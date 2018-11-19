@@ -297,8 +297,8 @@ platform.
       begins? command, arg
     end
 
-    if help then
-      if Symbol === help then
+    if help
+      if Symbol === help
         send help
       else
         say help
@@ -306,10 +306,10 @@ platform.
       return
     end
 
-    if options[:help] then
+    if options[:help]
       show_help
 
-    elsif arg then
+    elsif arg
       show_command_help arg
 
     else
@@ -334,7 +334,7 @@ platform.
       command = @command_manager[cmd_name]
 
       summary =
-        if command then
+        if command
           command.summary
         else
           "[No command found for #{cmd_name}]"
@@ -361,10 +361,10 @@ platform.
 
     possibilities = @command_manager.find_command_possibilities command_name
 
-    if possibilities.size == 1 then
+    if possibilities.size == 1
       command = @command_manager[possibilities.first]
       command.invoke("--help")
-    elsif possibilities.size > 1 then
+    elsif possibilities.size > 1
       alert_warning "Ambiguous command #{command_name} (#{possibilities.join(', ')})"
     else
       alert_warning "Unknown command #{command_name}. Try: gem help commands"

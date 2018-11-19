@@ -148,7 +148,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     yield
   ensure
-    if enable_shared then
+    if enable_shared
       RbConfig::CONFIG['enable_shared'] = enable_shared
     else
       RbConfig::CONFIG.delete 'enable_shared'
@@ -270,7 +270,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     tmpdir = File.expand_path Dir.tmpdir
     tmpdir.untaint
 
-    if ENV['KEEP_FILES'] then
+    if ENV['KEEP_FILES']
       @tempdir = File.join(tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}")
     else
       @tempdir = File.join(tmpdir, "test_rubygems_#{$$}")
@@ -304,7 +304,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     @userhome = File.join @tempdir, 'userhome'
     ENV["GEM_SPEC_CACHE"] = File.join @tempdir, 'spec_cache'
 
-    @orig_ruby = if ENV['RUBY'] then
+    @orig_ruby = if ENV['RUBY']
                    ruby = Gem.ruby
                    Gem.ruby = ENV['RUBY']
                    ruby
@@ -426,7 +426,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     end
     RbConfig::CONFIG['arch'] = @orig_arch
 
-    if defined? Gem::RemoteFetcher then
+    if defined? Gem::RemoteFetcher
       Gem::RemoteFetcher.fetcher = nil
     end
 
@@ -449,7 +449,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     Gem.ruby = @orig_ruby if @orig_ruby
 
-    if @orig_ENV_HOME then
+    if @orig_ENV_HOME
       ENV['HOME'] = @orig_ENV_HOME
     else
       ENV.delete 'HOME'
@@ -534,7 +534,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     head = nil
 
     Dir.chdir directory do
-      unless File.exist? '.git' then
+      unless File.exist? '.git'
         system @git, 'init', '--quiet'
         system @git, 'config', 'user.name',  'RubyGems Tests'
         system @git, 'config', 'user.email', 'rubygems@example'
@@ -573,7 +573,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     gem = File.join @tempdir, "gems", "#{spec.full_name}.gem"
 
-    unless File.exist? gem then
+    unless File.exist? gem
       use_ui Gem::MockGemUi.new do
         Dir.chdir @tempdir do
           Gem::Package.build spec
@@ -832,7 +832,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     spec.loaded_from = spec.spec_file
 
-    unless files.empty? then
+    unless files.empty?
       write_file spec.spec_file do |io|
         io.write spec.to_ruby_for_cache
       end
@@ -890,7 +890,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       yield s if block_given?
     end
 
-    if deps then
+    if deps
       # Since Hash#each is unordered in 1.8, sort the keys and iterate that
       # way so the tests are deterministic on all implementations.
       deps.keys.sort.each do |n|
@@ -898,7 +898,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       end
     end
 
-    unless files.empty? then
+    unless files.empty?
       write_file spec.spec_file do |io|
         io.write spec.to_ruby_for_cache
       end
@@ -926,7 +926,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     # TODO: deprecate
     raise "deps or block, not both" if deps and block
 
-    if deps then
+    if deps
       block = proc do |s|
         # Since Hash#each is unordered in 1.8, sort
         # the keys and iterate that way so the tests are
@@ -1122,7 +1122,7 @@ Also, a list:
     end
 
     # HACK for test_download_to_cache
-    unless Gem::RemoteFetcher === @fetcher then
+    unless Gem::RemoteFetcher === @fetcher
       v = Gem.marshal_version
 
       specs = all.map { |spec| spec.name_tuple }
@@ -1163,7 +1163,7 @@ Also, a list:
 
   def util_set_RUBY_VERSION(version, patchlevel = nil, revision = nil, description = nil, engine = "ruby", engine_version = nil)
     if Gem.instance_variables.include? :@ruby_version or
-       Gem.instance_variables.include? '@ruby_version' then
+       Gem.instance_variables.include? '@ruby_version'
       Gem.send :remove_instance_variable, :@ruby_version
     end
 
@@ -1371,7 +1371,7 @@ Also, a list:
   def dependency_request(dep, from_name, from_version, parent = nil)
     remote = Gem::Source.new @uri
 
-    unless parent then
+    unless parent
       parent_dep = dep from_name, from_version
       parent = Gem::Resolver::DependencyRequest.new parent_dep, nil
     end
@@ -1541,7 +1541,7 @@ Also, a list:
   # <tt>test/rubygems/</tt>.
 
   def self.cert_path(cert_name)
-    if 32 == (Time.at(2**32) rescue 32) then
+    if 32 == (Time.at(2**32) rescue 32)
       cert_file =
         File.expand_path "../../../test/rubygems/#{cert_name}_cert_32.pem",
                          __FILE__

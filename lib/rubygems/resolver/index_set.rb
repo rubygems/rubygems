@@ -9,7 +9,7 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
     super()
 
     @f =
-      if source then
+      if source
         sources = Gem::SourceList.from [source]
 
         Gem::SpecFetcher.new sources
@@ -44,7 +44,7 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
     name = req.dependency.name
 
     @all[name].each do |uri, n|
-      if req.match? n, @prerelease then
+      if req.match? n, @prerelease
         res << Gem::Resolver::IndexSpecification.new(
           self, n.name, n.version, uri, n.platform)
       end

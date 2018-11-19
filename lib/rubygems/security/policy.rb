@@ -91,16 +91,16 @@ class Gem::Security::Policy
 
     message = "certificate #{signer.subject}"
 
-    if not_before = signer.not_before and not_before > time then
+    if not_before = signer.not_before and not_before > time
       raise Gem::Security::Exception,
             "#{message} not valid before #{not_before}"
     end
 
-    if not_after = signer.not_after and not_after < time then
+    if not_after = signer.not_after and not_after < time
       raise Gem::Security::Exception, "#{message} not valid after #{not_after}"
     end
 
-    if issuer and not signer.verify issuer.public_key then
+    if issuer and not signer.verify issuer.public_key
       raise Gem::Security::Exception,
             "#{message} was not issued by #{issuer.subject}"
     end
@@ -112,7 +112,7 @@ class Gem::Security::Policy
   # Ensures the public key of +key+ matches the public key in +signer+
 
   def check_key(signer, key)
-    unless signer and key then
+    unless signer and key
       return true unless @only_signed
 
       raise Gem::Security::Exception, 'missing key or signature'
@@ -157,7 +157,7 @@ class Gem::Security::Policy
 
     path = Gem::Security.trust_dir.cert_path root
 
-    unless File.exist? path then
+    unless File.exist? path
       message = "root cert #{root.subject} is not trusted".dup
 
       message << " (root of signing cert #{chain.last.subject})" if
@@ -210,11 +210,11 @@ class Gem::Security::Policy
 
   def verify(chain, key = nil, digests = {}, signatures = {},
              full_name = '(unknown)')
-    if signatures.empty? then
-      if @only_signed then
+    if signatures.empty?
+      if @only_signed
         raise Gem::Security::Exception,
           "unsigned gems are not allowed by the #{name} policy"
-      elsif digests.empty? then
+      elsif digests.empty?
         # lack of signatures is irrelevant if there is nothing to check
         # against
       else
@@ -232,7 +232,7 @@ class Gem::Security::Policy
       file_digests.values.first.name == Gem::Security::DIGEST_NAME
     end
 
-    if @verify_data then
+    if @verify_data
       raise Gem::Security::Exception, 'no digests provided (probable bug)' if
         signer_digests.nil? or signer_digests.empty?
     else
@@ -249,9 +249,9 @@ class Gem::Security::Policy
 
     check_root chain, time if @verify_root
 
-    if @only_trusted then
+    if @only_trusted
       check_trust chain, digester, trust_dir
-    elsif signatures.empty? and digests.empty? then
+    elsif signatures.empty? and digests.empty?
       # trust is irrelevant if there's no signatures to verify
     else
       alert_warning "#{subject signer} is not trusted for #{full_name}"

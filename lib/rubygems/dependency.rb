@@ -76,7 +76,7 @@ class Gem::Dependency
   end
 
   def inspect # :nodoc:
-    if prerelease? then
+    if prerelease?
       "<%s type=%p name=%p requirements=%p prerelease=ok>" %
         [self.class, self.type, self.name, requirement.to_s]
     else
@@ -152,7 +152,7 @@ class Gem::Dependency
   end
 
   def to_s # :nodoc:
-    if type != :runtime then
+    if type != :runtime
       "#{name} (#{requirement}, #{type})"
     else
       "#{name} (#{requirement})"
@@ -260,7 +260,7 @@ class Gem::Dependency
   # Merges the requirements of +other+ into this dependency
 
   def merge(other)
-    unless name == other.name then
+    unless name == other.name
       raise ArgumentError,
             "#{self} and #{other} have different names"
     end
@@ -304,7 +304,7 @@ class Gem::Dependency
 
     # TODO: check Gem.activated_spec[self.name] in case matches falls outside
 
-    if matches.empty? then
+    if matches.empty?
       specs = Gem::Specification.stubs_for name
 
       if specs.empty?

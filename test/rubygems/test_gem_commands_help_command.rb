@@ -48,7 +48,7 @@ class TestGemCommandsHelpCommand < Gem::TestCase
         assert_match(/\s+#{cmd}\s+\S+/, out)
       end
 
-      if defined?(OpenSSL::SSL) then
+      if defined?(OpenSSL::SSL)
         assert_empty err
 
         refute_match 'No command found for ', out

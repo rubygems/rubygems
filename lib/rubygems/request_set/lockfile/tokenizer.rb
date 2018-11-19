@@ -65,7 +65,7 @@ class Gem::RequestSet::Lockfile::Tokenizer
 
       pos = s.pos if leading_whitespace = s.scan(/ +/)
 
-      if s.scan(/[<|=>]{7}/) then
+      if s.scan(/[<|=>]{7}/)
         message = "your #{@filename} contains merge conflict markers"
         column, line = token_pos pos
 
@@ -80,7 +80,7 @@ class Gem::RequestSet::Lockfile::Tokenizer
           @line += 1
           token
         when s.scan(/[A-Z]+/) then
-          if leading_whitespace then
+          if leading_whitespace
             text = s.matched
             text += s.scan(/[^\s)]*/).to_s # in case of no match
             Token.new(:text, text, *token_pos(pos))

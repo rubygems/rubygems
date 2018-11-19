@@ -117,7 +117,7 @@ class TestGemPlatform < Gem::TestCase
 
     assert_equal expected, platform.to_a, 'i386-mswin32 VC6'
   ensure
-    if orig_RUBY_SO_NAME then
+    if orig_RUBY_SO_NAME
       RbConfig::CONFIG['RUBY_SO_NAME'] = orig_RUBY_SO_NAME
     else
       RbConfig::CONFIG.delete 'RUBY_SO_NAME'
@@ -145,7 +145,7 @@ class TestGemPlatform < Gem::TestCase
   end
 
   def test_to_s
-    if win_platform? then
+    if win_platform?
       assert_equal 'x86-mswin32-60', Gem::Platform.local.to_s
     else
       assert_equal 'x86-darwin-8', Gem::Platform.local.to_s

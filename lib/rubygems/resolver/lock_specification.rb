@@ -30,7 +30,7 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
   def install(options = {})
     destination = options[:install_dir] || Gem.dir
 
-    if File.exist? File.join(destination, 'specifications', spec.spec_name) then
+    if File.exist? File.join(destination, 'specifications', spec.spec_name)
       yield nil
       return
     end
@@ -53,12 +53,12 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
       q.breakable
       q.text "version: #{@version}"
 
-      unless @platform == Gem::Platform::RUBY then
+      unless @platform == Gem::Platform::RUBY
         q.breakable
         q.text "platform: #{@platform}"
       end
 
-      unless @dependencies.empty? then
+      unless @dependencies.empty?
         q.breakable
         q.text 'dependencies:'
         q.breakable

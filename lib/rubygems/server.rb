@@ -463,7 +463,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def doc_root(gem_name)
-    if have_rdoc_4_plus? then
+    if have_rdoc_4_plus?
       "/doc_root/#{u gem_name}/"
     else
       "/doc_root/#{u gem_name}/rdoc/index.html"
@@ -491,14 +491,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/ then
+    if req.path =~ /\.gz$/
       specs = Gem::Util.gzip specs
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
     end
 
-    if req.request_method == 'HEAD' then
+    if req.request_method == 'HEAD'
       res['content-length'] = specs.length
     else
       res.body << specs
@@ -529,7 +529,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       end
     end
 
-    if @server.listeners.empty? then
+    if @server.listeners.empty?
       say "Unable to start a server."
       say "Check for running servers or your --bind and --port arguments"
       terminate_interaction 1
@@ -552,14 +552,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/ then
+    if req.path =~ /\.gz$/
       specs = Gem::Util.gzip specs
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
     end
 
-    if req.request_method == 'HEAD' then
+    if req.request_method == 'HEAD'
       res['content-length'] = specs.length
     else
       res.body << specs
@@ -579,13 +579,13 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
       selector = full_name.inspect
 
-      if specs.empty? then
+      if specs.empty?
         res.status = 404
         res.body = "No gems found matching #{selector}"
-      elsif specs.length > 1 then
+      elsif specs.length > 1
         res.status = 500
         res.body = "Multiple gems found matching #{selector}"
-      elsif marshal_format then
+      elsif marshal_format
         res['content-type'] = 'application/x-deflate'
         res.body << Gem.deflate(Marshal.dump(specs.first))
       end
@@ -818,7 +818,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       '/gems' => '/cache/',
     }
 
-    if have_rdoc_4_plus? then
+    if have_rdoc_4_plus?
       @server.mount '/doc_root', RDoc::Servlet, '/doc_root'
     else
       file_handlers['/doc_root'] = '/doc/'
@@ -851,14 +851,14 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/ then
+    if req.path =~ /\.gz$/
       specs = Gem::Util.gzip specs
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
     end
 
-    if req.request_method == 'HEAD' then
+    if req.request_method == 'HEAD'
       res['content-length'] = specs.length
     else
       res.body << specs

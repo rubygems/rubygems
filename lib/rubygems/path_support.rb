@@ -25,7 +25,7 @@ class Gem::PathSupport
   def initialize(env)
     @home = env["GEM_HOME"] || Gem.default_dir
 
-    if File::ALT_SEPARATOR then
+    if File::ALT_SEPARATOR
       @home = @home.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
     end
 
@@ -56,7 +56,7 @@ class Gem::PathSupport
         gem_path += default_path
       end
 
-      if File::ALT_SEPARATOR then
+      if File::ALT_SEPARATOR
         gem_path.map! do |this_path|
           this_path.gsub File::ALT_SEPARATOR, File::SEPARATOR
         end

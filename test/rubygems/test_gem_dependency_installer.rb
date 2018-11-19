@@ -897,7 +897,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1-cpu-other_platform-1], inst.installed_gems.map { |s| s.full_name }
   end
 
-  if defined? OpenSSL then
+  if defined? OpenSSL
     def test_install_security_policy
       util_setup_gems
 
@@ -922,7 +922,7 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   # Wrappers don't work on mswin
-  unless win_platform? then
+  unless win_platform?
     def test_install_no_wrappers
       util_setup_gems
 

@@ -223,7 +223,7 @@ end
     yield
 
   ensure
-    if configure_args then
+    if configure_args
       RbConfig::CONFIG['configure_args'] = configure_args
     else
       RbConfig::CONFIG.delete 'configure_args'

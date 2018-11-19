@@ -56,7 +56,7 @@ class Gem::RequestSet::Lockfile
       requirement = request.request.dependency.requirement
 
       deps[name] = if [Gem::Resolver::VendorSpecification,
-                       Gem::Resolver::GitSpecification].include? spec.class then
+                       Gem::Resolver::GitSpecification].include? spec.class
                      Gem::Requirement.source_set
                    else
                      requirement
@@ -152,7 +152,7 @@ class Gem::RequestSet::Lockfile
     dest = File.expand_path(dest)
     base = File.expand_path(base)
 
-    if dest.index(base) == 0 then
+    if dest.index(base) == 0
       offset = dest[base.size+1..-1]
 
       return '.' unless offset

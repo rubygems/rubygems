@@ -63,7 +63,7 @@ def test_certificates(certificates, uri)
     certificates.combination(n).each do |combination|
       match = test_uri uri, combination
 
-      if match then
+      if match
         $needed_combinations << match
         puts
         puts match.map { |certificate| certificate.subject }
@@ -117,7 +117,7 @@ def write_certificates(certificates)
 end
 
 io =
-  if ARGV.empty? then
+  if ARGV.empty?
     open OpenSSL::X509::DEFAULT_CERT_FILE
   else
     ARGF

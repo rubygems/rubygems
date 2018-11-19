@@ -319,7 +319,7 @@ EOM
   # the security policy.
 
   def digest(entry) # :nodoc:
-    algorithms = if @checksums then
+    algorithms = if @checksums
                    @checksums.keys
                  else
                    [Gem::Security::DIGEST_NAME].compact
@@ -327,7 +327,7 @@ EOM
 
     algorithms.each do |algorithm|
       digester =
-        if defined?(OpenSSL::Digest) then
+        if defined?(OpenSSL::Digest)
           OpenSSL::Digest.new algorithm
         else
           Digest.const_get(algorithm).new
@@ -391,7 +391,7 @@ EOM
         mkdir_options = {}
         mkdir_options[:mode] = dir_mode ? 0700 : (entry.header.mode if entry.directory?)
         mkdir =
-          if entry.directory? then
+          if entry.directory?
             destination
           else
             File.dirname destination
@@ -527,7 +527,7 @@ EOM
 
   def setup_signer(signer_options: {})
     passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
-    if @spec.signing_key then
+    if @spec.signing_key
       @signer =
         Gem::Security::Signer.new(
           @spec.signing_key,
@@ -607,7 +607,7 @@ EOM
       gem_digests.sort.each do |file_name, gem_hexdigest|
         computed_digest = digests[algorithm][file_name]
 
-        unless computed_digest.hexdigest == gem_hexdigest then
+        unless computed_digest.hexdigest == gem_hexdigest
           raise Gem::Package::FormatError.new \
             "#{algorithm} checksum mismatch for #{file_name}", @gem
         end
@@ -650,11 +650,11 @@ EOM
       verify_entry entry
     end
 
-    unless @spec then
+    unless @spec
       raise Gem::Package::FormatError.new 'package metadata is missing', @gem
     end
 
-    unless @files.include? 'data.tar.gz' then
+    unless @files.include? 'data.tar.gz'
       raise Gem::Package::FormatError.new \
               'package content (data.tar.gz) is missing', @gem
     end

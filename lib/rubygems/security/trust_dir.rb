@@ -105,7 +105,7 @@ class Gem::Security::TrustDir
   # permissions.
 
   def verify
-    if File.exist? @dir then
+    if File.exist? @dir
       raise Gem::Security::Exception,
         "trust directory #{@dir} is not a directory" unless
           File.directory? @dir

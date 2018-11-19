@@ -115,7 +115,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
           begin
             file.readline # discard encoding line
             stubline = file.readline.chomp
-            if stubline.start_with?(PREFIX) then
+            if stubline.start_with?(PREFIX)
               extensions = if /\A#{PREFIX}/ =~ file.readline.chomp
                              $'.split "\0"
                            else
@@ -185,7 +185,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # The full Gem::Specification for this gem, loaded from evalling its gemspec
 
   def to_spec
-    @spec ||= if @data then
+    @spec ||= if @data
                 loaded = Gem.loaded_specs[name]
                 loaded if loaded && loaded.version == version
               end

@@ -20,7 +20,7 @@ class Gem::Request::ConnectionPools # :nodoc:
     key       = http_args + [https?(uri)]
     @pool_mutex.synchronize do
       @pools[key] ||=
-        if https? uri then
+        if https? uri
           Gem::Request::HTTPSPool.new(http_args, @cert_files, @proxy_uri)
         else
           Gem::Request::HTTPPool.new(http_args, @cert_files, @proxy_uri)
@@ -81,7 +81,7 @@ class Gem::Request::ConnectionPools # :nodoc:
 
     no_proxy = get_no_proxy_from_env
 
-    if proxy_uri and not no_proxy?(hostname, no_proxy) then
+    if proxy_uri and not no_proxy?(hostname, no_proxy)
       proxy_hostname = proxy_uri.respond_to?(:hostname) ? proxy_uri.hostname : proxy_uri.host
       net_http_args + [
         proxy_hostname,
@@ -89,7 +89,7 @@ class Gem::Request::ConnectionPools # :nodoc:
         Gem::UriFormatter.new(proxy_uri.user).unescape,
         Gem::UriFormatter.new(proxy_uri.password).unescape,
       ]
-    elsif no_proxy? hostname, no_proxy then
+    elsif no_proxy? hostname, no_proxy
       net_http_args + [nil, nil]
     else
       net_http_args

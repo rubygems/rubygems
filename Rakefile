@@ -96,7 +96,7 @@ file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
     Find.find '.' do |file|
       dest = File.expand_path file, dest_root
 
-      if File.directory? file then
+      if File.directory? file
         mkdir_p dest
       else
         rm_f dest
@@ -257,7 +257,7 @@ namespace 'blog' do
 
     last_change_type = change_types.pop
 
-    if change_types.empty? then
+    if change_types.empty?
       change_types = ''
     else
       change_types = change_types.join(', ') << ' and '

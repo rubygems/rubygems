@@ -88,7 +88,7 @@ class Gem::Source
     rescue Gem::RemoteFetcher::FetchError
       Gem::Resolver::IndexSet.new self
     else
-      if response.respond_to? :uri then
+      if response.respond_to? :uri
         Gem::Resolver::APISet.new response.uri
       else
         Gem::Resolver::APISet.new bundler_api_uri
@@ -137,7 +137,7 @@ class Gem::Source
 
     local_spec = File.join cache_dir, spec_file_name
 
-    if File.exist? local_spec then
+    if File.exist? local_spec
       spec = Gem.read_binary local_spec
       spec = Marshal.load(spec) rescue nil
       return spec if spec
@@ -148,7 +148,7 @@ class Gem::Source
     spec = fetcher.fetch_path source_uri
     spec = Gem::Util.inflate spec
 
-    if update_cache? then
+    if update_cache?
       FileUtils.mkdir_p cache_dir
 
       File.open local_spec, 'wb' do |io|

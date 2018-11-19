@@ -65,7 +65,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
         Gem::Platform.local === s.platform
     end
 
-    if found.empty? then
+    if found.empty?
       exc = Gem::UnsatisfiableDependencyError.new request
       exc.errors = errors
 
@@ -128,7 +128,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       res << Gem::Resolver::InstalledSpecification.new(self, gemspec)
     end unless @ignore_installed
 
-    if consider_local? then
+    if consider_local?
       matching_local = @local.values.select do |spec, _|
         req.match? spec
       end.map do |spec, source|
@@ -138,7 +138,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       res.concat matching_local
 
       begin
-        if local_spec = @local_source.find_gem(name, dep.requirement) then
+        if local_spec = @local_source.find_gem(name, dep.requirement)
           res << Gem::Resolver::IndexSpecification.new(
             self, local_spec.name, local_spec.version,
             @local_source, local_spec.platform)

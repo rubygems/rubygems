@@ -35,7 +35,7 @@ class Gem::FakeFetcher
   def find_data(path)
     return File.read path.path if URI === path and 'file' == path.scheme
 
-    if URI === path and "URI::#{path.scheme.upcase}" != path.class.name then
+    if URI === path and "URI::#{path.scheme.upcase}" != path.class.name
       raise ArgumentError,
         "mismatch for scheme #{path.scheme} and class #{path.class}"
     end
@@ -44,7 +44,7 @@ class Gem::FakeFetcher
     @paths << path
     raise ArgumentError, 'need full URI' unless path =~ %r'^https?://'
 
-    unless @data.key? path then
+    unless @data.key? path
       raise Gem::RemoteFetcher::FetchError.new("no data for #{path}", path)
     end
 
@@ -54,10 +54,10 @@ class Gem::FakeFetcher
   def fetch_path(path, mtime = nil, head = false)
     data = find_data(path)
 
-    if data.respond_to?(:call) then
+    if data.respond_to?(:call)
       data.call
     else
-      if path.to_s =~ /gz$/ and not data.nil? and not data.empty? then
+      if path.to_s =~ /gz$/ and not data.nil? and not data.empty?
         data = Gem::Util.gunzip data
       end
 
@@ -114,7 +114,7 @@ class Gem::FakeFetcher
 
     raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
 
-    unless @data.key? path then
+    unless @data.key? path
       raise Gem::RemoteFetcher::FetchError.new("no data for #{path}", path)
     end
 
@@ -125,7 +125,7 @@ class Gem::FakeFetcher
 
   def download(spec, source_uri, install_dir = Gem.dir)
     name = File.basename spec.cache_file
-    path = if Dir.pwd == install_dir then # see fetch_command
+    path = if Dir.pwd == install_dir  # see fetch_command
              install_dir
            else
              File.join install_dir, "cache"
@@ -133,7 +133,7 @@ class Gem::FakeFetcher
 
     path = File.join path, name
 
-    if source_uri =~ /^http/ then
+    if source_uri =~ /^http/
       File.open(path, "wb") do |f|
         f.write fetch_path(File.join(source_uri, "gems", name))
       end
@@ -293,7 +293,7 @@ class Gem::TestCase::SpecFetcherSetup
     require 'socket'
     require 'rubygems/remote_fetcher'
 
-    unless @test.fetcher then
+    unless @test.fetcher
       @test.fetcher = Gem::FakeFetcher.new
       Gem::RemoteFetcher.fetcher = @test.fetcher
     end

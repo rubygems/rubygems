@@ -83,7 +83,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
       end
     end
 
-    if win_platform? then
+    if win_platform?
       assert File.exist?(@executable)
     else
       assert File.symlink?(@executable)

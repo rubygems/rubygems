@@ -482,7 +482,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # distinction as extensions cannot be shared between the two.
 
   def self.extension_api_version # :nodoc:
-    if 'no' == RbConfig::CONFIG['ENABLE_SHARED'] then
+    if 'no' == RbConfig::CONFIG['ENABLE_SHARED']
       "#{ruby_api_version}-static"
     else
       ruby_api_version
@@ -574,7 +574,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   def self.find_home
     Dir.home
   rescue
-    if Gem.win_platform? then
+    if Gem.win_platform?
       File.expand_path File.join(ENV['HOMEDRIVE'] || ENV['SystemDrive'], '/')
     else
       File.expand_path "/"
@@ -836,7 +836,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
     if prefix != File.expand_path(RbConfig::CONFIG['sitelibdir']) and
        prefix != File.expand_path(RbConfig::CONFIG['libdir']) and
-       'lib' == File.basename(RUBYGEMS_DIR) then
+       'lib' == File.basename(RUBYGEMS_DIR)
       prefix
     end
   end
@@ -894,7 +894,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # The path to the running Ruby interpreter.
 
   def self.ruby
-    if @ruby.nil? then
+    if @ruby.nil?
       @ruby = File.join(RbConfig::CONFIG['bindir'],
                         "#{RbConfig::CONFIG['ruby_install_name']}#{RbConfig::CONFIG['EXEEXT']}")
 
@@ -956,10 +956,10 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     return @ruby_version if defined? @ruby_version
     version = RUBY_VERSION.dup
 
-    if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1 then
+    if defined?(RUBY_PATCHLEVEL) && RUBY_PATCHLEVEL != -1
       version << ".#{RUBY_PATCHLEVEL}"
-    elsif defined?(RUBY_DESCRIPTION) then
-      if RUBY_ENGINE == "ruby" then
+    elsif defined?(RUBY_DESCRIPTION)
+      if RUBY_ENGINE == "ruby"
         version << ".#{RUBY_DESCRIPTION[/\Aruby #{Regexp.quote(RUBY_VERSION)}([^ ]+) /, 1]}"
       else
         version << ".#{RUBY_DESCRIPTION[/\A#{RUBY_ENGINE} #{Regexp.quote(RUBY_ENGINE_VERSION)} \(#{RUBY_VERSION}([^ ]+)\) /, 1]}"
@@ -1070,7 +1070,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Is this a windows platform?
 
   def self.win_platform?
-    if @@win_platform.nil? then
+    if @@win_platform.nil?
       ruby_platform = RbConfig::CONFIG['host_os']
       @@win_platform = !!WIN_PATTERNS.find { |r| ruby_platform =~ r }
     end
@@ -1158,7 +1158,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
     path = path.dup
 
-    if path == "-" then
+    if path == "-"
       Gem::Util.traverse_parents Dir.pwd do |directory|
         dep_file = GEM_DEP_FILES.find { |f| File.file?(f) }
 
@@ -1171,7 +1171,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
     path.untaint
 
-    unless File.file? path then
+    unless File.file? path
       return unless raise_exception
 
       raise ArgumentError, "Unable to find gem dependencies file at #{path}"
@@ -1375,7 +1375,7 @@ begin
 rescue LoadError
 end
 
-if defined?(RUBY_ENGINE) then
+if defined?(RUBY_ENGINE)
   begin
     ##
     # Defaults the Ruby implementation wants to provide for RubyGems

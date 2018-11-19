@@ -121,7 +121,7 @@ end
   ensure
     Object.const_set :RUBY_FRAMEWORK_VERSION, orig_RUBY_FRAMEWORK_VERSION if
       orig_RUBY_FRAMEWORK_VERSION
-    if orig_bindir then
+    if orig_bindir
       RbConfig::CONFIG['bindir'] = orig_bindir
     else
       RbConfig::CONFIG.delete 'bindir'
@@ -250,7 +250,7 @@ gem 'other', version
 
     expected = @installer.bin_dir
 
-    if Gem.win_platform? then
+    if Gem.win_platform?
       expected = expected.downcase.gsub(File::SEPARATOR, File::ALT_SEPARATOR)
     end
 
@@ -488,7 +488,7 @@ gem 'other', version
     real_exec = File.join @spec.gem_dir, 'bin', 'executable'
 
     # fake --no-wrappers for previous install
-    unless Gem.win_platform? then
+    unless Gem.win_platform?
       FileUtils.mkdir_p File.dirname(installed_exec)
       FileUtils.ln_s real_exec, installed_exec
     end

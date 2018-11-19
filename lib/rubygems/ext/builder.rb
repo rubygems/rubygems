@@ -195,7 +195,6 @@ EOF
         end
       end
 
-      write_gem_make_out results.join "\n"
     rescue => e
       results << e.message
       build_error extension_dir, results.join("\n"), $@

@@ -40,7 +40,7 @@ class Gem::Ext::Builder
 
     destdir = '"DESTDIR=%s"' % ENV['DESTDIR']
 
-    ['clean', '', 'install'].each do |target|
+    ['clean', '', 'install', 'distclean'].each do |target|
       # Pass DESTDIR via command line to override what's in MAKEFLAGS
       cmd = [
         make_program,
@@ -50,7 +50,7 @@ class Gem::Ext::Builder
       begin
         run(cmd, results, "make #{target}".rstrip)
       rescue Gem::InstallError
-        raise unless target == 'clean' # ignore clean failure
+        raise unless %w[clean distclean].include?(target) # ignore clean and distclean failure
       end
     end
   end

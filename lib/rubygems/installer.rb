@@ -752,7 +752,7 @@ version = "#{Gem::Requirement.default}.a"
 if ARGV.first
   str = ARGV.first
   str = str.dup.force_encoding("BINARY")
-  if str =~ /\\A_(.*)_\\z/ and Gem::Version.correct?($1) then
+  if str =~ /\\A_(.*)_\\z/ and Gem::Version.correct?($1)
     version = $1
     ARGV.shift
   end

@@ -960,10 +960,11 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       version << ".#{RUBY_PATCHLEVEL}"
     elsif defined?(RUBY_DESCRIPTION)
       if RUBY_ENGINE == "ruby"
-        version << ".#{RUBY_DESCRIPTION[/\Aruby #{Regexp.quote(RUBY_VERSION)}([^ ]+) /, 1]}"
+        desc = RUBY_DESCRIPTION[/\Aruby #{Regexp.quote(RUBY_VERSION)}([^ ]+) /, 1]
       else
-        version << ".#{RUBY_DESCRIPTION[/\A#{RUBY_ENGINE} #{Regexp.quote(RUBY_ENGINE_VERSION)} \(#{RUBY_VERSION}([^ ]+)\) /, 1]}"
+        desc = RUBY_DESCRIPTION[/\A#{RUBY_ENGINE} #{Regexp.quote(RUBY_ENGINE_VERSION)} \(#{RUBY_VERSION}([^ ]+)\) /, 1]
       end
+      version << ".#{desc}" if desc
     end
 
     @ruby_version = Gem::Version.new version

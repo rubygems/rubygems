@@ -1642,8 +1642,6 @@ dependencies: []
 
     @ext.build_extensions
 
-    gem_make_out = File.join @ext.extension_dir, 'gem_make.out'
-    assert_path_exists gem_make_out
   end
 
   def test_contains_requirable_file_eh

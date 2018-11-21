@@ -1176,9 +1176,6 @@ gem 'other', version
       installer.install
     end
 
-    expected_makefile = File.join Gem.user_dir, 'gems', @spec.full_name, 'Makefile'
-
-    assert_path_exists expected_makefile
     assert_path_exists expected_extension_dir
     refute_path_exists File.join expected_extension_dir, 'gem_make.out'
   end

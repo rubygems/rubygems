@@ -237,6 +237,14 @@ class Gem::Request
       verbose "fatal error"
 
       raise Gem::RemoteFetcher::FetchError.new('fatal error', @uri)
+    rescue (defined?(OpenSSL::SSL) ? OpenSSL::SSL::SSLError : nil) => e
+      # As of 2018-11, error is intermittently raised when using TLS 1.3 with
+      # improper client authentication
+      if OpenSSL::SSL.const_defined? :TLS1_3_VERSION
+        raise Gem::RemoteFetcher::FetchError.new("OpenSSL error: #{e.message}", @uri)
+      else
+        raise e
+      end
     # HACK work around EOFError bug in Net::HTTP
     # NOTE Errno::ECONNABORTED raised a lot on Windows, and make impossible
     # to install gems.

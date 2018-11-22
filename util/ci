@@ -48,10 +48,11 @@ case ARGV
 when %w(before_script)
   if TOOL.rubygems?
     run('gem', %W(uninstall executable-hooks gem-wrappers bundler-unload -x --force -i #{`gem env home`.strip}@global))
-    # 2.2 images of Travis was broken about bundled gems
-    if (RUBY_VERSION >= "2.2.0" && RUBY_VERSION < "2.3.0") || RUBY_VERSION >= "2.6.0"
+
+    if RUBY_VERSION >= "2.6.0"
       run('gem', %w(install minitest -v 5.4.3))
     end
+
     # 2.5 images of Travis was broken about bundler installation.
     if RUBY_VERSION >= "2.5.0" && RUBY_VERSION < "2.6.0"
       run('gem', %w(install bundler -v 1.16.2))

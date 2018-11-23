@@ -749,11 +749,12 @@ require 'rubygems'
 
 version = "#{Gem::Requirement.default}.a"
 
-if ARGV.first
-  str = ARGV.first
+str = ARGV.first
+if str
   str = str.dup.force_encoding("BINARY")
-  if str =~ /\\A_(.*)_\\z/ and Gem::Version.correct?($1)
-    version = $1
+  str = str[/\\A_(.*)_\\z/, 1]
+  if str and Gem::Version.correct?(str)
+    version = str
     ARGV.shift
   end
 end

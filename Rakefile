@@ -339,7 +339,7 @@ desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
   files = []
   require 'find'
-  exclude = %r[/\/tmp\/|pkg|CVS|\.DS_Store|\.svn|\.git|TAGS|extconf.h|\.bundle$|\.o$|\.log$/|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|doc|coverage/]ox
+  exclude = %r[/\/tmp\/|\/pkg\/|CVS|\.DS_Store|\/doc\/|\/coverage\/|\.svn|\.git|TAGS|extconf.h|\.bundle$|\.o$|\.log$/|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)]ox
   Find.find(".") do |path|
     next unless File.file?(path)
     next if path =~ exclude

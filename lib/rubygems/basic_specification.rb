@@ -43,14 +43,14 @@ class Gem::BasicSpecification
   # directory.
 
   def gem_build_complete_path # :nodoc:
-    File.join extension_dir, 'gem.build_complete'
+    File.join(extension_dir, 'gem.build_complete')
   end
 
   ##
   # True when the gem has been activated
 
   def activated?
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   ##
@@ -59,7 +59,7 @@ class Gem::BasicSpecification
   # eg: /usr/local/lib/ruby/gems/1.8
 
   def base_dir
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   ##
@@ -71,12 +71,12 @@ class Gem::BasicSpecification
     elsif missing_extensions?
       @ignored = true
 
-      warn "Ignoring #{full_name} because its extensions are not built. " +
-        "Try: gem pristine #{name} --version #{version}"
+      warn("Ignoring #{full_name} because its extensions are not built. " +
+        "Try: gem pristine #{name} --version #{version}")
       return false
     end
 
-    have_file? file, Gem.suffixes
+    have_file?(file, Gem.suffixes)
   end
 
   def default_gem?
@@ -102,7 +102,7 @@ class Gem::BasicSpecification
 
   def find_full_gem_path # :nodoc:
     # TODO: also, shouldn't it default to full_name if it hasn't been written?
-    path = File.expand_path File.join(gems_dir, full_name)
+    path = File.expand_path(File.join(gems_dir, full_name))
     path.untaint
     path
   end
@@ -139,7 +139,7 @@ class Gem::BasicSpecification
     @full_require_paths ||=
     begin
       full_paths = raw_require_paths.map do |path|
-        File.join full_gem_path, path.untaint
+        File.join(full_gem_path, path.untaint)
       end
 
       full_paths << extension_dir if have_extensions?
@@ -183,7 +183,7 @@ class Gem::BasicSpecification
   # eg: /usr/local/lib/ruby/1.8/gems/mygem-1.0
 
   def gem_dir
-    @gem_dir ||= File.expand_path File.join(gems_dir, full_name)
+    @gem_dir ||= File.expand_path(File.join(gems_dir, full_name))
   end
 
   ##
@@ -191,7 +191,7 @@ class Gem::BasicSpecification
   # gem directory. eg: /usr/local/lib/ruby/1.8/gems
 
   def gems_dir
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   def internal_init # :nodoc:
@@ -205,18 +205,18 @@ class Gem::BasicSpecification
   # Name of the gem
 
   def name
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   ##
   # Platform of the gem
 
   def platform
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   def raw_require_paths # :nodoc:
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   ##
@@ -239,7 +239,7 @@ class Gem::BasicSpecification
   def require_paths
     return raw_require_paths unless have_extensions?
 
-    [extension_dir].concat raw_require_paths
+    [extension_dir].concat(raw_require_paths)
   end
 
   ##
@@ -254,7 +254,7 @@ class Gem::BasicSpecification
         extension.split(File::SEPARATOR, 2).first
       end.uniq
 
-      paths.concat ext_dirs
+      paths.concat(ext_dirs)
     end
 
     paths.uniq
@@ -292,14 +292,14 @@ class Gem::BasicSpecification
   # Return a Gem::Specification from this gem
 
   def to_spec
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   ##
   # Version of the gem
 
   def version
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   ##
@@ -307,7 +307,7 @@ class Gem::BasicSpecification
   # about the gem from a stub line, without having to evaluate the
   # entire gemspec file.
   def stubbed?
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   def this; self; end
@@ -319,12 +319,12 @@ class Gem::BasicSpecification
   def have_file?(file, suffixes)
     return true if raw_require_paths.any? do |path|
       base = File.join(gems_dir, full_name, path.untaint, file).untaint
-      suffixes.any? { |suf| File.file? base + suf }
+      suffixes.any? { |suf| File.file?(base + suf) }
     end
 
     if have_extensions?
-      base = File.join extension_dir, file
-      suffixes.any? { |suf| File.file? base + suf }
+      base = File.join(extension_dir, file)
+      suffixes.any? { |suf| File.file?(base + suf) }
     else
       false
     end

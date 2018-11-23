@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require "rubygems/simple_gem"
-require 'rubygems/validator'
+require('rubygems/test_case')
+require("rubygems/simple_gem")
+require('rubygems/validator')
 
 class TestGemValidator < Gem::TestCase
 
@@ -17,12 +17,12 @@ class TestGemValidator < Gem::TestCase
       s.files = %w[lib/a.rb lib/b.rb]
     end
 
-    util_build_gem @spec
+    util_build_gem(@spec)
 
-    FileUtils.rm    File.join(@spec.gem_dir, 'lib/b.rb')
-    FileUtils.touch File.join(@spec.gem_dir, 'lib/c.rb')
+    FileUtils.rm(   File.join(@spec.gem_dir, 'lib/b.rb'))
+    FileUtils.touch(File.join(@spec.gem_dir, 'lib/c.rb'))
 
-    alien = @validator.alien 'a'
+    alien = @validator.alien('a')
 
     expected = {
       @spec.file_name => [
@@ -31,15 +31,15 @@ class TestGemValidator < Gem::TestCase
       ]
     }
 
-    assert_equal expected, alien
+    assert_equal(expected, alien)
   end
 
   def test_alien_default
-    new_default_spec 'c', 1, nil, 'lib/c.rb'
+    new_default_spec('c', 1, nil, 'lib/c.rb')
 
-    alien = @validator.alien 'c'
+    alien = @validator.alien('c')
 
-    assert_empty alien
+    assert_empty(alien)
   end
 
 end

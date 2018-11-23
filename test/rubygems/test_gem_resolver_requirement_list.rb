@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
+require('rubygems/test_case')
 
 class TestGemResolverRequirementList < Gem::TestCase
 
@@ -10,11 +10,11 @@ class TestGemResolverRequirementList < Gem::TestCase
   end
 
   def test_each
-    dep = Gem::Dependency.new "a", "= 1"
+    dep = Gem::Dependency.new("a", "= 1")
     req = Gem::Resolver::DependencyRequest.new(dep, nil)
-    @list.add req
+    @list.add(req)
 
-    assert_equal [req], @list.each.to_a
+    assert_equal([req], @list.each.to_a)
   end
 
 end

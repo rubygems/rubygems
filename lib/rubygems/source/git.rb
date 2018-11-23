@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems/util'
+require('rubygems/util')
 
 ##
 # A git gem for use in a gem dependencies file.
@@ -51,7 +51,7 @@ class Gem::Source::Git < Gem::Source
   # will be checked out when the gem is installed.
 
   def initialize(name, repository, reference, submodules = false)
-    super repository
+    super(repository)
 
     @name            = name
     @repository      = repository
@@ -91,21 +91,21 @@ class Gem::Source::Git < Gem::Source
   def checkout # :nodoc:
     cache
 
-    return false unless File.exist? repo_cache_dir
+    return false unless File.exist?(repo_cache_dir)
 
-    unless File.exist? install_dir
-      system @git, 'clone', '--quiet', '--no-checkout',
-             repo_cache_dir, install_dir
+    unless File.exist?(install_dir)
+      system(@git, 'clone', '--quiet', '--no-checkout',
+             repo_cache_dir, install_dir)
     end
 
-    Dir.chdir install_dir do
+    Dir.chdir(install_dir) do
       system @git, 'fetch', '--quiet', '--force', '--tags', install_dir
 
-      success = system @git, 'reset', '--quiet', '--hard', rev_parse
+      success = system(@git, 'reset', '--quiet', '--hard', rev_parse)
 
       success &&=
-        Gem::Util.silent_system @git, 'submodule', 'update',
-               '--quiet', '--init', '--recursive' if @need_submodules
+        Gem::Util.silent_system(@git, 'submodule', 'update',
+               '--quiet', '--init', '--recursive') if @need_submodules
 
       success
     end
@@ -117,14 +117,14 @@ class Gem::Source::Git < Gem::Source
   def cache # :nodoc:
     return unless @remote
 
-    if File.exist? repo_cache_dir
-      Dir.chdir repo_cache_dir do
+    if File.exist?(repo_cache_dir)
+      Dir.chdir(repo_cache_dir) do
         system @git, 'fetch', '--quiet', '--force', '--tags',
                @repository, 'refs/heads/*:refs/heads/*'
       end
     else
-      system @git, 'clone', '--quiet', '--bare', '--no-hardlinks',
-             @repository, repo_cache_dir
+      system(@git, 'clone', '--quiet', '--bare', '--no-hardlinks',
+             @repository, repo_cache_dir)
     end
   end
 
@@ -132,7 +132,7 @@ class Gem::Source::Git < Gem::Source
   # Directory where git gems get unpacked and so-forth.
 
   def base_dir # :nodoc:
-    File.join @root_dir, 'bundler'
+    File.join(@root_dir, 'bundler')
   end
 
   ##
@@ -152,18 +152,18 @@ class Gem::Source::Git < Gem::Source
   # The directory where the git gem will be installed.
 
   def install_dir # :nodoc:
-    return unless File.exist? repo_cache_dir
+    return unless File.exist?(repo_cache_dir)
 
-    File.join base_dir, 'gems', "#{@name}-#{dir_shortref}"
+    File.join(base_dir, 'gems', "#{@name}-#{dir_shortref}")
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[Git: ', ']' do
+    q.group(2, '[Git: ', ']') do
       q.breakable
-      q.text @repository
+      q.text(@repository)
 
       q.breakable
-      q.text @reference
+      q.text(@reference)
     end
   end
 
@@ -171,7 +171,7 @@ class Gem::Source::Git < Gem::Source
   # The directory where the git gem's repository will be cached.
 
   def repo_cache_dir # :nodoc:
-    File.join @root_dir, 'cache', 'bundler', 'git', "#{@name}-#{uri_hash}"
+    File.join(@root_dir, 'cache', 'bundler', 'git', "#{@name}-#{uri_hash}")
   end
 
   ##
@@ -180,12 +180,12 @@ class Gem::Source::Git < Gem::Source
   def rev_parse # :nodoc:
     hash = nil
 
-    Dir.chdir repo_cache_dir do
+    Dir.chdir(repo_cache_dir) do
       hash = Gem::Util.popen(@git, 'rev-parse', @reference).strip
     end
 
-    raise Gem::Exception,
-          "unable to find reference #{@reference} in #{@repository}" unless
+    raise(Gem::Exception,
+          "unable to find reference #{@reference} in #{@repository}") unless
             $?.success?
 
     hash
@@ -199,21 +199,21 @@ class Gem::Source::Git < Gem::Source
 
     return [] unless install_dir
 
-    Dir.chdir install_dir do
+    Dir.chdir(install_dir) do
       Dir['{,*,*/*}.gemspec'].map do |spec_file|
-        directory = File.dirname spec_file
-        file      = File.basename spec_file
+        directory = File.dirname(spec_file)
+        file      = File.basename(spec_file)
 
-        Dir.chdir directory do
-          spec = Gem::Specification.load file
+        Dir.chdir(directory) do
+          spec = Gem::Specification.load(file)
           if spec
             spec.base_dir = base_dir
 
             spec.extension_dir =
-              File.join base_dir, 'extensions', Gem::Platform.local.to_s,
-                Gem.extension_api_version, "#{name}-#{dir_shortref}"
+              File.join(base_dir, 'extensions', Gem::Platform.local.to_s,
+                Gem.extension_api_version, "#{name}-#{dir_shortref}")
 
-            spec.full_gem_path = File.dirname spec.loaded_from if spec
+            spec.full_gem_path = File.dirname(spec.loaded_from) if spec
           end
           spec
         end
@@ -225,17 +225,17 @@ class Gem::Source::Git < Gem::Source
   # A hash for the git gem based on the git repository URI.
 
   def uri_hash # :nodoc:
-    require 'digest' # required here to avoid deadlocking in Gem.activate_bin_path (because digest is a gem on 2.5+)
+    require('digest') # required here to avoid deadlocking in Gem.activate_bin_path (because digest is a gem on 2.5+)
 
     normalized =
       if @repository =~ %r%^\w+://(\w+@)?%
-        uri = URI(@repository).normalize.to_s.sub %r%/$%,''
+        uri = URI(@repository).normalize.to_s.sub(%r%/$%,'')
         uri.sub(/\A(\w+)/) { $1.downcase }
       else
         @repository
       end
 
-    Digest::SHA1.hexdigest normalized
+    Digest::SHA1.hexdigest(normalized)
   end
 
 end

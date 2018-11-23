@@ -1,15 +1,15 @@
 # frozen_string_literal: true
-require 'openssl'
-require 'time'
+require('openssl')
+require('time')
 
 class CertificateBuilder
 
   attr_reader :start
 
   def initialize(key_size = 2048)
-    @start          = Time.utc 2012, 01, 01, 00, 00, 00
-    @end_of_time    = Time.utc 9999, 12, 31, 23, 59, 59
-    @end_of_time_32 = Time.utc 2038, 01, 19, 03, 14, 07
+    @start          = Time.utc(2012, 01, 01, 00, 00, 00)
+    @end_of_time    = Time.utc(9999, 12, 31, 23, 59, 59)
+    @end_of_time_32 = Time.utc(2038, 01, 19, 03, 14, 07)
 
     @key_size = key_size
     @serial = 0
@@ -20,8 +20,8 @@ class CertificateBuilder
                           is_ca: false)
     certificates = []
 
-    not_before, not_before_32 = validity_for not_before
-    not_after,  not_after_32  = validity_for not_after
+    not_before, not_before_32 = validity_for(not_before)
+    not_after,  not_after_32  = validity_for(not_after)
     issuer_cert, issuer_cert_32 = issuer_cert
 
     certificates <<
@@ -49,10 +49,10 @@ class CertificateBuilder
 
     cert.public_key = key.public_key
 
-    cert.subject = OpenSSL::X509::Name.new [%W[CN #{subject}], %w[DC example]]
+    cert.subject = OpenSSL::X509::Name.new([%W[CN #{subject}], %w[DC example]])
     cert.issuer  = issuer_cert.subject
 
-    ef = OpenSSL::X509::ExtensionFactory.new issuer_cert, cert
+    ef = OpenSSL::X509::ExtensionFactory.new(issuer_cert, cert)
 
     cert.extensions = [
       ef.create_extension('subjectAltName', "email:#{subject}@example"),
@@ -60,23 +60,23 @@ class CertificateBuilder
     ]
 
     if cert != issuer_cert  # not self-signed cert
-      cert.add_extension ef.create_extension('authorityKeyIdentifier', 'keyid:always')
+      cert.add_extension(ef.create_extension('authorityKeyIdentifier', 'keyid:always'))
     end
 
     if is_ca
-      cert.add_extension ef.create_extension('basicConstraints', 'CA:TRUE', true)
-      cert.add_extension ef.create_extension('keyUsage', 'keyCertSign', true)
+      cert.add_extension(ef.create_extension('basicConstraints', 'CA:TRUE', true))
+      cert.add_extension(ef.create_extension('keyUsage', 'keyCertSign', true))
     end
 
-    cert.sign issuer_key, OpenSSL::Digest::SHA1.new
+    cert.sign(issuer_key, OpenSSL::Digest::SHA1.new)
 
-    puts "created cert - subject: #{cert.subject}, issuer: #{cert.issuer}"
+    puts("created cert - subject: #{cert.subject}, issuer: #{cert.issuer}")
     cert
   end
 
   def create_key
-    puts "creating key"
-    OpenSSL::PKey::RSA.new @key_size
+    puts("creating key")
+    OpenSSL::PKey::RSA.new(@key_size)
   end
 
   def create_keys(names)
@@ -110,14 +110,14 @@ end
 
 cb = CertificateBuilder.new
 
-keys = cb.create_keys [
+keys = cb.create_keys([
   :alternate,
   :child,
   :grandchild,
   :invalid,
   :invalidchild,
   :private,
-]
+])
 
 keys[:public] = keys[:private].public_key
 
@@ -158,14 +158,14 @@ certs[:wrong_key] =
 base_dir = 'test/rubygems'
 
 keys.each do |name, key|
-  dest = File.join base_dir, "#{name}_key.pem"
-  File.write dest, key.to_pem
+  dest = File.join(base_dir, "#{name}_key.pem")
+  File.write(dest, key.to_pem)
 end
 
 certs.each do |name, (cert, cert_32)|
-  dest = File.join base_dir, "#{name}_cert.pem"
-  File.write dest, cert.to_pem
+  dest = File.join(base_dir, "#{name}_cert.pem")
+  File.write(dest, cert.to_pem)
 
-  dest = File.join base_dir, "#{name}_cert_32.pem"
-  File.write dest, cert_32.to_pem
+  dest = File.join(base_dir, "#{name}_cert_32.pem")
+  File.write(dest, cert_32.to_pem)
 end

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems/remote_fetcher'
+require('rubygems/remote_fetcher')
 
 ##
 # Utility methods for using the RubyGems API.
@@ -7,7 +7,7 @@ require 'rubygems/remote_fetcher'
 module Gem::GemcutterUtilities
 
   # TODO: move to Gem::Command
-  OptionParser.accept Symbol do |value|
+  OptionParser.accept(Symbol) do |value|
     value.to_sym
   end
 
@@ -29,7 +29,7 @@ module Gem::GemcutterUtilities
 
   def api_key
     if options[:key]
-      verify_api_key options[:key]
+      verify_api_key(options[:key])
     elsif Gem.configuration.api_keys.key?(host)
       Gem.configuration.api_keys[host]
     else
@@ -61,12 +61,12 @@ module Gem::GemcutterUtilities
   # If +allowed_push_host+ metadata is present, then it will only allow that host.
 
   def rubygems_api_request(method, path, host = nil, allowed_push_host = nil, &block)
-    require 'net/http'
+    require('net/http')
 
     self.host = host if host
     unless self.host
-      alert_error "You must specify a gem server"
-      terminate_interaction 1 # TODO: question this
+      alert_error("You must specify a gem server")
+      terminate_interaction(1) # TODO: question this
     end
 
     if allowed_push_host
@@ -74,14 +74,14 @@ module Gem::GemcutterUtilities
       host_uri         = URI.parse(self.host)
 
       unless (host_uri.scheme == allowed_host_uri.scheme) && (host_uri.host == allowed_host_uri.host)
-        alert_error "#{self.host.inspect} is not allowed by the gemspec, which only allows #{allowed_push_host.inspect}"
-        terminate_interaction 1
+        alert_error("#{self.host.inspect} is not allowed by the gemspec, which only allows #{allowed_push_host.inspect}")
+        terminate_interaction(1)
       end
     end
 
-    uri = URI.parse "#{self.host}/#{path}"
+    uri = URI.parse("#{self.host}/#{path}")
 
-    request_method = Net::HTTP.const_get method.to_s.capitalize
+    request_method = Net::HTTP.const_get(method.to_s.capitalize)
 
     Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)
   end
@@ -100,17 +100,17 @@ module Gem::GemcutterUtilities
                     sign_in_host
                   end
 
-    say "Enter your #{pretty_host} credentials."
-    say "Don't have an account yet? " +
-        "Create one at #{sign_in_host}/sign_up"
+    say("Enter your #{pretty_host} credentials.")
+    say("Don't have an account yet? " +
+        "Create one at #{sign_in_host}/sign_up")
 
-    email    =              ask "   Email: "
-    password = ask_for_password "Password: "
-    say "\n"
+    email    =              ask("   Email: ")
+    password = ask_for_password("Password: ")
+    say("\n")
 
     response = rubygems_api_request(:get, "api/v1/api_key",
                                     sign_in_host) do |request|
-      request.basic_auth email, password
+      request.basic_auth(email, password)
     end
 
     with_response response do |resp|
@@ -124,11 +124,11 @@ module Gem::GemcutterUtilities
   # an error.
 
   def verify_api_key(key)
-    if Gem.configuration.api_keys.key? key
+    if Gem.configuration.api_keys.key?(key)
       Gem.configuration.api_keys[key]
     else
-      alert_error "No such API key. Please add it to your configuration (done automatically on initial `gem push`)."
-      terminate_interaction 1 # TODO: question this
+      alert_error("No such API key. Please add it to your configuration (done automatically on initial `gem push`).")
+      terminate_interaction(1) # TODO: question this
     end
   end
 
@@ -143,16 +143,16 @@ module Gem::GemcutterUtilities
     case response
     when Net::HTTPSuccess then
       if block_given?
-        yield response
+        yield(response)
       else
-        say response.body
+        say(response.body)
       end
     else
       message = response.body
       message = "#{error_prefix}: #{message}" if error_prefix
 
-      say message
-      terminate_interaction 1 # TODO: question this
+      say(message)
+      terminate_interaction(1) # TODO: question this
     end
   end
 
@@ -160,7 +160,7 @@ module Gem::GemcutterUtilities
     if host == Gem::DEFAULT_HOST
       Gem.configuration.rubygems_api_key = key
     else
-      Gem.configuration.set_api_key host, key
+      Gem.configuration.set_api_key(host, key)
     end
   end
 

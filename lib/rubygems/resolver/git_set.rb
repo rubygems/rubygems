@@ -57,9 +57,9 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
   # is present in the arguments.
 
   def add_git_spec(name, version, repository, reference, submodules) # :nodoc:
-    add_git_gem name, repository, reference, submodules
+    add_git_gem(name, repository, reference, submodules)
 
-    source = Gem::Source::Git.new name, repository, reference
+    source = Gem::Source::Git.new(name, repository, reference)
     source.root_dir = @root_dir
 
     spec = Gem::Specification.new do |s|
@@ -67,7 +67,7 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
       s.version = version
     end
 
-    git_spec = Gem::Resolver::GitSpecification.new self, spec, source
+    git_spec = Gem::Resolver::GitSpecification.new(self, spec, source)
 
     @specs[spec.name] = git_spec
 
@@ -78,10 +78,10 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
   # Finds all git gems matching +req+
 
   def find_all(req)
-    prefetch nil
+    prefetch(nil)
 
     specs.values.select do |spec|
-      req.match? spec
+      req.match?(spec)
     end
   end
 
@@ -92,12 +92,12 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
     return unless @specs.empty?
 
     @repositories.each do |name, (repository, reference)|
-      source = Gem::Source::Git.new name, repository, reference
+      source = Gem::Source::Git.new(name, repository, reference)
       source.root_dir = @root_dir
       source.remote = @remote
 
       source.specs.each do |spec|
-        git_spec = Gem::Resolver::GitSpecification.new self, spec, source
+        git_spec = Gem::Resolver::GitSpecification.new(self, spec, source)
 
         @specs[spec.name] = git_spec
       end
@@ -105,7 +105,7 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[GitSet', ']' do
+    q.group(2, '[GitSet', ']') do
       next if @repositories.empty?
       q.breakable
 
@@ -113,8 +113,8 @@ class Gem::Resolver::GitSet < Gem::Resolver::Set
         "#{name}: #{repository}@#{reference}"
       end
 
-      q.seplist repos do |repo|
-        q.text repo
+      q.seplist(repos) do |repo|
+        q.text(repo)
       end
     end
   end

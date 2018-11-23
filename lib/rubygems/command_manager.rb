@@ -5,8 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/command'
-require 'rubygems/user_interaction'
+require('rubygems/command')
+require('rubygems/user_interaction')
 
 ##
 # The command manager registers and installs all the individual sub-commands
@@ -101,7 +101,7 @@ class Gem::CommandManager
   # Register all the subcommands supported by the gem command.
 
   def initialize
-    require 'timeout'
+    require('timeout')
     @commands = {}
 
     BUILTIN_COMMANDS.each do |name|
@@ -120,7 +120,7 @@ class Gem::CommandManager
   # Unregister the Symbol +command+ as a gem command.
 
   def unregister_command(command)
-    @commands.delete command
+    @commands.delete(command)
   end
 
   ##
@@ -145,48 +145,48 @@ class Gem::CommandManager
   def run(args, build_args=nil)
     process_args(args, build_args)
   rescue StandardError, Timeout::Error => ex
-    alert_error "While executing gem ... (#{ex.class})\n    #{ex}"
-    ui.backtrace ex
+    alert_error("While executing gem ... (#{ex.class})\n    #{ex}")
+    ui.backtrace(ex)
 
     terminate_interaction(1)
   rescue Interrupt
-    alert_error "Interrupted"
+    alert_error("Interrupted")
     terminate_interaction(1)
   end
 
   def process_args(args, build_args=nil)
     if args.empty?
-      say Gem::Command::HELP
-      terminate_interaction 1
+      say(Gem::Command::HELP)
+      terminate_interaction(1)
     end
 
     case args.first
     when '-h', '--help' then
-      say Gem::Command::HELP
-      terminate_interaction 0
+      say(Gem::Command::HELP)
+      terminate_interaction(0)
     when '-v', '--version' then
-      say Gem::VERSION
-      terminate_interaction 0
+      say(Gem::VERSION)
+      terminate_interaction(0)
     when /^-/ then
-      alert_error "Invalid option: #{args.first}. See 'gem --help'."
-      terminate_interaction 1
+      alert_error("Invalid option: #{args.first}. See 'gem --help'.")
+      terminate_interaction(1)
     else
       cmd_name = args.shift.downcase
-      cmd = find_command cmd_name
-      cmd.invoke_with_build_args args, build_args
+      cmd = find_command(cmd_name)
+      cmd.invoke_with_build_args(args, build_args)
     end
   end
 
   def find_command(cmd_name)
-    cmd_name = find_alias_command cmd_name
+    cmd_name = find_alias_command(cmd_name)
 
-    possibilities = find_command_possibilities cmd_name
+    possibilities = find_command_possibilities(cmd_name)
 
     if possibilities.size > 1
-      raise Gem::CommandLineError,
-            "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]"
+      raise(Gem::CommandLineError,
+            "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]")
     elsif possibilities.empty?
-      raise Gem::CommandLineError, "Unknown command #{cmd_name}"
+      raise(Gem::CommandLineError, "Unknown command #{cmd_name}")
     end
 
     self[possibilities.first]
@@ -216,7 +216,7 @@ class Gem::CommandManager
 
     begin
       begin
-        require "rubygems/commands/#{command_name}_command"
+        require("rubygems/commands/#{command_name}_command")
       rescue LoadError => e
         load_error = e
       end
@@ -224,8 +224,8 @@ class Gem::CommandManager
     rescue Exception => e
       e = load_error if load_error
 
-      alert_error "Loading command: #{command_name} (#{e.class})\n\t#{e}"
-      ui.backtrace e
+      alert_error("Loading command: #{command_name} (#{e.class})\n\t#{e}")
+      ui.backtrace(e)
     end
   end
 

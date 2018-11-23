@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems/command'
+require('rubygems/command')
 
 class Gem::Commands::HelpCommand < Gem::Command
 
@@ -281,7 +281,7 @@ platform.
   # :startdoc:
 
   def initialize
-    super 'help', "Provide help on the 'gem' command"
+    super('help', "Provide help on the 'gem' command")
 
     @command_manager = Gem::CommandManager.instance
   end
@@ -299,9 +299,9 @@ platform.
 
     if help
       if Symbol === help
-        send help
+        send(help)
       else
-        say help
+        say(help)
       end
       return
     end
@@ -310,10 +310,10 @@ platform.
       show_help
 
     elsif arg
-      show_command_help arg
+      show_command_help(arg)
 
     else
-      say Gem::Command::HELP
+      say(Gem::Command::HELP)
     end
   end
 
@@ -340,7 +340,7 @@ platform.
           "[No command found for #{cmd_name}]"
         end
 
-      summary = wrap(summary, summary_width).split "\n"
+      summary = wrap(summary, summary_width).split("\n")
       out << sprintf(format, cmd_name, summary.shift)
       until summary.empty? do
         out << "#{wrap_indent}#{summary.shift}"
@@ -353,21 +353,21 @@ platform.
     out << "Commands may be abbreviated, so long as they are unambiguous."
     out << "e.g. 'gem i rake' is short for 'gem install rake'."
 
-    say out.join("\n")
+    say(out.join("\n"))
   end
 
   def show_command_help(command_name) # :nodoc:
     command_name = command_name.downcase
 
-    possibilities = @command_manager.find_command_possibilities command_name
+    possibilities = @command_manager.find_command_possibilities(command_name)
 
     if possibilities.size == 1
       command = @command_manager[possibilities.first]
       command.invoke("--help")
     elsif possibilities.size > 1
-      alert_warning "Ambiguous command #{command_name} (#{possibilities.join(', ')})"
+      alert_warning("Ambiguous command #{command_name} (#{possibilities.join(', ')})")
     else
-      alert_warning "Unknown command #{command_name}. Try: gem help commands"
+      alert_warning("Unknown command #{command_name}. Try: gem help commands")
     end
   end
 

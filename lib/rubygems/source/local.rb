@@ -65,7 +65,7 @@ class Gem::Source::Local < Gem::Source
             if !cur
               names << tup
             elsif cur.version < tup.version
-              names.delete cur
+              names.delete(cur)
               names << tup
             end
           else
@@ -80,7 +80,7 @@ class Gem::Source::Local < Gem::Source
 
   def find_gem(gem_name, version = Gem::Requirement.default, # :nodoc:
                prerelease = false)
-    load_specs :complete
+    load_specs(:complete)
 
     found = []
 
@@ -102,30 +102,30 @@ class Gem::Source::Local < Gem::Source
   end
 
   def fetch_spec(name) # :nodoc:
-    load_specs :complete
+    load_specs(:complete)
 
     if data = @specs[name]
       data.last.spec
     else
-      raise Gem::Exception, "Unable to find spec for #{name.inspect}"
+      raise(Gem::Exception, "Unable to find spec for #{name.inspect}")
     end
   end
 
   def download(spec, cache_dir = nil) # :nodoc:
-    load_specs :complete
+    load_specs(:complete)
 
     @specs.each do |name, data|
       return data[0] if data[1].spec == spec
     end
 
-    raise Gem::Exception, "Unable to find file for '#{spec.full_name}'"
+    raise(Gem::Exception, "Unable to find file for '#{spec.full_name}'")
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[Local gems:', ']' do
+    q.group(2, '[Local gems:', ']') do
       q.breakable
-      q.seplist @specs.keys do |v|
-        q.text v.full_name
+      q.seplist(@specs.keys) do |v|
+        q.text(v.full_name)
       end
     end
   end

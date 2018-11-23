@@ -27,7 +27,7 @@ class Gem::Package::TarReader::Entry
   end
 
   def check_closed # :nodoc:
-    raise IOError, "closed #{self.class}" if closed?
+    raise(IOError, "closed #{self.class}") if closed?
   end
 
   ##
@@ -65,14 +65,14 @@ class Gem::Package::TarReader::Entry
 
   def full_name
     if @header.prefix != ""
-      File.join @header.prefix, @header.name
+      File.join(@header.prefix, @header.name)
     else
       @header.name
     end
   rescue ArgumentError => e
     raise unless e.message == 'string contains null byte'
-    raise Gem::Package::TarInvalidError,
-          'tar is corrupt, name contains null byte'
+    raise(Gem::Package::TarInvalidError,
+          'tar is corrupt, name contains null byte')
   end
 
   ##
@@ -137,7 +137,7 @@ class Gem::Package::TarReader::Entry
     len ||= @header.size - @read
     max_read = [len, @header.size - @read].min
 
-    ret = @io.read max_read
+    ret = @io.read(max_read)
     @read += ret.size
 
     ret
@@ -146,7 +146,7 @@ class Gem::Package::TarReader::Entry
   def readpartial(maxlen = nil, outbuf = "".b)
     check_closed
 
-    raise EOFError if @read >= @header.size
+    raise(EOFError) if @read >= @header.size
 
     maxlen ||= @header.size - @read
     max_read = [maxlen, @header.size - @read].min

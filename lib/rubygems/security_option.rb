@@ -5,7 +5,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
+require('rubygems')
 
 # forward-declare
 
@@ -20,16 +20,16 @@ end
 module Gem::SecurityOption
   def add_security_option
     # TODO: use @parser.accept
-    OptionParser.accept Gem::Security::Policy do |value|
+    OptionParser.accept(Gem::Security::Policy) do |value|
       require 'rubygems/security'
 
-      raise OptionParser::InvalidArgument, 'OpenSSL not installed' unless
+      raise(OptionParser::InvalidArgument, 'OpenSSL not installed') unless
         defined?(Gem::Security::HighSecurity)
 
       policy = Gem::Security::Policies[value]
       unless policy
         valid = Gem::Security::Policies.keys.sort
-        raise OptionParser::InvalidArgument, "#{value} (#{valid.join ', '} are valid)"
+        raise(OptionParser::InvalidArgument, "#{value} (#{valid.join(', ')} are valid)")
       end
       policy
     end

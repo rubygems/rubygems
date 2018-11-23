@@ -20,14 +20,14 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require 'rubygems'
-require 'rubygems/package'
+require('rubygems')
+require('rubygems/package')
 begin
-  gem 'rake'
+  gem('rake')
 rescue Gem::LoadError
 end
 
-require 'rake/packagetask'
+require('rake/packagetask')
 
 ##
 # Create a package based upon a Gem::Specification.  Gem packages, as well as
@@ -76,8 +76,8 @@ class Gem::PackageTask < Rake::PackageTask
   # to define the task.
 
   def initialize(gem_spec)
-    init gem_spec
-    yield self if block_given?
+    init(gem_spec)
+    yield(self) if block_given?
     define if block_given?
   end
 
@@ -85,7 +85,7 @@ class Gem::PackageTask < Rake::PackageTask
   # Initialization tasks without the "yield self" or define operations.
 
   def init(gem)
-    super gem.full_name, :noversion
+    super(gem.full_name, :noversion)
     @gem_spec = gem
     @package_files += gem_spec.files if gem_spec.files
   end
@@ -97,17 +97,17 @@ class Gem::PackageTask < Rake::PackageTask
   def define
     super
 
-    gem_file = File.basename gem_spec.cache_file
-    gem_path = File.join package_dir, gem_file
-    gem_dir  = File.join package_dir, gem_spec.full_name
+    gem_file = File.basename(gem_spec.cache_file)
+    gem_path = File.join(package_dir, gem_file)
+    gem_dir  = File.join(package_dir, gem_spec.full_name)
 
-    task :package => [:gem]
+    task(:package => [:gem])
 
-    directory package_dir
-    directory gem_dir
+    directory(package_dir)
+    directory(gem_dir)
 
-    desc "Build the gem file #{gem_file}"
-    task :gem => [gem_path]
+    desc("Build the gem file #{gem_file}")
+    task(:gem => [gem_path])
 
     trace = Rake.application.options.trace
     Gem.configuration.verbose = trace
@@ -115,7 +115,7 @@ class Gem::PackageTask < Rake::PackageTask
     file gem_path => [package_dir, gem_dir] + @gem_spec.files do
       chdir(gem_dir) do
         when_writing "Creating #{gem_spec.file_name}" do
-          Gem::Package.build gem_spec
+          Gem::Package.build(gem_spec)
 
           verbose trace do
             mv gem_file, '..'

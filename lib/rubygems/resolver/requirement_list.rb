@@ -28,9 +28,9 @@ class Gem::Resolver::RequirementList
 
   def add(req)
     if req.requirement.exact?
-      @exact.push req
+      @exact.push(req)
     else
-      @list.push req
+      @list.push(req)
     end
     req
   end
@@ -39,7 +39,7 @@ class Gem::Resolver::RequirementList
   # Enumerates requirements in the list
 
   def each # :nodoc:
-    return enum_for __method__ unless block_given?
+    return enum_for(__method__) unless block_given?
 
     @exact.each do |requirement|
       yield requirement

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'net/http'
-require 'time'
-require 'rubygems/user_interaction'
+require('net/http')
+require('time')
+require('rubygems/user_interaction')
 
 class Gem::Request
 
@@ -13,7 +13,7 @@ class Gem::Request
   def self.create_with_proxy(uri, request_class, last_modified, proxy) # :nodoc:
     cert_files = get_cert_files
     proxy ||= get_proxy_from_env(uri.scheme)
-    pool       = ConnectionPools.new proxy_uri(proxy), cert_files
+    pool       = ConnectionPools.new(proxy_uri(proxy), cert_files)
 
     new(uri, request_class, last_modified, pool.pool_for(uri))
   end
@@ -30,7 +30,7 @@ class Gem::Request
     @uri = uri
     @request_class = request_class
     @last_modified = last_modified
-    @requests = Hash.new 0
+    @requests = Hash.new(0)
     @user_agent = user_agent
 
     @connection_pool = pool
@@ -45,33 +45,33 @@ class Gem::Request
   end
 
   def self.configure_connection_for_https(connection, cert_files)
-    require 'net/https'
+    require('net/https')
     connection.use_ssl = true
     connection.verify_mode =
       Gem.configuration.ssl_verify_mode || OpenSSL::SSL::VERIFY_PEER
     store = OpenSSL::X509::Store.new
 
     if Gem.configuration.ssl_client_cert
-      pem = File.read Gem.configuration.ssl_client_cert
-      connection.cert = OpenSSL::X509::Certificate.new pem
-      connection.key = OpenSSL::PKey::RSA.new pem
+      pem = File.read(Gem.configuration.ssl_client_cert)
+      connection.cert = OpenSSL::X509::Certificate.new(pem)
+      connection.key = OpenSSL::PKey::RSA.new(pem)
     end
 
     store.set_default_paths
     cert_files.each do |ssl_cert_file|
-      store.add_file ssl_cert_file
+      store.add_file(ssl_cert_file)
     end
     if Gem.configuration.ssl_ca_cert
-      if File.directory? Gem.configuration.ssl_ca_cert
-        store.add_path Gem.configuration.ssl_ca_cert
+      if File.directory?(Gem.configuration.ssl_ca_cert)
+        store.add_path(Gem.configuration.ssl_ca_cert)
       else
-        store.add_file Gem.configuration.ssl_ca_cert
+        store.add_file(Gem.configuration.ssl_ca_cert)
       end
     end
     connection.cert_store = store
 
     connection.verify_callback = proc do |preverify_ok, store_context|
-      verify_certificate store_context unless preverify_ok
+      verify_certificate(store_context) unless preverify_ok
 
       preverify_ok
     end
@@ -81,8 +81,8 @@ class Gem::Request
     raise unless (e.respond_to?(:path) && e.path == 'openssl') ||
                  e.message =~ / -- openssl$/
 
-    raise Gem::Exception.new(
-            'Unable to require openssl, install OpenSSL and rebuild Ruby (preferred) or use non-HTTPS sources')
+    raise(Gem::Exception.new(
+            'Unable to require openssl, install OpenSSL and rebuild Ruby (preferred) or use non-HTTPS sources'))
   end
 
   def self.verify_certificate(store_context)
@@ -91,11 +91,11 @@ class Gem::Request
     number = store_context.error
     cert   = store_context.current_cert
 
-    ui.alert_error "SSL verification error at depth #{depth}: #{error} (#{number})"
+    ui.alert_error("SSL verification error at depth #{depth}: #{error} (#{number})")
 
-    extra_message = verify_certificate_message number, cert
+    extra_message = verify_certificate_message(number, cert)
 
-    ui.alert_error extra_message if extra_message
+    ui.alert_error(extra_message) if extra_message
   end
 
   def self.verify_certificate_message(error_number, cert)
@@ -133,28 +133,28 @@ class Gem::Request
     @connection_pool.checkout
   rescue defined?(OpenSSL::SSL) ? OpenSSL::SSL::SSLError : Errno::EHOSTDOWN,
          Errno::EHOSTDOWN => e
-    raise Gem::RemoteFetcher::FetchError.new(e.message, uri)
+    raise(Gem::RemoteFetcher::FetchError.new(e.message, uri))
   end
 
   def fetch
-    request = @request_class.new @uri.request_uri
+    request = @request_class.new(@uri.request_uri)
 
     unless @uri.nil? || @uri.user.nil? || @uri.user.empty?
-      request.basic_auth Gem::UriFormatter.new(@uri.user).unescape,
-                         Gem::UriFormatter.new(@uri.password).unescape
+      request.basic_auth(Gem::UriFormatter.new(@uri.user).unescape,
+                         Gem::UriFormatter.new(@uri.password).unescape)
     end
 
-    request.add_field 'User-Agent', @user_agent
-    request.add_field 'Connection', 'keep-alive'
-    request.add_field 'Keep-Alive', '30'
+    request.add_field('User-Agent', @user_agent)
+    request.add_field('Connection', 'keep-alive')
+    request.add_field('Keep-Alive', '30')
 
     if @last_modified
-      request.add_field 'If-Modified-Since', @last_modified.httpdate
+      request.add_field('If-Modified-Since', @last_modified.httpdate)
     end
 
-    yield request if block_given?
+    yield(request) if block_given?
 
-    perform_request request
+    perform_request(request)
   end
 
   ##
@@ -168,7 +168,7 @@ class Gem::Request
 
     no_env_proxy = env_proxy.nil? || env_proxy.empty?
 
-    return get_proxy_from_env 'http' if no_env_proxy and _scheme != 'http'
+    return get_proxy_from_env('http') if no_env_proxy and _scheme != 'http'
     return :no_proxy                 if no_env_proxy
 
     uri = URI(Gem::UriFormatter.new(env_proxy).normalize)
@@ -185,7 +185,7 @@ class Gem::Request
   end
 
   def perform_request(request) # :nodoc:
-    connection = connection_for @uri
+    connection = connection_for(@uri)
 
     retried = false
     bad_response = false
@@ -193,7 +193,7 @@ class Gem::Request
     begin
       @requests[connection.object_id] += 1
 
-      verbose "#{request.method} #{@uri}"
+      verbose("#{request.method} #{@uri}")
 
       file_name = File.basename(@uri.path)
       # perform download progress reporter only for gems
@@ -211,7 +211,7 @@ class Gem::Request
               reporter.update(downloaded)
             end
             reporter.done
-            if incomplete_response.respond_to? :body=
+            if incomplete_response.respond_to?(:body=)
               incomplete_response.body = data
             else
               incomplete_response.instance_variable_set(:@body, data)
@@ -219,24 +219,24 @@ class Gem::Request
           end
         end
       else
-        response = connection.request request
+        response = connection.request(request)
       end
 
-      verbose "#{response.code} #{response.message}"
+      verbose("#{response.code} #{response.message}")
 
     rescue Net::HTTPBadResponse
-      verbose "bad response"
+      verbose("bad response")
 
-      reset connection
+      reset(connection)
 
-      raise Gem::RemoteFetcher::FetchError.new('too many bad responses', @uri) if bad_response
+      raise(Gem::RemoteFetcher::FetchError.new('too many bad responses', @uri)) if bad_response
 
       bad_response = true
       retry
     rescue Net::HTTPFatalError
-      verbose "fatal error"
+      verbose("fatal error")
 
-      raise Gem::RemoteFetcher::FetchError.new('fatal error', @uri)
+      raise(Gem::RemoteFetcher::FetchError.new('fatal error', @uri))
     # HACK work around EOFError bug in Net::HTTP
     # NOTE Errno::ECONNABORTED raised a lot on Windows, and make impossible
     # to install gems.
@@ -244,11 +244,11 @@ class Gem::Request
            Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE
 
       requests = @requests[connection.object_id]
-      verbose "connection reset after #{requests} requests, retrying"
+      verbose("connection reset after #{requests} requests, retrying")
 
-      raise Gem::RemoteFetcher::FetchError.new('too many connection resets', @uri) if retried
+      raise(Gem::RemoteFetcher::FetchError.new('too many connection resets', @uri)) if retried
 
-      reset connection
+      reset(connection)
 
       retried = true
       retry
@@ -256,14 +256,14 @@ class Gem::Request
 
     response
   ensure
-    @connection_pool.checkin connection
+    @connection_pool.checkin(connection)
   end
 
   ##
   # Resets HTTP connection +connection+.
 
   def reset(connection)
-    @requests.delete connection.object_id
+    @requests.delete(connection.object_id)
 
     connection.finish
     connection.start
@@ -290,6 +290,6 @@ class Gem::Request
 
 end
 
-require 'rubygems/request/http_pool'
-require 'rubygems/request/https_pool'
-require 'rubygems/request/connection_pools'
+require('rubygems/request/http_pool')
+require('rubygems/request/https_pool')
+require('rubygems/request/connection_pools')

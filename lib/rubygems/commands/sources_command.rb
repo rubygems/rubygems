@@ -1,18 +1,18 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/remote_fetcher'
-require 'rubygems/spec_fetcher'
-require 'rubygems/local_remote_options'
+require('rubygems/command')
+require('rubygems/remote_fetcher')
+require('rubygems/spec_fetcher')
+require('rubygems/local_remote_options')
 
 class Gem::Commands::SourcesCommand < Gem::Command
 
   include Gem::LocalRemoteOptions
 
   def initialize
-    require 'fileutils'
+    require('fileutils')
 
-    super 'sources',
-          'Manage the sources and cache file RubyGems uses to search for gems'
+    super('sources',
+          'Manage the sources and cache file RubyGems uses to search for gems')
 
     add_option '-a', '--add SOURCE_URI', 'Add source' do |value, options|
       options[:add] = value
@@ -39,31 +39,31 @@ class Gem::Commands::SourcesCommand < Gem::Command
   end
 
   def add_source(source_uri) # :nodoc:
-    check_rubygems_https source_uri
+    check_rubygems_https(source_uri)
 
-    source = Gem::Source.new source_uri
+    source = Gem::Source.new(source_uri)
 
     begin
-      if Gem.sources.include? source
-        say "source #{source_uri} already present in the cache"
+      if Gem.sources.include?(source)
+        say("source #{source_uri} already present in the cache")
       else
-        source.load_specs :released
+        source.load_specs(:released)
         Gem.sources << source
         Gem.configuration.write
 
-        say "#{source_uri} added to sources"
+        say("#{source_uri} added to sources")
       end
     rescue URI::Error, ArgumentError
-      say "#{source_uri} is not a URI"
-      terminate_interaction 1
+      say("#{source_uri} is not a URI")
+      terminate_interaction(1)
     rescue Gem::RemoteFetcher::FetchError => e
-      say "Error fetching #{source_uri}:\n\t#{e.message}"
-      terminate_interaction 1
+      say("Error fetching #{source_uri}:\n\t#{e.message}")
+      terminate_interaction(1)
     end
   end
 
   def check_rubygems_https(source_uri) # :nodoc:
-    uri = URI source_uri
+    uri = URI(source_uri)
 
     if uri.scheme and uri.scheme.downcase == 'http' and
        uri.host.downcase == 'rubygems.org'
@@ -73,24 +73,24 @@ https://rubygems.org is recommended for security over #{uri}
 Do you want to add this insecure source?
       QUESTION
 
-      terminate_interaction 1 unless ask_yes_no question
+      terminate_interaction(1) unless ask_yes_no(question)
     end
   end
 
   def clear_all # :nodoc:
     path = Gem.spec_cache_dir
-    FileUtils.rm_rf path
+    FileUtils.rm_rf(path)
 
-    unless File.exist? path
-      say "*** Removed specs cache ***"
+    unless File.exist?(path)
+      say("*** Removed specs cache ***")
     else
-      unless File.writable? path
-        say "*** Unable to remove source cache (write protected) ***"
+      unless File.writable?(path)
+        say("*** Unable to remove source cache (write protected) ***")
       else
-        say "*** Unable to remove source cache ***"
+        say("*** Unable to remove source cache ***")
       end
 
-      terminate_interaction 1
+      terminate_interaction(1)
     end
   end
 
@@ -146,7 +146,7 @@ To remove a source use the --remove argument:
   end
 
   def list # :nodoc:
-    say "*** CURRENT SOURCES ***"
+    say("*** CURRENT SOURCES ***")
     say
 
     Gem.sources.each do |src|
@@ -165,10 +165,10 @@ To remove a source use the --remove argument:
     clear_all if options[:clear_all]
 
     source_uri = options[:add]
-    add_source source_uri if source_uri
+    add_source(source_uri) if source_uri
 
     source_uri = options[:remove]
-    remove_source source_uri if source_uri
+    remove_source(source_uri) if source_uri
 
     update if options[:update]
 
@@ -176,34 +176,34 @@ To remove a source use the --remove argument:
   end
 
   def remove_source(source_uri) # :nodoc:
-    unless Gem.sources.include? source_uri
-      say "source #{source_uri} not present in cache"
+    unless Gem.sources.include?(source_uri)
+      say("source #{source_uri} not present in cache")
     else
-      Gem.sources.delete source_uri
+      Gem.sources.delete(source_uri)
       Gem.configuration.write
 
-      say "#{source_uri} removed from sources"
+      say("#{source_uri} removed from sources")
     end
   end
 
   def update # :nodoc:
     Gem.sources.each_source do |src|
-      src.load_specs :released
-      src.load_specs :latest
+      src.load_specs(:released)
+      src.load_specs(:latest)
     end
 
-    say "source cache successfully updated"
+    say("source cache successfully updated")
   end
 
   def remove_cache_file(desc, path) # :nodoc:
-    FileUtils.rm_rf path
+    FileUtils.rm_rf(path)
 
     if not File.exist?(path)
-      say "*** Removed #{desc} source cache ***"
+      say("*** Removed #{desc} source cache ***")
     elsif not File.writable?(path)
-      say "*** Unable to remove #{desc} source cache (write protected) ***"
+      say("*** Unable to remove #{desc} source cache (write protected) ***")
     else
-      say "*** Unable to remove #{desc} source cache ***"
+      say("*** Unable to remove #{desc} source cache ***")
     end
   end
 

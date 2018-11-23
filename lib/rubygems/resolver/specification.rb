@@ -82,13 +82,13 @@ class Gem::Resolver::Specification
   # specification.
 
   def install(options = {})
-    require 'rubygems/installer'
+    require('rubygems/installer')
 
-    gem = download options
+    gem = download(options)
 
-    installer = Gem::Installer.at gem, options
+    installer = Gem::Installer.at(gem, options)
 
-    yield installer if block_given?
+    yield(installer) if block_given?
 
     @spec = installer.install
   end
@@ -96,16 +96,16 @@ class Gem::Resolver::Specification
   def download(options)
     dir = options[:install_dir] || Gem.dir
 
-    Gem.ensure_gem_subdirectories dir
+    Gem.ensure_gem_subdirectories(dir)
 
-    source.download spec, dir
+    source.download(spec, dir)
   end
 
   ##
   # Returns true if this specification is installable on this platform.
 
   def installable_platform?
-    Gem::Platform.match spec.platform
+    Gem::Platform.match(spec.platform)
   end
 
   def local? # :nodoc:

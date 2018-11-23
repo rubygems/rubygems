@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/commands/push_command'
+require('rubygems/test_case')
+require('rubygems/commands/push_command')
 
 class TestGemCommandsPushCommand < Gem::TestCase
 
@@ -10,15 +10,15 @@ class TestGemCommandsPushCommand < Gem::TestCase
     Gem.host = Gem::DEFAULT_HOST
     Gem.configuration.disable_default_gem_server = false
 
-    @gems_dir  = File.join @tempdir, 'gems'
-    @cache_dir = File.join @gemhome, "cache"
+    @gems_dir  = File.join(@tempdir, 'gems')
+    @cache_dir = File.join(@gemhome, "cache")
 
-    FileUtils.mkdir @gems_dir
+    FileUtils.mkdir(@gems_dir)
 
     Gem.configuration.rubygems_api_key =
       "ed244fbf2b1a52e012da8616c512fa47f9aa5250"
 
-    @spec, @path = util_gem "freewill", "1.0.0"
+    @spec, @path = util_gem("freewill", "1.0.0")
     @host = 'https://rubygems.example'
     @api_key = Gem.configuration.rubygems_api_key
 
@@ -47,19 +47,19 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
   def send_battery
     use_ui @ui do
-      @cmd.instance_variable_set :@host, @host
+      @cmd.instance_variable_set(:@host, @host)
       @cmd.send_gem(@path)
     end
 
-    assert_match %r{Pushing gem to #{@host}...}, @ui.output
+    assert_match(%r{Pushing gem to #{@host}...}, @ui.output)
 
-    assert_equal Net::HTTP::Post, @fetcher.last_request.class
-    assert_equal Gem.read_binary(@path), @fetcher.last_request.body
-    assert_equal File.size(@path), @fetcher.last_request["Content-Length"].to_i
-    assert_equal "application/octet-stream", @fetcher.last_request["Content-Type"]
-    assert_equal @api_key, @fetcher.last_request["Authorization"]
+    assert_equal(Net::HTTP::Post, @fetcher.last_request.class)
+    assert_equal(Gem.read_binary(@path), @fetcher.last_request.body)
+    assert_equal(File.size(@path), @fetcher.last_request["Content-Length"].to_i)
+    assert_equal("application/octet-stream", @fetcher.last_request["Content-Type"])
+    assert_equal(@api_key, @fetcher.last_request["Authorization"])
 
-    assert_match @response, @ui.output
+    assert_match(@response, @ui.output)
   end
 
   def test_execute
@@ -70,10 +70,10 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     @cmd.execute
 
-    assert_equal Net::HTTP::Post, @fetcher.last_request.class
-    assert_equal Gem.read_binary(@path), @fetcher.last_request.body
-    assert_equal "application/octet-stream",
-                 @fetcher.last_request["Content-Type"]
+    assert_equal(Net::HTTP::Post, @fetcher.last_request.class)
+    assert_equal(Gem.read_binary(@path), @fetcher.last_request.body)
+    assert_equal("application/octet-stream",
+                 @fetcher.last_request["Content-Type"])
   end
 
   def test_execute_host
@@ -89,10 +89,10 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     @cmd.execute
 
-    assert_equal Net::HTTP::Post, @fetcher.last_request.class
-    assert_equal Gem.read_binary(@path), @fetcher.last_request.body
-    assert_equal "application/octet-stream",
-                 @fetcher.last_request["Content-Type"]
+    assert_equal(Net::HTTP::Post, @fetcher.last_request.class)
+    assert_equal(Gem.read_binary(@path), @fetcher.last_request.body)
+    assert_equal("application/octet-stream",
+                 @fetcher.last_request["Content-Type"])
   end
 
   def test_execute_allowed_push_host
@@ -109,10 +109,10 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     @cmd.execute
 
-    assert_equal Net::HTTP::Post, @fetcher.last_request.class
-    assert_equal Gem.read_binary(@path), @fetcher.last_request.body
-    assert_equal "application/octet-stream",
-                 @fetcher.last_request["Content-Type"]
+    assert_equal(Net::HTTP::Post, @fetcher.last_request.class)
+    assert_equal(Gem.read_binary(@path), @fetcher.last_request.body)
+    assert_equal("application/octet-stream",
+                 @fetcher.last_request["Content-Type"])
   end
 
   def test_sending_when_default_host_disabled
@@ -125,7 +125,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
       end
     end
 
-    assert_match response, @ui.error
+    assert_match(response, @ui.error)
   end
 
   def test_sending_when_default_host_disabled_with_override
@@ -151,13 +151,13 @@ class TestGemCommandsPushCommand < Gem::TestCase
       @host => @api_key
     }
 
-    FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
-    File.open Gem.configuration.credentials_path, 'w' do |f|
-      f.write keys.to_yaml
+    FileUtils.mkdir_p(File.dirname(Gem.configuration.credentials_path))
+    File.open(Gem.configuration.credentials_path, 'w') do |f|
+      f.write(keys.to_yaml)
     end
     Gem.configuration.load_api_keys
 
-    FileUtils.rm Gem.configuration.credentials_path
+    FileUtils.rm(Gem.configuration.credentials_path)
 
     @response = "Successfully registered gem: freebird (1.0.1)"
     @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
@@ -185,13 +185,13 @@ class TestGemCommandsPushCommand < Gem::TestCase
       @host => @api_key
     }
 
-    FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
-    File.open Gem.configuration.credentials_path, 'w' do |f|
-      f.write keys.to_yaml
+    FileUtils.mkdir_p(File.dirname(Gem.configuration.credentials_path))
+    File.open(Gem.configuration.credentials_path, 'w') do |f|
+      f.write(keys.to_yaml)
     end
     Gem.configuration.load_api_keys
 
-    FileUtils.rm Gem.configuration.credentials_path
+    FileUtils.rm(Gem.configuration.credentials_path)
 
     @response = "Successfully registered gem: freebird (1.0.1)"
     @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
@@ -212,13 +212,13 @@ class TestGemCommandsPushCommand < Gem::TestCase
       :rubygems_api_key => @api_key,
     }
 
-    FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
-    File.open Gem.configuration.credentials_path, 'w' do |f|
-      f.write keys.to_yaml
+    FileUtils.mkdir_p(File.dirname(Gem.configuration.credentials_path))
+    File.open(Gem.configuration.credentials_path, 'w') do |f|
+      f.write(keys.to_yaml)
     end
     Gem.configuration.load_api_keys
 
-    FileUtils.rm Gem.configuration.credentials_path
+    FileUtils.rm(Gem.configuration.credentials_path)
 
     @response = "Successfully registered gem: freebird (1.0.1)"
     @fetcher.data["#{@host}/api/v1/gems"]  = [@response, 200, 'OK']
@@ -236,7 +236,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
       send_battery
     end
 
-    assert_match response, @ui.error
+    assert_match(response, @ui.error)
   end
 
   def test_sending_gem_to_disallowed_push_host
@@ -254,13 +254,13 @@ class TestGemCommandsPushCommand < Gem::TestCase
       @host => @api_key
     }
 
-    FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
-    File.open Gem.configuration.credentials_path, 'w' do |f|
-      f.write keys.to_yaml
+    FileUtils.mkdir_p(File.dirname(Gem.configuration.credentials_path))
+    File.open(Gem.configuration.credentials_path, 'w') do |f|
+      f.write(keys.to_yaml)
     end
     Gem.configuration.load_api_keys
 
-    FileUtils.rm Gem.configuration.credentials_path
+    FileUtils.rm(Gem.configuration.credentials_path)
 
     response = "ERROR:  \"#{@host}\" is not allowed by the gemspec, which only allows \"#{push_host}\""
 
@@ -268,7 +268,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
       send_battery
     end
 
-    assert_match response, @ui.error
+    assert_match(response, @ui.error)
   end
 
   def test_sending_gem_defaulting_to_allowed_push_host
@@ -285,13 +285,13 @@ class TestGemCommandsPushCommand < Gem::TestCase
       host => api_key
     }
 
-    FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
-    File.open Gem.configuration.credentials_path, 'w' do |f|
-      f.write keys.to_yaml
+    FileUtils.mkdir_p(File.dirname(Gem.configuration.credentials_path))
+    File.open(Gem.configuration.credentials_path, 'w') do |f|
+      f.write(keys.to_yaml)
     end
     Gem.configuration.load_api_keys
 
-    FileUtils.rm Gem.configuration.credentials_path
+    FileUtils.rm(Gem.configuration.credentials_path)
 
     @response = "Successfully registered gem: freebird (1.0.1)"
     @fetcher.data["#{host}/api/v1/gems"]  = [@response, 200, 'OK']
@@ -299,15 +299,15 @@ class TestGemCommandsPushCommand < Gem::TestCase
     # do not set @host
     use_ui(@ui) { @cmd.send_gem(@path) }
 
-    assert_match %r{Pushing gem to #{host}...}, @ui.output
+    assert_match(%r{Pushing gem to #{host}...}, @ui.output)
 
-    assert_equal Net::HTTP::Post, @fetcher.last_request.class
-    assert_equal Gem.read_binary(@path), @fetcher.last_request.body
-    assert_equal File.size(@path), @fetcher.last_request["Content-Length"].to_i
-    assert_equal "application/octet-stream", @fetcher.last_request["Content-Type"]
-    assert_equal api_key, @fetcher.last_request["Authorization"]
+    assert_equal(Net::HTTP::Post, @fetcher.last_request.class)
+    assert_equal(Gem.read_binary(@path), @fetcher.last_request.body)
+    assert_equal(File.size(@path), @fetcher.last_request["Content-Length"].to_i)
+    assert_equal("application/octet-stream", @fetcher.last_request["Content-Type"])
+    assert_equal(api_key, @fetcher.last_request["Authorization"])
 
-    assert_match @response, @ui.output
+    assert_match(@response, @ui.output)
   end
 
   def test_raises_error_with_no_arguments
@@ -320,7 +320,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
   def test_sending_gem_denied
     response = "You don't have permission to push to this gem"
     @fetcher.data["#{@host}/api/v1/gems"] = [response, 403, 'Forbidden']
-    @cmd.instance_variable_set :@host, @host
+    @cmd.instance_variable_set(:@host, @host)
 
     assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
@@ -328,23 +328,23 @@ class TestGemCommandsPushCommand < Gem::TestCase
       end
     end
 
-    assert_match response, @ui.output
+    assert_match(response, @ui.output)
   end
 
   def test_sending_gem_key
     @response = "Successfully registered gem: freewill (1.0.0)"
     @fetcher.data["#{@host}/api/v1/gems"] = [@response, 200, "OK"]
-    File.open Gem.configuration.credentials_path, 'a' do |f|
-      f.write ':other: 701229f217cdf23b1344c7b4b54ca97'
+    File.open(Gem.configuration.credentials_path, 'a') do |f|
+      f.write(':other: 701229f217cdf23b1344c7b4b54ca97')
     end
     Gem.configuration.load_api_keys
 
-    @cmd.handle_options %w(-k other)
-    @cmd.instance_variable_set :@host, @host
+    @cmd.handle_options(%w(-k other))
+    @cmd.instance_variable_set(:@host, @host)
     @cmd.send_gem(@path)
 
-    assert_equal Gem.configuration.api_keys[:other],
-                 @fetcher.last_request["Authorization"]
+    assert_equal(Gem.configuration.api_keys[:other],
+                 @fetcher.last_request["Authorization"])
   end
 
 end

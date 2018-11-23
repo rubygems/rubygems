@@ -5,5 +5,5 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
+require('rubygems')
 Gem.use_paths("test/mock/gems")

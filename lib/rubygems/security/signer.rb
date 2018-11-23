@@ -2,7 +2,7 @@
 ##
 # Basic OpenSSL-based package signing class.
 
-require "rubygems/user_interaction"
+require("rubygems/user_interaction")
 
 class Gem::Security::Signer
 
@@ -72,13 +72,13 @@ class Gem::Security::Signer
     @options = DEFAULT_OPTIONS.merge(options)
 
     unless @key
-      default_key  = File.join Gem.default_key_path
-      @key = default_key if File.exist? default_key
+      default_key  = File.join(Gem.default_key_path)
+      @key = default_key if File.exist?(default_key)
     end
 
     unless @cert_chain
-      default_cert = File.join Gem.default_cert_path
-      @cert_chain = [default_cert] if File.exist? default_cert
+      default_cert = File.join(Gem.default_cert_path)
+      @cert_chain = [default_cert] if File.exist?(default_cert)
     end
 
     @digest_algorithm = Gem::Security::DIGEST_ALGORITHM
@@ -93,9 +93,9 @@ class Gem::Security::Signer
       @cert_chain = @cert_chain.compact.map do |cert|
         next cert if OpenSSL::X509::Certificate === cert
 
-        cert = File.read cert if File.exist? cert
+        cert = File.read(cert) if File.exist?(cert)
 
-        OpenSSL::X509::Certificate.new cert
+        OpenSSL::X509::Certificate.new(cert)
       end
 
       load_cert_chain
@@ -127,11 +127,11 @@ class Gem::Security::Signer
     return if @cert_chain.empty?
 
     while @cert_chain.first.issuer.to_s != @cert_chain.first.subject.to_s do
-      issuer = Gem::Security.trust_dir.issuer_of @cert_chain.first
+      issuer = Gem::Security.trust_dir.issuer_of(@cert_chain.first)
 
       break unless issuer # cert chain is verified later
 
-      @cert_chain.unshift issuer
+      @cert_chain.unshift(issuer)
     end
   end
 
@@ -141,7 +141,7 @@ class Gem::Security::Signer
   def sign(data)
     return unless @key
 
-    raise Gem::Security::Exception, 'no certs provided' if @cert_chain.empty?
+    raise(Gem::Security::Exception, 'no certs provided') if @cert_chain.empty?
 
     if @cert_chain.length == 1 and @cert_chain.last.not_after < Time.now
       re_sign_key(
@@ -149,11 +149,11 @@ class Gem::Security::Signer
       )
     end
 
-    full_name = extract_name @cert_chain.last
+    full_name = extract_name(@cert_chain.last)
 
-    Gem::Security::SigningPolicy.verify @cert_chain, @key, {}, {}, full_name
+    Gem::Security::SigningPolicy.verify(@cert_chain, @key, {}, {}, full_name)
 
-    @key.sign @digest_algorithm.new, data
+    @key.sign(@digest_algorithm.new, data)
   end
 
   ##

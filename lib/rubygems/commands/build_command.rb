@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/package'
+require('rubygems/command')
+require('rubygems/package')
 
 class Gem::Commands::BuildCommand < Gem::Command
 
   def initialize
-    super 'build', 'Build a gem from a gemspec'
+    super('build', 'Build a gem from a gemspec')
 
     add_option '--force', 'skip validation of the spec' do |value, options|
       options[:force] = true
@@ -46,13 +46,13 @@ with gem spec:
   def execute
     gemspec = get_one_gem_name
 
-    unless File.exist? gemspec
-      gemspec += '.gemspec' if File.exist? gemspec + '.gemspec'
+    unless File.exist?(gemspec)
+      gemspec += '.gemspec' if File.exist?(gemspec + '.gemspec')
     end
 
-    if File.exist? gemspec
+    if File.exist?(gemspec)
       Dir.chdir(File.dirname(gemspec)) do
-        spec = Gem::Specification.load File.basename(gemspec)
+        spec = Gem::Specification.load(File.basename(gemspec))
 
         if spec
           Gem::Package.build(
@@ -61,13 +61,13 @@ with gem spec:
             options[:strict]
           )
         else
-          alert_error "Error loading gemspec. Aborting."
-          terminate_interaction 1
+          alert_error("Error loading gemspec. Aborting.")
+          terminate_interaction(1)
         end
       end
     else
-      alert_error "Gemspec file not found: #{gemspec}"
-      terminate_interaction 1
+      alert_error("Gemspec file not found: #{gemspec}")
+      terminate_interaction(1)
     end
   end
 

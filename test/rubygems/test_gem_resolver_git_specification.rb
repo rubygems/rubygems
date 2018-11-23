@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/installer'
+require('rubygems/test_case')
+require('rubygems/installer')
 
 class TestGemResolverGitSpecification < Gem::TestCase
 
@@ -8,48 +8,48 @@ class TestGemResolverGitSpecification < Gem::TestCase
     super
 
     @set  = Gem::Resolver::GitSet.new
-    @spec = Gem::Specification.new 'a', 1
+    @spec = Gem::Specification.new('a', 1)
   end
 
   def test_equals2
-    g_spec_a = Gem::Resolver::GitSpecification.new @set, @spec
+    g_spec_a = Gem::Resolver::GitSpecification.new(@set, @spec)
 
-    assert_equal g_spec_a, g_spec_a
+    assert_equal(g_spec_a, g_spec_a)
 
-    spec_b = Gem::Specification.new 'b', 1
-    g_spec_b = Gem::Resolver::GitSpecification.new @set, spec_b
+    spec_b = Gem::Specification.new('b', 1)
+    g_spec_b = Gem::Resolver::GitSpecification.new(@set, spec_b)
 
-    refute_equal g_spec_a, g_spec_b
+    refute_equal(g_spec_a, g_spec_b)
 
     g_set = Gem::Resolver::GitSet.new
-    g_spec_s = Gem::Resolver::GitSpecification.new g_set, @spec
+    g_spec_s = Gem::Resolver::GitSpecification.new(g_set, @spec)
 
-    refute_equal g_spec_a, g_spec_s
+    refute_equal(g_spec_a, g_spec_s)
 
     i_set  = Gem::Resolver::IndexSet.new
-    source = Gem::Source.new @gem_repo
+    source = Gem::Source.new(@gem_repo)
     i_spec = Gem::Resolver::IndexSpecification.new(
       i_set, 'a', v(1), source, Gem::Platform::RUBY)
 
-    refute_equal g_spec_a, i_spec
+    refute_equal(g_spec_a, i_spec)
   end
 
   def test_add_dependency
-    git_gem 'a', 1
+    git_gem('a', 1)
 
-    git_spec = Gem::Resolver::GitSpecification.new @set, @spec
+    git_spec = Gem::Resolver::GitSpecification.new(@set, @spec)
 
-    b_dep = dep 'b'
+    b_dep = dep('b')
 
-    git_spec.add_dependency b_dep
+    git_spec.add_dependency(b_dep)
 
-    assert_equal [b_dep], git_spec.dependencies
+    assert_equal([b_dep], git_spec.dependencies)
   end
 
   def test_install
-    git_gem 'a', 1
+    git_gem('a', 1)
 
-    git_spec = Gem::Resolver::GitSpecification.new @set, @spec
+    git_spec = Gem::Resolver::GitSpecification.new(@set, @spec)
 
     called = false
 
@@ -57,7 +57,7 @@ class TestGemResolverGitSpecification < Gem::TestCase
       called = installer
     end
 
-    assert called
+    assert(called)
   end
 
   # functional test for Gem::Ext::Builder
@@ -67,15 +67,15 @@ class TestGemResolverGitSpecification < Gem::TestCase
       s.extensions << 'ext/extconf.rb'
     end
 
-    Dir.chdir 'git/a' do
-      FileUtils.mkdir_p 'ext/lib'
+    Dir.chdir('git/a') do
+      FileUtils.mkdir_p('ext/lib')
 
-      File.open 'ext/extconf.rb', 'w' do |io|
-        io.puts 'require "mkmf"'
-        io.puts 'create_makefile "a"'
+      File.open('ext/extconf.rb', 'w') do |io|
+        io.puts('require "mkmf"')
+        io.puts('create_makefile "a"')
       end
 
-      FileUtils.touch 'ext/lib/b.rb'
+      FileUtils.touch('ext/lib/b.rb')
 
       system @git, 'add', 'ext/extconf.rb'
       system @git, 'add', 'ext/lib/b.rb'
@@ -83,21 +83,21 @@ class TestGemResolverGitSpecification < Gem::TestCase
       system @git, 'commit', '--quiet', '-m', 'Add extension files'
     end
 
-    source = Gem::Source::Git.new name, repository, 'master', true
+    source = Gem::Source::Git.new(name, repository, 'master', true)
 
     spec = source.specs.first
 
-    git_spec = Gem::Resolver::GitSpecification.new @set, spec, source
+    git_spec = Gem::Resolver::GitSpecification.new(@set, spec, source)
 
     git_spec.install({})
 
-    assert_path_exists File.join git_spec.spec.extension_dir, 'b.rb'
+    assert_path_exists(File.join(git_spec.spec.extension_dir, 'b.rb'))
   end
 
   def test_install_installed
-    git_gem 'a', 1
+    git_gem('a', 1)
 
-    git_spec = Gem::Resolver::GitSpecification.new @set, @spec
+    git_spec = Gem::Resolver::GitSpecification.new(@set, @spec)
 
     git_spec.install({})
 
@@ -107,7 +107,7 @@ class TestGemResolverGitSpecification < Gem::TestCase
       called = installer
     end
 
-    assert called
+    assert(called)
   end
 
 end

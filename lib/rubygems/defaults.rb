@@ -20,7 +20,7 @@ module Gem
   # specified in the environment
 
   def self.default_spec_cache_dir
-    File.join Gem.user_home, '.gem', 'specs'
+    File.join(Gem.user_home, '.gem', 'specs')
   end
 
   ##
@@ -76,7 +76,7 @@ module Gem
   def self.user_dir
     parts = [Gem.user_home, '.gem', ruby_engine]
     parts << RbConfig::CONFIG['ruby_version'] unless RbConfig::CONFIG['ruby_version'].empty?
-    File.join parts
+    File.join(parts)
   end
 
   ##
@@ -93,7 +93,7 @@ module Gem
     path = []
     path << user_dir if user_home && File.exist?(user_home)
     path << default_dir
-    path << vendor_dir if vendor_dir and File.directory? vendor_dir
+    path << vendor_dir if vendor_dir and File.directory?(vendor_dir)
     path
   end
 
@@ -104,8 +104,8 @@ module Gem
     exec_format = RbConfig::CONFIG['ruby_install_name'].sub('ruby', '%s') rescue '%s'
 
     unless exec_format =~ /%s/
-      raise Gem::Exception,
-        "[BUG] invalid exec_format #{exec_format.inspect}, no %s"
+      raise(Gem::Exception,
+        "[BUG] invalid exec_format #{exec_format.inspect}, no %s")
     end
 
     exec_format
@@ -137,14 +137,14 @@ module Gem
   # The default signing key path
 
   def self.default_key_path
-    File.join Gem.user_home, ".gem", "gem-private_key.pem"
+    File.join(Gem.user_home, ".gem", "gem-private_key.pem")
   end
 
   ##
   # The default signing certificate chain path
 
   def self.default_cert_path
-    File.join Gem.user_home, ".gem", "gem-public_cert.pem"
+    File.join(Gem.user_home, ".gem", "gem-public_cert.pem")
   end
 
   ##
@@ -169,10 +169,10 @@ module Gem
       return vendor_dir.dup
     end
 
-    return nil unless RbConfig::CONFIG.key? 'vendordir'
+    return nil unless RbConfig::CONFIG.key?('vendordir')
 
-    File.join RbConfig::CONFIG['vendordir'], 'gems',
-              RbConfig::CONFIG['ruby_version']
+    File.join(RbConfig::CONFIG['vendordir'], 'gems',
+              RbConfig::CONFIG['ruby_version'])
   end
 
   ##

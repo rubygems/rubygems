@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
+require('rubygems/test_case')
 # require 'rubygems/builder'
 # require 'rubygems/package'
-require 'rubygems/deprecate'
+require('rubygems/deprecate')
 
 class TestDeprecate < Gem::TestCase
 
@@ -22,18 +22,18 @@ class TestDeprecate < Gem::TestCase
   end
 
   def test_defaults
-    assert_equal false, @original_skip
+    assert_equal(false, @original_skip)
   end
 
   def test_assignment
     Gem::Deprecate.skip = false
-    assert_equal false, Gem::Deprecate.skip
+    assert_equal(false, Gem::Deprecate.skip)
 
     Gem::Deprecate.skip = true
-    assert_equal true, Gem::Deprecate.skip
+    assert_equal(true, Gem::Deprecate.skip)
 
     Gem::Deprecate.skip = nil
-    assert([true,false].include? Gem::Deprecate.skip)
+    assert([true,false].include?(Gem::Deprecate.skip))
   end
 
   def test_skip
@@ -70,7 +70,7 @@ class TestDeprecate < Gem::TestCase
       thing.foo
     end
 
-    assert_equal "", out
+    assert_equal("", out)
     assert_match(/Thing#foo is deprecated; use bar instead\./, err)
     assert_match(/on or after 2099-03-01/, err)
   end

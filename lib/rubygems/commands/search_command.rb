@@ -1,13 +1,13 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/commands/query_command'
+require('rubygems/command')
+require('rubygems/commands/query_command')
 
 class Gem::Commands::SearchCommand < Gem::Commands::QueryCommand
 
   def initialize
-    super 'search', 'Display remote gems whose name matches REGEXP'
+    super('search', 'Display remote gems whose name matches REGEXP')
 
-    remove_option '--name-matches'
+    remove_option('--name-matches')
 
     defaults[:domain] = :remote
   end

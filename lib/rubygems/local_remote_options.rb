@@ -5,8 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'uri'
-require 'rubygems'
+require('uri')
+require('rubygems')
 
 ##
 # Mixin methods for local and remote Gem::Command options.
@@ -17,17 +17,17 @@ module Gem::LocalRemoteOptions
   # Allows OptionParser to handle HTTP URIs.
 
   def accept_uri_http
-    OptionParser.accept URI::HTTP do |value|
+    OptionParser.accept(URI::HTTP) do |value|
       begin
-        uri = URI.parse value
+        uri = URI.parse(value)
       rescue URI::InvalidURIError
-        raise OptionParser::InvalidArgument, value
+        raise(OptionParser::InvalidArgument, value)
       end
 
       valid_uri_schemes = ["http", "https", "file", "s3"]
       unless valid_uri_schemes.include?(uri.scheme)
         msg =  "Invalid uri scheme for #{value}\nPreface URLs with one of #{valid_uri_schemes.map{|s| "#{s}://"}}"
-        raise ArgumentError, msg
+        raise(ArgumentError, msg)
       end
 
       value
@@ -108,7 +108,7 @@ module Gem::LocalRemoteOptions
 
       source << '/' if source !~ /\/\z/
 
-      if options.delete :sources_cleared
+      if options.delete(:sources_cleared)
         Gem.sources = [source]
       else
         Gem.sources << source unless Gem.sources.include?(source)

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-require 'rubygems/command'
+require('rubygems/command')
 
 class Gem::Commands::EnvironmentCommand < Gem::Command
 
   def initialize
-    super 'environment', 'Display information about the RubyGems environment'
+    super('environment', 'Display information about the RubyGems environment')
   end
 
   def arguments # :nodoc:
@@ -91,9 +91,9 @@ lib/rubygems/defaults/operating_system.rb
       when nil then
         show_environment
       else
-        raise Gem::CommandLineError, "Unknown environment option [#{arg}]"
+        raise(Gem::CommandLineError, "Unknown environment option [#{arg}]")
       end
-    say out
+    say(out)
     true
   end
 
@@ -137,8 +137,8 @@ lib/rubygems/defaults/operating_system.rb
     out << "     - #{Gem.dir}\n"
 
     gem_path = Gem.path.dup
-    gem_path.delete Gem.dir
-    add_path out, gem_path
+    gem_path.delete(Gem.dir)
+    add_path(out, gem_path)
 
     out << "  - GEM CONFIGURATION:\n"
     Gem.configuration.each do |name, value|
@@ -154,7 +154,7 @@ lib/rubygems/defaults/operating_system.rb
     out << "  - SHELL PATH:\n"
 
     shell_path = ENV['PATH'].split(File::PATH_SEPARATOR)
-    add_path out, shell_path
+    add_path(out, shell_path)
 
     out
   end

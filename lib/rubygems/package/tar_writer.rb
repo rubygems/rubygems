@@ -5,7 +5,7 @@
 # See LICENSE.txt for additional licensing information.
 #++
 
-require 'digest'
+require('digest')
 
 ##
 # Allows writing of tar files
@@ -44,9 +44,9 @@ class Gem::Package::TarWriter
 
     def write(data)
       if data.bytesize + @written > @limit
-        raise FileOverflow, "You tried to feed more data than fits in the file."
+        raise(FileOverflow, "You tried to feed more data than fits in the file.")
       end
-      @io.write data
+      @io.write(data)
       @written += data.bytesize
       data.bytesize
     end
@@ -69,7 +69,7 @@ class Gem::Package::TarWriter
     # Writes +data+ onto the IO
 
     def write(data)
-      @io.write data
+      @io.write(data)
     end
 
   end
@@ -83,7 +83,7 @@ class Gem::Package::TarWriter
     return writer unless block_given?
 
     begin
-      yield writer
+      yield(writer)
     ensure
       writer.close
     end
@@ -106,26 +106,26 @@ class Gem::Package::TarWriter
   def add_file(name, mode) # :yields: io
     check_closed
 
-    name, prefix = split_name name
+    name, prefix = split_name(name)
 
     init_pos = @io.pos
-    @io.write Gem::Package::TarHeader::EMPTY_HEADER # placeholder for the header
+    @io.write(Gem::Package::TarHeader::EMPTY_HEADER) # placeholder for the header
 
-    yield RestrictedStream.new(@io) if block_given?
+    yield(RestrictedStream.new(@io)) if block_given?
 
     size = @io.pos - init_pos - 512
 
     remainder = (512 - (size % 512)) % 512
-    @io.write "\0" * remainder
+    @io.write("\0" * remainder)
 
     final_pos = @io.pos
     @io.pos = init_pos
 
-    header = Gem::Package::TarHeader.new :name => name, :mode => mode,
+    header = Gem::Package::TarHeader.new(:name => name, :mode => mode,
                                          :size => size, :prefix => prefix,
-                                         :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now
+                                         :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now)
 
-    @io.write header
+    @io.write(header)
     @io.pos = final_pos
 
     self
@@ -143,7 +143,7 @@ class Gem::Package::TarWriter
     digests = digest_algorithms.map do |digest_algorithm|
       digest = digest_algorithm.new
       digest_name =
-        if digest.respond_to? :name
+        if digest.respond_to?(:name)
           digest.name
         else
           /::([^:]+)$/ =~ digest_algorithm.name
@@ -156,7 +156,7 @@ class Gem::Package::TarWriter
     digests = Hash[*digests.flatten]
 
     add_file name, mode do |io|
-      Gem::Package::DigestIO.wrap io, digests do |digest_io|
+      Gem::Package::DigestIO.wrap(io, digests) do |digest_io|
         yield digest_io
       end
     end
@@ -184,7 +184,7 @@ class Gem::Package::TarWriter
 
     signature_digest = digests.values.compact.find do |digest|
       digest_name =
-        if digest.respond_to? :name
+        if digest.respond_to?(:name)
           digest.name
         else
           digest.class.name[/::([^:]+)\z/, 1]
@@ -193,13 +193,13 @@ class Gem::Package::TarWriter
       digest_name == signer.digest_name
     end
 
-    raise "no #{signer.digest_name} in #{digests.values.compact}" unless signature_digest
+    raise("no #{signer.digest_name} in #{digests.values.compact}") unless signature_digest
 
     if signer.key
-      signature = signer.sign signature_digest.digest
+      signature = signer.sign(signature_digest.digest)
 
       add_file_simple "#{name}.sig", 0444, signature.length do |io|
-        io.write signature
+        io.write(signature)
       end
     end
 
@@ -213,16 +213,16 @@ class Gem::Package::TarWriter
   def add_file_simple(name, mode, size) # :yields: io
     check_closed
 
-    name, prefix = split_name name
+    name, prefix = split_name(name)
 
     header = Gem::Package::TarHeader.new(:name => name, :mode => mode,
                                          :size => size, :prefix => prefix,
                                          :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now).to_s
 
-    @io.write header
-    os = BoundedStream.new @io, size
+    @io.write(header)
+    os = BoundedStream.new(@io, size)
 
-    yield os if block_given?
+    yield(os) if block_given?
 
     min_padding = size - os.written
     @io.write("\0" * min_padding)
@@ -239,7 +239,7 @@ class Gem::Package::TarWriter
   def add_symlink(name, target, mode)
     check_closed
 
-    name, prefix = split_name name
+    name, prefix = split_name(name)
 
     header = Gem::Package::TarHeader.new(:name => name, :mode => mode,
                                          :size => 0, :typeflag => "2",
@@ -247,7 +247,7 @@ class Gem::Package::TarWriter
                                          :prefix => prefix,
                                          :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now).to_s
 
-    @io.write header
+    @io.write(header)
 
     self
   end
@@ -256,7 +256,7 @@ class Gem::Package::TarWriter
   # Raises IOError if the TarWriter is closed
 
   def check_closed
-    raise IOError, "closed #{self.class}" if closed?
+    raise(IOError, "closed #{self.class}") if closed?
   end
 
   ##
@@ -265,7 +265,7 @@ class Gem::Package::TarWriter
   def close
     check_closed
 
-    @io.write "\0" * 1024
+    @io.write("\0" * 1024)
     flush
 
     @closed = true
@@ -284,7 +284,7 @@ class Gem::Package::TarWriter
   def flush
     check_closed
 
-    @io.flush if @io.respond_to? :flush
+    @io.flush if @io.respond_to?(:flush)
   end
 
   ##
@@ -295,12 +295,12 @@ class Gem::Package::TarWriter
 
     name, prefix = split_name(name)
 
-    header = Gem::Package::TarHeader.new :name => name, :mode => mode,
+    header = Gem::Package::TarHeader.new(:name => name, :mode => mode,
                                          :typeflag => "5", :size => 0,
                                          :prefix => prefix,
-                                         :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now
+                                         :mtime => ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc : Time.now)
 
-    @io.write header
+    @io.write(header)
 
     self
   end
@@ -310,7 +310,7 @@ class Gem::Package::TarWriter
 
   def split_name(name) # :nodoc:
     if name.bytesize > 256
-      raise Gem::Package::TooLongFileName.new("File \"#{name}\" has a too long path (should be 256 or less)")
+      raise(Gem::Package::TooLongFileName.new("File \"#{name}\" has a too long path (should be 256 or less)"))
     end
 
     prefix = ''
@@ -324,11 +324,11 @@ class Gem::Package::TarWriter
       end
 
       if name.bytesize > 100 or prefix.empty?
-        raise Gem::Package::TooLongFileName.new("File \"#{prefix}/#{name}\" has a too long name (should be 100 or less)")
+        raise(Gem::Package::TooLongFileName.new("File \"#{prefix}/#{name}\" has a too long name (should be 100 or less)"))
       end
 
       if prefix.bytesize > 155
-        raise Gem::Package::TooLongFileName.new("File \"#{prefix}/#{name}\" has a too long base path (should be 155 or less)")
+        raise(Gem::Package::TooLongFileName.new("File \"#{prefix}/#{name}\" has a too long base path (should be 155 or less)"))
       end
     end
 

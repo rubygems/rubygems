@@ -5,10 +5,10 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
-require 'rubygems/command_manager'
-require 'rubygems/config_file'
-require 'rubygems/deprecate'
+require('rubygems')
+require('rubygems/command_manager')
+require('rubygems/config_file')
+require('rubygems/deprecate')
 
 ##
 # Load additional plugins from $LOAD_PATH
@@ -28,7 +28,7 @@ class Gem::GemRunner
 
   def initialize(options={})
     if !options.empty? && !Gem::Deprecate.skip
-      Kernel.warn "NOTE: passing options to Gem::GemRunner.new is deprecated with no replacement. It will be removed on or after 2016-10-01."
+      Kernel.warn("NOTE: passing options to Gem::GemRunner.new is deprecated with no replacement. It will be removed on or after 2016-10-01.")
     end
 
     @command_manager_class = options[:command_manager] || Gem::CommandManager
@@ -39,9 +39,9 @@ class Gem::GemRunner
   # Run the gem command with the following arguments.
 
   def run(args)
-    build_args = extract_build_args args
+    build_args = extract_build_args(args)
 
-    do_configuration args
+    do_configuration(args)
 
     cmd = @command_manager_class.instance
 
@@ -49,14 +49,14 @@ class Gem::GemRunner
       config_args = Gem.configuration[command_name]
       config_args = case config_args
                     when String
-                      config_args.split ' '
+                      config_args.split(' ')
                     else
                       Array(config_args)
                     end
-      Gem::Command.add_specific_extra_args command_name, config_args
+      Gem::Command.add_specific_extra_args(command_name, config_args)
     end
 
-    cmd.run Gem.configuration.args, build_args
+    cmd.run(Gem.configuration.args, build_args)
   end
 
   ##
@@ -77,7 +77,7 @@ class Gem::GemRunner
 
   def do_configuration(args)
     Gem.configuration = @config_file_class.new(args)
-    Gem.use_paths Gem.configuration[:gemhome], Gem.configuration[:gempath]
+    Gem.use_paths(Gem.configuration[:gemhome], Gem.configuration[:gempath])
     Gem::Command.extra_args = Gem.configuration[:gem]
   end
 

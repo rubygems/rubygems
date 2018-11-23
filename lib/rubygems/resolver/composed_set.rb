@@ -52,7 +52,7 @@ class Gem::Resolver::ComposedSet < Gem::Resolver::Set
 
   def find_all(req)
     @sets.map do |s|
-      s.find_all req
+      s.find_all(req)
     end.flatten
   end
 

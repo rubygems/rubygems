@@ -33,7 +33,7 @@ class Gem::RequestSet::Lockfile
       @line   = line
       @column = column
       @path   = path
-      super "#{message} (at line #{line} column #{column})"
+      super("#{message} (at line #{line} column #{column})")
     end
   end
 
@@ -43,8 +43,8 @@ class Gem::RequestSet::Lockfile
 
   def self.build(request_set, gem_deps_file, dependencies = nil)
     request_set.resolve
-    dependencies ||= requests_to_deps request_set.sorted_requests
-    new request_set, gem_deps_file, dependencies
+    dependencies ||= requests_to_deps(request_set.sorted_requests)
+    new(request_set, gem_deps_file, dependencies)
   end
 
   def self.requests_to_deps(requests) # :nodoc:
@@ -56,7 +56,7 @@ class Gem::RequestSet::Lockfile
       requirement = request.request.dependency.requirement
 
       deps[name] = if [Gem::Resolver::VendorSpecification,
-                       Gem::Resolver::GitSpecification].include? spec.class
+                       Gem::Resolver::GitSpecification].include?(spec.class)
                      Gem::Requirement.source_set
                    else
                      requirement
@@ -85,9 +85,9 @@ class Gem::RequestSet::Lockfile
   def add_DEPENDENCIES(out) # :nodoc:
     out << "DEPENDENCIES"
 
-    out.concat @dependencies.sort_by { |name,| name }.map { |name, requirement|
+    out.concat(@dependencies.sort_by { |name,| name }.map { |name, requirement|
       "  #{name}#{requirement.for_lockfile}"
-    }
+    })
 
     out << nil
   end
@@ -170,7 +170,7 @@ class Gem::RequestSet::Lockfile
     path_requests.each do |request|
       directory = File.expand_path(request.spec.source.uri)
 
-      out << "  remote: #{relative_path_from directory, @gem_deps_dir}"
+      out << "  remote: #{relative_path_from(directory, @gem_deps_dir)}"
       out << "  specs:"
       out << "    #{request.name} (#{request.version})"
     end
@@ -204,17 +204,17 @@ class Gem::RequestSet::Lockfile
 
     groups = spec_groups
 
-    add_PATH out, groups.delete(Gem::Resolver::VendorSpecification) { [] }
+    add_PATH(out, groups.delete(Gem::Resolver::VendorSpecification) { [] })
 
-    add_GIT out, groups.delete(Gem::Resolver::GitSpecification) { [] }
+    add_GIT(out, groups.delete(Gem::Resolver::GitSpecification) { [] })
 
-    add_GEM out, groups
+    add_GEM(out, groups)
 
-    add_PLATFORMS out
+    add_PLATFORMS(out)
 
-    add_DEPENDENCIES out
+    add_DEPENDENCIES(out)
 
-    out.join "\n"
+    out.join("\n")
   end
 
   ##
@@ -223,8 +223,8 @@ class Gem::RequestSet::Lockfile
   def write
     content = to_s
 
-    File.open "#{@gem_deps_file}.lock", 'w' do |io|
-      io.write content
+    File.open("#{@gem_deps_file}.lock", 'w') do |io|
+      io.write(content)
     end
   end
 
@@ -235,4 +235,4 @@ class Gem::RequestSet::Lockfile
   end
 end
 
-require 'rubygems/request_set/lockfile/tokenizer'
+require('rubygems/request_set/lockfile/tokenizer')

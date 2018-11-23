@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/commands/owner_command'
+require('rubygems/test_case')
+require('rubygems/commands/owner_command')
 
 class TestGemCommandsOwnerCommand < Gem::TestCase
 
@@ -35,18 +35,18 @@ EOF
       @cmd.show_owners("freewill")
     end
 
-    assert_equal Net::HTTP::Get, @stub_fetcher.last_request.class
-    assert_equal Gem.configuration.rubygems_api_key, @stub_fetcher.last_request["Authorization"]
+    assert_equal(Net::HTTP::Get, @stub_fetcher.last_request.class)
+    assert_equal(Gem.configuration.rubygems_api_key, @stub_fetcher.last_request["Authorization"])
 
-    assert_match %r{Owners for gem: freewill}, @stub_ui.output
-    assert_match %r{- user1@example.com}, @stub_ui.output
-    assert_match %r{- user2@example.com}, @stub_ui.output
-    assert_match %r{- user3}, @stub_ui.output
-    assert_match %r{- 4}, @stub_ui.output
+    assert_match(%r{Owners for gem: freewill}, @stub_ui.output)
+    assert_match(%r{- user1@example.com}, @stub_ui.output)
+    assert_match(%r{- user2@example.com}, @stub_ui.output)
+    assert_match(%r{- user3}, @stub_ui.output)
+    assert_match(%r{- 4}, @stub_ui.output)
   end
 
   def test_show_owners_dont_load_objects
-    skip "testing a psych-only API" unless defined?(::Psych::DisallowedClass)
+    skip("testing a psych-only API") unless defined?(::Psych::DisallowedClass)
 
     response = <<EOF
 ---
@@ -80,8 +80,8 @@ EOF
       @cmd.show_owners("freewill")
     end
 
-    assert_match %r{Owners for gem: freewill}, @stub_ui.output
-    assert_match %r{- user1@example.com}, @stub_ui.output
+    assert_match(%r{Owners for gem: freewill}, @stub_ui.output)
+    assert_match(%r{- user1@example.com}, @stub_ui.output)
   end
 
   def test_show_owners_setting_up_host
@@ -95,8 +95,8 @@ EOF
       @cmd.show_owners("freewill")
     end
 
-    assert_match %r{Owners for gem: freewill}, @stub_ui.output
-    assert_match %r{- user1@example.com}, @stub_ui.output
+    assert_match(%r{Owners for gem: freewill}, @stub_ui.output)
+    assert_match(%r{- user1@example.com}, @stub_ui.output)
   end
 
   def test_show_owners_denied
@@ -109,21 +109,21 @@ EOF
       end
     end
 
-    assert_match response, @stub_ui.output
+    assert_match(response, @stub_ui.output)
   end
 
   def test_show_owners_key
     response = "- email: user1@example.com\n"
     @stub_fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners.yaml"] = [response, 200, 'OK']
-    File.open Gem.configuration.credentials_path, 'a' do |f|
-      f.write ':other: 701229f217cdf23b1344c7b4b54ca97'
+    File.open(Gem.configuration.credentials_path, 'a') do |f|
+      f.write(':other: 701229f217cdf23b1344c7b4b54ca97')
     end
     Gem.configuration.load_api_keys
 
-    @cmd.handle_options %w(-k other)
+    @cmd.handle_options(%w(-k other))
     @cmd.show_owners('freewill')
 
-    assert_equal '701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization']
+    assert_equal('701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization'])
   end
 
   def test_add_owners
@@ -134,11 +134,11 @@ EOF
       @cmd.add_owners("freewill", ["user-new1@example.com"])
     end
 
-    assert_equal Net::HTTP::Post, @stub_fetcher.last_request.class
-    assert_equal Gem.configuration.rubygems_api_key, @stub_fetcher.last_request["Authorization"]
-    assert_equal "email=user-new1%40example.com", @stub_fetcher.last_request.body
+    assert_equal(Net::HTTP::Post, @stub_fetcher.last_request.class)
+    assert_equal(Gem.configuration.rubygems_api_key, @stub_fetcher.last_request["Authorization"])
+    assert_equal("email=user-new1%40example.com", @stub_fetcher.last_request.body)
 
-    assert_match response, @stub_ui.output
+    assert_match(response, @stub_ui.output)
   end
 
   def test_add_owners_denied
@@ -149,7 +149,7 @@ EOF
       @cmd.add_owners("freewill", ["user-new1@example.com"])
     end
 
-    assert_match response, @stub_ui.output
+    assert_match(response, @stub_ui.output)
   end
 
   def test_add_owner_with_host_option_through_execute
@@ -159,29 +159,29 @@ EOF
     @stub_fetcher.data["#{host}/api/v1/gems/freewill/owners"] = [add_owner_response, 200, 'OK']
     @stub_fetcher.data["#{host}/api/v1/gems/freewill/owners.yaml"] = [show_owners_response, 200, 'OK']
 
-    @cmd.handle_options %W[--host #{host} --add user-new1@example.com freewill]
+    @cmd.handle_options(%W[--host #{host} --add user-new1@example.com freewill])
 
     use_ui @stub_ui do
       @cmd.execute
     end
 
-    assert_match add_owner_response, @stub_ui.output
-    assert_match %r{Owners for gem: freewill}, @stub_ui.output
-    assert_match %r{- user1@example.com}, @stub_ui.output
+    assert_match(add_owner_response, @stub_ui.output)
+    assert_match(%r{Owners for gem: freewill}, @stub_ui.output)
+    assert_match(%r{- user1@example.com}, @stub_ui.output)
   end
 
   def test_add_owners_key
     response = "Owner added successfully."
     @stub_fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 200, 'OK']
-    File.open Gem.configuration.credentials_path, 'a' do |f|
-      f.write ':other: 701229f217cdf23b1344c7b4b54ca97'
+    File.open(Gem.configuration.credentials_path, 'a') do |f|
+      f.write(':other: 701229f217cdf23b1344c7b4b54ca97')
     end
     Gem.configuration.load_api_keys
 
-    @cmd.handle_options %w(-k other)
+    @cmd.handle_options(%w(-k other))
     @cmd.add_owners('freewill', ['user-new1@example.com'])
 
-    assert_equal '701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization']
+    assert_equal('701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization'])
   end
 
   def test_remove_owners
@@ -192,11 +192,11 @@ EOF
       @cmd.remove_owners("freewill", ["user-remove1@example.com"])
     end
 
-    assert_equal Net::HTTP::Delete, @stub_fetcher.last_request.class
-    assert_equal Gem.configuration.rubygems_api_key, @stub_fetcher.last_request["Authorization"]
-    assert_equal "email=user-remove1%40example.com", @stub_fetcher.last_request.body
+    assert_equal(Net::HTTP::Delete, @stub_fetcher.last_request.class)
+    assert_equal(Gem.configuration.rubygems_api_key, @stub_fetcher.last_request["Authorization"])
+    assert_equal("email=user-remove1%40example.com", @stub_fetcher.last_request.body)
 
-    assert_match response, @stub_ui.output
+    assert_match(response, @stub_ui.output)
   end
 
   def test_remove_owners_denied
@@ -207,21 +207,21 @@ EOF
       @cmd.remove_owners("freewill", ["user-remove1@example.com"])
     end
 
-    assert_match response, @stub_ui.output
+    assert_match(response, @stub_ui.output)
   end
 
   def test_remove_owners_key
     response = "Owner removed successfully."
     @stub_fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [response, 200, 'OK']
-    File.open Gem.configuration.credentials_path, 'a' do |f|
-      f.write ':other: 701229f217cdf23b1344c7b4b54ca97'
+    File.open(Gem.configuration.credentials_path, 'a') do |f|
+      f.write(':other: 701229f217cdf23b1344c7b4b54ca97')
     end
     Gem.configuration.load_api_keys
 
-    @cmd.handle_options %w(-k other)
+    @cmd.handle_options(%w(-k other))
     @cmd.remove_owners('freewill', ['user-remove1@example.com'])
 
-    assert_equal '701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization']
+    assert_equal('701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization'])
   end
 
   def test_remove_owners_missing
@@ -232,7 +232,7 @@ EOF
       @cmd.remove_owners("freewill", ["missing@example"])
     end
 
-    assert_equal "Removing missing@example: #{response}\n", @stub_ui.output
+    assert_equal("Removing missing@example: #{response}\n", @stub_ui.output)
   end
 
 end

@@ -13,7 +13,7 @@ class Gem::Resolver::LockSet < Gem::Resolver::Set
     super()
 
     @sources = sources.map do |source|
-      Gem::Source::Lock.new source
+      Gem::Source::Lock.new(source)
     end
 
     @specs   = []
@@ -27,12 +27,12 @@ class Gem::Resolver::LockSet < Gem::Resolver::Set
   # the current set's source.
 
   def add(name, version, platform) # :nodoc:
-    version = Gem::Version.new version
+    version = Gem::Version.new(version)
     specs = [
       Gem::Resolver::LockSpecification.new(self, name, version, @sources, platform)
     ]
 
-    @specs.concat specs
+    @specs.concat(specs)
 
     specs
   end
@@ -43,7 +43,7 @@ class Gem::Resolver::LockSet < Gem::Resolver::Set
 
   def find_all(req)
     @specs.select do |spec|
-      req.match? spec
+      req.match?(spec)
     end
   end
 
@@ -52,30 +52,30 @@ class Gem::Resolver::LockSet < Gem::Resolver::Set
   # +platform+.  +source+ is ignored.
 
   def load_spec(name, version, platform, source) # :nodoc:
-    dep = Gem::Dependency.new name, version
+    dep = Gem::Dependency.new(name, version)
 
     found = @specs.find do |spec|
-      dep.matches_spec? spec and spec.platform == platform
+      dep.matches_spec?(spec) and spec.platform == platform
     end
 
-    tuple = Gem::NameTuple.new found.name, found.version, found.platform
+    tuple = Gem::NameTuple.new(found.name, found.version, found.platform)
 
-    found.source.fetch_spec tuple
+    found.source.fetch_spec(tuple)
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[LockSet', ']' do
+    q.group(2, '[LockSet', ']') do
       q.breakable
-      q.text 'source:'
+      q.text('source:')
 
       q.breakable
-      q.pp @source
+      q.pp(@source)
 
       q.breakable
-      q.text 'specs:'
+      q.text('specs:')
 
       q.breakable
-      q.pp @specs.map { |spec| spec.full_name }
+      q.pp(@specs.map { |spec| spec.full_name })
     end
   end
 

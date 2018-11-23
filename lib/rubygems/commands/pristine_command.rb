@@ -1,20 +1,20 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/package'
-require 'rubygems/installer'
-require 'rubygems/version_option'
+require('rubygems/command')
+require('rubygems/package')
+require('rubygems/installer')
+require('rubygems/version_option')
 
 class Gem::Commands::PristineCommand < Gem::Command
 
   include Gem::VersionOption
 
   def initialize
-    super 'pristine',
+    super('pristine',
           'Restores installed gems to pristine condition from files located in the gem cache',
           :version => Gem::Requirement.default,
           :extensions => true,
           :extensions_set => false,
-          :all => false
+          :all => false)
 
     add_option('--all',
                'Restore all installed gems to pristine',
@@ -105,56 +105,56 @@ extensions will be restored.
             end
 
     if specs.to_a.empty?
-      raise Gem::Exception,
-            "Failed to find gems #{options[:args]} #{options[:version]}"
+      raise(Gem::Exception,
+            "Failed to find gems #{options[:args]} #{options[:version]}")
     end
 
     install_dir = Gem.dir # TODO use installer option
 
-    raise Gem::FilePermissionError.new(install_dir) unless
+    raise(Gem::FilePermissionError.new(install_dir)) unless
       File.writable?(install_dir)
 
-    say "Restoring gems to pristine condition..."
+    say("Restoring gems to pristine condition...")
 
     specs.each do |spec|
       if spec.default_gem?
-        say "Skipped #{spec.full_name}, it is a default gem"
+        say("Skipped #{spec.full_name}, it is a default gem")
         next
       end
 
-      if options.has_key? :skip
-        if options[:skip].include? spec.name
-          say "Skipped #{spec.full_name}, it was given through options"
+      if options.has_key?(:skip)
+        if options[:skip].include?(spec.name)
+          say("Skipped #{spec.full_name}, it was given through options")
           next
         end
       end
 
       unless spec.extensions.empty? or options[:extensions] or options[:only_executables]
-        say "Skipped #{spec.full_name}, it needs to compile an extension"
+        say("Skipped #{spec.full_name}, it needs to compile an extension")
         next
       end
 
       gem = spec.cache_file
 
-      unless File.exist? gem or options[:only_executables]
-        require 'rubygems/remote_fetcher'
+      unless File.exist?(gem) or options[:only_executables]
+        require('rubygems/remote_fetcher')
 
-        say "Cached gem for #{spec.full_name} not found, attempting to fetch..."
+        say("Cached gem for #{spec.full_name} not found, attempting to fetch...")
 
-        dep = Gem::Dependency.new spec.name, spec.version
-        found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+        dep = Gem::Dependency.new(spec.name, spec.version)
+        found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency(dep)
 
         if found.empty?
-          say "Skipped #{spec.full_name}, it was not found from cache and remote sources"
+          say("Skipped #{spec.full_name}, it was not found from cache and remote sources")
           next
         end
 
         spec_candidate, source = found.first
-        Gem::RemoteFetcher.fetcher.download spec_candidate, source.uri.to_s, spec.base_dir
+        Gem::RemoteFetcher.fetcher.download(spec_candidate, source.uri.to_s, spec.base_dir)
       end
 
       env_shebang =
-        if options.include? :env_shebang
+        if options.include?(:env_shebang)
           options[:env_shebang]
         else
           install_defaults = Gem::ConfigFile::PLATFORM_DEFAULTS['install']

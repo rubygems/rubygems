@@ -5,8 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
-require 'rubygems/security_option'
+require('rubygems')
+require('rubygems/security_option')
 
 ##
 # Mixin methods for install and update options for Gem::Commands
@@ -51,7 +51,7 @@ module Gem::InstallUpdateOptions
                'Install gem into the vendor directory.',
                'Only for use by gem repackagers.') do |value, options|
       unless Gem.vendor_dir
-        raise OptionParser::InvalidOption.new 'your platform is not supported'
+        raise(OptionParser::InvalidOption.new('your platform is not supported'))
       end
 
       options[:vendor] = true
@@ -137,14 +137,14 @@ module Gem::InstallUpdateOptions
                'Read from a gem dependencies API file and',
                'install the listed gems') do |v,o|
       v = Gem::GEM_DEP_FILES.find do |file|
-        File.exist? file
+        File.exist?(file)
       end unless v
 
       unless v
-        message = v ? v : "(tried #{Gem::GEM_DEP_FILES.join ', '})"
+        message = v ? v : "(tried #{Gem::GEM_DEP_FILES.join(', ')})"
 
-        raise OptionParser::InvalidArgument,
-                "cannot find gem dependencies file #{message}"
+        raise(OptionParser::InvalidArgument,
+                "cannot find gem dependencies file #{message}")
       end
 
       options[:gemdeps] = v
@@ -154,7 +154,7 @@ module Gem::InstallUpdateOptions
                'Omit the named groups (comma separated)',
                'when installing from a gem dependencies',
                'file') do |v,o|
-      options[:without_groups].concat v.map { |without| without.intern }
+      options[:without_groups].concat(v.map { |without| without.intern })
     end
 
     add_option(:"Install/Update", '--default',

@@ -8,7 +8,7 @@ class Gem::Resolver::LocalSpecification < Gem::Resolver::SpecSpecification
   # Returns +true+ if this gem is installable for the current platform.
 
   def installable_platform?
-    return true if @source.kind_of? Gem::Source::SpecificFile
+    return true if @source.kind_of?(Gem::Source::SpecificFile)
 
     super
   end
@@ -18,23 +18,23 @@ class Gem::Resolver::LocalSpecification < Gem::Resolver::SpecSpecification
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[LocalSpecification', ']' do
+    q.group(2, '[LocalSpecification', ']') do
       q.breakable
-      q.text "name: #{name}"
+      q.text("name: #{name}")
 
       q.breakable
-      q.text "version: #{version}"
+      q.text("version: #{version}")
 
       q.breakable
-      q.text "platform: #{platform}"
+      q.text("platform: #{platform}")
 
       q.breakable
-      q.text 'dependencies:'
+      q.text('dependencies:')
       q.breakable
-      q.pp dependencies
+      q.pp(dependencies)
 
       q.breakable
-      q.text "source: #{@source.path}"
+      q.text("source: #{@source.path}")
     end
   end
 

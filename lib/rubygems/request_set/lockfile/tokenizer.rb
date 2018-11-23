@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'rubygems/request_set/lockfile/parser'
+require('rubygems/request_set/lockfile/parser')
 
 class Gem::RequestSet::Lockfile::Tokenizer
-  Token = Struct.new :type, :value, :column, :line
-  EOF   = Token.new :EOF
+  Token = Struct.new(:type, :value, :column, :line)
+  EOF   = Token.new(:EOF)
 
   def self.from_file(file)
-    new File.read(file), file
+    new(File.read(file), file)
   end
 
   def initialize(input, filename = nil, line = 0, pos = 0)
@@ -14,11 +14,11 @@ class Gem::RequestSet::Lockfile::Tokenizer
     @line_pos = pos
     @tokens   = []
     @filename = filename
-    tokenize input
+    tokenize(input)
   end
 
   def make_parser(set, platforms)
-    Gem::RequestSet::Lockfile::Parser.new self, set, platforms, @filename
+    Gem::RequestSet::Lockfile::Parser.new(self, set, platforms, @filename)
   end
 
   def to_a
@@ -42,7 +42,7 @@ class Gem::RequestSet::Lockfile::Tokenizer
   end
 
   def unshift(token)
-    @tokens.unshift token
+    @tokens.unshift(token)
   end
 
   def next_token
@@ -57,8 +57,8 @@ class Gem::RequestSet::Lockfile::Tokenizer
   private
 
   def tokenize(input)
-    require 'strscan'
-    s = StringScanner.new input
+    require('strscan')
+    s = StringScanner.new(input)
 
     until s.eos? do
       pos = s.pos
@@ -67,9 +67,9 @@ class Gem::RequestSet::Lockfile::Tokenizer
 
       if s.scan(/[<|=>]{7}/)
         message = "your #{@filename} contains merge conflict markers"
-        column, line = token_pos pos
+        column, line = token_pos(pos)
 
-        raise Gem::RequestSet::Lockfile::ParseError.new message, column, line, @filename
+        raise(Gem::RequestSet::Lockfile::ParseError.new(message, column, line, @filename))
       end
 
       @tokens <<
@@ -103,7 +103,7 @@ class Gem::RequestSet::Lockfile::Tokenizer
         when s.scan(/[^\s),!]*/) then
           Token.new(:text, s.matched, *token_pos(pos))
         else
-          raise "BUG: can't create token for: #{s.string[s.pos..-1].inspect}"
+          raise("BUG: can't create token for: #{s.string[s.pos..-1].inspect}")
         end
     end
 

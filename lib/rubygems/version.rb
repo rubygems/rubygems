@@ -171,7 +171,7 @@ class Gem::Version
 
   def self.correct?(version)
     unless Gem::Deprecate.skip
-      warn "nil versions are discouraged and will be deprecated in Rubygems 4" if version.nil?
+      warn("nil versions are discouraged and will be deprecated in Rubygems 4") if version.nil?
     end
 
     !!(version.to_s =~ ANCHORED_VERSION_PATTERN)
@@ -191,7 +191,7 @@ class Gem::Version
     elsif input.nil?
       nil
     else
-      new input
+      new(input)
     end
   end
 
@@ -209,7 +209,7 @@ class Gem::Version
 
   def initialize(version)
     unless self.class.correct?(version)
-      raise ArgumentError, "Malformed version number string #{version}"
+      raise(ArgumentError, "Malformed version number string #{version}")
     end
 
     # If version is an empty string convert it to 0
@@ -232,7 +232,7 @@ class Gem::Version
                 segments.pop if segments.size > 1
 
                 segments[-1] = segments[-1].succ
-                self.class.new segments.join(".")
+                self.class.new(segments.join("."))
               end
   end
 
@@ -249,7 +249,7 @@ class Gem::Version
   end
 
   def init_with(coder) # :nodoc:
-    yaml_initialize coder.tag, coder.map
+    yaml_initialize(coder.tag, coder.map)
   end
 
   def inspect # :nodoc:
@@ -269,7 +269,7 @@ class Gem::Version
   # 1.3.5 and earlier) compatibility.
 
   def marshal_load(array)
-    initialize array[0]
+    initialize(array[0])
   end
 
   def yaml_initialize(tag, map) # :nodoc:
@@ -283,21 +283,21 @@ class Gem::Version
   end
 
   def encode_with(coder) # :nodoc:
-    coder.add 'version', @version
+    coder.add('version', @version)
   end
 
   ##
   # A version is considered a prerelease if it contains a letter.
 
   def prerelease?
-    unless instance_variable_defined? :@prerelease
+    unless instance_variable_defined?(:@prerelease)
       @prerelease = !!(@version =~ /[a-zA-Z]/)
     end
     @prerelease
   end
 
   def pretty_print(q) # :nodoc:
-    q.text "Gem::Version.new(#{version.inspect})"
+    q.text("Gem::Version.new(#{version.inspect})")
   end
 
   ##
@@ -308,7 +308,7 @@ class Gem::Version
     @release ||= if prerelease?
                    segments = self.segments
                    segments.pop while segments.any? { |s| String === s }
-                   self.class.new segments.join('.')
+                   self.class.new(segments.join('.'))
                  else
                    self
                  end
@@ -326,7 +326,7 @@ class Gem::Version
 
     segments.pop    while segments.any? { |s| String === s }
     segments.pop    while segments.size > 2
-    segments.push 0 while segments.size < 2
+    segments.push(0) while segments.size < 2
 
     recommendation = "~> #{segments.join(".")}"
     recommendation += ".a" if prerelease?

@@ -5,7 +5,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-require "shellwords"
+require("shellwords")
 
 class Gem::Ext::RakeBuilder < Gem::Ext::Builder
 

@@ -16,7 +16,7 @@ class Gem::Resolver::InstalledSpecification < Gem::Resolver::SpecSpecification
   # +options+ are ignored.
 
   def install(options = {})
-    yield nil
+    yield(nil)
   end
 
   ##
@@ -25,26 +25,26 @@ class Gem::Resolver::InstalledSpecification < Gem::Resolver::SpecSpecification
   def installable_platform?
     # BACKCOMPAT If the file is coming out of a specified file, then we
     # ignore the platform. This code can be removed in RG 3.0.
-    return true if @source.kind_of? Gem::Source::SpecificFile
+    return true if @source.kind_of?(Gem::Source::SpecificFile)
 
     super
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[InstalledSpecification', ']' do
+    q.group(2, '[InstalledSpecification', ']') do
       q.breakable
-      q.text "name: #{name}"
+      q.text("name: #{name}")
 
       q.breakable
-      q.text "version: #{version}"
+      q.text("version: #{version}")
 
       q.breakable
-      q.text "platform: #{platform}"
+      q.text("platform: #{platform}")
 
       q.breakable
-      q.text 'dependencies:'
+      q.text('dependencies:')
       q.breakable
-      q.pp spec.dependencies
+      q.pp(spec.dependencies)
     end
   end
 

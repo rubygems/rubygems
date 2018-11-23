@@ -1,25 +1,25 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/server'
+require('rubygems/command')
+require('rubygems/server')
 
 class Gem::Commands::ServerCommand < Gem::Command
 
   def initialize
-    super 'server', 'Documentation and gem repository HTTP server',
-          :port => 8808, :gemdir => [], :daemon => false
+    super('server', 'Documentation and gem repository HTTP server',
+          :port => 8808, :gemdir => [], :daemon => false)
 
-    OptionParser.accept :Port do |port|
+    OptionParser.accept(:Port) do |port|
       if port =~ /\A\d+\z/
-        port = Integer port
-        raise OptionParser::InvalidArgument, "#{port}: not a port number" if
+        port = Integer(port)
+        raise(OptionParser::InvalidArgument, "#{port}: not a port number") if
           port > 65535
 
         port
       else
         begin
-          Socket.getservbyname port
+          Socket.getservbyname(port)
         rescue SocketError
-          raise OptionParser::InvalidArgument, "#{port}: no such named service"
+          raise(OptionParser::InvalidArgument, "#{port}: no such named service")
         end
       end
     end
@@ -80,7 +80,7 @@ You can set up a shortcut to gem server documentation using the URL:
 
   def execute
     options[:gemdir] = Gem.path if options[:gemdir].empty?
-    Gem::Server.run options
+    Gem::Server.run(options)
   end
 
 end

@@ -1,28 +1,28 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/simple_gem'
+require('rubygems/test_case')
+require('rubygems/simple_gem')
 
 class TestGemPackageOld < Gem::TestCase
 
   def setup
     super
 
-    File.open 'old_format.gem', 'wb' do |io|
-      io.write SIMPLE_GEM
+    File.open('old_format.gem', 'wb') do |io|
+      io.write(SIMPLE_GEM)
     end
 
-    @package = Gem::Package::Old.new 'old_format.gem'
-    @destination = File.join @tempdir, 'extract'
+    @package = Gem::Package::Old.new('old_format.gem')
+    @destination = File.join(@tempdir, 'extract')
 
-    FileUtils.mkdir_p @destination
+    FileUtils.mkdir_p(@destination)
   end
 
   def test_contents
-    assert_equal %w[lib/foo.rb lib/test.rb lib/test/wow.rb], @package.contents
+    assert_equal(%w[lib/foo.rb lib/test.rb lib/test/wow.rb], @package.contents)
   end
 
   def test_contents_security_policy
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip('openssl is missing') unless defined?(OpenSSL::SSL)
 
     @package.security_policy = Gem::Security::AlmostNoSecurity
 
@@ -32,32 +32,32 @@ class TestGemPackageOld < Gem::TestCase
   end
 
   def test_extract_files
-    @package.extract_files @destination
+    @package.extract_files(@destination)
 
-    extracted = File.join @destination, 'lib/foo.rb'
-    assert_path_exists extracted
+    extracted = File.join(@destination, 'lib/foo.rb')
+    assert_path_exists(extracted)
 
     mask = 0100644 & (~File.umask)
 
-    assert_equal mask, File.stat(extracted).mode unless win_platform?
+    assert_equal(mask, File.stat(extracted).mode) unless win_platform?
   end
 
   def test_extract_files_security_policy
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip('openssl is missing') unless defined?(OpenSSL::SSL)
 
     @package.security_policy = Gem::Security::AlmostNoSecurity
 
     assert_raises Gem::Security::Exception do
-      @package.extract_files @destination
+      @package.extract_files(@destination)
     end
   end
 
   def test_spec
-    assert_equal 'testing', @package.spec.name
+    assert_equal('testing', @package.spec.name)
   end
 
   def test_spec_security_policy
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip('openssl is missing') unless defined?(OpenSSL::SSL)
 
     @package.security_policy = Gem::Security::AlmostNoSecurity
 
@@ -67,13 +67,13 @@ class TestGemPackageOld < Gem::TestCase
   end
 
   def test_verify
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip('openssl is missing') unless defined?(OpenSSL::SSL)
 
-    assert @package.verify
+    assert(@package.verify)
 
     @package.security_policy = Gem::Security::NoSecurity
 
-    assert @package.verify
+    assert(@package.verify)
 
     @package.security_policy = Gem::Security::AlmostNoSecurity
 
@@ -81,9 +81,9 @@ class TestGemPackageOld < Gem::TestCase
       @package.verify
     end
 
-    assert_equal 'old format gems do not contain signatures ' +
+    assert_equal('old format gems do not contain signatures ' +
                  'and cannot be verified',
-                 e.message
+                 e.message)
   end
 
 end

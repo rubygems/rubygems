@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-autoload :FileUtils, 'fileutils'
-autoload :URI, 'uri'
+autoload(:FileUtils, 'fileutils')
+autoload(:URI, 'uri')
 
 ##
 # A Source knows how to list and fetch gems from a RubyGems marshal index.
@@ -28,7 +28,7 @@ class Gem::Source
 
   def initialize(uri)
     begin
-      unless uri.kind_of? URI
+      unless uri.kind_of?(URI)
         uri = URI.parse(uri.to_s)
       end
     rescue URI::InvalidURIError
@@ -78,20 +78,20 @@ class Gem::Source
   # Returns a Set that can fetch specifications from this source.
 
   def dependency_resolver_set # :nodoc:
-    return Gem::Resolver::IndexSet.new self if 'file' == uri.scheme
+    return Gem::Resolver::IndexSet.new(self) if 'file' == uri.scheme
 
     bundler_api_uri = uri + './api/v1/dependencies'
 
     begin
       fetcher = Gem::RemoteFetcher.fetcher
-      response = fetcher.fetch_path bundler_api_uri, nil, true
+      response = fetcher.fetch_path(bundler_api_uri, nil, true)
     rescue Gem::RemoteFetcher::FetchError
-      Gem::Resolver::IndexSet.new self
+      Gem::Resolver::IndexSet.new(self)
     else
-      if response.respond_to? :uri
-        Gem::Resolver::APISet.new response.uri
+      if response.respond_to?(:uri)
+        Gem::Resolver::APISet.new(response.uri)
       else
-        Gem::Resolver::APISet.new bundler_api_uri
+        Gem::Resolver::APISet.new(bundler_api_uri)
       end
     end
   end
@@ -108,7 +108,7 @@ class Gem::Source
     escaped_path = uri.path.sub(/^\/([a-z]):\//i, '/\\1-/')
     escaped_path.untaint
 
-    File.join Gem.spec_cache_dir, "#{uri.host}%#{uri.port}", File.dirname(escaped_path)
+    File.join(Gem.spec_cache_dir, "#{uri.host}%#{uri.port}", File.dirname(escaped_path))
   end
 
   ##
@@ -133,31 +133,31 @@ class Gem::Source
 
     source_uri = uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
 
-    cache_dir = cache_dir source_uri
+    cache_dir = cache_dir(source_uri)
 
-    local_spec = File.join cache_dir, spec_file_name
+    local_spec = File.join(cache_dir, spec_file_name)
 
-    if File.exist? local_spec
-      spec = Gem.read_binary local_spec
+    if File.exist?(local_spec)
+      spec = Gem.read_binary(local_spec)
       spec = Marshal.load(spec) rescue nil
       return spec if spec
     end
 
     source_uri.path << '.rz'
 
-    spec = fetcher.fetch_path source_uri
-    spec = Gem::Util.inflate spec
+    spec = fetcher.fetch_path(source_uri)
+    spec = Gem::Util.inflate(spec)
 
     if update_cache?
-      FileUtils.mkdir_p cache_dir
+      FileUtils.mkdir_p(cache_dir)
 
-      File.open local_spec, 'wb' do |io|
-        io.write spec
+      File.open(local_spec, 'wb') do |io|
+        io.write(spec)
       end
     end
 
     # TODO: Investigate setting Gem::Specification#loaded_from to a URI
-    Marshal.load spec
+    Marshal.load(spec)
   end
 
   ##
@@ -176,23 +176,23 @@ class Gem::Source
     fetcher    = Gem::RemoteFetcher.fetcher
     file_name  = "#{file}.#{Gem.marshal_version}"
     spec_path  = uri + "#{file_name}.gz"
-    cache_dir  = cache_dir spec_path
+    cache_dir  = cache_dir(spec_path)
     local_file = File.join(cache_dir, file_name)
     retried    = false
 
-    FileUtils.mkdir_p cache_dir if update_cache?
+    FileUtils.mkdir_p(cache_dir) if update_cache?
 
-    spec_dump = fetcher.cache_update_path spec_path, local_file, update_cache?
+    spec_dump = fetcher.cache_update_path(spec_path, local_file, update_cache?)
 
     begin
-      Gem::NameTuple.from_list Marshal.load(spec_dump)
+      Gem::NameTuple.from_list(Marshal.load(spec_dump))
     rescue ArgumentError
       if update_cache? && !retried
-        FileUtils.rm local_file
+        FileUtils.rm(local_file)
         retried = true
         retry
       else
-        raise Gem::Exception.new("Invalid spec cache file in #{local_file}")
+        raise(Gem::Exception.new("Invalid spec cache file in #{local_file}"))
       end
     end
   end
@@ -203,27 +203,27 @@ class Gem::Source
 
   def download(spec, dir=Dir.pwd)
     fetcher = Gem::RemoteFetcher.fetcher
-    fetcher.download spec, uri.to_s, dir
+    fetcher.download(spec, uri.to_s, dir)
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[Remote:', ']' do
+    q.group(2, '[Remote:', ']') do
       q.breakable
-      q.text @uri.to_s
+      q.text(@uri.to_s)
 
       if api = uri
         q.breakable
-        q.text 'API URI: '
-        q.text api.to_s
+        q.text('API URI: ')
+        q.text(api.to_s)
       end
     end
   end
 
 end
 
-require 'rubygems/source/git'
-require 'rubygems/source/installed'
-require 'rubygems/source/specific_file'
-require 'rubygems/source/local'
-require 'rubygems/source/lock'
-require 'rubygems/source/vendor'
+require('rubygems/source/git')
+require('rubygems/source/installed')
+require('rubygems/source/specific_file')
+require('rubygems/source/local')
+require('rubygems/source/lock')
+require('rubygems/source/vendor')

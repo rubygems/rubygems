@@ -1,16 +1,16 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/version_option'
-require 'rubygems/rdoc'
-require 'fileutils'
+require('rubygems/command')
+require('rubygems/version_option')
+require('rubygems/rdoc')
+require('fileutils')
 
 class Gem::Commands::RdocCommand < Gem::Command
   include Gem::VersionOption
 
   def initialize
-    super 'rdoc', 'Generates RDoc for pre-installed gems',
+    super('rdoc', 'Generates RDoc for pre-installed gems',
           :version => Gem::Requirement.default,
-          :include_rdoc => false, :include_ri => true, :overwrite => false
+          :include_rdoc => false, :include_ri => true, :overwrite => false)
 
     add_option('--all',
                'Generate RDoc/RI documentation for all',
@@ -64,31 +64,31 @@ Use --overwrite to force rebuilding of documentation.
               Gem::Specification.to_a
             else
               get_all_gem_names.map do |name|
-                Gem::Specification.find_by_name name, options[:version]
+                Gem::Specification.find_by_name(name, options[:version])
               end.flatten.uniq
             end
 
     if specs.empty?
-      alert_error 'No matching gems found'
-      terminate_interaction 1
+      alert_error('No matching gems found')
+      terminate_interaction(1)
     end
 
     specs.each do |spec|
-      doc = Gem::RDoc.new spec, options[:include_rdoc], options[:include_ri]
+      doc = Gem::RDoc.new(spec, options[:include_rdoc], options[:include_ri])
 
       doc.force = options[:overwrite]
 
       if options[:overwrite]
-        FileUtils.rm_rf File.join(spec.doc_dir, 'ri')
-        FileUtils.rm_rf File.join(spec.doc_dir, 'rdoc')
+        FileUtils.rm_rf(File.join(spec.doc_dir, 'ri'))
+        FileUtils.rm_rf(File.join(spec.doc_dir, 'rdoc'))
       end
 
       begin
         doc.generate
       rescue Errno::ENOENT => e
         e.message =~ / - /
-        alert_error "Unable to document #{spec.full_name}, #{$'} is missing, skipping"
-        terminate_interaction 1 if specs.length == 1
+        alert_error("Unable to document #{spec.full_name}, #{$'} is missing, skipping")
+        terminate_interaction(1) if specs.length == 1
       end
     end
   end

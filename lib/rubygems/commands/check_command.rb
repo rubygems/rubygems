@@ -1,16 +1,16 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/version_option'
-require 'rubygems/validator'
-require 'rubygems/doctor'
+require('rubygems/command')
+require('rubygems/version_option')
+require('rubygems/validator')
+require('rubygems/doctor')
 
 class Gem::Commands::CheckCommand < Gem::Command
 
   include Gem::VersionOption
 
   def initialize
-    super 'check', 'Check a gem repository for added or missing files',
-          :alien => true, :doctor => false, :dry_run => false, :gems => true
+    super('check', 'Check a gem repository for added or missing files',
+          :alien => true, :doctor => false, :dry_run => false, :gems => true)
 
     add_option('-a', '--[no-]alien',
                'Report "unmanaged" or rogue files in the',
@@ -35,34 +35,34 @@ class Gem::Commands::CheckCommand < Gem::Command
       options[:gems] = value
     end
 
-    add_version_option 'check'
+    add_version_option('check')
   end
 
   def check_gems
-    say 'Checking gems...'
+    say('Checking gems...')
     say
     gems = get_all_gem_names rescue []
 
     Gem::Validator.new.alien(gems).sort.each do |key, val|
       unless val.empty?
-        say "#{key} has #{val.size} problems"
+        say("#{key} has #{val.size} problems")
         val.each do |error_entry|
           say "  #{error_entry.path}:"
           say "    #{error_entry.problem}"
         end
       else
-        say "#{key} is error-free" if Gem.configuration.verbose
+        say("#{key} is error-free") if Gem.configuration.verbose
       end
       say
     end
   end
 
   def doctor
-    say 'Checking for files from uninstalled gems...'
+    say('Checking for files from uninstalled gems...')
     say
 
     Gem.path.each do |gem_repo|
-      doctor = Gem::Doctor.new gem_repo, options[:dry_run]
+      doctor = Gem::Doctor.new(gem_repo, options[:dry_run])
       doctor.doctor
     end
   end

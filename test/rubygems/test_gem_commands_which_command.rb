@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/commands/which_command'
+require('rubygems/test_case')
+require('rubygems/commands/which_command')
 
 class TestGemCommandsWhichCommand < Gem::TestCase
 
@@ -13,18 +13,18 @@ class TestGemCommandsWhichCommand < Gem::TestCase
   def test_execute
     util_foo_bar
 
-    @cmd.handle_options %w[foo_bar]
+    @cmd.handle_options(%w[foo_bar])
 
     use_ui @ui do
       @cmd.execute
     end
 
-    assert_equal "#{@foo_bar.full_gem_path}/lib/foo_bar.rb\n", @ui.output
-    assert_equal '', @ui.error
+    assert_equal("#{@foo_bar.full_gem_path}/lib/foo_bar.rb\n", @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_directory
-    @cmd.handle_options %w[directory]
+    @cmd.handle_options(%w[directory])
 
     use_ui @ui do
       assert_raises Gem::MockGemUi::TermError do
@@ -32,9 +32,9 @@ class TestGemCommandsWhichCommand < Gem::TestCase
       end
     end
 
-    assert_equal '', @ui.output
-    assert_match %r%Can.t find Ruby library file or shared library directory\n%,
-                 @ui.error
+    assert_equal('', @ui.output)
+    assert_match(%r%Can.t find Ruby library file or shared library directory\n%,
+                 @ui.error)
   end
 
   def test_execute_one_missing
@@ -42,7 +42,7 @@ class TestGemCommandsWhichCommand < Gem::TestCase
 
     util_foo_bar
 
-    @cmd.handle_options %w[foo_bar missinglib]
+    @cmd.handle_options(%w[foo_bar missinglib])
 
     use_ui @ui do
       assert_raises Gem::MockGemUi::TermError do
@@ -50,13 +50,13 @@ class TestGemCommandsWhichCommand < Gem::TestCase
       end
     end
 
-    assert_equal "#{@foo_bar.full_gem_path}/lib/foo_bar.rb\n", @ui.output
-    assert_match %r%Can.t find Ruby library file or shared library missinglib\n%,
-                 @ui.error
+    assert_equal("#{@foo_bar.full_gem_path}/lib/foo_bar.rb\n", @ui.output)
+    assert_match(%r%Can.t find Ruby library file or shared library missinglib\n%,
+                 @ui.error)
   end
 
   def test_execute_missing
-    @cmd.handle_options %w[missinglib]
+    @cmd.handle_options(%w[missinglib])
 
     use_ui @ui do
       assert_raises Gem::MockGemUi::TermError do
@@ -64,9 +64,9 @@ class TestGemCommandsWhichCommand < Gem::TestCase
       end
     end
 
-    assert_equal '', @ui.output
-    assert_match %r%Can.t find Ruby library file or shared library missinglib\n%,
-                 @ui.error
+    assert_equal('', @ui.output)
+    assert_match(%r%Can.t find Ruby library file or shared library missinglib\n%,
+                 @ui.error)
   end
 
   def util_foo_bar
@@ -74,12 +74,12 @@ class TestGemCommandsWhichCommand < Gem::TestCase
     @foo_bar = util_spec 'foo_bar' do |gem|
       gem.files = files
     end
-    install_specs @foo_bar
+    install_specs(@foo_bar)
 
     files.each do |file|
       filename = File.join(@foo_bar.full_gem_path, file)
-      FileUtils.mkdir_p File.dirname filename
-      FileUtils.touch filename
+      FileUtils.mkdir_p(File.dirname(filename))
+      FileUtils.touch(filename)
     end
   end
 

@@ -20,8 +20,8 @@ class Gem::Package::Old < Gem::Package
   # cannot be written.
 
   def initialize(gem, security_policy)
-    require 'fileutils'
-    require 'zlib'
+    require('fileutils')
+    require('zlib')
     Gem.load_yaml
 
     @contents        = nil
@@ -40,7 +40,7 @@ class Gem::Package::Old < Gem::Package
 
     @gem.with_read_io do |io|
       read_until_dashes io # spec
-      header = file_list io
+      header = file_list(io)
 
       @contents = header.map { |file| file['path'] }
     end
@@ -56,13 +56,13 @@ class Gem::Package::Old < Gem::Package
 
     @gem.with_read_io do |io|
       read_until_dashes io # spec
-      header = file_list io
-      raise Gem::Exception, errstr unless header
+      header = file_list(io)
+      raise(Gem::Exception, errstr) unless header
 
       header.each do |entry|
         full_name = entry['path']
 
-        destination = install_location full_name, destination_dir
+        destination = install_location(full_name, destination_dir)
 
         file_data = String.new
 
@@ -71,24 +71,24 @@ class Gem::Package::Old < Gem::Package
         end
 
         file_data = file_data.strip.unpack("m")[0]
-        file_data = Zlib::Inflate.inflate file_data
+        file_data = Zlib::Inflate.inflate(file_data)
 
-        raise Gem::Package::FormatError, "#{full_name} in #{@gem} is corrupt" if
+        raise(Gem::Package::FormatError, "#{full_name} in #{@gem} is corrupt") if
           file_data.length != entry['size'].to_i
 
-        FileUtils.rm_rf destination
+        FileUtils.rm_rf(destination)
 
-        FileUtils.mkdir_p File.dirname(destination), :mode => dir_mode && 0700
+        FileUtils.mkdir_p(File.dirname(destination), :mode => dir_mode && 0700)
 
-        File.open destination, 'wb', file_mode(entry['mode']) do |out|
-          out.write file_data
+        File.open(destination, 'wb', file_mode(entry['mode'])) do |out|
+          out.write(file_data)
         end
 
         verbose destination
       end
     end
   rescue Zlib::DataError
-    raise Gem::Exception, errstr
+    raise(Gem::Exception, errstr)
   end
 
   ##
@@ -101,7 +101,7 @@ class Gem::Package::Old < Gem::Package
       header << line
     end
 
-    Gem::SafeYAML.safe_load header
+    Gem::SafeYAML.safe_load(header)
   end
 
   ##
@@ -109,7 +109,7 @@ class Gem::Package::Old < Gem::Package
 
   def read_until_dashes(io) # :nodoc:
     while (line = io.gets) && line.chomp.strip != "---" do
-      yield line if block_given?
+      yield(line) if block_given?
     end
   end
 
@@ -124,7 +124,7 @@ class Gem::Package::Old < Gem::Package
       break unless line
     end
 
-    raise Gem::Exception, "Failed to find end of Ruby script while reading gem"
+    raise(Gem::Exception, "Failed to find end of Ruby script while reading gem")
   end
 
   ##
@@ -145,12 +145,12 @@ class Gem::Package::Old < Gem::Package
     end
 
     begin
-      @spec = Gem::Specification.from_yaml yaml
+      @spec = Gem::Specification.from_yaml(yaml)
     rescue YAML::SyntaxError
-      raise Gem::Exception, "Failed to parse gem specification out of gem file"
+      raise(Gem::Exception, "Failed to parse gem specification out of gem file")
     end
   rescue ArgumentError
-    raise Gem::Exception, "Failed to parse gem specification out of gem file"
+    raise(Gem::Exception, "Failed to parse gem specification out of gem file")
   end
 
   ##
@@ -160,8 +160,8 @@ class Gem::Package::Old < Gem::Package
   def verify
     return true unless @security_policy
 
-    raise Gem::Security::Exception,
-          'old format gems do not contain signatures and cannot be verified' if
+    raise(Gem::Security::Exception,
+          'old format gems do not contain signatures and cannot be verified') if
       @security_policy.verify_data
 
     true

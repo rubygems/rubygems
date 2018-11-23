@@ -5,8 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'tsort'
-require 'rubygems/deprecate'
+require('tsort')
+require('rubygems/deprecate')
 
 ##
 # Gem::DependencyList is used for installing and uninstalling gems in the
@@ -50,7 +50,7 @@ class Gem::DependencyList
   # Adds +gemspecs+ to the dependency list.
 
   def add(*gemspecs)
-    @specs.concat gemspecs
+    @specs.concat(gemspecs)
   end
 
   def clear
@@ -120,10 +120,10 @@ class Gem::DependencyList
       spec.runtime_dependencies.each do |dep|
         inst = Gem::Specification.any? { |installed_spec|
           dep.name == installed_spec.name and
-            dep.requirement.satisfied_by? installed_spec.version
+            dep.requirement.satisfied_by?(installed_spec.version)
         }
 
-        unless inst or @specs.find { |s| s.satisfies_requirement? dep }
+        unless inst or @specs.find { |s| s.satisfies_requirement?(dep) }
           unsatisfied[spec.name] << dep
           return unsatisfied if quick
         end
@@ -140,7 +140,7 @@ class Gem::DependencyList
   # is NOT ok to remove the gemspec.
 
   def ok_to_remove?(full_name, check_dev=true)
-    gem_to_remove = find_name full_name
+    gem_to_remove = find_name(full_name)
 
     # If the state is inconsistent, at least don't crash
     return true unless gem_to_remove
@@ -162,7 +162,7 @@ class Gem::DependencyList
 
     deps.all? { |dep|
       siblings.any? { |s|
-        s.satisfies_requirement? dep
+        s.satisfies_requirement?(dep)
       }
     }
   end
@@ -175,7 +175,7 @@ class Gem::DependencyList
   def remove_specs_unsatisfied_by(dependencies)
     specs.reject! { |spec|
       dep = dependencies[spec.name]
-      dep and not dep.requirement.satisfied_by? spec.version
+      dep and not dep.requirement.satisfied_by?(spec.version)
     }
   end
 
@@ -200,7 +200,7 @@ class Gem::DependencyList
         next if spec == other
 
         other.dependencies.each do |dep|
-          if spec.satisfies_requirement? dep
+          if spec.satisfies_requirement?(dep)
             result[spec] << other
           end
         end
@@ -222,8 +222,8 @@ class Gem::DependencyList
 
     dependencies.each do |dep|
       specs.each do |spec|
-        if spec.satisfies_requirement? dep
-          yield spec
+        if spec.satisfies_requirement?(dep)
+          yield(spec)
           break
         end
       end

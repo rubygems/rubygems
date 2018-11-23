@@ -19,11 +19,11 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
 
     @set = set
     @name = api_data[:name]
-    @version = Gem::Version.new api_data[:number]
-    @platform = Gem::Platform.new api_data[:platform]
+    @version = Gem::Version.new(api_data[:number])
+    @platform = Gem::Platform.new(api_data[:platform])
     @original_platform = api_data[:platform]
     @dependencies = api_data[:dependencies].map do |name, ver|
-      Gem::Dependency.new name, ver.split(/\s*,\s*/)
+      Gem::Dependency.new(name, ver.split(/\s*,\s*/))
     end
   end
 
@@ -37,33 +37,33 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
   end
 
   def fetch_development_dependencies # :nodoc:
-    spec = source.fetch_spec Gem::NameTuple.new @name, @version, @platform
+    spec = source.fetch_spec(Gem::NameTuple.new(@name, @version, @platform))
 
     @dependencies = spec.dependencies
   end
 
   def installable_platform? # :nodoc:
-    Gem::Platform.match @platform
+    Gem::Platform.match(@platform)
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[APISpecification', ']' do
+    q.group(2, '[APISpecification', ']') do
       q.breakable
-      q.text "name: #{name}"
+      q.text("name: #{name}")
 
       q.breakable
-      q.text "version: #{version}"
+      q.text("version: #{version}")
 
       q.breakable
-      q.text "platform: #{platform}"
+      q.text("platform: #{platform}")
 
       q.breakable
-      q.text 'dependencies:'
+      q.text('dependencies:')
       q.breakable
-      q.pp @dependencies
+      q.pp(@dependencies)
 
       q.breakable
-      q.text "set uri: #{@set.dep_uri}"
+      q.text("set uri: #{@set.dep_uri}")
     end
   end
 
@@ -73,13 +73,13 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
   def spec # :nodoc:
     @spec ||=
       begin
-        tuple = Gem::NameTuple.new @name, @version, @platform
-        source.fetch_spec tuple
+        tuple = Gem::NameTuple.new(@name, @version, @platform)
+        source.fetch_spec(tuple)
       rescue Gem::RemoteFetcher::FetchError
         raise if @original_platform == @platform
 
-        tuple = Gem::NameTuple.new @name, @version, @original_platform
-        source.fetch_spec tuple
+        tuple = Gem::NameTuple.new(@name, @version, @original_platform)
+        source.fetch_spec(tuple)
       end
   end
 

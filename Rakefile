@@ -1,16 +1,16 @@
 # -*- ruby -*-
 
-require 'rubygems'
-require 'rubygems/package_task'
-require "rake/testtask"
+require('rubygems')
+require('rubygems/package_task')
+require("rake/testtask")
 
 begin
-  require 'psych'
+  require('psych')
 rescue ::LoadError
-  require 'yaml'
+  require('yaml')
 end
 
-desc "Setup Rubygems dev environment"
+desc("Setup Rubygems dev environment")
 task :setup => ["bundler:checkout"] do
   gemspec = Gem::Specification.load(File.expand_path("../rubygems-update.gemspec", __FILE__))
 
@@ -29,35 +29,35 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['test/**/test_*.rb']
 end
 
-task :default => :test
+task(:default => :test)
 
 spec = Gem::Specification.load('rubygems-update.gemspec')
 v = spec.version
 
-require 'rdoc/task'
+require('rdoc/task')
 
-RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
+RDoc::Task.new(:rdoc => 'docs', :clobber_rdoc => 'clobber_docs') do |doc|
   doc.main   = 'README.md'
   doc.title  = "RubyGems #{v} API Documentation"
 
-  rdoc_files = Rake::FileList.new %w[lib bundler/lib]
-  rdoc_files.add %w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.rdoc
+  rdoc_files = Rake::FileList.new(%w[lib bundler/lib])
+  rdoc_files.add(%w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.rdoc
   MAINTAINERS.txt Manifest.txt POLICIES.rdoc README.md UPGRADING.rdoc bundler/CHANGELOG.md
   bundler/CODE_OF_CONDUCT.md bundler/CONTRIBUTING.md bundler/LICENSE.md bundler/README.md
-  hide_lib_for_update/note.txt].map(&:freeze)
+  hide_lib_for_update/note.txt].map(&:freeze))
 
   doc.rdoc_files = rdoc_files
 
   doc.rdoc_dir = 'doc'
 end
 
-desc "Install gems needed to run the tests"
+desc("Install gems needed to run the tests")
 task :install_test_deps => :clean do
   sh "gem install minitest -v '~> 5.0'"
 end
 
 begin
-  require "automatiek"
+  require("automatiek")
 
   Automatiek::RakeTask.new("molinillo") do |lib|
     lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
@@ -71,7 +71,7 @@ rescue LoadError
   end
 end
 
-desc "Run rubocop"
+desc("Run rubocop")
 task(:rubocop) do
   sh "util/rubocop"
 end
@@ -79,28 +79,28 @@ end
 # --------------------------------------------------------------------
 # Creating a release
 
-task :prerelease => %w[clobber check_manifest test bundler:build_metadata]
+task(:prerelease => %w[clobber check_manifest test bundler:build_metadata])
 
-task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:publish]
+task(:postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:publish])
 
 Gem::PackageTask.new(spec) {}
 
-Rake::Task["package"].enhance ["pkg/rubygems-#{v}.tgz", "pkg/rubygems-#{v}.zip"]
+Rake::Task["package"].enhance(["pkg/rubygems-#{v}.tgz", "pkg/rubygems-#{v}.zip"])
 
 file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
   require 'find'
 
-  dest_root = File.expand_path t.name
+  dest_root = File.expand_path(t.name)
 
   cd t.source do
-    Find.find '.' do |file|
-      dest = File.expand_path file, dest_root
+    Find.find('.') do |file|
+      dest = File.expand_path(file, dest_root)
 
-      if File.directory? file
-        mkdir_p dest
+      if File.directory?(file)
+        mkdir_p(dest)
       else
-        rm_f dest
-        safe_ln file, dest
+        rm_f(dest)
+        safe_ln(file, dest)
       end
     end
   end
@@ -118,13 +118,13 @@ file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
   end
 end
 
-desc "Upload release to S3"
+desc("Upload release to S3")
 task :upload_to_s3 do
   sh "s3cmd put -P pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://oregon.production.s3.rubygems.org/rubygems/"
 end
 
-desc "Upload release to rubygems.org"
-task :upload => %w[upload_to_s3]
+desc("Upload release to rubygems.org")
+task(:upload => %w[upload_to_s3])
 
 directory '../guides.rubygems.org' do
   sh 'git', 'clone',
@@ -140,7 +140,7 @@ namespace 'guides' do
   end
 
   task 'update' => %w[../guides.rubygems.org] do
-    lib_dir = File.join Dir.pwd, 'lib'
+    lib_dir = File.join(Dir.pwd, 'lib')
 
     chdir '../guides.rubygems.org' do
       ruby '-I', lib_dir, '-S', 'rake', 'command_guide'
@@ -151,10 +151,10 @@ namespace 'guides' do
   task 'commit' => %w[../guides.rubygems.org] do
     chdir '../guides.rubygems.org' do
       begin
-        sh 'git', 'diff', '--quiet'
+        sh('git', 'diff', '--quiet')
       rescue
-        sh 'git', 'commit', 'command-reference.md', 'specification-reference.md',
-           '-m', "Rebuild for RubyGems #{v}"
+        sh('git', 'commit', 'command-reference.md', 'specification-reference.md',
+           '-m', "Rebuild for RubyGems #{v}")
       end
     end
   end
@@ -171,12 +171,12 @@ namespace 'guides' do
   on_master = `git branch --list master`.strip == '* master'
   on_master = true if ENV['FORCE']
 
-  task 'publish' => %w[
+  task('publish' => %w[
     guides:pull
     guides:update
     guides:commit
     guides:push
-  ] if on_master
+  ]) if on_master
 end
 
 directory '../blog.rubygems.org' do
@@ -186,7 +186,7 @@ directory '../blog.rubygems.org' do
 end
 
 namespace 'blog' do
-  date = Time.now.strftime '%Y-%m-%d'
+  date = Time.now.strftime('%Y-%m-%d')
   post_page = "_posts/#{date}-#{v}-released.md"
   checksums = ''
 
@@ -197,7 +197,7 @@ namespace 'blog' do
 
       open file, 'rb' do |io|
         while chunk = io.read(65536) do
-          digest.update chunk
+          digest.update(chunk)
         end
       end
 
@@ -212,7 +212,7 @@ namespace 'blog' do
     end
   end
 
-  path = File.join '../blog.rubygems.org', post_page
+  path = File.join('../blog.rubygems.org', post_page)
 
   task 'update' => [path]
 
@@ -220,11 +220,11 @@ namespace 'blog' do
     name  = `git config --get user.name`.strip
     email = `git config --get user.email`.strip
 
-    history = File.read 'History.txt'
+    history = File.read('History.txt')
 
-    history.force_encoding Encoding::UTF_8
+    history.force_encoding(Encoding::UTF_8)
 
-    _, change_log, = history.split %r%^===\s*\d.*%, 3
+    _, change_log, = history.split(%r%^===\s*\d.*%, 3)
 
     change_types = []
 
@@ -243,7 +243,7 @@ namespace 'blog' do
           entry << lines.shift.strip
         end
 
-        change_log << "#{entry.join ' '}\n"
+        change_log << "#{entry.join(' ')}\n"
       else
         change_log << line
       end
@@ -252,7 +252,7 @@ namespace 'blog' do
     change_log = change_log.join
 
     change_types = change_types.map do |change_type|
-      change_type.downcase.tr '^a-z ', ''
+      change_type.downcase.tr('^a-z ', '')
     end
 
     last_change_type = change_types.pop
@@ -267,8 +267,8 @@ namespace 'blog' do
 
     require 'tempfile'
 
-    Tempfile.open 'blog_post' do |io|
-      io.write <<-ANNOUNCEMENT
+    Tempfile.open('blog_post') do |io|
+      io.write(<<-ANNOUNCEMENT)
 ---
 title: #{v} Released
 layout: post
@@ -301,7 +301,7 @@ SHA256 Checksums:
 
       sh(ENV['EDITOR'] || 'vim', io.path)
 
-      FileUtils.cp io.path, path
+      FileUtils.cp(io.path, path)
     end
   end
 
@@ -330,12 +330,12 @@ end
 
 # Misc Tasks ---------------------------------------------------------
 
-desc "Cleanup trailing whitespace"
+desc("Cleanup trailing whitespace")
 task :whitespace do
   system 'find . -not \( -name .svn -prune -o -name .git -prune \) -type f -print0 | xargs -0 sed -i "" -E "s/[[:space:]]*$//"'
 end
 
-desc "Update the manifest to reflect what's on disk"
+desc("Update the manifest to reflect what's on disk")
 task :update_manifest do
   files = []
   require 'find'

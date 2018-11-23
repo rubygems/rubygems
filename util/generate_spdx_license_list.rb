@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'json'
-require 'net/http'
-require 'uri'
+require('json')
+require('net/http')
+require('uri')
 
 licenses_json = Net::HTTP.get(URI('https://spdx.org/licenses/licenses.json'))
 licenses = JSON.parse(licenses_json)['licenses'].map do |licenseObject|
@@ -13,7 +13,7 @@ exceptions = JSON.parse(exceptions_json)['exceptions'].map do |exceptionObject|
 end
 
 open 'lib/rubygems/util/licenses.rb', 'w' do |io|
-  io.write <<-RUBY
+  io.write(<<-RUBY)
 # frozen_string_literal: true
 require 'rubygems/text'
 
@@ -25,12 +25,12 @@ class Gem::Licenses
   # Software Package Data Exchange (SPDX) standard open-source software
   # license identifiers
   LICENSE_IDENTIFIERS = %w(
-      #{licenses.sort.join "\n      "}
+      #{licenses.sort.join("\n      ")}
   ).freeze
 
   # exception identifiers
   EXCEPTION_IDENTIFIERS = %w(
-      #{exceptions.sort.join "\n      "}
+      #{exceptions.sort.join("\n      ")}
   ).freeze
 
   REGEXP = %r{

@@ -5,8 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/util'
-require 'rubygems/deprecate'
+require('rubygems/util')
+require('rubygems/deprecate')
 
 ##
 # Module that defines the default UserInteraction.  Any class including this
@@ -96,7 +96,7 @@ module Gem::UserInteraction
   # Displays an alert +statement+.  Asks a +question+ if given.
 
   def alert(statement, question = nil)
-    ui.alert statement, question
+    ui.alert(statement, question)
   end
 
   ##
@@ -104,7 +104,7 @@ module Gem::UserInteraction
   # +question+ if given.
 
   def alert_error(statement, question = nil)
-    ui.alert_error statement, question
+    ui.alert_error(statement, question)
   end
 
   ##
@@ -112,49 +112,49 @@ module Gem::UserInteraction
   # +question+ if given.
 
   def alert_warning(statement, question = nil)
-    ui.alert_warning statement, question
+    ui.alert_warning(statement, question)
   end
 
   ##
   # Asks a +question+ and returns the answer.
 
   def ask(question)
-    ui.ask question
+    ui.ask(question)
   end
 
   ##
   # Asks for a password with a +prompt+
 
   def ask_for_password(prompt)
-    ui.ask_for_password prompt
+    ui.ask_for_password(prompt)
   end
 
   ##
   # Asks a yes or no +question+.  Returns true for yes, false for no.
 
   def ask_yes_no(question, default = nil)
-    ui.ask_yes_no question, default
+    ui.ask_yes_no(question, default)
   end
 
   ##
   # Asks the user to answer +question+ with an answer from the given +list+.
 
   def choose_from_list(question, list)
-    ui.choose_from_list question, list
+    ui.choose_from_list(question, list)
   end
 
   ##
   # Displays the given +statement+ on the standard output (or equivalent).
 
   def say(statement = '')
-    ui.say statement
+    ui.say(statement)
   end
 
   ##
   # Terminates the RubyGems process with the given +exit_code+
 
   def terminate_interaction(exit_code = 0)
-    ui.terminate_interaction exit_code
+    ui.terminate_interaction(exit_code)
   end
 
   ##
@@ -215,7 +215,7 @@ class Gem::StreamUI
   def backtrace(exception)
     return unless Gem.configuration.backtrace
 
-    @errs.puts "\t#{exception.backtrace.join "\n\t"}"
+    @errs.puts("\t#{exception.backtrace.join("\n\t")}")
   end
 
   ##
@@ -224,13 +224,13 @@ class Gem::StreamUI
   # [option_name, option_index].
 
   def choose_from_list(question, list)
-    @outs.puts question
+    @outs.puts(question)
 
     list.each_with_index do |item, index|
-      @outs.puts " #{index+1}. #{item}"
+      @outs.puts(" #{index+1}. #{item}")
     end
 
-    @outs.print "> "
+    @outs.print("> ")
     @outs.flush
 
     result = @ins.gets
@@ -249,8 +249,8 @@ class Gem::StreamUI
   def ask_yes_no(question, default=nil)
     unless tty?
       if default.nil?
-        raise Gem::OperationNotSupportedError,
-              "Not connected to a tty and no default specified"
+        raise(Gem::OperationNotSupportedError,
+              "Not connected to a tty and no default specified")
       else
         return default
       end
@@ -268,7 +268,7 @@ class Gem::StreamUI
     result = nil
 
     while result.nil? do
-      result = case ask "#{question} [#{default_answer}]"
+      result = case ask("#{question} [#{default_answer}]")
                when /^y/i then true
                when /^n/i then false
                when /^$/  then default
@@ -311,7 +311,7 @@ class Gem::StreamUI
   def require_io_console
     @require_io_console ||= begin
       begin
-        require 'io/console'
+        require('io/console')
       rescue LoadError
       end
       true
@@ -327,14 +327,14 @@ class Gem::StreamUI
   # Display a statement.
 
   def say(statement="")
-    @outs.puts statement
+    @outs.puts(statement)
   end
 
   ##
   # Display an informational alert.  Will ask +question+ if it is not nil.
 
   def alert(statement, question=nil)
-    @outs.puts "INFO:  #{statement}"
+    @outs.puts("INFO:  #{statement}")
     ask(question) if question
   end
 
@@ -342,7 +342,7 @@ class Gem::StreamUI
   # Display a warning on stderr.  Will ask +question+ if it is not nil.
 
   def alert_warning(statement, question=nil)
-    @errs.puts "WARNING:  #{statement}"
+    @errs.puts("WARNING:  #{statement}")
     ask(question) if question
   end
 
@@ -351,7 +351,7 @@ class Gem::StreamUI
   # Will ask +question+ if it is not nil.
 
   def alert_error(statement, question=nil)
-    @errs.puts "ERROR:  #{statement}"
+    @errs.puts("ERROR:  #{statement}")
     ask(question) if question
   end
 
@@ -359,7 +359,7 @@ class Gem::StreamUI
   # Display a debug message on the same location as error messages.
 
   def debug(statement)
-    @errs.puts statement
+    @errs.puts(statement)
   end
   deprecate :debug, :none, 2018, 12
 
@@ -369,7 +369,7 @@ class Gem::StreamUI
 
   def terminate_interaction(status = 0)
     close
-    raise Gem::SystemExitException, status
+    raise(Gem::SystemExitException, status)
   end
 
   def close
@@ -444,7 +444,7 @@ class Gem::StreamUI
       @count = 0
       @terminal_message = terminal_message
 
-      @out.puts initial_message
+      @out.puts(initial_message)
     end
 
     ##
@@ -452,7 +452,7 @@ class Gem::StreamUI
 
     def updated(message)
       @count += 1
-      @out.print "."
+      @out.print(".")
       @out.flush
     end
 
@@ -460,7 +460,7 @@ class Gem::StreamUI
     # Prints out the terminal message.
 
     def done
-      @out.puts "\n#{@terminal_message}"
+      @out.puts("\n#{@terminal_message}")
     end
 
   end
@@ -489,7 +489,7 @@ class Gem::StreamUI
       @count = 0
       @terminal_message = terminal_message
 
-      @out.puts initial_message
+      @out.puts(initial_message)
     end
 
     ##
@@ -497,14 +497,14 @@ class Gem::StreamUI
 
     def updated(message)
       @count += 1
-      @out.puts "#{@count}/#{@total}: #{message}"
+      @out.puts("#{@count}/#{@total}: #{message}")
     end
 
     ##
     # Prints out the terminal message.
 
     def done
-      @out.puts @terminal_message
+      @out.puts(@terminal_message)
     end
   end
 
@@ -579,7 +579,7 @@ class Gem::StreamUI
     def fetch(file_name, *args)
       if @file_name.nil?
         @file_name = file_name
-        locked_puts "Fetching #{@file_name}"
+        locked_puts("Fetching #{@file_name}")
       end
     end
 
@@ -600,7 +600,7 @@ class Gem::StreamUI
     private
     def locked_puts(message)
       MUTEX.synchronize do
-        @out.puts message
+        @out.puts(message)
       end
     end
   end
@@ -617,7 +617,7 @@ class Gem::ConsoleUI < Gem::StreamUI
   # stdin, output to stdout and warnings or errors to stderr.
 
   def initialize
-    super STDIN, STDOUT, STDERR, true
+    super(STDIN, STDOUT, STDERR, true)
   end
 end
 
@@ -635,7 +635,7 @@ class Gem::SilentUI < Gem::StreamUI
     reader = File.open(IO::NULL, 'r')
     writer = File.open(IO::NULL, 'w')
 
-    super reader, writer, writer, false
+    super(reader, writer, writer, false)
   end
 
   def close

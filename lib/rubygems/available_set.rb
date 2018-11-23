@@ -28,13 +28,13 @@ class Gem::AvailableSet
     when Array
       s = o.map do |sp,so|
         if !sp.kind_of?(Gem::Specification) or !so.kind_of?(Gem::Source)
-          raise TypeError, "Array must be in [[spec, source], ...] form"
+          raise(TypeError, "Array must be in [[spec, source], ...] form")
         end
 
         Tuple.new(sp,so)
       end
     else
-      raise TypeError, "must be a Gem::AvailableSet"
+      raise(TypeError, "must be a Gem::AvailableSet")
     end
 
     @set += s
@@ -47,7 +47,7 @@ class Gem::AvailableSet
   # Yields each Tuple in this AvailableSet
 
   def each
-    return enum_for __method__ unless block_given?
+    return enum_for(__method__) unless block_given?
 
     @set.each do |tuple|
       yield tuple
@@ -58,7 +58,7 @@ class Gem::AvailableSet
   # Yields the Gem::Specification for each Tuple in this AvailableSet
 
   def each_spec
-    return enum_for __method__ unless block_given?
+    return enum_for(__method__) unless block_given?
 
     each do |tuple|
       yield tuple.spec
@@ -110,8 +110,8 @@ class Gem::AvailableSet
     each_spec do |spec|
       request_set.always_install << spec
 
-      request_set.gem spec.name, spec.version
-      request_set.import spec.development_dependencies if
+      request_set.gem(spec.name, spec.version)
+      request_set.import(spec.development_dependencies) if
         :shallow == development
     end
 
@@ -127,7 +127,7 @@ class Gem::AvailableSet
     dep = req.dependency
 
     match = @set.find_all do |t|
-      dep.match? t.spec
+      dep.match?(t.spec)
     end
 
     match.map do |t|
@@ -151,7 +151,7 @@ class Gem::AvailableSet
       # already locally installed
       Gem::Specification.any? do |installed_spec|
         dep.name == installed_spec.name and
-          dep.requirement.satisfied_by? installed_spec.version
+          dep.requirement.satisfied_by?(installed_spec.version)
       end
     end
 
@@ -160,6 +160,6 @@ class Gem::AvailableSet
   end
 
   def inject_into_list(dep_list)
-    @set.each { |t| dep_list.add t.spec }
+    @set.each { |t| dep_list.add(t.spec) }
   end
 end

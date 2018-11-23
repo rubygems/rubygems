@@ -51,9 +51,9 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
   # always_install list.
 
   def add_always_install(dependency)
-    request = Gem::Resolver::DependencyRequest.new dependency, nil
+    request = Gem::Resolver::DependencyRequest.new(dependency, nil)
 
-    found = find_all request
+    found = find_all(request)
 
     found.delete_if { |s|
       s.version.prerelease? and not s.local?
@@ -66,10 +66,10 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     end
 
     if found.empty?
-      exc = Gem::UnsatisfiableDependencyError.new request
+      exc = Gem::UnsatisfiableDependencyError.new(request)
       exc.errors = errors
 
-      raise exc
+      raise(exc)
     end
 
     newest = found.max_by do |s|
@@ -118,7 +118,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     dep  = req.dependency
 
     return res if @ignore_dependencies and
-              @always_install.none? { |spec| dep.match? spec }
+              @always_install.none? { |spec| dep.match?(spec) }
 
     name = dep.name
 
@@ -130,12 +130,12 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
 
     if consider_local?
       matching_local = @local.values.select do |spec, _|
-        req.match? spec
+        req.match?(spec)
       end.map do |spec, source|
-        Gem::Resolver::LocalSpecification.new self, spec, source
+        Gem::Resolver::LocalSpecification.new(self, spec, source)
       end
 
-      res.concat matching_local
+      res.concat(matching_local)
 
       begin
         if local_spec = @local_source.find_gem(name, dep.requirement)
@@ -152,7 +152,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       spec.version.prerelease? and not dep.prerelease?
     end
 
-    res.concat @remote_set.find_all req if consider_remote?
+    res.concat(@remote_set.find_all(req)) if consider_remote?
 
     res
   end
@@ -182,10 +182,10 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
   def load_spec(name, ver, platform, source) # :nodoc:
     key = "#{name}-#{ver}-#{platform}"
 
-    @specs.fetch key do
-      tuple = Gem::NameTuple.new name, ver, platform
+    @specs.fetch(key) do
+      tuple = Gem::NameTuple.new(name, ver, platform)
 
-      @specs[key] = source.fetch_spec tuple
+      @specs[key] = source.fetch_spec(tuple)
     end
   end
 
@@ -199,17 +199,17 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[InstallerSet', ']' do
+    q.group(2, '[InstallerSet', ']') do
       q.breakable
-      q.text "domain: #{@domain}"
+      q.text("domain: #{@domain}")
 
       q.breakable
-      q.text 'specs: '
-      q.pp @specs.keys
+      q.text('specs: ')
+      q.pp(@specs.keys)
 
       q.breakable
-      q.text 'always install: '
-      q.pp @always_install
+      q.text('always install: ')
+      q.pp(@always_install)
     end
   end
 

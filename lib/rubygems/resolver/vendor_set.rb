@@ -33,14 +33,14 @@ class Gem::Resolver::VendorSet < Gem::Resolver::Set
   # unpacked into the given +directory+.
 
   def add_vendor_gem(name, directory) # :nodoc:
-    gemspec = File.join directory, "#{name}.gemspec"
+    gemspec = File.join(directory, "#{name}.gemspec")
 
-    spec = Gem::Specification.load gemspec
+    spec = Gem::Specification.load(gemspec)
 
-    raise Gem::GemNotFoundException,
-          "unable to find #{gemspec} for gem #{name}" unless spec
+    raise(Gem::GemNotFoundException,
+          "unable to find #{gemspec} for gem #{name}") unless spec
 
-    spec.full_gem_path = File.expand_path directory
+    spec.full_gem_path = File.expand_path(directory)
 
     @specs[spec.name]  = spec
     @directories[spec] = directory
@@ -54,10 +54,10 @@ class Gem::Resolver::VendorSet < Gem::Resolver::Set
 
   def find_all(req)
     @specs.values.select do |spec|
-      req.match? spec
+      req.match?(spec)
     end.map do |spec|
-      source = Gem::Source::Vendor.new @directories[spec]
-      Gem::Resolver::VendorSpecification.new self, spec, source
+      source = Gem::Source::Vendor.new(@directories[spec])
+      Gem::Resolver::VendorSpecification.new(self, spec, source)
     end
   end
 
@@ -66,11 +66,11 @@ class Gem::Resolver::VendorSet < Gem::Resolver::Set
   # ignored.
 
   def load_spec(name, version, platform, source) # :nodoc:
-    @specs.fetch name
+    @specs.fetch(name)
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[VendorSet', ']' do
+    q.group(2, '[VendorSet', ']') do
       next if @directories.empty?
       q.breakable
 
@@ -78,8 +78,8 @@ class Gem::Resolver::VendorSet < Gem::Resolver::Set
         "#{spec.full_name}: #{directory}"
       end
 
-      q.seplist dirs do |dir|
-        q.text dir
+      q.seplist(dirs) do |dir|
+        q.text(dir)
       end
     end
   end

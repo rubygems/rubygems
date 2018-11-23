@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/indexer'
+require('rubygems/command')
+require('rubygems/indexer')
 
 ##
 # Generates a index files for use as a gem server.
@@ -10,13 +10,13 @@ require 'rubygems/indexer'
 class Gem::Commands::GenerateIndexCommand < Gem::Command
 
   def initialize
-    super 'generate_index',
+    super('generate_index',
           'Generates the index files for a gem server directory',
-          :directory => '.', :build_modern => true
+          :directory => '.', :build_modern => true)
 
     add_option '-d', '--directory=DIRNAME',
                'repository base dir containing gems subdir' do |dir, options|
-      options[:directory] = File.expand_path dir
+      options[:directory] = File.expand_path(dir)
     end
 
     add_option '--[no-]modern',
@@ -68,10 +68,10 @@ Marshal::MINOR_VERSION constants.  It is used to ensure compatibility.
 
     if not File.exist?(options[:directory]) or
        not File.directory?(options[:directory])
-      alert_error "unknown directory name #{options[:directory]}."
-      terminate_interaction 1
+      alert_error("unknown directory name #{options[:directory]}.")
+      terminate_interaction(1)
     else
-      indexer = Gem::Indexer.new options.delete(:directory), options
+      indexer = Gem::Indexer.new(options.delete(:directory), options)
 
       if options[:update]
         indexer.update_index

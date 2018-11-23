@@ -5,8 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/package'
-require 'rubygems/installer'
+require('rubygems/package')
+require('rubygems/installer')
 
 ##
 # Validator performs various gem file and gem database validation
@@ -16,7 +16,7 @@ class Gem::Validator
   include Gem::UserInteraction
 
   def initialize # :nodoc:
-    require 'find'
+    require('find')
   end
 
   ##
@@ -34,12 +34,12 @@ class Gem::Validator
   # gem_path:: [String] Path to gem file
 
   def verify_gem_file(gem_path)
-    File.open gem_path, Gem.binary_mode do |file|
+    File.open(gem_path, Gem.binary_mode) do |file|
       gem_data = file.read
       verify_gem gem_data
     end
   rescue Errno::ENOENT, Errno::EINVAL
-    raise Gem::VerificationError, "missing gem file #{gem_path}"
+    raise(Gem::VerificationError, "missing gem file #{gem_path}")
   end
 
   private
@@ -47,7 +47,7 @@ class Gem::Validator
   def find_files_for_gem(gem_directory)
     installed_files = []
 
-    Find.find gem_directory do |file_name|
+    Find.find(gem_directory) do |file_name|
       fn = file_name[gem_directory.size..file_name.size-1].sub(/^\//, "")
       installed_files << fn unless
         fn =~ /CVS/ || fn.empty? || File.directory?(file_name)
@@ -61,7 +61,7 @@ class Gem::Validator
   ##
   # Describes a problem with a file in a gem.
 
-  ErrorData = Struct.new :path, :problem do
+  ErrorData = Struct.new(:path, :problem) do
     def <=>(other) # :nodoc:
       return nil unless self.class === other
 
@@ -86,7 +86,7 @@ class Gem::Validator
     errors = Hash.new { |h,k| h[k] = {} }
 
     Gem::Specification.each do |spec|
-      next unless gems.include? spec.name unless gems.empty?
+      next unless gems.include?(spec.name) unless gems.empty?
       next if spec.default_gem?
 
       gem_name      = spec.file_name
@@ -94,13 +94,13 @@ class Gem::Validator
       spec_path     = spec.spec_file
       gem_directory = spec.full_gem_path
 
-      unless File.directory? gem_directory
+      unless File.directory?(gem_directory)
         errors[gem_name][spec.full_name] =
           "Gem registered but doesn't exist at #{gem_directory}"
         next
       end
 
-      unless File.exist? spec_path
+      unless File.exist?(spec_path)
         errors[gem_name][spec_path] = "Spec file missing for installed gem"
       end
 
@@ -109,11 +109,11 @@ class Gem::Validator
 
         good, gone, unreadable = nil, nil, nil, nil
 
-        File.open gem_path, Gem.binary_mode do |file|
-          package = Gem::Package.new gem_path
+        File.open(gem_path, Gem.binary_mode) do |file|
+          package = Gem::Package.new(gem_path)
 
           good, gone = package.contents.partition { |file_name|
-            File.exist? File.join(gem_directory, file_name)
+            File.exist?(File.join(gem_directory, file_name))
           }
 
           gone.sort.each do |path|
@@ -121,7 +121,7 @@ class Gem::Validator
           end
 
           good, unreadable = good.partition { |file_name|
-            File.readable? File.join(gem_directory, file_name)
+            File.readable?(File.join(gem_directory, file_name))
           }
 
           unreadable.sort.each do |path|
@@ -132,9 +132,9 @@ class Gem::Validator
             begin
               next unless data # HACK `gem check -a mkrf`
 
-              source = File.join gem_directory, entry['path']
+              source = File.join(gem_directory, entry['path'])
 
-              File.open source, Gem.binary_mode do |f|
+              File.open(source, Gem.binary_mode) do |f|
                 unless f.read == data
                   errors[gem_name][entry['path']] = "Modified from original"
                 end
@@ -156,7 +156,7 @@ class Gem::Validator
 
     errors.each do |name, subhash|
       errors[name] = subhash.map do |path, msg|
-        ErrorData.new path, msg
+        ErrorData.new(path, msg)
       end.sort
     end
 

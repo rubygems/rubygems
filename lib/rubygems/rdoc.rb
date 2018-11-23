@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems'
+require('rubygems')
 
 begin
-  gem 'rdoc'
+  gem('rdoc')
 rescue Gem::LoadError
   # swallow
 else
@@ -14,7 +14,7 @@ else
 end
 
 begin
-  require 'rdoc/rubygems_hook'
+  require('rdoc/rubygems_hook')
   module Gem
     RDoc = ::RDoc::RubygemsHook
   end

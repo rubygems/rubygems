@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/local_remote_options'
-require 'rubygems/version_option'
-require 'rubygems/package'
+require('rubygems/command')
+require('rubygems/local_remote_options')
+require('rubygems/version_option')
+require('rubygems/package')
 
 class Gem::Commands::SpecificationCommand < Gem::Command
 
@@ -12,9 +12,9 @@ class Gem::Commands::SpecificationCommand < Gem::Command
   def initialize
     Gem.load_yaml
 
-    super 'specification', 'Display gem specification (in yaml)',
+    super('specification', 'Display gem specification (in yaml)',
           :domain => :local, :version => Gem::Requirement.default,
-          :format => :yaml
+          :format => :yaml)
 
     add_version_option('examine')
     add_platform_option
@@ -76,37 +76,37 @@ Specific fields in the specification can be extracted in YAML format:
     gem = options[:args].shift
 
     unless gem
-      raise Gem::CommandLineError,
-            "Please specify a gem name or file on the command line"
+      raise(Gem::CommandLineError,
+            "Please specify a gem name or file on the command line")
     end
 
     case v = options[:version]
     when String
-      req = Gem::Requirement.create v
+      req = Gem::Requirement.create(v)
     when Gem::Requirement
       req = v
     else
-      raise Gem::CommandLineError, "Unsupported version type: '#{v}'"
+      raise(Gem::CommandLineError, "Unsupported version type: '#{v}'")
     end
 
     if !req.none? and options[:all]
-      alert_error "Specify --all or -v, not both"
-      terminate_interaction 1
+      alert_error("Specify --all or -v, not both")
+      terminate_interaction(1)
     end
 
     if options[:all]
-      dep = Gem::Dependency.new gem
+      dep = Gem::Dependency.new(gem)
     else
-      dep = Gem::Dependency.new gem, req
+      dep = Gem::Dependency.new(gem, req)
     end
 
     field = get_one_optional_argument
 
-    raise Gem::CommandLineError, "--ruby and FIELD are mutually exclusive" if
+    raise(Gem::CommandLineError, "--ruby and FIELD are mutually exclusive") if
       field and options[:format] == :ruby
 
     if local?
-      if File.exist? gem
+      if File.exist?(gem)
         specs << Gem::Package.new(gem).spec rescue nil
       end
 
@@ -117,14 +117,14 @@ Specific fields in the specification can be extracted in YAML format:
 
     if remote?
       dep.prerelease = options[:prerelease]
-      found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+      found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency(dep)
 
       specs.push(*found.map { |spec,| spec })
     end
 
     if specs.empty?
-      alert_error "No gem matching '#{dep}' found"
-      terminate_interaction 1
+      alert_error("No gem matching '#{dep}' found")
+      terminate_interaction(1)
     end
 
     unless options[:all]
@@ -132,11 +132,11 @@ Specific fields in the specification can be extracted in YAML format:
     end
 
     specs.each do |s|
-      s = s.send field if field
+      s = s.send(field) if field
 
       say case options[:format]
           when :ruby then s.to_ruby
-          when :marshal then Marshal.dump s
+          when :marshal then Marshal.dump(s)
           else s.to_yaml
           end
 

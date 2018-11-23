@@ -18,10 +18,10 @@ class Gem::Package::IOSource < Gem::Package::Source # :nodoc: all
   def start
     @start ||= begin
       if io.pos > 0
-        raise Gem::Package::Error, "Cannot read start unless IO is at start"
+        raise(Gem::Package::Error, "Cannot read start unless IO is at start")
       end
 
-      value = io.read 20
+      value = io.read(20)
       io.rewind
       value
     end
@@ -32,11 +32,11 @@ class Gem::Package::IOSource < Gem::Package::Source # :nodoc: all
   end
 
   def with_read_io
-    yield io
+    yield(io)
   end
 
   def with_write_io
-    yield io
+    yield(io)
   end
 
   def path

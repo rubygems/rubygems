@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/indexer'
-require 'rubygems/commands/generate_index_command'
+require('rubygems/test_case')
+require('rubygems/indexer')
+require('rubygems/commands/generate_index_command')
 
 class TestGemCommandsGenerateIndexCommand < Gem::TestCase
 
@@ -17,34 +17,34 @@ class TestGemCommandsGenerateIndexCommand < Gem::TestCase
       @cmd.execute
     end
 
-    specs = File.join @gemhome, "specs.4.8.gz"
+    specs = File.join(@gemhome, "specs.4.8.gz")
 
-    assert File.exist?(specs), specs
+    assert(File.exist?(specs), specs)
   end
 
   def test_handle_options_directory
     return if win_platform?
-    refute_equal '/nonexistent', @cmd.options[:directory]
+    refute_equal('/nonexistent', @cmd.options[:directory])
 
-    @cmd.handle_options %w[--directory /nonexistent]
+    @cmd.handle_options(%w[--directory /nonexistent])
 
-    assert_equal '/nonexistent', @cmd.options[:directory]
+    assert_equal('/nonexistent', @cmd.options[:directory])
   end
 
   def test_handle_options_directory_windows
     return unless win_platform?
 
-    refute_equal '/nonexistent', @cmd.options[:directory]
+    refute_equal('/nonexistent', @cmd.options[:directory])
 
-    @cmd.handle_options %w[--directory C:/nonexistent]
+    @cmd.handle_options(%w[--directory C:/nonexistent])
 
-    assert_equal 'C:/nonexistent', @cmd.options[:directory]
+    assert_equal('C:/nonexistent', @cmd.options[:directory])
   end
 
   def test_handle_options_update
-    @cmd.handle_options %w[--update]
+    @cmd.handle_options(%w[--update])
 
-    assert @cmd.options[:update]
+    assert(@cmd.options[:update])
   end
 
-end if ''.respond_to? :to_xs
+end if ''.respond_to?(:to_xs)

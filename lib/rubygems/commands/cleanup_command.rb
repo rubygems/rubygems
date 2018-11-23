@@ -1,15 +1,15 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/dependency_list'
-require 'rubygems/uninstaller'
+require('rubygems/command')
+require('rubygems/dependency_list')
+require('rubygems/uninstaller')
 
 class Gem::Commands::CleanupCommand < Gem::Command
 
   def initialize
-    super 'cleanup',
+    super('cleanup',
           'Clean up old versions of installed gems',
           :force => false, :install_dir => Gem.dir,
-          :check_dev => true
+          :check_dev => true)
 
     add_option('-n', '-d', '--dryrun',
                'Do not uninstall gems') do |value, options|
@@ -60,7 +60,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
   end
 
   def execute
-    say "Cleaning up installed gems..."
+    say("Cleaning up installed gems...")
 
     if options[:args].empty?
       done     = false
@@ -79,12 +79,12 @@ If no gems are named all gems in GEM_HOME are cleaned.
       clean_gems
     end
 
-    say "Clean up complete"
+    say("Clean up complete")
 
     verbose do
       skipped = @default_gems.map { |spec| spec.full_name }
 
-      "Skipped default gems: #{skipped.join ', '}"
+      "Skipped default gems: #{skipped.join(', ')}"
     end
   end
 
@@ -99,7 +99,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
     @full = Gem::DependencyList.from_specs
 
     deplist = Gem::DependencyList.new
-    @gems_to_cleanup.each do |spec| deplist.add spec end
+    @gems_to_cleanup.each do |spec| deplist.add(spec) end
 
     deps = deplist.strongly_connected_components.flatten
 
@@ -113,7 +113,7 @@ If no gems are named all gems in GEM_HOME are cleaned.
   def get_candidate_gems
     @candidate_gems = unless options[:args].empty?
                         options[:args].map do |gem_name|
-                          Gem::Specification.find_all_by_name gem_name
+                          Gem::Specification.find_all_by_name(gem_name)
                         end.flatten
                       else
                         Gem::Specification.to_a
@@ -155,11 +155,11 @@ If no gems are named all gems in GEM_HOME are cleaned.
     return unless @full.ok_to_remove?(spec.full_name, options[:check_dev])
 
     if options[:dryrun]
-      say "Dry Run Mode: Would uninstall #{spec.full_name}"
+      say("Dry Run Mode: Would uninstall #{spec.full_name}")
       return
     end
 
-    say "Attempting to uninstall #{spec.full_name}"
+    say("Attempting to uninstall #{spec.full_name}")
 
     uninstall_options = {
       :executables => false,
@@ -168,18 +168,18 @@ If no gems are named all gems in GEM_HOME are cleaned.
 
     uninstall_options[:user_install] = Gem.user_dir == spec.base_dir
 
-    uninstaller = Gem::Uninstaller.new spec.name, uninstall_options
+    uninstaller = Gem::Uninstaller.new(spec.name, uninstall_options)
 
     begin
       uninstaller.uninstall
     rescue Gem::DependencyRemovalException, Gem::InstallError,
            Gem::GemNotInHomeException, Gem::FilePermissionError => e
-      say "Unable to uninstall #{spec.full_name}:"
-      say "\t#{e.class}: #{e.message}"
+      say("Unable to uninstall #{spec.full_name}:")
+      say("\t#{e.class}: #{e.message}")
     end
   ensure
     # Restore path Gem::Uninstaller may have changed
-    Gem.use_paths @original_home, *@original_path
+    Gem.use_paths(@original_home, *@original_path)
   end
 
 end

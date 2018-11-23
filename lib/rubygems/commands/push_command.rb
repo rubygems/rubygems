@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/local_remote_options'
-require 'rubygems/gemcutter_utilities'
-require 'rubygems/package'
+require('rubygems/command')
+require('rubygems/local_remote_options')
+require('rubygems/gemcutter_utilities')
+require('rubygems/package')
 
 class Gem::Commands::PushCommand < Gem::Command
   include Gem::LocalRemoteOptions
@@ -27,7 +27,7 @@ command.  For further discussion see the help for the yank command.
   end
 
   def initialize
-    super 'push', 'Push a gem up to the gem server', :host => self.host
+    super('push', 'Push a gem up to the gem server', :host => self.host)
 
     @user_defined_host = false
 
@@ -67,7 +67,7 @@ command.  For further discussion see the help for the yank command.
               default_host
             end
 
-    sign_in @host
+    sign_in(@host)
 
     send_gem(gem_name)
   end
@@ -80,7 +80,7 @@ command.  For further discussion see the help for the yank command.
     if latest_rubygems_version < Gem.rubygems_version and
          Gem.rubygems_version.prerelease? and
          Gem::Version.new('2.0.0.rc.2') != Gem.rubygems_version
-      alert_error <<-ERROR
+      alert_error(<<-ERROR)
 You are using a beta release of RubyGems (#{Gem::VERSION}) which is not
 allowed to push gems.  Please downgrade or upgrade to a release version.
 
@@ -91,7 +91,7 @@ You can upgrade or downgrade to the latest release version with:
   gem update --system=#{latest_rubygems_version}
 
       ERROR
-      terminate_interaction 1
+      terminate_interaction(1)
     end
 
     gem_data = Gem::Package.new(name)
@@ -111,16 +111,16 @@ You can upgrade or downgrade to the latest release version with:
     # Always include @host, even if it's nil
     args += [ @host, push_host ]
 
-    say "Pushing gem to #{@host || Gem.host}..."
+    say("Pushing gem to #{@host || Gem.host}...")
 
     response = rubygems_api_request(*args) do |request|
-      request.body = Gem.read_binary name
-      request.add_field "Content-Length", request.body.size
-      request.add_field "Content-Type",   "application/octet-stream"
-      request.add_field "Authorization",  api_key
+      request.body = Gem.read_binary(name)
+      request.add_field("Content-Length", request.body.size)
+      request.add_field("Content-Type",   "application/octet-stream")
+      request.add_field("Authorization",  api_key)
     end
 
-    with_response response
+    with_response(response)
   end
 
   private

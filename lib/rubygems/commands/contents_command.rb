@@ -1,16 +1,16 @@
 # frozen_string_literal: true
-require 'English'
-require 'rubygems/command'
-require 'rubygems/version_option'
+require('English')
+require('rubygems/command')
+require('rubygems/version_option')
 
 class Gem::Commands::ContentsCommand < Gem::Command
 
   include Gem::VersionOption
 
   def initialize
-    super 'contents', 'Display the contents of the installed gems',
+    super('contents', 'Display the contents of the installed gems',
           :specdirs => [], :lib_only => false, :prefix => true,
-          :show_install_dir => false
+          :show_install_dir => false)
 
     add_version_option
 
@@ -67,33 +67,33 @@ prefix or only the files that are requireable.
   def execute
     @version   = options[:version] || Gem::Requirement.default
     @spec_dirs = specification_directories
-    @path_kind = path_description @spec_dirs
+    @path_kind = path_description(@spec_dirs)
 
     names = gem_names
 
     names.each do |name|
       found =
         if options[:show_install_dir]
-          gem_install_dir name
+          gem_install_dir(name)
         else
-          gem_contents name
+          gem_contents(name)
         end
 
-      terminate_interaction 1 unless found or names.length > 1
+      terminate_interaction(1) unless found or names.length > 1
     end
   end
 
   def files_in(spec)
     if spec.default_gem?
-      files_in_default_gem spec
+      files_in_default_gem(spec)
     else
-      files_in_gem spec
+      files_in_gem(spec)
     end
   end
 
   def files_in_gem(spec)
     gem_path  = spec.full_gem_path
-    extra     = "/{#{spec.require_paths.join ','}}" if options[:lib_only]
+    extra     = "/{#{spec.require_paths.join(',')}}" if options[:lib_only]
     glob      = "#{gem_path}#{extra}/**/*"
     prefix_re = /#{Regexp.escape(gem_path)}\//
 
@@ -116,23 +116,23 @@ prefix or only the files that are requireable.
   end
 
   def gem_contents(name)
-    spec = spec_for name
+    spec = spec_for(name)
 
     return false unless spec
 
-    files = files_in spec
+    files = files_in(spec)
 
-    show_files files
+    show_files(files)
 
     true
   end
 
   def gem_install_dir(name)
-    spec = spec_for name
+    spec = spec_for(name)
 
     return false unless spec
 
-    say spec.gem_dir
+    say(spec.gem_dir)
 
     true
   end
@@ -156,12 +156,12 @@ prefix or only the files that are requireable.
   def show_files(files)
     files.sort.each do |prefix, basename|
       absolute_path = File.join(prefix, basename)
-      next if File.directory? absolute_path
+      next if File.directory?(absolute_path)
 
       if options[:prefix]
-        say absolute_path
+        say(absolute_path)
       else
-        say basename
+        say(basename)
       end
     end
   end
@@ -171,10 +171,10 @@ prefix or only the files that are requireable.
 
     return spec if spec
 
-    say "Unable to find gem '#{name}' in #{@path_kind}"
+    say("Unable to find gem '#{name}' in #{@path_kind}")
 
     if Gem.configuration.verbose
-      say "\nDirectories searched:"
+      say("\nDirectories searched:")
       @spec_dirs.sort.each { |dir| say dir }
     end
 

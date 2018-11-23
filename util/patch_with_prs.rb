@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-$:.unshift File.expand_path("../../lib", __FILE__)
-require "rubygems"
-require "optparse"
+$:.unshift(File.expand_path("../../lib", __FILE__))
+require("rubygems")
+require("optparse")
 
 def confirm(prompt = "")
   loop do
@@ -16,7 +16,7 @@ end
 
 def sh(*cmd)
   return if system(*cmd)
-  raise "#{cmd} failed"
+  raise("#{cmd} failed")
 end
 
 version = nil
@@ -43,7 +43,7 @@ version ||= begin
   segments.join(".")
 end
 
-confirm "You are about to release #{version}, currently #{Gem::VERSION}"
+confirm("You are about to release #{version}, currently #{Gem::VERSION}")
 
 branch = version.split(".", 3)[0, 2].join(".")
 sh("git", "checkout", branch)
@@ -61,11 +61,11 @@ sh(Gem.ruby, File.expand_path("../update_changelog.rb", __FILE__))
 version_file = "lib/rubygems.rb"
 version_contents = File.read(version_file)
 unless version_contents.sub!(/^(\s*VERSION = )(["'])#{Gem::Version::VERSION_PATTERN}\2/, "\\1#{version.to_s.dump}")
-  abort "failed to update #{version_file}, is it in the expected format?"
+  abort("failed to update #{version_file}, is it in the expected format?")
 end
 File.open(version_file, "w") {|f| f.write(version_contents) }
 
-confirm "Update changelog"
+confirm("Update changelog")
 sh("git", "commit", "-am", "Version #{version} with changelog")
 sh("rake", "release", "VERSION=#{version}")
 sh("git", "push")

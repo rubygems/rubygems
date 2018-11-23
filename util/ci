@@ -27,7 +27,7 @@ TOOL = Tool.new(ENV.fetch("TEST_TOOL") { abort "must specify a TEST_TOOL" })
 def run(command, args = [])
   Dir.chdir(TOOL.dir) do
     unless system(command, *args)
-      abort "running `#{command} #{args.join(" ")}` failed"
+      abort("running `#{command} #{args.join(" ")}` failed")
     end
   end
 end
@@ -37,7 +37,7 @@ def with_retries(attempts = 3)
 rescue StandardError, SystemExit => e
   attempts -= 1
   if attempts > 0
-    warn "Command failed (#{e}). Retrying #{attempts -= 1} more times."
+    warn("Command failed (#{e}). Retrying #{attempts -= 1} more times.")
     retry
   else
     raise
@@ -73,5 +73,5 @@ when %w(script)
     run('rake', %w(spec:travis -t))
   end
 else
-  abort "unknown args #{ARGV.inspect}"
+  abort("unknown args #{ARGV.inspect}")
 end

@@ -32,9 +32,9 @@ class Gem::Package::DigestIO
   #   digests['SHA512'].hexdigest #=> "9b71d224[...]"
 
   def self.wrap(io, digests)
-    digest_io = new io, digests
+    digest_io = new(io, digests)
 
-    yield digest_io
+    yield(digest_io)
 
     return digests
   end
@@ -52,7 +52,7 @@ class Gem::Package::DigestIO
   # Writes +data+ to the underlying IO and updates the digests
 
   def write(data)
-    result = @io.write data
+    result = @io.write(data)
 
     @digests.each do |_, digest|
       digest << data

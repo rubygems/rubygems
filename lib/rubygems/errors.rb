@@ -62,7 +62,7 @@ module Gem
         return message
       end
       names = specs.map(&:full_name)
-      "Could not find '#{name}' (#{requirement}) - did find: [#{names.join ','}]\n"
+      "Could not find '#{name}' (#{requirement}) - did find: [#{names.join(',')}]\n"
     end
   end
 
@@ -88,7 +88,7 @@ module Gem
 
       reason = conflicts.map { |act, dependencies|
         "#{act.full_name} conflicts with #{dependencies.join(", ")}"
-      }.join ", "
+      }.join(", ")
 
       # TODO: improve message by saying who activated `con`
 

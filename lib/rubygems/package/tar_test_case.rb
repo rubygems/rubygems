@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/package'
+require('rubygems/test_case')
+require('rubygems/package')
 
 ##
 # A test case for Gem::Package::Tar* classes
@@ -58,13 +58,13 @@ class Gem::Package::TarTestCase < Gem::TestCase
         next
       end
 
-      assert_equal expected[offset, length], actual[offset, length],
-                   "Field #{name} of the tar header differs."
+      assert_equal(expected[offset, length], actual[offset, length],
+                   "Field #{name} of the tar header differs.")
 
       offset += length
     end
 
-    assert_equal expected[chksum_off, 8], actual[chksum_off, 8]
+    assert_equal(expected[chksum_off, 8], actual[chksum_off, 8])
   end
 
   def calc_checksum(header)
@@ -123,19 +123,19 @@ class Gem::Package::TarTestCase < Gem::TestCase
   end
 
   def util_entry(tar)
-    io = TempIO.new tar
+    io = TempIO.new(tar)
 
-    header = Gem::Package::TarHeader.from io
+    header = Gem::Package::TarHeader.from(io)
 
-    Gem::Package::TarReader::Entry.new header, io
+    Gem::Package::TarReader::Entry.new(header, io)
   end
 
   def util_dir_entry
-    util_entry tar_dir_header("foo", "bar", 0, Time.now)
+    util_entry(tar_dir_header("foo", "bar", 0, Time.now))
   end
 
   def util_symlink_entry
-    util_entry tar_symlink_header("foo", "bar", 0, Time.now, "link")
+    util_entry(tar_symlink_header("foo", "bar", 0, Time.now, "link"))
   end
 
 end

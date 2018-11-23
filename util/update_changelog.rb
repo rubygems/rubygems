@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'json'
-require 'net/http'
+require('json')
+require('net/http')
 
 def access_token_query_string
   @access_token_query_string ||= begin
@@ -55,7 +55,7 @@ File.open(File.expand_path('../../ChangeLog', __FILE__), 'w') do |changelog|
   prs = commits.reverse_each.map { |c| c =~ /(Auto merge of|Merge pull request|Merge) #(\d+)/ && $2 }.compact
   prs.each do |pr|
     next if history =~ /Pull\srequest\s##{pr}/m
-    details = github_api "/repos/rubygems/rubygems/pulls/#{pr}"
+    details = github_api("/repos/rubygems/rubygems/pulls/#{pr}")
     title, user = details.values_at('title', 'user')
     user = github_api(user['url'])
     name = user['name'] || user['login']

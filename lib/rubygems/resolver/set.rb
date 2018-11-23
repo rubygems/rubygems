@@ -21,7 +21,7 @@ class Gem::Resolver::Set
   attr_accessor :prerelease
 
   def initialize # :nodoc:
-    require 'uri'
+    require('uri')
     @prerelease = false
     @remote     = true
     @errors     = []
@@ -32,7 +32,7 @@ class Gem::Resolver::Set
   # Specification objects matching the given DependencyRequest +req+.
 
   def find_all(req)
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   ##

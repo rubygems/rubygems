@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems/command'
+require('rubygems/command')
 
 unless defined? Gem::Commands::MirrorCommand
   class Gem::Commands::MirrorCommand < Gem::Command
@@ -19,7 +19,7 @@ The mirror command has been moved to the rubygems-mirror gem.
     end
 
     def execute
-      alert_error "Install the rubygems-mirror gem for the mirror command"
+      alert_error("Install the rubygems-mirror gem for the mirror command")
     end
 
   end

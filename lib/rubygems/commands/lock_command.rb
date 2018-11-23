@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require 'rubygems/command'
+require('rubygems/command')
 
 class Gem::Commands::LockCommand < Gem::Command
 
   def initialize
-    super 'lock', 'Generate a lockdown list of gems',
-          :strict => false
+    super('lock', 'Generate a lockdown list of gems',
+          :strict => false)
 
     add_option '-s', '--[no-]strict',
                'fail if unable to satisfy a dependency' do |strict, options|
@@ -60,14 +60,14 @@ lock it down to the exact version.
 
   def complain(message)
     if options[:strict]
-      raise Gem::Exception, message
+      raise(Gem::Exception, message)
     else
-      say "# #{message}"
+      say("# #{message}")
     end
   end
 
   def execute
-    say "require 'rubygems'"
+    say("require 'rubygems'")
 
     locked = {}
 
@@ -76,14 +76,14 @@ lock it down to the exact version.
     until pending.empty? do
       full_name = pending.shift
 
-      spec = Gem::Specification.load spec_path(full_name)
+      spec = Gem::Specification.load(spec_path(full_name))
 
       if spec.nil?
-        complain "Could not find gem #{full_name}, try using the full name"
+        complain("Could not find gem #{full_name}, try using the full name")
         next
       end
 
-      say "gem '#{spec.name}', '= #{spec.version}'" unless locked[spec.name]
+      say("gem '#{spec.name}', '= #{spec.version}'") unless locked[spec.name]
       locked[spec.name] = true
 
       spec.runtime_dependencies.each do |dep|
@@ -91,7 +91,7 @@ lock it down to the exact version.
         candidates = dep.matching_specs
 
         if candidates.empty?
-          complain "Unable to satisfy '#{dep}' from currently installed gems"
+          complain("Unable to satisfy '#{dep}' from currently installed gems")
         else
           pending << candidates.last.full_name
         end
@@ -101,10 +101,10 @@ lock it down to the exact version.
 
   def spec_path(gem_full_name)
     gemspecs = Gem.path.map { |path|
-      File.join path, "specifications", "#{gem_full_name}.gemspec"
+      File.join(path, "specifications", "#{gem_full_name}.gemspec")
     }
 
-    gemspecs.find { |path| File.exist? path }
+    gemspecs.find { |path| File.exist?(path) }
   end
 
 end

@@ -5,7 +5,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/user_interaction'
+require('rubygems/user_interaction')
 
 class Gem::Ext::Builder
 
@@ -27,8 +27,8 @@ class Gem::Ext::Builder
   end
 
   def self.make(dest_path, results)
-    unless File.exist? 'Makefile'
-      raise Gem::InstallError, 'Makefile not found'
+    unless File.exist?('Makefile')
+      raise(Gem::InstallError, 'Makefile not found')
     end
 
     # try to find make program from Ruby configure arguments first
@@ -56,7 +56,7 @@ class Gem::Ext::Builder
   end
 
   def self.redirector
-    warn "#{caller[0]}: Use IO.popen(..., err: [:child, :out])"
+    warn("#{caller[0]}: Use IO.popen(..., err: [:child, :out])")
     '2>&1'
   end
 
@@ -81,7 +81,7 @@ class Gem::Ext::Builder
         end
       end
     rescue => error
-      raise Gem::InstallError, "#{command_name || class_name} failed#{error.message}"
+      raise(Gem::InstallError, "#{command_name || class_name} failed#{error.message}")
     ensure
       ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
     end
@@ -96,7 +96,7 @@ class Gem::Ext::Builder
           ", uncaught signal #{$?.termsig}"
         end
 
-      raise Gem::InstallError, "#{command_name || class_name} failed#{exit_reason}"
+      raise(Gem::InstallError, "#{command_name || class_name} failed#{exit_reason}")
     end
   end
 
@@ -128,10 +128,10 @@ class Gem::Ext::Builder
     when /CMakeLists.txt/ then
       Gem::Ext::CmakeBuilder
     else
-      extension_dir = File.join @gem_dir, File.dirname(extension)
+      extension_dir = File.join(@gem_dir, File.dirname(extension))
 
       message = "No builder for extension '#{extension}'"
-      build_error extension_dir, message
+      build_error(extension_dir, message)
     end
   end
 
@@ -139,7 +139,7 @@ class Gem::Ext::Builder
   # Logs the build +output+ in +build_dir+, then raises Gem::Ext::BuildError.
 
   def build_error(build_dir, output, backtrace = nil) # :nodoc:
-    gem_make_out = write_gem_make_out output
+    gem_make_out = write_gem_make_out(output)
 
     message = <<-EOF
 ERROR: Failed to build gem native extension.
@@ -150,7 +150,7 @@ Gem files will remain installed in #{@gem_dir} for inspection.
 Results logged to #{gem_make_out}
 EOF
 
-    raise Gem::Ext::BuildError, message, backtrace
+    raise(Gem::Ext::BuildError, message, backtrace)
   end
 
   def build_extension(extension, dest_path) # :nodoc:
@@ -170,17 +170,17 @@ EOF
     extension ||= '' # I wish I knew why this line existed
 
     extension_dir =
-      File.expand_path File.join(@gem_dir, File.dirname(extension))
-    lib_dir = File.join @spec.full_gem_path, @spec.raw_require_paths.first
+      File.expand_path(File.join(@gem_dir, File.dirname(extension)))
+    lib_dir = File.join(@spec.full_gem_path, @spec.raw_require_paths.first)
 
-    builder = builder_for extension
+    builder = builder_for(extension)
 
     begin
-      FileUtils.mkdir_p dest_path
+      FileUtils.mkdir_p(dest_path)
 
       CHDIR_MUTEX.synchronize do
         pwd = Dir.getwd
-        Dir.chdir extension_dir
+        Dir.chdir(extension_dir)
         begin
           results = builder.build(extension, dest_path,
                                   results, @build_args, lib_dir)
@@ -188,17 +188,17 @@ EOF
           verbose { results.join("\n") }
         ensure
           begin
-            Dir.chdir pwd
+            Dir.chdir(pwd)
           rescue SystemCallError
-            Dir.chdir dest_path
+            Dir.chdir(dest_path)
           end
         end
       end
 
-      write_gem_make_out results.join "\n"
+      write_gem_make_out(results.join("\n"))
     rescue => e
       results << e.message
-      build_error extension_dir, results.join("\n"), $@
+      build_error(extension_dir, results.join("\n"), $@)
     end
   end
 
@@ -210,15 +210,15 @@ EOF
     return if @spec.extensions.empty?
 
     if @build_args.empty?
-      say "Building native extensions. This could take a while..."
+      say("Building native extensions. This could take a while...")
     else
-      say "Building native extensions with: '#{@build_args.join ' '}'"
-      say "This could take a while..."
+      say("Building native extensions with: '#{@build_args.join(' ')}'")
+      say("This could take a while...")
     end
 
     dest_path = @spec.extension_dir
 
-    FileUtils.rm_f @spec.gem_build_complete_path
+    FileUtils.rm_f(@spec.gem_build_complete_path)
 
     # FIXME: action at a distance: @ran_rake modified deep in build_extension(). - @duckinator
     @ran_rake = false # only run rake once
@@ -229,18 +229,18 @@ EOF
       build_extension extension, dest_path
     end
 
-    FileUtils.touch @spec.gem_build_complete_path
+    FileUtils.touch(@spec.gem_build_complete_path)
   end
 
   ##
   # Writes +output+ to gem_make.out in the extension install directory.
 
   def write_gem_make_out(output) # :nodoc:
-    destination = File.join @spec.extension_dir, 'gem_make.out'
+    destination = File.join(@spec.extension_dir, 'gem_make.out')
 
-    FileUtils.mkdir_p @spec.extension_dir
+    FileUtils.mkdir_p(@spec.extension_dir)
 
-    File.open destination, 'wb' do |io| io.puts output end
+    File.open(destination, 'wb') do |io| io.puts(output) end
 
     destination
   end

@@ -18,7 +18,7 @@ module YAML # :nodoc:
   if defined? ::Syck
     # for tests that change YAML::ENGINE
     # 1.8 does not support the second argument to const_defined?
-    remove_const :Syck rescue nil
+    remove_const(:Syck) rescue nil
 
     Syck = ::Syck
 
@@ -40,7 +40,7 @@ module YAML # :nodoc:
   # should.
   module Syck
     class DefaultKey
-      remove_method :to_s rescue nil
+      remove_method(:to_s) rescue nil
 
       def to_s
         '='
@@ -69,7 +69,7 @@ end
 
 module Gem
   # for tests that change YAML::ENGINE
-  remove_const :SyckDefaultKey if const_defined? :SyckDefaultKey
+  remove_const(:SyckDefaultKey) if const_defined?(:SyckDefaultKey)
 
   SyckDefaultKey = YAML::Syck::DefaultKey
 end

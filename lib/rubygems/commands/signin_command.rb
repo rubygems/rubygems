@@ -1,13 +1,13 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/gemcutter_utilities'
+require('rubygems/command')
+require('rubygems/gemcutter_utilities')
 
 class Gem::Commands::SigninCommand < Gem::Command
   include Gem::GemcutterUtilities
 
   def initialize
-    super 'signin', 'Sign in to any gemcutter-compatible host. '\
-          'It defaults to https://rubygems.org'
+    super('signin', 'Sign in to any gemcutter-compatible host. '\
+          'It defaults to https://rubygems.org')
 
     add_option('--host HOST', 'Push to another gemcutter-compatible host') do |value, options|
       options[:host] = value
@@ -26,7 +26,7 @@ class Gem::Commands::SigninCommand < Gem::Command
   end
 
   def execute
-    sign_in options[:host]
+    sign_in(options[:host])
   end
 
 end

@@ -5,8 +5,8 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/user_interaction'
-require 'rbconfig'
+require('rubygems/user_interaction')
+require('rbconfig')
 
 ##
 # Gem::ConfigFile RubyGems options and gem command options from gemrc.
@@ -63,7 +63,7 @@ class Gem::ConfigFile
 
   SYSTEM_CONFIG_PATH =
     begin
-      require "etc"
+      require("etc")
       Etc.sysconfdir
     rescue LoadError, NoMethodError
       RbConfig::CONFIG["sysconfdir"] || "/etc"
@@ -71,7 +71,7 @@ class Gem::ConfigFile
 
   # :startdoc:
 
-  SYSTEM_WIDE_CONFIG_FILE = File.join SYSTEM_CONFIG_PATH, 'gemrc'
+  SYSTEM_WIDE_CONFIG_FILE = File.join(SYSTEM_CONFIG_PATH, 'gemrc')
 
   ##
   # List of arguments supplied to the config file object.
@@ -193,40 +193,40 @@ class Gem::ConfigFile
     @concurrent_downloads = DEFAULT_CONCURRENT_DOWNLOADS
     @cert_expiration_length_days = DEFAULT_CERT_EXPIRATION_LENGTH_DAYS
 
-    operating_system_config = Marshal.load Marshal.dump(OPERATING_SYSTEM_DEFAULTS)
-    platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)
-    system_config = load_file SYSTEM_WIDE_CONFIG_FILE
-    user_config = load_file config_file_name.dup.untaint
+    operating_system_config = Marshal.load(Marshal.dump(OPERATING_SYSTEM_DEFAULTS))
+    platform_config = Marshal.load(Marshal.dump(PLATFORM_DEFAULTS))
+    system_config = load_file(SYSTEM_WIDE_CONFIG_FILE)
+    user_config = load_file(config_file_name.dup.untaint)
     environment_config = (ENV['GEMRC'] || '').split(/[:;]/).inject({}) do |result, file|
-      result.merge load_file file
+      result.merge(load_file(file))
     end
 
-    @hash = operating_system_config.merge platform_config
-    unless arg_list.index '--norc'
-      @hash = @hash.merge system_config
-      @hash = @hash.merge user_config
-      @hash = @hash.merge environment_config
+    @hash = operating_system_config.merge(platform_config)
+    unless arg_list.index('--norc')
+      @hash = @hash.merge(system_config)
+      @hash = @hash.merge(user_config)
+      @hash = @hash.merge(environment_config)
     end
 
     # HACK these override command-line args, which is bad
-    @backtrace                   = @hash[:backtrace]                   if @hash.key? :backtrace
-    @bulk_threshold              = @hash[:bulk_threshold]              if @hash.key? :bulk_threshold
-    @home                        = @hash[:gemhome]                     if @hash.key? :gemhome
-    @path                        = @hash[:gempath]                     if @hash.key? :gempath
-    @update_sources              = @hash[:update_sources]              if @hash.key? :update_sources
-    @verbose                     = @hash[:verbose]                     if @hash.key? :verbose
-    @disable_default_gem_server  = @hash[:disable_default_gem_server]  if @hash.key? :disable_default_gem_server
-    @sources                     = @hash[:sources]                     if @hash.key? :sources
-    @cert_expiration_length_days = @hash[:cert_expiration_length_days] if @hash.key? :cert_expiration_length_days
+    @backtrace                   = @hash[:backtrace]                   if @hash.key?(:backtrace)
+    @bulk_threshold              = @hash[:bulk_threshold]              if @hash.key?(:bulk_threshold)
+    @home                        = @hash[:gemhome]                     if @hash.key?(:gemhome)
+    @path                        = @hash[:gempath]                     if @hash.key?(:gempath)
+    @update_sources              = @hash[:update_sources]              if @hash.key?(:update_sources)
+    @verbose                     = @hash[:verbose]                     if @hash.key?(:verbose)
+    @disable_default_gem_server  = @hash[:disable_default_gem_server]  if @hash.key?(:disable_default_gem_server)
+    @sources                     = @hash[:sources]                     if @hash.key?(:sources)
+    @cert_expiration_length_days = @hash[:cert_expiration_length_days] if @hash.key?(:cert_expiration_length_days)
 
-    @ssl_verify_mode  = @hash[:ssl_verify_mode]  if @hash.key? :ssl_verify_mode
-    @ssl_ca_cert      = @hash[:ssl_ca_cert]      if @hash.key? :ssl_ca_cert
-    @ssl_client_cert  = @hash[:ssl_client_cert]  if @hash.key? :ssl_client_cert
+    @ssl_verify_mode  = @hash[:ssl_verify_mode]  if @hash.key?(:ssl_verify_mode)
+    @ssl_ca_cert      = @hash[:ssl_ca_cert]      if @hash.key?(:ssl_ca_cert)
+    @ssl_client_cert  = @hash[:ssl_client_cert]  if @hash.key?(:ssl_client_cert)
 
     @api_keys         = nil
     @rubygems_api_key = nil
 
-    handle_arguments arg_list
+    handle_arguments(arg_list)
   end
 
   ##
@@ -244,18 +244,18 @@ class Gem::ConfigFile
 
   def check_credentials_permissions
     return if Gem.win_platform? # windows doesn't write 0600 as 0600
-    return unless File.exist? credentials_path
+    return unless File.exist?(credentials_path)
 
     existing_permissions = File.stat(credentials_path).mode & 0777
 
     return if existing_permissions == 0600
 
-    alert_error <<-ERROR
+    alert_error(<<-ERROR)
 Your gem push credentials file located at:
 
 \t#{credentials_path}
 
-has file permissions of 0#{existing_permissions.to_s 8} but 0600 is required.
+has file permissions of 0#{existing_permissions.to_s(8)} but 0600 is required.
 
 To fix this error run:
 
@@ -268,29 +268,29 @@ You should reset your credentials at:
 if you believe they were disclosed to a third party.
     ERROR
 
-    terminate_interaction 1
+    terminate_interaction(1)
   end
 
   ##
   # Location of RubyGems.org credentials
 
   def credentials_path
-    File.join Gem.user_home, '.gem', 'credentials'
+    File.join(Gem.user_home, '.gem', 'credentials')
   end
 
   def load_api_keys
     check_credentials_permissions
 
-    @api_keys = if File.exist? credentials_path
+    @api_keys = if File.exist?(credentials_path)
                   load_file(credentials_path)
                 else
                   @hash
                 end
 
-    if @api_keys.key? :rubygems_api_key
+    if @api_keys.key?(:rubygems_api_key)
       @rubygems_api_key    = @api_keys[:rubygems_api_key]
-      @api_keys[:rubygems] = @api_keys.delete :rubygems_api_key unless
-        @api_keys.key? :rubygems
+      @api_keys[:rubygems] = @api_keys.delete(:rubygems_api_key) unless
+        @api_keys.key?(:rubygems)
     end
   end
 
@@ -307,7 +307,7 @@ if you believe they were disclosed to a third party.
   # Sets the RubyGems.org API key to +api_key+
 
   def rubygems_api_key=(api_key)
-    set_api_key :rubygems_api_key, api_key
+    set_api_key(:rubygems_api_key, api_key)
 
     @rubygems_api_key = api_key
   end
@@ -320,14 +320,14 @@ if you believe they were disclosed to a third party.
 
     config = load_file(credentials_path).merge(host => api_key)
 
-    dirname = File.dirname credentials_path
-    Dir.mkdir(dirname) unless File.exist? dirname
+    dirname = File.dirname(credentials_path)
+    Dir.mkdir(dirname) unless File.exist?(dirname)
 
     Gem.load_yaml
 
     permissions = 0600 & (~File.umask)
     File.open(credentials_path, 'w', permissions) do |f|
-      f.write config.to_yaml
+      f.write(config.to_yaml)
     end
 
     load_api_keys # reload
@@ -348,19 +348,19 @@ if you believe they were disclosed to a third party.
     yaml_errors = [ArgumentError]
     yaml_errors << Psych::SyntaxError if defined?(Psych::SyntaxError)
 
-    return {} unless filename and File.exist? filename
+    return {} unless filename and File.exist?(filename)
 
     begin
       content = Gem::SafeYAML.load(File.read(filename))
-      unless content.kind_of? Hash
-        warn "Failed to load #{filename} because it doesn't contain valid YAML hash"
+      unless content.kind_of?(Hash)
+        warn("Failed to load #{filename} because it doesn't contain valid YAML hash")
         return {}
       end
       return content
     rescue *yaml_errors => e
-      warn "Failed to load #{filename}, #{e}"
+      warn("Failed to load #{filename}, #{e}")
     rescue Errno::EACCES
-      warn "Failed to load #{filename} due to permissions problem."
+      warn("Failed to load #{filename} due to permissions problem.")
     end
 
     {}
@@ -379,17 +379,17 @@ if you believe they were disclosed to a third party.
   # Delegates to @hash
   def each(&block)
     hash = @hash.dup
-    hash.delete :update_sources
-    hash.delete :verbose
-    hash.delete :backtrace
-    hash.delete :bulk_threshold
+    hash.delete(:update_sources)
+    hash.delete(:verbose)
+    hash.delete(:backtrace)
+    hash.delete(:bulk_threshold)
 
-    yield :update_sources, @update_sources
-    yield :verbose, @verbose
-    yield :backtrace, @backtrace
-    yield :bulk_threshold, @bulk_threshold
+    yield(:update_sources, @update_sources)
+    yield(:verbose, @verbose)
+    yield(:backtrace, @backtrace)
+    yield(:bulk_threshold, @bulk_threshold)
 
-    yield 'config_file_name', @config_file_name if @config_file_name
+    yield('config_file_name', @config_file_name) if @config_file_name
 
     hash.each(&block)
   end
@@ -405,7 +405,7 @@ if you believe they were disclosed to a third party.
       when /^--debug$/ then
         $DEBUG = true
 
-        warn 'NOTE:  Debugging mode prints all exceptions even when rescued'
+        warn('NOTE:  Debugging mode prints all exceptions even when rescued')
       else
         @args << arg
       end
@@ -435,13 +435,13 @@ if you believe they were disclosed to a third party.
       @hash.fetch(:concurrent_downloads, DEFAULT_CONCURRENT_DOWNLOADS)
 
     yaml_hash[:ssl_verify_mode] =
-      @hash[:ssl_verify_mode] if @hash.key? :ssl_verify_mode
+      @hash[:ssl_verify_mode] if @hash.key?(:ssl_verify_mode)
 
     yaml_hash[:ssl_ca_cert] =
-      @hash[:ssl_ca_cert] if @hash.key? :ssl_ca_cert
+      @hash[:ssl_ca_cert] if @hash.key?(:ssl_ca_cert)
 
     yaml_hash[:ssl_client_cert] =
-      @hash[:ssl_client_cert] if @hash.key? :ssl_client_cert
+      @hash[:ssl_client_cert] if @hash.key?(:ssl_client_cert)
 
     keys = yaml_hash.keys.map { |key| key.to_s }
     keys << 'debug'
@@ -458,8 +458,8 @@ if you believe they were disclosed to a third party.
 
   # Writes out this config file, replacing its source.
   def write
-    File.open config_file_name, 'w' do |io|
-      io.write to_yaml
+    File.open(config_file_name, 'w') do |io|
+      io.write(to_yaml)
     end
   end
 

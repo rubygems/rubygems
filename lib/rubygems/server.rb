@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require 'webrick'
-require 'zlib'
-require 'erb'
-require 'uri'
+require('webrick')
+require('zlib')
+require('erb')
+require('uri')
 
-require 'rubygems'
-require 'rubygems/rdoc'
+require('rubygems')
+require('rubygems/rdoc')
 
 ##
 # Gem::Server and allows users to serve gems for consumption by
@@ -433,17 +433,17 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     Gem::RDoc.load_rdoc
     Socket.do_not_reverse_lookup = true
 
-    @gem_dirs  = Array gem_dirs
+    @gem_dirs  = Array(gem_dirs)
     @port      = port
     @daemon    = daemon
     @launch    = launch
     @addresses = addresses
 
-    logger  = WEBrick::Log.new nil, WEBrick::BasicLog::FATAL
-    @server = WEBrick::HTTPServer.new :DoNotListen => true, :Logger => logger
+    logger  = WEBrick::Log.new(nil, WEBrick::BasicLog::FATAL)
+    @server = WEBrick::HTTPServer.new(:DoNotListen => true, :Logger => logger)
 
-    @spec_dirs = @gem_dirs.map { |gem_dir| File.join gem_dir, 'specifications' }
-    @spec_dirs.reject! { |spec_dir| !File.directory? spec_dir }
+    @spec_dirs = @gem_dirs.map { |gem_dir| File.join(gem_dir, 'specifications') }
+    @spec_dirs.reject! { |spec_dir| !File.directory?(spec_dir) }
 
     reset_gems
 
@@ -464,15 +464,15 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
   def doc_root(gem_name)
     if have_rdoc_4_plus?
-      "/doc_root/#{u gem_name}/"
+      "/doc_root/#{u(gem_name)}/"
     else
-      "/doc_root/#{u gem_name}/rdoc/index.html"
+      "/doc_root/#{u(gem_name)}/rdoc/index.html"
     end
   end
 
   def have_rdoc_4_plus?
     @have_rdoc_4_plus ||=
-      Gem::Requirement.new('>= 4.0.0.preview2').satisfied_by? Gem::RDoc.rdoc_version
+      Gem::Requirement.new('>= 4.0.0.preview2').satisfied_by?(Gem::RDoc.rdoc_version)
   end
 
   def latest_specs(req, res)
@@ -480,7 +480,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     res['content-type'] = 'application/x-gzip'
 
-    add_date res
+    add_date(res)
 
     latest_specs = Gem::Specification.latest_specs
 
@@ -489,10 +489,10 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       [spec.name, spec.version, platform]
     end
 
-    specs = Marshal.dump specs
+    specs = Marshal.dump(specs)
 
     if req.path =~ /\.gz$/
-      specs = Gem::Util.gzip specs
+      specs = Gem::Util.gzip(specs)
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
@@ -516,9 +516,9 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     addresses.each do |address|
       begin
-        @server.listen address, @port
+        @server.listen(address, @port)
         @server.listeners[listeners..-1].each do |listener|
-          host, port = listener.addr.values_at 2, 1
+          host, port = listener.addr.values_at(2, 1)
           host = "[#{host}]" if host =~ /:/ # we don't reverse lookup
           say "Server started at http://#{host}:#{port}"
         end
@@ -530,9 +530,9 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     end
 
     if @server.listeners.empty?
-      say "Unable to start a server."
-      say "Check for running servers or your --bind and --port arguments"
-      terminate_interaction 1
+      say("Unable to start a server.")
+      say("Check for running servers or your --bind and --port arguments")
+      terminate_interaction(1)
     end
   end
 
@@ -541,7 +541,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     res['content-type'] = 'application/x-gzip'
 
-    add_date res
+    add_date(res)
 
     specs = Gem::Specification.select do |spec|
       spec.version.prerelease?
@@ -550,10 +550,10 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       [spec.name, spec.version, platform]
     end
 
-    specs = Marshal.dump specs
+    specs = Marshal.dump(specs)
 
     if req.path =~ /\.gz$/
-      specs = Gem::Util.gzip specs
+      specs = Gem::Util.gzip(specs)
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
@@ -570,10 +570,10 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     reset_gems
 
     res['content-type'] = 'text/plain'
-    add_date res
+    add_date(res)
 
     case req.request_uri.path
-    when %r|^/quick/(Marshal.#{Regexp.escape Gem.marshal_version}/)?(.*?)\.gemspec\.rz$| then
+    when %r|^/quick/(Marshal.#{Regexp.escape(Gem.marshal_version)}/)?(.*?)\.gemspec\.rz$| then
       marshal_format, full_name = $1, $2
       specs = Gem::Specification.find_all_by_full_name(full_name)
 
@@ -590,16 +590,16 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         res.body << Gem.deflate(Marshal.dump(specs.first))
       end
     else
-      raise WEBrick::HTTPStatus::NotFound, "`#{req.path}' not found."
+      raise(WEBrick::HTTPStatus::NotFound, "`#{req.path}' not found.")
     end
   end
 
   def root(req, res)
     reset_gems
 
-    add_date res
+    add_date(res)
 
-    raise WEBrick::HTTPStatus::NotFound, "`#{req.path}' not found." unless
+    raise(WEBrick::HTTPStatus::NotFound, "`#{req.path}' not found.") unless
       req.path == '/'
 
     specs = []
@@ -626,7 +626,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       # Pre-process spec homepage for safety reasons
       begin
         homepage_uri = URI.parse(spec.homepage)
-        if [URI::HTTP, URI::HTTPS].member? homepage_uri.class
+        if [URI::HTTP, URI::HTTPS].member?(homepage_uri.class)
           homepage_uri = spec.homepage
         else
           homepage_uri = "."
@@ -689,7 +689,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     # suppress 1.9.3dev warning about unused variable
     values = values
 
-    result = template.result binding
+    result = template.result(binding)
     res.body = result
   end
 
@@ -732,10 +732,10 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     show_rdoc_for_pattern("#{query}*", res) && return
     show_rdoc_for_pattern("*#{query}*", res) && return
 
-    template = ERB.new RDOC_NO_DOCUMENTATION
+    template = ERB.new(RDOC_NO_DOCUMENTATION)
 
     res['content-type'] = 'text/html'
-    res.body = template.result binding
+    res.body = template.result(binding)
   end
 
   ##
@@ -754,8 +754,8 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   # documentation - just put it underneath the main doc folder.
 
   def show_rdoc_for_pattern(pattern, res)
-    found_gems = Dir.glob("{#{@gem_dirs.join ','}}/doc/#{pattern}").select {|path|
-      File.exist? File.join(path, 'rdoc/index.html')
+    found_gems = Dir.glob("{#{@gem_dirs.join(',')}}/doc/#{pattern}").select {|path|
+      File.exist?(File.join(path, 'rdoc/index.html'))
     }
     case found_gems.length
     when 0
@@ -763,7 +763,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     when 1
       new_path = File.basename(found_gems[0])
       res.status = 302
-      res['Location'] = doc_root new_path
+      res['Location'] = doc_root(new_path)
       return true
     else
       doc_items = []
@@ -778,7 +778,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
       template = ERB.new(RDOC_SEARCH_TEMPLATE)
       res['content-type'] = 'text/html'
-      result = template.result binding
+      result = template.result(binding)
       res.body = result
       return true
     end
@@ -789,20 +789,20 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     WEBrick::Daemon.start if @daemon
 
-    @server.mount_proc "/specs.#{Gem.marshal_version}", method(:specs)
-    @server.mount_proc "/specs.#{Gem.marshal_version}.gz", method(:specs)
+    @server.mount_proc("/specs.#{Gem.marshal_version}", method(:specs))
+    @server.mount_proc("/specs.#{Gem.marshal_version}.gz", method(:specs))
 
-    @server.mount_proc "/latest_specs.#{Gem.marshal_version}",
-                       method(:latest_specs)
-    @server.mount_proc "/latest_specs.#{Gem.marshal_version}.gz",
-                       method(:latest_specs)
+    @server.mount_proc("/latest_specs.#{Gem.marshal_version}",
+                       method(:latest_specs))
+    @server.mount_proc("/latest_specs.#{Gem.marshal_version}.gz",
+                       method(:latest_specs))
 
-    @server.mount_proc "/prerelease_specs.#{Gem.marshal_version}",
-                       method(:prerelease_specs)
-    @server.mount_proc "/prerelease_specs.#{Gem.marshal_version}.gz",
-                       method(:prerelease_specs)
+    @server.mount_proc("/prerelease_specs.#{Gem.marshal_version}",
+                       method(:prerelease_specs))
+    @server.mount_proc("/prerelease_specs.#{Gem.marshal_version}.gz",
+                       method(:prerelease_specs))
 
-    @server.mount_proc "/quick/", method(:quick)
+    @server.mount_proc("/quick/", method(:quick))
 
     @server.mount_proc("/gem-server-rdoc-style.css") do |req, res|
       res['content-type'] = 'text/css'
@@ -810,16 +810,16 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
       res.body << RDOC_CSS
     end
 
-    @server.mount_proc "/", method(:root)
+    @server.mount_proc("/", method(:root))
 
-    @server.mount_proc "/rdoc", method(:rdoc)
+    @server.mount_proc("/rdoc", method(:rdoc))
 
     file_handlers = {
       '/gems' => '/cache/',
     }
 
     if have_rdoc_4_plus?
-      @server.mount '/doc_root', RDoc::Servlet, '/doc_root'
+      @server.mount('/doc_root', RDoc::Servlet, '/doc_root')
     else
       file_handlers['/doc_root'] = '/doc/'
     end
@@ -842,17 +842,17 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   def specs(req, res)
     reset_gems
 
-    add_date res
+    add_date(res)
 
     specs = Gem::Specification.sort_by(&:sort_obj).map do |spec|
       platform = spec.original_platform || Gem::Platform::RUBY
       [spec.name, spec.version, platform]
     end
 
-    specs = Marshal.dump specs
+    specs = Marshal.dump(specs)
 
     if req.path =~ /\.gz$/
-      specs = Gem::Util.gzip specs
+      specs = Gem::Util.gzip(specs)
       res['content-type'] = 'application/x-gzip'
     else
       res['content-type'] = 'application/octet-stream'
@@ -871,7 +871,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
     # TODO: 0.0.0.0 == any, not localhost.
     host = listeners.any?{|l| l == '0.0.0.0'} ? 'localhost' : listeners.first
 
-    say "Launching browser to http://#{host}:#{@port}"
+    say("Launching browser to http://#{host}:#{@port}")
 
     system("#{@launch} http://#{host}:#{@port}")
   end

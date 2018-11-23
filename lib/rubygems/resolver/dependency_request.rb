@@ -49,7 +49,7 @@ class Gem::Resolver::DependencyRequest
   # prerelease dependency.
 
   def match?(spec, allow_prerelease = false)
-    @dependency.match? spec, nil, allow_prerelease
+    @dependency.match?(spec, nil, allow_prerelease)
   end
 
   ##
@@ -58,7 +58,7 @@ class Gem::Resolver::DependencyRequest
   # NOTE:  #matches_spec? matches prerelease versions.  See also #match?
 
   def matches_spec?(spec)
-    @dependency.matches_spec? spec
+    @dependency.matches_spec?(spec)
   end
 
   ##
@@ -96,13 +96,13 @@ class Gem::Resolver::DependencyRequest
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[Dependency request ', ']' do
+    q.group(2, '[Dependency request ', ']') do
       q.breakable
-      q.text @dependency.to_s
+      q.text(@dependency.to_s)
 
       q.breakable
-      q.text ' requested by '
-      q.pp @requester
+      q.text(' requested by ')
+      q.pp(@requester)
     end
   end
 

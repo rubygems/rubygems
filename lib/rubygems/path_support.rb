@@ -31,7 +31,7 @@ class Gem::PathSupport
 
     @home = expand(@home)
 
-    @path = split_gem_path env["GEM_PATH"], @home
+    @path = split_gem_path(env["GEM_PATH"], @home)
 
     @spec_cache_dir = env["GEM_SPEC_CACHE"] || Gem.default_spec_cache_dir
 
@@ -58,7 +58,7 @@ class Gem::PathSupport
 
       if File::ALT_SEPARATOR
         gem_path.map! do |this_path|
-          this_path.gsub File::ALT_SEPARATOR, File::SEPARATOR
+          this_path.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
         end
       end
 

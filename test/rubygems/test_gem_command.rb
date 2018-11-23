@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/command'
+require('rubygems/test_case')
+require('rubygems/command')
 
 class Gem::Command
   public :parser
@@ -22,47 +22,47 @@ class TestGemCommand < Gem::TestCase
     ]
 
     @cmd_name = 'doit'
-    @cmd = Gem::Command.new @cmd_name, 'summary'
+    @cmd = Gem::Command.new(@cmd_name, 'summary')
   end
 
   def teardown
     super
-    Gem::Command.common_options.replace @common_options
+    Gem::Command.common_options.replace(@common_options)
   end
 
   def test_self_add_specific_extra_args
     added_args = %w[--all]
-    @cmd.add_option '--all' do |v,o| end
+    @cmd.add_option('--all') do |v,o| end
 
-    Gem::Command.add_specific_extra_args @cmd_name, added_args
+    Gem::Command.add_specific_extra_args(@cmd_name, added_args)
 
-    assert_equal added_args, Gem::Command.specific_extra_args(@cmd_name)
+    assert_equal(added_args, Gem::Command.specific_extra_args(@cmd_name))
 
-    h = @cmd.add_extra_args []
+    h = @cmd.add_extra_args([])
 
-    assert_equal added_args, h
+    assert_equal(added_args, h)
   end
 
   def test_self_add_specific_extra_args_unknown
     added_args = %w[--definitely_not_there]
 
-    Gem::Command.add_specific_extra_args @cmd_name, added_args
+    Gem::Command.add_specific_extra_args(@cmd_name, added_args)
 
-    assert_equal added_args, Gem::Command.specific_extra_args(@cmd_name)
+    assert_equal(added_args, Gem::Command.specific_extra_args(@cmd_name))
 
-    h = @cmd.add_extra_args []
+    h = @cmd.add_extra_args([])
 
-    assert_equal [], h
+    assert_equal([], h)
   end
 
   def test_basic_accessors
-    assert_equal "doit", @cmd.command
-    assert_equal "gem doit", @cmd.program_name
-    assert_equal "summary", @cmd.summary
+    assert_equal("doit", @cmd.command)
+    assert_equal("gem doit", @cmd.program_name)
+    assert_equal("summary", @cmd.summary)
   end
 
   def test_common_option_in_class
-    assert Array === Gem::Command.common_options
+    assert(Array === Gem::Command.common_options)
   end
 
   def test_defaults
@@ -80,7 +80,7 @@ class TestGemCommand < Gem::TestCase
       @cmd.invoke
     end
 
-    assert_match %r|Usage: gem doit|, @ui.output
+    assert_match(%r|Usage: gem doit|, @ui.output)
   end
 
   def test_invoke
@@ -91,7 +91,7 @@ class TestGemCommand < Gem::TestCase
       @cmd.invoke
     end
 
-    assert done
+    assert(done)
   end
 
   def test_invoke_with_bad_options
@@ -110,20 +110,20 @@ class TestGemCommand < Gem::TestCase
     @cmd.when_invoked do true end
 
     use_ui @ui do
-      @cmd.invoke "-x"
+      @cmd.invoke("-x")
     end
 
-    assert @xopt, "Should have done xopt"
+    assert(@xopt, "Should have done xopt")
   end
 
   def test_invoke_with_build_args
     @cmd.when_invoked { true }
 
     use_ui @ui do
-      @cmd.invoke_with_build_args ["-x"], ["--awesome=true"]
+      @cmd.invoke_with_build_args(["-x"], ["--awesome=true"])
     end
 
-    assert_equal ["--awesome=true"], @cmd.options[:build_args]
+    assert_equal(["--awesome=true"], @cmd.options[:build_args])
   end
 
   # Returning false from the command handler invokes the usage output.
@@ -163,10 +163,10 @@ class TestGemCommand < Gem::TestCase
     end
 
     use_ui @ui do
-      @cmd.invoke '-h'
+      @cmd.invoke('-h')
     end
 
-    assert_match %r|Usage: gem doit|, @ui.output
+    assert_match(%r|Usage: gem doit|, @ui.output)
   end
 
   def test_option_recognition
@@ -179,20 +179,20 @@ class TestGemCommand < Gem::TestCase
     @cmd.add_option('--silent', 'Silence RubyGems output') do |value, options|
       options[:silent] = true
     end
-    assert @cmd.handles?(['-x'])
-    assert @cmd.handles?(['-h'])
-    assert @cmd.handles?(['-h', 'command'])
-    assert @cmd.handles?(['--help', 'command'])
-    assert @cmd.handles?(['-f', 'filename'])
-    assert @cmd.handles?(['--file=filename'])
-    assert @cmd.handles?(['--silent'])
-    refute @cmd.handles?(['-z'])
-    refute @cmd.handles?(['-f'])
-    refute @cmd.handles?(['--toothpaste'])
+    assert(@cmd.handles?(['-x']))
+    assert(@cmd.handles?(['-h']))
+    assert(@cmd.handles?(['-h', 'command']))
+    assert(@cmd.handles?(['--help', 'command']))
+    assert(@cmd.handles?(['-f', 'filename']))
+    assert(@cmd.handles?(['--file=filename']))
+    assert(@cmd.handles?(['--silent']))
+    refute(@cmd.handles?(['-z']))
+    refute(@cmd.handles?(['-f']))
+    refute(@cmd.handles?(['--toothpaste']))
 
     args = ['-h', 'command']
     @cmd.handles?(args)
-    assert_equal ['-h', 'command'], args
+    assert_equal(['-h', 'command'], args)
   end
 
   def test_show_lookup_failure_suggestions_local
@@ -200,34 +200,34 @@ class TestGemCommand < Gem::TestCase
     misspelled = "nonexistent_with_hint"
 
     spec_fetcher do |fetcher|
-      fetcher.spec correct, 2
+      fetcher.spec(correct, 2)
     end
 
     use_ui @ui do
-      @cmd.show_lookup_failure misspelled, Gem::Requirement.default, [], :local
+      @cmd.show_lookup_failure(misspelled, Gem::Requirement.default, [], :local)
     end
 
     expected = <<-EXPECTED
 ERROR:  Could not find a valid gem 'nonexistent_with_hint' (>= 0) in any repository
     EXPECTED
 
-    assert_equal expected, @ui.error
+    assert_equal(expected, @ui.error)
   end
 
   def test_show_lookup_failure_suggestions_none
     spec_fetcher do |fetcher|
-      fetcher.spec 'correct', 2
+      fetcher.spec('correct', 2)
     end
 
     use_ui @ui do
-      @cmd.show_lookup_failure 'other', Gem::Requirement.default, [], :remote
+      @cmd.show_lookup_failure('other', Gem::Requirement.default, [], :remote)
     end
 
     expected = <<-EXPECTED
 ERROR:  Could not find a valid gem 'other' (>= 0) in any repository
     EXPECTED
 
-    assert_equal expected, @ui.error
+    assert_equal(expected, @ui.error)
   end
 
   def test_show_lookup_failure_suggestions_remote
@@ -235,11 +235,11 @@ ERROR:  Could not find a valid gem 'other' (>= 0) in any repository
     misspelled = "nonexistent_with_hint"
 
     spec_fetcher do |fetcher|
-      fetcher.spec correct, 2
+      fetcher.spec(correct, 2)
     end
 
     use_ui @ui do
-      @cmd.show_lookup_failure misspelled, Gem::Requirement.default, [], :remote
+      @cmd.show_lookup_failure(misspelled, Gem::Requirement.default, [], :remote)
     end
 
     expected = <<-EXPECTED
@@ -247,7 +247,7 @@ ERROR:  Could not find a valid gem 'nonexistent_with_hint' (>= 0) in any reposit
 ERROR:  Possible alternatives: non_existent_with_hint
     EXPECTED
 
-    assert_equal expected, @ui.error
+    assert_equal(expected, @ui.error)
   end
 
 end

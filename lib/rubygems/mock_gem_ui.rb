@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'stringio'
-require 'rubygems/user_interaction'
+require('stringio')
+require('rubygems/user_interaction')
 
 ##
 # This Gem::StreamUI subclass records input and output to StringIO for
@@ -13,7 +13,7 @@ class Gem::MockGemUi < Gem::StreamUI
   class InputEOFError < RuntimeError
 
     def initialize(question)
-      super "Out of input for MockGemUi on #{question.inspect}"
+      super("Out of input for MockGemUi on #{question.inspect}")
     end
 
   end
@@ -38,26 +38,26 @@ class Gem::MockGemUi < Gem::StreamUI
     end
 
     def noecho
-      yield self
+      yield(self)
     end
   end
 
   def initialize(input = "")
-    ins = StringIO.new input
+    ins = StringIO.new(input)
     outs = StringIO.new
     errs = StringIO.new
 
-    ins.extend TTY
-    outs.extend TTY
-    errs.extend TTY
+    ins.extend(TTY)
+    outs.extend(TTY)
+    errs.extend(TTY)
 
-    super ins, outs, errs, true
+    super(ins, outs, errs, true)
 
     @terminated = false
   end
 
   def ask(question)
-    raise InputEOFError, question if @ins.eof?
+    raise(InputEOFError, question) if @ins.eof?
 
     super
   end
@@ -81,8 +81,8 @@ class Gem::MockGemUi < Gem::StreamUI
   def terminate_interaction(status=0)
     @terminated = true
 
-    raise TermError, status if status != 0
-    raise SystemExitException
+    raise(TermError, status) if status != 0
+    raise(SystemExitException)
   end
 
 end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/security'
+require('rubygems/command')
+require('rubygems/security')
 begin
-  require 'openssl'
+  require('openssl')
 rescue LoadError => e
   raise unless (e.respond_to?(:path) && e.path == 'openssl') ||
                e.message =~ / -- openssl$/
@@ -11,33 +11,33 @@ end
 class Gem::Commands::CertCommand < Gem::Command
 
   def initialize
-    super 'cert', 'Manage RubyGems certificates and signing settings',
-          :add => [], :remove => [], :list => [], :build => [], :sign => []
+    super('cert', 'Manage RubyGems certificates and signing settings',
+          :add => [], :remove => [], :list => [], :build => [], :sign => [])
 
-    OptionParser.accept OpenSSL::X509::Certificate do |certificate_file|
+    OptionParser.accept(OpenSSL::X509::Certificate) do |certificate_file|
       begin
-        certificate = OpenSSL::X509::Certificate.new File.read certificate_file
+        certificate = OpenSSL::X509::Certificate.new(File.read(certificate_file))
       rescue Errno::ENOENT
-        raise OptionParser::InvalidArgument, "#{certificate_file}: does not exist"
+        raise(OptionParser::InvalidArgument, "#{certificate_file}: does not exist")
       rescue OpenSSL::X509::CertificateError
-        raise OptionParser::InvalidArgument,
-          "#{certificate_file}: invalid X509 certificate"
+        raise(OptionParser::InvalidArgument,
+          "#{certificate_file}: invalid X509 certificate")
       end
       [certificate, certificate_file]
     end
 
-    OptionParser.accept OpenSSL::PKey::RSA do |key_file|
+    OptionParser.accept(OpenSSL::PKey::RSA) do |key_file|
       begin
         passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
-        key = OpenSSL::PKey::RSA.new File.read(key_file), passphrase
+        key = OpenSSL::PKey::RSA.new(File.read(key_file), passphrase)
       rescue Errno::ENOENT
-        raise OptionParser::InvalidArgument, "#{key_file}: does not exist"
+        raise(OptionParser::InvalidArgument, "#{key_file}: does not exist")
       rescue OpenSSL::PKey::RSAError
-        raise OptionParser::InvalidArgument, "#{key_file}: invalid RSA key"
+        raise(OptionParser::InvalidArgument, "#{key_file}: invalid RSA key")
       end
 
-      raise OptionParser::InvalidArgument,
-            "#{key_file}: private key not found" unless key.private?
+      raise(OptionParser::InvalidArgument,
+            "#{key_file}: private key not found") unless key.private?
 
       key
     end
@@ -81,8 +81,8 @@ class Gem::Commands::CertCommand < Gem::Command
     add_option('-s', '--sign CERT',
                'Signs CERT with the key from -K',
                'and the certificate from -C') do |cert_file, options|
-      raise OptionParser::InvalidArgument, "#{cert_file}: does not exist" unless
-        File.file? cert_file
+      raise(OptionParser::InvalidArgument, "#{cert_file}: does not exist") unless
+        File.file?(cert_file)
 
       options[:sign] << cert_file
     end
@@ -99,9 +99,9 @@ class Gem::Commands::CertCommand < Gem::Command
   end
 
   def add_certificate(certificate) # :nodoc:
-    Gem::Security.trust_dir.trust_cert certificate
+    Gem::Security.trust_dir.trust_cert(certificate)
 
-    say "Added '#{certificate.subject}'"
+    say("Added '#{certificate.subject}'")
   end
 
   def execute
@@ -134,17 +134,17 @@ class Gem::Commands::CertCommand < Gem::Command
 
   def build(email)
     if !valid_email?(email)
-      raise Gem::CommandLineError, "Invalid email address #{email}"
+      raise(Gem::CommandLineError, "Invalid email address #{email}")
     end
 
     key, key_path = build_key
-    cert_path = build_cert email, key
+    cert_path = build_cert(email, key)
 
-    say "Certificate: #{cert_path}"
+    say("Certificate: #{cert_path}")
 
     if key_path
-      say "Private Key: #{key_path}"
-      say "Don't forget to move the key file to somewhere private!"
+      say("Private Key: #{key_path}")
+      say("Don't forget to move the key file to somewhere private!")
     end
   end
 
@@ -158,33 +158,33 @@ class Gem::Commands::CertCommand < Gem::Command
       (Gem::Security::ONE_DAY * expiration_length_days)
     )
 
-    Gem::Security.write cert, "gem-public_cert.pem"
+    Gem::Security.write(cert, "gem-public_cert.pem")
   end
 
   def build_key # :nodoc:
     return options[:key] if options[:key]
 
-    passphrase = ask_for_password 'Passphrase for your Private Key:'
-    say "\n"
+    passphrase = ask_for_password('Passphrase for your Private Key:')
+    say("\n")
 
-    passphrase_confirmation = ask_for_password 'Please repeat the passphrase for your Private Key:'
-    say "\n"
+    passphrase_confirmation = ask_for_password('Please repeat the passphrase for your Private Key:')
+    say("\n")
 
-    raise Gem::CommandLineError,
-          "Passphrase and passphrase confirmation don't match" unless passphrase == passphrase_confirmation
+    raise(Gem::CommandLineError,
+          "Passphrase and passphrase confirmation don't match") unless passphrase == passphrase_confirmation
 
     key      = Gem::Security.create_key
-    key_path = Gem::Security.write key, "gem-private_key.pem", 0600, passphrase
+    key_path = Gem::Security.write(key, "gem-private_key.pem", 0600, passphrase)
 
     return key, key_path
   end
 
   def certificates_matching(filter)
-    return enum_for __method__, filter unless block_given?
+    return enum_for(__method__, filter) unless block_given?
 
     Gem::Security.trusted_certificates.select do |certificate, _|
       subject = certificate.subject.to_s
-      subject.downcase.index filter
+      subject.downcase.index(filter)
     end.sort_by do |certificate, _|
       certificate.subject.to_a.map { |name, data,| [name, data] }
     end.each do |certificate, path|
@@ -239,36 +239,36 @@ For further reading on signing gems see `ri Gem::Security`.
   end
 
   def load_default_cert
-    cert_file = File.join Gem.default_cert_path
-    cert = File.read cert_file
-    options[:issuer_cert] = OpenSSL::X509::Certificate.new cert
+    cert_file = File.join(Gem.default_cert_path)
+    cert = File.read(cert_file)
+    options[:issuer_cert] = OpenSSL::X509::Certificate.new(cert)
   rescue Errno::ENOENT
-    alert_error \
-      "--certificate not specified and ~/.gem/gem-public_cert.pem does not exist"
+    alert_error(\
+      "--certificate not specified and ~/.gem/gem-public_cert.pem does not exist")
 
-    terminate_interaction 1
+    terminate_interaction(1)
   rescue OpenSSL::X509::CertificateError
-    alert_error \
-      "--certificate not specified and ~/.gem/gem-public_cert.pem is not valid"
+    alert_error(\
+      "--certificate not specified and ~/.gem/gem-public_cert.pem is not valid")
 
-    terminate_interaction 1
+    terminate_interaction(1)
   end
 
   def load_default_key
-    key_file = File.join Gem.default_key_path
-    key = File.read key_file
+    key_file = File.join(Gem.default_key_path)
+    key = File.read(key_file)
     passphrase = ENV['GEM_PRIVATE_KEY_PASSPHRASE']
-    options[:key] = OpenSSL::PKey::RSA.new key, passphrase
+    options[:key] = OpenSSL::PKey::RSA.new(key, passphrase)
   rescue Errno::ENOENT
-    alert_error \
-      "--private-key not specified and ~/.gem/gem-private_key.pem does not exist"
+    alert_error(\
+      "--private-key not specified and ~/.gem/gem-private_key.pem does not exist")
 
-    terminate_interaction 1
+    terminate_interaction(1)
   rescue OpenSSL::PKey::RSAError
-    alert_error \
-      "--private-key not specified and ~/.gem/gem-private_key.pem is not valid"
+    alert_error(\
+      "--private-key not specified and ~/.gem/gem-private_key.pem is not valid")
 
-    terminate_interaction 1
+    terminate_interaction(1)
   end
 
   def load_defaults # :nodoc:
@@ -278,23 +278,23 @@ For further reading on signing gems see `ri Gem::Security`.
 
   def remove_certificates_matching(filter) # :nodoc:
     certificates_matching filter do |certificate, path|
-      FileUtils.rm path
+      FileUtils.rm(path)
       say "Removed '#{certificate.subject}'"
     end
   end
 
   def sign(cert_file)
-    cert = File.read cert_file
-    cert = OpenSSL::X509::Certificate.new cert
+    cert = File.read(cert_file)
+    cert = OpenSSL::X509::Certificate.new(cert)
 
     permissions = File.stat(cert_file).mode & 0777
 
     issuer_cert = options[:issuer_cert]
     issuer_key = options[:key]
 
-    cert = Gem::Security.sign cert, issuer_key, issuer_cert
+    cert = Gem::Security.sign(cert, issuer_key, issuer_cert)
 
-    Gem::Security.write cert, cert_file, permissions
+    Gem::Security.write(cert, cert_file, permissions)
   end
 
   def sign_certificates # :nodoc:

@@ -4,7 +4,7 @@
 # Each exception needs a brief description and the scenarios where it is
 # likely to be raised
 
-require 'rubygems/deprecate'
+require('rubygems/deprecate')
 
 ##
 # Base exception class for RubyGems.  All exception raised by RubyGems are a
@@ -40,7 +40,7 @@ class Gem::DependencyResolutionError < Gem::DependencyError
     @conflict = conflict
     a, b = conflicting_dependencies
 
-    super "conflicting dependencies #{a} and #{b}\n#{@conflict.explanation}"
+    super("conflicting dependencies #{a} and #{b}\n#{@conflict.explanation}")
   end
 
   def conflicting_dependencies
@@ -80,7 +80,7 @@ class Gem::FilePermissionError < Gem::Exception
   def initialize(directory)
     @directory = directory
 
-    super "You don't have write permissions for the #{directory} directory."
+    super("You don't have write permissions for the #{directory} directory.")
   end
 
 end
@@ -104,7 +104,7 @@ class Gem::SpecificGemNotFoundException < Gem::GemNotFoundException
   # are also stored.
 
   def initialize(name, version, errors=nil)
-    super "Could not find a valid gem '#{name}' (#{version}) locally or in a repository"
+    super("Could not find a valid gem '#{name}' (#{version}) locally or in a repository")
 
     @name = name
     @version = version
@@ -141,7 +141,7 @@ class Gem::ImpossibleDependenciesError < Gem::Exception
     @request   = request
     @conflicts = conflicts
 
-    super build_message
+    super(build_message)
   end
 
   def build_message # :nodoc:
@@ -223,7 +223,7 @@ class Gem::SystemExitException < SystemExit
   def initialize(exit_code)
     @exit_code = exit_code
 
-    super "Exiting RubyGems with exit_code #{exit_code}"
+    super("Exiting RubyGems with exit_code #{exit_code}")
   end
 
 end
@@ -252,12 +252,12 @@ class Gem::UnsatisfiableDependencyError < Gem::DependencyError
   def initialize(dep, platform_mismatch=nil)
     if platform_mismatch and !platform_mismatch.empty?
       plats = platform_mismatch.map { |x| x.platform.to_s }.sort.uniq
-      super "Unable to resolve dependency: No match for '#{dep}' on this platform. Found: #{plats.join(', ')}"
+      super("Unable to resolve dependency: No match for '#{dep}' on this platform. Found: #{plats.join(', ')}")
     else
       if dep.explicit?
-        super "Unable to resolve dependency: user requested '#{dep}'"
+        super("Unable to resolve dependency: user requested '#{dep}'")
       else
-        super "Unable to resolve dependency: '#{dep.request_context}' requires '#{dep}'"
+        super("Unable to resolve dependency: '#{dep.request_context}' requires '#{dep}'")
       end
     end
 

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-require "rubygems"
-require "rubygems/test_case"
-require "rubygems/commands/help_command"
-require "rubygems/package"
-require "rubygems/command_manager"
-require File.expand_path('../rubygems_plugin', __FILE__)
+require("rubygems")
+require("rubygems/test_case")
+require("rubygems/commands/help_command")
+require("rubygems/package")
+require("rubygems/command_manager")
+require(File.expand_path('../rubygems_plugin', __FILE__))
 
 class TestGemCommandsHelpCommand < Gem::TestCase
   # previously this was calc'd in setup, but 1.8.7 had
@@ -16,7 +16,7 @@ class TestGemCommandsHelpCommand < Gem::TestCase
 
     @cmd = Gem::Commands::HelpCommand.new
 
-    load PLUGIN unless Gem::Commands.const_defined? :InterruptCommand
+    load(PLUGIN) unless Gem::Commands.const_defined?(:InterruptCommand)
   end
 
   def test_gem_help_bad
@@ -49,9 +49,9 @@ class TestGemCommandsHelpCommand < Gem::TestCase
       end
 
       if defined?(OpenSSL::SSL)
-        assert_empty err
+        assert_empty(err)
 
-        refute_match 'No command found for ', out
+        refute_match('No command found for ', out)
       end
     end
   end
@@ -68,11 +68,11 @@ class TestGemCommandsHelpCommand < Gem::TestCase
     @cmd.options[:args] = args
 
     use_ui @ui do
-      Dir.chdir @tempdir do
+      Dir.chdir(@tempdir) do
         @cmd.execute
       end
     end
 
-    yield @ui.output, @ui.error
+    yield(@ui.output, @ui.error)
   end
 end

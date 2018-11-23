@@ -42,7 +42,7 @@ class Gem::Source::Lock < Gem::Source
   # Delegates to the wrapped source's fetch_spec method.
 
   def fetch_spec(name_tuple)
-    @wrapped.fetch_spec name_tuple
+    @wrapped.fetch_spec(name_tuple)
   end
 
   def uri # :nodoc:

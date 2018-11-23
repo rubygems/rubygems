@@ -39,18 +39,18 @@ class Gem::Resolver::IndexSpecification < Gem::Resolver::Specification
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[Index specification', ']' do
+    q.group(2, '[Index specification', ']') do
       q.breakable
-      q.text full_name
+      q.text(full_name)
 
       unless Gem::Platform::RUBY == @platform
         q.breakable
-        q.text @platform.to_s
+        q.text(@platform.to_s)
       end
 
       q.breakable
-      q.text 'source '
-      q.pp @source
+      q.text('source ')
+      q.pp(@source)
     end
   end
 
@@ -60,9 +60,9 @@ class Gem::Resolver::IndexSpecification < Gem::Resolver::Specification
   def spec # :nodoc:
     @spec ||=
       begin
-        tuple = Gem::NameTuple.new @name, @version, @platform
+        tuple = Gem::NameTuple.new(@name, @version, @platform)
 
-        @source.fetch_spec tuple
+        @source.fetch_spec(tuple)
       end
   end
 

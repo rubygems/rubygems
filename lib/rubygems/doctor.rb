@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems'
-require 'rubygems/user_interaction'
+require('rubygems')
+require('rubygems/user_interaction')
 
 ##
 # Cleans up after a partially-failed uninstall or for an invalid
@@ -32,7 +32,7 @@ class Gem::Doctor
     Gem::REPOSITORY_SUBDIRECTORIES.sort -
       REPOSITORY_EXTENSION_MAP.map { |(k,_)| k }.sort
 
-  raise "Update REPOSITORY_EXTENSION_MAP, missing: #{missing.join ', '}" unless
+  raise("Update REPOSITORY_EXTENSION_MAP, missing: #{missing.join(', ')}") unless
     missing.empty?
 
   ##
@@ -69,13 +69,13 @@ class Gem::Doctor
     @orig_home = Gem.dir
     @orig_path = Gem.path
 
-    say "Checking #{@gem_repository}"
+    say("Checking #{@gem_repository}")
 
-    Gem.use_paths @gem_repository.to_s
+    Gem.use_paths(@gem_repository.to_s)
 
     unless gem_repository?
-      say 'This directory does not appear to be a RubyGems repository, ' +
-          'skipping'
+      say('This directory does not appear to be a RubyGems repository, ' +
+          'skipping')
       say
       return
     end
@@ -84,7 +84,7 @@ class Gem::Doctor
 
     say
   ensure
-    Gem.use_paths @orig_home, *@orig_path
+    Gem.use_paths(@orig_home, *@orig_path)
   end
 
   ##
@@ -109,7 +109,7 @@ class Gem::Doctor
       next unless File.exist?(child)
 
       basename = File.basename(child, extension)
-      next if installed_specs.include? basename
+      next if installed_specs.include?(basename)
       next if /^rubygems-\d/ =~ basename
       next if 'specifications' == sub_directory and 'default' == basename
 

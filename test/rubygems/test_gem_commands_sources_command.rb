@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/commands/sources_command'
+require('rubygems/test_case')
+require('rubygems/commands/sources_command')
 
 class TestGemCommandsSourcesCommand < Gem::TestCase
 
@@ -15,11 +15,11 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
   end
 
   def test_initialize_proxy
-    assert @cmd.handles?(['--http-proxy', 'http://proxy.example.com'])
+    assert(@cmd.handles?(['--http-proxy', 'http://proxy.example.com']))
   end
 
   def test_execute
-    @cmd.handle_options []
+    @cmd.handle_options([])
 
     use_ui @ui do
       @cmd.execute
@@ -31,13 +31,13 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
 #{@gem_repo}
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_add
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 1
+      fetcher.spec('a', 1)
     end
 
     specs = Gem::Specification.map { |spec|
@@ -45,27 +45,27 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     }
 
     specs_dump_gz = StringIO.new
-    Zlib::GzipWriter.wrap specs_dump_gz do |io|
-      Marshal.dump specs, io
+    Zlib::GzipWriter.wrap(specs_dump_gz) do |io|
+      Marshal.dump(specs, io)
     end
 
     @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
       specs_dump_gz.string
 
-    @cmd.handle_options %W[--add #{@new_repo}]
+    @cmd.handle_options(%W[--add #{@new_repo}])
 
     use_ui @ui do
       @cmd.execute
     end
 
-    assert_equal [@gem_repo, @new_repo], Gem.sources
+    assert_equal([@gem_repo, @new_repo], Gem.sources)
 
     expected = <<-EOF
 #{@new_repo} added to sources
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_add_nonexistent_source
@@ -74,7 +74,7 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
       raise Gem::RemoteFetcher::FetchError.new('it died', uri)
     end
 
-    @cmd.handle_options %w[--add http://beta-gems.example.com]
+    @cmd.handle_options(%w[--add http://beta-gems.example.com])
 
     use_ui @ui do
       assert_raises Gem::MockGemUi::TermError do
@@ -87,68 +87,68 @@ Error fetching http://beta-gems.example.com:
 \tit died (#{uri})
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_add_redundant_source
-    @cmd.handle_options %W[--add #{@gem_repo}]
+    @cmd.handle_options(%W[--add #{@gem_repo}])
 
     use_ui @ui do
       @cmd.execute
     end
 
-    assert_equal [@gem_repo], Gem.sources
+    assert_equal([@gem_repo], Gem.sources)
 
     expected = <<-EOF
 source #{@gem_repo} already present in the cache
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_add_redundant_source_trailing_slash
     # Remove pre-existing gem source (w/ slash)
     repo_with_slash = "http://gems.example.com/"
-    @cmd.handle_options %W[--remove #{repo_with_slash}]
+    @cmd.handle_options(%W[--remove #{repo_with_slash}])
     use_ui @ui do
       @cmd.execute
     end
-    source = Gem::Source.new repo_with_slash
-    assert_equal false, Gem.sources.include?(source)
+    source = Gem::Source.new(repo_with_slash)
+    assert_equal(false, Gem.sources.include?(source))
 
     expected = <<-EOF
 #{repo_with_slash} removed from sources
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
 
     # Re-add pre-existing gem source (w/o slash)
     repo_without_slash = "http://gems.example.com"
-    @cmd.handle_options %W[--add #{repo_without_slash}]
+    @cmd.handle_options(%W[--add #{repo_without_slash}])
     use_ui @ui do
       @cmd.execute
     end
-    source = Gem::Source.new repo_without_slash
-    assert_equal true, Gem.sources.include?(source)
+    source = Gem::Source.new(repo_without_slash)
+    assert_equal(true, Gem.sources.include?(source))
 
     expected = <<-EOF
 http://gems.example.com/ removed from sources
 http://gems.example.com added to sources
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
 
     # Re-add original gem source (w/ slash)
-    @cmd.handle_options %W[--add #{repo_with_slash}]
+    @cmd.handle_options(%W[--add #{repo_with_slash}])
     use_ui @ui do
       @cmd.execute
     end
-    source = Gem::Source.new repo_with_slash
-    assert_equal true, Gem.sources.include?(source)
+    source = Gem::Source.new(repo_with_slash)
+    assert_equal(true, Gem.sources.include?(source))
 
     expected = <<-EOF
 http://gems.example.com/ removed from sources
@@ -156,15 +156,15 @@ http://gems.example.com added to sources
 source http://gems.example.com/ already present in the cache
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_add_http_rubygems_org
     http_rubygems_org = 'http://rubygems.org'
 
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 1
+      fetcher.spec('a', 1)
     end
 
     specs = Gem::Specification.map { |spec|
@@ -172,16 +172,16 @@ source http://gems.example.com/ already present in the cache
     }
 
     specs_dump_gz = StringIO.new
-    Zlib::GzipWriter.wrap specs_dump_gz do |io|
-      Marshal.dump specs, io
+    Zlib::GzipWriter.wrap(specs_dump_gz) do |io|
+      Marshal.dump(specs, io)
     end
 
     @fetcher.data["#{http_rubygems_org}/specs.#{@marshal_version}.gz"] =
       specs_dump_gz.string
 
-    @cmd.handle_options %W[--add #{http_rubygems_org}]
+    @cmd.handle_options(%W[--add #{http_rubygems_org}])
 
-    ui = Gem::MockGemUi.new "n"
+    ui = Gem::MockGemUi.new("n")
 
     use_ui ui do
       assert_raises Gem::MockGemUi::TermError do
@@ -189,17 +189,17 @@ source http://gems.example.com/ already present in the cache
       end
     end
 
-    assert_equal [@gem_repo], Gem.sources
+    assert_equal([@gem_repo], Gem.sources)
 
     expected = <<-EXPECTED
     EXPECTED
 
-    assert_equal expected, @ui.output
-    assert_empty @ui.error
+    assert_equal(expected, @ui.output)
+    assert_empty(@ui.error)
   end
 
   def test_execute_add_bad_uri
-    @cmd.handle_options %w[--add beta-gems.example.com]
+    @cmd.handle_options(%w[--add beta-gems.example.com])
 
     use_ui @ui do
       assert_raises Gem::MockGemUi::TermError do
@@ -207,18 +207,18 @@ source http://gems.example.com/ already present in the cache
       end
     end
 
-    assert_equal [@gem_repo], Gem.sources
+    assert_equal([@gem_repo], Gem.sources)
 
     expected = <<-EOF
 beta-gems.example.com is not a URI
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_clear_all
-    @cmd.handle_options %w[--clear-all]
+    @cmd.handle_options(%w[--clear-all])
 
     use_ui @ui do
       @cmd.execute
@@ -228,15 +228,15 @@ beta-gems.example.com is not a URI
 *** Removed specs cache ***
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
 
     dir = Gem.spec_cache_dir
-    refute File.exist?(dir), 'cache dir removed'
+    refute(File.exist?(dir), 'cache dir removed')
   end
 
   def test_execute_list
-    @cmd.handle_options %w[--list]
+    @cmd.handle_options(%w[--list])
 
     use_ui @ui do
       @cmd.execute
@@ -248,12 +248,12 @@ beta-gems.example.com is not a URI
 #{@gem_repo}
     EOF
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_remove
-    @cmd.handle_options %W[--remove #{@gem_repo}]
+    @cmd.handle_options(%W[--remove #{@gem_repo}])
 
     use_ui @ui do
       @cmd.execute
@@ -261,12 +261,12 @@ beta-gems.example.com is not a URI
 
     expected = "#{@gem_repo} removed from sources\n"
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_remove_no_network
-    @cmd.handle_options %W[--remove #{@gem_repo}]
+    @cmd.handle_options(%W[--remove #{@gem_repo}])
 
     @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] = proc do
       raise Gem::RemoteFetcher::FetchError
@@ -278,23 +278,23 @@ beta-gems.example.com is not a URI
 
     expected = "#{@gem_repo} removed from sources\n"
 
-    assert_equal expected, @ui.output
-    assert_equal '', @ui.error
+    assert_equal(expected, @ui.output)
+    assert_equal('', @ui.error)
   end
 
   def test_execute_update
-    @cmd.handle_options %w[--update]
+    @cmd.handle_options(%w[--update])
 
     spec_fetcher do |fetcher|
-      fetcher.gem 'a', 1
+      fetcher.gem('a', 1)
     end
 
     use_ui @ui do
       @cmd.execute
     end
 
-    assert_equal "source cache successfully updated\n", @ui.output
-    assert_equal '', @ui.error
+    assert_equal("source cache successfully updated\n", @ui.output)
+    assert_equal('', @ui.error)
   end
 
 end

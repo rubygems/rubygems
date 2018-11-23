@@ -15,19 +15,19 @@ class Gem::Package::FileSource < Gem::Package::Source # :nodoc: all
   end
 
   def start
-    @start ||= File.read path, 20
+    @start ||= File.read(path, 20)
   end
 
   def present?
-    File.exist? path
+    File.exist?(path)
   end
 
   def with_write_io(&block)
-    File.open path, 'wb', &block
+    File.open(path, 'wb', &block)
   end
 
   def with_read_io(&block)
-    File.open path, 'rb', &block
+    File.open(path, 'rb', &block)
   end
 
 end

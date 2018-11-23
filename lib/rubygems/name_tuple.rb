@@ -4,14 +4,14 @@
 # Represents a gem of name +name+ at +version+ of +platform+. These
 # wrap the data returned from the indexes.
 
-require 'rubygems/platform'
+require('rubygems/platform')
 
 class Gem::NameTuple
   def initialize(name, version, platform="ruby")
     @name = name
     @version = version
 
-    unless platform.kind_of? Gem::Platform
+    unless platform.kind_of?(Gem::Platform)
       platform = "ruby" if !platform or platform.empty?
     end
 
@@ -40,7 +40,7 @@ class Gem::NameTuple
   # A null NameTuple, ie name=nil, version=0
 
   def self.null
-    new nil, Gem::Version.new(0), nil
+    new(nil, Gem::Version.new(0), nil)
   end
 
   ##
@@ -61,7 +61,7 @@ class Gem::NameTuple
   # Indicate if this NameTuple matches the current platform.
 
   def match_platform?
-    Gem::Platform.match @platform
+    Gem::Platform.match(@platform)
   end
 
   ##

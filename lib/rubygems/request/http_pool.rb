@@ -12,7 +12,7 @@ class Gem::Request::HTTPPool # :nodoc:
     @http_args  = http_args
     @cert_files = cert_files
     @proxy_uri  = proxy_uri
-    @queue      = SizedQueue.new 1
+    @queue      = SizedQueue.new(1)
     @queue << nil
   end
 
@@ -21,7 +21,7 @@ class Gem::Request::HTTPPool # :nodoc:
   end
 
   def checkin(connection)
-    @queue.push connection
+    @queue.push(connection)
   end
 
   def close_all
@@ -36,7 +36,7 @@ class Gem::Request::HTTPPool # :nodoc:
   private
 
   def make_connection
-    setup_connection Gem::Request::ConnectionPools.client.new(*@http_args)
+    setup_connection(Gem::Request::ConnectionPools.client.new(*@http_args))
   end
 
   def setup_connection(connection)

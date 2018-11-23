@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/installer'
-require 'rubygems/version_option'
-require 'rubygems/security_option'
-require 'rubygems/remote_fetcher'
+require('rubygems/command')
+require('rubygems/installer')
+require('rubygems/version_option')
+require('rubygems/security_option')
+require('rubygems/remote_fetcher')
 
 # forward-declare
 
@@ -18,11 +18,11 @@ class Gem::Commands::UnpackCommand < Gem::Command
   include Gem::SecurityOption
 
   def initialize
-    require 'fileutils'
+    require('fileutils')
 
-    super 'unpack', 'Unpack an installed gem to the current directory',
+    super('unpack', 'Unpack an installed gem to the current directory',
           :version => Gem::Requirement.default,
-          :target  => Dir.pwd
+          :target  => Dir.pwd)
 
     add_option('--target=DIR',
                'target directory for unpacking') do |value, options|
@@ -76,45 +76,45 @@ command help for an example.
     security_policy = options[:security_policy]
 
     get_all_gem_names.each do |name|
-      dependency = Gem::Dependency.new name, options[:version]
-      path = get_path dependency
+      dependency = Gem::Dependency.new(name, options[:version])
+      path = get_path(dependency)
 
       unless path
-        alert_error "Gem '#{name}' not installed nor fetchable."
+        alert_error("Gem '#{name}' not installed nor fetchable.")
         next
       end
 
       if @options[:spec]
-        spec, metadata = get_metadata path, security_policy
+        spec, metadata = get_metadata(path, security_policy)
 
         if metadata.nil?
-          alert_error "--spec is unsupported on '#{name}' (old format gem)"
+          alert_error("--spec is unsupported on '#{name}' (old format gem)")
           next
         end
 
-        spec_file = File.basename spec.spec_file
+        spec_file = File.basename(spec.spec_file)
 
-        FileUtils.mkdir_p @options[:target] if @options[:target]
+        FileUtils.mkdir_p(@options[:target]) if @options[:target]
 
         destination = begin
           if @options[:target]
-            File.join @options[:target], spec_file
+            File.join(@options[:target], spec_file)
           else
             spec_file
           end
         end
 
-        File.open destination, 'w' do |io|
-          io.write metadata
+        File.open(destination, 'w') do |io|
+          io.write(metadata)
         end
       else
-        basename = File.basename path, '.gem'
-        target_dir = File.expand_path basename, options[:target]
+        basename = File.basename(path, '.gem')
+        target_dir = File.expand_path(basename, options[:target])
 
-        package = Gem::Package.new path, security_policy
-        package.extract_files target_dir
+        package = Gem::Package.new(path, security_policy)
+        package.extract_files(target_dir)
 
-        say "Unpacked gem: '#{target_dir}'"
+        say("Unpacked gem: '#{target_dir}'")
       end
     end
   end
@@ -129,7 +129,7 @@ command help for an example.
   def find_in_cache(filename)
     Gem.path.each do |path|
       this_path = File.join(path, "cache", filename)
-      return this_path if File.exist? this_path
+      return this_path if File.exist?(this_path)
     end
 
     return nil
@@ -167,7 +167,7 @@ command help for an example.
     # We expect to find (basename).gem in the 'cache' directory.  Furthermore,
     # the name match must be exact (ignoring case).
 
-    path = find_in_cache File.basename selected.cache_file
+    path = find_in_cache(File.basename(selected.cache_file))
 
     return Gem::RemoteFetcher.fetcher.download_to_cache(dependency) unless path
 
@@ -181,19 +181,19 @@ command help for an example.
   # TODO move to Gem::Package as #raw_spec or something
 
   def get_metadata(path, security_policy = nil)
-    format = Gem::Package.new path, security_policy
+    format = Gem::Package.new(path, security_policy)
     spec = format.spec
 
     metadata = nil
 
-    File.open path, Gem.binary_mode do |io|
-      tar = Gem::Package::TarReader.new io
+    File.open(path, Gem.binary_mode) do |io|
+      tar = Gem::Package::TarReader.new(io)
       tar.each_entry do |entry|
         case entry.full_name
         when 'metadata' then
           metadata = entry.read
         when 'metadata.gz' then
-          metadata = Gem::Util.gunzip entry.read
+          metadata = Gem::Util.gunzip(entry.read)
         end
       end
     end

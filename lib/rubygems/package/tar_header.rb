@@ -100,12 +100,12 @@ class Gem::Package::TarHeader
   # Creates a tar header from IO +stream+
 
   def self.from(stream)
-    header = stream.read 512
+    header = stream.read(512)
     empty = (EMPTY_HEADER == header)
 
-    fields = header.unpack UNPACK_FORMAT
+    fields = header.unpack(UNPACK_FORMAT)
 
-    new :name     => fields.shift,
+    new(:name     => fields.shift,
         :mode     => strict_oct(fields.shift),
         :uid      => strict_oct(fields.shift),
         :gid      => strict_oct(fields.shift),
@@ -122,12 +122,12 @@ class Gem::Package::TarHeader
         :devminor => strict_oct(fields.shift),
         :prefix   => fields.shift,
 
-        :empty => empty
+        :empty => empty)
   end
 
   def self.strict_oct(str)
     return str.oct if str =~ /\A[0-7]*\z/
-    raise ArgumentError, "#{str.inspect} is not an octal string"
+    raise(ArgumentError, "#{str.inspect} is not an octal string")
   end
 
   ##
@@ -135,7 +135,7 @@ class Gem::Package::TarHeader
 
   def initialize(vals)
     unless vals[:name] && vals[:size] && vals[:prefix] && vals[:mode]
-      raise ArgumentError, ":name, :size, :prefix and :mode required"
+      raise(ArgumentError, ":name, :size, :prefix and :mode required")
     end
 
     vals[:uid] ||= 0
@@ -193,8 +193,8 @@ class Gem::Package::TarHeader
   # Updates the TarHeader's checksum
 
   def update_checksum
-    header = header " " * 8
-    @checksum = oct calculate_checksum(header), 6
+    header = header(" " * 8)
+    @checksum = oct(calculate_checksum(header), 6)
   end
 
   private
@@ -224,7 +224,7 @@ class Gem::Package::TarHeader
       prefix
     ]
 
-    header = header.pack PACK_FORMAT
+    header = header.pack(PACK_FORMAT)
 
     header << ("\0" * ((512 - header.size) % 512))
   end

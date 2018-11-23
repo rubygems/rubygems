@@ -10,12 +10,12 @@ class Gem::Ext::ConfigureBuilder < Gem::Ext::Builder
   def self.build(extension, dest_path, results, args=[], lib_dir=nil)
     unless File.exist?('Makefile')
       cmd = "sh ./configure --prefix=#{dest_path}"
-      cmd << " #{args.join ' '}" unless args.empty?
+      cmd << " #{args.join(' ')}" unless args.empty?
 
-      run cmd, results
+      run(cmd, results)
     end
 
-    make dest_path, results
+    make(dest_path, results)
 
     results
   end

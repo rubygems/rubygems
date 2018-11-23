@@ -10,18 +10,18 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
 
     @f =
       if source
-        sources = Gem::SourceList.from [source]
+        sources = Gem::SourceList.from([source])
 
-        Gem::SpecFetcher.new sources
+        Gem::SpecFetcher.new(sources)
       else
         Gem::SpecFetcher.fetcher
       end
 
     @all = Hash.new { |h,k| h[k] = [] }
 
-    list, errors = @f.available_specs :complete
+    list, errors = @f.available_specs(:complete)
 
-    @errors.concat errors
+    @errors.concat(errors)
 
     list.each do |uri, specs|
       specs.each do |n|
@@ -44,7 +44,7 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
     name = req.dependency.name
 
     @all[name].each do |uri, n|
-      if req.match? n, @prerelease
+      if req.match?(n, @prerelease)
         res << Gem::Resolver::IndexSpecification.new(
           self, n.name, n.version, uri, n.platform)
       end
@@ -54,14 +54,14 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[IndexSet', ']' do
+    q.group(2, '[IndexSet', ']') do
       q.breakable
-      q.text 'sources:'
+      q.text('sources:')
       q.breakable
-      q.pp @f.sources
+      q.pp(@f.sources)
 
       q.breakable
-      q.text 'specs:'
+      q.text('specs:')
 
       q.breakable
 
@@ -71,8 +71,8 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
         end
       end.flatten
 
-      q.seplist names do |name|
-        q.text name
+      q.seplist(names) do |name|
+        q.text(name)
       end
     end
   end

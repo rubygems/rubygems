@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/commands/open_command'
+require('rubygems/test_case')
+require('rubygems/commands/open_command')
 
 class TestGemCommandsOpenCommand < Gem::TestCase
 
@@ -15,8 +15,8 @@ class TestGemCommandsOpenCommand < Gem::TestCase
       gem.files = %W[lib/#{name}.rb Rakefile]
       gem.version = version
     end
-    write_file File.join(*%W[gems #{spec.full_name} lib #{name}.rb])
-    write_file File.join(*%W[gems #{spec.full_name} Rakefile])
+    write_file(File.join(*%W[gems #{spec.full_name} lib #{name}.rb]))
+    write_file(File.join(*%W[gems #{spec.full_name} Rakefile]))
     spec
   end
 
@@ -24,8 +24,8 @@ class TestGemCommandsOpenCommand < Gem::TestCase
     @cmd.options[:args] = %w[foo]
     @cmd.options[:editor] = "#{Gem.ruby} -e0 --"
 
-    gem 'foo', '1.0.0'
-    spec = gem 'foo', '1.0.1'
+    gem('foo', '1.0.0')
+    spec = gem('foo', '1.0.1')
     mock = MiniTest::Mock.new
     mock.expect(:call, true, [spec.full_gem_path])
 
@@ -35,15 +35,15 @@ class TestGemCommandsOpenCommand < Gem::TestCase
       end
     end
 
-    assert mock.verify
-    assert_equal "", @ui.error
+    assert(mock.verify)
+    assert_equal("", @ui.error)
   end
 
   def test_wrong_version
     @cmd.options[:version] = "4.0"
     @cmd.options[:args] = %w[foo]
 
-    gem "foo", "5.0"
+    gem("foo", "5.0")
 
     assert_raises Gem::MockGemUi::TermError do
       use_ui @ui do
@@ -51,8 +51,8 @@ class TestGemCommandsOpenCommand < Gem::TestCase
       end
     end
 
-    assert_match %r|Unable to find gem 'foo'|, @ui.output
-    assert_equal "", @ui.error
+    assert_match(%r|Unable to find gem 'foo'|, @ui.output)
+    assert_equal("", @ui.error)
   end
 
   def test_execute_bad_gem
@@ -64,8 +64,8 @@ class TestGemCommandsOpenCommand < Gem::TestCase
       end
     end
 
-    assert_match %r|Unable to find gem 'foo'|, @ui.output
-    assert_equal "", @ui.error
+    assert_match(%r|Unable to find gem 'foo'|, @ui.output)
+    assert_equal("", @ui.error)
   end
 
   def test_default_gem
@@ -93,8 +93,8 @@ class TestGemCommandsOpenCommand < Gem::TestCase
       end
     end
 
-    assert_match %r|'foo' is a default gem and can't be opened\.| , @ui.output
-    assert_equal "", @ui.error
+    assert_match(%r|'foo' is a default gem and can't be opened\.| , @ui.output)
+    assert_equal("", @ui.error)
   end
 
 end

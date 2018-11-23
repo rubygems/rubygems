@@ -12,7 +12,7 @@ module Gem
     def each
       n = self
       while n
-        yield n.value
+        yield(n.value)
         n = n.tail
       end
     end
@@ -22,16 +22,16 @@ module Gem
     end
 
     def prepend(value)
-      List.new value, self
+      List.new(value, self)
     end
 
     def pretty_print(q) # :nodoc:
-      q.pp to_a
+      q.pp(to_a)
     end
 
     def self.prepend(list, value)
       return List.new(value) unless list
-      List.new value, list
+      List.new(value, list)
     end
   end
 end

@@ -17,7 +17,7 @@ class Gem::Source::SpecificFile < Gem::Source
     @uri = nil
     @path = ::File.expand_path(file)
 
-    @package = Gem::Package.new @path
+    @package = Gem::Package.new(@path)
     @spec = @package.spec
     @name = @spec.name_tuple
   end
@@ -33,19 +33,19 @@ class Gem::Source::SpecificFile < Gem::Source
 
   def fetch_spec(name) # :nodoc:
     return @spec if name == @name
-    raise Gem::Exception, "Unable to find '#{name}'"
+    raise(Gem::Exception, "Unable to find '#{name}'")
     @spec
   end
 
   def download(spec, dir = nil) # :nodoc:
     return @path if spec == @spec
-    raise Gem::Exception, "Unable to download '#{spec.full_name}'"
+    raise(Gem::Exception, "Unable to download '#{spec.full_name}'")
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[SpecificFile:', ']' do
+    q.group(2, '[SpecificFile:', ']') do
       q.breakable
-      q.text @path
+      q.text(@path)
     end
   end
 

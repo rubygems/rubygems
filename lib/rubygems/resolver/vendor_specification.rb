@@ -18,7 +18,7 @@ class Gem::Resolver::VendorSpecification < Gem::Resolver::SpecSpecification
   # +options+ are ignored.
 
   def install(options = {})
-    yield nil
+    yield(nil)
   end
 
 end

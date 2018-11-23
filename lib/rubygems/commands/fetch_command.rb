@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/local_remote_options'
-require 'rubygems/version_option'
+require('rubygems/command')
+require('rubygems/local_remote_options')
+require('rubygems/version_option')
 
 class Gem::Commands::FetchCommand < Gem::Command
 
@@ -9,7 +9,7 @@ class Gem::Commands::FetchCommand < Gem::Command
   include Gem::VersionOption
 
   def initialize
-    super 'fetch', 'Download a gem and place it in the current directory'
+    super('fetch', 'Download a gem and place it in the current directory')
 
     add_bulk_threshold_option
     add_proxy_option
@@ -50,11 +50,11 @@ then repackaging it.
     gem_names = get_all_gem_names
 
     gem_names.each do |gem_name|
-      dep = Gem::Dependency.new gem_name, version
+      dep = Gem::Dependency.new(gem_name, version)
       dep.prerelease = options[:prerelease]
 
       specs_and_sources, errors =
-        Gem::SpecFetcher.fetcher.spec_for_dependency dep
+        Gem::SpecFetcher.fetcher.spec_for_dependency(dep)
 
       if platform
         filtered = specs_and_sources.select { |s,| s.platform == platform }
@@ -64,11 +64,11 @@ then repackaging it.
       spec, source = specs_and_sources.max_by { |s,| s.version }
 
       if spec.nil?
-        show_lookup_failure gem_name, version, errors, options[:domain]
+        show_lookup_failure(gem_name, version, errors, options[:domain])
         next
       end
 
-      source.download spec
+      source.download(spec)
 
       say "Downloaded #{spec.full_name}"
     end

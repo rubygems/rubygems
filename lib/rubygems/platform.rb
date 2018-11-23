@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require "rubygems/deprecate"
+require("rubygems/deprecate")
 
 ##
 # Available list of platforms for targeting Gem installations.
@@ -31,10 +31,10 @@ class Gem::Platform
   end
 
   def self.installable?(spec)
-    if spec.respond_to? :installable_platform?
+    if spec.respond_to?(:installable_platform?)
       spec.installable_platform?
     else
-      match spec.platform
+      match(spec.platform)
     end
   end
 
@@ -54,7 +54,7 @@ class Gem::Platform
     when Array then
       @cpu, @os, @version = arch
     when String then
-      arch = arch.split '-'
+      arch = arch.split('-')
 
       if arch.length > 2 and arch.last !~ /\d/  # reassemble x86-linux-gnu
         extra = arch.pop
@@ -107,7 +107,7 @@ class Gem::Platform
       @os = arch.os
       @version = arch.version
     else
-      raise ArgumentError, "invalid argument #{arch.inspect}"
+      raise(ArgumentError, "invalid argument #{arch.inspect}")
     end
   end
 
@@ -120,7 +120,7 @@ class Gem::Platform
   end
 
   def to_s
-    to_a.compact.join '-'
+    to_a.compact.join('-')
   end
 
   ##
@@ -183,7 +183,7 @@ class Gem::Platform
               else                             other
               end
 
-      other = Gem::Platform.new other
+      other = Gem::Platform.new(other)
     else
       return nil
     end

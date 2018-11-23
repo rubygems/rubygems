@@ -30,8 +30,8 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
   def install(options = {})
     destination = options[:install_dir] || Gem.dir
 
-    if File.exist? File.join(destination, 'specifications', spec.spec_name)
-      yield nil
+    if File.exist?(File.join(destination, 'specifications', spec.spec_name))
+      yield(nil)
       return
     end
 
@@ -46,23 +46,23 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[LockSpecification', ']' do
+    q.group(2, '[LockSpecification', ']') do
       q.breakable
-      q.text "name: #{@name}"
+      q.text("name: #{@name}")
 
       q.breakable
-      q.text "version: #{@version}"
+      q.text("version: #{@version}")
 
       unless @platform == Gem::Platform::RUBY
         q.breakable
-        q.text "platform: #{@platform}"
+        q.text("platform: #{@platform}")
       end
 
       unless @dependencies.empty?
         q.breakable
-        q.text 'dependencies:'
+        q.text('dependencies:')
         q.breakable
-        q.pp @dependencies
+        q.pp(@dependencies)
       end
     end
   end
@@ -80,7 +80,7 @@ class Gem::Resolver::LockSpecification < Gem::Resolver::Specification
       s.version  = @version
       s.platform = @platform
 
-      s.dependencies.concat @dependencies
+      s.dependencies.concat(@dependencies)
     end
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/installer'
+require('rubygems/test_case')
+require('rubygems/installer')
 
 class Gem::Installer
 
@@ -94,14 +94,14 @@ class Gem::InstallerTestCase < Gem::TestCase
       util_make_exec spec
     end
 
-    util_build_gem @spec
-    util_build_gem @user_spec
+    util_build_gem(@spec)
+    util_build_gem(@user_spec)
 
     @gem = @spec.cache_file
     @user_gem = @user_spec.cache_file
 
-    @installer      = util_installer @spec, @gemhome
-    @user_installer = util_installer @user_spec, Gem.user_dir, :user
+    @installer      = util_installer(@spec, @gemhome)
+    @user_installer = util_installer(@user_spec, Gem.user_dir, :user)
 
     Gem::Installer.path_warning = false
   end
@@ -110,7 +110,7 @@ class Gem::InstallerTestCase < Gem::TestCase
   # The path where installed executables live
 
   def util_inst_bindir
-    File.join @gemhome, "bin"
+    File.join(@gemhome, "bin")
   end
 
   ##
@@ -123,14 +123,14 @@ class Gem::InstallerTestCase < Gem::TestCase
     spec.executables = %w[executable]
     spec.files << 'bin/executable'
 
-    exec_path = spec.bin_file "executable"
+    exec_path = spec.bin_file("executable")
     write_file exec_path do |io|
-      io.puts shebang
+      io.puts(shebang)
     end
 
-    bin_path = File.join @tempdir, "bin", "executable"
+    bin_path = File.join(@tempdir, "bin", "executable")
     write_file bin_path do |io|
-      io.puts shebang
+      io.puts(shebang)
     end
   end
 
@@ -146,30 +146,30 @@ class Gem::InstallerTestCase < Gem::TestCase
     @spec.files << File.join('lib', 'code.rb')
     @spec.extensions << File.join('ext', 'a', 'mkrf_conf.rb')
 
-    Dir.chdir @tempdir do
-      FileUtils.mkdir_p 'bin'
-      FileUtils.mkdir_p 'lib'
-      FileUtils.mkdir_p File.join('ext', 'a')
-      File.open File.join('bin', 'executable'), 'w' do |f|
-        f.puts "raise 'ran executable'"
+    Dir.chdir(@tempdir) do
+      FileUtils.mkdir_p('bin')
+      FileUtils.mkdir_p('lib')
+      FileUtils.mkdir_p(File.join('ext', 'a'))
+      File.open(File.join('bin', 'executable'), 'w') do |f|
+        f.puts("raise 'ran executable'")
       end
-      File.open File.join('lib', 'code.rb'), 'w' do |f| f.puts '1' end
-      File.open File.join('ext', 'a', 'mkrf_conf.rb'), 'w' do |f|
+      File.open(File.join('lib', 'code.rb'), 'w') do |f| f.puts('1') end
+      File.open(File.join('ext', 'a', 'mkrf_conf.rb'), 'w') do |f|
         f << <<-EOF
           File.open 'Rakefile', 'w' do |rf| rf.puts "task :default" end
         EOF
       end
 
-      yield @spec if block_given?
+      yield(@spec) if block_given?
 
       use_ui ui do
-        FileUtils.rm_f @gem
+        FileUtils.rm_f(@gem)
 
-        @gem = Gem::Package.build @spec
+        @gem = Gem::Package.build(@spec)
       end
     end
 
-    @installer = Gem::Installer.at @gem
+    @installer = Gem::Installer.at(@gem)
   end
 
   ##

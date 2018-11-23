@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "rubygems/util"
+require("rubygems/util")
 
 module Gem::BundlerVersionFinder
   def self.bundler_version
@@ -83,10 +83,10 @@ To install the missing version, run `gem install bundler:#{vr.first}`
   def self.lockfile_contents
     gemfile = ENV["BUNDLE_GEMFILE"]
     gemfile = nil if gemfile && gemfile.empty?
-    Gem::Util.traverse_parents Dir.pwd do |directory|
+    Gem::Util.traverse_parents(Dir.pwd) do |directory|
       next unless gemfile = Gem::GEM_DEP_FILES.find { |f| File.file?(f.untaint) }
 
-      gemfile = File.join directory, gemfile
+      gemfile = File.join(directory, gemfile)
       break
     end unless gemfile
 

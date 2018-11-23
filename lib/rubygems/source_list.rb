@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems/source'
+require('rubygems/source')
 
 ##
 # The SourceList represents the sources rubygems has been configured to use.
@@ -36,7 +36,7 @@ class Gem::SourceList
   def self.from(ary)
     list = new
 
-    list.replace ary
+    list.replace(ary)
 
     return list
   end
@@ -130,8 +130,8 @@ class Gem::SourceList
   # Gem::Source or a source URI.
 
   def include?(other)
-    if other.kind_of? Gem::Source
-      @sources.include? other
+    if other.kind_of?(Gem::Source)
+      @sources.include?(other)
     else
       @sources.find { |x| x.uri.to_s == other.to_s }
     end
@@ -141,8 +141,8 @@ class Gem::SourceList
   # Deletes +source+ from the source list which may be a Gem::Source or a URI.
 
   def delete(source)
-    if source.kind_of? Gem::Source
-      @sources.delete source
+    if source.kind_of?(Gem::Source)
+      @sources.delete(source)
     else
       @sources.delete_if { |x| x.uri.to_s == source.to_s }
     end

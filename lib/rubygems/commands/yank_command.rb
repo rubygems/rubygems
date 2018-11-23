@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/local_remote_options'
-require 'rubygems/version_option'
-require 'rubygems/gemcutter_utilities'
+require('rubygems/command')
+require('rubygems/local_remote_options')
+require('rubygems/version_option')
+require('rubygems/gemcutter_utilities')
 
 class Gem::Commands::YankCommand < Gem::Command
   include Gem::LocalRemoteOptions
@@ -28,7 +28,7 @@ data you will need to change them immediately and yank your gem.
   end
 
   def initialize
-    super 'yank', 'Remove a pushed gem from the index'
+    super('yank', 'Remove a pushed gem from the index')
 
     add_version_option("remove")
     add_platform_option("remove")
@@ -46,7 +46,7 @@ data you will need to change them immediately and yank your gem.
   def execute
     @host = options[:host]
 
-    sign_in @host
+    sign_in(@host)
 
     version   = get_version_from_requirements(options[:version])
     platform  = get_platform_from_requirements(options)
@@ -54,13 +54,13 @@ data you will need to change them immediately and yank your gem.
     if version
       yank_gem(version, platform)
     else
-      say "A version argument is required: #{usage}"
+      say("A version argument is required: #{usage}")
       terminate_interaction
     end
   end
 
   def yank_gem(version, platform)
-    say "Yanking gem from #{self.host}..."
+    say("Yanking gem from #{self.host}...")
     yank_api_request(:delete, version, platform, "api/v1/gems/yank")
   end
 
@@ -77,9 +77,9 @@ data you will need to change them immediately and yank your gem.
       }
       data['platform'] = platform if platform
 
-      request.set_form_data data
+      request.set_form_data(data)
     end
-    say response.body
+    say(response.body)
   end
 
   def get_version_from_requirements(requirements)
@@ -89,7 +89,7 @@ data you will need to change them immediately and yank your gem.
   end
 
   def get_platform_from_requirements(requirements)
-    Gem.platforms[1].to_s if requirements.key? :added_platform
+    Gem.platforms[1].to_s if requirements.key?(:added_platform)
   end
 
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'tempfile'
-require 'rubygems'
-require 'rubygems/remote_fetcher'
+require('tempfile')
+require('rubygems')
+require('rubygems/remote_fetcher')
 
 ##
 # A fake Gem::RemoteFetcher for use in tests or to avoid real live HTTP
@@ -33,19 +33,19 @@ class Gem::FakeFetcher
   end
 
   def find_data(path)
-    return File.read path.path if URI === path and 'file' == path.scheme
+    return File.read(path.path) if URI === path and 'file' == path.scheme
 
     if URI === path and "URI::#{path.scheme.upcase}" != path.class.name
-      raise ArgumentError,
-        "mismatch for scheme #{path.scheme} and class #{path.class}"
+      raise(ArgumentError,
+        "mismatch for scheme #{path.scheme} and class #{path.class}")
     end
 
     path = path.to_s
     @paths << path
-    raise ArgumentError, 'need full URI' unless path =~ %r'^https?://'
+    raise(ArgumentError, 'need full URI') unless path =~ %r'^https?://'
 
-    unless @data.key? path
-      raise Gem::RemoteFetcher::FetchError.new("no data for #{path}", path)
+    unless @data.key?(path)
+      raise(Gem::RemoteFetcher::FetchError.new("no data for #{path}", path))
     end
 
     @data[path]
@@ -58,7 +58,7 @@ class Gem::FakeFetcher
       data.call
     else
       if path.to_s =~ /gz$/ and not data.nil? and not data.empty?
-        data = Gem::Util.gunzip data
+        data = Gem::Util.gunzip(data)
       end
 
       data
@@ -67,7 +67,7 @@ class Gem::FakeFetcher
 
   def cache_update_path(uri, path = nil, update = true)
     if data = fetch_path(uri)
-      open(path, 'wb') { |io| io.write data } if path and update
+      open(path, 'wb') { |io| io.write(data) } if path and update
       data
     else
       Gem.read_binary(path) if path
@@ -89,8 +89,8 @@ class Gem::FakeFetcher
     data = find_data(uri)
     body, code, msg = data
 
-    @last_request = request_class.new uri.request_uri
-    yield @last_request if block_given?
+    @last_request = request_class.new(uri.request_uri)
+    yield(@last_request) if block_given?
 
     response = Net::HTTPResponse.send(:response_class, code.to_s).new("1.0", code.to_s, msg)
     response.instance_variable_set(:@body, body)
@@ -99,12 +99,12 @@ class Gem::FakeFetcher
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[FakeFetcher', ']' do
+    q.group(2, '[FakeFetcher', ']') do
       q.breakable
-      q.text 'URIs:'
+      q.text('URIs:')
 
       q.breakable
-      q.pp @data.keys
+      q.pp(@data.keys)
     end
   end
 
@@ -112,10 +112,10 @@ class Gem::FakeFetcher
     path = path.to_s
     @paths << path
 
-    raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
+    raise(ArgumentError, 'need full URI') unless path =~ %r'^http://'
 
-    unless @data.key? path
-      raise Gem::RemoteFetcher::FetchError.new("no data for #{path}", path)
+    unless @data.key?(path)
+      raise(Gem::RemoteFetcher::FetchError.new("no data for #{path}", path))
     end
 
     data = @data[path]
@@ -124,34 +124,34 @@ class Gem::FakeFetcher
   end
 
   def download(spec, source_uri, install_dir = Gem.dir)
-    name = File.basename spec.cache_file
+    name = File.basename(spec.cache_file)
     path = if Dir.pwd == install_dir  # see fetch_command
              install_dir
            else
-             File.join install_dir, "cache"
+             File.join(install_dir, "cache")
            end
 
-    path = File.join path, name
+    path = File.join(path, name)
 
     if source_uri =~ /^http/
       File.open(path, "wb") do |f|
-        f.write fetch_path(File.join(source_uri, "gems", name))
+        f.write(fetch_path(File.join(source_uri, "gems", name)))
       end
     else
-      FileUtils.cp source_uri, path
+      FileUtils.cp(source_uri, path)
     end
 
     path
   end
 
   def download_to_cache(dependency)
-    found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dependency
+    found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency(dependency)
 
     return if found.empty?
 
     spec, source = found.first
 
-    download spec, source.uri.to_s
+    download(spec, source.uri.to_s)
   end
 
 end
@@ -188,9 +188,9 @@ class Gem::TestCase::SpecFetcherSetup
   # gems and specifications defined in the instance.
 
   def self.declare(test, repository)
-    setup = new test, repository
+    setup = new(test, repository)
 
-    yield setup
+    yield(setup)
 
     setup.execute
   end
@@ -236,7 +236,7 @@ class Gem::TestCase::SpecFetcherSetup
       when :gem then
         spec, gem = @test.util_gem(*arguments, &arguments.pop)
 
-        write_spec spec
+        write_spec(spec)
 
         @gems[spec] = gem
         @installed << spec
@@ -248,7 +248,7 @@ class Gem::TestCase::SpecFetcherSetup
       when :spec then
         spec = @test.util_spec(*arguments, &arguments.pop)
 
-        write_spec spec
+        write_spec(spec)
 
         @gems[spec] = nil
         @installed << spec
@@ -283,15 +283,15 @@ class Gem::TestCase::SpecFetcherSetup
 
   def legacy_platform
     spec 'pl', 1 do |s|
-      s.platform = Gem::Platform.new 'i386-linux'
-      s.instance_variable_set :@original_platform, 'i386-linux'
+      s.platform = Gem::Platform.new('i386-linux')
+      s.instance_variable_set(:@original_platform, 'i386-linux')
     end
   end
 
   def setup_fetcher # :nodoc:
-    require 'zlib'
-    require 'socket'
-    require 'rubygems/remote_fetcher'
+    require('zlib')
+    require('socket')
+    require('rubygems/remote_fetcher')
 
     unless @test.fetcher
       @test.fetcher = Gem::FakeFetcher.new
@@ -302,12 +302,12 @@ class Gem::TestCase::SpecFetcherSetup
 
     begin
       gem_repo, @test.gem_repo = @test.gem_repo, @repository
-      @test.uri = URI @repository
+      @test.uri = URI(@repository)
 
       @test.util_setup_spec_fetcher(*@downloaded)
     ensure
       @test.gem_repo = gem_repo
-      @test.uri = URI gem_repo
+      @test.uri = URI(gem_repo)
     end
 
     @gems.each do |spec, gem|
@@ -316,7 +316,7 @@ class Gem::TestCase::SpecFetcherSetup
       @test.fetcher.data["#{@repository}gems/#{spec.file_name}"] =
         Gem.read_binary(gem)
 
-      FileUtils.cp gem, spec.cache_file
+      FileUtils.cp(gem, spec.cache_file)
     end
   end
 
@@ -332,8 +332,8 @@ class Gem::TestCase::SpecFetcherSetup
   end
 
   def write_spec(spec) # :nodoc:
-    File.open spec.spec_file, 'w' do |io|
-      io.write spec.to_ruby_for_cache
+    File.open(spec.spec_file, 'w') do |io|
+      io.write(spec.to_ruby_for_cache)
     end
   end
 
@@ -353,9 +353,9 @@ class TempIO < Tempfile
   # Creates a new TempIO that will be initialized to contain +string+.
 
   def initialize(string = '')
-    super "TempIO"
+    super("TempIO")
     binmode
-    write string
+    write(string)
     rewind
   end
 
@@ -364,6 +364,6 @@ class TempIO < Tempfile
 
   def string
     flush
-    Gem.read_binary path
+    Gem.read_binary(path)
   end
 end

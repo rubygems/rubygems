@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/commands/query_command'
+require('rubygems/command')
+require('rubygems/commands/query_command')
 
 ##
 # An alternate to Gem::Commands::QueryCommand that searches for gems starting
@@ -9,7 +9,7 @@ require 'rubygems/commands/query_command'
 class Gem::Commands::ListCommand < Gem::Commands::QueryCommand
 
   def initialize
-    super 'list', 'Display local gems whose name matches REGEXP'
+    super('list', 'Display local gems whose name matches REGEXP')
 
     remove_option('--name-matches')
   end

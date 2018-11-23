@@ -5,11 +5,11 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/exceptions'
-require 'fileutils'
+require('rubygems/exceptions')
+require('fileutils')
 
 begin
-  require 'openssl'
+  require('openssl')
 rescue LoadError => e
   raise unless (e.respond_to?(:path) && e.path == 'openssl') ||
                e.message =~ / -- openssl$/
@@ -345,7 +345,7 @@ module Gem::Security
     elsif defined?(OpenSSL::Digest::SHA1)
       OpenSSL::Digest::SHA1
     else
-      require 'digest'
+      require('digest')
       Digest::SHA512
     end
 
@@ -353,7 +353,7 @@ module Gem::Security
   # Used internally to select the signing digest from all computed digests
 
   DIGEST_NAME = # :nodoc:
-    if DIGEST_ALGORITHM.method_defined? :name
+    if DIGEST_ALGORITHM.method_defined?(:name)
       DIGEST_ALGORITHM.new.name
     else
       DIGEST_ALGORITHM.name[/::([^:]+)\z/, 1]
@@ -410,7 +410,7 @@ module Gem::Security
 
     return alt_name.value if alt_name
 
-    certificate.send x509_entry
+    certificate.send(x509_entry)
   end
 
   ##
@@ -432,10 +432,10 @@ module Gem::Security
 
     cert.subject    = subject
 
-    ef = OpenSSL::X509::ExtensionFactory.new nil, cert
+    ef = OpenSSL::X509::ExtensionFactory.new(nil, cert)
 
     cert.extensions = extensions.map do |ext_name, value|
-      ef.create_extension ext_name, value
+      ef.create_extension(ext_name, value)
     end
 
     cert
@@ -447,11 +447,11 @@ module Gem::Security
   # +key+.
 
   def self.create_cert_email(email, key, age = ONE_YEAR, extensions = EXTENSIONS)
-    subject = email_to_name email
+    subject = email_to_name(email)
 
-    extensions = extensions.merge "subjectAltName" => "email:#{email}"
+    extensions = extensions.merge("subjectAltName" => "email:#{email}")
 
-    create_cert_self_signed subject, key, age, extensions
+    create_cert_self_signed(subject, key, age, extensions)
   end
 
   ##
@@ -460,9 +460,9 @@ module Gem::Security
 
   def self.create_cert_self_signed(subject, key, age = ONE_YEAR,
                                    extensions = EXTENSIONS, serial = 1)
-    certificate = create_cert subject, key, age, extensions
+    certificate = create_cert(subject, key, age, extensions)
 
-    sign certificate, key, certificate, age, extensions, serial
+    sign(certificate, key, certificate, age, extensions, serial)
   end
 
   ##
@@ -470,7 +470,7 @@ module Gem::Security
   # default is a 3072 bit RSA key.
 
   def self.create_key(length = KEY_LENGTH, algorithm = KEY_ALGORITHM)
-    algorithm.new length
+    algorithm.new(length)
   end
 
   ##
@@ -479,13 +479,13 @@ module Gem::Security
   def self.email_to_name(email_address)
     email_address = email_address.gsub(/[^\w@.-]+/i, '_')
 
-    cn, dcs = email_address.split '@'
+    cn, dcs = email_address.split('@')
 
-    dcs = dcs.split '.'
+    dcs = dcs.split('.')
 
-    name = "CN=#{cn}/#{dcs.map { |dc| "DC=#{dc}" }.join '/'}"
+    name = "CN=#{cn}/#{dcs.map { |dc| "DC=#{dc}" }.join('/')}"
 
-    OpenSSL::X509::Name.parse name
+    OpenSSL::X509::Name.parse(name)
   end
 
   ##
@@ -496,19 +496,19 @@ module Gem::Security
 
   def self.re_sign(expired_certificate, private_key, age = ONE_YEAR,
                    extensions = EXTENSIONS)
-    raise Gem::Security::Exception,
+    raise(Gem::Security::Exception,
           "incorrect signing key for re-signing " +
-          "#{expired_certificate.subject}" unless
+          "#{expired_certificate.subject}") unless
       expired_certificate.public_key.to_pem == private_key.public_key.to_pem
 
     unless expired_certificate.subject.to_s ==
            expired_certificate.issuer.to_s
-      subject = alt_name_or_x509_entry expired_certificate, :subject
-      issuer  = alt_name_or_x509_entry expired_certificate, :issuer
+      subject = alt_name_or_x509_entry(expired_certificate, :subject)
+      issuer  = alt_name_or_x509_entry(expired_certificate, :issuer)
 
-      raise Gem::Security::Exception,
+      raise(Gem::Security::Exception,
             "#{subject} is not self-signed, contact #{issuer} " +
-            "to obtain a valid certificate"
+            "to obtain a valid certificate")
     end
 
     serial = expired_certificate.serial + 1
@@ -540,20 +540,20 @@ module Gem::Security
       extension.oid == 'subjectAltName'
     end
 
-    extensions = extensions.merge 'subjectAltName' => alt_name.value if
+    extensions = extensions.merge('subjectAltName' => alt_name.value) if
       alt_name
 
     issuer_alt_name = signing_cert.extensions.find do |extension|
       extension.oid == 'subjectAltName'
     end
 
-    extensions = extensions.merge 'issuerAltName' => issuer_alt_name.value if
+    extensions = extensions.merge('issuerAltName' => issuer_alt_name.value) if
       issuer_alt_name
 
-    signed = create_cert signee_subject, signee_key, age, extensions, serial
+    signed = create_cert(signee_subject, signee_key, age, extensions, serial)
     signed.issuer = signing_cert.subject
 
-    signed.sign signing_key, Gem::Security::DIGEST_ALGORITHM.new
+    signed.sign(signing_key, Gem::Security::DIGEST_ALGORITHM.new)
   end
 
   ##
@@ -563,9 +563,9 @@ module Gem::Security
   def self.trust_dir
     return @trust_dir if @trust_dir
 
-    dir = File.join Gem.user_home, '.gem', 'trust'
+    dir = File.join(Gem.user_home, '.gem', 'trust')
 
-    @trust_dir ||= Gem::Security::TrustDir.new dir
+    @trust_dir ||= Gem::Security::TrustDir.new(dir)
   end
 
   ##
@@ -581,13 +581,13 @@ module Gem::Security
   # passed to +to_pem+.
 
   def self.write(pemmable, path, permissions = 0600, passphrase = nil, cipher = KEY_CIPHER)
-    path = File.expand_path path
+    path = File.expand_path(path)
 
-    File.open path, 'wb', permissions do |io|
+    File.open(path, 'wb', permissions) do |io|
       if passphrase and cipher
-        io.write pemmable.to_pem cipher, passphrase
+        io.write(pemmable.to_pem(cipher, passphrase))
       else
-        io.write pemmable.to_pem
+        io.write(pemmable.to_pem)
       end
     end
 
@@ -599,9 +599,9 @@ module Gem::Security
 end
 
 if defined?(OpenSSL::SSL)
-  require 'rubygems/security/policy'
-  require 'rubygems/security/policies'
-  require 'rubygems/security/trust_dir'
+  require('rubygems/security/policy')
+  require('rubygems/security/policies')
+  require('rubygems/security/trust_dir')
 end
 
-require 'rubygems/security/signer'
+require('rubygems/security/signer')

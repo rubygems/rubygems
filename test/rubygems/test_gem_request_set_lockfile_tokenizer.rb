@@ -1,48 +1,48 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/request_set'
-require 'rubygems/request_set/lockfile'
-require 'rubygems/request_set/lockfile/tokenizer'
-require 'rubygems/request_set/lockfile/parser'
+require('rubygems/test_case')
+require('rubygems/request_set')
+require('rubygems/request_set/lockfile')
+require('rubygems/request_set/lockfile/tokenizer')
+require('rubygems/request_set/lockfile/parser')
 
 class TestGemRequestSetLockfileTokenizer < Gem::TestCase
   def setup
     super
 
     @gem_deps_file = 'gem.deps.rb'
-    @lock_file = File.expand_path "#{@gem_deps_file}.lock"
+    @lock_file = File.expand_path("#{@gem_deps_file}.lock")
   end
 
   def test_peek
-    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "\n"
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new("\n")
 
-    assert_equal :newline, tokenizer.peek.first
+    assert_equal(:newline, tokenizer.peek.first)
 
-    assert_equal :newline, tokenizer.next_token.first
+    assert_equal(:newline, tokenizer.next_token.first)
 
-    assert_equal :EOF, tokenizer.peek.first
+    assert_equal(:EOF, tokenizer.peek.first)
   end
 
   def test_skip
-    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "\n"
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new("\n")
 
-    refute_predicate tokenizer, :empty?
+    refute_predicate(tokenizer, :empty?)
 
-    tokenizer.skip :newline
+    tokenizer.skip(:newline)
 
-    assert_empty tokenizer
+    assert_empty(tokenizer)
   end
 
   def test_token_pos
-    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new ''
-    assert_equal [5, 0], tokenizer.token_pos(5)
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new('')
+    assert_equal([5, 0], tokenizer.token_pos(5))
 
-    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new '', nil, 1, 2
-    assert_equal [3, 1], tokenizer.token_pos(5)
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new('', nil, 1, 2)
+    assert_equal([3, 1], tokenizer.token_pos(5))
   end
 
   def test_tokenize
-    write_lockfile <<-LOCKFILE
+    write_lockfile(<<-LOCKFILE)
 GEM
   remote: #{@gem_repo}
   specs:
@@ -145,11 +145,11 @@ DEPENDENCIES
       [:newline,     nil,                  3, 16],
     ]
 
-    assert_equal expected, tokenize_lockfile
+    assert_equal(expected, tokenize_lockfile)
   end
 
   def test_tokenize_capitals
-    write_lockfile <<-LOCKFILE
+    write_lockfile(<<-LOCKFILE)
 GEM
   remote: #{@gem_repo}
   specs:
@@ -187,49 +187,49 @@ DEPENDENCIES
       [:newline, nil,                  4, 9],
     ]
 
-    assert_equal expected, tokenize_lockfile
+    assert_equal(expected, tokenize_lockfile)
   end
 
   def test_tokenize_conflict_markers
-    write_lockfile '<<<<<<<'
+    write_lockfile('<<<<<<<')
 
     e = assert_raises Gem::RequestSet::Lockfile::ParseError do
       tokenize_lockfile
     end
 
-    assert_equal "your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
-                 e.message
+    assert_equal("your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
+                 e.message)
 
-    write_lockfile '|||||||'
-
-    e = assert_raises Gem::RequestSet::Lockfile::ParseError do
-      tokenize_lockfile
-    end
-
-    assert_equal "your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
-                 e.message
-
-    write_lockfile '======='
+    write_lockfile('|||||||')
 
     e = assert_raises Gem::RequestSet::Lockfile::ParseError do
       tokenize_lockfile
     end
 
-    assert_equal "your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
-                 e.message
+    assert_equal("your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
+                 e.message)
 
-    write_lockfile '>>>>>>>'
+    write_lockfile('=======')
 
     e = assert_raises Gem::RequestSet::Lockfile::ParseError do
       tokenize_lockfile
     end
 
-    assert_equal "your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
-                 e.message
+    assert_equal("your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
+                 e.message)
+
+    write_lockfile('>>>>>>>')
+
+    e = assert_raises Gem::RequestSet::Lockfile::ParseError do
+      tokenize_lockfile
+    end
+
+    assert_equal("your #{@lock_file} contains merge conflict markers (at line 0 column 0)",
+                 e.message)
   end
 
   def test_tokenize_git
-    write_lockfile <<-LOCKFILE
+    write_lockfile(<<-LOCKFILE)
 DEPENDENCIES
   a!
     LOCKFILE
@@ -243,11 +243,11 @@ DEPENDENCIES
       [:newline, nil,             4,  1],
     ]
 
-    assert_equal expected, tokenize_lockfile
+    assert_equal(expected, tokenize_lockfile)
   end
 
   def test_tokenize_multiple
-    write_lockfile <<-LOCKFILE
+    write_lockfile(<<-LOCKFILE)
 GEM
   remote: #{@gem_repo}
   specs:
@@ -283,20 +283,20 @@ GEM
       [:newline,     nil,       26,  4],
     ]
 
-    assert_equal expected, tokenize_lockfile
+    assert_equal(expected, tokenize_lockfile)
   end
 
   def test_unget
-    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new "\n"
-    tokenizer.unshift :token
-    parser = tokenizer.make_parser nil, nil
+    tokenizer = Gem::RequestSet::Lockfile::Tokenizer.new("\n")
+    tokenizer.unshift(:token)
+    parser = tokenizer.make_parser(nil, nil)
 
-    assert_equal :token, parser.get
+    assert_equal(:token, parser.get)
   end
 
   def write_lockfile(lockfile)
-    File.open @lock_file, 'w' do |io|
-      io.write lockfile
+    File.open(@lock_file, 'w') do |io|
+      io.write(lockfile)
     end
   end
 

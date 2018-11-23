@@ -41,7 +41,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
                          Gem::Version.new(0)
                        end
 
-      @platform      = Gem::Platform.new parts[2]
+      @platform      = Gem::Platform.new(parts[2])
       @extensions    = extensions
       @full_name     = if platform == Gem::Platform::RUBY
                          "#{name}-#{version}"
@@ -57,11 +57,11 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   def self.default_gemspec_stub(filename, base_dir, gems_dir)
-    new filename, base_dir, gems_dir, true
+    new(filename, base_dir, gems_dir, true)
   end
 
   def self.gemspec_stub(filename, base_dir, gems_dir)
-    new filename, base_dir, gems_dir, false
+    new(filename, base_dir, gems_dir, false)
   end
 
   attr_reader :base_dir, :gems_dir
@@ -117,12 +117,12 @@ class Gem::StubSpecification < Gem::BasicSpecification
             stubline = file.readline.chomp
             if stubline.start_with?(PREFIX)
               extensions = if /\A#{PREFIX}/ =~ file.readline.chomp
-                             $'.split "\0"
+                             $'.split("\0")
                            else
                              StubLine::NO_EXTENSIONS
                            end
 
-              @data = StubLine.new stubline, extensions
+              @data = StubLine.new(stubline, extensions)
             end
           rescue EOFError
           end
@@ -144,7 +144,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   def missing_extensions?
     return false if default_gem?
     return false if extensions.empty?
-    return false if File.exist? gem_build_complete_path
+    return false if File.exist?(gem_build_complete_path)
 
     to_spec.missing_extensions?
   end
@@ -208,7 +208,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # Is there a stub line present for this StubSpecification?
 
   def stubbed?
-    data.is_a? StubLine
+    data.is_a?(StubLine)
   end
 
 end

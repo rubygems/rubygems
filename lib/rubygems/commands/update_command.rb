@@ -1,13 +1,13 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/command_manager'
-require 'rubygems/dependency_installer'
-require 'rubygems/install_update_options'
-require 'rubygems/local_remote_options'
-require 'rubygems/spec_fetcher'
-require 'rubygems/version_option'
-require 'rubygems/install_message' # must come before rdoc for messaging
-require 'rubygems/rdoc'
+require('rubygems/command')
+require('rubygems/command_manager')
+require('rubygems/dependency_installer')
+require('rubygems/install_update_options')
+require('rubygems/local_remote_options')
+require('rubygems/spec_fetcher')
+require('rubygems/version_option')
+require('rubygems/install_message') # must come before rdoc for messaging
+require('rubygems/rdoc')
 
 class Gem::Commands::UpdateCommand < Gem::Command
 
@@ -20,14 +20,14 @@ class Gem::Commands::UpdateCommand < Gem::Command
   attr_reader :updated # :nodoc:
 
   def initialize
-    super 'update', 'Update installed gems to the latest version',
+    super('update', 'Update installed gems to the latest version',
       :document => %w[rdoc ri],
-      :force    => false
+      :force    => false)
 
     add_install_update_options
 
-    OptionParser.accept Gem::Version do |value|
-      Gem::Version.new value
+    OptionParser.accept(Gem::Version) do |value|
+      Gem::Version.new(value)
 
       value
     end
@@ -41,7 +41,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
     add_local_remote_options
     add_platform_option
-    add_prerelease_option "as update targets"
+    add_prerelease_option("as update targets")
 
     @updated   = []
     @installer = nil
@@ -70,7 +70,7 @@ command to remove old versions.
 
   def check_latest_rubygems(version) # :nodoc:
     if Gem.rubygems_version == version
-      say "Latest version already installed. Done."
+      say("Latest version already installed. Done.")
       terminate_interaction
     end
 
@@ -79,8 +79,8 @@ command to remove old versions.
 
   def check_update_arguments # :nodoc:
     unless options[:args].empty?
-      alert_error "Gem names are not allowed with the --system option"
-      terminate_interaction 1
+      alert_error("Gem names are not allowed with the --system option")
+      terminate_interaction(1)
     end
   end
 
@@ -92,10 +92,10 @@ command to remove old versions.
 
     hig = highest_installed_gems
 
-    gems_to_update = which_to_update hig, options[:args].uniq
+    gems_to_update = which_to_update(hig, options[:args].uniq)
 
     if options[:explain]
-      say "Gems to update:"
+      say("Gems to update:")
 
       gems_to_update.each do |(name, version)|
         say "  #{name}-#{version}"
@@ -104,32 +104,32 @@ command to remove old versions.
       return
     end
 
-    say "Updating installed gems"
+    say("Updating installed gems")
 
-    updated = update_gems gems_to_update
+    updated = update_gems(gems_to_update)
 
     updated_names = updated.map { |spec| spec.name }
     not_updated_names = options[:args].uniq - updated_names
 
     if updated.empty?
-      say "Nothing to update"
+      say("Nothing to update")
     else
-      say "Gems updated: #{updated_names.join(' ')}"
-      say "Gems already up-to-date: #{not_updated_names.join(' ')}" unless not_updated_names.empty?
+      say("Gems updated: #{updated_names.join(' ')}")
+      say("Gems already up-to-date: #{not_updated_names.join(' ')}") unless not_updated_names.empty?
     end
   end
 
   def fetch_remote_gems(spec) # :nodoc:
-    dependency = Gem::Dependency.new spec.name, "> #{spec.version}"
+    dependency = Gem::Dependency.new(spec.name, "> #{spec.version}")
     dependency.prerelease = options[:prerelease]
 
     fetcher = Gem::SpecFetcher.fetcher
 
-    spec_tuples, errors = fetcher.search_for_dependency dependency
+    spec_tuples, errors = fetcher.search_for_dependency(dependency)
 
-    error = errors.find { |e| e.respond_to? :exception }
+    error = errors.find { |e| e.respond_to?(:exception) }
 
-    raise error if error
+    raise(error) if error
 
     spec_tuples
   end
@@ -147,7 +147,7 @@ command to remove old versions.
   end
 
   def highest_remote_version(spec) # :nodoc:
-    spec_tuples = fetch_remote_gems spec
+    spec_tuples = fetch_remote_gems(spec)
 
     matching_gems = spec_tuples.select do |g,_|
       g.name == spec.name and g.match_platform?
@@ -163,13 +163,13 @@ command to remove old versions.
   def install_rubygems(version) # :nodoc:
     args = update_rubygems_arguments
 
-    update_dir = File.join Gem.dir, 'gems', "rubygems-update-#{version}"
+    update_dir = File.join(Gem.dir, 'gems', "rubygems-update-#{version}")
 
-    Dir.chdir update_dir do
+    Dir.chdir(update_dir) do
       say "Installing RubyGems #{version}"
 
-      installed = system Gem.ruby, '--disable-gems', 'setup.rb', *args
-      say "RubyGems system software updated" if installed
+      installed = system(Gem.ruby, '--disable-gems', 'setup.rb', *args)
+      say("RubyGems system software updated") if installed
     end
   end
 
@@ -178,11 +178,11 @@ command to remove old versions.
     update_latest = version == true
 
     if update_latest
-      version     = Gem::Version.new     Gem::VERSION
-      requirement = Gem::Requirement.new ">= #{Gem::VERSION}"
+      version     = Gem::Version.new(    Gem::VERSION)
+      requirement = Gem::Requirement.new(">= #{Gem::VERSION}")
     else
-      version     = Gem::Version.new     version
-      requirement = Gem::Requirement.new version
+      version     = Gem::Version.new(    version)
+      requirement = Gem::Requirement.new(version)
     end
 
     rubygems_update         = Gem::Specification.new
@@ -193,7 +193,7 @@ command to remove old versions.
       'rubygems-update' => rubygems_update
     }
 
-    gems_to_update = which_to_update hig, options[:args], :system
+    gems_to_update = which_to_update(hig, options[:args], :system)
     _, up_ver   = gems_to_update.first
 
     target = if update_latest
@@ -211,13 +211,13 @@ command to remove old versions.
     update_options = options.dup
     update_options[:prerelease] = version.prerelease?
 
-    @installer = Gem::DependencyInstaller.new update_options
+    @installer = Gem::DependencyInstaller.new(update_options)
 
-    say "Updating #{name}"
+    say("Updating #{name}")
     begin
-      @installer.install name, Gem::Requirement.new(version)
+      @installer.install(name, Gem::Requirement.new(version))
     rescue Gem::InstallError, Gem::DependencyError => e
-      alert_error "Error installing #{name}:\n\t#{e.message}"
+      alert_error("Error installing #{name}:\n\t#{e.message}")
     end
 
     @installer.installed_gems.each do |spec|
@@ -241,22 +241,22 @@ command to remove old versions.
 
     version, requirement = rubygems_target_version
 
-    check_latest_rubygems version
+    check_latest_rubygems(version)
 
-    update_gem 'rubygems-update', version
+    update_gem('rubygems-update', version)
 
-    installed_gems = Gem::Specification.find_all_by_name 'rubygems-update', requirement
+    installed_gems = Gem::Specification.find_all_by_name('rubygems-update', requirement)
     version        = installed_gems.first.version
 
-    install_rubygems version
+    install_rubygems(version)
   end
 
   def update_rubygems_arguments # :nodoc:
     args = []
     args << '--prefix' << Gem.prefix if Gem.prefix
     # TODO use --document for >= 1.9 , --no-rdoc --no-ri < 1.9
-    args << '--no-rdoc' unless options[:document].include? 'rdoc'
-    args << '--no-ri'   unless options[:document].include? 'ri'
+    args << '--no-rdoc' unless options[:document].include?('rdoc')
+    args << '--no-ri'   unless options[:document].include?('ri')
     args << '--no-format-executable' if options[:no_format_executable]
     args << '--previous-version' << Gem::VERSION if
       options[:system] == true or
@@ -271,7 +271,7 @@ command to remove old versions.
       next if not gem_names.empty? and
               gem_names.none? { |name| name == l_spec.name }
 
-      highest_remote_ver = highest_remote_version l_spec
+      highest_remote_ver = highest_remote_version(l_spec)
 
       if system or (l_spec.version < highest_remote_ver)
         result << [l_spec.name, [l_spec.version, highest_remote_ver].max]

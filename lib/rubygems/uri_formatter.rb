@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'cgi'
-require 'uri'
+require('cgi')
+require('uri')
 
 ##
 # The UriFormatter handles URIs from user-input and escaping.
@@ -28,7 +28,7 @@ class Gem::UriFormatter
 
   def escape
     return unless @uri
-    CGI.escape @uri
+    CGI.escape(@uri)
   end
 
   ##
@@ -43,7 +43,7 @@ class Gem::UriFormatter
 
   def unescape
     return unless @uri
-    CGI.unescape @uri
+    CGI.unescape(@uri)
   end
 
 end

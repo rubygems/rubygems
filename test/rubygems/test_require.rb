@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems'
+require('rubygems/test_case')
+require('rubygems')
 
 class TestGemRequire < Gem::TestCase
   class Latch
@@ -31,41 +31,41 @@ class TestGemRequire < Gem::TestCase
     assert_raises LoadError do
       require 'test_gem_require_a'
     end
-    $LOADED_FEATURES.replace @old_loaded_features
+    $LOADED_FEATURES.replace(@old_loaded_features)
   end
 
   def assert_require(path)
-    assert require(path), "'#{path}' was already required"
+    assert(require(path), "'#{path}' was already required")
   end
 
   # Providing -I on the commandline should always beat gems
   def test_dash_i_beats_gems
-    a1 = util_spec "a", "1", {"b" => "= 1"}, "lib/test_gem_require_a.rb"
-    b1 = util_spec "b", "1", {"c" => "> 0"}, "lib/b/c.rb"
-    c1 = util_spec "c", "1", nil, "lib/c/c.rb"
-    c2 = util_spec "c", "2", nil, "lib/c/c.rb"
+    a1 = util_spec("a", "1", {"b" => "= 1"}, "lib/test_gem_require_a.rb")
+    b1 = util_spec("b", "1", {"c" => "> 0"}, "lib/b/c.rb")
+    c1 = util_spec("c", "1", nil, "lib/c/c.rb")
+    c2 = util_spec("c", "2", nil, "lib/c/c.rb")
 
-    install_specs c1, c2, b1, a1
+    install_specs(c1, c2, b1, a1)
 
     dir = Dir.mktmpdir("test_require", @tempdir)
-    dash_i_arg = File.join dir, 'lib'
+    dash_i_arg = File.join(dir, 'lib')
 
-    c_rb = File.join dash_i_arg, 'b', 'c.rb'
+    c_rb = File.join(dash_i_arg, 'b', 'c.rb')
 
-    FileUtils.mkdir_p File.dirname c_rb
-    File.open(c_rb, 'w') { |f| f.write "class Object; HELLO = 'world' end" }
+    FileUtils.mkdir_p(File.dirname(c_rb))
+    File.open(c_rb, 'w') { |f| f.write("class Object; HELLO = 'world' end") }
 
     lp = $LOAD_PATH.dup
 
     # Pretend to provide a commandline argument that overrides a file in gem b
-    $LOAD_PATH.unshift dash_i_arg
+    $LOAD_PATH.unshift(dash_i_arg)
 
-    assert_require 'test_gem_require_a'
-    assert_require 'b/c' # this should be required from -I
-    assert_equal "world", ::Object::HELLO
+    assert_require('test_gem_require_a')
+    assert_require('b/c') # this should be required from -I
+    assert_equal("world", ::Object::HELLO)
   ensure
-    $LOAD_PATH.replace lp
-    Object.send :remove_const, :HELLO if Object.const_defined? :HELLO
+    $LOAD_PATH.replace(lp)
+    Object.send(:remove_const, :HELLO) if Object.const_defined?(:HELLO)
   end
 
   def create_sync_thread
@@ -80,13 +80,13 @@ class TestGemRequire < Gem::TestCase
   end
 
   def test_concurrent_require
-    Object.const_set :FILE_ENTERED_LATCH, Latch.new(2)
-    Object.const_set :FILE_EXIT_LATCH, Latch.new(1)
+    Object.const_set(:FILE_ENTERED_LATCH, Latch.new(2))
+    Object.const_set(:FILE_EXIT_LATCH, Latch.new(1))
 
-    a1 = util_spec "a", "1", nil, "lib/a.rb"
-    b1 = util_spec "b", "1", nil, "lib/b.rb"
+    a1 = util_spec("a", "1", nil, "lib/a.rb")
+    b1 = util_spec("b", "1", nil, "lib/b.rb")
 
-    install_specs a1, b1
+    install_specs(a1, b1)
 
     t1 = create_sync_thread{ assert_require 'a' }
     t2 = create_sync_thread{ assert_require 'b' }
@@ -97,207 +97,207 @@ class TestGemRequire < Gem::TestCase
     # now let them finish
     FILE_EXIT_LATCH.release
 
-    assert t1.join, "thread 1 should exit"
-    assert t2.join, "thread 2 should exit"
+    assert(t1.join, "thread 1 should exit")
+    assert(t2.join, "thread 2 should exit")
   ensure
-    Object.send :remove_const, :FILE_ENTERED_LATCH if Object.const_defined? :FILE_ENTERED_LATCH
-    Object.send :remove_const, :FILE_EXIT_LATCH if Object.const_defined? :FILE_EXIT_LATCH
+    Object.send(:remove_const, :FILE_ENTERED_LATCH) if Object.const_defined?(:FILE_ENTERED_LATCH)
+    Object.send(:remove_const, :FILE_EXIT_LATCH) if Object.const_defined?(:FILE_EXIT_LATCH)
   end
 
   def test_require_is_not_lazy_with_exact_req
-    a1 = util_spec "a", "1", {"b" => "= 1"}, "lib/test_gem_require_a.rb"
-    b1 = util_spec "b", "1", nil, "lib/b/c.rb"
-    b2 = util_spec "b", "2", nil, "lib/b/c.rb"
+    a1 = util_spec("a", "1", {"b" => "= 1"}, "lib/test_gem_require_a.rb")
+    b1 = util_spec("b", "1", nil, "lib/b/c.rb")
+    b2 = util_spec("b", "2", nil, "lib/b/c.rb")
 
-    install_specs b1, b2, a1
+    install_specs(b1, b2, a1)
 
-    assert_require 'test_gem_require_a'
-    assert_equal %w(a-1 b-1), loaded_spec_names
-    assert_equal unresolved_names, []
+    assert_require('test_gem_require_a')
+    assert_equal(%w(a-1 b-1), loaded_spec_names)
+    assert_equal(unresolved_names, [])
 
-    assert_require "b/c"
-    assert_equal %w(a-1 b-1), loaded_spec_names
+    assert_require("b/c")
+    assert_equal(%w(a-1 b-1), loaded_spec_names)
   end
 
   def test_require_is_lazy_with_inexact_req
-    a1 = util_spec "a", "1", {"b" => ">= 1"}, "lib/test_gem_require_a.rb"
-    b1 = util_spec "b", "1", nil, "lib/b/c.rb"
-    b2 = util_spec "b", "2", nil, "lib/b/c.rb"
+    a1 = util_spec("a", "1", {"b" => ">= 1"}, "lib/test_gem_require_a.rb")
+    b1 = util_spec("b", "1", nil, "lib/b/c.rb")
+    b2 = util_spec("b", "2", nil, "lib/b/c.rb")
 
-    install_specs b1, b2, a1
+    install_specs(b1, b2, a1)
 
-    assert_require 'test_gem_require_a'
-    assert_equal %w(a-1), loaded_spec_names
-    assert_equal unresolved_names, ["b (>= 1)"]
+    assert_require('test_gem_require_a')
+    assert_equal(%w(a-1), loaded_spec_names)
+    assert_equal(unresolved_names, ["b (>= 1)"])
 
-    assert_require "b/c"
-    assert_equal %w(a-1 b-2), loaded_spec_names
+    assert_require("b/c")
+    assert_equal(%w(a-1 b-2), loaded_spec_names)
   end
 
   def test_require_is_not_lazy_with_one_possible
-    a1 = util_spec "a", "1", {"b" => ">= 1"}, "lib/test_gem_require_a.rb"
-    b1 = util_spec "b", "1", nil, "lib/b/c.rb"
+    a1 = util_spec("a", "1", {"b" => ">= 1"}, "lib/test_gem_require_a.rb")
+    b1 = util_spec("b", "1", nil, "lib/b/c.rb")
 
-    install_specs b1, a1
+    install_specs(b1, a1)
 
-    assert_require 'test_gem_require_a'
-    assert_equal %w(a-1 b-1), loaded_spec_names
-    assert_equal unresolved_names, []
+    assert_require('test_gem_require_a')
+    assert_equal(%w(a-1 b-1), loaded_spec_names)
+    assert_equal(unresolved_names, [])
 
-    assert_require "b/c"
-    assert_equal %w(a-1 b-1), loaded_spec_names
+    assert_require("b/c")
+    assert_equal(%w(a-1 b-1), loaded_spec_names)
   end
 
   def test_require_can_use_a_pathname_object
-    a1 = util_spec "a", "1", nil, "lib/test_gem_require_a.rb"
+    a1 = util_spec("a", "1", nil, "lib/test_gem_require_a.rb")
 
-    install_specs a1
+    install_specs(a1)
 
-    assert_require Pathname.new 'test_gem_require_a'
-    assert_equal %w(a-1), loaded_spec_names
-    assert_equal unresolved_names, []
+    assert_require(Pathname.new('test_gem_require_a'))
+    assert_equal(%w(a-1), loaded_spec_names)
+    assert_equal(unresolved_names, [])
   end
 
   def test_activate_via_require_respects_loaded_files
-    a1 = util_spec "a", "1", {"b" => ">= 1"}, "lib/test_gem_require_a.rb"
-    b1 = util_spec "b", "1", nil, "lib/benchmark.rb"
-    b2 = util_spec "b", "2", nil, "lib/benchmark.rb"
+    a1 = util_spec("a", "1", {"b" => ">= 1"}, "lib/test_gem_require_a.rb")
+    b1 = util_spec("b", "1", nil, "lib/benchmark.rb")
+    b2 = util_spec("b", "2", nil, "lib/benchmark.rb")
 
-    install_specs b1, b2, a1
+    install_specs(b1, b2, a1)
 
-    require 'test_gem_require_a'
-    assert_equal unresolved_names, ["b (>= 1)"]
+    require('test_gem_require_a')
+    assert_equal(unresolved_names, ["b (>= 1)"])
 
-    refute require('benchmark'), "benchmark should have already been loaded"
+    refute(require('benchmark'), "benchmark should have already been loaded")
 
     # We detected that we should activate b-2, so we did so, but
     # then original_require decided "I've already got benchmark.rb" loaded.
     # This case is fine because our lazy loading is provided exactly
     # the same behavior as eager loading would have.
 
-    assert_equal %w(a-1 b-2), loaded_spec_names
+    assert_equal(%w(a-1 b-2), loaded_spec_names)
   end
 
   def test_already_activated_direct_conflict
-    a1 = util_spec "a", "1", { "b" => "> 0" }
-    b1 = util_spec "b", "1", { "c" => ">= 1" }, "lib/ib.rb"
-    b2 = util_spec "b", "2", { "c" => ">= 2" }, "lib/ib.rb"
-    c1 = util_spec "c", "1", nil, "lib/d.rb"
+    a1 = util_spec("a", "1", { "b" => "> 0" })
+    b1 = util_spec("b", "1", { "c" => ">= 1" }, "lib/ib.rb")
+    b2 = util_spec("b", "2", { "c" => ">= 2" }, "lib/ib.rb")
+    c1 = util_spec("c", "1", nil, "lib/d.rb")
     c2 = util_spec("c", "2", nil, "lib/d.rb")
 
-    install_specs c1, c2, b1, b2, a1
+    install_specs(c1, c2, b1, b2, a1)
 
     a1.activate
     c1.activate
-    assert_equal %w(a-1 c-1), loaded_spec_names
-    assert_equal ["b (> 0)"], unresolved_names
+    assert_equal(%w(a-1 c-1), loaded_spec_names)
+    assert_equal(["b (> 0)"], unresolved_names)
 
-    assert require("ib")
+    assert(require("ib"))
 
-    assert_equal %w(a-1 b-1 c-1), loaded_spec_names
-    assert_equal [], unresolved_names
+    assert_equal(%w(a-1 b-1 c-1), loaded_spec_names)
+    assert_equal([], unresolved_names)
   end
 
   def test_multiple_gems_with_the_same_path
-    a1 = util_spec "a", "1", { "b" => "> 0", "x" => "> 0" }
-    b1 = util_spec "b", "1", { "c" => ">= 1" }, "lib/ib.rb"
-    b2 = util_spec "b", "2", { "c" => ">= 2" }, "lib/ib.rb"
-    x1 = util_spec "x", "1", nil, "lib/ib.rb"
-    x2 = util_spec "x", "2", nil, "lib/ib.rb"
-    c1 = util_spec "c", "1", nil, "lib/d.rb"
+    a1 = util_spec("a", "1", { "b" => "> 0", "x" => "> 0" })
+    b1 = util_spec("b", "1", { "c" => ">= 1" }, "lib/ib.rb")
+    b2 = util_spec("b", "2", { "c" => ">= 2" }, "lib/ib.rb")
+    x1 = util_spec("x", "1", nil, "lib/ib.rb")
+    x2 = util_spec("x", "2", nil, "lib/ib.rb")
+    c1 = util_spec("c", "1", nil, "lib/d.rb")
     c2 = util_spec("c", "2", nil, "lib/d.rb")
 
-    install_specs c1, c2, x1, x2, b1, b2, a1
+    install_specs(c1, c2, x1, x2, b1, b2, a1)
 
     a1.activate
     c1.activate
-    assert_equal %w(a-1 c-1), loaded_spec_names
-    assert_equal ["b (> 0)", "x (> 0)"], unresolved_names
+    assert_equal(%w(a-1 c-1), loaded_spec_names)
+    assert_equal(["b (> 0)", "x (> 0)"], unresolved_names)
 
     e = assert_raises(Gem::LoadError) do
       require("ib")
     end
 
-    assert_equal "ib found in multiple gems: b, x", e.message
+    assert_equal("ib found in multiple gems: b, x", e.message)
   end
 
   def test_unable_to_find_good_unresolved_version
-    a1 = util_spec "a", "1", { "b" => "> 0" }
-    b1 = util_spec "b", "1", { "c" => ">= 2" }, "lib/ib.rb"
-    b2 = util_spec "b", "2", { "c" => ">= 3" }, "lib/ib.rb"
+    a1 = util_spec("a", "1", { "b" => "> 0" })
+    b1 = util_spec("b", "1", { "c" => ">= 2" }, "lib/ib.rb")
+    b2 = util_spec("b", "2", { "c" => ">= 3" }, "lib/ib.rb")
 
-    c1 = util_spec "c", "1", nil, "lib/d.rb"
-    c2 = util_spec "c", "2", nil, "lib/d.rb"
-    c3 = util_spec "c", "3", nil, "lib/d.rb"
+    c1 = util_spec("c", "1", nil, "lib/d.rb")
+    c2 = util_spec("c", "2", nil, "lib/d.rb")
+    c3 = util_spec("c", "3", nil, "lib/d.rb")
 
-    install_specs c1, c2, c3, b1, b2, a1
+    install_specs(c1, c2, c3, b1, b2, a1)
 
     a1.activate
     c1.activate
-    assert_equal %w(a-1 c-1), loaded_spec_names
-    assert_equal ["b (> 0)"], unresolved_names
+    assert_equal(%w(a-1 c-1), loaded_spec_names)
+    assert_equal(["b (> 0)"], unresolved_names)
 
     e = assert_raises(Gem::LoadError) do
       require("ib")
     end
 
-    assert_equal "unable to find a version of 'b' to activate", e.message
+    assert_equal("unable to find a version of 'b' to activate", e.message)
   end
 
   def test_require_works_after_cleanup
-    a1 = new_default_spec "a", "1.0", nil, "a/b.rb"
-    b1 = new_default_spec "b", "1.0", nil, "b/c.rb"
-    b2 = new_default_spec "b", "2.0", nil, "b/d.rb"
+    a1 = new_default_spec("a", "1.0", nil, "a/b.rb")
+    b1 = new_default_spec("b", "1.0", nil, "b/c.rb")
+    b2 = new_default_spec("b", "2.0", nil, "b/d.rb")
 
-    install_default_gems a1
-    install_default_gems b1
-    install_default_gems b2
+    install_default_gems(a1)
+    install_default_gems(b1)
+    install_default_gems(b2)
 
     # Load default ruby gems fresh as if we've just started a ruby script.
     Gem::Specification.reset
-    require 'rubygems'
+    require('rubygems')
     Gem::Specification.stubs
 
     # Remove an old default gem version directly from disk as if someone ran
     # gem cleanup.
-    FileUtils.rm_rf(File.join @default_dir, "#{b1.full_name}")
-    FileUtils.rm_rf(File.join @default_spec_dir, "#{b1.full_name}.gemspec")
+    FileUtils.rm_rf(File.join(@default_dir, "#{b1.full_name}"))
+    FileUtils.rm_rf(File.join(@default_spec_dir, "#{b1.full_name}.gemspec"))
 
     # Require gems that have not been removed.
-    assert_require 'a/b'
-    assert_equal %w(a-1.0), loaded_spec_names
-    assert_require 'b/d'
-    assert_equal %w(a-1.0 b-2.0), loaded_spec_names
+    assert_require('a/b')
+    assert_equal(%w(a-1.0), loaded_spec_names)
+    assert_require('b/d')
+    assert_equal(%w(a-1.0 b-2.0), loaded_spec_names)
   end
 
   def test_require_doesnt_traverse_development_dependencies
     a = util_spec("a", "1", nil, "lib/a.rb")
     z = util_spec("z", "1", "w" => "> 0")
-    w1 = util_spec("w", "1") { |s| s.add_development_dependency "non-existent" }
-    w2 = util_spec("w", "2") { |s| s.add_development_dependency "non-existent" }
+    w1 = util_spec("w", "1") { |s| s.add_development_dependency("non-existent") }
+    w2 = util_spec("w", "2") { |s| s.add_development_dependency("non-existent") }
 
-    install_specs a, w1, w2, z
+    install_specs(a, w1, w2, z)
 
-    assert gem("z")
-    assert_equal %w(z-1), loaded_spec_names
-    assert_equal ["w (> 0)"], unresolved_names
+    assert(gem("z"))
+    assert_equal(%w(z-1), loaded_spec_names)
+    assert_equal(["w (> 0)"], unresolved_names)
 
-    assert require("a")
+    assert(require("a"))
   end
 
   def test_default_gem_only
     default_gem_spec = new_default_spec("default", "2.0.0.0",
                                         nil, "default/gem.rb")
     install_default_specs(default_gem_spec)
-    assert_require "default/gem"
-    assert_equal %w(default-2.0.0.0), loaded_spec_names
+    assert_require("default/gem")
+    assert_equal(%w(default-2.0.0.0), loaded_spec_names)
   end
 
   def test_realworld_default_gem
     begin
-      gem 'json'
+      gem('json')
     rescue Gem::MissingSpecError
-      skip "default gems are only available after ruby installation"
+      skip("default gems are only available after ruby installation")
     end
 
     cmd = <<-RUBY
@@ -306,7 +306,7 @@ class TestGemRequire < Gem::TestCase
       puts Gem.loaded_specs["json"].default_gem?
     RUBY
     output = Gem::Util.popen(Gem.ruby, "-e", cmd).strip
-    assert_equal "true", output
+    assert_equal("true", output)
   end
 
   def test_default_gem_and_normal_gem
@@ -316,8 +316,8 @@ class TestGemRequire < Gem::TestCase
     normal_gem_spec = util_spec("default", "3.0", nil,
                                "lib/default/gem.rb")
     install_specs(normal_gem_spec)
-    assert_require "default/gem"
-    assert_equal %w(default-3.0), loaded_spec_names
+    assert_require("default/gem")
+    assert_equal(%w(default-3.0), loaded_spec_names)
   end
 
   def loaded_spec_names
@@ -332,14 +332,14 @@ class TestGemRequire < Gem::TestCase
     silence_warnings do
       class << ::Gem
         alias old_try_activate try_activate
-        def try_activate(*); raise 'raised from try_activate'; end
+        def try_activate(*); raise('raised from try_activate'); end
       end
     end
 
-    require 'does_not_exist_for_try_activate_test'
+    require('does_not_exist_for_try_activate_test')
   rescue RuntimeError => e
     assert_match(/raised from try_activate/, e.message)
-    assert Kernel::RUBYGEMS_ACTIVATION_MONITOR.try_enter, "require monitor was not unlocked when try_activate raised"
+    assert(Kernel::RUBYGEMS_ACTIVATION_MONITOR.try_enter, "require monitor was not unlocked when try_activate raised")
   ensure
     silence_warnings do
       class << ::Gem
@@ -358,33 +358,33 @@ class TestGemRequire < Gem::TestCase
         raise "received #gem with #{args.inspect}"
       end
     end
-    assert c.send(:require, "default/gem")
-    assert_equal %w(default-2.0.0.0), loaded_spec_names
+    assert(c.send(:require, "default/gem"))
+    assert_equal(%w(default-2.0.0.0), loaded_spec_names)
   end
 
   def test_require_default_when_gem_defined
     a = util_spec("a", "1", nil, "lib/a.rb")
-    install_specs a
+    install_specs(a)
     c = Class.new do
       def self.gem(*args)
         raise "received #gem with #{args.inspect}"
       end
     end
-    assert c.send(:require, "a")
-    assert_equal %w(a-1), loaded_spec_names
+    assert(c.send(:require, "a"))
+    assert_equal(%w(a-1), loaded_spec_names)
   end
 
 
   def test_require_bundler
     b1 = util_spec('bundler', '1', nil, "lib/bundler/setup.rb")
     b2a = util_spec('bundler', '2.a', nil, "lib/bundler/setup.rb")
-    install_specs b1, b2a
+    install_specs(b1, b2a)
 
-    require "rubygems/bundler_version_finder"
+    require("rubygems/bundler_version_finder")
     $:.clear
-    assert_require 'bundler/setup'
-    assert_equal %w[bundler-2.a], loaded_spec_names
-    assert_empty unresolved_names
+    assert_require('bundler/setup')
+    assert_equal(%w[bundler-2.a], loaded_spec_names)
+    assert_empty(unresolved_names)
   end
 
   def test_require_bundler_missing_bundler_version

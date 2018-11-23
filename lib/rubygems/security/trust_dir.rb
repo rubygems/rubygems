@@ -33,22 +33,22 @@ class Gem::Security::TrustDir
   # Returns the path to the trusted +certificate+
 
   def cert_path(certificate)
-    name_path certificate.subject
+    name_path(certificate.subject)
   end
 
   ##
   # Enumerates trusted certificates.
 
   def each_certificate
-    return enum_for __method__ unless block_given?
+    return enum_for(__method__) unless block_given?
 
-    glob = File.join @dir, '*.pem'
+    glob = File.join(@dir, '*.pem')
 
     Dir[glob].each do |certificate_file|
       begin
-        certificate = load_certificate certificate_file
+        certificate = load_certificate(certificate_file)
 
-        yield certificate, certificate_file
+        yield(certificate, certificate_file)
       rescue OpenSSL::X509::CertificateError
         next # HACK warn
       end
@@ -60,29 +60,29 @@ class Gem::Security::TrustDir
   # the trust directory.
 
   def issuer_of(certificate)
-    path = name_path certificate.issuer
+    path = name_path(certificate.issuer)
 
-    return unless File.exist? path
+    return unless File.exist?(path)
 
-    load_certificate path
+    load_certificate(path)
   end
 
   ##
   # Returns the path to the trusted certificate with the given ASN.1 +name+
 
   def name_path(name)
-    digest = @digester.hexdigest name.to_s
+    digest = @digester.hexdigest(name.to_s)
 
-    File.join @dir, "cert-#{digest}.pem"
+    File.join(@dir, "cert-#{digest}.pem")
   end
 
   ##
   # Loads the given +certificate_file+
 
   def load_certificate(certificate_file)
-    pem = File.read certificate_file
+    pem = File.read(certificate_file)
 
-    OpenSSL::X509::Certificate.new pem
+    OpenSSL::X509::Certificate.new(pem)
   end
 
   ##
@@ -91,10 +91,10 @@ class Gem::Security::TrustDir
   def trust_cert(certificate)
     verify
 
-    destination = cert_path certificate
+    destination = cert_path(certificate)
 
-    File.open destination, 'wb', 0600 do |io|
-      io.write certificate.to_pem
+    File.open(destination, 'wb', 0600) do |io|
+      io.write(certificate.to_pem)
       io.chmod(@permissions[:trusted_cert])
     end
   end
@@ -105,14 +105,14 @@ class Gem::Security::TrustDir
   # permissions.
 
   def verify
-    if File.exist? @dir
-      raise Gem::Security::Exception,
-        "trust directory #{@dir} is not a directory" unless
-          File.directory? @dir
+    if File.exist?(@dir)
+      raise(Gem::Security::Exception,
+        "trust directory #{@dir} is not a directory") unless
+          File.directory?(@dir)
 
-      FileUtils.chmod 0700, @dir
+      FileUtils.chmod(0700, @dir)
     else
-      FileUtils.mkdir_p @dir, :mode => @permissions[:trust_dir]
+      FileUtils.mkdir_p(@dir, :mode => @permissions[:trust_dir])
     end
   end
 

@@ -28,13 +28,13 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   def initialize(dep_uri = 'https://rubygems.org/api/v1/dependencies')
     super()
 
-    dep_uri = URI dep_uri unless URI === dep_uri # for ruby 1.8
+    dep_uri = URI(dep_uri) unless URI === dep_uri # for ruby 1.8
 
     @dep_uri = dep_uri
     @uri     = dep_uri + '../..'
 
     @data   = Hash.new { |h,k| h[k] = [] }
-    @source = Gem::Source.new @uri
+    @source = Gem::Source.new(@uri)
 
     @to_fetch = []
   end
@@ -53,7 +53,7 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
     end
 
     versions(req.name).each do |ver|
-      if req.dependency.match? req.name, ver[:number]
+      if req.dependency.match?(req.name, ver[:number])
         res << Gem::Resolver::APISpecification.new(self, ver)
       end
     end
@@ -76,8 +76,8 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   def prefetch_now # :nodoc:
     needed, @to_fetch = @to_fetch, []
 
-    uri = @dep_uri + "?gems=#{needed.sort.join ','}"
-    str = Gem::RemoteFetcher.fetcher.fetch_path uri
+    uri = @dep_uri + "?gems=#{needed.sort.join(',')}"
+    str = Gem::RemoteFetcher.fetcher.fetch_path(uri)
 
     loaded = []
 
@@ -94,13 +94,13 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[APISet', ']' do
+    q.group(2, '[APISet', ']') do
       q.breakable
-      q.text "URI: #{@dep_uri}"
+      q.text("URI: #{@dep_uri}")
 
       q.breakable
-      q.text 'gem names:'
-      q.pp @data.keys
+      q.text('gem names:')
+      q.pp(@data.keys)
     end
   end
 
@@ -113,7 +113,7 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
     end
 
     uri = @dep_uri + "?gems=#{name}"
-    str = Gem::RemoteFetcher.fetcher.fetch_path uri
+    str = Gem::RemoteFetcher.fetcher.fetch_path(uri)
 
     Marshal.load(str).each do |ver|
       @data[ver[:name]] << ver

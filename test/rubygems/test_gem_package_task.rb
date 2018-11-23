@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems'
+require('rubygems/test_case')
+require('rubygems')
 begin
-  require 'rubygems/package_task'
+  require('rubygems/package_task')
 rescue LoadError
 end
 
@@ -29,11 +29,11 @@ class TestGemPackageTask < Gem::TestCase
       p.package_files << "y"
     end
 
-    assert_equal %w[x y], pkg.package_files
+    assert_equal(%w[x y], pkg.package_files)
 
-    Dir.chdir @tempdir do
-      FileUtils.touch 'x'
-      FileUtils.touch 'y'
+    Dir.chdir(@tempdir) do
+      FileUtils.touch('x')
+      FileUtils.touch('y')
 
       Rake.application['package'].invoke
 
@@ -51,7 +51,7 @@ class TestGemPackageTask < Gem::TestCase
     pkg = Gem::PackageTask.new(gem)  do |p|
       p.package_files << "y"
     end
-    assert_equal ["x", "y"], pkg.package_files
+    assert_equal(["x", "y"], pkg.package_files)
   end
 
   def test_gem_package_with_ruby_platform
@@ -64,7 +64,7 @@ class TestGemPackageTask < Gem::TestCase
     pkg = Gem::PackageTask.new(gem)  do |p|
       p.package_files << "y"
     end
-    assert_equal ["x", "y"], pkg.package_files
+    assert_equal(["x", "y"], pkg.package_files)
   end
 
   def test_package_dir_path
@@ -74,10 +74,10 @@ class TestGemPackageTask < Gem::TestCase
       g.platform = 'java'
     end
 
-    pkg = Gem::PackageTask.new gem
+    pkg = Gem::PackageTask.new(gem)
     pkg.define
 
-    assert_equal 'pkg/nokogiri-1.5.0-java', pkg.package_dir_path
+    assert_equal('pkg/nokogiri-1.5.0-java', pkg.package_dir_path)
   end
 
 end if defined?(Rake::PackageTask)

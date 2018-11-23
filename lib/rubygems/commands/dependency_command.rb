@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/local_remote_options'
-require 'rubygems/version_option'
+require('rubygems/command')
+require('rubygems/local_remote_options')
+require('rubygems/version_option')
 
 class Gem::Commands::DependencyCommand < Gem::Command
 
@@ -9,9 +9,9 @@ class Gem::Commands::DependencyCommand < Gem::Command
   include Gem::VersionOption
 
   def initialize
-    super 'dependency',
+    super('dependency',
           'Show the dependencies of an installed gem',
-          :version => Gem::Requirement.default, :domain => :local
+          :version => Gem::Requirement.default, :domain => :local)
 
     add_version_option
     add_platform_option
@@ -57,7 +57,7 @@ use with other commands.
   def fetch_remote_specs(dependency) # :nodoc:
     fetcher = Gem::SpecFetcher.fetcher
 
-    ss, = fetcher.spec_for_dependency dependency
+    ss, = fetcher.spec_for_dependency(dependency)
 
     ss.map { |spec, _| spec }
   end
@@ -66,22 +66,22 @@ use with other commands.
     specs = []
 
     if local?
-      specs.concat Gem::Specification.stubs.find_all { |spec|
+      specs.concat(Gem::Specification.stubs.find_all { |spec|
         name_pattern =~ spec.name and
-          dependency.requirement.satisfied_by? spec.version
-      }.map(&:to_spec)
+          dependency.requirement.satisfied_by?(spec.version)
+      }.map(&:to_spec))
     end
 
-    specs.concat fetch_remote_specs dependency if remote?
+    specs.concat(fetch_remote_specs(dependency)) if remote?
 
-    ensure_specs specs
+    ensure_specs(specs)
 
     specs.uniq.sort
   end
 
   def gem_dependency(pattern, version, prerelease) # :nodoc:
     dependency = Gem::Deprecate.skip_during {
-      Gem::Dependency.new pattern, version
+      Gem::Dependency.new(pattern, version)
     }
 
     dependency.prerelease = prerelease
@@ -113,43 +113,43 @@ use with other commands.
       response << "\n"
     end
 
-    say response
+    say(response)
   end
 
   def execute
     ensure_local_only_reverse_dependencies
 
-    pattern = name_pattern options[:args]
+    pattern = name_pattern(options[:args])
 
     dependency =
-      gem_dependency pattern, options[:version], options[:prerelease]
+      gem_dependency(pattern, options[:version], options[:prerelease])
 
-    specs = fetch_specs pattern, dependency
+    specs = fetch_specs(pattern, dependency)
 
-    reverse = reverse_dependencies specs
+    reverse = reverse_dependencies(specs)
 
     if options[:pipe_format]
-      display_pipe specs
+      display_pipe(specs)
     else
-      display_readable specs, reverse
+      display_readable(specs, reverse)
     end
   end
 
   def ensure_local_only_reverse_dependencies # :nodoc:
     if options[:reverse_dependencies] and remote? and not local?
-      alert_error 'Only reverse dependencies for local gems are supported.'
-      terminate_interaction 1
+      alert_error('Only reverse dependencies for local gems are supported.')
+      terminate_interaction(1)
     end
   end
 
   def ensure_specs(specs) # :nodoc:
     return unless specs.empty?
 
-    patterns = options[:args].join ','
-    say "No gems found matching #{patterns} (#{options[:version]})" if
+    patterns = options[:args].join(',')
+    say("No gems found matching #{patterns} (#{options[:version]})") if
       Gem.configuration.verbose
 
-    terminate_interaction 1
+    terminate_interaction(1)
   end
 
   def print_dependencies(spec, level = 0) # :nodoc:
@@ -166,7 +166,7 @@ use with other commands.
   def remote_specs(dependency) # :nodoc:
     fetcher = Gem::SpecFetcher.fetcher
 
-    ss, _ = fetcher.spec_for_dependency dependency
+    ss, _ = fetcher.spec_for_dependency(dependency)
 
     ss.map { |s,o| s }
   end
@@ -177,7 +177,7 @@ use with other commands.
     return reverse unless options[:reverse_dependencies]
 
     specs.each do |spec|
-      reverse[spec.full_name] = find_reverse_dependencies spec
+      reverse[spec.full_name] = find_reverse_dependencies(spec)
     end
 
     reverse
@@ -210,7 +210,7 @@ use with other commands.
 
     if args.length == 1 and args.first =~ /\A\/(.*)\/(i)?\z/m
       flags = $2 ? Regexp::IGNORECASE : nil
-      Regexp.new $1, flags
+      Regexp.new($1, flags)
     else
       /\A#{Regexp.union(*args)}/
     end

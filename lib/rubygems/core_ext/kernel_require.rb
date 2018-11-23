@@ -5,7 +5,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'monitor'
+require('monitor')
 
 module Kernel
 
@@ -14,7 +14,7 @@ module Kernel
   # Make sure we have a reference to Ruby's original Kernel#require
   unless defined?(gem_original_require)
     alias gem_original_require require
-    private :gem_original_require
+    private(:gem_original_require)
   end
 
   ##
@@ -34,7 +34,7 @@ module Kernel
   def require(path)
     RUBYGEMS_ACTIVATION_MONITOR.enter
 
-    path = path.to_path if path.respond_to? :to_path
+    path = path.to_path if path.respond_to?(:to_path)
 
     if spec = Gem.find_unresolved_default_spec(path)
       Gem.remove_unresolved_default_spec(spec)
@@ -67,7 +67,7 @@ module Kernel
 
     # Attempt to find +path+ in any unresolved gems...
 
-    found_specs = Gem::Specification.find_in_unresolved path
+    found_specs = Gem::Specification.find_in_unresolved(path)
 
     # If there are no directly unresolved gems, then try and find +path+
     # in any gems that are available via the currently unresolved gems.
@@ -80,7 +80,7 @@ module Kernel
     # it's a dependency of c.
     #
     if found_specs.empty?
-      found_specs = Gem::Specification.find_in_unresolved_tree path
+      found_specs = Gem::Specification.find_in_unresolved_tree(path)
 
       found_specs.each do |found_spec|
         found_spec.activate
@@ -96,7 +96,7 @@ module Kernel
 
       if names.size > 1
         RUBYGEMS_ACTIVATION_MONITOR.exit
-        raise Gem::LoadError, "#{path} found in multiple gems: #{names.join ', '}"
+        raise(Gem::LoadError, "#{path} found in multiple gems: #{names.join(', ')}")
       end
 
       # Ok, now find a gem that has no conflicts, starting
@@ -104,10 +104,10 @@ module Kernel
       valid = found_specs.find { |s| !s.has_conflicts? }
 
       unless valid
-        le = Gem::LoadError.new "unable to find a version of '#{names.first}' to activate"
+        le = Gem::LoadError.new("unable to find a version of '#{names.first}' to activate")
         le.name = names.first
         RUBYGEMS_ACTIVATION_MONITOR.exit
-        raise le
+        raise(le)
       end
 
       valid.activate
@@ -129,7 +129,7 @@ module Kernel
 
     return gem_original_require(path) if require_again
 
-    raise load_error
+    raise(load_error)
   end
 
   private :require

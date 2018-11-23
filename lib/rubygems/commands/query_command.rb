@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/local_remote_options'
-require 'rubygems/spec_fetcher'
-require 'rubygems/version_option'
-require 'rubygems/text'
+require('rubygems/command')
+require('rubygems/local_remote_options')
+require('rubygems/spec_fetcher')
+require('rubygems/version_option')
+require('rubygems/text')
 
 class Gem::Commands::QueryCommand < Gem::Command
 
@@ -13,9 +13,9 @@ class Gem::Commands::QueryCommand < Gem::Command
 
   def initialize(name = 'query',
                  summary = 'Query gem information in local or remote repositories')
-    super name, summary,
+    super(name, summary,
          :name => //, :domain => :local, :details => false, :versions => true,
-         :installed => nil, :version => Gem::Requirement.default
+         :installed => nil, :version => Gem::Requirement.default)
 
     add_option('-i', '--[no-]installed',
                'Check for installed gem') do |value, options|
@@ -26,7 +26,7 @@ class Gem::Commands::QueryCommand < Gem::Command
       options[:installed] = false
     end
 
-    add_version_option command, "for use with --installed"
+    add_version_option(command, "for use with --installed")
 
     add_option('-n', '--name-matches REGEXP',
                'Name of gem(s) to query on matches the',
@@ -93,24 +93,24 @@ is too hard to use.
 
     unless options[:installed].nil?
       if no_name
-        alert_error "You must specify a gem name"
+        alert_error("You must specify a gem name")
         exit_code |= 4
       elsif name.count > 1
-        alert_error "You must specify only ONE gem!"
+        alert_error("You must specify only ONE gem!")
         exit_code |= 4
       else
-        installed = installed? name.first, options[:version]
+        installed = installed?(name.first, options[:version])
         installed = !installed unless options[:installed]
 
         if installed
-          say "true"
+          say("true")
         else
-          say "false"
+          say("false")
           exit_code |= 1
         end
       end
 
-      terminate_interaction exit_code
+      terminate_interaction(exit_code)
     end
 
     names = Array(name)
@@ -122,7 +122,7 @@ is too hard to use.
   def display_header(type)
     if (ui.outs.tty? and Gem.configuration.verbose) or both?
       say
-      say "*** #{type} GEMS ***"
+      say("*** #{type} GEMS ***")
       say
     end
   end
@@ -131,15 +131,15 @@ is too hard to use.
   def show_gems(name, prerelease)
     req = Gem::Requirement.default
     # TODO: deprecate for real
-    dep = Gem::Deprecate.skip_during { Gem::Dependency.new name, req }
+    dep = Gem::Deprecate.skip_during { Gem::Dependency.new(name, req) }
     dep.prerelease = prerelease
 
     if local?
       if prerelease and not both?
-        alert_warning "prereleases are always shown locally"
+        alert_warning("prereleases are always shown locally")
       end
 
-      display_header 'LOCAL'
+      display_header('LOCAL')
 
       specs = Gem::Specification.find_all { |s|
         s.name =~ name and req =~ s.version
@@ -149,11 +149,11 @@ is too hard to use.
         [spec.name_tuple, spec]
       end
 
-      output_query_results spec_tuples
+      output_query_results(spec_tuples)
     end
 
     if remote?
-      display_header 'REMOTE'
+      display_header('REMOTE')
 
       fetcher = Gem::SpecFetcher.fetcher
 
@@ -177,7 +177,7 @@ is too hard to use.
         end
       end
 
-      output_query_results spec_tuples
+      output_query_results(spec_tuples)
     end
   end
 
@@ -200,9 +200,9 @@ is too hard to use.
       n.downcase
     end
 
-    output_versions output, versions
+    output_versions(output, versions)
 
-    say output.join(options[:details] ? "\n\n" : "\n")
+    say(output.join(options[:details] ? "\n\n" : "\n"))
   end
 
   def output_versions(output, versions)
@@ -235,16 +235,16 @@ is too hard to use.
 
     name_tuple, spec = detail_tuple
 
-    spec = spec.fetch_spec name_tuple if spec.respond_to? :fetch_spec
+    spec = spec.fetch_spec(name_tuple) if spec.respond_to?(:fetch_spec)
 
     entry << "\n"
 
-    spec_platforms   entry, platforms
-    spec_authors     entry, spec
-    spec_homepage    entry, spec
-    spec_license     entry, spec
-    spec_loaded_from entry, spec, specs
-    spec_summary     entry, spec
+    spec_platforms(  entry, platforms)
+    spec_authors(    entry, spec)
+    spec_homepage(   entry, spec)
+    spec_license(    entry, spec)
+    spec_loaded_from(entry, spec, specs)
+    spec_summary(    entry, spec)
   end
 
   def entry_versions(entry, name_tuples, platforms, specs)
@@ -273,7 +273,7 @@ is too hard to use.
         end
       end
 
-    entry << " (#{list.join ', '})"
+    entry << " (#{list.join(', ')})"
   end
 
   def make_entry(entry_tuples, platforms)
@@ -285,8 +285,8 @@ is too hard to use.
 
     entry = [name_tuples.first.name]
 
-    entry_versions entry, name_tuples, platforms, specs
-    entry_details  entry, detail_tuple, specs, platforms
+    entry_versions(entry, name_tuples, platforms, specs)
+    entry_details( entry, detail_tuple, specs, platforms)
 
     entry.join
   end
@@ -337,14 +337,14 @@ is too hard to use.
 
     if platforms.length == 1
       title = platforms.values.length == 1 ? 'Platform' : 'Platforms'
-      entry << "    #{title}: #{platforms.values.sort.join ', '}\n"
+      entry << "    #{title}: #{platforms.values.sort.join(', ')}\n"
     else
       entry << "    Platforms:\n"
       platforms.sort_by do |version,|
         version
       end.each do |version, pls|
         label = "        #{version}: "
-        data = format_text pls.sort.join(', '), 68, label.length
+        data = format_text(pls.sort.join(', '), 68, label.length)
         data[0, label.length] = label
         entry << data << "\n"
       end

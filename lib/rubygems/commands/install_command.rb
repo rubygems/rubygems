@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/install_update_options'
-require 'rubygems/dependency_installer'
-require 'rubygems/local_remote_options'
-require 'rubygems/validator'
-require 'rubygems/version_option'
+require('rubygems/command')
+require('rubygems/install_update_options')
+require('rubygems/dependency_installer')
+require('rubygems/local_remote_options')
+require('rubygems/validator')
+require('rubygems/version_option')
 
 ##
 # Gem installer command line tool
@@ -28,13 +28,13 @@ class Gem::Commands::InstallCommand < Gem::Command
       :without_groups    => [],
     })
 
-    super 'install', 'Install a gem into the local repository', defaults
+    super('install', 'Install a gem into the local repository', defaults)
 
     add_install_update_options
     add_local_remote_options
     add_platform_option
     add_version_option
-    add_prerelease_option "to be installed. (Only for listed gems)"
+    add_prerelease_option("to be installed. (Only for listed gems)")
 
     @installed_specs = []
   end
@@ -133,29 +133,29 @@ You can use `i` command instead of `install`.
 
   def check_install_dir # :nodoc:
     if options[:install_dir] and options[:user_install]
-      alert_error "Use --install-dir or --user-install but not both"
-      terminate_interaction 1
+      alert_error("Use --install-dir or --user-install but not both")
+      terminate_interaction(1)
     end
   end
 
   def check_version # :nodoc:
     if options[:version] != Gem::Requirement.default and
          get_all_gem_names.size > 1
-      alert_error "Can't use --version with multiple gems. You can specify multiple gems with" \
-                  " version requirments using `gem install 'my_gem:1.0.0' 'my_other_gem:~>2.0.0'`"
-      terminate_interaction 1
+      alert_error("Can't use --version with multiple gems. You can specify multiple gems with" \
+                  " version requirments using `gem install 'my_gem:1.0.0' 'my_other_gem:~>2.0.0'`")
+      terminate_interaction(1)
     end
   end
 
   def execute
-    if options.include? :gemdeps
+    if options.include?(:gemdeps)
       install_from_gemdeps
       return # not reached
     end
 
     @installed_specs = []
 
-    ENV.delete 'GEM_PATH' if options[:install_dir].nil?
+    ENV.delete('GEM_PATH') if options[:install_dir].nil?
 
     check_install_dir
     check_version
@@ -166,20 +166,20 @@ You can use `i` command instead of `install`.
 
     show_installed
 
-    terminate_interaction exit_code
+    terminate_interaction(exit_code)
   end
 
   def install_from_gemdeps # :nodoc:
-    require 'rubygems/request_set'
+    require('rubygems/request_set')
     rs = Gem::RequestSet.new
 
-    specs = rs.install_from_gemdeps options do |req, inst|
+    specs = rs.install_from_gemdeps(options) do |req, inst|
       s = req.full_spec
 
       if inst
-        say "Installing #{s.name} (#{s.version})"
+        say("Installing #{s.name} (#{s.version})")
       else
-        say "Using #{s.name} (#{s.version})"
+        say("Using #{s.name} (#{s.version})")
       end
     end
 
@@ -195,13 +195,13 @@ You can use `i` command instead of `install`.
     req = Gem::Requirement.create(version)
 
     if options[:ignore_dependencies]
-      install_gem_without_dependencies name, req
+      install_gem_without_dependencies(name, req)
     else
-      inst = Gem::DependencyInstaller.new options
-      request_set = inst.resolve_dependencies name, req
+      inst = Gem::DependencyInstaller.new(options)
+      request_set = inst.resolve_dependencies(name, req)
 
       if options[:explain]
-        puts "Gems to install:"
+        puts("Gems to install:")
 
         request_set.sorted_requests.each do |s|
           puts "  #{s.full_name}"
@@ -209,10 +209,10 @@ You can use `i` command instead of `install`.
 
         return
       else
-        @installed_specs.concat request_set.install options
+        @installed_specs.concat(request_set.install(options))
       end
 
-      show_install_errors inst.errors
+      show_install_errors(inst.errors)
     end
   end
 
@@ -220,33 +220,33 @@ You can use `i` command instead of `install`.
     gem = nil
 
     if local?
-      if name =~ /\.gem$/ and File.file? name
-        source = Gem::Source::SpecificFile.new name
+      if name =~ /\.gem$/ and File.file?(name)
+        source = Gem::Source::SpecificFile.new(name)
         spec = source.spec
       else
         source = Gem::Source::Local.new
-        spec = source.find_gem name, req
+        spec = source.find_gem(name, req)
       end
-      gem = source.download spec if spec
+      gem = source.download(spec) if spec
     end
 
     if remote? and not gem
-      dependency = Gem::Dependency.new name, req
+      dependency = Gem::Dependency.new(name, req)
       dependency.prerelease = options[:prerelease]
 
       fetcher = Gem::RemoteFetcher.fetcher
-      gem = fetcher.download_to_cache dependency
+      gem = fetcher.download_to_cache(dependency)
     end
 
-    inst = Gem::Installer.at gem, options
+    inst = Gem::Installer.at(gem, options)
     inst.install
 
-    require 'rubygems/dependency_installer'
-    dinst = Gem::DependencyInstaller.new options
-    dinst.installed_gems.replace [inst.spec]
+    require('rubygems/dependency_installer')
+    dinst = Gem::DependencyInstaller.new(options)
+    dinst.installed_gems.replace([inst.spec])
 
     Gem.done_installing_hooks.each do |hook|
-      hook.call dinst, [inst.spec]
+      hook.call(dinst, [inst.spec])
     end unless Gem.done_installing_hooks.empty?
 
     @installed_specs.push(inst.spec)
@@ -261,17 +261,17 @@ You can use `i` command instead of `install`.
       domain = :local unless options[:suggest_alternate]
 
       begin
-        install_gem gem_name, gem_version
+        install_gem(gem_name, gem_version)
       rescue Gem::InstallError => e
-        alert_error "Error installing #{gem_name}:\n\t#{e.message}"
+        alert_error("Error installing #{gem_name}:\n\t#{e.message}")
         exit_code |= 1
       rescue Gem::GemNotFoundException => e
-        show_lookup_failure e.name, e.version, e.errors, domain
+        show_lookup_failure(e.name, e.version, e.errors, domain)
 
         exit_code |= 2
       rescue Gem::UnsatisfiableDependencyError => e
-        show_lookup_failure e.name, e.version, e.errors, domain,
-                            "'#{gem_name}' (#{gem_version})"
+        show_lookup_failure(e.name, e.version, e.errors, domain,
+                            "'#{gem_name}' (#{gem_version})")
 
         exit_code |= 2
       end
@@ -285,11 +285,11 @@ You can use `i` command instead of `install`.
 
   def load_hooks # :nodoc:
     if options[:install_as_default]
-      require 'rubygems/install_default_message'
+      require('rubygems/install_default_message')
     else
-      require 'rubygems/install_message'
+      require('rubygems/install_message')
     end
-    require 'rubygems/rdoc'
+    require('rubygems/rdoc')
   end
 
   def show_install_errors(errors) # :nodoc:
@@ -308,7 +308,7 @@ You can use `i` command instead of `install`.
     return if @installed_specs.empty?
 
     gems = @installed_specs.length == 1 ? 'gem' : 'gems'
-    say "#{@installed_specs.length} #{gems} installed"
+    say("#{@installed_specs.length} #{gems} installed")
   end
 
 end

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
-require 'English'
-require 'rubygems/command'
-require 'rubygems/version_option'
-require 'rubygems/util'
+require('English')
+require('rubygems/command')
+require('rubygems/version_option')
+require('rubygems/util')
 
 class Gem::Commands::OpenCommand < Gem::Command
 
   include Gem::VersionOption
 
   def initialize
-    super 'open', 'Open gem sources in editor'
+    super('open', 'Open gem sources in editor')
 
     add_option('-e', '--editor COMMAND', String,
                "Prepends COMMAND to gem path. Could be used to specify editor.") do |command, options|
@@ -55,16 +55,16 @@ class Gem::Commands::OpenCommand < Gem::Command
 
     found = open_gem(get_one_gem_name)
 
-    terminate_interaction 1 unless found
+    terminate_interaction(1) unless found
   end
 
   def open_gem(name)
-    spec = spec_for name
+    spec = spec_for(name)
 
     return false unless spec
 
     if spec.default_gem?
-      say "'#{name}' is a default gem and can't be opened."
+      say("'#{name}' is a default gem and can't be opened.")
       return false
     end
 
@@ -82,6 +82,6 @@ class Gem::Commands::OpenCommand < Gem::Command
 
     return spec if spec
 
-    say "Unable to find gem '#{name}'"
+    say("Unable to find gem '#{name}'")
   end
 end

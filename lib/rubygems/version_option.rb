@@ -5,7 +5,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
+require('rubygems')
 
 ##
 # Mixin methods for --version and --platform Gem::Command options.
@@ -16,11 +16,11 @@ module Gem::VersionOption
   # Add the --platform option to the option parser.
 
   def add_platform_option(task = command, *wrap)
-    OptionParser.accept Gem::Platform do |value|
+    OptionParser.accept(Gem::Platform) do |value|
       if value == Gem::Platform::RUBY
         value
       else
-        Gem::Platform.new value
+        Gem::Platform.new(value)
       end
     end
 
@@ -32,7 +32,7 @@ module Gem::VersionOption
         options[:added_platform] = true
       end
 
-      Gem.platforms << value unless Gem.platforms.include? value
+      Gem.platforms << value unless Gem.platforms.include?(value)
     end
   end
 
@@ -51,7 +51,7 @@ module Gem::VersionOption
   # Add the --version option to the option parser.
 
   def add_version_option(task = command, *wrap)
-    OptionParser.accept Gem::Requirement do |value|
+    OptionParser.accept(Gem::Requirement) do |value|
       Gem::Requirement.new(*value.split(/\s*,\s*/))
     end
 

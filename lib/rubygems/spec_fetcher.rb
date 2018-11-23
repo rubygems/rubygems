@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'rubygems/remote_fetcher'
-require 'rubygems/user_interaction'
-require 'rubygems/errors'
-require 'rubygems/text'
-require 'rubygems/name_tuple'
+require('rubygems/remote_fetcher')
+require('rubygems/user_interaction')
+require('rubygems/errors')
+require('rubygems/text')
+require('rubygems/name_tuple')
 
 ##
 # SpecFetcher handles metadata updates from remote gem repositories.
@@ -114,7 +114,7 @@ class Gem::SpecFetcher
             pm = (
               rejected_specs[dependency] ||= \
                 Gem::PlatformMismatch.new(tup.name, tup.version))
-            pm.add_platform tup.platform
+            pm.add_platform(tup.platform)
             false
           else
             true
@@ -192,7 +192,7 @@ class Gem::SpecFetcher
     matches = names.map { |n|
       next unless n.match_platform?
 
-      distance = levenshtein_distance gem_name, n.name.downcase.tr('_-', '')
+      distance = levenshtein_distance(gem_name, n.name.downcase.tr('_-', ''))
 
       next if distance >= max
 
@@ -202,7 +202,7 @@ class Gem::SpecFetcher
     }.compact
 
     matches = if matches.empty? && type != :prerelease
-                suggest_gems_from_name gem_name, :prerelease
+                suggest_gems_from_name(gem_name, :prerelease)
               else
                 matches.uniq.sort_by { |name, dist| dist }
               end
@@ -228,9 +228,9 @@ class Gem::SpecFetcher
       begin
         names = case type
                 when :latest
-                  tuples_for source, :latest
+                  tuples_for(source, :latest)
                 when :released
-                  tuples_for source, :released
+                  tuples_for(source, :released)
                 when :complete
                   names =
                     tuples_for(source, :prerelease, true) +
@@ -246,7 +246,7 @@ class Gem::SpecFetcher
                 when :prerelease
                   tuples_for(source, :prerelease)
                 else
-                  raise Gem::Exception, "Unknown type - :#{type}"
+                  raise(Gem::Exception, "Unknown type - :#{type}")
                 end
       rescue Gem::RemoteFetcher::FetchError => e
         errors << Gem::SourceFetchProblem.new(source, e)

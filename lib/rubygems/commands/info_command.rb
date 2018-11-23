@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'rubygems/command'
-require 'rubygems/commands/query_command'
+require('rubygems/command')
+require('rubygems/commands/query_command')
 
 class Gem::Commands::InfoCommand < Gem::Commands::QueryCommand
   def initialize
-    super "info", "Show information for the given gem"
+    super("info", "Show information for the given gem")
 
     remove_option('--name-matches')
     remove_option('-d')

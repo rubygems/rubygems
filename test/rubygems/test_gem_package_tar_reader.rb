@@ -1,18 +1,18 @@
 # frozen_string_literal: true
-require 'rubygems/package/tar_test_case'
-require 'rubygems/package'
+require('rubygems/package/tar_test_case')
+require('rubygems/package')
 
 class TestGemPackageTarReader < Gem::Package::TarTestCase
 
   def test_each_entry
-    tar = tar_dir_header "foo", "bar", 0, Time.now
+    tar = tar_dir_header("foo", "bar", 0, Time.now)
     tar << tar_file_header("bar", "baz", 0, 0, Time.now)
 
-    io = TempIO.new tar
+    io = TempIO.new(tar)
 
     entries = 0
 
-    Gem::Package::TarReader.new io do |tar_reader|
+    Gem::Package::TarReader.new(io) do |tar_reader|
       tar_reader.each_entry do |entry|
         assert_kind_of Gem::Package::TarReader::Entry, entry
 
@@ -20,7 +20,7 @@ class TestGemPackageTarReader < Gem::Package::TarTestCase
       end
     end
 
-    assert_equal 2, entries
+    assert_equal(2, entries)
   ensure
     io.close!
   end
@@ -51,13 +51,13 @@ class TestGemPackageTarReader < Gem::Package::TarTestCase
   end
 
   def test_seek
-    tar = tar_dir_header "foo", "bar", 0, Time.now
+    tar = tar_dir_header("foo", "bar", 0, Time.now)
     tar << tar_file_header("bar", "baz", 0, 0, Time.now)
 
-    io = TempIO.new tar
+    io = TempIO.new(tar)
 
-    Gem::Package::TarReader.new io do |tar_reader|
-      tar_reader.seek 'baz/bar' do |entry|
+    Gem::Package::TarReader.new(io) do |tar_reader|
+      tar_reader.seek('baz/bar') do |entry|
         assert_kind_of Gem::Package::TarReader::Entry, entry
 
         assert_equal 'baz/bar', entry.full_name
@@ -70,13 +70,13 @@ class TestGemPackageTarReader < Gem::Package::TarTestCase
   end
 
   def test_seek_missing
-    tar = tar_dir_header "foo", "bar", 0, Time.now
+    tar = tar_dir_header("foo", "bar", 0, Time.now)
     tar << tar_file_header("bar", "baz", 0, 0, Time.now)
 
-    io = TempIO.new tar
+    io = TempIO.new(tar)
 
-    Gem::Package::TarReader.new io do |tar_reader|
-      tar_reader.seek 'nonexistent' do |entry|
+    Gem::Package::TarReader.new(io) do |tar_reader|
+      tar_reader.seek('nonexistent') do |entry|
         flunk 'entry missing but entry-found block was run'
       end
 

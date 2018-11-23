@@ -18,7 +18,7 @@ class Gem::Resolver::SourceSet < Gem::Resolver::Set
 
   def find_all(req) # :nodoc:
     if set = get_set(req.dependency.name)
-      set.find_all req
+      set.find_all(req)
     else
       []
     end
@@ -28,7 +28,7 @@ class Gem::Resolver::SourceSet < Gem::Resolver::Set
   def prefetch(reqs) # :nodoc:
     reqs.each do |req|
       if set = get_set(req.dependency.name)
-        set.prefetch reqs
+        set.prefetch(reqs)
       end
     end
   end

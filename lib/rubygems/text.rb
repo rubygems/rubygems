@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems'
+require('rubygems')
 
 ##
 # A collection of text-wrangling methods
@@ -14,7 +14,7 @@ module Gem::Text
   end
 
   def truncate_text(text, description, max_length = 100_000)
-    raise ArgumentError, "max_length must be positive" unless max_length > 0
+    raise(ArgumentError, "max_length must be positive") unless max_length > 0
     return text if text.size <= max_length
     "Truncating #{description} to #{max_length.to_s.reverse.gsub(/...(?=.)/,'\&,').reverse} characters:\n" + text[0, max_length]
   end

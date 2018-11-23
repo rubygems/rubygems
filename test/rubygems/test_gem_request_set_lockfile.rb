@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/request_set'
-require 'rubygems/request_set/lockfile'
+require('rubygems/test_case')
+require('rubygems/request_set')
+require('rubygems/request_set/lockfile')
 
 class TestGemRequestSetLockfile < Gem::TestCase
 
@@ -10,44 +10,44 @@ class TestGemRequestSetLockfile < Gem::TestCase
 
     Gem::RemoteFetcher.fetcher = @fetcher = Gem::FakeFetcher.new
 
-    util_set_arch 'i686-darwin8.10.1'
+    util_set_arch('i686-darwin8.10.1')
 
     @set = Gem::RequestSet.new
 
     @git_set    = Gem::Resolver::GitSet.new
     @vendor_set = Gem::Resolver::VendorSet.new
 
-    @set.instance_variable_set :@git_set,    @git_set
-    @set.instance_variable_set :@vendor_set, @vendor_set
+    @set.instance_variable_set(:@git_set,    @git_set)
+    @set.instance_variable_set(:@vendor_set, @vendor_set)
 
     @gem_deps_file = 'gem.deps.rb'
   end
 
   def lockfile
-    Gem::RequestSet::Lockfile.build @set, @gem_deps_file
+    Gem::RequestSet::Lockfile.build(@set, @gem_deps_file)
   end
 
   def write_lockfile(lockfile)
-    @lock_file = File.expand_path "#{@gem_deps_file}.lock"
+    @lock_file = File.expand_path("#{@gem_deps_file}.lock")
 
-    File.open @lock_file, 'w' do |io|
-      io.write lockfile
+    File.open(@lock_file, 'w') do |io|
+      io.write(lockfile)
     end
   end
 
   def test_add_DEPENDENCIES
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2 do |s|
-        s.add_development_dependency 'b'
+      fetcher.spec('a', 2) do |s|
+        s.add_development_dependency('b')
       end
     end
 
-    @set.gem 'a'
+    @set.gem('a')
     @set.resolve
 
     out = []
 
-    lockfile.add_DEPENDENCIES out
+    lockfile.add_DEPENDENCIES(out)
 
     expected = [
       'DEPENDENCIES',
@@ -55,26 +55,26 @@ class TestGemRequestSetLockfile < Gem::TestCase
       nil
     ]
 
-    assert_equal expected, out
+    assert_equal(expected, out)
   end
 
   def test_add_DEPENDENCIES_from_gem_deps
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2 do |s|
-        s.add_development_dependency 'b'
+      fetcher.spec('a', 2) do |s|
+        s.add_development_dependency('b')
       end
     end
 
     dependencies = { 'a' => Gem::Requirement.new('~> 2.0') }
 
-    @set.gem 'a'
+    @set.gem('a')
     @set.resolve
     @lockfile =
-      Gem::RequestSet::Lockfile.new @set, @gem_deps_file, dependencies
+      Gem::RequestSet::Lockfile.new(@set, @gem_deps_file, dependencies)
 
     out = []
 
-    @lockfile.add_DEPENDENCIES out
+    @lockfile.add_DEPENDENCIES(out)
 
     expected = [
       'DEPENDENCIES',
@@ -82,28 +82,28 @@ class TestGemRequestSetLockfile < Gem::TestCase
       nil
     ]
 
-    assert_equal expected, out
+    assert_equal(expected, out)
   end
 
   def test_add_GEM
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2 do |s|
-        s.add_dependency 'b'
-        s.add_development_dependency 'c'
+      fetcher.spec('a', 2) do |s|
+        s.add_dependency('b')
+        s.add_development_dependency('c')
       end
 
-      fetcher.spec 'b', 2
+      fetcher.spec('b', 2)
 
-      fetcher.spec 'bundler', 1
+      fetcher.spec('bundler', 1)
     end
 
-    @set.gem 'a'
-    @set.gem 'bundler'
+    @set.gem('a')
+    @set.gem('bundler')
     @set.resolve
 
     out = []
 
-    lockfile.add_GEM out, lockfile.spec_groups
+    lockfile.add_GEM(out, lockfile.spec_groups)
 
     expected = [
       'GEM',
@@ -115,26 +115,26 @@ class TestGemRequestSetLockfile < Gem::TestCase
       nil
     ]
 
-    assert_equal expected, out
+    assert_equal(expected, out)
   end
 
   def test_add_PLATFORMS
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2 do |s|
-        s.add_dependency 'b'
+      fetcher.spec('a', 2) do |s|
+        s.add_dependency('b')
       end
 
-      fetcher.spec 'b', 2 do |s|
+      fetcher.spec('b', 2) do |s|
         s.platform = Gem::Platform::CURRENT
       end
     end
 
-    @set.gem 'a'
+    @set.gem('a')
     @set.resolve
 
     out = []
 
-    lockfile.add_PLATFORMS out
+    lockfile.add_PLATFORMS(out)
 
     expected = [
       'PLATFORMS',
@@ -143,25 +143,25 @@ class TestGemRequestSetLockfile < Gem::TestCase
       nil
     ]
 
-    assert_equal expected, out
+    assert_equal(expected, out)
   end
 
   def test_relative_path_from
-    path = lockfile.relative_path_from '/foo', '/foo/bar'
+    path = lockfile.relative_path_from('/foo', '/foo/bar')
 
-    assert_equal File.expand_path('/foo'), path
+    assert_equal(File.expand_path('/foo'), path)
 
-    path = lockfile.relative_path_from '/foo', '/foo'
+    path = lockfile.relative_path_from('/foo', '/foo')
 
-    assert_equal '.', path
+    assert_equal('.', path)
   end
 
   def test_to_s_gem
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2
+      fetcher.spec('a', 2)
     end
 
-    @set.gem 'a'
+    @set.gem('a')
 
     expected = <<-LOCKFILE
 GEM
@@ -176,17 +176,17 @@ DEPENDENCIES
   a
     LOCKFILE
 
-    assert_equal expected, lockfile.to_s
+    assert_equal(expected, lockfile.to_s)
   end
 
   def test_to_s_gem_dependency
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2, 'c' => '>= 0', 'b' => '>= 0'
-      fetcher.spec 'b', 2
-      fetcher.spec 'c', 2
+      fetcher.spec('a', 2, 'c' => '>= 0', 'b' => '>= 0')
+      fetcher.spec('b', 2)
+      fetcher.spec('c', 2)
     end
 
-    @set.gem 'a'
+    @set.gem('a')
 
     expected = <<-LOCKFILE
 GEM
@@ -207,17 +207,17 @@ DEPENDENCIES
   c
     LOCKFILE
 
-    assert_equal expected, lockfile.to_s
+    assert_equal(expected, lockfile.to_s)
   end
 
   def test_to_s_gem_dependency_non_default
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2, 'b' => '>= 1'
-      fetcher.spec 'b', 2
+      fetcher.spec('a', 2, 'b' => '>= 1')
+      fetcher.spec('b', 2)
     end
 
-    @set.gem 'b'
-    @set.gem 'a'
+    @set.gem('b')
+    @set.gem('a')
 
     expected = <<-LOCKFILE
 GEM
@@ -235,16 +235,16 @@ DEPENDENCIES
   b
     LOCKFILE
 
-    assert_equal expected, lockfile.to_s
+    assert_equal(expected, lockfile.to_s)
   end
 
   def test_to_s_gem_dependency_requirement
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2, 'b' => '>= 0'
-      fetcher.spec 'b', 2
+      fetcher.spec('a', 2, 'b' => '>= 0')
+      fetcher.spec('b', 2)
     end
 
-    @set.gem 'a', '>= 1'
+    @set.gem('a', '>= 1')
 
     expected = <<-LOCKFILE
 GEM
@@ -262,15 +262,15 @@ DEPENDENCIES
   b
     LOCKFILE
 
-    assert_equal expected, lockfile.to_s
+    assert_equal(expected, lockfile.to_s)
   end
 
   def test_to_s_gem_path
     name, version, directory = vendor_gem
 
-    @vendor_set.add_vendor_gem name, directory
+    @vendor_set.add_vendor_gem(name, directory)
 
-    @set.gem 'a'
+    @set.gem('a')
 
     expected = <<-LOCKFILE
 PATH
@@ -285,15 +285,15 @@ DEPENDENCIES
   a!
     LOCKFILE
 
-    assert_equal expected, lockfile.to_s
+    assert_equal(expected, lockfile.to_s)
   end
 
   def test_to_s_gem_path_absolute
     name, version, directory = vendor_gem
 
-    @vendor_set.add_vendor_gem name, File.expand_path(directory)
+    @vendor_set.add_vendor_gem(name, File.expand_path(directory))
 
-    @set.gem 'a'
+    @set.gem('a')
 
     expected = <<-LOCKFILE
 PATH
@@ -308,17 +308,17 @@ DEPENDENCIES
   a!
     LOCKFILE
 
-    assert_equal expected, lockfile.to_s
+    assert_equal(expected, lockfile.to_s)
   end
 
   def test_to_s_gem_platform
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2 do |spec|
+      fetcher.spec('a', 2) do |spec|
         spec.platform = Gem::Platform.local
       end
     end
 
-    @set.gem 'a'
+    @set.gem('a')
 
     expected = <<-LOCKFILE
 GEM
@@ -333,22 +333,22 @@ DEPENDENCIES
   a
     LOCKFILE
 
-    assert_equal expected, lockfile.to_s
+    assert_equal(expected, lockfile.to_s)
   end
 
   def test_to_s_gem_source
     spec_fetcher do |fetcher|
-      fetcher.download 'a', 2
+      fetcher.download('a', 2)
     end
 
     spec_fetcher 'http://other.example/' do |fetcher|
-      fetcher.download 'b', 2
+      fetcher.download('b', 2)
     end
 
     Gem.sources << 'http://other.example/'
 
-    @set.gem 'a'
-    @set.gem 'b'
+    @set.gem('a')
+    @set.gem('b')
 
     expected = <<-LOCKFILE
 GEM
@@ -369,7 +369,7 @@ DEPENDENCIES
   b
     LOCKFILE
 
-    assert_equal expected, lockfile.to_s
+    assert_equal(expected, lockfile.to_s)
   end
 
   def test_to_s_git
@@ -377,30 +377,30 @@ DEPENDENCIES
 
     head = nil
 
-    Dir.chdir repository do
-      FileUtils.mkdir 'b'
+    Dir.chdir(repository) do
+      FileUtils.mkdir('b')
 
-      Dir.chdir 'b' do
-        b = Gem::Specification.new 'b', 1 do |s|
-          s.add_dependency 'a', '~> 1.0'
-          s.add_dependency 'c', '~> 1.0'
+      Dir.chdir('b') do
+        b = Gem::Specification.new('b', 1) do |s|
+          s.add_dependency('a', '~> 1.0')
+          s.add_dependency('c', '~> 1.0')
         end
 
-        File.open 'b.gemspec', 'w' do |io|
-          io.write b.to_ruby
+        File.open('b.gemspec', 'w') do |io|
+          io.write(b.to_ruby)
         end
 
         system @git, 'add', 'b.gemspec'
         system @git, 'commit', '--quiet', '-m', 'add b/b.gemspec'
       end
 
-      FileUtils.mkdir 'c'
+      FileUtils.mkdir('c')
 
-      Dir.chdir 'c' do
-        c = Gem::Specification.new 'c', 1
+      Dir.chdir('c') do
+        c = Gem::Specification.new('c', 1)
 
-        File.open 'c.gemspec', 'w' do |io|
-          io.write c.to_ruby
+        File.open('c.gemspec', 'w') do |io|
+          io.write(c.to_ruby)
         end
 
         system @git, 'add', 'c.gemspec'
@@ -410,11 +410,11 @@ DEPENDENCIES
       head = `#{@git} rev-parse HEAD`.strip
     end
 
-    @git_set.add_git_gem 'a', repository, 'HEAD', true
-    @git_set.add_git_gem 'b', repository, 'HEAD', true
-    @git_set.add_git_gem 'c', repository, 'HEAD', true
+    @git_set.add_git_gem('a', repository, 'HEAD', true)
+    @git_set.add_git_gem('b', repository, 'HEAD', true)
+    @git_set.add_git_gem('c', repository, 'HEAD', true)
 
-    @set.gem 'b'
+    @set.gem('b')
 
     expected = <<-LOCKFILE
 GIT
@@ -436,7 +436,7 @@ DEPENDENCIES
   c!
     LOCKFILE
 
-    assert_equal expected, lockfile.to_s
+    assert_equal(expected, lockfile.to_s)
   end
 
   def test_write
@@ -444,26 +444,26 @@ DEPENDENCIES
 
     gem_deps_lock_file = "#{@gem_deps_file}.lock"
 
-    assert_path_exists gem_deps_lock_file
+    assert_path_exists(gem_deps_lock_file)
 
-    refute_empty File.read gem_deps_lock_file
+    refute_empty(File.read(gem_deps_lock_file))
   end
 
   def test_write_error
-    @set.gem 'nonexistent'
+    @set.gem('nonexistent')
 
     gem_deps_lock_file = "#{@gem_deps_file}.lock"
 
-    File.open gem_deps_lock_file, 'w' do |io|
-      io.write 'hello'
+    File.open(gem_deps_lock_file, 'w') do |io|
+      io.write('hello')
     end
 
     assert_raises Gem::UnsatisfiableDependencyError do
       lockfile.write
     end
 
-    assert_path_exists gem_deps_lock_file
+    assert_path_exists(gem_deps_lock_file)
 
-    assert_equal 'hello', File.read(gem_deps_lock_file)
+    assert_equal('hello', File.read(gem_deps_lock_file))
   end
 end

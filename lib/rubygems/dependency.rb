@@ -2,8 +2,8 @@
 ##
 # The Dependency class holds a Gem name and a Gem::Requirement.
 
-require "rubygems/bundler_version_finder"
-require "rubygems/requirement"
+require("rubygems/bundler_version_finder")
+require("rubygems/requirement")
 
 class Gem::Dependency
 
@@ -42,22 +42,22 @@ class Gem::Dependency
     when Regexp then
       msg = ["NOTE: Dependency.new w/ a regexp is deprecated.",
              "Dependency.new called from #{Gem.location_of_caller.join(":")}"]
-      warn msg.join("\n") unless Gem::Deprecate.skip
+      warn(msg.join("\n")) unless Gem::Deprecate.skip
     else
-      raise ArgumentError,
-            "dependency name must be a String, was #{name.inspect}"
+      raise(ArgumentError,
+            "dependency name must be a String, was #{name.inspect}")
     end
 
     type         = Symbol === requirements.last ? requirements.pop : :runtime
     requirements = requirements.first if 1 == requirements.length # unpack
 
-    unless TYPES.include? type
-      raise ArgumentError, "Valid types are #{TYPES.inspect}, " +
-                           "not #{type.inspect}"
+    unless TYPES.include?(type)
+      raise(ArgumentError, "Valid types are #{TYPES.inspect}, " +
+                           "not #{type.inspect}")
     end
 
     @name        = name
-    @requirement = Gem::Requirement.create requirements
+    @requirement = Gem::Requirement.create(requirements)
     @type        = type
     @prerelease  = false
 
@@ -101,17 +101,17 @@ class Gem::Dependency
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 1, 'Gem::Dependency.new(', ')' do
-      q.pp name
-      q.text ','
+    q.group(1, 'Gem::Dependency.new(', ')') do
+      q.pp(name)
+      q.text(',')
       q.breakable
 
-      q.pp requirement
+      q.pp(requirement)
 
-      q.text ','
+      q.text(',')
       q.breakable
 
-      q.pp type
+      q.pp(type)
     end
   end
 
@@ -139,9 +139,9 @@ class Gem::Dependency
     # REFACTOR: See above
 
     if defined?(@version_requirement) && @version_requirement
-      version = @version_requirement.instance_variable_get :@version
+      version = @version_requirement.instance_variable_get(:@version)
       @version_requirement  = nil
-      @version_requirements = Gem::Requirement.new version
+      @version_requirements = Gem::Requirement.new(version)
     end
 
     @requirement = @version_requirements if defined?(@version_requirements)
@@ -193,7 +193,7 @@ class Gem::Dependency
   def =~(other)
     unless Gem::Dependency === other
       return unless other.respond_to?(:name) && other.respond_to?(:version)
-      other = Gem::Dependency.new other.name, other.version
+      other = Gem::Dependency.new(other.name, other.version)
     end
 
     return false unless name === other.name
@@ -205,7 +205,7 @@ class Gem::Dependency
 
     version = reqs.first.last
 
-    requirement.satisfied_by? version
+    requirement.satisfied_by?(version)
   end
 
   alias === =~
@@ -232,14 +232,14 @@ class Gem::Dependency
 
     return false unless self.name === name
 
-    version = Gem::Version.new version
+    version = Gem::Version.new(version)
 
     return true if requirement.none? and not version.prerelease?
     return false if version.prerelease? and
                     not allow_prerelease and
                     not prerelease?
 
-    requirement.satisfied_by? version
+    requirement.satisfied_by?(version)
   end
 
   ##
@@ -261,18 +261,18 @@ class Gem::Dependency
 
   def merge(other)
     unless name == other.name
-      raise ArgumentError,
-            "#{self} and #{other} have different names"
+      raise(ArgumentError,
+            "#{self} and #{other} have different names")
     end
 
     default = Gem::Requirement.default
     self_req  = self.requirement
     other_req = other.requirement
 
-    return self.class.new name, self_req  if other_req == default
-    return self.class.new name, other_req if self_req  == default
+    return self.class.new(name, self_req)  if other_req == default
+    return self.class.new(name, other_req) if self_req  == default
 
-    self.class.new name, self_req.as_list.concat(other_req.as_list)
+    self.class.new(name, self_req.as_list.concat(other_req.as_list))
   end
 
   def matching_specs(platform_only = false)
@@ -300,17 +300,17 @@ class Gem::Dependency
   end
 
   def to_specs
-    matches = matching_specs true
+    matches = matching_specs(true)
 
     # TODO: check Gem.activated_spec[self.name] in case matches falls outside
 
     if matches.empty?
-      specs = Gem::Specification.stubs_for name
+      specs = Gem::Specification.stubs_for(name)
 
       if specs.empty?
-        raise Gem::MissingSpecError.new name, requirement
+        raise(Gem::MissingSpecError.new(name, requirement))
       else
-        raise Gem::MissingSpecVersionError.new name, requirement, specs
+        raise(Gem::MissingSpecVersionError.new(name, requirement, specs))
       end
     end
 

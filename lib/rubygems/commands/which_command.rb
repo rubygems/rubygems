@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-require 'rubygems/command'
+require('rubygems/command')
 
 class Gem::Commands::WhichCommand < Gem::Command
   def initialize
-    super 'which', 'Find the location of a library file you can require',
-          :search_gems_first => false, :show_all => false
+    super('which', 'Find the location of a library file you can require',
+          :search_gems_first => false, :show_all => false)
 
     add_option '-a', '--[no-]all', 'show all matching files' do |show_all, options|
       options[:show_all] = show_all
@@ -42,7 +42,7 @@ requiring to see why it does not behave as you expect.
       arg = arg.sub(/#{Regexp.union(*Gem.suffixes)}$/, '')
       dirs = $LOAD_PATH
 
-      spec = Gem::Specification.find_by_path arg
+      spec = Gem::Specification.find_by_path(arg)
 
       if spec
         if options[:search_gems_first]
@@ -53,18 +53,18 @@ requiring to see why it does not behave as you expect.
       end
 
       # TODO: this is totally redundant and stupid
-      paths = find_paths arg, dirs
+      paths = find_paths(arg, dirs)
 
       if paths.empty?
-        alert_error "Can't find Ruby library file or shared library #{arg}"
+        alert_error("Can't find Ruby library file or shared library #{arg}")
 
         found &&= false
       else
-        say paths
+        say(paths)
       end
     end
 
-    terminate_interaction 1 unless found
+    terminate_interaction(1) unless found
   end
 
   def find_paths(package_name, dirs)
@@ -72,8 +72,8 @@ requiring to see why it does not behave as you expect.
 
     dirs.each do |dir|
       Gem.suffixes.each do |ext|
-        full_path = File.join dir, "#{package_name}#{ext}"
-        if File.exist? full_path and not File.directory? full_path
+        full_path = File.join(dir, "#{package_name}#{ext}")
+        if File.exist?(full_path) and not File.directory?(full_path)
           result << full_path
           return result unless options[:show_all]
         end

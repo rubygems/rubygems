@@ -35,11 +35,11 @@ class Gem::Resolver::Stats
   PATTERN = "%20s: %d\n".freeze
 
   def display
-    $stdout.puts "=== Resolver Statistics ==="
-    $stdout.printf PATTERN, "Max Depth", @max_depth
-    $stdout.printf PATTERN, "Total Requirements", @requirements
-    $stdout.printf PATTERN, "Max Requirements", @max_requirements
-    $stdout.printf PATTERN, "Backtracking #", @backtracking
-    $stdout.printf PATTERN, "Iteration #", @iterations
+    $stdout.puts("=== Resolver Statistics ===")
+    $stdout.printf(PATTERN, "Max Depth", @max_depth)
+    $stdout.printf(PATTERN, "Total Requirements", @requirements)
+    $stdout.printf(PATTERN, "Max Requirements", @max_requirements)
+    $stdout.printf(PATTERN, "Backtracking #", @backtracking)
+    $stdout.printf(PATTERN, "Iteration #", @iterations)
   end
 end

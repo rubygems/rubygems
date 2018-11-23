@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/local_remote_options'
-require 'rubygems/spec_fetcher'
-require 'rubygems/version_option'
+require('rubygems/command')
+require('rubygems/local_remote_options')
+require('rubygems/spec_fetcher')
+require('rubygems/version_option')
 
 class Gem::Commands::OutdatedCommand < Gem::Command
 
@@ -10,7 +10,7 @@ class Gem::Commands::OutdatedCommand < Gem::Command
   include Gem::VersionOption
 
   def initialize
-    super 'outdated', 'Display all gems that need updates'
+    super('outdated', 'Display all gems that need updates')
 
     add_local_remote_options
     add_platform_option

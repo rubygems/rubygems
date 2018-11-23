@@ -5,9 +5,9 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'optparse'
-require 'rubygems/requirement'
-require 'rubygems/user_interaction'
+require('optparse')
+require('rubygems/requirement')
+require('rubygems/user_interaction')
 
 ##
 # Base class for all Gem commands.  When creating a new gem command, define
@@ -90,7 +90,7 @@ class Gem::Command
   # array or a string to be split on white space.
 
   def self.add_specific_extra_args(cmd,args)
-    args = args.split(/\s+/) if args.kind_of? String
+    args = args.split(/\s+/) if args.kind_of?(String)
     specific_extra_args_hash[cmd] = args
   end
 
@@ -144,7 +144,7 @@ class Gem::Command
   # #get_one_optional_argument
 
   def execute
-    raise Gem::Exception, "generic command has no actions"
+    raise(Gem::Exception, "generic command has no actions")
   end
 
   ##
@@ -154,7 +154,7 @@ class Gem::Command
 
   def show_lookup_failure(gem_name, version, errors, domain, required_by = nil)
     gem = "'#{gem_name}' (#{version})"
-    msg = String.new "Could not find a valid gem #{gem}"
+    msg = String.new("Could not find a valid gem #{gem}")
 
     if errors and !errors.empty?
       msg << ", here is why:\n"
@@ -167,13 +167,13 @@ class Gem::Command
       end
     end
 
-    alert_error msg
+    alert_error(msg)
 
     unless domain == :local  # HACK
-      suggestions = Gem::SpecFetcher.fetcher.suggest_gems_from_name gem_name
+      suggestions = Gem::SpecFetcher.fetcher.suggest_gems_from_name(gem_name)
 
       unless suggestions.empty?
-        alert_error "Possible alternatives: #{suggestions.join(", ")}"
+        alert_error("Possible alternatives: #{suggestions.join(", ")}")
       end
     end
   end
@@ -185,8 +185,8 @@ class Gem::Command
     args = options[:args]
 
     if args.nil? or args.empty?
-      raise Gem::CommandLineError,
-            "Please specify at least one gem name (e.g. gem build GEMNAME)"
+      raise(Gem::CommandLineError,
+            "Please specify at least one gem name (e.g. gem build GEMNAME)")
     end
 
     args.select { |arg| arg !~ /^-/ }
@@ -215,13 +215,13 @@ class Gem::Command
     args = options[:args]
 
     if args.nil? or args.empty?
-      raise Gem::CommandLineError,
-            "Please specify a gem name on the command line (e.g. gem build GEMNAME)"
+      raise(Gem::CommandLineError,
+            "Please specify a gem name on the command line (e.g. gem build GEMNAME)")
     end
 
     if args.size > 1
-      raise Gem::CommandLineError,
-            "Too many gem names (#{args.join(', ')}); please specify only one"
+      raise(Gem::CommandLineError,
+            "Too many gem names (#{args.join(', ')}); please specify only one")
     end
 
     args.first
@@ -289,14 +289,14 @@ class Gem::Command
 
   def show_help
     parser.program_name = usage
-    say parser
+    say(parser)
   end
 
   ##
   # Invoke the command with the given list of arguments.
 
   def invoke(*args)
-    invoke_with_build_args args, nil
+    invoke_with_build_args(args, nil)
   end
 
   ##
@@ -304,7 +304,7 @@ class Gem::Command
   # and additional build arguments.
 
   def invoke_with_build_args(args, build_args)
-    handle_options args
+    handle_options(args)
 
     options[:build_args] = build_args
 
@@ -316,7 +316,7 @@ class Gem::Command
     if options[:help]
       show_help
     elsif @when_invoked
-      @when_invoked.call options
+      @when_invoked.call(options)
     else
       execute
     end
@@ -392,7 +392,7 @@ class Gem::Command
 
   def handle_options(args)
     args = add_extra_args(args)
-    @options = Marshal.load Marshal.dump @defaults # deep copy
+    @options = Marshal.load(Marshal.dump(@defaults)) # deep copy
     parser.parse!(args)
     @options[:args] = args
   end
@@ -425,24 +425,24 @@ class Gem::Command
 
     formatted = description.split("\n\n").map do |chunk|
       wrap chunk, 80 - 4
-    end.join "\n"
+    end.join("\n")
 
-    @parser.separator nil
-    @parser.separator "  Description:"
+    @parser.separator(nil)
+    @parser.separator("  Description:")
     formatted.split("\n").each do |line|
-      @parser.separator "    #{line.rstrip}"
+      @parser.separator("    #{line.rstrip}")
     end
   end
 
   def add_parser_options # :nodoc:
-    @parser.separator nil
+    @parser.separator(nil)
 
-    regular_options = @option_groups.delete :options
+    regular_options = @option_groups.delete(:options)
 
-    configure_options "", regular_options
+    configure_options("", regular_options)
 
     @option_groups.sort_by { |n,_| n.to_s }.each do |group_name, option_list|
-      @parser.separator nil
+      @parser.separator(nil)
       configure_options group_name, option_list
     end
   end
@@ -454,20 +454,20 @@ class Gem::Command
   def add_parser_run_info(title, content)
     return if content.empty?
 
-    @parser.separator nil
-    @parser.separator "  #{title}:"
+    @parser.separator(nil)
+    @parser.separator("  #{title}:")
     content.split(/\n/).each do |line|
-      @parser.separator "    #{line}"
+      @parser.separator("    #{line}")
     end
   end
 
   def add_parser_summary # :nodoc:
     return unless @summary
 
-    @parser.separator nil
-    @parser.separator "  Summary:"
+    @parser.separator(nil)
+    @parser.separator("  Summary:")
     wrap(@summary, 80 - 4).split("\n").each do |line|
-      @parser.separator "    #{line.strip}"
+      @parser.separator("    #{line.strip}")
     end
   end
 
@@ -488,20 +488,20 @@ class Gem::Command
 
     add_parser_options
 
-    @parser.separator nil
-    configure_options "Common", Gem::Command.common_options
+    @parser.separator(nil)
+    configure_options("Common", Gem::Command.common_options)
 
-    add_parser_run_info "Arguments", arguments
+    add_parser_run_info("Arguments", arguments)
     add_parser_summary
     add_parser_description
-    add_parser_run_info "Defaults", defaults_str
+    add_parser_run_info("Defaults", defaults_str)
   end
 
   def configure_options(header, option_list)
     return if option_list.nil? or option_list.empty?
 
     header = header.to_s.empty? ? '' : "#{header} "
-    @parser.separator "  #{header}Options:"
+    @parser.separator("  #{header}Options:")
 
     option_list.each do |args, handler|
       args.select { |arg| arg =~ /^-/ }
@@ -510,7 +510,7 @@ class Gem::Command
       end
     end
 
-    @parser.separator ''
+    @parser.separator('')
   end
 
   ##

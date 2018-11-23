@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/doctor'
+require('rubygems/test_case')
+require('rubygems/doctor')
 
 class TestGemDoctor < Gem::TestCase
 
@@ -9,35 +9,35 @@ class TestGemDoctor < Gem::TestCase
       gem.files = %W[lib/#{name}.rb Rakefile]
     end
 
-    write_file File.join(*%W[gems #{spec.full_name} lib #{name}.rb])
-    write_file File.join(*%W[gems #{spec.full_name} Rakefile])
+    write_file(File.join(*%W[gems #{spec.full_name} lib #{name}.rb]))
+    write_file(File.join(*%W[gems #{spec.full_name} Rakefile]))
 
     spec
   end
 
   def test_doctor
-    a = gem 'a'
-    b = gem 'b'
-    c = gem 'c'
+    a = gem('a')
+    b = gem('b')
+    c = gem('c')
 
-    Gem.use_paths @userhome, @gemhome
+    Gem.use_paths(@userhome, @gemhome)
 
-    FileUtils.rm b.spec_file
+    FileUtils.rm(b.spec_file)
 
-    File.open c.spec_file, 'w' do |io|
-      io.write 'this will raise an exception when evaluated.'
+    File.open(c.spec_file, 'w') do |io|
+      io.write('this will raise an exception when evaluated.')
     end
 
-    assert_path_exists File.join(a.gem_dir, 'Rakefile')
-    assert_path_exists File.join(a.gem_dir, 'lib', 'a.rb')
+    assert_path_exists(File.join(a.gem_dir, 'Rakefile'))
+    assert_path_exists(File.join(a.gem_dir, 'lib', 'a.rb'))
 
-    assert_path_exists b.gem_dir
-    refute_path_exists b.spec_file
+    assert_path_exists(b.gem_dir)
+    refute_path_exists(b.spec_file)
 
-    assert_path_exists c.gem_dir
-    assert_path_exists c.spec_file
+    assert_path_exists(c.gem_dir)
+    assert_path_exists(c.spec_file)
 
-    doctor = Gem::Doctor.new @gemhome
+    doctor = Gem::Doctor.new(@gemhome)
 
     capture_io do
       use_ui @ui do
@@ -45,14 +45,14 @@ class TestGemDoctor < Gem::TestCase
       end
     end
 
-    assert_path_exists File.join(a.gem_dir, 'Rakefile')
-    assert_path_exists File.join(a.gem_dir, 'lib', 'a.rb')
+    assert_path_exists(File.join(a.gem_dir, 'Rakefile'))
+    assert_path_exists(File.join(a.gem_dir, 'lib', 'a.rb'))
 
-    refute_path_exists b.gem_dir
-    refute_path_exists b.spec_file
+    refute_path_exists(b.gem_dir)
+    refute_path_exists(b.spec_file)
 
-    refute_path_exists c.gem_dir
-    refute_path_exists c.spec_file
+    refute_path_exists(c.gem_dir)
+    refute_path_exists(c.spec_file)
 
     expected = <<-OUTPUT
 Checking #{@gemhome}
@@ -62,35 +62,35 @@ Removed directory gems/c-2
 
     OUTPUT
 
-    assert_equal expected, @ui.output
+    assert_equal(expected, @ui.output)
 
-    assert_equal Gem.dir,  @userhome
-    assert_equal Gem.path, [@gemhome, @userhome]
+    assert_equal(Gem.dir,  @userhome)
+    assert_equal(Gem.path, [@gemhome, @userhome])
   end
 
   def test_doctor_dry_run
-    a = gem 'a'
-    b = gem 'b'
-    c = gem 'c'
+    a = gem('a')
+    b = gem('b')
+    c = gem('c')
 
-    Gem.use_paths @userhome, @gemhome
+    Gem.use_paths(@userhome, @gemhome)
 
-    FileUtils.rm b.spec_file
+    FileUtils.rm(b.spec_file)
 
-    File.open c.spec_file, 'w' do |io|
-      io.write 'this will raise an exception when evaluated.'
+    File.open(c.spec_file, 'w') do |io|
+      io.write('this will raise an exception when evaluated.')
     end
 
-    assert_path_exists File.join(a.gem_dir, 'Rakefile')
-    assert_path_exists File.join(a.gem_dir, 'lib', 'a.rb')
+    assert_path_exists(File.join(a.gem_dir, 'Rakefile'))
+    assert_path_exists(File.join(a.gem_dir, 'lib', 'a.rb'))
 
-    assert_path_exists b.gem_dir
-    refute_path_exists b.spec_file
+    assert_path_exists(b.gem_dir)
+    refute_path_exists(b.spec_file)
 
-    assert_path_exists c.gem_dir
-    assert_path_exists c.spec_file
+    assert_path_exists(c.gem_dir)
+    assert_path_exists(c.spec_file)
 
-    doctor = Gem::Doctor.new @gemhome, true
+    doctor = Gem::Doctor.new(@gemhome, true)
 
     capture_io do
       use_ui @ui do
@@ -98,14 +98,14 @@ Removed directory gems/c-2
       end
     end
 
-    assert_path_exists File.join(a.gem_dir, 'Rakefile')
-    assert_path_exists File.join(a.gem_dir, 'lib', 'a.rb')
+    assert_path_exists(File.join(a.gem_dir, 'Rakefile'))
+    assert_path_exists(File.join(a.gem_dir, 'lib', 'a.rb'))
 
-    assert_path_exists b.gem_dir
-    refute_path_exists b.spec_file
+    assert_path_exists(b.gem_dir)
+    refute_path_exists(b.spec_file)
 
-    assert_path_exists c.gem_dir
-    assert_path_exists c.spec_file
+    assert_path_exists(c.gem_dir)
+    assert_path_exists(c.spec_file)
 
     expected = <<-OUTPUT
 Checking #{@gemhome}
@@ -115,18 +115,18 @@ Extra directory gems/c-2
 
     OUTPUT
 
-    assert_equal expected, @ui.output
+    assert_equal(expected, @ui.output)
 
-    assert_equal Gem.dir,  @userhome
-    assert_equal Gem.path, [@gemhome, @userhome]
+    assert_equal(Gem.dir,  @userhome)
+    assert_equal(Gem.path, [@gemhome, @userhome])
   end
 
   def test_doctor_non_gem_home
-    other_dir = File.join @tempdir, 'other', 'dir'
+    other_dir = File.join(@tempdir, 'other', 'dir')
 
-    FileUtils.mkdir_p other_dir
+    FileUtils.mkdir_p(other_dir)
 
-    doctor = Gem::Doctor.new @tempdir
+    doctor = Gem::Doctor.new(@tempdir)
 
     capture_io do
       use_ui @ui do
@@ -134,7 +134,7 @@ Extra directory gems/c-2
       end
     end
 
-    assert_path_exists other_dir
+    assert_path_exists(other_dir)
 
     expected = <<-OUTPUT
 Checking #{@tempdir}
@@ -142,27 +142,27 @@ This directory does not appear to be a RubyGems repository, skipping
 
     OUTPUT
 
-    assert_equal expected, @ui.output
+    assert_equal(expected, @ui.output)
   end
 
   def test_doctor_child_missing
-    doctor = Gem::Doctor.new @gemhome
+    doctor = Gem::Doctor.new(@gemhome)
 
-    doctor.doctor_child 'missing', ''
+    doctor.doctor_child('missing', '')
 
-    assert true # count
+    assert(true) # count
   end
 
   def test_gem_repository_eh
-    doctor = Gem::Doctor.new @gemhome
+    doctor = Gem::Doctor.new(@gemhome)
 
-    refute doctor.gem_repository?, 'no gems installed'
+    refute(doctor.gem_repository?, 'no gems installed')
 
-    install_specs util_spec 'a'
+    install_specs(util_spec('a'))
 
-    doctor = Gem::Doctor.new @gemhome
+    doctor = Gem::Doctor.new(@gemhome)
 
-    assert doctor.gem_repository?, 'gems installed'
+    assert(doctor.gem_repository?, 'gems installed')
   end
 
 end

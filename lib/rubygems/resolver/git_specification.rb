@@ -22,11 +22,11 @@ class Gem::Resolver::GitSpecification < Gem::Resolver::SpecSpecification
   # the executables.
 
   def install(options = {})
-    require 'rubygems/installer'
+    require('rubygems/installer')
 
-    installer = Gem::Installer.for_spec spec, options
+    installer = Gem::Installer.for_spec(spec, options)
 
-    yield installer if block_given?
+    yield(installer) if block_given?
 
     installer.run_pre_install_hooks
     installer.build_extensions
@@ -36,22 +36,22 @@ class Gem::Resolver::GitSpecification < Gem::Resolver::SpecSpecification
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[GitSpecification', ']' do
+    q.group(2, '[GitSpecification', ']') do
       q.breakable
-      q.text "name: #{name}"
+      q.text("name: #{name}")
 
       q.breakable
-      q.text "version: #{version}"
+      q.text("version: #{version}")
 
       q.breakable
-      q.text 'dependencies:'
+      q.text('dependencies:')
       q.breakable
-      q.pp dependencies
+      q.pp(dependencies)
 
       q.breakable
-      q.text "source:"
+      q.text("source:")
       q.breakable
-      q.pp @source
+      q.pp(@source)
     end
   end
 

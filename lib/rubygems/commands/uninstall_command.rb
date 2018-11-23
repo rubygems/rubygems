@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/version_option'
-require 'rubygems/uninstaller'
-require 'fileutils'
+require('rubygems/command')
+require('rubygems/version_option')
+require('rubygems/uninstaller')
+require('fileutils')
 
 ##
 # Gem uninstaller command line tool
@@ -14,9 +14,9 @@ class Gem::Commands::UninstallCommand < Gem::Command
   include Gem::VersionOption
 
   def initialize
-    super 'uninstall', 'Uninstall gems from the local repository',
+    super('uninstall', 'Uninstall gems from the local repository',
           :version => Gem::Requirement.default, :user_install => true,
-          :check_dev => false, :vendor => false
+          :check_dev => false, :vendor => false)
 
     add_option('-a', '--[no-]all',
       'Uninstall all matching versions'
@@ -82,7 +82,7 @@ class Gem::Commands::UninstallCommand < Gem::Command
                'Uninstall gem from the vendor directory.',
                'Only for use by gem repackagers.') do |value, options|
       unless Gem.vendor_dir
-        raise OptionParser::InvalidOption.new 'your platform is not supported'
+        raise(OptionParser::InvalidOption.new('your platform is not supported'))
       end
 
       alert_warning 'Use your OS package manager to uninstall vendor gems'
@@ -132,7 +132,7 @@ that is a dependency of an existing gem.  You can use the
       uninstall_gem spec.name
     end
 
-    alert "Uninstalled all gems in #{options[:install_dir]}"
+    alert("Uninstalled all gems in #{options[:install_dir]}")
   end
 
   def uninstall_specific
@@ -142,7 +142,7 @@ that is a dependency of an existing gem.  You can use the
       gem_specs = Gem::Specification.find_all_by_name(name)
       say("Gem '#{name}' is not installed") if gem_specs.empty?
       gem_specs.each do |spec|
-        deplist.add spec
+        deplist.add(spec)
       end
     end
 
@@ -166,7 +166,7 @@ that is a dependency of an existing gem.  You can use the
     alert_error("Error: unable to successfully uninstall '#{spec.name}' which is " +
           "located at '#{spec.full_gem_path}'. This is most likely because" +
           "the current user does not have the appropriate permissions")
-    terminate_interaction 1
+    terminate_interaction(1)
   end
 
   def uninstall(gem_name)

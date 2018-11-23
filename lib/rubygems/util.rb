@@ -10,12 +10,12 @@ module Gem::Util
   # Zlib::GzipReader wrapper that unzips +data+.
 
   def self.gunzip(data)
-    require 'zlib'
-    require 'stringio'
+    require('zlib')
+    require('stringio')
     data = StringIO.new(data, 'r')
 
     unzipped = Zlib::GzipReader.new(data).read
-    unzipped.force_encoding Encoding::BINARY
+    unzipped.force_encoding(Encoding::BINARY)
     unzipped
   end
 
@@ -23,12 +23,12 @@ module Gem::Util
   # Zlib::GzipWriter wrapper that zips +data+.
 
   def self.gzip(data)
-    require 'zlib'
-    require 'stringio'
+    require('zlib')
+    require('stringio')
     zipped = StringIO.new(String.new, 'w')
-    zipped.set_encoding Encoding::BINARY
+    zipped.set_encoding(Encoding::BINARY)
 
-    Zlib::GzipWriter.wrap zipped do |io| io.write data end
+    Zlib::GzipWriter.wrap(zipped) do |io| io.write(data) end
 
     zipped.string
   end
@@ -37,8 +37,8 @@ module Gem::Util
   # A Zlib::Inflate#inflate wrapper
 
   def self.inflate(data)
-    require 'zlib'
-    Zlib::Inflate.inflate data
+    require('zlib')
+    Zlib::Inflate.inflate(data)
   end
 
   ##
@@ -47,13 +47,13 @@ module Gem::Util
   # for a command.
 
   def self.popen(*command)
-    IO.popen command, &:read
+    IO.popen(command, &:read)
   rescue TypeError # ruby 1.8 only supports string command
     r, w = IO.pipe
 
     pid = fork do
       STDIN.close
-      STDOUT.reopen w
+      STDOUT.reopen(w)
 
       exec(*command)
     end
@@ -63,7 +63,7 @@ module Gem::Util
     begin
       return r.read
     ensure
-      Process.wait pid
+      Process.wait(pid)
     end
   end
 
@@ -87,13 +87,13 @@ module Gem::Util
         stdout = STDOUT.dup
         stderr = STDERR.dup
 
-        STDOUT.reopen IO::NULL, 'w'
-        STDERR.reopen IO::NULL, 'w'
+        STDOUT.reopen(IO::NULL, 'w')
+        STDERR.reopen(IO::NULL, 'w')
 
         return system(*command)
       ensure
-        STDOUT.reopen stdout
-        STDERR.reopen stderr
+        STDOUT.reopen(stdout)
+        STDERR.reopen(stderr)
         stdout.close
         stderr.close
       end
@@ -104,11 +104,11 @@ module Gem::Util
   # Enumerates the parents of +directory+.
 
   def self.traverse_parents(directory, &block)
-    return enum_for __method__, directory unless block_given?
+    return enum_for(__method__, directory) unless block_given?
 
-    here = File.expand_path directory
+    here = File.expand_path(directory)
     loop do
-      Dir.chdir here, &block rescue Errno::EACCES
+      Dir.chdir(here, &block) rescue Errno::EACCES
 
       new_here = File.expand_path('..', here)
       return if new_here == here # toplevel

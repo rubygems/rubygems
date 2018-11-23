@@ -50,26 +50,26 @@ class Gem::Resolver::ActivationRequest
   # Downloads a gem at +path+ and returns the file path.
 
   def download(path)
-    Gem.ensure_gem_subdirectories path
+    Gem.ensure_gem_subdirectories(path)
 
-    if @spec.respond_to? :sources
+    if @spec.respond_to?(:sources)
       exception = nil
       path = @spec.sources.find{ |source|
         begin
-          source.download full_spec, path
+          source.download(full_spec, path)
         rescue exception
         end
       }
       return path      if path
-      raise  exception if exception
+      raise( exception) if exception
 
-    elsif @spec.respond_to? :source
+    elsif @spec.respond_to?(:source)
       source = @spec.source
-      source.download full_spec, path
+      source.download(full_spec, path)
 
     else
       source = Gem.sources.first
-      source.download full_spec, path
+      source.download(full_spec, path)
     end
   end
 
@@ -99,7 +99,7 @@ class Gem::Resolver::ActivationRequest
       else
         unless @others_possible.empty?
           others = @others_possible.map { |s| s.full_name }
-          " (others possible: #{others.join ', '})"
+          " (others possible: #{others.join(', ')})"
         end
       end
 
@@ -153,24 +153,24 @@ class Gem::Resolver::ActivationRequest
   end
 
   def pretty_print(q) # :nodoc:
-    q.group 2, '[Activation request', ']' do
+    q.group(2, '[Activation request', ']') do
       q.breakable
-      q.pp @spec
+      q.pp(@spec)
 
       q.breakable
-      q.text ' for '
-      q.pp @request
+      q.text(' for ')
+      q.pp(@request)
 
       case @others_possible
       when false then
       when true then
         q.breakable
-        q.text 'others possible'
+        q.text('others possible')
       else
         unless @others_possible.empty?
           q.breakable
-          q.text 'others '
-          q.pp @others_possible.map { |s| s.full_name }
+          q.text('others ')
+          q.pp(@others_possible.map { |s| s.full_name })
         end
       end
     end

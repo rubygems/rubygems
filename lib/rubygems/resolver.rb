@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'rubygems/dependency'
-require 'rubygems/exceptions'
-require 'rubygems/util'
-require 'rubygems/util/list'
+require('rubygems/dependency')
+require('rubygems/exceptions')
+require('rubygems/util')
+require('rubygems/util/list')
 
 ##
 # Given a set of Gem::Dependency objects as +needed+ and a way to query the
@@ -75,7 +75,7 @@ class Gem::Resolver
 
     case sets.length
     when 0 then
-      raise ArgumentError, 'one set in the composition must be non-nil'
+      raise(ArgumentError, 'one set in the composition must be non-nil')
     when 1 then
       sets.first
     else
@@ -88,7 +88,7 @@ class Gem::Resolver
   # for the +needed+ dependencies.
 
   def self.for_current_gems(needed)
-    new needed, Gem::Resolver::CurrentSet.new
+    new(needed, Gem::Resolver::CurrentSet.new)
   end
 
   ##
@@ -116,15 +116,15 @@ class Gem::Resolver
     return unless DEBUG_RESOLVER
 
     d = data.map { |x| x.pretty_inspect }.join(", ")
-    $stderr.printf "%10s %s\n", stage.to_s.upcase, d
+    $stderr.printf("%10s %s\n", stage.to_s.upcase, d)
   end
 
   def explain_list(stage) # :nodoc:
     return unless DEBUG_RESOLVER
 
     data = yield
-    $stderr.printf "%10s (%d entries)\n", stage.to_s.upcase, data.size
-    PP.pp data, $stderr unless data.empty?
+    $stderr.printf("%10s (%d entries)\n", stage.to_s.upcase, data.size)
+    PP.pp(data, $stderr) unless data.empty?
   end
 
   ##
@@ -136,11 +136,11 @@ class Gem::Resolver
   def activation_request(dep, possible) # :nodoc:
     spec = possible.pop
 
-    explain :activate, [spec.full_name, possible.size]
-    explain :possible, possible
+    explain(:activate, [spec.full_name, possible.size])
+    explain(:possible, possible)
 
     activation_request =
-      Gem::Resolver::ActivationRequest.new spec, dep, possible
+      Gem::Resolver::ActivationRequest.new(spec, dep, possible)
 
     return spec, activation_request
   end
@@ -161,9 +161,9 @@ class Gem::Resolver
       @stats.requirement!
     end
 
-    @set.prefetch reqs
+    @set.prefetch(reqs)
 
-    @stats.record_requirements reqs
+    @stats.record_requirements(reqs)
 
     reqs
   end
@@ -185,10 +185,10 @@ class Gem::Resolver
 
   def resolve
     locking_dg = Molinillo::DependencyGraph.new
-    Molinillo::Resolver.new(self, self).resolve(@needed.map { |d| DependencyRequest.new d, nil }, locking_dg).tsort.map(&:payload).compact
+    Molinillo::Resolver.new(self, self).resolve(@needed.map { |d| DependencyRequest.new(d, nil) }, locking_dg).tsort.map(&:payload).compact
   rescue Molinillo::VersionConflict => e
     conflict = e.conflicts.values.first
-    raise Gem::DependencyResolutionError, Conflict.new(conflict.requirement_trees.first.first, conflict.existing, conflict.requirement)
+    raise(Gem::DependencyResolutionError, Conflict.new(conflict.requirement_trees.first.first, conflict.existing, conflict.requirement))
   ensure
     @output.close if defined?(@output) and !debug?
   end
@@ -198,7 +198,7 @@ class Gem::Resolver
   # returns those that match the local platform and all those that match.
 
   def find_possible(dependency) # :nodoc:
-    all = @set.find_all dependency
+    all = @set.find_all(dependency)
 
     if (skip_dep_gems = skip_gems[dependency.name]) && !skip_dep_gems.empty?
       matching = all.select do |api_spec|
@@ -208,7 +208,7 @@ class Gem::Resolver
       all = matching unless matching.empty?
     end
 
-    matching_platform = select_local_platforms all
+    matching_platform = select_local_platforms(all)
 
     return matching_platform, all
   end
@@ -218,7 +218,7 @@ class Gem::Resolver
 
   def select_local_platforms(specs) # :nodoc:
     specs.select do |spec|
-      Gem::Platform.installable? spec
+      Gem::Platform.installable?(spec)
     end
   end
 
@@ -226,9 +226,9 @@ class Gem::Resolver
     possibles, all = find_possible(dependency)
     if !@soft_missing && possibles.empty?
       @missing << dependency
-      exc = Gem::UnsatisfiableDependencyError.new dependency, all
+      exc = Gem::UnsatisfiableDependencyError.new(dependency, all)
       exc.errors = @set.errors
-      raise exc
+      raise(exc)
     end
 
     sources = []
@@ -247,7 +247,7 @@ class Gem::Resolver
     sources.each do |source|
       groups[source].
         sort_by { |spec| [spec.version, Gem::Platform.local =~ spec.platform ? 1 : 0] }.
-        map { |spec| ActivationRequest.new spec, dependency, [] }.
+        map { |spec| ActivationRequest.new(spec, dependency, []) }.
         each { |activation_request| activation_requests << activation_request }
     end
 
@@ -261,7 +261,7 @@ class Gem::Resolver
   end
 
   def requirement_satisfied_by?(requirement, activated, spec)
-    requirement.matches_spec? spec
+    requirement.matches_spec?(spec)
   end
 
   def name_for(dependency)
@@ -287,7 +287,7 @@ class Gem::Resolver
   end
 
   SINGLE_POSSIBILITY_CONSTRAINT_PENALTY = 1_000_000
-  private_constant :SINGLE_POSSIBILITY_CONSTRAINT_PENALTY if defined?(private_constant)
+  private_constant(:SINGLE_POSSIBILITY_CONSTRAINT_PENALTY) if defined?(private_constant)
 
   # returns an integer \in (-\infty, 0]
   # a number closer to 0 means the dependency is less constraining
@@ -314,30 +314,30 @@ class Gem::Resolver
 
 end
 
-require 'rubygems/resolver/activation_request'
-require 'rubygems/resolver/conflict'
-require 'rubygems/resolver/dependency_request'
-require 'rubygems/resolver/requirement_list'
-require 'rubygems/resolver/stats'
+require('rubygems/resolver/activation_request')
+require('rubygems/resolver/conflict')
+require('rubygems/resolver/dependency_request')
+require('rubygems/resolver/requirement_list')
+require('rubygems/resolver/stats')
 
-require 'rubygems/resolver/set'
-require 'rubygems/resolver/api_set'
-require 'rubygems/resolver/composed_set'
-require 'rubygems/resolver/best_set'
-require 'rubygems/resolver/current_set'
-require 'rubygems/resolver/git_set'
-require 'rubygems/resolver/index_set'
-require 'rubygems/resolver/installer_set'
-require 'rubygems/resolver/lock_set'
-require 'rubygems/resolver/vendor_set'
-require 'rubygems/resolver/source_set'
+require('rubygems/resolver/set')
+require('rubygems/resolver/api_set')
+require('rubygems/resolver/composed_set')
+require('rubygems/resolver/best_set')
+require('rubygems/resolver/current_set')
+require('rubygems/resolver/git_set')
+require('rubygems/resolver/index_set')
+require('rubygems/resolver/installer_set')
+require('rubygems/resolver/lock_set')
+require('rubygems/resolver/vendor_set')
+require('rubygems/resolver/source_set')
 
-require 'rubygems/resolver/specification'
-require 'rubygems/resolver/spec_specification'
-require 'rubygems/resolver/api_specification'
-require 'rubygems/resolver/git_specification'
-require 'rubygems/resolver/index_specification'
-require 'rubygems/resolver/installed_specification'
-require 'rubygems/resolver/local_specification'
-require 'rubygems/resolver/lock_specification'
-require 'rubygems/resolver/vendor_specification'
+require('rubygems/resolver/specification')
+require('rubygems/resolver/spec_specification')
+require('rubygems/resolver/api_specification')
+require('rubygems/resolver/git_specification')
+require('rubygems/resolver/index_specification')
+require('rubygems/resolver/installed_specification')
+require('rubygems/resolver/local_specification')
+require('rubygems/resolver/lock_specification')
+require('rubygems/resolver/vendor_specification')

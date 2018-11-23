@@ -44,7 +44,7 @@ RubyGems will drop backwards compatibility with that Ruby version.
 
 For example, since Ruby 2.2 has reached end-of-life, future RubyGems minor
 releases will only support Ruby 2.3 and above. As of this writing RubyGems is
-at version 3.0, so when RubyGems 3.1 is released, it will only support Ruby
+at version 2.7, so when RubyGems 2.8 is released, it will only support Ruby
 2.3 and later.
 
 ## Release Process

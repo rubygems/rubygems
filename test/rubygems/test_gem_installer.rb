@@ -55,8 +55,7 @@ version = \">= 0.a\"
 
 str = ARGV.first
 if str
-  str = str.dup.force_encoding("BINARY")
-  str = str[/\\A_(.*)_\\z/, 1]
+  str = str.b[/\\A_(.*)_\\z/, 1]
   if str and Gem::Version.correct?(str)
     version = str
     ARGV.shift

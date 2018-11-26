@@ -361,7 +361,7 @@ class Gem::Command
 
   def remove_option(name)
     @option_groups.each do |_, option_list|
-      option_list.reject! { |args, _| args.any? { |x| x =~ /^#{name}/ } }
+      option_list.reject! { |args, _| args.any? { |x| x.is_a?(String) && x =~ /^#{name}/ } }
     end
   end
 
@@ -504,7 +504,6 @@ class Gem::Command
     @parser.separator "  #{header}Options:"
 
     option_list.each do |args, handler|
-      args.select { |arg| arg =~ /^-/ }
       @parser.on(*args) do |value|
         handler.call(value, @options)
       end

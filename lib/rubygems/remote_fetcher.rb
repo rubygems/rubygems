@@ -99,10 +99,11 @@ class Gem::RemoteFetcher
 
   def download_to_cache(dependency)
     found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dependency
-
     return if found.empty?
 
-    spec, source = found.max_by { |(s,_)| s.version }
+    spec, source = found.max_by { |(s,_)|
+      [s.version, Gem::Platform.rank(s.platform)]
+    }
 
     download spec, source.uri.to_s
   end

@@ -97,8 +97,7 @@ class Gem::Source::Local < Gem::Source
         end
       end
     end
-
-    found.max_by { |s| s.version }
+    found.max_by { |s| [s.version, Gem::Platform.rank(s.platform)] }
   end
 
   def fetch_spec(name) # :nodoc:

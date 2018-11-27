@@ -149,7 +149,9 @@ class Gem::FakeFetcher
 
     return if found.empty?
 
-    spec, source = found.first
+    spec, source = Gem.platforms.length == 1 ?
+      found.first :
+      found.max_by { |(s,_)| [s.version, Gem::Platform.rank(s.platform)] }
 
     download spec, source.uri.to_s
   end

@@ -30,6 +30,20 @@ class Gem::Platform
     end
   end
 
+  def self.rank(platform)
+    if Gem.platforms == [RUBY]     # --platform=ruby
+      if RUBY == platform then     0
+      else                        -1
+      end
+    else
+      if    local == platform then 2
+      elsif local =~ platform then 1
+      elsif RUBY  == platform then 0
+      else                        -1
+      end
+    end
+  end
+
   def self.installable?(spec)
     if spec.respond_to? :installable_platform?
       spec.installable_platform?

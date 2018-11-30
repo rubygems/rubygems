@@ -73,6 +73,8 @@ class Gem::SpecificationPolicy < SimpleDelegator
 
     validate_dependencies
 
+    validate_cert_chain
+
     if @warnings > 0
       if strict
         error "specification has warnings"
@@ -348,6 +350,15 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
       rescue URI::InvalidURIError
         error "\"#{homepage}\" is not a valid HTTP URI"
       end
+    end
+  end
+
+  def validate_cert_chain
+    if cert_chain.empty?
+      warning <<-warning
+No cert chain found. Please consider signing your gem to improve security.
+See https://guides.rubygems.org/security for more information.
+      warning
     end
   end
 

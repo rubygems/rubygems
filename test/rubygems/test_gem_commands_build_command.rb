@@ -25,6 +25,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
       s.rubyforge_project = 'example'
       s.license = 'AGPL-3.0'
       s.files = ['README.md']
+      s.cert_chain = [PUBLIC_CERT_PATH]
     end
 
     @cmd = Gem::Commands::BuildCommand.new
@@ -121,7 +122,10 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     error = @ui.error.split "\n"
     assert_equal "WARNING:  licenses is empty, but is recommended.  Use a license identifier from", error.shift
     assert_equal "http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.", error.shift
+    assert_equal "WARNING:  No cert chain found. Please consider signing your gem to improve security.", error.shift
+    assert_equal "See https://guides.rubygems.org/security for more information.", error.shift
     assert_equal "WARNING:  See http://guides.rubygems.org/specification-reference/ for help", error.shift
+
     assert_equal [], error
 
     gem_file = File.join @tempdir, File.basename(@gem.cache_file)

@@ -82,6 +82,7 @@ end
       s.requirements << 'A working computer'
       s.rubyforge_project = 'example'
       s.license = 'MIT'
+      s.cert_chain = [PUBLIC_CERT_PATH]
 
       s.mark_version
       s.files = %w[lib/code.rb]

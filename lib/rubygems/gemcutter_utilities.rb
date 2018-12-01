@@ -177,7 +177,7 @@ module Gem::GemcutterUtilities
   # Returns true when the user has enabled multifactor authentication from
   # +response+ text.
 
-  def need_otp? response
+  def need_otp?(response)
     return unless response.kind_of?(Net::HTTPUnauthorized) &&
         response.body.start_with?('You have enabled multifactor authentication')
     return true if options[:otp]

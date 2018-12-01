@@ -14,7 +14,6 @@ class Gem::Commands::SigninCommand < Gem::Command
     end
 
     add_otp_option
-
   end
 
   def description # :nodoc:

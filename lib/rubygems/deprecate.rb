@@ -27,7 +27,7 @@ module Gem::Deprecate
     @skip ||= false
   end
 
-  def self.skip= v # :nodoc:
+  def self.skip=(v) # :nodoc:
     @skip = v
   end
 
@@ -47,7 +47,7 @@ module Gem::Deprecate
   # telling the user of +repl+ (unless +repl+ is :none) and the
   # year/month that it is planned to go away.
 
-  def deprecate name, repl, year, month
+  def deprecate(name, repl, year, month)
     class_eval {
       old = "_deprecated_#{name}"
       alias_method old, name

@@ -53,11 +53,11 @@ require 'rubygems'
 
 version = \">= 0.a\"
 
-if ARGV.first
-  str = ARGV.first
-  str = str.dup.force_encoding("BINARY")
-  if str =~ /\\A_(.*)_\\z/ and Gem::Version.correct?($1) then
-    version = $1
+str = ARGV.first
+if str
+  str = str.b[/\\A_(.*)_\\z/, 1]
+  if str and Gem::Version.correct?(str)
+    version = str
     ARGV.shift
   end
 end
@@ -121,7 +121,7 @@ end
   ensure
     Object.const_set :RUBY_FRAMEWORK_VERSION, orig_RUBY_FRAMEWORK_VERSION if
       orig_RUBY_FRAMEWORK_VERSION
-    if orig_bindir then
+    if orig_bindir
       RbConfig::CONFIG['bindir'] = orig_bindir
     else
       RbConfig::CONFIG.delete 'bindir'
@@ -250,7 +250,7 @@ gem 'other', version
 
     expected = @installer.bin_dir
 
-    if Gem.win_platform? then
+    if Gem.win_platform?
       expected = expected.downcase.gsub(File::SEPARATOR, File::ALT_SEPARATOR)
     end
 
@@ -488,7 +488,7 @@ gem 'other', version
     real_exec = File.join @spec.gem_dir, 'bin', 'executable'
 
     # fake --no-wrappers for previous install
-    unless Gem.win_platform? then
+    unless Gem.win_platform?
       FileUtils.mkdir_p File.dirname(installed_exec)
       FileUtils.ln_s real_exec, installed_exec
     end
@@ -1431,7 +1431,7 @@ gem 'other', version
     def spec.full_name # so the spec is buildable
       "malicious-1"
     end
-    def spec.validate packaging, strict; end
+    def spec.validate(packaging, strict); end
 
     util_build_gem spec
 
@@ -1753,7 +1753,7 @@ gem 'other', version
     @installer = util_installer @spec, @gemhome
   end
 
-  def util_conflict_executable wrappers
+  def util_conflict_executable(wrappers)
     conflict = quick_gem 'conflict' do |spec|
       util_make_exec spec
     end

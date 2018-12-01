@@ -1561,7 +1561,7 @@ dependencies: []
     @ext.build_extensions
     refute_path_exists @ext.extension_dir
   ensure
-    unless ($DEBUG or win_platform? or Process.uid.zero?) then
+    unless ($DEBUG or win_platform? or Process.uid.zero?)
       FileUtils.chmod 0755, File.join(@ext.base_dir, 'extensions')
       FileUtils.chmod 0755, @ext.base_dir
     end
@@ -2131,7 +2131,7 @@ dependencies: []
       remove_method :default_ext_dir_for
     end
 
-    def Gem.default_ext_dir_for base_dir
+    def Gem.default_ext_dir_for(base_dir)
       '/foo'
     end
 
@@ -2613,7 +2613,7 @@ end
     end
   end
 
-  def x s; s.gsub(/xxx/, ''); end
+  def x(s); s.gsub(/xxx/, ''); end
   def w; x "WARxxxNING"; end
   def t; x "TOxxxDO"; end
   def f; x "FxxxIXME"; end
@@ -2875,7 +2875,7 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
   end
 
   def test_validate_empty_require_paths
-    if win_platform? then
+    if win_platform?
       skip 'test_validate_empty_require_paths skipped on MS Windows (symlink)'
     else
       util_setup_validate
@@ -3722,18 +3722,6 @@ end
     end
     Gem::Specification.reset
     assert_equal ["default-2.0.0.0"], Gem::Specification.map(&:full_name)
-  end
-
-  def test_detect_bundled_gem_in_old_ruby
-    util_set_RUBY_VERSION '1.9.3', 551
-
-    spec = util_spec 'bigdecimal', '1.1.0' do |s|
-      s.summary = "This bigdecimal is bundled with Ruby"
-    end
-
-    assert spec.bundled_gem_in_old_ruby?
-  ensure
-    util_restore_RUBY_VERSION
   end
 
   def util_setup_deps

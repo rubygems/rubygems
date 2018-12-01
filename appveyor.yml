@@ -9,8 +9,6 @@ clone_depth: 10
 
 environment:
   matrix:
-  - ruby_version: 22
-  - ruby_version: 22-x64
   - ruby_version: 23-x64
   - ruby_version: 24-x64
   - ruby_version: 25-x64
@@ -18,7 +16,7 @@ environment:
 
 init:
   - set PATH=C:/Ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;
-  - mklink /d C:\git "C:\Program Files\Git"
+  - mklink /j C:\git "C:\Program Files\Git"
   - set GIT=C:/git/cmd/git.exe
   - ps: >-
       if ($env:ruby_version -eq '_trunk') {
@@ -28,12 +26,8 @@ init:
       }
 
 install:
-- ps: >-
-    git submodule update --init --recursive
-
-    if ((gem query -i minitest) -eq $False){ gem install minitest --no-document }
-
-    if ((gem query -i rake)     -eq $False){ gem install rake     --no-document }
+  - git submodule update --init --recursive
+  - gem install "rake:>=10.4.2" "minitest:>=5.4.3" --conservative --no-document
 
 test_script:
   - rake test

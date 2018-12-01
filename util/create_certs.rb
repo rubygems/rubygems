@@ -6,7 +6,7 @@ class CertificateBuilder
 
   attr_reader :start
 
-  def initialize key_size = 2048
+  def initialize(key_size = 2048)
     @start          = Time.utc 2012, 01, 01, 00, 00, 00
     @end_of_time    = Time.utc 9999, 12, 31, 23, 59, 59
     @end_of_time_32 = Time.utc 2038, 01, 19, 03, 14, 07
@@ -59,11 +59,11 @@ class CertificateBuilder
       ef.create_extension('subjectKeyIdentifier', 'hash')
     ]
 
-    if cert != issuer_cert then # not self-signed cert
+    if cert != issuer_cert  # not self-signed cert
       cert.add_extension ef.create_extension('authorityKeyIdentifier', 'keyid:always')
     end
 
-    if is_ca then
+    if is_ca
       cert.add_extension ef.create_extension('basicConstraints', 'CA:TRUE', true)
       cert.add_extension ef.create_extension('keyUsage', 'keyCertSign', true)
     end
@@ -79,7 +79,7 @@ class CertificateBuilder
     OpenSSL::PKey::RSA.new @key_size
   end
 
-  def create_keys names
+  def create_keys(names)
     keys = {}
 
     names.each do |name|
@@ -95,8 +95,8 @@ class CertificateBuilder
     serial
   end
 
-  def validity_for time
-    if time == :end_of_time then
+  def validity_for(time)
+    if time == :end_of_time
       validity    = @end_of_time
       validity_32 = @end_of_time_32
     else

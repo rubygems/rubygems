@@ -2,7 +2,7 @@
 require 'rubygems/test_case'
 require 'rubygems/security'
 
-unless defined?(OpenSSL::SSL) then
+unless defined?(OpenSSL::SSL)
   warn 'Skipping Gem::Security tests.  openssl not found.'
 end
 

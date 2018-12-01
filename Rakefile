@@ -96,7 +96,7 @@ file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
     Find.find '.' do |file|
       dest = File.expand_path file, dest_root
 
-      if File.directory? file then
+      if File.directory? file
         mkdir_p dest
       else
         rm_f dest
@@ -257,7 +257,7 @@ namespace 'blog' do
 
     last_change_type = change_types.pop
 
-    if change_types.empty? then
+    if change_types.empty?
       change_types = ''
     else
       change_types = change_types.join(', ') << ' and '
@@ -339,7 +339,7 @@ desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
   files = []
   require 'find'
-  exclude = %r[/\/tmp\/|pkg|CVS|\.DS_Store|\.svn|\.git|TAGS|extconf.h|\.bundle$|\.o$|\.log$/|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|doc|coverage/]ox
+  exclude = %r[/\/tmp\/|\/pkg\/|CVS|\.DS_Store|\/doc\/|\/coverage\/|\.svn|\.git|TAGS|extconf.h|\.bundle$|\.o$|\.log$/|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)]ox
   Find.find(".") do |path|
     next unless File.file?(path)
     next if path =~ exclude

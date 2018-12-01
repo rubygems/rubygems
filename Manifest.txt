@@ -1,4 +1,3 @@
-.document
 .rubocop.yml
 .travis.yml
 CODE_OF_CONDUCT.md
@@ -309,6 +308,7 @@ lib/rubygems/compatibility.rb
 lib/rubygems/config_file.rb
 lib/rubygems/core_ext/kernel_gem.rb
 lib/rubygems/core_ext/kernel_require.rb
+lib/rubygems/core_ext/kernel_warn.rb
 lib/rubygems/defaults.rb
 lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb
@@ -640,5 +640,6 @@ util/create_certs.rb
 util/create_encrypted_key.rb
 util/generate_spdx_license_list.rb
 util/patch_with_prs.rb
+util/rubocop
 util/update_bundled_ca_certificates.rb
 util/update_changelog.rb

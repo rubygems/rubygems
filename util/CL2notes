@@ -9,7 +9,7 @@ def format_text(text, wrap, indent=0)
   work = text.dup
 
   while work.length > wrap
-    if work =~ /^(.{0,#{wrap}})[ \n]/o then
+    if work =~ /^(.{0,#{wrap}})[ \n]/o
       result << $1
       work.slice!(0, $&.length)
     else

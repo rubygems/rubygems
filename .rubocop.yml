@@ -3,7 +3,7 @@ AllCops:
   Exclude:
     - 'bundler/**/*'
     - 'lib/rubygems/resolver/molinillo/**/*'
-  TargetRubyVersion: 2.2
+  TargetRubyVersion: 2.3
 
 Layout/AccessModifierIndentation:
   Enabled: true
@@ -21,6 +21,9 @@ Layout/CommentIndentation:
   Enabled: true
 
 Layout/ElseAlignment:
+  Enabled: true
+
+MultilineIfThen:
   Enabled: true
 
 # Force Unix line endings.
@@ -54,6 +57,9 @@ Layout/TrailingBlankLines:
   Enabled: true
 
 Layout/TrailingWhitespace:
+  Enabled: true
+
+Style/MethodDefParentheses:
   Enabled: true
 
 Style/MutableConstant:

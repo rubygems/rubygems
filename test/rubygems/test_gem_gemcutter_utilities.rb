@@ -215,7 +215,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     assert_equal '111111', @fetcher.last_request['OTP']
   end
 
-  def util_sign_in response, host = nil, args = [], extra_input = ''
+  def util_sign_in(response, host = nil, args = [], extra_input = '')
     email    = 'you@example.com'
     password = 'secret'
 
@@ -232,7 +232,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     @sign_in_ui = Gem::MockGemUi.new("#{email}\n#{password}\n" + extra_input)
 
     use_ui @sign_in_ui do
-      if args.length > 0 then
+      if args.length > 0
         @cmd.sign_in(*args)
       else
         @cmd.sign_in

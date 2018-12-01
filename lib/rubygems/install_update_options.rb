@@ -50,7 +50,7 @@ module Gem::InstallUpdateOptions
     add_option(:"Install/Update", '--vendor',
                'Install gem into the vendor directory.',
                'Only for use by gem repackagers.') do |value, options|
-      unless Gem.vendor_dir then
+      unless Gem.vendor_dir
         raise OptionParser::InvalidOption.new 'your platform is not supported'
       end
 
@@ -140,7 +140,7 @@ module Gem::InstallUpdateOptions
         File.exist? file
       end unless v
 
-      unless v then
+      unless v
         message = v ? v : "(tried #{Gem::GEM_DEP_FILES.join ', '})"
 
         raise OptionParser::InvalidArgument,

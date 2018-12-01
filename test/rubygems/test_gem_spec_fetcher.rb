@@ -39,7 +39,8 @@ class TestGemSpecFetcher < Gem::TestCase
   end
 
   def test_initialize_unwritable_home_dir
-    skip 'chmod not supported' if Gem.win_platform?
+    skip 'skipped on mwsin (chmod has no effect)' if vc_windows?
+    skip 'skipped in root privilege' if Process.uid.zero? && !win_platform?
 
     FileUtils.chmod 0000, Gem.user_home
 

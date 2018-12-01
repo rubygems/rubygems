@@ -30,7 +30,7 @@ class TestGemUtil < Gem::TestCase
   end
 
   def test_traverse_parents_does_not_crash_on_permissions_error
-    skip 'skipped on MS Windows (chmod has no effect)' if win_platform?
+    skip 'skipped on MS Windows (chmod 0666 has no effect)' if win_platform?
 
     FileUtils.mkdir_p 'd/e/f'
     # remove 'execute' permission from "e" directory and make it

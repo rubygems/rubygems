@@ -1534,8 +1534,8 @@ dependencies: []
   end
 
   def test_build_extensions_extensions_dir_unwritable
-    skip 'chmod not supported' if Gem.win_platform?
-    skip 'skipped in root privilege' if Process.uid.zero?
+    skip 'chmod not supported' if vc_windows?
+    skip 'skipped in root privilege' if Process.uid.zero? && !win_platform?
 
     ext_spec
 
@@ -1568,7 +1568,7 @@ dependencies: []
   end
 
   def test_build_extensions_no_extensions_dir_unwritable
-    skip 'chmod not supported' if Gem.win_platform?
+    skip 'chmod not supported' if vc_windows?
 
     ext_spec
 
@@ -3260,7 +3260,7 @@ Did you mean 'Ruby'?
   end
 
   def test_validate_permissions_of_missing_file_non_packaging
-    skip 'chmod not supported' if Gem.win_platform?
+    skip 'chmod not supported' if vc_windows?
 
     util_setup_validate
 

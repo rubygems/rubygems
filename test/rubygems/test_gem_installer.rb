@@ -441,19 +441,19 @@ gem 'other', version
 
     Dir.mkdir util_inst_bindir
 
-    if win_platform?
-      skip('test_generate_bin_script_no_perms skipped on MS Windows')
-    elsif Process.uid.zero?
+    if vc_windows?
+      skip('test_generate_bin_script_no_perms skipped on mswin')
+    elsif Process.uid.zero? && !win_platform?
       skip('test_generate_bin_script_no_perms skipped in root privilege')
-    else
-      FileUtils.chmod 0000, util_inst_bindir
+    end
 
-      assert_raises Gem::FilePermissionError do
-        @installer.generate_bin
-      end
+    FileUtils.chmod 0000, util_inst_bindir
+
+    assert_raises Gem::FilePermissionError do
+      @installer.generate_bin
     end
   ensure
-    FileUtils.chmod 0755, util_inst_bindir unless ($DEBUG or win_platform?)
+    FileUtils.chmod 0755, util_inst_bindir unless ($DEBUG or vc_windows?)
   end
 
   def test_generate_bin_script_no_shebang

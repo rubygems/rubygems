@@ -297,7 +297,10 @@ class TestGemRequire < Gem::TestCase
     begin
       gem 'json'
     rescue Gem::MissingSpecError
-      skip "default gems are only available after ruby installation"
+      unless File.expand_path("../..", __dir__).end_with? "rubygems"
+        # running tests in ruby/ruby testing
+        skip "default gems are only available after ruby installation"
+      end
     end
 
     cmd = <<-RUBY
@@ -305,7 +308,7 @@ class TestGemRequire < Gem::TestCase
       require "json"
       puts Gem.loaded_specs["json"].default_gem?
     RUBY
-    output = Gem::Util.popen(Gem.ruby, "-e", cmd).strip
+    output = IO.popen([Gem.ruby, "-e", cmd], &:read).strip
     assert_equal "true", output
   end
 

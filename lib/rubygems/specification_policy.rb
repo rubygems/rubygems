@@ -150,11 +150,13 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       if open_ended
         op, dep_version = dep.requirement.requirements.first
 
-        base = dep_version.segments.first 2
+        segments = dep_version.segments
+
+        base = segments.first 2
 
         bugfix = if op == '>'
                    ", '> #{dep_version}'"
-                 elsif op == '>=' and base != dep_version.segments
+                 elsif op == '>=' and base != segments
                    ", '>= #{dep_version}'"
                  end
 

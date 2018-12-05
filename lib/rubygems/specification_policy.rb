@@ -154,14 +154,18 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
 
         base = segments.first 2
 
-        bugfix = if op == '>'
-                   ", '> #{dep_version}'"
-                 elsif op == '>=' and base != segments
-                   ", '>= #{dep_version}'"
-                 end
+        recommendation = if (op == '>' || op == '>=') && segments == [0]
+                           "  use a bounded requirement, such as '~> x.y'"
+                         else
+                           bugfix = if op == '>'
+                                      ", '> #{dep_version}'"
+                                    elsif op == '>=' and base != segments
+                                      ", '>= #{dep_version}'"
+                                    end
 
-        recommendation = "  if #{dep.name} is semantically versioned, use:\n" \
-                         "    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}"
+                           "  if #{dep.name} is semantically versioned, use:\n" \
+                           "    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}"
+                         end
 
         warning_messages << ["open-ended dependency on #{dep} is not recommended", recommendation].join("\n") + "\n"
       end

@@ -2699,6 +2699,7 @@ end
       @a1.add_runtime_dependency     'l', '> 1.2.3'
       @a1.add_runtime_dependency     'm', '~> 2.1.0'
       @a1.add_runtime_dependency     'n', '~> 0.1.0'
+      @a1.add_runtime_dependency     'o'
 
       use_ui @ui do
         @a1.validate
@@ -2719,6 +2720,8 @@ end
 #{w}:  open-ended dependency on l (> 1.2.3) is not recommended
   if l is semantically versioned, use:
     add_runtime_dependency 'l', '~> 1.2', '> 1.2.3'
+#{w}:  open-ended dependency on o (>= 0) is not recommended
+  use a bounded requirement, such as '~> x.y'
 #{w}:  See http://guides.rubygems.org/specification-reference/ for help
       EXPECTED
 

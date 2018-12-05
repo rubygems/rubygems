@@ -58,16 +58,16 @@ when %w(before_script)
       run('gem', %w(install bundler -v 1.16.2))
     end
 
-    run('gem', %w(install rubocop -v ~>0.60.0))
-
     run('gem', %w(list --details))
     run('gem', %w(env))
   else
     with_retries { run('rake', %w(spec:travis:deps)) }
   end
+when %w(rubocop)
+  run('gem', %w(install rubocop -v ~>0.60.0))
+  run('util/rubocop')
 when %w(script)
   if TOOL.rubygems?
-    run('util/rubocop')
     run('rake test')
   else
     run('rake', %w(spec:travis -t))

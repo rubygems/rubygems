@@ -16,6 +16,16 @@ rvm:
 env:
   - "TEST_TOOL=rubygems YAML=psych"
   - "TEST_TOOL=bundler RGV=master"
+jobs:
+  include:
+    - stage: linting
+      rvm: 2.5
+      env:
+        - "TEST_TOOL=rubygems YAML=psych"
+      script: util/ci rubocop
+stages:
+  - linting
+  - test
 before_script:
   - util/ci before_script
 script:

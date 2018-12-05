@@ -18,13 +18,13 @@ env:
   - "TEST_TOOL=bundler RGV=master"
 jobs:
   include:
-    - stage: rubocop
+    - stage: linting
       rvm: 2.5
       env:
         - "TEST_TOOL=rubygems YAML=psych"
       script: util/ci rubocop
 stages:
-  - rubocop
+  - linting
   - test
 before_script:
   - util/ci before_script

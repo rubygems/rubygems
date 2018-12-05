@@ -119,8 +119,8 @@ class Gem::Package
   # Permission for other files
   attr_accessor :data_mode
 
-  def self.build(spec, skip_validation = false, strict_validation = false)
-    gem_file = spec.file_name
+  def self.build(spec, skip_validation = false, strict_validation = false, file_name = nil)
+    gem_file = file_name || spec.file_name
 
     package = new gem_file
     package.spec = spec
@@ -281,7 +281,7 @@ class Gem::Package
   Successfully built RubyGem
   Name: #{@spec.name}
   Version: #{@spec.version}
-  File: #{File.basename @spec.cache_file}
+  File: #{File.basename @gem.path}
 EOM
   ensure
     @signer = nil

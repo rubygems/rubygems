@@ -158,11 +158,10 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
                    ", '>= #{dep_version}'"
                  end
 
-        warning_messages << <<-WARNING
-open-ended dependency on #{dep} is not recommended
-  if #{dep.name} is semantically versioned, use:
-    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}
-        WARNING
+        recommendation = "  if #{dep.name} is semantically versioned, use:\n" \
+                         "    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}"
+
+        warning_messages << ["open-ended dependency on #{dep} is not recommended", recommendation].join("\n") + "\n"
       end
     end
     if error_messages.any?

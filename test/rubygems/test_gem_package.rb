@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require 'rubygems/package/tar_test_case'
-require 'rubygems/simple_gem'
 
 class TestGemPackage < Gem::Package::TarTestCase
 

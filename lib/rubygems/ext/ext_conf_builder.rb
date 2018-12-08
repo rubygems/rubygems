@@ -62,14 +62,6 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
         make dest_path, results
 
         if tmp_dest
-          # TODO remove in RubyGems 3
-          if Gem.install_extension_in_lib and lib_dir
-            FileUtils.mkdir_p lib_dir
-            entries = Dir.entries(tmp_dest) - %w[. ..]
-            entries = entries.map { |entry| File.join tmp_dest, entry }
-            FileUtils.cp_r entries, lib_dir, :remove_destination => true
-          end
-
           FileEntry.new(tmp_dest).traverse do |ent|
             destent = ent.class.new(dest_path, ent.rel)
             destent.exist? or FileUtils.mv(ent.path, destent.path)

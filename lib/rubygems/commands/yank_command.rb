@@ -66,7 +66,7 @@ data you will need to change them immediately and yank your gem.
     response = yank_api_request(*args)
 
     if need_otp? response
-      response = yank_api_request(*args, true)
+      response = yank_api_request(*args)
     end
 
     say response.body
@@ -74,11 +74,11 @@ data you will need to change them immediately and yank your gem.
 
   private
 
-  def yank_api_request(method, version, platform, api, use_otp = false)
+  def yank_api_request(method, version, platform, api)
     name = get_one_gem_name
     response = rubygems_api_request(method, api, host) do |request|
       request.add_field("Authorization", api_key)
-      request.add_field("OTP", options[:otp]) if use_otp
+      request.add_field("OTP", options[:otp]) if options[:otp]
 
       data = {
         'gem_name' => name,

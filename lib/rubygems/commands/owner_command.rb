@@ -88,7 +88,7 @@ permission to.
         response = send_owner_request(method, name, owner)
 
         if need_otp? response
-          response = send_owner_request(method, name, owner, true)
+          response = send_owner_request(method, name, owner)
         end
 
         action = method == :delete ? "Removing" : "Adding"
@@ -102,11 +102,11 @@ permission to.
 
   private
 
-  def send_owner_request(method, name, owner, use_otp = false)
+  def send_owner_request(method, name, owner)
     rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
       request.set_form_data 'email' => owner
       request.add_field "Authorization", api_key
-      request.add_field "OTP", options[:otp] if use_otp
+      request.add_field "OTP", options[:otp] if options[:otp]
     end
   end
 

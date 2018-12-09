@@ -119,7 +119,7 @@ You can upgrade or downgrade to the latest release version with:
     response = send_push_request(name, args)
 
     if need_otp? response
-      response = send_push_request(name, args, true)
+      response = send_push_request(name, args)
     end
 
     with_response response
@@ -127,13 +127,13 @@ You can upgrade or downgrade to the latest release version with:
 
   private
 
-  def send_push_request(name, args, use_otp = false)
+  def send_push_request(name, args)
     rubygems_api_request(*args) do |request|
       request.body = Gem.read_binary name
       request.add_field "Content-Length", request.body.size
       request.add_field "Content-Type",   "application/octet-stream"
       request.add_field "Authorization",  api_key
-      request.add_field "OTP", options[:otp] if use_otp
+      request.add_field "OTP", options[:otp] if options[:otp]
     end
   end
 

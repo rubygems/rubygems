@@ -118,7 +118,7 @@ You can upgrade or downgrade to the latest release version with:
 
     response = send_push_request(name, args)
 
-    if need_otp? response
+    if need_ask_otp? response
       response = send_push_request(name, args)
     end
 

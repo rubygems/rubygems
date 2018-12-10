@@ -65,7 +65,7 @@ data you will need to change them immediately and yank your gem.
     args = [:delete, version, platform, "api/v1/gems/yank"]
     response = yank_api_request(*args)
 
-    if need_otp? response
+    if need_ask_otp? response
       response = yank_api_request(*args)
     end
 

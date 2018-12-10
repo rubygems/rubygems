@@ -87,7 +87,7 @@ permission to.
       begin
         response = send_owner_request(method, name, owner)
 
-        if need_otp? response
+        if need_ask_otp? response
           response = send_owner_request(method, name, owner)
         end
 

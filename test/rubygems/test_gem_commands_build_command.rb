@@ -22,7 +22,6 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     end
 
     @gem = util_spec 'some_gem' do |s|
-      s.rubyforge_project = 'example'
       s.license = 'AGPL-3.0'
       s.files = ['README.md']
     end
@@ -125,7 +124,6 @@ class TestGemCommandsBuildCommand < Gem::TestCase
 
   def test_execute_strict_with_warnings
     bad_gem = util_spec 'some_bad_gem' do |s|
-      s.rubyforge_project = 'example'
       s.files = ['README.md']
     end
 

@@ -831,6 +831,17 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     end
   end
 
+  def test_nil_ca_cert
+    ssl_server = self.class.start_ssl_server
+    temp_ca_cert = nil
+
+    with_configured_fetcher(":ssl_ca_cert: #{temp_ca_cert}") do |fetcher|
+      assert_raises Gem::RemoteFetcher::FetchError do
+        fetcher.fetch_path("https://localhost:#{ssl_server.config[:Port]}")
+      end
+    end
+  end
+
   def with_configured_fetcher(config_str = nil, &block)
     if config_str
       temp_conf = File.join @tempdir, '.gemrc'

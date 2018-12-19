@@ -51,6 +51,7 @@ bundler/lib/bundler/cli/package.rb
 bundler/lib/bundler/cli/platform.rb
 bundler/lib/bundler/cli/plugin.rb
 bundler/lib/bundler/cli/pristine.rb
+bundler/lib/bundler/cli/remove.rb
 bundler/lib/bundler/cli/show.rb
 bundler/lib/bundler/cli/update.rb
 bundler/lib/bundler/cli/viz.rb
@@ -101,6 +102,7 @@ bundler/lib/bundler/plugin.rb
 bundler/lib/bundler/plugin/api.rb
 bundler/lib/bundler/plugin/api/source.rb
 bundler/lib/bundler/plugin/dsl.rb
+bundler/lib/bundler/plugin/events.rb
 bundler/lib/bundler/plugin/index.rb
 bundler/lib/bundler/plugin/installer.rb
 bundler/lib/bundler/plugin/installer/git.rb
@@ -257,6 +259,7 @@ bundler/man/bundle-outdated.ronn
 bundler/man/bundle-package.ronn
 bundler/man/bundle-platform.ronn
 bundler/man/bundle-pristine.ronn
+bundler/man/bundle-remove.ronn
 bundler/man/bundle-show.ronn
 bundler/man/bundle-update.ronn
 bundler/man/bundle-viz.ronn

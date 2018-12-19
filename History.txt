@@ -1,5 +1,304 @@
 # coding: UTF-8
 
+=== 3.0.0 / 2018-12-19
+
+Major enhancements:
+
+* S3 source. Pull request #1690 by Aditya Prakash.
+* Download gems with threads. Pull request #1898 by André Arko.
+* Update to SPDX license list 3.0. Pull request #2152 by Mike Linksvayer.
+* [GSoC] Multi-factor feature for RubyGems. Pull request #2369 by Qiu
+  Chaofan.
+* Use bundler 1.17.2. Pull request #2521 by SHIBATA Hiroshi.
+
+Minor enhancements:
+
+* Don't treat inaccessible working directories as build failures. Pull
+  request #1135 by Pete.
+* Remove useless directory parameter from builders .build methods.
+  [rebased]. Pull request #1433 by Kurtis Rainbolt-Greene.
+* Skipping more than one gem in pristine. Pull request #1592 by Henne
+  Vogelsang.
+* Add info command to print information about an installed gem. Pull
+  request #2023 by Colby Swandale.
+* Add --[no-]check-development option to cleanup command. Pull request
+  #2061 by Lin Jen-Shin (godfat).
+* Show which gem referenced a missing gem. Pull request #2067 by Artem
+  Khramov.
+* Prevent to delete to "bundler-" prefix gem like bundler-audit. Pull
+  request #2086 by SHIBATA Hiroshi.
+* Fix rake install_test_deps once the rake clean_env does not exist. Pull
+  request #2090 by Lucas Arantes.
+* Workaround common options mutation in Gem::Command test. Pull request
+  #2098 by Thibault Jouan.
+* Extract a SpecificationPolicy validation class. Pull request #2101 by
+  Olle Jonsson.
+* Handle environment that does not have `flock` system call. Pull request
+  #2107 by SHIBATA Hiroshi.
+* Handle the explain option in gem update. Pull request #2110 by Colby
+  Swandale.
+* Add Gem.operating_system_defaults to allow packagers to override
+  defaults. Pull request #2116 by Vít Ondruch.
+* Update for compatibilty with new minitest. Pull request #2118 by
+  MSP-Greg.
+* Make Windows bin stubs portable. Pull request #2119 by MSP-Greg.
+* Avoid to warnings about gemspec loadings in rubygems tests. Pull request
+  #2125 by SHIBATA Hiroshi.
+* Set whether bundler is used for gemdeps with an environmental variable.
+  Pull request #2126 by SHIBATA Hiroshi.
+* Titleize "GETTING HELP" in readme. Pull request #2136 by Colby Swandale.
+* Improve the error message given when using --version with multiple gems
+  in the install command. Pull request #2137 by Colby Swandale.
+* Use `File.open` instead of `open`. Pull request #2142 by SHIBATA
+  Hiroshi.
+* Gem::Util.traverse_parents should not crash on permissions error. Pull
+  request #2147 by Robert Ulejczyk.
+* [Installer] Avoid a #mkdir race condition. Pull request #2148 by Samuel
+  Giddins.
+* Allow writing gemspecs from gem unpack to location specified by target
+  option. Pull request #2150 by Colby Swandale.
+* Raise errors in `gem uninstall` when a file in a gem could not be
+  removed . Pull request #2154 by Colby Swandale.
+* Remove PID from gem index directory. Pull request #2155 by SHIBATA
+  Hiroshi.
+* Nil guard on `Gem::Specification`. Pull request #2164 by SHIBATA
+  Hiroshi.
+* Skip broken test with macOS platform. Pull request #2167 by SHIBATA
+  Hiroshi.
+* Support option for `--destdir` with upgrade installer. Pull request
+  #2169 by SHIBATA Hiroshi.
+* To use constant instead of hard-coded version. Pull request #2171 by
+  SHIBATA Hiroshi.
+* Add Rake task to install dev dependencies. Pull request #2173 by Ellen
+  Marie Dash.
+* Add new sections to the README and explaination of what RubyGems is.
+  Pull request #2174 by Colby Swandale.
+* Prefer to use `Numeric#zero?` instead of `== 0`. Pull request #2176 by
+  SHIBATA Hiroshi.
+* Ignore perfomance test of version regexp pattern. Pull request #2179 by
+  SHIBATA Hiroshi.
+* Ignore .DS_Store files in the update_manifest task. Pull request #2199
+  by Colby Swandale.
+* Allow building gems without having to be in the gem folder . Pull
+  request #2204 by Colby Swandale.
+* Added coverage ability used by simplecov. Pull request #2207 by SHIBATA
+  Hiroshi.
+* Improve invalid proxy error message. Pull request #2217 by Luis
+  Sagastume.
+* Simplify home directory detection and platform condition. Pull request
+  #2218 by SHIBATA Hiroshi.
+* Permission options. Pull request #2219 by Nobuyoshi Nakada.
+* Improve gemspec and package task. Pull request #2220 by SHIBATA Hiroshi.
+* Prefer to use util_spec in `Gem::TestCase`. Pull request #2227 by
+  SHIBATA Hiroshi.
+*  [Requirement] Treat requirements with == versions as equal. Pull
+  request #2230 by Samuel Giddins.
+* Add a note for the non-semantically versioned case. Pull request #2242
+  by David Rodríguez.
+* Keep feature names loaded in the block. Pull request #2261 by Nobuyoshi
+  Nakada.
+* Tweak warning recommendation. Pull request #2266 by David Rodríguez.
+* Show git path in gem env. Pull request #2268 by Luis Sagastume.
+* Add `--env-shebang` flag to setup command. Pull request #2271 by James
+  Myers.
+* Support SOURCE_DATE_EPOCH to make gem spec reproducible. Pull request
+  #2278 by Levente Polyak.
+* Chdir back to original directory when building an extension fails. Pull
+  request #2282 by Samuel Giddins.
+* [Rakefile] Add a default task that runs the tests. Pull request #2283 by
+  Samuel Giddins.
+* Support SOURCE_DATE_EPOCH to make gem tar reproducible. Pull request
+  #2289 by Levente Polyak.
+* Reset hooks in test cases. Pull request #2297 by Samuel Giddins.
+* Minor typo: nokogiri. Pull request #2298 by Darshan Baid.
+* Ignore vendored molinillo from code coverage. Pull request #2302 by
+  SHIBATA Hiroshi.
+* Support IO.copy_stream. Pull request #2303 by okkez.
+* Prepare beta release. Pull request #2304 by SHIBATA Hiroshi.
+* Add error message when trying to open a default gem. Pull request #2307
+  by Luis Sagastume.
+* Add alias command 'i' for 'install' command. Pull request #2308 by
+  ota42y.
+* Cleanup rdoc task in Rakefile. Pull request #2318 by SHIBATA Hiroshi.
+* Add testcase to test_gem_text.rb. Pull request #2329 by Oliver.
+* Gem build strict option. Pull request #2332 by David Rodríguez.
+* Make spec reset more informative. Pull request #2333 by Luis Sagastume.
+* [Rakefile] Set bundler build metadata when doing a release. Pull request
+  #2335 by Samuel Giddins.
+* Speed up globbing relative to given directories. Pull request #2336 by
+  Samuel Giddins.
+* Remove semver gem build warning. Pull request #2351 by David Rodríguez.
+* Expand symlinks in gem path. Pull request #2352 by Benoit Daloze.
+* Normalize comment indentations. Pull request #2353 by David Rodríguez.
+* Add bindir flag to pristine. Pull request #2361 by Luis Sagastume.
+* Add --user-install behaviour to cleanup command. Pull request #2362 by
+  Luis Sagastume.
+* Allow build options to be passed to Rake. Pull request #2382 by Alyssa
+  Ross.
+* Add --re-sign flag to cert command. Pull request #2391 by Luis
+  Sagastume.
+* Fix "interpreted as grouped expression" warning. Pull request #2399 by
+  Colby Swandale.
+* [Gem::Ext::Builder] Comments to aid future refactoring. Pull request
+  #2405 by Ellen Marie Dash.
+* Move CONTRIBUTING.rdoc and POLICIES.rdoc documents to markdown. Pull
+  request #2412 by Colby Swandale.
+* Improve certificate expiration defaults. Pull request #2420 by Luis
+  Sagastume.
+* Freeze all possible constants. Pull request #2422 by Colby Swandale.
+* Fix bundler rubygems binstub not properly looking for bundler. Pull
+  request #2426 by David Rodríguez.
+* Make sure rubygems never leaks to another installation. Pull request
+  #2427 by David Rodríguez.
+* Update README.md. Pull request #2428 by Marc-André Lafortune.
+* Restrict special chars from prefixing new gem names. Pull request #2432
+  by Luis Sagastume.
+* This removes support for dynamic API backend lookup via DNS SRV records.
+  Pull request #2433 by Arlandis Word.
+* Fix link to CONTRIBUTING.md doc. Pull request #2434 by Arlandis Word.
+* Support Keyword args with Pysch. Pull request #2439 by SHIBATA Hiroshi.
+* Bug/kernel#warn uplevel. Pull request #2442 by Nobuyoshi Nakada.
+* Improve certificate error message. Pull request #2454 by Luis Sagastume.
+* Update gem open command help text. Pull request #2458 by Aditya Prakash.
+* Uninstall with versions. Pull request #2466 by David Rodríguez.
+* Add output option to build command. Pull request #2501 by Colby
+  Swandale.
+* Move rubocop into a separate stage in travis ci. Pull request #2510 by
+  Colby Swandale.
+* Ignore warnings with test_gem_specification.rb. Pull request #2523 by
+  SHIBATA Hiroshi.
+* Support the environment without OpenSSL. Pull request #2528 by SHIBATA
+  Hiroshi.
+
+Bug fixes:
+
+* Fix undefined method error when printing alert. Pull request #1884 by
+  Robert Ross.
+* Frozen string fix - lib/rubygems/bundler_version_finder.rb. Pull request
+  #2115 by MSP-Greg.
+* Fixed typos. Pull request #2143 by SHIBATA Hiroshi.
+* Fix regression of destdir on Windows platform. Pull request #2178 by
+  SHIBATA Hiroshi.
+* Fixed no assignment variables about default gems installation. Pull
+  request #2181 by SHIBATA Hiroshi.
+* Fix spelling errors in the README. Pull request #2187 by Colby Swandale.
+* Missing comma creates ambiguous meaning. Pull request #2190 by Clifford
+  Heath.
+* Fix getting started instructions. Pull request #2198 by Luis Sagastume.
+* Fix rubygems dev env. Pull request #2201 by Luis Sagastume.
+* Fix #1470: generate documentation when --install-dir is present. Pull
+  request #2229 by Elias Hernandis.
+* Fix activation when multiple platforms installed. Pull request #2339 by
+  MSP-Greg.
+* Fix required_ruby_version with prereleases and improve error message.
+  Pull request #2344 by David Rodríguez.
+* Update tests for 'newer' Windows builds. Pull request #2348 by MSP-Greg.
+* Fix broken rubocop task by upgrading to 0.58.1. Pull request #2356 by
+  David Rodríguez.
+* Gem::Version should handle nil like it used to before. Pull request
+  #2363 by Luis Sagastume.
+* Avoid need of C++ compiler to pass the test suite. Pull request #2367 by
+  Vít Ondruch.
+* Fix auto resign expired certificate. Pull request #2380 by Luis
+  Sagastume.
+* Skip permissions-dependent test when root. Pull request #2386 by Alyssa
+  Ross.
+* Fix test that depended on /usr/bin being in PATH. Pull request #2387 by
+  Alyssa Ross.
+* Fixed test fail with mswin environment. Pull request #2390 by SHIBATA
+  Hiroshi.
+* Fix broken builds using the correct rubocop version. Pull request #2396
+  by Luis Sagastume.
+* Fix extension builder failure when verbose. Pull request #2457 by Sorah
+  Fukumori.
+* Fix test warnings. Pull request #2472 by MSP-Greg.
+* The test suite of bundler is not present ruby description. Pull request
+  #2484 by SHIBATA Hiroshi.
+* Fix crash on certain gemspecs. Pull request #2506 by David Rodríguez.
+* Fixed test fails with the newer version of OpenSSL. Pull request #2507
+  by SHIBATA Hiroshi.
+* Fix broken symlink that points to ../*. Pull request #2516 by Akira
+  Matsuda.
+* Fix remote fetcher tests. Pull request #2520 by Luis Sagastume.
+* Fix tests when --program-suffix and similar ruby configure options are
+  used. Pull request #2529 by Jeremy Evans.
+
+Compatibility changes:
+
+* IO.binread is not provided at Ruby 1.8. Pull request #2093 by SHIBATA
+  Hiroshi.
+* Ignored to publish rdoc documentation of rubygems for
+  docs.seattlerb.org. Pull request #2105 by SHIBATA Hiroshi.
+* Support pre-release RubyGems. Pull request #2128 by SHIBATA Hiroshi.
+* Relax minitest version for 5. Pull request #2131 by SHIBATA Hiroshi.
+* Remove zentest from dev dependency. Pull request #2132 by SHIBATA
+  Hiroshi.
+* Remove hoe for test suite. Pull request #2160 by SHIBATA Hiroshi.
+* Cleanup deprecated tasks. Pull request #2162 by SHIBATA Hiroshi.
+* Drop to support Ruby < 2.2. Pull request #2182 by SHIBATA Hiroshi.
+* Cleanup deprecated style. Pull request #2193 by SHIBATA Hiroshi.
+* Remove CVEs from the rubygems repo. Pull request #2195 by Colby
+  Swandale.
+* Removed needless condition for old version of ruby. Pull request #2206
+  by SHIBATA Hiroshi.
+* Removed deprecated methods over the limit day. Pull request #2216 by
+  SHIBATA Hiroshi.
+* Remove syck support. Pull request #2222 by SHIBATA Hiroshi.
+* Removed needless condition for Encoding. Pull request #2223 by SHIBATA
+  Hiroshi.
+* Removed needless condition for String#force_encoding. Pull request #2225
+  by SHIBATA Hiroshi.
+* Removed needless OpenSSL patch for Ruby 1.8. Pull request #2243 by
+  SHIBATA Hiroshi.
+* Removed compatibility code for Ruby 1.9.2. Pull request #2244 by SHIBATA
+  Hiroshi.
+* Removed needless version condition for the old ruby. Pull request #2252
+  by SHIBATA Hiroshi.
+* Remove needless define/respond_to condition. Pull request #2255 by
+  SHIBATA Hiroshi.
+* Use File.realpath directlry in Gem::Package. Pull request #2284 by
+  SHIBATA Hiroshi.
+* Removed needless condition for old versions of Ruby. Pull request #2286
+  by SHIBATA Hiroshi.
+* Remove the --rdoc and --ri options from install/update. Pull request
+  #2354 by Colby Swandale.
+* Move authors assigner to required attributes section of
+  Gem::Specification. Pull request #2406 by Grey Baker.
+* Remove rubyforge_page functionality. Pull request #2436 by Nick
+  Schwaderer.
+* Drop ruby 1.8 support and use IO.popen. Pull request #2441 by Nobuyoshi
+  Nakada.
+* Drop ruby 2.2 support. Pull request #2487 by David Rodríguez.
+* Remove some old compatibility code. Pull request #2488 by David
+  Rodríguez.
+* Remove .document from src. Pull request #2489 by Colby Swandale.
+* Remove old version support. Pull request #2493 by Nobuyoshi Nakada.
+* [BudlerVersionFinder] set .filter! and .compatible? to match only on
+  major versions. Pull request #2515 by Colby Swandale.
+
+Style changes:
+
+* Add Rubocop. Pull request #2250 by Colby Swandale.
+* Removed explicitly declaration of thread library. Pull request #2324 by
+  SHIBATA Hiroshi.
+* Remove Trailing whitespace with rubocop. Pull request #2394 by SHIBATA
+  Hiroshi.
+* Update rubocop and also use correct pessimistic version. Pull request
+  #2404 by Colby Swandale.
+* Enable more rubocop rules. Pull request #2435 by Ellen Marie Dash.
+* Fix and lock rubocop. Pull request #2465 by David Rodríguez.
+* Add a rubocop binstub. Pull request #2468 by David Rodríguez.
+* Restore the `rubocop` task. Pull request #2470 by David Rodríguez.
+* Remove trailing blank lines. Pull request #2471 by David Rodríguez.
+* Remove empty lines around method bodies. Pull request #2473 by David
+  Rodríguez.
+* Enable Style/MethodDefParentheses in Rubocop. Pull request #2478 by
+  Colby Swandale.
+* Enable Style/MultilineIfThen in Rubocop. Pull request #2479 by Luis
+  Sagastume.
+* Remove trailing 'then' from generated code. Pull request #2480 by Luis
+  Sagastume.
+
 === 2.7.8 / 2018-11-02
 
 Minor enhancements:

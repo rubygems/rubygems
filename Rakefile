@@ -79,7 +79,7 @@ end
 # --------------------------------------------------------------------
 # Creating a release
 
-task :prerelease => %w[clobber check_manifest test bundler:build_metadata]
+task :prerelease => %w[clobber test bundler:build_metadata]
 
 task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:publish]
 

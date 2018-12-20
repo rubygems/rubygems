@@ -19,19 +19,6 @@ class Gem::Validator
     require 'find'
   end
 
-  ##
-  # Given the path to a gem file, validates against its own MD5 checksum
-  #
-  # gem_path:: [String] Path to gem file
-
-  def verify_gem_file(gem_path)
-    File.open gem_path, Gem.binary_mode do |file|
-      gem_data = file.read
-    end
-  rescue Errno::ENOENT, Errno::EINVAL
-    raise Gem::VerificationError, "missing gem file #{gem_path}"
-  end
-
   private
 
   def find_files_for_gem(gem_directory)
@@ -95,7 +82,9 @@ class Gem::Validator
       end
 
       begin
-        verify_gem_file(gem_path)
+        unless File.readable?(gem_path)
+          raise Gem::VerificationError, "missing gem file #{gem_path}"
+        end
 
         good, gone, unreadable = nil, nil, nil, nil
 

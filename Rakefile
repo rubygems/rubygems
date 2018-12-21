@@ -3,12 +3,7 @@
 require 'rubygems'
 require 'rubygems/package_task'
 require "rake/testtask"
-
-begin
-  require 'psych'
-rescue ::LoadError
-  require 'yaml'
-end
+require 'psych'
 
 desc "Setup Rubygems dev environment"
 task :setup => ["bundler:checkout"] do

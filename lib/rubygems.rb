@@ -572,7 +572,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   #++
 
   def self.find_home
-    Dir.home
+    Dir.home.dup
   rescue
     if Gem.win_platform?
       File.expand_path File.join(ENV['HOMEDRIVE'] || ENV['SystemDrive'], '/')

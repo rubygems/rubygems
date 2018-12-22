@@ -1,5 +1,16 @@
 # coding: UTF-8
 
+=== 3.0.1 / 2018-12-23
+
+Bug fixes:
+
+* Ensure globbed files paths are expanded. Pull request #2536 by Tony Ta.
+* Dup the Dir.home string before passing it on. Pull request #2545 by
+  Charles Oliver Nutter.
+* Added permissions to installed files for non-owners. Pull request #2546
+  by SHIBATA Hiroshi.
+* Restore release task without hoe. Pull request #2547 by SHIBATA Hiroshi.
+
 === 3.0.0 / 2018-12-19
 
 Major enhancements:

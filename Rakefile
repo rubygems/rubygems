@@ -75,8 +75,14 @@ end
 # Creating a release
 
 task :prerelease => %w[clobber test bundler:build_metadata]
-
 task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:publish]
+
+desc "Release rubygems-#{v}"
+task :release => :prerelease do
+  Rake::Task["package"].invoke
+  sh "gem push pkg/rubygems-update-#{v}.gem"
+end
+Rake::Task["release"].enhance(["postrelease"])
 
 Gem::PackageTask.new(spec) {}
 

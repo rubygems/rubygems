@@ -151,7 +151,7 @@ class TestGem < Gem::TestCase
   end
 
   def assert_self_install_permissions
-    mask = /mingw|mswin/ =~ RUBY_PLATFORM ? 0755 : 0777
+    mask = /mingw|mswin/ =~ RUBY_PLATFORM ? 0700 : 0777
     options = {
       :dir_mode => 0500,
       :prog_mode => 0510,

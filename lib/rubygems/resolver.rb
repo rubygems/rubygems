@@ -110,6 +110,7 @@ class Gem::Resolver
     @skip_gems           = {}
     @soft_missing        = false
     @stats               = Gem::Resolver::Stats.new
+    @find_possible       = {}
   end
 
   def explain(stage, *data) # :nodoc:
@@ -198,6 +199,9 @@ class Gem::Resolver
   # returns those that match the local platform and all those that match.
 
   def find_possible(dependency) # :nodoc:
+    dep_str = dependency.to_s
+    return @find_possible[dep_str] if @find_possible[dep_str]
+
     all = @set.find_all dependency
 
     if (skip_dep_gems = skip_gems[dependency.name]) && !skip_dep_gems.empty?
@@ -208,9 +212,7 @@ class Gem::Resolver
       all = matching unless matching.empty?
     end
 
-    matching_platform = select_local_platforms all
-
-    return matching_platform, all
+    @find_possible[dep_str] = [select_by_platform_ruby_version(all), all]
   end
 
   ##
@@ -220,6 +222,16 @@ class Gem::Resolver
     specs.select do |spec|
       Gem::Platform.installable? spec
     end
+  end
+
+  def select_by_platform_ruby_version(specs)
+    ruby_version = Gem.ruby_version
+    specs.select { |spec|
+      Gem::Platform.installable?(spec) &&
+      (Gem::Specification === spec ?
+        spec.required_ruby_version.satisfied_by?(ruby_version) :
+        spec.spec.required_ruby_version.satisfied_by?(ruby_version))
+    }
   end
 
   def search_for(dependency)

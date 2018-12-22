@@ -41,6 +41,28 @@ class TestGemSourceLocal < Gem::TestCase
     assert_equal "a-1", @sl.find_gem("a").full_name
   end
 
+  def test_find_gem_platform_local
+    local = Gem::Platform.local
+    _, al_gem = util_gem "a", '1' do |s| s.platform = local end
+    FileUtils.mv al_gem, @tempdir
+
+    assert_equal "a-1-#{local}", @sl.find_gem("a").full_name
+  end
+
+  def test_find_gem_platform_ruby
+    # equivalent to --platform=ruby
+    Gem.platforms = [Gem::Platform::RUBY]
+
+    local = Gem::Platform.local
+    _, al_gem = util_gem "a", '1' do |s| s.platform = local end
+    FileUtils.mv al_gem, @tempdir
+
+    # equivalent to --platform=ruby
+    Gem.platforms = [Gem::Platform::RUBY]
+
+    assert_equal "a-1", @sl.find_gem("a").full_name
+  end
+
   def test_find_gem_highest_version
     _, a2_gem = util_gem "a", "2"
     FileUtils.mv a2_gem, @tempdir

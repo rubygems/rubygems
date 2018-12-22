@@ -423,6 +423,44 @@ ruby "0"
                  rs.sets.map { |set| set.class }
   end
 
+  def test_resolve_ruby_vers_platform
+    spec_fetcher do |fetcher|
+      fetcher.gem "a", "1.0", "b" => "~> 2.0"
+      fetcher.gem 'b', 2.0
+      fetcher.gem 'b', 2.0 do |s|
+        s.platform = Gem::Platform.local
+        s.required_ruby_version = Gem::Requirement.new "< 2.5.0"
+      end
+    end
+
+    util_set_RUBY_VERSION '2.5.0'
+
+    reqs = Gem::RequestSet.new(Gem::Dependency.new 'a', ">= 0.0.0").resolve
+
+    assert_equal ["b-2.0", "a-1.0"],  reqs.map { |req| req.full_name }
+    assert_equal Gem::Platform::RUBY, reqs[0].spec.platform
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
+  def test_resolve_ruby_vers
+    spec_fetcher do |fetcher|
+      fetcher.gem "a", "1.0", "b" => "~> 2.0"
+      fetcher.gem 'b', 2.0
+      fetcher.gem 'b', 2.1 do |s|
+        s.required_ruby_version = Gem::Requirement.new "~> 2.6.0.a"
+      end
+    end
+
+    util_set_RUBY_VERSION '2.5.0'
+
+    reqs = Gem::RequestSet.new(Gem::Dependency.new 'a', ">= 0.0.0").resolve
+
+    assert_equal ["b-2.0", "a-1.0"], reqs.map { |req| req.full_name }
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
   def test_sorted_requests
     a = util_spec "a", "2", "b" => ">= 2"
     b = util_spec "b", "2", "c" => ">= 2"

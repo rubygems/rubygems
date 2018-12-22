@@ -720,7 +720,19 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_match "1 gem installed", @ui.output
   end
 
-  def test_install_gem_ignore_dependencies_both
+  def test_install_gem_remote_platform_local
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2 do |s| s.platform = local end
+      fetcher.gem 'a', 2
+    end
+
+    @cmd.install_gem 'a', '>= 0'
+
+    assert_equal %W[a-2-#{local}], @cmd.installed_specs.map { |spec| spec.full_name }
+  end
+
+  def test_install_gem_ignore_dependencies_local
     done_installing = false
     Gem.done_installing do
       done_installing = true
@@ -751,6 +763,20 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.install_gem 'a', '>= 0'
 
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+  end
+
+  def test_install_gem_ignore_dependencies_remote_platform_local
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 3
+      fetcher.gem 'a', 3 do |s| s.platform = local end
+    end
+
+    @cmd.options[:ignore_dependencies] = true
+
+    @cmd.install_gem 'a', '>= 0'
+
+    assert_equal %W[a-3-#{local}], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
   def test_install_gem_ignore_dependencies_specific_file
@@ -1142,4 +1168,103 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal [:test, :development], @cmd.options[:without_groups]
   end
 
+  def test_explain_platform_local
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2
+      fetcher.spec 'a', 2 do |s| s.platform = local end
+    end
+
+    @cmd.options[:explain] = true
+    @cmd.options[:args] = %w[a]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    out = @ui.output.split "\n"
+
+    assert_equal "Gems to install:", out.shift
+    assert_equal "  a-2-#{local}", out.shift
+    assert_empty out
+  end
+
+  def test_explain_platform_local_ignore_deps
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 3
+      fetcher.spec 'a', 3 do |s| s.platform = local end
+    end
+
+    @cmd.options[:ignore_dependencies] = true
+    @cmd.options[:explain] = true
+    @cmd.options[:args] = %w[a]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    out = @ui.output.split "\n"
+
+    assert_equal "Gems to install:", out.shift
+    assert_equal "  a-3-#{local}", out.shift
+    assert_empty out
+  end
+
+  def test_explain_platform_ruby
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2
+      fetcher.spec 'a', 2 do |s| s.platform = local end
+    end
+
+    # equivalent to --platform=ruby
+    Gem.platforms = [Gem::Platform::RUBY]
+
+    @cmd.options[:explain] = true
+    @cmd.options[:args] = %w[a]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    out = @ui.output.split "\n"
+
+    assert_equal "Gems to install:", out.shift
+    assert_equal "  a-2", out.shift
+    assert_empty out
+  end
+
+  def test_explain_platform_ruby_ignore_deps
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 3
+      fetcher.spec 'a', 3 do |s| s.platform = local end
+    end
+
+    # equivalent to --platform=ruby
+    Gem.platforms = [Gem::Platform::RUBY]
+
+    @cmd.options[:ignore_dependencies] = true
+    @cmd.options[:explain] = true
+    @cmd.options[:args] = %w[a]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    out = @ui.output.split "\n"
+
+    assert_equal "Gems to install:", out.shift
+    assert_equal "  a-3", out.shift
+    assert_empty out
+  end
 end

@@ -18,12 +18,13 @@ init:
   - set PATH=C:/Ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;
   - mklink /j C:\git "C:\Program Files\Git"
   - set GIT=C:/git/cmd/git.exe
-  - ps: >-
+  - ps: |
       if ($env:ruby_version -eq '_trunk') {
         $trunk_uri = 'https://ci.appveyor.com/api/projects/MSP-Greg/ruby-loco/artifacts/ruby_trunk.7z'
         (New-Object Net.WebClient).DownloadFile($trunk_uri, 'C:\ruby_trunk.7z')
         7z.exe x C:\ruby_trunk.7z -oC:\Ruby_trunk
       }
+      $env:TEST_SSL = '1'   # $env:CI normally set by Appveyor
 
 install:
   - git submodule update --init --recursive

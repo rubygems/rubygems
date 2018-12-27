@@ -11,11 +11,14 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     @data = 'abcde12345'
     @io = TempIO.new
     @tar_writer = Gem::Package::TarWriter.new @io
+    @backup_epoch = ENV["SOURCE_DATE_EPOCH"]
+    ENV["SOURCE_DATE_EPOCH"] = nil
   end
 
   def teardown
     @tar_writer.close unless @tar_writer.closed?
     @io.close!
+    ENV["SOURCE_DATE_EPOCH"] = @backup_epoch
 
     super
   end

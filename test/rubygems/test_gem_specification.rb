@@ -95,6 +95,8 @@ end
 
     @current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
 
+    @gem_spec_today = ENV["SOURCE_DATE_EPOCH"] ? Time.at(ENV["SOURCE_DATE_EPOCH"].to_i) : Gem::Specification::TODAY
+
     load 'rubygems/syck_hack.rb'
   end
 
@@ -1033,7 +1035,8 @@ dependencies: []
     end
     assert_equal 'keyedlist', spec.name
     assert_equal '0.4.0', spec.version.to_s
-    assert_equal Gem::Specification::TODAY, spec.date
+    spec_date = @gem_spec_today
+    assert_equal Time.utc(spec_date.year, spec_date.month, spec_date.day), spec.date
     assert spec.required_ruby_version.satisfied_by?(Gem::Version.new('1'))
     assert_equal false, spec.has_unit_tests?
   end
@@ -1674,7 +1677,10 @@ dependencies: []
   end
 
   def test_date
+    backup_epoch = ENV["SOURCE_DATE_EPOCH"]
+    ENV["SOURCE_DATE_EPOCH"] = nil
     assert_equal Gem::Specification::TODAY, @a1.date
+    ENV["SOURCE_DATE_EPOCH"] = backup_epoch
   end
 
   def test_date_equals_date
@@ -1719,8 +1725,10 @@ dependencies: []
   end
 
   def test_date_use_env_source_date_epoch
+    backup_epoch = ENV["SOURCE_DATE_EPOCH"]
     ENV["SOURCE_DATE_EPOCH"] = "123456789"
     assert_equal Time.utc(1973,11,29,0,0,0), @a1.date
+    ENV["SOURCE_DATE_EPOCH"] = backup_epoch
   end
 
   def test_dependencies
@@ -2387,7 +2395,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze, "other".freeze]
   s.authors = ["A User".freeze]
-  s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
+  s.date = "#{@gem_spec_today.strftime "%Y-%m-%d"}"
   s.description = "This is a test description".freeze
   s.email = "example@example.com".freeze
   s.files = ["lib/code.rb".freeze]
@@ -2436,7 +2444,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["A User".freeze]
-  s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
+  s.date = "#{@gem_spec_today.strftime "%Y-%m-%d"}"
   s.description = "This is a test description".freeze
   s.email = "example@example.com".freeze
   s.homepage = "http://example.com".freeze
@@ -2493,7 +2501,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["A User".freeze]
-  s.date = "#{Gem::Specification::TODAY.strftime "%Y-%m-%d"}"
+  s.date = "#{@gem_spec_today.strftime "%Y-%m-%d"}"
   s.description = "This is a test description".freeze
   s.email = "example@example.com".freeze
   s.executables = ["exec".freeze]
@@ -3573,7 +3581,7 @@ Gem::Specification.new do |s|
   s.metadata = { "one" => "two", "two" => "three" } if s.respond_to? :metadata=
   s.require_paths = ["lib".freeze]
   s.authors = ["A User".freeze]
-  s.date = "#{Gem::Specification::TODAY.strftime("%Y-%m-%d")}"
+  s.date = "#{@gem_spec_today.strftime("%Y-%m-%d")}"
   s.description = "This is a test description".freeze
   s.email = "example@example.com".freeze
   s.files = ["lib/code.rb".freeze]

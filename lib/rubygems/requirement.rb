@@ -267,7 +267,17 @@ class Gem::Requirement
 
   def ==(other) # :nodoc:
     return unless Gem::Requirement === other
-    requirements == other.requirements
+
+    # An == check is always necessary
+    return false unless requirements == other.requirements
+
+    # An == check is sufficient unless any requirements use ~>
+    return true unless requirements.any? { |r| r.first == "~>" }
+
+    # If any requirements use ~> then we also need to compare the version
+    # strings for those requirements only (to check their precision is equal)
+    requirements.select { |r| r.first == "~>" }.
+      eql?(other.requirements.select { |r| r.first == "~>" })
   end
 
   private

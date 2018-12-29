@@ -61,10 +61,10 @@ class TestGemCommandsYankCommand < Gem::TestCase
   def test_execute_with_otp_success
     response_fail = 'You have enabled multifactor authentication but your request doesn\'t have the correct OTP code. Please check it and retry.'
     yank_uri = 'http://example/api/v1/gems/yank'
-    @fetcher.data[yank_uri] = proc do
-      @call_count ||= 0
-      (@call_count += 1).odd? ? [response_fail, 401, 'Unauthorized'] : ['Successfully yanked', 200, 'OK']
-    end
+    @fetcher.data[yank_uri] = [
+      [response_fail, 401, 'Unauthorized'],
+      ['Successfully yanked', 200, 'OK']
+    ]
 
     @cmd.options[:args]           = %w[a]
     @cmd.options[:added_platform] = true

@@ -32,7 +32,7 @@ class Gem::FakeFetcher
     @paths = []
   end
 
-  def find_data(path)
+  def find_data(path, nargs = 3)
     return File.read path.path if URI === path and 'file' == path.scheme
 
     if URI === path and "URI::#{path.scheme.upcase}" != path.class.name
@@ -48,7 +48,14 @@ class Gem::FakeFetcher
       raise Gem::RemoteFetcher::FetchError.new("no data for #{path}", path)
     end
 
-    @data[path]
+    data = @data[path]
+
+    if data.respond_to?(:flatten!)
+      data.flatten!
+      data.size <= nargs ? data.last(nargs) : data.shift(nargs)
+    else
+      data
+    end
   end
 
   def fetch_path(path, mtime = nil, head = false)
@@ -60,7 +67,6 @@ class Gem::FakeFetcher
       if path.to_s =~ /gz$/ and not data.nil? and not data.empty?
         data = Gem::Util.gunzip data
       end
-
       data
     end
   end

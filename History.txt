@@ -1,5 +1,22 @@
 # coding: UTF-8
 
+=== 3.0.2 / 2019-01-01
+
+Minor enhancements:
+
+* Use Bundler-1.17.3. Pull request #2556 by SHIBATA Hiroshi.
+* Fix document flag description. Pull request #2555 by Luis Sagastume.
+
+Bug fixes:
+
+* Fix tests when ruby --program-suffix is used without rubygems
+  --format-executable. Pull request #2549 by Jeremy Evans.
+* Fix Gem::Requirement equality comparison when ~> operator is used. Pull
+  request #2554 by Grey Baker.
+* Unset SOURCE_DATE_EPOCH in the test cases. Pull request #2558 by Sorah
+  Fukumori.
+* Restore SOURCE_DATE_EPOCH. Pull request #2560 by SHIBATA Hiroshi.
+
 === 3.0.1 / 2018-12-23
 
 Bug fixes:

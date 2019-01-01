@@ -156,7 +156,7 @@ Minor enhancements:
 * This removes support for dynamic API backend lookup via DNS SRV records.
   Pull request #2433 by Arlandis Word.
 * Fix link to CONTRIBUTING.md doc. Pull request #2434 by Arlandis Word.
-* Support Keyword args with Pysch. Pull request #2439 by SHIBATA Hiroshi.
+* Support Keyword args with Psych. Pull request #2439 by SHIBATA Hiroshi.
 * Bug/kernel#warn uplevel. Pull request #2442 by Nobuyoshi Nakada.
 * Improve certificate error message. Pull request #2454 by Luis Sagastume.
 * Update gem open command help text. Pull request #2458 by Aditya Prakash.
@@ -256,7 +256,7 @@ Compatibility changes:
   by SHIBATA Hiroshi.
 * Remove needless define/respond_to condition. Pull request #2255 by
   SHIBATA Hiroshi.
-* Use File.realpath directlry in Gem::Package. Pull request #2284 by
+* Use File.realpath directly in Gem::Package. Pull request #2284 by
   SHIBATA Hiroshi.
 * Removed needless condition for old versions of Ruby. Pull request #2286
   by SHIBATA Hiroshi.

@@ -101,34 +101,34 @@ module Gem::InstallUpdateOptions
       options[:user_install] = value
     end
 
-    add_option(:"Install/Update", "--development",
+    add_option(:"Install/Update", '--development',
                 "Install additional development",
                 "dependencies") do |value, options|
       options[:development] = true
       options[:dev_shallow] = true
     end
 
-    add_option(:"Install/Update", "--development-all",
+    add_option(:"Install/Update", '--development-all',
                 "Install development dependencies for all",
                 "gems (including dev deps themselves)") do |value, options|
       options[:development] = true
       options[:dev_shallow] = false
     end
 
-    add_option(:"Install/Update", "--conservative",
+    add_option(:"Install/Update", '--conservative',
                 "Don't attempt to upgrade gems already",
                 "meeting version requirement") do |value, options|
       options[:conservative] = true
       options[:minimal_deps] = true
     end
 
-    add_option(:"Install/Update", "--minimal-deps",
+    add_option(:"Install/Update", '--minimal-deps',
                 "Don't upgrade any dependencies that already",
                 "meet version requirements") do |value, options|
       options[:minimal_deps] = true
     end
 
-    add_option(:"Install/Update", "--[no-]post-install-message",
+    add_option(:"Install/Update", '--[no-]post-install-message',
                 "Print post install message") do |value, options|
       options[:post_install_message] = value
     end

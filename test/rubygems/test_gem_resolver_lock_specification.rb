@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
-require 'rubygems/installer'
-require 'rubygems/resolver'
 
 class TestGemResolverLockSpecification < Gem::TestCase
 

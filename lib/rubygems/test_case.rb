@@ -2,16 +2,13 @@
 # TODO: $SAFE = 1
 
 begin
-  gem 'minitest', '~> 5.0'
+  # minitest 5.4.3 included with Ruby 2.2.0
+  gem 'minitest', '~> 5.4'
 rescue NoMethodError, Gem::LoadError
   # for ruby tests
 end
 
-if defined? Gem::QuickLoader
-  Gem::QuickLoader.load_full_rubygems_library
-else
-  require 'rubygems'
-end
+require 'rubygems'
 
 # If bundler gemspec exists, add to stubs
 bundler_gemspec = File.expand_path("../../../bundler/bundler.gemspec", __FILE__)

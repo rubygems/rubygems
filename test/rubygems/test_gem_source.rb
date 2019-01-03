@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
-require 'rubygems/source'
 require 'rubygems/indexer'
 
 class TestGemSource < Gem::TestCase

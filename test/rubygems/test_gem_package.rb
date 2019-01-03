@@ -1,6 +1,5 @@
 # coding: utf-8
 # frozen_string_literal: true
-
 require 'rubygems/package/tar_test_case'
 require 'rubygems/simple_gem'
 

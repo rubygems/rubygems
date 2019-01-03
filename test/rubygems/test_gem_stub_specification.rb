@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require "rubygems/test_case"
-require "rubygems/stub_specification"
 
 class TestStubSpecification < Gem::TestCase
   SPECIFICATIONS = File.expand_path(File.join("..", "specifications"), __FILE__)

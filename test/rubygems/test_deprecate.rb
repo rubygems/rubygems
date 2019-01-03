@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
-# require 'rubygems/builder'
-# require 'rubygems/package'
 require 'rubygems/deprecate'
 
 class TestDeprecate < Gem::TestCase

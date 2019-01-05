@@ -1,6 +1,5 @@
 # coding: utf-8
 # frozen_string_literal: true
-
 require 'rubygems/test_case'
 
 unless defined?(OpenSSL::SSL)

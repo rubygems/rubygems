@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
-require "rubygems/version"
-
 require "minitest/benchmark"
 
 class TestGemVersion < Gem::TestCase

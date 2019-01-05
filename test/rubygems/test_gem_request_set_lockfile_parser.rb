@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
-require 'rubygems/request_set'
 require 'rubygems/request_set/lockfile'
 require 'rubygems/request_set/lockfile/tokenizer'
 require 'rubygems/request_set/lockfile/parser'

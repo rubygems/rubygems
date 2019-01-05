@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
 require 'rubygems/ext'
-require 'rubygems/installer'
 
 class TestGemExtBuilder < Gem::TestCase
 

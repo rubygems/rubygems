@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
-require 'rubygems'
 require 'rubygems/command'
 require 'rubygems/gemcutter_utilities'
 

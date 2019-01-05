@@ -1,9 +1,7 @@
 # coding: US-ASCII
 # frozen_string_literal: true
 require 'rubygems/test_case'
-require 'rubygems'
 require 'rubygems/command'
-require 'rubygems/installer'
 require 'pathname'
 require 'tmpdir'
 require 'rbconfig'

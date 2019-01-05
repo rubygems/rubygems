@@ -4,7 +4,6 @@ require 'rubygems/test_case'
 require 'pathname'
 require 'stringio'
 require 'rubygems/ext'
-require 'rubygems/specification'
 require 'rubygems/installer'
 
 class TestGemSpecification < Gem::TestCase

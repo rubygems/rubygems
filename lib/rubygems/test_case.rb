@@ -2,7 +2,8 @@
 # TODO: $SAFE = 1
 
 begin
-  gem 'minitest', '~> 5.0'
+  # minitest 5.4.3 is bundled with Ruby 2.2.0
+  gem 'minitest', '~> 5.4'
 rescue NoMethodError, Gem::LoadError
   # for ruby tests
 end

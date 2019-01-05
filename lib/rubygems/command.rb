@@ -6,7 +6,6 @@
 #++
 
 require 'optparse'
-require 'rubygems/requirement'
 require 'rubygems/user_interaction'
 
 ##

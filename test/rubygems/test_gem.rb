@@ -1,4 +1,5 @@
 # coding: US-ASCII
+# frozen_string_literal: true
 require 'rubygems/test_case'
 require 'rubygems'
 require 'rubygems/command'
@@ -892,14 +893,16 @@ class TestGem < Gem::TestCase
       io.write "\xCF\x80"
     end
 
-    assert_equal ["\xCF", "\x80"], Gem.read_binary('test').chars.to_a
+    file_str = "\xCF\x80".dup.force_encoding('ASCII-8BIT')
+
+    assert_equal file_str, Gem.read_binary('test')
 
     skip 'chmod not supported' if Gem.win_platform?
 
     begin
       File.chmod 0444, 'test'
 
-      assert_equal ["\xCF", "\x80"], Gem.read_binary('test').chars.to_a
+      assert_equal file_str, Gem.read_binary('test')
     ensure
       File.chmod 0644, 'test'
     end

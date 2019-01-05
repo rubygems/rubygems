@@ -8,11 +8,7 @@ rescue NoMethodError, Gem::LoadError
   # for ruby tests
 end
 
-if defined? Gem::QuickLoader
-  Gem::QuickLoader.load_full_rubygems_library
-else
-  require 'rubygems'
-end
+require 'rubygems'
 
 # If bundler gemspec exists, add to stubs
 bundler_gemspec = File.expand_path("../../../bundler/bundler.gemspec", __FILE__)

@@ -60,20 +60,18 @@ Gems can be saved to a specified filename with the output option:
     end
 
     if File.exist? gemspec
-      Dir.chdir(File.dirname(gemspec)) do
-        spec = Gem::Specification.load File.basename(gemspec)
+      spec = Gem::Specification.load gemspec
 
-        if spec
-          Gem::Package.build(
-            spec,
-            options[:force],
-            options[:strict],
-            options[:output]
-          )
-        else
-          alert_error "Error loading gemspec. Aborting."
-          terminate_interaction 1
-        end
+      if spec
+        Gem::Package.build(
+          spec,
+          options[:force],
+          options[:strict],
+          options[:output]
+        )
+      else
+        alert_error "Error loading gemspec. Aborting."
+        terminate_interaction 1
       end
     else
       alert_error "Gemspec file not found: #{gemspec}"

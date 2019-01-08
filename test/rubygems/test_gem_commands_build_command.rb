@@ -192,12 +192,12 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_equal "ERROR:  Gemspec file not found: some_gem\n", @ui.error
   end
 
-  def test_execute_outside_dir
-    gemspec_dir = File.join @tempdir, 'build_command_gem'
-    gemspec_file = File.join gemspec_dir, @gem.spec_name
-    readme_file = File.join gemspec_dir, 'README.md'
+  def test_execute_gemspec_outside_dir
+    gem_files_dir = File.join @tempdir, 'build_command_gem'
+    gemspec_file = File.join @tempdir, @gem.spec_name
+    readme_file = File.join gem_files_dir, 'README.md'
 
-    FileUtils.mkdir_p gemspec_dir
+    FileUtils.mkdir_p gem_files_dir
 
     File.open readme_file, 'w' do |f|
       f.write "My awesome gem"
@@ -209,8 +209,10 @@ class TestGemCommandsBuildCommand < Gem::TestCase
 
     @cmd.options[:args] = [gemspec_file]
 
-    use_ui @ui do
-      @cmd.execute
+    Dir.chdir gem_files_dir do
+      use_ui @ui do
+        @cmd.execute
+      end
     end
 
     output = @ui.output.split "\n"
@@ -220,7 +222,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_equal "  File: some_gem-2.gem", output.shift
     assert_equal [], output
 
-    gem_file = File.join gemspec_dir, File.basename(@gem.cache_file)
+    gem_file = File.join gem_files_dir, File.basename(@gem.cache_file)
     assert File.exist?(gem_file)
 
     spec = Gem::Package.new(gem_file).spec

@@ -1285,7 +1285,7 @@ class Gem::Specification < Gem::BasicSpecification
     unresolved = unresolved_deps
     unless unresolved.empty?
       w = "W" + "ARN"
-      warn "#{w}: Unresolved or ambigious specs during Gem::Specification.reset:"
+      warn "#{w}: Unresolved or ambiguous specs during Gem::Specification.reset:"
       unresolved.values.each do |dep|
         warn "      #{dep}"
 

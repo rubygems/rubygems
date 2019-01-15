@@ -341,7 +341,7 @@ class Gem::Version
 
   def <=>(other)
     return unless Gem::Version === other
-    return 0 if @version == other._version
+    return 0 if @version == other._version || canonical_segments == other.canonical_segments
 
     lhsegments = _segments
     rhsegments = other._segments

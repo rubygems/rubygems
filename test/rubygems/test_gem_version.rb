@@ -78,7 +78,7 @@ class TestGemVersion < Gem::TestCase
     assert_equal v("1.2").hash, v("1.2").hash
     refute_equal v("1.2").hash, v("1.3").hash
     assert_equal v("1.2").hash, v("1.2.0").hash
-    assert_equal v("1.2.pre.1").hash, v("1.2.0.pre.1.0").hash
+    assert_equal v("1.2.0.pre.1").hash, v("1.2.0.pre.1.0").hash
   end
 
   def test_initialize
@@ -210,7 +210,7 @@ class TestGemVersion < Gem::TestCase
 
   def test_canonical_segments
     assert_equal [1], v("1.0.0").canonical_segments
-    assert_equal [1, "a", 1], v("1.0.0.a.1.0").canonical_segments
+    assert_equal [1, 0, 0, "a", 1], v("1.0.0.a.1.0").canonical_segments
     assert_equal [1, 2, 3, "pre", 1], v("1.2.3-1").canonical_segments
   end
 

@@ -712,12 +712,6 @@ end
   def test_platforms
     if win_platform?
       util_set_arch 'x86-mswin32-60' do
-        @gda.platforms :ruby do
-          @gda.gem 'a'
-        end
-
-        assert_equal [dep('a')], @set.dependencies
-
         @gda.platforms :mswin do
           @gda.gem 'c'
         end

@@ -658,6 +658,7 @@ end
           @gda.gem 'a'
         end
 
+        assert_equal [dep('a')], @set.dependencies
         refute_empty @set.dependencies
       end
     else
@@ -710,28 +711,18 @@ end
   end
 
   def test_platforms
-    if win_platform?
-      util_set_arch 'x86-mswin32-60' do
-        @gda.platforms :mswin do
-          @gda.gem 'c'
-        end
-
-        assert_equal [dep('a'), dep('c')], @set.dependencies
+    util_set_arch 'i686-darwin8.10.1' do
+      @gda.platforms :ruby do
+        @gda.gem 'a'
       end
-    else
-      util_set_arch 'i686-darwin8.10.1' do
-        @gda.platforms :ruby do
-          @gda.gem 'a'
-        end
 
-        assert_equal [dep('a')], @set.dependencies
+      assert_equal [dep('a')], @set.dependencies
 
-        @gda.platforms :mswin do
-          @gda.gem 'b'
-        end
-
-        assert_equal [dep('a')], @set.dependencies
+      @gda.platforms :mswin do
+        @gda.gem 'b'
       end
+
+      assert_equal [dep('a')], @set.dependencies
     end
   end
 

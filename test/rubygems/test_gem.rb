@@ -197,7 +197,7 @@ class TestGem < Gem::TestCase
     }
     # below is for intermittent errors on Appveyor & Travis 2019-01,
     # see https://github.com/rubygems/rubygems/pull/2568
-    sleep 0.1
+    sleep 0.2
     result = {}
     Dir.chdir @gemhome do
       expected.each_key do |n|

@@ -197,7 +197,7 @@ class TestGemCommand < Gem::TestCase
 
   def test_depreacate_option_long_name
     deprecate_msg = <<-EXPECTED
-WARNING:  The \"--test\" option has been deprecated and will be removed in future versions of Rubygems, its use is discouraged.
+WARNING:  The \"--test\" option has been deprecated and will be removed in future versions of Rubygems 3.1, its use is discouraged.
     EXPECTED
 
     testCommand = Class.new(Gem::Command) do
@@ -208,7 +208,7 @@ WARNING:  The \"--test\" option has been deprecated and will be removed in futur
           options[:test] = true
         end
 
-        deprecate_option(long_name: '--test')
+        deprecate_option(long_name: '--test', version: '3.1')
       end
 
       def execute
@@ -226,7 +226,7 @@ WARNING:  The \"--test\" option has been deprecated and will be removed in futur
 
   def test_depreacate_option_short_name
     deprecate_msg = <<-EXPECTED
-WARNING:  The \"-t\" option has been deprecated and will be removed in future versions of Rubygems, its use is discouraged.
+WARNING:  The \"-t\" option has been deprecated and will be removed in future versions of Rubygems 3.5, its use is discouraged.
     EXPECTED
 
     testCommand = Class.new(Gem::Command) do
@@ -237,7 +237,7 @@ WARNING:  The \"-t\" option has been deprecated and will be removed in future ve
           options[:test] = true
         end
 
-        deprecate_option(short_name: '-t')
+        deprecate_option(short_name: '-t', version: '3.5')
       end
 
       def execute

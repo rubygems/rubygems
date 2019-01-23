@@ -366,15 +366,19 @@ class Gem::Command
     end
   end
 
-  def deprecate_option(short_name: nil, long_name: nil)
-    @deprecated_options[command].merge!({ short_name => true }) if short_name
-    @deprecated_options[command].merge!({ long_name  => true }) if long_name
+  def deprecate_option(short_name: nil, long_name: nil, version: nil)
+    @deprecated_options[command].merge!({ short_name => { "rg_version_to_expire" => version } }) if short_name
+    @deprecated_options[command].merge!({ long_name  => { "rg_version_to_expire" => version } }) if long_name
   end
 
   def check_deprecated_options(options)
     options.each do |option|
-      deprecate_option_msg = "The \"#{option}\" option has been deprecated and will be removed in future versions of Rubygems, its use is discouraged."
-      alert_warning(deprecate_option_msg) if option_is_deprecated?(option)
+      if option_is_deprecated?(option)
+        version_to_expire = @deprecated_options[command][option]["rg_version_to_expire"]
+        deprecate_option_msg = "The \"#{option}\" option has been deprecated and will be removed in future versions of Rubygems #{version_to_expire}, its use is discouraged."
+
+        alert_warning(deprecate_option_msg)
+      end
     end
   end
 
@@ -435,7 +439,7 @@ class Gem::Command
   private
 
   def option_is_deprecated?(option)
-    @deprecated_options[command][option]
+    @deprecated_options[command].has_key?(option)
   end
 
   def add_parser_description # :nodoc:

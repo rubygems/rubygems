@@ -122,6 +122,7 @@ class Gem::Command
     @defaults = defaults
     @options = defaults.dup
     @option_groups = Hash.new { |h,k| h[k] = [] }
+    @deprecated_options = { command => {} }
     @parser = nil
     @when_invoked = nil
   end
@@ -351,7 +352,7 @@ class Gem::Command
   # options in output.  See `gem help list` for an example.
 
   def add_option(*opts, &handler) # :yields: value, options
-    group_name = Symbol === opts.first ? opts.shift : :options
+    group_name = Symbol == opts.first.class ? opts.shift : :options
 
     @option_groups[group_name] << [opts, handler]
   end
@@ -362,6 +363,18 @@ class Gem::Command
   def remove_option(name)
     @option_groups.each do |_, option_list|
       option_list.reject! { |args, _| args.any? { |x| x.is_a?(String) && x =~ /^#{name}/ } }
+    end
+  end
+
+  def deprecate_option(short_name: nil, long_name: nil)
+    @deprecated_options[command].merge!({ short_name => true }) if short_name
+    @deprecated_options[command].merge!({ long_name  => true }) if long_name
+  end
+
+  def check_deprecated_options(options)
+    options.each do |option|
+      deprecate_option_msg = "The \"#{option}\" option has been deprecated and will be removed in future versions of Rubygems, its use is discouraged."
+      alert_warning(deprecate_option_msg) if option_is_deprecated?(option)
     end
   end
 
@@ -392,6 +405,7 @@ class Gem::Command
 
   def handle_options(args)
     args = add_extra_args(args)
+    check_deprecated_options(args)
     @options = Marshal.load Marshal.dump @defaults # deep copy
     parser.parse!(args)
     @options[:args] = args
@@ -419,6 +433,10 @@ class Gem::Command
   end
 
   private
+
+  def option_is_deprecated?(option)
+    @deprecated_options[command][option]
+  end
 
   def add_parser_description # :nodoc:
     return unless description

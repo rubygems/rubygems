@@ -195,6 +195,64 @@ class TestGemCommand < Gem::TestCase
     assert_equal ['-h', 'command'], args
   end
 
+  def test_depreacate_option_long_name
+    deprecate_msg = <<-EXPECTED
+WARNING:  The \"--test\" option has been deprecated and will be removed in future versions of Rubygems, its use is discouraged.
+    EXPECTED
+
+    testCommand = Class.new(Gem::Command) do
+      def initialize
+        super('test', 'Gem::Command instance for testing')
+
+        add_option('-t', '--test', 'Test command') do |value, options|
+          options[:test] = true
+        end
+
+        deprecate_option(long_name: '--test')
+      end
+
+      def execute
+        true
+      end
+    end
+
+    cmd = testCommand.new
+
+    use_ui @ui do
+      cmd.invoke("--test")
+      assert_equal deprecate_msg, @ui.error
+    end
+  end
+
+  def test_depreacate_option_short_name
+    deprecate_msg = <<-EXPECTED
+WARNING:  The \"-t\" option has been deprecated and will be removed in future versions of Rubygems, its use is discouraged.
+    EXPECTED
+
+    testCommand = Class.new(Gem::Command) do
+      def initialize
+        super('test', 'Gem::Command instance for testing')
+
+        add_option('-t', '--test', 'Test command') do |value, options|
+          options[:test] = true
+        end
+
+        deprecate_option(short_name: '-t')
+      end
+
+      def execute
+        true
+      end
+    end
+
+    cmd = testCommand.new
+
+    use_ui @ui do
+      cmd.invoke("-t")
+      assert_equal deprecate_msg, @ui.error
+    end
+  end
+
   def test_show_lookup_failure_suggestions_local
     correct    = "non_existent_with_hint"
     misspelled = "nonexistent_with_hint"

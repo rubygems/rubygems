@@ -404,7 +404,7 @@ class TestGemRequirement < Gem::TestCase
 
   def assert_satisfied_by(version, requirement)
     assert req(requirement).satisfied_by?(v(version)),
-      "#{requirement} is satisfied by #{version}"
+      "Expected #{version} to satisfy #{requirement}"
   end
 
   # Refute the assumption that two requirements are equal.
@@ -417,6 +417,6 @@ class TestGemRequirement < Gem::TestCase
 
   def refute_satisfied_by(version, requirement)
     refute req(requirement).satisfied_by?(v(version)),
-      "#{requirement} is not satisfied by #{version}"
+      "Expected #{version} not to satisfy #{requirement}"
   end
 end

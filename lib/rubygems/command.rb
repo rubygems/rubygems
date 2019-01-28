@@ -227,6 +227,14 @@ class Gem::Command
     args.first
   end
 
+  def first_arg_current_dir?
+    args = options[:args]
+    return false if args.nil?
+
+    current_dir = "."
+    args.first == current_dir
+  end
+
   ##
   # Get a single optional argument from the command line.  If more than one
   # argument is given, return only the first. Return nil if none are given.

@@ -189,7 +189,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     end
 
     assert_equal '', @ui.output
-    assert_equal "ERROR:  Gemspec file not found: some_gem\n", @ui.error
+    assert_equal "ERROR:  Gemspec file not found: some_gem.gemspec\n", @ui.error
   end
 
   def test_execute_outside_dir
@@ -228,6 +228,90 @@ class TestGemCommandsBuildCommand < Gem::TestCase
 
     assert_equal "some_gem", spec.name
     assert_equal "this is a summary", spec.summary
+  end
+
+  def test_execute_current_dir
+    gem_0 = util_spec 'some_gem' do |s|
+      s.license = 'AGPL-3.0'
+      s.files = ['README.md']
+    end
+
+    gem_1 = util_spec 'another_gem' do |s|
+      s.license = 'AGPL-3.0'
+      s.files = ['README.md']
+    end
+
+    gemspec_dir = File.join @tempdir, 'build_command_gem'
+
+    gemspec_file_0 = File.join(gemspec_dir, gem_0.spec_name)
+    readme_file_0  = File.join(gemspec_dir, 'README.md')
+
+    gemspec_file_1 = File.join(gemspec_dir, gem_1.spec_name)
+    readme_file_1  = File.join(gemspec_dir, 'README.md')
+
+    FileUtils.mkdir_p(gemspec_dir)
+
+    File.open(readme_file_0, 'w') do |f|
+      f.write "My awesome gem"
+    end
+
+    File.open(readme_file_1, 'w') do |f|
+      f.write "My awesome gem"
+    end
+
+    File.open(gemspec_file_0, 'w') do |gs|
+      gs.write gem_0.to_ruby
+    end
+
+    File.open(gemspec_file_1, 'w') do |gs|
+      gs.write gem_1.to_ruby
+    end
+
+    @cmd.options[:args] = ["."]
+
+    use_ui @ui do
+      Dir.chdir(gemspec_dir) do
+        @cmd.execute
+      end
+    end
+
+    output = @ui.output.split "\n"
+    assert_equal "  Successfully built RubyGem", output.shift
+    assert_equal "  Name: another_gem", output.shift
+    assert_equal "  Version: 2", output.shift
+    assert_equal "  File: another_gem-2.gem", output.shift
+    assert_equal "  Successfully built RubyGem", output.shift
+    assert_equal "  Name: some_gem", output.shift
+    assert_equal "  Version: 2", output.shift
+    assert_equal "  File: some_gem-2.gem", output.shift
+    assert_equal [], output
+
+    gem_file_0 = File.join(gemspec_dir, File.basename(gem_0.cache_file))
+    assert File.exist?(gem_file_0)
+
+    gem_file_1 = File.join(gemspec_dir, File.basename(gem_1.cache_file))
+    assert File.exist?(gem_file_1)
+  end
+
+  def test_execute_current_dir_no_gemspecs
+    gemspec_dir = File.join @tempdir, 'build_command_gem'
+    FileUtils.mkdir_p(gemspec_dir)
+
+    @cmd.options[:args] = ["."]
+
+    use_ui @ui do
+      Dir.chdir(gemspec_dir) do
+        assert_raises Gem::MockGemUi::TermError do
+          @cmd.execute
+        end
+      end
+    end
+
+    assert_equal "", @ui.output
+
+    Dir.chdir(gemspec_dir) do
+      assert_equal "ERROR:  Gemspec files not found: #{Dir.pwd}\n", @ui.error
+    end
   end
 
   def test_can_find_gemspecs_without_dot_gemspec

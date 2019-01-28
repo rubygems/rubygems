@@ -66,6 +66,7 @@ data you will need to change them immediately and yank your gem.
     response = yank_api_request(*args)
 
     if need_ask_otp? response
+      ask_otp
       response = yank_api_request(*args)
     end
 

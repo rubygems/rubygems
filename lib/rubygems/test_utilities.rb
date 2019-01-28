@@ -19,7 +19,7 @@ require 'rubygems/remote_fetcher'
 #   @fetcher.fetch_path('http://gems.example.com/sequence') # => [1, 2, 3]
 #   @fetcher.fetch_path('http://gems.example.com/sequence') # => [4, 5, 6]
 #
-#   # use procs as fake response
+#   # procs can be accepted
 #
 #   @fetcher.data['http://gems.example.com/random'] = proc do
 #     Random.rand

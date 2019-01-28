@@ -127,6 +127,7 @@ module Gem::GemcutterUtilities
     end
 
     if need_ask_otp? response
+      ask_otp
       response = rubygems_api_request(:get, "api/v1/api_key", sign_in_host) do |request|
         request.basic_auth email, password
         request.add_field "OTP", options[:otp]
@@ -184,10 +185,12 @@ module Gem::GemcutterUtilities
     return false if options[:otp]
     return unless response.kind_of?(Net::HTTPUnauthorized) &&
         response.body.start_with?('You have enabled multifactor authentication')
+    true
+  end
 
+  def ask_otp
     say 'You have enabled multi-factor authentication. Please enter OTP code.'
     options[:otp] = ask 'Code: '
-    true
   end
 
   def set_api_key(host, key)

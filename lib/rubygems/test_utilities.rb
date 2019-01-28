@@ -13,6 +13,18 @@ require 'rubygems/remote_fetcher'
 #   @fetcher.data['http://gems.example.com/yaml'] = source_index.to_yaml
 #   Gem::RemoteFetcher.fetcher = @fetcher
 #
+#   # use sequence if multiple responses are needed
+#
+#   @fetcher.data['http://gems.example.com/sequence'] = [[1, 2, 3], [4, 5, 6]]
+#   @fetcher.fetch_path('http://gems.example.com/sequence') # => [1, 2, 3]
+#   @fetcher.fetch_path('http://gems.example.com/sequence') # => [4, 5, 6]
+#
+#   # use procs as fake response
+#
+#   @fetcher.data['http://gems.example.com/random'] = proc do
+#     Random.rand
+#   end
+#
 #   # invoke RubyGems code
 #
 #   paths = @fetcher.paths
@@ -50,12 +62,8 @@ class Gem::FakeFetcher
 
     data = @data[path]
 
-    if data.respond_to?(:flatten!)
-      data.flatten!
-      data.size <= nargs ? data.last(nargs) : data.shift(nargs)
-    else
-      data
-    end
+    data.flatten! and return data.shift(nargs) if data.respond_to?(:flatten!)
+    data
   end
 
   def fetch_path(path, mtime = nil, head = false)

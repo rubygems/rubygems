@@ -129,6 +129,34 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     assert_match "3 gems installed", @ui.output
   end
 
+  def test_execute_current_directory
+    specs = spec_fetcher do |fetcher|
+      fetcher.download 'a', '1'
+      fetcher.download 'b', '1'
+      fetcher.download 'c', '1'
+    end
+
+    gem_dir = File.join @tempdir, 'install_command_gem'
+    FileUtils.mkdir_p(gem_dir)
+
+    FileUtils.mv specs['a-1'].cache_file, gem_dir
+    FileUtils.mv specs['b-1'].cache_file, gem_dir
+    FileUtils.mv specs['c-1'].cache_file, gem_dir
+
+    @cmd.options[:args] = ["."]
+
+    use_ui @ui do
+      Dir.chdir(gem_dir) do
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+          @cmd.execute
+        end
+      end
+    end
+
+    assert_equal "", @ui.error
+    assert_match "3 gems installed", @ui.output
+  end
+
   def test_execute_no_user_install
     skip 'skipped on MS Windows (chmod has no effect)' if win_platform?
     skip 'skipped in root privilege' if Process.uid.zero?

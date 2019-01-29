@@ -67,13 +67,7 @@ Gems can be saved to a specified filename with the output option:
   private
 
   def build_all_gems
-    gem_names = []
-
-    Dir.chdir(Dir.pwd) do |path|
-      gem_names = Dir["#{path}/*.gemspec"].map do |file_path|
-        File.basename(file_path, ".gemspec")
-      end
-    end
+    gem_names = get_current_dir_gems(file_extension: ".gemspec")
 
     if gem_names.empty?
       alert_error "Gemspec files not found: #{Dir.pwd}"

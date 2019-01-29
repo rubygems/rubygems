@@ -178,6 +178,18 @@ class Gem::Command
     end
   end
 
+  def get_current_dir_gems(file_extension: ".gem")
+    gem_names = []
+
+    Dir.chdir(Dir.pwd) do |path|
+      gem_names = Dir["#{path}/*#{file_extension}"].map do |file_path|
+        File.basename(file_path, "#{file_extension}")
+      end
+    end
+
+    gem_names
+  end
+
   ##
   # Get all gem names from the command line.
 
@@ -186,23 +198,29 @@ class Gem::Command
 
     if args.nil? or args.empty?
       raise Gem::CommandLineError,
-            "Please specify at least one gem name (e.g. gem build GEMNAME)"
+        "Please specify at least one gem name (e.g. gem build GEMNAME)"
     end
 
     args.select { |arg| arg !~ /^-/ }
   end
 
   ##
-  # Get all [gem, version] from the command line.
+  # Get all [gem, version] from the command line or current directory
   #
-  # An argument in the form gem:ver is pull apart into the gen name and version,
+  # An argument in the form gem:ver or gem-ver is pull apart into the gen name and version,
   # respectively.
   def get_all_gem_names_and_versions
-    get_all_gem_names.map do |name|
-      if /\A(.*):(#{Gem::Requirement::PATTERN_RAW})\z/ =~ name
-        [$1, $2]
-      else
-        [name]
+    if  first_arg_current_dir?
+      get_current_dir_gems.map do |name|
+        [$1, $2] if /\A(.*)-(#{Gem::Requirement::PATTERN_RAW})\z/ =~ name
+      end
+    else
+      get_all_gem_names.map do |name|
+        if /\A(.*):(#{Gem::Requirement::PATTERN_RAW})\z/ =~ name
+            [$1, $2]
+        else
+          [name]
+        end
       end
     end
   end

@@ -217,7 +217,7 @@ class Gem::Command
     else
       get_all_gem_names.map do |name|
         if /\A(.*):(#{Gem::Requirement::PATTERN_RAW})\z/ =~ name
-            [$1, $2]
+          [$1, $2]
         else
           [name]
         end

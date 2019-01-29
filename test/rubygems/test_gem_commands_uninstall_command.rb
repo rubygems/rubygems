@@ -47,6 +47,37 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
                  Gem::Specification.all_names.sort
   end
 
+  def test_execute_current_directory
+    gem_dir = File.join @tempdir, 'uninstall_command_gem'
+    FileUtils.mkdir_p(gem_dir)
+
+    c = quick_gem 'c'
+    b = quick_gem 'b'
+    d = quick_gem 'd'
+
+    util_build_gem c
+    util_build_gem b
+    util_build_gem d
+
+    util_installer(c, gem_dir).install
+    util_installer(b, gem_dir).install
+    util_installer(d, gem_dir).install
+
+    @cmd.options[:args] = ["."]
+
+    use_ui @ui do
+      Dir.chdir "#{gem_dir}/cache" do
+        @cmd.execute
+      end
+    end
+
+    output = @ui.output.split "\n"
+    assert_equal "Successfully uninstalled c-2", output.shift
+    assert_equal "Successfully uninstalled b-2", output.shift
+    assert_equal "Successfully uninstalled d-2", output.shift
+    assert_equal [], output
+  end
+
   def test_execute_dependency_order
     c = quick_gem 'c' do |spec|
       spec.add_dependency 'a'

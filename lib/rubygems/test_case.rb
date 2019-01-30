@@ -115,6 +115,8 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
   attr_accessor :uri # :nodoc:
 
+  TEST_PATH = File.expand_path('../../../test/rubygems', __FILE__)
+
   def assert_activate(expected, *specs)
     specs.each do |spec|
       case spec
@@ -1360,9 +1362,8 @@ Also, a list:
   end
 
   @@ruby = rubybin
-  gempath = File.expand_path('../../../test/rubygems', __FILE__)
-  @@good_rake = "#{rubybin} #{escape_path(gempath, 'good_rake.rb')}"
-  @@bad_rake = "#{rubybin} #{escape_path(gempath, 'bad_rake.rb')}"
+  @@good_rake = "#{rubybin} #{escape_path(TEST_PATH, 'good_rake.rb')}"
+  @@bad_rake = "#{rubybin} #{escape_path(TEST_PATH, 'bad_rake.rb')}"
 
   ##
   # Construct a new Gem::Dependency.
@@ -1550,14 +1551,12 @@ Also, a list:
 
   def self.cert_path(cert_name)
     if 32 == (Time.at(2**32) rescue 32)
-      cert_file =
-        File.expand_path "../../../test/rubygems/#{cert_name}_cert_32.pem",
-                         __FILE__
+      cert_file = "#{TEST_PATH}/#{cert_name}_cert_32.pem"
 
       return cert_file if File.exist? cert_file
     end
 
-    File.expand_path "../../../test/rubygems/#{cert_name}_cert.pem", __FILE__
+    "#{TEST_PATH}/#{cert_name}_cert.pem"
   end
 
   ##
@@ -1575,7 +1574,7 @@ Also, a list:
   # Returns the path to the key named +key_name+ from <tt>test/rubygems</tt>
 
   def self.key_path(key_name)
-    File.expand_path "../../../test/rubygems/#{key_name}_key.pem", __FILE__
+    "#{TEST_PATH}/#{key_name}_key.pem"
   end
 
   # :stopdoc:

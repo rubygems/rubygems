@@ -352,7 +352,7 @@ class Gem::Command
   # options in output.  See `gem help list` for an example.
 
   def add_option(*opts, &handler) # :yields: value, options
-    group_name = Symbol == opts.first.class ? opts.shift : :options
+    group_name = Symbol === opts.first ? opts.shift : :options
 
     @option_groups[group_name] << [opts, handler]
   end

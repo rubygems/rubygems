@@ -195,7 +195,7 @@ class TestGemCommand < Gem::TestCase
     assert_equal ['-h', 'command'], args
   end
 
-  def test_depreacate_option_long_name
+  def test_deprecate_option_long_name
     deprecate_msg = <<-EXPECTED
 WARNING:  The \"--test\" option has been deprecated and will be removed in future versions of Rubygems 3.1, its use is discouraged.
     EXPECTED
@@ -224,7 +224,7 @@ WARNING:  The \"--test\" option has been deprecated and will be removed in futur
     end
   end
 
-  def test_depreacate_option_short_name
+  def test_deprecate_option_short_name
     deprecate_msg = <<-EXPECTED
 WARNING:  The \"-t\" option has been deprecated and will be removed in future versions of Rubygems 3.5, its use is discouraged.
     EXPECTED

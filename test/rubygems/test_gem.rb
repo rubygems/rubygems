@@ -166,15 +166,12 @@ class TestGem < Gem::TestCase
     }
     Dir.chdir @tempdir do
       Dir.mkdir 'bin'
-      File.open 'bin/foo.cmd', 'w' do |fp|
-        fp.chmod(0755)
-        fp.puts 'p'
-      end
-
       Dir.mkdir 'data'
-      File.open 'data/foo.txt', 'w' do |fp|
-        fp.puts 'blah'
-      end
+
+      File.write 'bin/foo.cmd', "p\n"
+      File.chmod 0755, 'bin/foo.cmd'
+
+      File.write 'data/foo.txt', "blah\n"
 
       spec_fetcher do |f|
         f.gem 'foo', 1 do |s|

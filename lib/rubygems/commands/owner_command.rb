@@ -63,6 +63,8 @@ permission to.
   end
 
   def show_owners(name)
+    Gem.load_yaml
+
     response = rubygems_api_request :get, "api/v1/gems/#{name}/owners.yaml" do |request|
       request.add_field "Authorization", api_key
     end

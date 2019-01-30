@@ -115,7 +115,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
   attr_accessor :uri # :nodoc:
 
-  TEST_PATH = File.expand_path('../../../test/rubygems', __FILE__)
+  TEST_PATH = ENV.fetch('RUBYGEMS_TEST_PATH', File.expand_path('../../../test/rubygems', __FILE__))
 
   def assert_activate(expected, *specs)
     specs.each do |spec|

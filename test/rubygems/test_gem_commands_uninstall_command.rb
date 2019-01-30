@@ -71,11 +71,9 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
       end
     end
 
-    output = @ui.output.split "\n"
-    assert_equal "Successfully uninstalled c-2", output.shift
-    assert_equal "Successfully uninstalled b-2", output.shift
-    assert_equal "Successfully uninstalled d-2", output.shift
-    assert_equal [], output
+    assert_match "Successfully uninstalled c-2", @ui.output
+    assert_match "Successfully uninstalled b-2", @ui.output
+    assert_match "Successfully uninstalled d-2", @ui.output
   end
 
   def test_execute_dependency_order

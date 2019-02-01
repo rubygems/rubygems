@@ -97,8 +97,10 @@ command to remove old versions.
     if options[:explain]
       say "Gems to update:"
 
-      gems_to_update.each do |(name, version)|
-        say "  #{name}-#{version}"
+      gems_to_update.each do |(name, version, platform)|
+        say platform == "ruby" ?
+          "  #{name}-#{version}" :
+          "  #{name}-#{version}-#{platform}"
       end
 
       return
@@ -153,11 +155,27 @@ command to remove old versions.
       g.name == spec.name and g.match_platform?
     end
 
-    highest_remote_gem = matching_gems.max_by { |g,_| g.version }
+    highest_remote_gem = matching_gems.max_by { |g,_|
+      [g.version, Gem::Platform.rank(g.platform)]
+    }
 
     highest_remote_gem ||= [Gem::NameTuple.null]
 
     highest_remote_gem.first.version
+  end
+
+  def highest_remote_tuple(spec) # :nodoc:
+    spec_tuples = fetch_remote_gems spec
+
+    matching_gems = spec_tuples.select do |g,_|
+      g.name == spec.name and g.match_platform?
+    end
+
+    highest_remote_gem = matching_gems.max_by { |g,_|
+      [g.version, Gem::Platform.rank(g.platform) ]
+    }
+
+    highest_remote_gem.nil? ? Gem::NameTuple.null : highest_remote_gem.first
   end
 
   def install_rubygems(version) # :nodoc:
@@ -194,7 +212,7 @@ command to remove old versions.
     }
 
     gems_to_update = which_to_update hig, options[:args], :system
-    _, up_ver   = gems_to_update.first
+    _, up_ver = gems_to_update.first
 
     target = if update_latest
                up_ver
@@ -271,10 +289,10 @@ command to remove old versions.
       next if not gem_names.empty? and
               gem_names.none? { |name| name == l_spec.name }
 
-      highest_remote_ver = highest_remote_version l_spec
+      tuple = highest_remote_tuple l_spec
 
-      if system or (l_spec.version < highest_remote_ver)
-        result << [l_spec.name, [l_spec.version, highest_remote_ver].max]
+      if system or (l_spec.version < tuple.version)
+        result << [tuple.name, [l_spec.version, tuple.version].max, tuple.platform]
       end
     end
 

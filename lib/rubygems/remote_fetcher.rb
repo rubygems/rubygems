@@ -102,7 +102,9 @@ class Gem::RemoteFetcher
 
     return if found.empty?
 
-    spec, source = found.max_by { |(s,_)| s.version }
+    spec, source = found.max_by { |(s,_)|
+      [s.version, Gem::Platform.rank(s.platform)]
+    }
 
     download spec, source.uri.to_s
   end

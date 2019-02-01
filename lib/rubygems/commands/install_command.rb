@@ -201,10 +201,13 @@ You can use `i` command instead of `install`.
       request_set = inst.resolve_dependencies name, req
 
       if options[:explain]
-        puts "Gems to install:"
+        say "Gems to install:"
 
         request_set.sorted_requests.each do |s|
-          puts "  #{s.full_name}"
+          # shows platform specific gems if used
+          say (plat = s.spec.platform) == Gem::Platform::RUBY ?
+            "  #{s.full_name}" :
+            "  #{s.full_name}-#{plat}"
         end
 
         return
@@ -234,6 +237,20 @@ You can use `i` command instead of `install`.
       dependency = Gem::Dependency.new name, req
       dependency.prerelease = options[:prerelease]
 
+      if options[:explain]
+        say "Gems to install:"
+        ary = Gem::SpecFetcher.fetcher.search_for_dependency dependency
+        if ary.is_a?(Array) && ary[0].is_a?(Array)
+          tuples = ary[0].map { |i| i[0] }
+          tuple = tuples.max_by { |s|
+            [s.version, Gem::Platform.rank(s.platform)]
+          }
+          say "  #{tuple.full_name}"
+        else
+          say "  no matching gems found"
+        end
+        return
+      end
       fetcher = Gem::RemoteFetcher.fetcher
       gem = fetcher.download_to_cache dependency
     end

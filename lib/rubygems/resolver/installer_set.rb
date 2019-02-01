@@ -59,11 +59,9 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       s.version.prerelease? and not s.local?
     } unless dependency.prerelease?
 
-    found = found.select do |s|
-      Gem::Source::SpecificFile === s.source or
-        Gem::Platform::RUBY == s.platform or
-        Gem::Platform.local === s.platform
-    end
+    found = found.select { |s|
+      Gem::Source::SpecificFile === s.source or Gem::Platform.match s.platform
+    }
 
     if found.empty?
       exc = Gem::UnsatisfiableDependencyError.new request
@@ -73,7 +71,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     end
 
     newest = found.max_by do |s|
-      [s.version, s.platform == Gem::Platform::RUBY ? -1 : 1]
+      [s.version, Gem::Platform.rank(s.platform)]
     end
 
     @always_install << newest.spec

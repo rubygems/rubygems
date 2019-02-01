@@ -439,6 +439,36 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     assert_equal @a2.file_name, File.basename(gem)
   end
 
+  def test_download_to_cache_local
+    local = Gem::Platform.local
+    @a2, @a2_gem = util_gem 'a', '2'
+    @a2loc, @a2loc_gem = util_gem 'a', '2' do |s| s.platform = local end
+
+    Gem.platforms = ['ruby', local]
+
+    util_setup_spec_fetcher @a1, @a2, @a2loc
+    @fetcher.instance_variable_set :@a1, @a1
+    @fetcher.instance_variable_set :@a2, @a2
+    @fetcher.instance_variable_set :@a2loc, @a2loc
+
+    def @fetcher.fetch_path(uri, mtime = nil, head = false)
+      case uri.request_uri
+      when /#{@a1.spec_name}/
+        Gem.deflate Marshal.dump @a1
+      when /#{@a2.spec_name}/
+        Gem.deflate Marshal.dump @a2
+      when /#{@a2loc.spec_name}/
+        Gem.deflate Marshal.dump @a2loc
+      else
+        uri.to_s
+      end
+    end
+
+    gem = Gem::RemoteFetcher.fetcher.download_to_cache dep 'a'
+
+    assert_equal @a2loc.file_name, File.basename(gem)
+  end
+
   def test_fetch_path_gzip
     fetcher = Gem::RemoteFetcher.new nil
     @fetcher = fetcher

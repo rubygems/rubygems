@@ -297,6 +297,25 @@ class TestGemPlatform < Gem::TestCase
     assert_local_match 'sparc-solaris2.8-mq5.3'
   end
 
+  def test_rank
+    util_set_arch 'x64-mingw32'
+    assert_equal( 2, Gem::Platform.rank( Gem::Platform.new 'x64-mingw32'      ))
+    assert_equal( 1, Gem::Platform.rank( Gem::Platform.new 'universal-mingw32'))
+    assert_equal( 0, Gem::Platform.rank( Gem::Platform::RUBY ))
+    assert_equal(-1, Gem::Platform.rank( Gem::Platform.new 'x86_64-linux'     ))
+    assert_equal(-1, Gem::Platform.rank( Gem::Platform.new 'x86_64-darwin17'  ))
+  end
+
+  def test_rank_platform_ruby
+    # equivalent to --platform=ruby
+    Gem.platforms = [Gem::Platform::RUBY]
+    assert_equal(-1, Gem::Platform.rank( Gem::Platform.new 'x64-mingw32'      ))
+    assert_equal(-1, Gem::Platform.rank( Gem::Platform.new 'universal-mingw32'))
+    assert_equal( 0, Gem::Platform.rank( Gem::Platform::RUBY ))
+    assert_equal(-1, Gem::Platform.rank( Gem::Platform.new 'x86_64-linux'     ))
+    assert_equal(-1, Gem::Platform.rank( Gem::Platform.new 'x86_64-darwin17'  ))
+  end
+
   def assert_local_match(name)
     assert_match Gem::Platform.local, name
   end

@@ -1311,6 +1311,8 @@ class Gem::Specification < Gem::BasicSpecification
   # Load custom marshal format, re-initializing defaults as needed
 
   def self._load(str)
+    Gem.load_yaml
+
     array = Marshal.load str
 
     spec = Gem::Specification.new
@@ -2591,6 +2593,8 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def to_yaml(opts = {}) # :nodoc:
+    Gem.load_yaml
+
     # Because the user can switch the YAML engine behind our
     # back, we have to check again here to make sure that our
     # psych code was properly loaded, and load it if not.

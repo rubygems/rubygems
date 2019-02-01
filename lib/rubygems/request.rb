@@ -168,9 +168,10 @@ class Gem::Request
 
     no_env_proxy = env_proxy.nil? || env_proxy.empty?
 
-    return :no_proxy if scheme == 'https' && no_env_proxy
-    return get_proxy_from_env 'http' if no_env_proxy and _scheme != 'http'
-    return :no_proxy                 if no_env_proxy
+    if no_env_proxy
+      return ( _scheme == 'https' || _scheme == 'http' ) ?
+        :no_proxy : get_proxy_from_env('http')
+    end
 
     uri = URI(Gem::UriFormatter.new(env_proxy).normalize)
 

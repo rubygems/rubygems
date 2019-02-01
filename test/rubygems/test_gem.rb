@@ -14,8 +14,6 @@ $LOAD_PATH.map! do |path|
 end
 
 class TestGem < Gem::TestCase
-  RUBY_INSTALL_NAME = RbConfig::CONFIG['RUBY_INSTALL_NAME']
-
   PLUGINS_LOADED = [] # rubocop:disable Style/MutableConstant
 
   def setup
@@ -137,76 +135,84 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_install_permissions_umask_0
-    umask = File.umask(0)
-    assert_self_install_permissions
-  ensure
-    File.umask(umask)
+    assert_self_install_permissions umask: 0
   end
 
   def test_self_install_permissions_umask_077
-    umask = File.umask(077)
-    assert_self_install_permissions
-  ensure
-    File.umask(umask)
+    assert_self_install_permissions umask: 077
   end
 
   def test_self_install_permissions_with_format_executable
-    @format_executable = true
-    assert_self_install_permissions
+    rbcc = RbConfig::CONFIG
+    key = 'ruby_install_name'
+    orig_val = rbcc[key]
+    rbcc[key]        = 'ruby27'
+    rbcc[key.upcase] = 'ruby27'
+    Gem::Installer.exec_format = nil
+    assert_self_install_permissions format_executable: true
+  ensure
+    rbcc[key]        = orig_val
+    rbcc[key.upcase] = orig_val
+    Gem::Installer.exec_format = nil
   end
 
-  def assert_self_install_permissions
+  def assert_self_install_permissions(umask: nil, format_executable: nil)
+    orig_umask = File.umask(umask) if umask
     mask = win_platform? ? 0700 : 0777
     options = {
-      :dir_mode => 0500,
-      :prog_mode => 0510,
+      :dir_mode  => 0500,
+      :prog_mode => windows? ? 0410 : 0510,
       :data_mode => 0640,
-      :wrappers => true,
-      :format_executable => !!(@format_executable if defined?(@format_executable))
+      :wrappers  => true,
     }
+    options[:format_executable] = format_executable unless format_executable.nil?
     Dir.chdir @tempdir do
       Dir.mkdir 'bin'
       Dir.mkdir 'data'
 
-      File.write 'bin/foo.cmd', "p\n"
-      File.chmod 0755, 'bin/foo.cmd'
+      File.write 'bin/foo', "#!/usr/bin/env ruby\n"
+      File.chmod 0755, 'bin/foo'
 
       File.write 'data/foo.txt', "blah\n"
 
       spec_fetcher do |f|
         f.gem 'foo', 1 do |s|
-          s.executables = ['foo.cmd']
-          s.files = %w[bin/foo.cmd data/foo.txt]
+          s.executables = ['foo']
+          s.files = %w[bin/foo data/foo.txt]
         end
       end
       Gem.install 'foo', Gem::Requirement.default, options
     end
 
     prog_mode = (options[:prog_mode] & mask).to_s(8)
-    dir_mode = (options[:dir_mode] & mask).to_s(8)
+    dir_mode  = (options[:dir_mode] & mask).to_s(8)
     data_mode = (options[:data_mode] & mask).to_s(8)
-    prog_name = 'foo.cmd'
-    prog_name = RUBY_INSTALL_NAME.sub('ruby', 'foo.cmd') if options[:format_executable]
+    prog_name = format_executable ?
+      RbConfig::CONFIG['ruby_install_name'].sub('ruby', 'foo') : 'foo'
     expected = {
       "bin/#{prog_name}" => prog_mode,
       'gems/foo-1' => dir_mode,
       'gems/foo-1/bin' => dir_mode,
       'gems/foo-1/data' => dir_mode,
-      'gems/foo-1/bin/foo.cmd' => prog_mode,
+      'gems/foo-1/bin/foo' => prog_mode,
       'gems/foo-1/data/foo.txt' => data_mode,
     }
-    # below is for intermittent errors on Appveyor & Travis 2019-01,
-    # see https://github.com/rubygems/rubygems/pull/2568
-    sleep 0.2
+    # add Windows script
+    expected["bin/#{prog_name}.bat"] = mask.to_s(8) if windows?
     result = {}
     Dir.chdir @gemhome do
       expected.each_key do |n|
-        result[n] = (File.stat(n).mode & mask).to_s(8)
+        begin
+          result[n] = (File.stat(n).mode & mask).to_s(8)
+        rescue Errno::ENOENT
+          result[n] = 'Errno::ENOENT - no dir or file?'
+        end
       end
     end
     assert_equal(expected, result)
   ensure
     File.chmod(0755, *Dir.glob(@gemhome+'/gems/**/').map {|path| path.untaint})
+    File.umask(orig_umask) if orig_umask
   end
 
   def test_require_missing

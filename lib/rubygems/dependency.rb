@@ -325,11 +325,11 @@ class Gem::Dependency
     active = matches.find { |spec| spec.activated? }
     return active if active
 
-    return matches.first if prerelease?
-
-    # Move prereleases to the end of the list for >= 0 requirements
-    pre, matches = matches.partition { |spec| spec.version.prerelease? }
-    matches += pre if requirement == Gem::Requirement.default
+    unless prerelease?
+      # Move prereleases to the end of the list for >= 0 requirements
+      pre, matches = matches.partition { |spec| spec.version.prerelease? }
+      matches += pre if requirement == Gem::Requirement.default
+    end
 
     matches.first
   end

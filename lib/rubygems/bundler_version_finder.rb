@@ -41,8 +41,11 @@ To install the missing version, run `gem install bundler:#{vr.first}`
     spec.version.segments.first == bundler_version.segments.first
   end
 
-  def self.filter!(specs)
-    specs.select! { |spec| compatible?(spec) }
+  def self.prioritize!(specs)
+    match_index = specs.find_index { |spec| compatible?(spec) }
+    return unless match_index
+
+    specs.unshift(specs.delete_at(match_index))
   end
 
   def self.bundle_update_bundler_version

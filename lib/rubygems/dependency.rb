@@ -334,4 +334,14 @@ class Gem::Dependency
     matches.first
   end
 
+  def spec_for_exe(exec_name)
+    matches = matching_specs(true)
+
+    matches = matches.find_all do |spec|
+      spec.executables.include? exec_name
+    end if exec_name
+
+    matches.first
+  end
+
 end

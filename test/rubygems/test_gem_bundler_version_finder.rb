@@ -3,6 +3,8 @@ require 'rubygems/test_case'
 
 class TestGemBundlerVersionFinder < Gem::TestCase
   def setup
+    super
+
     @argv = ARGV.dup
     @env = ENV.to_hash.clone
     ENV.delete("BUNDLER_VERSION")
@@ -13,6 +15,8 @@ class TestGemBundlerVersionFinder < Gem::TestCase
     ARGV.replace @argv
     ENV.replace @env
     $0 = @dollar_0
+
+    super
   end
 
   def bvf

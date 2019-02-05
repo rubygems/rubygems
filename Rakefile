@@ -79,7 +79,8 @@ task(:bisect) do
            abort "Specify the failing seed as the SEED environment variable"
          end
 
-  sh "SEED=#{seed} MTB_VERBOSE=2 util/bisect -Ilib:bundler/lib:test test"
+  gemdir = `gem env gemdir`.chomp
+  sh "SEED=#{seed} MTB_VERBOSE=2 util/bisect -Ilib:bundler/lib:test:#{gemdir}/gems/minitest-server-1.0.5/lib test"
 end
 
 # --------------------------------------------------------------------

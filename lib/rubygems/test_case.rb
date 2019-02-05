@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 # TODO: $SAFE = 1
 
-begin
-  gem 'minitest', '~> 5.0'
-rescue NoMethodError, Gem::LoadError
-  # for ruby tests
-end
-
 if defined? Gem::QuickLoader
   Gem::QuickLoader.load_full_rubygems_library
 else
@@ -23,7 +17,7 @@ if File.exist?(bundler_gemspec)
 end
 
 begin
-  gem 'minitest'
+  gem 'minitest', '~> 5.0'
 rescue Gem::LoadError
 end
 

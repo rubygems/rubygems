@@ -71,6 +71,17 @@ task(:rubocop) do
   sh "util/rubocop"
 end
 
+desc "Run a test suite bisection"
+task(:bisect) do
+  seed = begin
+           Integer(ENV["SEED"])
+         rescue
+           abort "Specify the failing seed as the SEED environment variable"
+         end
+
+  sh "SEED=#{seed} MTB_VERBOSE=2 util/bisect -Ilib:bundler/lib:test test"
+end
+
 # --------------------------------------------------------------------
 # Creating a release
 

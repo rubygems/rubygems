@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+begin
+  load Gem.bin_path("minitest-bisect", "minitest_bisect")
+rescue Gem::GemNotFoundException
+  abort "Install minitest-bisect gem to run a rubygems test suite bisection"
+end

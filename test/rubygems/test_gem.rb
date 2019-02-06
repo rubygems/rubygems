@@ -159,7 +159,7 @@ class TestGem < Gem::TestCase
     mask = win_platform? ? 0700 : 0777
     options = {
       :dir_mode => 0500,
-      :prog_mode => 0510,
+      :prog_mode => win_platform? ? 0410 : 0510,
       :data_mode => 0640,
       :wrappers => true,
       :format_executable => !!(@format_executable if defined?(@format_executable))
@@ -168,15 +168,15 @@ class TestGem < Gem::TestCase
       Dir.mkdir 'bin'
       Dir.mkdir 'data'
 
-      File.write 'bin/foo.cmd', "p\n"
-      File.chmod 0755, 'bin/foo.cmd'
+      File.write 'bin/foo', "p\n"
+      File.chmod 0755, 'bin/foo'
 
       File.write 'data/foo.txt', "blah\n"
 
       spec_fetcher do |f|
         f.gem 'foo', 1 do |s|
-          s.executables = ['foo.cmd']
-          s.files = %w[bin/foo.cmd data/foo.txt]
+          s.executables = ['foo']
+          s.files = %w[bin/foo data/foo.txt]
         end
       end
       Gem.install 'foo', Gem::Requirement.default, options
@@ -185,16 +185,18 @@ class TestGem < Gem::TestCase
     prog_mode = (options[:prog_mode] & mask).to_s(8)
     dir_mode = (options[:dir_mode] & mask).to_s(8)
     data_mode = (options[:data_mode] & mask).to_s(8)
-    prog_name = 'foo.cmd'
-    prog_name = RUBY_INSTALL_NAME.sub('ruby', 'foo.cmd') if options[:format_executable]
+    prog_name = 'foo'
+    prog_name = RUBY_INSTALL_NAME.sub('ruby', 'foo') if options[:format_executable]
     expected = {
       "bin/#{prog_name}" => prog_mode,
       'gems/foo-1' => dir_mode,
       'gems/foo-1/bin' => dir_mode,
       'gems/foo-1/data' => dir_mode,
-      'gems/foo-1/bin/foo.cmd' => prog_mode,
+      'gems/foo-1/bin/foo' => prog_mode,
       'gems/foo-1/data/foo.txt' => data_mode,
     }
+    # add Windows script
+    expected["bin/#{prog_name}.bat"] = mask.to_s(8) if win_platform?
     result = {}
     Dir.chdir @gemhome do
       expected.each_key do |n|

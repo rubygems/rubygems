@@ -152,6 +152,15 @@ class TestGem < Gem::TestCase
     assert_self_install_permissions(format_executable: true)
   end
 
+  def test_self_install_permissions_with_format_executable_and_non_standard_ruby_install_name
+    Gem::Installer.exec_format = nil
+    ruby_install_name 'ruby27' do
+      assert_self_install_permissions(format_executable: true)
+    end
+  ensure
+    Gem::Installer.exec_format = nil
+  end
+
   def assert_self_install_permissions(format_executable: false)
     mask = win_platform? ? 0700 : 0777
     options = {

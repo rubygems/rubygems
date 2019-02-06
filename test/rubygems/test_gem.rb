@@ -168,7 +168,7 @@ class TestGem < Gem::TestCase
       Dir.mkdir 'bin'
       Dir.mkdir 'data'
 
-      File.write 'bin/foo', "p\n"
+      File.write 'bin/foo', "#!/usr/bin/env ruby\n"
       File.chmod 0755, 'bin/foo'
 
       File.write 'data/foo.txt', "blah\n"

@@ -14,8 +14,6 @@ $LOAD_PATH.map! do |path|
 end
 
 class TestGem < Gem::TestCase
-  RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
-
   PLUGINS_LOADED = [] # rubocop:disable Style/MutableConstant
 
   def setup
@@ -185,7 +183,7 @@ class TestGem < Gem::TestCase
     dir_mode = (options[:dir_mode] & mask).to_s(8)
     data_mode = (options[:data_mode] & mask).to_s(8)
     prog_name = 'foo'
-    prog_name = RUBY_INSTALL_NAME.sub('ruby', 'foo') if options[:format_executable]
+    prog_name = RbConfig::CONFIG['ruby_install_name'].sub('ruby', 'foo') if options[:format_executable]
     expected = {
       "bin/#{prog_name}" => prog_mode,
       'gems/foo-1' => dir_mode,

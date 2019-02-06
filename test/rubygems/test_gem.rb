@@ -151,18 +151,17 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_install_permissions_with_format_executable
-    @format_executable = true
-    assert_self_install_permissions
+    assert_self_install_permissions(format_executable: true)
   end
 
-  def assert_self_install_permissions
+  def assert_self_install_permissions(format_executable: false)
     mask = win_platform? ? 0700 : 0777
     options = {
       :dir_mode => 0500,
       :prog_mode => win_platform? ? 0410 : 0510,
       :data_mode => 0640,
       :wrappers => true,
-      :format_executable => !!(@format_executable if defined?(@format_executable))
+      :format_executable => format_executable
     }
     Dir.chdir @tempdir do
       Dir.mkdir 'bin'

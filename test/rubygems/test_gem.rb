@@ -14,8 +14,6 @@ $LOAD_PATH.map! do |path|
 end
 
 class TestGem < Gem::TestCase
-  RUBY_INSTALL_NAME = RbConfig::CONFIG['RUBY_INSTALL_NAME']
-
   PLUGINS_LOADED = [] # rubocop:disable Style/MutableConstant
 
   def setup
@@ -151,32 +149,40 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_install_permissions_with_format_executable
-    @format_executable = true
-    assert_self_install_permissions
+    assert_self_install_permissions(format_executable: true)
   end
 
-  def assert_self_install_permissions
+  def test_self_install_permissions_with_format_executable_and_non_standard_ruby_install_name
+    Gem::Installer.exec_format = nil
+    ruby_install_name 'ruby27' do
+      assert_self_install_permissions(format_executable: true)
+    end
+  ensure
+    Gem::Installer.exec_format = nil
+  end
+
+  def assert_self_install_permissions(format_executable: false)
     mask = win_platform? ? 0700 : 0777
     options = {
       :dir_mode => 0500,
-      :prog_mode => 0510,
+      :prog_mode => win_platform? ? 0410 : 0510,
       :data_mode => 0640,
       :wrappers => true,
-      :format_executable => !!(@format_executable if defined?(@format_executable))
+      :format_executable => format_executable
     }
     Dir.chdir @tempdir do
       Dir.mkdir 'bin'
       Dir.mkdir 'data'
 
-      File.write 'bin/foo.cmd', "p\n"
-      File.chmod 0755, 'bin/foo.cmd'
+      File.write 'bin/foo', "#!/usr/bin/env ruby\n"
+      File.chmod 0755, 'bin/foo'
 
       File.write 'data/foo.txt', "blah\n"
 
       spec_fetcher do |f|
         f.gem 'foo', 1 do |s|
-          s.executables = ['foo.cmd']
-          s.files = %w[bin/foo.cmd data/foo.txt]
+          s.executables = ['foo']
+          s.files = %w[bin/foo data/foo.txt]
         end
       end
       Gem.install 'foo', Gem::Requirement.default, options
@@ -185,19 +191,18 @@ class TestGem < Gem::TestCase
     prog_mode = (options[:prog_mode] & mask).to_s(8)
     dir_mode = (options[:dir_mode] & mask).to_s(8)
     data_mode = (options[:data_mode] & mask).to_s(8)
-    prog_name = 'foo.cmd'
-    prog_name = RUBY_INSTALL_NAME.sub('ruby', 'foo.cmd') if options[:format_executable]
+    prog_name = 'foo'
+    prog_name = RbConfig::CONFIG['ruby_install_name'].sub('ruby', 'foo') if options[:format_executable]
     expected = {
       "bin/#{prog_name}" => prog_mode,
       'gems/foo-1' => dir_mode,
       'gems/foo-1/bin' => dir_mode,
       'gems/foo-1/data' => dir_mode,
-      'gems/foo-1/bin/foo.cmd' => prog_mode,
+      'gems/foo-1/bin/foo' => prog_mode,
       'gems/foo-1/data/foo.txt' => data_mode,
     }
-    # below is for intermittent errors on Appveyor & Travis 2019-01,
-    # see https://github.com/rubygems/rubygems/pull/2568
-    sleep 0.2
+    # add Windows script
+    expected["bin/#{prog_name}.bat"] = mask.to_s(8) if win_platform?
     result = {}
     Dir.chdir @gemhome do
       expected.each_key do |n|

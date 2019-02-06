@@ -14,7 +14,7 @@ $LOAD_PATH.map! do |path|
 end
 
 class TestGem < Gem::TestCase
-  RUBY_INSTALL_NAME = RbConfig::CONFIG['RUBY_INSTALL_NAME']
+  RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
 
   PLUGINS_LOADED = [] # rubocop:disable Style/MutableConstant
 

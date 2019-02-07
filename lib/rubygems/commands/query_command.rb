@@ -39,7 +39,7 @@ class Gem::Commands::QueryCommand < Gem::Command
       options[:details] = value
     end
 
-    add_option(      '--[no-]versions',
+    add_option('--[no-]versions',
                'Display only gem names') do |value, options|
       options[:versions] = value
       options[:details] = false unless value
@@ -56,7 +56,7 @@ class Gem::Commands::QueryCommand < Gem::Command
       options[:exact] = value
     end
 
-    add_option(      '--[no-]prerelease',
+    add_option('--[no-]prerelease',
                'Display prerelease versions') do |value, options|
       options[:prerelease] = value
     end

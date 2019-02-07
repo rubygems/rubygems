@@ -217,6 +217,8 @@ You can use `i` command instead of `install`.
   end
 
   def install_gem_without_dependencies(name, req) # :nodoc:
+    dinst = Gem::DependencyInstaller.new options
+
     gem = nil
 
     if local?
@@ -241,7 +243,6 @@ You can use `i` command instead of `install`.
     inst = Gem::Installer.at gem, options
     inst.install
 
-    dinst = Gem::DependencyInstaller.new options
     dinst.installed_gems.replace [inst.spec]
 
     Gem.done_installing_hooks.each do |hook|

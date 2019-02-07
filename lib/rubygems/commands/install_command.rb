@@ -194,10 +194,11 @@ You can use `i` command instead of `install`.
 
     req = Gem::Requirement.create(version)
 
+    inst = Gem::DependencyInstaller.new options
+
     if options[:ignore_dependencies]
-      install_gem_without_dependencies name, req
+      install_gem_without_dependencies inst, name, req
     else
-      inst = Gem::DependencyInstaller.new options
       request_set = inst.resolve_dependencies name, req
 
       if options[:explain]
@@ -216,9 +217,7 @@ You can use `i` command instead of `install`.
     end
   end
 
-  def install_gem_without_dependencies(name, req) # :nodoc:
-    dinst = Gem::DependencyInstaller.new options
-
+  def install_gem_without_dependencies(dinst, name, req) # :nodoc:
     gem = nil
 
     if local?

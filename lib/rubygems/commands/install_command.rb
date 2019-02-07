@@ -207,22 +207,11 @@ You can use `i` command instead of `install`.
     gem = nil
 
     if local?
-      if name =~ /\.gem$/ and File.file? name
-        source = Gem::Source::SpecificFile.new name
-        spec = source.spec
-      else
-        source = Gem::Source::Local.new
-        spec = source.find_gem name, req
-      end
-      gem = source.download spec if spec
+      gem = fetch_local_gem name, req
     end
 
     if remote? and not gem
-      dependency = Gem::Dependency.new name, req
-      dependency.prerelease = options[:prerelease]
-
-      fetcher = Gem::RemoteFetcher.fetcher
-      gem = fetcher.download_to_cache dependency
+      gem = fetch_remote_gem name, req
     end
 
     inst = Gem::Installer.at gem, options
@@ -281,6 +270,25 @@ You can use `i` command instead of `install`.
     end
 
     show_install_errors dinst.errors
+  end
+
+  def fetch_local_gem(name, req) # :nodoc:
+    if name =~ /\.gem$/ and File.file? name
+      source = Gem::Source::SpecificFile.new name
+      spec = source.spec
+    else
+      source = Gem::Source::Local.new
+      spec = source.find_gem name, req
+    end
+    source.download spec if spec
+  end
+
+  def fetch_remote_gem(name, req) # :nodoc:
+    dependency = Gem::Dependency.new name, req
+    dependency.prerelease = options[:prerelease]
+
+    fetcher = Gem::RemoteFetcher.fetcher
+    fetcher.download_to_cache dependency
   end
 
   ##

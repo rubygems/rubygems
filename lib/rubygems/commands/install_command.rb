@@ -241,7 +241,6 @@ You can use `i` command instead of `install`.
     inst = Gem::Installer.at gem, options
     inst.install
 
-    require 'rubygems/dependency_installer'
     dinst = Gem::DependencyInstaller.new options
     dinst.installed_gems.replace [inst.spec]
 

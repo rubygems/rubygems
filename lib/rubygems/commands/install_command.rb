@@ -214,16 +214,13 @@ You can use `i` command instead of `install`.
       gem = fetch_remote_gem name, req
     end
 
-    inst = Gem::Installer.at gem, options
-    inst.install
-
-    dinst.installed_gems.replace [inst.spec]
+    installed_spec_set = install_fetched_gem dinst, gem
 
     Gem.done_installing_hooks.each do |hook|
-      hook.call dinst, [inst.spec]
+      hook.call dinst, installed_spec_set
     end unless Gem.done_installing_hooks.empty?
 
-    @installed_specs.push(inst.spec)
+    @installed_specs.push(*installed_spec_set)
   end
 
   def install_gems # :nodoc:
@@ -289,6 +286,15 @@ You can use `i` command instead of `install`.
 
     fetcher = Gem::RemoteFetcher.fetcher
     fetcher.download_to_cache dependency
+  end
+
+  def install_fetched_gem(dinst, gem) # :nodoc:
+    inst = Gem::Installer.at gem, options
+    inst.install
+
+    dinst.installed_gems.replace [inst.spec]
+
+    [inst.spec]
   end
 
   ##

@@ -194,12 +194,12 @@ You can use `i` command instead of `install`.
 
     req = Gem::Requirement.create(version)
 
-    inst = Gem::DependencyInstaller.new options
+    dinst = Gem::DependencyInstaller.new options
 
     if options[:ignore_dependencies]
-      install_gem_without_dependencies inst, name, req
+      install_gem_without_dependencies dinst, name, req
     else
-      request_set = inst.resolve_dependencies name, req
+      request_set = dinst.resolve_dependencies name, req
 
       if options[:explain]
         say "Gems to install:"
@@ -213,7 +213,7 @@ You can use `i` command instead of `install`.
         @installed_specs.concat request_set.install options
       end
 
-      show_install_errors inst.errors
+      show_install_errors dinst.errors
     end
   end
 

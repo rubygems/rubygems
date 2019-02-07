@@ -210,11 +210,11 @@ You can use `i` command instead of `install`.
       gem = fetch_local_gem name, req
     end
 
-    if remote? and not gem
-      gem = fetch_remote_gem name, req
-    end
-
-    installed_spec_set = install_fetched_gem dinst, gem
+    installed_spec_set = if remote? and not gem
+                           dinst.install name, req
+                         else
+                           install_fetched_gem dinst, gem
+                         end
 
     Gem.done_installing_hooks.each do |hook|
       hook.call dinst, installed_spec_set
@@ -278,14 +278,6 @@ You can use `i` command instead of `install`.
       spec = source.find_gem name, req
     end
     source.download spec if spec
-  end
-
-  def fetch_remote_gem(name, req) # :nodoc:
-    dependency = Gem::Dependency.new name, req
-    dependency.prerelease = options[:prerelease]
-
-    fetcher = Gem::RemoteFetcher.fetcher
-    fetcher.download_to_cache dependency
   end
 
   def install_fetched_gem(dinst, gem) # :nodoc:

@@ -4,6 +4,7 @@ require 'rubygems/local_remote_options'
 require 'rubygems/gemcutter_utilities'
 
 class Gem::Commands::OwnerCommand < Gem::Command
+
   include Gem::LocalRemoteOptions
   include Gem::GemcutterUtilities
 

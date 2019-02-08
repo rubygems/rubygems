@@ -2,6 +2,7 @@
 require 'rubygems/installer_test_case'
 
 class TestGemInstaller < Gem::InstallerTestCase
+
   @@symlink_supported = nil
 
   def symlink_supported?
@@ -1770,4 +1771,5 @@ gem 'other', version
   def mask
     0100755 & (~File.umask)
   end
+
 end

@@ -4,6 +4,7 @@ require 'rubygems/test_case'
 require 'rubygems/rdoc'
 
 class TestGemRDoc < Gem::TestCase
+
   Gem::RDoc.load_rdoc
 
   def setup

@@ -10,6 +10,7 @@ require 'tempfile'
 require 'shellwords'
 
 class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
+
   FileEntry = FileUtils::Entry_ # :nodoc:
 
   def self.build(extension, dest_path, results, args=[], lib_dir=nil)

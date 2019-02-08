@@ -3,6 +3,7 @@ require 'rubygems/test_case'
 require 'rubygems/commands/yank_command'
 
 class TestGemCommandsYankCommand < Gem::TestCase
+
   def setup
     super
 

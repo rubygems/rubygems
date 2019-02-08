@@ -1341,6 +1341,7 @@ Also, a list:
   end
 
   class << self
+
     # :nodoc:
     ##
     # Return the join path, with escaping backticks, dollars, and
@@ -1354,6 +1355,7 @@ Also, a list:
         "\"#{path.gsub(/[`$"]/, '\\&')}\""
       end
     end
+
   end
 
   @@ruby = rubybin
@@ -1527,6 +1529,7 @@ Also, a list:
 
     def prefetch(reqs) # :nodoc:
     end
+
   end
 
   ##

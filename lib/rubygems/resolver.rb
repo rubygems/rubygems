@@ -11,6 +11,7 @@ require 'rubygems/util/list'
 # all the requirements.
 
 class Gem::Resolver
+
   require 'rubygems/resolver/molinillo'
 
   ##

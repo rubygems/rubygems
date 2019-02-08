@@ -304,4 +304,5 @@ class TestGemPlatform < Gem::TestCase
   def refute_local_match(name)
     refute_match Gem::Platform.local, name
   end
+
 end

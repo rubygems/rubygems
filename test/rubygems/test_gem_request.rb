@@ -486,6 +486,7 @@ ERROR:  Certificate  is an invalid CA certificate
   end
 
   class Conn
+
     attr_accessor :payload
 
     def new(*args); self; end
@@ -504,6 +505,7 @@ ERROR:  Certificate  is an invalid CA certificate
       self.payload = req
       @response
     end
+
   end
 
 end if defined?(OpenSSL::SSL)

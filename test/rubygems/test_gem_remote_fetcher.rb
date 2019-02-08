@@ -895,11 +895,14 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
   end
 
   class NilLog < WEBrick::Log
+
     def log(level, data) #Do nothing
     end
+
   end
 
   class << self
+
     attr_reader :normal_server, :proxy_server
     attr_accessor :enable_zip, :enable_yaml
 
@@ -1042,6 +1045,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     def key(filename)
       OpenSSL::PKey::RSA.new(File.read(File.join(DIR, filename)))
     end
+
   end
 
   def test_correct_for_windows_path

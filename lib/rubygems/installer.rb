@@ -108,6 +108,7 @@ class Gem::Installer
   end
 
   class FakePackage
+
     attr_accessor :spec
 
     attr_accessor :dir_mode
@@ -131,6 +132,7 @@ class Gem::Installer
 
     def copy_to(path)
     end
+
   end
 
   ##

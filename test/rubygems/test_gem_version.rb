@@ -284,4 +284,5 @@ class TestGemVersion < Gem::TestCase
   def refute_version_equal(unexpected, actual)
     refute_equal v(unexpected), v(actual)
   end
+
 end

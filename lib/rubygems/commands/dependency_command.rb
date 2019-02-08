@@ -215,4 +215,5 @@ use with other commands.
       /\A#{Regexp.union(*args)}/
     end
   end
+
 end

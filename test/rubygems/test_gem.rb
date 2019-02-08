@@ -14,6 +14,7 @@ $LOAD_PATH.map! do |path|
 end
 
 class TestGem < Gem::TestCase
+
   PLUGINS_LOADED = [] # rubocop:disable Style/MutableConstant
 
   def setup
@@ -1945,4 +1946,5 @@ You may need to `gem install -g` to install missing gems
   def util_cache_dir
     File.join Gem.dir, "cache"
   end
+
 end

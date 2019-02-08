@@ -366,4 +366,5 @@ WARNING:  Use your OS package manager to uninstall vendor gems
     assert_empty @ui.output
     assert_match %r!Error: unable to successfully uninstall '#{@spec.name}'!, @ui.error
   end
+
 end

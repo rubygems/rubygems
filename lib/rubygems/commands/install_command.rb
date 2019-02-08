@@ -204,7 +204,10 @@ You can use `i` command instead of `install`.
         say "Gems to install:"
 
         request_set.sorted_requests.each do |s|
-          say "  #{s.full_name}"
+          # shows platform specific gems if used
+          say (plat = s.spec.platform) == Gem::Platform::RUBY ?
+            "  #{s.full_name}" :
+            "  #{s.full_name}-#{plat}"
         end
 
         return

@@ -875,4 +875,5 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     system("#{@launch} http://#{host}:#{@port}")
   end
+
 end

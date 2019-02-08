@@ -439,4 +439,5 @@ class Gem::Indexer
       Marshal.dump specs_index, io
     end
   end
+
 end

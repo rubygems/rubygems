@@ -95,4 +95,5 @@ class TestGemCommandsSigninCommand < Gem::TestCase
 
     sign_in_ui
   end
+
 end

@@ -2,6 +2,7 @@ require 'delegate'
 require 'uri'
 
 class Gem::SpecificationPolicy < SimpleDelegator
+
   VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/.freeze # :nodoc:
 
   SPECIAL_CHARACTERS = /\A[#{Regexp.escape('.-_')}]+/.freeze # :nodoc:
@@ -404,4 +405,5 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
   def help_text # :nodoc:
     "See http://guides.rubygems.org/specification-reference/ for help"
   end
+
 end

@@ -28,11 +28,13 @@ class TestGemCommandsPushCommand < Gem::TestCase
     @cmd = Gem::Commands::PushCommand.new
 
     class << Gem
+
       alias_method :orig_latest_rubygems_version, :latest_rubygems_version
 
       def latest_rubygems_version
         Gem.rubygems_version
       end
+
     end
   end
 
@@ -40,8 +42,10 @@ class TestGemCommandsPushCommand < Gem::TestCase
     super
 
     class << Gem
+
       remove_method :latest_rubygems_version
       alias_method :latest_rubygems_version, :orig_latest_rubygems_version
+
     end
   end
 

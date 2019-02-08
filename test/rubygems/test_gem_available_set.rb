@@ -127,4 +127,5 @@ class TestGemAvailableSet < Gem::TestCase
 
     assert_equal [a3a, a2, a2a, a1, a1a], g
   end
+
 end

@@ -2,6 +2,7 @@
 require 'rubygems/test_case'
 
 class TestGemBundlerVersionFinder < Gem::TestCase
+
   def setup
     super
 
@@ -127,4 +128,5 @@ class TestGemBundlerVersionFinder < Gem::TestCase
     bvf.filter!(specs)
     specs
   end
+
 end

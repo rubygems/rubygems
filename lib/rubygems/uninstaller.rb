@@ -354,4 +354,5 @@ class Gem::Uninstaller
 
     raise e
   end
+
 end

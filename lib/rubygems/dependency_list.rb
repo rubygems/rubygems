@@ -17,6 +17,7 @@ require 'rubygems/deprecate'
 # this class necessary anymore?  Especially #ok?, #why_not_ok?
 
 class Gem::DependencyList
+
   attr_reader :specs
 
   include Enumerable

@@ -5,7 +5,9 @@ class Gem::Request::ConnectionPools # :nodoc:
   @client = Net::HTTP
 
   class << self
+
     attr_accessor :client
+
   end
 
   def initialize(proxy_uri, cert_files)

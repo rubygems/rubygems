@@ -3,7 +3,9 @@ require 'rubygems/test_case'
 require 'rubygems/command'
 
 class Gem::Command
+
   public :parser
+
 end
 
 class TestGemCommand < Gem::TestCase

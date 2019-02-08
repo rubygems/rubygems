@@ -5,6 +5,7 @@ require 'rubygems/source'
 require 'fileutils'
 
 class TestGemSourceLocal < Gem::TestCase
+
   def setup
     super
 

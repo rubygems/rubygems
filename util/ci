@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 class Tool
+
   def initialize(name)
     @name = name
   end
@@ -20,6 +21,7 @@ class Tool
       File.expand_path('../../bundler', __FILE__)
     end
   end
+
 end
 
 TOOL = Tool.new(ENV.fetch("TEST_TOOL") { abort "must specify a TEST_TOOL" })

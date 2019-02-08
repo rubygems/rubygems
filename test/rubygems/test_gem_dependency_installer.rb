@@ -1235,4 +1235,5 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     util_clear_gems
   end
+
 end

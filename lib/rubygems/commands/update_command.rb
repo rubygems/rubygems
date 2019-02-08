@@ -97,8 +97,10 @@ command to remove old versions.
     if options[:explain]
       say "Gems to update:"
 
-      gems_to_update.each do |(name, version)|
-        say "  #{name}-#{version}"
+      gems_to_update.each do |(name, version, platform)|
+        say platform == "ruby" ?
+          "  #{name}-#{version}" :
+          "  #{name}-#{version}-#{platform}"
       end
 
       return
@@ -153,7 +155,7 @@ command to remove old versions.
       g.name == spec.name and g.match_platform?
     end
 
-    highest_remote_gem = matching_gems.max_by { |g,_| g.version }
+    highest_remote_gem = matching_gems.max
 
     highest_remote_gem ||= [Gem::NameTuple.null]
 
@@ -275,7 +277,7 @@ command to remove old versions.
       highest_remote_ver = highest_remote_tup.version
 
       if system or (l_spec.version < highest_remote_ver)
-        result << [l_spec.name, [l_spec.version, highest_remote_ver].max]
+        result << [l_spec.name, [l_spec.version, highest_remote_ver].max, highest_remote_tup.platform]
       end
     end
 

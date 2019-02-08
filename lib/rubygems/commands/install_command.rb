@@ -201,10 +201,10 @@ You can use `i` command instead of `install`.
       request_set = inst.resolve_dependencies name, req
 
       if options[:explain]
-        puts "Gems to install:"
+        say "Gems to install:"
 
         request_set.sorted_requests.each do |s|
-          puts "  #{s.full_name}"
+          say "  #{s.full_name}"
         end
 
         return

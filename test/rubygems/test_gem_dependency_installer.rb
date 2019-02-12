@@ -28,6 +28,7 @@ class TestGemDependencyInstaller < Gem::TestCase
   def util_setup_gems
     @a1, @a1_gem         = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
     @a1_pre, @a1_pre_gem = util_gem 'a', '1.a'
+
     @b1, @b1_gem         = util_gem 'b', '1' do |s|
       s.add_dependency 'a'
       s.add_development_dependency 'aa'

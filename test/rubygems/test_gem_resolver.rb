@@ -151,10 +151,12 @@ class TestGemResolver < Gem::TestCase
 
   def test_resolve_conservative
     a1_spec = util_spec 'a', 1
+
     a2_spec = util_spec 'a', 2 do |s|
       s.add_dependency 'b', 2
       s.add_dependency 'c'
     end
+
     b1_spec = util_spec 'b', 1
     b2_spec = util_spec 'b', 2
     c1_spec = util_spec 'c', 1 do |s| s.add_dependency 'd', 2 end

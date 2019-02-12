@@ -122,7 +122,7 @@ class Gem::InstallerTestCase < Gem::TestCase
 
   def util_make_exec(spec = @spec, shebang = "#!/usr/bin/ruby")
     spec.executables = %w[executable]
-    spec.files << 'bin/executable'
+    spec.bindir = 'bin'
 
     exec_path = spec.bin_file "executable"
     write_file exec_path do |io|

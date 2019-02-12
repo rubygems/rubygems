@@ -314,7 +314,7 @@ gem 'other', version
     @installer.wrappers = true
 
     @spec.executables = %w[executable]
-    @spec.bindir = '.'
+    @spec.bindir = 'bin'
 
     exec_file = @installer.formatted_program_filename 'executable'
     exec_path = File.join @spec.gem_dir, exec_file

@@ -753,6 +753,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     Gem::Specification.reset
   end
 
+  def util_clear_default_gems
+    FileUtils.rm_rf @default_spec_dir
+    FileUtils.mkdir @default_spec_dir
+  end
+
   ##
   # Install the provided specs
 

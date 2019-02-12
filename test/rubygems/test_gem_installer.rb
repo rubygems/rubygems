@@ -702,7 +702,10 @@ gem 'other', version
   end
 
   def test_initialize
-    spec = util_spec 'a' do |s| s.platform = Gem::Platform.new 'mswin32' end
+    spec = util_spec 'a' do |s|
+      s.platform = Gem::Platform.new 'mswin32'
+    end
+
     gem = File.join @tempdir, spec.file_name
 
     Dir.mkdir util_inst_bindir
@@ -948,7 +951,10 @@ gem 'other', version
     # Morph spec to have lib/other.rb instead of code.rb and recreate
     @spec.files = File.join('lib', 'other.rb')
     Dir.chdir @tempdir do
-      File.open File.join('lib', 'other.rb'), 'w' do |f| f.puts '1' end
+      File.open File.join('lib', 'other.rb'), 'w' do |f|
+        f.puts '1'
+      end
+
       use_ui ui do
         FileUtils.rm @gem
         Gem::Package.build @spec
@@ -1285,9 +1291,9 @@ gem 'other', version
     end
 
     # empty depend file for no auto dependencies
-    @spec.files += %W"depend #{@spec.name}.c".each {|file|
+    @spec.files += %W"depend #{@spec.name}.c".each do |file|
       write_file File.join(@tempdir, file)
-    }
+    end
 
     so = File.join(@spec.gem_dir, "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}")
     refute_path_exists so

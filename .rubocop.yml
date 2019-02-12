@@ -71,3 +71,6 @@ Style/MethodDefParentheses:
 
 Style/MutableConstant:
   Enabled: true
+
+Style/BlockDelimiters:
+  Enabled: true

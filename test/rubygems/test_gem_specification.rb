@@ -143,9 +143,9 @@ end
       num_of_version_per_pkg = 3
       packages = (0..num_of_pkg).map do |pkgi|
         (0..num_of_version_per_pkg).map do |pkg_version|
-          deps = Hash[((pkgi + 1)..num_of_pkg).map { |deppkgi|
+          deps = Hash[((pkgi + 1)..num_of_pkg).map do |deppkgi|
             ["pkg#{deppkgi}", ">= 0"]
-          }]
+          end]
           util_spec "pkg#{pkgi}", pkg_version.to_s, deps
         end
       end
@@ -156,9 +156,9 @@ end
       install_specs base
       base.activate
 
-      tms = Benchmark.measure {
+      tms = Benchmark.measure do
         assert_raises(LoadError) { require 'no_such_file_foo' }
-      }
+      end
       assert_operator tms.total, :<=, 10
     end
   end
@@ -2878,7 +2878,7 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
     util_setup_validate
 
     FileUtils.mkdir_p File.join(@tempdir, 'bin')
-    File.open File.join(@tempdir, 'bin', 'exec'), 'w' do end
+    File.open File.join(@tempdir, 'bin', 'exec'), 'w'
     FileUtils.mkdir_p File.join(@tempdir, 'exec')
 
     use_ui @ui do

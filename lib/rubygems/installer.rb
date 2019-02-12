@@ -126,7 +126,9 @@ class Gem::Installer
         file = File.join destination_dir, file
         next if File.exist? file
         FileUtils.mkdir_p File.dirname(file)
-        File.open file, 'w' do |fp| fp.puts "# #{file}" end
+        File.open file, 'w' do |fp|
+          fp.puts "# #{file}"
+        end
       end
     end
 

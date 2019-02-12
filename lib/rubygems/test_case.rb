@@ -193,19 +193,19 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
   def assert_contains_make_command(target, output, msg = nil)
     if output.match(/\n/)
-      msg = message(msg) {
+      msg = message(msg) do
         'Expected output containing make command "%s": %s' % [
           ('%s %s' % [make_command, target]).rstrip,
           output.inspect
         ]
-      }
+      end
     else
-      msg = message(msg) {
+      msg = message(msg) do
         'Expected make command "%s": %s' % [
           ('%s %s' % [make_command, target]).rstrip,
           output.inspect
         ]
-      }
+      end
     end
 
     assert scan_make_command_lines(output).any? { |line|
@@ -318,7 +318,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     Gem.ensure_gem_subdirectories @gemhome
 
     @orig_LOAD_PATH = $LOAD_PATH.dup
-    $LOAD_PATH.map! { |s|
+    $LOAD_PATH.map! do |s|
       expand_path = File.expand_path(s)
       if expand_path != s
         expand_path.untaint
@@ -329,7 +329,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
         s = expand_path
       end
       s
-    }
+    end
 
     Dir.chdir @tempdir
 
@@ -601,11 +601,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   def uninstall_gem(spec)
     require 'rubygems/uninstaller'
 
-    Class.new(Gem::Uninstaller) {
+    Class.new(Gem::Uninstaller) do
       def ask_if_ok(spec)
         true
       end
-    }.new(spec.name, :executables => true, :user_install => true).uninstall
+    end.new(spec.name, :executables => true, :user_install => true).uninstall
   end
 
   ##
@@ -614,7 +614,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
   def create_tmpdir
     tmpdir = nil
-    Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
+
+    Dir.chdir Dir.tmpdir do
+      tmpdir = Dir.pwd
+    end # HACK OSX /private/tmp
+
     tmpdir = File.join tmpdir, "test_rubygems_#{$$}"
     FileUtils.mkdir_p tmpdir
     return tmpdir
@@ -725,7 +729,10 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       spec.files.each do |file|
         next if File.exist? file
         FileUtils.mkdir_p File.dirname(file)
-        File.open file, 'w' do |fp| fp.puts "# #{file}" end
+
+        File.open file, 'w' do |fp|
+          fp.puts "# #{file}"
+        end
       end
 
       use_ui Gem::MockGemUi.new do

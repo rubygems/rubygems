@@ -1727,14 +1727,13 @@ gem 'other', version
     @installer.wrappers = true
     @installer.options[:install_as_default] = true
     @installer.gem_dir = @spec.gem_dir
-    @installer.generate_bin
 
     use_ui @ui do
       @installer.install
     end
 
-    assert_directory_exists util_inst_bindir
-    installed_exec = File.join util_inst_bindir, 'executable'
+    assert_directory_exists File.join(@spec.gem_dir, 'bin')
+    installed_exec = File.join @spec.gem_dir, 'bin', 'executable'
     assert_path_exists installed_exec
 
     assert_directory_exists File.join(Gem.default_dir, 'specifications')

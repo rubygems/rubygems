@@ -844,7 +844,7 @@ TEXT
   # without the full gem installed.
 
   def extract_bin
-    @package.extract_files gem_dir, "bin/*"
+    @package.extract_files gem_dir, "#{spec.bindir}/*"
   end
 
   ##

@@ -98,7 +98,7 @@ class TestGemCommand < Gem::TestCase
 
   def test_invoke_with_bad_options
     use_ui @ui do
-      @cmd.when_invoked do true end
+      @cmd.when_invoked { true }
 
       ex = assert_raises OptionParser::InvalidOption do
         @cmd.invoke('-zzz')
@@ -109,7 +109,7 @@ class TestGemCommand < Gem::TestCase
   end
 
   def test_invoke_with_common_options
-    @cmd.when_invoked do true end
+    @cmd.when_invoked { true }
 
     use_ui @ui do
       @cmd.invoke "-x"

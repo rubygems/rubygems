@@ -962,12 +962,12 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
         :SSLVerifyClient => nil,
         :SSLCertName => nil
       }.merge(config))
-      server.mount_proc("/yaml") { |req, res|
+      server.mount_proc("/yaml") do |req, res|
         res.body = "--- true\n"
-      }
-      server.mount_proc("/insecure_redirect") { |req, res|
+      end
+      server.mount_proc("/insecure_redirect") do |req, res|
         res.set_redirect(WEBrick::HTTPStatus::MovedPermanently, req.query['to'])
-      }
+      end
       server.ssl_context.tmp_dh_callback = proc { TEST_KEY_DH2048 }
       t = Thread.new do
         begin
@@ -1002,7 +1002,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
         :AccessLog       => null_logger
       )
       s.mount_proc("/kill") { |req, res| s.shutdown }
-      s.mount_proc("/yaml") { |req, res|
+      s.mount_proc("/yaml") do |req, res|
         if req["X-Captain"]
           res.body = req["X-Captain"]
         elsif @enable_yaml
@@ -1014,8 +1014,8 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
           res.body = "<h1>NOT FOUND</h1>"
           res['Content-Type'] = 'text/html'
         end
-      }
-      s.mount_proc("/yaml.Z") { |req, res|
+      end
+      s.mount_proc("/yaml.Z") do |req, res|
         if @enable_zip
           res.body = Zlib::Deflate.deflate(data)
           res['Content-Type'] = 'text/plain'
@@ -1024,7 +1024,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
           res.body = "<h1>NOT FOUND</h1>"
           res['Content-Type'] = 'text/html'
         end
-      }
+      end
       th = Thread.new do
         begin
           s.start

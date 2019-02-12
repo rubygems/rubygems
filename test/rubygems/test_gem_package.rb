@@ -433,7 +433,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_extract_files_empty
-    data_tgz = util_tar_gz do end
+    data_tgz = util_tar_gz { }
 
     gem = util_tar do |tar|
       tar.add_file 'data.tar.gz', 0644 do |io|

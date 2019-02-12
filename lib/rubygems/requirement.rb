@@ -153,11 +153,11 @@ class Gem::Requirement
   def for_lockfile # :nodoc:
     return if [DefaultRequirement] == @requirements
 
-    list = requirements.sort_by { |_, version|
+    list = requirements.sort_by do |_, version|
       version
-    }.map { |op, version|
+    end.map do |op, version|
       "#{op} #{version}"
-    }.uniq
+    end.uniq
 
     " (#{list.join ', '})"
   end

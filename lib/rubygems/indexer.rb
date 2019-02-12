@@ -180,9 +180,9 @@ class Gem::Indexer
   # Builds indices for RubyGems 1.2 and newer. Handles full, latest, prerelease
 
   def build_modern_indices(specs)
-    prerelease, released = specs.partition { |s|
+    prerelease, released = specs.partition do |s|
       s.version.prerelease?
-    }
+    end
     latest_specs =
       Gem::Specification._latest_specs specs
 
@@ -200,7 +200,7 @@ class Gem::Indexer
   end
 
   def map_gems_to_specs(gems)
-    gems.map { |gemfile|
+    gems.map do |gemfile|
       if File.size(gemfile) == 0
         alert_warning "Skipping zero-length gem: #{gemfile}"
         next
@@ -223,7 +223,7 @@ class Gem::Indexer
                "\t#{e.backtrace.join "\n\t"}"].join("\n")
         alert_error msg
       end
-    }.compact
+    end.compact
   end
 
   ##

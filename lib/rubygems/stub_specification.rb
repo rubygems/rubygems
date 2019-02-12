@@ -52,9 +52,9 @@ class Gem::StubSpecification < Gem::BasicSpecification
                        end
 
       path_list = parts.last
-      @require_paths = REQUIRE_PATH_LIST[path_list] || path_list.split("\0".freeze).map! { |x|
+      @require_paths = REQUIRE_PATH_LIST[path_list] || path_list.split("\0".freeze).map! do |x|
         REQUIRE_PATHS[x] || x
-      }
+      end
     end
 
   end

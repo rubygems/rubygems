@@ -634,7 +634,7 @@ class TestGem < Gem::TestCase
 
     discover_path = File.join 'lib', 'sff', 'discover.rb'
 
-    foo1, foo2 = %w(1 2).map { |version|
+    foo1, foo2 = %w(1 2).map do |version|
       spec = quick_gem 'sff', version do |s|
         s.files << discover_path
       end
@@ -644,7 +644,7 @@ class TestGem < Gem::TestCase
       end
 
       spec
-    }
+    end
 
     Gem.refresh
 
@@ -666,7 +666,7 @@ class TestGem < Gem::TestCase
 
     discover_path = File.join 'lib', 'sff', 'discover.rb'
 
-    foo1, _ = %w(1 2).map { |version|
+    foo1, _ = %w(1 2).map do |version|
       spec = quick_gem 'sff', version do |s|
         s.files << discover_path
       end
@@ -676,7 +676,7 @@ class TestGem < Gem::TestCase
       end
 
       spec
-    }
+    end
     Gem.refresh
 
     write_file(File.join Dir.pwd, 'Gemfile') do |fp|
@@ -702,7 +702,7 @@ class TestGem < Gem::TestCase
 
     discover_path = File.join 'lib', 'sff', 'discover.rb'
 
-    _, foo2 = %w(1 2).map { |version|
+    _, foo2 = %w(1 2).map do |version|
       spec = quick_gem 'sff', version do |s|
         s.files << discover_path
       end
@@ -712,7 +712,7 @@ class TestGem < Gem::TestCase
       end
 
       spec
-    }
+    end
 
     Gem.refresh
 
@@ -1090,7 +1090,7 @@ class TestGem < Gem::TestCase
   def test_self_post_build
     assert_equal 1, Gem.post_build_hooks.length
 
-    Gem.post_build do |installer| end
+    Gem.post_build { |installer| }
 
     assert_equal 2, Gem.post_build_hooks.length
   end
@@ -1098,7 +1098,7 @@ class TestGem < Gem::TestCase
   def test_self_post_install
     assert_equal 1, Gem.post_install_hooks.length
 
-    Gem.post_install do |installer| end
+    Gem.post_install { |installer| }
 
     assert_equal 2, Gem.post_install_hooks.length
   end
@@ -1106,7 +1106,7 @@ class TestGem < Gem::TestCase
   def test_self_done_installing
     assert_empty Gem.done_installing_hooks
 
-    Gem.done_installing do |gems| end
+    Gem.done_installing { |gems| }
 
     assert_equal 1, Gem.done_installing_hooks.length
   end
@@ -1122,7 +1122,7 @@ class TestGem < Gem::TestCase
   def test_self_post_uninstall
     assert_equal 1, Gem.post_uninstall_hooks.length
 
-    Gem.post_uninstall do |installer| end
+    Gem.post_uninstall { |installer| }
 
     assert_equal 2, Gem.post_uninstall_hooks.length
   end
@@ -1130,7 +1130,7 @@ class TestGem < Gem::TestCase
   def test_self_pre_install
     assert_equal 1, Gem.pre_install_hooks.length
 
-    Gem.pre_install do |installer| end
+    Gem.pre_install { |installer| }
 
     assert_equal 2, Gem.pre_install_hooks.length
   end
@@ -1146,7 +1146,7 @@ class TestGem < Gem::TestCase
   def test_self_pre_uninstall
     assert_equal 1, Gem.pre_uninstall_hooks.length
 
-    Gem.pre_uninstall do |installer| end
+    Gem.pre_uninstall { |installer| }
 
     assert_equal 2, Gem.pre_uninstall_hooks.length
   end

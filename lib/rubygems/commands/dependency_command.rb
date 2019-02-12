@@ -80,9 +80,9 @@ use with other commands.
   end
 
   def gem_dependency(pattern, version, prerelease) # :nodoc:
-    dependency = Gem::Deprecate.skip_during {
+    dependency = Gem::Deprecate.skip_during do
       Gem::Dependency.new pattern, version
-    }
+    end
 
     dependency.prerelease = prerelease
 

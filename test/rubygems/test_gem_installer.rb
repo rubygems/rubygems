@@ -1285,9 +1285,9 @@ gem 'other', version
     end
 
     # empty depend file for no auto dependencies
-    @spec.files += %W"depend #{@spec.name}.c".each {|file|
+    @spec.files += %W"depend #{@spec.name}.c".each do |file|
       write_file File.join(@tempdir, file)
-    }
+    end
 
     so = File.join(@spec.gem_dir, "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}")
     refute_path_exists so

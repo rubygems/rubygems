@@ -141,9 +141,9 @@ is too hard to use.
 
       display_header 'LOCAL'
 
-      specs = Gem::Specification.find_all { |s|
+      specs = Gem::Specification.find_all do |s|
         s.name =~ name and req =~ s.version
-      }
+      end
 
       spec_tuples = specs.map do |spec|
         [spec.name_tuple, spec]

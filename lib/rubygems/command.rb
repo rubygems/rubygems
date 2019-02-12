@@ -393,7 +393,7 @@ class Gem::Command
 
   def merge_options(new_options)
     @options = @defaults.clone
-    new_options.each do |k,v| @options[k] = v end
+    new_options.each { |k,v| @options[k] = v }
   end
 
   ##

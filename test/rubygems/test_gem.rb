@@ -416,7 +416,10 @@ class TestGem < Gem::TestCase
         fp.puts 'blah'
       end
 
-      foo = util_spec 'foo' do |s| s.files = %w[data/foo.txt] end
+      foo = util_spec 'foo' do |s|
+        s.files = %w[data/foo.txt]
+      end
+
       install_gem foo
     end
 

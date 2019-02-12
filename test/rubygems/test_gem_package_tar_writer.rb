@@ -25,7 +25,9 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
 
   def test_add_file
     Time.stub :now, Time.at(1458518157) do
-      @tar_writer.add_file 'x', 0644 do |f| f.write 'a' * 10 end
+      @tar_writer.add_file 'x', 0644 do |f|
+        f.write 'a' * 10
+      end
 
       assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now),
                          @io.string[0, 512])
@@ -160,7 +162,9 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
 
   def test_add_file_simple
     Time.stub :now, Time.at(1458518157) do
-      @tar_writer.add_file_simple 'x', 0644, 10 do |io| io.write "a" * 10 end
+      @tar_writer.add_file_simple 'x', 0644, 10 do |io|
+        io.write "a" * 10
+      end
 
       assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.now),
                          @io.string[0, 512])
@@ -173,7 +177,9 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
   def test_add_file_simple_source_date_epoch
     ENV["SOURCE_DATE_EPOCH"] = "123456789"
     Time.stub :now, Time.at(1458518157) do
-      @tar_writer.add_file_simple 'x', 0644, 10 do |io| io.write "a" * 10 end
+      @tar_writer.add_file_simple 'x', 0644, 10 do |io|
+        io.write "a" * 10
+      end
 
       assert_headers_equal(tar_file_header('x', '', 0644, 10, Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc),
                          @io.string[0, 512])

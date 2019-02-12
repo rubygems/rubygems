@@ -156,7 +156,10 @@ class Gem::InstallerTestCase < Gem::TestCase
         f.puts "raise 'ran executable'"
       end
 
-      File.open File.join('lib', 'code.rb'), 'w' do |f| f.puts '1' end
+      File.open File.join('lib', 'code.rb'), 'w' do |f|
+        f.puts '1'
+      end
+
       File.open File.join('ext', 'a', 'mkrf_conf.rb'), 'w' do |f|
         f << <<-EOF
           File.open 'Rakefile', 'w' do |rf| rf.puts "task :default" end

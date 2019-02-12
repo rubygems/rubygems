@@ -614,7 +614,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
   def create_tmpdir
     tmpdir = nil
-    Dir.chdir Dir.tmpdir do tmpdir = Dir.pwd end # HACK OSX /private/tmp
+
+    Dir.chdir Dir.tmpdir do
+      tmpdir = Dir.pwd
+    end # HACK OSX /private/tmp
+
     tmpdir = File.join tmpdir, "test_rubygems_#{$$}"
     FileUtils.mkdir_p tmpdir
     return tmpdir
@@ -725,7 +729,10 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       spec.files.each do |file|
         next if File.exist? file
         FileUtils.mkdir_p File.dirname(file)
-        File.open file, 'w' do |fp| fp.puts "# #{file}" end
+
+        File.open file, 'w' do |fp|
+          fp.puts "# #{file}"
+        end
       end
 
       use_ui Gem::MockGemUi.new do

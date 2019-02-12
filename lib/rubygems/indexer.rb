@@ -131,7 +131,10 @@ class Gem::Indexer
         marshal_name = File.join @quick_marshal_dir, spec_file_name
 
         marshal_zipped = Gem.deflate Marshal.dump(spec)
-        File.open marshal_name, 'wb' do |io| io.write marshal_zipped end
+
+        File.open marshal_name, 'wb' do |io|
+          io.write marshal_zipped
+        end
 
         files << marshal_name
 

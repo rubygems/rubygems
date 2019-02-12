@@ -702,7 +702,10 @@ gem 'other', version
   end
 
   def test_initialize
-    spec = util_spec 'a' do |s| s.platform = Gem::Platform.new 'mswin32' end
+    spec = util_spec 'a' do |s|
+      s.platform = Gem::Platform.new 'mswin32'
+    end
+
     gem = File.join @tempdir, spec.file_name
 
     Dir.mkdir util_inst_bindir
@@ -948,7 +951,10 @@ gem 'other', version
     # Morph spec to have lib/other.rb instead of code.rb and recreate
     @spec.files = File.join('lib', 'other.rb')
     Dir.chdir @tempdir do
-      File.open File.join('lib', 'other.rb'), 'w' do |f| f.puts '1' end
+      File.open File.join('lib', 'other.rb'), 'w' do |f|
+        f.puts '1'
+      end
+
       use_ui ui do
         FileUtils.rm @gem
         Gem::Package.build @spec

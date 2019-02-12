@@ -117,7 +117,10 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     FileUtils.mkdir @gems_dir
 
     # TODO: why does the remote fetcher need it written to disk?
-    @a1, @a1_gem = util_gem 'a', '1' do |s| s.executables << 'a_bin' end
+    @a1, @a1_gem = util_gem 'a', '1' do |s|
+      s.executables << 'a_bin'
+    end
+
     @a1.loaded_from = File.join(@gemhome, 'specifications', @a1.full_name)
 
     Gem::RemoteFetcher.fetcher = nil

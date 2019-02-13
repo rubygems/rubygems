@@ -638,6 +638,7 @@ test/rubygems/test_require.rb
 test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem
 util/CL2notes
+util/bisect
 util/ci
 util/create_certs.rb
 util/create_encrypted_key.rb

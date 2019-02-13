@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+begin
+  minitest_bisect = Gem.bin_path("minitest-bisect", "minitest_bisect")
+rescue Gem::GemNotFoundException
+  abort "Install minitest-bisect gem to run a rubygems test suite bisection"
+end
+
+#
+# Need to monkeypatch the `path_expander` gem to make sure it uses the same
+# sorted set of files as `rake`. Otherwise `rake test` failures are
+# irreproducible. Can be removed once
+# https://github.com/seattlerb/path_expander/pull/4 is released.
+#
+
+module RefinedPathExpander
+  def expand_dirs_to_files(*dirs)
+    super.sort
+  end
+end
+
+require 'path_expander'
+
+class PathExpander
+
+  prepend RefinedPathExpander
+
+end
+
+load minitest_bisect

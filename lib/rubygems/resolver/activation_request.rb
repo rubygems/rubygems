@@ -77,7 +77,7 @@ class Gem::Resolver::ActivationRequest
   # The full name of the specification to be activated.
 
   def full_name
-    (platform = @spec.platform) == Gem::Platform::RUBY ?
+    platform == Gem::Platform::RUBY ?
       @spec.full_name :
       "#{@spec.full_name}-#{platform}"
   end
@@ -183,6 +183,13 @@ class Gem::Resolver::ActivationRequest
 
   def version
     @spec.version
+  end
+
+  ##
+  # The platform of this activation request's specification
+
+  def platform
+    @spec.platform
   end
 
 end

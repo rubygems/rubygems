@@ -41,6 +41,7 @@ class TestGemIndexer < Gem::TestCase
     super
 
     util_clear_gems
+    util_clear_default_gems
   end
 
   def test_initialize

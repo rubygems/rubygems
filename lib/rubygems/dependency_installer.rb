@@ -29,7 +29,7 @@ class Gem::DependencyInstaller
     :wrappers            => true,
     :build_args          => nil,
     :build_docs_in_background => false,
-    :install_as_default  => false
+    :install_as_default => false
   }.freeze
 
   ##

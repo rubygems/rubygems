@@ -57,7 +57,7 @@ class Gem::Uninstaller
     # Indicate if development dependencies should be checked when
     # uninstalling. (default: false)
     #
-    @check_dev         = options[:check_dev]
+    @check_dev = options[:check_dev]
 
     if options[:force]
       @force_all = true
@@ -134,7 +134,7 @@ class Gem::Uninstaller
       elsif index >= 0 && index < list.size
         uninstall_gem list[index]
       else
-        say "Error: must enter a number [1-#{list.size+1}]"
+        say "Error: must enter a number [1-#{list.size + 1}]"
       end
     else
       uninstall_gem list.first

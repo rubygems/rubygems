@@ -85,14 +85,14 @@ class Gem::Specification < Gem::BasicSpecification
       'Deprecated "test_suite_file" in favor of the new, but equivalent, "test_files"',
       '"test_file=x" is a shortcut for "test_files=[x]"'
     ],
-    2  => [
+    2 => [
       'Added "required_rubygems_version"',
       'Now forward-compatible with future versions',
     ],
-    3  => [
+    3 => [
       'Added Fixnum validation to the specification_version'
     ],
-    4  => [
+    4 => [
       'Added sandboxed freeform metadata to the specification version.'
     ]
   }.freeze

@@ -227,7 +227,7 @@ class Gem::StreamUI
     @outs.puts question
 
     list.each_with_index do |item, index|
-      @outs.puts " #{index+1}. #{item}"
+      @outs.puts " #{index + 1}. #{item}"
     end
 
     @outs.print "> "

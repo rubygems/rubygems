@@ -42,7 +42,7 @@ class Gem::Request::ConnectionPools # :nodoc:
   def get_no_proxy_from_env
     env_no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
 
-    return [] if env_no_proxy.nil?  or env_no_proxy.empty?
+    return [] if env_no_proxy.nil? or env_no_proxy.empty?
 
     env_no_proxy.split(/\s*,\s*/)
   end

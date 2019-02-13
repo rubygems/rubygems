@@ -115,7 +115,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
   def find_all(req)
     res = []
 
-    dep  = req.dependency
+    dep = req.dependency
 
     return res if @ignore_dependencies and
               @always_install.none? { |spec| dep.match? spec }

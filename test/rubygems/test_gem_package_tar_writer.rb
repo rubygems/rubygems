@@ -201,7 +201,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     @tar_writer.add_file_simple("lib/foo/bar", 0, 10) { |f| f.write @data }
     @tar_writer.flush
 
-    assert_equal @data + ("\0" * (512-@data.size)),
+    assert_equal @data + ("\0" * (512 - @data.size)),
                  @io.string[512, 512]
   end
 
@@ -301,7 +301,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
 
     # note, GNU tar 1.28 is unable to handle this case too,
     # tested with "tar --format=ustar -cPf /tmp/foo.tartar -- /aaaaaa....a"
-    name = '/'  + 'a' * 100
+    name = '/' + 'a' * 100
     exception = assert_raises Gem::Package::TooLongFileName do
       @tar_writer.split_name name
     end

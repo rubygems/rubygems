@@ -17,7 +17,7 @@ class TestGemCommand < Gem::TestCase
 
     @common_options = Gem::Command.common_options.dup
     Gem::Command.common_options.clear
-    Gem::Command.common_options <<  [
+    Gem::Command.common_options << [
       ['-x', '--exe', 'Execute'], lambda do |*a|
         @xopt = true
       end

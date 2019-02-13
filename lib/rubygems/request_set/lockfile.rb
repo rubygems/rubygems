@@ -81,7 +81,7 @@ class Gem::RequestSet::Lockfile
 
     @gem_deps_file.untaint unless gem_deps_file.tainted?
 
-    @platforms      = []
+    @platforms = []
   end
 
   def add_DEPENDENCIES(out) # :nodoc:
@@ -155,7 +155,7 @@ class Gem::RequestSet::Lockfile
     base = File.expand_path(base)
 
     if dest.index(base) == 0
-      offset = dest[base.size+1..-1]
+      offset = dest[base.size + 1..-1]
 
       return '.' unless offset
 

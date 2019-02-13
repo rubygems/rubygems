@@ -384,7 +384,7 @@ end
   #     [B] ~> 1.0 (satisfied by 1.0)
 
   def test_self_activate_checks_dependencies
-    a  = util_spec 'a', '1.0'
+    a = util_spec 'a', '1.0'
     a.add_dependency 'c', '= 1.0'
     a.add_dependency 'b', '~> 1.0'
 

@@ -26,7 +26,7 @@ class TestGemDependencyInstaller < Gem::TestCase
   end
 
   def util_setup_gems
-    @a1, @a1_gem         = util_gem 'a', '1' do |s|
+    @a1, @a1_gem = util_gem 'a', '1' do |s|
       s.executables << 'a_bin'
     end
 
@@ -37,11 +37,11 @@ class TestGemDependencyInstaller < Gem::TestCase
       s.add_development_dependency 'aa'
     end
 
-    @c1, @c1_gem         = util_gem 'c', '1' do |s|
+    @c1, @c1_gem = util_gem 'c', '1' do |s|
       s.add_development_dependency 'b'
     end
 
-    @d1, @d1_gem         = util_gem 'd', '1' do |s|
+    @d1, @d1_gem = util_gem 'd', '1' do |s|
       s.add_development_dependency 'c'
     end
 

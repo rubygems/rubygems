@@ -31,6 +31,10 @@ Layout/EndOfLine:
   Enabled: true
   EnforcedStyle: lf
 
+Layout/EmptyLinesAroundClassBody:
+  Enabled: true
+  EnforcedStyle: empty_lines_except_namespace
+
 Layout/EmptyLinesAroundMethodBody:
   Enabled: true
 
@@ -53,6 +57,9 @@ Layout/IndentationConsistency:
 Layout/IndentationWidth:
   Enabled: true
 
+Layout/SpaceInsideParens:
+  Enabled: true
+
 Layout/TrailingBlankLines:
   Enabled: true
 
@@ -63,4 +70,7 @@ Style/MethodDefParentheses:
   Enabled: true
 
 Style/MutableConstant:
+  Enabled: true
+
+Style/BlockDelimiters:
   Enabled: true

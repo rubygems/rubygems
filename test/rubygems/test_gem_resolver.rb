@@ -151,16 +151,31 @@ class TestGemResolver < Gem::TestCase
 
   def test_resolve_conservative
     a1_spec = util_spec 'a', 1
+
     a2_spec = util_spec 'a', 2 do |s|
       s.add_dependency 'b', 2
       s.add_dependency 'c'
     end
+
     b1_spec = util_spec 'b', 1
     b2_spec = util_spec 'b', 2
-    c1_spec = util_spec 'c', 1 do |s| s.add_dependency 'd', 2 end
-    c2_spec = util_spec 'c', 2 do |s| s.add_dependency 'd', 2 end
-    d1_spec = util_spec 'd', 1 do |s| s.add_dependency 'e' end
-    d2_spec = util_spec 'd', 2 do |s| s.add_dependency 'e' end
+
+    c1_spec = util_spec 'c', 1 do |s|
+      s.add_dependency 'd', 2
+    end
+
+    c2_spec = util_spec 'c', 2 do |s|
+      s.add_dependency 'd', 2
+    end
+
+    d1_spec = util_spec 'd', 1 do |s|
+      s.add_dependency 'e'
+    end
+
+    d2_spec = util_spec 'd', 2 do |s|
+      s.add_dependency 'e'
+    end
+
     e1_spec = util_spec 'e', 1
     e2_spec = util_spec 'e', 2
 
@@ -189,8 +204,14 @@ class TestGemResolver < Gem::TestCase
   end
 
   def test_resolve_development
-    a_spec = util_spec 'a', 1 do |s| s.add_development_dependency 'b' end
-    b_spec = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end
+    a_spec = util_spec 'a', 1 do |s|
+      s.add_development_dependency 'b'
+    end
+
+    b_spec = util_spec 'b', 1 do
+      |s| s.add_development_dependency 'c'
+    end
+
     c_spec = util_spec 'c', 1
 
     a_dep = make_dep 'a', '= 1'
@@ -212,10 +233,16 @@ class TestGemResolver < Gem::TestCase
       s.add_runtime_dependency 'd'
     end
 
-    b_spec = util_spec 'b', 1 do |s| s.add_development_dependency 'c' end
+    b_spec = util_spec 'b', 1 do |s|
+      s.add_development_dependency 'c'
+    end
+
     c_spec = util_spec 'c', 1
 
-    d_spec = util_spec 'd', 1 do |s| s.add_development_dependency 'e' end
+    d_spec = util_spec 'd', 1 do |s|
+      s.add_development_dependency 'e'
+    end
+
     e_spec = util_spec 'e', 1
 
     a_dep = make_dep 'a', '= 1'
@@ -300,8 +327,14 @@ class TestGemResolver < Gem::TestCase
 
     spec_fetcher do |fetcher|
       fetcher.spec 'a', 2
-      a2_p1 = fetcher.spec 'a', 2 do |s| s.platform = Gem::Platform.local end
-      a3_p2 = fetcher.spec 'a', 3 do |s| s.platform = unknown end
+
+      a2_p1 = fetcher.spec 'a', 2 do |s|
+        s.platform = Gem::Platform.local
+      end
+
+      a3_p2 = fetcher.spec 'a', 3 do |s|
+        s.platform = unknown
+      end
     end
 
     v2 = v(2)
@@ -709,8 +742,14 @@ class TestGemResolver < Gem::TestCase
     r = Gem::Resolver.new nil, nil
 
     a1    = util_spec 'a', 1
-    a1_p1 = util_spec 'a', 1 do |s| s.platform = Gem::Platform.local end
-    a1_p2 = util_spec 'a', 1 do |s| s.platform = 'unknown'           end
+
+    a1_p1 = util_spec 'a', 1 do |s|
+      s.platform = Gem::Platform.local
+    end
+
+    a1_p2 = util_spec 'a', 1 do |s|
+      s.platform = 'unknown'
+    end
 
     selected = r.select_local_platforms [a1, a1_p1, a1_p2]
 
@@ -719,8 +758,14 @@ class TestGemResolver < Gem::TestCase
 
   def test_search_for_local_platform_partial_string_match
     a1    = util_spec 'a', 1
-    a1_p1 = util_spec 'a', 1 do |s| s.platform = Gem::Platform.local.os end
-    a1_p2 = util_spec 'a', 1 do |s| s.platform = 'unknown'              end
+
+    a1_p1 = util_spec 'a', 1 do |s|
+      s.platform = Gem::Platform.local.os
+    end
+
+    a1_p2 = util_spec 'a', 1 do |s|
+      s.platform = 'unknown'
+    end
 
     s = set(a1_p1, a1_p2, a1)
     d = [make_dep('a')]

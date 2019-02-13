@@ -2,10 +2,6 @@
 require "rubygems/version"
 require "rubygems/deprecate"
 
-# If we're being loaded after yaml was already required, then
-# load our yaml + workarounds now.
-Gem.load_yaml if defined? ::YAML
-
 ##
 # A Requirement is a set of one or more version restrictions. It supports a
 # few (<tt>=, !=, >, <, >=, <=, ~></tt>) different restriction operators.
@@ -14,6 +10,7 @@ Gem.load_yaml if defined? ::YAML
 # together in RubyGems.
 
 class Gem::Requirement
+
   OPS = { #:nodoc:
     "="  =>  lambda { |v, r| v == r },
     "!=" =>  lambda { |v, r| v != r },
@@ -156,11 +153,11 @@ class Gem::Requirement
   def for_lockfile # :nodoc:
     return if [DefaultRequirement] == @requirements
 
-    list = requirements.sort_by { |_, version|
+    list = requirements.sort_by do |_, version|
       version
-    }.map { |op, version|
+    end.map do |op, version|
       "#{op} #{version}"
-    }.uniq
+    end.uniq
 
     " (#{list.join ', '})"
   end
@@ -305,11 +302,14 @@ class Gem::Requirement
       l.first <=> r.first # then, sort by the operator (for stability)
     end
   end
+
 end
 
 class Gem::Version
+
   # This is needed for compatibility with older yaml
   # gemspecs.
 
   Requirement = Gem::Requirement # :nodoc:
+
 end

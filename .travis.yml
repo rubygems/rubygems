@@ -1,6 +1,5 @@
 language: ruby
-dist: trusty
-sudo: required
+dist: xenial
 branches:
   only:
     - master
@@ -8,15 +7,15 @@ branches:
     - trying
     - /^[\d.]+$/
     - /.+-stable$/
+env:
+  - "TEST_TOOL=rubygems YAML=psych"
+  - "TEST_TOOL=bundler RGV=master"
 rvm:
   - 2.3.8
   - 2.4.5
   - 2.5.3
-  - 2.6.0
+  - 2.6.1
   - ruby-head
-env:
-  - "TEST_TOOL=rubygems YAML=psych"
-  - "TEST_TOOL=bundler RGV=master"
 jobs:
   include:
     - stage: linting
@@ -33,6 +32,8 @@ script:
   - util/ci script
 matrix:
   allow_failures:
+    - rvm: 2.6.1
+      env: "TEST_TOOL=bundler RGV=master"
     - rvm: ruby-head
       env: "TEST_TOOL=rubygems YAML=psych"
     - rvm: ruby-head

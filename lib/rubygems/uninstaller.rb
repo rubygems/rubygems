@@ -180,9 +180,9 @@ class Gem::Uninstaller
     # Leave any executables created by other installed versions
     # of this gem installed.
 
-    list = Gem::Specification.find_all { |s|
+    list = Gem::Specification.find_all do |s|
       s.name == spec.name && s.version != spec.version
-    }
+    end
 
     list.each do |s|
       s.executables.each do |exe_name|
@@ -354,4 +354,5 @@ class Gem::Uninstaller
 
     raise e
   end
+
 end

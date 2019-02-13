@@ -19,7 +19,7 @@ rvm:
 jobs:
   include:
     - stage: linting
-      rvm: 2.5
+      rvm: 2.6
       env:
         - "TEST_TOOL=rubygems YAML=psych"
       script: util/ci rubocop

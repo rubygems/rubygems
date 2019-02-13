@@ -77,9 +77,9 @@ class Gem::Resolver::ActivationRequest
   # The full name of the specification to be activated.
 
   def full_name
-    (plat = @spec.platform) == Gem::Platform::RUBY ?
+    (platform = @spec.platform) == Gem::Platform::RUBY ?
       @spec.full_name :
-      "#{@spec.full_name}-#{plat}"
+      "#{@spec.full_name}-#{platform}"
   end
 
   alias_method :to_s, :full_name

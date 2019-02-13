@@ -77,9 +77,7 @@ class Gem::Resolver::ActivationRequest
   # The full name of the specification to be activated.
 
   def full_name
-    platform == Gem::Platform::RUBY ?
-      @spec.full_name :
-      "#{@spec.full_name}-#{platform}"
+    name_tuple.full_name
   end
 
   alias_method :to_s, :full_name
@@ -190,6 +188,12 @@ class Gem::Resolver::ActivationRequest
 
   def platform
     @spec.platform
+  end
+
+  private
+
+  def name_tuple
+    @name_tuple ||= Gem::NameTuple.new(name, version, platform)
   end
 
 end

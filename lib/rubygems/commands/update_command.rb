@@ -275,9 +275,10 @@ command to remove old versions.
 
       highest_remote_tup = highest_remote_tuple l_spec
       highest_remote_ver = highest_remote_tup.version
+      highest_installed_ver = l_spec.version
 
-      if system or (l_spec.version < highest_remote_ver)
-        result << [l_spec.name, [l_spec.version, highest_remote_ver].max, highest_remote_tup.platform]
+      if system or (highest_installed_ver < highest_remote_ver)
+        result << [l_spec.name, [highest_installed_ver, highest_remote_ver].max, highest_remote_tup.platform]
       end
     end
 

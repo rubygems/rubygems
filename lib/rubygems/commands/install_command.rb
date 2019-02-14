@@ -203,8 +203,8 @@ You can use `i` command instead of `install`.
       if options[:explain]
         say "Gems to install:"
 
-        request_set.sorted_requests.each do |s|
-          say "  #{s.full_name}"
+        request_set.sorted_requests.each do |activation_request|
+          say "  #{activation_request.full_name}"
         end
 
         return

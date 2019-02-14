@@ -146,7 +146,7 @@ command to remove old versions.
     hig
   end
 
-  def highest_remote_tuple(spec) # :nodoc:
+  def highest_remote_name_tuple(spec) # :nodoc:
     spec_tuples = fetch_remote_gems spec
 
     matching_gems = spec_tuples.select do |g,_|
@@ -271,7 +271,7 @@ command to remove old versions.
       next if not gem_names.empty? and
               gem_names.none? { |name| name == l_spec.name }
 
-      highest_remote_tup = highest_remote_tuple l_spec
+      highest_remote_tup = highest_remote_name_tuple l_spec
       highest_remote_ver = highest_remote_tup.version
       highest_installed_ver = l_spec.version
 

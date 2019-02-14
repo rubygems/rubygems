@@ -32,8 +32,6 @@ script:
   - util/ci script
 matrix:
   allow_failures:
-    - rvm: 2.6.1
-      env: "TEST_TOOL=bundler RGV=master"
     - rvm: ruby-head
       env: "TEST_TOOL=rubygems YAML=psych"
     - rvm: ruby-head

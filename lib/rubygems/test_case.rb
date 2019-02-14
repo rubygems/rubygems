@@ -136,6 +136,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
   def assert_directory_exists(path, msg = nil)
     msg = message(msg) { "Expected path '#{path}' to be a directory" }
+    assert_path_exists path
     assert File.directory?(path), msg
   end
 

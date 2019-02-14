@@ -984,7 +984,7 @@ gem 'other', version
 
   def test_install_missing_dirs
     FileUtils.rm_f File.join(Gem.dir, 'cache')
-    FileUtils.rm_f File.join(Gem.dir, 'docs')
+    FileUtils.rm_f File.join(Gem.dir, 'doc')
     FileUtils.rm_f File.join(Gem.dir, 'specifications')
 
     use_ui @ui do
@@ -992,7 +992,7 @@ gem 'other', version
     end
 
     assert_directory_exists File.join(Gem.dir, 'cache')
-    assert_directory_exists File.join(Gem.dir, 'docs')
+    assert_directory_exists File.join(Gem.dir, 'doc')
     assert_directory_exists File.join(Gem.dir, 'specifications')
 
     assert_path_exists File.join @gemhome, 'cache', @spec.file_name

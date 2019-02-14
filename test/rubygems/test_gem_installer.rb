@@ -991,9 +991,9 @@ gem 'other', version
       @installer.install
     end
 
-    File.directory? File.join(Gem.dir, 'cache')
-    File.directory? File.join(Gem.dir, 'docs')
-    File.directory? File.join(Gem.dir, 'specifications')
+    assert_directory_exists File.join(Gem.dir, 'cache')
+    assert_directory_exists File.join(Gem.dir, 'docs')
+    assert_directory_exists File.join(Gem.dir, 'specifications')
 
     assert_path_exists File.join @gemhome, 'cache', @spec.file_name
     assert_path_exists File.join @gemhome, 'specifications', @spec.spec_name

@@ -84,7 +84,7 @@ gems:
   # Generated via:
   #   x = OpenSSL::PKey::DH.new(2048) # wait a while...
   #   x.to_s => pem
-  TEST_KEY_DH2048 =  OpenSSL::PKey::DH.new <<-_end_of_pem_
+  TEST_KEY_DH2048 = OpenSSL::PKey::DH.new <<-_end_of_pem_
 -----BEGIN DH PARAMETERS-----
 MIIBCAKCAQEA3Ze2EHSfYkZLUn557torAmjBgPsqzbodaRaGZtgK1gEU+9nNJaFV
 G1JKhmGUiEDyIW7idsBpe4sX/Wqjnp48Lr8IeI/SlEzLdoGpf05iRYXC8Cm9o8aM
@@ -789,7 +789,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
 
     ssl_server = self.class.start_ssl_server({
       :SSLVerifyClient =>
-        OpenSSL::SSL::VERIFY_PEER|OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
+        OpenSSL::SSL::VERIFY_PEER | OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
 
     temp_ca_cert = File.join(DIR, 'ca_cert.pem')
     temp_client_cert = File.join(DIR, 'client.pem')
@@ -806,7 +806,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
 
     ssl_server = self.class.start_ssl_server({
       :SSLVerifyClient =>
-        OpenSSL::SSL::VERIFY_PEER|OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
+        OpenSSL::SSL::VERIFY_PEER | OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
 
     temp_ca_cert = File.join(DIR, 'ca_cert.pem')
     temp_client_cert = File.join(DIR, 'invalid_client.pem')

@@ -443,7 +443,7 @@ Gem dependencies file #{@path} requires #{name} more than once.
 Gem dependencies file #{@path} includes git reference for both ref and branch but only ref is used.
       WARNING
     end
-    if (ref||branch) && tag
+    if (ref || branch) && tag
       warn <<-WARNING
 Gem dependencies file #{@path} includes git reference for both ref/branch and tag but only ref/branch is used.
       WARNING
@@ -483,7 +483,7 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
 
   def gem_group(name, options) # :nodoc:
     g = options.delete :group
-    all_groups  = g ? Array(g) : []
+    all_groups = g ? Array(g) : []
 
     groups = options.delete :groups
     all_groups |= groups if groups

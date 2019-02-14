@@ -13,7 +13,7 @@ class Gem::Request
   def self.create_with_proxy(uri, request_class, last_modified, proxy) # :nodoc:
     cert_files = get_cert_files
     proxy ||= get_proxy_from_env(uri.scheme)
-    pool       = ConnectionPools.new proxy_uri(proxy), cert_files
+    pool = ConnectionPools.new proxy_uri(proxy), cert_files
 
     new(uri, request_class, last_modified, pool.pool_for(uri))
   end

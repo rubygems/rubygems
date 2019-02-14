@@ -256,7 +256,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     @fetcher     = nil
 
     if Gem::USE_BUNDLER_FOR_GEMDEPS
-      Bundler.ui                     = Bundler::UI::Silent.new
+      Bundler.ui = Bundler::UI::Silent.new
     end
     @back_ui                       = Gem::DefaultUserInteraction.ui
     @ui                            = Gem::MockGemUi.new
@@ -1025,7 +1025,7 @@ Also, a list:
       s.add_dependency 'x', '>= 1'
     end
 
-    @pl1     = quick_gem 'pl', '1' do |s| # l for legacy
+    @pl1 = quick_gem 'pl', '1' do |s| # l for legacy
       s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
       s.platform = Gem::Platform.new 'i386-linux'
@@ -1584,7 +1584,7 @@ Also, a list:
   # :stopdoc:
   # only available in RubyGems tests
 
-  PRIVATE_KEY_PASSPHRASE      = 'Foo bar'.freeze
+  PRIVATE_KEY_PASSPHRASE = 'Foo bar'.freeze
 
   begin
     PRIVATE_KEY                 = load_key 'private'

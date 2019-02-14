@@ -89,7 +89,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
 
   private
   def self.get_relative_path(path)
-    path[0..Dir.pwd.length-1] = '.' if path.start_with?(Dir.pwd)
+    path[0..Dir.pwd.length - 1] = '.' if path.start_with?(Dir.pwd)
     path
   end
 

@@ -68,7 +68,7 @@ class TestGemAvailableSet < Gem::TestCase
 
   def test_best
     a1, _ = util_gem 'a', '1'
-    a2, _  = util_gem 'a', '2'
+    a2, _ = util_gem 'a', '2'
 
     set = Gem::AvailableSet.new
     set.add a1, @source
@@ -97,7 +97,7 @@ class TestGemAvailableSet < Gem::TestCase
 
   def test_sorted_normal_versions
     a1, _ = util_gem 'a', '1'
-    a2, _  = util_gem 'a', '2'
+    a2, _ = util_gem 'a', '2'
 
     set = Gem::AvailableSet.new
     set.add a1, @source

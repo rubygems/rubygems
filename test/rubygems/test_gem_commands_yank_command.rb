@@ -13,7 +13,7 @@ class TestGemCommandsYankCommand < Gem::TestCase
     @fetcher = Gem::RemoteFetcher.fetcher
 
     Gem.configuration.rubygems_api_key = 'key'
-    Gem.configuration.api_keys[:KEY]  = 'other'
+    Gem.configuration.api_keys[:KEY] = 'other'
   end
 
   def test_handle_options

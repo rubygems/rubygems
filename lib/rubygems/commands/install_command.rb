@@ -204,19 +204,11 @@ You can use `i` command instead of `install`.
       request_set.sorted_requests.each do |activation_request|
         say "  #{activation_request.full_name}"
       end
-    elsif options[:ignore_dependencies]
-      install_gem_without_dependencies request_set
     else
-      install_gem_with_dependencies request_set
+      @installed_specs.concat request_set.install options
     end
 
     show_install_errors dinst.errors
-  end
-
-  def install_gem_without_dependencies(request_set) # :nodoc:
-    installed_spec_set = request_set.install options
-
-    @installed_specs.push(*installed_spec_set)
   end
 
   def install_gems # :nodoc:
@@ -245,10 +237,6 @@ You can use `i` command instead of `install`.
     end
 
     exit_code
-  end
-
-  def install_gem_with_dependencies(request_set) # :nodoc:
-    @installed_specs.concat request_set.install options
   end
 
   ##

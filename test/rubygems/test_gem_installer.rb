@@ -325,7 +325,7 @@ gem 'other', version
 
     @installer.generate_bin
 
-    assert_equal true, File.directory?(util_inst_bindir)
+    assert_directory_exists (util_inst_bindir)
     installed_exec = File.join(util_inst_bindir, 'executable')
     assert_path_exists installed_exec
     assert_equal mask, File.stat(installed_exec).mode unless win_platform?
@@ -366,7 +366,7 @@ gem 'other', version
     @installer.gem_dir = @spec.gem_dir
 
     @installer.generate_bin
-    assert File.directory? util_inst_bindir
+    assert_directory_exists util_inst_bindir
     installed_exec = File.join util_inst_bindir, 'executable'
     assert_path_exists installed_exec
     assert_equal mask, File.stat(installed_exec).mode unless win_platform?
@@ -383,7 +383,7 @@ gem 'other', version
 
     Gem::Installer.exec_format = 'foo-%s-bar'
     @installer.generate_bin
-    assert_equal true, File.directory?(util_inst_bindir)
+    assert_directory_exists util_inst_bindir
     installed_exec = File.join util_inst_bindir, 'foo-executable-bar'
     assert_path_exists installed_exec
   ensure
@@ -397,7 +397,7 @@ gem 'other', version
 
     Gem::Installer.exec_format = 'foo-%s-bar'
     @installer.generate_bin
-    assert_equal true, File.directory?(util_inst_bindir)
+    assert_directory_exists util_inst_bindir
     installed_exec = File.join util_inst_bindir, 'executable'
     assert_path_exists installed_exec
   ensure
@@ -496,7 +496,7 @@ gem 'other', version
     end
 
     @installer.generate_bin
-    assert_equal true, File.directory?(util_inst_bindir)
+    assert_directory_exists util_inst_bindir
     assert_path_exists installed_exec
     assert_equal mask, File.stat(installed_exec).mode unless win_platform?
 
@@ -514,7 +514,7 @@ gem 'other', version
     @installer.gem_dir = @spec.gem_dir
 
     @installer.generate_bin
-    assert_equal true, File.directory?(util_inst_bindir)
+    assert_directory_exists util_inst_bindir
     installed_exec = File.join util_inst_bindir, 'executable'
     assert_equal true, File.symlink?(installed_exec)
     assert_equal(File.join(@spec.gem_dir, 'bin', 'executable'),
@@ -666,7 +666,7 @@ gem 'other', version
       @installer.generate_bin
     end
 
-    assert_equal true, File.directory?(util_inst_bindir)
+    assert_directory_exists util_inst_bindir
     installed_exec = File.join(util_inst_bindir, 'executable')
     assert_path_exists installed_exec
 
@@ -977,16 +977,16 @@ gem 'other', version
 
   def test_install_missing_dirs
     FileUtils.rm_f File.join(Gem.dir, 'cache')
-    FileUtils.rm_f File.join(Gem.dir, 'docs')
+    FileUtils.rm_f File.join(Gem.dir, 'doc')
     FileUtils.rm_f File.join(Gem.dir, 'specifications')
 
     use_ui @ui do
       @installer.install
     end
 
-    File.directory? File.join(Gem.dir, 'cache')
-    File.directory? File.join(Gem.dir, 'docs')
-    File.directory? File.join(Gem.dir, 'specifications')
+    assert_directory_exists File.join(Gem.dir, 'cache')
+    assert_directory_exists File.join(Gem.dir, 'doc')
+    assert_directory_exists File.join(Gem.dir, 'specifications')
 
     assert_path_exists File.join @gemhome, 'cache', @spec.file_name
     assert_path_exists File.join @gemhome, 'specifications', @spec.spec_name
@@ -1834,12 +1834,12 @@ gem 'other', version
       @installer.install
     end
 
-    assert File.directory? util_inst_bindir
+    assert_directory_exists util_inst_bindir
     installed_exec = File.join util_inst_bindir, 'executable'
     assert_path_exists installed_exec
 
-    assert File.directory? File.join(Gem.default_dir, 'specifications')
-    assert File.directory? File.join(Gem.default_dir, 'specifications', 'default')
+    assert_directory_exists File.join(Gem.default_dir, 'specifications')
+    assert_directory_exists File.join(Gem.default_dir, 'specifications', 'default')
 
     default_spec = eval File.read File.join(Gem.default_dir, 'specifications', 'default', 'a-2.gemspec')
     assert_equal Gem::Version.new("2"), default_spec.version

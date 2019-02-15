@@ -544,7 +544,7 @@ class TestGem < Gem::TestCase
 
     Gem.ensure_gem_subdirectories @gemhome, 0750
 
-    assert File.directory? File.join(@gemhome, "cache")
+    assert_directory_exists File.join(@gemhome, "cache")
 
     assert_equal 0750, File::Stat.new(@gemhome).mode & 0777
     assert_equal 0750, File::Stat.new(File.join(@gemhome, "cache")).mode & 0777
@@ -573,7 +573,7 @@ class TestGem < Gem::TestCase
 
     Gem.ensure_gem_subdirectories gemdir
 
-    assert File.directory?(util_cache_dir)
+    assert_directory_exists util_cache_dir
   end
 
   unless win_platform? || Process.uid.zero?  # only for FS that support write protection

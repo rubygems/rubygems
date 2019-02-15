@@ -201,6 +201,8 @@ You can use `i` command instead of `install`.
     else
       install_gem_with_dependencies dinst, name, req
     end
+
+    show_install_errors dinst.errors
   end
 
   def install_gem_without_dependencies(dinst, name, req) # :nodoc:
@@ -255,8 +257,6 @@ You can use `i` command instead of `install`.
     else
       @installed_specs.concat request_set.install options
     end
-
-    show_install_errors dinst.errors
   end
 
   ##

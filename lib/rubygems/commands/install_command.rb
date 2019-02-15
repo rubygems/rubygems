@@ -208,10 +208,6 @@ You can use `i` command instead of `install`.
   def install_gem_without_dependencies(dinst, name, req) # :nodoc:
     installed_spec_set = dinst.install name, req
 
-    Gem.done_installing_hooks.each do |hook|
-      hook.call dinst, installed_spec_set
-    end unless Gem.done_installing_hooks.empty?
-
     @installed_specs.push(*installed_spec_set)
   end
 

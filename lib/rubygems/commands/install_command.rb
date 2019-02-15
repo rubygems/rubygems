@@ -198,7 +198,13 @@ You can use `i` command instead of `install`.
 
     request_set = dinst.resolve_dependencies name, req
 
-    if options[:ignore_dependencies]
+    if options[:explain]
+      say "Gems to install:"
+
+      request_set.sorted_requests.each do |activation_request|
+        say "  #{activation_request.full_name}"
+      end
+    elsif options[:ignore_dependencies]
       install_gem_without_dependencies request_set
     else
       install_gem_with_dependencies request_set
@@ -242,17 +248,7 @@ You can use `i` command instead of `install`.
   end
 
   def install_gem_with_dependencies(request_set) # :nodoc:
-    if options[:explain]
-      say "Gems to install:"
-
-      request_set.sorted_requests.each do |activation_request|
-        say "  #{activation_request.full_name}"
-      end
-
-      return
-    else
-      @installed_specs.concat request_set.install options
-    end
+    @installed_specs.concat request_set.install options
   end
 
   ##

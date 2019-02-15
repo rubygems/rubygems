@@ -753,6 +753,23 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
+  def test_install_gem_ignore_dependencies_remote_platform_local
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 3
+
+      fetcher.gem 'a', 3 do |s|
+        s.platform = local
+      end
+    end
+
+    @cmd.options[:ignore_dependencies] = true
+
+    @cmd.install_gem 'a', '>= 0'
+
+    assert_equal %W[a-3-#{local}], @cmd.installed_specs.map { |spec| spec.full_name }
+  end
+
   def test_install_gem_ignore_dependencies_specific_file
     spec = util_spec 'a', 2
 

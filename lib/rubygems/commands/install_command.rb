@@ -194,62 +194,33 @@ You can use `i` command instead of `install`.
 
     req = Gem::Requirement.create(version)
 
+    dinst = Gem::DependencyInstaller.new options
+
     if options[:ignore_dependencies]
-      install_gem_without_dependencies name, req
+      install_gem_without_dependencies dinst, name, req
     else
-      inst = Gem::DependencyInstaller.new options
-      request_set = inst.resolve_dependencies name, req
-
-      if options[:explain]
-        say "Gems to install:"
-
-        request_set.sorted_requests.each do |activation_request|
-          say "  #{activation_request.full_name}"
-        end
-
-        return
-      else
-        @installed_specs.concat request_set.install options
-      end
-
-      show_install_errors inst.errors
+      install_gem_with_dependencies dinst, name, req
     end
   end
 
-  def install_gem_without_dependencies(name, req) # :nodoc:
+  def install_gem_without_dependencies(dinst, name, req) # :nodoc:
     gem = nil
 
     if local?
-      if name =~ /\.gem$/ and File.file? name
-        source = Gem::Source::SpecificFile.new name
-        spec = source.spec
-      else
-        source = Gem::Source::Local.new
-        spec = source.find_gem name, req
-      end
-      gem = source.download spec if spec
+      gem = fetch_local_gem name, req
     end
 
-    if remote? and not gem
-      dependency = Gem::Dependency.new name, req
-      dependency.prerelease = options[:prerelease]
-
-      fetcher = Gem::RemoteFetcher.fetcher
-      gem = fetcher.download_to_cache dependency
-    end
-
-    inst = Gem::Installer.at gem, options
-    inst.install
-
-    require 'rubygems/dependency_installer'
-    dinst = Gem::DependencyInstaller.new options
-    dinst.installed_gems.replace [inst.spec]
+    installed_spec_set = if remote? and not gem
+                           dinst.install name, req
+                         else
+                           install_fetched_gem dinst, gem
+                         end
 
     Gem.done_installing_hooks.each do |hook|
-      hook.call dinst, [inst.spec]
+      hook.call dinst, installed_spec_set
     end unless Gem.done_installing_hooks.empty?
 
-    @installed_specs.push(inst.spec)
+    @installed_specs.push(*installed_spec_set)
   end
 
   def install_gems # :nodoc:
@@ -278,6 +249,44 @@ You can use `i` command instead of `install`.
     end
 
     exit_code
+  end
+
+  def install_gem_with_dependencies(dinst, name, req) # :nodoc:
+    request_set = dinst.resolve_dependencies name, req
+
+    if options[:explain]
+      say "Gems to install:"
+
+      request_set.sorted_requests.each do |activation_request|
+        say "  #{activation_request.full_name}"
+      end
+
+      return
+    else
+      @installed_specs.concat request_set.install options
+    end
+
+    show_install_errors dinst.errors
+  end
+
+  def fetch_local_gem(name, req) # :nodoc:
+    if name =~ /\.gem$/ and File.file? name
+      source = Gem::Source::SpecificFile.new name
+      spec = source.spec
+    else
+      source = Gem::Source::Local.new
+      spec = source.find_gem name, req
+    end
+    source.download spec if spec
+  end
+
+  def install_fetched_gem(dinst, gem) # :nodoc:
+    inst = Gem::Installer.at gem, options
+    inst.install
+
+    dinst.installed_gems.replace [inst.spec]
+
+    [inst.spec]
   end
 
   ##

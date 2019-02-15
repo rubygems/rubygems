@@ -236,6 +236,25 @@ ERROR:  Could not find a valid gem 'bar' (= 0.5) (required by 'foo' (>= 0)) in a
     assert_match(/ould not find a valid gem 'no_such_gem'/, @ui.error)
   end
 
+  def test_execute_local_missing_ignore_dependencies
+    spec_fetcher
+
+    @cmd.options[:domain] = :local
+    @cmd.options[:ignore_dependencies] = true
+
+    @cmd.options[:args] = %w[no_such_gem]
+
+    use_ui @ui do
+      e = assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+      assert_equal 2, e.exit_code
+    end
+
+    # HACK no repository was checked
+    assert_match(/ould not find a valid gem 'no_such_gem'/, @ui.error)
+  end
+
   def test_execute_no_gem
     @cmd.options[:args] = %w[]
 

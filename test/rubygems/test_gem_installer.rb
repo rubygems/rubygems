@@ -313,7 +313,7 @@ gem 'other', version
     @installer.wrappers = true
 
     @spec.executables = %w[executable]
-    @spec.bindir = '.'
+    @spec.bindir = 'bin'
 
     exec_file = @installer.formatted_program_filename 'executable'
     exec_path = File.join @spec.gem_dir, exec_file
@@ -1828,14 +1828,13 @@ gem 'other', version
     @installer.wrappers = true
     @installer.options[:install_as_default] = true
     @installer.gem_dir = @spec.gem_dir
-    @installer.generate_bin
 
     use_ui @ui do
       @installer.install
     end
 
-    assert_directory_exists util_inst_bindir
-    installed_exec = File.join util_inst_bindir, 'executable'
+    assert_directory_exists File.join(@spec.gem_dir, 'bin')
+    installed_exec = File.join @spec.gem_dir, 'bin', 'executable'
     assert_path_exists installed_exec
 
     assert_directory_exists File.join(Gem.default_dir, 'specifications')
@@ -1844,6 +1843,38 @@ gem 'other', version
     default_spec = eval File.read File.join(Gem.default_dir, 'specifications', 'default', 'a-2.gemspec')
     assert_equal Gem::Version.new("2"), default_spec.version
     assert_equal ['bin/executable'], default_spec.files
+  end
+
+  def test_default_gem_with_exe_as_bindir
+    FileUtils.rm_f File.join(Gem.dir, 'specifications')
+
+    @spec = quick_gem 'c' do |spec|
+      util_make_exec spec, '#!/usr/bin/ruby', 'exe'
+    end
+
+    util_build_gem @spec
+
+    @spec.cache_file
+
+    installer = util_installer @spec, @gemhome
+
+    installer.options[:install_as_default] = true
+    installer.gem_dir = @spec.gem_dir
+
+    use_ui @ui do
+      installer.install
+    end
+
+    assert_directory_exists File.join(@spec.gem_dir, 'exe')
+    installed_exec = File.join @spec.gem_dir, 'exe', 'executable'
+    assert_path_exists installed_exec
+
+    assert_directory_exists File.join(Gem.default_dir, 'specifications')
+    assert_directory_exists File.join(Gem.default_dir, 'specifications', 'default')
+
+    default_spec = eval File.read File.join(Gem.default_dir, 'specifications', 'default', 'c-2.gemspec')
+    assert_equal Gem::Version.new("2"), default_spec.version
+    assert_equal ['exe/executable'], default_spec.files
   end
 
   def old_ruby_required(requirement)

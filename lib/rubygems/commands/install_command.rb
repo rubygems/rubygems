@@ -196,17 +196,19 @@ You can use `i` command instead of `install`.
 
     dinst = Gem::DependencyInstaller.new options
 
+    request_set = dinst.resolve_dependencies name, req
+
     if options[:ignore_dependencies]
-      install_gem_without_dependencies dinst, name, req
+      install_gem_without_dependencies request_set
     else
-      install_gem_with_dependencies dinst, name, req
+      install_gem_with_dependencies request_set
     end
 
     show_install_errors dinst.errors
   end
 
-  def install_gem_without_dependencies(dinst, name, req) # :nodoc:
-    installed_spec_set = dinst.install name, req
+  def install_gem_without_dependencies(request_set) # :nodoc:
+    installed_spec_set = request_set.install options
 
     @installed_specs.push(*installed_spec_set)
   end
@@ -239,9 +241,7 @@ You can use `i` command instead of `install`.
     exit_code
   end
 
-  def install_gem_with_dependencies(dinst, name, req) # :nodoc:
-    request_set = dinst.resolve_dependencies name, req
-
+  def install_gem_with_dependencies(request_set) # :nodoc:
     if options[:explain]
       say "Gems to install:"
 

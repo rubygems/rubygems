@@ -61,6 +61,11 @@ when %w(before_script)
     run('gem', %w(list --details))
     run('gem', %w(env))
   else
+    # Fix incorrect default gem specifications on ruby 2.6.1. Can be removed
+    # when 2.6.2 is released and we start testing against it. See
+    # https://bugs.ruby-lang.org/issues/15582 for more information
+    run('gem', %w(install etc:1.0.1 --default)) if RUBY_VERSION == "2.6.1"
+
     with_retries { run('rake', %w(spec:travis:deps)) }
   end
 when %w(rubocop)

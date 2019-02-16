@@ -111,6 +111,7 @@ class Gem::Resolver
     @skip_gems           = {}
     @soft_missing        = false
     @stats               = Gem::Resolver::Stats.new
+    @find_possible       = {}
   end
 
   def explain(stage, *data) # :nodoc:
@@ -185,12 +186,14 @@ class Gem::Resolver
   # Proceed with resolution! Returns an array of ActivationRequest objects.
 
   def resolve
+    @find_possible = {} # caches find_possible  results
     locking_dg = Molinillo::DependencyGraph.new
     Molinillo::Resolver.new(self, self).resolve(@needed.map { |d| DependencyRequest.new d, nil }, locking_dg).tsort.map(&:payload).compact
   rescue Molinillo::VersionConflict => e
     conflict = e.conflicts.values.first
     raise Gem::DependencyResolutionError, Conflict.new(conflict.requirement_trees.first.first, conflict.existing, conflict.requirement)
   ensure
+    @find_possible = {}
     @output.close if defined?(@output) and !debug?
   end
 
@@ -199,6 +202,9 @@ class Gem::Resolver
   # returns those that match the local platform and all those that match.
 
   def find_possible(dependency) # :nodoc:
+    dep_str = dependency.to_s
+    return @find_possible[dep_str] if @find_possible.key? dep_str
+
     all = @set.find_all dependency
 
     if (skip_dep_gems = skip_gems[dependency.name]) && !skip_dep_gems.empty?
@@ -211,7 +217,7 @@ class Gem::Resolver
 
     matching_platform = select_local_platforms all
 
-    return matching_platform, all
+    @find_possible[dep_str] = [matching_platform, all]
   end
 
   ##

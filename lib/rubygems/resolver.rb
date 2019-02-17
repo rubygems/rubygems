@@ -199,7 +199,8 @@ class Gem::Resolver
 
   ##
   # Extracts the specifications that may be able to fulfill +dependency+ and
-  # returns those that match the local platform and all those that match.
+  # returns an array whose first element is those that match the local platform
+  # and Ruby version.  The second element is all those that match the dependency.
 
   def find_possible(dependency) # :nodoc:
     dep_str = dependency.to_s
@@ -215,9 +216,7 @@ class Gem::Resolver
       all = matching unless matching.empty?
     end
 
-    matching_platform = select_local_platforms all
-
-    @find_possible[dep_str] = [matching_platform, all]
+    @find_possible[dep_str] = [select_local_platforms_ruby_version(all), all]
   end
 
   ##
@@ -226,6 +225,21 @@ class Gem::Resolver
   def select_local_platforms(specs) # :nodoc:
     specs.select do |spec|
       Gem::Platform.installable? spec
+    end
+  end
+
+  ##
+  # Returns the gems in +specs+ that match the local platform and also the Ruby
+  # version.
+  # TODO: can this return just the first matching, rather than all?
+
+  def select_local_platforms_ruby_version(specs) # :nodoc:
+    ruby_version = Gem.ruby_version
+    specs.select do |spec|
+      Gem::Platform.installable?(spec) &&
+      (Gem::Specification === spec ?
+        spec.required_ruby_version.satisfied_by?(ruby_version) :
+        spec.spec.required_ruby_version.satisfied_by?(ruby_version))
     end
   end
 
@@ -251,7 +265,7 @@ class Gem::Resolver
 
     sources.each do |source|
       groups[source].
-        sort_by { |spec| [spec.version, Gem::Platform.local =~ spec.platform ? 1 : 0] }.
+        sort_by { |spec| [spec.version, spec.platform == Gem::Platform::RUBY ? -1 : 1] }.
         map { |spec| ActivationRequest.new spec, dependency, [] }.
         each { |activation_request| activation_requests << activation_request }
     end

@@ -169,6 +169,37 @@ class TestGemSpecFetcher < Gem::TestCase
     assert_equal "bad news from the internet (#{@gem_repo})", sfp.error.message
   end
 
+  def test_spec_for_dependency_required_best_only
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2
+      fetcher.spec 'a', 2 do |s|
+        s.required_ruby_version = Gem::Requirement.new "< 2.5.0.a"
+        s.platform = Gem::Platform.local
+      end
+      fetcher.spec 'a', 3 do |s|
+        s.required_ruby_version = Gem::Requirement.new ">= 2.6.0"
+      end
+      fetcher.spec 'a', 3 do |s|
+        s.required_ruby_version = Gem::Requirement.new ">= 2.6.0"
+        s.platform = Gem::Platform.local
+      end
+    end
+
+    util_set_RUBY_VERSION '2.5.0'
+
+    dep = Gem::Dependency.new 'a'
+    specs_and_sources, _ = @sf.spec_for_dependency dep, best_only: true
+
+    spec_names = specs_and_sources.map do |spec, source_uri|
+      [spec.full_name, source_uri]
+    end
+
+    assert_equal [['a-2', Gem::Source.new(@gem_repo)]],
+                 spec_names
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
   def test_suggest_gems_from_name_latest
     spec_fetcher do|fetcher|
       fetcher.spec 'example', 1

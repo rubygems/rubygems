@@ -1123,6 +1123,35 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal [a1_x86_mingw32], releases
   end
 
+  def test_find_gems_with_sources_with_best_only_plat_ruby_vers
+    a2,           = util_gem 'a', 2
+    a2_ruby_plat, = util_gem 'a', 2 do |s|
+      s.required_ruby_version = Gem::Requirement.new "< 2.5.0.a"
+      s.platform = Gem::Platform.local
+    end
+    a3_ruby, = util_gem 'a', 3 do |s|
+      s.required_ruby_version = Gem::Requirement.new ">= 2.6.0"
+    end
+    a3_ruby_plat, = util_gem 'a', 3 do |s|
+      s.required_ruby_version = Gem::Requirement.new ">= 2.6.0"
+      s.platform = Gem::Platform.local
+    end
+    util_setup_spec_fetcher a2, a2_ruby_plat, a3_ruby, a3_ruby_plat
+
+    util_set_RUBY_VERSION '2.5.0'
+
+    installer = Gem::DependencyInstaller.new
+
+    dependency = Gem::Dependency.new('a', Gem::Requirement.default)
+
+    releases =
+      installer.find_gems_with_sources(dependency, true).all_specs
+
+    assert_equal [a2], releases
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
   def test_find_gems_with_sources_with_bad_source
     Gem.sources.replace ["http://not-there.nothing"]
 

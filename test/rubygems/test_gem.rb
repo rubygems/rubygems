@@ -155,8 +155,10 @@ class TestGem < Gem::TestCase
 
   def test_self_install_permissions_with_format_executable_and_non_standard_ruby_install_name
     Gem::Installer.exec_format = nil
-    ruby_install_name 'ruby27' do
-      assert_self_install_permissions(format_executable: true)
+    with_clean_path_to_ruby do
+      ruby_install_name 'ruby27' do
+        assert_self_install_permissions(format_executable: true)
+      end
     end
   ensure
     Gem::Installer.exec_format = nil

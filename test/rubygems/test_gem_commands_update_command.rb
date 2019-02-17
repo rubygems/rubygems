@@ -200,6 +200,42 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
                  @ui.error
   end
 
+  def test_execute_required_ruby_version
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.download 'a', 2
+      fetcher.download 'a', 2 do |s|
+        s.required_ruby_version = '< 2.5.0.a'
+        s.platform = local
+      end
+      fetcher.download 'a', 3 do |s|
+        s.required_ruby_version = '>= 2.6.0'
+      end
+      fetcher.download 'a', 3 do |s|
+        s.required_ruby_version = '>= 2.6.0'
+        s.platform = local
+      end
+
+      fetcher.spec 'a', 1
+    end
+
+    util_set_RUBY_VERSION '2.5.0'
+
+    @cmd.options[:explain] = true
+    @cmd.options[:args] = %w[a]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+    assert_equal "Gems to update:", out.shift
+    assert_equal "  a-2", out.shift
+    assert_empty out
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
   # before:
   #   a1 -> c1.2
   # after:

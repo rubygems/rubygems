@@ -83,18 +83,20 @@ class Gem::SpecFetcher
   #
   # If +matching_platform+ is false, gems for all platforms are returned.
 
-  def search_for_dependency(dependency, matching_platform=true)
+  def search_for_dependency(dependency, matching_platform=true, best_only: false)
     found = {}
 
     rejected_specs = {}
 
+    # if best_only is true, need to force from :latest, as it may not contain
+    # an installable gem
     if dependency.prerelease?
-      if dependency.specific?
+      if dependency.specific? || best_only
         type = :complete
       else
         type = :abs_latest
       end
-    elsif dependency.latest_version?
+    elsif dependency.latest_version? && !best_only
       type = :latest
     else
       type = :released
@@ -138,7 +140,6 @@ class Gem::SpecFetcher
     return [tuples, errors]
   end
 
-
   ##
   # Return all gem name tuples who's names match +obj+
 
@@ -157,23 +158,46 @@ class Gem::SpecFetcher
     tuples
   end
 
-
   ##
   # Find and fetch specs that match +dependency+.
   #
   # If +matching_platform+ is false, gems for all platforms are returned.
 
-  def spec_for_dependency(dependency, matching_platform=true)
-    tuples, errors = search_for_dependency(dependency, matching_platform)
+  def spec_for_dependency(dependency, matching_platform=true, best_only: false)
+    tuples, errors = search_for_dependency(dependency, matching_platform, best_only: best_only)
 
     specs = []
-    tuples.each do |tup, source|
-      begin
-        spec = source.fetch_spec(tup)
-      rescue Gem::RemoteFetcher::FetchError => e
-        errors << Gem::SourceFetchProblem.new(source, e)
+
+    unless tuples.empty?
+      if best_only
+        tuples.sort_by! do |t| [t[0].version,
+          Gem.platforms.last == Gem::Platform::RUBY ?
+            (t[0].platform == Gem::Platform::RUBY ? 1 : 0) :
+            (t[0].platform =~ Gem.platforms.last  ? 1 : 0) ]
+        end
+        tuples.reverse.each do |tup, source|
+          begin
+            spec = source.fetch_spec(tup)
+          rescue Gem::RemoteFetcher::FetchError => e
+            errors << Gem::SourceFetchProblem.new(source, e)
+          else
+            if spec.required_ruby_version.satisfied_by? Gem.ruby_version
+              specs << [spec, source]
+              break
+            end
+          end
+        end
       else
-        specs << [spec, source]
+        tuples.each do |tup, source|
+          begin
+            spec = source.fetch_spec(tup)
+          rescue Gem::RemoteFetcher::FetchError => e
+            errors << Gem::SourceFetchProblem.new(source, e)
+          else
+            next unless spec.required_ruby_version.satisfied_by?(Gem.ruby_version)
+            specs << [spec, source]
+          end
+        end
       end
     end
 

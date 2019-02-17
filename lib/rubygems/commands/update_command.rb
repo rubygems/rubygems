@@ -125,7 +125,7 @@ command to remove old versions.
 
     fetcher = Gem::SpecFetcher.fetcher
 
-    spec_tuples, errors = fetcher.search_for_dependency dependency
+    spec_tuples, errors = fetcher.search_for_dependency dependency, best_only: true
 
     error = errors.find { |e| e.respond_to? :exception }
 
@@ -147,17 +147,13 @@ command to remove old versions.
   end
 
   def highest_remote_name_tuple(spec) # :nodoc:
-    spec_tuples = fetch_remote_gems spec
+    dependency = Gem::Dependency.new spec.name, "> #{spec.version}"
+    dependency.prerelease = options[:prerelease]
 
-    matching_gems = spec_tuples.select do |g,_|
-      g.name == spec.name and g.match_platform?
-    end
+    fetcher = Gem::SpecFetcher.fetcher
+    specs, _ = fetcher.spec_for_dependency dependency, best_only: true
 
-    highest_remote_gem = matching_gems.max
-
-    highest_remote_gem ||= [Gem::NameTuple.null]
-
-    highest_remote_gem.first
+    specs.empty? ? Gem::NameTuple.null : specs[0][0].name_tuple
   end
 
   def install_rubygems(version) # :nodoc:

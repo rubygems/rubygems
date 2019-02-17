@@ -98,7 +98,7 @@ class Gem::RemoteFetcher
   # larger, more encompassing effort. -erikh
 
   def download_to_cache(dependency)
-    found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dependency
+    found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dependency, best_only: true
 
     return if found.empty?
 

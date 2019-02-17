@@ -61,8 +61,8 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
 
     found = found.select do |s|
       Gem::Source::SpecificFile === s.source or
-        Gem::Platform::RUBY == s.platform or
-        Gem::Platform.local === s.platform
+        s.platform == Gem::Platform::RUBY or
+        Gem::Platform.new(s.platform) =~ Gem.platforms.last
     end
 
     if found.empty?
@@ -72,9 +72,12 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       raise exc
     end
 
-    newest = found.max_by do |s|
-      [s.version, s.platform == Gem::Platform::RUBY ? -1 : 1]
-    end
+    newest =
+      found.sort_by do |spec| [spec.version,
+        spec.platform == Gem::Platform::RUBY ? -1 : 1]
+      end.reverse.find do
+        |s| s.spec.required_ruby_version.satisfied_by? Gem.ruby_version
+      end
 
     @always_install << newest.spec
   end

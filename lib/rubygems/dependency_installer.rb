@@ -212,56 +212,26 @@ class Gem::DependencyInstaller
     end
 
     if consider_remote?
-      begin
-        # TODO this is pulled from #spec_for_dependency to allow
-        # us to filter tuples before fetching specs.
-        #
-        tuples, errors = Gem::SpecFetcher.fetcher.search_for_dependency dep
+      specs, errors = Gem::SpecFetcher.fetcher.spec_for_dependency(dep, best_only: best_only)
 
-        if best_only && !tuples.empty?
-          tuples.sort! do |a,b|
-            if b[0].version == a[0].version
-              if b[0].platform != Gem::Platform::RUBY
-                1
-              else
-                -1
-              end
-            else
-              b[0].version <=> a[0].version
-            end
-          end
-          tuples = [tuples.first]
-        end
-
-        specs = []
-        tuples.each do |tup, source|
-          begin
-            spec = source.fetch_spec(tup)
-          rescue Gem::RemoteFetcher::FetchError => e
-            errors << Gem::SourceFetchProblem.new(source, e)
-          else
-            specs << [spec, source]
-          end
-        end
-
-        if @errors
-          @errors += errors
-        else
-          @errors = errors
-        end
-
-        set << specs
-
-      rescue Gem::RemoteFetcher::FetchError => e
+      unless errors.empty?
+        @domain = :local
         # FIX if there is a problem talking to the network, we either need to always tell
         # the user (no really_verbose) or fail hard, not silently tell them that we just
         # couldn't find their requested gem.
         verbose do
-          "Error fetching remote data:\t\t#{e.message}\n" \
-            "Falling back to local-only install"
+          "Error fetching remote data:\t\t#{e[0].message}\n" \
+          "Falling back to local-only install"
         end
-        @domain = :local
       end
+
+      if @errors
+        @errors += errors
+      else
+        @errors = errors
+      end
+
+      set << specs unless specs.empty?
     end
 
     set

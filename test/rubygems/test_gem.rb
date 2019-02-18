@@ -952,7 +952,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_ruby_escaping_spaces_in_path
-    orig_ruby = Gem.ruby
     orig_bindir = RbConfig::CONFIG['bindir']
     orig_ruby_install_name = RbConfig::CONFIG['ruby_install_name']
     orig_exe_ext = RbConfig::CONFIG['EXEEXT']
@@ -960,18 +959,17 @@ class TestGem < Gem::TestCase
     RbConfig::CONFIG['bindir'] = "C:/Ruby 1.8/bin"
     RbConfig::CONFIG['ruby_install_name'] = "ruby"
     RbConfig::CONFIG['EXEEXT'] = ".exe"
-    Gem.instance_variable_set("@ruby", nil)
 
-    assert_equal "\"C:/Ruby 1.8/bin/ruby.exe\"", Gem.ruby
+    with_clean_path_to_ruby do
+      assert_equal "\"C:/Ruby 1.8/bin/ruby.exe\"", Gem.ruby
+    end
   ensure
-    Gem.instance_variable_set("@ruby", orig_ruby)
     RbConfig::CONFIG['bindir'] = orig_bindir
     RbConfig::CONFIG['ruby_install_name'] = orig_ruby_install_name
     RbConfig::CONFIG['EXEEXT'] = orig_exe_ext
   end
 
   def test_self_ruby_path_without_spaces
-    orig_ruby = Gem.ruby
     orig_bindir = RbConfig::CONFIG['bindir']
     orig_ruby_install_name = RbConfig::CONFIG['ruby_install_name']
     orig_exe_ext = RbConfig::CONFIG['EXEEXT']
@@ -979,11 +977,11 @@ class TestGem < Gem::TestCase
     RbConfig::CONFIG['bindir'] = "C:/Ruby18/bin"
     RbConfig::CONFIG['ruby_install_name'] = "ruby"
     RbConfig::CONFIG['EXEEXT'] = ".exe"
-    Gem.instance_variable_set("@ruby", nil)
 
-    assert_equal "C:/Ruby18/bin/ruby.exe", Gem.ruby
+    with_clean_path_to_ruby do
+      assert_equal "C:/Ruby18/bin/ruby.exe", Gem.ruby
+    end
   ensure
-    Gem.instance_variable_set("@ruby", orig_ruby)
     RbConfig::CONFIG['bindir'] = orig_bindir
     RbConfig::CONFIG['ruby_install_name'] = orig_ruby_install_name
     RbConfig::CONFIG['EXEEXT'] = orig_exe_ext
@@ -1902,6 +1900,16 @@ You may need to `gem install -g` to install missing gems
     else
       RbConfig::CONFIG.delete 'ruby_install_name'
     end
+  end
+
+  def with_clean_path_to_ruby
+    orig_ruby = Gem.ruby
+
+    Gem.instance_variable_set :@ruby, nil
+
+    yield
+  ensure
+    Gem.instance_variable_set("@ruby", orig_ruby)
   end
 
   def with_plugin(path)

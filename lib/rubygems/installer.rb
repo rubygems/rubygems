@@ -729,9 +729,14 @@ class Gem::Installer
       unpack or File.writable?(gem_home)
   end
 
-  def verify_spec_name
-    return if spec.name =~ Gem::Specification::VALID_NAME_PATTERN
-    raise Gem::InstallError, "#{spec} has an invalid name"
+  def verify_spec
+    unless spec.name =~ Gem::Specification::VALID_NAME_PATTERN
+      raise Gem::InstallError, "#{spec} has an invalid name"
+    end
+
+    if spec.raw_require_paths.any?{|path| path =~ /\R/ }
+      raise Gem::InstallError, "#{spec} has an invalid require_paths"
+    end
   end
 
   ##
@@ -880,9 +885,9 @@ TEXT
   def pre_install_checks
     verify_gem_home options[:unpack]
 
-    # The name must be verified first, since it could contain ruby code that
-    # would be eval'ed in #ensure_loadable_spec
-    verify_spec_name
+    # The name and require_paths must be verified first, since it could contain
+    # ruby code that would be eval'ed in #ensure_loadable_spec
+    verify_spec
 
     ensure_loadable_spec
 

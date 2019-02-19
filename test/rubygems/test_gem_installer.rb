@@ -1460,7 +1460,7 @@ gem 'other', version
     def spec.full_name # so the spec is buildable
       "malicious-1"
     end
-    def spec.validate; end
+    def spec.validate(*args); end
 
     util_build_gem spec
 
@@ -1474,6 +1474,27 @@ gem 'other', version
       assert_equal "#<Gem::Specification name=malicious\n::Object.const_set(:FROM_EVAL, true)# version=1> has an invalid name", e.message
     end
     refute defined?(::Object::FROM_EVAL)
+  end
+
+  def test_pre_install_checks_malicious_require_paths_before_eval
+    spec = util_spec "malicious", '1'
+    def spec.full_name # so the spec is buildable
+      "malicious-1"
+    end
+    def spec.validate(*args); end
+    spec.require_paths = ["malicious\n``"]
+
+    util_build_gem spec
+
+    gem = File.join(@gemhome, 'cache', spec.file_name)
+
+    use_ui @ui do
+      @installer = Gem::Installer.at gem
+      e = assert_raises Gem::InstallError do
+        @installer.pre_install_checks
+      end
+      assert_equal "#<Gem::Specification name=malicious version=1> has an invalid require_paths", e.message
+    end
   end
 
   def test_shebang

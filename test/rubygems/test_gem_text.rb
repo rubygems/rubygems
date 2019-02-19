@@ -91,6 +91,6 @@ Without the wrapping, the text might not look good in the RSS feed.
   end
 
   def test_clean_text
-    assert_equal ".]2;nyan", clean_text("\e]2;nyan\a")
+    assert_equal ".]2;nyan.", clean_text("\e]2;nyan\a")
   end
 end

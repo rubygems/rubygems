@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 require 'rubygems/remote_fetcher'
+require 'rubygems/text'
 
 ##
 # Utility methods for using the RubyGems API.
 
 module Gem::GemcutterUtilities
+
+  include Gem::Text
 
   # TODO: move to Gem::Command
   OptionParser.accept Symbol do |value|

@@ -7,6 +7,7 @@
 
 require 'rubygems/command'
 require 'rubygems/user_interaction'
+require 'rubygems/text'
 
 ##
 # The command manager registers and installs all the individual sub-commands
@@ -32,6 +33,7 @@ require 'rubygems/user_interaction'
 
 class Gem::CommandManager
 
+  include Gem::Text
   include Gem::UserInteraction
 
   BUILTIN_COMMANDS = [ # :nodoc:

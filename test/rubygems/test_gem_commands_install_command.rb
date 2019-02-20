@@ -96,6 +96,64 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     assert_match "1 gem installed", @ui.output
   end
 
+  def test_execute_local_dependency_nonexistent
+    specs = spec_fetcher do |fetcher|
+      fetcher.gem 'foo', 2, 'bar' => '0.5'
+    end
+
+    @cmd.options[:domain] = :local
+
+    FileUtils.mv specs['foo-2'].cache_file, @tempdir
+
+    @cmd.options[:args] = ['foo']
+
+    use_ui @ui do
+      orig_dir = Dir.pwd
+      begin
+        Dir.chdir @tempdir
+        e = assert_raises Gem::MockGemUi::TermError do
+          @cmd.execute
+        end
+        assert_equal 2, e.exit_code
+      ensure
+        Dir.chdir orig_dir
+      end
+    end
+
+    expected = <<-EXPECTED
+ERROR:  Could not find a valid gem 'bar' (= 0.5) (required by 'foo' (>= 0)) in any repository
+    EXPECTED
+
+    assert_equal expected, @ui.error
+  end
+
+  def test_execute_local_dependency_nonexistent_ignore_dependencies
+    specs = spec_fetcher do |fetcher|
+      fetcher.gem 'foo', 2, 'bar' => '0.5'
+    end
+
+    @cmd.options[:domain] = :local
+    @cmd.options[:ignore_dependencies] = true
+
+    FileUtils.mv specs['foo-2'].cache_file, @tempdir
+
+    @cmd.options[:args] = ['foo']
+
+    use_ui @ui do
+      orig_dir = Dir.pwd
+      begin
+        Dir.chdir orig_dir
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+          @cmd.execute
+        end
+      ensure
+        Dir.chdir orig_dir
+      end
+    end
+
+    assert_match "1 gem installed", @ui.output
+  end
+
   def test_execute_local_transitive_prerelease
     specs = spec_fetcher do |fetcher|
       fetcher.download 'a', 2, 'b' => "2.a", 'c' => '3'
@@ -164,6 +222,25 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     spec_fetcher
 
     @cmd.options[:domain] = :local
+
+    @cmd.options[:args] = %w[no_such_gem]
+
+    use_ui @ui do
+      e = assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+      assert_equal 2, e.exit_code
+    end
+
+    # HACK no repository was checked
+    assert_match(/ould not find a valid gem 'no_such_gem'/, @ui.error)
+  end
+
+  def test_execute_local_missing_ignore_dependencies
+    spec_fetcher
+
+    @cmd.options[:domain] = :local
+    @cmd.options[:ignore_dependencies] = true
 
     @cmd.options[:args] = %w[no_such_gem]
 

@@ -204,17 +204,7 @@ You can use `i` command instead of `install`.
   end
 
   def install_gem_without_dependencies(dinst, name, req) # :nodoc:
-    gem = nil
-
-    if local?
-      gem = fetch_local_gem name, req
-    end
-
-    installed_spec_set = if remote? and not gem
-                           dinst.install name, req
-                         else
-                           install_fetched_gem dinst, gem
-                         end
+    installed_spec_set = dinst.install name, req
 
     Gem.done_installing_hooks.each do |hook|
       hook.call dinst, installed_spec_set
@@ -267,26 +257,6 @@ You can use `i` command instead of `install`.
     end
 
     show_install_errors dinst.errors
-  end
-
-  def fetch_local_gem(name, req) # :nodoc:
-    if name =~ /\.gem$/ and File.file? name
-      source = Gem::Source::SpecificFile.new name
-      spec = source.spec
-    else
-      source = Gem::Source::Local.new
-      spec = source.find_gem name, req
-    end
-    source.download spec if spec
-  end
-
-  def install_fetched_gem(dinst, gem) # :nodoc:
-    inst = Gem::Installer.at gem, options
-    inst.install
-
-    dinst.installed_gems.replace [inst.spec]
-
-    [inst.spec]
   end
 
   ##

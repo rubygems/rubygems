@@ -196,21 +196,19 @@ You can use `i` command instead of `install`.
 
     dinst = Gem::DependencyInstaller.new options
 
-    if options[:ignore_dependencies]
-      install_gem_without_dependencies dinst, name, req
+    request_set = dinst.resolve_dependencies name, req
+
+    if options[:explain]
+      say "Gems to install:"
+
+      request_set.sorted_requests.each do |activation_request|
+        say "  #{activation_request.full_name}"
+      end
     else
-      install_gem_with_dependencies dinst, name, req
+      @installed_specs.concat request_set.install options
     end
-  end
 
-  def install_gem_without_dependencies(dinst, name, req) # :nodoc:
-    installed_spec_set = dinst.install name, req
-
-    Gem.done_installing_hooks.each do |hook|
-      hook.call dinst, installed_spec_set
-    end unless Gem.done_installing_hooks.empty?
-
-    @installed_specs.push(*installed_spec_set)
+    show_install_errors dinst.errors
   end
 
   def install_gems # :nodoc:
@@ -239,24 +237,6 @@ You can use `i` command instead of `install`.
     end
 
     exit_code
-  end
-
-  def install_gem_with_dependencies(dinst, name, req) # :nodoc:
-    request_set = dinst.resolve_dependencies name, req
-
-    if options[:explain]
-      say "Gems to install:"
-
-      request_set.sorted_requests.each do |activation_request|
-        say "  #{activation_request.full_name}"
-      end
-
-      return
-    else
-      @installed_specs.concat request_set.install options
-    end
-
-    show_install_errors dinst.errors
   end
 
   ##

@@ -737,6 +737,18 @@ class Gem::Installer
     if spec.raw_require_paths.any?{|path| path =~ /\R/ }
       raise Gem::InstallError, "#{spec} has an invalid require_paths"
     end
+
+    if spec.extensions.any?{|ext| ext =~ /\R/ }
+      raise Gem::InstallError, "#{spec} has an invalid extensions"
+    end
+
+    if spec.specification_version.to_s =~ /\R/
+      raise Gem::InstallError, "#{spec} has an invalid specification_version"
+    end
+
+    if spec.dependencies.any? {|dep| dep.type =~ /\R/ || dep.name =~ /\R/ }
+      raise Gem::InstallError, "#{spec} has an invalid dependencies"
+    end
   end
 
   ##

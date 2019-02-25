@@ -13,17 +13,12 @@ require 'rubygems/remote_fetcher'
 #   @fetcher.data['http://gems.example.com/yaml'] = source_index.to_yaml
 #   Gem::RemoteFetcher.fetcher = @fetcher
 #
-#   # use sequence if multiple responses are needed
+#   use nested array if multiple response is needed
 #
-#   @fetcher.data['http://gems.example.com/sequence'] = [[1, 2, 3], [4, 5, 6]]
-#   @fetcher.fetch_path('http://gems.example.com/sequence') # => [1, 2, 3]
-#   @fetcher.fetch_path('http://gems.example.com/sequence') # => [4, 5, 6]
+#   @fetcher.data['http://gems.example.com/sequence'] = [['Success', 200, 'OK'], ['Failed', 401, 'Unauthorized']]
 #
-#   # procs can be accepted
-#
-#   @fetcher.data['http://gems.example.com/random'] = proc do
-#     Random.rand
-#   end
+#   @fetcher.fetch_path('http://gems.example.com/sequence') # => ['Success', 200, 'OK']
+#   @fetcher.fetch_path('http://gems.example.com/sequence') # => ['Failed', 401, 'Unauthorized']
 #
 #   # invoke RubyGems code
 #

@@ -715,11 +715,11 @@ class Gem::Installer
       raise Gem::InstallError, "#{spec} has an invalid name"
     end
 
-    if spec.raw_require_paths.any?{|path| path =~ /\R/ }
+    if spec.raw_require_paths.any?{|path| path =~ /\r\n|\r|\n/ }
       raise Gem::InstallError, "#{spec} has an invalid require_paths"
     end
 
-    if spec.extensions.any?{|ext| ext =~ /\R/ }
+    if spec.extensions.any?{|ext| ext =~ /\r\n|\r|\n/ }
       raise Gem::InstallError, "#{spec} has an invalid extensions"
     end
 
@@ -727,7 +727,7 @@ class Gem::Installer
       raise Gem::InstallError, "#{spec} has an invalid specification_version"
     end
 
-    if spec.dependencies.any? {|dep| dep.type =~ /\R/ || dep.name =~ /\R/ }
+    if spec.dependencies.any? {|dep| dep.type =~ /\r\n|\r|\n/ || dep.name =~ /\r\n|\r|\n/ }
       raise Gem::InstallError, "#{spec} has an invalid dependencies"
     end
   end

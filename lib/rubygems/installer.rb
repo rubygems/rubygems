@@ -742,7 +742,7 @@ class Gem::Installer
       raise Gem::InstallError, "#{spec} has an invalid extensions"
     end
 
-    if spec.specification_version.to_s =~ /\R/
+    unless spec.specification_version.to_s =~ /\A\d+\z/
       raise Gem::InstallError, "#{spec} has an invalid specification_version"
     end
 

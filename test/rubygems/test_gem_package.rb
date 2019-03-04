@@ -481,6 +481,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_extract_symlink_parent_doesnt_delete_user_dir
+    skip if RUBY_VERSION <= "1.8.7"
+
     package = Gem::Package.new @gem
 
     # Extract into a subdirectory of @destination; if this test fails it writes

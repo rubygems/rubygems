@@ -31,6 +31,9 @@ Layout/EndOfLine:
   Enabled: true
   EnforcedStyle: lf
 
+Layout/EmptyLines:
+  Enabled: true
+
 Layout/EmptyLinesAroundClassBody:
   Enabled: true
   EnforcedStyle: empty_lines_except_namespace

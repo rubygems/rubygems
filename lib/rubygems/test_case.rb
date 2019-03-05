@@ -716,7 +716,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   end
   deprecate :quick_spec, :util_spec, 2018, 12
 
-
   ##
   # Builds a gem from +spec+ and places it in <tt>File.join @gemhome,
   # 'cache'</tt>.  Automatically creates files based on +spec.files+

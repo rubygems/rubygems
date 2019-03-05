@@ -234,7 +234,6 @@ By default, this RubyGems will install gem as:
     end
   end
 
-
   def install_executables(bin_dir)
     @bin_file_names = []
 

@@ -6,7 +6,6 @@
 # See LICENSE.txt for permissions.
 #++
 
-
 require 'rubygems/version'
 require 'rubygems/requirement'
 require 'rubygems/platform'
@@ -2028,8 +2027,6 @@ class Gem::Specification < Gem::BasicSpecification
     @installed_by_version ||= nil
     yaml_initialize coder.tag, coder.map
   end
-
-
 
   eval <<-RB, binding, __FILE__, __LINE__ + 1
     def set_nil_attributes_to_nil

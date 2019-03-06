@@ -196,7 +196,8 @@ class Gem::Resolver
 
   ##
   # Extracts the specifications that may be able to fulfill +dependency+ and
-  # returns those that match the local platform and all those that match.
+  # returns an array whose first element is those that match the local platform
+  # and the second element is all those that match the dependency.
 
   def find_possible(dependency) # :nodoc:
     all = @set.find_all dependency

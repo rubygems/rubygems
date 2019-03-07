@@ -77,6 +77,34 @@ class TestGemResolverInstallerSet < Gem::TestCase
     end
   end
 
+  def test_add_always_install_required_ruby_version
+    spec_fetcher do |fetcher|
+      fetcher.spec 'a', 2
+      fetcher.spec 'a', 2 do |s|
+        s.required_ruby_version = Gem::Requirement.new "< 2.5.0.a"
+        s.platform = Gem::Platform.local
+      end
+      fetcher.spec 'a', 3 do |s|
+        s.required_ruby_version = Gem::Requirement.new ">= 2.6.0"
+      end
+      fetcher.spec 'a', 3 do |s|
+        s.required_ruby_version = Gem::Requirement.new ">= 2.6.0"
+        s.platform = Gem::Platform.local
+      end
+    end
+
+    util_set_RUBY_VERSION '2.5.0'
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    spec = set.add_always_install dep('a', '>= 0')
+
+    assert_equal 1, spec.length
+    assert_equal 'a-2', spec[0].full_name
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
   def test_add_local
     a_1, a_1_gem = util_gem 'a', 1
 

@@ -505,6 +505,63 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
   end
 
+  def test_execute_required_ruby_version
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.download 'a', 2
+      fetcher.download 'a', 2 do |s|
+        s.required_ruby_version = '< 2.5.0.a'
+        s.platform = local
+      end
+      fetcher.download 'a', 3 do |s|
+        s.required_ruby_version = '>= 2.6.0'
+      end
+      fetcher.download 'a', 3 do |s|
+        s.required_ruby_version = '>= 2.6.0'
+        s.platform = local
+      end
+    end
+
+    util_set_RUBY_VERSION '2.5.0'
+
+    @cmd.options[:args] = %w[a]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    assert_equal %w[a-2], @cmd.installed_specs.map { |spec| spec.full_name }
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
+  def test_execute_required_ruby_version2
+    local = Gem::Platform.local
+    spec_fetcher do |fetcher|
+      fetcher.gem 'a', 2.0
+      fetcher.gem 'a', 2.0 do |s|
+        s.required_ruby_version = '< 2.6.a'
+        s.platform = local
+      end
+    end
+
+    util_set_RUBY_VERSION '2.6.0'
+
+    @cmd.options[:args] = %w[a]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    assert_equal %w[a-2.0], @cmd.installed_specs.map { |spec| spec.full_name }
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
   def test_execute_rdoc
     specs = spec_fetcher do |fetcher|
       fetcher.gem 'a', 2

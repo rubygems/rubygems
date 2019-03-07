@@ -12,6 +12,8 @@ require 'rubygems/util/list'
 
 class Gem::Resolver
 
+  extend Gem::Deprecate
+
   require 'rubygems/resolver/molinillo'
 
   ##
@@ -197,7 +199,8 @@ class Gem::Resolver
   ##
   # Extracts the specifications that may be able to fulfill +dependency+ and
   # returns an array whose first element is those that match the local platform
-  # and the second element is all those that match the dependency.
+  # and Ruby version, and the second element is all those that match the
+  # dependency.
 
   def find_possible(dependency) # :nodoc:
     all = @set.find_all dependency
@@ -210,9 +213,9 @@ class Gem::Resolver
       all = matching unless matching.empty?
     end
 
-    matching_platform = select_local_platforms all
+    matching_platforms_ruby_version = select_local_platforms_ruby_version all
 
-    return matching_platform, all
+    return matching_platforms_ruby_version, all
   end
 
   ##
@@ -221,6 +224,21 @@ class Gem::Resolver
   def select_local_platforms(specs) # :nodoc:
     specs.select do |spec|
       Gem::Platform.installable? spec
+    end
+  end
+  deprecate :select_local_platforms, :select_local_platforms_ruby_version, 2019, 12
+
+  ##
+  # Returns the gems in +specs+ that match the local platform and also the Ruby
+  # version.
+
+  def select_local_platforms_ruby_version(specs) # :nodoc:
+    ruby_version = Gem.ruby_version
+    specs.select do |spec|
+      Gem::Platform.installable?(spec) &&
+      (Gem::Specification === spec ?
+        spec.required_ruby_version.satisfied_by?(ruby_version) :
+        spec.spec.required_ruby_version.satisfied_by?(ruby_version))
     end
   end
 

@@ -175,6 +175,7 @@ class Gem::DependencyInstaller
 
     @available.pick_best!
   end
+  deprecate :available_set_for, :none, 2019, 12
 
   ##
   # Indicated, based on the requested domain, if local
@@ -266,6 +267,7 @@ class Gem::DependencyInstaller
 
     set
   end
+  deprecate :find_gems_with_sources, :none, 2019, 12
 
   ##
   # Finds a spec and the source_uri it came from for gem +gem_name+ and
@@ -312,6 +314,7 @@ class Gem::DependencyInstaller
 
     @available = set
   end
+  deprecate :find_spec_by_name_and_version, :none, 2019, 12
 
   ##
   # Gathers all dependencies necessary for the installation from local and

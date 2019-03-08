@@ -3,6 +3,8 @@
 # Specifies a Specification object that should be activated.  Also contains a
 # dependency that was used to introduce this activation.
 
+require 'rubygems/name_tuple'
+
 class Gem::Resolver::ActivationRequest
 
   ##

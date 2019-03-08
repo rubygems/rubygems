@@ -18,7 +18,7 @@ require 'rubygems/util/list'
 require 'stringio'
 
 ##
-# The Specification class contains the information for a Gem.  Typically
+# The Specification class contains the information for a gem.  Typically
 # defined in a .gemspec file or a Rakefile, and looks like this:
 #
 #   Gem::Specification.new do |s|
@@ -364,8 +364,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   ##
   # The metadata holds extra data for this gem that may be useful to other
-  # consumers and is settable by gem authors without requiring an update to
-  # the rubygems software.
+  # consumers and is settable by gem authors.
   #
   # Metadata items have the following restrictions:
   #

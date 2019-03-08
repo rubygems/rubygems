@@ -79,8 +79,17 @@ end
 # --------------------------------------------------------------------
 # Creating a release
 
-task :prerelease => %w[clobber test bundler:build_metadata]
+task :prerelease => %w[clobber test bundler:build_metadata check_deprecations]
 task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:publish]
+
+desc "Check for deprecated methods with expired deprecation horizon"
+task :check_deprecations do
+  if v.segments[1] == 0 && v.segments[2] == 0
+    sh("util/rubocop -r ./util/cops/deprecations --only Rubygems/Deprecations")
+  else
+    puts "Skipping deprecation checks since not releasing a major version."
+  end
+end
 
 desc "Release rubygems-#{v}"
 task :release => :prerelease do

@@ -3,6 +3,7 @@ AllCops:
   Exclude:
     - 'bundler/**/*'
     - 'lib/rubygems/resolver/molinillo/**/*'
+    - 'pkg/**/*'
   TargetRubyVersion: 2.3
 
 Layout/AccessModifierIndentation:

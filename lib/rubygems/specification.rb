@@ -774,15 +774,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
   private_class_method :gemspec_stubs_in
 
-  def self.default_stubs(pattern)
-    base_dir = Gem.default_dir
-    gems_dir = File.join base_dir, "gems"
-    gemspec_stubs_in(default_specifications_dir, pattern) do |path|
-      Gem::StubSpecification.default_gemspec_stub(path, base_dir, gems_dir)
-    end
-  end
-  private_class_method :default_stubs
-
   def self.installed_stubs(dirs, pattern)
     map_stubs(dirs, pattern) do |path, base_dir, gems_dir|
       Gem::StubSpecification.gemspec_stub(path, base_dir, gems_dir)
@@ -828,6 +819,17 @@ class Gem::Specification < Gem::BasicSpecification
       _resort!(stubs)
       @@stubs_by_name = stubs.select { |s| Gem::Platform.match s.platform }.group_by(&:name)
       stubs
+    end
+  end
+
+  ##
+  # Returns a Gem::StubSpecification for default gems
+
+  def self.default_stubs(pattern = "*.gemspec")
+    base_dir = Gem.default_dir
+    gems_dir = File.join base_dir, "gems"
+    gemspec_stubs_in(default_specifications_dir, pattern) do |path|
+      Gem::StubSpecification.default_gemspec_stub(path, base_dir, gems_dir)
     end
   end
 

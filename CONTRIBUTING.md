@@ -37,6 +37,13 @@ To run commands like `gem install` from the repo:
 
     $ ruby -Ilib bin/gem install
 
+To run bundler test:
+
+    $ cd bundler
+    $ git submodule update --init --recursive
+    $ bin/rake spec:deps
+    $ bin/rspec spec
+
 ## Issues
 
 RubyGems uses labels to track all issues and pull requests. In order to

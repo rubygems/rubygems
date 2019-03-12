@@ -1,5 +1,17 @@
 # coding: UTF-8
 
+=== 3.0.3 / 2019-03-05
+
+Security fixes:
+
+* Fixed following vulnerabilities:
+  * CVE-2019-8320: Delete directory using symlink when decompressing tar
+  * CVE-2019-8321: Escape sequence injection vulnerability in `verbose`
+  * CVE-2019-8322: Escape sequence injection vulnerability in `gem owner`
+  * CVE-2019-8323: Escape sequence injection vulnerability in API response handling
+  * CVE-2019-8324: Installing a malicious gem may lead to arbitrary code execution
+  * CVE-2019-8325: Escape sequence injection vulnerability in errors
+
 === 3.0.2 / 2019-01-01
 
 Minor enhancements:

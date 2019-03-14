@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "bundler/psyched_yaml"
+require "yaml"
 require "bundler/vendored_fileutils"
 require "bundler/vendored_uri"
 require "digest"

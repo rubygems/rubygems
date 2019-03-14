@@ -30,7 +30,8 @@ here: http://guides.rubygems.org/contributing/
 
 ## Getting Started
 
-    $ rake setup
+    $ cp config/database.yml.example config/database.yml # And update it to match your database
+    $ rake db:setup
     $ rake test
 
 To run commands like `gem install` from the repo:

@@ -8,7 +8,7 @@ branches:
     - /^[\d.]+$/
     - /.+-stable$/
 env:
-  - "TEST_TOOL=rubygems YAML=psych"
+  - "TEST_TOOL=rubygems"
   - "TEST_TOOL=bundler RGV=master"
 rvm:
   - 2.3.8
@@ -21,7 +21,7 @@ jobs:
     - stage: linting
       rvm: 2.6
       env:
-        - "TEST_TOOL=rubygems YAML=psych"
+        - "TEST_TOOL=rubygems"
       script: util/ci rubocop
 stages:
   - linting
@@ -33,6 +33,6 @@ script:
 matrix:
   allow_failures:
     - rvm: ruby-head
-      env: "TEST_TOOL=rubygems YAML=psych"
+      env: "TEST_TOOL=rubygems"
     - rvm: ruby-head
       env: "TEST_TOOL=bundler RGV=master"

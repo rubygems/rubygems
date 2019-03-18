@@ -6,10 +6,11 @@ require 'stringio'
 require 'rubygems/ext'
 require 'rubygems/specification'
 require 'rubygems/installer'
+require 'rubygems/platform'
 
 class TestGemSpecification < Gem::TestCase
 
-  LEGACY_YAML_SPEC = <<-EOF
+  LEGACY_YAML_SPEC = <<-EOF.freeze
 --- !ruby/object:Gem::Specification
 rubygems_version: "1.0"
 name: keyedlist
@@ -28,7 +29,7 @@ email: flgr@ccan.de
 has_rdoc: true
   EOF
 
-  LEGACY_RUBY_SPEC = <<-EOF
+  LEGACY_RUBY_SPEC = <<-EOF.freeze
 Gem::Specification.new do |s|
   s.name = %q{keyedlist}
   s.version = %q{0.4.0}
@@ -48,7 +49,6 @@ end
       s.extensions << 'ext/a/extconf.rb'
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
-      s.rubyforge_project = 'example'
       s.license = 'MIT'
 
       s.add_dependency 'rake', '> 0.4'
@@ -60,12 +60,13 @@ end
     end
   end
 
-  def ext_spec
+  def ext_spec(platform: Gem::Platform::RUBY)
     @ext = util_spec 'ext', '1' do |s|
       s.executable = 'exec'
       s.test_file = 'test/suite.rb'
       s.extensions = %w[ext/extconf.rb]
       s.license = 'MIT'
+      s.platform = platform
 
       s.mark_version
       s.files = %w[lib/code.rb]
@@ -80,7 +81,6 @@ end
       s.executable = 'exec'
       s.test_file = 'test/suite.rb'
       s.requirements << 'A working computer'
-      s.rubyforge_project = 'example'
       s.license = 'MIT'
 
       s.mark_version
@@ -145,9 +145,9 @@ end
       num_of_version_per_pkg = 3
       packages = (0..num_of_pkg).map do |pkgi|
         (0..num_of_version_per_pkg).map do |pkg_version|
-          deps = Hash[((pkgi + 1)..num_of_pkg).map { |deppkgi|
+          deps = Hash[((pkgi + 1)..num_of_pkg).map do |deppkgi|
             ["pkg#{deppkgi}", ">= 0"]
-          }]
+          end]
           util_spec "pkg#{pkgi}", pkg_version.to_s, deps
         end
       end
@@ -158,9 +158,9 @@ end
       install_specs base
       base.activate
 
-      tms = Benchmark.measure {
+      tms = Benchmark.measure do
         assert_raises(LoadError) { require 'no_such_file_foo' }
-      }
+      end
       assert_operator tms.total, :<=, 10
     end
   end
@@ -386,7 +386,7 @@ end
   #     [B] ~> 1.0 (satisfied by 1.0)
 
   def test_self_activate_checks_dependencies
-    a  = util_spec 'a', '1.0'
+    a = util_spec 'a', '1.0'
     a.add_dependency 'c', '= 1.0'
     a.add_dependency 'b', '~> 1.0'
 
@@ -701,7 +701,6 @@ end
       required_ruby_version
       required_rubygems_version
       requirements
-      rubyforge_project
       rubygems_version
       signing_key
       specification_version
@@ -871,7 +870,6 @@ require_paths:
 author: Austin Ziegler
 email: diff-lcs@halostatue.ca
 homepage: http://rubyforge.org/projects/ruwiki/
-rubyforge_project: ruwiki
 description: "Test"
 bindir: bin
 has_rdoc: true
@@ -1215,7 +1213,7 @@ dependencies: []
 
     data = Marshal.load Gem::Util.inflate(Gem.read_binary(path))
 
-    assert_nil data.rubyforge_project
+    assert_nil data.signing_key
   end
 
   def test_initialize
@@ -1343,6 +1341,16 @@ dependencies: []
 
     assert_equal 'a-1 has an invalid value for @licenses', e.message
     assert_equal '/path/to/file', e.file_path
+  end
+
+  def test_initialize_prerelease_version_before_name
+    spec = Gem::Specification.new do |s|
+      s.version = '1.0.0.dev'
+      s.name = 'a'
+    end
+
+    assert_equal "a", spec.name
+    assert_equal "1.0.0.dev", spec.version.to_s
   end
 
   def test__dump
@@ -1575,7 +1583,7 @@ dependencies: []
     @ext.build_extensions
     refute_path_exists @ext.extension_dir
   ensure
-    unless ($DEBUG or win_platform? or Process.uid.zero?) then
+    unless ($DEBUG or win_platform? or Process.uid.zero?)
       FileUtils.chmod 0755, File.join(@ext.base_dir, 'extensions')
       FileUtils.chmod 0755, @ext.base_dir
     end
@@ -1681,6 +1689,16 @@ dependencies: []
     assert_equal expected, err
   end
 
+  def test_contains_requirable_file_eh_extension_java_platform
+    ext_spec(platform: Gem::Platform.new("java"))
+
+    _, err = capture_io do
+      refute @ext.contains_requirable_file? 'nonexistent'
+    end
+
+    assert_empty err
+  end
+
   def test_date
     assert_equal Gem::Specification::TODAY, @a1.date
   end
@@ -1727,8 +1745,11 @@ dependencies: []
   end
 
   def test_date_use_env_source_date_epoch
+    epoch = ENV["SOURCE_DATE_EPOCH"]
     ENV["SOURCE_DATE_EPOCH"] = "123456789"
     assert_equal Time.utc(1973,11,29,0,0,0), @a1.date
+  ensure
+    ENV["SOURCE_DATE_EPOCH"] = epoch
   end
 
   def test_dependencies
@@ -1828,6 +1849,7 @@ dependencies: []
       RbConfig::CONFIG['ENABLE_SHARED'], 'no'
 
     class << Gem
+
       alias orig_default_ext_dir_for default_ext_dir_for
 
       remove_method :default_ext_dir_for
@@ -1835,6 +1857,7 @@ dependencies: []
       def Gem.default_ext_dir_for(base_dir)
         'elsewhere'
       end
+
     end
 
     ext_spec
@@ -1848,9 +1871,11 @@ dependencies: []
     RbConfig::CONFIG['ENABLE_SHARED'] = enable_shared
 
     class << Gem
+
       remove_method :default_ext_dir_for
 
       alias default_ext_dir_for orig_default_ext_dir_for
+
     end
   end
 
@@ -2140,12 +2165,14 @@ dependencies: []
 
   def test_require_paths_default_ext_dir_for
     class << Gem
+
       send :alias_method, :orig_default_ext_dir_for, :default_ext_dir_for
 
       remove_method :default_ext_dir_for
+
     end
 
-    def Gem.default_ext_dir_for base_dir
+    def Gem.default_ext_dir_for(base_dir)
       '/foo'
     end
 
@@ -2158,9 +2185,11 @@ dependencies: []
     end
   ensure
     class << Gem
+
       send :remove_method, :default_ext_dir_for
       send :alias_method,  :default_ext_dir_for, :orig_default_ext_dir_for
       send :remove_method, :orig_default_ext_dir_for
+
     end
   end
 
@@ -2321,8 +2350,8 @@ dependencies: []
     s2 = util_spec 'b', '1'
 
     assert_equal(-1, (s1 <=> s2))
-    assert_equal( 0, (s1 <=> s1))
-    assert_equal( 1, (s2 <=> s1))
+    assert_equal(0, (s1 <=> s1))
+    assert_equal(1, (s2 <=> s1))
   end
 
   def test_spaceship_platform
@@ -2331,18 +2360,18 @@ dependencies: []
       s.platform = Gem::Platform.new 'x86-my_platform1'
     end
 
-    assert_equal( -1, (s1 <=> s2))
-    assert_equal(  0, (s1 <=> s1))
-    assert_equal(  1, (s2 <=> s1))
+    assert_equal(-1, (s1 <=> s2))
+    assert_equal(0, (s1 <=> s1))
+    assert_equal(1, (s2 <=> s1))
   end
 
   def test_spaceship_version
     s1 = util_spec 'a', '1'
     s2 = util_spec 'a', '2'
 
-    assert_equal( -1, (s1 <=> s2))
-    assert_equal(  0, (s1 <=> s1))
-    assert_equal(  1, (s2 <=> s1))
+    assert_equal(-1, (s1 <=> s2))
+    assert_equal(0, (s1 <=> s1))
+    assert_equal(1, (s2 <=> s1))
   end
 
   def test_spec_file
@@ -2510,7 +2539,6 @@ Gem::Specification.new do |s|
   s.homepage = "http://example.com".freeze
   s.licenses = ["MIT".freeze]
   s.requirements = ["A working computer".freeze]
-  s.rubyforge_project = "example".freeze
   s.rubygems_version = "#{Gem::VERSION}".freeze
   s.summary = "this is a summary".freeze
   s.test_files = ["test/suite.rb".freeze]
@@ -2540,6 +2568,14 @@ end
     same_spec = eval ruby_code
 
     assert_equal @c1, same_spec
+  end
+
+  def test_to_ruby_keeps_requirements_as_originally_specified
+    spec = util_spec 'a', '1' do |s|
+      s.add_dependency 'b', ['~> 1.0', '>= 1.0.0']
+    end
+
+    assert_includes spec.to_ruby, '"~> 1.0", ">= 1.0.0"'
   end
 
   def test_to_ruby_legacy
@@ -2627,7 +2663,7 @@ end
     end
   end
 
-  def x s; s.gsub(/xxx/, ''); end
+  def x(s); s.gsub(/xxx/, ''); end
   def w; x "WARxxxNING"; end
   def t; x "TOxxxDO"; end
   def f; x "FxxxIXME"; end
@@ -2703,6 +2739,7 @@ end
       @a1.add_runtime_dependency     'l', '> 1.2.3'
       @a1.add_runtime_dependency     'm', '~> 2.1.0'
       @a1.add_runtime_dependency     'n', '~> 0.1.0'
+      @a1.add_runtime_dependency     'o'
 
       use_ui @ui do
         @a1.validate
@@ -2723,6 +2760,8 @@ end
 #{w}:  open-ended dependency on l (> 1.2.3) is not recommended
   if l is semantically versioned, use:
     add_runtime_dependency 'l', '~> 1.2', '> 1.2.3'
+#{w}:  open-ended dependency on o (>= 0) is not recommended
+  use a bounded requirement, such as '~> x.y'
 #{w}:  See http://guides.rubygems.org/specification-reference/ for help
       EXPECTED
 
@@ -2873,7 +2912,7 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
     util_setup_validate
 
     FileUtils.mkdir_p File.join(@tempdir, 'bin')
-    File.open File.join(@tempdir, 'bin', 'exec'), 'w' do end
+    File.open File.join(@tempdir, 'bin', 'exec'), 'w'
     FileUtils.mkdir_p File.join(@tempdir, 'exec')
 
     use_ui @ui do
@@ -2889,7 +2928,7 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
   end
 
   def test_validate_empty_require_paths
-    if win_platform? then
+    if win_platform?
       skip 'test_validate_empty_require_paths skipped on MS Windows (symlink)'
     else
       util_setup_validate
@@ -2928,6 +2967,8 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
   def test_unresolved_specs
     specification = Gem::Specification.clone
 
+    set_orig specification
+
     specification.define_singleton_method(:unresolved_deps) do
       { b: Gem::Dependency.new("x","1") }
     end
@@ -2937,7 +2978,7 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
     end
 
     expected = <<-EXPECTED
-WARN: Unresolved or ambigious specs during Gem::Specification.reset:
+WARN: Unresolved or ambiguous specs during Gem::Specification.reset:
       x (= 1)
 WARN: Clearing out unresolved specs. Try 'gem cleanup <gem>'
 Please report a bug if this causes problems.
@@ -2951,6 +2992,8 @@ Please report a bug if this causes problems.
   def test_unresolved_specs_with_versions
     specification = Gem::Specification.clone
 
+    set_orig specification
+
     specification.define_singleton_method(:unresolved_deps) do
       { b: Gem::Dependency.new("x","1") }
     end
@@ -2963,7 +3006,7 @@ Please report a bug if this causes problems.
     end
 
     expected = <<-EXPECTED
-WARN: Unresolved or ambigious specs during Gem::Specification.reset:
+WARN: Unresolved or ambiguous specs during Gem::Specification.reset:
       x (= 1)
       Available/installed versions of this gem:
       - 1
@@ -2975,6 +3018,12 @@ Please report a bug if this causes problems.
     assert_output nil, expected do
       specification.reset
     end
+  end
+
+  def set_orig(cls)
+    s_cls = cls.singleton_class
+    s_cls.send :alias_method, :orig_unresolved_deps , :unresolved_deps
+    s_cls.send :alias_method, :orig_find_all_by_name, :find_all_by_name
   end
 
   def test_validate_files_recursive
@@ -3442,10 +3491,10 @@ Did you mean 'Ruby'?
     end
 
     expected = %W[
-                  a-2
-                  a-2-x86-my_platform-1
-                  a-3-x86-other_platform-1
-                 ]
+      a-2
+      a-2-x86-my_platform-1
+      a-3-x86-other_platform-1
+    ]
 
     latest_specs = Gem::Specification.latest_specs.map(&:full_name).sort
 
@@ -3728,18 +3777,6 @@ end
     assert_equal ["default-2.0.0.0"], Gem::Specification.map(&:full_name)
   end
 
-  def test_detect_bundled_gem_in_old_ruby
-    util_set_RUBY_VERSION '1.9.3', 551
-
-    spec = util_spec 'bigdecimal', '1.1.0' do |s|
-      s.summary = "This bigdecimal is bundled with Ruby"
-    end
-
-    assert spec.bundled_gem_in_old_ruby?
-  ensure
-    util_restore_RUBY_VERSION
-  end
-
   def util_setup_deps
     @gem = util_spec "awesome", "1.0" do |awesome|
       awesome.add_runtime_dependency "bonobo", []
@@ -3816,4 +3853,5 @@ end
   ensure
     $VERBOSE = old_verbose
   end
+
 end

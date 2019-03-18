@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 require 'rubygems/remote_fetcher'
+require 'rubygems/text'
 
 ##
 # Utility methods for using the RubyGems API.
 
 module Gem::GemcutterUtilities
+
+  include Gem::Text
 
   # TODO: move to Gem::Command
   OptionParser.accept Symbol do |value|
@@ -25,10 +28,22 @@ module Gem::GemcutterUtilities
   end
 
   ##
+  # Add the --otp option
+
+  def add_otp_option
+    add_option('--otp CODE',
+               'Digit code for multifactor authentication') do |value, options|
+      options[:otp] = value
+    end
+  end
+
+  ##
   # The API key from the command options or from the user's configuration.
 
   def api_key
-    if options[:key] then
+    if ENV["GEM_HOST_API_KEY"]
+      ENV["GEM_HOST_API_KEY"]
+    elsif options[:key]
       verify_api_key options[:key]
     elsif Gem.configuration.api_keys.key?(host)
       Gem.configuration.api_keys[host]
@@ -51,7 +66,7 @@ module Gem::GemcutterUtilities
         env_rubygems_host = nil if
           env_rubygems_host and env_rubygems_host.empty?
 
-        env_rubygems_host|| configured_host
+        env_rubygems_host || configured_host
       end
   end
 
@@ -82,19 +97,33 @@ module Gem::GemcutterUtilities
     uri = URI.parse "#{self.host}/#{path}"
 
     request_method = Net::HTTP.const_get method.to_s.capitalize
+    response = Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)
+    return response unless mfa_unauthorized?(response)
 
-    Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)
+    Gem::RemoteFetcher.fetcher.request(uri, request_method) do |req|
+      req.add_field "OTP", get_otp
+      block.call(req)
+    end
+  end
+
+  def mfa_unauthorized?(response)
+    response.kind_of?(Net::HTTPUnauthorized) && response.body.start_with?('You have enabled multifactor authentication')
+  end
+
+  def get_otp
+    say 'You have enabled multi-factor authentication. Please enter OTP code.'
+    ask 'Code: '
   end
 
   ##
   # Signs in with the RubyGems API at +sign_in_host+ and sets the rubygems API
   # key.
 
-  def sign_in sign_in_host = nil
+  def sign_in(sign_in_host = nil)
     sign_in_host ||= self.host
     return if api_key
 
-    pretty_host = if Gem::DEFAULT_HOST == sign_in_host then
+    pretty_host = if Gem::DEFAULT_HOST == sign_in_host
                     'RubyGems.org'
                   else
                     sign_in_host
@@ -104,13 +133,14 @@ module Gem::GemcutterUtilities
     say "Don't have an account yet? " +
         "Create one at #{sign_in_host}/sign_up"
 
-    email    =              ask "   Email: "
+    email = ask "   Email: "
     password = ask_for_password "Password: "
     say "\n"
 
     response = rubygems_api_request(:get, "api/v1/api_key",
                                     sign_in_host) do |request|
       request.basic_auth email, password
+      request.add_field "OTP", options[:otp] if options[:otp]
     end
 
     with_response response do |resp|
@@ -124,7 +154,7 @@ module Gem::GemcutterUtilities
   # an error.
 
   def verify_api_key(key)
-    if Gem.configuration.api_keys.key? key then
+    if Gem.configuration.api_keys.key? key
       Gem.configuration.api_keys[key]
     else
       alert_error "No such API key. Please add it to your configuration (done automatically on initial `gem push`)."
@@ -139,24 +169,28 @@ module Gem::GemcutterUtilities
   # If the response was not successful, shows an error to the user including
   # the +error_prefix+ and the response body.
 
-  def with_response response, error_prefix = nil
+  def with_response(response, error_prefix = nil)
     case response
     when Net::HTTPSuccess then
-      if block_given? then
+      if block_given?
         yield response
       else
-        say response.body
+        say clean_text(response.body)
       end
     else
       message = response.body
       message = "#{error_prefix}: #{message}" if error_prefix
 
-      say message
+      say clean_text(message)
       terminate_interaction 1 # TODO: question this
     end
   end
 
-  def set_api_key host, key
+  ##
+  # Returns true when the user has enabled multifactor authentication from
+  # +response+ text and no otp provided by options.
+
+  def set_api_key(host, key)
     if host == Gem::DEFAULT_HOST
       Gem.configuration.rubygems_api_key = key
     else
@@ -165,4 +199,3 @@ module Gem::GemcutterUtilities
   end
 
 end
-

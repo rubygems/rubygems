@@ -94,7 +94,7 @@ class TestGemPackage < Gem::Package::TarTestCase
       }
     }
 
-    if defined?(OpenSSL::Digest) then
+    if defined?(OpenSSL::Digest)
       expected['SHA256'] = {
         'metadata.gz' => metadata_sha256,
         'data.tar.gz' => Digest::SHA256.hexdigest(tar),
@@ -105,6 +105,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_build_time_source_date_epoch
+    epoch = ENV["SOURCE_DATE_EPOCH"]
     ENV["SOURCE_DATE_EPOCH"] = "123456789"
 
     spec = Gem::Specification.new 'build', '1'
@@ -114,10 +115,11 @@ class TestGemPackage < Gem::Package::TarTestCase
     spec.date = Time.at 0
     spec.rubygems_version = Gem::Version.new '0'
 
-
     package = Gem::Package.new spec.file_name
 
     assert_equal Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc, package.build_time
+  ensure
+    ENV["SOURCE_DATE_EPOCH"] = epoch
   end
 
   def test_add_files
@@ -126,8 +128,13 @@ class TestGemPackage < Gem::Package::TarTestCase
 
     FileUtils.mkdir_p 'lib/empty'
 
-    File.open 'lib/code.rb',  'w' do |io| io.write '# lib/code.rb'  end
-    File.open 'lib/extra.rb', 'w' do |io| io.write '# lib/extra.rb' end
+    File.open 'lib/code.rb',  'w' do |io|
+      io.write '# lib/code.rb'
+    end
+
+    File.open 'lib/extra.rb', 'w' do |io|
+      io.write '# lib/extra.rb'
+    end
 
     package = Gem::Package.new 'bogus.gem'
     package.spec = spec
@@ -150,17 +157,19 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_add_files_symlink
-    skip 'symlink not supported' if Gem.win_platform? && RUBY_VERSION < '2.3'
-
     spec = Gem::Specification.new
-    spec.files = %w[lib/code.rb lib/code_sym.rb]
+    spec.files = %w[lib/code.rb lib/code_sym.rb lib/code_sym2.rb]
 
     FileUtils.mkdir_p 'lib'
-    File.open 'lib/code.rb',  'w' do |io| io.write '# lib/code.rb'  end
+
+    File.open 'lib/code.rb',  'w' do |io|
+      io.write '# lib/code.rb'
+    end
 
     # NOTE: 'code.rb' is correct, because it's relative to lib/code_sym.rb
     begin
       File.symlink('code.rb', 'lib/code_sym.rb')
+      File.symlink('../lib/code.rb', 'lib/code_sym2.rb')
     rescue Errno::EACCES => e
       if win_platform?
         skip "symlink - must be admin with no UAC on Windows"
@@ -191,7 +200,7 @@ class TestGemPackage < Gem::Package::TarTestCase
     end
 
     assert_equal %w[lib/code.rb], files
-    assert_equal [{'lib/code_sym.rb' => 'lib/code.rb'}], symlinks
+    assert_equal [{'lib/code_sym.rb' => 'lib/code.rb'}, {'lib/code_sym2.rb' => '../lib/code.rb'}], symlinks
   end
 
   def test_build
@@ -431,7 +440,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_extract_files_empty
-    data_tgz = util_tar_gz do end
+    data_tgz = util_tar_gz { }
 
     gem = util_tar do |tar|
       tar.add_file 'data.tar.gz', 0644 do |io|
@@ -460,7 +469,9 @@ class TestGemPackage < Gem::Package::TarTestCase
     package = Gem::Package.new @gem
 
     tgz_io = util_tar_gz do |tar|
-      tar.add_file '/absolute.rb', 0644 do |io| io.write 'hi' end
+      tar.add_file '/absolute.rb', 0644 do |io|
+        io.write 'hi'
+      end
     end
 
     e = assert_raises Gem::Package::PathError do
@@ -472,12 +483,13 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_extract_tar_gz_symlink_relative_path
-    skip 'symlink not supported' if Gem.win_platform? && RUBY_VERSION < '2.3'
-
     package = Gem::Package.new @gem
 
     tgz_io = util_tar_gz do |tar|
-      tar.add_file    'relative.rb', 0644 do |io| io.write 'hi' end
+      tar.add_file    'relative.rb', 0644 do |io|
+        io.write 'hi'
+      end
+
       tar.mkdir       'lib',         0755
       tar.add_symlink 'lib/foo.rb', '../relative.rb', 0644
     end
@@ -501,14 +513,14 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_extract_symlink_parent
-    skip 'symlink not supported' if Gem.win_platform? && RUBY_VERSION < '2.3'
-
     package = Gem::Package.new @gem
 
     tgz_io = util_tar_gz do |tar|
       tar.mkdir       'lib',               0755
       tar.add_symlink 'lib/link', '../..', 0644
-      tar.add_file    'lib/link/outside.txt', 0644 do |io| io.write 'hi' end
+      tar.add_file    'lib/link/outside.txt', 0644 do |io|
+        io.write 'hi'
+      end
     end
 
     # Extract into a subdirectory of @destination; if this test fails it writes
@@ -531,12 +543,48 @@ class TestGemPackage < Gem::Package::TarTestCase
     end
   end
 
+  def test_extract_symlink_parent_doesnt_delete_user_dir
+    package = Gem::Package.new @gem
+
+    # Extract into a subdirectory of @destination; if this test fails it writes
+    # a file outside destination_subdir, but we want the file to remain inside
+    # @destination so it will be cleaned up.
+    destination_subdir = File.join @destination, 'subdir'
+    FileUtils.mkdir_p destination_subdir
+
+    destination_user_dir = File.join @destination, 'user'
+    destination_user_subdir = File.join destination_user_dir, 'dir'
+    FileUtils.mkdir_p destination_user_subdir
+
+    tgz_io = util_tar_gz do |tar|
+      tar.add_symlink 'link', destination_user_dir, 16877
+      tar.add_symlink 'link/dir', '.', 16877
+    end
+
+    e = assert_raises(Gem::Package::PathError, Errno::EACCES) do
+      package.extract_tar_gz tgz_io, destination_subdir
+    end
+
+    assert_path_exists destination_user_subdir
+
+    if Gem::Package::PathError === e
+      assert_equal("installing into parent path #{destination_user_subdir} of " +
+                  "#{destination_subdir} is not allowed", e.message)
+    elsif win_platform?
+      skip "symlink - must be admin with no UAC on Windows"
+    else
+      raise e
+    end
+  end
+
   def test_extract_tar_gz_directory
     package = Gem::Package.new @gem
 
     tgz_io = util_tar_gz do |tar|
       tar.mkdir    'lib',        0755
-      tar.add_file 'lib/foo.rb', 0644 do |io| io.write 'hi' end
+      tar.add_file 'lib/foo.rb', 0644 do |io|
+        io.write 'hi'
+      end
       tar.mkdir    'lib/foo',    0755
     end
 
@@ -553,7 +601,9 @@ class TestGemPackage < Gem::Package::TarTestCase
     package = Gem::Package.new @gem
 
     tgz_io = util_tar_gz do |tar|
-      tar.add_file './dot_slash.rb', 0644 do |io| io.write 'hi' end
+      tar.add_file './dot_slash.rb', 0644 do |io|
+        io.write 'hi'
+      end
     end
 
     package.extract_tar_gz tgz_io, @destination
@@ -566,7 +616,9 @@ class TestGemPackage < Gem::Package::TarTestCase
     package = Gem::Package.new @gem
 
     tgz_io = util_tar_gz do |tar|
-      tar.add_file '.dot_file.rb', 0644 do |io| io.write 'hi' end
+      tar.add_file '.dot_file.rb', 0644 do |io|
+        io.write 'hi'
+      end
     end
 
     package.extract_tar_gz tgz_io, @destination
@@ -580,7 +632,9 @@ class TestGemPackage < Gem::Package::TarTestCase
       package = Gem::Package.new @gem
 
       tgz_io = util_tar_gz do |tar|
-        tar.add_file 'foo/file.rb', 0644 do |io| io.write 'hi' end
+        tar.add_file 'foo/file.rb', 0644 do |io|
+          io.write 'hi'
+        end
       end
 
       package.extract_tar_gz tgz_io, @destination.upcase
@@ -1045,7 +1099,9 @@ class TestGemPackage < Gem::Package::TarTestCase
     tgz_io = StringIO.new
 
     # can't wrap TarWriter because it seeks
-    Zlib::GzipWriter.wrap tgz_io do |io| io.write tar_io.string end
+    Zlib::GzipWriter.wrap tgz_io do |io|
+      io.write tar_io.string
+    end
 
     StringIO.new tgz_io.string
   end

@@ -58,6 +58,7 @@ class Gem::Installer
   # Available through requiring rubygems/installer_test_case
 
   attr_writer :wrappers
+
 end
 
 ##
@@ -119,9 +120,9 @@ class Gem::InstallerTestCase < Gem::TestCase
   # The executable is also written to the bin dir in @tmpdir and the installed
   # gem directory for +spec+.
 
-  def util_make_exec(spec = @spec, shebang = "#!/usr/bin/ruby")
+  def util_make_exec(spec = @spec, shebang = "#!/usr/bin/ruby", bindir = "bin")
     spec.executables = %w[executable]
-    spec.files << 'bin/executable'
+    spec.bindir = bindir
 
     exec_path = spec.bin_file "executable"
     write_file exec_path do |io|
@@ -150,10 +151,15 @@ class Gem::InstallerTestCase < Gem::TestCase
       FileUtils.mkdir_p 'bin'
       FileUtils.mkdir_p 'lib'
       FileUtils.mkdir_p File.join('ext', 'a')
+
       File.open File.join('bin', 'executable'), 'w' do |f|
         f.puts "raise 'ran executable'"
       end
-      File.open File.join('lib', 'code.rb'), 'w' do |f| f.puts '1' end
+
+      File.open File.join('lib', 'code.rb'), 'w' do |f|
+        f.puts '1'
+      end
+
       File.open File.join('ext', 'a', 'mkrf_conf.rb'), 'w' do |f|
         f << <<-EOF
           File.open 'Rakefile', 'w' do |rf| rf.puts "task :default" end
@@ -183,4 +189,3 @@ class Gem::InstallerTestCase < Gem::TestCase
   end
 
 end
-

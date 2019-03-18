@@ -2,7 +2,7 @@
 require 'rubygems/test_case'
 require 'rubygems/commands/cert_command'
 
-unless defined?(OpenSSL::SSL) then
+unless defined?(OpenSSL::SSL)
   warn 'Skipping `gem cert` tests.  openssl not found.'
 end
 
@@ -159,7 +159,7 @@ Added '/CN=alternate/DC=example'
     @cmd.handle_options %W[
       --build nobody@example.com
       --days 26
-      ]
+    ]
 
     @build_ui = Gem::MockGemUi.new "#{passphrase}\n#{passphrase}"
 
@@ -192,7 +192,6 @@ Added '/CN=alternate/DC=example'
 
     test = (cert.not_after - cert.not_before).to_i / (24 * 60 * 60)
     assert_equal(test, 26)
-
   end
 
   def test_execute_build_bad_passphrase_confirmation
@@ -615,6 +614,37 @@ ERROR:  --private-key not specified and ~/.gem/gem-private_key.pem does not exis
     assert_equal '', @ui.error
   end
 
+  def test_execute_re_sign_with_cert_expiration_length_days
+    gem_path = File.join Gem.user_home, ".gem"
+    Dir.mkdir gem_path
+
+    path = File.join @tempdir, 'cert.pem'
+    Gem::Security.write EXPIRED_PUBLIC_CERT, path, 0600
+
+    assert_equal '/CN=nobody/DC=example', EXPIRED_PUBLIC_CERT.issuer.to_s
+
+    tmp_expired_cert_file = File.join(Dir.tmpdir, File.basename(EXPIRED_PUBLIC_CERT_FILE))
+    File.write(tmp_expired_cert_file, File.read(EXPIRED_PUBLIC_CERT_FILE))
+
+    @cmd.handle_options %W[
+      --private-key #{PRIVATE_KEY_FILE}
+      --certificate #{tmp_expired_cert_file}
+      --re-sign
+    ]
+
+    Gem.configuration.cert_expiration_length_days = 28
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    re_signed_cert = OpenSSL::X509::Certificate.new(File.read(tmp_expired_cert_file))
+    cert_days_to_expire = (re_signed_cert.not_after - re_signed_cert.not_before).to_i / (24 * 60 * 60)
+
+    assert_equal(28, cert_days_to_expire)
+    assert_equal '', @ui.error
+  end
+
   def test_handle_options
     @cmd.handle_options %W[
       --add #{PUBLIC_CERT_FILE}
@@ -764,4 +794,3 @@ ERROR:  --private-key not specified and ~/.gem/gem-private_key.pem does not exis
   end
 
 end if defined?(OpenSSL::SSL)
-

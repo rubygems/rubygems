@@ -3,10 +3,57 @@ AllCops:
   Exclude:
     - 'bundler/**/*'
     - 'lib/rubygems/resolver/molinillo/**/*'
-  TargetRubyVersion: 2.2
+    - 'pkg/**/*'
+  TargetRubyVersion: 2.3
+
+Layout/AccessModifierIndentation:
+  Enabled: true
+
+Layout/BlockAlignment:
+  Enabled: true
+
+Layout/CaseIndentation:
+  Enabled: true
+
+Layout/ClosingParenthesisIndentation:
+  Enabled: true
 
 Layout/CommentIndentation:
   Enabled: true
+
+Layout/ElseAlignment:
+  Enabled: true
+
+MultilineIfThen:
+  Enabled: true
+
+# Force Unix line endings.
+Layout/EndOfLine:
+  Enabled: true
+  EnforcedStyle: lf
+
+Layout/EmptyLines:
+  Enabled: true
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: true
+  EnforcedStyle: empty_lines_except_namespace
+
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: true
+
+Layout/IndentHash:
+  Enabled: true
+  EnforcedStyle: consistent
+
+# NOTE: When used with --auto-correct, this only seems to auto-correct the
+#       first array item for some reason.
+Layout/IndentArray:
+  Enabled: true
+  EnforcedStyle: consistent
+  Exclude:
+    # This is a generated file.
+    - lib/rubygems/util/licenses.rb
 
 Layout/IndentationConsistency:
   Enabled: true
@@ -14,5 +61,23 @@ Layout/IndentationConsistency:
 Layout/IndentationWidth:
   Enabled: true
 
+Layout/SpaceAroundOperators:
+  Enabled: true
+
+Layout/SpaceInsideParens:
+  Enabled: true
+
+Layout/TrailingBlankLines:
+  Enabled: true
+
 Layout/TrailingWhitespace:
+  Enabled: true
+
+Style/MethodDefParentheses:
+  Enabled: true
+
+Style/MutableConstant:
+  Enabled: true
+
+Style/BlockDelimiters:
   Enabled: true

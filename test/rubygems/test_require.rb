@@ -3,8 +3,10 @@ require 'rubygems/test_case'
 require 'rubygems'
 
 class TestGemRequire < Gem::TestCase
+
   class Latch
-    def initialize count = 1
+
+    def initialize(count = 1)
       @count = count
       @lock  = Monitor.new
       @cv    = @lock.new_cond
@@ -22,6 +24,7 @@ class TestGemRequire < Gem::TestCase
         @cv.wait_while { @count > 0 }
       end
     end
+
   end
 
   def setup
@@ -331,8 +334,10 @@ class TestGemRequire < Gem::TestCase
   def test_try_activate_error_unlocks_require_monitor
     silence_warnings do
       class << ::Gem
+
         alias old_try_activate try_activate
         def try_activate(*); raise 'raised from try_activate'; end
+
       end
     end
 
@@ -343,7 +348,9 @@ class TestGemRequire < Gem::TestCase
   ensure
     silence_warnings do
       class << ::Gem
+
         alias try_activate old_try_activate
+
       end
     end
     Kernel::RUBYGEMS_ACTIVATION_MONITOR.exit
@@ -373,7 +380,6 @@ class TestGemRequire < Gem::TestCase
     assert c.send(:require, "a")
     assert_equal %w(a-1), loaded_spec_names
   end
-
 
   def test_require_bundler
     b1 = util_spec('bundler', '1', nil, "lib/bundler/setup.rb")
@@ -412,10 +418,29 @@ class TestGemRequire < Gem::TestCase
     end
   end
 
+  if RUBY_VERSION >= "2.5"
+    def test_no_kernel_require_in_warn_with_uplevel
+      lib = File.realpath("../../../lib", __FILE__)
+      Dir.mktmpdir("warn_test") do |dir|
+        File.write(dir + "/sub.rb", "warn 'uplevel', 'test', uplevel: 1\n")
+        File.write(dir + "/main.rb", "require 'sub'\n")
+        _, err = capture_subprocess_io do
+          system(@@ruby, "-w", "-rpp", "--disable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
+        end
+        assert_equal "main.rb:1: warning: uplevel\ntest\n", err
+        _, err = capture_subprocess_io do
+          system(@@ruby, "-w", "-rpp", "--enable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
+        end
+        assert_equal "main.rb:1: warning: uplevel\ntest\n", err
+      end
+    end
+  end
+
   def silence_warnings
     old_verbose, $VERBOSE = $VERBOSE, false
     yield
   ensure
     $VERBOSE = old_verbose
   end
+
 end

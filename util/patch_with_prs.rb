@@ -50,7 +50,7 @@ sh("git", "checkout", branch)
 sh("git", "submodule", "update", "--init", "--recursive")
 
 commits = `git log --oneline origin/master --`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
-commits.select! {|_sha, message| message =~ /(Auto merge of|Merge pull request) ##{Regexp.union(*prs)}/ }
+commits.select! {|_sha, message| message =~ /(Auto merge of|Merge pull request|Merge) ##{Regexp.union(*prs)}/ }
 
 unless system("git", "cherry-pick", "-x", "-m", "1", *commits.map(&:first))
   abort unless system("zsh")

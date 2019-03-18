@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 class Tool
+
   def initialize(name)
     @name = name
   end
@@ -20,6 +21,7 @@ class Tool
       File.expand_path('../../bundler', __FILE__)
     end
   end
+
 end
 
 TOOL = Tool.new(ENV.fetch("TEST_TOOL") { abort "must specify a TEST_TOOL" })
@@ -48,24 +50,24 @@ case ARGV
 when %w(before_script)
   if TOOL.rubygems?
     run('gem', %W(uninstall executable-hooks gem-wrappers bundler-unload -x --force -i #{`gem env home`.strip}@global))
-    # 2.2 images of Travis was broken about bundled gems
-    if (RUBY_VERSION >= "2.2.0" && RUBY_VERSION < "2.3.0") || RUBY_VERSION >= "2.6.0"
-      run('gem', %w(install minitest -v 5.4.3))
-    end
-    # 2.5 images of Travis was broken about bundler installation.
-    if RUBY_VERSION >= "2.5.0" && RUBY_VERSION < "2.6.0"
-      run('gem', %w(install bundler -v 1.16.2))
-    end
 
-    run('gem', %w(install rubocop -v ~>0.59.0))
+    # shipped gems in 2.3.8
+    run('gem', %w(install rake:>=10.4.2 minitest:>=5.8.5 --conservative --no-document))
 
     run('gem', %w(list --details))
     run('gem', %w(env))
   else
+    # Fix incorrect default gem specifications on ruby 2.6.1. Can be removed
+    # when 2.6.2 is released and we start testing against it. See
+    # https://bugs.ruby-lang.org/issues/15582 for more information
+    run('gem', %w(install etc:1.0.1 --default)) if RUBY_VERSION == "2.6.1"
+
     with_retries { run('rake', %w(spec:travis:deps)) }
   end
+when %w(rubocop)
+  run('gem', %w(install rubocop -v ~>0.61.1))
+  run('util/rubocop')
 when %w(script)
-  run('rake rubocop')
   if TOOL.rubygems?
     run('rake test')
   else

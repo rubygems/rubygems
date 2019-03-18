@@ -28,7 +28,9 @@ module Gem::Util
     zipped = StringIO.new(String.new, 'w')
     zipped.set_encoding Encoding::BINARY
 
-    Zlib::GzipWriter.wrap zipped do |io| io.write data end
+    Zlib::GzipWriter.wrap zipped do |io|
+      io.write data
+    end
 
     zipped.string
   end
@@ -46,7 +48,7 @@ module Gem::Util
   # and implements an IO.popen-like behavior where it does not accept an array
   # for a command.
 
-  def self.popen *command
+  def self.popen(*command)
     IO.popen command, &:read
   rescue TypeError # ruby 1.8 only supports string command
     r, w = IO.pipe
@@ -70,7 +72,7 @@ module Gem::Util
   ##
   # Invokes system, but silences all output.
 
-  def self.silent_system *command
+  def self.silent_system(*command)
     opt = {:out => IO::NULL, :err => [:child, :out]}
     if Hash === command.last
       opt.update(command.last)
@@ -103,7 +105,7 @@ module Gem::Util
   ##
   # Enumerates the parents of +directory+.
 
-  def self.traverse_parents directory, &block
+  def self.traverse_parents(directory, &block)
     return enum_for __method__, directory unless block_given?
 
     here = File.expand_path directory
@@ -122,7 +124,7 @@ module Gem::Util
 
   def self.glob_files_in_dir(glob, base_path)
     if RUBY_VERSION >= "2.5"
-      Dir.glob(glob, base: base_path).map! {|f| File.join(base_path, f) }
+      Dir.glob(glob, base: base_path).map! {|f| File.expand_path(f, base_path) }
     else
       Dir.glob(File.expand_path(glob, base_path))
     end

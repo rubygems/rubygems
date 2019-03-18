@@ -3,12 +3,7 @@
 require 'rubygems'
 require 'rubygems/package_task'
 require "rake/testtask"
-
-begin
-  require 'psych'
-rescue ::LoadError
-  require 'yaml'
-end
+require 'psych'
 
 desc "Setup Rubygems dev environment"
 task :setup => ["bundler:checkout"] do
@@ -71,21 +66,44 @@ rescue LoadError
   end
 end
 
-begin
-  gem "rubocop", "~> 0.58"
-  require "rubocop/rake_task"
+desc "Run rubocop"
+task(:rubocop) do
+  sh "util/rubocop"
+end
 
-  RuboCop::RakeTask.new
-rescue LoadError
-  task(:rubocop) { abort "Install the rubocop gem (~> 0.58) to run a static analysis" }
+desc "Run a test suite bisection"
+task(:bisect) do
+  seed = begin
+           Integer(ENV["SEED"])
+         rescue
+           abort "Specify the failing seed as the SEED environment variable"
+         end
+
+  gemdir = `gem env gemdir`.chomp
+  sh "SEED=#{seed} MTB_VERBOSE=2 util/bisect -Ilib:bundler/lib:test:#{gemdir}/gems/minitest-server-1.0.5/lib test"
 end
 
 # --------------------------------------------------------------------
 # Creating a release
 
-task :prerelease => %w[clobber check_manifest test bundler:build_metadata]
-
+task :prerelease => %w[clobber test bundler:build_metadata check_deprecations]
 task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:publish]
+
+desc "Check for deprecated methods with expired deprecation horizon"
+task :check_deprecations do
+  if v.segments[1] == 0 && v.segments[2] == 0
+    sh("util/rubocop -r ./util/cops/deprecations --only Rubygems/Deprecations")
+  else
+    puts "Skipping deprecation checks since not releasing a major version."
+  end
+end
+
+desc "Release rubygems-#{v}"
+task :release => :prerelease do
+  Rake::Task["package"].invoke
+  sh "gem push pkg/rubygems-update-#{v}.gem"
+end
+Rake::Task["release"].enhance(["postrelease"])
 
 Gem::PackageTask.new(spec) {}
 
@@ -100,7 +118,7 @@ file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
     Find.find '.' do |file|
       dest = File.expand_path file, dest_root
 
-      if File.directory? file then
+      if File.directory? file
         mkdir_p dest
       else
         rm_f dest
@@ -261,7 +279,7 @@ namespace 'blog' do
 
     last_change_type = change_types.pop
 
-    if change_types.empty? then
+    if change_types.empty?
       change_types = ''
     else
       change_types = change_types.join(', ') << ' and '
@@ -343,7 +361,7 @@ desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
   files = []
   require 'find'
-  exclude = %r[/\/tmp\/|pkg|CVS|\.DS_Store|\.svn|\.git|TAGS|extconf.h|\.bundle$|\.o$|\.log$/|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|doc/]ox
+  exclude = %r[/\/tmp\/|\/pkg\/|CVS|\.DS_Store|\/doc\/|\/coverage\/|\.svn|\.git|TAGS|extconf.h|\.bundle$|\.o$|\.log$/|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)]ox
   Find.find(".") do |path|
     next unless File.file?(path)
     next if path =~ exclude

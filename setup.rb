@@ -7,7 +7,7 @@
 #++
 
 # Make sure rubygems isn't already loaded.
-if ENV['RUBYOPT'] or defined? Gem then
+if ENV['RUBYOPT'] or defined? Gem
   ENV.delete 'RUBYOPT'
 
   require 'rbconfig'
@@ -42,4 +42,3 @@ begin
 rescue Gem::SystemExitException => e
   exit e.exit_code
 end
-

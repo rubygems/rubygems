@@ -4,7 +4,7 @@ require 'rubygems/request'
 require 'ostruct'
 require 'base64'
 
-unless defined?(OpenSSL::SSL) then
+unless defined?(OpenSSL::SSL)
   warn 'Skipping Gem::Request tests.  openssl not found.'
 end
 
@@ -17,7 +17,7 @@ class TestGemRequest < Gem::TestCase
   PUBLIC_CERT_FILE = cert_path 'public'
   SSL_CERT         = load_cert 'ssl'
 
-  def make_request uri, request_class, last_modified, proxy
+  def make_request(uri, request_class, last_modified, proxy)
     Gem::Request.create_with_proxy uri, request_class, last_modified, proxy
   end
 
@@ -79,14 +79,25 @@ class TestGemRequest < Gem::TestCase
     assert_equal URI(@proxy_uri), proxy
   end
 
+  def test_proxy_ENV
+    ENV['http_proxy'] = "http://proxy"
+    ENV['https_proxy'] = ""
+
+    request = make_request URI('https://example'), nil, nil, nil
+
+    proxy = request.proxy_uri
+
+    assert_nil proxy
+  end
+
   def test_configure_connection_for_https
     connection = Net::HTTP.new 'localhost', 443
 
-    request = Class.new(Gem::Request) {
+    request = Class.new(Gem::Request) do
       def self.get_cert_files
         [TestGemRequest::PUBLIC_CERT_FILE]
       end
-    }.create_with_proxy URI('https://example'), nil, nil, nil
+    end.create_with_proxy URI('https://example'), nil, nil, nil
 
     Gem::Request.configure_connection_for_https connection, request.cert_files
 
@@ -101,11 +112,11 @@ class TestGemRequest < Gem::TestCase
 
     connection = Net::HTTP.new 'localhost', 443
 
-    request = Class.new(Gem::Request) {
+    request = Class.new(Gem::Request) do
       def self.get_cert_files
         [TestGemRequest::PUBLIC_CERT_FILE]
       end
-    }.create_with_proxy URI('https://example'), nil, nil, nil
+    end.create_with_proxy URI('https://example'), nil, nil, nil
 
     Gem::Request.configure_connection_for_https connection, request.cert_files
 
@@ -442,7 +453,7 @@ ERROR:  Certificate  is an invalid CA certificate
     message =
       Gem::Request.verify_certificate_message error_number, EXPIRED_CERT
 
-    assert_equal "You must add #{EXPIRED_CERT.issuer} to your local trusted store",
+    assert_equal "Cannot verify certificate issued by #{EXPIRED_CERT.issuer}",
                  message
   end
 
@@ -465,7 +476,7 @@ ERROR:  Certificate  is an invalid CA certificate
     @orig_RUBY_REVISION   = RUBY_REVISION if defined? RUBY_REVISION
   end
 
-  def util_stub_net_http hash
+  def util_stub_net_http(hash)
     old_client = Gem::Request::ConnectionPools.client
     conn = Conn.new OpenStruct.new(hash)
     Gem::Request::ConnectionPools.client = conn
@@ -475,9 +486,10 @@ ERROR:  Certificate  is an invalid CA certificate
   end
 
   class Conn
+
     attr_accessor :payload
 
-    def new *args; self; end
+    def new(*args); self; end
     def use_ssl=(bool); end
     def verify_callback=(setting); end
     def verify_mode=(setting); end
@@ -493,6 +505,7 @@ ERROR:  Certificate  is an invalid CA certificate
       self.payload = req
       @response
     end
+
   end
 
 end if defined?(OpenSSL::SSL)

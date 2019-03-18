@@ -44,6 +44,7 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal Gem::ConfigFile::DEFAULT_BULK_THRESHOLD, @cfg.bulk_threshold
     assert_equal true, @cfg.verbose
     assert_equal [@gem_repo], Gem.sources
+    assert_equal 365, @cfg.cert_expiration_length_days
 
     File.open @temp_conf, 'w' do |fp|
       fp.puts ":backtrace: true"
@@ -58,6 +59,7 @@ class TestGemConfigFile < Gem::TestCase
       fp.puts "- /var/ruby/1.8/gem_home"
       fp.puts ":ssl_verify_mode: 0"
       fp.puts ":ssl_ca_cert: /etc/ssl/certs"
+      fp.puts ":cert_expiration_length_days: 28"
     end
 
     util_config_file
@@ -71,6 +73,7 @@ class TestGemConfigFile < Gem::TestCase
                  @cfg.path)
     assert_equal 0, @cfg.ssl_verify_mode
     assert_equal '/etc/ssl/certs', @cfg.ssl_ca_cert
+    assert_equal 28, @cfg.cert_expiration_length_days
   end
 
   def test_initialize_handle_arguments_config_file
@@ -341,7 +344,7 @@ if you believe they were disclosed to a third party.
 
     assert_equal expected, YAML.load_file(@cfg.credentials_path)
 
-    unless win_platform? then
+    unless win_platform?
       stat = File.stat @cfg.credentials_path
 
       assert_equal 0600, stat.mode & 0600
@@ -486,5 +489,5 @@ if you believe they were disclosed to a third party.
     util_config_file
     assert_equal(true, @cfg.disable_default_gem_server)
   end
-end
 
+end

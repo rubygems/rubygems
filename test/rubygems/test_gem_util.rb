@@ -5,8 +5,7 @@ require 'rubygems/util'
 class TestGemUtil < Gem::TestCase
 
   def test_class_popen
-    skip "MJIT executes process and it's caught by Process.wait(-1)" if defined?(RubyVM::MJIT) && RubyVM::MJIT.enabled?
-    assert_equal "0\n", Gem::Util.popen(Gem.ruby, '-e', 'p 0')
+    assert_equal "0\n", Gem::Util.popen(Gem.ruby, '-I', File.expand_path('../../../lib', __FILE__), '-e', 'p 0')
 
     assert_raises Errno::ECHILD do
       Process.wait(-1)
@@ -15,7 +14,7 @@ class TestGemUtil < Gem::TestCase
 
   def test_silent_system
     assert_silent do
-      Gem::Util.silent_system Gem.ruby, '-e', 'puts "hello"; warn "hello"'
+      Gem::Util.silent_system Gem.ruby, '-I', File.expand_path('../../../lib', __FILE__), '-e', 'puts "hello"; warn "hello"'
     end
   end
 
@@ -52,12 +51,28 @@ class TestGemUtil < Gem::TestCase
   end
 
   def test_linked_list_find
-    list = [1,2,3,4,5].inject(Gem::List.new(0)) { |m,o|
+    list = [1,2,3,4,5].inject(Gem::List.new(0)) do |m,o|
       Gem::List.new o, m
-    }
+    end
     assert_equal 5, list.find { |x| x == 5 }
     assert_equal 4, list.find { |x| x == 4 }
   end
 
-end
+  def test_glob_files_in_dir
+    FileUtils.mkdir_p 'g'
+    FileUtils.touch File.join('g', 'h.rb')
+    FileUtils.touch File.join('g', 'i.rb')
 
+    expected_paths = [
+      File.join(@tempdir, 'g/h.rb'),
+      File.join(@tempdir, 'g/i.rb'),
+    ]
+
+    files_with_absolute_base = Gem::Util.glob_files_in_dir('*.rb', File.join(@tempdir, 'g'))
+    assert_equal expected_paths.to_set, files_with_absolute_base.to_set
+
+    files_with_relative_base = Gem::Util.glob_files_in_dir('*.rb', 'g')
+    assert_equal expected_paths.to_set, files_with_relative_base.to_set
+  end
+
+end

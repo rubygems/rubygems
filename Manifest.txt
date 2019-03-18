@@ -1,17 +1,16 @@
-.document
 .rubocop.yml
 .travis.yml
 CODE_OF_CONDUCT.md
-CONTRIBUTING.rdoc
+CONTRIBUTING.md
 History.txt
 LICENSE.txt
 MAINTAINERS.txt
 MIT.txt
 Manifest.txt
-POLICIES.rdoc
+POLICIES.md
 README.md
 Rakefile
-UPGRADING.rdoc
+UPGRADING.md
 appveyor.yml
 bin/gem
 bin/update_rubygems
@@ -52,6 +51,7 @@ bundler/lib/bundler/cli/package.rb
 bundler/lib/bundler/cli/platform.rb
 bundler/lib/bundler/cli/plugin.rb
 bundler/lib/bundler/cli/pristine.rb
+bundler/lib/bundler/cli/remove.rb
 bundler/lib/bundler/cli/show.rb
 bundler/lib/bundler/cli/update.rb
 bundler/lib/bundler/cli/viz.rb
@@ -102,6 +102,7 @@ bundler/lib/bundler/plugin.rb
 bundler/lib/bundler/plugin/api.rb
 bundler/lib/bundler/plugin/api/source.rb
 bundler/lib/bundler/plugin/dsl.rb
+bundler/lib/bundler/plugin/events.rb
 bundler/lib/bundler/plugin/index.rb
 bundler/lib/bundler/plugin/installer.rb
 bundler/lib/bundler/plugin/installer/git.rb
@@ -258,6 +259,7 @@ bundler/man/bundle-outdated.ronn
 bundler/man/bundle-package.ronn
 bundler/man/bundle-platform.ronn
 bundler/man/bundle-pristine.ronn
+bundler/man/bundle-remove.ronn
 bundler/man/bundle-show.ronn
 bundler/man/bundle-update.ronn
 bundler/man/bundle-viz.ronn
@@ -309,6 +311,7 @@ lib/rubygems/compatibility.rb
 lib/rubygems/config_file.rb
 lib/rubygems/core_ext/kernel_gem.rb
 lib/rubygems/core_ext/kernel_require.rb
+lib/rubygems/core_ext/kernel_warn.rb
 lib/rubygems/defaults.rb
 lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb
@@ -635,10 +638,12 @@ test/rubygems/test_require.rb
 test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem
 util/CL2notes
+util/bisect
 util/ci
 util/create_certs.rb
 util/create_encrypted_key.rb
 util/generate_spdx_license_list.rb
 util/patch_with_prs.rb
+util/rubocop
 util/update_bundled_ca_certificates.rb
 util/update_changelog.rb

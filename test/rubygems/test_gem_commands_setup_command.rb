@@ -187,7 +187,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     @cmd.extend FileUtils
 
     bin_dir = File.join(@gemhome, 'bin')
-    @cmd.install_default_bundler_gem
+    @cmd.install_default_bundler_gem bin_dir
 
     bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
     default_spec_path = File.join(Gem::Specification.default_specifications_dir, "#{bundler_spec.full_name}.gemspec")

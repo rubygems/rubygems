@@ -46,11 +46,6 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
   doc.rdoc_dir = 'doc'
 end
 
-desc "Install gems needed to run the tests"
-task :install_test_deps => :clean do
-  sh "gem install minitest -v '~> 5.0'"
-end
-
 begin
   require "automatiek"
 

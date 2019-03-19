@@ -427,13 +427,12 @@ By default, this RubyGems will install gem as:
       cp File.join("bundler", bundler_spec.bindir, e), File.join(bundler_bin_dir, e)
     end
 
-    if Gem.win_platform?
-      require 'rubygems/installer'
+    require 'rubygems/installer'
 
-      installer = Gem::Installer.for_spec bundler_spec
-      bundler_spec.executables.each do |e|
-        installer.generate_windows_script e, bundler_spec.bin_dir
-      end
+    Dir.chdir("bundler") do
+      built_gem = Gem::Package.build(bundler_spec)
+      installer = Gem::Installer.at(built_gem, env_shebang: options[:env_shebang], install_as_default: true)
+      installer.install
     end
 
     say "Bundler #{bundler_spec.version} installed"

@@ -73,6 +73,9 @@ Layout/TrailingBlankLines:
 Layout/TrailingWhitespace:
   Enabled: true
 
+Lint/ParenthesesAsGroupedExpression:
+  Enabled: true
+
 Style/MethodDefParentheses:
   Enabled: true
 

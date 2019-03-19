@@ -326,7 +326,7 @@ gem 'other', version
 
     @installer.generate_bin
 
-    assert_directory_exists (util_inst_bindir)
+    assert_directory_exists util_inst_bindir
     installed_exec = File.join(util_inst_bindir, 'executable')
     assert_path_exists installed_exec
     assert_equal mask, File.stat(installed_exec).mode unless win_platform?

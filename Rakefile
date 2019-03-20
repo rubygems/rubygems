@@ -150,7 +150,7 @@ task :upload_to_s3 do
 
   s3 = Aws::S3::Resource.new(region:'us-west-2')
   %w[zip tgz].each do |ext|
-    obj = s3.bucket('production').object("rubygems/rubygems-#{v}.#{ext}")
+    obj = s3.bucket('oregon.production.s3.rubygems.org').object("rubygems/rubygems-#{v}.#{ext}")
     obj.upload_file("pkg/rubygems-#{v}.#{ext}")
   end
 end

@@ -142,7 +142,17 @@ end
 
 desc "Upload release to S3"
 task :upload_to_s3 do
-  sh "s3cmd put -P pkg/rubygems-#{v}.zip pkg/rubygems-#{v}.tgz s3://oregon.production.s3.rubygems.org/rubygems/"
+  begin
+    require "aws-sdk-s3"
+  rescue LoadError
+    abort "Install the aws-sdk-s3 gem to be able to upload gems to rubygems.org."
+  end
+
+  s3 = Aws::S3::Resource.new(region:'us-west-2')
+  %w[zip tgz].each do |ext|
+    obj = s3.bucket('oregon.production.s3.rubygems.org').object("rubygems/rubygems-#{v}.#{ext}")
+    obj.upload_file("pkg/rubygems-#{v}.#{ext}")
+  end
 end
 
 desc "Upload release to rubygems.org"

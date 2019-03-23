@@ -148,29 +148,32 @@ that is a dependency of an existing gem.  You can use the
 
   def uninstall_specific
     deplist = Gem::DependencyList.new
-    gems_to_uninstall = []
+    original_gem_version = {}
 
     get_all_gem_names_and_versions.each do |name, version|
-      requirement = version || options[:version]
-      gems_to_uninstall << { name: name, version: requirement }
-      gem_specs = Gem::Specification.find_all_by_name(name, requirement)
+      original_gem_version[name] = version || options[:version]
+
+      gem_specs = Gem::Specification.find_all_by_name(name, original_gem_version[name])
 
       say("Gem '#{name}' is not installed") if gem_specs.empty?
-      gem_specs.each { |spec| deplist.add spec }
+      gem_specs.each do |spec|
+        deplist.add spec
+      end
     end
 
     deps = deplist.strongly_connected_components.flatten.reverse
 
-    gems_to_uninstall.each do |dep|
-      if dep[:version] == Gem::Requirement.default
-        deps.map(&:name).uniq.each do |gem_name|
-          uninstall_gem(gem_name)
-        end
-      else
-        deps.each do |dep|
+    gems_to_uninstall = {}
+
+    deps.each do |dep|
+      unless gems_to_uninstall[dep.name]
+        gems_to_uninstall[dep.name] = true
+
+        unless original_gem_version[dep.name] == Gem::Requirement.default
           options[:version] = dep.version
-          uninstall_gem(dep.name)
         end
+
+        uninstall_gem(dep.name)
       end
     end
   end

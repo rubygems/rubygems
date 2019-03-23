@@ -19,10 +19,14 @@ rvm:
 jobs:
   include:
     - stage: linting
-      rvm: 2.6
+      rvm: 2.6.1
       env:
         - "TEST_TOOL=rubygems"
       script: util/ci rubocop
+    - stage: test
+      rvm: 2.6.1
+      env:
+        - "TEST_TOOL=bundler RGV=master BDV=master"
 stages:
   - linting
   - test

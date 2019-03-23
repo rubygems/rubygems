@@ -104,10 +104,10 @@ class TestKernel < Gem::TestCase
       quick_gem 'bundler', '1'
       quick_gem 'bundler', '2.a'
 
-      _, e = capture_io do
+      e = assert_raises Gem::MissingSpecVersionError do
         gem('bundler')
       end
-      assert_match "Could not find 'bundler' (55) required by reason.", e
+      assert_match "Could not find 'bundler' (55) required by reason.", e.message
     end
   end
 

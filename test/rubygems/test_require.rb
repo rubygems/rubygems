@@ -399,10 +399,10 @@ class TestGemRequire < Gem::TestCase
       b2a = util_spec('bundler', '2.a', nil, "lib/bundler/setup.rb")
       install_specs b1, b2a
 
-      _, e = capture_io do
+      e = assert_raises Gem::MissingSpecVersionError do
         gem('bundler')
       end
-      assert_match "Could not find 'bundler' (55) required by reason.", e
+      assert_match "Could not find 'bundler' (55) required by reason.", e.message
     end
   end
 

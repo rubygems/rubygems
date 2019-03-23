@@ -281,7 +281,7 @@ class Gem::Dependency
       requirement.satisfied_by?(spec.version) && env_req.satisfied_by?(spec.version)
     end.map(&:to_spec)
 
-    Gem::BundlerVersionFinder.filter!(matches) if name == "bundler".freeze
+    Gem::BundlerVersionFinder.prioritize!(matches) if name == "bundler".freeze
 
     if platform_only
       matches.reject! do |spec|
@@ -325,13 +325,36 @@ class Gem::Dependency
     active = matches.find { |spec| spec.activated? }
     return active if active
 
-    return matches.first if prerelease?
+    unless prerelease?
+      # Move prereleases to the end of the list for >= 0 requirements
+      pre, matches = matches.partition { |spec| spec.version.prerelease? }
+      matches += pre if requirement == Gem::Requirement.default
+    end
 
-    # Move prereleases to the end of the list for >= 0 requirements
-    pre, matches = matches.partition { |spec| spec.version.prerelease? }
-    matches += pre if requirement == Gem::Requirement.default
+    select_first(matches)
+  end
 
-    matches.first
+  def spec_for_exe(exec_name)
+    matches = matching_specs(true)
+
+    matches = matches.find_all do |spec|
+      spec.executables.include? exec_name
+    end if exec_name
+
+    select_first(matches)
+  end
+
+  private
+
+  def select_first(matches)
+    spec = matches.first
+    return unless spec
+
+    if !Gem::BundlerVersionFinder.compatible?(spec)
+      warn Gem::BundlerVersionFinder.missing_version_message
+    end
+
+    spec
   end
 
 end

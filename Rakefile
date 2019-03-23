@@ -10,7 +10,7 @@ task :setup => ["bundler:checkout"] do
   gemspec = Gem::Specification.load(File.expand_path("../rubygems-update.gemspec", __FILE__))
 
   gemspec.dependencies.each do |dep|
-    sh "gem install '#{dep.name}:#{dep.requirement.to_s}'"
+    sh "gem install '#{dep.name}:#{dep.requirement.to_s}' --conservative --no-document"
   end
 end
 
@@ -44,11 +44,6 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
   doc.rdoc_files = rdoc_files
 
   doc.rdoc_dir = 'doc'
-end
-
-desc "Install gems needed to run the tests"
-task :install_test_deps => :clean do
-  sh "gem install minitest -v '~> 5.0'"
 end
 
 begin
@@ -361,11 +356,6 @@ SHA256 Checksums:
 end
 
 # Misc Tasks ---------------------------------------------------------
-
-desc "Cleanup trailing whitespace"
-task :whitespace do
-  system 'find . -not \( -name .svn -prune -o -name .git -prune \) -type f -print0 | xargs -0 sed -i "" -E "s/[[:space:]]*$//"'
-end
 
 desc "Update the manifest to reflect what's on disk"
 task :update_manifest do

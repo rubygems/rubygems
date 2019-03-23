@@ -52,7 +52,7 @@ when %w(before_script)
     run('gem', %W(uninstall executable-hooks gem-wrappers bundler-unload -x --force -i #{`gem env home`.strip}@global))
 
     # shipped gems in 2.3.8
-    run('gem', %w(install rake:>=10.4.2 minitest:>=5.8.5 --conservative --no-document))
+    run('rake', 'setup')
 
     run('gem', %w(list --details))
     run('gem', %w(env))

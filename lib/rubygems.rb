@@ -268,10 +268,17 @@ module Gem
 
     return loaded if loaded && dep.matches_spec?(loaded)
 
-    spec = dep.spec_for_exe(exec_name)
+    specs = dep.matching_specs(true)
 
-    unless spec
+    specs = specs.find_all do |spec|
+      spec.executables.include? exec_name
+    end if exec_name
+
+    unless spec = specs.first
       msg = "can't find gem #{dep} with executable #{exec_name}"
+      if name == "bundler" && bundler_message = Gem::BundlerVersionFinder.missing_version_message
+        msg = bundler_message
+      end
       raise Gem::GemNotFoundException, msg
     end
 

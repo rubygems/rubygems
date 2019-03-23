@@ -321,14 +321,14 @@ class TestGem < Gem::TestCase
 
     File.open("Gemfile", "w") { |f| f.puts('source "https://rubygems.org"') }
 
-    _, err = capture_io do
+    e = assert_raises Gem::GemNotFoundException do
       load Gem.activate_bin_path("bundler", "bundle", ">= 0.a")
     end
 
-    assert_includes err, "Could not find 'bundler' (9999) required by your #{File.expand_path("Gemfile.lock")}."
-    assert_includes err, "To update to the latest version installed on your system, run `bundle update --bundler`."
-    assert_includes err, "To install the missing version, run `gem install bundler:9999`"
-    refute_includes err, "can't find gem bundler (>= 0.a) with executable bundle"
+    assert_includes e.message, "Could not find 'bundler' (9999) required by your #{File.expand_path("Gemfile.lock")}."
+    assert_includes e.message, "To update to the latest version installed on your system, run `bundle update --bundler`."
+    assert_includes e.message, "To install the missing version, run `gem install bundler:9999`"
+    refute_includes e.message, "can't find gem bundler (>= 0.a) with executable bundle"
   end
 
   def test_self_bin_path_no_exec_name

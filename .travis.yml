@@ -25,6 +25,9 @@ jobs:
       rvm: 2.6.2
       env: "TEST_TOOL=bundler RGV=.. BDV=master"
     - stage: test
+      rvm: jruby-9.2.7.0
+      env: "TEST_TOOL=rubygems"
+    - stage: test
       rvm: ruby-head
       env: "TEST_TOOL=rubygems"
     - stage: test

@@ -193,7 +193,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_uninstall_selection
-    ui = Gem::MockGemUi.new "1\ny\n"
+    ui = Gem::MockGemUi.new "1\n"
 
     util_make_gems
 

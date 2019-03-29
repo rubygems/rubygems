@@ -873,51 +873,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Adds +spec+ to the known specifications, keeping the collection
-  # properly sorted.
-
-  def self.add_spec(spec)
-    warn "Gem::Specification.add_spec is deprecated and will be removed in RubyGems 3.0" unless Gem::Deprecate.skip
-    # TODO: find all extraneous adds
-    # puts
-    # p :add_spec => [spec.full_name, caller.reject { |s| s =~ /minitest/ }]
-
-    # TODO: flush the rest of the crap from the tests
-    # raise "no dupes #{spec.full_name} in #{all_names.inspect}" if
-    #   _all.include? spec
-
-    raise "nil spec!" unless spec # TODO: remove once we're happy with tests
-
-    return if _all.include? spec
-
-    _all << spec
-    stubs << spec
-    (@@stubs_by_name[spec.name] ||= []) << spec
-    sort_by!(@@stubs_by_name[spec.name]) { |s| s.version }
-    _resort!(_all)
-    _resort!(stubs)
-  end
-
-  ##
-  # Adds multiple specs to the known specifications.
-
-  def self.add_specs(*specs)
-    warn "Gem::Specification.add_specs is deprecated and will be removed in RubyGems 3.0" unless Gem::Deprecate.skip
-
-    raise "nil spec!" if specs.any?(&:nil?) # TODO: remove once we're happy
-
-    # TODO: this is much more efficient, but we need the extra checks for now
-    # _all.concat specs
-    # _resort!
-
-    Gem::Deprecate.skip_during do
-      specs.each do |spec| # TODO: slow
-        add_spec spec
-      end
-    end
-  end
-
-  ##
   # Returns all specifications. This method is discouraged from use.
   # You probably want to use one of the Enumerable methods instead.
 
@@ -1242,17 +1197,6 @@ class Gem::Specification < Gem::BasicSpecification
     end
 
     nil
-  end
-
-  ##
-  # Removes +spec+ from the known specs.
-
-  def self.remove_spec(spec)
-    warn "Gem::Specification.remove_spec is deprecated and will be removed in RubyGems 3.0" unless Gem::Deprecate.skip
-    _all.delete spec
-    stubs.delete_if { |s| s.full_name == spec.full_name }
-    (@@stubs_by_name[spec.name] || []).delete_if { |s| s.full_name == spec.full_name }
-    reset
   end
 
   ##

@@ -26,7 +26,7 @@ jobs:
     - stage: test
       rvm: 2.6.1
       env:
-        - "TEST_TOOL=bundler RGV=master BDV=master"
+        - "TEST_TOOL=bundler RGV=.. BDV=master"
 stages:
   - linting
   - test

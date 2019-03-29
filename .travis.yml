@@ -13,18 +13,18 @@ env:
 rvm:
   - 2.3.8
   - 2.4.5
-  - 2.5.3
-  - 2.6.1
+  - 2.5.5
+  - 2.6.2
   - ruby-head
 jobs:
   include:
     - stage: linting
-      rvm: 2.6.1
+      rvm: 2.6.2
       env:
         - "TEST_TOOL=rubygems"
       script: util/ci rubocop
     - stage: test
-      rvm: 2.6.1
+      rvm: 2.6.2
       env:
         - "TEST_TOOL=bundler RGV=.. BDV=master"
 stages:

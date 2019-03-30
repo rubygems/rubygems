@@ -954,9 +954,9 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_ruby_escaping_spaces_in_path
-    with_bindir_and_exeext("C:/Ruby 1.8/bin", ".exe") do
-      ruby_install_name "ruby" do
-        with_clean_path_to_ruby do
+    with_clean_path_to_ruby do
+      with_bindir_and_exeext("C:/Ruby 1.8/bin", ".exe") do
+        ruby_install_name "ruby" do
           assert_equal "\"C:/Ruby 1.8/bin/ruby.exe\"", Gem.ruby
         end
       end
@@ -964,9 +964,9 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_ruby_path_without_spaces
-    with_bindir_and_exeext("C:/Ruby18/bin", ".exe") do
-      ruby_install_name "ruby" do
-        with_clean_path_to_ruby do
+    with_clean_path_to_ruby do
+      with_bindir_and_exeext("C:/Ruby18/bin", ".exe") do
+        ruby_install_name "ruby" do
           assert_equal "C:/Ruby18/bin/ruby.exe", Gem.ruby
         end
       end

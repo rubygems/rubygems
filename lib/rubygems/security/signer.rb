@@ -85,7 +85,6 @@ class Gem::Security::Signer
     @digest_name      = Gem::Security::DIGEST_NAME
 
     if @key && !@key.is_a?(OpenSSL::PKey::RSA)
-      @passphrase ||= ask_for_password("Enter PEM pass phrase:")
       @key = OpenSSL::PKey::RSA.new(File.read(@key), @passphrase)
     end
 

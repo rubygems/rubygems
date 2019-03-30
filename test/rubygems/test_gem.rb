@@ -1908,7 +1908,7 @@ You may need to `gem install -g` to install missing gems
 
     yield
   ensure
-    Gem.instance_variable_set("@ruby", orig_ruby)
+    Gem.instance_variable_set :@ruby, orig_ruby
   end
 
   def with_plugin(path)

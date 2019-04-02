@@ -168,8 +168,6 @@ that is a dependency of an existing gem.  You can use the
 
   def uninstall_gem(gem_name)
     uninstall(gem_name)
-  rescue Gem::InstallError
-    nil
   rescue Gem::GemNotInHomeException => e
     spec = e.spec
     alert("In order to remove #{spec.name}, please execute:\n" +

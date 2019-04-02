@@ -307,7 +307,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     gemhome2 = "#{@gemhome}2"
 
     a_4, = util_gem 'a', 4
-    install_gem a_4, :install_dir => gemhome2
+    install_gem a_4
 
     Gem::Specification.dirs = [@gemhome, gemhome2]
 
@@ -323,6 +323,29 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     end
 
     assert_equal %w[default-1], Gem::Specification.all_names.sort
+  end
+
+  def test_execute_outside_gem_home
+    ui = Gem::MockGemUi.new "y\n"
+
+    gemhome2 = "#{@gemhome}2"
+
+    a_4, = util_gem 'a', 4
+    install_gem a_4 , :install_dir => gemhome2
+
+    Gem::Specification.dirs = [@gemhome, gemhome2]
+
+    assert_includes Gem::Specification.all_names, 'a-4'
+
+    @cmd.options[:args] = ['a:4']
+
+    e = assert_raises Gem::InstallError do
+      use_ui ui do
+        @cmd.execute
+      end
+    end
+
+    assert_includes e.message, "a is not installed in GEM_HOME"
   end
 
   def test_handle_options

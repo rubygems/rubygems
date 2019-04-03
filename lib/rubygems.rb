@@ -253,8 +253,6 @@ module Gem
     # TODO: fails test_self_bin_path_bin_file_gone_in_latest
     # Gem::Specification.find_by_name(name, *requirements).bin_file exec_name
 
-    raise ArgumentError, "you must supply exec_name" unless exec_name
-
     requirements = Gem::Requirement.default if
       requirements.empty?
 
@@ -262,6 +260,8 @@ module Gem
   end
 
   def self.find_spec_for_exe(name, exec_name, requirements)
+    raise ArgumentError, "you must supply exec_name" unless exec_name
+
     dep = Gem::Dependency.new name, requirements
 
     loaded = Gem.loaded_specs[name]
@@ -297,8 +297,8 @@ module Gem
   #
   # This method should *only* be used in bin stub files.
 
-  def self.activate_bin_path(name, exec_name, requirement) # :nodoc:
-    spec = find_spec_for_exe name, exec_name, [requirement]
+  def self.activate_bin_path(name, exec_name = nil, *requirements) # :nodoc:
+    spec = find_spec_for_exe name, exec_name, requirements
     Gem::LOADED_SPECS_MUTEX.synchronize do
       spec.activate
       finish_resolve

@@ -44,29 +44,10 @@ module Gem::Util
   end
 
   ##
-  # This calls IO.popen where it accepts an array for a +command+ (Ruby 1.9+)
-  # and implements an IO.popen-like behavior where it does not accept an array
-  # for a command.
+  # This calls IO.popen and reads the result
 
   def self.popen(*command)
     IO.popen command, &:read
-  rescue TypeError # ruby 1.8 only supports string command
-    r, w = IO.pipe
-
-    pid = fork do
-      STDIN.close
-      STDOUT.reopen w
-
-      exec(*command)
-    end
-
-    w.close
-
-    begin
-      return r.read
-    ensure
-      Process.wait pid
-    end
   end
 
   ##

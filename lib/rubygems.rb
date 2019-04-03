@@ -174,8 +174,6 @@ module Gem
     write_binary_errors
   end.freeze
 
-  USE_BUNDLER_FOR_GEMDEPS = !ENV['DONT_USE_BUNDLER_FOR_GEMDEPS'] # :nodoc:
-
   @@win_platform = nil
 
   @configuration = nil
@@ -1183,27 +1181,15 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       raise ArgumentError, "Unable to find gem dependencies file at #{path}"
     end
 
-    if USE_BUNDLER_FOR_GEMDEPS
-
-      ENV["BUNDLE_GEMFILE"] ||= File.expand_path(path)
-      require 'rubygems/user_interaction'
-      Gem::DefaultUserInteraction.use_ui(ui) do
-        require "bundler"
-        @gemdeps = Bundler.setup
-        Bundler.ui = nil
-        @gemdeps.requested_specs.map(&:to_spec).sort_by(&:name)
-      end
-
-    else
-
-      rs = Gem::RequestSet.new
-      @gemdeps = rs.load_gemdeps path
-
-      rs.resolve_current.map do |s|
-        s.full_spec.tap(&:activate)
-      end
-
+    ENV["BUNDLE_GEMFILE"] ||= File.expand_path(path)
+    require 'rubygems/user_interaction'
+    Gem::DefaultUserInteraction.use_ui(ui) do
+      require "bundler"
+      @gemdeps = Bundler.setup
+      Bundler.ui = nil
+      @gemdeps.requested_specs.map(&:to_spec).sort_by(&:name)
     end
+
   rescue => e
     case e
     when Gem::LoadError, Gem::UnsatisfiableDependencyError, (defined?(Bundler::GemNotFound) ? Bundler::GemNotFound : Gem::LoadError)

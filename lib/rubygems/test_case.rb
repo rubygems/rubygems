@@ -38,9 +38,8 @@ unless Gem::Dependency.new('rdoc', '>= 3.10').matching_specs.empty?
   gem 'json'
 end
 
-if Gem::USE_BUNDLER_FOR_GEMDEPS
-  require 'bundler'
-end
+require 'bundler'
+
 require 'minitest/autorun'
 
 require 'rubygems/deprecate'
@@ -261,9 +260,8 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     @current_dir = Dir.pwd
     @fetcher     = nil
 
-    if Gem::USE_BUNDLER_FOR_GEMDEPS
-      Bundler.ui = Bundler::UI::Silent.new
-    end
+    Bundler.ui = Bundler::UI::Silent.new
+
     @back_ui                       = Gem::DefaultUserInteraction.ui
     @ui                            = Gem::MockGemUi.new
     # This needs to be a new instance since we call use_ui(@ui) when we want to
@@ -368,9 +366,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     Gem.loaded_specs.clear
     Gem.clear_default_specs
     Gem::Specification.unresolved_deps.clear
-    if Gem::USE_BUNDLER_FOR_GEMDEPS
-      Bundler.reset!
-    end
+    Bundler.reset!
 
     Gem.configuration.verbose = true
     Gem.configuration.update_sources = true

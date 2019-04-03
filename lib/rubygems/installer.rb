@@ -727,7 +727,7 @@ class Gem::Installer
     end
   end
 
-  def verify_gem_home(unpack = false) # :nodoc:
+  def verify_gem_home # :nodoc:
     FileUtils.mkdir_p gem_home, :mode => options[:dir_mode] && 0755
     raise Gem::FilePermissionError, gem_home unless File.writable?(gem_home)
   end

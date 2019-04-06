@@ -1724,7 +1724,9 @@ gem 'other', version
 
     dest = File.join @gemhome, 'gems', @spec.full_name
 
-    @installer.unpack dest
+    Gem::Deprecate.skip_during do
+      @installer.unpack dest
+    end
 
     assert_path_exists File.join dest, 'lib', 'code.rb'
     assert_path_exists File.join dest, 'bin', 'executable'

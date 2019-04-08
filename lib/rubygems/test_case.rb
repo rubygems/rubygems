@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 # TODO: $SAFE = 1
 
-if defined? Gem::QuickLoader
-  Gem::QuickLoader.load_full_rubygems_library
-else
-  require 'rubygems'
-end
+require 'rubygems'
 
 # If bundler gemspec exists, add to stubs
 bundler_gemspec = File.expand_path("../../../bundler/bundler.gemspec", __FILE__)

@@ -15,18 +15,21 @@ rvm:
   - 2.4.5
   - 2.5.5
   - 2.6.2
-  - ruby-head
 jobs:
   include:
     - stage: linting
       rvm: 2.6.2
-      env:
-        - "TEST_TOOL=rubygems"
+      env: "TEST_TOOL=rubygems"
       script: util/ci rubocop
     - stage: test
       rvm: 2.6.2
-      env:
-        - "TEST_TOOL=bundler RGV=.. BDV=master"
+      env: "TEST_TOOL=bundler RGV=.. BDV=master"
+    - stage: test
+      rvm: ruby-head
+      env: "TEST_TOOL=rubygems"
+    - stage: test
+      rvm: ruby-head
+      env: "TEST_TOOL=bundler RGV=.. BDV=master"
 stages:
   - linting
   - test
@@ -39,4 +42,4 @@ matrix:
     - rvm: ruby-head
       env: "TEST_TOOL=rubygems"
     - rvm: ruby-head
-      env: "TEST_TOOL=bundler RGV=master"
+      env: "TEST_TOOL=bundler RGV=.. BDV=master"

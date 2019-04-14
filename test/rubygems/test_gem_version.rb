@@ -149,12 +149,14 @@ class TestGemVersion < Gem::TestCase
 
   def test_spaceship
     assert_equal(0, v("1.0")       <=> v("1.0.0"))
+    assert_equal(0, v("1.0.0.a")   <=> v("1.0.a"))
     assert_equal(1, v("1.0")       <=> v("1.0.a"))
     assert_equal(1, v("1.8.2")     <=> v("0.0.0"))
     assert_equal(1, v("1.8.2")     <=> v("1.8.2.a"))
     assert_equal(1, v("1.8.2.b")   <=> v("1.8.2.a"))
-    assert_equal(-1, v("1.8.2.a") <=> v("1.8.2"))
+    assert_equal(-1, v("1.8.2.a")  <=> v("1.8.2"))
     assert_equal(1, v("1.8.2.a10") <=> v("1.8.2.a9"))
+    assert_equal(1, v("2.0.b")     <=> v("2.0.0.a"))
     assert_equal(0, v("")          <=> v("0"))
 
     assert_nil v("1.0") <=> "whatever"

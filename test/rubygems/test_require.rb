@@ -323,6 +323,19 @@ class TestGemRequire < Gem::TestCase
     assert_equal %w(default-3.0), loaded_spec_names
   end
 
+  def test_default_gem_prerelease
+    default_gem_spec = new_default_spec("default", "2.0.0",
+                                        nil, "default/gem.rb")
+    install_default_specs(default_gem_spec)
+
+    default_gem_prerelease_spec = new_default_spec("default", "3.0.0.rc2",
+                                                  nil, "default/gem.rb")
+    install_default_specs(default_gem_prerelease_spec)
+
+    assert_require "default/gem"
+    assert_equal %w(default-3.0.0.rc2), loaded_spec_names
+  end
+
   def loaded_spec_names
     Gem.loaded_specs.values.map(&:full_name).sort
   end
@@ -399,10 +412,10 @@ class TestGemRequire < Gem::TestCase
       b2a = util_spec('bundler', '2.a', nil, "lib/bundler/setup.rb")
       install_specs b1, b2a
 
-      e = assert_raises Gem::MissingSpecVersionError do
+      _, e = capture_io do
         gem('bundler')
       end
-      assert_match "Could not find 'bundler' (55) required by reason.", e.message
+      assert_match "Could not find 'bundler' (55) required by reason.", e
     end
   end
 

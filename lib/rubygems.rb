@@ -266,17 +266,10 @@ module Gem
 
     return loaded if loaded && dep.matches_spec?(loaded)
 
-    specs = dep.matching_specs(true)
+    spec = dep.spec_for_exe(exec_name)
 
-    specs = specs.find_all do |spec|
-      spec.executables.include? exec_name
-    end if exec_name
-
-    unless spec = specs.first
+    unless spec
       msg = "can't find gem #{dep} with executable #{exec_name}"
-      if name == "bundler" && bundler_message = Gem::BundlerVersionFinder.missing_version_message
-        msg = bundler_message
-      end
       raise Gem::GemNotFoundException, msg
     end
 
@@ -1182,6 +1175,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     end
 
     ENV["BUNDLE_GEMFILE"] ||= File.expand_path(path)
+    ENV["BUNDLE_PATH__SYSTEM"] ||= "true"
+
     require 'rubygems/user_interaction'
     Gem::DefaultUserInteraction.use_ui(ui) do
       require "bundler"

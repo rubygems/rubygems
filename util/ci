@@ -47,7 +47,7 @@ end
 case ARGV
 when %w(before_script)
   if TOOL.rubygems?
-    run('gem', %W(uninstall executable-hooks gem-wrappers bundler-unload -x --force -i #{`gem env home`.strip}@global))
+    run('ruby', %W(-I lib bin/gem uninstall executable-hooks gem-wrappers bundler-unload -x --force -i #{`gem env home`.strip}@global))
 
     if RUBY_VERSION >= "2.6.0"
       run('gem', %w(install minitest -v 5.4.3))

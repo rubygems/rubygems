@@ -654,8 +654,8 @@ class Gem::Specification < Gem::BasicSpecification
   #  # This gem will work with 1.8.6 or greater...
   #  spec.required_ruby_version = '>= 1.8.6'
   #
-  #  # Only with ruby 2.0.x
-  #  spec.required_ruby_version = '~> 2.0'
+  #  # Only with final releases of major version 2 where minor version is at least 3
+  #  spec.required_ruby_version = '~> 2.3'
   #
   #  # Only prereleases or final releases after 2.6.0.preview2
   #  spec.required_ruby_version = '> 2.6.0.preview2'

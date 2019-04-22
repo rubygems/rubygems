@@ -59,14 +59,6 @@ when %w(before_script)
   else
     if ENV["BDV"]
       run('git', %W(reset --hard origin/#{ENV["BDV"]}))
-    elsif RUBY_VERSION == "2.6.2" || RUBY_VERSION == "2.5.5"
-      # Manually cherry-pick changes needed so that bundler does not load
-      # default gems by default, and thus its specs pass.
-      # TODO: Remove when the commits are included in a bundler release and
-      # vendored in rubygems.
-      run('git', %w(cherry-pick facdf8e6a450d60a05546b62e23bd9c0d7de2c02))
-      run('git', %w(cherry-pick 7f1ec3d02f62ddea6dac75513e320c607ac3ed93))
-      run('git', %w(cherry-pick c7ac5b38012051379fb87d40e31e0887833dca98))
     end
 
     with_retries { run('rake', %w(spec:travis:deps)) }

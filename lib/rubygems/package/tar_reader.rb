@@ -124,4 +124,4 @@ class Gem::Package::TarReader
 
 end
 
-require 'rubygems/package/tar_reader/entry'
+require_relative 'tar_reader/entry'

@@ -42,9 +42,9 @@
 # #files are the files in the .gem tar file, not the Ruby files in the gem
 # #extract_files and #contents automatically call #verify
 
-require 'rubygems/security'
-require 'rubygems/specification'
-require 'rubygems/user_interaction'
+require_relative 'security'
+require_relative 'specification'
+require_relative 'user_interaction'
 require 'zlib'
 
 class Gem::Package
@@ -721,12 +721,12 @@ EOM
 
 end
 
-require 'rubygems/package/digest_io'
-require 'rubygems/package/source'
-require 'rubygems/package/file_source'
-require 'rubygems/package/io_source'
-require 'rubygems/package/old'
-require 'rubygems/package/tar_header'
-require 'rubygems/package/tar_reader'
-require 'rubygems/package/tar_reader/entry'
-require 'rubygems/package/tar_writer'
+require_relative 'package/digest_io'
+require_relative 'package/source'
+require_relative 'package/file_source'
+require_relative 'package/io_source'
+require_relative 'package/old'
+require_relative 'package/tar_header'
+require_relative 'package/tar_reader'
+require_relative 'package/tar_reader/entry'
+require_relative 'package/tar_writer'

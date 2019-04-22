@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require 'rubygems'
-require 'rubygems/request'
-require 'rubygems/request/connection_pools'
-require 'rubygems/s3_uri_signer'
-require 'rubygems/uri_formatter'
-require 'rubygems/uri_parsing'
-require 'rubygems/user_interaction'
+require_relative '../rubygems'
+require_relative 'request'
+require_relative 'request/connection_pools'
+require_relative 's3_uri_signer'
+require_relative 'uri_formatter'
+require_relative 'uri_parsing'
+require_relative 'user_interaction'
 require 'resolv'
 
 ##

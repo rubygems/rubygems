@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/command'
-require 'rubygems/package'
+require_relative '../command'
+require_relative '../package'
 
 class Gem::Commands::BuildCommand < Gem::Command
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rubygems'
+require_relative '../rubygems'
 
 # If bundler gemspec exists, add to stubs
 bundler_gemspec = File.expand_path("../../../bundler/bundler.gemspec", __FILE__)
@@ -32,18 +32,18 @@ require 'minitest/autorun'
 
 ENV["JARS_SKIP"] = "true" if Gem.java_platform? # avoid unnecessary and noisy `jar-dependencies` post install hook
 
-require 'rubygems/deprecate'
+require_relative 'deprecate'
 
 require 'fileutils'
 require 'pathname'
 require 'pp'
-require 'rubygems/package'
+require_relative 'package'
 require 'shellwords'
 require 'tmpdir'
 require 'uri'
 require 'zlib'
 require 'benchmark' # stdlib
-require 'rubygems/mock_gem_ui'
+require_relative 'mock_gem_ui'
 
 module Gem
 
@@ -581,7 +581,7 @@ class Gem::TestCase < Minitest::Test
   # Builds and installs the Gem::Specification +spec+
 
   def install_gem(spec, options = {})
-    require 'rubygems/installer'
+    require_relative 'installer'
 
     gem = spec.cache_file
 
@@ -608,7 +608,7 @@ class Gem::TestCase < Minitest::Test
   ##
   # Uninstalls the Gem::Specification +spec+
   def uninstall_gem(spec)
-    require 'rubygems/uninstaller'
+    require_relative 'uninstaller'
 
     Class.new(Gem::Uninstaller) do
       def ask_if_ok(spec)
@@ -673,7 +673,7 @@ class Gem::TestCase < Minitest::Test
   # Use this with #write_file to build an installed gem.
 
   def quick_gem(name, version='2')
-    require 'rubygems/specification'
+    require_relative 'specification'
 
     spec = Gem::Specification.new do |s|
       s.platform    = Gem::Platform::RUBY
@@ -1546,8 +1546,8 @@ begin
   gem 'rdoc'
   require 'rdoc'
 
-  require 'rubygems/rdoc'
+  require_relative 'rdoc'
 rescue LoadError, Gem::LoadError
 end
 
-require 'rubygems/test_utilities'
+require_relative 'test_utilities'

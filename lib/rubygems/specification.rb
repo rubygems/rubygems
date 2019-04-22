@@ -6,14 +6,14 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/version'
-require 'rubygems/requirement'
-require 'rubygems/platform'
-require 'rubygems/deprecate'
-require 'rubygems/basic_specification'
-require 'rubygems/stub_specification'
-require 'rubygems/specification_policy'
-require 'rubygems/util/list'
+require_relative 'version'
+require_relative 'requirement'
+require_relative 'platform'
+require_relative 'deprecate'
+require_relative 'basic_specification'
+require_relative 'stub_specification'
+require_relative 'specification_policy'
+require_relative 'util/list'
 
 ##
 # The Specification class contains the information for a gem.  Typically
@@ -1564,9 +1564,9 @@ class Gem::Specification < Gem::BasicSpecification
       unresolved_deps = Gem::Specification.unresolved_deps.dup
       Gem::Specification.unresolved_deps.clear
 
-      require 'rubygems/config_file'
-      require 'rubygems/ext'
-      require 'rubygems/user_interaction'
+      require_relative 'config_file'
+      require_relative 'ext'
+      require_relative 'user_interaction'
 
       ui = Gem::SilentUI.new
       Gem::DefaultUserInteraction.use_ui ui do
@@ -2518,7 +2518,7 @@ class Gem::Specification < Gem::BasicSpecification
     # back, we have to check again here to make sure that our
     # psych code was properly loaded, and load it if not.
     unless Gem.const_defined?(:NoAliasYAMLTree)
-      require 'rubygems/psych_tree'
+      require_relative 'psych_tree'
     end
 
     builder = Gem::NoAliasYAMLTree.create

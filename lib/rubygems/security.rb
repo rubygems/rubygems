@@ -5,7 +5,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/exceptions'
+require_relative 'exceptions'
 require 'fileutils'
 
 begin
@@ -601,9 +601,9 @@ module Gem::Security
 end
 
 if defined?(OpenSSL::SSL)
-  require 'rubygems/security/policy'
-  require 'rubygems/security/policies'
-  require 'rubygems/security/trust_dir'
+  require_relative 'security/policy'
+  require_relative 'security/policies'
+  require_relative 'security/trust_dir'
 end
 
-require 'rubygems/security/signer'
+require_relative 'security/signer'

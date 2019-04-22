@@ -5,9 +5,9 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/util'
-require 'rubygems/deprecate'
-require 'rubygems/text'
+require_relative 'util'
+require_relative 'deprecate'
+require_relative 'text'
 
 ##
 # Module that defines the default UserInteraction.  Any class including this

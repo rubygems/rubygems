@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems/package'
+require_relative '../test_case'
+require_relative '../package'
 
 ##
 # A test case for Gem::Package::Tar* classes

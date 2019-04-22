@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'tempfile'
-require 'rubygems'
-require 'rubygems/remote_fetcher'
+require_relative '../rubygems'
+require_relative 'remote_fetcher'
 
 ##
 # A fake Gem::RemoteFetcher for use in tests or to avoid real live HTTP
@@ -301,7 +301,7 @@ class Gem::TestCase::SpecFetcherSetup
   def setup_fetcher # :nodoc:
     require 'zlib'
     require 'socket'
-    require 'rubygems/remote_fetcher'
+    require_relative 'remote_fetcher'
 
     unless @test.fetcher
       @test.fetcher = Gem::FakeFetcher.new

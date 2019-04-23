@@ -79,13 +79,12 @@ is too hard to use.
 
   def execute
     exit_code = 0
-    if options[:args].to_a.empty? and options[:name].source.empty?
+    if args.empty? and options[:name].source.empty?
       name = options[:name]
       no_name = true
     elsif !options[:name].source.empty?
       name = Array(options[:name])
     else
-      args = options[:args].to_a
       name = options[:exact] ? args.map{|arg| /\A#{Regexp.escape(arg)}\Z/ } : args.map{|arg| /#{arg}/i }
     end
 
@@ -118,6 +117,10 @@ is too hard to use.
   end
 
   private
+
+  def args
+    options[:args].to_a
+  end
 
   def display_header(type)
     if (ui.outs.tty? and Gem.configuration.verbose) or both?

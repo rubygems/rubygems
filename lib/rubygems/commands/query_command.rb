@@ -79,21 +79,21 @@ is too hard to use.
 
   def execute
     exit_code = 0
-    name = gem_name? ? Array(options[:name]) : options[:name]
+    gem_names = Array(options[:name])
 
     if !args.empty?
-      name = options[:exact] ? args.map{|arg| /\A#{Regexp.escape(arg)}\Z/ } : args.map{|arg| /#{arg}/i }
+      gem_names = options[:exact] ? args.map{|arg| /\A#{Regexp.escape(arg)}\Z/ } : args.map{|arg| /#{arg}/i }
     end
 
     unless options[:installed].nil?
       if args.empty? && !gem_name?
         alert_error "You must specify a gem name"
         exit_code |= 4
-      elsif name.count > 1
+      elsif gem_names.count > 1
         alert_error "You must specify only ONE gem!"
         exit_code |= 4
       else
-        installed = installed? name.first, options[:version]
+        installed = installed? gem_names.first, options[:version]
         installed = !installed unless options[:installed]
 
         if installed
@@ -107,8 +107,7 @@ is too hard to use.
       terminate_interaction exit_code
     end
 
-    names = Array(name)
-    names.each { |n| show_gems n, options[:prerelease] }
+    gem_names.each { |n| show_gems n, options[:prerelease] }
   end
 
   private

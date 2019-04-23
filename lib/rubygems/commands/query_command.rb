@@ -78,39 +78,46 @@ is too hard to use.
   end
 
   def execute
-    exit_code = 0
     gem_names = Array(options[:name])
 
     if !args.empty?
       gem_names = options[:exact] ? args.map{|arg| /\A#{Regexp.escape(arg)}\Z/ } : args.map{|arg| /#{arg}/i }
     end
 
-    unless options[:installed].nil?
-      if args.empty? && !gem_name?
-        alert_error "You must specify a gem name"
-        exit_code |= 4
-      elsif gem_names.count > 1
-        alert_error "You must specify only ONE gem!"
-        exit_code |= 4
-      else
-        installed = installed? gem_names.first, options[:version]
-        installed = !installed unless options[:installed]
-
-        if installed
-          say "true"
-        else
-          say "false"
-          exit_code |= 1
-        end
-      end
-
-      terminate_interaction exit_code
-    end
+    terminate_interaction(check_installed_gems(gem_names)) if check_installed_gems?
 
     gem_names.each { |n| show_gems n, options[:prerelease] }
   end
 
   private
+
+  def check_installed_gems(gem_names)
+    exit_code = 0
+
+    if args.empty? && !gem_name?
+      alert_error "You must specify a gem name"
+      exit_code |= 4
+    elsif gem_names.count > 1
+      alert_error "You must specify only ONE gem!"
+      exit_code |= 4
+    else
+      installed = installed? gem_names.first, options[:version]
+      installed = !installed unless options[:installed]
+
+      if installed
+        say "true"
+      else
+        say "false"
+        exit_code |= 1
+      end
+    end
+
+    exit_code
+  end
+
+  def check_installed_gems?
+    !options[:installed].nil?
+  end
 
   def gem_name?
     !options[:name].source.empty?

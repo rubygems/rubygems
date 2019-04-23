@@ -88,8 +88,6 @@ is too hard to use.
       name = options[:exact] ? args.map{|arg| /\A#{Regexp.escape(arg)}\Z/ } : args.map{|arg| /#{arg}/i }
     end
 
-    prerelease = options[:prerelease]
-
     unless options[:installed].nil?
       if no_name
         alert_error "You must specify a gem name"
@@ -113,7 +111,7 @@ is too hard to use.
     end
 
     names = Array(name)
-    names.each { |n| show_gems n, prerelease }
+    names.each { |n| show_gems n, options[:prerelease] }
   end
 
   private

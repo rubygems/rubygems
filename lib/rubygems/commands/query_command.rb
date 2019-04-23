@@ -79,9 +79,10 @@ is too hard to use.
 
   def execute
     exit_code = 0
+    name = options[:name]
+
     if args.empty?
-      if options[:name].source.empty?
-        name = options[:name]
+      if name.source.empty?
         no_name = true
       else
         name = Array(options[:name])

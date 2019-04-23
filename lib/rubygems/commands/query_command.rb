@@ -96,10 +96,10 @@ is too hard to use.
 
     if args.empty? && !gem_name?
       alert_error "You must specify a gem name"
-      exit_code |= 4
+      exit_code = 4
     elsif gem_names.count > 1
       alert_error "You must specify only ONE gem!"
-      exit_code |= 4
+      exit_code = 4
     else
       installed = installed?(gem_names.first, options[:version])
       installed = !installed unless options[:installed]
@@ -108,7 +108,7 @@ is too hard to use.
         say "true"
       else
         say "false"
-        exit_code |= 1
+        exit_code = 1
       end
     end
 

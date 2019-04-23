@@ -104,12 +104,8 @@ is too hard to use.
       installed = installed?(gem_names.first, options[:version])
       installed = !installed unless options[:installed]
 
-      if installed
-        say "true"
-      else
-        say "false"
-        exit_code = 1
-      end
+      say(installed)
+      exit_code = 1 if !installed
     end
 
     exit_code

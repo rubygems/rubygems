@@ -79,11 +79,13 @@ is too hard to use.
 
   def execute
     exit_code = 0
-    if args.empty? and options[:name].source.empty?
-      name = options[:name]
-      no_name = true
-    elsif !options[:name].source.empty?
-      name = Array(options[:name])
+    if args.empty?
+      if options[:name].source.empty?
+        name = options[:name]
+        no_name = true
+      else
+        name = Array(options[:name])
+      end
     else
       name = options[:exact] ? args.map{|arg| /\A#{Regexp.escape(arg)}\Z/ } : args.map{|arg| /#{arg}/i }
     end

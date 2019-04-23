@@ -79,11 +79,9 @@ is too hard to use.
 
   def execute
     exit_code = 0
-    name = options[:name]
+    name = gem_name? ? Array(options[:name]) : options[:name]
 
-    if args.empty?
-      name = Array(options[:name]) if gem_name?
-    else
+    if !args.empty?
       name = options[:exact] ? args.map{|arg| /\A#{Regexp.escape(arg)}\Z/ } : args.map{|arg| /#{arg}/i }
     end
 

@@ -86,7 +86,7 @@ is too hard to use.
 
     terminate_interaction(check_installed_gems(gem_names)) if check_installed_gems?
 
-    gem_names.each { |n| show_gems n, options[:prerelease] }
+    gem_names.each { |n| show_gems(n, options[:prerelease]) }
   end
 
   private
@@ -101,7 +101,7 @@ is too hard to use.
       alert_error "You must specify only ONE gem!"
       exit_code |= 4
     else
-      installed = installed? gem_names.first, options[:version]
+      installed = installed?(gem_names.first, options[:version])
       installed = !installed unless options[:installed]
 
       if installed

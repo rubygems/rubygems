@@ -82,17 +82,13 @@ is too hard to use.
     name = options[:name]
 
     if args.empty?
-      if name.source.empty?
-        no_name = true
-      else
-        name = Array(options[:name])
-      end
+      name = Array(options[:name]) if gem_name?
     else
       name = options[:exact] ? args.map{|arg| /\A#{Regexp.escape(arg)}\Z/ } : args.map{|arg| /#{arg}/i }
     end
 
     unless options[:installed].nil?
-      if no_name
+      if args.empty? && !gem_name?
         alert_error "You must specify a gem name"
         exit_code |= 4
       elsif name.count > 1
@@ -118,6 +114,10 @@ is too hard to use.
   end
 
   private
+
+  def gem_name?
+    !options[:name].source.empty?
+  end
 
   def args
     options[:args].to_a

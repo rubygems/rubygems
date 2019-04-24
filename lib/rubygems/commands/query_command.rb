@@ -348,9 +348,10 @@ is too hard to use.
       entry << "    #{title}: #{platforms.values.sort.join ', '}\n"
     else
       entry << "    Platforms:\n"
-      platforms.sort_by do |version,|
-        version
-      end.each do |version, pls|
+
+      sorted_platforms = platforms.sort_by { |version,| version }
+
+      sorted_platforms.each do |version, pls|
         label = "        #{version}: "
         data = format_text pls.sort.join(', '), 68, label.length
         data[0, label.length] = label

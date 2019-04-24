@@ -269,43 +269,6 @@ class Gem::DependencyInstaller
   end
   deprecate :find_spec_by_name_and_version, :none, 2019, 12
 
-  ##
-  # Gathers all dependencies necessary for the installation from local and
-  # remote sources unless the ignore_dependencies was given.
-  #--
-  # TODO remove at RubyGems 4
-
-  def gather_dependencies # :nodoc:
-    specs = @available.all_specs
-
-    # these gems were listed by the user, always install them
-    keep_names = specs.map { |spec| spec.full_name }
-
-    if @dev_shallow
-      @toplevel_specs = keep_names
-    end
-
-    dependency_list = Gem::DependencyList.new @development
-    dependency_list.add(*specs)
-
-    # REFACTOR maybe abstract away using Gem::Specification.include? so
-    # that this isn't dependent only on the currently installed gems
-    dependency_list.specs.reject! do |spec|
-      not keep_names.include?(spec.full_name) and
-      Gem::Specification.include?(spec)
-    end
-
-    unless dependency_list.ok? or @ignore_dependencies or @force
-      reason = dependency_list.why_not_ok?.map do |k,v|
-        "#{k} requires #{v.join(", ")}"
-      end.join("; ")
-      raise Gem::DependencyError, "Unable to resolve dependencies: #{reason}"
-    end
-
-    @gems_to_install = dependency_list.dependency_order.reverse
-  end
-  deprecate :gather_dependencies, :none, 2018, 12
-
   def in_background(what) # :nodoc:
     fork_happened = false
     if @build_docs_in_background and Process.respond_to?(:fork)

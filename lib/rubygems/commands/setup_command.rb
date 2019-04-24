@@ -428,8 +428,12 @@ By default, this RubyGems will install gem as:
 
     Dir.chdir("bundler") do
       built_gem = Gem::Package.build(bundler_spec)
-      installer = Gem::Installer.at(built_gem, env_shebang: options[:env_shebang], install_as_default: true, bin_dir: bin_dir, wrappers: true)
-      installer.install
+      begin
+        installer = Gem::Installer.at(built_gem, env_shebang: options[:env_shebang], install_as_default: true, bin_dir: bin_dir, wrappers: true)
+        installer.install
+      ensure
+        FileUtils.rm_f built_gem
+      end
     end
 
     say "Bundler #{bundler_spec.version} installed"

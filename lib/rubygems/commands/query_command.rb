@@ -119,6 +119,10 @@ is too hard to use.
     !options[:name].source.empty?
   end
 
+  def prerelease?
+    options[:prerelease]
+  end
+
   def args
     options[:args].to_a
   end
@@ -135,23 +139,7 @@ is too hard to use.
   def show_gems(name, prerelease)
     req = Gem::Requirement.default
 
-    if local?
-      if prerelease and not both?
-        alert_warning "prereleases are always shown locally"
-      end
-
-      display_header 'LOCAL'
-
-      specs = Gem::Specification.find_all do |s|
-        s.name =~ name and req =~ s.version
-      end
-
-      spec_tuples = specs.map do |spec|
-        [spec.name_tuple, spec]
-      end
-
-      output_query_results spec_tuples
-    end
+    show_local_gems(name) if local?
 
     if remote?
       display_header 'REMOTE'
@@ -180,6 +168,24 @@ is too hard to use.
 
       output_query_results spec_tuples
     end
+  end
+
+  def show_local_gems(name, req = Gem::Requirement.default)
+    if prerelease? && !both?
+      alert_warning("prereleases are always shown locally")
+    end
+
+    display_header("LOCAL")
+
+    specs = Gem::Specification.find_all do |s|
+      s.name =~ name and req =~ s.version
+    end
+
+    spec_tuples = specs.map do |spec|
+      [spec.name_tuple, spec]
+    end
+
+    output_query_results(spec_tuples)
   end
 
   ##

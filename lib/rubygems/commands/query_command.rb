@@ -243,7 +243,7 @@ is too hard to use.
 
     name_tuple, spec = detail_tuple
 
-    spec = spec.fetch_spec name_tuple if spec.respond_to? :fetch_spec
+    spec = spec.fetch_spec(name_tuple)if spec.respond_to?(:fetch_spec)
 
     entry << "\n"
 
@@ -293,8 +293,8 @@ is too hard to use.
 
     entry = [name_tuples.first.name]
 
-    entry_versions entry, name_tuples, platforms, specs
-    entry_details  entry, detail_tuple, specs, platforms
+    entry_versions(entry, name_tuples, platforms, specs)
+    entry_details(entry, detail_tuple, specs, platforms)
 
     entry.join
   end
@@ -345,7 +345,7 @@ is too hard to use.
 
     if platforms.length == 1
       title = platforms.values.length == 1 ? 'Platform' : 'Platforms'
-      entry << "    #{title}: #{platforms.values.sort.join ', '}\n"
+      entry << "    #{title}: #{platforms.values.sort.join(', ')}\n"
     else
       entry << "    Platforms:\n"
 

@@ -134,9 +134,6 @@ is too hard to use.
   #Guts of original execute
   def show_gems(name, prerelease)
     req = Gem::Requirement.default
-    # TODO: deprecate for real
-    dep = Gem::Deprecate.skip_during { Gem::Dependency.new name, req }
-    dep.prerelease = prerelease
 
     if local?
       if prerelease and not both?

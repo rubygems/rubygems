@@ -137,37 +137,8 @@ is too hard to use.
 
   #Guts of original execute
   def show_gems(name, prerelease)
-    req = Gem::Requirement.default
-
-    show_local_gems(name) if local?
-
-    if remote?
-      display_header 'REMOTE'
-
-      fetcher = Gem::SpecFetcher.fetcher
-
-      type = if options[:all]
-               if options[:prerelease]
-                 :complete
-               else
-                 :released
-               end
-             elsif options[:prerelease]
-               :prerelease
-             else
-               :latest
-             end
-
-      if name.respond_to?(:source) && name.source.empty?
-        spec_tuples = fetcher.detect(type) { true }
-      else
-        spec_tuples = fetcher.detect(type) do |name_tuple|
-          name === name_tuple.name
-        end
-      end
-
-      output_query_results spec_tuples
-    end
+    show_local_gems(name)  if local?
+    show_remote_gems(name) if remote?
   end
 
   def show_local_gems(name, req = Gem::Requirement.default)
@@ -183,6 +154,34 @@ is too hard to use.
 
     spec_tuples = specs.map do |spec|
       [spec.name_tuple, spec]
+    end
+
+    output_query_results(spec_tuples)
+  end
+
+  def show_remote_gems(name)
+    display_header("REMOTE")
+
+    fetcher = Gem::SpecFetcher.fetcher
+
+    type = if options[:all]
+             if options[:prerelease]
+               :complete
+             else
+               :released
+             end
+           elsif options[:prerelease]
+             :prerelease
+           else
+             :latest
+           end
+
+    if name.respond_to?(:source) && name.source.empty?
+      spec_tuples = fetcher.detect(type) { true }
+    else
+      spec_tuples = fetcher.detect(type) do |name_tuple|
+        name === name_tuple.name
+      end
     end
 
     output_query_results(spec_tuples)

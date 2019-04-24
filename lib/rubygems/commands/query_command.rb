@@ -164,27 +164,29 @@ is too hard to use.
 
     fetcher = Gem::SpecFetcher.fetcher
 
-    type = if options[:all]
-             if options[:prerelease]
-               :complete
-             else
-               :released
-             end
-           elsif options[:prerelease]
-             :prerelease
-           else
-             :latest
-           end
-
-    if name.respond_to?(:source) && name.source.empty?
-      spec_tuples = fetcher.detect(type) { true }
-    else
-      spec_tuples = fetcher.detect(type) do |name_tuple|
-        name === name_tuple.name
-      end
-    end
+    spec_tuples = if name.respond_to?(:source) && name.source.empty?
+                    fetcher.detect(specs_type) { true }
+                  else
+                    fetcher.detect(specs_type) do |name_tuple|
+                      name === name_tuple.name
+                    end
+                  end
 
     output_query_results(spec_tuples)
+  end
+
+  def specs_type
+    if options[:all]
+      if options[:prerelease]
+        :complete
+      else
+        :released
+      end
+    elsif options[:prerelease]
+      :prerelease
+    else
+      :latest
+    end
   end
 
   ##

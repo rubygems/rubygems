@@ -853,8 +853,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       FileUtils.rm spec.spec_file
     end
 
-    Gem::Specification.reset
-
     return spec
   end
 

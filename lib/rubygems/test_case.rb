@@ -317,14 +317,13 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     Gem.instance_variable_set :@default_dir, @default_dir
     FileUtils.mkdir_p @default_spec_dir
 
-    Gem::Specification.reset
+    Gem::Specification.unresolved_deps.clear
     Gem.use_paths(@gemhome)
 
     Gem::Security.reset
 
     Gem.loaded_specs.clear
     Gem.clear_default_specs
-    Gem::Specification.unresolved_deps.clear
     Bundler.reset!
 
     Gem.configuration.verbose = true
@@ -1567,10 +1566,3 @@ rescue LoadError, Gem::LoadError
 end
 
 require 'rubygems/test_utilities'
-tmpdirs = []
-tmpdirs << (ENV['GEM_HOME'] = Dir.mktmpdir("home"))
-tmpdirs << (ENV['GEM_PATH'] = Dir.mktmpdir("path"))
-pid = $$
-END {tmpdirs.each {|dir| Dir.rmdir(dir)} if $$ == pid}
-Gem.clear_paths
-Gem.loaded_specs.clear

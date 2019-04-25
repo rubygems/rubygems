@@ -637,14 +637,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   end
 
   ##
-  # TODO:  remove in RubyGems 4.0
-
-  def quick_spec(name, version = '2') # :nodoc:
-    util_spec name, version
-  end
-  deprecate :quick_spec, :util_spec, 2018, 12
-
-  ##
   # Builds a gem from +spec+ and places it in <tt>File.join @gemhome,
   # 'cache'</tt>.  Automatically creates files based on +spec.files+
 
@@ -744,52 +736,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     old_loaded_features.concat(new_features.select {|f| f.rindex(prefix, 0)})
     $LOADED_FEATURES.replace old_loaded_features
   end
-
-  ##
-  # new_spec is deprecated as it is never used.
-  #
-  # TODO:  remove in RubyGems 4.0
-
-  def new_spec(name, version, deps = nil, *files) # :nodoc:
-    require 'rubygems/specification'
-
-    spec = Gem::Specification.new do |s|
-      s.platform    = Gem::Platform::RUBY
-      s.name        = name
-      s.version     = version
-      s.author      = 'A User'
-      s.email       = 'example@example.com'
-      s.homepage    = 'http://example.com'
-      s.summary     = "this is a summary"
-      s.description = "This is a test description"
-
-      Array(deps).each do |n, req|
-        s.add_dependency n, (req || '>= 0')
-      end
-
-      s.files.push(*files) unless files.empty?
-
-      yield s if block_given?
-    end
-
-    spec.loaded_from = spec.spec_file
-
-    unless files.empty?
-      write_file spec.spec_file do |io|
-        io.write spec.to_ruby_for_cache
-      end
-
-      util_build_gem spec
-
-      cache_file = File.join @tempdir, 'gems', "#{spec.full_name}.gem"
-      FileUtils.mkdir_p File.dirname cache_file
-      FileUtils.mv spec.cache_file, cache_file
-      FileUtils.rm spec.spec_file
-    end
-
-    spec
-  end
-  deprecate :new_spec, :none, 2018, 12
 
   def new_default_spec(name, version, deps = nil, *files)
     spec = util_spec name, version, deps

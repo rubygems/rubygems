@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# TODO: $SAFE = 1
 
 require 'rubygems'
 
@@ -91,8 +90,6 @@ end
 # gem-related behavior in a sandbox.  Through RubyGemTestCase you can install
 # and uninstall gems, fetch remote gems through a stub fetcher and be assured
 # your normal set of gems is not affected.
-#
-# Tests are always run at a safe level of 1.
 
 class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase)
 

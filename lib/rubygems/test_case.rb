@@ -222,8 +222,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
   @@project_dir = Dir.pwd.untaint unless defined?(@@project_dir)
 
-  @@initial_reset = false
-
   ##
   # #setup prepares a sandboxed location to install gems.  All installs are
   # directed to a temporary directory.  All install plugins are removed.
@@ -319,15 +317,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     Gem.instance_variable_set :@default_dir, @default_dir
     FileUtils.mkdir_p @default_spec_dir
 
-    # We use Gem::Specification.reset the first time only so that if there
-    # are unresolved deps that leak into the whole test suite, they're at least
-    # reported once.
-    if @@initial_reset
-      Gem::Specification.unresolved_deps.clear # done to avoid cross-test warnings
-    else
-      @@initial_reset = true
-      Gem::Specification.reset
-    end
+    Gem::Specification.reset
     Gem.use_paths(@gemhome)
 
     Gem::Security.reset

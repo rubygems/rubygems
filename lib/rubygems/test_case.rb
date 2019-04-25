@@ -537,22 +537,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   end
 
   ##
-  # creates a temporary directory with hax
-  # TODO: deprecate and remove
-
-  def create_tmpdir
-    tmpdir = nil
-
-    Dir.chdir Dir.tmpdir do
-      tmpdir = Dir.pwd
-    end # HACK OSX /private/tmp
-
-    tmpdir = File.join tmpdir, "test_rubygems_#{$$}"
-    FileUtils.mkdir_p tmpdir
-    return tmpdir
-  end
-
-  ##
   # Enables pretty-print for all tests
 
   def mu_pp(obj)
@@ -948,31 +932,6 @@ Also, a list:
   end
 
   ##
-  # Sets up a fake fetcher using the gems from #util_make_gems.  Optionally
-  # additional +prerelease+ gems may be included.
-  #
-  # Gems created by this method may be fetched using Gem::RemoteFetcher.
-
-  def util_setup_fake_fetcher(prerelease = false)
-    require 'zlib'
-    require 'socket'
-    require 'rubygems/remote_fetcher'
-
-    @fetcher = Gem::FakeFetcher.new
-
-    util_make_gems(prerelease)
-    Gem::Specification.reset
-
-    @all_gems = [@a1, @a2, @a3a, @a_evil9, @b2, @c1_2].sort
-    @all_gem_names = @all_gems.map { |gem| gem.full_name }
-
-    gem_names = [@a1.full_name, @a2.full_name, @a3a.full_name, @b2.full_name]
-    @gem_names = gem_names.sort.join("\n")
-
-    Gem::RemoteFetcher.fetcher = @fetcher
-  end
-
-  ##
   # Add +spec+ to +@fetcher+ serving the data in the file +path+.
   # +repo+ indicates which repo to make +spec+ appear to be in.
 
@@ -983,7 +942,6 @@ Also, a list:
 
   ##
   # Sets up Gem::SpecFetcher to return information from the gems in +specs+.
-  # Best used with +@all_gems+ from #util_setup_fake_fetcher.
 
   def util_setup_spec_fetcher(*specs)
     all_specs = Gem::Specification.to_a + specs

@@ -235,17 +235,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   def setup
     super
 
-    @orig_gem_home   = ENV['GEM_HOME']
-    @orig_gem_path   = ENV['GEM_PATH']
-    @orig_gem_vendor = ENV['GEM_VENDOR']
-    @orig_gem_spec_cache = ENV['GEM_SPEC_CACHE']
-    @orig_rubygems_gemdeps = ENV['RUBYGEMS_GEMDEPS']
-    @orig_bundle_gemfile   = ENV['BUNDLE_GEMFILE']
-    @orig_rubygems_host = ENV['RUBYGEMS_HOST']
-    ENV.keys.find_all { |k| k.start_with?('GEM_REQUIREMENT_') }.each do |k|
-      ENV.delete k
-    end
-    @orig_gem_env_requirements = ENV.to_hash
+    @orig_env = ENV.to_hash
 
     ENV['GEM_VENDOR'] = nil
     ENV['SOURCE_DATE_EPOCH'] = nil
@@ -415,30 +405,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     FileUtils.rm_rf @tempdir
 
-    ENV.clear
-    @orig_gem_env_requirements.each do |k,v|
-      ENV[k] = v
-    end
-
-    ENV['GEM_HOME']   = @orig_gem_home
-    ENV['GEM_PATH']   = @orig_gem_path
-    ENV['GEM_VENDOR'] = @orig_gem_vendor
-    ENV['GEM_SPEC_CACHE'] = @orig_gem_spec_cache
-    ENV['RUBYGEMS_GEMDEPS'] = @orig_rubygems_gemdeps
-    ENV['BUNDLE_GEMFILE']   = @orig_bundle_gemfile
-    ENV['RUBYGEMS_HOST'] = @orig_rubygems_host
+    ENV.replace(@orig_env)
 
     Gem.ruby = @orig_ruby if @orig_ruby
 
-    if @orig_ENV_HOME
-      ENV['HOME'] = @orig_ENV_HOME
-    else
-      ENV.delete 'HOME'
-    end
-
     Gem.instance_variable_set :@default_dir, nil
-
-    ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = @orig_gem_private_key_passphrase
 
     Gem::Specification._clear_load_cache
     Gem::Specification.unresolved_deps.clear

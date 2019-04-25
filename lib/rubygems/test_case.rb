@@ -231,9 +231,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   # If the +RUBY+ environment variable is set the given path is used for
   # Gem::ruby.  The local platform is set to <tt>i386-mswin32</tt> for Windows
   # or <tt>i686-darwin8.10.1</tt> otherwise.
-  #
-  # If the +KEEP_FILES+ environment variable is set the files will not be
-  # removed from <tt>/tmp/test_rubygems_#{$$}.#{Time.now.to_i}</tt>.
 
   def setup
     super
@@ -267,11 +264,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     tmpdir = File.expand_path Dir.tmpdir
     tmpdir.untaint
 
-    if ENV['KEEP_FILES']
-      @tempdir = File.join(tmpdir, "test_rubygems_#{$$}.#{Time.now.to_i}")
-    else
-      @tempdir = File.join(tmpdir, "test_rubygems_#{$$}")
-    end
+    @tempdir = File.join(tmpdir, "test_rubygems_#{$$}")
     @tempdir.untaint
 
     FileUtils.mkdir_p @tempdir
@@ -395,7 +388,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
   ##
   # #teardown restores the process to its original state and removes the
-  # tempdir unless the +KEEP_FILES+ environment variable was set.
+  # tempdir
 
   def teardown
     $LOAD_PATH.replace @orig_LOAD_PATH if @orig_LOAD_PATH
@@ -420,7 +413,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     Dir.chdir @current_dir
 
-    FileUtils.rm_rf @tempdir unless ENV['KEEP_FILES']
+    FileUtils.rm_rf @tempdir
 
     ENV.clear
     @orig_gem_env_requirements.each do |k,v|

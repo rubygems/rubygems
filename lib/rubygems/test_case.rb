@@ -251,23 +251,13 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     # capture output
     Gem::DefaultUserInteraction.ui = Gem::MockGemUi.new
 
-    tmpdir = File.expand_path Dir.tmpdir
+    tmpdir = File.realpath Dir.tmpdir
     tmpdir.untaint
 
     @tempdir = File.join(tmpdir, "test_rubygems_#{$$}")
     @tempdir.untaint
 
     FileUtils.mkdir_p @tempdir
-
-    # This makes the tempdir consistent on OS X.
-    # File.expand_path Dir.tmpdir                      #=> "/var/..."
-    # Dir.chdir Dir.tmpdir do File.expand_path '.' end #=> "/private/var/..."
-    # TODO use File#realpath above instead of #expand_path once 1.8 support is
-    # dropped.
-    Dir.chdir @tempdir do
-      @tempdir = File.expand_path '.'
-      @tempdir.untaint
-    end
 
     # This makes the tempdir consistent on Windows.
     # Dir.tmpdir may return short path name, but Dir[Dir.tmpdir] returns long

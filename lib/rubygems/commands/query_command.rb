@@ -123,6 +123,10 @@ is too hard to use.
     options[:prerelease]
   end
 
+  def show_prereleases?
+    options[:prerelease].nil? || prerelease?
+  end
+
   def args
     options[:args].to_a
   end
@@ -142,14 +146,15 @@ is too hard to use.
   end
 
   def show_local_gems(name, req = Gem::Requirement.default)
-    if prerelease? && !both?
-      alert_warning("prereleases are always shown locally")
-    end
-
     display_header("LOCAL")
 
     specs = Gem::Specification.find_all do |s|
       s.name =~ name and req =~ s.version
+    end
+
+    dep = Gem::Deprecate.skip_during { Gem::Dependency.new name, req }
+    specs.select! do |s|
+      dep.match?(s.name, s.version, show_prereleases?)
     end
 
     spec_tuples = specs.map do |spec|

@@ -743,9 +743,6 @@ class Gem::Specification < Gem::BasicSpecification
   def self._all # :nodoc:
     unless defined?(@@all) && @@all
       @@all = stubs.map(&:to_spec)
-      if @@all.any?(&:nil?) # TODO: remove once we're happy
-        raise "pid: #{$$} nil spec! included in #{stubs.inspect}"
-      end
 
       # After a reset, make sure already loaded specs
       # are still marked as activated.
@@ -896,7 +893,6 @@ class Gem::Specification < Gem::BasicSpecification
   # -- wilsonb
 
   def self.all=(specs)
-    raise "nil spec!" if specs.any?(&:nil?) # TODO: remove once we're happy
     @@stubs_by_name = specs.group_by(&:name)
     @@all = @@stubs = specs
   end

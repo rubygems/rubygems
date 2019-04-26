@@ -569,7 +569,7 @@ pl (1 i386-linux)
     @cmd.options[:domain] = :remote
 
     use_ui @stub_ui do
-      @cmd.send :show_gems, /a/i, false
+      @cmd.send :show_gems, /a/i
     end
 
     assert_match %r%^a %,  @stub_ui.output

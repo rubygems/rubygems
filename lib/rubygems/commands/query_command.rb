@@ -86,7 +86,7 @@ is too hard to use.
 
     terminate_interaction(check_installed_gems(gem_names)) if check_installed_gems?
 
-    gem_names.each { |n| show_gems(n, options[:prerelease]) }
+    gem_names.each { |n| show_gems(n) }
   end
 
   private
@@ -136,7 +136,7 @@ is too hard to use.
   end
 
   #Guts of original execute
-  def show_gems(name, prerelease)
+  def show_gems(name)
     show_local_gems(name)  if local?
     show_remote_gems(name) if remote?
   end

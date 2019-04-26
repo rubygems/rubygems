@@ -15,7 +15,7 @@ task :setup => ["bundler:checkout"] do
 end
 
 Rake::TestTask.new do |t|
-  t.ruby_opts = %w[--disable-gems]
+  t.ruby_opts = %w[--disable-gems -w]
   t.ruby_opts << '-rdevkit' if Gem.win_platform?
 
   t.libs << "test"

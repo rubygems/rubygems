@@ -1927,7 +1927,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def gems_dir
-    # TODO: this logic seems terribly broken, but tests fail if just base_dir
     @gems_dir ||= File.join(base_dir, "gems")
   end
 

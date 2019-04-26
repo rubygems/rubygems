@@ -119,12 +119,12 @@ is too hard to use.
     !options[:name].source.empty?
   end
 
-  def prerelease?
+  def prerelease
     options[:prerelease]
   end
 
   def show_prereleases?
-    options[:prerelease].nil? || prerelease?
+    prerelease.nil? || prerelease
   end
 
   def args

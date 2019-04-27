@@ -190,7 +190,7 @@ is too hard to use.
     elsif options[:prerelease]
       :prerelease
     else
-      :latest
+      :abs_latest
     end
   end
 

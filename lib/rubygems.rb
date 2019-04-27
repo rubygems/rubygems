@@ -669,6 +669,21 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     index
   end
 
+  ##
+  # Add a list of paths to the $LOAD_PATH at the proper place.
+
+  def self.add_to_load_path(*paths)
+    insert_index = load_path_insert_index
+
+    if insert_index
+      # gem directories must come after -I and ENV['RUBYLIB']
+      $LOAD_PATH.insert(insert_index, *paths)
+    else
+      # we are probably testing in core, -I and RUBYLIB don't apply
+      $LOAD_PATH.unshift(*paths)
+    end
+  end
+
   @yaml_loaded = false
 
   ##

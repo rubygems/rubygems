@@ -1498,7 +1498,6 @@ class Gem::Specification < Gem::BasicSpecification
 
     paths = full_require_paths
 
-    # gem directories must come after -I and ENV['RUBYLIB']
     insert_index = Gem.load_path_insert_index
 
     if insert_index

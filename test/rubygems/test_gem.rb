@@ -1674,33 +1674,6 @@ class TestGem < Gem::TestCase
     assert_nil              Gem.find_unresolved_default_spec("README")
   end
 
-  def test_default_gems_use_full_paths
-    begin
-      if defined?(RUBY_ENGINE)
-        engine = RUBY_ENGINE
-        Object.send :remove_const, :RUBY_ENGINE
-      end
-      Object.const_set :RUBY_ENGINE, 'ruby'
-
-      refute Gem.default_gems_use_full_paths?
-    ensure
-      Object.send :remove_const, :RUBY_ENGINE
-      Object.const_set :RUBY_ENGINE, engine if engine
-    end
-
-    begin
-      if defined?(RUBY_ENGINE)
-        engine = RUBY_ENGINE
-        Object.send :remove_const, :RUBY_ENGINE
-      end
-      Object.const_set :RUBY_ENGINE, 'jruby'
-      assert Gem.default_gems_use_full_paths?
-    ensure
-      Object.send :remove_const, :RUBY_ENGINE
-      Object.const_set :RUBY_ENGINE, engine if engine
-    end
-  end
-
   def test_use_gemdeps
     gem_deps_file = 'gem.deps.rb'.untaint
     spec = util_spec 'a', 1

@@ -304,7 +304,12 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     @default_dir = File.join @tempdir, 'default'
     @default_spec_dir = File.join @default_dir, "specifications", "default"
-    Gem.instance_variable_set :@default_dir, @default_dir
+    if RUBY_PLATFORM == "java"
+      @orig_default_gem_home = RbConfig::CONFIG['default_gem_home']
+      RbConfig::CONFIG['default_gem_home'] = @default_dir
+    else
+      Gem.instance_variable_set(:@default_dir, @default_dir)
+    end
     FileUtils.mkdir_p @default_spec_dir
 
     Gem::Specification.unresolved_deps.clear
@@ -378,7 +383,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     Gem.ruby = @orig_ruby if @orig_ruby
 
-    Gem.instance_variable_set :@default_dir, nil
+    if RUBY_PLATFORM == "java"
+      RbConfig::CONFIG['default_gem_home'] = @orig_default_gem_home
+    else
+      Gem.instance_variable_set :@default_dir, nil
+    end
 
     Gem::Specification._clear_load_cache
     Gem::Specification.unresolved_deps.clear

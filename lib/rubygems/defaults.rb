@@ -151,7 +151,7 @@ module Gem
   # Whether to expect full paths in default gems - true for non-MRI
   # ruby implementations
   def self.default_gems_use_full_paths?
-    ruby_engine != 'ruby'
+    ruby_engine != "ruby" && ruby_engine != "jruby"
   end
 
   ##

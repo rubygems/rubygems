@@ -785,6 +785,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
 
   def test_ssl_client_cert_auth_connection
     skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip 'openssl in jruby fails' if java_platform?
 
     ssl_server = self.class.start_ssl_server({
       :SSLVerifyClient =>

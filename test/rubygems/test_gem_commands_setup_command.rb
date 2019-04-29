@@ -124,7 +124,6 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
   def test_env_shebang_flag
-    skip if Gem.java_platform?
     gem_bin_path = gem_install 'a'
     write_file gem_bin_path do |io|
       io.puts 'I changed it!'

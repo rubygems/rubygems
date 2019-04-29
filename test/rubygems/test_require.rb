@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require_relative '../../lib/rubygems'
-require_relative '../../lib/rubygems/test_case'
+require 'rubygems/test_case'
+require 'rubygems'
 
 class TestGemRequire < Gem::TestCase
 
@@ -443,11 +443,11 @@ class TestGemRequire < Gem::TestCase
         File.write(dir + "/sub.rb", "warn 'uplevel', 'test', uplevel: 1\n")
         File.write(dir + "/main.rb", "require 'sub'\n")
         _, err = capture_subprocess_io do
-          system(Gem.ruby, "-w", "-rpp", "--disable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
+          system(@@ruby, "-w", "-rpp", "--disable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
         end
         assert_equal "main.rb:1: warning: uplevel\ntest\n", err
         _, err = capture_subprocess_io do
-          system(Gem.ruby, "-w", "-rpp", "--enable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
+          system(@@ruby, "-w", "-rpp", "--enable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
         end
         assert_equal "main.rb:1: warning: uplevel\ntest\n", err
       end

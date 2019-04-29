@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 
-require_relative "../../lib/rubygems/test_case"
-require_relative "../../lib/rubygems/validator"
+require "rubygems/test_case"
+require "rubygems/validator"
 
 class TestGemValidator < Gem::TestCase
 

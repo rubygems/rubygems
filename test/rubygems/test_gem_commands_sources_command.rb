@@ -10,6 +10,14 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     @cmd = Gem::Commands::SourcesCommand.new
 
     @new_repo = "http://beta-gems.example.com"
+
+    @old_https_proxy_config = Gem.configuration[:http_proxy]
+  end
+
+  def teardown
+    Gem.configuration[:http_proxy] = @old_https_proxy_config
+
+    super
   end
 
   def test_initialize_proxy

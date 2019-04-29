@@ -7,8 +7,6 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
   def setup
     super
 
-    spec_fetcher
-
     @cmd = Gem::Commands::SourcesCommand.new
 
     @new_repo = "http://beta-gems.example.com"
@@ -69,6 +67,8 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
   end
 
   def test_execute_add_nonexistent_source
+    spec_fetcher
+
     uri = "http://beta-gems.example.com/specs.#{@marshal_version}.gz"
     @fetcher.data[uri] = proc do
       raise Gem::RemoteFetcher::FetchError.new('it died', uri)
@@ -92,6 +92,8 @@ Error fetching http://beta-gems.example.com:
   end
 
   def test_execute_add_redundant_source
+    spec_fetcher
+
     @cmd.handle_options %W[--add #{@gem_repo}]
 
     use_ui @ui do
@@ -109,6 +111,8 @@ source #{@gem_repo} already present in the cache
   end
 
   def test_execute_add_redundant_source_trailing_slash
+    spec_fetcher
+
     # Remove pre-existing gem source (w/ slash)
     repo_with_slash = "http://gems.example.com/"
     @cmd.handle_options %W[--remove #{repo_with_slash}]
@@ -266,6 +270,8 @@ beta-gems.example.com is not a URI
   end
 
   def test_execute_remove_no_network
+    spec_fetcher
+
     @cmd.handle_options %W[--remove #{@gem_repo}]
 
     @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] = proc do

@@ -142,6 +142,28 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     end
   end
 
+  ##
+  # Sets the vendordir entry in RbConfig::CONFIG to +value+ and restores the
+  # original value when the block ends
+  #
+  def vendordir(value)
+    vendordir = RbConfig::CONFIG['vendordir']
+
+    if value
+      RbConfig::CONFIG['vendordir'] = value
+    else
+      RbConfig::CONFIG.delete 'vendordir'
+    end
+
+    yield
+  ensure
+    if vendordir
+      RbConfig::CONFIG['vendordir'] = vendordir
+    else
+      RbConfig::CONFIG.delete 'vendordir'
+    end
+  end
+
   # TODO: move to minitest
   def refute_path_exists(path, msg = nil)
     msg = message(msg) { "Expected path '#{path}' to not exist" }

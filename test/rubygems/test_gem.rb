@@ -465,55 +465,43 @@ class TestGem < Gem::TestCase
   end
 
   def test_default_path
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'
+    vendordir(File.join(@tempdir, 'vendor')) do
+      FileUtils.rm_rf Gem.user_home
 
-    FileUtils.rm_rf Gem.user_home
+      expected = [Gem.default_dir]
 
-    expected = [Gem.default_dir]
-
-    assert_equal expected, Gem.default_path
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+      assert_equal expected, Gem.default_path
+    end
   end
 
   def test_default_path_missing_vendor
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG.delete 'vendordir'
+    vendordir(nil) do
+      FileUtils.rm_rf Gem.user_home
 
-    FileUtils.rm_rf Gem.user_home
+      expected = [Gem.default_dir]
 
-    expected = [Gem.default_dir]
-
-    assert_equal expected, Gem.default_path
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+      assert_equal expected, Gem.default_path
+    end
   end
 
   def test_default_path_user_home
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'
+    vendordir(File.join(@tempdir, 'vendor')) do
+      expected = [Gem.user_dir, Gem.default_dir]
 
-    expected = [Gem.user_dir, Gem.default_dir]
-
-    assert_equal expected, Gem.default_path
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+      assert_equal expected, Gem.default_path
+    end
   end
 
   def test_default_path_vendor_dir
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'
+    vendordir(File.join(@tempdir, 'vendor')) do
+      FileUtils.mkdir_p Gem.vendor_dir
 
-    FileUtils.mkdir_p Gem.vendor_dir
+      FileUtils.rm_rf Gem.user_home
 
-    FileUtils.rm_rf Gem.user_home
+      expected = [Gem.default_dir, Gem.vendor_dir]
 
-    expected = [Gem.default_dir, Gem.vendor_dir]
-
-    assert_equal expected, Gem.default_path
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+      assert_equal expected, Gem.default_path
+    end
   end
 
   def test_self_default_sources
@@ -1368,13 +1356,13 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_vendor_dir
-    skip "No vendordir by default on jruby" if RUBY_PLATFORM == "java"
+    vendordir(File.join(@tempdir, 'vendor')) do
+      expected =
+        File.join RbConfig::CONFIG['vendordir'], 'gems',
+                  RbConfig::CONFIG['ruby_version']
 
-    expected =
-      File.join RbConfig::CONFIG['vendordir'], 'gems',
-                RbConfig::CONFIG['ruby_version']
-
-    assert_equal expected, Gem.vendor_dir
+      assert_equal expected, Gem.vendor_dir
+    end
   end
 
   def test_self_vendor_dir_ENV_GEM_VENDOR
@@ -1385,12 +1373,9 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_vendor_dir_missing
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG.delete 'vendordir'
-
-    assert_nil Gem.vendor_dir
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+    vendordir(nil) do
+      assert_nil Gem.vendor_dir
+    end
   end
 
   def test_load_plugins

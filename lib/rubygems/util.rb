@@ -44,35 +44,17 @@ module Gem::Util
   end
 
   ##
-  # This calls IO.popen where it accepts an array for a +command+ (Ruby 1.9+)
-  # and implements an IO.popen-like behavior where it does not accept an array
-  # for a command.
+  # This calls IO.popen,
 
   def self.popen(*command)
-    IO.popen command, &:read
-  rescue TypeError # ruby 1.8 only supports string command
-    r, w = IO.pipe
-
-    pid = fork do
-      STDIN.close
-      STDOUT.reopen w
-
-      exec(*command)
-    end
-
-    w.close
-
-    begin
-      return r.read
-    ensure
-      Process.wait pid
-    end
+    `#{command.shelljoin}`
   end
 
   ##
   # Invokes system, but silences all output.
 
   def self.silent_system(*command)
+    return fallback_silent_system(*command) if RUBY_PLATFORM == "java"
     opt = {:out => IO::NULL, :err => [:child, :out]}
     if Hash === command.last
       opt.update(command.last)
@@ -82,6 +64,10 @@ module Gem::Util
     end
     return system(*(cmds << opt))
   rescue TypeError
+    fallback_silent_system(*command)
+  end
+
+  def self.fallback_silent_system(*command)
     @silent_mutex ||= Mutex.new
 
     @silent_mutex.synchronize do

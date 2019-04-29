@@ -328,6 +328,7 @@ class TestGemRequest < Gem::TestCase
   end
 
   def test_verify_certificate
+    skip if RUBY_PLATFORM == "java"
     store = OpenSSL::X509::Store.new
     context = OpenSSL::X509::StoreContext.new store
     context.error = OpenSSL::X509::V_ERR_OUT_OF_MEM
@@ -341,6 +342,7 @@ class TestGemRequest < Gem::TestCase
   end
 
   def test_verify_certificate_extra_message
+    skip if RUBY_PLATFORM == "java"
     store = OpenSSL::X509::Store.new
     context = OpenSSL::X509::StoreContext.new store
     context.error = OpenSSL::X509::V_ERR_INVALID_CA

@@ -1223,6 +1223,7 @@ gem 'other', version
   end
 
   def test_find_lib_file_after_install
+    skip "extensions don't quite work on jruby" if RUBY_PLATFORM == "java"
     @spec.extensions << "extconf.rb"
     write_file File.join(@tempdir, "extconf.rb") do |io|
       io.write <<-RUBY
@@ -1266,6 +1267,7 @@ gem 'other', version
   end
 
   def test_install_extension_and_script
+    skip "Makefile creation crashes on jruby" if RUBY_PLATFORM == "java"
     @spec.extensions << "extconf.rb"
     write_file File.join(@tempdir, "extconf.rb") do |io|
       io.write <<-RUBY
@@ -1304,6 +1306,7 @@ gem 'other', version
   end
 
   def test_install_extension_flat
+    skip "extensions don't quite work on jruby" if RUBY_PLATFORM == "java"
     @spec.require_paths = ["."]
 
     @spec.extensions << "extconf.rb"
@@ -1334,19 +1337,6 @@ gem 'other', version
       @installer.install
     end
     assert_path_exists so
-  rescue
-    puts '-' * 78
-    puts File.read File.join(@gemhome, 'gems', 'a-2', 'Makefile')
-    puts '-' * 78
-
-    path = File.join(@gemhome, 'gems', 'a-2', 'gem_make.out')
-
-    if File.exist?(path)
-      puts File.read(path)
-      puts '-' * 78
-    end
-
-    raise
   end
 
   def test_installation_satisfies_dependency_eh

@@ -231,8 +231,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     @current_dir = Dir.pwd
     @fetcher     = nil
 
-    Bundler.ui = Bundler::UI::Silent.new
-
     @back_ui                       = Gem::DefaultUserInteraction.ui
     @ui                            = Gem::MockGemUi.new
     # This needs to be a new instance since we call use_ui(@ui) when we want to

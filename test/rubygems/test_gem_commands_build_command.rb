@@ -281,7 +281,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_build_signed_gem
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL) && RUBY_PLATFORM != "java"
 
     trust_dir = Gem::Security.trust_dir
 
@@ -308,7 +308,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_build_signed_gem_with_cert_expiration_length_days
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL) && RUBY_PLATFORM != "java"
 
     gem_path = File.join Gem.user_home, ".gem"
     Dir.mkdir gem_path
@@ -352,7 +352,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_build_auto_resign_cert
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL) && RUBY_PLATFORM != "java"
 
     gem_path = File.join Gem.user_home, ".gem"
     Dir.mkdir gem_path

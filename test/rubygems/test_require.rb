@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'rubygems/test_case'
-require 'rubygems'
+require_relative '../../lib/rubygems'
+require_relative '../../lib/rubygems/test_case'
 
 class TestGemRequire < Gem::TestCase
 
@@ -431,18 +431,19 @@ class TestGemRequire < Gem::TestCase
     end
   end
 
-  if RUBY_VERSION >= "2.5"
+  # uplevel is 2.5+ only and jruby has some issues with it
+  if RUBY_VERSION >= "2.5" && RUBY_PLATFORM != "java"
     def test_no_kernel_require_in_warn_with_uplevel
       lib = File.realpath("../../../lib", __FILE__)
       Dir.mktmpdir("warn_test") do |dir|
         File.write(dir + "/sub.rb", "warn 'uplevel', 'test', uplevel: 1\n")
         File.write(dir + "/main.rb", "require 'sub'\n")
         _, err = capture_subprocess_io do
-          system(@@ruby, "-w", "-rpp", "--disable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
+          system(Gem.ruby, "-w", "-rpp", "--disable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
         end
         assert_equal "main.rb:1: warning: uplevel\ntest\n", err
         _, err = capture_subprocess_io do
-          system(@@ruby, "-w", "-rpp", "--enable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
+          system(Gem.ruby, "-w", "-rpp", "--enable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
         end
         assert_equal "main.rb:1: warning: uplevel\ntest\n", err
       end

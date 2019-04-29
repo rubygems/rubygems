@@ -26,9 +26,10 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
       -f
       -i /install_to
       -w
-      --vendor
       --post-install-message
     ]
+
+    args.concat %w[--vendor] unless RUBY_PLATFORM == "java"
 
     args.concat %w[-P HighSecurity] if defined?(OpenSSL::SSL)
 
@@ -145,6 +146,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   end
 
   def test_vendor
+    skip "No vendordir by default on jruby" if RUBY_PLATFORM == "java"
     @cmd.handle_options %w[--vendor]
 
     assert @cmd.options[:vendor]

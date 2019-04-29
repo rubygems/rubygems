@@ -840,6 +840,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_verify_corrupt
+    skip "jruby strips the null byte and does not think it's corrupt" if RUBY_PLATFORM == "java"
     tf = Tempfile.open 'corrupt' do |io|
       data = Gem::Util.gzip 'a' * 10
       io.write \

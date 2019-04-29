@@ -359,6 +359,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_handle_options_vendor
+    skip "No vendordir by default on jruby" if RUBY_PLATFORM == "java"
     use_ui @ui do
       @cmd.handle_options %w[--vendor]
     end

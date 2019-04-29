@@ -162,7 +162,7 @@ module Gem
       return vendor_dir.dup
     end
 
-    return nil unless RbConfig::CONFIG.key? 'vendordir'
+    return nil unless RbConfig::CONFIG.key?('vendordir') && !RbConfig::CONFIG['vendordir'].nil?
 
     File.join RbConfig::CONFIG['vendordir'], 'gems',
               RbConfig::CONFIG['ruby_version']

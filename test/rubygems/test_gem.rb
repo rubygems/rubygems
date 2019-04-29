@@ -1589,13 +1589,13 @@ class TestGem < Gem::TestCase
     File.open path, "w" do |f|
       f.puts "gem 'a'"
     end
-    out0 = `#{cmd.shelljoin}`.split(/\n/)
+    out0 = IO.popen(cmd, &:read).split(/\n/)
 
     File.open path, "a" do |f|
       f.puts "gem 'b'"
       f.puts "gem 'c'"
     end
-    out = `#{cmd.shelljoin}`.split(/\n/)
+    out = IO.popen(cmd, &:read).split(/\n/)
 
     assert_equal ["b-1", "c-1"], out - out0
   end
@@ -1628,13 +1628,13 @@ class TestGem < Gem::TestCase
     File.open path, "w" do |f|
       f.puts "gem 'a'"
     end
-    out0 = `#{cmd.shelljoin}`.split(/\n/)
+    out0 = IO.popen(cmd, &:read).split(/\n/)
 
     File.open path, "a" do |f|
       f.puts "gem 'b'"
       f.puts "gem 'c'"
     end
-    out = `#{cmd.shelljoin}`.split(/\n/)
+    out = IO.popen(cmd, &:read).split(/\n/)
 
     Dir.rmdir "sub1"
 

@@ -6,7 +6,6 @@
 #++
 
 require 'rubygems/user_interaction'
-require "open3"
 
 class Gem::Ext::Builder
 
@@ -56,6 +55,11 @@ class Gem::Ext::Builder
     end
   end
 
+  def self.redirector
+    warn "#{caller[0]}: Use IO.popen(..., err: [:child, :out])"
+    '2>&1'
+  end
+
   def self.run(command, results, command_name = nil)
     verbose = Gem.configuration.really_verbose
 
@@ -68,28 +72,28 @@ class Gem::Ext::Builder
       results << "current directory: #{Dir.pwd}"
       results << (command.respond_to?(:shelljoin) ? command.shelljoin : command)
 
-      output, status = Open3.capture2e(*command)
-      if verbose
-        puts output
-      else
-        results << output
+      redirections = verbose ? {} : {err: [:child, :out]}
+      IO.popen(command, "r", redirections) do |io|
+        if verbose
+          IO.copy_stream(io, $stdout)
+        else
+          results << io.read
+        end
       end
+    rescue => error
+      raise Gem::InstallError, "#{command_name || class_name} failed#{error.message}"
     ensure
       ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
     end
 
-    unless status.success?
+    unless $?.success?
       results << "Building has failed. See above output for more information on the failure." if verbose
-    end
 
-    yield(status, results) if block_given?
-
-    unless status.success?
       exit_reason =
-        if status.exited?
-          ", exit code #{status.exitstatus}"
-        elsif status.signaled?
-          ", uncaught signal #{status.termsig}"
+        if $?.exited?
+          ", exit code #{$?.exitstatus}"
+        elsif $?.signaled?
+          ", uncaught signal #{$?.termsig}"
         end
 
       raise Gem::InstallError, "#{command_name || class_name} failed#{exit_reason}"

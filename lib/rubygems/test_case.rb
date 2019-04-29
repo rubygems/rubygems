@@ -998,8 +998,7 @@ Also, a list:
   end
 
   def util_set_RUBY_VERSION(version, patchlevel = nil, revision = nil, description = nil, engine = "ruby", engine_version = nil)
-    if Gem.instance_variables.include? :@ruby_version or
-       Gem.instance_variables.include? '@ruby_version'
+    if Gem.instance_variables.include? :@ruby_version
       Gem.send :remove_instance_variable, :@ruby_version
     end
 

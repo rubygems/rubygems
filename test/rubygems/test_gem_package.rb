@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require 'rubygems/package/tar_test_case'
-require 'rubygems/simple_gem'
 
 class TestGemPackage < Gem::Package::TarTestCase
 
@@ -24,6 +23,8 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_class_new_old_format
+    skip "jruby can't require the simple_gem file" if RUBY_PLATFORM == "java"
+    require_relative "simple_gem"
     File.open 'old_format.gem', 'wb' do |io|
       io.write SIMPLE_GEM
     end

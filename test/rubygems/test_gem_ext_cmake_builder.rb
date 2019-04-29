@@ -12,7 +12,7 @@ class TestGemExtCmakeBuilder < Gem::TestCase
 
     skip "CmakeBuilder doesn't work on JRuby." if Gem.java_platform? && ENV["CI"]
 
-    Gem::Util.silent_system('cmake')
+    system('cmake', out: IO::NULL, err: [:child, :out])
 
     skip 'cmake not present' unless $?.success?
 

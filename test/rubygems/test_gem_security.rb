@@ -7,7 +7,7 @@ unless defined?(OpenSSL::SSL)
 end
 
 if Gem.java_platform?
-  warn 'Skipping Gem::Security tests on jruby'
+  warn 'Skipping Gem::Security tests on jruby.'
 end
 
 class TestGemSecurity < Gem::TestCase
@@ -311,4 +311,4 @@ class TestGemSecurity < Gem::TestCase
     assert_equal key.to_pem, key_from_file.to_pem
   end
 
-end if defined?(OpenSSL::SSL) && RUBY_PLATFORM != "java"
+end if defined?(OpenSSL::SSL) && !Gem.java_platform?

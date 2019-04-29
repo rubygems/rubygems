@@ -797,4 +797,4 @@ ERROR:  --private-key not specified and ~/.gem/gem-private_key.pem does not exis
                  e.message
   end
 
-end if defined?(OpenSSL::SSL) && RUBY_PLATFORM != "java"
+end if defined?(OpenSSL::SSL) && !Gem.java_platform?

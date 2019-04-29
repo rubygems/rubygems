@@ -23,7 +23,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_class_new_old_format
-    skip "jruby can't require the simple_gem file" if RUBY_PLATFORM == "java"
+    skip "jruby can't require the simple_gem file" if Gem.java_platform?
     require_relative "simple_gem"
     File.open 'old_format.gem', 'wb' do |io|
       io.write SIMPLE_GEM
@@ -840,7 +840,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_verify_corrupt
-    skip "jruby strips the null byte and does not think it's corrupt" if RUBY_PLATFORM == "java"
+    skip "jruby strips the null byte and does not think it's corrupt" if Gem.java_platform?
     tf = Tempfile.open 'corrupt' do |io|
       data = Gem::Util.gzip 'a' * 10
       io.write \

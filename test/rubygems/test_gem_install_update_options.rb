@@ -29,7 +29,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
       --post-install-message
     ]
 
-    args.concat %w[--vendor] unless RUBY_PLATFORM == "java"
+    args.concat %w[--vendor] unless Gem.java_platform?
 
     args.concat %w[-P HighSecurity] if defined?(OpenSSL::SSL)
 

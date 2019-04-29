@@ -6,7 +6,7 @@ unless defined?(OpenSSL::SSL)
   warn 'Skipping Gem::Security tests.  openssl not found.'
 end
 
-unless RUBY_PLATFORM == "java"
+if Gem.java_platform?
   warn 'Skipping Gem::Security tests on jruby'
 end
 

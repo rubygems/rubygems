@@ -509,7 +509,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_use_gemdeps
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     FileUtils.mkdir_p 'detect/a/b'
@@ -663,7 +663,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_find_files_with_gemfile
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     cwd = File.expand_path("test/rubygems", @@project_dir)
     actual_load_path = $LOAD_PATH.unshift(cwd).dup
 
@@ -696,7 +696,7 @@ class TestGem < Gem::TestCase
     assert_equal expected, Gem.find_files('sff/discover').sort
     assert_equal expected, Gem.find_files('sff/**.rb').sort, '[ruby-core:31730]'
   ensure
-    assert_equal cwd, actual_load_path.shift unless RUBY_PLATFORM == "java"
+    assert_equal cwd, actual_load_path.shift unless Gem.java_platform?
   end
 
   def test_self_find_latest_files
@@ -1222,7 +1222,7 @@ class TestGem < Gem::TestCase
       refute Gem.try_activate 'nonexistent'
     end
 
-    unless RUBY_PLATFORM == "java"
+    unless Gem.java_platform?
       expected = "Ignoring ext-1 because its extensions are not built. " +
                  "Try: gem pristine ext --version 1\n"
 
@@ -1505,7 +1505,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_auto_activation_of_specific_gemdeps_file
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
@@ -1530,7 +1530,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_auto_activation_of_used_gemdeps_file
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
@@ -1564,7 +1564,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_looks_for_gemdeps_files_automatically_on_start
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
@@ -1601,7 +1601,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_looks_for_gemdeps_files_automatically_on_start_in_parent_dir
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
@@ -1670,7 +1670,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     gem_deps_file = 'gem.deps.rb'.untaint
     spec = util_spec 'a', 1
     install_specs spec
@@ -1732,7 +1732,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_automatic
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     spec = util_spec 'a', 1
@@ -1781,7 +1781,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_missing_gem
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     File.open 'x', 'w' do |io|
@@ -1809,7 +1809,7 @@ You may need to `gem install -g` to install missing gems
   end
 
   def test_use_gemdeps_specific
-    skip "Requiring bundler messes things up" if RUBY_PLATFORM == "java"
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     spec = util_spec 'a', 1

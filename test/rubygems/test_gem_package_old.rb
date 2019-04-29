@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
 
-unless RUBY_PLATFORM == "java" # jruby can't require the simple_gem file
+unless Gem.java_platform? # jruby can't require the simple_gem file
   require 'rubygems/simple_gem'
 
   class TestGemPackageOld < Gem::TestCase

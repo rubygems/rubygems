@@ -6,8 +6,8 @@ unless defined?(OpenSSL::SSL)
   warn 'Skipping `gem cert` tests.  openssl not found.'
 end
 
-unless RUBY_PLATFORM == "java"
-  warn 'Skipping Gem::Security tests on jruby'
+if Gem.java_platform?
+  warn 'Skipping `gem cert` tests on jruby.'
 end
 
 class TestGemCommandsCertCommand < Gem::TestCase

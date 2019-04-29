@@ -329,4 +329,4 @@ install:
     assert_equal %w[--with-foo-dir=/nonexistent], builder.build_args
   end
 
-end unless RUBY_PLATFORM == "java"
+end unless Gem.java_platform?

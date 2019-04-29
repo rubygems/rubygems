@@ -324,7 +324,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     @default_dir = File.join @tempdir, 'default'
     @default_spec_dir = File.join @default_dir, "specifications", "default"
-    if RUBY_PLATFORM == "java"
+    if Gem.java_platform?
       @orig_default_gem_home = RbConfig::CONFIG['default_gem_home']
       RbConfig::CONFIG['default_gem_home'] = @default_dir
     else
@@ -403,7 +403,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     Gem.ruby = @orig_ruby if @orig_ruby
 
-    if RUBY_PLATFORM == "java"
+    if Gem.java_platform?
       RbConfig::CONFIG['default_gem_home'] = @orig_default_gem_home
     else
       Gem.instance_variable_set :@default_dir, nil
@@ -1084,6 +1084,20 @@ Also, a list:
 
   def win_platform?
     Gem.win_platform?
+  end
+
+  ##
+  # Is this test being run on a Java platform?
+
+  def self.java_platform?
+    Gem.java_platform?
+  end
+
+  ##
+  # Is this test being run on a Java platform?
+
+  def java_platform?
+    Gem.java_platform?
   end
 
   ##

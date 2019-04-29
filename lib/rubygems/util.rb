@@ -54,7 +54,7 @@ module Gem::Util
   # Invokes system, but silences all output.
 
   def self.silent_system(*command)
-    return fallback_silent_system(*command) if RUBY_PLATFORM == "java"
+    return fallback_silent_system(*command) if Gem.java_platform?
     opt = {:out => IO::NULL, :err => [:child, :out]}
     if Hash === command.last
       opt.update(command.last)

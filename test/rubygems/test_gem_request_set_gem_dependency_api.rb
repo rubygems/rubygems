@@ -856,4 +856,4 @@ end
       engine
   end
 
-end unless RUBY_PLATFORM == "java"
+end unless Gem.java_platform?

@@ -75,8 +75,6 @@ class Gem::Ext::Builder
           results << io.read
         end
       end
-    rescue => error
-      raise Gem::InstallError, "#{command_name || class_name} failed#{error.message}"
     ensure
       ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
     end

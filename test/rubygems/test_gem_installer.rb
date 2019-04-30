@@ -793,8 +793,6 @@ gem 'other', version
   end
 
   def test_install
-    Dir.mkdir util_inst_bindir
-
     @installer = util_setup_installer
 
     gemdir     = File.join @gemhome, 'gems', @spec.full_name
@@ -854,8 +852,6 @@ gem 'other', version
   end
 
   def test_install_creates_working_binstub
-    Dir.mkdir util_inst_bindir
-
     @installer = util_setup_installer
 
     @installer.wrappers = true
@@ -879,8 +875,6 @@ gem 'other', version
   end
 
   def test_conflicting_binstubs
-    Dir.mkdir util_inst_bindir
-
     @gem = setup_base_gem
 
     # build old version that has a bin file
@@ -929,8 +923,6 @@ gem 'other', version
   end
 
   def test_install_creates_binstub_that_understand_version
-    Dir.mkdir util_inst_bindir
-
     @installer = util_setup_installer
 
     @installer.wrappers = true
@@ -960,8 +952,6 @@ gem 'other', version
   end
 
   def test_install_creates_binstub_that_prefers_user_installed_gem_to_default
-    Dir.mkdir util_inst_bindir
-
     install_default_gems new_default_spec('default', '2')
 
     @installer = util_setup_installer do |spec|
@@ -990,8 +980,6 @@ gem 'other', version
   end
 
   def test_install_creates_binstub_that_dont_trust_encoding
-    Dir.mkdir util_inst_bindir
-
     @installer = util_setup_installer
 
     @installer.wrappers = true
@@ -1022,8 +1010,6 @@ gem 'other', version
   end
 
   def test_install_with_no_prior_files
-    Dir.mkdir util_inst_bindir
-
     @installer = util_setup_installer
 
     build_rake_in do

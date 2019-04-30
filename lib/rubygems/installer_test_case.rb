@@ -143,7 +143,7 @@ class Gem::InstallerTestCase < Gem::TestCase
   #   lib/code.rb
   #   ext/a/mkrf_conf.rb
 
-  def util_setup_gem(ui = @ui) # HACK fix use_ui to make this automatic
+  def util_setup_gem(ui = @ui)
     @spec.files << File.join('lib', 'code.rb')
     @spec.extensions << File.join('ext', 'a', 'mkrf_conf.rb')
 

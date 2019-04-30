@@ -734,7 +734,6 @@ gem 'other', version
   def test_install
     Dir.mkdir util_inst_bindir
     util_setup_gem
-    util_clear_gems
 
     gemdir     = File.join @gemhome, 'gems', @spec.full_name
     cache_file = File.join @gemhome, 'cache', @spec.file_name
@@ -795,7 +794,6 @@ gem 'other', version
   def test_install_creates_working_binstub
     Dir.mkdir util_inst_bindir
     util_setup_gem
-    util_clear_gems
 
     @installer.wrappers = true
 
@@ -819,7 +817,6 @@ gem 'other', version
 
   def test_conflicting_binstubs
     Dir.mkdir util_inst_bindir
-    util_clear_gems
 
     # build old version that has a bin file
     util_setup_gem do |spec|
@@ -869,7 +866,6 @@ gem 'other', version
   def test_install_creates_binstub_that_understand_version
     Dir.mkdir util_inst_bindir
     util_setup_gem
-    util_clear_gems
 
     @installer.wrappers = true
 
@@ -930,7 +926,6 @@ gem 'other', version
   def test_install_creates_binstub_that_dont_trust_encoding
     Dir.mkdir util_inst_bindir
     util_setup_gem
-    util_clear_gems
 
     @installer.wrappers = true
 
@@ -961,7 +956,6 @@ gem 'other', version
 
   def test_install_with_no_prior_files
     Dir.mkdir util_inst_bindir
-    util_clear_gems
 
     util_setup_gem
     build_rake_in do
@@ -1026,8 +1020,6 @@ gem 'other', version
   end
 
   def test_install_post_build_false
-    util_clear_gems
-
     Gem.post_build do
       false
     end
@@ -1050,8 +1042,6 @@ gem 'other', version
   end
 
   def test_install_post_build_nil
-    util_clear_gems
-
     Gem.post_build do
       nil
     end
@@ -1068,8 +1058,6 @@ gem 'other', version
   end
 
   def test_install_pre_install_false
-    util_clear_gems
-
     Gem.pre_install do
       false
     end
@@ -1089,8 +1077,6 @@ gem 'other', version
   end
 
   def test_install_pre_install_nil
-    util_clear_gems
-
     Gem.pre_install do
       nil
     end

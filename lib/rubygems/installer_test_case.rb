@@ -188,7 +188,7 @@ class Gem::InstallerTestCase < Gem::TestCase
       end
     end
 
-    @installer = Gem::Installer.at @gem
+    Gem::Installer.at @gem
   end
 
   ##

@@ -733,7 +733,7 @@ gem 'other', version
 
   def test_install
     Dir.mkdir util_inst_bindir
-    util_setup_gem
+    @installer = util_setup_gem
 
     gemdir     = File.join @gemhome, 'gems', @spec.full_name
     cache_file = File.join @gemhome, 'cache', @spec.file_name
@@ -793,7 +793,7 @@ gem 'other', version
 
   def test_install_creates_working_binstub
     Dir.mkdir util_inst_bindir
-    util_setup_gem
+    @installer = util_setup_gem
 
     @installer.wrappers = true
 
@@ -819,7 +819,7 @@ gem 'other', version
     Dir.mkdir util_inst_bindir
 
     # build old version that has a bin file
-    util_setup_gem do |spec|
+    @installer = util_setup_gem do |spec|
       File.open File.join('bin', 'executable'), 'w' do |f|
         f.puts "require 'code'"
       end
@@ -838,7 +838,7 @@ gem 'other', version
     old_bin_file = File.join @installer.bin_dir, 'executable'
 
     # build new version that doesn't have a bin file
-    util_setup_gem do |spec|
+    @installer = util_setup_gem do |spec|
       FileUtils.rm File.join('bin', 'executable')
       spec.files.delete File.join('bin', 'executable')
       spec.executables.delete 'executable'
@@ -865,7 +865,7 @@ gem 'other', version
 
   def test_install_creates_binstub_that_understand_version
     Dir.mkdir util_inst_bindir
-    util_setup_gem
+    @installer = util_setup_gem
 
     @installer.wrappers = true
 
@@ -898,7 +898,7 @@ gem 'other', version
 
     install_default_gems new_default_spec('default', '2')
 
-    util_setup_gem do |spec|
+    @installer = util_setup_gem do |spec|
       spec.name = 'default'
       spec.version = '2'
     end
@@ -925,7 +925,7 @@ gem 'other', version
 
   def test_install_creates_binstub_that_dont_trust_encoding
     Dir.mkdir util_inst_bindir
-    util_setup_gem
+    @installer = util_setup_gem
 
     @installer.wrappers = true
 
@@ -957,7 +957,7 @@ gem 'other', version
   def test_install_with_no_prior_files
     Dir.mkdir util_inst_bindir
 
-    util_setup_gem
+    @installer = util_setup_gem
     build_rake_in do
       use_ui @ui do
         assert_equal @spec, @installer.install
@@ -967,7 +967,7 @@ gem 'other', version
     gemdir = File.join(@gemhome, 'gems', @spec.full_name)
     assert_path_exists File.join gemdir, 'lib', 'code.rb'
 
-    util_setup_gem
+    @installer = util_setup_gem
     # Morph spec to have lib/other.rb instead of code.rb and recreate
     @spec.files = File.join('lib', 'other.rb')
     Dir.chdir @tempdir do
@@ -1356,7 +1356,7 @@ gem 'other', version
 
   def test_pre_install_checks_dependencies
     @spec.add_dependency 'b', '> 5'
-    util_setup_gem
+    @installer = util_setup_gem
 
     use_ui @ui do
       assert_raises Gem::InstallError do
@@ -1735,7 +1735,7 @@ gem 'other', version
   end
 
   def test_unpack
-    util_setup_gem
+    @installer = util_setup_gem
 
     dest = File.join @gemhome, 'gems', @spec.full_name
 

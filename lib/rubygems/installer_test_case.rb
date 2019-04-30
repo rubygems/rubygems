@@ -112,13 +112,33 @@ class Gem::InstallerTestCase < Gem::TestCase
   # And returns a Gem::Installer for the @spec that installs into @gemhome
 
   def setup_base_installer
-    @spec = quick_gem 'a' do |spec|
+    @gem = setup_base_gem
+    util_installer @spec, @gemhome
+  end
+
+  ##
+  # Creates the following instance variables:
+  #
+  # @spec::
+  #   a spec named 'a', intended for regular installs
+  #
+  # And returns a gem built for the @spec
+
+  def setup_base_gem
+    @spec = setup_base_spec
+    util_build_gem @spec
+    @spec.cache_file
+  end
+
+  ##
+  # Sets up a generic specification for testing the rubygems installer
+  #
+  # And returns it
+
+  def setup_base_spec
+    quick_gem 'a' do |spec|
       util_make_exec spec
     end
-
-    util_build_gem @spec
-    @gem = @spec.cache_file
-    util_installer @spec, @gemhome
   end
 
   ##
@@ -146,6 +166,15 @@ class Gem::InstallerTestCase < Gem::TestCase
     @user_gem = @user_spec.cache_file
 
     util_installer @user_spec, Gem.user_dir, :user
+  end
+
+  ##
+  # Sets up the base @gem, builds it and returns an installer for it.
+  #
+  def util_setup_installer
+    @gem = setup_base_gem
+
+    util_setup_gem
   end
 
   ##

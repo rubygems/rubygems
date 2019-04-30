@@ -841,8 +841,6 @@ gem 'other', version
 
     assert_path_exists rakefile
 
-    spec_file = File.join(@gemhome, 'specifications', @spec.spec_name)
-
     assert_equal spec_file, @newspec.loaded_from
     assert_path_exists spec_file
 

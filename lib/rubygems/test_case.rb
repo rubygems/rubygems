@@ -632,7 +632,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       io.write spec.to_ruby_for_cache
     end
 
-    spec.loaded_from = spec.loaded_from = written_path
+    spec.loaded_from = written_path
 
     Gem::Specification.reset
 

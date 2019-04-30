@@ -177,7 +177,9 @@ pl (1)
 
   def test_execute_details_truncates_summary
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2 do |s|
+      fetcher.spec 'a', 2
+
+      fetcher.spec 'a', '3.a' do |s|
         s.summary = 'This is a lot of text. ' * 10_000
         s.authors = ["Abraham Lincoln \x01", "\x02 Hirohito"]
         s.homepage = "http://a.example.com/\x03"
@@ -196,11 +198,11 @@ pl (1)
 
 *** REMOTE GEMS ***
 
-a (2)
+a (3.a, 2)
     Authors: Abraham Lincoln ., . Hirohito
     Homepage: http://a.example.com/.
 
-    Truncating the summary for a-2 to 100,000 characters:
+    Truncating the summary for a-3.a to 100,000 characters:
 #{"    This is a lot of text. This is a lot of text. This is a lot of text.\n" * 1449}    This is a lot of te
 
 pl (1)

@@ -1295,7 +1295,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_needs
-    util_clear_gems
     a = util_spec "a", "1"
     b = util_spec "b", "1", "c" => nil
     c = util_spec "c", "2"
@@ -1314,7 +1313,6 @@ class TestGem < Gem::TestCase
 
   def test_self_needs_picks_up_unresolved_deps
     save_loaded_features do
-      util_clear_gems
       a = util_spec "a", "1"
       b = util_spec "b", "1", "c" => nil
       c = util_spec "c", "2"
@@ -1506,7 +1504,6 @@ class TestGem < Gem::TestCase
 
   def test_auto_activation_of_specific_gemdeps_file
     skip "Requiring bundler messes things up" if Gem.java_platform?
-    util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
     b = util_spec "b", "1", nil, "lib/b.rb"
@@ -1531,7 +1528,6 @@ class TestGem < Gem::TestCase
 
   def test_auto_activation_of_used_gemdeps_file
     skip "Requiring bundler messes things up" if Gem.java_platform?
-    util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
     b = util_spec "b", "1", nil, "lib/b.rb"
@@ -1565,7 +1561,6 @@ class TestGem < Gem::TestCase
 
   def test_looks_for_gemdeps_files_automatically_on_start
     skip "Requiring bundler messes things up" if Gem.java_platform?
-    util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
     b = util_spec "b", "1", nil, "lib/b.rb"
@@ -1602,7 +1597,6 @@ class TestGem < Gem::TestCase
 
   def test_looks_for_gemdeps_files_automatically_on_start_in_parent_dir
     skip "Requiring bundler messes things up" if Gem.java_platform?
-    util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
     b = util_spec "b", "1", nil, "lib/b.rb"

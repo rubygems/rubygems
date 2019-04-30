@@ -11,7 +11,6 @@ class TestGemIndexer < Gem::TestCase
   def setup
     super
 
-    util_clear_gems
     util_make_gems
 
     @d2_0 = util_spec 'd', '2.0' do |s|
@@ -40,7 +39,6 @@ class TestGemIndexer < Gem::TestCase
   def teardown
     super
 
-    util_clear_gems
     util_clear_default_gems
   end
 

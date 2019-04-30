@@ -20,6 +20,7 @@ class TestGemInstaller < Gem::InstallerTestCase
 
   def setup
     super
+    @installer = setup_base_installer
     common_installer_setup
 
     @config = Gem.configuration

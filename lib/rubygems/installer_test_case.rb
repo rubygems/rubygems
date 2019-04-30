@@ -66,43 +66,8 @@ end
 
 class Gem::InstallerTestCase < Gem::TestCase
 
-  ##
-  # Creates the following instance variables:
-  #
-  # @spec::
-  #   a spec named 'a', intended for regular installs
-  # @user_spec::
-  #   a spec named 'b', intended for user installs
-  #
-  # @gem::
-  #   the path to a built gem from @spec
-  # @user_spec::
-  #   the path to a built gem from @user_spec
-  #
-  # @installer::
-  #   a Gem::Installer for the @spec that installs into @gemhome
-  # @user_installer::
-  #   a Gem::Installer for the @user_spec that installs into Gem.user_dir
-
   def setup
     super
-
-    @spec = quick_gem 'a' do |spec|
-      util_make_exec spec
-    end
-
-    @user_spec = quick_gem 'b' do |spec|
-      util_make_exec spec
-    end
-
-    util_build_gem @spec
-    util_build_gem @user_spec
-
-    @gem = @spec.cache_file
-    @user_gem = @user_spec.cache_file
-
-    @installer      = util_installer @spec, @gemhome
-    @user_installer = util_installer @user_spec, Gem.user_dir, :user
 
     Gem::Installer.path_warning = false
   end
@@ -133,6 +98,54 @@ class Gem::InstallerTestCase < Gem::TestCase
     write_file bin_path do |io|
       io.puts shebang
     end
+  end
+
+  ##
+  # Creates the following instance variables:
+  #
+  # @spec::
+  #   a spec named 'a', intended for regular installs
+  #
+  # @gem::
+  #   the path to a built gem from @spec
+  #
+  # And returns a Gem::Installer for the @spec that installs into @gemhome
+
+  def setup_base_installer
+    @spec = quick_gem 'a' do |spec|
+      util_make_exec spec
+    end
+
+    util_build_gem @spec
+    @gem = @spec.cache_file
+    util_installer @spec, @gemhome
+  end
+
+  ##
+  # Creates the following instance variables:
+  #
+  # @spec::
+  #   a spec named 'a', intended for regular installs
+  # @user_spec::
+  #   a spec named 'b', intended for user installs
+  #
+  # @gem::
+  #   the path to a built gem from @spec
+  # @user_gem::
+  #   the path to a built gem from @user_spec
+  #
+  # And returns a Gem::Installer for the @user_spec that installs into Gem.user_dir
+
+  def setup_base_user_installer
+    @user_spec = quick_gem 'b' do |spec|
+      util_make_exec spec
+    end
+
+    util_build_gem @user_spec
+
+    @user_gem = @user_spec.cache_file
+
+    util_installer @user_spec, Gem.user_dir, :user
   end
 
   ##

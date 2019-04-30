@@ -112,6 +112,13 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   end
 
   def test_user_install_enabled
+    @spec = quick_gem 'a' do |spec|
+      util_make_exec spec
+    end
+
+    util_build_gem @spec
+    @gem = @spec.cache_file
+
     @cmd.handle_options %w[--user-install]
 
     assert @cmd.options[:user_install]
@@ -123,6 +130,13 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   end
 
   def test_user_install_disabled_read_only
+    @spec = quick_gem 'a' do |spec|
+      util_make_exec spec
+    end
+
+    util_build_gem @spec
+    @gem = @spec.cache_file
+
     if win_platform?
       skip('test_user_install_disabled_read_only test skipped on MS Windows')
     elsif Process.uid.zero?

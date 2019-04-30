@@ -6,6 +6,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
   def setup
     super
+    @installer = setup_base_installer
     common_installer_setup
 
     build_rake_in do

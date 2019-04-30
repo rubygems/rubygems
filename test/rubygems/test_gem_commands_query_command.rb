@@ -93,7 +93,9 @@ pl (1 i386-linux)
 
   def test_execute_details
     spec_fetcher do |fetcher|
-      fetcher.spec 'a', 2 do |s|
+      fetcher.spec 'a', 2
+
+      fetcher.spec 'a', '3.a' do |s|
         s.summary = 'This is a lot of text. ' * 4
         s.authors = ['Abraham Lincoln', 'Hirohito']
         s.homepage = 'http://a.example.com/'
@@ -112,7 +114,7 @@ pl (1 i386-linux)
 
 *** REMOTE GEMS ***
 
-a (2)
+a (3.a, 2)
     Authors: Abraham Lincoln, Hirohito
     Homepage: http://a.example.com/
 

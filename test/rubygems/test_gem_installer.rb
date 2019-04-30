@@ -22,11 +22,6 @@ class TestGemInstaller < Gem::InstallerTestCase
     super
     common_installer_setup
 
-    if (self.class.method_defined?(:__name__) ? __name__ : name) =~ /\Atest_install(_|\Z)/
-      FileUtils.rm_r @spec.gem_dir
-      FileUtils.rm_r @user_spec.gem_dir
-    end
-
     @config = Gem.configuration
   end
 
@@ -1896,8 +1891,6 @@ gem 'other', version
   end
 
   def test_default_gem_with_wrappers
-    FileUtils.rm_f File.join(Gem.dir, 'specifications')
-
     @installer.wrappers = true
     @installer.options[:install_as_default] = true
     @installer.gem_dir = @spec.gem_dir
@@ -1916,8 +1909,6 @@ gem 'other', version
   end
 
   def test_default_gem_with_exe_as_bindir
-    FileUtils.rm_f File.join(Gem.dir, 'specifications')
-
     @spec = quick_gem 'c' do |spec|
       util_make_exec spec, '#!/usr/bin/ruby', 'exe'
     end

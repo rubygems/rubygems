@@ -44,29 +44,10 @@ module Gem::Util
   end
 
   ##
-  # This calls IO.popen where it accepts an array for a +command+ (Ruby 1.9+)
-  # and implements an IO.popen-like behavior where it does not accept an array
-  # for a command.
+  # This calls IO.popen and reads the result
 
   def self.popen(*command)
     IO.popen command, &:read
-  rescue TypeError # ruby 1.8 only supports string command
-    r, w = IO.pipe
-
-    pid = fork do
-      STDIN.close
-      STDOUT.reopen w
-
-      exec(*command)
-    end
-
-    w.close
-
-    begin
-      return r.read
-    ensure
-      Process.wait pid
-    end
   end
 
   ##
@@ -80,26 +61,7 @@ module Gem::Util
     else
       cmds = command.dup
     end
-    return system(*(cmds << opt))
-  rescue TypeError
-    @silent_mutex ||= Mutex.new
-
-    @silent_mutex.synchronize do
-      begin
-        stdout = STDOUT.dup
-        stderr = STDERR.dup
-
-        STDOUT.reopen IO::NULL, 'w'
-        STDERR.reopen IO::NULL, 'w'
-
-        return system(*command)
-      ensure
-        STDOUT.reopen stdout
-        STDERR.reopen stderr
-        stdout.close
-        stderr.close
-      end
-    end
+    system(*(cmds << opt))
   end
 
   ##

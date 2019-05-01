@@ -142,6 +142,28 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     end
   end
 
+  ##
+  # Sets the vendordir entry in RbConfig::CONFIG to +value+ and restores the
+  # original value when the block ends
+  #
+  def vendordir(value)
+    vendordir = RbConfig::CONFIG['vendordir']
+
+    if value
+      RbConfig::CONFIG['vendordir'] = value
+    else
+      RbConfig::CONFIG.delete 'vendordir'
+    end
+
+    yield
+  ensure
+    if vendordir
+      RbConfig::CONFIG['vendordir'] = vendordir
+    else
+      RbConfig::CONFIG.delete 'vendordir'
+    end
+  end
+
   # TODO: move to minitest
   def refute_path_exists(path, msg = nil)
     msg = message(msg) { "Expected path '#{path}' to not exist" }
@@ -231,8 +253,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     @current_dir = Dir.pwd
     @fetcher     = nil
 
-    Bundler.ui = Bundler::UI::Silent.new
-
     @back_ui                       = Gem::DefaultUserInteraction.ui
     @ui                            = Gem::MockGemUi.new
     # This needs to be a new instance since we call use_ui(@ui) when we want to
@@ -304,7 +324,12 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     @default_dir = File.join @tempdir, 'default'
     @default_spec_dir = File.join @default_dir, "specifications", "default"
-    Gem.instance_variable_set :@default_dir, @default_dir
+    if Gem.java_platform?
+      @orig_default_gem_home = RbConfig::CONFIG['default_gem_home']
+      RbConfig::CONFIG['default_gem_home'] = @default_dir
+    else
+      Gem.instance_variable_set(:@default_dir, @default_dir)
+    end
     FileUtils.mkdir_p @default_spec_dir
 
     Gem::Specification.unresolved_deps.clear
@@ -378,7 +403,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     Gem.ruby = @orig_ruby if @orig_ruby
 
-    Gem.instance_variable_set :@default_dir, nil
+    if Gem.java_platform?
+      RbConfig::CONFIG['default_gem_home'] = @orig_default_gem_home
+    else
+      Gem.instance_variable_set :@default_dir, nil
+    end
 
     Gem::Specification._clear_load_cache
     Gem::Specification.unresolved_deps.clear
@@ -1055,6 +1084,20 @@ Also, a list:
 
   def win_platform?
     Gem.win_platform?
+  end
+
+  ##
+  # Is this test being run on a Java platform?
+
+  def self.java_platform?
+    Gem.java_platform?
+  end
+
+  ##
+  # Is this test being run on a Java platform?
+
+  def java_platform?
+    Gem.java_platform?
   end
 
   ##

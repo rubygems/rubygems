@@ -465,55 +465,43 @@ class TestGem < Gem::TestCase
   end
 
   def test_default_path
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'
+    vendordir(File.join(@tempdir, 'vendor')) do
+      FileUtils.rm_rf Gem.user_home
 
-    FileUtils.rm_rf Gem.user_home
+      expected = [Gem.default_dir]
 
-    expected = [Gem.default_dir]
-
-    assert_equal expected, Gem.default_path
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+      assert_equal expected, Gem.default_path
+    end
   end
 
   def test_default_path_missing_vendor
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG.delete 'vendordir'
+    vendordir(nil) do
+      FileUtils.rm_rf Gem.user_home
 
-    FileUtils.rm_rf Gem.user_home
+      expected = [Gem.default_dir]
 
-    expected = [Gem.default_dir]
-
-    assert_equal expected, Gem.default_path
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+      assert_equal expected, Gem.default_path
+    end
   end
 
   def test_default_path_user_home
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'
+    vendordir(File.join(@tempdir, 'vendor')) do
+      expected = [Gem.user_dir, Gem.default_dir]
 
-    expected = [Gem.user_dir, Gem.default_dir]
-
-    assert_equal expected, Gem.default_path
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+      assert_equal expected, Gem.default_path
+    end
   end
 
   def test_default_path_vendor_dir
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG['vendordir'] = File.join @tempdir, 'vendor'
+    vendordir(File.join(@tempdir, 'vendor')) do
+      FileUtils.mkdir_p Gem.vendor_dir
 
-    FileUtils.mkdir_p Gem.vendor_dir
+      FileUtils.rm_rf Gem.user_home
 
-    FileUtils.rm_rf Gem.user_home
+      expected = [Gem.default_dir, Gem.vendor_dir]
 
-    expected = [Gem.default_dir, Gem.vendor_dir]
-
-    assert_equal expected, Gem.default_path
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+      assert_equal expected, Gem.default_path
+    end
   end
 
   def test_self_default_sources
@@ -521,6 +509,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_use_gemdeps
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     FileUtils.mkdir_p 'detect/a/b'
@@ -674,6 +663,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_find_files_with_gemfile
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     cwd = File.expand_path("test/rubygems", @@project_dir)
     actual_load_path = $LOAD_PATH.unshift(cwd).dup
 
@@ -706,7 +696,7 @@ class TestGem < Gem::TestCase
     assert_equal expected, Gem.find_files('sff/discover').sort
     assert_equal expected, Gem.find_files('sff/**.rb').sort, '[ruby-core:31730]'
   ensure
-    assert_equal cwd, actual_load_path.shift
+    assert_equal cwd, actual_load_path.shift unless Gem.java_platform?
   end
 
   def test_self_find_latest_files
@@ -1232,10 +1222,12 @@ class TestGem < Gem::TestCase
       refute Gem.try_activate 'nonexistent'
     end
 
-    expected = "Ignoring ext-1 because its extensions are not built. " +
-               "Try: gem pristine ext --version 1\n"
+    unless Gem.java_platform?
+      expected = "Ignoring ext-1 because its extensions are not built. " +
+                 "Try: gem pristine ext --version 1\n"
 
-    assert_equal expected, err
+      assert_equal expected, err
+    end
   end
 
   def test_self_use_paths_with_nils
@@ -1364,11 +1356,13 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_vendor_dir
-    expected =
-      File.join RbConfig::CONFIG['vendordir'], 'gems',
-                RbConfig::CONFIG['ruby_version']
+    vendordir(File.join(@tempdir, 'vendor')) do
+      expected =
+        File.join RbConfig::CONFIG['vendordir'], 'gems',
+                  RbConfig::CONFIG['ruby_version']
 
-    assert_equal expected, Gem.vendor_dir
+      assert_equal expected, Gem.vendor_dir
+    end
   end
 
   def test_self_vendor_dir_ENV_GEM_VENDOR
@@ -1379,12 +1373,9 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_vendor_dir_missing
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG.delete 'vendordir'
-
-    assert_nil Gem.vendor_dir
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
+    vendordir(nil) do
+      assert_nil Gem.vendor_dir
+    end
   end
 
   def test_load_plugins
@@ -1514,6 +1505,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_auto_activation_of_specific_gemdeps_file
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
@@ -1538,6 +1530,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_auto_activation_of_used_gemdeps_file
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
@@ -1571,6 +1564,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_looks_for_gemdeps_files_automatically_on_start
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
@@ -1607,6 +1601,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_looks_for_gemdeps_files_automatically_on_start_in_parent_dir
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     util_clear_gems
 
     a = util_spec "a", "1", nil, "lib/a.rb"
@@ -1674,34 +1669,8 @@ class TestGem < Gem::TestCase
     assert_nil              Gem.find_unresolved_default_spec("README")
   end
 
-  def test_default_gems_use_full_paths
-    begin
-      if defined?(RUBY_ENGINE)
-        engine = RUBY_ENGINE
-        Object.send :remove_const, :RUBY_ENGINE
-      end
-      Object.const_set :RUBY_ENGINE, 'ruby'
-
-      refute Gem.default_gems_use_full_paths?
-    ensure
-      Object.send :remove_const, :RUBY_ENGINE
-      Object.const_set :RUBY_ENGINE, engine if engine
-    end
-
-    begin
-      if defined?(RUBY_ENGINE)
-        engine = RUBY_ENGINE
-        Object.send :remove_const, :RUBY_ENGINE
-      end
-      Object.const_set :RUBY_ENGINE, 'jruby'
-      assert Gem.default_gems_use_full_paths?
-    ensure
-      Object.send :remove_const, :RUBY_ENGINE
-      Object.const_set :RUBY_ENGINE, engine if engine
-    end
-  end
-
   def test_use_gemdeps
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     gem_deps_file = 'gem.deps.rb'.untaint
     spec = util_spec 'a', 1
     install_specs spec
@@ -1763,6 +1732,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_automatic
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     spec = util_spec 'a', 1
@@ -1811,6 +1781,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_missing_gem
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     File.open 'x', 'w' do |io|
@@ -1838,6 +1809,7 @@ You may need to `gem install -g` to install missing gems
   end
 
   def test_use_gemdeps_specific
+    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     spec = util_spec 'a', 1

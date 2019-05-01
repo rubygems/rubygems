@@ -26,9 +26,10 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
       -f
       -i /install_to
       -w
-      --vendor
       --post-install-message
     ]
+
+    args.concat %w[--vendor] unless Gem.java_platform?
 
     args.concat %w[-P HighSecurity] if defined?(OpenSSL::SSL)
 
@@ -145,28 +146,26 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   end
 
   def test_vendor
-    @cmd.handle_options %w[--vendor]
+    vendordir(File.join(@tempdir, 'vendor')) do
+      @cmd.handle_options %w[--vendor]
 
-    assert @cmd.options[:vendor]
-    assert_equal Gem.vendor_dir, @cmd.options[:install_dir]
+      assert @cmd.options[:vendor]
+      assert_equal Gem.vendor_dir, @cmd.options[:install_dir]
+    end
   end
 
   def test_vendor_missing
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG.delete 'vendordir'
+    vendordir(nil) do
+      e = assert_raises OptionParser::InvalidOption do
+        @cmd.handle_options %w[--vendor]
+      end
 
-    e = assert_raises OptionParser::InvalidOption do
-      @cmd.handle_options %w[--vendor]
+      assert_equal 'invalid option: --vendor your platform is not supported',
+                   e.message
+
+      refute @cmd.options[:vendor]
+      refute @cmd.options[:install_dir]
     end
-
-    assert_equal 'invalid option: --vendor your platform is not supported',
-                 e.message
-
-    refute @cmd.options[:vendor]
-    refute @cmd.options[:install_dir]
-
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
   end
 
   def test_post_install_message_no

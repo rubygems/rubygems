@@ -323,4 +323,4 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     @ui.outs.set_encoding @default_external if @default_external
   end
 
-end
+end unless Gem.java_platform?

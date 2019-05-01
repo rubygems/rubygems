@@ -1223,6 +1223,7 @@ gem 'other', version
   end
 
   def test_find_lib_file_after_install
+    skip "extensions don't quite work on jruby" if Gem.java_platform?
     @spec.extensions << "extconf.rb"
     write_file File.join(@tempdir, "extconf.rb") do |io|
       io.write <<-RUBY
@@ -1266,6 +1267,7 @@ gem 'other', version
   end
 
   def test_install_extension_and_script
+    skip "Makefile creation crashes on jruby" if Gem.java_platform?
     @spec.extensions << "extconf.rb"
     write_file File.join(@tempdir, "extconf.rb") do |io|
       io.write <<-RUBY
@@ -1304,6 +1306,7 @@ gem 'other', version
   end
 
   def test_install_extension_flat
+    skip "extensions don't quite work on jruby" if Gem.java_platform?
     @spec.require_paths = ["."]
 
     @spec.extensions << "extconf.rb"

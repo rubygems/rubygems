@@ -359,20 +359,22 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_handle_options_vendor
-    use_ui @ui do
-      @cmd.handle_options %w[--vendor]
-    end
+    vendordir(File.join(@tempdir, 'vendor')) do
+      use_ui @ui do
+        @cmd.handle_options %w[--vendor]
+      end
 
-    assert @cmd.options[:vendor]
-    assert_equal Gem.vendor_dir, @cmd.options[:install_dir]
+      assert @cmd.options[:vendor]
+      assert_equal Gem.vendor_dir, @cmd.options[:install_dir]
 
-    assert_empty @ui.output
+      assert_empty @ui.output
 
-    expected = <<-EXPECTED
+      expected = <<-EXPECTED
 WARNING:  Use your OS package manager to uninstall vendor gems
-    EXPECTED
+      EXPECTED
 
-    assert_match expected, @ui.error
+      assert_match expected, @ui.error
+    end
   end
 
   def test_execute_two_version
@@ -395,21 +397,17 @@ WARNING:  Use your OS package manager to uninstall vendor gems
   end
 
   def test_handle_options_vendor_missing
-    orig_vendordir = RbConfig::CONFIG['vendordir']
-    RbConfig::CONFIG.delete 'vendordir'
+    vendordir(nil) do
+      e = assert_raises OptionParser::InvalidOption do
+        @cmd.handle_options %w[--vendor]
+      end
 
-    e = assert_raises OptionParser::InvalidOption do
-      @cmd.handle_options %w[--vendor]
+      assert_equal 'invalid option: --vendor your platform is not supported',
+                   e.message
+
+      refute @cmd.options[:vendor]
+      refute @cmd.options[:install_dir]
     end
-
-    assert_equal 'invalid option: --vendor your platform is not supported',
-                 e.message
-
-    refute @cmd.options[:vendor]
-    refute @cmd.options[:install_dir]
-
-  ensure
-    RbConfig::CONFIG['vendordir'] = orig_vendordir
   end
 
   def test_execute_with_gem_not_installed

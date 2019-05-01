@@ -509,7 +509,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_use_gemdeps
-    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     FileUtils.mkdir_p 'detect/a/b'
@@ -663,7 +662,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_find_files_with_gemfile
-    skip "Requiring bundler messes things up" if Gem.java_platform?
     cwd = File.expand_path("test/rubygems", @@project_dir)
     actual_load_path = $LOAD_PATH.unshift(cwd).dup
 
@@ -1503,8 +1501,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_auto_activation_of_specific_gemdeps_file
-    skip "Requiring bundler messes things up" if Gem.java_platform?
-
     a = util_spec "a", "1", nil, "lib/a.rb"
     b = util_spec "b", "1", nil, "lib/b.rb"
     c = util_spec "c", "1", nil, "lib/c.rb"
@@ -1527,8 +1523,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_auto_activation_of_used_gemdeps_file
-    skip "Requiring bundler messes things up" if Gem.java_platform?
-
     a = util_spec "a", "1", nil, "lib/a.rb"
     b = util_spec "b", "1", nil, "lib/b.rb"
     c = util_spec "c", "1", nil, "lib/c.rb"
@@ -1664,7 +1658,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps
-    skip "Requiring bundler messes things up" if Gem.java_platform?
     gem_deps_file = 'gem.deps.rb'.untaint
     spec = util_spec 'a', 1
     install_specs spec
@@ -1726,7 +1719,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_automatic
-    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], '-'
 
     spec = util_spec 'a', 1
@@ -1775,7 +1767,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_use_gemdeps_missing_gem
-    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     File.open 'x', 'w' do |io|
@@ -1803,7 +1794,6 @@ You may need to `gem install -g` to install missing gems
   end
 
   def test_use_gemdeps_specific
-    skip "Requiring bundler messes things up" if Gem.java_platform?
     rubygems_gemdeps, ENV['RUBYGEMS_GEMDEPS'] = ENV['RUBYGEMS_GEMDEPS'], 'x'
 
     spec = util_spec 'a', 1

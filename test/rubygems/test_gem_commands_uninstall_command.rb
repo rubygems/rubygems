@@ -73,15 +73,6 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
   def test_execute_removes_executable
     initial_install
-    ui = Gem::MockGemUi.new
-
-    installer = util_setup_gem ui
-
-    build_rake_in do
-      use_ui ui do
-        installer.install
-      end
-    end
 
     if win_platform?
       assert File.exist?(@executable)
@@ -132,7 +123,6 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_prerelease
-    initial_install
     @spec = util_spec "pre", "2.b"
     @gem = File.join @tempdir, @spec.file_name
     FileUtils.touch @gem
@@ -162,7 +152,6 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     ui = Gem::MockGemUi.new
 
     util_make_gems
-    @installer = util_setup_gem ui
 
     assert_equal 3, Gem::Specification.find_all_by_name('a').length
 
@@ -185,7 +174,6 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     ui = Gem::MockGemUi.new "y\n"
 
     util_make_gems
-    @installer = util_setup_gem ui
 
     assert_equal 3, Gem::Specification.find_all_by_name('a').length
 
@@ -268,8 +256,6 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     a_3a, = util_gem 'a', '3.a'
     install_gem a_3a
 
-    @installer = util_setup_gem ui
-
     assert_equal 3, Gem::Specification.find_all_by_name('a').length
 
     @cmd.options[:force] = true
@@ -290,7 +276,6 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     ui = Gem::MockGemUi.new
 
     util_make_gems
-    @installer = util_setup_gem ui
 
     assert Gem::Specification.find_all_by_name('dep_x').length > 0
     assert Gem::Specification.find_all_by_name('x').length > 0

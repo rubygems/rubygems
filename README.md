@@ -25,6 +25,12 @@ Finally, inside your Ruby program, load the Nokogiri gem and start parsing your 
 
 For more information about how to use RubyGems, see our RubyGems basics guide at [guides.rubygems.org](http://guides.rubygems.org/rubygems-basics/)
 
+## Requirements
+
+* RubyGems 2.6 supports Ruby 2.4 or lower.
+* RubyGems 2.7 supports Ruby 2.5 or lower.
+* RubyGems 3.0 supports Ruby 2.3 or later.
+
 ## Installation
 
 RubyGems is likely already installed in your Ruby environment, you can check by running `gem --version` in your terminal emulator.

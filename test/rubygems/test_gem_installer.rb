@@ -460,7 +460,7 @@ gem 'other', version
   def test_generate_bin_script_no_execs
     @installer = setup_base_installer
 
-    util_execless
+    @installer = util_execless
 
     @installer.wrappers = true
     @installer.generate_bin
@@ -563,7 +563,7 @@ gem 'other', version
   def test_generate_bin_symlink_no_execs
     @installer = setup_base_installer
 
-    util_execless
+    @installer = util_execless
 
     @installer.wrappers = false
     @installer.generate_bin
@@ -2068,7 +2068,7 @@ gem 'other', version
     @spec = util_spec 'z'
     util_build_gem @spec
 
-    @installer = util_installer @spec, @gemhome
+    util_installer @spec, @gemhome
   end
 
   def util_conflict_executable(wrappers)

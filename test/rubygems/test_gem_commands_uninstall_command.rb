@@ -79,11 +79,11 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   def test_execute_removes_executable
     ui = Gem::MockGemUi.new
 
-    @installer = util_setup_gem ui
+    installer = util_setup_gem ui
 
     build_rake_in do
       use_ui ui do
-        @installer.install
+        installer.install
       end
     end
 

@@ -6,20 +6,13 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
 
   def setup
     super
-    @installer = setup_base_installer
-    common_installer_setup
-
-    build_rake_in do
-      use_ui @ui do
-        @installer.install
-      end
-    end
-
     @cmd = Gem::Commands::UninstallCommand.new
     @executable = File.join(@gemhome, 'bin', 'executable')
   end
 
   def test_execute_all_named
+    initial_install
+
     util_make_gems
 
     default = new_default_spec 'default', '1'
@@ -49,6 +42,8 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_dependency_order
+    initial_install
+
     c = quick_gem 'c' do |spec|
       spec.add_dependency 'a'
     end
@@ -77,6 +72,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_removes_executable
+    initial_install
     ui = Gem::MockGemUi.new
 
     installer = util_setup_gem ui
@@ -114,6 +110,8 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_removes_formatted_executable
+    @installer = setup_base_installer
+
     FileUtils.rm_f @executable # Wish this didn't happen in #setup
 
     Gem::Installer.exec_format = 'foo-%s-bar'
@@ -134,6 +132,7 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_prerelease
+    initial_install
     @spec = util_spec "pre", "2.b"
     @gem = File.join @tempdir, @spec.file_name
     FileUtils.touch @gem
@@ -158,6 +157,8 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_with_version_leaves_non_matching_versions
+    initial_install
+
     ui = Gem::MockGemUi.new
 
     util_make_gems
@@ -179,6 +180,8 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_with_version_specified_as_colon
+    initial_install
+
     ui = Gem::MockGemUi.new "y\n"
 
     util_make_gems
@@ -255,6 +258,8 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_with_force_and_without_version_uninstalls_everything
+    initial_install
+
     ui = Gem::MockGemUi.new "y\n"
 
     a_1, = util_gem 'a', 1
@@ -280,6 +285,8 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_with_force_ignores_dependencies
+    initial_install
+
     ui = Gem::MockGemUi.new
 
     util_make_gems
@@ -424,6 +431,8 @@ WARNING:  Use your OS package manager to uninstall vendor gems
   end
 
   def test_execute_with_gem_uninstall_error
+    initial_install
+
     util_make_gems
 
     @cmd.options[:args] = %w[a]
@@ -448,6 +457,19 @@ WARNING:  Use your OS package manager to uninstall vendor gems
 
     assert_empty @ui.output
     assert_match %r!Error: unable to successfully uninstall '#{@spec.name}'!, @ui.error
+  end
+
+  private
+
+  def initial_install
+    installer = setup_base_installer
+    common_installer_setup
+
+    build_rake_in do
+      use_ui @ui do
+        installer.install
+      end
+    end
   end
 
 end

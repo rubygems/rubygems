@@ -101,14 +101,14 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
   end
 
   def test_execute_removes_formatted_executable
-    @installer = setup_base_installer
+    installer = setup_base_installer
 
     FileUtils.rm_f @executable # Wish this didn't happen in #setup
 
     Gem::Installer.exec_format = 'foo-%s-bar'
 
-    @installer.format_executable = true
-    @installer.install
+    installer.format_executable = true
+    installer.install
 
     formatted_executable = File.join @gemhome, 'bin', 'foo-executable-bar'
     assert_equal true, File.exist?(formatted_executable)
@@ -127,11 +127,11 @@ class TestGemCommandsUninstallCommand < Gem::InstallerTestCase
     @gem = File.join @tempdir, @spec.file_name
     FileUtils.touch @gem
 
-    @installer = util_setup_gem
+    installer = util_setup_gem
 
     build_rake_in do
       use_ui @ui do
-        @installer.install
+        installer.install
       end
     end
 

@@ -46,6 +46,9 @@ Layout/EmptyLinesAroundClassBody:
 Layout/EmptyLinesAroundMethodBody:
   Enabled: true
 
+Layout/ExtraSpacing:
+  Enabled: true
+
 Layout/FirstHashElementIndentation:
   Enabled: true
   EnforcedStyle: consistent

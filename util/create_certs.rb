@@ -59,7 +59,7 @@ class CertificateBuilder
       ef.create_extension('subjectKeyIdentifier', 'hash')
     ]
 
-    if cert != issuer_cert  # not self-signed cert
+    if cert != issuer_cert # not self-signed cert
       cert.add_extension ef.create_extension('authorityKeyIdentifier', 'keyid:always')
     end
 

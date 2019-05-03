@@ -632,7 +632,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       io.write spec.to_ruby_for_cache
     end
 
-    spec.loaded_from = spec.loaded_from = written_path
+    spec.loaded_from = written_path
 
     Gem::Specification.reset
 
@@ -680,11 +680,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     FileUtils.rm_rf File.join(@gemhome, "specifications")
     FileUtils.mkdir File.join(@gemhome, "specifications")
     Gem::Specification.reset
-  end
-
-  def util_clear_default_gems
-    FileUtils.rm_rf @default_spec_dir
-    FileUtils.mkdir @default_spec_dir
   end
 
   ##

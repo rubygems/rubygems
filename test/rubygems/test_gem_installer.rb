@@ -742,13 +742,13 @@ gem 'other', version
     rakefile   = File.join gemdir, 'ext', 'a', 'Rakefile'
     spec_file  = File.join @gemhome, 'specifications', @spec.spec_name
 
-    Gem.pre_install do |installer|
+    Gem.pre_install do
       refute_path_exists cache_file, 'cache file must not exist yet'
       refute_path_exists spec_file,  'spec file must not exist yet'
       true
     end
 
-    Gem.post_build do |installer|
+    Gem.post_build do
       assert_path_exists gemdir, 'gem install dir must exist'
       assert_path_exists rakefile, 'gem executable must exist'
       refute_path_exists stub_exe, 'gem executable must not exist'
@@ -756,7 +756,7 @@ gem 'other', version
       true
     end
 
-    Gem.post_install do |installer|
+    Gem.post_install do
       assert_path_exists cache_file, 'cache file must exist'
       assert_path_exists spec_file,  'spec file must exist'
     end

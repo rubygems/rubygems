@@ -77,4 +77,12 @@ class TestGemUtil < Gem::TestCase
     assert_equal expected_paths.to_set, files_with_relative_base.to_set
   end
 
+  def test_correct_for_windows_path
+    path = "/C:/WINDOWS/Temp/gems"
+    assert_equal "C:/WINDOWS/Temp/gems", Gem::Util.correct_for_windows_path(path)
+
+    path = "/home/skillet"
+    assert_equal "/home/skillet", Gem::Util.correct_for_windows_path(path)
+  end
+
 end

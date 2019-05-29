@@ -3113,7 +3113,7 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     util_setup_validate
 
     use_ui @ui do
-      @a1.licenses = ['GPL-2.0+']
+      @a1.licenses = ['MIT+']
       @a1.validate
     end
 
@@ -3135,7 +3135,7 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     util_setup_validate
 
     use_ui @ui do
-      @a1.licenses = ['GPL-2.0+ WITH Autoconf-exception-2.0']
+      @a1.licenses = ['GPL-2.0-or-later WITH Autoconf-exception-2.0']
       @a1.validate
     end
 
@@ -3164,13 +3164,26 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     util_setup_validate
 
     use_ui @ui do
-      @a1.licenses = ['GPL-2.0+ WITH Autocofn-exception-2.0']
+      @a1.licenses = ['MIT WITH Autocofn-exception-2.0']
       @a1.validate
     end
 
     assert_match <<-warning, @ui.error
-WARNING:  license value 'GPL-2.0+ WITH Autocofn-exception-2.0' is invalid.  Use a license identifier from
+WARNING:  license value 'MIT WITH Autocofn-exception-2.0' is invalid.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
+    warning
+  end
+
+  def test_validate_deprecated_license
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.licenses = ['GPL-2.0+ WITH Autoconf-exception-2.0']
+      @a1.validate
+    end
+
+    assert_match <<-warning, @ui.error
+WARNING:  license value 'GPL-2.0+ WITH Autoconf-exception-2.0' is deprecated.  See http://spdx.org/licenses.
     warning
   end
 

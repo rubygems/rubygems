@@ -1,0 +1,78 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://rubygems.org/api/v1/gems/.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Type:
+      - "*/*; charset=utf-8"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'self'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com;
+        style-src 'self' https://fonts.googleapis.com; img-src 'self' https://secure.gaug.es
+        https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com;
+        font-src 'self' https://fonts.gstatic.com; connect-src https://s3-us-west-2.amazonaws.com/rubygems-dumps/
+        https://*.fastly-insights.com https://api.github.com;
+      Cache-Control:
+      - no-cache
+      X-Request-Id:
+      - d561ca36-81ac-49d6-8c63-5d8fbad9c656
+      X-Runtime:
+      - '0.005448'
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains
+      Content-Length:
+      - '58'
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Tue, 19 Mar 2019 02:15:58 GMT
+      Via:
+      - 1.1 varnish
+      Age:
+      - '0'
+      Connection:
+      - keep-alive
+      X-Served-By:
+      - cache-eze19326-EZE
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Timer:
+      - S1552961759.665643,VS0,VE193
+      Vary:
+      - Accept-Encoding
+      Server:
+      - RubyGems.org
+    body:
+      encoding: ASCII-8BIT
+      string: This rubygem could not be found.
+    http_version: 
+  recorded_at: Tue, 19 Mar 2019 02:15:59 GMT
+recorded_with: VCR 4.0.0

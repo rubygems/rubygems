@@ -42,6 +42,13 @@ require 'uri'
 require 'zlib'
 require 'benchmark' # stdlib
 require 'rubygems/mock_gem_ui'
+require "mocha/minitest"
+require 'vcr'
+
+VCR.configure do |c|
+  c.cassette_library_dir = 'test/rubygems/fixtures/vcr_cassettes'
+  c.hook_into :webmock # or :fakeweb
+end
 
 module Gem
 

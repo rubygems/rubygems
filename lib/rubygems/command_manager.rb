@@ -69,6 +69,7 @@ class Gem::CommandManager
     :uninstall,
     :unpack,
     :update,
+    :web,
     :which,
     :yank,
   ].freeze

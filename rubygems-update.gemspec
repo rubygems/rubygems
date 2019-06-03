@@ -34,10 +34,14 @@ Gem::Specification.new do |s|
 
   s.specification_version = 4
 
+  s.add_dependency(%q<launchy>, ["~> 2.4.3"])
   s.add_development_dependency(%q<builder>, ["~> 3.0"])
   s.add_development_dependency(%q<rdoc>, ["~> 6.0"])
   s.add_development_dependency(%q<rake>, ["~> 12.0"])
   s.add_development_dependency(%q<minitest>, ["~> 5.0"])
   s.add_development_dependency(%q<simplecov>, ["~> 0"])
   s.add_development_dependency(%q<rubocop>, ["~> 0.74.0"])
+  s.add_development_dependency(%q<mocha>, ["~> 1.7.0"])
+  s.add_development_dependency(%q<webmock>, ["~> 3.5.1"])
+  s.add_development_dependency(%q<vcr>, ["~> 4.0.0"])
 end

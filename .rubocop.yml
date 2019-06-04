@@ -42,13 +42,11 @@ Layout/EmptyLinesAroundClassBody:
 Layout/EmptyLinesAroundMethodBody:
   Enabled: true
 
-Layout/IndentHash:
+Layout/IndentFirstHashElement:
   Enabled: true
   EnforcedStyle: consistent
 
-# NOTE: When used with --auto-correct, this only seems to auto-correct the
-#       first array item for some reason.
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   Enabled: true
   EnforcedStyle: consistent
   Exclude:

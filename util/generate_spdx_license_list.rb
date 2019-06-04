@@ -18,6 +18,7 @@ open 'lib/rubygems/util/licenses.rb', 'w' do |io|
 require 'rubygems/text'
 
 class Gem::Licenses
+
   extend Gem::Text
 
   NONSTANDARD = 'Nonstandard'.freeze
@@ -25,12 +26,12 @@ class Gem::Licenses
   # Software Package Data Exchange (SPDX) standard open-source software
   # license identifiers
   LICENSE_IDENTIFIERS = %w(
-      #{licenses.sort.join "\n      "}
+    #{licenses.sort.join "\n    "}
   ).freeze
 
   # exception identifiers
   EXCEPTION_IDENTIFIERS = %w(
-      #{exceptions.sort.join "\n      "}
+    #{exceptions.sort.join "\n    "}
   ).freeze
 
   REGEXP = %r{
@@ -56,6 +57,7 @@ class Gem::Licenses
     return unless lowest < license.size
     by_distance[lowest]
   end
+
 end
   RUBY
 end

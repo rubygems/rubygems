@@ -27,6 +27,9 @@ Layout/ElseAlignment:
 MultilineIfThen:
   Enabled: true
 
+Layout/EmptyLinesAroundAccessModifier:
+  Enabled: true
+
 # Force Unix line endings.
 Layout/EndOfLine:
   Enabled: true

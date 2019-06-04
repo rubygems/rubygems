@@ -9,6 +9,9 @@ AllCops:
 Layout/AccessModifierIndentation:
   Enabled: true
 
+Layout/AlignArray:
+  Enabled: true
+
 Layout/BlockAlignment:
   Enabled: true
 

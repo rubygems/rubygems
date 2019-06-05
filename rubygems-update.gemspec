@@ -39,5 +39,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<rake>, ["~> 12.0"])
   s.add_development_dependency(%q<minitest>, ["~> 5.0"])
   s.add_development_dependency(%q<simplecov>, ["~> 0"])
-  s.add_development_dependency(%q<rubocop>, ["~> 0.61.1"])
+  s.add_development_dependency(%q<rubocop>, ["~> 0.71.0"])
 end

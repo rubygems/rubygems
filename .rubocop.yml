@@ -9,6 +9,9 @@ AllCops:
 Layout/AccessModifierIndentation:
   Enabled: true
 
+Layout/AlignArray:
+  Enabled: true
+
 Layout/BlockAlignment:
   Enabled: true
 
@@ -27,6 +30,9 @@ Layout/ElseAlignment:
 MultilineIfThen:
   Enabled: true
 
+Layout/EmptyLinesAroundAccessModifier:
+  Enabled: true
+
 # Force Unix line endings.
 Layout/EndOfLine:
   Enabled: true
@@ -42,18 +48,13 @@ Layout/EmptyLinesAroundClassBody:
 Layout/EmptyLinesAroundMethodBody:
   Enabled: true
 
-Layout/IndentHash:
+Layout/IndentFirstHashElement:
   Enabled: true
   EnforcedStyle: consistent
 
-# NOTE: When used with --auto-correct, this only seems to auto-correct the
-#       first array item for some reason.
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   Enabled: true
   EnforcedStyle: consistent
-  Exclude:
-    # This is a generated file.
-    - lib/rubygems/util/licenses.rb
 
 Layout/IndentationConsistency:
   Enabled: true

@@ -125,13 +125,22 @@ end
 
 file "pkg/rubygems-#{v}.zip" => "pkg/rubygems-#{v}" do
   cd 'pkg' do
-    sh "zip -q -r rubygems-#{v}.zip rubygems-#{v}"
+    if Gem.win_platform?
+      sh "7z a rubygems-#{v}.zip rubygems-#{v}"
+    else
+      sh "zip -q -r rubygems-#{v}.zip rubygems-#{v}"
+    end
   end
 end
 
 file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
   cd 'pkg' do
-    sh "tar -czf rubygems-#{v}.tgz rubygems-#{v}"
+    if Gem.win_platform? && RUBY_VERSION < '2.4'
+      sh "7z a -ttar  rubygems-#{v}.tar rubygems-#{v}"
+      sh "7z a -tgzip rubygems-#{v}.tgz rubygems-#{v}.tar"
+    else
+      sh "tar -czf rubygems-#{v}.tgz rubygems-#{v}"
+    end
   end
 end
 

@@ -16,12 +16,10 @@ bin/gem
 bin/update_rubygems
 bundler/CHANGELOG.md
 bundler/CODE_OF_CONDUCT.md
-bundler/CONTRIBUTING.md
 bundler/LICENSE.md
 bundler/README.md
 bundler/bundler.gemspec
 bundler/exe/bundle
-bundler/exe/bundle_ruby
 bundler/exe/bundler
 bundler/lib/bundler.rb
 bundler/lib/bundler/build_metadata.rb
@@ -136,11 +134,6 @@ bundler/lib/bundler/source/rubygems.rb
 bundler/lib/bundler/source/rubygems/remote.rb
 bundler/lib/bundler/source_list.rb
 bundler/lib/bundler/spec_set.rb
-bundler/lib/bundler/ssl_certs/.document
-bundler/lib/bundler/ssl_certs/certificate_manager.rb
-bundler/lib/bundler/ssl_certs/index.rubygems.org/GlobalSignRootCA.pem
-bundler/lib/bundler/ssl_certs/rubygems.global.ssl.fastly.net/DigiCertHighAssuranceEVRootCA.pem
-bundler/lib/bundler/ssl_certs/rubygems.org/AddTrustExternalCARoot.pem
 bundler/lib/bundler/stub_specification.rb
 bundler/lib/bundler/templates/.document
 bundler/lib/bundler/templates/Executable
@@ -175,6 +168,7 @@ bundler/lib/bundler/ui/shell.rb
 bundler/lib/bundler/ui/silent.rb
 bundler/lib/bundler/uri_credentials_filter.rb
 bundler/lib/bundler/vendor/fileutils/lib/fileutils.rb
+bundler/lib/bundler/vendor/fileutils/lib/fileutils/version.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/compatibility.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/delegates/resolution_state.rb
@@ -637,10 +631,13 @@ test/rubygems/test_remote_fetch_error.rb
 test/rubygems/test_require.rb
 test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem
+test/test_rake_package.rb
 util/CL2notes
 util/bisect
 util/ci
+util/cops/deprecations.rb
 util/create_certs.rb
+util/create_certs.sh
 util/create_encrypted_key.rb
 util/generate_spdx_license_list.rb
 util/patch_with_prs.rb

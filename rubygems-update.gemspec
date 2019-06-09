@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
     "MIT.txt", "Manifest.txt", "README.md",
     "UPGRADING.md", "POLICIES.md", "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md", "bundler/CHANGELOG.md", "bundler/CODE_OF_CONDUCT.md",
-    "bundler/CONTRIBUTING.md", "bundler/LICENSE.md", "bundler/README.md",
+    "bundler/LICENSE.md", "bundler/README.md",
     "hide_lib_for_update/note.txt", *Dir["bundler/man/*.1"]
   ]
 

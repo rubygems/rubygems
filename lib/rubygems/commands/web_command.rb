@@ -1,15 +1,18 @@
 # frozen_string_literal: true
-
-require 'gem/web'
+require 'rubygems/command'
+require 'rubygems/executor'
+require 'rubygems/version_option'
 
 class Gem::Commands::WebCommand < Gem::Command
 
   include Gem::VersionOption
+  attr_reader :executor
+
 
   def initialize
     super 'web', "Open the gem's homepage",
       :command => nil,
-      :version => Gem::Web::VERSION,
+      :version => Gem::Requirement.default,
       :latest => false
 
     add_option("-g", "--github", "Open GitHub page of gem, this searches all urls for a GitHub page. This is the default.") do |v|
@@ -30,6 +33,8 @@ class Gem::Commands::WebCommand < Gem::Command
     add_option("-t", "--rubytoolbox", "Open the ruby toolbox page of a gem") do |v|
       options[:rubytoolbox] = v
     end
+
+    @executor = Gem::Web::Executor.new
   end
 
   def arguments
@@ -41,7 +46,7 @@ class Gem::Commands::WebCommand < Gem::Command
   end
 
   def execute
-    Gem::Web::Executor.new.open_page(get_one_optional_argument, options)
+    @executor.open_page(get_one_optional_argument, options)
   end
 
 end

@@ -41,7 +41,7 @@ module Gem
       def get_api_metadata(gem)
         begin
           JSON.parse(open("https://rubygems.org/api/v1/gems/#{gem}.json").read)
-        rescue OpenURI::HTTPError => ex
+        rescue OpenURI::HTTPError
           puts "Did not find #{gem} on rubygems.org"
           nil
         end
@@ -53,17 +53,21 @@ module Gem
           uri = "https://rubygems.org/gems/#{gem}"
         end
 
-        Launchy.open(uri)
+        open_default_browser(uri)
       end
 
       def open_rubygems(gem)
-        Launchy.open("https://rubygems.org/gems/#{gem}")
+        open_default_browser("https://rubygems.org/gems/#{gem}")
       end
 
       def open_rubytoolbox(gem)
-        Launchy.open("https://www.ruby-toolbox.com/projects/#{gem}")
+        open_default_browser("https://www.ruby-toolbox.com/projects/#{gem}")
       end
 
+      # TODO: Make this cross-platform
+      def open_default_browser(uri)
+        system("xdg-open", uri)
+      end
     end
   end
 end

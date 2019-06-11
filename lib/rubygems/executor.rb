@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'launchy'
 require 'open-uri'
 require 'json'
 

@@ -351,6 +351,7 @@ lib/rubygems/commands/stale_command.rb
 lib/rubygems/commands/uninstall_command.rb
 lib/rubygems/commands/unpack_command.rb
 lib/rubygems/commands/update_command.rb
+lib/rubygems/commands/web_command.rb
 lib/rubygems/commands/which_command.rb
 lib/rubygems/commands/yank_command.rb
 lib/rubygems/compatibility.rb
@@ -366,6 +367,7 @@ lib/rubygems/deprecate.rb
 lib/rubygems/doctor.rb
 lib/rubygems/errors.rb
 lib/rubygems/exceptions.rb
+lib/rubygems/executor.rb
 lib/rubygems/ext.rb
 lib/rubygems/ext/build_error.rb
 lib/rubygems/ext/builder.rb
@@ -591,6 +593,7 @@ test/rubygems/test_gem_commands_stale_command.rb
 test/rubygems/test_gem_commands_uninstall_command.rb
 test/rubygems/test_gem_commands_unpack_command.rb
 test/rubygems/test_gem_commands_update_command.rb
+test/rubygems/test_gem_commands_web_command.rb
 test/rubygems/test_gem_commands_which_command.rb
 test/rubygems/test_gem_commands_yank_command.rb
 test/rubygems/test_gem_config_file.rb

@@ -10,7 +10,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
     @cmd = Gem::Commands::WebCommand.new
     @mock = MiniTest::Mock.new
   end
-  
+
   def test_default_option
     @mock.expect(:call, true, ["xdg-open", "http://github.com/rails/rails"])
 
@@ -65,26 +65,26 @@ class TestGemCommandsWebCommand < Gem::TestCase
 
     @mock.verify
   end
-  
+
   def test_open_rubygems
     @mock.expect(:call, true, ["xdg-open", "https://rubygems.org/gems/rails"])
-  
+
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-r rails]
       @cmd.execute
     end
-  
+
     @mock.verify
   end
 
   def test_open_rubytoolbox
     @mock.expect(:call, true, ["xdg-open", "https://www.ruby-toolbox.com/projects/rails"])
-  
+
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-t rails]
       @cmd.execute
     end
-  
+
     @mock.verify
   end
 

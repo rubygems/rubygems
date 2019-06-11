@@ -8,7 +8,6 @@ class Gem::Commands::WebCommand < Gem::Command
   include Gem::VersionOption
   attr_reader :executor
 
-
   def initialize
     super 'web', "Open the gem's homepage",
       :command => nil,

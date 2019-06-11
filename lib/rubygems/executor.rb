@@ -68,6 +68,7 @@ module Gem
       def open_default_browser(uri)
         system("xdg-open", uri)
       end
+
     end
   end
 end

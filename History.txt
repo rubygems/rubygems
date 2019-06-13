@@ -1,5 +1,14 @@
 # coding: UTF-8
 
+=== 2.7.10 / 2019-06-14
+
+Minor enhancements:
+
+* Fix bundler rubygems binstub not properly looking for bundler. Pull request #2426
+  by David Rodríguez.
+* [BudlerVersionFinder] set .filter! and .compatible? to match only on major versions.
+  Pull request #2515 by Colby Swandale.
+
 === 2.7.9 / 2019-03-05
 
 Security fixes:

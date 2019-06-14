@@ -8,6 +8,7 @@ Minor enhancements:
   by David Rodríguez.
 * [BudlerVersionFinder] set .filter! and .compatible? to match only on major versions.
   Pull request #2515 by Colby Swandale.
++ Update for compatibilty with new minitest. Pull request #2118 by MSP-Greg.
 
 === 2.7.9 / 2019-03-05
 

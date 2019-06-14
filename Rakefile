@@ -95,8 +95,8 @@ desc "Release rubygems-#{v}"
 task :release => :prerelease do
   Rake::Task["package"].invoke
   sh "gem push pkg/rubygems-update-#{v}.gem"
+  Rake::Task["postrelease"].invoke
 end
-Rake::Task["release"].enhance(["postrelease"])
 
 Gem::PackageTask.new(spec) {}
 

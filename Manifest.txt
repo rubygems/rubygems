@@ -200,7 +200,6 @@ bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/timed_stack.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/version.rb
 bundler/lib/bundler/vendor/fileutils/lib/fileutils.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo.rb
-bundler/lib/bundler/vendor/molinillo/lib/molinillo/compatibility.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/delegates/resolution_state.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/delegates/specification_provider.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/dependency_graph.rb

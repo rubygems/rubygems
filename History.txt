@@ -339,6 +339,28 @@ Style changes:
 * Remove trailing 'then' from generated code. Pull request #2480 by Luis
   Sagastume.
 
+=== 2.7.10 / 2019-06-14
+
+Minor enhancements:
+
+* Fix bundler rubygems binstub not properly looking for bundler. Pull request #2426
+  by David Rodríguez.
+* [BudlerVersionFinder] set .filter! and .compatible? to match only on major versions.
+  Pull request #2515 by Colby Swandale.
++ Update for compatibilty with new minitest. Pull request #2118 by MSP-Greg.
+
+=== 2.7.9 / 2019-03-05
+
+Security fixes:
+
+* Fixed following vulnerabilities:
+  * CVE-2019-8320: Delete directory using symlink when decompressing tar
+  * CVE-2019-8321: Escape sequence injection vulnerability in `verbose`
+  * CVE-2019-8322: Escape sequence injection vulnerability in `gem owner`
+  * CVE-2019-8323: Escape sequence injection vulnerability in API response handling
+  * CVE-2019-8324: Installing a malicious gem may lead to arbitrary code execution
+  * CVE-2019-8325: Escape sequence injection vulnerability in errors
+
 === 2.7.8 / 2018-11-02
 
 Minor enhancements:

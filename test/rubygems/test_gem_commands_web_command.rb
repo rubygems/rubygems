@@ -11,8 +11,19 @@ class TestGemCommandsWebCommand < Gem::TestCase
     @mock = MiniTest::Mock.new
   end
 
+  def test_open_browser_command
+    @mock.expect(:os, "darwin")
+
+    Gem::Platform.stub :local, @mock do
+      executor = Gem::Web::Executor.new
+      assert_equal "open", executor.open_browser_cmd
+    end
+
+    @mock.verify
+  end
+
   def test_default_option
-    @mock.expect(:call, true, ["xdg-open", "http://github.com/rails/rails"])
+    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://github.com/rails/rails"])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[rails]
@@ -23,7 +34,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_the_documentation
-    @mock.expect(:call, true, ["xdg-open", "http://api.rubyonrails.org"])
+    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://api.rubyonrails.org"])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-d rails]
@@ -34,7 +45,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_the_homepage
-    @mock.expect(:call, true, ["xdg-open", "http://rubyonrails.org"])
+    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://rubyonrails.org"])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-w rails]
@@ -45,7 +56,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_the_source_code
-    @mock.expect(:call, true, ["xdg-open", "http://github.com/rails/rails"])
+    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://github.com/rails/rails"])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-c rails]
@@ -56,7 +67,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_github
-    @mock.expect(:call, true, ["xdg-open", "http://github.com/rails/rails"])
+    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://github.com/rails/rails"])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-g rails]
@@ -67,7 +78,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_rubygems
-    @mock.expect(:call, true, ["xdg-open", "https://rubygems.org/gems/rails"])
+    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "https://rubygems.org/gems/rails"])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-r rails]
@@ -78,7 +89,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_rubytoolbox
-    @mock.expect(:call, true, ["xdg-open", "https://www.ruby-toolbox.com/projects/rails"])
+    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "https://www.ruby-toolbox.com/projects/rails"])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-t rails]
@@ -97,7 +108,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_rubygems_if_it_could_not_find_page
-    @mock.expect(:call, true, ["xdg-open", "https://rubygems.org/gems/rails"])
+    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "https://rubygems.org/gems/rails"])
 
     @cmd.executor.stub :system, @mock do
       assert_output("Did not find page for rails, opening RubyGems page instead.\n") do

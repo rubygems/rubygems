@@ -1,10 +1,24 @@
 # frozen_string_literal: true
 require 'open-uri'
 require 'json'
+require 'rubygems/platform'
 
 module Gem
   module Web
     class Executor
+
+      OPEN_BROWSER_CMDS = {
+        linux: "xdg-open",
+        darwin: "open",
+        mingw32: "start"
+      }.freeze
+
+      attr_reader :open_browser_cmd
+
+      def initialize
+        local_os = Gem::Platform.local.os.to_sym
+        @open_browser_cmd = OPEN_BROWSER_CMDS[local_os]
+      end
 
       def open_page(gem, options)
         if options[:sourcecode]
@@ -63,9 +77,8 @@ module Gem
         open_default_browser("https://www.ruby-toolbox.com/projects/#{gem}")
       end
 
-      # TODO: Make this cross-platform
       def open_default_browser(uri)
-        system("xdg-open", uri)
+        system(@open_browser_cmd, uri)
       end
 
     end

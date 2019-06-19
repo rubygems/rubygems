@@ -20,7 +20,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     @cmd.options[:prefix] = @install_dir
 
     filelist = %w[
-      bin/gem
+      exe/gem
       lib/rubygems.rb
       lib/rubygems/test_case.rb
       lib/rubygems/ssl_certs/rubygems.org/foo.pem

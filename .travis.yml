@@ -28,6 +28,9 @@ jobs:
       rvm: jruby-9.2.7.0
       env: "TEST_TOOL=rubygems"
     - stage: test
+      rvm: truffleruby-19.0.0
+      env: "TEST_TOOL=rubygems"
+    - stage: test
       rvm: ruby-head
       env: "TEST_TOOL=rubygems"
     - stage: test

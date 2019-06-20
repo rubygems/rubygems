@@ -20,7 +20,7 @@ jobs:
     - stage: linting
       rvm: 2.6.3
       env: "TEST_TOOL=rubygems"
-      script: util/ci rubocop
+      script: util/ci.sh rubocop
     - stage: test
       rvm: 2.6.3
       env: "TEST_TOOL=bundler RGV=.. BDV=master"
@@ -37,9 +37,9 @@ stages:
   - linting
   - test
 before_script:
-  - util/ci before_script
+  - util/ci.sh before_script
 script:
-  - util/ci script
+  - util/ci.sh script
 matrix:
   allow_failures:
     - rvm: ruby-head

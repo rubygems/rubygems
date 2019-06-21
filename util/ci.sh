@@ -17,9 +17,6 @@ case $1 in
       ruby -I lib bin/gem uninstall executable-hooks gem-wrappers bundler-unload -x --force -i "$gemhome@global"
 
       rake setup
-
-      gem list --details
-      gem env
     else
       cd bundler
 

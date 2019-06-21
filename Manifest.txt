@@ -634,7 +634,7 @@ test/rubygems/wrong_key_cert_32.pem
 test/test_rake_package.rb
 util/CL2notes
 util/bisect
-util/ci
+util/ci.sh
 util/cops/deprecations.rb
 util/create_certs.rb
 util/create_certs.sh

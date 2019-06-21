@@ -16,7 +16,7 @@ case $1 in
 
       ruby -I lib bin/gem uninstall executable-hooks gem-wrappers bundler-unload -x --force -i "$gemhome@global"
 
-      rake setup
+      exec rake setup
     else
       cd bundler
 
@@ -25,24 +25,24 @@ case $1 in
         git reset --hard "origin/$BDV"
       fi
 
-      rake spec:travis:deps
+      exec rake spec:travis:deps
     fi
 
     ;;
 
   rubocop)
     gem install rubocop -v "~>0.71.0"
-    util/rubocop
+    exec util/rubocop
 
     ;;
 
   script)
     if [ "$TEST_TOOL" = "rubygems" ]
     then
-      rake test
+      exec rake test
     else
       cd bundler
-      rake spec:travis -t
+      exec rake spec:travis -t
     fi
 
     ;;

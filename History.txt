@@ -1,5 +1,60 @@
 # coding: UTF-8
 
+=== 3.0.4 / 2019-06-14
+
+Minor enhancements:
+
+* Add support for TruffleRuby #2612 by Benoit Daloze
+* Serve a more descriptive error when --no-ri or --no-rdoc are used #2572
+  by Grey Baker
+* Improve test compatibility with CMake 2.8. Pull request #2590 by Vít
+  Ondruch.
+* Restore gem build behavior and introduce the "-C" flag to gem build.
+  Pull request #2596 by Luis Sagastume.
+* Enabled block call with util_set_arch. Pull request #2603 by SHIBATA
+  Hiroshi.
+* Avoid rdoc hook when it's failed to load rdoc library. Pull request
+  #2604 by SHIBATA Hiroshi.
+* Drop tests for legacy RDoc. Pull request #2608 by Nobuyoshi Nakada.
+* Update TODO comment. Pull request #2658 by Luis Sagastume.
+* Skip malicious extension test with mswin platform. Pull request #2670 by
+  SHIBATA Hiroshi.
+* Check deprecated methods on release. Pull request #2673 by David
+  Rodríguez.
+* Add steps to run bundler tests. Pull request #2680 by Aditya Prakash.
+* Skip temporary "No such host is known" error. Pull request #2684 by
+  Takashi Kokubun.
+* Replaced aws-sdk-s3 instead of s3cmd. Pull request #2688 by SHIBATA
+  Hiroshi.
+* Allow uninstall from symlinked GEM_HOME. Pull request #2720 by David
+  Rodríguez.
+* Use current checkout in CI to uninstall RVM related gems. Pull request
+  #2729 by David Rodríguez.
+* Update Contributor Covenant v1.4.1. Pull request #2751 by SHIBATA
+  Hiroshi.
+* Added supported versions of Ruby. Pull request #2756 by SHIBATA Hiroshi.
+* Fix shadowing outer local variable warning. Pull request #2763 by Luis
+  Sagastume.
+* Update the certificate files to make the test pass on Debian 10. Pull
+  request #2777 by Yusuke Endoh.
+* Backport ruby core changes. Pull request #2778 by SHIBATA Hiroshi.
+
+Bug fixes:
+
+* Test_gem.rb - intermittent failure fix. Pull request #2613 by MSP-Greg.
+* Fix sporadic CI failures. Pull request #2617 by David Rodríguez.
+* Fix flaky bundler version finder tests. Pull request #2624 by David
+  Rodríguez.
+* Fix gem indexer tests leaking utility gems. Pull request #2625 by David
+  Rodríguez.
+* Clean up default spec dir too. Pull request #2639 by David Rodríguez.
+* Fix 2.6.1 build against vendored bundler. Pull request #2645 by David
+  Rodríguez.
+* Fix comment typo. Pull request #2664 by Luis Sagastume.
+* Fix comment of Gem::Specification#required_ruby_version=. Pull request
+  #2732 by Alex Junger.
+* Fix TODOs. Pull request #2748 by David Rodríguez.
+
 === 3.0.3 / 2019-03-05
 
 Security fixes:
@@ -338,6 +393,28 @@ Style changes:
   Sagastume.
 * Remove trailing 'then' from generated code. Pull request #2480 by Luis
   Sagastume.
+
+=== 2.7.10 / 2019-06-14
+
+Minor enhancements:
+
+* Fix bundler rubygems binstub not properly looking for bundler. Pull request #2426
+  by David Rodríguez.
+* [BudlerVersionFinder] set .filter! and .compatible? to match only on major versions.
+  Pull request #2515 by Colby Swandale.
++ Update for compatibilty with new minitest. Pull request #2118 by MSP-Greg.
+
+=== 2.7.9 / 2019-03-05
+
+Security fixes:
+
+* Fixed following vulnerabilities:
+  * CVE-2019-8320: Delete directory using symlink when decompressing tar
+  * CVE-2019-8321: Escape sequence injection vulnerability in `verbose`
+  * CVE-2019-8322: Escape sequence injection vulnerability in `gem owner`
+  * CVE-2019-8323: Escape sequence injection vulnerability in API response handling
+  * CVE-2019-8324: Installing a malicious gem may lead to arbitrary code execution
+  * CVE-2019-8325: Escape sequence injection vulnerability in errors
 
 === 2.7.8 / 2018-11-02
 

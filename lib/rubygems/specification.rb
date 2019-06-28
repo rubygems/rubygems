@@ -2284,7 +2284,6 @@ class Gem::Specification < Gem::BasicSpecification
 
     e = Gem::LoadError.new msg
     e.name = self.name
-    # TODO: e.requirement = dep.requirement
 
     raise e
   end

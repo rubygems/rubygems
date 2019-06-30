@@ -92,11 +92,17 @@ module Gem
       @conflicts = conflicts
       @name      = target.name
 
-      reason = conflicts.map do |act, dependencies|
-        "#{act.full_name} conflicts with #{dependencies.join(", ")}"
-      end.join ", "
 
-      # TODO: improve message by saying who activated `con`
+      reason = conflicts.map do |act, dependencies|
+        who_activated_conflict = dependencies.select do |dep|
+          if dep.runtime?
+            spec = Gem.loaded_specs[dep.name]
+            spec && !spec.satisfies_requirement?(dep)
+          end
+        end
+
+        "#{act.full_name} conflicts with #{dependencies.join(", ")} => activated by #{who_activated_conflict}"
+      end.join ", "
 
       super("Unable to activate #{target.full_name}, because #{reason}")
     end

@@ -8,9 +8,24 @@ module Gem
     class Executor
 
       OPEN_BROWSER_CMDS = {
-        linux: "xdg-open",
+        aix: "defaultbrowser",
+        cygwin: "cygstart",
         darwin: "open",
-        mingw32: "start"
+        macruby: "open", #TODO: check this
+        freebsd: "xdg-open",
+        # FIXME: What to do?
+        # hpux: "",
+        # java: "",
+        # dalvik: "",
+        # dotnet: "",
+        # linux: "xdg-open",
+        mingw32: "start",
+        netbsdelf: "xdg-open",
+        openbsd: "xdg-open",
+        bitrig: "xdg-open", # check this
+        # solaris: "sdtwebclient", # version < 11
+        # solaris: "xdg-open", # version > 11
+        unknown: ""
       }.freeze
 
       attr_reader :open_browser_cmd

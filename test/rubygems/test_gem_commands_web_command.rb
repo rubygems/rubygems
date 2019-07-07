@@ -16,15 +16,20 @@ class TestGemCommandsWebCommand < Gem::TestCase
     @mock.expect(:version, '')
 
     Gem::Platform.stub :local, @mock do
-      executor = Gem::Web::Executor.new
-      assert_equal "open", executor.open_browser_cmd
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match /open/, open_browser_cmd
     end
 
     @mock.verify
   end
 
   def test_default_option
-    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://github.com/rails/rails"])
+    open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                       Gem::Platform.local.version,
+                                                                       "http://github.com/rails/rails")
+    @mock.expect(:call, true, [open_browser_cmd])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[rails]
@@ -35,7 +40,10 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_the_documentation
-    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://api.rubyonrails.org"])
+    open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                       Gem::Platform.local.version,
+                                                                       "http://api.rubyonrails.org")
+    @mock.expect(:call, true, [open_browser_cmd])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-d rails]
@@ -46,7 +54,10 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_the_homepage
-    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://rubyonrails.org"])
+    open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                    Gem::Platform.local.version,
+                                                                    "http://rubyonrails.org")
+    @mock.expect(:call, true, [open_browser_cmd])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-w rails]
@@ -57,7 +68,10 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_the_source_code
-    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://github.com/rails/rails"])
+    open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                       Gem::Platform.local.version,
+                                                                       "http://github.com/rails/rails")
+    @mock.expect(:call, true, [open_browser_cmd])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-c rails]
@@ -68,7 +82,10 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_github
-    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "http://github.com/rails/rails"])
+    open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                       Gem::Platform.local.version,
+                                                                       "http://github.com/rails/rails")
+    @mock.expect(:call, true, [open_browser_cmd])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-g rails]
@@ -79,7 +96,10 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_rubygems
-    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "https://rubygems.org/gems/rails"])
+    open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                       Gem::Platform.local.version,
+                                                                       "https://rubygems.org/gems/rails")
+    @mock.expect(:call, true, [open_browser_cmd])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-r rails]
@@ -90,7 +110,10 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_rubytoolbox
-    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "https://www.ruby-toolbox.com/projects/rails"])
+    open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                    Gem::Platform.local.version,
+                                                                    "https://www.ruby-toolbox.com/projects/rails")
+    @mock.expect(:call, true, [open_browser_cmd])
 
     @cmd.executor.stub :system, @mock do
       @cmd.handle_options %w[-t rails]
@@ -109,7 +132,10 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_rubygems_if_it_could_not_find_page
-    @mock.expect(:call, true, [@cmd.executor.open_browser_cmd, "https://rubygems.org/gems/rails"])
+    open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                       Gem::Platform.local.version,
+                                                                       "https://rubygems.org/gems/rails")
+    @mock.expect(:call, true, [open_browser_cmd])
 
     @cmd.executor.stub :system, @mock do
       assert_output("Did not find page for rails, opening RubyGems page instead.\n") do

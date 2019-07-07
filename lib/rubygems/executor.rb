@@ -7,53 +7,47 @@ module Gem
   module Web
     class Executor
 
-      def open_default_browser_cmd(local_os, version)
+      def open_default_browser_cmd(local_os, version, uri)
         case local_os
         when 'aix'
-          'defaultbrowser'
+          "defaultbrowser #{uri}"
         when 'cygwin'
-          'cygstart'
+          "cygstart #{uri}"
         when 'darwin'
-          'open'
+          "open #{uri}"
         when 'macruby'
-          'open'
+          "open #{uri}"
         when 'freebsd'
-          'xdg-open'
+          "xdg-open #{uri}"
         when 'hpux'
-          ''
+          ""
         when 'java'
-          ''
+          "if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {" \
+            "Desktop.getDesktop().browse(new URI(#{uri}));" \
+          "}"
         when 'dalvik'
-          ''
+          ""
         when 'dotnet'
-          ''
+          "System.Diagnostics.Process.Start(#{uri});"
         when 'linux'
-          'xdg-open'
+          "xdg-open #{uri}"
         when 'mingw32'
-          'start'
+          "start #{uri}"
         when 'netbsdelf'
-          'xdg-open'
+          "xdg-open #{uri}"
         when 'openbsd'
-          'xdg-open'
+          "xdg-open #{uri}"
         when 'bitrig'
-          'xdg-open'
+          "xdg-open #{uri}"
         when 'solaris'
           if version < 11
-            'sdtwebclient'
+            "sdtwebclient #{uri}"
           else
-            'xdg-open'
+            "xdg-open #{uri}"
           end
         else
-          ''
+          ""
         end
-      end
-
-      attr_reader :open_browser_cmd
-
-      def initialize
-        local_os = Gem::Platform.local.os
-        version = Gem::Platform.local.version
-        @open_browser_cmd = open_default_browser_cmd(local_os, version)
       end
 
       def open_page(gem, options)
@@ -114,8 +108,12 @@ module Gem
       end
 
       def open_default_browser(uri)
-        if !@open_browser_cmd.nil?
-          system(@open_browser_cmd, uri)
+        local_os = Gem::Platform.local.os
+        version = Gem::Platform.local.version
+        open_browser_cmd = open_default_browser_cmd(local_os, version, uri)
+
+        if !open_browser_cmd.empty?
+          system(open_browser_cmd)
         else
           puts "The command 'web' is not supported on your platform."
         end

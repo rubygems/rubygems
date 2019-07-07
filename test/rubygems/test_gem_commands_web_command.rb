@@ -13,6 +13,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
 
   def test_open_browser_command
     @mock.expect(:os, "darwin")
+    @mock.expect(:version, '')
 
     Gem::Platform.stub :local, @mock do
       executor = Gem::Web::Executor.new

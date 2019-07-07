@@ -7,32 +7,53 @@ module Gem
   module Web
     class Executor
 
-      OPEN_BROWSER_CMDS = {
-        aix: "defaultbrowser",
-        cygwin: "cygstart",
-        darwin: "open",
-        macruby: "open", #TODO: check this
-        freebsd: "xdg-open",
-        # FIXME: What to do?
-        # hpux: "",
-        # java: "",
-        # dalvik: "",
-        # dotnet: "",
-        # linux: "xdg-open",
-        mingw32: "start",
-        netbsdelf: "xdg-open",
-        openbsd: "xdg-open",
-        bitrig: "xdg-open", # check this
-        # solaris: "sdtwebclient", # version < 11
-        # solaris: "xdg-open", # version > 11
-        unknown: ""
-      }.freeze
+      def open_default_browser_cmd(local_os, version)
+        case local_os
+        when 'aix'
+          'defaultbrowser'
+        when 'cygwin'
+          'cygstart'
+        when 'darwin'
+          'open'
+        when 'macruby'
+          'open'
+        when 'freebsd'
+          'xdg-open'
+        when 'hpux'
+          ''
+        when 'java'
+          ''
+        when 'dalvik'
+          ''
+        when 'dotnet'
+          ''
+        when 'linux'
+          'xdg-open'
+        when 'mingw32'
+          'start'
+        when 'netbsdelf'
+          'xdg-open'
+        when 'openbsd'
+          'xdg-open'
+        when 'bitrig'
+          'xdg-open'
+        when 'solaris'
+          if version < 11
+            'sdtwebclient'
+          else
+            'xdg-open'
+          end
+        else
+          ''
+        end
+      end
 
       attr_reader :open_browser_cmd
 
       def initialize
-        local_os = Gem::Platform.local.os.to_sym
-        @open_browser_cmd = OPEN_BROWSER_CMDS[local_os]
+        local_os = Gem::Platform.local.os
+        version = Gem::Platform.local.version
+        @open_browser_cmd = open_default_browser_cmd(local_os, version)
       end
 
       def open_page(gem, options)
@@ -93,7 +114,11 @@ module Gem
       end
 
       def open_default_browser(uri)
-        system(@open_browser_cmd, uri)
+        if !@open_browser_cmd.nil?
+          system(@open_browser_cmd, uri)
+        else
+          puts "The command 'web' is not supported on your platform."
+        end
       end
 
     end

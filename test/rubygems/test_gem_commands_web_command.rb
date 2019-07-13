@@ -146,4 +146,18 @@ class TestGemCommandsWebCommand < Gem::TestCase
     @mock.verify
   end
 
+  def test_unsupported_platform
+    @mock.expect(:os, "unsupported_os")
+    @mock.expect(:version, "")
+
+    Gem::Platform.stub :local, @mock do
+      assert_output("The command 'web' is not supported on your platform.\n") do
+        @cmd.handle_options %w[-r rails]
+        @cmd.execute
+      end
+    end
+
+    @mock.verify
+  end
+
 end

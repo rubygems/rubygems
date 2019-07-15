@@ -41,7 +41,7 @@ class Gem::Commands::WebCommand < Gem::Command
   end
 
   def usage
-    "[GEMNAME]"
+    "#{program_name} GEMNAME"
   end
 
   def execute

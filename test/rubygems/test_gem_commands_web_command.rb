@@ -11,7 +11,35 @@ class TestGemCommandsWebCommand < Gem::TestCase
     @mock = MiniTest::Mock.new
   end
 
-  def test_open_browser_command
+  def test_opening_browser_in_aix
+    @mock.expect(:os, "aix")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/defaultbrowser/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_cygwin
+    @mock.expect(:os, "cygwin")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/cygstart/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_darwin
     @mock.expect(:os, "darwin")
     @mock.expect(:version, '')
 
@@ -19,7 +47,158 @@ class TestGemCommandsWebCommand < Gem::TestCase
       open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
                                                                  Gem::Platform.local.version,
                                                                  "http://github.com/ruby/ruby")
-      assert_match /open/, open_browser_cmd
+      assert_match(/open/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_macruby
+    @mock.expect(:os, "macruby")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/open/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_freebsd
+    @mock.expect(:os, "freebsd")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/xdg-open/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_java
+    @mock.expect(:os, "java")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/Desktop.getDesktop\(\).browse/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_dotnet
+    @mock.expect(:os, "dotnet")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/System.Diagnostics.Process.Start/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_linux
+    @mock.expect(:os, "linux")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/xdg-open/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_mingw32
+    @mock.expect(:os, "mingw32")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/start/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_netbsdelf
+    @mock.expect(:os, "netbsdelf")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/xdg-open/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_openbsd
+    @mock.expect(:os, "openbsd")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/xdg-open/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_bitrig
+    @mock.expect(:os, "bitrig")
+    @mock.expect(:version, '')
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/xdg-open/, open_browser_cmd)
+    end
+
+    @mock.verify
+  end
+
+  def test_opening_browser_in_solaris
+    @mock.expect(:os, "solaris")
+    @mock.expect(:version, 10)
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/sdtwebclient/, open_browser_cmd)
+    end
+    @mock.verify
+
+    @mock.expect(:os, "solaris")
+    @mock.expect(:version, 11)
+
+    Gem::Platform.stub :local, @mock do
+      open_browser_cmd = Gem::Web::Executor.new.open_default_browser_cmd(Gem::Platform.local.os,
+                                                                 Gem::Platform.local.version,
+                                                                 "http://github.com/ruby/ruby")
+      assert_match(/xdg-open/, open_browser_cmd)
     end
 
     @mock.verify
@@ -146,18 +325,21 @@ class TestGemCommandsWebCommand < Gem::TestCase
     @mock.verify
   end
 
-  def test_unsupported_platform
-    @mock.expect(:os, "unsupported_os")
-    @mock.expect(:version, "")
+  def test_unsupported_platforms
+    unsupported_platforms = ["hpux", "dalvik", "unsupported_os"]
 
-    Gem::Platform.stub :local, @mock do
-      assert_output("The command 'web' is not supported on your platform.\n") do
-        @cmd.handle_options %w[-r rails]
-        @cmd.execute
+    unsupported_platforms.each do |platform|
+      @mock.expect(:os, platform)
+      @mock.expect(:version, "")
+  
+      Gem::Platform.stub :local, @mock do
+        assert_output("The command 'web' is not supported on your platform.\n") do
+          @cmd.handle_options %w[-r rails]
+          @cmd.execute
+        end
       end
+  
+      @mock.verify
     end
-
-    @mock.verify
   end
-
 end

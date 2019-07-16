@@ -6,7 +6,7 @@ require "rake/testtask"
 require 'psych'
 
 desc "Setup Rubygems dev environment"
-task :setup => ["git_hooks", "bundler:checkout"] do
+task :setup => ["bundler:checkout"] do
   gemspec = Gem::Specification.load(File.expand_path("../rubygems-update.gemspec", __FILE__))
 
   gemspec.dependencies.each do |dep|

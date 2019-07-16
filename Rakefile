@@ -14,6 +14,11 @@ task :setup => ["bundler:checkout"] do
   end
 end
 
+desc "Setup git hooks"
+task :git_hooks do
+  sh "git config core.hooksPath .githooks"
+end
+
 Rake::TestTask.new do |t|
   t.ruby_opts = %w[--disable-gems -w]
   t.ruby_opts << '-rdevkit' if Gem.win_platform?

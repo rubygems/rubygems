@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+HOOKS="pre-commit-rubocop"
+
+for hook in $HOOKS; do
+  if [ -f "$PWD/.githooks/$hook" ]; then
+    echo  "Running pre-commit hooks..."
+    echo  "  > $hook"
+
+    # Execute hook
+    "$PWD/.githooks/$hook"
+
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+  else
+    echo "Error: file $hook not found."
+    exit 1
+  fi
+done
+

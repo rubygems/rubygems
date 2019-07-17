@@ -33,6 +33,8 @@ here: http://guides.rubygems.org/contributing/
     $ rake setup
     $ rake test
 
+> Optional you can configure git hooks with: rake git_hooks
+
 To run commands like `gem install` from the repo:
 
     $ ruby -Ilib bin/gem install

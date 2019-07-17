@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+./util/rubocop $(git diff --cached --name-only)

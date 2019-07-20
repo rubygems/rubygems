@@ -7,49 +7,6 @@ module Gem
   module Web
     class Executor
 
-      def open_default_browser_cmd(local_os, version, uri)
-        case local_os
-        when 'aix'
-          "defaultbrowser #{uri}"
-        when 'cygwin'
-          "cygstart #{uri}"
-        when 'darwin'
-          "open #{uri}"
-        when 'macruby'
-          "open #{uri}"
-        when 'freebsd'
-          "xdg-open #{uri}"
-        when 'hpux'
-          ""
-        when 'java'
-          "if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {" \
-            "Desktop.getDesktop().browse(new URI(#{uri}));" \
-          "}"
-        when 'dalvik'
-          ""
-        when 'dotnet'
-          "System.Diagnostics.Process.Start(#{uri});"
-        when 'linux'
-          "xdg-open #{uri}"
-        when 'mingw32'
-          "start #{uri}"
-        when 'netbsdelf'
-          "xdg-open #{uri}"
-        when 'openbsd'
-          "xdg-open #{uri}"
-        when 'bitrig'
-          "xdg-open #{uri}"
-        when 'solaris'
-          if version < 11
-            "sdtwebclient #{uri}"
-          else
-            "xdg-open #{uri}"
-          end
-        else
-          ""
-        end
-      end
-
       def open_page(gem, options)
         if options[:sourcecode]
           find_page(gem, "source_code_uri")
@@ -108,14 +65,11 @@ module Gem
       end
 
       def open_default_browser(uri)
-        local_os = Gem::Platform.local.os
-        version = Gem::Platform.local.version
-        open_browser_cmd = open_default_browser_cmd(local_os, version, uri)
-
-        if !open_browser_cmd.empty?
-          system(open_browser_cmd)
+        open_browser_cmd = ENV['BROWSER']
+        if open_browser_cmd.nil?
+          puts uri
         else
-          puts "The command 'web' is not supported on your platform."
+          system(open_browser_cmd, uri)
         end
       end
 

@@ -42,6 +42,7 @@ data you will need to change them immediately and yank your gem.
     end
 
     add_key_option
+    add_otp_option
     @host = nil
   end
 

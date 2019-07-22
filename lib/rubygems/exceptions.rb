@@ -9,6 +9,51 @@ class Gem::Exception < RuntimeError; end
 
 class Gem::CommandLineError < Gem::Exception; end
 
+class Gem::UnknownCommandError < Gem::Exception
+
+  class SpellChecker
+
+    attr_reader :error
+
+    def initialize(error)
+      @error = error
+    end
+
+    def corrections
+      @corrections ||=
+        spell_checker.correct(error.command_name).map(&:inspect)
+    end
+
+    private
+
+    def spell_checker
+      DidYouMean::SpellChecker.new(dictionary: error.command_names)
+    end
+
+  end
+
+  attr_reader :command_names, :command_name
+
+  def initialize(command_names, command_name)
+    @command_names = command_names
+    @command_name = command_name
+
+    self.class.correctable
+    super("Unknown command #{command_name}")
+  end
+
+  def self.correctable
+    @correctable ||=
+      begin
+        require 'did_you_mean'
+        ::DidYouMean::SPELL_CHECKERS['Gem::UnknownCommandError'] = SpellChecker
+        prepend ::DidYouMean::Correctable
+      rescue LoadError
+      end
+  end
+
+end
+
 class Gem::DependencyError < Gem::Exception; end
 
 class Gem::DependencyRemovalException < Gem::Exception; end

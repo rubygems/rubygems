@@ -189,7 +189,7 @@ class Gem::CommandManager
       raise Gem::CommandLineError,
             "Ambiguous command #{cmd_name} matches [#{possibilities.join(', ')}]"
     elsif possibilities.empty?
-      raise Gem::CommandLineError, "Unknown command #{cmd_name}"
+      raise Gem::UnknownCommandError.new(command_names, cmd_name)
     end
 
     self[possibilities.first]

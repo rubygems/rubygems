@@ -51,11 +51,19 @@ class TestGemCommandManager < Gem::TestCase
   end
 
   def test_find_command_unknown
-    e = assert_raises Gem::CommandLineError do
+    e = assert_raises Gem::UnknownCommandError do
       @command_manager.find_command 'xyz'
     end
 
     assert_equal 'Unknown command xyz', e.message
+  end
+
+  def test_find_command_unknown_suggestions
+    e = assert_raises Gem::UnknownCommandError do
+      @command_manager.find_command 'pish'
+    end
+
+    assert_equal "Unknown command pish\nDid you mean?  \"push\"", e.message
   end
 
   def test_run_interrupt

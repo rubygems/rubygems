@@ -3,14 +3,16 @@
 # gems in the test suite. Its function is to mirror the +DidYouMean+ API
 # without actually doing anything of consequence.
 module DidYouMean
-  SPELL_CHECKERS = {}
+  SPELL_CHECKERS = {} # rubocop:disable Style/MutableConstant
 
   class SpellChecker
+
     def initialize(dictionary:) end
 
     def correct(word)
       word == 'pish' ? %w[push] : []
     end
+
   end
 
   module Correctable

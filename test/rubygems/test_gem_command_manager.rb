@@ -63,7 +63,12 @@ class TestGemCommandManager < Gem::TestCase
       @command_manager.find_command 'pish'
     end
 
-    assert_equal "Unknown command pish\nDid you mean?  \"push\"", e.message
+    message = 'Unknown command pish'.dup
+    if Gem::UnknownCommandError.correctable
+      message << "\nDid you mean?  \"push\""
+    end
+
+    assert_equal message, e.message
   end
 
   def test_run_interrupt

@@ -48,7 +48,9 @@ class Gem::UnknownCommandError < Gem::Exception
         require 'did_you_mean'
         ::DidYouMean::SPELL_CHECKERS['Gem::UnknownCommandError'] = SpellChecker
         prepend ::DidYouMean::Correctable
+        true
       rescue LoadError
+        false
       end
   end
 

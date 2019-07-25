@@ -21,25 +21,24 @@ class Gem::UnknownCommandError < Gem::Exception
 
     def corrections
       @corrections ||=
-        spell_checker.correct(error.command_name).map(&:inspect)
+        spell_checker.correct(error.unknown_command).map(&:inspect)
     end
 
     private
 
     def spell_checker
-      DidYouMean::SpellChecker.new(dictionary: error.command_names)
+      dictionary = Gem::CommandManager.instance.command_names
+      DidYouMean::SpellChecker.new(dictionary: dictionary)
     end
 
   end
 
-  attr_reader :command_names, :command_name
+  attr_reader :unknown_command
 
-  def initialize(command_names, command_name)
-    @command_names = command_names
-    @command_name = command_name
-
+  def initialize(unknown_command)
     self.class.correctable
-    super("Unknown command #{command_name}")
+    @unknown_command = unknown_command
+    super("Unknown command #{unknown_command}")
   end
 
   def self.correctable

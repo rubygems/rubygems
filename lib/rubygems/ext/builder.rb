@@ -109,8 +109,6 @@ class Gem::Ext::Builder
     @spec       = spec
     @build_args = build_args
     @gem_dir    = spec.full_gem_path
-
-    @ran_rake   = false
   end
 
   ##
@@ -123,12 +121,11 @@ class Gem::Ext::Builder
     when /configure/ then
       Gem::Ext::ConfigureBuilder
     when /rakefile/i, /mkrf_conf/i then
-      @ran_rake = true
       Gem::Ext::RakeBuilder
     when /CMakeLists.txt/ then
       Gem::Ext::CmakeBuilder
     else
-      extension_dir = File.join @gem_dir, File.dirname(extension)
+      extension_dir = File.join @gem_dir, File.dirname(extension.to_s)
 
       message = "No builder for extension '#{extension}'"
       build_error extension_dir, message
@@ -153,27 +150,12 @@ EOF
     raise Gem::Ext::BuildError, message, backtrace
   end
 
-  def build_extension(extension, dest_path) # :nodoc:
+  def build_extension(extension, builder, dest_path) # :nodoc:
     results = []
-
-    # FIXME: Determine if this line is necessary and, if so, why.
-    # Notes:
-    # 1. As far as I can tell, this method is only called by +build_extensions+.
-    # 2. The existence of this line implies +extension+ is, or previously was,
-    #    sometimes +false+ or +nil+.
-    # 3. #1 and #2 combined suggests, but does not confirm, that
-    #    +@specs.extensions+ sometimes contained +false+ or +nil+ values.
-    # 4. Nothing seems to explicitly handle +extension+ being empty,
-    #    which makes me wonder both what it should do and what it does.
-    #
-    # - @duckinator
-    extension ||= '' # I wish I knew why this line existed
 
     extension_dir =
       File.expand_path File.join(@gem_dir, File.dirname(extension))
     lib_dir = File.join @spec.full_gem_path, @spec.raw_require_paths.first
-
-    builder = builder_for extension
 
     begin
       FileUtils.mkdir_p dest_path
@@ -221,9 +203,10 @@ EOF
     FileUtils.rm_f @spec.gem_build_complete_path
 
     @spec.extensions.each do |extension|
-      break if @ran_rake
+      builder = builder_for extension
+      build_extension extension, builder, dest_path
 
-      build_extension extension, dest_path
+      break if builder.is_a? Gem::Ext::RakeBuilder
     end
 
     FileUtils.touch @spec.gem_build_complete_path

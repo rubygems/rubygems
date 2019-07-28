@@ -39,6 +39,27 @@ class Gem::PathSupport
     @spec_cache_dir = @spec_cache_dir.dup.untaint
   end
 
+  ##
+  # Finds the user's home directory.
+  #--
+  # Some comments from the ruby-talk list regarding finding the home
+  # directory:
+  #
+  #   I have HOME, USERPROFILE and HOMEDRIVE + HOMEPATH. Ruby seems
+  #   to be depending on HOME in those code samples. I propose that
+  #   it should fallback to USERPROFILE and HOMEDRIVE + HOMEPATH (at
+  #   least on Win32).
+
+  def self.find_home
+    Dir.home.dup
+  rescue
+    if Gem.win_platform?
+      File.expand_path File.join(ENV['HOMEDRIVE'] || ENV['SystemDrive'], '/')
+    else
+      File.expand_path "/"
+    end
+  end
+
   private
 
   ##

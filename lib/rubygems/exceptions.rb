@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rubygems/deprecate'
+require 'rubygems/unknown_command_spell_checker'
 
 ##
 # Base exception class for RubyGems.  All exception raised by RubyGems are a
@@ -11,46 +12,20 @@ class Gem::CommandLineError < Gem::Exception; end
 
 class Gem::UnknownCommandError < Gem::Exception
 
-  class SpellChecker
-
-    attr_reader :error
-
-    def initialize(error)
-      @error = error
-    end
-
-    def corrections
-      @corrections ||=
-        spell_checker.correct(error.unknown_command).map(&:inspect)
-    end
-
-    private
-
-    def spell_checker
-      dictionary = Gem::CommandManager.instance.command_names
-      DidYouMean::SpellChecker.new(dictionary: dictionary)
-    end
-
-  end
-
   attr_reader :unknown_command
 
   def initialize(unknown_command)
-    self.class.correctable
     @unknown_command = unknown_command
     super("Unknown command #{unknown_command}")
   end
 
-  def self.correctable
-    @correctable ||=
-      begin
-        require 'did_you_mean'
-        ::DidYouMean::SPELL_CHECKERS['Gem::UnknownCommandError'] = SpellChecker
-        prepend ::DidYouMean::Correctable
-        true
-      rescue LoadError
-        false
-      end
+  begin
+    require 'did_you_mean'
+    ::DidYouMean::SPELL_CHECKERS['Gem::UnknownCommandError'] =
+      Gem::UnknownCommandSpellChecker
+
+    prepend ::DidYouMean::Correctable
+  rescue LoadError
   end
 
 end

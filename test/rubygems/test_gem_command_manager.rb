@@ -64,7 +64,7 @@ class TestGemCommandManager < Gem::TestCase
     end
 
     message = 'Unknown command pish'.dup
-    if Gem::UnknownCommandError.correctable
+    if Gem::UnknownCommandError.instance_methods.include?(:corrections)
       message << "\nDid you mean?  \"push\""
     end
 

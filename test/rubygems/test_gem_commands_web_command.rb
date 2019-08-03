@@ -10,21 +10,13 @@ class TestGemCommandsWebCommand < Gem::TestCase
     @cmd = Gem::Commands::WebCommand.new
     @mock = MiniTest::Mock.new
     ENV['BROWSER'] = nil
-    @gem = "rails"
-    response = <<~HEREDOC
-      {
-        "source_code_uri": "http://github.com/rails/rails",
-        "documentation_uri": "http://api.rubyonrails.org",
-        "homepage_uri": "http://rubyonrails.org"
-      }
-    HEREDOC
-
-    @mock.expect(:read, response)
+    @gem = "bestgemever"
   end
 
-  def test_default_option
-    OpenURI.stub :open_uri, @mock do
-      assert_output("http://github.com/rails/rails\n") do
+  def test_default_option_should_be_homepage
+    @mock.expect(:homepage, "https://bestgemever.example.io")
+    Gem::Specification.stub :find_by_name, @mock do
+      assert_output("https://bestgemever.example.io\n") do
         @cmd.handle_options [@gem]
         @cmd.execute
       end
@@ -33,101 +25,111 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_the_documentation
-    OpenURI.stub :open_uri, @mock do
-      assert_output("http://api.rubyonrails.org\n") do
+    metadata = {
+      "documentation_uri" => "https://www.example.info/gems/bestgemever/0.0.1",
+    }
+    @mock.expect(:metadata, metadata)
+
+    Gem::Specification.stub :find_by_name, @mock do
+      assert_output("https://www.example.info/gems/bestgemever/0.0.1\n") do
         @cmd.handle_options ["-d", @gem]
         @cmd.execute
       end
     end
+    @mock.verify
   end
 
   def test_open_the_homepage
-    OpenURI.stub :open_uri, @mock do
-      assert_output("http://rubyonrails.org\n") do
+    @mock.expect(:homepage, "https://bestgemever.example.io")
+
+    Gem::Specification.stub :find_by_name, @mock do
+      assert_output("https://bestgemever.example.io\n") do
         @cmd.handle_options ["-w", @gem]
         @cmd.execute
       end
     end
+    @mock.verify
   end
 
   def test_open_the_source_code
-    OpenURI.stub :open_uri, @mock do
-      assert_output("http://github.com/rails/rails\n") do
+    metadata = {
+      "source_code_uri" => "https://example.com/user/bestgemever"
+    }
+    @mock.expect(:metadata, metadata)
+
+    Gem::Specification.stub :find_by_name, @mock do
+      assert_output("https://example.com/user/bestgemever\n") do
         @cmd.handle_options ["-c", @gem]
         @cmd.execute
       end
     end
+    @mock.verify
   end
 
-  def test_open_github
-    OpenURI.stub :open_uri, @mock do
-      assert_output("http://github.com/rails/rails\n") do
-        @cmd.handle_options ["-g", @gem]
-        @cmd.execute
+  def test_open_when_info_is_missing
+    [
+      ["-c", "This gem has no info about its source code.\n"],
+      ["-d", "This gem has no info about its documentation.\n"],
+    ].each do |test_case|
+      option = test_case[0]
+      error = test_case[1]
+      @mock.expect(:metadata, {})
+      Gem::Specification.stub :find_by_name, @mock do
+        assert_output(error) do
+          @cmd.handle_options [option, @gem]
+          @cmd.execute
+        end
       end
+      @mock.verify
     end
   end
 
   def test_open_rubygems
-    OpenURI.stub :open_uri, @mock do
-      assert_output("https://rubygems.org/gems/rails\n") do
+    Gem::Specification.stub :find_by_name, @mock do
+      assert_output("https://rubygems.org/gems/#{@gem}\n") do
         @cmd.handle_options ["-r", @gem]
         @cmd.execute
       end
     end
-  end
-
-  def test_open_rubytoolbox
-    OpenURI.stub :open_uri, @mock do
-      assert_output("https://www.ruby-toolbox.com/projects/rails\n") do
-        @cmd.handle_options ["-t", @gem]
-        @cmd.execute
-      end
-    end
+    @mock.verify
   end
 
   def test_search_unexisting_gem
-    raises_exception = proc { raise OpenURI::HTTPError.new("error", nil) }
-
-    OpenURI.stub :open_uri, raises_exception do
-      gem = "this-is-an-unexisting-gem"
-      assert_output(/Did not find #{gem} on rubygems.org\n/) do
-        @cmd.handle_options [gem]
-        @cmd.execute
-      end
+    gem = "this-is-an-unexisting-gem"
+    assert_output(/Could not find '#{gem}'/) do
+      @cmd.handle_options [gem]
+      @cmd.execute
     end
   end
 
-  def test_open_rubygems_if_it_could_not_find_page
-    OpenURI.stub :open_uri, @mock do
-      out, _ = capture_io do
-        @cmd.executor.launch_browser("rails", "")
-      end
-      assert_match(/Did not find page for rails, opening RubyGems page instead./, out)
-      assert_match(/https:\/\/rubygems.org\/gems\/rails/, out)
-    end
-  end
+  # def test_open_rubygems_if_it_could_not_find_page
+  #   Gem::Specification.stub :find_by_name, @mock do
+  #     out, _ = capture_io do
+  #       @cmd.executor.launch_browser("rails", "")
+  #     end
+  #     assert_match(/Did not find page for rails, opening RubyGems page instead./, out)
+  #     assert_match(/https:\/\/rubygems.org\/gems\/rails/, out)
+  #   end
+  # end
 
   def test_open_browser_if_env_variable_is_set
-    OpenURI.stub :open_uri, @mock do
-      open_browser_cmd = "open"
-      uri = "http://github.com/rails"
+    open_browser_cmd = "open"
+    uri = "http://github.com/rails"
 
-      env_mock = MiniTest::Mock.new
-      env_mock.expect(:call, open_browser_cmd, ['BROWSER'])
+    env_mock = MiniTest::Mock.new
+    env_mock.expect(:call, open_browser_cmd, ['BROWSER'])
 
-      browser_mock = MiniTest::Mock.new
-      browser_mock.expect(:call, true, [open_browser_cmd, uri])
+    browser_mock = MiniTest::Mock.new
+    browser_mock.expect(:call, true, [open_browser_cmd, uri])
 
-      ENV.stub :[], env_mock do
-        @cmd.executor.stub :system, browser_mock do
-          @cmd.executor.open_default_browser(uri)
-        end
+    ENV.stub :[], env_mock do
+      @cmd.executor.stub :system, browser_mock do
+        @cmd.executor.open_default_browser(uri)
       end
-
-      browser_mock.verify
-      env_mock.verify
     end
+
+    browser_mock.verify
+    env_mock.verify
   end
 
 end

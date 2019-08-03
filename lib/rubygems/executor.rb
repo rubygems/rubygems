@@ -8,65 +8,40 @@ module Gem
     class Executor
 
       def open_page(gem, options)
+        spec = Gem::Specification.find_by_name(gem)
+
         if options[:sourcecode]
-          find_page(gem, "source_code_uri")
+          source_code_uri = spec.metadata["source_code_uri"]
+          if source_code_uri
+            open_default_browser(source_code_uri)
+          else
+            puts("This gem has no info about its source code.")
+          end
         elsif options[:doc]
-          find_page(gem, "documentation_uri")
+          documentation_uri = spec.metadata["documentation_uri"]
+          if documentation_uri
+            open_default_browser(documentation_uri)
+          else
+            puts("This gem has no info about its documentation.")
+          end
         elsif options[:webpage]
-          find_page(gem, "homepage_uri")
+          open_default_browser(spec.homepage)
         elsif options[:rubygems]
           open_rubygems(gem)
-        elsif options[:rubytoolbox]
-          open_rubytoolbox(gem)
-        else
-          find_github(gem)
+        else # The default option is homepage
+          open_default_browser(spec.homepage)
         end
-      end
-
-      def find_page(gem, page)
-        meta = get_api_metadata(gem)
-        launch_browser(gem, meta[page]) unless meta.nil?
-      end
-
-      def find_github(gem)
-        unless (meta = get_api_metadata(gem)).nil?
-          links = [meta["source_code_uri"], meta["documentation_uri"], meta["homepage_uri"]]
-          uri = links.find do |link|
-            !link.nil? && link.match(/http(s?):\/\/(www\.)?github.com\/.*/i)
-          end
-          launch_browser(gem, uri)
-        end
-      end
-
-      def get_api_metadata(gem)
-        begin
-          JSON.parse(open("#{Gem.host}/api/v1/gems/#{gem}.json").read)
-        rescue OpenURI::HTTPError
-          puts "Did not find #{gem} on rubygems.org"
-          nil
-        end
-      end
-
-      def launch_browser(gem, uri)
-        if uri.nil? || uri.empty?
-          puts "Did not find page for #{gem}, opening RubyGems page instead."
-          uri = "https://rubygems.org/gems/#{gem}"
-        end
-
-        open_default_browser(uri)
+      rescue Gem::MissingSpecError => e
+        puts e.message
       end
 
       def open_rubygems(gem)
         open_default_browser("https://rubygems.org/gems/#{gem}")
       end
 
-      def open_rubytoolbox(gem)
-        open_default_browser("https://www.ruby-toolbox.com/projects/#{gem}")
-      end
-
       def open_default_browser(uri)
         open_browser_cmd = ENV['BROWSER']
-        if open_browser_cmd.nil?
+        if open_browser_cmd.nil? || open_browser_cmd.empty?
           puts uri
         else
           system(open_browser_cmd, uri)

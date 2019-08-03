@@ -14,9 +14,6 @@ class Gem::Commands::WebCommand < Gem::Command
       :version => Gem::Requirement.default,
       :latest => false
 
-    add_option("-g", "--github", "Open GitHub page of gem, this searches all urls for a GitHub page. This is the default.") do |v|
-      options[:github] = v
-    end
     add_option("-c", "--sourcecode", "Open sourcecode gem") do |v|
       options[:sourcecode] = v
     end
@@ -28,9 +25,6 @@ class Gem::Commands::WebCommand < Gem::Command
     end
     add_option("-r", "--rubygems", "Open the rubygems page of a gem") do |v|
       options[:rubygems] = v
-    end
-    add_option("-t", "--rubytoolbox", "Open the ruby toolbox page of a gem") do |v|
-      options[:rubytoolbox] = v
     end
 
     @executor = Gem::Web::Executor.new

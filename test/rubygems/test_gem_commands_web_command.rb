@@ -67,15 +67,10 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_when_info_is_missing
-    [
-      ["-c", "This gem has no info about its source code.\n"],
-      ["-d", "This gem has no info about its documentation.\n"],
-    ].each do |test_case|
-      option = test_case[0]
-      error = test_case[1]
+    ["-c", "-d"].each do |option|
       @mock.expect(:metadata, {})
       Gem::Specification.stub :find_by_name, @mock do
-        assert_output(error) do
+        assert_output("This gem does not have this information.\n") do
           @cmd.handle_options [option, @gem]
           @cmd.execute
         end

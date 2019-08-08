@@ -67,10 +67,14 @@ class TestGemCommandsWebCommand < Gem::TestCase
   end
 
   def test_open_when_info_is_missing
-    ["-c", "-d"].each do |option|
+    [["-c", "source_code_uri"], ["-d", "documentation_uri"]].each do |test_case|
+      option = test_case[0]
+      info = test_case[1]
       @mock.expect(:metadata, {})
+      @mock.expect(:name, @gem)
+
       Gem::Specification.stub :find_by_name, @mock do
-        assert_output("This gem does not have this information.\n") do
+        assert_output("Gem '#{@gem}' does not specify #{info}.\n") do
           @cmd.handle_options [option, @gem]
           @cmd.execute
         end
@@ -91,21 +95,13 @@ class TestGemCommandsWebCommand < Gem::TestCase
 
   def test_search_unexisting_gem
     gem = "this-is-an-unexisting-gem"
-    assert_output(/Could not find '#{gem}'/) do
-      @cmd.handle_options [gem]
-      @cmd.execute
+    assert_raises(SystemExit) do
+      assert_output(/Could not find '#{gem}'/) do
+        @cmd.handle_options [gem]
+        @cmd.execute
+      end
     end
   end
-
-  # def test_open_rubygems_if_it_could_not_find_page
-  #   Gem::Specification.stub :find_by_name, @mock do
-  #     out, _ = capture_io do
-  #       @cmd.executor.launch_browser("rails", "")
-  #     end
-  #     assert_match(/Did not find page for rails, opening RubyGems page instead./, out)
-  #     assert_match(/https:\/\/rubygems.org\/gems\/rails/, out)
-  #   end
-  # end
 
   def test_open_browser_if_env_variable_is_set
     open_browser_cmd = "open"
@@ -119,7 +115,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
 
     ENV.stub :[], env_mock do
       @cmd.executor.stub :system, browser_mock do
-        @cmd.executor.open_default_browser(uri)
+        @cmd.executor.open_browser(uri)
       end
     end
 

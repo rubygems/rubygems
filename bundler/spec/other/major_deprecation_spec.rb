@@ -118,7 +118,7 @@ RSpec.describe "major deprecations" do
       )
     end
 
-    pending "should fail with a helpful error", :bundler => "3"
+    pending "fails with a helpful error", :bundler => "3"
   end
 
   context "bundle check --path=" do
@@ -140,7 +140,7 @@ RSpec.describe "major deprecations" do
       )
     end
 
-    pending "should fail with a helpful error", :bundler => "3"
+    pending "fails with a helpful error", :bundler => "3"
   end
 
   context "bundle cache --all" do
@@ -162,7 +162,7 @@ RSpec.describe "major deprecations" do
       )
     end
 
-    pending "should fail with a helpful error", :bundler => "3"
+    pending "fails with a helpful error", :bundler => "3"
   end
 
   describe "bundle config" do
@@ -365,7 +365,7 @@ RSpec.describe "major deprecations" do
           )
         end
 
-        pending "should fail with a helpful error", :bundler => "3"
+        pending "fails with a helpful error", :bundler => "3"
       end
     end
   end
@@ -389,7 +389,7 @@ RSpec.describe "major deprecations" do
       )
     end
 
-    pending "should fail with a helpful error", :bundler => "3"
+    pending "fails with a helpful error", :bundler => "3"
   end
 
   context "when Bundler.setup is run in a ruby script" do
@@ -429,7 +429,7 @@ RSpec.describe "major deprecations" do
                              "capistrano-bundler gem. Use it instead.")
     end
 
-    pending "should fail with a helpful error", :bundler => "3"
+    pending "fails with a helpful error", :bundler => "3"
   end
 
   describe Bundler::Dsl do

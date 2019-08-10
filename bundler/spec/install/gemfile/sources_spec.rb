@@ -128,7 +128,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
           end
         end
 
-        gemfile <<-G
+        install_gemfile <<-G
           source "#{file_uri_for(gem_repo3)}"
           gem "rack-obama" # should come from repo3!
           gem "rack", :source => "#{file_uri_for(gem_repo1)}"
@@ -136,7 +136,6 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
 
       it "installs the gems without any warning" do
-        bundle :install
         expect(err).not_to include("Warning")
         expect(the_bundle).to include_gems("rack-obama 1.0.0", "rack 1.0.0")
       end
@@ -221,7 +220,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
 
         context "and not in any other sources" do
           before do
-            gemfile <<-G
+            install_gemfile <<-G
               source "#{file_uri_for(gem_repo2)}"
               source "#{file_uri_for(gem_repo3)}" do
                 gem "depends_on_rack"
@@ -230,7 +229,6 @@ RSpec.describe "bundle install with gems on multiple sources" do
           end
 
           it "installs from the other source without any warning" do
-            bundle :install
             expect(err).not_to include("Warning")
             expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0")
           end
@@ -388,14 +386,13 @@ RSpec.describe "bundle install with gems on multiple sources" do
           build_gem "not_in_repo1", "1.0.0"
         end
 
-        gemfile <<-G
+        install_gemfile <<-G, :raise_on_error => false
           source "#{file_uri_for(gem_repo3)}"
           gem "not_in_repo1", :source => "#{file_uri_for(gem_repo1)}"
         G
       end
 
       it "does not install the gem" do
-        bundle :install, :raise_on_error => false
         expect(err).to include("Could not find gem 'not_in_repo1'")
       end
     end
@@ -456,14 +453,13 @@ RSpec.describe "bundle install with gems on multiple sources" do
     before do
       system_gems "rack-0.9.1"
 
-      gemfile <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack" # shoud come from repo1!
       G
     end
 
     it "installs the gems without any warning" do
-      bundle :install
       expect(err).not_to include("Warning")
       expect(the_bundle).to include_gems("rack 1.0.0")
     end

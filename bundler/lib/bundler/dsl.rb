@@ -192,7 +192,6 @@ module Bundler
               "      gem 'rails'\n" \
               "    end\n\n"
 
-        raise DeprecatedError, msg if Bundler.feature_flag.disable_multisource?
         SharedHelpers.major_deprecation(2, msg.strip)
       end
 

@@ -96,7 +96,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
 
       it "installs the gems without any warning" do
         bundle :install
-        expect(out).not_to include("Warning")
+        expect(err).not_to include("Warning")
         expect(the_bundle).to include_gems("rack-obama 1.0.0")
         expect(the_bundle).to include_gems("rack 1.0.0", :source => "remote1")
       end
@@ -137,7 +137,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
 
       it "installs the gems without any warning" do
         bundle :install
-        expect(out).not_to include("Warning")
+        expect(err).not_to include("Warning")
         expect(the_bundle).to include_gems("rack-obama 1.0.0", "rack 1.0.0")
       end
     end
@@ -173,7 +173,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
 
           it "installs from the same source without any warning" do
             bundle :install
-            expect(out).not_to include("Warning")
+            expect(err).not_to include("Warning")
             expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0")
           end
         end
@@ -196,7 +196,6 @@ RSpec.describe "bundle install with gems on multiple sources" do
             it "installs from the same source without any warning" do
               bundle :install
 
-              expect(out).not_to include("Warning: the gem 'rack' was found in multiple sources.")
               expect(err).not_to include("Warning: the gem 'rack' was found in multiple sources.")
               expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0")
 
@@ -204,7 +203,6 @@ RSpec.describe "bundle install with gems on multiple sources" do
               system_gems []
               bundle :install
 
-              expect(out).not_to include("Warning: the gem 'rack' was found in multiple sources.")
               expect(err).not_to include("Warning: the gem 'rack' was found in multiple sources.")
               expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0")
             end
@@ -232,7 +230,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
 
           it "installs from the other source without any warning" do
             bundle :install
-            expect(out).not_to include("Warning")
+            expect(err).not_to include("Warning")
             expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0")
           end
         end

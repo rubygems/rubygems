@@ -95,11 +95,60 @@ class TestGemCommandsWebCommand < Gem::TestCase
 
   def test_search_unexisting_gem
     gem = "this-is-an-unexisting-gem"
-    assert_raises(SystemExit) do
-      assert_output(/Could not find '#{gem}'/) do
-        @cmd.handle_options [gem]
-        @cmd.execute
+    assert_output(/Could not find '#{gem}'/) do
+      @cmd.handle_options [gem]
+      @cmd.execute
+    end
+  end
+
+  def test_search_online_if_gem_is_not_installed
+    gem = "this-is-an-unexisting-gem"
+    exception = proc { raise Gem::MissingSpecError.new("error", nil) }
+    spec = MiniTest::Mock.new
+    spec.expect(:homepage, "https://bestgemever.example.io")
+    spec.expect(:nil?, false)
+
+    Gem::Specification.stub :find_by_name, exception do
+      @cmd.executor.stub :fetch_remote_spec, spec do
+        assert_output("https://bestgemever.example.io\n") do
+          @cmd.handle_options [gem]
+          @cmd.execute
+        end
       end
+    end
+
+    spec.verify
+  end
+
+  def test_search_online_for_inexisting_gem
+    gem = "this-is-an-unexisting-gem"
+    exception = proc { raise Gem::MissingSpecError.new("error", nil) }
+
+    Gem::Specification.stub :find_by_name, exception, [gem] do
+      @cmd.executor.stub :fetch_remote_spec, nil do
+        assert_output(/Could not find '#{gem}' in rubygems.org too./) do
+          @cmd.handle_options [gem]
+          @cmd.execute
+        end
+      end
+    end
+  end
+
+  def test_fetch_remote_spec
+    found_spec = [[[util_spec(@gem), "sources"]], []]
+
+    Gem::SpecFetcher.fetcher.stub :spec_for_dependency, found_spec do
+      spec = @cmd.executor.fetch_remote_spec @gem
+      assert_equal @gem, spec.name
+    end
+  end
+
+  def test_fetch_unexisting_remote_spec
+    gem = "this-is-an-unexisting-gem"
+    not_found = [[], []]
+
+    Gem::SpecFetcher.fetcher.stub :spec_for_dependency, not_found do
+      assert_nil @cmd.executor.fetch_remote_spec gem
     end
   end
 

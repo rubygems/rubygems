@@ -11,8 +11,13 @@ module Gem
         begin
           spec = Gem::Specification.find_by_name(gem)
         rescue Gem::MissingSpecError => e
-          puts e.message
-          exit 1
+          spec = fetch_remote_spec(gem)
+
+          if spec.nil?
+            puts e.message
+            puts "Could not find '#{gem}' in rubygems.org too."
+            return
+          end
         end
 
         if options[:sourcecode]
@@ -23,6 +28,18 @@ module Gem
           open_rubygems(gem)
         else # The default option is homepage
           open_browser(spec.homepage)
+        end
+      end
+
+      def fetch_remote_spec(gem)
+        dep = Gem::Dependency.new gem
+        found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dep
+        spec_tuple = found.first
+
+        if spec_tuple.nil? || spec_tuple.empty?
+          nil
+        else
+          spec_tuple.first
         end
       end
 

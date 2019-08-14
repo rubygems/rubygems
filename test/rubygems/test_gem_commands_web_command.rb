@@ -39,18 +39,6 @@ class TestGemCommandsWebCommand < Gem::TestCase
     @mock.verify
   end
 
-  def test_open_the_homepage
-    @mock.expect(:homepage, "https://bestgemever.example.io")
-
-    Gem::Specification.stub :find_by_name, @mock do
-      assert_output("https://bestgemever.example.io\n") do
-        @cmd.handle_options ["-w", @gem]
-        @cmd.execute
-      end
-    end
-    @mock.verify
-  end
-
   def test_open_the_source_code
     metadata = {
       "source_code_uri" => "https://example.com/user/bestgemever"
@@ -104,20 +92,18 @@ class TestGemCommandsWebCommand < Gem::TestCase
   def test_search_online_if_gem_is_not_installed
     gem = "this-is-an-unexisting-gem"
     exception = proc { raise Gem::MissingSpecError.new("error", nil) }
-    spec = MiniTest::Mock.new
-    spec.expect(:homepage, "https://bestgemever.example.io")
-    spec.expect(:nil?, false)
 
     Gem::Specification.stub :find_by_name, exception do
-      @cmd.executor.stub :fetch_remote_spec, spec do
-        assert_output("https://bestgemever.example.io\n") do
+      spec = util_spec(@gem)
+      found_spec = [[[spec, "sources"]], []]
+
+      Gem::SpecFetcher.fetcher.stub :spec_for_dependency, found_spec do
+        assert_output(/#{spec.homepage}/) do
           @cmd.handle_options [gem]
           @cmd.execute
         end
       end
     end
-
-    spec.verify
   end
 
   def test_search_online_for_inexisting_gem
@@ -125,8 +111,9 @@ class TestGemCommandsWebCommand < Gem::TestCase
     exception = proc { raise Gem::MissingSpecError.new("error", nil) }
 
     Gem::Specification.stub :find_by_name, exception, [gem] do
-      @cmd.executor.stub :fetch_remote_spec, nil do
-        assert_output(/Could not find '#{gem}' in rubygems.org too./) do
+      not_found = [[], []]
+      Gem::SpecFetcher.fetcher.stub :spec_for_dependency, not_found do
+        assert_output(/Could not find '#{gem}' in rubygems.org/) do
           @cmd.handle_options [gem]
           @cmd.execute
         end
@@ -138,7 +125,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
     found_spec = [[[util_spec(@gem), "sources"]], []]
 
     Gem::SpecFetcher.fetcher.stub :spec_for_dependency, found_spec do
-      spec = @cmd.executor.fetch_remote_spec @gem
+      spec = Gem::Web::Executor.new.fetch_remote_spec @gem
       assert_equal @gem, spec.name
     end
   end
@@ -148,7 +135,7 @@ class TestGemCommandsWebCommand < Gem::TestCase
     not_found = [[], []]
 
     Gem::SpecFetcher.fetcher.stub :spec_for_dependency, not_found do
-      assert_nil @cmd.executor.fetch_remote_spec gem
+      assert_nil Gem::Web::Executor.new.fetch_remote_spec gem
     end
   end
 
@@ -162,9 +149,10 @@ class TestGemCommandsWebCommand < Gem::TestCase
     browser_mock = MiniTest::Mock.new
     browser_mock.expect(:call, true, [open_browser_cmd, uri])
 
+    executor = Gem::Web::Executor.new
     ENV.stub :[], env_mock do
-      @cmd.executor.stub :system, browser_mock do
-        @cmd.executor.open_browser(uri)
+      executor.stub :system, browser_mock do
+        executor.open_browser(uri)
       end
     end
 

@@ -6,7 +6,6 @@ require 'rubygems/version_option'
 class Gem::Commands::WebCommand < Gem::Command
 
   include Gem::VersionOption
-  attr_reader :executor
 
   def initialize
     super 'web', "Open the gem's homepage",
@@ -19,9 +18,6 @@ class Gem::Commands::WebCommand < Gem::Command
     end
     add_option("-d", "--doc", "Open documentation of gem") do |v|
       options[:doc] = v
-    end
-    add_option("-w", "--webpage", "Open webpage of gem") do |v|
-      options[:webpage] = v
     end
     add_option("-r", "--rubygems", "Open the rubygems page of a gem") do |v|
       options[:rubygems] = v

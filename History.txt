@@ -1,5 +1,11 @@
 # coding: UTF-8
 
+=== 3.0.6 / 2019-08-17
+
+Bug fixes:
+
+* Revert #2813. It broke the compatibility with 3.0.x versions.
+
 === 3.0.5 / 2019-08-16
 
 Minor enhancements:

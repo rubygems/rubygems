@@ -307,6 +307,7 @@ lib/rubygems/commands/unpack_command.rb
 lib/rubygems/commands/update_command.rb
 lib/rubygems/commands/which_command.rb
 lib/rubygems/commands/yank_command.rb
+lib/rubygems/compatibility.rb
 lib/rubygems/config_file.rb
 lib/rubygems/core_ext/kernel_gem.rb
 lib/rubygems/core_ext/kernel_require.rb

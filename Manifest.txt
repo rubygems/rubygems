@@ -412,6 +412,7 @@ lib/rubygems/resolver/specification.rb
 lib/rubygems/resolver/stats.rb
 lib/rubygems/resolver/vendor_set.rb
 lib/rubygems/resolver/vendor_specification.rb
+lib/rubygems/s3_uri_signer.rb
 lib/rubygems/safe_yaml.rb
 lib/rubygems/security.rb
 lib/rubygems/security/policies.rb
@@ -638,7 +639,9 @@ test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem
 util/CL2notes
 util/ci
+util/cops/deprecations.rb
 util/create_certs.rb
+util/create_certs.sh
 util/create_encrypted_key.rb
 util/generate_spdx_license_list.rb
 util/patch_with_prs.rb

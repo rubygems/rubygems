@@ -1,5 +1,64 @@
 # coding: UTF-8
 
+=== 3.0.6 / 2019-08-17
+
+Bug fixes:
+
+* Revert #2813. It broke the compatibility with 3.0.x versions.
+
+=== 3.0.5 / 2019-08-16
+
+Minor enhancements:
+
+* Use env var to configure api key on push. Pull request #2559 by Luis
+  Sagastume.
+* Unswallow uninstall error. Pull request #2707 by David Rodríguez.
+* Expose windows path normalization utility. Pull request #2767 by David
+  Rodríguez.
+* Clean which command. Pull request #2801 by Luis Sagastume.
+* Upgrading S3 source signature to AWS SigV4. Pull request #2807 by
+  Alexander Pakulov.
+* Remove missleading comment, no reason to move Gem.host to Gem::Util.
+  Pull request #2811 by Luis Sagastume.
+* Drop support for 'gem env packageversion'. Pull request #2813 by Luis
+  Sagastume.
+* Take into account just git tracked files in update_manifest rake task.
+  Pull request #2816 by Luis Sagastume.
+* Remove TODO comment, there's no Gem::Dirs constant. Pull request #2819
+  by Luis Sagastume.
+* Remove unused 'raise' from test_case. Pull request #2820 by Luis
+  Sagastume.
+* Move TODO comment to an information comment. Pull request #2821 by Luis
+  Sagastume.
+* Use File#open instead of Kernel#open in stub_specification.rb. Pull
+  request #2834 by Luis Sagastume.
+* Make error code a gemcutter_utilities a constant. Pull request #2844 by
+  Luis Sagastume.
+* Remove FIXME comment related to PathSupport. Pull request #2854 by Luis
+  Sagastume.
+* Use gsub with Hash. Pull request #2860 by Kazuhiro NISHIYAMA.
+* Use the standard RUBY_ENGINE_VERSION instead of JRUBY_VERSION. Pull
+  request #2864 by Benoit Daloze.
+* Do not mutate uri.query during s3 signature creation. Pull request #2874
+  by Alexander Pakulov.
+* Fixup #2844. Pull request #2878 by SHIBATA Hiroshi.
+
+Bug fixes:
+
+* Fix intermittent test error on Appveyor & Travis. Pull request #2568 by
+  MSP-Greg.
+* Extend timeout on assert_self_install_permissions. Pull request #2605 by
+  SHIBATA Hiroshi.
+* Better folder assertions. Pull request #2644 by David Rodríguez.
+* Fix default gem executable installation when folder is not `bin/`. Pull
+  request #2649 by David Rodríguez.
+* Fix gem uninstall behavior. Pull request #2663 by Luis Sagastume.
+* Fix for large values in UID/GID fields in tar archives. Pull request
+  #2780 by Alexey Shein.
+* Fixed task order for release. Pull request #2792 by SHIBATA Hiroshi.
+* Ignore GEMRC variable for test suite. Pull request #2837 by SHIBATA
+  Hiroshi.
+
 === 3.0.4 / 2019-06-14
 
 Minor enhancements:

@@ -1,25 +1,22 @@
 # frozen_string_literal: true
 require 'rubygems/command'
 require 'rubygems/executor'
-require 'rubygems/version_option'
 
 class Gem::Commands::WebCommand < Gem::Command
 
-  include Gem::VersionOption
-
   def initialize
-    super 'web', "Open the gem's homepage",
+    super "web", "Open the gem's homepage",
       :command => nil,
       :version => Gem::Requirement.default,
       :latest => false
 
-    add_option("-c", "--sourcecode", "Open sourcecode gem") do |v|
+    add_option("-c", "--sourcecode", "Open source code for the gem") do |v|
       options[:sourcecode] = v
     end
-    add_option("-d", "--doc", "Open documentation of gem") do |v|
+    add_option("-d", "--doc", "Open documentation for the gem") do |v|
       options[:doc] = v
     end
-    add_option("-r", "--rubygems", "Open the rubygems page of a gem") do |v|
+    add_option("-r", "--rubygems", "Open the rubygems.org page for the gem") do |v|
       options[:rubygems] = v
     end
 

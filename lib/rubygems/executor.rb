@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'open-uri'
 require 'json'
-require 'rubygems/platform'
 
 module Gem
   module Web
@@ -25,13 +24,13 @@ module Gem
           get_info_from_metadata(spec, "documentation_uri")
         elsif options[:rubygems]
           open_rubygems(gem)
-        else # The default option is homepage
+        else
           open_browser(spec.homepage)
         end
       end
 
       def fetch_remote_spec(gem)
-        dep = Gem::Dependency.new gem
+        dep = Gem::Dependency.new(gem)
         found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency(dep)
         spec_tuple = found.first
 
@@ -57,7 +56,7 @@ module Gem
       end
 
       def open_browser(uri)
-        browser = ENV['BROWSER']
+        browser = ENV["BROWSER"]
         if browser.nil? || browser.empty?
           puts uri
         else

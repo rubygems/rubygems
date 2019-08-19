@@ -34,15 +34,11 @@ module Gem
         found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency(dep)
         spec_tuple = found.first
 
-        if spec_tuple.nil? || spec_tuple.empty?
-          nil
-        else
-          spec_tuple.first
-        end
+        spec_tuple.first unless spec_tuple.nil? || spec_tuple.empty?
       end
 
       def get_info_from_metadata(spec, info)
-        uri = spec.metadata[info]
+        uri = spec.metadata[info]&.strip
 
         if uri.nil? || uri.empty?
           puts "Gem '#{spec.name}' does not specify #{info}."

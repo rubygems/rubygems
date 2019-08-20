@@ -156,5 +156,6 @@ it does ensures that any code submitted by you wasn't altered while you were
 transferring it, and proves that it was you who submitted it and not someone
 else.
 
-Please see https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work for
-details on how to generate a signature and automatically sign your commits.
+Please see https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work or
+https://help.github.com/en/articles/signing-commits for details on how to
+to generate a signature and automatically sign your commits.

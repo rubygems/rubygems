@@ -27,9 +27,6 @@ Layout/CommentIndentation:
 Layout/ElseAlignment:
   Enabled: true
 
-MultilineIfThen:
-  Enabled: true
-
 Layout/EmptyLinesAroundAccessModifier:
   Enabled: true
 
@@ -78,6 +75,9 @@ Lint/ParenthesesAsGroupedExpression:
   Enabled: true
 
 Style/MethodDefParentheses:
+  Enabled: true
+
+Style/MultilineIfThen:
   Enabled: true
 
 Style/MutableConstant:

@@ -90,9 +90,10 @@ command to remove old versions.
       return
     end
 
-    hig = highest_installed_gems
-
-    gems_to_update = which_to_update hig, options[:args].uniq
+    gems_to_update = which_to_update(
+      highest_installed_gems,
+      options[:args].uniq
+    )
 
     if options[:explain]
       say "Gems to update:"

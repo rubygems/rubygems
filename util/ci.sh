@@ -31,7 +31,7 @@ case $1 in
     ;;
 
   rubocop)
-    gem install rubocop -v "~>0.71.0"
+    gem install rubocop -v "~>0.74.0"
     exec util/rubocop
 
     ;;

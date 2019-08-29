@@ -73,8 +73,6 @@ command to remove old versions.
       say "Latest version already installed. Done."
       terminate_interaction
     end
-
-    options[:user_install] = false
   end
 
   def check_update_arguments # :nodoc:

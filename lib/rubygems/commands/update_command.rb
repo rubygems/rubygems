@@ -136,6 +136,9 @@ command to remove old versions.
   def highest_installed_gems # :nodoc:
     hig = {} # highest installed gems
 
+    # Get only gem specifications installed as --user-install
+    Gem::Specification.dirs = Gem.user_dir if options[:user_install]
+
     Gem::Specification.each do |spec|
       if hig[spec.name].nil? or hig[spec.name].version < spec.version
         hig[spec.name] = spec

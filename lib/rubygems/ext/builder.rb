@@ -161,18 +161,20 @@ EOF
       FileUtils.mkdir_p dest_path
 
       CHDIR_MUTEX.synchronize do
-        pwd = Dir.getwd
-        Dir.chdir extension_dir
+        maybe_failed_to_chdir_back_to_pwd = false
         begin
-          results = builder.build(extension, dest_path,
-                                  results, @build_args, lib_dir)
+          Dir.chdir extension_dir do
+            results = builder.build(extension, dest_path,
+                                    results, @build_args, lib_dir)
 
-          verbose { results.join("\n") }
-        ensure
-          begin
-            Dir.chdir pwd
-          rescue SystemCallError
+            verbose { results.join("\n") }
+            maybe_failed_to_chdir_back_to_pwd = true
+          end
+        rescue SystemCallError
+          if maybe_failed_to_chdir_back_to_pwd
             Dir.chdir dest_path
+          else
+            raise
           end
         end
       end

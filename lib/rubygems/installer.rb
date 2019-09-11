@@ -305,11 +305,7 @@ class Gem::Installer
     run_pre_install_hooks
 
     # Set loaded_from to ensure extension_dir is correct
-    if @options[:install_as_default]
-      spec.loaded_from = default_spec_file
-    else
-      spec.loaded_from = spec_file
-    end
+    spec.loaded_from = spec_file
 
     # Completely remove any previous gem files
     FileUtils.rm_rf gem_dir
@@ -445,7 +441,7 @@ class Gem::Installer
   #
 
   def default_spec_file
-    File.join gem_home, "specifications", "default", "#{spec.full_name}.gemspec"
+    spec_file
   end
 
   ##
@@ -663,7 +659,9 @@ class Gem::Installer
     @env_shebang         = options[:env_shebang]
     @force               = options[:force]
     @install_dir         = options[:install_dir]
-    @gem_home            = options[:install_dir] || Gem.dir
+    @gem_home            = Gem.dir
+    @gem_home            = Gem.default_gems_dir if options[:install_as_default]
+    @gem_home            = options[:install_dir] if options[:install_dir]
     @plugins_dir         = Gem.plugindir(@gem_home)
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]

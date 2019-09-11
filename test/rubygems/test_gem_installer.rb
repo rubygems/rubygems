@@ -1106,7 +1106,7 @@ gem 'other', version
     default_spec.executables = "executable"
     install_default_gems default_spec
 
-    exe = File.join @gemhome, "bin", "executable"
+    exe = File.join @defaultgemhome, "bin", "executable"
 
     assert_path_exist exe, "default gem's executable not installed"
 
@@ -1116,6 +1116,7 @@ gem 'other', version
     end
 
     util_clear_gems
+    util_clear_gems @defaultgemhome
 
     installer.wrappers = true
 
@@ -1125,6 +1126,9 @@ gem 'other', version
         @newspec = installer.install
       end
     end
+
+    exe = File.join @gemhome, "bin", "executable"
+    assert_path_exist exe, "user installed gem's executable not installed"
 
     e = assert_raise RuntimeError do
       instance_eval File.read(exe)
@@ -2311,13 +2315,11 @@ gem 'other', version
   end
 
   def test_default_gem_without_wrappers
-    installer = setup_base_installer
+    installer = setup_default_installer
 
     FileUtils.rm_rf File.join(Gem.default_dir, "specifications")
 
     installer.wrappers = false
-    installer.options[:install_as_default] = true
-    installer.gem_dir = @spec.gem_dir
 
     use_ui @ui do
       installer.install
@@ -2327,16 +2329,15 @@ gem 'other', version
     installed_exec = File.join @spec.gem_dir, "bin", "executable"
     assert_path_exist installed_exec
 
-    assert_directory_exists File.join(Gem.default_dir, "specifications")
-    assert_directory_exists File.join(Gem.default_dir, "specifications", "default")
+    assert_directory_exists File.join(Gem.default_gems_dir, "specifications")
 
-    default_spec = eval File.read File.join(Gem.default_dir, "specifications", "default", "a-2.gemspec")
+    default_spec = eval File.read File.join(Gem.default_gems_dir, "specifications", "a-2.gemspec")
     assert_equal Gem::Version.new("2"), default_spec.version
     assert_equal ["bin/executable"], default_spec.files
 
-    assert_directory_exists util_inst_bindir
+    assert_directory_exists File.join(Gem.default_gems_dir, "bin")
 
-    installed_exec = File.join util_inst_bindir, "executable"
+    installed_exec = File.join Gem.default_gems_dir, "bin", "executable"
     assert_path_exist installed_exec
 
     wrapper = File.read installed_exec
@@ -2350,19 +2351,17 @@ gem 'other', version
   end
 
   def test_default_gem_with_wrappers
-    installer = setup_base_installer
+    installer = setup_default_installer
 
     installer.wrappers = true
-    installer.options[:install_as_default] = true
-    installer.gem_dir = @spec.gem_dir
 
     use_ui @ui do
       installer.install
     end
 
-    assert_directory_exists util_inst_bindir
+    assert_directory_exists File.join(Gem.default_gems_dir, "bin")
 
-    installed_exec = File.join util_inst_bindir, "executable"
+    installed_exec = File.join Gem.default_gems_dir, "bin", "executable"
     assert_path_exist installed_exec
 
     wrapper = File.read installed_exec
@@ -2378,10 +2377,7 @@ gem 'other', version
 
     @spec.cache_file
 
-    installer = util_installer @spec, @gemhome
-
-    installer.options[:install_as_default] = true
-    installer.gem_dir = @spec.gem_dir
+    installer = Gem::Installer.at @spec.cache_file, :install_as_default => true
 
     use_ui @ui do
       installer.install
@@ -2391,10 +2387,9 @@ gem 'other', version
     installed_exec = File.join @spec.gem_dir, "exe", "executable"
     assert_path_exist installed_exec
 
-    assert_directory_exists File.join(Gem.default_dir, "specifications")
-    assert_directory_exists File.join(Gem.default_dir, "specifications", "default")
+    assert_directory_exists File.join(Gem.default_gems_dir, "specifications")
 
-    default_spec = eval File.read File.join(Gem.default_dir, "specifications", "default", "c-2.gemspec")
+    default_spec = eval File.read File.join(Gem.default_gems_dir, "specifications", "c-2.gemspec")
     assert_equal Gem::Version.new("2"), default_spec.version
     assert_equal ["exe/executable"], default_spec.files
   end
@@ -2409,9 +2404,8 @@ gem 'other', version
     end
 
     assert_directory_exists File.join("#{@gemhome}2", "specifications")
-    assert_directory_exists File.join("#{@gemhome}2", "specifications", "default")
 
-    default_spec = eval File.read File.join("#{@gemhome}2", "specifications", "default", "a-2.gemspec")
+    default_spec = eval File.read File.join("#{@gemhome}2", "specifications", "a-2.gemspec")
     assert_equal Gem::Version.new("2"), default_spec.version
     assert_equal ["bin/executable"], default_spec.files
   end

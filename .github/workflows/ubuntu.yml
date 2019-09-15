@@ -9,6 +9,13 @@ jobs:
       matrix:
         ruby: [ '2.3.x', '2.4.x', '2.5.x', '2.6.x' ]
         test_tool: [ "rubygems", "bundler" ]
+        rgv: ["master"]
+        bdv: ["2.1.0.pre.1"]
+        include:
+          - ruby: "2.6.x"
+            test_tool: "bundler"
+            rgv: ".."
+            bdv: "master"
     steps:
       - uses: actions/checkout@master
       - run: git submodule update -i
@@ -24,3 +31,5 @@ jobs:
         run: util/ci.sh script
         env:
           TEST_TOOL: ${{ matrix.test_tool }}
+          RGV: ${{ matrix.rgv }}
+          BDV: ${{ matrix.bdv }}

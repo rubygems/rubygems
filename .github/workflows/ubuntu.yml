@@ -21,6 +21,7 @@ jobs:
         run: |
           chmod go-w $HOME
           sudo chmod -R go-w /usr/share
+          sudo chmod -R go-w /opt/hostedtoolcache/Ruby
       - name: Setup ruby
         uses: actions/setup-ruby@v1
         with:

@@ -8,7 +8,6 @@ jobs:
     strategy:
       matrix:
         ruby: [ '2.3.x', '2.4.x', '2.5.x', '2.6.x' ]
-        test_tool: [ "rubygems", "bundler" ]
     steps:
       - uses: actions/checkout@master
       - run: git submodule update -i
@@ -17,10 +16,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install Dependencies
-        run: util/ci.sh before_script
-        env:
-          TEST_TOOL: ${{ matrix.test_tool }}
+        run: gem install "rake:>=10.4.2" "minitest:>=5.4.3" --conservative --no-document
       - name: Run Test
-        run: util/ci.sh script
-        env:
-          TEST_TOOL: ${{ matrix.test_tool }}
+        run: rake test

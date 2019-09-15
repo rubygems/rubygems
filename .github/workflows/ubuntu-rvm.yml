@@ -21,6 +21,7 @@ jobs:
       run: |
         chmod go-w $HOME
         sudo chmod -R go-w /usr/share
+        sudo chmod -R go-w /opt/hostedtoolcache/Ruby
     - name: Set up RVM
       run: |
         curl -sSL https://get.rvm.io | bash

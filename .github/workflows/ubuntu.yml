@@ -11,6 +11,7 @@ jobs:
         test_tool: [ "rubygems", "bundler" ]
     steps:
       - uses: actions/checkout@master
+      - run: git submodule update -i
       - name: Setup ruby
         uses: actions/setup-ruby@v1
         with:

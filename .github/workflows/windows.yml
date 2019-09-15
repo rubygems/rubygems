@@ -10,6 +10,7 @@ jobs:
         ruby: [ '2.3.x', '2.4.x', '2.5.x', '2.6.x' ]
     steps:
       - uses: actions/checkout@master
+      - run: git submodule update -i
       - name: Setup ruby
         uses: actions/setup-ruby@v1
         with:

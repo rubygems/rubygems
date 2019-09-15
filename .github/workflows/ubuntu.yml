@@ -27,6 +27,8 @@ jobs:
           TEST_TOOL: ${{ matrix.test_tool }}
       - name: Run Lint
         run: util/ci.sh rubocop
+        env:
+          TEST_TOOL: rubygems
       - name: Run Test
         run: util/ci.sh script
         env:

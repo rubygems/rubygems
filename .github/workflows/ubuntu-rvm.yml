@@ -17,6 +17,10 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - run: git submodule update -i
+    - name: Fixed world writable dirs
+      run: |
+        chmod go-w $HOME
+        sudo chmod -R go-w /usr/share
     - name: Set up RVM
       run: |
         curl -sSL https://get.rvm.io | bash

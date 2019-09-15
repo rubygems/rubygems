@@ -1,4 +1,6 @@
-on: pull_request
+name: macos
+
+on: [push]
 
 jobs:
   macos:

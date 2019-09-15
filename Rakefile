@@ -10,7 +10,7 @@ task :setup => ["bundler:checkout"] do
   gemspec = Gem::Specification.load(File.expand_path("../rubygems-update.gemspec", __FILE__))
 
   gemspec.dependencies.each do |dep|
-    sh "gem install '#{dep.name}:#{dep.requirement.to_s}' --conservative --no-document --forxe"
+    sh "gem install '#{dep.name}:#{dep.requirement.to_s}' --conservative --no-document --force"
   end
 end
 

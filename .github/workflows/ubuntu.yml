@@ -25,6 +25,8 @@ jobs:
         run: util/ci.sh before_script
         env:
           TEST_TOOL: ${{ matrix.test_tool }}
+      - name: Run Lint
+        run: util/ci.sh rubocop
       - name: Run Test
         run: util/ci.sh script
         env:

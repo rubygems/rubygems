@@ -15,8 +15,7 @@ jobs:
       - name: Setup ruby
         uses: actions/setup-ruby@v1
         with:
-          version: ${{ matrix.ruby }}
-          architecture: 'x64'
+          ruby-version: ${{ matrix.ruby }}
       - name: Install Dependencies
         run: util/ci.sh before_script
         env:

@@ -14,8 +14,7 @@ jobs:
       - name: Setup ruby
         uses: actions/setup-ruby@v1
         with:
-          version: ${{ matrix.ruby }}
-          architecture: 'x64'
+          ruby-version: ${{ matrix.ruby }}
       - name: Install Dependencies
         run: gem install "rake:>=10.4.2" "minitest:>=5.4.3" --conservative --no-document
       - name: Run Test

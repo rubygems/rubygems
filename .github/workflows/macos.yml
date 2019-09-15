@@ -6,6 +6,7 @@ jobs:
     strategy:
       matrix:
         ruby: [ '2.3.x', '2.4.x', '2.5.x', '2.6.x' ]
+        test_tool: [ "rubygems", "bundler" ]
     steps:
       - uses: actions/checkout@master
       - name: Setup ruby
@@ -15,7 +16,9 @@ jobs:
           architecture: 'x64'
       - name: Install Dependencies
         run: util/ci.sh before_script
+        env:
+          TEST_TOOL: ${{ matrix.test_tool }}
       - name: Run Test
         run: util/ci.sh script
         env:
-          TEST_TOOL: "rubygems"
+          TEST_TOOL: ${{ matrix.test_tool }}

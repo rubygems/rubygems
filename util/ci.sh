@@ -38,7 +38,7 @@ case $1 in
       exec rake test
     else
       cd bundler
-      exec rake spec:travis -t
+      exec rake spec -t
     fi
 
     ;;

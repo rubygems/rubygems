@@ -7,7 +7,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        ruby: [ '2.3.x', '2.4.x', '2.5.x', '2.6.x' ]
+        ruby: [ '2.4.x', '2.5.x', '2.6.x' ]
     steps:
       - uses: actions/checkout@master
       - run: git submodule update -i

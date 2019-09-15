@@ -12,10 +12,10 @@ jobs:
         rgv: ["master"]
         bdv: ["2.1.0.pre.1"]
         include:
-          - ruby: "ruby-head"
-            test_tool: "bundler"
-            rgv: ".."
-            bdv: "master"
+          - ruby: ruby-head
+            test_tool: bundler
+            rgv: ..
+            bdv: master
     steps:
     - uses: actions/checkout@master
     - run: git submodule update -i

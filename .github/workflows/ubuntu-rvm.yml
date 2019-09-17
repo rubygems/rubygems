@@ -14,6 +14,9 @@ jobs:
             test_tool: bundler
             rgv: ..
             bdv: master
+        exclude:
+          - ruby: jruby-9.2.8.0
+            test_tool: bundler
     steps:
     - uses: actions/checkout@master
     - run: git submodule update -i

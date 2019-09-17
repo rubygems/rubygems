@@ -1,4 +1,4 @@
-name: ubuntu
+name: ubuntu-lint
 
 on: [push]
 
@@ -15,7 +15,7 @@ jobs:
       - name: Install Dependencies
         run: util/ci.sh before_script
         env:
-          TEST_TOOL: ${{ matrix.test_tool }}
+          TEST_TOOL: rubygems
       - name: Run Lint
         run: util/ci.sh rubocop
         env:

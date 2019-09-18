@@ -12,10 +12,6 @@ case $1 in
   before_script)
     if [ "$TEST_TOOL" = "rubygems" ]
     then
-      gemhome=$(gem env home)
-
-      ruby -I lib bin/gem uninstall executable-hooks gem-wrappers bundler-unload -x --force -i "$gemhome@global"
-
       exec rake setup
     else
       cd bundler
@@ -42,7 +38,7 @@ case $1 in
       exec rake test
     else
       cd bundler
-      exec rake spec:travis -t
+      exec rake spec -t
     fi
 
     ;;

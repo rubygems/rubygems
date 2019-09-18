@@ -1,0 +1,21 @@
+name: windows
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        ruby: [ '2.4.x', '2.5.x', '2.6.x' ]
+    steps:
+      - uses: actions/checkout@master
+      - run: git submodule update -i
+      - name: Setup ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install Dependencies
+        run: gem install "rake:>=10.4.2" "minitest:>=5.4.3" --conservative --no-document
+      - name: Run Test
+        run: rake test

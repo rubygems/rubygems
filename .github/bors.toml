@@ -1,6 +1,5 @@
 status = [
-  "windows / build (2.6.x) (push)",
-  "ubuntu / build (2.6.x, rubygems) (push)".
+  "continuous-integration/travis-ci/push"
 ]
 
 timeout-sec = 14400

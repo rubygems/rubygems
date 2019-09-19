@@ -1,0 +1,44 @@
+version: '{build}'
+branches:
+  only:
+  - master
+  - auto
+  - /[\d.]+/
+skip_tags: true
+clone_depth: 10
+
+environment:
+  matrix:
+  - ruby_version: 23-x64
+  - ruby_version: 24-x64
+  - ruby_version: 25-x64
+  - ruby_version: 26-x64
+  - ruby_version: _trunk
+
+init:
+  - set PATH=C:/Ruby%ruby_version%/bin;C:/Program Files/7-Zip;C:/Program Files/AppVeyor/BuildAgent;C:/git/cmd;C:/Program Files (x86)/GNU/GnuPG/pub;C:/Windows/system32;C:\Windows;
+  - mklink /j C:\git "C:\Program Files\Git"
+  - set GIT=C:/git/cmd/git.exe
+  - ps: >-
+      if ($env:ruby_version -eq '_trunk') {
+        $trunk_uri = 'https://ci.appveyor.com/api/projects/MSP-Greg/ruby-loco/artifacts/ruby_trunk.7z'
+        (New-Object Net.WebClient).DownloadFile($trunk_uri, 'C:\ruby_trunk.7z')
+        7z.exe x C:\ruby_trunk.7z -oC:\Ruby_trunk
+      }
+
+install:
+  - git submodule update --init --recursive
+  - gem install "rake:>=10.4.2" "minitest:>=5.4.3" --conservative --no-document
+
+test_script:
+  - rake test
+
+on_finish:
+  - ruby -v
+
+matrix:
+  allow_failures:
+    - ruby_version: _trunk
+
+build: off
+deploy: off

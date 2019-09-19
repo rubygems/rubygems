@@ -1,0 +1,48 @@
+language: ruby
+dist: bionic
+branches:
+  only:
+    - master
+    - staging
+    - trying
+    - /^[\d.]+$/
+    - /.+-stable$/
+env:
+  - "TEST_TOOL=rubygems"
+  - "TEST_TOOL=bundler RGV=master"
+rvm:
+  - 2.3.8
+  - 2.4.7
+  - 2.5.6
+  - 2.6.4
+jobs:
+  include:
+    - stage: linting
+      rvm: 2.6.4
+      env: "TEST_TOOL=rubygems"
+      script: util/ci.sh rubocop
+    - stage: test
+      rvm: 2.6.4
+      env: "TEST_TOOL=bundler RGV=.. BDV=master"
+    - stage: test
+      rvm: jruby-9.2.8.0
+      env: "TEST_TOOL=rubygems"
+    - stage: test
+      rvm: ruby-head
+      env: "TEST_TOOL=rubygems"
+    - stage: test
+      rvm: ruby-head
+      env: "TEST_TOOL=bundler RGV=.. BDV=master"
+stages:
+  - linting
+  - test
+before_script:
+  - util/ci.sh before_script
+script:
+  - util/ci.sh script
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+      env: "TEST_TOOL=rubygems"
+    - rvm: ruby-head
+      env: "TEST_TOOL=bundler RGV=.. BDV=master"

@@ -21,7 +21,7 @@ case $1 in
         git reset --hard "origin/$BDV"
       fi
 
-      exec rake spec:travis:deps
+      exec bin/rake spec:travis:deps
     fi
 
     ;;
@@ -38,7 +38,7 @@ case $1 in
       exec rake test
     else
       cd bundler
-      exec rake spec -t
+      exec bin/rake spec -t
     fi
 
     ;;

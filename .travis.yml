@@ -9,7 +9,7 @@ branches:
     - /.+-stable$/
 env:
   - "TEST_TOOL=rubygems"
-  - "TEST_TOOL=bundler RGV=master"
+  - "TEST_TOOL=bundler RGV=.."
 rvm:
   - 2.6.4
 jobs:

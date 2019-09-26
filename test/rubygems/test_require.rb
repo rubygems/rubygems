@@ -517,18 +517,20 @@ class TestGemRequire < Gem::TestCase
       end
     end
 
-    def test_no_other_behavioral_changes_with_kernel_warn
-      lib = File.realpath("../../../lib", __FILE__)
-      Dir.mktmpdir("warn_test") do |dir|
-        File.write(dir + "/main.rb", "warn({x:1}, {y:2}, [])\n")
-        _, err = capture_subprocess_io do
-          system(@@ruby, "-w", "-rpp", "--disable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
+    if RUBY_VERSION >= "2.7"
+      def test_no_other_behavioral_changes_with_kernel_warn
+        lib = File.realpath("../../../lib", __FILE__)
+        Dir.mktmpdir("warn_test") do |dir|
+          File.write(dir + "/main.rb", "warn({x:1}, {y:2}, [])\n")
+          _, err = capture_subprocess_io do
+            system(@@ruby, "-w", "-rpp", "--disable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
+          end
+          assert_match(/main.rb:1: warning: The last argument is used as the keyword parameter/, err)
+          _, err = capture_subprocess_io do
+            system(@@ruby, "-w", "-rpp", "--enable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
+          end
+          assert_match(/main.rb:1: warning: The last argument is used as the keyword parameter/, err)
         end
-        assert_match(/main.rb:1: warning: The last argument is used as the keyword parameter/, err)
-        _, err = capture_subprocess_io do
-          system(@@ruby, "-w", "-rpp", "--enable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
-        end
-        assert_match(/main.rb:1: warning: The last argument is used as the keyword parameter/, err)
       end
     end
   end

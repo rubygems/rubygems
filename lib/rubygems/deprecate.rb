@@ -75,6 +75,7 @@ module Gem::Deprecate
       def self.method_added(method_name)
         if method_name == @@command_method
           return if @@command_found
+
           @@command_found = true
 
           old = "_deprecated_#{method_name}"
@@ -84,7 +85,6 @@ module Gem::Deprecate
             send old, *args, &block
 
             klass = self.kind_of? Module
-            target = klass ? "#{self}." : "#{self.class}#"
             msg = [ "\nNOTE: #{self.command} command is deprecated",
                     ". It will be removed on or after %4d-%02d-01.\n" % [@@deprecation_year, @@deprecation_month],
             ]

@@ -65,6 +65,37 @@ module Gem::Deprecate
     end
   end
 
+  def deprecate_command(year, month)
+    class_eval do
+      @@deprecation_year  = year
+      @@deprecation_month = month
+      @@command_method    = :execute
+      @@command_found     = false
+
+      def self.method_added(method_name)
+        if method_name == @@command_method
+          return if @@command_found
+          @@command_found = true
+
+          old = "_deprecated_#{method_name}"
+          alias_method old, method_name
+
+          define_method method_name do |*args, &block|
+            send old, *args, &block
+
+            klass = self.kind_of? Module
+            target = klass ? "#{self}." : "#{self.class}#"
+            msg = [ "\nNOTE: #{self.command} command is deprecated",
+                    ". It will be removed on or after %4d-%02d-01.\n" % [@@deprecation_year, @@deprecation_month],
+            ]
+
+            warn "#{msg.join}" unless Gem::Deprecate.skip
+          end
+        end
+      end
+    end
+  end
+
   module_function :deprecate, :skip_during
 
 end

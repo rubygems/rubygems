@@ -77,4 +77,31 @@ class TestDeprecate < Gem::TestCase
     assert_match(/on or after 2099-03-01/, err)
   end
 
+  require 'rubygems/command'
+  class FooCommand < Gem::Command
+
+    extend Gem::Deprecate
+
+    deprecate_command(2099, 4)
+
+    def initialize
+      super("foo", "foo command does pew pew")
+    end
+
+    def execute
+      puts "pew pew!"
+    end
+
+  end
+
+  def test_deprecate_command
+    out, err = capture_io do
+      foo = FooCommand.new
+      foo.execute
+    end
+
+    assert_equal "pew pew!\n", out
+    assert_match(/NOTE: foo command is deprecated. It will be removed on or after 2099-04-01.\n/, err)
+  end
+
 end

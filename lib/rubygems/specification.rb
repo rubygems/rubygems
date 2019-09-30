@@ -1184,7 +1184,7 @@ class Gem::Specification < Gem::BasicSpecification
   # This method may take some time to return as it must check each local gem
   # against the server's index.
 
-  def self.outdated_and_latest_version
+  def self.outdated_and_latest_version(show_all_versions=false)
     return enum_for __method__ unless block_given?
 
     # TODO: maybe we should switch to rubygems' version service?
@@ -1199,8 +1199,14 @@ class Gem::Specification < Gem::BasicSpecification
 
       latest_remote = remotes.sort.last
 
-      yield [local_spec, latest_remote] if
-        latest_remote and local_spec.version < latest_remote
+      if show_all_versions
+        yield [local_spec, remotes]
+      else
+        if latest_remote && local_spec.version < latest_remote
+          yield [local_spec, latest_remote]
+        end
+      end
+
     end
   end
 

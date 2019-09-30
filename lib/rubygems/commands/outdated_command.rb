@@ -26,7 +26,7 @@ update the gems with the update or install commands.
   end
 
   def execute
-    Gem::Specification.outdated_and_latest_version.each do |spec, remote_version|
+    Gem::Specification.outdated_and_latest_version do |spec, remote_version|
       say "#{spec.name} (#{spec.version} < #{remote_version})"
     end
   end

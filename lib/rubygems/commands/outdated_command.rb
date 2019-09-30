@@ -14,6 +14,11 @@ class Gem::Commands::OutdatedCommand < Gem::Command
 
     add_local_remote_options
     add_platform_option
+
+    add_option('all', '--all',
+               'List all newer versions of each outdated gem') do |value, options|
+      options[:all_outdated] = value
+    end
   end
 
   def description # :nodoc:

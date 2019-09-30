@@ -1202,8 +1202,6 @@ class Gem::Specification < Gem::BasicSpecification
       yield [local_spec, latest_remote] if
         latest_remote and local_spec.version < latest_remote
     end
-
-    nil
   end
 
   ##

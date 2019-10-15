@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-=== 3.1.0.pre2 / 2018-12-19
+=== 3.1.0.pre2 / 2019-10-15
 
 Minor enhancements:
 
@@ -9,7 +9,7 @@ Minor enhancements:
 * Time comparison around date boundary. Pull request #2944 by Nobuyoshi
   Nakada.
 
-=== 3.1.0.pre1 / 2018-12-19
+=== 3.1.0.pre1 / 2019-10-08
 
 Major enhancements:
 

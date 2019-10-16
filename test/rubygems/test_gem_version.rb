@@ -220,6 +220,8 @@ class TestGemVersion < Gem::TestCase
   def test_frozen_version
     v = v('1.freeze.test').freeze
     assert_less_than v, v('1')
+    assert_version_equal v('1'), v.release
+    assert_version_equal v('2'), v.bump
   end
 
   # Asserts that +version+ is a prerelease.

@@ -374,6 +374,12 @@ class Gem::Version
       end.reduce(&:concat)
   end
 
+  def freeze
+    prerelease?
+    canonical_segments
+    super
+  end
+
   protected
 
   def _version

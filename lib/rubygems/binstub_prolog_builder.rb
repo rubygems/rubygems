@@ -2,18 +2,13 @@
 
 class Gem::BinstubPrologBuilder
 
-  def initialize(cmdtype)
-    @cmdtype = cmdtype
-  end
-
   def prolog(shebang)
     shebang.sub!(/\r$/, '')
-    script = prolog_script[@cmdtype]
     shebang.sub!(/\A(\#!.*?ruby\b)?/) do
-      if script.end_with?("\n")
-        script + ($1 || "#!ruby\n")
+      if prolog_script.end_with?("\n")
+        prolog_script + ($1 || "#!ruby\n")
       else
-        $1 ? script : "#{script}\n"
+        $1 ? prolog_script : "#{prolog_script}\n"
       end
     end
     shebang
@@ -45,26 +40,18 @@ class Gem::BinstubPrologBuilder
 
     script << %Q[exec "$bindir/#{ruby_install_name}" "-x" "$0" "$@"\n]
 
-    result = {}
-    result["exe"] = "#!#{bindir}/#{ruby_install_name}"
-    result["cmd"] = <<~EOS
-      :""||{ ""=> %q<-*- ruby -*-
-      @"%~dp0#{ruby_install_name}" -x "%~f0" %*
-      @exit /b %ERRORLEVEL%
-      };{#\n#{script.gsub(/(?=\n)/, ' #')}>,\n}
-    EOS
-
-    result.default = (load_relative || /\s/ =~ bindir) ?
-                              <<~EOS : result["exe"]
-      #!/bin/sh
-      # -*- ruby -*-
-      _=_\\
-      =begin
-      #{script.chomp}
-      =end
-    EOS
-
-    result
+    if load_relative || /\s/ =~ bindir
+      <<~EOS
+        #!/bin/sh
+        # -*- ruby -*-
+        _=_\\
+        =begin
+        #{script.chomp}
+        =end
+      EOS
+    else
+      "#!#{bindir}/#{ruby_install_name}"
+    end
   end
 
 end

@@ -625,7 +625,7 @@ class Gem::Installer
       "#!#{which}"
     elsif opts
       require_relative 'binstub_prolog_builder'
-      Gem::BinstubPrologBuilder.new(cmdtype).prolog(+"#{shebang}#{opts}")
+      Gem::BinstubPrologBuilder.new.prolog(+"#{shebang}#{opts}")
     elsif not ruby_name
       "#!#{Gem.ruby}#{opts}"
     else
@@ -967,14 +967,6 @@ TEXT
   def write_cache_file
     cache_file = File.join gem_home, 'cache', spec.file_name
     @package.copy_to cache_file
-  end
-
-  private
-
-  def cmdtype
-    if File::ALT_SEPARATOR == '\\'
-      File.exist?("rubystub.exe") ? 'exe' : 'cmd'
-    end
   end
 
 end

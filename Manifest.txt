@@ -17,6 +17,7 @@ bundler/CHANGELOG.md
 bundler/CODE_OF_CONDUCT.md
 bundler/LICENSE.md
 bundler/README.md
+bundler/UPGRADING.md
 bundler/bundler.gemspec
 bundler/exe/bundle
 bundler/exe/bundler

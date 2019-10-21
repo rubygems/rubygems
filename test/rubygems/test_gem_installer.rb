@@ -1690,13 +1690,30 @@ gem 'other', version
   end
 
   def test_shebang_arguments
-    installer = setup_base_installer
+    load_relative 'no' do
+      installer = setup_base_installer
 
-    util_make_exec @spec, "#!/usr/bin/ruby -ws"
+      util_make_exec @spec, "#!/usr/bin/ruby -ws"
 
-    shebang = installer.shebang 'executable'
+      shebang = installer.shebang 'executable'
 
-    assert_equal "#!#{Gem.ruby} -ws", shebang
+      assert_equal "#!#{Gem.ruby} -ws", shebang
+    end
+  end
+
+  def test_shebang_arguments_with_load_relative
+    load_relative 'yes' do
+      installer = setup_base_installer
+
+      util_make_exec @spec, "#!/usr/bin/ruby -ws"
+
+      shebang = installer.shebang 'executable'
+
+      shebang_lines = shebang.split "\n"
+
+      assert_equal "#!/bin/sh", shebang_lines.shift
+      assert_includes shebang_lines, "#!#{Gem.ruby} -ws"
+    end
   end
 
   def test_shebang_empty
@@ -1719,13 +1736,30 @@ gem 'other', version
   end
 
   def test_shebang_env_arguments
-    installer = setup_base_installer
+    load_relative 'no' do
+      installer = setup_base_installer
 
-    util_make_exec @spec, "#!/usr/bin/env ruby -ws"
+      util_make_exec @spec, "#!/usr/bin/env ruby -ws"
 
-    shebang = installer.shebang 'executable'
+      shebang = installer.shebang 'executable'
 
-    assert_equal "#!#{Gem.ruby} -ws", shebang
+      assert_equal "#!#{Gem.ruby} -ws", shebang
+    end
+  end
+
+  def test_shebang_env_arguments_with_load_relative
+    load_relative 'yes' do
+      installer = setup_base_installer
+
+      util_make_exec @spec, "#!/usr/bin/env ruby -ws"
+
+      shebang = installer.shebang 'executable'
+
+      shebang_lines = shebang.split "\n"
+
+      assert_equal "#!/bin/sh", shebang_lines.shift
+      assert_includes shebang_lines, "#!#{Gem.ruby} -ws"
+    end
   end
 
   def test_shebang_env_shebang
@@ -1753,13 +1787,30 @@ gem 'other', version
   end
 
   def test_shebang_nested_arguments
-    installer = setup_base_installer
+    load_relative 'no' do
+      installer = setup_base_installer
 
-    util_make_exec @spec, "#!/opt/local/ruby/bin/ruby -ws"
+      util_make_exec @spec, "#!/opt/local/ruby/bin/ruby -ws"
 
-    shebang = installer.shebang 'executable'
+      shebang = installer.shebang 'executable'
 
-    assert_equal "#!#{Gem.ruby} -ws", shebang
+      assert_equal "#!#{Gem.ruby} -ws", shebang
+    end
+  end
+
+  def test_shebang_nested_arguments_with_load_relative
+    load_relative 'yes' do
+      installer = setup_base_installer
+
+      util_make_exec @spec, "#!/opt/local/ruby/bin/ruby -ws"
+
+      shebang = installer.shebang 'executable'
+
+      shebang_lines = shebang.split "\n"
+
+      assert_equal "#!/bin/sh", shebang_lines.shift
+      assert_includes shebang_lines, "#!#{Gem.ruby} -ws"
+    end
   end
 
   def test_shebang_version
@@ -1773,13 +1824,30 @@ gem 'other', version
   end
 
   def test_shebang_version_arguments
-    installer = setup_base_installer
+    load_relative 'no' do
+      installer = setup_base_installer
 
-    util_make_exec @spec, "#!/usr/bin/ruby18 -ws"
+      util_make_exec @spec, "#!/usr/bin/ruby18 -ws"
 
-    shebang = installer.shebang 'executable'
+      shebang = installer.shebang 'executable'
 
-    assert_equal "#!#{Gem.ruby} -ws", shebang
+      assert_equal "#!#{Gem.ruby} -ws", shebang
+    end
+  end
+
+  def test_shebang_version_arguments_with_load_relative
+    load_relative 'yes' do
+      installer = setup_base_installer
+
+      util_make_exec @spec, "#!/usr/bin/ruby18 -ws"
+
+      shebang = installer.shebang 'executable'
+
+      shebang_lines = shebang.split "\n"
+
+      assert_equal "#!/bin/sh", shebang_lines.shift
+      assert_includes shebang_lines, "#!#{Gem.ruby} -ws"
+    end
   end
 
   def test_shebang_version_env
@@ -1793,13 +1861,30 @@ gem 'other', version
   end
 
   def test_shebang_version_env_arguments
-    installer = setup_base_installer
+    load_relative 'no' do
+      installer = setup_base_installer
 
-    util_make_exec @spec, "#!/usr/bin/env ruby18 -ws"
+      util_make_exec @spec, "#!/usr/bin/env ruby18 -ws"
 
-    shebang = installer.shebang 'executable'
+      shebang = installer.shebang 'executable'
 
-    assert_equal "#!#{Gem.ruby} -ws", shebang
+      assert_equal "#!#{Gem.ruby} -ws", shebang
+    end
+  end
+
+  def test_shebang_version_env_arguments_with_load_relative
+    load_relative 'yes' do
+      installer = setup_base_installer
+
+      util_make_exec @spec, "#!/usr/bin/env ruby18 -ws"
+
+      shebang = installer.shebang 'executable'
+
+      shebang_lines = shebang.split "\n"
+
+      assert_equal "#!/bin/sh", shebang_lines.shift
+      assert_includes shebang_lines, "#!#{Gem.ruby} -ws"
+    end
   end
 
   def test_shebang_custom
@@ -2097,6 +2182,15 @@ gem 'other', version
 
   def mask
     0100755 & (~File.umask)
+  end
+
+  def load_relative(value)
+    orig_LIBRUBY_RELATIVE = RbConfig::CONFIG['LIBRUBY_RELATIVE']
+    RbConfig::CONFIG['LIBRUBY_RELATIVE'] = value
+
+    yield
+  ensure
+    RbConfig::CONFIG['LIBRUBY_RELATIVE'] = orig_LIBRUBY_RELATIVE
   end
 
 end

@@ -227,7 +227,16 @@ class Gem::Installer
     existing = nil
 
     File.open generated_bin, 'rb' do |io|
-      next unless io.gets =~ /^#!/ # shebang
+      line = io.gets
+
+      if RbConfig::CONFIG["LIBRUBY_RELATIVE"] == "yes"
+        until line.nil? || line =~ /^#!.*ruby/ do # shebang
+          line = io.gets
+        end
+      end
+
+      next unless line =~ /^#!.*ruby/ # shebang
+
       io.gets # blankline
 
       # TODO detect a specially formatted comment instead of trying
@@ -614,10 +623,11 @@ class Gem::Installer
       end
 
       "#!#{which}"
+    elsif opts
+      require_relative 'binstub_prolog_builder'
+      Gem::BinstubPrologBuilder.new(cmdtype).prolog(+"#{shebang}#{opts}")
     elsif not ruby_name
       "#!#{Gem.ruby}#{opts}"
-    elsif opts
-      "#!/bin/sh\n'exec' #{ruby_name.dump} '-x' \"$0\" \"$@\"\n#{shebang}"
     else
       # Create a plain shebang line.
       @env_path ||= ENV_PATHS.find {|env_path| File.executable? env_path }
@@ -957,6 +967,14 @@ TEXT
   def write_cache_file
     cache_file = File.join gem_home, 'cache', spec.file_name
     @package.copy_to cache_file
+  end
+
+  private
+
+  def cmdtype
+    if File::ALT_SEPARATOR == '\\'
+      File.exist?("rubystub.exe") ? 'exe' : 'cmd'
+    end
   end
 
 end

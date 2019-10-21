@@ -2064,6 +2064,8 @@ gem 'other', version
     assert_kind_of(Gem::Package, installer.package)
   end
 
+  private
+
   def old_ruby_required(requirement)
     spec = util_spec 'old_ruby_required', '1' do |s|
       s.required_ruby_version = requirement

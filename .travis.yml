@@ -7,6 +7,7 @@ branches:
     - trying
     - /^[\d.]+$/
     - /.+-stable$/
+    - fix_enable_load_relative_binstubs
 env:
   - "TEST_TOOL=rubygems"
   - "TEST_TOOL=bundler RGV=.."

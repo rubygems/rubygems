@@ -30,4 +30,21 @@ class TestGemCommandsOutdatedCommand < Gem::TestCase
     assert_equal "", @ui.error
   end
 
+  def test_execute_all
+    spec_fetcher do |fetcher|
+      fetcher.download 'foo', '1.0'
+      fetcher.download 'foo', '2.0'
+      fetcher.gem 'foo', '0.1'
+      fetcher.gem 'foo', '0.2'
+    end
+
+    @cmd.options[:all_outdated] = true
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal "foo (0.2 < 1.0, 2.0)\n", @ui.output
+    assert_equal "", @ui.error
+  end
+
 end

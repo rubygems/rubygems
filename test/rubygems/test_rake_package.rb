@@ -8,19 +8,43 @@ class TestRakePackage < Minitest::Test
   def test_builds_ok
     skip unless File.exist?(File.expand_path("../../../Rakefile", __FILE__))
 
-    output, status = Open3.capture2e("rake package")
+    with_empty_pkg_folder do
+      output, status = Open3.capture2e("rake package")
 
-    assert_equal true, status.success?, <<~MSG.chomp
-      Expected `rake package` to work, but got errors:
+      assert_equal true, status.success?, <<~MSG.chomp
+        Expected `rake package` to work, but got errors:
 
-      ```
-      #{output}
-      ```
+        ```
+        #{output}
+        ```
 
-      If you have added or removed files, make sure you run `rake update_manifest` to update the `Manifest.txt` accordingly
-    MSG
+        If you have added or removed files, make sure you run `rake update_manifest` to update the `Manifest.txt` accordingly
+      MSG
+    end
+  end
 
-    FileUtils.rm_f "pkg"
+  private
+
+  def with_empty_pkg_folder
+    if File.exist?("pkg")
+      FileUtils.cp_r("pkg", "tmp")
+
+      begin
+        FileUtils.rm_rf("pkg")
+        yield
+      ensure
+        FileUtils.rm_rf("pkg")
+        FileUtils.cp_r("tmp/pkg", ".")
+      end
+    else
+      Dir.mkdir("pkg")
+
+      begin
+        yield
+      ensure
+        FileUtils.rm_rf("pkg")
+      end
+    end
   end
 
 end

@@ -686,6 +686,7 @@ test/rubygems/test_remote_fetch_error.rb
 test/rubygems/test_require.rb
 test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem
+tmp/.keep
 util/CL2notes
 util/bisect
 util/ci.sh

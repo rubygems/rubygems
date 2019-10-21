@@ -681,7 +681,7 @@ test/rubygems/test_gem_validator.rb
 test/rubygems/test_gem_version.rb
 test/rubygems/test_gem_version_option.rb
 test/rubygems/test_kernel.rb
-test/rubygems/test_rake_package.rb
+test/rubygems/test_project_sanity.rb
 test/rubygems/test_remote_fetch_error.rb
 test/rubygems/test_require.rb
 test/rubygems/wrong_key_cert.pem

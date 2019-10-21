@@ -3,9 +3,9 @@
 require "rubygems/test_case"
 require "open3"
 
-class TestRakePackage < Minitest::Test
+class TestProjectSanity < Minitest::Test
 
-  def test_builds_ok
+  def test_rake_package_builds_ok
     skip unless File.exist?(File.expand_path("../../../Rakefile", __FILE__))
 
     with_empty_pkg_folder do

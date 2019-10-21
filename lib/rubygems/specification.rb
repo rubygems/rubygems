@@ -1200,6 +1200,8 @@ class Gem::Specification < Gem::BasicSpecification
       latest_remote = remotes.sort.last
 
       if show_all_versions
+        remotes.delete(local_spec.version)
+        next if remotes.empty?
         yield [local_spec, remotes]
       else
         if latest_remote && local_spec.version < latest_remote

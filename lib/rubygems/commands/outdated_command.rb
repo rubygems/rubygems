@@ -17,7 +17,7 @@ class Gem::Commands::OutdatedCommand < Gem::Command
 
     add_option('all', '--all',
                'List all newer versions of each outdated gem') do |value, options|
-      options[:all_outdated] = value
+      options[:all_newest] = value
     end
   end
 
@@ -31,7 +31,7 @@ update the gems with the update or install commands.
   end
 
   def execute
-    Gem::Specification.outdated_and_latest_version(options[:all_outdated]) do |spec, remote_versions|
+    Gem::Specification.outdated_and_latest_version(options[:all_newest]) do |spec, remote_versions|
       say "#{spec.name} (#{spec.version} < #{[remote_versions].flatten.join(", ")})"
     end
   end

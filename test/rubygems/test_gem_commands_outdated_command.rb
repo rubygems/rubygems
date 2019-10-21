@@ -38,7 +38,7 @@ class TestGemCommandsOutdatedCommand < Gem::TestCase
       fetcher.gem 'foo', '0.2'
     end
 
-    @cmd.options[:all_outdated] = true
+    @cmd.options[:all_newest] = true
     use_ui @ui do
       @cmd.execute
     end

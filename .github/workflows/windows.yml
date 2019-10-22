@@ -3,7 +3,7 @@ name: windows
 on: [push]
 
 jobs:
-  build:
+  windows:
     runs-on: windows-latest
     strategy:
       matrix:

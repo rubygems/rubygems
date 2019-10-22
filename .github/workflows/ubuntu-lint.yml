@@ -3,7 +3,7 @@ name: ubuntu-lint
 on: [push]
 
 jobs:
-  build:
+  ubuntu_lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master

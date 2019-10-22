@@ -3,7 +3,7 @@ name: ubuntu-rvm
 on: [push]
 
 jobs:
-  build:
+  ubuntu_rvm:
     runs-on: ubuntu-latest
     strategy:
       matrix:

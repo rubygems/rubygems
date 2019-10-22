@@ -3,7 +3,7 @@ name: ubuntu-bundler-master
 on: [push]
 
 jobs:
-  build:
+  ubuntu_bundler_master:
     runs-on: ubuntu-latest
     strategy:
       matrix:

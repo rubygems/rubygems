@@ -50,7 +50,7 @@ class Gem::BinstubPrologBuilder
         =end
       EOS
     else
-      "#!#{bindir}/#{ruby_install_name}"
+      "#!#{Gem.ruby}"
     end
   end
 

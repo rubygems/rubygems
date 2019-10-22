@@ -4,6 +4,7 @@ AllCops:
     - 'bundler/**/*'
     - 'lib/rubygems/resolver/molinillo/**/*'
     - 'pkg/**/*'
+    - 'tmp/**/*'
   TargetRubyVersion: 2.3
 
 Layout/AccessModifierIndentation:

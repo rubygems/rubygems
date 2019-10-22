@@ -376,18 +376,36 @@ end
 
 # Misc Tasks ---------------------------------------------------------
 
+module Rubygems
+  class ProjectFiles
+
+    def self.all
+      files = []
+      exclude = %r[\.git|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)]ox
+      tracked_files = `git ls-files --recurse-submodules`.split("\n").map {|f| "./#{f}" }
+
+      tracked_files.each do |path|
+        next unless File.file?(path)
+        next if path =~ exclude
+        files << path[2..-1]
+      end
+
+      files
+    end
+
+  end
+end
+
 desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
-  files = []
-  exclude = %r[\.git|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)]ox
-  tracked_files = `git ls-files --recurse-submodules`.split("\n").map {|f| "./#{f}" }
+  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all.sort) }
+end
 
-  tracked_files.each do |path|
-    next unless File.file?(path)
-    next if path =~ exclude
-    files << path[2..-1]
+desc "Check the manifest is up to date"
+task :check_manifest do
+  if File.read("Manifest.txt").split.sort != Rubygems::ProjectFiles.all.sort
+    abort "Manifest is out of date. Run `rake update_manifest` to sync it"
   end
-  File.open('Manifest.txt', 'w') {|f| f.puts(files.sort) }
 end
 
 namespace :bundler do

@@ -18,33 +18,33 @@ jobs:
           - ruby: jruby-9.2.8.0
             test_tool: bundler
     steps:
-    - uses: actions/checkout@master
-    - run: git submodule update -i
-    - name: Fixed world writable dirs
-      run: |
-        chmod go-w $HOME
-        sudo chmod -R go-w /usr/share
-        sudo chmod -R go-w /opt
-    - name: Set up RVM
-      run: |
-        curl -sSL https://get.rvm.io | bash
-    - name: Set up Ruby
-      run: |
-        source $HOME/.rvm/scripts/rvm
-        rvm install ${{ matrix.ruby }} --binary
-        rvm --default use ${{ matrix.ruby }}
-    - name: Install dependencies
-      run: |
-        source $HOME/.rvm/scripts/rvm
-        util/ci.sh before_script
-      env:
-        TEST_TOOL: ${{ matrix.test_tool }}
-    - name: Run test
-      run: |
-        source $HOME/.rvm/scripts/rvm
-        util/ci.sh script
-      continue-on-error: true
-      env:
-        TEST_TOOL: ${{ matrix.test_tool }}
-        RGV: ${{ matrix.rgv }}
-        BDV: ${{ matrix.bdv }}
+      - uses: actions/checkout@master
+      - run: git submodule update -i
+      - name: Fixed world writable dirs
+        run: |
+          chmod go-w $HOME
+          sudo chmod -R go-w /usr/share
+          sudo chmod -R go-w /opt
+      - name: Set up RVM
+        run: |
+          curl -sSL https://get.rvm.io | bash
+      - name: Set up Ruby
+        run: |
+          source $HOME/.rvm/scripts/rvm
+          rvm install ${{ matrix.ruby }} --binary
+          rvm --default use ${{ matrix.ruby }}
+      - name: Install dependencies
+        run: |
+          source $HOME/.rvm/scripts/rvm
+          util/ci.sh before_script
+        env:
+          TEST_TOOL: ${{ matrix.test_tool }}
+      - name: Run test
+        run: |
+          source $HOME/.rvm/scripts/rvm
+          util/ci.sh script
+        continue-on-error: true
+        env:
+          TEST_TOOL: ${{ matrix.test_tool }}
+          RGV: ${{ matrix.rgv }}
+          BDV: ${{ matrix.bdv }}

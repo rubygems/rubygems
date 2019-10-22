@@ -4,7 +4,7 @@ class Gem::BinstubPrologBuilder
 
   def prolog(shebang)
     shebang.sub!(/\r$/, '')
-    shebang.sub!(/\A(\#!.*?ruby\b)?/) do
+    shebang.sub!(/\A(\#!.*?ruby(?=\s|$))?/) do
       if prolog_script.end_with?("\n")
         prolog_script + ($1 || "#!ruby\n")
       else

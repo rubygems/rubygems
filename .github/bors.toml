@@ -1,5 +1,4 @@
 status = [
-  "continuous-integration/travis-ci/push",
   "ubuntu_lint",
   "macos (2.3.x)",
   "ubuntu (2.3.x, rubygems)",

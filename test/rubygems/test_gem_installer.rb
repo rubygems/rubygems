@@ -547,7 +547,7 @@ gem 'other', version
   end
 
   def test_generate_bin_symlink
-    return if !symlink_supported?
+    skip "Symlinks not supported or not enabled" unless symlink_supported?
 
     installer = setup_base_installer
 
@@ -599,7 +599,7 @@ gem 'other', version
   end
 
   def test_generate_bin_symlink_update_newer
-    return if !symlink_supported?
+    skip "Symlinks not supported or not enabled" unless symlink_supported?
 
     installer = setup_base_installer
 
@@ -631,7 +631,7 @@ gem 'other', version
   end
 
   def test_generate_bin_symlink_update_older
-    return if !symlink_supported?
+    skip "Symlinks not supported or not enabled" unless symlink_supported?
 
     installer = setup_base_installer
 
@@ -669,7 +669,7 @@ gem 'other', version
   end
 
   def test_generate_bin_symlink_update_remove_wrapper
-    return if !symlink_supported?
+    skip "Symlinks not supported or not enabled" unless symlink_supported?
 
     installer = setup_base_installer
 
@@ -742,7 +742,7 @@ gem 'other', version
   end
 
   def test_generate_bin_uses_default_shebang
-    return if !symlink_supported?
+    skip "Symlinks not supported or not enabled" unless symlink_supported?
 
     installer = setup_base_installer
 

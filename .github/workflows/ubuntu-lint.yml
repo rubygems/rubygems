@@ -3,7 +3,7 @@ name: ubuntu-lint
 on: [push]
 
 jobs:
-  build:
+  ubuntu_lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -20,3 +20,4 @@ jobs:
         run: util/ci.sh rubocop
         env:
           TEST_TOOL: rubygems
+    timeout-minutes: 15

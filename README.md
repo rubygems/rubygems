@@ -1,4 +1,4 @@
-# RubyGems [![Travis Build Status](https://secure.travis-ci.org/rubygems/rubygems.svg?branch=master)](http://travis-ci.org/rubygems/rubygems) [![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/github/rubygems/rubygems?branch=master&svg=true)](https://ci.appveyor.com/project/rubygems/rubygems?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/30f913e9c2dd932132c1/maintainability)](https://codeclimate.com/github/rubygems/rubygems/maintainability)
+# RubyGems [![Maintainability](https://api.codeclimate.com/v1/badges/30f913e9c2dd932132c1/maintainability)](https://codeclimate.com/github/rubygems/rubygems/maintainability)
 
 RubyGems is a package management framework for Ruby.
 

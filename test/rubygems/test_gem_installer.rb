@@ -5,6 +5,9 @@ class TestGemInstaller < Gem::InstallerTestCase
 
   @@symlink_supported = nil
 
+  # Our CI does not currently hit the "symlink not supported" case, but this is
+  # needed for Windows developers without symlink support enabled (the default
+  # for non admin) to be able to run the tests successfully
   def symlink_supported?
     if @@symlink_supported.nil?
       begin

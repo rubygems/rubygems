@@ -547,7 +547,7 @@ gem 'other', version
   end
 
   def test_generate_bin_symlink
-    return if win_platform? #Windows FS do not support symlinks
+    return if !symlink_supported?
 
     installer = setup_base_installer
 
@@ -599,7 +599,7 @@ gem 'other', version
   end
 
   def test_generate_bin_symlink_update_newer
-    return if win_platform? #Windows FS do not support symlinks
+    return if !symlink_supported?
 
     installer = setup_base_installer
 

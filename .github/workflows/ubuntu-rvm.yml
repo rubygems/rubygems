@@ -3,7 +3,7 @@ name: ubuntu-rvm
 on: [push]
 
 jobs:
-  build:
+  ubuntu_rvm:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -47,3 +47,4 @@ jobs:
           TEST_TOOL: ${{ matrix.test_tool }}
           RGV: ${{ matrix.rgv }}
           BDV: ${{ matrix.bdv }}
+    timeout-minutes: 60

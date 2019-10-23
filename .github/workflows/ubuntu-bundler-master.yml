@@ -30,3 +30,4 @@ jobs:
           TEST_TOOL: "bundler"
           RGV: ".."
           BDV: "master"
+    timeout-minutes: 60

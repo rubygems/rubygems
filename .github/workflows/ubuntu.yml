@@ -29,3 +29,4 @@ jobs:
         run: util/ci.sh script
         env:
           TEST_TOOL: ${{ matrix.test_tool }}
+    timeout-minutes: 60

@@ -47,3 +47,4 @@ jobs:
           TEST_TOOL: ${{ matrix.test_tool }}
           RGV: ${{ matrix.rgv }}
           BDV: ${{ matrix.bdv }}
+    timeout-minutes: 60

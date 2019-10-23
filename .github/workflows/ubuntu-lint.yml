@@ -20,3 +20,4 @@ jobs:
         run: util/ci.sh rubocop
         env:
           TEST_TOOL: rubygems
+    timeout-minutes: 15

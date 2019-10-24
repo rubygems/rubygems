@@ -15,8 +15,13 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+      - name: DevKit, ENV['PATH']
+        uses: MSP-Greg/msys2-action@master
       - name: Install Dependencies
-        run: gem install "rake:>=10.4.2" "minitest:>=5.4.3" --conservative --no-document
+        run: gem --% install "rake:>=12.0.0" "minitest:>=5.10.1" --conservative --no-document
       - name: Run Test
-        run: rake test
+        run: |
+          New-Item -Path "C:\git" -ItemType Junction -Value "C:\Program Files\Git" 1> $null
+          $env:GIT = "C:\git\cmd\git.exe"
+          rake test
     timeout-minutes: 15

@@ -1234,18 +1234,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     end
   end
 
-  class << self
-
-    ##
-    # TODO remove with RubyGems 4.0
-
-    alias detect_gemdeps use_gemdeps # :nodoc:
-
-    extend Gem::Deprecate
-    deprecate :detect_gemdeps, "Gem.use_gemdeps", 2018, 12
-
-  end
-
   ##
   # The SOURCE_DATE_EPOCH environment variable (or, if that's not set, the current time), converted to Time object.
   # This is used throughout RubyGems for enabling reproducible builds.

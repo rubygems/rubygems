@@ -1221,7 +1221,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
         end
       end
       Bundler.ui = nil
-      @gemdeps.requested_specs.map(&:to_spec).sort_by(&:name)
     end
 
   rescue => e

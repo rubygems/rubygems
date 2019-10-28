@@ -589,7 +589,9 @@ class TestGem < Gem::TestCase
     begin
       Dir.chdir 'detect/a/b'
 
-      assert_equal add_bundler_full_name([]), Gem.use_gemdeps.map(&:full_name)
+      Gem.use_gemdeps
+
+      assert_equal add_bundler_full_name([]), loaded_spec_names
     ensure
       Dir.chdir @tempdir
     end
@@ -1609,8 +1611,11 @@ class TestGem < Gem::TestCase
 
     ENV['RUBYGEMS_GEMDEPS'] = "-"
 
-    expected_specs = [a, b, util_spec("bundler", Bundler::VERSION), c].compact
-    assert_equal expected_specs, Gem.use_gemdeps.sort_by { |s| s.name }
+    expected_specs = [a, b, util_spec("bundler", Bundler::VERSION), c].compact.map(&:full_name)
+
+    Gem.use_gemdeps
+
+    assert_equal expected_specs, loaded_spec_names
   end
 
   LIB_PATH = File.expand_path "../../../lib".dup.tap(&Gem::UNTAINT), __FILE__.dup.tap(&Gem::UNTAINT)

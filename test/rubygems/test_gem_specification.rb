@@ -1162,12 +1162,11 @@ dependencies: []
     # Create gemspecs in three locations used in stubs
     loaded_spec = Gem::Specification.new 'a', '3'
     Gem.loaded_specs['a'] = loaded_spec
-    save_gemspec 'a', '2', dir_default_specs
-    save_gemspec 'a', '1', dir_standard_specs
+    save_gemspec('a-2', '2', dir_default_specs) { |s| s.name = 'a' }
+    save_gemspec('a-1', '1', dir_standard_specs) { |s| s.name = 'a' }
 
     full_names = ['a-3', 'a-2', 'a-1']
 
-    full_names = Gem::Specification.stubs_for('a').map { |s| s.full_name }
     assert_equal full_names, Gem::Specification.stubs_for('a').map { |s| s.full_name }
     assert_equal 1, Gem::Specification.class_variable_get(:@@stubs_by_name).length
 

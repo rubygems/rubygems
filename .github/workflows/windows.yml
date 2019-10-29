@@ -16,7 +16,13 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install Dependencies
-        run: gem --% install "rake:>=10.4.2" "minitest:>=5.4.3" --conservative --no-document
+        # updated to match gems in oldest Actions Ruby version, currently 2.4
+        run: gem --% install "rake:>=12.0.0" "minitest:>=5.10.1" --conservative --no-document
       - name: Run Test
-        run: rake test
+        # create a symlink for git to a folder without a space, needed for CI only
+        run: |
+          New-Item -Path "C:\git" -ItemType Junction -Value "C:\Program Files\Git" 1> $null
+          $env:GIT = "C:\git\cmd\git.exe"
+          ridk enable
+          rake test
     timeout-minutes: 15

@@ -20,7 +20,7 @@ task :git_hooks do
 end
 
 Rake::TestTask.new do |t|
-  t.ruby_opts = %w[--disable-gems -w]
+  t.ruby_opts = %w[--disable-gems -w -rrubygems]
   t.ruby_opts << '-rdevkit' if Gem.win_platform?
 
   t.libs << "test"

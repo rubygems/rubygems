@@ -95,13 +95,13 @@ class TestDeprecate < Gem::TestCase
   end
 
   def test_deprecate_command
+    foo = FooCommand.new
+
     out, err = capture_io do
-      foo = FooCommand.new
       foo.execute
     end
 
-    assert_equal "pew pew!\n", out
-    assert_match(/NOTE: foo command is deprecated. It will be removed on or after 2099-04-01.\n/, err)
+    assert foo.deprecated?
   end
 
 end

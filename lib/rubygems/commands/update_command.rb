@@ -73,8 +73,6 @@ command to remove old versions.
       say "Latest version already installed. Done."
       terminate_interaction
     end
-
-    options[:user_install] = false
   end
 
   def check_update_arguments # :nodoc:
@@ -90,9 +88,10 @@ command to remove old versions.
       return
     end
 
-    hig = highest_installed_gems
-
-    gems_to_update = which_to_update hig, options[:args].uniq
+    gems_to_update = which_to_update(
+      highest_installed_gems,
+      options[:args].uniq
+    )
 
     if options[:explain]
       say "Gems to update:"
@@ -136,6 +135,9 @@ command to remove old versions.
 
   def highest_installed_gems # :nodoc:
     hig = {} # highest installed gems
+
+    # Get only gem specifications installed as --user-install
+    Gem::Specification.dirs = Gem.user_dir if options[:user_install]
 
     Gem::Specification.each do |spec|
       if hig[spec.name].nil? or hig[spec.name].version < spec.version

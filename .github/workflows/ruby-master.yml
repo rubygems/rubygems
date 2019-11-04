@@ -1,0 +1,25 @@
+name: ruby-master
+
+on: [push]
+
+jobs:
+  ruby_master:
+    runs-on: ubuntu-latest
+    container:
+      image: rubylang/ruby:master-nightly-bionic
+      env:
+        TEST_TOOL: "rubygems"
+    steps:
+      - name: Setup Requirements
+        run: |
+          apt update -qy
+          apt install zip -qy
+          gem install rake --no-document
+      - uses: actions/checkout@master
+      - run: git submodule update -i
+      - name: ruby -v
+        run: ruby -v
+      - name: Install Dependencies
+        run: util/ci.sh before_script
+      - name: Run Test
+        run: util/ci.sh script

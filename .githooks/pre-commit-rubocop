@@ -1,3 +1,11 @@
 #!/usr/bin/env bash
 
-./util/rubocop $(git diff --cached --name-only)
+files=$(git diff --name-only --cached --diff-filter=d)
+length=${#files}
+
+# Run rubocop hook only when analyzable files are present
+if [[ $length -ne 0 ]]; then
+  ./util/rubocop $files
+else
+  echo "No files to analyze"
+fi

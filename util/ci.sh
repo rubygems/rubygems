@@ -22,6 +22,8 @@ case $1 in
     else
       cd bundler
 
+      export RGV=..
+
       if [ -n "$BDV" ]
       then
         git reset --hard "origin/$BDV"
@@ -45,6 +47,9 @@ case $1 in
       exec rake test
     else
       cd bundler
+
+      export RGV=..
+
       exec bin/rake spec -t
     fi
 

@@ -23,16 +23,28 @@ class Gem::Commands::WebCommand < Gem::Command
     @executor = Gem::Web::Executor.new
   end
 
-  def arguments
+  def arguments # :nodoc:
     "GEMNAME       gem to open the webpage for"
   end
 
-  def usage
+  def usage # :nodoc:
     "#{program_name} GEMNAME"
   end
 
   def execute
     @executor.open_page(get_one_optional_argument, options)
+  end
+
+  def description # :nodoc:
+    <<~HEREDOC
+      The web command allows you to get/open webpages for a given gem.
+
+      It's possible to configure it to automatically open links:
+
+        $ BROWSER=firefox gem web rails
+
+      The --rubygems option only fetches gems from rubygems.org
+    HEREDOC
   end
 
 end

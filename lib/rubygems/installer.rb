@@ -810,7 +810,7 @@ TEXT
     ruby_exe = "ruby.exe" if ruby_exe.empty?
 
     if File.exist?(File.join bindir, ruby_exe)
-      # stub & ruby.exe withing same folder.  Portable
+      # stub & ruby.exe within same folder.  Portable
       <<-TEXT
 @ECHO OFF
 @"%~dp0#{ruby_exe}" "%~dpn0" %*

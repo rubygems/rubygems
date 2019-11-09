@@ -43,7 +43,8 @@ class Gem::Commands::WebCommand < Gem::Command
 
         $ BROWSER=firefox gem web rails
 
-      The --rubygems option only fetches gems from rubygems.org
+      If the gem is not hosted on rubygems.org, using --rubygems will result
+      in a broken or incorrect link.
     HEREDOC
   end
 

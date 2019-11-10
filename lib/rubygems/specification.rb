@@ -1752,10 +1752,11 @@ class Gem::Specification < Gem::BasicSpecification
   #
   #   [depending_gem, dependency, [list_of_gems_that_satisfy_dependency]]
 
-  def dependent_gems
+  def dependent_gems(check_dev=true)
     out = []
     Gem::Specification.each do |spec|
-      spec.dependencies.each do |dep|
+      deps = check_dev ? spec.dependencies : spec.runtime_dependencies
+      deps.each do |dep|
         if self.satisfies_requirement?(dep)
           sats = []
           find_all_satisfiers(dep) do |sat|

@@ -1,5 +1,26 @@
 # coding: UTF-8
 
+=== 3.1.0.pre3 / 2019-11-11
+
+Minor enhancements:
+
+* Fix gem pristine not accounting for user installed gems. Pull request
+  #2914 by Luis Sagastume.
+* Refactor keyword argument test for Ruby 2.7. Pull request #2947 by
+  SHIBATA Hiroshi.
+* Fix errors at frozen Gem::Version. Pull request #2949 by Nobuyoshi
+  Nakada.
+* Remove taint usage on Ruby 2.7+. Pull request #2951 by Jeremy Evans.
+* Check Manifest.txt is up to date. Pull request #2953 by David Rodríguez.
+* Clarify symlink conditionals in tests. Pull request #2962 by David
+  Rodríguez.
+* Update command line parsing to work under ps. Pull request #2966 by
+  David Rodríguez.
+* Properly test `Gem::Specifications.stub_for`. Pull request #2970 by
+  David Rodríguez.
+* Fix Gem::LOADED_SPECS_MUTEX handling for recursive locking. Pull request
+  #2985 by MSP-Greg.
+
 === 3.1.0.pre2 / 2019-10-15
 
 Minor enhancements:

@@ -26,6 +26,7 @@ bundler/lib/bundler/capistrano.rb
 bundler/lib/bundler/cli.rb
 bundler/lib/bundler/cli/add.rb
 bundler/lib/bundler/cli/binstubs.rb
+bundler/lib/bundler/cli/cache.rb
 bundler/lib/bundler/cli/check.rb
 bundler/lib/bundler/cli/clean.rb
 bundler/lib/bundler/cli/common.rb
@@ -43,7 +44,6 @@ bundler/lib/bundler/cli/list.rb
 bundler/lib/bundler/cli/lock.rb
 bundler/lib/bundler/cli/open.rb
 bundler/lib/bundler/cli/outdated.rb
-bundler/lib/bundler/cli/package.rb
 bundler/lib/bundler/cli/platform.rb
 bundler/lib/bundler/cli/plugin.rb
 bundler/lib/bundler/cli/pristine.rb
@@ -207,7 +207,6 @@ bundler/lib/bundler/vendor/thor/lib/thor/base.rb
 bundler/lib/bundler/vendor/thor/lib/thor/command.rb
 bundler/lib/bundler/vendor/thor/lib/thor/core_ext/hash_with_indifferent_access.rb
 bundler/lib/bundler/vendor/thor/lib/thor/core_ext/io_binary_read.rb
-bundler/lib/bundler/vendor/thor/lib/thor/core_ext/ordered_hash.rb
 bundler/lib/bundler/vendor/thor/lib/thor/error.rb
 bundler/lib/bundler/vendor/thor/lib/thor/group.rb
 bundler/lib/bundler/vendor/thor/lib/thor/invocation.rb
@@ -242,6 +241,9 @@ bundler/man/bundle-add.ronn
 bundler/man/bundle-binstubs.1
 bundler/man/bundle-binstubs.1.txt
 bundler/man/bundle-binstubs.ronn
+bundler/man/bundle-cache.1
+bundler/man/bundle-cache.1.txt
+bundler/man/bundle-cache.ronn
 bundler/man/bundle-check.1
 bundler/man/bundle-check.1.txt
 bundler/man/bundle-check.ronn
@@ -284,9 +286,6 @@ bundler/man/bundle-open.ronn
 bundler/man/bundle-outdated.1
 bundler/man/bundle-outdated.1.txt
 bundler/man/bundle-outdated.ronn
-bundler/man/bundle-package.1
-bundler/man/bundle-package.1.txt
-bundler/man/bundle-package.ronn
 bundler/man/bundle-platform.1
 bundler/man/bundle-platform.1.txt
 bundler/man/bundle-platform.ronn

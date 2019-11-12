@@ -24,10 +24,9 @@ jobs:
         run: util/ci.sh before_script
         env:
           TEST_TOOL: "bundler"
+          BDV: "master"
       - name: Run Test
         run: util/ci.sh script
         env:
           TEST_TOOL: "bundler"
-          RGV: ".."
-          BDV: "master"
     timeout-minutes: 60

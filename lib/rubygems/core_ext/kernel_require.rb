@@ -32,7 +32,7 @@ module Kernel
   # that file has already been loaded is preserved.
 
   def require(path)
-    if RUBY_VERSION >= "2.5"
+    if RUBYGEMS_ACTIVATION_MONITOR.respond_to?(:mon_owned?)
       monitor_owned = RUBYGEMS_ACTIVATION_MONITOR.mon_owned?
     end
     RUBYGEMS_ACTIVATION_MONITOR.enter
@@ -169,9 +169,8 @@ module Kernel
 
     raise load_error
   ensure
-    if RUBY_VERSION >= "2.5"
-      ow = RUBYGEMS_ACTIVATION_MONITOR.mon_owned?
-      if monitor_owned != ow
+    if RUBYGEMS_ACTIVATION_MONITOR.respond_to?(:mon_owned?)
+      if monitor_owned != (ow = RUBYGEMS_ACTIVATION_MONITOR.mon_owned?)
         STDERR.puts [$$, Thread.current, $!, $!.backtrace].inspect if $!
         raise "CRITICAL: RUBYGEMS_ACTIVATION_MONITOR.owned?: before #{monitor_owned} -> after #{ow}"
       end

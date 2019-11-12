@@ -12,7 +12,6 @@ jobs:
         include:
           - ruby: ruby-head
             test_tool: bundler
-            rgv: ..
             bdv: master
         exclude:
           - ruby: jruby-9.2.8.0
@@ -39,12 +38,11 @@ jobs:
           util/ci.sh before_script
         env:
           TEST_TOOL: ${{ matrix.test_tool }}
+          BDV: ${{ matrix.bdv }}
       - name: Run test
         run: |
           source $HOME/.rvm/scripts/rvm
           util/ci.sh script
         env:
           TEST_TOOL: ${{ matrix.test_tool }}
-          RGV: ${{ matrix.rgv }}
-          BDV: ${{ matrix.bdv }}
     timeout-minutes: 60

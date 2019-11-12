@@ -19,7 +19,7 @@ class Gem::UnknownCommandError < Gem::Exception
     super("Unknown command #{unknown_command}")
   end
 
-  if defined?(DidYouMean)
+  if defined?(DidYouMean::SPELL_CHECKERS) && defined?(DidYouMean::Correctable)
     DidYouMean::SPELL_CHECKERS['Gem::UnknownCommandError'] =
       Gem::UnknownCommandSpellChecker
 

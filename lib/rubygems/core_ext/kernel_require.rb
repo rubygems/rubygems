@@ -32,6 +32,9 @@ module Kernel
   # that file has already been loaded is preserved.
 
   def require(path)
+    if RUBYGEMS_ACTIVATION_MONITOR.respond_to?(:mon_owned?)
+      monitor_owned = RUBYGEMS_ACTIVATION_MONITOR.mon_owned?
+    end
     RUBYGEMS_ACTIVATION_MONITOR.enter
 
     path = path.to_path if path.respond_to? :to_path
@@ -42,7 +45,15 @@ module Kernel
       rp = nil
       $LOAD_PATH[0...Gem.load_path_insert_index || -1].each do |lp|
         safe_lp = lp.dup.tap(&Gem::UNTAINT)
-        next if File.symlink? safe_lp # for backword compatibility
+        begin
+          if File.symlink? safe_lp # for backword compatibility
+            next
+          end
+        rescue SecurityError
+          RUBYGEMS_ACTIVATION_MONITOR.exit
+          raise
+        end
+
         Gem.suffixes.each do |s|
           full_path = File.expand_path(File.join(safe_lp, "#{path}#{s}"))
           if File.file?(full_path)
@@ -157,6 +168,13 @@ module Kernel
     return gem_original_require(path) if require_again
 
     raise load_error
+  ensure
+    if RUBYGEMS_ACTIVATION_MONITOR.respond_to?(:mon_owned?)
+      if monitor_owned != (ow = RUBYGEMS_ACTIVATION_MONITOR.mon_owned?)
+        STDERR.puts [$$, Thread.current, $!, $!.backtrace].inspect if $!
+        raise "CRITICAL: RUBYGEMS_ACTIVATION_MONITOR.owned?: before #{monitor_owned} -> after #{ow}"
+      end
+    end
   end
 
   private :require

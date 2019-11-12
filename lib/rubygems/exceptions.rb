@@ -19,13 +19,11 @@ class Gem::UnknownCommandError < Gem::Exception
     super("Unknown command #{unknown_command}")
   end
 
-  begin
-    require 'did_you_mean'
-    ::DidYouMean::SPELL_CHECKERS['Gem::UnknownCommandError'] =
+  if defined?(DidYouMean)
+    DidYouMean::SPELL_CHECKERS['Gem::UnknownCommandError'] =
       Gem::UnknownCommandSpellChecker
 
-    prepend ::DidYouMean::Correctable
-  rescue LoadError
+    prepend DidYouMean::Correctable
   end
 
 end

@@ -23,7 +23,6 @@ Rake::TestTask.new do |t|
   t.ruby_opts = %w[-w]
   t.ruby_opts << '-rdevkit' if Gem.win_platform?
 
-  t.libs << "libs"
   t.libs << "test"
   t.libs << "bundler/lib"
 

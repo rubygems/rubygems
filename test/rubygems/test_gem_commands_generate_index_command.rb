@@ -26,6 +26,18 @@ class TestGemCommandsGenerateIndexCommand < Gem::TestCase
     assert File.exist?(specs), specs
   end
 
+  def test_execute_no_modern
+    @cmd.options[:modern] = false
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    specs = File.join @gemhome, "specs.4.8.gz"
+
+    assert File.exist?(specs), specs
+  end
+
   def test_handle_options_directory
     return if win_platform?
     refute_equal '/nonexistent', @cmd.options[:directory]
@@ -49,6 +61,26 @@ class TestGemCommandsGenerateIndexCommand < Gem::TestCase
     @cmd.handle_options %w[--update]
 
     assert @cmd.options[:update]
+  end
+
+  def test_handle_options_modern
+    use_ui @ui do
+      @cmd.handle_options %w[--modern]
+    end
+
+    assert_equal \
+      "WARNING:  The \"--modern\" option has been deprecated and will be removed in Rubygems 4.0. Modern indexes (specs, latest_specs, and prerelease_specs) are always generated, so this option is not needed.\n",
+      @ui.error
+  end
+
+  def test_handle_options_no_modern
+    use_ui @ui do
+      @cmd.handle_options %w[--no-modern]
+    end
+
+    assert_equal \
+      "WARNING:  The \"--no-modern\" option has been deprecated and will be removed in Rubygems 4.0. The `--no-modern` option is currently ignored. Modern indexes (specs, latest_specs, and prerelease_specs) are always generated.\n",
+      @ui.error
   end
 
 end if defined?(Builder::XChar)

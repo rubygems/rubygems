@@ -3,6 +3,10 @@ require 'rubygems/test_case'
 require 'rubygems/indexer'
 require 'rubygems/commands/generate_index_command'
 
+unless defined?(Builder::XChar)
+  warn "generate_index tests are being skipped.  Install builder gem."
+end
+
 class TestGemCommandsGenerateIndexCommand < Gem::TestCase
 
   def setup
@@ -47,4 +51,4 @@ class TestGemCommandsGenerateIndexCommand < Gem::TestCase
     assert @cmd.options[:update]
   end
 
-end if ''.respond_to? :to_xs
+end if defined?(Builder::XChar)

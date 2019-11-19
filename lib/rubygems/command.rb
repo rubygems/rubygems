@@ -369,6 +369,24 @@ class Gem::Command
     end
   end
 
+  ##
+  # Mark a command-line option as deprecated, and optionally specify a
+  # deprecation horizon.
+  #
+  # Note that with the current implementation, every version of the option needs
+  # to be explicitly deprecated, so to deprecate an option defined as
+  #
+  #   add_option('-t', '--[no-]test', 'Set test mode') do |value, options|
+  #     # ... stuff ...
+  #   end
+  #
+  # you would need to explicitly add a call to `deprecate_option` for every
+  # version of the option you want to deprecate, like
+  #
+  #   deprecate_option('-t')
+  #   deprecate_option('--test')
+  #   deprecate_option('--no-test')
+
   def deprecate_option(name, version: nil)
     @deprecated_options[command].merge!({ name => { "rg_version_to_expire" => version } })
   end

@@ -369,9 +369,8 @@ class Gem::Command
     end
   end
 
-  def deprecate_option(short_name: nil, long_name: nil, version: nil)
-    @deprecated_options[command].merge!({ short_name => { "rg_version_to_expire" => version } }) if short_name
-    @deprecated_options[command].merge!({ long_name  => { "rg_version_to_expire" => version } }) if long_name
+  def deprecate_option(name, version: nil)
+    @deprecated_options[command].merge!({ name => { "rg_version_to_expire" => version } })
   end
 
   def check_deprecated_options(options)

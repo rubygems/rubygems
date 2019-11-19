@@ -68,69 +68,19 @@ module Gem::Deprecate
   # Deprecation method to deprecate Rubygems commands
   def deprecate_command(year, month)
     class_eval do
-      # Year we want the command to be deprecated
-      @@deprecation_year = year
+      define_method "deprecated?" do
+        true
+      end
 
-      # Month we want the command to be deprecated
-      @@deprecation_month = month
+      define_method "deprecation_warning" do
+        msg = [ "\nNOTE: #{self.command} command is deprecated",
+                ". It will be removed on or after %4d-%02d-01.\n" % [year, month],
+        ]
 
-      # We will be calling the deprecation warning whenever the "execute" method is called
-      @@command_method = :execute
-
-      # state variable to avoid infinite loop
-      @@command_found = false
-
-      # Original command name where this method is called.
-      # e.g if we call this method inside the Gem::Commands::QueryCommand class, this variable will be "query"
-      @@command = "#{self}".split("::").last.split(/(?=[A-Z])/).first.downcase
-
-      def self.method_added(method_name)
-        # Look only when @@command_method is added/loaded
-        if method_name == @@command_method
-          # If we don't return early this will be called recursively forerver.
-          # method_added will be called everytime we "define_method"
-          return if @@command_found
-
-          @@command_found = true
-
-          # Alias "execute" to "_deprecated_execute"
-          old = "_deprecated_#{method_name}"
-          alias_method old, method_name
-
-          # Overwrite execute method with our custom method that will display the deprecation message
-          define_method method_name do |*args, &block|
-            send(old, *args, &block)
-
-            # We will call the deprecation warning only on the class in which we are calling "deprecate_command"
-            # This is to avoid calling the deprecation warning on classes which inherits from the class we are calling "deprecate_command"
-
-            # Example:
-            #
-            #class Gem::Commands::QueryCommand
-            #    deprecate_command(2019, 12)
-            #
-            #    def execute
-            #      do_something
-            #    end
-            # end
-            #
-            # class Gem::Commands::InfoCommand < Gem::Commands::QueryCommand; end
-
-            # This check will prevent the deprecation warning happening when we execute "gem info" and display it
-            # only when we call "gem query" as expected
-            if "#{self.command}" == @@command
-              msg = [ "\nNOTE: #{self.command} command is deprecated",
-                      ". It will be removed on or after %4d-%02d-01.\n" % [@@deprecation_year, @@deprecation_month],
-              ]
-
-              warn "#{msg.join}" unless Gem::Deprecate.skip
-            end
-          end
-        end
+        warn "#{msg.join}" unless Gem::Deprecate.skip
       end
     end
   end
-
   module_function :deprecate, :deprecate_command, :skip_during
 
 end

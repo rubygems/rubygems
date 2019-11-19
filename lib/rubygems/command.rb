@@ -444,6 +444,10 @@ class Gem::Command
     result
   end
 
+  def deprecated?
+    false
+  end
+
   private
 
   def option_is_deprecated?(option)

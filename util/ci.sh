@@ -51,7 +51,7 @@ case $1 in
 
       export RGV=..
 
-      exec bin/rake spec -t
+      exec bin/rspec ./spec/other/cli_dispatch_spec.rb
     fi
 
     ;;

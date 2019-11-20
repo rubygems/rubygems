@@ -15,12 +15,12 @@ jobs:
         run: |
           apt update -qy
           apt install zip -qy
-        if: matrix.test_tool == "rubygems"
+        if: matrix.test_tool == 'rubygems'
       - name: Setup Requirements for bundler
         run: |
           apt update -qy
           apt install sudo -qy
-        if: matrix.test_tool == "bundler"
+        if: matrix.test_tool == 'bundler'
       - uses: actions/checkout@master
       - run: git submodule update -i
       - name: ruby -v

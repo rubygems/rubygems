@@ -16,6 +16,8 @@ case $1 in
       ruby -I lib bin/gem uninstall executable-hooks gem-wrappers bundler-unload -x --force -i "$gemhome@global"
     fi
 
+    gem install rake -v "~>12.0"
+
     if [ "$TEST_TOOL" = "rubygems" ]
     then
       exec rake setup
@@ -29,7 +31,6 @@ case $1 in
         git reset --hard "origin/$BDV"
       fi
 
-      gem install rake -v "~>12.0"
       exec bin/rake spec:travis:deps
     fi
 

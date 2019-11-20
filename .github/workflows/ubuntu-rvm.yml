@@ -7,17 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ 'ruby-head', 'jruby-9.2.9.0' ]
-        test_tool: [ "rubygems", "bundler" ]
-        include:
-          - ruby: ruby-head
-            test_tool: bundler
-            bdv: master
-        exclude:
-          - ruby: ruby-head
-            test_tool: rubygems
-          - ruby: jruby-9.2.9.0
-            test_tool: bundler
+        ruby: ['jruby-9.2.9.0' ]
+        test_tool: [ "rubygems" ]
     steps:
       - uses: actions/checkout@master
       - run: git submodule update -i

@@ -13,7 +13,8 @@ jobs:
         test_tool: ["rubygems", "bundler"]
     steps:
       - uses: actions/checkout@master
-      - run: git submodule update -i
+        with:
+          submodules: true
       - name: ruby -v
         run: ruby -v
       - name: Install Dependencies

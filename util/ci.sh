@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
+set -xeo pipefail
 
 if [ -z "$TEST_TOOL" ]
 then
@@ -16,7 +16,8 @@ case $1 in
       ruby -I lib bin/gem uninstall executable-hooks gem-wrappers bundler-unload -x --force -i "$gemhome@global"
     fi
 
-    gem install rake -v "~>12.0"
+    ruby -I lib bin/gem env
+    ruby -I lib bin/gem install rake -v "~>12.0"
 
     if [ "$TEST_TOOL" = "rubygems" ]
     then

@@ -31,7 +31,7 @@ case $1 in
         git reset --hard "origin/$BDV"
       fi
 
-      exec bin/rake spec:travis:deps
+      exec bin/rake spec:deps
     fi
 
     ;;

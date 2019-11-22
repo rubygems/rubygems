@@ -18,10 +18,6 @@ case $1 in
 
     ruby -I lib bin/gem env
 
-    [ -d "$HOME/.gem/ruby/2.7.0" ] && echo "Exists"
-
-    mkdir -p "$HOME/.gem/ruby/2.7.0"
-
     ruby -I lib bin/gem install rake -v "~>12.0"
 
     if [ "$TEST_TOOL" = "rubygems" ]
@@ -56,8 +52,9 @@ case $1 in
       cd bundler
 
       export RGV=..
+      export BUNDLE_SILENCE_ROOT_WARNING=true
 
-      exec bin/rspec ./spec/other/cli_dispatch_spec.rb
+      exec bin/rake spec -t
     fi
 
     ;;

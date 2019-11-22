@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: rubylang/ruby:master-nightly-bionic
-      options: --user ubuntu
     strategy:
       matrix:
         test_tool: ["rubygems", "bundler"]

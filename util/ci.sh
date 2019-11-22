@@ -20,6 +20,8 @@ case $1 in
 
     [ -d "$HOME/.gem/ruby/2.7.0" ] && echo "Exists"
 
+    mkdir -p "$HOME/.gem/ruby/2.7.0"
+
     ruby -I lib bin/gem install rake -v "~>12.0"
 
     if [ "$TEST_TOOL" = "rubygems" ]

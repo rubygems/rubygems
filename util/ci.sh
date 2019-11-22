@@ -17,6 +17,9 @@ case $1 in
     fi
 
     ruby -I lib bin/gem env
+
+    [ -d "$HOME/.gem/ruby/2.7.0" ] && echo "Exists"
+
     ruby -I lib bin/gem install rake -v "~>12.0"
 
     if [ "$TEST_TOOL" = "rubygems" ]

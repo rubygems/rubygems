@@ -499,8 +499,8 @@ class TestGemRequire < Gem::TestCase
     end
   end
 
-  # uplevel is 2.5+ only and jruby has some issues with it
-  if RUBY_VERSION >= "2.5" && !java_platform?
+  # uplevel is 2.5+ only
+  if RUBY_VERSION >= "2.5"
     ["", "Kernel."].each do |prefix|
       define_method "test_no_kernel_require_in_#{prefix.tr(".", "_")}warn_with_uplevel" do
         lib = File.realpath("../../../lib", __FILE__)
@@ -510,11 +510,11 @@ class TestGemRequire < Gem::TestCase
           _, err = capture_subprocess_io do
             system(@@ruby, "-w", "--disable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
           end
-          assert_equal "main.rb:1: warning: uplevel\ntest\n", err
+          assert_match(/main\.rb:1: warning: uplevel\ntest\n$/, err)
           _, err = capture_subprocess_io do
             system(@@ruby, "-w", "--enable=gems", "-I", lib, "-C", dir, "-I.", "main.rb")
           end
-          assert_equal "main.rb:1: warning: uplevel\ntest\n", err
+          assert_match(/main\.rb:1: warning: uplevel\ntest\n$/, err)
         end
       end
 
@@ -525,11 +525,11 @@ class TestGemRequire < Gem::TestCase
           _, err = capture_subprocess_io do
             system(@@ruby, "-w", "--disable=gems", "-I", lib, "-C", dir, "main.rb")
           end
-          assert_equal "{:x=>1}\n{:y=>2}\n", err
+          assert_match(/{:x=>1}\n{:y=>2}\n$/, err)
           _, err = capture_subprocess_io do
             system(@@ruby, "-w", "--enable=gems", "-I", lib, "-C", dir, "main.rb")
           end
-          assert_equal "{:x=>1}\n{:y=>2}\n", err
+          assert_match(/{:x=>1}\n{:y=>2}\n$/, err)
         end
       end
     end

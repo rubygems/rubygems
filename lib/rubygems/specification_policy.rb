@@ -1,8 +1,7 @@
-require 'delegate'
 require 'uri'
 require 'rubygems/user_interaction'
 
-class Gem::SpecificationPolicy < SimpleDelegator
+class Gem::SpecificationPolicy
 
   include Gem::UserInteraction
 
@@ -25,7 +24,6 @@ class Gem::SpecificationPolicy < SimpleDelegator
   def initialize(specification)
     @warnings = 0
 
-    super(specification)
     @specification = specification
   end
 

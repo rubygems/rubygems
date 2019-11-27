@@ -8,16 +8,6 @@ jobs:
     strategy:
       matrix:
         ruby: [ 'ruby-head', 'jruby-9.2.9.0' ]
-        test_tool: [ "rubygems", "bundler" ]
-        include:
-          - ruby: ruby-head
-            test_tool: bundler
-            bdv: master
-        exclude:
-          - ruby: ruby-head
-            test_tool: rubygems
-          - ruby: jruby-9.2.9.0
-            test_tool: bundler
     steps:
       - uses: actions/checkout@master
       - run: git submodule update -i
@@ -34,17 +24,20 @@ jobs:
           source $HOME/.rvm/scripts/rvm
           rvm install ${{ matrix.ruby }} --binary
           rvm --default use ${{ matrix.ruby }}
-      - name: Install dependencies
+      - name: Test rubygems
         run: |
           source $HOME/.rvm/scripts/rvm
           util/ci.sh before_script
-        env:
-          TEST_TOOL: ${{ matrix.test_tool }}
-          BDV: ${{ matrix.bdv }}
-      - name: Run test
-        run: |
-          source $HOME/.rvm/scripts/rvm
           util/ci.sh script
         env:
-          TEST_TOOL: ${{ matrix.test_tool }}
+          TEST_TOOL: rubygems
+        if: matrix.ruby == 'jruby-9.2.9.0'
+      - name: Test bundler
+        run: |
+          source $HOME/.rvm/scripts/rvm
+          BDV=master util/ci.sh before_script
+          util/ci.sh script
+        env:
+          TEST_TOOL: bundler
+        if: matrix.ruby == 'ruby-head'
     timeout-minutes: 60

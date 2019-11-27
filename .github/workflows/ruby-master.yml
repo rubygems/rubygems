@@ -1,6 +1,12 @@
 name: ruby-master
 
-on: [push]
+on:
+  pull_request:
+
+  push:
+    branches:
+      - staging
+      - trying
 
 jobs:
   ruby_master:

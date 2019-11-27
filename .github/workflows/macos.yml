@@ -1,6 +1,12 @@
 name: macos
 
-on: [push]
+on:
+  pull_request:
+
+  push:
+    branches:
+      - staging
+      - trying
 
 jobs:
   macos:

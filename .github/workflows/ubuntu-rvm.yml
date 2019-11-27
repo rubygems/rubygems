@@ -37,6 +37,7 @@ jobs:
           source $HOME/.rvm/scripts/rvm
           BDV=master util/ci.sh before_script
           util/ci.sh script
+        continue-on-error: true
         env:
           TEST_TOOL: bundler
         if: matrix.ruby == 'ruby-head'

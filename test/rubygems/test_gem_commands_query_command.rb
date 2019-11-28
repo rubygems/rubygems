@@ -844,6 +844,10 @@ othergem (1.2.3)
     assert_equal expected, @stub_ui.output
   end
 
+  def test_depprecated
+    assert @cmd.deprecated?
+  end
+
   private
 
   def add_gems_to_fetcher

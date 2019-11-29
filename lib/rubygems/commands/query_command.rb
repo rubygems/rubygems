@@ -4,8 +4,12 @@ require 'rubygems/local_remote_options'
 require 'rubygems/spec_fetcher'
 require 'rubygems/version_option'
 require 'rubygems/text'
+require 'rubygems/deprecate'
 
 class Gem::Commands::QueryCommand < Gem::Command
+
+  extend Gem::Deprecate
+  deprecate_command(2019, 12)
 
   include Gem::Text
   include Gem::LocalRemoteOptions

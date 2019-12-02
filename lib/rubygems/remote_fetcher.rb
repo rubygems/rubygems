@@ -256,8 +256,6 @@ class Gem::RemoteFetcher
   def fetch_path(uri, mtime = nil, head = false)
     uri = URI.parse uri unless URI::Generic === uri
 
-    raise ArgumentError, "bad uri: #{uri}" unless uri
-
     unless uri.scheme
       raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}"
     end

@@ -365,11 +365,8 @@ class TestGemRequire < Gem::TestCase
   end
 
   def test_realworld_default_gem
-    begin
-      gem 'json'
-    rescue Gem::MissingSpecError
-      skip "default gems are only available after ruby installation"
-    end
+    testing_ruby_repo = !ENV["GEM_COMMAND"].nil?
+    skip "this test can't work under ruby-core setup" if testing_ruby_repo || java_platform?
 
     cmd = <<-RUBY
       $stderr = $stdout

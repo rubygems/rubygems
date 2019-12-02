@@ -254,7 +254,7 @@ class Gem::RemoteFetcher
   # Downloads +uri+ and returns it as a String.
 
   def fetch_path(uri, mtime = nil, head = false)
-    uri = URI.parse uri unless URI::Generic === uri
+    uri = URI.parse uri unless uri.is_a?(URI::Generic)
 
     unless uri.scheme
       raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}"

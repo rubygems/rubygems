@@ -130,12 +130,12 @@ class Gem::RemoteFetcher
 
     FileUtils.mkdir_p cache_dir rescue nil unless File.exist? cache_dir
 
-    # Always escape URI's to deal with potential spaces and such
-    # It should also be considered that source_uri may already be
-    # a valid URI with escaped characters. e.g. "{DESede}" is encoded
-    # as "%7BDESede%7D". If this is escaped again the percentage
-    # symbols will be escaped.
     if source_uri.is_a?(String)
+      # Always escape URI's to deal with potential spaces and such
+      # It should also be considered that source_uri may already be
+      # a valid URI with escaped characters. e.g. "{DESede}" is encoded
+      # as "%7BDESede%7D". If this is escaped again the percentage
+      # symbols will be escaped.
       begin
         source_uri = URI.parse(source_uri)
       rescue

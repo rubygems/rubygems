@@ -138,7 +138,7 @@ class Gem::RemoteFetcher
       begin
         source_uri = URI.parse(source_uri)
       rescue
-        source_uri = URI.parse(URI::DEFAULT_PARSER.escape(source_uri.to_s))
+        source_uri = URI.parse(URI::DEFAULT_PARSER.escape(source_uri))
       end
     end
 

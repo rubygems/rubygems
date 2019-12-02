@@ -130,18 +130,7 @@ class Gem::RemoteFetcher
 
     FileUtils.mkdir_p cache_dir rescue nil unless File.exist? cache_dir
 
-    if source_uri.is_a?(String)
-      # Always escape URI's to deal with potential spaces and such
-      # It should also be considered that source_uri may already be
-      # a valid URI with escaped characters. e.g. "{DESede}" is encoded
-      # as "%7BDESede%7D". If this is escaped again the percentage
-      # symbols will be escaped.
-      begin
-        source_uri = URI.parse(source_uri)
-      rescue
-        source_uri = URI.parse(URI::DEFAULT_PARSER.escape(source_uri))
-      end
-    end
+    source_uri = parse_uri(source_uri)
 
     scheme = source_uri.scheme
 
@@ -236,7 +225,7 @@ class Gem::RemoteFetcher
       unless location = response['Location']
         raise FetchError.new("redirecting but no redirect location was given", uri)
       end
-      location = URI.parse location
+      location = parse_uri location
 
       if https?(uri) && !https?(location)
         raise FetchError.new("redirecting to non-https resource: #{location}", uri)
@@ -254,7 +243,7 @@ class Gem::RemoteFetcher
   # Downloads +uri+ and returns it as a String.
 
   def fetch_path(uri, mtime = nil, head = false)
-    uri = URI.parse uri if uri.is_a?(String)
+    uri = parse_uri uri
 
     unless uri.scheme
       raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}"
@@ -354,6 +343,20 @@ class Gem::RemoteFetcher
   end
 
   private
+
+  def parse_uri(source_uri)
+    return source_uri unless source_uri.is_a?(String)
+
+    # It should also be considered that source_uri may already be
+    # a valid URI with escaped characters. e.g. "{DESede}" is encoded
+    # as "%7BDESede%7D". If this is escaped again the percentage
+    # symbols will be escaped.
+    begin
+      URI.parse(source_uri)
+    rescue
+      URI.parse(URI::DEFAULT_PARSER.escape(source_uri))
+    end
+  end
 
   def proxy_for(proxy, uri)
     Gem::Request.proxy_uri(proxy || Gem::Request.get_proxy_from_env(uri.scheme))

@@ -260,8 +260,6 @@ class Gem::RemoteFetcher
     end
 
     data
-  rescue FetchError
-    raise
   rescue Timeout::Error
     raise UnknownHostError.new('timed out', uri.to_s)
   rescue IOError, SocketError, SystemCallError,

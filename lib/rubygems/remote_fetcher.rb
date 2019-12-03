@@ -32,8 +32,6 @@ class Gem::RemoteFetcher
     def initialize(message, uri)
       super message
 
-      uri = uri_parser.parse(uri)
-
       uri.password = 'REDACTED' if uri.respond_to?(:password) && uri.password
 
       @uri = uri.to_s
@@ -41,14 +39,6 @@ class Gem::RemoteFetcher
 
     def to_s # :nodoc:
       "#{super} (#{uri})"
-    end
-
-    private
-
-    def uri_parser
-      require "uri"
-
-      Gem::UriParser.new(URI)
     end
 
   end
@@ -138,7 +128,7 @@ class Gem::RemoteFetcher
 
     FileUtils.mkdir_p cache_dir rescue nil unless File.exist? cache_dir
 
-    source_uri = parse_uri(source_uri)
+    source_uri = parse_uri!(source_uri)
 
     scheme = source_uri.scheme
 
@@ -233,7 +223,7 @@ class Gem::RemoteFetcher
       unless location = response['Location']
         raise FetchError.new("redirecting but no redirect location was given", uri)
       end
-      location = parse_uri location
+      location = parse_uri! location
 
       if https?(uri) && !https?(location)
         raise FetchError.new("redirecting to non-https resource: #{location}", uri)
@@ -251,7 +241,7 @@ class Gem::RemoteFetcher
   # Downloads +uri+ and returns it as a String.
 
   def fetch_path(uri, mtime = nil, head = false)
-    uri = parse_uri uri
+    uri = parse_uri! uri
 
     unless uri.scheme
       raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}"
@@ -283,7 +273,7 @@ class Gem::RemoteFetcher
     begin
       public_uri = s3_uri_signer(uri).sign
     rescue Gem::S3URISigner::ConfigurationError, Gem::S3URISigner::InstanceProfileError => e
-      raise FetchError.new(e.message, "s3://#{uri.host}")
+      raise FetchError.new(e.message, parse_uri("s3://#{uri.host}"))
     end
     fetch_https public_uri, mtime, head
   end
@@ -350,8 +340,12 @@ class Gem::RemoteFetcher
 
   private
 
-  def parse_uri(source_uri)
+  def parse_uri!(source_uri)
     uri_parser.parse!(source_uri)
+  end
+
+  def parse_uri(source_uri)
+    uri_parser.parse(source_uri)
   end
 
   def uri_parser

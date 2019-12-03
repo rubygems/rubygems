@@ -4,6 +4,7 @@ require 'rubygems/request'
 require 'rubygems/request/connection_pools'
 require 'rubygems/s3_uri_signer'
 require 'rubygems/uri_formatter'
+require 'rubygems/uri_parser'
 require 'rubygems/user_interaction'
 require 'resolv'
 require 'rubygems/deprecate'
@@ -31,21 +32,23 @@ class Gem::RemoteFetcher
     def initialize(message, uri)
       super message
 
-      unless uri.is_a?(URI::Generic)
-        begin
-          uri = URI.parse(uri)
-        rescue URI::InvalidURIError
-          @uri = uri
-          return
-        end
-      end
+      uri = uri_parser.parse(uri)
 
-      uri.password = 'REDACTED' if uri.password
+      uri.password = 'REDACTED' if uri.respond_to?(:password) && uri.password
+
       @uri = uri.to_s
     end
 
     def to_s # :nodoc:
       "#{super} (#{uri})"
+    end
+
+    private
+
+    def uri_parser
+      require "uri"
+
+      Gem::UriParser.new
     end
 
   end
@@ -348,17 +351,13 @@ class Gem::RemoteFetcher
   private
 
   def parse_uri(source_uri)
-    return source_uri if source_uri.is_a?(URI::Generic)
+    uri_parser.parse!(source_uri)
+  end
 
-    # It should also be considered that source_uri may already be
-    # a valid URI with escaped characters. e.g. "{DESede}" is encoded
-    # as "%7BDESede%7D". If this is escaped again the percentage
-    # symbols will be escaped.
-    begin
-      URI.parse(source_uri)
-    rescue
-      URI.parse(URI::DEFAULT_PARSER.escape(source_uri))
-    end
+  def uri_parser
+    require "uri"
+
+    @uri_parser ||= Gem::UriParser.new
   end
 
   def proxy_for(proxy, uri)

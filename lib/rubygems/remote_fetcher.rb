@@ -4,7 +4,7 @@ require 'rubygems/request'
 require 'rubygems/request/connection_pools'
 require 'rubygems/s3_uri_signer'
 require 'rubygems/uri_formatter'
-require 'rubygems/uri_parser'
+require 'rubygems/uri_parsing'
 require 'rubygems/user_interaction'
 require 'resolv'
 require 'rubygems/deprecate'
@@ -18,11 +18,15 @@ class Gem::RemoteFetcher
   include Gem::UserInteraction
   extend Gem::Deprecate
 
+  include Gem::UriParsing
+
   ##
   # A FetchError exception wraps up the various possible IO and HTTP failures
   # that could happen while downloading from the internet.
 
   class FetchError < Gem::Exception
+
+    include Gem::UriParsing
 
     ##
     # The URI which was being accessed when the exception happened.
@@ -41,20 +45,6 @@ class Gem::RemoteFetcher
 
     def to_s # :nodoc:
       "#{super} (#{uri})"
-    end
-
-    private
-
-    def parse_uri(source_uri)
-      return source_uri unless source_uri.is_a?(String)
-
-      uri_parser.parse(source_uri)
-    end
-
-    def uri_parser
-      require "uri"
-
-      Gem::UriParser.new
     end
 
   end
@@ -355,18 +345,6 @@ class Gem::RemoteFetcher
   end
 
   private
-
-  def parse_uri(source_uri)
-    return source_uri unless source_uri.is_a?(String)
-
-    uri_parser.parse!(source_uri)
-  end
-
-  def uri_parser
-    require "uri"
-
-    @uri_parser ||= Gem::UriParser.new
-  end
 
   def proxy_for(proxy, uri)
     Gem::Request.proxy_uri(proxy || Gem::Request.get_proxy_from_env(uri.scheme))

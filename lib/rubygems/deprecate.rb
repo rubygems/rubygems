@@ -73,7 +73,7 @@ module Gem::Deprecate
       end
 
       define_method "deprecation_warning" do
-        msg = [ "\nNOTE: #{self.command} command is deprecated",
+        msg = [ "#{self.command} command is deprecated",
                 ". It will be removed on or after %4d-%02d-01.\n" % [year, month],
         ]
 

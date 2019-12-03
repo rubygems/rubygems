@@ -296,7 +296,7 @@ class TestGemCommandManager < Gem::TestCase
     end
 
     assert_equal "pew pew!\n", @ui.output
-    assert_match(/NOTE: foo command is deprecated. It will be removed on or after 2099-04-01.\n/, @ui.error)
+    assert_equal("WARNING:  foo command is deprecated. It will be removed on or after 2099-04-01.\n", @ui.error)
   ensure
     Gem::Commands.send(:remove_const, :FooCommand)
   end

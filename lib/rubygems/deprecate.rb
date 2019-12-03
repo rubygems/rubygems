@@ -77,7 +77,7 @@ module Gem::Deprecate
                 ". It will be removed on or after %4d-%02d-01.\n" % [year, month],
         ]
 
-        warn "#{msg.join}" unless Gem::Deprecate.skip
+        alert_warning "#{msg.join}" unless Gem::Deprecate.skip
       end
     end
   end

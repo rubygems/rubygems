@@ -30,13 +30,18 @@ class Gem::RemoteFetcher
 
     def initialize(message, uri)
       super message
-      begin
-        uri = URI.parse(uri)
-        uri.password = 'REDACTED' if uri.password
-        @uri = uri.to_s
-      rescue URI::InvalidURIError
-        @uri = uri
+
+      if uri.is_a?(String)
+        begin
+          uri = URI.parse(uri)
+        rescue URI::InvalidURIError
+          @uri = uri
+          return
+        end
       end
+
+      uri.password = 'REDACTED' if uri.password
+      @uri = uri.to_s
     end
 
     def to_s # :nodoc:
@@ -107,7 +112,7 @@ class Gem::RemoteFetcher
 
     spec, source = found.max_by { |(s,_)| s.version }
 
-    download spec, source.uri.to_s
+    download spec, source.uri
   end
 
   ##
@@ -255,19 +260,19 @@ class Gem::RemoteFetcher
       begin
         data = Gem::Util.gunzip data
       rescue Zlib::GzipFile::Error
-        raise FetchError.new("server did not return a valid file", uri.to_s)
+        raise FetchError.new("server did not return a valid file", uri)
       end
     end
 
     data
   rescue Timeout::Error
-    raise UnknownHostError.new('timed out', uri.to_s)
+    raise UnknownHostError.new('timed out', uri)
   rescue IOError, SocketError, SystemCallError,
          *(OpenSSL::SSL::SSLError if defined?(OpenSSL)) => e
     if e.message =~ /getaddrinfo/
-      raise UnknownHostError.new('no such name', uri.to_s)
+      raise UnknownHostError.new('no such name', uri)
     else
-      raise FetchError.new("#{e.class}: #{e}", uri.to_s)
+      raise FetchError.new("#{e.class}: #{e}", uri)
     end
   end
 

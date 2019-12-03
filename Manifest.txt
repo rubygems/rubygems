@@ -493,6 +493,7 @@ lib/rubygems/test_utilities.rb
 lib/rubygems/text.rb
 lib/rubygems/uninstaller.rb
 lib/rubygems/uri_formatter.rb
+lib/rubygems/uri_parser.rb
 lib/rubygems/user_interaction.rb
 lib/rubygems/util.rb
 lib/rubygems/util/licenses.rb

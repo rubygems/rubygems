@@ -153,7 +153,7 @@ class Gem::RemoteFetcher
           remote_gem_path = source_uri + "gems/#{gem_file_name}"
 
           self.cache_update_path remote_gem_path, local_gem_path
-        rescue Gem::RemoteFetcher::FetchError
+        rescue FetchError
           raise if spec.original_platform == spec.platform
 
           alternate_name = "#{spec.original_name}.gem"

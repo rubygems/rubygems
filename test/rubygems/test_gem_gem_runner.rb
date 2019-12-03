@@ -66,4 +66,14 @@ class TestGemGemRunner < Gem::TestCase
     assert_equal %w[--foo], args
   end
 
+  def test_query_is_deprecated
+    args = %w[query]
+
+    use_ui @ui do
+      assert_nil @runner.run(args)
+    end
+
+    assert_equal "WARNING:  query command is deprecated. It will be removed on or after 2019-12-01.\n", @ui.error
+  end
+
 end

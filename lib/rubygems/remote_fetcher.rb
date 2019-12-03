@@ -48,7 +48,7 @@ class Gem::RemoteFetcher
     def uri_parser
       require "uri"
 
-      Gem::UriParser.new
+      Gem::UriParser.new(URI)
     end
 
   end
@@ -357,7 +357,7 @@ class Gem::RemoteFetcher
   def uri_parser
     require "uri"
 
-    @uri_parser ||= Gem::UriParser.new
+    @uri_parser ||= Gem::UriParser.new(URI)
   end
 
   def proxy_for(proxy, uri)

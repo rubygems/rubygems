@@ -135,7 +135,7 @@ class Gem::RemoteFetcher
     # a valid URI with escaped characters. e.g. "{DESede}" is encoded
     # as "%7BDESede%7D". If this is escaped again the percentage
     # symbols will be escaped.
-    unless source_uri.is_a?(URI::Generic)
+    if source_uri.is_a?(String)
       begin
         source_uri = URI.parse(source_uri)
       rescue
@@ -254,7 +254,7 @@ class Gem::RemoteFetcher
   # Downloads +uri+ and returns it as a String.
 
   def fetch_path(uri, mtime = nil, head = false)
-    uri = URI.parse uri unless uri.is_a?(URI::Generic)
+    uri = URI.parse uri if uri.is_a?(String)
 
     unless uri.scheme
       raise ArgumentError, "uri scheme is invalid: #{uri.scheme.inspect}"

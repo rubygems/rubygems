@@ -16,7 +16,7 @@ jobs:
         ruby: [ '2.3.x', '2.4.x', '2.5.x', '2.6.x' ]
         test_tool: [ "rubygems", "bundler" ]
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v1
       - run: git submodule update -i
       - name: Fixed world writable dirs
         run: |

@@ -21,7 +21,7 @@ jobs:
           apt update -qy
           apt install zip -qy
           gem install rake --no-document
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v1
       - run: git submodule update -i
       - name: ruby -v
         run: ruby -v

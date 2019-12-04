@@ -15,7 +15,7 @@ jobs:
       matrix:
         ruby: [ '2.6.x' ]
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v1
       - run: git submodule update -i
       - name: Fixed world writable dirs
         run: |

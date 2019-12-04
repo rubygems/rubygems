@@ -277,6 +277,11 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       @tempdir.tap(&Gem::UNTAINT)
     end
 
+    @orig_SYSTEM_WIDE_CONFIG_FILE = Gem::ConfigFile::SYSTEM_WIDE_CONFIG_FILE
+    Gem::ConfigFile.send :remove_const, :SYSTEM_WIDE_CONFIG_FILE
+    Gem::ConfigFile.send :const_set, :SYSTEM_WIDE_CONFIG_FILE,
+                         File.join(@tempdir, 'system-gemrc')
+
     @gemhome  = File.join @tempdir, 'gemhome'
     @userhome = File.join @tempdir, 'userhome'
     ENV["GEM_SPEC_CACHE"] = File.join @tempdir, 'spec_cache'
@@ -397,6 +402,10 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
     FileUtils.rm_rf @tempdir
 
     ENV.replace(@orig_env)
+
+    Gem::ConfigFile.send :remove_const, :SYSTEM_WIDE_CONFIG_FILE
+    Gem::ConfigFile.send :const_set, :SYSTEM_WIDE_CONFIG_FILE,
+                         @orig_SYSTEM_WIDE_CONFIG_FILE
 
     Gem.ruby = @orig_ruby if @orig_ruby
 

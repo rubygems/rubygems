@@ -284,19 +284,19 @@ class TestGemCommandManager < Gem::TestCase
       deprecate_command(2099, 4)
 
       def execute
-        puts "pew pew!"
+        say "pew pew!"
       end
     end
 
     Gem::Commands.send(:const_set, :FooCommand, foo_command)
     @command_manager.register_command(:foo, foo_command.new("foo"))
 
-    out, err = capture_io do
+    use_ui @ui do
       @command_manager.process_args(%w[foo])
     end
 
-    assert_equal "pew pew!\n", out
-    assert_match(/NOTE: foo command is deprecated. It will be removed on or after 2099-04-01.\n/, err)
+    assert_equal "pew pew!\n", @ui.output
+    assert_equal("WARNING:  foo command is deprecated. It will be removed on or after 2099-04-01.\n", @ui.error)
   ensure
     Gem::Commands.send(:remove_const, :FooCommand)
   end

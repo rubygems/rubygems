@@ -224,26 +224,34 @@ class TestGemCommandManager < Gem::TestCase
     end
 
     #check defaults
-    @command_manager.process_args %w[query]
+    Gem::Deprecate.skip_during do
+      @command_manager.process_args %w[query]
+    end
     assert_equal(//, check_options[:name])
     assert_equal :local, check_options[:domain]
     assert_equal false, check_options[:details]
 
     #check settings
     check_options = nil
-    @command_manager.process_args %w[query --name foobar --local --details]
+    Gem::Deprecate.skip_during do
+      @command_manager.process_args %w[query --name foobar --local --details]
+    end
     assert_equal(/foobar/i, check_options[:name])
     assert_equal :local, check_options[:domain]
     assert_equal true, check_options[:details]
 
     #remote domain
     check_options = nil
-    @command_manager.process_args %w[query --remote]
+    Gem::Deprecate.skip_during do
+      @command_manager.process_args %w[query --remote]
+    end
     assert_equal :remote, check_options[:domain]
 
     #both (local/remote) domains
     check_options = nil
-    @command_manager.process_args %w[query --both]
+    Gem::Deprecate.skip_during do
+      @command_manager.process_args %w[query --both]
+    end
     assert_equal :both, check_options[:domain]
   end
 

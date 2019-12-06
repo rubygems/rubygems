@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ 'ruby-head', 'jruby-9.2.9.0' ]
+        ruby: [ '2.3.8', 'ruby-head', 'jruby-9.2.9.0' ]
     steps:
       - uses: actions/checkout@v1
       - run: git submodule update -i
@@ -37,7 +37,7 @@ jobs:
           util/ci.sh script
         env:
           TEST_TOOL: rubygems
-        if: matrix.ruby == 'jruby-9.2.9.0'
+        if: matrix.ruby == 'jruby-9.2.9.0' || matrix.ruby == '2.3.8'
       - name: Test bundler
         run: |
           source $HOME/.rvm/scripts/rvm

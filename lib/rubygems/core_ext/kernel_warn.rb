@@ -6,11 +6,9 @@ if RUBY_VERSION >= "2.5"
   module Kernel
     path = "#{__dir__}/" # Frames to be skipped start with this path.
 
-    # Suppress "method redefined" warning
-    original_warn = instance_method(:warn)
-    Module.new {define_method(:warn, original_warn)}
-
     original_warn = method(:warn)
+
+    remove_method :warn
 
     class << self
 

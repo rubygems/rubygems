@@ -365,19 +365,16 @@ class TestGemRequire < Gem::TestCase
   end
 
   def test_realworld_default_gem
-    begin
-      gem 'json'
-    rescue Gem::MissingSpecError
-      skip "default gems are only available after ruby installation"
-    end
+    testing_ruby_repo = !ENV["GEM_COMMAND"].nil?
+    skip "this test can't work under ruby-core setup" if testing_ruby_repo || java_platform?
 
     cmd = <<-RUBY
       $stderr = $stdout
       require "json"
-      puts Gem.loaded_specs["json"].default_gem?
+      puts Gem.loaded_specs["json"]
     RUBY
     output = Gem::Util.popen(Gem.ruby, "-e", cmd).strip
-    assert_equal "true", output
+    refute_empty output
   end
 
   def test_default_gem_and_normal_gem

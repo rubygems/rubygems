@@ -31,6 +31,20 @@ class TestProjectSanity < Minitest::Test
     assert status.success?, "Expected Manifest.txt to be up to date, but it's not. Run `rake update_manifest` to sync it."
   end
 
+  def test_ruby_setup_rb_builds_ok
+    output, status = Open3.capture2e("ruby setup.rb")
+
+    assert_equal true, status.success?, <<~MSG.chomp
+      Expected `ruby setup.rb` to work, but got errors:
+
+      ```
+      #{output}
+      ```
+
+      The content of bin/bundle is #{File.read("/home/runner/.rvm/rubies/ruby-head/bin/bundle") if File.exist?("/home/runner/.rvm/rubies/ruby-head/bin/bundle")}
+    MSG
+  end
+
   private
 
   def with_empty_pkg_folder

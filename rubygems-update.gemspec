@@ -33,11 +33,4 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0")
 
   s.specification_version = 4
-
-  s.add_development_dependency(%q<builder>, ["~> 3.0"])
-  s.add_development_dependency(%q<rdoc>, ["~> 6.0"])
-  s.add_development_dependency(%q<rake>, ["~> 12.0"])
-  s.add_development_dependency(%q<minitest>, ["~> 5.0"])
-  s.add_development_dependency(%q<simplecov>, ["~> 0"])
-  s.add_development_dependency(%q<rubocop>, ["~> 0.74.0"])
 end

@@ -16,8 +16,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install Dependencies
-        # updated to match gems in oldest Actions Ruby version, currently 2.4
-        run: gem --% install "rake:>=12.0.0" "minitest:>=5.10.1" --conservative --no-document
+        run: TEST_TOOL=rubygems util/ci.sh before_script
+        shell: bash
       - name: Run Test
         # create a symlink for git to a folder without a space, needed for CI only
         run: |

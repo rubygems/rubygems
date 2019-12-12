@@ -16,7 +16,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install Dependencies
-        run: gem install "rake:>=10.4.2" "minitest:>=5.4.3" --conservative --no-document
+        run: TEST_TOOL=rubygems util/ci.sh before_script
       - name: Run Test
         run: rake test
     timeout-minutes: 15

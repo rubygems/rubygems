@@ -30,7 +30,7 @@ case $1 in
       fi
 
       gem install rake -v "~>12.0"
-      exec bin/rake spec:travis:deps
+      exec bin/rake spec:deps
     fi
 
     ;;

@@ -1,7 +1,5 @@
 status = [
   "ubuntu_lint",
-  "ubuntu (2.3.x, rubygems)",
-  "ubuntu (2.3.x, bundler)",
   "macos (2.4.x)",
   "ubuntu (2.4.x, rubygems)",
   "ubuntu (2.4.x, bundler)",
@@ -15,9 +13,10 @@ status = [
   "ubuntu (2.6.x, bundler)",
   "windows (2.6.x)",
   "ubuntu_bundler_master (2.6.x)",
-  "ubuntu_rvm (ruby-head, rubygems)",
-  "ubuntu_rvm (ruby-head, bundler)",
-  "ubuntu_rvm (jruby-9.2.8.0, rubygems)",
+  "ruby_master",
+  "ubuntu_rvm (2.3.8)",
+  "ubuntu_rvm (ruby-head)",
+  "ubuntu_rvm (jruby-9.2.9.0)",
 ]
 
 timeout-sec = 14400

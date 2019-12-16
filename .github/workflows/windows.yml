@@ -1,6 +1,12 @@
 name: windows
 
-on: [push]
+on:
+  pull_request:
+
+  push:
+    branches:
+      - staging
+      - trying
 
 jobs:
   windows:
@@ -9,7 +15,7 @@ jobs:
       matrix:
         ruby: [ '2.4.x', '2.5.x', '2.6.x' ]
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v1
       - run: git submodule update -i
       - name: Setup ruby
         uses: actions/setup-ruby@v1

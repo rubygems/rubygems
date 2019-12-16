@@ -1,5 +1,13 @@
 # coding: UTF-8
 
+=== 3.1.1 / 2019-12-16
+
+Bug fixes:
+
+* Vendor Bundler 2.1.0 again. The version of Bundler with
+  RubyGems 3.1.0 was Bundler 2.1.0.pre.3. Pull request #3029 by
+  SHIBATA Hiroshi.
+
 === 3.1.0 / 2019-12-16
 
 Major enhancements:

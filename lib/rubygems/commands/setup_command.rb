@@ -17,6 +17,7 @@ class Gem::Commands::SetupCommand < Gem::Command
 
     super 'setup', 'Install RubyGems',
           :format_executable => true, :document => %w[ri],
+          :force => false,
           :site_or_vendor => 'sitelibdir',
           :destdir => '', :prefix => '', :previous_version => '',
           :regenerate_binstubs => true
@@ -86,6 +87,11 @@ class Gem::Commands::SetupCommand < Gem::Command
     add_option '--[no-]regenerate-binstubs',
                'Regenerate gem binstubs' do |value, options|
       options[:regenerate_binstubs] = value
+    end
+
+    add_option '-f', '--[no-]force',
+               'Forcefully overwrite binstubs' do |value, options|
+      options[:force] = value
     end
 
     add_option('-E', '--[no-]env-shebang',
@@ -429,7 +435,7 @@ By default, this RubyGems will install gem as:
     Dir.chdir("bundler") do
       built_gem = Gem::Package.build(bundler_spec)
       begin
-        installer = Gem::Installer.at(built_gem, env_shebang: options[:env_shebang], format_executable: options[:format_executable], install_as_default: true, bin_dir: bin_dir, wrappers: true)
+        installer = Gem::Installer.at(built_gem, env_shebang: options[:env_shebang], format_executable: options[:format_executable], force: options[:force], install_as_default: true, bin_dir: bin_dir, wrappers: true)
         installer.install
       ensure
         FileUtils.rm_f built_gem

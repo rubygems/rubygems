@@ -212,7 +212,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     # TODO: We need to assert to remove same version of bundler on gem_dir directory(It's not site_ruby dir)
 
-    # expect to not remove bundler-* direcotyr.
+    # expect to not remove bundler-* directory.
     assert_path_exists 'default/gems/bundler-audit-1.0.0'
   end
 

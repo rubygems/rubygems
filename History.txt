@@ -1,5 +1,37 @@
 # coding: UTF-8
 
+=== 3.1.0 / 2019-12-16
+
+Major enhancements:
+
+* Vendor bundler 2.1. Pull request #3028 by David Rodríguez.
+
+Minor enhancements:
+
+* Check for rubygems.org typo squatting sources. Pull request #2999 by
+  Luis Sagastume.
+* Refactor remote fetcher. Pull request #3017 by David Rodríguez.
+* Lazily load `open3`. Pull request #3001 by David Rodríguez.
+* Remove `delegate` dependency. Pull request #3002 by David Rodríguez.
+* Lazily load `uri`. Pull request #3005 by David Rodríguez.
+* Lazily load `rubygems/gem_runner` during tests. Pull request #3009 by
+  David Rodríguez.
+* Use bundler to manage development dependencies. Pull request #3012 by
+  David Rodríguez.
+
+Bug fixes:
+
+* Remove unnecessary executable flags. Pull request #2982 by David
+  Rodríguez.
+* Remove configuration that contained a typo. Pull request #2989 by David
+  Rodríguez.
+
+Compatibility changes:
+
+* Remove 1.8.7 leftovers. Pull request #2972 by David Rodríguez.
+* Deprecate `gem generate_index --modern` and `gem generate_index
+  --no-modern`. Pull request #2992 by David Rodríguez.
+
 === 3.1.0.pre3 / 2019-11-11
 
 Minor enhancements:

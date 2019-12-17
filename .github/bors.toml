@@ -1,5 +1,10 @@
 status = [
   "ubuntu_lint",
+  "install (2.3.8)",
+  "install (2.4.9)",
+  "install (2.5.7)",
+  "install (2.6.5)",
+  "install (jruby-9.2.9.0)",
   "macos (2.4.x)",
   "ubuntu (2.4.x, rubygems)",
   "ubuntu (2.4.x, bundler)",

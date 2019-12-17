@@ -1,5 +1,293 @@
 # coding: UTF-8
 
+=== 3.1.1 / 2019-12-16
+
+Bug fixes:
+
+* Vendor Bundler 2.1.0 again. The version of Bundler with
+  RubyGems 3.1.0 was Bundler 2.1.0.pre.3. Pull request #3029 by
+  SHIBATA Hiroshi.
+
+=== 3.1.0 / 2019-12-16
+
+Major enhancements:
+
+* Vendor bundler 2.1. Pull request #3028 by David Rodríguez.
+
+Minor enhancements:
+
+* Check for rubygems.org typo squatting sources. Pull request #2999 by
+  Luis Sagastume.
+* Refactor remote fetcher. Pull request #3017 by David Rodríguez.
+* Lazily load `open3`. Pull request #3001 by David Rodríguez.
+* Remove `delegate` dependency. Pull request #3002 by David Rodríguez.
+* Lazily load `uri`. Pull request #3005 by David Rodríguez.
+* Lazily load `rubygems/gem_runner` during tests. Pull request #3009 by
+  David Rodríguez.
+* Use bundler to manage development dependencies. Pull request #3012 by
+  David Rodríguez.
+
+Bug fixes:
+
+* Remove unnecessary executable flags. Pull request #2982 by David
+  Rodríguez.
+* Remove configuration that contained a typo. Pull request #2989 by David
+  Rodríguez.
+
+Compatibility changes:
+
+* Remove 1.8.7 leftovers. Pull request #2972 by David Rodríguez.
+* Deprecate `gem generate_index --modern` and `gem generate_index
+  --no-modern`. Pull request #2992 by David Rodríguez.
+
+=== 3.1.0.pre3 / 2019-11-11
+
+Minor enhancements:
+
+* Fix gem pristine not accounting for user installed gems. Pull request
+  #2914 by Luis Sagastume.
+* Refactor keyword argument test for Ruby 2.7. Pull request #2947 by
+  SHIBATA Hiroshi.
+* Fix errors at frozen Gem::Version. Pull request #2949 by Nobuyoshi
+  Nakada.
+* Remove taint usage on Ruby 2.7+. Pull request #2951 by Jeremy Evans.
+* Check Manifest.txt is up to date. Pull request #2953 by David Rodríguez.
+* Clarify symlink conditionals in tests. Pull request #2962 by David
+  Rodríguez.
+* Update command line parsing to work under ps. Pull request #2966 by
+  David Rodríguez.
+* Properly test `Gem::Specifications.stub_for`. Pull request #2970 by
+  David Rodríguez.
+* Fix Gem::LOADED_SPECS_MUTEX handling for recursive locking. Pull request
+  #2985 by MSP-Greg.
+
+=== 3.1.0.pre2 / 2019-10-15
+
+Minor enhancements:
+
+* Optimize Gem::Package::TarReader#each. Pull request #2941 by Jean byroot
+  Boussier.
+* Time comparison around date boundary. Pull request #2944 by Nobuyoshi
+  Nakada.
+
+=== 3.1.0.pre1 / 2019-10-08
+
+Major enhancements:
+
+* Try to use bundler-2.1.0.pre.2. Pull request #2923 by SHIBATA Hiroshi.
+* [Require] Ensure -I beats a default gem. Pull request #1868 by Samuel
+  Giddins.
+* [Specification] Prefer user-installed gems to default gems. Pull request
+  #2112 by Samuel Giddins.
+* Multifactor authentication for yank command. Pull request #2514 by Qiu
+  Chaofan.
+* Autoswitch to exact bundler version if present. Pull request #2583 by
+  David Rodríguez.
+
+Minor enhancements:
+
+* Fix Gem::Requirement equality comparison when ~> operator is used. Pull
+  request #2554 by Grey Baker.
+* Don't use a proxy if https_proxy env var is empty. Pull request #2567 by
+  Luis Sagastume.
+* Fix typo in specs warning. Pull request #2585 by Rui.
+* Bin/gem: remove initial empty line. Pull request #2602 by Kenyon Ralph.
+* Avoid rdoc hook when it's failed to load rdoc library. Pull request
+  #2604 by SHIBATA Hiroshi.
+* Refactor get_proxy_from_env logic. Pull request #2611 by Luis Sagastume.
+* Allow to easily bisect flaky failures. Pull request #2626 by David
+  Rodríguez.
+* Fix `--ignore-dependencies` flag not installing platform specific gems.
+  Pull request #2631 by David Rodríguez.
+* Make `gem install --explain` list platforms. Pull request #2634 by David
+  Rodríguez.
+* Make `gem update --explain` list platforms. Pull request #2635 by David
+  Rodríguez.
+* Refactoring install and update explanations. Pull request #2643 by David
+  Rodríguez.
+* Restore transitiveness of version comparison. Pull request #2651 by
+  David Rodríguez.
+* Undo requirement sorting. Pull request #2652 by David Rodríguez.
+* Update dummy version of Bundler for #2581. Pull request #2584 by SHIBATA
+  Hiroshi.
+* Ignore to handle the different platform. Pull request #2672 by SHIBATA
+  Hiroshi.
+* Make Gem::Specification.default_stubs to public methods. Pull request
+  #2675 by SHIBATA Hiroshi.
+* Sort files and test_files in specifications. Pull request #2524 by
+  Christopher Baines.
+* Fix comment of Gem::Specification#required_ruby_version=. Pull request
+  #2732 by Alex Junger.
+* Config_file.rb - update path separator in ENV['GEMRC'] logic. Pull
+  request #2735 by MSP-Greg.
+* Fix `ruby setup.rb` warnings. Pull request #2737 by David Rodríguez.
+* Don't use regex delimiters when searching for a dependency. Pull request
+  #2738 by Luis Sagastume.
+* Refactor query command. Pull request #2739 by Luis Sagastume.
+* Don't remove default spec files from mapping after require. Pull request
+  #2741 by David Rodríguez.
+* Cleanup base test case. Pull request #2742 by David Rodríguez.
+* Simplify Specification#gems_dir. Pull request #2745 by David Rodríguez.
+* Fix test warning. Pull request #2746 by David Rodríguez.
+* Extract an `add_to_load_path` method. Pull request #2749 by David
+  Rodríguez.
+* Fix setup command if format_executable is true by default. Pull request
+  #2766 by Jeremy Evans.
+* Update the certificate files to make the test pass on Debian 10. Pull
+  request #2777 by Yusuke Endoh.
+* Write to the correct config file(.gemrc). Pull request #2779 by Luis
+  Sagastume.
+* Fix for large values in UID/GID fields in tar archives. Pull request
+  #2780 by Alexey Shein.
+* Lazy require stringio. Pull request #2781 by Luis Sagastume.
+* Make Gem::Specification#ruby_code handle OpenSSL::PKey::RSA objects.
+  Pull request #2782 by Luis Sagastume.
+* Fix setup command test for bundler with program_suffix. Pull request
+  #2783 by Sorah Fukumori.
+* Make sure `rake package` works. Pull request #2787 by David Rodríguez.
+* Synchronize access to the Gem::Specification::LOAD_CACHE Hash. Pull
+  request #2789 by Benoit Daloze.
+* Task to install rubygems to local system. Pull request #2795 by David
+  Rodríguez.
+* Add an attr_reader to Gem::Installer for the package instance variable.
+  Pull request #2796 by Daniel Berger.
+* Switch CI script to bash. Pull request #2799 by David Rodríguez.
+* Move gemcutter utilities code to Gem::Command. Pull request #2803 by
+  Luis Sagastume.
+* Add raw spec method to gem package. Pull request #2806 by Luis
+  Sagastume.
+* Improve `rake package` test error message. Pull request #2815 by David
+  Rodríguez.
+* Resolve `@@project_dir` from test file paths. Pull request #2843 by
+  Nobuyoshi Nakada.
+* Remove dead code in Gem::Validator. Pull request #2537 by Ellen Marie
+  Dash.
+* The date might have advanced since TODAY has been set. Pull request
+  #2938 by Nobuyoshi Nakada.
+* Remove old ci configurations. Pull request #2917 by SHIBATA Hiroshi.
+* Add Gem::Dependency identity. Pull request #2936 by Luis Sagastume.
+* Filter dependency type and name strictly. Pull request #2930 by SHIBATA
+  Hiroshi.
+* Always pass an encoding option to Zlib::GzipReader.wrap. Pull request
+  #2933 by Nobuyoshi Nakada.
+* Introduce default prerelease requirement. Pull request #2925 by David
+  Rodríguez.
+* Detect libc version, closes #2918. Pull request #2922 by fauno.
+* Use IAM role to extract security-credentials for EC2 instance. Pull
+  request #2894 by Alexander Pakulov.
+* Improve `gem uninstall --all`. Pull request #2893 by David Rodríguez.
+* Use `RbConfig::CONFIG['rubylibprefix']`. Pull request #2889 by Nobuyoshi
+  Nakada.
+* Build the first gemspec we found if no arguments are passed to gem
+  build. Pull request #2887 by Luis Sagastume.
+* $LOAD_PATH elements should be real paths. Pull request #2885 by
+  Nobuyoshi Nakada.
+* Use the standard RUBY_ENGINE_VERSION instead of JRUBY_VERSION. Pull
+  request #2864 by Benoit Daloze.
+* Cleanup after testing `rake package`. Pull request #2862 by David
+  Rodríguez.
+* Cherry-pick shushing deprecation warnings from ruby-core. Pull request
+  #2861 by David Rodríguez.
+* Ext/builder.rb cleanup. Pull request #2849 by Luis Sagastume.
+* Fix @ran_rake assignment in builder.rb. Pull request #2850 by Luis
+  Sagastume.
+* Remove test suite warnings. Pull request #2845 by Luis Sagastume.
+* Replace domain parameter with a parameter to suppress suggestions. Pull
+  request #2846 by Luis Sagastume.
+* Move default specifications dir definition out of BasicSpecification.
+  Pull request #2841 by Vít Ondruch.
+* There is no usage of @orig_env_* variables in test suite. Pull request
+  #2838 by SHIBATA Hiroshi.
+* Use File#open instead of Kernel#open in stub_specification.rb. Pull
+  request #2834 by Luis Sagastume.
+* Simplify #to_ruby code. Pull request #2825 by Nobuyoshi Nakada.
+* Add a gem attr to the Gem::Package class. Pull request #2828 by Daniel
+  Berger.
+* Remove useless TODO comment. Pull request #2818 by Luis Sagastume.
+
+Bug fixes:
+
+* Fix typos in History.txt. Pull request #2565 by Igor Zubkov.
+* Remove unused empty sources array. Pull request #2598 by Aaron
+  Patterson.
+* Fix windows specific executables generated by `gem install`. Pull
+  request #2628 by David Rodríguez.
+* Gem::Specification#to_ruby needs OpenSSL. Pull request #2937 by
+  Nobuyoshi Nakada.
+* Set SOURCE_DATE_EPOCH env var if not provided. Pull request #2882 by
+  Ellen Marie Dash.
+* Installer.rb - fix #windows_stub_script. Pull request #2876 by MSP-Greg.
+* Fixed deprecation message. Pull request #2867 by Nobuyoshi Nakada.
+* Fix requiring default gems to consider prereleases. Pull request #2728
+  by David Rodríguez.
+* Forbid `find_spec_for_exe` without an `exec_name`. Pull request #2706 by
+  David Rodríguez.
+* Do not prompt for passphrase when key can be loaded without it. Pull
+  request #2710 by Luis Sagastume.
+* Add missing wrapper. Pull request #2690 by David Rodríguez.
+* Remove long ago deprecated methods. Pull request #2704 by David
+  Rodríguez.
+* Renamed duplicate test. Pull request #2678 by Nobuyoshi Nakada.
+* File.exists? is deprecated. Pull request #2855 by SHIBATA Hiroshi.
+* Fixed to warn with shadowing outer local variable. Pull request #2856 by
+  SHIBATA Hiroshi.
+* Fix explain with ignore-dependencies. Pull request #2647 by David
+  Rodríguez.
+* Fix default gem executable installation when folder is not `bin/`. Pull
+  request #2649 by David Rodríguez.
+* Fix cryptic error on local and ignore-dependencies combination. Pull
+  request #2650 by David Rodríguez.
+
+Compatibility changes:
+
+* Remove commented code from command.rb. Pull request #2620 by Luis
+  Sagastume.
+* Suppress keywords warning. Pull request #2934 by Nobuyoshi Nakada.
+* Suppress Ruby 2.7's real kwargs warning. Pull request #2912 by Koichi
+  ITO.
+* Fix Kernel#warn override. Pull request #2911 by Jeremy Evans.
+* Make deprecate Gem::RubyGemsVersion and Gem::ConfigMap. Pull request
+  #2857 by SHIBATA Hiroshi.
+* Deprecate Gem::RemoteFetcher#fetch_size. Pull request #2833 by Luis
+  Sagastume.
+* Remove conflict.rb code that was supposed to be removed in Rubygems 3.
+  Pull request #2802 by Luis Sagastume.
+* Explicitly deprecate `rubyforge_project`. Pull request #2798 by David
+  Rodríguez.
+* Compatibility cleanups. Pull request #2754 by David Rodríguez.
+* Remove `others_possible` activation request param. Pull request #2747 by
+  David Rodríguez.
+* Remove dependency installer deprecated code. Pull request #2740 by Luis
+  Sagastume.
+* Deprecate unused Gem::Installer#unpack method. Pull request #2715 by Vít
+  Ondruch.
+* Removed guard condition with USE_BUNDLER_FOR_GEMDEPS. Pull request #2716
+  by SHIBATA Hiroshi.
+* Skip deprecation warning during specs. Pull request #2718 by David
+  Rodríguez.
+* Remove QuickLoader reference. Pull request #2719 by David Rodríguez.
+* Removed circular require. Pull request #2679 by Nobuyoshi Nakada.
+* Removed needless environmental variable for Travis CI. Pull request
+  #2685 by SHIBATA Hiroshi.
+* Deprecate a few unused methods. Pull request #2674 by David Rodríguez.
+* Removing yaml require. Pull request #2538 by Luciano Sousa.
+* Add deprecation warnings for cli options. Pull request #2607 by Luis
+  Sagastume.
+
+Style changes:
+
+* Enable `Layout/SpaceInsideParens` rubocop cop. Pull request #2630 by
+  David Rodríguez.
+* Remove some extra empty lines from the repo. Pull request #2669 by David
+  Rodríguez.
+* Enable Style/EmptyLinesAroundClassBody rubocop cop. Pull request #2636
+  by David Rodríguez.
+* Enable Style/BlockDelimiters rubocop cop. Pull request #2640 by David
+  Rodríguez.
+* Enable Layout/SpaceAroundOperators rubocop cop. Pull request #2642 by
+  David Rodríguez.
+* Rubocop 0.71. Pull request #2785 by David Rodríguez.
+
 === 3.0.6 / 2019-08-17
 
 Bug fixes:

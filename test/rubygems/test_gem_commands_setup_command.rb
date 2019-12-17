@@ -212,8 +212,39 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     # TODO: We need to assert to remove same version of bundler on gem_dir directory(It's not site_ruby dir)
 
-    # expect to not remove bundler-* direcotyr.
+    # expect to not remove bundler-* directory.
     assert_path_exists 'default/gems/bundler-audit-1.0.0'
+  end
+
+  def test_install_default_bundler_gem_with_force_flag
+    @cmd.extend FileUtils
+
+    bin_dir = File.join(@gemhome, 'bin')
+    bundle_bin = File.join(bin_dir, 'bundle')
+
+    write_file bundle_bin do |f|
+      f.puts '#!/usr/bin/ruby'
+      f.puts ''
+      f.puts 'echo "hello"'
+    end
+
+    bindir(bin_dir) do
+      @cmd.options[:force] = true
+
+      @cmd.install_default_bundler_gem bin_dir
+
+      bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
+      default_spec_path = File.join(Gem.default_specifications_dir, "#{bundler_spec.full_name}.gemspec")
+      spec = Gem::Specification.load(default_spec_path)
+
+      spec.executables.each do |e|
+        if Gem.win_platform?
+          assert_path_exists File.join(bin_dir, "#{e}.bat")
+        end
+
+        assert_path_exists File.join bin_dir, Gem.default_exec_format % e
+      end
+    end
   end
 
   def test_remove_old_lib_files

@@ -219,7 +219,7 @@ class Gem::Installer
   def check_executable_overwrite(filename) # :nodoc:
     return if @force
 
-    generated_bin = File.join @bin_dir, formatted_program_filename(filename)
+    generated_bin = target_binstub_path(filename)
 
     return unless File.exist? generated_bin
 
@@ -532,7 +532,7 @@ class Gem::Installer
   # http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/193379
 
   def generate_bin_script(filename, bindir)
-    bin_script_path = File.join bindir, formatted_program_filename(filename)
+    bin_script_path = target_binstub_path(filename)
 
     FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
 
@@ -552,7 +552,7 @@ class Gem::Installer
 
   def generate_bin_symlink(filename, bindir)
     src = File.join gem_dir, spec.bindir, filename
-    dst = File.join bindir, formatted_program_filename(filename)
+    dst = target_binstub_path(filename)
 
     if File.exist? dst
       if File.symlink? dst
@@ -957,6 +957,12 @@ TEXT
   def write_cache_file
     cache_file = File.join gem_home, 'cache', spec.file_name
     @package.copy_to cache_file
+  end
+
+  private
+
+  def target_binstub_path(filename)
+    File.join @bin_dir, formatted_program_filename(filename)
   end
 
 end

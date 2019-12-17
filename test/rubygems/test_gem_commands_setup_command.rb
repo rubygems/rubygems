@@ -247,6 +247,65 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     end
   end
 
+  def test_install_default_bundler_gem_replacing_the_buggy_bundler_binstub
+    @cmd.extend FileUtils
+
+    bin_dir = File.join(@gemhome, 'bin')
+    bundle_bin = File.join(bin_dir, 'bundle')
+
+    write_file bundle_bin do |f|
+      f.puts <<~'RUBY'
+        #!/usr/local/bin/ruby
+        # frozen_string_literal: true
+
+        # Exit cleanly from an early interrupt
+        Signal.trap("INT") do
+          Bundler.ui.debug("\n#{caller.join("\n")}") if defined?(Bundler)
+          exit 1
+        end
+
+        require "bundler"
+        # Check if an older version of bundler is installed
+        $LOAD_PATH.each do |path|
+          next unless path =~ %r{/bundler-0\.(\d+)} && $1.to_i < 9
+          err = String.new
+          err << "Looks like you have a version of bundler that's older than 0.9.\n"
+          err << "Please remove your old versions.\n"
+          err << "An easy way to do this is by running `gem cleanup bundler`."
+          abort(err)
+        end
+
+        require "bundler/friendly_errors"
+        Bundler.with_friendly_errors do
+          require "bundler/cli"
+
+          # Allow any command to use --help flag to show help for that command
+          help_flags = %w[--help -h]
+          help_flag_used = ARGV.any? {|a| help_flags.include? a }
+          args = help_flag_used ? Bundler::CLI.reformatted_help_args(ARGV) : ARGV
+
+          Bundler::CLI.start(args, :debug => true)
+        end
+      RUBY
+    end
+
+    bindir(bin_dir) do
+      @cmd.install_default_bundler_gem bin_dir
+
+      bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
+      default_spec_path = File.join(Gem.default_specifications_dir, "#{bundler_spec.full_name}.gemspec")
+      spec = Gem::Specification.load(default_spec_path)
+
+      spec.executables.each do |e|
+        if Gem.win_platform?
+          assert_path_exists File.join(bin_dir, "#{e}.bat")
+        end
+
+        assert_path_exists File.join bin_dir, Gem.default_exec_format % e
+      end
+    end
+  end
+
   def test_remove_old_lib_files
     lib                   = File.join @install_dir, 'lib'
     lib_rubygems          = File.join lib, 'rubygems'

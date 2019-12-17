@@ -223,6 +223,8 @@ class Gem::Installer
 
     return unless File.exist? generated_bin
 
+    return if overwrite_excluded_for?(filename)
+
     ruby_executable = false
     existing = nil
 
@@ -965,4 +967,20 @@ TEXT
     File.join @bin_dir, formatted_program_filename(filename)
   end
 
+  def overwrite_excluded_for?(filename)
+    require "digest"
+
+    exclusions = {
+      # Bad version of the bundle binstub shipped with ruby 2.3, 2.4 and 2.5
+      "bundle" => ["77085ec6cc8a3c8e2292711d8132cc50b4412f7ab17a7aac7bff2002c9b90cf1"]
+    }
+
+    filename_exclusions = exclusions[filename]
+
+    return false unless filename_exclusions
+
+    digest = Digest::SHA256.file(target_binstub_path(filename)).hexdigest
+
+    filename_exclusions.include?(digest)
+  end
 end

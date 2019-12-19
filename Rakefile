@@ -96,8 +96,13 @@ task :check_deprecations do
 end
 
 desc "Install rubygems to local system"
-task :install => :package do
+task :install => [:clear_package, :package] do
   sh "ruby -Ilib bin/gem install pkg/rubygems-update-#{v}.gem && update_rubygems"
+end
+
+desc "Clears previously built package"
+task :clear_package do
+  rm_rf "pkg"
 end
 
 desc "Release rubygems-#{v}"

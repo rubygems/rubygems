@@ -1,0 +1,44 @@
+name: install
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - staging
+      - trying
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ruby: [ '2.3.8', '2.4.9', '2.5.7', '2.6.5', 'jruby-9.2.9.0' ]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - run: git submodule update -i
+
+      - name: Fix world writable dirs
+        run: |
+          chmod go-w $HOME
+          sudo chmod -R go-w /usr/share
+          sudo chmod -R go-w /opt
+
+      - name: Set up RVM
+        run: curl -sSL https://get.rvm.io | bash
+
+      - name: Set up Ruby
+        run: |
+          source $HOME/.rvm/scripts/rvm
+          rvm install ${{ matrix.ruby }} --binary --autolibs=disable
+          rvm --default use ${{ matrix.ruby }}
+
+      - name: Install rubygems
+        run: |
+          source $HOME/.rvm/scripts/rvm
+          ruby -Ilib -S rake install
+
+    timeout-minutes: 10

@@ -97,7 +97,7 @@ end
 
 desc "Install rubygems to local system"
 task :install => :package do
-  sh "gem install pkg/rubygems-update-#{v}.gem && update_rubygems"
+  sh "ruby -Ilib bin/gem install pkg/rubygems-update-#{v}.gem && update_rubygems"
 end
 
 desc "Release rubygems-#{v}"

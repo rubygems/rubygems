@@ -17,7 +17,7 @@ class Gem::Commands::SetupCommand < Gem::Command
 
     super 'setup', 'Install RubyGems',
           :format_executable => true, :document => %w[ri],
-          :force => false,
+          :force => true,
           :site_or_vendor => 'sitelibdir',
           :destdir => '', :prefix => '', :previous_version => '',
           :regenerate_binstubs => true

@@ -598,7 +598,7 @@ abort "#{deprecation_message}"
         history_string = ""
 
         until versions.length == 0 or
-              versions.shift < options[:previous_version] do
+              versions.shift <= options[:previous_version] do
           history_string += version_lines.shift + text.shift
         end
 

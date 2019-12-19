@@ -339,11 +339,6 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   * Fixed release note display for LANG=C when installing rubygems
   * π is tasty
 
-=== 2.0.2 / 2013-03-06
-
-* Bug fixes:
-  * Other bugs fixed
-
     EXPECTED
 
     output = @ui.output

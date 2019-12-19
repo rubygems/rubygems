@@ -123,6 +123,18 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     assert_equal "I changed it!\n", File.read(gem_bin_path)
   end
 
+  def test_execute_informs_about_installed_executables
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    out = @ui.output.split "\n"
+
+    exec_line = out.shift until exec_line == "RubyGems installed the following executables:"
+    assert_equal "\t#{default_gem_bin_path}", out.shift
+    assert_equal "\t#{default_bundle_bin_path}", out.shift
+  end
+
   def test_env_shebang_flag
     gem_bin_path = gem_install 'a'
     write_file gem_bin_path do |io|
@@ -133,10 +145,6 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     @cmd.options[:env_shebang] = true
     @cmd.execute
 
-    gem_exec = sprintf Gem.default_exec_format, 'gem'
-    default_gem_bin_path = File.join @install_dir, 'bin', gem_exec
-    bundle_exec = sprintf Gem.default_exec_format, 'bundle'
-    default_bundle_bin_path = File.join @install_dir, 'bin', bundle_exec
     ruby_exec = sprintf Gem.default_exec_format, 'ruby'
 
     if Gem.win_platform?
@@ -347,6 +355,18 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     assert_equal expected, output
   ensure
     @ui.outs.set_encoding @default_external if @default_external
+  end
+
+  private
+
+  def default_gem_bin_path
+    gem_exec = sprintf Gem.default_exec_format, 'gem'
+    File.join @install_dir, 'bin', gem_exec
+  end
+
+  def default_bundle_bin_path
+    bundle_exec = sprintf Gem.default_exec_format, 'bundle'
+    File.join @install_dir, 'bin', bundle_exec
   end
 
 end unless Gem.java_platform?

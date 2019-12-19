@@ -205,10 +205,10 @@ By default, this RubyGems will install gem as:
     say
 
     say "RubyGems installed the following executables:"
-    say @bin_file_names.map { |name| "\t#{name}\n" }
+    say bin_file_names.map { |name| "\t#{name}\n" }
     say
 
-    unless @bin_file_names.grep(/#{File::SEPARATOR}gem$/)
+    unless bin_file_names.grep(/#{File::SEPARATOR}gem$/)
       say "If `gem` was installed by a previous RubyGems installation, you may need"
       say "to remove it by hand."
       say
@@ -241,8 +241,6 @@ By default, this RubyGems will install gem as:
   end
 
   def install_executables(bin_dir)
-    @bin_file_names = []
-
     prog_mode = options[:prog_mode] || 0755
 
     executables = { 'gem' => 'bin' }
@@ -255,13 +253,7 @@ By default, this RubyGems will install gem as:
         bin_files -= %w[update_rubygems]
 
         bin_files.each do |bin_file|
-          bin_file_formatted = if options[:format_executable]
-                                 Gem.default_exec_format % bin_file
-                               else
-                                 bin_file
-                               end
-
-          dest_file = File.join bin_dir, bin_file_formatted
+          dest_file = target_bin_path(bin_dir, bin_file)
           bin_tmp_file = File.join Dir.tmpdir, "#{bin_file}.#{$$}"
 
           begin
@@ -273,7 +265,7 @@ By default, this RubyGems will install gem as:
             end
 
             install bin_tmp_file, dest_file, :mode => prog_mode
-            @bin_file_names << dest_file
+            bin_file_names << dest_file
           ensure
             rm bin_tmp_file
           end
@@ -441,6 +433,8 @@ By default, this RubyGems will install gem as:
         FileUtils.rm_f built_gem
       end
     end
+
+    bundler_spec.executables.each {|executable| bin_file_names << target_bin_path(bin_dir, executable) }
 
     say "Bundler #{bundler_spec.version} installed"
   end
@@ -630,6 +624,21 @@ abort "#{deprecation_message}"
 
     command = Gem::Commands::PristineCommand.new
     command.invoke(*args)
+  end
+
+  private
+
+  def target_bin_path(bin_dir, bin_file)
+    bin_file_formatted = if options[:format_executable]
+                           Gem.default_exec_format % bin_file
+                         else
+                           bin_file
+                         end
+    File.join bin_dir, bin_file_formatted
+  end
+
+  def bin_file_names
+    @bin_file_names ||= []
   end
 
 end

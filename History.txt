@@ -1,5 +1,25 @@
 # coding: UTF-8
 
+
+=== 3.1.2 / 2019-12-20
+
+Minor enhancements:
+
+* Restore non prompting `gem update --system` behavior. Pull request #3040
+  by David Rodríguez.
+* Show only release notes for new code installed. Pull request #3041 by
+  David Rodríguez.
+* Inform about installed `bundle` executable after `gem update --system`.
+  Pull request #3042 by David Rodríguez.
+* Use Bundler 2.1.2. Pull request #3043 by SHIBATA Hiroshi.
+
+Bug fixes:
+
+* Require `uri` in source.rb. Pull request #3034 by mihaibuzgau.
+* Fix `gem update --system --force`. Pull request #3035 by David
+  Rodríguez.
+* Move `require uri` to source_list. Pull request #3038 by mihaibuzgau.
+
 === 3.1.1 / 2019-12-16
 
 Bug fixes:

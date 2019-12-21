@@ -210,6 +210,9 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     # expect to remove normal gem that was same version. because it's promoted default gems.
     refute_path_exists File.join(Gem.dir, "specifications", "bundler-#{BUNDLER_VERS}.gemspec")
 
+    # expect to add normal gem that was same version. because it's demoted from a default gem.
+    assert_path_exists File.join(Gem.dir, "specifications", "bundler-1.15.4.gemspec")
+
     assert_path_exists "#{Gem.dir}/gems/bundler-#{BUNDLER_VERS}"
     assert_path_exists "#{Gem.dir}/gems/bundler-1.15.4"
     assert_path_exists "#{Gem.dir}/gems/bundler-audit-1.0.0"

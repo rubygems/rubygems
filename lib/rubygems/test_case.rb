@@ -676,8 +676,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       yield(s) if block_given?
     end
 
-    Gem::Specification.map # HACK: force specs to (re-)load before we write
-
     written_path = write_file spec.spec_file do |io|
       io.write spec.to_ruby_for_cache
     end

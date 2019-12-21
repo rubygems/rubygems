@@ -249,6 +249,19 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     end
   end
 
+  def test_install_default_bundler_gem_when_previous_version_not_in_cache
+    @cmd.extend FileUtils
+
+    File.delete File.join(Gem.dir, "cache", "bundler-1.15.4.gem")
+
+    bin_dir = File.join(@gemhome, 'bin')
+    @cmd.install_default_bundler_gem bin_dir
+
+    refute_path_exists File.join(Gem.default_specifications_dir, "bundler-1.15.4.gemspec")
+    assert_path_exists File.join(Gem.dir, "specifications", "bundler-1.15.4.gemspec")
+    assert_path_exists File.join(Gem.dir, "gems", "bundler-1.15.4")
+  end
+
   def test_remove_old_lib_files
     lib                   = File.join @install_dir, 'lib'
     lib_rubygems          = File.join lib, 'rubygems'

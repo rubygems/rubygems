@@ -383,6 +383,13 @@ By default, this RubyGems will install gem as:
 
       gem = spec.cache_file
 
+      unless File.exist?(gem)
+        require 'rubygems/remote_fetcher'
+
+        dep = Gem::Dependency.new(spec.name, spec.version)
+        Gem::RemoteFetcher.fetcher.download_to_cache(dep, spec.base_dir)
+      end
+
       installer = Gem::Installer.at(gem, env_shebang: options[:env_shebang], format_executable: options[:format_executable], force: options[:force], bin_dir: bin_dir, wrappers: true)
       installer.install
 

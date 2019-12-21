@@ -101,14 +101,14 @@ class Gem::RemoteFetcher
   # Should probably be integrated with #download below, but that will be a
   # larger, more encompassing effort. -erikh
 
-  def download_to_cache(dependency)
+  def download_to_cache(dependency, install_dir = Gem.dir)
     found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dependency
 
     return if found.empty?
 
     spec, source = found.max_by {|(s,_)| s.version }
 
-    download spec, source.uri
+    download spec, source.uri, install_dir
   end
 
   ##

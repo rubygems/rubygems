@@ -215,7 +215,6 @@ class TestGemCommandsPristineCommand < Gem::TestCase
       io.write "# extconf.rb\nrequire 'mkmf'; create_makefile 'a'"
     end
 
-    util_build_gem a
     install_gem a
 
     @cmd.options[:args] = %w[a]

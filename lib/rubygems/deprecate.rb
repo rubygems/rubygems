@@ -81,6 +81,31 @@ module Gem::Deprecate
       end
     end
   end
-  module_function :deprecate, :deprecate_command, :skip_during
+
+  ##
+  # Same as `deprecate`, but only warns during BuildCommand
+  # Used for deprecated specification properties
+
+  def deprecate_spec(name, repl, year, month)
+    class_eval do
+      old = "_deprecated_#{name}"
+      alias_method old, name
+      define_method name do |*args, &block|
+        if Gem::CommandManager.instance.current_command == :build and
+          !Gem::Deprecate.skip
+          klass = self.kind_of? Module
+          target = klass ? "#{self}." : "#{self.class}#"
+          msg = [ "NOTE: #{target}#{name} is deprecated",
+                  repl == :none ? " with no replacement" : "; use #{repl} instead",
+                  ". It will be removed on or after %4d-%02d-01." % [year, month],
+                  "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}",
+          ]
+          warn "#{msg.join}."
+        end
+        send old, *args, &block
+      end
+    end
+  end
+  module_function :deprecate, :deprecate_command, :deprecate_spec, :skip_during
 
 end

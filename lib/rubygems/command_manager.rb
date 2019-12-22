@@ -78,6 +78,11 @@ class Gem::CommandManager
   }.freeze
 
   ##
+  # The current command name as a symbol
+
+  attr_reader :current_command
+
+  ##
   # Return the authoritative instance of the command manager.
 
   def self.instance
@@ -175,6 +180,7 @@ class Gem::CommandManager
     else
       cmd_name = args.shift.downcase
       cmd = find_command cmd_name
+      @current_command = cmd.command.to_sym
       cmd.invoke_with_build_args args, build_args
       cmd.deprecation_warning if cmd.deprecated?
     end

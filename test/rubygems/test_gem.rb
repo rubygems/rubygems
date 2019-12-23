@@ -1090,10 +1090,18 @@ class TestGem < Gem::TestCase
     util_restore_RUBY_VERSION
   end
 
-  def test_self_ruby_version_with_prerelease
+  def test_self_ruby_version_with_svn_prerelease
     util_set_RUBY_VERSION '2.6.0', -1, 63539, 'ruby 2.6.0preview2 (2018-05-31 trunk 63539) [x86_64-linux]'
 
     assert_equal Gem::Version.new('2.6.0.preview2'), Gem.ruby_version
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
+  def test_self_ruby_version_with_git_prerelease
+    util_set_RUBY_VERSION '2.7.0', -1, 'b563439274a402e33541f5695b1bfd4ac1085638', 'ruby 2.7.0preview3 (2019-11-23 master b563439274) [x86_64-linux]'
+
+    assert_equal Gem::Version.new('2.7.0.preview3'), Gem.ruby_version
   ensure
     util_restore_RUBY_VERSION
   end
@@ -1106,10 +1114,18 @@ class TestGem < Gem::TestCase
     util_restore_RUBY_VERSION
   end
 
-  def test_self_ruby_version_with_trunk
+  def test_self_ruby_version_with_svn_trunk
     util_set_RUBY_VERSION '1.9.2', -1, 23493, 'ruby 1.9.2dev (2009-05-20 trunk 23493) [x86_64-linux]'
 
     assert_equal Gem::Version.new('1.9.2.dev'), Gem.ruby_version
+  ensure
+    util_restore_RUBY_VERSION
+  end
+
+  def test_self_ruby_version_with_git_master
+    util_set_RUBY_VERSION '2.7.0', -1, '5de284ec78220e75643f89b454ce999da0c1c195', 'ruby 2.7.0dev (2019-12-23T01:37:30Z master 5de284ec78) [x86_64-linux]'
+
+    assert_equal Gem::Version.new('2.7.0.dev'), Gem.ruby_version
   ensure
     util_restore_RUBY_VERSION
   end

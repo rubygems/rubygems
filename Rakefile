@@ -65,7 +65,7 @@ end
 
 desc "Run rubocop"
 task(:rubocop) do
-  sh "util/rubocop"
+  sh "util/bin/rubocop"
 end
 
 desc "Run a test suite bisection"
@@ -77,7 +77,7 @@ task(:bisect) do
          end
 
   gemdir = `gem env gemdir`.chomp
-  sh "SEED=#{seed} MTB_VERBOSE=2 util/bisect -Ilib:bundler/lib:test:#{gemdir}/gems/minitest-server-1.0.5/lib test"
+  sh "SEED=#{seed} MTB_VERBOSE=2 util/bin/bisect -Ilib:bundler/lib:test:#{gemdir}/gems/minitest-server-1.0.5/lib test"
 end
 
 # --------------------------------------------------------------------
@@ -89,7 +89,7 @@ task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:
 desc "Check for deprecated methods with expired deprecation horizon"
 task :check_deprecations do
   if v.segments[1] == 0 && v.segments[2] == 0
-    sh("util/rubocop -r ./util/cops/deprecations --only Rubygems/Deprecations")
+    sh("util/bin/rubocop -r ./util/cops/deprecations --only Rubygems/Deprecations")
   else
     puts "Skipping deprecation checks since not releasing a major version."
   end

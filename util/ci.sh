@@ -16,9 +16,11 @@ case $1 in
       ruby -I lib bin/gem uninstall executable-hooks gem-wrappers bundler-unload -x --force -i "$gemhome@global"
     fi
 
+    exec bundle install
+
     if [ "$TEST_TOOL" = "rubygems" ]
     then
-      exec rake setup
+      exec ./util/bin/rake setup
     else
       cd bundler
 
@@ -36,15 +38,14 @@ case $1 in
     ;;
 
   rubocop)
-    gem install rubocop -v "~>0.74.0"
-    exec util/rubocop
+    exec ./util/bin/rubocop
 
     ;;
 
   script)
     if [ "$TEST_TOOL" = "rubygems" ]
     then
-      exec rake test
+      exec ./util/bin/rake test
     else
       cd bundler
 

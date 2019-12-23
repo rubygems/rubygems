@@ -571,7 +571,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   def install_gem(spec, options = {})
     require 'rubygems/installer'
 
-    gem = File.join @tempdir, "gems", "#{spec.full_name}.gem"
+    gem = spec.cache_file
 
     unless File.exist? gem
       use_ui Gem::MockGemUi.new do
@@ -580,7 +580,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
         end
       end
 
-      gem = File.join(@tempdir, File.basename(spec.cache_file)).tap(&Gem::UNTAINT)
+      gem = File.join(@tempdir, File.basename(gem)).tap(&Gem::UNTAINT)
     end
 
     Gem::Installer.at(gem, options.merge({:wrappers => true})).install
@@ -675,8 +675,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
       yield(s) if block_given?
     end
-
-    Gem::Specification.map # HACK: force specs to (re-)load before we write
 
     written_path = write_file spec.spec_file do |io|
       io.write spec.to_ruby_for_cache
@@ -842,9 +840,6 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
       util_build_gem spec
 
-      cache_file = File.join @tempdir, 'gems', "#{spec.full_name}.gem"
-      FileUtils.mkdir_p File.dirname cache_file
-      FileUtils.mv spec.cache_file, cache_file
       FileUtils.rm spec.spec_file
     end
 

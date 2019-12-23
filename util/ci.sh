@@ -20,7 +20,7 @@ case $1 in
 
     if [ "$TEST_TOOL" = "rubygems" ]
     then
-      exec ./util/bin/rake setup
+      exec ./util/rake setup
     else
       cd bundler
 
@@ -45,7 +45,7 @@ case $1 in
   script)
     if [ "$TEST_TOOL" = "rubygems" ]
     then
-      exec ./util/bin/rake test
+      exec ./util/rake test
     else
       cd bundler
 

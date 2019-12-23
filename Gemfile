@@ -6,3 +6,4 @@ gem "rake", "~> 12.0"
 gem "minitest", "~> 5.0"
 gem "simplecov", "~> 0"
 gem "rubocop", "~> 0.74.0"
+gem 'minitest-bisect', '~> 1.5'

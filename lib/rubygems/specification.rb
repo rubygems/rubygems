@@ -103,6 +103,13 @@ class Gem::Specification < Gem::BasicSpecification
      4 => 18,
   }.freeze
 
+  ##
+  # Some Specification methods/properties are deprecated and then removed.
+  # Gems installed with older RubyGems versions may have these items
+  # in their .gemspec files.  Used in #method_missing to ignore them.
+
+  REMOVED_METHODS = [:rubyforge_project=].freeze
+
   today = Time.now.utc
   TODAY = Time.utc(today.year, today.month, today.day) # :nodoc:
 
@@ -2105,6 +2112,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Warn about unknown attributes while loading a spec.
 
   def method_missing(sym, *a, &b) # :nodoc:
+    return if REMOVED_METHODS.include? sym
     if @specification_version > CURRENT_SPECIFICATION_VERSION and
       sym.to_s =~ /=$/
       warn "ignoring #{sym} loading #{full_name}" if $DEBUG

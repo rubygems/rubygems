@@ -734,14 +734,6 @@ class Gem::Specification < Gem::BasicSpecification
   attr_writer :original_platform # :nodoc:
 
   ##
-  # Deprecated and ignored.
-  #
-  # Formerly used to set rubyforge project.
-
-  attr_writer :rubyforge_project
-  deprecate :rubyforge_project=, :none,       2019, 12
-
-  ##
   # The Gem::Specification version of this gemspec.
   #
   # Do not set this, it is set automatically when the gem is packaged.

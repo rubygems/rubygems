@@ -3517,10 +3517,10 @@ Bug fixes:
 
 NOTE:
 
-http://rubygems.org is now the default source for downloading gems.
+https://rubygems.org/ is now the default source for downloading gems.
 
 You may have sources set via ~/.gemrc, so you should replace
-http://gems.rubyforge.org with http://rubygems.org
+http://gems.rubyforge.org with https://rubygems.org/
 
 http://gems.rubyforge.org will continue to work for the foreseeable future.
 

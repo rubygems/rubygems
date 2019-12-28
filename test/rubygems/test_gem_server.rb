@@ -473,7 +473,7 @@ class TestGemServer < Gem::TestCase
     dir = "#{@gemhome}2"
 
     spec = util_spec 'validhomepagegemhttp', 1
-    spec.homepage = "http://rubygems.org"
+    spec.homepage = "https://rubygems.org/"
 
     specs_dir = File.join dir, 'specifications'
     FileUtils.mkdir_p specs_dir

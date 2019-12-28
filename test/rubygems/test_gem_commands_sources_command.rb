@@ -247,7 +247,7 @@ source http://gems.example.com/ already present in the cache
   end
 
   def test_execute_add_http_rubygems_org
-    http_rubygems_org = 'http://rubygems.org'
+    http_rubygems_org = 'https://rubygems.org/'
 
     spec_fetcher do |fetcher|
       fetcher.spec 'a', 1

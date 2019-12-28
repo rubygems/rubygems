@@ -340,7 +340,7 @@ SHA256 Checksums:
 
 #{checksums}
 
-[download]: http://rubygems.org/pages/download
+[download]: https://rubygems.org/pages/download
 [upgrading]: http://docs.seattlerb.org/rubygems/UPGRADING_rdoc.html
 
       ANNOUNCEMENT

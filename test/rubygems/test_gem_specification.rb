@@ -3532,7 +3532,8 @@ Did you mean 'Ruby'?
         s.metadata = {
           "one"          => "two",
           "home"         => "three",
-          "homepage_uri" => "https://example.com/user/repo"
+          "homepage_uri" => "https://example.com/user/repo",
+          "donation_uri" => "https://example.com/donation"
         }
       end
 

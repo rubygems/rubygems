@@ -389,7 +389,7 @@ class Gem::Specification < Gem::BasicSpecification
   # These links will be used on your gem's page on rubygems.org and must pass
   # validation against following regex.
   #
-  #   %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
+  #   %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-\_]+(\.[A-Za-z\d\-\_]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}
 
   attr_accessor :metadata
 

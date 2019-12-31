@@ -62,11 +62,11 @@ end
 #
 #   $ tar tf your-gem-1.0.gem
 #   metadata.gz
-#   metadata.gz.sum
 #   metadata.gz.sig # metadata signature
 #   data.tar.gz
-#   data.tar.gz.sum
 #   data.tar.gz.sig # data signature
+#   checksums.yaml.gz
+#   checksums.yaml.gz.sig # checksums signature
 #
 # === Manually signing gems
 #

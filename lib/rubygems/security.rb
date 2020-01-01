@@ -161,6 +161,8 @@ end
 #     -K, --private-key KEY            Key for --sign or --build
 #     -s, --sign CERT                  Signs CERT with the key from -K
 #                                      and the certificate from -C
+#     -d, --days NUMBER_OF_DAYS        Days before the certificate expires
+#     -R, --re-sign                    Re-signs the certificate from -C with the key from -K
 #
 # We've already covered the <code>--build</code> option, and the
 # <code>--add</code>, <code>--list</code>, and <code>--remove</code> commands

@@ -267,7 +267,7 @@ end
 # 2. Grab the public key from the gemspec
 #
 #      gem spec some_signed_gem-1.0.gem cert_chain | \
-#        ruby -ryaml -e 'puts YAML.load_documents($stdin)' > public_key.crt
+#        ruby -ryaml -e 'puts YAML.load($stdin)' > public_key.crt
 #
 # 3. Generate a SHA1 hash of the data.tar.gz
 #

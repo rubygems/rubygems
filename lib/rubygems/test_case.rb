@@ -340,7 +340,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
                    ruby
                  end
 
-    @git = ENV['GIT'] || 'git'
+    @git = ENV['GIT'] || (win_platform? ? 'git.exe' : 'git')
 
     Gem.ensure_gem_subdirectories @gemhome
 

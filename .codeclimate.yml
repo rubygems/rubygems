@@ -1,0 +1,49 @@
+version: "2"
+
+# This config isn't meant to encode the state we want the codebase in.
+# It aims to highlight the most complicated or redundant parts of the
+# codebase. My aim is to make the number of issues be small enough to be
+# actionable, by making it to be more forgiving of less-urgent problems.
+#
+# We started with Code Climate flagging 379 potential issues, and a lot of
+# them are ultimately pretty low priority. Feel free to adjust these, or
+# ask me to do so, if you think it'd be useful. - @duckinator
+checks:
+  argument-count:
+    config:
+      threshold: 4
+  complex-logic:
+    config:
+      threshold: 4
+  file-lines:
+    config:
+      threshold: 750 # default=250
+  method-complexity:
+    config:
+      threshold: 20 # default=5
+  method-count:
+    config:
+      threshold: 50 # default=20
+  method-lines:
+    config:
+      threshold: 60 # default=25
+  nested-control-flow:
+    config:
+      threshold: 4
+  return-statements:
+    config:
+      threshold: 4
+  similar-code:
+    config:
+      threshold: # language-specific defaults. an override will affect all languages.
+  identical-code:
+    config:
+      threshold: # language-specific defaults. an override will affect all languages.
+
+# Disallowing all duplication often causes more trouble than it's worth.
+# Allow a few instances of similar code before Code Climate gets grumpy.
+plugins:
+  duplication:
+    enabled: true
+    config:
+      count_threshold: 3

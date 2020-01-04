@@ -1,6 +1,7 @@
 *.rbc
 *.swp
 .DS_Store
+/.bundle/gems
 /.idea
 /.rdoc
 /.rvmrc

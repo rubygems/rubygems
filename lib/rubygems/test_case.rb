@@ -169,20 +169,24 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   # original value when the block ends
   #
   def bindir(value)
-    bindir = RbConfig::CONFIG['bindir']
+    with_clean_path_to_ruby do
+      bindir = RbConfig::CONFIG['bindir']
 
-    if value
-      RbConfig::CONFIG['bindir'] = value
-    else
-      RbConfig::CONFIG.delete 'bindir'
-    end
+      if value
+        RbConfig::CONFIG['bindir'] = value
+      else
+        RbConfig::CONFIG.delete 'bindir'
+      end
 
-    yield
-  ensure
-    if bindir
-      RbConfig::CONFIG['bindir'] = bindir
-    else
-      RbConfig::CONFIG.delete 'bindir'
+      begin
+        yield
+      ensure
+        if bindir
+          RbConfig::CONFIG['bindir'] = bindir
+        else
+          RbConfig::CONFIG.delete 'bindir'
+        end
+      end
     end
   end
 
@@ -1249,6 +1253,16 @@ Also, a list:
     rescue LoadError
       "ruby"
     end
+  end
+
+  def with_clean_path_to_ruby
+    orig_ruby = Gem.ruby
+
+    Gem.instance_variable_set :@ruby, nil
+
+    yield
+  ensure
+    Gem.instance_variable_set :@ruby, orig_ruby
   end
 
   class << self

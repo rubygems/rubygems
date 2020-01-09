@@ -161,10 +161,8 @@ class TestGem < Gem::TestCase
 
   def test_self_install_permissions_with_format_executable_and_non_standard_ruby_install_name
     Gem::Installer.exec_format = nil
-    with_clean_path_to_ruby do
-      ruby_install_name 'ruby27' do
-        assert_self_install_permissions(format_executable: true)
-      end
+    ruby_install_name 'ruby27' do
+      assert_self_install_permissions(format_executable: true)
     end
   ensure
     Gem::Installer.exec_format = nil
@@ -1024,21 +1022,17 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_ruby_escaping_spaces_in_path
-    with_clean_path_to_ruby do
-      with_bindir_and_exeext("C:/Ruby 1.8/bin", ".exe") do
-        ruby_install_name "ruby" do
-          assert_equal "\"C:/Ruby 1.8/bin/ruby.exe\"", Gem.ruby
-        end
+    with_bindir_and_exeext("C:/Ruby 1.8/bin", ".exe") do
+      ruby_install_name "ruby" do
+        assert_equal "\"C:/Ruby 1.8/bin/ruby.exe\"", Gem.ruby
       end
     end
   end
 
   def test_self_ruby_path_without_spaces
-    with_clean_path_to_ruby do
-      with_bindir_and_exeext("C:/Ruby18/bin", ".exe") do
-        ruby_install_name "ruby" do
-          assert_equal "C:/Ruby18/bin/ruby.exe", Gem.ruby
-        end
+    with_bindir_and_exeext("C:/Ruby18/bin", ".exe") do
+      ruby_install_name "ruby" do
+        assert_equal "C:/Ruby18/bin/ruby.exe", Gem.ruby
       end
     end
   end
@@ -1920,15 +1914,19 @@ You may need to `gem install -g` to install missing gems
   end
 
   def ruby_install_name(name)
-    orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
-    RbConfig::CONFIG['ruby_install_name'] = name
+    with_clean_path_to_ruby do
+      orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']
+      RbConfig::CONFIG['ruby_install_name'] = name
 
-    yield
-  ensure
-    if orig_RUBY_INSTALL_NAME
-      RbConfig::CONFIG['ruby_install_name'] = orig_RUBY_INSTALL_NAME
-    else
-      RbConfig::CONFIG.delete 'ruby_install_name'
+      begin
+        yield
+      ensure
+        if orig_RUBY_INSTALL_NAME
+          RbConfig::CONFIG['ruby_install_name'] = orig_RUBY_INSTALL_NAME
+        else
+          RbConfig::CONFIG.delete 'ruby_install_name'
+        end
+      end
     end
   end
 
@@ -1938,16 +1936,6 @@ You may need to `gem install -g` to install missing gems
         yield
       end
     end
-  end
-
-  def with_clean_path_to_ruby
-    orig_ruby = Gem.ruby
-
-    Gem.instance_variable_set :@ruby, nil
-
-    yield
-  ensure
-    Gem.instance_variable_set :@ruby, orig_ruby
   end
 
   def with_plugin(path)

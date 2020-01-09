@@ -11,6 +11,8 @@ on:
 jobs:
   ubuntu_rvm:
     runs-on: ubuntu-latest
+    env:
+      CLASSPATH: ""
     strategy:
       matrix:
         ruby: [ '2.3.8', 'ruby-head', 'jruby-9.2.9.0' ]

@@ -12,9 +12,6 @@ jobs:
   install:
     runs-on: ubuntu-latest
 
-    env:
-      CLASSPATH: ""
-
     strategy:
       matrix:
         ruby: [ '2.3.8', '2.4.9', '2.5.7', '2.6.5', 'jruby-9.2.9.0' ]

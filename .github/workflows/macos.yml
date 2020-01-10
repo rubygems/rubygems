@@ -13,12 +13,12 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        ruby: [ '2.4.x', '2.5.x', '2.6.x' ]
+        ruby: [ '2.4.9', '2.5.7', '2.6.5' ]
     steps:
       - uses: actions/checkout@v1
       - run: git submodule update -i
       - name: Setup ruby
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install Dependencies

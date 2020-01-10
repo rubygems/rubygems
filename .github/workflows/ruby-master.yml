@@ -14,7 +14,7 @@ jobs:
     container:
       image: rubylang/ruby:master-nightly-bionic
       env:
-        TEST_TOOL: "rubygems"
+        TEST_TOOL: rubygems
     steps:
       - name: Setup Requirements
         run: |

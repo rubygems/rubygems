@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.6.5' ]
+        ruby: [ 2.6.5 ]
     steps:
       - uses: actions/checkout@v1
       - run: git submodule update -i
@@ -29,10 +29,10 @@ jobs:
       - name: Install Dependencies
         run: util/ci.sh before_script
         env:
-          TEST_TOOL: "bundler"
-          BDV: "master"
+          TEST_TOOL: bundler
+          BDV: master
       - name: Run Test
         run: util/ci.sh script
         env:
-          TEST_TOOL: "bundler"
+          TEST_TOOL: bundler
     timeout-minutes: 60

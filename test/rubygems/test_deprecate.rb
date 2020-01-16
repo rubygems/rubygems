@@ -152,6 +152,6 @@ class TestDeprecate < Gem::TestCase
     assert_match(/OtherThing#foo is deprecated; use bar instead\./, err)
     assert_match(/OtherThing#foo_arg is deprecated; use bar_arg instead\./, err)
     assert_match(/OtherThing#foo_kwarg is deprecated; use bar_kwarg instead\./, err)
-    assert_match(/on or after 2099-03-01/, err)
+    assert_match(/on or after 2099-03/, err)
   end
 end

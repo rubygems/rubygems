@@ -1906,6 +1906,24 @@ You may need to `gem install -g` to install missing gems
     assert platform_defaults.is_a? Hash
   end
 
+  # Ensure that `Gem.source_date_epoch` is consistent even if
+  # $SOURCE_DATE_EPOCH has not been set.
+  def test_default_source_date_epoch_doesnt_change
+    old_epoch = ENV['SOURCE_DATE_EPOCH']
+    ENV['SOURCE_DATE_EPOCH'] = nil
+
+    # Unfortunately, there is no real way to test this aside from waiting
+    # enough for `Time.now.to_i` to change -- which is a whole second.
+    #
+    # Fortunately, we only need to do this once.
+    a = Gem.source_date_epoch
+    sleep 1
+    b = Gem.source_date_epoch
+    assert_equal a, b
+  ensure
+    ENV['SOURCE_DATE_EPOCH'] = old_epoch
+  end
+
   def ruby_install_name(name)
     with_clean_path_to_ruby do
       orig_RUBY_INSTALL_NAME = RbConfig::CONFIG['ruby_install_name']

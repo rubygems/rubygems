@@ -10,7 +10,7 @@ on:
 
 jobs:
   ubuntu_rvm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     env:
       CLASSPATH: ""
     strategy:

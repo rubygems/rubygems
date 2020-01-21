@@ -56,6 +56,7 @@ bundler/lib/bundler/cli/update.rb
 bundler/lib/bundler/cli/viz.rb
 bundler/lib/bundler/compact_index_client.rb
 bundler/lib/bundler/compact_index_client/cache.rb
+bundler/lib/bundler/compact_index_client/gem_parser.rb
 bundler/lib/bundler/compact_index_client/updater.rb
 bundler/lib/bundler/constants.rb
 bundler/lib/bundler/current_ruby.rb
@@ -158,8 +159,10 @@ bundler/lib/bundler/templates/newgem/newgem.gemspec.tt
 bundler/lib/bundler/templates/newgem/rspec.tt
 bundler/lib/bundler/templates/newgem/spec/newgem_spec.rb.tt
 bundler/lib/bundler/templates/newgem/spec/spec_helper.rb.tt
-bundler/lib/bundler/templates/newgem/test/newgem_test.rb.tt
-bundler/lib/bundler/templates/newgem/test/test_helper.rb.tt
+bundler/lib/bundler/templates/newgem/test/minitest/newgem_test.rb.tt
+bundler/lib/bundler/templates/newgem/test/minitest/test_helper.rb.tt
+bundler/lib/bundler/templates/newgem/test/test-unit/newgem_test.rb.tt
+bundler/lib/bundler/templates/newgem/test/test-unit/test_helper.rb.tt
 bundler/lib/bundler/templates/newgem/travis.yml.tt
 bundler/lib/bundler/ui.rb
 bundler/lib/bundler/ui/rg_proxy.rb

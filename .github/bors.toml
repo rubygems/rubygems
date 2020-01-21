@@ -24,7 +24,7 @@ status = [
   "ubuntu_rvm (jruby-9.2.9.0)",
 ]
 
-timeout-sec = 3600
+timeout_sec = 3600
 delete_merged_branches = true
 
 [committer]

@@ -25,6 +25,7 @@ status = [
 ]
 
 timeout_sec = 3600
+prerun_timeout_sec = 3600
 delete_merged_branches = true
 
 [committer]

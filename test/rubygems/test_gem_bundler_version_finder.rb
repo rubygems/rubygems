@@ -78,6 +78,16 @@ class TestGemBundlerVersionFinder < Gem::TestCase
     end
   end
 
+  def test_deleted_directory
+    require "tmpdir"
+
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir)
+    end
+
+    assert_nil bvf.bundler_version_with_reason
+  end
+
   def test_compatible
     assert bvf.compatible?(util_spec("foo"))
     assert bvf.compatible?(util_spec("bundler", 1.1))

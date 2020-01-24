@@ -33,6 +33,7 @@ class Gem::GemRunner
   # Run the gem command with the following arguments.
 
   def run(args)
+    warn_on_outdated
     build_args = extract_build_args args
 
     do_configuration args
@@ -74,6 +75,15 @@ class Gem::GemRunner
     Gem.use_paths Gem.configuration[:gemhome], Gem.configuration[:gempath]
     Gem::Command.extra_args = Gem.configuration[:gem]
   end
+
+  def warn_on_outdated
+    current_version = Gem.rubygems_version
+    rubygems_latest = Gem.latest_rubygems_version
+    if rubygems_latest > current_version
+      alert_warning "You are currently using gem #{current_version}, however gem #{rubygems_latest} is availble.\nConsider upgrading using the command `gem update --system`\n"
+    end
+  end
+
 end
 
 Gem.load_plugins

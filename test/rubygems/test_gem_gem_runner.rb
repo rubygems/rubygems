@@ -12,6 +12,14 @@ class TestGemGemRunner < Gem::TestCase
 
     require 'rubygems/gem_runner'
     @runner = Gem::GemRunner.new
+
+    singleton_gem_class.class_eval do
+      alias_method :orig_latest_rubygems_version, :latest_rubygems_version
+
+      def latest_rubygems_version
+        Gem.rubygems_version
+      end
+    end
   end
 
   def teardown
@@ -20,6 +28,10 @@ class TestGemGemRunner < Gem::TestCase
     Gem::Command.build_args = @orig_args
     Gem::Command.specific_extra_args_hash = @orig_specific_extra_args
     Gem::Command.extra_args = @orig_extra_args
+    singleton_gem_class.class_eval do
+      remove_method :latest_rubygems_version
+      alias_method :latest_rubygems_version, :orig_latest_rubygems_version
+    end
   end
 
   def test_do_configuration

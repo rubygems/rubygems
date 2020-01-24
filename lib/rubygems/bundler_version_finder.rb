@@ -83,19 +83,18 @@ To install the missing version, run `gem install bundler:#{vr.first}`
     gemfile = ENV["BUNDLE_GEMFILE"]
     gemfile = nil if gemfile && gemfile.empty?
 
-    pwd = begin
-            Dir.pwd
-          rescue Errno::ENOENT
-            Dir.chdir
-            Dir.pwd
-          end
+    unless gemfile
+      begin
+        Gem::Util.traverse_parents(Dir.pwd) do |directory|
+          next unless gemfile = Gem::GEM_DEP_FILES.find { |f| File.file?(f.tap(&Gem::UNTAINT)) }
 
-    Gem::Util.traverse_parents(pwd) do |directory|
-      next unless gemfile = Gem::GEM_DEP_FILES.find { |f| File.file?(f.tap(&Gem::UNTAINT)) }
-
-      gemfile = File.join directory, gemfile
-      break
-    end unless gemfile
+          gemfile = File.join directory, gemfile
+          break
+        end
+      rescue Errno::ENOENT
+        return
+      end
+    end
 
     return unless gemfile
 

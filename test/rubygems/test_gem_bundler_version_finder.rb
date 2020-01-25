@@ -79,9 +79,11 @@ class TestGemBundlerVersionFinder < Gem::TestCase
   end
 
   def test_deleted_directory
+    skip "Cannot perform this test on windows" if win_platform?
+
     require "tmpdir"
 
-    Dir.mktmpdir do |dir|
+    Dir.mktmpdir("some_dir") do |dir|
       Dir.chdir(dir)
     end
 

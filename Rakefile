@@ -18,7 +18,7 @@ end
 
 Rake::TestTask.new do |t|
   t.ruby_opts = %w[-w]
-  t.ruby_opts << '-rdevkit' if Gem.win_platform?
+  t.ruby_opts << '-rdevkit' if RbConfig::CONFIG['host_os'].include?('mingw')
 
   t.libs << "test"
   t.libs << "bundler/lib"

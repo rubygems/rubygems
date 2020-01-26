@@ -573,22 +573,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   private_class_method :find_home
 
-  # TODO:  remove in RubyGems 4.0
-
-  ##
-  # Zlib::GzipReader wrapper that unzips +data+.
-
-  def self.gunzip(data)
-    Gem::Util.gunzip data
-  end
-
-  class << self
-
-    extend Gem::Deprecate
-    deprecate :gunzip, "Gem::Util.gunzip", 2018, 12
-
-  end
-
   ##
   # Zlib::GzipWriter wrapper that zips +data+.
 

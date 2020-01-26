@@ -409,8 +409,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   ##
   # The path where gems are to be installed.
-  #--
-  # FIXME deprecate these once everything else has been done -ebh
 
   def self.dir
     paths.home

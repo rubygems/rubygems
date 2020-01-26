@@ -574,20 +574,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   private_class_method :find_home
 
   ##
-  # A Zlib::Inflate#inflate wrapper
-
-  def self.inflate(data)
-    Gem::Util.inflate data
-  end
-
-  class << self
-
-    extend Gem::Deprecate
-    deprecate :inflate, "Gem::Util.inflate", 2018, 12
-
-  end
-
-  ##
   # Top level install helper method. Allows you to install gems interactively:
   #
   #   % irb

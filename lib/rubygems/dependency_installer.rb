@@ -107,27 +107,6 @@ class Gem::DependencyInstaller
   end
 
   ##
-  # Creates an AvailableSet to install from based on +dep_or_name+ and
-  # +version+
-
-  def available_set_for(dep_or_name, version) # :nodoc:
-    if String === dep_or_name
-      Gem::Deprecate.skip_during do
-        find_spec_by_name_and_version dep_or_name, version, @prerelease
-      end
-    else
-      dep = dep_or_name.dup
-      dep.prerelease = @prerelease
-      @available = Gem::Deprecate.skip_during do
-        find_gems_with_sources dep
-      end
-    end
-
-    @available.pick_best!
-  end
-  deprecate :available_set_for, :none, 2019, 12
-
-  ##
   # Indicated, based on the requested domain, if local
   # gems should be considered.
 

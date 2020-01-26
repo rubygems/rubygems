@@ -230,10 +230,6 @@ class Gem::Uninstaller
 
   ##
   # spec:: the spec of the gem to be uninstalled
-  # list:: the list of all such gems
-  #
-  # Warning: this method modifies the +list+ parameter.  Once it has
-  # uninstalled a gem, it is removed from that list.
 
   def remove(spec)
     unless path_ok?(@gem_home, spec) or

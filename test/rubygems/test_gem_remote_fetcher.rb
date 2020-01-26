@@ -917,7 +917,6 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
   end
 
   def test_ssl_client_cert_auth_connection
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
     skip 'openssl in jruby fails' if java_platform?
 
     ssl_server = self.class.start_ssl_server({
@@ -935,8 +934,6 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
   end
 
   def test_do_not_allow_invalid_client_cert_auth_connection
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
-
     ssl_server = self.class.start_ssl_server({
       :SSLVerifyClient =>
         OpenSSL::SSL::VERIFY_PEER | OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
@@ -1083,9 +1080,6 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     DIR = File.expand_path(File.dirname(__FILE__))
 
     def start_ssl_server(config = {})
-      raise MiniTest::Skip, 'openssl not installed' unless
-        defined?(OpenSSL::SSL)
-
       null_logger = NilLog.new
       server = WEBrick::HTTPServer.new({
         :Port => 0,

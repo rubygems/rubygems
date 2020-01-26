@@ -574,20 +574,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   private_class_method :find_home
 
   ##
-  # Zlib::GzipWriter wrapper that zips +data+.
-
-  def self.gzip(data)
-    Gem::Util.gzip data
-  end
-
-  class << self
-
-    extend Gem::Deprecate
-    deprecate :gzip, "Gem::Util.gzip", 2018, 12
-
-  end
-
-  ##
   # A Zlib::Inflate#inflate wrapper
 
   def self.inflate(data)

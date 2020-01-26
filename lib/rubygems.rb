@@ -1018,6 +1018,9 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     @suffix_pattern ||= "{#{suffixes.join(',')}}"
   end
 
+  ##
+  # Regexp for require-able path suffixes.
+
   def self.suffix_regexp
     @suffix_regexp ||= /#{Regexp.union(suffixes)}\z/
   end

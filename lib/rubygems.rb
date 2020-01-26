@@ -43,10 +43,10 @@ require 'rubygems/errors'
 #
 # == RubyGems Plugins
 #
-# As of RubyGems 1.3.2, RubyGems will load plugins installed in gems or
+# RubyGems will load plugins in the latest version of each installed gem or
 # $LOAD_PATH.  Plugins must be named 'rubygems_plugin' (.rb, .so, etc) and
-# placed at the root of your gem's #require_path.  Plugins are discovered via
-# Gem::find_files and then loaded.
+# placed at the root of your gem's #require_path.  Plugins are installed at a
+# special location and loaded on boot.
 #
 # For an example plugin, see the {Graph gem}[https://github.com/seattlerb/graph]
 # which adds a `gem graph` command.
@@ -148,6 +148,7 @@ module Gem
     doc
     extensions
     gems
+    plugins
     specifications
   ].freeze
 
@@ -420,6 +421,10 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   def self.spec_cache_dir
     paths.spec_cache_dir
+  end
+
+  def self.plugins_dir
+    File.join(dir, "plugins")
   end
 
   ##
@@ -980,6 +985,20 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
+  # Glob pattern for require-able plugin suffixes.
+
+  def self.plugin_suffix_pattern
+    @plugin_suffix_pattern ||= "_plugin#{suffix_pattern}"
+  end
+
+  ##
+  # Regexp for require-able plugin suffixes.
+
+  def self.plugin_suffix_regexp
+    @plugin_suffix_regexp ||= /_plugin#{suffix_regexp}\z/
+  end
+
+  ##
   # Suffixes for require-able paths.
 
   def self.suffixes
@@ -1077,11 +1096,10 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
-  # Find the 'rubygems_plugin' files in the latest installed gems and load
-  # them
+  # Find rubygems plugin files in the standard location and load them
 
   def self.load_plugins
-    load_plugin_files find_latest_files('rubygems_plugin', false)
+    load_plugin_files Gem::Util.glob_files_in_dir("*#{Gem.plugin_suffix_pattern}", plugins_dir)
   end
 
   ##

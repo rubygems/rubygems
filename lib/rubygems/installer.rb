@@ -6,6 +6,7 @@
 #++
 
 require 'rubygems/command'
+require 'rubygems/installer_uninstaller_utils'
 require 'rubygems/exceptions'
 require 'rubygems/deprecate'
 require 'rubygems/package'
@@ -42,6 +43,8 @@ class Gem::Installer
   ExtensionBuildError = Gem::Ext::BuildError # :nodoc:
 
   include Gem::UserInteraction
+
+  include Gem::InstallerUninstallerUtils
 
   ##
   # Filename of the gem being installed.
@@ -322,6 +325,7 @@ class Gem::Installer
     end
 
     generate_bin
+    generate_plugins
 
     unless @options[:install_as_default]
       write_spec
@@ -512,7 +516,17 @@ class Gem::Installer
       else
         generate_bin_symlink filename, @bin_dir
       end
+    end
+  end
 
+  def generate_plugins # :nodoc:
+    latest = Gem::Specification.latest_specs(true).find { |installed_spec| installed_spec.name == spec.name }
+    return if latest && latest.version > spec.version
+
+    if spec.plugins.empty?
+      remove_plugins_for(spec)
+    else
+      regenerate_plugins_for(spec)
     end
   end
 

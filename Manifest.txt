@@ -398,6 +398,7 @@ lib/rubygems/install_message.rb
 lib/rubygems/install_update_options.rb
 lib/rubygems/installer.rb
 lib/rubygems/installer_test_case.rb
+lib/rubygems/installer_uninstaller_utils.rb
 lib/rubygems/local_remote_options.rb
 lib/rubygems/mock_gem_ui.rb
 lib/rubygems/name_tuple.rb

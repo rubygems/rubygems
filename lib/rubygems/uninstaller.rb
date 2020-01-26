@@ -7,6 +7,7 @@
 
 require 'fileutils'
 require 'rubygems'
+require 'rubygems/installer_uninstaller_utils'
 require 'rubygems/dependency_list'
 require 'rubygems/rdoc'
 require 'rubygems/user_interaction'
@@ -22,6 +23,8 @@ require 'rubygems/user_interaction'
 class Gem::Uninstaller
 
   include Gem::UserInteraction
+
+  include Gem::InstallerUninstallerUtils
 
   ##
   # The directory a gem's executables will be installed into
@@ -158,7 +161,10 @@ class Gem::Uninstaller
     end
 
     remove_executables @spec
+    remove_plugins @spec
     remove @spec
+
+    regenerate_plugins
 
     Gem.post_uninstall_hooks.each do |hook|
       hook.call self
@@ -267,6 +273,25 @@ class Gem::Uninstaller
     say "Successfully uninstalled #{spec.full_name}"
 
     Gem::Specification.reset
+  end
+
+  ##
+  # Remove any plugin wrappers for +spec+.
+
+  def remove_plugins(spec) # :nodoc:
+    return if spec.plugins.empty?
+
+    remove_plugins_for(spec)
+  end
+
+  ##
+  # Regenerates plugin wrappers after removal.
+
+  def regenerate_plugins
+    latest = Gem::Specification.latest_specs(true).find { |installed_spec| installed_spec.name == @spec.name }
+    return if latest.nil?
+
+    regenerate_plugins_for(latest)
   end
 
   ##

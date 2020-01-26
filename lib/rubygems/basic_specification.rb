@@ -280,6 +280,13 @@ class Gem::BasicSpecification
   end
 
   ##
+  # Returns the list of plugins in this spec.
+
+  def plugins
+    matches_for_glob("rubygems#{Gem.plugin_suffix_pattern}")
+  end
+
+  ##
   # Returns a string usable in Dir.glob to match all requirable paths
   # for this spec.
 

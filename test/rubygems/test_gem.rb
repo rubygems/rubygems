@@ -11,12 +11,6 @@ if File.exist?(File.join(Dir.tmpdir, "Gemfile"))
   raise "rubygems/bundler tests do not work correctly if there is #{ File.join(Dir.tmpdir, "Gemfile") }"
 end
 
-# TODO: push this up to test_case.rb once battle tested
-
-$LOAD_PATH.map! do |path|
-  path.dup.tap(&Gem::UNTAINT)
-end
-
 class TestGem < Gem::TestCase
 
   PLUGINS_LOADED = [] # rubocop:disable Style/MutableConstant
@@ -1480,7 +1474,6 @@ class TestGem < Gem::TestCase
       install_gem foo2
     end
 
-    Gem.searcher = nil
     Gem::Specification.reset
 
     gem 'foo'

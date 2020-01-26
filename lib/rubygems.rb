@@ -1124,12 +1124,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # them
 
   def self.load_plugins
-    # Remove this env var by at least 3.0
-    if ENV['RUBYGEMS_LOAD_ALL_PLUGINS']
-      load_plugin_files find_files('rubygems_plugin', false)
-    else
-      load_plugin_files find_latest_files('rubygems_plugin', false)
-    end
+    load_plugin_files find_latest_files('rubygems_plugin', false)
   end
 
   ##

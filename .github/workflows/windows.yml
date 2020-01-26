@@ -25,10 +25,7 @@ jobs:
         run: TEST_TOOL=rubygems util/ci.sh before_script
         shell: bash
       - name: Run Test
-        # create a symlink for git to a folder without a space, needed for CI only
         run: |
-          New-Item -Path "C:\git" -ItemType Junction -Value "C:\Program Files\Git" 1> $null
-          $env:GIT = "C:\git\cmd\git.exe"
           ridk enable
           rake test
     timeout-minutes: 15

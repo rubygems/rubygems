@@ -122,56 +122,6 @@ class Gem::DependencyInstaller
     @domain == :both or @domain == :remote
   end
 
-  ##
-  # Finds a spec and the source_uri it came from for gem +gem_name+ and
-  # +version+.  Returns an Array of specs and sources required for
-  # installation of the gem.
-
-  def find_spec_by_name_and_version(gem_name,
-                                    version = Gem::Requirement.default,
-                                    prerelease = false)
-    set = Gem::AvailableSet.new
-
-    if consider_local?
-      if gem_name =~ /\.gem$/ and File.file? gem_name
-        src = Gem::Source::SpecificFile.new(gem_name)
-        set.add src.spec, src
-      elsif gem_name =~ /\.gem$/
-        Dir[gem_name].each do |name|
-          begin
-            src = Gem::Source::SpecificFile.new name
-            set.add src.spec, src
-          rescue Gem::Package::FormatError
-          end
-        end
-      else
-        local = Gem::Source::Local.new
-
-        if s = local.find_gem(gem_name, version)
-          set.add s, local
-        end
-      end
-    end
-
-    if set.empty?
-      dep = Gem::Dependency.new gem_name, version
-      dep.prerelease = true if prerelease
-
-      set = Gem::Deprecate.skip_during do
-        find_gems_with_sources(dep, true)
-      end
-
-      set.match_platform!
-    end
-
-    if set.empty?
-      raise Gem::SpecificGemNotFoundException.new(gem_name, version, @errors)
-    end
-
-    @available = set
-  end
-  deprecate :find_spec_by_name_and_version, :none, 2019, 12
-
   def in_background(what) # :nodoc:
     fork_happened = false
     if @build_docs_in_background and Process.respond_to?(:fork)

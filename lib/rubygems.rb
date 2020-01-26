@@ -1131,19 +1131,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Find all 'rubygems_plugin' files in $LOAD_PATH and load them
 
   def self.load_env_plugins
-    path = "rubygems_plugin"
-
-    files = []
-    glob = "#{path}#{Gem.suffix_pattern}"
-    $LOAD_PATH.each do |load_path|
-      globbed = Gem::Util.glob_files_in_dir(glob, load_path)
-
-      globbed.each do |load_path_file|
-        files << load_path_file if File.file?(load_path_file.tap(&Gem::UNTAINT))
-      end
-    end
-
-    load_plugin_files files
+    load_plugin_files find_files_from_load_path("rubygems_plugin")
   end
 
   ##

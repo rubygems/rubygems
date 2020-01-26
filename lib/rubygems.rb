@@ -1366,23 +1366,23 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   MARSHAL_SPEC_DIR = "quick/Marshal.#{Gem.marshal_version}/".freeze
 
-  autoload :BundlerVersionFinder, 'rubygems/bundler_version_finder'
-  autoload :ConfigFile,         'rubygems/config_file'
-  autoload :Dependency,         'rubygems/dependency'
-  autoload :DependencyList,     'rubygems/dependency_list'
-  autoload :Installer,          'rubygems/installer'
-  autoload :Licenses,           'rubygems/util/licenses'
-  autoload :PathSupport,        'rubygems/path_support'
-  autoload :Platform,           'rubygems/platform'
-  autoload :RequestSet,         'rubygems/request_set'
-  autoload :Requirement,        'rubygems/requirement'
-  autoload :Resolver,           'rubygems/resolver'
-  autoload :Source,             'rubygems/source'
-  autoload :SourceList,         'rubygems/source_list'
-  autoload :SpecFetcher,        'rubygems/spec_fetcher'
-  autoload :Specification,      'rubygems/specification'
-  autoload :Util,               'rubygems/util'
-  autoload :Version,            'rubygems/version'
+  autoload :BundlerVersionFinder, File.expand_path('rubygems/bundler_version_finder', __dir__)
+  autoload :ConfigFile,         File.expand_path('rubygems/config_file', __dir__)
+  autoload :Dependency,         File.expand_path('rubygems/dependency', __dir__)
+  autoload :DependencyList,     File.expand_path('rubygems/dependency_list', __dir__)
+  autoload :Installer,          File.expand_path('rubygems/installer', __dir__)
+  autoload :Licenses,           File.expand_path('rubygems/util/licenses', __dir__)
+  autoload :PathSupport,        File.expand_path('rubygems/path_support', __dir__)
+  autoload :Platform,           File.expand_path('rubygems/platform', __dir__)
+  autoload :RequestSet,         File.expand_path('rubygems/request_set', __dir__)
+  autoload :Requirement,        File.expand_path('rubygems/requirement', __dir__)
+  autoload :Resolver,           File.expand_path('rubygems/resolver', __dir__)
+  autoload :Source,             File.expand_path('rubygems/source', __dir__)
+  autoload :SourceList,         File.expand_path('rubygems/source_list', __dir__)
+  autoload :SpecFetcher,        File.expand_path('rubygems/spec_fetcher', __dir__)
+  autoload :Specification,      File.expand_path('rubygems/specification', __dir__)
+  autoload :Util,               File.expand_path('rubygems/util', __dir__)
+  autoload :Version,            File.expand_path('rubygems/version', __dir__)
 
   require "rubygems/specification"
 end

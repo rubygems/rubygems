@@ -36,7 +36,7 @@ jobs:
         run: |
           source $HOME/.rvm/scripts/rvm
           util/ci.sh before_script
-          util/ci.sh script
+          rake test TESTOPTS=--verbose
         env:
           TEST_TOOL: rubygems
         if: matrix.ruby == 'jruby-9.2.9.0' || matrix.ruby == '2.3.8'

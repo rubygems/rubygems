@@ -409,8 +409,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   ##
   # The path where gems are to be installed.
-  #--
-  # FIXME deprecate these once everything else has been done -ebh
 
   def self.dir
     paths.home
@@ -572,50 +570,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   private_class_method :find_home
-
-  # TODO:  remove in RubyGems 4.0
-
-  ##
-  # Zlib::GzipReader wrapper that unzips +data+.
-
-  def self.gunzip(data)
-    Gem::Util.gunzip data
-  end
-
-  class << self
-
-    extend Gem::Deprecate
-    deprecate :gunzip, "Gem::Util.gunzip", 2018, 12
-
-  end
-
-  ##
-  # Zlib::GzipWriter wrapper that zips +data+.
-
-  def self.gzip(data)
-    Gem::Util.gzip data
-  end
-
-  class << self
-
-    extend Gem::Deprecate
-    deprecate :gzip, "Gem::Util.gzip", 2018, 12
-
-  end
-
-  ##
-  # A Zlib::Inflate#inflate wrapper
-
-  def self.inflate(data)
-    Gem::Util.inflate data
-  end
-
-  class << self
-
-    extend Gem::Deprecate
-    deprecate :inflate, "Gem::Util.inflate", 2018, 12
-
-  end
 
   ##
   # Top level install helper method. Allows you to install gems interactively:
@@ -1221,18 +1175,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     else
       raise
     end
-  end
-
-  class << self
-
-    ##
-    # TODO remove with RubyGems 4.0
-
-    alias detect_gemdeps use_gemdeps # :nodoc:
-
-    extend Gem::Deprecate
-    deprecate :detect_gemdeps, "Gem.use_gemdeps", 2018, 12
-
   end
 
   ##

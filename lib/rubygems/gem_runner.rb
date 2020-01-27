@@ -8,6 +8,7 @@
 require 'rubygems'
 require 'rubygems/command_manager'
 require 'rubygems/deprecate'
+require 'rubygems/user_interaction'
 
 ##
 # Load additional plugins from $LOAD_PATH
@@ -80,7 +81,7 @@ class Gem::GemRunner
     current_version = Gem.rubygems_version
     rubygems_latest = Gem.latest_rubygems_version
     if rubygems_latest > current_version
-      alert_warning "You are currently using gem #{current_version}, however gem #{rubygems_latest} is availble.\nConsider upgrading using the command `gem update --system`\n"
+      say "You are currently using gem #{current_version}, however gem #{rubygems_latest} is availble.\nConsider upgrading using the command `gem update --system`\n"
     end
   end
 

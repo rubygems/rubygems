@@ -121,4 +121,26 @@ class TestGemGemRunner < Gem::TestCase
 
     assert_empty @ui.error
   end
+
+  def test_warn_on_outdated
+    args = %w[info]
+    singleton_gem_class.class_eval do
+      def latest_rubygems_version
+        Gem::Version.new "99999999.0.0"
+      end
+    end
+
+    use_ui @ui do
+      @runner.run(args)
+    end
+
+    assert_match /You are currently using gem/, @ui.output
+  end
+
+  private
+
+  def singleton_gem_class
+    class << Gem; self; end
+  end
+
 end

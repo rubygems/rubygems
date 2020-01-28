@@ -34,7 +34,11 @@ class Gem::GemRunner
   # Run the gem command with the following arguments.
 
   def run(args)
-    warn_on_outdated
+    begin
+      warn_on_outdated
+    rescue
+      alert_warning "Could not determine if rubygems is out of date"
+    end
     build_args = extract_build_args args
 
     do_configuration args

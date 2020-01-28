@@ -153,14 +153,12 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     assert_equal proxy_uri, fetcher.instance_variable_get(:@proxy).to_s
   end
 
-  def test_fetch_size_bad_uri
+  def test_fetch_path_bad_uri
     fetcher = Gem::RemoteFetcher.new nil
     @fetcher = fetcher
 
     e = assert_raises ArgumentError do
-      Gem::Deprecate.skip_during do
-        fetcher.fetch_size 'gems.example.com/yaml'
-      end
+      @fetcher.fetch_path("gems.example.com/yaml", nil, true)
     end
 
     assert_equal 'uri scheme is invalid: nil', e.message

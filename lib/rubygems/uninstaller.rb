@@ -207,12 +207,8 @@ class Gem::Uninstaller
       raise Gem::FilePermissionError, bin_dir unless File.writable? bin_dir
 
       executables.each do |exe_name|
-        say "Removing #{exe_name}"
-
-        exe_file = File.join bin_dir, exe_name
-
-        safe_delete { FileUtils.rm exe_file }
-        safe_delete { FileUtils.rm "#{exe_file}.bat" }
+        verbose_delete(bin_dir, exe_name)
+        verbose_delete(bin_dir, "#{exe_name}.bat")
       end
     else
       say "Executables and scripts will remain installed."
@@ -347,6 +343,15 @@ class Gem::Uninstaller
     e.spec = @spec
 
     raise e
+  end
+
+  def verbose_delete(bin_dir, exe_name)
+    exe_file = File.join bin_dir, exe_name
+
+    return unless File.exist?(exe_file)
+
+    say "Removing #{exe_name}"
+    FileUtils.rm exe_file
   end
 
 end

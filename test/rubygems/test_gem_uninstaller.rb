@@ -104,6 +104,9 @@ class TestGemUninstaller < Gem::InstallerTestCase
   def test_remove_executables_user_format
     Gem::Installer.exec_format = 'foo-%s-bar'
 
+    path = Gem::Package.build @spec
+    Gem::Installer.at(path, :format_executable => true, :user_install => true).install
+
     uninstaller = Gem::Uninstaller.new nil, :executables => true, :format_executable => true
 
     use_ui @ui do
@@ -133,6 +136,18 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert_equal "Removing executable\n", @ui.output
   ensure
     Gem::Installer.exec_format = nil
+  end
+
+  def test_remove_executables_does_not_inform_about_removal_when_not_removed
+    uninstaller = Gem::Uninstaller.new nil, :executables => true
+
+    FileUtils.rm File.join Gem.user_dir, 'bin', 'executable'
+
+    use_ui @ui do
+      uninstaller.remove_executables @user_spec
+    end
+
+    assert_empty @ui.output
   end
 
   def test_remove_not_in_home

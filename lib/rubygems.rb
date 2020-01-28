@@ -972,6 +972,9 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     @suffix_pattern ||= "{#{suffixes.join(',')}}"
   end
 
+  ##
+  # Regexp for require-able path suffixes.
+
   def self.suffix_regexp
     @suffix_regexp ||= /#{Regexp.union(suffixes)}\z/
   end
@@ -1078,31 +1081,14 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # them
 
   def self.load_plugins
-    # Remove this env var by at least 3.0
-    if ENV['RUBYGEMS_LOAD_ALL_PLUGINS']
-      load_plugin_files find_files('rubygems_plugin', false)
-    else
-      load_plugin_files find_latest_files('rubygems_plugin', false)
-    end
+    load_plugin_files find_latest_files('rubygems_plugin', false)
   end
 
   ##
   # Find all 'rubygems_plugin' files in $LOAD_PATH and load them
 
   def self.load_env_plugins
-    path = "rubygems_plugin"
-
-    files = []
-    glob = "#{path}#{Gem.suffix_pattern}"
-    $LOAD_PATH.each do |load_path|
-      globbed = Gem::Util.glob_files_in_dir(glob, load_path)
-
-      globbed.each do |load_path_file|
-        files << load_path_file if File.file?(load_path_file.tap(&Gem::UNTAINT))
-      end
-    end
-
-    load_plugin_files files
+    load_plugin_files find_files_from_load_path("rubygems_plugin")
   end
 
   ##

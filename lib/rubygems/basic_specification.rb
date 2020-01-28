@@ -274,7 +274,6 @@ class Gem::BasicSpecification
   # Return all files in this gem that match for +glob+.
 
   def matches_for_glob(glob) # TODO: rename?
-    # TODO: do we need these?? Kill it
     glob = File.join(self.lib_dirs_glob, glob)
 
     Dir[glob].map { |f| f.tap(&Gem::UNTAINT) } # FIX our tests are broken, run w/ SAFE=1

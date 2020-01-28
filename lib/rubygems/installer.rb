@@ -180,15 +180,7 @@ class Gem::Installer
     require 'fileutils'
 
     @options = options
-    if package.is_a? String
-      security_policy = options[:security_policy]
-      @package = Gem::Package.new package, security_policy
-      if $VERBOSE
-        warn "constructing an Installer object with a string is deprecated. Please use Gem::Installer.at (called from: #{caller.first})"
-      end
-    else
-      @package = package
-    end
+    @package = package
 
     process_options
 

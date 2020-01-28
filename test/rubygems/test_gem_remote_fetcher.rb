@@ -182,9 +182,8 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
   def test_no_proxy
     use_ui @stub_ui do
       assert_data_from_server @fetcher.fetch_path(@server_uri)
-      Gem::Deprecate.skip_during do
-        assert_equal SERVER_DATA.size, @fetcher.fetch_size(@server_uri)
-      end
+      response = @fetcher.fetch_path(@server_uri, nil, true)
+      assert_equal SERVER_DATA.size, response['content-length'].to_i
     end
   end
 

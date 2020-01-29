@@ -15,15 +15,23 @@ class Gem::UnknownCommandError < Gem::Exception
   attr_reader :unknown_command
 
   def initialize(unknown_command)
+    self.class.attach_correctable
+
     @unknown_command = unknown_command
     super("Unknown command #{unknown_command}")
   end
 
-  if defined?(DidYouMean::SPELL_CHECKERS) && defined?(DidYouMean::Correctable)
-    DidYouMean::SPELL_CHECKERS['Gem::UnknownCommandError'] =
-      Gem::UnknownCommandSpellChecker
+  def self.attach_correctable
+    return if defined?(@attached)
 
-    prepend DidYouMean::Correctable
+    if defined?(DidYouMean::SPELL_CHECKERS) && defined?(DidYouMean::Correctable)
+      DidYouMean::SPELL_CHECKERS['Gem::UnknownCommandError'] =
+        Gem::UnknownCommandSpellChecker
+
+      prepend DidYouMean::Correctable
+    end
+
+    @attached = true
   end
 
 end

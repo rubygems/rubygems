@@ -837,18 +837,6 @@ TEXT
   end
 
   ##
-  # Logs the build +output+ in +build_dir+, then raises Gem::Ext::BuildError.
-  #
-  # TODO:  Delete this for RubyGems 4.  It remains for API compatibility
-
-  def extension_build_error(build_dir, output, backtrace = nil) # :nodoc:
-    builder = Gem::Ext::Builder.new spec, @build_args
-
-    builder.build_error build_dir, output, backtrace
-  end
-  deprecate :extension_build_error, :none, 2018, 12
-
-  ##
   # Reads the file index and extracts each file into the gem directory.
   #
   # Ensures that files can't be installed outside the gem directory.

@@ -940,7 +940,13 @@ gem 'other', version
   end
 
   def test_install_creates_binstub_that_prefers_user_installed_gem_to_default
-    install_default_gems new_default_spec('default', '2')
+    default_spec = new_default_spec('default', '2', nil, 'exe/executable')
+    default_spec.executables = 'executable'
+    install_default_gems default_spec
+
+    exe = File.join @gemhome, 'bin', 'executable'
+
+    assert_path_exists exe, "default gem's executable not installed"
 
     installer = util_setup_installer do |spec|
       spec.name = 'default'
@@ -957,8 +963,6 @@ gem 'other', version
         @newspec = installer.install
       end
     end
-
-    exe = File.join @gemhome, 'bin', 'executable'
 
     e = assert_raises RuntimeError do
       instance_eval File.read(exe)

@@ -18,7 +18,7 @@ class Gem::SpecificationPolicy
     mailing_list_uri
     source_code_uri
     wiki_uri
-    donation_uri
+    funding_uri
   ].freeze # :nodoc:
 
   def initialize(specification)

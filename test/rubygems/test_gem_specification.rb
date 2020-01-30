@@ -3533,7 +3533,7 @@ Did you mean 'Ruby'?
           "one"          => "two",
           "home"         => "three",
           "homepage_uri" => "https://example.com/user/repo",
-          "donation_uri" => "https://example.com/donation"
+          "funding_uri"  => "https://example.com/donate"
         }
       end
 

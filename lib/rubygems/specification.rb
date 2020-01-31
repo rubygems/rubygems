@@ -1087,6 +1087,13 @@ class Gem::Specification < Gem::BasicSpecification
     _latest_specs Gem::Specification._all, prerelease
   end
 
+  ##
+  # Return the latest installed spec for gem +name+.
+
+  def self.latest_spec_for(name)
+    latest_specs(true).find { |installed_spec| installed_spec.name == name }
+  end
+
   def self._latest_specs(specs, prerelease = false) # :nodoc:
     result = Hash.new { |h,k| h[k] = {} }
     native = {}

@@ -288,7 +288,7 @@ class Gem::Uninstaller
   # Regenerates plugin wrappers after removal.
 
   def regenerate_plugins
-    latest = Gem::Specification.latest_specs(true).find { |installed_spec| installed_spec.name == @spec.name }
+    latest = Gem::Specification.latest_spec_for(@spec.name)
     return if latest.nil?
 
     regenerate_plugins_for(latest)

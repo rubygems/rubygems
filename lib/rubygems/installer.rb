@@ -520,7 +520,7 @@ class Gem::Installer
   end
 
   def generate_plugins # :nodoc:
-    latest = Gem::Specification.latest_specs(true).find { |installed_spec| installed_spec.name == spec.name }
+    latest = Gem::Specification.latest_spec_for(spec.name)
     return if latest && latest.version > spec.version
 
     if spec.plugins.empty?

@@ -1098,8 +1098,8 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
         begin
           server.start
         rescue Exception => ex
-          abort ex.message
           puts "ERROR during server thread: #{ex.message}"
+          raise
         ensure
           server.shutdown
         end

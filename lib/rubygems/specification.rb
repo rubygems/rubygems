@@ -384,6 +384,7 @@ class Gem::Specification < Gem::BasicSpecification
   #     "mailing_list_uri"  => "https://groups.example.com/bestgemever",
   #     "source_code_uri"   => "https://example.com/user/bestgemever",
   #     "wiki_uri"          => "https://example.com/user/bestgemever/wiki"
+  #     "funding_uri"       => "https://example.com/donate"
   #   }
   #
   # These links will be used on your gem's page on rubygems.org and must pass

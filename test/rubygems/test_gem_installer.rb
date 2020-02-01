@@ -744,6 +744,70 @@ gem 'other', version
     assert_match(/#{default_shebang}/, shebang_line)
   end
 
+  def test_generate_plugins
+    installer = util_setup_installer do |spec|
+      write_file File.join(@tempdir, 'lib', 'rubygems_plugin.rb') do |io|
+        io.write "puts __FILE__"
+      end
+
+      spec.files += %w[lib/rubygems_plugin.rb]
+    end
+
+    build_rake_in do
+      installer.install
+    end
+
+    plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+
+    FileUtils.rm plugin_path
+
+    installer.generate_plugins
+
+    assert File.exist?(plugin_path), 'plugin not written'
+  end
+
+  def test_keeps_plugins_up_to_date
+    # NOTE: version a-2 is already installed by setup hooks
+
+    write_file File.join(@tempdir, 'lib', 'rubygems_plugin.rb') do |io|
+      io.write "puts __FILE__"
+    end
+
+    build_rake_in do
+      util_setup_installer do |spec|
+        spec.version = '1'
+        spec.files += %w[lib/rubygems_plugin.rb]
+      end.install
+
+      plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+      refute File.exist?(plugin_path), 'old version installed while newer version without plugin also installed, but plugin written'
+
+      util_setup_installer do |spec|
+        spec.version = '2'
+        spec.files += %w[lib/rubygems_plugin.rb]
+      end.install
+
+      plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+      assert File.exist?(plugin_path), 'latest version reinstalled, but plugin not written'
+      assert_match %r{\Arequire.*a-2/lib/rubygems_plugin\.rb}, File.read(plugin_path), 'written plugin has incorrect content'
+
+      util_setup_installer do |spec|
+        spec.version = '3'
+        spec.files += %w[lib/rubygems_plugin.rb]
+      end.install
+
+      plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+      assert File.exist?(plugin_path), 'latest version installed, but plugin removed'
+      assert_match %r{\Arequire.*a-3/lib/rubygems_plugin\.rb}, File.read(plugin_path), 'written plugin has incorrect content'
+
+      util_setup_installer do |spec|
+        spec.version = '4'
+      end.install
+
+      refute File.exist?(plugin_path), 'new version installed without a plugin while older version with a plugin installed, but plugin not removed'
+    end
+  end
+
   def test_initialize
     spec = util_spec 'a' do |s|
       s.platform = Gem::Platform.new 'mswin32'

@@ -159,6 +159,44 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty out
   end
 
+  def test_execute_system_specific_older_than_3_2_removes_plugins_dir
+    spec_fetcher do |fetcher|
+      fetcher.download 'rubygems-update', 3.1 do |s|
+        s.files = %w[setup.rb]
+      end
+    end
+
+    @cmd.options[:args]          = []
+    @cmd.options[:system]        = "3.1"
+
+    FileUtils.mkdir_p Gem.plugins_dir
+    write_file File.join(Gem.plugins_dir, 'a_plugin.rb')
+
+    @cmd.execute
+
+    refute_path_exists Gem.plugins_dir, "Plugins folder not removed when updating rubygems to pre-3.2"
+  end
+
+  def test_execute_system_specific_newer_than_or_equal_to_3_2_leaves_plugins_dir_alone
+    spec_fetcher do |fetcher|
+      fetcher.download 'rubygems-update', 3.2 do |s|
+        s.files = %w[setup.rb]
+      end
+    end
+
+    @cmd.options[:args]          = []
+    @cmd.options[:system]        = "3.2"
+
+    FileUtils.mkdir_p Gem.plugins_dir
+    plugin_file = File.join(Gem.plugins_dir, 'a_plugin.rb')
+    write_file plugin_file
+
+    @cmd.execute
+
+    assert_path_exists Gem.plugins_dir, "Plugin folder removed when updating rubygems to post-3.2"
+    assert_path_exists plugin_file, "Plugin removed when updating rubygems to post-3.2"
+  end
+
   def test_execute_system_specifically_to_latest_version
     spec_fetcher do |fetcher|
       fetcher.download 'rubygems-update', 8 do |s|

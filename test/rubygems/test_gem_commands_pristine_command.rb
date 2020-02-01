@@ -490,6 +490,42 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     refute File.exist? gem_lib
   end
 
+  def test_execute_only_plugins
+    a = util_spec 'a' do |s|
+      s.executables = %w[foo]
+      s.files = %w[bin/foo lib/a.rb lib/rubygems_plugin.rb]
+    end
+    write_file File.join(@tempdir, 'lib', 'a.rb') do |fp|
+      fp.puts "puts __FILE__"
+    end
+    write_file File.join(@tempdir, 'lib', 'rubygems_plugin.rb') do |fp|
+      fp.puts "puts __FILE__"
+    end
+    write_file File.join(@tempdir, 'bin', 'foo') do |fp|
+      fp.puts "#!/usr/bin/ruby"
+    end
+
+    install_gem a
+
+    gem_lib = File.join @gemhome, 'gems', a.full_name, 'lib', 'a.rb'
+    gem_plugin = File.join @gemhome, 'plugins', 'a_plugin.rb'
+    gem_exec = File.join @gemhome, 'bin', 'foo'
+
+    FileUtils.rm gem_exec
+    FileUtils.rm gem_plugin
+    FileUtils.rm gem_lib
+
+    @cmd.handle_options %w[--all --only-plugins]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    refute File.exist? gem_exec
+    assert File.exist? gem_plugin
+    refute File.exist? gem_lib
+  end
+
   def test_execute_bindir
     a = util_spec 'a' do |s|
       s.name = "test_gem"

@@ -170,8 +170,31 @@ command to remove old versions.
     Dir.chdir update_dir do
       say "Installing RubyGems #{version}"
 
-      installed = system Gem.ruby, '--disable-gems', 'setup.rb', *args
+      installed = preparing_gem_layout_for(version) do
+        system Gem.ruby, '--disable-gems', 'setup.rb', *args
+      end
+
       say "RubyGems system software updated" if installed
+    end
+  end
+
+  def preparing_gem_layout_for(version)
+    if Gem::Version.new(version) >= Gem::Version.new("3.2.a")
+      yield
+    else
+      require "tmpdir"
+      tmpdir = Dir.mktmpdir
+      FileUtils.mv Gem.plugins_dir, tmpdir
+
+      status = yield
+
+      if status
+        FileUtils.rm_rf tmpdir
+      else
+        FileUtils.mv File.join(tmpdir, "plugins"), Gem.plugins_dir
+      end
+
+      status
     end
   end
 

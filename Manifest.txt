@@ -356,6 +356,7 @@ lib/rubygems/commands/outdated_command.rb
 lib/rubygems/commands/owner_command.rb
 lib/rubygems/commands/pristine_command.rb
 lib/rubygems/commands/push_command.rb
+lib/rubygems/commands/query_command.rb
 lib/rubygems/commands/rdoc_command.rb
 lib/rubygems/commands/search_command.rb
 lib/rubygems/commands/server_command.rb
@@ -598,6 +599,7 @@ test/rubygems/test_gem_commands_outdated_command.rb
 test/rubygems/test_gem_commands_owner_command.rb
 test/rubygems/test_gem_commands_pristine_command.rb
 test/rubygems/test_gem_commands_push_command.rb
+test/rubygems/test_gem_commands_query_command.rb
 test/rubygems/test_gem_commands_search_command.rb
 test/rubygems/test_gem_commands_server_command.rb
 test/rubygems/test_gem_commands_setup_command.rb

@@ -11,10 +11,8 @@ if ENV['RUBYOPT'] or defined? Gem
   ENV.delete 'RUBYOPT'
 
   require 'rbconfig'
-  config = defined?(RbConfig) ? RbConfig : Config
-
-  ruby = File.join config::CONFIG['bindir'], config::CONFIG['ruby_install_name']
-  ruby << config::CONFIG['EXEEXT']
+  ruby = File.join RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name']
+  ruby << RbConfig::CONFIG['EXEEXT']
 
   cmd = [ruby, 'setup.rb', *ARGV].compact
   cmd[1,0] = "--disable-gems"

@@ -1247,9 +1247,7 @@ Also, a list:
 
     begin
       require "rbconfig"
-      File.join(RbConfig::CONFIG["bindir"],
-                RbConfig::CONFIG["ruby_install_name"] +
-                RbConfig::CONFIG["EXEEXT"])
+      RbConfig.ruby
     rescue LoadError
       "ruby"
     end

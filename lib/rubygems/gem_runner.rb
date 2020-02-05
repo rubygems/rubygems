@@ -25,6 +25,9 @@ Gem.load_env_plugins rescue nil
 # classes they call directly.
 
 class Gem::GemRunner
+
+  include Gem::UserInteraction
+
   def initialize
     @command_manager_class = Gem::CommandManager
     @config_file_class = Gem::ConfigFile
@@ -34,11 +37,6 @@ class Gem::GemRunner
   # Run the gem command with the following arguments.
 
   def run(args)
-    begin
-      warn_on_outdated
-    rescue
-      alert_warning "Could not determine if rubygems is out of date"
-    end
     build_args = extract_build_args args
 
     do_configuration args
@@ -57,6 +55,8 @@ class Gem::GemRunner
     end
 
     cmd.run Gem.configuration.args, build_args
+
+    warn_on_outdated
   end
 
   ##
@@ -82,10 +82,8 @@ class Gem::GemRunner
   end
 
   def warn_on_outdated
-    current_version = Gem.rubygems_version
-    rubygems_latest = Gem.latest_rubygems_version
-    if rubygems_latest > current_version
-      say "You are currently using gem #{current_version}, however gem #{rubygems_latest} is availble.\nConsider upgrading using the command `gem update --system`\n"
+    if Gem.latest_rubygems_version > Gem.rubygems_version
+      say "You are currently using gem #{Gem.rubygems_version}, however gem #{Gem.latest_rubygems_version} is availble.\nConsider upgrading using the command `gem update --system`\n"
     end
   end
 

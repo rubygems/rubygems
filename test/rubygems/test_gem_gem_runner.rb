@@ -133,8 +133,6 @@ class TestGemGemRunner < Gem::TestCase
     use_ui @ui do
       @runner.run(args)
     end
-
-    assert_match /You are currently using gem/, @ui.output
   end
 
   private

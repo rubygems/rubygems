@@ -7,7 +7,6 @@ require 'rubygems/spec_fetcher'
 require 'rubygems/user_interaction'
 require 'rubygems/source'
 require 'rubygems/available_set'
-require 'rubygems/deprecate'
 
 ##
 # Installs a gem along with all its dependencies from local and remote gems.
@@ -15,7 +14,6 @@ require 'rubygems/deprecate'
 class Gem::DependencyInstaller
 
   include Gem::UserInteraction
-  extend Gem::Deprecate
 
   DEFAULT_OPTIONS = { # :nodoc:
     :env_shebang         => false,

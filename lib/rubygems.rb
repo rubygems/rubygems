@@ -863,8 +863,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   def self.ruby
     if @ruby.nil?
-      @ruby = File.join(RbConfig::CONFIG['bindir'],
-                        "#{RbConfig::CONFIG['ruby_install_name']}#{RbConfig::CONFIG['EXEEXT']}")
+      @ruby = RbConfig.ruby
 
       @ruby = "\"#{@ruby}\"" if @ruby =~ /\s/
     end

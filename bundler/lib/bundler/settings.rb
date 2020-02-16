@@ -447,7 +447,7 @@ module Bundler
     end
 
     def local_config_file
-      Pathname.new(@root).join("config") if @root
+      @root.join("config") if @root
     end
 
     def load_config(config_file)

@@ -152,7 +152,7 @@ an appropriate purple `platform: *` label. Current platform labels:
 ### Git
 
 Please sign your commits. Although not required in order for you to contribute,
-it does ensures that any code submitted by you wasn't altered while you were
+it ensures that any code submitted by you wasn't altered while you were
 transferring it, and proves that it was you who submitted it and not someone
 else.
 

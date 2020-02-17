@@ -443,6 +443,7 @@ class Gem::Installer
   def default_spec_file
     spec_file
   end
+  deprecate :default_spec_file, :none, 2024, 5
 
   ##
   # Writes the .gemspec specification (in Ruby) to the gem home's
@@ -462,7 +463,7 @@ class Gem::Installer
   # command works.
 
   def write_default_spec
-    Gem.write_binary(default_spec_file, spec.to_ruby)
+    Gem.write_binary(spec_file, spec.to_ruby)
   end
 
   ##

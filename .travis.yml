@@ -34,5 +34,7 @@ matrix:
   allow_failures:
     - rvm: ruby-head
       env: "TEST_TOOL=rubygems YAML=psych"
+    - rvm: 2.3.8
+      env: "TEST_TOOL=bundler RGV=master"
     - rvm: ruby-head
       env: "TEST_TOOL=bundler RGV=master"

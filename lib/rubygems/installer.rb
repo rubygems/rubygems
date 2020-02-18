@@ -47,11 +47,6 @@ class Gem::Installer
   include Gem::InstallerUninstallerUtils
 
   ##
-  # Filename of the gem being installed.
-
-  attr_reader :gem
-
-  ##
   # The directory a gem's executables will be installed into
 
   attr_reader :bin_dir
@@ -887,6 +882,13 @@ TEXT
 
   def dir
     gem_dir.to_s
+  end
+
+  ##
+  # Filename of the gem being installed.
+
+  def gem
+    @package.gem.path
   end
 
   ##

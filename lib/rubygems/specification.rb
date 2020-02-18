@@ -790,11 +790,6 @@ class Gem::Specification < Gem::BasicSpecification
   end
   private_class_method :map_stubs
 
-  def self.sort_by!(list, &block)
-    list.sort_by!(&block)
-  end
-  private_class_method :sort_by!
-
   def self.each_spec(dirs) # :nodoc:
     each_gemspec(dirs) do |path|
       spec = self.load path

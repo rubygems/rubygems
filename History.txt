@@ -1,5 +1,17 @@
 # coding: UTF-8
 
+=== 3.0.7 / 2020-02-18
+
+Bug fixes:
+
+* Fix underscore version selection for bundler #2908 by David Rodríguez.
+* Add missing wrapper. Pull request #2690 by David Rodríguez.
+* Make Gem::Specification#ruby_code handle OpenSSL::PKey::RSA objects.
+  Pull request #2782 by Luis Sagastume.
+* Installer.rb - fix #windows_stub_script. Pull request #2876 by MSP-Greg.
+* Use IAM role to extract security-credentials for EC2 instance. Pull
+  request #2894 by Alexander Pakulov.
+
 === 3.0.6 / 2019-08-17
 
 Bug fixes:

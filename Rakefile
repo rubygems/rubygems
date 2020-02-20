@@ -70,14 +70,7 @@ end
 
 desc "Run a test suite bisection"
 task(:bisect) do
-  seed = begin
-           Integer(ENV["SEED"])
-         rescue
-           abort "Specify the failing seed as the SEED environment variable"
-         end
-
-  gemdir = `gem env gemdir`.chomp
-  sh "SEED=#{seed} MTB_VERBOSE=2 util/bisect -Ilib:bundler/lib:test:#{gemdir}/gems/minitest-server-1.0.5/lib test"
+  sh "util/bisect"
 end
 
 # --------------------------------------------------------------------

@@ -160,6 +160,18 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     assert_equal "I changed it!\n", File.read(gem_plugin_path)
   end
 
+  def test_execute_regenerate_plugins_creates_plugins_dir_if_not_there
+    gem_plugin_path = gem_install_with_plugin 'a'
+
+    # Simulate gem installed with an older rubygems without a plugins layout
+    FileUtils.rm_rf Gem.plugins_dir
+
+    @cmd.options[:document] = []
+    @cmd.execute
+
+    assert_match %r{\Arequire}, File.read(gem_plugin_path)
+  end
+
   def test_execute_informs_about_installed_executables
     use_ui @ui do
       @cmd.execute

@@ -512,6 +512,8 @@ class Gem::Installer
     latest = Gem::Specification.latest_spec_for(spec.name)
     return if latest && latest.version > spec.version
 
+    ensure_writable_dir Gem.plugins_dir
+
     if spec.plugins.empty?
       remove_plugins_for(spec)
     else

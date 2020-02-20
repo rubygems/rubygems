@@ -7,8 +7,7 @@ seed = begin
          abort "Specify the failing seed as the SEED environment variable"
        end
 
-gemdir = `gem env gemdir`.chomp
-ENV["RUBYOPT"] = "-Ilib:bundler/lib:test:#{gemdir}/gems/minitest-server-1.0.5/lib"
+ENV["RUBYOPT"] = "-Ilib:bundler/lib:test:#{Gem.dir}/gems/minitest-server-1.0.5/lib"
 ENV["MTB_VERBOSE"] = "2"
 
 begin

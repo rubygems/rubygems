@@ -27,12 +27,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Install Dependencies
-        run: util/ci.sh before_script
-        env:
-          TEST_TOOL: ${{ matrix.test_tool }}
       - name: Run Test
-        run: util/ci.sh script
+        run: |
+          util/ci.sh before_script
+          util/ci.sh script
         env:
           TEST_TOOL: ${{ matrix.test_tool }}
     timeout-minutes: 60

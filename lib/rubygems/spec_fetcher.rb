@@ -198,12 +198,12 @@ class Gem::SpecFetcher
   end
 
   def suggest_gems_from_name_regex(gem_name, type = :latest)
-    name = Regexp.new gem_name
+    name = Regexp.new gem_name.downcase.tr('_-', '')
     names = available_specs(type).first.values.flatten(1)
 
     matches = names.map do |n|
       next unless n.match_platform?
-      n.name if name === n.name
+      n.name if name === n.name.downcase.tr('_-', '')
     end.compact
 
     matches = if matches.empty? && type != :prerelease

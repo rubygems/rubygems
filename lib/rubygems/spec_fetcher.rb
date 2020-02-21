@@ -197,6 +197,24 @@ class Gem::SpecFetcher
     matches.first(5).map { |name, dist| name }
   end
 
+  def suggest_gems_from_name_regex(gem_name, type = :latest)
+    name = Regexp.new gem_name
+    names = available_specs(type).first.values.flatten(1)
+
+    matches = names.map do |n|
+      next unless n.match_platform?
+      n.name if name === n.name
+    end.compact
+
+    matches = if matches.empty? && type != :prerelease
+                suggest_gems_from_name_regex gem_name, :prerelease
+              else
+                matches.uniq
+              end
+
+    return matches
+  end
+
   ##
   # Returns a list of gems available for each source in Gem::sources.
   #

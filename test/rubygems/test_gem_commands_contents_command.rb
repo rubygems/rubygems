@@ -152,6 +152,23 @@ class TestGemCommandsContentsCommand < Gem::TestCase
     assert_equal "", @ui.error
   end
 
+  def test_execute_show_install_dir_latest_version
+    @cmd.options[:args] = %w[foo]
+    @cmd.options[:show_install_dir] = true
+
+    gem 'foo', 1
+    gem 'foo', 2
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = File.join @gemhome, 'gems', 'foo-2'
+
+    assert_equal "#{expected}\n", @ui.output
+    assert_equal "", @ui.error
+  end
+
   def test_execute_show_install_dir_version
     @cmd.options[:args] = %w[foo]
     @cmd.options[:show_install_dir] = true

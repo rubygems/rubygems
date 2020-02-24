@@ -482,13 +482,7 @@ class Gem::Installer
   def generate_bin # :nodoc:
     return if spec.executables.nil? or spec.executables.empty?
 
-    begin
-      Dir.mkdir @bin_dir, *[options[:dir_mode] && 0755].compact
-    rescue SystemCallError
-      raise unless File.directory? @bin_dir
-    end
-
-    raise Gem::FilePermissionError.new(@bin_dir) unless File.writable? @bin_dir
+    ensure_writable_dir @bin_dir
 
     spec.executables.each do |filename|
       filename.tap(&Gem::UNTAINT)
@@ -517,6 +511,8 @@ class Gem::Installer
   def generate_plugins # :nodoc:
     latest = Gem::Specification.latest_spec_for(spec.name)
     return if latest && latest.version > spec.version
+
+    ensure_writable_dir Gem.plugins_dir
 
     if spec.plugins.empty?
       remove_plugins_for(spec)
@@ -953,6 +949,16 @@ TEXT
   def write_cache_file
     cache_file = File.join gem_home, 'cache', spec.file_name
     @package.copy_to cache_file
+  end
+
+  def ensure_writable_dir(dir) # :nodoc:
+    begin
+      Dir.mkdir dir, *[options[:dir_mode] && 0755].compact
+    rescue SystemCallError
+      raise unless File.directory? dir
+    end
+
+    raise Gem::FilePermissionError.new(dir) unless File.writable? dir
   end
 
 end

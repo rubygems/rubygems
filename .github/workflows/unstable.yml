@@ -1,12 +1,8 @@
 name: unstable
 
 on:
-  pull_request:
-
-  push:
-    branches:
-      - staging
-      - trying
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   unstable:

@@ -19,9 +19,9 @@ status = [
   "windows (2.6.5)",
   "ubuntu_bundler_master (2.6.5)",
   "ruby_master",
-  "ubuntu_rvm (2.3.8)",
+  "ubuntu (2.3.8, rubygems)",
   "ubuntu_rvm (ruby-head)",
-  "ubuntu_rvm (jruby-9.2.9.0)",
+  "ubuntu (jruby-9.2.9.0, rubygems)",
 ]
 
 timeout_sec = 3600

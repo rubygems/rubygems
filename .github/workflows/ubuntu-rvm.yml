@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-16.04
     strategy:
       matrix:
-        ruby: [ '2.3.8', 'ruby-head', 'jruby-9.2.9.0' ]
+        ruby: [ 'ruby-head' ]
     steps:
       - uses: actions/checkout@v1
       - run: git submodule update -i
@@ -30,14 +30,6 @@ jobs:
           source $HOME/.rvm/scripts/rvm
           rvm install ${{ matrix.ruby }} --binary --autolibs=disable
           rvm --default use ${{ matrix.ruby }}
-      - name: Test rubygems
-        run: |
-          source $HOME/.rvm/scripts/rvm
-          util/ci.sh before_script
-          rake test TESTOPTS=--verbose
-        env:
-          TEST_TOOL: rubygems
-        if: matrix.ruby == 'jruby-9.2.9.0' || matrix.ruby == '2.3.8'
       - name: Test bundler
         run: |
           source $HOME/.rvm/scripts/rvm
@@ -46,5 +38,4 @@ jobs:
         continue-on-error: true
         env:
           TEST_TOOL: bundler
-        if: matrix.ruby == 'ruby-head'
     timeout-minutes: 60

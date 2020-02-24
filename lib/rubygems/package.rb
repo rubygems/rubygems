@@ -106,6 +106,11 @@ class Gem::Package
   attr_reader :gem
 
   ##
+  # Reference to the path containing the gems source code that will be packaged.
+
+  attr_reader :path
+
+  ##
   # The security policy used for verifying the contents of this package.
 
   attr_accessor :security_policy
@@ -256,7 +261,7 @@ class Gem::Package
 
   def add_files(tar) # :nodoc:
     @spec.files.each do |file|
-      file_full_path = File.join(@path, file)
+      file_full_path = File.join(path, file)
 
       stat = File.lstat file_full_path
 
@@ -264,7 +269,7 @@ class Gem::Package
         target_path = File.readlink(file_full_path)
 
         unless target_path.start_with? '.'
-          relative_dir = File.dirname(file_full_path).sub("#{@path}/", '')
+          relative_dir = File.dirname(file_full_path).sub("#{path}/", '')
           target_path = File.join(relative_dir, target_path)
         end
 

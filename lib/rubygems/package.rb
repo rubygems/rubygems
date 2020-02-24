@@ -127,10 +127,11 @@ class Gem::Package
   # Permission for other files
   attr_accessor :data_mode
 
-  def self.build(spec, skip_validation = false, strict_validation = false, file_name = nil)
+  def self.build(spec, skip_validation = false, strict_validation = false, file_name = nil, path = nil)
     gem_file = file_name || spec.file_name
+    gem_file = File.join(path, gem_file) unless path.nil?
 
-    package = new gem_file
+    package = new gem_file, nil, path
     package.spec = spec
     package.build skip_validation, strict_validation
 
@@ -144,7 +145,7 @@ class Gem::Package
   # If +gem+ is an existing file in the old format a Gem::Package::Old will be
   # returned.
 
-  def self.new(gem, security_policy = nil)
+  def self.new(gem, security_policy = nil, path = nil)
     gem = if gem.is_a?(Gem::Package::Source)
             gem
           elsif gem.respond_to? :read
@@ -153,7 +154,7 @@ class Gem::Package
             Gem::Package::FileSource.new gem
           end
 
-    return super unless Gem::Package == self
+    return super(gem, security_policy) unless Gem::Package == self
     return super unless gem.present?
 
     return super unless gem.start
@@ -191,8 +192,9 @@ class Gem::Package
   ##
   # Creates a new package that will read or write to the file +gem+.
 
-  def initialize(gem, security_policy) # :notnew:
+  def initialize(gem, security_policy, path = nil) # :notnew:
     @gem = gem
+    @path = path || Dir.pwd
 
     @build_time      = Gem.source_date_epoch
     @checksums       = {}
@@ -254,13 +256,15 @@ class Gem::Package
 
   def add_files(tar) # :nodoc:
     @spec.files.each do |file|
-      stat = File.lstat file
+      file_full_path = File.join(@path, file)
+
+      stat = File.lstat file_full_path
 
       if stat.symlink?
-        target_path = File.readlink(file)
+        target_path = File.readlink(file_full_path)
 
         unless target_path.start_with? '.'
-          relative_dir = File.dirname(file).sub("#{Dir.pwd}/", '')
+          relative_dir = File.dirname(file_full_path).sub("#{@path}/", '')
           target_path = File.join(relative_dir, target_path)
         end
 
@@ -270,7 +274,7 @@ class Gem::Package
       next unless stat.file?
 
       tar.add_file_simple file, stat.mode, stat.size do |dst_io|
-        File.open file, 'rb' do |src_io|
+        File.open file_full_path, 'rb' do |src_io|
           dst_io.write src_io.read 16384 until src_io.eof?
         end
       end

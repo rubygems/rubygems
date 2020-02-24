@@ -79,16 +79,7 @@ Gems can be saved to a specified filename with the output option:
 
     if File.exist?(gemspec)
       spec = Gem::Specification.load(gemspec)
-
-      if options[:build_path]
-        Dir.chdir(File.dirname(gemspec)) do
-          spec = Gem::Specification.load(File.basename(gemspec))
-          build_package(spec)
-        end
-      else
-        build_package(spec)
-      end
-
+      build_package(spec)
     else
       alert_error "Gemspec file not found: #{gemspec}"
       terminate_interaction(1)
@@ -101,7 +92,8 @@ Gems can be saved to a specified filename with the output option:
         spec,
         options[:force],
         options[:strict],
-        options[:output]
+        options[:output],
+        options[:build_path]
       )
     else
       alert_error "Error loading gemspec. Aborting."

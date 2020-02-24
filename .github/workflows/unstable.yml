@@ -1,4 +1,4 @@
-name: ubuntu
+name: unstable
 
 on:
   pull_request:
@@ -9,24 +9,29 @@ on:
       - trying
 
 jobs:
-  ubuntu:
-    runs-on: ubuntu-latest
+  unstable:
+    runs-on: ubuntu-16.04
     strategy:
       matrix:
-        ruby: [ 2.3.8, 2.4.9, 2.5.7, 2.6.5, jruby-9.2.9.0 ]
-        test_tool: [ rubygems, bundler ]
+        ruby: [ ruby-head ]
     steps:
       - uses: actions/checkout@v1
       - run: git submodule update -i
-      - name: Setup ruby
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Run Test
+      - name: Test bundler
+        run: |
+          BDV=master util/ci.sh before_script
+          util/ci.sh script
+        continue-on-error: true
+        env:
+          TEST_TOOL: bundler
+      - name: Test rubygems
         run: |
           util/ci.sh before_script
           util/ci.sh script
         env:
-          TEST_TOOL: ${{ matrix.test_tool }}
-        if: matrix.ruby == '2.4.9' || matrix.ruby == '2.5.7' || matrix.ruby == '2.6.5' || matrix.test_tool == 'rubygems'
+          TEST_TOOL: rubygems
     timeout-minutes: 60

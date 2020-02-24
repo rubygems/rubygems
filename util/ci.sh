@@ -10,12 +10,6 @@ fi
 
 case $1 in
   before_script)
-    if [ -d "$HOME/.rvm" ]
-    then
-      gemhome=$(gem env home)
-      ruby -I lib bin/gem uninstall executable-hooks gem-wrappers bundler-unload -x --force -i "$gemhome@global"
-    fi
-
     if [ "$TEST_TOOL" = "rubygems" ]
     then
       exec rake setup

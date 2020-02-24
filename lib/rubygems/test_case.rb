@@ -78,6 +78,20 @@ module Gem
   end
 end
 
+require "rubygems/command"
+
+class Gem::Command
+
+  ##
+  # Allows resetting the hash of specific args per command.  This method is
+  # available when requiring 'rubygems/test_case'
+
+  def self.specific_extra_args_hash=(value)
+    @specific_extra_args_hash = value
+  end
+
+end
+
 ##
 # RubyGemTestCase provides a variety of methods for testing rubygems and
 # gem-related behavior in a sandbox.  Through RubyGemTestCase you can install

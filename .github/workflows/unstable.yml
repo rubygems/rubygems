@@ -28,4 +28,10 @@ jobs:
         continue-on-error: true
         env:
           TEST_TOOL: bundler
+      - name: Test rubygems
+        run: |
+          util/ci.sh before_script
+          util/ci.sh script
+        env:
+          TEST_TOOL: rubygems
     timeout-minutes: 60

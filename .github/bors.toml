@@ -20,7 +20,7 @@ status = [
   "ubuntu_bundler_master (2.6.5)",
   "ruby_master",
   "ubuntu (2.3.8, rubygems)",
-  "ubuntu_rvm (ruby-head)",
+  "unstable (ruby-head)",
   "ubuntu (jruby-9.2.9.0, rubygems)",
 ]
 

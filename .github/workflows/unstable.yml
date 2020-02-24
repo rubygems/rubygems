@@ -1,4 +1,4 @@
-name: ubuntu-rvm
+name: unstable
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - trying
 
 jobs:
-  ubuntu_rvm:
+  unstable:
     runs-on: ubuntu-16.04
     strategy:
       matrix:
@@ -17,22 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: git submodule update -i
-      - name: Fixed world writable dirs
-        run: |
-          chmod go-w $HOME
-          sudo chmod -R go-w /usr/share
-          sudo chmod -R go-w /opt
-      - name: Set up RVM
-        run: |
-          curl -sSL https://get.rvm.io | bash
       - name: Set up Ruby
-        run: |
-          source $HOME/.rvm/scripts/rvm
-          rvm install ${{ matrix.ruby }} --binary --autolibs=disable
-          rvm --default use ${{ matrix.ruby }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
       - name: Test bundler
         run: |
-          source $HOME/.rvm/scripts/rvm
           BDV=master util/ci.sh before_script
           util/ci.sh script
         continue-on-error: true

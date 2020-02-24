@@ -105,6 +105,22 @@ class TestGemCommandsContentsCommand < Gem::TestCase
     assert_empty @ui.error
   end
 
+  def test_execute_missing_version
+    @cmd.options[:args] = %w[foo]
+    @cmd.options[:version] = Gem::Requirement.new '= 2'
+
+    gem 'foo', 1
+
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_match "Unable to find gem 'foo'", @ui.output
+    assert_empty @ui.error
+  end
+
   def test_execute_missing_multiple
     @cmd.options[:args] = %w[foo bar]
 

@@ -43,7 +43,7 @@ module Kernel
     # https://github.com/rubygems/rubygems/pull/1868
     resolved_path = begin
       rp = nil
-      Gem.suffixes[1..-1].each do |s|
+      Gem.suffixes.each do |s|
         load_path_insert_index = Gem.load_path_insert_index
         break unless load_path_insert_index
 

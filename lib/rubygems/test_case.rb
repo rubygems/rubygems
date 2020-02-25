@@ -1260,8 +1260,7 @@ Also, a list:
     end
 
     begin
-      require "rbconfig"
-      RbConfig.ruby
+      Gem.ruby
     rescue LoadError
       "ruby"
     end

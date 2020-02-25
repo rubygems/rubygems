@@ -1016,16 +1016,16 @@ class TestGem < Gem::TestCase
   end
 
   def test_self_ruby_escaping_spaces_in_path
-    with_bindir_and_exeext("C:/Ruby 1.8/bin", ".exe") do
-      ruby_install_name "ruby" do
+    with_clean_path_to_ruby do
+      with_rb_config_ruby("C:/Ruby 1.8/bin/ruby.exe") do
         assert_equal "\"C:/Ruby 1.8/bin/ruby.exe\"", Gem.ruby
       end
     end
   end
 
   def test_self_ruby_path_without_spaces
-    with_bindir_and_exeext("C:/Ruby18/bin", ".exe") do
-      ruby_install_name "ruby" do
+    with_clean_path_to_ruby do
+      with_rb_config_ruby("C:/Ruby18/bin/ruby.exe") do
         assert_equal "C:/Ruby18/bin/ruby.exe", Gem.ruby
       end
     end
@@ -1941,11 +1941,24 @@ You may need to `gem install -g` to install missing gems
     end
   end
 
-  def with_bindir_and_exeext(bindir, exeext)
-    bindir(bindir) do
-      exeext(exeext) do
-        yield
-      end
+  def with_rb_config_ruby(path)
+    rb_config_singleton_class = class << RbConfig; self; end
+    orig_path = RbConfig.ruby
+
+    redefine_method(rb_config_singleton_class, :ruby, path)
+
+    yield
+  ensure
+    redefine_method(rb_config_singleton_class, :ruby, orig_path)
+  end
+
+  def redefine_method(base, method, new_result)
+    if RUBY_VERSION >= "2.5"
+      base.alias_method(method, method)
+      base.define_method(method) { new_result }
+    else
+      base.send(:alias_method, method, method)
+      base.send(:define_method, method) { new_result }
     end
   end
 

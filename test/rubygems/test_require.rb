@@ -567,18 +567,20 @@ class TestGemRequire < Gem::TestCase
     write_file File.join(@tempdir, "extconf.rb") do |io|
       io.write <<-RUBY
         require "mkmf"
+        CONFIG['LDSHARED'] = '$(TOUCH) $@ ||'
         create_makefile("#{name}")
       RUBY
     end
 
     write_file File.join(@tempdir, "#{name}.c") do |io|
       io.write <<-C
-        #include <ruby.h>
         void Init_#{name}() { }
       C
     end
 
-    spec.files += ["extconf.rb", "#{name}.c"]
+    write_file File.join(@tempdir, "depend")
+
+    spec.files += ["extconf.rb", "depend", "#{name}.c"]
 
     so = File.join(spec.gem_dir, "#{name}.#{RbConfig::CONFIG["DLEXT"]}")
     refute_path_exists so

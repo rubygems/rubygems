@@ -1,5 +1,3 @@
-# -*- ruby -*-
-
 RakeFileUtils.verbose_flag = false
 
 require 'rubygems'

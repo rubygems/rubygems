@@ -173,9 +173,10 @@ class TestGemSpecFetcher < Gem::TestCase
     spec_fetcher do|fetcher|
       fetcher.spec 'example', 1
       fetcher.spec 'other-example', 1
+      fetcher.spec 'exampel', 1
     end
 
-    suggestions = @sf.suggest_gems_from_name('examplw')
+    suggestions = @sf.suggest_gems_from_name('examplw', type = :latest, num_results = 1)
     assert_equal ['example'], suggestions
   end
 
@@ -198,6 +199,9 @@ class TestGemSpecFetcher < Gem::TestCase
 
     suggestions = @sf.suggest_gems_from_name_regex('exampl')
     assert_equal ['example', 'other-example'], suggestions
+
+    suggestions = @sf.suggest_gems_from_name_regex('exampl', type = :latest, num_results = 1)
+    assert_equal ['example'], suggestions
   end
 
   def test_suggest_gems_from_name_regex_prerelease

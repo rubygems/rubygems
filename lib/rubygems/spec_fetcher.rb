@@ -171,7 +171,7 @@ class Gem::SpecFetcher
   # Suggests gems based on the supplied +gem_name+. Returns an array of
   # alternative gem names.
 
-  def suggest_gems_from_name(gem_name, type = :latest)
+  def suggest_gems_from_name(gem_name, type = :latest, num_results = 5)
     gem_name        = gem_name.downcase.tr('_-', '')
     max             = gem_name.size / 2
     names           = available_specs(type).first.values.flatten(1)
@@ -194,10 +194,10 @@ class Gem::SpecFetcher
                 matches.uniq.sort_by { |name, dist| dist }
               end
 
-    matches.first(5).map { |name, dist| name }
+    matches.first(num_results).map { |name, dist| name }
   end
 
-  def suggest_gems_from_name_regex(gem_name, type = :latest)
+  def suggest_gems_from_name_regex(gem_name, type = :latest, num_results = 5)
     name = Regexp.new gem_name.downcase.tr('_-', '')
     names = available_specs(type).first.values.flatten(1)
 
@@ -212,7 +212,7 @@ class Gem::SpecFetcher
                 matches.uniq
               end
 
-    return matches
+    return matches.first(num_results)
   end
 
   ##

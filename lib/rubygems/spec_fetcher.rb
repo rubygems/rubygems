@@ -173,20 +173,24 @@ class Gem::SpecFetcher
 
   def suggest_gems_from_name(gem_name, type = :latest, num_results = 5)
     gem_name        = gem_name.downcase.tr('_-', '')
+    name            = Regexp.new gem_name
     max             = gem_name.size / 2
     names           = available_specs(type).first.values.flatten(1)
 
     matches = names.map do |n|
       next unless n.match_platform?
-
-      distance = levenshtein_distance gem_name, n.name.downcase.tr('_-', '')
-
-      next if distance >= max
-
-      return [n.name] if distance == 0
-
-      [n.name, distance]
+      [n.name, 0] if name === n.name.downcase.tr('_-', '')
     end.compact
+
+    if matches.length < num_results
+      matches += names.map do |n|
+        next unless n.match_platform?
+        distance = levenshtein_distance gem_name, n.name.downcase.tr('_-', '')
+        next if distance >= max
+        return [n.name] if distance == 0
+        [n.name, distance]
+      end.compact
+    end
 
     matches = if matches.empty? && type != :prerelease
                 suggest_gems_from_name gem_name, :prerelease
@@ -194,25 +198,7 @@ class Gem::SpecFetcher
                 matches.uniq.sort_by { |name, dist| dist }
               end
 
-    matches.first(num_results).map { |name, dist| name }
-  end
-
-  def suggest_gems_from_name_regex(gem_name, type = :latest, num_results = 5)
-    name = Regexp.new gem_name.downcase.tr('_-', '')
-    names = available_specs(type).first.values.flatten(1)
-
-    matches = names.map do |n|
-      next unless n.match_platform?
-      n.name if name === n.name.downcase.tr('_-', '')
-    end.compact
-
-    matches = if matches.empty? && type != :prerelease
-                suggest_gems_from_name_regex gem_name, :prerelease
-              else
-                matches.uniq
-              end
-
-    return matches.first(num_results)
+    matches.map { |name, dist| name }.uniq.first(num_results)
   end
 
   ##

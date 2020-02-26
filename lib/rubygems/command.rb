@@ -174,7 +174,7 @@ class Gem::Command
     alert_error msg
 
     unless suppress_suggestions
-      suggestions = Gem::SpecFetcher.fetcher.suggest_gems_from_name_regex(gem_name)
+      suggestions = Gem::SpecFetcher.fetcher.suggest_gems_from_name(gem_name, :latest, 10)
       unless suggestions.empty?
         alert_error "Possible alternatives: #{suggestions.join(", ")}"
       end

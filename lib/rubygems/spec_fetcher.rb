@@ -173,7 +173,6 @@ class Gem::SpecFetcher
 
   def suggest_gems_from_name(gem_name, type = :latest, num_results = 5)
     gem_name        = gem_name.downcase.tr('_-', '')
-    name            = Regexp.new gem_name
     max             = gem_name.size / 2
     names           = available_specs(type).first.values.flatten(1)
 

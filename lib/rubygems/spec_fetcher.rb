@@ -179,7 +179,7 @@ class Gem::SpecFetcher
 
     matches = names.map do |n|
       next unless n.match_platform?
-      [n.name, 0] if name === n.name.downcase.tr('_-', '')
+      [n.name, 0] if n.name.downcase.tr('_-', '').include?(gem_name)
     end.compact
 
     if matches.length < num_results

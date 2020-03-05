@@ -515,9 +515,9 @@ class Gem::Installer
     ensure_writable_dir @plugins_dir
 
     if spec.plugins.empty?
-      remove_plugins_for(spec)
+      remove_plugins_for(spec, @plugins_dir)
     else
-      regenerate_plugins_for(spec)
+      regenerate_plugins_for(spec, @plugins_dir)
     end
   end
 

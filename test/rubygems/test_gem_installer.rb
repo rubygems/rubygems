@@ -808,6 +808,17 @@ gem 'other', version
     end
   end
 
+  def test_generates_plugins_dir_under_install_dir_if_not_there
+    Gem.use_paths "#{@gemhome}2" # Set GEM_HOME to an uninitialized repo
+
+    @spec = util_spec 'a'
+
+    path = Gem::Package.build @spec
+
+    installer = Gem::Installer.at path, :install_dir => "#{@gemhome}3"
+    assert_equal @spec, installer.install
+  end
+
   def test_initialize
     spec = util_spec 'a' do |s|
       s.platform = Gem::Platform.new 'mswin32'

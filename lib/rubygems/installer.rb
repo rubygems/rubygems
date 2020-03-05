@@ -512,7 +512,7 @@ class Gem::Installer
     latest = Gem::Specification.latest_spec_for(spec.name)
     return if latest && latest.version > spec.version
 
-    ensure_writable_dir Gem.plugins_dir
+    ensure_writable_dir @plugins_dir
 
     if spec.plugins.empty?
       remove_plugins_for(spec)
@@ -681,6 +681,7 @@ class Gem::Installer
     @force               = options[:force]
     @install_dir         = options[:install_dir]
     @gem_home            = options[:install_dir] || Gem.dir
+    @plugins_dir         = File.join(@gem_home, "plugins")
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
     @wrappers            = options[:wrappers]

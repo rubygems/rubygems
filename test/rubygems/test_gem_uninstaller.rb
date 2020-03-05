@@ -217,7 +217,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
     assert File.exist?(plugin_path), 'plugin not written'
 
     FileUtils.rm plugin_path
-    Gem::Uninstaller.new(nil).regenerate_plugins_for @spec
+    Gem::Uninstaller.new(nil).regenerate_plugins_for @spec, Gem.plugins_dir
 
     assert File.exist?(plugin_path), 'plugin not regenerated'
   end

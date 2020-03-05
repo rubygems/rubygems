@@ -468,7 +468,10 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     subdirs.each do |name|
       subdir = File.join dir, name
       next if File.exist? subdir
-      FileUtils.mkdir_p subdir, **options rescue nil
+      begin
+        FileUtils.mkdir_p subdir, **options
+      rescue Errno::EACCES
+      end
     end
   ensure
     File.umask old_umask

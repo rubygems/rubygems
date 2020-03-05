@@ -15,6 +15,11 @@ jobs:
       matrix:
         ruby: [ 2.3.8, 2.4.9, 2.5.7, 2.6.5, jruby-9.2.11.0 ]
         test_tool: [ rubygems, bundler ]
+        exclude:
+          - ruby: 2.3.8
+            test_tool: bundler
+          - ruby: jruby-9.2.11.0
+            test_tool: bundler
     steps:
       - uses: actions/checkout@v1
       - run: git submodule update -i
@@ -28,5 +33,4 @@ jobs:
           util/ci.sh script
         env:
           TEST_TOOL: ${{ matrix.test_tool }}
-        if: matrix.ruby == '2.4.9' || matrix.ruby == '2.5.7' || matrix.ruby == '2.6.5' || matrix.test_tool == 'rubygems'
     timeout-minutes: 60

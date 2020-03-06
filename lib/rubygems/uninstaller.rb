@@ -50,7 +50,7 @@ class Gem::Uninstaller
     @gem                = gem
     @version            = options[:version] || Gem::Requirement.default
     @gem_home           = File.realpath(options[:install_dir] || Gem.dir)
-    @plugins_dir        = File.join(@gem_home, 'plugins')
+    @plugins_dir        = Gem.plugindir(@gem_home)
     @force_executables  = options[:executables]
     @force_all          = options[:all]
     @force_ignore       = options[:ignore]

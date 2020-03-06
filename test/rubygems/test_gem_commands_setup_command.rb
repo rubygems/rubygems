@@ -107,7 +107,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     end
     install_gem gem
 
-    File.join Gem.plugins_dir, "#{name}_plugin.rb"
+    File.join Gem.plugindir, "#{name}_plugin.rb"
   end
 
   def test_execute_regenerate_binstubs
@@ -164,7 +164,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     gem_plugin_path = gem_install_with_plugin 'a'
 
     # Simulate gem installed with an older rubygems without a plugins layout
-    FileUtils.rm_rf Gem.plugins_dir
+    FileUtils.rm_rf Gem.plugindir
 
     @cmd.options[:document] = []
     @cmd.execute

@@ -757,7 +757,7 @@ gem 'other', version
       installer.install
     end
 
-    plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+    plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
 
     FileUtils.rm plugin_path
 
@@ -798,7 +798,7 @@ gem 'other', version
         spec.files += %w[lib/rubygems_plugin.rb]
       end.install
 
-      plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+      plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
       refute File.exist?(plugin_path), 'old version installed while newer version without plugin also installed, but plugin written'
 
       util_setup_installer do |spec|
@@ -806,7 +806,7 @@ gem 'other', version
         spec.files += %w[lib/rubygems_plugin.rb]
       end.install
 
-      plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+      plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
       assert File.exist?(plugin_path), 'latest version reinstalled, but plugin not written'
       assert_match %r{\Arequire.*a-2/lib/rubygems_plugin\.rb}, File.read(plugin_path), 'written plugin has incorrect content'
 
@@ -815,7 +815,7 @@ gem 'other', version
         spec.files += %w[lib/rubygems_plugin.rb]
       end.install
 
-      plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+      plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
       assert File.exist?(plugin_path), 'latest version installed, but plugin removed'
       assert_match %r{\Arequire.*a-3/lib/rubygems_plugin\.rb}, File.read(plugin_path), 'written plugin has incorrect content'
 

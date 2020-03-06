@@ -4,7 +4,7 @@ status = [
   "install (2.4.9)",
   "install (2.5.7)",
   "install (2.6.5)",
-  "install (jruby-9.2.9.0)",
+  "install (jruby-9.2.11.0)",
   "macos (2.4.9)",
   "ubuntu (2.4.9, rubygems)",
   "ubuntu (2.4.9, bundler)",
@@ -19,7 +19,7 @@ status = [
   "windows (2.6.5)",
   "ubuntu_bundler_master (2.6.5)",
   "ubuntu (2.3.8, rubygems)",
-  "ubuntu (jruby-9.2.9.0, rubygems)",
+  "ubuntu (jruby-9.2.11.0, rubygems)",
 ]
 
 timeout_sec = 3600

@@ -18,11 +18,6 @@ case $1 in
 
       export RGV=..
 
-      if [ -n "$BDV" ]
-      then
-        git reset --hard "origin/$BDV"
-      fi
-
       gem install rake -v "~>12.0"
       exec bin/rake spec:deps
     fi

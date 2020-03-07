@@ -17,20 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: git submodule update -i
-      - name: Fix world writable dirs
-        run: |
-          chmod go-w $HOME
-          sudo chmod -R go-w /usr/share
-          sudo chmod -R go-w /opt
-      - name: Set up RVM
-        run: curl -sSL https://get.rvm.io | bash
-      - name: Set up Ruby
-        run: |
-          source $HOME/.rvm/scripts/rvm
-          rvm install ${{ matrix.ruby }} --binary --autolibs=disable
-          rvm --default use ${{ matrix.ruby }}
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
       - name: Install rubygems
-        run: |
-          source $HOME/.rvm/scripts/rvm
-          ruby -Ilib -S rake install
+        run: ruby -Ilib -S rake install
     timeout-minutes: 10

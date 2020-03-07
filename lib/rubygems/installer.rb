@@ -295,11 +295,8 @@ class Gem::Installer
     run_pre_install_hooks
 
     # Set loaded_from to ensure extension_dir is correct
-    if @options[:install_as_default]
-      spec.loaded_from = default_spec_file
-    else
-      spec.loaded_from = spec_file
-    end
+    spec.loaded_from = spec_file
+    spec.default_gem = @options[:install_as_default]
 
     # Completely remove any previous gem files
     FileUtils.rm_rf gem_dir
@@ -437,8 +434,9 @@ class Gem::Installer
   #
 
   def default_spec_file
-    File.join Gem.default_specifications_dir, "#{spec.full_name}.gemspec"
+    spec_file
   end
+  deprecate :default_spec_file, :none, 2021, 02
 
   ##
   # Writes the .gemspec specification (in Ruby) to the gem home's
@@ -457,6 +455,9 @@ class Gem::Installer
   ##
   # Writes the full .gemspec specification (in Ruby) to the gem home's
   # specifications/default directory.
+  #
+  # In contrast to #write_spec, this keeps file lists, so the `gem contents`
+  # command works.
 
   def write_default_spec
     File.open(default_spec_file, "w") do |file|
@@ -680,7 +681,11 @@ class Gem::Installer
     @env_shebang         = options[:env_shebang]
     @force               = options[:force]
     @install_dir         = options[:install_dir]
-    @gem_home            = options[:install_dir] || Gem.dir
+    if options[:install_as_default]
+      @gem_home = Gem.default_gems_dir
+    else
+      @gem_home = options[:install_dir] || Gem.dir
+    end
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
     @wrappers            = options[:wrappers]

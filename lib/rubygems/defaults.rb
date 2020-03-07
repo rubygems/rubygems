@@ -46,6 +46,27 @@ module Gem
   end
 
   ##
+  # Directory to StdLib default gems
+
+  def self.default_gems_dir
+    path = if defined? RUBY_FRAMEWORK_VERSION
+             [
+               File.dirname(RbConfig::CONFIG['sitedir']),
+               'Default',
+               RbConfig::CONFIG['ruby_version']
+             ]
+           else
+             [
+               RbConfig::CONFIG['rubylibprefix'],
+               'default',
+               RbConfig::CONFIG['ruby_version']
+             ]
+           end
+
+    @default_gems_dir ||= File.join(*path)
+  end
+
+  ##
   # Returns binary extensions dir for specified RubyGems base dir or nil
   # if such directory cannot be determined.
   #
@@ -67,7 +88,7 @@ module Gem
   # Path to specification files of default gems.
 
   def self.default_specifications_dir
-    File.join(Gem.default_dir, "specifications", "default")
+    File.join(Gem.default_gems_dir, "specifications")
   end
 
   ##

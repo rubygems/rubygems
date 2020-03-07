@@ -386,15 +386,19 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
 
     ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = PRIVATE_KEY_PASSPHRASE
 
-    @default_dir = File.join @tempdir, 'default'
-    @default_spec_dir = File.join @default_dir, "specifications", "default"
+    @default_dir = File.join @tempdir, 'bundled'
+    @default_spec_dir = File.join @default_dir, "specifications"
+    @default_gems_dir = File.join @tempdir, 'default'
+    @default_gems_spec_dir = File.join @default_gems_dir, "specifications"
     if Gem.java_platform?
       @orig_default_gem_home = RbConfig::CONFIG['default_gem_home']
       RbConfig::CONFIG['default_gem_home'] = @default_dir
     else
       Gem.instance_variable_set(:@default_dir, @default_dir)
     end
+    Gem.instance_variable_set(:@default_gems_dir, @default_gems_dir)
     FileUtils.mkdir_p @default_spec_dir
+    FileUtils.mkdir_p @default_gems_spec_dir
 
     Gem::Specification.unresolved_deps.clear
     Gem.use_paths(@gemhome)
@@ -475,6 +479,7 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
       RbConfig::CONFIG['default_gem_home'] = @orig_default_gem_home
     else
       Gem.instance_variable_set :@default_dir, nil
+      Gem.instance_variable_set :@default_gems_dir, nil
     end
 
     Gem::Specification._clear_load_cache
@@ -804,7 +809,8 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
   def new_default_spec(name, version, deps = nil, *files)
     spec = util_spec name, version, deps
 
-    spec.loaded_from = File.join(@default_spec_dir, spec.spec_name)
+    spec.loaded_from = File.join(@default_gems_spec_dir, spec.spec_name)
+    spec.default_gem = true
     spec.files = files
 
     lib_dir = File.join(@tempdir, "default_gems", "lib")

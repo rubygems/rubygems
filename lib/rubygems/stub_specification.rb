@@ -74,12 +74,12 @@ class Gem::StubSpecification < Gem::BasicSpecification
     filename.tap(&Gem::UNTAINT)
 
     self.loaded_from = filename
+    self.default_gem = default_gem
     @data            = nil
     @name            = nil
     @spec            = nil
     @base_dir        = base_dir
     @gems_dir        = gems_dir
-    @default_gem     = default_gem
   end
 
   ##
@@ -91,10 +91,6 @@ class Gem::StubSpecification < Gem::BasicSpecification
       loaded = Gem.loaded_specs[name]
       loaded && loaded.version == version
     end
-  end
-
-  def default_gem?
-    @default_gem
   end
 
   def build_extensions # :nodoc:

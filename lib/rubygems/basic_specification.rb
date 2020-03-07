@@ -30,6 +30,12 @@ class Gem::BasicSpecification
 
   attr_writer :full_gem_path # :nodoc:
 
+  ##
+  # Default gem flag.
+
+  attr_accessor :default_gem # :nodoc:
+  alias default_gem? default_gem
+
   def initialize
     internal_init
   end
@@ -87,11 +93,6 @@ class Gem::BasicSpecification
     end
 
     have_file? file, Gem.suffixes
-  end
-
-  def default_gem?
-    loaded_from &&
-      File.dirname(loaded_from) == Gem.default_specifications_dir
   end
 
   ##

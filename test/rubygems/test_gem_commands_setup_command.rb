@@ -56,12 +56,11 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     FileUtils.mkdir_p 'default/gems'
 
-    gemspec = Gem::Specification.new
-    gemspec.author = "Us"
-    gemspec.name = "bundler"
-    gemspec.version = BUNDLER_VERS
-    gemspec.bindir = "exe"
-    gemspec.executables = ["bundle"]
+    gemspec = util_spec 'bundler', BUNDLER_VERS do |s|
+      s.author = "Us"
+      s.bindir = "exe"
+      s.executables = ["bundle"]
+    end
 
     File.open 'bundler/bundler.gemspec',   'w' do |io|
       io.puts gemspec.to_ruby
@@ -72,8 +71,6 @@ class TestGemCommandsSetupCommand < Gem::TestCase
       io.puts gemspec.to_ruby
     end
 
-    FileUtils.mkdir_p File.join(Gem.default_dir, "specifications")
-
     open(File.join(Gem.default_dir, "specifications", "bundler-#{BUNDLER_VERS}.gemspec"), 'w') do |io|
       io.puts "# bundler-#{BUNDLER_VERS}"
     end
@@ -82,8 +79,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
       io.puts '# bundler-audit'
     end
 
-    FileUtils.mkdir_p 'default/gems/bundler-1.15.4'
-    FileUtils.mkdir_p 'default/gems/bundler-audit-1.0.0'
+    FileUtils.mkdir_p File.join(Gem.default_dir, 'gems/bundler-1.15.4')
+    FileUtils.mkdir_p File.join(Gem.default_dir, 'gems/bundler-audit-1.0.0')
   end
 
   def gem_install(name)
@@ -262,15 +259,15 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     refute_path_exists File.join(Gem.default_dir, "specifications", "bundler-#{BUNDLER_VERS}.gemspec")
 
     # expect to install default gems. It location was `site_ruby` directory on real world.
-    assert_path_exists "default/gems/bundler-#{BUNDLER_VERS}"
+    assert_path_exists File.join(Gem.default_gems_dir, "gems/bundler-#{BUNDLER_VERS}")
 
     # expect to not remove other versions of bundler on `site_ruby`
-    assert_path_exists 'default/gems/bundler-1.15.4'
+    assert_path_exists File.join(Gem.default_dir, 'gems/bundler-1.15.4')
 
     # TODO: We need to assert to remove same version of bundler on gem_dir directory(It's not site_ruby dir)
 
     # expect to not remove bundler-* directory.
-    assert_path_exists 'default/gems/bundler-audit-1.0.0'
+    assert_path_exists File.join(Gem.default_dir, 'gems/bundler-audit-1.0.0')
   end
 
   def test_install_default_bundler_gem_with_force_flag

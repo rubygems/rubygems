@@ -319,6 +319,13 @@ module Gem
   end
 
   ##
+  # The path were rubygems plugins are to be installed.
+
+  def self.plugindir(install_dir=Gem.dir)
+    File.join install_dir, 'plugins'
+  end
+
+  ##
   # Reset the +dir+ and +path+ values.  The next time +dir+ or +path+
   # is requested, the values will be calculated from scratch.  This is
   # mainly used by the unit tests to provide test isolation.
@@ -423,10 +430,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   def self.spec_cache_dir
     paths.spec_cache_dir
-  end
-
-  def self.plugins_dir
-    File.join(dir, "plugins")
   end
 
   ##
@@ -1103,7 +1106,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Find rubygems plugin files in the standard location and load them
 
   def self.load_plugins
-    load_plugin_files Gem::Util.glob_files_in_dir("*#{Gem.plugin_suffix_pattern}", plugins_dir)
+    load_plugin_files Gem::Util.glob_files_in_dir("*#{Gem.plugin_suffix_pattern}", plugindir)
   end
 
   ##

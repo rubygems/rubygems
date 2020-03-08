@@ -757,13 +757,32 @@ gem 'other', version
       installer.install
     end
 
-    plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+    plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
 
     FileUtils.rm plugin_path
 
     installer.generate_plugins
 
     assert File.exist?(plugin_path), 'plugin not written'
+  end
+
+  def test_generate_plugins_with_install_dir
+    spec = quick_gem 'a' do |spec|
+      write_file File.join(@tempdir, 'lib', 'rubygems_plugin.rb') do |io|
+        io.write "puts __FILE__"
+      end
+
+      spec.files += %w[lib/rubygems_plugin.rb]
+    end
+
+    util_build_gem spec
+
+    plugin_path = File.join "#{@gemhome}2", 'plugins', 'a_plugin.rb'
+    installer = util_installer spec, "#{@gemhome}2"
+
+    assert_equal spec, installer.install
+
+    assert File.exist?(plugin_path), 'plugin not written to install_dir'
   end
 
   def test_keeps_plugins_up_to_date
@@ -779,7 +798,7 @@ gem 'other', version
         spec.files += %w[lib/rubygems_plugin.rb]
       end.install
 
-      plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+      plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
       refute File.exist?(plugin_path), 'old version installed while newer version without plugin also installed, but plugin written'
 
       util_setup_installer do |spec|
@@ -787,7 +806,7 @@ gem 'other', version
         spec.files += %w[lib/rubygems_plugin.rb]
       end.install
 
-      plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+      plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
       assert File.exist?(plugin_path), 'latest version reinstalled, but plugin not written'
       assert_match %r{\Arequire.*a-2/lib/rubygems_plugin\.rb}, File.read(plugin_path), 'written plugin has incorrect content'
 
@@ -796,7 +815,7 @@ gem 'other', version
         spec.files += %w[lib/rubygems_plugin.rb]
       end.install
 
-      plugin_path = File.join Gem.plugins_dir, 'a_plugin.rb'
+      plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
       assert File.exist?(plugin_path), 'latest version installed, but plugin removed'
       assert_match %r{\Arequire.*a-3/lib/rubygems_plugin\.rb}, File.read(plugin_path), 'written plugin has incorrect content'
 
@@ -806,6 +825,17 @@ gem 'other', version
 
       refute File.exist?(plugin_path), 'new version installed without a plugin while older version with a plugin installed, but plugin not removed'
     end
+  end
+
+  def test_generates_plugins_dir_under_install_dir_if_not_there
+    Gem.use_paths "#{@gemhome}2" # Set GEM_HOME to an uninitialized repo
+
+    @spec = util_spec 'a'
+
+    path = Gem::Package.build @spec
+
+    installer = Gem::Installer.at path, :install_dir => "#{@gemhome}3"
+    assert_equal @spec, installer.install
   end
 
   def test_initialize

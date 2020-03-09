@@ -1,4 +1,4 @@
-name: ubuntu
+name: ubuntu-bundler
 
 on:
   pull_request:

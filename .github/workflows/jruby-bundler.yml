@@ -1,4 +1,4 @@
-name: jruby
+name: jruby-bundler
 
 on:
   pull_request:

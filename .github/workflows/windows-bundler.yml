@@ -1,4 +1,4 @@
-name: windows
+name: windows-bundler
 
 on:
   pull_request:

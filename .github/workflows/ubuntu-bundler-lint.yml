@@ -18,7 +18,11 @@ jobs:
         with:
           ruby-version: 2.6.5
       - name: Install Dependencies
-        run: bin/rake spec:deps
+        run: |
+          cd bundler
+          bin/rake spec:deps
       - name: Run Lint
-        run: bin/rake rubocop check_rvm_integration man:check
+        run: |
+          cd bundler
+          bin/rake rubocop check_rvm_integration man:check
     timeout-minutes: 15

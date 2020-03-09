@@ -25,14 +25,21 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
       - name: Prepare dependencies
         run: |
+          cd bundler
           BUNDLER_SPEC_SUB_VERSION=3.0.0 bin/rake override_version
           bin/rake spec:parallel_deps
       - name: Run Test
-        run: bin/parallel_rspec spec
+        run: |
+          cd bundler
+          bin/parallel_rspec spec
       - name: Run Test with realworld
-        run: bin/rake spec:realworld
+        run: |
+          cd bundler
+          bin/rake spec:realworld
         env:
           BUNDLER_SPEC_PRE_RECORDED: 1
       - name: Run Test with sudo
-        run: bin/rake spec:sudo
+        run: |
+          cd bundler
+          bin/rake spec:sudo
     timeout-minutes: 60

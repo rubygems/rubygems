@@ -21,10 +21,13 @@ jobs:
           ruby-version: jruby-9.2.9.0
 
       - name: Install local bundler
-        run: bin/rake install:local
+        run: |
+          cd bundler
+          bin/rake install:local
 
       - name: Run a warbler project
         run: |
+          cd bundler
           cd spec/realworld/fixtures/warbler
           bundle install
           bundle exec warble

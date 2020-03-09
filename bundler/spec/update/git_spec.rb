@@ -75,6 +75,8 @@ RSpec.describe "bundle update" do
     end
 
     it "notices when you change the repo url in the Gemfile" do
+      skip "some of monorepo issues" if Gem.win_platform?
+
       build_git "foo", :path => lib_path("foo_one")
       build_git "foo", :path => lib_path("foo_two")
 
@@ -181,6 +183,8 @@ RSpec.describe "bundle update" do
     end
 
     it "errors with a message when the .git repo is gone" do
+      skip "some of monorepo issues" if Gem.win_platform?
+
       build_git "foo", "1.0"
 
       install_gemfile <<-G
@@ -212,6 +216,8 @@ RSpec.describe "bundle update" do
     end
 
     it "shows the previous version of the gem" do
+      skip "some of monorepo issues" if Gem.win_platform?
+
       build_git "rails", "3.0", :path => lib_path("rails")
 
       install_gemfile <<-G

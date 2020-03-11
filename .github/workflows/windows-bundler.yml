@@ -9,7 +9,7 @@ on:
       - trying
 
 jobs:
-  windows:
+  windows_bundler:
     runs-on: windows-latest
 
     strategy:

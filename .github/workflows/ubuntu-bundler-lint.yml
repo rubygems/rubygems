@@ -9,7 +9,7 @@ on:
       - trying
 
 jobs:
-  ubuntu_lint:
+  ubuntu_bundler_lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

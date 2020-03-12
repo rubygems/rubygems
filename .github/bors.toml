@@ -42,7 +42,7 @@ status = [
   "ubuntu_bundler3 (2.6.5, ..)"
 ]
 
-timeout_sec = 14400
+timeout_sec = 3600
 prerun_timeout_sec = 3600
 delete_merged_branches = true
 

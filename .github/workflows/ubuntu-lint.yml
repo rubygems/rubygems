@@ -26,4 +26,14 @@ jobs:
         run: util/ci.sh rubocop
         env:
           TEST_TOOL: rubygems
+      - name: Install Dependencies in Bundler
+        run: |
+          cd bundler
+          bin/rake spec:deps
+          gem i rake -v "13.0.1"
+      - name: Run Lint in Bundler
+        run: |
+          cd bundler
+          bin/rubocop --ignore_parent_exclusion
+          bin/rake check_rvm_integration man:check
     timeout-minutes: 15

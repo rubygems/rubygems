@@ -12,7 +12,6 @@ jobs:
         ruby: [ ruby-head ]
     steps:
       - uses: actions/checkout@v1
-      - run: git submodule update -i
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:

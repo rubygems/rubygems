@@ -16,7 +16,6 @@ jobs:
         ruby: [ 2.4.9, 2.5.7, 2.6.5 ]
     steps:
       - uses: actions/checkout@v1
-      - run: git submodule update -i
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:

@@ -15,9 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Setup ruby
-        uses: eregon/use-ruby-action@v1
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: jruby-9.2.9.0
+          ruby-version: jruby-9.2.11.0
       - name: Install local bundler
         run: |
           bin/rake install:local

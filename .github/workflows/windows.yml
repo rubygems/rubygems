@@ -37,4 +37,4 @@ jobs:
           cd bundler
           bin/parallel_rspec spec
         shell: bash
-    timeout-minutes: 15
+    timeout-minutes: 60

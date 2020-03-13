@@ -21,7 +21,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install Dependencies
-        run: util/ci.sh before_script
+        run: rake setup
         shell: bash
       - name: Run Test
         run: |

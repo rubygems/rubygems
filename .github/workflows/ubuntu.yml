@@ -22,6 +22,6 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
       - name: Run Test
         run: |
-          util/ci.sh before_script
-          util/ci.sh script
+          rake setup
+          rake test
     timeout-minutes: 60

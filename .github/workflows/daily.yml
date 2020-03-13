@@ -24,6 +24,6 @@ jobs:
         continue-on-error: true
       - name: Test rubygems
         run: |
-          util/ci.sh before_script
-          util/ci.sh script
+          rake setup
+          rake test
     timeout-minutes: 60

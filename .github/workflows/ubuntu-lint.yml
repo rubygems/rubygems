@@ -27,7 +27,6 @@ jobs:
         run: |
           cd bundler
           bin/rake spec:deps
-          gem i rake -v "13.0.1"
       - name: Run Lint in Bundler
         run: |
           cd bundler

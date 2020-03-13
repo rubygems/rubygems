@@ -25,6 +25,7 @@ jobs:
           util/rubocop
       - name: Install Dependencies in Bundler
         run: |
+          rm ../Gemfile*
           bin/rake spec:deps
         working-directory: ./bundler
       - name: Run Lint in Bundler

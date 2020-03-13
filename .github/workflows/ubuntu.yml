@@ -24,6 +24,4 @@ jobs:
         run: |
           util/ci.sh before_script
           util/ci.sh script
-        env:
-          TEST_TOOL: rubygems
     timeout-minutes: 60

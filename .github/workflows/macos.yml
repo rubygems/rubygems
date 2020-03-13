@@ -22,7 +22,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install Dependencies
-        run: TEST_TOOL=rubygems util/ci.sh before_script
+        run: util/ci.sh before_script
       - name: Run Test
         run: rake test
     timeout-minutes: 15

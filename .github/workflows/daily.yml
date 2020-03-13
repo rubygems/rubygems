@@ -18,15 +18,12 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
       - name: Test bundler
         run: |
-          BDV=master util/ci.sh before_script
-          util/ci.sh script
+          bin/rake spec:parallel_deps
+          cd bundler
+          RGV=.. bin/parallel_rspec spec
         continue-on-error: true
-        env:
-          TEST_TOOL: bundler
       - name: Test rubygems
         run: |
           util/ci.sh before_script
           util/ci.sh script
-        env:
-          TEST_TOOL: rubygems
     timeout-minutes: 60

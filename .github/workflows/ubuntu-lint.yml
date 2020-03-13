@@ -19,12 +19,8 @@ jobs:
           ruby-version: 2.6.5
       - name: Install Dependencies
         run: util/ci.sh before_script
-        env:
-          TEST_TOOL: rubygems
       - name: Run Lint
         run: util/ci.sh rubocop
-        env:
-          TEST_TOOL: rubygems
       - name: Install Dependencies in Bundler
         run: |
           cd bundler

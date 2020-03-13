@@ -2,25 +2,9 @@
 
 set -eo pipefail
 
-if [ -z "$TEST_TOOL" ]
-then
-  echo "You must specify a TEST_TOOL"
-  exit 1
-fi
-
 case $1 in
   before_script)
-    if [ "$TEST_TOOL" = "rubygems" ]
-    then
-      exec rake setup
-    else
-      cd bundler
-
-      export RGV=..
-
-      gem install rake -v "~>12.0"
-      exec bin/rake spec:deps
-    fi
+    exec rake setup
 
     ;;
 
@@ -31,16 +15,7 @@ case $1 in
     ;;
 
   script)
-    if [ "$TEST_TOOL" = "rubygems" ]
-    then
-      exec rake test
-    else
-      cd bundler
-
-      export RGV=..
-
-      exec bin/rake spec -t
-    fi
+    exec rake test
 
     ;;
 

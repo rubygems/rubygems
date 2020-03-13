@@ -1,4 +1,4 @@
-name: windows
+name: windows-bundler
 
 on:
   pull_request:
@@ -9,22 +9,26 @@ on:
       - trying
 
 jobs:
-  windows:
+  windows_bundler:
     runs-on: windows-latest
+
     strategy:
       matrix:
-        ruby: [ 2.4.9, 2.5.7, 2.6.5 ]
+        ruby: [ '2.4', '2.5', '2.6' ]
+
     steps:
       - uses: actions/checkout@v1
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Install Dependencies
-        run: rake setup
-        shell: bash
-      - name: Run Test
+      - name: Install dependencies
         run: |
-          ridk enable
-          rake test
-    timeout-minutes: 15
+          bin/rake spec:parallel_deps
+        working-directory: ./bundler
+        shell: bash
+      - name: Run specs
+        run: |
+          bin/parallel_rspec spec
+        working-directory: ./bundler
+        shell: bash

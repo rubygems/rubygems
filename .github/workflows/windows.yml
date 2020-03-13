@@ -27,4 +27,14 @@ jobs:
         run: |
           ridk enable
           rake test
+      - name: Install dependencies in Bundler
+        run: |
+          cd bundler
+          bin/rake spec:parallel_deps
+        shell: bash
+      - name: Run specs in Bundler
+        run: |
+          cd bundler
+          bin/parallel_rspec spec
+        shell: bash
     timeout-minutes: 15

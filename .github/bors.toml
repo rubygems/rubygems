@@ -36,9 +36,6 @@ status = [
   "ubuntu_bundler3 (2.5.7, ..)",
   "ubuntu_bundler3 (2.6.5, v3.0.6)",
   "ubuntu_bundler3 (2.6.5, ..)",
-  "windows_bundler (2.4)",
-  "windows_bundler (2.5)",
-  "windows_bundler (2.6)",
 ]
 
 timeout_sec = 3600

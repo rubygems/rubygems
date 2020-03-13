@@ -17,20 +17,16 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6.5
-      - name: Install Dependencies
-        run: rake setup
       - name: Run Lint
         run: |
+          rake setup
           gem install rubocop -v "~>0.74.0"
           util/rubocop
-      - name: Install Dependencies in Bundler
+      - name: Run Lint in Bundler
         run: |
           cd bundler
           bin/rake spec:deps
           gem i rake -v "13.0.1"
-      - name: Run Lint in Bundler
-        run: |
-          cd bundler
           bin/rubocop --ignore_parent_exclusion
           bin/rake check_rvm_integration man:check
     timeout-minutes: 15

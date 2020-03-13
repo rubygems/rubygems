@@ -19,8 +19,8 @@ jobs:
       - name: Test bundler
         run: |
           bin/rake spec:parallel_deps
-          cd bundler
           RGV=.. bin/parallel_rspec spec
+        working-directory: ./bundler
         continue-on-error: true
       - name: Test rubygems
         run: |

@@ -47,23 +47,23 @@ jobs:
       - name: Prepare dependencies
         run: |
           sudo apt-get install graphviz -y
-          cd bundler
           bin/rake spec:parallel_deps
+        working-directory: ./bundler
       - name: Run Test
         run: |
-          cd bundler
           bin/parallel_rspec spec
+        working-directory: ./bundler
         continue-on-error: ${{ matrix.ruby == 'head' }}
       - name: Run Test with realworld
         run: |
-          cd bundler
           bin/rake spec:realworld
         env:
           BUNDLER_SPEC_PRE_RECORDED: 1
+        working-directory: ./bundler
         continue-on-error: ${{ matrix.ruby == 'head' }}
       - name: Run Test with sudo
         run: |
-          cd bundler
           bin/rake spec:sudo
+        working-directory: ./bundler
         continue-on-error: ${{ matrix.ruby == 'head' }}
     timeout-minutes: 60

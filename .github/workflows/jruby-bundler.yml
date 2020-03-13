@@ -14,21 +14,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-
       - name: Setup ruby
         uses: eregon/use-ruby-action@v1
         with:
           ruby-version: jruby-9.2.9.0
-
       - name: Install local bundler
         run: |
-          cd bundler
           bin/rake install:local
-
+        working-directory: ./bundler
       - name: Run a warbler project
         run: |
-          cd bundler
           cd spec/realworld/fixtures/warbler
           bundle install
           bundle exec warble
           java -jar warbler.jar
+        working-directory: ./bundler

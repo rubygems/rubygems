@@ -41,7 +41,7 @@ status = [
   "windows_bundler (2.6)",
 ]
 
-timeout_sec = 3600
+timeout_sec = 7200
 prerun_timeout_sec = 3600
 delete_merged_branches = true
 

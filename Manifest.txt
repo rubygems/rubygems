@@ -708,7 +708,6 @@ test/rubygems/wrong_key_cert_32.pem
 tmp/.keep
 util/CL2notes
 util/bisect
-util/ci.sh
 util/cops/deprecations.rb
 util/create_certs.rb
 util/create_certs.sh

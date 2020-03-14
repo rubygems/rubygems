@@ -12,22 +12,18 @@ jobs:
         ruby: [ ruby-head ]
     steps:
       - uses: actions/checkout@v1
-      - run: git submodule update -i
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Test bundler
         run: |
-          BDV=master util/ci.sh before_script
-          util/ci.sh script
+          bin/rake spec:parallel_deps
+          RGV=.. bin/parallel_rspec spec
+        working-directory: ./bundler
         continue-on-error: true
-        env:
-          TEST_TOOL: bundler
       - name: Test rubygems
         run: |
-          util/ci.sh before_script
-          util/ci.sh script
-        env:
-          TEST_TOOL: rubygems
+          rake setup
+          rake test
     timeout-minutes: 60

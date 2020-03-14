@@ -13,17 +13,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - run: git submodule update -i
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6.5
       - name: Install Dependencies
-        run: util/ci.sh before_script
-        env:
-          TEST_TOOL: rubygems
+        run: rake setup
       - name: Run Lint
-        run: util/ci.sh rubocop
-        env:
-          TEST_TOOL: rubygems
+        run: |
+          gem install rubocop -v "~>0.74.0"
+          util/rubocop
+      - name: Install Dependencies in Bundler
+        run: |
+          rm ../Gemfile*
+          bin/rake spec:deps
+        working-directory: ./bundler
+      - name: Run Lint in Bundler
+        run: |
+          bin/rubocop --ignore_parent_exclusion
+          bin/rake check_rvm_integration man:check
+        working-directory: ./bundler
     timeout-minutes: 15

@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
         ruby: [ 2.3.8, 2.4.9, 2.5.7, 2.6.5, jruby-9.2.11.0 ]
     steps:
       - uses: actions/checkout@v1
@@ -24,4 +24,5 @@ jobs:
         run: |
           rake setup
           rake test
+        shell: bash
     timeout-minutes: 60

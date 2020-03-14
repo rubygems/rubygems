@@ -1,4 +1,4 @@
-name: jruby-bundler
+name: warbler
 
 on:
   pull_request:

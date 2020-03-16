@@ -99,7 +99,7 @@ module Bundler
         install_serially
       end
 
-      handle_error if @specs.any?(&:failed?)
+      handle_error if failed_specs.any?
       @specs
     ensure
       worker_pool && worker_pool.stop
@@ -131,6 +131,10 @@ module Bundler
     end
 
   private
+
+    def failed_specs
+      @specs.select(&:failed?)
+    end
 
     def install_with_worker
       enqueue_specs
@@ -190,7 +194,7 @@ module Bundler
     end
 
     def handle_error
-      errors = @specs.select(&:failed?).map(&:error)
+      errors = failed_specs.map(&:error)
       if exception = errors.find {|e| e.is_a?(Bundler::BundlerError) }
         raise exception
       end

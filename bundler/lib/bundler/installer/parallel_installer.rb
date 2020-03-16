@@ -160,11 +160,7 @@ module Bundler
       gem_installer = Bundler::GemInstaller.new(
         spec_install.spec, @installer, @standalone, worker_num, @force
       )
-      success, message = begin
-        gem_installer.install_from_spec
-      rescue RuntimeError => e
-        raise e, "#{e}\n\n#{require_tree_for_spec(spec_install.spec)}"
-      end
+      success, message = gem_installer.install_from_spec
       if success
         spec_install.state = :installed
         spec_install.post_install_message = message unless message.nil?

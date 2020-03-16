@@ -1,4 +1,4 @@
-BUNDLE-LIST(1)							BUNDLE-LIST(1)
+BUNDLE-LIST(1)                                                  BUNDLE-LIST(1)
 
 
 
@@ -26,19 +26,19 @@ DESCRIPTION
 
 OPTIONS
        --name-only
-	      Print only the name of each gem.
+              Print only the name of each gem.
 
        --paths
-	      Print the path to each gem in the bundle.
+              Print the path to each gem in the bundle.
 
        --without-group=<list>
-	      A space-separated list of groups of gems to skip	during	print-
-	      ing.
+              A space-separated list of groups of gems to skip  during  print-
+              ing.
 
        --only-group=<list>
-	      A space-separated list of groups of gems to print.
+              A space-separated list of groups of gems to print.
 
 
 
 
-				  March 2020			BUNDLE-LIST(1)
+                                  March 2020                    BUNDLE-LIST(1)

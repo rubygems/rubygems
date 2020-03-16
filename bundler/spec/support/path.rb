@@ -34,27 +34,19 @@ module Spec
     end
 
     def tracked_files
-      skip "not in git working directory" unless git_root_dir?
-
-      @tracked_files ||= ruby_core? ? `git ls-files -z -- lib/bundler lib/bundler.rb spec/bundler man/bundler*` : `git ls-files -z`
+      @tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb spec/bundler man/bundler*" : "git ls-files -z", :dir => root)
     end
 
     def shipped_files
-      skip "not in git working directory" unless git_root_dir?
-
-      @shipped_files ||= ruby_core? ? `git ls-files -z -- lib/bundler lib/bundler.rb man/bundler* libexec/bundle*` : `git ls-files -z -- lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec`
+      @shipped_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb man/bundler* libexec/bundle*" : "git ls-files -z -- lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec", :dir => root)
     end
 
     def lib_tracked_files
-      skip "not in git working directory" unless git_root_dir?
-
-      @lib_tracked_files ||= ruby_core? ? sys_exec("git ls-files -z -- lib/bundler lib/bundler.rb", :dir => root) : sys_exec("git ls-files -z -- lib", :dir => root)
+      @lib_tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb" : "git ls-files -z -- lib", :dir => root)
     end
 
     def man_tracked_files
-      skip "not in git working directory" unless git_root_dir?
-
-      @man_tracked_files ||= sys_exec("git ls-files -z -- man", :dir => root)
+      @man_tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- man/bundler*" : "git ls-files -z -- man", :dir => root)
     end
 
     def tmp(*path)
@@ -193,11 +185,5 @@ module Spec
     end
 
     extend self
-
-  private
-
-    def git_root_dir?
-      root.to_s == `git rev-parse --show-toplevel`.chomp
-    end
   end
 end

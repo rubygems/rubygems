@@ -194,7 +194,7 @@ module Bundler
       if exception = errors.find {|e| e.is_a?(Bundler::BundlerError) }
         raise exception
       end
-      raise Bundler::InstallError, errors.map(&:to_s).join("\n\n")
+      raise Bundler::InstallError, errors.join("\n\n")
     end
 
     def require_tree_for_spec(spec)

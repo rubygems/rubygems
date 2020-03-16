@@ -120,6 +120,9 @@ namespace :man do
         end
 
         file "#{roff}.txt" => roff do
+          # If this program is generating unexpected differences from the
+          # checked in output, see "Errata" in WRITING.md. Ensure you are
+          # running groff 1.22.3 exactly.
           sh "groff -Wall -mtty-char -mandoc -Tascii #{roff} | col -b > #{roff}.txt"
         end
 

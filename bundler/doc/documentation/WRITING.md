@@ -44,6 +44,32 @@ $ man man/bundle-cookies.1
 
 If you make more changes to `bundle-cookies.ronn`, you'll need to run the `rake man:build` again before previewing.
 
+### Errata
+
+`rake man:build` uses `groff` to format the output. This program is finicky and
+the output - whether it hyphenates words or makes other changes to the output -
+depends very much on which version of `groff` you use. We use `groff` version
+`1.22.3` to render the output.
+
+If you want to generate the output yourself, you have a few options:
+
+1. Generate the documentation on an Ubuntu machine, either using a Docker
+   container or native Linux. Install `groff-base` (as of writing the default
+   installed version is 1.22.3) and `bsdmainutils` (for the `col` program).
+
+2. Download `groff` and compile version 1.22.3 from source. You can download
+   groff from here: https://savannah.gnu.org/git/?group=groff. Check out git tag
+   `1.22.3`, run `./configure && make && make install` and then rerun groff.
+
+    Note, on a Mac, the default installed `groff` is version 1.19, and the
+    Homebrew version of `groff` is 1.22.4, both of which will generate incorrect
+    output. You must also set `GROFF_NO_SGR=true` in the environment in order to
+    avoid escape sequences being printed into the text file.
+
+    ```
+    GROFF_NO_SGR=true ./bin/rake man:build
+    ```
+
 ## Testing
 
 We have tests for our documentation! The most important test file to run before you make your pull request is the one for the `help` command and another for documentation quality.

@@ -15,7 +15,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6.5
+          ruby-version: 2.7.0
           bundler: none
       - name: Install Dependencies
         run: rake setup

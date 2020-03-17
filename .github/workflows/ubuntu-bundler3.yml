@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ 2.4.9, 2.5.7, 2.6.5 ]
-        rgv: [ v3.0.6, .. ]
+        ruby: [ 2.4.9, 2.5.7, 2.6.5, 2.7.0 ]
+        rgv: [ v3.1.2, .. ]
     env:
       RGV: ${{ matrix.rgv }}
     steps:

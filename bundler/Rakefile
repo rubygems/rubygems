@@ -120,7 +120,7 @@ namespace :man do
         end
 
         file "#{roff}.txt" => roff do
-          sh "groff -wall -mtty-char -mandoc -Tascii #{roff} | col -xb > #{roff}.txt"
+          sh "groff -Wbreak -mtty-char -mandoc -Tascii -rHY=0 #{roff} | col -xb > #{roff}.txt"
         end
 
         task :build_all_pages => "#{roff}.txt"

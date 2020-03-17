@@ -20,8 +20,8 @@ OPTIONS
 
        --local
               Do not attempt to connect to rubygems.org. Instead, Bundler will
-              use  the  gems  already  present  in  Rubygems' cache or in ven-
-              dor/cache. Note that  if  a  appropriate  platform-specific  gem
+              use   the   gems  already  present  in  Rubygems'  cache  or  in
+              vendor/cache. Note that if a appropriate  platform-specific  gem
               exists on rubygems.org it will not be found.
 
        --print
@@ -35,8 +35,8 @@ OPTIONS
               Fall back to using the single-file index of all gems.
 
        --add-platform
-              Add a new platform to the lockfile, re-resolving for  the  addi-
-              tion of that platform.
+              Add a  new  platform  to  the  lockfile,  re-resolving  for  the
+              addition of that platform.
 
        --remove-platform
               Remove a platform from the lockfile.
@@ -73,8 +73,8 @@ UPDATING A LIST OF GEMS
        --update nokogiri.
 
        Bundler will update nokogiri and any of its dependencies, but leave the
-       rest of the gems that you specified locked to the versions in the  Gem-
-       file.lock.
+       rest of the gems that you specified  locked  to  the  versions  in  the
+       Gemfile.lock.
 
 SUPPORTING OTHER PLATFORMS
        If  you want your bundle to support platforms other than the one you're

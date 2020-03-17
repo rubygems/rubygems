@@ -9,8 +9,8 @@ SYNOPSIS
        bundle cache
 
 DESCRIPTION
-       Copy  all of the .gem files needed to run the application into the ven-
-       dor/cache   directory.   In   the   future,   when   running    [bundle
+       Copy  all  of  the  .gem  files  needed to run the application into the
+       vendor/cache  directory.  In   the   future,   when   running   [bundle
        install(1)][bundle-install], use the gems in the cache in preference to
        the ones on rubygems.org.
 
@@ -57,15 +57,15 @@ REMOTE FETCHING
        (common) problem can happen when developing on Windows and deploying to
        Linux, or even when developing on OSX and deploying to Linux.
 
-       If you know for sure that the gems packaged in vendor/cache are  appro-
-       priate  for the platform you are on, you can run bundle install --local
-       to skip checking for more appropriate gems, and use the  ones  in  ven-
-       dor/cache.
+       If you know for  sure  that  the  gems  packaged  in  vendor/cache  are
+       appropriate  for  the  platform  you are on, you can run bundle install
+       --local to skip checking for more appropriate gems, and use the ones in
+       vendor/cache.
 
        One  way  to be sure that you have the right platformed versions of all
        your gems is to run bundle cache on an identical machine and  check  in
-       the  gems. For instance, you can run bundle cache on an identical stag-
-       ing box during your staging process,  and  check  in  the  vendor/cache
+       the  gems.  For  instance,  you  can  run  bundle cache on an identical
+       staging box during your staging process, and check in the  vendor/cache
        before deploying to production.
 
        By  default,  bundle  cache(1)  bundle-cache.1.html  fetches  and  also

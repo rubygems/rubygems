@@ -10,8 +10,8 @@ SYNOPSIS
 
 DESCRIPTION
        This  command  will  remove  all unused gems in your bundler directory.
-       This is useful when you have made many changes to  your  gem  dependen-
-       cies.
+       This  is  useful  when  you  have  made  many  changes  to   your   gem
+       dependencies.
 
 OPTIONS
        --dry-run

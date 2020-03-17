@@ -35,9 +35,9 @@ DESCRIPTION
        --all cleans all installed gems for that Ruby version.
 
        If a developer forgets which gems in their project they might have been
-       debugging,  the Rubygems gem pristine [GEMNAME] command may be inconve-
-       nient. One can avoid waiting for gem pristine --all,  and  instead  run
-       bundle pristine.
+       debugging,   the   Rubygems  gem  pristine  [GEMNAME]  command  may  be
+       inconvenient. One can avoid waiting for gem pristine --all, and instead
+       run bundle pristine.
 
 
 

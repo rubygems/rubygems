@@ -13,8 +13,8 @@ DESCRIPTION
        viz generates a PNG file of the  current  Gemfile(5)  as  a  dependency
        graph. viz requires the ruby-graphviz gem (and its dependencies).
 
-       The  associated  gems must also be installed via bundle install(1) bun-
-       dle-install.1.html.
+       The  associated  gems  must  also  be  installed  via bundle install(1)
+       bundle-install.1.html.
 
 OPTIONS
        --file, -f

@@ -20,8 +20,8 @@ DESCRIPTION
 
        bundle add rails --version "< 3.0, > 1.1"
 
-       bundle add rails  --version  "~>  5.0.0"  --source  "https://gems.exam-
-       ple.com" --group "development"
+       bundle     add     rails     --version     "~>     5.0.0"      --source
+       "https://gems.example.com" --group "development"
 
        bundle add rails --skip-install
 

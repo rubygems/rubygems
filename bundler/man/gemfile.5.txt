@@ -9,17 +9,17 @@ SYNOPSIS
        A Gemfile describes the gem dependencies required to execute associated
        Ruby code.
 
-       Place the Gemfile in the root of the directory containing  the  associ-
-       ated  code.  For instance, in a Rails application, place the Gemfile in
-       the same directory as the Rakefile.
+       Place  the  Gemfile  in  the  root  of  the  directory  containing  the
+       associated  code.  For  instance,  in  a  Rails  application, place the
+       Gemfile in the same directory as the Rakefile.
 
 SYNTAX
        A Gemfile is evaluated as Ruby code, in a context which makes available
        a number of methods used to describe the gem requirements.
 
 GLOBAL SOURCES
-       At the top of the Gemfile, add a line for the Rubygems source that con-
-       tains the gems listed in the Gemfile.
+       At  the  top  of  the  Gemfile, add a line for the Rubygems source that
+       contains the gems listed in the Gemfile.
 
 
 
@@ -34,10 +34,10 @@ GLOBAL SOURCES
        Sources are checked for gems  following  the  heuristics  described  in
        SOURCE  PRIORITY.  If  a  gem  is found in more than one global source,
        Bundler will print a warning after installing the gem indicating  which
-       source  was used, and listing the other sources where the gem is avail-
-       able. A specific source can be selected for gems that  need  to  use  a
-       non-standard repository, suppressing this warning, by using the :source
-       option or a source block.
+       source  was  used,  and  listing  the  other  sources  where the gem is
+       available. A specific source can be selected for gems that need to  use
+       a  non-standard  repository,  suppressing  this  warning,  by using the
+       :source option or a source block.
 
    CREDENTIALS
        Some gem sources require a username and password. Use bundle  config(1)
@@ -71,9 +71,9 @@ RUBY
 
    VERSION (required)
        The version of Ruby that your application requires. If your application
-       requires  an  alternate  Ruby  engine, such as JRuby, Rubinius or Truf-
-       fleRuby, this should be the Ruby version that the engine is  compatible
-       with.
+       requires   an  alternate  Ruby  engine,  such  as  JRuby,  Rubinius  or
+       TruffleRuby, this should  be  the  Ruby  version  that  the  engine  is
+       compatible with.
 
 
 
@@ -104,9 +104,9 @@ RUBY
 
 
    ENGINE VERSION
-       Each application may specify a Ruby engine version. If an  engine  ver-
-       sion  is  specified, an engine must also be specified. If the engine is
-       "ruby" the engine version specified must match the Ruby version.
+       Each application may specify  a  Ruby  engine  version.  If  an  engine
+       version  is  specified, an engine must also be specified. If the engine
+       is "ruby" the engine version specified must match the Ruby version.
 
 
 
@@ -124,8 +124,8 @@ RUBY
 
 
 GEMS
-       Specify gem requirements using the gem method, with the following argu-
-       ments. All parameters are OPTIONAL unless otherwise specified.
+       Specify gem requirements using  the  gem  method,  with  the  following
+       arguments. All parameters are OPTIONAL unless otherwise specified.
 
    NAME (required)
        For each gem requirement, list a single gem line.
@@ -203,11 +203,11 @@ GEMS
 
 
 
-       The Bundler CLI allows you to specify a list of groups whose gems  bun-
-       dle install should not install with the without configuration.
+       The Bundler CLI allows you to specify  a  list  of  groups  whose  gems
+       bundle install should not install with the without configuration.
 
-       To  specify  multiple  groups to ignore, specify a list of groups sepa-
-       rated by spaces.
+       To  specify  multiple  groups  to  ignore,  specify  a  list  of groups
+       separated by spaces.
 
 
 
@@ -222,13 +222,13 @@ GEMS
 
        Note that on bundle install, bundler downloads and evaluates all  gems,
        in  order to create a single canonical list of all of the required gems
-       and their dependencies. This means that you cannot list different  ver-
-       sions  of  the  same  gems  in  different groups. For more details, see
+       and their dependencies. This  means  that  you  cannot  list  different
+       versions  of  the  same gems in different groups. For more details, see
        Understanding Bundler https://bundler.io/rationale.html.
 
    PLATFORMS
-       If a gem should only be used in a particular platform or set  of  plat-
-       forms,  you  can  specify  them. Platforms are essentially identical to
+       If a gem should only be  used  in  a  particular  platform  or  set  of
+       platforms, you can specify them. Platforms are essentially identical to
        groups, except that you do not need to use the  --without  install-time
        flag to exclude groups of gems for other platforms.
 
@@ -255,9 +255,9 @@ GEMS
        You  can  restrict  further  by  platform and version for all platforms
        except for rbx, jruby, truffleruby and mswin.
 
-       To specify a version in addition to a platform, append the version num-
-       ber without the delimiter to the platform. For example, to specify that
-       a gem should only be used on platforms with Ruby 2.3, use:
+       To specify a version in addition to  a  platform,  append  the  version
+       number  without  the delimiter to the platform. For example, to specify
+       that a gem should only be used on platforms with Ruby 2.3, use:
 
 
 
@@ -348,8 +348,8 @@ GEMS
 
        If  a  git repository does not have a .gemspec, bundler will attempt to
        create one, but it will not contain any dependencies, executables, or C
-       extension  compilation  instructions. As a result, it may fail to prop-
-       erly integrate into your application.
+       extension  compilation  instructions.  As  a  result,  it  may  fail to
+       properly integrate into your application.
 
        If a git repository does have a .gemspec for the gem  you  attached  it
        to,  a version specifier, if provided, means that the git repository is
@@ -365,8 +365,8 @@ GEMS
 
 
        If  a  git repository does not have a .gemspec for the gem you attached
-       it to, a version specifier MUST be provided. Bundler will use this ver-
-       sion in the simple .gemspec it creates.
+       it to, a version specifier MUST be  provided.  Bundler  will  use  this
+       version in the simple .gemspec it creates.
 
        Git repositories support a number of additional options.
 
@@ -386,13 +386,13 @@ GEMS
        submodules
               For          reference,          a         git         submodule
               https://git-scm.com/book/en/v2/Git-Tools-Submodules   lets   you
-              have  another  git repository within a subfolder of your reposi-
-              tory. Specify :submodules => true to cause bundler to expand any
-              submodules included in the git repository
+              have   another   git  repository  within  a  subfolder  of  your
+              repository. Specify :submodules =>  true  to  cause  bundler  to
+              expand any submodules included in the git repository
 
-       If  a  git repository contains multiple .gemspecs, each .gemspec repre-
-       sents a gem located at the same place in the file system as  the  .gem-
-       spec.
+       If   a  git  repository  contains  multiple  .gemspecs,  each  .gemspec
+       represents a gem located at the same place in the file  system  as  the
+       .gemspec.
 
 
 
@@ -434,15 +434,15 @@ GEMS
 
 
    GITHUB
-       NOTE: This shorthand should be avoided until Bundler 2.0, since it cur-
-       rently expands to an insecure git:// URL. This allows a man-in-the-mid-
-       dle attacker to compromise your system.
+       NOTE: This shorthand should be avoided  until  Bundler  2.0,  since  it
+       currently   expands   to   an   insecure  git://  URL.  This  allows  a
+       man-in-the-middle attacker to compromise your system.
 
-       If the git repository you want to use is hosted on GitHub and  is  pub-
-       lic,  you  can use the :github shorthand to specify the github username
-       and repository name (without  the  trailing  ".git"),  separated  by  a
-       slash.  If  both the username and repository name are the same, you can
-       omit one.
+       If the git repository you want to  use  is  hosted  on  GitHub  and  is
+       public,  you  can  use  the  :github  shorthand  to  specify the github
+       username and repository name (without the trailing  ".git"),  separated
+       by  a slash. If both the username and repository name are the same, you
+       can omit one.
 
 
 
@@ -511,8 +511,8 @@ GEMS
 
    PATH
        You  can  specify that a gem is located in a particular location on the
-       file system. Relative paths are resolved relative to the directory con-
-       taining the Gemfile.
+       file system. Relative paths are  resolved  relative  to  the  directory
+       containing the Gemfile.
 
        Similar  to the semantics of the :git option, the :path option requires
        that the directory in question either contains a .gemspec for the  gem,
@@ -527,9 +527,10 @@ GEMS
 
 
 
-       If you would like to use multiple local gems directly from the filesys-
-       tem,  you can set a global path option to the path containing the gem's
-       files. This will automatically load gemspec files from subdirectories.
+       If you would  like  to  use  multiple  local  gems  directly  from  the
+       filesystem, you can set a global path option to the path containing the
+       gem's  files.  This  will  automatically  load   gemspec   files   from
+       subdirectories.
 
 
 
@@ -568,24 +569,24 @@ BLOCK FORM OF SOURCE, GIT, PATH, GROUP and PLATFORMS
 
 
 
-       In  the  case of the group block form the :optional option can be given
-       to prevent a group from being installed unless  listed  in  the  --with
+       In the case of the group block form the :optional option can  be  given
+       to  prevent  a  group  from being installed unless listed in the --with
        option given to the bundle install command.
 
-       In  the  case of the git block form, the :ref, :branch, :tag, and :sub-
-       modules options may be passed to the git method, and all  gems  in  the
-       block will inherit those options.
+       In the case of the  git  block  form,  the  :ref,  :branch,  :tag,  and
+       :submodules  options  may  be passed to the git method, and all gems in
+       the block will inherit those options.
 
-       The  presence  of  a  source  block in a Gemfile also makes that source
-       available as a possible global source for any other gems which  do  not
-       specify explicit sources. Thus, when defining source blocks, it is rec-
-       ommended that you also ensure all other gems in the Gemfile  are  using
-       explicit  sources,  either  via  source blocks or :source directives on
-       individual gems.
+       The presence of a source block in a  Gemfile  also  makes  that  source
+       available  as  a possible global source for any other gems which do not
+       specify explicit sources. Thus, when  defining  source  blocks,  it  is
+       recommended  that  you  also  ensure  all other gems in the Gemfile are
+       using explicit sources, either via source blocks or :source  directives
+       on individual gems.
 
 INSTALL_IF
-       The install_if method allows gems to be installed based on  a  proc  or
-       lambda.  This  is  especially useful for optional gems that can only be
+       The  install_if  method  allows gems to be installed based on a proc or
+       lambda. This is especially useful for optional gems that  can  only  be
        used if certain software is installed or some other conditions are met.
 
 
@@ -597,34 +598,35 @@ INSTALL_IF
 
 
 GEMSPEC
-       The .gemspec  http://guides.rubygems.org/specification-reference/  file
+       The  .gemspec  http://guides.rubygems.org/specification-reference/ file
        is where you provide metadata about your gem to Rubygems. Some required
-       Gemspec attributes include the name, description, and homepage of  your
-       gem.  This is also where you specify the dependencies your gem needs to
+       Gemspec  attributes include the name, description, and homepage of your
+       gem. This is also where you specify the dependencies your gem needs  to
        run.
 
        If you wish to use Bundler to help install dependencies for a gem while
-       it  is being developed, use the gemspec method to pull in the dependen-
-       cies listed in the .gemspec file.
+       it  is  being  developed,  use  the  gemspec  method  to  pull  in  the
+       dependencies listed in the .gemspec file.
 
        The gemspec method adds any runtime dependencies as gem requirements in
-       the  default  group.  It  also  adds  development  dependencies  as gem
-       requirements in the development group. Finally, it adds a gem  require-
-       ment on your project (:path => '.'). In conjunction with Bundler.setup,
-       this allows you to require project files in your test code as you would
-       if  the  project  were  installed as a gem; you need not manipulate the
-       load path manually or require project files via relative paths.
+       the default  group.  It  also  adds  development  dependencies  as  gem
+       requirements   in  the  development  group.  Finally,  it  adds  a  gem
+       requirement on  your  project  (:path  =>  '.').  In  conjunction  with
+       Bundler.setup,  this  allows  you to require project files in your test
+       code as you would if the project were installed as a gem; you need  not
+       manipulate the load path manually or require project files via relative
+       paths.
 
-       The gemspec method supports optional :path, :glob, :name, and :develop-
-       ment_group options, which control where bundler looks for the .gemspec,
-       the glob it uses to look for the  gemspec  (defaults  to:  "{,,/*}.gem-
-       spec"),  what named .gemspec it uses (if more than one is present), and
-       which group development dependencies are included in.
+       The  gemspec  method  supports  optional  :path,  :glob,   :name,   and
+       :development_group  options,  which control where bundler looks for the
+       .gemspec, the glob it uses  to  look  for  the  gemspec  (defaults  to:
+       "{,,/*}.gemspec"),  what  named  .gemspec  it uses (if more than one is
+       present), and which group development dependencies are included in.
 
-       When a gemspec dependency encounters version conflicts  during  resolu-
-       tion,  the  local  version under development will always be selected --
-       even if there are remote versions that better match other  requirements
-       for the gemspec gem.
+       When  a  gemspec  dependency  encounters   version   conflicts   during
+       resolution, the local version under development will always be selected
+       --  even  if  there  are  remote  versions  that  better  match   other
+       requirements for the gemspec gem.
 
 SOURCE PRIORITY
        When  attempting  to locate a gem to satisfy a gem requirement, bundler

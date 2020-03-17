@@ -9,9 +9,9 @@ SYNOPSIS
        bundle remove [GEM [GEM ...]] [--install]
 
 DESCRIPTION
-       Removes the given gems from the Gemfile while ensuring that the result-
-       ing Gemfile is still valid. If a gem cannot be removed,  a  warning  is
-       printed.  If  a  gem  is  already absent from the Gemfile, and error is
+       Removes  the  given  gems  from  the  Gemfile  while  ensuring that the
+       resulting Gemfile is still valid. If a gem cannot be removed, a warning
+       is  printed.  If a gem is already absent from the Gemfile, and error is
        raised.
 
 OPTIONS

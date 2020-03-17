@@ -32,8 +32,8 @@ OPTIONS
               Print the path to each gem in the bundle.
 
        --without-group=<list>
-              A space-separated list of groups of gems to skip  during  print-
-              ing.
+              A  space-separated  list  of  groups  of  gems  to  skip  during
+              printing.
 
        --only-group=<list>
               A space-separated list of groups of gems to print.

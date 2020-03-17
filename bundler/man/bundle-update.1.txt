@@ -12,9 +12,9 @@ SYNOPSIS
 
 DESCRIPTION
        Update  the  gems specified (all gems, if --all flag is used), ignoring
-       the previously installed gems specified in the  Gemfile.lock.  In  gen-
-       eral, you should use bundle install(1) bundle-install.1.html to install
-       the same exact gems and versions across machines.
+       the  previously  installed  gems  specified  in  the  Gemfile.lock.  In
+       general,  you  should  use  bundle  install(1) bundle-install.1.html to
+       install the same exact gems and versions across machines.
 
        You would use bundle update to explicitly update the version of a gem.
 
@@ -42,8 +42,8 @@ OPTIONS
               Ruby.
 
        --bundler
-              Update the locked version of bundler to the invoked bundler ver-
-              sion.
+              Update  the  locked  version  of  bundler to the invoked bundler
+              version.
 
        --full-index
               Fall back to using the single-file index of all gems.
@@ -146,11 +146,11 @@ UPDATING ALL GEMS
        use.
 
        However, from time to time, you might want to update the gems  you  are
-       using  to  the  newest  versions that still match the gems in your Gem-
-       file(5).
+       using  to  the  newest  versions  that  still  match  the  gems in your
+       Gemfile(5).
 
-       To do this, run  bundle  update  --all,  which  will  ignore  the  Gem-
-       file.lock,  and  resolve  all the dependencies again. Keep in mind that
+       To  do  this,  run  bundle  update  --all,  which   will   ignore   the
+       Gemfile.lock, and resolve all the dependencies again. Keep in mind that
        this process can result in a significantly  different  set  of  the  25
        gems,  based  on  the  requirements  of  new  gems that the gem authors
        released since the last time you ran bundle update --all.
@@ -210,17 +210,17 @@ OVERLAPPING DEPENDENCIES
        are also dependencies of another gem.
 
        To prevent updating shared dependencies, prior to version 1.14 the only
-       option was the CONSERVATIVE UPDATING behavior in bundle install(1) bun-
-       dle-install.1.html:
+       option was the CONSERVATIVE  UPDATING  behavior  in  bundle  install(1)
+       bundle-install.1.html:
 
        In this scenario, updating the thin version manually in the Gemfile(5),
        and then running  bundle  install(1)  bundle-install.1.html  will  only
        update  daemons  and  eventmachine, but not rack. For more information,
-       see  the  CONSERVATIVE  UPDATING  section  of  bundle  install(1)  bun-
-       dle-install.1.html.
+       see  the   CONSERVATIVE   UPDATING   section   of   bundle   install(1)
+       bundle-install.1.html.
 
-       Starting with 1.14, specifying the --conservative option will also pre-
-       vent shared dependencies from being updated.
+       Starting  with  1.14,  specifying  the  --conservative option will also
+       prevent shared dependencies from being updated.
 
 PATCH LEVEL OPTIONS
        Version 1.14 introduced 4 patch-level options that will  influence  how
@@ -242,10 +242,10 @@ PATCH LEVEL OPTIONS
               | --major.
 
        When Bundler is resolving what versions  to  use  to  satisfy  declared
-       requirements  in  the Gemfile or in parent gems, it looks up all avail-
-       able versions, filters out any versions that don't satisfy the require-
-       ment, and then, by default, sorts them from newest to oldest, consider-
-       ing them in that order.
+       requirements  in  the  Gemfile  or  in  parent  gems,  it  looks up all
+       available versions, filters out any versions  that  don't  satisfy  the
+       requirement,  and  then,  by default, sorts them from newest to oldest,
+       considering them in that order.
 
        Providing one of the patch level options  (e.g.  --patch)  changes  the
        sort  order of the satisfying versions, causing Bundler to consider the
@@ -274,9 +274,9 @@ PATCH LEVEL OPTIONS
        1.0.4, 1.0.3, 1.0.2".
 
        Gem requirements as defined in the Gemfile  will  still  be  the  first
-       determining factor for what versions are available. If the gem require-
-       ment for foo in the Gemfile is '~> 1.0', that will accomplish the  same
-       thing as providing the --minor and --strict options.
+       determining  factor  for  what  versions  are  available.  If  the  gem
+       requirement for foo in the Gemfile is '~> 1.0',  that  will  accomplish
+       the same thing as providing the --minor and --strict options.
 
 PATCH LEVEL EXAMPLES
        Given the following gem specifications:
@@ -363,8 +363,8 @@ RECOMMENDED WORKFLOW
 
            $ bundle install --deployment
 
-       o   After  changing  the  Gemfile(5)  to reflect a new or update depen-
-           dency, run
+       o   After   changing   the  Gemfile(5)  to  reflect  a  new  or  update
+           dependency, run
 
            $ bundle install
 
@@ -372,12 +372,13 @@ RECOMMENDED WORKFLOW
 
            $ git add Gemfile.lock
 
-       o   If bundle install(1) bundle-install.1.html reports a conflict, man-
-           ually update the specific gems that you changed in the Gemfile(5)
+       o   If bundle  install(1)  bundle-install.1.html  reports  a  conflict,
+           manually   update  the  specific  gems  that  you  changed  in  the
+           Gemfile(5)
 
            $ bundle update rails thin
 
-       o   If  you want to update all the gems to the latest possible versions
+       o   If you want to update all the gems to the latest possible  versions
            that still match the gems listed in the Gemfile(5), run
 
            $ bundle update --all

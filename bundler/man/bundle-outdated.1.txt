@@ -8,8 +8,8 @@ NAME
 SYNOPSIS
        bundle   outdated   [GEM]   [--local]   [--pre]  [--source]  [--strict]
        [--parseable     |     --porcelain]     [--group=GROUP]      [--groups]
-       [--update-strict]  [--patch|--minor|--major]  [--filter-major]  [--fil-
-       ter-minor] [--filter-patch] [--only-explicit]
+       [--update-strict]       [--patch|--minor|--major]      [--filter-major]
+       [--filter-minor] [--filter-patch] [--only-explicit]
 
 DESCRIPTION
        Outdated lists the names and versions of gems that have a newer version
@@ -63,8 +63,8 @@ OPTIONS
               Only list patch newer versions.
 
        --only-explicit
-              Only list gems specified in your Gemfile,  not  their  dependen-
-              cies.
+              Only  list  gems  specified   in   your   Gemfile,   not   their
+              dependencies.
 
 PATCH LEVEL OPTIONS
        See bundle update(1) bundle-update.1.html for details.
@@ -123,8 +123,8 @@ FILTERING OUTPUT
 
 
 
-       Combining  all three filter options would be the same result as provid-
-       ing none of them.
+       Combining  all  three  filter  options  would  be  the  same  result as
+       providing none of them.
 
 
 

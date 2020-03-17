@@ -2,15 +2,8 @@
 
 Contributions to RubyGems are made via GitHub pull requests, which must be
 approved by a project committer other than the author. To approve a PR, a
-maintainer can leave a comment including the text "@bundlerbot r+", indicating
-that they have reviewed the PR and approve it. Bundlerbot will then
-automatically create a merge commit, test the merge, and land the PR if the
-merge commit passes the tests.
-
-This process guarantees that our release branches always have passing tests,
-and reduces siloing of information to a single contributor. For a full list of
-possible commands, see [the Bundlerbot
-documentation](https://bors.tech/documentation/).
+maintainer can use GitHubs PR review feature. After that, if the original author
+is happy to merge the PR, she can press the merge button.
 
 ## Long-Term Support
 

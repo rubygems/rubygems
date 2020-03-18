@@ -287,25 +287,11 @@ module Spec
     end
 
     def rubocop_gemfile_basename
-      filename = if RUBY_VERSION.start_with?("2.3")
-        "rubocop23_gems"
-      elsif RUBY_VERSION.start_with?("2.4")
-        "rubocop24_gems"
-      else
-        "rubocop_gems"
-      end
-      source_root.join("tool/bundler/#{filename}.rb")
+      source_root.join("tool/bundler/rubocop_gems.rb")
     end
 
     def standard_gemfile_basename
-      filename = if RUBY_VERSION.start_with?("2.3")
-        "standard23_gems"
-      elsif RUBY_VERSION.start_with?("2.4")
-        "standard24_gems"
-      else
-        "standard_gems"
-      end
-      source_root.join("tool/bundler/#{filename}.rb")
+      source_root.join("tool/bundler/standard_gems.rb")
     end
 
     extend self

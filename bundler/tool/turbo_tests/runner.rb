@@ -132,13 +132,11 @@ module TurboTests
     def start_copy_thread(src, dst)
       Thread.new do
         loop do
-          begin
-            msg = src.readpartial(4096)
-          rescue EOFError
-            break
-          else
-            dst.write(msg)
-          end
+          msg = src.readpartial(4096)
+        rescue EOFError
+          break
+        else
+          dst.write(msg)
         end
       end
     end

@@ -9,7 +9,7 @@ on:
       - trying
 
 jobs:
-  warbler:
+  jruby_bundler:
     runs-on: ubuntu-latest
 
     steps:

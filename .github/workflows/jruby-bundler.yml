@@ -18,6 +18,14 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: jruby-9.2.11.0
+      - name: Install dependencies
+        run: |
+          bin/rake spec:deps
+        working-directory: ./bundler
+      - name: Run specs
+        run: |
+          bin/rspec spec
+        working-directory: ./bundler
       - name: Install local bundler
         run: |
           bin/rake install:local

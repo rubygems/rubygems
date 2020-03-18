@@ -260,7 +260,7 @@ module Bundler
         Bundler.ui.info hint_text("test")
 
         result = Bundler.ui.ask "Enter a test framework. rspec/minitest/test-unit/(none):"
-        if result =~ /rspec|minitest|test-unit/
+        if /rspec|minitest|test-unit/.match?(result)
           test_framework = result
         else
           test_framework = false
@@ -301,7 +301,7 @@ module Bundler
         Bundler.ui.info hint_text("ci")
 
         result = Bundler.ui.ask "Enter a CI service. github/travis/gitlab/circle/(none):"
-        if result =~ /github|travis|gitlab|circle/
+        if /github|travis|gitlab|circle/.match?(result)
           ci_template = result
         else
           ci_template = false
@@ -332,7 +332,7 @@ module Bundler
         Bundler.ui.info hint_text("linter")
 
         result = Bundler.ui.ask "Enter a linter. rubocop/standard/(none):"
-        if result =~ /rubocop|standard/
+        if /rubocop|standard/.match?(result)
           linter_template = result
         else
           linter_template = false
@@ -379,7 +379,7 @@ module Bundler
     end
 
     def ensure_safe_gem_name(name, constant_array)
-      if name =~ /^\d/
+      if /^\d/.match?(name)
         Bundler.ui.error "Invalid gem name #{name} Please give a name which does not start with numbers."
         exit 1
       end

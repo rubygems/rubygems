@@ -110,7 +110,7 @@ class Gem::Doctor
 
       basename = File.basename(child, extension)
       next if installed_specs.include? basename
-      next if /^rubygems-\d/ =~ basename
+      next if /^rubygems-\d/.match?(basename)
       next if 'specifications' == sub_directory and 'default' == basename
       next if 'plugins' == sub_directory and Gem.plugin_suffix_regexp =~ basename
 

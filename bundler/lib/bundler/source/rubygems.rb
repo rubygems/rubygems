@@ -370,7 +370,7 @@ module Bundler
 
       def normalize_uri(uri)
         uri = uri.to_s
-        uri = "#{uri}/" unless uri =~ %r{/$}
+        uri = "#{uri}/" unless %r{/$}.match?(uri)
         require_relative "../vendored_uri"
         uri = Bundler::URI(uri)
         raise ArgumentError, "The source must be an absolute URI. For example:\n" \
@@ -413,7 +413,7 @@ module Bundler
           idx = @allow_local ? installed_specs.dup : Index.new
 
           Dir["#{cache_path}/*.gem"].each do |gemfile|
-            next if gemfile =~ /^bundler\-[\d\.]+?\.gem/
+            next if /^bundler\-[\d\.]+?\.gem/.match?(gemfile)
             s ||= Bundler.rubygems.spec_from_gem(gemfile)
             s.source = self
             idx << s

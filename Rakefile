@@ -216,7 +216,7 @@ end
 file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
   cd 'pkg' do
     tar_version = `tar --version`
-    if tar_version =~ /bsdtar/
+    if /bsdtar/.match?(tar_version)
       # bsdtar, as used by at least FreeBSD and macOS, uses `--uname` and `--gname`.
       sh "tar -czf rubygems-#{v}.tgz --uname=rubygems:0 --gname=rubygems:0 rubygems-#{v}"
     else # If a third variant is added, change this line to: elsif tar_version =~ /GNU tar/
@@ -422,7 +422,7 @@ module Rubygems
 
       tracked_files.each do |path|
         next unless File.file?(path)
-        next if path =~ exclude
+        next if path&.match?(exclude)
         files << path
       end
 

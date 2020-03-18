@@ -264,7 +264,7 @@ class Gem::TestCase < Test::Unit::TestCase
   end
 
   def assert_contains_make_command(target, output, msg = nil)
-    if output.match(/\n/)
+    if output.match?(/\n/)
       msg = build_message(msg,
         "Expected output containing make command \"%s\", but was \n\nBEGIN_OF_OUTPUT\n%sEND_OF_OUTPUT" % [
           ('%s %s' % [make_command, target]).rstrip,
@@ -1326,7 +1326,7 @@ Also, a list:
 
     def escape_path(*path)
       path = File.join(*path)
-      if %r{\A[-+:/=@,.\w]+\z} =~ path
+      if %r{\A[-+:/=@,.\w]+\z}.match?(path)
         path
       else
         "\"#{path.gsub(/[`$"]/, '\\&')}\""

@@ -2,7 +2,7 @@ require: rubocop-performance
 
 AllCops:
   DisabledByDefault: true
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.6
   Include:
     - bundler/**/*.rb
     - bundler/**/*.gemspec

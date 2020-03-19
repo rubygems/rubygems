@@ -6,7 +6,7 @@ require "rake/testtask"
 require 'psych'
 
 desc "Setup Rubygems dev environment"
-task :setup => ["bundler:checkout"] do
+task :setup do
   sh "gem install bundler:2.0.2"
   sh "bundle install"
 end
@@ -377,7 +377,7 @@ module Rubygems
     def self.all
       files = []
       exclude = %r[\.git|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)]ox
-      tracked_files = `git ls-files --recurse-submodules`.split("\n").map {|f| "./#{f}" }
+      tracked_files = `git ls-files`.split("\n").map {|f| "./#{f}" }
 
       tracked_files.each do |path|
         next unless File.file?(path)
@@ -404,11 +404,6 @@ task :check_manifest do
 end
 
 namespace :bundler do
-  desc "Initialize bundler submodule"
-  task :checkout do
-    sh "git submodule update --init"
-  end
-
   task :build_metadata do
     chdir('bundler') { sh "rake build_metadata" }
   end

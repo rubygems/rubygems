@@ -42,7 +42,6 @@ To run commands like `gem install` from the repo:
 To run bundler test:
 
     $ cd bundler
-    $ git submodule update --init --recursive
     $ bin/rake spec:deps
     $ bin/rspec spec
 

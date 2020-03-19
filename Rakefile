@@ -7,7 +7,7 @@ require 'psych'
 
 desc "Setup Rubygems dev environment"
 task :setup do
-  sh "gem install bundler:2.0.2"
+  sh "gem install bundler:2.1.4"
   sh "bundle install"
 end
 

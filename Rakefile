@@ -7,7 +7,8 @@ require 'psych'
 
 desc "Setup Rubygems dev environment"
 task :setup do
-  sh "gem install bundler:2.1.4"
+  version = File.read("Gemfile.lock").split(/BUNDLED WITH\n   /).last
+  sh "gem install bundler:#{version}"
   sh "bundle install"
 end
 

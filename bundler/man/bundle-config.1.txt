@@ -14,7 +14,8 @@ DESCRIPTION
 
        Bundler loads configuration settings in this order:
 
-       1.  Local config (app/.bundle/config or $BUNDLE_APP_CONFIG/config)
+       1.  Local        config        (<project_root>/.bundle/config        or
+           $BUNDLE_APP_CONFIG/config)
 
        2.  Environmental variables (ENV)
 
@@ -24,25 +25,26 @@ DESCRIPTION
 
 
 
-       Executing bundle config list with will print  a  list  of  all  bundler
-       configuration  for the current bundle, and where that configuration was
+       Executing  bundle  config  list  with  will print a list of all bundler
+       configuration for the current bundle, and where that configuration  was
        set.
 
-       Executing bundle config  get  <name>  will  print  the  value  of  that
+       Executing  bundle  config  get  <name>  will  print  the  value of that
        configuration setting, and where it was set.
 
-       Executing  bundle config set <name> <value> will set that configuration
-       to the value specified for all bundles executed as  the  current  user.
-       The  configuration  will be stored in ~/.bundle/config. If name already
+       Executing bundle config set <name> <value> will set that  configuration
+       to  the  value  specified for all bundles executed as the current user.
+       The configuration will be stored in ~/.bundle/config. If  name  already
        is set, name will be overridden and user will be warned.
 
-       Executing bundle config set --global <name> <value> works the  same  as
+       Executing  bundle  config set --global <name> <value> works the same as
        above.
 
-       Executing  bundle  config  set  --local  <name>  <value>  will set that
-       configuration to the  local  application.  The  configuration  will  be
-       stored   in   app/.bundle/config.  If  BUNDLE_APP_CONFIG  is  set,  the
-       configuration will be stored in $BUNDLE_APP_CONFIG/config.
+       Executing bundle config  set  --local  <name>  <value>  will  set  that
+       configuration   in   the  directory  for  the  local  application.  The
+       configuration  will  be  stored  in  <project_root>/.bundle/config.  If
+       BUNDLE_APP_CONFIG   is   set,  the  configuration  will  be  stored  in
+       $BUNDLE_APP_CONFIG/config.
 
        Executing bundle config unset <name> will delete the  configuration  in
        both local and global sources.

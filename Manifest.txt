@@ -11,6 +11,7 @@ MIT.txt
 Manifest.txt
 POLICIES.md
 README.md
+RUBYGEMS_README.md
 Rakefile
 UPGRADING.md
 bin/gem

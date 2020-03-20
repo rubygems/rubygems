@@ -12,7 +12,6 @@ module Bundler
       allow_offline_install
       auto_clean_without_path
       auto_install
-      auto_config_jobs
       cache_all
       cache_all_platforms
       default_install_uses_path

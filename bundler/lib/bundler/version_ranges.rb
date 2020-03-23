@@ -92,6 +92,7 @@ module Bundler
         when "<" then ReqR.new(ReqR::Endpoint.new(ReqR::ZERO, true), ReqR::Endpoint.new(v, false))
         when "<=" then ReqR.new(ReqR::Endpoint.new(ReqR::ZERO, true), ReqR::Endpoint.new(v, true))
         when "~>" then ReqR.new(ReqR::Endpoint.new(v, true), ReqR::Endpoint.new(v.bump, false))
+        when "^" then ReqR.new(ReqR::Endpoint.new(v, true), ReqR::Endpoint.new(v.major_bump, false))
         else raise "unknown version op #{op} in requirement #{requirement}"
         end
       end.uniq

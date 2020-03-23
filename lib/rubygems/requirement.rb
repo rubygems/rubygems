@@ -4,7 +4,7 @@ require "rubygems/deprecate"
 
 ##
 # A Requirement is a set of one or more version restrictions. It supports a
-# few (<tt>=, !=, >, <, >=, <=, ~></tt>) different restriction operators.
+# few (<tt>=, !=, >, <, >=, <=, ~>, ^</tt>) different restriction operators.
 #
 # See Gem::Version for a description on how versions and requirements work
 # together in RubyGems.
@@ -18,7 +18,8 @@ class Gem::Requirement
     "<"  =>  lambda { |v, r| v <  r },
     ">=" =>  lambda { |v, r| v >= r },
     "<=" =>  lambda { |v, r| v <= r },
-    "~>" =>  lambda { |v, r| v >= r && v.release < r.bump }
+    "~>" =>  lambda { |v, r| v >= r && v.release < r.bump },
+    "^" =>  lambda { |v, r| v >= r && v.release < r.major_bump }
   }.freeze
 
   SOURCE_SET_REQUIREMENT = Struct.new(:for_lockfile).new "!" # :nodoc:

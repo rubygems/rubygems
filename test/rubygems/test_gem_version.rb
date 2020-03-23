@@ -29,6 +29,26 @@ class TestGemVersion < Gem::TestCase
     assert_bumped_version_equal "6", "5"
   end
 
+  def test_major_bump
+    assert_major_bumped_version_equal "6.0", "5.2.4"
+  end
+
+  def test_major_bump_alpha
+    assert_major_bumped_version_equal "6.0", "5.2.4.a"
+  end
+
+  def test_major_bump_alphanumeric
+    assert_major_bumped_version_equal "6.0", "5.2.4.a10"
+  end
+
+  def test_major_bump_trailing_zeros
+    assert_major_bumped_version_equal "6.0", "5.0.0"
+  end
+
+  def test_major_bump_one_level
+    assert_major_bumped_version_equal "6", "5"
+  end
+
   # A Gem::Version is already a Gem::Version and therefore not transformed by
   # Gem::Version.create
 
@@ -222,6 +242,7 @@ class TestGemVersion < Gem::TestCase
     assert_less_than v, v('1')
     assert_version_equal v('1'), v.release
     assert_version_equal v('2'), v.bump
+    assert_version_equal v('2'), v.major_bump
   end
 
   # Asserts that +version+ is a prerelease.
@@ -248,6 +269,12 @@ class TestGemVersion < Gem::TestCase
 
   def assert_bumped_version_equal(expected, unbumped)
     assert_version_equal expected, v(unbumped).bump
+  end
+
+  # Assert that major_bumping the +unbumped+ version yields the +expected+.
+
+  def assert_major_bumped_version_equal(expected, unbumped)
+    assert_version_equal expected, v(unbumped).major_bump
   end
 
   # Assert that +release+ is the correct non-prerelease +version+.

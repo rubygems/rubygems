@@ -145,6 +145,7 @@
 #   "~> 3.5"      3.5   ... 4.0
 #   "~> 3.5.0"    3.5.0 ... 3.6
 #   "~> 3"        3.0   ... 4.0
+#   "^ 3.5.0"    3.5.0 ... 4.0
 #
 # For the last example, single-digit versions are automatically extended with
 # a zero to give a sensible result.
@@ -198,6 +199,7 @@ class Gem::Version
 
   @@all = {}
   @@bump = {}
+  @@major_bump = {}
   @@release = {}
 
   def self.new(version) # :nodoc:
@@ -236,6 +238,21 @@ class Gem::Version
 
                        segments[-1] = segments[-1].succ
                        self.class.new segments.join(".")
+                     end
+  end
+
+  ##
+  # Return a new version object where the first revision
+  # number (major) is one greater (e.g., 5.3.1 => 6.0).
+  #
+  # Pre-release (alpha) parts, e.g, 5.3.1.b.2 => 6.0, are ignored.
+
+  def major_bump
+    @@major_bump[self] ||= begin
+                       segments = self.segments
+                       major_segments = [segments[0].succ]
+                       major_segments.push 0 if segments.size > 1
+                       self.class.new major_segments.join(".")
                      end
   end
 

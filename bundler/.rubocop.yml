@@ -506,9 +506,6 @@ Style/BlockComments:
 Style/BlockDelimiters:
   Enabled: true
 
-Style/BracesAroundHashParameters:
-  Enabled: true
-
 Style/CharacterLiteral:
   Enabled: true
 

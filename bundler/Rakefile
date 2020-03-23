@@ -78,11 +78,6 @@ namespace :spec do
   end
 end
 
-desc "Run RuboCop"
-task :rubocop do
-  sh("bin/rubocop --parallel")
-end
-
 desc "Check RVM integration"
 task :check_rvm_integration do
   # The rubygems-bundler gem is installed by RVM by default and it could easily

@@ -202,6 +202,7 @@ RSpec.describe "Bundler::RubyVersion and its subclasses" do
       it_behaves_like "it parses the version from the requirement string", "2.0.0"
       it_behaves_like "it parses the version from the requirement string", ">= 2.0.0"
       it_behaves_like "it parses the version from the requirement string", "~> 2.0.0"
+      it_behaves_like "it parses the version from the requirement string", "^ 2.0.0"
       it_behaves_like "it parses the version from the requirement string", "< 2.0.0"
       it_behaves_like "it parses the version from the requirement string", "= 2.0.0"
       it_behaves_like "it parses the version from the requirement string", ["> 2.0.0", "< 2.4.5"]

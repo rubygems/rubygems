@@ -89,3 +89,6 @@ Style/MutableConstant:
 
 Style/BlockDelimiters:
   Enabled: true
+
+Style/PercentLiteralDelimiters:
+  Enabled: true

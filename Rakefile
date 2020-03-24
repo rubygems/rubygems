@@ -76,7 +76,7 @@ namespace :rubocop do
   end
 end
 
-task rubocop: %w(rubocop:rubygems rubocop:bundler)
+task rubocop: %w[rubocop:rubygems rubocop:bundler]
 
 desc "Run a test suite bisection"
 task(:bisect) do
@@ -275,7 +275,7 @@ namespace 'blog' do
 
     history.force_encoding Encoding::UTF_8
 
-    _, change_log, = history.split %r%^===\s*\d.*%, 3
+    _, change_log, = history.split %r{^===\s*\d.*}, 3
 
     change_types = []
 
@@ -386,7 +386,7 @@ module Rubygems
 
     def self.all
       files = []
-      exclude = %r[\.git|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)]ox
+      exclude = %r{\.git|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)}ox
       tracked_files = `git ls-files`.split("\n").map {|f| "./#{f}" }
 
       tracked_files.each do |path|

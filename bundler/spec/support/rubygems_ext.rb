@@ -9,8 +9,6 @@ module Spec
       "parallel_tests" => "~> 2.29",
       "ronn" => "~> 0.7.3",
       "rspec" => "~> 3.8",
-      "rubocop" => "= 0.77.0",
-      "rubocop-performance" => "= 1.5.1",
     }
 
     DEPS = { # rubocop:disable Style/MutableConstant

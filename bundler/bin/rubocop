@@ -1,6 +1,5 @@
-#!/usr/bin/env ruby
-# frozen_string_literal: true
+#!/usr/bin/env bash
 
-require_relative "../spec/support/rubygems_ext"
+cd "${BASH_SOURCE[0]%/*}/../.." || exit 1
 
-Spec::Rubygems.gem_load("rubocop", "rubocop")
+util/rubocop --config bundler/.rubocop.yml "$@" bundler

@@ -64,10 +64,19 @@ rescue LoadError
   end
 end
 
-desc "Run rubocop"
-task(:rubocop) do
-  sh "util/rubocop"
+namespace :rubocop do
+  desc "Run rubocop for RubyGems. Pass positional arguments, e.g. -a, as Rake arguments."
+  task(:rubygems) do |_, args|
+    sh "util/rubocop", *args
+  end
+
+  desc "Run rubocop for Bundler. Pass positional arguments, e.g. -a, as Rake arguments."
+  task(:bundler) do |_, args|
+    sh "bundler/bin/rubocop", *args
+  end
 end
+
+task rubocop: %w(rubocop:rubygems rubocop:bundler)
 
 desc "Run a test suite bisection"
 task(:bisect) do

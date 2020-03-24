@@ -20,17 +20,11 @@ jobs:
       - name: Install Dependencies
         run: rake setup
       - name: Run Lint
-        run: |
-          gem install rubocop -v "~>0.74.0"
-          util/rubocop
+        run: rake rubocop
       - name: Install Dependencies in Bundler
-        run: |
-          rm ../Gemfile*
-          bin/rake spec:deps
+        run: bin/rake spec:deps
         working-directory: ./bundler
-      - name: Run Lint in Bundler
-        run: |
-          bin/rubocop --ignore_parent_exclusion
-          bin/rake check_rvm_integration man:check
+      - name: "Check RVM integration, man:check"
+        run: bin/rake check_rvm_integration man:check
         working-directory: ./bundler
     timeout-minutes: 15

@@ -5,8 +5,7 @@ on:
 
   push:
     branches:
-      - staging
-      - trying
+      - master
 
 jobs:
   ubuntu_bundler3:

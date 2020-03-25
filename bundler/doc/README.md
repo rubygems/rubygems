@@ -14,6 +14,7 @@ If you'd like to help make Bundler better, you totally rock! Thanks for helping 
 * [Getting help](contributing/GETTING_HELP.md)
 * [Filing issues](contributing/ISSUES.md)
 * [Community](contributing/COMMUNITY.md)
+* [Reproduction script guide](/bundler/doc/contributing/REPRODUCTION_SCRIPT_GUIDE.md)
 
 ## Development
 

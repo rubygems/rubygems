@@ -23,6 +23,8 @@ Hopefully the troubleshooting steps above resolved your problem! If things still
 
 A half working script with comments for the parts you were unable to automate is still appreciated.
 
+Please check our [reproduction script guide](/bundler/doc/contributing/REPRODUCTION_SCRIPT_GUIDE.md) for further guidance.
+
 If you are unable to do that, please include the following information in your report:
 
  - What you're trying to accomplish

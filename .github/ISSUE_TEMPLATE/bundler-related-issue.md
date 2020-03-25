@@ -22,7 +22,7 @@ If you haven't done that, please do it before creating a new issue.
 
 Please answer the following questions so we can process your issue as fast as possible:
 
-1. Do you have a reproduction script? It would be really helpful for us if you provide one. Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
+1. Do you have a reproduction script? It would be really helpful for us if you provide one. You can check our [reproduction script guide](/bundler/doc/contributing/REPRODUCTION_SCRIPT_GUIDE.md) or check an example: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
 
     Script URL: 
 

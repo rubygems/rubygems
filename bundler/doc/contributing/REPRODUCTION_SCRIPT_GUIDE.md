@@ -30,6 +30,5 @@ Below you can find a template that may be used in order to create reproduction s
 
 Below you can find a couple of examples of reproduction scripts:
 
-- [Example 1](https://gist.github.com/xaviershay/6207550)
-- [Example 2](https://gist.github.com/xaviershay/6295889)
-
+- [Git environment variables causing install to fail](https://gist.github.com/xaviershay/6207550)
+- [Multiple gems in a repository cannot be updated independently](https://gist.github.com/xaviershay/6295889)

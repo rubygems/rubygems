@@ -8,7 +8,7 @@ reproduction script is and provide a template and a couple of examples of some r
 
 A reproduction script **reproduces an event**, e.g. an issue, a bug, an error or a warning.
 
-The core idea behind creating a reproduction script is to configure the different environment variables to be as similar as
+The core idea behind creating a reproduction script is to configure the environment to be as similar as
 possible with the environment trying to be reproduced.
 
 After the environment has been configured properly the idea is to reproduce a series of events until reaching a specific 

@@ -11,4 +11,4 @@ repo_root = File.expand_path("../..", __dir__)
 
 Dir.chdir(repo_root)
 
-load File.expand_path("util/rubocop", repo_root)
+load File.expand_path("bin/rubocop", repo_root)

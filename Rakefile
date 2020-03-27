@@ -67,7 +67,7 @@ end
 namespace :rubocop do
   desc "Run rubocop for RubyGems. Pass positional arguments, e.g. -a, as Rake arguments."
   task(:rubygems) do |_, args|
-    sh "util/rubocop", *args
+    sh "bin/rubocop", *args
   end
 
   desc "Run rubocop for Bundler. Pass positional arguments, e.g. -a, as Rake arguments."
@@ -80,7 +80,7 @@ task rubocop: %w[rubocop:rubygems rubocop:bundler]
 
 desc "Run a test suite bisection"
 task(:bisect) do
-  sh "util/bisect"
+  sh "bin/bisect"
 end
 
 # --------------------------------------------------------------------
@@ -92,7 +92,7 @@ task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:
 desc "Check for deprecated methods with expired deprecation horizon"
 task :check_deprecations do
   if v.segments[1] == 0 && v.segments[2] == 0
-    sh("util/rubocop -r ./util/cops/deprecations --only Rubygems/Deprecations")
+    sh("bin/rubocop -r ./bin/cops/deprecations --only Rubygems/Deprecations")
   else
     puts "Skipping deprecation checks since not releasing a major version."
   end
@@ -386,7 +386,7 @@ module Rubygems
 
     def self.all
       files = []
-      exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|util/)}
+      exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|bin/)}
       tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|

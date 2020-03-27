@@ -40,7 +40,7 @@ PLATFORMS
 
 DEPENDENCIES
   builder (~> 3.0)
-  minitest (~> 5.0)
+  minitest (~> 5.13)
   rake (~> 13.0)
   rdoc (= 6.2.0)
   rubocop (~> 0.80.1)

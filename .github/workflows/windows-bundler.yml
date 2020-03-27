@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - reorg_workflows
 
 jobs:
   windows_bundler:

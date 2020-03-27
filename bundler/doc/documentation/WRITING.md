@@ -1,5 +1,7 @@
 # Writing docs for man pages
 
+*Any commands or file paths in this document assume that you are inside [the bundler/ directory of the rubygems/rubygems repository](https://github.com/rubygems/rubygems/tree/master/bundler).*
+
 A primary source of help for Bundler users are the man pages: the output printed when you run `bundle help` (or `bundler help`). These pages can be a little tricky to format and preview, but are pretty straightforward once you get the hang of it.
 
 _Note: `bundler` and `bundle` may be used interchangeably in the CLI. This guide uses `bundle` because it's cuter._
@@ -55,9 +57,9 @@ $ bin/rspec ./spec/quality_spec.rb
 
 # Writing docs for [the Bundler documentation site](https://bundler.io)
 
-If you'd like to submit a pull request for any of the primary commands or utilities on [the Bundler documentation site](https://bundler.io), please follow the instructions above for writing documentation for man pages from the `rubygems/bundler` repository. They are the same in each case.
+If you'd like to submit a pull request for any of the primary commands or utilities on [the Bundler documentation site](https://bundler.io), please follow the instructions above for writing documentation for man pages from the `rubygems/rubygems` repository. They are the same in each case.
 
-Note: Editing `.ronn` files from the `rubygems/bundler` repository for the primary commands and utilities documentation is all you need 🎉. There is no need to manually change anything in the `rubygems/bundler-site` repository, because the man pages and the docs for primary commands and utilities on [the Bundler documentation site](https://bundler.io) are one in the same. They are generated automatically from the `rubygems/bundler` repository's `.ronn` files from the `rake man/build` command. In other words, after updating `.ronn` file and running `rake man/build` in `bundler`, `.ronn` files map to the auto-generated files in the `source/man` directory of `bundler-site`.
+Note: Editing `.ronn` files from the `rubygems/rubygems` repository for the primary commands and utilities documentation is all you need 🎉. There is no need to manually change anything in the `rubygems/bundler-site` repository, because the man pages and the docs for primary commands and utilities on [the Bundler documentation site](https://bundler.io) are one in the same. They are generated automatically from the `rubygems/rubygems` repository's `.ronn` files from the `rake man/build` command. In other words, after updating `.ronn` file and running `rake man/build` in `bundler`, `.ronn` files map to the auto-generated files in the `source/man` directory of `bundler-site`.
 
 Additionally, if you'd like to add a guide or tutorial: in the `rubygems/bundler-site` repository, go to `/bundler-site/source/current_version_of_bundler/guides` and add [a new Markdown file](https://guides.github.com/features/mastering-markdown/) (with an extension ending in `.md`). Be sure to correctly format the title of your new guide, like so:
 ```

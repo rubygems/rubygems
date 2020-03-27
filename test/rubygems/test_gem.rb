@@ -42,12 +42,12 @@ class TestGem < Gem::TestCase
 
       a1.activate
 
-      assert_equal %w(a-1), loaded_spec_names
+      assert_equal %w[a-1], loaded_spec_names
       assert_equal ["b (> 0)"], unresolved_names
 
       Gem.finish_resolve
 
-      assert_equal %w(a-1 b-2 c-2), loaded_spec_names
+      assert_equal %w[a-1 b-2 c-2], loaded_spec_names
       assert_equal [], unresolved_names
     end
   end
@@ -66,12 +66,12 @@ class TestGem < Gem::TestCase
 
       a1.activate
 
-      assert_equal %w(a-1), loaded_spec_names
+      assert_equal %w[a-1], loaded_spec_names
       assert_equal ["b (> 0)", "d (> 0)"], unresolved_names
 
       Gem.finish_resolve
 
-      assert_equal %w(a-1 b-1 c-1 d-2), loaded_spec_names
+      assert_equal %w[a-1 b-1 c-1 d-2], loaded_spec_names
       assert_equal [], unresolved_names
     end
   end
@@ -89,12 +89,12 @@ class TestGem < Gem::TestCase
       a1.activate
       c1.activate
 
-      assert_equal %w(a-1 c-1), loaded_spec_names
+      assert_equal %w[a-1 c-1], loaded_spec_names
       assert_equal ["b (> 0)"], unresolved_names
 
       Gem.finish_resolve
 
-      assert_equal %w(a-1 b-1 c-1), loaded_spec_names
+      assert_equal %w[a-1 b-1 c-1], loaded_spec_names
       assert_equal [], unresolved_names
     end
   end
@@ -299,7 +299,7 @@ class TestGem < Gem::TestCase
     gem 'c'
     Gem.finish_resolve
 
-    assert_equal %w(a-1 b-2 c-1), loaded_spec_names
+    assert_equal %w[a-1 b-2 c-1], loaded_spec_names
   end
 
   def test_activate_bin_path_in_debug_mode
@@ -383,7 +383,7 @@ class TestGem < Gem::TestCase
 
     load Gem.activate_bin_path("bundler", "bundle", ">= 0.a")
 
-    assert_equal %w(bundler-2.0.0), loaded_spec_names
+    assert_equal %w[bundler-2.0.0], loaded_spec_names
   end
 
   def test_activate_bin_path_respects_underscore_selection_if_given
@@ -417,7 +417,7 @@ class TestGem < Gem::TestCase
 
     load Gem.activate_bin_path("bundler", "bundle", "= 1.17.3")
 
-    assert_equal %w(bundler-1.17.3), loaded_spec_names
+    assert_equal %w[bundler-1.17.3], loaded_spec_names
   end
 
   def test_self_bin_path_no_exec_name
@@ -716,7 +716,7 @@ class TestGem < Gem::TestCase
 
     discover_path = File.join 'lib', 'sff', 'discover.rb'
 
-    foo1, foo2 = %w(1 2).map do |version|
+    foo1, foo2 = %w[1 2].map do |version|
       spec = quick_gem 'sff', version do |s|
         s.files << discover_path
       end
@@ -748,7 +748,7 @@ class TestGem < Gem::TestCase
 
     discover_path = File.join 'lib', 'sff', 'discover.rb'
 
-    foo1, _ = %w(1 2).map do |version|
+    foo1, _ = %w[1 2].map do |version|
       spec = quick_gem 'sff', version do |s|
         s.files << discover_path
       end
@@ -784,7 +784,7 @@ class TestGem < Gem::TestCase
 
     discover_path = File.join 'lib', 'sff', 'discover.rb'
 
-    _, foo2 = %w(1 2).map do |version|
+    _, foo2 = %w[1 2].map do |version|
       spec = quick_gem 'sff', version do |s|
         s.files << discover_path
       end
@@ -1274,7 +1274,7 @@ class TestGem < Gem::TestCase
       Gem.try_activate 'a_file'
     end
 
-    assert_match %r%Could not find 'b' %, e.message
+    assert_match %r{Could not find 'b' }, e.message
   end
 
   def test_self_try_activate_missing_prerelease
@@ -1294,7 +1294,7 @@ class TestGem < Gem::TestCase
       Gem.try_activate 'a_file'
     end
 
-    assert_match %r%Could not find 'b' \(= 1.0rc1\)%, e.message
+    assert_match %r{Could not find 'b' \(= 1.0rc1\)}, e.message
   end
 
   def test_self_try_activate_missing_extensions
@@ -1399,7 +1399,7 @@ class TestGem < Gem::TestCase
 
     activated = Gem::Specification.map { |x| x.full_name }
 
-    assert_equal %w!a-1 b-1 c-2!, activated.sort
+    assert_equal %w[a-1 b-1 c-2], activated.sort
   end
 
   def test_self_needs_picks_up_unresolved_deps
@@ -1419,7 +1419,7 @@ class TestGem < Gem::TestCase
         require "d#{$$}"
       end
 
-      assert_equal %w!a-1 b-1 c-2 d-1 e-1!, loaded_spec_names
+      assert_equal %w[a-1 b-1 c-2 d-1 e-1], loaded_spec_names
     end
   end
 
@@ -1611,7 +1611,7 @@ class TestGem < Gem::TestCase
 
     Gem.use_gemdeps
 
-    assert_equal add_bundler_full_name(%W(a-1 b-1 c-1)), loaded_spec_names
+    assert_equal add_bundler_full_name(%W[a-1 b-1 c-1]), loaded_spec_names
   end
 
   def test_auto_activation_of_used_gemdeps_file
@@ -1765,7 +1765,7 @@ class TestGem < Gem::TestCase
 
     Gem.use_gemdeps gem_deps_file
 
-    assert_equal add_bundler_full_name(%W(a-1)), loaded_spec_names
+    assert_equal add_bundler_full_name(%W[a-1]), loaded_spec_names
     refute_nil Gem.gemdeps
   end
 
@@ -1825,7 +1825,7 @@ class TestGem < Gem::TestCase
 
     Gem.use_gemdeps
 
-    assert_equal add_bundler_full_name(%W(a-1)), loaded_spec_names
+    assert_equal add_bundler_full_name(%W[a-1]), loaded_spec_names
   ensure
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
   end
@@ -1902,7 +1902,7 @@ You may need to `gem install -g` to install missing gems
 
     Gem.use_gemdeps
 
-    assert_equal add_bundler_full_name(%W(a-1)), loaded_spec_names
+    assert_equal add_bundler_full_name(%W[a-1]), loaded_spec_names
   ensure
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
   end

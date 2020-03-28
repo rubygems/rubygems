@@ -667,11 +667,8 @@ RSpec.describe "bundle gem" do
 
     let(:flags) { nil }
 
-    before do
-      bundle! ["gem", gem_name, flags].compact.join(" ")
-    end
-
     it "does not nest constants" do
+      bundle! ["gem", gem_name, flags].compact.join(" ")
       expect(bundled_app("#{gem_name}/lib/#{require_path}/version.rb").read).to match(/module TestGem/)
       expect(bundled_app("#{gem_name}/lib/#{require_path}.rb").read).to match(/module TestGem/)
     end
@@ -680,6 +677,10 @@ RSpec.describe "bundle gem" do
 
     context "--ext parameter set" do
       let(:flags) { "--ext" }
+
+      before do
+        bundle! ["gem", gem_name, flags].compact.join(" ")
+      end
 
       it "builds ext skeleton" do
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/extconf.rb")).to exist
@@ -715,11 +716,8 @@ RSpec.describe "bundle gem" do
 
     let(:require_path) { "test/gem" }
 
-    before do
-      bundle! "gem #{gem_name}"
-    end
-
     it "nests constants so they work" do
+      bundle! "gem #{gem_name}"
       expect(bundled_app("#{gem_name}/lib/#{require_path}/version.rb").read).to match(/module Test\n  module Gem/)
       expect(bundled_app("#{gem_name}/lib/#{require_path}.rb").read).to match(/module Test\n  module Gem/)
     end

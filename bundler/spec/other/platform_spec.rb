@@ -450,7 +450,7 @@ G
     end
 
     it "fails when engine version doesn't match" do
-      ruby_engine_is "ruby" do
+      ruby_engine_is "jruby" do
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rack"

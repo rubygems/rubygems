@@ -606,7 +606,7 @@ RSpec.describe "bundle outdated" do
     end
 
     it "reports that updates are available if the JRuby platform is used" do
-      simulate_ruby_engine "jruby", "1.6.7" do
+      ruby_engine_is "jruby", "1.6.7" do
         simulate_platform "jruby" do
           install_gemfile <<-G
             source "#{file_uri_for(gem_repo2)}"

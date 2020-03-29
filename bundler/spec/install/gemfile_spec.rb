@@ -65,7 +65,7 @@ RSpec.describe "bundle install" do
   context "with engine specified in symbol" do
     it "does not raise any error parsing Gemfile" do
       simulate_ruby_version "2.3.0" do
-        simulate_ruby_engine "jruby", "9.1.2.0" do
+        ruby_engine_is "jruby", "9.1.2.0" do
           install_gemfile! <<-G
             source "#{file_uri_for(gem_repo1)}"
             ruby "2.3.0", :engine => :jruby, :engine_version => "9.1.2.0"
@@ -78,7 +78,7 @@ RSpec.describe "bundle install" do
 
     it "installation succeeds" do
       simulate_ruby_version "2.3.0" do
-        simulate_ruby_engine "jruby", "9.1.2.0" do
+        ruby_engine_is "jruby", "9.1.2.0" do
           install_gemfile! <<-G
             source "#{file_uri_for(gem_repo1)}"
             ruby "2.3.0", :engine => :jruby, :engine_version => "9.1.2.0"

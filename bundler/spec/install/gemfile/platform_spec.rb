@@ -353,64 +353,65 @@ RSpec.describe "bundle install with platform conditionals" do
 
   it "does not attempt to install gems from :rbx when using --local" do
     simulate_platform "ruby"
-    simulate_ruby_engine "ruby"
+    ruby_engine_is "ruby" do
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        gem "some_gem", :platform => :rbx
+      G
 
-    gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
-      gem "some_gem", :platform => :rbx
-    G
-
-    bundle "install --local"
-    expect(out).not_to match(/Could not find gem 'some_gem/)
+      bundle "install --local"
+      expect(out).not_to match(/Could not find gem 'some_gem/)
+    end
   end
 
   it "does not attempt to install gems from other rubies when using --local" do
     simulate_platform "ruby"
-    simulate_ruby_engine "ruby"
-    other_ruby_version_tag = RUBY_VERSION =~ /^1\.8/ ? :ruby_19 : :ruby_18
+    ruby_engine_is "ruby" do
+      other_ruby_version_tag = RUBY_VERSION =~ /^1\.8/ ? :ruby_19 : :ruby_18
 
-    gemfile <<-G
+      gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
       gem "some_gem", platform: :#{other_ruby_version_tag}
-    G
+      G
 
-    bundle "install --local"
-    expect(out).not_to match(/Could not find gem 'some_gem/)
+      bundle "install --local"
+      expect(out).not_to match(/Could not find gem 'some_gem/)
+    end
   end
 
   it "resolves all platforms by default and without warning messages" do
     simulate_platform "ruby"
-    simulate_ruby_engine "ruby"
+    ruby_engine_is "ruby" do
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
 
-    gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+        gem "rack", :platform => [:mingw, :mswin, :x64_mingw, :jruby]
+      G
 
-      gem "rack", :platform => [:mingw, :mswin, :x64_mingw, :jruby]
-    G
+      bundle! "install"
 
-    bundle! "install"
+      expect(err).to be_empty
 
-    expect(err).to be_empty
+      lockfile_should_be <<-L
+        GEM
+          remote: #{file_uri_for(gem_repo1)}/
+          specs:
+            rack (1.0.0)
 
-    lockfile_should_be <<-L
-      GEM
-        remote: #{file_uri_for(gem_repo1)}/
-        specs:
-          rack (1.0.0)
+        PLATFORMS
+          java
+          ruby
+          x64-mingw32
+          x86-mingw32
+          x86-mswin32
 
-      PLATFORMS
-        java
-        ruby
-        x64-mingw32
-        x86-mingw32
-        x86-mswin32
+        DEPENDENCIES
+          rack
 
-      DEPENDENCIES
-        rack
-
-      BUNDLED WITH
-         #{Bundler::VERSION}
-    L
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
   end
 end
 

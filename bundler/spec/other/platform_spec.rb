@@ -302,7 +302,7 @@ G
     end
 
     it "installs fine with any engine" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rack"
@@ -350,7 +350,7 @@ G
     end
 
     it "doesn't install when engine version doesn't match" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rack"
@@ -396,7 +396,7 @@ G
     end
 
     it "checks fine with any engine" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rack"
@@ -450,7 +450,7 @@ G
     end
 
     it "fails when engine version doesn't match" do
-      simulate_ruby_engine "ruby" do
+      ruby_engine_is "ruby" do
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rack"
@@ -514,7 +514,7 @@ G
     end
 
     it "updates fine with any engine" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         gemfile <<-G
           source "#{file_uri_for(gem_repo2)}"
           gem "activesupport"
@@ -564,7 +564,7 @@ G
     end
 
     it "fails when ruby engine version doesn't match" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         gemfile <<-G
           source "#{file_uri_for(gem_repo2)}"
           gem "activesupport"
@@ -618,7 +618,7 @@ G
     end
 
     it "prints path if ruby version is correct for any engine" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         install_gemfile! <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rails"
@@ -656,7 +656,7 @@ G
     end
 
     it "fails if engine version doesn't match", :bundler => "< 3" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rails"
@@ -705,7 +705,7 @@ G
     end
 
     it "copies the .gem file to vendor/cache when ruby version matches for any engine" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         install_gemfile! <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem 'rack'
@@ -741,7 +741,7 @@ G
     end
 
     it "fails if the engine version doesn't match" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         gemfile <<-G
           gem 'rack'
 
@@ -786,7 +786,7 @@ G
     end
 
     it "copies the .gem file to vendor/cache when ruby version matches any engine" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         install_gemfile! <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem 'rack'
@@ -822,7 +822,7 @@ G
     end
 
     it "fails if the engine version doesn't match" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         gemfile <<-G
           gem 'rack'
 
@@ -865,7 +865,7 @@ G
     end
 
     it "activates the correct gem when ruby version matches any engine" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         system_gems "rack-1.0.0", "rack-0.9.1", :path => :bundle_path
         gemfile <<-G
           gem "rack", "0.9.1"
@@ -901,7 +901,7 @@ G
     end
 
     # it "fails when the engine version doesn't match" do
-    #   simulate_ruby_engine "jruby" do
+    #   ruby_engine_is "jruby" do
     #     gemfile <<-G
     #       gem "rack", "0.9.1"
     #
@@ -954,7 +954,7 @@ G
     end
 
     it "starts IRB with the default group loaded when ruby version matches any engine", :readline do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rack"
@@ -1001,7 +1001,7 @@ G
     end
 
     it "fails when engine version doesn't match" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rack"
@@ -1058,7 +1058,7 @@ G
     end
 
     it "makes a Gemfile.lock if setup succeeds for any engine" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "yard"
@@ -1113,7 +1113,7 @@ G
     end
 
     it "fails when engine version doesn't match" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "yard"
@@ -1192,7 +1192,7 @@ G
     end
 
     it "returns list of outdated gems when the ruby version matches for any engine" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         bundle! :install
         update_repo2 do
           build_gem "activesupport", "3.0"
@@ -1256,7 +1256,7 @@ G
     end
 
     it "fails when the engine version doesn't match" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         update_repo2 do
           build_gem "activesupport", "3.0"
           update_git "foo", :path => lib_path("foo")
@@ -1276,7 +1276,7 @@ G
     end
 
     it "fails when the patchlevel doesn't match" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         update_repo2 do
           build_gem "activesupport", "3.0"
           update_git "foo", :path => lib_path("foo")
@@ -1296,7 +1296,7 @@ G
     end
 
     it "fails when the patchlevel is a fixnum" do
-      simulate_ruby_engine "jruby" do
+      ruby_engine_is "jruby" do
         update_repo2 do
           build_gem "activesupport", "3.0"
           update_git "foo", :path => lib_path("foo")

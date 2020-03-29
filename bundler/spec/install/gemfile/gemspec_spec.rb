@@ -169,20 +169,20 @@ RSpec.describe "bundle install from an existing gemspec" do
 
   it "should match a lockfile on non-ruby platforms with a transitive platform dependency" do
     simulate_platform java
-    simulate_ruby_engine "jruby"
+    ruby_engine_is "jruby" do
+      build_lib("foo", :path => tmp.join("foo")) do |s|
+        s.add_dependency "platform_specific"
+      end
 
-    build_lib("foo", :path => tmp.join("foo")) do |s|
-      s.add_dependency "platform_specific"
+      system_gems "platform_specific-1.0-java", :path => :bundle_path, :keep_path => true
+
+      install_gemfile! <<-G
+        gemspec :path => '#{tmp.join("foo")}'
+      G
+
+      bundle! "update --bundler", :verbose => true
+      expect(the_bundle).to include_gems "foo 1.0", "platform_specific 1.0 JAVA"
     end
-
-    system_gems "platform_specific-1.0-java", :path => :bundle_path, :keep_path => true
-
-    install_gemfile! <<-G
-      gemspec :path => '#{tmp.join("foo")}'
-    G
-
-    bundle! "update --bundler", :verbose => true
-    expect(the_bundle).to include_gems "foo 1.0", "platform_specific 1.0 JAVA"
   end
 
   it "should evaluate the gemspec in its directory" do
@@ -380,7 +380,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         end
 
         it "should install" do
-          simulate_ruby_engine "jruby" do
+          ruby_engine_is "jruby" do
             simulate_platform "java" do
               results = bundle "install", :artifice => "endpoint"
               expect(results).to include("Installing rack 1.0.0")
@@ -394,7 +394,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         let(:platform) { "java" }
 
         it "should install" do
-          simulate_ruby_engine "jruby" do
+          ruby_engine_is "jruby" do
             simulate_platform "java" do
               results = bundle "install", :artifice => "endpoint"
               expect(results).to include("Installing rack 1.0.0")

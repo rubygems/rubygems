@@ -54,7 +54,7 @@ class TestDeprecate < Gem::TestCase
     def bar
       @message = "bar"
     end
-    deprecate :foo, :bar, 2099, 3
+    deprecate :foo, :bar
 
   end
 
@@ -74,7 +74,7 @@ class TestDeprecate < Gem::TestCase
 
     assert_equal "", out
     assert_match(/Thing#foo is deprecated; use bar instead\./, err)
-    assert_match(/on or after 2099-03-01/, err)
+    assert_match(/in Rubygems [0-9]+/, err)
   end
 
   def test_deprecate_command
@@ -82,7 +82,7 @@ class TestDeprecate < Gem::TestCase
     foo_command = Class.new(Gem::Command) do
       extend Gem::Deprecate
 
-      deprecate_command(2099, 4)
+      deprecate_command
 
       def execute
         puts "pew pew!"

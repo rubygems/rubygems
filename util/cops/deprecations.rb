@@ -8,22 +8,17 @@ module RuboCop
       #
       # @example
       #
-      #   As of March, 2020
-      #
       #   # bad
       #   deprecate :safdfa, :none
       #
       #   # good
-      #   deprecate :safdfa
-      #   deprecate :safdfa, safdfa_replacement,
+      #   the `deprecate` call is fully removed
       #
       class Deprecations < Cop
 
-        MSG = "Remove `deprecate` calls for the next major release " \
-
         def on_send(node)
           _receiver, method_name, *args = *node
-          return unless method_name == :deprecate
+          return unless method_name == :deprecate || method_name == :deprecate_command
 
           add_offense(node)
         end
@@ -31,7 +26,8 @@ module RuboCop
         private
 
         def message(node)
-          format(MSG, method: node.method_name)
+          msg = "Remove `#{node.method_name}` calls for the next major release "
+          format(msg, method: node.method_name)
         end
 
       end

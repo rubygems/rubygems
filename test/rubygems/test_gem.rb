@@ -309,6 +309,7 @@ class TestGem < Gem::TestCase
 
     install_specs a1
 
+    require "open3"
     output, status = Open3.capture2e(
       { "GEM_HOME" => Gem.paths.home, "DEBUG_RESOLVER" => "1" },
       Gem.ruby, "-I", File.expand_path("../../lib", __dir__), "-e", "\"Gem.activate_bin_path('a', 'exec', '>= 0')\""

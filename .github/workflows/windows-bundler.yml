@@ -16,7 +16,7 @@ jobs:
         ruby: [ '2.4', '2.5', '2.6' ]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:

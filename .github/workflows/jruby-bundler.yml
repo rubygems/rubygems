@@ -8,7 +8,7 @@ on:
       - master
 
 jobs:
-  warbler:
+  jruby_bundler:
     runs-on: ubuntu-latest
 
     env:

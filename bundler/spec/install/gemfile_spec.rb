@@ -62,32 +62,24 @@ RSpec.describe "bundle install" do
     end
   end
 
-  context "with engine specified in symbol" do
+  context "with engine specified in symbol", :jruby do
     it "does not raise any error parsing Gemfile" do
-      simulate_ruby_version "2.3.0" do
-        simulate_ruby_engine "jruby", "9.1.2.0" do
-          install_gemfile! <<-G
-            source "#{file_uri_for(gem_repo1)}"
-            ruby "2.3.0", :engine => :jruby, :engine_version => "9.1.2.0"
-          G
+      install_gemfile! <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        ruby "#{RUBY_VERSION}", :engine => :jruby, :engine_version => "#{RUBY_ENGINE_VERSION}"
+      G
 
-          expect(out).to match(/Bundle complete!/)
-        end
-      end
+      expect(out).to match(/Bundle complete!/)
     end
 
     it "installation succeeds" do
-      simulate_ruby_version "2.3.0" do
-        simulate_ruby_engine "jruby", "9.1.2.0" do
-          install_gemfile! <<-G
-            source "#{file_uri_for(gem_repo1)}"
-            ruby "2.3.0", :engine => :jruby, :engine_version => "9.1.2.0"
-            gem "rack"
-          G
+      install_gemfile! <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        ruby "#{RUBY_VERSION}", :engine => :jruby, :engine_version => "#{RUBY_ENGINE_VERSION}"
+        gem "rack"
+      G
 
-          expect(the_bundle).to include_gems "rack 1.0.0"
-        end
-      end
+      expect(the_bundle).to include_gems "rack 1.0.0"
     end
   end
 

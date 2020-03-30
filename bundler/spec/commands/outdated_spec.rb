@@ -605,24 +605,20 @@ RSpec.describe "bundle outdated" do
       expect(out).to end_with("Bundle up to date!")
     end
 
-    it "reports that updates are available if the JRuby platform is used" do
-      simulate_ruby_engine "jruby", "1.6.7" do
-        simulate_platform "jruby" do
-          install_gemfile <<-G
-            source "#{file_uri_for(gem_repo2)}"
-            gem "laduradura", '= 5.15.2', :platforms => [:ruby, :jruby]
-          G
+    it "reports that updates are available if the JRuby platform is used", :jruby do
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "laduradura", '= 5.15.2', :platforms => [:ruby, :jruby]
+      G
 
-          bundle "outdated"
+      bundle "outdated"
 
-          expected_output = <<~TABLE.strip
-            Gem         Current  Latest  Requested  Groups
-            laduradura  5.15.2   5.15.3  = 5.15.2   default
-          TABLE
+      expected_output = <<~TABLE.strip
+        Gem         Current  Latest  Requested  Groups
+        laduradura  5.15.2   5.15.3  = 5.15.2   default
+      TABLE
 
-          expect(out).to end_with(expected_output)
-        end
-      end
+      expect(out).to end_with(expected_output)
     end
   end
 

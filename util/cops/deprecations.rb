@@ -12,7 +12,7 @@ module RuboCop
       #   deprecate :safdfa, :none
       #
       #   # good
-      #   the `deprecate` call is fully removed
+      #   # the `deprecate` call is fully removed
       #
       class Deprecations < Cop
 

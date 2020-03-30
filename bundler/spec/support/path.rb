@@ -76,7 +76,7 @@ module Spec
       if Bundler::VERSION.split(".").first.to_i < 3
         system_gem_path(*path)
       else
-        bundled_app(*[".bundle", ENV.fetch("BUNDLER_SPEC_RUBY_ENGINE", Gem.ruby_engine), RbConfig::CONFIG["ruby_version"], *path].compact)
+        bundled_app(*[".bundle", Gem.ruby_engine, RbConfig::CONFIG["ruby_version"], *path].compact)
       end
     end
 

@@ -1085,9 +1085,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby <<-R
-        require 'bundler/setup'
-      R
+      ruby "require 'bundler/setup'"
 
       expect(bundled_app_lock).not_to exist
       should_be_ruby_version_incorrect
@@ -1104,9 +1102,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby <<-R
-        require 'bundler/setup'
-      R
+      ruby "require 'bundler/setup'"
 
       expect(bundled_app_lock).not_to exist
       should_be_engine_incorrect
@@ -1124,9 +1120,7 @@ G
 
         FileUtils.rm(bundled_app_lock)
 
-        ruby <<-R
-          require 'bundler/setup'
-        R
+      ruby "require 'bundler/setup'"
 
         expect(bundled_app_lock).not_to exist
         should_be_engine_version_incorrect
@@ -1144,9 +1138,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby <<-R
-        require 'bundler/setup'
-      R
+      ruby "require 'bundler/setup'"
 
       expect(bundled_app_lock).not_to exist
       should_be_patchlevel_incorrect

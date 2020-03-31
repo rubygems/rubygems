@@ -353,7 +353,6 @@ RSpec.describe "bundle install with platform conditionals" do
 
   it "does not attempt to install gems from :rbx when using --local" do
     simulate_platform "ruby"
-    simulate_ruby_engine "ruby"
 
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
@@ -366,7 +365,6 @@ RSpec.describe "bundle install with platform conditionals" do
 
   it "does not attempt to install gems from other rubies when using --local" do
     simulate_platform "ruby"
-    simulate_ruby_engine "ruby"
     other_ruby_version_tag = RUBY_VERSION =~ /^1\.8/ ? :ruby_19 : :ruby_18
 
     gemfile <<-G
@@ -380,7 +378,6 @@ RSpec.describe "bundle install with platform conditionals" do
 
   it "resolves all platforms by default and without warning messages" do
     simulate_platform "ruby"
-    simulate_ruby_engine "ruby"
 
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"

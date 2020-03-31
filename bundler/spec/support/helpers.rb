@@ -62,8 +62,8 @@ module Spec
     def run(cmd, *args)
       opts = args.last.is_a?(Hash) ? args.pop : {}
       groups = args.map(&:inspect).join(", ")
-      setup = "require '#{lib_dir}/bundler' ; Bundler.ui.silence { Bundler.setup(#{groups}) }\n"
-      ruby(setup + cmd, opts)
+      setup = "require '#{lib_dir}/bundler' ; Bundler.ui.silence { Bundler.setup(#{groups}) }"
+      ruby([setup, cmd].join(" ; "), opts)
     end
     bang :run
 
@@ -158,7 +158,8 @@ module Spec
 
     def ruby(ruby, options = {})
       lib_option = options[:no_lib] ? "" : " -I#{lib_dir}"
-      sys_exec(%(#{Gem.ruby}#{lib_option} -w -e #{ruby.shellescape}), options)
+      escaped_ruby = RUBY_PLATFORM == "java" ? ruby.shellescape.dump : ruby.shellescape
+      sys_exec(%(#{Gem.ruby}#{lib_option} -w -e #{escaped_ruby}), options)
     end
     bang :ruby
 
@@ -366,16 +367,8 @@ module Spec
       path = opts.fetch(:path, system_gem_path)
       if path == :bundle_path
         bundle_dir = opts.fetch(:bundle_dir, bundled_app)
-        path = ruby!(<<-RUBY, :dir => bundle_dir)
-          require "bundler"
-          begin
-            puts Bundler.bundle_path
-          rescue Bundler::GemfileNotFound
-            ENV["BUNDLE_GEMFILE"] = "Gemfile"
-            retry
-          end
-
-        RUBY
+        code = 'require "bundler"; begin; puts Bundler.bundle_path; rescue Bundler::GemfileNotFound; ENV["BUNDLE_GEMFILE"] = "Gemfile"; retry; end'
+        path = ruby!(code, :dir => bundle_dir)
       end
       gems = gems.flatten
 
@@ -461,19 +454,6 @@ module Spec
       yield if block_given?
     ensure
       ENV["BUNDLER_SPEC_RUBY_VERSION"] = old if block_given?
-    end
-
-    def simulate_ruby_engine(engine, version = "1.6.0")
-      return if engine == local_ruby_engine
-
-      old = ENV["BUNDLER_SPEC_RUBY_ENGINE"]
-      ENV["BUNDLER_SPEC_RUBY_ENGINE"] = engine
-      old_version = ENV["BUNDLER_SPEC_RUBY_ENGINE_VERSION"]
-      ENV["BUNDLER_SPEC_RUBY_ENGINE_VERSION"] = version
-      yield if block_given?
-    ensure
-      ENV["BUNDLER_SPEC_RUBY_ENGINE"] = old if block_given?
-      ENV["BUNDLER_SPEC_RUBY_ENGINE_VERSION"] = old_version if block_given?
     end
 
     def simulate_bundler_version(version)

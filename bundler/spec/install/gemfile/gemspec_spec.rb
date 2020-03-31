@@ -167,10 +167,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     expect(out.scan(message).size).to eq(1)
   end
 
-  it "should match a lockfile on non-ruby platforms with a transitive platform dependency" do
-    simulate_platform java
-    simulate_ruby_engine "jruby"
-
+  it "should match a lockfile on non-ruby platforms with a transitive platform dependency", :jruby do
     build_lib("foo", :path => tmp.join("foo")) do |s|
       s.add_dependency "platform_specific"
     end
@@ -365,13 +362,11 @@ RSpec.describe "bundle install from an existing gemspec" do
         L
       end
 
-      context "using JRuby with explicit platform" do
-        let(:platform) { "java" }
-
+      context "using JRuby with explicit platform", :jruby do
         before do
           create_file(
-            tmp.join("foo", "foo-#{platform}.gemspec"),
-            build_spec("foo", "1.0", platform) do
+            tmp.join("foo", "foo-java.gemspec"),
+            build_spec("foo", "1.0", "java") do
               dep "rack", "=1.0.0"
               @spec.authors = "authors"
               @spec.summary = "summary"
@@ -380,27 +375,17 @@ RSpec.describe "bundle install from an existing gemspec" do
         end
 
         it "should install" do
-          simulate_ruby_engine "jruby" do
-            simulate_platform "java" do
-              results = bundle "install", :artifice => "endpoint"
-              expect(results).to include("Installing rack 1.0.0")
-              expect(the_bundle).to include_gems "rack 1.0.0"
-            end
-          end
+          results = bundle "install", :artifice => "endpoint"
+          expect(results).to include("Installing rack 1.0.0")
+          expect(the_bundle).to include_gems "rack 1.0.0"
         end
       end
 
-      context "using JRuby" do
-        let(:platform) { "java" }
-
+      context "using JRuby", :jruby do
         it "should install" do
-          simulate_ruby_engine "jruby" do
-            simulate_platform "java" do
-              results = bundle "install", :artifice => "endpoint"
-              expect(results).to include("Installing rack 1.0.0")
-              expect(the_bundle).to include_gems "rack 1.0.0"
-            end
-          end
+          results = bundle "install", :artifice => "endpoint"
+          expect(results).to include("Installing rack 1.0.0")
+          expect(the_bundle).to include_gems "rack 1.0.0"
         end
       end
 

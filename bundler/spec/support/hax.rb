@@ -46,23 +46,3 @@ if ENV["BUNDLER_SPEC_WINDOWS"] == "true"
     WINDOWS = true
   end
 end
-
-class Object
-  if ENV["BUNDLER_SPEC_RUBY_ENGINE"]
-    if RUBY_ENGINE != "jruby" && ENV["BUNDLER_SPEC_RUBY_ENGINE"] == "jruby"
-      begin
-        # this has to be done up front because psych will try to load a .jar
-        # if it thinks its on jruby
-        require "psych"
-      rescue LoadError
-        nil
-      end
-    end
-
-    remove_const :RUBY_ENGINE
-    RUBY_ENGINE = ENV["BUNDLER_SPEC_RUBY_ENGINE"]
-
-    remove_const :RUBY_ENGINE_VERSION
-    RUBY_ENGINE_VERSION = ENV["BUNDLER_SPEC_RUBY_ENGINE_VERSION"]
-  end
-end

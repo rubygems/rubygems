@@ -41,13 +41,17 @@ module Gem::Deprecate
     Gem::Deprecate.skip = original
   end
 
+  def self.next_rubygems_major_version # :nodoc:
+    Gem::Version.new(Gem.rubygems_version.segments.first).bump
+  end
+
   ##
   # Simple deprecation method that deprecates +name+ by wrapping it up
   # in a dummy method. It warns on each call to the dummy method
   # telling the user of +repl+ (unless +repl+ is :none) and the
-  # year/month that it is planned to go away.
+  # Rubygems version that it is planned to go away.
 
-  def deprecate(name, repl, year, month)
+  def deprecate(name, replacement=:none)
     class_eval do
       old = "_deprecated_#{name}"
       alias_method old, name
@@ -55,8 +59,8 @@ module Gem::Deprecate
         klass = self.kind_of? Module
         target = klass ? "#{self}." : "#{self.class}#"
         msg = [ "NOTE: #{target}#{name} is deprecated",
-                repl == :none ? " with no replacement" : "; use #{repl} instead",
-                ". It will be removed on or after %4d-%02d-01." % [year, month],
+                replacement == :none ? " with no replacement" : "; use #{replacement} instead",
+                ". It will be removed in Rubygems #{Gem::Deprecate.next_rubygems_major_version}",
                 "\n#{target}#{name} called from #{Gem.location_of_caller.join(":")}",
         ]
         warn "#{msg.join}." unless Gem::Deprecate.skip
@@ -66,7 +70,7 @@ module Gem::Deprecate
   end
 
   # Deprecation method to deprecate Rubygems commands
-  def deprecate_command(year, month)
+  def deprecate_command
     class_eval do
       define_method "deprecated?" do
         true
@@ -74,13 +78,14 @@ module Gem::Deprecate
 
       define_method "deprecation_warning" do
         msg = [ "#{self.command} command is deprecated",
-                ". It will be removed on or after %4d-%02d-01.\n" % [year, month],
+                ". It will be removed in Rubygems #{Gem::Deprecate.next_rubygems_major_version}.\n",
         ]
 
         alert_warning "#{msg.join}" unless Gem::Deprecate.skip
       end
     end
   end
+
   module_function :deprecate, :deprecate_command, :skip_during
 
 end

@@ -8,7 +8,9 @@ module Spec
       "automatiek" => "~> 0.3.0",
       "parallel_tests" => "~> 2.29",
       "ronn" => "~> 0.7.3",
-      "rspec" => "~> 3.8",
+      "rspec-core" => "~> 3.8",
+      "rspec-expectations" => "~> 3.8",
+      "rspec-mocks" => "~> 3.8",
     }
 
     DEPS = { # rubocop:disable Style/MutableConstant

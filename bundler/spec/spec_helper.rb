@@ -14,7 +14,9 @@ if File.expand_path(__FILE__) =~ %r{([^\w/\.:\-])}
 end
 
 require "bundler"
-require "rspec"
+require "rspec/core"
+require "rspec/expectations"
+require "rspec/mocks"
 
 require_relative "support/builders"
 require_relative "support/filters"

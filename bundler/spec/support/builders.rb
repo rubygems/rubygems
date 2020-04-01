@@ -370,7 +370,7 @@ module Spec
       rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
 
       if rake_path.nil?
-        Spec::Path.base_system_gems.rmtree
+        FileUtils.rm_rf(Path.base_system_gems)
         Spec::Rubygems.setup
         rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
       end

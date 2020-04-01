@@ -371,7 +371,7 @@ module Spec
 
       if rake_path.nil?
         FileUtils.rm_rf(Path.base_system_gems)
-        Spec::Rubygems.setup
+        Spec::Rubygems.install_test_deps
         rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
       end
 

@@ -48,8 +48,8 @@ module Spec
       require gem_name
     end
 
-    def setup
-      install_test_deps
+    def test_setup
+      setup_test_paths
 
       require "fileutils"
 
@@ -79,12 +79,16 @@ module Spec
       end
     end
 
-    def install_test_deps
+    def setup_test_paths
       Gem.clear_paths
 
       ENV["BUNDLE_PATH"] = nil
       ENV["GEM_HOME"] = ENV["GEM_PATH"] = Path.base_system_gems.to_s
       ENV["PATH"] = [Path.bindir, Path.system_gem_path.join("bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)
+    end
+
+    def install_test_deps
+      setup_test_paths
 
       install_gems(DEPS)
     end

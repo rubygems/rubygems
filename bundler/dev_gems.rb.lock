@@ -1,0 +1,39 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    automatiek (0.3.0)
+    diff-lcs (1.3)
+    hpricot (0.8.6)
+    mustache (1.1.1)
+    parallel (1.19.1)
+    parallel_tests (2.32.0)
+      parallel
+    rdiscount (2.2.0.1)
+    ronn (0.7.3)
+      hpricot (>= 0.8.2)
+      mustache (>= 0.7.0)
+      rdiscount (>= 1.5.8)
+    rspec-core (3.9.1)
+      rspec-support (~> 3.9.1)
+    rspec-expectations (3.9.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-mocks (3.9.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-support (3.9.2)
+
+PLATFORMS
+  java
+  ruby
+
+DEPENDENCIES
+  automatiek (~> 0.3.0)
+  parallel_tests (~> 2.29)
+  ronn (~> 0.7.3)
+  rspec-core (~> 3.8)
+  rspec-expectations (~> 3.8)
+  rspec-mocks (~> 3.8)
+
+BUNDLED WITH
+   2.2.0.dev

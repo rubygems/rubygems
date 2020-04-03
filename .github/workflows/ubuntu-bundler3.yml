@@ -22,6 +22,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+          bundler: none
       - name: Prepare dependencies
         run: |
           BUNDLER_SPEC_SUB_VERSION=3.0.0 bin/rake override_version

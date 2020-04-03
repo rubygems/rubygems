@@ -77,6 +77,7 @@ module Bundler
       @locked_bundler_version = nil
       @locked_ruby_version    = nil
       @locked_specs_incomplete_for_platform = false
+      @new_platform = nil
 
       if lockfile && File.exist?(lockfile)
         @lockfile_contents = Bundler.read_file(lockfile)

@@ -81,6 +81,8 @@ RSpec.describe "installing a gem with native extensions", :ruby_repo do
       gem "c_extension", :git => #{lib_path("c_extension-1.0").to_s.dump}
     G
 
+    expect(err).to_not include("warning: conflicting chdir during another chdir block")
+
     run! "Bundler.require; puts CExtension.new.its_true"
     expect(out).to eq("true")
   end

@@ -85,9 +85,13 @@ module Spec
     end
 
     def install_gems(gemfile, lockfile)
+      old_gemfile = ENV["BUNDLE_GEMFILE"]
+      ENV["BUNDLE_GEMFILE"] = gemfile.to_s
       definition = Bundler::Definition.build(gemfile, lockfile, nil)
       definition.validate_runtime!
       Bundler::Installer.install(Path.root, definition, :path => ENV["GEM_HOME"])
+    ensure
+      ENV["BUNDLE_GEMFILE"] = old_gemfile
     end
 
     def test_gemfile

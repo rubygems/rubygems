@@ -29,6 +29,7 @@ jobs:
         shell: bash
       - name: Run specs
         run: |
+          export TMPDIR=$RUNNER_TEMP
           bin/parallel_rspec spec
         working-directory: ./bundler
         shell: bash

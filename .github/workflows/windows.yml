@@ -25,6 +25,7 @@ jobs:
         shell: bash
       - name: Run Test
         run: |
+          $env:TMPDIR = $env:RUNNER_TEMP
           ridk enable
           rake test
     timeout-minutes: 15

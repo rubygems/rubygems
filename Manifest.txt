@@ -1,6 +1,3 @@
-.bundle/config
-.codeclimate.yml
-.rubocop.yml
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
 Gemfile

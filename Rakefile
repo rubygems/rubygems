@@ -386,7 +386,7 @@ module Rubygems
 
     def self.all
       files = []
-      exclude = %r{\.git|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)}ox
+      exclude = %r{\.git|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)}
       tracked_files = `git ls-files`.split("\n").map {|f| "./#{f}" }
 
       tracked_files.each do |path|

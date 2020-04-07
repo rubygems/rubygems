@@ -1,15 +1,17 @@
-name: daily
+name: daily-bundler
 
 on:
   schedule:
     - cron: '0 0 * * *'
 
 jobs:
-  daily:
+  daily_bundler:
     runs-on: ubuntu-16.04
     strategy:
       matrix:
         ruby: [ ruby-head ]
+    env:
+      RGV: ..
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby
@@ -17,8 +19,13 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
-      - name: Test rubygems
+      - name: Prepare dependencies
         run: |
-          rake setup
-          rake test
+          sudo apt-get install graphviz -y
+          bin/rake spec:parallel_deps
+        working-directory: ./bundler
+      - name: Run Test
+        run: |
+          bin/rake spec:all
+        working-directory: ./bundler
     timeout-minutes: 60

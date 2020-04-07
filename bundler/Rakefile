@@ -38,8 +38,18 @@ namespace :spec do
     Spec::Rubygems.install_parallel_test_deps
   end
 
+  desc "Run all specs"
+  task :all => %w[spec:regular spec:realworld spec:sudo]
+
+  desc "Run the regular spec suite"
+  task :regular do
+    sh("bin/parallel_rspec spec")
+  end
+
   desc "Run the real-world spec suite"
-  task :realworld => %w[set_realworld spec]
+  task :realworld do
+    sh("BUNDLER_SPEC_PRE_RECORDED=1 bin/rspec --tag realworld")
+  end
 
   namespace :realworld do
     desc "Re-record cassettes for the realworld specs"
@@ -50,12 +60,8 @@ namespace :spec do
     end
   end
 
-  task :set_realworld do
-    ENV["BUNDLER_REALWORLD_TESTS"] = "1"
-  end
-
   desc "Run the spec suite with the sudo tests"
-  task :sudo => %w[set_sudo] do
+  task :sudo do
     require "open3"
     output, status = Open3.capture2e("sudo", "cp", "/etc/sudoers", "tmp/old_sudoers")
     raise "Couldn't read sudoers file: #{output}" unless status.success?
@@ -66,15 +72,11 @@ namespace :spec do
 
       raise "Couldn't configure sudo correctly to preserve path" unless `ruby -v` == `sudo -E ruby -v`
 
-      sh("sudo -E bin/rspec")
+      sh("sudo -E bin/rspec --tag sudo")
     ensure
       system("sudo", "cp", "tmp/old_sudoers", "/etc/sudoers")
       system("sudo", "chown", "-R", ENV["USER"], "tmp")
     end
-  end
-
-  task :set_sudo do
-    ENV["BUNDLER_SUDO_TESTS"] = "1"
   end
 end
 

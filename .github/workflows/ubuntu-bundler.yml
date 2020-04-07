@@ -53,19 +53,7 @@ jobs:
         working-directory: ./bundler
       - name: Run Test
         run: |
-          bin/parallel_rspec spec
-        working-directory: ./bundler
-        continue-on-error: ${{ matrix.ruby == 'head' }}
-      - name: Run Test with realworld
-        run: |
-          bin/rake spec:realworld
-        env:
-          BUNDLER_SPEC_PRE_RECORDED: 1
-        working-directory: ./bundler
-        continue-on-error: ${{ matrix.ruby == 'head' }}
-      - name: Run Test with sudo
-        run: |
-          bin/rake spec:sudo
+          bin/rake spec:all
         working-directory: ./bundler
         continue-on-error: ${{ matrix.ruby == 'head' }}
     timeout-minutes: 60

@@ -308,7 +308,7 @@ class TestGem < Gem::TestCase
     require "open3"
     output, status = Open3.capture2e(
       { "GEM_HOME" => Gem.paths.home, "DEBUG_RESOLVER" => "1" },
-      Gem.ruby, "-I", File.expand_path("../../lib", __dir__), "-e", "\"Gem.activate_bin_path('a', 'exec', '>= 0')\""
+      *ruby_with_rubygems_in_load_path, "-e", "\"Gem.activate_bin_path('a', 'exec', '>= 0')\""
     )
 
     assert status.success?, output
@@ -1632,7 +1632,6 @@ class TestGem < Gem::TestCase
     assert_equal expected_specs, Gem.use_gemdeps.sort_by { |s| s.name }
   end
 
-  LIB_PATH = File.expand_path "../../../lib", __FILE__
   BUNDLER_LIB_PATH = File.expand_path $LOAD_PATH.find {|lp| File.file?(File.join(lp, "bundler.rb")) }
   BUNDLER_FULL_NAME = "bundler-#{Bundler::VERSION}".freeze
 
@@ -1660,7 +1659,7 @@ class TestGem < Gem::TestCase
     ENV['RUBYGEMS_GEMDEPS'] = "-"
 
     path = File.join @tempdir, "gem.deps.rb"
-    cmd = [Gem.ruby, "-I#{LIB_PATH}",
+    cmd = [*ruby_with_rubygems_in_load_path,
            "-I#{BUNDLER_LIB_PATH}"]
     cmd << "-eputs Gem.loaded_specs.values.map(&:full_name).sort"
 
@@ -1698,7 +1697,7 @@ class TestGem < Gem::TestCase
     Dir.mkdir "sub1"
 
     path = File.join @tempdir, "gem.deps.rb"
-    cmd = [Gem.ruby, "-Csub1", "-I#{LIB_PATH}",
+    cmd = [*ruby_with_rubygems_in_load_path, "-Csub1",
            "-I#{BUNDLER_LIB_PATH}"]
     cmd << "-eputs Gem.loaded_specs.values.map(&:full_name).sort"
 

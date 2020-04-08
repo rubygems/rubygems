@@ -38,8 +38,6 @@ jobs:
           bundler: none
       - name: Prepare dependencies
         run: |
-          sudo sed -i 's/azure\.//' /etc/apt/sources.list
-          sudo apt-get update
           sudo apt-get install graphviz -y
           bin/rake spec:parallel_deps
         working-directory: ./bundler

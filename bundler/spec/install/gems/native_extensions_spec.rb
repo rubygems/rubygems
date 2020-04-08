@@ -38,9 +38,8 @@ RSpec.describe "installing a gem with native extensions", :ruby_repo do
     G
 
     bundle "config set build.c_extension --with-c_extension=hello"
-    bundle "install"
+    bundle! "install"
 
-    expect(out).not_to include("extconf.rb failed")
     expect(out).to include("Installing c_extension 1.0 with native extensions")
 
     run "Bundler.require; puts CExtension.new.its_true"
@@ -82,7 +81,7 @@ RSpec.describe "installing a gem with native extensions", :ruby_repo do
       gem "c_extension", :git => #{lib_path("c_extension-1.0").to_s.dump}
     G
 
-    expect(out).not_to include("extconf.rb failed")
+    expect(err).to_not include("warning: conflicting chdir during another chdir block")
 
     run! "Bundler.require; puts CExtension.new.its_true"
     expect(out).to eq("true")
@@ -122,8 +121,6 @@ RSpec.describe "installing a gem with native extensions", :ruby_repo do
     install_gemfile! <<-G
       gem "c_extension", :git => #{lib_path("c_extension-1.0").to_s.dump}
     G
-
-    expect(out).not_to include("extconf.rb failed")
 
     run! "Bundler.require; puts CExtension.new.its_true"
     expect(out).to eq("true")

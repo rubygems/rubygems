@@ -1661,7 +1661,7 @@ class TestGem < Gem::TestCase
 
     path = File.join @tempdir, "gem.deps.rb"
     cmd = [Gem.ruby, "-I#{LIB_PATH}",
-           "-I#{BUNDLER_LIB_PATH}", "-rrubygems"]
+           "-I#{BUNDLER_LIB_PATH}"]
     cmd << "-eputs Gem.loaded_specs.values.map(&:full_name).sort"
 
     File.open path, "w" do |f|
@@ -1699,7 +1699,7 @@ class TestGem < Gem::TestCase
 
     path = File.join @tempdir, "gem.deps.rb"
     cmd = [Gem.ruby, "-Csub1", "-I#{LIB_PATH}",
-           "-I#{BUNDLER_LIB_PATH}", "-rrubygems"]
+           "-I#{BUNDLER_LIB_PATH}"]
     cmd << "-eputs Gem.loaded_specs.values.map(&:full_name).sort"
 
     File.open path, "w" do |f|

@@ -1,15 +1,21 @@
 name: daily
 
-on:
-  schedule:
-    - cron: '0 0 * * *'
+on: [push, pull_request]
 
 jobs:
   daily:
-    runs-on: ubuntu-16.04
+    timeout-minutes: 15
+    name: RG Cron ${{ matrix.os }} ${{ matrix.ruby }}
+    runs-on: ${{ matrix.os }}-latest
     strategy:
+      fail-fast: false
       matrix:
-        ruby: [ ruby-head ]
+        include:
+          - { os: ubuntu  , ruby: head  }
+          - { os: macos   , ruby: head  }
+          - { os: windows , ruby: mingw }
+          - { os: windows , ruby: mswin }
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby
@@ -17,8 +23,25 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
+
+      - name:  Setup
+        shell: pwsh
+        run:   |
+          gem install builder -N
+          ruby ./util/ruby_core_test.rb
+          patch -p1 -N --no-backup-if-mismatch -i ./util/ruby_core_runner.rb.patch
+          $lib_path = $(ruby -e "STDOUT.write RbConfig::CONFIG['rubylibdir']")
+          Rename-Item -Path $lib_path/bundler.rb  -NewName bundler.rb_
+          Rename-Item -Path $lib_path/bundler     -NewName bundler_
+          Rename-Item -Path $lib_path/rubygems.rb -NewName rubygems.rb_
+          Rename-Item -Path $lib_path/rubygems    -NewName rubygems_
+          echo "::set-env name=TMPDIR::$env:RUNNER_TEMP"
+          echo "::set-env name=TEMP::$env:RUNNER_TEMP"
+          echo "::set-env name=TMP::$env:RUNNER_TEMP"
+          echo "::set-env name=RUBYOPT::-I$pwd/bundler/lib -I$pwd/lib"
+
       - name: Test rubygems
-        run: |
-          rake setup
-          rake test
-    timeout-minutes: 60
+        working-directory: ./test
+        env:
+          CORE_CI: true
+        run:  ruby --disable=gems ./runner.rb -j2 --verbose --show-skip

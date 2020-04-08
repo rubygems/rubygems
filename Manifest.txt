@@ -709,5 +709,7 @@ util/create_encrypted_key.rb
 util/generate_spdx_license_list.rb
 util/patch_with_prs.rb
 util/rubocop
+util/ruby_core_runner.rb.patch
+util/ruby_core_test.rb
 util/update_bundled_ca_certificates.rb
 util/update_changelog.rb

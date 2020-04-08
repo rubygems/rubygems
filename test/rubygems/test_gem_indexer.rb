@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
+
+if ENV['CORE_CI']
+  begin
+    require 'builder'
+    require 'builder/xchar'
+  rescue
+  end
+end
+
 require 'rubygems/indexer'
 
 unless defined?(Builder::XChar)

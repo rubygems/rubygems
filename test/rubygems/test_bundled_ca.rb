@@ -27,7 +27,12 @@ if ENV["CI"] || ENV["TEST_SSL"]
     end
 
     def assert_https(host)
-      self.assertions += 1
+      # needed for ruby/ruby testing
+      if self.respond_to? :assertions
+        self.assertions += 1
+      else
+        self._assertions += 1
+      end
       http = Net::HTTP.new(host, 443)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_PEER

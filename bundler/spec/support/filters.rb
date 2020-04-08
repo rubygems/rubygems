@@ -21,17 +21,8 @@ class RequirementChecker < Proc
 end
 
 RSpec.configure do |config|
-  if ENV["BUNDLER_SUDO_TESTS"] && Spec::Sudo.present?
-    config.filter_run :sudo => true
-  else
-    config.filter_run_excluding :sudo => true
-  end
-
-  if ENV["BUNDLER_REALWORLD_TESTS"]
-    config.filter_run :realworld => true
-  else
-    config.filter_run_excluding :realworld => true
-  end
+  config.filter_run_excluding :sudo => true
+  config.filter_run_excluding :realworld => true
 
   git_version = Bundler::Source::Git::GitProxy.new(nil, nil, nil).version
 

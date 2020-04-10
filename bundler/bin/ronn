@@ -3,4 +3,4 @@
 
 require_relative "../spec/support/rubygems_ext"
 
-Spec::Rubygems.gem_load("ronn", "ronn")
+Spec::Rubygems.gem_load("ronn-ng", "ronn")

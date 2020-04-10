@@ -7,7 +7,7 @@ gem "rubocop", "~> 0.80.1"
 gem "rubocop-performance", "~> 1.5.2"
 gem "webrick", "~> 1.6"
 gem "parallel_tests", "~> 2.29"
-gem "ronn", "~> 0.7.3", :platform => :ruby
+gem "ronn-ng", "0.10.0.pre.SNAPSHOT"
 gem "rspec-core", "~> 3.8"
 gem "rspec-expectations", "~> 3.8"
 gem "rspec-mocks", "~> 3.8"

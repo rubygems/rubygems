@@ -18,9 +18,9 @@ module Spec
       gem_load_and_activate(gem_name, bin_container)
     end
 
-    def gem_require(gem_name)
+    def gem_require(gem_name, entrypoint = nil)
       gem_activate(gem_name)
-      require gem_name
+      require(entrypoint || gem_name)
     end
 
     def test_setup

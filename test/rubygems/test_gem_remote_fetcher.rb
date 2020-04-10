@@ -78,8 +78,6 @@ gems:
 
   PROXY_DATA = SERVER_DATA.gsub(/0.4.11/, '0.4.2')
 
-  DIR = File.expand_path(File.dirname(__FILE__))
-
   # Generated via:
   #   x = OpenSSL::PKey::DH.new(2048) # wait a while...
   #   x.to_s => pem
@@ -887,7 +885,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
 
   def test_ssl_connection
     ssl_server = start_ssl_server
-    temp_ca_cert = File.join(DIR, 'ca_cert.pem')
+    temp_ca_cert = File.join(__dir__, 'ca_cert.pem')
     with_configured_fetcher(":ssl_ca_cert: #{temp_ca_cert}") do |fetcher|
       fetcher.fetch_path("https://localhost:#{ssl_server.config[:Port]}/yaml")
     end
@@ -898,8 +896,8 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       :SSLVerifyClient =>
         OpenSSL::SSL::VERIFY_PEER | OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
 
-    temp_ca_cert = File.join(DIR, 'ca_cert.pem')
-    temp_client_cert = File.join(DIR, 'client.pem')
+    temp_ca_cert = File.join(__dir__, 'ca_cert.pem')
+    temp_client_cert = File.join(__dir__, 'client.pem')
 
     with_configured_fetcher(
       ":ssl_ca_cert: #{temp_ca_cert}\n" +
@@ -913,8 +911,8 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       :SSLVerifyClient =>
         OpenSSL::SSL::VERIFY_PEER | OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT})
 
-    temp_ca_cert = File.join(DIR, 'ca_cert.pem')
-    temp_client_cert = File.join(DIR, 'invalid_client.pem')
+    temp_ca_cert = File.join(__dir__, 'ca_cert.pem')
+    temp_client_cert = File.join(__dir__, 'invalid_client.pem')
 
     with_configured_fetcher(
       ":ssl_ca_cert: #{temp_ca_cert}\n" +
@@ -943,7 +941,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
 
   def test_do_not_follow_insecure_redirect
     ssl_server = start_ssl_server
-    temp_ca_cert = File.join(DIR, 'ca_cert.pem')
+    temp_ca_cert = File.join(__dir__, 'ca_cert.pem')
     expected_error_message =
       "redirecting to non-https resource: #{@server_uri} (https://localhost:#{ssl_server.config[:Port]}/insecure_redirect?to=#{@server_uri})"
 
@@ -1052,8 +1050,6 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     @proxy_server[:server].config[:Port]
   end
 
-  DIR = File.expand_path(File.dirname(__FILE__))
-
   def start_ssl_server(config = {})
     null_logger = NilLog.new
     server = WEBrick::HTTPServer.new({
@@ -1061,7 +1057,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       :Logger => null_logger,
       :AccessLog => [],
       :SSLEnable => true,
-      :SSLCACertificateFile => File.join(DIR, 'ca_cert.pem'),
+      :SSLCACertificateFile => File.join(__dir__, 'ca_cert.pem'),
       :SSLCertificate => cert('ssl_cert.pem'),
       :SSLPrivateKey => key('ssl_key.pem'),
       :SSLVerifyClient => nil,
@@ -1142,11 +1138,11 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
   end
 
   def cert(filename)
-    OpenSSL::X509::Certificate.new(File.read(File.join(DIR, filename)))
+    OpenSSL::X509::Certificate.new(File.read(File.join(__dir__, filename)))
   end
 
   def key(filename)
-    OpenSSL::PKey::RSA.new(File.read(File.join(DIR, filename)))
+    OpenSSL::PKey::RSA.new(File.read(File.join(__dir__, filename)))
   end
 
 end if defined?(OpenSSL::SSL)

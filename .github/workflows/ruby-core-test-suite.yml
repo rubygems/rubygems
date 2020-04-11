@@ -25,7 +25,7 @@ jobs:
           mkdir rubygems
       - uses: actions/checkout@v2
         with:
-          repository: "ruby/ruby"
+          repository: ruby/ruby
           path: ruby/ruby
       - name: Build Ruby
         run: |

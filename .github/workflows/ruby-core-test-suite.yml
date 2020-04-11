@@ -1,4 +1,4 @@
-name: ruby-core-test
+name: ruby-core
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
       - master
 
 jobs:
-  ruby_core_test:
+  ruby_core:
     runs-on: ubuntu-latest
     strategy:
       matrix:

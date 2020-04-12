@@ -85,4 +85,105 @@ install (FILES test.txt DESTINATION bin)
     assert_contains_make_command 'install', output
   end
 
+  def test_self_build_erb
+    File.open File.join(@ext, 'CMakeLists.txt.erb'), 'w' do |cmakelists|
+      cmakelists.write <<-eo_cmake
+cmake_minimum_required(VERSION 2.6)
+project(self_build NONE)
+install (FILES <%= RbConfig.expand(RbConfig::MAKEFILE_CONFIG['RUBY_SO_NAME']) %>.txt DESTINATION bin)
+      eo_cmake
+    end
+
+    ruby_so_name = "#{RbConfig.expand(RbConfig::MAKEFILE_CONFIG['RUBY_SO_NAME'])}"
+    FileUtils.touch File.join(@ext, "#{ruby_so_name}.txt")
+
+    output = []
+
+    Dir.chdir @ext do
+      Gem::Ext::CmakeBuilder.build nil, @dest_path, output
+    end
+
+    output = output.join "\n"
+
+    assert_match \
+      %r{^cmake \. -DCMAKE_INSTALL_PREFIX=#{Regexp.escape @dest_path}}, output
+    assert_match %r{#{Regexp.escape @ext}}, output
+    assert_contains_make_command '', output
+    assert_contains_make_command 'install', output
+    assert_match "#{ruby_so_name}.txt", output
+  end
+
+  def test_self_build_erb_has_cmakelists
+    File.open File.join(@ext, 'CMakeLists.txt.erb'), 'w' do |cmakelists|
+      cmakelists.write <<-eo_cmake
+cmake_minimum_required(VERSION 2.6)
+project(self_build NONE)
+install (FILES <%= RbConfig.expand(RbConfig::MAKEFILE_CONFIG['RUBY_SO_NAME']) %>.txt DESTINATION bin)
+      eo_cmake
+    end
+
+    File.open File.join(@ext, 'CMakeLists.txt'), 'w' do |cmakelists|
+      cmakelists.write <<-eo_cmake
+cmake_minimum_required(VERSION 2.6)
+project(self_build NONE)
+install (FILES test.txt DESTINATION bin)
+      eo_cmake
+    end
+
+    FileUtils.touch File.join(@ext, 'test.txt')
+
+    output = []
+
+    Dir.chdir @ext do
+      Gem::Ext::CmakeBuilder.build nil, @dest_path, output
+    end
+
+    output = output.join "\n"
+
+    assert_match \
+      %r{^cmake \. -DCMAKE_INSTALL_PREFIX=#{Regexp.escape @dest_path}}, output
+    assert_match %r{#{Regexp.escape @ext}}, output
+    assert_contains_make_command '', output
+    assert_contains_make_command 'install', output
+    assert_match %r{test\.txt}, output
+  end
+
+  def test_self_build_args
+    File.open File.join(@ext, 'CMakeLists.txt'), 'w' do |cmakelists|
+      cmakelists.write <<-eo_cmake
+cmake_minimum_required(VERSION 2.6)
+project(self_build NONE)
+if (CMAKE_BUILD_TYPE MATCHES Test)
+  install (FILES test.txt DESTINATION bin)
+else()
+  install (FILES test_fail.txt DESTINATION bin)
+endif()
+      eo_cmake
+    end
+
+    FileUtils.touch File.join(@ext, 'test.txt')
+    FileUtils.touch File.join(@ext, 'test_fail.txt')
+
+    output = []
+
+    Dir.chdir @ext do
+      begin
+        build_args_keep = Gem::Command.build_args
+        Gem::Command.build_args = %w[-DCMAKE_BUILD_TYPE=Test]
+        Gem::Ext::CmakeBuilder.build nil, @dest_path, output
+      ensure
+        Gem::Command.build_args = build_args_keep
+      end
+    end
+
+    output = output.join "\n"
+
+    assert_match \
+      %r{^cmake \. -DCMAKE_INSTALL_PREFIX=#{Regexp.escape @dest_path}}, output
+    assert_match %r{#{Regexp.escape @ext}}, output
+    assert_contains_make_command '', output
+    assert_contains_make_command 'install', output
+    assert_match %r{test\.txt}, output
+  end
+
 end

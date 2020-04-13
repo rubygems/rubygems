@@ -169,7 +169,7 @@ module Bundler
           end
         end
 
-        def git(command, check_errors = true, error_msg = nil)
+        def git(command, check_errors = true)
           command_with_no_credentials = URICredentialsFilter.credential_filtered_string(command, uri)
           raise GitNotAllowedError.new(command_with_no_credentials) unless allow?
 
@@ -178,7 +178,7 @@ module Bundler
           end
 
           stdout_with_no_credentials = URICredentialsFilter.credential_filtered_string(out, uri)
-          raise GitCommandError.new(command_with_no_credentials, path, error_msg) if check_errors && !status.success?
+          raise GitCommandError.new(command_with_no_credentials, path) if check_errors && !status.success?
           stdout_with_no_credentials
         end
 

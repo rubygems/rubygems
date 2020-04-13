@@ -27,11 +27,11 @@ module Bundler
       class GitCommandError < GitError
         attr_reader :command
 
-        def initialize(command, path, destination_path, extra_info = nil)
+        def initialize(command, path, extra_info = nil)
           @command = command
 
           msg = String.new
-          msg << "Git error: command `git #{command}` in directory #{destination_path} has failed."
+          msg << "Git error: command `git #{command}` in directory #{path} has failed."
           msg << "\n#{extra_info}" if extra_info
           msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if path.exist?
           super msg
@@ -39,9 +39,9 @@ module Bundler
       end
 
       class MissingGitRevisionError < GitCommandError
-        def initialize(command, path, destination_path, ref, repo)
+        def initialize(command, destination_path, ref, repo)
           msg = "Revision #{ref} does not exist in the repository #{repo}. Maybe you misspelled it?"
-          super command, path, destination_path, msg
+          super command, destination_path, msg
         end
       end
 
@@ -132,7 +132,7 @@ module Bundler
           begin
             git "reset", "--hard", @revision, :dir => destination
           rescue GitCommandError => e
-            raise MissingGitRevisionError.new(e.command, path, destination, @revision, URICredentialsFilter.credential_filtered_uri(uri))
+            raise MissingGitRevisionError.new(e.command, destination, @revision, URICredentialsFilter.credential_filtered_uri(uri))
           end
 
           if submodules
@@ -168,7 +168,7 @@ module Bundler
             capture_and_filter_stderr("git", "-C", dir.to_s, *command)
           end
 
-          raise GitCommandError.new(command_with_no_credentials, path, dir) unless status.success?
+          raise GitCommandError.new(command_with_no_credentials, dir) unless status.success?
 
           URICredentialsFilter.credential_filtered_string(out, uri)
         end
@@ -190,7 +190,7 @@ module Bundler
             git("rev-parse", "--verify", ref, :dir => path).strip
           end
         rescue GitCommandError => e
-          raise MissingGitRevisionError.new(e.command, path, path, ref, URICredentialsFilter.credential_filtered_uri(uri))
+          raise MissingGitRevisionError.new(e.command, path, ref, URICredentialsFilter.credential_filtered_uri(uri))
         end
 
         # Adds credentials to the URI as Fetcher#configured_uri_for does

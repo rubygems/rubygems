@@ -169,7 +169,7 @@ module Bundler
           end
         end
 
-        def git(command, check_errors = true)
+        def git(command)
           command_with_no_credentials = URICredentialsFilter.credential_filtered_string(command, uri)
           raise GitNotAllowedError.new(command_with_no_credentials) unless allow?
 
@@ -178,7 +178,7 @@ module Bundler
           end
 
           stdout_with_no_credentials = URICredentialsFilter.credential_filtered_string(out, uri)
-          raise GitCommandError.new(command_with_no_credentials, path) if check_errors && !status.success?
+          raise GitCommandError.new(command_with_no_credentials, path) unless status.success?
           stdout_with_no_credentials
         end
 
@@ -196,7 +196,7 @@ module Bundler
 
         def find_local_revision
           allowed_in_path do
-            git("rev-parse --verify #{Shellwords.shellescape(ref)}", true).strip
+            git("rev-parse --verify #{Shellwords.shellescape(ref)}").strip
           end
         end
 

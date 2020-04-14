@@ -27,13 +27,13 @@ module Bundler
       class GitCommandError < GitError
         attr_reader :command
 
-        def initialize(command, path = nil, extra_info = nil)
+        def initialize(command, path, extra_info = nil)
           @command = command
 
           msg = String.new
           msg << "Git error: command `git #{command}` in directory #{SharedHelpers.pwd} has failed."
           msg << "\n#{extra_info}" if extra_info
-          msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if path && path.exist?
+          msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if path.exist?
           super msg
         end
       end

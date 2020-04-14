@@ -694,7 +694,7 @@ module Spec
           raise "You can't specify `master` as the branch" if branch == "master"
           escaped_branch = Shellwords.shellescape(branch)
 
-          if capture("git branch | grep #{escaped_branch}", libpath).empty?
+          if capture("git branch -l #{escaped_branch}", libpath).empty?
             capture("git branch #{escaped_branch}", libpath)
           end
 

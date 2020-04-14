@@ -1310,9 +1310,10 @@ In Gemfile:
         puts FOO
       R
 
+      installed_time = out
+
       update_git("foo", :branch => "branch2")
 
-      installed_time = out
       expect(installed_time).to match(/\A\d+\.\d+\z/)
 
       install_gemfile <<-G

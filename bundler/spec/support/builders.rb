@@ -436,13 +436,13 @@ module Spec
       opts = args.last.is_a?(Hash) ? args.last : {}
       builder = opts[:bare] ? GitBareBuilder : GitBuilder
       spec = build_with(builder, name, args, &block)
-      GitReader.new(opts[:path] || lib_path(spec.full_name))
+      GitReader.new(self, opts[:path] || lib_path(spec.full_name))
     end
 
     def update_git(name, *args, &block)
       opts = args.last.is_a?(Hash) ? args.last : {}
       spec = build_with(GitUpdater, name, args, &block)
-      GitReader.new(opts[:path] || lib_path(spec.full_name))
+      GitReader.new(self, opts[:path] || lib_path(spec.full_name))
     end
 
     def build_plugin(name, *args, &blk)
@@ -714,22 +714,17 @@ module Spec
     end
 
     class GitReader
-      attr_reader :path
+      attr_reader :context, :path
 
-      def initialize(path)
+      def initialize(context, path)
+        @context = context
         @path = path
       end
 
       def ref_for(ref, len = nil)
-        ref = git "rev-parse #{ref}"
+        ref = context.git "rev-parse #{ref}", path
         ref = ref[0..len] if len
         ref
-      end
-
-    private
-
-      def git(cmd)
-        Open3.capture2e("git #{cmd}", :chdir => path)[0].strip
       end
     end
 

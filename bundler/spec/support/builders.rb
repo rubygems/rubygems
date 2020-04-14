@@ -668,10 +668,10 @@ module Spec
         super(options.merge(:path => path, :source => source))
         capture("git init", path)
         capture("git add *", path)
-        capture("git config user.email \"lol@wut.com\"", path)
-        capture("git config user.name \"lolwut\"", path)
+        capture("git config user.email lol@wut.com", path)
+        capture("git config user.name lolwut", path)
         capture("git config commit.gpgsign false", path)
-        capture("git commit -m \"OMG INITIAL COMMIT\"", path)
+        capture("git commit -m OMG_INITIAL_COMMIT", path)
       end
     end
 
@@ -719,7 +719,7 @@ module Spec
         end
         super(options.merge(:path => libpath, :gemspec => update_gemspec, :source => source))
         capture("git add *", libpath)
-        capture("git commit -m \"BUMP\"", libpath)
+        capture("git commit -m BUMP", libpath)
       end
     end
 

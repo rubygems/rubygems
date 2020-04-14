@@ -551,8 +551,7 @@ module Spec
       end
 
       def capture(cmd, dir)
-        output, _status = Open3.capture2e(cmd, :chdir => dir)
-        output
+        @context.sys_exec(cmd, :dir => dir)
       end
 
       def method_missing(*args, &blk)

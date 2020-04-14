@@ -62,15 +62,7 @@ module Bundler
         end
 
         def revision
-          return @revision if @revision
-
-          begin
-            @revision ||= find_local_revision
-          rescue GitCommandError => e
-            raise MissingGitRevisionError.new(e.command, path, ref, URICredentialsFilter.credential_filtered_uri(uri))
-          end
-
-          @revision
+          @revision ||= find_local_revision
         end
 
         def branch
@@ -198,6 +190,8 @@ module Bundler
           allowed_in_path do
             git("rev-parse --verify #{Shellwords.shellescape(ref)}").strip
           end
+        rescue GitCommandError => e
+          raise MissingGitRevisionError.new(e.command, path, ref, URICredentialsFilter.credential_filtered_uri(uri))
         end
 
         # Escape the URI for git commands

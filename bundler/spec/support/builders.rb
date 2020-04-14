@@ -683,36 +683,31 @@ module Spec
     end
 
     class GitUpdater < LibBuilder
-      def silently(str, dir)
-        output, _error, _status = Open3.capture3(str, :chdir => dir)
-        output
-      end
-
       def _build(options)
         libpath = options[:path] || _default_path
         update_gemspec = options[:gemspec] || false
         source = options[:source] || "git@#{libpath}"
 
-        silently "git checkout master", libpath
+        capture "git checkout master", libpath
 
         if branch = options[:branch]
           raise "You can't specify `master` as the branch" if branch == "master"
           escaped_branch = Shellwords.shellescape(branch)
 
           if capture("git branch | grep #{escaped_branch}", libpath).empty?
-            silently("git branch #{escaped_branch}", libpath)
+            capture("git branch #{escaped_branch}", libpath)
           end
 
-          silently("git checkout #{escaped_branch}", libpath)
+          capture("git checkout #{escaped_branch}", libpath)
         elsif tag = options[:tag]
           capture("git tag #{Shellwords.shellescape(tag)}", libpath)
         elsif options[:remote]
-          silently("git remote add origin #{options[:remote]}", libpath)
+          capture("git remote add origin #{options[:remote]}", libpath)
         elsif options[:push]
-          silently("git push origin #{options[:push]}", libpath)
+          capture("git push origin #{options[:push]}", libpath)
         end
 
-        current_ref = silently("git rev-parse HEAD", libpath).strip
+        current_ref = capture("git rev-parse HEAD", libpath).strip
         _default_files.keys.each do |path|
           _default_files[path] += "\n#{Builders.constantize(name)}_PREV_REF = '#{current_ref}'"
         end

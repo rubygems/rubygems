@@ -27,7 +27,7 @@ module Bundler
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
           return kernel_load(bin_path, *args)
         end
-        kernel_exec(bin_path, *args)
+        Kernel.exec(bin_path, *args)
       else
         # exec using the given command
         kernel_exec(cmd, *args)

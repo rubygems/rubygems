@@ -134,7 +134,7 @@ RSpec.describe Bundler::Source::Git::GitProxy do
       it "fails gracefully when resetting to the revision fails" do
         expect(subject).to receive(:git_retry).with(start_with("clone ")) { destination.mkpath }
         expect(subject).to receive(:git_retry).with(start_with("fetch "))
-        expect(subject).to receive(:git).with(command).and_raise(Bundler::Source::Git::GitCommandError.new(command, cache))
+        expect(subject).to receive(:git).with(command).and_raise(Bundler::Source::Git::GitCommandError.new(command, cache, destination))
         expect(subject).not_to receive(:git)
 
         expect { subject.copy_to(destination, submodules) }.

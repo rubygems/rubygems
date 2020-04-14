@@ -550,10 +550,6 @@ module Spec
         @files = {}
       end
 
-      def capture(cmd, dir)
-        @context.sys_exec(cmd, :dir => dir)
-      end
-
       def method_missing(*args, &blk)
         @spec.send(*args, &blk)
       end
@@ -665,12 +661,12 @@ module Spec
         path = options[:path] || _default_path
         source = options[:source] || "git@#{path}"
         super(options.merge(:path => path, :source => source))
-        capture("git init", path)
-        capture("git add *", path)
-        capture("git config user.email lol@wut.com", path)
-        capture("git config user.name lolwut", path)
-        capture("git config commit.gpgsign false", path)
-        capture("git commit -m OMG_INITIAL_COMMIT", path)
+        @context.git("init", path)
+        @context.git("add *", path)
+        @context.git("config user.email lol@wut.com", path)
+        @context.git("config user.name lolwut", path)
+        @context.git("config commit.gpgsign false", path)
+        @context.git("commit -m OMG_INITIAL_COMMIT", path)
       end
     end
 
@@ -678,7 +674,7 @@ module Spec
       def _build(options)
         path = options[:path] || _default_path
         super(options.merge(:path => path))
-        capture("git init --bare", path)
+        @context.git("init --bare", path)
       end
     end
 
@@ -688,32 +684,32 @@ module Spec
         update_gemspec = options[:gemspec] || false
         source = options[:source] || "git@#{libpath}"
 
-        capture "git checkout master", libpath
+        @context.git "checkout master", libpath
 
         if branch = options[:branch]
           raise "You can't specify `master` as the branch" if branch == "master"
           escaped_branch = Shellwords.shellescape(branch)
 
-          if capture("git branch -l #{escaped_branch}", libpath).empty?
-            capture("git branch #{escaped_branch}", libpath)
+          if @context.git("branch -l #{escaped_branch}", libpath).empty?
+            @context.git("branch #{escaped_branch}", libpath)
           end
 
-          capture("git checkout #{escaped_branch}", libpath)
+          @context.git("checkout #{escaped_branch}", libpath)
         elsif tag = options[:tag]
-          capture("git tag #{Shellwords.shellescape(tag)}", libpath)
+          @context.git("tag #{Shellwords.shellescape(tag)}", libpath)
         elsif options[:remote]
-          capture("git remote add origin #{options[:remote]}", libpath)
+          @context.git("remote add origin #{options[:remote]}", libpath)
         elsif options[:push]
-          capture("git push origin #{options[:push]}", libpath)
+          @context.git("push origin #{options[:push]}", libpath)
         end
 
-        current_ref = capture("git rev-parse HEAD", libpath).strip
+        current_ref = @context.git("rev-parse HEAD", libpath).strip
         _default_files.keys.each do |path|
           _default_files[path] += "\n#{Builders.constantize(name)}_PREV_REF = '#{current_ref}'"
         end
         super(options.merge(:path => libpath, :gemspec => update_gemspec, :source => source))
-        capture("git add *", libpath)
-        capture("git commit -m BUMP", libpath)
+        @context.git("add *", libpath)
+        @context.git("commit -m BUMP", libpath)
       end
     end
 

@@ -187,6 +187,10 @@ module Spec
       "#{Gem.ruby} -S #{ENV["GEM_PATH"]}/bin/rake"
     end
 
+    def git(cmd, path)
+      sys_exec("git #{cmd}", :dir => path)
+    end
+
     def sys_exec(cmd, options = {})
       env = options[:env] || {}
       dir = options[:dir] || bundled_app

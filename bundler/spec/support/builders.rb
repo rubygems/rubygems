@@ -729,9 +729,7 @@ module Spec
     private
 
       def git(cmd)
-        Bundler::SharedHelpers.with_clean_git_env do
-          Open3.capture2e("git #{cmd}", :chdir => path)[0].strip
-        end
+        Open3.capture2e("git #{cmd}", :chdir => path)[0].strip
       end
     end
 

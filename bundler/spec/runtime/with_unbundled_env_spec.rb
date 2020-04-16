@@ -12,6 +12,10 @@ RSpec.describe "Bundler.with_env helpers" do
     bundle "install", options
   end
 
+  def run_bundler_script(env, script)
+    system(env, "ruby -I#{lib_dir} -rbundler #{script}")
+  end
+
   describe "Bundler.original_env" do
     it "should return the PATH present before bundle was activated" do
       code = "print Bundler.original_env['PATH']"
@@ -170,7 +174,7 @@ RSpec.describe "Bundler.with_env helpers" do
     end
 
     it "runs system inside with_original_env" do
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
+      run_bundler_script({ "BUNDLE_FOO" => "bar" }, bundled_app("source.rb"))
       expect($?.exitstatus).to eq(42)
     end
   end
@@ -185,7 +189,7 @@ RSpec.describe "Bundler.with_env helpers" do
     end
 
     it "runs system inside with_clean_env" do
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
+      run_bundler_script({ "BUNDLE_FOO" => "bar" }, bundled_app("source.rb"))
       expect($?.exitstatus).to eq(42)
     end
   end
@@ -200,7 +204,7 @@ RSpec.describe "Bundler.with_env helpers" do
     end
 
     it "runs system inside with_unbundled_env" do
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
+      run_bundler_script({ "BUNDLE_FOO" => "bar" }, bundled_app("source.rb"))
       expect($?.exitstatus).to eq(42)
     end
   end
@@ -221,7 +225,7 @@ RSpec.describe "Bundler.with_env helpers" do
     it "runs exec inside with_original_env" do
       skip "Fork not implemented" if Gem.win_platform?
 
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
+      run_bundler_script({ "BUNDLE_FOO" => "bar" }, bundled_app("source.rb"))
       expect($?.exitstatus).to eq(0)
     end
   end
@@ -242,7 +246,7 @@ RSpec.describe "Bundler.with_env helpers" do
     it "runs exec inside with_clean_env" do
       skip "Fork not implemented" if Gem.win_platform?
 
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
+      run_bundler_script({ "BUNDLE_FOO" => "bar" }, bundled_app("source.rb"))
       expect($?.exitstatus).to eq(1)
     end
   end
@@ -263,7 +267,7 @@ RSpec.describe "Bundler.with_env helpers" do
     it "runs exec inside with_clean_env" do
       skip "Fork not implemented" if Gem.win_platform?
 
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
+      run_bundler_script({ "BUNDLE_FOO" => "bar" }, bundled_app("source.rb"))
       expect($?.exitstatus).to eq(1)
     end
   end

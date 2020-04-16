@@ -161,8 +161,8 @@ RSpec.describe "Bundler.with_env helpers" do
   end
 
   describe "Bundler.original_system" do
-    let(:code) do
-      <<~RUBY
+    before do
+      create_file("source.rb", <<-'RUBY')
         Bundler.original_system(%([ "\$BUNDLE_FOO" = "bar" ] && exit 42))
 
         exit $?.exitstatus
@@ -170,16 +170,14 @@ RSpec.describe "Bundler.with_env helpers" do
     end
 
     it "runs system inside with_original_env" do
-      skip "obscure error" if Gem.win_platform?
-
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler -e '#{code}'")
+      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
       expect($?.exitstatus).to eq(42)
     end
   end
 
   describe "Bundler.clean_system", :bundler => 2 do
-    let(:code) do
-      <<~RUBY
+    before do
+      create_file("source.rb", <<-'RUBY')
         Bundler.ui.silence { Bundler.clean_system(%([ "\$BUNDLE_FOO" = "bar" ] || exit 42)) }
 
         exit $?.exitstatus
@@ -187,16 +185,14 @@ RSpec.describe "Bundler.with_env helpers" do
     end
 
     it "runs system inside with_clean_env" do
-      skip "obscure error" if Gem.win_platform?
-
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler -e '#{code}'")
+      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
       expect($?.exitstatus).to eq(42)
     end
   end
 
   describe "Bundler.unbundled_system" do
-    let(:code) do
-      <<~RUBY
+    before do
+      create_file("source.rb", <<-'RUBY')
         Bundler.unbundled_system(%([ "\$BUNDLE_FOO" = "bar" ] || exit 42))
 
         exit $?.exitstatus
@@ -204,14 +200,14 @@ RSpec.describe "Bundler.with_env helpers" do
     end
 
     it "runs system inside with_unbundled_env" do
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler -e '#{code}'")
+      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
       expect($?.exitstatus).to eq(42)
     end
   end
 
   describe "Bundler.original_exec" do
-    let(:code) do
-      <<~RUBY
+    before do
+      create_file("source.rb", <<-'RUBY')
         Process.fork do
           exit Bundler.original_exec(%(test "\$BUNDLE_FOO" = "bar"))
         end
@@ -225,14 +221,14 @@ RSpec.describe "Bundler.with_env helpers" do
     it "runs exec inside with_original_env" do
       skip "Fork not implemented" if Gem.win_platform?
 
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler -e '#{code}'")
+      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
       expect($?.exitstatus).to eq(0)
     end
   end
 
   describe "Bundler.clean_exec", :bundler => 2 do
-    let(:code) do
-      <<~RUBY
+    before do
+      create_file("source.rb", <<-'RUBY')
         Process.fork do
           exit Bundler.ui.silence { Bundler.clean_exec(%(test "\$BUNDLE_FOO" = "bar")) }
         end
@@ -246,14 +242,14 @@ RSpec.describe "Bundler.with_env helpers" do
     it "runs exec inside with_clean_env" do
       skip "Fork not implemented" if Gem.win_platform?
 
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler -e '#{code}'")
+      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
       expect($?.exitstatus).to eq(1)
     end
   end
 
   describe "Bundler.unbundled_exec" do
-    let(:code) do
-      <<~RUBY
+    before do
+      create_file("source.rb", <<-'RUBY')
         Process.fork do
           exit Bundler.unbundled_exec(%(test "\$BUNDLE_FOO" = "bar"))
         end
@@ -267,7 +263,7 @@ RSpec.describe "Bundler.with_env helpers" do
     it "runs exec inside with_clean_env" do
       skip "Fork not implemented" if Gem.win_platform?
 
-      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler -e '#{code}'")
+      system({ "BUNDLE_FOO" => "bar" }, "ruby -I#{lib_dir} -rbundler #{bundled_app("source.rb")}")
       expect($?.exitstatus).to eq(1)
     end
   end

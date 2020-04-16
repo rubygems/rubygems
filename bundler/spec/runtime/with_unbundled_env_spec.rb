@@ -13,7 +13,7 @@ RSpec.describe "Bundler.with_env helpers" do
   end
 
   def run_bundler_script(env, script)
-    system(env, "ruby -I#{lib_dir} -rbundler #{script}")
+    system(env, "ruby", "-I#{lib_dir}", "-rbundler", script.to_s)
   end
 
   describe "Bundler.original_env" do

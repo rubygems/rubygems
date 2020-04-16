@@ -163,7 +163,7 @@ RSpec.describe "Bundler.with_env helpers" do
   describe "Bundler.original_system" do
     before do
       create_file("source.rb", <<-'RUBY')
-        Bundler.original_system(%([ "\$BUNDLE_FOO" = "bar" ] && exit 42))
+        Bundler.original_system("ruby", "-e", "exit(42) if ENV['BUNDLE_FOO'] == 'bar'")
 
         exit $?.exitstatus
       RUBY
@@ -178,7 +178,7 @@ RSpec.describe "Bundler.with_env helpers" do
   describe "Bundler.clean_system", :bundler => 2 do
     before do
       create_file("source.rb", <<-'RUBY')
-        Bundler.ui.silence { Bundler.clean_system(%([ "\$BUNDLE_FOO" = "bar" ] || exit 42)) }
+        Bundler.ui.silence { Bundler.clean_system("ruby", "-e", "exit(42) unless ENV['BUNDLE_FOO'] == 'bar'") }
 
         exit $?.exitstatus
       RUBY
@@ -193,7 +193,7 @@ RSpec.describe "Bundler.with_env helpers" do
   describe "Bundler.unbundled_system" do
     before do
       create_file("source.rb", <<-'RUBY')
-        Bundler.unbundled_system(%([ "\$BUNDLE_FOO" = "bar" ] || exit 42))
+        Bundler.unbundled_system("ruby", "-e", "exit(42) unless ENV['BUNDLE_FOO'] == 'bar'")
 
         exit $?.exitstatus
       RUBY

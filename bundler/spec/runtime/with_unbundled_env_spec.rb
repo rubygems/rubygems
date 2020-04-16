@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe "Bundler.with_env helpers" do
-  def bundle_exec_ruby!(code, options = {})
+  def bundle_exec_ruby!(args, options = {})
     build_bundler_context options
-    bundle! "exec '#{Gem.ruby}' -e #{code}", options
+    bundle! "exec '#{Gem.ruby}' #{args}", options
   end
 
   def build_bundler_context(options = {})
@@ -18,19 +18,23 @@ RSpec.describe "Bundler.with_env helpers" do
 
   describe "Bundler.original_env" do
     it "should return the PATH present before bundle was activated" do
-      code = "print Bundler.original_env['PATH']"
+      create_file("source.rb", <<-RB)
+        print Bundler.original_env["PATH"]
+      RB
       path = `getconf PATH`.strip + "#{File::PATH_SEPARATOR}/foo"
       with_path_as(path) do
-        bundle_exec_ruby!(code.dump)
+        bundle_exec_ruby!(bundled_app("source.rb").to_s)
         expect(last_command.stdboth).to eq(path)
       end
     end
 
     it "should return the GEM_PATH present before bundle was activated" do
-      code = "print Bundler.original_env['GEM_PATH']"
+      create_file("source.rb", <<-RB)
+        print Bundler.original_env['GEM_PATH']
+      RB
       gem_path = ENV["GEM_PATH"] + "#{File::PATH_SEPARATOR}/foo"
       with_gem_path_as(gem_path) do
-        bundle_exec_ruby!(code.dump)
+        bundle_exec_ruby!(bundled_app("source.rb").to_s)
         expect(last_command.stdboth).to eq(gem_path)
       end
     end
@@ -48,7 +52,7 @@ RSpec.describe "Bundler.with_env helpers" do
       path = `getconf PATH`.strip + File::PATH_SEPARATOR + File.dirname(Gem.ruby)
       with_path_as(path) do
         build_bundler_context
-        bundle! "exec '#{Gem.ruby}' #{bundled_app("exe.rb")} 2"
+        bundle_exec_ruby!("#{bundled_app("exe.rb")} 2")
       end
       expect(err).to eq <<-EOS.strip
 2 false
@@ -62,40 +66,50 @@ RSpec.describe "Bundler.with_env helpers" do
       ENV.replace(ENV.to_hash.delete_if {|k, _v| k.start_with?(Bundler::EnvironmentPreserver::BUNDLER_PREFIX) })
 
       original = ruby!('puts ENV.to_a.map {|e| e.join("=") }.sort.join("\n")')
-      code = 'puts Bundler.original_env.to_a.map {|e| e.join("=") }.sort.join("\n")'
-      bundle_exec_ruby! code.dump
+      create_file("source.rb", <<-RB)
+        puts Bundler.original_env.to_a.map {|e| e.join("=") }.sort.join("\n")
+      RB
+      bundle_exec_ruby! bundled_app("source.rb")
       expect(out).to eq original
     end
   end
 
   shared_examples_for "an unbundling helper" do
     it "should delete BUNDLE_PATH" do
-      code = "print #{modified_env}.has_key?('BUNDLE_PATH')"
+      create_file("source.rb", <<-RB)
+        print #{modified_env}.has_key?('BUNDLE_PATH')
+      RB
       ENV["BUNDLE_PATH"] = "./foo"
-      bundle_exec_ruby! code.dump
+      bundle_exec_ruby! bundled_app("source.rb")
       expect(last_command.stdboth).to include "false"
     end
 
     it "should remove '-rbundler/setup' from RUBYOPT" do
-      code = "print #{modified_env}['RUBYOPT']"
+      create_file("source.rb", <<-RB)
+        print #{modified_env}['RUBYOPT']
+      RB
       ENV["RUBYOPT"] = "-W2 -rbundler/setup #{ENV["RUBYOPT"]}"
-      bundle_exec_ruby! code.dump, :env => { "BUNDLER_SPEC_DISABLE_DEFAULT_BUNDLER_GEM" => "true" }
+      bundle_exec_ruby! bundled_app("source.rb"), :env => { "BUNDLER_SPEC_DISABLE_DEFAULT_BUNDLER_GEM" => "true" }
       expect(last_command.stdboth).not_to include("-rbundler/setup")
     end
 
     it "should restore RUBYLIB", :ruby_repo do
-      code = "print #{modified_env}['RUBYLIB']"
+      create_file("source.rb", <<-RB)
+        print #{modified_env}['RUBYLIB']
+      RB
       ENV["RUBYLIB"] = lib_dir.to_s + File::PATH_SEPARATOR + "/foo"
       ENV["BUNDLER_ORIG_RUBYLIB"] = lib_dir.to_s + File::PATH_SEPARATOR + "/foo-original"
-      bundle_exec_ruby! code.dump
+      bundle_exec_ruby! bundled_app("source.rb")
       expect(last_command.stdboth).to include("/foo-original")
     end
 
     it "should restore the original MANPATH" do
-      code = "print #{modified_env}['MANPATH']"
+      create_file("source.rb", <<-RB)
+        print #{modified_env}['MANPATH']
+      RB
       ENV["MANPATH"] = "/foo"
       ENV["BUNDLER_ORIG_MANPATH"] = "/foo-original"
-      bundle_exec_ruby! code.dump
+      bundle_exec_ruby! bundled_app("source.rb")
       expect(last_command.stdboth).to include("/foo-original")
     end
   end

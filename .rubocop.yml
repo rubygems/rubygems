@@ -81,6 +81,11 @@ Lint/DuplicateMethods:
 Lint/ParenthesesAsGroupedExpression:
   Enabled: true
 
+Naming/HeredocDelimiterNaming:
+  Enabled: true
+  ForbiddenDelimiters:
+    - ^RB$
+
 Style/MethodDefParentheses:
   Enabled: true
 

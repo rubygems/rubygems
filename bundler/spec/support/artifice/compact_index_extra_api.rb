@@ -14,7 +14,7 @@ class CompactIndexExtraApi < CompactIndexAPI
   get "/extra/versions" do
     etag_response do
       file = tmp("versions.list")
-      file.delete if file.file?
+      FileUtils.rm_f(file)
       file = CompactIndex::VersionsFile.new(file.to_s)
       file.create(gems(gem_repo4))
       file.contents

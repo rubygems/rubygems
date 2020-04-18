@@ -5,8 +5,6 @@ RSpec.describe "gemcutter's dependency API" do
   let(:source_uri) { "http://#{source_hostname}" }
 
   it "should use the API" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -28,8 +26,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "should handle nested dependencies" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rails"
@@ -48,8 +44,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "should handle multiple gem dependencies on the same gem" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "net-sftp"
@@ -60,8 +54,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "should use the endpoint when using --deployment" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -74,8 +66,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "handles git dependencies that are in rubygems" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_git "foo" do |s|
       s.executables = "foobar"
       s.add_dependency "rails", "2.3.2"
@@ -94,8 +84,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "handles git dependencies that are in rubygems using --deployment" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_git "foo" do |s|
       s.executables = "foobar"
       s.add_dependency "rails", "2.3.2"
@@ -140,8 +128,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "falls back when hitting the Gemcutter Dependency Limit" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "activesupport"
@@ -168,8 +154,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "falls back when Gemcutter API doesn't return proper Marshal format" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -181,8 +165,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "falls back when the API URL returns 403 Forbidden" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -194,8 +176,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "handles host redirects" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -206,8 +186,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "handles host redirects without Net::HTTP::Persistent" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -232,8 +210,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "timeouts when Bundler::Fetcher redirects too much" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -244,10 +220,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   context "when --full-index is specified" do
-    before do
-      skip "artifice issues?" if Gem.win_platform?
-    end
-
     it "should use the modern index for install" do
       gemfile <<-G
         source "#{source_uri}"
@@ -272,8 +244,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "fetches again when more dependencies are found in subsequent sources", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -292,8 +262,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "fetches again when more dependencies are found in subsequent sources using blocks" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -313,8 +281,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "fetches gem versions even when those gems are already installed" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack", "1.0.0"
@@ -337,8 +303,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "considers all possible versions of dependencies from all api gem sources", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     # In this scenario, the gem "somegem" only exists in repo4.  It depends on specific version of activesupport that
     # exists only in repo1.  There happens also be a version of activesupport in repo4, but not the one that version 1.0.0
     # of somegem wants. This test makes sure that bundler actually finds version 1.2.3 of active support in the other
@@ -363,8 +327,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "considers all possible versions of dependencies from all api gem sources using blocks" do
-    skip "artifice issues?" if Gem.win_platform?
-
     # In this scenario, the gem "somegem" only exists in repo4.  It depends on specific version of activesupport that
     # exists only in repo1.  There happens also be a version of activesupport in repo4, but not the one that version 1.0.0
     # of somegem wants. This test makes sure that bundler actually finds version 1.2.3 of active support in the other
@@ -390,8 +352,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "prints API output properly with back deps" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -413,8 +373,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "does not fetch every spec if the index of gems is large when doing back deps", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -439,8 +397,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "does not fetch every spec if the index of gems is large when doing back deps using blocks" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -466,8 +422,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "uses the endpoint if all sources support it" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
 
@@ -479,8 +433,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "fetches again when more dependencies are found in subsequent sources using --deployment", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -501,8 +453,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "fetches again when more dependencies are found in subsequent sources using --deployment with blocks" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -547,7 +497,7 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "installs the binstubs", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
+    skip "exec format error" if Gem.win_platform?
 
     gemfile <<-G
       source "#{source_uri}"
@@ -561,8 +511,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "installs the bins when using --path and uses autoclean", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -574,8 +522,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "installs the bins when using --path and uses bundle clean", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -587,8 +533,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "prints post_install_messages" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem 'rack-obama'
@@ -599,8 +543,6 @@ RSpec.describe "gemcutter's dependency API" do
   end
 
   it "should display the post install message for a dependency" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem 'rack_middleware'
@@ -623,8 +565,6 @@ RSpec.describe "gemcutter's dependency API" do
     end
 
     it "passes basic authentication details and strips out creds" do
-      skip "artifice issues?" if Gem.win_platform?
-
       gemfile <<-G
         source "#{basic_auth_source_uri}"
         gem "rack"
@@ -636,8 +576,6 @@ RSpec.describe "gemcutter's dependency API" do
     end
 
     it "strips http basic authentication creds for modern index" do
-      skip "artifice issues?" if Gem.win_platform?
-
       gemfile <<-G
         source "#{basic_auth_source_uri}"
         gem "rack"
@@ -659,8 +597,6 @@ RSpec.describe "gemcutter's dependency API" do
     end
 
     it "strips http basic auth creds when warning about ambiguous sources", :bundler => "< 3" do
-      skip "artifice issues?" if Gem.win_platform?
-
       gemfile <<-G
         source "#{basic_auth_source_uri}"
         source "#{file_uri_for(gem_repo1)}"
@@ -674,8 +610,6 @@ RSpec.describe "gemcutter's dependency API" do
     end
 
     it "does not pass the user / password to different hosts on redirect" do
-      skip "artifice issues?" if Gem.win_platform?
-
       gemfile <<-G
         source "#{basic_auth_source_uri}"
         gem "rack"
@@ -694,8 +628,6 @@ RSpec.describe "gemcutter's dependency API" do
       end
 
       it "reads authentication details by host name from bundle config" do
-        skip "artifice issues?" if Gem.win_platform?
-
         bundle "config set #{source_hostname} #{user}:#{password}"
 
         bundle :install, :artifice => "endpoint_strict_basic_authentication"
@@ -705,8 +637,6 @@ RSpec.describe "gemcutter's dependency API" do
       end
 
       it "reads authentication details by full url from bundle config" do
-        skip "artifice issues?" if Gem.win_platform?
-
         # The trailing slash is necessary here; Fetcher canonicalizes the URI.
         bundle "config set #{source_uri}/ #{user}:#{password}"
 
@@ -717,8 +647,6 @@ RSpec.describe "gemcutter's dependency API" do
       end
 
       it "should use the API" do
-        skip "artifice issues?" if Gem.win_platform?
-
         bundle "config set #{source_hostname} #{user}:#{password}"
         bundle :install, :artifice => "endpoint_strict_basic_authentication"
         expect(out).to include("Fetching gem metadata from #{source_uri}")
@@ -726,8 +654,6 @@ RSpec.describe "gemcutter's dependency API" do
       end
 
       it "prefers auth supplied in the source uri" do
-        skip "artifice issues?" if Gem.win_platform?
-
         gemfile <<-G
           source "#{basic_auth_source_uri}"
           gem "rack"
@@ -756,8 +682,6 @@ RSpec.describe "gemcutter's dependency API" do
       let(:password) { nil }
 
       it "passes basic authentication details" do
-        skip "artifice issues?" if Gem.win_platform?
-
         gemfile <<-G
           source "#{basic_auth_source_uri}"
           gem "rack"
@@ -815,8 +739,6 @@ RSpec.describe "gemcutter's dependency API" do
 
   context ".gemrc with sources is present" do
     it "uses other sources declared in the Gemfile" do
-      skip "artifice issues?" if Gem.win_platform?
-
       File.open(home(".gemrc"), "w") do |file|
         file.puts({ :sources => ["https://rubygems.org"] }.to_yaml)
       end

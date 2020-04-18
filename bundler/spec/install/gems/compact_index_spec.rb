@@ -5,8 +5,6 @@ RSpec.describe "compact index api" do
   let(:source_uri) { "http://#{source_hostname}" }
 
   it "should use the API" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -28,8 +26,6 @@ RSpec.describe "compact index api" do
   end
 
   it "should handle nested dependencies" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rails"
@@ -48,8 +44,6 @@ RSpec.describe "compact index api" do
   end
 
   it "should handle case sensitivity conflicts" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo4 do
       build_gem "rack", "1.0" do |s|
         s.add_runtime_dependency("Rack", "0.1")
@@ -70,8 +64,6 @@ RSpec.describe "compact index api" do
   end
 
   it "should handle multiple gem dependencies on the same gem" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "net-sftp"
@@ -82,8 +74,6 @@ RSpec.describe "compact index api" do
   end
 
   it "should use the endpoint when using --deployment" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -96,8 +86,6 @@ RSpec.describe "compact index api" do
   end
 
   it "handles git dependencies that are in rubygems" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_git "foo" do |s|
       s.executables = "foobar"
       s.add_dependency "rails", "2.3.2"
@@ -116,8 +104,6 @@ RSpec.describe "compact index api" do
   end
 
   it "handles git dependencies that are in rubygems using --deployment" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_git "foo" do |s|
       s.executables = "foobar"
       s.add_dependency "rails", "2.3.2"
@@ -162,8 +148,6 @@ RSpec.describe "compact index api" do
   end
 
   it "falls back when the API URL returns 403 Forbidden" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -175,8 +159,6 @@ RSpec.describe "compact index api" do
   end
 
   it "falls back when the versions endpoint has a checksum mismatch" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -191,8 +173,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "falls back when the user's home directory does not exist or is not writable" do
-    skip "artifice issues?" if Gem.win_platform?
-
     ENV["HOME"] = tmp("missing_home").to_s
 
     gemfile <<-G
@@ -206,8 +186,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "handles host redirects" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -218,8 +196,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "handles host redirects without Net::HTTP::Persistent" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -244,8 +220,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "times out when Bundler::Fetcher redirects too much" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -256,10 +230,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   context "when --full-index is specified" do
-    before do
-      skip "artifice issues?" if Gem.win_platform?
-    end
-
     it "should use the modern index for install" do
       gemfile <<-G
         source "#{source_uri}"
@@ -300,8 +270,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "fetches again when more dependencies are found in subsequent sources", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -320,8 +288,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "fetches again when more dependencies are found in subsequent sources with source blocks" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -340,8 +306,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "fetches gem versions even when those gems are already installed" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack", "1.0.0"
@@ -365,8 +329,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "considers all possible versions of dependencies from all api gem sources", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     # In this scenario, the gem "somegem" only exists in repo4.  It depends on specific version of activesupport that
     # exists only in repo1.  There happens also be a version of activesupport in repo4, but not the one that version 1.0.0
     # of somegem wants. This test makes sure that bundler actually finds version 1.2.3 of active support in the other
@@ -391,8 +353,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "considers all possible versions of dependencies from all api gem sources when using blocks", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     # In this scenario, the gem "somegem" only exists in repo4.  It depends on specific version of activesupport that
     # exists only in repo1.  There happens also be a version of activesupport in repo4, but not the one that version 1.0.0
     # of somegem wants. This test makes sure that bundler actually finds version 1.2.3 of active support in the other
@@ -418,8 +378,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "prints API output properly with back deps" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -441,8 +399,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "does not fetch every spec if the index of gems is large when doing back deps" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -468,8 +424,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "does not fetch every spec if the index of gems is large when doing back deps & everything is the compact index" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo4 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -494,8 +448,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "uses the endpoint if all sources support it" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
 
@@ -507,8 +459,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "fetches again when more dependencies are found in subsequent sources using --deployment", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -529,8 +479,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "fetches again when more dependencies are found in subsequent sources using --deployment with blocks" do
-    skip "artifice issues?" if Gem.win_platform?
-
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -552,8 +500,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "does not refetch if the only unmet dependency is bundler" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
 
@@ -577,7 +523,7 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "installs the binstubs", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
+    skip "exec format error" if Gem.win_platform?
 
     gemfile <<-G
       source "#{source_uri}"
@@ -591,8 +537,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "installs the bins when using --path and uses autoclean", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -604,8 +548,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "installs the bins when using --path and uses bundle clean", :bundler => "< 3" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
@@ -617,8 +559,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "prints post_install_messages" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem 'rack-obama'
@@ -629,8 +569,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "should display the post install message for a dependency" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem 'rack_middleware'
@@ -653,8 +591,6 @@ The checksum of /versions does not match the checksum provided by the server! So
     end
 
     it "passes basic authentication details and strips out creds" do
-      skip "artifice issues?" if Gem.win_platform?
-
       gemfile <<-G
         source "#{basic_auth_source_uri}"
         gem "rack"
@@ -666,8 +602,6 @@ The checksum of /versions does not match the checksum provided by the server! So
     end
 
     it "strips http basic authentication creds for modern index" do
-      skip "artifice issues?" if Gem.win_platform?
-
       gemfile <<-G
         source "#{basic_auth_source_uri}"
         gem "rack"
@@ -689,8 +623,6 @@ The checksum of /versions does not match the checksum provided by the server! So
     end
 
     it "strips http basic auth creds when warning about ambiguous sources", :bundler => "< 3" do
-      skip "artifice issues?" if Gem.win_platform?
-
       gemfile <<-G
         source "#{basic_auth_source_uri}"
         source "#{file_uri_for(gem_repo1)}"
@@ -704,8 +636,6 @@ The checksum of /versions does not match the checksum provided by the server! So
     end
 
     it "does not pass the user / password to different hosts on redirect" do
-      skip "artifice issues?" if Gem.win_platform?
-
       gemfile <<-G
         source "#{basic_auth_source_uri}"
         gem "rack"
@@ -724,8 +654,6 @@ The checksum of /versions does not match the checksum provided by the server! So
       end
 
       it "reads authentication details by host name from bundle config" do
-        skip "artifice issues?" if Gem.win_platform?
-
         bundle "config set #{source_hostname} #{user}:#{password}"
 
         bundle! :install, :artifice => "compact_index_strict_basic_authentication"
@@ -735,8 +663,6 @@ The checksum of /versions does not match the checksum provided by the server! So
       end
 
       it "reads authentication details by full url from bundle config" do
-        skip "artifice issues?" if Gem.win_platform?
-
         # The trailing slash is necessary here; Fetcher canonicalizes the URI.
         bundle "config set #{source_uri}/ #{user}:#{password}"
 
@@ -747,8 +673,6 @@ The checksum of /versions does not match the checksum provided by the server! So
       end
 
       it "should use the API" do
-        skip "artifice issues?" if Gem.win_platform?
-
         bundle "config set #{source_hostname} #{user}:#{password}"
         bundle! :install, :artifice => "compact_index_strict_basic_authentication"
         expect(out).to include("Fetching gem metadata from #{source_uri}")
@@ -756,8 +680,6 @@ The checksum of /versions does not match the checksum provided by the server! So
       end
 
       it "prefers auth supplied in the source uri" do
-        skip "artifice issues?" if Gem.win_platform?
-
         gemfile <<-G
           source "#{basic_auth_source_uri}"
           gem "rack"
@@ -786,8 +708,6 @@ The checksum of /versions does not match the checksum provided by the server! So
       let(:password) { nil }
 
       it "passes basic authentication details" do
-        skip "artifice issues?" if Gem.win_platform?
-
         gemfile <<-G
           source "#{basic_auth_source_uri}"
           gem "rack"
@@ -845,8 +765,6 @@ The checksum of /versions does not match the checksum provided by the server! So
 
   context ".gemrc with sources is present" do
     it "uses other sources declared in the Gemfile" do
-      skip "artifice issues?" if Gem.win_platform?
-
       File.open(home(".gemrc"), "w") do |file|
         file.puts({ :sources => ["https://rubygems.org"] }.to_yaml)
       end
@@ -867,7 +785,7 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "performs partial update with a non-empty range" do
-    skip "artifice issues?" if Gem.win_platform?
+    skip "HTTP_RANGE not set" if Gem.win_platform?
 
     gemfile <<-G
       source "#{source_uri}"
@@ -890,8 +808,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "performs partial update while local cache is updated by another process" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem 'rack'
@@ -910,8 +826,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "performs full update of compact index info cache if range is not satisfiable" do
-    skip "artifice issues?" if Gem.win_platform?
-
     gemfile <<-G
       source "#{source_uri}"
       gem 'rack', '0.9.1'
@@ -955,8 +869,6 @@ The checksum of /versions does not match the checksum provided by the server! So
 
   describe "checksum validation" do
     it "raises when the checksum does not match" do
-      skip "artifice issues?" if Gem.win_platform?
-
       install_gemfile <<-G, :artifice => "compact_index_wrong_gem_checksum"
         source "#{source_uri}"
         gem "rack"
@@ -977,8 +889,6 @@ The checksum of /versions does not match the checksum provided by the server! So
     end
 
     it "raises when the checksum is the wrong length" do
-      skip "artifice issues?" if Gem.win_platform?
-
       install_gemfile <<-G, :artifice => "compact_index_wrong_gem_checksum", :env => { "BUNDLER_SPEC_RACK_CHECKSUM" => "checksum!" }
         source "#{source_uri}"
         gem "rack"
@@ -988,8 +898,6 @@ The checksum of /versions does not match the checksum provided by the server! So
     end
 
     it "does not raise when disable_checksum_validation is set" do
-      skip "artifice issues?" if Gem.win_platform?
-
       bundle! "config set disable_checksum_validation true"
       install_gemfile! <<-G, :artifice => "compact_index_wrong_gem_checksum"
         source "#{source_uri}"
@@ -999,8 +907,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "works when cache dir is world-writable" do
-    skip "artifice issues?" if Gem.win_platform?
-
     install_gemfile! <<-G, :artifice => "compact_index"
       File.umask(0000)
       source "#{source_uri}"
@@ -1009,8 +915,6 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "doesn't explode when the API dependencies are wrong" do
-    skip "artifice issues?" if Gem.win_platform?
-
     install_gemfile <<-G, :artifice => "compact_index_wrong_dependencies", :env => { "DEBUG" => "true" }
       source "#{source_uri}"
       gem "rails"
@@ -1027,8 +931,6 @@ Either installing with `--full-index` or running `bundle update rails` should fi
   end
 
   it "does not duplicate specs in the lockfile when updating and a dependency is not installed" do
-    skip "artifice issues?" if Gem.win_platform?
-
     install_gemfile! <<-G, :artifice => "compact_index"
       source "#{source_uri}" do
         gem "rails"

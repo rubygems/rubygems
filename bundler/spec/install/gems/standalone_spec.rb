@@ -226,8 +226,6 @@ RSpec.shared_examples "bundle install --standalone" do
 
     describe "simple gems" do
       before do
-        skip "artifice issues maybe" if Gem.win_platform?
-
         gemfile <<-G
           source "#{source_uri}"
           gem "rails"

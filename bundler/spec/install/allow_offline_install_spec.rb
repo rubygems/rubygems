@@ -7,8 +7,6 @@ RSpec.describe "bundle install with :allow_offline_install" do
 
   context "with no cached data locally" do
     it "still installs" do
-      skip "corrupt test gem" if Gem.win_platform?
-
       install_gemfile! <<-G, :artifice => "compact_index"
         source "http://testgemserver.local"
         gem "rack-obama"
@@ -28,8 +26,6 @@ RSpec.describe "bundle install with :allow_offline_install" do
 
   context "with cached data locally" do
     it "will install from the compact index" do
-      skip "corrupt test gem" if Gem.win_platform?
-
       system_gems ["rack-1.0.0"], :path => :bundle_path
 
       bundle! "config set clean false"

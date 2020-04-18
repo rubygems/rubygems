@@ -84,8 +84,6 @@ RSpec.describe "install with --deployment or --frozen" do
   end
 
   it "works when there are credentials in the source URL" do
-    skip "corrupt test gem" if Gem.win_platform?
-
     install_gemfile(<<-G, :artifice => "endpoint_strict_basic_authentication", :quiet => true)
       source "http://user:pass@localgemserver.test/"
 

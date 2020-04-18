@@ -303,8 +303,6 @@ RSpec.describe "the lockfile format" do
   end
 
   it "generates a lockfile without credentials for a configured source", :bundler => "< 3" do
-    skip "corrupt test gem" if Gem.win_platform?
-
     bundle "config set http://localgemserver.test/ user:pass"
 
     install_gemfile(<<-G, :artifice => "endpoint_strict_basic_authentication", :quiet => true)

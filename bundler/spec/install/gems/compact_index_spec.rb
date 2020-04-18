@@ -889,7 +889,7 @@ The checksum of /versions does not match the checksum provided by the server! So
     end
 
     it "raises when the checksum is the wrong length" do
-      install_gemfile <<-G, :artifice => "compact_index_wrong_gem_checksum", :env => { "BUNDLER_SPEC_RACK_CHECKSUM" => "checksum!" }
+      install_gemfile <<-G, :artifice => "compact_index_wrong_gem_checksum", :env => { "BUNDLER_SPEC_RACK_CHECKSUM" => "checksum!", "DEBUG" => "1" }, :verbose => true
         source "#{source_uri}"
         gem "rack"
       G

@@ -1,3 +1,6 @@
+require:
+  - rubocop-performance
+
 AllCops:
   DisabledByDefault: true
   Exclude:
@@ -79,6 +82,9 @@ Lint/DuplicateMethods:
   Enabled: true
 
 Lint/ParenthesesAsGroupedExpression:
+  Enabled: true
+
+Performance/StartWith:
   Enabled: true
 
 Style/MethodDefParentheses:

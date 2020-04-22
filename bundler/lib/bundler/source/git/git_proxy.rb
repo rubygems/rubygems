@@ -167,9 +167,9 @@ module Bundler
             capture_and_filter_stderr(uri, "git #{command}", :chdir => dir.to_s)
           end
 
-          stdout_with_no_credentials = URICredentialsFilter.credential_filtered_string(out, uri)
           raise GitCommandError.new(command_with_no_credentials, path, dir) unless status.success?
-          stdout_with_no_credentials
+
+          URICredentialsFilter.credential_filtered_string(out, uri)
         end
 
         def has_revision_cached?

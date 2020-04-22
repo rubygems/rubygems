@@ -263,6 +263,8 @@ module Bundler
           "plugin source for #{options[:type]} with uri #{uri}"
         end
 
+        alias_method :to_s_locked, :to_s
+
         # Note: Do not override if you don't know what you are doing.
         def include?(other)
           other == self

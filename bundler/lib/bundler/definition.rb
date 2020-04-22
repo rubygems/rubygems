@@ -438,11 +438,11 @@ module Bundler
 
       if @locked_sources != gemfile_sources
         if new_sources.any?
-          added.concat new_sources.map {|source| "* source: #{source}" }
+          added.concat new_sources.map {|source| "* source: #{source.to_s}" }
         end
 
         if deleted_sources.any?
-          deleted.concat deleted_sources.map {|source| "* source: #{source}" }
+          deleted.concat deleted_sources.map {|source| "* source: #{source.to_s_locked}" }
         end
       end
 
@@ -457,8 +457,8 @@ module Bundler
 
       both_sources.each do |name, (dep, lock_source)|
         next if lock_source.nil? || (dep && lock_source.can_lock?(dep))
-        gemfile_source_name = (dep && dep.source) || "no specified source"
-        lockfile_source_name = lock_source
+        gemfile_source_name = (dep && dep.source) ? dep.source.to_s : "no specified source"
+        lockfile_source_name = lock_source.to_s_locked
         changed << "* #{name} from `#{gemfile_source_name}` to `#{lockfile_source_name}`"
       end
 
@@ -694,6 +694,7 @@ module Bundler
         # will cause the `ref` used to be the most recent for the branch (or master) if
         # an explicit `ref` is not used.
         if source.respond_to?(:unlock!) && @unlock[:sources].include?(source.name)
+          source.allow_git_ops! if source.respond_to?(:allow_git_ops!)
           source.unlock!
           changes = true
         end

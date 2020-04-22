@@ -79,6 +79,7 @@ module Bundler
         end
       end
       alias_method :name, :to_s
+      alias_method :to_s_locked, :to_s
 
       def specs
         @specs ||= begin

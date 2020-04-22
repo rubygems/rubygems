@@ -49,6 +49,7 @@ module Bundler
       def to_s
         "the local ruby installation"
       end
+      alias_method :to_s_locked, :to_s
 
       def ==(other)
         self.class == other.class

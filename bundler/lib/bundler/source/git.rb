@@ -15,6 +15,7 @@ module Bundler
 
         @allow_cached = false
         @allow_remote = false
+        @allow_git_ops = false
 
         # Stringify options that could be set as symbols
         %w[ref branch tag revision].each {|k| options[k] = options[k].to_s if options[k] }
@@ -59,12 +60,20 @@ module Bundler
 
       alias_method :==, :eql?
 
+      def to_s_locked
+        display_name(true)
+      end
+
       def to_s
+        display_name(false)
+      end
+
+      def display_name(locked)
         at = cached_ref
 
-        rev = begin
+        rev = if locked
                 "@#{shortref_for_display(revision)}"
-              rescue GitError
+              else
                 nil
               end
 
@@ -161,7 +170,7 @@ module Bundler
       def install(spec, options = {})
         force = options[:force]
 
-        print_using_message "Using #{version_message(spec)} from #{self}"
+        print_using_message "Using #{version_message(spec)} from #{to_s_locked}"
 
         if (requires_checkout? && !@copied) || force
           Bundler.ui.debug "  * Checking out revision: #{ref}"
@@ -217,7 +226,11 @@ module Bundler
       end
 
       def allow_git_ops?
-        @allow_remote || @allow_cached
+        @allow_git_ops || @allow_remote || @allow_cached
+      end
+
+      def allow_git_ops!
+        @allow_git_ops = true
       end
 
       def local?

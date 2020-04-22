@@ -456,7 +456,7 @@ module Bundler
       @locked_deps.each  {|name, d| both_sources[name][1] = d.source }
 
       both_sources.each do |name, (dep, lock_source)|
-        next unless !lock_source.nil? && (dep.nil? || (!dep.nil? && !lock_source.can_lock?(dep)))
+        next if lock_source.nil? || (!dep.nil? && (dep.nil? || lock_source.can_lock?(dep)))
         gemfile_source_name = (dep && dep.source) || "no specified source"
         lockfile_source_name = lock_source
         changed << "* #{name} from `#{gemfile_source_name}` to `#{lockfile_source_name}`"

@@ -66,13 +66,13 @@ module Bundler
         end
 
         def branch
-          @branch ||= allowed_in_path do
+          @branch ||= allowed_with_path do
             git("rev-parse --abbrev-ref HEAD", :dir => path).strip
           end
         end
 
         def contains?(commit)
-          allowed_in_path do
+          allowed_with_path do
             result, status = git_null("branch --contains #{commit}", :dir => path)
             status.success? && result =~ /^\* (.*)$/
           end
@@ -100,7 +100,7 @@ module Bundler
             return unless extra_ref
           end
 
-          in_path do
+          with_path do
             git_retry %(fetch --force --quiet --tags #{uri_escaped_with_configured_credentials} "refs/heads/*:refs/heads/*" #{extra_ref}), :dir => path
           end
         end
@@ -172,7 +172,7 @@ module Bundler
 
         def has_revision_cached?
           return unless @revision
-          in_path { git("cat-file -e #{@revision}", :dir => path) }
+          with_path { git("cat-file -e #{@revision}", :dir => path) }
           true
         rescue GitError
           false
@@ -183,7 +183,7 @@ module Bundler
         end
 
         def find_local_revision
-          allowed_in_path do
+          allowed_with_path do
             git("rev-parse --verify #{Shellwords.shellescape(ref)}", :dir => path).strip
           end
         rescue GitCommandError => e
@@ -220,13 +220,13 @@ module Bundler
           @git ? @git.allow_git_ops? : true
         end
 
-        def in_path(&blk)
+        def with_path(&blk)
           checkout unless path.exist?
           blk.call
         end
 
-        def allowed_in_path
-          return in_path { yield } if allow?
+        def allowed_with_path
+          return with_path { yield } if allow?
           raise GitError, "The git source #{uri} is not yet checked out. Please run `bundle install` before trying to start your application"
         end
 

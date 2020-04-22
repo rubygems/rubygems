@@ -143,8 +143,7 @@ module Bundler
       private
 
         def git_null(command, dir: SharedHelpers.pwd)
-          command_with_no_credentials = URICredentialsFilter.credential_filtered_string(command, uri)
-          raise GitNotAllowedError.new(command_with_no_credentials) unless allow?
+          check_allowed(command)
 
           out, status = SharedHelpers.with_clean_git_env do
             capture_and_ignore_stderr("git #{command}", :chdir => dir.to_s)
@@ -160,8 +159,7 @@ module Bundler
         end
 
         def git(command, dir: SharedHelpers.pwd)
-          command_with_no_credentials = URICredentialsFilter.credential_filtered_string(command, uri)
-          raise GitNotAllowedError.new(command_with_no_credentials) unless allow?
+          command_with_no_credentials = check_allowed(command)
 
           out, status = SharedHelpers.with_clean_git_env do
             capture_and_filter_stderr(uri, "git #{command}", :chdir => dir.to_s)
@@ -230,6 +228,12 @@ module Bundler
         def allowed_in_path
           return in_path { yield } if allow?
           raise GitError, "The git source #{uri} is not yet checked out. Please run `bundle install` before trying to start your application"
+        end
+
+        def check_allowed(command)
+          command_with_no_credentials = URICredentialsFilter.credential_filtered_string(command, uri)
+          raise GitNotAllowedError.new(command_with_no_credentials) unless allow?
+          command_with_no_credentials
         end
 
         def capture_and_filter_stderr(uri, cmd, chdir: SharedHelpers.pwd)

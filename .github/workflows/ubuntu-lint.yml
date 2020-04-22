@@ -21,6 +21,8 @@ jobs:
         run: rake setup
       - name: Run Lint
         run: rake rubocop
+      - name: Generate docs
+        run: rake docs
       - name: Install Dependencies in Bundler
         run: bin/rake spec:deps
         working-directory: ./bundler

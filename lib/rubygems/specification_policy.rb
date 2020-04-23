@@ -76,6 +76,8 @@ class Gem::SpecificationPolicy
 
     validate_dependencies
 
+    validate_removed_attributes
+
     if @warnings > 0
       if strict
         error "specification has warnings"
@@ -407,6 +409,12 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     return if File.read(executable_path, 2) == '#!'
 
     warning "#{executable_path} is missing #! line"
+  end
+
+  def validate_removed_attributes # :nodoc:
+    @specification.removed_method_calls.each do |attr|
+      warning("#{attr} is deprecated and ignored. Please remove this from your gemspec to ensure that your gem continues to build in the future.")
+    end
   end
 
   def warning(statement) # :nodoc:

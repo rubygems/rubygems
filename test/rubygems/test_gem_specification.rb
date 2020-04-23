@@ -3110,6 +3110,21 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
     warning
   end
 
+  def test_removed_methods
+    assert_equal Gem::Specification::REMOVED_METHODS, [:rubyforge_project=]
+  end
+
+  def test_validate_removed_rubyforge_project
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.rubyforge_project = 'invalid-attribute'
+      @a1.validate
+    end
+
+    assert_match "rubyforge_project= is deprecated", @ui.error
+  end
+
   def test_validate_license_values
     util_setup_validate
 

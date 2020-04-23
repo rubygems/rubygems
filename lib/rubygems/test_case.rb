@@ -357,6 +357,13 @@ class Gem::TestCase < Minitest::Test
     Dir.chdir @tempdir
 
     ENV['HOME'] = @userhome
+    FileUtils.mkdir_p File.join(@userhome, ".gem")
+    File.write File.join(@userhome, ".gemrc"), "--- {}"
+    temp_cred = File.join(@userhome, '.gem', 'credentials')
+    FileUtils.mkdir_p File.dirname(temp_cred)
+    File.write temp_cred, ':rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97'
+    File.chmod 0600, temp_cred
+
     Gem.instance_variable_set :@user_home, nil
     Gem.instance_variable_set :@gemdeps, nil
     Gem.instance_variable_set :@env_requirements_by_name, nil

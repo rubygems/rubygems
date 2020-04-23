@@ -875,10 +875,10 @@ __FILE__: #{path.to_s.inspect}
         skip "https://github.com/rubygems/bundler/issues/6898" if Gem.win_platform?
 
         file = bundled_app("file_that_bundle_execs.rb")
-        create_file(file, <<-RB)
+        create_file(file, <<-RUBY)
           #!#{Gem.ruby}
           puts `bundle exec echo foo`
-        RB
+        RUBY
         file.chmod(0o777)
         bundle! "exec #{file}"
         expect(out).to eq("foo")
@@ -897,21 +897,21 @@ __FILE__: #{path.to_s.inspect}
 
         build_repo4 do
           build_gem "openssl", openssl_version do |s|
-            s.write("lib/openssl.rb", <<-RB)
+            s.write("lib/openssl.rb", <<-RUBY)
               raise "custom openssl should not be loaded, it's not in the gemfile!"
-            RB
+            RUBY
           end
         end
 
         system_gems(:bundler, "openssl-#{openssl_version}", :gem_repo => gem_repo4)
 
         file = bundled_app("require_openssl.rb")
-        create_file(file, <<-RB)
+        create_file(file, <<-RUBY)
           #!/usr/bin/env ruby
           require "openssl"
           puts OpenSSL::VERSION
           warn Gem.loaded_specs.values.map(&:full_name)
-        RB
+        RUBY
         file.chmod(0o777)
 
         aggregate_failures do

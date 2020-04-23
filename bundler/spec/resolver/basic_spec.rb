@@ -184,7 +184,7 @@ Bundler could not find compatible versions for gem "a":
 
   it "takes into account required_ruby_version for minor version bumps" do
     @index = build_index do
-      gem "foo", "1.0.0" do
+      gem "foo", "1.0.0" do |s|
         s.required_ruby_version = "~> 2.4.0"
       end
 

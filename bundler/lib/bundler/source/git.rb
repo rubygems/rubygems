@@ -60,17 +60,7 @@ module Bundler
       alias_method :==, :eql?
 
       def to_s
-        at = if local?
-          path
-        elsif user_ref = options["ref"]
-          if ref =~ /\A[a-z0-9]{4,}\z/i
-            shortref_for_display(user_ref)
-          else
-            user_ref
-          end
-        else
-          ref
-        end
+        at = cached_ref
 
         rev = begin
                 "@#{shortref_for_display(revision)}"
@@ -294,6 +284,20 @@ module Bundler
 
       def cached_revision
         options["revision"]
+      end
+
+      def cached_ref
+        if local?
+          path
+        elsif user_ref = options["ref"]
+          if ref =~ /\A[a-z0-9]{4,}\z/i
+            shortref_for_display(user_ref)
+          else
+            user_ref
+          end
+        else
+          ref
+        end
       end
 
       def cached?

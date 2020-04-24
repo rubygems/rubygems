@@ -16,7 +16,7 @@ RSpec.describe Bundler, "friendly errors" do
     end
 
     after do
-      FileUtils.rm(home(".gemrc"))
+      FileUtils.rm(Gem.configuration.config_file_name)
     end
 
     it "reports a relevant friendly error message" do

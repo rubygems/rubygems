@@ -43,7 +43,7 @@ namespace :spec do
 
   desc "Run the regular spec suite"
   task :regular do
-    sh("bin/parallel_rspec --verbose-rerun-command spec")
+    sh("bin/parallel_rspec")
   end
 
   desc "Run the real-world spec suite"

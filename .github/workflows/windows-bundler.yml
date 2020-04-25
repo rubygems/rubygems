@@ -29,6 +29,6 @@ jobs:
         shell: bash
       - name: Run specs
         run: |
-          bin/parallel_rspec spec
+          bin/parallel_rspec
         working-directory: ./bundler
         shell: bash

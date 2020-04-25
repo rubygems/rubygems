@@ -26,7 +26,7 @@ To work on Bundler, you'll probably want to do a couple of things:
 
 6. Optionally, you can run the test suite in parallel:
 
-        $ bin/parallel_rspec spec
+        $ bin/parallel_rspec
 
 7. Set up a shell alias to run Bundler from your clone, e.g. a Bash alias ([follow these instructions](https://www.moncefbelyamani.com/create-aliases-in-bash-profile-to-assign-shortcuts-for-common-terminal-commands/) for adding aliases to your `~/.bashrc` profile):
 

@@ -218,24 +218,13 @@ RSpec.describe "bundle update" do
     it "shows the previous version of the gem" do
       skip "some of monorepo issues" if Gem.win_platform?
 
-      build_git "rails", "3.0", :path => lib_path("rails")
+      build_git "rails", "2.3.2", :path => lib_path("rails")
 
       install_gemfile <<-G
         gem "rails", :git => "#{lib_path("rails")}"
       G
 
-      lockfile <<-G
-        GIT
-          remote: #{lib_path("rails")}
-          specs:
-            rails (2.3.2)
-
-        PLATFORMS
-          #{generic_local_platform}
-
-        DEPENDENCIES
-          rails!
-      G
+      update_git "rails", "3.0", :path => lib_path("rails"), :gemspec => true
 
       bundle "update", :all => true
       expect(out).to include("Using rails 3.0 (was 2.3.2) from #{lib_path("rails")} (at master@#{revision_for(lib_path("rails"))[0..6]})")

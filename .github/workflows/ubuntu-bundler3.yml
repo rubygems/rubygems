@@ -30,7 +30,7 @@ jobs:
         working-directory: ./bundler
       - name: Run Test
         run: |
-          bin/parallel_rspec spec
+          bin/parallel_rspec
         working-directory: ./bundler
       - name: Run Test with realworld
         run: |

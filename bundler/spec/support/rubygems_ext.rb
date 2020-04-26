@@ -67,10 +67,24 @@ module Spec
     def install_test_deps
       setup_test_paths
 
+      workaround_loaded_specs_issue
+
       install_gems(test_gemfile, test_lockfile)
     end
 
   private
+
+    # Some rubygems versions include loaded specs when loading gemspec stubs
+    # from the file system. In this situation, that makes bundler incorrectly
+    # assume that `rake` is already installed at `tmp/` because it's installed
+    # globally, and makes it skip installing it to the proper location for our
+    # tests. To workaround, we remove `rake` from the loaded specs when running
+    # under those versions, so that `bundler` does the right thing.
+    def workaround_loaded_specs_issue
+      current_rubygems_version = Gem::Version.new(Gem::VERSION)
+
+      Gem.loaded_specs.delete("rake") if current_rubygems_version >= Gem::Version.new("3.0.0.beta2") && current_rubygems_version < Gem::Version.new("3.2.0")
+    end
 
     def gem_load_and_activate(gem_name, bin_container)
       gem_activate(gem_name)

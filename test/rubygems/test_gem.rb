@@ -1272,6 +1272,7 @@ class TestGem < Gem::TestCase
     end
 
     assert_match %r{Could not find 'b' }, e.message
+    assert_match %r{at: #{a.spec_file}}, e.message
   end
 
   def test_self_try_activate_missing_prerelease

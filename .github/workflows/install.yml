@@ -24,4 +24,6 @@ jobs:
         run: ruby -Ilib -S rake install
       - name: Run bundler installed as a default gem
         run: bundle --version
+      - name: Check bundler man pages were installed and are properly picked up
+        run: bundle install --help | grep -q BUNDLE-INSTALL
     timeout-minutes: 10

@@ -22,4 +22,6 @@ jobs:
           bundler: none
       - name: Install rubygems
         run: ruby -Ilib -S rake install
+      - name: Run bundler installed as a default gem
+        run: bundle --version
     timeout-minutes: 10

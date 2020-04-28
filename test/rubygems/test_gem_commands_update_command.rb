@@ -159,6 +159,26 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty out
   end
 
+  def test_execute_system_specific_older_than_minimum_supported_rubygems
+    spec_fetcher do |fetcher|
+      fetcher.download 'rubygems-update', "2.5.1" do |s|
+        s.files = %w[setup.rb]
+      end
+    end
+
+    @cmd.options[:args]          = []
+    @cmd.options[:system]        = "2.5.1"
+
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_empty @ui.output
+    assert_match(/\AERROR:  rubygems 2.5.1 is not supported by your current ruby. The oldest supported version is [0-9a-z.]+\n\z/, @ui.error)
+  end
+
   def test_execute_system_specific_older_than_3_2_removes_plugins_dir
     spec_fetcher do |fetcher|
       fetcher.download 'rubygems-update', 3.1 do |s|
@@ -175,7 +195,7 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @cmd.execute
 
     refute_path_exists Gem.plugindir, "Plugins folder not removed when updating rubygems to pre-3.2"
-  end
+  end unless Gem.ruby_version >= Gem::Version.new("2.7") # these versions can't downgrade that much
 
   def test_execute_system_specific_newer_than_or_equal_to_3_2_leaves_plugins_dir_alone
     spec_fetcher do |fetcher|

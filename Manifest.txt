@@ -398,6 +398,7 @@ lib/rubygems/installer_uninstaller_utils.rb
 lib/rubygems/local_remote_options.rb
 lib/rubygems/mock_gem_ui.rb
 lib/rubygems/name_tuple.rb
+lib/rubygems/original_version.rb
 lib/rubygems/package.rb
 lib/rubygems/package/digest_io.rb
 lib/rubygems/package/file_source.rb

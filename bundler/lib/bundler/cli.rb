@@ -815,7 +815,7 @@ module Bundler
       option = current_command.options[name]
       flag_name = option.switch_name
 
-      name_index = ARGV.find {|arg| flag_name == arg }
+      name_index = ARGV.find {|arg| flag_name == arg.split("=")[0] }
       return unless name_index
 
       value = options[name]

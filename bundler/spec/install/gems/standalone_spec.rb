@@ -27,7 +27,12 @@ RSpec.shared_examples "bundle install --standalone" do
     end
 
     it "works on a different system" do
-      FileUtils.mv(bundled_app, "#{bundled_app}2")
+      begin
+        FileUtils.mv(bundled_app, "#{bundled_app}2")
+      rescue Errno::ENOTEMPTY
+        puts "Couldn't rename test app since the target folder has these files: #{Dir.glob("#{bundled_app}2/*")}"
+        raise
+      end
 
       testrb = String.new <<-RUBY
         $:.unshift File.expand_path("bundle")

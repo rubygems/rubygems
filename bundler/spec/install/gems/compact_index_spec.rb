@@ -404,15 +404,13 @@ The checksum of /versions does not match the checksum provided by the server! So
         s.add_dependency "foo"
       end
       build_gem "missing"
-      # need to hit the limit
-      1.upto(Bundler::Source::Rubygems::API_REQUEST_LIMIT) do |i|
-        build_gem "gem#{i}"
-      end
 
       FileUtils.rm_rf Dir[gem_repo2("gems/foo-*.gem")]
     end
 
-    install_gemfile! <<-G, :artifice => "compact_index_extra_missing"
+    api_request_limit = low_api_request_limit_for(gem_repo2)
+
+    install_gemfile! <<-G, :artifice => "compact_index_extra_missing", :env => { "BUNDLER_SPEC_API_REQUEST_LIMIT" => api_request_limit.to_s }
       source "#{source_uri}"
       source "#{source_uri}/extra" do
         gem "back_deps"
@@ -428,15 +426,13 @@ The checksum of /versions does not match the checksum provided by the server! So
         s.add_dependency "foo"
       end
       build_gem "missing"
-      # need to hit the limit
-      1.upto(Bundler::Source::Rubygems::API_REQUEST_LIMIT) do |i|
-        build_gem "gem#{i}"
-      end
 
       FileUtils.rm_rf Dir[gem_repo4("gems/foo-*.gem")]
     end
 
-    install_gemfile! <<-G, :artifice => "compact_index_extra_api_missing"
+    api_request_limit = low_api_request_limit_for(gem_repo4)
+
+    install_gemfile! <<-G, :artifice => "compact_index_extra_api_missing", :env => { "BUNDLER_SPEC_API_REQUEST_LIMIT" => api_request_limit.to_s }
       source "#{source_uri}"
       source "#{source_uri}/extra" do
         gem "back_deps"

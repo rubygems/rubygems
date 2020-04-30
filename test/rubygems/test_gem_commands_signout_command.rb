@@ -11,11 +11,6 @@ class TestGemCommandsSignoutCommand < Gem::TestCase
     @cmd = Gem::Commands::SignoutCommand.new
   end
 
-  def teardown
-    super
-    File.delete Gem.configuration.credentials_path if File.exist?(Gem.configuration.credentials_path)
-  end
-
   def test_execute_when_user_is_signed_in
     FileUtils.mkdir_p File.dirname(Gem.configuration.credentials_path)
     FileUtils::touch Gem.configuration.credentials_path

@@ -7,6 +7,8 @@ class TestGemCommandsYankCommand < Gem::TestCase
   def setup
     super
 
+    credential_setup
+
     @cmd = Gem::Commands::YankCommand.new
     @cmd.options[:host] = 'http://example'
 
@@ -14,6 +16,12 @@ class TestGemCommandsYankCommand < Gem::TestCase
 
     Gem.configuration.rubygems_api_key = 'key'
     Gem.configuration.api_keys[:KEY] = 'other'
+  end
+
+  def teardown
+    credential_teardown
+
+    super
   end
 
   def test_handle_options

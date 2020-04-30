@@ -36,7 +36,7 @@ private
 
     cmd = [ruby, $0, *ARGV].compact
 
-    ENV["RUBYOPT"] = "-I#{local_copy_path.join("lib")} #{ENV["RUBYOPT"]}"
+    ENV["RUBYOPT"] = ["-I#{local_copy_path.join("lib")}", ENV["RUBYOPT"]].compact.join(" ")
 
     exec(ENV, *cmd)
   end

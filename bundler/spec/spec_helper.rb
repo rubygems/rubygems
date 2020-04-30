@@ -83,7 +83,6 @@ RSpec.configure do |config|
   config.before :suite do
     require_relative "support/rubygems_ext"
     Spec::Rubygems.test_setup
-    ENV["RUBYOPT"] = "#{ENV["RUBYOPT"]} -r#{Spec::Path.spec_dir}/support/hax.rb"
     ENV["BUNDLE_SPEC_RUN"] = "true"
     ENV["BUNDLE_USER_CONFIG"] = ENV["BUNDLE_USER_CACHE"] = ENV["BUNDLE_USER_PLUGIN"] = nil
     ENV["GEMRC"] = nil

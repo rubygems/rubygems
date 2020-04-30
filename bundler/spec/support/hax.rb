@@ -33,7 +33,7 @@ if ENV["BUNDLER_SPEC_VERSION"]
 
   module Bundler
     remove_const(:VERSION) if const_defined?(:VERSION)
-    VERSION = ENV["BUNDLER_SPEC_VERSION"].dup
+    VERSION = ENV["BUNDLER_SPEC_VERSION"]
   end
 end
 

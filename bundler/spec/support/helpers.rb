@@ -90,7 +90,6 @@ module Spec
       env["PATH"].gsub!("#{Path.root}/exe", "") if env["PATH"] && system_bundler
 
       requires = options.delete(:requires) || []
-      requires << "#{Path.spec_dir}/support/hax.rb"
 
       artifice = options.delete(:artifice) do
         if RSpec.current_example.metadata[:realworld]
@@ -174,6 +173,7 @@ module Spec
       lib_option = "-I#{libs.join(File::PATH_SEPARATOR)}"
 
       requires = options.delete(:requires) || []
+      requires << "#{Path.spec_dir}/support/hax.rb"
       require_option = requires.map {|r| "-r#{r}" }
 
       [sudo, Gem.ruby, *lib_option, *require_option].compact.join(" ")

@@ -412,14 +412,13 @@ The checksum of /versions does not match the checksum provided by the server! So
       FileUtils.rm_rf Dir[gem_repo2("gems/foo-*.gem")]
     end
 
-    gemfile <<-G
+    install_gemfile! <<-G, :artifice => "compact_index_extra_missing"
       source "#{source_uri}"
       source "#{source_uri}/extra" do
         gem "back_deps"
       end
     G
 
-    bundle! :install, :artifice => "compact_index_extra_missing"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 

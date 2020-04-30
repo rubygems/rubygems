@@ -386,13 +386,12 @@ RSpec.describe "gemcutter's dependency API" do
       FileUtils.rm_rf Dir[gem_repo2("gems/foo-*.gem")]
     end
 
-    gemfile <<-G
+    install_gemfile! <<-G, :artifice => "endpoint_extra_missing"
       source "#{source_uri}"
       source "#{source_uri}/extra"
       gem "back_deps"
     G
 
-    bundle! :install, :artifice => "endpoint_extra_missing"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 
@@ -410,14 +409,13 @@ RSpec.describe "gemcutter's dependency API" do
       FileUtils.rm_rf Dir[gem_repo2("gems/foo-*.gem")]
     end
 
-    gemfile <<-G
+    install_gemfile! <<-G, :artifice => "endpoint_extra_missing"
       source "#{source_uri}"
       source "#{source_uri}/extra" do
         gem "back_deps"
       end
     G
 
-    bundle! :install, :artifice => "endpoint_extra_missing"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 

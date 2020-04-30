@@ -103,12 +103,9 @@ module Spec
         requires << "#{Path.spec_dir}/support/artifice/#{artifice}.rb"
       end
 
-      requires_str = requires.map {|r| "-r#{r}" }.join(" ")
-
       load_path = []
       load_path << lib_dir unless system_bundler
       load_path << spec_dir
-      load_path_str = "-I#{load_path.join(File::PATH_SEPARATOR)}"
 
       dir = options.delete(:dir) || bundled_app
 
@@ -125,7 +122,8 @@ module Spec
         end
       end.join
 
-      cmd = "#{sudo} #{Gem.ruby} #{load_path_str} #{requires_str} #{bundle_bin} #{cmd}#{args}"
+      ruby_cmd = build_ruby_cmd({ :sudo => sudo, :load_path => load_path, :requires => requires })
+      cmd = "#{ruby_cmd} #{bundle_bin} #{cmd}#{args}"
       sys_exec(cmd, { :env => env, :dir => dir }, &block)
     end
     bang :bundle
@@ -153,9 +151,9 @@ module Spec
     end
 
     def ruby(ruby, options = {})
-      lib_option = options[:no_lib] ? "" : " -I#{lib_dir}"
+      ruby_cmd = build_ruby_cmd({ :load_path => options[:no_lib] ? [] : [lib_dir] })
       escaped_ruby = RUBY_PLATFORM == "java" ? ruby.shellescape.dump : ruby.shellescape
-      sys_exec(%(#{Gem.ruby}#{lib_option} -w -e #{escaped_ruby}), options)
+      sys_exec(%(#{ruby_cmd} -w -e #{escaped_ruby}), options)
     end
     bang :ruby
 
@@ -167,6 +165,18 @@ module Spec
           warn "ZOMG LOAD ERROR" if e.message.include?("-- #{name}")
         end
       R
+    end
+
+    def build_ruby_cmd(options = {})
+      sudo = options.delete(:sudo)
+
+      libs = options.delete(:load_path) || []
+      lib_option = "-I#{libs.join(File::PATH_SEPARATOR)}"
+
+      requires = options.delete(:requires) || []
+      require_option = requires.map {|r| "-r#{r}" }
+
+      [sudo, Gem.ruby, *lib_option, *require_option].compact.join(" ")
     end
 
     def gembin(cmd, options = {})

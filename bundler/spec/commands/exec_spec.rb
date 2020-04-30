@@ -296,10 +296,10 @@ RSpec.describe "bundle exec" do
     rubyopt = ["-r#{lib_dir}/bundler/setup", rubyopt].compact.join(" ")
 
     bundle "exec 'echo $RUBYOPT'"
-    expect(out).to have_rubyopts(rubyopt)
+    expect(out).to eq(rubyopt)
 
     bundle "exec 'echo $RUBYOPT'", :env => { "RUBYOPT" => rubyopt }
-    expect(out).to have_rubyopts(rubyopt)
+    expect(out).to eq(rubyopt)
   end
 
   it "does not duplicate already exec'ed RUBYLIB" do

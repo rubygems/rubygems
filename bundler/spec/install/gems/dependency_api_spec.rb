@@ -392,7 +392,7 @@ RSpec.describe "gemcutter's dependency API" do
       gem "back_deps"
     G
 
-    bundle :install, :artifice => "endpoint_extra_missing"
+    bundle! :install, :artifice => "endpoint_extra_missing"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 
@@ -417,7 +417,7 @@ RSpec.describe "gemcutter's dependency API" do
       end
     G
 
-    bundle :install, :artifice => "endpoint_extra_missing"
+    bundle! :install, :artifice => "endpoint_extra_missing"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 

@@ -90,7 +90,7 @@ module Spec
       env["PATH"].gsub!("#{Path.root}/exe", "") if env["PATH"] && system_bundler
 
       requires = options.delete(:requires) || []
-      requires << "support/hax"
+      requires << "#{Path.spec_dir}/support/hax.rb"
 
       artifice = options.delete(:artifice) do
         if RSpec.current_example.metadata[:realworld]
@@ -100,7 +100,7 @@ module Spec
         end
       end
       if artifice
-        requires << "support/artifice/#{artifice}"
+        requires << "#{Path.spec_dir}/support/artifice/#{artifice}.rb"
       end
 
       requires_str = requires.map {|r| "-r#{r}" }.join(" ")

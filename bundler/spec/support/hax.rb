@@ -33,7 +33,7 @@ if ENV["BUNDLER_SPEC_VERSION"]
 
   module Bundler
     remove_const(:VERSION) if const_defined?(:VERSION)
-    VERSION = ENV["BUNDLER_SPEC_VERSION"].dup
+    VERSION = ENV["BUNDLER_SPEC_VERSION"]
   end
 end
 
@@ -44,5 +44,20 @@ if ENV["BUNDLER_SPEC_WINDOWS"] == "true"
   module Bundler
     remove_const :WINDOWS if defined?(WINDOWS)
     WINDOWS = true
+  end
+end
+
+if ENV["BUNDLER_SPEC_API_REQUEST_LIMIT"]
+  require_relative "path"
+  require "#{Spec::Path.lib_dir}/bundler/source"
+  require "#{Spec::Path.lib_dir}/bundler/source/rubygems"
+
+  module Bundler
+    class Source
+      class Rubygems < Source
+        remove_const :API_REQUEST_LIMIT
+        API_REQUEST_LIMIT = ENV["BUNDLER_SPEC_API_REQUEST_LIMIT"].to_i
+      end
+    end
   end
 end

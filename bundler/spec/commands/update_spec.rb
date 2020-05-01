@@ -681,7 +681,6 @@ RSpec.describe "bundle update" do
       G
 
       bundle! "update", :all => true
-      out.gsub!(/RubyGems [\d\.]+ is not threadsafe.*\n?/, "")
       expect(out).to include "Resolving dependencies...\nBundle updated!"
 
       update_repo4 do
@@ -690,7 +689,6 @@ RSpec.describe "bundle update" do
 
       bundle! "update", :all => true
       out.sub!("Removing foo (1.0)\n", "")
-      out.gsub!(/RubyGems [\d\.]+ is not threadsafe.*\n?/, "")
       expect(out).to include strip_whitespace(<<-EOS).strip
         Resolving dependencies...
         Fetching foo 2.0 (was 1.0)

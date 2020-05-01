@@ -8,6 +8,7 @@ RSpec.describe "bundle gem" do
     expect(bundled_app("#{gem_name}/Rakefile")).to exist
     expect(bundled_app("#{gem_name}/lib/#{require_path}.rb")).to exist
     expect(bundled_app("#{gem_name}/lib/#{require_path}/version.rb")).to exist
+    expect(bundled_app("#{gem_name}/.travis.yml").read).to match(/- #{RUBY_VERSION}/)
   end
 
   let(:generated_gemspec) { Bundler.load_gemspec_uncached(bundled_app(gem_name).join("#{gem_name}.gemspec")) }
@@ -590,10 +591,6 @@ RSpec.describe "bundle gem" do
       it "defaults to rspec" do
         expect(bundled_app("#{gem_name}/spec/spec_helper.rb")).to exist
         expect(bundled_app("#{gem_name}/test/test_helper.rb")).to_not exist
-      end
-
-      it "creates a .travis.yml file to test the library against the current Ruby version on Travis CI" do
-        expect(bundled_app("#{gem_name}/.travis.yml").read).to match(/- #{RUBY_VERSION}/)
       end
     end
 

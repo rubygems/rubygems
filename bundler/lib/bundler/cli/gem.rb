@@ -79,12 +79,11 @@ module Bundler
       ]
 
       templates.merge!("gitignore.tt" => ".gitignore") if Bundler.git_present?
+      templates.merge!("travis.yml.tt" => ".travis.yml")
 
       if test_framework = ask_and_set_test_framework
         config[:test] = test_framework
         config[:test_framework_version] = TEST_FRAMEWORK_VERSIONS[test_framework]
-
-        templates.merge!("travis.yml.tt" => ".travis.yml")
 
         case test_framework
         when "rspec"

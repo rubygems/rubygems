@@ -692,7 +692,7 @@ RSpec.describe "bundle update" do
       out.sub!("Removing foo (1.0)\n", "")
       out.gsub!(/RubyGems [\d\.]+ is not threadsafe.*\n?/, "")
       expect(out).to include strip_whitespace(<<-EOS).strip
-        Resolving dependencies...
+        Resolving dependencies....
         Fetching foo 2.0 (was 1.0)
         Installing foo 2.0 (was 1.0)
         Bundle updated

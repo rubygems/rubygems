@@ -63,9 +63,9 @@ RSpec.describe Bundler::Dsl do
       end
     end
 
-    context "default git sources", :bundler => "3" do
-      it "has none" do
-        expect(subject.instance_variable_get(:@git_sources)).to eq({})
+    context "default git sources" do
+      it "has bitbucket, gist, and github" do
+        expect(subject.instance_variable_get(:@git_sources).keys.sort).to eq(%w[bitbucket gist github])
       end
     end
   end
@@ -208,7 +208,7 @@ RSpec.describe Bundler::Dsl do
       end
     end
 
-    describe "#github", :bundler => "2" do
+    describe "#github" do
       it "from github" do
         spree_gems = %w[spree_core spree_api spree_backend]
         subject.github "spree" do
@@ -221,7 +221,7 @@ RSpec.describe Bundler::Dsl do
       end
     end
 
-    describe "#github", :bundler => "3" do
+    describe "#github", :bundler => "4" do
       it "from github" do
         expect do
           spree_gems = %w[spree_core spree_api spree_backend]

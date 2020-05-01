@@ -416,25 +416,34 @@ RSpec.describe "major deprecations" do
     end
 
     context "with github gems" do
-      it "warns about removal", :bundler => "2" do
+      it "does not warn about removal", :bundler => "2" do
+        expect(Bundler.ui).not_to receive(:warn)
+        subject.gem("sparks", :github => "indirect/sparks")
+        github_uri = "https://github.com/indirect/sparks.git"
+        expect(subject.dependencies.first.source.uri).to eq(github_uri)
+      end
+
+      it "warns about removal", :bundler => "3" do
         msg = <<-EOS
 The :github git source is deprecated, and will be removed in the future. Change any "reponame" :github sources to "username/reponame". Add this code to the top of your Gemfile to ensure it continues to work:
 
     git_source(:github) {|repo_name| "https://github.com/\#{repo_name}.git" }
 
         EOS
-        expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(3, msg)
+        expect(Bundler.ui).to receive(:warn).with("[DEPRECATED] #{msg}")
         subject.gem("sparks", :github => "indirect/sparks")
         github_uri = "https://github.com/indirect/sparks.git"
         expect(subject.dependencies.first.source.uri).to eq(github_uri)
       end
-
-      pending "should fail with a helpful error", :bundler => "3"
     end
 
     context "with bitbucket gems" do
-      it "warns about removal", :bundler => "2" do
-        allow(Bundler.ui).to receive(:deprecate)
+      it "does not warn about removal", :bundler => "2" do
+        expect(Bundler.ui).not_to receive(:warn)
+        subject.gem("not-really-a-gem", :bitbucket => "mcorp/flatlab-rails")
+      end
+
+      it "warns about removal", :bundler => "3" do
         msg = <<-EOS
 The :bitbucket git source is deprecated, and will be removed in the future. Add this code to the top of your Gemfile to ensure it continues to work:
 
@@ -445,27 +454,27 @@ The :bitbucket git source is deprecated, and will be removed in the future. Add 
     end
 
         EOS
-        expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(3, msg)
+        expect(Bundler.ui).to receive(:warn).with("[DEPRECATED] #{msg}")
         subject.gem("not-really-a-gem", :bitbucket => "mcorp/flatlab-rails")
       end
-
-      pending "should fail with a helpful error", :bundler => "3"
     end
 
     context "with gist gems" do
-      it "warns about removal", :bundler => "2" do
-        allow(Bundler.ui).to receive(:deprecate)
+      it "does not warn about removal", :bundler => "2" do
+        expect(Bundler.ui).not_to receive(:warn)
+        subject.gem("not-really-a-gem", :gist => "1234")
+      end
+
+      it "warns about removal", :bundler => "3" do
         msg = <<-EOS
 The :gist git source is deprecated, and will be removed in the future. Add this code to the top of your Gemfile to ensure it continues to work:
 
     git_source(:gist) {|repo_name| "https://gist.github.com/\#{repo_name}.git" }
 
         EOS
-        expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(3, msg)
+        expect(Bundler.ui).to receive(:warn).with("[DEPRECATED] #{msg}")
         subject.gem("not-really-a-gem", :gist => "1234")
       end
-
-      pending "should fail with a helpful error", :bundler => "3"
     end
   end
 

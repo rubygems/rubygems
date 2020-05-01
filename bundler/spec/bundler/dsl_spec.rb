@@ -220,17 +220,6 @@ RSpec.describe Bundler::Dsl do
         end
       end
     end
-
-    describe "#github", :bundler => "4" do
-      it "from github" do
-        expect do
-          spree_gems = %w[spree_core spree_api spree_backend]
-          subject.github "spree" do
-            spree_gems.each {|spree_gem| subject.send :gem, spree_gem }
-          end
-        end.to raise_error(Bundler::DeprecatedError, /github method has been removed/)
-      end
-    end
   end
 
   describe "syntax errors" do

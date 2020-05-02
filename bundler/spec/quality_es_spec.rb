@@ -40,7 +40,7 @@ RSpec.describe "La biblioteca si misma" do
   it "mantiene la calidad de lenguaje de la documentación" do
     included = /ronn/
     error_messages = []
-    man_tracked_files.split("\x0").each do |filename|
+    man_tracked_files.each do |filename|
       next unless filename =~ included
       error_messages << check_for_expendable_words(filename)
       error_messages << check_for_specific_pronouns(filename)
@@ -51,7 +51,7 @@ RSpec.describe "La biblioteca si misma" do
   it "mantiene la calidad de lenguaje de oraciones usadas en el código fuente" do
     error_messages = []
     exempt = /vendor/
-    lib_tracked_files.split("\x0").each do |filename|
+    lib_tracked_files.each do |filename|
       next if filename =~ exempt
       error_messages << check_for_expendable_words(filename)
       error_messages << check_for_specific_pronouns(filename)

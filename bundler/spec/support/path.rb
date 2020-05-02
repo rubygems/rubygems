@@ -34,19 +34,19 @@ module Spec
     end
 
     def tracked_files
-      @tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb spec/bundler man/bundler*" : "git ls-files -z", :dir => root)
+      @tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb spec/bundler man/bundler*" : "git ls-files -z", :dir => root).split("\x0")
     end
 
     def shipped_files
-      @shipped_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb man/bundler* libexec/bundle*" : "git ls-files -z -- lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec", :dir => root)
+      @shipped_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb man/bundler* libexec/bundle*" : "git ls-files -z -- lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec", :dir => root).split("\x0")
     end
 
     def lib_tracked_files
-      @lib_tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb" : "git ls-files -z -- lib", :dir => root)
+      @lib_tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb" : "git ls-files -z -- lib", :dir => root).split("\x0")
     end
 
     def man_tracked_files
-      @man_tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- man/bundler*" : "git ls-files -z -- man", :dir => root)
+      @man_tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- man/bundler*" : "git ls-files -z -- man", :dir => root).split("\x0")
     end
 
     def tmp(*path)

@@ -695,7 +695,19 @@ class Gem::Installer
     path = ENV['PATH']
     path = path.tr(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
 
-    if Gem.win_platform?
+    # Windows file system is case insensitive, but other OS's may also be,
+    # so we need to check
+    # test_dir folder needs to exist, try a few...
+    test_dir = if    Dir.exist? user_bin_dir  then user_bin_dir
+               elsif Dir.exist? Gem.user_home then Gem.user_home
+               else  __dir__
+               end
+
+    # fs_case_insens is true for case insensitive file systems
+    fs_case_insens =
+      test_dir != test_dir.swapcase && File.identical?(test_dir, test_dir.swapcase)
+
+    if fs_case_insens
       path = path.downcase
       user_bin_dir = user_bin_dir.downcase
     end

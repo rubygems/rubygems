@@ -219,6 +219,15 @@ gem 'other', version
     end
 
     assert_empty @ui.error
+
+    ENV['PATH'] = [orig_PATH, bin_dir.swapcase].join(File::PATH_SEPARATOR)
+
+    use_ui @ui do
+      installer.check_that_user_bin_dir_is_in_path
+    end
+
+    assert_empty @ui.error
+
   ensure
     ENV['PATH'] = orig_PATH
   end

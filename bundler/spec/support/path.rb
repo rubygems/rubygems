@@ -159,20 +159,6 @@ module Spec
       tmp "tmpdir", *args
     end
 
-    def with_root_gemspec
-      if ruby_core?
-        root_gemspec = root.join("bundler.gemspec")
-        # Dir.chdir for Dir.glob in gemspec
-        spec = Dir.chdir(root) { Gem::Specification.load(gemspec.to_s) }
-        spec.bindir = "libexec"
-        File.open(root_gemspec.to_s, "w") {|f| f.write spec.to_ruby }
-        yield(root_gemspec)
-        FileUtils.rm(root_gemspec)
-      else
-        yield(gemspec)
-      end
-    end
-
     def ruby_core?
       # avoid to warnings
       @ruby_core ||= nil

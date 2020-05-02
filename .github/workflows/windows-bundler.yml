@@ -5,7 +5,7 @@ on:
 
   push:
     branches:
-      - master
+      - refactor_git_source_display
 
 jobs:
   windows_bundler:

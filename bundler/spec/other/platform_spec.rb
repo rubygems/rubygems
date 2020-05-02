@@ -388,7 +388,7 @@ G
 
       bundle :check
       expect(exitstatus).to eq(0) if exitstatus
-      expect(out).to eq("Resolving dependencies...\nThe Gemfile's dependencies are satisfied")
+      expect(out).to match(/\AResolving dependencies\.\.\.\.*\nThe Gemfile's dependencies are satisfied\z/)
     end
 
     it "checks fine with any engine", :jruby do
@@ -406,7 +406,7 @@ G
 
       bundle :check
       expect(exitstatus).to eq(0) if exitstatus
-      expect(out).to eq("Resolving dependencies...\nThe Gemfile's dependencies are satisfied")
+      expect(out).to match(/\AResolving dependencies\.\.\.\.*\nThe Gemfile's dependencies are satisfied\z/)
     end
 
     it "fails when ruby version doesn't match" do

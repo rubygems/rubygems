@@ -98,18 +98,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     context "the bundle binstub" do
       before do
-        if system_bundler_version == :bundler
-          system_gems :bundler
-        elsif system_bundler_version
-          build_repo4 do
-            build_gem "bundler", system_bundler_version do |s|
-              s.executables = "bundle"
-              s.bindir = "exe"
-              s.write "exe/bundle", "puts %(system bundler #{system_bundler_version}\\n\#{ARGV.inspect})"
-            end
-          end
-          system_gems "bundler-#{system_bundler_version}", :gem_repo => gem_repo4
-        end
+        system_gems "bundler-#{system_bundler_version}"
         build_repo2 do
           build_gem "prints_loaded_gems", "1.0" do |s|
             s.executables = "print_loaded_gems"
@@ -131,8 +120,8 @@ RSpec.describe "bundle binstubs <gem>" do
       let(:system_bundler_version) { Bundler::VERSION }
 
       it "runs bundler" do
-        sys_exec! "bin/bundle install"
-        expect(out).to eq %(system bundler #{system_bundler_version}\n["install"])
+        sys_exec! "bin/bundle install", :env => { "DEBUG" => "1" }
+        expect(out).to include %(Using bundler #{system_bundler_version}\n)
       end
 
       context "when BUNDLER_VERSION is set" do
@@ -207,8 +196,8 @@ RSpec.describe "bundle binstubs <gem>" do
         before { lockfile.gsub(system_bundler_version, "1.1.1") }
 
         it "calls through to the latest bundler version" do
-          sys_exec! "bin/bundle update --bundler"
-          expect(out).to eq %(system bundler #{system_bundler_version}\n["update", "--bundler"])
+          sys_exec! "bin/bundle update --bundler", :env => { "DEBUG" => "1" }
+          expect(out).to include %(Using bundler #{system_bundler_version}\n)
         end
 
         it "calls through to the explicit bundler version" do
@@ -222,13 +211,12 @@ RSpec.describe "bundle binstubs <gem>" do
       context "without a lockfile" do
         it "falls back to the latest installed bundler" do
           FileUtils.rm bundled_app_lock
-          sys_exec! "bin/bundle install"
-          expect(out).to eq "system bundler #{system_bundler_version}\n[]"
+          sys_exec! "bin/bundle install", :env => { "DEBUG" => "1" }
+          expect(out).to include "Using bundler #{system_bundler_version}\n"
         end
       end
 
       context "using another binstub" do
-        let(:system_bundler_version) { :bundler }
         it "loads all gems" do
           sys_exec! bundled_app("bin/print_loaded_gems").to_s
           expect(out).to eq %(["bundler-#{Bundler::VERSION}", "prints_loaded_gems-1.0", "rack-1.2"])

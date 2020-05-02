@@ -294,12 +294,14 @@ module Spec
       options = gems.last.is_a?(Hash) ? gems.pop : {}
       gem_repo = options.fetch(:gem_repo) { gem_repo1 }
       gems.each do |g|
-        if g == :bundler
-          with_built_bundler {|gem_path| install_gem(gem_path) }
-        elsif g.to_s =~ %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}
-          install_gem(g)
+        gem_name = g.to_s
+        if gem_name.start_with?("bundler")
+          version = gem_name.match(/\Abundler-(?<version>.*)\z/)[:version] if gem_name != "bundler"
+          with_built_bundler(version) {|gem_path| install_gem(gem_path) }
+        elsif gem_name =~ %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}
+          install_gem(gem_name)
         else
-          install_gem("#{gem_repo}/gems/#{g}.gem")
+          install_gem("#{gem_repo}/gems/#{gem_name}.gem")
         end
       end
     end
@@ -310,8 +312,9 @@ module Spec
       gem_command! "install --no-document --ignore-dependencies '#{path}'"
     end
 
-    def with_built_bundler
-      full_name = "bundler-#{Bundler::VERSION}"
+    def with_built_bundler(version = nil)
+      version ||= Bundler::VERSION
+      full_name = "bundler-#{version}"
       build_path = tmp + full_name
       bundler_path = build_path + "#{full_name}.gem"
 
@@ -324,6 +327,8 @@ module Spec
           FileUtils.mkdir_p target_shipped_dir unless File.directory?(target_shipped_dir)
           FileUtils.cp shipped_file, target_shipped_file, :preserve => true
         end
+
+        replace_version_file(version, dir: build_path) # rubocop:disable Style/HashSyntax
 
         gem_command! "build bundler.gemspec", :dir => build_path
 

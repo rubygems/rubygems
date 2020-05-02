@@ -138,6 +138,26 @@ RSpec.describe Bundler::GemHelper do
           expect(app_gem_path).to exist
         end
       end
+
+      context "when building in the current working directory" do
+        it "creates .gem file" do
+          mock_build_message app_name, app_version
+          Dir.chdir app_path do
+            Bundler::GemHelper.new.build_gem
+          end
+          expect(app_gem_path).to exist
+        end
+      end
+
+      context "when building in a location relative to the current working directory" do
+        it "creates .gem file" do
+          mock_build_message app_name, app_version
+          Dir.chdir File.dirname(app_path) do
+            Bundler::GemHelper.new(File.basename(app_path)).build_gem
+          end
+          expect(app_gem_path).to exist
+        end
+      end
     end
 
     describe "#install_gem" do

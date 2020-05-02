@@ -25,8 +25,8 @@ module Bundler
     attr_reader :spec_path, :base, :gemspec
 
     def initialize(base = nil, name = nil)
-      @base = (base ||= SharedHelpers.pwd)
-      gemspecs = name ? [File.join(base, "#{name}.gemspec")] : Dir[File.join(base, "{,*}.gemspec")]
+      @base = File.expand_path(base || SharedHelpers.pwd)
+      gemspecs = name ? [File.join(@base, "#{name}.gemspec")] : Dir[File.join(@base, "{,*}.gemspec")]
       raise "Unable to determine name from existing gemspec. Use :name => 'gemname' in #install_tasks to manually set it." unless gemspecs.size == 1
       @spec_path = gemspecs.first
       @gemspec = Bundler.load_gemspec(@spec_path)

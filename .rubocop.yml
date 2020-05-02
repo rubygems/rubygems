@@ -1,3 +1,5 @@
+require: rubocop-performance
+
 AllCops:
   DisabledByDefault: true
   Exclude:
@@ -88,6 +90,9 @@ Naming/HeredocDelimiterNaming:
   Enabled: true
   ForbiddenDelimiters:
     - ^RB$
+
+Performance/StringReplacement:
+  Enabled: true
 
 Style/MethodDefParentheses:
   Enabled: true

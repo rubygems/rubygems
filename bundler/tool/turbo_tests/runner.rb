@@ -157,6 +157,7 @@ module TurboTests
           @reporter.example_pending(example)
         when "example_failed"
           example = FakeExample.from_obj(message["example"])
+          example["full_description"] = "[TEST_ENV_NUMBER=#{message["process_id"]}] #{example["full_description"]}"
           @reporter.example_failed(example)
           @failure_count += 1
           if fail_fast_met

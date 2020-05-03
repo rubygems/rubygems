@@ -26,7 +26,6 @@ module TurboTests
       :example_failed,
       :example_passed,
       :example_pending,
-      :seed
     )
 
     attr_reader :output
@@ -53,13 +52,6 @@ module TurboTests
       output_row(
         "type" => :example_failed,
         "example" => example_to_json(notification.example)
-      )
-    end
-
-    def seed(notification)
-      output_row(
-        "type" => :seed,
-        "seed" => notification.seed,
       )
     end
 

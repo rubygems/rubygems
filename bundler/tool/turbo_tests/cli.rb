@@ -12,9 +12,11 @@ module TurboTests
 
     def run
       requires = []
-      formatters = []
+      formatters = [{
+        :name => "progress",
+        :outputs => [],
+      }]
       tags = []
-      verbose = false
       fail_fast = nil
 
       OptionParser.new do |opts|
@@ -34,37 +36,20 @@ module TurboTests
         end
 
         opts.on("-o", "--out FILE", "Write output to a file instead of $stdout") do |filename|
-          if formatters.empty?
-            formatters << {
-              :name => "progress",
-              :outputs => [],
-            }
-          end
           formatters.last[:outputs] << filename
-        end
-
-        opts.on("-v", "--verbose", "More output") do
-          verbose = true
         end
 
         opts.on("--fail-fast=[N]") do |n|
           n = begin
                 Integer(n)
               rescue StandardError
-                nil
+                1
               end
-          fail_fast = n.nil? || n < 1 ? 1 : n
+          fail_fast = [1, n].max
         end
       end.parse!(@argv)
 
       requires.each {|f| require(f) }
-
-      if formatters.empty?
-        formatters << {
-          :name => "progress",
-          :outputs => [],
-        }
-      end
 
       formatters.each do |formatter|
         if formatter[:outputs].empty?
@@ -76,7 +61,6 @@ module TurboTests
         :formatters => formatters,
         :tags => tags,
         :files => @argv.empty? ? ["spec"] : @argv,
-        :verbose => verbose,
         :fail_fast => fail_fast
       )
     end

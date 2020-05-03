@@ -11,7 +11,6 @@ module TurboTests
       formatters = opts[:formatters]
       tags = opts[:tags]
       start_time = opts.fetch(:start_time) { Time.now }
-      verbose = opts.fetch(:verbose, false)
       fail_fast = opts.fetch(:fail_fast, nil)
 
       reporter = Reporter.from_config(formatters, start_time)
@@ -20,7 +19,6 @@ module TurboTests
         :reporter => reporter,
         :files => files,
         :tags => tags,
-        :verbose => verbose,
         :fail_fast => fail_fast
       ).run
     end
@@ -29,7 +27,6 @@ module TurboTests
       @reporter = opts[:reporter]
       @files = opts[:files]
       @tags = opts[:tags]
-      @verbose = opts[:verbose]
       @fail_fast = opts[:fail_fast]
       @failure_count = 0
       @runtime_log = "tmp/parallel_runtime_rspec.log"
@@ -85,23 +82,26 @@ module TurboTests
 
         command_name = Gem.win_platform? ? [Gem.ruby, "bin/rspec"] : "bin/rspec"
 
+        seed = rand(0xFFFF).to_s
+
         command = [
           *command_name,
           *extra_args,
+          "--seed", seed,
           "--format", "ParallelTests::RSpec::RuntimeLogger",
           "--out", @runtime_log,
           "--format", "TurboTests::JsonRowsFormatter",
           *tests
         ]
 
-        if @verbose
-          command_str = [
-            env.map {|k, v| "#{k}=#{v}" }.join(" "),
-            command.join(" "),
-          ].select {|x| x.size > 0 }.join(" ")
+        rerun_command = [
+          *command_name,
+          *extra_args,
+          "--seed", seed,
+          *tests
+        ]
 
-          STDOUT.puts "Process #{process_id}: #{command_str}"
-        end
+        puts "TEST_ENV_NUMBER=#{env["TEST_ENV_NUMBER"]} #{rerun_command.join(" ")}"
 
         _stdin, stdout, stderr, _wait_thr = Open3.popen3(env, *command)
 
@@ -112,7 +112,7 @@ module TurboTests
               result = line.split(env["RSPEC_FORMATTER_OUTPUT_ID"])
 
               output = result.shift
-              STDOUT.print(output) unless output.empty?
+              print(output) unless output.empty?
 
               message = result.shift
               next unless message
@@ -157,13 +157,13 @@ module TurboTests
           @reporter.example_pending(example)
         when "example_failed"
           example = FakeExample.from_obj(message["example"])
+          example["full_description"] = "[TEST_ENV_NUMBER=#{message["process_id"]}] #{example["full_description"]}"
           @reporter.example_failed(example)
           @failure_count += 1
           if fail_fast_met
             @threads.each(&:kill)
             break
           end
-        when "seed"
         when "close"
         when "exit"
           exited += 1

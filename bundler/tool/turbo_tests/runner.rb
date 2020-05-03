@@ -88,6 +88,7 @@ module TurboTests
         command = [
           *command_name,
           *extra_args,
+          "--seed", rand(0xFFFF).to_s,
           "--format", "ParallelTests::RSpec::RuntimeLogger",
           "--out", @runtime_log,
           "--format", "TurboTests::JsonRowsFormatter",
@@ -163,7 +164,6 @@ module TurboTests
             @threads.each(&:kill)
             break
           end
-        when "seed"
         when "close"
         when "exit"
           exited += 1

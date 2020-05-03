@@ -101,7 +101,7 @@ module TurboTests
             command.join(" "),
           ].select {|x| x.size > 0 }.join(" ")
 
-          STDOUT.puts "Process #{process_id}: #{command_str}"
+          STDOUT.puts command_str
         end
 
         _stdin, stdout, stderr, _wait_thr = Open3.popen3(env, *command)

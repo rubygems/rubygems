@@ -48,9 +48,9 @@ module TurboTests
           n = begin
                 Integer(n)
               rescue StandardError
-                nil
+                1
               end
-          fail_fast = n.nil? || n < 1 ? 1 : n
+          fail_fast = [1, n].max
         end
       end.parse!(@argv)
 

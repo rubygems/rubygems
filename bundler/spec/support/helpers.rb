@@ -310,21 +310,25 @@ module Spec
     end
 
     def with_built_bundler
-      bundler_path = tmp + "bundler-#{Bundler::VERSION}.gem"
+      full_name = "bundler-#{Bundler::VERSION}"
+      build_path = tmp + full_name
+      bundler_path = build_path + "#{full_name}.gem"
 
-      with_root_gemspec do |gemspec|
-        if Gem::Version.new(Gem::VERSION) >= Gem::Version.new("3.0.0")
-          gem_command! "build #{gemspec} --output #{bundler_path}", :dir => root
-        else
-          gem_command! "build #{gemspec}", :dir => root
-          FileUtils.mv root + File.basename(bundler_path), bundler_path
-        end
-      end
+      Dir.mkdir build_path
 
       begin
+        shipped_files.each do |shipped_file|
+          target_shipped_file = build_path + shipped_file
+          target_shipped_dir = File.dirname(target_shipped_file)
+          FileUtils.mkdir_p target_shipped_dir unless File.directory?(target_shipped_dir)
+          FileUtils.cp shipped_file, target_shipped_file, :preserve => true
+        end
+
+        gem_command! "build bundler.gemspec", :dir => build_path
+
         yield(bundler_path)
       ensure
-        bundler_path.rmtree
+        build_path.rmtree
       end
     end
 

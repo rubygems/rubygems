@@ -17,7 +17,6 @@ module TurboTests
         :outputs => [],
       }]
       tags = []
-      verbose = false
       fail_fast = nil
 
       OptionParser.new do |opts|
@@ -38,10 +37,6 @@ module TurboTests
 
         opts.on("-o", "--out FILE", "Write output to a file instead of $stdout") do |filename|
           formatters.last[:outputs] << filename
-        end
-
-        opts.on("-v", "--verbose", "More output") do
-          verbose = true
         end
 
         opts.on("--fail-fast=[N]") do |n|
@@ -66,7 +61,6 @@ module TurboTests
         :formatters => formatters,
         :tags => tags,
         :files => @argv.empty? ? ["spec"] : @argv,
-        :verbose => verbose,
         :fail_fast => fail_fast
       )
     end

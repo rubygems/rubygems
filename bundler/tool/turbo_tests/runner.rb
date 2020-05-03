@@ -11,7 +11,6 @@ module TurboTests
       formatters = opts[:formatters]
       tags = opts[:tags]
       start_time = opts.fetch(:start_time) { Time.now }
-      verbose = opts.fetch(:verbose, false)
       fail_fast = opts.fetch(:fail_fast, nil)
 
       reporter = Reporter.from_config(formatters, start_time)
@@ -20,7 +19,6 @@ module TurboTests
         :reporter => reporter,
         :files => files,
         :tags => tags,
-        :verbose => verbose,
         :fail_fast => fail_fast
       ).run
     end
@@ -29,7 +27,6 @@ module TurboTests
       @reporter = opts[:reporter]
       @files = opts[:files]
       @tags = opts[:tags]
-      @verbose = opts[:verbose]
       @fail_fast = opts[:fail_fast]
       @failure_count = 0
       @runtime_log = "tmp/parallel_runtime_rspec.log"
@@ -95,14 +92,12 @@ module TurboTests
           *tests
         ]
 
-        if @verbose
-          command_str = [
-            env.map {|k, v| "#{k}=#{v}" }.join(" "),
-            command.join(" "),
-          ].select {|x| x.size > 0 }.join(" ")
+        command_str = [
+          env.map {|k, v| "#{k}=#{v}" }.join(" "),
+          command.join(" "),
+        ].select {|x| x.size > 0 }.join(" ")
 
-          puts command_str
-        end
+        puts command_str
 
         _stdin, stdout, stderr, _wait_thr = Open3.popen3(env, *command)
 

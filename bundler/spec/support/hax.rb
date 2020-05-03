@@ -27,16 +27,6 @@ module Gem
   end
 end
 
-if ENV["BUNDLER_SPEC_VERSION"]
-  require_relative "path"
-  require "#{Spec::Path.lib_dir}/bundler/version"
-
-  module Bundler
-    remove_const(:VERSION) if const_defined?(:VERSION)
-    VERSION = ENV["BUNDLER_SPEC_VERSION"]
-  end
-end
-
 if ENV["BUNDLER_SPEC_WINDOWS"] == "true"
   require_relative "path"
   require "#{Spec::Path.lib_dir}/bundler/constants"

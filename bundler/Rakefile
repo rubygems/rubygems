@@ -246,7 +246,7 @@ end
 
 task :override_version do
   next unless version = ENV["BUNDLER_SPEC_SUB_VERSION"]
-  version_file = File.expand_path("../lib/bundler/version.rb", __FILE__)
+  version_file = File.expand_path("lib/bundler/version.rb", __dir__)
   contents = File.read(version_file)
   contents.sub!(/(^\s+VERSION\s*=\s*)"#{Gem::Version::VERSION_PATTERN}"/, %(\\1"#{version}"))
   File.open(version_file, "w") {|f| f << contents }

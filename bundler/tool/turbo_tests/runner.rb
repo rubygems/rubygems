@@ -101,7 +101,7 @@ module TurboTests
             command.join(" "),
           ].select {|x| x.size > 0 }.join(" ")
 
-          STDOUT.puts command_str
+          puts command_str
         end
 
         _stdin, stdout, stderr, _wait_thr = Open3.popen3(env, *command)
@@ -113,7 +113,7 @@ module TurboTests
               result = line.split(env["RSPEC_FORMATTER_OUTPUT_ID"])
 
               output = result.shift
-              STDOUT.print(output) unless output.empty?
+              print(output) unless output.empty?
 
               message = result.shift
               next unless message

@@ -12,7 +12,10 @@ module TurboTests
 
     def run
       requires = []
-      formatters = []
+      formatters = [{
+        :name => "progress",
+        :outputs => [],
+      }]
       tags = []
       verbose = false
       fail_fast = nil
@@ -34,12 +37,6 @@ module TurboTests
         end
 
         opts.on("-o", "--out FILE", "Write output to a file instead of $stdout") do |filename|
-          if formatters.empty?
-            formatters << {
-              :name => "progress",
-              :outputs => [],
-            }
-          end
           formatters.last[:outputs] << filename
         end
 
@@ -58,13 +55,6 @@ module TurboTests
       end.parse!(@argv)
 
       requires.each {|f| require(f) }
-
-      if formatters.empty?
-        formatters << {
-          :name => "progress",
-          :outputs => [],
-        }
-      end
 
       formatters.each do |formatter|
         if formatter[:outputs].empty?

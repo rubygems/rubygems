@@ -82,22 +82,26 @@ module TurboTests
 
         command_name = Gem.win_platform? ? [Gem.ruby, "bin/rspec"] : "bin/rspec"
 
+        seed = rand(0xFFFF).to_s
+
         command = [
           *command_name,
           *extra_args,
-          "--seed", rand(0xFFFF).to_s,
+          "--seed", seed,
           "--format", "ParallelTests::RSpec::RuntimeLogger",
           "--out", @runtime_log,
           "--format", "TurboTests::JsonRowsFormatter",
           *tests
         ]
 
-        command_str = [
-          env.map {|k, v| "#{k}=#{v}" }.join(" "),
-          command.join(" "),
-        ].select {|x| x.size > 0 }.join(" ")
+        rerun_command = [
+          *command_name,
+          *extra_args,
+          "--seed", seed,
+          *tests
+        ]
 
-        puts command_str
+        puts "TEST_ENV_NUMBER=#{env["TEST_ENV_NUMBER"]} #{rerun_command.join(" ")}"
 
         _stdin, stdout, stderr, _wait_thr = Open3.popen3(env, *command)
 

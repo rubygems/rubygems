@@ -27,6 +27,7 @@ jobs:
           - { ruby: 2.7.1, rgv: v3.0.6  }
     env:
       RGV: ${{ matrix.rgv }}
+      RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby

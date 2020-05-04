@@ -733,7 +733,7 @@ The checksum of /versions does not match the checksum provided by the server! So
         gem "rack"
       G
 
-      bundle :install, :env => { "RUBYOPT" => "-I#{bundled_app("broken_ssl")}" }
+      bundle :install, :env => { "RUBYOPT" => opt_add("-I#{bundled_app("broken_ssl")}", ENV["RUBYOPT"]) }
       expect(err).to include("OpenSSL")
     end
   end

@@ -13,8 +13,7 @@ module Spec
     end
 
     def gem_load(gem_name, bin_container)
-      require_relative "rubygems_version_manager"
-      RubygemsVersionManager.new(ENV["RGV"]).switch
+      require_relative "switch_rubygems"
 
       gem_load_and_activate(gem_name, bin_container)
     end

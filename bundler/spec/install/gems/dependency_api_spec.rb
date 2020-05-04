@@ -706,7 +706,7 @@ RSpec.describe "gemcutter's dependency API" do
         gem "rack"
       G
 
-      bundle :install, :env => { "RUBYOPT" => "-I#{bundled_app("broken_ssl")}" }
+      bundle :install, :env => { "RUBYOPT" => opt_add("-I#{bundled_app("broken_ssl")}", ENV["RUBYOPT"]) }
       expect(err).to include("OpenSSL")
     end
   end

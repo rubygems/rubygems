@@ -357,6 +357,10 @@ module Spec
       end
     end
 
+    def opt_add(option, options)
+      [option.strip, options].compact.join(" ")
+    end
+
     def break_git!
       FileUtils.mkdir_p(tmp("broken_path"))
       File.open(tmp("broken_path/git"), "w", 0o755) do |f|

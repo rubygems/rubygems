@@ -292,8 +292,7 @@ RSpec.describe "bundle exec" do
       gem "rack"
     G
 
-    rubyopt = ENV["RUBYOPT"]
-    rubyopt = ["-r#{lib_dir}/bundler/setup", rubyopt].compact.join(" ")
+    rubyopt = opt_add("-r#{lib_dir}/bundler/setup", ENV["RUBYOPT"])
 
     bundle "exec 'echo $RUBYOPT'"
     expect(out).to eq(rubyopt)

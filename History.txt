@@ -1,5 +1,24 @@
 # coding: UTF-8
 
+=== 3.1.3 / 2020-05-05
+
+* Fix platform comparison check in #contains_requirable_file?. Pull
+  request #3495 by Benoit Daloze.
+* Improve gzip errors logging. Pull request #3485 by David Rodríguez.
+* Fix incorrect `gem uninstall --all` message. Pull request #3483 by David
+  Rodríguez.
+* Fix incorrect bundler version being required. Pull request #3458 by
+  David Rodríguez.
+* Resolver: require NameTuple before use. Pull request #3171 by Olle
+  Jonsson.
+* Use absolute paths with autoload. Pull request #3100 by David Rodríguez.
+* Avoid changing $SOURCE_DATE_EPOCH. Pull request #3088 by Ellen Marie
+  Dash.
+* Use Bundler 2.1.4. Pull request #3072 by Hiroshi SHIBATA.
+* Fix gem install from a gemdeps file with complex dependencies.
+  Pull request #3054 by Luis Sagastume.
+* Add tests to check if Gem.ruby_version works with ruby git master.
+  Pull request #3049 by Yusuke Endoh.
 
 === 3.1.2 / 2019-12-20
 

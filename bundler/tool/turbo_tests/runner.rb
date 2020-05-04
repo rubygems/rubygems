@@ -78,7 +78,7 @@ module TurboTests
       else
         require "securerandom"
         env["RSPEC_FORMATTER_OUTPUT_ID"] = SecureRandom.uuid
-        env["RUBYOPT"] = "-I#{File.expand_path("..", __dir__)}"
+        env["RUBYOPT"] = ["-I#{File.expand_path("..", __dir__)}", ENV["RUBYOPT"]].compact.join(" ")
 
         command_name = Gem.win_platform? ? [Gem.ruby, "bin/rspec"] : "bin/rspec"
 

@@ -3,7 +3,6 @@
 require_relative "path"
 
 $LOAD_PATH.unshift(Spec::Path.lib_dir.to_s)
-require "bundler"
 
 module Spec
   module Rubygems
@@ -94,6 +93,7 @@ module Spec
     end
 
     def gem_activate(gem_name)
+      require "bundler"
       gem_requirement = Bundler::LockfileParser.new(File.read(dev_lockfile)).dependencies[gem_name]&.requirement
       gem gem_name, gem_requirement
     end
@@ -101,6 +101,7 @@ module Spec
     def install_gems(gemfile, lockfile)
       old_gemfile = ENV["BUNDLE_GEMFILE"]
       ENV["BUNDLE_GEMFILE"] = gemfile.to_s
+      require "bundler"
       definition = Bundler::Definition.build(gemfile, lockfile, nil)
       definition.validate_runtime!
       Bundler::Installer.install(Path.root, definition, :path => ENV["GEM_HOME"])

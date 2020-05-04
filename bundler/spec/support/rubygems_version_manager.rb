@@ -36,7 +36,7 @@ private
 
     cmd = [ruby, $0, *ARGV].compact
 
-    ENV["RUBYOPT"] = opt_add("-I#{local_copy_path.join("lib")}", ENV["RUBYOPT"])
+    ENV["RUBYOPT"] = opt_add("-I#{local_copy_path.join("lib")}", opt_remove("--disable-gems", ENV["RUBYOPT"]))
 
     exec(ENV, *cmd)
   end

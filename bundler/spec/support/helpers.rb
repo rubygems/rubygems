@@ -358,7 +358,13 @@ module Spec
     end
 
     def opt_add(option, options)
-      [option.strip, options].compact.join(" ")
+      [option.strip, options].compact.reject(&:empty?).join(" ")
+    end
+
+    def opt_remove(option, options)
+      return unless options
+
+      options.split(" ").reject {|opt| opt.strip == option.strip }.join(" ")
     end
 
     def break_git!

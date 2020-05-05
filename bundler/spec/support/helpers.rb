@@ -78,7 +78,7 @@ module Spec
 
     def bundle(cmd, options = {}, &block)
       with_sudo = options.delete(:sudo)
-      sudo = with_sudo == :preserve_env ? "sudo -E" : "sudo" if with_sudo
+      sudo = with_sudo == :preserve_env ? "sudo -E --preserve-env=RUBYOPT" : "sudo" if with_sudo
 
       bundle_bin = options.delete("bundle_bin") || bindir.join("bundle")
 

@@ -23,6 +23,7 @@ GEM
     tilt (2.0.10)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES

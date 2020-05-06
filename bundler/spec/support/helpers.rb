@@ -78,7 +78,7 @@ module Spec
 
     def bundle(cmd, options = {}, &block)
       with_sudo = options.delete(:sudo)
-      sudo = with_sudo == :preserve_env ? "sudo -E" : "sudo" if with_sudo
+      sudo = with_sudo == :preserve_env ? "sudo -E --preserve-env=RUBYOPT" : "sudo" if with_sudo
 
       bundle_bin = options.delete("bundle_bin") || bindir.join("bundle")
 
@@ -203,6 +203,7 @@ module Spec
 
     def sys_exec(cmd, options = {})
       env = options[:env] || {}
+      env["RUBYOPT"] = opt_add("-r#{spec_dir}/support/switch_rubygems.rb", env["RUBYOPT"] || ENV["RUBYOPT"])
       dir = options[:dir] || bundled_app
       command_execution = CommandExecution.new(cmd.to_s, dir)
 
@@ -355,6 +356,16 @@ module Spec
       with_path_as(path.to_s + ":" + ENV["PATH"]) do
         yield
       end
+    end
+
+    def opt_add(option, options)
+      [option.strip, options].compact.reject(&:empty?).join(" ")
+    end
+
+    def opt_remove(option, options)
+      return unless options
+
+      options.split(" ").reject {|opt| opt.strip == option.strip }.join(" ")
     end
 
     def break_git!

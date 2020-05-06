@@ -292,14 +292,15 @@ RSpec.describe "bundle exec" do
       gem "rack"
     G
 
-    rubyopt = ENV["RUBYOPT"]
-    rubyopt = ["-r#{lib_dir}/bundler/setup", rubyopt].compact.join(" ")
+    bundler_setup_opt = "-r#{lib_dir}/bundler/setup"
+
+    rubyopt = opt_add(bundler_setup_opt, ENV["RUBYOPT"])
 
     bundle "exec 'echo $RUBYOPT'"
-    expect(out).to eq(rubyopt)
+    expect(out.split(" ").count(bundler_setup_opt)).to eq(1)
 
     bundle "exec 'echo $RUBYOPT'", :env => { "RUBYOPT" => rubyopt }
-    expect(out).to eq(rubyopt)
+    expect(out.split(" ").count(bundler_setup_opt)).to eq(1)
   end
 
   it "does not duplicate already exec'ed RUBYLIB" do

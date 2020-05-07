@@ -826,7 +826,7 @@ G
   context "bundle exec" do
     before do
       ENV["BUNDLER_FORCE_TTY"] = "true"
-      system_gems "rack-1.0.0", "rack-0.9.1", :path => :bundle_path
+      system_gems "rack-1.0.0", "rack-0.9.1", :path => default_bundle_path
     end
 
     it "activates the correct gem when ruby version matches" do
@@ -841,7 +841,7 @@ G
     end
 
     it "activates the correct gem when ruby version matches any engine", :jruby do
-      system_gems "rack-1.0.0", "rack-0.9.1", :path => :bundle_path
+      system_gems "rack-1.0.0", "rack-0.9.1", :path => default_bundle_path
       gemfile <<-G
         gem "rack", "0.9.1"
 

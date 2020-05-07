@@ -760,7 +760,7 @@ module Spec
         if opts[:to_system]
           @context.system_gems gem_path, :keep_path => true
         elsif opts[:to_bundle]
-          @context.system_gems gem_path, :path => :bundle_path, :keep_path => true
+          @context.system_gems gem_path, :path => @context.default_bundle_path, :keep_path => true
         else
           FileUtils.mv(gem_path, destination)
         end

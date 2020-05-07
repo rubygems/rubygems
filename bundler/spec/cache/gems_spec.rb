@@ -27,7 +27,7 @@ RSpec.describe "bundle cache" do
     end
 
     it "uses the cache as a source when installing gems with --local" do
-      system_gems [], :path => :bundle_path
+      system_gems [], :path => default_bundle_path
       bundle "install --local"
 
       expect(the_bundle).to include_gems("rack 1.0.0")
@@ -46,7 +46,7 @@ RSpec.describe "bundle cache" do
     end
 
     it "does not reinstall gems from the cache if they exist in the bundle" do
-      system_gems "rack-1.0.0", :path => :bundle_path
+      system_gems "rack-1.0.0", :path => default_bundle_path
 
       gemfile <<-G
         gem "rack"

@@ -13,7 +13,7 @@ Before processing your issue please confirm that:
 
 - [ ] You checked all the following documents and couldn't find a solution for your issue:
 
-- [Troubleshooting common issues](https://github.com/rubygems/bundler/blob/master/doc/TROUBLESHOOTING.md)
+- [Troubleshooting common issues](https://github.com/rubygems/rubygems/blob/master/bundler/doc/TROUBLESHOOTING.md)
 - [Bundler documentation site](https://bundler.io/)
 - [Bundler man pages](https://bundler.io/man/bundle.1.html)
 - [Bundler command line reference](https://bundler.io/v2.0/commands.html)

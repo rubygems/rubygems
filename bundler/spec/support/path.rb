@@ -139,8 +139,8 @@ module Spec
       tmp("gems/system", *path)
     end
 
-    def local_gem_path(*path)
-      bundled_app(*[".bundle", Gem.ruby_engine, RbConfig::CONFIG["ruby_version"], *path].compact)
+    def local_gem_path(*path, base: bundled_app)
+      base.join(*[".bundle", Gem.ruby_engine, RbConfig::CONFIG["ruby_version"], *path].compact)
     end
 
     def lib_path(*args)

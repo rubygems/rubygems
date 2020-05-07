@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rubygems'
+require 'rubygems/config_file'
 require 'rubygems/request'
 require 'rubygems/request/connection_pools'
 require 'rubygems/s3_uri_signer'
@@ -59,10 +60,18 @@ class Gem::RemoteFetcher
   # Cached RemoteFetcher instance.
 
   def self.fetcher
-    @fetcher ||= self.new Gem.configuration[:http_proxy]
+    @fetcher ||= self.new(
+      Gem.configuration[:http_proxy],
+      max_retries: Gem.configuration.max_retries,
+      replace_resolv: Gem.configuration.replace_resolv,
+      timeout: Gem.configuration.timeout,
+    )
   end
 
   attr_accessor :headers
+  attr_accessor :max_retries
+  attr_accessor :replace_resolv
+  attr_accessor :timeout
 
   ##
   # Initialize a remote fetcher using the source URI and possible proxy
@@ -77,8 +86,21 @@ class Gem::RemoteFetcher
   #
   # +headers+: A set of additional HTTP headers to be sent to the server when
   #            fetching the gem.
+  #
+  # +max_retries+: Number of times to retry downloads for slow internet
+  #                connections. Must be an integer.
+  #
+  # +replace_resolv+: +true+ to require +'resolv-replace'+ for slow internet
+  #                   connections, else, +false+ to not.
+  #
+  # +timeout+: Open, Read, SSL, and Continue timeouts in seconds for slow
+  #            internet connections. +nil+ will use the default values
+  #            (i.e., not set anything). Can be an integer, float, or +nil+.
 
-  def initialize(proxy=nil, dns=nil, headers={})
+  def initialize(proxy=nil, dns=nil, headers={},
+                 max_retries: Gem::ConfigFile::DEFAULT_MAX_RETRIES,
+                 replace_resolv: Gem::ConfigFile::DEFAULT_REPLACE_RESOLV,
+                 timeout: Gem::ConfigFile::DEFAULT_TIMEOUT)
     require 'net/http'
     require 'stringio'
     require 'time'
@@ -92,6 +114,10 @@ class Gem::RemoteFetcher
     @cert_files = Gem::Request.get_cert_files
 
     @headers = headers
+
+    @max_retries = max_retries.to_i() # Must be an int
+    @replace_resolv = replace_resolv
+    @timeout = timeout # nil is okay
   end
 
   ##
@@ -315,7 +341,9 @@ class Gem::RemoteFetcher
     proxy = proxy_for @proxy, uri
     pool  = pools_for(proxy).pool_for uri
 
-    request = Gem::Request.new uri, request_class, last_modified, pool
+    request = Gem::Request.new(uri, request_class, last_modified, pool,
+      max_retries: @max_retries,replace_resolv: @replace_resolv,timeout: @timeout,
+    )
 
     request.fetch do |req|
       yield req if block_given?

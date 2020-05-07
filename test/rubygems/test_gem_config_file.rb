@@ -42,6 +42,9 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal true, @cfg.verbose
     assert_equal [@gem_repo], Gem.sources
     assert_equal 365, @cfg.cert_expiration_length_days
+    assert_equal Gem::ConfigFile::DEFAULT_MAX_RETRIES, @cfg.max_retries
+    assert_equal Gem::ConfigFile::DEFAULT_REPLACE_RESOLV, @cfg.replace_resolv
+    assert_nil @cfg.timeout
 
     File.open @temp_conf, 'w' do |fp|
       fp.puts ":backtrace: true"
@@ -57,6 +60,9 @@ class TestGemConfigFile < Gem::TestCase
       fp.puts ":ssl_verify_mode: 0"
       fp.puts ":ssl_ca_cert: /etc/ssl/certs"
       fp.puts ":cert_expiration_length_days: 28"
+      fp.puts ":max_retries: 3"
+      fp.puts ":replace_resolv: true"
+      fp.puts ":timeout: 180"
     end
 
     util_config_file
@@ -71,6 +77,9 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal 0, @cfg.ssl_verify_mode
     assert_equal '/etc/ssl/certs', @cfg.ssl_ca_cert
     assert_equal 28, @cfg.cert_expiration_length_days
+    assert_equal 3, @cfg.max_retries
+    assert_equal true, @cfg.replace_resolv
+    assert_equal 180, @cfg.timeout
   end
 
   def test_initialize_handle_arguments_config_file
@@ -285,6 +294,9 @@ if you believe they were disclosed to a third party.
       fp.puts ":verbose: false"
       fp.puts ":sources:"
       fp.puts "  - http://more-gems.example.com"
+      fp.puts ":max_retries: 3"
+      fp.puts ":replace_resolv: true"
+      fp.puts ":timeout: 180"
     end
 
     args = %W[--norc]
@@ -296,6 +308,9 @@ if you believe they were disclosed to a third party.
     assert_equal Gem::ConfigFile::DEFAULT_BULK_THRESHOLD, @cfg.bulk_threshold
     assert_equal true, @cfg.verbose
     assert_equal [@gem_repo], Gem.sources
+    assert_equal Gem::ConfigFile::DEFAULT_MAX_RETRIES, @cfg.max_retries
+    assert_equal Gem::ConfigFile::DEFAULT_REPLACE_RESOLV, @cfg.replace_resolv
+    assert_nil @cfg.timeout
   end
 
   def test_load_api_keys
@@ -381,7 +396,12 @@ if you believe they were disclosed to a third party.
     @cfg.update_sources = false
     @cfg.bulk_threshold = 10
     @cfg.verbose = false
+    @cfg.max_retries = 3
+    @cfg.replace_resolv = true
+    @cfg.timeout = 180
+
     Gem.sources.replace %w[http://more-gems.example.com]
+
     @cfg[:install] = '--wrappers'
 
     @cfg.write
@@ -394,6 +414,9 @@ if you believe they were disclosed to a third party.
                  'bulk_threshold'
     assert_equal true, @cfg.update_sources, 'update_sources'
     assert_equal true, @cfg.verbose,        'verbose'
+    assert_equal Gem::ConfigFile::DEFAULT_MAX_RETRIES, @cfg.max_retries, 'max_retries'
+    assert_equal Gem::ConfigFile::DEFAULT_REPLACE_RESOLV, @cfg.replace_resolv, 'replace_resolv'
+    assert_nil @cfg.timeout, 'timeout'
 
     assert_equal '--wrappers', @cfg[:install], 'install'
 
@@ -413,6 +436,9 @@ if you believe they were disclosed to a third party.
       fp.puts ":ssl_ca_cert: /nonexistent/ca_cert.pem"
       fp.puts ":ssl_client_cert: /nonexistent/client_cert.pem"
       fp.puts "install: --wrappers"
+      fp.puts ":max_retries: 3"
+      fp.puts ":replace_resolv: true"
+      fp.puts ":timeout: 180"
     end
 
     util_config_file
@@ -421,6 +447,9 @@ if you believe they were disclosed to a third party.
     @cfg.update_sources = :junk
     @cfg.bulk_threshold = 20
     @cfg.verbose = :junk
+    @cfg.max_retries = :junk
+    @cfg.replace_resolv = :junk
+    @cfg.timeout = :junk
     Gem.sources.replace %w[http://even-more-gems.example.com]
     @cfg[:install] = '--wrappers --no-rdoc'
 
@@ -433,6 +462,9 @@ if you believe they were disclosed to a third party.
     assert_equal 10,    @cfg.bulk_threshold, 'bulk_threshold'
     assert_equal false, @cfg.update_sources, 'update_sources'
     assert_equal false, @cfg.verbose,        'verbose'
+    assert_equal 3,     @cfg.max_retries,    'max_retries'
+    assert_equal true,  @cfg.replace_resolv, 'replace_resolv'
+    assert_equal 180,   @cfg.timeout,        'timeout'
 
     assert_equal 2,                              @cfg.ssl_verify_mode
     assert_equal '/nonexistent/ca_cert.pem',     @cfg.ssl_ca_cert

@@ -17,6 +17,10 @@ module Spec
       @gemspec_dir ||= gemspec.parent
     end
 
+    def loaded_gemspec
+      @loaded_gemspec ||= Gem::Specification.load(gemspec.to_s)
+    end
+
     def bindir
       @bindir ||= root.join(ruby_core? ? "libexec" : "exe")
     end

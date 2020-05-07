@@ -176,7 +176,7 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "does not reinstall any gem that is already available locally" do
-      system_gems "activesupport-2.3.2", :path => :bundle_path
+      system_gems "activesupport-2.3.2", :path => default_bundle_path
 
       build_repo2 do
         build_gem "activesupport", "2.3.2" do |s|

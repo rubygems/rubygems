@@ -65,10 +65,10 @@ module Spec
     end
 
     def default_bundle_path(*path)
-      if Bundler::VERSION.split(".").first.to_i < 3
-        system_gem_path(*path)
+      if Bundler.feature_flag.default_install_uses_path?
+        local_gem_path(*path)
       else
-        bundled_app(*[".bundle", Gem.ruby_engine, RbConfig::CONFIG["ruby_version"], *path].compact)
+        system_gem_path(*path)
       end
     end
 
@@ -137,6 +137,10 @@ module Spec
 
     def system_gem_path(*path)
       tmp("gems/system", *path)
+    end
+
+    def local_gem_path(*path, base: bundled_app)
+      base.join(*[".bundle", Gem.ruby_engine, RbConfig::CONFIG["ruby_version"], *path].compact)
     end
 
     def lib_path(*args)

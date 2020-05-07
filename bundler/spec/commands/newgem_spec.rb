@@ -252,7 +252,8 @@ RSpec.describe "bundle gem" do
     prepare_gemspec(bundled_app("newgem", "newgem.gemspec"))
 
     gems = ["rake-13.0.1"]
-    system_gems gems, :path => :bundle_path, :bundle_dir => bundled_app("newgem")
+    path = Bundler.feature_flag.default_install_uses_path? ? local_gem_path(:base => bundled_app("newgem")) : system_gem_path
+    system_gems gems, :path => path
     bundle! "exec rake build", :dir => bundled_app("newgem")
 
     expect(last_command.stdboth).not_to include("ERROR")

@@ -144,7 +144,7 @@ RSpec.describe "bundle check" do
       end
     G
 
-    system_gems "rack-1.0.0", :path => :bundle_path
+    system_gems "rack-1.0.0", :path => default_bundle_path
 
     lockfile <<-G
       GEM
@@ -175,7 +175,7 @@ RSpec.describe "bundle check" do
       end
     G
 
-    system_gems "rack-1.0.0", :path => :bundle_path
+    system_gems "rack-1.0.0", :path => default_bundle_path
 
     lockfile <<-G
       GEM

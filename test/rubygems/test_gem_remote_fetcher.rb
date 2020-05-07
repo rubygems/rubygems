@@ -631,6 +631,40 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     assert_equal "murphy", fetcher.fetch_path(@server_uri)
   end
 
+  def test_fetch_http_with_slow_internet
+    fetcher = Gem::RemoteFetcher.new(nil,
+      max_retries: 3,
+      replace_resolv: true,
+      timeout: 180,
+    )
+
+    assert_equal 3, fetcher.max_retries
+    assert_equal true, fetcher.replace_resolv
+    assert_equal 180, fetcher.timeout
+
+    @fetcher = fetcher
+    url = 'http://gems.example.com/redirect'
+
+    def fetcher.request(uri, request_class, last_modified = nil)
+      url = 'http://gems.example.com/redirect'
+
+      unless defined? @requested
+        @requested = true
+        res = Net::HTTPMovedPermanently.new nil, 301, nil
+        res.add_field 'Location', url
+        res
+      else
+        res = Net::HTTPOK.new nil, 200, nil
+        def res.body() 'real_path' end
+        res
+      end
+    end
+
+    data = fetcher.fetch_http URI.parse(url)
+
+    assert_equal 'real_path', data
+  end
+
   def assert_fetch_s3(url, signature, token=nil, region='us-east-1', instance_profile_json=nil)
     fetcher = Gem::RemoteFetcher.new nil
     @fetcher = fetcher

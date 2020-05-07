@@ -28,6 +28,9 @@ require 'rbconfig'
 # +:sources+:: Sets Gem::sources
 # +:verbose+:: See #verbose
 # +:concurrent_downloads+:: See #concurrent_downloads
+# +:max_retries+:: See #max_retries
+# +:replace_resolv+:: See #replace_resolv
+# +:timeout+:: See #timeout
 #
 # gemrc files may exist in various locations and are read and merged in
 # the following order:
@@ -46,6 +49,9 @@ class Gem::ConfigFile
   DEFAULT_UPDATE_SOURCES = true
   DEFAULT_CONCURRENT_DOWNLOADS = 8
   DEFAULT_CERT_EXPIRATION_LENGTH_DAYS = 365
+  DEFAULT_MAX_RETRIES = 0
+  DEFAULT_REPLACE_RESOLV = false
+  DEFAULT_TIMEOUT = nil
 
   ##
   # For Ruby packagers to set configuration defaults.  Set in
@@ -113,6 +119,34 @@ class Gem::ConfigFile
   attr_accessor :concurrent_downloads
 
   ##
+  # Number of times to retry downloads for slow internet connections.
+  # Must be an integer.
+  #
+  # See Gem::Request
+  # See Gem::RemoteFetcher
+
+  attr_accessor :max_retries
+
+  ##
+  # +true+ to require +'resolv-replace'+ for slow internet connections,
+  # else, +false+ to not.
+  #
+  # See Gem::Request
+  # See Gem::RemoteFetcher
+
+  attr_accessor :replace_resolv
+
+  ##
+  # Open, Read, SSL, and Continue timeouts in seconds for slow internet connections.
+  # +nil+ will use the default values (i.e., not set anything).
+  # Can be an integer, float, or +nil+.
+  #
+  # See Gem::Request
+  # See Gem::RemoteFetcher
+
+  attr_accessor :timeout
+
+  ##
   # True if we want to update the SourceInfoCache every time, false otherwise
 
   attr_accessor :update_sources
@@ -176,6 +210,9 @@ class Gem::ConfigFile
     @update_sources = DEFAULT_UPDATE_SOURCES
     @concurrent_downloads = DEFAULT_CONCURRENT_DOWNLOADS
     @cert_expiration_length_days = DEFAULT_CERT_EXPIRATION_LENGTH_DAYS
+    @max_retries = DEFAULT_MAX_RETRIES
+    @replace_resolv = DEFAULT_REPLACE_RESOLV
+    @timeout = DEFAULT_TIMEOUT
 
     operating_system_config = Marshal.load Marshal.dump(OPERATING_SYSTEM_DEFAULTS)
     platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)
@@ -204,6 +241,15 @@ class Gem::ConfigFile
     @disable_default_gem_server  = @hash[:disable_default_gem_server]  if @hash.key? :disable_default_gem_server
     @sources                     = @hash[:sources]                     if @hash.key? :sources
     @cert_expiration_length_days = @hash[:cert_expiration_length_days] if @hash.key? :cert_expiration_length_days
+    @timeout                     = @hash[:timeout]                     if @hash.key? :timeout
+
+    if @hash.key? :max_retries
+      @max_retries = @hash[:max_retries].to_i() # Must be an int
+    end
+
+    if @hash.key? :replace_resolv
+      @replace_resolv = @hash[:replace_resolv] ? true : false
+    end
 
     @ssl_verify_mode  = @hash[:ssl_verify_mode]  if @hash.key? :ssl_verify_mode
     @ssl_ca_cert      = @hash[:ssl_ca_cert]      if @hash.key? :ssl_ca_cert
@@ -374,11 +420,17 @@ if you believe they were disclosed to a third party.
     hash.delete :verbose
     hash.delete :backtrace
     hash.delete :bulk_threshold
+    hash.delete :max_retries
+    hash.delete :replace_resolv
+    hash.delete :timeout
 
     yield :update_sources, @update_sources
     yield :verbose, @verbose
     yield :backtrace, @backtrace
     yield :bulk_threshold, @bulk_threshold
+    yield :max_retries, @max_retries
+    yield :replace_resolv, @replace_resolv
+    yield :timeout, @timeout
 
     yield 'config_file_name', @config_file_name if @config_file_name
 
@@ -421,6 +473,9 @@ if you believe they were disclosed to a third party.
     yaml_hash[:sources] = Gem.sources.to_a
     yaml_hash[:update_sources] = @hash.fetch(:update_sources, DEFAULT_UPDATE_SOURCES)
     yaml_hash[:verbose] = @hash.fetch(:verbose, DEFAULT_VERBOSITY)
+    yaml_hash[:max_retries] = @hash.fetch(:max_retries, DEFAULT_MAX_RETRIES)
+    yaml_hash[:replace_resolv] = @hash.fetch(:replace_resolv, DEFAULT_REPLACE_RESOLV)
+    yaml_hash[:timeout] = @hash.fetch(:timeout, DEFAULT_TIMEOUT)
 
     yaml_hash[:concurrent_downloads] =
       @hash.fetch(:concurrent_downloads, DEFAULT_CONCURRENT_DOWNLOADS)
@@ -474,6 +529,9 @@ if you believe they were disclosed to a third party.
       @bulk_threshold == other.bulk_threshold and
       @verbose == other.verbose and
       @update_sources == other.update_sources and
+      @max_retries == other.max_retries and
+      @replace_resolv == other.replace_resolv and
+      @timeout == other.timeout and
       @hash == other.hash
   end
 

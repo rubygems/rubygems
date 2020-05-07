@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'net/http'
 require 'time'
+require 'rubygems/config_file'
 require 'rubygems/user_interaction'
 
 class Gem::Request
@@ -10,12 +11,17 @@ class Gem::Request
 
   ###
   # Legacy.  This is used in tests.
-  def self.create_with_proxy(uri, request_class, last_modified, proxy) # :nodoc:
+  def self.create_with_proxy(uri, request_class, last_modified, proxy,
+                             max_retries: Gem::ConfigFile::DEFAULT_MAX_RETRIES,
+                             replace_resolv: Gem::ConfigFile::DEFAULT_REPLACE_RESOLV,
+                             timeout: Gem::ConfigFile::DEFAULT_TIMEOUT) # :nodoc:
     cert_files = get_cert_files
     proxy ||= get_proxy_from_env(uri.scheme)
     pool = ConnectionPools.new proxy_uri(proxy), cert_files
 
-    new(uri, request_class, last_modified, pool.pool_for(uri))
+    new(uri, request_class, last_modified, pool.pool_for(uri),
+      max_retries: max_retries, replace_resolv: replace_resolv, timeout: timeout,
+    )
   end
 
   def self.proxy_uri(proxy) # :nodoc:
@@ -27,7 +33,17 @@ class Gem::Request
     end
   end
 
-  def initialize(uri, request_class, last_modified, pool)
+  def initialize(uri, request_class, last_modified, pool,
+                 max_retries: Gem::ConfigFile::DEFAULT_MAX_RETRIES,
+                 replace_resolv: Gem::ConfigFile::DEFAULT_REPLACE_RESOLV,
+                 timeout: Gem::ConfigFile::DEFAULT_TIMEOUT)
+    if replace_resolv
+      require 'resolv'
+      require 'resolv-replace'
+
+      verbose 'replaced DNS resolver'
+    end
+
     @uri = uri
     @request_class = request_class
     @last_modified = last_modified
@@ -35,6 +51,9 @@ class Gem::Request
     @user_agent = user_agent
 
     @connection_pool = pool
+
+    @max_retries = max_retries.to_i() # Must be an int
+    @timeout = timeout # nil is okay
   end
 
   def proxy_uri; @connection_pool.proxy_uri; end
@@ -191,8 +210,24 @@ class Gem::Request
   def perform_request(request) # :nodoc:
     connection = connection_for @uri
 
+    if @max_retries > 0
+      connection.max_retries = @max_retries
+
+      verbose "using max retries of #{@max_retries}"
+    end
+
+    if !@timeout.nil?()
+      connection.continue_timeout = @timeout
+      connection.open_timeout = @timeout
+      connection.read_timeout = @timeout
+      connection.ssl_timeout = @timeout
+
+      verbose "using timeout of #{@timeout}"
+    end
+
     retried = false
     bad_response = false
+    open_retries = 0 # For @max_retries
 
     begin
       @requests[connection.object_id] += 1
@@ -256,6 +291,19 @@ class Gem::Request
 
       retried = true
       retry
+    rescue SocketError => e
+      raise e if (open_retries += 1) > @max_retries
+
+      # "Failed to open TCP connection to rubygems.org:443 (getaddrinfo: Name or service not known) (SocketError)"
+      if e.message.include?('Failed to open') || e.message.include?('getaddrinfo')
+        verbose "failed to open connection, retry #{open_retries} of #{@max_retries}"
+
+        reset connection
+
+        retry
+      else
+        raise e
+      end
     end
 
     response

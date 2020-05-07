@@ -248,6 +248,23 @@ class TestGemRequest < Gem::TestCase
     assert_equal 'Wed, 02 Jan 2013 03:04:05 GMT', modified_header
   end
 
+  def test_fetch_with_slow_internet
+    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+
+    response = util_stub_net_http(
+      body: :junk, code: 200, replace_resolv: true
+    ) do
+      @request = Gem::Request.create_with_proxy(
+        uri, Net::HTTP::Get, nil, nil, replace_resolv: true
+      )
+
+      @request.fetch
+    end
+
+    assert_equal 200, response.code
+    assert_equal :junk, response.body
+  end
+
   def test_user_agent
     ua = make_request(@uri, nil, nil, nil).user_agent
 

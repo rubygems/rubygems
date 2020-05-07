@@ -7,7 +7,7 @@ RSpec.describe "bundle cache" do
         gem 'rack'
       G
 
-      system_gems "rack-1.0.0", :path => :bundle_path
+      system_gems "rack-1.0.0", :path => path
       bundle! :cache
     end
 
@@ -75,11 +75,13 @@ RSpec.describe "bundle cache" do
 
   context "using system gems" do
     before { bundle! "config set path.system true" }
+    let(:path) { system_gem_path }
     it_behaves_like "when there are only gemsources"
   end
 
   context "installing into a local path" do
     before { bundle! "config set path ./.bundle" }
+    let(:path) { local_gem_path }
     it_behaves_like "when there are only gemsources"
   end
 

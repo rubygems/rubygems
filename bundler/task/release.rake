@@ -152,7 +152,7 @@ namespace :release do
     branch = version.split(".", 3)[0, 2].push("stable").join("-")
     sh("git", "checkout", "-b", "release/#{version}", branch)
 
-    commits = `git log --oneline origin/master --`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
+    commits = `git log --oneline origin/master -- bundler`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
     commits.select! {|_sha, message| message =~ /(Auto merge of|Merge pull request|Merge) ##{Regexp.union(*prs)}/ }
 
     abort "Could not find commits for all PRs" unless commits.size == prs.size
@@ -178,7 +178,7 @@ namespace :release do
   desc "Open all PRs that have not been included in a stable release"
   task :open_unreleased_prs do
     def prs(on = "master")
-      commits = `git log --oneline origin/#{on} --`.split("\n")
+      commits = `git log --oneline origin/#{on} -- bundler`.split("\n")
       commits.reverse_each.map {|c| c =~ /(Auto merge of|Merge pull request|Merge) #(\d+)/ && $2 }.compact
     end
 

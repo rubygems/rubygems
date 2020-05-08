@@ -195,14 +195,16 @@ namespace :release do
 
     in_release = prs("HEAD") - prs(last_stable) - prs(previous_to_last_stable)
 
-    print "About to review #{in_release.size} pending PRs. "
+    n_prs = in_release.size
+
+    print "About to review #{n_prs} pending PRs. "
 
     confirm "Continue? (y/n)"
 
-    in_release.each do |pr|
+    in_release.each.with_index do |pr, idx|
       url_opener = /darwin/ =~ RUBY_PLATFORM ? "open" : "xdg-open"
       url = "https://github.com/rubygems/rubygems/pull/#{pr}"
-      print "#{url}. (n)ext/(o)pen? "
+      print "[#{idx + 1}/#{n_prs}] #{url}. (n)ext/(o)pen? "
       system(url_opener, url, :out => IO::NULL, :err => IO::NULL) if $stdin.gets.strip == "o"
     end
   end

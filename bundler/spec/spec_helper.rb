@@ -61,8 +61,6 @@ RSpec.configure do |config|
 
   config.bisect_runner = :shell
 
-  original_env = ENV.to_hash
-
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
@@ -90,8 +88,6 @@ RSpec.configure do |config|
     # Don't wrap output in tests
     ENV["THOR_COLUMNS"] = "10000"
 
-    original_env = ENV.to_hash
-
     if ENV["RUBY"]
       FileUtils.cp_r Spec::Path.bindir, File.join(Spec::Path.root, "lib", "exe")
     end
@@ -102,21 +98,26 @@ RSpec.configure do |config|
   end
 
   config.around :each do |example|
-    ENV.replace(original_env)
-    reset!
-    system_gems []
+    original_env = ENV.to_hash
 
-    @command_executions = []
+    begin
+      reset!
+      system_gems []
 
-    Bundler.ui.silence { example.run }
+      @command_executions = []
 
-    all_output = @command_executions.map(&:to_s_verbose).join("\n\n")
-    if example.exception && !all_output.empty?
-      warn all_output unless config.formatters.grep(RSpec::Core::Formatters::DocumentationFormatter).empty?
-      message = example.exception.message + "\n\nCommands:\n#{all_output}"
-      (class << example.exception; self; end).send(:define_method, :message) do
-        message
+      Bundler.ui.silence { example.run }
+
+      all_output = @command_executions.map(&:to_s_verbose).join("\n\n")
+      if example.exception && !all_output.empty?
+        warn all_output unless config.formatters.grep(RSpec::Core::Formatters::DocumentationFormatter).empty?
+        message = example.exception.message + "\n\nCommands:\n#{all_output}"
+        (class << example.exception; self; end).send(:define_method, :message) do
+          message
+        end
       end
+    ensure
+      ENV.replace(original_env)
     end
   end
 

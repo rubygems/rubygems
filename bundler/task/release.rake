@@ -111,7 +111,7 @@ namespace :release do
     version = Gem::Version.new(args.version || bundler_spec.version)
     tag = "v#{version}"
 
-    gh_api_post :path => "/repos/bundler/bundler/releases",
+    gh_api_post :path => "/repos/rubygems/rubygems/releases",
                 :body => {
                   :tag_name => tag,
                   :name => tag,
@@ -137,11 +137,11 @@ namespace :release do
 
     puts "Cherry-picking PRs milestoned for #{version} (currently #{bundler_spec.version}) into the stable branch..."
 
-    milestones = gh_api_request(:path => "repos/bundler/bundler/milestones?state=open")
+    milestones = gh_api_request(:path => "repos/rubygems/rubygems/milestones?state=open")
     unless patch_milestone = milestones.find {|m| m["title"] == version }
       abort "failed to find #{version} milestone on GitHub"
     end
-    prs = gh_api_request(:path => "repos/bundler/bundler/issues?milestone=#{patch_milestone["number"]}&state=all")
+    prs = gh_api_request(:path => "repos/rubygems/rubygems/issues?milestone=#{patch_milestone["number"]}&state=all")
     prs.map! do |pr|
       abort "#{pr["html_url"]} hasn't been closed yet!" unless pr["state"] == "closed"
       next unless pr["pull_request"]
@@ -201,7 +201,7 @@ namespace :release do
 
     in_release.each do |pr|
       url_opener = /darwin/ =~ RUBY_PLATFORM ? "open" : "xdg-open"
-      url = "https://github.com/bundler/bundler/pull/#{pr}"
+      url = "https://github.com/rubygems/rubygems/pull/#{pr}"
       print "#{url}. (n)ext/(o)pen? "
       system(url_opener, url, :out => IO::NULL, :err => IO::NULL) if $stdin.gets.strip == "o"
     end

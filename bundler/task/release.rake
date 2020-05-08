@@ -4,33 +4,10 @@ require_relative "../lib/bundler/gem_tasks"
 task :build => ["build_metadata"] do
   Rake::Task["build_metadata:clean"].tap(&:reenable).real_invoke
 end
-task "release:rubygem_push" => ["release:verify_docs", "release:verify_files", "release:verify_github", "build_metadata", "release:github"]
+task "release:rubygem_push" => ["release:verify_docs", "release:verify_github", "build_metadata", "release:github"]
 
 namespace :release do
   task :verify_docs => :"man:check"
-
-  task :verify_files do
-    git_list = IO.popen("git ls-files -z", &:read).split("\x0").select {|f| f.match(%r{^(lib|man|exe)/}) }
-    git_list += %w[CHANGELOG.md LICENSE.md README.md bundler.gemspec]
-
-    gem_list = Gem::Specification.load("bundler.gemspec").files
-
-    extra_files = gem_list.to_set - git_list.to_set
-
-    error_msg = <<~MSG
-
-      You intend to ship some files with the gem that are not generated man pages
-      nor source control files. Please review the extra list of files and try
-      again:
-
-      #{extra_files.to_a.join("\n  ")}
-
-    MSG
-
-    raise error_msg if extra_files.any?
-
-    puts "The file list is correct for a release."
-  end
 
   def gh_api_post(opts)
     gem "netrc", "~> 0.11.0"

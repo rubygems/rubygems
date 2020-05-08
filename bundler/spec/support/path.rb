@@ -38,19 +38,19 @@ module Spec
     end
 
     def tracked_files
-      @tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb spec/bundler man/bundler*" : "git ls-files -z", :dir => root).split("\x0")
+      @tracked_files ||= git_ls_files(tracked_files_glob)
     end
 
     def shipped_files
-      @shipped_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb man/bundler* libexec/bundle*" : "git ls-files -z -- lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec", :dir => root).split("\x0")
+      @shipped_files ||= git_ls_files(shipped_files_glob)
     end
 
     def lib_tracked_files
-      @lib_tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- lib/bundler lib/bundler.rb" : "git ls-files -z -- lib", :dir => root).split("\x0")
+      @lib_tracked_files ||= git_ls_files(lib_tracked_files_glob)
     end
 
     def man_tracked_files
-      @man_tracked_files ||= sys_exec(ruby_core? ? "git ls-files -z -- man/bundler*" : "git ls-files -z -- man", :dir => root).split("\x0")
+      @man_tracked_files ||= git_ls_files(man_tracked_files_glob)
     end
 
     def tmp(*path)
@@ -183,6 +183,28 @@ module Spec
       else
         @ruby_core
       end
+    end
+
+  private
+
+    def git_ls_files(glob)
+      sys_exec("git ls-files -z -- #{glob}", :dir => root).split("\x0")
+    end
+
+    def tracked_files_glob
+      ruby_core? ?  "lib/bundler lib/bundler.rb spec/bundler man/bundler*" : ""
+    end
+
+    def shipped_files_glob
+      ruby_core? ? "lib/bundler lib/bundler.rb man/bundler* libexec/bundle*" : "lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec"
+    end
+
+    def lib_tracked_files_glob
+      ruby_core? ? "lib/bundler lib/bundler.rb" : "lib"
+    end
+
+    def man_tracked_files_glob
+      ruby_core? ? "man/bundler*" : "man"
     end
 
     extend self

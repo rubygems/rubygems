@@ -394,7 +394,7 @@ RSpec.describe "major deprecations" do
 
   context "when `bundler/deployment` is required in a ruby script" do
     before do
-      ruby(<<-RUBY)
+      ruby(<<-RUBY, :env => env_for_missing_prerelease_default_gem_activation)
         require 'bundler/deployment'
       RUBY
     end

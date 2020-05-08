@@ -1051,7 +1051,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby "require 'bundler/setup'"
+      ruby "require 'bundler/setup'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
 
       expect(bundled_app_lock).not_to exist
       should_be_ruby_version_incorrect
@@ -1068,7 +1068,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby "require 'bundler/setup'"
+      ruby "require 'bundler/setup'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
 
       expect(bundled_app_lock).not_to exist
       should_be_engine_incorrect
@@ -1085,7 +1085,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby "require 'bundler/setup'"
+      ruby "require 'bundler/setup'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
 
       expect(bundled_app_lock).not_to exist
       should_be_engine_version_incorrect
@@ -1102,7 +1102,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby "require 'bundler/setup'"
+      ruby "require 'bundler/setup'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
 
       expect(bundled_app_lock).not_to exist
       should_be_patchlevel_incorrect

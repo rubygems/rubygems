@@ -85,8 +85,11 @@ RSpec.configure do |config|
     ENV["THOR_COLUMNS"] = "10000"
 
     if ENV["RUBY"]
-      FileUtils.cp_r Spec::Path.bindir, File.join(Spec::Path.root, "lib", "exe")
+      FileUtils.cp_r Spec::Path.bindir, File.join(Spec::Path.source_root, "lib", "exe")
     end
+
+    extend(Spec::Helpers)
+    system_gems :bundler, :path => pristine_system_gem_path
   end
 
   config.before :all do
@@ -97,6 +100,8 @@ RSpec.configure do |config|
 
   config.around :each do |example|
     begin
+      FileUtils.cp_r pristine_system_gem_path, system_gem_path
+
       with_gem_path_as(system_gem_path) do
         @command_executions = []
 
@@ -117,8 +122,10 @@ RSpec.configure do |config|
   end
 
   config.after :suite do
+    FileUtils.rm_r Spec::Path.pristine_system_gem_path
+
     if ENV["RUBY"]
-      FileUtils.rm_rf File.join(Spec::Path.root, "lib", "exe")
+      FileUtils.rm_rf File.join(Spec::Path.source_root, "lib", "exe")
     end
   end
 end

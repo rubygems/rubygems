@@ -45,10 +45,9 @@ RSpec.describe "bundle pristine", :ruby_repo do
     end
 
     it "does not delete the bundler gem" do
-      system_gems :bundler
       bundle! "install"
-      bundle! "pristine", :system_bundler => true
-      bundle! "-v", :system_bundler => true
+      bundle! "pristine"
+      bundle! "-v"
 
       expected = if Bundler::VERSION < "3.0"
         "Bundler version"

@@ -2,12 +2,15 @@
 
 require_relative "command_execution"
 require_relative "the_bundle"
+require_relative "path"
 
 module Spec
   module Helpers
+    include Spec::Path
+
     def reset!
       Dir.glob("#{tmp}/{gems/*,*}", File::FNM_DOTMATCH).each do |dir|
-        next if %w[base remote1 gems rubygems . ..].include?(File.basename(dir))
+        next if %w[base base_system remote1 gems rubygems . ..].include?(File.basename(dir))
         FileUtils.rm_rf(dir)
       end
       FileUtils.mkdir_p(home)
@@ -85,14 +88,10 @@ module Spec
       with_sudo = options.delete(:sudo)
       sudo = with_sudo == :preserve_env ? "sudo -E --preserve-env=RUBYOPT" : "sudo" if with_sudo
 
-      bundle_bin = options.delete("bundle_bin") || bindir.join("bundle")
-
-      if system_bundler = options.delete(:system_bundler)
-        bundle_bin = system_gem_path.join("bin/bundler")
-      end
+      bundle_bin = options.delete(:bundle_bin)
+      bundle_bin ||= installed_bindir.join("bundle")
 
       env = options.delete(:env) || {}
-      env["PATH"].gsub!("#{Path.root}/exe", "") if env["PATH"] && system_bundler
 
       requires = options.delete(:requires) || []
 
@@ -108,7 +107,6 @@ module Spec
       end
 
       load_path = []
-      load_path << lib_dir unless system_bundler
       load_path << spec_dir
 
       dir = options.delete(:dir) || bundled_app
@@ -150,12 +148,12 @@ module Spec
     end
 
     def bundler(cmd, options = {})
-      options["bundle_bin"] = bindir.join("bundler")
+      options[:bundle_bin] = system_gem_path.join("bin/bundler")
       bundle(cmd, options)
     end
 
     def ruby(ruby, options = {})
-      ruby_cmd = build_ruby_cmd({ :load_path => options[:no_lib] ? [] : [lib_dir] })
+      ruby_cmd = build_ruby_cmd
       escaped_ruby = RUBY_PLATFORM == "java" ? ruby.shellescape.dump : ruby.shellescape
       sys_exec(%(#{ruby_cmd} -w -e #{escaped_ruby}), options)
     end
@@ -174,8 +172,8 @@ module Spec
     def build_ruby_cmd(options = {})
       sudo = options.delete(:sudo)
 
-      libs = options.delete(:load_path) || []
-      lib_option = "-I#{libs.join(File::PATH_SEPARATOR)}"
+      libs = options.delete(:load_path)
+      lib_option = libs ? "-I#{libs.join(File::PATH_SEPARATOR)}" : []
 
       requires = options.delete(:requires) || []
       requires << "#{Path.spec_dir}/support/hax.rb"
@@ -185,12 +183,8 @@ module Spec
     end
 
     def gembin(cmd, options = {})
-      old = ENV["RUBYOPT"]
-      ENV["RUBYOPT"] = "#{ENV["RUBYOPT"]} -I#{lib_dir}"
       cmd = bundled_app("bin/#{cmd}") unless cmd.to_s.include?("/")
       sys_exec(cmd.to_s, options)
-    ensure
-      ENV["RUBYOPT"] = old
     end
 
     def gem_command(command, options = {})
@@ -335,6 +329,13 @@ module Spec
 
         replace_version_file(version, dir: build_path) # rubocop:disable Style/HashSyntax
 
+        build_metadata = {
+          :built_at => loaded_gemspec.date.utc.strftime("%Y-%m-%d"),
+          :git_commit_sha => sys_exec("git rev-parse --short HEAD", :dir => source_root).strip,
+        }
+
+        replace_build_metadata(build_metadata, dir: build_path) # rubocop:disable Style/HashSyntax
+
         gem_command! "build bundler.gemspec", :dir => build_path
 
         yield(bundler_path)
@@ -402,6 +403,12 @@ module Spec
       with_path_added(tmp("fake_man")) { yield }
     end
 
+    def pristine_system_gems(*gems)
+      FileUtils.rm_rf(system_gem_path)
+
+      system_gems(*gems)
+    end
+
     def system_gems(*gems)
       opts = gems.last.is_a?(Hash) ? gems.last : {}
       path = opts.fetch(:path, system_gem_path)
@@ -436,9 +443,8 @@ module Spec
     end
 
     def simulate_new_machine
-      system_gems []
-      FileUtils.rm_rf system_gem_path
       FileUtils.rm_rf bundled_app(".bundle")
+      pristine_system_gems :bundler
     end
 
     def simulate_platform(platform)
@@ -462,10 +468,32 @@ module Spec
       old = ENV["BUNDLER_SPEC_WINDOWS"]
       ENV["BUNDLER_SPEC_WINDOWS"] = "true"
       simulate_platform platform do
-        yield
+        simulate_bundler_version_when_missing_prerelease_default_gem_activation do
+          yield
+        end
       end
     ensure
       ENV["BUNDLER_SPEC_WINDOWS"] = old
+    end
+
+    # workaround for missing https://github.com/rubygems/rubygems/commit/929e92d752baad3a08f3ac92eaec162cb96aedd1
+    def simulate_bundler_version_when_missing_prerelease_default_gem_activation
+      return yield unless Gem.rubygems_version < Gem::Version.new("3.1.0.pre.1")
+
+      old = ENV["BUNDLER_VERSION"]
+      ENV["BUNDLER_VERSION"] = Bundler::VERSION
+      yield
+    ensure
+      ENV["BUNDLER_VERSION"] = old
+    end
+
+    # workaround for missing https://github.com/rubygems/rubygems/commit/929e92d752baad3a08f3ac92eaec162cb96aedd1
+    def env_for_missing_prerelease_default_gem_activation
+      if Gem.rubygems_version < Gem::Version.new("3.1.0.pre.1")
+        { "BUNDLER_VERSION" => Bundler::VERSION }
+      else
+        {}
+      end
     end
 
     def revision_for(path)

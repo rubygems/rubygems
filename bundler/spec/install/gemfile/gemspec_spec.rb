@@ -420,6 +420,8 @@ RSpec.describe "bundle install from an existing gemspec" do
           end
         end
 
+        bundle "config specific_platform false"
+
         %w[ruby jruby].each do |platform|
           simulate_platform(platform) do
             install_gemfile <<-G

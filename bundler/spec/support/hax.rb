@@ -24,7 +24,7 @@ end
 
 if ENV["BUNDLER_SPEC_WINDOWS"] == "true"
   require_relative "path"
-  require "#{Spec::Path.lib_dir}/bundler/constants"
+  require "bundler/constants"
 
   module Bundler
     remove_const :WINDOWS if defined?(WINDOWS)
@@ -34,8 +34,8 @@ end
 
 if ENV["BUNDLER_SPEC_API_REQUEST_LIMIT"]
   require_relative "path"
-  require "#{Spec::Path.lib_dir}/bundler/source"
-  require "#{Spec::Path.lib_dir}/bundler/source/rubygems"
+  require "bundler/source"
+  require "bundler/source/rubygems"
 
   module Bundler
     class Source

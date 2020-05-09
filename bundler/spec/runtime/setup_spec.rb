@@ -1273,20 +1273,20 @@ end
           build_gem "net-http-pipeline", "1.0.1"
         end
 
-        system_gems "net-http-pipeline-1.0.1", :gem_repo => gem_repo4 do
-          gemfile <<-G
-            source "#{file_uri_for(gem_repo4)}"
-            gem "net-http-pipeline", "1.0.1"
-          G
+        system_gems "net-http-pipeline-1.0.1", :gem_repo => gem_repo4
 
-          bundle "config set --local path vendor/bundle"
+        gemfile <<-G
+          source "#{file_uri_for(gem_repo4)}"
+          gem "net-http-pipeline", "1.0.1"
+        G
 
-          bundle! :install
+        bundle "config set --local path vendor/bundle"
 
-          bundle! :check
+        bundle! :install
 
-          expect(out).to eq("The Gemfile's dependencies are satisfied")
-        end
+        bundle! :check
+
+        expect(out).to eq("The Gemfile's dependencies are satisfied")
       end
 
       Gem::Specification.select(&:default_gem?).map(&:name).each do |g|

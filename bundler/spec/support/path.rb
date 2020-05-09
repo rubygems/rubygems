@@ -163,6 +163,13 @@ module Spec
       tmp "tmpdir", *args
     end
 
+    def replace_version_file(version, dir: root)
+      version_file = File.expand_path("lib/bundler/version.rb", dir)
+      contents = File.read(version_file)
+      contents.sub!(/(^\s+VERSION\s*=\s*)"#{Gem::Version::VERSION_PATTERN}"/, %(\\1"#{version}"))
+      File.open(version_file, "w") {|f| f << contents }
+    end
+
     def ruby_core?
       # avoid to warnings
       @ruby_core ||= nil

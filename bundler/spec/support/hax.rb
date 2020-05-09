@@ -9,11 +9,6 @@ module Gem
     Gem.ruby = ENV["RUBY"]
   end
 
-  if version = ENV["BUNDLER_SPEC_RUBYGEMS_VERSION"]
-    remove_const(:VERSION) if const_defined?(:VERSION)
-    VERSION = version
-  end
-
   class Platform
     @local = new(ENV["BUNDLER_SPEC_PLATFORM"]) if ENV["BUNDLER_SPEC_PLATFORM"]
   end
@@ -24,16 +19,6 @@ module Gem
     @path_to_default_spec_map.delete_if do |_path, spec|
       spec.name == "bundler"
     end
-  end
-end
-
-if ENV["BUNDLER_SPEC_VERSION"]
-  require_relative "path"
-  require "#{Spec::Path.lib_dir}/bundler/version"
-
-  module Bundler
-    remove_const(:VERSION) if const_defined?(:VERSION)
-    VERSION = ENV["BUNDLER_SPEC_VERSION"]
   end
 end
 

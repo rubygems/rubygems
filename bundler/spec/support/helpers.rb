@@ -13,6 +13,7 @@ module Spec
       FileUtils.mkdir_p(home)
       FileUtils.mkdir_p(tmpdir)
       Bundler.reset!
+      Gem.clear_paths
     end
 
     def self.bang(method)
@@ -401,8 +402,6 @@ module Spec
         FileUtils.rm_rf(path)
         FileUtils.mkdir_p(path)
       end
-
-      Gem.clear_paths
 
       env_backup = ENV.to_hash
       ENV["GEM_HOME"] = path.to_s

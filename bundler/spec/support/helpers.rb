@@ -12,6 +12,10 @@ module Spec
       end
       FileUtils.mkdir_p(home)
       FileUtils.mkdir_p(tmpdir)
+      reset_paths!
+    end
+
+    def reset_paths!
       Bundler.reset!
       Gem.clear_paths
     end

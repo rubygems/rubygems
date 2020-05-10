@@ -91,13 +91,14 @@ RSpec.configure do |config|
 
   config.before :all do
     build_repo1
+
+    reset_paths!
   end
 
   config.around :each do |example|
     original_env = ENV.to_hash
 
     begin
-      reset!
       system_gems []
 
       @command_executions = []
@@ -114,6 +115,7 @@ RSpec.configure do |config|
       end
     ensure
       ENV.replace(original_env)
+      reset!
     end
   end
 

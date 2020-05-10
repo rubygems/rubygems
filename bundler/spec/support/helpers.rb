@@ -423,8 +423,6 @@ module Spec
       FileUtils.rm_rf(system_gem_path)
       FileUtils.mkdir_p(system_gem_path)
 
-      Gem.clear_paths
-
       gem_home = ENV["GEM_HOME"]
       gem_path = ENV["GEM_PATH"]
       path = ENV["PATH"]

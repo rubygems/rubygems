@@ -344,19 +344,24 @@ module Spec
     end
 
     def with_gem_path_as(path)
-      backup = ENV.to_hash
-      ENV["GEM_HOME"] = path.to_s
-      ENV["GEM_PATH"] = path.to_s
-      ENV["BUNDLER_ORIG_GEM_PATH"] = nil
-      yield
-    ensure
-      ENV.replace(backup)
+      without_env_side_effects do
+        ENV["GEM_HOME"] = path.to_s
+        ENV["GEM_PATH"] = path.to_s
+        ENV["BUNDLER_ORIG_GEM_PATH"] = nil
+        yield
+      end
     end
 
     def with_path_as(path)
+      without_env_side_effects do
+        ENV["PATH"] = path.to_s
+        ENV["BUNDLER_ORIG_PATH"] = nil
+        yield
+      end
+    end
+
+    def without_env_side_effects
       backup = ENV.to_hash
-      ENV["PATH"] = path.to_s
-      ENV["BUNDLER_ORIG_PATH"] = nil
       yield
     ensure
       ENV.replace(backup)

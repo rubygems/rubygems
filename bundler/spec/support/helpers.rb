@@ -412,15 +412,8 @@ module Spec
         FileUtils.mkdir_p(path)
       end
 
-      env_backup = ENV.to_hash
-      ENV["GEM_HOME"] = path.to_s
-      ENV["GEM_PATH"] = path.to_s
-      ENV["BUNDLER_ORIG_GEM_PATH"] = nil
-
-      begin
+      with_gem_path_as(path) do
         install_gems(*gems)
-      ensure
-        ENV.replace(env_backup)
       end
     end
 

@@ -96,25 +96,22 @@ RSpec.configure do |config|
   end
 
   config.around :each do |example|
-    original_env = ENV.to_hash
-
     begin
-      system_gems []
+      with_gem_path_as(system_gem_path) do
+        @command_executions = []
 
-      @command_executions = []
+        Bundler.ui.silence { example.run }
 
-      Bundler.ui.silence { example.run }
-
-      all_output = @command_executions.map(&:to_s_verbose).join("\n\n")
-      if example.exception && !all_output.empty?
-        warn all_output unless config.formatters.grep(RSpec::Core::Formatters::DocumentationFormatter).empty?
-        message = example.exception.message + "\n\nCommands:\n#{all_output}"
-        (class << example.exception; self; end).send(:define_method, :message) do
-          message
+        all_output = @command_executions.map(&:to_s_verbose).join("\n\n")
+        if example.exception && !all_output.empty?
+          warn all_output unless config.formatters.grep(RSpec::Core::Formatters::DocumentationFormatter).empty?
+          message = example.exception.message + "\n\nCommands:\n#{all_output}"
+          (class << example.exception; self; end).send(:define_method, :message) do
+            message
+          end
         end
       end
     ensure
-      ENV.replace(original_env)
       reset!
     end
   end

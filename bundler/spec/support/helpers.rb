@@ -436,12 +436,12 @@ module Spec
       ENV["GEM_HOME"] = system_gem_path.to_s
       ENV["GEM_PATH"] = system_gem_path.to_s
 
-      gems.each do |gem|
-        gem_command! "install --no-document #{gem}"
-      end
-      return unless block_given?
       begin
-        yield
+        gems.each do |gem|
+          gem_command! "install --no-document #{gem}"
+        end
+
+        yield if block_given?
       ensure
         ENV["GEM_HOME"] = gem_home
         ENV["GEM_PATH"] = gem_path

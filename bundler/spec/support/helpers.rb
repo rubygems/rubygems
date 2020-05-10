@@ -439,8 +439,6 @@ module Spec
         gems.each do |gem|
           gem_command! "install --no-document #{gem}"
         end
-
-        yield if block_given?
       ensure
         ENV["GEM_HOME"] = gem_home
         ENV["GEM_PATH"] = gem_path

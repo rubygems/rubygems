@@ -407,11 +407,6 @@ module Spec
       path = opts.fetch(:path, system_gem_path)
       gems = gems.flatten
 
-      unless opts[:keep_path]
-        FileUtils.rm_rf(path)
-        FileUtils.mkdir_p(path)
-      end
-
       with_gem_path_as(path) do
         install_gems(*gems)
       end

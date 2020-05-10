@@ -417,10 +417,9 @@ module Spec
       ENV["GEM_PATH"] = path.to_s
       ENV["BUNDLER_ORIG_GEM_PATH"] = nil
 
-      install_gems(*gems)
-      return unless block_given?
       begin
-        yield
+        install_gems(*gems)
+        yield if block_given?
       ensure
         ENV.replace(env_backup)
       end

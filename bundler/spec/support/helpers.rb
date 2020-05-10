@@ -420,9 +420,6 @@ module Spec
     def realworld_system_gems(*gems)
       gems = gems.flatten
 
-      FileUtils.rm_rf(system_gem_path)
-      FileUtils.mkdir_p(system_gem_path)
-
       with_gem_path_as(system_gem_path) do
         gems.each do |gem|
           gem_command! "install --no-document #{gem}"

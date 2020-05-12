@@ -12,7 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1, jruby-9.2.11.1 ]
+        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1, jruby-9.2.11.1, truffleruby-head ]
+    env:
+      TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby
@@ -20,8 +22,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
+      - name: Install Dependencies
+        run: rake setup
       - name: Run Test
-        run: |
-          rake setup
-          rake test
+        run: rake test
     timeout-minutes: 60

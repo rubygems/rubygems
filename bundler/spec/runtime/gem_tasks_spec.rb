@@ -28,7 +28,7 @@ RSpec.describe "require 'bundler/gem_tasks'" do
   end
 
   it "includes the relevant tasks" do
-    with_gem_path_as(Spec::Path.base_system_gems.to_s) do
+    with_gem_path_as(base_system_gems.to_s) do
       sys_exec "#{rake} -T", :env => { "RUBYOPT" => opt_add("-I#{lib_dir}", ENV["RUBYOPT"]) }
     end
 
@@ -46,7 +46,7 @@ RSpec.describe "require 'bundler/gem_tasks'" do
   end
 
   it "defines a working `rake install` task" do
-    with_gem_path_as(Spec::Path.base_system_gems.to_s) do
+    with_gem_path_as(base_system_gems.to_s) do
       sys_exec "#{rake} install", :env => { "RUBYOPT" => opt_add("-I#{lib_dir}", ENV["RUBYOPT"]) }
     end
 
@@ -70,7 +70,7 @@ RSpec.describe "require 'bundler/gem_tasks'" do
   end
 
   it "adds 'pkg' to rake/clean's CLOBBER" do
-    with_gem_path_as(Spec::Path.base_system_gems.to_s) do
+    with_gem_path_as(base_system_gems.to_s) do
       sys_exec! %(#{rake} -e 'load "Rakefile"; puts CLOBBER.inspect')
     end
     expect(out).to eq '["pkg"]'

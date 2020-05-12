@@ -68,6 +68,24 @@ RSpec.describe "require 'bundler/gem_tasks'" do
     end
   end
 
+  context "bundle path configured locally" do
+    before do
+      bundle "config set path vendor/bundle"
+    end
+
+    it "works" do
+      install_gemfile! <<-G
+        source "#{file_uri_for(gem_repo1)}"
+
+        gem "rake"
+      G
+
+      bundle! "exec rake -T"
+
+      expect(err).to be_empty
+    end
+  end
+
   it "adds 'pkg' to rake/clean's CLOBBER" do
     with_gem_path_as(base_system_gems.to_s) do
       sys_exec! %(#{rake} -e 'load "Rakefile"; puts CLOBBER.inspect'), :env => { "GEM_HOME" => system_gem_path.to_s }

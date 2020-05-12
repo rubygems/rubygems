@@ -29,7 +29,7 @@ RSpec.describe "require 'bundler/gem_tasks'" do
 
   it "includes the relevant tasks" do
     with_gem_path_as(base_system_gems.to_s) do
-      sys_exec "#{rake} -T", :env => { "RUBYOPT" => opt_add("-I#{lib_dir}", ENV["RUBYOPT"]) }
+      sys_exec "#{rake} -T"
     end
 
     expect(err).to be_empty
@@ -47,7 +47,7 @@ RSpec.describe "require 'bundler/gem_tasks'" do
 
   it "defines a working `rake install` task" do
     with_gem_path_as(base_system_gems.to_s) do
-      sys_exec "#{rake} install", :env => { "RUBYOPT" => opt_add("-I#{lib_dir}", ENV["RUBYOPT"]) }
+      sys_exec "#{rake} install"
     end
 
     expect(err).to be_empty

@@ -15,7 +15,6 @@ RSpec.describe "require 'bundler/gem_tasks'" do
 
     bundled_app("Rakefile").open("w") do |f|
       f.write <<-RAKEFILE
-        $:.unshift("#{lib_dir}")
         require "bundler/gem_tasks"
       RAKEFILE
     end
@@ -29,7 +28,7 @@ RSpec.describe "require 'bundler/gem_tasks'" do
 
   it "includes the relevant tasks" do
     with_gem_path_as(base_system_gems.to_s) do
-      sys_exec "#{rake} -T"
+      sys_exec "#{rake} -T", :env => { "GEM_HOME" => system_gem_path.to_s }
     end
 
     expect(err).to be_empty
@@ -47,7 +46,7 @@ RSpec.describe "require 'bundler/gem_tasks'" do
 
   it "defines a working `rake install` task" do
     with_gem_path_as(base_system_gems.to_s) do
-      sys_exec "#{rake} install"
+      sys_exec "#{rake} install", :env => { "GEM_HOME" => system_gem_path.to_s }
     end
 
     expect(err).to be_empty
@@ -71,7 +70,7 @@ RSpec.describe "require 'bundler/gem_tasks'" do
 
   it "adds 'pkg' to rake/clean's CLOBBER" do
     with_gem_path_as(base_system_gems.to_s) do
-      sys_exec! %(#{rake} -e 'load "Rakefile"; puts CLOBBER.inspect')
+      sys_exec! %(#{rake} -e 'load "Rakefile"; puts CLOBBER.inspect'), :env => { "GEM_HOME" => system_gem_path.to_s }
     end
     expect(out).to eq '["pkg"]'
   end

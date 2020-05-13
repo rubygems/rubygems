@@ -314,16 +314,16 @@ RSpec.describe "major deprecations" do
     end
 
     {
-      :clean => true,
-      :deployment => true,
-      :frozen => true,
-      :"no-cache" => true,
-      :"no-prune" => true,
-      :path => "vendor/bundle",
-      :shebang => "ruby27",
-      :system => true,
-      :without => "development",
-      :with => "development",
+      "clean" => true,
+      "deployment" => true,
+      "frozen" => true,
+      "no-cache" => true,
+      "no-prune" => true,
+      "path" => "vendor/bundle",
+      "shebang" => "ruby27",
+      "system" => true,
+      "without" => "development",
+      "with" => "development",
     }.each do |name, value|
       flag_name = "--#{name}"
 

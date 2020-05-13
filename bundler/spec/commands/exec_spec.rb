@@ -598,8 +598,9 @@ RSpec.describe "bundle exec" do
       end
       Bundler.rubygems.extend(Monkey)
       G
-      bundle "install --deployment"
-      bundle "exec ruby -e '`#{bindir.join("bundler")} -v`; puts $?.success?'"
+      bundle! "config set path.system true"
+      bundle! "install"
+      bundle "exec ruby -e '`bundle -v`; puts $?.success?'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
       expect(out).to match("true")
     end
   end
@@ -904,7 +905,7 @@ __FILE__: #{path.to_s.inspect}
           end
         end
 
-        system_gems(:bundler, "openssl-#{openssl_version}", :gem_repo => gem_repo4)
+        system_gems("openssl-#{openssl_version}", :gem_repo => gem_repo4)
 
         file = bundled_app("require_openssl.rb")
         create_file(file, <<-RUBY)

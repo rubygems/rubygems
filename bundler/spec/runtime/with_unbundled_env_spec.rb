@@ -89,7 +89,9 @@ RSpec.describe "Bundler.with_env helpers" do
         print #{modified_env}['RUBYOPT']
       RUBY
       ENV["RUBYOPT"] = "-W2 -rbundler/setup #{ENV["RUBYOPT"]}"
-      bundle_exec_ruby! bundled_app("source.rb"), :env => { "BUNDLER_SPEC_DISABLE_DEFAULT_BUNDLER_GEM" => "true" }
+      simulate_bundler_version_when_missing_prerelease_default_gem_activation do
+        bundle_exec_ruby! bundled_app("source.rb")
+      end
       expect(last_command.stdboth).not_to include("-rbundler/setup")
     end
 

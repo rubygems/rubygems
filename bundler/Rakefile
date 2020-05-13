@@ -213,9 +213,6 @@ else
     lib.vendor_lib = "lib/bundler/vendor/fileutils"
   end
 
-  # We currently cherry-pick changes to use `require_relative` internally
-  # instead of regular `require`. They are pending review at
-  # https://github.com/drbrain/net-http-persistent/pull/106
   desc "Vendor a specific version of net-http-persistent"
   Automatiek::RakeTask.new("net-http-persistent") do |lib|
     lib.download = { :github => "https://github.com/drbrain/net-http-persistent" }

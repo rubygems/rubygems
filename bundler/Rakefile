@@ -195,9 +195,6 @@ else
     lib.vendor_lib = "lib/bundler/vendor/molinillo"
   end
 
-  # We currently cherry-pick changes to use `require_relative` internally
-  # instead of regular `require`. They are already in thor's master branch but
-  # still need to be released.
   desc "Vendor a specific version of thor"
   Automatiek::RakeTask.new("thor") do |lib|
     lib.download = { :github => "https://github.com/erikhuda/thor" }

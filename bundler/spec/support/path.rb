@@ -14,7 +14,11 @@ module Spec
     end
 
     def gemspec
-      @gemspec ||= source_root.join(ruby_core? ? "lib/bundler/bundler.gemspec" : "bundler.gemspec")
+      @gemspec ||= source_root.join(relative_gemspec)
+    end
+
+    def relative_gemspec
+      @relative_gemspec ||= ruby_core? ? "lib/bundler/bundler.gemspec" : "bundler.gemspec"
     end
 
     def gemspec_dir

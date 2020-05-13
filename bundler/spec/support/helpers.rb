@@ -336,7 +336,7 @@ module Spec
 
         replace_build_metadata(build_metadata, dir: build_path) # rubocop:disable Style/HashSyntax
 
-        gem_command! "build bundler.gemspec", :dir => build_path
+        gem_command! "build #{relative_gemspec}", :dir => build_path
 
         yield(bundler_path)
       ensure

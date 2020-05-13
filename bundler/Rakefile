@@ -206,6 +206,7 @@ else
 
   desc "Vendor a specific version of fileutils"
   Automatiek::RakeTask.new("fileutils") do |lib|
+    lib.version = "v1.4.1"
     lib.download = { :github => "https://github.com/ruby/fileutils" }
     lib.namespace = "FileUtils"
     lib.prefix = "Bundler"

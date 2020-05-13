@@ -219,6 +219,7 @@ else
   # dependencies `uri` and `connection_pool` relatively.
   desc "Vendor a specific version of net-http-persistent"
   Automatiek::RakeTask.new("net-http-persistent") do |lib|
+    lib.version = "v4.0.0"
     lib.download = { :github => "https://github.com/drbrain/net-http-persistent" }
     lib.namespace = "Net::HTTP::Persistent"
     lib.prefix = "Bundler::Persistent"

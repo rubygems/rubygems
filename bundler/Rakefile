@@ -197,6 +197,7 @@ else
 
   desc "Vendor a specific version of thor"
   Automatiek::RakeTask.new("thor") do |lib|
+    lib.version = "v1.0.1"
     lib.download = { :github => "https://github.com/erikhuda/thor" }
     lib.namespace = "Thor"
     lib.prefix = "Bundler"

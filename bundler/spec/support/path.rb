@@ -29,6 +29,14 @@ module Spec
       @loaded_gemspec ||= Gem::Specification.load(gemspec.to_s)
     end
 
+    def test_gemfile
+      @test_gemfile ||= source_root.join(ruby_core? ? "tool/bundler/test_gems.rb" : "test_gems.rb")
+    end
+
+    def dev_gemfile
+      @dev_gemfile ||= source_root.join("dev_gems.rb")
+    end
+
     def bindir
       @bindir ||= source_root.join(ruby_core? ? "libexec" : "exe")
     end

@@ -110,7 +110,7 @@ module Spec
     end
 
     def test_gemfile
-      Path.source_root.join("test_gems.rb")
+      Path.test_gemfile
     end
 
     def test_lockfile
@@ -118,7 +118,7 @@ module Spec
     end
 
     def dev_gemfile
-      Path.source_root.join("dev_gems.rb")
+      Path.dev_gemfile
     end
 
     def dev_lockfile

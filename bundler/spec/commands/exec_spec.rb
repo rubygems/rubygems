@@ -882,7 +882,7 @@ __FILE__: #{path.to_s.inspect}
           puts `bundle exec echo foo`
         RUBY
         file.chmod(0o777)
-        bundle! "exec #{file}"
+        bundle! "exec #{file}", :env => { "PATH" => path }
         expect(out).to eq("foo")
       end
     end
@@ -916,15 +916,17 @@ __FILE__: #{path.to_s.inspect}
         RUBY
         file.chmod(0o777)
 
+        env = { "PATH" => path }
         aggregate_failures do
-          expect(bundle!("exec #{file}", :artifice => nil)).to eq(expected)
-          expect(bundle!("exec bundle exec #{file}", :artifice => nil)).to eq(expected)
-          expect(bundle!("exec ruby #{file}", :artifice => nil)).to eq(expected)
-          expect(run!(file.read, :artifice => nil)).to eq(expected)
+          expect(bundle!("exec #{file}", :artifice => nil, :env => env)).to eq(expected)
+          expect(bundle!("exec bundle exec #{file}", :artifice => nil, :env => env)).to eq(expected)
+          expect(bundle!("exec ruby #{file}", :artifice => nil, :env => env)).to eq(expected)
+          expect(run!(file.read, :artifice => nil, :env => env)).to eq(expected)
         end
 
+        skip "ruby_core has openssl and rubygems in the same folder, and this test needs rubygems require but default openssl not in a directly added entry in $LOAD_PATH" if ruby_core?
         # sanity check that we get the newer, custom version without bundler
-        sys_exec("#{Gem.ruby} #{file}")
+        sys_exec("#{Gem.ruby} #{file}", :env => env)
         expect(err).to include("custom openssl should not be loaded")
       end
     end

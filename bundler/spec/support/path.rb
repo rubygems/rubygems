@@ -41,6 +41,12 @@ module Spec
       @gem_bin ||= ruby_core? ? ENV["GEM_COMMAND"] : "gem"
     end
 
+    def path
+      env_path = ENV["PATH"]
+      env_path = env_path.split(File::PATH_SEPARATOR).reject {|path| path == bindir.to_s }.join(File::PATH_SEPARATOR) if ruby_core?
+      env_path
+    end
+
     def spec_dir
       @spec_dir ||= source_root.join(ruby_core? ? "spec/bundler" : "spec")
     end

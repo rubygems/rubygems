@@ -238,11 +238,11 @@ module Spec
     end
 
     def tracked_files_glob
-      ruby_core? ?  "lib/bundler lib/bundler.rb spec/bundler man/bundler*" : ""
+      ruby_core? ?  "lib/bundler lib/bundler.rb spec/bundler man/bundle*" : ""
     end
 
     def shipped_files_glob
-      ruby_core? ? "lib/bundler lib/bundler.rb man/bundler* libexec/bundle*" : "lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec"
+      ruby_core? ? "lib/bundler lib/bundler.rb man/bundle* man/gemfile* libexec/bundle*" : "lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec"
     end
 
     def lib_tracked_files_glob
@@ -250,7 +250,7 @@ module Spec
     end
 
     def man_tracked_files_glob
-      ruby_core? ? "man/bundler*" : "man"
+      ruby_core? ? "man/bundle* man/gemfile*" : "man"
     end
 
     extend self

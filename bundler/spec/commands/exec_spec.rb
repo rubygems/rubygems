@@ -457,7 +457,7 @@ RSpec.describe "bundle exec" do
   end
 
   describe "with gem executables" do
-    describe "run from a random directory", :ruby_repo do
+    describe "run from a random directory" do
       before(:each) do
         install_gemfile <<-G
           gem "rack"
@@ -873,7 +873,7 @@ __FILE__: #{path.to_s.inspect}
         bundle! :install
       end
 
-      it "correctly shells out", :ruby_repo do
+      it "correctly shells out" do
         skip "https://github.com/rubygems/bundler/issues/6898" if Gem.win_platform?
 
         file = bundled_app("file_that_bundle_execs.rb")

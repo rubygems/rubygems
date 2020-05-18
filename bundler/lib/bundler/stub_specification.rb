@@ -28,7 +28,7 @@ module Bundler
 
     # @!group Stub Delegates
 
-    # This is defined directly to avoid having to load every installed spec
+    # This is defined directly to avoid having to loading the full spec
     def missing_extensions?
       stub.missing_extensions?
     end

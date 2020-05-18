@@ -41,8 +41,8 @@ module Bundler
       stub.instance_variable_set(:@activated, activated)
     end
 
-    def default_gem
-      stub.default_gem
+    def default_gem?
+      stub.default_gem?
     end
 
     def full_gem_path

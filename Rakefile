@@ -1,5 +1,7 @@
 # -*- ruby -*-
 
+RakeFileUtils.verbose_flag = false
+
 require 'rubygems'
 require 'rubygems/package_task'
 require "rake/testtask"

@@ -14,7 +14,7 @@ module Bundler
 
     def build_extensions
       extension_cache_path = options[:bundler_extension_cache_path]
-      return super unless extension_cache_path && extension_dir = Bundler.rubygems.spec_extension_dir(spec)
+      return super unless extension_cache_path && extension_dir = spec.extension_dir
 
       extension_dir = Pathname.new(extension_dir)
       build_complete = SharedHelpers.filesystem_access(extension_cache_path.join("gem.build_complete"), :read, &:file?)

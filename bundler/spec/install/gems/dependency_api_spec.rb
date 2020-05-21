@@ -378,21 +378,18 @@ RSpec.describe "gemcutter's dependency API" do
         s.add_dependency "foo"
       end
       build_gem "missing"
-      # need to hit the limit
-      1.upto(Bundler::Source::Rubygems::API_REQUEST_LIMIT) do |i|
-        build_gem "gem#{i}"
-      end
 
       FileUtils.rm_rf Dir[gem_repo2("gems/foo-*.gem")]
     end
 
-    gemfile <<-G
+    api_request_limit = low_api_request_limit_for(gem_repo2)
+
+    install_gemfile! <<-G, :artifice => "endpoint_extra_missing", :env => { "BUNDLER_SPEC_API_REQUEST_LIMIT" => api_request_limit.to_s }.merge(env_for_missing_prerelease_default_gem_activation)
       source "#{source_uri}"
       source "#{source_uri}/extra"
       gem "back_deps"
     G
 
-    bundle :install, :artifice => "endpoint_extra_missing"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 
@@ -402,22 +399,19 @@ RSpec.describe "gemcutter's dependency API" do
         s.add_dependency "foo"
       end
       build_gem "missing"
-      # need to hit the limit
-      1.upto(Bundler::Source::Rubygems::API_REQUEST_LIMIT) do |i|
-        build_gem "gem#{i}"
-      end
 
       FileUtils.rm_rf Dir[gem_repo2("gems/foo-*.gem")]
     end
 
-    gemfile <<-G
+    api_request_limit = low_api_request_limit_for(gem_repo2)
+
+    install_gemfile! <<-G, :artifice => "endpoint_extra_missing", :env => { "BUNDLER_SPEC_API_REQUEST_LIMIT" => api_request_limit.to_s }.merge(env_for_missing_prerelease_default_gem_activation)
       source "#{source_uri}"
       source "#{source_uri}/extra" do
         gem "back_deps"
       end
     G
 
-    bundle :install, :artifice => "endpoint_extra_missing"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 
@@ -712,7 +706,7 @@ RSpec.describe "gemcutter's dependency API" do
         gem "rack"
       G
 
-      bundle :install, :env => { "RUBYOPT" => "-I#{bundled_app("broken_ssl")}" }
+      bundle :install, :env => { "RUBYOPT" => opt_add("-I#{bundled_app("broken_ssl")}", ENV["RUBYOPT"]) }
       expect(err).to include("OpenSSL")
     end
   end

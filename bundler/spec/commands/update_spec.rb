@@ -681,8 +681,7 @@ RSpec.describe "bundle update" do
       G
 
       bundle! "update", :all => true
-      out.gsub!(/RubyGems [\d\.]+ is not threadsafe.*\n?/, "")
-      expect(out).to include "Resolving dependencies...\nBundle updated!"
+      expect(out).to match(/Resolving dependencies\.\.\.\.*\nBundle updated!/)
 
       update_repo4 do
         build_gem "foo", "2.0"
@@ -690,13 +689,7 @@ RSpec.describe "bundle update" do
 
       bundle! "update", :all => true
       out.sub!("Removing foo (1.0)\n", "")
-      out.gsub!(/RubyGems [\d\.]+ is not threadsafe.*\n?/, "")
-      expect(out).to include strip_whitespace(<<-EOS).strip
-        Resolving dependencies...
-        Fetching foo 2.0 (was 1.0)
-        Installing foo 2.0 (was 1.0)
-        Bundle updated
-      EOS
+      expect(out).to match(/Resolving dependencies\.\.\.\.*\nFetching foo 2\.0 \(was 1\.0\)\nInstalling foo 2\.0 \(was 1\.0\)\nBundle updated/)
     end
   end
 
@@ -971,7 +964,7 @@ RSpec.describe "bundle update conservative" do
           isolated_owner
 
         BUNDLED WITH
-           1.13.0
+           #{Bundler::VERSION}
       L
     end
 

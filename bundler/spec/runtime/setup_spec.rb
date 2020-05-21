@@ -136,7 +136,7 @@ RSpec.describe "Bundler.setup" do
     end
 
     it "orders the load path correctly when there are dependencies" do
-      system_gems :bundler
+      bundle "config set path.system true"
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -767,13 +767,11 @@ end
     G
 
     ruby <<-R
-      if Gem::Specification.method_defined? :extension_dir
-        s = Gem::Specification.find_by_name '#{gem_name}'
-        s.extension_dir = '#{ext_dir}'
+      s = Gem::Specification.find_by_name '#{gem_name}'
+      s.extension_dir = '#{ext_dir}'
 
-        # Don't build extensions.
-        s.class.send(:define_method, :build_extensions) { nil }
-      end
+      # Don't build extensions.
+      s.class.send(:define_method, :build_extensions) { nil }
 
       require '#{lib_dir}/bundler'
       gem '#{gem_name}'
@@ -802,7 +800,7 @@ end
       Dir.mkdir(gems_dir)
       Dir.mkdir(specifications_dir)
 
-      FileUtils.ln_s(root, File.join(gems_dir, full_name))
+      FileUtils.ln_s(source_root, File.join(gems_dir, full_name))
 
       gemspec_content = File.binread(gemspec).
                 sub("Bundler::VERSION", %("#{Bundler::VERSION}")).
@@ -818,7 +816,7 @@ end
 
       ruby <<-R, :env => { "GEM_PATH" => symlinked_gem_home }, :no_lib => true
         TracePoint.trace(:class) do |tp|
-          if tp.path.include?("bundler") && !tp.path.start_with?("#{root}")
+          if tp.path.include?("bundler") && !tp.path.start_with?("#{source_root}")
             puts "OMG. Defining a class from another bundler at \#{tp.path}:\#{tp.lineno}"
           end
         end
@@ -1209,6 +1207,7 @@ end
           %w[io-console openssl]
         end << "bundler"
         exempts << "fiddle" if Gem.win_platform? && Gem::Version.new(Gem::VERSION) >= Gem::Version.new("2.7")
+        exempts << "uri" if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.7")
         exempts
       end
 
@@ -1273,20 +1272,20 @@ end
           build_gem "net-http-pipeline", "1.0.1"
         end
 
-        system_gems "net-http-pipeline-1.0.1", :gem_repo => gem_repo4 do
-          gemfile <<-G
-            source "#{file_uri_for(gem_repo4)}"
-            gem "net-http-pipeline", "1.0.1"
-          G
+        system_gems "net-http-pipeline-1.0.1", :gem_repo => gem_repo4
 
-          bundle "config set --local path vendor/bundle"
+        gemfile <<-G
+          source "#{file_uri_for(gem_repo4)}"
+          gem "net-http-pipeline", "1.0.1"
+        G
 
-          bundle! :install
+        bundle "config set --local path vendor/bundle"
 
-          bundle! :check
+        bundle! :install
 
-          expect(out).to eq("The Gemfile's dependencies are satisfied")
-        end
+        bundle! :check
+
+        expect(out).to eq("The Gemfile's dependencies are satisfied")
       end
 
       Gem::Specification.select(&:default_gem?).map(&:name).each do |g|
@@ -1372,7 +1371,7 @@ end
     end
 
     it "takes care of requiring rubygems" do
-      sys_exec("#{Gem.ruby} -I#{lib_dir} -e \"puts require('bundler/setup')\"", :env => { "RUBYOPT" => "--disable=gems" })
+      sys_exec("#{Gem.ruby} -I#{lib_dir} -rbundler/setup -e'puts true'", :env => { "RUBYOPT" => opt_add("--disable=gems", ENV["RUBYOPT"]) })
 
       expect(last_command.stdboth).to eq("true")
     end

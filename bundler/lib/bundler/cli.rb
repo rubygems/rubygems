@@ -122,16 +122,19 @@ module Bundler
       else command = "bundle-#{cli}"
       end
 
-      man_path  = File.expand_path("../../../man", __FILE__)
-      man_pages = Hash[Dir.glob(File.join(man_path, "*")).grep(/.*\.\d*\Z/).collect do |f|
+      man_path = File.expand_path("../../../man", __FILE__)
+      # man files are located under ruby's mandir with the default gems of bundler
+      man_path = RbConfig::CONFIG["mandir"] unless File.directory?(man_path)
+      man_pages = Hash[Dir.glob(File.join(man_path, "**", "*")).grep(/.*\.\d*\Z/).collect do |f|
         [File.basename(f, ".*"), f]
       end]
 
       if man_pages.include?(command)
+        man_page = man_pages[command]
         if Bundler.which("man") && man_path !~ %r{^file:/.+!/META-INF/jruby.home/.+}
-          Kernel.exec "man #{man_pages[command]}"
+          Kernel.exec "man #{man_page}"
         else
-          puts File.read("#{man_path}/#{File.basename(man_pages[command])}.txt")
+          puts File.read("#{File.dirname(man_page)}/#{File.basename(man_page)}.txt")
         end
       elsif command_path = Bundler.which("bundler-#{cli}")
         Kernel.exec(command_path, "--help")
@@ -813,7 +816,7 @@ module Bundler
       option = current_command.options[name]
       flag_name = option.switch_name
 
-      name_index = ARGV.find {|arg| flag_name == arg }
+      name_index = ARGV.find {|arg| flag_name == arg.split("=")[0] }
       return unless name_index
 
       value = options[name]
@@ -822,7 +825,7 @@ module Bundler
       Bundler::SharedHelpers.major_deprecation 2,\
         "The `#{flag_name}` flag is deprecated because it relies on being " \
         "remembered across bundler invocations, which bundler will no longer " \
-        "do in future versions. Instead please use `bundle config set #{name} " \
+        "do in future versions. Instead please use `bundle config set #{name.tr("-", "_")} " \
         "'#{value}'`, and stop using this flag"
     end
   end

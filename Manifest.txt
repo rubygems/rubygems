@@ -563,6 +563,7 @@ test/rubygems/sff/discover.rb
 test/rubygems/simple_gem.rb
 test/rubygems/specifications/bar-0.0.2.gemspec
 test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
+test/rubygems/specifications/rubyforge-0.0.1.gemspec
 test/rubygems/ssl_cert.pem
 test/rubygems/ssl_key.pem
 test/rubygems/test_bundled_ca.rb

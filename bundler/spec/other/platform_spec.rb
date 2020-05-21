@@ -388,7 +388,7 @@ G
 
       bundle :check
       expect(exitstatus).to eq(0) if exitstatus
-      expect(out).to eq("Resolving dependencies...\nThe Gemfile's dependencies are satisfied")
+      expect(out).to match(/\AResolving dependencies\.\.\.\.*\nThe Gemfile's dependencies are satisfied\z/)
     end
 
     it "checks fine with any engine", :jruby do
@@ -406,7 +406,7 @@ G
 
       bundle :check
       expect(exitstatus).to eq(0) if exitstatus
-      expect(out).to eq("Resolving dependencies...\nThe Gemfile's dependencies are satisfied")
+      expect(out).to match(/\AResolving dependencies\.\.\.\.*\nThe Gemfile's dependencies are satisfied\z/)
     end
 
     it "fails when ruby version doesn't match" do
@@ -826,7 +826,7 @@ G
   context "bundle exec" do
     before do
       ENV["BUNDLER_FORCE_TTY"] = "true"
-      system_gems "rack-1.0.0", "rack-0.9.1", :path => :bundle_path
+      system_gems "rack-1.0.0", "rack-0.9.1", :path => default_bundle_path
     end
 
     it "activates the correct gem when ruby version matches" do
@@ -841,7 +841,7 @@ G
     end
 
     it "activates the correct gem when ruby version matches any engine", :jruby do
-      system_gems "rack-1.0.0", "rack-0.9.1", :path => :bundle_path
+      system_gems "rack-1.0.0", "rack-0.9.1", :path => default_bundle_path
       gemfile <<-G
         gem "rack", "0.9.1"
 
@@ -1051,7 +1051,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby "require 'bundler/setup'"
+      ruby "require 'bundler/setup'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
 
       expect(bundled_app_lock).not_to exist
       should_be_ruby_version_incorrect
@@ -1068,7 +1068,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby "require 'bundler/setup'"
+      ruby "require 'bundler/setup'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
 
       expect(bundled_app_lock).not_to exist
       should_be_engine_incorrect
@@ -1085,7 +1085,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby "require 'bundler/setup'"
+      ruby "require 'bundler/setup'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
 
       expect(bundled_app_lock).not_to exist
       should_be_engine_version_incorrect
@@ -1102,7 +1102,7 @@ G
 
       FileUtils.rm(bundled_app_lock)
 
-      ruby "require 'bundler/setup'"
+      ruby "require 'bundler/setup'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
 
       expect(bundled_app_lock).not_to exist
       should_be_patchlevel_incorrect

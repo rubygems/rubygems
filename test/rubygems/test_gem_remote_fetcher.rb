@@ -81,7 +81,7 @@ gems:
   # Generated via:
   #   x = OpenSSL::PKey::DH.new(2048) # wait a while...
   #   x.to_s => pem
-  TEST_KEY_DH2048 = OpenSSL::PKey::DH.new <<-_end_of_pem_
+  TEST_KEY_DH2048 = OpenSSL::PKey::DH.new <<-_END_OF_PEM_
 -----BEGIN DH PARAMETERS-----
 MIIBCAKCAQEA3Ze2EHSfYkZLUn557torAmjBgPsqzbodaRaGZtgK1gEU+9nNJaFV
 G1JKhmGUiEDyIW7idsBpe4sX/Wqjnp48Lr8IeI/SlEzLdoGpf05iRYXC8Cm9o8aM
@@ -90,7 +90,7 @@ cfmVgoSEAo9YLBpzoji2jHkO7Q5IPt4zxbTdlmmGFLc/GO9q7LGHhC+rcMcNTGsM
 NP0fuvVAIB158VnQ0liHSwcl6+9vE1mL0Jo/qEXQxl0+UdKDjaGfTsn6HIrwTnmJ
 PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
 -----END DH PARAMETERS-----
-    _end_of_pem_
+    _END_OF_PEM_
 
   def setup
     @proxies = %w[https_proxy http_proxy HTTP_PROXY http_proxy_user HTTP_PROXY_USER http_proxy_pass HTTP_PROXY_PASS no_proxy NO_PROXY]
@@ -1051,6 +1051,8 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
   end
 
   def start_ssl_server(config = {})
+    skip "starting this test server fails randomly on jruby" if Gem.java_platform?
+
     null_logger = NilLog.new
     server = WEBrick::HTTPServer.new({
       :Port => 0,

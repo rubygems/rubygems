@@ -3,7 +3,7 @@
 RSpec.describe "bundle exec" do
   let(:system_gems_to_install) { %w[rack-1.0.0 rack-0.9.1] }
   before :each do
-    system_gems(system_gems_to_install, :path => :bundle_path)
+    system_gems(system_gems_to_install, :path => default_bundle_path)
   end
 
   it "works with --gemfile flag" do
@@ -292,14 +292,15 @@ RSpec.describe "bundle exec" do
       gem "rack"
     G
 
-    rubyopt = ENV["RUBYOPT"]
-    rubyopt = "-r#{lib_dir}/bundler/setup #{rubyopt}"
+    bundler_setup_opt = "-r#{lib_dir}/bundler/setup"
+
+    rubyopt = opt_add(bundler_setup_opt, ENV["RUBYOPT"])
 
     bundle "exec 'echo $RUBYOPT'"
-    expect(out).to have_rubyopts(rubyopt)
+    expect(out.split(" ").count(bundler_setup_opt)).to eq(1)
 
     bundle "exec 'echo $RUBYOPT'", :env => { "RUBYOPT" => rubyopt }
-    expect(out).to have_rubyopts(rubyopt)
+    expect(out.split(" ").count(bundler_setup_opt)).to eq(1)
   end
 
   it "does not duplicate already exec'ed RUBYLIB" do
@@ -597,8 +598,9 @@ RSpec.describe "bundle exec" do
       end
       Bundler.rubygems.extend(Monkey)
       G
-      bundle "install --deployment"
-      bundle "exec ruby -e '`#{bindir.join("bundler")} -v`; puts $?.success?'"
+      bundle! "config set path.system true"
+      bundle! "install"
+      bundle "exec ruby -e '`bundle -v`; puts $?.success?'", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
       expect(out).to match("true")
     end
   end
@@ -875,10 +877,10 @@ __FILE__: #{path.to_s.inspect}
         skip "https://github.com/rubygems/bundler/issues/6898" if Gem.win_platform?
 
         file = bundled_app("file_that_bundle_execs.rb")
-        create_file(file, <<-RB)
+        create_file(file, <<-RUBY)
           #!#{Gem.ruby}
           puts `bundle exec echo foo`
-        RB
+        RUBY
         file.chmod(0o777)
         bundle! "exec #{file}"
         expect(out).to eq("foo")
@@ -897,21 +899,21 @@ __FILE__: #{path.to_s.inspect}
 
         build_repo4 do
           build_gem "openssl", openssl_version do |s|
-            s.write("lib/openssl.rb", <<-RB)
+            s.write("lib/openssl.rb", <<-RUBY)
               raise "custom openssl should not be loaded, it's not in the gemfile!"
-            RB
+            RUBY
           end
         end
 
-        system_gems(:bundler, "openssl-#{openssl_version}", :gem_repo => gem_repo4)
+        system_gems("openssl-#{openssl_version}", :gem_repo => gem_repo4)
 
         file = bundled_app("require_openssl.rb")
-        create_file(file, <<-RB)
+        create_file(file, <<-RUBY)
           #!/usr/bin/env ruby
           require "openssl"
           puts OpenSSL::VERSION
           warn Gem.loaded_specs.values.map(&:full_name)
-        RB
+        RUBY
         file.chmod(0o777)
 
         aggregate_failures do
@@ -924,6 +926,25 @@ __FILE__: #{path.to_s.inspect}
         # sanity check that we get the newer, custom version without bundler
         sys_exec("#{Gem.ruby} #{file}")
         expect(err).to include("custom openssl should not be loaded")
+      end
+    end
+
+    context "with a git gem that includes extensions" do
+      before do
+        build_git "simple_git_binary", &:add_c_extension
+        bundle! "config set --local path .bundle"
+        install_gemfile! <<-G
+          gem "simple_git_binary", :git => '#{lib_path("simple_git_binary-1.0")}'
+        G
+      end
+
+      it "allows calling bundle install" do
+        bundle! "exec bundle install"
+      end
+
+      it "allows calling bundle install after removing gem.build_complete" do
+        FileUtils.rm_rf Dir[bundled_app(".bundle/**/gem.build_complete")]
+        bundle! "exec #{Gem.ruby} -S bundle install"
       end
     end
   end

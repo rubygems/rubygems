@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ 2.3.8, 2.4.9, 2.5.7, 2.6.5, jruby-9.2.11.0 ]
+        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1, jruby-9.2.11.1 ]
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby
@@ -21,5 +21,11 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
       - name: Install rubygems
-        run: ruby -Ilib -S rake install
+        run: ruby -Ilib -S rake install 2> errors.txt
+      - name: Check rubygems install produced no warnings
+        run: test ! -s errors.txt || (cat errors.txt && exit 1)
+      - name: Run bundler installed as a default gem
+        run: bundle --version
+      - name: Check bundler man pages were installed and are properly picked up
+        run: bundle install --help | grep -q BUNDLE-INSTALL
     timeout-minutes: 10

@@ -46,6 +46,8 @@ RSpec.describe Bundler::Env do
         skip "needs to use a valid HOME" if Gem.win_platform? && RUBY_VERSION < "2.6.0"
 
         with_clear_paths("HOME", "/a/b/c") do
+          allow(File).to receive(:exist?)
+          allow(File).to receive(:exist?).with("/a/b/c/.gem").and_return(true)
           out = described_class.report
           expect(out).to include("User Path   /a/b/c/.gem")
         end

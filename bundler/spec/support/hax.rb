@@ -9,40 +9,52 @@ module Gem
     Gem.ruby = ENV["RUBY"]
   end
 
-  if version = ENV["BUNDLER_SPEC_RUBYGEMS_VERSION"]
-    remove_const(:VERSION) if const_defined?(:VERSION)
-    VERSION = version
-  end
+  if ENV["BUNDLER_SPEC_PLATFORM"]
+    class Platform
+      @local = new(ENV["BUNDLER_SPEC_PLATFORM"])
+    end
+    @platforms = [Gem::Platform::RUBY, Gem::Platform.local]
 
-  class Platform
-    @local = new(ENV["BUNDLER_SPEC_PLATFORM"]) if ENV["BUNDLER_SPEC_PLATFORM"]
+    if ENV["BUNDLER_SPEC_PLATFORM"] == "ruby"
+      class << self
+        remove_method :finish_resolve
+
+        def finish_resolve
+          []
+        end
+      end
+    end
   end
-  @platforms = [Gem::Platform::RUBY, Gem::Platform.local]
 
   # We only need this hack for rubygems versions without the BundlerVersionFinder
-  if Gem::Version.new(Gem::VERSION) < Gem::Version.new("2.7.0") || ENV["BUNDLER_SPEC_DISABLE_DEFAULT_BUNDLER_GEM"]
+  if Gem::Version.new(Gem::VERSION) < Gem::Version.new("2.7.0")
     @path_to_default_spec_map.delete_if do |_path, spec|
       spec.name == "bundler"
     end
   end
 end
 
-if ENV["BUNDLER_SPEC_VERSION"]
-  require_relative "path"
-  require "#{Spec::Path.lib_dir}/bundler/version"
-
-  module Bundler
-    remove_const(:VERSION) if const_defined?(:VERSION)
-    VERSION = ENV["BUNDLER_SPEC_VERSION"].dup
-  end
-end
-
 if ENV["BUNDLER_SPEC_WINDOWS"] == "true"
   require_relative "path"
-  require "#{Spec::Path.lib_dir}/bundler/constants"
+  require "bundler/constants"
 
   module Bundler
     remove_const :WINDOWS if defined?(WINDOWS)
     WINDOWS = true
+  end
+end
+
+if ENV["BUNDLER_SPEC_API_REQUEST_LIMIT"]
+  require_relative "path"
+  require "bundler/source"
+  require "bundler/source/rubygems"
+
+  module Bundler
+    class Source
+      class Rubygems < Source
+        remove_const :API_REQUEST_LIMIT
+        API_REQUEST_LIMIT = ENV["BUNDLER_SPEC_API_REQUEST_LIMIT"].to_i
+      end
+    end
   end
 end

@@ -76,6 +76,10 @@ class Gem::SpecificationPolicy
 
     validate_dependencies
 
+    validate_extensions
+
+    validate_removed_attributes
+
     if @warnings > 0
       if strict
         error "specification has warnings"
@@ -324,19 +328,19 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
 
       if !Gem::Licenses.match?(license)
         suggestions = Gem::Licenses.suggestions(license)
-        message = <<-warning
+        message = <<-WARNING
 license value '#{license}' is invalid.  Use a license identifier from
 http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
-        warning
+        WARNING
         message += "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
         warning(message)
       end
     end
 
-    warning <<-warning if licenses.empty?
+    warning <<-WARNING if licenses.empty?
 licenses is empty, but is recommended.  Use a license identifier from
 http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
-    warning
+    WARNING
   end
 
   LAZY = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, '')
@@ -407,6 +411,24 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     return if File.read(executable_path, 2) == '#!'
 
     warning "#{executable_path} is missing #! line"
+  end
+
+  def validate_removed_attributes # :nodoc:
+    @specification.removed_method_calls.each do |attr|
+      warning("#{attr} is deprecated and ignored. Please remove this from your gemspec to ensure that your gem continues to build in the future.")
+    end
+  end
+
+  def validate_extensions # :nodoc:
+    require_relative 'ext'
+    builder = Gem::Ext::Builder.new(@specification)
+
+    rake_extension = @specification.extensions.any? {|s| builder.builder_for(s) == Gem::Ext::RakeBuilder }
+    rake_dependency = @specification.dependencies.any? {|d| d.name == 'rake'}
+
+    warning <<-WARNING if rake_extension && !rake_dependency
+You have specified rake based extension, but rake is not added as dependency. It is recommended to add rake as a dependency in gemspec since there's no guarantee rake will be already installed.
+    WARNING
   end
 
   def warning(statement) # :nodoc:

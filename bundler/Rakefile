@@ -43,7 +43,7 @@ namespace :spec do
 
   desc "Run the regular spec suite"
   task :regular do
-    sh("bin/parallel_rspec --verbose-rerun-command spec")
+    sh("bin/parallel_rspec")
   end
 
   desc "Run the real-world spec suite"
@@ -72,7 +72,7 @@ namespace :spec do
 
       raise "Couldn't configure sudo correctly to preserve path" unless `ruby -v` == `sudo -E ruby -v`
 
-      sh("sudo -E bin/rspec --tag sudo")
+      sh("sudo -E --preserve-env=RUBYOPT bin/rspec --tag sudo")
     ensure
       system("sudo", "cp", "tmp/old_sudoers", "/etc/sudoers")
       system("sudo", "chown", "-R", ENV["USER"], "tmp")
@@ -246,12 +246,7 @@ end
 
 task :override_version do
   next unless version = ENV["BUNDLER_SPEC_SUB_VERSION"]
-  version_file = File.expand_path("../lib/bundler/version.rb", __FILE__)
-  contents = File.read(version_file)
-  unless contents.sub!(/(^\s+VERSION\s*=\s*)"#{Gem::Version::VERSION_PATTERN}"/, %(\\1"#{version}"))
-    abort("Failed to change bundler version")
-  end
-  File.open(version_file, "w") {|f| f << contents }
+  Spec::Path.replace_version_file(version)
 end
 
 task :default => :spec

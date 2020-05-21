@@ -338,13 +338,6 @@ module Gem
   end
 
   ##
-  # The path to standard location of the user's .gemrc file.
-
-  def self.config_file
-    @config_file ||= File.join Gem.user_home, '.gemrc'
-  end
-
-  ##
   # The standard configuration object for gems.
 
   def self.configuration
@@ -401,11 +394,11 @@ module Gem
           target[k] = v
         when Array
           unless Gem::Deprecate.skip
-            warn <<-eowarn
+            warn <<-EOWARN
 Array values in the parameter to `Gem.paths=` are deprecated.
 Please use a String or nil.
 An Array (#{env.inspect}) was passed in from #{caller[3]}
-            eowarn
+            EOWARN
           end
           target[k] = v.join File::PATH_SEPARATOR
         end
@@ -558,33 +551,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
-  # Finds the user's home directory.
-  #--
-  # Some comments from the ruby-talk list regarding finding the home
-  # directory:
-  #
-  #   I have HOME, USERPROFILE and HOMEDRIVE + HOMEPATH. Ruby seems
-  #   to be depending on HOME in those code samples. I propose that
-  #   it should fallback to USERPROFILE and HOMEDRIVE + HOMEPATH (at
-  #   least on Win32).
-  #++
-  #--
-  #
-  #++
-
-  def self.find_home
-    Dir.home.dup
-  rescue
-    if Gem.win_platform?
-      File.expand_path File.join(ENV['HOMEDRIVE'] || ENV['SystemDrive'], '/')
-    else
-      File.expand_path "/"
-    end
-  end
-
-  private_class_method :find_home
-
-  ##
   # Top level install helper method. Allows you to install gems interactively:
   #
   #   % irb
@@ -650,13 +616,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   def self.load_yaml
     return if @yaml_loaded
     return unless defined?(gem)
-
-    begin
-      gem 'psych', '>= 2.0.0'
-    rescue Gem::LoadError
-      # It's OK if the user does not have the psych gem installed.  We will
-      # attempt to require the stdlib version
-    end
 
     begin
       # Try requiring the gem version *or* stdlib version of psych.
@@ -1057,13 +1016,6 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
-  # The home directory for the user.
-
-  def self.user_home
-    @user_home ||= find_home.tap(&Gem::UNTAINT)
-  end
-
-  ##
   # Is this a windows platform?
 
   def self.win_platform?
@@ -1271,6 +1223,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
           next unless $~
         end
 
+        spec.activate if already_loaded?(file)
+
         @path_to_default_spec_map[file] = spec
         @path_to_default_spec_map[file.sub(suffix_regexp, "")] = spec
       end
@@ -1335,6 +1289,18 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     # work
 
     attr_reader :pre_uninstall_hooks
+
+    private
+
+    def already_loaded?(file)
+      default_gem_load_paths.find do |load_path_entry|
+        $LOADED_FEATURES.include?("#{load_path_entry}/#{file}")
+      end
+    end
+
+    def default_gem_load_paths
+      @default_gem_load_paths ||= $LOAD_PATH[load_path_insert_index..-1]
+    end
 
   end
 

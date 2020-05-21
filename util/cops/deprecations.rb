@@ -9,7 +9,7 @@ module RuboCop
       # @example
       #
       #   # bad
-      #   deprecate :safdfa, :none
+      #   rubygems_deprecate :safdfa, :none
       #
       #   # good
       #   # the `deprecate` call is fully removed
@@ -18,7 +18,7 @@ module RuboCop
 
         def on_send(node)
           _receiver, method_name, *args = *node
-          return unless method_name == :deprecate || method_name == :deprecate_command
+          return unless method_name == :rubygems_deprecate || method_name == :rubygems_deprecate_command
 
           add_offense(node)
         end

@@ -112,6 +112,8 @@ class Gem::TestCase < Minitest::Test
 
   TEST_PATH = ENV.fetch('RUBYGEMS_TEST_PATH', File.expand_path('../../../test/rubygems', __FILE__))
 
+  SPECIFICATIONS = File.expand_path(File.join(TEST_PATH, "specifications"), __FILE__)
+
   def assert_activate(expected, *specs)
     specs.each do |spec|
       case spec
@@ -468,6 +470,17 @@ class Gem::TestCase < Minitest::Test
     @back_ui.close
   end
 
+  def credential_setup
+    @temp_cred = File.join(@userhome, '.gem', 'credentials')
+    FileUtils.mkdir_p File.dirname(@temp_cred)
+    File.write @temp_cred, ':rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97'
+    File.chmod 0600, @temp_cred
+  end
+
+  def credential_teardown
+    FileUtils.rm_rf @temp_cred
+  end
+
   def common_installer_setup
     common_installer_teardown
 
@@ -789,6 +802,7 @@ class Gem::TestCase < Minitest::Test
 
     lib_dir = File.join(@tempdir, "default_gems", "lib")
     lib_dir.instance_variable_set(:@gem_prelude_index, lib_dir)
+    Gem.instance_variable_set(:@default_gem_load_paths, [*Gem.instance_variable_get(:@default_gem_load_paths), lib_dir])
     $LOAD_PATH.unshift(lib_dir)
     files.each do |file|
       rb_path = File.join(lib_dir, file)
@@ -1532,12 +1546,6 @@ begin
   require 'rdoc'
 
   require 'rubygems/rdoc'
-rescue LoadError, Gem::LoadError
-end
-
-begin
-  gem 'builder'
-  require 'builder/xchar'
 rescue LoadError, Gem::LoadError
 end
 

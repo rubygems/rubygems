@@ -1272,6 +1272,7 @@ class TestGem < Gem::TestCase
     end
 
     assert_match %r{Could not find 'b' }, e.message
+    assert_match %r{at: #{a.spec_file}}, e.message
   end
 
   def test_self_try_activate_missing_prerelease
@@ -1370,6 +1371,8 @@ class TestGem < Gem::TestCase
   def test_self_user_dir
     parts = [@userhome, '.gem', Gem.ruby_engine]
     parts << RbConfig::CONFIG['ruby_version'] unless RbConfig::CONFIG['ruby_version'].empty?
+
+    FileUtils.mkdir_p File.join(parts)
 
     assert_equal File.join(parts), Gem.user_dir
   end

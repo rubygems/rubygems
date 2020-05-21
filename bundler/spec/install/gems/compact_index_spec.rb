@@ -404,22 +404,19 @@ The checksum of /versions does not match the checksum provided by the server! So
         s.add_dependency "foo"
       end
       build_gem "missing"
-      # need to hit the limit
-      1.upto(Bundler::Source::Rubygems::API_REQUEST_LIMIT) do |i|
-        build_gem "gem#{i}"
-      end
 
       FileUtils.rm_rf Dir[gem_repo2("gems/foo-*.gem")]
     end
 
-    gemfile <<-G
+    api_request_limit = low_api_request_limit_for(gem_repo2)
+
+    install_gemfile! <<-G, :artifice => "compact_index_extra_missing", :env => { "BUNDLER_SPEC_API_REQUEST_LIMIT" => api_request_limit.to_s }.merge(env_for_missing_prerelease_default_gem_activation)
       source "#{source_uri}"
       source "#{source_uri}/extra" do
         gem "back_deps"
       end
     G
 
-    bundle! :install, :artifice => "compact_index_extra_missing"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 
@@ -429,15 +426,13 @@ The checksum of /versions does not match the checksum provided by the server! So
         s.add_dependency "foo"
       end
       build_gem "missing"
-      # need to hit the limit
-      1.upto(Bundler::Source::Rubygems::API_REQUEST_LIMIT) do |i|
-        build_gem "gem#{i}"
-      end
 
       FileUtils.rm_rf Dir[gem_repo4("gems/foo-*.gem")]
     end
 
-    install_gemfile! <<-G, :artifice => "compact_index_extra_api_missing"
+    api_request_limit = low_api_request_limit_for(gem_repo4)
+
+    install_gemfile! <<-G, :artifice => "compact_index_extra_api_missing", :env => { "BUNDLER_SPEC_API_REQUEST_LIMIT" => api_request_limit.to_s }.merge(env_for_missing_prerelease_default_gem_activation)
       source "#{source_uri}"
       source "#{source_uri}/extra" do
         gem "back_deps"
@@ -738,7 +733,7 @@ The checksum of /versions does not match the checksum provided by the server! So
         gem "rack"
       G
 
-      bundle :install, :env => { "RUBYOPT" => "-I#{bundled_app("broken_ssl")}" }
+      bundle :install, :env => { "RUBYOPT" => opt_add("-I#{bundled_app("broken_ssl")}", ENV["RUBYOPT"]) }
       expect(err).to include("OpenSSL")
     end
   end

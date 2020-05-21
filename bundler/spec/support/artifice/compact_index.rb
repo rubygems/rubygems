@@ -83,7 +83,7 @@ class CompactIndexAPI < Endpoint
                          nil
                        end
             CompactIndex::GemVersion.new(spec.version.version, spec.platform.to_s, checksum, nil,
-              deps, spec.required_ruby_version, spec.required_rubygems_version)
+              deps, spec.required_ruby_version.to_s, spec.required_rubygems_version.to_s)
           end
           CompactIndex::Gem.new(name, gem_versions)
         end

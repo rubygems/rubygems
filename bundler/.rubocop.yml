@@ -414,6 +414,11 @@ Naming/FileName:
 Naming/HeredocDelimiterCase:
   Enabled: true
 
+Naming/HeredocDelimiterNaming:
+  Enabled: true
+  ForbiddenDelimiters:
+    - ^RB$
+
 Naming/MethodName:
   Enabled: true
 

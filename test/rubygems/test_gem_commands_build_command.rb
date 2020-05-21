@@ -17,8 +17,13 @@ class TestGemCommandsBuildCommand < Gem::TestCase
 
     readme_file = File.join(@tempdir, 'README.md')
 
-    File.open readme_file, 'w' do |f|
-      f.write 'My awesome gem'
+    begin
+      umask_orig = File.umask(2)
+      File.open readme_file, 'w' do |f|
+        f.write 'My awesome gem'
+      end
+    ensure
+      File.umask(umask_orig)
     end
 
     @gem = util_spec 'some_gem' do |s|
@@ -120,6 +125,23 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     @cmd.options[:args] = [gemspec_file]
 
     util_test_build_gem @gem
+  end
+
+  def test_execute_rubyforge_project_warning
+    rubyforge_gemspec = File.join SPECIFICATIONS, "rubyforge-0.0.1.gemspec"
+
+    @cmd.options[:args] = [rubyforge_gemspec]
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        @cmd.execute
+      end
+    end
+
+    error = @ui.error.split("\n")
+    assert_equal "WARNING:  rubyforge_project= is deprecated and ignored. Please remove this from your gemspec to ensure that your gem continues to build in the future.", error.shift
+    assert_equal "WARNING:  See https://guides.rubygems.org/specification-reference/ for help", error.shift
+    assert_equal [], error
   end
 
   def test_execute_strict_with_warnings

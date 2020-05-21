@@ -2838,6 +2838,37 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
     end
   end
 
+  def test_validate_rake_extension_have_rake_dependency_warning
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @a1.extensions = ['Rakefile']
+      File.write File.join(@tempdir, 'Rakefile'), ''
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      assert_match(/add rake as a dependency/, @ui.error)
+    end
+  end
+
+  def test_validate_rake_extension_have_rake_dependency_no_warning
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @a1.extensions = ['Rakefile']
+      @a1.add_runtime_dependency 'rake'
+      File.write File.join(@tempdir, 'Rakefile'), ''
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      refute_match(/add rake as a dependency/, @ui.error)
+    end
+  end
+
   def test_validate_description
     util_setup_validate
 
@@ -3104,10 +3135,25 @@ Please report a bug if this causes problems.
       @a1.validate
     end
 
-    assert_match <<-warning, @ui.error
+    assert_match <<-WARNING, @ui.error
 WARNING:  licenses is empty, but is recommended.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
-    warning
+    WARNING
+  end
+
+  def test_removed_methods
+    assert_equal Gem::Specification::REMOVED_METHODS, [:rubyforge_project=]
+  end
+
+  def test_validate_removed_rubyforge_project
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.rubyforge_project = 'invalid-attribute'
+      @a1.validate
+    end
+
+    assert_match "rubyforge_project= is deprecated", @ui.error
   end
 
   def test_validate_license_values
@@ -3118,10 +3164,10 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
       @a1.validate
     end
 
-    assert_match <<-warning, @ui.error
+    assert_match <<-WARNING, @ui.error
 WARNING:  license value 'BSD' is invalid.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
-    warning
+    WARNING
   end
 
   def test_validate_license_values_plus
@@ -3165,14 +3211,14 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
       @a1.validate
     end
 
-    assert_match <<-warning, @ui.error
+    assert_match <<-WARNING, @ui.error
 WARNING:  license value 'GPL-2.0+ FOO' is invalid.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
-    warning
-    assert_match <<-warning, @ui.error
+    WARNING
+    assert_match <<-WARNING, @ui.error
 WARNING:  license value 'GPL-2.0 FOO' is invalid.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
-    warning
+    WARNING
   end
 
   def test_validate_license_with_invalid_exception
@@ -3183,10 +3229,10 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
       @a1.validate
     end
 
-    assert_match <<-warning, @ui.error
+    assert_match <<-WARNING, @ui.error
 WARNING:  license value 'GPL-2.0+ WITH Autocofn-exception-2.0' is invalid.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
-    warning
+    WARNING
   end
 
   def test_validate_license_gives_suggestions
@@ -3197,11 +3243,11 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
       @a1.validate
     end
 
-    assert_match <<-warning, @ui.error
+    assert_match <<-WARNING, @ui.error
 WARNING:  license value 'ruby' is invalid.  Use a license identifier from
 http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
 Did you mean 'Ruby'?
-    warning
+    WARNING
   end
 
   def test_validate_empty_files
@@ -3805,12 +3851,17 @@ end
       FileUtils.mkdir_p "test"
       FileUtils.mkdir_p "bin"
 
-      FileUtils.touch File.join("ext", "a", "extconf.rb")
-      FileUtils.touch File.join("lib", "code.rb")
-      FileUtils.touch File.join("test", "suite.rb")
+      begin
+        umask_orig = File.umask(2)
+        FileUtils.touch File.join("ext", "a", "extconf.rb")
+        FileUtils.touch File.join("lib", "code.rb")
+        FileUtils.touch File.join("test", "suite.rb")
 
-      File.open "bin/exec", "w", 0755 do |fp|
-        fp.puts "#!#{Gem.ruby}"
+        File.open "bin/exec", "w", 0755 do |fp|
+          fp.puts "#!#{Gem.ruby}"
+        end
+      ensure
+        File.umask(umask_orig)
       end
     end
   end

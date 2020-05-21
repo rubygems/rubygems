@@ -2,8 +2,7 @@
 
 require_relative "path"
 
-$LOAD_PATH.unshift(Spec::Path.lib_dir.to_s)
-require "bundler"
+$LOAD_PATH.unshift(Spec::Path.source_lib_dir.to_s)
 
 module Spec
   module Rubygems
@@ -14,8 +13,7 @@ module Spec
     end
 
     def gem_load(gem_name, bin_container)
-      require_relative "rubygems_version_manager"
-      RubygemsVersionManager.new(ENV["RGV"]).switch
+      require_relative "switch_rubygems"
 
       gem_load_and_activate(gem_name, bin_container)
     end
@@ -61,16 +59,30 @@ module Spec
 
       ENV["BUNDLE_PATH"] = nil
       ENV["GEM_HOME"] = ENV["GEM_PATH"] = Path.base_system_gems.to_s
-      ENV["PATH"] = [Path.bindir, Path.system_gem_path.join("bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)
+      ENV["PATH"] = [Path.system_gem_path.join("bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)
     end
 
     def install_test_deps
       setup_test_paths
 
+      workaround_loaded_specs_issue
+
       install_gems(test_gemfile, test_lockfile)
     end
 
   private
+
+    # Some rubygems versions include loaded specs when loading gemspec stubs
+    # from the file system. In this situation, that makes bundler incorrectly
+    # assume that `rake` is already installed at `tmp/` because it's installed
+    # globally, and makes it skip installing it to the proper location for our
+    # tests. To workaround, we remove `rake` from the loaded specs when running
+    # under those versions, so that `bundler` does the right thing.
+    def workaround_loaded_specs_issue
+      current_rubygems_version = Gem::Version.new(Gem::VERSION)
+
+      Gem.loaded_specs.delete("rake") if current_rubygems_version >= Gem::Version.new("3.0.0.beta2") && current_rubygems_version < Gem::Version.new("3.2.0")
+    end
 
     def gem_load_and_activate(gem_name, bin_container)
       gem_activate(gem_name)
@@ -80,6 +92,7 @@ module Spec
     end
 
     def gem_activate(gem_name)
+      require "bundler"
       gem_requirement = Bundler::LockfileParser.new(File.read(dev_lockfile)).dependencies[gem_name]&.requirement
       gem gem_name, gem_requirement
     end
@@ -87,15 +100,16 @@ module Spec
     def install_gems(gemfile, lockfile)
       old_gemfile = ENV["BUNDLE_GEMFILE"]
       ENV["BUNDLE_GEMFILE"] = gemfile.to_s
+      require "bundler"
       definition = Bundler::Definition.build(gemfile, lockfile, nil)
       definition.validate_runtime!
-      Bundler::Installer.install(Path.root, definition, :path => ENV["GEM_HOME"])
+      Bundler::Installer.install(Path.source_root, definition, :path => ENV["GEM_HOME"])
     ensure
       ENV["BUNDLE_GEMFILE"] = old_gemfile
     end
 
     def test_gemfile
-      Path.root.join("test_gems.rb")
+      Path.source_root.join("test_gems.rb")
     end
 
     def test_lockfile
@@ -103,7 +117,7 @@ module Spec
     end
 
     def dev_gemfile
-      Path.root.join("dev_gems.rb")
+      Path.source_root.join("dev_gems.rb")
     end
 
     def dev_lockfile

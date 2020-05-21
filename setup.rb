@@ -19,7 +19,7 @@ end
 
 Dir.chdir File.dirname(__FILE__)
 
-$:.unshift 'lib'
+$:.unshift File.expand_path('lib')
 require 'rubygems'
 require 'rubygems/gem_runner'
 require 'rubygems/exceptions'

@@ -17,6 +17,18 @@ module Spec
       Gem::Platform.new(platform)
     end
 
+    # Returns a number smaller than the size of the index. Useful for specs that
+    # need the API request limit to be reached for some reason.
+    def low_api_request_limit_for(gem_repo)
+      all_gems = Dir[gem_repo.join("gems/*.gem")]
+
+      all_gem_names = all_gems.map do |file|
+        File.basename(file, ".gem").match(/\A(?<gem_name>[^-]+)-.*\z/)[:gem_name]
+      end.uniq
+
+      (all_gem_names - ["bundler"]).size
+    end
+
     def build_repo1
       build_repo gem_repo1 do
         build_gem "rack", %w[0.9.1 1.0.0] do |s|
@@ -746,9 +758,9 @@ module Spec
 
         gem_path = File.expand_path("#{@spec.full_name}.gem", lib_path)
         if opts[:to_system]
-          @context.system_gems gem_path, :keep_path => true
+          @context.system_gems gem_path
         elsif opts[:to_bundle]
-          @context.system_gems gem_path, :path => :bundle_path, :keep_path => true
+          @context.system_gems gem_path, :path => @context.default_bundle_path
         else
           FileUtils.mv(gem_path, destination)
         end

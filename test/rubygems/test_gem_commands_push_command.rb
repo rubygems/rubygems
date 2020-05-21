@@ -6,6 +6,9 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
   def setup
     super
+
+    credential_setup
+
     ENV["RUBYGEMS_HOST"] = nil
     Gem.host = Gem::DEFAULT_HOST
     Gem.configuration.disable_default_gem_server = false
@@ -37,6 +40,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
   end
 
   def teardown
+    credential_teardown
+
     super
 
     singleton_gem_class.class_eval do

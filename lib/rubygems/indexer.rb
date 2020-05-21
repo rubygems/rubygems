@@ -4,19 +4,6 @@ require 'rubygems/package'
 require 'time'
 require 'tmpdir'
 
-rescue_exceptions = [LoadError]
-begin
-  require 'bundler/errors'
-rescue LoadError # this rubygems + old ruby
-else # this rubygems + ruby trunk with bundler
-  rescue_exceptions << Bundler::GemfileNotFound
-end
-begin
-  gem 'builder'
-  require 'builder/xchar'
-rescue *rescue_exceptions
-end
-
 ##
 # Top level class for building the gem repository index.
 
@@ -61,11 +48,6 @@ class Gem::Indexer
     require 'fileutils'
     require 'tmpdir'
     require 'zlib'
-
-    unless defined?(Builder::XChar)
-      raise "Gem::Indexer requires that the XML Builder library be installed:" +
-            "\n\tgem install builder"
-    end
 
     options = { :build_modern => true }.merge options
 

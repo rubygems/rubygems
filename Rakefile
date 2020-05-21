@@ -1,5 +1,7 @@
 # -*- ruby -*-
 
+RakeFileUtils.verbose_flag = false
+
 require 'rubygems'
 require 'rubygems/package_task'
 require "rake/testtask"
@@ -39,9 +41,9 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
   doc.title  = "RubyGems #{v} API Documentation"
 
   rdoc_files = Rake::FileList.new %w[lib bundler/lib]
-  rdoc_files.add %w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.rdoc
-                    MAINTAINERS.txt Manifest.txt POLICIES.rdoc README.md UPGRADING.rdoc bundler/CHANGELOG.md
-                    bundler/CONTRIBUTING.md bundler/LICENSE.md bundler/README.md
+  rdoc_files.add %w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.md
+                    MAINTAINERS.txt Manifest.txt POLICIES.md README.md UPGRADING.md bundler/CHANGELOG.md
+                    bundler/doc/contributing/README.md bundler/LICENSE.md bundler/README.md
                     hide_lib_for_update/note.txt].map(&:freeze)
 
   doc.rdoc_files = rdoc_files
@@ -100,7 +102,7 @@ end
 
 desc "Install rubygems to local system"
 task :install => [:clear_package, :package] do
-  sh "ruby -Ilib bin/gem install --no-document pkg/rubygems-update-#{v}.gem && update_rubygems --no-document"
+  sh "ruby -Ilib bin/gem install --no-document pkg/rubygems-update-#{v}.gem && update_rubygems --no-document --no-format-executable"
 end
 
 desc "Clears previously built package"

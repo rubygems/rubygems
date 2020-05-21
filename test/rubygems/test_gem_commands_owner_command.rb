@@ -7,6 +7,8 @@ class TestGemCommandsOwnerCommand < Gem::TestCase
   def setup
     super
 
+    credential_setup
+
     ENV["RUBYGEMS_HOST"] = nil
     @stub_ui = Gem::MockGemUi.new
     @stub_fetcher = Gem::FakeFetcher.new
@@ -15,6 +17,12 @@ class TestGemCommandsOwnerCommand < Gem::TestCase
     Gem.configuration.rubygems_api_key = "ed244fbf2b1a52e012da8616c512fa47f9aa5250"
 
     @cmd = Gem::Commands::OwnerCommand.new
+  end
+
+  def teardown
+    credential_teardown
+
+    super
   end
 
   def test_show_owners

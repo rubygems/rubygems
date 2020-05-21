@@ -19,7 +19,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: jruby-9.2.11.0
+          ruby-version: jruby-9.2.11.1
           bundler: none
       - name: Prepare dependencies
         run: |
@@ -27,7 +27,7 @@ jobs:
         working-directory: ./bundler
       - name: Run Test
         run: |
-          bin/parallel_rspec spec --test-options '--tag jruby'
+          bin/parallel_rspec --tag jruby
         working-directory: ./bundler
       - name: Install local bundler
         run: |

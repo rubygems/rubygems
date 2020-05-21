@@ -5,21 +5,8 @@ require 'rubygems/package_task'
 
 class TestGemPackageTask < Gem::TestCase
 
-  def setup
-    super
-
-    Rake.application = Rake::Application.new
-
-    @original_rake_fileutils_verbosity = RakeFileUtils.verbose_flag
-  end
-
-  def teardown
-    RakeFileUtils.verbose_flag = @original_rake_fileutils_verbosity
-
-    super
-  end
-
   def test_gem_package
+    original_rake_fileutils_verbosity = RakeFileUtils.verbose_flag
     RakeFileUtils.verbose_flag = false
 
     gem = Gem::Specification.new do |g|
@@ -30,6 +17,8 @@ class TestGemPackageTask < Gem::TestCase
       g.files = %w[x]
       g.summary = 'summary'
     end
+
+    Rake.application = Rake::Application.new
 
     pkg = Gem::PackageTask.new(gem) do |p|
       p.package_files << "y"
@@ -45,6 +34,8 @@ class TestGemPackageTask < Gem::TestCase
 
       assert_path_exists 'pkg/pkgr-1.2.3.gem'
     end
+  ensure
+    RakeFileUtils.verbose_flag = original_rake_fileutils_verbosity
   end
 
   def test_gem_package_prints_to_stdout_by_default
@@ -57,27 +48,27 @@ class TestGemPackageTask < Gem::TestCase
       g.summary = 'summary'
     end
 
-    pkg = Gem::PackageTask.new(gem) do |p|
-      p.package_files << "y"
-    end
+    _, err = capture_io do
+      Rake.application = Rake::Application.new
 
-    assert_equal %w[x y], pkg.package_files
-
-    Dir.chdir @tempdir do
-      FileUtils.touch 'x'
-      FileUtils.touch 'y'
-
-      _, err = capture_io do
-        Rake.application['package'].invoke
+      pkg = Gem::PackageTask.new(gem) do |p|
+        p.package_files << "y"
       end
 
-      assert_empty err
+      assert_equal %w[x y], pkg.package_files
+
+      Dir.chdir @tempdir do
+        FileUtils.touch 'x'
+        FileUtils.touch 'y'
+
+        Rake.application['package'].invoke
+      end
     end
+
+    assert_empty err
   end
 
   def test_gem_package_with_current_platform
-    RakeFileUtils.verbose_flag = false
-
     gem = Gem::Specification.new do |g|
       g.name = "pkgr"
       g.version = "1.2.3"
@@ -91,8 +82,6 @@ class TestGemPackageTask < Gem::TestCase
   end
 
   def test_gem_package_with_ruby_platform
-    RakeFileUtils.verbose_flag = false
-
     gem = Gem::Specification.new do |g|
       g.name = "pkgr"
       g.version = "1.2.3"
@@ -106,8 +95,6 @@ class TestGemPackageTask < Gem::TestCase
   end
 
   def test_package_dir_path
-    RakeFileUtils.verbose_flag = false
-
     gem = Gem::Specification.new do |g|
       g.name = 'nokogiri'
       g.version = '1.5.0'

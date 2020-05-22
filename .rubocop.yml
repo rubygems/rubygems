@@ -91,6 +91,9 @@ Naming/HeredocDelimiterNaming:
   ForbiddenDelimiters:
     - ^RB$
 
+Performance/StartWith:
+  Enabled: true
+
 Performance/StringReplacement:
   Enabled: true
 

@@ -84,10 +84,6 @@ RSpec.configure do |config|
     # Don't wrap output in tests
     ENV["THOR_COLUMNS"] = "10000"
 
-    if ENV["RUBY"]
-      FileUtils.cp_r Spec::Path.bindir, File.join(Spec::Path.source_root, "lib", "exe")
-    end
-
     extend(Spec::Helpers)
     system_gems :bundler, :path => pristine_system_gem_path
   end
@@ -123,9 +119,5 @@ RSpec.configure do |config|
 
   config.after :suite do
     FileUtils.rm_r Spec::Path.pristine_system_gem_path
-
-    if ENV["RUBY"]
-      FileUtils.rm_rf File.join(Spec::Path.source_root, "lib", "exe")
-    end
   end
 end

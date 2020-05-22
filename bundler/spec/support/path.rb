@@ -14,7 +14,11 @@ module Spec
     end
 
     def gemspec
-      @gemspec ||= source_root.join(ruby_core? ? "lib/bundler/bundler.gemspec" : "bundler.gemspec")
+      @gemspec ||= source_root.join(relative_gemspec)
+    end
+
+    def relative_gemspec
+      @relative_gemspec ||= ruby_core? ? "lib/bundler/bundler.gemspec" : "bundler.gemspec"
     end
 
     def gemspec_dir
@@ -23,6 +27,14 @@ module Spec
 
     def loaded_gemspec
       @loaded_gemspec ||= Gem::Specification.load(gemspec.to_s)
+    end
+
+    def test_gemfile
+      @test_gemfile ||= source_root.join(ruby_core? ? "tool/bundler/test_gems.rb" : "test_gems.rb")
+    end
+
+    def dev_gemfile
+      @dev_gemfile ||= source_root.join("dev_gems.rb")
     end
 
     def bindir
@@ -39,6 +51,12 @@ module Spec
 
     def gem_bin
       @gem_bin ||= ruby_core? ? ENV["GEM_COMMAND"] : "gem"
+    end
+
+    def path
+      env_path = ENV["PATH"]
+      env_path = env_path.split(File::PATH_SEPARATOR).reject {|path| path == bindir.to_s }.join(File::PATH_SEPARATOR) if ruby_core?
+      env_path
     end
 
     def spec_dir
@@ -220,11 +238,11 @@ module Spec
     end
 
     def tracked_files_glob
-      ruby_core? ?  "lib/bundler lib/bundler.rb spec/bundler man/bundler*" : ""
+      ruby_core? ?  "lib/bundler lib/bundler.rb spec/bundler man/bundle*" : ""
     end
 
     def shipped_files_glob
-      ruby_core? ? "lib/bundler lib/bundler.rb man/bundler* libexec/bundle*" : "lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec"
+      ruby_core? ? "lib/bundler lib/bundler.rb man/bundle* man/gemfile* libexec/bundle*" : "lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec"
     end
 
     def lib_tracked_files_glob
@@ -232,7 +250,7 @@ module Spec
     end
 
     def man_tracked_files_glob
-      ruby_core? ? "man/bundler*" : "man"
+      ruby_core? ? "man/bundle* man/gemfile*" : "man"
     end
 
     extend self

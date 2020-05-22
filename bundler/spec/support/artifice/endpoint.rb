@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative "../path"
-include Spec::Path
 
 $LOAD_PATH.unshift(*Dir[Spec::Path.base_system_gems.join("gems/{artifice,mustermann,rack,tilt,sinatra,ruby2_keywords}-*/lib")].map(&:to_s))
 
@@ -40,6 +39,8 @@ class Endpoint < Sinatra::Base
   end
 
   helpers do
+    include Spec::Path
+
     def dependencies_for(gem_names, gem_repo = GEM_REPO)
       return [] if gem_names.nil? || gem_names.empty?
 

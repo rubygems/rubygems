@@ -9,5 +9,3 @@ gem "compact_index", "~> 0.12.1"
 gem "sinatra", "~> 2.0"
 gem "rake", "13.0.1"
 gem "builder", "~> 3.2"
-# ruby-graphviz is used by the viz tests
-gem "ruby-graphviz", "1.2.4" # for >= Ruby 2.3

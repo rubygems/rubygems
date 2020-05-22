@@ -31,7 +31,7 @@ RSpec.describe "bundle install with a lockfile present" do
       end
 
       context "when the gem is not installed" do
-        before { FileUtils.rm_rf ".bundle" }
+        before { FileUtils.rm_rf bundled_app(".bundle") }
 
         it "does not evaluate the gemfile twice" do
           bundle! :install

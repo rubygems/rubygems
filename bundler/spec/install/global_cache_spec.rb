@@ -185,8 +185,8 @@ RSpec.describe "global gem caching" do
     end
   end
 
-  describe "extension caching", :ruby_repo do
-    it "works" do
+  describe "extension caching" do
+    it "works", :ruby_repo do
       skip "gets incorrect ref in path" if Gem.win_platform?
 
       build_git "very_simple_git_binary", &:add_c_extension

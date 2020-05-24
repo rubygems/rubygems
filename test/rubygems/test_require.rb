@@ -45,6 +45,35 @@ class TestGemRequire < Gem::TestCase
     refute require(path), "'#{path}' was not yet required"
   end
 
+  def test_respect_loaded_features_caching_like_standard_require
+    dir = Dir.mktmpdir("test_require", @tempdir)
+
+    lp1 = File.join dir, 'foo1'
+    foo1 = File.join lp1, 'foo.rb'
+
+    FileUtils.mkdir_p lp1
+    File.open(foo1, 'w') { |f| f.write "class Object; HELLO = 'foo1' end" }
+
+    lp = $LOAD_PATH.dup
+
+    $LOAD_PATH.unshift lp1
+    assert_require 'foo'
+    assert_equal "foo1", ::Object::HELLO
+
+    lp2 = File.join dir, 'foo2'
+    foo2 = File.join lp2, 'foo.rb'
+
+    FileUtils.mkdir_p lp2
+    File.open(foo2, 'w') { |f| f.write "class Object; HELLO = 'foo2' end" }
+
+    $LOAD_PATH.unshift lp2
+    refute_require 'foo'
+    assert_equal "foo1", ::Object::HELLO
+  ensure
+    $LOAD_PATH.replace lp
+    Object.send :remove_const, :HELLO if Object.const_defined? :HELLO
+  end
+
   # Providing -I on the commandline should always beat gems
   def test_dash_i_beats_gems
     a1 = util_spec "a", "1", {"b" => "= 1"}, "lib/test_gem_require_a.rb"
@@ -418,6 +447,17 @@ class TestGemRequire < Gem::TestCase
     end
 
     assert_equal 0, times_called
+  end
+
+  def test_second_gem_require_does_not_resolve_path_manually_before_going_through_standard_require
+    a1 = util_spec "a", "1", nil, "lib/test_gem_require_a.rb"
+    install_gem a1
+
+    assert_require "test_gem_require_a"
+
+    stub(:gem_original_require, ->(path) { assert_equal "test_gem_require_a", path }) do
+      require "test_gem_require_a"
+    end
   end
 
   def test_realworld_default_gem

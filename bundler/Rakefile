@@ -53,10 +53,8 @@ namespace :spec do
 
   namespace :realworld do
     desc "Re-record cassettes for the realworld specs"
-    task :record => %w[set_record realworld]
-
-    task :set_record do
-      ENV["BUNDLER_SPEC_FORCE_RECORD"] = "1"
+    task :record do
+      sh("rm -rf spec/support/artifice/vcr_cassettes && bin/rspec --tag realworld")
     end
   end
 

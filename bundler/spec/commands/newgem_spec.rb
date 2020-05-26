@@ -194,6 +194,26 @@ RSpec.describe "bundle gem" do
     end
   end
 
+  shared_examples_for "test framework is present" do
+    it "creates a .travis.yml file to test the library against the current Ruby version on Travis CI" do
+      expect(bundled_app("#{gem_name}/.travis.yml").read).to match(/- #{RUBY_VERSION}/)
+    end
+  end
+
+  shared_examples_for "test framework is absent" do
+    it "does not create any test framework files" do
+      expect(bundled_app("#{gem_name}/.rspec")).to_not exist
+      expect(bundled_app("#{gem_name}/spec/#{require_path}_spec.rb")).to_not exist
+      expect(bundled_app("#{gem_name}/spec/spec_helper.rb")).to_not exist
+      expect(bundled_app("#{gem_name}/test/#{require_path}.rb")).to_not exist
+      expect(bundled_app("#{gem_name}/test/test_helper.rb")).to_not exist
+    end
+
+    it "does not create a .travis.yml file" do
+      expect(bundled_app("#{gem_name}/.travis.yml")).to_not exist
+    end
+  end
+
   context "README.md", :readline do
     context "git config github.user present" do
       before do
@@ -408,13 +428,7 @@ RSpec.describe "bundle gem" do
         bundle! "gem #{gem_name}"
       end
 
-      it "doesn't create any spec/test file" do
-        expect(bundled_app("#{gem_name}/.rspec")).to_not exist
-        expect(bundled_app("#{gem_name}/spec/#{require_path}_spec.rb")).to_not exist
-        expect(bundled_app("#{gem_name}/spec/spec_helper.rb")).to_not exist
-        expect(bundled_app("#{gem_name}/test/#{require_path}.rb")).to_not exist
-        expect(bundled_app("#{gem_name}/test/test_helper.rb")).to_not exist
-      end
+      it_behaves_like "test framework is absent"
     end
 
     context "--test parameter set to rspec" do
@@ -444,6 +458,8 @@ RSpec.describe "bundle gem" do
       it "creates a default test which fails" do
         expect(bundled_app("#{gem_name}/spec/#{require_path}_spec.rb").read).to include("expect(false).to eq(true)")
       end
+
+      it_behaves_like "test framework is present"
     end
 
     context "gem.test setting set to rspec" do
@@ -457,6 +473,8 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/spec/#{require_path}_spec.rb")).to exist
         expect(bundled_app("#{gem_name}/spec/spec_helper.rb")).to exist
       end
+
+      it_behaves_like "test framework is present"
     end
 
     context "gem.test setting set to rspec and --test is set to minitest" do
@@ -469,6 +487,8 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/test/#{require_path}_test.rb")).to exist
         expect(bundled_app("#{gem_name}/test/test_helper.rb")).to exist
       end
+
+      it_behaves_like "test framework is present"
     end
 
     context "--test parameter set to minitest" do
@@ -501,6 +521,8 @@ RSpec.describe "bundle gem" do
       it "creates a default test which fails" do
         expect(bundled_app("#{gem_name}/test/#{require_path}_test.rb").read).to include("assert false")
       end
+
+      it_behaves_like "test framework is present"
     end
 
     context "gem.test setting set to minitest" do
@@ -525,6 +547,8 @@ RSpec.describe "bundle gem" do
 
         expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)
       end
+
+      it_behaves_like "test framework is present"
     end
 
     context "--test parameter set to test-unit" do
@@ -557,6 +581,8 @@ RSpec.describe "bundle gem" do
       it "creates a default test which fails" do
         expect(bundled_app("#{gem_name}/test/#{require_path}_test.rb").read).to include("assert_equal(\"expected\", \"actual\")")
       end
+
+      it_behaves_like "test framework is present"
     end
 
     context "gem.test setting set to test-unit" do
@@ -581,21 +607,65 @@ RSpec.describe "bundle gem" do
 
         expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)
       end
+
+      it_behaves_like "test framework is present"
     end
 
-    context "--test with no arguments" do
+    context "gem.test set to rspec and --test with no arguments", :hint_text do
+      before do
+        bundle "config set gem.test rspec"
+        bundle! "gem #{gem_name} --test"
+      end
+
+      it "builds spec skeleton" do
+        expect(bundled_app("#{gem_name}/.rspec")).to exist
+        expect(bundled_app("#{gem_name}/spec/#{require_path}_spec.rb")).to exist
+        expect(bundled_app("#{gem_name}/spec/spec_helper.rb")).to exist
+      end
+
+      it "hints that --test is not needed" do
+        hint = "Bundler is configured to generate test files for rspec, "\
+               "so -t is not needed if you want to continue using it. " \
+               "This setting can be changed anytime with `bundle config gem.test`."
+        expect(out).to match(hint)
+      end
+
+      it_behaves_like "test framework is present"
+    end
+
+    context "gem.test setting set to false and --test with no arguments", :hint_text do
+      before do
+        bundle "config set gem.test false"
+        bundle! "gem #{gem_name} --test"
+      end
+
+      it "asks to generate test files" do
+        expect(out).to match("Do you want to generate tests with your gem?")
+      end
+
+      it "hints that the choice will only be applied to the current gem" do
+        expect(out).to match("Your choice will only be applied to this gem.")
+      end
+
+      it_behaves_like "test framework is absent"
+    end
+
+    context "gem.test setting not set and --test with no arguments", :hint_text do
       before do
         bundle! "gem #{gem_name} --test"
       end
 
-      it "defaults to rspec" do
-        expect(bundled_app("#{gem_name}/spec/spec_helper.rb")).to exist
-        expect(bundled_app("#{gem_name}/test/test_helper.rb")).to_not exist
+      it "asks to generate test files" do
+        expect(out).to match("Do you want to generate tests with your gem?")
       end
 
-      it "creates a .travis.yml file to test the library against the current Ruby version on Travis CI" do
-        expect(bundled_app("#{gem_name}/.travis.yml").read).to match(/- #{RUBY_VERSION}/)
+      it "hints that the choice will be applied to future bundle gem calls" do
+        hint = "Future `bundle gem` calls will use your choice. " \
+               "This setting can be changed anytime with `bundle config gem.test`."
+        expect(out).to match(hint)
       end
+
+      it_behaves_like "test framework is absent"
     end
 
     context "--edit option" do

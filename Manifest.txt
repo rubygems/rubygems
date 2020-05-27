@@ -51,7 +51,6 @@ bundler/lib/bundler/cli/update.rb
 bundler/lib/bundler/cli/viz.rb
 bundler/lib/bundler/compact_index_client.rb
 bundler/lib/bundler/compact_index_client/cache.rb
-bundler/lib/bundler/compact_index_client/gem_parser.rb
 bundler/lib/bundler/compact_index_client/updater.rb
 bundler/lib/bundler/constants.rb
 bundler/lib/bundler/current_ruby.rb

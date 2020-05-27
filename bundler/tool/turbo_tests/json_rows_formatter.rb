@@ -22,6 +22,7 @@ module TurboTests
   class JsonRowsFormatter
     RSpec::Core::Formatters.register(
       self,
+      :message,
       :close,
       :example_failed,
       :example_passed,
@@ -52,6 +53,13 @@ module TurboTests
       output_row(
         "type" => :example_failed,
         "example" => example_to_json(notification.example)
+      )
+    end
+
+    def message(notification)
+      output_row(
+        "type" => :message,
+        "message" => notification.message
       )
     end
 

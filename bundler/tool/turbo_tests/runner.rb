@@ -164,6 +164,9 @@ module TurboTests
             @threads.each(&:kill)
             break
           end
+        when "message"
+          notification = RSpec::Core::Notifications::MessageNotification.new(message["message"])
+          @reporter.message(notification)
         when "close"
         when "exit"
           exited += 1

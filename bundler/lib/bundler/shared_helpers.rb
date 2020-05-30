@@ -204,8 +204,8 @@ module Bundler
     end
 
     def digest(name)
-      require "digest"
-      Digest(name)
+      require "openssl"
+      OpenSSL::Digest(name)
     end
 
     def write_to_gemfile(gemfile_path, contents)

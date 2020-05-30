@@ -1,8 +1,8 @@
 image: ruby:<%= RUBY_VERSION %>
 
 before_script:
-  - gem install bundler
-  - bundle install -v <%= Bundler::VERSION %>
+  - gem install bundler -v <%= Bundler::VERSION %>
+  - bundle install
 
 test:
   script:

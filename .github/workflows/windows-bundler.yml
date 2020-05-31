@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - cache_test_times
 
 jobs:
   windows_bundler:
@@ -35,3 +36,8 @@ jobs:
           bin/parallel_rspec
         working-directory: ./bundler
         shell: bash
+      - name: Save test times to an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: test_times
+          path: bundler/tmp/parallel_runtime_rspec.log

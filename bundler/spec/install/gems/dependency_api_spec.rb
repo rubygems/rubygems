@@ -53,14 +53,16 @@ RSpec.describe "gemcutter's dependency API" do
     expect(the_bundle).to include_gems "net-sftp 1.1.1"
   end
 
-  it "should use the endpoint when using --deployment" do
+  it "should use the endpoint when using deployment mode" do
     gemfile <<-G
       source "#{source_uri}"
       gem "rack"
     G
     bundle :install, :artifice => "endpoint"
 
-    bundle! :install, forgotten_command_line_options(:deployment => true, :path => "vendor/bundle").merge(:artifice => "endpoint")
+    bundle "config --local deployment true"
+    bundle "config --local path vendor/bundle"
+    bundle! :install, :artifice => "endpoint"
     expect(out).to include("Fetching gem metadata from #{source_uri}")
     expect(the_bundle).to include_gems "rack 1.0.0"
   end
@@ -83,7 +85,7 @@ RSpec.describe "gemcutter's dependency API" do
     expect(the_bundle).to include_gems("rails 2.3.2")
   end
 
-  it "handles git dependencies that are in rubygems using --deployment" do
+  it "handles git dependencies that are in rubygems using deployment mode" do
     build_git "foo" do |s|
       s.executables = "foobar"
       s.add_dependency "rails", "2.3.2"
@@ -96,12 +98,13 @@ RSpec.describe "gemcutter's dependency API" do
 
     bundle :install, :artifice => "endpoint"
 
-    bundle "install --deployment", :artifice => "endpoint"
+    bundle "config --local deployment true"
+    bundle :install, :artifice => "endpoint"
 
     expect(the_bundle).to include_gems("rails 2.3.2")
   end
 
-  it "doesn't fail if you only have a git gem with no deps when using --deployment" do
+  it "doesn't fail if you only have a git gem with no deps when using deployment mode" do
     build_git "foo"
     gemfile <<-G
       source "#{source_uri}"
@@ -109,7 +112,8 @@ RSpec.describe "gemcutter's dependency API" do
     G
 
     bundle "install", :artifice => "endpoint"
-    bundle! :install, forgotten_command_line_options(:deployment => true).merge(:artifice => "endpoint")
+    bundle "config --local deployment true"
+    bundle! :install, :artifice => "endpoint"
 
     expect(the_bundle).to include_gems("foo 1.0")
   end
@@ -446,7 +450,7 @@ RSpec.describe "gemcutter's dependency API" do
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 
-  it "fetches again when more dependencies are found in subsequent sources using --deployment with blocks" do
+  it "fetches again when more dependencies are found in subsequent sources using deployment mode with blocks" do
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -463,7 +467,8 @@ RSpec.describe "gemcutter's dependency API" do
 
     bundle :install, :artifice => "endpoint_extra"
 
-    bundle "install --deployment", :artifice => "endpoint_extra"
+    bundle "config --local deployment true"
+    bundle! "install", :artifice => "endpoint_extra"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 

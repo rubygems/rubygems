@@ -26,6 +26,11 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
+      - name: Download test times from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: test_times
+          path: bundler/tmp/parallel_runtime_rspec.log
       - name: Install dependencies
         run: |
           bin/rake spec:parallel_deps

@@ -38,16 +38,16 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: bundler_status
-          path: previous_status.txt
+          path: status.txt
         if: always()
 
       - name: Save status
         if: always()
-        run: echo "${{ job.status }}" > status.txt
+        run: echo "${{ job.status }}" > new_status.txt
 
       - name: Compare with previous run
         if: always()
-        run: echo "::set-env name=STATUS_CHANGED::$(diff status.txt previous_status.txt; echo $?)"
+        run: echo "::set-env name=STATUS_CHANGED::$(diff status.txt new_status.txt; echo $?)"
 
       - uses: 8398a7/action-slack@v3
         with:
@@ -56,6 +56,10 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
         if: env.STATUS_CHANGED != '0'
+
+      - name: Rotate status
+        run: mv new_status.txt status.txt
+        if: always()
 
       - uses: actions/upload-artifact@v2
         with:

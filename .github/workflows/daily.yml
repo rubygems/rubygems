@@ -33,13 +33,9 @@ jobs:
           path: previous_status.txt
         if: always()
 
-      - name: Save fail status
-        if: failure()
-        run: echo "FAIL" > status.txt
-
-      - name: Save pass status
-        if: success()
-        run: echo "PASS" > status.txt
+      - name: Save status
+        if: always()
+        run: echo "${{ job.status }}" > status.txt
 
       - name: Compare with previous run
         if: always()

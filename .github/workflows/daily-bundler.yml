@@ -37,7 +37,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: status
+          name: bundler_status
           path: previous_status.txt
         if: always()
 
@@ -63,7 +63,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: status
+          name: bundler_status
           path: status.txt
         if: always()
 

@@ -39,6 +39,7 @@ jobs:
         with:
           name: status
           path: previous_status.txt
+        if: always()
 
       - name: Save fail status
         if: failure()
@@ -49,6 +50,7 @@ jobs:
         run: echo "PASS" > status.txt
 
       - name: Compare with previous run
+        if: always()
         run: echo "::set-env name=STATUS_CHANGED::$(diff status.txt previous_status.txt; echo $?)"
 
       - uses: 8398a7/action-slack@v3
@@ -63,5 +65,6 @@ jobs:
         with:
           name: status
           path: status.txt
+        if: always()
 
     timeout-minutes: 60

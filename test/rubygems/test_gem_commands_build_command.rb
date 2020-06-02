@@ -135,7 +135,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
 
     error = @ui.error.split("\n")
     assert_equal "WARNING:  rubyforge_project= is deprecated and ignored. Please remove this from your gemspec to ensure that your gem continues to build in the future.", error.shift
-    assert_equal "WARNING:  See http://guides.rubygems.org/specification-reference/ for help", error.shift
+    assert_equal "WARNING:  See https://guides.rubygems.org/specification-reference/ for help", error.shift
     assert_equal [], error
   end
 

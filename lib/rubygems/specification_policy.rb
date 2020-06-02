@@ -33,13 +33,32 @@ class Gem::SpecificationPolicy
   attr_accessor :packaging
 
   ##
-  # Checks that the specification contains all required fields, and does a
-  # very basic sanity check.
+  # Does a sanity check on the specification.
   #
   # Raises InvalidSpecificationException if the spec does not pass the
   # checks.
+  #
+  # It also performs some validations that do not raise but print warning
+  # messages instead.
 
   def validate(strict = false)
+    validate_required!
+
+    validate_optional(strict) if packaging || strict
+
+    true
+  end
+
+  ##
+  # Does a sanity check on the specification.
+  #
+  # Raises InvalidSpecificationException if the spec does not pass the
+  # checks.
+  #
+  # Only runs checks that are considered necessary for the specification to be
+  # functional.
+
+  def validate_required!
     validate_nil_attributes
 
     validate_rubygems_version
@@ -66,11 +85,17 @@ class Gem::SpecificationPolicy
 
     validate_metadata
 
+    validate_licenses_length
+
+    validate_lazy_metadata
+
+    validate_duplicate_dependencies
+  end
+
+  def validate_optional(strict)
     validate_licenses
 
     validate_permissions
-
-    validate_lazy_metadata
 
     validate_values
 
@@ -87,8 +112,6 @@ class Gem::SpecificationPolicy
         alert_warning help_text
       end
     end
-
-    true
   end
 
   ##
@@ -127,14 +150,13 @@ class Gem::SpecificationPolicy
   end
 
   ##
-  # Implementation for Specification#validate_dependencies
+  # Checks that no duplicate dependencies are specified.
 
-  def validate_dependencies # :nodoc:
+  def validate_duplicate_dependencies # :nodoc:
     # NOTE: see REFACTOR note in Gem::Dependency about types - this might be brittle
     seen = Gem::Dependency::TYPES.inject({}) { |types, type| types.merge({ type => {}}) }
 
     error_messages = []
-    warning_messages = []
     @specification.dependencies.each do |dep|
       if prev = seen[dep.type][dep.name]
         error_messages << <<-MESSAGE
@@ -144,7 +166,20 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       end
 
       seen[dep.type][dep.name] = dep
+    end
+    if error_messages.any?
+      error error_messages.join
+    end
+  end
 
+  ##
+  # Checks that dependencies use requirements as we recommend.  Warnings are
+  # issued when dependencies are open-ended or overly strict for semantic
+  # versioning.
+
+  def validate_dependencies # :nodoc:
+    warning_messages = []
+    @specification.dependencies.each do |dep|
       prerelease_dep = dep.requirements_list.any? do |req|
         Gem::Requirement.new(req).prerelease?
       end
@@ -178,9 +213,6 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
 
         warning_messages << ["open-ended dependency on #{dep} is not recommended", recommendation].join("\n") + "\n"
       end
-    end
-    if error_messages.any?
-      error error_messages.join
     end
     if warning_messages.any?
       warning_messages.each { |warning_message| warning warning_message }
@@ -307,8 +339,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
             end
 
     unless Array === val and val.all? {|x| x.kind_of?(klass)}
-      raise(Gem::InvalidSpecificationException,
-            "#{field} must be an Array of #{klass}")
+      error "#{field} must be an Array of #{klass}"
     end
   end
 
@@ -318,14 +349,20 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
     error "authors may not be empty"
   end
 
-  def validate_licenses
+  def validate_licenses_length
     licenses = @specification.licenses
 
     licenses.each do |license|
       if license.length > 64
         error "each license must be 64 characters or less"
       end
+    end
+  end
 
+  def validate_licenses
+    licenses = @specification.licenses
+
+    licenses.each do |license|
       if !Gem::Licenses.match?(license)
         suggestions = Gem::Licenses.suggestions(license)
         message = <<-WARNING

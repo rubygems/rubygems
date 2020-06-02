@@ -2590,20 +2590,17 @@ class Gem::Specification < Gem::BasicSpecification
   def validate_metadata
     Gem::SpecificationPolicy.new(self).validate_metadata
   end
+  rubygems_deprecate :validate_metadata
 
-  ##
-  # Checks that dependencies use requirements as we recommend.  Warnings are
-  # issued when dependencies are open-ended or overly strict for semantic
-  # versioning.
   def validate_dependencies
     Gem::SpecificationPolicy.new(self).validate_dependencies
   end
+  rubygems_deprecate :validate_dependencies
 
-  ##
-  # Checks to see if the files to be packaged are world-readable.
   def validate_permissions
     Gem::SpecificationPolicy.new(self).validate_permissions
   end
+  rubygems_deprecate :validate_permissions
 
   ##
   # Set the version to +version+, potentially also setting

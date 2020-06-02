@@ -14,18 +14,22 @@ jobs:
       RGV: ..
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
+
       - name: Show Ruby version
         run: ruby --version
+
       - name: Prepare dependencies
         run: |
           sudo apt-get install graphviz -y
           bin/rake spec:parallel_deps
         working-directory: ./bundler
+
       - name: Run Test
         run: |
           bin/rake spec:all
@@ -33,16 +37,17 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: status
-          path: previous_status.txt
-      - name: Save fail status
-        if: failure()
-        run: echo "FAIL" > status.txt
-      - name: Save pass status
-        if: success()
-        run: echo "PASS" > status.txt
+          name: bundler_status
+          path: status.txt
+        if: always()
+
+      - name: Save status
+        if: always()
+        run: echo "${{ job.status }}" > new_status.txt
+
       - name: Compare with previous run
-        run: echo "::set-env name=STATUS_CHANGED::$(diff status.txt previous_status.txt; echo $?)"
+        if: always()
+        run: echo "::set-env name=STATUS_CHANGED::$(diff status.txt new_status.txt; echo $?)"
 
       - uses: 8398a7/action-slack@v3
         with:
@@ -50,10 +55,16 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-        if: env.STATUS_CHANGED != '0'
+        if: failure() && env.STATUS_CHANGED != '0'
+
+      - name: Rotate status
+        run: mv new_status.txt status.txt
+        if: always()
 
       - uses: actions/upload-artifact@v2
         with:
-          name: status
+          name: bundler_status
           path: status.txt
+        if: always()
+
     timeout-minutes: 60

@@ -12,13 +12,16 @@ jobs:
         ruby: [ ruby-head ]
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
+
       - name: Show Ruby version
         run: ruby --version
+
       - name: Test rubygems
         run: |
           rake setup
@@ -26,27 +29,34 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: status
-          path: previous_status.txt
-      - name: Save fail status
-        if: failure()
-        run: echo "FAIL" > status.txt
-      - name: Save pass status
-        if: success()
-        run: echo "PASS" > status.txt
+          name: rubygems_status
+          path: status.txt
+        if: always()
+
+      - name: Save status
+        if: always()
+        run: echo "${{ job.status }}" > new_status.txt
+
       - name: Compare with previous run
-        run: echo "::set-env name=STATUS_CHANGED::$(diff status.txt previous_status.txt; echo $?)"
+        if: always()
+        run: echo "::set-env name=STATUS_CHANGED::$(diff status.txt new_status.txt; echo $?)"
 
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow
+          fields: repo,message,commit,action,workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
         if: env.STATUS_CHANGED != '0'
 
+      - name: Rotate status
+        run: mv new_status.txt status.txt
+        if: always()
+
       - uses: actions/upload-artifact@v2
         with:
-          name: status
+          name: rubygems_status
           path: status.txt
+        if: always()
+
     timeout-minutes: 60

@@ -55,7 +55,7 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-        if: env.STATUS_CHANGED != '0'
+        if: failure() && env.STATUS_CHANGED != '0'
 
       - name: Rotate status
         run: mv new_status.txt status.txt

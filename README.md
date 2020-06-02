@@ -6,7 +6,7 @@ A package (also known as a library) contains a set of functionality that can be 
 We call these packages "gems" and RubyGems is a tool to install, create, manage and load these packages in your Ruby environment.
 
 RubyGems is also a client for [RubyGems.org](https://rubygems.org), a public repository of Gems that allows you to publish a Gem
-that can be shared and used by other developers. See our guide on publishing a Gem at [guides.rubygems.org](http://guides.rubygems.org/publishing/)
+that can be shared and used by other developers. See our guide on publishing a Gem at [guides.rubygems.org](https://guides.rubygems.org/publishing/)
 
 ## Getting Started
 
@@ -23,7 +23,7 @@ Finally, inside your Ruby program, load the Nokogiri gem and start parsing your 
 
     Nokogiri.XML('<h1>Hello World</h1>')
 
-For more information about how to use RubyGems, see our RubyGems basics guide at [guides.rubygems.org](http://guides.rubygems.org/rubygems-basics/)
+For more information about how to use RubyGems, see our RubyGems basics guide at [guides.rubygems.org](https://guides.rubygems.org/rubygems-basics/)
 
 ## Requirements
 
@@ -65,10 +65,10 @@ See [UPGRADING](UPGRADING.md) for more details and alternative instructions.
 ## Documentation
 
 RubyGems uses [rdoc](https://github.com/rdoc/rdoc) for documentation. A compiled set of the docs
-can be viewed online at [rubydoc](http://www.rubydoc.info/github/rubygems/rubygems).
+can be viewed online at [rubydoc](https://www.rubydoc.info/github/rubygems/rubygems).
 
 RubyGems also provides a comprehensive set of guides which covers numerous topics such as
-creating a new gem, security practices and other resources at http://guides.rubygems.org
+creating a new gem, security practices and other resources at https://guides.rubygems.org
 
 ## Getting Help
 

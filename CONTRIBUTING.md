@@ -26,7 +26,7 @@ contributors to follow to reduce the time it takes to get changes merged in.
 
 
 For more information and ideas on how to contribute to RubyGems ecosystem, see
-here: http://guides.rubygems.org/contributing/
+here: https://guides.rubygems.org/contributing/
 
 ## Getting Started
 

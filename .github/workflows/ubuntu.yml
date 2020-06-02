@@ -35,4 +35,5 @@ jobs:
         run: util/ci.sh script
         env:
           TEST_TOOL: ${{ matrix.test_tool }}
+        continue-on-error: ${{ matrix.test_tool == 'bundler' }}
     timeout-minutes: 60

@@ -244,7 +244,7 @@ class Gem::ConfigFile
     @timeout                     = @hash[:timeout]                     if @hash.key? :timeout
 
     if @hash.key? :max_retries
-      @max_retries = @hash[:max_retries].to_i() # Must be an int
+      @max_retries = @hash[:max_retries].to_i # Must be an int
     end
 
     if @hash.key? :replace_resolv

@@ -115,7 +115,7 @@ class Gem::RemoteFetcher
 
     @headers = headers
 
-    @max_retries = max_retries.to_i() # Must be an int
+    @max_retries = max_retries.to_i # Must be an int
     @replace_resolv = replace_resolv
     @timeout = timeout # nil is okay
   end

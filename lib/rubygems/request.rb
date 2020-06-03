@@ -52,7 +52,7 @@ class Gem::Request
 
     @connection_pool = pool
 
-    @max_retries = max_retries.to_i() # Must be an int
+    @max_retries = max_retries.to_i # Must be an int
     @timeout = timeout # nil is okay
   end
 
@@ -216,7 +216,7 @@ class Gem::Request
       verbose "using max retries of #{@max_retries}"
     end
 
-    if !@timeout.nil?()
+    if !@timeout.nil?
       connection.continue_timeout = @timeout
       connection.open_timeout = @timeout
       connection.read_timeout = @timeout

@@ -97,6 +97,9 @@ Performance/StartWith:
 Performance/StringReplacement:
   Enabled: true
 
+Style/MethodCallWithoutArgsParentheses:
+  Enabled: true
+
 Style/MethodDefParentheses:
   Enabled: true
 

@@ -27,19 +27,9 @@ jobs:
           rake setup
           rake test
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: rubygems_status
-          path: status.txt
+      - name: Get previous status
         if: always()
-
-      - name: Save status
-        if: always()
-        run: echo "${{ job.status }}" > new_status.txt
-
-      - name: Compare with previous run
-        if: always()
-        run: echo "::set-env name=STATUS_CHANGED::$(diff status.txt new_status.txt; echo $?)"
+        run: echo "::set-env name=OLD_STATUS::$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/runs?event=schedule&branch=master' | jq '.workflow_runs | map(select(.workflow_id == 716807)) | .[0].conclusion')"
 
       - uses: 8398a7/action-slack@v3
         with:
@@ -47,16 +37,6 @@ jobs:
           fields: repo,message,commit,action,workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-        if: env.STATUS_CHANGED != '0'
-
-      - name: Rotate status
-        run: mv new_status.txt status.txt
-        if: always()
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: rubygems_status
-          path: status.txt
-        if: always()
+        if: failure() && env.OLD_STATUS == '"success"'
 
     timeout-minutes: 60

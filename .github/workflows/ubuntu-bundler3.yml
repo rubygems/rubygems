@@ -9,7 +9,7 @@ on:
 
 jobs:
   ubuntu_bundler3:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
         ruby: [ 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]

@@ -9,7 +9,7 @@ on:
 
 jobs:
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2019
     strategy:
       matrix:
         ruby: [ 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]

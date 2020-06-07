@@ -9,7 +9,7 @@ on:
 
 jobs:
   ubuntu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
         ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1, jruby-9.2.11.1, truffleruby-head ]

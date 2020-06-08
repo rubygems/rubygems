@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "bundler/vendored_fileutils"
-
 RSpec.describe "bundle pristine", :ruby_repo do
   before :each do
     build_lib "baz", :path => bundled_app do |s|

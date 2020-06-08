@@ -177,9 +177,6 @@ rescue Gem::LoadError => e
     desc "Vendor a specific version of molinillo"
     task(:molinillo) { abort msg }
 
-    desc "Vendor a specific version of fileutils"
-    task(:fileutils) { abort msg }
-
     desc "Vendor a specific version of thor"
     task(:thor) { abort msg }
 
@@ -204,14 +201,6 @@ else
     lib.namespace = "Thor"
     lib.prefix = "Bundler"
     lib.vendor_lib = "lib/bundler/vendor/thor"
-  end
-
-  desc "Vendor a specific version of fileutils"
-  Automatiek::RakeTask.new("fileutils") do |lib|
-    lib.download = { :github => "https://github.com/ruby/fileutils" }
-    lib.namespace = "FileUtils"
-    lib.prefix = "Bundler"
-    lib.vendor_lib = "lib/bundler/vendor/fileutils"
   end
 
   # We currently cherry-pick changes to use `require_relative` internally

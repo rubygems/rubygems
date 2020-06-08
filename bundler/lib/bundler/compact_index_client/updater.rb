@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../vendored_fileutils"
 require "stringio"
 require "zlib"
 

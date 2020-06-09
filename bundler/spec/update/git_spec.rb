@@ -27,11 +27,11 @@ RSpec.describe "bundle update" do
         s.add_dependency "activesupport", "= 3.0"
       end
 
-      install_gemfile! <<-G
+      install_gemfile <<-G
         gem "rails", :git => "#{lib_path("rails")}"
       G
 
-      bundle! "update rails"
+      bundle "update rails"
       expect(the_bundle).to include_gems "rails 3.0", "activesupport 3.0"
     end
 
@@ -158,24 +158,24 @@ RSpec.describe "bundle update" do
       end
 
       it "unlocks the source when submodules are removed from git source", :git => ">= 2.9.0" do
-        install_gemfile! <<-G
+        install_gemfile <<-G
           source "#{file_uri_for(gem_repo4)}"
           git "#{lib_path("has_submodule-1.0")}", :submodules => true do
             gem "has_submodule"
           end
         G
 
-        run! "require 'submodule'"
+        run "require 'submodule'"
         expect(out).to eq("GIT")
 
-        install_gemfile! <<-G
+        install_gemfile <<-G
           source "#{file_uri_for(gem_repo4)}"
           git "#{lib_path("has_submodule-1.0")}" do
             gem "has_submodule"
           end
         G
 
-        run! "require 'submodule'"
+        run "require 'submodule'"
         expect(out).to eq("GEM")
       end
     end

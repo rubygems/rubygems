@@ -132,7 +132,7 @@ RSpec.describe "bundle install" do
     end
 
     it "does not cause a conflict if new dependencies in the Gemfile require older dependencies than the lockfile" do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem 'rails', "2.3.2"
       G
@@ -147,35 +147,35 @@ RSpec.describe "bundle install" do
     end
 
     it "can install dependencies with newer bundler version with system gems" do
-      bundle! "config set path.system true"
+      bundle "config set path.system true"
 
       system_gems "bundler-99999999.99.1"
 
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "rails", "3.0"
       G
 
-      bundle! "check"
+      bundle "check"
       expect(out).to include("The Gemfile's dependencies are satisfied")
     end
 
     it "can install dependencies with newer bundler version with a local path" do
-      bundle! "config set path .bundle"
+      bundle "config set path .bundle"
 
       system_gems "bundler-99999999.99.1"
 
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "rails", "3.0"
       G
 
-      bundle! "check"
+      bundle "check"
       expect(out).to include("The Gemfile's dependencies are satisfied")
     end
 
     context "with allow_bundler_dependency_conflicts set" do
-      before { bundle! "config set allow_bundler_dependency_conflicts true" }
+      before { bundle "config set allow_bundler_dependency_conflicts true" }
 
       it "are forced to the current bundler version with warnings when no compatible version is found" do
         build_repo4 do
@@ -184,7 +184,7 @@ RSpec.describe "bundle install" do
           end
         end
 
-        install_gemfile! <<-G
+        install_gemfile <<-G
           source "#{file_uri_for(gem_repo4)}"
           gem "requires_nonexistant_bundler"
         G

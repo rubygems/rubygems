@@ -5,7 +5,7 @@ RSpec.describe "major deprecations" do
 
   describe "Bundler" do
     before do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G
@@ -146,7 +146,7 @@ RSpec.describe "major deprecations" do
   describe "bundle config" do
     describe "old list interface" do
       before do
-        bundle! "config"
+        bundle "config"
       end
 
       it "warns", :bundler => "3" do
@@ -158,7 +158,7 @@ RSpec.describe "major deprecations" do
 
     describe "old get interface" do
       before do
-        bundle! "config waka"
+        bundle "config waka"
       end
 
       it "warns", :bundler => "3" do
@@ -170,7 +170,7 @@ RSpec.describe "major deprecations" do
 
     describe "old set interface" do
       before do
-        bundle! "config waka wakapun"
+        bundle "config waka wakapun"
       end
 
       it "warns", :bundler => "3" do
@@ -182,7 +182,7 @@ RSpec.describe "major deprecations" do
 
     describe "old set interface with --local" do
       before do
-        bundle! "config --local waka wakapun"
+        bundle "config --local waka wakapun"
       end
 
       it "warns", :bundler => "3" do
@@ -194,7 +194,7 @@ RSpec.describe "major deprecations" do
 
     describe "old set interface with --global" do
       before do
-        bundle! "config --global waka wakapun"
+        bundle "config --global waka wakapun"
       end
 
       it "warns", :bundler => "3" do
@@ -206,7 +206,7 @@ RSpec.describe "major deprecations" do
 
     describe "old unset interface" do
       before do
-        bundle! "config --delete waka"
+        bundle "config --delete waka"
       end
 
       it "warns", :bundler => "3" do
@@ -218,7 +218,7 @@ RSpec.describe "major deprecations" do
 
     describe "old unset interface with --local" do
       before do
-        bundle! "config --delete --local waka"
+        bundle "config --delete --local waka"
       end
 
       it "warns", :bundler => "3" do
@@ -230,7 +230,7 @@ RSpec.describe "major deprecations" do
 
     describe "old unset interface with --global" do
       before do
-        bundle! "config --delete --global waka"
+        bundle "config --delete --global waka"
       end
 
       it "warns", :bundler => "3" do
@@ -250,14 +250,14 @@ RSpec.describe "major deprecations" do
     end
 
     it "warns when no options are given", :bundler => "3" do
-      bundle! "update"
+      bundle "update"
       expect(deprecations).to include("Pass --all to `bundle update` to update everything")
     end
 
     pending "fails with a helpful error when no options are given", :bundler => "3"
 
     it "does not warn when --all is passed" do
-      bundle! "update --all"
+      bundle "update --all"
       expect(deprecations).to be_empty
     end
   end
@@ -290,7 +290,7 @@ RSpec.describe "major deprecations" do
 
     it "should print a proper warning, and use gems.rb" do
       create_file "gems.rb"
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G
@@ -373,7 +373,7 @@ RSpec.describe "major deprecations" do
   context "when Bundler.setup is run in a ruby script" do
     before do
       create_file "gems.rb"
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack", :group => :test
       G
@@ -481,7 +481,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
   context "bundle show" do
     before do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G
@@ -489,7 +489,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
     context "without flags" do
       before do
-        bundle! :show
+        bundle :show
       end
 
       it "prints a deprecation warning recommending `bundle list`", :bundler => "2" do
@@ -501,7 +501,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
     context "with --outdated flag" do
       before do
-        bundle! "show --outdated"
+        bundle "show --outdated"
       end
 
       it "prints a deprecation warning informing about its removal", :bundler => "2" do
@@ -513,7 +513,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
     context "with --verbose flag" do
       before do
-        bundle! "show --verbose"
+        bundle "show --verbose"
       end
 
       it "prints a deprecation warning informing about its removal", :bundler => "2" do
@@ -525,7 +525,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
     context "with a gem argument" do
       before do
-        bundle! "show rack"
+        bundle "show rack"
       end
 
       it "prints a deprecation warning recommending `bundle info`", :bundler => "2" do

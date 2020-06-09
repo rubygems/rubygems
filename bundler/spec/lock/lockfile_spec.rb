@@ -496,7 +496,7 @@ RSpec.describe "the lockfile format" do
          #{Bundler::VERSION}
     L
 
-    bundle! "install"
+    bundle "install"
     expect(the_bundle).to include_gems "rack 1.0.0"
   end
 
@@ -620,13 +620,13 @@ RSpec.describe "the lockfile format" do
   it "serializes pinned path sources to the lockfile even when packaging" do
     build_lib "foo"
 
-    install_gemfile! <<-G
+    install_gemfile <<-G
       gem "foo", :path => "#{lib_path("foo-1.0")}"
     G
 
     bundle "config set cache_all true"
-    bundle! :cache
-    bundle! :install, :local => true
+    bundle :cache
+    bundle :install, :local => true
 
     lockfile_should_be <<-G
       PATH
@@ -1048,7 +1048,7 @@ RSpec.describe "the lockfile format" do
 
     simulate_platform "universal-java-16"
 
-    install_gemfile! <<-G
+    install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
       gem "platform_specific"
     G
@@ -1079,7 +1079,7 @@ RSpec.describe "the lockfile format" do
 
     simulate_platform "universal-java-16"
 
-    install_gemfile! <<-G
+    install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
       gem "platform_specific"
     G
@@ -1294,7 +1294,7 @@ RSpec.describe "the lockfile format" do
     G
 
     bundle "config --local path vendor"
-    bundle! :install
+    bundle :install
     expect(the_bundle).to include_gems "omg 1.0"
 
     # Create a Gemfile.lock that has duplicate GIT sections

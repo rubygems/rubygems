@@ -32,8 +32,8 @@ RSpec.describe "bundle install with git sources" do
 
     it "caches the git repo globally" do
       simulate_new_machine
-      bundle! "config set global_gem_cache true"
-      bundle! :install
+      bundle "config set global_gem_cache true"
+      bundle :install
       expect(Dir["#{home}/.bundle/cache/git/foo-1.0-*"]).to have_attributes :size => 1
     end
 
@@ -225,14 +225,14 @@ RSpec.describe "bundle install with git sources" do
         s.write("lib/foo.rb", "raise 'FAIL'")
       end
 
-      install_gemfile! <<-G
+      install_gemfile <<-G
         git "#{lib_path("foo-1.0")}", :ref => "refs/bundler/1" do
           gem "foo"
         end
       G
       expect(err).to be_empty
 
-      run! <<-RUBY
+      run <<-RUBY
         require 'foo'
         puts "WIN" if defined?(FOO)
       RUBY
@@ -241,7 +241,7 @@ RSpec.describe "bundle install with git sources" do
     end
 
     it "works when the revision is a non-head ref and it was previously downloaded" do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         git "#{lib_path("foo-1.0")}" do
           gem "foo"
         end
@@ -259,14 +259,14 @@ RSpec.describe "bundle install with git sources" do
         s.write("lib/foo.rb", "raise 'FAIL'")
       end
 
-      install_gemfile! <<-G
+      install_gemfile <<-G
         git "#{lib_path("foo-1.0")}", :ref => "refs/bundler/1" do
           gem "foo"
         end
       G
       expect(err).to be_empty
 
-      run! <<-RUBY
+      run <<-RUBY
         require 'foo'
         puts "WIN" if defined?(FOO)
       RUBY
@@ -277,16 +277,16 @@ RSpec.describe "bundle install with git sources" do
     it "does not download random non-head refs" do
       sys_exec("git update-ref -m \"Bundler Spec!\" refs/bundler/1 master~1", :dir => lib_path("foo-1.0"))
 
-      bundle! "config set global_gem_cache true"
+      bundle "config set global_gem_cache true"
 
-      install_gemfile! <<-G
+      install_gemfile <<-G
         git "#{lib_path("foo-1.0")}" do
           gem "foo"
         end
       G
 
       # ensure we also git fetch after cloning
-      bundle! :update, :all => true
+      bundle :update, :all => true
 
       sys_exec("git ls-remote .", :dir => Dir[home(".bundle/cache/git/foo-*")].first)
 
@@ -410,8 +410,8 @@ RSpec.describe "bundle install with git sources" do
         gem "rack", :git => "#{lib_path("rack-0.8")}", :branch => "master"
       G
 
-      bundle! %(config set local.rack #{lib_path("local-rack")})
-      bundle! :install
+      bundle %(config set local.rack #{lib_path("local-rack")})
+      bundle :install
 
       run "require 'rack'"
       expect(out).to eq("LOCAL")
@@ -446,14 +446,14 @@ RSpec.describe "bundle install with git sources" do
         s.write "lib/rack.rb", "puts :LOCAL"
       end
 
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack", :git => "#{lib_path("rack-0.8")}", :branch => "master"
       G
 
-      bundle! %(config set local.rack #{lib_path("local-rack")})
-      bundle! :install
-      run! "require 'rack'"
+      bundle %(config set local.rack #{lib_path("local-rack")})
+      bundle :install
+      run "require 'rack'"
       expect(out).to eq("LOCAL")
     end
 
@@ -1046,7 +1046,7 @@ RSpec.describe "bundle install with git sources" do
       simulate_new_machine
 
       bundle "config --local deployment true"
-      bundle! :install
+      bundle :install
     end
   end
 
@@ -1135,7 +1135,7 @@ RSpec.describe "bundle install with git sources" do
       R
       expect(out).to eq("YES")
 
-      run! <<-R
+      run <<-R
         puts $:.grep(/ext/)
       R
       expect(out).to include(Pathname.glob(default_bundle_path("bundler/gems/extensions/**/foo-1.0-*")).first.to_s)
@@ -1223,7 +1223,7 @@ In Gemfile:
         gem "foo", :git => "#{lib_path("foo-1.0")}"
       G
 
-      run! <<-R
+      run <<-R
         require 'foo'
         puts FOO
       R
@@ -1236,7 +1236,7 @@ In Gemfile:
         gem "foo", :git => "#{lib_path("foo-1.0")}"
       G
 
-      run! <<-R
+      run <<-R
         require 'foo'
         puts FOO
       R
@@ -1265,7 +1265,7 @@ In Gemfile:
         gem "foo", :git => "#{lib_path("foo-1.0")}"
       G
 
-      run! <<-R
+      run <<-R
         require 'foo'
         puts FOO
       R
@@ -1279,7 +1279,7 @@ In Gemfile:
         gem "foo", :git => "#{lib_path("foo-1.0")}"
       G
 
-      run! <<-R
+      run <<-R
         require 'foo'
         puts FOO
       R
@@ -1307,7 +1307,7 @@ In Gemfile:
         gem "foo", :git => "#{lib_path("foo-1.0")}"
       G
 
-      run! <<-R
+      run <<-R
         require 'foo'
         puts FOO
       R
@@ -1323,7 +1323,7 @@ In Gemfile:
         gem "foo", :git => "#{lib_path("foo-1.0")}", :branch => "branch2"
       G
 
-      run! <<-R
+      run <<-R
         require 'foo'
         puts FOO
       R
@@ -1332,9 +1332,9 @@ In Gemfile:
       installed_time = out
 
       update_git("foo")
-      bundle! "update foo"
+      bundle "update foo"
 
-      run! <<-R
+      run <<-R
         require 'foo'
         puts FOO
       R
@@ -1393,14 +1393,14 @@ In Gemfile:
       bundle :cache
       simulate_new_machine
 
-      bundle! "install", :env => { "PATH" => "" }
+      bundle "install", :env => { "PATH" => "" }
       expect(out).to_not include("You need to install git to be able to use gems from git repositories.")
     end
   end
 
   describe "when the git source is overridden with a local git repo" do
     before do
-      bundle! "config set --global local.foo #{lib_path("foo")}"
+      bundle "config set --global local.foo #{lib_path("foo")}"
     end
 
     describe "and git output is colorized" do

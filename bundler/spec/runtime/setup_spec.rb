@@ -107,7 +107,7 @@ RSpec.describe "Bundler.setup" do
 
   context "load order" do
     def clean_load_path(lp)
-      without_bundler_load_path = ruby!("puts $LOAD_PATH").split("\n")
+      without_bundler_load_path = ruby("puts $LOAD_PATH").split("\n")
       lp -= without_bundler_load_path
       lp.map! {|p| p.sub(/^#{Regexp.union system_gem_path.to_s, default_bundle_path.to_s, lib_dir.to_s}/i, "") }
     end
@@ -143,7 +143,7 @@ RSpec.describe "Bundler.setup" do
         gem "rails"
       G
 
-      ruby! <<-RUBY
+      ruby <<-RUBY
         require '#{lib_dir}/bundler'
         Bundler.setup
         puts $LOAD_PATH
@@ -164,14 +164,14 @@ RSpec.describe "Bundler.setup" do
     end
 
     it "falls back to order the load path alphabetically for backwards compatibility" do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "weakling"
         gem "duradura"
         gem "terranova"
       G
 
-      ruby! <<-RUBY
+      ruby <<-RUBY
         require '#{lib_dir}/bundler/setup'
         puts $LOAD_PATH
       RUBY
@@ -482,14 +482,14 @@ RSpec.describe "Bundler.setup" do
 
     it "works even when the cache directory has been deleted" do
       bundle "config --local path vendor/bundle"
-      bundle! :install
+      bundle :install
       FileUtils.rm_rf vendored_gems("cache")
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
 
     it "does not randomly change the path when specifying --path and the bundle directory becomes read only" do
       bundle "config --local path vendor/bundle"
-      bundle! :install
+      bundle :install
 
       with_read_only("#{bundled_app}/**/*") do
         expect(the_bundle).to include_gems "rack 1.0.0"
@@ -518,7 +518,7 @@ RSpec.describe "Bundler.setup" do
       G
 
       bundle %(config set local.rack #{lib_path("local-rack")})
-      bundle! :install
+      bundle :install
 
       FileUtils.rm_rf(lib_path("local-rack"))
       run "require 'rack'", :raise_on_error => false
@@ -536,7 +536,7 @@ RSpec.describe "Bundler.setup" do
       G
 
       bundle %(config set local.rack #{lib_path("local-rack")})
-      bundle! :install
+      bundle :install
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -558,7 +558,7 @@ RSpec.describe "Bundler.setup" do
       G
 
       bundle %(config set local.rack #{lib_path("local-rack")})
-      bundle! :install
+      bundle :install
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -665,12 +665,12 @@ RSpec.describe "Bundler.setup" do
   end
 
   it "does not load all gemspecs" do
-    install_gemfile! <<-G
+    install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
       gem "rack"
     G
 
-    run! <<-R
+    run <<-R
       File.open(File.join(Gem.dir, "specifications", "broken.gemspec"), "w") do |f|
         f.write <<-RUBY
 # -*- encoding: utf-8 -*-
@@ -685,7 +685,7 @@ end
       end
     R
 
-    run! <<-R
+    run <<-R
       puts "WIN"
     R
 
@@ -717,12 +717,12 @@ end
       before { ENV["MANPATH"] = "/foo#{File::PATH_SEPARATOR}" }
 
       it "adds the gem's man dir to the MANPATH" do
-        install_gemfile! <<-G
+        install_gemfile <<-G
           source "#{file_uri_for(gem_repo4)}"
           gem "with_man"
         G
 
-        run! "puts ENV['MANPATH']"
+        run "puts ENV['MANPATH']"
         expect(out).to eq("#{default_bundle_path("gems/with_man-1.0/man")}#{File::PATH_SEPARATOR}/foo")
       end
     end
@@ -731,12 +731,12 @@ end
       before { ENV.delete("MANPATH") }
 
       it "adds the gem's man dir to the MANPATH" do
-        install_gemfile! <<-G
+        install_gemfile <<-G
           source "#{file_uri_for(gem_repo4)}"
           gem "with_man"
         G
 
-        run! "puts ENV['MANPATH']"
+        run "puts ENV['MANPATH']"
         expect(out).to eq(default_bundle_path("gems/with_man-1.0/man").to_s)
       end
     end
@@ -971,7 +971,7 @@ end
 
   describe "with system gems in the bundle" do
     before :each do
-      bundle! "config set path.system true"
+      bundle "config set path.system true"
       system_gems "rack-1.0.0"
 
       install_gemfile <<-G
@@ -1158,14 +1158,14 @@ end
 
     context "is not present" do
       it "does not change the lock" do
-        expect { ruby! "require '#{lib_dir}/bundler/setup'" }.not_to change { lockfile }
+        expect { ruby "require '#{lib_dir}/bundler/setup'" }.not_to change { lockfile }
       end
     end
 
     context "is newer" do
       let(:ruby_version) { "5.5.5" }
       it "does not change the lock or warn" do
-        expect { ruby! "require '#{lib_dir}/bundler/setup'" }.not_to change { lockfile }
+        expect { ruby "require '#{lib_dir}/bundler/setup'" }.not_to change { lockfile }
         expect(out).to be_empty
         expect(err).to be_empty
       end
@@ -1174,7 +1174,7 @@ end
     context "is older" do
       let(:ruby_version) { "1.0.0" }
       it "does not change the lock" do
-        expect { ruby! "require '#{lib_dir}/bundler/setup'" }.not_to change { lockfile }
+        expect { ruby "require '#{lib_dir}/bundler/setup'" }.not_to change { lockfile }
       end
     end
   end
@@ -1194,8 +1194,8 @@ end
     end
 
     it "does not load openssl" do
-      install_gemfile! ""
-      ruby! <<-RUBY
+      install_gemfile ""
+      ruby <<-RUBY
         require "#{lib_dir}/bundler/setup"
         puts defined?(OpenSSL) || "undefined"
         require "openssl"
@@ -1250,25 +1250,25 @@ end
       RUBY
 
       it "activates no gems with -rbundler/setup" do
-        install_gemfile! ""
-        ruby! code, :env => { "RUBYOPT" => activation_warning_hack_rubyopt + " -r#{lib_dir}/bundler/setup" }
+        install_gemfile ""
+        ruby code, :env => { "RUBYOPT" => activation_warning_hack_rubyopt + " -r#{lib_dir}/bundler/setup" }
         expect(out).to eq("{}")
       end
 
       it "activates no gems with bundle exec" do
-        install_gemfile! ""
+        install_gemfile ""
         create_file("script.rb", code)
-        bundle! "exec ruby ./script.rb", :env => { "RUBYOPT" => activation_warning_hack_rubyopt }
+        bundle "exec ruby ./script.rb", :env => { "RUBYOPT" => activation_warning_hack_rubyopt }
         expect(out).to eq("{}")
       end
 
       it "activates no gems with bundle exec that is loaded" do
         skip "not executable" if Gem.win_platform?
 
-        install_gemfile! ""
+        install_gemfile ""
         create_file("script.rb", "#!/usr/bin/env ruby\n\n#{code}")
         FileUtils.chmod(0o777, bundled_app("script.rb"))
-        bundle! "exec ./script.rb", :artifice => nil, :env => { "RUBYOPT" => activation_warning_hack_rubyopt }
+        bundle "exec ./script.rb", :artifice => nil, :env => { "RUBYOPT" => activation_warning_hack_rubyopt }
         expect(out).to eq("{}")
       end
 
@@ -1286,9 +1286,9 @@ end
 
         bundle "config set --local path vendor/bundle"
 
-        bundle! :install
+        bundle :install
 
-        bundle! :check
+        bundle :check
 
         expect(out).to eq("The Gemfile's dependencies are satisfied")
       end
@@ -1324,7 +1324,7 @@ end
             build_gem g, "999999"
           end
 
-          install_gemfile! <<-G
+          install_gemfile <<-G
             source "#{file_uri_for(gem_repo4)}"
             gem "#{g}", "999999"
           G
@@ -1340,7 +1340,7 @@ end
             build_gem g, "0.0.0.a"
           end
 
-          install_gemfile! <<-G
+          install_gemfile <<-G
             source "#{file_uri_for(gem_repo4)}"
             gem "#{g}", "0.0.0.a"
           G
@@ -1359,7 +1359,7 @@ end
         gem "rack"
       G
 
-      ruby! <<-RUBY
+      ruby <<-RUBY
         require "#{lib_dir}/bundler/setup"
         Object.new.gem "rack"
         puts Gem.loaded_specs["rack"].full_name
@@ -1369,7 +1369,7 @@ end
     end
 
     it "keeps Kernel#gem private", :bundler => "3" do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G
@@ -1385,7 +1385,7 @@ end
     end
 
     it "keeps Kernel#require private" do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G

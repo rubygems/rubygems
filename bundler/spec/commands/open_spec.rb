@@ -69,7 +69,7 @@ RSpec.describe "bundle open" do
 
     it "allows selecting exit from many match gems", :readline do
       env = { "EDITOR" => "echo editor", "VISUAL" => "echo visual", "BUNDLER_EDITOR" => "echo bundler_editor" }
-      bundle! "open active", :env => env do |input, _, _|
+      bundle "open active", :env => env do |input, _, _|
         input.puts "0"
       end
     end
@@ -94,7 +94,7 @@ RSpec.describe "bundle open" do
 
   context "when opening a default gem" do
     let(:default_gems) do
-      ruby!(<<-RUBY).split("\n")
+      ruby(<<-RUBY).split("\n")
         if Gem::Specification.is_a?(Enumerable)
           puts Gem::Specification.select(&:default_gem?).map(&:name)
         end

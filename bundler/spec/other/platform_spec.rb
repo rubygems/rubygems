@@ -232,7 +232,7 @@ G
            #{Bundler::VERSION}
       L
 
-      bundle! "platform --ruby"
+      bundle "platform --ruby"
       expect(out).to eq("ruby 1.0.0p127")
     end
 
@@ -241,7 +241,7 @@ G
         ruby ">= 1.8.7"
       G
 
-      bundle! "platform --ruby"
+      bundle "platform --ruby"
       expect(out).to eq("ruby 1.8.7")
     end
 
@@ -250,7 +250,7 @@ G
         ruby ">= 1.8.7", "< 2.0.0"
       G
 
-      bundle! "platform --ruby"
+      bundle "platform --ruby"
       expect(out).to eq("ruby 1.8.7")
     end
   end
@@ -594,7 +594,7 @@ G
     end
 
     it "prints path if ruby version is correct" do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rails"
 
@@ -606,7 +606,7 @@ G
     end
 
     it "prints path if ruby version is correct for any engine", :jruby do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rails"
 
@@ -689,14 +689,14 @@ G
     end
 
     it "copies the .gem file to vendor/cache when ruby version matches for any engine", :jruby do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem 'rack'
 
         #{ruby_version_correct_engineless}
       G
 
-      bundle! :cache
+      bundle :cache
       expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
     end
 
@@ -748,7 +748,7 @@ G
 
   context "bundle pack" do
     before do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem 'rack'
       G
@@ -766,7 +766,7 @@ G
     end
 
     it "copies the .gem file to vendor/cache when ruby version matches any engine", :jruby do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem 'rack'
 
@@ -1148,7 +1148,7 @@ G
     end
 
     it "returns list of outdated gems when the ruby version matches for any engine", :jruby do
-      bundle! :install
+      bundle :install
       update_repo2 do
         build_gem "activesupport", "3.0"
         update_git "foo", :path => lib_path("foo")

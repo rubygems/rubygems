@@ -194,9 +194,12 @@ RSpec.describe "bundle gem" do
     end
   end
 
-  shared_examples_for "test framework is present" do
-    it "creates a .travis.yml file to test the library against the current Ruby version on Travis CI" do
-      expect(bundled_app("#{gem_name}/.travis.yml").read).to match(/- #{RUBY_VERSION}/)
+  shared_examples_for "CI config is absent" do
+    it "does not create any CI files" do
+      expect(bundled_app("#{gem_name}/.github/workflows/main.yml")).to_not exist
+      expect(bundled_app("#{gem_name}/.travis.yml")).to_not exist
+      expect(bundled_app("#{gem_name}/.gitlab-ci.yml")).to_not exist
+      expect(bundled_app("#{gem_name}/.circleci/config.yml")).to_not exist
     end
   end
 
@@ -207,10 +210,6 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/spec/spec_helper.rb")).to_not exist
       expect(bundled_app("#{gem_name}/test/#{require_path}.rb")).to_not exist
       expect(bundled_app("#{gem_name}/test/test_helper.rb")).to_not exist
-    end
-
-    it "does not create a .travis.yml file" do
-      expect(bundled_app("#{gem_name}/.travis.yml")).to_not exist
     end
   end
 
@@ -458,13 +457,11 @@ RSpec.describe "bundle gem" do
       it "creates a default test which fails" do
         expect(bundled_app("#{gem_name}/spec/#{require_path}_spec.rb").read).to include("expect(false).to eq(true)")
       end
-
-      it_behaves_like "test framework is present"
     end
 
     context "gem.test setting set to rspec" do
       before do
-        bundle "config set gem.test rspec"
+        bundle! "config set gem.test rspec"
         bundle! "gem #{gem_name}"
       end
 
@@ -473,13 +470,11 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/spec/#{require_path}_spec.rb")).to exist
         expect(bundled_app("#{gem_name}/spec/spec_helper.rb")).to exist
       end
-
-      it_behaves_like "test framework is present"
     end
 
     context "gem.test setting set to rspec and --test is set to minitest" do
       before do
-        bundle "config set gem.test rspec"
+        bundle! "config set gem.test rspec"
         bundle! "gem #{gem_name} --test=minitest"
       end
 
@@ -487,13 +482,11 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/test/#{require_path}_test.rb")).to exist
         expect(bundled_app("#{gem_name}/test/test_helper.rb")).to exist
       end
-
-      it_behaves_like "test framework is present"
     end
 
     context "--test parameter set to minitest" do
       before do
-        bundle "gem #{gem_name} --test=minitest"
+        bundle! "gem #{gem_name} --test=minitest"
       end
 
       it "depends on a specific version of minitest" do
@@ -521,13 +514,11 @@ RSpec.describe "bundle gem" do
       it "creates a default test which fails" do
         expect(bundled_app("#{gem_name}/test/#{require_path}_test.rb").read).to include("assert false")
       end
-
-      it_behaves_like "test framework is present"
     end
 
     context "gem.test setting set to minitest" do
       before do
-        bundle "config set gem.test minitest"
+        bundle! "config set gem.test minitest"
         bundle! "gem #{gem_name}"
       end
 
@@ -547,13 +538,11 @@ RSpec.describe "bundle gem" do
 
         expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)
       end
-
-      it_behaves_like "test framework is present"
     end
 
     context "--test parameter set to test-unit" do
       before do
-        bundle "gem #{gem_name} --test=test-unit"
+        bundle! "gem #{gem_name} --test=test-unit"
       end
 
       it "depends on a specific version of test-unit" do
@@ -581,14 +570,12 @@ RSpec.describe "bundle gem" do
       it "creates a default test which fails" do
         expect(bundled_app("#{gem_name}/test/#{require_path}_test.rb").read).to include("assert_equal(\"expected\", \"actual\")")
       end
-
-      it_behaves_like "test framework is present"
     end
 
     context "gem.test setting set to test-unit" do
       before do
-        bundle "config set gem.test test-unit"
-        bundle "gem #{gem_name}"
+        bundle! "config set gem.test test-unit"
+        bundle! "gem #{gem_name}"
       end
 
       it "creates a default rake task to run the test suite" do
@@ -607,13 +594,11 @@ RSpec.describe "bundle gem" do
 
         expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)
       end
-
-      it_behaves_like "test framework is present"
     end
 
     context "gem.test set to rspec and --test with no arguments", :hint_text do
       before do
-        bundle "config set gem.test rspec"
+        bundle! "config set gem.test rspec"
         bundle! "gem #{gem_name} --test"
       end
 
@@ -623,19 +608,14 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/spec/spec_helper.rb")).to exist
       end
 
-      it "hints that --test is not needed" do
-        hint = "Bundler is configured to generate test files for rspec, "\
-               "so -t is not needed if you want to continue using it. " \
-               "This setting can be changed anytime with `bundle config gem.test`."
-        expect(out).to match(hint)
+      it "hints that --test is already configured" do
+        expect(out).to match("rspec is already configured, ignoring --test flag.")
       end
-
-      it_behaves_like "test framework is present"
     end
 
     context "gem.test setting set to false and --test with no arguments", :hint_text do
       before do
-        bundle "config set gem.test false"
+        bundle! "config set gem.test false"
         bundle! "gem #{gem_name} --test"
       end
 
@@ -668,9 +648,143 @@ RSpec.describe "bundle gem" do
       it_behaves_like "test framework is absent"
     end
 
+    context "--ci with no argument" do
+      it "does not generate any CI config" do
+        bundle! "gem #{gem_name}"
+
+        expect(bundled_app("#{gem_name}/.github/workflows/main.yml")).to_not exist
+        expect(bundled_app("#{gem_name}/.travis.yml")).to_not exist
+        expect(bundled_app("#{gem_name}/.gitlab-ci.yml")).to_not exist
+        expect(bundled_app("#{gem_name}/.circleci/config.yml")).to_not exist
+      end
+    end
+
+    context "--ci set to github" do
+      it "generates a GitHub Actions config file" do
+        bundle! "gem #{gem_name} --ci=github"
+
+        expect(bundled_app("#{gem_name}/.github/workflows/main.yml")).to exist
+      end
+    end
+
+    context "--ci set to gitlab" do
+      it "generates a GitLab CI config file" do
+        bundle! "gem #{gem_name} --ci=gitlab"
+
+        expect(bundled_app("#{gem_name}/.gitlab-ci.yml")).to exist
+      end
+    end
+
+    context "--ci set to circle" do
+      it "generates a CircleCI config file" do
+        bundle! "gem #{gem_name} --ci=circle"
+
+        expect(bundled_app("#{gem_name}/.circleci/config.yml")).to exist
+      end
+    end
+
+    context "--ci set to travis" do
+      it "generates a Travis CI config file" do
+        bundle! "gem #{gem_name} --ci=travis"
+
+        expect(bundled_app("#{gem_name}/.travis.yml")).to exist
+      end
+    end
+
+    context "gem.ci setting set to none" do
+      it "doesn't generate any CI config" do
+        expect(bundled_app("#{gem_name}/.github/workflows/main.yml")).to_not exist
+        expect(bundled_app("#{gem_name}/.travis.yml")).to_not exist
+        expect(bundled_app("#{gem_name}/.gitlab-ci.yml")).to_not exist
+        expect(bundled_app("#{gem_name}/.circleci/config.yml")).to_not exist
+      end
+    end
+
+    context "gem.ci setting set to github" do
+      it "generates a GitHub Actions config file" do
+        bundle! "config set gem.ci github"
+        bundle! "gem #{gem_name}"
+
+        expect(bundled_app("#{gem_name}/.github/workflows/main.yml")).to exist
+      end
+    end
+
+    context "gem.ci setting set to travis" do
+      it "generates a Travis CI config file" do
+        bundle! "config set gem.ci travis"
+        bundle! "gem #{gem_name}"
+
+        expect(bundled_app("#{gem_name}/.travis.yml")).to exist
+      end
+    end
+
+    context "gem.ci setting set to gitlab" do
+      it "generates a GitLab CI config file" do
+        bundle! "config set gem.ci gitlab"
+        bundle! "gem #{gem_name}"
+
+        expect(bundled_app("#{gem_name}/.gitlab-ci.yml")).to exist
+      end
+    end
+
+    context "gem.ci setting set to circle" do
+      it "generates a CircleCI config file" do
+        bundle! "config set gem.ci circle"
+        bundle! "gem #{gem_name}"
+
+        expect(bundled_app("#{gem_name}/.circleci/config.yml")).to exist
+      end
+    end
+
+    context "gem.ci set to github and --ci with no arguments", :hint_text do
+      before do
+        bundle! "config set gem.ci github"
+        bundle! "gem #{gem_name} --ci"
+      end
+
+      it "generates a GitHub Actions config file" do
+        expect(bundled_app("#{gem_name}/.github/workflows/main.yml")).to exist
+      end
+
+      it "hints that --ci is already configured" do
+        expect(out).to match("github is already configured, ignoring --ci flag.")
+      end
+    end
+
+    context "gem.ci setting set to false and --ci with no arguments", :hint_text do
+      before do
+        bundle! "config set gem.ci false"
+        bundle! "gem #{gem_name} --ci"
+      end
+
+      it "asks to setup CI" do
+        expect(out).to match("Do you want to set up continuous integration for your gem?")
+      end
+
+      it "hints that the choice will only be applied to the current gem" do
+        expect(out).to match("Your choice will only be applied to this gem.")
+      end
+    end
+
+    context "gem.ci setting not set and --ci with no arguments", :hint_text do
+      before do
+        bundle! "gem #{gem_name} --ci"
+      end
+
+      it "asks to setup CI" do
+        expect(out).to match("Do you want to set up continuous integration for your gem?")
+      end
+
+      it "hints that the choice will be applied to future bundle gem calls" do
+        hint = "Future `bundle gem` calls will use your choice. " \
+               "This setting can be changed anytime with `bundle config gem.ci`."
+        expect(out).to match(hint)
+      end
+    end
+
     context "--edit option" do
       it "opens the generated gemspec in the user's text editor" do
-        output = bundle "gem #{gem_name} --edit=echo"
+        output = bundle! "gem #{gem_name} --edit=echo"
         gemspec_path = File.join(bundled_app, gem_name, "#{gem_name}.gemspec")
         expect(output).to include("echo \"#{gemspec_path}\"")
       end
@@ -875,10 +989,20 @@ Usage: "bundle gem NAME [OPTIONS]"
       expect(bundled_app("foobar/Gemfile").read).to include('gem "rspec"')
     end
 
-    it "asks about MIT license" do
-      global_config "BUNDLE_GEM__TEST" => "false", "BUNDLE_GEM__COC" => "false"
+    it "asks about CI service" do
+      global_config "BUNDLE_GEM__TEST" => "false", "BUNDLE_GEM__MIT" => "false", "BUNDLE_GEM__COC" => "false", "BUNDLE_GEM__RUBOCOP" => "false"
 
-      bundle "config list"
+      bundle! "gem foobar" do |input, _, _|
+        input.puts "github"
+      end
+
+      expect(bundled_app("foobar/.github/workflows/main.yml")).to exist
+    end
+
+    it "asks about MIT license" do
+      global_config "BUNDLE_GEM__TEST" => "false", "BUNDLE_GEM__COC" => "false", "BUNDLE_GEM__CI" => "false", "BUNDLE_GEM__RUBOCOP" => "false"
+
+      bundle! "config list"
 
       bundle! "gem foobar" do |input, _, _|
         input.puts "yes"
@@ -888,7 +1012,7 @@ Usage: "bundle gem NAME [OPTIONS]"
     end
 
     it "asks about CoC" do
-      global_config "BUNDLE_GEM__MIT" => "false", "BUNDLE_GEM__TEST" => "false"
+      global_config "BUNDLE_GEM__MIT" => "false", "BUNDLE_GEM__TEST" => "false", "BUNDLE_GEM__CI" => "false", "BUNDLE_GEM__RUBOCOP" => "false"
 
       bundle! "gem foobar" do |input, _, _|
         input.puts "yes"

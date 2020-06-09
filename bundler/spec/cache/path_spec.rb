@@ -79,12 +79,16 @@ RSpec.describe "bundle cache with path" do
     bundle "config set cache_all true"
     bundle :cache
 
+    expect(bundled_app("vendor/cache/foo-1.0")).to exist
+
+    build_lib "bar"
+
     install_gemfile <<-G
       gem "bar", :path => '#{lib_path("bar-1.0")}'
     G
 
     bundle :cache
-    expect(bundled_app("vendor/cache/bar-1.0")).not_to exist
+    expect(bundled_app("vendor/cache/foo-1.0")).not_to exist
   end
 
   it "raises a warning without --all", :bundler => "< 3" do
@@ -135,7 +139,7 @@ RSpec.describe "bundle cache with path" do
       gem "baz", :path => '#{lib_path("baz-1.0")}'
     G
 
-    bundle "cache --no-all"
+    bundle "cache --no-all", :raise_on_error => false
     expect(bundled_app("vendor/cache/baz-1.0")).not_to exist
   end
 end

@@ -61,7 +61,7 @@ RSpec.describe "bundle install from an existing gemspec" do
   it "should raise if there are no gemspecs available" do
     build_lib("foo", :path => tmp.join("foo"), :gemspec => false)
 
-    install_gemfile(<<-G)
+    install_gemfile <<-G, :raise_on_error => false
       source "#{file_uri_for(gem_repo2)}"
       gemspec :path => '#{tmp.join("foo")}'
     G
@@ -73,7 +73,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       s.write("foo2.gemspec", build_spec("foo", "4.0").first.to_ruby)
     end
 
-    install_gemfile(<<-G)
+    install_gemfile <<-G, :raise_on_error => false
       source "#{file_uri_for(gem_repo2)}"
       gemspec :path => '#{tmp.join("foo")}'
     G
@@ -126,7 +126,8 @@ RSpec.describe "bundle install from an existing gemspec" do
     # ghost pass in future, and will only catch a regression if the message
     # doesn't change. Exit codes should be used correctly (they can be more
     # than just 0 and 1).
-    output = bundle("install --deployment", :dir => tmp.join("foo"))
+    bundle "config set --local deployment true"
+    output = bundle("install", :dir => tmp.join("foo"))
     expect(output).not_to match(/You have added to the Gemfile/)
     expect(output).not_to match(/You have deleted from the Gemfile/)
     expect(output).not_to match(/install in deployment mode after changing/)
@@ -188,7 +189,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       s.write "raise 'ahh' unless Dir.pwd == '#{tmp.join("foo")}'"
     end
 
-    install_gemfile <<-G
+    install_gemfile <<-G, :raise_on_error => false
       gemspec :path => '#{tmp.join("foo")}'
     G
     expect(last_command.stdboth).not_to include("ahh")
@@ -291,7 +292,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         end
 
         bundle "config --local deployment true"
-        bundle :install
+        bundle :install, :raise_on_error => false
 
         expect(err).to include("changed")
       end

@@ -108,7 +108,7 @@ namespace :release do
 
   desc "Push the release to Github releases"
   task :github, :version do |_t, args|
-    version = Gem::Version.new(args.version || bundler_spec.version)
+    version = Gem::Version.new(args.version || Bundler::GemHelper.gemspec.version)
     tag = "v#{version}"
 
     gh_api_post :path => "/repos/rubygems/rubygems/releases",
@@ -123,7 +123,7 @@ namespace :release do
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch, :version do |_t, args|
     version = args.version
-    current_version = bundler_spec.version
+    current_version = Bundler::GemHelper.gemspec.version
 
     version ||= begin
       segments = current_version.segments

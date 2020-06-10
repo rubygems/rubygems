@@ -584,7 +584,7 @@ class Gem::Installer
   def shebang(bin_file_name)
     ruby_name = RbConfig::CONFIG['ruby_install_name'] if @env_shebang
     path = File.join gem_dir, spec.bindir, bin_file_name
-    first_line = File.open(path, "rb") {|file| file.gets} || ""
+    first_line = File.open(path, "rb") { |file| file.gets } || ""
 
     if first_line.start_with?("#!")
       # Preserve extra words on shebang line, like "-w".  Thanks RPA.
@@ -600,7 +600,7 @@ class Gem::Installer
       which = which.gsub(/\$(\w+)/) do
         case $1
         when "env"
-          @env_path ||= ENV_PATHS.find {|env_path| File.executable? env_path }
+          @env_path ||= ENV_PATHS.find { |env_path| File.executable? env_path }
         when "ruby"
           "#{Gem.ruby}#{opts}"
         when "exec"
@@ -617,7 +617,7 @@ class Gem::Installer
       "#!/bin/sh\n'exec' #{ruby_name.dump} '-x' \"$0\" \"$@\"\n#{shebang}"
     else
       # Create a plain shebang line.
-      @env_path ||= ENV_PATHS.find {|env_path| File.executable? env_path }
+      @env_path ||= ENV_PATHS.find { |env_path| File.executable? env_path }
       "#!#{@env_path} #{ruby_name}"
     end
   end
@@ -738,11 +738,11 @@ class Gem::Installer
       raise Gem::InstallError, "#{spec} has an invalid name"
     end
 
-    if spec.raw_require_paths.any?{|path| path =~ /\R/ }
+    if spec.raw_require_paths.any?{ |path| path =~ /\R/ }
       raise Gem::InstallError, "#{spec} has an invalid require_paths"
     end
 
-    if spec.extensions.any?{|ext| ext =~ /\R/ }
+    if spec.extensions.any?{ |ext| ext =~ /\R/ }
       raise Gem::InstallError, "#{spec} has an invalid extensions"
     end
 
@@ -750,11 +750,11 @@ class Gem::Installer
       raise Gem::InstallError, "#{spec} has an invalid specification_version"
     end
 
-    if spec.dependencies.any? {|dep| dep.type != :runtime && dep.type != :development }
+    if spec.dependencies.any? { |dep| dep.type != :runtime && dep.type != :development }
       raise Gem::InstallError, "#{spec} has an invalid dependencies"
     end
 
-    if spec.dependencies.any? {|dep| dep.name =~ /(?:\R|[<>])/ }
+    if spec.dependencies.any? { |dep| dep.name =~ /(?:\R|[<>])/ }
       raise Gem::InstallError, "#{spec} has an invalid dependencies"
     end
   end

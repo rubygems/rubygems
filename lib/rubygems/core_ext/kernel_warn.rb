@@ -16,7 +16,7 @@ if RUBY_VERSION >= "2.5"
 
     end
 
-    module_function define_method(:warn) {|*messages, **kw|
+    module_function define_method(:warn) { |*messages, **kw|
       unless uplevel = kw[:uplevel]
         if Gem.java_platform?
           return original_warn.call(*messages)

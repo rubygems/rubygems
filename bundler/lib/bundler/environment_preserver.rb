@@ -25,7 +25,7 @@ module Bundler
       to_hash = env.to_hash
       return to_hash unless Gem.win_platform?
 
-      to_hash.each_with_object({}) {|(k,v), a| a[k.upcase] = v }
+      to_hash.each_with_object({}) { |(k,v), a| a[k.upcase] = v }
     end
 
     # @param env [Hash]
@@ -46,7 +46,7 @@ module Bundler
 
       ENV.clear
 
-      backup.each {|k, v| ENV[k] = v }
+      backup.each { |k, v| ENV[k] = v }
     end
 
     # @return [Hash]

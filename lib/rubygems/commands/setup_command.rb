@@ -310,7 +310,7 @@ By default, this RubyGems will install gem as:
   def shebang
     if options[:env_shebang]
       ruby_name = RbConfig::CONFIG['ruby_install_name']
-      @env_path ||= ENV_PATHS.find {|env_path| File.executable? env_path }
+      @env_path ||= ENV_PATHS.find { |env_path| File.executable? env_path }
       "#!#{@env_path} #{ruby_name}\n"
     else
       "#!#{Gem.ruby}\n"
@@ -396,8 +396,8 @@ By default, this RubyGems will install gem as:
     mkdir_p specs_dir, :mode => 0755
 
     # Workaround for non-git environment.
-    gemspec = File.open('bundler/bundler.gemspec', 'rb'){|f| f.read.gsub(/`git ls-files -z`/, "''") }
-    File.open('bundler/bundler.gemspec', 'w'){|f| f.write gemspec }
+    gemspec = File.open('bundler/bundler.gemspec', 'rb'){ |f| f.read.gsub(/`git ls-files -z`/, "''") }
+    File.open('bundler/bundler.gemspec', 'w'){ |f| f.write gemspec }
 
     bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
     bundler_spec.files = Dir.chdir("bundler") { Dir["{*.md,{lib,exe,man}/**/*}"] }
@@ -405,8 +405,8 @@ By default, this RubyGems will install gem as:
 
     # Remove bundler-*.gemspec in default specification directory.
     Dir.entries(specs_dir).
-      select {|gs| gs.start_with?("bundler-") }.
-      each {|gs| File.delete(File.join(specs_dir, gs)) }
+      select { |gs| gs.start_with?("bundler-") }.
+      each { |gs| File.delete(File.join(specs_dir, gs)) }
 
     default_spec_path = File.join(specs_dir, "#{bundler_spec.full_name}.gemspec")
     Gem.write_binary(default_spec_path, bundler_spec.to_ruby)
@@ -422,8 +422,8 @@ By default, this RubyGems will install gem as:
     # Remove gem files that were same version of vendored bundler.
     if File.directory? bundler_spec.gems_dir
       Dir.entries(bundler_spec.gems_dir).
-        select {|default_gem| File.basename(default_gem) == "bundler-#{bundler_spec.version}" }.
-        each {|default_gem| rm_r File.join(bundler_spec.gems_dir, default_gem) }
+        select { |default_gem| File.basename(default_gem) == "bundler-#{bundler_spec.version}" }.
+        each { |default_gem| rm_r File.join(bundler_spec.gems_dir, default_gem) }
     end
 
     bundler_bin_dir = bundler_spec.bin_dir
@@ -445,7 +445,7 @@ By default, this RubyGems will install gem as:
       end
     end
 
-    bundler_spec.executables.each {|executable| bin_file_names << target_bin_path(bin_dir, executable) }
+    bundler_spec.executables.each { |executable| bin_file_names << target_bin_path(bin_dir, executable) }
 
     say "Bundler #{bundler_spec.version} installed"
   end
@@ -548,7 +548,7 @@ By default, this RubyGems will install gem as:
   def bundler_template_files
     Dir.chdir "bundler/lib" do
       Dir.glob(File.join('bundler', 'templates', '**', '*'), File::FNM_DOTMATCH).
-        select{|f| !File.directory?(f)}
+        select{ |f| !File.directory?(f) }
     end
   end
 
@@ -556,7 +556,7 @@ By default, this RubyGems will install gem as:
   def template_files_in(dir)
     Dir.chdir dir do
       Dir.glob(File.join('templates', '**', '*'), File::FNM_DOTMATCH).
-        select{|f| !File.directory?(f)}
+        select{ |f| !File.directory?(f) }
     end
   end
 

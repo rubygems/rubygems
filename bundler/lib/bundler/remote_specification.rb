@@ -50,7 +50,7 @@ module Bundler
     # once the remote gem is downloaded, the backend specification will
     # be swapped out.
     def __swap__(spec)
-      raise APIResponseInvalidDependenciesError unless spec.dependencies.all? {|d| d.is_a?(Gem::Dependency) }
+      raise APIResponseInvalidDependenciesError unless spec.dependencies.all? { |d| d.is_a?(Gem::Dependency) }
 
       SharedHelpers.ensure_same_dependencies(self, dependencies, spec.dependencies)
       @_remote_specification = spec
@@ -80,7 +80,7 @@ module Bundler
         # allow us to handle when the specs dependencies are an array of array of string
         # in order to delay the crash to `#__swap__` where it results in a friendlier error
         # see https://github.com/rubygems/bundler/issues/5797
-        deps = deps.map {|d| d.is_a?(Gem::Dependency) ? d : Gem::Dependency.new(*d) }
+        deps = deps.map { |d| d.is_a?(Gem::Dependency) ? d : Gem::Dependency.new(*d) }
 
         deps
       end

@@ -232,7 +232,7 @@ module Gem
 
   def self.finish_resolve(request_set=Gem::RequestSet.new)
     request_set.import Gem::Specification.unresolved_deps.values
-    request_set.import Gem.loaded_specs.values.map {|s| Gem::Dependency.new(s.name, s.version) }
+    request_set.import Gem.loaded_specs.values.map { |s| Gem::Dependency.new(s.name, s.version) }
 
     request_set.resolve_current.each do |s|
       s.full_spec.activate
@@ -1212,8 +1212,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     #
 
     def register_default_spec(spec)
-      extended_require_paths = spec.require_paths.map {|f| f + "/"}
-      new_format = extended_require_paths.any? {|path| spec.files.any? {|f| f.start_with? path } }
+      extended_require_paths = spec.require_paths.map { |f| f + "/" }
+      new_format = extended_require_paths.any? { |path| spec.files.any? { |f| f.start_with? path } }
 
       if new_format
         prefix_group = extended_require_paths.join("|")

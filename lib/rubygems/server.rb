@@ -866,10 +866,10 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def launch
-    listeners = @server.listeners.map{|l| l.addr[2] }
+    listeners = @server.listeners.map{ |l| l.addr[2] }
 
     # TODO: 0.0.0.0 == any, not localhost.
-    host = listeners.any?{|l| l == '0.0.0.0'} ? 'localhost' : listeners.first
+    host = listeners.any?{ |l| l == '0.0.0.0' } ? 'localhost' : listeners.first
 
     say "Launching browser to http://#{host}:#{@port}"
 

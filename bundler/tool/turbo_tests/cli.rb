@@ -49,7 +49,7 @@ module TurboTests
         end
       end.parse!(@argv)
 
-      requires.each {|f| require(f) }
+      requires.each { |f| require(f) }
 
       formatters.each do |formatter|
         if formatter[:outputs].empty?

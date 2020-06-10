@@ -103,7 +103,7 @@ class TestKernel < Gem::TestCase
       "./activate.rb"
     )
 
-    load_errors = output.split("\n").select { |line| line.include?("Could not find")}
+    load_errors = output.split("\n").select { |line| line.include?("Could not find") }
 
     assert_equal 1, load_errors.size
   end

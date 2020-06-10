@@ -48,8 +48,8 @@ confirm "You are about to release #{version}, currently #{Gem::VERSION}"
 branch = version.split(".", 3)[0, 2].join(".")
 sh("git", "checkout", branch)
 
-commits = `git log --oneline origin/master --`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
-commits.select! {|_sha, message| message =~ /(Auto merge of|Merge pull request|Merge) ##{Regexp.union(*prs)}/ }
+commits = `git log --oneline origin/master --`.split("\n").map { |l| l.split(/\s/, 2) }.reverse
+commits.select! { |_sha, message| message =~ /(Auto merge of|Merge pull request|Merge) ##{Regexp.union(*prs)}/ }
 
 unless system("git", "cherry-pick", "-x", "-m", "1", *commits.map(&:first))
   abort unless system("zsh")
@@ -62,7 +62,7 @@ version_contents = File.read(version_file)
 unless version_contents.sub!(/^(\s*VERSION = )(["'])#{Gem::Version::VERSION_PATTERN}\2/, "\\1#{version.to_s.dump}")
   abort "failed to update #{version_file}, is it in the expected format?"
 end
-File.open(version_file, "w") {|f| f.write(version_contents) }
+File.open(version_file, "w") { |f| f.write(version_contents) }
 
 confirm "Update changelog"
 sh("git", "commit", "-am", "Version #{version} with changelog")

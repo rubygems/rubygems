@@ -405,7 +405,7 @@ end
 
 desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
-  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all.sort) }
+  File.open('Manifest.txt', 'w') { |f| f.puts(Rubygems::ProjectFiles.all.sort) }
 end
 
 desc "Check the manifest is up to date"

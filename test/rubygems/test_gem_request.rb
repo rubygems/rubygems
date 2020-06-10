@@ -23,8 +23,8 @@ class TestGemRequest < Gem::TestCase
 
   def setup
     @proxies = %w[http_proxy https_proxy HTTP_PROXY http_proxy_user HTTP_PROXY_USER http_proxy_pass HTTP_PROXY_PASS no_proxy NO_PROXY]
-    @old_proxies = @proxies.map {|k| ENV[k] }
-    @proxies.each {|k| ENV[k] = nil }
+    @old_proxies = @proxies.map { |k| ENV[k] }
+    @proxies.each { |k| ENV[k] = nil }
 
     super
 
@@ -37,7 +37,7 @@ class TestGemRequest < Gem::TestCase
   def teardown
     super
     Gem.configuration[:http_proxy] = nil
-    @proxies.each_with_index {|k, i| ENV[k] = @old_proxies[i] }
+    @proxies.each_with_index { |k, i| ENV[k] = @old_proxies[i] }
   end
 
   def test_initialize_proxy

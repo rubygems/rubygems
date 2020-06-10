@@ -111,7 +111,7 @@ class TestGemVersion < Gem::TestCase
 
   def bench_anchored_version_pattern
     assert_performance_linear 0.5 do |count|
-      version_string = count.times.map {|i| "0" * i.succ }.join(".") << "."
+      version_string = count.times.map { |i| "0" * i.succ }.join(".") << "."
       version_string =~ Gem::Version::ANCHORED_VERSION_PATTERN
     end
   rescue RegexpError

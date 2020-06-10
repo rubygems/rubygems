@@ -149,7 +149,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     ruby_exec = sprintf Gem.default_exec_format, 'ruby'
 
-    bin_env = win_platform? ? "" : %w[/usr/bin/env /bin/env].find {|f| File.executable?(f) } + " "
+    bin_env = win_platform? ? "" : %w[/usr/bin/env /bin/env].find { |f| File.executable?(f) } + " "
     assert_match %r{\A#!\s*#{bin_env}#{ruby_exec}}, File.read(default_gem_bin_path)
     assert_match %r{\A#!\s*#{bin_env}#{ruby_exec}}, File.read(default_bundle_bin_path)
     assert_match %r{\A#!\s*#{bin_env}#{ruby_exec}}, File.read(gem_bin_path)
@@ -297,9 +297,9 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.remove_old_lib_files lib
 
-    files_that_go.each {|file| refute_path_exists file }
+    files_that_go.each { |file| refute_path_exists file }
 
-    files_that_stay.each {|file| assert_path_exists file }
+    files_that_stay.each { |file| assert_path_exists file }
   end
 
   def test_remove_old_man_files
@@ -320,9 +320,9 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.remove_old_man_files man
 
-    files_that_go.each {|file| refute_path_exists file }
+    files_that_go.each { |file| refute_path_exists file }
 
-    files_that_stay.each {|file| assert_path_exists file }
+    files_that_stay.each { |file| assert_path_exists file }
   end
 
   def test_show_release_notes

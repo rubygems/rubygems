@@ -1891,7 +1891,7 @@ gem 'other', version
     if win_platform?
       ""
     else
-      %w[/usr/bin/env /bin/env].find {|f| File.executable?(f) }
+      %w[/usr/bin/env /bin/env].find { |f| File.executable?(f) }
     end
   end
 

@@ -68,6 +68,10 @@ Layout/IndentationWidth:
 Layout/SpaceAroundOperators:
   Enabled: true
 
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+  SpaceBeforeBlockParameters: true
+
 Layout/SpaceInsideParens:
   Enabled: true
 

@@ -52,11 +52,11 @@ module Bundler
 
         common = commands & @commands.keys
         raise CommandConflict.new(name, common) unless common.empty?
-        commands.each {|c| @commands[c] = name }
+        commands.each { |c| @commands[c] = name }
 
         common = sources & @sources.keys
         raise SourceConflict.new(name, common) unless common.empty?
-        sources.each {|k| @sources[k] = name }
+        sources.each { |k| @sources[k] = name }
 
         hooks.each do |event|
           event_hooks = (@hooks[event] ||= []) << name
@@ -72,9 +72,9 @@ module Bundler
       end
 
       def unregister_plugin(name)
-        @commands.delete_if {|_, v| v == name }
-        @sources.delete_if {|_, v| v == name }
-        @hooks.each {|_, plugin_names| plugin_names.delete(name) }
+        @commands.delete_if { |_, v| v == name }
+        @sources.delete_if { |_, v| v == name }
+        @hooks.each { |_, plugin_names| plugin_names.delete(name) }
         @plugin_paths.delete(name)
         @load_paths.delete(name)
         save_index
@@ -117,7 +117,7 @@ module Bundler
       end
 
       def plugin_commands(plugin)
-        @commands.find_all {|_, n| n == plugin }.map(&:first)
+        @commands.find_all { |_, n| n == plugin }.map(&:first)
       end
 
       def source?(source)
@@ -174,7 +174,7 @@ module Bundler
         require_relative "../yaml_serializer"
         SharedHelpers.filesystem_access(index_file) do |index_f|
           FileUtils.mkdir_p(index_f.dirname)
-          File.open(index_f, "w") {|f| f.puts YAMLSerializer.dump(index) }
+          File.open(index_f, "w") { |f| f.puts YAMLSerializer.dump(index) }
         end
       end
     end

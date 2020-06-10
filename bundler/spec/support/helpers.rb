@@ -46,7 +46,7 @@ module Spec
     end
 
     def deprecations
-      err.split("\n").select {|l| l =~ MAJOR_DEPRECATION }.join("\n").split(MAJOR_DEPRECATION)
+      err.split("\n").select { |l| l =~ MAJOR_DEPRECATION }.join("\n").split(MAJOR_DEPRECATION)
     end
 
     def exitstatus
@@ -148,7 +148,7 @@ module Spec
 
       requires = options.delete(:requires) || []
       requires << "#{Path.spec_dir}/support/hax.rb"
-      require_option = requires.map {|r| "-r#{r}" }
+      require_option = requires.map { |r| "-r#{r}" }
 
       [sudo, Gem.ruby, *lib_option, *require_option].compact.join(" ")
     end
@@ -268,7 +268,7 @@ module Spec
         gem_name = g.to_s
         if gem_name.start_with?("bundler")
           version = gem_name.match(/\Abundler-(?<version>.*)\z/)[:version] if gem_name != "bundler"
-          with_built_bundler(version) {|gem_path| install_gem(gem_path) }
+          with_built_bundler(version) { |gem_path| install_gem(gem_path) }
         elsif gem_name =~ %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}
           install_gem(gem_name)
         else
@@ -353,7 +353,7 @@ module Spec
     def opt_remove(option, options)
       return unless options
 
-      options.split(" ").reject {|opt| opt.strip == option.strip }.join(" ")
+      options.split(" ").reject { |opt| opt.strip == option.strip }.join(" ")
     end
 
     def break_git!
@@ -506,7 +506,7 @@ module Spec
       changed_lines = pathname.readlines.map do |line|
         yield line
       end
-      File.open(pathname, "w") {|file| file.puts(changed_lines.join) }
+      File.open(pathname, "w") { |file| file.puts(changed_lines.join) }
     end
 
     def with_env_vars(env_hash, &block)

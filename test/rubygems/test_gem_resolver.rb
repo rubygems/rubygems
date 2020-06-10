@@ -29,7 +29,7 @@ class TestGemResolver < Gem::TestCase
     exp = expected.sort_by { |s| s.full_name }
     act = actual.map { |a| a.spec.spec }.sort_by { |s| s.full_name }
 
-    msg = "Set of gems was not the same: #{exp.map { |x| x.full_name}.inspect} != #{act.map { |x| x.full_name}.inspect}"
+    msg = "Set of gems was not the same: #{exp.map { |x| x.full_name }.inspect} != #{act.map { |x| x.full_name }.inspect}"
 
     assert_equal exp, act, msg
   rescue Gem::DependencyResolutionError => e

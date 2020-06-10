@@ -55,7 +55,7 @@ module Spec
 
     def path
       env_path = ENV["PATH"]
-      env_path = env_path.split(File::PATH_SEPARATOR).reject {|path| path == bindir.to_s }.join(File::PATH_SEPARATOR) if ruby_core?
+      env_path = env_path.split(File::PATH_SEPARATOR).reject { |path| path == bindir.to_s }.join(File::PATH_SEPARATOR) if ruby_core?
       env_path
     end
 
@@ -205,7 +205,7 @@ module Spec
       version_file = File.expand_path("lib/bundler/version.rb", dir)
       contents = File.read(version_file)
       contents.sub!(/(^\s+VERSION\s*=\s*)"#{Gem::Version::VERSION_PATTERN}"/, %(\\1"#{version}"))
-      File.open(version_file, "w") {|f| f << contents }
+      File.open(version_file, "w") { |f| f << contents }
     end
 
     def replace_build_metadata(build_metadata, dir: source_root)
@@ -217,7 +217,7 @@ module Spec
 
       contents = File.read(build_metadata_file)
       contents.sub!(/^(\s+# begin ivars).+(^\s+# end ivars)/m, "\\1\n#{ivars}\n\\2")
-      File.open(build_metadata_file, "w") {|f| f << contents }
+      File.open(build_metadata_file, "w") { |f| f << contents }
     end
 
     def ruby_core?

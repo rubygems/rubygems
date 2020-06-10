@@ -747,8 +747,8 @@ class Gem::Specification < Gem::BasicSpecification
       # After a reset, make sure already loaded specs
       # are still marked as activated.
       specs = {}
-      Gem.loaded_specs.each_value{|s| specs[s] = true}
-      @@all.each{|s| s.activated = true if specs[s]}
+      Gem.loaded_specs.each_value{ |s| specs[s] = true }
+      @@all.each{ |s| s.activated = true if specs[s] }
     end
     @@all
   end
@@ -960,7 +960,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Returns every spec that has the given +full_name+
 
   def self.find_all_by_full_name(full_name)
-    stubs.select {|s| s.full_name == full_name }.map(&:to_spec)
+    stubs.select { |s| s.full_name == full_name }.map(&:to_spec)
   end
 
   ##
@@ -1959,12 +1959,12 @@ class Gem::Specification < Gem::BasicSpecification
 
   eval <<-RUBY, binding, __FILE__, __LINE__ + 1
     def set_nil_attributes_to_nil
-      #{@@nil_attributes.map {|key| "@#{key} = nil" }.join "; "}
+      #{@@nil_attributes.map { |key| "@#{key} = nil" }.join "; "}
     end
     private :set_nil_attributes_to_nil
 
     def set_not_nil_attributes_to_default_values
-      #{@@non_nil_attributes.map {|key| "@#{key} = #{INITIALIZE_CODE_FOR_DEFAULTS[key]}" }.join ";"}
+      #{@@non_nil_attributes.map { |key| "@#{key} = #{INITIALIZE_CODE_FOR_DEFAULTS[key]}" }.join ";"}
     end
     private :set_not_nil_attributes_to_default_values
   RUBY

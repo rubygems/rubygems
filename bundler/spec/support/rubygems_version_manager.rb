@@ -34,7 +34,7 @@ class RubygemsVersionManager
 
       bad_loaded_features = $LOADED_FEATURES.select do |loaded_feature|
         (loaded_feature.start_with?(rubygems_path) && !loaded_feature.start_with?(rubygems_default_path)) ||
-          (loaded_feature.start_with?(bundler_path) && !bundler_exemptions.any? {|bundler_exemption| loaded_feature.start_with?(bundler_exemption) })
+          (loaded_feature.start_with?(bundler_path) && !bundler_exemptions.any? { |bundler_exemption| loaded_feature.start_with?(bundler_exemption) })
       end
 
       if bad_loaded_features.any?

@@ -372,7 +372,7 @@ class Gem::Version
   def canonical_segments
     @canonical_segments ||=
       _split_segments.map! do |segments|
-        segments.reverse_each.drop_while {|s| s == 0 }.reverse
+        segments.reverse_each.drop_while { |s| s == 0 }.reverse
       end.reduce(&:concat)
   end
 
@@ -399,7 +399,7 @@ class Gem::Version
   end
 
   def _split_segments
-    string_start = _segments.index {|s| s.is_a?(String) }
+    string_start = _segments.index { |s| s.is_a?(String) }
     string_segments = segments
     numeric_segments = string_segments.slice!(0, string_start || string_segments.size)
     return numeric_segments, string_segments

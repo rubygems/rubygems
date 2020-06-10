@@ -106,7 +106,7 @@ module TurboTests
         "full_description" => example.full_description,
         "metadata" => {
           "shared_group_inclusion_backtrace" =>
-            example.metadata[:shared_group_inclusion_backtrace].map {|frame| stack_frame_to_json(frame) },
+            example.metadata[:shared_group_inclusion_backtrace].map { |frame| stack_frame_to_json(frame) },
         },
         "location_rerun_argument" => example.location_rerun_argument,
       }

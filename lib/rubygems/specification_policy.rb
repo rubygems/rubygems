@@ -292,7 +292,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
   def validate_non_files
     return unless packaging
 
-    non_files = @specification.files.reject {|x| File.file?(x) || File.symlink?(x)}
+    non_files = @specification.files.reject { |x| File.file?(x) || File.symlink?(x) }
 
     unless non_files.empty?
       error "[\"#{non_files.join "\", \""}\"] are not files"
@@ -338,7 +338,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
               String
             end
 
-    unless Array === val and val.all? {|x| x.kind_of?(klass)}
+    unless Array === val and val.all? { |x| x.kind_of?(klass) }
       error "#{field} must be an Array of #{klass}"
     end
   end
@@ -369,7 +369,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
 license value '#{license}' is invalid.  Use a license identifier from
 http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
         WARNING
-        message += "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
+        message += "Did you mean #{suggestions.map { |s| "'#{s}'" }.join(', ')}?\n" unless suggestions.nil?
         warning(message)
       end
     end
@@ -460,8 +460,8 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     require_relative 'ext'
     builder = Gem::Ext::Builder.new(@specification)
 
-    rake_extension = @specification.extensions.any? {|s| builder.builder_for(s) == Gem::Ext::RakeBuilder }
-    rake_dependency = @specification.dependencies.any? {|d| d.name == 'rake'}
+    rake_extension = @specification.extensions.any? { |s| builder.builder_for(s) == Gem::Ext::RakeBuilder }
+    rake_dependency = @specification.dependencies.any? { |d| d.name == 'rake' }
 
     warning <<-WARNING if rake_extension && !rake_dependency
 You have specified rake based extension, but rake is not added as dependency. It is recommended to add rake as a dependency in gemspec since there's no guarantee rake will be already installed.

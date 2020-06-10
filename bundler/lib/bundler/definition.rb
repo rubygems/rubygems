@@ -59,7 +59,7 @@ module Bundler
       else
         unlock = unlock.dup
         @unlocking_bundler = unlock.delete(:bundler)
-        unlock.delete_if {|_k, v| Array(v).empty? }
+        unlock.delete_if { |_k, v| Array(v).empty? }
         @unlocking = !unlock.empty?
       end
 
@@ -315,7 +315,7 @@ module Bundler
     private :double_check_for_index
 
     def has_rubygems_remotes?
-      sources.rubygems_sources.any? {|s| s.remotes.any? }
+      sources.rubygems_sources.any? { |s| s.remotes.any? }
     end
 
     def has_local_dependencies?
@@ -323,7 +323,7 @@ module Bundler
     end
 
     def spec_git_paths
-      sources.git_sources.map {|s| File.realpath(s.path) if File.exist?(s.path) }.compact
+      sources.git_sources.map { |s| File.realpath(s.path) if File.exist?(s.path) }.compact
     end
 
     def groups
@@ -357,7 +357,7 @@ module Bundler
       end
 
       SharedHelpers.filesystem_access(file) do |p|
-        File.open(p, "wb") {|f| f.puts(contents) }
+        File.open(p, "wb") { |f| f.puts(contents) }
       end
     end
 
@@ -417,8 +417,8 @@ module Bundler
 
       new_platforms = @platforms - @locked_platforms
       deleted_platforms = @locked_platforms - @platforms
-      added.concat new_platforms.map {|p| "* platform: #{p}" }
-      deleted.concat deleted_platforms.map {|p| "* platform: #{p}" }
+      added.concat new_platforms.map { |p| "* platform: #{p}" }
+      deleted.concat deleted_platforms.map { |p| "* platform: #{p}" }
 
       gemfile_sources = sources.lock_sources
 
@@ -430,28 +430,28 @@ module Bundler
 
       # Check if it is possible that the source is only changed thing
       if (new_deps.empty? && deleted_deps.empty?) && (!new_sources.empty? && !deleted_sources.empty?)
-        new_sources.reject! {|source| (source.path? && source.path.exist?) || equivalent_rubygems_remotes?(source) }
-        deleted_sources.reject! {|source| (source.path? && source.path.exist?) || equivalent_rubygems_remotes?(source) }
+        new_sources.reject! { |source| (source.path? && source.path.exist?) || equivalent_rubygems_remotes?(source) }
+        deleted_sources.reject! { |source| (source.path? && source.path.exist?) || equivalent_rubygems_remotes?(source) }
       end
 
       if @locked_sources != gemfile_sources
         if new_sources.any?
-          added.concat new_sources.map {|source| "* source: #{source}" }
+          added.concat new_sources.map { |source| "* source: #{source}" }
         end
 
         if deleted_sources.any?
-          deleted.concat deleted_sources.map {|source| "* source: #{source}" }
+          deleted.concat deleted_sources.map { |source| "* source: #{source}" }
         end
       end
 
-      added.concat new_deps.map {|d| "* #{pretty_dep(d)}" } if new_deps.any?
+      added.concat new_deps.map { |d| "* #{pretty_dep(d)}" } if new_deps.any?
       if deleted_deps.any?
-        deleted.concat deleted_deps.map {|d| "* #{pretty_dep(d)}" }
+        deleted.concat deleted_deps.map { |d| "* #{pretty_dep(d)}" }
       end
 
-      both_sources = Hash.new {|h, k| h[k] = [] }
-      @dependencies.each {|d| both_sources[d.name][0] = d }
-      @locked_deps.each  {|name, d| both_sources[name][1] = d.source }
+      both_sources = Hash.new { |h, k| h[k] = [] }
+      @dependencies.each { |d| both_sources[d.name][0] = d }
+      @locked_deps.each  { |name, d| both_sources[name][1] = d.source }
 
       both_sources.each do |name, (dep, lock_source)|
         next if lock_source.nil? || (dep && lock_source.can_lock?(dep))
@@ -527,7 +527,7 @@ module Bundler
     end
 
     def find_indexed_specs(current_spec)
-      index[current_spec.name].select {|spec| spec.match_platform(current_spec.platform) }.sort_by(&:version)
+      index[current_spec.name].select { |spec| spec.match_platform(current_spec.platform) }.sort_by(&:version)
     end
 
     attr_reader :sources
@@ -559,7 +559,7 @@ module Bundler
 
     def change_reason
       if unlocking?
-        unlock_reason = @unlock.reject {|_k, v| Array(v).empty? }.map do |k, v|
+        unlock_reason = @unlock.reject { |_k, v| Array(v).empty? }.map do |k, v|
           if v == true
             k.to_s
           else
@@ -586,21 +586,21 @@ module Bundler
     # Check if the specs of the given source changed
     # according to the locked source.
     def specs_changed?(source)
-      locked = @locked_sources.find {|s| s == source }
+      locked = @locked_sources.find { |s| s == source }
 
       !locked || dependencies_for_source_changed?(source, locked) || specs_for_source_changed?(source)
     end
 
     def dependencies_for_source_changed?(source, locked_source = source)
-      deps_for_source = @dependencies.select {|s| s.source == source }
-      locked_deps_for_source = @locked_deps.values.select {|dep| dep.source == locked_source }
+      deps_for_source = @dependencies.select { |s| s.source == source }
+      locked_deps_for_source = @locked_deps.values.select { |dep| dep.source == locked_source }
 
       Set.new(deps_for_source) != Set.new(locked_deps_for_source)
     end
 
     def specs_for_source_changed?(source)
       locked_index = Index.new
-      locked_index.use(@locked_specs.select {|s| source.can_lock?(s) })
+      locked_index.use(@locked_specs.select { |s| source.can_lock?(s) })
 
       # order here matters, since Index#== is checking source.specs.include?(locked_index)
       locked_index != source.specs
@@ -616,7 +616,7 @@ module Bundler
       locals = []
 
       Bundler.settings.local_overrides.map do |k, v|
-        spec   = @dependencies.find {|s| s.name == k }
+        spec   = @dependencies.find { |s| s.name == k }
         source = spec && spec.source
         if source && source.respond_to?(:local_override!)
           source.unlock! if @unlock[:gems].include?(spec.name)
@@ -627,7 +627,7 @@ module Bundler
       sources_with_changes = locals.select do |source, changed|
         changed || specs_changed?(source)
       end.map(&:first)
-      !sources_with_changes.each {|source| @unlock[:sources] << source.name }.empty?
+      !sources_with_changes.each { |source| @unlock[:sources] << source.name }.empty?
     end
 
     def converge_paths
@@ -638,7 +638,7 @@ module Bundler
 
     def converge_path_source_to_gemspec_source(source)
       return source unless source.instance_of?(Source::Path)
-      gemspec_source = sources.path_sources.find {|s| s.is_a?(Source::Gemspec) && s.as_path_source == source }
+      gemspec_source = sources.path_sources.find { |s| s.is_a?(Source::Gemspec) && s.as_path_source == source }
       gemspec_source || source
     end
 
@@ -660,7 +660,7 @@ module Bundler
       changes = false
 
       # Get the RubyGems sources from the Gemfile.lock
-      locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
+      locked_gem_sources = @locked_sources.select { |s| s.is_a?(Source::Rubygems) }
       # Get the RubyGems remotes from the Gemfile
       actual_remotes = sources.rubygems_remotes
 
@@ -764,7 +764,7 @@ module Bundler
           end
 
           dep.source.unlock! if dep.source.respond_to?(:unlock!)
-          dep.source.specs.each {|s| @unlock[:gems] << s.name }
+          dep.source.specs.each { |s| @unlock[:gems] << s.name }
         end
       end
 
@@ -773,7 +773,7 @@ module Bundler
       converged = []
       @locked_specs.each do |s|
         # Replace the locked dependency's source with the equivalent source from the Gemfile
-        dep = @dependencies.find {|d| s.satisfies?(d) }
+        dep = @dependencies.find { |d| s.satisfies?(d) }
         s.source = (dep && dep.source) || sources.get(s.source)
 
         # Don't add a spec to the list if its source is expired. For example,
@@ -798,7 +798,7 @@ module Bundler
             # don't error if the path/git source isn't available
             next if @locked_specs.
                     for(requested_dependencies, [], false, true, false).
-                    none? {|locked_spec| locked_spec.source == s.source }
+                    none? { |locked_spec| locked_spec.source == s.source }
 
             raise
           end
@@ -809,10 +809,10 @@ module Bundler
           # commonly happens if the version changed in the gemspec
           next unless new_spec
 
-          new_runtime_deps = new_spec.dependencies.select {|d| d.type != :development }
-          old_runtime_deps = s.dependencies.select {|d| d.type != :development }
+          new_runtime_deps = new_spec.dependencies.select { |d| d.type != :development }
+          old_runtime_deps = s.dependencies.select { |d| d.type != :development }
           # If the dependencies of the path source have changed and locked spec can't satisfy new dependencies, unlock it
-          next unless new_runtime_deps.sort == old_runtime_deps.sort || new_runtime_deps.all? {|d| satisfies_locked_spec?(d) }
+          next unless new_runtime_deps.sort == old_runtime_deps.sort || new_runtime_deps.all? { |d| satisfies_locked_spec?(d) }
 
           s.dependencies.replace(new_spec.dependencies)
         end
@@ -829,9 +829,9 @@ module Bundler
       sources.all_sources.each do |source|
         next unless source.respond_to?(:unlock!)
 
-        unless resolve.any? {|s| s.source == source }
+        unless resolve.any? { |s| s.source == source }
           diff ||= @locked_specs.to_a - resolve.to_a
-          source.unlock! if diff.any? {|s| s.source == source }
+          source.unlock! if diff.any? { |s| s.source == source }
         end
       end
 
@@ -846,7 +846,7 @@ module Bundler
     end
 
     def satisfies_locked_spec?(dep)
-      @locked_specs[dep].any? {|s| s.satisfies?(dep) && (!dep.source || s.source.include?(dep.source)) }
+      @locked_specs[dep].any? { |s| s.satisfies?(dep) && (!dep.source || s.source.include?(dep.source)) }
     end
 
     # This list of dependencies is only used in #resolve, so it's OK to add
@@ -980,7 +980,7 @@ module Bundler
 
     def additional_base_requirements_for_resolve
       return [] unless @locked_gems && Bundler.feature_flag.only_update_to_newer_versions?
-      dependencies_by_name = dependencies.inject({}) {|memo, dep| memo.update(dep.name => dep) }
+      dependencies_by_name = dependencies.inject({}) { |memo, dep| memo.update(dep.name => dep) }
       @locked_gems.specs.reduce({}) do |requirements, locked_spec|
         name = locked_spec.name
         dependency = dependencies_by_name[name]

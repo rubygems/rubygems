@@ -23,7 +23,7 @@ module Bundler
       end
 
       def versions
-        versions_by_name = Hash.new {|hash, key| hash[key] = [] }
+        versions_by_name = Hash.new { |hash, key| hash[key] = [] }
         info_checksums_by_name = {}
 
         lines(versions_path).each do |line|
@@ -95,9 +95,9 @@ module Bundler
       def parse_gem(string)
         version_and_platform, rest = string.split(" ", 2)
         version, platform = version_and_platform.split("-", 2)
-        dependencies, requirements = rest.split("|", 2).map {|s| s.split(",") } if rest
-        dependencies = dependencies ? dependencies.map {|d| parse_dependency(d) } : []
-        requirements = requirements ? requirements.map {|r| parse_dependency(r) } : []
+        dependencies, requirements = rest.split("|", 2).map { |s| s.split(",") } if rest
+        dependencies = dependencies ? dependencies.map { |d| parse_dependency(d) } : []
+        requirements = requirements ? requirements.map { |r| parse_dependency(r) } : []
         [version, platform, dependencies, requirements]
       end
 

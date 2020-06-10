@@ -327,7 +327,7 @@ class Gem::RemoteFetcher
   end
 
   def close_all
-    @pools.each_value {|pool| pool.close_all}
+    @pools.each_value { |pool| pool.close_all }
   end
 
   private

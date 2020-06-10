@@ -208,7 +208,7 @@ class TestGem < Gem::TestCase
     end
     assert_equal(expected, result)
   ensure
-    File.chmod(0755, *Dir.glob(@gemhome + '/gems/**/').map {|path| path.tap(&Gem::UNTAINT)})
+    File.chmod(0755, *Dir.glob(@gemhome + '/gems/**/').map { |path| path.tap(&Gem::UNTAINT) })
   end
 
   def test_require_missing
@@ -1021,7 +1021,7 @@ class TestGem < Gem::TestCase
 
     Gem.refresh
 
-    Gem::Specification.each{|spec| assert spec.activated? if spec == s}
+    Gem::Specification.each{ |spec| assert spec.activated? if spec == s }
 
     Gem.loaded_specs.delete(s)
     Gem.refresh
@@ -1187,7 +1187,7 @@ class TestGem < Gem::TestCase
   def test_self_post_reset
     assert_empty Gem.post_reset_hooks
 
-    Gem.post_reset { }
+    Gem.post_reset {}
 
     assert_equal 1, Gem.post_reset_hooks.length
   end
@@ -1211,7 +1211,7 @@ class TestGem < Gem::TestCase
   def test_self_pre_reset
     assert_empty Gem.pre_reset_hooks
 
-    Gem.pre_reset { }
+    Gem.pre_reset {}
 
     assert_equal 1, Gem.pre_reset_hooks.length
   end
@@ -1635,7 +1635,7 @@ class TestGem < Gem::TestCase
     assert_equal expected_specs, Gem.use_gemdeps.sort_by { |s| s.name }
   end
 
-  BUNDLER_LIB_PATH = File.expand_path $LOAD_PATH.find {|lp| File.file?(File.join(lp, "bundler.rb")) }
+  BUNDLER_LIB_PATH = File.expand_path $LOAD_PATH.find { |lp| File.file?(File.join(lp, "bundler.rb")) }
   BUNDLER_FULL_NAME = "bundler-#{Bundler::VERSION}".freeze
 
   def add_bundler_full_name(names)

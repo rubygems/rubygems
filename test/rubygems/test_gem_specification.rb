@@ -1143,8 +1143,8 @@ dependencies: []
 
     dir_standard_specs = File.join Gem.dir, 'specifications'
 
-    save_gemspec('a-1', '1', dir_standard_specs){|s| s.name = 'a' }
-    save_gemspec('b-1', '1', dir_standard_specs){|s| s.name = 'b' }
+    save_gemspec('a-1', '1', dir_standard_specs){ |s| s.name = 'a' }
+    save_gemspec('b-1', '1', dir_standard_specs){ |s| s.name = 'b' }
 
     assert_equal ['a-1'], Gem::Specification.stubs_for('a').map { |s| s.full_name }
     assert_equal 1, Gem::Specification.class_variable_get(:@@stubs_by_name).length
@@ -3755,12 +3755,12 @@ end
 
     a1 = util_spec "a", "1"
     a1_pre = util_spec "a", "1.0.0.pre.1"
-    a_1_platform = util_spec("a", "1") {|s| s.platform = pl }
+    a_1_platform = util_spec("a", "1") { |s| s.platform = pl }
     a_b_1 = util_spec "a-b", "1"
-    a_b_1_platform = util_spec("a-b", "1") {|s| s.platform = pl }
+    a_b_1_platform = util_spec("a-b", "1") { |s| s.platform = pl }
 
     a_b_1_1 = util_spec "a-b-1", "1"
-    a_b_1_1_platform = util_spec("a-b-1", "1") {|s| s.platform = pl }
+    a_b_1_1_platform = util_spec("a-b-1", "1") { |s| s.platform = pl }
 
     install_specs(a1, a1_pre, a_1_platform, a_b_1, a_b_1_platform,
                   a_b_1_1, a_b_1_1_platform)

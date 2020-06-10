@@ -170,7 +170,7 @@ namespace :release do
     end
     prs.compact!
 
-    branch = Gem::Version.new(version).segments[0, 2].push("stable").join("-")
+    branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
     sh("git", "checkout", "-b", "release_bundler/#{version}", branch)
 
     commits = `git log --oneline origin/master -- bundler`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
@@ -208,7 +208,7 @@ namespace :release do
     end
 
     def to_stable_branch(release_tag)
-      release_tag.segments[0, 2].push("stable").join("-")
+      release_tag.segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
     end
 
     last_stable = to_stable_branch(minor_release_tags[-1])

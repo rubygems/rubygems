@@ -23,7 +23,7 @@ end
 
 version = ARGV.shift || Gem::VERSION
 
-entries = Hash.new { |h,file| h[file] = [] }
+entries = Hash.new {|h,file| h[file] = [] }
 entry = []
 file = nil
 
@@ -45,7 +45,7 @@ IO.foreach 'ChangeLog' do |line|
   end
 end
 
-entries.sort_by { |file, | file }.each do |file, file_entries|
+entries.sort_by {|file, | file }.each do |file, file_entries|
   puts "* #{file}"
   file_entries.each do |file_entry|
     file_entry = format_text file_entry, 74, 4

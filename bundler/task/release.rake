@@ -123,10 +123,10 @@ namespace :release do
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch, :version do |_t, args|
     version = args.version
+    current_version = bundler_spec.version
 
     version ||= begin
-      version = bundler_spec.version
-      segments = version.segments
+      segments = current_version.segments
       if segments.last.is_a?(String)
         segments << "1"
       else
@@ -135,7 +135,7 @@ namespace :release do
       segments.join(".")
     end
 
-    puts "Cherry-picking PRs milestoned for #{version} (currently #{bundler_spec.version}) into the stable branch..."
+    puts "Cherry-picking PRs milestoned for #{version} (currently #{current_version}) into the stable branch..."
 
     milestones = gh_api_request(:path => "repos/rubygems/rubygems/milestones?state=open")
     unless patch_milestone = milestones.find {|m| m["title"] == version }

@@ -397,7 +397,7 @@ module Rubygems
         files << path
       end
 
-      files
+      files.sort
     end
 
   end
@@ -405,12 +405,12 @@ end
 
 desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
-  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all.sort) }
+  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all) }
 end
 
 desc "Check the manifest is up to date"
 task :check_manifest do
-  if File.read("Manifest.txt").split.sort != Rubygems::ProjectFiles.all.sort
+  if File.read("Manifest.txt").split != Rubygems::ProjectFiles.all
     abort "Manifest is out of date. Run `rake update_manifest` to sync it"
   end
 end

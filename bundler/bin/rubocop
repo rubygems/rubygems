@@ -1,5 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-cd "${BASH_SOURCE[0]%/*}/../.." || exit 1
+ARGV.replace(%w[--config bundler/.rubocop.yml] + ARGV + %w[bundler])
 
-util/rubocop --config bundler/.rubocop.yml "$@" bundler
+repo_root = File.expand_path("../..", __dir__)
+
+Dir.chdir(repo_root)
+
+load File.expand_path("util/rubocop", repo_root)

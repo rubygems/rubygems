@@ -1204,6 +1204,19 @@ end
       expect(out).to eq("undefined\nconstant")
     end
 
+    it "does not load fileutils" do
+      gemfile ""
+      ruby! <<~RUBY
+        require "#{lib_dir}/bundler/setup"
+        puts $LOADED_FEATURES.find {|feature| feature.end_with?("fileutils.rb") } || "undefined"
+        require "fileutils"
+        puts $LOADED_FEATURES.find {|feature| feature.end_with?("fileutils.rb") }
+      RUBY
+      pre_bundler, post_bundler = out.split("\n")
+      expect(pre_bundler).to eq("undefined")
+      expect(post_bundler).to match(/\d+\.\d+\.\d+/)
+    end
+
     describe "default gem activation" do
       let(:exemptions) do
         exempts = if Gem::Version.new(Gem::VERSION) >= Gem::Version.new("2.7")

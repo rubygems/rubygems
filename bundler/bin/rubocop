@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-ARGV.replace(%w[--config bundler/.rubocop.yml] + ARGV + %w[bundler])
+new_argv = ARGV.map do |argv|
+  File.exist?(argv) ? File.expand_path(argv) : argv
+end
+
+ARGV.replace(%w[--config .rubocop_bundler.yml] + new_argv)
 
 repo_root = File.expand_path("../..", __dir__)
 

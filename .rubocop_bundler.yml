@@ -3,9 +3,18 @@ require: rubocop-performance
 AllCops:
   DisabledByDefault: true
   TargetRubyVersion: 2.3
+  Include:
+    - bundler/**/*.rb
+    - bundler/**/*.gemspec
+    - bundler/**/Rakefile
+    - bundler/**/Gemfile
+    - bundler/**/*.rake
   Exclude:
-    - tmp/**/*
-    - lib/bundler/vendor/**/*
+    - bin/*
+    - pkg/**/*
+    - util/**/*
+    - bundler/tmp/**/*
+    - bundler/lib/bundler/vendor/**/*
   DisplayCopNames: true
   CacheRootDirectory: tmp/rubocop
   MaxFilesInCache: 5000
@@ -163,7 +172,7 @@ Lint/SafeNavigationConsistency:
 Lint/ScriptPermission:
   Enabled: true
   Exclude:
-    - 'lib/bundler/templates/Executable'
+    - 'bundler/lib/bundler/templates/Executable'
 
 Lint/ShadowedArgument:
   Enabled: true
@@ -409,7 +418,7 @@ Naming/ConstantName:
 Naming/FileName:
   Enabled: true
   Exclude:
-    - 'spec/realworld/fixtures/warbler/bin/warbler-example.rb'
+    - 'bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb'
 
 Naming/HeredocDelimiterCase:
   Enabled: true

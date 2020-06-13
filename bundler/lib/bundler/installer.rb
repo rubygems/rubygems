@@ -202,9 +202,14 @@ module Bundler
         return jobs
       end
 
-      return 1 unless can_install_in_parallel?
+      if jobs = Bundler.settings[:jobs]
+        return jobs
+      end
 
-      Bundler.settings[:jobs] || processor_count
+      # Parallelization has some issues on Windows, so it's not yet the default
+      return 1 if Gem.win_platform?
+
+      processor_count
     end
 
     def processor_count
@@ -261,10 +266,6 @@ module Bundler
             ", so the dependency is being ignored"
         end
       end
-    end
-
-    def can_install_in_parallel?
-      true
     end
 
     def install_in_parallel(size, standalone, force = false)

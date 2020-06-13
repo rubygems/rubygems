@@ -101,6 +101,11 @@ Performance/StartWith:
 Performance/StringReplacement:
   Enabled: true
 
+Style/Encoding:
+  Enabled: true
+  Exclude:
+    - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
+
 Style/MethodCallWithoutArgsParentheses:
   Enabled: true
 

@@ -14,15 +14,26 @@ jobs:
       matrix:
         target: [rubygems, bundler]
     steps:
+      - name: Set up latest ruby head
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: head
+          bundler: none
+      - name: Save latest buildable revision to environment
+        run: echo "::set-env name=REF::$(ruby -v | cut -d')' -f1 | cut -d' ' -f5)"
+      - uses: actions/checkout@v2
+        with:
+          repository: ruby/ruby
+          path: ruby/ruby
+          fetch-depth: 10
+      - name: Checkout the latest buildable revision
+        run: git switch -c ${{ env.REF }}
+        working-directory: ruby/ruby
       - name: Install libraries
         run: |
           set -x
           sudo apt-get update -q || :
           sudo apt-get install --no-install-recommends -q -y build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev bison autoconf ruby
-      - uses: actions/checkout@v2
-        with:
-          repository: ruby/ruby
-          path: ruby/ruby
       - name: Build Ruby
         run: |
           autoconf

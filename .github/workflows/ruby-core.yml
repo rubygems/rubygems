@@ -53,7 +53,7 @@ jobs:
       - name: Test Bundler
         run: |
           ruby tool/sync_default_gems.rb bundler
-          make test-bundler
+          make test-bundler-parallel
         working-directory: ruby/ruby
         continue-on-error: true
         if: matrix.target == 'bundler'

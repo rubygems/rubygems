@@ -154,6 +154,7 @@ bundler/lib/bundler/templates/newgem/lib/newgem.rb.tt
 bundler/lib/bundler/templates/newgem/lib/newgem/version.rb.tt
 bundler/lib/bundler/templates/newgem/newgem.gemspec.tt
 bundler/lib/bundler/templates/newgem/rspec.tt
+bundler/lib/bundler/templates/newgem/rubocop.yml.tt
 bundler/lib/bundler/templates/newgem/spec/newgem_spec.rb.tt
 bundler/lib/bundler/templates/newgem/spec/spec_helper.rb.tt
 bundler/lib/bundler/templates/newgem/test/minitest/newgem_test.rb.tt

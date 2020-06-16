@@ -27,16 +27,6 @@ class TestGemRequire < Gem::TestCase
 
   end
 
-  def setup
-    super
-
-    @old_loaded_features = $LOADED_FEATURES.dup
-    assert_raises LoadError do
-      require 'test_gem_require_a'
-    end
-    $LOADED_FEATURES.replace @old_loaded_features
-  end
-
   def assert_require(path)
     assert require(path), "'#{path}' was already required"
   end
@@ -91,8 +81,6 @@ class TestGemRequire < Gem::TestCase
     FileUtils.mkdir_p File.dirname c_rb
     File.open(c_rb, 'w') {|f| f.write "class Object; HELLO = 'world' end" }
 
-    lp = $LOAD_PATH.dup
-
     # Pretend to provide a commandline argument that overrides a file in gem b
     $LOAD_PATH.unshift dash_i_arg
 
@@ -101,7 +89,6 @@ class TestGemRequire < Gem::TestCase
     assert_equal "world", ::Object::HELLO
     assert_equal %w[a-1 b-1], loaded_spec_names
   ensure
-    $LOAD_PATH.replace lp
     Object.send :remove_const, :HELLO if Object.const_defined? :HELLO
   end
 
@@ -135,8 +122,6 @@ class TestGemRequire < Gem::TestCase
 
     assert_require 'test_gem_require_a'
 
-    lp = $LOAD_PATH.dup
-
     # Pretend to provide a commandline argument that overrides a file in gem b
     $LOAD_PATH.unshift dash_i_arg
 
@@ -145,7 +130,6 @@ class TestGemRequire < Gem::TestCase
     assert_equal "world", ::Object::HELLO
     assert_equal %w[a-1 b-1], loaded_spec_names
   ensure
-    $LOAD_PATH.replace lp
     Object.send :remove_const, :HELLO if Object.const_defined? :HELLO
   end
 
@@ -156,16 +140,10 @@ class TestGemRequire < Gem::TestCase
     dash_i_ext_arg = util_install_extension_file('a')
     dash_i_lib_arg = util_install_ruby_file('a')
 
-    lp = $LOAD_PATH.dup
-
-    begin
-      $LOAD_PATH.unshift dash_i_lib_arg
-      $LOAD_PATH.unshift dash_i_ext_arg
-      assert_require 'a'
-      assert_match(/a\.rb$/, $LOADED_FEATURES.last)
-    ensure
-      $LOAD_PATH.replace lp
-    end
+    $LOAD_PATH.unshift dash_i_lib_arg
+    $LOAD_PATH.unshift dash_i_ext_arg
+    assert_require 'a'
+    assert_match(/a\.rb$/, $LOADED_FEATURES.last)
   end
 
   def test_concurrent_require

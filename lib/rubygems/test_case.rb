@@ -426,19 +426,14 @@ class Gem::TestCase < Minitest::Test
   # tempdir
 
   def teardown
-    $LOAD_PATH.replace @orig_LOAD_PATH if @orig_LOAD_PATH
-    if @orig_LOADED_FEATURES
-      if @orig_LOAD_PATH
-        paths = @orig_LOAD_PATH.map {|path| File.join(File.expand_path(path), "/") }
-        ($LOADED_FEATURES - @orig_LOADED_FEATURES).each do |feat|
-          unless paths.any? {|path| feat.start_with?(path) }
-            $LOADED_FEATURES.delete(feat)
-          end
-        end
-      else
-        $LOADED_FEATURES.replace @orig_LOADED_FEATURES
-      end
-    end
+    # `$LOAD_PATH` and `$LOADED_FEATURES` are reset unconditionally after each
+    # test. Doing that assumes that code loaded in the middle of a test can be
+    # required again safely even if not persisted to `$LOADED_FEATURES`. If your
+    # test needs code that might be required by other tests, make sure you add
+    # the `require` at top level, so that it's not reset by this `teardown`
+    # hook, and thus redefinition warnings are not triggered.
+    $LOAD_PATH.replace @orig_LOAD_PATH
+    $LOADED_FEATURES.replace @orig_LOADED_FEATURES
 
     RbConfig::CONFIG['arch'] = @orig_arch
 
@@ -787,16 +782,6 @@ class Gem::TestCase < Minitest::Test
 
   def unresolved_names
     Gem::Specification.unresolved_deps.values.map(&:to_s).sort
-  end
-
-  def save_loaded_features
-    old_loaded_features = $LOADED_FEATURES.dup
-    yield
-  ensure
-    prefix = File.dirname(__FILE__) + "/"
-    new_features = ($LOADED_FEATURES - old_loaded_features)
-    old_loaded_features.concat(new_features.select {|f| f.rindex(prefix, 0) })
-    $LOADED_FEATURES.replace old_loaded_features
   end
 
   def new_default_spec(name, version, deps = nil, *files)

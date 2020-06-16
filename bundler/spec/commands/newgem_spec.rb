@@ -169,6 +169,10 @@ RSpec.describe "bundle gem" do
       rubocop_dep = builder.dependencies.find {|d| d.name == "rubocop" }
       expect(rubocop_dep).not_to be_nil
     end
+
+    it "generates a default .rubocop.yml" do
+      expect(bundled_app("#{gem_name}/.rubocop.yml")).to exist
+    end
   end
 
   shared_examples_for "--no-rubocop flag" do
@@ -191,6 +195,10 @@ RSpec.describe "bundle gem" do
       builder.dependencies
       rubocop_dep = builder.dependencies.find {|d| d.name == "rubocop" }
       expect(rubocop_dep).to be_nil
+    end
+
+    it "doesn't generate a default .rubocop.yml" do
+      expect(bundled_app("#{gem_name}/.rubocop.yml")).to_not exist
     end
   end
 
@@ -318,7 +326,6 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/lib/#{require_path}.rb")).to exist
       expect(bundled_app("#{gem_name}/lib/#{require_path}/version.rb")).to exist
       expect(bundled_app("#{gem_name}/.gitignore")).to exist
-      expect(bundled_app("#{gem_name}/.rubocop.yml")).to exist
 
       expect(bundled_app("#{gem_name}/bin/setup")).to exist
       expect(bundled_app("#{gem_name}/bin/console")).to exist
@@ -375,12 +382,6 @@ RSpec.describe "bundle gem" do
       bundle "gem #{gem_name}"
 
       expect(bundled_app("#{gem_name}/lib/#{require_path}.rb").read).to match(/class Error < StandardError; end$/)
-    end
-
-    it "creates a default .rubocop.yml" do
-      bundle "gem #{gem_name}"
-
-      expect(bundled_app("#{gem_name}/.rubocop.yml")).to exist
     end
 
     it "runs rake without problems" do

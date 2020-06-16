@@ -79,7 +79,6 @@ module Bundler
       ]
 
       templates.merge!("gitignore.tt" => ".gitignore") if Bundler.git_present?
-      templates.merge!("rubocop.yml.tt" => ".rubocop.yml")
 
       if test_framework = ask_and_set_test_framework
         config[:test] = test_framework
@@ -149,6 +148,7 @@ module Bundler
         "and the Ruby Style Guides (https://github.com/rubocop-hq/ruby-style-guide).")
         config[:rubocop] = true
         Bundler.ui.info "RuboCop enabled in config"
+        templates.merge!("rubocop.yml.tt" => ".rubocop.yml")
       end
 
       templates.merge!("exe/newgem.tt" => "exe/#{name}") if config[:exe]

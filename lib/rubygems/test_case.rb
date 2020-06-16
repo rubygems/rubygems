@@ -300,7 +300,7 @@ class Gem::TestCase < Minitest::Test
     @orig_env = ENV.to_hash
     @tmp = File.expand_path("tmp")
 
-    Dir.mkdir @tmp
+    FileUtils.mkdir_p @tmp
 
     ENV['GEM_VENDOR'] = nil
     ENV['GEMRC'] = nil
@@ -322,7 +322,7 @@ class Gem::TestCase < Minitest::Test
     @tempdir = File.join(tmpdir, "test_rubygems_#{$$}")
     @tempdir.tap(&Gem::UNTAINT)
 
-    FileUtils.mkdir @tempdir
+    FileUtils.mkdir_p @tempdir
 
     @orig_SYSTEM_WIDE_CONFIG_FILE = Gem::ConfigFile::SYSTEM_WIDE_CONFIG_FILE
     Gem::ConfigFile.send :remove_const, :SYSTEM_WIDE_CONFIG_FILE
@@ -429,11 +429,8 @@ class Gem::TestCase < Minitest::Test
     $LOAD_PATH.replace @orig_LOAD_PATH if @orig_LOAD_PATH
     if @orig_LOADED_FEATURES
       if @orig_LOAD_PATH
-        paths = @orig_LOAD_PATH.map {|path| File.join(File.expand_path(path), "/") }
         ($LOADED_FEATURES - @orig_LOADED_FEATURES).each do |feat|
-          unless paths.any? {|path| feat.start_with?(path) }
-            $LOADED_FEATURES.delete(feat)
-          end
+          $LOADED_FEATURES.delete(feat) if feat.start_with?(@tmp)
         end
       else
         $LOADED_FEATURES.replace @orig_LOADED_FEATURES
@@ -448,7 +445,7 @@ class Gem::TestCase < Minitest::Test
 
     Dir.chdir @current_dir
 
-    FileUtils.rm_rf @tmp
+    FileUtils.rm_rf @tempdir
 
     ENV.replace(@orig_env)
 

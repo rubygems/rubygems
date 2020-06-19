@@ -233,8 +233,10 @@ else
       sublib.vendor_lib = "lib/bundler/vendor/connection_pool"
     end
 
+    # We currently include changes over the official version to require internal paths
+    # relatively.
     lib.dependency("uri") do |sublib|
-      sublib.version = "master"
+      sublib.version = "v0.10.0"
       sublib.download = { :github => "https://github.com/ruby/uri" }
       sublib.namespace = "URI"
       sublib.prefix = "Bundler"

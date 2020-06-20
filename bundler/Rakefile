@@ -195,11 +195,9 @@ else
     lib.vendor_lib = "lib/bundler/vendor/molinillo"
   end
 
-  # We currently cherry-pick changes to use `require_relative` internally
-  # instead of regular `require`. They are already in thor's master branch but
-  # still need to be released.
   desc "Vendor a specific version of thor"
   Automatiek::RakeTask.new("thor") do |lib|
+    lib.version = "v1.0.1"
     lib.download = { :github => "https://github.com/erikhuda/thor" }
     lib.namespace = "Thor"
     lib.prefix = "Bundler"
@@ -208,17 +206,20 @@ else
 
   desc "Vendor a specific version of fileutils"
   Automatiek::RakeTask.new("fileutils") do |lib|
+    lib.version = "v1.4.1"
     lib.download = { :github => "https://github.com/ruby/fileutils" }
     lib.namespace = "FileUtils"
     lib.prefix = "Bundler"
     lib.vendor_lib = "lib/bundler/vendor/fileutils"
   end
 
-  # We currently cherry-pick changes to use `require_relative` internally
-  # instead of regular `require`. They are pending review at
-  # https://github.com/drbrain/net-http-persistent/pull/106
+  # We currently include changes over the official version to avoid requiring
+  # the optional `net-http-pipeline` dependency, so that its version can be
+  # selected by end users. We also include changes to require the vendored
+  # dependencies `uri` and `connection_pool` relatively.
   desc "Vendor a specific version of net-http-persistent"
   Automatiek::RakeTask.new("net-http-persistent") do |lib|
+    lib.version = "v4.0.0"
     lib.download = { :github => "https://github.com/drbrain/net-http-persistent" }
     lib.namespace = "Net::HTTP::Persistent"
     lib.prefix = "Bundler::Persistent"
@@ -232,8 +233,10 @@ else
       sublib.vendor_lib = "lib/bundler/vendor/connection_pool"
     end
 
+    # We currently include changes over the official version to require internal paths
+    # relatively.
     lib.dependency("uri") do |sublib|
-      sublib.version = "master"
+      sublib.version = "v0.10.0"
       sublib.download = { :github => "https://github.com/ruby/uri" }
       sublib.namespace = "URI"
       sublib.prefix = "Bundler"

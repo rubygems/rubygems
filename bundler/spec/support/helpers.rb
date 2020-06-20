@@ -264,18 +264,22 @@ module Spec
       bundle :lock, opts
     end
 
-    def install_gems(*gems)
+    def system_gems(*gems)
+      gems = gems.flatten
       options = gems.last.is_a?(Hash) ? gems.pop : {}
-      gem_repo = options.fetch(:gem_repo) { gem_repo1 }
-      gems.each do |g|
-        gem_name = g.to_s
-        if gem_name.start_with?("bundler")
-          version = gem_name.match(/\Abundler-(?<version>.*)\z/)[:version] if gem_name != "bundler"
-          with_built_bundler(version) {|gem_path| install_gem(gem_path) }
-        elsif gem_name =~ %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}
-          install_gem(gem_name)
-        else
-          install_gem("#{gem_repo}/gems/#{gem_name}.gem")
+      path = options.fetch(:path, system_gem_path)
+      with_gem_path_as(path) do
+        gem_repo = options.fetch(:gem_repo, gem_repo1)
+        gems.each do |g|
+          gem_name = g.to_s
+          if gem_name.start_with?("bundler")
+            version = gem_name.match(/\Abundler-(?<version>.*)\z/)[:version] if gem_name != "bundler"
+            with_built_bundler(version) {|gem_path| install_gem(gem_path) }
+          elsif gem_name =~ %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}
+            install_gem(gem_name)
+          else
+            install_gem("#{gem_repo}/gems/#{gem_name}.gem")
+          end
         end
       end
     end
@@ -384,20 +388,12 @@ module Spec
       system_gems(*gems)
     end
 
-    def system_gems(*gems)
-      opts = gems.last.is_a?(Hash) ? gems.last : {}
-      path = opts.fetch(:path, system_gem_path)
-      gems = gems.flatten
-
-      with_gem_path_as(path) do
-        install_gems(*gems)
-      end
-    end
-
     def realworld_system_gems(*gems)
       gems = gems.flatten
+      opts = gems.last.is_a?(Hash) ? gems.pop : {}
+      path = opts.fetch(:path, system_gem_path)
 
-      with_gem_path_as(system_gem_path) do
+      with_gem_path_as(path) do
         gems.each do |gem|
           gem_command "install --no-document #{gem}"
         end

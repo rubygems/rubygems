@@ -390,8 +390,10 @@ module Spec
 
     def realworld_system_gems(*gems)
       gems = gems.flatten
+      opts = gems.last.is_a?(Hash) ? gems.pop : {}
+      path = opts.fetch(:path, system_gem_path)
 
-      with_gem_path_as(system_gem_path) do
+      with_gem_path_as(path) do
         gems.each do |gem|
           gem_command "install --no-document #{gem}"
         end

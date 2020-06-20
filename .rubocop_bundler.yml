@@ -297,6 +297,7 @@ Layout/EndAlignment:
 
 Layout/EndOfLine:
   Enabled: true
+  EnforcedStyle: lf
 
 Layout/ExtraSpacing:
   Enabled: true

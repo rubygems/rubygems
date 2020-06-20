@@ -1,0 +1,9 @@
+# git log -L:<method>:<file>
+*.rb diff=ruby
+*.gemspec diff=ruby
+bin/* diff=ruby
+bundler/bin/* diff=ruby
+bundler/exe/* diff=ruby
+
+# Auto detect text files and perform LF normalization
+* text eol=lf

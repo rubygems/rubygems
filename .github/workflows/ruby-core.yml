@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - "pr-**"
 
 jobs:
   ruby_core:

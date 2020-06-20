@@ -2,10 +2,17 @@ name: windows
 
 on:
   pull_request:
+    paths-ignore:
+      - "bundler/**"
+      - ".github/workflows/*bundler*.yml"
 
   push:
     branches:
       - master
+      - "pr-**"
+    paths-ignore:
+      - "bundler/**"
+      - ".github/workflows/*bundler*.yml"
 
 jobs:
   windows:
@@ -22,7 +29,6 @@ jobs:
           bundler: none
       - name: Install Dependencies
         run: rake setup
-        shell: bash
       - name: Run Test
         run: |
           ridk enable

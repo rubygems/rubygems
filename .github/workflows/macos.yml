@@ -2,10 +2,17 @@ name: macos
 
 on:
   pull_request:
+    paths-ignore:
+      - "bundler/**"
+      - ".github/workflows/*bundler*.yml"
 
   push:
     branches:
       - master
+      - "pr-**"
+    paths-ignore:
+      - "bundler/**"
+      - ".github/workflows/*bundler*.yml"
 
 jobs:
   macos:

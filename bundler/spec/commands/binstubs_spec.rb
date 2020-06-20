@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle binstubs <gem>" do
-  before do
-    skip "https://github.com/rubygems/bundler/issues/6894" if Gem.win_platform?
-  end
-
   context "when the gem exists in the lockfile" do
     it "sets up the binstub" do
       install_gemfile <<-G
@@ -288,8 +284,7 @@ RSpec.describe "bundle binstubs <gem>" do
         G
 
         bundle "binstubs rack --shebang jruby"
-
-        expect(File.open(bundled_app("bin/rackup")).gets).to eq("#!/usr/bin/env jruby\n")
+        expect(File.readlines(bundled_app("bin/rackup")).first).to eq("#!/usr/bin/env jruby\n")
       end
     end
   end

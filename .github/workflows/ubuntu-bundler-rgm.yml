@@ -1,30 +1,23 @@
-name: windows-bundler
+name: ubuntu-bundler-rgm
 
 on:
   pull_request:
-    paths:
-      - "bundler/**"
-      - ".github/workflows/*bundler*.yml"
 
   push:
     branches:
       - master
       - "pr-**"
-    paths:
-      - "bundler/**"
-      - ".github/workflows/*bundler*.yml"
 
 jobs:
-  windows_bundler:
-    runs-on: windows-2019
-
-    env:
-      RGV: ..
-
+  ubuntu_bundler:
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        ruby: [ 2.4, 2.5, 2.6, 2.7 ]
-
+        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
+        rgv: [ .. ]
+    env:
+      RGV: ${{ matrix.rgv }}
+      RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby
@@ -32,13 +25,13 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
-      - name: Install dependencies
+      - name: Prepare dependencies
         run: |
+          sudo apt-get install graphviz -y
           bin/rake spec:parallel_deps
         working-directory: ./bundler
-        shell: bash
-      - name: Run specs
+      - name: Run Test
         run: |
-          bin/parallel_rspec
+          bin/rake spec:all
         working-directory: ./bundler
-        shell: bash
+    timeout-minutes: 60

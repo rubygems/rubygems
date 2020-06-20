@@ -2,10 +2,17 @@ name: ubuntu-bundler3
 
 on:
   pull_request:
+    paths:
+      - "bundler/**"
+      - ".github/workflows/*bundler*.yml"
 
   push:
     branches:
       - master
+      - "pr-**"
+    paths:
+      - "bundler/**"
+      - ".github/workflows/*bundler*.yml"
 
 jobs:
   ubuntu_bundler3:
@@ -13,7 +20,7 @@ jobs:
     strategy:
       matrix:
         ruby: [ 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
-        rgv: [ v3.1.4, .. ]
+        rgv: [ v3.1.4 ]
     env:
       RGV: ${{ matrix.rgv }}
     steps:

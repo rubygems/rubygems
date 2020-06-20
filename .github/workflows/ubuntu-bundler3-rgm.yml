@@ -1,49 +1,46 @@
-name: jruby-bundler
+name: ubuntu-bundler3-rgm
 
 on:
   pull_request:
-    paths:
-      - "bundler/**"
-      - ".github/workflows/*bundler*.yml"
 
   push:
     branches:
       - master
       - "pr-**"
-    paths:
-      - "bundler/**"
-      - ".github/workflows/*bundler*.yml"
 
 jobs:
-  jruby_bundler:
+  ubuntu_bundler3:
     runs-on: ubuntu-18.04
-
+    strategy:
+      matrix:
+        ruby: [ 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
+        rgv: [ .. ]
     env:
-      RGV: ..
-
+      RGV: ${{ matrix.rgv }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: jruby-9.2.11.1
+          ruby-version: ${{ matrix.ruby }}
           bundler: none
       - name: Prepare dependencies
         run: |
+          BUNDLER_SPEC_SUB_VERSION=3.0.0 bin/rake override_version
           bin/rake spec:parallel_deps
         working-directory: ./bundler
       - name: Run Test
         run: |
-          bin/parallel_rspec --tag jruby
+          bin/parallel_rspec
         working-directory: ./bundler
-      - name: Install local bundler
+      - name: Run Test with realworld
         run: |
-          bin/rake install:local
+          bin/rake spec:realworld
+        env:
+          BUNDLER_SPEC_PRE_RECORDED: 1
         working-directory: ./bundler
-      - name: Run a warbler project
+      - name: Run Test with sudo
         run: |
-          cd spec/realworld/fixtures/warbler
-          bundle install
-          bundle exec warble
-          java -jar warbler.jar
+          bin/rake spec:sudo
         working-directory: ./bundler
+    timeout-minutes: 60

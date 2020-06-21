@@ -3,11 +3,11 @@
 Bundler uses [Semantic Versioning](https://semver.org/).
 
 _Note: In the documentation listed below, the *current* minor version number is
-1.11 and the *next* minor version number is 1.12_
+2.1 and the *next* minor version number is 2.2_
 
 Regardless of the version, *all releases* must update the `CHANGELOG.md` and `lib/bundler/version.rb`
-files. The changelog for the first stable minor release (`1.12.0`) is a sum of all
-the preceding pre-release versions (`1.12.pre.1`, `1.12.pre.2`, etc) for that
+files. The changelog for the first stable minor release (`2.2.0`) is a sum of all
+the preceding pre-release versions (`2.2.pre.1`, `2.2.pre.2`, etc) for that
 minor version. The changelog for the first stable minor release is left blank
 unless there are fixes included since the last pre/rc release.
 
@@ -15,8 +15,8 @@ unless there are fixes included since the last pre/rc release.
 
 In general, `master` will accept PRs for:
 
-* feature merges for the next minor version (1.12)
-* regression fix merges for a patch release on the current minor version (1.11)
+* feature merges for the next minor version (2.2)
+* regression fix merges for a patch release on the current minor version (2.1)
 * feature-flagged development for the next major version (2.0)
 
 ### Breaking releases
@@ -83,20 +83,20 @@ Here's the checklist for releasing new minor versions:
   feature release. As a general rule, this should always be okay, since features
   should _never break backwards compatibility_
 * [ ] Create a new stable branch from master (see **Branching** below)
-* [ ] Update `version.rb` to a prerelease number, e.g. `1.12.pre.1`
+* [ ] Update `version.rb` to a prerelease number, e.g. `2.2.pre.1`
 * [ ] Update `CHANGELOG.md` to include all of the features, bugfixes, etc for that
   version.
 * [ ] Run `bin/rake release`, tweet, blog, let people know about the prerelease!
 * [ ] Wait a **minimum of 7 days**
-* [ ] If significant problems are found, increment the prerelease (i.e. 1.12.pre.2)
+* [ ] If significant problems are found, increment the prerelease (i.e. 2.2.pre.2)
   and repeat, but treating `.pre.2` as a _patch release_. In general, once a stable
   branch has been cut from master, it should _not_ have master merged back into it.
 
 Wait! You're not done yet! After your prelease looks good:
 
-* [ ] Update `version.rb` to a final version (i.e. 1.12.0)
+* [ ] Update `version.rb` to a final version (i.e. 2.2.0)
 * [ ] In the [rubygems/bundler-site](https://github.com/rubygems/bundler-site) repo,
-  copy the previous version's docs to create a new version (e.g. `cp -r v1.11 v1.12`)
+  copy the previous version's docs to create a new version (e.g. `cp -r v2.1 v2.2`)
 * [ ] Update the new docs as needed, paying special attention to the "What's new"
   page for this version
 * [ ] Write a blog post announcing the new version, highlighting new features and
@@ -113,12 +113,12 @@ _anything_ wrong as the release manager.
 #### Branching
 
 Minor releases of the next version start with a new release branch from the
-current state of master: `1-12-stable`, and are immediately followed by a `.pre.1` release.
+current state of master: `2.2-stable`, and are immediately followed by a `.pre.1` release.
 
 Once that `-stable` branch has been cut from `master`, changes for that minor
-release series (1.12) will only be made _intentionally_, via patch releases.
+release series (2.2) will only be made _intentionally_, via patch releases.
 That is to say, changes to `master` by default _won't_ make their way into any
-`1.12` version, and development on `master` will be targeting the next minor
+`2.2` version, and development on `master` will be targeting the next minor
 or major release.
 
 ### Patch releases (bug fixes!)
@@ -130,13 +130,13 @@ and pour yourself a tasty drink!
 
 PRs containing regression fixes for a patch release of the current minor version
 are merged to master. These commits need to be cherry-picked from master onto
-the minor branch (`1-12-stable`).
+the minor branch (`2.2-stable`).
 
 There is a `bin/rake release:prepare_patch` rake task that helps with creating a patch
 release. It takes a single argument, the _exact_ patch release being made (e.g.
-`1.12.3`), but if not given it will bump the tiny version number by one. This
-task checks out the appropriate stable branch (`1-12-stable`), grabs the
-`1.12.3` milestone from GitHub, ensures all PRs are closed, and then
+`2.2.3`), but if not given it will bump the tiny version number by one. This
+task checks out the appropriate stable branch (`2.2-stable`), grabs the
+`2.2.3` milestone from GitHub, ensures all PRs are closed, and then
 cherry-picks those changes (and only those changes) to a new branch based off
 the stable branch. Then bumps the version in the version file and commits that
 change on top of the cherry-picks.

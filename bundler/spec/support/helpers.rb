@@ -27,8 +27,12 @@ module Spec
       TheBundle.new(*args)
     end
 
+    def command_executions
+      @command_executions ||= []
+    end
+
     def last_command
-      @command_executions.last || raise("There is no last command")
+      command_executions.last || raise("There is no last command")
     end
 
     def out
@@ -192,7 +196,7 @@ module Spec
         command_execution.exitstatus = wait_thr && wait_thr.value.exitstatus
       end
 
-      (@command_executions ||= []) << command_execution
+      command_executions << command_execution
 
       unless options[:raise_on_error] == false || command_execution.success?
         raise "Invoking #{cmd} failed!"

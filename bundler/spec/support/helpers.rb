@@ -199,7 +199,7 @@ module Spec
       command_executions << command_execution
 
       unless options[:raise_on_error] == false || command_execution.success?
-        raise "Invoking #{cmd} failed!"
+        raise "Invoking `#{cmd}` failed!"
       end
 
       command_execution.stdout

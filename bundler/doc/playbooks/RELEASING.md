@@ -112,11 +112,22 @@ _anything_ wrong as the release manager.
 
 #### Branching
 
-Minor releases of the next version start with a new release branch from the
-current state of master: `2.2-stable`, and are immediately followed by a `.pre.1` release.
+Bundler releases are syncronized with rubygems releases at the moment. That
+means that releases for both share the same stable branch, and they should
+generally happen together.
 
-Once that `-stable` branch has been cut from `master`, changes for that minor
-release series (2.2) will only be made _intentionally_, via patch releases.
+Minor releases of the next version start with a new release branch from the
+current state of master: `3.2`, and are immediately followed by a `.pre.1` release.
+
+The current conventional naming for stable branches is `x+1.y`, where `x.y` is
+the version of `bundler` that will be released. This is because `rubygems-x+1.y`
+will be released at the same time.
+
+For example, `rubygems-3.2.0` and `bundler-2.2.0` will be both released from the
+`3.2` stable branch.
+
+Once a stable branch has been cut from `master`, changes for that minor release
+series (bundler 2.2) will only be made _intentionally_, via patch releases.
 That is to say, changes to `master` by default _won't_ make their way into any
 `2.2` version, and development on `master` will be targeting the next minor
 or major release.
@@ -125,17 +136,17 @@ or major release.
 
 Releasing new bugfix versions is really straightforward. Increment the tiny version
 number in `lib/bundler/version.rb`, and in `CHANGELOG.md` add one bullet point
-per bug fixed. Then run `bin/rake release` from the `-stable` branch,
+per bug fixed. Then run `bin/rake release` from the appropriate stable branch,
 and pour yourself a tasty drink!
 
 PRs containing regression fixes for a patch release of the current minor version
 are merged to master. These commits need to be cherry-picked from master onto
-the minor branch (`2.2-stable`).
+the minor branch (`3.2`).
 
 There is a `bin/rake release:prepare_patch` rake task that helps with creating a patch
 release. It takes a single argument, the _exact_ patch release being made (e.g.
 `2.2.3`), but if not given it will bump the tiny version number by one. This
-task checks out the appropriate stable branch (`2.2-stable`), grabs the
+task checks out the appropriate stable branch (`3.2`), grabs the
 `2.2.3` milestone from GitHub, ensures all PRs are closed, and then
 cherry-picks those changes (and only those changes) to a new branch based off
 the stable branch. Then bumps the version in the version file and commits that

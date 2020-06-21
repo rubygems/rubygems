@@ -196,11 +196,17 @@ module Spec
         command_execution.exitstatus = wait_thr && wait_thr.value.exitstatus
       end
 
-      command_executions << command_execution
-
       unless options[:raise_on_error] == false || command_execution.success?
-        raise "Invoking `#{cmd}` failed!"
+        raise <<~ERROR
+
+          Invoking `#{cmd}` failed with output:
+          ----------------------------------------------------------------------
+          #{command_execution.stdboth}
+          ----------------------------------------------------------------------
+        ERROR
       end
+
+      command_executions << command_execution
 
       command_execution.stdout
     end

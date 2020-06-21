@@ -30,6 +30,11 @@ jobs:
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          path: bundler/tmp/rubygems
+          ref: ${{ matrix.rgv }}
+        if: matrix.rgv != '..'
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:

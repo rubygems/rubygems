@@ -83,10 +83,12 @@ Here's the checklist for releasing new minor versions:
   feature release. As a general rule, this should always be okay, since features
   should _never break backwards compatibility_
 * [ ] Create a new stable branch from master (see **Branching** below)
-* [ ] Update `version.rb` to a prerelease number, e.g. `2.2.pre.1`
-* [ ] Update `CHANGELOG.md` to include all of the features, bugfixes, etc for that
-  version.
-* [ ] Run `bin/rake release`, tweet, blog, let people know about the prerelease!
+* [ ] Create a PR to the stable branch that:
+  * [ ] Updates `version.rb` to a prerelease number, e.g. `1.12.pre.1`
+  * [ ] Updates `CHANGELOG.md` to include all of the features, bugfixes, etc for that version.
+* [ ] Get the PR reviewed, make sure CI is green, and merge it.
+* [ ] Pull the updated stable brnach, wait for CI to complete on it and get excited.
+* [ ] Run `bin/rake release` from the updated stable branch, tweet, blog, let people know about the prerelease!
 * [ ] Wait a **minimum of 7 days**
 * [ ] If significant problems are found, increment the prerelease (i.e. 2.2.pre.2)
   and repeat, but treating `.pre.2` as a _patch release_. In general, once a stable

@@ -27,8 +27,12 @@ module Spec
       TheBundle.new(*args)
     end
 
+    def command_executions
+      @command_executions ||= []
+    end
+
     def last_command
-      @command_executions.last || raise("There is no last command")
+      command_executions.last || raise("There is no last command")
     end
 
     def out
@@ -192,13 +196,25 @@ module Spec
         command_execution.exitstatus = wait_thr && wait_thr.value.exitstatus
       end
 
-      (@command_executions ||= []) << command_execution
-
       unless options[:raise_on_error] == false || command_execution.success?
-        raise "Invoking #{cmd} failed!"
+        raise <<~ERROR
+
+          Invoking `#{cmd}` failed with output:
+          ----------------------------------------------------------------------
+          #{command_execution.stdboth}
+          ----------------------------------------------------------------------
+        ERROR
       end
 
+      command_executions << command_execution
+
       command_execution.stdout
+    end
+
+    def all_commands_output
+      return [] if command_executions.empty?
+
+      "\n\nCommands:\n#{command_executions.map(&:to_s_verbose).join("\n\n")}"
     end
 
     def config(config = nil, path = bundled_app(".bundle/config"))

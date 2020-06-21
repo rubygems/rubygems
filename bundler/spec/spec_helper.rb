@@ -101,9 +101,9 @@ RSpec.configure do |config|
       with_gem_path_as(system_gem_path) do
         Bundler.ui.silence { example.run }
 
-        all_output = command_executions.map(&:to_s_verbose).join("\n\n")
+        all_output = all_commands_output
         if example.exception && !all_output.empty?
-          message = example.exception.message + "\n\nCommands:\n#{all_output}"
+          message = example.exception.message + all_output
           (class << example.exception; self; end).send(:define_method, :message) do
             message
           end

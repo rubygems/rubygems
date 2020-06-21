@@ -211,6 +211,12 @@ module Spec
       command_execution.stdout
     end
 
+    def all_commands_output
+      return [] if command_executions.empty?
+
+      "\n\nCommands:\n#{command_executions.map(&:to_s_verbose).join("\n\n")}"
+    end
+
     def config(config = nil, path = bundled_app(".bundle/config"))
       return YAML.load_file(path) unless config
       FileUtils.mkdir_p(File.dirname(path))

@@ -1,0 +1,41 @@
+name: monthly
+
+on:
+  push
+    branches:
+      - master
+
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  run:
+    name: Refresh month of man pages
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: none
+
+      - name: Install dependencies
+        run: rake setup
+
+      - name: Update month
+        run: bin/rake man:build
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v4
+        with:
+          author_name: Utkarsh Gupta
+          author_email: utkarsh@debian.org
+          message: "Bump man pages month"
+          add: "bundler/man/*"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: failure() && env.OLD_STATUS == '"success"'
+
+    timeout-minutes: 60

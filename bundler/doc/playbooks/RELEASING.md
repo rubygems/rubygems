@@ -119,7 +119,9 @@ means that releases for both share the same stable branch, and they should
 generally happen together.
 
 Minor releases of the next version start with a new release branch from the
-current state of master: `3.2`, and are immediately followed by a `.pre.1` release.
+current state of master: `3.2`, and are immediately followed by a prerelease
+(might be a `.pre.1` version or a `.rc.1` version depending on the readiness of
+the stable branch) or even directly by the final stable release.
 
 The current conventional naming for stable branches is `x+1.y`, where `x.y` is
 the version of `bundler` that will be released. This is because `rubygems-x+1.y`

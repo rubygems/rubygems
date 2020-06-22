@@ -150,7 +150,7 @@ namespace :release do
     prs.compact!
 
     branch = Gem::Version.new(version).segments[0, 2].push("stable").join("-")
-    sh("git", "checkout", "-b", "release/#{version}", branch)
+    sh("git", "checkout", "-b", "release_bundler/#{version}", branch)
 
     commits = `git log --oneline origin/master -- bundler`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
     commits.select! {|_sha, message| message =~ /(Auto merge of|Merge pull request|Merge) ##{Regexp.union(*prs)}/ }

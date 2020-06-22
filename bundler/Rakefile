@@ -234,6 +234,5 @@ end
 
 task :default => :spec
 
-load "task/build_metadata.rake"
 load "task/bundler_3.rake"
 load "task/release.rake"

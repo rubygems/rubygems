@@ -4,7 +4,7 @@ require_relative "../lib/bundler/gem_tasks"
 
 task :build_metadata do
   build_metadata = {
-    :built_at => Spec::Path.loaded_gemspec.date.utc.strftime("%Y-%m-%d"),
+    :built_at => Bundler::GemHelper.gemspec.date.utc.strftime("%Y-%m-%d"),
     :git_commit_sha => `git rev-parse --short HEAD`.strip,
     :release => Rake::Task["release"].instance_variable_get(:@already_invoked),
   }

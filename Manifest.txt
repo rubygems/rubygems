@@ -703,14 +703,3 @@ test/rubygems/test_remote_fetch_error.rb
 test/rubygems/test_require.rb
 test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem
-util/CL2notes
-util/bisect
-util/cops/deprecations.rb
-util/create_certs.rb
-util/create_certs.sh
-util/create_encrypted_key.rb
-util/generate_spdx_license_list.rb
-util/patch_with_prs.rb
-util/rubocop
-util/update_bundled_ca_certificates.rb
-util/update_changelog.rb

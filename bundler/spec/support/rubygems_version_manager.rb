@@ -75,7 +75,6 @@ private
   def switch_local_copy_if_needed
     return unless local_copy_switch_needed?
 
-    sys_exec("git remote update", :dir => local_copy_path)
     sys_exec("git checkout #{target_tag}", :dir => local_copy_path)
 
     ENV["RGV"] = local_copy_path.to_s
@@ -107,8 +106,7 @@ private
     rubygems_path = source_root.join("tmp/rubygems")
 
     unless rubygems_path.directory?
-      rubygems_path.parent.mkpath
-      sys_exec("git clone https://github.com/rubygems/rubygems.git #{rubygems_path}")
+      sys_exec("git clone .. #{rubygems_path}", :dir => source_root)
     end
 
     rubygems_path

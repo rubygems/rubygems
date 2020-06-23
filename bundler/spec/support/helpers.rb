@@ -506,11 +506,11 @@ module Spec
       process_file(pathname) do |line|
         case line
         when /spec\.metadata\["(?:allowed_push_host|homepage_uri|source_code_uri|changelog_uri)"\]/, /spec\.homepage/
-          line.gsub(/\=.*$/, "= 'http://example.org'")
+          line.gsub(/\=.*$/, '= "http://example.org"')
         when /spec\.summary/
-          line.gsub(/\=.*$/, "= %q{A short summary of my new gem.}")
+          line.gsub(/\=.*$/, '= "A short summary of my new gem."')
         when /spec\.description/
-          line.gsub(/\=.*$/, "= %q{A longer description of my new gem.}")
+          line.gsub(/\=.*$/, '= "A longer description of my new gem."')
         else
           line
         end

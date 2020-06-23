@@ -1,7 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    automatiek (0.3.0)
     diff-lcs (1.3)
     hpricot (0.8.6)
     mustache (1.1.1)
@@ -28,7 +27,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  automatiek (~> 0.3.0)
   parallel_tests (~> 2.29)
   ronn (~> 0.7.3)
   rspec-core (~> 3.8)

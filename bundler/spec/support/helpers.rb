@@ -193,7 +193,7 @@ module Spec
         stderr_read_thread = Thread.new { stderr.read }
         command_execution.stdout = stdout_read_thread.value.strip
         command_execution.stderr = stderr_read_thread.value.strip
-        command_execution.exitstatus = wait_thr && wait_thr.value.exitstatus
+        command_execution.exitstatus = wait_thr.value.exitstatus
       end
 
       unless options[:raise_on_error] == false || command_execution.success?

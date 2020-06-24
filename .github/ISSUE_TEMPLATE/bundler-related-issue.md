@@ -9,7 +9,7 @@ assignees: ''
 
 Thank you for contributing to the [rubygems](https://github.com/rubygems/rubygems) repository, and specifically to the [Bundler](https://bundler.io/) gem.
 
-Before processing your issue please confirm that:
+Before opening your issue please confirm that:
 
 - [ ] You checked all the following documents and couldn't find a solution for your issue:
 

@@ -9,16 +9,7 @@ assignees: ''
 
 Thank you for contributing to the [rubygems](https://github.com/rubygems/rubygems) repository, and specifically to the [Bundler](https://bundler.io/) gem.
 
-Before opening your issue please confirm that:
-
-- [ ] You checked all the following documents and couldn't find a solution for your issue:
-
-- [Troubleshooting common issues](https://github.com/rubygems/rubygems/blob/master/bundler/doc/TROUBLESHOOTING.md)
-- [Bundler documentation site](https://bundler.io/)
-- [Bundler man pages](https://bundler.io/man/bundle.1.html)
-- [Bundler command line reference](https://bundler.io/v2.0/commands.html)
-
-If you haven't done that, please do it before creating a new issue.
+Before opening your issue, make sure you have checked [our filing issues guide](https://github.com/rubygems/rubygems/blob/master/bundler/doc/contributing/ISSUES.md).
 
 Please answer the following questions so we can process your issue as fast as possible:
 
@@ -49,7 +40,5 @@ Please answer the following questions so we can process your issue as fast as po
 7. Please run `bundle env` and paste the output below:
 
     Your answer:
-
-For more information please check [Filing Issues: a guide](https://github.com/rubygems/rubygems/blob/master/bundler/doc/contributing/ISSUES.md).
 
 Thank you!

@@ -13,31 +13,31 @@ Before opening your issue, make sure you have checked [our filing issues guide](
 
 Please answer the following questions so we can process your issue as fast as possible:
 
-1. Do you have a reproduction script? It would be really helpful for us if you provide one. Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
+### Do you have a reproduction script? It would be really helpful for us if you provide one. Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
 
     Script URL: 
 
-2. What are you trying to accomplish?
+### What are you trying to accomplish?
 
     Your answer:
 
-3. What command did you run?
+### What command did you run?
 
     Your answer:
 
-4. What were you expecting to happen?
+### What were you expecting to happen?
 
     Your answer:
 
-5. What actually happened?
+### What actually happened?
 
     Your answer:
 
-6. Is there an exception backtrace? If so, please copy it below.
+### Is there an exception backtrace? If so, please copy it below.
 
     Your answer:
 
-7. Please run `bundle env` and paste the output below:
+### Please run `bundle env` and paste the output below:
 
     Your answer:
 

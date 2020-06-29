@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        ruby: [ ruby-head ]
+        ruby: [ ruby-head, truffleruby-head ]
+    env:
+      TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
     steps:
       - uses: actions/checkout@v2
 

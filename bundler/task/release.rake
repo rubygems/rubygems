@@ -1,36 +1,36 @@
 # frozen_string_literal: true
 
 require_relative "../lib/bundler/gem_tasks"
+
+Bundler::GemHelper.tag_prefix = "bundler-"
+
+task :build_metadata do
+  build_metadata = {
+    :built_at => Bundler::GemHelper.gemspec.date.utc.strftime("%Y-%m-%d"),
+    :git_commit_sha => `git rev-parse --short HEAD`.strip,
+    :release => Rake::Task["release"].instance_variable_get(:@already_invoked),
+  }
+
+  Spec::Path.replace_build_metadata(build_metadata)
+end
+
+namespace :build_metadata do
+  task :clean do
+    build_metadata = {
+      :release => false,
+    }
+
+    Spec::Path.replace_build_metadata(build_metadata)
+  end
+end
+
 task :build => ["build_metadata"] do
   Rake::Task["build_metadata:clean"].tap(&:reenable).real_invoke
 end
-task "release:rubygem_push" => ["release:verify_docs", "release:verify_files", "release:verify_github", "build_metadata", "release:github"]
+task "release:rubygem_push" => ["release:verify_docs", "release:verify_github", "build_metadata", "release:github"]
 
 namespace :release do
   task :verify_docs => :"man:check"
-
-  task :verify_files do
-    git_list = IO.popen("git ls-files -z", &:read).split("\x0").select {|f| f.match(%r{^(lib|man|exe)/}) }
-    git_list += %w[CHANGELOG.md LICENSE.md README.md bundler.gemspec]
-
-    gem_list = Gem::Specification.load("bundler.gemspec").files
-
-    extra_files = gem_list.to_set - git_list.to_set
-
-    error_msg = <<~MSG
-
-      You intend to ship some files with the gem that are not generated man pages
-      nor source control files. Please review the extra list of files and try
-      again:
-
-      #{extra_files.to_a.join("\n  ")}
-
-    MSG
-
-    raise error_msg if extra_files.any?
-
-    puts "The file list is correct for a release."
-  end
 
   def gh_api_post(opts)
     gem "netrc", "~> 0.11.0"
@@ -131,10 +131,10 @@ namespace :release do
 
   desc "Push the release to Github releases"
   task :github, :version do |_t, args|
-    version = Gem::Version.new(args.version || bundler_spec.version)
-    tag = "v#{version}"
+    version = Gem::Version.new(args.version || Bundler::GemHelper.gemspec.version)
+    tag = "bundler-v#{version}"
 
-    gh_api_post :path => "/repos/bundler/bundler/releases",
+    gh_api_post :path => "/repos/rubygems/rubygems/releases",
                 :body => {
                   :tag_name => tag,
                   :name => tag,
@@ -146,10 +146,10 @@ namespace :release do
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch, :version do |_t, args|
     version = args.version
+    current_version = Bundler::GemHelper.gemspec.version
 
     version ||= begin
-      version = bundler_spec.version
-      segments = version.segments
+      segments = current_version.segments
       if segments.last.is_a?(String)
         segments << "1"
       else
@@ -158,13 +158,13 @@ namespace :release do
       segments.join(".")
     end
 
-    puts "Cherry-picking PRs milestoned for #{version} (currently #{bundler_spec.version}) into the stable branch..."
+    puts "Cherry-picking PRs milestoned for #{version} (currently #{current_version}) into the stable branch..."
 
-    milestones = gh_api_request(:path => "repos/bundler/bundler/milestones?state=open")
+    milestones = gh_api_request(:path => "repos/rubygems/rubygems/milestones?state=open")
     unless patch_milestone = milestones.find {|m| m["title"] == version }
       abort "failed to find #{version} milestone on GitHub"
     end
-    prs = gh_api_request(:path => "repos/bundler/bundler/issues?milestone=#{patch_milestone["number"]}&state=all")
+    prs = gh_api_request(:path => "repos/rubygems/rubygems/issues?milestone=#{patch_milestone["number"]}&state=all")
     prs.map! do |pr|
       abort "#{pr["html_url"]} hasn't been closed yet!" unless pr["state"] == "closed"
       next unless pr["pull_request"]
@@ -172,10 +172,10 @@ namespace :release do
     end
     prs.compact!
 
-    branch = version.split(".", 3)[0, 2].push("stable").join("-")
-    sh("git", "checkout", "-b", "release/#{version}", branch)
+    branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
+    sh("git", "checkout", "-b", "release_bundler/#{version}", branch)
 
-    commits = `git log --oneline origin/master --`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
+    commits = `git log --oneline origin/master -- bundler`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
     commits.select! {|_sha, message| message =~ /(Auto merge of|Merge pull request|Merge) ##{Regexp.union(*prs)}/ }
 
     abort "Could not find commits for all PRs" unless commits.size == prs.size
@@ -201,16 +201,16 @@ namespace :release do
   desc "Open all PRs that have not been included in a stable release"
   task :open_unreleased_prs do
     def prs(on = "master")
-      commits = `git log --oneline origin/#{on} --`.split("\n")
+      commits = `git log --oneline origin/#{on} -- bundler`.split("\n")
       commits.reverse_each.map {|c| c =~ /(Auto merge of|Merge pull request|Merge) #(\d+)/ && $2 }.compact
     end
 
     def minor_release_tags
-      `git ls-remote origin`.split("\n").map {|r| r =~ %r{refs/tags/v([\d.]+)$} && $1 }.compact.map {|v| Gem::Version.create(Gem::Version.create(v).segments[0, 2].join(".")) }.sort.uniq
+      `git ls-remote origin`.split("\n").map {|r| r =~ %r{refs/tags/bundler-v([\d.]+)$} && $1 }.compact.map {|v| Gem::Version.create(Gem::Version.create(v).segments[0, 2].join(".")) }.sort.uniq
     end
 
     def to_stable_branch(release_tag)
-      release_tag.segments[0, 2].<<("stable").join("-")
+      release_tag.segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
     end
 
     last_stable = to_stable_branch(minor_release_tags[-1])
@@ -218,14 +218,16 @@ namespace :release do
 
     in_release = prs("HEAD") - prs(last_stable) - prs(previous_to_last_stable)
 
-    print "About to review #{in_release.size} pending PRs. "
+    n_prs = in_release.size
+
+    print "About to review #{n_prs} pending PRs. "
 
     confirm "Continue? (y/n)"
 
-    in_release.each do |pr|
+    in_release.each.with_index do |pr, idx|
       url_opener = /darwin/ =~ RUBY_PLATFORM ? "open" : "xdg-open"
-      url = "https://github.com/bundler/bundler/pull/#{pr}"
-      print "#{url}. (n)ext/(o)pen? "
+      url = "https://github.com/rubygems/rubygems/pull/#{pr}"
+      print "[#{idx + 1}/#{n_prs}] #{url}. (n)ext/(o)pen? "
       system(url_opener, url, :out => IO::NULL, :err => IO::NULL) if $stdin.gets.strip == "o"
     end
   end

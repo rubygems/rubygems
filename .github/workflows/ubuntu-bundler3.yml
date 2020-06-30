@@ -16,6 +16,7 @@ jobs:
         rgv: [ v3.1.4, .. ]
     env:
       RGV: ${{ matrix.rgv }}
+      RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
         with:

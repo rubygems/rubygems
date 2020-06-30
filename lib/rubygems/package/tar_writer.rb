@@ -4,8 +4,6 @@
 # See LICENSE.txt for additional licensing information.
 #++
 
-require 'digest'
-
 ##
 # Allows writing of tar files
 
@@ -145,8 +143,7 @@ class Gem::Package::TarWriter
         if digest.respond_to? :name
           digest.name
         else
-          /::([^:]+)$/ =~ digest_algorithm.name
-          $1
+          digest_algorithm.class.name[/::([^:]+)\z/, 1]
         end
 
       [digest_name, digest]
@@ -174,7 +171,7 @@ class Gem::Package::TarWriter
   def add_file_signed(name, mode, signer)
     digest_algorithms = [
       signer.digest_algorithm,
-      Digest::SHA512,
+      Gem::Security.create_digest('SHA512'),
     ].compact.uniq
 
     digests = add_file_digest name, mode, digest_algorithms do |io|

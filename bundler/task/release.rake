@@ -33,7 +33,6 @@ namespace :release do
   task :verify_docs => :"man:check"
 
   def gh_api_post(opts)
-    gem "netrc", "~> 0.11.0"
     require "netrc"
     require "net/http"
     require "json"

@@ -106,9 +106,6 @@ module Bundler
       cmd = [*gem_command, "push", path]
       cmd << "--key" << gem_key if gem_key
       cmd << "--host" << allowed_push_host if allowed_push_host
-      unless allowed_push_host || Bundler.user_home.join(".gem/credentials").file?
-        raise "Your rubygems.org credentials aren't set. Run `gem signin` to set them."
-      end
       sh_with_input(cmd)
       Bundler.ui.confirm "Pushed #{name} #{version} to #{gem_push_host}"
     end

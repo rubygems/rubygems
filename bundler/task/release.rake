@@ -32,7 +32,7 @@ task "release:rubygem_push" => ["release:verify_docs", "release:verify_github", 
 namespace :release do
   task :verify_docs => :"man:check"
 
-  def gh_api_post(opts)
+  def gh_api_authenticated_request(opts)
     require "netrc"
     require "net/http"
     require "json"
@@ -70,7 +70,7 @@ namespace :release do
 
   task :verify_github do
     require "pp"
-    gh_api_post :path => "/user"
+    gh_api_authenticated_request :path => "/user"
   end
 
   def confirm(prompt = "")
@@ -136,13 +136,13 @@ namespace :release do
     version = Gem::Version.new(args.version || Bundler::GemHelper.gemspec.version)
     tag = "bundler-v#{version}"
 
-    gh_api_post :path => "/repos/rubygems/rubygems/releases",
-                :body => {
-                  :tag_name => tag,
-                  :name => tag,
-                  :body => release_notes(version),
-                  :prerelease => version.prerelease?,
-                }
+    gh_api_authenticated_request :path => "/repos/rubygems/rubygems/releases",
+                                 :body => {
+                                   :tag_name => tag,
+                                   :name => tag,
+                                   :body => release_notes(version),
+                                   :prerelease => version.prerelease?,
+                                 }
   end
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"

@@ -70,7 +70,6 @@ namespace :release do
 
   desc "Make sure github API is ready to be used"
   task :verify_github do
-    require "pp"
     gh_api_authenticated_request :path => "/user"
   end
 

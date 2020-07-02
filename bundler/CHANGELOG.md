@@ -1,3 +1,68 @@
+## 2.2.0.rc.1 (Jul 02, 2020)
+
+Highlights:
+
+  - Windows support. There's still gotchas and unimplemented features, but a Windows CI is now enforced.
+  - Full multiplatform support. Bundler should now seamlessly handle multiplatform `Gemfile` or `gems.rb` files.
+
+Features:
+
+  - `bundle info` now includes gem metadata [#7376](https://github.com/rubygems/bundler/pull/7376)
+  - `bundle list --without-group` and `bundle list --only-group` now support space separated list of groups in addition to single groups [#7404](https://github.com/rubygems/bundler/pull/7404)
+  - `bundle gem` now supports a `--rubocop` flag that adds the `rubocop` gem to the new gem layout [#6455](https://github.com/rubygems/bundler/pull/6455)
+  - `bundle gem` now supports `--test-unit` in addition to `rspec` and `minitest` as a value for its `--test` option [#5521](https://github.com/rubygems/bundler/pull/5521)
+  - `bundle install` now uses the available number of processors automatically for concurrent gem install, except for Windows where it still uses a single thread by default [#3393](https://github.com/rubygems/rubygems/pull/3393) and [#3718](https://github.com/rubygems/rubygems/pull/3718)
+  - Report Gitlab CI within bundler user-agent string [#3432](https://github.com/rubygems/rubygems/pull/3432)
+  - Add `bundle plugin uninstall` [#3482](https://github.com/rubygems/rubygems/pull/3482)
+  - `bundle gem` now supports a `--ci` flag and a `gem.ci` configuration that adds CI config files for the main CI providers to the generated gem skeleton [#3667](https://github.com/rubygems/rubygems/pull/3667)
+  - Allow setting a tag prefix to be used by release tasks [#3766](https://github.com/rubygems/rubygems/pull/3766)
+
+Improvements:
+
+  - `bundle outdated` now prints output in columns for better readability [#4474](https://github.com/rubygems/bundler/pull/4474)
+  - bundler's `release` rake task now prints a better message when not being logged in and trying to push a gem [#7513](https://github.com/rubygems/bundler/pull/7513)
+  - `BUNDLE_APP_CONFIG` environment variable is now documented [#7563](https://github.com/rubygems/bundler/pull/7563)
+  - Original exception is now reported when bundler fails to load OpenSSL [#7527](https://github.com/rubygems/bundler/pull/7527)
+  - RVM specific instructions for recompiling ruby is no longer recommended when bundler fails to load OpenSSL [#7597](https://github.com/rubygems/bundler/pull/7597)
+  - Improve resolver debugging out from resolver [#7589](https://github.com/rubygems/bundler/pull/7589) and [#7590](https://github.com/rubygems/bundler/pull/7590)
+  - Clarify `bundle config --local` docs [#3408](https://github.com/rubygems/rubygems/pull/3408)
+  - Make sure to not "leak" to a different bundler install under any circumstances [#3595](https://github.com/rubygems/rubygems/pull/3595)
+  - Make sure users messing with `$;` doesn't affect us [#3602](https://github.com/rubygems/rubygems/pull/3602)
+  - Remove explicit psych activation which could potentially lead to packaging-specific issues [#3638](https://github.com/rubygems/rubygems/pull/3638)
+  - Deprecate `--no-deployment` flag and never recommend it [#3657](https://github.com/rubygems/rubygems/pull/3657)
+  - `bundle gem` test framework defaults to the `gem.test` setting and asks for a value without overwriting configuration if `-t` without a value is passed explicitly [#3544](https://github.com/rubygems/rubygems/pull/3544)
+  - `bundle gem` now ships with a default `.rubocop.yml` file and an offense free initial gem skeleton [#3731](https://github.com/rubygems/rubygems/pull/3731), [#3740](https://github.com/rubygems/rubygems/pull/3740), [#3765](https://github.com/rubygems/rubygems/pull/3765)
+  - Remove some requires that might workaround some autoloading issues on jruby [#3771](https://github.com/rubygems/rubygems/pull/3771)
+  - Unswallow an error that should make some random crashes on jruby easier to troubleshoot [#3774](https://github.com/rubygems/rubygems/pull/3774)
+
+Bugfixes:
+
+  - Fix `bundle pristine` removing gems with local overrides. Be conservative by printing a warning and skipping the removal [#7423](https://github.com/rubygems/bundler/pull/7423)
+  - Fix multiplaform resolution edge cases [#7522](https://github.com/rubygems/bundler/pull/7522) and [#7578](https://github.com/rubygems/bundler/pull/7578)
+  - Fix ruby version conflicts not displaying the current ruby version [7559](https://github.com/rubygems/bundler/pull/7559)
+  - Fix `Gemfile` or `gems.rb` files containing `:path` gems using relative paths not working when the app is packaged as a `jar` with `warbler` [#7614](https://github.com/rubygems/bundler/pull/7614)
+  - Fix config location edge case where if `BUNDLE_APP_CONFIG` is set to an absolute path like in official ruby docker images, and there's no Gemfile up in the directory hierarchy, bundler would end up using the default config location instead of the customized one [#7622](https://github.com/rubygems/bundler/pull/7622)
+  - Fix error message about missing permissions recommending a deprecated command [#7633](https://github.com/rubygems/bundler/pull/7633)
+  - Fix `init_gems_rb` setting being ignored by `bundle gem` [#7629](https://github.com/rubygems/bundler/pull/7629)
+  - Fix "unresolvable warning" being printed on `bundle install` of multipliplatform `Gemfile` or `gems.rb` files without lockfiles, multiplatform is now managed automatically [#7580](https://github.com/rubygems/bundler/pull/7580)
+  - Fix setting the number of `--jobs` to be one unit less than specified to the CLI [#3393](https://github.com/rubygems/rubygems/pull/3393)
+  - Fix extension building when the same git source specifies several gems with extensions [#3475](https://github.com/rubygems/rubygems/pull/3475)
+  - Fix uninitialized instance variable warning under ruby-head (2.8-dev) [#3477](https://github.com/rubygems/rubygems/pull/3477)
+  - Fix double chdir warning while installing a git gem with extensions [#3479](https://github.com/rubygems/rubygems/pull/3479)
+  - Fix some deprecations not showing up when CLI flags passed as `--flag=value` [#3561](https://github.com/rubygems/rubygems/pull/3561)
+  - Fix man pages display when bundler installed as a default gem [#3562](https://github.com/rubygems/rubygems/pull/3562)
+  - Fix bundler gem tasks not handling relative paths [#3586](https://github.com/rubygems/rubygems/pull/3586)
+  - Fix deprecation warnings when options the dashed names are used, such as `--no-prune` [#3623](https://github.com/rubygems/rubygems/pull/3623)
+  - Fix crash related to bundler gem activation under old rubygems version (2.6.1 or older) [#3626](https://github.com/rubygems/rubygems/pull/3626)
+  - Avoid stack overflow inside `StubSpecification` on some edge cases [#3635](https://github.com/rubygems/rubygems/pull/3635)
+  - Fix `bundle remove` with multiline gem specifications [#3400](https://github.com/rubygems/rubygems/pull/3400)
+  - Fix `bundle info` not informing about deleted gems as opposed to old `bundle show` [#3509](https://github.com/rubygems/rubygems/pull/3509)
+  - The `--no-deployment` flag to `bundle install` was deprecated just like the other flags that rely on their value being remembered [#3657](https://github.com/rubygems/rubygems/pull/3657)
+  - Fix `bundle install` unintentionally copying `with` and `without` global config to local configuration [#3666](https://github.com/rubygems/rubygems/pull/3666). This PR also address the `BUNDLE_WITH` environment variable unintentionally being persisted to configuration in a similar way ([#3708](https://github.com/rubygems/rubygems/issues/3708))
+  - Fix race condition in `bundle install` that could "empty" exceptions to be raised [#3669](https://github.com/rubygems/rubygems/pull/3669)
+  - Fix `--no-cache` to `bundle install` being unintentionally deprecated [#3688](https://github.com/rubygems/rubygems/pull/3688)
+  - Avoid calling `LoadError#message` to fix performance regression in future ruby 2.8 [#3762](https://github.com/rubygems/rubygems/pull/3762)
+
 ## 2.1.4 (January 5, 2020)
 
 Bugfixes:

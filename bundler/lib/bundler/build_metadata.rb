@@ -32,14 +32,6 @@ module Bundler
         return @git_commit_sha = Dir.chdir(git_dir) { `git rev-parse --short HEAD`.strip.freeze }
       end
 
-      # If Bundler is a submodule in RubyGems, get the submodule commit
-      git_sub_dir = File.join(File.expand_path("../../../..", __FILE__), ".git")
-      if File.directory?(git_sub_dir)
-        return @git_commit_sha = Dir.chdir(git_sub_dir) do
-          `git ls-tree --abbrev=8 HEAD bundler`.split(/\s/).fetch(2, "").strip.freeze
-        end
-      end
-
       @git_commit_sha ||= "unknown"
     end
 

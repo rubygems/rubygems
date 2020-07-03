@@ -37,10 +37,6 @@ Please fill in the following sections so we can process your issue as fast as po
 
 <!-- Replace this with the actual result you got. Paste the output of your command here. -->
 
-### Is there an exception backtrace? If so, please copy it below.
-
-<!-- Replace this with the exception backtrace you got, if any. -->
-
 ### Please run `bundle env` and paste the output below:
 
 <!-- Replace this with the result of `bundle env`. -->

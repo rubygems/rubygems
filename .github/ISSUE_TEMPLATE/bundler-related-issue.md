@@ -25,10 +25,6 @@ Please fill in the following sections so we can process your issue as fast as po
 
     Script URL: 
 
-### What are you trying to accomplish?
-
-    Your answer:
-
 ### What command did you run?
 
     Your answer:

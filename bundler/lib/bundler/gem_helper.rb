@@ -120,8 +120,8 @@ module Bundler
     def git_push(remote = nil)
       remote ||= default_remote
       perform_git_push remote
-      perform_git_push "#{remote} --tags"
-      Bundler.ui.confirm "Pushed git commits and tags."
+      perform_git_push "#{remote} #{version_tag}"
+      Bundler.ui.confirm "Pushed git commits and release tag."
     end
 
     def default_remote

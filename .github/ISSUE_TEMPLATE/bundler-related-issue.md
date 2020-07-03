@@ -26,7 +26,7 @@ Please fill in the following sections so we can process your issue as fast as po
 <!--
 
 Fill this with system independent repro steps so that maintainers can reproduce your issue on their machines.
-Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
+Examples: https://gist.github.com/xaviershay/6207550, https://gist.github.com/xaviershay/6295889
 
 -->
 

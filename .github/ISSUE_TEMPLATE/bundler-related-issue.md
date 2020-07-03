@@ -44,5 +44,3 @@ Please answer the following questions so we can process your issue as fast as po
 ### Please run `bundle env` and paste the output below:
 
     Your answer:
-
-Thank you!

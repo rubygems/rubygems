@@ -19,28 +19,28 @@ Please fill in the following sections so we can process your issue as fast as po
 
 ### Describe the problem as clearly as you can
 
-    Your anwser:
+<!-- Replace this with an explanation of the problem you are having. Be as much clear and precise as you can. -->
 
 ### Post system independent steps to reproduce the problem. Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
 
-    Script URL: 
+<!-- Fill this with system independent repro steps so that maintainers can reproduce your issue on their machines. -->
 
 ### What command did you run?
 
-    Your answer:
+<!-- Replace this with the command that you run. -->
 
 ### What were you expecting to happen?
 
-    Your answer:
+<!-- Replace this with the results you expected before running the command. -->
 
 ### What actually happened?
 
-    Your answer:
+<!-- Replace this with the actual result you got. Paste the output of your command here. -->
 
 ### Is there an exception backtrace? If so, please copy it below.
 
-    Your answer:
+<!-- Replace this with the exception backtrace you got, if any. -->
 
 ### Please run `bundle env` and paste the output below:
 
-    Your answer:
+<!-- Replace this with the result of `bundle env`. -->

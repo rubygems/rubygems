@@ -21,9 +21,14 @@ Please fill in the following sections so we can process your issue as fast as po
 
 <!-- Replace this with an explanation of the problem you are having. Be as much clear and precise as you can. -->
 
-### Post system independent steps to reproduce the problem. Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
+### Post system independent steps to reproduce the problem
 
-<!-- Fill this with system independent repro steps so that maintainers can reproduce your issue on their machines. -->
+<!--
+
+Fill this with system independent repro steps so that maintainers can reproduce your issue on their machines.
+Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
+
+-->
 
 ### What command did you run?
 

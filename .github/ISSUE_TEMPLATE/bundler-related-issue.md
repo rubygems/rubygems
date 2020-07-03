@@ -17,7 +17,7 @@ Please fill in the following sections so we can process your issue as fast as po
 
 -->
 
-### Do you have a reproduction script? It would be really helpful for us if you provide one. Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
+### Post system independent steps to reproduce the problem. Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
 
     Script URL: 
 

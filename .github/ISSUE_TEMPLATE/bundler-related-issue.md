@@ -37,6 +37,6 @@ Please fill in the following sections so we can process your issue as fast as po
 
 <!-- Replace this with the actual result you got. Paste the output of your command here. -->
 
-### Please run `bundle env` and paste the output below:
+### If not included with the output of your command, run `bundle env` and paste the output below
 
 <!-- Replace this with the result of `bundle env`. -->

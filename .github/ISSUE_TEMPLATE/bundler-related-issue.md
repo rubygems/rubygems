@@ -30,7 +30,7 @@ Examples: https://gist.github.com/xaviershay/6207550, https://gist.github.com/xa
 
 -->
 
-### What command did you run?
+### Which command did you run?
 
 <!-- Replace this with the command that you run. -->
 

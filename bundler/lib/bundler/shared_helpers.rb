@@ -109,7 +109,7 @@ module Bundler
       raise VirtualProtocolError.new
     rescue Errno::ENOSPC
       raise NoSpaceOnDeviceError.new(path, action)
-    rescue *[const_get_safely(:ENOTSUP, Errno)].compact
+    rescue Errno::ENOTSUP
       raise OperationNotSupportedError.new(path, action)
     rescue Errno::EEXIST, Errno::ENOENT
       raise

@@ -117,10 +117,21 @@ module Bundler
       Dir[File.join(base, "#{name}-*.gem")].sort_by {|f| File.mtime(f) }.last
     end
 
-    def git_push(remote = "")
+    def git_push(remote = nil)
+      remote ||= default_remote
       perform_git_push remote
       perform_git_push "#{remote} --tags"
       Bundler.ui.confirm "Pushed git commits and tags."
+    end
+
+    def default_remote
+      current_branch = sh(%w[git rev-parse --abbrev-ref HEAD]).strip
+      return "origin" if current_branch.empty?
+
+      remote_for_branch = sh(%W[git config --get branch.#{current_branch}.remote]).strip
+      return "origin" if remote_for_branch.empty?
+
+      remote_for_branch
     end
 
     def allowed_push_host

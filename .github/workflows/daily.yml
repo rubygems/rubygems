@@ -31,7 +31,7 @@ jobs:
 
       - name: Get previous status
         if: always()
-        run: echo "::set-env name=OLD_STATUS::$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/runs?event=schedule&branch=master' | jq '.workflow_runs | map(select(.workflow_id == 716807)) | .[0].conclusion')"
+        run: echo "::set-env name=OLD_STATUS::$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/workflows/716807/runs?event=schedule&branch=master' | jq '.workflow_runs | .[0].conclusion')"
 
       - uses: 8398a7/action-slack@v3
         with:

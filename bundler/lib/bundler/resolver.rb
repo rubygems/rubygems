@@ -160,8 +160,7 @@ module Bundler
         selected_sgs << sg_ruby if sg_ruby
         sg_all_platforms = nil
         all_platforms = @platforms + [platform]
-        sorted_all_platforms = self.class.sort_platforms(all_platforms)
-        sorted_all_platforms.reverse_each do |other_platform|
+        self.class.sort_platforms(all_platforms).reverse_each do |other_platform|
           if sg_all_platforms.nil?
             sg_all_platforms = sg.copy_for(other_platform)
           else

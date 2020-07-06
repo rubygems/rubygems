@@ -142,27 +142,27 @@ Bugfixes:
 
 ## 2.1.0.pre.1 (August 28, 2019)
 
-One of the biggest changes in bundler 2.1.0 is that deprecations for upcoming
-breaking changes in bundler 3 will be turned on by default. We do this to grab
-feedback and communicate early to our users the kind of changes we're intending
-to ship with bundler 3. See
-[#6965](https://github.com/rubygems/bundler/pull/6965).
+  One of the biggest changes in bundler 2.1.0 is that deprecations for upcoming
+  breaking changes in bundler 3 will be turned on by default. We do this to grab
+  feedback and communicate early to our users the kind of changes we're intending
+  to ship with bundler 3. See
+  [#6965](https://github.com/rubygems/bundler/pull/6965).
 
-Another important improvement is a better coexistence between bundler
-installations and the default copy of bundler that comes with ruby installed as
-a default gem. Since bundler is shipped as a default gem with ruby, a number of
-users have been affected by issues where bundler ends up failing due to version
-mismatches, because at some point of the execution, bundler switches to run the
-default copy instead of the expected version. A number of PRs have been focused
-on minimizing (hopefully eliminating) this, such as
-[#7100](https://github.com/rubygems/bundler/pull/7100),
-[#7137](https://github.com/rubygems/bundler/pull/7137),
-[#6996](https://github.com/rubygems/bundler/pull/6996),
-[#7056](https://github.com/rubygems/bundler/pull/7056),
-[#7062](https://github.com/rubygems/bundler/pull/7062),
-[#7193](https://github.com/rubygems/bundler/pull/7193),
-[#7216](https://github.com/rubygems/bundler/pull/7216),
-[#7274](https://github.com/rubygems/bundler/pull/7274)
+  Another important improvement is a better coexistence between bundler
+  installations and the default copy of bundler that comes with ruby installed as
+  a default gem. Since bundler is shipped as a default gem with ruby, a number of
+  users have been affected by issues where bundler ends up failing due to version
+  mismatches, because at some point of the execution, bundler switches to run the
+  default copy instead of the expected version. A number of PRs have been focused
+  on minimizing (hopefully eliminating) this, such as
+  [#7100](https://github.com/rubygems/bundler/pull/7100),
+  [#7137](https://github.com/rubygems/bundler/pull/7137),
+  [#6996](https://github.com/rubygems/bundler/pull/6996),
+  [#7056](https://github.com/rubygems/bundler/pull/7056),
+  [#7062](https://github.com/rubygems/bundler/pull/7062),
+  [#7193](https://github.com/rubygems/bundler/pull/7193),
+  [#7216](https://github.com/rubygems/bundler/pull/7216),
+  [#7274](https://github.com/rubygems/bundler/pull/7274)
 
 Deprecations:
 
@@ -234,9 +234,9 @@ Documentation:
   - Fix incorrect sections when explaining `:git`, `:branch`, and `:ref` options ([#7265](https://github.com/rubygems/bundler/pull/7265))
   - Fix mentions to remembered options in docs to explain the current state ([#7242](https://github.com/rubygems/bundler/pull/7242))
 
-Internally, there's also been a bunch of improvements in our development
-environment, test suite, policies, contributing docs, and a bunch of cleanups of
-old compatibility code.
+  Internally, there's also been a bunch of improvements in our development
+  environment, test suite, policies, contributing docs, and a bunch of cleanups of
+  old compatibility code.
 
 ## 2.0.2 (2019-06-13)
 
@@ -272,7 +272,7 @@ Changes:
 
 ## 2.0.0 (2019-01-03)
 
-No new changes
+  No new changes
 
 ## 2.0.0.pre.3 (2018-12-30)
 
@@ -285,7 +285,7 @@ Changes:
   - Ruby 2.6 compatibility fixes (@segiddins)
   - Import changes from Bundler 1.17.3 release
 
-Note: To upgrade your Gemfile to Bundler 2 you will need to run `bundle update --bundler`
+  Note: To upgrade your Gemfile to Bundler 2 you will need to run `bundle update --bundler`
 
 ## 2.0.0.pre.2 (2018-11-27)
 
@@ -297,7 +297,7 @@ Changes
 
   - Add compatibility for Bundler merge into ruby-src
 
-Note: To upgrade your Gemfile to Bundler 2 you will need to run `bundle update --bundler`
+  Note: To upgrade your Gemfile to Bundler 2 you will need to run `bundle update --bundler`
 
 ## 2.0.0.pre.1 (2018-11-09)
 
@@ -307,7 +307,7 @@ Breaking Changes:
   - Dropped support for version of RubyGems under 2.5
   - Moved error messages from STDOUT to STDERR
 
-Note: To upgrade your Gemfile to Bundler 2 you will need to run `bundle update --bundler`
+  Note: To upgrade your Gemfile to Bundler 2 you will need to run `bundle update --bundler`
 
 ## 1.17.3 (2018-12-27)
 
@@ -330,7 +330,7 @@ Documentation:
 
 ## 1.17.0 (2018-10-25)
 
-No new changes.
+  No new changes.
 
 ## 1.17.0.pre.2 (2018-10-13)
 
@@ -343,7 +343,7 @@ Features:
   - Add error message to `bundle add` to check adding duplicate gems to the Gemfile
   - When asking for `sudo`, Bundler will show a list of folders/files that require elevated permissions to write to.
 
-The following new features are available but are not enabled by default. These are intended to be tested by users for the upcoming release of Bundler 2.
+  The following new features are available but are not enabled by default. These are intended to be tested by users for the upcoming release of Bundler 2.
 
   - Improve deprecation warning message for `bundle show` command
   - Improve deprecation warning message for the `--force` option in `bundle install`
@@ -367,7 +367,7 @@ Features:
   - Add `--without-group` and `--only-group` options to `bundle list` ([#6564](https://github.com/rubygems/bundler/issues/6564), @agrim123)
   - Add `--gemfile` option to the `bundle exec` command ([#5924](https://github.com/rubygems/bundler/issues/5924), @ankitkataria)
 
-The following new features are available but are not enabled by default. These are intended to be tested by users for the upcoming release of Bundler 2.
+  The following new features are available but are not enabled by default. These are intended to be tested by users for the upcoming release of Bundler 2.
 
   - Make `install --path` relative to the current working directory ([#2048](https://github.com/rubygems/bundler/issues/2048), @igorbozato)
   - Auto-configure job count ([#5808](https://github.com/rubygems/bundler/issues/5808), @segiddins)
@@ -640,7 +640,7 @@ Bugfixes:
 
 ## 1.15.0 (2017-05-19)
 
-This space intentionally left blank.
+  This space intentionally left blank.
 
 ## 1.15.0.pre.4 (2017-05-10)
 
@@ -901,7 +901,7 @@ Bugfixes:
 
 ## 1.13.0 (2016-09-05)
 
-This space deliberately left blank.
+  This space deliberately left blank.
 
 ## 1.13.0.rc.2 (2016-08-21)
 
@@ -1036,7 +1036,7 @@ Bugfixes:
 
 ## 1.12.0 (2016-04-28)
 
-This space intentionally left blank.
+  This space intentionally left blank.
 
 ## 1.12.0.rc.4 (2016-04-21)
 
@@ -1160,7 +1160,7 @@ Bugfixes:
 
 ## 1.11.0 (2015-12-12)
 
-(this space intentionally left blank)
+  (this space intentionally left blank)
 
 ## 1.11.0.pre.2 (2015-12-06)
 
@@ -1292,7 +1292,7 @@ Bugfixes:
 
 ## 1.10.0 (2015-05-28)
 
-(this space intentionally left blank)
+  (this space intentionally left blank)
 
 ## 1.10.0.rc (2015-05-16)
 
@@ -1835,12 +1835,12 @@ Bugfixes:
 
 ## 1.5.0.rc.2 (2013-12-18)
 
-"Features":
+Features:
 
   - Support threaded installation on Rubygems 2.0.7+
   - Debug installation logs in .bundle/install.log
 
-"Bugfixes":
+Bugfixes:
 
   - Try to catch gem installation race conditions
 
@@ -2981,25 +2981,25 @@ Bugfixes:
     would always say "the git source is not checked out" when
     running `bundle install`
 
-NOTE: We received several reports of "the git source has not
-been checked out. Please run bundle install". As far as we
-can tell, these problems have two possible causes:
+  NOTE: We received several reports of "the git source has not
+  been checked out. Please run bundle install". As far as we
+  can tell, these problems have two possible causes:
 
-1. `bundle install ~/.bundle` in one user, but actually running
-   the application as another user. Never install gems to a
-   directory scoped to a user (`~` or `$HOME`) in deployment.
-2. A bug that happened when changing a gem to a git source.
+  1. `bundle install ~/.bundle` in one user, but actually running
+     the application as another user. Never install gems to a
+     directory scoped to a user (`~` or `$HOME`) in deployment.
+  2. A bug that happened when changing a gem to a git source.
 
-To mitigate several common causes of `(1)`, please use the
-new `--production` flag. This flag is simply a roll-up of
-the best practices we have been encouraging people to use
-for deployment.
+  To mitigate several common causes of `(1)`, please use the
+  new `--production` flag. This flag is simply a roll-up of
+  the best practices we have been encouraging people to use
+  for deployment.
 
-If you want to share gems across deployments, and you use
-Capistrano, symlink release_path/current/vendor/bundle to
-release_path/shared/bundle. This will keep deployments
-snappy while maintaining the benefits of clean, deploy-time
-isolation.
+  If you want to share gems across deployments, and you use
+  Capistrano, symlink release_path/current/vendor/bundle to
+  release_path/shared/bundle. This will keep deployments
+  snappy while maintaining the benefits of clean, deploy-time
+  isolation.
 
 ## 1.0.0.rc.1 (July 26, 2010)
 

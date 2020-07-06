@@ -86,31 +86,31 @@ namespace :release do
     parsed_response
   end
 
-  def release_notes(version)
-    title_token = "## "
-    current_version_title = "#{title_token}#{version}"
-    current_minor_title = "#{title_token}#{version.segments[0, 2].join(".")}"
-    text = File.open("CHANGELOG.md", "r:UTF-8", &:read)
-    lines = text.split("\n")
-
-    current_version_index = lines.find_index {|line| line.strip =~ /^#{current_version_title}($|\b)/ }
-    unless current_version_index
-      raise "Update the changelog for the last version (#{version})"
-    end
-    current_version_index += 1
-    previous_version_lines = lines[current_version_index.succ...-1]
-    previous_version_index = current_version_index + (
-      previous_version_lines.find_index {|line| line.start_with?(title_token) && !line.start_with?(current_minor_title) } ||
-      lines.count
-    )
-
-    relevant = lines[current_version_index..previous_version_index]
-
-    relevant.join("\n").strip
-  end
-
   desc "Push the release to Github releases"
   task :github do
+    def release_notes(version)
+      title_token = "## "
+      current_version_title = "#{title_token}#{version}"
+      current_minor_title = "#{title_token}#{version.segments[0, 2].join(".")}"
+      text = File.open("CHANGELOG.md", "r:UTF-8", &:read)
+      lines = text.split("\n")
+
+      current_version_index = lines.find_index {|line| line.strip =~ /^#{current_version_title}($|\b)/ }
+      unless current_version_index
+        raise "Update the changelog for the last version (#{version})"
+      end
+      current_version_index += 1
+      previous_version_lines = lines[current_version_index.succ...-1]
+      previous_version_index = current_version_index + (
+        previous_version_lines.find_index {|line| line.start_with?(title_token) && !line.start_with?(current_minor_title) } ||
+        lines.count
+      )
+
+      relevant = lines[current_version_index..previous_version_index]
+
+      relevant.join("\n").strip
+    end
+
     version = Gem::Version.new(Bundler::GemHelper.gemspec.version)
     tag = "bundler-v#{version}"
 

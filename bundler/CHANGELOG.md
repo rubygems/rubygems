@@ -272,7 +272,7 @@ Changes:
 
 ## 2.0.0 (2019-01-03)
 
-  No new changes
+  No changes.
 
 ## 2.0.0.pre.3 (2018-12-30)
 
@@ -330,7 +330,7 @@ Documentation:
 
 ## 1.17.0 (2018-10-25)
 
-  No new changes.
+  No changes.
 
 ## 1.17.0.pre.2 (2018-10-13)
 
@@ -640,7 +640,7 @@ Bugfixes:
 
 ## 1.15.0 (2017-05-19)
 
-  This space intentionally left blank.
+  No changes.
 
 ## 1.15.0.pre.4 (2017-05-10)
 
@@ -901,7 +901,7 @@ Bugfixes:
 
 ## 1.13.0 (2016-09-05)
 
-  This space deliberately left blank.
+  No changes.
 
 ## 1.13.0.rc.2 (2016-08-21)
 
@@ -1036,7 +1036,7 @@ Bugfixes:
 
 ## 1.12.0 (2016-04-28)
 
-  This space intentionally left blank.
+  No changes.
 
 ## 1.12.0.rc.4 (2016-04-21)
 
@@ -1160,7 +1160,7 @@ Bugfixes:
 
 ## 1.11.0 (2015-12-12)
 
-  (this space intentionally left blank)
+  No changes.
 
 ## 1.11.0.pre.2 (2015-12-06)
 
@@ -1292,7 +1292,7 @@ Bugfixes:
 
 ## 1.10.0 (2015-05-28)
 
-  (this space intentionally left blank)
+  No changes.
 
 ## 1.10.0.rc (2015-05-16)
 
@@ -2561,7 +2561,7 @@ Removed:
 
 ## 1.0.21 (September 30, 2011)
 
-  - No changes from RC
+  No changes.
 
 ## 1.0.21.rc (September 29, 2011)
 

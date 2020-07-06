@@ -1,0 +1,28 @@
+name: changelog-synchronizer-bundler
+
+on:
+  push:
+    branches:
+      - master
+
+    paths:
+      - bundler/CHANGELOG.md
+
+jobs:
+  changelog_synchronizer_bundler:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.1
+          bundler: none
+
+      - name: Update release draft from changelog
+        run: bin/rake release:github_draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ./bundler

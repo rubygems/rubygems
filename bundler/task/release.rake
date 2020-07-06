@@ -64,19 +64,6 @@ namespace :release do
     gh_api_authenticated_request :path => "/user"
   end
 
-  def confirm(prompt = "")
-    loop do
-      print(prompt)
-      print(": ") unless prompt.empty?
-
-      answer = $stdin.gets.strip
-      break if answer == "y"
-      abort if answer == "n"
-    end
-  rescue Interrupt
-    abort
-  end
-
   def gh_api_request(opts)
     require "net/http"
     require "json"
@@ -207,39 +194,5 @@ namespace :release do
     File.open(version_file, "w") {|f| f.write(version_contents) }
 
     sh("git", "commit", "-am", "Version #{version}")
-  end
-
-  desc "Open all PRs that have not been included in a stable release"
-  task :open_unreleased_prs do
-    def prs(on = "master")
-      commits = `git log --oneline origin/#{on} -- bundler`.split("\n")
-      commits.reverse_each.map {|c| c =~ /(Auto merge of|Merge pull request|Merge) #(\d+)/ && $2 }.compact
-    end
-
-    def minor_release_tags
-      `git ls-remote origin`.split("\n").map {|r| r =~ %r{refs/tags/bundler-v([\d.]+)$} && $1 }.compact.map {|v| Gem::Version.create(Gem::Version.create(v).segments[0, 2].join(".")) }.sort.uniq
-    end
-
-    def to_stable_branch(release_tag)
-      release_tag.segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
-    end
-
-    last_stable = to_stable_branch(minor_release_tags[-1])
-    previous_to_last_stable = to_stable_branch(minor_release_tags[-2])
-
-    in_release = prs("HEAD") - prs(last_stable) - prs(previous_to_last_stable)
-
-    n_prs = in_release.size
-
-    print "About to review #{n_prs} pending PRs. "
-
-    confirm "Continue? (y/n)"
-
-    in_release.each.with_index do |pr, idx|
-      url_opener = /darwin/ =~ RUBY_PLATFORM ? "open" : "xdg-open"
-      url = "https://github.com/rubygems/rubygems/pull/#{pr}"
-      print "[#{idx + 1}/#{n_prs}] #{url}. (n)ext/(o)pen? "
-      system(url_opener, url, :out => IO::NULL, :err => IO::NULL) if $stdin.gets.strip == "o"
-    end
   end
 end

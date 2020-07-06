@@ -30,4 +30,5 @@ If you'd like to help make Bundler better, you totally rock! Thanks for helping 
 
 ## Maintainers
 
+* [Merging pull requests](playbooks/MERGING_A_PR.md)
 * [Releasing Bundler](playbooks/RELEASING.md)

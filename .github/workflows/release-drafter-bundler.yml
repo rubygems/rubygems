@@ -1,0 +1,44 @@
+name: release-drafter-bundler
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release_drafter_bundler:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Publish changelog draft
+        id: publish_github_release_draft
+        uses: release-drafter/release-drafter@v5
+        with:
+          config-name: release-drafter-bundler.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.1
+          bundler: none
+
+      - name: Write new changelog
+        run: bin/rake release:write_changelog
+        env:
+          NEW_CHANGELOG_CONTENT: ${{ steps.publish_github_release_draft.outputs.body }}
+        working-directory: ./bundler
+
+      - name: Set up git config
+        run: |
+          git config user.name "The Bundler Bot"
+          git config user.email "bot@bundler.io"
+
+      - name: Commit and push the changes
+        run: |
+          git add bundler/man/*
+          git commit -m "Automatic changelog update"
+          git push origin master

@@ -136,6 +136,18 @@ namespace :release do
                                  }
   end
 
+  desc "Replace the unreleased section in the changelog with new content. Pass the new content through ENV['NEW_CHANGELOG_CONTENT']"
+  task :write_changelog do
+    section_token = "## "
+    unreleased_section_title = "#{section_token}(Unreleased)"
+    changelog_content = File.open("CHANGELOG.md", "r:UTF-8", &:read).split("\n")
+
+    current_rest_of_content = changelog_content.drop_while {|line| line.start_with?(unreleased_section_title) || !line.start_with?(section_token) }
+    new_content = ENV["NEW_CHANGELOG_CONTENT"]
+
+    File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write([new_content, current_rest_of_content].join("\n") + "\n") } if new_content
+  end
+
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch, :version do |_t, args|
     version = args.version

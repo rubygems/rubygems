@@ -110,8 +110,8 @@ namespace :release do
   end
 
   desc "Push the release to Github releases"
-  task :github, :version do |_t, args|
-    version = Gem::Version.new(args.version || Bundler::GemHelper.gemspec.version)
+  task :github do
+    version = Gem::Version.new(Bundler::GemHelper.gemspec.version)
     tag = "bundler-v#{version}"
 
     gh_api_authenticated_request :path => "/repos/rubygems/rubygems/releases",

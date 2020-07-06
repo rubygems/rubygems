@@ -23,6 +23,54 @@ task "release:rubygem_push" => ["release:verify_docs", "release:verify_github", 
 namespace :release do
   task :verify_docs => :"man:check"
 
+  class Changelog
+    def release_notes(version)
+      current_version_title = "#{section_token}#{version}"
+      current_minor_title = "#{section_token}#{version.segments[0, 2].join(".")}"
+
+      current_version_index = lines.find_index {|line| line.strip =~ /^#{current_version_title}($|\b)/ }
+      unless current_version_index
+        raise "Update the changelog for the last version (#{version})"
+      end
+      current_version_index += 1
+      previous_version_lines = lines[current_version_index.succ...-1]
+      previous_version_index = current_version_index + (
+        previous_version_lines.find_index {|line| line.start_with?(section_token) && !line.start_with?(current_minor_title) } ||
+        lines.count
+      )
+
+      lines[current_version_index..previous_version_index].join("\n").strip
+    end
+
+    def replace_unreleased_notes(new_content)
+      full_new_changelog = [unreleased_section_title, "", new_content, released_notes].join("\n") + "\n")
+
+      File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write(full_new_changelog) }
+    end
+
+  private
+
+    def unreleased_section_title
+      "#{section_token}(Unreleased)"
+    end
+
+    def released_notes
+      lines.drop_while {|line| line == unreleased_section_title || !line.start_with?(section_token) }
+    end
+
+    def lines
+      @lines ||= content.split("\n")
+    end
+
+    def content
+      File.open("CHANGELOG.md", "r:UTF-8", &:read)
+    end
+
+    def section_token
+      "## "
+    end
+  end
+
   def gh_api_authenticated_request(opts)
     require "netrc"
     require "net/http"
@@ -86,39 +134,17 @@ namespace :release do
     parsed_response
   end
 
-  def release_notes(version)
-    title_token = "## "
-    current_version_title = "#{title_token}#{version}"
-    current_minor_title = "#{title_token}#{version.segments[0, 2].join(".")}"
-    text = File.open("CHANGELOG.md", "r:UTF-8", &:read)
-    lines = text.split("\n")
-
-    current_version_index = lines.find_index {|line| line.strip =~ /^#{current_version_title}($|\b)/ }
-    unless current_version_index
-      raise "Update the changelog for the last version (#{version})"
-    end
-    current_version_index += 1
-    previous_version_lines = lines[current_version_index.succ...-1]
-    previous_version_index = current_version_index + (
-      previous_version_lines.find_index {|line| line.start_with?(title_token) && !line.start_with?(current_minor_title) } ||
-      lines.count
-    )
-
-    relevant = lines[current_version_index..previous_version_index]
-
-    relevant.join("\n").strip
-  end
-
   desc "Push the release to Github releases"
   task :github do
     version = Gem::Version.new(Bundler::GemHelper.gemspec.version)
+    release_notes = Changelog.new.release_notes(version)
     tag = "bundler-v#{version}"
 
     gh_api_authenticated_request :path => "/repos/rubygems/rubygems/releases",
                                  :body => {
                                    :tag_name => tag,
                                    :name => tag,
-                                   :body => release_notes(version),
+                                   :body => release_notes,
                                    :prerelease => version.prerelease?,
                                  }
   end
@@ -130,15 +156,10 @@ namespace :release do
 
   desc "Replace the unreleased section in the changelog with new content. Pass the new content through ENV['NEW_CHANGELOG_CONTENT']"
   task :write_changelog do
-    section_token = "## "
-    unreleased_section_title = "#{section_token}(Unreleased)"
-    changelog_content = File.open("CHANGELOG.md", "r:UTF-8", &:read).split("\n")
-
-    current_rest_of_content = changelog_content.drop_while {|line| line == unreleased_section_title || !line.start_with?(section_token) }
     new_content = ENV["NEW_CHANGELOG_CONTENT"]
     raise "You need to pass some content to write through ENV['NEW_CHANGELOG_CONTENT']" unless new_content
 
-    File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write([unreleased_section_title, "", new_content, current_rest_of_content].join("\n") + "\n") }
+    Changelog.new.replace_unreleased_notes(new_content)
   end
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"

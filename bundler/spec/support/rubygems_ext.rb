@@ -4,12 +4,15 @@ require_relative "path"
 
 $LOAD_PATH.unshift(Spec::Path.source_lib_dir.to_s)
 
+require_relative "helpers"
+
 module Spec
   module Rubygems
     extend self
+    extend Spec::Helpers
 
     def dev_setup
-      install_gems(dev_gemfile, dev_lockfile)
+      install_gems(dev_gemfile)
     end
 
     def gem_load(gem_name, bin_container)
@@ -68,7 +71,7 @@ module Spec
 
       workaround_loaded_specs_issue
 
-      install_gems(test_gemfile, test_lockfile)
+      install_gems(test_gemfile)
     end
 
     private
@@ -98,23 +101,12 @@ module Spec
       gem gem_name, gem_requirement
     end
 
-    def install_gems(gemfile, lockfile)
-      old_gemfile = ENV["BUNDLE_GEMFILE"]
-      ENV["BUNDLE_GEMFILE"] = gemfile.to_s
-      require "bundler"
-      definition = Bundler::Definition.build(gemfile, lockfile, nil)
-      definition.validate_runtime!
-      Bundler::Installer.install(Path.source_root, definition, :path => ENV["GEM_HOME"])
-    ensure
-      ENV["BUNDLE_GEMFILE"] = old_gemfile
+    def install_gems(gemfile)
+      puts sys_exec "bundle install --gemfile #{gemfile}"
     end
 
     def test_gemfile
       Path.test_gemfile
-    end
-
-    def test_lockfile
-      lockfile_for(test_gemfile)
     end
 
     def dev_gemfile

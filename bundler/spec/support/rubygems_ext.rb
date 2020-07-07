@@ -58,8 +58,6 @@ module Spec
     end
 
     def setup_test_paths
-      Gem.clear_paths
-
       ENV["BUNDLE_PATH"] = nil
       ENV["GEM_HOME"] = ENV["GEM_PATH"] = Path.base_system_gems.to_s
       ENV["PATH"] = [Path.system_gem_path.join("bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)

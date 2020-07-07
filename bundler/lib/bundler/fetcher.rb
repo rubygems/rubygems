@@ -273,9 +273,7 @@ module Bundler
 
     # cached gem specification path, if one exists
     def gemspec_cached_path(spec_file_name)
-      paths = Bundler.rubygems.spec_cache_dirs.map {|dir| File.join(dir, spec_file_name) }
-      paths = paths.select {|path| File.file? path }
-      paths.first
+      Bundler.rubygems.spec_cache_dirs.find {|dir| File.file?(File.join(dir, spec_file_name)) }
     end
 
     HTTP_ERRORS = [

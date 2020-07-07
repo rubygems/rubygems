@@ -86,7 +86,7 @@ module Spec
     end
 
     def install_gems(gemfile)
-      puts sys_exec "#{File.expand_path("exe/bundle", Path.source_root)} install --gemfile #{gemfile}"
+      puts sys_exec "#{File.expand_path("bin/bundle", Path.source_root)} install --gemfile #{gemfile}"
     end
 
     def test_gemfile

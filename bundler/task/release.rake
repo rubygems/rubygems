@@ -32,7 +32,7 @@ task "release:rubygem_push" => ["release:verify_docs", "release:verify_github", 
 namespace :release do
   task :verify_docs => :"man:check"
 
-  def gh_api_post(opts)
+  def gh_api_authenticated_request(opts)
     require "netrc"
     require "net/http"
     require "json"
@@ -41,7 +41,6 @@ namespace :release do
     host = opts.fetch(:host) { "https://api.github.com/" }
     path = opts.fetch(:path)
     uri = URI.join(host, path)
-    uri.query = [uri.query, "access_token=#{token}"].compact.join("&")
     headers = {
       "Content-Type" => "application/json",
       "Accept" => "application/vnd.github.v3+json",
@@ -52,7 +51,11 @@ namespace :release do
     response = if body
       Net::HTTP.post(uri, body.to_json, headers)
     else
-      Net::HTTP.get_response(uri)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      req = Net::HTTP::Get.new(uri.request_uri)
+      headers.each {|k, v| req[k] = v }
+      http.request(req)
     end
 
     if response.code.to_i >= 400
@@ -65,9 +68,9 @@ namespace :release do
     JSON.parse(response.body)
   end
 
+  desc "Make sure github API is ready to be used"
   task :verify_github do
-    require "pp"
-    gh_api_post :path => "/user"
+    gh_api_authenticated_request :path => "/user"
   end
 
   def confirm(prompt = "")
@@ -133,13 +136,13 @@ namespace :release do
     version = Gem::Version.new(args.version || Bundler::GemHelper.gemspec.version)
     tag = "bundler-v#{version}"
 
-    gh_api_post :path => "/repos/rubygems/rubygems/releases",
-                :body => {
-                  :tag_name => tag,
-                  :name => tag,
-                  :body => release_notes(version),
-                  :prerelease => version.prerelease?,
-                }
+    gh_api_authenticated_request :path => "/repos/rubygems/rubygems/releases",
+                                 :body => {
+                                   :tag_name => tag,
+                                   :name => tag,
+                                   :body => release_notes(version),
+                                   :prerelease => version.prerelease?,
+                                 }
   end
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"

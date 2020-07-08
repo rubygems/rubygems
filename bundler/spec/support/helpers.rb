@@ -333,6 +333,7 @@ module Spec
         build_metadata = {
           :built_at => loaded_gemspec.date.utc.strftime("%Y-%m-%d"),
           :git_commit_sha => git_commit_sha,
+          :release => true,
         }
 
         replace_build_metadata(build_metadata, dir: build_path) # rubocop:disable Style/HashSyntax

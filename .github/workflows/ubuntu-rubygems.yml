@@ -1,4 +1,4 @@
-name: ubuntu
+name: ubuntu-rubygems
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - 3.2
 
 jobs:
-  ubuntu:
+  ubuntu_rubygems:
     runs-on: ubuntu-18.04
     strategy:
       matrix:

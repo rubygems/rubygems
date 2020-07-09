@@ -1,11 +1,11 @@
-name: monthly
+name: monthly-bundler
 
 on:
   schedule:
     - cron: '0 0 1 * *'
 
 jobs:
-  run:
+  monthly_bundler:
     name: Refresh month of man pages
     runs-on: ubuntu-18.04
     steps:

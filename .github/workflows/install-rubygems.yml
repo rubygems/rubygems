@@ -1,4 +1,4 @@
-name: install
+name: install-rubygems
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - 3.2
 
 jobs:
-  install:
+  install_rubygems:
     runs-on: ubuntu-18.04
     strategy:
       matrix:

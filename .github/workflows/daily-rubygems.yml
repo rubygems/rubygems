@@ -1,11 +1,11 @@
-name: daily
+name: daily-rubygems
 
 on:
   schedule:
     - cron: '0 0 * * *'
 
 jobs:
-  daily:
+  daily_rubygems:
     runs-on: ubuntu-18.04
     strategy:
       matrix:

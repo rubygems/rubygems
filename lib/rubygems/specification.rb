@@ -1007,10 +1007,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Return currently unresolved specs that contain the file matching +path+.
 
   def self.find_in_unresolved(path)
-    # TODO: do we need these?? Kill it
-    specs = unresolved_deps.values.map {|dep| dep.to_specs }.flatten
-
-    specs.find_all {|spec| spec.contains_requirable_file? path }
+    unresolved_specs.find_all {|spec| spec.contains_requirable_file? path }
   end
 
   ##
@@ -1018,9 +1015,7 @@ class Gem::Specification < Gem::BasicSpecification
   # specs that contain the file matching +path+.
 
   def self.find_in_unresolved_tree(path)
-    specs = unresolved_deps.values.map {|dep| dep.to_specs }.flatten
-
-    specs.each do |spec|
+    unresolved_specs.each do |spec|
       spec.traverse do |from_spec, dep, to_spec, trail|
         if to_spec.has_conflicts? || to_spec.conficts_when_loaded_with?(trail)
           :next
@@ -1032,6 +1027,11 @@ class Gem::Specification < Gem::BasicSpecification
 
     []
   end
+
+  def self.unresolved_specs
+    unresolved_deps.values.map {|dep| dep.to_specs }.flatten
+  end
+  private_class_method :unresolved_specs
 
   ##
   # Special loader for YAML files.  When a Specification object is loaded

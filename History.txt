@@ -572,7 +572,6 @@ Bug fixes:
 
 Security fixes:
 
-* Fixed following vulnerabilities:
   * CVE-2019-8320: Delete directory using symlink when decompressing tar
   * CVE-2019-8321: Escape sequence injection vulnerability in `verbose`
   * CVE-2019-8322: Escape sequence injection vulnerability in `gem owner`
@@ -898,7 +897,6 @@ Minor enhancements:
 
 Security fixes:
 
-* Fixed following vulnerabilities:
   * CVE-2019-8320: Delete directory using symlink when decompressing tar
   * CVE-2019-8321: Escape sequence injection vulnerability in `verbose`
   * CVE-2019-8322: Escape sequence injection vulnerability in `gem owner`

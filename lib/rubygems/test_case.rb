@@ -283,9 +283,6 @@ class Gem::TestCase < Minitest::Test
 
   include Gem::DefaultUserInteraction
 
-  undef_method :default_test if instance_methods.include? 'default_test' or
-                                instance_methods.include? :default_test
-
   ##
   # #setup prepares a sandboxed location to install gems.  All installs are
   # directed to a temporary directory.  All install plugins are removed.
@@ -295,7 +292,9 @@ class Gem::TestCase < Minitest::Test
   # or <tt>i686-darwin8.10.1</tt> otherwise.
 
   def setup
-    super
+    @orig_stderr = $stderr.dup
+    @captured_stderr = Tempfile.new("captured_stderr")
+    $stderr.reopen @captured_stderr
 
     @orig_env = ENV.to_hash
     @tmp = File.expand_path("tmp")
@@ -470,6 +469,16 @@ class Gem::TestCase < Minitest::Test
     end
 
     @back_ui.close
+
+    $stderr.rewind
+    err = @captured_stderr.read
+    assert_empty err
+  ensure
+    @captured_stderr.unlink
+
+    $stderr.reopen @orig_stderr
+    @orig_stderr.close
+    @captured_stderr.close
   end
 
   def credential_setup
@@ -804,7 +813,7 @@ class Gem::TestCase < Minitest::Test
 
     lib_dir = File.join(@tempdir, "default_gems", "lib")
     lib_dir.instance_variable_set(:@gem_prelude_index, lib_dir)
-    Gem.instance_variable_set(:@default_gem_load_paths, [*Gem.instance_variable_get(:@default_gem_load_paths), lib_dir])
+    Gem.instance_variable_set(:@default_gem_load_paths, [*Gem.send(:default_gem_load_paths), lib_dir])
     $LOAD_PATH.unshift(lib_dir)
     files.each do |file|
       rb_path = File.join(lib_dir, file)

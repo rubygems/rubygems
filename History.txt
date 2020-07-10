@@ -494,20 +494,6 @@ Breaking changes:
   #2685 by SHIBATA Hiroshi.
 * Removing yaml require. Pull request #2538 by Luciano Sousa.
 
-Style changes:
-
-* Enable `Layout/SpaceInsideParens` rubocop cop. Pull request #2630 by
-  David Rodríguez.
-* Remove some extra empty lines from the repo. Pull request #2669 by David
-  Rodríguez.
-* Enable Style/EmptyLinesAroundClassBody rubocop cop. Pull request #2636
-  by David Rodríguez.
-* Enable Style/BlockDelimiters rubocop cop. Pull request #2640 by David
-  Rodríguez.
-* Enable Layout/SpaceAroundOperators rubocop cop. Pull request #2642 by
-  David Rodríguez.
-* Rubocop 0.71. Pull request #2785 by David Rodríguez.
-
 === 3.0.8 / 2020-02-19
 
 Bug fixes:
@@ -955,29 +941,6 @@ Breaking changes:
 * Remove old version support. Pull request #2493 by Nobuyoshi Nakada.
 * [BudlerVersionFinder] set .filter! and .compatible? to match only on
   major versions. Pull request #2515 by Colby Swandale.
-
-Style changes:
-
-* Add Rubocop. Pull request #2250 by Colby Swandale.
-* Removed explicitly declaration of thread library. Pull request #2324 by
-  SHIBATA Hiroshi.
-* Remove Trailing whitespace with rubocop. Pull request #2394 by SHIBATA
-  Hiroshi.
-* Update rubocop and also use correct pessimistic version. Pull request
-  #2404 by Colby Swandale.
-* Enable more rubocop rules. Pull request #2435 by Ellen Marie Dash.
-* Fix and lock rubocop. Pull request #2465 by David Rodríguez.
-* Add a rubocop binstub. Pull request #2468 by David Rodríguez.
-* Restore the `rubocop` task. Pull request #2470 by David Rodríguez.
-* Remove trailing blank lines. Pull request #2471 by David Rodríguez.
-* Remove empty lines around method bodies. Pull request #2473 by David
-  Rodríguez.
-* Enable Style/MethodDefParentheses in Rubocop. Pull request #2478 by
-  Colby Swandale.
-* Enable Style/MultilineIfThen in Rubocop. Pull request #2479 by Luis
-  Sagastume.
-* Remove trailing 'then' from generated code. Pull request #2480 by Luis
-  Sagastume.
 
 === 2.7.10 / 2019-06-14
 

@@ -9,11 +9,7 @@ require "rubygems/deprecate"
 class Gem::Platform
   @local = nil
 
-  attr_accessor :cpu
-
-  attr_accessor :os
-
-  attr_accessor :version
+  attr_accessor :cpu, :os, :version
 
   def self.local
     arch = RbConfig::CONFIG['arch']

@@ -1,5 +1,111 @@
 # coding: UTF-8
 
+=== 3.2.0.rc.1 / 2020-07-04
+
+Major enhancements:
+
+* Test TruffleRuby in CI. Pull request #2797 by Benoit Daloze.
+* Rework plugins system and speed up rubygems. Pull request #3108 by David
+  Rodríguez.
+
+Minor enhancements:
+
+* Specify explicit separator not to be affected by $;. Pull request #3424
+  by Nobuyoshi Nakada.
+* Enable `Layout/ExtraSpacing` cop. Pull request #3449 by David Rodríguez.
+* Rollback gem deprecate. Pull request #3530 by Luis Sagastume.
+* Normalize heredoc delimiters. Pull request #3533 by David Rodríguez.
+* Log messages to stdout in `rake package`. Pull request #3632 by David
+  Rodríguez.
+* Remove explicit `psych` activation. Pull request #3636 by David
+  Rodríguez.
+* Delay `fileutils` loading to fix some warnings. Pull request #3637 by
+  David Rodríguez.
+* Make sure rubygems/package can be directly required reliably. Pull
+  request #3670 by Luis Sagastume.
+* Make sure `tmp` folder exists before calling `Dir.tmpdir`. Pull request
+  #3711 by David Rodríguez.
+* Add Gem.disable_system_update_message to disable gem update --system if
+  needed. Pull request #3720 by Josef Šimánek.
+* Tweaks to play nice with ruby-core setup. Pull request #3733 by David
+  Rodríguez.
+* Remove explicit require for auto-loaded constant. Pull request #3751 by
+  Karol Bucek.
+* Test files should not be included in spec.files. Pull request #3758 by
+  Marc-André Lafortune.
+* Remove TODO comment about warning on setting instead of pushing. Pull
+  request #2823 by Luis Sagastume.
+* Add deprecate command method. Pull request #2935 by Luis Sagastume.
+* Simplify deprecate command method. Pull request #2974 by Luis Sagastume.
+* Fix Gem::LOADED_SPECS_MUTEX handling for recursive locking. Pull request
+  #2985 by MSP-Greg.
+* Add `funding_uri ` metadata field to gemspec. Pull request #3060 by
+  Colby Swandale.
+* Updates to some old gem-signing docs. Pull request #3063 by Tieg
+  Zaharia.
+* Update the gem method for Gem::Installer. Pull request #3137 by Daniel
+  Berger.
+* Simplify initial gem help output. Pull request #3148 by Olivier Lacan.
+* Resolve latest version via `gem contents`. Pull request #3149 by Dan
+  Rice.
+* Install suggestions. Pull request #3151 by Sophia Castellarin.
+* Only rescue the errors we actually want to rescue. Pull request #3156 by
+  David Rodríguez.
+
+Bug fixes:
+
+* Accept not only /usr/bin/env but also /bin/env in some tests. Pull
+  request #3422 by Yusuke Endoh.
+* Skip a test that attempts to remove the current directory on Solaris.
+  Pull request #3423 by Yusuke Endoh.
+* Fix race condition on bundler's parallel installer. Pull request #3440
+  by David Rodríguez.
+* Fix platform comparison check in #contains_requirable_file?. Pull
+  request #3495 by Benoit Daloze.
+* Improve missing spec error. Pull request #3559 by Luis Sagastume.
+* Fix hidden bundler template installation from rubygems updater. Pull
+  request #3674 by David Rodríguez.
+* Fix gem update --user-install. Pull request #2901 by Luis Sagastume.
+* Correct conflict list when uninstallation is prevented. Pull request
+  #2973 by David Rodríguez.
+* Fix error when trying to find bundler with a deleted "working directo….
+  Pull request #3090 by Luis Sagastume.
+* Fix -I require priority. Pull request #3124 by David Rodríguez.
+* Fix `ruby setup.rb` for new plugins layout. Pull request #3144 by David
+  Rodríguez.
+
+Compatibility changes:
+
+* Revert "Remove Gem::DependencyInstaller#find_gems_with_sources". Pull
+  request #3412 by David Rodríguez.
+* Version horizon deprecations. Pull request #3414 by Luis Sagastume.
+* Remove ruby 1.8 leftovers. Pull request #3442 by David Rodríguez.
+* Minitest cleanup. Pull request #3445 by David Rodríguez.
+* Remove `builder` gem requirement for `gem regenerate_index`. Pull
+  request #3552 by David Rodríguez.
+* Remove modelines for consistency. Pull request #3714 by David Rodríguez.
+* Stop using deprecated OpenSSL::Digest constants. Pull request #3763 by
+  Bart de Water.
+* Remove Gem module deprecated methods. Pull request #3101 by Luis
+  Sagastume.
+* Remove ubygems.rb. Pull request #3102 by Luis Sagastume.
+* Remove Gem::Commands::QueryCommand. Pull request #3104 by Luis
+  Sagastume.
+* Remove dependency installer deprecated methods. Pull request #3106 by
+  Luis Sagastume.
+* Set deprecation warning on query command. Pull request #2967 by Luis
+  Sagastume.
+* Remove Gem::UserInteraction#debug method. Pull request #3107 by Luis
+  Sagastume.
+* Remove options from Gem::GemRunner.new. Pull request #3110 by Luis
+  Sagastume.
+* Remove deprecated Gem::RemoteFetcher#fetch_size. Pull request #3111 by
+  Luis Sagastume.
+* Remove source_exception from Gem::Exception. Pull request #3112 by Luis
+  Sagastume.
+* Requiring rubygems/source_specific_file is deprecated, remove it. Pull
+  request #3114 by Luis Sagastume.
+
 === 3.1.4 / 2020-06-03
 
 Minor enhancements:

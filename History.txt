@@ -79,7 +79,7 @@ Deprecations:
 * Set deprecation warning on query command. Pull request #2967 by Luis
   Sagastume.
 
-Compatibility changes:
+Breaking changes:
 
 * Remove ruby 1.8 leftovers. Pull request #3442 by David Rodríguez.
 * Minitest cleanup. Pull request #3445 by David Rodríguez.
@@ -200,7 +200,7 @@ Deprecations:
 * Deprecate `gem generate_index --modern` and `gem generate_index
   --no-modern`. Pull request #2992 by David Rodríguez.
 
-Compatibility changes:
+Breaking changes:
 
 * Remove 1.8.7 leftovers. Pull request #2972 by David Rodríguez.
 
@@ -416,7 +416,7 @@ Deprecations:
 * Add deprecation warnings for cli options. Pull request #2607 by Luis
   Sagastume.
 
-Compatibility changes:
+Breaking changes:
 
 * Suppress keywords warning. Pull request #2934 by Nobuyoshi Nakada.
 * Suppress Ruby 2.7's real kwargs warning. Pull request #2912 by Koichi
@@ -834,7 +834,7 @@ Bug fixes:
 * Fix tests when --program-suffix and similar ruby configure options are
   used. Pull request #2529 by Jeremy Evans.
 
-Compatibility changes:
+Breaking changes:
 
 * IO.binread is not provided at Ruby 1.8. Pull request #2093 by SHIBATA
   Hiroshi.
@@ -980,7 +980,7 @@ Deprecations:
 * Mark deprecation to `ubygems.rb` for RubyGems 4. Pull request #2269 by
   SHIBATA Hiroshi.
 
-Compatibility changes:
+Breaking changes:
 
 * Update bundler-1.16.2. Pull request #2291 by SHIBATA Hiroshi.
 
@@ -1184,7 +1184,7 @@ Deprecations:
 * Add deprecation warning for Gem::DependencyInstaller#gems_to_install.
   Pull request #1731 by Jon Moss.
 
-Compatibility changes:
+Breaking changes:
 
 * Use `-rrubygems` instead of `-rubygems.rb`. Because ubygems.rb is
   unavailable on Ruby 2.5. Pull request #2028 #2027 #2029

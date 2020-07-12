@@ -398,8 +398,6 @@ Bug fixes:
 
 Compatibility changes:
 
-* Remove commented code from command.rb. Pull request #2620 by Luis
-  Sagastume.
 * Suppress keywords warning. Pull request #2934 by Nobuyoshi Nakada.
 * Suppress Ruby 2.7's real kwargs warning. Pull request #2912 by Koichi
   ITO.

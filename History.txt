@@ -76,9 +76,6 @@ Bug fixes:
 
 Compatibility changes:
 
-* Revert "Remove Gem::DependencyInstaller#find_gems_with_sources". Pull
-  request #3412 by David Rodríguez.
-* Version horizon deprecations. Pull request #3414 by Luis Sagastume.
 * Remove ruby 1.8 leftovers. Pull request #3442 by David Rodríguez.
 * Minitest cleanup. Pull request #3445 by David Rodríguez.
 * Remove `builder` gem requirement for `gem regenerate_index`. Pull

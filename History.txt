@@ -74,6 +74,11 @@ Bug fixes:
 * Fix `ruby setup.rb` for new plugins layout. Pull request #3144 by David
   Rodríguez.
 
+Deprecations:
+
+* Set deprecation warning on query command. Pull request #2967 by Luis
+  Sagastume.
+
 Compatibility changes:
 
 * Remove ruby 1.8 leftovers. Pull request #3442 by David Rodríguez.
@@ -90,8 +95,6 @@ Compatibility changes:
   Sagastume.
 * Remove dependency installer deprecated methods. Pull request #3106 by
   Luis Sagastume.
-* Set deprecation warning on query command. Pull request #2967 by Luis
-  Sagastume.
 * Remove Gem::UserInteraction#debug method. Pull request #3107 by Luis
   Sagastume.
 * Remove options from Gem::GemRunner.new. Pull request #3110 by Luis
@@ -192,11 +195,14 @@ Bug fixes:
 * Remove configuration that contained a typo. Pull request #2989 by David
   Rodríguez.
 
+Deprecations:
+
+* Deprecate `gem generate_index --modern` and `gem generate_index
+  --no-modern`. Pull request #2992 by David Rodríguez.
+
 Compatibility changes:
 
 * Remove 1.8.7 leftovers. Pull request #2972 by David Rodríguez.
-* Deprecate `gem generate_index --modern` and `gem generate_index
-  --no-modern`. Pull request #2992 by David Rodríguez.
 
 === 3.1.0.pre3 / 2019-11-11
 
@@ -396,27 +402,33 @@ Bug fixes:
 * Fix cryptic error on local and ignore-dependencies combination. Pull
   request #2650 by David Rodríguez.
 
+Deprecations:
+
+* Make deprecate Gem::RubyGemsVersion and Gem::ConfigMap. Pull request
+  #2857 by SHIBATA Hiroshi.
+* Deprecate Gem::RemoteFetcher#fetch_size. Pull request #2833 by Luis
+  Sagastume.
+* Explicitly deprecate `rubyforge_project`. Pull request #2798 by David
+  Rodríguez.
+* Deprecate unused Gem::Installer#unpack method. Pull request #2715 by Vít
+  Ondruch.
+* Deprecate a few unused methods. Pull request #2674 by David Rodríguez.
+* Add deprecation warnings for cli options. Pull request #2607 by Luis
+  Sagastume.
+
 Compatibility changes:
 
 * Suppress keywords warning. Pull request #2934 by Nobuyoshi Nakada.
 * Suppress Ruby 2.7's real kwargs warning. Pull request #2912 by Koichi
   ITO.
 * Fix Kernel#warn override. Pull request #2911 by Jeremy Evans.
-* Make deprecate Gem::RubyGemsVersion and Gem::ConfigMap. Pull request
-  #2857 by SHIBATA Hiroshi.
-* Deprecate Gem::RemoteFetcher#fetch_size. Pull request #2833 by Luis
-  Sagastume.
 * Remove conflict.rb code that was supposed to be removed in Rubygems 3.
   Pull request #2802 by Luis Sagastume.
-* Explicitly deprecate `rubyforge_project`. Pull request #2798 by David
-  Rodríguez.
 * Compatibility cleanups. Pull request #2754 by David Rodríguez.
 * Remove `others_possible` activation request param. Pull request #2747 by
   David Rodríguez.
 * Remove dependency installer deprecated code. Pull request #2740 by Luis
   Sagastume.
-* Deprecate unused Gem::Installer#unpack method. Pull request #2715 by Vít
-  Ondruch.
 * Removed guard condition with USE_BUNDLER_FOR_GEMDEPS. Pull request #2716
   by SHIBATA Hiroshi.
 * Skip deprecation warning during specs. Pull request #2718 by David
@@ -425,10 +437,7 @@ Compatibility changes:
 * Removed circular require. Pull request #2679 by Nobuyoshi Nakada.
 * Removed needless environmental variable for Travis CI. Pull request
   #2685 by SHIBATA Hiroshi.
-* Deprecate a few unused methods. Pull request #2674 by David Rodríguez.
 * Removing yaml require. Pull request #2538 by Luciano Sousa.
-* Add deprecation warnings for cli options. Pull request #2607 by Luis
-  Sagastume.
 
 === 3.0.8 / 2020-02-19
 
@@ -963,13 +972,16 @@ Bug fixes:
 * Fix path checks for case insensitive filesystem. Pull request #2211 by
   Lars Kanis.
 
-Compatibility changes:
+Deprecations:
 
 * Deprecate unused code before removing them at #1524. Pull request #2197
   by SHIBATA Hiroshi.
 * Deprecate for rubygems 3. Pull request #2214 by SHIBATA Hiroshi.
 * Mark deprecation to `ubygems.rb` for RubyGems 4. Pull request #2269 by
   SHIBATA Hiroshi.
+
+Compatibility changes:
+
 * Update bundler-1.16.2. Pull request #2291 by SHIBATA Hiroshi.
 
 === 2.7.6 / 2018-02-16
@@ -1162,11 +1174,8 @@ Minor enhancements:
 * Warn when requiring deprecated files. Pull request #1939 by Ellen Marie
   Dash.
 
-Compatibility changes:
+Deprecations:
 
-* Use `-rrubygems` instead of `-rubygems.rb`. Because ubygems.rb is
-  unavailable on Ruby 2.5. Pull request #2028 #2027 #2029
-  by SHIBATA Hiroshi.
 * Deprecate Gem::InstallerTestCase#util_gem_bindir and
   Gem::InstallerTestCase#util_gem_dir. Pull request #1729 by Jon Moss.
 * Deprecate passing options to Gem::GemRunner. Pull request #1730 by Jon
@@ -1174,6 +1183,12 @@ Compatibility changes:
 * Add deprecation for Gem#datadir. Pull request #1732 by Jon Moss.
 * Add deprecation warning for Gem::DependencyInstaller#gems_to_install.
   Pull request #1731 by Jon Moss.
+
+Compatibility changes:
+
+* Use `-rrubygems` instead of `-rubygems.rb`. Because ubygems.rb is
+  unavailable on Ruby 2.5. Pull request #2028 #2027 #2029
+  by SHIBATA Hiroshi.
 * Update Code of Conduct to Contributor Covenant v1.4.0. Pull request
   #1796 by Matej.
 

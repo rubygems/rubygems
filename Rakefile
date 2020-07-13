@@ -383,7 +383,6 @@ end
 
 module Rubygems
   class ProjectFiles
-
     def self.all
       files = []
       exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|util/)}
@@ -397,7 +396,6 @@ module Rubygems
 
       files.sort
     end
-
   end
 end
 

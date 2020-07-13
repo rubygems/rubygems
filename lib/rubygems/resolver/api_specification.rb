@@ -6,7 +6,6 @@
 # is the name, version, and dependencies.
 
 class Gem::Resolver::APISpecification < Gem::Resolver::Specification
-
   ##
   # We assume that all instances of this class are immutable;
   # so avoid duplicated generation for performance.
@@ -97,5 +96,4 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
   def source # :nodoc:
     @set.source
   end
-
 end

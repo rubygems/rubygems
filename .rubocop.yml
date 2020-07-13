@@ -43,7 +43,6 @@ Layout/EmptyLines:
 
 Layout/EmptyLinesAroundClassBody:
   Enabled: true
-  EnforcedStyle: empty_lines_except_namespace
 
 Layout/EmptyLinesAroundMethodBody:
   Enabled: true
@@ -105,6 +104,9 @@ Style/Encoding:
   Enabled: true
   Exclude:
     - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
+
+Style/IfInsideElse:
+  Enabled: false
 
 Style/MethodCallWithoutArgsParentheses:
   Enabled: true

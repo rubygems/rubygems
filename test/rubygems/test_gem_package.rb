@@ -4,7 +4,6 @@ require 'rubygems/package/tar_test_case'
 require 'digest'
 
 class TestGemPackage < Gem::Package::TarTestCase
-
   def setup
     super
 
@@ -1173,5 +1172,4 @@ class TestGemPackage < Gem::Package::TarTestCase
 
     StringIO.new tgz_io.string
   end
-
 end

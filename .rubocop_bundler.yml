@@ -597,7 +597,7 @@ Style/IdenticalConditionalBranches:
   Enabled: true
 
 Style/IfInsideElse:
-  Enabled: true
+  Enabled: false
 
 Style/IfUnlessModifierOfIfUnless:
   Enabled: true

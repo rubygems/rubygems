@@ -43,7 +43,6 @@ Layout/EmptyLines:
 
 Layout/EmptyLinesAroundClassBody:
   Enabled: true
-  EnforcedStyle: empty_lines_except_namespace
 
 Layout/EmptyLinesAroundMethodBody:
   Enabled: true

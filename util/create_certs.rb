@@ -3,7 +3,6 @@ require 'openssl'
 require 'time'
 
 class CertificateBuilder
-
   attr_reader :start
 
   def initialize(key_size = 2048)
@@ -105,7 +104,6 @@ class CertificateBuilder
 
     [validity, validity_32]
   end
-
 end
 
 cb = CertificateBuilder.new

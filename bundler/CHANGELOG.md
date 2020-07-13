@@ -1,3 +1,7 @@
+## (Unreleased)
+
+  No changes.
+
 ## 2.2.0.rc.1 (Jul 02, 2020)
 
 Major enhancements:
@@ -1240,9 +1244,6 @@ Performance:
 Bug fixes:
 
   - only warn on invalid gemspecs (@indirect)
-
-Bug fixes:
-
   - fix installing dependencies in the correct order ([#3799](https://github.com/rubygems/bundler/issues/3799), @pducks32)
   - fix sorting of mixed DependencyLists ([#3762](https://github.com/rubygems/bundler/issues/3762), @tony-spataro-rs)
   - fix `install_if` conditionals when using the block form (@danieltdt)
@@ -1252,9 +1253,6 @@ Bug fixes:
 Bug fixes:
 
   - don't add or update BUNDLED WITH during `install` with no changes (@segiddins)
-
-Bug fixes:
-
   - fix sorting of mixed DependencyLists with RubyGems >= 2.23 ([#3762](https://github.com/rubygems/bundler/issues/3762), @tony-spataro-rs)
   - speed up resolver for path and git gems (@segiddins)
   - fix `install --force` to not reinstall Bundler ([#3743](https://github.com/rubygems/bundler/issues/3743), @karlo57)

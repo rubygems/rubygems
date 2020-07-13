@@ -1,0 +1,17 @@
+name: release-drafter-bundler
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release_drafter_bundler:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Publish changelog draft
+        uses: release-drafter/release-drafter@v5
+        with:
+          config-name: release-drafter-bundler.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -64,27 +64,42 @@ can help with. That are marked with a light gray `contribution: *`
 
 ### Type
 
-Most Issues or pull requests will have a light green `type: *` label,  which
-describes the type of the issue or pull request.
+Issues might have a light green `type: *` label,  which describes the type of
+the issue.
 
 *   **bug report** - An issue describing a bug in rubygems. This would be
     something that is broken, confusing, unexpected behavior etc.
-*   **bug fix** - A pull request that fixes a bug report.
 *   **feature request** - An issue describing a request for a new feature or
     enhancement.
-*   **feature implementation** - A pull request implementing a feature
-    request.
 *   **question** - An issue that is a more of a question than a call for
     specific changes in the codebase.
-*   **cleanup** - Generally for a pull request that improves the code base
-    without fixing a bug or implementing a feature.
-*   **major bump** - This issue or pull request requires a major version bump
+*   **cleanup** - An issue that proposes cleanups to the code base without
+    fixing a bug or implementing a feature.
+*   **major bump** - This issue  request requires a major version bump
 *   **administrative** - This issue relates to administrative tasks that need
     to take place as it relates to rubygems
 *   **documentation** - This issue relates to improving the documentation for
     in this repo. Note that much of the rubygems documentation is here:
     https://github.com/rubygems/guides
 
+Pull request might have a light orange `rubygems: *` or a light blue `bundler:
+*` label which describes the pull request according to the following criteria:
+
+*   **security fix** - A pull request that fixes a security issue.
+*   **breaking change** - A pull request including any change that requires a
+    major version bump.
+*   **major enhancement** - A pull request including a backwards compatible
+    change worth a special mention in the changelog
+*   **deprecation** - A pull request that introduces a deprecation.
+*   **feature** - A pull request implementing a feature request.
+*   **deprecation** - A pull request that implements a performance improvement.
+*   **documentation** - A pull request introducing documentation improvements
+    worth mentioning to end users.
+*   **minor enhancements** - A pull request introducing small but user visible changes.
+*   **bug fix** - A pull request that fixes a bug report.
+
+In the case of `bundler`, these labels are set by maintainers on PRs and have
+special importance because they are used to automatically build the changelog.
 
 ### Workflow / Status
 

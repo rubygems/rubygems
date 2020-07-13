@@ -1,0 +1,66 @@
+name: older-rubygems-bundler
+
+on:
+  pull_request:
+    paths:
+      - bundler/**
+      - .github/workflows/older-rubygems-bundler.yml
+      - .rubocop_bundler.yml
+
+  push:
+    branches:
+      - master
+      - 3.2
+
+jobs:
+  older_rubygems_bundler:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
+        rgv: [ v2.5.2, v2.6.14, v2.7.10, v3.0.8, v3.1.4 ]
+        bundler: [ '' ]
+        exclude:
+          - { bundler: '', ruby: 2.4.10, rgv: v2.5.2  }
+          - { bundler: '', ruby: 2.5.8, rgv: v2.5.2  }
+          - { bundler: '', ruby: 2.5.8, rgv: v2.6.14 }
+          - { bundler: '', ruby: 2.6.6, rgv: v2.5.2  }
+          - { bundler: '', ruby: 2.6.6, rgv: v2.6.14 }
+          - { bundler: '', ruby: 2.6.6, rgv: v2.7.10 }
+          - { bundler: '', ruby: 2.7.1, rgv: v2.5.2  }
+          - { bundler: '', ruby: 2.7.1, rgv: v2.6.14 }
+          - { bundler: '', ruby: 2.7.1, rgv: v2.7.10 }
+          - { bundler: '', ruby: 2.7.1, rgv: v3.0.8  }
+        include:
+          - { bundler: 3.0.0, ruby: 2.4.10, rgv: v3.1.4 }
+          - { bundler: 3.0.0, ruby: 2.5.8, rgv: v3.1.4 }
+          - { bundler: 3.0.0, ruby: 2.6.6, rgv: v3.1.4 }
+          - { bundler: 3.0.0, ruby: 2.7.1, rgv: v3.1.4 }
+    env:
+      RGV: ${{ matrix.rgv }}
+      RUBYOPT: --disable-gems
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: none
+      - name: Install graphviz
+        run: sudo apt-get install graphviz -y
+        if: matrix.bundler == ''
+      - name: Replace version
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler }} bin/rake override_version
+        if: matrix.bundler != ''
+        working-directory: ./bundler
+      - name: Prepare dependencies
+        run: |
+          bin/rake spec:parallel_deps
+        working-directory: ./bundler
+      - name: Run Test
+        run: |
+          bin/rake spec:all
+        working-directory: ./bundler
+    timeout-minutes: 60

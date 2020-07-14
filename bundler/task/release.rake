@@ -43,7 +43,9 @@ namespace :release do
     end
 
     def replace_unreleased_notes(new_content)
-      full_new_changelog = [unreleased_section_title, "", new_content, released_notes].join("\n") + "\n")
+      new_content_with_references = new_content.gsub(/#(\d+)/, '[#\1](https://github.com/rubygems/rubygems/pull/\1)')
+
+      full_new_changelog = [unreleased_section_title, "", new_content_with_references, released_notes].join("\n") + "\n"
 
       File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write(full_new_changelog) }
     end

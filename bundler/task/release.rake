@@ -16,7 +16,7 @@ namespace :build_metadata do
 end
 
 task :build => ["build_metadata"] do
-  Rake::Task["build_metadata:clean"].tap(&:reenable).real_invoke
+  Rake::Task["build_metadata:clean"].tap(&:reenable).invoke
 end
 task "release:rubygem_push" => ["release:verify_docs", "release:verify_github", "build_metadata", "release:github"]
 

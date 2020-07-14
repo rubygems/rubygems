@@ -47,4 +47,4 @@ jobs:
         run: |
           git add bundler/CHANGELOG.md
           git commit -m "Automatic changelog update"
-          git show
+          git push origin master

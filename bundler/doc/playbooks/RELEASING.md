@@ -51,29 +51,13 @@ $ git cherry-pick -m 1 dd6aef9
 The `bin/rake release:prepare_patch` command will automatically handle
 cherry-picking, and is further detailed below.
 
-## Changelog
-
-Bundler maintains a list of changes present in each version in the `CHANGELOG.md` file.
-Entries should not be added in pull requests, but are rather written by the Bundler
-maintainers before the release.
-
-To fill in the changelog, maintainers can go through the relevant PRs using the
-`bin/rake release:open_unreleased_prs` and manually add a changelog entry for each
-PR that it's about to be released.
-
-If you're releasing a patch level version, you can use `rake
-release:open_unreleased_prs` to instead label each relevant PR with the proper
-milestone of the version to be release. Then the `bin/rake release:patch` task will
-go _only_ through those PRs, and prompt you to add a changelog entry for each of
-them.
-
 ## Releases
 
 ### Minor releases
 
 While pushing a gem version to RubyGems.org is as simple as `bin/rake release`,
 releasing a new version of Bundler includes a lot of communication: team consensus,
-git branching, changelog writing, documentation site updates, and a blog post.
+git branching, documentation site updates, and a blog post.
 
 Dizzy yet? Us too.
 
@@ -85,7 +69,7 @@ Here's the checklist for releasing new minor versions:
 * [ ] Create a new stable branch from master (see **Branching** below)
 * [ ] Create a PR to the stable branch that:
   * [ ] Updates `version.rb` to a prerelease number, e.g. `1.12.pre.1`
-  * [ ] Updates `CHANGELOG.md` to include all of the features, bugfixes, etc for that version.
+  * [ ] Updates `CHANGELOG.md` to include a release header for the new version, leaving the "(Unreleased)" section empty.
 * [ ] Get the PR reviewed, make sure CI is green, and merge it.
 * [ ] Pull the updated stable brnach, wait for CI to complete on it and get excited.
 * [ ] Run `bin/rake release` from the updated stable branch, tweet, blog, let people know about the prerelease!

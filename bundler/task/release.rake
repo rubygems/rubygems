@@ -57,11 +57,11 @@ namespace :release do
     end
 
     def released_notes
-      lines.drop_while {|line| line == unreleased_section_title || !line.start_with?(release_section_token) }
+      lines.drop_while {|line| !line.start_with?(release_section_token) }
     end
 
     def lines
-      @lines ||= content.split("\n")
+      @lines ||= content.split("\n")[2..-1]
     end
 
     def content

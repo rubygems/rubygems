@@ -20,11 +20,13 @@ jobs:
       - name: Get target version
         id: get_target_version
         run: echo "::set-output name=target_version::$(bin/rake release:target_version)"
+        working-directory: ./bundler
 
       - name: Publish changelog draft
         uses: release-drafter/release-drafter@v5
         with:
           config-name: release-drafter-bundler.yml
-          version: ${{ steps.get_target_version.outputs.target_version }}
+          version: bundler-v${{ steps.get_target_version.outputs.target_version }}
+          tag: bundler-v${{ steps.get_target_version.outputs.target_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

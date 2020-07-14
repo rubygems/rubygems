@@ -9,9 +9,24 @@ jobs:
   release_drafter_bundler:
     runs-on: ubuntu-18.04
     steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: none
+
+      - name: Get target version
+        id: get_target_version
+        run: echo "::set-output name=target_version::$(bin/rake release:target_version)"
+        working-directory: ./bundler
+
       - name: Publish changelog draft
         uses: release-drafter/release-drafter@v5
         with:
           config-name: release-drafter-bundler.yml
+          version: bundler-v${{ steps.get_target_version.outputs.target_version }}
+          tag: bundler-v${{ steps.get_target_version.outputs.target_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

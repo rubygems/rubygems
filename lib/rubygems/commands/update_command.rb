@@ -214,7 +214,7 @@ command to remove old versions.
     rubygems_update.version = version
 
     hig = {
-      'rubygems-update' => rubygems_update
+      'rubygems-update' => rubygems_update,
     }
 
     gems_to_update = which_to_update hig, options[:args], :system

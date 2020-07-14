@@ -88,7 +88,7 @@ class Gem::RequestSet::GemDependencyAPI
     :truffleruby  => Gem::Platform::RUBY,
     :x64_mingw    => x64_mingw,
     :x64_mingw_20 => x64_mingw,
-    :x64_mingw_21 => x64_mingw
+    :x64_mingw_21 => x64_mingw,
   }.freeze
 
   gt_eq_0        = Gem::Requirement.new '>= 0'

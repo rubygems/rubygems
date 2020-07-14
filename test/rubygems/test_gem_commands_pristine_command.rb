@@ -568,7 +568,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert_equal([
       "Restoring gems to pristine condition...",
       "Cached gem for a-2 not found, attempting to fetch...",
-      "Skipped a-2, it was not found from cache and remote sources"
+      "Skipped a-2, it was not found from cache and remote sources",
     ], @ui.output.split("\n"))
 
     assert_empty @ui.error

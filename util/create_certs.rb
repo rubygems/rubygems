@@ -55,7 +55,7 @@ class CertificateBuilder
 
     cert.extensions = [
       ef.create_extension('subjectAltName', "email:#{subject}@example"),
-      ef.create_extension('subjectKeyIdentifier', 'hash')
+      ef.create_extension('subjectKeyIdentifier', 'hash'),
     ]
 
     if cert != issuer_cert # not self-signed cert

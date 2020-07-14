@@ -44,7 +44,7 @@ class Gem::Ext::Builder
       cmd = [
         make_program,
         destdir,
-        target
+        target,
       ].join(' ').rstrip
       begin
         run(cmd, results, "make #{target}".rstrip)

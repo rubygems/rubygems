@@ -136,6 +136,11 @@ namespace :release do
                                  }
   end
 
+  desc "Prints the current version in the version file, which should be the next release target"
+  task :target_version do
+    print Bundler::GemHelper.gemspec.version
+  end
+
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch, :version do |_t, args|
     version = args.version

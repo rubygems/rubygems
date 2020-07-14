@@ -19,12 +19,12 @@
 
 # 2.2.0.rc.1 (Jul 02, 2020)
 
-Major enhancements:
+## Major enhancements:
 
   - Windows support. There's still gotchas and unimplemented features, but a Windows CI is now enforced.
   - Full multiplatform support. Bundler should now seamlessly handle multiplatform `Gemfile` or `gems.rb` files.
 
-Features:
+## Features:
 
   - `bundle info` now includes gem metadata [#7376](https://github.com/rubygems/bundler/pull/7376)
   - `bundle list --without-group` and `bundle list --only-group` now support space separated list of groups in addition to single groups [#7404](https://github.com/rubygems/bundler/pull/7404)
@@ -36,7 +36,7 @@ Features:
   - `bundle gem` now supports a `--ci` flag and a `gem.ci` configuration that adds CI config files for the main CI providers to the generated gem skeleton [#3667](https://github.com/rubygems/rubygems/pull/3667)
   - Allow setting a tag prefix to be used by release tasks [#3766](https://github.com/rubygems/rubygems/pull/3766)
 
-Minor enhancements:
+## Minor enhancements:
 
   - `bundle outdated` now prints output in columns for better readability [#4474](https://github.com/rubygems/bundler/pull/4474)
   - bundler's `release` rake task now prints a better message when not being logged in and trying to push a gem [#7513](https://github.com/rubygems/bundler/pull/7513)
@@ -54,7 +54,7 @@ Minor enhancements:
   - Remove some requires that might workaround some autoloading issues on jruby [#3771](https://github.com/rubygems/rubygems/pull/3771)
   - Unswallow an error that should make some random crashes on jruby easier to troubleshoot [#3774](https://github.com/rubygems/rubygems/pull/3774)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix `bundle pristine` removing gems with local overrides. Be conservative by printing a warning and skipping the removal [#7423](https://github.com/rubygems/bundler/pull/7423)
   - Fix multiplaform resolution edge cases [#7522](https://github.com/rubygems/bundler/pull/7522) and [#7578](https://github.com/rubygems/bundler/pull/7578)
@@ -84,14 +84,14 @@ Bug fixes:
 
 # 2.1.4 (January 5, 2020)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix `net-http-pipeline` no longer being allowed in Gemfiles if already installed in the system due to our vendored version of `net-http-persistent` optionally requiring it [#7529](https://github.com/bundler/bundler/pull/7529)
   - Fix inline gems no longer being requirable if no Gemfile is present in the directory hierarchy [#7537](https://github.com/bundler/bundler/pull/7537)
 
 # 2.1.3 (January 2, 2020)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix `rake build` when path has spaces on it [#7514](https://github.com/bundler/bundler/pull/7514)
   - Fix `rake release` git push tasks when the running shell has `git` as an alias of another command (like `hub`) [#7510](https://github.com/bundler/bundler/pull/7510)
@@ -100,20 +100,20 @@ Bug fixes:
 
 # 2.1.2 (December 20, 2019)
 
-Bug fixes:
+## Bug fixes:
 
   - Restore an explicit `require "rubygems"` on top `rubygems_integration.rb` to avoid some missing constant errors under some convoluted setups [#7505](https://github.com/rubygems/bundler/pull/7505)
 
 # 2.1.1 (December 17, 2019)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix some cases of shelling out to `rubygems` still being silent [#7493](https://github.com/rubygems/bundler/pull/7493)
   - Restore compatibility with `rubygems-bundler` so that binstubs work under `RVM` [#7498](https://github.com/rubygems/bundler/pull/7498)
 
 # 2.1.0 (December 15, 2019)
 
-Features:
+## Features:
 
   - Add support for new default gems. In particular,
 
@@ -123,27 +123,27 @@ Features:
 
     plus other PRs removing or lazily loading usages of these gems from other places to not interfere with user's choice, such as [#7471](https://github.com/rubygems/bundler/pull/7471) or [#7473](https://github.com/bundler/bundler/pull/7473)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix `bundle exec rake install` failing [#7474](https://github.com/rubygems/bundler/pull/7474)
   - Fix `bundle exec`'ing to rubygems being silent [#7442](https://github.com/rubygems/bundler/pull/7442)
   - Restore previous `BUNDLE_GEMFILE` in `bundler/inline` [#7418](https://github.com/rubygems/bundler/pull/7418)
   - Fix error when using `gem` DSL's `:glob` option for selecting gemspecs from a specific source [#7419](https://github.com/rubygems/bundler/pull/7419)
 
-Minor enhancements:
+## Minor enhancements:
 
   - `bundle config` no longer warns when using "old interface" (might be deprecated again in the future) [#7475](https://github.com/rubygems/bundler/pull/7475)
   - `bundle update` no longer warns when used without arguments (might be deprecated again in the future) [#7475](https://github.com/rubygems/bundler/pull/7475)
 
 # 2.1.0.pre.3 (November 12, 2019)
 
-Features:
+## Features:
 
   - Add caller information to some deprecation messages to make them easier to fix [#7361](https://github.com/rubygems/bundler/pull/7361)
   - Reconcile `bundle cache` vs `bundle package` everywhere. Now in docs, CLI help and everywhere else `bundle cache` is the preferred version and `bundle package` remains as an alias [#7389](https://github.com/rubygems/bundler/pull/7389)
   - Display some basic `bundler` documentation together with ruby's RDoc based documentation [#7394](https://github.com/rubygems/bundler/pull/7394)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix typos deprecation message and upgrading docs [#7374](https://github.com/rubygems/bundler/pull/7374)
   - Deprecation warnings about `taint` usage on ruby 2.7 [#7385](https://github.com/rubygems/bundler/pull/7385)
@@ -154,7 +154,7 @@ Bug fixes:
 
 # 2.1.0.pre.2 (September 15, 2019)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix `bundle clean` trying to delete non-existent directory ([#7340](https://github.com/rubygems/bundler/pull/7340))
   - Fix warnings about keyword argument separation on ruby 2.7 ([#7337](https://github.com/rubygems/bundler/pull/7337))
@@ -183,13 +183,13 @@ Bug fixes:
   [#7216](https://github.com/rubygems/bundler/pull/7216),
   [#7274](https://github.com/rubygems/bundler/pull/7274)
 
-Deprecations:
+## Deprecations:
 
   * See the [the upgrading document](UPGRADING.md) for a detailed explanation of
     the deprecations that are getting enabled in bundler 2.1, and the future
     breaking changes in bundler 3.
 
-Features:
+## Features:
 
   - Reimplement `config` command using subcommands ([#5981](https://github.com/rubygems/bundler/pull/5981))
   - Add `bundle plugin list` command ([#6120](https://github.com/rubygems/bundler/pull/6120))
@@ -207,7 +207,7 @@ Features:
   - Several improvements on new gem templates ([#6924](https://github.com/rubygems/bundler/pull/6924), [#6968](https://github.com/bundler/bundler/pull/6968), [#7209](https://github.com/bundler/bundler/pull/7209), [#7222](https://github.com/bundler/bundler/pull/7222), [#7238](https://github.com/bundler/bundler/pull/7238))
   - Add `--[no-]git` option to `bundle gem` to generate non source control gems. Useful for monorepos, for example ([#7263](https://github.com/rubygems/bundler/pull/7263))
 
-Bug fixes:
+## Bug fixes:
 
   - Raise when the same gem is available in multiple sources, and show a suggestion to solve it ([#5985](https://github.com/rubygems/bundler/pull/5985))
   - Validate that bundler has permissions to write to the tmp directory, and raise with a meaningful error otherwise ([#5954](https://github.com/rubygems/bundler/pull/5954))
@@ -245,7 +245,7 @@ Bug fixes:
   - Fix `bundle doctor` command ([#7309](https://github.com/rubygems/bundler/pull/7309))
   - Fix bundler giving an unclear recommendation when duplicated gems are found in the Gemfile ([#7302](https://github.com/rubygems/bundler/pull/7302))
 
-Documentation:
+## Documentation:
 
   - Fix typo on a file extension in `bundle.ronn` [#7146](https://github.com/rubygems/bundler/pull/7146)
   - Fix incorrect default value for `cache_path` configuration ([#7229](https://github.com/rubygems/bundler/pull/7229))
@@ -259,7 +259,7 @@ Documentation:
 
 # 2.0.2 (2019-06-13)
 
-Minor enhancements:
+## Minor enhancements:
 
   - Fixes for Bundler integration with ruby-src ([#6941](https://github.com/rubygems/bundler/pull/6941), [#6973](https://github.com/bundler/bundler/pull/6973), [#6977](https://github.com/bundler/bundler/pull/6977), [#6315](https://github.com/bundler/bundler/pull/6315), [#7061](https://github.com/bundler/bundler/pull/7061))
   - Use `__dir__` instead of `__FILE__` when generating a gem with `bundle gem` ([#6503](https://github.com/rubygems/bundler/pull/6503))
@@ -278,14 +278,14 @@ Minor enhancements:
   - Fixed an issue where the `github` source was not using `https` by default that we mentioned in the 2.0 release ([#7182](https://github.com/rubygems/bundler/pull/7182))
   - Fixed an issue where `rake release` was not outputting the message to users asking for a 2fa token ([#7199](https://github.com/rubygems/bundler/pull/7199))
 
-Documentation:
+## Documentation:
 
   - Fix incorrect documented `BUNDLE_PATH_RELATIVE_TO_CWD` env var ([#6751](https://github.com/rubygems/bundler/pull/6751))
   - Update URLs in Bundler's documentation to use `https` ([#6935](https://github.com/rubygems/bundler/pull/6935))
 
 # 2.0.1 (2019-01-04)
 
-Bug fixes:
+## Bug fixes:
 
   - Relaxed RubyGems requirement to `>= 2.5.0` ([#6867](https://github.com/rubygems/bundler/pull/6867))
 
@@ -295,15 +295,15 @@ Bug fixes:
 
 # 2.0.0.pre.3 (2018-12-30)
 
-Breaking changes:
+## Breaking changes:
 
   - Bundler 2 now requires RubyGems 3.0.0 at minimum
 
-Bug fixes:
+## Bug fixes:
 
   - Ruby 2.6 compatibility fixes (@segiddins)
 
-Minor enhancements:
+## Minor enhancements:
 
   - Import changes from Bundler 1.17.3 release
 
@@ -311,7 +311,7 @@ Minor enhancements:
 
 # 2.0.0.pre.2 (2018-11-27)
 
-Breaking changes:
+## Breaking changes:
 
   - `:github` source in the Gemfile now defaults to using HTTPS
 
@@ -323,7 +323,7 @@ Changes
 
 # 2.0.0.pre.1 (2018-11-09)
 
-Breaking changes:
+## Breaking changes:
 
   - Dropped support for versions of Ruby under 2.3
   - Dropped support for version of RubyGems under 2.5
@@ -333,12 +333,12 @@ Breaking changes:
 
 # 1.17.3 (2018-12-27)
 
-Bug fixes:
+## Bug fixes:
 
  - Fix a Bundler error when installing gems on old versions of RubyGems ([#6839](https://github.com/rubygems/bundler/issues/6839), @colby-swandale)
  - Fix a rare issue where Bundler was removing itself after a `bundle clean` ([#6829](https://github.com/rubygems/bundler/issues/6829), @colby-swandale)
 
-Documentation:
+## Documentation:
 
   - Add entry for the `bundle remove` command to the main Bundler manual page
 
@@ -356,7 +356,7 @@ Documentation:
 
 # 1.17.0.pre.2 (2018-10-13)
 
-Features:
+## Features:
 
   - Configure Bundler home, cache, config and plugin directories with `BUNDLE_USER_HOME`, `BUNDLE_USER_CACHE`, `BUNDLE_USER_CONFIG` and `BUNDLE_USER_PLUGIN` env vars ([#4333](https://github.com/rubygems/bundler/issues/4333), @gwerbin)
   - Add `--all` option to `bundle binstubs` that will generate an executable file for all gems with commands in the bundle
@@ -372,7 +372,7 @@ Features:
 
 # 1.17.0.pre.1 (2018-09-24)
 
-Features:
+## Features:
 
   - Check folder/file permissions of the Bundle home directory in the `bundle doctor` command ([#5786](https://github.com/rubygems/bundler/issues/5786), @ajwann)
   - Remove compiled gem extensions when running `bundle clean` ([#5596](https://github.com/rubygems/bundler/issues/5596), @akhramov)
@@ -398,12 +398,12 @@ Features:
 
 # 1.16.6 (2018-10-05)
 
-Minor enhancements:
+## Minor enhancements:
 
   - Add an error message when adding a gem with `bundle add` that's already in the bundle ([#6341](https://github.com/rubygems/bundler/issues/6341), @agrim123)
   - Add Homepage, Source Code and Changelog URI metadata fields to the `bundle gem` gemspec template (@walf443)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix issue where updating a gem resulted in the gem's version being downgraded when `BUNDLE_ONLY_UPDATE_TO_NEWER_VERSIONS` was set ([#6529](https://github.com/rubygems/bundler/issues/6529), @theflow)
   - Fix some rescue calls that don't specifiy error type (@utilum)
@@ -412,7 +412,7 @@ Bug fixes:
   - Refactor check for OpenSSL in `bundle env` (@voxik)
   - Remove an unnecessary assignment in Metadata (@voxik)
 
-Documentation:
+## Documentation:
 
   - Update docs to reflect revised guidance to check in Gemfile.lock into version control for gems ([#5879](https://github.com/rubygems/bundler/issues/5879), @arbonap)
   - Add documentation for the `--all` flag in `bundle update` (@agrim123)
@@ -420,11 +420,11 @@ Documentation:
 
 # 1.16.5 (2018-09-18)
 
-Minor enhancements:
+## Minor enhancements:
 
   - Add support for TruffleRuby (@eregon)
 
-Bug fixes:
+## Bug fixes:
 
   - Avoid printing git errors when checking the version on incorrectly packaged versions of Bundler ([#6453](https://github.com/rubygems/bundler/issues/6453), @greysteil)
   - Fix issue where Bundler does not check the given class when comparing equality in DepProxy (@ChrisBr)
@@ -436,13 +436,13 @@ Bug fixes:
 
 # 1.16.4 (2018-08-17)
 
-Minor enhancements:
+## Minor enhancements:
 
   - Welcome new members to the Bundler core team (@indirect)
   - Don't mutate original error trees when determining version_conflict_message (@greysteil)
   - Update vendored Molinillo to 0.6.6 (@segiddins)
 
-Bug fixes:
+## Bug fixes:
 
   - Reword bundle update regression message to be more clear to the user when a gem's version is downgraded ([#6584](https://github.com/rubygems/bundler/issues/6584), @ralphbolo)
   - Respect --conservative flag when updating a dependency group ([#6560](https://github.com/rubygems/bundler/issues/6560), @greysteil)
@@ -451,17 +451,17 @@ Bug fixes:
   - Use UTF-8 for reading files including Gemfile ([#6660](https://github.com/rubygems/bundler/issues/6660), @eregon)
   - Remove unnecessary `while` loop in path resolver helper (@ojab)
 
-Documentation:
+## Documentation:
 
   - Document that `bundle show [--paths]` sorts results by name (@kemitchell)
 
 # 1.16.3 (2018-07-17)
 
-Features:
+## Features:
 
   - Support URI::File of Ruby 2.6 (@hsbt)
 
-Bug fixes:
+## Bug fixes:
 
   - Expand symlinks during setup to allow Bundler to load correctly when using symlinks in $GEM_HOME ([#6465](https://github.com/rubygems/bundler/issues/6465), @ojab, @indirect)
   - Dont let Bundler create temporary folders for gem installs which are owned by root ([#6258](https://github.com/rubygems/bundler/issues/6258), @colby-swandale)
@@ -471,14 +471,14 @@ Bug fixes:
   - Handle Errno::ENOTSUP in the Bundler Process Lock to prevent exceptions when using NFS mounts ([#6566](https://github.com/rubygems/bundler/issues/6566), @colby-swandale)
   - Respect encodings when reading gemspecs ([#6598](https://github.com/rubygems/bundler/issues/6598), @deivid-rodriguez)
 
-Documentation:
+## Documentation:
 
   - Fix links between manual pages (@BanzaiMan)
   - Add warning to Gemfile documentation for the use of the `source` option when declaring gems ([#6280](https://github.com/rubygems/bundler/issues/6280), @forestgagnon)
 
 # 1.16.2 (2018-04-20)
 
-Minor enhancements:
+## Minor enhancements:
 
   - Include the gem's source in the gem install error message when available (@papanikge)
   - Remove unnecessary executable bit from gem template (@voxik)
@@ -487,7 +487,7 @@ Minor enhancements:
   - Use `Bundler.rubygems.inflate` instead of the Gem::Util method directly (@segiddins)
   - Remove unused instance variable (@segiddins)
 
-Bug fixes:
+## Bug fixes:
 
   - Only trap INT signal and have Ruby's signal default handler be invoked (@shayonj)
   - Fix warning about the use of `__FILE__` in RubyGems integration testing (@MSP-Greg)
@@ -513,7 +513,7 @@ Bug fixes:
   - Support Bundler installing on a readonly filesystem without a home directory ([#6461](https://github.com/rubygems/bundler/issues/6461), @grosser)
   - Filter git uri credentials in source description (@segiddins)
 
-Documentation:
+## Documentation:
 
   - Correct typos in `bundle binstubs` man page (@erikj, @samueloph)
   - Update links in `bundle gem` command documentation to use https (@KrauseFx)
@@ -528,7 +528,7 @@ Documentation:
 
 # 1.16.1 (2017-12-12)
 
-Bug fixes:
+## Bug fixes:
 
   - avoid hanging on complex resolver errors ([#6114](https://github.com/rubygems/bundler/issues/6114), @halfbyte)
   - avoid an error when running `bundle update --group` ([#6156](https://github.com/rubygems/bundler/issues/6156), @mattbrictson)
@@ -541,7 +541,7 @@ Bug fixes:
 
 # 1.16.0 (2017-10-31)
 
-Bug fixes:
+## Bug fixes:
 
   - avoid new RubyGems warning about unsafe YAML loading (to keep output consistent) (@segiddins)
   - load digest subclasses in a thread-safe manner (@segiddins, @colby-swandale)
@@ -555,11 +555,11 @@ Bug fixes:
 
 # 1.16.0.pre.3 (2017-10-04)
 
-Features:
+## Features:
 
   - the output from `bundle env` includes more information, particularly both the compiled & loaded versions of OpenSSL (@indirect)
 
-Bug fixes:
+## Bug fixes:
 
   - fix a bug where installing on FreeBSD would accidentally raise an error ([#6013](https://github.com/rubygems/bundler/issues/6013), @olleolleolle)
   - fix a regression in 1.16 where pre-release gems could accidentally be resolved even when the gemfile contained no pre-release requirements (@greysteil)
@@ -568,7 +568,7 @@ Bug fixes:
 
 # 1.16.0.pre.2 (2017-09-06)
 
-Bug fixes:
+## Bug fixes:
 
   - handle when a connection is missing a socket when warning about OpenSSL version (@greysteil)
   - the description for the `rake release` task now reflects `$RUBYGEMS_HOST` (@wadetandy)
@@ -576,7 +576,7 @@ Bug fixes:
 
 # 1.16.0.pre.1 (2017-09-04)
 
-Features:
+## Features:
 
   - allow using non-branch symbolic refs in a git source ([#4845](https://github.com/rubygems/bundler/issues/4845), @segiddins)
   - allow absolute paths in the `cache path` setting ([#5627](https://github.com/rubygems/bundler/issues/5627), @mal)
@@ -595,7 +595,7 @@ Features:
   - allow adding credentials to a gem source during deployment when `allow_deployment_source_credential_changes` is set (@adrian-gomez)
   - making an outdated (and insecure) TLS connection to rubygems.org will print a warning (@segiddins)
 
-Bug fixes:
+## Bug fixes:
 
   - allow configuring a mirror fallback timeout without a trailing slash ([#4830](https://github.com/rubygems/bundler/issues/4830), @segiddins)
   - fix handling of mirrors for file: urls that contain upper-case characters (@segiddins)
@@ -619,7 +619,7 @@ Bug fixes:
 
 # 1.15.4 (2017-08-19)
 
-Bug fixes:
+## Bug fixes:
 
   - handle file conflicts gracefully in `bundle gem` (@rafaelfranca, @segiddins)
   - bundler will fail gracefully when the bundle path contains the system path separator ([#5485](https://github.com/rubygems/bundler/issues/5485), ajwann)
@@ -628,18 +628,18 @@ Bug fixes:
 
 # 1.15.3 (2017-07-21)
 
-Bug fixes:
+## Bug fixes:
 
   - ensure that empty strings passed to `bundle config` are serialized & parsed properly ([#5881](https://github.com/rubygems/bundler/issues/5881), @segiddins)
   - avoid printing an outdated version warning when running a parseable command (@segiddins)
 
 # 1.15.2 (2017-07-17)
 
-Features:
+## Features:
 
   - new gemfiles created by bundler will include an explicit `github` git source that uses `https` (@segiddins)
 
-Bug fixes:
+## Bug fixes:
 
   - inline gemfiles work when `BUNDLE_BIN` is set ([#5847](https://github.com/rubygems/bundler/issues/5847), @segiddins)
   - avoid using the old dependency API when there are no changes to the compact index files ([#5373](https://github.com/rubygems/bundler/issues/5373), @greysteil)
@@ -653,7 +653,7 @@ Bug fixes:
 
 # 1.15.1 (2017-06-02)
 
-Bug fixes:
+## Bug fixes:
 
   - `bundle lock --update GEM` will fail gracefully when the gem is not in the lockfile ([#5693](https://github.com/rubygems/bundler/issues/5693), @segiddins)
   - `bundle init --gemspec` will fail gracefully when the gemspec is invalid (@colby-swandale)
@@ -666,14 +666,14 @@ Bug fixes:
 
 # 1.15.0.pre.4 (2017-05-10)
 
-Bug fixes:
+## Bug fixes:
 
   - avoid conflicts when `Gem.finish_resolve` is called after the bundle has been set up (@segiddins)
   - ensure that `Gem::Specification.find_by_name` always returns an object that can have `#to_spec` called on it ([#5592](https://github.com/rubygems/bundler/issues/5592), @jules2689)
 
 # 1.15.0.pre.3 (2017-04-30)
 
-Bug fixes:
+## Bug fixes:
 
   - avoid redundant blank lines in the readme generated by `bundle gem` (@koic)
   - ensure that `open-uri` is not loaded after `bundle exec` (@segiddins)
@@ -683,7 +683,7 @@ Bug fixes:
 
 # 1.15.0.pre.2 (2017-04-23)
 
-Bug fixes:
+## Bug fixes:
 
   - ensure pre-existing fit caches are updated from remote sources ([#5423](https://github.com/rubygems/bundler/issues/5423), @alextaylor000)
   - avoid duplicating specs in the lockfile after updating with the gem uninstalled ([#5599](https://github.com/rubygems/bundler/issues/5599), @segiddins)
@@ -691,7 +691,7 @@ Bug fixes:
 
 # 1.15.0.pre.1 (2017-04-16)
 
-Features:
+## Features:
 
   - print a notification when a newer version of bundler is available ([#4683](https://github.com/rubygems/bundler/issues/4683), @segiddins)
   - add man pages for all bundler commands ([#4988](https://github.com/rubygems/bundler/issues/4988), @feministy)
@@ -707,7 +707,7 @@ Features:
   - add the `bundle pristine` command to re-install gems from cached `.gem` files ([#4509](https://github.com/rubygems/bundler/issues/4509), @denniss)
   - add a `--parseable` option for `bundle config` (@JuanitoFatas, @colby-swandale)
 
-Performance:
+## Performance:
 
   - speed up gemfile initialization by storing locked dependencies as a hash (@jules2689)
   - speed up gemfile initialization by making locked dependency comparison lazy, avoiding object allocation (@jules2689)
@@ -716,7 +716,7 @@ Performance:
   - avoid diffing large arrays when no sources in the gemfile have changed (@segiddins)
   - avoid evaluating full gemspecs when running with RubyGems 2.5+ (@segiddins)
 
-Bug fixes:
+## Bug fixes:
 
   - fix cases where `bundle update` would print a resolver conflict instead of updating the selected gems ([#5031](https://github.com/rubygems/bundler/issues/5031), [#5095](https://github.com/bundler/bundler/issues/5095), @segiddins)
   - print out a stack trace after an interrupt when running in debug mode (@segiddins)
@@ -735,7 +735,7 @@ Bug fixes:
 
 # 1.14.6 (2017-03-03)
 
-Bug fixes:
+## Bug fixes:
 
   - avoid undefined constant `Bundler::Plugin::API::Source` exception ([#5409](https://github.com/rubygems/bundler/issues/5409), @segiddins)
   - avoid incorrect warnings about needing to enable `specific_platform` (@segiddins)
@@ -745,7 +745,7 @@ Bug fixes:
 
 # 1.14.5 (2017-02-22)
 
-Bug fixes:
+## Bug fixes:
 
   - avoid loading all unused gemspecs during `bundle exec` on RubyGems 2.3+ (@segiddins)
   - improve resolver performance when dependencies have zero or one total possibilities ignoring requirements ([#5444](https://github.com/rubygems/bundler/issues/5444), [#5457](https://github.com/bundler/bundler/issues/5457), @segiddins)
@@ -760,7 +760,7 @@ Bug fixes:
 
 # 1.14.4 (2017-02-12)
 
-Bug fixes:
+## Bug fixes:
 
   - fail gracefully when attempting to overwrite an existing directory with `bundle gem` ([#5358](https://github.com/rubygems/bundler/issues/5358), @nodo)
   - fix a resolver bug that would cause bundler to report conflicts that it could resolve ([#5359](https://github.com/rubygems/bundler/issues/5359), [#5362](https://github.com/bundler/bundler/issues/5362), @segiddins)
@@ -773,27 +773,27 @@ Bug fixes:
 
 # 1.14.3 (2017-01-24)
 
-Bug fixes:
+## Bug fixes:
 
   - fix the resolver attempting to activate ruby-platform gems when the bundle is only for other platforms ([#5349](https://github.com/rubygems/bundler/issues/5349), [#5356](https://github.com/bundler/bundler/issues/5356), @segiddins)
   - avoid re-resolving a locked gemfile that uses `gemspec` and includes development dependencies ([#5349](https://github.com/rubygems/bundler/issues/5349), @segiddins)
 
 # 1.14.2 (2017-01-22)
 
-Bug fixes:
+## Bug fixes:
 
   - fix using `force_ruby_platform` on windows ([#5344](https://github.com/rubygems/bundler/issues/5344), @segiddins)
   - fix an incorrect version conflict error when using `gemspec` on multiple platforms ([#5340](https://github.com/rubygems/bundler/issues/5340), @segiddins)
 
 # 1.14.1 (2017-01-21)
 
-Bug fixes:
+## Bug fixes:
 
   - work around a ruby 2.2.2 bug that caused a stack consistency error during installation ([#5342](https://github.com/rubygems/bundler/issues/5342), @segiddins)
 
 # 1.14.0 (2017-01-20)
 
-Bug fixes:
+## Bug fixes:
 
   - ensure `Settings::Mirror` is autoloaded under the `Settings` namespace
     ([#5238](https://github.com/rubygems/bundler/issues/5238), @segiddins)
@@ -801,7 +801,7 @@ Bug fixes:
 
 # 1.14.0.pre.2 (2017-01-11)
 
-Bug fixes:
+## Bug fixes:
 
   - allow not selecting a gem when running `bundle open` ([#5301](https://github.com/rubygems/bundler/issues/5301), @segiddins)
   - support installing gems from git branches that contain shell metacharacters ([#5295](https://github.com/rubygems/bundler/issues/5295), @segiddins)
@@ -810,7 +810,7 @@ Bug fixes:
 
 # 1.14.0.pre.1 (2016-12-29)
 
-Features:
+## Features:
 
   - `bundle doctor` first runs `bundle check` (@segiddins)
   - the bundler trampoline is automatically enabled when the target version is greater than bundler 2 (@segiddins)
@@ -830,12 +830,12 @@ Features:
   - add support for the `ruby_25` gemfile filter (@amatsuda)
   - when installing with a lockfile that is missing dependencies, allow installation to proceed (but without parallelism) (@segiddins)
 
-Performance:
+## Performance:
 
   - improve `require "bundler"` performance by ~5x (@segiddins)
   - allow install gems in parallel when running on rubygems 2+
 
-Bug fixes:
+## Bug fixes:
 
   - config files with CRLF line endings can be read ([#4435](https://github.com/rubygems/bundler/issues/4435), @segiddins)
   - `bundle lock` activates gems for the current platform even if they were activated under a different platform for a separate dependency ([#4896](https://github.com/rubygems/bundler/issues/4896), @segiddins)
@@ -867,25 +867,25 @@ Bug fixes:
 
 # 1.13.7 (2016-12-25)
 
-Features:
+## Features:
 
   - add support for the `ruby_24` gemfile filter ([#5281](https://github.com/rubygems/bundler/issues/5281), @amatsuda)
 
 # 1.13.6 (2016-10-22)
 
-Bug fixes:
+## Bug fixes:
 
   - make the `gem` method public again, fixing a regression in 1.13.4 ([#5102](https://github.com/rubygems/bundler/issues/5102), @segiddins)
 
 # 1.13.5 (2016-10-15)
 
-Bug fixes:
+## Bug fixes:
 
   - Ensure a locked pre-release spec can always be re-resolved ([#5089](https://github.com/rubygems/bundler/issues/5089), @segiddins)
 
 # 1.13.4 (2016-10-11)
 
-Bug fixes:
+## Bug fixes:
 
  - stop printing warning when compact index versions file is rewritten ([#5064](https://github.com/rubygems/bundler/issues/5064), @indirect)
  - fix `parent directory is world writable but not sticky` error on install ([#5043](https://github.com/rubygems/bundler/issues/5043), @indirect)
@@ -894,13 +894,13 @@ Bug fixes:
 
 # 1.13.3 (2016-10-10)
 
-Bug fixes:
+## Bug fixes:
 
   - add support for weak etags to the new index (@segiddins)
 
 # 1.13.2 (2016-09-30)
 
-Bug fixes:
+## Bug fixes:
 
   - allow `Settings` to be initialized without a root directory (@m1k3)
   - allow specifying ruby engines in the gemfile as a symbol ([#4919](https://github.com/rubygems/bundler/issues/4919), @JuanitoFatas)
@@ -910,13 +910,13 @@ Bug fixes:
   - fail gracefully when parsing the metadata for a gemspec from the compact index fails (@segiddins)
   - fix system gems not being copied to --path on bundle install (e.g. --deployment) ([#4974](https://github.com/rubygems/bundler/issues/4974), @chrismo)
 
-Performance:
+## Performance:
 
   - avoid parsing the lockfile twice when evaluating gemfiles (@segiddins)
 
 # 1.13.1 (2016-09-13)
 
-Bug fixes:
+## Bug fixes:
 
   - ensure that `Gem::Source` is available, fixing several exceptions ([#4944](https://github.com/rubygems/bundler/issues/4944), @dekellum)
   - ensure that dependency resolution works when multiple gems have the same dependency ([#4961](https://github.com/rubygems/bundler/issues/4961), @segiddins)
@@ -927,7 +927,7 @@ Bug fixes:
 
 # 1.13.0.rc.2 (2016-08-21)
 
-Features:
+## Features:
 
   - add setting `exec_disable_load` to force `exec` to spawn a new Ruby process (@segiddins)
   - add `doctor` command to help with issues like unlinked compiled gems ([#4765](https://github.com/rubygems/bundler/issues/4765), @mistydemeo)
@@ -940,7 +940,7 @@ Features:
   - add `only_update_to_newer_versions` setting to prevent downgrades during `update` (@segiddins)
   - expanded experimental plugin support to include hooks and sources (@asutoshpalai)
 
-Bug fixes:
+## Bug fixes:
 
   - retry gem downloads ([#4846](https://github.com/rubygems/bundler/issues/4846), @jkeiser)
   - improve the CompactIndex to handle capitalized legacy gems ([#4867](https://github.com/rubygems/bundler/issues/4867), @segiddins)
@@ -959,12 +959,12 @@ Bug fixes:
 
 # 1.13.0.rc.1 (2016-06-27)
 
-Features:
+## Features:
 
   - when `bundle config major_deprecations` or `BUNDLE_MAJOR_DEPRECATIONS` is set, deprecation warnings for bundler 2 will be printed (@segiddins)
   - when running with `--verbose`, bundler will print the reason it is re-resolving a gemfile (@segiddins)
 
-Bug fixes:
+## Bug fixes:
 
   - fix support for running RubyGems 1.x on Ruby 2.3 ([#4698](https://github.com/rubygems/bundler/issues/4698), @segiddins)
   - fix bundle exec'ing to a ruby file when gems are installed into a path ([#4592](https://github.com/rubygems/bundler/issues/4592), @chrismo)
@@ -976,14 +976,14 @@ Bug fixes:
 
 # 1.13.0.pre.1 (2016-06-20)
 
-Performance:
+## Performance:
 
   - speed up gemfile resolution during `bundle install` by between 4x-100x ([#4376](https://github.com/rubygems/bundler/issues/4376), @segiddins)
   - generally reduce object allocations when using bundler (@segiddins)
   - speed up bin generation for path gems with many files ([#2846](https://github.com/rubygems/bundler/issues/2846), @segiddins)
   - fix detecting path spec changes to avoid re-resolving unnecessarily (@jrafanie)
 
-Features:
+## Features:
 
   - automatically trampoline to the bundler version locked in the lockfile, only updating to the running version on `bundle update --bundler` (@segiddins)
   - laying the groundwork for plugin support, which is currently unsuppported, undocumented, disabled by default, and liable to change without notice (@asutoshpalai)
@@ -1001,7 +1001,7 @@ Features:
   - add `--add-platform` option to `bundle lock` (@segiddins)
   - fail gracefully when a resolved spec's `required_ruby_version` or `required_rubygems_version` is incompatible (@segiddins)
 
-Bug fixes:
+## Bug fixes:
 
   - implicitly unlock the resolved ruby version when the declared requirements in the gemfile are incompatible with the locked version ([#4595](https://github.com/rubygems/bundler/issues/4595), [#4627](https://github.com/bundler/bundler/issues/4627), @segiddins)
   - add support for quoted paths in `$PATH` ([#4323](https://github.com/rubygems/bundler/issues/4323), @segiddins)
@@ -1018,19 +1018,19 @@ Bug fixes:
 
 # 1.12.6 (2016-10-10)
 
-Bug fixes:
+## Bug fixes:
   - add support for weak etags to the new index (@segiddins)
 
 # 1.12.5 (2016-05-25)
 
-Bug fixes:
+## Bug fixes:
   - only take over `--help` on `bundle exec` when the first two arguments are `exec` and `--help` ([#4596](https://github.com/rubygems/bundler/issues/4596), @segiddins)
   - don't require `require: true` dependencies that are excluded via `env` or `install_if` (@BrianHawley)
   - reduce the number of threads used simultaneously by bundler ([#4367](https://github.com/rubygems/bundler/issues/4367), @will-in-wi)
 
 # 1.12.4 (2016-05-16)
 
-Bug fixes:
+## Bug fixes:
   - ensure concurrent use of the new index can't corrupt the cache ([#4519](https://github.com/rubygems/bundler/issues/4519), @domcleal)
   - allow missing rubygems credentials when pushing a gem with a custom host ([#4437](https://github.com/rubygems/bundler/issues/4437), @Cohen-Carlisle)
   - fix installing built-in specs with `--standalone` ([#4557](https://github.com/rubygems/bundler/issues/4557), @segiddins)
@@ -1038,19 +1038,19 @@ Bug fixes:
 
 # 1.12.3 (2016-05-06)
 
-Bug fixes:
+## Bug fixes:
   - fix uncoditionally writing `.bundle/config` when running `bundle install` (@segiddins)
   - fall back to the dependency API and the full index when the home directory is not writable (@segiddins)
 
 # 1.12.2 (2016-05-04)
 
-Bug fixes:
+## Bug fixes:
   - fix modifying a frozen string when the resolver conflicts on dependencies with requirements ([#4520](https://github.com/rubygems/bundler/issues/4520), @grzuy)
   - fix `bundle exec foo --help` not showing the invoked command's help ([#4480](https://github.com/rubygems/bundler/issues/4480), @b-ggs)
 
 # 1.12.1 (2016-04-30)
 
-Bug fixes:
+## Bug fixes:
   - automatically fallback when the new index has a checksum mismatch instead of erroring (@segiddins)
   - fix computation of new index file local checksums on Windows ([#4472](https://github.com/rubygems/bundler/issues/4472), @mwrock)
   - properly handle certain resolver backtracking cases without erroring (@segiddins, [#4484](https://github.com/rubygems/bundler/issues/4484))
@@ -1062,23 +1062,23 @@ Bug fixes:
 
 # 1.12.0.rc.4 (2016-04-21)
 
-Bug fixes:
+## Bug fixes:
 
   - don't fail when `bundle outdated` is run with flags and the lockfile contains non-semver versions ([#4438](https://github.com/rubygems/bundler/issues/4438), @RochesterinNYC)
 
 # 1.12.0.rc.3 (2016-04-19)
 
-Bug fixes:
+## Bug fixes:
 
   - don't allow new attributes to dirty a lockfile when running `bundle exec`, `-rbundler/setup`, or `bundle check` (@segiddins)
 
 # 1.12.0.rc.2 (2016-04-15)
 
-Features:
+## Features:
 
   - `bundle outdated` handles all combinations of `--major`, `--minor`, and `--patch` ([#4396](https://github.com/rubygems/bundler/issues/4396), @RochesterinNYC)
 
-Bug fixes:
+## Bug fixes:
 
   - prevent endless recursive copy for `bundle package --all` ([#4392](https://github.com/rubygems/bundler/issues/4392), @RochesterinNYC)
   - allow executables that are `load`ed to exit non-0 via an `at_exit` hook when invoked by `bundle exec` (@segiddins)
@@ -1086,11 +1086,11 @@ Bug fixes:
 
 # 1.12.0.rc (2016-03-13)
 
-Performance:
+## Performance:
 
   - Download gem metadata from globally distributed CDN endpoints ([#4358](https://github.com/rubygems/bundler/issues/4358), @segiddins)
 
-Bug fixes:
+## Bug fixes:
 
   - handle Ruby pre-releases built from source ([#4324](https://github.com/rubygems/bundler/issues/4324), @RochesterinNYC)
   - support binstubs from RubyGems 2.6 ([#4341](https://github.com/rubygems/bundler/issues/4341), @segiddins)
@@ -1098,17 +1098,17 @@ Bug fixes:
 
 # 1.12.0.pre.2 (2016-02-26)
 
-Performance:
+## Performance:
 
   - speed up `bundle exec` by `load`ing the executable whenever possible, saving roughly .2 seconds per invocation (@segiddins)
 
-Features:
+## Features:
 
   - add a `--patch` flag for `bundle outdated` (@RochesterinNYC)
   - add `Bundler.clean_env` and `Bundler.original_env` ([#4232](https://github.com/rubygems/bundler/issues/4232), @njam)
   - add `--frozen` support to `bundle package` ([#3356](https://github.com/rubygems/bundler/issues/3356), @RochesterinNYC)
 
-Bug fixes:
+## Bug fixes:
 
   - place bundler loaded gems after `-I` and `RUBYLIB` (@Elffers)
   - give a better error message when filesystem access raises an `EPROTO` error ([#3581](https://github.com/rubygems/bundler/issues/3581), [#3932](https://github.com/bundler/bundler/issues/3932), [#4163](https://github.com/bundler/bundler/issues/4163), @RochesterinNYC)
@@ -1125,12 +1125,12 @@ Bug fixes:
 
 # 1.12.0.pre.1 (2016-02-09)
 
-Performance:
+## Performance:
 
   - speed up `bundle install` and `bundle update` by using the new compact gem index (@segiddins, @fotanus, @indirect)
   - speed up `bundle exec` by avoiding loading the gemfile twice ([#2951](https://github.com/rubygems/bundler/issues/2951), [#2952](https://github.com/bundler/bundler/issues/2952), @segiddins)
 
-Features:
+## Features:
 
   - add support for using version operators to specify ruby versions in the Gemfile (@jtarchie)
   - redirect `--help` flag for plugins to that plugin's man page (@RochesterinNYC)
@@ -1142,7 +1142,7 @@ Features:
   - add support for ruby 2.4 ([#4266](https://github.com/rubygems/bundler/issues/4266), @segiddins)
   - add `bundle outdated --parseable` for machine-readable output (@RochesterinNYC)
 
-Bug fixes:
+## Bug fixes:
 
   - fix `bundle package --all` recursing endlessly ([#4158](https://github.com/rubygems/bundler/issues/4158), @RochesterinNYC)
   - fail fast on more errors when fetching remote resources ([#4154](https://github.com/rubygems/bundler/issues/4154), @RochesterinNYC)
@@ -1167,13 +1167,13 @@ Bug fixes:
 
 # 1.11.2 (2015-12-15)
 
-Bug fixes:
+## Bug fixes:
 
   - _really_ stop calling `required_ruby_version` on nil @specifications ([#4147](https://github.com/rubygems/bundler/issues/4147), @indirect)
 
 # 1.11.1 (2015-12-15)
 
-Bug fixes:
+## Bug fixes:
 
   - lazy-load Psych, again ([#4149](https://github.com/rubygems/bundler/issues/4149), @indirect)
   - allow gemspec gems on other platforms ([#4150](https://github.com/rubygems/bundler/issues/4150), @indirect)
@@ -1186,14 +1186,14 @@ Bug fixes:
 
 # 1.11.0.pre.2 (2015-12-06)
 
-Bug fixes:
+## Bug fixes:
 
   - fail gracefully when trying to execute a non-executable file ([#4081](https://github.com/rubygems/bundler/issues/4081), @fotanus)
   - fix a crash when pushing a gem via `rake release` (@segiddins)
 
 # 1.11.0.pre.1 (2015-11-29)
 
-Features:
+## Features:
 
   - actual Gemfile and lockfile filenames are used in messages ([#3672](https://github.com/rubygems/bundler/issues/3672), @segiddins)
   - the git remote for `rake release` is now customizable (@skateman)
@@ -1217,7 +1217,7 @@ Features:
   - add `pkg` to rake's clobber list ([#3676](https://github.com/rubygems/bundler/issues/3676), @jasonkarns)
   - retry fetching specs when fetching version metadata fails (@jingweno)
 
-Bug fixes:
+## Bug fixes:
 
   - avoid showing bundler version warning messages twice (@fotanus)
   - fix running `bundle check` with `--path` when the gems are only installed globally (@akihiro17)
@@ -1249,14 +1249,14 @@ Bug fixes:
   - fix `bundle console` falling back to `irb` when the preferred console is unavailable (@felixbuenemann)
   - restrict platforms when referencing a `gemspec` in the `Gemfile` to those defined in the gemspec ([#4102](https://github.com/rubygems/bundler/issues/4102), @smellsblue)
 
-Performance:
+## Performance:
 
   - speed up dependency resolution in pathological cases by 25x ([#3803](https://github.com/rubygems/bundler/issues/3803), @segiddins)
   - drop string allocations when searching for gems (@jrafanie)
 
 # 1.10.6 (2015-07-22)
 
-Bug fixes:
+## Bug fixes:
 
   - only warn on invalid gemspecs (@indirect)
   - fix installing dependencies in the correct order ([#3799](https://github.com/rubygems/bundler/issues/3799), @pducks32)
@@ -1265,7 +1265,7 @@ Bug fixes:
 
 # 1.10.5 (2015-06-24)
 
-Bug fixes:
+## Bug fixes:
 
   - don't add or update BUNDLED WITH during `install` with no changes (@segiddins)
   - fix sorting of mixed DependencyLists with RubyGems >= 2.23 ([#3762](https://github.com/rubygems/bundler/issues/3762), @tony-spataro-rs)
@@ -1274,7 +1274,7 @@ Bug fixes:
 
 # 1.10.4 (2015-06-16)
 
-Bug fixes:
+## Bug fixes:
 
   - don't add BUNDLED WITH to the lock when Spring runs `check` over and over (@indirect)
   - display "with native extensions" log output correctly (@ivantsepp)
@@ -1282,7 +1282,7 @@ Bug fixes:
 
 # 1.10.3 (2015-06-03)
 
-Bug fixes:
+## Bug fixes:
 
   - allow missing gemspec files when validating path and git gems ([#3686](https://github.com/rubygems/bundler/issues/3686), [#3698](https://github.com/bundler/bundler/issues/3698), @segiddins)
   - fix regression in `rake install` ([#3701](https://github.com/rubygems/bundler/issues/3701), [#3705](https://github.com/bundler/bundler/issues/3705), @segiddins)
@@ -1291,13 +1291,13 @@ Bug fixes:
 
 # 1.10.2 (2015-05-29)
 
-Bug fixes:
+## Bug fixes:
 
   - fix regression in `bundle update GEM` performance introduced in 1.10.0 ([#3687](https://github.com/rubygems/bundler/issues/3687), @segiddins)
 
 # 1.10.1 (2015-05-28)
 
-Bug fixes:
+## Bug fixes:
 
   - silence ruby warning when running CLI commands (@segiddins)
   - validate gemspecs in non-packaging mode ([#3681](https://github.com/rubygems/bundler/issues/3681), @segiddins)
@@ -1309,12 +1309,12 @@ Bug fixes:
 
 # 1.10.0.rc (2015-05-16)
 
-Features:
+## Features:
 
   - dramatically speed up resolving some slow Gemfiles ([#3635](https://github.com/rubygems/bundler/issues/3635), @segiddins)
   - track CI platforms running Bundler ([#3646](https://github.com/rubygems/bundler/issues/3646), @fotanus)
 
-Bug fixes:
+## Bug fixes:
 
   - allow `viz` to work with prereleases ([#3621](https://github.com/rubygems/bundler/issues/3621), [#3217](https://github.com/bundler/bundler/issues/3217), @aprescott)
   - validate gemspecs used in path and git gems ([#3639](https://github.com/rubygems/bundler/issues/3639), @segiddins, @indirect)
@@ -1323,19 +1323,19 @@ Bug fixes:
 
 # 1.10.0.pre.2 (2015-05-07)
 
-Bug fixes:
+## Bug fixes:
 
   - make BUNDLED WITH backwards compatible ([#3623](https://github.com/rubygems/bundler/issues/3623), @segiddins)
 
 # 1.10.0.pre.1 (2015-05-05)
 
-Bug fixes:
+## Bug fixes:
 
   - always clean up tmp dirs ([#3277](https://github.com/rubygems/bundler/issues/3277), @hone, @indirect, @segiddins)
 
 # 1.10.0.pre (2015-05-03)
 
-Features:
+## Features:
 
   - support gem extensions built into any directory on RubyGems 2.2+ ([#3582](https://github.com/rubygems/bundler/issues/3582), @voxik)
   - add 'bundler/inline' which provides a `gemfile` method ([#3440](https://github.com/rubygems/bundler/issues/3440), @segiddins)
@@ -1350,47 +1350,47 @@ Features:
   - make timeouts and retries configurable via `config` ([#3601](https://github.com/rubygems/bundler/issues/3601), @pducks32)
   - add `install_if` Gemfile method for conditional installs ([#3611](https://github.com/rubygems/bundler/issues/3611), @segiddins)
 
-Bug fixes:
+## Bug fixes:
 
   - standalone mode now uses builtin gems correctly ([#3610](https://github.com/rubygems/bundler/issues/3610), @segiddins)
   - fix `rake spec:deps` on MinGW Ruby 2.0+ ([#3487](https://github.com/rubygems/bundler/issues/3487), @marutosi)
   - remember all y/n answers when generating gems ([#3579](https://github.com/rubygems/bundler/issues/3579), @pducks32)
 
-Performance:
+## Performance:
 
   - use RubyGems stub specifications when possible ([#3580](https://github.com/rubygems/bundler/issues/3580), @segiddins)
 
-Deprecations:
+## Deprecations:
 
   - deprecated the (never enabled) `bundle_ruby` binary (@smlance)
 
 # 1.9.10 (2015-06-22)
 
-Features:
+## Features:
 
   - the `BUNDLED WITH` section of lockfiles generated by 1.10+ will be preserved (@segiddins)
 
 # 1.9.9 (2015-05-16)
 
-Bug fixes:
+## Bug fixes:
 
   - read mirror and credential settings from older versions ([#3557](https://github.com/rubygems/bundler/issues/3557), @Strech)
 
 # 1.9.8 (2015-05-12)
 
-Bug fixes:
+## Bug fixes:
 
   - fix regression in sudo mode introduced by 1.9.7 ([#3642](https://github.com/rubygems/bundler/issues/3642), @segiddins)
 
 # 1.9.7 (2015-05-11)
 
-Bug fixes:
+## Bug fixes:
 
   - always clean up tmp dirs ([#3277](https://github.com/rubygems/bundler/issues/3277), @hone, @indirect, @segiddins)
 
 # 1.9.6 (2015-05-02)
 
-Bug fixes:
+## Bug fixes:
 
   - use RubyGems spec stubs if available (@segiddins)
   - allow creating gems with names containing two dashes ([#3483](https://github.com/rubygems/bundler/issues/3483), @janlelis)
@@ -1398,20 +1398,20 @@ Bug fixes:
 
 # 1.9.5 (2015-04-29)
 
-Bug fixes:
+## Bug fixes:
 
   - respect Gemfile sources when installing a gem present in two sources ([#3585](https://github.com/rubygems/bundler/issues/3585), @tmoore)
 
 # 1.9.4 (2015-04-13)
 
-Bug fixes:
+## Bug fixes:
 
   - fix regression in installing x86 and universal gems ([#3565](https://github.com/rubygems/bundler/issues/3565), @jdmundrawala)
   - improve error when gems are missing ([#3564](https://github.com/rubygems/bundler/issues/3564), @sealocal)
 
 # 1.9.3 (2015-04-12)
 
-Bug fixes:
+## Bug fixes:
 
   - handle removal of `specs` from rubygems/rubygems@620910 ([#3558](https://github.com/rubygems/bundler/issues/3558), @indirect)
   - install 'universal' gems on Windows ([#3066](https://github.com/rubygems/bundler/issues/3066), @jdmundrawala)
@@ -1420,7 +1420,7 @@ Bug fixes:
 
 # 1.9.2 (2015-03-30)
 
-Bug fixes:
+## Bug fixes:
 
   - ensure gem executables are executable ([#3517](https://github.com/rubygems/bundler/issues/3517), [#3511](https://github.com/bundler/bundler/issues/3511), @indirect)
   - fix warnings in Molinillo ([#3516](https://github.com/rubygems/bundler/issues/3516), @segiddins)
@@ -1430,7 +1430,7 @@ Bug fixes:
 
 # 1.9.1 (2015-03-21)
 
-Bug fixes:
+## Bug fixes:
 
   - avoid exception in 'bundler/gem_tasks' ([#3492](https://github.com/rubygems/bundler/issues/3492), @segiddins)
 
@@ -1438,7 +1438,7 @@ Bug fixes:
 
 # 1.9.0.rc (2015-03-13)
 
-Bug fixes:
+## Bug fixes:
 
   - make Bundler.which stop finding directories (@nohoho)
   - handle Bundler prereleases correctly ([#3470](https://github.com/rubygems/bundler/issues/3470), @segiddins)
@@ -1446,77 +1446,77 @@ Bug fixes:
 
 # 1.9.0.pre.1 (2015-03-11)
 
-Bug fixes:
+## Bug fixes:
 
   - make `gem` command work again (@arthurnn)
 
 # 1.9.0.pre (2015-03-11)
 
-Features:
+## Features:
 
   - prefer gemspecs closest to the directory root ([#3428](https://github.com/rubygems/bundler/issues/3428), @segiddins)
   - debug log for API request limits ([#3452](https://github.com/rubygems/bundler/issues/3452), @neerfri)
 
-Minor enhancements:
+## Minor enhancements:
 
   - Molinillo resolver, shared with CocoaPods (@segiddins)
   - updated Thor to v0.19.1 (@segiddins)
 
 # 1.8.9 (2015-05-02)
 
-Bug fixes:
+## Bug fixes:
 
   - Use RubyGems spec stubs if available (@segiddins)
 
 # 1.8.8 (2015-04-29)
 
-Bug fixes:
+## Bug fixes:
 
   - Respect Gemfile sources when installing a gem present in two sources ([#3585](https://github.com/rubygems/bundler/issues/3585), @tmoore)
 
 # 1.8.7 (2015-04-07)
 
-Bug fixes:
+## Bug fixes:
 
   - stop suppressing errors inside gems that get required ([#3549](https://github.com/rubygems/bundler/issues/3549), @indirect)
 
 # 1.8.6 (2015-03-30)
 
-Bug fixes:
+## Bug fixes:
 
   - keep gems locked when updating another gem from the same source ([#3250](https://github.com/rubygems/bundler/issues/3250), @indirect)
   - resolve race that could build gems without saved arguments ([#3404](https://github.com/rubygems/bundler/issues/3404), @indirect)
 
 # 1.8.5 (2015-03-11)
 
-Bug fixes:
+## Bug fixes:
 
   - remove MIT license from gemspec when removing license file (@indirect)
   - respect 'no' immediately as well as saving it in `gem` config (@kirs)
 
 # 1.8.4 (2015-03-05)
 
-Bug fixes:
+## Bug fixes:
 
   - document --all-platforms option ([#3449](https://github.com/rubygems/bundler/issues/3449), @moeffju)
   - find gems from all sources on exec after install ([#3450](https://github.com/rubygems/bundler/issues/3450), @TimMoore)
 
 # 1.8.3 (2015-02-24)
 
-Bug fixes:
+## Bug fixes:
 
   - handle boolean values for gem settings (@EduardoBautista)
   - stop always looking for updated `path` gems ([#3414](https://github.com/rubygems/bundler/issues/3414), [#3417](https://github.com/bundler/bundler/issues/3417), [#3429](https://github.com/bundler/bundler/issues/3429), @TimMoore)
 
 # 1.8.2 (2015-02-14)
 
-Bug fixes:
+## Bug fixes:
 
   - allow config settings for gems with 'http' in the name again ([#3398](https://github.com/rubygems/bundler/issues/3398), @TimMoore)
 
 # 1.8.1 (2015-02-13)
 
-Bug fixes:
+## Bug fixes:
 
   - synchronize building git gem native extensions ([#3385](https://github.com/rubygems/bundler/issues/3385), @antifuchs & @indirect)
   - set gemspec bindir correctly ([#3392](https://github.com/rubygems/bundler/issues/3392), @TimMoore)
@@ -1527,7 +1527,7 @@ Bug fixes:
 
 # 1.8.0 (2015-02-10)
 
-Bug fixes:
+## Bug fixes:
 
   - gemfile `github` blocks now work ([#3379](https://github.com/rubygems/bundler/issues/3379), @indirect)
   - look up installed gems in remote sources ([#3300](https://github.com/rubygems/bundler/issues/3300), [#3368](https://github.com/bundler/bundler/issues/3368), [#3377](https://github.com/bundler/bundler/issues/3377), [#3380](https://github.com/bundler/bundler/issues/3380), [#3381](https://github.com/bundler/bundler/issues/3381), @indirect)
@@ -1536,21 +1536,21 @@ Bug fixes:
 
 # 1.8.0.rc (2015-01-26)
 
-Features:
+## Features:
 
   - add `config disable_multisource` option to ensure sources can't compete (@indirect)
 
-Bug fixes:
+## Bug fixes:
 
   - don't add extra quotes around long, quoted config values (@aroben, [#3338](https://github.com/rubygems/bundler/issues/3338))
 
-Security fixes:
+## Security fixes:
 
   - warn when more than one top-level source is present (@indirect)
 
 # 1.8.0.pre (2015-01-26)
 
-Features:
+## Features:
 
   - add metadata allowed_push_host to new gem template ([#3002](https://github.com/rubygems/bundler/issues/3002), @juanitofatas)
   - adds a `--no-install` flag to `bundle package` (@d-reinhold)
@@ -1572,33 +1572,33 @@ Features:
   - add `config gemfile /path` for other Gemfile locations (@dholdren)
   - add `github` method alonside the `git` method (@BenMorganIO)
 
-Bug fixes:
+## Bug fixes:
 
   - reduce memory usage with threaded parallel workers (@Who828)
   - support read-only git gems (@pmahoney)
   - various resolver performance improvements (@dubek)
   - untaint git gem paths for Rubygems compatibility (@tdtds)
 
-Documentation:
+## Documentation:
 
   - add missing Gemfile global `path` explanation (@agenteo)
 
 # 1.7.15 (2015-04-29)
 
-Bug fixes:
+## Bug fixes:
 
   - Respect Gemfile sources when installing a gem present in two sources ([#3585](https://github.com/rubygems/bundler/issues/3585), @tmoore)
 
 # 1.7.14 (2015-03-30)
 
-Bug fixes:
+## Bug fixes:
 
   - Keep gems locked when updating another gem from the same source ([#3250](https://github.com/rubygems/bundler/issues/3250), @indirect)
   - Don't add extra quotes around long, quoted config values (@aroben, [#3338](https://github.com/rubygems/bundler/issues/3338))
 
 # 1.7.13 (2015-02-07)
 
-Bug fixes:
+## Bug fixes:
 
   - Look up installed gems in remote sources ([#3300](https://github.com/rubygems/bundler/issues/3300), [#3368](https://github.com/bundler/bundler/issues/3368), [#3377](https://github.com/bundler/bundler/issues/3377), [#3380](https://github.com/bundler/bundler/issues/3380), [#3381](https://github.com/bundler/bundler/issues/3381), @indirect)
   - Look up gems across all sources to satisfy dependencies ([#3365](https://github.com/rubygems/bundler/issues/3365), @keiths-osc)
@@ -1606,29 +1606,29 @@ Bug fixes:
 
 # 1.7.12 (2015-01-08)
 
-Bug fixes:
+## Bug fixes:
 
   - Always send credentials for sources, fixing private Gemfury gems ([#3342](https://github.com/rubygems/bundler/issues/3342), @TimMoore)
 
 # 1.7.11 (2015-01-04)
 
-Bug fixes:
+## Bug fixes:
 
   - Recognize `:mri_22` and `:mingw_22`, rather than just `:ruby_22` ([#3328](https://github.com/rubygems/bundler/issues/3328), @myabc)
 
 # 1.7.10 (2014-12-29)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix source blocks sometimes causing deployment mode to fail wrongly ([#3298](https://github.com/rubygems/bundler/issues/3298), @TimMoore)
 
-Features:
+## Features:
 
   - Support `platform :mri_22` and related version bits ([#3309](https://github.com/rubygems/bundler/issues/3309), @thomasfedb)
 
 # 1.7.9 (2014-12-09)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix an issue where bundler sometime spams one gem in Gemfile.lock ([#3216](https://github.com/rubygems/bundler/issues/3216), @Who828)
   - Ensure bundle update installs the newer version of the gem ([#3089](https://github.com/rubygems/bundler/issues/3089), @Who828)
@@ -1636,13 +1636,13 @@ Bug fixes:
 
 # 1.7.8 (2014-12-06)
 
-Bug fixes:
+## Bug fixes:
 
   - Hide credentials while warning about gems with ambiguous sources ([#3256](https://github.com/rubygems/bundler/issues/3256), @TimMoore)
 
 # 1.7.7 (2014-11-19)
 
-Bug fixes:
+## Bug fixes:
 
   - Ensure server credentials stored in config or ENV will be used ([#3180](https://github.com/rubygems/bundler/issues/3180), @arronmabrey)
   - Fix race condition causing errors while installing git-based gems ([#3174](https://github.com/rubygems/bundler/issues/3174), @Who828)
@@ -1650,20 +1650,20 @@ Bug fixes:
 
 # 1.7.6 (2014-11-11)
 
-Bug fixes:
+## Bug fixes:
 
   - CA certificates that work with all OpenSSLs (@luislavena, @indirect)
 
 # 1.7.5 (2014-11-10)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix --deployment with source blocks and non-alphabetical gems ([#3224](https://github.com/rubygems/bundler/issues/3224), @TimMoore)
   - Vendor CA chain to validate new rubygems.org HTTPS certificate (@indirect)
 
 # 1.7.4 (2014-10-19)
 
-Bug fixes:
+## Bug fixes:
 
   - Allow --deployment after `pack` while using source blocks ([#3167](https://github.com/rubygems/bundler/issues/3167), @TimMoore)
   - Use dependency API even when HTTP credentials are in ENV ([#3191](https://github.com/rubygems/bundler/issues/3191), @fvaleur)
@@ -1672,20 +1672,20 @@ Bug fixes:
 
 # 1.7.3 (2014-09-14)
 
-Bug fixes:
+## Bug fixes:
 
   - `extconf.rb` is now generated with the right path for `create_makefile` (@andremedeiros)
   - Fix various Ruby warnings (@piotrsanarki, @indirect)
 
 # 1.7.2 (2014-08-23)
 
-Bug fixes:
+## Bug fixes:
 
   - Revert gem source sorting in lock files (@indirect)
 
 # 1.7.1 (2014-08-20)
 
-Bug fixes:
+## Bug fixes:
 
   - Install gems from one source needed by gems in another source (@indirect)
   - Install the same gem versions even after some are installed (@TimMoore)
@@ -1693,44 +1693,44 @@ Bug fixes:
 
 # 1.7.0 (2014-08-13)
 
-Security fixes:
+## Security fixes:
 
   - Fix for CVE-2013-0334, installing gems from an unexpected source (@TimMoore)
 
-Features:
+## Features:
 
   - Gemfile `source` calls now take a block containing gems from that source (@TimMoore)
   - Added the `:source` option to `gem` to specify a source (@TimMoore)
 
-Bug fixes:
+## Bug fixes:
 
   - Warn on ambiguous gems available from more than one source (@TimMoore)
 
 # 1.6.7 (2014-10-19)
 
-Features:
+## Features:
 
   - warn to upgrade when using useless source blocks (@danfinnie)
 
-Documentation:
+## Documentation:
 
   - explain how to use gem server credentials via ENV (@hwartig)
 
 # 1.6.6 (2014-08-23)
 
-Bug fixes:
+## Bug fixes:
 
   - restore Gemfile credentials to Gemfile.lock (@indirect)
 
 # 1.6.5 (2014-07-23)
 
-Bug fixes:
+## Bug fixes:
 
   - require openssl explicitly to fix rare HTTPS request failures (@indirect, [#3107](https://github.com/rubygems/bundler/issues/3107))
 
 # 1.6.4 (2014-07-17)
 
-Bug fixes:
+## Bug fixes:
 
   - fix undefined constant error when can't find gem during binstubs ([#3095](https://github.com/rubygems/bundler/issues/3095), @jetaggart)
   - work when installed git gems are not writable ([#3092](https://github.com/rubygems/bundler/issues/3092), @pmahoney)
@@ -1742,7 +1742,7 @@ Bug fixes:
 
 # 1.6.3 (2014-06-16)
 
-Bug fixes:
+## Bug fixes:
 
   - fix regression when resolving many conflicts ([#2994](https://github.com/rubygems/bundler/issues/2994), @Who828)
   - use local gemspec for builtin gems during install --local ([#3041](https://github.com/rubygems/bundler/issues/3041), @Who828)
@@ -1751,7 +1751,7 @@ Bug fixes:
 
 # 1.6.2 (2014-04-13)
 
-Bug fixes:
+## Bug fixes:
 
   - fix an exception when using builtin gems ([#2915](https://github.com/rubygems/bundler/issues/2915), [#2963](https://github.com/bundler/bundler/issues/2963), @gnufied)
   - cache gems that are built in to the running ruby ([#2975](https://github.com/rubygems/bundler/issues/2975), @indirect)
@@ -1759,23 +1759,23 @@ Bug fixes:
   - keep standalone working even with builtin gems (@indirect)
   - don't update vendor/cache in deployment mode ([#2921](https://github.com/rubygems/bundler/issues/2921), @indirect)
 
-Features:
+## Features:
 
   - warn informatively when `bundle install` is run as root ([#2936](https://github.com/rubygems/bundler/issues/2936), @1337807)
 
 # 1.6.1 (2014-04-02)
 
-Bug fixes:
+## Bug fixes:
 
   - update C extensions when git gem versions change ([#2948](https://github.com/rubygems/bundler/issues/2948), @dylanahsmith)
 
-Features:
+## Features:
 
   - add support for C extensions in sudo mode on Rubygems 2.2
 
 # 1.6.0 (2014-03-28)
 
-Bug fixes:
+## Bug fixes:
 
   - many Gemfiles that caused incorrect errors now resolve correctly (@Who828)
   - redirects across hosts now work on rubies without OpenSSL ([#2686](https://github.com/rubygems/bundler/issues/2686), @grddev)
@@ -1790,7 +1790,7 @@ Bug fixes:
   - handle exception installing when build_info owned by root (@Who828)
   - skip HTTP redirects from rubygems.org, huge speed boost (@Who828)
 
-Features:
+## Features:
 
   - resolver rewritten to avoid recursion (@Who828)
   - add `git_source` for custom options like :github and :gist (@strzalek)
@@ -1805,20 +1805,20 @@ Features:
   - Avoid using threequals operator where possible (@as-cii)
   - Add `bundle update --group` to update specific group ([#2731](https://github.com/rubygems/bundler/issues/2731) @banyan)
 
-Documentation:
+## Documentation:
 
   - Add missing switches for bundle-install(1) and bundle-update(1) (@as-cii)
 
 # 1.5.3 (2014-02-06)
 
-Bug fixes:
+## Bug fixes:
 
   - find "missing" gems that are actually present ([#2780](https://github.com/rubygems/bundler/issues/2780), [#2818](https://github.com/bundler/bundler/issues/2818), [#2854](https://github.com/bundler/bundler/issues/2854))
   - use n-1 cores when given n jobs for parallel install (@jdickey)
 
 # 1.5.2 (2014-01-10)
 
-Bug fixes:
+## Bug fixes:
 
   - fix integration with Rubygems 1.8.0-1.8.19
   - handle ENETDOWN exception during network requests
@@ -1829,34 +1829,34 @@ Bug fixes:
 
 # 1.5.1 (2013-12-28)
 
-Bug fixes:
+## Bug fixes:
 
   - correctly find gems installed with Ruby by default
 
 # 1.5.0 (2013-12-26)
 
-Features:
+## Features:
 
   - install missing gems if their specs are present (@hone)
 
-Bug fixes:
+## Bug fixes:
 
   - use print for "Installing…" so messages are thread-safe (@TimMoore)
 
 # 1.5.0.rc.2 (2013-12-18)
 
-Features:
+## Features:
 
   - Support threaded installation on Rubygems 2.0.7+
   - Debug installation logs in .bundle/install.log
 
-Bug fixes:
+## Bug fixes:
 
   - Try to catch gem installation race conditions
 
 # 1.5.0.rc.1 (2013-11-09)
 
-Features:
+## Features:
 
   - bundle update also accepts --jobs ([#2692](https://github.com/rubygems/bundler/issues/2692), @mrkn)
   - add fork URL to README for new `bundle gem` ([#2665](https://github.com/rubygems/bundler/issues/2665), @zzak)
@@ -1865,7 +1865,7 @@ Features:
   - don't redownload installed specs for `bundle install` ([#2680](https://github.com/rubygems/bundler/issues/2680), @cainlevy)
   - override gem sources with mirrors ([#2650](https://github.com/rubygems/bundler/issues/2650), @danielsdeleo, @mkristian)
 
-Bug fixes:
+## Bug fixes:
 
   - fix sharing same SSL socket when forking workers for parallel install ([#2632](https://github.com/rubygems/bundler/issues/2632))
   - fix msg typo in GitNotAllowedError ([#2654](https://github.com/rubygems/bundler/issues/2654), @joyicecloud)
@@ -1877,7 +1877,7 @@ Bug fixes:
 
 # 1.4.0.rc.1 (2013-09-29)
 
-Features:
+## Features:
 
   - add support for the x64-mingw32 platform ([#2356](https://github.com/rubygems/bundler/issues/2356), [#2590](https://github.com/bundler/bundler/issues/2590), @larskanis)
   - add :patchlevel option to ruby DSL
@@ -1892,7 +1892,7 @@ Features:
   - add `--retry` to retry failed network and git commands (@schneems)
   - include command and versions in User-Agent (@indirect, @joyicecloud)
 
-Bug fixes:
+## Bug fixes:
 
   - allow passwordless Basic Auth ([#2606](https://github.com/rubygems/bundler/issues/2606), @rykov)
   - don't suggest `gem install foo` when `foo` is a git gem that fails (@kirs)
@@ -1901,7 +1901,7 @@ Bug fixes:
 
 # 1.4.0.pre.1 (2013-08-04)
 
-Features:
+## Features:
 
   - retry network requests while installing gems ([#2561](https://github.com/rubygems/bundler/issues/2561), @ascherger)
   - faster installs using gemspecs from the local system cache ([#2497](https://github.com/rubygems/bundler/issues/2497), @mipearson)
@@ -1918,7 +1918,7 @@ Features:
   - add quiet option to `bundle package` ([#2573](https://github.com/rubygems/bundler/issues/2573), @shtirlic)
   - use RUBYLIB instead of RUBYOPT for better Windows support ([#2536](https://github.com/rubygems/bundler/issues/2536), @equinux)
 
-Bug fixes:
+## Bug fixes:
 
   - reduce stack size while resolving to fix JRuby overflow ([#2510](https://github.com/rubygems/bundler/issues/2510), @headius)
   - display GitErrors while loading specs in --verbose mode ([#2461](https://github.com/rubygems/bundler/issues/2461))
@@ -1927,7 +1927,7 @@ Bug fixes:
 
 # 1.3.6 (8 January 2014)
 
-Bug fixes:
+## Bug fixes:
 
   - make gemspec path option preserve relative paths in lock file (@bwillis)
   - use umask when creating binstubs ([#1618](https://github.com/rubygems/bundler/issues/1618), @v-yarotsky)
@@ -1947,11 +1947,11 @@ Bug fixes:
 
 # 1.3.5 (3 April 2013)
 
-Features:
+## Features:
 
   - progress indicator while resolver is running (@chief)
 
-Bug fixes:
+## Bug fixes:
 
   - update local overrides with orphaned revisions (@jamesferguson)
   - revert to working quoting of RUBYOPT on Windows (@ogra)
@@ -1960,36 +1960,36 @@ Bug fixes:
 
 # 1.3.4 (15 March 2013)
 
-Bug fixes:
+## Bug fixes:
 
   - load YAML on Rubygems versions that define module YAML
   - fix regression that broke --without on ruby 1.8.7
 
 # 1.3.3 (13 March 2013)
 
-Features:
+## Features:
 
   - compatible with Rubygems 2.0.2 (higher and lower already work)
   - mention skipped groups in bundle install and bundle update output (@simi)
   - `gem` creates rake tasks for minitest (@coop) and rspec
 
-Bug fixes:
+## Bug fixes:
 
   - require rbconfig for standalone mode
 
 # 1.3.2 (7 March 2013)
 
-Features:
+## Features:
 
   - include rubygems.org CA chain
 
-Bug fixes:
+## Bug fixes:
 
   - don't store --dry-run as a Bundler setting
 
 # 1.3.1 (3 March 2013)
 
-Bug fixes:
+## Bug fixes:
 
   - include manpages in gem, restoring many help pages
   - handle more SSL certificate verification failures
@@ -1998,7 +1998,7 @@ Bug fixes:
 
 # 1.3.0 (24 February 2013)
 
-Features:
+## Features:
 
   - raise a useful error when the lockfile contains a merge conflict (@zofrex)
   - ensure `rake release` checks for uncommitted as well as unstaged (@benmoss)
@@ -2006,7 +2006,7 @@ Features:
   - set $MANPATH inside `exec` for gems with man pages (@sunaku)
   - partial gem names for `open` and `update` now return a list (@takkanm)
 
-Bug fixes:
+## Bug fixes:
 
   - `update` now (again) finds gems that aren't listed in the Gemfile
   - `install` now (again) updates cached gems that aren't in the Gemfile
@@ -2015,13 +2015,13 @@ Bug fixes:
 
 # 1.3.0.pre.8 (12 February 2013)
 
-Security fixes:
+## Security fixes:
 
   - validate SSL certificate chain during HTTPS network requests
   - don't send HTTP Basic Auth creds when redirected to other hosts (@perplexes)
   - add `--trust-policy` to `install`, like `gem install -P` (@CosmicCat, [#2293](https://github.com/rubygems/bundler/issues/2293))
 
-Features:
+## Features:
 
   - optimize resolver when too new of a gem is already activated (@rykov, [#2248](https://github.com/rubygems/bundler/issues/2248))
   - update Net::HTTP::Persistent for SSL cert validation and no_proxy ENV
@@ -2034,7 +2034,7 @@ Features:
   - inform users when the resolver starts
   - disable reverse DNS to speed up API requests (@raggi)
 
-Bug fixes:
+## Bug fixes:
 
   - raise errors while requiring dashed gems ([#1807](https://github.com/rubygems/bundler/issues/1807))
   - quote the Bundler path on Windows (@jgeiger, [#1862](https://github.com/rubygems/bundler/issues/1862), [#1856](https://github.com/bundler/bundler/issues/1856))
@@ -2046,14 +2046,14 @@ Bug fixes:
 
 # 1.3.0.pre.7 (22 January 2013)
 
-Bug fixes:
+## Bug fixes:
 
   - stubs for gems with dev deps no longer cause exceptions ([#2272](https://github.com/rubygems/bundler/issues/2272))
   - don't suggest binstubs to --binstubs users
 
 # 1.3.0.pre.6 (22 January 2013)
 
-Features:
+## Features:
 
   - `binstubs` lists child gem bins if a gem has no binstubs
   - `bundle gem --edit` will open the new gemspec (@ndbroadbent)
@@ -2061,7 +2061,7 @@ Features:
   - `bundle env` prints info about bundler's environment (@peeja)
   - add `BUNDLE_IGNORE_CONFIG` environment variable support (@richo)
 
-Bug fixes:
+## Bug fixes:
 
   - don't overwrite custom binstubs during `install --binstubs`
   - don't throw an exception if `binstubs` gem doesn't exist
@@ -2069,39 +2069,39 @@ Bug fixes:
 
 # 1.3.0.pre.5 (Jan 9, 2013)
 
-Features:
+## Features:
 
   - make `--standalone` require lines ruby engine/version agnostic
   - add `--dry-run` to `bundle clean` (@wfarr, [#2237](https://github.com/rubygems/bundler/issues/2237))
 
-Bug fixes:
+## Bug fixes:
 
   - don't skip writing binstubs when doing `bundle install`
   - distinguish between ruby 1.9/2.0 when using :platforms (@spastorino)
 
 # 1.3.0.pre.4 (Jan 3, 2013)
 
-Features:
+## Features:
 
   - `bundle binstubs <gem>` to setup individual binstubs
   - `bundle install --binstubs ""` will remove binstubs option
   - `bundle clean --dry-run` will print out gems instead of removing them
 
-Bug fixes:
+## Bug fixes:
 
   - Avoid stack traces when Ctrl+C during bundle command (@mitchellh)
   - fix YAML parsing in in ruby-preview2
 
 # 1.3.0.pre.3 (Dec 21, 2012)
 
-Features:
+## Features:
 
   - pushing gems during `rake release` can be disabled (@trans)
   - installing gems with `rake install` is much faster (@utkarshkukreti)
   - added platforms :ruby_20 and :mri_20, since the ABI has changed
   - added '--edit' option to open generated gemspec in editor
 
-Bug fixes:
+## Bug fixes:
 
   - :git gems with extensions now work with Rubygems >= 2.0 (@jeremy)
   - revert SemVer breaking change to :github
@@ -2111,13 +2111,13 @@ Bug fixes:
 
 # 1.3.0.pre.2 (Dec 9, 2012)
 
-Features:
+## Features:
 
   - `config` expands local overrides like `local.rack .` (@gkop, [#2205](https://github.com/rubygems/bundler/issues/2205))
   - `gem` generates files correctly for names like `jquery-rails` (@banyan, [#2201](https://github.com/rubygems/bundler/issues/2201))
   - use gems from gists with the :gist option in the Gemfile (@jgaskins)
 
-Bug fixes:
+## Bug fixes:
 
   - Gemfile sources other than rubygems.org work even when .gemrc contains sources
   - caching git gems now caches specs, fixing e.g. git ls-files (@bison, [#2039](https://github.com/rubygems/bundler/issues/2039))
@@ -2126,7 +2126,7 @@ Bug fixes:
 
 # 1.3.0.pre (Nov 29, 2012)
 
-Features:
+## Features:
 
   - compatible with Ruby 2.0.0-preview2
   - compatible with Rubygems 2.0.0.preview2 (@drbrain, @evanphx)
@@ -2142,7 +2142,7 @@ Features:
   - `gem` command generates MIT license (@BrentWheeldon)
   - gem rake task 'release' resuses existing tags (@shtirlic)
 
-Bug fixes:
+## Bug fixes:
 
   - JRuby new works with HTTPS gem sources (@davidcelis)
   - `install` installs both rake rake-built gems at once (@crowbot, [#2107](https://github.com/rubygems/bundler/issues/2107))
@@ -2156,20 +2156,20 @@ Bug fixes:
 
 # 1.2.5 (Feb 24, 2013)
 
-Bug fixes:
+## Bug fixes:
 
   - install Gemfiles with HTTP sources even without OpenSSL present
   - display CerficateFailureError message in full
 
 # 1.2.4 (Feb 12, 2013)
 
-Features:
+## Features:
 
   - warn about Ruby 2.0 and Rubygems 2.0
   - inform users when the resolver starts
   - disable reverse DNS to speed up API requests (@raggi)
 
-Bug fixes:
+## Bug fixes:
 
   - don't send user/pass when redirected to another host (@perplexes)
   - load gemspecs containing unicode (@gaffneyc, [#2301](https://github.com/rubygems/bundler/issues/2301))
@@ -2179,13 +2179,13 @@ Bug fixes:
 
 # 1.2.3 (Nov 29, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - fix exceptions while loading some gemspecs
 
 # 1.2.2 (Nov 14, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - support new Psych::SyntaxError for Ruby 2.0.0 (@tenderlove, @sol)
   - `bundle viz` works with git gems again (@hirochachacha)
@@ -2193,30 +2193,30 @@ Bug fixes:
 
 # 1.2.1 (Sep 19, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - `bundle clean` now works with BUNDLE_WITHOUT groups again
   - have a net/http read timeout around the Gemcutter API Endpoint
 
 # 1.2.0 (Aug 30, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - raise original error message from LoadError's
 
-Documentation:
+## Documentation:
 
   - `platform` man pages
 
 # 1.2.0.rc.2 (Aug 8, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - `clean` doesn't remove gems that are included in the lockfile
 
 # 1.2.0.rc (Jul 17, 2012)
 
-Features:
+## Features:
 
   - `check` now has a `--dry-run` option (@svenfuchs, [#1811](https://github.com/rubygems/bundler/issues/1811))
   - loosen ruby directive for engines
@@ -2227,7 +2227,7 @@ Features:
   - fall back on the full index when experiencing syck errors ([#1419](https://github.com/rubygems/bundler/issues/1419))
   - handle syntax errors in Ruby gemspecs ([#1974](https://github.com/rubygems/bundler/issues/1974))
 
-Bug fixes:
+## Bug fixes:
 
   - fix `pack`/`cache` with `--all` (@josevalim, [#1989](https://github.com/rubygems/bundler/issues/1989))
   - don't display warning message when `cache_all` is set
@@ -2236,17 +2236,17 @@ Bug fixes:
 
 # 1.2.0.pre.1 (May 27, 2012)
 
-Features:
+## Features:
 
   - Git gems import submodules of submodules recursively (@nwwatson, [#1935](https://github.com/rubygems/bundler/issues/1935))
 
-Bug fixes:
+## Bug fixes:
 
   - Exit from `check` with a non-zero status when frozen with no lock
   - Use `latest_release` in Capistrano and Vlad integration ([#1264](https://github.com/rubygems/bundler/issues/1264))
   - Work around a Ruby 1.9.3p194 bug in Psych when config files are empty
 
-Documentation:
+## Documentation:
 
   - Add instructions for local git repos to the `config` manpage
   - Update the `Gemfile` manpage to include ruby versions (@stevenh512)
@@ -2256,7 +2256,7 @@ Documentation:
 
 # 1.2.0.pre (May 4, 2012)
 
-Features:
+## Features:
 
   - bundle package now accepts --all to package git and path dependencies
   - bundle config now accepts --local, --global and --delete options
@@ -2272,16 +2272,16 @@ Features:
   - add ruby to DSL, to specify version of ruby
   - error out if the ruby version doesn't match
 
-Performance:
+## Performance:
 
   - bundle exec shouldn't run Bundler.setup just setting the right rubyopts options is enough (@spastorino, [#1598](https://github.com/rubygems/bundler/issues/1598))
 
-Bug fixes:
+## Bug fixes:
 
   - Avoid passing RUBYOPT changes in with_clean_env block (@eric1234, [#1604](https://github.com/rubygems/bundler/issues/1604))
   - Use the same ruby to run subprocesses as is running rake (@brixen)
 
-Documentation:
+## Documentation:
 
   - Add :github documentation in DSL (@zofrex, [#1848](https://github.com/rubygems/bundler/issues/1848), [#1851](https://github.com/bundler/bundler/issues/1851), [#1852](https://github.com/bundler/bundler/issues/1852))
   - Add docs for the --no-cache option (@fluxx, [#1796](https://github.com/rubygems/bundler/issues/1796))
@@ -2290,13 +2290,13 @@ Documentation:
 
 # 1.1.5 (Jul 17, 2012)
 
-Features:
+## Features:
 
   - Special case `ruby` directive from 1.2.0, so you can install Gemfiles that use it
 
 # 1.1.4 (May 27, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - Use `latest_release` in Capistrano and Vlad integration ([#1264](https://github.com/rubygems/bundler/issues/1264))
   - Unknown exceptions now link to ISSUES for help instead of a new ticket
@@ -2306,19 +2306,19 @@ Bug fixes:
 
 # 1.1.3 (March 23, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - escape the bundler root path (@tenderlove, [#1789](https://github.com/rubygems/bundler/issues/1789))
 
 # 1.1.2 (March 20, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix --deployment for multiple PATH sections of the same source ([#1782](https://github.com/rubygems/bundler/issues/1782))
 
 # 1.1.1 (March 14, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - Rescue EAGAIN so the fetcher works on JRuby on Windows
   - Stop asking users to report gem installation errors
@@ -2327,13 +2327,13 @@ Bug fixes:
   - URI-encode gem names for dependency API (@rohit, [#1672](https://github.com/rubygems/bundler/issues/1672))
   - Fix `cache` edge case in rubygems 1.3.7 ([#1202](https://github.com/rubygems/bundler/issues/1202))
 
-Performance:
+## Performance:
 
   - Reduce invocation of git ls-files in `bundle gem` gemspecs (@knu)
 
 # 1.1.0 (Mar 7, 2012)
 
-Bug fixes:
+## Bug fixes:
 
   - Clean up corrupted lockfiles on bundle installs
   - Prevent duplicate GIT sources
@@ -2341,11 +2341,11 @@ Bug fixes:
 
 # 1.1.rc.8 (Mar 3, 2012)
 
-Performance:
+## Performance:
 
   - don't resolve if the Gemfile.lock and Gemfile haven't changed
 
-Bug fixes:
+## Bug fixes:
 
   - Load gemspecs from git even when a released gem has the same version ([#1609](https://github.com/rubygems/bundler/issues/1609))
   - Declare an accurate Ruby version requirement of 1.8.7 or newer ([#1619](https://github.com/rubygems/bundler/issues/1619))
@@ -2354,13 +2354,13 @@ Bug fixes:
 
 # 1.1.rc.7 (Dec 29, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix bug where `clean` would break when using :path with no gemspec
 
 # 1.1.rc.6 (Dec 22, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix performance regression from 1.0 (@spastorino, [#1511](https://github.com/rubygems/bundler/issues/1511), [#1591](https://github.com/bundler/bundler/issues/1591), [#1592](https://github.com/bundler/bundler/issues/1592))
   - Load gems correctly when GEM_HOME is blank
@@ -2369,36 +2369,36 @@ Bug fixes:
 
 # 1.1.rc.5 (Dec 14, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix ASCII encoding errors with gem (rerelease with ruby 1.8)
 
 # 1.1.rc.4 (Dec 14, 2011)
 
-Features:
+## Features:
 
   - `bundle viz` has the option to output a DOT file instead of a PNG (@hirochachacha, [#683](https://github.com/rubygems/bundler/issues/683))
 
-Bug fixes:
+## Bug fixes:
 
   - Ensure binstubs generated when using --standalone point to the standalonde bundle (@cowboyd, [#1588](https://github.com/rubygems/bundler/issues/1588))
   - fix `bundle viz` (@hirochachacha, [#1586](https://github.com/rubygems/bundler/issues/1586))
 
 # 1.1.rc.3 (Dec 8, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - fix relative_path so it checks Bundler.root is actually in the beginning of the path ([#1582](https://github.com/rubygems/bundler/issues/1582))
   - fix bundle outdated doesn't list all gems (@joelmoss, [#1521](https://github.com/rubygems/bundler/issues/1521))
 
 # 1.1.rc.2 (Dec 6, 2011)
 
-Features:
+## Features:
 
   - Added README.md to `newgem` (@ognevsky, [#1574](https://github.com/rubygems/bundler/issues/1574))
   - Added LICENSE (MIT) to newgem (@ognevsky, [#1571](https://github.com/rubygems/bundler/issues/1571))
 
-Bug fixes:
+## Bug fixes:
 
   - only auto-namespace requires for implied requires ([#1531](https://github.com/rubygems/bundler/issues/1531))
   - fix bundle clean output for git repos ([#1473](https://github.com/rubygems/bundler/issues/1473))
@@ -2413,38 +2413,38 @@ Bug fixes:
   - `bundle init` now uses https://rubygems.org (@jjb, [#1522](https://github.com/rubygems/bundler/issues/1522))
   - `bundle install/update` does not autoclean when using --path for semver
 
-Documentation:
+## Documentation:
 
   - added documentation for --shebang option for `bundle install` (@lunks, [#1475](https://github.com/rubygems/bundler/issues/1475), [#1558](https://github.com/bundler/bundler/issues/1558))
 
 # 1.1.rc (Oct 3, 2011)
 
-Features:
+## Features:
 
   - add `--shebang` option to bundle install (@bensie, [#1467](https://github.com/rubygems/bundler/issues/1467))
   - build passes on ruby 1.9.3rc1 ([#1458](https://github.com/rubygems/bundler/issues/1458), [#1469](https://github.com/bundler/bundler/issues/1469))
   - hide basic auth credentials for custom sources ([#1440](https://github.com/rubygems/bundler/issues/1440), [#1463](https://github.com/bundler/bundler/issues/1463))
 
-Bug fixes:
+## Bug fixes:
 
   - fix index search result caching ([#1446](https://github.com/rubygems/bundler/issues/1446), [#1466](https://github.com/bundler/bundler/issues/1466))
   - fix fetcher prints multiple times during install ([#1445](https://github.com/rubygems/bundler/issues/1445), [#1462](https://github.com/bundler/bundler/issues/1462))
   - don't mention API errors from non-rubygems.org sources
   - fix autoclean so it doesn't remove bins that are used ([#1459](https://github.com/rubygems/bundler/issues/1459), [#1460](https://github.com/bundler/bundler/issues/1460))
 
-Documentation:
+## Documentation:
 
   - add :require => [...] to the gemfile(5) manpage (@nono, [#1468](https://github.com/rubygems/bundler/issues/1468))
 
 # 1.1.pre.10 (Sep 27, 2011)
 
-Features:
+## Features:
 
   - `config system_bindir foo` added, works like "-n foo" in your .gemrc file
 
 # 1.1.pre.9 (Sep 18, 2011)
 
-Features:
+## Features:
 
   - `clean` will now clean up all old .gem and .gemspec files, cleaning up older pres
   - `clean` will be automatically run after bundle install and update when using `--path` ([#1420](https://github.com/rubygems/bundler/issues/1420), [#1425](https://github.com/bundler/bundler/issues/1425))
@@ -2456,7 +2456,7 @@ Features:
   - load rubygems plugins in the bundle binary (@tpope, [#1364](https://github.com/rubygems/bundler/issues/1364))
   - make `--standalone` respect `--path` (@cowboyd, [#1361](https://github.com/rubygems/bundler/issues/1361))
 
-Bug fixes:
+## Bug fixes:
 
   - Fix `clean` to handle nested gems in a git repo ([#1329](https://github.com/rubygems/bundler/issues/1329))
   - Fix conflict from revert of benchmark tool (@boffbowsh, [#1355](https://github.com/rubygems/bundler/issues/1355))
@@ -2469,7 +2469,7 @@ Bug fixes:
 
 # 1.1.pre.8 (Aug 13, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix `bundle check` to not print fatal error message (@cldwalker, [#1347](https://github.com/rubygems/bundler/issues/1347))
   - Fix require_sudo when Gem.bindir isn't writeable ([#1352](https://github.com/rubygems/bundler/issues/1352))
@@ -2478,21 +2478,21 @@ Bug fixes:
 
 # 1.1.pre.7 (Aug 8, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fixed invalid byte sequence error while installing gem on Ruby 1.9 ([#1341](https://github.com/rubygems/bundler/issues/1341))
   - Fixed exception when sudo was needed to install gems (@spastorino)
 
 # 1.1.pre.6 (Aug 8, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix cross repository dependencies ([#1138](https://github.com/rubygems/bundler/issues/1138))
   - Fix git dependency fetching from API endpoint ([#1254](https://github.com/rubygems/bundler/issues/1254))
   - Fixes for bundle outdated (@joelmoss, [#1238](https://github.com/rubygems/bundler/issues/1238))
   - Fix bundle standalone when using the endpoint ([#1240](https://github.com/rubygems/bundler/issues/1240))
 
-Features:
+## Features:
 
   - Implement `to_ary` to avoid calls to method_missing (@tenderlove, [#1274](https://github.com/rubygems/bundler/issues/1274))
   - bundle clean removes old .gem files (@cldwalker, [#1293](https://github.com/rubygems/bundler/issues/1293))
@@ -2502,12 +2502,12 @@ Features:
 
 # 1.1.pre.5 (June 11, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix LazySpecification on Ruby 1.9 (@dpiddy, [#1232](https://github.com/rubygems/bundler/issues/1232))
   - Fix HTTP proxy support (@leobessa, [#878](https://github.com/rubygems/bundler/issues/878))
 
-Features:
+## Features:
 
   - Speed up `install --deployment` by using the API endpoint
   - Support Basic HTTP Auth for the API endpoint (@dpiddy, [#1229](https://github.com/rubygems/bundler/issues/1229))
@@ -2520,40 +2520,40 @@ Features:
 
 # 1.1.pre.4 (May 5, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix bug that could prevent installing new gems
 
 # 1.1.pre.3 (May 4, 2011)
 
-Features:
+## Features:
 
   - Add `bundle outdated` to show outdated gems (@joelmoss)
   - Remove BUNDLE_* from `Bundler.with_clean_env` (@wuputah)
   - Add Bundler.clean_system, and clean_exec (@wuputah)
   - Use git config for gem author name and email (@krekoten)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix error calling Bundler.rubygems.gem_path
   - Fix error when Gem.path returns Gem::FS instead of String
 
 # 1.1.pre.2 (April 28, 2011)
 
-Features:
+## Features:
 
   - Add :github option to Gemfile DSL for easy git repos
   - Merge all fixes from 1.0.12 and 1.0.13
 
 # 1.1.pre.1 (February 2, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Compatibility with changes made by Rubygems 1.5
 
 # 1.1.pre (January 21, 2011)
 
-Features:
+## Features:
 
   - Add bundle clean. Removes unused gems from --path directory
   - Initial Gemcutter Endpoint API work, BAI Fetching source index
@@ -2562,7 +2562,7 @@ Features:
   - Make it possible to override a .gemspec dependency's source in the
     Gemfile
 
-Breaking changes:
+## Breaking changes:
 
   - Removed bundle lock
   - Removed bundle install <path>
@@ -2575,29 +2575,29 @@ Breaking changes:
 
 # 1.0.21.rc (September 29, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Load Psych unless Syck is defined, because 1.9.2 defines YAML
 
 # 1.0.20 (September 27, 2011)
 
-Features:
+## Features:
 
   - Add platform :maglev (@timfel, [#1444](https://github.com/rubygems/bundler/issues/1444))
 
-Bug fixes:
+## Bug fixes:
 
   - Ensure YAML is required even if Psych is found
   - Handle directory names that contain invalid regex characters
 
 # 1.0.20.rc (September 18, 2011)
 
-Features:
+## Features:
 
   - Rescue interrupts to `bundle` while loading bundler.rb ([#1395](https://github.com/rubygems/bundler/issues/1395))
   - Allow clearing without groups by passing `--without ''` ([#1259](https://github.com/rubygems/bundler/issues/1259))
 
-Bug fixes:
+## Bug fixes:
 
   - Manually sort requirements in the lockfile ([#1375](https://github.com/rubygems/bundler/issues/1375))
   - Remove several warnings generated by ruby -w (@stephencelis)
@@ -2607,13 +2607,13 @@ Bug fixes:
 
 # 1.0.19.rc (September 13, 2011)
 
-Features:
+## Features:
 
   - Compatibility with Rubygems 1.8.10 installer changes
   - Report gem installation failures clearly (@rwilcox, [#1380](https://github.com/rubygems/bundler/issues/1380))
   - Useful error for cap and vlad on first deploy (@nexmat, @kirs)
 
-Bug fixes:
+## Bug fixes:
 
   - `exec` now works when the command contains 'exec'
   - Only touch lock after changes on Windows (@robertwahler, [#1358](https://github.com/rubygems/bundler/issues/1358))
@@ -2621,13 +2621,13 @@ Bug fixes:
 
 # 1.0.18 (August 16, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix typo in DEBUG_RESOLVER (@geemus)
   - Fixes rake 0.9.x warning (@mtylty, [#1333](https://github.com/rubygems/bundler/issues/1333))
   - Fix `bundle cache` again for rubygems 1.3.x
 
-Features:
+## Features:
 
   - Run the bundle install earlier in a Capistrano deployment (@cgriego, [#1300](https://github.com/rubygems/bundler/issues/1300))
   - Support hidden gemspec (@trans, @cldwalker, [#827](https://github.com/rubygems/bundler/issues/827))
@@ -2636,20 +2636,20 @@ Features:
 
 # 1.0.17 (August 8, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix rake issues with rubygems 1.3.x ([#1342](https://github.com/rubygems/bundler/issues/1342))
   - Fixed invalid byte sequence error while installing gem on Ruby 1.9 ([#1341](https://github.com/rubygems/bundler/issues/1341))
 
 # 1.0.16 (August 8, 2011)
 
-Features:
+## Features:
 
   - Performance fix for MRI 1.9 (@efficientcloud, [#1288](https://github.com/rubygems/bundler/issues/1288))
   - Shortcuts (like `bundle i`) for all commands (@amatsuda)
   - Correcly identify missing child dependency in error message
 
-Bug fixes:
+## Bug fixes:
 
   - Allow Windows network share paths with forward slashes (@mtscout6, [#1253](https://github.com/rubygems/bundler/issues/1253))
   - Check for rubygems.org credentials so `rake release` doesn't hang ([#980](https://github.com/rubygems/bundler/issues/980))
@@ -2657,30 +2657,30 @@ Bug fixes:
   - Fix `bundle install --without` on kiji (@tmm1, [#1287](https://github.com/rubygems/bundler/issues/1287))
   - Get rid of warning in ruby 1.9.3 (@smartinez87, [#1231](https://github.com/rubygems/bundler/issues/1231))
 
-Documentation:
+## Documentation:
 
   - Documentation for `gem ..., :require => false` (@kmayer, [#1292](https://github.com/rubygems/bundler/issues/1292))
   - Gems provide "executables", they are rarely also binaries (@fxn, [#1242](https://github.com/rubygems/bundler/issues/1242))
 
 # 1.0.15 (June 9, 2011)
 
-Features:
+## Features:
 
   - Improved Rubygems integration, removed many deprecation notices
 
-Bug fixes:
+## Bug fixes:
 
   - Escape URL arguments to git correctly on Windows (1.0.14 regression)
 
 # 1.0.14 (May 27, 2011)
 
-Features:
+## Features:
 
   - Rubinius platform :rbx (@rkbodenner)
   - Include gem rake tasks with "require 'bundler/gem_tasks" (@indirect)
   - Include user name and email from git config in new gemspec (@ognevsky)
 
-Bug fixes:
+## Bug fixes:
 
   - Set file permissions after checking out git repos (@tissak)
   - Remove deprecated call to Gem::SourceIndex#all_gems (@mpj)
@@ -2695,14 +2695,14 @@ Bug fixes:
 
 # 1.0.13 (May 4, 2011)
 
-Features:
+## Features:
 
   - Compatibility with Rubygems master (soon to be v1.8) (@evanphx)
   - Informative error when --path points to a broken symlink
   - Support Rake 0.9 and greater (@e2)
   - Output full errors for non-TTYs e.g. pow (@josh)
 
-Bug fixes:
+## Bug fixes:
 
   - Allow spaces in gem path names for gem tasks (@rslifka)
   - Have cap run bundle install from release_path (@martinjagusch)
@@ -2710,13 +2710,13 @@ Bug fixes:
 
 # 1.0.12 (April 8, 2011)
 
-Features:
+## Features:
 
   - Add --no-deployment option to `install` for disabling it on dev machines
   - Better error message when git fails and cache is present (@parndt)
   - Honor :bundle_cmd in cap `rake` command (@voidlock, @cgriego)
 
-Bug fixes:
+## Bug fixes:
 
   - Compatibility with Rubygems 1.7 and Rails 2.3 and vendored gems (@evanphx)
   - Fix changing gem order in lock (@gucki)
@@ -2727,12 +2727,12 @@ Bug fixes:
 
 # 1.0.11 (April 1, 2011)
 
-Features:
+## Features:
 
   - Compatibility with Rubygems 1.6 and 1.7
   - Better error messages when a git command fails
 
-Bug fixes:
+## Bug fixes:
 
   - Don't always update gemspec gems (@carllerche)
   - Remove ivar warnings (@jackdempsey)
@@ -2741,14 +2741,14 @@ Bug fixes:
 
 # 1.0.10 (February 1, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix a regression loading YAML gemspecs from :git and :path gems
   - Requires, namespaces, etc. to work with changes in Rubygems 1.5
 
 # 1.0.9 (January 19, 2011)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix a bug where Bundler.require could remove gems from the load
     path. In Rails apps with a default application.rb, this removed
@@ -2756,7 +2756,7 @@ Bug fixes:
 
 # 1.0.8 (January 18, 2011)
 
-Features:
+## Features:
 
   - Allow overriding gemspec() deps with :git deps
   - Add --local option to `bundle update`
@@ -2764,7 +2764,7 @@ Features:
   - Use `less` as help pager instead of `more`
   - Run `bundle exec rake` instead of `rake` in Capistrano tasks
 
-Bug fixes:
+## Bug fixes:
 
   - Fix --no-cache option for `bundle install`
   - Allow Vlad deploys to work without Capistrano gem installed
@@ -2778,19 +2778,19 @@ Bug fixes:
 
 # 1.0.7 (November 17, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - Remove Bundler version from the lockfile because it broke
     backwards compatibility with 1.0.0-1.0.5. Sorry. :(
 
 # 1.0.6 (November 16, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix regression in `update` that caused long/wrong results
   - Allow git gems on other platforms while installing ([#579](https://github.com/rubygems/bundler/issues/579))
 
-Features:
+## Features:
 
   - Speed up `install` command using various optimizations
   - Significantly increase performance of resolver
@@ -2800,13 +2800,13 @@ Features:
 
 # 1.0.5 (November 13, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - Fix regression disabling all operations that employ sudo
 
 # 1.0.4 (November 12, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - Expand relative :paths from Bundler.root (eg ./foogem)
   - Allow git gems in --without groups while --frozen
@@ -2820,7 +2820,7 @@ Bug fixes:
   - Disable colored output in --deployment
   - Preserve line endings in lock file
 
-Features:
+## Features:
 
   - Add support for 'mingw32' platform (aka RubyInstaller)
   - Large speed increase when Gemfile.lock is already present
@@ -2831,7 +2831,7 @@ Features:
 
 # 1.0.3 (October 15, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - Use bitwise or in #hash to reduce the chance of overflow
   - `bundle update` now works with :git + :tag updates
@@ -2847,13 +2847,13 @@ Bug fixes:
 
 # 1.0.2 (October 2, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - Actually include the man pages in the gem, so help works
 
 # 1.0.1 (October 1, 2010)
 
-Features:
+## Features:
 
   - Vlad deployment recipe, `require 'bundler/vlad'`
   - Prettier bundle graphs
@@ -2863,7 +2863,7 @@ Features:
   - Allow subclassing of GemHelper for custom tasks
   - Chdir to gem directory during `bundle open`
 
-Bug fixes:
+## Bug fixes:
 
   - Allow gemspec requirements with a list of versions
   - Accept lockfiles with windows line endings
@@ -2875,11 +2875,11 @@ Bug fixes:
 
 # 1.0.0 (August 29, 2010)
 
-Features:
+## Features:
 
   - You can now define `:bundle_cmd` in the capistrano task
 
-Bug fixes:
+## Bug fixes:
 
   - Various bugfixes to the built-in rake helpers
   - Fix a bug where shortrefs weren't unique enough and were
@@ -2897,12 +2897,12 @@ Bug fixes:
 
 # 1.0.0.rc.6 (August 23, 2010)
 
-Features:
+## Features:
 
   - Much better documentation for most of the commands and Gemfile
     format
 
-Bug fixes:
+## Bug fixes:
 
   - Don't attempt to create directories if they already exist
   - Fix the capistrano task so that it actually runs
@@ -2915,18 +2915,18 @@ Bug fixes:
 
 # 1.0.0.rc.5 (August 10, 2010)
 
-Features:
+## Features:
 
   - Make the Capistrano task more concise.
 
-Bug fixes:
+## Bug fixes:
 
   - Fix a regression with determining whether or not to use sudo
   - Allow using the --gemfile flag with the --deployment flag
 
 # 1.0.0.rc.4 (August 9, 2010)
 
-Features:
+## Features:
 
   - `bundle gem NAME` command to generate a new gem with Gemfile
   - Bundle config file location can be specified by BUNDLE_APP_CONFIG
@@ -2934,7 +2934,7 @@ Features:
     (default with --deployment)
   - Basic Capistrano task now added as 'bundler/capistrano'
 
-Bug fixes:
+## Bug fixes:
 
   - Multiple bundler process no longer share a tmp directory
   - `bundle update GEM` always updates dependencies of GEM as well
@@ -2947,7 +2947,7 @@ Bug fixes:
 
 # 1.0.0.rc.3 (August 3, 2010)
 
-Features:
+## Features:
 
   - Deprecate --production flag for --deployment, since the former
     was causing confusion with the :production group
@@ -2956,7 +2956,7 @@ Features:
   - Improve message from `bundle check` under various conditions
   - Better error when a changed Gemfile conflicts with Gemfile.lock
 
-Bug fixes:
+## Bug fixes:
 
   - Create bin/ directory if it is missing, then install binstubs
   - Error nicely on the edge case of a pinned gem with no spec
@@ -3077,20 +3077,20 @@ Bug fixes:
 
 # 0.9.26
 
-Features:
+## Features:
 
   - error nicely on incompatible 0.10 lockfiles
 
 # 0.9.25 (May 3, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - explicitly coerce Pathname objects to Strings for Ruby 1.9
   - fix some newline weirdness in output from install command
 
 # 0.9.24 (April 22, 2010)
 
-Features:
+## Features:
 
   - fetch submodules for git sources
   - limit the bundled version of bundler to the same as the one installing
@@ -3099,7 +3099,7 @@ Features:
   - raise Bundler::GemNotFound instead of calling exit! inside library code
   - Rubygems 1.3.5 compatibility for the adventurous, not supported by me :)
 
-Bug fixes:
+## Bug fixes:
 
   - don't try to regenerate environment.rb if it is read-only
   - prune outdated gems with the platform "ruby"
@@ -3109,14 +3109,14 @@ Bug fixes:
 
 # 0.9.23 (April 20, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - cache command no longer prunes gems created by an older rubygems version
   - cache command no longer prunes gems that are for other platforms
 
 # 0.9.22 (April 20, 2010)
 
-Features:
+## Features:
 
   - cache command now prunes stale .gem files from vendor/cache
   - init --gemspec command now generates development dependencies
@@ -3124,7 +3124,7 @@ Features:
   - remove .gem files generated after installing a gem from a :path ([#286](https://github.com/rubygems/bundler/issues/286))
   - improve install/lock messaging ([#284](https://github.com/rubygems/bundler/issues/284))
 
-Bug fixes:
+## Bug fixes:
 
   - ignore cached gems that are for another platform ([#288](https://github.com/rubygems/bundler/issues/288))
   - install Windows gems that have no architecture set, like rcov ([#277](https://github.com/rubygems/bundler/issues/277))
@@ -3135,31 +3135,31 @@ Bug fixes:
 
 # 0.9.21 (April 16, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - don't raise 'omg wtf' when lockfile is outdated
 
 # 0.9.20 (April 15, 2010)
 
-Features:
+## Features:
 
   - load YAML format gemspecs
   - no backtraces when calling Bundler.setup if gems are missing
   - no backtraces when trying to exec a file without the executable bit
 
-Bug fixes:
+## Bug fixes:
 
   - fix infinite recursion in Bundler.setup after loading a bundled Bundler gem
   - request install instead of lock when env.rb is out of sync with Gemfile.lock
 
 # 0.9.19 (April 12, 2010)
 
-Features:
+## Features:
 
   - suggest `bundle install --relock` when the Gemfile has changed ([#272](https://github.com/rubygems/bundler/issues/272))
   - source support for Rubygems servers without prerelease gem indexes ([#262](https://github.com/rubygems/bundler/issues/262))
 
-Bug fixes:
+## Bug fixes:
 
   - don't set up all groups every time Bundler.setup is called while locked ([#263](https://github.com/rubygems/bundler/issues/263))
   - fix #full_gem_path for git gems while locked ([#268](https://github.com/rubygems/bundler/issues/268))
@@ -3168,11 +3168,11 @@ Bug fixes:
 
 # 0.9.18 (April 8, 2010)
 
-Features:
+## Features:
 
   - console command that runs irb with bundle (and optional group) already loaded
 
-Bug fixes:
+## Bug fixes:
 
   - Bundler.setup now fully disables system gems, even when unlocked ([#266](https://github.com/rubygems/bundler/issues/266), [#246](https://github.com/bundler/bundler/issues/246))
     - fixes Yard, which found plugins in Gem.source_index that it could not load
@@ -3180,25 +3180,25 @@ Bug fixes:
 
 # 0.9.17 (April 7, 2010)
 
-Features:
+## Features:
 
   - Bundler.require now calls Bundler.setup automatically
   - Gem::Specification#add_bundler_dependencies added for gemspecs
 
-Bug fixes:
+## Bug fixes:
 
   - Gem paths are not longer duplicated while loading bundler
   - exec no longer duplicates RUBYOPT if it is already set correctly
 
 # 0.9.16 (April 3, 2010)
 
-Features:
+## Features:
 
   - exit gracefully on INT signal
   - resolver output now indicates whether remote sources were checked
   - print error instead of backtrace when exec cannot find a binary ([#241](https://github.com/rubygems/bundler/issues/241))
 
-Bug fixes:
+## Bug fixes:
 
   - show, check, and open commands work again while locked (oops)
   - show command for git gems
@@ -3211,7 +3211,7 @@ Bug fixes:
 
 # 0.9.15 (April 1, 2010)
 
-Features:
+## Features:
 
   - use the env_file if possible instead of doing a runtime resolve
      - huge speedup when calling Bundler.setup while locked
@@ -3219,7 +3219,7 @@ Features:
      - regenerates env_file if it was generated by an older version
   - update cached/packed gems when you update gems via bundle install
 
-Bug fixes:
+## Bug fixes:
 
   - prep for Rubygems 1.3.7 changes
   - install command now pulls git branches correctly ([#211](https://github.com/rubygems/bundler/issues/211))
@@ -3227,7 +3227,7 @@ Bug fixes:
 
 # 0.9.14 (March 30, 2010)
 
-Features:
+## Features:
 
   - install command output vastly improved
     - installation message now accurate, with 'using' and 'installing'
@@ -3238,7 +3238,7 @@ Features:
   - show command now aliased as 'list'
   - VISUAL env var respected for GUI editors
 
-Bug fixes:
+## Bug fixes:
 
   - exec command now finds binaries from gems with no gemspec
   - note source of Gemfile resolver errors
@@ -3246,7 +3246,7 @@ Bug fixes:
 
 # 0.9.13 (March 23, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - exec command now finds binaries from gems installed via :path
   - gem dependencies are pulled in even if their type is nil
@@ -3257,12 +3257,12 @@ Bug fixes:
 
   - refactoring, internal cleanup, more solid specs
 
-Features:
+## Features:
 
   - check command takes a --without option
   - check command exits 1 if the check fails
 
-Bug fixes:
+## Bug fixes:
 
   - perform a topological sort on resolved gems ([#191](https://github.com/rubygems/bundler/issues/191))
   - gems from git work even when paths or repos have spaces ([#196](https://github.com/rubygems/bundler/issues/196))
@@ -3275,7 +3275,7 @@ Bug fixes:
 
   - added roadmap with future development plans
 
-Features:
+## Features:
 
   - install command can take the path to the gemfile with --gemfile ([#125](https://github.com/rubygems/bundler/issues/125))
   - unknown command line options are now rejected ([#163](https://github.com/rubygems/bundler/issues/163))
@@ -3287,7 +3287,7 @@ Features:
   - improve backtraces when a gemspec is invalid
   - improve performance by installing gems from the cache if present
 
-Bug fixes:
+## Bug fixes:
 
   - normalize parameters to Bundler.require ([#153](https://github.com/rubygems/bundler/issues/153))
   - check now checks installed gems rather than cached gems ([#162](https://github.com/rubygems/bundler/issues/162))
@@ -3303,7 +3303,7 @@ Bug fixes:
 
   - depends on Rubygems 1.3.6
 
-Bug fixes:
+## Bug fixes:
 
   - support locking after install --without
   - don't reinstall gems from the cache if they're already in the bundle
@@ -3311,14 +3311,14 @@ Bug fixes:
 
 # 0.9.9 (February 25, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - don't die if GEM_HOME is an empty string
   - fixes for Ruby 1.8.6 and 1.9
 
 # 0.9.8 (February 23, 2010)
 
-Features:
+## Features:
 
   - pack command which both caches and locks
   - descriptive error if a cached gem is missing
@@ -3330,7 +3330,7 @@ Features:
   - print a useful warning if building a gem fails
   - allow manual configuration via BUNDLE_PATH
 
-Bug fixes:
+## Bug fixes:
 
   - eval gemspecs in the gem directory so relative paths work
   - make default spec for git sources valid
@@ -3338,19 +3338,19 @@ Bug fixes:
 
 # 0.9.7 (February 17, 2010)
 
-Bug fixes:
+## Bug fixes:
 
   - don't say that a gem from an excluded group is "installing"
   - improve crippling rubygems in locked scenarios
 
 # 0.9.6 (February 16, 2010)
 
-Features:
+## Features:
 
   - allow String group names
   - a number of improvements in the documentation and error messages
 
-Bug fixes:
+## Bug fixes:
 
   - set SourceIndex#spec_dirs to solve a problem involving Rails 2.3 in unlocked mode
   - ensure Rubygems is fully loaded in Ruby 1.9 before patching it
@@ -3361,7 +3361,7 @@ Bug fixes:
 
 # 0.9.5 (February 12, 2010)
 
-Features:
+## Features:
 
   - added support for :path => "relative/path"
   - added support for older versions of git
@@ -3369,7 +3369,7 @@ Features:
   - Bundler.require fails silently if a library does not have a file on the load path with its name
   - Basic support for multiple rubies by namespacing the default bundle path using the version and engine
 
-Bug fixes:
+## Bug fixes:
 
   - if the bundle is locked and .bundle/environment.rb is not present when Bundler.setup is called, generate it
   - same if it's not present with `bundle check`

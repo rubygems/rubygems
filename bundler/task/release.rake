@@ -73,62 +73,12 @@ namespace :release do
     end
   end
 
-  def gh_api_authenticated_request(opts)
+  def new_gh_client
     require "netrc"
-    require "net/http"
-    require "json"
     _username, token = Netrc.read["api.github.com"]
 
-    host = opts.fetch(:host) { "https://api.github.com/" }
-    path = opts.fetch(:path)
-    uri = URI.join(host, path)
-    headers = {
-      "Content-Type" => "application/json",
-      "Accept" => "application/vnd.github.v3+json",
-      "Authorization" => "token #{token}",
-    }.merge(opts.fetch(:headers, {}))
-    body = opts.fetch(:body) { nil }
-
-    response = if body
-      Net::HTTP.post(uri, body.to_json, headers)
-    else
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      req = Net::HTTP::Get.new(uri.request_uri)
-      headers.each {|k, v| req[k] = v }
-      http.request(req)
-    end
-
-    if response.code.to_i >= 400
-      raise "#{uri}\n#{response.inspect}\n#{begin
-                                              JSON.parse(response.body)
-                                            rescue JSON::ParseError
-                                              response.body
-                                            end}"
-    end
-    JSON.parse(response.body)
-  end
-
-  def gh_api_request(opts)
-    require "net/http"
-    require "json"
-    host = opts.fetch(:host) { "https://api.github.com/" }
-    path = opts.fetch(:path)
-    response = Net::HTTP.get_response(URI.join(host, path))
-
-    links = Hash[*(response["Link"] || "").split(", ").map do |link|
-      href, name = link.match(/<(.*?)>; rel="(\w+)"/).captures
-
-      [name.to_sym, href]
-    end.flatten]
-
-    parsed_response = JSON.parse(response.body)
-
-    if n = links[:next]
-      parsed_response.concat gh_api_request(:host => host, :path => n)
-    end
-
-    parsed_response
+    require "octokit"
+    Octokit::Client.new(:access_token => token)
   end
 
   desc "Push the release to Github releases"
@@ -137,13 +87,9 @@ namespace :release do
     release_notes = Changelog.new.release_notes(version)
     tag = "bundler-v#{version}"
 
-    gh_api_authenticated_request :path => "/repos/rubygems/rubygems/releases",
-                                 :body => {
-                                   :tag_name => tag,
-                                   :name => tag,
-                                   :body => release_notes,
-                                   :prerelease => version.prerelease?,
-                                 }
+    new_gh_client.create_release "rubygems/rubygems", tag, :name => tag,
+                                                           :body => release_notes,
+                                                           :prerelease => version.prerelease?
   end
 
   desc "Prints the current version in the version file, which should be the next release target"
@@ -176,11 +122,14 @@ namespace :release do
 
     puts "Cherry-picking PRs milestoned for #{version} (currently #{current_version}) into the stable branch..."
 
-    milestones = gh_api_request(:path => "repos/rubygems/rubygems/milestones?state=open")
+    gh_client = new_gh_client
+
+    milestones = gh_client.milestones("rubygems/rubygems", :state => "open")
+
     unless patch_milestone = milestones.find {|m| m["title"] == version }
       abort "failed to find #{version} milestone on GitHub"
     end
-    prs = gh_api_request(:path => "repos/rubygems/rubygems/issues?milestone=#{patch_milestone["number"]}&state=all")
+    prs = gh_client.issues("rubygems/rubygems", :milestone => patch_milestone["number"], :state => "all")
     prs.map! do |pr|
       abort "#{pr["html_url"]} hasn't been closed yet!" unless pr["state"] == "closed"
       next unless pr["pull_request"]

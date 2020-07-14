@@ -40,7 +40,7 @@ categories:
     labels:
       - "bundler: bug fix"
 
-change-template: "  - $TITLE [#$NUMBER]($URL)"
+change-template: "  - $TITLE #$NUMBER"
 
 no-changes-template: "  No changes."
 

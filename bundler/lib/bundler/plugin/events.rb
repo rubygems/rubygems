@@ -56,6 +56,18 @@ module Bundler
       #   Includes an Array of Bundler::Dependency objects
       #   GEM_AFTER_INSTALL_ALL = "after-install-all"
       define :GEM_AFTER_INSTALL_ALL,  "after-install-all"
+
+      # @!parse
+      #   A hook called before any gems check
+      #   Includes an Array of Bundler::Dependency objects
+      #   GEM_BEFORE_CHECK_ALL = "before-check-all"
+      define :GEM_BEFORE_CHECK_ALL, "before-check-all"
+
+      # @!parse
+      #   A hook called after any gems check
+      #   Includes an Array of Bundler::Dependency objects
+      #   GEM_AFTER_CHECK_ALL = "after-check-all"
+      define :GEM_AFTER_CHECK_ALL,  "after-check-all"
     end
   end
 end

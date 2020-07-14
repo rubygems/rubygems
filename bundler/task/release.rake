@@ -18,7 +18,7 @@ end
 task :build => ["build_metadata"] do
   Rake::Task["build_metadata:clean"].tap(&:reenable).invoke
 end
-task "release:rubygem_push" => ["release:verify_docs", "release:verify_github", "build_metadata", "release:github"]
+task "release:rubygem_push" => ["release:verify_docs", "build_metadata", "release:github"]
 
 namespace :release do
   task :verify_docs => :"man:check"
@@ -107,11 +107,6 @@ namespace :release do
                                             end}"
     end
     JSON.parse(response.body)
-  end
-
-  desc "Make sure github API is ready to be used"
-  task :verify_github do
-    gh_api_authenticated_request :path => "/user"
   end
 
   def gh_api_request(opts)

@@ -69,7 +69,7 @@ namespace :release do
     end
 
     def release_section_token
-      "## "
+      "# "
     end
   end
 

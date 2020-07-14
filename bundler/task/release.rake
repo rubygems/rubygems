@@ -23,6 +23,56 @@ task "release:rubygem_push" => ["release:verify_docs", "release:verify_github", 
 namespace :release do
   task :verify_docs => :"man:check"
 
+  class Changelog
+    def release_notes(version)
+      current_version_title = "#{section_token}#{version}"
+      current_minor_title = "#{section_token}#{version.segments[0, 2].join(".")}"
+
+      current_version_index = lines.find_index {|line| line.strip =~ /^#{current_version_title}($|\b)/ }
+      unless current_version_index
+        raise "Update the changelog for the last version (#{version})"
+      end
+      current_version_index += 1
+      previous_version_lines = lines[current_version_index.succ...-1]
+      previous_version_index = current_version_index + (
+        previous_version_lines.find_index {|line| line.start_with?(section_token) && !line.start_with?(current_minor_title) } ||
+        lines.count
+      )
+
+      lines[current_version_index..previous_version_index].join("\n").strip
+    end
+
+    def replace_unreleased_notes(new_content)
+      new_content_with_references = new_content.gsub(/#(\d+)/, '[#\1](https://github.com/rubygems/rubygems/pull/\1)')
+
+      full_new_changelog = [unreleased_section_title, "", new_content_with_references, released_notes].join("\n") + "\n"
+
+      File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write(full_new_changelog) }
+    end
+
+  private
+
+    def unreleased_section_title
+      "#{section_token}(Unreleased)"
+    end
+
+    def released_notes
+      lines.drop_while {|line| line == unreleased_section_title || !line.start_with?(section_token) }
+    end
+
+    def lines
+      @lines ||= content.split("\n")
+    end
+
+    def content
+      File.open("CHANGELOG.md", "r:UTF-8", &:read)
+    end
+
+    def section_token
+      "## "
+    end
+  end
+
   def gh_api_authenticated_request(opts)
     require "netrc"
     require "net/http"
@@ -64,19 +114,6 @@ namespace :release do
     gh_api_authenticated_request :path => "/user"
   end
 
-  def confirm(prompt = "")
-    loop do
-      print(prompt)
-      print(": ") unless prompt.empty?
-
-      answer = $stdin.gets.strip
-      break if answer == "y"
-      abort if answer == "n"
-    end
-  rescue Interrupt
-    abort
-  end
-
   def gh_api_request(opts)
     require "net/http"
     require "json"
@@ -99,39 +136,17 @@ namespace :release do
     parsed_response
   end
 
-  def release_notes(version)
-    title_token = "## "
-    current_version_title = "#{title_token}#{version}"
-    current_minor_title = "#{title_token}#{version.segments[0, 2].join(".")}"
-    text = File.open("CHANGELOG.md", "r:UTF-8", &:read)
-    lines = text.split("\n")
-
-    current_version_index = lines.find_index {|line| line.strip =~ /^#{current_version_title}($|\b)/ }
-    unless current_version_index
-      raise "Update the changelog for the last version (#{version})"
-    end
-    current_version_index += 1
-    previous_version_lines = lines[current_version_index.succ...-1]
-    previous_version_index = current_version_index + (
-      previous_version_lines.find_index {|line| line.start_with?(title_token) && !line.start_with?(current_minor_title) } ||
-      lines.count
-    )
-
-    relevant = lines[current_version_index..previous_version_index]
-
-    relevant.join("\n").strip
-  end
-
   desc "Push the release to Github releases"
-  task :github, :version do |_t, args|
-    version = Gem::Version.new(args.version || Bundler::GemHelper.gemspec.version)
+  task :github do
+    version = Gem::Version.new(Bundler::GemHelper.gemspec.version)
+    release_notes = Changelog.new.release_notes(version)
     tag = "bundler-v#{version}"
 
     gh_api_authenticated_request :path => "/repos/rubygems/rubygems/releases",
                                  :body => {
                                    :tag_name => tag,
                                    :name => tag,
-                                   :body => release_notes(version),
+                                   :body => release_notes,
                                    :prerelease => version.prerelease?,
                                  }
   end
@@ -143,15 +158,10 @@ namespace :release do
 
   desc "Replace the unreleased section in the changelog with new content. Pass the new content through ENV['NEW_CHANGELOG_CONTENT']"
   task :write_changelog do
-    section_token = "## "
-    unreleased_section_title = "#{section_token}(Unreleased)"
-    changelog_content = File.open("CHANGELOG.md", "r:UTF-8", &:read).split("\n")
-
-    current_rest_of_content = changelog_content.drop_while {|line| line == unreleased_section_title || !line.start_with?(section_token) }
     new_content = ENV["NEW_CHANGELOG_CONTENT"]
     raise "You need to pass some content to write through ENV['NEW_CHANGELOG_CONTENT']" unless new_content
 
-    File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write([unreleased_section_title, "", new_content, current_rest_of_content].join("\n") + "\n") }
+    Changelog.new.replace_unreleased_notes(new_content)
   end
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"
@@ -207,39 +217,5 @@ namespace :release do
     File.open(version_file, "w") {|f| f.write(version_contents) }
 
     sh("git", "commit", "-am", "Version #{version}")
-  end
-
-  desc "Open all PRs that have not been included in a stable release"
-  task :open_unreleased_prs do
-    def prs(on = "master")
-      commits = `git log --oneline origin/#{on} -- bundler`.split("\n")
-      commits.reverse_each.map {|c| c =~ /(Auto merge of|Merge pull request|Merge) #(\d+)/ && $2 }.compact
-    end
-
-    def minor_release_tags
-      `git ls-remote origin`.split("\n").map {|r| r =~ %r{refs/tags/bundler-v([\d.]+)$} && $1 }.compact.map {|v| Gem::Version.create(Gem::Version.create(v).segments[0, 2].join(".")) }.sort.uniq
-    end
-
-    def to_stable_branch(release_tag)
-      release_tag.segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
-    end
-
-    last_stable = to_stable_branch(minor_release_tags[-1])
-    previous_to_last_stable = to_stable_branch(minor_release_tags[-2])
-
-    in_release = prs("HEAD") - prs(last_stable) - prs(previous_to_last_stable)
-
-    n_prs = in_release.size
-
-    print "About to review #{n_prs} pending PRs. "
-
-    confirm "Continue? (y/n)"
-
-    in_release.each.with_index do |pr, idx|
-      url_opener = /darwin/ =~ RUBY_PLATFORM ? "open" : "xdg-open"
-      url = "https://github.com/rubygems/rubygems/pull/#{pr}"
-      print "[#{idx + 1}/#{n_prs}] #{url}. (n)ext/(o)pen? "
-      system(url_opener, url, :out => IO::NULL, :err => IO::NULL) if $stdin.gets.strip == "o"
-    end
   end
 end

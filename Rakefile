@@ -100,7 +100,7 @@ end
 
 desc "Install rubygems to local system"
 task :install => [:clear_package, :package] do
-  sh "ruby -Ilib bin/gem install --no-document pkg/rubygems-update-#{v}.gem && update_rubygems --no-document --no-format-executable"
+  sh "ruby -Ilib bin/gem install --no-document pkg/rubygems-update-#{v}.gem && update_rubygems --no-document"
 end
 
 desc "Clears previously built package"

@@ -1,6 +1,8 @@
 ## (Unreleased)
 
-  No changes.
+## Bug fixes:
+
+  - Fix broken exception recovery code when installing plugins [#3487](https://github.com/rubygems/rubygems/pull/3487)
 
 ## 2.2.0.rc.1 (Jul 02, 2020)
 

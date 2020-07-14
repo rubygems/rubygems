@@ -295,7 +295,7 @@ Bug fixes:
 
 # 2.0.0.pre.3 (2018-12-30)
 
-Breaking Changes:
+Breaking changes:
 
   - Bundler 2 now requires RubyGems 3.0.0 at minimum
 
@@ -311,7 +311,7 @@ Minor enhancements:
 
 # 2.0.0.pre.2 (2018-11-27)
 
-Breaking Changes:
+Breaking changes:
 
   - `:github` source in the Gemfile now defaults to using HTTPS
 
@@ -323,7 +323,7 @@ Changes
 
 # 2.0.0.pre.1 (2018-11-09)
 
-Breaking Changes:
+Breaking changes:
 
   - Dropped support for versions of Ruby under 2.3
   - Dropped support for version of RubyGems under 2.5
@@ -2562,7 +2562,7 @@ Features:
   - Make it possible to override a .gemspec dependency's source in the
     Gemfile
 
-Breaking Changes:
+Breaking changes:
 
   - Removed bundle lock
   - Removed bundle install <path>

@@ -1,22 +1,6 @@
 # frozen_string_literal: true
 
-require "benchmark"
-
 require_relative "spec/support/rubygems_ext"
-
-# Benchmark task execution
-module Rake
-  class Task
-    alias_method :real_invoke, :invoke
-
-    def invoke(*args)
-      time = Benchmark.measure(@name) do
-        real_invoke(*args)
-      end
-      puts "#{@name} ran for #{time}"
-    end
-  end
-end
 
 desc "Run specs"
 task :spec do

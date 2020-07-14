@@ -1,13 +1,7 @@
 ---
 
 template: |
-  ## (Unreleased)
-
   $CHANGES
-
-name-template: "bundler-v$RESOLVED_VERSION"
-
-tag-template: "bundler-v$RESOLVED_VERSION"
 
 categories:
   - title: "Security fixes:"
@@ -60,16 +54,3 @@ include-labels:
   - "bundler: documentation"
   - "bundler: minor enhancement"
   - "bundler: bug fix"
-
-version-resolver:
-  major:
-    labels:
-      - "bundler: breaking change"
-
-  minor:
-    labels:
-      - "bundler: feature"
-      - "bundler: major enhancement"
-      - "bundler: deprecation"
-
-  default: patch

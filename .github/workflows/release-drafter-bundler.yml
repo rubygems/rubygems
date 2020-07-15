@@ -24,6 +24,18 @@ jobs:
         id: path_check
         run: echo "::set-output name=changelog_modified::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -c '^bundler/CHANGELOG.md$')"
 
+      - name: Install dependencies
+        run: bin/rake dev:deps
+        working-directory: ./bundler
+        if: steps.path_check.outputs.changelog_modified != '0'
+
+      - name: Update release draft from changelog
+        run: bin/rake release:github_draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ./bundler
+        if: steps.path_check.outputs.changelog_modified != '0'
+
       - name: Get target version
         id: get_target_version
         run: echo "::set-output name=target_version::$(bin/rake release:target_version)"

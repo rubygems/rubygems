@@ -5,15 +5,14 @@ on:
     branches:
       - master
 
-    paths-ignore:
-      - bundler/CHANGELOG.md
-
 jobs:
   release_drafter_bundler:
     runs-on: ubuntu-18.04
     steps:
       - name: Clone repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -21,10 +20,15 @@ jobs:
           ruby-version: 2.7.1
           bundler: none
 
+      - name: Check for changelog modifications
+        id: path_check
+        run: echo "::set-output name=changelog_modified::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -c '^bundler/CHANGELOG.md$')"
+
       - name: Get target version
         id: get_target_version
         run: echo "::set-output name=target_version::$(bin/rake release:target_version)"
         working-directory: ./bundler
+        if: steps.path_check.outputs.changelog_modified == '0'
 
       - name: Publish changelog draft
         id: publish_github_release_draft
@@ -35,20 +39,24 @@ jobs:
           tag: bundler-v${{ steps.get_target_version.outputs.target_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.path_check.outputs.changelog_modified == '0'
 
       - name: Write new changelog
         run: bin/rake release:write_changelog
         env:
           NEW_CHANGELOG_CONTENT: ${{ steps.publish_github_release_draft.outputs.body }}
         working-directory: ./bundler
+        if: steps.path_check.outputs.changelog_modified == '0'
 
       - name: Set up git config
         run: |
           git config user.name "The Bundler Bot"
           git config user.email "bot@bundler.io"
+        if: steps.path_check.outputs.changelog_modified == '0'
 
       - name: Commit and show the changes
         run: |
           git add bundler/CHANGELOG.md
           git commit -m "Automatic changelog update"
           git push origin master
+        if: steps.path_check.outputs.changelog_modified == '0'

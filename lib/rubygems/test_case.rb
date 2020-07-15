@@ -364,7 +364,7 @@ class Gem::TestCase < Minitest::Test
 
     ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = PRIVATE_KEY_PASSPHRASE
 
-    @default_dir = File.join @tempdir, 'default'
+    @default_dir = File.join @tempdir, 'dummy_gem_home'
     @default_spec_dir = File.join @default_dir, "specifications", "default"
     if Gem.java_platform?
       @orig_default_gem_home = RbConfig::CONFIG['default_gem_home']

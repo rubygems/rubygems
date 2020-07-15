@@ -1,4 +1,4 @@
-name: release-drafter-bundler
+name: changelog-bundler
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  release_drafter_bundler:
+  changelog_bundler:
     runs-on: ubuntu-18.04
     steps:
       - name: Clone repo

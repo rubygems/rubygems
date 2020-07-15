@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+    paths-ignore:
+      - bundler/CHANGELOG.md
+
 jobs:
   release_drafter_bundler:
     runs-on: ubuntu-18.04

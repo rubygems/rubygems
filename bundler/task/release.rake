@@ -25,8 +25,8 @@ namespace :release do
 
   class Changelog
     def release_notes(version)
-      current_version_title = "#{section_token}#{version}"
-      current_minor_title = "#{section_token}#{version.segments[0, 2].join(".")}"
+      current_version_title = "#{release_section_token}#{version}"
+      current_minor_title = "#{release_section_token}#{version.segments[0, 2].join(".")}"
 
       current_version_index = lines.find_index {|line| line.strip =~ /^#{current_version_title}($|\b)/ }
       unless current_version_index
@@ -35,11 +35,11 @@ namespace :release do
       current_version_index += 1
       previous_version_lines = lines[current_version_index.succ...-1]
       previous_version_index = current_version_index + (
-        previous_version_lines.find_index {|line| line.start_with?(section_token) && !line.start_with?(current_minor_title) } ||
+        previous_version_lines.find_index {|line| line.start_with?(release_section_token) && !line.start_with?(current_minor_title) } ||
         lines.count
       )
 
-      lines[current_version_index..previous_version_index].join("\n").strip
+      join_and_strip(lines[current_version_index..previous_version_index])
     end
 
     def replace_unreleased_notes(new_content)
@@ -50,32 +50,44 @@ namespace :release do
       File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write(full_new_changelog) }
     end
 
+    def unreleased_notes
+      join_and_strip(lines.take_while {|line| !line.start_with?(release_section_token) })
+    end
+
   private
 
     def unreleased_section_title
-      "#{section_token}(Unreleased)"
+      "#{release_section_token}(Unreleased)"
     end
 
     def released_notes
-      lines.drop_while {|line| line == unreleased_section_title || !line.start_with?(section_token) }
+      lines.drop_while {|line| !line.start_with?(release_section_token) }
+    end
+
+    def join_and_strip(lines)
+      lines.join("\n").strip
     end
 
     def lines
-      @lines ||= content.split("\n")
+      @lines ||= content.split("\n")[2..-1]
     end
 
     def content
       File.open("CHANGELOG.md", "r:UTF-8", &:read)
     end
 
-    def section_token
-      "## "
+    def release_section_token
+      "# "
     end
   end
 
   def new_gh_client
-    require "netrc"
-    _username, token = Netrc.read["api.github.com"]
+    token = ENV["GITHUB_TOKEN"]
+
+    unless token
+      require "netrc"
+      _username, token = Netrc.read["api.github.com"]
+    end
 
     require "octokit"
     Octokit::Client.new(:access_token => token)
@@ -95,6 +107,31 @@ namespace :release do
   desc "Prints the current version in the version file, which should be the next release target"
   task :target_version do
     print Bundler::GemHelper.gemspec.version
+  end
+
+  desc "Sync the current draft release with the changelog"
+  task :github_draft do
+    version = Bundler::GemHelper.gemspec.version
+    unreleased_notes = Changelog.new.unreleased_notes
+    tag = "bundler-v#{version}"
+
+    gh_client = new_gh_client
+    gh_client.auto_paginate = true
+
+    releases = gh_client.releases("rubygems/rubygems")
+    release_draft = releases.find {|release| release.draft == true }
+
+    options = {
+      :body => unreleased_notes,
+      :prerelease => version.prerelease?,
+      :draft => true,
+    }
+
+    if release_draft
+      gh_client.update_release(release_draft.url, options.merge(:tag_name => tag))
+    else
+      gh_client.create_release("rubygems/rubygems", tag, options)
+    end
   end
 
   desc "Replace the unreleased section in the changelog with new content. Pass the new content through ENV['NEW_CHANGELOG_CONTENT']"

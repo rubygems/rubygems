@@ -8,7 +8,7 @@ categories:
     labels:
       - "bundler: security fix"
 
-  - title: "Breaking Changes:"
+  - title: "Breaking changes:"
     labels:
       - "bundler: breaking change"
 

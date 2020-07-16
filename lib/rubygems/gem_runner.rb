@@ -25,7 +25,6 @@ Gem.load_env_plugins rescue nil
 # classes they call directly.
 
 class Gem::GemRunner
-
   include Gem::UserInteraction
 
   def initialize
@@ -56,7 +55,9 @@ class Gem::GemRunner
 
     cmd.run Gem.configuration.args, build_args
 
-    warn_on_outdated
+    if !Gem.disable_system_update_message
+      warn_on_outdated
+    end
   end
 
   ##
@@ -86,7 +87,6 @@ class Gem::GemRunner
       say "You are currently using gem #{Gem.rubygems_version}, however gem #{Gem.latest_rubygems_version} is availble.\nConsider upgrading using the command `gem update --system`\n"
     end
   end
-
 end
 
 Gem.load_plugins

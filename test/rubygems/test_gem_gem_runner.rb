@@ -140,5 +140,4 @@ class TestGemGemRunner < Gem::TestCase
   def singleton_gem_class
     class << Gem; self; end
   end
-
 end

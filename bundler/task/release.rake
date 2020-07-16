@@ -77,12 +77,18 @@ namespace :release do
     end
   end
 
-  def new_gh_client
-    require "netrc"
-    _username, token = Netrc.read["api.github.com"]
+  module GithubInfo
+    extend self
 
-    require "octokit"
-    Octokit::Client.new(:access_token => token)
+    def client
+      @client ||= begin
+        require "netrc"
+        _username, token = Netrc.read["api.github.com"]
+
+        require "octokit"
+        Octokit::Client.new(:access_token => token)
+      end
+    end
   end
 
   desc "Push the release to Github releases"
@@ -91,9 +97,9 @@ namespace :release do
     release_notes = Changelog.new.release_notes(version)
     tag = "bundler-v#{version}"
 
-    new_gh_client.create_release "rubygems/rubygems", tag, :name => tag,
-                                                           :body => release_notes,
-                                                           :prerelease => version.prerelease?
+    GithubInfo.client.create_release "rubygems/rubygems", tag, :name => tag,
+                                                               :body => release_notes,
+                                                               :prerelease => version.prerelease?
   end
 
   desc "Prints the current version in the version file, which should be the next release target"
@@ -126,7 +132,7 @@ namespace :release do
 
     puts "Cherry-picking PRs milestoned for #{version} (currently #{current_version}) into the stable branch..."
 
-    gh_client = new_gh_client
+    gh_client = GithubInfo.client
 
     milestones = gh_client.milestones("rubygems/rubygems", :state => "open")
 

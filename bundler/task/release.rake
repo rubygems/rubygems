@@ -144,7 +144,7 @@ namespace :release do
     branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
     sh("git", "checkout", "-b", "release_bundler/#{version}", branch)
 
-    commits = `git log --oneline origin/master -- bundler`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
+    commits = `git log --oneline origin/master`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
     commits.select! {|_sha, message| message =~ /(Auto merge of|Merge pull request|Merge) ##{Regexp.union(*prs)}/ }
 
     abort "Could not find commits for all PRs" unless commits.size == prs.size

@@ -20,55 +20,24 @@ jobs:
           ruby-version: 2.7.1
           bundler: none
 
-      - name: Check for changelog modifications
-        id: path_check
-        run: echo "::set-output name=changelog_modified::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -c '^bundler/CHANGELOG.md$')"
-
       - name: Install dependencies
         run: bin/rake dev:deps
         working-directory: ./bundler
-        if: steps.path_check.outputs.changelog_modified != '0'
 
-      - name: Update release draft from changelog
-        run: bin/rake release:github_draft
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Sync changelog
+        run: bin/rake release:sync_changelog
         working-directory: ./bundler
-        if: steps.path_check.outputs.changelog_modified != '0'
-
-      - name: Get target version
-        id: get_target_version
-        run: echo "::set-output name=target_version::$(bin/rake release:target_version)"
-        working-directory: ./bundler
-        if: steps.path_check.outputs.changelog_modified == '0'
-
-      - name: Publish changelog draft
-        id: publish_github_release_draft
-        uses: release-drafter/release-drafter@v5
-        with:
-          config-name: release-drafter-bundler.yml
-          name: bundler-v${{ steps.get_target_version.outputs.target_version }}
-          tag: bundler-v${{ steps.get_target_version.outputs.target_version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.path_check.outputs.changelog_modified == '0'
-
-      - name: Write new changelog
-        run: bin/rake release:write_changelog
-        env:
-          NEW_CHANGELOG_CONTENT: ${{ steps.publish_github_release_draft.outputs.body }}
-        working-directory: ./bundler
-        if: steps.path_check.outputs.changelog_modified == '0'
 
       - name: Set up git config
         run: |
           git config user.name "The Bundler Bot"
           git config user.email "bot@bundler.io"
-        if: steps.path_check.outputs.changelog_modified == '0'
 
-      - name: Commit and show the changes
+      - name: Commit and push changes
         run: |
-          git add bundler/CHANGELOG.md
-          git commit -m "Automatic changelog update"
-          git push origin master
-        if: steps.path_check.outputs.changelog_modified == '0'
+          if [ "$(git diff)" != "" ]
+          then
+            git add bundler/CHANGELOG.md
+            git commit -m "Automatic changelog update"
+            git push origin master
+          fi

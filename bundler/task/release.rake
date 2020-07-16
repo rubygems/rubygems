@@ -42,15 +42,101 @@ namespace :release do
       join_and_strip(lines[current_version_index..previous_version_index])
     end
 
-    def replace_unreleased_notes(new_content)
-      new_content_with_references = new_content.gsub(/#(\d+)/, '[#\1](https://github.com/rubygems/rubygems/pull/\1)')
+    def sync
+      lines = []
 
-      full_new_changelog = [unreleased_section_title, "", new_content_with_references, released_notes].join("\n") + "\n"
+      group_by_labels(pull_requests_since_last_release).each do |label, pulls|
+        category = changelog_label_mapping[label]
+
+        lines << "## #{category}"
+        lines << ""
+
+        pulls.sort_by(&:merged_at).reverse_each do |pull|
+          lines << "  - #{pull.title} [##{pull.number}](#{pull.html_url})"
+        end
+
+        lines << ""
+      end
+
+      replace_unreleased_notes(lines)
+    end
+
+  private
+
+    def group_by_labels(pulls)
+      grouped_pulls = pulls.group_by do |pull|
+        relevant_label_for(pull)
+      end
+
+      grouped_pulls.delete(nil) # exclude non categorized pulls
+
+      grouped_pulls.sort do |a, b|
+        changelog_labels.index(a[0]) <=> changelog_labels.index(b[0])
+      end.to_h
+    end
+
+    def pull_requests_since_last_release
+      last_release_date = gh_client.releases("rubygems/rubygems").select {|release| !release.draft && release.tag_name =~ /^bundler-v/ }.sort_by(&:created_at).last.created_at
+
+      pr_ids = merged_pr_ids_since(last_release_date)
+
+      pull_requests_for(pr_ids)
+    end
+
+    def changelog_label_mapping
+      {
+        "bundler: security fix" => "Security fixes:",
+        "bundler: breaking change" => "Breaking changes:",
+        "bundler: major enhancement" => "Major enhancements:",
+        "bundler: deprecation" => "Deprecations:",
+        "bundler: feature" => "Features:",
+        "bundler: performance" => "Performance:",
+        "bundler: documentation" => "Documentation:",
+        "bundler: minor enhancement" => "Minor enhancements:",
+        "bundler: bug fix" => "Bug fixes:",
+      }
+    end
+
+    def replace_unreleased_notes(new_content)
+      full_new_changelog = [unreleased_section_title, "", new_content, released_notes].join("\n") + "\n"
 
       File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write(full_new_changelog) }
     end
 
-  private
+    def relevant_label_for(pull)
+      relevant_labels = pull.labels.map(&:name) & changelog_labels
+      return unless relevant_labels.any?
+
+      raise "#{pull.html_url} has multiple labels that map to changelog sections" unless relevant_labels.size == 1
+
+      relevant_labels.first
+    end
+
+    def changelog_labels
+      changelog_label_mapping.keys
+    end
+
+    def merged_pr_ids_since(date)
+      commits = `git log --oneline origin/master --since '#{date}'`.split("\n").map {|l| l.split(/\s/, 2) }
+      commits.map do |_sha, message|
+        match = /Merge pull request #(\d+)/.match(message)
+        next unless match
+
+        match[1].to_i
+      end.compact
+    end
+
+    def pull_requests_for(ids)
+      pulls = gh_client.pull_requests("rubygems/rubygems", :sort => :updated, :state => :closed, :direction => :desc)
+
+      loop do
+        pulls.select! {|pull| ids.include?(pull.number) }
+
+        return pulls if (pulls.map(&:number) & ids).to_set == ids.to_set
+
+        pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
+      end
+    end
 
     def unreleased_section_title
       "#{release_section_token}(Unreleased)"
@@ -74,6 +160,10 @@ namespace :release do
 
     def release_section_token
       "# "
+    end
+
+    def gh_client
+      GithubInfo.client
     end
   end
 
@@ -102,17 +192,9 @@ namespace :release do
                                                                :prerelease => version.prerelease?
   end
 
-  desc "Prints the current version in the version file, which should be the next release target"
-  task :target_version do
-    print Bundler::GemHelper.gemspec.version
-  end
-
-  desc "Replace the unreleased section in the changelog with new content. Pass the new content through ENV['NEW_CHANGELOG_CONTENT']"
-  task :write_changelog do
-    new_content = ENV["NEW_CHANGELOG_CONTENT"]
-    raise "You need to pass some content to write through ENV['NEW_CHANGELOG_CONTENT']" unless new_content
-
-    Changelog.new.replace_unreleased_notes(new_content)
+  desc "Replace the unreleased section in the changelog with up to date content according to merged PRs since the last release"
+  task :sync_changelog do
+    Changelog.new.sync
   end
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"

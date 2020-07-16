@@ -33,7 +33,7 @@ jobs:
           git config user.name "The Bundler Bot"
           git config user.email "bot@bundler.io"
 
-      - name: Commit and show the changes
+      - name: Commit and push changes
         run: |
           if [ "$(git diff)" != "" ]
           then

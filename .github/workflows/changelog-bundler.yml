@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Clone repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -22,25 +24,8 @@ jobs:
         run: bin/rake dev:deps
         working-directory: ./bundler
 
-      - name: Get target version
-        id: get_target_version
-        run: echo "::set-output name=target_version::$(bin/rake release:target_version)"
-        working-directory: ./bundler
-
-      - name: Publish changelog draft
-        id: publish_github_release_draft
-        uses: release-drafter/release-drafter@v5
-        with:
-          config-name: release-drafter-bundler.yml
-          name: bundler-v${{ steps.get_target_version.outputs.target_version }}
-          tag: bundler-v${{ steps.get_target_version.outputs.target_version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Write new changelog
-        run: bin/rake release:write_changelog
-        env:
-          NEW_CHANGELOG_CONTENT: ${{ steps.publish_github_release_draft.outputs.body }}
+      - name: Sync changelog
+        run: bin/rake release:sync_changelog
         working-directory: ./bundler
 
       - name: Set up git config
@@ -48,8 +33,11 @@ jobs:
           git config user.name "The Bundler Bot"
           git config user.email "bot@bundler.io"
 
-      - name: Commit and show the changes
+      - name: Commit and push changes
         run: |
-          git add bundler/CHANGELOG.md
-          git commit -m "Automatic changelog update"
-          git push origin master
+          if [ "$(git diff)" != "" ]
+          then
+            git add bundler/CHANGELOG.md
+            git commit -m "Automatic changelog update"
+            git push origin master
+          fi

@@ -35,6 +35,9 @@ jobs:
 
       - name: Commit and show the changes
         run: |
-          git add bundler/CHANGELOG.md
-          git commit -m "Automatic changelog update"
-          git push origin master
+          if [ "$(git diff)" != "" ]
+          then
+            git add bundler/CHANGELOG.md
+            git commit -m "Automatic changelog update"
+            git push origin master
+          fi

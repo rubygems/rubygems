@@ -10,7 +10,6 @@
   - Fix broken exception recovery code when installing plugins [#3487](https://github.com/rubygems/rubygems/pull/3487)
   - Fix incorrect build info on development versions of bundler, and on bundler versions installed as a default gem [#3778](https://github.com/rubygems/rubygems/pull/3778)
   - Avoid autoloading `openssl` to try help with jruby load service issues [#3809](https://github.com/rubygems/rubygems/pull/3809)
-  - Fix `rake release` pushing all local tags instead of only the release tag [#3785](https://github.com/rubygems/rubygems/pull/3785)
   - Fix `rake release` aborting when credentials file is missing, even if properly configured through XDG [#3783](https://github.com/rubygems/rubygems/pull/3783)
 
 # 2.2.0.rc.1 (Jul 02, 2020)

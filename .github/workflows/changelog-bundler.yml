@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - improve_changelog_management
 
 jobs:
   changelog_bundler:
@@ -39,5 +40,5 @@ jobs:
           then
             git add bundler/CHANGELOG.md
             git commit -m "Automatic changelog update"
-            git push origin master
+            git show
           fi

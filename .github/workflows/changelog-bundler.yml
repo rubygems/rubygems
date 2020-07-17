@@ -25,7 +25,7 @@ jobs:
         working-directory: ./bundler
 
       - name: Sync changelog
-        run: bin/rake release:sync_changelog
+        run: bin/rake release:sync_changelog[${{ github.events.after }}]
         working-directory: ./bundler
 
       - name: Set up git config

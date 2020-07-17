@@ -42,17 +42,28 @@ namespace :release do
       join_and_strip(lines[current_version_index..previous_version_index])
     end
 
-    def sync
+    def sync_with(sha)
+      number = last_merged_pr_id(sha)
+      return unless number
+
+      label = relevant_label_for(number)
+      return unless label
+
+      title = last_commit_body(sha)
+
+      new_entry = "  - #{title} [##{number}](https://github.com/rubygems/rubygems/pull/#{number})"
+      new_category = "## #{changelog_label_mapping[label]}"
+
+      unreleased_sections_per_category[new_category] = [new_entry, *unreleased_sections_per_category[new_category]]
+
       lines = []
 
-      group_by_labels(pull_requests_since_last_release).each do |label, pulls|
-        category = changelog_label_mapping[label]
-
-        lines << "## #{category}"
+      unreleased_sections_per_category.each do |category, entries|
+        lines << category
         lines << ""
 
-        pulls.sort_by(&:merged_at).reverse_each do |pull|
-          lines << "  - #{pull.title} [##{pull.number}](#{pull.html_url})"
+        entries.each do |entry|
+          lines << entry
         end
 
         lines << ""
@@ -63,24 +74,25 @@ namespace :release do
 
   private
 
-    def group_by_labels(pulls)
-      grouped_pulls = pulls.group_by do |pull|
-        relevant_label_for(pull)
-      end
-
-      grouped_pulls.delete(nil) # exclude non categorized pulls
-
-      grouped_pulls.sort do |a, b|
-        changelog_labels.index(a[0]) <=> changelog_labels.index(b[0])
-      end.to_h
+    def unreleased_sections_per_category
+      @unreleased_sections_per_category ||= parse_unreleased_sections_per_category
     end
 
-    def pull_requests_since_last_release
-      last_release_date = gh_client.releases("rubygems/rubygems").select {|release| !release.draft && release.tag_name =~ /^bundler-v/ }.sort_by(&:created_at).last.created_at
+    def parse_unreleased_sections_per_category
+      result = Hash.new([])
+      current_category = nil
 
-      pr_ids = merged_pr_ids_since(last_release_date)
+      unreleased_notes.each do |line|
+        next if line.empty?
 
-      pull_requests_for(pr_ids)
+        if line.start_with?(category_section_token)
+          current_category = line
+        else
+          result[current_category] = result[current_category] + [line]
+        end
+      end
+
+      result
     end
 
     def changelog_label_mapping
@@ -103,7 +115,8 @@ namespace :release do
       File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write(full_new_changelog) }
     end
 
-    def relevant_label_for(pull)
+    def relevant_label_for(number)
+      pull = gh_client.pull_request("rubygems/rubygems", number)
       relevant_labels = pull.labels.map(&:name) & changelog_labels
       return unless relevant_labels.any?
 
@@ -116,30 +129,26 @@ namespace :release do
       changelog_label_mapping.keys
     end
 
-    def merged_pr_ids_since(date)
-      commits = `git log --oneline origin/master --since '#{date}'`.split("\n").map {|l| l.split(/\s/, 2) }
-      commits.map do |_sha, message|
-        match = /Merge pull request #(\d+)/.match(message)
-        next unless match
+    def last_merged_pr_id(sha)
+      match = /Merge pull request #(\d+)/.match(last_commit_message(sha))
 
-        match[1].to_i
-      end.compact
+      match[1].to_i
     end
 
-    def pull_requests_for(ids)
-      pulls = gh_client.pull_requests("rubygems/rubygems", :sort => :updated, :state => :closed, :direction => :desc)
+    def last_commit_message(sha)
+      `git show -s --format=%s #{sha}`.strip
+    end
 
-      loop do
-        pulls.select! {|pull| ids.include?(pull.number) }
-
-        return pulls if (pulls.map(&:number) & ids).to_set == ids.to_set
-
-        pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
-      end
+    def last_commit_body(sha)
+      `git show -s --format=%b #{sha}`.strip
     end
 
     def unreleased_section_title
       "#{release_section_token}(Unreleased)"
+    end
+
+    def unreleased_notes
+      lines.take_while {|line| !line.start_with?(release_section_token) }
     end
 
     def released_notes
@@ -156,6 +165,10 @@ namespace :release do
 
     def content
       File.open("CHANGELOG.md", "r:UTF-8", &:read)
+    end
+
+    def category_section_token
+      "## "
     end
 
     def release_section_token
@@ -193,8 +206,8 @@ namespace :release do
   end
 
   desc "Replace the unreleased section in the changelog with up to date content according to merged PRs since the last release"
-  task :sync_changelog do
-    Changelog.new.sync
+  task :sync_changelog, :sha do |_t, args|
+    Changelog.new.sync_with(args.sha)
   end
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"

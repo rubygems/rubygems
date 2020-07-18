@@ -76,7 +76,7 @@ namespace :release do
     end
 
     def pull_requests_since_last_release
-      last_release_date = gh_client.releases("rubygems/rubygems").select {|release| !release.draft && release.tag_name =~ /^bundler-v/ }.sort_by(&:created_at).last.created_at
+      last_release_date = GithubInfo.latest_release.created_at
 
       pr_ids = merged_pr_ids_since(last_release_date)
 
@@ -170,6 +170,10 @@ namespace :release do
   module GithubInfo
     extend self
 
+    def latest_release
+      @latest_release ||= client.releases("rubygems/rubygems").select {|release| !release.draft && release.tag_name =~ /^bundler-v/ }.sort_by(&:created_at).last
+    end
+
     def client
       @client ||= begin
         require "netrc"
@@ -202,7 +206,7 @@ namespace :release do
     version = args.version
 
     version ||= begin
-      current_version = Bundler::GemHelper.gemspec.version
+      current_version = Gem::Version.new(GithubInfo.latest_release.tag_name.gsub(/^bundler-v/, ""))
       segments = current_version.segments
       if segments.last.is_a?(String)
         segments << "1"

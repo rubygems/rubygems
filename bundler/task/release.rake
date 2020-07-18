@@ -254,7 +254,7 @@ namespace :release do
       version_file = "lib/bundler/version.rb"
       version_contents = File.read(version_file)
       unless version_contents.sub!(/^(\s*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/, "\\1#{version.to_s.dump}")
-        raise "failed to update #{version_file}, is it in the expected format?"
+        raise "Failed to update #{version_file}, is it in the expected format?"
       end
       File.open(version_file, "w") {|f| f.write(version_contents) }
 

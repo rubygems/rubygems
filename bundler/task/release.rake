@@ -24,6 +24,10 @@ namespace :release do
   task :verify_docs => :"man:check"
 
   class Changelog
+    def initialize(level = nil)
+      @level = level
+    end
+
     def release_notes(version)
       current_version_title = "#{release_section_token}#{version}"
       current_minor_title = "#{release_section_token}#{version.segments[0, 2].join(".")}"
@@ -42,10 +46,10 @@ namespace :release do
       join_and_strip(lines[current_version_index..previous_version_index])
     end
 
-    def sync
+    def sync!
       lines = []
 
-      group_by_labels(pull_requests_since_last_release).each do |label, pulls|
+      group_by_labels(relevant_pull_requests_since_last_release).each do |label, pulls|
         category = changelog_label_mapping[label]
 
         lines << "## #{category}"
@@ -61,6 +65,14 @@ namespace :release do
       replace_unreleased_notes(lines)
     end
 
+    def relevant_pull_requests_since_last_release
+      last_release_date = GithubInfo.latest_release.created_at
+
+      pr_ids = merged_pr_ids_since(last_release_date)
+
+      relevant_pull_requests_for(pr_ids)
+    end
+
   private
 
     def group_by_labels(pulls)
@@ -68,19 +80,9 @@ namespace :release do
         relevant_label_for(pull)
       end
 
-      grouped_pulls.delete(nil) # exclude non categorized pulls
-
       grouped_pulls.sort do |a, b|
         changelog_labels.index(a[0]) <=> changelog_labels.index(b[0])
       end.to_h
-    end
-
-    def pull_requests_since_last_release
-      last_release_date = gh_client.releases("rubygems/rubygems").select {|release| !release.draft && release.tag_name =~ /^bundler-v/ }.sort_by(&:created_at).last.created_at
-
-      pr_ids = merged_pr_ids_since(last_release_date)
-
-      pull_requests_for(pr_ids)
     end
 
     def changelog_label_mapping
@@ -112,8 +114,16 @@ namespace :release do
       relevant_labels.first
     end
 
+    def patch_level_labels
+      ["bundler: security fix", "bundler: minor enhancement", "bundler: bug fix"]
+    end
+
     def changelog_labels
-      changelog_label_mapping.keys
+      if @level == :patch
+        patch_level_labels
+      else
+        changelog_label_mapping.keys
+      end
     end
 
     def merged_pr_ids_since(date)
@@ -126,16 +136,18 @@ namespace :release do
       end.compact
     end
 
-    def pull_requests_for(ids)
+    def relevant_pull_requests_for(ids)
       pulls = gh_client.pull_requests("rubygems/rubygems", :sort => :updated, :state => :closed, :direction => :desc)
 
       loop do
         pulls.select! {|pull| ids.include?(pull.number) }
 
-        return pulls if (pulls.map(&:number) & ids).to_set == ids.to_set
+        break if (pulls.map(&:number) & ids).to_set == ids.to_set
 
         pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
       end
+
+      pulls.select {|pull| relevant_label_for(pull) }
     end
 
     def unreleased_section_title
@@ -170,6 +182,10 @@ namespace :release do
   module GithubInfo
     extend self
 
+    def latest_release
+      @latest_release ||= client.releases("rubygems/rubygems").select {|release| !release.draft && release.tag_name =~ /^bundler-v/ }.sort_by(&:created_at).last
+    end
+
     def client
       @client ||= begin
         require "netrc"
@@ -194,15 +210,15 @@ namespace :release do
 
   desc "Replace the unreleased section in the changelog with up to date content according to merged PRs since the last release"
   task :sync_changelog do
-    Changelog.new.sync
+    Changelog.new.sync!
   end
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch, :version do |_t, args|
     version = args.version
-    current_version = Bundler::GemHelper.gemspec.version
 
     version ||= begin
+      current_version = Gem::Version.new(GithubInfo.latest_release.tag_name.gsub(/^bundler-v/, ""))
       segments = current_version.segments
       if segments.last.is_a?(String)
         segments << "1"
@@ -212,46 +228,43 @@ namespace :release do
       segments.join(".")
     end
 
-    puts "Cherry-picking PRs milestoned for #{version} (currently #{current_version}) into the stable branch..."
+    puts "Cherry-picking PRs with patch-level compatible tags into the stable branch..."
 
     gh_client = GithubInfo.client
-
-    milestones = gh_client.milestones("rubygems/rubygems", :state => "open")
-
-    unless patch_milestone = milestones.find {|m| m["title"] == version }
-      abort "failed to find #{version} milestone on GitHub"
-    end
-    prs = gh_client.issues("rubygems/rubygems", :milestone => patch_milestone["number"], :state => "all")
-    prs.map! do |pr|
-      abort "#{pr["html_url"]} hasn't been closed yet!" unless pr["state"] == "closed"
-      next unless pr["pull_request"]
-      pr["number"].to_s
-    end
-    prs.compact!
+    changelog = Changelog.new(:patch)
 
     branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
-    sh("git", "checkout", "-b", "release_bundler/#{version}", branch)
 
-    commits = `git log --oneline origin/master`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
-    commits.select! {|_sha, message| message =~ /Merge pull request ##{Regexp.union(*prs)}/ }
+    previous_branch = `git rev-parse --abbrev-ref HEAD`.strip
+    release_branch = "release_bundler/#{version}"
 
-    abort "Could not find commits for all PRs" unless commits.size == prs.size
+    sh("git", "checkout", "-b", release_branch, branch)
 
-    if commits.any? && !system("git", "cherry-pick", "-x", "-m", "1", *commits.map(&:first))
-      warn "Opening a new shell to fix the cherry-pick errors. Press Ctrl-D when done to resume the task"
+    begin
+      prs = changelog.relevant_pull_requests_since_last_release
 
-      unless system(ENV["SHELL"] || "zsh")
-        abort "Failed to resolve conflicts on a different shell. Resolve conflicts manually and finish the task manually"
+      if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
+        warn "Opening a new shell to fix the cherry-pick errors. Press Ctrl-D when done to resume the task"
+
+        unless system(ENV["SHELL"] || "zsh")
+          raise "Failed to resolve conflicts on a different shell. Resolve conflicts manually and finish the task manually"
+        end
       end
-    end
 
-    version_file = "lib/bundler/version.rb"
-    version_contents = File.read(version_file)
-    unless version_contents.sub!(/^(\s*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/, "\\1#{version.to_s.dump}")
-      abort "failed to update #{version_file}, is it in the expected format?"
-    end
-    File.open(version_file, "w") {|f| f.write(version_contents) }
+      version_file = "lib/bundler/version.rb"
+      version_contents = File.read(version_file)
+      unless version_contents.sub!(/^(\s*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/, "\\1#{version.to_s.dump}")
+        raise "Failed to update #{version_file}, is it in the expected format?"
+      end
+      File.open(version_file, "w") {|f| f.write(version_contents) }
 
-    sh("git", "commit", "-am", "Version #{version}")
+      changelog.sync!
+
+      sh("git", "commit", "-am", "Version #{version} with changelog")
+    rescue StandardError
+      sh("git", "checkout", previous_branch)
+      sh("git", "branch", "-D", release_branch)
+      raise
+    end
   end
 end

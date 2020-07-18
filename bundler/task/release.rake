@@ -42,7 +42,7 @@ namespace :release do
       join_and_strip(lines[current_version_index..previous_version_index])
     end
 
-    def sync
+    def sync!
       lines = []
 
       group_by_labels(pull_requests_since_last_release).each do |label, pulls|
@@ -194,7 +194,7 @@ namespace :release do
 
   desc "Replace the unreleased section in the changelog with up to date content according to merged PRs since the last release"
   task :sync_changelog do
-    Changelog.new.sync
+    Changelog.new.sync!
   end
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"

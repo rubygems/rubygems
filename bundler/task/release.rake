@@ -200,9 +200,9 @@ namespace :release do
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch, :version do |_t, args|
     version = args.version
-    current_version = Bundler::GemHelper.gemspec.version
 
     version ||= begin
+      current_version = Bundler::GemHelper.gemspec.version
       segments = current_version.segments
       if segments.last.is_a?(String)
         segments << "1"

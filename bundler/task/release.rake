@@ -234,27 +234,37 @@ namespace :release do
     changelog = Changelog.new(:patch)
 
     branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
-    sh("git", "checkout", "-b", "release_bundler/#{version}", branch)
 
-    prs = changelog.relevant_pull_requests_since_last_release
+    previous_branch = `git rev-parse --abbrev-ref HEAD`.strip
+    release_branch = "release_bundler/#{version}"
 
-    if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
-      warn "Opening a new shell to fix the cherry-pick errors. Press Ctrl-D when done to resume the task"
+    sh("git", "checkout", "-b", release_branch, branch)
 
-      unless system(ENV["SHELL"] || "zsh")
-        abort "Failed to resolve conflicts on a different shell. Resolve conflicts manually and finish the task manually"
+    begin
+      prs = changelog.relevant_pull_requests_since_last_release
+
+      if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
+        warn "Opening a new shell to fix the cherry-pick errors. Press Ctrl-D when done to resume the task"
+
+        unless system(ENV["SHELL"] || "zsh")
+          raise "Failed to resolve conflicts on a different shell. Resolve conflicts manually and finish the task manually"
+        end
       end
+
+      version_file = "lib/bundler/version.rb"
+      version_contents = File.read(version_file)
+      unless version_contents.sub!(/^(\s*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/, "\\1#{version.to_s.dump}")
+        raise "failed to update #{version_file}, is it in the expected format?"
+      end
+      File.open(version_file, "w") {|f| f.write(version_contents) }
+
+      changelog.sync!
+
+      sh("git", "commit", "-am", "Version #{version} with changelog")
+    rescue StandardError
+      sh("git", "checkout", previous_branch)
+      sh("git", "branch", "-D", release_branch)
+      raise
     end
-
-    version_file = "lib/bundler/version.rb"
-    version_contents = File.read(version_file)
-    unless version_contents.sub!(/^(\s*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/, "\\1#{version.to_s.dump}")
-      abort "failed to update #{version_file}, is it in the expected format?"
-    end
-    File.open(version_file, "w") {|f| f.write(version_contents) }
-
-    changelog.sync!
-
-    sh("git", "commit", "-am", "Version #{version} with changelog")
   end
 end

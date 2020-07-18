@@ -211,11 +211,6 @@ namespace :release do
                                                                :prerelease => version.prerelease?
   end
 
-  desc "Replace the unreleased section in the changelog with up to date content according to merged PRs since the last release"
-  task :sync_changelog do
-    Changelog.new.sync!
-  end
-
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch, :version do |_t, args|
     version = args.version

@@ -55,7 +55,7 @@ namespace :release do
         lines << "## #{category}"
         lines << ""
 
-        pulls.sort_by(&:merged_at).reverse_each do |pull|
+        pulls.reverse_each do |pull|
           lines << "  - #{pull.title} [##{pull.number}](#{pull.html_url})"
         end
 
@@ -150,7 +150,7 @@ namespace :release do
         pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
       end
 
-      pulls.select {|pull| relevant_label_for(pull) }
+      pulls.select {|pull| relevant_label_for(pull) }.sort_by(&:merged_at)
     end
 
     def unreleased_section_title

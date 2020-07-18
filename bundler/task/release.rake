@@ -24,6 +24,10 @@ namespace :release do
   task :verify_docs => :"man:check"
 
   class Changelog
+    def initialize(level = nil)
+      @level = level
+    end
+
     def release_notes(version)
       current_version_title = "#{release_section_token}#{version}"
       current_minor_title = "#{release_section_token}#{version.segments[0, 2].join(".")}"
@@ -61,6 +65,14 @@ namespace :release do
       replace_unreleased_notes(lines)
     end
 
+    def relevant_pull_requests_since_last_release
+      last_release_date = GithubInfo.latest_release.created_at
+
+      pr_ids = merged_pr_ids_since(last_release_date)
+
+      relevant_pull_requests_for(pr_ids)
+    end
+
   private
 
     def group_by_labels(pulls)
@@ -71,14 +83,6 @@ namespace :release do
       grouped_pulls.sort do |a, b|
         changelog_labels.index(a[0]) <=> changelog_labels.index(b[0])
       end.to_h
-    end
-
-    def relevant_pull_requests_since_last_release
-      last_release_date = GithubInfo.latest_release.created_at
-
-      pr_ids = merged_pr_ids_since(last_release_date)
-
-      relevant_pull_requests_for(pr_ids)
     end
 
     def changelog_label_mapping
@@ -110,8 +114,16 @@ namespace :release do
       relevant_labels.first
     end
 
+    def patch_level_labels
+      ["bundler: security fix", "bundler: minor enhancement", "bundler: bug fix"]
+    end
+
     def changelog_labels
-      changelog_label_mapping.keys
+      if @level == :patch
+        patch_level_labels
+      else
+        changelog_label_mapping.keys
+      end
     end
 
     def merged_pr_ids_since(date)
@@ -216,32 +228,17 @@ namespace :release do
       segments.join(".")
     end
 
-    puts "Cherry-picking PRs milestoned for #{version} (currently #{current_version}) into the stable branch..."
+    puts "Cherry-picking PRs with patch-level compatible tags into the stable branch..."
 
     gh_client = GithubInfo.client
-
-    milestones = gh_client.milestones("rubygems/rubygems", :state => "open")
-
-    unless patch_milestone = milestones.find {|m| m["title"] == version }
-      abort "failed to find #{version} milestone on GitHub"
-    end
-    prs = gh_client.issues("rubygems/rubygems", :milestone => patch_milestone["number"], :state => "all")
-    prs.map! do |pr|
-      abort "#{pr["html_url"]} hasn't been closed yet!" unless pr["state"] == "closed"
-      next unless pr["pull_request"]
-      pr["number"].to_s
-    end
-    prs.compact!
+    changelog = Changelog.new(:patch)
 
     branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
     sh("git", "checkout", "-b", "release_bundler/#{version}", branch)
 
-    commits = `git log --oneline origin/master`.split("\n").map {|l| l.split(/\s/, 2) }.reverse
-    commits.select! {|_sha, message| message =~ /Merge pull request ##{Regexp.union(*prs)}/ }
+    prs = changelog.relevant_pull_requests_since_last_release
 
-    abort "Could not find commits for all PRs" unless commits.size == prs.size
-
-    if commits.any? && !system("git", "cherry-pick", "-x", "-m", "1", *commits.map(&:first))
+    if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
       warn "Opening a new shell to fix the cherry-pick errors. Press Ctrl-D when done to resume the task"
 
       unless system(ENV["SHELL"] || "zsh")
@@ -256,6 +253,8 @@ namespace :release do
     end
     File.open(version_file, "w") {|f| f.write(version_contents) }
 
-    sh("git", "commit", "-am", "Version #{version}")
+    changelog.sync!
+
+    sh("git", "commit", "-am", "Version #{version} with changelog")
   end
 end

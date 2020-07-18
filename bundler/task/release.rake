@@ -45,7 +45,7 @@ namespace :release do
     def sync!
       lines = []
 
-      group_by_labels(pull_requests_since_last_release).each do |label, pulls|
+      group_by_labels(relevant_pull_requests_since_last_release).each do |label, pulls|
         category = changelog_label_mapping[label]
 
         lines << "## #{category}"
@@ -68,19 +68,17 @@ namespace :release do
         relevant_label_for(pull)
       end
 
-      grouped_pulls.delete(nil) # exclude non categorized pulls
-
       grouped_pulls.sort do |a, b|
         changelog_labels.index(a[0]) <=> changelog_labels.index(b[0])
       end.to_h
     end
 
-    def pull_requests_since_last_release
+    def relevant_pull_requests_since_last_release
       last_release_date = GithubInfo.latest_release.created_at
 
       pr_ids = merged_pr_ids_since(last_release_date)
 
-      pull_requests_for(pr_ids)
+      relevant_pull_requests_for(pr_ids)
     end
 
     def changelog_label_mapping
@@ -126,16 +124,18 @@ namespace :release do
       end.compact
     end
 
-    def pull_requests_for(ids)
+    def relevant_pull_requests_for(ids)
       pulls = gh_client.pull_requests("rubygems/rubygems", :sort => :updated, :state => :closed, :direction => :desc)
 
       loop do
         pulls.select! {|pull| ids.include?(pull.number) }
 
-        return pulls if (pulls.map(&:number) & ids).to_set == ids.to_set
+        break if (pulls.map(&:number) & ids).to_set == ids.to_set
 
         pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
       end
+
+      pulls.select {|pull| relevant_label_for(pull) }
     end
 
     def unreleased_section_title

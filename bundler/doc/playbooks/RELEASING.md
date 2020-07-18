@@ -134,11 +134,12 @@ the minor branch (`3.2`).
 There is a `bin/rake release:prepare_patch` rake task that helps with creating a patch
 release. It takes a single argument, the _exact_ patch release being made (e.g.
 `2.2.3`), but if not given it will bump the tiny version number by one. This
-task checks out the appropriate stable branch (`3.2`), grabs the
-`2.2.3` milestone from GitHub, ensures all PRs are closed, and then
-cherry-picks those changes (and only those changes) to a new branch based off
-the stable branch. Then bumps the version in the version file and commits that
-change on top of the cherry-picks.
+task checks out the appropriate stable branch (`3.2`), grabs all patch-level
+compatible merged but unreleased PRs from GitHub, and then cherry-picks those
+changes (and only those changes) to a new branch based off the stable branch.
+Then bumps the version in the version file, synchronizes the changelog to
+include all backported changes and commits that change on top of the
+cherry-picks.
 
 Now you have a release branch ready to be merged into the stable branch. You'll
 want to open a PR from this branch into the stable branch and provided CI is

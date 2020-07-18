@@ -80,6 +80,8 @@ namespace :release do
         relevant_label_for(pull)
       end
 
+      grouped_pulls.delete_if {|k, _v| changelog_label_mapping[k].nil? }
+
       grouped_pulls.sort do |a, b|
         changelog_labels.index(a[0]) <=> changelog_labels.index(b[0])
       end.to_h
@@ -96,6 +98,7 @@ namespace :release do
         "bundler: documentation" => "Documentation:",
         "bundler: minor enhancement" => "Minor enhancements:",
         "bundler: bug fix" => "Bug fixes:",
+        "bundler :backport" => nil,
       }
     end
 
@@ -115,7 +118,7 @@ namespace :release do
     end
 
     def patch_level_labels
-      ["bundler: security fix", "bundler: minor enhancement", "bundler: bug fix"]
+      ["bundler: security fix", "bundler: minor enhancement", "bundler: bug fix", "bundler: backport"]
     end
 
     def changelog_labels

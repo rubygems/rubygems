@@ -46,7 +46,20 @@ namespace :release do
       join_and_strip(lines[current_version_index..previous_version_index])
     end
 
-    def sync!
+    def cut!(version)
+      full_new_changelog = [
+        unreleased_section_title,
+        "",
+        "# #{version} (#{Time.now.strftime("%B %-d, %Y")})",
+        "",
+        unreleased_notes,
+        lines,
+      ].join("\n") + "\n"
+
+      File.write("CHANGELOG.md", full_new_changelog)
+    end
+
+    def unreleased_notes
       lines = []
 
       group_by_labels(relevant_pull_requests_since_last_release).each do |label, pulls|
@@ -62,7 +75,7 @@ namespace :release do
         lines << ""
       end
 
-      replace_unreleased_notes(lines)
+      lines
     end
 
     def relevant_pull_requests_since_last_release
@@ -100,12 +113,6 @@ namespace :release do
         "bundler: bug fix" => "Bug fixes:",
         "bundler :backport" => nil,
       }
-    end
-
-    def replace_unreleased_notes(new_content)
-      full_new_changelog = [unreleased_section_title, "", new_content, released_notes].join("\n") + "\n"
-
-      File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write(full_new_changelog) }
     end
 
     def relevant_label_for(pull)
@@ -260,7 +267,7 @@ namespace :release do
       end
       File.open(version_file, "w") {|f| f.write(version_contents) }
 
-      changelog.sync!
+      changelog.cut!(version.to_s)
 
       sh("git", "commit", "-am", "Version #{version} with changelog")
     rescue StandardError

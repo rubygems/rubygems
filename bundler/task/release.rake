@@ -247,10 +247,14 @@ namespace :release do
       prs = changelog.relevant_pull_requests_since_last_release
 
       if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
-        warn "Opening a new shell to fix the cherry-pick errors. Press Ctrl-D when done to resume the task"
+        warn <<~MSG
+          Opening a new shell to fix the cherry-pick errors manually. Run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the task.
+
+          Otherwise type `Ctrl-D` to cancel
+        MSG
 
         unless system(ENV["SHELL"] || "zsh")
-          raise "Failed to resolve conflicts on a different shell. Resolve conflicts manually and finish the task manually"
+          raise "Failed to resolve conflitcs, resetting original state"
         end
       end
 

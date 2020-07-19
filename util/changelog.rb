@@ -4,6 +4,13 @@ require_relative "github_info"
 require "yaml"
 
 class Changelog
+  def self.rubygems
+    @rubygems ||= new(
+      "History.txt",
+      :latest_release => GithubInfo.latest_release_for("rubygems"),
+    )
+  end
+
   def self.bundler
     @bundler ||= new(
       "CHANGELOG.md",
@@ -53,6 +60,36 @@ class Changelog
       segments[-1] += 1
     end
     Gem::Version.new(segments.join("."))
+  end
+
+  def release_notes_for_blog(version)
+    release_notes(version).map do |line|
+      if change_types.include?(line)
+        "_#{line}_"
+      else
+        line
+      end
+    end
+  end
+
+  def change_types_for_blog(version)
+    types = release_notes(version)
+      .select {|line| change_types.include?(line) }
+      .map {|line| line.downcase.tr '^a-z ', '' }
+
+    last_change_type = types.pop
+
+    if types.empty?
+      types = ''
+    else
+      types = types.join(', ') << ' and '
+    end
+
+    types << last_change_type
+  end
+
+  def cut_patch_level_version!
+    cut!(next_patch_level_version)
   end
 
   def cut!(version)
@@ -106,11 +143,36 @@ class Changelog
   end
 
   def format_entry_for(pull)
-    entry_template
+    new_entry = entry_template
       .gsub(/%pull_request_title/, pull.title)
       .gsub(/%pull_request_number/, pull.number.to_s)
       .gsub(/%pull_request_url/, pull.html_url)
       .gsub(/%pull_request_author/, pull.user.name || pull.user.login)
+
+    new_entry = wrap(new_entry, entry_wrapping, 2) if entry_wrapping
+
+    new_entry
+  end
+
+  def wrap(text, length, indent)
+    result = []
+    work = text.dup
+
+    while work.length > length
+      if work =~ /^(.{0,#{length}})[ \n]/o
+        result << $1
+        work.slice!(0, $&.length)
+      else
+        result << work.slice!(0, length)
+      end
+    end
+
+    result << work unless work.empty?
+    result = result.reduce(String.new) do |acc, elem|
+      acc << "\n" << ' ' * indent unless acc.empty?
+      acc << elem
+    end
+    result
   end
 
   def group_by_labels(pulls)
@@ -144,6 +206,10 @@ class Changelog
 
   def changelog_labels
     relevant_changelog_label_mapping.keys
+  end
+
+  def change_types
+    relevant_changelog_label_mapping.values
   end
 
   def merged_pr_ids_since(date)
@@ -196,6 +262,10 @@ class Changelog
 
   def release_date_format
     @config["release_date_format"]
+  end
+
+  def entry_wrapping
+    @config["entry_wrapping"]
   end
 
   def changelog_label_mapping

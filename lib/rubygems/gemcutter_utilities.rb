@@ -8,6 +8,7 @@ require 'rubygems/text'
 module Gem::GemcutterUtilities
 
   ERROR_CODE = 1
+  API_SCOPES = %i[index_rubygems push_rubygem yank_rubygem add_owner remove_owner webhook_actions show_dashboard].freeze
 
   include Gem::Text
 
@@ -132,12 +133,26 @@ module Gem::GemcutterUtilities
 
     email = ask "   Email: "
     password = ask_for_password "Password: "
+
+    hostname = Socket.gethostname
+    default_key_name = "#{hostname}"
+    key_name = ask "API Key name [#{default_key_name}]: "
+    key_name = default_key_name if key_name.empty?
+
+    scope_params = {}
+
+    say "Please select scopes you want to enable for the API key (y/n)"
+    API_SCOPES.each do |scope|
+      selected = ask "#{scope} [n]: "
+      scope_params[scope] = true if selected == "y"
+    end
     say "\n"
 
-    response = rubygems_api_request(:get, "api/v1/api_key",
+    response = rubygems_api_request(:post, "api/v1/api_key",
                                     sign_in_host) do |request|
       request.basic_auth email, password
       request.add_field "OTP", options[:otp] if options[:otp]
+      request.body = URI.encode_www_form({ name: key_name }.merge(scope_params))
     end
 
     with_response response do |resp|

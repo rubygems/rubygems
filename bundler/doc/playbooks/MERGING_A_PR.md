@@ -25,6 +25,10 @@ release, make sure the following information is accurate:
 
   This label will indicate the section in the changelog that the PR will take.
 
+  If for some reason you need a PR to be backported to a stable branch, but it
+  doesn't have any user visible changes, apply the "bundler: backport" label to
+  it so that our release scripts know about that.
+
 Finally, don't forget to review the changes in detail. Make sure you try them
 locally if they are not trivial and make sure you request changes and ask as
 many questions as needed until you are convinced that including the changes into

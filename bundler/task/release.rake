@@ -46,7 +46,20 @@ namespace :release do
       join_and_strip(lines[current_version_index..previous_version_index])
     end
 
-    def sync!
+    def cut!(version)
+      full_new_changelog = [
+        unreleased_section_title,
+        "",
+        "# #{version} (#{Time.now.strftime("%B %-d, %Y")})",
+        "",
+        unreleased_notes,
+        lines,
+      ].join("\n") + "\n"
+
+      File.write("CHANGELOG.md", full_new_changelog)
+    end
+
+    def unreleased_notes
       lines = []
 
       group_by_labels(relevant_pull_requests_since_last_release).each do |label, pulls|
@@ -55,14 +68,14 @@ namespace :release do
         lines << "## #{category}"
         lines << ""
 
-        pulls.sort_by(&:merged_at).reverse_each do |pull|
+        pulls.reverse_each do |pull|
           lines << "  - #{pull.title} [##{pull.number}](#{pull.html_url})"
         end
 
         lines << ""
       end
 
-      replace_unreleased_notes(lines)
+      lines
     end
 
     def relevant_pull_requests_since_last_release
@@ -80,6 +93,8 @@ namespace :release do
         relevant_label_for(pull)
       end
 
+      grouped_pulls.delete_if {|k, _v| changelog_label_mapping[k].nil? }
+
       grouped_pulls.sort do |a, b|
         changelog_labels.index(a[0]) <=> changelog_labels.index(b[0])
       end.to_h
@@ -96,13 +111,8 @@ namespace :release do
         "bundler: documentation" => "Documentation:",
         "bundler: minor enhancement" => "Minor enhancements:",
         "bundler: bug fix" => "Bug fixes:",
+        "bundler :backport" => nil,
       }
-    end
-
-    def replace_unreleased_notes(new_content)
-      full_new_changelog = [unreleased_section_title, "", new_content, released_notes].join("\n") + "\n"
-
-      File.open("CHANGELOG.md", "w:UTF-8") {|f| f.write(full_new_changelog) }
     end
 
     def relevant_label_for(pull)
@@ -115,7 +125,7 @@ namespace :release do
     end
 
     def patch_level_labels
-      ["bundler: security fix", "bundler: minor enhancement", "bundler: bug fix"]
+      ["bundler: security fix", "bundler: minor enhancement", "bundler: bug fix", "bundler: backport"]
     end
 
     def changelog_labels
@@ -147,7 +157,7 @@ namespace :release do
         pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
       end
 
-      pulls.select {|pull| relevant_label_for(pull) }
+      pulls.select {|pull| relevant_label_for(pull) }.sort_by(&:merged_at)
     end
 
     def unreleased_section_title
@@ -208,11 +218,6 @@ namespace :release do
                                                                :prerelease => version.prerelease?
   end
 
-  desc "Replace the unreleased section in the changelog with up to date content according to merged PRs since the last release"
-  task :sync_changelog do
-    Changelog.new.sync!
-  end
-
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch, :version do |_t, args|
     version = args.version
@@ -244,10 +249,14 @@ namespace :release do
       prs = changelog.relevant_pull_requests_since_last_release
 
       if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
-        warn "Opening a new shell to fix the cherry-pick errors. Press Ctrl-D when done to resume the task"
+        warn <<~MSG
+          Opening a new shell to fix the cherry-pick errors manually. Run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the task.
+
+          Otherwise type `Ctrl-D` to cancel
+        MSG
 
         unless system(ENV["SHELL"] || "zsh")
-          raise "Failed to resolve conflicts on a different shell. Resolve conflicts manually and finish the task manually"
+          raise "Failed to resolve conflitcs, resetting original state"
         end
       end
 
@@ -258,7 +267,7 @@ namespace :release do
       end
       File.open(version_file, "w") {|f| f.write(version_contents) }
 
-      changelog.sync!
+      changelog.cut!(version.to_s)
 
       sh("git", "commit", "-am", "Version #{version} with changelog")
     rescue StandardError

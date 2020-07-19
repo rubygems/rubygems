@@ -31,7 +31,7 @@ namespace :release do
     tag = "bundler-v#{version}"
 
     GithubInfo.client.create_release "rubygems/rubygems", tag, :name => tag,
-                                                               :body => release_notes,
+                                                               :body => release_notes.join("\n").strip,
                                                                :prerelease => version.prerelease?
   end
 

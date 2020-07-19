@@ -38,7 +38,7 @@ class Changelog
       lines.count
     )
 
-    join_and_strip(lines[current_version_index..previous_version_index])
+    lines[current_version_index..previous_version_index]
   end
 
   def cut!(version)
@@ -158,10 +158,6 @@ class Changelog
 
   def released_notes
     lines.drop_while {|line| !line.start_with?(release_section_token) }
-  end
-
-  def join_and_strip(lines)
-    lines.join("\n").strip
   end
 
   def lines

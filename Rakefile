@@ -273,8 +273,6 @@ namespace 'blog' do
 
     history = File.read 'History.txt'
 
-    history.force_encoding Encoding::UTF_8
-
     _, change_log, = history.split %r{^===\s*\d.*}, 3
 
     change_types = []

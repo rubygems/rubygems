@@ -169,7 +169,7 @@ class Changelog
   end
 
   def content
-    File.open(@file, "r:UTF-8", &:read)
+    File.read(@file)
   end
 
   def release_section_token

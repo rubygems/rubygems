@@ -301,7 +301,7 @@ namespace 'blog' do
     change_log = change_log.join
 
     change_types = change_types.map do |change_type|
-      change_type.downcase.tr '^a-z ', ''
+      change_type.downcase
     end
 
     last_change_type = change_types.pop

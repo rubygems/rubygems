@@ -1,9 +1,25 @@
 # frozen_string_literal: true
 
 require_relative "github_info"
+require "yaml"
 
 class Changelog
-  def initialize(level = nil)
+  def self.bundler
+    @bundler ||= new(
+      "CHANGELOG.md",
+    )
+  end
+
+  def self.bundler_patch_level
+    @bundler_patch_level ||= new(
+      "CHANGELOG.md",
+      :patch,
+    )
+  end
+
+  def initialize(file, level = :all)
+    @file = File.expand_path(file)
+    @config = YAML.load_file("#{File.dirname(file)}/.changelog.yml")
     @level = level
   end
 
@@ -27,13 +43,13 @@ class Changelog
 
   def cut!(version)
     full_new_changelog = [
-      "# #{version} (#{Time.now.strftime("%B %-d, %Y")})",
+      format_header_for(version),
       "",
       unreleased_notes,
       lines,
     ].join("\n") + "\n"
 
-    File.write("CHANGELOG.md", full_new_changelog)
+    File.write(@file, full_new_changelog)
   end
 
   def unreleased_notes
@@ -42,11 +58,11 @@ class Changelog
     group_by_labels(relevant_pull_requests_since_last_release).each do |label, pulls|
       category = changelog_label_mapping[label]
 
-      lines << "## #{category}"
+      lines << category
       lines << ""
 
       pulls.reverse_each do |pull|
-        lines << "  - #{pull.title} [##{pull.number}](#{pull.html_url})"
+        lines << format_entry_for(pull)
       end
 
       lines << ""
@@ -65,6 +81,24 @@ class Changelog
 
   private
 
+  def format_header_for(version)
+    new_header = header_template.gsub(/%new_version/, version.to_s)
+
+    if header_template.include?("%release_date")
+      new_header = new_header.gsub(/%release_date/, Time.now.strftime(release_date_format))
+    end
+
+    new_header
+  end
+
+  def format_entry_for(pull)
+    entry_template
+      .gsub(/%pull_request_title/, pull.title)
+      .gsub(/%pull_request_number/, pull.number.to_s)
+      .gsub(/%pull_request_url/, pull.html_url)
+      .gsub(/%pull_request_author/, pull.user.name || pull.user.login)
+  end
+
   def group_by_labels(pulls)
     grouped_pulls = pulls.group_by do |pull|
       relevant_label_for(pull)
@@ -77,21 +111,6 @@ class Changelog
     end.to_h
   end
 
-  def changelog_label_mapping
-    {
-      "bundler: security fix" => "Security fixes:",
-      "bundler: breaking change" => "Breaking changes:",
-      "bundler: major enhancement" => "Major enhancements:",
-      "bundler: deprecation" => "Deprecations:",
-      "bundler: feature" => "Features:",
-      "bundler: performance" => "Performance:",
-      "bundler: documentation" => "Documentation:",
-      "bundler: minor enhancement" => "Minor enhancements:",
-      "bundler: bug fix" => "Bug fixes:",
-      "bundler: backport" => nil,
-    }
-  end
-
   def relevant_label_for(pull)
     relevant_labels = pull.labels.map(&:name) & changelog_labels
     return unless relevant_labels.any?
@@ -101,16 +120,16 @@ class Changelog
     relevant_labels.first
   end
 
-  def patch_level_labels
-    ["bundler: security fix", "bundler: minor enhancement", "bundler: bug fix", "bundler: backport"]
+  def relevant_changelog_label_mapping
+    mapping = changelog_label_mapping
+
+    mapping = mapping.slice(*patch_level_labels) if @level == :patch
+
+    mapping
   end
 
   def changelog_labels
-    if @level == :patch
-      patch_level_labels
-    else
-      changelog_label_mapping.keys
-    end
+    relevant_changelog_label_mapping.keys
   end
 
   def merged_pr_ids_since(date)
@@ -150,11 +169,31 @@ class Changelog
   end
 
   def content
-    File.open("CHANGELOG.md", "r:UTF-8", &:read)
+    File.open(@file, "r:UTF-8", &:read)
   end
 
   def release_section_token
-    "# "
+    header_template.match(/^(\S+\s+)/)[1]
+  end
+
+  def header_template
+    @config["header_template"]
+  end
+
+  def entry_template
+    @config["entry_template"]
+  end
+
+  def release_date_format
+    @config["release_date_format"]
+  end
+
+  def changelog_label_mapping
+    @config["changelog_label_mapping"]
+  end
+
+  def patch_level_labels
+    @config["patch_level_labels"]
   end
 
   def gh_client

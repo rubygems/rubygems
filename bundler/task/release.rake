@@ -27,7 +27,7 @@ namespace :release do
   desc "Push the release to Github releases"
   task :github do
     version = Gem::Version.new(Bundler::GemHelper.gemspec.version)
-    release_notes = Changelog.new.release_notes(version)
+    release_notes = Changelog.bundler.release_notes(version)
     tag = "bundler-v#{version}"
 
     GithubInfo.client.create_release "rubygems/rubygems", tag, :name => tag,
@@ -53,7 +53,7 @@ namespace :release do
     puts "Cherry-picking PRs with patch-level compatible tags into the stable branch..."
 
     gh_client = GithubInfo.client
-    changelog = Changelog.new(:patch)
+    changelog = Changelog.bundler_patch_level
 
     branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
 

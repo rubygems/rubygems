@@ -34,7 +34,7 @@ module Spec
     end
 
     def dev_gemfile
-      @dev_gemfile ||= source_root.join("dev_gems.rb")
+      @dev_gemfile ||= git_root.join("dev_gems.rb")
     end
 
     def bindir

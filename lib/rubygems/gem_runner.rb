@@ -9,6 +9,7 @@ require 'rubygems'
 require 'rubygems/command_manager'
 require 'rubygems/deprecate'
 require 'rubygems/user_interaction'
+require 'rubygems/openssl'
 
 ##
 # Load additional plugins from $LOAD_PATH
@@ -83,7 +84,7 @@ class Gem::GemRunner
   end
 
   def warn_on_outdated
-    if Gem.latest_rubygems_version > Gem.rubygems_version
+    if defined?(OpenSSL::SSL) && (Gem.latest_rubygems_version > Gem.rubygems_version)
       say "You are currently using gem #{Gem.rubygems_version}, however gem #{Gem.latest_rubygems_version} is availble.\nConsider upgrading using the command `gem update --system`\n"
     end
   end

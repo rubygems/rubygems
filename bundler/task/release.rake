@@ -52,7 +52,6 @@ namespace :release do
 
     puts "Cherry-picking PRs with patch-level compatible tags into the stable branch..."
 
-    gh_client = GithubInfo.client
     changelog = Changelog.bundler_patch_level
 
     branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")

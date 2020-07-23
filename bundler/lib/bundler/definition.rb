@@ -541,7 +541,7 @@ module Bundler
       @unlocking
     end
 
-  private
+    private
 
     def add_platforms
       (@dependencies.flat_map(&:expanded_platforms) + current_platforms).uniq.each do |platform|

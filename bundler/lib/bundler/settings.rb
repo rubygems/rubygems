@@ -290,7 +290,7 @@ module Bundler
       "BUNDLE_#{key}"
     end
 
-  private
+    private
 
     def parent_setting_for(name)
       split_specific_setting_for(name)[0]

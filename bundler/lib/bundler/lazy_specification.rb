@@ -12,7 +12,7 @@ module Bundler
         [name, version, platform_string] <=> [other.name, other.version, other.platform_string]
       end
 
-    protected
+      protected
 
       def platform_string
         platform_string = platform.to_s
@@ -118,7 +118,7 @@ module Bundler
       " #{source.revision[0..6]}"
     end
 
-  private
+    private
 
     def to_ary
       nil

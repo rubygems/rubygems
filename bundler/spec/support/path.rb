@@ -219,7 +219,7 @@ module Spec
       end
     end
 
-  private
+    private
 
     def git_ls_files(glob)
       skip "Not running on a git context, since running tests from a tarball" if ruby_core_tarball?

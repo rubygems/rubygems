@@ -100,7 +100,7 @@ module Bundler
       raise e
     end
 
-  private
+    private
 
     def warn_if_root
       return if Bundler.settings[:silence_root_warning] || Bundler::WINDOWS || !Process.uid.zero?

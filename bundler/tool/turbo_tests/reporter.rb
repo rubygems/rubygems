@@ -93,7 +93,7 @@ module TurboTests
         RSpec::Core::Notifications::NullNotification)
     end
 
-  protected
+    protected
 
     def delegate_to_formatters(method, *args)
       @formatters.each do |formatter|

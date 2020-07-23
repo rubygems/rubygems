@@ -111,7 +111,7 @@ namespace :release do
         "bundler: documentation" => "Documentation:",
         "bundler: minor enhancement" => "Minor enhancements:",
         "bundler: bug fix" => "Bug fixes:",
-        "bundler :backport" => nil,
+        "bundler: backport" => nil,
       }
     end
 

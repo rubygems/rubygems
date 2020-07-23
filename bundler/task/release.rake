@@ -36,9 +36,7 @@ namespace :release do
   end
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"
-  task :prepare_patch, :version do |_t, args|
-    version = args.version
-
+  task :prepare_patch do
     version ||= begin
       current_version = Gem::Version.new(GithubInfo.latest_release.tag_name.gsub(/^bundler-v/, ""))
       segments = current_version.segments

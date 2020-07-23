@@ -37,20 +37,10 @@ namespace :release do
 
   desc "Prepare a patch release with the PRs from master in the patch milestone"
   task :prepare_patch do
-    version ||= begin
-      current_version = Gem::Version.new(GithubInfo.latest_release.tag_name.gsub(/^bundler-v/, ""))
-      segments = current_version.segments
-      if segments.last.is_a?(String)
-        segments << "1"
-      else
-        segments[-1] += 1
-      end
-      segments.join(".")
-    end
-
     puts "Cherry-picking PRs with patch-level compatible tags into the stable branch..."
 
     changelog = Changelog.bundler_patch_level
+    version = changelog.next_patch_level_version
 
     branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
 

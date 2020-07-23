@@ -7,6 +7,7 @@ class Changelog
   def self.bundler
     @bundler ||= new(
       "CHANGELOG.md",
+      :latest_release => GithubInfo.latest_release_for("bundler"),
     )
   end
 
@@ -14,13 +15,15 @@ class Changelog
     @bundler_patch_level ||= new(
       "CHANGELOG.md",
       :patch,
+      :latest_release => GithubInfo.latest_release_for("bundler"),
     )
   end
 
-  def initialize(file, level = :all)
+  def initialize(file, level = :all, latest_release:)
     @file = File.expand_path(file)
     @config = YAML.load_file("#{File.dirname(file)}/.changelog.yml")
     @level = level
+    @latest_release = latest_release
   end
 
   def release_notes(version)
@@ -39,6 +42,17 @@ class Changelog
     )
 
     lines[current_version_index..previous_version_index]
+  end
+
+  def next_patch_level_version
+    current_version = Gem::Version.new(@latest_release.tag_name.match(/v(.*)\Z/)[1])
+    segments = current_version.segments
+    if segments.last.is_a?(String)
+      segments << "1"
+    else
+      segments[-1] += 1
+    end
+    segments.join(".")
   end
 
   def cut!(version)
@@ -72,7 +86,7 @@ class Changelog
   end
 
   def relevant_pull_requests_since_last_release
-    last_release_date = GithubInfo.latest_release.created_at
+    last_release_date = @latest_release.created_at
 
     pr_ids = merged_pr_ids_since(last_release_date)
 

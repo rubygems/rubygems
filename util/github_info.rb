@@ -3,8 +3,10 @@
 module GithubInfo
   extend self
 
-  def latest_release
-    @latest_release ||= client.releases("rubygems/rubygems").select {|release| release.tag_name.start_with?("bundler-v") }.sort_by(&:created_at).last
+  def latest_release_for(library)
+    tag_prefix = library == "bundler" ? "bundler-v" : "v"
+
+    client.releases("rubygems/rubygems").select {|release| release.tag_name.start_with?(tag_prefix) }.sort_by(&:created_at).last
   end
 
   def client

@@ -12,7 +12,6 @@ GEM
     parser (2.7.0.5)
       ast (~> 2.4.0)
     rainbow (3.0.0)
-    rake (13.0.1)
     rdoc (6.2.0)
     rexml (3.2.4)
     rubocop (0.80.1)
@@ -40,7 +39,6 @@ PLATFORMS
 
 DEPENDENCIES
   minitest (~> 5.14, >= 5.14.2)
-  rake (~> 13.0)
   rdoc (= 6.2.0)
   rubocop (~> 0.80.1)
   rubocop-performance (~> 1.5.2)

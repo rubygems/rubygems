@@ -52,7 +52,7 @@ class Changelog
     else
       segments[-1] += 1
     end
-    segments.join(".")
+    Gem::Version.new(segments.join("."))
   end
 
   def cut!(version)

@@ -42,7 +42,7 @@ namespace :release do
     changelog = Changelog.bundler_patch_level
     version = changelog.next_patch_level_version
 
-    branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
+    branch = version.segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
 
     previous_branch = `git rev-parse --abbrev-ref HEAD`.strip
     release_branch = "release_bundler/#{version}"

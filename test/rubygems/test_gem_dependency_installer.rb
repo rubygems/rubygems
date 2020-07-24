@@ -842,7 +842,7 @@ class TestGemDependencyInstaller < Gem::TestCase
 
   require 'rubygems/openssl'
 
-  if defined? OpenSSL::SSL
+  if Gem::HAVE_OPENSSL
     def test_install_security_policy
       util_setup_gems
 

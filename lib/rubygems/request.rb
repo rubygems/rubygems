@@ -45,7 +45,8 @@ class Gem::Request
   end
 
   def self.configure_connection_for_https(connection, cert_files)
-    require 'openssl'
+    raise Gem::Exception.new('OpenSSl is not available. Install OpenSSL and rebuild Ruby (preferred) or use non-HTTPS sources') unless Gem::HAVE_OPENSSL
+
     connection.use_ssl = true
     connection.verify_mode =
       Gem.configuration.ssl_verify_mode || OpenSSL::SSL::VERIFY_PEER
@@ -125,7 +126,7 @@ class Gem::Request
 
   def connection_for(uri)
     @connection_pool.checkout
-  rescue defined?(OpenSSL::SSL) ? OpenSSL::SSL::SSLError : Errno::EHOSTDOWN,
+  rescue Gem::HAVE_OPENSSL ? OpenSSL::SSL::SSLError : Errno::EHOSTDOWN,
          Errno::EHOSTDOWN => e
     raise Gem::RemoteFetcher::FetchError.new(e.message, uri)
   end

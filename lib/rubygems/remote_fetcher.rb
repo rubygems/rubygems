@@ -263,7 +263,7 @@ class Gem::RemoteFetcher
   rescue Timeout::Error
     raise UnknownHostError.new('timed out', uri)
   rescue IOError, SocketError, SystemCallError,
-         *(OpenSSL::SSL::SSLError if defined?(OpenSSL::SSL)) => e
+         *(OpenSSL::SSL::SSLError if Gem::HAVE_OPENSSL) => e
     if e.message =~ /getaddrinfo/
       raise UnknownHostError.new('no such name', uri)
     else

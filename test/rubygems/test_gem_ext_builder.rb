@@ -48,7 +48,7 @@ install:
       Gem::Ext::Builder.make @dest_path, results
     end
 
-    results = results.join "\n"
+    results = results.join("\n").b
 
     assert_match %r{"DESTDIR=#{ENV['DESTDIR']}" clean$},   results
     assert_match %r{"DESTDIR=#{ENV['DESTDIR']}"$},         results
@@ -79,7 +79,7 @@ install:
       Gem::Ext::Builder.make @dest_path, results
     end
 
-    results = results.join "\n"
+    results = results.join("\n").b
 
     assert_match %r{"DESTDIR=#{ENV['DESTDIR']}" clean$},   results
     assert_match %r{"DESTDIR=#{ENV['DESTDIR']}"$},         results

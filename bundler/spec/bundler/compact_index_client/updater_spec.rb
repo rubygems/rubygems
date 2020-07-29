@@ -16,15 +16,13 @@ RSpec.describe Bundler::CompactIndexClient::Updater do
 
     let(:response) { double(:response, :body => "") }
 
-    it "MisMatchedChecksumError is raised" do
+    it "treats the response as an update" do
       # Twice: #update retries on failure
-      expect(response).to receive(:[]).with("Content-Encoding").twice { "" }
-      expect(response).to receive(:[]).with("ETag").twice { nil }
-      expect(fetcher).to receive(:call).twice { response }
+      expect(response).to receive(:[]).with("Content-Encoding") { "" }
+      expect(response).to receive(:[]).with("ETag") { nil }
+      expect(fetcher).to receive(:call) { response }
 
-      expect do
-        updater.update(local_path, remote_path)
-      end.to raise_error(Bundler::CompactIndexClient::Updater::MisMatchedChecksumError)
+      updater.update(local_path, remote_path)
     end
   end
 

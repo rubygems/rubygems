@@ -196,11 +196,21 @@ gem 'other', version
     bin_dir = installer.bin_dir
 
     if Gem.win_platform?
-      bin_dir = bin_dir.downcase.gsub(File::SEPARATOR, File::ALT_SEPARATOR)
+      bin_dir = bin_dir.downcase
     end
 
     orig_PATH, ENV['PATH'] =
       ENV['PATH'], [ENV['PATH'], bin_dir].join(File::PATH_SEPARATOR)
+
+    use_ui @ui do
+      installer.check_that_user_bin_dir_is_in_path
+    end
+
+    assert_empty @ui.error
+
+    return unless win_platform?
+
+    ENV['PATH'] = [orig_PATH, bin_dir.tr(File::SEPARATOR, File::ALT_SEPARATOR)].join(File::PATH_SEPARATOR)
 
     use_ui @ui do
       installer.check_that_user_bin_dir_is_in_path
@@ -239,7 +249,7 @@ gem 'other', version
     expected = installer.bin_dir
 
     if Gem.win_platform?
-      expected = expected.downcase.gsub(File::SEPARATOR, File::ALT_SEPARATOR)
+      expected = expected.downcase
     end
 
     assert_match expected, @ui.error

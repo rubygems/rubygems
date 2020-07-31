@@ -39,6 +39,7 @@ RSpec.describe Bundler::CompactIndexClient::Updater do
 
   context "when bundler doesn't have permissions on Dir.tmpdir" do
     it "Errno::EACCES is raised" do
+      local_path # create local path before stubbing mktmpdir
       allow(Dir).to receive(:mktmpdir) { raise Errno::EACCES }
 
       expect do

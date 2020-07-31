@@ -6,18 +6,16 @@ require "bundler/compact_index_client/updater"
 
 RSpec.describe Bundler::CompactIndexClient::Updater do
   let(:fetcher) { double(:fetcher) }
-  let(:local_path) { Pathname("/tmp/localpath") }
+  let(:local_path) { Pathname.new Dir.mktmpdir("localpath") }
   let(:remote_path) { double(:remote_path) }
 
   let!(:updater) { described_class.new(fetcher) }
 
   context "when the ETag header is missing" do
     # Regression test for https://github.com/rubygems/bundler/issues/5463
-
-    let(:response) { double(:response, :body => "") }
+    let(:response) { double(:response, :body => "abc123") }
 
     it "treats the response as an update" do
-      # Twice: #update retries on failure
       expect(response).to receive(:[]).with("Content-Encoding") { "" }
       expect(response).to receive(:[]).with("ETag") { nil }
       expect(fetcher).to receive(:call) { response }

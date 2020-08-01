@@ -66,8 +66,8 @@ module Bundler
             end
           end
 
-          response_etag = (response["ETag"] || "").gsub(%r{\AW/}, "")
-          if etag_for(local_temp_path) == response_etag
+          etag = (response["ETag"] || "").gsub(%r{\AW/}, "")
+          if etag.length.zero? || etag_for(local_temp_path) == etag
             SharedHelpers.filesystem_access(local_path) do
               FileUtils.mv(local_temp_path, local_path)
             end
@@ -75,7 +75,7 @@ module Bundler
           end
 
           if retrying
-            raise MisMatchedChecksumError.new(remote_path, response_etag, etag_for(local_temp_path))
+            raise MisMatchedChecksumError.new(remote_path, etag, etag_for(local_temp_path))
           end
 
           update(local_path, remote_path, :retrying)

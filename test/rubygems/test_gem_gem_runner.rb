@@ -132,6 +132,7 @@ class TestGemGemRunner < Gem::TestCase
 
     use_ui @ui do
       @runner.run(args)
+      assert_match(/Consider upgrading/, @ui.output)
     end
   end
 

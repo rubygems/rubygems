@@ -31,4 +31,4 @@ SEE ALSO
 
 
 
-                                   July 2020                    BUNDLE-INIT(1)
+                                  August 2020                   BUNDLE-INIT(1)

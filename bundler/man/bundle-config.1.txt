@@ -524,4 +524,4 @@ CONFIGURE BUNDLER DIRECTORIES
 
 
 
-                                   July 2020                  BUNDLE-CONFIG(1)
+                                  August 2020                 BUNDLE-CONFIG(1)

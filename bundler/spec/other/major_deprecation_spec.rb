@@ -271,7 +271,7 @@ RSpec.describe "major deprecations" do
     end
 
     it "should output a deprecation warning", :bundler => "2" do
-      expect(deprecations).to include("The --binstubs option will be removed in favor of `bundle binstubs`")
+      expect(deprecations).to include("The --binstubs option will be removed in favor of `bundle binstubs --all`")
     end
 
     pending "fails with a helpful error", :bundler => "3"

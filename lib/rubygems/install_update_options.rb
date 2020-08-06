@@ -184,7 +184,11 @@ module Gem::InstallUpdateOptions
   # Default options for the gem install command.
 
   def install_update_defaults_str
-    '--document=rdoc,ri --wrappers'
+    default_args = '--document=rdoc,ri --wrappers'
+    if !File.writable?(Gem.paths.home)
+      default_args += ' --user-home'
+    end
+    default_args
   end
 
 end

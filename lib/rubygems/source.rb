@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-autoload :FileUtils, 'fileutils'
 
 require "rubygems/text"
 ##
@@ -9,7 +8,6 @@ require "rubygems/text"
 # bundler dependency API and so-forth.
 
 class Gem::Source
-
   include Comparable
   include Gem::Text
 
@@ -224,7 +222,6 @@ class Gem::Source
     return if @uri.host.nil?
     levenshtein_distance(@uri.host, host) <= distance_threshold
   end
-
 end
 
 require 'rubygems/source/git'

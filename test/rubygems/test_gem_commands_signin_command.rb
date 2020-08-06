@@ -4,9 +4,10 @@ require 'rubygems/commands/signin_command'
 require 'rubygems/installer'
 
 class TestGemCommandsSigninCommand < Gem::TestCase
-
   def setup
     super
+
+    credential_setup
 
     Gem.configuration.rubygems_api_key = nil
     Gem.configuration.api_keys.clear
@@ -15,13 +16,13 @@ class TestGemCommandsSigninCommand < Gem::TestCase
   end
 
   def teardown
-    credentials_path = Gem.configuration.credentials_path
-    File.delete(credentials_path)  if File.exist?(credentials_path)
+    credential_teardown
+
     super
   end
 
   def test_execute_when_not_already_signed_in
-    sign_in_ui = util_capture() { @cmd.execute }
+    sign_in_ui = util_capture { @cmd.execute }
     assert_match %r{Signed in.}, sign_in_ui.output
   end
 
@@ -64,7 +65,7 @@ class TestGemCommandsSigninCommand < Gem::TestCase
   end
 
   def test_execute_with_valid_creds_set_for_default_host
-    util_capture {@cmd.execute}
+    util_capture { @cmd.execute }
 
     api_key     = 'a5fdbb6ba150cbb83aad2bb2fede64cf040453903'
     credentials = YAML.load_file Gem.configuration.credentials_path
@@ -95,5 +96,4 @@ class TestGemCommandsSigninCommand < Gem::TestCase
 
     sign_in_ui
   end
-
 end

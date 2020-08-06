@@ -4,7 +4,6 @@
 # files
 
 class Gem::Resolver::InstallerSet < Gem::Resolver::Set
-
   ##
   # List of Gem::Specification objects that must always be installed.
 
@@ -118,12 +117,12 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     dep = req.dependency
 
     return res if @ignore_dependencies and
-              @always_install.none? { |spec| dep.match? spec }
+              @always_install.none? {|spec| dep.match? spec }
 
     name = dep.name
 
     dep.matching_specs.each do |gemspec|
-      next if @always_install.any? { |spec| spec.name == gemspec.name }
+      next if @always_install.any? {|spec| spec.name == gemspec.name }
 
       res << Gem::Resolver::InstalledSpecification.new(self, gemspec)
     end unless @ignore_installed
@@ -168,7 +167,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
   end
 
   def inspect # :nodoc:
-    always_install = @always_install.map { |s| s.full_name }
+    always_install = @always_install.map {|s| s.full_name }
 
     '#<%s domain: %s specs: %p always install: %p>' % [
       self.class, @domain, @specs.keys, always_install,
@@ -223,5 +222,4 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       @domain = :local unless remote
     end
   end
-
 end

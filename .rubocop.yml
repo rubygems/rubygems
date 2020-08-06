@@ -1,3 +1,5 @@
+require: rubocop-performance
+
 AllCops:
   DisabledByDefault: true
   Exclude:
@@ -10,7 +12,7 @@ AllCops:
 Layout/AccessModifierIndentation:
   Enabled: true
 
-Layout/AlignArray:
+Layout/ArrayAlignment:
   Enabled: true
 
 Layout/BlockAlignment:
@@ -41,16 +43,18 @@ Layout/EmptyLines:
 
 Layout/EmptyLinesAroundClassBody:
   Enabled: true
-  EnforcedStyle: empty_lines_except_namespace
 
 Layout/EmptyLinesAroundMethodBody:
   Enabled: true
 
-Layout/IndentFirstHashElement:
+Layout/ExtraSpacing:
+  Enabled: true
+
+Layout/FirstHashElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
-Layout/IndentFirstArrayElement:
+Layout/FirstArrayElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
@@ -60,13 +64,20 @@ Layout/IndentationConsistency:
 Layout/IndentationWidth:
   Enabled: true
 
+Layout/LeadingEmptyLines:
+  Enabled: true
+
 Layout/SpaceAroundOperators:
   Enabled: true
+
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+  SpaceBeforeBlockParameters: false
 
 Layout/SpaceInsideParens:
   Enabled: true
 
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Enabled: true
 
 Layout/TrailingWhitespace:
@@ -76,6 +87,31 @@ Lint/DuplicateMethods:
   Enabled: true
 
 Lint/ParenthesesAsGroupedExpression:
+  Enabled: true
+
+Naming/HeredocDelimiterCase:
+  Enabled: true
+
+Naming/HeredocDelimiterNaming:
+  Enabled: true
+  ForbiddenDelimiters:
+    - ^RB$
+
+Performance/StartWith:
+  Enabled: true
+
+Performance/StringReplacement:
+  Enabled: true
+
+Style/Encoding:
+  Enabled: true
+  Exclude:
+    - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
+
+Style/IfInsideElse:
+  Enabled: false
+
+Style/MethodCallWithoutArgsParentheses:
   Enabled: true
 
 Style/MethodDefParentheses:
@@ -88,4 +124,7 @@ Style/MutableConstant:
   Enabled: true
 
 Style/BlockDelimiters:
+  Enabled: true
+
+Style/PercentLiteralDelimiters:
   Enabled: true

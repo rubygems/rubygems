@@ -1,0 +1,2 @@
+# If users select a blank issue the default template will be loaded.
+blank_issues_enabled: true

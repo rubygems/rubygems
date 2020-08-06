@@ -5,25 +5,29 @@ on:
 
   push:
     branches:
-      - staging
-      - trying
+      - master
+      - 3.2
 
 jobs:
   ubuntu_lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v1
-      - run: git submodule update -i
+      - uses: actions/checkout@v2
       - name: Setup ruby
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.6.x"
+          ruby-version: 2.7.1
+          bundler: none
       - name: Install Dependencies
-        run: util/ci.sh before_script
-        env:
-          TEST_TOOL: rubygems
+        run: rake setup
       - name: Run Lint
-        run: util/ci.sh rubocop
-        env:
-          TEST_TOOL: rubygems
+        run: rake rubocop
+      - name: Generate docs
+        run: rake docs
+      - name: Install Dependencies in Bundler
+        run: bin/rake spec:deps
+        working-directory: ./bundler
+      - name: "Check RVM integration, man:check"
+        run: bin/rake check_rvm_integration man:check
+        working-directory: ./bundler
     timeout-minutes: 15

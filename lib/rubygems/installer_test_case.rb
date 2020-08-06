@@ -3,7 +3,6 @@ require 'rubygems/test_case'
 require 'rubygems/installer'
 
 class Gem::Installer
-
   ##
   # Available through requiring rubygems/installer_test_case
 
@@ -58,14 +57,12 @@ class Gem::Installer
   # Available through requiring rubygems/installer_test_case
 
   attr_writer :wrappers
-
 end
 
 ##
 # A test case for Gem::Installer.
 
 class Gem::InstallerTestCase < Gem::TestCase
-
   def setup
     super
 
@@ -230,4 +227,20 @@ class Gem::InstallerTestCase < Gem::TestCase
                        :user_install => user)
   end
 
+  @@symlink_supported = nil
+
+  # This is needed for Windows environment without symlink support enabled (the default
+  # for non admin) to be able to skip test for features using symlinks.
+  def symlink_supported?
+    if @@symlink_supported.nil?
+      begin
+        File.symlink("", "")
+      rescue Errno::ENOENT, Errno::EEXIST
+        @@symlink_supported = true
+      rescue NotImplementedError, SystemCallError
+        @@symlink_supported = false
+      end
+    end
+    @@symlink_supported
+  end
 end

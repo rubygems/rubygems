@@ -3,9 +3,10 @@ require 'rubygems/test_case'
 require 'rubygems/commands/owner_command'
 
 class TestGemCommandsOwnerCommand < Gem::TestCase
-
   def setup
     super
+
+    credential_setup
 
     ENV["RUBYGEMS_HOST"] = nil
     @stub_ui = Gem::MockGemUi.new
@@ -15,6 +16,12 @@ class TestGemCommandsOwnerCommand < Gem::TestCase
     Gem.configuration.rubygems_api_key = "ed244fbf2b1a52e012da8616c512fa47f9aa5250"
 
     @cmd = Gem::Commands::OwnerCommand.new
+  end
+
+  def teardown
+    credential_teardown
+
+    super
   end
 
   def test_show_owners
@@ -119,7 +126,7 @@ EOF
     end
     Gem.configuration.load_api_keys
 
-    @cmd.handle_options %w(-k other)
+    @cmd.handle_options %w[-k other]
     @cmd.show_owners('freewill')
 
     assert_equal '701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization']
@@ -177,7 +184,7 @@ EOF
     end
     Gem.configuration.load_api_keys
 
-    @cmd.handle_options %w(-k other)
+    @cmd.handle_options %w[-k other]
     @cmd.add_owners('freewill', ['user-new1@example.com'])
 
     assert_equal '701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization']
@@ -217,7 +224,7 @@ EOF
     end
     Gem.configuration.load_api_keys
 
-    @cmd.handle_options %w(-k other)
+    @cmd.handle_options %w[-k other]
     @cmd.remove_owners('freewill', ['user-remove1@example.com'])
 
     assert_equal '701229f217cdf23b1344c7b4b54ca97', @stub_fetcher.last_request['Authorization']
@@ -268,5 +275,4 @@ EOF
     assert_match 'Code: ', @otp_ui.output
     assert_equal '111111', @stub_fetcher.last_request['OTP']
   end
-
 end

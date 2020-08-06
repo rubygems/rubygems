@@ -3,7 +3,6 @@ require 'rubygems/test_case'
 require 'rubygems/ext'
 
 class TestGemExtRakeBuilder < Gem::TestCase
-
   def setup
     super
 
@@ -25,9 +24,9 @@ class TestGemExtRakeBuilder < Gem::TestCase
 
       output = output.join "\n"
 
-      refute_match %r%^rake failed:%, output
-      assert_match %r%^#{Regexp.escape @@ruby} mkrf_conf\.rb%, output
-      assert_match %r%^#{Regexp.escape rake} RUBYARCHDIR\\=#{Regexp.escape @dest_path} RUBYLIBDIR\\=#{Regexp.escape @dest_path}%, output
+      refute_match %r{^rake failed:}, output
+      assert_match %r{^#{Regexp.escape Gem.ruby} mkrf_conf\.rb}, output
+      assert_match %r{^#{Regexp.escape rake} RUBYARCHDIR\\=#{Regexp.escape @dest_path} RUBYLIBDIR\\=#{Regexp.escape @dest_path}}, output
     end
   end
 
@@ -46,9 +45,9 @@ class TestGemExtRakeBuilder < Gem::TestCase
 
       output = output.join "\n"
 
-      refute_match %r%^rake failed:%, output
-      assert_match %r%^#{Regexp.escape @@ruby} mkrf_conf\.rb%, output
-      assert_match %r%^#{Regexp.escape rake} RUBYARCHDIR\\=#{Regexp.escape @dest_path} RUBYLIBDIR\\=#{Regexp.escape @dest_path}%, output
+      refute_match %r{^rake failed:}, output
+      assert_match %r{^#{Regexp.escape Gem.ruby} mkrf_conf\.rb}, output
+      assert_match %r{^#{Regexp.escape rake} RUBYARCHDIR\\=#{Regexp.escape @dest_path} RUBYLIBDIR\\=#{Regexp.escape @dest_path}}, output
     end
   end
 
@@ -62,8 +61,8 @@ class TestGemExtRakeBuilder < Gem::TestCase
 
       output = output.join "\n"
 
-      refute_match %r%^rake failed:%, output
-      assert_match %r%^#{Regexp.escape rake} RUBYARCHDIR\\=#{Regexp.escape @dest_path} RUBYLIBDIR\\=#{Regexp.escape @dest_path} test1 test2%, output
+      refute_match %r{^rake failed:}, output
+      assert_match %r{^#{Regexp.escape rake} RUBYARCHDIR\\=#{Regexp.escape @dest_path} RUBYLIBDIR\\=#{Regexp.escape @dest_path} test1 test2}, output
     end
   end
 
@@ -78,7 +77,7 @@ class TestGemExtRakeBuilder < Gem::TestCase
         end
       end
 
-      assert_match %r%^rake failed%, error.message
+      assert_match %r{^rake failed}, error.message
     end
   end
 
@@ -91,5 +90,4 @@ class TestGemExtRakeBuilder < Gem::TestCase
       EO_MKRF
     end
   end
-
 end

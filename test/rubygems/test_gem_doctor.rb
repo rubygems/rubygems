@@ -3,7 +3,6 @@ require 'rubygems/test_case'
 require 'rubygems/doctor'
 
 class TestGemDoctor < Gem::TestCase
-
   def gem(name)
     spec = quick_gem name do |gem|
       gem.files = %W[lib/#{name}.rb Rakefile]
@@ -158,8 +157,8 @@ This directory does not appear to be a RubyGems repository, skipping
 
     Gem.use_paths @gemhome.to_s
 
-    FileUtils.mkdir_p Gem.plugins_dir
-    bad_plugin = File.join(Gem.plugins_dir, "a_badly_named_file.rb")
+    FileUtils.mkdir_p Gem.plugindir
+    bad_plugin = File.join(Gem.plugindir, "a_badly_named_file.rb")
     write_file bad_plugin
 
     doctor = Gem::Doctor.new @gemhome
@@ -192,5 +191,4 @@ Removed file plugins/a_badly_named_file.rb
 
     assert doctor.gem_repository?, 'gems installed'
   end
-
 end

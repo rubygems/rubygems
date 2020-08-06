@@ -4,7 +4,6 @@ require 'time'
 require 'rubygems/user_interaction'
 
 class Gem::Request
-
   extend Gem::UserInteraction
   include Gem::UserInteraction
 
@@ -46,7 +45,7 @@ class Gem::Request
   end
 
   def self.configure_connection_for_https(connection, cert_files)
-    require 'net/https'
+    require 'openssl'
     connection.use_ssl = true
     connection.verify_mode =
       Gem.configuration.ssl_verify_mode || OpenSSL::SSL::VERIFY_PEER
@@ -78,12 +77,6 @@ class Gem::Request
     end
 
     connection
-  rescue LoadError => e
-    raise unless (e.respond_to?(:path) && e.path == 'openssl') ||
-                 e.message =~ / -- openssl$/
-
-    raise Gem::Exception.new(
-            'Unable to require openssl, install OpenSSL and rebuild Ruby (preferred) or use non-HTTPS sources')
   end
 
   def self.verify_certificate(store_context)
@@ -291,7 +284,6 @@ class Gem::Request
 
     ua
   end
-
 end
 
 require 'rubygems/request/http_pool'

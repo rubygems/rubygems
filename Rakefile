@@ -1,4 +1,4 @@
-# -*- ruby -*-
+RakeFileUtils.verbose_flag = false
 
 require 'rubygems'
 require 'rubygems/package_task'
@@ -6,9 +6,10 @@ require "rake/testtask"
 require 'psych'
 
 desc "Setup Rubygems dev environment"
-task :setup => ["bundler:checkout"] do
-  sh "gem install bundler:2.0.2"
-  sh "bundle install"
+task :setup do
+  version = File.read("dev_gems.rb.lock").split(/BUNDLED WITH\n   /).last
+  sh "gem install bundler:#{version}"
+  sh "bundle install --gemfile=dev_gems.rb"
 end
 
 desc "Setup git hooks"
@@ -38,9 +39,9 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
   doc.title  = "RubyGems #{v} API Documentation"
 
   rdoc_files = Rake::FileList.new %w[lib bundler/lib]
-  rdoc_files.add %w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.rdoc
-                    MAINTAINERS.txt Manifest.txt POLICIES.rdoc README.md UPGRADING.rdoc bundler/CHANGELOG.md
-                    bundler/CODE_OF_CONDUCT.md bundler/CONTRIBUTING.md bundler/LICENSE.md bundler/README.md
+  rdoc_files.add %w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.md
+                    MAINTAINERS.txt Manifest.txt POLICIES.md README.md UPGRADING.md bundler/CHANGELOG.md
+                    bundler/doc/contributing/README.md bundler/LICENSE.md bundler/README.md
                     hide_lib_for_update/note.txt].map(&:freeze)
 
   doc.rdoc_files = rdoc_files
@@ -63,21 +64,23 @@ rescue LoadError
   end
 end
 
-desc "Run rubocop"
-task(:rubocop) do
-  sh "util/rubocop"
+namespace :rubocop do
+  desc "Run rubocop for RubyGems. Pass positional arguments, e.g. -a, as Rake arguments."
+  task(:rubygems) do |_, args|
+    sh "util/rubocop", *args
+  end
+
+  desc "Run rubocop for Bundler. Pass positional arguments, e.g. -a, as Rake arguments."
+  task(:bundler) do |_, args|
+    sh "bundler/bin/rubocop", *args
+  end
 end
+
+task rubocop: %w[rubocop:rubygems rubocop:bundler]
 
 desc "Run a test suite bisection"
 task(:bisect) do
-  seed = begin
-           Integer(ENV["SEED"])
-         rescue
-           abort "Specify the failing seed as the SEED environment variable"
-         end
-
-  gemdir = `gem env gemdir`.chomp
-  sh "SEED=#{seed} MTB_VERBOSE=2 util/bisect -Ilib:bundler/lib:test:#{gemdir}/gems/minitest-server-1.0.5/lib test"
+  sh "util/bisect"
 end
 
 # --------------------------------------------------------------------
@@ -167,7 +170,7 @@ task :upload_to_s3 do
   s3 = Aws::S3::Resource.new(region:'us-west-2')
   %w[zip tgz].each do |ext|
     obj = s3.bucket('oregon.production.s3.rubygems.org').object("rubygems/rubygems-#{v}.#{ext}")
-    obj.upload_file("pkg/rubygems-#{v}.#{ext}")
+    obj.upload_file("pkg/rubygems-#{v}.#{ext}", acl: 'public-read')
   end
 end
 
@@ -272,7 +275,7 @@ namespace 'blog' do
 
     history.force_encoding Encoding::UTF_8
 
-    _, change_log, = history.split %r%^===\s*\d.*%, 3
+    _, change_log, = history.split %r{^===\s*\d.*}, 3
 
     change_types = []
 
@@ -380,42 +383,35 @@ end
 
 module Rubygems
   class ProjectFiles
-
     def self.all
       files = []
-      exclude = %r[\.git|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)]ox
-      tracked_files = `git ls-files --recurse-submodules`.split("\n").map {|f| "./#{f}" }
+      exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|util/)}
+      tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|
         next unless File.file?(path)
         next if path =~ exclude
-        files << path[2..-1]
+        files << path
       end
 
-      files
+      files.sort
     end
-
   end
 end
 
 desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
-  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all.sort) }
+  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all) }
 end
 
 desc "Check the manifest is up to date"
 task :check_manifest do
-  if File.read("Manifest.txt").split.sort != Rubygems::ProjectFiles.all.sort
+  if File.read("Manifest.txt").split != Rubygems::ProjectFiles.all
     abort "Manifest is out of date. Run `rake update_manifest` to sync it"
   end
 end
 
 namespace :bundler do
-  desc "Initialize bundler submodule"
-  task :checkout do
-    sh "git submodule update --init"
-  end
-
   task :build_metadata do
     chdir('bundler') { sh "rake build_metadata" }
   end

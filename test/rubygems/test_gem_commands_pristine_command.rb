@@ -3,7 +3,6 @@ require 'rubygems/test_case'
 require 'rubygems/commands/pristine_command'
 
 class TestGemCommandsPristineCommand < Gem::TestCase
-
   def setup
     super
     common_installer_setup
@@ -160,11 +159,9 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
     ruby_exec = sprintf Gem.default_exec_format, 'ruby'
 
-    if win_platform?
-      assert_match %r%\A#!\s*#{ruby_exec}%, File.read(gem_exec)
-    else
-      assert_match %r%\A#!\s*/usr/bin/env #{ruby_exec}%, File.read(gem_exec)
-    end
+    bin_env = win_platform? ? "" : %w[/usr/bin/env /bin/env].find {|f| File.executable?(f) } + " "
+
+    assert_match %r{\A#!\s*#{bin_env}#{ruby_exec}}, File.read(gem_exec)
   end
 
   def test_execute_extensions_explicit
@@ -248,7 +245,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
       RUBY
     end
 
-    build_args = %w!--with-awesome=true --sweet!
+    build_args = %w[--with-awesome=true --sweet]
 
     install_gem a, :build_args => build_args
 
@@ -457,7 +454,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
       end
     end
 
-    assert_match %r|at least one gem name|, e.message
+    assert_match %r{at least one gem name}, e.message
   end
 
   def test_execute_only_executables
@@ -658,5 +655,4 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert @cmd.options[:extensions]
     assert @cmd.options[:extensions_set]
   end
-
 end

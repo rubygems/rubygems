@@ -40,7 +40,7 @@ with your OS's package manager before installing RubyGems manually.
 If you would like to manually install RubyGems:
 
 * Download from https://rubygems.org/pages/download, unpack, and `cd` into RubyGems' src
-* OR clone this repository and `cd` into the repository (make sure to run `git submodule update --init`)
+* OR clone this repository and `cd` into the repository
 
 Install RubyGems by running:
 

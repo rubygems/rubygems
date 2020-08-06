@@ -1,6 +1,15 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+seed = begin
+         Integer(ENV["SEED"])
+       rescue
+         abort "Specify the failing seed as the SEED environment variable"
+       end
+
+ENV["RUBYOPT"] = "-Ilib:bundler/lib:test:#{Gem.dir}/gems/minitest-server-1.0.5/lib"
+ENV["MTB_VERBOSE"] = "2"
+
 begin
   minitest_bisect = Gem.bin_path("minitest-bisect", "minitest_bisect")
 rescue Gem::GemNotFoundException

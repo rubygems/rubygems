@@ -3,19 +3,15 @@
 require 'json'
 require 'net/http'
 
-def access_token_query_string
-  @access_token_query_string ||= begin
-    token = ENV['GITHUB_API_TOKEN']
-    token ? "?access_token=#{token.strip}" : ''
-  end
-end
-
 def github_api(path)
   base = 'https://api.github.com'
   url = path.start_with?(base) ? path : base + path
-  url += access_token_query_string
   uri = URI.parse(url)
-  return unless response = Net::HTTP.get_response(uri)
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+  req = Net::HTTP::Get.new(uri.request_uri)
+  req["authorization"] = "token #{ENV['GITHUB_API_TOKEN']}" if ENV['GITHUB_API_TOKEN']
+  response = http.request(req)
   JSON.load(response.body)
 end
 
@@ -46,13 +42,14 @@ def sentence(text)
   text.end_with?('.') ? text : text << '.'
 end
 
+from = ARGV.shift || Gem::VERSION
 branch = ARGV.shift || "HEAD"
 
 history = File.read(File.expand_path('../../History.txt', __FILE__))
 
 File.open(File.expand_path('../../ChangeLog', __FILE__), 'w') do |changelog|
-  commits = `git log --oneline v#{Gem::VERSION}..#{branch}`.split("\n")
-  prs = commits.reverse_each.map { |c| c =~ /(Auto merge of|Merge pull request|Merge) #(\d+)/ && $2 }.compact.uniq.sort!
+  commits = `git log --oneline v#{from}..#{branch}`.split("\n")
+  prs = commits.reverse_each.map {|c| c =~ /(Auto merge of|Merge pull request|Merge) #(\d+)/ && $2 }.compact.uniq.sort!
   prs.each do |pr|
     next if history =~ /Pull\srequest\s##{pr}/m
     details = github_api "/repos/rubygems/rubygems/pulls/#{pr}"

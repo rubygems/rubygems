@@ -4,7 +4,6 @@ require 'rubygems/dependency_installer'
 require 'rubygems/security'
 
 class TestGemDependencyInstaller < Gem::TestCase
-
   def setup
     super
     common_installer_setup
@@ -46,69 +45,6 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     util_reset_gems
-  end
-
-  def test_available_set_for_name
-    util_setup_gems
-    p1a, = util_gem 'a', '10.a'
-    util_setup_spec_fetcher p1a, @a1, @a1_pre
-
-    inst = Gem::DependencyInstaller.new
-
-    available = Gem::Deprecate.skip_during do
-      inst.available_set_for 'a', Gem::Requirement.default
-    end
-
-    assert_equal %w[a-1], available.set.map { |s| s.spec.full_name }
-  end
-
-  def test_available_set_for_name_prerelease
-    util_setup_gems
-    p1a, = util_gem 'a', '10.a'
-    util_setup_spec_fetcher p1a, @a1, @a1_pre
-
-    inst = Gem::DependencyInstaller.new :prerelease => true
-
-    available = Gem::Deprecate.skip_during do
-      inst.available_set_for 'a', Gem::Requirement.default
-    end
-
-    assert_equal %w[a-10.a],
-                 available.sorted.map { |s| s.spec.full_name }
-  end
-
-  def test_available_set_for_dep
-    util_setup_gems
-    p1a, = util_gem 'a', '10.a'
-    util_setup_spec_fetcher p1a, @a1, @a1_pre
-
-    inst = Gem::DependencyInstaller.new
-
-    dep = Gem::Dependency.new 'a', Gem::Requirement.default
-
-    available = Gem::Deprecate.skip_during do
-      inst.available_set_for dep, Gem::Requirement.default
-    end
-
-    assert_equal %w[a-1], available.set.map { |s| s.spec.full_name }
-  end
-
-  def test_available_set_for_dep_prerelease
-    util_setup_gems
-    p1a, = util_gem 'a', '10.a'
-    util_setup_spec_fetcher p1a, @a1, @a1_pre
-
-    inst = Gem::DependencyInstaller.new :prerelease => true
-
-    dep = Gem::Dependency.new 'a', Gem::Requirement.default
-    dep.prerelease = true
-
-    available = Gem::Deprecate.skip_during do
-      inst.available_set_for dep, Gem::Requirement.default
-    end
-
-    assert_equal %w[a-10.a],
-                 available.sorted.map { |s| s.spec.full_name }
   end
 
   def test_install
@@ -211,7 +147,7 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
-    FileUtils.mv  e1_gem, @tempdir
+    FileUtils.mv e1_gem, @tempdir
 
     inst = nil
 
@@ -220,7 +156,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name },
+    assert_equal %w[b-1], inst.installed_gems.map {|s| s.full_name },
                  'sanity check'
 
     Dir.chdir @tempdir do
@@ -228,7 +164,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'e'
     end
 
-    assert_equal %w[a-1 e-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 e-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_cache_dir
@@ -245,7 +181,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 b-1], inst.installed_gems.map {|s| s.full_name }
 
     assert File.exist? File.join(@gemhome, "cache", @a1.file_name)
     assert File.exist? File.join(@gemhome, "cache", @b1.file_name)
@@ -270,7 +206,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'a', req("= 2")
     end
 
-    assert_equal %w[a-2], inst.installed_gems.map { |s| s.full_name },
+    assert_equal %w[a-2], inst.installed_gems.map {|s| s.full_name },
                  'sanity check'
 
     FileUtils.rm File.join(@tempdir, a2.file_name)
@@ -281,7 +217,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     assert_equal %w[a-2 b-1], Gem::Specification.map(&:full_name)
-    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   # This asserts that if a gem's dependency is satisfied by an
@@ -302,7 +238,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv  a2_gem, @tempdir # not in index
     FileUtils.mv @b1_gem, @tempdir
-    FileUtils.mv  a3_gem, @tempdir
+    FileUtils.mv a3_gem, @tempdir
 
     Dir.chdir @tempdir do
       Gem::DependencyInstaller.new.install 'a', req("= 2")
@@ -318,7 +254,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
 
     assert_equal %w[a-2 b-1], Gem::Specification.map(&:full_name)
-    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_dependency
@@ -341,7 +277,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 b-1], inst.installed_gems.map {|s| s.full_name }
 
     assert done_installing_ran, 'post installs hook was not run'
   end
@@ -363,7 +299,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[a-1 aa-1 b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 aa-1 b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_dependency_development_deep
@@ -385,7 +321,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'd'
     end
 
-    assert_equal %w[a-1 aa-1 b-1 c-1 d-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 aa-1 b-1 c-1 d-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_dependency_development_shallow
@@ -407,7 +343,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'd'
     end
 
-    assert_equal %w[c-1 d-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[c-1 d-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_dependency_existing
@@ -423,7 +359,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_dependency_existing_extension
@@ -460,7 +396,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       Dir.chdir pwd
     end
 
-    assert_equal %w[f-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[f-1], inst.installed_gems.map {|s| s.full_name }
 
     assert_path_exists e1.extension_dir
   end
@@ -480,7 +416,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'f'
     end
 
-    assert_equal %w[f-2], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[f-2], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_local
@@ -494,7 +430,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'a-1.gem'
     end
 
-    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_local_prerelease
@@ -508,7 +444,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'a-1.a.gem'
     end
 
-    assert_equal %w[a-1.a], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1.a], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_local_dependency
@@ -524,7 +460,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b-1.gem'
     end
 
-    assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_local_dependency_installed
@@ -542,7 +478,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b-1.gem'
     end
 
-    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_local_subdir
@@ -555,7 +491,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'gems/a-1.gem'
     end
 
-    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_minimal_deps
@@ -581,7 +517,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b', req('= 1')
     end
 
-    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name },
+    assert_equal %w[b-1], inst.installed_gems.map {|s| s.full_name },
                  'sanity check'
 
     Dir.chdir @tempdir do
@@ -589,7 +525,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'e'
     end
 
-    assert_equal %w[a-1 e-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 e-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_no_document
@@ -622,7 +558,7 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     env = "/\\S+/env" unless Gem.win_platform?
 
-    assert_match %r|\A#!#{env} #{RbConfig::CONFIG['ruby_install_name']}\n|,
+    assert_match %r{\A#!#{env} #{RbConfig::CONFIG['ruby_install_name']}\n},
                  File.read(File.join(@gemhome, 'bin', 'a_bin'))
   end
 
@@ -639,7 +575,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_build_args
@@ -669,7 +605,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_install_dir
@@ -690,7 +626,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 b-1], inst.installed_gems.map {|s| s.full_name }
 
     assert File.exist?(File.join(gemhome2, 'specifications', @a1.spec_name))
     assert File.exist?(File.join(gemhome2, 'cache', @a1.file_name))
@@ -714,7 +650,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 b-1], inst.installed_gems.map {|s| s.full_name }
     a1, b1 = inst.installed_gems
 
     assert_equal a1.spec_file, a1.loaded_from
@@ -738,7 +674,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[a-1 b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1 b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_domain_local
@@ -757,7 +693,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       assert_equal expected, e.message
     end
 
-    assert_equal [], inst.installed_gems.map { |s| s.full_name }
+    assert_equal [], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_domain_remote
@@ -773,7 +709,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     inst = Gem::DependencyInstaller.new :domain => :remote
     inst.install 'a'
 
-    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_dual_repository
@@ -790,7 +726,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'a'
     end
 
-    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name },
+    assert_equal %w[a-1], inst.installed_gems.map {|s| s.full_name },
                  'sanity check'
 
     ENV['GEM_HOME'] = @gemhome
@@ -802,7 +738,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'b'
     end
 
-    assert_equal %w[b-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[b-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_reinstall
@@ -837,7 +773,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install 'a'
     end
 
-    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_remote_dep
@@ -857,7 +793,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst.install dep
     end
 
-    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_remote_platform_newer
@@ -890,7 +826,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     inst = Gem::DependencyInstaller.new :domain => :remote
     inst.install 'a'
 
-    assert_equal %w[a-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_platform_is_ignored_when_a_file_is_specified
@@ -901,17 +837,19 @@ class TestGemDependencyInstaller < Gem::TestCase
     inst = Gem::DependencyInstaller.new :domain => :local
     inst.install a_gem
 
-    assert_equal %w[a-1-cpu-other_platform-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[a-1-cpu-other_platform-1], inst.installed_gems.map {|s| s.full_name }
   end
+
+  require 'rubygems/openssl'
 
   if defined? OpenSSL
     def test_install_security_policy
       util_setup_gems
 
-      data = File.open(@a1_gem, 'rb') { |f| f.read }
+      data = File.open(@a1_gem, 'rb') {|f| f.read }
       @fetcher.data['http://gems.example.com/gems/a-1.gem'] = data
 
-      data = File.open(@b1_gem, 'rb') { |f| f.read }
+      data = File.open(@b1_gem, 'rb') {|f| f.read }
       @fetcher.data['http://gems.example.com/gems/b-1.gem'] = data
 
       policy = Gem::Security::HighSecurity
@@ -924,7 +862,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       assert_equal 'unsigned gems are not allowed by the High Security policy',
                    e.message
 
-      assert_equal %w[], inst.installed_gems.map { |s| s.full_name }
+      assert_equal %w[], inst.installed_gems.map {|s| s.full_name }
     end
   end
 
@@ -938,7 +876,7 @@ class TestGemDependencyInstaller < Gem::TestCase
       inst = Gem::DependencyInstaller.new :wrappers => false, :format_executable => false
       inst.install 'a'
 
-      refute_match(%r|This file was generated by RubyGems.|,
+      refute_match(%r{This file was generated by RubyGems.},
                    File.read(File.join(@gemhome, 'bin', 'a_bin')))
     end
   end
@@ -946,32 +884,32 @@ class TestGemDependencyInstaller < Gem::TestCase
   def test_install_version
     util_setup_d
 
-    data = File.open(@d2_gem, 'rb') { |f| f.read }
+    data = File.open(@d2_gem, 'rb') {|f| f.read }
     @fetcher.data['http://gems.example.com/gems/d-2.gem'] = data
 
-    data = File.open(@d1_gem, 'rb') { |f| f.read }
+    data = File.open(@d1_gem, 'rb') {|f| f.read }
     @fetcher.data['http://gems.example.com/gems/d-1.gem'] = data
 
     inst = Gem::DependencyInstaller.new
 
     inst.install 'd', '= 1'
 
-    assert_equal %w[d-1], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[d-1], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_install_version_default
     util_setup_d
 
-    data = File.open(@d2_gem, 'rb') { |f| f.read }
+    data = File.open(@d2_gem, 'rb') {|f| f.read }
     @fetcher.data['http://gems.example.com/gems/d-2.gem'] = data
 
-    data = File.open(@d1_gem, 'rb') { |f| f.read }
+    data = File.open(@d1_gem, 'rb') {|f| f.read }
     @fetcher.data['http://gems.example.com/gems/d-1.gem'] = data
 
     inst = Gem::DependencyInstaller.new
     inst.install 'd'
 
-    assert_equal %w[d-2], inst.installed_gems.map { |s| s.full_name }
+    assert_equal %w[d-2], inst.installed_gems.map {|s| s.full_name }
   end
 
   def test_find_gems_gems_with_sources
@@ -992,80 +930,6 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     assert_equal @b1, s.spec
     assert_equal Gem::Source.new(@gem_repo), s.source
-  end
-
-  def test_find_spec_by_name_and_version_wildcard
-    util_gem 'a', 1
-    FileUtils.mv 'gems/a-1.gem', @tempdir
-
-    FileUtils.touch 'rdoc.gem'
-
-    inst = Gem::DependencyInstaller.new
-
-    available = Gem::Deprecate.skip_during do
-      inst.find_spec_by_name_and_version('*.gem')
-    end
-
-    assert_equal %w[a-1], available.each_spec.map { |spec| spec.full_name }
-  end
-
-  def test_find_spec_by_name_and_version_wildcard_bad_gem
-    FileUtils.touch 'rdoc.gem'
-
-    inst = Gem::DependencyInstaller.new
-
-    assert_raises Gem::Package::FormatError do
-      Gem::Deprecate.skip_during do
-        inst.find_spec_by_name_and_version '*.gem'
-      end
-    end
-  end
-
-  def test_find_spec_by_name_and_version_bad_gem
-    FileUtils.touch 'rdoc.gem'
-
-    inst = Gem::DependencyInstaller.new
-
-    e = assert_raises Gem::Package::FormatError do
-      Gem::Deprecate.skip_during do
-        inst.find_spec_by_name_and_version 'rdoc.gem'
-      end
-    end
-
-    full_path = File.join @tempdir, 'rdoc.gem'
-    assert_equal "package metadata is missing in #{full_path}", e.message
-  end
-
-  def test_find_spec_by_name_and_version_directory
-    Dir.mkdir 'rdoc'
-
-    inst = Gem::DependencyInstaller.new
-
-    e = assert_raises Gem::SpecificGemNotFoundException do
-      Gem::Deprecate.skip_during do
-        inst.find_spec_by_name_and_version 'rdoc'
-      end
-    end
-
-    assert_equal "Could not find a valid gem 'rdoc' (>= 0) " +
-                 "locally or in a repository",
-                 e.message
-  end
-
-  def test_find_spec_by_name_and_version_file
-    FileUtils.touch 'rdoc'
-
-    inst = Gem::DependencyInstaller.new
-
-    e = assert_raises Gem::SpecificGemNotFoundException do
-      Gem::Deprecate.skip_during do
-        inst.find_spec_by_name_and_version 'rdoc'
-      end
-    end
-
-    assert_equal "Could not find a valid gem 'rdoc' (>= 0) " +
-                 "locally or in a repository",
-                 e.message
   end
 
   def test_find_gems_with_sources_local
@@ -1109,8 +973,8 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     releases = set.all_specs
 
-    assert releases.any? { |s| s.name == 'a' and s.version.to_s == '1' }
-    refute releases.any? { |s| s.name == 'a' and s.version.to_s == '1.a' }
+    assert releases.any? {|s| s.name == 'a' and s.version.to_s == '1' }
+    refute releases.any? {|s| s.name == 'a' and s.version.to_s == '1.a' }
 
     dependency.prerelease = true
 
@@ -1168,7 +1032,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     inst = Gem::DependencyInstaller.new
     request_set = inst.resolve_dependencies 'b', req('>= 0')
 
-    requests = request_set.sorted_requests.map { |req| req.full_name }
+    requests = request_set.sorted_requests.map {|req| req.full_name }
 
     assert_equal %w[a-1 b-1], requests
   end
@@ -1182,7 +1046,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     inst = Gem::DependencyInstaller.new :ignore_dependencies => true
     request_set = inst.resolve_dependencies 'b', req('>= 0')
 
-    requests = request_set.sorted_requests.map { |req| req.full_name }
+    requests = request_set.sorted_requests.map {|req| req.full_name }
 
     assert request_set.ignore_dependencies
 
@@ -1199,7 +1063,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     inst = Gem::DependencyInstaller.new
     request_set = inst.resolve_dependencies 'a-1.gem', req('>= 0')
 
-    requests = request_set.sorted_requests.map { |req| req.full_name }
+    requests = request_set.sorted_requests.map {|req| req.full_name }
 
     assert_equal %w[a-1], requests
   end
@@ -1265,5 +1129,4 @@ class TestGemDependencyInstaller < Gem::TestCase
                               @d1, @d2, @x1_m, @x1_o, @w1, @y1,
                               @y1_1_p, @z1].compact)
   end
-
 end

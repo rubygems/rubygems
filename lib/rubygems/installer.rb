@@ -28,7 +28,6 @@ require 'fileutils'
 # file.  See Gem.pre_install and Gem.post_install for details.
 
 class Gem::Installer
-
   extend Gem::Deprecate
 
   ##
@@ -45,11 +44,6 @@ class Gem::Installer
   include Gem::UserInteraction
 
   include Gem::InstallerUninstallerUtils
-
-  ##
-  # Filename of the gem being installed.
-
-  attr_reader :gem
 
   ##
   # The directory a gem's executables will be installed into
@@ -78,7 +72,6 @@ class Gem::Installer
   @install_lock = Mutex.new
 
   class << self
-
     ##
     # True if we've warned about PATH not including Gem.bindir
 
@@ -103,7 +96,6 @@ class Gem::Installer
     def exec_format
       @exec_format ||= Gem.default_exec_format
     end
-
   end
 
   ##
@@ -116,7 +108,6 @@ class Gem::Installer
   end
 
   class FakePackage
-
     attr_accessor :spec
 
     attr_accessor :dir_mode
@@ -142,7 +133,6 @@ class Gem::Installer
 
     def copy_to(path)
     end
-
   end
 
   ##
@@ -194,6 +184,7 @@ class Gem::Installer
     if options[:user_install]
       @gem_home = Gem.user_dir
       @bin_dir = Gem.bindir gem_home unless options[:bin_dir]
+      @plugins_dir = Gem.plugindir(gem_home)
       check_that_user_bin_dir_is_in_path
     end
   end
@@ -415,7 +406,7 @@ class Gem::Installer
 
   def installation_satisfies_dependency?(dependency)
     return true if @options[:development] and dependency.type == :development
-    return true if installed_specs.detect { |s| dependency.matches_spec? s }
+    return true if installed_specs.detect {|s| dependency.matches_spec? s }
     return false if @only_install_dir
     not dependency.matching_specs.empty?
   end
@@ -427,7 +418,7 @@ class Gem::Installer
     @gem_dir = directory
     extract_files
   end
-  deprecate :unpack, :none, 2020, 04
+  rubygems_deprecate :unpack
 
   ##
   # The location of the spec file that is installed.
@@ -487,13 +478,7 @@ class Gem::Installer
   def generate_bin # :nodoc:
     return if spec.executables.nil? or spec.executables.empty?
 
-    begin
-      Dir.mkdir @bin_dir, *[options[:dir_mode] && 0755].compact
-    rescue SystemCallError
-      raise unless File.directory? @bin_dir
-    end
-
-    raise Gem::FilePermissionError.new(@bin_dir) unless File.writable? @bin_dir
+    ensure_writable_dir @bin_dir
 
     spec.executables.each do |filename|
       filename.tap(&Gem::UNTAINT)
@@ -520,13 +505,15 @@ class Gem::Installer
   end
 
   def generate_plugins # :nodoc:
-    latest = Gem::Specification.latest_spec_for(spec.name)
+    latest = Gem::Installer.install_lock.synchronize { Gem::Specification.latest_spec_for(spec.name) }
     return if latest && latest.version > spec.version
 
+    ensure_writable_dir @plugins_dir
+
     if spec.plugins.empty?
-      remove_plugins_for(spec)
+      remove_plugins_for(spec, @plugins_dir)
     else
-      regenerate_plugins_for(spec)
+      regenerate_plugins_for(spec, @plugins_dir)
     end
   end
 
@@ -593,9 +580,9 @@ class Gem::Installer
   def shebang(bin_file_name)
     ruby_name = RbConfig::CONFIG['ruby_install_name'] if @env_shebang
     path = File.join gem_dir, spec.bindir, bin_file_name
-    first_line = File.open(path, "rb") {|file| file.gets}
+    first_line = File.open(path, "rb") {|file| file.gets } || ""
 
-    if /\A#!/ =~ first_line
+    if first_line.start_with?("#!")
       # Preserve extra words on shebang line, like "-w".  Thanks RPA.
       shebang = first_line.sub(/\A\#!.*?ruby\S*((\s+\S+)+)/, "#!#{Gem.ruby}")
       opts = $1
@@ -690,6 +677,7 @@ class Gem::Installer
     @force               = options[:force]
     @install_dir         = options[:install_dir]
     @gem_home            = options[:install_dir] || Gem.dir
+    @plugins_dir         = Gem.plugindir(@gem_home)
     @ignore_dependencies = options[:ignore_dependencies]
     @format_executable   = options[:format_executable]
     @wrappers            = options[:wrappers]
@@ -714,11 +702,14 @@ class Gem::Installer
   end
 
   def check_that_user_bin_dir_is_in_path # :nodoc:
+    return if self.class.path_warning
+
     user_bin_dir = @bin_dir || Gem.bindir(gem_home)
-    user_bin_dir = user_bin_dir.gsub(File::SEPARATOR, File::ALT_SEPARATOR) if
-      File::ALT_SEPARATOR
+    user_bin_dir = user_bin_dir.tr(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
 
     path = ENV['PATH']
+    path = path.tr(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
+
     if Gem.win_platform?
       path = path.downcase
       user_bin_dir = user_bin_dir.downcase
@@ -728,10 +719,8 @@ class Gem::Installer
 
     unless path.include? user_bin_dir
       unless !Gem.win_platform? && (path.include? user_bin_dir.sub(ENV['HOME'], '~'))
-        unless self.class.path_warning
-          alert_warning "You don't have #{user_bin_dir} in your PATH,\n\t  gem executables will not run."
-          self.class.path_warning = true
-        end
+        alert_warning "You don't have #{user_bin_dir} in your PATH,\n\t  gem executables will not run."
+        self.class.path_warning = true
       end
     end
   end
@@ -890,6 +879,13 @@ TEXT
   end
 
   ##
+  # Filename of the gem being installed.
+
+  def gem
+    @package.gem.path
+  end
+
+  ##
   # Performs various checks before installing the gem such as the install
   # repository is writable and its directories exist, required Ruby and
   # rubygems versions are met and that dependencies are installed.
@@ -953,4 +949,13 @@ TEXT
     @package.copy_to cache_file
   end
 
+  def ensure_writable_dir(dir) # :nodoc:
+    begin
+      Dir.mkdir dir, *[options[:dir_mode] && 0755].compact
+    rescue SystemCallError
+      raise unless File.directory? dir
+    end
+
+    raise Gem::FilePermissionError.new(dir) unless File.writable? dir
+  end
 end

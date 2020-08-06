@@ -4,24 +4,10 @@ require 'rubygems/package'
 require 'time'
 require 'tmpdir'
 
-rescue_exceptions = [LoadError]
-begin
-  require 'bundler/errors'
-rescue LoadError # this rubygems + old ruby
-else # this rubygems + ruby trunk with bundler
-  rescue_exceptions << Bundler::GemfileNotFound
-end
-begin
-  gem 'builder'
-  require 'builder/xchar'
-rescue *rescue_exceptions
-end
-
 ##
 # Top level class for building the gem repository index.
 
 class Gem::Indexer
-
   include Gem::UserInteraction
 
   ##
@@ -61,11 +47,6 @@ class Gem::Indexer
     require 'fileutils'
     require 'tmpdir'
     require 'zlib'
-
-    unless defined?(Builder::XChar)
-      raise "Gem::Indexer requires that the XML Builder library be installed:" +
-            "\n\tgem install builder"
-    end
 
     options = { :build_modern => true }.merge options
 
@@ -383,7 +364,7 @@ class Gem::Indexer
     end
 
     specs = map_gems_to_specs updated_gems
-    prerelease, released = specs.partition { |s| s.version.prerelease? }
+    prerelease, released = specs.partition {|s| s.version.prerelease? }
 
     files = build_marshal_gemspecs specs
 
@@ -442,5 +423,4 @@ class Gem::Indexer
       Marshal.dump specs_index, io
     end
   end
-
 end

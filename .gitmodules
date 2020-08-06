@@ -1,3 +1,0 @@
-[submodule "bundler"]
-	path = bundler
-	url = https://github.com/bundler/bundler.git

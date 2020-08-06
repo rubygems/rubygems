@@ -1,0 +1,6 @@
+# git log -L:<method>:<file>
+*.rb diff=ruby
+*.gemspec diff=ruby
+bin/* diff=ruby
+bundler/bin/* diff=ruby
+bundler/exe/* diff=ruby

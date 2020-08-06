@@ -21,7 +21,6 @@ require 'rubygems/user_interaction'
 # file.  See Gem.pre_uninstall and Gem.post_uninstall for details.
 
 class Gem::Uninstaller
-
   include Gem::UserInteraction
 
   include Gem::InstallerUninstallerUtils
@@ -50,6 +49,7 @@ class Gem::Uninstaller
     @gem                = gem
     @version            = options[:version] || Gem::Requirement.default
     @gem_home           = File.realpath(options[:install_dir] || Gem.dir)
+    @plugins_dir        = Gem.plugindir(@gem_home)
     @force_executables  = options[:executables]
     @force_all          = options[:all]
     @force_ignore       = options[:ignore]
@@ -113,10 +113,10 @@ class Gem::Uninstaller
     if list.empty?
       return unless other_repo_specs.any?
 
-      other_repos = other_repo_specs.map { |spec| spec.base_dir }.uniq
+      other_repos = other_repo_specs.map {|spec| spec.base_dir }.uniq
 
       message = ["#{@gem} is not installed in GEM_HOME, try:"]
-      message.concat other_repos.map { |repo|
+      message.concat other_repos.map {|repo|
         "\tgem uninstall -i #{repo} #{@gem}"
       }
 
@@ -125,7 +125,7 @@ class Gem::Uninstaller
       remove_all list
 
     elsif list.size > 1
-      gem_names = list.map { |gem| gem.full_name }
+      gem_names = list.map {|gem| gem.full_name }
       gem_names << "All versions"
 
       say
@@ -196,7 +196,7 @@ class Gem::Uninstaller
 
     return if executables.empty?
 
-    executables = executables.map { |exec| formatted_program_filename exec }
+    executables = executables.map {|exec| formatted_program_filename exec }
 
     remove = if @force_executables.nil?
                ask_yes_no("Remove executables:\n" +
@@ -231,7 +231,7 @@ class Gem::Uninstaller
   # NOTE: removes uninstalled gems from +list+.
 
   def remove_all(list)
-    list.each { |spec| uninstall_gem spec }
+    list.each {|spec| uninstall_gem spec }
   end
 
   ##
@@ -281,7 +281,7 @@ class Gem::Uninstaller
   def remove_plugins(spec) # :nodoc:
     return if spec.plugins.empty?
 
-    remove_plugins_for(spec)
+    remove_plugins_for(spec, @plugins_dir)
   end
 
   ##
@@ -291,7 +291,7 @@ class Gem::Uninstaller
     latest = Gem::Specification.latest_spec_for(@spec.name)
     return if latest.nil?
 
-    regenerate_plugins_for(latest)
+    regenerate_plugins_for(latest, @plugins_dir)
   end
 
   ##
@@ -338,7 +338,7 @@ class Gem::Uninstaller
     end
 
     spec.dependent_gems(@check_dev).each do |dep_spec, dep, satlist|
-      unless siblings.any? { |s| s.satisfies_requirement? dep }
+      unless siblings.any? {|s| s.satisfies_requirement? dep }
         msg << "#{dep_spec.name}-#{dep_spec.version} depends on #{dep}"
       end
     end
@@ -373,5 +373,4 @@ class Gem::Uninstaller
 
     raise e
   end
-
 end

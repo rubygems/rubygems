@@ -3,7 +3,6 @@ require 'rubygems/test_case'
 require 'rubygems/commands/update_command'
 
 class TestGemCommandsUpdateCommand < Gem::TestCase
-
   def setup
     super
     common_installer_setup
@@ -169,12 +168,12 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @cmd.options[:args]          = []
     @cmd.options[:system]        = "3.1"
 
-    FileUtils.mkdir_p Gem.plugins_dir
-    write_file File.join(Gem.plugins_dir, 'a_plugin.rb')
+    FileUtils.mkdir_p Gem.plugindir
+    write_file File.join(Gem.plugindir, 'a_plugin.rb')
 
     @cmd.execute
 
-    refute_path_exists Gem.plugins_dir, "Plugins folder not removed when updating rubygems to pre-3.2"
+    refute_path_exists Gem.plugindir, "Plugins folder not removed when updating rubygems to pre-3.2"
   end
 
   def test_execute_system_specific_newer_than_or_equal_to_3_2_leaves_plugins_dir_alone
@@ -187,13 +186,13 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     @cmd.options[:args]          = []
     @cmd.options[:system]        = "3.2"
 
-    FileUtils.mkdir_p Gem.plugins_dir
-    plugin_file = File.join(Gem.plugins_dir, 'a_plugin.rb')
+    FileUtils.mkdir_p Gem.plugindir
+    plugin_file = File.join(Gem.plugindir, 'a_plugin.rb')
     write_file plugin_file
 
     @cmd.execute
 
-    assert_path_exists Gem.plugins_dir, "Plugin folder removed when updating rubygems to post-3.2"
+    assert_path_exists Gem.plugindir, "Plugin folder removed when updating rubygems to post-3.2"
     assert_path_exists plugin_file, "Plugin removed when updating rubygems to post-3.2"
   end
 
@@ -236,6 +235,25 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty @ui.output
     assert_equal "ERROR:  Gem names are not allowed with the --system option\n",
                  @ui.error
+  end
+
+  def test_execute_system_with_disabled_update
+    old_disable_system_update_message = Gem.disable_system_update_message
+    Gem.disable_system_update_message = "Please use package manager instead."
+
+    @cmd.options[:args] = []
+    @cmd.options[:system] = true
+
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_empty @ui.output
+    assert_equal "ERROR:  Please use package manager instead.\n", @ui.error
+  ensure
+    Gem.disable_system_update_message = old_disable_system_update_message
   end
 
   # before:
@@ -628,5 +646,4 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_equal "  a-2", out.shift
     assert_empty out
   end
-
 end

@@ -1,0 +1,28 @@
+name: macos_rubygems
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
+      - 3.2
+
+jobs:
+  macos_rubygems:
+    runs-on: macos-10.15
+    strategy:
+      matrix:
+        ruby: [ 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: none
+      - name: Install Dependencies
+        run: rake setup
+      - name: Run Test
+        run: rake test
+    timeout-minutes: 15

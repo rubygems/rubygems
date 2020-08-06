@@ -247,7 +247,7 @@ EOF
 
     @stub_fetcher.data["#{Gem.host}/api/v1/gems/freewill/owners"] = [
       [response_fail, 401, 'Unauthorized'],
-      [response_success, 200, 'OK']
+      [response_success, 200, 'OK'],
     ]
 
     @otp_ui = Gem::MockGemUi.new "111111\n"

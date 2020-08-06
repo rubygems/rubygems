@@ -32,7 +32,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
   def test_alternate_key_alternate_host
     keys = {
       :rubygems_api_key => 'KEY',
-      "http://rubygems.engineyard.com" => "EYKEY"
+      "http://rubygems.engineyard.com" => "EYKEY",
     }
 
     FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path

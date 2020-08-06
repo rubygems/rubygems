@@ -297,7 +297,7 @@ class Gem::Package
 
     setup_signer(
       signer_options: {
-        expiration_length_days: Gem.configuration.cert_expiration_length_days
+        expiration_length_days: Gem.configuration.cert_expiration_length_days,
       }
     )
 

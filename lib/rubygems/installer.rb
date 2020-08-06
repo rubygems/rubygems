@@ -670,7 +670,7 @@ class Gem::Installer
       :env_shebang  => false,
       :force        => false,
       :only_install_dir => false,
-      :post_install_message => true
+      :post_install_message => true,
     }.merge options
 
     @env_shebang         = options[:env_shebang]

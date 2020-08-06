@@ -70,7 +70,7 @@ class TestGemCommandsYankCommand < Gem::TestCase
     yank_uri = 'http://example/api/v1/gems/yank'
     @fetcher.data[yank_uri] = [
       [response_fail, 401, 'Unauthorized'],
-      ['Successfully yanked', 200, 'OK']
+      ['Successfully yanked', 200, 'OK'],
     ]
 
     @cmd.options[:args]           = %w[a]

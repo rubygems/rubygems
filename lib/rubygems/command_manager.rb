@@ -73,7 +73,7 @@ class Gem::CommandManager
   ].freeze
 
   ALIAS_COMMANDS = {
-    'i' => 'install'
+    'i' => 'install',
   }.freeze
 
   ##

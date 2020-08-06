@@ -14,7 +14,7 @@ URIS = [
 HOSTNAMES_TO_MAP = [
   'rubygems.global.ssl.fastly.net',
   'rubygems.org',
-  'index.rubygems.org'
+  'index.rubygems.org',
 ].freeze
 
 def connect_to(uri, store)

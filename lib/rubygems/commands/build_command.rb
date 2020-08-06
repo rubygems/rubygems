@@ -4,7 +4,6 @@ require 'rubygems/package'
 require 'rubygems/version_option'
 
 class Gem::Commands::BuildCommand < Gem::Command
-
   include Gem::VersionOption
 
   def initialize

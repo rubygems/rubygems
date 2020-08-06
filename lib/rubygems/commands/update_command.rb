@@ -167,13 +167,13 @@ command to remove old versions.
     update_dir = File.join Gem.dir, 'gems', "rubygems-update-#{version}"
 
     Dir.chdir update_dir do
-      say "Installing RubyGems #{version}"
+      say "Installing RubyGems #{version}" unless options[:silent]
 
       installed = preparing_gem_layout_for(version) do
         system Gem.ruby, '--disable-gems', 'setup.rb', *args
       end
 
-      say "RubyGems system software updated" if installed
+      say "RubyGems system software updated" if installed unless options[:silent]
     end
   end
 
@@ -237,7 +237,7 @@ command to remove old versions.
 
     @installer = Gem::DependencyInstaller.new update_options
 
-    say "Updating #{name}"
+    say "Updating #{name}" unless options[:system] && options[:silent]
     begin
       @installer.install name, Gem::Requirement.new(version)
     rescue Gem::InstallError, Gem::DependencyError => e
@@ -282,6 +282,7 @@ command to remove old versions.
 
   def update_rubygems_arguments # :nodoc:
     args = []
+    args << '--silent' if options[:silent]
     args << '--prefix' << Gem.prefix if Gem.prefix
     args << '--no-document' unless options[:document].include?('rdoc') || options[:document].include?('ri')
     args << '--no-format-executable' if options[:no_format_executable]

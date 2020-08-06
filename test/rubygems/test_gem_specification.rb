@@ -1999,7 +1999,7 @@ dependencies: []
     test_cases = {
       'i386-mswin32'      => 'a-1-x86-mswin32-60',
       'i386-mswin32_80'   => 'a-1-x86-mswin32-80',
-      'i386-mingw32'      => 'a-1-x86-mingw32'
+      'i386-mingw32'      => 'a-1-x86-mingw32',
     }
 
     test_cases.each do |arch, expected|
@@ -3035,7 +3035,7 @@ Please report a bug if this causes problems.
     specification.define_singleton_method(:find_all_by_name) do |dep_name|
       [
         specification.new {|s| s.name = "z", s.version = Gem::Version.new("1") },
-        specification.new {|s| s.name = "z", s.version = Gem::Version.new("2") }
+        specification.new {|s| s.name = "z", s.version = Gem::Version.new("2") },
       ]
     end
 
@@ -3578,7 +3578,7 @@ Did you mean 'Ruby'?
           "one"          => "two",
           "home"         => "three",
           "homepage_uri" => "https://example.com/user/repo",
-          "funding_uri"  => "https://example.com/donate"
+          "funding_uri"  => "https://example.com/donate",
         }
       end
 

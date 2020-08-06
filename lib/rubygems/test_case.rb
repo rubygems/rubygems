@@ -254,14 +254,14 @@ class Gem::TestCase < Minitest::Test
       msg = message(msg) do
         'Expected output containing make command "%s": %s' % [
           ('%s %s' % [make_command, target]).rstrip,
-          output.inspect
+          output.inspect,
         ]
       end
     else
       msg = message(msg) do
         'Expected make command "%s": %s' % [
           ('%s %s' % [make_command, target]).rstrip,
-          output.inspect
+          output.inspect,
         ]
       end
     end

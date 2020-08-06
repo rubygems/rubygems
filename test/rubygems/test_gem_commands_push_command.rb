@@ -152,7 +152,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     keys = {
       :rubygems_api_key => 'KEY',
-      @host => @api_key
+      @host => @api_key,
     }
 
     FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
@@ -187,7 +187,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     keys = {
       :rubygems_api_key => 'KEY',
-      @host => @api_key
+      @host => @api_key,
     }
 
     FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
@@ -271,7 +271,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     keys = {
       :rubygems_api_key => 'KEY',
-      @host => @api_key
+      @host => @api_key,
     }
 
     FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
@@ -302,7 +302,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     api_key = "PRIVKEY"
 
     keys = {
-      host => api_key
+      host => api_key,
     }
 
     FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
@@ -373,7 +373,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
 
     @fetcher.data["#{Gem.host}/api/v1/gems"] = [
       [response_fail, 401, 'Unauthorized'],
-      [response_success, 200, 'OK']
+      [response_success, 200, 'OK'],
     ]
 
     @otp_ui = Gem::MockGemUi.new "111111\n"

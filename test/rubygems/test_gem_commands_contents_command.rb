@@ -238,7 +238,7 @@ lib/foo.rb
     expected = [
       [RbConfig::CONFIG['bindir'], 'default_command'],
       [RbConfig::CONFIG['rubylibdir'], 'default/gem.rb'],
-      [RbConfig::CONFIG['archdir'], 'default_gem.so']
+      [RbConfig::CONFIG['archdir'], 'default_gem.so'],
     ].sort.map{|a|File.join a }.join "\n"
 
     assert_equal expected, @ui.output.chomp

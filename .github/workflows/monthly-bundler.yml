@@ -1,0 +1,38 @@
+name: monthly-bundler
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  monthly_bundler:
+    name: Refresh month of man pages
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.1
+          bundler: none
+
+      - name: Install ronn
+        run: gem install ronn:'~> 0.7.3'
+
+      - name: Update month
+        run: bin/rake man:build
+        working-directory: ./bundler
+
+      - name: Set up git config
+        run: |
+          git config user.name "The Bundler Bot"
+          git config user.email "bot@bundler.io"
+
+      - name: Commit and push the changes
+        run: |
+          git add bundler/man/*
+          git commit -m "Bump man pages month"
+          git push origin master
+
+    timeout-minutes: 15

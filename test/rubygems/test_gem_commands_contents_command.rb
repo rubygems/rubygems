@@ -3,7 +3,6 @@ require 'rubygems/test_case'
 require 'rubygems/commands/contents_command'
 
 class TestGemCommandsContentsCommand < Gem::TestCase
-
   def setup
     super
 
@@ -239,8 +238,8 @@ lib/foo.rb
     expected = [
       [RbConfig::CONFIG['bindir'], 'default_command'],
       [RbConfig::CONFIG['rubylibdir'], 'default/gem.rb'],
-      [RbConfig::CONFIG['archdir'], 'default_gem.so']
-    ].sort.map{|a|File.join a}.join "\n"
+      [RbConfig::CONFIG['archdir'], 'default_gem.so'],
+    ].sort.map{|a|File.join a }.join "\n"
 
     assert_equal expected, @ui.output.chomp
     assert_equal "", @ui.error
@@ -268,5 +267,4 @@ lib/foo.rb
     assert_equal Gem::Requirement.new('0.0.2'), @cmd.options[:version]
     assert @cmd.options[:show_install_dir]
   end
-
 end

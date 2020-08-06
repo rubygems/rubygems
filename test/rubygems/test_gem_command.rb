@@ -3,13 +3,10 @@ require 'rubygems/test_case'
 require 'rubygems/command'
 
 class Gem::Command
-
   public :parser
-
 end
 
 class TestGemCommand < Gem::TestCase
-
   def setup
     super
 
@@ -34,7 +31,7 @@ class TestGemCommand < Gem::TestCase
 
   def test_self_add_specific_extra_args
     added_args = %w[--all]
-    @cmd.add_option('--all') { |v,o| }
+    @cmd.add_option('--all') {|v,o| }
 
     Gem::Command.add_specific_extra_args @cmd_name, added_args
 
@@ -388,5 +385,4 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
     assert_equal expected, @ui.error
   end
-
 end

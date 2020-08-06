@@ -4,7 +4,6 @@ require 'rubygems/package/tar_writer'
 require 'minitest/mock'
 
 class TestGemPackageTarWriter < Gem::Package::TarTestCase
-
   def setup
     super
 
@@ -72,7 +71,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
   end
 
   def test_add_file_digest
-    digest_algorithms = Digest::SHA1, Digest::SHA512
+    digest_algorithms = Digest::SHA1.new, Digest::SHA512.new
 
     Time.stub :now, Time.at(1458518157) do
       digests = @tar_writer.add_file_digest 'x', 0644, digest_algorithms do |io|
@@ -95,7 +94,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
   end
 
   def test_add_file_digest_multiple
-    digest_algorithms = [Digest::SHA1, Digest::SHA512]
+    digest_algorithms = [Digest::SHA1.new, Digest::SHA512.new]
 
     Time.stub :now, Time.at(1458518157) do
       digests = @tar_writer.add_file_digest 'x', 0644, digest_algorithms do |io|
@@ -202,7 +201,7 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
   end
 
   def test_add_file_simple_data
-    @tar_writer.add_file_simple("lib/foo/bar", 0, 10) { |f| f.write @data }
+    @tar_writer.add_file_simple("lib/foo/bar", 0, 10) {|f| f.write @data }
     @tar_writer.flush
 
     assert_equal @data + ("\0" * (512 - @data.size)),
@@ -330,5 +329,4 @@ class TestGemPackageTarWriter < Gem::Package::TarTestCase
     end
     assert_includes exception.message, name
   end
-
 end

@@ -95,7 +95,7 @@ RSpec.describe "bundle install across platforms" do
 
     simulate_platform java
 
-    install_gemfile! <<-G
+    install_gemfile <<-G
       source "#{file_uri_for(gem_repo4)}"
 
       gem "empyrean", "0.1.0"
@@ -128,7 +128,7 @@ RSpec.describe "bundle install across platforms" do
          #{Bundler::VERSION}
     L
 
-    bundle! "lock --add-platform ruby"
+    bundle "lock --add-platform ruby"
 
     good_lockfile = strip_whitespace(<<-L)
       GEM
@@ -195,23 +195,23 @@ RSpec.describe "bundle install across platforms" do
 
     aggregate_failures do
       lockfile bad_lockfile
-      bundle! :install
+      bundle :install
       lockfile_should_be good_lockfile
 
       lockfile bad_lockfile
-      bundle! :update, :all => true
+      bundle :update, :all => true
       lockfile_should_be good_lockfile
 
       lockfile bad_lockfile
-      bundle! "update ffi"
+      bundle "update ffi"
       lockfile_should_be good_lockfile
 
       lockfile bad_lockfile
-      bundle! "update empyrean"
+      bundle "update empyrean"
       lockfile_should_be good_lockfile
 
       lockfile bad_lockfile
-      bundle! :lock
+      bundle :lock
       lockfile_should_be good_lockfile
     end
   end
@@ -242,7 +242,7 @@ RSpec.describe "bundle install across platforms" do
       build_gem "CFPropertyList"
     end
 
-    install_gemfile! <<-G
+    install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
 
       gem "facter"
@@ -263,11 +263,12 @@ RSpec.describe "bundle install across platforms" do
       gem "rack", "1.0.0"
     G
 
-    bundle! :install, forgotten_command_line_options(:path => "vendor/bundle")
+    bundle "config --local path vendor/bundle"
+    bundle :install
 
     FileUtils.mv(vendored_gems, bundled_app("vendor/bundle", Gem.ruby_engine, "1.8"))
 
-    bundle! :install
+    bundle :install
     expect(vendored_gems("gems/rack-1.0.0")).to exist
   end
 end
@@ -348,7 +349,6 @@ RSpec.describe "bundle install with platform conditionals" do
     G
 
     bundle :list
-    expect(exitstatus).to eq(0) if exitstatus
   end
 
   it "does not attempt to install gems from :rbx when using --local" do
@@ -385,7 +385,7 @@ RSpec.describe "bundle install with platform conditionals" do
       gem "rack", :platform => [:mingw, :mswin, :x64_mingw, :jruby]
     G
 
-    bundle! "install"
+    bundle "install"
 
     expect(err).to be_empty
 

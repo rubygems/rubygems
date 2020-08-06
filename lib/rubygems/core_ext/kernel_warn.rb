@@ -4,16 +4,14 @@
 if RUBY_VERSION >= "2.5"
 
   module Kernel
-    path = "#{__dir__}/" # Frames to be skipped start with this path.
+    rubygems_path = "#{__dir__}/" # Frames to be skipped start with this path.
 
     original_warn = method(:warn)
 
     remove_method :warn
 
     class << self
-
       remove_method :warn
-
     end
 
     module_function define_method(:warn) {|*messages, **kw|
@@ -40,9 +38,11 @@ if RUBY_VERSION >= "2.5"
 
           start += 1
 
-          unless loc.path.start_with?(path)
-            # Non-rubygems frames
-            uplevel -= 1
+          if path = loc.path
+            unless path.start_with?(rubygems_path) or path.start_with?('<internal:')
+              # Non-rubygems frames
+              uplevel -= 1
+            end
           end
         end
         uplevel = start

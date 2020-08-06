@@ -5,7 +5,6 @@
 # dependency resolution in the resolver is included.
 
 class Gem::Resolver::Specification
-
   ##
   # The dependencies of the gem for this specification
 
@@ -105,11 +104,10 @@ class Gem::Resolver::Specification
   # Returns true if this specification is installable on this platform.
 
   def installable_platform?
-    Gem::Platform.match spec.platform
+    Gem::Platform.match_spec? spec
   end
 
   def local? # :nodoc:
     false
   end
-
 end

@@ -9,7 +9,7 @@ RSpec.describe Bundler::GemHelper do
   let(:app_gemspec_path) { app_path.join("#{app_name}.gemspec") }
 
   before(:each) do
-    global_config "BUNDLE_GEM__MIT" => "false", "BUNDLE_GEM__TEST" => "false", "BUNDLE_GEM__COC" => "false", "BUNDLE_GEM__RUBOCOP" => "false"
+    global_config "BUNDLE_GEM__MIT" => "false", "BUNDLE_GEM__TEST" => "false", "BUNDLE_GEM__COC" => "false", "BUNDLE_GEM__RUBOCOP" => "false", "BUNDLE_GEM__CI" => "false"
     bundle "gem #{app_name}"
     prepare_gemspec(app_gemspec_path)
   end
@@ -138,6 +138,26 @@ RSpec.describe Bundler::GemHelper do
           expect(app_gem_path).to exist
         end
       end
+
+      context "when building in the current working directory" do
+        it "creates .gem file" do
+          mock_build_message app_name, app_version
+          Dir.chdir app_path do
+            Bundler::GemHelper.new.build_gem
+          end
+          expect(app_gem_path).to exist
+        end
+      end
+
+      context "when building in a location relative to the current working directory" do
+        it "creates .gem file" do
+          mock_build_message app_name, app_version
+          Dir.chdir File.dirname(app_path) do
+            Bundler::GemHelper.new(File.basename(app_path)).build_gem
+          end
+          expect(app_gem_path).to exist
+        end
+      end
     end
 
     describe "#install_gem" do
@@ -147,7 +167,7 @@ RSpec.describe Bundler::GemHelper do
           mock_confirm_message "#{app_name} (#{app_version}) installed."
           subject.install_gem(nil, :local)
           expect(app_gem_path).to exist
-          gem_command! :list
+          gem_command :list
           expect(out).to include("#{app_name} (#{app_version})")
         end
       end
@@ -219,7 +239,7 @@ RSpec.describe Bundler::GemHelper do
           before do
             mock_build_message app_name, app_version
             mock_confirm_message "Tagged v#{app_version}."
-            mock_confirm_message "Pushed git commits and tags."
+            mock_confirm_message "Pushed git commits and release tag."
 
             sys_exec("git push -u origin master", :dir => app_path)
           end
@@ -233,6 +253,23 @@ RSpec.describe Bundler::GemHelper do
           it "uses Kernel.system" do
             cmd = gem_bin.shellsplit
             expect(Kernel).to receive(:system).with(*cmd, "push", app_gem_path.to_s, "--host", "http://example.org").and_return(true)
+
+            Rake.application["release"].invoke
+          end
+        end
+
+        context "on releasing with a custom tag prefix" do
+          before do
+            Bundler::GemHelper.tag_prefix = "foo-"
+            mock_build_message app_name, app_version
+            mock_confirm_message "Pushed git commits and release tag."
+
+            sys_exec("git push -u origin master", :dir => app_path)
+            expect(subject).to receive(:rubygem_push).with(app_gem_path.to_s)
+          end
+
+          it "prepends the custom prefix to the tag" do
+            mock_confirm_message "Tagged foo-v#{app_version}."
 
             Rake.application["release"].invoke
           end

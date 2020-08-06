@@ -1,4 +1,4 @@
-# -*- ruby -*-
+RakeFileUtils.verbose_flag = false
 
 require 'rubygems'
 require 'rubygems/package_task'
@@ -170,7 +170,7 @@ task :upload_to_s3 do
   s3 = Aws::S3::Resource.new(region:'us-west-2')
   %w[zip tgz].each do |ext|
     obj = s3.bucket('oregon.production.s3.rubygems.org').object("rubygems/rubygems-#{v}.#{ext}")
-    obj.upload_file("pkg/rubygems-#{v}.#{ext}")
+    obj.upload_file("pkg/rubygems-#{v}.#{ext}", acl: 'public-read')
   end
 end
 
@@ -383,10 +383,9 @@ end
 
 module Rubygems
   class ProjectFiles
-
     def self.all
       files = []
-      exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec))}
+      exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|util/)}
       tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|
@@ -395,20 +394,19 @@ module Rubygems
         files << path
       end
 
-      files
+      files.sort
     end
-
   end
 end
 
 desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
-  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all.sort) }
+  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all) }
 end
 
 desc "Check the manifest is up to date"
 task :check_manifest do
-  if File.read("Manifest.txt").split.sort != Rubygems::ProjectFiles.all.sort
+  if File.read("Manifest.txt").split != Rubygems::ProjectFiles.all
     abort "Manifest is out of date. Run `rake update_manifest` to sync it"
   end
 end

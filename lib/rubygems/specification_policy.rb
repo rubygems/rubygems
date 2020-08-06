@@ -1,7 +1,6 @@
 require 'rubygems/user_interaction'
 
 class Gem::SpecificationPolicy
-
   include Gem::UserInteraction
 
   VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/.freeze # :nodoc:
@@ -33,13 +32,32 @@ class Gem::SpecificationPolicy
   attr_accessor :packaging
 
   ##
-  # Checks that the specification contains all required fields, and does a
-  # very basic sanity check.
+  # Does a sanity check on the specification.
   #
   # Raises InvalidSpecificationException if the spec does not pass the
   # checks.
+  #
+  # It also performs some validations that do not raise but print warning
+  # messages instead.
 
   def validate(strict = false)
+    validate_required!
+
+    validate_optional(strict) if packaging || strict
+
+    true
+  end
+
+  ##
+  # Does a sanity check on the specification.
+  #
+  # Raises InvalidSpecificationException if the spec does not pass the
+  # checks.
+  #
+  # Only runs checks that are considered necessary for the specification to be
+  # functional.
+
+  def validate_required!
     validate_nil_attributes
 
     validate_rubygems_version
@@ -66,15 +84,23 @@ class Gem::SpecificationPolicy
 
     validate_metadata
 
+    validate_licenses_length
+
+    validate_lazy_metadata
+
+    validate_duplicate_dependencies
+  end
+
+  def validate_optional(strict)
     validate_licenses
 
     validate_permissions
 
-    validate_lazy_metadata
-
     validate_values
 
     validate_dependencies
+
+    validate_extensions
 
     validate_removed_attributes
 
@@ -85,8 +111,6 @@ class Gem::SpecificationPolicy
         alert_warning help_text
       end
     end
-
-    true
   end
 
   ##
@@ -125,14 +149,13 @@ class Gem::SpecificationPolicy
   end
 
   ##
-  # Implementation for Specification#validate_dependencies
+  # Checks that no duplicate dependencies are specified.
 
-  def validate_dependencies # :nodoc:
+  def validate_duplicate_dependencies # :nodoc:
     # NOTE: see REFACTOR note in Gem::Dependency about types - this might be brittle
-    seen = Gem::Dependency::TYPES.inject({}) { |types, type| types.merge({ type => {}}) }
+    seen = Gem::Dependency::TYPES.inject({}) {|types, type| types.merge({ type => {}}) }
 
     error_messages = []
-    warning_messages = []
     @specification.dependencies.each do |dep|
       if prev = seen[dep.type][dep.name]
         error_messages << <<-MESSAGE
@@ -142,7 +165,20 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       end
 
       seen[dep.type][dep.name] = dep
+    end
+    if error_messages.any?
+      error error_messages.join
+    end
+  end
 
+  ##
+  # Checks that dependencies use requirements as we recommend.  Warnings are
+  # issued when dependencies are open-ended or overly strict for semantic
+  # versioning.
+
+  def validate_dependencies # :nodoc:
+    warning_messages = []
+    @specification.dependencies.each do |dep|
       prerelease_dep = dep.requirements_list.any? do |req|
         Gem::Requirement.new(req).prerelease?
       end
@@ -177,11 +213,8 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
         warning_messages << ["open-ended dependency on #{dep} is not recommended", recommendation].join("\n") + "\n"
       end
     end
-    if error_messages.any?
-      error error_messages.join
-    end
     if warning_messages.any?
-      warning_messages.each { |warning_message| warning warning_message }
+      warning_messages.each {|warning_message| warning warning_message }
     end
   end
 
@@ -258,7 +291,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
   def validate_non_files
     return unless packaging
 
-    non_files = @specification.files.reject {|x| File.file?(x) || File.symlink?(x)}
+    non_files = @specification.files.reject {|x| File.file?(x) || File.symlink?(x) }
 
     unless non_files.empty?
       error "[\"#{non_files.join "\", \""}\"] are not files"
@@ -304,9 +337,8 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
               String
             end
 
-    unless Array === val and val.all? {|x| x.kind_of?(klass)}
-      raise(Gem::InvalidSpecificationException,
-            "#{field} must be an Array of #{klass}")
+    unless Array === val and val.all? {|x| x.kind_of?(klass) }
+      error "#{field} must be an Array of #{klass}"
     end
   end
 
@@ -316,21 +348,27 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
     error "authors may not be empty"
   end
 
-  def validate_licenses
+  def validate_licenses_length
     licenses = @specification.licenses
 
     licenses.each do |license|
       if license.length > 64
         error "each license must be 64 characters or less"
       end
+    end
+  end
 
+  def validate_licenses
+    licenses = @specification.licenses
+
+    licenses.each do |license|
       if !Gem::Licenses.match?(license)
         suggestions = Gem::Licenses.suggestions(license)
         message = <<-WARNING
 license value '#{license}' is invalid.  Use a license identifier from
 http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
         WARNING
-        message += "Did you mean #{suggestions.map { |s| "'#{s}'"}.join(', ')}?\n" unless suggestions.nil?
+        message += "Did you mean #{suggestions.map {|s| "'#{s}'" }.join(', ')}?\n" unless suggestions.nil?
         warning(message)
       end
     end
@@ -394,7 +432,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
       validate_shebang_line_in(executable)
     end
 
-    @specification.files.select { |f| File.symlink?(f) }.each do |file|
+    @specification.files.select {|f| File.symlink?(f) }.each do |file|
       warning "#{file} is a symlink, which is not supported on all platforms"
     end
   end
@@ -417,6 +455,18 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     end
   end
 
+  def validate_extensions # :nodoc:
+    require_relative 'ext'
+    builder = Gem::Ext::Builder.new(@specification)
+
+    rake_extension = @specification.extensions.any? {|s| builder.builder_for(s) == Gem::Ext::RakeBuilder }
+    rake_dependency = @specification.dependencies.any? {|d| d.name == 'rake' }
+
+    warning <<-WARNING if rake_extension && !rake_dependency
+You have specified rake based extension, but rake is not added as dependency. It is recommended to add rake as a dependency in gemspec since there's no guarantee rake will be already installed.
+    WARNING
+  end
+
   def warning(statement) # :nodoc:
     @warnings += 1
 
@@ -432,5 +482,4 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
   def help_text # :nodoc:
     "See https://guides.rubygems.org/specification-reference/ for help"
   end
-
 end

@@ -2,7 +2,6 @@
 require 'rubygems/installer_test_case'
 
 class TestGemInstaller < Gem::InstallerTestCase
-
   def setup
     super
     common_installer_setup
@@ -197,11 +196,21 @@ gem 'other', version
     bin_dir = installer.bin_dir
 
     if Gem.win_platform?
-      bin_dir = bin_dir.downcase.gsub(File::SEPARATOR, File::ALT_SEPARATOR)
+      bin_dir = bin_dir.downcase
     end
 
     orig_PATH, ENV['PATH'] =
       ENV['PATH'], [ENV['PATH'], bin_dir].join(File::PATH_SEPARATOR)
+
+    use_ui @ui do
+      installer.check_that_user_bin_dir_is_in_path
+    end
+
+    assert_empty @ui.error
+
+    return unless win_platform?
+
+    ENV['PATH'] = [orig_PATH, bin_dir.tr(File::SEPARATOR, File::ALT_SEPARATOR)].join(File::PATH_SEPARATOR)
 
     use_ui @ui do
       installer.check_that_user_bin_dir_is_in_path
@@ -240,7 +249,7 @@ gem 'other', version
     expected = installer.bin_dir
 
     if Gem.win_platform?
-      expected = expected.downcase.gsub(File::SEPARATOR, File::ALT_SEPARATOR)
+      expected = expected.downcase
     end
 
     assert_match expected, @ui.error
@@ -336,7 +345,7 @@ gem 'other', version
 
     options = {
       :bin_dir => bin_dir,
-      :install_dir => "/non/existent"
+      :install_dir => "/non/existent",
     }
 
     inst = Gem::Installer.at '', options
@@ -721,7 +730,7 @@ gem 'other', version
     installer.generate_bin
 
     default_shebang = Gem.ruby
-    shebang_line = open("#{@gemhome}/bin/executable") { |f| f.readlines.first }
+    shebang_line = open("#{@gemhome}/bin/executable") {|f| f.readlines.first }
     assert_match(/\A#!/, shebang_line)
     assert_match(/#{default_shebang}/, shebang_line)
   end
@@ -765,6 +774,28 @@ gem 'other', version
     assert_equal spec, installer.install
 
     assert File.exist?(plugin_path), 'plugin not written to install_dir'
+  end
+
+  def test_generate_plugins_with_user_install
+    spec = quick_gem 'a' do |s|
+      write_file File.join(@tempdir, 'lib', 'rubygems_plugin.rb') do |io|
+        io.write "puts __FILE__"
+      end
+
+      s.files += %w[lib/rubygems_plugin.rb]
+    end
+
+    util_build_gem spec
+
+    File.chmod(0555, Gem.plugindir)
+    system_path = File.join(Gem.plugindir, 'a_plugin.rb')
+    user_path = File.join(Gem.plugindir(Gem.user_dir), 'a_plugin.rb')
+    installer = util_installer spec, Gem.dir, :user
+
+    assert_equal spec, installer.install
+
+    assert !File.exist?(system_path), 'plugin not written to user plugins_dir'
+    assert File.exist?(user_path), 'plugin not written to user plugins_dir'
   end
 
   def test_keeps_plugins_up_to_date
@@ -1383,7 +1414,7 @@ gem 'other', version
       installer.install
     end
 
-    expected = File.join @spec.full_require_paths.find { |path|
+    expected = File.join @spec.full_require_paths.find {|path|
       File.exist? File.join path, 'b.rb'
     }, 'b.rb'
     assert_equal expected, @spec.matches_for_glob('b.rb').first
@@ -2190,5 +2221,4 @@ gem 'other', version
   def mask
     0100755
   end
-
 end

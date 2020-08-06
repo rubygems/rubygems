@@ -1,40 +1,27 @@
 # frozen_string_literal: true
 
-require "benchmark"
-
 require_relative "spec/support/rubygems_ext"
-
-# Benchmark task execution
-module Rake
-  class Task
-    alias_method :real_invoke, :invoke
-
-    def invoke(*args)
-      time = Benchmark.measure(@name) do
-        real_invoke(*args)
-      end
-      puts "#{@name} ran for #{time}"
-    end
-  end
-end
 
 desc "Run specs"
 task :spec do
   sh("bin/rspec")
 end
 
-namespace :spec do
-  desc "Ensure spec dependencies are installed"
+namespace :dev do
+  desc "Ensure dev dependencies are installed"
   task :deps do
     Spec::Rubygems.dev_setup
+  end
+end
 
+namespace :spec do
+  desc "Ensure spec dependencies are installed"
+  task :deps => "dev:deps" do
     Spec::Rubygems.install_test_deps
   end
 
   desc "Ensure spec dependencies for running in parallel are installed"
-  task :parallel_deps do
-    Spec::Rubygems.dev_setup
-
+  task :parallel_deps => "dev:deps" do
     Spec::Rubygems.install_parallel_test_deps
   end
 
@@ -53,10 +40,8 @@ namespace :spec do
 
   namespace :realworld do
     desc "Re-record cassettes for the realworld specs"
-    task :record => %w[set_record realworld]
-
-    task :set_record do
-      ENV["BUNDLER_SPEC_FORCE_RECORD"] = "1"
+    task :record do
+      sh("rm -rf spec/support/artifice/vcr_cassettes && bin/rspec --tag realworld")
     end
   end
 
@@ -72,7 +57,7 @@ namespace :spec do
 
       raise "Couldn't configure sudo correctly to preserve path" unless `ruby -v` == `sudo -E ruby -v`
 
-      sh("sudo -E bin/rspec --tag sudo")
+      sh("sudo -E --preserve-env=RUBYOPT bin/rspec --tag sudo")
     ensure
       system("sudo", "cp", "tmp/old_sudoers", "/etc/sudoers")
       system("sudo", "chown", "-R", ENV["USER"], "tmp")
@@ -170,90 +155,71 @@ namespace :man do
   end
 end
 
-begin
-  Spec::Rubygems.gem_require("automatiek")
-rescue Gem::LoadError => e
-  msg = "We couldn't activate automatiek (#{e.requirement}). Try `gem install automatiek:'#{e.requirement}'` to be able to vendor gems"
+load "task/automatiek.rake"
 
-  namespace :vendor do
-    desc "Vendor a specific version of molinillo"
-    task(:molinillo) { abort msg }
+desc "Vendor a specific version of molinillo"
+Automatiek::RakeTask.new("molinillo") do |lib|
+  lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
+  lib.namespace = "Molinillo"
+  lib.prefix = "Bundler"
+  lib.vendor_lib = "lib/bundler/vendor/molinillo"
+end
 
-    desc "Vendor a specific version of fileutils"
-    task(:fileutils) { abort msg }
+desc "Vendor a specific version of thor"
+Automatiek::RakeTask.new("thor") do |lib|
+  lib.version = "v1.0.1"
+  lib.download = { :github => "https://github.com/erikhuda/thor" }
+  lib.namespace = "Thor"
+  lib.prefix = "Bundler"
+  lib.vendor_lib = "lib/bundler/vendor/thor"
+end
 
-    desc "Vendor a specific version of thor"
-    task(:thor) { abort msg }
+desc "Vendor a specific version of fileutils"
+Automatiek::RakeTask.new("fileutils") do |lib|
+  lib.version = "v1.4.1"
+  lib.download = { :github => "https://github.com/ruby/fileutils" }
+  lib.namespace = "FileUtils"
+  lib.prefix = "Bundler"
+  lib.vendor_lib = "lib/bundler/vendor/fileutils"
+end
 
-    desc "Vendor a specific version of net-http-persistent"
-    task(:"net-http-persistent") { abort msg }
+# We currently include the following changes over the official version:
+# * Avoid requiring the optional `net-http-pipeline` dependency, so that its version can be selected by end users.
+# * We also include changes to require the vendored dependencies `uri` and `connection_pool` relatively.
+# * Avoid autoloading `OpenSSL` since it causes problems on jruby.
+desc "Vendor a specific version of net-http-persistent"
+Automatiek::RakeTask.new("net-http-persistent") do |lib|
+  lib.version = "v4.0.0"
+  lib.download = { :github => "https://github.com/drbrain/net-http-persistent" }
+  lib.namespace = "Net::HTTP::Persistent"
+  lib.prefix = "Bundler::Persistent"
+  lib.vendor_lib = "lib/bundler/vendor/net-http-persistent"
+
+  lib.dependency("connection_pool") do |sublib|
+    sublib.version = "v2.2.2"
+    sublib.download = { :github => "https://github.com/mperham/connection_pool" }
+    sublib.namespace = "ConnectionPool"
+    sublib.prefix = "Bundler"
+    sublib.vendor_lib = "lib/bundler/vendor/connection_pool"
   end
-else
-  desc "Vendor a specific version of molinillo"
-  Automatiek::RakeTask.new("molinillo") do |lib|
-    lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
-    lib.namespace = "Molinillo"
-    lib.prefix = "Bundler"
-    lib.vendor_lib = "lib/bundler/vendor/molinillo"
-  end
 
-  # We currently cherry-pick changes to use `require_relative` internally
-  # instead of regular `require`. They are already in thor's master branch but
-  # still need to be released.
-  desc "Vendor a specific version of thor"
-  Automatiek::RakeTask.new("thor") do |lib|
-    lib.download = { :github => "https://github.com/erikhuda/thor" }
-    lib.namespace = "Thor"
-    lib.prefix = "Bundler"
-    lib.vendor_lib = "lib/bundler/vendor/thor"
-  end
-
-  desc "Vendor a specific version of fileutils"
-  Automatiek::RakeTask.new("fileutils") do |lib|
-    lib.download = { :github => "https://github.com/ruby/fileutils" }
-    lib.namespace = "FileUtils"
-    lib.prefix = "Bundler"
-    lib.vendor_lib = "lib/bundler/vendor/fileutils"
-  end
-
-  # We currently cherry-pick changes to use `require_relative` internally
-  # instead of regular `require`. They are pending review at
-  # https://github.com/drbrain/net-http-persistent/pull/106
-  desc "Vendor a specific version of net-http-persistent"
-  Automatiek::RakeTask.new("net-http-persistent") do |lib|
-    lib.download = { :github => "https://github.com/drbrain/net-http-persistent" }
-    lib.namespace = "Net::HTTP::Persistent"
-    lib.prefix = "Bundler::Persistent"
-    lib.vendor_lib = "lib/bundler/vendor/net-http-persistent"
-
-    lib.dependency("connection_pool") do |sublib|
-      sublib.version = "v2.2.2"
-      sublib.download = { :github => "https://github.com/mperham/connection_pool" }
-      sublib.namespace = "ConnectionPool"
-      sublib.prefix = "Bundler"
-      sublib.vendor_lib = "lib/bundler/vendor/connection_pool"
-    end
-
-    lib.dependency("uri") do |sublib|
-      sublib.version = "master"
-      sublib.download = { :github => "https://github.com/ruby/uri" }
-      sublib.namespace = "URI"
-      sublib.prefix = "Bundler"
-      sublib.vendor_lib = "lib/bundler/vendor/uri"
-    end
+  # We currently include changes over the official version to require internal paths
+  # relatively.
+  lib.dependency("uri") do |sublib|
+    sublib.version = "v0.10.0"
+    sublib.download = { :github => "https://github.com/ruby/uri" }
+    sublib.namespace = "URI"
+    sublib.prefix = "Bundler"
+    sublib.vendor_lib = "lib/bundler/vendor/uri"
   end
 end
 
 task :override_version do
   next unless version = ENV["BUNDLER_SPEC_SUB_VERSION"]
-  version_file = File.expand_path("../lib/bundler/version.rb", __FILE__)
-  contents = File.read(version_file)
-  unless contents.sub!(/(^\s+VERSION\s*=\s*)"#{Gem::Version::VERSION_PATTERN}"/, %(\\1"#{version}"))
-    abort("Failed to change bundler version")
-  end
-  File.open(version_file, "w") {|f| f << contents }
+  Spec::Path.replace_version_file(version)
 end
 
 task :default => :spec
 
-Dir["task/*.rake"].each(&method(:load))
+load "task/bundler_3.rake"
+load "task/release.rake"

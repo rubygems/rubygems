@@ -1,11 +1,9 @@
-# coding: UTF-8
 # frozen_string_literal: true
 
 require 'rubygems/test_case'
 require 'rubygems/ext'
 
 class TestGemExtExtConfBuilder < Gem::TestCase
-
   def setup
     super
 
@@ -241,5 +239,4 @@ end
       RbConfig::CONFIG.delete 'configure_args'
     end
   end
-
 end

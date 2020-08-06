@@ -107,7 +107,7 @@ RSpec.describe "The library itself" do
   it "has no malformed whitespace" do
     exempt = /\.gitmodules|fixtures|vendor|LICENSE|vcr_cassettes|rbreadline\.diff|\.txt$/
     error_messages = []
-    tracked_files.split("\x0").each do |filename|
+    tracked_files.each do |filename|
       next if filename =~ exempt
       error_messages << check_for_tab_characters(filename)
       error_messages << check_for_extra_spaces(filename)
@@ -118,7 +118,7 @@ RSpec.describe "The library itself" do
   it "has no estraneous quotes" do
     exempt = /vendor|vcr_cassettes|LICENSE|rbreadline\.diff/
     error_messages = []
-    tracked_files.split("\x0").each do |filename|
+    tracked_files.each do |filename|
       next if filename =~ exempt
       error_messages << check_for_straneous_quotes(filename)
     end
@@ -128,7 +128,7 @@ RSpec.describe "The library itself" do
   it "does not include any leftover debugging or development mechanisms" do
     exempt = %r{quality_spec.rb|support/helpers|vcr_cassettes|\.md|\.ronn|\.txt|\.5|\.1}
     error_messages = []
-    tracked_files.split("\x0").each do |filename|
+    tracked_files.each do |filename|
       next if filename =~ exempt
       error_messages << check_for_debugging_mechanisms(filename)
     end
@@ -138,7 +138,7 @@ RSpec.describe "The library itself" do
   it "does not include any unresolved merge conflicts" do
     error_messages = []
     exempt = %r{lock/lockfile_spec|quality_spec|vcr_cassettes|\.ronn|lockfile_parser\.rb}
-    tracked_files.split("\x0").each do |filename|
+    tracked_files.each do |filename|
       next if filename =~ exempt
       error_messages << check_for_git_merge_conflicts(filename)
     end
@@ -148,7 +148,7 @@ RSpec.describe "The library itself" do
   it "maintains language quality of the documentation" do
     included = /ronn/
     error_messages = []
-    man_tracked_files.split("\x0").each do |filename|
+    man_tracked_files.each do |filename|
       next unless filename =~ included
       error_messages << check_for_expendable_words(filename)
       error_messages << check_for_specific_pronouns(filename)
@@ -159,7 +159,7 @@ RSpec.describe "The library itself" do
   it "maintains language quality of sentences used in source code" do
     error_messages = []
     exempt = /vendor|vcr_cassettes|CODE_OF_CONDUCT/
-    lib_tracked_files.split("\x0").each do |filename|
+    lib_tracked_files.each do |filename|
       next if filename =~ exempt
       error_messages << check_for_expendable_words(filename)
       error_messages << check_for_specific_pronouns(filename)
@@ -185,7 +185,7 @@ RSpec.describe "The library itself" do
     Bundler::Settings::ARRAY_KEYS.each {|k| all_settings[k] << "in Bundler::Settings::ARRAY_KEYS" }
 
     key_pattern = /([a-z\._-]+)/i
-    lib_tracked_files.split("\x0").each do |filename|
+    lib_tracked_files.each do |filename|
       each_line(filename) do |line, number|
         line.scan(/Bundler\.settings\[:#{key_pattern}\]/).flatten.each {|s| all_settings[s] << "referenced at `#{filename}:#{number.succ}`" }
       end
@@ -216,9 +216,9 @@ RSpec.describe "The library itself" do
   end
 
   it "ships the correct set of files" do
-    git_list = shipped_files.split("\x0")
+    git_list = git_ls_files(ruby_core? ? "lib/bundler lib/bundler.rb man/bundle* man/gemfile* libexec/bundle*" : "lib man exe CHANGELOG.md LICENSE.md README.md bundler.gemspec")
 
-    gem_list = Gem::Specification.load(gemspec.to_s).files
+    gem_list = loaded_gemspec.files
 
     expect(git_list.to_set).to eq(gem_list.to_set)
   end
@@ -231,10 +231,11 @@ RSpec.describe "The library itself" do
       lib/bundler/vlad.rb
       lib/bundler/templates/gems.rb
     ]
-    files_to_require = lib_tracked_files.split("\x0").grep(/\.rb$/) - exclusions
+    files_to_require = lib_tracked_files.grep(/\.rb$/) - exclusions
     files_to_require.reject! {|f| f.start_with?("lib/bundler/vendor") }
-    files_to_require.map! {|f| File.expand_path("../#{f}", __dir__) }
-    sys_exec!("ruby -w") do |input, _, _|
+    files_to_require.map! {|f| File.expand_path(f, source_root) }
+    files_to_require.sort!
+    sys_exec("ruby -w") do |input, _, _|
       files_to_require.each do |f|
         input.puts "require '#{f}'"
       end
@@ -250,7 +251,7 @@ RSpec.describe "The library itself" do
   it "does not use require internally, but require_relative" do
     exempt = %r{templates/|vendor/}
     all_bad_requires = []
-    lib_tracked_files.split("\x0").each do |filename|
+    lib_tracked_files.each do |filename|
       next if filename =~ exempt
       each_line(filename) do |line, number|
         line.scan(/^ *require "bundler/).each { all_bad_requires << "#{filename}:#{number.succ}" }

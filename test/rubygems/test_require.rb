@@ -3,9 +3,7 @@ require 'rubygems/test_case'
 require 'rubygems'
 
 class TestGemRequire < Gem::TestCase
-
   class Latch
-
     def initialize(count = 1)
       @count = count
       @lock  = Monitor.new
@@ -24,7 +22,6 @@ class TestGemRequire < Gem::TestCase
         @cv.wait_while { @count > 0 }
       end
     end
-
   end
 
   def setup
@@ -45,6 +42,35 @@ class TestGemRequire < Gem::TestCase
     refute require(path), "'#{path}' was not yet required"
   end
 
+  def test_respect_loaded_features_caching_like_standard_require
+    dir = Dir.mktmpdir("test_require", @tempdir)
+
+    lp1 = File.join dir, 'foo1'
+    foo1 = File.join lp1, 'foo.rb'
+
+    FileUtils.mkdir_p lp1
+    File.open(foo1, 'w') {|f| f.write "class Object; HELLO = 'foo1' end" }
+
+    lp = $LOAD_PATH.dup
+
+    $LOAD_PATH.unshift lp1
+    assert_require 'foo'
+    assert_equal "foo1", ::Object::HELLO
+
+    lp2 = File.join dir, 'foo2'
+    foo2 = File.join lp2, 'foo.rb'
+
+    FileUtils.mkdir_p lp2
+    File.open(foo2, 'w') {|f| f.write "class Object; HELLO = 'foo2' end" }
+
+    $LOAD_PATH.unshift lp2
+    refute_require 'foo'
+    assert_equal "foo1", ::Object::HELLO
+  ensure
+    $LOAD_PATH.replace lp
+    Object.send :remove_const, :HELLO if Object.const_defined? :HELLO
+  end
+
   # Providing -I on the commandline should always beat gems
   def test_dash_i_beats_gems
     a1 = util_spec "a", "1", {"b" => "= 1"}, "lib/test_gem_require_a.rb"
@@ -60,7 +86,7 @@ class TestGemRequire < Gem::TestCase
     c_rb = File.join dash_i_arg, 'b', 'c.rb'
 
     FileUtils.mkdir_p File.dirname c_rb
-    File.open(c_rb, 'w') { |f| f.write "class Object; HELLO = 'world' end" }
+    File.open(c_rb, 'w') {|f| f.write "class Object; HELLO = 'world' end" }
 
     lp = $LOAD_PATH.dup
 
@@ -102,7 +128,7 @@ class TestGemRequire < Gem::TestCase
     c_rb = File.join dash_i_arg, 'c', 'c.rb'
 
     FileUtils.mkdir_p File.dirname c_rb
-    File.open(c_rb, 'w') { |f| f.write "class Object; HELLO = 'world' end" }
+    File.open(c_rb, 'w') {|f| f.write "class Object; HELLO = 'world' end" }
 
     assert_require 'test_gem_require_a'
 
@@ -122,6 +148,7 @@ class TestGemRequire < Gem::TestCase
 
   def test_dash_i_respects_default_library_extension_priority
     skip "extensions don't quite work on jruby" if Gem.java_platform?
+    skip "not installed yet" unless RbConfig::TOPDIR
 
     dash_i_ext_arg = util_install_extension_file('a')
     dash_i_lib_arg = util_install_ruby_file('a')
@@ -223,12 +250,20 @@ class TestGemRequire < Gem::TestCase
       stdlib one is already in $LOADED_FEATURES?. Reproducible by running the
       spaceship_specific_file test before this one" if java_platform?
 
-    lp = $LOAD_PATH.dup
-    lib_dir = File.expand_path(File.join(File.dirname(__FILE__), "../../lib"))
-    if File.exist?(lib_dir)
+    skip "not installed yet" unless RbConfig::TOPDIR
+
+    lib_dir = File.expand_path("../../lib", File.dirname(__FILE__))
+    rubylibdir = File.realdirpath(RbConfig::CONFIG["rubylibdir"])
+    if rubylibdir == lib_dir
+      # testing in the ruby repository where RubyGems' lib/ == stdlib lib/
+      # In that case we want to move the stdlib lib/ to still be after b-2 in $LOAD_PATH
+      lp = $LOAD_PATH.dup
       $LOAD_PATH.delete lib_dir
       $LOAD_PATH.push lib_dir
+      load_path_changed = true
     end
+
+    require 'benchmark' # the stdlib
 
     a1 = util_spec "a", "1", {"b" => ">= 1"}, "lib/test_gem_require_a.rb"
     b1 = util_spec "b", "1", nil, "lib/benchmark.rb"
@@ -236,19 +271,56 @@ class TestGemRequire < Gem::TestCase
 
     install_specs b1, b2, a1
 
+    # Activates a-1, but not b-1 and b-2
     assert_require 'test_gem_require_a'
+    assert_equal %w[a-1], loaded_spec_names
+    assert $LOAD_PATH.include? a1.load_paths[0]
+    refute $LOAD_PATH.include? b1.load_paths[0]
+    refute $LOAD_PATH.include? b2.load_paths[0]
+
     assert_equal unresolved_names, ["b (>= 1)"]
 
-    refute require('benchmark'), "benchmark should have already been loaded"
+    # The require('benchmark') below will activate b-2. However, its
+    # lib/benchmark.rb won't ever be loaded. The reason is MRI sees that even
+    # though b-2 is earlier in $LOAD_PATH it already loaded a benchmark.rb file
+    # and that still exists in $LOAD_PATH (further down),
+    # and as a result #gem_original_require returns false.
+    refute require('benchmark'), "the benchmark stdlib should be recognized as already loaded"
+
+    assert_includes $LOAD_PATH, b2.load_paths[0]
+    assert_includes $LOAD_PATH, rubylibdir
+    message = proc {
+      "this test relies on the b-2 gem lib/ to be before stdlib to make sense\n" +
+      $LOAD_PATH.pretty_inspect
+    }
+    assert_operator $LOAD_PATH.index(b2.load_paths[0]), :<, $LOAD_PATH.index(rubylibdir), message
 
     # We detected that we should activate b-2, so we did so, but
-    # then original_require decided "I've already got benchmark.rb" loaded.
-    # This case is fine because our lazy loading is provided exactly
+    # then #gem_original_require decided "I've already got some benchmark.rb" loaded.
+    # This case is fine because our lazy loading provided exactly
     # the same behavior as eager loading would have.
 
     assert_equal %w[a-1 b-2], loaded_spec_names
   ensure
-    $LOAD_PATH.replace lp unless java_platform?
+    $LOAD_PATH.replace lp if load_path_changed
+  end
+
+  def test_activate_via_require_respects_loaded_default_from_default_gems
+    a1 = new_default_spec "a", "1", nil, "a.rb"
+
+    # simulate requiring a default gem before rubygems is loaded
+    Kernel.send(:gem_original_require, "a")
+
+    # simulate registering default specs on loading rubygems
+    install_default_gems a1
+
+    a2 = util_spec "a", "2", nil, "lib/a.rb"
+
+    install_specs a2
+
+    refute_require 'a'
+
+    assert_equal %w[a-1], loaded_spec_names
   end
 
   def test_already_activated_direct_conflict
@@ -346,8 +418,8 @@ class TestGemRequire < Gem::TestCase
   def test_require_doesnt_traverse_development_dependencies
     a = util_spec("a#{$$}", "1", nil, "lib/a#{$$}.rb")
     z = util_spec("z", "1", "w" => "> 0")
-    w1 = util_spec("w", "1") { |s| s.add_development_dependency "non-existent" }
-    w2 = util_spec("w", "2") { |s| s.add_development_dependency "non-existent" }
+    w1 = util_spec("w", "1") {|s| s.add_development_dependency "non-existent" }
+    w2 = util_spec("w", "2") {|s| s.add_development_dependency "non-existent" }
 
     install_specs a, w1, w2, z
 
@@ -382,6 +454,17 @@ class TestGemRequire < Gem::TestCase
     assert_equal 0, times_called
   end
 
+  def test_second_gem_require_does_not_resolve_path_manually_before_going_through_standard_require
+    a1 = util_spec "a", "1", nil, "lib/test_gem_require_a.rb"
+    install_gem a1
+
+    assert_require "test_gem_require_a"
+
+    stub(:gem_original_require, ->(path) { assert_equal "test_gem_require_a", path }) do
+      require "test_gem_require_a"
+    end
+  end
+
   def test_realworld_default_gem
     testing_ruby_repo = !ENV["GEM_COMMAND"].nil?
     skip "this test can't work under ruby-core setup" if testing_ruby_repo || java_platform?
@@ -392,7 +475,32 @@ class TestGemRequire < Gem::TestCase
       puts Gem.loaded_specs["json"]
     RUBY
     output = Gem::Util.popen(*ruby_with_rubygems_in_load_path, "-e", cmd).strip
+    assert $?.success?
     refute_empty output
+  end
+
+  def test_realworld_upgraded_default_gem
+    testing_ruby_repo = !ENV["GEM_COMMAND"].nil?
+    skip "this test can't work under ruby-core setup" if testing_ruby_repo
+
+    newer_json = util_spec("json", "999.99.9", nil, ["lib/json.rb"])
+    install_gem newer_json
+
+    path = "#{@tempdir}/test_realworld_upgraded_default_gem.rb"
+    code = <<-RUBY
+      $stderr = $stdout
+      require "json"
+      puts Gem.loaded_specs["json"].version
+      puts $LOADED_FEATURES
+    RUBY
+    File.write(path, code)
+
+    output = Gem::Util.popen({ 'GEM_HOME' => @gemhome }, *ruby_with_rubygems_in_load_path, path).strip
+    assert $?.success?
+    refute_empty output
+    assert_equal "999.99.9", output.lines[0].chomp
+    # Make sure only files from the newer json gem are loaded, and no files from the default json gem
+    assert_equal ["#{@gemhome}/gems/json-999.99.9/lib/json.rb"], output.lines.grep(%r{/gems/json-}).map(&:chomp)
   end
 
   def test_default_gem_and_normal_gem
@@ -404,6 +512,33 @@ class TestGemRequire < Gem::TestCase
     install_specs(normal_gem_spec)
     assert_require "default/gem"
     assert_equal %w[default-3.0], loaded_spec_names
+  end
+
+  def test_normal_gems_with_overridden_load_error_message
+    normal_gem_spec = util_spec("normal", "3.0", nil, "lib/normal/gem.rb")
+
+    install_specs(normal_gem_spec)
+
+    File.write("require_with_overridden_load_error_message.rb", <<-RUBY)
+      LoadError.class_eval do
+        def message
+          "Overridden message"
+        end
+      end
+
+      require 'normal/gem'
+    RUBY
+
+    require "open3"
+
+    output, exit_status = Open3.capture2e(
+      { "GEM_HOME" => Gem.paths.home },
+      *ruby_with_rubygems_in_load_path,
+      "-r",
+      "./require_with_overridden_load_error_message.rb"
+    )
+
+    assert exit_status.success?, "Require failed due to #{output}"
   end
 
   def test_default_gem_prerelease
@@ -430,10 +565,8 @@ class TestGemRequire < Gem::TestCase
   def test_try_activate_error_unlocks_require_monitor
     silence_warnings do
       class << ::Gem
-
         alias old_try_activate try_activate
         def try_activate(*); raise 'raised from try_activate'; end
-
       end
     end
 
@@ -444,9 +577,7 @@ class TestGemRequire < Gem::TestCase
   ensure
     silence_warnings do
       class << ::Gem
-
         alias try_activate old_try_activate
-
       end
     end
     Kernel::RUBYGEMS_ACTIVATION_MONITOR.exit
@@ -522,11 +653,11 @@ class TestGemRequire < Gem::TestCase
           File.write(dir + "/sub.rb", "#{prefix}warn 'uplevel', 'test', uplevel: 1\n")
           File.write(dir + "/main.rb", "require 'sub'\n")
           _, err = capture_subprocess_io do
-            system(*ruby_with_rubygems_in_load_path, "-w", "--disable=gems", "-C", dir, "-I.", "main.rb")
+            system(*ruby_with_rubygems_in_load_path, "-w", "--disable=gems", "-C", dir, "-I", dir, "main.rb")
           end
           assert_match(/main\.rb:1: warning: uplevel\ntest\n$/, err)
           _, err = capture_subprocess_io do
-            system(*ruby_with_rubygems_in_load_path, "-w", "--enable=gems", "-C", dir, "-I.", "main.rb")
+            system(*ruby_with_rubygems_in_load_path, "-w", "--enable=gems", "-C", dir, "-I", dir, "main.rb")
           end
           assert_match(/main\.rb:1: warning: uplevel\ntest\n$/, err)
         end
@@ -598,9 +729,8 @@ class TestGemRequire < Gem::TestCase
     a_rb = File.join dash_i_lib_arg, "#{name}.rb"
 
     FileUtils.mkdir_p File.dirname a_rb
-    File.open(a_rb, 'w') { |f| f.write "# #{name}.rb" }
+    File.open(a_rb, 'w') {|f| f.write "# #{name}.rb" }
 
     dash_i_lib_arg
   end
-
 end

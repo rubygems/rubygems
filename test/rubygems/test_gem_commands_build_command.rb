@@ -1,11 +1,9 @@
-
 # frozen_string_literal: true
 require 'rubygems/test_case'
 require 'rubygems/commands/build_command'
 require 'rubygems/package'
 
 class TestGemCommandsBuildCommand < Gem::TestCase
-
   CERT_FILE = cert_path 'public3072'
   SIGNING_KEY = key_path 'private3072'
 
@@ -510,5 +508,4 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   ensure
     ENV["SOURCE_DATE_EPOCH"] = epoch
   end
-
 end

@@ -1,13 +1,22 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    automatiek (0.3.0)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
     diff-lcs (1.3)
+    faraday (1.0.1)
+      multipart-post (>= 1.2, < 3)
     hpricot (0.8.6)
+    multipart-post (2.1.1)
     mustache (1.1.1)
+    netrc (0.11.0)
+    octokit (4.18.0)
+      faraday (>= 0.9)
+      sawyer (~> 0.8.0, >= 0.5.3)
     parallel (1.19.1)
     parallel_tests (2.32.0)
       parallel
+    public_suffix (4.0.5)
     rdiscount (2.2.0.1)
     ronn (0.7.3)
       hpricot (>= 0.8.2)
@@ -22,13 +31,17 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.2)
+    sawyer (0.8.2)
+      addressable (>= 2.3.5)
+      faraday (> 0.8, < 2.0)
 
 PLATFORMS
   java
   ruby
 
 DEPENDENCIES
-  automatiek (~> 0.3.0)
+  netrc (~> 0.11.0)
+  octokit (~> 4.18)
   parallel_tests (~> 2.29)
   ronn (~> 0.7.3)
   rspec-core (~> 3.8)
@@ -36,4 +49,4 @@ DEPENDENCIES
   rspec-mocks (~> 3.8)
 
 BUNDLED WITH
-   2.2.0.dev
+   2.2.0.rc.2

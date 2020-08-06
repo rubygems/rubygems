@@ -28,6 +28,8 @@ RSpec.describe "the lockfile format" do
   end
 
   it "updates the lockfile's bundler version if current ver. is newer" do
+    system_gems "bundler-1.8.2"
+
     lockfile <<-L
       GIT
         remote: git://github.com/nex3/haml.git
@@ -50,7 +52,7 @@ RSpec.describe "the lockfile format" do
          1.8.2
     L
 
-    install_gemfile <<-G
+    install_gemfile <<-G, :env => { "BUNDLER_VERSION" => Bundler::VERSION }
       source "#{file_uri_for(gem_repo1)}"
 
       gem "rack"
@@ -206,6 +208,8 @@ RSpec.describe "the lockfile format" do
     current_version = Bundler::VERSION
     older_major = previous_major(current_version)
 
+    system_gems "bundler-#{older_major}"
+
     lockfile <<-L
       GEM
         remote: #{file_uri_for(gem_repo1)}/
@@ -222,7 +226,7 @@ RSpec.describe "the lockfile format" do
          #{older_major}
     L
 
-    install_gemfile <<-G
+    install_gemfile <<-G, :env => { "BUNDLER_VERSION" => Bundler::VERSION }
       source "#{file_uri_for(gem_repo1)}/"
 
       gem "rack"
@@ -492,7 +496,7 @@ RSpec.describe "the lockfile format" do
          #{Bundler::VERSION}
     L
 
-    bundle! "install"
+    bundle "install"
     expect(the_bundle).to include_gems "rack 1.0.0"
   end
 
@@ -616,13 +620,13 @@ RSpec.describe "the lockfile format" do
   it "serializes pinned path sources to the lockfile even when packaging" do
     build_lib "foo"
 
-    install_gemfile! <<-G
+    install_gemfile <<-G
       gem "foo", :path => "#{lib_path("foo-1.0")}"
     G
 
     bundle "config set cache_all true"
-    bundle! :cache
-    bundle! :install, :local => true
+    bundle :cache
+    bundle :install, :local => true
 
     lockfile_should_be <<-G
       PATH
@@ -1044,7 +1048,7 @@ RSpec.describe "the lockfile format" do
 
     simulate_platform "universal-java-16"
 
-    install_gemfile! <<-G
+    install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
       gem "platform_specific"
     G
@@ -1075,7 +1079,7 @@ RSpec.describe "the lockfile format" do
 
     simulate_platform "universal-java-16"
 
-    install_gemfile! <<-G
+    install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
       gem "platform_specific"
     G
@@ -1203,7 +1207,7 @@ RSpec.describe "the lockfile format" do
   end
 
   it "raises if two different versions are used" do
-    install_gemfile <<-G
+    install_gemfile <<-G, :raise_on_error => false
       source "#{file_uri_for(gem_repo1)}/"
       gem "rack", "1.0"
       gem "rack", "1.1"
@@ -1214,7 +1218,7 @@ RSpec.describe "the lockfile format" do
   end
 
   it "raises if two different sources are used" do
-    install_gemfile <<-G
+    install_gemfile <<-G, :raise_on_error => false
       source "#{file_uri_for(gem_repo1)}/"
       gem "rack"
       gem "rack", :git => "git://hubz.com"
@@ -1289,7 +1293,8 @@ RSpec.describe "the lockfile format" do
       gem "omg", :git => "#{lib_path("omg")}", :branch => 'master'
     G
 
-    bundle! :install, forgotten_command_line_options(:path => "vendor")
+    bundle "config --local path vendor"
+    bundle :install
     expect(the_bundle).to include_gems "omg 1.0"
 
     # Create a Gemfile.lock that has duplicate GIT sections
@@ -1364,7 +1369,7 @@ RSpec.describe "the lockfile format" do
         rack_middleware
     L
 
-    install_gemfile <<-G
+    install_gemfile <<-G, :raise_on_error => false
       source "#{file_uri_for(gem_repo1)}"
       gem "rack_middleware"
     G
@@ -1433,7 +1438,7 @@ RSpec.describe "the lockfile format" do
 
         expect do
           ruby <<-RUBY
-                   require 'bundler'
+                   require '#{lib_dir}/bundler'
                    Bundler.setup
                  RUBY
         end.not_to change { File.mtime(bundled_app_lock) }
@@ -1462,7 +1467,7 @@ RSpec.describe "the lockfile format" do
          #{Bundler::VERSION}
     L
 
-    install_gemfile(<<-G)
+    install_gemfile <<-G, :raise_on_error => false
       source "#{file_uri_for(gem_repo1)}/"
       gem "rack"
     G

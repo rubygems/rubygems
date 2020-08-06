@@ -28,7 +28,7 @@ RSpec.describe "bundle help" do
   end
 
   it "looks for a binary and executes it with --help option if it's named bundler-<task>" do
-    skip "obscure error" if Gem.win_platform?
+    skip "Could not find command testtasks, probably because not a windows friendly executable" if Gem.win_platform?
 
     File.open(tmp("bundler-testtasks"), "w", 0o755) do |f|
       f.puts "#!/usr/bin/env ruby\nputs ARGV.join(' ')\n"
@@ -38,7 +38,6 @@ RSpec.describe "bundle help" do
       bundle "help testtasks"
     end
 
-    expect(exitstatus).to be_zero if exitstatus
     expect(out).to eq("--help")
   end
 
@@ -72,7 +71,7 @@ RSpec.describe "bundle help" do
 
   it "has helpful output when using --help flag for a non-existent command" do
     with_fake_man do
-      bundle "instill -h"
+      bundle "instill -h", :raise_on_error => false
     end
     expect(err).to include('Could not find command "instill".')
   end

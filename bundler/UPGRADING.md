@@ -33,7 +33,7 @@ in the upcoming 3 version.
 
 * Flags passed to `bundle install` that relied on being remembered across invocations have been deprecated.
 
-  In particular, the `--clean`, `--deployment`, `--frozen`, `--no-cache`,
+  In particular, the `--clean`, `--deployment`, `--frozen`,
   `--no-prune`, `--path`, `--shebang`, `--system`, `--without`, and `--with`
   options to `bundle install`.
 

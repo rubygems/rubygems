@@ -3,7 +3,6 @@ require 'rubygems/test_case'
 require 'rubygems/commands/update_command'
 
 class TestGemCommandsUpdateCommand < Gem::TestCase
-
   def setup
     super
     common_installer_setup
@@ -256,6 +255,53 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_empty @ui.output
     assert_equal "ERROR:  Gem names are not allowed with the --system option\n",
                  @ui.error
+  end
+
+  def test_execute_system_with_disabled_update
+    old_disable_system_update_message = Gem.disable_system_update_message
+    Gem.disable_system_update_message = "Please use package manager instead."
+
+    @cmd.options[:args] = []
+    @cmd.options[:system] = true
+
+    assert_raises Gem::MockGemUi::TermError do
+      use_ui @ui do
+        @cmd.execute
+      end
+    end
+
+    assert_empty @ui.output
+    assert_equal "ERROR:  Please use package manager instead.\n", @ui.error
+  ensure
+    Gem.disable_system_update_message = old_disable_system_update_message
+  end
+
+  # The other style of `gem update --system` tests don't actually run
+  # setup.rb, so we just check that setup.rb gets the `--silent` flag.
+  def test_execute_system_silent_passed_to_setuprb
+    @cmd.options[:args] = []
+    @cmd.options[:system] = true
+    @cmd.options[:silent] = true
+
+    assert_equal true, @cmd.update_rubygems_arguments.include?('--silent')
+  end
+
+  def test_execute_system_silent
+    spec_fetcher do |fetcher|
+      fetcher.download 'rubygems-update', 9 do |s|
+        s.files = %w[setup.rb]
+      end
+    end
+
+    @cmd.options[:args]          = []
+    @cmd.options[:system]        = true
+    @cmd.options[:silent]        = true
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_empty @ui.output
   end
 
   # before:
@@ -648,5 +694,4 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     assert_equal "  a-2", out.shift
     assert_empty out
   end
-
 end

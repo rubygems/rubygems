@@ -102,11 +102,6 @@ module Bundler
       end.flatten(1)
     end
 
-    def spec_extension_dir(spec)
-      return unless spec.respond_to?(:extension_dir)
-      spec.extension_dir
-    end
-
     def stub_set_spec(stub, spec)
       stub.instance_variable_set(:@spec, spec)
     end
@@ -141,14 +136,10 @@ module Bundler
     end
 
     def inflate(obj)
-      require "rubygems/util"
-
       Gem::Util.inflate(obj)
     end
 
     def correct_for_windows_path(path)
-      require "rubygems/util"
-
       if Gem::Util.respond_to?(:correct_for_windows_path)
         Gem::Util.correct_for_windows_path(path)
       elsif path[0].chr == "/" && path[1].chr =~ /[a-z]/i && path[2].chr == ":"
@@ -223,11 +214,6 @@ module Bundler
       Gem.bin_path(gem, bin, ver)
     end
 
-    def preserve_paths
-      # this is a no-op outside of RubyGems 1.8
-      yield
-    end
-
     def loaded_gem_paths
       loaded_gem_paths = Gem.loaded_specs.map {|_, s| s.full_require_paths }
       loaded_gem_paths.flatten
@@ -265,8 +251,6 @@ module Bundler
       require "rubygems/security"
       require_relative "psyched_yaml"
       gem_from_path(path, security_policies[policy]).spec
-    rescue Gem::Package::FormatError
-      raise GemspecError, "Could not read gem at #{path}. It may be corrupted."
     rescue Exception, Gem::Exception, Gem::Security::Exception => e # rubocop:disable Lint/RescueException
       if e.is_a?(Gem::Security::Exception) ||
           e.message =~ /unknown trust policy|unsigned gem/i ||

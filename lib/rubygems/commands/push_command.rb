@@ -5,7 +5,6 @@ require 'rubygems/gemcutter_utilities'
 require 'rubygems/package'
 
 class Gem::Commands::PushCommand < Gem::Command
-
   include Gem::LocalRemoteOptions
   include Gem::GemcutterUtilities
 
@@ -101,8 +100,7 @@ The push command will use ~/.gem/credentials to authenticate to a server, but yo
 
     [
       gem_metadata["default_gem_server"],
-      gem_metadata["allowed_push_host"]
+      gem_metadata["allowed_push_host"],
     ]
   end
-
 end

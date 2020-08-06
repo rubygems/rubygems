@@ -7,49 +7,41 @@ assignees: ''
 
 ---
 
+<!--
+
 Thank you for contributing to the [rubygems](https://github.com/rubygems/rubygems) repository, and specifically to the [Bundler](https://bundler.io/) gem.
 
-Before processing your issue please confirm that:
+Before opening your issue, make sure you have checked [our filing issues guide](https://github.com/rubygems/rubygems/blob/master/bundler/doc/contributing/ISSUES.md).
 
-- [ ] You checked all the following documents and couldn't find a solution for your issue:
+Please fill in the following sections so we can process your issue as fast as possible:
 
-- [Troubleshooting common issues](https://github.com/rubygems/bundler/blob/master/doc/TROUBLESHOOTING.md)
-- [Bundler documentation site](https://bundler.io/)
-- [Bundler man pages](https://bundler.io/man/bundle.1.html)
-- [Bundler command line reference](https://bundler.io/v2.0/commands.html)
+-->
 
-If you haven't done that, please do it before creating a new issue.
+### Describe the problem as clearly as you can
 
-Please answer the following questions so we can process your issue as fast as possible:
+<!-- Replace this with an explanation of the problem you are having. Be as much clear and precise as you can. -->
 
-1. Do you have a reproduction script? It would be really helpful for us if you provide one. Examples: [Sample repro script for Bundler issues](https://gist.github.com/xaviershay/6207550), [Another sample repro script for Bundler issues](https://gist.github.com/xaviershay/6295889).
+### Post system independent steps to reproduce the problem
 
-    Script URL: 
+<!--
 
-2. What are you trying to accomplish?
+Fill this with system independent repro steps so that maintainers can reproduce your issue on their machines.
+Examples: https://gist.github.com/xaviershay/6207550, https://gist.github.com/xaviershay/6295889
 
-    Your answer:
+-->
 
-3. What command did you run?
+### Which command did you run?
 
-    Your answer:
+<!-- Replace this with the command that you run. -->
 
-4. What were you expecting to happen?
+### What were you expecting to happen?
 
-    Your answer:
+<!-- Replace this with the results you expected before running the command. -->
 
-5. What actually happened?
+### What actually happened?
 
-    Your answer:
+<!-- Replace this with the actual result you got. Paste the output of your command here. -->
 
-6. Is there an exception backtrace? If so, please copy it below.
+### If not included with the output of your command, run `bundle env` and paste the output below
 
-    Your answer:
-
-7. Please run `bundle env` and paste the output below:
-
-    Your answer:
-
-For more information please check [Filing Issues: a guide](https://github.com/rubygems/rubygems/blob/master/bundler/doc/contributing/ISSUES.md).
-
-Thank you!
+<!-- Replace this with the result of `bundle env`. -->

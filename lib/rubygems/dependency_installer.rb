@@ -5,7 +5,6 @@ require 'rubygems/package'
 require 'rubygems/installer'
 require 'rubygems/spec_fetcher'
 require 'rubygems/user_interaction'
-require 'rubygems/source'
 require 'rubygems/available_set'
 require 'rubygems/deprecate'
 
@@ -13,7 +12,6 @@ require 'rubygems/deprecate'
 # Installs a gem along with all its dependencies from local and remote gems.
 
 class Gem::DependencyInstaller
-
   include Gem::UserInteraction
   extend Gem::Deprecate
 
@@ -29,7 +27,7 @@ class Gem::DependencyInstaller
     :wrappers            => true,
     :build_args          => nil,
     :build_docs_in_background => false,
-    :install_as_default => false
+    :install_as_default => false,
   }.freeze
 
   ##
@@ -336,5 +334,4 @@ class Gem::DependencyInstaller
 
     request_set
   end
-
 end

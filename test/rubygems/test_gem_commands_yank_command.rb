@@ -3,9 +3,10 @@ require 'rubygems/test_case'
 require 'rubygems/commands/yank_command'
 
 class TestGemCommandsYankCommand < Gem::TestCase
-
   def setup
     super
+
+    credential_setup
 
     @cmd = Gem::Commands::YankCommand.new
     @cmd.options[:host] = 'http://example'
@@ -14,6 +15,12 @@ class TestGemCommandsYankCommand < Gem::TestCase
 
     Gem.configuration.rubygems_api_key = 'key'
     Gem.configuration.api_keys[:KEY] = 'other'
+  end
+
+  def teardown
+    credential_teardown
+
+    super
   end
 
   def test_handle_options
@@ -63,7 +70,7 @@ class TestGemCommandsYankCommand < Gem::TestCase
     yank_uri = 'http://example/api/v1/gems/yank'
     @fetcher.data[yank_uri] = [
       [response_fail, 401, 'Unauthorized'],
-      ['Successfully yanked', 200, 'OK']
+      ['Successfully yanked', 200, 'OK'],
     ]
 
     @cmd.options[:args]           = %w[a]
@@ -140,5 +147,4 @@ class TestGemCommandsYankCommand < Gem::TestCase
     assert_equal 'key', @fetcher.last_request['Authorization']
     assert_equal [yank_uri], @fetcher.paths
   end
-
 end

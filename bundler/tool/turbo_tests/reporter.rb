@@ -63,6 +63,10 @@ module TurboTests
       @failed_examples << example
     end
 
+    def message(notification)
+      delegate_to_formatters(:message, notification)
+    end
+
     def finish
       end_time = Time.now
 

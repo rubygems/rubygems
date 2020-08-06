@@ -1,0 +1,31 @@
+name: windows_rubygems
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
+      - 3.2
+
+jobs:
+  windows_rubygems:
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        ruby: [ 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: none
+      - name: Install Dependencies
+        run: rake setup
+        shell: bash
+      - name: Run Test
+        run: |
+          ridk enable
+          rake test
+    timeout-minutes: 15

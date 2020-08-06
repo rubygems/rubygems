@@ -83,7 +83,6 @@ end
 require "rubygems/command"
 
 class Gem::Command
-
   ##
   # Allows resetting the hash of specific args per command.  This method is
   # available when requiring 'rubygems/test_case'
@@ -91,7 +90,6 @@ class Gem::Command
   def self.specific_extra_args_hash=(value)
     @specific_extra_args_hash = value
   end
-
 end
 
 ##
@@ -101,7 +99,6 @@ end
 # your normal set of gems is not affected.
 
 class Gem::TestCase < Minitest::Test
-
   extend Gem::Deprecate
 
   attr_accessor :fetcher # :nodoc:
@@ -257,19 +254,19 @@ class Gem::TestCase < Minitest::Test
       msg = message(msg) do
         'Expected output containing make command "%s": %s' % [
           ('%s %s' % [make_command, target]).rstrip,
-          output.inspect
+          output.inspect,
         ]
       end
     else
       msg = message(msg) do
         'Expected make command "%s": %s' % [
           ('%s %s' % [make_command, target]).rstrip,
-          output.inspect
+          output.inspect,
         ]
       end
     end
 
-    assert scan_make_command_lines(output).any? { |line|
+    assert scan_make_command_lines(output).any? {|line|
       make = parse_make_command_line(line)
 
       if make[:targets].include?(target)
@@ -283,9 +280,6 @@ class Gem::TestCase < Minitest::Test
 
   include Gem::DefaultUserInteraction
 
-  undef_method :default_test if instance_methods.include? 'default_test' or
-                                instance_methods.include? :default_test
-
   ##
   # #setup prepares a sandboxed location to install gems.  All installs are
   # directed to a temporary directory.  All install plugins are removed.
@@ -295,14 +289,18 @@ class Gem::TestCase < Minitest::Test
   # or <tt>i686-darwin8.10.1</tt> otherwise.
 
   def setup
-    super
-
     @orig_env = ENV.to_hash
+    @tmp = File.expand_path("tmp")
+
+    FileUtils.mkdir_p @tmp
 
     ENV['GEM_VENDOR'] = nil
     ENV['GEMRC'] = nil
+    ENV['XDG_CACHE_HOME'] = nil
+    ENV['XDG_CONFIG_HOME'] = nil
+    ENV['XDG_DATA_HOME'] = nil
     ENV['SOURCE_DATE_EPOCH'] = nil
-    ENV["TMPDIR"] = File.expand_path("tmp")
+    ENV["TMPDIR"] = @tmp
 
     @current_dir = Dir.pwd
     @fetcher     = nil
@@ -358,6 +356,7 @@ class Gem::TestCase < Minitest::Test
 
     ENV['HOME'] = @userhome
     Gem.instance_variable_set :@user_home, nil
+    Gem.instance_variable_set :@data_home, nil
     Gem.instance_variable_set :@gemdeps, nil
     Gem.instance_variable_set :@env_requirements_by_name, nil
     Gem.send :remove_instance_variable, :@ruby_version if
@@ -384,6 +383,7 @@ class Gem::TestCase < Minitest::Test
     Gem::Security.reset
 
     Gem.loaded_specs.clear
+    Gem.instance_variable_set(:@activated_gem_paths, 0)
     Gem.clear_default_specs
     Bundler.reset!
 
@@ -424,11 +424,8 @@ class Gem::TestCase < Minitest::Test
     $LOAD_PATH.replace @orig_LOAD_PATH if @orig_LOAD_PATH
     if @orig_LOADED_FEATURES
       if @orig_LOAD_PATH
-        paths = @orig_LOAD_PATH.map {|path| File.join(File.expand_path(path), "/")}
         ($LOADED_FEATURES - @orig_LOADED_FEATURES).each do |feat|
-          unless paths.any? {|path| feat.start_with?(path)}
-            $LOADED_FEATURES.delete(feat)
-          end
+          $LOADED_FEATURES.delete(feat) if feat.start_with?(@tmp)
         end
       else
         $LOADED_FEATURES.replace @orig_LOADED_FEATURES
@@ -468,6 +465,17 @@ class Gem::TestCase < Minitest::Test
     end
 
     @back_ui.close
+  end
+
+  def credential_setup
+    @temp_cred = File.join(@userhome, '.gem', 'credentials')
+    FileUtils.mkdir_p File.dirname(@temp_cred)
+    File.write @temp_cred, ':rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97'
+    File.chmod 0600, @temp_cred
+  end
+
+  def credential_teardown
+    FileUtils.rm_rf @temp_cred
   end
 
   def common_installer_setup
@@ -779,7 +787,7 @@ class Gem::TestCase < Minitest::Test
   ensure
     prefix = File.dirname(__FILE__) + "/"
     new_features = ($LOADED_FEATURES - old_loaded_features)
-    old_loaded_features.concat(new_features.select {|f| f.rindex(prefix, 0)})
+    old_loaded_features.concat(new_features.select {|f| f.rindex(prefix, 0) })
     $LOADED_FEATURES.replace old_loaded_features
   end
 
@@ -791,6 +799,7 @@ class Gem::TestCase < Minitest::Test
 
     lib_dir = File.join(@tempdir, "default_gems", "lib")
     lib_dir.instance_variable_set(:@gem_prelude_index, lib_dir)
+    Gem.instance_variable_set(:@default_gem_load_paths, [*Gem.send(:default_gem_load_paths), lib_dir])
     $LOAD_PATH.unshift(lib_dir)
     files.each do |file|
       rb_path = File.join(lib_dir, file)
@@ -1001,7 +1010,7 @@ Also, a list:
 
     spec_fetcher = Gem::SpecFetcher.fetcher
 
-    prerelease, all = all_specs.partition { |spec| spec.version.prerelease? }
+    prerelease, all = all_specs.partition {|spec| spec.version.prerelease? }
     latest = Gem::Specification._latest_specs all_specs
 
     spec_fetcher.specs[@uri] = []
@@ -1023,7 +1032,7 @@ Also, a list:
     unless Gem::RemoteFetcher === @fetcher
       v = Gem.marshal_version
 
-      specs = all.map { |spec| spec.name_tuple }
+      specs = all.map {|spec| spec.name_tuple }
       s_zip = util_gzip Marshal.dump Gem::NameTuple.to_basic specs
 
       latest_specs = latest.map do |spec|
@@ -1032,7 +1041,7 @@ Also, a list:
 
       l_zip = util_gzip Marshal.dump Gem::NameTuple.to_basic latest_specs
 
-      prerelease_specs = prerelease.map { |spec| spec.name_tuple }
+      prerelease_specs = prerelease.map {|spec| spec.name_tuple }
       p_zip = util_gzip Marshal.dump Gem::NameTuple.to_basic prerelease_specs
 
       @fetcher.data["#{@gem_repo}specs.#{v}.gz"]            = s_zip
@@ -1258,11 +1267,11 @@ Also, a list:
   end
 
   class << self
-
     # :nodoc:
     ##
     # Return the join path, with escaping backticks, dollars, and
     # double-quotes.  Unlike `shellescape`, equal-sign is not escaped.
+
     private
 
     def escape_path(*path)
@@ -1273,7 +1282,6 @@ Also, a list:
         "\"#{path.gsub(/[`$"]/, '\\&')}\""
       end
     end
-
   end
 
   @@good_rake = "#{rubybin} #{escape_path(TEST_PATH, 'good_rake.rb')}"
@@ -1391,7 +1399,6 @@ Also, a list:
   # It is available by requiring Gem::TestCase.
 
   class StaticSet < Gem::Resolver::Set
-
     ##
     # A StaticSet ignores remote because it has a fixed set of gems.
 
@@ -1428,7 +1435,7 @@ Also, a list:
     # Finds all gems matching +dep+ in this set.
 
     def find_all(dep)
-      @specs.find_all { |s| dep.match? s, @prerelease }
+      @specs.find_all {|s| dep.match? s, @prerelease }
     end
 
     ##
@@ -1446,7 +1453,6 @@ Also, a list:
 
     def prefetch(reqs) # :nodoc:
     end
-
   end
 
   ##
@@ -1514,27 +1520,6 @@ Also, a list:
     PUBLIC_KEY  = nil
     PUBLIC_CERT = nil
   end if defined?(OpenSSL::SSL)
-
-end
-
-# require dependencies that are not discoverable once GEM_HOME and GEM_PATH
-# are wiped
-begin
-  gem 'rake'
-rescue Gem::LoadError
-end
-
-begin
-  require 'rake/packagetask'
-rescue LoadError
-end
-
-begin
-  gem 'rdoc'
-  require 'rdoc'
-
-  require 'rubygems/rdoc'
-rescue LoadError, Gem::LoadError
 end
 
 require 'rubygems/test_utilities'

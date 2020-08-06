@@ -6,8 +6,8 @@
 #++
 
 require 'optparse'
-require 'rubygems/requirement'
-require 'rubygems/user_interaction'
+require_relative 'requirement'
+require_relative 'user_interaction'
 
 ##
 # Base class for all Gem commands.  When creating a new gem command, define
@@ -17,7 +17,6 @@ require 'rubygems/user_interaction'
 # A very good example to look at is Gem::Commands::ContentsCommand
 
 class Gem::Command
-
   include Gem::UserInteraction
 
   OptionParser.accept Symbol do |value|
@@ -125,7 +124,7 @@ class Gem::Command
     @program_name = "gem #{command}"
     @defaults = defaults
     @options = defaults.dup
-    @option_groups = Hash.new { |h,k| h[k] = [] }
+    @option_groups = Hash.new {|h,k| h[k] = [] }
     @deprecated_options = { command => {} }
     @parser = nil
     @when_invoked = nil
@@ -162,7 +161,7 @@ class Gem::Command
 
     if errors and !errors.empty?
       msg << ", here is why:\n"
-      errors.each { |x| msg << "          #{x.wordy}\n" }
+      errors.each {|x| msg << "          #{x.wordy}\n" }
     else
       if required_by and gem != required_by
         msg << " (required by #{required_by}) in any repository"
@@ -192,7 +191,7 @@ class Gem::Command
             "Please specify at least one gem name (e.g. gem build GEMNAME)"
     end
 
-    args.select { |arg| arg !~ /^-/ }
+    args.select {|arg| arg !~ /^-/ }
   end
 
   ##
@@ -364,7 +363,7 @@ class Gem::Command
 
   def remove_option(name)
     @option_groups.each do |_, option_list|
-      option_list.reject! { |args, _| args.any? { |x| x.is_a?(String) && x =~ /^#{name}/ } }
+      option_list.reject! {|args, _| args.any? {|x| x.is_a?(String) && x =~ /^#{name}/ } }
     end
   end
 
@@ -417,7 +416,7 @@ class Gem::Command
 
   def merge_options(new_options)
     @options = @defaults.clone
-    new_options.each { |k,v| @options[k] = v }
+    new_options.each {|k,v| @options[k] = v }
   end
 
   ##
@@ -456,7 +455,7 @@ class Gem::Command
     until extra.empty? do
       ex = []
       ex << extra.shift
-      ex << extra.shift if extra.first.to_s =~ /^[^-]/
+      ex << extra.shift if extra.first.to_s =~ /^[^-]/ # rubocop:disable Performance/StartWith
       result << ex if handles?(ex)
     end
 
@@ -496,7 +495,7 @@ class Gem::Command
 
     configure_options "", regular_options
 
-    @option_groups.sort_by { |n,_| n.to_s }.each do |group_name, option_list|
+    @option_groups.sort_by {|n,_| n.to_s }.each do |group_name, option_list|
       @parser.separator nil
       configure_options group_name, option_list
     end
@@ -652,7 +651,6 @@ RubyGems is a package manager for Ruby.
   HELP
 
   # :startdoc:
-
 end
 
 ##

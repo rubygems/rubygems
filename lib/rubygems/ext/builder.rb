@@ -5,10 +5,9 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems/user_interaction'
+require_relative '../user_interaction'
 
 class Gem::Ext::Builder
-
   include Gem::UserInteraction
 
   ##
@@ -45,7 +44,7 @@ class Gem::Ext::Builder
       cmd = [
         make_program,
         destdir,
-        target
+        target,
       ].join(' ').rstrip
       begin
         run(cmd, results, "make #{target}".rstrip)
@@ -227,5 +226,4 @@ EOF
 
     destination
   end
-
 end

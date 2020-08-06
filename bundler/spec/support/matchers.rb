@@ -75,16 +75,6 @@ module Spec
       end
     end
 
-    RSpec::Matchers.define :have_rubyopts do |*args|
-      args = args.flatten
-      args = args.first.split(/\s+/) if args.size == 1
-
-      match do |actual|
-        actual = actual.split(/\s+/) if actual.is_a?(String)
-        args.all? {|arg| actual.include?(arg) } && actual.uniq.size == actual.size
-      end
-    end
-
     RSpec::Matchers.define :be_sorted do
       diffable
       attr_reader :expected
@@ -125,16 +115,18 @@ module Spec
         opts = names.last.is_a?(Hash) ? names.pop : {}
         source = opts.delete(:source)
         groups = Array(opts[:groups])
+        exclude_from_load_path = opts.delete(:exclude_from_load_path)
+        opts[:raise_on_error] = false
         groups << opts
         @errors = names.map do |name|
           name, version, platform = name.split(/\s+/)
           require_path = name == "bundler" ? "#{lib_dir}/bundler" : name.tr("-", "/")
           version_const = name == "bundler" ? "Bundler::VERSION" : Spec::Builders.constantize(name)
-          begin
-            run! "require '#{require_path}.rb'; puts #{version_const}", *groups
-          rescue StandardError => e
-            next "#{name} is not installed:\n#{indent(e)}"
-          end
+          code = []
+          code << "$LOAD_PATH.delete '#{exclude_from_load_path}'" if exclude_from_load_path
+          code << "require '#{require_path}.rb'"
+          code << "puts #{version_const}"
+          run code.join("; "), *groups
           actual_version, actual_platform = out.strip.split(/\s+/, 2)
           unless Gem::Version.new(actual_version) == Gem::Version.new(version)
             next "#{name} was expected to be at version #{version} but was #{actual_version}"
@@ -143,12 +135,8 @@ module Spec
             next "#{name} was expected to be of platform #{platform} but was #{actual_platform}"
           end
           next unless source
-          begin
-            source_const = "#{Spec::Builders.constantize(name)}_SOURCE"
-            run! "require '#{require_path}/source'; puts #{source_const}", *groups
-          rescue StandardError
-            next "#{name} does not have a source defined:\n#{indent(e)}"
-          end
+          source_const = "#{Spec::Builders.constantize(name)}_SOURCE"
+          run "require '#{require_path}/source'; puts #{source_const}", *groups
           unless out.strip == source
             next "Expected #{name} (#{version}) to be installed from `#{source}`, was actually from `#{out}`"
           end
@@ -160,20 +148,17 @@ module Spec
       match_when_negated do
         opts = names.last.is_a?(Hash) ? names.pop : {}
         groups = Array(opts[:groups]) || []
+        opts[:raise_on_error] = false
         @errors = names.map do |name|
           name, version = name.split(/\s+/, 2)
-          begin
-            run <<-R, *(groups + [opts])
-              begin
-                require '#{name}'
-                puts #{Spec::Builders.constantize(name)}
-              rescue LoadError, NameError
-                puts "WIN"
-              end
-            R
-          rescue StandardError => e
-            next "checking for #{name} failed:\n#{e}\n#{e.backtrace.join("\n")}"
-          end
+          run <<-R, *(groups + [opts])
+            begin
+              require '#{name}'
+              puts #{Spec::Builders.constantize(name)}
+            rescue LoadError, NameError
+              puts "WIN"
+            end
+          R
           next if out == "WIN"
           next "expected #{name} to not be installed, but it was" if version.nil?
           if Gem::Version.new(out) == Gem::Version.new(version)

@@ -39,48 +39,40 @@ module Kernel
 
     path = path.to_path if path.respond_to? :to_path
 
-    # Ensure -I beats a default gem
-    # https://github.com/rubygems/rubygems/pull/1868
-    resolved_path = begin
-      rp = nil
-      Gem.suffixes.each do |s|
-        load_path_insert_index = Gem.load_path_insert_index
-        break unless load_path_insert_index
-
-        $LOAD_PATH[0...load_path_insert_index].each do |lp|
-          safe_lp = lp.dup.tap(&Gem::UNTAINT)
-          begin
-            if File.symlink? safe_lp # for backward compatibility
-              next
-            end
-          rescue SecurityError
-            RUBYGEMS_ACTIVATION_MONITOR.exit
-            raise
-          end
-
-          full_path = File.expand_path(File.join(safe_lp, "#{path}#{s}"))
-          if File.file?(full_path)
-            rp = full_path
-            break
-          end
-        end
-        break if rp
-      end
-      rp
-    end
-
-    if resolved_path
-      RUBYGEMS_ACTIVATION_MONITOR.exit
-      return gem_original_require(resolved_path)
-    end
-
     if spec = Gem.find_unresolved_default_spec(path)
+      # Ensure -I beats a default gem
+      resolved_path = begin
+        rp = nil
+        load_path_check_index = Gem.load_path_insert_index - Gem.activated_gem_paths
+        Gem.suffixes.each do |s|
+          $LOAD_PATH[0...load_path_check_index].each do |lp|
+            safe_lp = lp.dup.tap(&Gem::UNTAINT)
+            begin
+              if File.symlink? safe_lp # for backward compatibility
+                next
+              end
+            rescue SecurityError
+              RUBYGEMS_ACTIVATION_MONITOR.exit
+              raise
+            end
+
+            full_path = File.expand_path(File.join(safe_lp, "#{path}#{s}"))
+            if File.file?(full_path)
+              rp = full_path
+              break
+            end
+          end
+          break if rp
+        end
+        rp
+      end
+
       begin
         Kernel.send(:gem, spec.name, Gem::Requirement.default_prerelease)
       rescue Exception
         RUBYGEMS_ACTIVATION_MONITOR.exit
         raise
-      end
+      end unless resolved_path
     end
 
     # If there are no unresolved deps, then we can use just try
@@ -138,7 +130,7 @@ module Kernel
 
       # Ok, now find a gem that has no conflicts, starting
       # at the highest version.
-      valid = found_specs.find { |s| !s.has_conflicts? }
+      valid = found_specs.find {|s| !s.has_conflicts? }
 
       unless valid
         le = Gem::LoadError.new "unable to find a version of '#{names.first}' to activate"
@@ -156,7 +148,7 @@ module Kernel
     RUBYGEMS_ACTIVATION_MONITOR.enter
 
     begin
-      if load_error.message.end_with?(path) and Gem.try_activate(path)
+      if load_error.path == path and Gem.try_activate(path)
         require_again = true
       end
     ensure

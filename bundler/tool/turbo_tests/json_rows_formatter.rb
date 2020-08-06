@@ -22,11 +22,11 @@ module TurboTests
   class JsonRowsFormatter
     RSpec::Core::Formatters.register(
       self,
+      :message,
       :close,
       :example_failed,
       :example_passed,
       :example_pending,
-      :seed
     )
 
     attr_reader :output
@@ -56,10 +56,10 @@ module TurboTests
       )
     end
 
-    def seed(notification)
+    def message(notification)
       output_row(
-        "type" => :seed,
-        "seed" => notification.seed,
+        "type" => :message,
+        "message" => notification.message
       )
     end
 

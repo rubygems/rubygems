@@ -6,27 +6,20 @@ on:
   push:
     branches:
       - master
+      - 3.2
 
 jobs:
   ubuntu_bundler:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        ruby: [ 2.3.8, 2.4.9, 2.5.7, 2.6.5, 2.7.0 ]
-        rgv: [ v2.5.2, v2.6.14, v2.7.10, v3.0.6, v3.1.2, .. ]
+        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
+        bundler: [ '', 3.0.0 ]
         exclude:
-          - { ruby: 2.4.9, rgv: v2.5.2  }
-          - { ruby: 2.5.7, rgv: v2.5.2  }
-          - { ruby: 2.5.7, rgv: v2.6.14 }
-          - { ruby: 2.6.5, rgv: v2.5.2  }
-          - { ruby: 2.6.5, rgv: v2.6.14 }
-          - { ruby: 2.6.5, rgv: v2.7.10 }
-          - { ruby: 2.7.0, rgv: v2.5.2  }
-          - { ruby: 2.7.0, rgv: v2.6.14 }
-          - { ruby: 2.7.0, rgv: v2.7.10 }
-          - { ruby: 2.7.0, rgv: v3.0.6  }
+          - { bundler: 3.0.0, ruby: 2.3.8 }
     env:
-      RGV: ${{ matrix.rgv }}
+      RGV: ..
+      RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby
@@ -34,9 +27,15 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
+      - name: Install graphviz
+        run: sudo apt-get install graphviz -y
+        if: matrix.bundler == ''
+      - name: Replace version
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler }} bin/rake override_version
+        if: matrix.bundler != ''
+        working-directory: ./bundler
       - name: Prepare dependencies
         run: |
-          sudo apt-get install graphviz -y
           bin/rake spec:parallel_deps
         working-directory: ./bundler
       - name: Run Test

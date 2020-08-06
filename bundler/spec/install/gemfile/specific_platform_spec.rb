@@ -57,7 +57,7 @@ RSpec.describe "bundle install with specific_platform enabled" do
     before { simulate_platform "x86_64-darwin-15" }
 
     it "locks to both the specific darwin platform and ruby" do
-      install_gemfile!(google_protobuf)
+      install_gemfile(google_protobuf)
       allow(Bundler::SharedHelpers).to receive(:find_gemfile).and_return(bundled_app_gemfile)
       expect(the_bundle.locked_gems.platforms).to eq([pl("ruby"), pl("x86_64-darwin-15")])
       expect(the_bundle).to include_gem("google-protobuf 3.0.0.alpha.5.0.5.1 universal-darwin")
@@ -69,13 +69,13 @@ RSpec.describe "bundle install with specific_platform enabled" do
 
     it "caches both the universal-darwin and ruby gems when --all-platforms is passed" do
       gemfile(google_protobuf)
-      bundle! "package --all-platforms"
+      bundle "package --all-platforms"
       expect([cached_gem("google-protobuf-3.0.0.alpha.5.0.5.1"), cached_gem("google-protobuf-3.0.0.alpha.5.0.5.1-universal-darwin")]).
         to all(exist)
     end
 
     it "uses the platform-specific gem with extra dependencies" do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "facter"
       G
@@ -94,8 +94,8 @@ RSpec.describe "bundle install with specific_platform enabled" do
       end
 
       it "adds the foreign platform" do
-        install_gemfile!(google_protobuf)
-        bundle! "lock --add-platform=#{x64_mingw}"
+        install_gemfile(google_protobuf)
+        bundle "lock --add-platform=#{x64_mingw}"
 
         expect(the_bundle.locked_gems.platforms).to eq([rb, x64_mingw, pl("x86_64-darwin-15")])
         expect(the_bundle.locked_gems.specs.map(&:full_name)).to eq(%w[
@@ -106,8 +106,8 @@ RSpec.describe "bundle install with specific_platform enabled" do
       end
 
       it "falls back on plain ruby when that version doesnt have a platform-specific gem" do
-        install_gemfile!(google_protobuf)
-        bundle! "lock --add-platform=#{java}"
+        install_gemfile(google_protobuf)
+        bundle "lock --add-platform=#{java}"
 
         expect(the_bundle.locked_gems.platforms).to eq([java, rb, pl("x86_64-darwin-15")])
         expect(the_bundle.locked_gems.specs.map(&:full_name)).to eq(%w[

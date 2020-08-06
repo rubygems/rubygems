@@ -1,0 +1,38 @@
+name: install-rubygems
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
+      - 3.2
+
+jobs:
+  install_rubygems:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1, jruby-9.2.11.1 ]
+        openssl: [true, false]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: none
+      - name: Install rubygems
+        run: ruby -Ilib -S rake install 2> errors.txt
+      - name: Check rubygems install produced no warnings
+        run: test ! -s errors.txt || (cat errors.txt && exit 1)
+      - name: Simulate no openssl
+        run: ruby util/remove_openssl.rb
+        if: matrix.openssl == false
+      - name: Run installed rubygems
+        run: gem list bundler
+      - name: Run bundler installed as a default gem
+        run: bundle --version
+      - name: Check bundler man pages were installed and are properly picked up
+        run: bundle install --help | grep -q BUNDLE-INSTALL
+    timeout-minutes: 10

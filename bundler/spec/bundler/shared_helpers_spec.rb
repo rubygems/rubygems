@@ -163,7 +163,7 @@ RSpec.describe Bundler::SharedHelpers do
     let(:pwd_stub) { nil }
 
     it "returns the current absolute path" do
-      expect(subject.pwd).to eq(root)
+      expect(subject.pwd).to eq(source_root)
     end
   end
 
@@ -242,7 +242,7 @@ RSpec.describe Bundler::SharedHelpers do
     shared_examples_for "ENV['RUBYOPT'] gets set correctly" do
       it "ensures -rbundler/setup is at the beginning of ENV['RUBYOPT']" do
         subject.set_bundle_environment
-        expect(ENV["RUBYOPT"].split(" ")).to start_with("-r#{lib_dir}/bundler/setup")
+        expect(ENV["RUBYOPT"].split(" ")).to start_with("-r#{source_lib_dir}/bundler/setup")
       end
     end
 
@@ -491,30 +491,6 @@ RSpec.describe Bundler::SharedHelpers do
         expect { subject.filesystem_access("/path", &file_op_block) }.to raise_error(
           Bundler::GenericSystemCallError, /error accessing.+underlying.+Shields down/m
         )
-      end
-    end
-  end
-
-  describe "#const_get_safely" do
-    module TargetNamespace
-      VALID_CONSTANT = 1
-    end
-
-    context "when the namespace does have the requested constant" do
-      it "returns the value of the requested constant" do
-        expect(subject.const_get_safely(:VALID_CONSTANT, TargetNamespace)).to eq(1)
-      end
-    end
-
-    context "when the requested constant is passed as a string" do
-      it "returns the value of the requested constant" do
-        expect(subject.const_get_safely("VALID_CONSTANT", TargetNamespace)).to eq(1)
-      end
-    end
-
-    context "when the namespace does not have the requested constant" do
-      it "returns nil" do
-        expect(subject.const_get_safely("INVALID_CONSTANT", TargetNamespace)).to be_nil
       end
     end
   end

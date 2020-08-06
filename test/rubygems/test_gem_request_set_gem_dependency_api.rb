@@ -3,7 +3,6 @@ require 'rubygems/test_case'
 require 'rubygems/request_set'
 
 class TestGemRequestSetGemDependencyAPI < Gem::TestCase
-
   def setup
     super
 
@@ -50,7 +49,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
     end
     @gda.gemspec
     assert_equal %w[ foo bar ].sort, @set.dependencies.map(&:name).sort
-    bar = @set.dependencies.find { |d| d.name == 'bar' }
+    bar = @set.dependencies.find {|d| d.name == 'bar' }
     assert_equal [["<", Gem::Version.create('1.6.4')],
                   [">=", Gem::Version.create('1.6.0')]], bar.requirement.requirements.sort
   end
@@ -490,7 +489,7 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
       groups = @gda.send :gem_group, 'a', :group => :b, :groups => [:c, :d]
     end
 
-    assert_equal [:a, :b, :c, :d], groups.sort_by { |group| group.to_s }
+    assert_equal [:a, :b, :c, :d], groups.sort_by {|group| group.to_s }
   end
 
   def test_gemspec
@@ -845,5 +844,4 @@ end
 
     assert_equal engine_version, RUBY_ENGINE_VERSION if engine
   end
-
 end unless Gem.java_platform?

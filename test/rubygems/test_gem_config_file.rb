@@ -3,9 +3,10 @@ require 'rubygems/test_case'
 require 'rubygems/config_file'
 
 class TestGemConfigFile < Gem::TestCase
-
   def setup
     super
+
+    credential_setup
 
     @temp_conf = File.join @tempdir, '.gemrc'
 
@@ -25,6 +26,8 @@ class TestGemConfigFile < Gem::TestCase
     Gem::ConfigFile::PLATFORM_DEFAULTS.clear
 
     ENV['GEMRC'] = @env_gemrc
+
+    credential_teardown
 
     super
   end
@@ -170,7 +173,7 @@ class TestGemConfigFile < Gem::TestCase
     assert_nil @cfg.instance_variable_get :@api_keys
 
     temp_cred = File.join Gem.user_home, '.gem', 'credentials'
-    FileUtils.mkdir File.dirname(temp_cred)
+    FileUtils.mkdir_p File.dirname(temp_cred)
     File.open temp_cred, 'w', 0600 do |fp|
       fp.puts ':rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97'
     end
@@ -296,7 +299,7 @@ if you believe they were disclosed to a third party.
 
   def test_load_api_keys
     temp_cred = File.join Gem.user_home, '.gem', 'credentials'
-    FileUtils.mkdir File.dirname(temp_cred)
+    FileUtils.mkdir_p File.dirname(temp_cred)
     File.open temp_cred, 'w', 0600 do |fp|
       fp.puts ":rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97"
       fp.puts ":other: a5fdbb6ba150cbb83aad2bb2fede64c"
@@ -488,5 +491,4 @@ if you believe they were disclosed to a third party.
     util_config_file
     assert_equal(true, @cfg.disable_default_gem_server)
   end
-
 end

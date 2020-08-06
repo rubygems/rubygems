@@ -65,7 +65,7 @@ RSpec.describe "bundle install with explicit source paths" do
     username = "some_unexisting_user"
     relative_path = lib_path("foo-1.0").relative_path_from(Pathname.new("/home/#{username}").expand_path)
 
-    install_gemfile <<-G
+    install_gemfile <<-G, :raise_on_error => false
       gem 'foo', :path => "~#{username}/#{relative_path}"
     G
     expect(err).to match("There was an error while trying to use the path `~#{username}/#{relative_path}`.")
@@ -131,8 +131,8 @@ RSpec.describe "bundle install with explicit source paths" do
       gem 'foo', :path => File.expand_path("../foo-1.0", __FILE__)
     G
 
-    bundle! :install, forgotten_command_line_options(:frozen => true)
-    expect(exitstatus).to eq(0) if exitstatus
+    bundle "config --local frozen true"
+    bundle :install
   end
 
   it "installs dependencies from the path even if a newer gem is available elsewhere" do
@@ -184,7 +184,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
     build_lib "omg", "1.0", :path => lib_path("omg")
 
-    bundle! :install, :env => { "BUNDLE_BUNDLE_ONLY_UPDATE_TO_NEWER_VERSIONS" => "true" }
+    bundle :install, :env => { "BUNDLE_BUNDLE_ONLY_UPDATE_TO_NEWER_VERSIONS" => "true" }
 
     expect(the_bundle).to include_gems "omg 1.0"
   end
@@ -222,7 +222,7 @@ RSpec.describe "bundle install with explicit source paths" do
       G
     end
 
-    install_gemfile <<-G
+    install_gemfile <<-G, :raise_on_error => false
       gem "foo", :path => "#{lib_path("foo-1.0")}"
     G
 
@@ -305,11 +305,11 @@ RSpec.describe "bundle install with explicit source paths" do
       s.write "bar.gemspec", build_spec("bar", "1.0").first.to_ruby
     end
 
-    install_gemfile <<-G
+    install_gemfile <<-G, :raise_on_error => false
       gemspec :path => "#{lib_path("foo")}"
     G
 
-    expect(exitstatus).to eq(15) if exitstatus
+    expect(exitstatus).to eq(15)
     expect(err).to match(/There are multiple gemspecs/)
   end
 
@@ -420,7 +420,6 @@ RSpec.describe "bundle install with explicit source paths" do
     install_gemfile <<-G
       gem "bar", "1.0.0", path: "vendor/bar", require: "bar/nyard"
     G
-    expect(exitstatus).to eq(0) if exitstatus
   end
 
   context "existing lockfile" do
@@ -609,7 +608,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
     it "switches the source when the gem existed in rubygems and the path was already being used for another gem" do
       build_lib "foo", "1.0", :path => lib_path("foo")
-      build_gem "bar", "1.0", :to_system => true do |s|
+      build_gem "bar", "1.0", :to_bundle => true do |s|
         s.write "lib/bar.rb", "raise 'fail'"
       end
 
@@ -708,8 +707,7 @@ RSpec.describe "bundle install with explicit source paths" do
         H
       end
 
-      bundle :install,
-        :requires => [lib_path("install_hooks.rb")]
+      bundle :install, :requires => [lib_path("install_hooks.rb")], :raise_on_error => false
       expect(err).to include("failed for foo-1.0")
     end
 
@@ -727,7 +725,7 @@ RSpec.describe "bundle install with explicit source paths" do
         s.write("lib/rubygems_plugin.rb", "FileUtils.touch('#{bar_file}')")
       end
 
-      install_gemfile! <<-G
+      install_gemfile <<-G
         gem "foo", :path => "#{lib_path("foo-1.0")}"
         gem "bar", :path => "#{lib_path("bar-1.0")}"
       G

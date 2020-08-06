@@ -3,16 +3,18 @@ require 'rubygems/test_case'
 require 'rubygems/ext'
 
 class TestGemExtCmakeBuilder < Gem::TestCase
-
   def setup
     super
 
     # Details: https://github.com/rubygems/rubygems/issues/1270#issuecomment-177368340
     skip "CmakeBuilder doesn't work on Windows." if Gem.win_platform?
 
-    _, status = Open3.capture2e('cmake')
-
-    skip 'cmake not present' unless status.success?
+    begin
+      _, status = Open3.capture2e('cmake')
+      skip 'cmake not present' unless status.success?
+    rescue Errno::ENOENT
+      skip 'cmake not present'
+    end
 
     @ext = File.join @tempdir, 'ext'
     @dest_path = File.join @tempdir, 'prefix'
@@ -84,5 +86,4 @@ install (FILES test.txt DESTINATION bin)
     assert_contains_make_command '', output
     assert_contains_make_command 'install', output
   end
-
 end

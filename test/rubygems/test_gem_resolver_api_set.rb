@@ -2,7 +2,6 @@
 require 'rubygems/test_case'
 
 class TestGemResolverAPISet < Gem::TestCase
-
   def setup
     super
 
@@ -40,7 +39,7 @@ class TestGemResolverAPISet < Gem::TestCase
       { :name         => 'a',
         :number       => '1',
         :platform     => 'ruby',
-        :dependencies => [], },
+        :dependencies => [] },
     ]
 
     @fetcher.data["#{@dep_uri}?gems=a"] = Marshal.dump data
@@ -50,7 +49,7 @@ class TestGemResolverAPISet < Gem::TestCase
     a_dep = @DR::DependencyRequest.new dep('a'), nil
 
     expected = [
-      @DR::APISpecification.new(set, data.first)
+      @DR::APISpecification.new(set, data.first),
     ]
 
     assert_equal expected, set.find_all(a_dep)
@@ -63,7 +62,7 @@ class TestGemResolverAPISet < Gem::TestCase
       { :name         => 'a',
         :number       => '1',
         :platform     => 'ruby',
-        :dependencies => [], },
+        :dependencies => [] },
     ]
 
     @fetcher.data["#{@dep_uri}?gems=a"] = Marshal.dump data
@@ -75,7 +74,7 @@ class TestGemResolverAPISet < Gem::TestCase
     set.prefetch [a_dep]
 
     expected = [
-      @DR::APISpecification.new(set, data.first)
+      @DR::APISpecification.new(set, data.first),
     ]
 
     assert_equal expected, set.find_all(a_dep)
@@ -115,7 +114,7 @@ class TestGemResolverAPISet < Gem::TestCase
       { :name         => 'a',
         :number       => '1',
         :platform     => 'ruby',
-        :dependencies => [], },
+        :dependencies => [] },
     ]
 
     @fetcher.data["#{@dep_uri}?gems=a,b"] = Marshal.dump data
@@ -128,7 +127,7 @@ class TestGemResolverAPISet < Gem::TestCase
 
     set.prefetch [a_dep, b_dep]
 
-    assert_equal %w[a-1], set.find_all(a_dep).map { |s| s.full_name }
+    assert_equal %w[a-1], set.find_all(a_dep).map {|s| s.full_name }
     assert_empty          set.find_all(b_dep)
   end
 
@@ -139,7 +138,7 @@ class TestGemResolverAPISet < Gem::TestCase
       { :name         => 'a',
         :number       => '1',
         :platform     => 'ruby',
-        :dependencies => [], },
+        :dependencies => [] },
     ]
 
     @fetcher.data["#{@dep_uri}?gems=a"] = Marshal.dump data
@@ -164,7 +163,7 @@ class TestGemResolverAPISet < Gem::TestCase
       { :name         => 'a',
         :number       => '1',
         :platform     => 'ruby',
-        :dependencies => [], },
+        :dependencies => [] },
     ]
 
     @fetcher.data["#{@dep_uri}?gems=a,b"] = Marshal.dump data
@@ -188,7 +187,7 @@ class TestGemResolverAPISet < Gem::TestCase
       { :name         => 'a',
         :number       => '1',
         :platform     => 'ruby',
-        :dependencies => [], },
+        :dependencies => [] },
     ]
 
     @fetcher.data["#{@dep_uri}?gems=a,b"] = Marshal.dump data
@@ -204,5 +203,4 @@ class TestGemResolverAPISet < Gem::TestCase
 
     assert_empty set.instance_variable_get :@data
   end
-
 end

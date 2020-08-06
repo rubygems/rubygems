@@ -2,7 +2,6 @@
 require 'rubygems/test_case'
 
 class TestGemResolverVendorSet < Gem::TestCase
-
   def setup
     super
 
@@ -52,7 +51,7 @@ class TestGemResolverVendorSet < Gem::TestCase
     source = Gem::Source::Vendor.new directory
 
     expected = [
-      Gem::Resolver::VendorSpecification.new(@set, spec, source)
+      Gem::Resolver::VendorSpecification.new(@set, spec, source),
     ]
 
     assert_equal expected, found
@@ -79,5 +78,4 @@ class TestGemResolverVendorSet < Gem::TestCase
       @set.load_spec 'b', v(1), Gem::Platform::RUBY, nil
     end
   end
-
 end

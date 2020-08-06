@@ -1,11 +1,9 @@
-# coding: utf-8
 # frozen_string_literal: true
 
 require 'rubygems/package/tar_test_case'
 require 'digest'
 
 class TestGemPackage < Gem::Package::TarTestCase
-
   def setup
     super
 
@@ -93,15 +91,12 @@ class TestGemPackage < Gem::Package::TarTestCase
       'SHA512' => {
         'metadata.gz' => metadata_sha512,
         'data.tar.gz' => Digest::SHA512.hexdigest(tar),
-      }
-    }
-
-    if defined?(OpenSSL::Digest)
-      expected['SHA256'] = {
+      },
+      'SHA256' => {
         'metadata.gz' => metadata_sha256,
         'data.tar.gz' => Digest::SHA256.hexdigest(tar),
-      }
-    end
+      },
+    }
 
     assert_equal expected, YAML.load(checksums)
   end
@@ -443,7 +438,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_raw_spec
-    data_tgz = util_tar_gz { }
+    data_tgz = util_tar_gz {}
 
     gem = util_tar do |tar|
       tar.add_file 'data.tar.gz', 0644 do |io|
@@ -490,7 +485,7 @@ class TestGemPackage < Gem::Package::TarTestCase
   end
 
   def test_extract_files_empty
-    data_tgz = util_tar_gz { }
+    data_tgz = util_tar_gz {}
 
     gem = util_tar do |tar|
       tar.add_file 'data.tar.gz', 0644 do |io|
@@ -605,6 +600,8 @@ class TestGemPackage < Gem::Package::TarTestCase
     destination_user_dir = File.join @destination, 'user'
     destination_user_subdir = File.join destination_user_dir, 'dir'
     FileUtils.mkdir_p destination_user_subdir
+
+    skip "TMPDIR seems too long to add it as symlink into tar" if destination_user_dir.size > 90
 
     tgz_io = util_tar_gz do |tar|
       tar.add_symlink 'link', destination_user_dir, 16877
@@ -1018,7 +1015,7 @@ class TestGemPackage < Gem::Package::TarTestCase
         bogus_data = Gem::Util.gzip 'hello'
         fake_signer = Class.new do
           def digest_name; 'SHA512'; end
-          def digest_algorithm; Digest(:SHA512); end
+          def digest_algorithm; Digest(:SHA512).new; end
           def key; 'key'; end
           def sign(*); 'fake_sig'; end
         end
@@ -1068,11 +1065,22 @@ class TestGemPackage < Gem::Package::TarTestCase
 
     package = Gem::Package.new @gem
 
-    e = assert_raises Gem::Package::FormatError do
-      package.verify_entry entry
+    _, err = use_ui @ui do
+      e = nil
+
+      out_err = capture_io do
+        e = assert_raises ArgumentError do
+          package.verify_entry entry
+        end
+      end
+
+      assert_equal "whatever", e.message
+      assert_equal "full_name", e.backtrace_locations.first.label
+
+      out_err
     end
 
-    assert_equal "package is corrupt, exception while verifying: whatever (ArgumentError) in #{@gem}", e.message
+    assert_equal "Exception while verifying #{@gem}\n", err
 
     valid_metadata = ["metadata", "metadata.gz"]
     valid_metadata.each do |vm|
@@ -1161,5 +1169,4 @@ class TestGemPackage < Gem::Package::TarTestCase
 
     StringIO.new tgz_io.string
   end
-
 end

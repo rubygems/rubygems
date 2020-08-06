@@ -56,7 +56,7 @@ RSpec.describe "bundle cache" do
           D
 
           bundle "config set cache_all true"
-          bundle! :cache
+          bundle :cache
 
           expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
           expect(bundled_app("vendor/cache/nokogiri-1.4.2.gem")).to exist
@@ -88,7 +88,7 @@ RSpec.describe "bundle cache" do
           D
 
           bundle "config set cache_all true"
-          bundle! :cache
+          bundle :cache
 
           expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
           expect(bundled_app("vendor/cache/nokogiri-1.4.2.gem")).to exist
@@ -133,7 +133,7 @@ RSpec.describe "bundle cache" do
         D
 
         bundle "config set cache_all true"
-        bundle! :cache
+        bundle :cache
 
         expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
         expect(bundled_app("vendor/cache/nokogiri-1.4.2.gem")).to exist
@@ -152,7 +152,7 @@ RSpec.describe "bundle cache" do
         gem 'rack'
       D
 
-      bundle! :cache, forgotten_command_line_options(:path => bundled_app("test"))
+      bundle "cache --path #{bundled_app("test")}"
 
       expect(the_bundle).to include_gems "rack 1.0.0"
       expect(bundled_app("test/vendor/cache/")).to exist
@@ -166,7 +166,7 @@ RSpec.describe "bundle cache" do
         gem 'rack'
       D
 
-      bundle! "cache --no-install"
+      bundle "cache --no-install"
 
       expect(the_bundle).not_to include_gems "rack 1.0.0"
       expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
@@ -178,8 +178,8 @@ RSpec.describe "bundle cache" do
         gem 'rack'
       D
 
-      bundle! "cache --no-install"
-      bundle! "install"
+      bundle "cache --no-install"
+      bundle "install"
 
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
@@ -190,8 +190,8 @@ RSpec.describe "bundle cache" do
         gem "rack", "1.0.0"
       D
 
-      bundle! "cache --no-install"
-      bundle! "update --all"
+      bundle "cache --no-install"
+      bundle "update --all"
 
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
@@ -221,7 +221,8 @@ RSpec.describe "bundle cache" do
         end
       end
 
-      install_gemfile! <<-G, forgotten_command_line_options(:without => "wo")
+      bundle "config --local without wo"
+      install_gemfile <<-G
         source "file:#{gem_repo1}"
         gem "rack"
         group :wo do
@@ -230,19 +231,20 @@ RSpec.describe "bundle cache" do
         end
       G
 
-      bundle! :cache, "all-platforms" => true
+      bundle :cache, "all-platforms" => true
       expect(bundled_app("vendor/cache/weakling-0.0.3.gem")).to exist
       expect(bundled_app("vendor/cache/uninstallable-2.0.gem")).to exist
       expect(the_bundle).to include_gem "rack 1.0"
       expect(the_bundle).not_to include_gems "weakling", "uninstallable"
 
-      bundle! :install, forgotten_command_line_options(:without => "wo")
+      bundle "config --local without wo"
+      bundle :install
       expect(the_bundle).to include_gem "rack 1.0"
       expect(the_bundle).not_to include_gems "weakling", "uninstallable"
     end
   end
 
-  context "with --frozen" do
+  context "with frozen configured" do
     before do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -251,17 +253,20 @@ RSpec.describe "bundle cache" do
       bundle "install"
     end
 
-    subject { bundle :cache, forgotten_command_line_options(:frozen => true) }
+    subject do
+      bundle "config --local frozen true"
+      bundle :cache, :raise_on_error => false
+    end
 
     it "tries to install with frozen" do
-      bundle! "config set deployment true"
+      bundle "config set deployment true"
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
         gem "rack-obama"
       G
       subject
-      expect(exitstatus).to eq(16) if exitstatus
+      expect(exitstatus).to eq(16)
       expect(err).to include("deployment mode")
       expect(err).to include("You have added to the Gemfile")
       expect(err).to include("* rack-obama")
@@ -290,16 +295,18 @@ RSpec.describe "bundle install with gem sources" do
 
     it "does not hit the remote at all" do
       build_repo2
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "rack"
       G
 
-      bundle! :cache
+      bundle :cache
       simulate_new_machine
       FileUtils.rm_rf gem_repo2
 
-      bundle! :install, forgotten_command_line_options(:deployment => true, :path => "vendor/bundle")
+      bundle "config --local deployment true"
+      bundle "config --local path vendor/bundle"
+      bundle :install
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
 

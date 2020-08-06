@@ -5,7 +5,7 @@ RSpec.describe "major deprecations" do
 
   describe "Bundler" do
     before do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G
@@ -94,7 +94,7 @@ RSpec.describe "major deprecations" do
 
   describe "bundle update --quiet" do
     it "does not print any deprecations" do
-      bundle :update, :quiet => true
+      bundle :update, :quiet => true, :raise_on_error => false
       expect(deprecations).to be_empty
     end
   end
@@ -106,7 +106,29 @@ RSpec.describe "major deprecations" do
         gem "rack"
       G
 
-      bundle "check --path vendor/bundle"
+      bundle "check --path vendor/bundle", :raise_on_error => false
+    end
+
+    it "should print a deprecation warning", :bundler => "2" do
+      expect(deprecations).to include(
+        "The `--path` flag is deprecated because it relies on being " \
+        "remembered across bundler invocations, which bundler will no " \
+        "longer do in future versions. Instead please use `bundle config set " \
+        "path 'vendor/bundle'`, and stop using this flag"
+      )
+    end
+
+    pending "should fail with a helpful error", :bundler => "3"
+  end
+
+  context "bundle check --path=" do
+    before do
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        gem "rack"
+      G
+
+      bundle "check --path=vendor/bundle", :raise_on_error => false
     end
 
     it "should print a deprecation warning", :bundler => "2" do
@@ -124,7 +146,7 @@ RSpec.describe "major deprecations" do
   describe "bundle config" do
     describe "old list interface" do
       before do
-        bundle! "config"
+        bundle "config"
       end
 
       it "warns", :bundler => "3" do
@@ -136,7 +158,7 @@ RSpec.describe "major deprecations" do
 
     describe "old get interface" do
       before do
-        bundle! "config waka"
+        bundle "config waka"
       end
 
       it "warns", :bundler => "3" do
@@ -148,7 +170,7 @@ RSpec.describe "major deprecations" do
 
     describe "old set interface" do
       before do
-        bundle! "config waka wakapun"
+        bundle "config waka wakapun"
       end
 
       it "warns", :bundler => "3" do
@@ -160,7 +182,7 @@ RSpec.describe "major deprecations" do
 
     describe "old set interface with --local" do
       before do
-        bundle! "config --local waka wakapun"
+        bundle "config --local waka wakapun"
       end
 
       it "warns", :bundler => "3" do
@@ -172,7 +194,7 @@ RSpec.describe "major deprecations" do
 
     describe "old set interface with --global" do
       before do
-        bundle! "config --global waka wakapun"
+        bundle "config --global waka wakapun"
       end
 
       it "warns", :bundler => "3" do
@@ -184,7 +206,7 @@ RSpec.describe "major deprecations" do
 
     describe "old unset interface" do
       before do
-        bundle! "config --delete waka"
+        bundle "config --delete waka"
       end
 
       it "warns", :bundler => "3" do
@@ -196,7 +218,7 @@ RSpec.describe "major deprecations" do
 
     describe "old unset interface with --local" do
       before do
-        bundle! "config --delete --local waka"
+        bundle "config --delete --local waka"
       end
 
       it "warns", :bundler => "3" do
@@ -208,7 +230,7 @@ RSpec.describe "major deprecations" do
 
     describe "old unset interface with --global" do
       before do
-        bundle! "config --delete --global waka"
+        bundle "config --delete --global waka"
       end
 
       it "warns", :bundler => "3" do
@@ -228,14 +250,14 @@ RSpec.describe "major deprecations" do
     end
 
     it "warns when no options are given", :bundler => "3" do
-      bundle! "update"
+      bundle "update"
       expect(deprecations).to include("Pass --all to `bundle update` to update everything")
     end
 
     pending "fails with a helpful error when no options are given", :bundler => "3"
 
     it "does not warn when --all is passed" do
-      bundle! "update --all"
+      bundle "update --all"
       expect(deprecations).to be_empty
     end
   end
@@ -268,7 +290,7 @@ RSpec.describe "major deprecations" do
 
     it "should print a proper warning, and use gems.rb" do
       create_file "gems.rb"
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G
@@ -292,17 +314,18 @@ RSpec.describe "major deprecations" do
     end
 
     {
-      :clean => true,
-      :deployment => true,
-      :frozen => true,
-      :"no-cache" => true,
-      :"no-prune" => true,
-      :path => "vendor/bundle",
-      :shebang => "ruby27",
-      :system => true,
-      :without => "development",
-      :with => "development",
-    }.each do |name, value|
+      "clean" => ["clean", true],
+      "deployment" => ["deployment", true],
+      "frozen" => ["frozen", true],
+      "no-deployment" => ["deployment", false],
+      "no-prune" => ["no_prune", true],
+      "path" => ["path", "vendor/bundle"],
+      "shebang" => ["shebang", "ruby27"],
+      "system" => ["system", true],
+      "without" => ["without", "development"],
+      "with" => ["with", "development"],
+    }.each do |name, expectations|
+      option_name, value = *expectations
       flag_name = "--#{name}"
 
       context "with the #{flag_name} flag" do
@@ -316,7 +339,7 @@ RSpec.describe "major deprecations" do
             "The `#{flag_name}` flag is deprecated because it relies on " \
             "being remembered across bundler invocations, which bundler " \
             "will no longer do in future versions. Instead please use " \
-            "`bundle config set #{name} '#{value}'`, and stop using this flag"
+            "`bundle config set #{option_name} '#{value}'`, and stop using this flag"
           )
         end
 
@@ -350,7 +373,7 @@ RSpec.describe "major deprecations" do
   context "when Bundler.setup is run in a ruby script" do
     before do
       create_file "gems.rb"
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack", :group => :test
       G
@@ -372,7 +395,7 @@ RSpec.describe "major deprecations" do
 
   context "when `bundler/deployment` is required in a ruby script" do
     before do
-      ruby(<<-RUBY)
+      ruby(<<-RUBY, :env => env_for_missing_prerelease_default_gem_activation)
         require 'bundler/deployment'
       RUBY
     end
@@ -394,25 +417,34 @@ RSpec.describe "major deprecations" do
     end
 
     context "with github gems" do
-      it "warns about removal", :bundler => "2" do
+      it "does not warn about removal", :bundler => "2" do
+        expect(Bundler.ui).not_to receive(:warn)
+        subject.gem("sparks", :github => "indirect/sparks")
+        github_uri = "https://github.com/indirect/sparks.git"
+        expect(subject.dependencies.first.source.uri).to eq(github_uri)
+      end
+
+      it "warns about removal", :bundler => "3" do
         msg = <<-EOS
 The :github git source is deprecated, and will be removed in the future. Change any "reponame" :github sources to "username/reponame". Add this code to the top of your Gemfile to ensure it continues to work:
 
     git_source(:github) {|repo_name| "https://github.com/\#{repo_name}.git" }
 
         EOS
-        expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(3, msg)
+        expect(Bundler.ui).to receive(:warn).with("[DEPRECATED] #{msg}")
         subject.gem("sparks", :github => "indirect/sparks")
         github_uri = "https://github.com/indirect/sparks.git"
         expect(subject.dependencies.first.source.uri).to eq(github_uri)
       end
-
-      pending "should fail with a helpful error", :bundler => "3"
     end
 
     context "with bitbucket gems" do
-      it "warns about removal", :bundler => "2" do
-        allow(Bundler.ui).to receive(:deprecate)
+      it "does not warn about removal", :bundler => "2" do
+        expect(Bundler.ui).not_to receive(:warn)
+        subject.gem("not-really-a-gem", :bitbucket => "mcorp/flatlab-rails")
+      end
+
+      it "warns about removal", :bundler => "3" do
         msg = <<-EOS
 The :bitbucket git source is deprecated, and will be removed in the future. Add this code to the top of your Gemfile to ensure it continues to work:
 
@@ -423,33 +455,33 @@ The :bitbucket git source is deprecated, and will be removed in the future. Add 
     end
 
         EOS
-        expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(3, msg)
+        expect(Bundler.ui).to receive(:warn).with("[DEPRECATED] #{msg}")
         subject.gem("not-really-a-gem", :bitbucket => "mcorp/flatlab-rails")
       end
-
-      pending "should fail with a helpful error", :bundler => "3"
     end
 
     context "with gist gems" do
-      it "warns about removal", :bundler => "2" do
-        allow(Bundler.ui).to receive(:deprecate)
+      it "does not warn about removal", :bundler => "2" do
+        expect(Bundler.ui).not_to receive(:warn)
+        subject.gem("not-really-a-gem", :gist => "1234")
+      end
+
+      it "warns about removal", :bundler => "3" do
         msg = <<-EOS
 The :gist git source is deprecated, and will be removed in the future. Add this code to the top of your Gemfile to ensure it continues to work:
 
     git_source(:gist) {|repo_name| "https://gist.github.com/\#{repo_name}.git" }
 
         EOS
-        expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(3, msg)
+        expect(Bundler.ui).to receive(:warn).with("[DEPRECATED] #{msg}")
         subject.gem("not-really-a-gem", :gist => "1234")
       end
-
-      pending "should fail with a helpful error", :bundler => "3"
     end
   end
 
   context "bundle show" do
     before do
-      install_gemfile! <<-G
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G
@@ -457,7 +489,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
     context "without flags" do
       before do
-        bundle! :show
+        bundle :show
       end
 
       it "prints a deprecation warning recommending `bundle list`", :bundler => "2" do
@@ -469,7 +501,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
     context "with --outdated flag" do
       before do
-        bundle! "show --outdated"
+        bundle "show --outdated"
       end
 
       it "prints a deprecation warning informing about its removal", :bundler => "2" do
@@ -481,7 +513,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
     context "with --verbose flag" do
       before do
-        bundle! "show --verbose"
+        bundle "show --verbose"
       end
 
       it "prints a deprecation warning informing about its removal", :bundler => "2" do
@@ -493,7 +525,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
     context "with a gem argument" do
       before do
-        bundle! "show rack"
+        bundle "show rack"
       end
 
       it "prints a deprecation warning recommending `bundle info`", :bundler => "2" do
@@ -530,7 +562,7 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
   context "bundle console" do
     before do
-      bundle "console"
+      bundle "console", :raise_on_error => false
     end
 
     it "prints a deprecation warning", :bundler => "2" do
@@ -542,13 +574,9 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
   end
 
   context "bundle viz" do
-    let(:ruby_graphviz) do
-      graphviz_glob = base_system_gems.join("cache/ruby-graphviz*")
-      Pathname.glob(graphviz_glob).first
-    end
-
     before do
-      system_gems ruby_graphviz
+      graphviz_version = RUBY_VERSION >= "2.4" ? "1.2.5" : "1.2.4"
+      realworld_system_gems "ruby-graphviz --version #{graphviz_version}"
       create_file "gems.rb"
       bundle "viz"
     end

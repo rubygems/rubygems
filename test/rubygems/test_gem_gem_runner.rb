@@ -2,13 +2,13 @@
 require 'rubygems/test_case'
 
 class TestGemGemRunner < Gem::TestCase
-
   def setup
     super
 
     require 'rubygems/command'
     @orig_args = Gem::Command.build_args
     @orig_specific_extra_args = Gem::Command.specific_extra_args_hash.dup
+    @orig_extra_args = Gem::Command.extra_args.dup
 
     require 'rubygems/gem_runner'
     @runner = Gem::GemRunner.new
@@ -19,6 +19,7 @@ class TestGemGemRunner < Gem::TestCase
 
     Gem::Command.build_args = @orig_args
     Gem::Command.specific_extra_args_hash = @orig_specific_extra_args
+    Gem::Command.extra_args = @orig_extra_args
   end
 
   def test_do_configuration
@@ -108,5 +109,4 @@ class TestGemGemRunner < Gem::TestCase
 
     assert_empty @ui.error
   end
-
 end

@@ -621,7 +621,7 @@ EOF
       @rubygems = nil
     end
 
-  private
+    private
 
     def eval_yaml_gemspec(path, contents)
       require_relative "bundler/psyched_yaml"

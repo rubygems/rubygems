@@ -140,7 +140,7 @@ module Bundler
           end
         end
 
-      private
+        private
 
         def git_null(command, dir: SharedHelpers.pwd)
           check_allowed(command)

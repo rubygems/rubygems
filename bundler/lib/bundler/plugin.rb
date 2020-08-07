@@ -16,7 +16,7 @@ module Bundler
 
     PLUGIN_FILE_NAME = "plugins.rb".freeze
 
-  module_function
+    module_function
 
     def reset!
       instance_variables.each {|i| remove_instance_variable(i) }

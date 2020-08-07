@@ -220,7 +220,6 @@ Lint/Void:
 
 Layout/AccessModifierIndentation:
   Enabled: true
-  EnforcedStyle: outdent
 
 Layout/ArrayAlignment:
   Enabled: true

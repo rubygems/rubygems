@@ -21,7 +21,7 @@ module Bundler
       end
     end
 
-  private
+    private
 
     def paths
       @specs.map do |spec|

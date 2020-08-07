@@ -216,7 +216,7 @@ module Bundler
       "#<#{self.class}:0x#{object_id} uri=#{uri}>"
     end
 
-  private
+    private
 
     FETCHERS = [CompactIndex, Dependency, Index].freeze
 
@@ -303,7 +303,7 @@ module Bundler
       store
     end
 
-  private
+    private
 
     def remote_uri
       @remote.uri

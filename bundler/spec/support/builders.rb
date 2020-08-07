@@ -461,7 +461,7 @@ module Spec
       build_with(PluginBuilder, name, args, &blk)
     end
 
-  private
+    private
 
     def build_with(builder, name, args, &blk)
       @_build_path ||= nil

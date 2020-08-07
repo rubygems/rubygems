@@ -26,7 +26,7 @@ module Spec
       replace_build_metadata(build_metadata, dir: dir) # rubocop:disable Style/HashSyntax
     end
 
-  private
+    private
 
     def replace_build_metadata(build_metadata, dir:)
       build_metadata_file = File.expand_path("lib/bundler/build_metadata.rb", dir)

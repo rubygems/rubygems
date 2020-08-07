@@ -58,7 +58,7 @@ module TurboTests
       @reporter.failed_examples.empty?
     end
 
-  protected
+    protected
 
     def start_regular_subprocess(tests, process_id)
       start_subprocess(

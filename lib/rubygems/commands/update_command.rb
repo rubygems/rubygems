@@ -74,6 +74,13 @@ command to remove old versions.
     end
   end
 
+  def check_oldest_rubygems(version) # :nodoc:
+    if oldest_supported_version > version
+      alert_error "rubygems #{version} is not supported. The oldest supported version is #{oldest_supported_version}"
+      terminate_interaction 1
+    end
+  end
+
   def check_update_arguments # :nodoc:
     unless options[:args].empty?
       alert_error "Gem names are not allowed with the --system option"
@@ -272,6 +279,8 @@ command to remove old versions.
 
     check_latest_rubygems version
 
+    check_oldest_rubygems version
+
     update_gem 'rubygems-update', version
 
     installed_gems = Gem::Specification.find_all_by_name 'rubygems-update', requirement
@@ -309,5 +318,12 @@ command to remove old versions.
     end
 
     result
+  end
+
+  private
+
+  def oldest_supported_version
+    # for Ruby 2.3
+    @oldest_supported_version ||= Gem::Version.new("2.5.2")
   end
 end

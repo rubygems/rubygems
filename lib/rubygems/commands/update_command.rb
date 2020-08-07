@@ -10,7 +10,6 @@ require 'rubygems/install_message' # must come before rdoc for messaging
 require 'rubygems/rdoc'
 
 class Gem::Commands::UpdateCommand < Gem::Command
-
   include Gem::InstallUpdateOptions
   include Gem::LocalRemoteOptions
   include Gem::VersionOption
@@ -72,6 +71,13 @@ command to remove old versions.
     if Gem.rubygems_version == version
       say "Latest version already installed. Done."
       terminate_interaction
+    end
+  end
+
+  def check_oldest_rubygems(version) # :nodoc:
+    if oldest_supported_version > version
+      alert_error "rubygems #{version} is not supported. The oldest supported version is #{oldest_supported_version}"
+      terminate_interaction 1
     end
   end
 
@@ -215,7 +221,7 @@ command to remove old versions.
     rubygems_update.version = version
 
     hig = {
-      'rubygems-update' => rubygems_update
+      'rubygems-update' => rubygems_update,
     }
 
     gems_to_update = which_to_update hig, options[:args], :system
@@ -273,6 +279,8 @@ command to remove old versions.
 
     check_latest_rubygems version
 
+    check_oldest_rubygems version
+
     update_gem 'rubygems-update', version
 
     installed_gems = Gem::Specification.find_all_by_name 'rubygems-update', requirement
@@ -312,4 +320,10 @@ command to remove old versions.
     result
   end
 
+  private
+
+  def oldest_supported_version
+    # for Ruby 2.3
+    @oldest_supported_version ||= Gem::Version.new("2.5.2")
+  end
 end

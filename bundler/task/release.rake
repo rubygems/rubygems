@@ -86,7 +86,7 @@ namespace :release do
       relevant_pull_requests_for(pr_ids)
     end
 
-  private
+    private
 
     def group_by_labels(pulls)
       grouped_pulls = pulls.group_by do |pull|

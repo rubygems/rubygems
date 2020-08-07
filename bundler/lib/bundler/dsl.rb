@@ -279,7 +279,7 @@ module Bundler
       raise GemfileError, "Undefined local variable or method `#{name}' for Gemfile"
     end
 
-  private
+    private
 
     def add_git_sources
       git_source(:github) do |repo_name|
@@ -567,7 +567,7 @@ The :#{name} git source is deprecated, and will be removed in the future.#{addit
         end
       end
 
-    private
+      private
 
       def parse_line_number_from_description
         description = self.description

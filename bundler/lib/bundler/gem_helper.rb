@@ -100,7 +100,7 @@ module Bundler
       Bundler.ui.confirm "#{name} (#{version}) installed."
     end
 
-  protected
+    protected
 
     def rubygem_push(path)
       cmd = [*gem_command, "push", path]

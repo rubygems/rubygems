@@ -250,7 +250,7 @@ module Bundler
       ["00", *platform.to_a.map {|part| part || "" }]
     end
 
-  private
+    private
 
     # returns an integer \in (-\infty, 0]
     # a number closer to 0 means the dependency is less constraining

@@ -116,7 +116,7 @@ module Bundler
       @rubygems_aggregate.remotes
     end
 
-  private
+    private
 
     def rubygems_aggregate_class
       Source::Rubygems

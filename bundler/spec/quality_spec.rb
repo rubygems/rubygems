@@ -261,7 +261,7 @@ RSpec.describe "The library itself" do
     expect(all_bad_requires).to be_empty, "#{all_bad_requires.size} internal requires that should use `require_relative`: #{all_bad_requires}"
   end
 
-private
+  private
 
   def each_line(filename, &block)
     File.readlines(filename, :encoding => "UTF-8").each_with_index(&block)

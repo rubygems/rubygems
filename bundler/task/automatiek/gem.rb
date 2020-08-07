@@ -101,7 +101,7 @@ module Automatiek
       FileUtils.rm_r files
     end
 
-  private
+    private
 
     def process(files, regex, replacement = "")
       files.each do |file|

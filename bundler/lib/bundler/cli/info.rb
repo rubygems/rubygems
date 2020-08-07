@@ -22,7 +22,7 @@ module Bundler
       end
     end
 
-  private
+    private
 
     def spec_for_gem(gem_name)
       spec = Bundler.definition.specs.find {|s| s.name == gem_name }

@@ -34,7 +34,7 @@ module Bundler
       end
     end
 
-  private
+    private
 
     def validate_bundler_checksum(checksum)
       return true if Bundler.settings[:disable_checksum_validation]

@@ -24,7 +24,7 @@ module Bundler
       end
     end
 
-  private
+    private
 
     def install
       require_relative "install"

@@ -20,7 +20,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
   def initialize
     options = {
-      :force    => false
+      :force => false,
     }
 
     options.merge!(install_update_options)

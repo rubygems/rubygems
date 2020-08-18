@@ -27,6 +27,8 @@ class Gem::Commands::InstallCommand < Gem::Command
       :without_groups    => [],
     })
 
+    defaults.merge!(install_update_options)
+
     super 'install', 'Install a gem into the local repository', defaults
 
     add_install_update_options

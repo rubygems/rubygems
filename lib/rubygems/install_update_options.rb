@@ -181,7 +181,17 @@ module Gem::InstallUpdateOptions
   end
 
   ##
-  # Default options for the gem install command.
+  # Default options for the gem install and update commands.
+
+  def install_update_options
+    {
+      :document => %w[ri],
+      :wrappers => true,
+    }
+  end
+
+  ##
+  # Default description for the gem install and update commands.
 
   def install_update_defaults_str
     '--document=ri --wrappers'

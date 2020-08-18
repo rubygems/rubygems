@@ -20,9 +20,10 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
   def initialize
     options = {
-      :document => %w[ri],
       :force    => false
     }
+
+    options.merge!(install_update_options)
 
     super 'update', 'Update installed gems to the latest version', options
 

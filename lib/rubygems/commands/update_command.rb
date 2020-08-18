@@ -20,7 +20,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
   def initialize
     options = {
-      :document => %w[rdoc ri],
+      :document => %w[ri],
       :force    => false
     }
 

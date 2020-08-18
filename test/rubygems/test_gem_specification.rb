@@ -2557,11 +2557,11 @@ Gem::Specification.new do |s|
   if s.respond_to? :add_runtime_dependency then
     s.add_runtime_dependency(%q<rake>.freeze, [\"> 0.4\"])
     s.add_runtime_dependency(%q<jabber4r>.freeze, [\"> 0.0.0\"])
-    s.add_runtime_dependency(%q<pqa>.freeze, [\"> 0.4\", \"<= 0.6\"])
+    s.add_runtime_dependency(%q<pqa>.freeze, [\"<= 0.6\", \"> 0.4\"])
   else
     s.add_dependency(%q<rake>.freeze, [\"> 0.4\"])
     s.add_dependency(%q<jabber4r>.freeze, [\"> 0.0.0\"])
-    s.add_dependency(%q<pqa>.freeze, [\"> 0.4\", \"<= 0.6\"])
+    s.add_dependency(%q<pqa>.freeze, [\"<= 0.6\", \"> 0.4\"])
   end
 end
     SPEC
@@ -2578,7 +2578,7 @@ end
       s.add_dependency 'b', ['~> 1.0', '>= 1.0.0']
     end
 
-    assert_includes spec.to_ruby, '"~> 1.0", ">= 1.0.0"'
+    assert_includes spec.to_ruby, '">= 1.0.0", "~> 1.0"'
   end
 
   def test_to_ruby_legacy

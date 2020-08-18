@@ -131,6 +131,7 @@ class Gem::Requirement
     requirements = requirements.flatten
     requirements.compact!
     requirements.uniq!
+    requirements.sort!
 
     if requirements.empty?
       @requirements = [DefaultRequirement]

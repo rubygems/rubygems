@@ -186,7 +186,6 @@ module Gem::InstallUpdateOptions
   def install_update_options
     {
       :document => %w[ri],
-      :wrappers => true,
     }
   end
 
@@ -194,7 +193,7 @@ module Gem::InstallUpdateOptions
   # Default description for the gem install and update commands.
 
   def install_update_defaults_str
-    '--document=ri --wrappers'
+    '--document=ri'
   end
 
 end

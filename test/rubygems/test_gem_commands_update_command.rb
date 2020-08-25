@@ -554,7 +554,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
       :args     => [],
       :document => %w[ri],
       :force    => false,
-      :wrappers => true,
       :system   => true,
     }
 
@@ -574,7 +573,6 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
       :args     => [],
       :document => %w[ri],
       :force    => false,
-      :wrappers => true,
       :system   => "1.3.7",
     }
 

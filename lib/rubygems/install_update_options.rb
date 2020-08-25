@@ -184,7 +184,7 @@ module Gem::InstallUpdateOptions
   # Default options for the gem install command.
 
   def install_update_defaults_str
-    '--document=rdoc,ri --wrappers'
+    '--document=rdoc,ri --wrappers --conservative'
   end
 
 end

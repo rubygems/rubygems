@@ -362,7 +362,6 @@ class Gem::TestCase < Minitest::Test
     Gem.send :remove_instance_variable, :@ruby_version if
       Gem.instance_variables.include? :@ruby_version
 
-    FileUtils.mkdir_p @gemhome
     FileUtils.mkdir_p @userhome
 
     ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = PRIVATE_KEY_PASSPHRASE

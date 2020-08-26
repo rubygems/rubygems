@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Gem::UnknownCommandSpellChecker
-
   attr_reader :error
 
   def initialize(error)
@@ -19,5 +18,4 @@ class Gem::UnknownCommandSpellChecker
     dictionary = Gem::CommandManager.instance.command_names
     DidYouMean::SpellChecker.new(dictionary: dictionary)
   end
-
 end

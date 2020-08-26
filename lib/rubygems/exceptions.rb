@@ -11,7 +11,6 @@ class Gem::Exception < RuntimeError; end
 class Gem::CommandLineError < Gem::Exception; end
 
 class Gem::UnknownCommandError < Gem::Exception
-
   attr_reader :unknown_command
 
   def initialize(unknown_command)
@@ -33,7 +32,6 @@ class Gem::UnknownCommandError < Gem::Exception
 
     @attached = true
   end
-
 end
 
 class Gem::DependencyError < Gem::Exception; end

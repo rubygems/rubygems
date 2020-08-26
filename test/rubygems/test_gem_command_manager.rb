@@ -265,7 +265,7 @@ class TestGemCommandManager < Gem::TestCase
 
     #check defaults
     @command_manager.process_args %w[update]
-    assert_includes check_options[:document], 'rdoc'
+    assert_includes check_options[:document], 'ri'
 
     #check settings
     check_options = nil

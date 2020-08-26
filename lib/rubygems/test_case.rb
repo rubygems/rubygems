@@ -337,6 +337,7 @@ class Gem::TestCase < Minitest::Test
     @git = ENV['GIT'] || (win_platform? ? 'git.exe' : 'git')
 
     Gem.ensure_gem_subdirectories @gemhome
+    Gem.ensure_default_gem_subdirectories @gemhome
 
     @orig_LOAD_PATH = $LOAD_PATH.dup
     $LOAD_PATH.map! do |s|
@@ -373,7 +374,6 @@ class Gem::TestCase < Minitest::Test
     else
       Gem.instance_variable_set(:@default_dir, @gemhome)
     end
-    FileUtils.mkdir_p @default_spec_dir
 
     @orig_bindir = RbConfig::CONFIG["bindir"]
     RbConfig::CONFIG["bindir"] = File.join @gemhome, "bin"

@@ -380,8 +380,6 @@ class Gem::TestCase < Minitest::Test
     Gem::Specification.unresolved_deps.clear
     Gem.use_paths(@gemhome)
 
-    Gem::Security.reset
-
     Gem.loaded_specs.clear
     Gem.instance_variable_set(:@activated_gem_paths, 0)
     Gem.clear_default_specs

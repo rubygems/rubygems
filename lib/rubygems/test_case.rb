@@ -367,7 +367,6 @@ class Gem::TestCase < Minitest::Test
 
     ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = PRIVATE_KEY_PASSPHRASE
 
-    @default_spec_dir = File.join @gemhome, "specifications", "default"
     if Gem.java_platform?
       @orig_default_gem_home = RbConfig::CONFIG['default_gem_home']
       RbConfig::CONFIG['default_gem_home'] = @gemhome
@@ -795,7 +794,7 @@ class Gem::TestCase < Minitest::Test
   def new_default_spec(name, version, deps = nil, *files)
     spec = util_spec name, version, deps
 
-    spec.loaded_from = File.join(@default_spec_dir, spec.spec_name)
+    spec.loaded_from = File.join(@gemhome, "specifications", "default", spec.spec_name)
     spec.files = files
 
     lib_dir = File.join(@tempdir, "default_gems", "lib")

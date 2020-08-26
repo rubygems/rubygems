@@ -405,7 +405,7 @@ class TestGemRequire < Gem::TestCase
 
     # Remove an old default gem version directly from disk as if someone ran
     # gem cleanup.
-    FileUtils.rm_rf(File.join @default_dir, "#{b1.full_name}")
+    FileUtils.rm_rf(File.join @gemhome, "#{b1.full_name}")
     FileUtils.rm_rf(File.join @default_spec_dir, "#{b1.full_name}.gemspec")
 
     # Require gems that have not been removed.

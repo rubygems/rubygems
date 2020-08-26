@@ -367,14 +367,12 @@ class Gem::TestCase < Minitest::Test
 
     ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = PRIVATE_KEY_PASSPHRASE
 
-    @default_dir = @gemhome
-
-    @default_spec_dir = File.join @default_dir, "specifications", "default"
+    @default_spec_dir = File.join @gemhome, "specifications", "default"
     if Gem.java_platform?
       @orig_default_gem_home = RbConfig::CONFIG['default_gem_home']
-      RbConfig::CONFIG['default_gem_home'] = @default_dir
+      RbConfig::CONFIG['default_gem_home'] = @gemhome
     else
-      Gem.instance_variable_set(:@default_dir, @default_dir)
+      Gem.instance_variable_set(:@default_dir, @gemhome)
     end
     FileUtils.mkdir_p @default_spec_dir
 

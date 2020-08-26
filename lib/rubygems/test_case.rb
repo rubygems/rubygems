@@ -754,12 +754,6 @@ class Gem::TestCase < Minitest::Test
 
   def install_default_gems(*specs)
     install_default_specs(*specs)
-
-    specs.each do |spec|
-      File.open spec.loaded_from, 'w' do |io|
-        io.write spec.to_ruby_for_cache
-      end
-    end
   end
 
   ##

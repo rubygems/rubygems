@@ -4,6 +4,7 @@ RSpec.describe "bundle gem" do
   def gem_skeleton_assertions
     expect(bundled_app("#{gem_name}/#{gem_name}.gemspec")).to exist
     expect(bundled_app("#{gem_name}/README.md")).to exist
+    expect(bundled_app("#{gem_name}/CHANGELOG.md")).to exist
     expect(bundled_app("#{gem_name}/Gemfile")).to exist
     expect(bundled_app("#{gem_name}/Rakefile")).to exist
     expect(bundled_app("#{gem_name}/lib/#{require_path}.rb")).to exist

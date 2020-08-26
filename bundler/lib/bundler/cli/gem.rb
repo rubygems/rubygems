@@ -69,6 +69,7 @@ module Bundler
         "newgem.gemspec.tt" => "#{name}.gemspec",
         "Rakefile.tt" => "Rakefile",
         "README.md.tt" => "README.md",
+        "CHANGELOG.md.tt" => "CHANGELOG.md",
         "bin/console.tt" => "bin/console",
         "bin/setup.tt" => "bin/setup",
       }

@@ -2170,6 +2170,23 @@ gem 'other', version
     assert_equal ['exe/executable'], default_spec.files
   end
 
+  def test_default_gem_to_specific_install_dir
+    @gem = setup_base_gem
+    installer = util_installer @spec, "#{@gemhome}2"
+    installer.options[:install_as_default] = true
+
+    use_ui @ui do
+      installer.install
+    end
+
+    assert_directory_exists File.join("#{@gemhome}2", 'specifications')
+    assert_directory_exists File.join("#{@gemhome}2", 'specifications', 'default')
+
+    default_spec = eval File.read File.join("#{@gemhome}2", 'specifications', 'default', 'a-2.gemspec')
+    assert_equal Gem::Version.new("2"), default_spec.version
+    assert_equal ['bin/executable'], default_spec.files
+  end
+
   def test_package_attribute
     gem = quick_gem 'c' do |spec|
       util_make_exec spec, '#!/usr/bin/ruby', 'exe'

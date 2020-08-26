@@ -753,13 +753,6 @@ class Gem::TestCase < Minitest::Test
   # Installs the provided default specs including writing the spec file
 
   def install_default_gems(*specs)
-    install_default_specs(*specs)
-  end
-
-  ##
-  # Install the provided default specs
-
-  def install_default_specs(*specs)
     specs.each do |spec|
       installer = Gem::Installer.for_spec(spec, :install_as_default => true)
       installer.install

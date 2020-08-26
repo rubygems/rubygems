@@ -83,7 +83,7 @@ end
   end
 
   def test_check_executable_overwrite_default_bin_dir
-    installer = setup_base_installer
+    installer = setup_base_installer(false)
 
     bindir(Gem.bindir) do
       util_conflict_executable false
@@ -143,7 +143,7 @@ gem 'other', version
   end
 
   def test_check_executable_overwrite_other_gem
-    installer = setup_base_installer
+    installer = setup_base_installer(false)
 
     util_conflict_executable true
 
@@ -1134,7 +1134,7 @@ gem 'other', version
         Gem::Package.build @spec
       end
     end
-    installer = Gem::Installer.at @gem
+    installer = Gem::Installer.at @gem, :force => true
     build_rake_in do
       use_ui @ui do
         assert_equal @spec, installer.install
@@ -1337,7 +1337,7 @@ gem 'other', version
 
     # reinstall the gem, this is also the same as pristine
     use_ui @ui do
-      installer = Gem::Installer.at path
+      installer = Gem::Installer.at path, :force => true
       installer.install
     end
 
@@ -1537,6 +1537,7 @@ gem 'other', version
     installer = setup_base_installer
     @spec.add_dependency 'b', '> 5'
     installer = util_setup_gem
+    installer.force = false
 
     use_ui @ui do
       assert_raises Gem::InstallError do

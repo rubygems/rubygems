@@ -367,7 +367,8 @@ class Gem::TestCase < Minitest::Test
 
     ENV['GEM_PRIVATE_KEY_PASSPHRASE'] = PRIVATE_KEY_PASSPHRASE
 
-    @default_dir = File.join @tempdir, 'default'
+    @default_dir = @gemhome
+
     @default_spec_dir = File.join @default_dir, "specifications", "default"
     if Gem.java_platform?
       @orig_default_gem_home = RbConfig::CONFIG['default_gem_home']
@@ -376,6 +377,9 @@ class Gem::TestCase < Minitest::Test
       Gem.instance_variable_set(:@default_dir, @default_dir)
     end
     FileUtils.mkdir_p @default_spec_dir
+
+    @orig_bindir = RbConfig::CONFIG["bindir"]
+    RbConfig::CONFIG["bindir"] = File.join @gemhome, "bin"
 
     Gem::Specification.unresolved_deps.clear
     Gem.use_paths(@gemhome)
@@ -447,6 +451,8 @@ class Gem::TestCase < Minitest::Test
                          @orig_SYSTEM_WIDE_CONFIG_FILE
 
     Gem.ruby = @orig_ruby if @orig_ruby
+
+    RbConfig::CONFIG['bindir'] = @orig_bindir
 
     if Gem.java_platform?
       RbConfig::CONFIG['default_gem_home'] = @orig_default_gem_home
@@ -741,7 +747,7 @@ class Gem::TestCase < Minitest::Test
 
   def install_specs(*specs)
     specs.each do |spec|
-      Gem::Installer.for_spec(spec).install
+      Gem::Installer.for_spec(spec, :force => true).install
     end
 
     Gem.searcher = nil

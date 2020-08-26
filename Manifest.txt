@@ -162,6 +162,7 @@ bundler/lib/bundler/templates/Executable.bundler
 bundler/lib/bundler/templates/Executable.standalone
 bundler/lib/bundler/templates/Gemfile
 bundler/lib/bundler/templates/gems.rb
+bundler/lib/bundler/templates/newgem/CHANGELOG.md.tt
 bundler/lib/bundler/templates/newgem/CODE_OF_CONDUCT.md.tt
 bundler/lib/bundler/templates/newgem/Gemfile.tt
 bundler/lib/bundler/templates/newgem/LICENSE.txt.tt

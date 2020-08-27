@@ -887,12 +887,11 @@ module Bundler
     end
 
     def expand_dependencies(dependencies, remote = false)
-      sorted_platforms = Resolver.sort_platforms(@platforms)
       deps = []
       dependencies.each do |dep|
         dep = Dependency.new(dep, ">= 0") unless dep.respond_to?(:name)
         next unless remote || dep.current_platform?
-        dep.gem_platforms(sorted_platforms).each do |p|
+        dep.gem_platforms(Resolver.sort_platforms(@platforms)).each do |p|
           deps << DepProxy.new(dep, p) if remote || p == generic_local_platform
         end
       end

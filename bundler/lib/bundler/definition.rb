@@ -204,10 +204,6 @@ module Bundler
       @locked_specs - specs
     end
 
-    def new_platform?
-      @new_platform
-    end
-
     def missing_specs
       missing = []
       resolve.materialize(requested_dependencies, missing)

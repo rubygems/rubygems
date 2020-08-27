@@ -69,7 +69,6 @@ module Bundler
         "newgem.gemspec.tt" => "#{name}.gemspec",
         "Rakefile.tt" => "Rakefile",
         "README.md.tt" => "README.md",
-        "CHANGELOG.md.tt" => "CHANGELOG.md",
         "bin/console.tt" => "bin/console",
         "bin/setup.tt" => "bin/setup",
       }
@@ -140,6 +139,18 @@ module Bundler
         config[:coc] = true
         Bundler.ui.info "Code of conduct enabled in config"
         templates.merge!("CODE_OF_CONDUCT.md.tt" => "CODE_OF_CONDUCT.md")
+      end
+
+      if ask_and_set(:changelog, "Do you want to include a changelog?",
+        "A changelog is a file which contains a curated, chronologically ordered list of notable " \
+        "changes for each version of a project. To make it easier for users and contributors to" \
+        " see precisely what notable changes have been made between each release (or version) of" \
+        " the project. Whether consumers or developers, the end users of software are" \
+        " human beings who care about what's in the software. When the software changes, people" \
+        " want to know why and how. see https://keepachangelog.com")
+        config[:changelog] = true
+        Bundler.ui.info "Changelog enabled in config"
+        templates.merge!("CHANGELOG.md.tt" => "CHANGELOG.md")
       end
 
       if ask_and_set(:rubocop, "Do you want to add rubocop as a dependency for gems you generate?",

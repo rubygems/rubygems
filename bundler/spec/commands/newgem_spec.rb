@@ -4,7 +4,6 @@ RSpec.describe "bundle gem" do
   def gem_skeleton_assertions
     expect(bundled_app("#{gem_name}/#{gem_name}.gemspec")).to exist
     expect(bundled_app("#{gem_name}/README.md")).to exist
-    expect(bundled_app("#{gem_name}/CHANGELOG.md")).to exist
     expect(bundled_app("#{gem_name}/Gemfile")).to exist
     expect(bundled_app("#{gem_name}/Rakefile")).to exist
     expect(bundled_app("#{gem_name}/lib/#{require_path}.rb")).to exist
@@ -154,6 +153,26 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/README.md").read).not_to include("## Code of Conduct")
         expect(bundled_app("#{gem_name}/README.md").read).not_to include("https://github.com/bundleuser/#{gem_name}/blob/master/CODE_OF_CONDUCT.md")
       end
+    end
+  end
+
+  shared_examples_for "--changelog flag" do
+    before do
+      bundle! "gem #{gem_name} --changelog"
+    end
+    it "generates a gem skeleton with CHANGELOG license" do
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/CHANGELOG.md")).to exist
+    end
+  end
+
+  shared_examples_for "--no-changelog flag" do
+    before do
+      bundle! "gem #{gem_name} --no-changelog"
+    end
+    it "generates a gem skeleton without CHANGELOG license" do
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/CHANGELOG.md")).to_not exist
     end
   end
 

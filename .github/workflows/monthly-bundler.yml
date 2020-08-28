@@ -8,6 +8,7 @@ jobs:
   monthly_bundler:
     name: Refresh month of man pages
     runs-on: ubuntu-18.04
+    if: github.repository == "rubygems/rubygems"
     steps:
       - uses: actions/checkout@v2
 

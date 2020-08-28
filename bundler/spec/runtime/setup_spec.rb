@@ -1231,6 +1231,7 @@ end
         end << "bundler"
         exempts << "fiddle" if Gem.win_platform? && Gem::Version.new(Gem::VERSION) >= Gem::Version.new("2.7")
         exempts << "uri" if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.7")
+        exempts << "set" if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.8")
         exempts
       end
 

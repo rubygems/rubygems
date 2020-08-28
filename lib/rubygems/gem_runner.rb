@@ -8,6 +8,8 @@
 require 'rubygems'
 require 'rubygems/command_manager'
 require 'rubygems/deprecate'
+require 'rubygems/user_interaction'
+require 'rubygems/openssl'
 
 ##
 # Load additional plugins from $LOAD_PATH
@@ -24,6 +26,8 @@ Gem.load_env_plugins rescue nil
 # classes they call directly.
 
 class Gem::GemRunner
+  include Gem::UserInteraction
+
   def initialize
     @command_manager_class = Gem::CommandManager
     @config_file_class = Gem::ConfigFile
@@ -51,6 +55,10 @@ class Gem::GemRunner
     end
 
     cmd.run Gem.configuration.args, build_args
+
+    if !Gem.disable_system_update_message
+      warn_on_outdated
+    end
   end
 
   ##
@@ -73,6 +81,12 @@ class Gem::GemRunner
     Gem.configuration = @config_file_class.new(args)
     Gem.use_paths Gem.configuration[:gemhome], Gem.configuration[:gempath]
     Gem::Command.extra_args = Gem.configuration[:gem]
+  end
+
+  def warn_on_outdated
+    if defined?(OpenSSL::SSL) && (Gem.latest_rubygems_version > Gem.rubygems_version)
+      say "You are currently using gem #{Gem.rubygems_version}, however gem #{Gem.latest_rubygems_version} is availble.\nConsider upgrading using the command `gem update --system`\n"
+    end
   end
 end
 

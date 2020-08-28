@@ -497,6 +497,16 @@ RSpec.describe "bundle install with gem sources" do
             #{Bundler::VERSION}
         L
       end
+
+      it "does not crash when unlocking" do
+        gemfile <<-G
+          ruby '>= 2.1.0'
+        G
+
+        bundle "update"
+
+        expect(err).not_to include("Could not find gem 'Ruby")
+      end
     end
   end
 

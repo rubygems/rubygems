@@ -146,8 +146,8 @@ module Bundler
         "changes for each version of a project. To make it easier for users and contributors to" \
         " see precisely what notable changes have been made between each release (or version) of" \
         " the project. Whether consumers or developers, the end users of software are" \
-        " human beings who care about what's in the software. When the software changes, people" \
-        " want to know why and how. see https://keepachangelog.com")
+        " human beings who care about what's in the software. When the software changes, people " \
+        "want to know why and how. see https://keepachangelog.com")
         config[:changelog] = true
         Bundler.ui.info "Changelog enabled in config"
         templates.merge!("CHANGELOG.md.tt" => "CHANGELOG.md")

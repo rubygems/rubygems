@@ -313,8 +313,13 @@ module Bundler
           end
 
           message = if spec.nil?
+            target_file = begin
+                            Bundler.default_gemfile.basename
+                          rescue GemfileNotFound
+                            "inline Gemfile"
+                          end
             "#{dep.name} is not part of the bundle." \
-            " Add it to your #{Bundler.default_gemfile.basename}."
+            " Add it to your #{target_file}."
           else
             "can't activate #{dep}, already activated #{spec.full_name}. " \
             "Make sure all dependencies are added to Gemfile."

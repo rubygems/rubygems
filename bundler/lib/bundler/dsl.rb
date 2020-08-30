@@ -457,7 +457,7 @@ repo_name ||= user_name
           "Using `source` more than once without a block is a security risk, and " \
           "may result in installing unexpected gems. To resolve this warning, use " \
           "a block to indicate which gems should come from the secondary source. " \
-          "To upgrade this warning to an error, run `bundle config set " \
+          "To upgrade this warning to an error, run `bundle config set --local " \
           "disable_multisource true`."
       end
     end

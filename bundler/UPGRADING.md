@@ -9,7 +9,7 @@ look like. All these deprecations are printed by default in the Bundler 2.1 rele
 If you don't want to deal with deprecations right now and want to toggle them
 off, you can do it through configuration. Set the `BUNDLE_SILENCE_DEPRECATIONS`
 environment variable to "true", or configure it through `bundle config` either
-globally through `bundle config set silence_deprecations true` command, or
+globally through `bundle config set --global silence_deprecations true` command, or
 locally through `bundle config set --local silence_deprecations true`. From now
 on in this document we will assume that all three of these configuration options
 are available, but will only mention `bundle config set <option> <value>`.
@@ -51,7 +51,7 @@ in the upcoming 3 version.
   development and test gems.  This magic will disappear from bundler 3, and
   you will explicitly need to configure it, either through environment
   variables, application configuration, or machine configuration. For example,
-  with `bundle config set without development test`.
+  with `bundle config set --local without development test`.
 
   The removal of this kind of flag also applies to analogous commands, for
   example, to `bundle check --path`.

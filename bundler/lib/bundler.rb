@@ -354,6 +354,7 @@ EOF
 
       if env.key?("RUBYOPT")
         rubyopt = env["RUBYOPT"].split(" ")
+        rubyopt.delete("-r#{File.expand_path("bundler/setup", __dir__)}")
         rubyopt.delete("-rbundler/setup")
         env["RUBYOPT"] = rubyopt.join(" ")
       end

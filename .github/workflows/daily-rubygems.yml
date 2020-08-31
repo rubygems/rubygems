@@ -7,7 +7,7 @@ on:
 jobs:
   daily_rubygems:
     runs-on: ubuntu-18.04
-    if: github.repository == "rubygems/rubygems"
+    if: github.repository == 'rubygems/rubygems'
     strategy:
       matrix:
         ruby: [ ruby-head, truffleruby-head ]

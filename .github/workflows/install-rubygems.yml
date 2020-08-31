@@ -32,8 +32,11 @@ jobs:
       - name: Simulate no openssl
         run: ruby util/remove_openssl.rb
         if: matrix.openssl == false
-      - name: Run installed rubygems
+      - name: Run a local rubygems command
         run: gem list bundler
+      - name: Run a remote rubygems command
+        run: gem outdated
+        if: matrix.openssl == true
       - name: Run bundler installed as a default gem
         run: bundle --version
       - name: Check bundler man pages were installed and are properly picked up

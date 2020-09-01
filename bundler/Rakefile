@@ -124,7 +124,7 @@ namespace :man do
       end
 
       desc "Build the man pages"
-      task :build => ["clean", "build_all_pages"]
+      task :build => [:clean, :build_all_pages]
 
       desc "Verify man pages are in sync"
       task :check => :build do

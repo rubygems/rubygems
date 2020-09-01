@@ -96,11 +96,7 @@ namespace :man do
           sh "bin/ronn --warnings --roff --pipe --date #{Time.now.strftime("%Y-%m-%d")} #{ronn} > #{roff}"
         end
 
-        file "#{roff}.txt" => roff do
-          sh "groff -Wbreak -mtty-char -mandoc -Tascii -rHY=0 #{roff} | col -xb > #{roff}.txt"
-        end
-
-        task :build_all_pages => "#{roff}.txt"
+        task :build_all_pages => roff
 
         [ronn, File.basename(roff)]
       end

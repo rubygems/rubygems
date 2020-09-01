@@ -105,7 +105,7 @@ RSpec.describe "The library itself" do
   end
 
   it "has no malformed whitespace" do
-    exempt = /\.gitmodules|fixtures|vendor|LICENSE|vcr_cassettes|rbreadline\.diff|\.txt$/
+    exempt = /\.gitmodules|fixtures|vendor|LICENSE|vcr_cassettes|rbreadline\.diff|index\.txt$/
     error_messages = []
     tracked_files.each do |filename|
       next if filename =~ exempt
@@ -126,7 +126,7 @@ RSpec.describe "The library itself" do
   end
 
   it "does not include any leftover debugging or development mechanisms" do
-    exempt = %r{quality_spec.rb|support/helpers|vcr_cassettes|\.md|\.ronn|\.txt|\.5|\.1}
+    exempt = %r{quality_spec.rb|support/helpers|vcr_cassettes|\.md|\.ronn|index\.txt|\.5|\.1}
     error_messages = []
     tracked_files.each do |filename|
       next if filename =~ exempt

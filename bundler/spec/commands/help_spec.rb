@@ -15,11 +15,11 @@ RSpec.describe "bundle help" do
     expect(out).to eq(%(["#{root}/man/bundle-install.1"]))
   end
 
-  it "simply outputs the txt file when there is no man on the path" do
+  it "simply outputs the human readable file when there is no man on the path" do
     with_path_as("") do
       bundle "help install"
     end
-    expect(out).to match(/BUNDLE-INSTALL/)
+    expect(out).to match(/bundle-install/)
   end
 
   it "still outputs the old help for commands that do not have man pages yet" do

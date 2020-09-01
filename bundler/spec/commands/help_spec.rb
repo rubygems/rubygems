@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle help" do
-  it "uses mann when available" do
+  it "uses man when available" do
     with_fake_man do
       bundle "help gemfile"
     end

@@ -353,7 +353,10 @@ EOF
       env.delete_if {|k, _| k[0, 7] == "BUNDLE_" }
 
       if env.key?("RUBYOPT")
-        env["RUBYOPT"] = env["RUBYOPT"].sub "-rbundler/setup", ""
+        rubyopt = env["RUBYOPT"].split(" ")
+        rubyopt.delete("-r#{File.expand_path("bundler/setup", __dir__)}")
+        rubyopt.delete("-rbundler/setup")
+        env["RUBYOPT"] = rubyopt.join(" ")
       end
 
       if env.key?("RUBYLIB")

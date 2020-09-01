@@ -8,7 +8,7 @@ RSpec.describe "bundle help" do
     expect(out).to eq(%(["#{root}/man/gemfile.5"]))
   end
 
-  it "prefixes bundle commands with bundle- when finding the groff files" do
+  it "prefixes bundle commands with bundle- when finding the man files" do
     with_fake_man do
       bundle "help install"
     end

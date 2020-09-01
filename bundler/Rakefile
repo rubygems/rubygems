@@ -88,12 +88,9 @@ namespace :man do
     else
       directory "man"
 
-      index = []
-      Dir["man/*.ronn"].map do |source|
+      index = Dir["man/*.ronn"].map do |source|
         ronn = "man/#{File.basename(source)}"
         roff = "man/#{File.basename(source, ".ronn")}"
-
-        index << [ronn, File.basename(roff)]
 
         file roff => ["man", ronn] do
           sh "bin/ronn --warnings --roff --pipe --date #{Time.now.strftime("%Y-%m-%d")} #{ronn} > #{roff}"
@@ -104,6 +101,8 @@ namespace :man do
         end
 
         task :build_all_pages => "#{roff}.txt"
+
+        [ronn, File.basename(roff)]
       end
 
       file "index.txt" do

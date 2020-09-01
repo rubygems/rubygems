@@ -93,7 +93,8 @@ namespace :man do
         roff = "man/#{File.basename(source, ".ronn")}"
 
         file roff => ["man", ronn] do
-          sh "bin/ronn --warnings --roff --pipe --date #{Time.now.strftime("%Y-%m-%d")} #{ronn} > #{roff}"
+          date = ENV["MAN_PAGES_DATE"] || Time.now.strftime("%Y-%m-%d")
+          sh "bin/ronn --warnings --roff --pipe --date #{date} #{ronn} > #{roff}"
         end
 
         task :build_all_pages => roff
@@ -126,8 +127,14 @@ namespace :man do
       desc "Build the man pages"
       task :build => [:clean, :build_all_pages]
 
+      desc "Sets target date for building man pages to the one currently present"
+      task :set_current_date do
+        require "date"
+        ENV["MAN_PAGES_DATE"] = Date.parse(File.readlines("man/bundle-add.1")[3].split('"')[5]).strftime("%Y-%m-%d")
+      end
+
       desc "Verify man pages are in sync"
-      task :check => :build do
+      task :check => [:set_current_date, :build] do
         require "open3"
 
         output, status = Open3.capture2e("git status --porcelain")

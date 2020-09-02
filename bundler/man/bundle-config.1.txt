@@ -58,8 +58,8 @@ DESCRIPTION
        Executing bundle with the BUNDLE_IGNORE_CONFIG environment variable set
        will cause it to ignore all configuration.
 
-       Executing bundle  config  set  disable_multisource  true  upgrades  the
-       warning  about  the  Gemfile  containing multiple primary sources to an
+       Executing bundle config set --local disable_multisource  true  upgrades
+       the warning about the Gemfile containing multiple primary sources to an
        error. Executing bundle  config  unset  disable_multisource  downgrades
        this error to a warning.
 
@@ -70,7 +70,8 @@ REMEMBERING OPTIONS
 
        However,  this will be changed in bundler 3, so it's better not to rely
        on this behavior. If these options must be remembered, it's  better  to
-       set them using bundle config (e.g., bundle config set path foo).
+       set  them  using  bundle  config  (e.g., bundle config set --local path
+       foo).
 
        The options that can be configured are:
 
@@ -120,7 +121,7 @@ BUILD OPTIONS
 
 
 
-           bundle config set build.mysql --with-mysql-config=/usr/local/mysql/bin/mysql_config
+           bundle config set --global build.mysql --with-mysql-config=/usr/local/mysql/bin/mysql_config
 
 
 
@@ -376,7 +377,7 @@ LOCAL GIT REPOS
 
 
 
-           bundle config set local.GEM_NAME /path/to/local/git/repository
+           bundle config set --local local.GEM_NAME /path/to/local/git/repository
 
 
 
@@ -385,7 +386,7 @@ LOCAL GIT REPOS
 
 
 
-           bundle config set local.rack ~/Work/git/rack
+           bundle config set --local local.rack ~/Work/git/rack
 
 
 
@@ -418,7 +419,7 @@ MIRRORS OF GEM SOURCES
 
 
 
-           bundle config set mirror.SOURCE_URL MIRROR_URL
+           bundle config set --global mirror.SOURCE_URL MIRROR_URL
 
 
 
@@ -427,7 +428,7 @@ MIRRORS OF GEM SOURCES
 
 
 
-           bundle config set mirror.http://rubygems.org http://rubygems-mirror.org
+           bundle config set --global mirror.http://rubygems.org http://rubygems-mirror.org
 
 
 
@@ -437,7 +438,7 @@ MIRRORS OF GEM SOURCES
 
 
 
-           bundle config set mirror.SOURCE_URL.fallback_timeout TIMEOUT
+           bundle config set --global mirror.SOURCE_URL.fallback_timeout TIMEOUT
 
 
 
@@ -445,7 +446,7 @@ MIRRORS OF GEM SOURCES
 
 
 
-           bundle config set mirror.https://rubygems.org.fallback_timeout 3
+           bundle config set --global mirror.https://rubygems.org.fallback_timeout 3
 
 
 
@@ -458,7 +459,7 @@ CREDENTIALS FOR GEM SOURCES
 
 
 
-           bundle config set SOURCE_HOSTNAME USERNAME:PASSWORD
+           bundle config set --global SOURCE_HOSTNAME USERNAME:PASSWORD
 
 
 
@@ -467,7 +468,7 @@ CREDENTIALS FOR GEM SOURCES
 
 
 
-           bundle config set gems.longerous.com claudette:s00pers3krit
+           bundle config set --global gems.longerous.com claudette:s00pers3krit
 
 
 
@@ -484,7 +485,7 @@ CREDENTIALS FOR GEM SOURCES
 
 
 
-           bundle config set https://github.com/bundler/bundler.git username:password
+           bundle config set --global https://github.com/bundler/bundler.git username:password
 
 
 

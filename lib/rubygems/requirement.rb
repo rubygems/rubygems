@@ -283,11 +283,11 @@ class Gem::Requirement
   protected
 
   def _sorted_requirements
-    requirements.sort_by(&:to_s)
+    @_sorted_requirements ||= requirements.sort_by(&:to_s)
   end
 
   def _tilde_requirements
-    _sorted_requirements.select {|r| r.first == "~>" }
+    @_tilde_requirements ||= _sorted_requirements.select {|r| r.first == "~>" }
   end
 
   private

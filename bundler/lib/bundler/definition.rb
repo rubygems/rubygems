@@ -199,10 +199,6 @@ module Bundler
       @locked_specs - specs
     end
 
-    def new_platform?
-      @new_platform
-    end
-
     def missing_specs
       missing = []
       resolve.materialize(requested_dependencies, missing)
@@ -550,10 +546,9 @@ module Bundler
     end
 
     def current_platforms
-      current_platform = Bundler.local_platform
       [].tap do |platforms|
-        platforms << current_platform if Bundler.feature_flag.specific_platform?
-        platforms << generic(current_platform)
+        platforms << local_platform if Bundler.feature_flag.specific_platform?
+        platforms << generic_local_platform
       end
     end
 
@@ -884,16 +879,20 @@ module Bundler
     end
 
     def expand_dependencies(dependencies, remote = false)
-      sorted_platforms = Resolver.sort_platforms(@platforms)
       deps = []
       dependencies.each do |dep|
         dep = Dependency.new(dep, ">= 0") unless dep.respond_to?(:name)
-        next if !remote && !dep.current_platform?
-        dep.gem_platforms(sorted_platforms).each do |p|
-          deps << DepProxy.new(dep, p) if remote || p == generic_local_platform
-        end
+        next unless remote || dep.current_platform?
+        target_platforms = dep.gem_platforms(remote ? Resolver.sort_platforms(@platforms) : [generic_local_platform])
+        deps += expand_dependency_with_platforms(dep, target_platforms)
       end
       deps
+    end
+
+    def expand_dependency_with_platforms(dep, platforms)
+      platforms.map do |p|
+        DepProxy.new(dep, p)
+      end
     end
 
     def dependencies_for(groups)

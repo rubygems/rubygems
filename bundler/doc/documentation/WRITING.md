@@ -22,7 +22,7 @@ Don't see a man page for a command? Make a new page and send us a PR! We also we
 
 To create a new man page, simply create a new `.ronn` file in the `man/` directory.
 
-For example: to create a man page for the command `bundle cookies` (not a real command, sadly), I would create a file `man/bundle-cookies.ronn` and add my documentation there.
+For example: to create a man page for the command `bundle cookies` (not a real command, sadly), I would create a file `man/bundle-cookies.1.ronn` and add my documentation there.
 
 ## Formatting
 
@@ -44,7 +44,7 @@ $ rake man:build
 $ man man/bundle-cookies.1
 ```
 
-If you make more changes to `bundle-cookies.ronn`, you'll need to run the `rake man:build` again before previewing.
+If you make more changes to `bundle-cookies.1.ronn`, you'll need to run the `rake man:build` again before previewing.
 
 ## Testing
 

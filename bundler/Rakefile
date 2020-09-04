@@ -88,24 +88,17 @@ namespace :man do
     else
       directory "man"
 
-      index = []
-      sources = Dir["man/*.ronn"].map {|f| File.basename(f, ".ronn") }
-      sources.map do |basename|
-        ronn = "man/#{basename}.ronn"
-        manual_section = ".1" unless basename =~ /\.(\d+)\Z/
-        roff = "man/#{basename}#{manual_section}"
-
-        index << [ronn, File.basename(roff)]
+      index = Dir["man/*.ronn"].map do |source|
+        ronn = "man/#{File.basename(source)}"
+        roff = "man/#{File.basename(source, ".ronn")}"
 
         file roff => ["man", ronn] do
           sh "bin/ronn --warnings --roff --pipe --date #{Time.now.strftime("%Y-%m-%d")} #{ronn} > #{roff}"
         end
 
-        file "#{roff}.txt" => roff do
-          sh "groff -Wbreak -mtty-char -mandoc -Tascii -rHY=0 #{roff} | col -xb > #{roff}.txt"
-        end
+        task :build_all_pages => roff
 
-        task :build_all_pages => "#{roff}.txt"
+        [ronn, File.basename(roff)]
       end
 
       file "index.txt" do

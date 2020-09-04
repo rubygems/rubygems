@@ -134,7 +134,7 @@ module Bundler
         if Bundler.which("man") && man_path !~ %r{^file:/.+!/META-INF/jruby.home/.+}
           Kernel.exec "man #{man_page}"
         else
-          puts File.read("#{File.dirname(man_page)}/#{File.basename(man_page)}.txt")
+          puts File.read("#{File.dirname(man_page)}/#{File.basename(man_page)}.ronn")
         end
       elsif command_path = Bundler.which("bundler-#{cli}")
         Kernel.exec(command_path, "--help")

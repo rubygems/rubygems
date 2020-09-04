@@ -302,6 +302,7 @@ bundler/man/bundle.1
 bundler/man/bundle.1.ronn
 bundler/man/gemfile.5
 bundler/man/gemfile.5.ronn
+bundler/man/index.txt
 hide_lib_for_update/note.txt
 lib/rubygems.rb
 lib/rubygems/available_set.rb

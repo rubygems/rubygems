@@ -256,6 +256,35 @@ RSpec.describe "bundle install across platforms" do
     expect(the_bundle).not_to include_gem "CFPropertyList"
   end
 
+  it "works with gems with platform-specific dependency having different requirements order", :rubygems => ">= 3.2.0.rc.2" do
+    simulate_platform x64_mac
+
+    update_repo2 do
+      build_gem "fspath", "3"
+      build_gem "image_optim_pack", "1.2.3" do |s|
+        s.add_runtime_dependency "fspath", ">= 2.1", "< 4"
+      end
+      build_gem "image_optim_pack", "1.2.3" do |s|
+        s.platform = "universal-darwin"
+        s.add_runtime_dependency "fspath", "< 4", ">= 2.1"
+      end
+    end
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo2)}"
+    G
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo2)}"
+
+      gem "image_optim_pack"
+    G
+
+    expect(err).not_to include "Unable to use the platform-specific"
+
+    expect(the_bundle).to include_gem "image_optim_pack 1.2.3 universal-darwin"
+  end
+
   it "fetches gems again after changing the version of Ruby" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"

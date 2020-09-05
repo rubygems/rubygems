@@ -129,6 +129,34 @@ module Gem
     end
   end
 
+  unless Gem::Requirement.new("> 1", "< 2") == Gem::Requirement.new("< 2", "> 1")
+    class Requirement
+      module OrderIndependentComparison
+        def ==(other)
+          if _requirements_sorted? && other._requirements_sorted?
+            super
+          else
+            _with_sorted_requirements == other._with_sorted_requirements
+          end
+        end
+
+        protected
+
+        def _requirements_sorted?
+          return @_are_requirements_sorted if defined?(@_are_requirements_sorted)
+          strings = as_list
+          @_are_requirements_sorted = strings == strings.sort
+        end
+
+        def _with_sorted_requirements
+          @_with_sorted_requirements ||= _requirements_sorted? ? self : self.class.new(as_list.sort)
+        end
+      end
+
+      prepend OrderIndependentComparison
+    end
+  end
+
   class Platform
     JAVA  = Gem::Platform.new("java") unless defined?(JAVA)
     MSWIN = Gem::Platform.new("mswin32") unless defined?(MSWIN)

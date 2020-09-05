@@ -256,7 +256,7 @@ RSpec.describe "bundle install across platforms" do
     expect(the_bundle).not_to include_gem "CFPropertyList"
   end
 
-  it "works with gems with platform-specific dependency having different requirements order", :rubygems => ">= 3.2.0.rc.2" do
+  it "works with gems with platform-specific dependency having different requirements order" do
     simulate_platform x64_mac
 
     update_repo2 do

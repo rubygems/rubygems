@@ -150,7 +150,8 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
    Install executables from gems in the bundle to the specified directory.
    Defaults to `false`.
 * `cache_all` (`BUNDLE_CACHE_ALL`):
-   Cache all gems, including path and git gems.
+   Cache all gems, including path and git gems. This needs to be explicitly
+   configured on bundler 1 and bundler 2, but will be the default on bundler 3.
 * `cache_all_platforms` (`BUNDLE_CACHE_ALL_PLATFORMS`):
    Cache gems for all platforms.
 * `cache_path` (`BUNDLE_CACHE_PATH`):

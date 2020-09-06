@@ -129,6 +129,7 @@ module Gem
     end
   end
 
+  # comparison is done order independently since rubygems 3.2.0.rc.2
   unless Gem::Requirement.new("> 1", "< 2") == Gem::Requirement.new("< 2", "> 1")
     class Requirement
       module OrderIndependentComparison

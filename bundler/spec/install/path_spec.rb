@@ -13,7 +13,7 @@ RSpec.describe "bundle install" do
       G
     end
 
-    it "does not use available system gems with `vendor/bundle", :bundler => "< 3" do
+    it "does not use available system gems with `vendor/bundle" do
       bundle "config --local path vendor/bundle"
       bundle :install
       expect(the_bundle).to include_gems "rack 1.0.0"

@@ -207,14 +207,14 @@ module Bundler
       key  = key_for(:path)
       path = ENV[key] || @global_config[key]
       if path && !@temporary.key?(key) && !@local_config.key?(key)
-        return Path.new(path, false, false)
+        return Path.new(path, false)
       end
 
       system_path = self["path.system"] || (self[:disable_shared_gems] == false)
-      Path.new(self[:path], system_path, Bundler.feature_flag.default_install_uses_path?)
+      Path.new(self[:path], system_path)
     end
 
-    Path = Struct.new(:explicit_path, :system_path, :default_install_uses_path) do
+    Path = Struct.new(:explicit_path, :system_path) do
       def path
         path = base_path
         path = File.join(path, Bundler.ruby_scope) unless use_system_gems?
@@ -224,7 +224,7 @@ module Bundler
       def use_system_gems?
         return true if system_path
         return false if explicit_path
-        !default_install_uses_path
+        !Bundler.feature_flag.default_install_uses_path?
       end
 
       def base_path

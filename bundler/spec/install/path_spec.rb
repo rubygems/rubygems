@@ -30,7 +30,7 @@ RSpec.describe "bundle install" do
       dir.rmtree
     end
 
-    it "prints a warning to let the user know where gems where installed" do
+    it "prints a message to let the user know where gems where installed" do
       bundle "config --local path vendor/bundle"
       bundle :install
       expect(out).to include("gems are installed into `./vendor/bundle`")

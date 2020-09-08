@@ -19,6 +19,14 @@ RSpec.describe "bundle install" do
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
 
+    it "uses system gems with `path.system` configured with more priority than `path`" do
+      bundle "config --local path.system true"
+      bundle "config --global path vendor/bundle"
+      bundle :install
+      run "require 'rack'", :raise_on_error => false
+      expect(out).to include("FAIL")
+    end
+
     it "handles paths with regex characters in them" do
       dir = bundled_app("bun++dle")
       dir.mkpath

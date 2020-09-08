@@ -195,14 +195,16 @@ module Bundler
 
     # for legacy reasons, in Bundler 2, we do not respect :disable_shared_gems
     def path
-      key  = key_for(:path)
-      path = ENV[key] || @global_config[key]
-      if path && !@temporary.key?(key) && !@local_config.key?(key)
-        return Path.new(path, false)
+      configs.each do |_level, settings|
+        path = value_for("path", settings)
+        path_system = value_for("path.system", settings)
+        disabled_shared_gems = value_for("disable_shared_gems", settings)
+        next if path.nil? && path_system.nil? && disabled_shared_gems.nil?
+        system_path = path_system || (disabled_shared_gems == false)
+        return Path.new(path, system_path)
       end
 
-      system_path = self["path.system"] || (self[:disable_shared_gems] == false)
-      Path.new(self[:path], system_path)
+      Path.new(nil, false)
     end
 
     Path = Struct.new(:explicit_path, :system_path) do

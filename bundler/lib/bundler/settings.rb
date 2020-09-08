@@ -278,7 +278,7 @@ module Bundler
       all.each do |raw_key|
         [@local_config, @env_config, @global_config].each do |settings|
           value = converted_value(settings[key_for(raw_key)], raw_key)
-          Validator.validate!(raw_key, value, settings.to_hash.dup)
+          Validator.validate!(raw_key, value, settings.dup)
         end
       end
     end

@@ -160,7 +160,7 @@ RSpec.describe "bundle gem" do
     before do
       bundle! "gem #{gem_name} --changelog"
     end
-    it "generates a gem skeleton with CHANGELOG license" do
+    it "generates a gem skeleton with a CHANGELOG" do
       gem_skeleton_assertions
       expect(bundled_app("#{gem_name}/CHANGELOG.md")).to exist
     end

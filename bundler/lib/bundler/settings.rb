@@ -182,20 +182,20 @@ module Bundler
 
       locations = []
 
-      if @temporary.key?(key)
-        locations << "Set for the current command: #{converted_value(@temporary[key], exposed_key).inspect}"
+      if value = @temporary[key]
+        locations << "Set for the current command: #{converted_value(value, exposed_key).inspect}"
       end
 
-      if @local_config.key?(key)
-        locations << "Set for your local app (#{local_config_file}): #{converted_value(@local_config[key], exposed_key).inspect}"
+      if value = @local_config[key]
+        locations << "Set for your local app (#{local_config_file}): #{converted_value(value, exposed_key).inspect}"
       end
 
       if value = ENV[key]
         locations << "Set via #{key}: #{converted_value(value, exposed_key).inspect}"
       end
 
-      if @global_config.key?(key)
-        locations << "Set for the current user (#{global_config_file}): #{converted_value(@global_config[key], exposed_key).inspect}"
+      if value = @global_config[key]
+        locations << "Set for the current user (#{global_config_file}): #{converted_value(value, exposed_key).inspect}"
       end
 
       return ["You have not configured a value for `#{exposed_key}`"] if locations.empty?

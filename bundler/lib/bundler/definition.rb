@@ -314,10 +314,6 @@ module Bundler
       sources.rubygems_sources.any? {|s| s.remotes.any? }
     end
 
-    def has_local_dependencies?
-      !sources.path_sources.empty? || !sources.git_sources.empty?
-    end
-
     def spec_git_paths
       sources.git_sources.map {|s| File.realpath(s.path) if File.exist?(s.path) }.compact
     end

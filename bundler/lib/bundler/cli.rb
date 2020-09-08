@@ -461,6 +461,12 @@ module Bundler
       bundle without having to download any additional gems.
     D
     def cache
+      SharedHelpers.major_deprecation 2,
+        "The `--all` flag is deprecated because it relies on being " \
+        "remembered across bundler invocations, which bundler will no longer " \
+        "do in future versions. Instead please use `bundle config set cache_all true`, " \
+        "and stop using this flag" if ARGV.include?("--all")
+
       require_relative "cli/cache"
       Cache.new(options).run
     end
@@ -838,7 +844,7 @@ module Bundler
       value = options[name]
       value = value.join(" ").to_s if option.type == :array
 
-      Bundler::SharedHelpers.major_deprecation 2,\
+      Bundler::SharedHelpers.major_deprecation 2,
         "The `#{flag_name}` flag is deprecated because it relies on being " \
         "remembered across bundler invocations, which bundler will no longer " \
         "do in future versions. Instead please use `bundle config set --local #{name.tr("-", "_")} " \

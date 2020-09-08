@@ -37,12 +37,6 @@ module Bundler
       all = options.fetch(:all, Bundler.feature_flag.cache_all? || nil)
 
       Bundler.settings.set_command_option_if_given :cache_all, all
-
-      if Bundler.definition.has_local_dependencies? && !Bundler.feature_flag.cache_all?
-        Bundler.ui.warn "Your Gemfile contains path and git dependencies. If you want "    \
-          "to cache them as well, please pass the --all flag. This will be the default " \
-          "on Bundler 3.0."
-      end
     end
   end
 end

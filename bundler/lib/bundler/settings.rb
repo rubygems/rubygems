@@ -277,7 +277,7 @@ module Bundler
     def validate!
       all.each do |raw_key|
         [@local_config, @env_config, @global_config].each do |settings|
-          value = converted_value(settings[key_for(raw_key)], raw_key)
+          value = value_for(raw_key, settings)
           Validator.validate!(raw_key, value, settings.dup)
         end
       end
@@ -290,6 +290,10 @@ module Bundler
     end
 
     private
+
+    def value_for(name, config)
+      converted_value(config[key_for(name)], name)
+    end
 
     def parent_setting_for(name)
       split_specific_setting_for(name)[0]

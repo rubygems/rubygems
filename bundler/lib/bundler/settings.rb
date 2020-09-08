@@ -81,13 +81,7 @@ module Bundler
 
     def [](name)
       key = key_for(name)
-      value = @temporary.fetch(key) do
-              @local_config.fetch(key) do
-              @env_config.fetch(key) do
-              @global_config.fetch(key) do
-              DEFAULT_CONFIG.fetch(key) do
-                nil
-              end end end end end
+      value = configs.values.map {|config| config[key] }.compact.first
 
       converted_value(value, name)
     end
@@ -167,13 +161,11 @@ module Bundler
 
     def locations(key)
       key = key_for(key)
-      locations = {}
-      locations[:temporary] = @temporary[key] if @temporary.key?(key)
-      locations[:local]  = @local_config[key] if @local_config.key?(key)
-      locations[:env]    = @env_config[key] if @env_config.key?(key)
-      locations[:global] = @global_config[key] if @global_config.key?(key)
-      locations[:default] = DEFAULT_CONFIG[key] if DEFAULT_CONFIG.key?(key)
-      locations
+      configs.keys.inject({}) do |partial_locations, level|
+        value_on_level = configs[level][key]
+        partial_locations[level] = value_on_level unless value_on_level.nil?
+        partial_locations
+      end
     end
 
     def pretty_values_for(exposed_key)
@@ -290,6 +282,16 @@ module Bundler
     end
 
     private
+
+    def configs
+      {
+        :temporary => @temporary,
+        :local => @local_config,
+        :env => @env_config,
+        :global => @global_config,
+        :default => DEFAULT_CONFIG,
+      }
+    end
 
     def value_for(name, config)
       converted_value(config[key_for(name)], name)

@@ -63,12 +63,12 @@ module Bundler
     ].freeze
 
     DEFAULT_CONFIG = {
-      :silence_deprecations => false,
-      :disable_version_check => true,
-      :prefer_patch => false,
-      :redirect => 5,
-      :retry => 3,
-      :timeout => 10,
+      "BUNDLE_SILENCE_DEPRECATIONS" => false,
+      "BUNDLE_DISABLE_VERSION_CHECK" => true,
+      "BUNDLE_PREFER_PATCH" => false,
+      "BUNDLE_REDIRECT" => 5,
+      "BUNDLE_RETRY" => 3,
+      "BUNDLE_TIMEOUT" => 10,
     }.freeze
 
     def initialize(root = nil)
@@ -84,7 +84,7 @@ module Bundler
               @local_config.fetch(key) do
               ENV.fetch(key) do
               @global_config.fetch(key) do
-              DEFAULT_CONFIG.fetch(name) do
+              DEFAULT_CONFIG.fetch(key) do
                 nil
               end end end end end
 

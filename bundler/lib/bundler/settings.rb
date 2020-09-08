@@ -74,6 +74,7 @@ module Bundler
     def initialize(root = nil)
       @root            = root
       @local_config    = load_config(local_config_file)
+      @env_config      = ENV.to_h.select {|key, _value| key =~ /\ABUNDLE_.+/ }
       @global_config   = load_config(global_config_file)
       @temporary       = {}
     end
@@ -82,7 +83,7 @@ module Bundler
       key = key_for(name)
       value = @temporary.fetch(key) do
               @local_config.fetch(key) do
-              ENV.fetch(key) do
+              @env_config.fetch(key) do
               @global_config.fetch(key) do
               DEFAULT_CONFIG.fetch(key) do
                 nil
@@ -129,9 +130,7 @@ module Bundler
     end
 
     def all
-      env_keys = ENV.keys.grep(/\ABUNDLE_.+/)
-
-      keys = @temporary.keys | @global_config.keys | @local_config.keys | env_keys
+      keys = @temporary.keys | @global_config.keys | @local_config.keys | @env_config.keys
 
       keys.map do |key|
         key.sub(/^BUNDLE_/, "").gsub(/__/, ".").downcase
@@ -171,7 +170,7 @@ module Bundler
       locations = {}
       locations[:temporary] = @temporary[key] if @temporary.key?(key)
       locations[:local]  = @local_config[key] if @local_config.key?(key)
-      locations[:env]    = ENV[key] if ENV[key]
+      locations[:env]    = @env_config[key] if @env_config.key?(key)
       locations[:global] = @global_config[key] if @global_config.key?(key)
       locations[:default] = DEFAULT_CONFIG[key] if DEFAULT_CONFIG.key?(key)
       locations
@@ -190,7 +189,7 @@ module Bundler
         locations << "Set for your local app (#{local_config_file}): #{converted_value(value, exposed_key).inspect}"
       end
 
-      if value = ENV[key]
+      if value = @env_config[key]
         locations << "Set via #{key}: #{converted_value(value, exposed_key).inspect}"
       end
 
@@ -277,7 +276,7 @@ module Bundler
 
     def validate!
       all.each do |raw_key|
-        [@local_config, ENV, @global_config].each do |settings|
+        [@local_config, @env_config, @global_config].each do |settings|
           value = converted_value(settings[key_for(raw_key)], raw_key)
           Validator.validate!(raw_key, value, settings.to_hash.dup)
         end

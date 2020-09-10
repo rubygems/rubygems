@@ -76,7 +76,7 @@
   - Fix `bundle install` unintentionally copying `with` and `without` global config to local configuration [#3666](https://github.com/rubygems/rubygems/pull/3666). This PR also address the `BUNDLE_WITH` environment variable unintentionally being persisted to configuration in a similar way ([#3708](https://github.com/rubygems/rubygems/issues/3708))
   - Fix race condition in `bundle install` that could "empty" exceptions to be raised [#3669](https://github.com/rubygems/rubygems/pull/3669)
   - Fix `--no-cache` to `bundle install` being unintentionally deprecated [#3688](https://github.com/rubygems/rubygems/pull/3688)
-  - Avoid calling `LoadError#message` to fix performance regression in future ruby 2.8 [#3762](https://github.com/rubygems/rubygems/pull/3762)
+  - Avoid calling `LoadError#message` to fix performance regression in future ruby 3.0 [#3762](https://github.com/rubygems/rubygems/pull/3762)
 
 # 2.1.4 (January 5, 2020)
 

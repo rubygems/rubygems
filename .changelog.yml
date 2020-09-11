@@ -25,3 +25,10 @@ patch_level_labels:
   - "rubygems: minor enhancement"
   - "rubygems: bug fix"
   - "rubygems: backport"
+
+minor_level_labels:
+  - "rubygems: major enhancement"
+  - "rubygems: deprecation"
+  - "rubygems: feature"
+  - "rubygems: performance"
+  - "rubygems: documentation"

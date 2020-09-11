@@ -24,7 +24,13 @@ class Changelog
     @version = Gem::Version.new(version)
     @file = File.expand_path(file)
     @config = YAML.load_file("#{File.dirname(file)}/.changelog.yml")
-    @level = if @version.segments.last == 0 ? :all : :patch
+    @level = if @version.segments[1..2] == [0, 0]
+               :major
+             elsif @version.segments[2] == 0
+               :minor
+             else
+               :patch
+               end
     @latest_release = latest_release
   end
 
@@ -179,11 +185,13 @@ class Changelog
   end
 
   def relevant_changelog_label_mapping
-    mapping = changelog_label_mapping
-
-    mapping = mapping.slice(*patch_level_labels) if @level == :patch
-
-    mapping
+    if @level == :patch
+      changelog_label_mapping.slice(*patch_level_labels)
+    elsif @level == :minor
+      changelog_label_mapping.slice(*patch_level_labels + minor_level_labels)
+    else
+      changelog_label_mapping
+    end
   end
 
   def changelog_labels
@@ -256,6 +264,10 @@ class Changelog
 
   def patch_level_labels
     @config["patch_level_labels"]
+  end
+
+  def minor_level_labels
+    @config["minor_level_labels"]
   end
 
   def gh_client

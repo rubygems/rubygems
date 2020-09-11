@@ -108,11 +108,11 @@ task :clear_package do
   rm_rf "pkg"
 end
 
-desc "Generates the changelog for the next patch-level version"
-task :generate_changelog do
+desc "Generates the changelog for a specific target version"
+task :generate_changelog, [:version] do |_t, opts|
   require_relative "util/changelog"
 
-  Changelog.rubygems.cut_patch_level_version!
+  Changelog.for_rubygems(opts[:version]).cut!
 end
 
 desc "Release rubygems-#{v}"
@@ -278,7 +278,7 @@ namespace 'blog' do
     name  = `git config --get user.name`.strip
     email = `git config --get user.email`.strip
 
-    history = Changelog.rubygems
+    history = Changelog.for_rubygems(v.to_s)
 
     require 'tempfile'
 
@@ -291,7 +291,7 @@ author: #{name}
 author_email: #{email}
 ---
 
-RubyGems #{v} includes #{history.change_types_for_blog(v)}.
+RubyGems #{v} includes #{history.change_types_for_blog}.
 
 To update to the latest RubyGems you can run:
 
@@ -301,7 +301,7 @@ If you need to upgrade or downgrade please follow the [how to upgrade/downgrade
 RubyGems][upgrading] instructions.  To install RubyGems by hand see the
 [Download RubyGems][download] page.
 
-#{history.release_notes_for_blog(v).join("\n")}
+#{history.release_notes_for_blog.join("\n")}
 
 SHA256 Checksums:
 

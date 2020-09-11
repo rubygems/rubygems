@@ -4,36 +4,31 @@ require_relative "github_info"
 require "yaml"
 
 class Changelog
-  def self.rubygems
+  def self.for_rubygems(version)
     @rubygems ||= new(
       "History.txt",
+      version,
       :latest_release => GithubInfo.latest_release_for("rubygems"),
     )
   end
 
-  def self.bundler
+  def self.for_bundler(version)
     @bundler ||= new(
       "CHANGELOG.md",
+      version,
       :latest_release => GithubInfo.latest_release_for("bundler"),
     )
   end
 
-  def self.bundler_patch_level
-    @bundler_patch_level ||= new(
-      "CHANGELOG.md",
-      :patch,
-      :latest_release => GithubInfo.latest_release_for("bundler"),
-    )
-  end
-
-  def initialize(file, level = :all, latest_release:)
+  def initialize(file, version, latest_release:)
+    @version = Gem::Version.new(version)
     @file = File.expand_path(file)
     @config = YAML.load_file("#{File.dirname(file)}/.changelog.yml")
-    @level = level
+    @level = if @version.segments.last == 0 ? :all : :patch
     @latest_release = latest_release
   end
 
-  def release_notes(version)
+  def release_notes
     current_version_title = "#{release_section_token}#{version}"
     current_minor_title = "#{release_section_token}#{version.segments[0, 2].join(".")}"
 
@@ -51,19 +46,8 @@ class Changelog
     lines[current_version_index..previous_version_index]
   end
 
-  def next_patch_level_version
-    current_version = Gem::Version.new(@latest_release.tag_name.match(/v(.*)\Z/)[1])
-    segments = current_version.segments
-    if segments.last.is_a?(String)
-      segments << "1"
-    else
-      segments[-1] += 1
-    end
-    Gem::Version.new(segments.join("."))
-  end
-
-  def release_notes_for_blog(version)
-    release_notes(version).map do |line|
+  def release_notes_for_blog
+    release_notes.map do |line|
       if change_types.include?(line)
         "_#{line}_"
       else
@@ -72,8 +56,8 @@ class Changelog
     end
   end
 
-  def change_types_for_blog(version)
-    types = release_notes(version)
+  def change_types_for_blog
+    types = release_notes
       .select {|line| change_types.include?(line) }
       .map {|line| line.downcase.tr '^a-z ', '' }
 
@@ -88,13 +72,9 @@ class Changelog
     types << last_change_type
   end
 
-  def cut_patch_level_version!
-    cut!(next_patch_level_version)
-  end
-
-  def cut!(version)
+  def cut!
     full_new_changelog = [
-      format_header_for(version),
+      format_header,
       "",
       unreleased_notes,
       lines,
@@ -132,7 +112,9 @@ class Changelog
 
   private
 
-  def format_header_for(version)
+  attr_reader :version
+
+  def format_header
     new_header = header_template.gsub(/%new_version/, version.to_s)
 
     if header_template.include?("%release_date")

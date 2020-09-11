@@ -55,7 +55,7 @@ unless system("git", "cherry-pick", "-x", "-m", "1", *commits.map(&:first))
   abort unless system("zsh")
 end
 
-sh("rake", "generate_changelog")
+sh("rake", "generate_changelog[#{version}]")
 
 version_file = "lib/rubygems.rb"
 version_contents = File.read(version_file)

@@ -26,8 +26,9 @@ namespace :release do
 
   desc "Push the release to Github releases"
   task :github do
-    version = Gem::Version.new(Bundler::GemHelper.gemspec.version)
-    release_notes = Changelog.bundler.release_notes(version)
+    gemspec_version = Bundler::GemHelper.gemspec.version
+    version = Gem::Version.new(gemspec_version)
+    release_notes = Changelog.for_bundler(gemspec_version).release_notes
     tag = "bundler-v#{version}"
 
     GithubInfo.client.create_release "rubygems/rubygems", tag, :name => tag,
@@ -35,12 +36,10 @@ namespace :release do
                                                                :prerelease => version.prerelease?
   end
 
-  desc "Prepare a patch release with the PRs from master in the patch milestone"
-  task :prepare_patch do
-    puts "Cherry-picking PRs with patch-level compatible tags into the stable branch..."
-
-    changelog = Changelog.bundler_patch_level
-    version = changelog.next_patch_level_version
+  desc "Prepare a new release"
+  task :prepare, [:version] do |_t, opts|
+    version = opts[:version]
+    changelog = Changelog.for_bundler(version)
 
     branch = version.segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
 
@@ -71,7 +70,7 @@ namespace :release do
       end
       File.open(version_file, "w") {|f| f.write(version_contents) }
 
-      changelog.cut!(version.to_s)
+      changelog.cut!
 
       sh("git", "commit", "-am", "Version #{version} with changelog")
     rescue StandardError

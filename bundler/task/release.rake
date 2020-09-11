@@ -48,8 +48,6 @@ namespace :release do
 
     def cut!(version)
       full_new_changelog = [
-        unreleased_section_title,
-        "",
         "# #{version} (#{Time.now.strftime("%B %-d, %Y")})",
         "",
         unreleased_notes,
@@ -160,10 +158,6 @@ namespace :release do
       pulls.select {|pull| relevant_label_for(pull) }.sort_by(&:merged_at)
     end
 
-    def unreleased_section_title
-      "#{release_section_token}(Unreleased)"
-    end
-
     def released_notes
       lines.drop_while {|line| !line.start_with?(release_section_token) }
     end
@@ -173,7 +167,7 @@ namespace :release do
     end
 
     def lines
-      @lines ||= content.split("\n")[2..-1]
+      @lines ||= content.split("\n")
     end
 
     def content

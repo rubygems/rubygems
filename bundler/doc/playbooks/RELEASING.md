@@ -69,7 +69,7 @@ Here's the checklist for releasing new minor versions:
 * [ ] Create a new stable branch from master (see **Branching** below)
 * [ ] Create a PR to the stable branch that:
   * [ ] Updates `version.rb` to a prerelease number, e.g. `1.12.pre.1`
-  * [ ] Updates `CHANGELOG.md` to include a release header for the new version, leaving the "(Unreleased)" section empty.
+  * [ ] Updates `CHANGELOG.md` to include a release header for the new version.
 * [ ] Get the PR reviewed, make sure CI is green, and merge it.
 * [ ] Pull the updated stable brnach, wait for CI to complete on it and get excited.
 * [ ] Run `bin/rake release` from the updated stable branch, tweet, blog, let people know about the prerelease!

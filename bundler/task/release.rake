@@ -21,6 +21,11 @@ task :build => ["build_metadata"] do
 end
 task "release:rubygem_push" => ["release:verify_docs", "build_metadata", "release:github"]
 
+desc "Generates the changelog for a specific target version"
+task :generate_changelog, [:version] do |_t, opts|
+  Changelog.for_bundler(opts[:version]).cut!
+end
+
 namespace :release do
   task :verify_docs => :"man:check"
 

@@ -7,17 +7,6 @@
 
 class Gem::Resolver::APISpecification < Gem::Resolver::Specification
   ##
-  # We assume that all instances of this class are immutable;
-  # so avoid duplicated generation for performance.
-  @@cache = {}
-  def self.new(set, api_data)
-    cache_key = [set, api_data]
-    cache = @@cache[cache_key]
-    return cache if cache
-    @@cache[cache_key] = super
-  end
-
-  ##
   # Creates an APISpecification for the given +set+ from the rubygems.org
   # +api_data+.
   #
@@ -29,12 +18,12 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
 
     @set = set
     @name = api_data[:name]
-    @version = Gem::Version.new(api_data[:number]).freeze
-    @platform = Gem::Platform.new(api_data[:platform]).freeze
-    @original_platform = api_data[:platform].freeze
+    @version = Gem::Version.new api_data[:number]
+    @platform = Gem::Platform.new api_data[:platform]
+    @original_platform = api_data[:platform]
     @dependencies = api_data[:dependencies].map do |name, ver|
-      Gem::Dependency.new(name, ver.split(/\s*,\s*/)).freeze
-    end.freeze
+      Gem::Dependency.new name, ver.split(/\s*,\s*/)
+    end
   end
 
   def ==(other) # :nodoc:

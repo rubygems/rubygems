@@ -1,4 +1,4 @@
-# Development setup
+# Bundler Development setup
 
 To work on Bundler, you'll probably want to do a couple of things:
 
@@ -11,6 +11,10 @@ To work on Bundler, you'll probably want to do a couple of things:
     And for OS X (with brew installed):
 
         $ brew install graphviz
+
+* From the rubygems root directory change into the bundler directory:
+
+        $ cd bundler
 
 * Install Bundler's development dependencies:
 

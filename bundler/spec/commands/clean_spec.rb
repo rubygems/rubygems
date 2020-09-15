@@ -625,6 +625,28 @@ RSpec.describe "bundle clean" do
     expect(out).to eq("1.0")
   end
 
+  it "when using --force, it doesn't remove default gem binaries", :rubygems => ">= 3.2.0.rc.1" do
+    skip "does not work on Windows because it changes the path to look for default gems, and Windows uses the default fiddle gem" if Gem.win_platform?
+
+    default_irb_version = ruby "gem 'irb', '< 999999'; require 'irb'; puts IRB::VERSION", :raise_on_error => false
+    skip "irb isn't a default gem" if default_irb_version.empty?
+
+    build_repo2 do
+      # simulate executable for default gem
+      build_gem "irb", default_irb_version, :to_system => true, :default => true do |s|
+        s.executables = "irb"
+      end
+    end
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo2)}"
+    G
+
+    bundle "clean --force", :env => { "BUNDLER_GEM_DEFAULT_DIR" => system_gem_path.to_s }
+
+    expect(out).not_to include("Removing irb")
+  end
+
   it "doesn't blow up on path gems without a .gemspec" do
     relative_path = "vendor/private_gems/bar-1.0"
     absolute_path = bundled_app(relative_path)

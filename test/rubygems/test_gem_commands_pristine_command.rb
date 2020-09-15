@@ -577,7 +577,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
   def test_execute_default_gem
     default_gem_spec = new_default_spec("default", "2.0.0.0",
                                         nil, "default/gem.rb")
-    install_default_specs(default_gem_spec)
+    install_default_gems(default_gem_spec)
 
     @cmd.options[:args] = %w[default]
 

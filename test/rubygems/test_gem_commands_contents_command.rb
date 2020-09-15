@@ -227,7 +227,7 @@ lib/foo.rb
                                         nil, "default/gem.rb")
     default_gem_spec.executables = ["default_command"]
     default_gem_spec.files += ["default_gem.so"]
-    install_default_specs(default_gem_spec)
+    install_default_gems(default_gem_spec)
 
     @cmd.options[:args] = %w[default]
 

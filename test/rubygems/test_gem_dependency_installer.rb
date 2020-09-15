@@ -749,7 +749,7 @@ class TestGemDependencyInstaller < Gem::TestCase
     inst = nil
 
     Dir.chdir @tempdir do
-      inst = Gem::DependencyInstaller.new
+      inst = Gem::DependencyInstaller.new :force => true
       inst.install 'a'
     end
 

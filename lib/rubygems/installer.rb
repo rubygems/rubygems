@@ -433,7 +433,7 @@ class Gem::Installer
   #
 
   def default_spec_file
-    File.join Gem.default_specifications_dir, "#{spec.full_name}.gemspec"
+    File.join gem_home, "specifications", "default", "#{spec.full_name}.gemspec"
   end
 
   ##

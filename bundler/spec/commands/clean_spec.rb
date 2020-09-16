@@ -626,7 +626,7 @@ RSpec.describe "bundle clean" do
   end
 
   it "when using --force, it doesn't remove default gem binaries", :rubygems => ">= 3.2.0.rc.1" do
-    skip "does not work on Windows because it changes the path to look for default gems, and Windows uses the default fiddle gem" if Gem.win_platform?
+    skip "does not work on ruby 3.0 because it changes the path to look for default gems, tsort is a default gem there, and we can't install it either like we do with fiddle because it doesn't yet exist" unless RUBY_VERSION < "3.0.0"
 
     default_irb_version = ruby "gem 'irb', '< 999999'; require 'irb'; puts IRB::VERSION", :raise_on_error => false
     skip "irb isn't a default gem" if default_irb_version.empty?
@@ -637,6 +637,8 @@ RSpec.describe "bundle clean" do
         s.executables = "irb"
       end
     end
+
+    realworld_system_gems "fiddle"
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"

@@ -7,6 +7,7 @@ on:
     branches:
       - master
       - 3.2
+      - vendor_uri
 
 jobs:
   ruby_core:

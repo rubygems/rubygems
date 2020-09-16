@@ -11,6 +11,7 @@ on:
     branches:
       - master
       - 3.2
+      - vendor_uri
 
 jobs:
   older_rubygems_bundler:

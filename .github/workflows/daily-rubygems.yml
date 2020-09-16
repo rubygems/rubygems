@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+  push:
+    branches:
+      - master
+      - 3.2
+      - vendor_uri
+
 jobs:
   daily_rubygems:
     runs-on: ubuntu-18.04
@@ -29,17 +35,4 @@ jobs:
         run: |
           rake setup
           rake test
-
-      - name: Get previous status
-        if: always()
-        run: echo "::set-env name=OLD_STATUS::$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/workflows/daily-rubygems.yml/runs?event=schedule&branch=master' | jq '.workflow_runs | .[1].conclusion')"
-
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,action,workflow
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-        if: failure() && env.OLD_STATUS == '"success"'
-
     timeout-minutes: 60

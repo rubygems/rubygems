@@ -71,7 +71,7 @@ Here's the checklist for releasing new minor versions:
   * [ ] Updates `version.rb` to a prerelease number, e.g. `1.12.pre.1`
   * [ ] Updates `CHANGELOG.md` to include a release header for the new version.
 * [ ] Get the PR reviewed, make sure CI is green, and merge it.
-* [ ] Pull the updated stable brnach, wait for CI to complete on it and get excited.
+* [ ] Pull the updated stable branch, wait for CI to complete on it and get excited.
 * [ ] Run `bin/rake release` from the updated stable branch, tweet, blog, let people know about the prerelease!
 * [ ] Wait a **minimum of 7 days**
 * [ ] If significant problems are found, increment the prerelease (i.e. 2.2.pre.2)

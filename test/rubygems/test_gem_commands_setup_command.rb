@@ -333,8 +333,6 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     File.open 'History.txt', 'w' do |io|
       io.puts <<-HISTORY_TXT
-# coding: UTF-8
-
 === #{Gem::VERSION} / 2013-03-26
 
 * Bug fixes:

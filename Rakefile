@@ -108,6 +108,13 @@ task :clear_package do
   rm_rf "pkg"
 end
 
+desc "Generates the changelog for a specific target version"
+task :generate_changelog, [:version] do |_t, opts|
+  require_relative "util/changelog"
+
+  Changelog.for_rubygems(opts[:version]).cut!
+end
+
 desc "Release rubygems-#{v}"
 task :release => :prerelease do
   Rake::Task["package"].invoke
@@ -271,50 +278,7 @@ namespace 'blog' do
     name  = `git config --get user.name`.strip
     email = `git config --get user.email`.strip
 
-    history = File.read 'History.txt'
-
-    history.force_encoding Encoding::UTF_8
-
-    _, change_log, = history.split %r{^===\s*\d.*}, 3
-
-    change_types = []
-
-    lines = change_log.strip.lines
-    change_log = []
-
-    while line = lines.shift do
-      case line
-      when /(^[A-Z].*)/ then
-        change_types << $1
-        change_log << "_#{$1}_\n"
-      when /^\*/ then
-        entry = [line.strip]
-
-        while /^  \S/ =~ lines.first do
-          entry << lines.shift.strip
-        end
-
-        change_log << "#{entry.join ' '}\n"
-      else
-        change_log << line
-      end
-    end
-
-    change_log = change_log.join
-
-    change_types = change_types.map do |change_type|
-      change_type.downcase.tr '^a-z ', ''
-    end
-
-    last_change_type = change_types.pop
-
-    if change_types.empty?
-      change_types = ''
-    else
-      change_types = change_types.join(', ') << ' and '
-    end
-
-    change_types << last_change_type
+    history = Changelog.for_rubygems(v.to_s)
 
     require 'tempfile'
 
@@ -327,7 +291,7 @@ author: #{name}
 author_email: #{email}
 ---
 
-RubyGems #{v} includes #{change_types}.
+RubyGems #{v} includes #{history.change_types_for_blog}.
 
 To update to the latest RubyGems you can run:
 
@@ -337,7 +301,7 @@ If you need to upgrade or downgrade please follow the [how to upgrade/downgrade
 RubyGems][upgrading] instructions.  To install RubyGems by hand see the
 [Download RubyGems][download] page.
 
-#{change_log}
+#{history.release_notes_for_blog.join("\n")}
 
 SHA256 Checksums:
 

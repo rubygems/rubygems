@@ -1,5 +1,3 @@
-# (Unreleased)
-
 # 2.2.0.rc.1 (July 2, 2020)
 
 ## Major enhancements:

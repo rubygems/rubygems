@@ -23,7 +23,11 @@ release, make sure the following information is accurate:
   * "bundler: minor enhancement"
   * "bundler: bug fix"
 
-  This label will indicate the section in the changelog that the PR will take.
+  This label will indicate the section in the changelog that the PR will take,
+  and it will also be automatically used by our release tasks for backporting.
+  The labels that should be backported only to patch level releases, and to
+  either patch level or minor releases can be configured in the `.changelog.yml`
+  file.
 
   If for some reason you need a PR to be backported to a stable branch, but it
   doesn't have any user visible changes, apply the "bundler: backport" label to

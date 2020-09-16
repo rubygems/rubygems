@@ -27,7 +27,7 @@ class Gem::Source
 
   def initialize(uri)
     begin
-      unless uri.kind_of? Gem::URI
+      if uri.is_a? String
         uri = Gem::URI.parse(uri.to_s)
       end
     rescue Gem::URI::InvalidURIError

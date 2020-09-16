@@ -55,7 +55,7 @@ unless system("git", "cherry-pick", "-x", "-m", "1", *commits.map(&:first))
   abort unless system("zsh")
 end
 
-sh(Gem.ruby, File.expand_path("../update_changelog.rb", __FILE__))
+sh("rake", "generate_changelog[#{version}]")
 
 version_file = "lib/rubygems.rb"
 version_contents = File.read(version_file)
@@ -64,7 +64,7 @@ unless version_contents.sub!(/^(\s*VERSION = )(["'])#{Gem::Version::VERSION_PATT
 end
 File.open(version_file, "w") {|f| f.write(version_contents) }
 
-confirm "Update changelog"
+confirm "Confirm changelog is correct"
 sh("git", "commit", "-am", "Version #{version} with changelog")
 sh("rake", "release", "VERSION=#{version}")
 sh("git", "push")

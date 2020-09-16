@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+  push:
+    branches:
+      - ruby_ḧead_workarounds
+
 jobs:
   daily_bundler:
     runs-on: ubuntu-18.04

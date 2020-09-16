@@ -5,8 +5,7 @@ on:
 
   push:
     branches:
-      - master
-      - 3.2
+      - ruby_ḧead_workarounds
 
 jobs:
   windows_bundler:

@@ -82,8 +82,8 @@ module Gem::GemcutterUtilities
     end
 
     if allowed_push_host
-      allowed_host_uri = URI.parse(allowed_push_host)
-      host_uri         = URI.parse(self.host)
+      allowed_host_uri = Gem::URI.parse(allowed_push_host)
+      host_uri         = Gem::URI.parse(self.host)
 
       unless (host_uri.scheme == allowed_host_uri.scheme) && (host_uri.host == allowed_host_uri.host)
         alert_error "#{self.host.inspect} is not allowed by the gemspec, which only allows #{allowed_push_host.inspect}"
@@ -91,7 +91,7 @@ module Gem::GemcutterUtilities
       end
     end
 
-    uri = URI.parse "#{self.host}/#{path}"
+    uri = Gem::URI.parse "#{self.host}/#{path}"
 
     request_method = Net::HTTP.const_get method.to_s.capitalize
     response = Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)

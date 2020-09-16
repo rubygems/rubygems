@@ -6,30 +6,30 @@ class TestGemResolverAPISet < Gem::TestCase
     super
 
     @DR = Gem::Resolver
-    @dep_uri = URI "#{@gem_repo}api/v1/dependencies"
+    @dep_uri = Gem::URI "#{@gem_repo}api/v1/dependencies"
   end
 
   def test_initialize
     set = @DR::APISet.new
 
-    assert_equal URI('https://rubygems.org/api/v1/dependencies'), set.dep_uri
-    assert_equal URI('https://rubygems.org'),                     set.uri
-    assert_equal Gem::Source.new(URI('https://rubygems.org')),    set.source
+    assert_equal Gem::URI('https://rubygems.org/api/v1/dependencies'), set.dep_uri
+    assert_equal Gem::URI('https://rubygems.org'),                     set.uri
+    assert_equal Gem::Source.new(Gem::URI('https://rubygems.org')),    set.source
   end
 
   def test_initialize_deeper_uri
     set = @DR::APISet.new 'https://rubygemsserver.com/mygems/api/v1/dependencies'
 
-    assert_equal URI('https://rubygemsserver.com/mygems/api/v1/dependencies'), set.dep_uri
-    assert_equal URI('https://rubygemsserver.com/mygems/'),                    set.uri
-    assert_equal Gem::Source.new(URI('https://rubygemsserver.com/mygems/')), set.source
+    assert_equal Gem::URI('https://rubygemsserver.com/mygems/api/v1/dependencies'), set.dep_uri
+    assert_equal Gem::URI('https://rubygemsserver.com/mygems/'),                    set.uri
+    assert_equal Gem::Source.new(Gem::URI('https://rubygemsserver.com/mygems/')), set.source
   end
 
   def test_initialize_uri
     set = @DR::APISet.new @dep_uri
 
-    assert_equal URI("#{@gem_repo}api/v1/dependencies"), set.dep_uri
-    assert_equal URI("#{@gem_repo}"), set.uri
+    assert_equal Gem::URI("#{@gem_repo}api/v1/dependencies"), set.dep_uri
+    assert_equal Gem::URI("#{@gem_repo}"), set.uri
   end
 
   def test_find_all

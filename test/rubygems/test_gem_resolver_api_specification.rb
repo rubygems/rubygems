@@ -123,7 +123,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
       fetcher.spec 'a', 1
     end
 
-    dep_uri = URI(@gem_repo) + 'api/v1/dependencies'
+    dep_uri = Gem::URI(@gem_repo) + 'api/v1/dependencies'
     set = Gem::Resolver::APISet.new dep_uri
     data = {
       :name         => 'a',
@@ -147,7 +147,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
       end
     end
 
-    dep_uri = URI(@gem_repo) + 'api/v1/dependencies'
+    dep_uri = Gem::URI(@gem_repo) + 'api/v1/dependencies'
     set = Gem::Resolver::APISet.new dep_uri
     data = {
       :name         => 'j',

@@ -10,7 +10,7 @@ class TestGemSpecFetcher < Gem::TestCase
   def setup
     super
 
-    @uri = URI.parse @gem_repo
+    @uri = Gem::URI.parse @gem_repo
     @source = Gem::Source.new(@uri)
 
     @sf = Gem::SpecFetcher.new

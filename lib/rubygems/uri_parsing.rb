@@ -13,7 +13,7 @@ module Gem::UriParsing
   private :parse_uri
 
   def uri_parser
-    require "uri"
+    require_relative "uri/lib/uri"
 
     Gem::UriParser.new
   end

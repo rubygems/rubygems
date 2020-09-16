@@ -27,10 +27,10 @@ class Gem::Source
 
   def initialize(uri)
     begin
-      unless uri.kind_of? URI
-        uri = URI.parse(uri.to_s)
+      unless uri.kind_of? Gem::URI
+        uri = Gem::URI.parse(uri.to_s)
       end
-    rescue URI::InvalidURIError
+    rescue Gem::URI::InvalidURIError
       raise if Gem::Source == self.class
     end
 

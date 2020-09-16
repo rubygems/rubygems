@@ -2,13 +2,14 @@
 require 'net/http'
 require 'openssl'
 require 'fileutils'
+require_relative '../lib/rubygems/uri/lib/uri'
 
 URIS = [
-  URI('https://rubygems.org'),
-  URI('https://index.rubygems.org'),
-  URI('https://staging.rubygems.org'),
-  URI('https://fastly.rubygems.org'),
-  URI('https://rubygems.global.ssl.fastly.net'),
+  Gem::URI('https://rubygems.org'),
+  Gem::URI('https://index.rubygems.org'),
+  Gem::URI('https://staging.rubygems.org'),
+  Gem::URI('https://fastly.rubygems.org'),
+  Gem::URI('https://rubygems.global.ssl.fastly.net'),
 ].freeze
 
 HOSTNAMES_TO_MAP = [
@@ -88,7 +89,7 @@ end
 def hostname_certificate_mapping(certificates)
   mapping = {}
   HOSTNAMES_TO_MAP.each do |hostname|
-    uri = URI("https://#{hostname}")
+    uri = Gem::URI("https://#{hostname}")
     certificates.each do |cert|
       match = test_uri uri, [cert]
       mapping[hostname] = cert if match && !mapping.values.include?(cert)

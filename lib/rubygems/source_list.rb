@@ -48,15 +48,15 @@ class Gem::SourceList
   # String.
 
   def <<(obj)
-    require "uri"
+    require_relative "uri/lib/uri"
 
     src = case obj
-          when URI
+          when Gem::URI
             Gem::Source.new(obj)
           when Gem::Source
             obj
           else
-            Gem::Source.new(URI.parse(obj))
+            Gem::Source.new(Gem::URI.parse(obj))
           end
 
     @sources << src unless @sources.include?(src)

@@ -2,7 +2,7 @@
 require 'webrick'
 require 'zlib'
 require 'erb'
-require 'uri'
+require_relative 'uri/lib/uri'
 
 require 'rubygems'
 require 'rubygems/rdoc'
@@ -456,7 +456,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
   end
 
   def uri_encode(str)
-    str.gsub(URI::UNSAFE) do |match|
+    str.gsub(Gem::URI::UNSAFE) do |match|
       match.each_byte.map {|c| sprintf('%%%02X', c.ord) }.join
     end
   end
@@ -624,13 +624,13 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
       # Pre-process spec homepage for safety reasons
       begin
-        homepage_uri = URI.parse(spec.homepage)
-        if [URI::HTTP, URI::HTTPS].member? homepage_uri.class
+        homepage_uri = Gem::URI.parse(spec.homepage)
+        if [Gem::URI::HTTP, Gem::URI::HTTPS].member? homepage_uri.class
           homepage_uri = spec.homepage
         else
           homepage_uri = "."
         end
-      rescue URI::InvalidURIError
+      rescue Gem::URI::InvalidURIError
         homepage_uri = "."
       end
 

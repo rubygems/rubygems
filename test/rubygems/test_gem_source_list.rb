@@ -35,7 +35,7 @@ class TestGemSourceList < Gem::TestCase
 
     assert_kind_of Gem::Source, source
 
-    assert_kind_of URI, source.uri
+    assert_kind_of Gem::URI, source.uri
     assert_equal source.uri.to_s, @uri
 
     assert_equal [source], sl.sources
@@ -97,7 +97,7 @@ class TestGemSourceList < Gem::TestCase
 
   def test_include_eh
     assert @sl.include?(@uri), "string comparison not working"
-    assert @sl.include?(URI.parse(@uri)), "uri comparison not working"
+    assert @sl.include?(Gem::URI.parse(@uri)), "uri comparison not working"
   end
 
   def test_include_matches_a_source

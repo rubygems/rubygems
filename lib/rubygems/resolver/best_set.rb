@@ -59,7 +59,7 @@ class Gem::Resolver::BestSet < Gem::Resolver::ComposedSet
 
   def replace_failed_api_set(error) # :nodoc:
     uri = error.uri
-    uri = URI uri unless URI === uri
+    uri = Gem::URI uri unless Gem::URI === uri
     uri.query = nil
 
     raise error unless api_set = @sets.find do |set|

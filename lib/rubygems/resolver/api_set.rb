@@ -27,7 +27,7 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   def initialize(dep_uri = 'https://rubygems.org/api/v1/dependencies')
     super()
 
-    dep_uri = URI dep_uri unless URI === dep_uri
+    dep_uri = Gem::URI dep_uri unless Gem::URI === dep_uri
 
     @dep_uri = dep_uri
     @uri     = dep_uri + '../..'

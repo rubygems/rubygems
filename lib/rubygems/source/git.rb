@@ -229,7 +229,7 @@ class Gem::Source::Git < Gem::Source
 
     normalized =
       if @repository =~ %r{^\w+://(\w+@)?}
-        uri = URI(@repository).normalize.to_s.sub %r{/$},''
+        uri = Gem::URI(@repository).normalize.to_s.sub %r{/$},''
         uri.sub(/\A(\w+)/) { $1.downcase }
       else
         @repository

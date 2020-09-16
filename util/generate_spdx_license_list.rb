@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 require 'json'
 require 'net/http'
-require 'uri'
+require_relative '../lib/rubygems/uri/lib/uri'
 
-licenses_json = Net::HTTP.get(URI('https://spdx.org/licenses/licenses.json'))
+licenses_json = Net::HTTP.get(Gem::URI('https://spdx.org/licenses/licenses.json'))
 licenses = JSON.parse(licenses_json)['licenses'].map do |licenseObject|
   licenseObject['licenseId']
 end
-exceptions_json = Net::HTTP.get(URI('https://spdx.org/licenses/exceptions.json'))
+exceptions_json = Net::HTTP.get(Gem::URI('https://spdx.org/licenses/exceptions.json'))
 exceptions = JSON.parse(exceptions_json)['exceptions'].map do |exceptionObject|
   exceptionObject['licenseExceptionId']
 end

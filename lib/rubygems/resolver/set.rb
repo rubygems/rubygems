@@ -20,7 +20,7 @@ class Gem::Resolver::Set
   attr_accessor :prerelease
 
   def initialize # :nodoc:
-    require 'uri'
+    require_relative '../uri/lib/uri'
     @prerelease = false
     @remote     = true
     @errors     = []

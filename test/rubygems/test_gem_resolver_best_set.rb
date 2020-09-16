@@ -39,7 +39,7 @@ class TestGemResolverBestSet < Gem::TestCase
 
     set = @DR::BestSet.new
 
-    api_uri = URI(@gem_repo) + './api/v1/dependencies'
+    api_uri = Gem::URI(@gem_repo) + './api/v1/dependencies'
 
     set.sets << Gem::Resolver::APISet.new(api_uri)
 
@@ -99,7 +99,7 @@ class TestGemResolverBestSet < Gem::TestCase
   def test_replace_failed_api_set
     set = @DR::BestSet.new
 
-    api_uri = URI(@gem_repo) + './api/v1/dependencies'
+    api_uri = Gem::URI(@gem_repo) + './api/v1/dependencies'
     api_set = Gem::Resolver::APISet.new api_uri
 
     set.sets << api_set

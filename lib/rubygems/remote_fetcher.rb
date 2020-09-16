@@ -79,7 +79,7 @@ class Gem::RemoteFetcher
     require 'net/http'
     require 'stringio'
     require 'time'
-    require 'uri'
+    require_relative 'uri/lib/uri'
 
     Socket.do_not_reverse_lookup = true
 

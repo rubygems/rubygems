@@ -28,7 +28,7 @@ class TestGemRequest < Gem::TestCase
     super
 
     @proxy_uri = "http://localhost:1234"
-    @uri = URI('http://example')
+    @uri = Gem::URI('http://example')
 
     @request = make_request @uri, nil, nil, nil
   end
@@ -50,7 +50,7 @@ class TestGemRequest < Gem::TestCase
   def test_initialize_proxy_URI
     proxy_uri = 'http://proxy.example.com'
 
-    request = make_request @uri, nil, nil, URI(proxy_uri)
+    request = make_request @uri, nil, nil, Gem::URI(proxy_uri)
 
     assert_equal proxy_uri, request.proxy_uri.to_s
   end
@@ -71,18 +71,18 @@ class TestGemRequest < Gem::TestCase
   def test_initialize_proxy_ENV_https
     ENV['https_proxy'] = @proxy_uri
 
-    request = make_request URI('https://example'), nil, nil, nil
+    request = make_request Gem::URI('https://example'), nil, nil, nil
 
     proxy = request.proxy_uri
 
-    assert_equal URI(@proxy_uri), proxy
+    assert_equal Gem::URI(@proxy_uri), proxy
   end
 
   def test_proxy_ENV
     ENV['http_proxy'] = "http://proxy"
     ENV['https_proxy'] = ""
 
-    request = make_request URI('https://example'), nil, nil, nil
+    request = make_request Gem::URI('https://example'), nil, nil, nil
 
     proxy = request.proxy_uri
 
@@ -96,7 +96,7 @@ class TestGemRequest < Gem::TestCase
       def self.get_cert_files
         [TestGemRequest::PUBLIC_CERT_FILE]
       end
-    end.create_with_proxy URI('https://example'), nil, nil, nil
+    end.create_with_proxy Gem::URI('https://example'), nil, nil, nil
 
     Gem::Request.configure_connection_for_https connection, request.cert_files
 
@@ -115,7 +115,7 @@ class TestGemRequest < Gem::TestCase
       def self.get_cert_files
         [TestGemRequest::PUBLIC_CERT_FILE]
       end
-    end.create_with_proxy URI('https://example'), nil, nil, nil
+    end.create_with_proxy Gem::URI('https://example'), nil, nil, nil
 
     Gem::Request.configure_connection_for_https connection, request.cert_files
 
@@ -132,17 +132,17 @@ class TestGemRequest < Gem::TestCase
     request = make_request @uri, nil, nil, nil
     proxy = request.proxy_uri
 
-    assert_equal URI(@proxy_uri), proxy
+    assert_equal Gem::URI(@proxy_uri), proxy
   end
 
   def test_get_proxy_from_env_https
     ENV['https_proxy'] = @proxy_uri
-    uri = URI('https://example')
+    uri = Gem::URI('https://example')
     request = make_request uri, nil, nil, nil
 
     proxy = request.proxy_uri
 
-    assert_equal URI(@proxy_uri), proxy
+    assert_equal Gem::URI(@proxy_uri), proxy
   end
 
   def test_get_proxy_from_env_domain
@@ -185,7 +185,7 @@ class TestGemRequest < Gem::TestCase
   end
 
   def test_fetch
-    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    uri = Gem::URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
     response = util_stub_net_http(:body => :junk, :code => 200) do
       @request = make_request(uri, Net::HTTP::Get, nil, nil)
 
@@ -197,7 +197,7 @@ class TestGemRequest < Gem::TestCase
   end
 
   def test_fetch_basic_auth
-    uri = URI.parse "https://user:pass@example.rubygems/specs.#{Gem.marshal_version}"
+    uri = Gem::URI.parse "https://user:pass@example.rubygems/specs.#{Gem.marshal_version}"
     conn = util_stub_net_http(:body => :junk, :code => 200) do |c|
       @request = make_request(uri, Net::HTTP::Get, nil, nil)
       @request.fetch
@@ -209,7 +209,7 @@ class TestGemRequest < Gem::TestCase
   end
 
   def test_fetch_basic_auth_encoded
-    uri = URI.parse "https://user:%7BDEScede%7Dpass@example.rubygems/specs.#{Gem.marshal_version}"
+    uri = Gem::URI.parse "https://user:%7BDEScede%7Dpass@example.rubygems/specs.#{Gem.marshal_version}"
     conn = util_stub_net_http(:body => :junk, :code => 200) do |c|
       @request = make_request(uri, Net::HTTP::Get, nil, nil)
       @request.fetch
@@ -221,7 +221,7 @@ class TestGemRequest < Gem::TestCase
   end
 
   def test_fetch_head
-    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    uri = Gem::URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
     response = util_stub_net_http(:body => '', :code => 200) do |conn|
       @request = make_request(uri, Net::HTTP::Get, nil, nil)
       @request.fetch
@@ -232,7 +232,7 @@ class TestGemRequest < Gem::TestCase
   end
 
   def test_fetch_unmodified
-    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    uri = Gem::URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
     t = Time.utc(2013, 1, 2, 3, 4, 5)
     conn, response = util_stub_net_http(:body => '', :code => 304) do |c|
       @request = make_request(uri, Net::HTTP::Get, t, nil)

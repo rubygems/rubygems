@@ -5,7 +5,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'uri'
+require_relative 'uri/lib/uri'
 require 'rubygems'
 
 ##
@@ -17,10 +17,10 @@ module Gem::LocalRemoteOptions
   # Allows OptionParser to handle HTTP URIs.
 
   def accept_uri_http
-    OptionParser.accept URI::HTTP do |value|
+    OptionParser.accept Gem::URI::HTTP do |value|
       begin
-        uri = URI.parse value
-      rescue URI::InvalidURIError
+        uri = Gem::URI.parse value
+      rescue Gem::URI::InvalidURIError
         raise OptionParser::InvalidArgument, value
       end
 
@@ -90,7 +90,7 @@ module Gem::LocalRemoteOptions
   def add_proxy_option
     accept_uri_http
 
-    add_option(:"Local/Remote", '-p', '--[no-]http-proxy [URL]', URI::HTTP,
+    add_option(:"Local/Remote", '-p', '--[no-]http-proxy [URL]', Gem::URI::HTTP,
                'Use HTTP proxy for remote operations') do |value, options|
       options[:http_proxy] = (value == false) ? :no_proxy : value
       Gem.configuration[:http_proxy] = options[:http_proxy]
@@ -103,7 +103,7 @@ module Gem::LocalRemoteOptions
   def add_source_option
     accept_uri_http
 
-    add_option(:"Local/Remote", '-s', '--source URL', URI::HTTP,
+    add_option(:"Local/Remote", '-s', '--source URL', Gem::URI::HTTP,
                'Append URL to list of remote gem sources') do |source, options|
 
       source << '/' if source !~ /\/\z/

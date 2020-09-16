@@ -39,9 +39,9 @@ class Gem::FakeFetcher
   end
 
   def find_data(path, nargs = 3)
-    return Gem.read_binary path.path if URI === path and 'file' == path.scheme
+    return Gem.read_binary path.path if Gem::URI === path and 'file' == path.scheme
 
-    if URI === path and "URI::#{path.scheme.upcase}" != path.class.name
+    if Gem::URI === path and "Gem::URI::#{path.scheme.upcase}" != path.class.name
       raise ArgumentError,
         "mismatch for scheme #{path.scheme} and class #{path.class}"
     end
@@ -307,12 +307,12 @@ class Gem::TestCase::SpecFetcherSetup
 
     begin
       gem_repo, @test.gem_repo = @test.gem_repo, @repository
-      @test.uri = URI @repository
+      @test.uri = Gem::URI @repository
 
       @test.util_setup_spec_fetcher(*@downloaded)
     ensure
       @test.gem_repo = gem_repo
-      @test.uri = URI gem_repo
+      @test.uri = Gem::URI gem_repo
     end
 
     @gems.each do |spec, gem|

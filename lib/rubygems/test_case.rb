@@ -40,7 +40,7 @@ require 'pp'
 require 'rubygems/package'
 require 'shellwords'
 require 'tmpdir'
-require 'uri'
+require_relative 'uri/lib/uri'
 require 'zlib'
 require 'benchmark' # stdlib
 require 'rubygems/mock_gem_ui'
@@ -391,7 +391,7 @@ class Gem::TestCase < Minitest::Test
     Gem::RemoteFetcher.fetcher = Gem::FakeFetcher.new
 
     @gem_repo = "http://gems.example.com/"
-    @uri = URI.parse @gem_repo
+    @uri = Gem::URI.parse @gem_repo
     Gem.sources.replace [@gem_repo]
 
     Gem.searcher = nil

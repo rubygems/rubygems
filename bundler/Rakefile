@@ -157,7 +157,7 @@ namespace :man do
   end
 end
 
-load "task/automatiek.rake"
+load "../../task/automatiek.rake"
 
 desc "Vendor a specific version of molinillo"
 Automatiek::RakeTask.new("molinillo") do |lib|

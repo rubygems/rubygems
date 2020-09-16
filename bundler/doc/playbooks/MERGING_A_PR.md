@@ -10,8 +10,8 @@ release, make sure the following information is accurate:
 * The PR has a good descriptive title. That will be the wording for the
   corresponding changelog entry.
 
-* The PR has an accurate label. If a PR is to be included in a release, the
-  label must be one of the following:
+* The PR has an accurate label. If a PR is to be included in the changelog since
+  it has user visible changes, the label must be one of the following:
 
   * "bundler: security fix"
   * "bundler: breaking change"

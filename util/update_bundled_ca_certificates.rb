@@ -18,7 +18,6 @@ HOSTNAMES_TO_MAP = [
 ].freeze
 
 def connect_to(uri, store)
-  # None of the URIs are IPv6, so URI::Generic#hostname(ruby 1.9.3+) isn't needed
   http = Net::HTTP.new uri.host, uri.port
 
   http.use_ssl = uri.scheme.downcase == 'https'

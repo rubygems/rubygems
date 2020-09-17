@@ -85,8 +85,7 @@ Gems can be saved to a specified filename with the output option:
       spec = Gem::Specification.load(gemspec)
 
       if options[:build_path]
-        Dir.chdir(File.dirname(gemspec)) do
-          spec = Gem::Specification.load(File.basename(gemspec))
+        Dir.chdir(options[:build_path]) do
           build_package(spec)
         end
       else

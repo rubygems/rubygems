@@ -2,13 +2,9 @@
 require 'rubygems/test_case'
 
 require 'webrick'
-begin
-  require 'webrick/https'
-rescue LoadError => e
-  raise unless e.path == 'openssl'
-end
+require 'webrick/https' if Gem::HAVE_OPENSSL
 
-unless defined?(OpenSSL::SSL)
+unless Gem::HAVE_OPENSSL
   warn 'Skipping Gem::RemoteFetcher tests.  openssl not found.'
 end
 
@@ -1145,4 +1141,4 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
   def key(filename)
     OpenSSL::PKey::RSA.new(File.read(File.join(__dir__, filename)))
   end
-end if defined?(OpenSSL::SSL)
+end if Gem::HAVE_OPENSSL

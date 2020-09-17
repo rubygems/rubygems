@@ -30,7 +30,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
 
     args.concat %w[--vendor] unless Gem.java_platform?
 
-    args.concat %w[-P HighSecurity] if defined?(OpenSSL::SSL)
+    args.concat %w[-P HighSecurity] if Gem::HAVE_OPENSSL
 
     assert @cmd.handles?(args)
   end
@@ -92,7 +92,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   end
 
   def test_security_policy
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip 'openssl is missing' unless Gem::HAVE_OPENSSL
 
     @cmd.handle_options %w[-P HighSecurity]
 
@@ -100,7 +100,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
   end
 
   def test_security_policy_unknown
-    skip 'openssl is missing' unless defined?(OpenSSL::SSL)
+    skip 'openssl is missing' unless Gem::HAVE_OPENSSL
 
     @cmd.add_install_update_options
 

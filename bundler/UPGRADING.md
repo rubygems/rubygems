@@ -72,7 +72,7 @@ in the upcoming 3 version.
   reference to develop their own plugins. The plugin will contain the same code
   as the old core command, the only difference being that the command is now
   implemented as `bundle graph` which is much easier to understand. However, the
-  details of the plugin are under discussion. See [#7041](https://github.com/rubygems/bundler/issues/7041).
+  details of the plugin are under discussion. See [#3333](https://github.com/rubygems/rubygems/issues/3333).
 
 * The `bundle console` will be removed and replaced with `bin/console`.
 

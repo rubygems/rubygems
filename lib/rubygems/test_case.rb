@@ -1504,7 +1504,7 @@ Also, a list:
     PRIVATE_KEY = nil
     PUBLIC_KEY  = nil
     PUBLIC_CERT = nil
-  end if defined?(OpenSSL::SSL)
+  end if Gem::HAVE_OPENSSL
 end
 
 require 'rubygems/test_utilities'

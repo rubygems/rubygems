@@ -8,7 +8,7 @@ module CoreExtensions
 
     module Initializer
       CONNECTION_TIMEOUT = 5
-      IPV4_DELAY_SECONDS = 0.3
+      IPV4_DELAY_SECONDS = 0.1
 
       def initialize(host, serv, *rest)
         mutex = Mutex.new

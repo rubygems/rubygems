@@ -6,7 +6,6 @@ require 'rubygems/s3_uri_signer'
 require 'rubygems/uri_formatter'
 require 'rubygems/uri_parsing'
 require 'rubygems/user_interaction'
-require 'rubygems/core_ext/tcpsocket_init'
 require 'resolv'
 
 ##
@@ -79,6 +78,7 @@ class Gem::RemoteFetcher
   #            fetching the gem.
 
   def initialize(proxy=nil, dns=nil, headers={})
+    require 'rubygems/core_ext/tcpsocket_init' if Gem.configuration.ipv4_fallback_enabled
     require 'net/http'
     require 'stringio'
     require 'uri'

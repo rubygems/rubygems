@@ -18,12 +18,6 @@ module Gem::InstallUpdateOptions
   # Add the install/update options to the option parser.
 
   def add_install_update_options
-    add_option(:"Install/Update", '--ipv4-fallback-enabled',
-          'Gem repository directory to get installed',
-          'gems') do |value, options|
-      Gem.configuration.ipv4_fallback_enabled = value
-    end
-
     add_option(:"Install/Update", '-i', '--install-dir DIR',
                'Gem repository directory to get installed',
                'gems') do |value, options|

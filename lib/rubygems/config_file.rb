@@ -45,7 +45,7 @@ class Gem::ConfigFile
   DEFAULT_UPDATE_SOURCES = true
   DEFAULT_CONCURRENT_DOWNLOADS = 8
   DEFAULT_CERT_EXPIRATION_LENGTH_DAYS = 365
-  DEFAULT_IPv4_FALLBACK_ENABLED = false
+  DEFAULT_IPV4_FALLBACK_ENABLED = false
 
   ##
   # For Ruby packagers to set configuration defaults.  Set in
@@ -142,6 +142,7 @@ class Gem::ConfigFile
   attr_accessor :cert_expiration_length_days
 
   ##
+  # == Experimental ==
   # Fallback to IPv4 when IPv6 is not reachable or slow (default: false)
 
   attr_accessor :ipv4_fallback_enabled
@@ -181,7 +182,7 @@ class Gem::ConfigFile
     @update_sources = DEFAULT_UPDATE_SOURCES
     @concurrent_downloads = DEFAULT_CONCURRENT_DOWNLOADS
     @cert_expiration_length_days = DEFAULT_CERT_EXPIRATION_LENGTH_DAYS
-    @ipv4_fallback_enabled = DEFAULT_IPv4_FALLBACK_ENABLED
+    @ipv4_fallback_enabled = ENV['IPV4_FALLBACK_ENABLED'] == 'true' || DEFAULT_IPV4_FALLBACK_ENABLED
 
     operating_system_config = Marshal.load Marshal.dump(OPERATING_SYSTEM_DEFAULTS)
     platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)

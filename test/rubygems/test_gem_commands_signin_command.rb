@@ -83,13 +83,13 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     util_capture(key_name_ui, nil, api_key, fetcher) { @cmd.execute }
 
     assert_match "API Key name [#{Socket.gethostname}]", key_name_ui.output
-    assert_match "index_rubygems [n]", key_name_ui.output
-    assert_match "push_rubygem [n]", key_name_ui.output
-    assert_match "yank_rubygem [n]", key_name_ui.output
-    assert_match "add_owner [n]", key_name_ui.output
-    assert_match "remove_owner [n]", key_name_ui.output
-    assert_match "webhook_actions [n]", key_name_ui.output
-    assert_match "show_dashboard [n]", key_name_ui.output
+    assert_match "index_rubygems [y/N]", key_name_ui.output
+    assert_match "push_rubygem [y/N]", key_name_ui.output
+    assert_match "yank_rubygem [y/N]", key_name_ui.output
+    assert_match "add_owner [y/N]", key_name_ui.output
+    assert_match "remove_owner [y/N]", key_name_ui.output
+    assert_match "access_webhooks [y/N]", key_name_ui.output
+    assert_match "show_dashboard [y/N]", key_name_ui.output
     assert_equal "name=test-key&push_rubygem=true", fetcher.last_request.body
 
     credentials = YAML.load_file Gem.configuration.credentials_path

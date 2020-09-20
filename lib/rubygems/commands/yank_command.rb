@@ -46,6 +46,7 @@ data you will need to change them immediately and yank your gem.
 
   def execute
     @host = options[:host]
+    @scope = :yank_rubygem
 
     sign_in @host
 

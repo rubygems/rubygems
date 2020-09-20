@@ -61,6 +61,7 @@ The push command will use ~/.gem/credentials to authenticate to a server, but yo
               options[:host]
             end
 
+    @scope = :push_rubygem
     sign_in @host
 
     send_gem(gem_name)

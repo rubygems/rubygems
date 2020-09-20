@@ -52,6 +52,7 @@ permission to.
 
   def execute
     @host = options[:host]
+    @scope = get_scope
 
     sign_in
     name = get_one_gem_name
@@ -106,6 +107,14 @@ permission to.
       request.set_form_data 'email' => owner
       request.add_field "Authorization", api_key
       request.add_field "OTP", options[:otp] if options[:otp]
+    end
+  end
+
+  def get_scope
+    if options[:add].any?
+      :add_owner
+    elsif options[:remove].any?
+      :remove_owner
     end
   end
 end

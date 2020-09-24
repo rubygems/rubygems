@@ -10,7 +10,6 @@ require 'rubygems/install_message' # must come before rdoc for messaging
 require 'rubygems/rdoc'
 
 class Gem::Commands::UpdateCommand < Gem::Command
-
   include Gem::InstallUpdateOptions
   include Gem::LocalRemoteOptions
   include Gem::VersionOption
@@ -327,5 +326,4 @@ command to remove old versions.
     # for Ruby 2.3
     @oldest_supported_version ||= Gem::Version.new("2.5.2")
   end
-
 end

@@ -4,7 +4,6 @@ require 'rubygems/package'
 require 'rubygems/version_option'
 
 class Gem::Commands::BuildCommand < Gem::Command
-
   include Gem::VersionOption
 
   def initialize
@@ -113,5 +112,4 @@ Gems can be saved to a specified filename with the output option:
       terminate_interaction 1
     end
   end
-
 end

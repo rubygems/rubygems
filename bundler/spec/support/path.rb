@@ -6,7 +6,7 @@ require "rbconfig"
 module Spec
   module Path
     def source_root
-      @source_root ||= Pathname.new(ruby_core? ? "../../../.." : "../../..").expand_path(__FILE__)
+      @source_root ||= Pathname.new(ruby_core? ? "../../.." : "../..").expand_path(__dir__)
     end
 
     def root

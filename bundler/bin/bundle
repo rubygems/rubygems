@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 require "rubygems"
-bundler_gemspec = Gem::Specification.load(File.expand_path("../bundler.gemspec", __dir__))
-bundler_gemspec.instance_variable_set(:@full_gem_path, File.expand_path("..", __dir__))
+require_relative "../spec/support/path"
+bundler_gemspec = Spec::Path.loaded_gemspec
+bundler_gemspec.instance_variable_set(:@full_gem_path, Spec::Path.source_root)
 bundler_gemspec.activate if bundler_gemspec.respond_to?(:activate)
-load File.expand_path("../exe/bundle", __dir__)
+load File.expand_path("bundle", Spec::Path.bindir)

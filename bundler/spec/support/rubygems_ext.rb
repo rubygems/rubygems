@@ -42,6 +42,7 @@ module Spec
     end
 
     def install_parallel_test_deps
+      Gem.clear_paths
       require "parallel"
 
       prev_env_test_number = ENV["TEST_ENV_NUMBER"]

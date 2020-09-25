@@ -201,11 +201,7 @@ module Bundler
         source.specs
       elsif @lockfile_uses_separate_rubygems_sources
         Index.build do |idx|
-          if dependency.all_sources
-            dependency.all_sources.each {|s| idx.add_source(s.specs) if s }
-          else
-            idx.add_source @source_requirements[:default].specs
-          end
+          dependency.all_sources.each {|s| idx.add_source(s.specs) if s }
         end
       else
         @index
@@ -243,6 +239,8 @@ module Bundler
         vertex.recursive_predecessors.map do |v|
           @source_requirements[v.name]
         end << @source_requirements[:default]
+      else
+        []
       end
     end
 
@@ -411,14 +409,8 @@ module Bundler
 
             relevant_sources = if conflict.requirement.source
               [conflict.requirement.source]
-            elsif conflict.requirement.all_sources
-              conflict.requirement.all_sources
-            elsif @lockfile_uses_separate_rubygems_sources
-              # every conflict should have an explicit group of sources when we
-              # enforce strict pinning
-              raise "no source set for #{conflict}"
             else
-              []
+              conflict.requirement.all_sources
             end.compact.map(&:to_s).uniq.sort
 
             metadata_requirement = name.end_with?("\0")
@@ -455,7 +447,8 @@ module Bundler
     def validate_resolved_specs!(resolved_specs)
       resolved_specs.each do |v|
         name = v.name
-        next unless sources = relevant_sources_for_vertex(v)
+        sources = relevant_sources_for_vertex(v)
+        next unless sources.any?
         sources.compact!
         if default_index = sources.index(@source_requirements[:default])
           sources.delete_at(default_index)

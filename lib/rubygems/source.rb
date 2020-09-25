@@ -225,7 +225,7 @@ class Gem::Source
 
   def typo_squatting?(host, distance_threshold=4)
     return if @uri.host.nil?
-    levenshtein_distance(@uri.host, host) <= distance_threshold
+    levenshtein_distance(@uri.host, host).between? 1, distance_threshold
   end
 end
 

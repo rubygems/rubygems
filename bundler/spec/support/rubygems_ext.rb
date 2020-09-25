@@ -87,7 +87,7 @@ module Spec
     end
 
     def install_gems(gemfile)
-      puts sys_exec "#{File.expand_path("bin/bundle", Path.source_root)} install --gemfile #{gemfile}", :env => { "BUNDLE_PATH__SYSTEM" => "true" }
+      puts sys_exec "#{File.expand_path("support/bin/bundle", Path.spec_dir)} install --gemfile #{gemfile}", :env => { "BUNDLE_PATH__SYSTEM" => "true" }
     end
 
     def test_gemfile

@@ -283,7 +283,7 @@ class Gem::DependencyInstaller
     request_set.development_shallow = @dev_shallow
     request_set.soft_missing = @force
     request_set.prerelease = @prerelease
-    request_set.remote = false unless consider_remote?
+    request_set.remote = consider_remote?
 
     installer_set = Gem::Resolver::InstallerSet.new @domain
     installer_set.ignore_installed = @only_install_dir

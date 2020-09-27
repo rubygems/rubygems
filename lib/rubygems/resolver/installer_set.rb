@@ -32,7 +32,6 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     super()
 
     @domain = domain
-    @remote = consider_remote?
 
     @f = Gem::SpecFetcher.fetcher
 

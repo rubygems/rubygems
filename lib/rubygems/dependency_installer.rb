@@ -306,6 +306,7 @@ class Gem::DependencyInstaller
 
     dependency =
       if spec = installer_set.local?(dep_or_name)
+        installer_set.remote = nil if spec.dependencies.none?
         Gem::Dependency.new spec.name, version
       elsif String === dep_or_name
         Gem::Dependency.new dep_or_name, version

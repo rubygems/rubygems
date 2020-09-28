@@ -1786,7 +1786,7 @@ gem 'other', version
     @gem = setup_base_gem
     installer = Gem::Installer.at @gem, :build_root => build_root
 
-    assert_equal Pathname(build_root), installer.build_root
+    assert_equal build_root, installer.build_root
     assert_equal File.join(build_root, @gemhome, 'bin'), installer.bin_dir
     assert_equal File.join(build_root, @gemhome), installer.gem_home
   end

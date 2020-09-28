@@ -794,7 +794,7 @@ gem 'other', version
 
     assert_equal spec, installer.install
 
-    assert !File.exist?(system_path), 'plugin not written to user plugins_dir'
+    assert !File.exist?(system_path), 'plugin incorrectly written to system plugins_dir'
     assert File.exist?(user_path), 'plugin not written to user plugins_dir'
   end
 

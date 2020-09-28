@@ -695,6 +695,7 @@ class Gem::Installer
     unless @build_root.nil?
       @bin_dir = File.join(@build_root, @bin_dir.gsub(/^[a-zA-Z]:/, ''))
       @gem_home = File.join(@build_root, @gem_home.gsub(/^[a-zA-Z]:/, ''))
+      @plugins_dir = File.join(@build_root, @plugins_dir.gsub(/^[a-zA-Z]:/, ''))
       alert_warning "You build with buildroot.\n  Build root: #{@build_root}\n  Bin dir: #{@bin_dir}\n  Gem home: #{@gem_home}"
     end
   end

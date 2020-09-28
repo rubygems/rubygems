@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-18.04
     if: github.repository == 'rubygems/rubygems'
     strategy:
+      fail-fast: false
       matrix:
         ruby: [ ruby-head, truffleruby-head ]
     env:

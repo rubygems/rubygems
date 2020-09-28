@@ -1818,6 +1818,7 @@ gem 'other', version
     build_root = File.join @tempdir, 'build_root'
     bin_dir = File.join(build_root, @gemhome.gsub(/^[a-zA-Z]:/, ''), 'bin')
     gem_home = File.join(build_root, @gemhome.gsub(/^[a-zA-Z]:/, ''))
+    plugins_dir = File.join(build_root, @gemhome.gsub(/^[a-zA-Z]:/, ''), 'plugins')
 
     @gem = setup_base_gem
     installer = use_ui(@ui) { Gem::Installer.at @gem, :build_root => build_root }
@@ -1832,6 +1833,7 @@ gem 'other', version
     assert_equal "  Build root: #{build_root}", errors.shift
     assert_equal "  Bin dir: #{bin_dir}", errors.shift
     assert_equal "  Gem home: #{gem_home}", errors.shift
+    assert_equal "  Plugins dir: #{plugins_dir}", errors.shift
   end
 
   def test_shebang_arguments

@@ -8,9 +8,6 @@ jobs:
   daily_bundler:
     runs-on: ubuntu-18.04
     if: github.repository == 'rubygems/rubygems'
-    strategy:
-      matrix:
-        ruby: [ ruby-head ]
     env:
       RGV: ..
     steps:
@@ -19,7 +16,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby }}
+          ruby-version: ruby-head
           bundler: none
 
       - name: Show Ruby version

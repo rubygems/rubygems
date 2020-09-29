@@ -12,6 +12,7 @@ jobs:
   ubuntu_bundler:
     runs-on: ubuntu-18.04
     strategy:
+      fail-fast: false
       matrix:
         ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
         bundler: [ '', 3.0.0 ]

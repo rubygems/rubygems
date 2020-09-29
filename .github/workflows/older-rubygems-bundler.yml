@@ -16,6 +16,7 @@ jobs:
   older_rubygems_bundler:
     runs-on: ubuntu-18.04
     strategy:
+      fail-fast: false
       matrix:
         ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
         rgv: [ v2.5.2, v2.6.14, v2.7.10, v3.0.8, v3.1.4 ]

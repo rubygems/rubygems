@@ -12,6 +12,7 @@ jobs:
   ruby_core:
     runs-on: ubuntu-18.04
     strategy:
+      fail-fast: false
       matrix:
         target: [rubygems, bundler]
     steps:

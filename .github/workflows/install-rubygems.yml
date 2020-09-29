@@ -38,4 +38,13 @@ jobs:
         run: bundle --version
       - name: Check bundler man pages were installed and are properly picked up
         run: bundle install --help | grep -q BUNDLE-INSTALL
+      - name: Build bundler
+        run: gem build bundler.gemspec
+        working-directory: ./bundler
+      - name: Install built bundler
+        run: gem install bundler-*.gem --verbose > output.txt
+        working-directory: ./bundler
+      - name: Check bundler install didn't hit the network
+        run: if grep -q 'GET http' output.txt; then false; else true; fi
+        working-directory: ./bundler
     timeout-minutes: 10

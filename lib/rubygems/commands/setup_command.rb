@@ -394,10 +394,6 @@ By default, this RubyGems will install gem as:
     specs_dir = File.join(options[:destdir], specs_dir) unless Gem.win_platform?
     mkdir_p specs_dir, :mode => 0755
 
-    # Workaround for non-git environment.
-    gemspec = File.open('bundler/bundler.gemspec', 'rb'){|f| f.read.gsub(/`git ls-files -z`/, "''") }
-    File.open('bundler/bundler.gemspec', 'w'){|f| f.write gemspec }
-
     bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
     bundler_spec.files = Dir.chdir("bundler") { Dir["{*.md,{lib,exe,man}/**/*}"] }
     bundler_spec.executables -= %w[bundler bundle_ruby]

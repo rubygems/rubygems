@@ -283,7 +283,6 @@ class Gem::DependencyInstaller
     request_set.development_shallow = @dev_shallow
     request_set.soft_missing = @force
     request_set.prerelease = @prerelease
-    request_set.remote = false unless consider_remote?
 
     installer_set = Gem::Resolver::InstallerSet.new @domain
     installer_set.ignore_installed = @only_install_dir
@@ -307,6 +306,7 @@ class Gem::DependencyInstaller
 
     dependency =
       if spec = installer_set.local?(dep_or_name)
+        installer_set.remote = nil if spec.dependencies.none?
         Gem::Dependency.new spec.name, version
       elsif String === dep_or_name
         Gem::Dependency.new dep_or_name, version
@@ -321,6 +321,7 @@ class Gem::DependencyInstaller
     installer_set.add_always_install dependency
 
     request_set.always_install = installer_set.always_install
+    request_set.remote = installer_set.consider_remote?
 
     if @ignore_dependencies
       installer_set.ignore_dependencies = true

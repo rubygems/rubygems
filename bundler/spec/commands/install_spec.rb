@@ -295,7 +295,6 @@ RSpec.describe "bundle install with gem sources" do
 
     it "finds gems in multiple sources", :bundler => "< 3" do
       build_repo2
-      update_repo2
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"

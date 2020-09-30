@@ -61,6 +61,14 @@ Gems can be saved to a specified filename with the output option:
   end
 
   def execute
+    if build_path = options[:build_path]
+      Dir.chdir(build_path) do
+        gem_name = get_one_optional_argument || find_gemspec
+        build_gem(gem_name)
+      end
+      return
+    end
+
     gem_name = get_one_optional_argument || find_gemspec
     build_gem(gem_name)
   end
@@ -83,16 +91,7 @@ Gems can be saved to a specified filename with the output option:
 
     if File.exist?(gemspec)
       spec = Gem::Specification.load(gemspec)
-
-      if options[:build_path]
-        Dir.chdir(File.dirname(gemspec)) do
-          spec = Gem::Specification.load(File.basename(gemspec))
-          build_package(spec)
-        end
-      else
-        build_package(spec)
-      end
-
+      build_package(spec)
     else
       alert_error "Gemspec file not found: #{gemspec}"
       terminate_interaction(1)

@@ -87,7 +87,7 @@ Gems can be saved to a specified filename with the output option:
   end
 
   def build_gem(gem_name)
-    gemspec = File.extname(gem_name) == ".gemspec" ? gem_name : "#{gem_name}.gemspec"
+    gemspec = Dir.glob(gem_name).sort.first || "#{gem_name}.gemspec"
 
     if File.exist?(gemspec)
       spec = Gem::Specification.load(gemspec)

@@ -794,7 +794,7 @@ gem 'other', version
 
     assert_equal spec, installer.install
 
-    assert !File.exist?(system_path), 'plugin not written to user plugins_dir'
+    assert !File.exist?(system_path), 'plugin incorrectly written to system plugins_dir'
     assert File.exist?(user_path), 'plugin not written to user plugins_dir'
   end
 
@@ -1154,6 +1154,15 @@ gem 'other', version
 
     gem_dir = File.join(@gemhome, 'gems', 'old_ruby_required-1')
     assert_path_exists gem_dir
+  end
+
+  def test_install_build_root
+    build_root = File.join(@tempdir, 'build_root')
+
+    @gem = setup_base_gem
+    installer = Gem::Installer.at @gem, :build_root => build_root
+
+    assert_equal @spec, installer.install
   end
 
   def test_install_missing_dirs
@@ -1786,9 +1795,9 @@ gem 'other', version
     @gem = setup_base_gem
     installer = Gem::Installer.at @gem, :build_root => build_root
 
-    assert_equal Pathname(build_root), installer.build_root
-    assert_equal File.join(build_root, @gemhome, 'bin'), installer.bin_dir
-    assert_equal File.join(build_root, @gemhome), installer.gem_home
+    assert_equal build_root, installer.build_root
+    assert_equal File.join(build_root, @gemhome.gsub(/^[a-zA-Z]:/, ''), 'bin'), installer.bin_dir
+    assert_equal File.join(build_root, @gemhome.gsub(/^[a-zA-Z]:/, '')), installer.gem_home
   end
 
   def test_shebang_arguments

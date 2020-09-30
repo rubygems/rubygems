@@ -421,8 +421,14 @@ RSpec.describe "bundle binstubs <gem>" do
     end
 
     it "works if the gem has development dependencies" do
+      build_repo2 do
+        build_gem "with_development_dependency" do |s|
+          s.add_development_dependency "activesupport", "= 2.3.5"
+        end
+      end
+
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "#{file_uri_for(gem_repo2)}"
         gem "with_development_dependency"
       G
 

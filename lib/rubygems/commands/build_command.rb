@@ -92,6 +92,9 @@ Gems can be saved to a specified filename with the output option:
     if File.exist?(gemspec)
       spec = Gem::Specification.load(gemspec)
       build_package(spec)
+    elsif gemspec.scan(".gemspec").size > 1
+      alert_error "No Gemspec in #{Dir.pwd}"
+      terminate_interaction(1)
     else
       alert_error "Gemspec file not found: #{gemspec}"
       terminate_interaction(1)

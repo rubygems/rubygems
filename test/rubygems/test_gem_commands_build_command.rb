@@ -310,6 +310,37 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_equal "this is a summary", spec.summary
   end
 
+  def test_execute_outside_dir_no_gemspec_present
+    gemspec_dir = File.join @tempdir, 'build_command_gem'
+    gemspec_file = File.join @tempdir, @gem.spec_name
+    readme_file = File.join gemspec_dir, 'README.md'
+
+    FileUtils.mkdir_p gemspec_dir
+
+    File.open readme_file, 'w' do |f|
+      f.write "My awesome gem"
+    end
+
+    File.open gemspec_file, 'w' do |gs|
+      gs.write @gem.to_ruby
+    end
+
+    @cmd.options[:build_path] = gemspec_dir
+    @cmd.options[:args] = ["*.gemspec"]
+
+    use_ui @ui do
+      assert_raises Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    assert_equal "", @ui.output
+    assert_equal "ERROR:  No Gemspec in #{gemspec_dir}\n", @ui.error
+
+    gem_file = File.join gemspec_dir, File.basename(@gem.cache_file)
+    refute File.exist?(gem_file)
+  end
+
   def test_execute_outside_dir_without_gem_name
     gemspec_dir = File.join(@tempdir, 'build_command_gem')
     gemspec_file = File.join(gemspec_dir, @gem.spec_name)

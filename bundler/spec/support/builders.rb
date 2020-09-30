@@ -158,10 +158,6 @@ module Spec
 
         build_gem "duradura", "7.0"
 
-        build_gem "multiple_versioned_deps" do |s|
-          s.add_dependency "weakling", ">= 0.0.1", "< 0.1"
-        end
-
         build_gem "not_released", "1.0.pre"
 
         build_gem "has_prerelease", "1.0"

@@ -54,6 +54,12 @@ RSpec.describe "bundle install" do
     end
 
     it "works for gems with multiple versions in its dependencies" do
+      build_repo2 do
+        build_gem "multiple_versioned_deps" do |s|
+          s.add_dependency "weakling", ">= 0.0.1", "< 0.1"
+        end
+      end
+
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
 

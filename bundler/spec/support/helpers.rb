@@ -23,6 +23,17 @@ module Spec
       Gem.clear_paths
     end
 
+    def with_correct_ruby_for_core_repo
+      if ENV["RUBY"]
+        orig_ruby = Gem.ruby
+        Gem.ruby = ENV["RUBY"]
+      end
+
+      yield
+
+      Gem.ruby = orig_ruby if ENV["RUBY"]
+    end
+
     def the_bundle(*args)
       TheBundle.new(*args)
     end

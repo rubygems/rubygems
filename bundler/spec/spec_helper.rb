@@ -67,12 +67,9 @@ RSpec.configure do |config|
   end
 
   config.around :each do |example|
-    if ENV["RUBY"]
-      orig_ruby = Gem.ruby
-      Gem.ruby = ENV["RUBY"]
+    with_correct_ruby_for_core_repo do
+      example.run
     end
-    example.run
-    Gem.ruby = orig_ruby if ENV["RUBY"]
   end
 
   config.before :suite do
@@ -90,9 +87,11 @@ RSpec.configure do |config|
   end
 
   config.before :all do
-    build_repo1
+    with_correct_ruby_for_core_repo do
+      build_repo1
 
-    reset_paths!
+      reset_paths!
+    end
   end
 
   config.around :each do |example|

@@ -162,10 +162,6 @@ module Spec
           s.add_development_dependency "activesupport", "= 2.3.5"
         end
 
-        build_gem "with_license" do |s|
-          s.license = "MIT"
-        end
-
         build_gem "with_implicit_rake_dep" do |s|
           s.extensions << "Rakefile"
           s.write "Rakefile", <<-RUBY

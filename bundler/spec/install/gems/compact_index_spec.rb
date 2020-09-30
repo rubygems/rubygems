@@ -522,13 +522,19 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "does not refetch if the only unmet dependency is bundler" do
+    build_repo2 do
+      build_gem "bundler_dep" do |s|
+        s.add_dependency "bundler"
+      end
+    end
+
     gemfile <<-G
       source "#{source_uri}"
 
       gem "bundler_dep"
     G
 
-    bundle :install, :artifice => "compact_index"
+    bundle :install, :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
     expect(out).to include("Fetching gem metadata from #{source_uri}")
   end
 

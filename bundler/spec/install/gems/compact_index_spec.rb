@@ -258,14 +258,37 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "does not double check for gems that are only installed locally" do
-    system_gems %w[rack-1.0.0 thin-1.0 net_a-1.0]
+    build_repo2 do
+      build_gem "net_a" do |s|
+        s.add_dependency "net_b"
+        s.add_dependency "net_build_extensions"
+      end
+
+      build_gem "net_b"
+
+      build_gem "net_build_extensions" do |s|
+        s.add_dependency "rake"
+        s.extensions << "Rakefile"
+        s.write "Rakefile", <<-RUBY
+          task :default do
+            path = File.expand_path("../lib", __FILE__)
+            FileUtils.mkdir_p(path)
+            File.open("\#{path}/net_build_extensions.rb", "w") do |f|
+              f.puts "NET_BUILD_EXTENSIONS = 'YES'"
+            end
+          end
+        RUBY
+      end
+    end
+
+    system_gems %w[rack-1.0.0 thin-1.0 net_a-1.0], :gem_repo => gem_repo2
     bundle "config set --local path.system true"
     ENV["BUNDLER_SPEC_ALL_REQUESTS"] = strip_whitespace(<<-EOS).strip
       #{source_uri}/versions
       #{source_uri}/info/rack
     EOS
 
-    install_gemfile <<-G, :artifice => "compact_index", :verbose => true
+    install_gemfile <<-G, :artifice => "compact_index", :verbose => true, :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
       source "#{source_uri}"
       gem "rack"
     G

@@ -239,39 +239,6 @@ module Spec
           s.add_dependency "net-ssh", ">= 1.0.0", "< 1.99.0"
         end
 
-        # Test complicated gem dependencies for install
-        build_gem "net_a" do |s|
-          s.add_dependency "net_b"
-          s.add_dependency "net_build_extensions"
-        end
-
-        build_gem "net_b"
-
-        build_gem "net_build_extensions" do |s|
-          s.add_dependency "rake"
-          s.extensions << "Rakefile"
-          s.write "Rakefile", <<-RUBY
-            task :default do
-              path = File.expand_path("../lib", __FILE__)
-              FileUtils.mkdir_p(path)
-              File.open("\#{path}/net_build_extensions.rb", "w") do |f|
-                f.puts "NET_BUILD_EXTENSIONS = 'YES'"
-              end
-            end
-          RUBY
-        end
-
-        build_gem "net_c" do |s|
-          s.add_dependency "net_a"
-          s.add_dependency "net_d"
-        end
-
-        build_gem "net_d"
-
-        build_gem "net_e" do |s|
-          s.add_dependency "net_d"
-        end
-
         build_gem "foo"
       end
     end

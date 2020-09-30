@@ -174,13 +174,8 @@ class Gem::CommandManager
     else
       cmd_name = args.shift.downcase
       cmd = find_command cmd_name
-      if cmd_name == "server"
-        cmd.deprecation_warning if cmd.deprecated?
-        cmd.invoke_with_build_args args, build_args
-      else
-        cmd.invoke_with_build_args args, build_args
-        cmd.deprecation_warning if cmd.deprecated?
-      end
+      cmd.deprecation_warning if cmd.deprecated?
+      cmd.invoke_with_build_args args, build_args
     end
   end
 

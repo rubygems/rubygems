@@ -439,6 +439,14 @@ module Bundler
       Outdated.new(options, gems).run
     end
 
+    desc "fund [OPTIONS]", "Lists information about gems seeking funding assistance"
+    method_option "group", :aliases => "-g", :type => :array, :banner =>
+      "Fetch funding information for a specific group"
+    def fund
+      require_relative "cli/fund"
+      Fund.new(options).run
+    end
+
     desc "cache [OPTIONS]", "Locks and then caches all of the gems into vendor/cache"
     method_option "all",  :type => :boolean,
                           :default => Bundler.feature_flag.cache_all?,

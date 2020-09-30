@@ -244,6 +244,12 @@ module Bundler
       specs.for(expand_dependencies(deps))
     end
 
+    def dependencies_for(groups)
+      current_dependencies.reject do |d|
+        (d.groups & groups).empty?
+      end
+    end
+
     # Resolve all the dependencies specified in Gemfile. It ensures that
     # dependencies that have been already resolved via locked file and are fresh
     # are reused when resolving dependencies
@@ -895,12 +901,6 @@ module Bundler
     def expand_dependency_with_platforms(dep, platforms)
       platforms.map do |p|
         DepProxy.new(dep, p)
-      end
-    end
-
-    def dependencies_for(groups)
-      current_dependencies.reject do |d|
-        (d.groups & groups).empty?
       end
     end
 

@@ -21,18 +21,26 @@ Please fill in the following sections so we can process your issue as fast as po
 
 <!-- Replace this with an explanation of the problem you are having. Be as much clear and precise as you can. -->
 
-### Post system independent steps to reproduce the problem
+### Post steps to reproduce the problem
 
 <!--
 
-Fill this with system independent repro steps so that maintainers can reproduce your issue on their machines.
-Examples: https://gist.github.com/xaviershay/6207550, https://gist.github.com/xaviershay/6295889
+Fill this with a list of steps maintainers can follow to reproduce your issue. Note that while you are seeing this issue in your computer, maintainers might not see the same thing on theirs. There is a number of things that could influence this:
+
+* How your ruby is setup (OS package, from source, using a version manager).
+* How bundler & rubygems are configured.
+* The version of each involved piece of software that you are using.
+* ...
+
+The more complete the steps to simulate your particular environment are, the easier it will be for maintainers to reproduce your issue on their machines.
+
+Ideally, we recommend you to set up the list of steps as a [Dockerfile](https://docs.docker.com/get-started/). A Dockerfile provides a neutral environment that should give the same results, no matter where it's run.
 
 -->
 
 ### Which command did you run?
 
-<!-- Replace this with the command that you run. -->
+<!-- Replace this with the specific command that is causing trouble. -->
 
 ### What were you expecting to happen?
 

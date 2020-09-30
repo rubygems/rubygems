@@ -158,11 +158,6 @@ module Spec
 
         build_gem "duradura", "7.0"
 
-        build_gem "not_released", "1.0.pre"
-
-        build_gem "has_prerelease", "1.0"
-        build_gem "has_prerelease", "1.1.pre"
-
         build_gem "with_development_dependency" do |s|
           s.add_development_dependency "activesupport", "= 2.3.5"
         end

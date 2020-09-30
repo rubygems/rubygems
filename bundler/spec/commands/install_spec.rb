@@ -294,7 +294,11 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "finds gems in multiple sources", :bundler => "< 3" do
-      build_repo2
+      build_repo2 do
+        build_gem "rack", "1.2" do |s|
+          s.executables = "rackup"
+        end
+      end
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"

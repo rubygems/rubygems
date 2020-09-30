@@ -126,6 +126,10 @@ RSpec.describe "bundle install with install-time dependencies" do
 
       it "installs the older version" do
         build_repo2 do
+          build_gem "rack", "1.2" do |s|
+            s.executables = "rackup"
+          end
+
           build_gem "rack", "9001.0.0" do |s|
             s.required_ruby_version = "> 9000"
           end

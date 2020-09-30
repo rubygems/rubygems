@@ -1400,7 +1400,11 @@ RSpec.describe "the lockfile format" do
 
     context "during updates" do
       it "preserves Gemfile.lock \\n line endings" do
-        update_repo2
+        update_repo2 do
+          build_gem "rack", "1.2" do |s|
+            s.executables = "rackup"
+          end
+        end
 
         expect { bundle "update", :all => true }.to change { File.mtime(bundled_app_lock) }
         expect(File.read(bundled_app_lock)).not_to match("\r\n")
@@ -1410,7 +1414,12 @@ RSpec.describe "the lockfile format" do
       it "preserves Gemfile.lock \\n\\r line endings" do
         skip "needs to be adapted" if Gem.win_platform?
 
-        update_repo2
+        update_repo2 do
+          build_gem "rack", "1.2" do |s|
+            s.executables = "rackup"
+          end
+        end
+
         win_lock = File.read(bundled_app_lock).gsub(/\n/, "\r\n")
         File.open(bundled_app_lock, "wb") {|f| f.puts(win_lock) }
         set_lockfile_mtime_to_known_value

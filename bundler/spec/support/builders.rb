@@ -343,9 +343,6 @@ module Spec
 
     def update_repo2
       update_repo gem_repo2 do
-        build_gem "rack", "1.2" do |s|
-          s.executables = "rackup"
-        end
         yield if block_given?
       end
     end

@@ -173,6 +173,22 @@ module Gem
     undef_method :eql? if method_defined? :eql?
     alias_method :eql?, :==
   end
+
+  require "rubygems/util"
+
+  Util.singleton_class.module_eval do
+    if Util.singleton_methods.include?(:glob_files_in_dir) # since 3.0.0.beta.2
+      remove_method :glob_files_in_dir
+    end
+
+    def glob_files_in_dir(glob, base_path)
+      if RUBY_VERSION >= "2.5"
+        Dir.glob(glob, :base => base_path).map! {|f| File.expand_path(f, base_path) }
+      else
+        Dir.glob(File.join(base_path.to_s.gsub(/[\[\]]/, '\\\\\\&'), glob)).map! {|f| File.expand_path(f) }
+      end
+    end
+  end
 end
 
 module Gem

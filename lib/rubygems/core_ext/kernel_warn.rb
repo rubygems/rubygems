@@ -6,7 +6,7 @@ if RUBY_VERSION >= "2.5"
   module Kernel
     rubygems_path = "#{__dir__}/" # Frames to be skipped start with this path.
 
-    original_warn = method(:warn)
+    original_warn = instance_method(:warn)
 
     remove_method :warn
 
@@ -17,9 +17,9 @@ if RUBY_VERSION >= "2.5"
     module_function define_method(:warn) {|*messages, **kw|
       unless uplevel = kw[:uplevel]
         if Gem.java_platform?
-          return original_warn.call(*messages)
+          return original_warn.bind(self).call(*messages)
         else
-          return original_warn.call(*messages, **kw)
+          return original_warn.bind(self).call(*messages, **kw)
         end
       end
 
@@ -48,7 +48,7 @@ if RUBY_VERSION >= "2.5"
         kw[:uplevel] = start
       end
 
-      original_warn.call(*messages, **kw)
+      original_warn.bind(self).call(*messages, **kw)
     }
   end
 end

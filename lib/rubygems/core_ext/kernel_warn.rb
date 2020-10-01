@@ -3,23 +3,15 @@
 # `uplevel` keyword argument of Kernel#warn is available since ruby 2.5.
 if RUBY_VERSION >= "2.5"
 
-  module Kernel
-    rubygems_path = "#{__dir__}/" # Frames to be skipped start with this path.
+  module Gem::KernelExt
+    def warn(*messages, **kw)
+      rubygems_path = "#{__dir__}/" # Frames to be skipped start with this path.
 
-    original_warn = method(:warn)
-
-    remove_method :warn
-
-    class << self
-      remove_method :warn
-    end
-
-    module_function define_method(:warn) {|*messages, **kw|
       unless uplevel = kw[:uplevel]
         if Gem.java_platform?
-          return original_warn.call(*messages)
+          return super(*messages)
         else
-          return original_warn.call(*messages, **kw)
+          return super(*messages, **kw)
         end
       end
 
@@ -36,19 +28,23 @@ if RUBY_VERSION >= "2.5"
             break
           end
 
-          start += 1
-
           if path = loc.path
             unless path.start_with?(rubygems_path) or path.start_with?('<internal:')
               # Non-rubygems frames
               uplevel -= 1
+              break if uplevel < 0
             end
           end
+
+          start += 1
         end
         kw[:uplevel] = start
       end
 
-      original_warn.call(*messages, **kw)
-    }
+      super(*messages, **kw)
+    end
   end
+
+  extend Gem::KernelExt
+  Kernel.singleton_class.prepend Gem::KernelExt
 end

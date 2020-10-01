@@ -82,6 +82,8 @@ module Bundler
         require_relative "clean"
         Bundler::CLI::Clean.new(options).run
       end
+
+      Bundler::CLI::Common.output_fund_metadata_summary
     rescue GemNotFound, VersionConflict => e
       if options[:local] && Bundler.app_cache.exist?
         Bundler.ui.warn "Some gems seem to be missing from your #{Bundler.settings.app_cache_path} directory."

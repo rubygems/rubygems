@@ -233,6 +233,12 @@ module Bundler
       end
     end
 
+    def requested_dependencies
+      groups = requested_groups
+      groups.map!(&:to_sym)
+      dependencies_for(groups)
+    end
+
     def current_dependencies
       dependencies.select do |d|
         d.should_include? && !d.gem_platforms(@platforms).empty?
@@ -242,6 +248,12 @@ module Bundler
     def specs_for(groups)
       deps = dependencies_for(groups)
       specs.for(expand_dependencies(deps))
+    end
+
+    def dependencies_for(groups)
+      current_dependencies.reject do |d|
+        (d.groups & groups).empty?
+      end
     end
 
     # Resolve all the dependencies specified in Gemfile. It ensures that
@@ -896,18 +908,6 @@ module Bundler
       platforms.map do |p|
         DepProxy.new(dep, p)
       end
-    end
-
-    def dependencies_for(groups)
-      current_dependencies.reject do |d|
-        (d.groups & groups).empty?
-      end
-    end
-
-    def requested_dependencies
-      groups = requested_groups
-      groups.map!(&:to_sym)
-      dependencies_for(groups)
     end
 
     def source_requirements

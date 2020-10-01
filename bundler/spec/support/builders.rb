@@ -76,10 +76,6 @@ module Spec
           s.add_dependency "activesupport", ">= 2.0.0"
         end
 
-        build_gem "missing_dep" do |s|
-          s.add_dependency "not_here"
-        end
-
         build_gem "rspec", "1.2.7", :no_default => true do |s|
           s.write "lib/spec.rb", "SPEC = '1.2.7'"
         end

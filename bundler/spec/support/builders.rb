@@ -76,10 +76,6 @@ module Spec
           s.add_dependency "activesupport", ">= 2.0.0"
         end
 
-        build_gem "rails_pinned_to_old_activesupport" do |s|
-          s.add_dependency "activesupport", "= 1.2.3"
-        end
-
         build_gem "missing_dep" do |s|
           s.add_dependency "not_here"
         end

@@ -32,6 +32,7 @@ bundler/lib/bundler/cli/config.rb
 bundler/lib/bundler/cli/console.rb
 bundler/lib/bundler/cli/doctor.rb
 bundler/lib/bundler/cli/exec.rb
+bundler/lib/bundler/cli/fund.rb
 bundler/lib/bundler/cli/gem.rb
 bundler/lib/bundler/cli/info.rb
 bundler/lib/bundler/cli/init.rb

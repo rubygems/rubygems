@@ -233,6 +233,12 @@ module Bundler
       end
     end
 
+    def requested_dependencies
+      groups = requested_groups
+      groups.map!(&:to_sym)
+      dependencies_for(groups)
+    end
+
     def current_dependencies
       dependencies.select do |d|
         d.should_include? && !d.gem_platforms(@platforms).empty?
@@ -902,12 +908,6 @@ module Bundler
       platforms.map do |p|
         DepProxy.new(dep, p)
       end
-    end
-
-    def requested_dependencies
-      groups = requested_groups
-      groups.map!(&:to_sym)
-      dependencies_for(groups)
     end
 
     def source_requirements

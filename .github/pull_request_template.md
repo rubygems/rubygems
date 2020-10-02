@@ -23,3 +23,4 @@ alternatives, explain why you end up choosing the current implementation -->
 - [ ] Describe the problem / feature
 - [ ] Write [tests](https://github.com/rubygems/rubygems/blob/master/bundler/doc/development/PULL_REQUESTS.md#tests)
 - [ ] Write code to solve the problem
+- [ ] Make sure you follow the [current code style](https://github.com/rubygems/rubygems/blob/master/bundler/doc/development/PULL_REQUESTS.md#code-formatting) and [write meaningful commit messages without tags](https://github.com/rubygems/rubygems/blob/master/bundler/doc/development/PULL_REQUESTS.md#commit-messages)

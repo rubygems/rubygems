@@ -16,9 +16,7 @@ To make reviewing this PR a bit easier, please fill out answers to the following
 determine the cause of the issue and your conclusions. If you considered other
 alternatives, explain why you end up choosing the current implementation -->
 
-______________
-
-# Tasks:
+## Make sure he following tasks are checked
 
 - [ ] Describe the problem / feature
 - [ ] Write tests

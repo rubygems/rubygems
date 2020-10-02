@@ -1,5 +1,3 @@
-# Description:
-
 <!--
 Thanks so much for the contribution!
 

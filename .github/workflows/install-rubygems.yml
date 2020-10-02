@@ -9,7 +9,7 @@ on:
       - 3.2
 
 jobs:
-  install_rubygems:
+  install_rubygems_ubuntu:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -47,4 +47,21 @@ jobs:
       - name: Check bundler install didn't hit the network
         run: if grep -q 'GET http' output.txt; then false; else true; fi
         working-directory: ./bundler
+    timeout-minutes: 10
+
+  install_rubygems_windows:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.1
+          bundler: none
+      - name: Install rubygems
+        run: ruby setup.rb
+        shell: bash
+      - name: Check installation didn't modify gemspec line feeds
+        run: ruby -Ilib -e'exit 1 if File.readlines("bundler/bundler.gemspec").first.end_with?("\r\n")'
+        shell: bash
     timeout-minutes: 10

@@ -23,7 +23,9 @@ class Gem::Commands::BuildCommand < Gem::Command
       options[:output] = value
     end
 
-    add_option '-C PATH', '', 'Run as if gem build was started in <PATH> instead of the current working directory.' do |value, options|
+    add_option '-C PATH', '', 'Look for the code of the gem to be built',
+                              'in <PATH>. The GEMSPEC_FILE given as an',
+                              'argument is not influenced by this option' do |value, options|
       options[:build_path] = value
     end
   end

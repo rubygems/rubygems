@@ -3,6 +3,8 @@
 <!--
 Thanks so much for the contribution!
 
+Note that you must abide by the [code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md) to contribute to this project.
+
 To make reviewing this PR a bit easier, please fill out answers to the following questions.
 -->
 
@@ -21,5 +23,3 @@ alternatives, explain why you end up choosing the current implementation -->
 - [ ] Describe the problem / feature
 - [ ] Write tests
 - [ ] Write code to solve the problem
-
-I will abide by the [code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).

@@ -120,8 +120,8 @@ Each _gem_ `MAY` have one or more version specifiers.
 ### REQUIRE AS
 
 Each _gem_ `MAY` specify files that should be used when autorequiring via
-`Bundler.require`. You may pass an array with multiple files or `true` if file
-you want `required` has same name as _gem_ or `false` to
+`Bundler.require`. You may pass an array with multiple files or `true` if the file
+you want `required` has the same name as _gem_ or `false` to
 prevent any file from being autorequired.
 
     gem "redis", :require => ["redis/connection/hiredis", "redis"]

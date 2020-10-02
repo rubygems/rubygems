@@ -273,7 +273,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_can_find_gemspecs_without_dot_gemspec
-    gemspec_file = File.join(@tempdir, @gem.spec_name)
+    gemspec_file = File.join(@tempdir, @gem.name)
 
     File.open gemspec_file + ".gemspec", 'w' do |gs|
       gs.write @gem.to_ruby

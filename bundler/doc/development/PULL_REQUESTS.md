@@ -16,7 +16,7 @@ Make sure the code formatting and styling adheres to the guidelines. We use Rubo
 
 Prior to submitting your PR, please run the test suite:
 
-      $ bin/rspec
+      $ bin/parallel_rspec
 
 If you are unable to run the entire test suite, please run the unit test suite and at least the integration specs related to the command or domain of Bundler that your code changes relate to.
 

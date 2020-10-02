@@ -1,8 +1,11 @@
 # frozen_string_literal: true
+require 'English'
 require 'rubygems/command'
 require 'rubygems/version_option'
+require 'rubygems/util'
 
 class Gem::Commands::OpenCommand < Gem::Command
+
   include Gem::VersionOption
 
   def initialize
@@ -81,4 +84,5 @@ class Gem::Commands::OpenCommand < Gem::Command
 
     say "Unable to find gem '#{name}'"
   end
+
 end

@@ -3,6 +3,7 @@ require 'rubygems/test_case'
 require 'rubygems/spec_fetcher'
 
 class TestGemSpecFetcher < Gem::TestCase
+
   def tuple(*args)
     Gem::NameTuple.new(*args)
   end
@@ -175,7 +176,7 @@ class TestGemSpecFetcher < Gem::TestCase
       fetcher.spec 'examp', 1
     end
 
-    suggestions = @sf.suggest_gems_from_name('examplw', :latest, 1)
+    suggestions = @sf.suggest_gems_from_name('examplw', type = :latest, num_results = 1)
     assert_equal ['example'], suggestions
 
     suggestions = @sf.suggest_gems_from_name('other')
@@ -321,7 +322,7 @@ class TestGemSpecFetcher < Gem::TestCase
     specs, _ = @sf.available_specs(:prerelease)
 
     expected = Gem::NameTuple.from_list \
-      [['a', v('2.a'), Gem::Platform::RUBY]]
+      [['a',  v('2.a'), Gem::Platform::RUBY]]
 
     assert_equal expected, specs[@source]
   end
@@ -334,4 +335,5 @@ class TestGemSpecFetcher < Gem::TestCase
     assert_equal({}, specs)
     assert_kind_of Gem::SourceFetchProblem, errors.first
   end
+
 end

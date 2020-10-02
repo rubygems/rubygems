@@ -17,18 +17,6 @@ module Spec
       Gem::Platform.new(platform)
     end
 
-    # Returns a number smaller than the size of the index. Useful for specs that
-    # need the API request limit to be reached for some reason.
-    def low_api_request_limit_for(gem_repo)
-      all_gems = Dir[gem_repo.join("gems/*.gem")]
-
-      all_gem_names = all_gems.map do |file|
-        File.basename(file, ".gem").match(/\A(?<gem_name>[^-]+)-.*\z/)[:gem_name]
-      end.uniq
-
-      (all_gem_names - ["bundler"]).size
-    end
-
     def build_repo1
       build_repo gem_repo1 do
         build_gem "rack", %w[0.9.1 1.0.0] do |s|
@@ -76,7 +64,7 @@ module Spec
           s.add_dependency "activesupport", ">= 2.0.0"
         end
 
-        build_gem "rails_pinned_to_old_activesupport" do |s|
+        build_gem "rails_fail" do |s|
           s.add_dependency "activesupport", "= 1.2.3"
         end
 
@@ -322,20 +310,9 @@ module Spec
             "documentation_uri" => "https://www.example.info/gems/bestgemever/0.0.1",
             "homepage_uri"      => "https://bestgemever.example.io",
             "mailing_list_uri"  => "https://groups.example.com/bestgemever",
-            "funding_uri"       => "https://example.com/has_metadata/funding",
             "source_code_uri"   => "https://example.com/user/bestgemever",
             "wiki_uri"          => "https://example.com/user/bestgemever/wiki",
           }
-        end
-
-        build_gem "has_funding", "1.2.3" do |s|
-          s.metadata = {
-            "funding_uri"       => "https://example.com/has_funding/funding",
-          }
-        end
-
-        build_gem "gem_with_dependent_funding", "1.0" do |s|
-          s.add_dependency "has_funding"
         end
       end
     end
@@ -393,8 +370,8 @@ module Spec
       rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
 
       if rake_path.nil?
-        FileUtils.rm_rf(Path.base_system_gems)
-        Spec::Rubygems.install_test_deps
+        Spec::Path.base_system_gems.rmtree
+        Spec::Rubygems.setup
         rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
       end
 
@@ -417,7 +394,7 @@ module Spec
       @_build_repo = File.basename(path)
       yield
       with_gem_path_as Path.base_system_gems do
-        gem_command :generate_index, :dir => path
+        gem_command! :generate_index, :dir => path
       end
     ensure
       @_build_path = nil
@@ -459,20 +436,20 @@ module Spec
       opts = args.last.is_a?(Hash) ? args.last : {}
       builder = opts[:bare] ? GitBareBuilder : GitBuilder
       spec = build_with(builder, name, args, &block)
-      GitReader.new(self, opts[:path] || lib_path(spec.full_name))
+      GitReader.new(opts[:path] || lib_path(spec.full_name))
     end
 
     def update_git(name, *args, &block)
       opts = args.last.is_a?(Hash) ? args.last : {}
       spec = build_with(GitUpdater, name, args, &block)
-      GitReader.new(self, opts[:path] || lib_path(spec.full_name))
+      GitReader.new(opts[:path] || lib_path(spec.full_name))
     end
 
     def build_plugin(name, *args, &blk)
       build_with(PluginBuilder, name, args, &blk)
     end
 
-    private
+  private
 
     def build_with(builder, name, args, &blk)
       @_build_path ||= nil
@@ -571,6 +548,11 @@ module Spec
           s.license     = "MIT"
         end
         @files = {}
+      end
+
+      def capture(cmd, dir)
+        output, _status = Open3.capture2e(cmd, :chdir => dir)
+        output
       end
 
       def method_missing(*args, &blk)
@@ -684,12 +666,12 @@ module Spec
         path = options[:path] || _default_path
         source = options[:source] || "git@#{path}"
         super(options.merge(:path => path, :source => source))
-        @context.git("init", path)
-        @context.git("add *", path)
-        @context.git("config user.email lol@wut.com", path)
-        @context.git("config user.name lolwut", path)
-        @context.git("config commit.gpgsign false", path)
-        @context.git("commit -m OMG_INITIAL_COMMIT", path)
+        capture("git init", path)
+        capture("git add *", path)
+        capture("git config user.email \"lol@wut.com\"", path)
+        capture("git config user.name \"lolwut\"", path)
+        capture("git config commit.gpgsign false", path)
+        capture("git commit -m \"OMG INITIAL COMMIT\"", path)
       end
     end
 
@@ -697,57 +679,69 @@ module Spec
       def _build(options)
         path = options[:path] || _default_path
         super(options.merge(:path => path))
-        @context.git("init --bare", path)
+        capture("git init --bare", path)
       end
     end
 
     class GitUpdater < LibBuilder
+      def silently(str, dir)
+        output, _error, _status = Open3.capture3(str, :chdir => dir)
+        output
+      end
+
       def _build(options)
         libpath = options[:path] || _default_path
         update_gemspec = options[:gemspec] || false
         source = options[:source] || "git@#{libpath}"
 
-        @context.git "checkout master", libpath
+        silently "git checkout master", libpath
 
         if branch = options[:branch]
           raise "You can't specify `master` as the branch" if branch == "master"
           escaped_branch = Shellwords.shellescape(branch)
 
-          if @context.git("branch -l #{escaped_branch}", libpath).empty?
-            @context.git("branch #{escaped_branch}", libpath)
+          if capture("git branch | grep #{escaped_branch}", libpath).empty?
+            silently("git branch #{escaped_branch}", libpath)
           end
 
-          @context.git("checkout #{escaped_branch}", libpath)
+          silently("git checkout #{escaped_branch}", libpath)
         elsif tag = options[:tag]
-          @context.git("tag #{Shellwords.shellescape(tag)}", libpath)
+          capture("git tag #{Shellwords.shellescape(tag)}", libpath)
         elsif options[:remote]
-          @context.git("remote add origin #{options[:remote]}", libpath)
+          silently("git remote add origin #{options[:remote]}", libpath)
         elsif options[:push]
-          @context.git("push origin #{options[:push]}", libpath)
+          silently("git push origin #{options[:push]}", libpath)
         end
 
-        current_ref = @context.git("rev-parse HEAD", libpath).strip
+        current_ref = silently("git rev-parse HEAD", libpath).strip
         _default_files.keys.each do |path|
           _default_files[path] += "\n#{Builders.constantize(name)}_PREV_REF = '#{current_ref}'"
         end
         super(options.merge(:path => libpath, :gemspec => update_gemspec, :source => source))
-        @context.git("add *", libpath)
-        @context.git("commit -m BUMP", libpath, :raise_on_error => false)
+        capture("git add *", libpath)
+        capture("git commit -m \"BUMP\"", libpath)
       end
     end
 
     class GitReader
-      attr_reader :context, :path
+      attr_reader :path
 
-      def initialize(context, path)
-        @context = context
+      def initialize(path)
         @path = path
       end
 
       def ref_for(ref, len = nil)
-        ref = context.git "rev-parse #{ref}", path
+        ref = git "rev-parse #{ref}"
         ref = ref[0..len] if len
         ref
+      end
+
+    private
+
+      def git(cmd)
+        Bundler::SharedHelpers.with_clean_git_env do
+          Open3.capture2e("git #{cmd}", :chdir => path)[0].strip
+        end
       end
     end
 
@@ -764,14 +758,14 @@ module Spec
         elsif opts[:skip_validation]
           @context.gem_command "build --force #{@spec.name}", :dir => lib_path
         else
-          @context.gem_command "build #{@spec.name}", :dir => lib_path
+          @context.gem_command! "build #{@spec.name}", :dir => lib_path
         end
 
         gem_path = File.expand_path("#{@spec.full_name}.gem", lib_path)
         if opts[:to_system]
-          @context.system_gems gem_path, :default => opts[:default]
+          @context.system_gems gem_path, :keep_path => true
         elsif opts[:to_bundle]
-          @context.system_gems gem_path, :path => @context.default_bundle_path
+          @context.system_gems gem_path, :path => :bundle_path, :keep_path => true
         else
           FileUtils.mv(gem_path, destination)
         end

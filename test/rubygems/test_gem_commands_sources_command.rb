@@ -3,6 +3,7 @@ require 'rubygems/test_case'
 require 'rubygems/commands/sources_command'
 
 class TestGemCommandsSourcesCommand < Gem::TestCase
+
   def setup
     super
 
@@ -99,36 +100,6 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
 
     expected = "https://rubyems.org is too similar to https://rubygems.org\n\nDo you want to add this source? [yn]  https://rubyems.org added to sources\n"
 
-    assert_equal expected, ui.output
-
-    source = Gem::Source.new(rubygems_org)
-    assert Gem.sources.include?(source)
-
-    assert_empty ui.error
-  end
-
-  def test_execute_add_allow_typo_squatting_source_forced
-    rubygems_org = "https://rubyems.org"
-
-    spec_fetcher do |fetcher|
-      fetcher.spec("a", 1)
-    end
-
-    specs = Gem::Specification.map do |spec|
-      [spec.name, spec.version, spec.original_platform]
-    end
-
-    specs_dump_gz = StringIO.new
-    Zlib::GzipWriter.wrap(specs_dump_gz) do |io|
-      Marshal.dump(specs, io)
-    end
-
-    @fetcher.data["#{rubygems_org}/specs.#{@marshal_version}.gz"] = specs_dump_gz.string
-    @cmd.handle_options %W[--force --add #{rubygems_org}]
-
-    @cmd.execute
-
-    expected = "https://rubyems.org added to sources\n"
     assert_equal expected, ui.output
 
     source = Gem::Source.new(rubygems_org)
@@ -313,36 +284,6 @@ source http://gems.example.com/ already present in the cache
     assert_empty @ui.error
   end
 
-  def test_execute_add_http_rubygems_org_forced
-    rubygems_org = "http://rubygems.org"
-
-    spec_fetcher do |fetcher|
-      fetcher.spec("a", 1)
-    end
-
-    specs = Gem::Specification.map do |spec|
-      [spec.name, spec.version, spec.original_platform]
-    end
-
-    specs_dump_gz = StringIO.new
-    Zlib::GzipWriter.wrap(specs_dump_gz) do |io|
-      Marshal.dump(specs, io)
-    end
-
-    @fetcher.data["#{rubygems_org}/specs.#{@marshal_version}.gz"] = specs_dump_gz.string
-    @cmd.handle_options %W[--force --add #{rubygems_org}]
-
-    @cmd.execute
-
-    expected = "http://rubygems.org added to sources\n"
-    assert_equal expected, ui.output
-
-    source = Gem::Source.new(rubygems_org)
-    assert Gem.sources.include?(source)
-
-    assert_empty ui.error
-  end
-
   def test_execute_add_https_rubygems_org
     https_rubygems_org = 'https://rubygems.org/'
 
@@ -481,4 +422,5 @@ beta-gems.example.com is not a URI
     assert_equal "source cache successfully updated\n", @ui.output
     assert_equal '', @ui.error
   end
+
 end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+autoload :FileUtils, 'fileutils'
 
 require "rubygems/text"
 ##
@@ -8,6 +9,7 @@ require "rubygems/text"
 # bundler dependency API and so-forth.
 
 class Gem::Source
+
   include Comparable
   include Gem::Text
 
@@ -35,7 +37,6 @@ class Gem::Source
     end
 
     @uri = uri
-    @update_cache = nil
   end
 
   ##
@@ -115,8 +116,7 @@ class Gem::Source
   # Returns true when it is possible and safe to update the cache directory.
 
   def update_cache?
-    return @update_cache unless @update_cache.nil?
-    @update_cache =
+    @update_cache ||=
       begin
         File.stat(Gem.user_home).uid == Process.uid
       rescue Errno::ENOENT
@@ -181,10 +181,7 @@ class Gem::Source
     local_file = File.join(cache_dir, file_name)
     retried    = false
 
-    if update_cache?
-      require "fileutils"
-      FileUtils.mkdir_p cache_dir
-    end
+    FileUtils.mkdir_p cache_dir if update_cache?
 
     spec_dump = fetcher.cache_update_path spec_path, local_file, update_cache?
 
@@ -225,8 +222,9 @@ class Gem::Source
 
   def typo_squatting?(host, distance_threshold=4)
     return if @uri.host.nil?
-    levenshtein_distance(@uri.host, host).between? 1, distance_threshold
+    levenshtein_distance(@uri.host, host) <= distance_threshold
   end
+
 end
 
 require 'rubygems/source/git'

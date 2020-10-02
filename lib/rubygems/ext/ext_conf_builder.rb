@@ -5,13 +5,15 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'fileutils'
+require 'tempfile'
 require 'shellwords'
 
 class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
-  def self.build(extension, dest_path, results, args=[], lib_dir=nil)
-    require 'fileutils'
-    require 'tempfile'
 
+  FileEntry = FileUtils::Entry_ # :nodoc:
+
+  def self.build(extension, dest_path, results, args=[], lib_dir=nil)
     tmp_dest = Dir.mktmpdir(".gem.", ".")
 
     # Some versions of `mktmpdir` return absolute paths, which will break make
@@ -25,7 +27,7 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
     # Details: https://github.com/rubygems/rubygems/issues/977#issuecomment-171544940
     tmp_dest = get_relative_path(tmp_dest)
 
-    Tempfile.open %w[siteconf .rb], "." do |siteconf|
+    Tempfile.open %w"siteconf .rb", "." do |siteconf|
       siteconf.puts "require 'rbconfig'"
       siteconf.puts "dest_path = #{tmp_dest.dump}"
       %w[sitearchdir sitelibdir].each do |dir|
@@ -65,11 +67,11 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
           if Gem.install_extension_in_lib and lib_dir
             FileUtils.mkdir_p lib_dir
             entries = Dir.entries(tmp_dest) - %w[. ..]
-            entries = entries.map {|entry| File.join tmp_dest, entry }
+            entries = entries.map { |entry| File.join tmp_dest, entry }
             FileUtils.cp_r entries, lib_dir, :remove_destination => true
           end
 
-          FileUtils::Entry_.new(tmp_dest).traverse do |ent|
+          FileEntry.new(tmp_dest).traverse do |ent|
             destent = ent.class.new(dest_path, ent.rel)
             destent.exist? or FileUtils.mv(ent.path, destent.path)
           end
@@ -91,4 +93,5 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
     path[0..Dir.pwd.length - 1] = '.' if path.start_with?(Dir.pwd)
     path
   end
+
 end

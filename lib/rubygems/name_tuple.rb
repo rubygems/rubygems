@@ -4,7 +4,10 @@
 # Represents a gem of name +name+ at +version+ of +platform+. These
 # wrap the data returned from the indexes.
 
+require 'rubygems/platform'
+
 class Gem::NameTuple
+
   def initialize(name, version, platform="ruby")
     @name = name
     @version = version
@@ -23,7 +26,7 @@ class Gem::NameTuple
   # NameTuple objects.
 
   def self.from_list(list)
-    list.map {|t| new(*t) }
+    list.map { |t| new(*t) }
   end
 
   ##
@@ -31,7 +34,7 @@ class Gem::NameTuple
   # [name, version, platform] tuples.
 
   def self.to_basic(list)
-    list.map {|t| t.to_a }
+    list.map { |t| t.to_a }
   end
 
   ##
@@ -59,7 +62,7 @@ class Gem::NameTuple
   # Indicate if this NameTuple matches the current platform.
 
   def match_platform?
-    Gem::Platform.match_gem? @platform, @name
+    Gem::Platform.match @platform
   end
 
   ##
@@ -118,4 +121,5 @@ class Gem::NameTuple
   def hash
     to_a.hash
   end
+
 end

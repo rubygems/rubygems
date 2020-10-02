@@ -1,9 +1,11 @@
+
 # frozen_string_literal: true
 require 'rubygems/test_case'
 require 'rubygems/commands/build_command'
 require 'rubygems/package'
 
 class TestGemCommandsBuildCommand < Gem::TestCase
+
   CERT_FILE = cert_path 'public3072'
   SIGNING_KEY = key_path 'private3072'
 
@@ -15,13 +17,8 @@ class TestGemCommandsBuildCommand < Gem::TestCase
 
     readme_file = File.join(@tempdir, 'README.md')
 
-    begin
-      umask_orig = File.umask(2)
-      File.open readme_file, 'w' do |f|
-        f.write 'My awesome gem'
-      end
-    ensure
-      File.umask(umask_orig)
+    File.open readme_file, 'w' do |f|
+      f.write 'My awesome gem'
     end
 
     @gem = util_spec 'some_gem' do |s|
@@ -37,8 +34,6 @@ class TestGemCommandsBuildCommand < Gem::TestCase
 
     assert @cmd.options[:force]
     assert @cmd.options[:strict]
-    assert @cmd.handles?(%W[--platform #{Gem::Platform.local}])
-    assert_includes Gem.platforms, Gem::Platform.local
   end
 
   def test_options_filename
@@ -88,26 +83,6 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     util_test_build_gem @gem
   end
 
-  def test_execute_platform
-    gemspec_file = File.join(@tempdir, @gem.spec_name)
-
-    File.open gemspec_file, 'w' do |gs|
-      gs.write @gem.to_ruby
-    end
-
-    @cmd.options[:args] = [gemspec_file]
-
-    platforms = Gem.platforms.dup
-    begin
-      Gem.platforms << Gem::Platform.new("java")
-
-      spec = util_test_build_gem @gem, suffix: "java"
-    ensure
-      Gem.platforms.replace(platforms)
-    end
-    assert_match spec.platform, "java"
-  end
-
   def test_execute_bad_name
     [".", "-", "_"].each do |special_char|
       gem = util_spec 'some_gem_with_bad_name' do |s|
@@ -145,23 +120,6 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     @cmd.options[:args] = [gemspec_file]
 
     util_test_build_gem @gem
-  end
-
-  def test_execute_rubyforge_project_warning
-    rubyforge_gemspec = File.join SPECIFICATIONS, "rubyforge-0.0.1.gemspec"
-
-    @cmd.options[:args] = [rubyforge_gemspec]
-
-    use_ui @ui do
-      Dir.chdir @tempdir do
-        @cmd.execute
-      end
-    end
-
-    error = @ui.error.split("\n")
-    assert_equal "WARNING:  rubyforge_project= is deprecated and ignored. Please remove this from your gemspec to ensure that your gem continues to build in the future.", error.shift
-    assert_equal "WARNING:  See https://guides.rubygems.org/specification-reference/ for help", error.shift
-    assert_equal [], error
   end
 
   def test_execute_strict_with_warnings
@@ -349,29 +307,27 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     refute File.exist?(expected_gem)
   end
 
-  def util_test_build_gem(gem, suffix: nil)
+  def util_test_build_gem(gem)
     use_ui @ui do
       Dir.chdir @tempdir do
         @cmd.execute
       end
     end
-    suffix &&= "-#{suffix}"
-    gem_file = "some_gem-2#{suffix}.gem"
+
     output = @ui.output.split "\n"
     assert_equal "  Successfully built RubyGem", output.shift
     assert_equal "  Name: some_gem", output.shift
     assert_equal "  Version: 2", output.shift
-    assert_equal "  File: #{gem_file}", output.shift
+    assert_equal "  File: some_gem-2.gem", output.shift
     assert_equal [], output
 
-    gem_file = File.join(@tempdir, gem_file)
+    gem_file = File.join(@tempdir, File.basename(gem.cache_file))
     assert File.exist?(gem_file)
 
     spec = Gem::Package.new(gem_file).spec
 
     assert_equal "some_gem", spec.name
     assert_equal "this is a summary", spec.summary
-    spec
   end
 
   def test_execute_force
@@ -390,7 +346,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_build_signed_gem
-    skip 'openssl is missing' unless Gem::HAVE_OPENSSL && !java_platform?
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL) && !java_platform?
 
     trust_dir = Gem::Security.trust_dir
 
@@ -417,7 +373,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_build_signed_gem_with_cert_expiration_length_days
-    skip 'openssl is missing' unless Gem::HAVE_OPENSSL && !java_platform?
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL) && !java_platform?
 
     gem_path = File.join Gem.user_home, ".gem"
     Dir.mkdir gem_path
@@ -461,7 +417,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   end
 
   def test_build_auto_resign_cert
-    skip 'openssl is missing' unless Gem::HAVE_OPENSSL && !java_platform?
+    skip 'openssl is missing' unless defined?(OpenSSL::SSL) && !java_platform?
 
     gem_path = File.join Gem.user_home, ".gem"
     Dir.mkdir gem_path
@@ -532,4 +488,5 @@ class TestGemCommandsBuildCommand < Gem::TestCase
   ensure
     ENV["SOURCE_DATE_EPOCH"] = epoch
   end
+
 end

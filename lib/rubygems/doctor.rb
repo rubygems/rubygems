@@ -12,6 +12,7 @@ require 'rubygems/user_interaction'
 # removing the bogus specification.
 
 class Gem::Doctor
+
   include Gem::UserInteraction
 
   ##
@@ -30,7 +31,7 @@ class Gem::Doctor
 
   missing =
     Gem::REPOSITORY_SUBDIRECTORIES.sort -
-      REPOSITORY_EXTENSION_MAP.map {|(k,_)| k }.sort
+      REPOSITORY_EXTENSION_MAP.map { |(k,_)| k }.sort
 
   raise "Update REPOSITORY_EXTENSION_MAP, missing: #{missing.join ', '}" unless
     missing.empty?
@@ -52,7 +53,7 @@ class Gem::Doctor
   # Specs installed in this gem repository
 
   def installed_specs # :nodoc:
-    @installed_specs ||= Gem::Specification.map {|s| s.full_name }
+    @installed_specs ||= Gem::Specification.map { |s| s.full_name }
   end
 
   ##
@@ -128,4 +129,5 @@ class Gem::Doctor
   rescue Errno::ENOENT
     # ignore
   end
+
 end

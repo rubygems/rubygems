@@ -47,7 +47,7 @@ module Bundler
         remote_uri = filter_uri(remote_uri)
         super "Authentication is required for #{remote_uri}.\n" \
           "Please supply credentials for this source. You can do this by running:\n" \
-          " bundle config set --global #{remote_uri} username:password"
+          " bundle config set #{remote_uri} username:password"
       end
     end
     # This error is raised if HTTP authentication is provided, but incorrect.
@@ -69,8 +69,8 @@ module Bundler
                   :HTTPUnsupportedMediaType, :HTTPVersionNotSupported].freeze
     FAIL_ERRORS = begin
       fail_errors = [AuthenticationRequiredError, BadAuthenticationError, FallbackError]
-      fail_errors << Gem::Requirement::BadRequirementError
-      fail_errors.concat(NET_ERRORS.map {|e| Net.const_get(e) })
+      fail_errors << Gem::Requirement::BadRequirementError if defined?(Gem::Requirement::BadRequirementError)
+      fail_errors.concat(NET_ERRORS.map {|e| SharedHelpers.const_get_safely(e, Net) }.compact)
     end.freeze
 
     class << self
@@ -216,7 +216,7 @@ module Bundler
       "#<#{self.class}:0x#{object_id} uri=#{uri}>"
     end
 
-    private
+  private
 
     FETCHERS = [CompactIndex, Dependency, Index].freeze
 
@@ -229,7 +229,6 @@ module Bundler
         "BUILDBOX" => "buildbox",
         "GO_SERVER_URL" => "go",
         "SNAP_CI" => "snap",
-        "GITLAB_CI" => "gitlab",
         "CI_NAME" => ENV["CI_NAME"],
         "CI" => "ci",
       }
@@ -303,7 +302,7 @@ module Bundler
       store
     end
 
-    private
+  private
 
     def remote_uri
       @remote.uri

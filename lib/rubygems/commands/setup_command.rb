@@ -6,6 +6,7 @@ require 'rubygems/command'
 # RubyGems checkout or tarball.
 
 class Gem::Commands::SetupCommand < Gem::Command
+
   HISTORY_HEADER = /^===\s*[\d.a-zA-Z]+\s*\/\s*\d{4}-\d{2}-\d{2}\s*$/.freeze
   VERSION_MATCHER = /^===\s*([\d.a-zA-Z]+)\s*\/\s*\d{4}-\d{2}-\d{2}\s*$/.freeze
 
@@ -15,7 +16,7 @@ class Gem::Commands::SetupCommand < Gem::Command
     require 'tmpdir'
 
     super 'setup', 'Install RubyGems',
-          :format_executable => false, :document => %w[ri],
+          :format_executable => true, :document => %w[ri],
           :force => true,
           :site_or_vendor => 'sitelibdir',
           :destdir => '', :prefix => '', :previous_version => '',
@@ -167,19 +168,14 @@ By default, this RubyGems will install gem as:
     extend MakeDirs
 
     lib_dir, bin_dir = make_destination_dirs install_destdir
-    man_dir = make_man_dir install_destdir
 
     install_lib lib_dir
-
-    install_man man_dir
 
     install_executables bin_dir
 
     remove_old_bin_files bin_dir
 
     remove_old_lib_files lib_dir
-
-    remove_old_man_files man_dir
 
     install_default_bundler_gem bin_dir
 
@@ -216,7 +212,7 @@ By default, this RubyGems will install gem as:
     say
 
     say "RubyGems installed the following executables:"
-    say bin_file_names.map {|name| "\t#{name}\n" }
+    say bin_file_names.map { |name| "\t#{name}\n" }
     say
 
     unless bin_file_names.grep(/#{File::SEPARATOR}gem$/)
@@ -316,6 +312,16 @@ By default, this RubyGems will install gem as:
     end
   end
 
+  def install_file(file, dest_dir)
+    dest_file = File.join dest_dir, file
+    dest_dir = File.dirname dest_file
+    unless File.directory? dest_dir
+      mkdir_p dest_dir, :mode => 0755
+    end
+
+    install file, dest_file, :mode => options[:data_mode] || 0644
+  end
+
   def install_lib(lib_dir)
     libs = { 'RubyGems' => 'lib' }
     libs['Bundler'] = 'bundler/lib'
@@ -323,27 +329,18 @@ By default, this RubyGems will install gem as:
       say "Installing #{tool}" if @verbose
 
       lib_files = rb_files_in path
-      lib_files.concat(bundler_template_files) if tool == 'Bundler'
+      lib_files.concat(template_files) if tool == 'Bundler'
 
       pem_files = pem_files_in path
 
       Dir.chdir path do
-        install_file_list(lib_files + pem_files, lib_dir)
-      end
-    end
-  end
+        lib_files.each do |lib_file|
+          install_file lib_file, lib_dir
+        end
 
-  def install_man(man_dir)
-    mans = { 'Bundler' => 'bundler/man' }
-    mans.each do |tool, path|
-      say "Installing #{tool} manpages" if @verbose
-
-      bundler_man1_files = bundler_man1_files_in(path)
-      bundler_man5_files = bundler_man5_files_in(path)
-
-      Dir.chdir path do
-        install_file_list(bundler_man1_files, "#{man_dir}/man1")
-        install_file_list(bundler_man5_files, "#{man_dir}/man5")
+        pem_files.each do |pem_file|
+          install_file pem_file, lib_dir
+        end
       end
     end
   end
@@ -462,30 +459,6 @@ By default, this RubyGems will install gem as:
     return lib_dir, bin_dir
   end
 
-  def make_man_dir(install_destdir)
-    man_dir = generate_default_man_dir(install_destdir)
-
-    mkdir_p man_dir, :mode => 0755
-
-    return man_dir
-  end
-
-  def generate_default_man_dir(install_destdir)
-    prefix = options[:prefix]
-
-    if prefix.empty?
-      man_dir = RbConfig::CONFIG['mandir']
-    else
-      man_dir = File.join prefix, 'man'
-    end
-
-    unless install_destdir.empty?
-      man_dir = File.join install_destdir, man_dir.gsub(/^[a-zA-Z]:/, '')
-    end
-
-    man_dir
-  end
-
   def generate_default_dirs(install_destdir)
     prefix = options[:prefix]
     site_or_vendor = options[:site_or_vendor]
@@ -531,31 +504,18 @@ By default, this RubyGems will install gem as:
   end
 
   # for installation of bundler as default gems
-  def bundler_man1_files_in(dir)
-    Dir.chdir dir do
-      Dir['bundle*.1{,.txt,.ronn}']
-    end
-  end
-
-  # for installation of bundler as default gems
-  def bundler_man5_files_in(dir)
-    Dir.chdir dir do
-      Dir['gemfile.5{,.txt,.ronn}']
-    end
-  end
-
-  def bundler_template_files
+  def template_files
     Dir.chdir "bundler/lib" do
-      Dir.glob(File.join('bundler', 'templates', '**', '*'), File::FNM_DOTMATCH).
-        select{|f| !File.directory?(f) }
+      (Dir[File.join('bundler', 'templates', '**', '{*,.*}')]).
+        select{|f| !File.directory?(f)}
     end
   end
 
   # for cleanup old bundler files
   def template_files_in(dir)
     Dir.chdir dir do
-      Dir.glob(File.join('templates', '**', '*'), File::FNM_DOTMATCH).
-        select{|f| !File.directory?(f) }
+      (Dir[File.join('templates', '**', '{*,.*}')]).
+        select{|f| !File.directory?(f)}
     end
   end
 
@@ -586,7 +546,7 @@ abort "#{deprecation_message}"
       next unless Gem.win_platform?
 
       File.open "#{old_bin_path}.bat", 'w' do |fp|
-        fp.puts %(@ECHO.#{deprecation_message})
+        fp.puts %{@ECHO.#{deprecation_message}}
       end
     end
   end
@@ -603,29 +563,17 @@ abort "#{deprecation_message}"
 
       to_remove = old_lib_files - lib_files
 
-      gauntlet_rubygems = File.join(lib_dir, 'gauntlet_rubygems.rb')
-      to_remove << gauntlet_rubygems if File.exist? gauntlet_rubygems
-
       to_remove.delete_if do |file|
         file.start_with? 'defaults'
       end
 
-      remove_file_list(to_remove, old_lib_dir)
-    end
-  end
+      Dir.chdir old_lib_dir do
+        to_remove.each do |file|
+          FileUtils.rm_f file
 
-  def remove_old_man_files(man_dir)
-    man_dirs = { man_dir => "bundler/man" }
-    man_dirs.each do |old_man_dir, new_man_dir|
-      ["1", "5"].each do |section|
-        man_files = send(:"bundler_man#{section}_files_in", new_man_dir)
-
-        old_man_dir_with_section = "#{old_man_dir}/man#{section}"
-        old_man_files = send(:"bundler_man#{section}_files_in", old_man_dir_with_section)
-
-        man_to_remove = old_man_files - man_files
-
-        remove_file_list(man_to_remove, old_man_dir_with_section)
+          warn "unable to remove old file #{file} please remove it by hand" if
+            File.exist? file
+        end
       end
     end
   end
@@ -638,6 +586,8 @@ abort "#{deprecation_message}"
         history = File.read release_notes
 
         history.force_encoding Encoding::UTF_8
+
+        history = history.sub(/^# coding:.*?(?=^=)/m, '')
 
         text = history.split(HISTORY_HEADER)
         text.shift # correct an off-by-one generated by split
@@ -695,33 +645,6 @@ abort "#{deprecation_message}"
 
   private
 
-  def install_file_list(files, dest_dir)
-    files.each do |file|
-      install_file file, dest_dir
-    end
-  end
-
-  def install_file(file, dest_dir)
-    dest_file = File.join dest_dir, file
-    dest_dir = File.dirname dest_file
-    unless File.directory? dest_dir
-      mkdir_p dest_dir, :mode => 0755
-    end
-
-    install file, dest_file, :mode => options[:data_mode] || 0644
-  end
-
-  def remove_file_list(files, dir)
-    Dir.chdir dir do
-      files.each do |file|
-        FileUtils.rm_f file
-
-        warn "unable to remove old file #{file} please remove it by hand" if
-          File.exist? file
-      end
-    end
-  end
-
   def target_bin_path(bin_dir, bin_file)
     bin_file_formatted = if options[:format_executable]
                            Gem.default_exec_format % bin_file
@@ -734,4 +657,5 @@ abort "#{deprecation_message}"
   def bin_file_names
     @bin_file_names ||= []
   end
+
 end

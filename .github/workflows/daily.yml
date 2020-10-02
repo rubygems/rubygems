@@ -1,0 +1,29 @@
+name: daily
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  daily:
+    runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        ruby: [ ruby-head ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Test bundler
+        run: |
+          bin/rake spec:parallel_deps
+          RGV=.. bin/parallel_rspec spec
+        working-directory: ./bundler
+        continue-on-error: true
+      - name: Test rubygems
+        run: |
+          rake setup
+          rake test
+    timeout-minutes: 60

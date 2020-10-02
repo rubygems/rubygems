@@ -1,14 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-new_argv = ARGV.map do |argv|
-  File.exist?(argv) ? File.expand_path(argv) : argv
-end
+require_relative "../spec/support/rubygems_ext"
 
-ARGV.replace(%w[--config .rubocop_bundler.yml] + new_argv)
-
-repo_root = File.expand_path("../..", __dir__)
-
-Dir.chdir(repo_root)
-
-load File.expand_path("util/rubocop", repo_root)
+Spec::Rubygems.gem_load("rubocop", "rubocop")

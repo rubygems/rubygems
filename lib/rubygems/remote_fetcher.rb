@@ -13,6 +13,7 @@ require 'resolv'
 # a remote source.
 
 class Gem::RemoteFetcher
+
   include Gem::UserInteraction
   include Gem::UriParsing
 
@@ -21,6 +22,7 @@ class Gem::RemoteFetcher
   # that could happen while downloading from the internet.
 
   class FetchError < Gem::Exception
+
     include Gem::UriParsing
 
     ##
@@ -41,6 +43,7 @@ class Gem::RemoteFetcher
     def to_s # :nodoc:
       "#{super} (#{uri})"
     end
+
   end
 
   ##
@@ -103,7 +106,7 @@ class Gem::RemoteFetcher
 
     return if found.empty?
 
-    spec, source = found.max_by {|(s,_)| s.version }
+    spec, source = found.max_by { |(s,_)| s.version }
 
     download spec, source.uri
   end
@@ -114,12 +117,11 @@ class Gem::RemoteFetcher
   # always replaced.
 
   def download(spec, source_uri, install_dir = Gem.dir)
-    install_cache_dir = File.join install_dir, "cache"
     cache_dir =
-      if Dir.pwd == install_dir # see fetch_command
+      if Dir.pwd == install_dir  # see fetch_command
         install_dir
-      elsif File.writable?(install_cache_dir) || (File.writable?(install_dir) && (not File.exist?(install_cache_dir)))
-        install_cache_dir
+      elsif File.writable? install_dir
+        File.join install_dir, "cache"
       else
         File.join Gem.user_dir, "cache"
       end
@@ -127,7 +129,6 @@ class Gem::RemoteFetcher
     gem_file_name = File.basename spec.cache_file
     local_gem_path = File.join cache_dir, gem_file_name
 
-    require "fileutils"
     FileUtils.mkdir_p cache_dir rescue nil unless File.exist? cache_dir
 
     source_uri = parse_uri(source_uri)
@@ -211,7 +212,7 @@ class Gem::RemoteFetcher
   def fetch_http(uri, last_modified = nil, head = false, depth = 0)
     fetch_type = head ? Net::HTTP::Head : Net::HTTP::Get
     response   = request uri, fetch_type, last_modified do |req|
-      headers.each {|k,v| req.add_field(k,v) }
+      headers.each { |k,v| req.add_field(k,v) }
     end
 
     case response
@@ -251,7 +252,7 @@ class Gem::RemoteFetcher
 
     data = send "fetch_#{uri.scheme}", uri, mtime, head
 
-    if data and !head and uri.to_s.end_with?(".gz")
+    if data and !head and uri.to_s =~ /\.gz$/
       begin
         data = Gem::Util.gunzip data
       rescue Zlib::GzipFile::Error
@@ -263,7 +264,7 @@ class Gem::RemoteFetcher
   rescue Timeout::Error
     raise UnknownHostError.new('timed out', uri)
   rescue IOError, SocketError, SystemCallError,
-         *(OpenSSL::SSL::SSLError if Gem::HAVE_OPENSSL) => e
+         *(OpenSSL::SSL::SSLError if defined?(OpenSSL)) => e
     if e.message =~ /getaddrinfo/
       raise UnknownHostError.new('no such name', uri)
     else
@@ -326,7 +327,7 @@ class Gem::RemoteFetcher
   end
 
   def close_all
-    @pools.each_value {|pool| pool.close_all }
+    @pools.each_value {|pool| pool.close_all}
   end
 
   private
@@ -340,4 +341,5 @@ class Gem::RemoteFetcher
       @pools[proxy] ||= Gem::Request::ConnectionPools.new proxy, @cert_files
     end
   end
+
 end

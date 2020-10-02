@@ -4,6 +4,7 @@
 # Returns instances of APISpecification.
 
 class Gem::Resolver::APISet < Gem::Resolver::Set
+
   ##
   # The URI for the dependency API this APISet uses.
 
@@ -27,12 +28,12 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
   def initialize(dep_uri = 'https://rubygems.org/api/v1/dependencies')
     super()
 
-    dep_uri = URI dep_uri unless URI === dep_uri
+    dep_uri = URI dep_uri unless URI === dep_uri # for ruby 1.8
 
     @dep_uri = dep_uri
     @uri     = dep_uri + '../..'
 
-    @data   = Hash.new {|h,k| h[k] = [] }
+    @data   = Hash.new { |h,k| h[k] = [] }
     @source = Gem::Source.new @uri
 
     @to_fetch = []
@@ -66,7 +67,7 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
 
   def prefetch(reqs)
     return unless @remote
-    names = reqs.map {|r| r.dependency.name }
+    names = reqs.map { |r| r.dependency.name }
     needed = names - @data.keys - @to_fetch
 
     @to_fetch += needed
@@ -120,4 +121,5 @@ class Gem::Resolver::APISet < Gem::Resolver::Set
 
     @data[name]
   end
+
 end

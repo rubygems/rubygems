@@ -3,6 +3,7 @@ require 'rubygems/test_case'
 require "rubygems/text"
 
 class TestGemText < Gem::TestCase
+
   include Gem::Text
 
   def test_format_text
@@ -22,7 +23,7 @@ class TestGemText < Gem::TestCase
   end
 
   def test_format_text_no_space
-    assert_equal "texttowr\nap", format_text("texttowrap", 8)
+    assert_equal "texttowr\nap",     format_text("texttowrap", 8)
   end
 
   def test_format_text_trailing # for two spaces after .
@@ -83,12 +84,6 @@ Without the wrapping, the text might not look good in the RSS feed.
     assert_equal 7, levenshtein_distance("zentest", "xxxxxxx")
   end
 
-  def test_levenshtein_distance_all
-    assert_equal 6, levenshtein_distance("algorithm", "altruistic")
-    assert_equal 3, levenshtein_distance("saturday", "sunday")
-    assert_equal 3, levenshtein_distance("kitten", "sitting")
-  end
-
   def test_truncate_text
     assert_equal "abc", truncate_text("abc", "desc")
     assert_equal "Truncating desc to 2 characters:\nab", truncate_text("abc", "desc", 2)
@@ -99,4 +94,5 @@ Without the wrapping, the text might not look good in the RSS feed.
   def test_clean_text
     assert_equal ".]2;nyan.", clean_text("\e]2;nyan\a")
   end
+
 end

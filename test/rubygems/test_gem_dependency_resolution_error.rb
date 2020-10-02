@@ -2,6 +2,7 @@
 require 'rubygems/test_case'
 
 class TestGemDependencyResolutionError < Gem::TestCase
+
   def setup
     super
 
@@ -20,7 +21,8 @@ class TestGemDependencyResolutionError < Gem::TestCase
   end
 
   def test_message
-    assert_match %r{^conflicting dependencies a \(= 1\) and a \(= 2\)$},
+    assert_match %r%^conflicting dependencies a \(= 1\) and a \(= 2\)$%,
                  @error.message
   end
+
 end

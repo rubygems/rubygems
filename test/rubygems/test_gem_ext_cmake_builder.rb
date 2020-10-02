@@ -3,18 +3,16 @@ require 'rubygems/test_case'
 require 'rubygems/ext'
 
 class TestGemExtCmakeBuilder < Gem::TestCase
+
   def setup
     super
 
     # Details: https://github.com/rubygems/rubygems/issues/1270#issuecomment-177368340
     skip "CmakeBuilder doesn't work on Windows." if Gem.win_platform?
 
-    begin
-      _, status = Open3.capture2e('cmake')
-      skip 'cmake not present' unless status.success?
-    rescue Errno::ENOENT
-      skip 'cmake not present'
-    end
+    system('cmake', out: IO::NULL, err: [:child, :out])
+
+    skip 'cmake not present' unless $?.success?
 
     @ext = File.join @tempdir, 'ext'
     @dest_path = File.join @tempdir, 'prefix'
@@ -25,11 +23,11 @@ class TestGemExtCmakeBuilder < Gem::TestCase
 
   def test_self_build
     File.open File.join(@ext, 'CMakeLists.txt'), 'w' do |cmakelists|
-      cmakelists.write <<-EO_CMAKE
+      cmakelists.write <<-eo_cmake
 cmake_minimum_required(VERSION 2.6)
 project(self_build NONE)
 install (FILES test.txt DESTINATION bin)
-      EO_CMAKE
+      eo_cmake
     end
 
     FileUtils.touch File.join(@ext, 'test.txt')
@@ -43,11 +41,11 @@ install (FILES test.txt DESTINATION bin)
     output = output.join "\n"
 
     assert_match \
-      %r{^cmake \. -DCMAKE_INSTALL_PREFIX=#{Regexp.escape @dest_path}}, output
-    assert_match %r{#{Regexp.escape @ext}}, output
+      %r%^cmake \. -DCMAKE_INSTALL_PREFIX=#{Regexp.escape @dest_path}%, output
+    assert_match %r%#{Regexp.escape @ext}%, output
     assert_contains_make_command '', output
     assert_contains_make_command 'install', output
-    assert_match %r{test\.txt}, output
+    assert_match %r%test\.txt%, output
   end
 
   def test_self_build_fail
@@ -66,8 +64,8 @@ install (FILES test.txt DESTINATION bin)
 
     assert_match 'cmake failed', error.message
 
-    assert_match %r{^#{sh_prefix_cmake}#{Regexp.escape @dest_path}}, output
-    assert_match %r{#{shell_error_msg}}, output
+    assert_match %r%^#{sh_prefix_cmake}#{Regexp.escape @dest_path}%, output
+    assert_match %r%#{shell_error_msg}%, output
   end
 
   def test_self_build_has_makefile
@@ -86,4 +84,5 @@ install (FILES test.txt DESTINATION bin)
     assert_contains_make_command '', output
     assert_contains_make_command 'install', output
   end
+
 end

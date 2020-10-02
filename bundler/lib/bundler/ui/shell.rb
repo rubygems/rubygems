@@ -28,17 +28,17 @@ module Bundler
         tell_me(msg, :green, newline) if level("confirm")
       end
 
-      def warn(msg, newline = nil, color = :yellow)
+      def warn(msg, newline = nil)
         return unless level("warn")
         return if @warning_history.include? msg
         @warning_history << msg
 
-        tell_err(msg, color, newline)
+        tell_err(msg, :yellow, newline)
       end
 
-      def error(msg, newline = nil, color = :red)
+      def error(msg, newline = nil)
         return unless level("error")
-        tell_err(msg, color, newline)
+        tell_err(msg, :red, newline)
       end
 
       def debug(msg, newline = nil)
@@ -92,7 +92,7 @@ module Bundler
         []
       end
 
-      private
+    private
 
       # valimism
       def tell_me(msg, color = nil, newline = nil)

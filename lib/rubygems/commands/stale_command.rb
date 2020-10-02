@@ -2,6 +2,7 @@
 require 'rubygems/command'
 
 class Gem::Commands::StaleCommand < Gem::Command
+
   def initialize
     super('stale', 'List gems along with access times')
   end
@@ -32,8 +33,9 @@ longer using.
       end
     end
 
-    gem_to_atime.sort_by {|_, atime| atime }.each do |name, atime|
+    gem_to_atime.sort_by { |_, atime| atime }.each do |name, atime|
       say "#{name} at #{atime.strftime '%c'}"
     end
   end
+
 end

@@ -1,4 +1,4 @@
-RakeFileUtils.verbose_flag = false
+# -*- ruby -*-
 
 require 'rubygems'
 require 'rubygems/package_task'
@@ -7,9 +7,9 @@ require 'psych'
 
 desc "Setup Rubygems dev environment"
 task :setup do
-  version = File.read("dev_gems.rb.lock").split(/BUNDLED WITH\n   /).last
+  version = File.read("Gemfile.lock").split(/BUNDLED WITH\n   /).last
   sh "gem install bundler:#{version}"
-  sh "bundle install --gemfile=dev_gems.rb"
+  sh "bundle install"
 end
 
 desc "Setup git hooks"
@@ -39,9 +39,9 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
   doc.title  = "RubyGems #{v} API Documentation"
 
   rdoc_files = Rake::FileList.new %w[lib bundler/lib]
-  rdoc_files.add %w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.md
-                    MAINTAINERS.txt Manifest.txt POLICIES.md README.md UPGRADING.md bundler/CHANGELOG.md
-                    bundler/doc/contributing/README.md bundler/LICENSE.md bundler/README.md
+  rdoc_files.add %w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.rdoc
+                    MAINTAINERS.txt Manifest.txt POLICIES.rdoc README.md UPGRADING.rdoc bundler/CHANGELOG.md
+                    bundler/CONTRIBUTING.md bundler/LICENSE.md bundler/README.md
                     hide_lib_for_update/note.txt].map(&:freeze)
 
   doc.rdoc_files = rdoc_files
@@ -64,19 +64,10 @@ rescue LoadError
   end
 end
 
-namespace :rubocop do
-  desc "Run rubocop for RubyGems. Pass positional arguments, e.g. -a, as Rake arguments."
-  task(:rubygems) do |_, args|
-    sh "util/rubocop", *args
-  end
-
-  desc "Run rubocop for Bundler. Pass positional arguments, e.g. -a, as Rake arguments."
-  task(:bundler) do |_, args|
-    sh "bundler/bin/rubocop", *args
-  end
+desc "Run rubocop"
+task(:rubocop) do
+  sh "util/rubocop"
 end
-
-task rubocop: %w[rubocop:rubygems rubocop:bundler]
 
 desc "Run a test suite bisection"
 task(:bisect) do
@@ -106,13 +97,6 @@ end
 desc "Clears previously built package"
 task :clear_package do
   rm_rf "pkg"
-end
-
-desc "Generates the changelog for a specific target version"
-task :generate_changelog, [:version] do |_t, opts|
-  require_relative "util/changelog"
-
-  Changelog.for_rubygems(opts[:version]).cut!
 end
 
 desc "Release rubygems-#{v}"
@@ -177,7 +161,7 @@ task :upload_to_s3 do
   s3 = Aws::S3::Resource.new(region:'us-west-2')
   %w[zip tgz].each do |ext|
     obj = s3.bucket('oregon.production.s3.rubygems.org').object("rubygems/rubygems-#{v}.#{ext}")
-    obj.upload_file("pkg/rubygems-#{v}.#{ext}", acl: 'public-read')
+    obj.upload_file("pkg/rubygems-#{v}.#{ext}")
   end
 end
 
@@ -278,7 +262,50 @@ namespace 'blog' do
     name  = `git config --get user.name`.strip
     email = `git config --get user.email`.strip
 
-    history = Changelog.for_rubygems(v.to_s)
+    history = File.read 'History.txt'
+
+    history.force_encoding Encoding::UTF_8
+
+    _, change_log, = history.split %r%^===\s*\d.*%, 3
+
+    change_types = []
+
+    lines = change_log.strip.lines
+    change_log = []
+
+    while line = lines.shift do
+      case line
+      when /(^[A-Z].*)/ then
+        change_types << $1
+        change_log << "_#{$1}_\n"
+      when /^\*/ then
+        entry = [line.strip]
+
+        while /^  \S/ =~ lines.first do
+          entry << lines.shift.strip
+        end
+
+        change_log << "#{entry.join ' '}\n"
+      else
+        change_log << line
+      end
+    end
+
+    change_log = change_log.join
+
+    change_types = change_types.map do |change_type|
+      change_type.downcase.tr '^a-z ', ''
+    end
+
+    last_change_type = change_types.pop
+
+    if change_types.empty?
+      change_types = ''
+    else
+      change_types = change_types.join(', ') << ' and '
+    end
+
+    change_types << last_change_type
 
     require 'tempfile'
 
@@ -291,7 +318,7 @@ author: #{name}
 author_email: #{email}
 ---
 
-RubyGems #{v} includes #{history.change_types_for_blog}.
+RubyGems #{v} includes #{change_types}.
 
 To update to the latest RubyGems you can run:
 
@@ -301,7 +328,7 @@ If you need to upgrade or downgrade please follow the [how to upgrade/downgrade
 RubyGems][upgrading] instructions.  To install RubyGems by hand see the
 [Download RubyGems][download] page.
 
-#{history.release_notes_for_blog.join("\n")}
+#{change_log}
 
 SHA256 Checksums:
 
@@ -347,30 +374,32 @@ end
 
 module Rubygems
   class ProjectFiles
+
     def self.all
       files = []
-      exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)|util/)}
-      tracked_files = `git ls-files`.split("\n")
+      exclude = %r[\.git|\./bundler/(?!lib|man|exe|[^/]+\.md|bundler.gemspec)]ox
+      tracked_files = `git ls-files`.split("\n").map {|f| "./#{f}" }
 
       tracked_files.each do |path|
         next unless File.file?(path)
         next if path =~ exclude
-        files << path
+        files << path[2..-1]
       end
 
-      files.sort
+      files
     end
+
   end
 end
 
 desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
-  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all) }
+  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all.sort) }
 end
 
 desc "Check the manifest is up to date"
 task :check_manifest do
-  if File.read("Manifest.txt").split != Rubygems::ProjectFiles.all
+  if File.read("Manifest.txt").split.sort != Rubygems::ProjectFiles.all.sort
     abort "Manifest is out of date. Run `rake update_manifest` to sync it"
   end
 end

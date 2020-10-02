@@ -14,7 +14,7 @@ URIS = [
 HOSTNAMES_TO_MAP = [
   'rubygems.global.ssl.fastly.net',
   'rubygems.org',
-  'index.rubygems.org',
+  'index.rubygems.org'
 ].freeze
 
 def connect_to(uri, store)
@@ -66,7 +66,7 @@ def test_certificates(certificates, uri)
       if match
         $needed_combinations << match
         puts
-        puts match.map {|certificate| certificate.subject }
+        puts match.map { |certificate| certificate.subject }
         return
       else
         print '.'

@@ -19,6 +19,7 @@ module TestGemCommandsQueryCommandSetup
 end
 
 class TestGemCommandsQueryCommandWithInstalledGems < Gem::TestCase
+
   include TestGemCommandsQueryCommandSetup
 
   def test_execute
@@ -579,8 +580,8 @@ pl (1 i386-linux)
       @cmd.execute
     end
 
-    assert_match %r{^a }, @stub_ui.output
-    assert_match %r{^pl }, @stub_ui.output
+    assert_match %r%^a %, @stub_ui.output
+    assert_match %r%^pl %, @stub_ui.output
     assert_equal '', @stub_ui.error
   end
 
@@ -592,8 +593,8 @@ pl (1 i386-linux)
       @cmd.send :show_gems, /a/i
     end
 
-    assert_match %r{^a },  @stub_ui.output
-    refute_match %r{^pl }, @stub_ui.output
+    assert_match %r%^a %,  @stub_ui.output
+    refute_match %r%^pl %, @stub_ui.output
     assert_empty @stub_ui.error
   end
 
@@ -606,9 +607,11 @@ pl (1 i386-linux)
       fetcher.spec 'a', '3.a'
     end
   end
+
 end
 
 class TestGemCommandsQueryCommandWithoutInstalledGems < Gem::TestCase
+
   include TestGemCommandsQueryCommandSetup
 
   def test_execute_platform
@@ -641,10 +644,10 @@ a (2 universal-darwin, 1 ruby x86-linux)
   end
 
   def test_execute_show_default_gems
-    spec_fetcher {|fetcher| fetcher.spec 'a', 2 }
+    spec_fetcher { |fetcher| fetcher.spec 'a', 2 }
 
     a1 = new_default_spec 'a', 1
-    install_default_gems a1
+    install_default_specs a1
 
     use_ui @stub_ui do
       @cmd.execute
@@ -663,7 +666,7 @@ EOF
   def test_execute_show_default_gems_with_platform
     a1 = new_default_spec 'a', 1
     a1.platform = 'java'
-    install_default_gems a1
+    install_default_specs a1
 
     use_ui @stub_ui do
       @cmd.execute
@@ -685,7 +688,7 @@ EOF
     end
 
     a1 = new_default_spec 'a', 1
-    install_default_gems a1
+    install_default_specs a1
 
     @cmd.handle_options %w[-l -d]
 
@@ -854,4 +857,5 @@ othergem (1.2.3)
       fetcher.download 'a', '3.a'
     end
   end
+
 end

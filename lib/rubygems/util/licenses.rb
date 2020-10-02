@@ -2,13 +2,14 @@
 require 'rubygems/text'
 
 class Gem::Licenses
+
   extend Gem::Text
 
   NONSTANDARD = 'Nonstandard'.freeze
 
   # Software Package Data Exchange (SPDX) standard open-source software
   # license identifiers
-  LICENSE_IDENTIFIERS = %w[
+  LICENSE_IDENTIFIERS = %w(
     0BSD
     AAL
     ADSL
@@ -378,10 +379,10 @@ class Gem::Licenses
     xinetd
     xpp
     zlib-acknowledgement
-  ].freeze
+  ).freeze
 
   # exception identifiers
-  EXCEPTION_IDENTIFIERS = %w[
+  EXCEPTION_IDENTIFIERS = %w(
     389-exception
     Autoconf-exception-2.0
     Autoconf-exception-3.0
@@ -409,7 +410,7 @@ class Gem::Licenses
     mif-exception
     openvpn-openssl-exception
     u-boot-exception-2.0
-  ].freeze
+  ).freeze
 
   REGEXP = %r{
     \A
@@ -434,4 +435,5 @@ class Gem::Licenses
     return unless lowest < license.size
     by_distance[lowest]
   end
+
 end

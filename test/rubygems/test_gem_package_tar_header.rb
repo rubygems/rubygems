@@ -3,6 +3,7 @@ require 'rubygems/package/tar_test_case'
 require 'rubygems/package'
 
 class TestGemPackageTarHeader < Gem::Package::TarTestCase
+
   def setup
     super
 
@@ -204,22 +205,4 @@ tjmather\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
     assert_equal 6932, tar_header.checksum
   end
 
-  def test_spaces_in_headers
-    stream = StringIO.new(
-      <<-EOF.dup.force_encoding('binary').split("\n").join
-Access_Points_09202018.csv
-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
-\x00\x00100777 \x00     0 \x00     0 \x00       4357 13545040367  104501
-\x000
-      EOF
-    )
-
-    tar_header = Gem::Package::TarHeader.from stream
-
-    assert_equal 0, tar_header.uid
-    assert_equal 0, tar_header.gid
-  end
 end

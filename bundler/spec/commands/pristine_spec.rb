@@ -18,7 +18,7 @@ RSpec.describe "bundle pristine", :ruby_repo do
       build_lib "bar", :path => lib_path("bar")
     end
 
-    install_gemfile <<-G
+    install_gemfile! <<-G
       source "#{file_uri_for(gem_repo2)}"
       gem "weakling"
       gem "very_simple_binary"
@@ -34,7 +34,7 @@ RSpec.describe "bundle pristine", :ruby_repo do
 
   context "when sourced from RubyGems" do
     it "reverts using cached .gem file" do
-      spec = find_spec("weakling")
+      spec = Bundler.definition.specs["weakling"].first
       changes_txt = Pathname.new(spec.full_gem_path).join("lib/changes.txt")
 
       FileUtils.touch(changes_txt)
@@ -45,9 +45,10 @@ RSpec.describe "bundle pristine", :ruby_repo do
     end
 
     it "does not delete the bundler gem" do
-      bundle "install"
-      bundle "pristine"
-      bundle "-v"
+      system_gems :bundler
+      bundle! "install"
+      bundle! "pristine", :system_bundler => true
+      bundle! "-v", :system_bundler => true
 
       expected = if Bundler::VERSION < "3.0"
         "Bundler version"
@@ -61,30 +62,30 @@ RSpec.describe "bundle pristine", :ruby_repo do
 
   context "when sourced from git repo" do
     it "reverts by resetting to current revision`" do
-      spec = find_spec("foo")
+      spec = Bundler.definition.specs["foo"].first
       changed_file = Pathname.new(spec.full_gem_path).join("lib/foo.rb")
       diff = "#Pristine spec changes"
 
       File.open(changed_file, "a") {|f| f.puts diff }
       expect(File.read(changed_file)).to include(diff)
 
-      bundle "pristine"
+      bundle! "pristine"
       expect(File.read(changed_file)).to_not include(diff)
     end
 
     it "removes added files" do
-      spec = find_spec("foo")
+      spec = Bundler.definition.specs["foo"].first
       changes_txt = Pathname.new(spec.full_gem_path).join("lib/changes.txt")
 
       FileUtils.touch(changes_txt)
       expect(changes_txt).to be_file
 
-      bundle "pristine"
+      bundle! "pristine"
       expect(changes_txt).not_to be_file
     end
 
     it "displays warning and ignores changes when a local config exists" do
-      spec = find_spec("foo")
+      spec = Bundler.definition.specs["foo"].first
       bundle "config set local.#{spec.name} #{lib_path(spec.name)}"
 
       changes_txt = Pathname.new(spec.full_gem_path).join("lib/changes.txt")
@@ -93,13 +94,13 @@ RSpec.describe "bundle pristine", :ruby_repo do
 
       bundle "pristine"
       expect(changes_txt).to be_file
-      expect(err).to include("Cannot pristine #{spec.name} (#{spec.version}#{spec.git_version}). Gem is locally overridden.")
+      expect(err).to include("Cannot pristine #{spec.name} (#{spec.version}#{spec.git_version}). Gem is locally overriden.")
     end
   end
 
   context "when sourced from gemspec" do
     it "displays warning and ignores changes when sourced from gemspec" do
-      spec = find_spec("baz")
+      spec = Bundler.definition.specs["baz"].first
       changed_file = Pathname.new(spec.full_gem_path).join("lib/baz.rb")
       diff = "#Pristine spec changes"
 
@@ -112,7 +113,7 @@ RSpec.describe "bundle pristine", :ruby_repo do
     end
 
     it "reinstall gemspec dependency" do
-      spec = find_spec("baz-dev")
+      spec = Bundler.definition.specs["baz-dev"].first
       changed_file = Pathname.new(spec.full_gem_path).join("lib/baz/dev.rb")
       diff = "#Pristine spec changes"
 
@@ -126,7 +127,7 @@ RSpec.describe "bundle pristine", :ruby_repo do
 
   context "when sourced from path" do
     it "displays warning and ignores changes when sourced from local path" do
-      spec = find_spec("bar")
+      spec = Bundler.definition.specs["bar"].first
       changes_txt = Pathname.new(spec.full_gem_path).join("lib/changes.txt")
       FileUtils.touch(changes_txt)
       expect(changes_txt).to be_file
@@ -138,22 +139,22 @@ RSpec.describe "bundle pristine", :ruby_repo do
 
   context "when passing a list of gems to pristine" do
     it "resets them" do
-      foo = find_spec("foo")
+      foo = Bundler.definition.specs["foo"].first
       foo_changes_txt = Pathname.new(foo.full_gem_path).join("lib/changes.txt")
       FileUtils.touch(foo_changes_txt)
       expect(foo_changes_txt).to be_file
 
-      bar = find_spec("bar")
+      bar = Bundler.definition.specs["bar"].first
       bar_changes_txt = Pathname.new(bar.full_gem_path).join("lib/changes.txt")
       FileUtils.touch(bar_changes_txt)
       expect(bar_changes_txt).to be_file
 
-      weakling = find_spec("weakling")
+      weakling = Bundler.definition.specs["weakling"].first
       weakling_changes_txt = Pathname.new(weakling.full_gem_path).join("lib/changes.txt")
       FileUtils.touch(weakling_changes_txt)
       expect(weakling_changes_txt).to be_file
 
-      bundle "pristine foo bar weakling"
+      bundle! "pristine foo bar weakling"
 
       expect(err).to include("Cannot pristine bar (1.0). Gem is sourced from local path.")
       expect(out).to include("Installing weakling 1.0")
@@ -164,13 +165,13 @@ RSpec.describe "bundle pristine", :ruby_repo do
     end
 
     it "raises when one of them is not in the lockfile" do
-      bundle "pristine abcabcabc", :raise_on_error => false
+      bundle "pristine abcabcabc"
       expect(err).to include("Could not find gem 'abcabcabc'.")
     end
   end
 
   context "when a build config exists for one of the gems" do
-    let(:very_simple_binary) { find_spec("very_simple_binary") }
+    let(:very_simple_binary) { Bundler.definition.specs["very_simple_binary"].first }
     let(:c_ext_dir)          { Pathname.new(very_simple_binary.full_gem_path).join("ext") }
     let(:build_opt)          { "--with-ext-lib=#{c_ext_dir}" }
     before { bundle "config set build.very_simple_binary -- #{build_opt}" }
@@ -178,7 +179,7 @@ RSpec.describe "bundle pristine", :ruby_repo do
     # This just verifies that the generated Makefile from the c_ext gem makes
     # use of the build_args from the bundle config
     it "applies the config when installing the gem" do
-      bundle "pristine"
+      bundle! "pristine"
 
       makefile_contents = File.read(c_ext_dir.join("Makefile").to_s)
       expect(makefile_contents).to match(/libpath =.*#{c_ext_dir}/)
@@ -187,7 +188,7 @@ RSpec.describe "bundle pristine", :ruby_repo do
   end
 
   context "when a build config exists for a git sourced gem" do
-    let(:git_with_ext) { find_spec("git_with_ext") }
+    let(:git_with_ext) { Bundler.definition.specs["git_with_ext"].first }
     let(:c_ext_dir)          { Pathname.new(git_with_ext.full_gem_path).join("ext") }
     let(:build_opt)          { "--with-ext-lib=#{c_ext_dir}" }
     before { bundle "config set build.git_with_ext -- #{build_opt}" }
@@ -195,17 +196,11 @@ RSpec.describe "bundle pristine", :ruby_repo do
     # This just verifies that the generated Makefile from the c_ext gem makes
     # use of the build_args from the bundle config
     it "applies the config when installing the gem" do
-      bundle "pristine"
+      bundle! "pristine"
 
       makefile_contents = File.read(c_ext_dir.join("Makefile").to_s)
       expect(makefile_contents).to match(/libpath =.*#{c_ext_dir}/)
       expect(makefile_contents).to match(/LIBPATH =.*-L#{c_ext_dir}/)
-    end
-  end
-
-  def find_spec(name)
-    without_env_side_effects do
-      Bundler.definition.specs[name].first
     end
   end
 end

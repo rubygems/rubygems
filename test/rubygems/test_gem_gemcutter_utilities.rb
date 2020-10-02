@@ -5,11 +5,9 @@ require 'rubygems/command'
 require 'rubygems/gemcutter_utilities'
 
 class TestGemGemcutterUtilities < Gem::TestCase
+
   def setup
     super
-
-    credential_setup
-
     # below needed for random testing, class property
     Gem.configuration.disable_default_gem_server = nil
 
@@ -24,15 +22,13 @@ class TestGemGemcutterUtilities < Gem::TestCase
     ENV['RUBYGEMS_HOST'] = nil
     Gem.configuration.rubygems_api_key = nil
 
-    credential_teardown
-
     super
   end
 
   def test_alternate_key_alternate_host
     keys = {
       :rubygems_api_key => 'KEY',
-      "http://rubygems.engineyard.com" => "EYKEY",
+      "http://rubygems.engineyard.com" => "EYKEY"
     }
 
     FileUtils.mkdir_p File.dirname Gem.configuration.credentials_path
@@ -261,4 +257,5 @@ class TestGemGemcutterUtilities < Gem::TestCase
       @cmd.verify_api_key :missing
     end
   end
+
 end

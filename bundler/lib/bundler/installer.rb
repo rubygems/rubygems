@@ -135,17 +135,12 @@ module Bundler
           next
         end
 
-        mode = Bundler::WINDOWS ? "wb:UTF-8" : "w"
-        content = if RUBY_VERSION >= "2.6"
-          ERB.new(template, :trim_mode => "-").result(binding)
-        else
-          ERB.new(template, nil, "-").result(binding)
-        end
-
-        File.write(binstub_path, content, :mode => mode, :perm => 0o777 & ~File.umask)
-        if Bundler::WINDOWS
-          prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
-          File.write("#{binstub_path}.cmd", prefix + content, :mode => mode)
+        File.open(binstub_path, "w", 0o777 & ~File.umask) do |f|
+          if RUBY_VERSION >= "2.6"
+            f.puts ERB.new(template, :trim_mode => "-").result(binding)
+          else
+            f.puts ERB.new(template, nil, "-").result(binding)
+          end
         end
       end
 
@@ -180,23 +175,17 @@ module Bundler
         next if executable == "bundle"
         executable_path = Pathname(spec.full_gem_path).join(spec.bindir, executable).relative_path_from(bin_path)
         executable_path = executable_path
-
-        mode = Bundler::WINDOWS ? "wb:UTF-8" : "w"
-        content = if RUBY_VERSION >= "2.6"
-          ERB.new(template, :trim_mode => "-").result(binding)
-        else
-          ERB.new(template, nil, "-").result(binding)
-        end
-
-        File.write("#{bin_path}/#{executable}", content, :mode => mode, :perm => 0o755)
-        if Bundler::WINDOWS
-          prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
-          File.write("#{bin_path}/#{executable}.cmd", prefix + content, :mode => mode)
+        File.open "#{bin_path}/#{executable}", "w", 0o755 do |f|
+          if RUBY_VERSION >= "2.6"
+            f.puts ERB.new(template, :trim_mode => "-").result(binding)
+          else
+            f.puts ERB.new(template, nil, "-").result(binding)
+          end
         end
       end
     end
 
-    private
+  private
 
     # the order that the resolver provides is significant, since
     # dependencies might affect the installation of a gem.
@@ -213,14 +202,9 @@ module Bundler
         return jobs
       end
 
-      if jobs = Bundler.settings[:jobs]
-        return jobs
-      end
+      return 1 unless can_install_in_parallel?
 
-      # Parallelization has some issues on Windows, so it's not yet the default
-      return 1 if Gem.win_platform?
-
-      processor_count
+      Bundler.settings[:jobs] || processor_count
     end
 
     def processor_count
@@ -277,6 +261,10 @@ module Bundler
             ", so the dependency is being ignored"
         end
       end
+    end
+
+    def can_install_in_parallel?
+      true
     end
 
     def install_in_parallel(size, standalone, force = false)

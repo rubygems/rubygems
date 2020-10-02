@@ -34,9 +34,9 @@ require_relative "bundler/build_metadata"
 # of loaded and required modules.
 #
 module Bundler
-  environment_preserver = EnvironmentPreserver.from_env
+  environment_preserver = EnvironmentPreserver.new(ENV, EnvironmentPreserver::BUNDLER_KEYS)
   ORIGINAL_ENV = environment_preserver.restore
-  environment_preserver.replace_with_backup
+  ENV.replace(environment_preserver.backup)
   SUDO_MUTEX = Mutex.new
 
   autoload :Definition,             File.expand_path("bundler/definition", __dir__)
@@ -353,10 +353,7 @@ EOF
       env.delete_if {|k, _| k[0, 7] == "BUNDLE_" }
 
       if env.key?("RUBYOPT")
-        rubyopt = env["RUBYOPT"].split(" ")
-        rubyopt.delete("-r#{File.expand_path("bundler/setup", __dir__)}")
-        rubyopt.delete("-rbundler/setup")
-        env["RUBYOPT"] = rubyopt.join(" ")
+        env["RUBYOPT"] = env["RUBYOPT"].sub "-rbundler/setup", ""
       end
 
       if env.key?("RUBYLIB")
@@ -456,7 +453,7 @@ EOF
       # system binaries. If you put '-n foo' in your .gemrc, RubyGems will
       # install binstubs there instead. Unfortunately, RubyGems doesn't expose
       # that directory at all, so rather than parse .gemrc ourselves, we allow
-      # the directory to be set as well, via `bundle config set --local bindir foo`.
+      # the directory to be set as well, via `bundle config set bindir foo`.
       Bundler.settings[:system_bindir] || Bundler.rubygems.gem_bindir
     end
 
@@ -624,7 +621,7 @@ EOF
       @rubygems = nil
     end
 
-    private
+  private
 
     def eval_yaml_gemspec(path, contents)
       require_relative "bundler/psyched_yaml"

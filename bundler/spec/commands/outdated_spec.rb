@@ -27,7 +27,7 @@ RSpec.describe "bundle outdated" do
         update_git "zebra", :path => lib_path("zebra")
       end
 
-      bundle "outdated", :raise_on_error => false
+      bundle "outdated"
 
       expected_output = <<~TABLE.gsub("x", "\\\h").tr(".", "\.").strip
         Gem            Current      Latest       Requested  Groups
@@ -50,7 +50,7 @@ RSpec.describe "bundle outdated" do
         gem "AAA", "1.0.0"
       G
 
-      bundle "outdated", :raise_on_error => false
+      bundle "outdated"
 
       expected_output = <<~TABLE
         Gem  Current  Latest  Requested  Groups
@@ -66,13 +66,15 @@ RSpec.describe "bundle outdated" do
         update_git "foo", :path => lib_path("foo")
       end
 
-      bundle "outdated", :raise_on_error => false
+      bundle "outdated"
 
-      expect(exitstatus).to_not be_zero
+      expect(exitstatus).to_not be_zero if exitstatus
     end
 
     it "returns success exit status if no outdated gems present" do
       bundle "outdated"
+
+      expect(exitstatus).to be_zero if exitstatus
     end
 
     it "adds gem group to dependency output when repo is updated" do
@@ -89,7 +91,7 @@ RSpec.describe "bundle outdated" do
       update_repo2 { build_gem "activesupport", "3.0" }
       update_repo2 { build_gem "terranova", "9" }
 
-      bundle "outdated", :raise_on_error => false
+      bundle "outdated"
 
       expected_output = <<~TABLE.strip
         Gem            Current  Latest  Requested  Groups
@@ -103,7 +105,7 @@ RSpec.describe "bundle outdated" do
 
   describe "with --verbose option" do
     it "shows the location of the latest version's gemspec if installed" do
-      bundle "config set clean false"
+      bundle! "config set clean false"
 
       update_repo2 { build_gem "activesupport", "3.0" }
       update_repo2 { build_gem "terranova", "9" }
@@ -122,7 +124,7 @@ RSpec.describe "bundle outdated" do
         gem 'activesupport', '2.3.5'
       G
 
-      bundle "outdated --verbose", :raise_on_error => false
+      bundle "outdated --verbose"
 
       expected_output = <<~TABLE.strip
         Gem            Current  Latest  Requested  Groups   Path
@@ -155,7 +157,7 @@ RSpec.describe "bundle outdated" do
         build_gem "duradura", "8.0"
       end
 
-      bundle "outdated --group #{group}", :raise_on_error => false
+      bundle "outdated --group #{group}"
     end
 
     it "works when the bundle is up to date" do
@@ -221,7 +223,7 @@ RSpec.describe "bundle outdated" do
     end
 
     it "returns a sorted list of outdated gems" do
-      bundle "outdated --groups", :raise_on_error => false
+      bundle "outdated --groups"
 
       expected_output = <<~TABLE.strip
         Gem  Current  Latest  Requested  Groups
@@ -258,7 +260,7 @@ RSpec.describe "bundle outdated" do
         build_gem "duradura", "8.0"
       end
 
-      bundle "outdated --groups", :raise_on_error => false
+      bundle "outdated --groups"
 
       expected_output = <<~TABLE.strip
         Gem            Current  Latest  Requested  Groups
@@ -277,14 +279,14 @@ RSpec.describe "bundle outdated" do
         build_gem "activesupport", "2.3.4"
       end
 
-      bundle "config set clean false"
+      bundle! "config set clean false"
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport", "2.3.4"
       G
 
-      bundle "outdated --local", :raise_on_error => false
+      bundle "outdated --local"
 
       expected_output = <<~TABLE.strip
         Gem            Current  Latest  Requested  Groups
@@ -328,13 +330,13 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --parseable option" do
-    subject { bundle "outdated --parseable", :raise_on_error => false }
+    subject { bundle "outdated --parseable" }
 
     it_behaves_like "a minimal output is desired"
   end
 
   describe "with aliased --porcelain option" do
-    subject { bundle "outdated --porcelain", :raise_on_error => false }
+    subject { bundle "outdated --porcelain" }
 
     it_behaves_like "a minimal output is desired"
   end
@@ -346,7 +348,7 @@ RSpec.describe "bundle outdated" do
         update_git "foo", :path => lib_path("foo")
       end
 
-      bundle "outdated foo", :raise_on_error => false
+      bundle "outdated foo"
 
       expected_output = <<~TABLE.gsub("x", "\\\h").tr(".", "\.").strip
         Gem  Current      Latest       Requested  Groups
@@ -376,7 +378,7 @@ RSpec.describe "bundle outdated" do
           build_gem "activesupport", "3.0.0.beta"
         end
 
-        bundle "outdated --pre", :raise_on_error => false
+        bundle "outdated --pre"
 
         expected_output = <<~TABLE.strip
           Gem            Current  Latest      Requested  Groups
@@ -399,7 +401,7 @@ RSpec.describe "bundle outdated" do
           gem "activesupport", "3.0.0.beta.1"
         G
 
-        bundle "outdated", :raise_on_error => false
+        bundle "outdated"
 
         expected_output = <<~TABLE.strip
           Gem            Current       Latest        Requested       Groups
@@ -419,7 +421,7 @@ RSpec.describe "bundle outdated" do
         build_gem "weakling", "0.0.5"
       end
 
-      bundle :outdated, filter_strict_option => true, :raise_on_error => false
+      bundle :outdated, filter_strict_option => true
 
       expected_output = <<~TABLE.strip
         Gem       Current  Latest  Requested  Groups
@@ -453,7 +455,7 @@ RSpec.describe "bundle outdated" do
           build_gem "weakling", "0.0.5"
         end
 
-        bundle :outdated, filter_strict_option => true, "filter-patch" => true, :raise_on_error => false
+        bundle :outdated, filter_strict_option => true, "filter-patch" => true
 
         expected_output = <<~TABLE.strip
           Gem       Current  Latest  Requested  Groups
@@ -475,7 +477,7 @@ RSpec.describe "bundle outdated" do
           build_gem "weakling", "0.1.5"
         end
 
-        bundle :outdated, filter_strict_option => true, "filter-minor" => true, :raise_on_error => false
+        bundle :outdated, filter_strict_option => true, "filter-minor" => true
 
         expected_output = <<~TABLE.strip
           Gem       Current  Latest  Requested  Groups
@@ -497,7 +499,7 @@ RSpec.describe "bundle outdated" do
           build_gem "weakling", "1.1.5"
         end
 
-        bundle :outdated, filter_strict_option => true, "filter-major" => true, :raise_on_error => false
+        bundle :outdated, filter_strict_option => true, "filter-major" => true
 
         expected_output = <<~TABLE.strip
           Gem       Current  Latest  Requested  Groups
@@ -511,13 +513,13 @@ RSpec.describe "bundle outdated" do
 
   describe "with invalid gem name" do
     it "returns could not find gem name" do
-      bundle "outdated invalid_gem_name", :raise_on_error => false
+      bundle "outdated invalid_gem_name"
       expect(err).to include("Could not find gem 'invalid_gem_name'.")
     end
 
     it "returns non-zero exit code" do
-      bundle "outdated invalid_gem_name", :raise_on_error => false
-      expect(exitstatus).to_not be_zero
+      bundle "outdated invalid_gem_name"
+      expect(exitstatus).to_not be_zero if exitstatus
     end
   end
 
@@ -529,13 +531,13 @@ RSpec.describe "bundle outdated" do
     G
 
     bundle "config set auto_install 1"
-    bundle :outdated, :raise_on_error => false
+    bundle :outdated
     expect(out).to include("Installing foo 1.0")
   end
 
   context "after bundle install --deployment", :bundler => "< 3" do
     before do
-      install_gemfile <<-G, :deployment => true, :raise_on_error => false
+      install_gemfile <<-G, forgotten_command_line_options(:deployment => true)
         source "#{file_uri_for(gem_repo2)}"
 
         gem "rack"
@@ -546,7 +548,7 @@ RSpec.describe "bundle outdated" do
     it "outputs a helpful message about being in deployment mode" do
       update_repo2 { build_gem "activesupport", "3.0" }
 
-      bundle "outdated", :raise_on_error => false
+      bundle "outdated"
       expect(last_command).to be_failure
       expect(err).to include("You are trying to check outdated gems in deployment mode.")
       expect(err).to include("Run `bundle outdated` elsewhere.")
@@ -555,7 +557,7 @@ RSpec.describe "bundle outdated" do
     end
   end
 
-  context "after bundle config set --local deployment true" do
+  context "after bundle config set deployment true" do
     before do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
@@ -563,13 +565,13 @@ RSpec.describe "bundle outdated" do
         gem "rack"
         gem "foo"
       G
-      bundle "config set --local deployment true"
+      bundle! "config set deployment true"
     end
 
     it "outputs a helpful message about being in deployment mode" do
       update_repo2 { build_gem "activesupport", "3.0" }
 
-      bundle "outdated", :raise_on_error => false
+      bundle "outdated"
       expect(last_command).to be_failure
       expect(err).to include("You are trying to check outdated gems in deployment mode.")
       expect(err).to include("Run `bundle outdated` elsewhere.")
@@ -603,20 +605,24 @@ RSpec.describe "bundle outdated" do
       expect(out).to end_with("Bundle up to date!")
     end
 
-    it "reports that updates are available if the JRuby platform is used", :jruby do
-      install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
-        gem "laduradura", '= 5.15.2', :platforms => [:ruby, :jruby]
-      G
+    it "reports that updates are available if the JRuby platform is used" do
+      simulate_ruby_engine "jruby", "1.6.7" do
+        simulate_platform "jruby" do
+          install_gemfile <<-G
+            source "#{file_uri_for(gem_repo2)}"
+            gem "laduradura", '= 5.15.2', :platforms => [:ruby, :jruby]
+          G
 
-      bundle "outdated", :raise_on_error => false
+          bundle "outdated"
 
-      expected_output = <<~TABLE.strip
-        Gem         Current  Latest  Requested  Groups
-        laduradura  5.15.2   5.15.3  = 5.15.2   default
-      TABLE
+          expected_output = <<~TABLE.strip
+            Gem         Current  Latest  Requested  Groups
+            laduradura  5.15.2   5.15.3  = 5.15.2   default
+          TABLE
 
-      expect(out).to end_with(expected_output)
+          expect(out).to end_with(expected_output)
+        end
+      end
     end
   end
 
@@ -652,7 +658,7 @@ RSpec.describe "bundle outdated" do
       end
     end
 
-    subject { bundle "outdated", :raise_on_error => false }
+    subject { bundle "outdated" }
     it_behaves_like "version update is detected"
   end
 
@@ -719,7 +725,7 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --filter-major option" do
-    subject { bundle "outdated --filter-major", :raise_on_error => false }
+    subject { bundle "outdated --filter-major" }
 
     it_behaves_like "major version updates are detected"
     it_behaves_like "minor version is ignored"
@@ -727,7 +733,7 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --filter-minor option" do
-    subject { bundle "outdated --filter-minor", :raise_on_error => false }
+    subject { bundle "outdated --filter-minor" }
 
     it_behaves_like "minor version updates are detected"
     it_behaves_like "major version is ignored"
@@ -735,7 +741,7 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --filter-patch option" do
-    subject { bundle "outdated --filter-patch", :raise_on_error => false }
+    subject { bundle "outdated --filter-patch" }
 
     it_behaves_like "patch version updates are detected"
     it_behaves_like "major version is ignored"
@@ -743,7 +749,7 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --filter-minor --filter-patch options" do
-    subject { bundle "outdated --filter-minor --filter-patch", :raise_on_error => false }
+    subject { bundle "outdated --filter-minor --filter-patch" }
 
     it_behaves_like "minor version updates are detected"
     it_behaves_like "patch version updates are detected"
@@ -751,7 +757,7 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --filter-major --filter-minor options" do
-    subject { bundle "outdated --filter-major --filter-minor", :raise_on_error => false }
+    subject { bundle "outdated --filter-major --filter-minor" }
 
     it_behaves_like "major version updates are detected"
     it_behaves_like "minor version updates are detected"
@@ -759,7 +765,7 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --filter-major --filter-patch options" do
-    subject { bundle "outdated --filter-major --filter-patch", :raise_on_error => false }
+    subject { bundle "outdated --filter-major --filter-patch" }
 
     it_behaves_like "major version updates are detected"
     it_behaves_like "patch version updates are detected"
@@ -767,7 +773,7 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --filter-major --filter-minor --filter-patch options" do
-    subject { bundle "outdated --filter-major --filter-minor --filter-patch", :raise_on_error => false }
+    subject { bundle "outdated --filter-major --filter-minor --filter-patch" }
 
     it_behaves_like "major version updates are detected"
     it_behaves_like "minor version updates are detected"
@@ -808,7 +814,7 @@ RSpec.describe "bundle outdated" do
       end
 
       it "shows all gems when patching and filtering to patch" do
-        bundle "outdated --patch --filter-patch", :raise_on_error => false
+        bundle "outdated --patch --filter-patch"
 
         expected_output = <<~TABLE.strip
           Gem    Current  Latest  Requested  Groups
@@ -821,7 +827,7 @@ RSpec.describe "bundle outdated" do
       end
 
       it "shows minor and major when updating to minor and filtering to patch and minor" do
-        bundle "outdated --minor --filter-minor", :raise_on_error => false
+        bundle "outdated --minor --filter-minor"
 
         expected_output = <<~TABLE.strip
           Gem    Current  Latest  Requested  Groups
@@ -833,7 +839,7 @@ RSpec.describe "bundle outdated" do
       end
 
       it "shows minor when updating to major and filtering to minor with parseable" do
-        bundle "outdated --major --filter-minor --parseable", :raise_on_error => false
+        bundle "outdated --major --filter-minor --parseable"
 
         expect(out).not_to include("patch (newest")
         expect(out).to include("minor (newest")
@@ -875,7 +881,7 @@ RSpec.describe "bundle outdated" do
       end
 
       it "shows gems with update-strict updating to patch and filtering to patch" do
-        bundle "outdated --patch --update-strict --filter-patch", :raise_on_error => false
+        bundle "outdated --patch --update-strict --filter-patch"
 
         expected_output = <<~TABLE.strip
           Gem  Current  Latest  Requested  Groups
@@ -908,7 +914,7 @@ RSpec.describe "bundle outdated" do
         gem 'weakling'
       G
 
-      bundle "outdated --only-explicit", :raise_on_error => false
+      bundle "outdated --only-explicit"
 
       expected_output = <<~TABLE.strip
         Gem       Current  Latest  Requested  Groups

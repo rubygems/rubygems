@@ -16,7 +16,7 @@ module Bundler
 
     PLUGIN_FILE_NAME = "plugins.rb".freeze
 
-    module_function
+  module_function
 
     def reset!
       instance_variables.each {|i| remove_instance_variable(i) }
@@ -39,37 +39,12 @@ module Bundler
 
       save_plugins names, specs
     rescue PluginError => e
-      specs_to_delete = specs.select {|k, _v| names.include?(k) && !index.commands.values.include?(k) }
-      specs_to_delete.each_value {|spec| Bundler.rm_rf(spec.full_gem_path) }
-
-      names_list = names.map {|name| "`#{name}`" }.join(", ")
-      Bundler.ui.error "Failed to install the following plugins: #{names_list}. The underlying error was: #{e.message}.\n #{e.backtrace.join("\n ")}"
-    end
-
-    # Uninstalls plugins by the given names
-    #
-    # @param [Array<String>] names the names of plugins to be uninstalled
-    def uninstall(names, options)
-      if names.empty? && !options[:all]
-        Bundler.ui.error "No plugins to uninstall. Specify at least 1 plugin to uninstall.\n"\
-          "Use --all option to uninstall all the installed plugins."
-        return
+      if specs
+        specs_to_delete = Hash[specs.select {|k, _v| names.include?(k) && !index.commands.values.include?(k) }]
+        specs_to_delete.values.each {|spec| Bundler.rm_rf(spec.full_gem_path) }
       end
 
-      names = index.installed_plugins if options[:all]
-      if names.any?
-        names.each do |name|
-          if index.installed?(name)
-            Bundler.rm_rf(index.plugin_path(name))
-            index.unregister_plugin(name)
-            Bundler.ui.info "Uninstalled plugin #{name}"
-          else
-            Bundler.ui.error "Plugin #{name} is not installed \n"
-          end
-        end
-      else
-        Bundler.ui.info "No plugins installed"
-      end
+      Bundler.ui.error "Failed to install plugin #{name}: #{e.message}\n  #{e.backtrace.join("\n ")}"
     end
 
     # List installed plugins and commands

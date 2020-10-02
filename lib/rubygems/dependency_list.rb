@@ -17,6 +17,7 @@ require 'rubygems/deprecate'
 # this class necessary anymore?  Especially #ok?, #why_not_ok?
 
 class Gem::DependencyList
+
   attr_reader :specs
 
   include Enumerable
@@ -100,11 +101,11 @@ class Gem::DependencyList
   end
 
   def find_name(full_name)
-    @specs.find {|spec| spec.full_name == full_name }
+    @specs.find { |spec| spec.full_name == full_name }
   end
 
   def inspect # :nodoc:
-    "%s %p>" % [super[0..-2], map {|s| s.full_name }]
+    "%s %p>" % [super[0..-2], map { |s| s.full_name }]
   end
 
   ##
@@ -115,7 +116,7 @@ class Gem::DependencyList
   end
 
   def why_not_ok?(quick = false)
-    unsatisfied = Hash.new {|h,k| h[k] = [] }
+    unsatisfied = Hash.new { |h,k| h[k] = [] }
     each do |spec|
       spec.runtime_dependencies.each do |dep|
         inst = Gem::Specification.any? do |installed_spec|
@@ -123,7 +124,7 @@ class Gem::DependencyList
             dep.requirement.satisfied_by? installed_spec.version
         end
 
-        unless inst or @specs.find {|s| s.satisfies_requirement? dep }
+        unless inst or @specs.find { |s| s.satisfies_requirement? dep }
           unsatisfied[spec.name] << dep
           return unsatisfied if quick
         end
@@ -183,7 +184,7 @@ class Gem::DependencyList
   # Removes the gemspec matching +full_name+ from the dependency list
 
   def remove_by_name(full_name)
-    @specs.delete_if {|spec| spec.full_name == full_name }
+    @specs.delete_if { |spec| spec.full_name == full_name }
   end
 
   ##
@@ -191,7 +192,7 @@ class Gem::DependencyList
   # gemspecs that have a dependency satisfied by the named gemspec.
 
   def spec_predecessors
-    result = Hash.new {|h,k| h[k] = [] }
+    result = Hash.new { |h,k| h[k] = [] }
 
     specs = @specs.sort.reverse
 
@@ -237,6 +238,7 @@ class Gem::DependencyList
   # +ignored+.
 
   def active_count(specs, ignored)
-    specs.count {|spec| ignored[spec.full_name].nil? }
+    specs.count { |spec| ignored[spec.full_name].nil? }
   end
+
 end

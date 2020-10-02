@@ -3,7 +3,12 @@ require 'rubygems/test_case'
 require 'rubygems/indexer'
 require 'rubygems/commands/generate_index_command'
 
+unless defined?(Builder::XChar)
+  warn "generate_index tests are being skipped.  Install builder gem."
+end
+
 class TestGemCommandsGenerateIndexCommand < Gem::TestCase
+
   def setup
     super
 
@@ -77,4 +82,5 @@ class TestGemCommandsGenerateIndexCommand < Gem::TestCase
       "WARNING:  The \"--no-modern\" option has been deprecated and will be removed in Rubygems 4.0. The `--no-modern` option is currently ignored. Modern indexes (specs, latest_specs, and prerelease_specs) are always generated.\n",
       @ui.error
   end
-end
+
+end if defined?(Builder::XChar)

@@ -42,6 +42,7 @@ module Bundler
       setup_makes_kernel_gem_public
       silence_deprecations
       silence_root_warning
+      skip_default_git_sources
       specific_platform
       suppress_install_using_messages
       unlock_source_unlocks_spec
@@ -63,25 +64,30 @@ module Bundler
     ].freeze
 
     DEFAULT_CONFIG = {
-      "BUNDLE_SILENCE_DEPRECATIONS" => false,
-      "BUNDLE_DISABLE_VERSION_CHECK" => true,
-      "BUNDLE_PREFER_PATCH" => false,
-      "BUNDLE_REDIRECT" => 5,
-      "BUNDLE_RETRY" => 3,
-      "BUNDLE_TIMEOUT" => 10,
+      :silence_deprecations => false,
+      :disable_version_check => true,
+      :prefer_patch => false,
+      :redirect => 5,
+      :retry => 3,
+      :timeout => 10,
     }.freeze
 
     def initialize(root = nil)
       @root            = root
       @local_config    = load_config(local_config_file)
-      @env_config      = ENV.to_h.select {|key, _value| key =~ /\ABUNDLE_.+/ }
       @global_config   = load_config(global_config_file)
       @temporary       = {}
     end
 
     def [](name)
       key = key_for(name)
-      value = configs.values.map {|config| config[key] }.compact.first
+      value = @temporary.fetch(key) do
+              @local_config.fetch(key) do
+              ENV.fetch(key) do
+              @global_config.fetch(key) do
+              DEFAULT_CONFIG.fetch(name) do
+                nil
+              end end end end end
 
       converted_value(value, name)
     end
@@ -124,7 +130,9 @@ module Bundler
     end
 
     def all
-      keys = @temporary.keys | @global_config.keys | @local_config.keys | @env_config.keys
+      env_keys = ENV.keys.grep(/\ABUNDLE_.+/)
+
+      keys = @temporary.keys | @global_config.keys | @local_config.keys | env_keys
 
       keys.map do |key|
         key.sub(/^BUNDLE_/, "").gsub(/__/, ".").downcase
@@ -161,11 +169,13 @@ module Bundler
 
     def locations(key)
       key = key_for(key)
-      configs.keys.inject({}) do |partial_locations, level|
-        value_on_level = configs[level][key]
-        partial_locations[level] = value_on_level unless value_on_level.nil?
-        partial_locations
-      end
+      locations = {}
+      locations[:temporary] = @temporary[key] if @temporary.key?(key)
+      locations[:local]  = @local_config[key] if @local_config.key?(key)
+      locations[:env]    = ENV[key] if ENV[key]
+      locations[:global] = @global_config[key] if @global_config.key?(key)
+      locations[:default] = DEFAULT_CONFIG[key] if DEFAULT_CONFIG.key?(key)
+      locations
     end
 
     def pretty_values_for(exposed_key)
@@ -173,20 +183,20 @@ module Bundler
 
       locations = []
 
-      if value = @temporary[key]
-        locations << "Set for the current command: #{converted_value(value, exposed_key).inspect}"
+      if @temporary.key?(key)
+        locations << "Set for the current command: #{converted_value(@temporary[key], exposed_key).inspect}"
       end
 
-      if value = @local_config[key]
-        locations << "Set for your local app (#{local_config_file}): #{converted_value(value, exposed_key).inspect}"
+      if @local_config.key?(key)
+        locations << "Set for your local app (#{local_config_file}): #{converted_value(@local_config[key], exposed_key).inspect}"
       end
 
-      if value = @env_config[key]
+      if value = ENV[key]
         locations << "Set via #{key}: #{converted_value(value, exposed_key).inspect}"
       end
 
-      if value = @global_config[key]
-        locations << "Set for the current user (#{global_config_file}): #{converted_value(value, exposed_key).inspect}"
+      if @global_config.key?(key)
+        locations << "Set for the current user (#{global_config_file}): #{converted_value(@global_config[key], exposed_key).inspect}"
       end
 
       return ["You have not configured a value for `#{exposed_key}`"] if locations.empty?
@@ -195,19 +205,17 @@ module Bundler
 
     # for legacy reasons, in Bundler 2, we do not respect :disable_shared_gems
     def path
-      configs.each do |_level, settings|
-        path = value_for("path", settings)
-        path_system = value_for("path.system", settings)
-        disabled_shared_gems = value_for("disable_shared_gems", settings)
-        next if path.nil? && path_system.nil? && disabled_shared_gems.nil?
-        system_path = path_system || (disabled_shared_gems == false)
-        return Path.new(path, system_path)
+      key  = key_for(:path)
+      path = ENV[key] || @global_config[key]
+      if path && !@temporary.key?(key) && !@local_config.key?(key)
+        return Path.new(path, false, false)
       end
 
-      Path.new(nil, false)
+      system_path = self["path.system"] || (self[:disable_shared_gems] == false)
+      Path.new(self[:path], system_path, Bundler.feature_flag.default_install_uses_path?)
     end
 
-    Path = Struct.new(:explicit_path, :system_path) do
+    Path = Struct.new(:explicit_path, :system_path, :default_install_uses_path) do
       def path
         path = base_path
         path = File.join(path, Bundler.ruby_scope) unless use_system_gems?
@@ -217,7 +225,7 @@ module Bundler
       def use_system_gems?
         return true if system_path
         return false if explicit_path
-        !Bundler.feature_flag.default_install_uses_path?
+        !default_install_uses_path
       end
 
       def base_path
@@ -270,9 +278,9 @@ module Bundler
 
     def validate!
       all.each do |raw_key|
-        [@local_config, @env_config, @global_config].each do |settings|
-          value = value_for(raw_key, settings)
-          Validator.validate!(raw_key, value, settings.dup)
+        [@local_config, ENV, @global_config].each do |settings|
+          value = converted_value(settings[key_for(raw_key)], raw_key)
+          Validator.validate!(raw_key, value, settings.to_hash.dup)
         end
       end
     end
@@ -283,21 +291,7 @@ module Bundler
       "BUNDLE_#{key}"
     end
 
-    private
-
-    def configs
-      {
-        :temporary => @temporary,
-        :local => @local_config,
-        :env => @env_config,
-        :global => @global_config,
-        :default => DEFAULT_CONFIG,
-      }
-    end
-
-    def value_for(name, config)
-      converted_value(config[key_for(name)], name)
-    end
+  private
 
     def parent_setting_for(name)
       split_specific_setting_for(name)[0]

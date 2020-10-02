@@ -2,7 +2,11 @@
 ##
 # The Dependency class holds a Gem name and a Gem::Requirement.
 
+require "rubygems/bundler_version_finder"
+require "rubygems/requirement"
+
 class Gem::Dependency
+
   ##
   # Valid dependency types.
   #--
@@ -281,7 +285,7 @@ class Gem::Dependency
 
     if platform_only
       matches.reject! do |spec|
-        spec.nil? || !Gem::Platform.match_spec?(spec)
+        spec.nil? || !Gem::Platform.match(spec.platform)
       end
     end
 
@@ -318,13 +322,13 @@ class Gem::Dependency
   def to_spec
     matches = self.to_specs.compact
 
-    active = matches.find {|spec| spec.activated? }
+    active = matches.find { |spec| spec.activated? }
     return active if active
 
     return matches.first if prerelease?
 
     # Move prereleases to the end of the list for >= 0 requirements
-    pre, matches = matches.partition {|spec| spec.version.prerelease? }
+    pre, matches = matches.partition { |spec| spec.version.prerelease? }
     matches += pre if requirement == Gem::Requirement.default
 
     matches.first
@@ -343,4 +347,5 @@ class Gem::Dependency
       :released
     end
   end
+
 end

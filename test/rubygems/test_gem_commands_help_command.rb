@@ -6,6 +6,7 @@ require "rubygems/package"
 require "rubygems/command_manager"
 
 class TestGemCommandsHelpCommand < Gem::TestCase
+
   def setup
     super
 
@@ -43,7 +44,7 @@ class TestGemCommandsHelpCommand < Gem::TestCase
         assert_match(/\s+#{cmd}\s+\S+/, out)
       end
 
-      if Gem::HAVE_OPENSSL
+      if defined?(OpenSSL::SSL)
         assert_empty err
 
         refute_match 'No command found for ', out
@@ -70,4 +71,5 @@ class TestGemCommandsHelpCommand < Gem::TestCase
 
     yield @ui.output, @ui.error
   end
+
 end

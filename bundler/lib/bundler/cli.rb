@@ -122,19 +122,16 @@ module Bundler
       else command = "bundle-#{cli}"
       end
 
-      man_path = File.expand_path("../../../man", __FILE__)
-      # man files are located under ruby's mandir with the default gems of bundler
-      man_path = RbConfig::CONFIG["mandir"] unless File.directory?(man_path)
-      man_pages = Hash[Dir.glob(File.join(man_path, "**", "*")).grep(/.*\.\d*\Z/).collect do |f|
+      man_path  = File.expand_path("../../../man", __FILE__)
+      man_pages = Hash[Dir.glob(File.join(man_path, "*")).grep(/.*\.\d*\Z/).collect do |f|
         [File.basename(f, ".*"), f]
       end]
 
       if man_pages.include?(command)
-        man_page = man_pages[command]
         if Bundler.which("man") && man_path !~ %r{^file:/.+!/META-INF/jruby.home/.+}
-          Kernel.exec "man #{man_page}"
+          Kernel.exec "man #{man_pages[command]}"
         else
-          puts File.read("#{File.dirname(man_page)}/#{File.basename(man_page)}.ronn")
+          puts File.read("#{man_path}/#{File.basename(man_pages[command])}.txt")
         end
       elsif command_path = Bundler.which("bundler-#{cli}")
         Kernel.exec(command_path, "--help")
@@ -250,11 +247,9 @@ module Bundler
     def install
       SharedHelpers.major_deprecation(2, "The `--force` option has been renamed to `--redownload`") if ARGV.include?("--force")
 
-      %w[clean deployment frozen no-prune path shebang system without with].each do |option|
+      %w[clean deployment frozen no-cache no-prune path shebang system without with].each do |option|
         remembered_flag_deprecation(option)
       end
-
-      remembered_negative_flag_deprecation("no-deployment")
 
       require_relative "cli/install"
       Bundler.settings.temporary(:no_install => false) do
@@ -439,18 +434,11 @@ module Bundler
       Outdated.new(options, gems).run
     end
 
-    desc "fund [OPTIONS]", "Lists information about gems seeking funding assistance"
-    method_option "group", :aliases => "-g", :type => :array, :banner =>
-      "Fetch funding information for a specific group"
-    def fund
-      require_relative "cli/fund"
-      Fund.new(options).run
-    end
-
     desc "cache [OPTIONS]", "Locks and then caches all of the gems into vendor/cache"
-    method_option "all",  :type => :boolean,
-                          :default => Bundler.feature_flag.cache_all?,
-                          :banner => "Include all sources (including path and git)."
+    unless Bundler.feature_flag.cache_all?
+      method_option "all",  :type => :boolean,
+                            :banner => "Include all sources (including path and git)."
+    end
     method_option "all-platforms", :type => :boolean, :banner => "Include gems for all platforms present in the lockfile, not only the current one"
     method_option "cache-path", :type => :string, :banner =>
       "Specify a different cache path than the default (vendor/cache)."
@@ -469,12 +457,6 @@ module Bundler
       bundle without having to download any additional gems.
     D
     def cache
-      SharedHelpers.major_deprecation 2,
-        "The `--all` flag is deprecated because it relies on being " \
-        "remembered across bundler invocations, which bundler will no longer " \
-        "do in future versions. Instead please use `bundle config set cache_all true`, " \
-        "and stop using this flag" if ARGV.include?("--all")
-
       require_relative "cli/cache"
       Cache.new(options).run
     end
@@ -578,19 +560,16 @@ module Bundler
 
     desc "gem NAME [OPTIONS]", "Creates a skeleton for creating a rubygem"
     method_option :exe, :type => :boolean, :default => false, :aliases => ["--bin", "-b"], :desc => "Generate a binary executable for your library."
-    method_option :coc, :type => :boolean, :desc => "Generate a code of conduct file. Set a default with `bundle config set --global gem.coc true`."
+    method_option :coc, :type => :boolean, :desc => "Generate a code of conduct file. Set a default with `bundle config set gem.coc true`."
     method_option :edit, :type => :string, :aliases => "-e", :required => false, :banner => "EDITOR",
                          :lazy_default => [ENV["BUNDLER_EDITOR"], ENV["VISUAL"], ENV["EDITOR"]].find {|e| !e.nil? && !e.empty? },
                          :desc => "Open generated gemspec in the specified editor (defaults to $EDITOR or $BUNDLER_EDITOR)"
     method_option :ext, :type => :boolean, :default => false, :desc => "Generate the boilerplate for C extension code"
     method_option :git, :type => :boolean, :default => true, :desc => "Initialize a git repo inside your library."
-    method_option :mit, :type => :boolean, :desc => "Generate an MIT license file. Set a default with `bundle config set --global gem.mit true`."
-    method_option :rubocop, :type => :boolean, :desc => "Add rubocop to the generated Rakefile and gemspec. Set a default with `bundle config set --global gem.rubocop true`."
-    method_option :test, :type => :string, :lazy_default => Bundler.settings["gem.test"] || "", :aliases => "-t", :banner => "Use the specified test framework for your library",
-                         :desc => "Generate a test directory for your library, either rspec, minitest or test-unit. Set a default with `bundle config set --global gem.test (rspec|minitest|test-unit)`."
-    method_option :ci, :type => :string, :lazy_default => Bundler.settings["gem.ci"] || "",
-                       :desc => "Generate CI configuration, either GitHub Actions, Travis CI, GitLab CI or CircleCI. Set a default with `bundle config set --global gem.ci (github|travis|gitlab|circle)`"
-
+    method_option :mit, :type => :boolean, :desc => "Generate an MIT license file. Set a default with `bundle config set gem.mit true`."
+    method_option :rubocop, :type => :boolean, :desc => "Add rubocop to the generated Rakefile and gemspec. Set a default with `bundle config set gem.rubocop true`."
+    method_option :test, :type => :string, :lazy_default => "rspec", :aliases => "-t", :banner => "rspec",
+                         :desc => "Generate a test directory for your library, either rspec, minitest or test-unit. Set a default with `bundle config set gem.test rspec`."
     def gem(name)
     end
 
@@ -753,11 +732,11 @@ module Bundler
       end
     end
 
-    private
+  private
 
     # Automatically invoke `bundle install` and resume if
     # Bundler.settings[:auto_install] exists. This is set through config cmd
-    # `bundle config set --global auto_install 1`.
+    # `bundle config set auto_install 1`.
     #
     # Note that this method `nil`s out the global Definition object, so it
     # should be called first, before you instantiate anything like an
@@ -830,32 +809,20 @@ module Bundler
       nil
     end
 
-    def remembered_negative_flag_deprecation(name)
-      positive_name = name.gsub(/\Ano-/, "")
-      option = current_command.options[positive_name]
-      flag_name = "--no-" + option.switch_name.gsub(/\A--/, "")
-
-      flag_deprecation(positive_name, flag_name, option)
-    end
-
     def remembered_flag_deprecation(name)
       option = current_command.options[name]
       flag_name = option.switch_name
 
-      flag_deprecation(name, flag_name, option)
-    end
-
-    def flag_deprecation(name, flag_name, option)
-      name_index = ARGV.find {|arg| flag_name == arg.split("=")[0] }
+      name_index = ARGV.find {|arg| flag_name == arg }
       return unless name_index
 
       value = options[name]
       value = value.join(" ").to_s if option.type == :array
 
-      Bundler::SharedHelpers.major_deprecation 2,
+      Bundler::SharedHelpers.major_deprecation 2,\
         "The `#{flag_name}` flag is deprecated because it relies on being " \
         "remembered across bundler invocations, which bundler will no longer " \
-        "do in future versions. Instead please use `bundle config set --local #{name.tr("-", "_")} " \
+        "do in future versions. Instead please use `bundle config set #{name} " \
         "'#{value}'`, and stop using this flag"
     end
   end

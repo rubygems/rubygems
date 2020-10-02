@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
 
-unless Gem::HAVE_OPENSSL
+unless defined?(OpenSSL::SSL)
   warn 'Skipping Gem::Security::TrustDir tests.  openssl not found.'
 end
 
 class TestGemSecurityTrustDir < Gem::TestCase
+
   CHILD_CERT = load_cert 'child'
 
   def setup
@@ -17,7 +18,7 @@ class TestGemSecurityTrustDir < Gem::TestCase
   end
 
   def test_cert_path
-    digest = OpenSSL::Digest.hexdigest Gem::Security::DIGEST_NAME, PUBLIC_CERT.subject.to_s
+    digest = Gem::Security::DIGEST_ALGORITHM.hexdigest PUBLIC_CERT.subject.to_s
 
     expected = File.join @dest_dir, "cert-#{digest}.pem"
 
@@ -41,7 +42,7 @@ class TestGemSecurityTrustDir < Gem::TestCase
   end
 
   def test_name_path
-    digest = OpenSSL::Digest.hexdigest Gem::Security::DIGEST_NAME, PUBLIC_CERT.subject.to_s
+    digest = Gem::Security::DIGEST_ALGORITHM.hexdigest PUBLIC_CERT.subject.to_s
 
     expected = File.join @dest_dir, "cert-#{digest}.pem"
 
@@ -95,4 +96,5 @@ class TestGemSecurityTrustDir < Gem::TestCase
 
     assert_equal mask, File.stat(@dest_dir).mode unless win_platform?
   end
-end if Gem::HAVE_OPENSSL
+
+end if defined?(OpenSSL::SSL)

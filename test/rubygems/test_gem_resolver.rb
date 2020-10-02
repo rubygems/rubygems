@@ -2,6 +2,7 @@
 require 'rubygems/test_case'
 
 class TestGemResolver < Gem::TestCase
+
   def setup
     super
 
@@ -25,10 +26,10 @@ class TestGemResolver < Gem::TestCase
   def assert_resolves_to(expected, resolver)
     actual = resolver.resolve
 
-    exp = expected.sort_by {|s| s.full_name }
-    act = actual.map {|a| a.spec.spec }.sort_by {|s| s.full_name }
+    exp = expected.sort_by { |s| s.full_name }
+    act = actual.map { |a| a.spec.spec }.sort_by { |s| s.full_name }
 
-    msg = "Set of gems was not the same: #{exp.map {|x| x.full_name }.inspect} != #{act.map {|x| x.full_name }.inspect}"
+    msg = "Set of gems was not the same: #{exp.map { |x| x.full_name}.inspect} != #{act.map { |x| x.full_name}.inspect}"
 
     assert_equal exp, act, msg
   rescue Gem::DependencyResolutionError => e
@@ -104,7 +105,7 @@ class TestGemResolver < Gem::TestCase
 
     res.requests a1, act, reqs
 
-    assert_equal ['b (= 2)'], reqs.map {|req| req.to_s }
+    assert_equal ['b (= 2)'], reqs.map { |req| req.to_s }
   end
 
   def test_requests_development
@@ -126,7 +127,7 @@ class TestGemResolver < Gem::TestCase
 
     res.requests spec, act, reqs
 
-    assert_equal ['b (= 2)'], reqs.map {|req| req.to_s }
+    assert_equal ['b (= 2)'], reqs.map { |req| req.to_s }
 
     assert spec.instance_variable_defined? :@called
   end
@@ -545,7 +546,7 @@ class TestGemResolver < Gem::TestCase
 
     dependency = e.conflict.dependency
 
-    assert_includes %w[a b], dependency.name
+    assert_includes %w(a b), dependency.name
     assert_equal req('>= 0'), dependency.requirement
 
     activated = e.conflict.activated
@@ -788,4 +789,5 @@ class TestGemResolver < Gem::TestCase
     assert_match "No match for 'a (= 1)' on this platform. Found: c-p-1",
                  e.message
   end
+
 end

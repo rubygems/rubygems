@@ -1,5 +1,3 @@
-require: rubocop-performance
-
 AllCops:
   DisabledByDefault: true
   Exclude:
@@ -43,11 +41,9 @@ Layout/EmptyLines:
 
 Layout/EmptyLinesAroundClassBody:
   Enabled: true
+  EnforcedStyle: empty_lines_except_namespace
 
 Layout/EmptyLinesAroundMethodBody:
-  Enabled: true
-
-Layout/ExtraSpacing:
   Enabled: true
 
 Layout/FirstHashElementIndentation:
@@ -64,15 +60,8 @@ Layout/IndentationConsistency:
 Layout/IndentationWidth:
   Enabled: true
 
-Layout/LeadingEmptyLines:
-  Enabled: true
-
 Layout/SpaceAroundOperators:
   Enabled: true
-
-Layout/SpaceInsideBlockBraces:
-  Enabled: true
-  SpaceBeforeBlockParameters: false
 
 Layout/SpaceInsideParens:
   Enabled: true
@@ -89,31 +78,6 @@ Lint/DuplicateMethods:
 Lint/ParenthesesAsGroupedExpression:
   Enabled: true
 
-Naming/HeredocDelimiterCase:
-  Enabled: true
-
-Naming/HeredocDelimiterNaming:
-  Enabled: true
-  ForbiddenDelimiters:
-    - ^RB$
-
-Performance/StartWith:
-  Enabled: true
-
-Performance/StringReplacement:
-  Enabled: true
-
-Style/Encoding:
-  Enabled: true
-  Exclude:
-    - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
-
-Style/IfInsideElse:
-  Enabled: false
-
-Style/MethodCallWithoutArgsParentheses:
-  Enabled: true
-
 Style/MethodDefParentheses:
   Enabled: true
 
@@ -125,16 +89,3 @@ Style/MutableConstant:
 
 Style/BlockDelimiters:
   Enabled: true
-
-Style/PercentLiteralDelimiters:
-  Enabled: true
-
-# Having these make it easier to *not* forget to add one when adding a new
-# value and you can simply copy the previous line.
-Style/TrailingCommaInArrayLiteral:
-  Enabled: true
-  EnforcedStyleForMultiline: comma
-
-Style/TrailingCommaInHashLiteral:
-  Enabled: true
-  EnforcedStyleForMultiline: comma

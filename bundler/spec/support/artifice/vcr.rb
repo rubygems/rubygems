@@ -31,6 +31,7 @@ class BundlerVCRHTTP < Net::HTTP
 
     def recorded_response?
       return true if ENV["BUNDLER_SPEC_PRE_RECORDED"]
+      return false if ENV["BUNDLER_SPEC_FORCE_RECORD"]
       request_pair_paths.all? {|f| File.exist?(f) }
     end
 
@@ -78,7 +79,7 @@ class BundlerVCRHTTP < Net::HTTP
     end
 
     def read_stored_request(path)
-      contents = File.binread(path)
+      contents = File.read(path)
       headers = {}
       method = nil
       path = nil

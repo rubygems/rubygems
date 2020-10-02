@@ -1,34 +1,34 @@
-# Bundler Development setup
+# Development setup
 
-To work on Bundler, you'll probably want to do a couple of things:
+Bundler doesn't use a Gemfile to list development dependencies, because when we tried it we couldn't tell if we were awake or it was just another level of dreams. To work on Bundler, you'll probably want to do a couple of things:
 
-* [Fork the Rubygems repo](https://github.com/rubygems/rubygems), and clone the fork onto your machine. ([Follow this tutorial](https://help.github.com/articles/fork-a-repo/) for instructions on forking a repo.)
+1. [Fork the Rubygems repo](https://github.com/rubygems/rubygems), and clone the fork onto your machine. ([Follow this tutorial](https://help.github.com/articles/fork-a-repo/) for instructions on forking a repo.)
 
-* Install `graphviz` package using your package manager:
+2. Install `groff-base` and `graphviz` packages using your package manager:
 
-        $ sudo apt-get install graphviz -y
+        $ sudo apt-get install graphviz groff-base -y
 
     And for OS X (with brew installed):
 
-        $ brew install graphviz
+        $ brew install graphviz groff
 
-* From the rubygems root directory change into the bundler directory:
+3. You may also have to install the `bsdmainutils` package on linux if your distribution does not include the `col` command.
 
-        $ cd bundler
+        $ sudo apt-get install bsdmainutils -y
 
-* Install Bundler's development dependencies:
+4. Install Bundler's development dependencies:
 
         $ bin/rake spec:deps
 
-* Run the test suite, to make sure things are working:
+5. Run the test suite, to make sure things are working:
 
         $ bin/rake spec
 
-* Optionally, you can run the test suite in parallel:
+6. Optionally, you can run the test suite in parallel:
 
-        $ bin/parallel_rspec
+        $ bin/parallel_rspec spec
 
-* Set up a shell alias to run Bundler from your clone, e.g. a Bash alias ([follow these instructions](https://www.moncefbelyamani.com/create-aliases-in-bash-profile-to-assign-shortcuts-for-common-terminal-commands/) for adding aliases to your `~/.bashrc` profile):
+7. Set up a shell alias to run Bundler from your clone, e.g. a Bash alias ([follow these instructions](https://www.moncefbelyamani.com/create-aliases-in-bash-profile-to-assign-shortcuts-for-common-terminal-commands/) for adding aliases to your `~/.bashrc` profile):
 
         $ alias dbundle='/path/to/bundler/repo/bin/bundle'
 

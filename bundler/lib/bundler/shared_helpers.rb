@@ -109,12 +109,19 @@ module Bundler
       raise VirtualProtocolError.new
     rescue Errno::ENOSPC
       raise NoSpaceOnDeviceError.new(path, action)
-    rescue Errno::ENOTSUP
+    rescue *[const_get_safely(:ENOTSUP, Errno)].compact
       raise OperationNotSupportedError.new(path, action)
     rescue Errno::EEXIST, Errno::ENOENT
       raise
     rescue SystemCallError => e
       raise GenericSystemCallError.new(e, "There was an error accessing `#{path}`.")
+    end
+
+    def const_get_safely(constant_name, namespace)
+      const_in_namespace = namespace.constants.include?(constant_name.to_s) ||
+        namespace.constants.include?(constant_name.to_sym)
+      return nil unless const_in_namespace
+      namespace.const_get(constant_name)
     end
 
     def major_deprecation(major_version, message, print_caller_location: false)
@@ -187,7 +194,7 @@ module Bundler
       return @md5_available if defined?(@md5_available)
       @md5_available = begin
         require "openssl"
-        OpenSSL::Digest.digest("MD5", "")
+        OpenSSL::Digest::MD5.digest("")
         true
       rescue LoadError
         true
@@ -205,7 +212,7 @@ module Bundler
       filesystem_access(gemfile_path) {|g| File.open(g, "w") {|file| file.puts contents } }
     end
 
-    private
+  private
 
     def validate_bundle_path
       path_separator = Bundler.rubygems.path_separator

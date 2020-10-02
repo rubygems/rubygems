@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 require 'rubygems/test_case'
 
-unless Gem::HAVE_OPENSSL
+unless defined?(OpenSSL::SSL)
   warn 'Skipping Gem::Security::Signer tests.  openssl not found.'
 end
 
 class TestGemSecuritySigner < Gem::TestCase
+
   ALTERNATE_KEY  = load_key 'alternate'
   CHILD_KEY      = load_key 'child'
   GRANDCHILD_KEY = load_key 'grandchild'
@@ -36,8 +37,8 @@ class TestGemSecuritySigner < Gem::TestCase
   def test_initialize_cert_chain_mixed
     signer = Gem::Security::Signer.new nil, [@cert_file, CHILD_CERT]
 
-    assert_equal [PUBLIC_CERT, CHILD_CERT].map {|c| c.to_pem },
-                 signer.cert_chain.map {|c| c.to_pem }
+    assert_equal [PUBLIC_CERT, CHILD_CERT].map { |c| c.to_pem },
+                 signer.cert_chain.map { |c| c.to_pem }
   end
 
   def test_initialize_cert_chain_invalid
@@ -49,8 +50,8 @@ class TestGemSecuritySigner < Gem::TestCase
   def test_initialize_cert_chain_path
     signer = Gem::Security::Signer.new nil, [@cert_file]
 
-    assert_equal [PUBLIC_CERT].map {|c| c.to_pem },
-                 signer.cert_chain.map {|c| c.to_pem }
+    assert_equal [PUBLIC_CERT].map { |c| c.to_pem },
+                 signer.cert_chain.map { |c| c.to_pem }
   end
 
   def test_initialize_default
@@ -65,7 +66,7 @@ class TestGemSecuritySigner < Gem::TestCase
     signer = Gem::Security::Signer.new nil, nil
 
     assert_equal PRIVATE_KEY.to_pem, signer.key.to_pem
-    assert_equal [PUBLIC_CERT.to_pem], signer.cert_chain.map {|c| c.to_pem }
+    assert_equal [PUBLIC_CERT.to_pem], signer.cert_chain.map { |c| c.to_pem }
   end
 
   def test_initialize_key_path
@@ -99,7 +100,7 @@ class TestGemSecuritySigner < Gem::TestCase
     signer.load_cert_chain
 
     assert_equal [PUBLIC_CERT.to_pem, CHILD_CERT.to_pem],
-                 signer.cert_chain.map {|c| c.to_pem }
+                 signer.cert_chain.map { |c| c.to_pem }
   end
 
   def test_load_cert_chain_broken
@@ -111,7 +112,7 @@ class TestGemSecuritySigner < Gem::TestCase
     signer.load_cert_chain
 
     assert_equal [CHILD_CERT.to_pem, GRANDCHILD_CERT.to_pem],
-                 signer.cert_chain.map {|c| c.to_pem }
+                 signer.cert_chain.map { |c| c.to_pem }
   end
 
   def test_sign
@@ -190,7 +191,7 @@ toqvglr0kdbknSRRjBVLK6tsgr07aLT9gNP7mTW2PA==
       signer.sign 'hello'
     end
 
-    assert_match %r{certificate /CN=nobody/DC=example not valid}, e.message
+    assert_match %r%certificate /CN=nobody/DC=example not valid%, e.message
   end
 
   def test_sign_no_key
@@ -214,4 +215,5 @@ toqvglr0kdbknSRRjBVLK6tsgr07aLT9gNP7mTW2PA==
       signer.sign 'hello'
     end
   end
-end if Gem::HAVE_OPENSSL
+
+end if defined?(OpenSSL::SSL)

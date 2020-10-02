@@ -10,5 +10,6 @@
 /misc
 /notes.txt
 /pkg
-/tmp
+/tmp/*
+!/tmp/.keep
 /coverage

@@ -37,6 +37,7 @@ require 'rbconfig'
 # - per environment (gemrc files listed in the GEMRC environment variable)
 
 class Gem::ConfigFile
+
   include Gem::UserInteraction
 
   DEFAULT_BACKTRACE = false
@@ -260,12 +261,7 @@ if you believe they were disclosed to a third party.
   # Location of RubyGems.org credentials
 
   def credentials_path
-    credentials = File.join Gem.user_home, '.gem', 'credentials'
-    if File.exist? credentials
-      credentials
-    else
-      File.join Gem.data_home, "gem", "credentials"
-    end
+    File.join Gem.user_home, '.gem', 'credentials'
   end
 
   def load_api_keys
@@ -433,7 +429,7 @@ if you believe they were disclosed to a third party.
     yaml_hash[:ssl_client_cert] =
       @hash[:ssl_client_cert] if @hash.key? :ssl_client_cert
 
-    keys = yaml_hash.keys.map {|key| key.to_s }
+    keys = yaml_hash.keys.map { |key| key.to_s }
     keys << 'debug'
     re = Regexp.union(*keys)
 
@@ -448,10 +444,6 @@ if you believe they were disclosed to a third party.
 
   # Writes out this config file, replacing its source.
   def write
-    unless File.exist?(File.dirname(config_file_name))
-      FileUtils.mkdir_p File.dirname(config_file_name)
-    end
-
     File.open config_file_name, 'w' do |io|
       io.write to_yaml
     end
@@ -496,4 +488,5 @@ if you believe they were disclosed to a third party.
       end
     end
   end
+
 end

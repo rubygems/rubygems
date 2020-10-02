@@ -10,6 +10,7 @@ require 'fileutils'
 # See `gem help uninstall`
 
 class Gem::Commands::UninstallCommand < Gem::Command
+
   include Gem::VersionOption
 
   def initialize
@@ -135,14 +136,14 @@ that is a dependency of an existing gem.  You can use the
   end
 
   def uninstall_all
-    specs = Gem::Specification.reject {|spec| spec.default_gem? }
+    specs = Gem::Specification.reject { |spec| spec.default_gem? }
 
     specs.each do |spec|
       options[:version] = spec.version
       uninstall_gem spec.name
     end
 
-    alert "Uninstalled all gems in #{options[:install_dir] || Gem.dir}"
+    alert "Uninstalled all gems in #{options[:install_dir]}"
   end
 
   def uninstall_specific
@@ -194,4 +195,5 @@ that is a dependency of an existing gem.  You can use the
   def uninstall(gem_name)
     Gem::Uninstaller.new(gem_name, options).uninstall
   end
+
 end

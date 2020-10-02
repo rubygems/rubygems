@@ -5,9 +5,15 @@ require 'rubygems/commands/signout_command'
 require 'rubygems/installer'
 
 class TestGemCommandsSignoutCommand < Gem::TestCase
+
   def setup
     super
     @cmd = Gem::Commands::SignoutCommand.new
+  end
+
+  def teardown
+    super
+    File.delete Gem.configuration.credentials_path if File.exist?(Gem.configuration.credentials_path)
   end
 
   def test_execute_when_user_is_signed_in
@@ -27,4 +33,5 @@ class TestGemCommandsSignoutCommand < Gem::TestCase
 
     assert_match %r{You are not currently signed in}, @sign_out_ui.error
   end
+
 end

@@ -27,16 +27,16 @@ RSpec.describe "bundle clean" do
 
     bundle "config set path vendor/bundle"
     bundle "config set clean false"
-    bundle "install"
+    bundle! "install"
 
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
 
       gem "thin"
     G
-    bundle "install"
+    bundle! "install"
 
-    bundle :clean
+    bundle! :clean
 
     expect(out).to include("Removing foo (1.0)")
 
@@ -86,7 +86,7 @@ RSpec.describe "bundle clean" do
 
     bundle "config set path vendor/bundle"
     bundle "config set clean false"
-    bundle "install"
+    bundle! "install"
 
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
@@ -94,9 +94,9 @@ RSpec.describe "bundle clean" do
       gem "rack", "0.9.1"
       gem "foo"
     G
-    bundle "update rack"
+    bundle! "update rack"
 
-    bundle :clean
+    bundle! :clean
 
     expect(out).to include("Removing rack (1.0.0)")
 
@@ -234,13 +234,13 @@ RSpec.describe "bundle clean" do
     G
 
     bundle "config set path vendor/bundle"
-    bundle "install"
+    bundle! "install"
 
     update_git "foo", :path => lib_path("foo-bar")
     revision2 = revision_for(lib_path("foo-bar"))
 
-    bundle "update", :all => true
-    bundle :clean
+    bundle! "update", :all => true
+    bundle! :clean
 
     expect(out).to include("Removing foo-bar (#{revision[0..11]})")
 
@@ -315,19 +315,20 @@ RSpec.describe "bundle clean" do
     bundle "install"
 
     bundle :clean
+    expect(exitstatus).to eq(0) if exitstatus
   end
 
   it "displays an error when used without --path" do
-    bundle "config set path.system true"
+    bundle! "config set path.system true"
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
 
       gem "rack", "1.0.0"
     G
 
-    bundle :clean, :raise_on_error => false
+    bundle :clean
 
-    expect(exitstatus).to eq(15)
+    expect(exitstatus).to eq(15) if exitstatus
     expect(err).to include("--force")
   end
 
@@ -363,22 +364,22 @@ RSpec.describe "bundle clean" do
   end
 
   it "does not call clean automatically when using system gems" do
-    bundle "config set path.system true"
+    bundle! "config set path.system true"
 
-    install_gemfile <<-G
+    install_gemfile! <<-G
       source "#{file_uri_for(gem_repo1)}"
 
       gem "thin"
       gem "rack"
     G
 
-    install_gemfile <<-G
+    install_gemfile! <<-G
       source "#{file_uri_for(gem_repo1)}"
 
       gem "rack"
     G
 
-    gem_command :list
+    gem_command! :list
     expect(out).to include("rack (1.0.0)").and include("thin (1.0)")
   end
 
@@ -420,7 +421,7 @@ RSpec.describe "bundle clean" do
       build_gem "foo", "1.0.1"
     end
 
-    bundle "update", :all => true
+    bundle! "update", :all => true
 
     should_have_gems "foo-1.0.1"
     should_not_have_gems "foo-1.0"
@@ -429,7 +430,7 @@ RSpec.describe "bundle clean" do
   it "automatically cleans when path has not been set", :bundler => "3" do
     build_repo2
 
-    install_gemfile <<-G
+    install_gemfile! <<-G
       source "#{file_uri_for(gem_repo2)}"
 
       gem "foo"
@@ -439,7 +440,7 @@ RSpec.describe "bundle clean" do
       build_gem "foo", "1.0.1"
     end
 
-    bundle "update", :all => true
+    bundle! "update", :all => true
 
     files = Pathname.glob(bundled_app(".bundle", Bundler.ruby_scope, "*", "*"))
     files.map! {|f| f.to_s.sub(bundled_app(".bundle", Bundler.ruby_scope).to_s, "") }
@@ -479,18 +480,18 @@ RSpec.describe "bundle clean" do
       gem "foo"
     G
     bundle "config set path vendor/bundle"
-    bundle "install"
+    bundle! "install"
 
     update_repo2 do
       build_gem "foo", "1.0.1"
     end
 
-    bundle :update, :all => true
+    bundle! :update, :all => true
     should_have_gems "foo-1.0", "foo-1.0.1"
   end
 
   it "does not clean on bundle update when using --system" do
-    bundle "config set path.system true"
+    bundle! "config set path.system true"
 
     build_repo2
 
@@ -499,19 +500,19 @@ RSpec.describe "bundle clean" do
 
       gem "foo"
     G
-    bundle "install"
+    bundle! "install"
 
     update_repo2 do
       build_gem "foo", "1.0.1"
     end
-    bundle :update, :all => true
+    bundle! :update, :all => true
 
-    gem_command :list
+    gem_command! :list
     expect(out).to include("foo (1.0.1, 1.0)")
   end
 
   it "cleans system gems when --force is used" do
-    bundle "config set path.system true"
+    bundle! "config set path.system true"
 
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
@@ -530,7 +531,7 @@ RSpec.describe "bundle clean" do
     bundle "clean --force"
 
     expect(out).to include("Removing foo (1.0)")
-    gem_command :list
+    gem_command! :list
     expect(out).not_to include("foo (1.0)")
     expect(out).to include("rack (1.0.0)")
   end
@@ -559,12 +560,12 @@ RSpec.describe "bundle clean" do
 
       FileUtils.chmod(0o500, system_cache_path)
 
-      bundle :clean, :force => true, :raise_on_error => false
+      bundle :clean, :force => true
 
       expect(err).to include(system_gem_path.to_s)
       expect(err).to include("grant write permissions")
 
-      gem_command :list
+      gem_command! :list
       expect(out).to include("foo (1.0)")
       expect(out).to include("rack (1.0.0)")
     end
@@ -601,7 +602,7 @@ RSpec.describe "bundle clean" do
   end
 
   it "when using --force on system gems, it doesn't remove binaries" do
-    bundle "config set path.system true"
+    bundle! "config set path.system true"
 
     build_repo2
     update_repo2 do
@@ -622,31 +623,8 @@ RSpec.describe "bundle clean" do
 
     sys_exec "foo"
 
+    expect(exitstatus).to eq(0) if exitstatus
     expect(out).to eq("1.0")
-  end
-
-  it "when using --force, it doesn't remove default gem binaries", :rubygems => ">= 3.2.0.rc.1" do
-    skip "does not work on ruby 3.0 because it changes the path to look for default gems, tsort is a default gem there, and we can't install it either like we do with fiddle because it doesn't yet exist" unless RUBY_VERSION < "3.0.0"
-
-    default_irb_version = ruby "gem 'irb', '< 999999'; require 'irb'; puts IRB::VERSION", :raise_on_error => false
-    skip "irb isn't a default gem" if default_irb_version.empty?
-
-    build_repo2 do
-      # simulate executable for default gem
-      build_gem "irb", default_irb_version, :to_system => true, :default => true do |s|
-        s.executables = "irb"
-      end
-    end
-
-    realworld_system_gems "fiddle"
-
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
-    G
-
-    bundle "clean --force", :env => { "BUNDLER_GEM_DEFAULT_DIR" => system_gem_path.to_s }
-
-    expect(out).not_to include("Removing irb")
   end
 
   it "doesn't blow up on path gems without a .gemspec" do
@@ -666,7 +644,7 @@ RSpec.describe "bundle clean" do
 
     bundle "config set path vendor/bundle"
     bundle "install"
-    bundle :clean
+    bundle! :clean
   end
 
   it "doesn't remove gems in dry-run mode with path set" do
@@ -771,7 +749,7 @@ RSpec.describe "bundle clean" do
 
     bundle "config set path vendor/bundle"
     bundle "config set clean false"
-    bundle "install"
+    bundle! "install"
 
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
@@ -780,8 +758,8 @@ RSpec.describe "bundle clean" do
       gem "weakling"
     G
 
-    bundle "config set auto_install 1"
-    bundle :clean
+    bundle! "config set auto_install 1"
+    bundle! :clean
     expect(out).to include("Installing weakling 0.0.3")
     should_have_gems "thin-1.0", "rack-1.0.0", "weakling-0.0.3"
     should_not_have_gems "foo-1.0"
@@ -799,11 +777,11 @@ RSpec.describe "bundle clean" do
     G
 
     bundle "config set path vendor/bundle"
-    bundle "install"
+    bundle! "install"
     expect(vendored_gems("bundler/gems/extensions")).to exist
     expect(vendored_gems("bundler/gems/very_simple_git_binary-1.0-#{revision[0..11]}")).to exist
 
-    bundle :clean
+    bundle! :clean
     expect(out).to be_empty
 
     expect(vendored_gems("bundler/gems/extensions")).to exist
@@ -820,7 +798,7 @@ RSpec.describe "bundle clean" do
     G
 
     bundle "config set path vendor/bundle"
-    bundle "install"
+    bundle! "install"
 
     very_simple_binary_extensions_dir =
       Pathname.glob("#{vendored_gems}/extensions/*/*/very_simple_binary-1.0").first
@@ -838,8 +816,8 @@ RSpec.describe "bundle clean" do
       gem "simple_binary"
     G
 
-    bundle "install"
-    bundle :clean
+    bundle! "install"
+    bundle! :clean
     expect(out).to eq("Removing very_simple_binary (1.0)")
 
     expect(very_simple_binary_extensions_dir).not_to exist
@@ -860,7 +838,7 @@ RSpec.describe "bundle clean" do
     G
 
     bundle "config set path vendor/bundle"
-    bundle "install"
+    bundle! "install"
 
     very_simple_binary_extensions_dir =
       Pathname.glob("#{vendored_gems}/bundler/gems/extensions/*/*/very_simple_git_binary-1.0-#{short_revision}").first
@@ -871,22 +849,22 @@ RSpec.describe "bundle clean" do
       gem "very_simple_git_binary", :git => "#{lib_path("very_simple_git_binary-1.0")}", :ref => "#{revision}"
     G
 
-    bundle "install"
-    bundle :clean
+    bundle! "install"
+    bundle! :clean
     expect(out).to include("Removing thin (1.0)")
     expect(very_simple_binary_extensions_dir).to exist
 
     gemfile <<-G
     G
 
-    bundle "install"
-    bundle :clean
+    bundle! "install"
+    bundle! :clean
     expect(out).to eq("Removing very_simple_git_binary-1.0 (#{short_revision})")
 
     expect(very_simple_binary_extensions_dir).not_to exist
   end
 
-  it "keeps git extension directories when excluded by group" do
+  it "keeps git extension directories when excluded by group", :ruby_repo do
     build_git "very_simple_git_binary", &:add_c_extension
 
     revision = revision_for(lib_path("very_simple_git_binary-1.0"))
@@ -903,8 +881,8 @@ RSpec.describe "bundle clean" do
     bundle :lock
     bundle "config set without development"
     bundle "config set path vendor/bundle"
-    bundle "install"
-    bundle :clean
+    bundle! "install"
+    bundle! :clean
 
     very_simple_binary_extensions_dir =
       Pathname.glob("#{vendored_gems}/bundler/gems/extensions/*/*/very_simple_git_binary-1.0-#{short_revision}").first

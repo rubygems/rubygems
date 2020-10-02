@@ -4,6 +4,7 @@
 # source index.
 
 class Gem::Resolver::IndexSet < Gem::Resolver::Set
+
   def initialize(source = nil) # :nodoc:
     super()
 
@@ -16,7 +17,7 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
         Gem::SpecFetcher.fetcher
       end
 
-    @all = Hash.new {|h,k| h[k] = [] }
+    @all = Hash.new { |h,k| h[k] = [] }
 
     list, errors = @f.available_specs :complete
 
@@ -75,4 +76,5 @@ class Gem::Resolver::IndexSet < Gem::Resolver::Set
       end
     end
   end
+
 end

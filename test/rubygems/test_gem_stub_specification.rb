@@ -3,6 +3,8 @@ require "rubygems/test_case"
 require "rubygems/stub_specification"
 
 class TestStubSpecification < Gem::TestCase
+
+  SPECIFICATIONS = File.expand_path(File.join("..", "specifications"), __FILE__)
   FOO = File.join SPECIFICATIONS, "foo-0.0.1-x86-mswin32.gemspec"
   BAR = File.join SPECIFICATIONS, "bar-0.0.2.gemspec"
 
@@ -290,4 +292,5 @@ end
       return stub
     end
   end
+
 end

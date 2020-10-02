@@ -1,19 +1,24 @@
+# -*- coding: utf-8 -*-
 # frozen_string_literal: true
 #--
 # Copyright (C) 2004 Mauricio Julio Fernández Pradier
 # See LICENSE.txt for additional licensing information.
 #++
 
+require 'digest'
+
 ##
 # Allows writing of tar files
 
 class Gem::Package::TarWriter
+
   class FileOverflow < StandardError; end
 
   ##
   # IO wrapper that allows writing a limited amount of data
 
   class BoundedStream
+
     ##
     # Maximum number of bytes that can be written
 
@@ -45,12 +50,14 @@ class Gem::Package::TarWriter
       @written += data.bytesize
       data.bytesize
     end
+
   end
 
   ##
   # IO wrapper that provides only #write
 
   class RestrictedStream
+
     ##
     # Creates a new RestrictedStream wrapping +io+
 
@@ -64,6 +71,7 @@ class Gem::Package::TarWriter
     def write(data)
       @io.write data
     end
+
   end
 
   ##
@@ -138,7 +146,8 @@ class Gem::Package::TarWriter
         if digest.respond_to? :name
           digest.name
         else
-          digest_algorithm.class.name[/::([^:]+)\z/, 1]
+          /::([^:]+)$/ =~ digest_algorithm.name
+          $1
         end
 
       [digest_name, digest]
@@ -166,7 +175,7 @@ class Gem::Package::TarWriter
   def add_file_signed(name, mode, signer)
     digest_algorithms = [
       signer.digest_algorithm,
-      Gem::Security.create_digest('SHA512'),
+      Digest::SHA512,
     ].compact.uniq
 
     digests = add_file_digest name, mode, digest_algorithms do |io|
@@ -325,4 +334,5 @@ class Gem::Package::TarWriter
 
     return name, prefix
   end
+
 end

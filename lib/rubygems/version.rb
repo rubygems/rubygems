@@ -151,6 +151,7 @@
 # a zero to give a sensible result.
 
 class Gem::Version
+
   autoload :Requirement, File.expand_path('requirement', __dir__)
 
   include Comparable
@@ -187,7 +188,7 @@ class Gem::Version
   #   ver3 = Version.create(nil)        # -> nil
 
   def self.create(input)
-    if self === input # check yourself before you wreck yourself
+    if self === input  # check yourself before you wreck yourself
       input
     elsif input.nil?
       nil
@@ -232,7 +233,7 @@ class Gem::Version
   def bump
     @@bump[self] ||= begin
                        segments = self.segments
-                       segments.pop while segments.any? {|s| String === s }
+                       segments.pop while segments.any? { |s| String === s }
                        segments.pop if segments.size > 1
 
                        segments[-1] = segments[-1].succ
@@ -326,7 +327,7 @@ class Gem::Version
   def release
     @@release[self] ||= if prerelease?
                           segments = self.segments
-                          segments.pop while segments.any? {|s| String === s }
+                          segments.pop while segments.any? { |s| String === s }
                           self.class.new segments.join('.')
                         else
                           self
@@ -343,7 +344,7 @@ class Gem::Version
   def approximate_recommendation
     segments = self.segments
 
-    segments.pop    while segments.any? {|s| String === s }
+    segments.pop    while segments.any? { |s| String === s }
     segments.pop    while segments.size > 2
     segments.push 0 while segments.size < 2
 
@@ -420,4 +421,5 @@ class Gem::Version
     numeric_segments = string_segments.slice!(0, string_start || string_segments.size)
     return numeric_segments, string_segments
   end
+
 end

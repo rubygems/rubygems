@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'rubygems'
 require 'rubygems/source_list'
 require 'rubygems/test_case'
 
 class TestGemSourceList < Gem::TestCase
+
   def setup
     super
 
@@ -115,4 +115,5 @@ class TestGemSourceList < Gem::TestCase
     @sl.delete Gem::Source.new(@uri)
     assert_equal @sl.sources, []
   end
+
 end

@@ -3,6 +3,7 @@ require 'rubygems/installer_test_case'
 require 'rubygems/uninstaller'
 
 class TestGemUninstaller < Gem::InstallerTestCase
+
   def setup
     super
     @installer = setup_base_installer
@@ -26,7 +27,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
     FileUtils.mkdir_p 'foo/bar'
     uninstaller = Gem::Uninstaller.new nil, :install_dir => 'foo//bar'
 
-    assert_match %r{foo/bar$}, uninstaller.instance_variable_get(:@gem_home)
+    assert_match %r|foo/bar$|, uninstaller.instance_variable_get(:@gem_home)
   end
 
   def test_ask_if_ok
@@ -153,8 +154,6 @@ class TestGemUninstaller < Gem::InstallerTestCase
   end
 
   def test_remove_symlinked_gem_home
-    skip "Symlinks not supported or not enabled" unless symlink_supported?
-
     Dir.mktmpdir("gem_home") do |dir|
       symlinked_gem_home = "#{dir}/#{File.basename(@gemhome)}"
 
@@ -177,7 +176,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     @spec.files += %w[lib/rubygems_plugin.rb]
 
-    Gem::Installer.at(Gem::Package.build(@spec), :force => true).install
+    Gem::Installer.at(Gem::Package.build(@spec)).install
 
     plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
     assert File.exist?(plugin_path), 'plugin not written'
@@ -194,7 +193,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     @spec.files += %w[lib/rubygems_plugin.rb]
 
-    Gem::Installer.at(Gem::Package.build(@spec), :force => true).install
+    Gem::Installer.at(Gem::Package.build(@spec)).install
 
     plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
     assert File.exist?(plugin_path), 'plugin not written'
@@ -212,7 +211,7 @@ class TestGemUninstaller < Gem::InstallerTestCase
 
     @spec.files += %w[lib/rubygems_plugin.rb]
 
-    Gem::Installer.at(Gem::Package.build(@spec), :force => true).install
+    Gem::Installer.at(Gem::Package.build(@spec)).install
 
     plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
     assert File.exist?(plugin_path), 'plugin not written'
@@ -314,7 +313,7 @@ create_makefile '#{@spec.name}'
     use_ui @ui do
       path = Gem::Package.build @spec
 
-      installer = Gem::Installer.at path, :force => true
+      installer = Gem::Installer.at path
       installer.install
     end
 
@@ -459,12 +458,12 @@ create_makefile '#{@spec.name}'
     lines = ui.output.split("\n")
     lines.shift
 
-    assert_match %r{You have requested to uninstall the gem:}, lines.shift
+    assert_match %r!You have requested to uninstall the gem:!, lines.shift
     lines.shift
     lines.shift
 
-    assert_match %r{r-1 depends on q \(= 1\)}, lines.shift
-    assert_match %r{Successfully uninstalled q-1}, lines.last
+    assert_match %r!r-1 depends on q \(= 1\)!, lines.shift
+    assert_match %r!Successfully uninstalled q-1!, lines.last
   end
 
   def test_uninstall_only_lists_unsatisfied_deps
@@ -489,12 +488,12 @@ create_makefile '#{@spec.name}'
     lines = ui.output.split("\n")
     lines.shift
 
-    assert_match %r{You have requested to uninstall the gem:}, lines.shift
+    assert_match %r!You have requested to uninstall the gem:!, lines.shift
     lines.shift
     lines.shift
 
-    assert_match %r{x-1 depends on q \(= 1.0\)}, lines.shift
-    assert_match %r{Successfully uninstalled q-1.0}, lines.last
+    assert_match %r!x-1 depends on q \(= 1.0\)!, lines.shift
+    assert_match %r!Successfully uninstalled q-1.0!, lines.last
   end
 
   def test_uninstall_doesnt_prompt_when_other_gem_satisfies_requirement
@@ -570,12 +569,12 @@ create_makefile '#{@spec.name}'
     lines = ui.output.split("\n")
     lines.shift
 
-    assert_match %r{You have requested to uninstall the gem:}, lines.shift
+    assert_match %r!You have requested to uninstall the gem:!, lines.shift
     lines.shift
     lines.shift
 
-    assert_match %r{r-1 depends on q \(= 1, development\)}, lines.shift
-    assert_match %r{Successfully uninstalled q-1}, lines.last
+    assert_match %r!r-1 depends on q \(= 1, development\)!, lines.shift
+    assert_match %r!Successfully uninstalled q-1!, lines.last
   end
 
   def test_uninstall_prompt_only_lists_the_dependents_that_prevented_uninstallation
@@ -599,12 +598,12 @@ create_makefile '#{@spec.name}'
     lines = ui.output.split("\n")
     lines.shift
 
-    assert_match %r{You have requested to uninstall the gem:}, lines.shift
+    assert_match %r!You have requested to uninstall the gem:!, lines.shift
     lines.shift
     lines.shift
 
-    assert_match %r{s-1 depends on q \(= 1\)}, lines.shift
-    assert_match %r{Successfully uninstalled q-1}, lines.last
+    assert_match %r!s-1 depends on q \(= 1\)!, lines.shift
+    assert_match %r!Successfully uninstalled q-1!, lines.last
   end
 
   def test_uninstall_no_permission
@@ -633,19 +632,19 @@ create_makefile '#{@spec.name}'
     plugin_path = File.join Gem.plugindir, 'a_plugin.rb'
 
     @spec.version = '1'
-    Gem::Installer.at(Gem::Package.build(@spec), :force => true).install
+    Gem::Installer.at(Gem::Package.build(@spec)).install
 
     refute File.exist?(plugin_path), 'version without plugin installed, but plugin written'
 
     @spec.files += %w[lib/rubygems_plugin.rb]
     @spec.version = '2'
-    Gem::Installer.at(Gem::Package.build(@spec), :force => true).install
+    Gem::Installer.at(Gem::Package.build(@spec)).install
 
     assert File.exist?(plugin_path), 'version with plugin installed, but plugin not written'
     assert_match %r{\Arequire.*a-2/lib/rubygems_plugin\.rb}, File.read(plugin_path), 'written plugin has incorrect content'
 
     @spec.version = '3'
-    Gem::Installer.at(Gem::Package.build(@spec), :force => true).install
+    Gem::Installer.at(Gem::Package.build(@spec)).install
 
     assert File.exist?(plugin_path), 'version with plugin installed, but plugin removed'
     assert_match %r{\Arequire.*a-3/lib/rubygems_plugin\.rb}, File.read(plugin_path), 'old version installed, but plugin updated'
@@ -664,4 +663,5 @@ create_makefile '#{@spec.name}'
 
     refute File.exist?(plugin_path), 'last version uninstalled, but plugin still present'
   end
+
 end

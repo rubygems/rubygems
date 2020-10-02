@@ -5,42 +5,65 @@ on:
 
   push:
     branches:
-      - master
-      - 3.2
+      - staging
+      - trying
 
 jobs:
   ubuntu_bundler:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
-        bundler: [ '', 3.0.0 ]
+        ruby: [ 2.3.8, 2.4.9, 2.5.7, 2.6.5, head ]
+        rgv: [ v2.5.2, v2.6.14, v2.7.10, v3.0.6, .. ]
         exclude:
-          - { bundler: 3.0.0, ruby: 2.3.8 }
+          - ruby: 2.4.9
+            rgv: v2.5.2
+          - ruby: 2.5.7
+            rgv: v2.5.2
+          - ruby: 2.5.7
+            rgv: v2.6.14
+          - ruby: 2.6.5
+            rgv: v2.5.2
+          - ruby: 2.6.5
+            rgv: v2.6.14
+          - ruby: 2.6.5
+            rgv: v2.7.10
+          - ruby: head
+            rgv: v2.5.2
+          - ruby: head
+            rgv: v2.6.14
+          - ruby: head
+            rgv: v2.7.10
+          - ruby: head
+            rgv: v3.0.6
     env:
-      RGV: ..
-      RUBYOPT: --disable-gems
+      RGV: ${{ matrix.rgv }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler: none
-      - name: Install graphviz
-        run: sudo apt-get install graphviz -y
-        if: matrix.bundler == ''
-      - name: Replace version
-        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler }} bin/rake override_version
-        if: matrix.bundler != ''
-        working-directory: ./bundler
       - name: Prepare dependencies
         run: |
+          sudo apt-get install graphviz -y
           bin/rake spec:parallel_deps
         working-directory: ./bundler
       - name: Run Test
         run: |
-          bin/rake spec:all
+          bin/parallel_rspec spec
         working-directory: ./bundler
+        continue-on-error: ${{ matrix.ruby == 'head' }}
+      - name: Run Test with realworld
+        run: |
+          bin/rake spec:realworld
+        env:
+          BUNDLER_SPEC_PRE_RECORDED: 1
+        working-directory: ./bundler
+        continue-on-error: ${{ matrix.ruby == 'head' }}
+      - name: Run Test with sudo
+        run: |
+          bin/rake spec:sudo
+        working-directory: ./bundler
+        continue-on-error: ${{ matrix.ruby == 'head' }}
     timeout-minutes: 60

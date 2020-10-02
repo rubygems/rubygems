@@ -1,7 +1,8 @@
 # frozen_string_literal: true
-require_relative '../command'
+require 'rubygems/command'
 
 class Gem::Ext::CmakeBuilder < Gem::Ext::Builder
+
   def self.build(extension, dest_path, results, args=[], lib_dir=nil)
     unless File.exist?('Makefile')
       cmd = "cmake . -DCMAKE_INSTALL_PREFIX=#{dest_path}"
@@ -14,4 +15,5 @@ class Gem::Ext::CmakeBuilder < Gem::Ext::Builder
 
     results
   end
+
 end

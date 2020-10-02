@@ -145,17 +145,20 @@ module Bundler
 
           Bundler.mkdir_p bin_path, :no_sudo => true unless spec.executables.empty? || Bundler.rubygems.provides?(">= 2.7.5")
 
-          installed_spec = Bundler::RubyGemsGemInstaller.at(
-            path,
-            :install_dir         => install_path.to_s,
-            :bin_dir             => bin_path.to_s,
-            :ignore_dependencies => true,
-            :wrappers            => true,
-            :env_shebang         => true,
-            :build_args          => opts[:build_args],
-            :bundler_expected_checksum => spec.respond_to?(:checksum) && spec.checksum,
-            :bundler_extension_cache_path => extension_cache_path(spec)
-          ).install
+          installed_spec = nil
+          Bundler.rubygems.preserve_paths do
+            installed_spec = Bundler::RubyGemsGemInstaller.at(
+              path,
+              :install_dir         => install_path.to_s,
+              :bin_dir             => bin_path.to_s,
+              :ignore_dependencies => true,
+              :wrappers            => true,
+              :env_shebang         => true,
+              :build_args          => opts[:build_args],
+              :bundler_expected_checksum => spec.respond_to?(:checksum) && spec.checksum,
+              :bundler_extension_cache_path => extension_cache_path(spec)
+            ).install
+          end
           spec.full_gem_path = installed_spec.full_gem_path
 
           # SUDO HAX
@@ -291,7 +294,7 @@ module Bundler
         names
       end
 
-      protected
+    protected
 
       def credless_remotes
         remotes.map(&method(:suppress_configured_credentials))
@@ -465,7 +468,7 @@ module Bundler
         Bundler.app_cache
       end
 
-      private
+    private
 
       # Checks if the requested spec exists in the global cache. If it does,
       # we copy it to the download path, and if it does not, we download it.

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # frozen_string_literal: true
 #++
 # Copyright (C) 2004 Mauricio Julio Fernández Pradier
@@ -8,6 +9,7 @@
 # Class for reading entries out of a tar file
 
 class Gem::Package::TarReader::Entry
+
   ##
   # Header for this tar entry
 
@@ -164,4 +166,5 @@ class Gem::Package::TarReader::Entry
     @io.pos = @orig_pos
     @read = 0
   end
+
 end

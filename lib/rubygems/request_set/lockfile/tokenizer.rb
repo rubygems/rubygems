@@ -2,6 +2,7 @@
 require 'rubygems/request_set/lockfile/parser'
 
 class Gem::RequestSet::Lockfile::Tokenizer
+
   Token = Struct.new :type, :value, :column, :line
   EOF   = Token.new :EOF
 
@@ -22,7 +23,7 @@ class Gem::RequestSet::Lockfile::Tokenizer
   end
 
   def to_a
-    @tokens.map {|token| [token.type, token.value, token.column, token.line] }
+    @tokens.map { |token| [token.type, token.value, token.column, token.line] }
   end
 
   def skip(type)
@@ -109,4 +110,5 @@ class Gem::RequestSet::Lockfile::Tokenizer
 
     @tokens
   end
+
 end

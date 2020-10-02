@@ -155,11 +155,10 @@ RSpec.describe "real source plugins" do
         expect(the_bundle).to include_gems("a-path-gem 1.0")
       end
 
-      it "copies repository to vendor cache and uses it even when installed with `path` configured" do
-        bundle "config --local path vendor/bundle"
-        bundle :install
+      it "copies repository to vendor cache and uses it even when installed with bundle --path" do
+        bundle! :install, forgotten_command_line_options(:path => "vendor/bundle")
         bundle "config set cache_all true"
-        bundle :cache
+        bundle! :cache
 
         expect(bundled_app("vendor/cache/a-path-gem-1.0-#{uri_hash}")).to exist
 
@@ -168,10 +167,9 @@ RSpec.describe "real source plugins" do
       end
 
       it "bundler package copies repository to vendor cache" do
-        bundle "config --local path vendor/bundle"
-        bundle :install
+        bundle! :install, forgotten_command_line_options(:path => "vendor/bundle")
         bundle "config set cache_all true"
-        bundle :cache
+        bundle! :cache
 
         expect(bundled_app("vendor/cache/a-path-gem-1.0-#{uri_hash}")).to exist
 
@@ -205,7 +203,7 @@ RSpec.describe "real source plugins" do
       end
 
       it "installs" do
-        bundle "install"
+        bundle! "install"
 
         expect(the_bundle).to include_gems("a-path-gem 1.0")
       end

@@ -21,6 +21,7 @@ require 'rubygems/user_interaction'
 # file.  See Gem.pre_uninstall and Gem.post_uninstall for details.
 
 class Gem::Uninstaller
+
   include Gem::UserInteraction
 
   include Gem::InstallerUninstallerUtils
@@ -113,10 +114,10 @@ class Gem::Uninstaller
     if list.empty?
       return unless other_repo_specs.any?
 
-      other_repos = other_repo_specs.map {|spec| spec.base_dir }.uniq
+      other_repos = other_repo_specs.map { |spec| spec.base_dir }.uniq
 
       message = ["#{@gem} is not installed in GEM_HOME, try:"]
-      message.concat other_repos.map {|repo|
+      message.concat other_repos.map { |repo|
         "\tgem uninstall -i #{repo} #{@gem}"
       }
 
@@ -125,7 +126,7 @@ class Gem::Uninstaller
       remove_all list
 
     elsif list.size > 1
-      gem_names = list.map {|gem| gem.full_name }
+      gem_names = list.map { |gem| gem.full_name }
       gem_names << "All versions"
 
       say
@@ -196,7 +197,7 @@ class Gem::Uninstaller
 
     return if executables.empty?
 
-    executables = executables.map {|exec| formatted_program_filename exec }
+    executables = executables.map { |exec| formatted_program_filename exec }
 
     remove = if @force_executables.nil?
                ask_yes_no("Remove executables:\n" +
@@ -231,7 +232,7 @@ class Gem::Uninstaller
   # NOTE: removes uninstalled gems from +list+.
 
   def remove_all(list)
-    list.each {|spec| uninstall_gem spec }
+    list.each { |spec| uninstall_gem spec }
   end
 
   ##
@@ -338,7 +339,7 @@ class Gem::Uninstaller
     end
 
     spec.dependent_gems(@check_dev).each do |dep_spec, dep, satlist|
-      unless siblings.any? {|s| s.satisfies_requirement? dep }
+      unless siblings.any? { |s| s.satisfies_requirement? dep }
         msg << "#{dep_spec.name}-#{dep_spec.version} depends on #{dep}"
       end
     end
@@ -373,4 +374,5 @@ class Gem::Uninstaller
 
     raise e
   end
+
 end

@@ -5,6 +5,7 @@ require 'rubygems/version_option'
 require 'rubygems/package'
 
 class Gem::Commands::SpecificationCommand < Gem::Command
+
   include Gem::LocalRemoteOptions
   include Gem::VersionOption
 
@@ -118,7 +119,7 @@ Specific fields in the specification can be extracted in YAML format:
       dep.prerelease = options[:prerelease]
       found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dep
 
-      specs.push(*found.map {|spec,| spec })
+      specs.push(*found.map { |spec,| spec })
     end
 
     if specs.empty?
@@ -127,7 +128,7 @@ Specific fields in the specification can be extracted in YAML format:
     end
 
     unless options[:all]
-      specs = [specs.max_by {|s| s.version }]
+      specs = [specs.max_by { |s| s.version }]
     end
 
     specs.each do |s|
@@ -142,4 +143,5 @@ Specific fields in the specification can be extracted in YAML format:
       say "\n"
     end
   end
+
 end

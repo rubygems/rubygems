@@ -102,6 +102,11 @@ module Bundler
       end.flatten(1)
     end
 
+    def spec_extension_dir(spec)
+      return unless spec.respond_to?(:extension_dir)
+      spec.extension_dir
+    end
+
     def stub_set_spec(stub, spec)
       stub.instance_variable_set(:@spec, spec)
     end
@@ -136,10 +141,14 @@ module Bundler
     end
 
     def inflate(obj)
+      require "rubygems/util"
+
       Gem::Util.inflate(obj)
     end
 
     def correct_for_windows_path(path)
+      require "rubygems/util"
+
       if Gem::Util.respond_to?(:correct_for_windows_path)
         Gem::Util.correct_for_windows_path(path)
       elsif path[0].chr == "/" && path[1].chr =~ /[a-z]/i && path[2].chr == ":"
@@ -214,6 +223,11 @@ module Bundler
       Gem.bin_path(gem, bin, ver)
     end
 
+    def preserve_paths
+      # this is a no-op outside of RubyGems 1.8
+      yield
+    end
+
     def loaded_gem_paths
       loaded_gem_paths = Gem.loaded_specs.map {|_, s| s.full_require_paths }
       loaded_gem_paths.flatten
@@ -251,6 +265,8 @@ module Bundler
       require "rubygems/security"
       require_relative "psyched_yaml"
       gem_from_path(path, security_policies[policy]).spec
+    rescue Gem::Package::FormatError
+      raise GemspecError, "Could not read gem at #{path}. It may be corrupted."
     rescue Exception, Gem::Exception, Gem::Security::Exception => e # rubocop:disable Lint/RescueException
       if e.is_a?(Gem::Security::Exception) ||
           e.message =~ /unknown trust policy|unsigned gem/i ||
@@ -313,13 +329,8 @@ module Bundler
           end
 
           message = if spec.nil?
-            target_file = begin
-                            Bundler.default_gemfile.basename
-                          rescue GemfileNotFound
-                            "inline Gemfile"
-                          end
             "#{dep.name} is not part of the bundle." \
-            " Add it to your #{target_file}."
+            " Add it to your #{Bundler.default_gemfile.basename}."
           else
             "can't activate #{dep}, already activated #{spec.full_name}. " \
             "Make sure all dependencies are added to Gemfile."
@@ -411,17 +422,6 @@ module Bundler
     # Replace or hook into RubyGems to provide a bundlerized view
     # of the world.
     def replace_entrypoints(specs)
-      specs_by_name = add_default_gems_to(specs)
-
-      replace_gem(specs, specs_by_name)
-      stub_rubygems(specs)
-      replace_bin_path(specs_by_name)
-
-      Gem.clear_paths
-    end
-
-    # Add default gems not already present in specs, and return them as a hash.
-    def add_default_gems_to(specs)
       specs_by_name = specs.reduce({}) do |h, s|
         h[s.name] = s
         h
@@ -436,7 +436,11 @@ module Bundler
         specs_by_name[default_spec_name] = default_spec
       end
 
-      specs_by_name
+      replace_gem(specs, specs_by_name)
+      stub_rubygems(specs)
+      replace_bin_path(specs_by_name)
+
+      Gem.clear_paths
     end
 
     def undo_replacements
@@ -569,10 +573,10 @@ module Bundler
 
     def backport_ext_builder_monitor
       # So we can avoid requiring "rubygems/ext" in its entirety
-      Gem.module_eval <<-RUBY, __FILE__, __LINE__ + 1
+      Gem.module_eval <<-RB, __FILE__, __LINE__ + 1
         module Ext
         end
-      RUBY
+      RB
 
       require "rubygems/ext/builder"
 

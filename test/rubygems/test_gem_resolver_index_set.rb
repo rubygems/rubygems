@@ -2,6 +2,7 @@
 require 'rubygems/test_case'
 
 class TestGemResolverIndexSet < Gem::TestCase
+
   def setup
     super
 
@@ -41,7 +42,7 @@ class TestGemResolverIndexSet < Gem::TestCase
 
     found = set.find_all req
 
-    assert_equal %w[a-1], found.map {|s| s.full_name }
+    assert_equal %w[a-1], found.map { |s| s.full_name }
   end
 
   def test_find_all_local
@@ -82,6 +83,7 @@ class TestGemResolverIndexSet < Gem::TestCase
 
     found = set.find_all req
 
-    assert_equal %w[a-1.a], found.map {|s| s.full_name }
+    assert_equal %w[a-1.a], found.map { |s| s.full_name }
   end
+
 end

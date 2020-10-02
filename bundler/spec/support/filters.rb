@@ -21,8 +21,17 @@ class RequirementChecker < Proc
 end
 
 RSpec.configure do |config|
-  config.filter_run_excluding :sudo => true
-  config.filter_run_excluding :realworld => true
+  if ENV["BUNDLER_SUDO_TESTS"] && Spec::Sudo.present?
+    config.filter_run :sudo => true
+  else
+    config.filter_run_excluding :sudo => true
+  end
+
+  if ENV["BUNDLER_REALWORLD_TESTS"]
+    config.filter_run :realworld => true
+  else
+    config.filter_run_excluding :realworld => true
+  end
 
   git_version = Bundler::Source::Git::GitProxy.new(nil, nil, nil).version
 
@@ -33,7 +42,6 @@ RSpec.configure do |config|
   config.filter_run_excluding :no_color_tty => Gem.win_platform? || !ENV["GITHUB_ACTION"].nil?
   config.filter_run_excluding :permissions => Gem.win_platform?
   config.filter_run_excluding :readline => Gem.win_platform?
-  config.filter_run_excluding :jruby => RUBY_PLATFORM != "java"
 
   config.filter_run_when_matching :focus unless ENV["CI"]
 end

@@ -3,11 +3,11 @@
 Bundler uses [Semantic Versioning](https://semver.org/).
 
 _Note: In the documentation listed below, the *current* minor version number is
-2.1 and the *next* minor version number is 2.2_
+1.11 and the *next* minor version number is 1.12_
 
 Regardless of the version, *all releases* must update the `CHANGELOG.md` and `lib/bundler/version.rb`
-files. The changelog for the first stable minor release (`2.2.0`) is a sum of all
-the preceding pre-release versions (`2.2.pre.1`, `2.2.pre.2`, etc) for that
+files. The changelog for the first stable minor release (`1.12.0`) is a sum of all
+the preceding pre-release versions (`1.12.pre.1`, `1.12.pre.2`, etc) for that
 minor version. The changelog for the first stable minor release is left blank
 unless there are fixes included since the last pre/rc release.
 
@@ -15,8 +15,8 @@ unless there are fixes included since the last pre/rc release.
 
 In general, `master` will accept PRs for:
 
-* feature merges for the next minor version (2.2)
-* regression fix merges for a patch release on the current minor version (2.1)
+* feature merges for the next minor version (1.12)
+* regression fix merges for a patch release on the current minor version (1.11)
 * feature-flagged development for the next major version (2.0)
 
 ### Breaking releases
@@ -29,29 +29,11 @@ behaviors that will change.
 We try very hard to only release breaking changes when incrementing the _major_
 version of Bundler.
 
-### Patch && minor releases
+### Cherry picking
 
-While pushing a gem version to RubyGems.org is as simple as `bin/rake release`,
-releasing a new version of Bundler includes a lot of communication: team consensus,
-git branching, documentation site updates, and a blog post.
+Patch releases are made by cherry-picking bug fixes from `master`.
 
-Patch and minor releases are made by cherry-picking pill requests from `master`.
-
-There is a `bin/rake release:prepare[<target_version>]` rake task that helps
-with creating a release. It takes a single argument, the _exact_ release being
-made (e.g.  `2.2.3`). This task checks out the appropriate stable branch
-(`3.2`), grabs all merged but unreleased PRs from GitHub that are compatible
-with the target release level, and then cherry-picks those changes (and only
-those changes) to a new branch based off the stable branch.  Then bumps the
-version in the version file, synchronizes the changelog to include all
-backported changes and commits that change on top of the cherry-picks.
-
-Note that this task requires all user facing pull requests to be tagged with
-specific labels. See [Merging a PR](/bundler/doc/playbooks/MERGING_A_PR.md) for
-details.
-
-Also note that when this task cherry-picks, it cherry-picks the merge commits
-using the following command:
+When we cherry-pick, we cherry-pick the merge commits using the following command:
 
 ```bash
 $ git cherry-pick -m 1 MERGE_COMMIT_SHAS
@@ -66,39 +48,60 @@ using:
 $ git cherry-pick -m 1 dd6aef9
 ```
 
-After running the task, you'll have a release branch ready to be merged into the
-stable branch. You'll want to open a PR from this branch into the stable branch
-and provided CI is green, you can go ahead, merge the PR and run `bin/rake
-release` from the updated stable branch.
+The `rake release:prepare_patch` command will automatically handle
+cherry-picking, and is further detailed below.
+
+## Changelog
+
+Bundler maintains a list of changes present in each version in the `CHANGELOG.md` file.
+Entries should not be added in pull requests, but are rather written by the Bundler
+maintainers before the release.
+
+To fill in the changelog, maintainers can go through the relevant PRs using the
+`rake release:open_unreleased_prs` and manually add a changelog entry for each
+PR that it's about to be released.
+
+If you're releasing a patch level version, you can use `rake
+release:open_unreleased_prs` to instead label each relevant PR with the proper
+milestone of the version to be release. Then the `rake release:patch` task will
+go _only_ through those PRs, and prompt you to add a changelog entry for each of
+them.
+
+## Releases
+
+### Minor releases
+
+While pushing a gem version to RubyGems.org is as simple as `rake release`,
+releasing a new version of Bundler includes a lot of communication: team consensus,
+git branching, changelog writing, documentation site updates, and a blog post.
+
+Dizzy yet? Us too.
 
 Here's the checklist for releasing new minor versions:
 
 * [ ] Check with the core team to ensure that there is consensus around shipping a
   feature release. As a general rule, this should always be okay, since features
   should _never break backwards compatibility_
-* [ ] Run `bin/rake release:prepare[<target_pre_version>]` and create a PR to
-  the stable branch with the generated changes.
-* [ ] Get the PR reviewed, make sure CI is green, and merge it.
-* [ ] Pull the updated stable branch, wait for CI to complete on it and get excited.
-* [ ] Run `bin/rake release` from the updated stable branch, tweet, blog, let people know about the prerelease!
+* [ ] Create a new stable branch from master (see **Branching** below)
+* [ ] Update `version.rb` to a prerelease number, e.g. `1.12.pre.1`
+* [ ] Update `CHANGELOG.md` to include all of the features, bugfixes, etc for that
+  version.
+* [ ] Run `rake release`, tweet, blog, let people know about the prerelease!
 * [ ] Wait a **minimum of 7 days**
-* [ ] If significant problems are found, increment the prerelease (i.e. 2.2.pre.2)
+* [ ] If significant problems are found, increment the prerelease (i.e. 1.12.pre.2)
   and repeat, but treating `.pre.2` as a _patch release_. In general, once a stable
   branch has been cut from master, it should _not_ have master merged back into it.
 
 Wait! You're not done yet! After your prelease looks good:
 
-* [ ] Run `bin/rake release:prepare[<target_version>]` and create a PR to the
-  stable branch.
-* [ ] Get the PR reviewed, make sure CI is green, and merge it.
+* [ ] Update `version.rb` to a final version (i.e. 1.12.0)
 * [ ] In the [rubygems/bundler-site](https://github.com/rubygems/bundler-site) repo,
-  copy the previous version's docs to create a new version (e.g. `cp -r v2.1 v2.2`)
+  copy the previous version's docs to create a new version (e.g. `cp -r v1.11 v1.12`)
 * [ ] Update the new docs as needed, paying special attention to the "What's new"
   page for this version
 * [ ] Write a blog post announcing the new version, highlighting new features and
   notable bugfixes
-* [ ] Pull the updated stable branch, wait for CI to complete on it and get excited.
-* [ ] Run `bin/rake release` in the bundler repo, tweet, link to the blog post, etc.
+* [ ] Run `rake release` in the bundler repo, tweet, link to the blog post, etc.
 
 At this point, you're a release manager! Pour yourself several tasty drinks and
 think about taking a vacation in the tropics.
@@ -109,27 +112,39 @@ _anything_ wrong as the release manager.
 
 #### Branching
 
-Bundler releases are syncronized with rubygems releases at the moment. That
-means that releases for both share the same stable branch, and they should
-generally happen together.
-
 Minor releases of the next version start with a new release branch from the
-current state of master: `3.2`, and are immediately followed by a prerelease
-(might be a `.pre.1` version or a `.rc.1` version depending on the readiness of
-the stable branch) or even directly by the final stable release.
+current state of master: `1-12-stable`, and are immediately followed by a `.pre.1` release.
 
-The current conventional naming for stable branches is `x+1.y`, where `x.y` is
-the version of `bundler` that will be released. This is because `rubygems-x+1.y`
-will be released at the same time.
-
-For example, `rubygems-3.2.0` and `bundler-2.2.0` will be both released from the
-`3.2` stable branch.
-
-Once a stable branch has been cut from `master`, changes for that minor release
-series (bundler 2.2) will only be made _intentionally_, via patch releases.
+Once that `-stable` branch has been cut from `master`, changes for that minor
+release series (1.12) will only be made _intentionally_, via patch releases.
 That is to say, changes to `master` by default _won't_ make their way into any
-`2.2` version, and development on `master` will be targeting the next minor
+`1.12` version, and development on `master` will be targeting the next minor
 or major release.
+
+### Patch releases (bug fixes!)
+
+Releasing new bugfix versions is really straightforward. Increment the tiny version
+number in `lib/bundler/version.rb`, and in `CHANGELOG.md` add one bullet point
+per bug fixed. Then run `rake release` from the `-stable` branch,
+and pour yourself a tasty drink!
+
+PRs containing regression fixes for a patch release of the current minor version
+are merged to master. These commits need to be cherry-picked from master onto
+the minor branch (`1-12-stable`).
+
+There is a `rake release:prepare_patch` rake task that helps with creating a patch
+release. It takes a single argument, the _exact_ patch release being made (e.g.
+`1.12.3`), but if not given it will bump the tiny version number by one. This
+task checks out the appropriate stable branch (`1-12-stable`), grabs the
+`1.12.3` milestone from GitHub, ensures all PRs are closed, and then
+cherry-picks those changes (and only those changes) to a new branch based off
+the stable branch. Then bumps the version in the version file and commits that
+change on top of the cherry-picks.
+
+Now you have a release branch ready to be merged into the stable branch. You'll
+want to open a PR from this branch into the stable branch and provided CI is
+green, you can go ahead, merge the PR and run `rake release` from the updated
+stable branch.
 
 ## Beta testing
 

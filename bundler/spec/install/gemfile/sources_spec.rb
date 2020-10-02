@@ -15,7 +15,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
     end
 
-    context "with multiple toplevel sources" do
+    context "with multiple toplevel sources", :bundler => "< 3" do
       let(:repo3_rack_version) { "1.0.0" }
 
       before do
@@ -36,13 +36,13 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
 
       it "fails", :bundler => "3" do
-        bundle :instal, :raise_on_error => false
+        bundle :install
         expect(err).to include("Each source after the first must include a block")
-        expect(exitstatus).to eq(4)
+        expect(exitstatus).to eq(4) if exitstatus
       end
     end
 
-    context "when different versions of the same gem are in multiple sources" do
+    context "when different versions of the same gem are in multiple sources", :bundler => "< 3" do
       let(:repo3_rack_version) { "1.2" }
 
       before do
@@ -52,19 +52,19 @@ RSpec.describe "bundle install with gems on multiple sources" do
           gem "rack-obama"
           gem "rack", "1.0.0" # force it to install the working version in repo1
         G
+
+        bundle :install
       end
 
       it "warns about ambiguous gems, but installs anyway", :bundler => "2" do
-        bundle :install
         expect(err).to include("Warning: the gem 'rack' was found in multiple sources.")
         expect(err).to include("Installed from: #{file_uri_for(gem_repo1)}")
         expect(the_bundle).to include_gems("rack-obama 1.0.0", "rack 1.0.0", :source => "remote1")
       end
 
       it "fails", :bundler => "3" do
-        bundle :install, :raise_on_error => false
         expect(err).to include("Each source after the first must include a block")
-        expect(exitstatus).to eq(4)
+        expect(exitstatus).to eq(4) if exitstatus
       end
     end
   end
@@ -95,20 +95,19 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
 
       it "installs the gems without any warning" do
-        bundle :install
+        bundle! :install
         expect(out).not_to include("Warning")
         expect(the_bundle).to include_gems("rack-obama 1.0.0")
         expect(the_bundle).to include_gems("rack 1.0.0", :source => "remote1")
       end
 
       it "can cache and deploy" do
-        bundle :cache
+        bundle! :cache
 
         expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
         expect(bundled_app("vendor/cache/rack-obama-1.0.gem")).to exist
 
-        bundle "config --local deployment true"
-        bundle :install
+        bundle! :install, forgotten_command_line_options(:deployment => true)
 
         expect(the_bundle).to include_gems("rack-obama 1.0.0", "rack 1.0.0")
       end
@@ -190,11 +189,11 @@ RSpec.describe "bundle install with gems on multiple sources" do
 
           context "when disable_multisource is set" do
             before do
-              bundle "config set disable_multisource true"
+              bundle! "config set disable_multisource true"
             end
 
             it "installs from the same source without any warning" do
-              bundle :install
+              bundle! :install
 
               expect(out).not_to include("Warning: the gem 'rack' was found in multiple sources.")
               expect(err).not_to include("Warning: the gem 'rack' was found in multiple sources.")
@@ -202,7 +201,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
 
               # when there is already a lock file, and the gems are missing, so try again
               system_gems []
-              bundle :install
+              bundle! :install
 
               expect(out).not_to include("Warning: the gem 'rack' was found in multiple sources.")
               expect(err).not_to include("Warning: the gem 'rack' was found in multiple sources.")
@@ -237,7 +236,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
           end
         end
 
-        context "and in yet another source" do
+        context "and in yet another source", :bundler => "< 3" do
           before do
             gemfile <<-G
               source "#{file_uri_for(gem_repo1)}"
@@ -246,23 +245,23 @@ RSpec.describe "bundle install with gems on multiple sources" do
                 gem "depends_on_rack"
               end
             G
+
+            bundle :install
           end
 
           it "installs from the other source and warns about ambiguous gems", :bundler => "2" do
-            bundle :install
             expect(err).to include("Warning: the gem 'rack' was found in multiple sources.")
             expect(err).to include("Installed from: #{file_uri_for(gem_repo2)}")
             expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0")
           end
 
           it "fails", :bundler => "3" do
-            bundle :install, :raise_on_error => false
             expect(err).to include("Each source after the first must include a block")
-            expect(exitstatus).to eq(4)
+            expect(exitstatus).to eq(4) if exitstatus
           end
         end
 
-        context "and only the dependency is pinned" do
+        context "and only the dependency is pinned", :bundler => "< 3" do
           before do
             # need this to be broken to check for correct source ordering
             build_repo gem_repo2 do
@@ -296,9 +295,9 @@ RSpec.describe "bundle install with gems on multiple sources" do
           end
 
           it "fails", :bundler => "3" do
-            bundle :install, :raise_on_error => false
+            bundle :install
             expect(err).to include("Each source after the first must include a block")
-            expect(exitstatus).to eq(4)
+            expect(exitstatus).to eq(4) if exitstatus
           end
         end
       end
@@ -307,7 +306,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
     context "when a top-level gem has an indirect dependency" do
       context "when disable_multisource is set" do
         before do
-          bundle "config set disable_multisource true"
+          bundle! "config set disable_multisource true"
         end
 
         before do
@@ -356,7 +355,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
           end
 
           it "does not find the dependency" do
-            bundle :install, :raise_on_error => false
+            bundle :install
             expect(err).to include("Could not find gem 'rack', which is required by gem 'depends_on_rack', in any of the relevant sources")
           end
         end
@@ -396,14 +395,14 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
 
       it "does not install the gem" do
-        bundle :install, :raise_on_error => false
+        bundle :install
         expect(err).to include("Could not find gem 'not_in_repo1'")
       end
     end
 
     context "with an existing lockfile" do
       before do
-        system_gems "rack-0.9.1", "rack-1.0.0", :path => default_bundle_path
+        system_gems "rack-0.9.1", "rack-1.0.0", :path => :bundle_path
 
         lockfile <<-L
           GEM
@@ -444,9 +443,9 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
 
       it "does not unlock the non-path gem after install" do
-        bundle :install
+        bundle! :install
 
-        bundle %(exec ruby -e 'puts "OK"')
+        bundle! %(exec ruby -e 'puts "OK"')
 
         expect(out).to include("OK")
       end
@@ -486,8 +485,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
         gem 'bar', '~> 0.1', :source => '#{file_uri_for(gem_repo4)}'
       G
 
-      bundle "config --local path ../gems/system"
-      bundle :install
+      bundle! :install, forgotten_command_line_options(:path => "../gems/system")
 
       # And then we add some new versions...
       update_repo4 do
@@ -535,7 +533,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
 
       it "does not re-resolve" do
-        bundle :install, :verbose => true
+        bundle! :install, :verbose => true
         expect(out).to include("using resolution from the lockfile")
         expect(out).not_to include("re-resolving dependencies")
       end
@@ -544,7 +542,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
 
   context "when a gem is installed to system gems" do
     before do
-      install_gemfile <<-G
+      install_gemfile! <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G
@@ -583,14 +581,14 @@ RSpec.describe "bundle install with gems on multiple sources" do
         G
 
         # But we should still be able to find rack 2.0.1.1.forked and install it
-        bundle :install
+        bundle! :install
       end
     end
   end
 
   describe "source changed to one containing a higher version of a dependency" do
     before do
-      install_gemfile <<-G
+      install_gemfile! <<-G
         source "#{file_uri_for(gem_repo1)}"
 
         gem "rack"
@@ -629,7 +627,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
         build_gem "rack"
       end
 
-      install_gemfile <<-G, :raise_on_error => false
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo4)}"
         source "#{file_uri_for(gem_repo1)}" do
           gem "thin"

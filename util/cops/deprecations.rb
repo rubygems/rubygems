@@ -8,26 +8,44 @@ module RuboCop
       #
       # @example
       #
+      #   As of March, 2019
+      #
       #   # bad
-      #   rubygems_deprecate :safdfa, :none
+      #   deprecate :safdfa, nil, 2018, 12
+      #   deprecate :safdfa, nil, 2019, 03
       #
       #   # good
-      #   # the `deprecate` call is fully removed
+      #   deprecate :safdfa, nil, 2019, 04
       #
       class Deprecations < Cop
+
+        MSG = "Remove `deprecate` calls with dates in the past, along with " \
+          "the methods they deprecate, or expand the deprecation horizons to " \
+          "a future date"
+
         def on_send(node)
           _receiver, method_name, *args = *node
-          return unless method_name == :rubygems_deprecate || method_name == :rubygems_deprecate_command
+          return unless method_name == :deprecate
 
-          add_offense(node)
+          scheduled_year = args[2].children.last
+          scheduled_month = args[3].children.last
+
+          current_time = Time.now
+
+          current_year = current_time.year
+          current_month = current_time.month
+
+          if current_year >= scheduled_year || (current_year == scheduled_year && current_month >= scheduled_month)
+            add_offense(node)
+          end
         end
 
         private
 
         def message(node)
-          msg = "Remove `#{node.method_name}` calls for the next major release "
-          format(msg, method: node.method_name)
+          format(MSG, method: node.method_name)
         end
+
       end
     end
   end

@@ -17,36 +17,12 @@ module Bundler
     ].map(&:freeze).freeze
     BUNDLER_PREFIX = "BUNDLER_ORIG_".freeze
 
-    def self.from_env
-      new(env_to_hash(ENV), BUNDLER_KEYS)
-    end
-
-    def self.env_to_hash(env)
-      to_hash = env.to_hash
-      return to_hash unless Gem.win_platform?
-
-      to_hash.each_with_object({}) {|(k,v), a| a[k.upcase] = v }
-    end
-
-    # @param env [Hash]
+    # @param env [ENV]
     # @param keys [Array<String>]
     def initialize(env, keys)
-      @original = env
+      @original = env.to_hash
       @keys = keys
       @prefix = BUNDLER_PREFIX
-    end
-
-    # Replaces `ENV` with the bundler environment variables backed up
-    def replace_with_backup
-      ENV.replace(backup) unless Gem.win_platform?
-
-      # Fallback logic for Windows below to workaround
-      # https://bugs.ruby-lang.org/issues/16798. Can be dropped once all
-      # supported rubies include the fix for that.
-
-      ENV.clear
-
-      backup.each {|k, v| ENV[k] = v }
     end
 
     # @return [Hash]

@@ -1,8 +1,10 @@
 # frozen_string_literal: true
+require 'English'
 require 'rubygems/command'
 require 'rubygems/version_option'
 
 class Gem::Commands::ContentsCommand < Gem::Command
+
   include Gem::VersionOption
 
   def initialize
@@ -104,8 +106,7 @@ prefix or only the files that are requireable.
     spec.files.map do |file|
       case file
       when /\A#{spec.bindir}\//
-        # $' is POSTMATCH
-        [RbConfig::CONFIG['bindir'], $']
+        [RbConfig::CONFIG['bindir'], $POSTMATCH]
       when /\.so\z/
         [RbConfig::CONFIG['archdir'], file]
       else
@@ -174,7 +175,7 @@ prefix or only the files that are requireable.
 
     if Gem.configuration.verbose
       say "\nDirectories searched:"
-      @spec_dirs.sort.each {|dir| say dir }
+      @spec_dirs.sort.each { |dir| say dir }
     end
 
     return nil
@@ -185,4 +186,5 @@ prefix or only the files that are requireable.
       [i, File.join(i, "specifications")]
     end.flatten
   end
+
 end

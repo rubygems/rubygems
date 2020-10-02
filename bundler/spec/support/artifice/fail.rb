@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 require "net/http"
+begin
+  require "net/https"
+rescue LoadError
+  nil # net/https or openssl
+end
 
 # We can't use artifice here because it uses rack
 

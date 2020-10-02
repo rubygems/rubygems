@@ -5,28 +5,23 @@ on:
 
   push:
     branches:
-      - master
-      - 3.2
+      - staging
+      - trying
 
 jobs:
   windows_bundler:
-    runs-on: windows-2019
-
-    env:
-      RGV: ..
+    runs-on: windows-latest
 
     strategy:
-      fail-fast: false
       matrix:
-        ruby: [ '2.4', '2.5', '2.6', '2.7' ]
+        ruby: [ '2.4', '2.5', '2.6' ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler: none
       - name: Install dependencies
         run: |
           bin/rake spec:parallel_deps
@@ -34,6 +29,6 @@ jobs:
         shell: bash
       - name: Run specs
         run: |
-          bin/parallel_rspec
+          bin/parallel_rspec spec
         working-directory: ./bundler
         shell: bash

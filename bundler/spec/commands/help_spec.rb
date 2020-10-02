@@ -1,25 +1,25 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle help" do
-  it "uses man when available" do
+  it "uses mann when available" do
     with_fake_man do
       bundle "help gemfile"
     end
     expect(out).to eq(%(["#{root}/man/gemfile.5"]))
   end
 
-  it "prefixes bundle commands with bundle- when finding the man files" do
+  it "prefixes bundle commands with bundle- when finding the groff files" do
     with_fake_man do
       bundle "help install"
     end
     expect(out).to eq(%(["#{root}/man/bundle-install.1"]))
   end
 
-  it "simply outputs the human readable file when there is no man on the path" do
+  it "simply outputs the txt file when there is no man on the path" do
     with_path_as("") do
       bundle "help install"
     end
-    expect(out).to match(/bundle-install/)
+    expect(out).to match(/BUNDLE-INSTALL/)
   end
 
   it "still outputs the old help for commands that do not have man pages yet" do
@@ -28,7 +28,7 @@ RSpec.describe "bundle help" do
   end
 
   it "looks for a binary and executes it with --help option if it's named bundler-<task>" do
-    skip "Could not find command testtasks, probably because not a windows friendly executable" if Gem.win_platform?
+    skip "obscure error" if Gem.win_platform?
 
     File.open(tmp("bundler-testtasks"), "w", 0o755) do |f|
       f.puts "#!/usr/bin/env ruby\nputs ARGV.join(' ')\n"
@@ -38,6 +38,7 @@ RSpec.describe "bundle help" do
       bundle "help testtasks"
     end
 
+    expect(exitstatus).to be_zero if exitstatus
     expect(out).to eq("--help")
   end
 
@@ -71,7 +72,7 @@ RSpec.describe "bundle help" do
 
   it "has helpful output when using --help flag for a non-existent command" do
     with_fake_man do
-      bundle "instill -h", :raise_on_error => false
+      bundle "instill -h"
     end
     expect(err).to include('Could not find command "instill".')
   end

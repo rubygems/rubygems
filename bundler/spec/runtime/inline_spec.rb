@@ -57,8 +57,9 @@ RSpec.describe "bundler/inline#gemfile" do
     RUBY
 
     expect(out).to eq("two")
+    expect(exitstatus).to be_zero if exitstatus
 
-    script <<-RUBY, :raise_on_error => false
+    script <<-RUBY
       gemfile do
         path "#{lib_path}" do
           gem "eleven"
@@ -79,6 +80,7 @@ RSpec.describe "bundler/inline#gemfile" do
     RUBY
 
     expect(out).to include("Rack's post install message")
+    expect(exitstatus).to be_zero if exitstatus
 
     script <<-RUBY, :artifice => "endpoint"
       gemfile(true) do
@@ -91,6 +93,7 @@ RSpec.describe "bundler/inline#gemfile" do
     err_lines = err.split("\n")
     err_lines.reject!{|line| line =~ /\.rb:\d+: warning: / } unless RUBY_VERSION < "2.7"
     expect(err_lines).to be_empty
+    expect(exitstatus).to be_zero if exitstatus
   end
 
   it "lets me use my own ui object" do
@@ -110,6 +113,7 @@ RSpec.describe "bundler/inline#gemfile" do
     RUBY
 
     expect(out).to eq("CONFIRMED!\nCONFIRMED!")
+    expect(exitstatus).to be_zero if exitstatus
   end
 
   it "has an option for quiet installation" do
@@ -126,7 +130,7 @@ RSpec.describe "bundler/inline#gemfile" do
   end
 
   it "raises an exception if passed unknown arguments" do
-    script <<-RUBY, :raise_on_error => false
+    script <<-RUBY
       gemfile(true, :arglebargle => true) do
         path "#{lib_path}"
         gem "two"
@@ -151,6 +155,7 @@ RSpec.describe "bundler/inline#gemfile" do
     RUBY
 
     expect(out).to match("OKAY")
+    expect(exitstatus).to be_zero if exitstatus
   end
 
   it "installs quietly if necessary when the install option is not set" do
@@ -165,6 +170,7 @@ RSpec.describe "bundler/inline#gemfile" do
 
     expect(out).to eq("1.0.0")
     expect(err).to be_empty
+    expect(exitstatus).to be_zero if exitstatus
   end
 
   it "installs quietly from git if necessary when the install option is not set" do
@@ -182,6 +188,7 @@ RSpec.describe "bundler/inline#gemfile" do
 
     expect(out).to eq("1.0.0\n2.0.0")
     expect(err).to be_empty
+    expect(exitstatus).to be_zero if exitstatus
   end
 
   it "allows calling gemfile twice" do
@@ -201,6 +208,7 @@ RSpec.describe "bundler/inline#gemfile" do
 
     expect(out).to eq("two\nfour")
     expect(err).to be_empty
+    expect(exitstatus).to be_zero if exitstatus
   end
 
   it "installs inline gems when a Gemfile.lock is present" do
@@ -235,6 +243,7 @@ RSpec.describe "bundler/inline#gemfile" do
     RUBY
 
     expect(err).to be_empty
+    expect(exitstatus).to be_zero if exitstatus
   end
 
   it "installs inline gems when frozen is set" do
@@ -248,6 +257,7 @@ RSpec.describe "bundler/inline#gemfile" do
     RUBY
 
     expect(last_command.stderr).to be_empty
+    expect(exitstatus).to be_zero if exitstatus
   end
 
   it "installs inline gems when BUNDLE_GEMFILE is set to an empty string" do
@@ -263,6 +273,7 @@ RSpec.describe "bundler/inline#gemfile" do
     RUBY
 
     expect(err).to be_empty
+    expect(exitstatus).to be_zero if exitstatus
   end
 
   it "installs inline gems when BUNDLE_BIN is set" do
@@ -338,35 +349,5 @@ RSpec.describe "bundler/inline#gemfile" do
 
     expect(last_command).to be_success
     expect(out).to include("BUNDLE_GEMFILE is empty")
-  end
-
-  it "does not error out if library requires optional dependencies" do
-    Dir.mkdir tmp("path_without_gemfile")
-
-    foo_code = <<~RUBY
-      begin
-        gem "bar"
-      rescue LoadError
-      end
-
-      puts "WIN"
-    RUBY
-
-    build_lib "foo", "1.0.0" do |s|
-      s.write "lib/foo.rb", foo_code
-    end
-
-    script <<-RUBY, :dir => tmp("path_without_gemfile")
-      gemfile do
-        path "#{lib_path}" do
-          gem "foo", require: false
-        end
-      end
-
-      require "foo"
-    RUBY
-
-    expect(out).to eq("WIN")
-    expect(err).to be_empty
   end
 end

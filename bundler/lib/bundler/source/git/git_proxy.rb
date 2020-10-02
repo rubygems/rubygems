@@ -18,7 +18,7 @@ module Bundler
         def initialize(command)
           msg = String.new
           msg << "Bundler is trying to run a `git #{command}` at runtime. You probably need to run `bundle install`. However, "
-          msg << "this error message could probably be more useful. Please submit a ticket at https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md "
+          msg << "this error message could probably be more useful. Please submit a ticket at https://github.com/rubygems/bundler/issues "
           msg << "with steps to reproduce as well as the following\n\nCALLER: #{caller.join("\n")}"
           super msg
         end
@@ -27,21 +27,21 @@ module Bundler
       class GitCommandError < GitError
         attr_reader :command
 
-        def initialize(command, path, destination_path, extra_info = nil)
+        def initialize(command, path = nil, extra_info = nil)
           @command = command
 
           msg = String.new
-          msg << "Git error: command `git #{command}` in directory #{destination_path} has failed."
+          msg << "Git error: command `git #{command}` in directory #{SharedHelpers.pwd} has failed."
           msg << "\n#{extra_info}" if extra_info
-          msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if path.exist?
+          msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if path && path.exist?
           super msg
         end
       end
 
       class MissingGitRevisionError < GitCommandError
-        def initialize(command, path, destination_path, ref, repo)
+        def initialize(command, path, ref, repo)
           msg = "Revision #{ref} does not exist in the repository #{repo}. Maybe you misspelled it?"
-          super command, path, destination_path, msg
+          super command, path, msg
         end
       end
 
@@ -62,18 +62,26 @@ module Bundler
         end
 
         def revision
-          @revision ||= find_local_revision
+          return @revision if @revision
+
+          begin
+            @revision ||= find_local_revision
+          rescue GitCommandError => e
+            raise MissingGitRevisionError.new(e.command, path, ref, URICredentialsFilter.credential_filtered_uri(uri))
+          end
+
+          @revision
         end
 
         def branch
-          @branch ||= allowed_with_path do
-            git("rev-parse --abbrev-ref HEAD", :dir => path).strip
+          @branch ||= allowed_in_path do
+            git("rev-parse --abbrev-ref HEAD").strip
           end
         end
 
         def contains?(commit)
-          allowed_with_path do
-            result, status = git_null("branch --contains #{commit}", :dir => path)
+          allowed_in_path do
+            result, status = git_null("branch --contains #{commit}")
             status.success? && result =~ /^\* (.*)$/
           end
         end
@@ -100,8 +108,8 @@ module Bundler
             return unless extra_ref
           end
 
-          with_path do
-            git_retry %(fetch --force --quiet --tags #{uri_escaped_with_configured_credentials} "refs/heads/*:refs/heads/*" #{extra_ref}), :dir => path
+          in_path do
+            git_retry %(fetch --force --quiet --tags #{uri_escaped_with_configured_credentials} "refs/heads/*:refs/heads/*" #{extra_ref})
           end
         end
 
@@ -125,56 +133,58 @@ module Bundler
             end
           end
           # method 2
-          git_retry %(fetch --force --quiet --tags "#{path}"), :dir => destination
+          SharedHelpers.chdir(destination) do
+            git_retry %(fetch --force --quiet --tags "#{path}")
 
-          begin
-            git "reset --hard #{@revision}", :dir => destination
-          rescue GitCommandError => e
-            raise MissingGitRevisionError.new(e.command, path, destination, @revision, URICredentialsFilter.credential_filtered_uri(uri))
-          end
+            begin
+              git "reset --hard #{@revision}"
+            rescue GitCommandError => e
+              raise MissingGitRevisionError.new(e.command, path, @revision, URICredentialsFilter.credential_filtered_uri(uri))
+            end
 
-          if submodules
-            git_retry "submodule update --init --recursive", :dir => destination
-          elsif Gem::Version.create(version) >= Gem::Version.create("2.9.0")
-            inner_command = "git -C $toplevel submodule deinit --force $sm_path"
-            inner_command = inner_command.gsub("$") { '\$' } unless Bundler::WINDOWS
-            git_retry "submodule foreach --quiet \"#{inner_command}\"", :dir => destination
+            if submodules
+              git_retry "submodule update --init --recursive"
+            elsif Gem::Version.create(version) >= Gem::Version.create("2.9.0")
+              git_retry "submodule deinit --all --force"
+            end
           end
         end
 
-        private
+      private
 
-        def git_null(command, dir: SharedHelpers.pwd)
-          check_allowed(command)
+        def git_null(command)
+          command_with_no_credentials = URICredentialsFilter.credential_filtered_string(command, uri)
+          raise GitNotAllowedError.new(command_with_no_credentials) unless allow?
 
           out, status = SharedHelpers.with_clean_git_env do
-            capture_and_ignore_stderr("git #{command}", :chdir => dir.to_s)
+            capture_and_ignore_stderr("git #{command}")
           end
 
           [URICredentialsFilter.credential_filtered_string(out, uri), status]
         end
 
-        def git_retry(command, dir: SharedHelpers.pwd)
+        def git_retry(command)
           Bundler::Retry.new("`git #{URICredentialsFilter.credential_filtered_string(command, uri)}`", GitNotAllowedError).attempts do
-            git(command, :dir => dir)
+            git(command)
           end
         end
 
-        def git(command, dir: SharedHelpers.pwd)
-          command_with_no_credentials = check_allowed(command)
+        def git(command, check_errors = true, error_msg = nil)
+          command_with_no_credentials = URICredentialsFilter.credential_filtered_string(command, uri)
+          raise GitNotAllowedError.new(command_with_no_credentials) unless allow?
 
           out, status = SharedHelpers.with_clean_git_env do
-            capture_and_filter_stderr(uri, "git #{command}", :chdir => dir.to_s)
+            capture_and_filter_stderr(uri, "git #{command}")
           end
 
-          raise GitCommandError.new(command_with_no_credentials, path, dir) unless status.success?
-
-          URICredentialsFilter.credential_filtered_string(out, uri)
+          stdout_with_no_credentials = URICredentialsFilter.credential_filtered_string(out, uri)
+          raise GitCommandError.new(command_with_no_credentials, path, error_msg) if check_errors && !status.success?
+          stdout_with_no_credentials
         end
 
         def has_revision_cached?
           return unless @revision
-          with_path { git("cat-file -e #{@revision}", :dir => path) }
+          in_path { git("cat-file -e #{@revision}") }
           true
         rescue GitError
           false
@@ -185,11 +195,9 @@ module Bundler
         end
 
         def find_local_revision
-          allowed_with_path do
-            git("rev-parse --verify #{Shellwords.shellescape(ref)}", :dir => path).strip
+          allowed_in_path do
+            git("rev-parse --verify #{Shellwords.shellescape(ref)}", true).strip
           end
-        rescue GitCommandError => e
-          raise MissingGitRevisionError.new(e.command, path, path, ref, URICredentialsFilter.credential_filtered_uri(uri))
         end
 
         # Escape the URI for git commands
@@ -222,32 +230,27 @@ module Bundler
           @git ? @git.allow_git_ops? : true
         end
 
-        def with_path(&blk)
+        def in_path(&blk)
           checkout unless path.exist?
-          blk.call
+          _ = URICredentialsFilter # load it before we chdir
+          SharedHelpers.chdir(path, &blk)
         end
 
-        def allowed_with_path
-          return with_path { yield } if allow?
+        def allowed_in_path
+          return in_path { yield } if allow?
           raise GitError, "The git source #{uri} is not yet checked out. Please run `bundle install` before trying to start your application"
         end
 
-        def check_allowed(command)
-          command_with_no_credentials = URICredentialsFilter.credential_filtered_string(command, uri)
-          raise GitNotAllowedError.new(command_with_no_credentials) unless allow?
-          command_with_no_credentials
-        end
-
-        def capture_and_filter_stderr(uri, cmd, chdir: SharedHelpers.pwd)
+        def capture_and_filter_stderr(uri, cmd)
           require "open3"
-          return_value, captured_err, status = Open3.capture3(cmd, :chdir => chdir)
+          return_value, captured_err, status = Open3.capture3(cmd)
           Bundler.ui.warn URICredentialsFilter.credential_filtered_string(captured_err, uri) if uri && !captured_err.empty?
           [return_value, status]
         end
 
-        def capture_and_ignore_stderr(cmd, chdir: SharedHelpers.pwd)
+        def capture_and_ignore_stderr(cmd)
           require "open3"
-          return_value, _, status = Open3.capture3(cmd, :chdir => chdir)
+          return_value, _, status = Open3.capture3(cmd)
           [return_value, status]
         end
       end

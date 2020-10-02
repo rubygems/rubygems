@@ -28,13 +28,9 @@ module Bundler
 
     # @!group Stub Delegates
 
-    # This is defined directly to avoid having to loading the full spec
+    # This is defined directly to avoid having to load every installed spec
     def missing_extensions?
-      return false if default_gem?
-      return false if extensions.empty?
-      return false if File.exist? gem_build_complete_path
-
-      true
+      stub.missing_extensions?
     end
 
     def activated
@@ -45,16 +41,8 @@ module Bundler
       stub.instance_variable_set(:@activated, activated)
     end
 
-    def extensions
-      stub.extensions
-    end
-
-    def gem_build_complete_path
-      File.join(extension_dir, "gem.build_complete")
-    end
-
-    def default_gem?
-      stub.default_gem?
+    def default_gem
+      stub.default_gem
     end
 
     def full_gem_path
@@ -83,7 +71,7 @@ module Bundler
       stub.raw_require_paths
     end
 
-    private
+  private
 
     def _remote_specification
       @_remote_specification ||= begin

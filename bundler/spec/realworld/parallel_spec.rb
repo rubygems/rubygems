@@ -53,7 +53,7 @@ RSpec.describe "parallel", :realworld => true, :sometimes => true do
 
     bundle :install, :standalone => true, :jobs => 4
 
-    ruby <<-RUBY
+    ruby <<-RUBY, :no_lib => true
       $:.unshift File.expand_path("bundle")
       require "bundler/setup"
 

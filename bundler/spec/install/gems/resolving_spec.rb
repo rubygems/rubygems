@@ -207,7 +207,7 @@ RSpec.describe "bundle install with install-time dependencies" do
         it "raises an error during resolution" do
           skip "ruby requirement includes platform and it shouldn't" if Gem.win_platform?
 
-          install_gemfile <<-G, :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }, :raise_on_error => false
+          install_gemfile <<-G, :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
             source "http://localgemserver.test/"
             ruby #{ruby_requirement}
             gem 'require_ruby'
@@ -233,7 +233,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
       describe "with a < requirement" do
         let(:ruby_requirement) { %("< 5000") }
-        let(:error_message_requirement) { "< 5000" }
+        let(:error_message_requirement) { Gem::Requirement.new(["< 5000", "= #{Bundler::RubyVersion.system.to_gem_version_with_patchlevel}"]).to_s }
 
         it_behaves_like "ruby version conflicts"
       end
@@ -241,7 +241,7 @@ RSpec.describe "bundle install with install-time dependencies" do
       describe "with a compound requirement" do
         let(:reqs) { ["> 0.1", "< 5000"] }
         let(:ruby_requirement) { reqs.map(&:dump).join(", ") }
-        let(:error_message_requirement) { Gem::Requirement.new(reqs).to_s }
+        let(:error_message_requirement) { Gem::Requirement.new(reqs + ["= #{Bundler::RubyVersion.system.to_gem_version_with_patchlevel}"]).to_s }
 
         it_behaves_like "ruby version conflicts"
       end
@@ -256,7 +256,7 @@ RSpec.describe "bundle install with install-time dependencies" do
         end
       end
 
-      install_gemfile <<-G, :raise_on_error => false
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem 'require_rubygems'
       G

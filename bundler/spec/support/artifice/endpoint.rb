@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative "../path"
+require Spec::Path.lib_dir.join("bundler/deprecate")
+include Spec::Path
 
 $LOAD_PATH.unshift(*Dir[Spec::Path.base_system_gems.join("gems/{artifice,mustermann,rack,tilt,sinatra,ruby2_keywords}-*/lib")].map(&:to_s))
 
@@ -39,27 +41,28 @@ class Endpoint < Sinatra::Base
   end
 
   helpers do
-    include Spec::Path
-
     def dependencies_for(gem_names, gem_repo = GEM_REPO)
       return [] if gem_names.nil? || gem_names.empty?
 
-      all_specs = %w[specs.4.8 prerelease_specs.4.8].map do |filename|
-        Marshal.load(File.open(gem_repo.join(filename)).read)
-      end.inject(:+)
+      require "#{Spec::Path.lib_dir}/bundler"
+      Bundler::Deprecate.skip_during do
+        all_specs = %w[specs.4.8 prerelease_specs.4.8].map do |filename|
+          Marshal.load(File.open(gem_repo.join(filename)).read)
+        end.inject(:+)
 
-      all_specs.map do |name, version, platform|
-        spec = load_spec(name, version, platform, gem_repo)
-        next unless gem_names.include?(spec.name)
-        {
-          :name         => spec.name,
-          :number       => spec.version.version,
-          :platform     => spec.platform.to_s,
-          :dependencies => spec.dependencies.select {|dep| dep.type == :runtime }.map do |dep|
-            [dep.name, dep.requirement.requirements.map {|a| a.join(" ") }.join(", ")]
-          end,
-        }
-      end.compact
+        all_specs.map do |name, version, platform|
+          spec = load_spec(name, version, platform, gem_repo)
+          next unless gem_names.include?(spec.name)
+          {
+            :name         => spec.name,
+            :number       => spec.version.version,
+            :platform     => spec.platform.to_s,
+            :dependencies => spec.dependencies.select {|dep| dep.type == :runtime }.map do |dep|
+              [dep.name, dep.requirement.requirements.map {|a| a.join(" ") }.join(", ")]
+            end,
+          }
+        end.compact
+      end
     end
 
     def load_spec(name, version, platform, gem_repo)
@@ -74,11 +77,11 @@ class Endpoint < Sinatra::Base
   end
 
   get "/fetch/actual/gem/:id" do
-    File.binread("#{GEM_REPO}/quick/Marshal.4.8/#{params[:id]}")
+    File.read("#{GEM_REPO}/quick/Marshal.4.8/#{params[:id]}")
   end
 
   get "/gems/:id" do
-    File.binread("#{GEM_REPO}/gems/#{params[:id]}")
+    File.read("#{GEM_REPO}/gems/#{params[:id]}")
   end
 
   get "/api/v1/dependencies" do
@@ -86,11 +89,11 @@ class Endpoint < Sinatra::Base
   end
 
   get "/specs.4.8.gz" do
-    File.binread("#{GEM_REPO}/specs.4.8.gz")
+    File.read("#{GEM_REPO}/specs.4.8.gz")
   end
 
   get "/prerelease_specs.4.8.gz" do
-    File.binread("#{GEM_REPO}/prerelease_specs.4.8.gz")
+    File.read("#{GEM_REPO}/prerelease_specs.4.8.gz")
   end
 end
 

@@ -2,6 +2,7 @@
 require 'rubygems/command'
 
 class Gem::Commands::HelpCommand < Gem::Command
+
   # :stopdoc:
   EXAMPLES = <<-EOF.freeze
 Some examples of 'gem' usage.
@@ -323,7 +324,7 @@ platform.
 
     margin_width = 4
 
-    desc_width = @command_manager.command_names.map {|n| n.size }.max + 4
+    desc_width = @command_manager.command_names.map { |n| n.size }.max + 4
 
     summary_width = 80 - margin_width - desc_width
     wrap_indent = ' ' * (margin_width + desc_width)
@@ -369,4 +370,5 @@ platform.
       alert_warning "Unknown command #{command_name}. Try: gem help commands"
     end
   end
+
 end

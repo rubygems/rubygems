@@ -12,6 +12,8 @@ module Bundler
 
       warn_if_root
 
+      normalize_groups
+
       Bundler::SharedHelpers.set_env "RB_USER_INSTALL", "1" if Bundler::FREEBSD
 
       # Disable color in deployment mode
@@ -53,7 +55,7 @@ module Bundler
 
       if options["binstubs"]
         Bundler::SharedHelpers.major_deprecation 2,
-          "The --binstubs option will be removed in favor of `bundle binstubs --all`"
+          "The --binstubs option will be removed in favor of `bundle binstubs`"
       end
 
       Plugin.gemfile_install(Bundler.default_gemfile) if Bundler.feature_flag.plugins?
@@ -82,8 +84,6 @@ module Bundler
         require_relative "clean"
         Bundler::CLI::Clean.new(options).run
       end
-
-      Bundler::CLI::Common.output_fund_metadata_summary
     rescue GemNotFound, VersionConflict => e
       if options[:local] && Bundler.app_cache.exist?
         Bundler.ui.warn "Some gems seem to be missing from your #{Bundler.settings.app_cache_path} directory."
@@ -102,7 +102,7 @@ module Bundler
       raise e
     end
 
-    private
+  private
 
     def warn_if_root
       return if Bundler.settings[:silence_root_warning] || Bundler::WINDOWS || !Process.uid.zero?
@@ -152,18 +152,19 @@ module Bundler
 
       check_for_group_conflicts_in_cli_options
 
+      Bundler.settings.set_command_option :with, nil if options[:with] == []
+      Bundler.settings.set_command_option :without, nil if options[:without] == []
+
       with = options.fetch(:with, [])
       with |= Bundler.settings[:with].map(&:to_s)
       with -= options[:without] if options[:without]
-      with = nil if options[:with] == []
 
       without = options.fetch(:without, [])
       without |= Bundler.settings[:without].map(&:to_s)
       without -= options[:with] if options[:with]
-      without = nil if options[:without] == []
 
-      Bundler.settings.set_command_option :without, without
-      Bundler.settings.set_command_option :with,    with
+      options[:with]    = with
+      options[:without] = without
     end
 
     def normalize_settings
@@ -190,7 +191,13 @@ module Bundler
 
       Bundler.settings.set_command_option_if_given :clean, options["clean"]
 
-      normalize_groups if options[:without] || options[:with]
+      unless Bundler.settings[:without] == options[:without] && Bundler.settings[:with] == options[:with]
+        # need to nil them out first to get around validation for backwards compatibility
+        Bundler.settings.set_command_option :without, nil
+        Bundler.settings.set_command_option :with,    nil
+        Bundler.settings.set_command_option :without, options[:without] - options[:with]
+        Bundler.settings.set_command_option :with,    options[:with]
+      end
 
       options[:force] = options[:redownload]
     end

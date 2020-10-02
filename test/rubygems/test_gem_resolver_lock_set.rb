@@ -2,6 +2,7 @@
 require 'rubygems/test_case'
 
 class TestGemResolverLockSet < Gem::TestCase
+
   def setup
     super
 
@@ -15,7 +16,7 @@ class TestGemResolverLockSet < Gem::TestCase
     specs = @set.add 'a', '2', Gem::Platform::RUBY
     spec = specs.first
 
-    assert_equal %w[a-2], @set.specs.map {|t| t.full_name }
+    assert_equal %w[a-2], @set.specs.map { |t| t.full_name }
 
     assert_kind_of Gem::Resolver::LockSpecification, spec
 
@@ -33,11 +34,11 @@ class TestGemResolverLockSet < Gem::TestCase
 
     found = @set.find_all dep 'a'
 
-    assert_equal %w[a-2], found.map {|s| s.full_name }
+    assert_equal %w[a-2], found.map { |s| s.full_name }
 
     found = @set.find_all dep 'a', '>= 0.a'
 
-    assert_equal %w[a-1.a a-2], found.map {|s| s.full_name }
+    assert_equal %w[a-1.a a-2], found.map { |s| s.full_name }
   end
 
   def test_load_spec
@@ -58,4 +59,5 @@ class TestGemResolverLockSet < Gem::TestCase
   def test_prefetch
     assert_respond_to @set, :prefetch
   end
+
 end

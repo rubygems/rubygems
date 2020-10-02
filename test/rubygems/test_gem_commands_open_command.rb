@@ -3,6 +3,7 @@ require 'rubygems/test_case'
 require 'rubygems/commands/open_command'
 
 class TestGemCommandsOpenCommand < Gem::TestCase
+
   def setup
     super
 
@@ -25,7 +26,7 @@ class TestGemCommandsOpenCommand < Gem::TestCase
 
     gem 'foo', '1.0.0'
     spec = gem 'foo', '1.0.1'
-    mock = Minitest::Mock.new
+    mock = MiniTest::Mock.new
     mock.expect(:call, true, [spec.full_gem_path])
 
     Dir.stub(:chdir, mock) do
@@ -50,7 +51,7 @@ class TestGemCommandsOpenCommand < Gem::TestCase
       end
     end
 
-    assert_match %r{Unable to find gem 'foo'}, @ui.output
+    assert_match %r|Unable to find gem 'foo'|, @ui.output
     assert_equal "", @ui.error
   end
 
@@ -63,7 +64,7 @@ class TestGemCommandsOpenCommand < Gem::TestCase
       end
     end
 
-    assert_match %r{Unable to find gem 'foo'}, @ui.output
+    assert_match %r|Unable to find gem 'foo'|, @ui.output
     assert_equal "", @ui.error
   end
 
@@ -92,7 +93,8 @@ class TestGemCommandsOpenCommand < Gem::TestCase
       end
     end
 
-    assert_match %r{'foo' is a default gem and can't be opened\.} , @ui.output
+    assert_match %r|'foo' is a default gem and can't be opened\.| , @ui.output
     assert_equal "", @ui.error
   end
+
 end

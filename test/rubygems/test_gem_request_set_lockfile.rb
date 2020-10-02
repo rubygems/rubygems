@@ -4,6 +4,7 @@ require 'rubygems/request_set'
 require 'rubygems/request_set/lockfile'
 
 class TestGemRequestSetLockfile < Gem::TestCase
+
   def setup
     super
 
@@ -51,7 +52,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
     expected = [
       'DEPENDENCIES',
       '  a',
-      nil,
+      nil
     ]
 
     assert_equal expected, out
@@ -78,7 +79,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
     expected = [
       'DEPENDENCIES',
       '  a (~> 2.0)',
-      nil,
+      nil
     ]
 
     assert_equal expected, out
@@ -111,7 +112,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
       '    a (2)',
       '      b',
       '    b (2)',
-      nil,
+      nil
     ]
 
     assert_equal expected, out
@@ -139,7 +140,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
       'PLATFORMS',
       '  ruby',
       '  x86-darwin-8',
-      nil,
+      nil
     ]
 
     assert_equal expected, out
@@ -465,4 +466,5 @@ DEPENDENCIES
 
     assert_equal 'hello', File.read(gem_deps_lock_file)
   end
+
 end

@@ -9,7 +9,7 @@ look like. All these deprecations are printed by default in the Bundler 2.1 rele
 If you don't want to deal with deprecations right now and want to toggle them
 off, you can do it through configuration. Set the `BUNDLE_SILENCE_DEPRECATIONS`
 environment variable to "true", or configure it through `bundle config` either
-globally through `bundle config set --global silence_deprecations true` command, or
+globally through `bundle config set silence_deprecations true` command, or
 locally through `bundle config set --local silence_deprecations true`. From now
 on in this document we will assume that all three of these configuration options
 are available, but will only mention `bundle config set <option> <value>`.
@@ -33,7 +33,7 @@ in the upcoming 3 version.
 
 * Flags passed to `bundle install` that relied on being remembered across invocations have been deprecated.
 
-  In particular, the `--clean`, `--deployment`, `--frozen`,
+  In particular, the `--clean`, `--deployment`, `--frozen`, `--no-cache`,
   `--no-prune`, `--path`, `--shebang`, `--system`, `--without`, and `--with`
   options to `bundle install`.
 
@@ -51,7 +51,7 @@ in the upcoming 3 version.
   development and test gems.  This magic will disappear from bundler 3, and
   you will explicitly need to configure it, either through environment
   variables, application configuration, or machine configuration. For example,
-  with `bundle config set --local without development test`.
+  with `bundle config set without development test`.
 
   The removal of this kind of flag also applies to analogous commands, for
   example, to `bundle check --path`.
@@ -72,7 +72,7 @@ in the upcoming 3 version.
   reference to develop their own plugins. The plugin will contain the same code
   as the old core command, the only difference being that the command is now
   implemented as `bundle graph` which is much easier to understand. However, the
-  details of the plugin are under discussion. See [#3333](https://github.com/rubygems/rubygems/issues/3333).
+  details of the plugin are under discussion. See [#7041](https://github.com/rubygems/bundler/issues/7041).
 
 * The `bundle console` will be removed and replaced with `bin/console`.
 

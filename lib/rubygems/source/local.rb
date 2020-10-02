@@ -4,6 +4,7 @@
 # dependencies.
 
 class Gem::Source::Local < Gem::Source
+
   def initialize # :nodoc:
     @specs   = nil
     @api_uri = nil
@@ -60,7 +61,7 @@ class Gem::Source::Local < Gem::Source
           when :latest
             tup = pkg.spec.name_tuple
 
-            cur = names.find {|x| x.name == tup.name }
+            cur = names.find { |x| x.name == tup.name }
             if !cur
               names << tup
             elsif cur.version < tup.version
@@ -97,7 +98,7 @@ class Gem::Source::Local < Gem::Source
       end
     end
 
-    found.max_by {|s| s.version }
+    found.max_by { |s| s.version }
   end
 
   def fetch_spec(name) # :nodoc:
@@ -128,4 +129,5 @@ class Gem::Source::Local < Gem::Source
       end
     end
   end
+
 end

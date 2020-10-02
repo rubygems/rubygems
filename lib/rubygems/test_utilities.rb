@@ -29,6 +29,7 @@ require 'rubygems/remote_fetcher'
 # See RubyGems' tests for more examples of FakeFetcher.
 
 class Gem::FakeFetcher
+
   attr_reader :data
   attr_reader :last_request
   attr_accessor :paths
@@ -39,7 +40,7 @@ class Gem::FakeFetcher
   end
 
   def find_data(path, nargs = 3)
-    return Gem.read_binary path.path if URI === path and 'file' == path.scheme
+    return File.read path.path if URI === path and 'file' == path.scheme
 
     if URI === path and "URI::#{path.scheme.upcase}" != path.class.name
       raise ArgumentError,
@@ -48,7 +49,7 @@ class Gem::FakeFetcher
 
     path = path.to_s
     @paths << path
-    raise ArgumentError, 'need full URI' unless path.start_with?("https://", "http://")
+    raise ArgumentError, 'need full URI' unless path =~ %r'^https?://'
 
     unless @data.key? path
       raise Gem::RemoteFetcher::FetchError.new("no data for #{path}", path)
@@ -66,7 +67,7 @@ class Gem::FakeFetcher
     if data.respond_to?(:call)
       data.call
     else
-      if path.to_s.end_with?(".gz") and not data.nil? and not data.empty?
+      if path.to_s =~ /gz$/ and not data.nil? and not data.empty?
         data = Gem::Util.gunzip data
       end
       data
@@ -75,7 +76,7 @@ class Gem::FakeFetcher
 
   def cache_update_path(uri, path = nil, update = true)
     if data = fetch_path(uri)
-      open(path, 'wb') {|io| io.write data } if path and update
+      open(path, 'wb') { |io| io.write data } if path and update
       data
     else
       Gem.read_binary(path) if path
@@ -120,7 +121,7 @@ class Gem::FakeFetcher
     path = path.to_s
     @paths << path
 
-    raise ArgumentError, 'need full URI' unless path =~ %r{^http://}
+    raise ArgumentError, 'need full URI' unless path =~ %r'^http://'
 
     unless @data.key? path
       raise Gem::RemoteFetcher::FetchError.new("no data for #{path}", path)
@@ -133,7 +134,7 @@ class Gem::FakeFetcher
 
   def download(spec, source_uri, install_dir = Gem.dir)
     name = File.basename spec.cache_file
-    path = if Dir.pwd == install_dir # see fetch_command
+    path = if Dir.pwd == install_dir  # see fetch_command
              install_dir
            else
              File.join install_dir, "cache"
@@ -161,13 +162,16 @@ class Gem::FakeFetcher
 
     download spec, source.uri.to_s
   end
+
 end
 
 # :stopdoc:
 class Gem::RemoteFetcher
+
   def self.fetcher=(fetcher)
     @fetcher = fetcher
   end
+
 end
 # :startdoc:
 
@@ -187,6 +191,7 @@ end
 # After the gems are created they are removed from Gem.dir.
 
 class Gem::TestCase::SpecFetcherSetup
+
   ##
   # Executes a SpecFetcher setup block.  Yields an instance then creates the
   # gems and specifications defined in the instance.
@@ -341,6 +346,7 @@ class Gem::TestCase::SpecFetcherSetup
       io.write spec.to_ruby_for_cache
     end
   end
+
 end
 
 ##
@@ -352,6 +358,7 @@ end
 # This class was added to flush out problems in Rubinius' IO implementation.
 
 class TempIO < Tempfile
+
   ##
   # Creates a new TempIO that will be initialized to contain +string+.
 
@@ -369,4 +376,5 @@ class TempIO < Tempfile
     flush
     Gem.read_binary path
   end
+
 end

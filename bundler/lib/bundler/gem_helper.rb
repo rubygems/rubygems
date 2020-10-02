@@ -15,10 +15,6 @@ module Bundler
         new(opts[:dir], opts[:name]).install
       end
 
-      def tag_prefix=(prefix)
-        instance.tag_prefix = prefix
-      end
-
       def gemspec(&block)
         gemspec = instance.gemspec
         block.call(gemspec) if block
@@ -28,15 +24,12 @@ module Bundler
 
     attr_reader :spec_path, :base, :gemspec
 
-    attr_writer :tag_prefix
-
     def initialize(base = nil, name = nil)
-      @base = File.expand_path(base || SharedHelpers.pwd)
-      gemspecs = name ? [File.join(@base, "#{name}.gemspec")] : Gem::Util.glob_files_in_dir("{,*}.gemspec", @base)
+      @base = (base ||= SharedHelpers.pwd)
+      gemspecs = name ? [File.join(base, "#{name}.gemspec")] : Dir[File.join(base, "{,*}.gemspec")]
       raise "Unable to determine name from existing gemspec. Use :name => 'gemname' in #install_tasks to manually set it." unless gemspecs.size == 1
       @spec_path = gemspecs.first
       @gemspec = Bundler.load_gemspec(@spec_path)
-      @tag_prefix = ""
     end
 
     def install
@@ -100,35 +93,27 @@ module Bundler
       Bundler.ui.confirm "#{name} (#{version}) installed."
     end
 
-    protected
+  protected
 
     def rubygem_push(path)
       cmd = [*gem_command, "push", path]
       cmd << "--key" << gem_key if gem_key
       cmd << "--host" << allowed_push_host if allowed_push_host
+      unless allowed_push_host || Bundler.user_home.join(".gem/credentials").file?
+        raise "Your rubygems.org credentials aren't set. Run `gem signin` to set them."
+      end
       sh_with_input(cmd)
       Bundler.ui.confirm "Pushed #{name} #{version} to #{gem_push_host}"
     end
 
     def built_gem_path
-      Gem::Util.glob_files_in_dir("#{name}-*.gem", base).sort_by {|f| File.mtime(f) }.last
+      Dir[File.join(base, "#{name}-*.gem")].sort_by {|f| File.mtime(f) }.last
     end
 
-    def git_push(remote = nil)
-      remote ||= default_remote
+    def git_push(remote = "")
       perform_git_push remote
-      perform_git_push "#{remote} #{version_tag}"
-      Bundler.ui.confirm "Pushed git commits and release tag."
-    end
-
-    def default_remote
-      current_branch = sh(%w[git rev-parse --abbrev-ref HEAD]).strip
-      return "origin" if current_branch.empty?
-
-      remote_for_branch = sh(%W[git config --get branch.#{current_branch}.remote]).strip
-      return "origin" if remote_for_branch.empty?
-
-      remote_for_branch
+      perform_git_push "#{remote} --tags"
+      Bundler.ui.confirm "Pushed git commits and tags."
     end
 
     def allowed_push_host
@@ -183,7 +168,7 @@ module Bundler
     end
 
     def version_tag
-      "#{@tag_prefix}v#{version}"
+      "v#{version}"
     end
 
     def name

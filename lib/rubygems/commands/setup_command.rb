@@ -322,13 +322,10 @@ By default, this RubyGems will install gem as:
     libs.each do |tool, path|
       say "Installing #{tool}" if @verbose
 
-      lib_files = rb_files_in path
-      lib_files.concat(bundler_template_files) if tool == 'Bundler'
-
-      pem_files = pem_files_in path
+      lib_files = files_in path
 
       Dir.chdir path do
-        install_file_list(lib_files + pem_files, lib_dir)
+        install_file_list(lib_files, lib_dir)
       end
     end
   end
@@ -514,15 +511,10 @@ By default, this RubyGems will install gem as:
     [lib_dir, bin_dir]
   end
 
-  def pem_files_in(dir)
+  def files_in(dir)
     Dir.chdir dir do
-      Dir[File.join('**', '*pem')]
-    end
-  end
-
-  def rb_files_in(dir)
-    Dir.chdir dir do
-      Dir[File.join('**', '*rb')]
+      Dir.glob(File.join('**', '*'), File::FNM_DOTMATCH).
+        select{|f| !File.directory?(f) }
     end
   end
 
@@ -537,21 +529,6 @@ By default, this RubyGems will install gem as:
   def bundler_man5_files_in(dir)
     Dir.chdir dir do
       Dir['gemfile.5{,.txt,.ronn}']
-    end
-  end
-
-  def bundler_template_files
-    Dir.chdir "bundler/lib" do
-      Dir.glob(File.join('bundler', 'templates', '**', '*'), File::FNM_DOTMATCH).
-        select{|f| !File.directory?(f) }
-    end
-  end
-
-  # for cleanup old bundler files
-  def template_files_in(dir)
-    Dir.chdir dir do
-      Dir.glob(File.join('templates', '**', '*'), File::FNM_DOTMATCH).
-        select{|f| !File.directory?(f) }
     end
   end
 
@@ -591,11 +568,9 @@ abort "#{deprecation_message}"
     lib_dirs = { File.join(lib_dir, 'rubygems') => 'lib/rubygems' }
     lib_dirs[File.join(lib_dir, 'bundler')] = 'bundler/lib/bundler'
     lib_dirs.each do |old_lib_dir, new_lib_dir|
-      lib_files = rb_files_in(new_lib_dir)
-      lib_files.concat(template_files_in(new_lib_dir)) if new_lib_dir =~ /bundler/
+      lib_files = files_in(new_lib_dir)
 
-      old_lib_files = rb_files_in(old_lib_dir)
-      old_lib_files.concat(template_files_in(old_lib_dir)) if old_lib_dir =~ /bundler/
+      old_lib_files = files_in(old_lib_dir)
 
       to_remove = old_lib_files - lib_files
 

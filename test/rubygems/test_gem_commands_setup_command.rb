@@ -155,14 +155,9 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     assert_match %r{\A#!\s*#{bin_env}#{ruby_exec}}, File.read(gem_bin_path)
   end
 
-  def test_pem_files_in
-    assert_equal %w[rubygems/ssl_certs/rubygems.org/foo.pem],
-                 @cmd.pem_files_in('lib').sort
-  end
-
-  def test_rb_files_in
-    assert_equal %w[rubygems.rb rubygems/test_case.rb],
-                 @cmd.rb_files_in('lib').sort
+  def test_files_in
+    assert_equal %w[rubygems.rb rubygems/ssl_certs/rubygems.org/foo.pem rubygems/test_case.rb],
+                 @cmd.files_in('lib').sort
   end
 
   def test_bundler_man1_files_in

@@ -1,7 +1,7 @@
-# Description:
-
 <!--
 Thanks so much for the contribution!
+
+Note that you must abide by the [code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md) to contribute to this project.
 
 To make reviewing this PR a bit easier, please fill out answers to the following questions.
 -->
@@ -16,13 +16,9 @@ To make reviewing this PR a bit easier, please fill out answers to the following
 determine the cause of the issue and your conclusions. If you considered other
 alternatives, explain why you end up choosing the current implementation -->
 
-______________
-
-# Tasks:
+## Make sure he following tasks are checked
 
 - [ ] Describe the problem / feature
-- [ ] Write tests
+- [ ] Write [tests](https://github.com/rubygems/rubygems/blob/master/bundler/doc/development/PULL_REQUESTS.md#tests) for features and bug fixes
 - [ ] Write code to solve the problem
-- [ ] Get code review from coworkers / friends
-
-I will abide by the [code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).
+- [ ] Make sure you follow the [current code style](https://github.com/rubygems/rubygems/blob/master/bundler/doc/development/PULL_REQUESTS.md#code-formatting) and [write meaningful commit messages without tags](https://github.com/rubygems/rubygems/blob/master/bundler/doc/development/PULL_REQUESTS.md#commit-messages)

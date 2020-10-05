@@ -161,12 +161,12 @@ class TestGemCommandsSetupCommand < Gem::TestCase
   end
 
   def test_bundler_man1_files_in
-    assert_equal %w[bundle-b.1 bundle-b.1.ronn],
+    assert_equal %w[bundle-b.1],
                  @cmd.bundler_man1_files_in('bundler/man').sort
   end
 
   def test_bundler_man5_files_in
-    assert_equal %w[gemfile.5 gemfile.5.ronn],
+    assert_equal %w[gemfile.5],
                  @cmd.bundler_man5_files_in('bundler/man').sort
   end
 
@@ -194,9 +194,9 @@ class TestGemCommandsSetupCommand < Gem::TestCase
       @cmd.install_man dir
 
       assert_path_exists File.join("#{dir}/man1", 'bundle-b.1')
-      assert_path_exists File.join("#{dir}/man1", 'bundle-b.1.ronn')
+      refute_path_exists File.join("#{dir}/man1", 'bundle-b.1.ronn')
       assert_path_exists File.join("#{dir}/man5", 'gemfile.5')
-      assert_path_exists File.join("#{dir}/man5", 'gemfile.5.ronn')
+      refute_path_exists File.join("#{dir}/man5", 'gemfile.5.ronn')
     end
   end
 
@@ -308,8 +308,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     gemfile_5_ronn     = File.join man, 'man5', 'gemfile.5.ronn'
     gemfile_5_txt      = File.join man, 'man5', 'gemfile.5.txt'
 
-    files_that_go   = [bundle_b_1_txt, gemfile_5_txt]
-    files_that_stay = [ruby_1, bundle_b_1, bundle_b_1_ronn, gemfile_5, gemfile_5_ronn]
+    files_that_go   = [bundle_b_1_txt, bundle_b_1_ronn, gemfile_5_txt, gemfile_5_ronn]
+    files_that_stay = [ruby_1, bundle_b_1, gemfile_5]
 
     create_dummy_files(files_that_go + files_that_stay)
 

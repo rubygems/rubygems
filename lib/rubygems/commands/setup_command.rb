@@ -521,14 +521,14 @@ By default, this RubyGems will install gem as:
   # for installation of bundler as default gems
   def bundler_man1_files_in(dir)
     Dir.chdir dir do
-      Dir['bundle*.1{,.ronn}']
+      Dir['bundle*.1']
     end
   end
 
   # for installation of bundler as default gems
   def bundler_man5_files_in(dir)
     Dir.chdir dir do
-      Dir['gemfile.5{,.ronn}']
+      Dir['gemfile.5']
     end
   end
 
@@ -592,7 +592,7 @@ abort "#{deprecation_message}"
 
       old_man1_dir = "#{old_man_dir}/man1"
       old_man1_files = bundler_man1_files_in(old_man1_dir)
-      old_man1_files += Dir.chdir(old_man1_dir) { Dir["bundle*.1.txt"] }
+      old_man1_files += Dir.chdir(old_man1_dir) { Dir["bundle*.1.{txt,ronn}"] }
 
       man1_to_remove = old_man1_files - man1_files
 
@@ -602,7 +602,7 @@ abort "#{deprecation_message}"
 
       old_man5_dir = "#{old_man_dir}/man5"
       old_man5_files = bundler_man5_files_in(old_man5_dir)
-      old_man1_files += Dir.chdir(old_man5_dir) { Dir["gemfile.5.txt"] }
+      old_man5_files += Dir.chdir(old_man5_dir) { Dir["gemfile.5.{txt,ronn}"] }
 
       man5_to_remove = old_man5_files - man5_files
 

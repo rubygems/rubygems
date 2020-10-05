@@ -588,16 +588,23 @@ abort "#{deprecation_message}"
   def remove_old_man_files(man_dir)
     man_dirs = { man_dir => "bundler/man" }
     man_dirs.each do |old_man_dir, new_man_dir|
-      ["1", "5"].each do |section|
-        man_files = send(:"bundler_man#{section}_files_in", new_man_dir)
+      man1_files = bundler_man1_files_in(new_man_dir)
 
-        old_man_dir_with_section = "#{old_man_dir}/man#{section}"
-        old_man_files = send(:"bundler_man#{section}_files_in", old_man_dir_with_section)
+      old_man1_dir = "#{old_man_dir}/man1"
+      old_man1_files = bundler_man1_files_in(old_man1_dir)
 
-        man_to_remove = old_man_files - man_files
+      man1_to_remove = old_man1_files - man1_files
 
-        remove_file_list(man_to_remove, old_man_dir_with_section)
-      end
+      remove_file_list(man1_to_remove, old_man1_dir)
+
+      man5_files = bundler_man5_files_in(new_man_dir)
+
+      old_man5_dir = "#{old_man_dir}/man5"
+      old_man5_files = bundler_man5_files_in(old_man5_dir)
+
+      man5_to_remove = old_man5_files - man5_files
+
+      remove_file_list(man5_to_remove, old_man5_dir)
     end
   end
 

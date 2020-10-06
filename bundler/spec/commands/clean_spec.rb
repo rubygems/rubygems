@@ -625,8 +625,10 @@ RSpec.describe "bundle clean" do
     expect(out).to eq("1.0")
   end
 
-  it "when using --force, it doesn't remove default gem binaries", :rubygems => ">= 3.2.0.rc.1" do
+  it "when using --force, it doesn't remove default gem binaries" do
     skip "does not work on ruby 3.0 because it changes the path to look for default gems, tsort is a default gem there, and we can't install it either like we do with fiddle because it doesn't yet exist" unless RUBY_VERSION < "3.0.0"
+
+    skip "does not work on rubygems versions where `--install_dir` doesn't respect --default" unless Gem::Installer.for_spec(loaded_gemspec, :install_dir => "/foo").default_spec_file == "/foo/specifications/default/bundler-#{Bundler::VERSION}.gemspec" # Since rubygems 3.2.0.rc.2
 
     default_irb_version = ruby "gem 'irb', '< 999999'; require 'irb'; puts IRB::VERSION", :raise_on_error => false
     skip "irb isn't a default gem" if default_irb_version.empty?

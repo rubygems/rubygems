@@ -46,7 +46,7 @@ namespace :release do
     version = opts[:version]
     changelog = Changelog.for_bundler(version)
 
-    branch = version.segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
+    branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
 
     previous_branch = `git rev-parse --abbrev-ref HEAD`.strip
     release_branch = "release_bundler/#{version}"

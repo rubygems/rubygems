@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
+        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.2 ]
         rgv: [ v2.5.2, v2.6.14, v2.7.10, v3.0.8, v3.1.4 ]
         bundler: [ '' ]
         exclude:
@@ -27,15 +27,15 @@ jobs:
           - { bundler: '', ruby: 2.6.6, rgv: v2.5.2  }
           - { bundler: '', ruby: 2.6.6, rgv: v2.6.14 }
           - { bundler: '', ruby: 2.6.6, rgv: v2.7.10 }
-          - { bundler: '', ruby: 2.7.1, rgv: v2.5.2  }
-          - { bundler: '', ruby: 2.7.1, rgv: v2.6.14 }
-          - { bundler: '', ruby: 2.7.1, rgv: v2.7.10 }
-          - { bundler: '', ruby: 2.7.1, rgv: v3.0.8  }
+          - { bundler: '', ruby: 2.7.2, rgv: v2.5.2  }
+          - { bundler: '', ruby: 2.7.2, rgv: v2.6.14 }
+          - { bundler: '', ruby: 2.7.2, rgv: v2.7.10 }
+          - { bundler: '', ruby: 2.7.2, rgv: v3.0.8  }
         include:
           - { bundler: 3.0.0, ruby: 2.4.10, rgv: v3.1.4 }
           - { bundler: 3.0.0, ruby: 2.5.8, rgv: v3.1.4 }
           - { bundler: 3.0.0, ruby: 2.6.6, rgv: v3.1.4 }
-          - { bundler: 3.0.0, ruby: 2.7.1, rgv: v3.1.4 }
+          - { bundler: 3.0.0, ruby: 2.7.2, rgv: v3.1.4 }
     env:
       RGV: ${{ matrix.rgv }}
       RUBYOPT: --disable-gems

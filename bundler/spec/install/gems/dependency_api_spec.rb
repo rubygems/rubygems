@@ -121,12 +121,20 @@ RSpec.describe "gemcutter's dependency API" do
   it "falls back when the API errors out" do
     simulate_platform mswin
 
+    build_repo2 do
+      # The rcov gem is platform mswin32, but has no arch
+      build_gem "rcov" do |s|
+        s.platform = Gem::Platform.new([nil, "mswin32", nil])
+        s.write "lib/rcov.rb", "RCOV = '1.0.0'"
+      end
+    end
+
     gemfile <<-G
       source "#{source_uri}"
       gem "rcov"
     G
 
-    bundle :install, :artifice => "windows"
+    bundle :install, :artifice => "windows", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
     expect(out).to include("Fetching source index from #{source_uri}")
     expect(the_bundle).to include_gems "rcov 1.0.0"
   end

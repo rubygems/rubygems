@@ -69,7 +69,7 @@ module TurboTests
       )
     end
 
-  private
+    private
 
     def exception_to_json(exception)
       if exception

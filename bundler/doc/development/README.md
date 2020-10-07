@@ -13,7 +13,3 @@ An overview of our preferred PR process, including how to run the test suite and
 ## [Adding new features](NEW_FEATURES.md)
 
 Guidelines for proposing and writing new features for Bundler.
-
-## [Releasing Bundler](RELEASING.md)
-
-A broad-strokes overview of the release process adhered to by the Bundler core team.

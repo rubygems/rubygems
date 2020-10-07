@@ -1,22 +1,6 @@
 # frozen_string_literal: true
 
-require "benchmark"
-
 require_relative "spec/support/rubygems_ext"
-
-# Benchmark task execution
-module Rake
-  class Task
-    alias_method :real_invoke, :invoke
-
-    def invoke(*args)
-      time = Benchmark.measure(@name) do
-        real_invoke(*args)
-      end
-      puts "#{@name} ran for #{time}"
-    end
-  end
-end
 
 desc "Run specs"
 task :spec do
@@ -97,31 +81,24 @@ namespace :man do
       Spec::Rubygems.gem_require("ronn")
     rescue Gem::LoadError => e
       desc "Build the man pages"
-      task(:build) { abort "We couln't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages" }
+      task(:build) { abort "We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages" }
 
       desc "Verify man pages are in sync"
-      task(:check) { abort "We couln't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages" }
+      task(:check) { abort "We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages" }
     else
       directory "man"
 
-      index = []
-      sources = Dir["man/*.ronn"].map {|f| File.basename(f, ".ronn") }
-      sources.map do |basename|
-        ronn = "man/#{basename}.ronn"
-        manual_section = ".1" unless basename =~ /\.(\d+)\Z/
-        roff = "man/#{basename}#{manual_section}"
-
-        index << [ronn, File.basename(roff)]
+      index = Dir["man/*.ronn"].map do |source|
+        ronn = "man/#{File.basename(source)}"
+        roff = "man/#{File.basename(source, ".ronn")}"
 
         file roff => ["man", ronn] do
           sh "bin/ronn --warnings --roff --pipe --date #{Time.now.strftime("%Y-%m-%d")} #{ronn} > #{roff}"
         end
 
-        file "#{roff}.txt" => roff do
-          sh "groff -Wbreak -mtty-char -mandoc -Tascii -rHY=0 #{roff} | col -xb > #{roff}.txt"
-        end
+        task :build_all_pages => roff
 
-        task :build_all_pages => "#{roff}.txt"
+        [ronn, File.basename(roff)]
       end
 
       file "index.txt" do
@@ -199,10 +176,10 @@ Automatiek::RakeTask.new("fileutils") do |lib|
   lib.vendor_lib = "lib/bundler/vendor/fileutils"
 end
 
-# We currently include changes over the official version to avoid requiring
-# the optional `net-http-pipeline` dependency, so that its version can be
-# selected by end users. We also include changes to require the vendored
-# dependencies `uri` and `connection_pool` relatively.
+# We currently include the following changes over the official version:
+# * Avoid requiring the optional `net-http-pipeline` dependency, so that its version can be selected by end users.
+# * We also include changes to require the vendored dependencies `uri` and `connection_pool` relatively.
+# * Avoid autoloading `OpenSSL` since it causes problems on jruby.
 desc "Vendor a specific version of net-http-persistent"
 Automatiek::RakeTask.new("net-http-persistent") do |lib|
   lib.version = "v4.0.0"

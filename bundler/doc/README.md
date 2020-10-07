@@ -21,10 +21,14 @@ If you'd like to help make Bundler better, you totally rock! Thanks for helping 
 * [Development setup](development/SETUP.md)
 * [Submitting pull requests](development/PULL_REQUESTS.md)
 * [Adding new features](development/NEW_FEATURES.md)
-* [Releasing Bundler](development/RELEASING.md)
 
 ## Documentation
 
 * [Overview](documentation/README.md)
 * [Writing docs for man pages](documentation/WRITING.md)
 * [Documentation vision](documentation/VISION.md)
+
+## Maintainers
+
+* [Merging pull requests](playbooks/MERGING_A_PR.md)
+* [Releasing Bundler](playbooks/RELEASING.md)

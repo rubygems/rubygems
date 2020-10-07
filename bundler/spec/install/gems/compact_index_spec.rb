@@ -138,19 +138,6 @@ RSpec.describe "compact index api" do
     expect(the_bundle).to include_gems("foo 1.0")
   end
 
-  it "falls back when the API errors out" do
-    simulate_platform mswin
-
-    gemfile <<-G
-      source "#{source_uri}"
-      gem "rcov"
-    G
-
-    bundle :install, :artifice => "windows"
-    expect(out).to include("Fetching source index from #{source_uri}")
-    expect(the_bundle).to include_gems "rcov 1.0.0"
-  end
-
   it "falls back when the API URL returns 403 Forbidden" do
     gemfile <<-G
       source "#{source_uri}"
@@ -625,27 +612,6 @@ The checksum of /versions does not match the checksum provided by the server! So
       bundle :install, :artifice => "compact_index_basic_authentication"
       expect(out).not_to include("#{user}:#{password}")
       expect(the_bundle).to include_gems "rack 1.0.0"
-    end
-
-    it "strips http basic authentication creds for modern index" do
-      gemfile <<-G
-        source "#{basic_auth_source_uri}"
-        gem "rack"
-      G
-
-      bundle :install, :artifice => "endopint_marshal_fail_basic_authentication"
-      expect(out).not_to include("#{user}:#{password}")
-      expect(the_bundle).to include_gems "rack 1.0.0"
-    end
-
-    it "strips http basic auth creds when it can't reach the server" do
-      gemfile <<-G
-        source "#{basic_auth_source_uri}"
-        gem "rack"
-      G
-
-      bundle :install, :artifice => "endpoint_500", :raise_on_error => false
-      expect(out).not_to include("#{user}:#{password}")
     end
 
     it "strips http basic auth creds when warning about ambiguous sources", :bundler => "< 3" do

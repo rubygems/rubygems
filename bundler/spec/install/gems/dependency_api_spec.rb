@@ -584,7 +584,7 @@ RSpec.describe "gemcutter's dependency API" do
         gem "rack"
       G
 
-      bundle :install, :artifice => "endopint_marshal_fail_basic_authentication"
+      bundle :install, :artifice => "endpoint_marshal_fail_basic_authentication"
       expect(out).not_to include("#{user}:#{password}")
       expect(the_bundle).to include_gems "rack 1.0.0"
     end

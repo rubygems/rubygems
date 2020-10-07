@@ -22,7 +22,7 @@ jobs:
           ruby-version: head
           bundler: none
       - name: Save latest buildable revision to environment
-        run: echo "::set-env name=REF::$(ruby -v | cut -d')' -f1 | cut -d' ' -f5)"
+        run: echo "REF=$(ruby -v | cut -d')' -f1 | cut -d' ' -f5)" >> $GITHUB_ENV
       - uses: actions/checkout@v2
         with:
           repository: ruby/ruby

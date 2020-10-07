@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1, jruby-9.2.11.1 ]
+        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.2, jruby-9.2.11.1 ]
         openssl: [true, false]
     steps:
       - uses: actions/checkout@v2
@@ -60,7 +60,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.1
+          ruby-version: 2.7.2
           bundler: none
       - name: Install rubygems
         run: ruby setup.rb

@@ -278,6 +278,7 @@ namespace 'blog' do
     name  = `git config --get user.name`.strip
     email = `git config --get user.email`.strip
 
+    require_relative "util/changelog"
     history = Changelog.for_rubygems(v.to_s)
 
     require 'tempfile'

@@ -141,8 +141,14 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "does not install the development dependency" do
+      build_repo2 do
+        build_gem "with_development_dependency" do |s|
+          s.add_development_dependency "activesupport", "= 2.3.5"
+        end
+      end
+
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "#{file_uri_for(gem_repo2)}"
         gem "with_development_dependency"
       G
 
@@ -294,8 +300,11 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "finds gems in multiple sources", :bundler => "< 3" do
-      build_repo2
-      update_repo2
+      build_repo2 do
+        build_gem "rack", "1.2" do |s|
+          s.executables = "rackup"
+        end
+      end
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"

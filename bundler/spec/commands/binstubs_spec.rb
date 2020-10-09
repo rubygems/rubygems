@@ -96,6 +96,10 @@ RSpec.describe "bundle binstubs <gem>" do
       before do
         pristine_system_gems "bundler-#{system_bundler_version}"
         build_repo2 do
+          build_gem "rack", "1.2" do |s|
+            s.executables = "rackup"
+          end
+
           build_gem "prints_loaded_gems", "1.0" do |s|
             s.executables = "print_loaded_gems"
             s.bindir = "exe"
@@ -417,8 +421,14 @@ RSpec.describe "bundle binstubs <gem>" do
     end
 
     it "works if the gem has development dependencies" do
+      build_repo2 do
+        build_gem "with_development_dependency" do |s|
+          s.add_development_dependency "activesupport", "= 2.3.5"
+        end
+      end
+
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "#{file_uri_for(gem_repo2)}"
         gem "with_development_dependency"
       G
 

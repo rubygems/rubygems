@@ -1,3 +1,44 @@
+=== 3.2.0.rc.2 / 2020-10-8
+
+Minor enhancements:
+
+* Make --dry-run flag consistent across rubygems commands. Pull request
+  #3867 by bronzdoc
+* Disallow downgrades to too old versions. Pull request #3566 by
+  deivid-rodriguez
+* Added `--platform` option to `build` command. Pull request #3079 by nobu
+* Have "gem update --system" pass through the `--silent` flag. Pull
+  request #3789 by duckinator
+* Add writable check for cache dir. Pull request #3876 by xndcn
+* Warn on duplicate dependency in a specification. Pull request #3864 by
+  bronzdoc
+* Fix indentation in `gem env`. Pull request #3861 by colby-swandale
+* Let more exceptions flow. Pull request #3819 by deivid-rodriguez
+* Ignore internal frames in RubyGems' Kernel#warn. Pull request #3810 by
+  eregon
+
+Bug fixes:
+
+* Add missing fileutils require. Pull request #3911 by deivid-rodriguez
+* Fix false positive warning on Windows when PATH has
+  `File::ALT_SEPARATOR`. Pull request #3829 by deivid-rodriguez
+* Fix Kernel#warn override to handle backtrace location with nil path.
+  Pull request #3852 by jeremyevans
+* Don't format executables on `gem update --system`. Pull request #3811 by
+  deivid-rodriguez
+* `gem install --user` fails with `Gem::FilePermissionError` on the system
+  plugins directory. Pull request #3804 by nobu
+
+Performance:
+
+* Avoid duplicated generation of APISpecification objects. Pull request
+  #3940 by mame
+* Eval defaults with frozen_string_literal: true. Pull request #3847 by
+  casperisfine
+* Deduplicate the requirement operators in memory. Pull request #3846 by
+  casperisfine
+* Optimize Gem.already_loaded?. Pull request #3793 by casperisfine
+
 === 3.2.0.rc.1 / 2020-07-04
 
 Major enhancements:

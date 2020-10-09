@@ -357,7 +357,7 @@ RSpec.describe "bundle exec" do
     bundle "config set clean false" # want to keep the rackup binstub
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "with_license"
+      gem "foo"
     G
     [true, false].each do |l|
       bundle "config set disable_exec_load #{l}"

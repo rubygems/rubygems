@@ -469,13 +469,21 @@ RSpec.describe "when a gem has no architecture" do
   it "still installs correctly" do
     simulate_platform mswin
 
+    build_repo2 do
+      # The rcov gem is platform mswin32, but has no arch
+      build_gem "rcov" do |s|
+        s.platform = Gem::Platform.new([nil, "mswin32", nil])
+        s.write "lib/rcov.rb", "RCOV = '1.0.0'"
+      end
+    end
+
     gemfile <<-G
       # Try to install gem with nil arch
       source "http://localgemserver.test/"
       gem "rcov"
     G
 
-    bundle :install, :artifice => "windows"
+    bundle :install, :artifice => "windows", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
     expect(the_bundle).to include_gems "rcov 1.0.0"
   end
 end

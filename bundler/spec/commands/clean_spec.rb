@@ -603,8 +603,7 @@ RSpec.describe "bundle clean" do
   it "when using --force on system gems, it doesn't remove binaries" do
     bundle "config set path.system true"
 
-    build_repo2
-    update_repo2 do
+    build_repo2 do
       build_gem "bindir" do |s|
         s.bindir = "exe"
         s.executables = "foo"

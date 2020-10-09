@@ -229,6 +229,7 @@ bundler/lib/bundler/vendor/thor/lib/thor/shell/color.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/html.rb
 bundler/lib/bundler/vendor/thor/lib/thor/util.rb
 bundler/lib/bundler/vendor/thor/lib/thor/version.rb
+bundler/lib/bundler/vendor/tmpdir/lib/tmpdir.rb
 bundler/lib/bundler/vendor/uri/lib/uri.rb
 bundler/lib/bundler/vendor/uri/lib/uri/common.rb
 bundler/lib/bundler/vendor/uri/lib/uri/file.rb
@@ -246,6 +247,7 @@ bundler/lib/bundler/vendored_fileutils.rb
 bundler/lib/bundler/vendored_molinillo.rb
 bundler/lib/bundler/vendored_persistent.rb
 bundler/lib/bundler/vendored_thor.rb
+bundler/lib/bundler/vendored_tmpdir.rb
 bundler/lib/bundler/vendored_uri.rb
 bundler/lib/bundler/version.rb
 bundler/lib/bundler/version_ranges.rb

@@ -181,6 +181,7 @@ EOF
 
     dest_path = @spec.extension_dir
 
+    require "fileutils"
     FileUtils.rm_f @spec.gem_build_complete_path
 
     @spec.extensions.each do |extension|

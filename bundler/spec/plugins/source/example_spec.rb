@@ -33,6 +33,7 @@ RSpec.describe "real source plugins" do
 
               def install(spec, opts)
                 mkdir_p(install_path.parent)
+                require 'fileutils'
                 FileUtils.cp_r(path, install_path)
 
                 spec_path = install_path.join("\#{spec.full_name}.gemspec")

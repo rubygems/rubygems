@@ -22,13 +22,13 @@ module Bundler
 
       def initialize(fetcher)
         @fetcher = fetcher
-        require "tmpdir"
+        require_relative "../vendored_tmpdir"
       end
 
       def update(local_path, remote_path, retrying = nil)
         headers = {}
 
-        Dir.mktmpdir("bundler-compact-index-") do |local_temp_dir|
+        Bundler::Dir.mktmpdir("bundler-compact-index-") do |local_temp_dir|
           local_temp_path = Pathname.new(local_temp_dir).join(local_path.basename)
 
           # first try to fetch any new bytes on the existing file

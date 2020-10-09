@@ -2,10 +2,6 @@
 
 Minor enhancements:
 
-* Don't hit the network when installing dependencyless local gemspec. Pull
-  request #3968 by deivid-rodriguez
-* Add `--force` option to `gem sources` command. Pull request #3956 by
-  andy-smith-msm
 * Make --dry-run flag consistent across rubygems commands. Pull request
   #3867 by bronzdoc
 * Disallow downgrades to too old versions. Pull request #3566 by
@@ -23,16 +19,6 @@ Minor enhancements:
 
 Bug fixes:
 
-* Append '.gemspec' extension only when it is not present.. Pull request
-  #3988 by voxik
-* Install to correct plugins dir when using `--build-root`. Pull request
-  #3972 by deivid-rodriguez
-* Fix `--build-root` flag under Windows. Pull request #3975 by
-  deivid-rodriguez
-* Fix `typo_squatting?` false positive for `rubygems.org` itself. Pull
-  request #3951 by andy-smith-msm
-* Make `--default` and `--install-dir` options to `gem install` play nice
-  together. Pull request #3906 by deivid-rodriguez
 * Add missing fileutils require. Pull request #3911 by deivid-rodriguez
 * Fix false positive warning on Windows when PATH has
   `File::ALT_SEPARATOR`. Pull request #3829 by deivid-rodriguez
@@ -45,8 +31,6 @@ Bug fixes:
 
 Performance:
 
-* Don't change ruby process CWD when building extensions. Pull request
-  #3498 by deivid-rodriguez
 * Avoid duplicated generation of APISpecification objects. Pull request
   #3940 by mame
 * Eval defaults with frozen_string_literal: true. Pull request #3847 by

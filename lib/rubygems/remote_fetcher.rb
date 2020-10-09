@@ -78,7 +78,6 @@ class Gem::RemoteFetcher
   def initialize(proxy=nil, dns=nil, headers={})
     require 'net/http'
     require 'stringio'
-    require 'time'
     require 'uri'
 
     Socket.do_not_reverse_lookup = true

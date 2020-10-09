@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'net/http'
-require 'time'
 require 'rubygems/user_interaction'
 
 class Gem::Request
@@ -144,6 +143,7 @@ class Gem::Request
     request.add_field 'Keep-Alive', '30'
 
     if @last_modified
+      require 'time'
       request.add_field 'If-Modified-Since', @last_modified.httpdate
     end
 

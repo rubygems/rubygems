@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "erb"
 require "rubygems/dependency_installer"
 require_relative "worker"
 require_relative "installer/parallel_installer"
@@ -136,6 +135,7 @@ module Bundler
         end
 
         mode = Bundler::WINDOWS ? "wb:UTF-8" : "w"
+        require "erb"
         content = if RUBY_VERSION >= "2.6"
           ERB.new(template, :trim_mode => "-").result(binding)
         else
@@ -182,6 +182,7 @@ module Bundler
         executable_path = executable_path
 
         mode = Bundler::WINDOWS ? "wb:UTF-8" : "w"
+        require "erb"
         content = if RUBY_VERSION >= "2.6"
           ERB.new(template, :trim_mode => "-").result(binding)
         else

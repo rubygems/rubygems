@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'openssl'
-require 'time'
 
 class CertificateBuilder
   attr_reader :start

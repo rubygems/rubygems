@@ -25,6 +25,7 @@ PLATFORMS
   java
   ruby
   x64-mingw32
+  x86_64-linux
 
 DEPENDENCIES
   artifice (~> 0.6.0)

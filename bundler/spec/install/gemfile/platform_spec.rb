@@ -255,32 +255,6 @@ RSpec.describe "bundle install across platforms" do
     expect(the_bundle).to include_gems "nokogiri 1.4.2 JAVA", "weakling 0.0.3"
   end
 
-  it "works with gems that have extra platform-specific runtime dependencies", :bundler => "< 3" do
-    simulate_platform x64_mac
-
-    update_repo2 do
-      build_gem "facter", "2.4.6"
-      build_gem "facter", "2.4.6" do |s|
-        s.platform = "universal-darwin"
-        s.add_runtime_dependency "CFPropertyList"
-      end
-      build_gem "CFPropertyList"
-    end
-
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
-
-      gem "facter"
-    G
-
-    expect(err).to include "Unable to use the platform-specific (universal-darwin) version of facter (2.4.6) " \
-      "because it has different dependencies from the ruby version. " \
-      "To use the platform-specific version of the gem, run `bundle config set --local specific_platform true` and install again."
-
-    expect(the_bundle).to include_gem "facter 2.4.6"
-    expect(the_bundle).not_to include_gem "CFPropertyList"
-  end
-
   it "works with gems with platform-specific dependency having different requirements order" do
     simulate_platform x64_mac
 

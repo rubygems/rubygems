@@ -981,38 +981,7 @@ RSpec.describe "the lockfile format" do
     G
   end
 
-  it "persists the spec's platform to the lockfile", :bundler => "< 3" do
-    build_repo2 do
-      build_gem "platform_specific", "1.0" do |s|
-        s.platform = Gem::Platform.new("universal-java-16")
-      end
-    end
-
-    simulate_platform "universal-java-16"
-
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
-      gem "platform_specific"
-    G
-
-    lockfile_should_be <<-G
-      GEM
-        remote: #{file_uri_for(gem_repo2)}/
-        specs:
-          platform_specific (1.0-java)
-
-      PLATFORMS
-        java
-
-      DEPENDENCIES
-        platform_specific
-
-      BUNDLED WITH
-         #{Bundler::VERSION}
-    G
-  end
-
-  it "persists the spec's platform and specific platform to the lockfile", :bundler => "3" do
+  it "persists the spec's platform and specific platform to the lockfile" do
     build_repo2 do
       build_gem "platform_specific", "1.0" do |s|
         s.platform = Gem::Platform.new("universal-java-16")

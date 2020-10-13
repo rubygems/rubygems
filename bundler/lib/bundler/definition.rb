@@ -559,7 +559,7 @@ module Bundler
     end
 
     def current_platforms
-      [local_platform, generic_local_platform]
+      [local_platform, generic_local_platform].uniq
     end
 
     def change_reason

@@ -12,7 +12,6 @@ require 'rubygems/deprecate'
 require 'rubygems/package'
 require 'rubygems/ext'
 require 'rubygems/user_interaction'
-require 'fileutils'
 
 ##
 # The installer installs the files contained in the .gem into the Gem.home.
@@ -492,7 +491,11 @@ class Gem::Installer
 
       mode = File.stat(bin_path).mode
       dir_mode = options[:prog_mode] || (mode | 0111)
-      FileUtils.chmod dir_mode, bin_path unless dir_mode == mode
+
+      unless dir_mode == mode
+        require 'fileutils'
+        FileUtils.chmod dir_mode, bin_path
+      end
 
       check_executable_overwrite filename
 

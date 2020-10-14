@@ -3,6 +3,7 @@
 require "net/http"
 require "bundler/compact_index_client"
 require "bundler/compact_index_client/updater"
+require "tmpdir"
 
 RSpec.describe Bundler::CompactIndexClient::Updater do
   let(:fetcher) { double(:fetcher) }
@@ -40,7 +41,7 @@ RSpec.describe Bundler::CompactIndexClient::Updater do
   context "when bundler doesn't have permissions on Dir.tmpdir" do
     it "Errno::EACCES is raised" do
       local_path # create local path before stubbing mktmpdir
-      allow(Dir).to receive(:mktmpdir) { raise Errno::EACCES }
+      allow(Bundler::Dir).to receive(:mktmpdir) { raise Errno::EACCES }
 
       expect do
         updater.update(local_path, remote_path)

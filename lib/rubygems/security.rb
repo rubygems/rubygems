@@ -6,7 +6,6 @@
 #++
 
 require 'rubygems/exceptions'
-require 'fileutils'
 require_relative 'openssl'
 
 ##

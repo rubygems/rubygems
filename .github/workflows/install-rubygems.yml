@@ -42,6 +42,8 @@ jobs:
         run: bundle --version
       - name: Check bundler man pages were installed and are properly picked up
         run: bundle install --help | grep -q BUNDLE-INSTALL
+      - name: Check bundler fallback man pages are properly picked up
+        run: sudo rm $(which man) && bundle install --help
       - name: Build bundler
         run: gem build bundler.gemspec
         working-directory: ./bundler

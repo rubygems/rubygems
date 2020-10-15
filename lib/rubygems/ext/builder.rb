@@ -40,7 +40,7 @@ class Gem::Ext::Builder
       env << 'sitelibdir=%s' % sitedir
     end
 
-    ['clean', '', 'install'].each do |target|
+    ['clean', '', 'install', 'clean'].each do |target|
       # Pass DESTDIR via command line to override what's in MAKEFLAGS
       cmd = [
         *make_program,

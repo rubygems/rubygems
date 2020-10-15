@@ -20,9 +20,9 @@ Don't see a man page for a command? Make a new page and send us a PR! We also we
 
 ## Creating a new man page
 
-To create a new man page, simply create a new `.ronn` file in the `man/` directory.
+To create a new man page, simply create a new `.ronn` file in the `lib/bundler/man/` directory.
 
-For example: to create a man page for the command `bundle cookies` (not a real command, sadly), I would create a file `man/bundle-cookies.1.ronn` and add my documentation there.
+For example: to create a man page for the command `bundle cookies` (not a real command, sadly), I would create a file `lib/bundler/man/bundle-cookies.1.ronn` and add my documentation there.
 
 ## Formatting
 

@@ -9,6 +9,14 @@ class Gem::Commands::QueryCommand < Gem::Command
 
   include Gem::QueryUtils
 
+  alias warning_without_suggested_alternatives deprecation_warning
+  def deprecation_warning
+    warning_without_suggested_alternatives
+
+    message = "\nIt is recommended that you use `gem search` or `gem list` instead.\n"
+    alert_warning message unless Gem::Deprecate.skip
+  end
+
   def initialize(name = 'query',
                  summary = 'Query gem information in local or remote repositories')
     super name, summary,

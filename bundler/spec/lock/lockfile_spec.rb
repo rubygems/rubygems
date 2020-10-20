@@ -417,34 +417,6 @@ RSpec.describe "the lockfile format" do
     expect(the_bundle).to include_gems "net-sftp 1.1.1", "net-ssh 1.0.0"
   end
 
-  it "generates a simple lockfile for a single pinned source, gem with a version requirement", :bundler => "< 3" do
-    git = build_git "foo"
-
-    install_gemfile <<-G
-      gem "foo", :git => "#{lib_path("foo-1.0")}"
-    G
-
-    lockfile_should_be <<-G
-      GIT
-        remote: #{lib_path("foo-1.0")}
-        revision: #{git.ref_for("master")}
-        specs:
-          foo (1.0)
-
-      GEM
-        specs:
-
-      PLATFORMS
-        #{lockfile_platforms}
-
-      DEPENDENCIES
-        foo!
-
-      BUNDLED WITH
-         #{Bundler::VERSION}
-    G
-  end
-
   it "generates a simple lockfile for a single pinned source, gem with a version requirement" do
     git = build_git "foo"
 

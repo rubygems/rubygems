@@ -33,6 +33,41 @@ RSpec.describe "bundle install with specific_platform enabled" do
         to all(exist)
     end
 
+    it "caches multiplatform git gems with a single gemspec when --all-platforms is passed" do
+      git = build_git "pg_array_parser", "1.0"
+
+      gemfile <<-G
+        gem "pg_array_parser", :git => "#{lib_path("pg_array_parser-1.0")}"
+      G
+
+      lockfile <<-L
+        GIT
+          remote: #{lib_path("pg_array_parser-1.0")}
+          revision: #{git.ref_for("master")}
+          specs:
+            pg_array_parser (1.0-java)
+            pg_array_parser (1.0)
+
+        GEM
+          specs:
+
+        PLATFORMS
+          java
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          pg_array_parser!
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+
+      bundle "config set --local cache_all true"
+      bundle "cache --all-platforms"
+
+      expect(err).to be_empty
+    end
+
     it "uses the platform-specific gem with extra dependencies" do
       setup_multiplatform_gem_with_different_dependencies_per_platform
       install_gemfile <<-G

@@ -677,6 +677,47 @@ class TestGemRequire < Gem::TestCase
         end
       end
     end
+
+    def test_no_crash_when_overriding_warn_with_warning_module
+      skip "https://github.com/oracle/truffleruby/issues/2109" if RUBY_ENGINE == "truffleruby"
+
+      Dir.mktmpdir("warn_test") do |dir|
+        File.write(dir + "/main.rb", "module Warning; def warn(str); super; end; end; warn 'Foo Bar'")
+        _, err = capture_subprocess_io do
+          system(*ruby_with_rubygems_in_load_path, "-w", "--disable=gems", "-C", dir, "main.rb")
+        end
+        assert_match(/Foo Bar\n$/, err)
+        _, err = capture_subprocess_io do
+          system(*ruby_with_rubygems_in_load_path, "-w", "--enable=gems", "-C", dir, "main.rb")
+        end
+        assert_match(/Foo Bar\n$/, err)
+      end
+    end
+
+    def test_expected_backtrace_location_when_inheriting_from_basic_object_and_including_kernel
+      Dir.mktmpdir("warn_test") do |dir|
+        File.write(dir + "/main.rb", "\nrequire 'sub'\n")
+        File.write(dir + "/sub.rb", <<-'RUBY')
+          require 'rubygems'
+          class C < BasicObject
+            include ::Kernel
+            def deprecated
+              warn "This is a deprecated method", uplevel: 2
+            end
+          end
+          C.new.deprecated
+        RUBY
+
+        _, err = capture_subprocess_io do
+          system(*ruby_with_rubygems_in_load_path, "-w", "--enable=gems", "-C", dir, "-I", dir, "main.rb")
+        end
+        assert_match(/main\.rb:2: warning: This is a deprecated method$/, err)
+        _, err = capture_subprocess_io do
+          system(*ruby_with_rubygems_in_load_path, "-w", "--enable=gems", "-C", dir, "-I", dir, "main.rb")
+        end
+        assert_match(/main\.rb:2: warning: This is a deprecated method$/, err)
+      end
+    end
   end
 
   private

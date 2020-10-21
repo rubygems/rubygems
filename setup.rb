@@ -21,7 +21,6 @@ Dir.chdir File.dirname(__FILE__)
 $:.unshift File.expand_path('lib')
 require 'rubygems'
 require 'rubygems/gem_runner'
-require 'rubygems/exceptions'
 
 Gem::CommandManager.instance.register_command :setup
 
@@ -31,8 +30,4 @@ if ENV["GEM_PREV_VER"]
 end
 args.unshift 'setup'
 
-begin
-  Gem::GemRunner.new.run args
-rescue Gem::SystemExitException => e
-  exit e.exit_code
-end
+Gem::GemRunner.new.run args

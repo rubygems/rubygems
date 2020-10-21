@@ -32,7 +32,7 @@ class Gem::Commands::QueryCommand < Gem::Command
     add_query_options
   end
 
-  def description
+  def description # :nodoc:
     <<-EOF
 The query command is the basis for the list and search commands.
 

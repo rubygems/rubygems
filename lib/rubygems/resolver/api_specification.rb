@@ -46,6 +46,10 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
       @dependencies == other.dependencies
   end
 
+  def hash
+    @set.hash ^ @name.hash ^ @version.hash ^ @platform.hash ^ @dependencies.hash
+  end
+
   def fetch_development_dependencies # :nodoc:
     spec = source.fetch_spec Gem::NameTuple.new @name, @version, @platform
 

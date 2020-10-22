@@ -53,6 +53,7 @@ begin
   require "automatiek"
 
   Automatiek::RakeTask.new("molinillo") do |lib|
+    lib.version = "0.7.0"
     lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
     lib.namespace = "Molinillo"
     lib.prefix = "Gem::Resolver"

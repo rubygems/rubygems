@@ -52,6 +52,9 @@ GEM_HOME environment variables. GEM_HOME sets the default repository to
 install into. GEM_PATH allows multiple local repositories to be searched for
 gems.
 
+GEM_USER_INSTALL forces the default repository to be in the user's home
+directory when set (so --[no-]user-install becomes moot).
+
 If you are behind a proxy server, RubyGems uses the HTTP_PROXY,
 HTTP_PROXY_USER and HTTP_PROXY_PASS environment variables to discover the
 proxy server.

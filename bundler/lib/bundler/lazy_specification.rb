@@ -79,7 +79,11 @@ module Bundler
       @specification = if source.is_a?(Source::Gemspec) && source.gemspec.name == name
         source.gemspec.tap {|s| s.source = source }
       else
-        search_object = Bundler.feature_flag.specific_platform? || Bundler.settings[:force_ruby_platform] ? self : Dependency.new(name, version)
+        search_object = if source.is_a?(Source::Path)
+          Dependency.new(name, version)
+        else
+          Bundler.feature_flag.specific_platform? || Bundler.settings[:force_ruby_platform] ? self : Dependency.new(name, version)
+        end
         platform_object = Gem::Platform.new(platform)
         candidates = source.specs.search(search_object)
         same_platform_candidates = candidates.select do |spec|

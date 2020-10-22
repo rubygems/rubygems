@@ -417,34 +417,6 @@ RSpec.describe "the lockfile format" do
     expect(the_bundle).to include_gems "net-sftp 1.1.1", "net-ssh 1.0.0"
   end
 
-  it "generates a simple lockfile for a single pinned source, gem with a version requirement", :bundler => "< 3" do
-    git = build_git "foo"
-
-    install_gemfile <<-G
-      gem "foo", :git => "#{lib_path("foo-1.0")}"
-    G
-
-    lockfile_should_be <<-G
-      GIT
-        remote: #{lib_path("foo-1.0")}
-        revision: #{git.ref_for("master")}
-        specs:
-          foo (1.0)
-
-      GEM
-        specs:
-
-      PLATFORMS
-        #{lockfile_platforms}
-
-      DEPENDENCIES
-        foo!
-
-      BUNDLED WITH
-         #{Bundler::VERSION}
-    G
-  end
-
   it "generates a simple lockfile for a single pinned source, gem with a version requirement" do
     git = build_git "foo"
 
@@ -968,7 +940,7 @@ RSpec.describe "the lockfile format" do
     G
   end
 
-  it "keeps existing platforms in the lockfile", :bundler => "< 3" do
+  it "keeps existing platforms in the lockfile" do
     lockfile <<-G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
@@ -999,49 +971,7 @@ RSpec.describe "the lockfile format" do
 
       PLATFORMS
         java
-        #{generic_local_platform}
-
-      DEPENDENCIES
-        rack
-
-      BUNDLED WITH
-         #{Bundler::VERSION}
-    G
-  end
-
-  it "keeps existing platforms in the lockfile", :bundler => "3" do
-    lockfile <<-G
-      GEM
-        remote: #{file_uri_for(gem_repo2)}/
-        specs:
-          rack (1.0.0)
-
-      PLATFORMS
-        java
-
-      DEPENDENCIES
-        rack
-
-      BUNDLED WITH
-         #{Bundler::VERSION}
-    G
-
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}/"
-
-      gem "rack"
-    G
-
-    lockfile_should_be <<-G
-      GEM
-        remote: #{file_uri_for(gem_repo2)}/
-        specs:
-          rack (1.0.0)
-
-      PLATFORMS
-        java
-        #{generic_local_platform}
-        #{specific_local_platform}
+        #{lockfile_platforms}
 
       DEPENDENCIES
         rack

@@ -13,7 +13,7 @@ class Gem::Commands::QueryCommand < Gem::Command
   def deprecation_warning
     warning_without_suggested_alternatives
 
-    message = "\nIt is recommended that you use `gem search` or `gem list` instead.\n"
+    message = "It is recommended that you use `gem search` or `gem list` instead.\n"
     alert_warning message unless Gem::Deprecate.skip
   end
 

@@ -327,4 +327,13 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
       expect(settings["mirror.https://rubygems.org/"]).to eq("http://rubygems-mirror.org")
     end
   end
+
+  describe "allow_sudo?" do
+    context "when BUNDLE_NO_SUDO is set" do
+      before { ENV["BUNDLE_NO_SUDO"] = "TRUE" }
+      it "allow_sudo? is false" do
+        expect(settings.allow_sudo?).to be false
+      end
+    end
+  end
 end

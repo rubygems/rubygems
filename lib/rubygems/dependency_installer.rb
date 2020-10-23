@@ -285,7 +285,7 @@ class Gem::DependencyInstaller
     request_set.prerelease = @prerelease
 
     installer_set = Gem::Resolver::InstallerSet.new @domain
-    installer_set.ignore_installed = @only_install_dir
+    installer_set.ignore_installed = (@minimal_deps == false) || @only_install_dir
 
     if consider_local?
       if dep_or_name =~ /\.gem$/ and File.file? dep_or_name

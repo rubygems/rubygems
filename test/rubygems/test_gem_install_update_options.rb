@@ -192,4 +192,10 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
 
     assert_equal true, @cmd.options[:post_install_message]
   end
+
+  def test_minimal_deps
+    @cmd.handle_options %w[--minimal-deps]
+
+    assert_equal true, @cmd.options[:minimal_deps]
+  end
 end

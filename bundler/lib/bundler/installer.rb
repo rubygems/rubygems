@@ -244,6 +244,7 @@ module Bundler
         end
       end.flatten
       Bundler.rubygems.load_plugin_files(path_plugin_files)
+      Bundler.rubygems.load_env_plugins
     end
 
     def ensure_specs_are_compatible!

@@ -222,6 +222,18 @@ RSpec.describe "bundle install with gem sources" do
       expect(the_bundle).to include_gems "rack 1.0.0", "activesupport 2.3.5"
     end
 
+    it "loads env plugins" do
+      plugin_msg = "hello from an env plugin!"
+      create_file "plugins/rubygems_plugin.rb", "puts '#{plugin_msg}'"
+      rubylib = ENV["RUBYLIB"].to_s.split(File::PATH_SEPARATOR).unshift(bundled_app("plugins").to_s).join(File::PATH_SEPARATOR)
+      install_gemfile <<-G, :env => { "RUBYLIB" => rubylib }
+        source "#{file_uri_for(gem_repo1)}"
+        gem "rack"
+      G
+
+      expect(last_command.stdboth).to include(plugin_msg)
+    end
+
     describe "with a gem that installs multiple platforms" do
       it "installs gems for the local platform as first choice" do
         skip "version is 1.0, not 1.0.0" if Gem.win_platform?

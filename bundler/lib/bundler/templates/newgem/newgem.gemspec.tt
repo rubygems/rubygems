@@ -35,4 +35,7 @@ Gem::Specification.new do |spec|
 <%- if config[:ext] -%>
   spec.extensions    = ["ext/<%= config[:underscored_name] %>/extconf.rb"]
 <%- end -%>
+
+  # Uncomment to register a new dependency of your gem
+  # spec.add_dependency "example-gem", "~> 1.0"
 end

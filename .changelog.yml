@@ -11,23 +11,21 @@ entry_wrapping: 74
 changelog_label_mapping:
   "rubygems: security fix": "Security fixes:"
   "rubygems: breaking change": "Breaking changes:"
-  "rubygems: major enhancement": "Major enhancements:"
   "rubygems: deprecation": "Deprecations:"
   "rubygems: feature": "Features:"
   "rubygems: performance": "Performance:"
-  "rubygems: minor enhancement": "Minor enhancements:"
+  "rubygems: enhancement": "Enhancements:"
   "rubygems: bug fix": "Bug fixes:"
   "rubygems: documentation": "Documentation:"
   "rubygems: backport": null
 
 patch_level_labels:
   - "rubygems: security fix"
-  - "rubygems: minor enhancement"
+  - "rubygems: enhancement"
   - "rubygems: bug fix"
   - "rubygems: backport"
 
 minor_level_labels:
-  - "rubygems: major enhancement"
   - "rubygems: deprecation"
   - "rubygems: feature"
   - "rubygems: performance"

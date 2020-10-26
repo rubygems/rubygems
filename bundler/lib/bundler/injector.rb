@@ -183,7 +183,7 @@ module Bundler
       new_gemfile = []
       multiline_removal = false
       IO.readlines(gemfile_path).each do |line|
-        if line.match(patterns)
+        if line.match(patterns) && is_not_a_line_comment?(line)
           multiline_removal = line.rstrip.end_with?(",")
           # skip lines which match the regex
           next
@@ -205,6 +205,11 @@ module Bundler
       %w[group source env install_if].each {|block| remove_nested_blocks(new_gemfile, block) }
 
       new_gemfile.join.chomp
+    end
+
+    # @param [String] line         Individual line of gemfile content.
+    def is_not_a_line_comment?(line)
+      line.match(/^(?=#).*/).nil?
     end
 
     # @param [Array] gemfile       Array of gemfile contents.

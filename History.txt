@@ -56,7 +56,7 @@ Performance:
 
 === 3.2.0.rc.2 / 2020-10-8
 
-Minor enhancements:
+Enhancements:
 
 * Make --dry-run flag consistent across rubygems commands. Pull request
   #3867 by bronzdoc
@@ -97,14 +97,11 @@ Performance:
 
 === 3.2.0.rc.1 / 2020-07-04
 
-Major enhancements:
+Enhancements:
 
 * Test TruffleRuby in CI. Pull request #2797 by Benoit Daloze.
 * Rework plugins system and speed up rubygems. Pull request #3108 by David
   Rodríguez.
-
-Minor enhancements:
-
 * Specify explicit separator not to be affected by $;. Pull request #3424
   by Nobuyoshi Nakada.
 * Enable `Layout/ExtraSpacing` cop. Pull request #3449 by David Rodríguez.
@@ -203,7 +200,7 @@ Breaking changes:
 
 === 3.1.4 / 2020-06-03
 
-Minor enhancements:
+Enhancements:
 
 * Deprecate rubyforge_project attribute only during build
   time. Pull request #3609 by Josef Šimánek.
@@ -214,7 +211,7 @@ Minor enhancements:
 
 === 3.1.3 / 2020-05-05
 
-Minor enhancements:
+Enhancements:
 
 * Resolver: require NameTuple before use. Pull request #3171 by Olle
   Jonsson.
@@ -239,7 +236,7 @@ Bug fixes:
 
 === 3.1.2 / 2019-12-20
 
-Minor enhancements:
+Enhancements:
 
 * Restore non prompting `gem update --system` behavior. Pull request #3040
   by David Rodríguez.
@@ -266,12 +263,9 @@ Bug fixes:
 
 === 3.1.0 / 2019-12-16
 
-Major enhancements:
+Enhancements:
 
 * Vendor bundler 2.1. Pull request #3028 by David Rodríguez.
-
-Minor enhancements:
-
 * Check for rubygems.org typo squatting sources. Pull request #2999 by
   Luis Sagastume.
 * Refactor remote fetcher. Pull request #3017 by David Rodríguez.
@@ -301,7 +295,7 @@ Breaking changes:
 
 === 3.1.0.pre3 / 2019-11-11
 
-Minor enhancements:
+Enhancements:
 
 * Fix gem pristine not accounting for user installed gems. Pull request
   #2914 by Luis Sagastume.
@@ -322,7 +316,7 @@ Minor enhancements:
 
 === 3.1.0.pre2 / 2019-10-15
 
-Minor enhancements:
+Enhancements:
 
 * Optimize Gem::Package::TarReader#each. Pull request #2941 by Jean byroot
   Boussier.
@@ -331,7 +325,7 @@ Minor enhancements:
 
 === 3.1.0.pre1 / 2019-10-08
 
-Major enhancements:
+Enhancements:
 
 * Try to use bundler-2.1.0.pre.2. Pull request #2923 by SHIBATA Hiroshi.
 * [Require] Ensure -I beats a default gem. Pull request #1868 by Samuel
@@ -342,9 +336,6 @@ Major enhancements:
   Chaofan.
 * Autoswitch to exact bundler version if present. Pull request #2583 by
   David Rodríguez.
-
-Minor enhancements:
-
 * Fix Gem::Requirement equality comparison when ~> operator is used. Pull
   request #2554 by Grey Baker.
 * Don't use a proxy if https_proxy env var is empty. Pull request #2567 by
@@ -561,7 +552,7 @@ Bug fixes:
 
 === 3.0.5 / 2019-08-16
 
-Minor enhancements:
+Enhancements:
 
 * Use env var to configure api key on push. Pull request #2559 by Luis
   Sagastume.
@@ -614,7 +605,7 @@ Bug fixes:
 
 === 3.0.4 / 2019-06-14
 
-Minor enhancements:
+Enhancements:
 
 * Add support for TruffleRuby #2612 by Benoit Daloze
 * Serve a more descriptive error when --no-ri or --no-rdoc are used #2572
@@ -680,7 +671,7 @@ Security fixes:
 
 === 3.0.2 / 2019-01-01
 
-Minor enhancements:
+Enhancements:
 
 * Use Bundler-1.17.3. Pull request #2556 by SHIBATA Hiroshi.
 * Fix document flag description. Pull request #2555 by Luis Sagastume.
@@ -708,7 +699,7 @@ Bug fixes:
 
 === 3.0.0 / 2018-12-19
 
-Major enhancements:
+Enhancements:
 
 * S3 source. Pull request #1690 by Aditya Prakash.
 * Download gems with threads. Pull request #1898 by André Arko.
@@ -716,9 +707,6 @@ Major enhancements:
 * [GSoC] Multi-factor feature for RubyGems. Pull request #2369 by Qiu
   Chaofan.
 * Use bundler 1.17.2. Pull request #2521 by SHIBATA Hiroshi.
-
-Minor enhancements:
-
 * Don't treat inaccessible working directories as build failures. Pull
   request #1135 by Pete.
 * Remove useless directory parameter from builders .build methods.
@@ -984,7 +972,7 @@ Breaking changes:
 
 === 2.7.10 / 2019-06-14
 
-Minor enhancements:
+Enhancements:
 
 * Fix bundler rubygems binstub not properly looking for bundler. Pull request #2426
   by David Rodríguez.
@@ -1005,7 +993,7 @@ Security fixes:
 
 === 2.7.8 / 2018-11-02
 
-Minor enhancements:
+Enhancements:
 
 * [Requirement] Treat requirements with == versions as equal. Pull
   request #2230 by Samuel Giddins.
@@ -1039,7 +1027,7 @@ Bug fixes:
 
 === 2.7.7 / 2018-05-08
 
-Minor enhancements:
+Enhancements:
 
 * [RequestSet] Only suggest a gem version with an installable platform.
   Pull request #2175 by Samuel Giddins.
@@ -1125,7 +1113,7 @@ Bug fixes:
 
 === 2.7.3
 
-Minor enhancements:
+Enhancements:
 
 * Removed needless version lock. Pull request #2074 by SHIBATA Hiroshi.
 * Add --[no-]check-development option to cleanup command. Pull request
@@ -1175,15 +1163,12 @@ Bug fixes:
 
 === 2.7.0 (2017-11-02)
 
-Major enhancements:
+Enhancements:
 
 * Update vendored bundler-1.16.0. Pull request #2051 by Samuel Giddins.
 * Use Bundler for Gem.use_gemdeps. Pull request #1674 by Samuel Giddins.
 * Add command `signin` to `gem` CLI. Pull request #1944 by Shiva Bhusal.
 * Add Logout feature to CLI. Pull request #1938 by Shiva Bhusal.
-
-Minor enhancements:
-
 * Added message to uninstall command for gem that is not installed. Pull
   request #1979 by anant anil kolvankar.
 * Add --trust-policy option to unpack command. Pull request #1718 by
@@ -1456,7 +1441,7 @@ Bug fixes:
 
 === 2.6.5 / 2016-06-21
 
-Minor enhancements:
+Enhancements:
 
 * Support for unified Integer in Ruby 2.4. Pull request #1618
   by SHIBATA Hiroshi.
@@ -1485,7 +1470,7 @@ Bug fixes:
 
 === 2.6.4 / 2016-04-26
 
-Minor enhancements:
+Enhancements:
 
 * Use Gem::Util::NULL_DEVICE instead of hard coded strings. Pull request #1588
   by Chris Charabaruk.
@@ -1502,7 +1487,7 @@ Bug fixes:
 
 === 2.6.3 / 2016-04-05
 
-Minor enhancements:
+Enhancements:
 
 * Lazily calculate Gem::LoadError exception messages. Pull request #1550
   by Aaron Patterson.
@@ -1555,7 +1540,7 @@ Bug fixes:
 
 === 2.6.0 / 2016-02-26
 
-Minor enhancements:
+Enhancements:
 
 * RubyGems now defaults the `gem push` to the gem's "allowed_push_host"
   metadata setting.  Pull request #1486 by Josh Lane.
@@ -1610,7 +1595,7 @@ Bug fixes:
 * Handle symlinks containing ".." correctly. Pull request #1457 by Samuel E.
   Giddins.
 
-Minor enhancements:
+Enhancements:
 
 * Add `--no-rc` flag, which skips loading `.gemrc`. Pull request #1329 by Luis
   Sagastume.
@@ -1668,7 +1653,7 @@ Bug fixes:
 
 === 2.5.0 / 2015-11-03
 
-Major enhancements:
+Enhancements:
 
 * Added the Gem::Licenses class which provides a set of standard license
   identifiers as set by spdx.org. This is now used by the
@@ -1676,8 +1661,6 @@ Major enhancements:
   enforce) licenses set by gem authors.
 
   Pull request #1249 by Kyle Mitchell.
-
-Minor enhancements:
 
 * Use Molinillo as the resolver library.  This is the same resolver as used by
   Bundler.  Pull request #1189 by Samuel E. Giddins.
@@ -1942,7 +1925,7 @@ Bug fixes:
 
 === 2.4.0 / 2014-07-16
 
-Minor enhancements:
+Enhancements:
 
 * The contents command now supports a --show-install-dir option that shows
   only the directory the gem is installed in.  Feature request #966 by Akinori
@@ -2005,7 +1988,7 @@ Bug fixes:
 
 === 2.3.0 / 2014-06-10
 
-Minor enhancements:
+Enhancements:
 
 * Added the `open` command which allows you to inspect the source of a gem
   using your editor.
@@ -2206,7 +2189,7 @@ Bug fixes:
 Special thanks to Vít Ondruch and Michal Papis for testing and finding bugs in
 RubyGems as it was prepared for the 2.2.0 release.
 
-Major enhancements:
+Enhancements:
 
 * RubyGems can check for gem dependencies files (gem.deps.rb or Gemfile) when
   rubygems executables are started and uses the found dependencies.  This
@@ -2228,8 +2211,6 @@ Major enhancements:
 
   The default sharing location may be configured by RubyGems packagers through
   Gem.default_ext_dir_for.  Pull Request #744 by Vít Ondruch.
-
-Minor enhancements:
 
 * RubyGems checks the 'allowed_push_host' metadata value when pushing a gem to
   prevent an accidental push to a public repository (such as rubygems.org).
@@ -2429,14 +2410,12 @@ Security fixes:
   including vulnerable APIs.  Fixed versions include 2.0.8, 1.8.26 and
   1.8.23.1 (for Ruby 1.9.3).  Issue #626 by Damir Sharipov.
 
-Major enhancements:
+Enhancements:
 
 * RubyGems uses a new dependency resolver for gem installation which works
   similar to the bundler resolver.  The new resolver can resolve conflicts the
   previous resolver could not and offers improved diagnostics when conflicts
   are discovered.
-
-Minor enhancements:
 
 * RubyGems now has improved platform matching for the ARM architecture.  Gems
   built with a CPU of "arm" will match any specific ARM CPU.  See `gem help
@@ -2769,7 +2748,7 @@ Breaking changes:
   * Removed support for Ruby 1.9.1
   * Removed many deprecated methods
 
-Major enhancements:
+Enhancements:
 
   * Improved support for default gems shipping with ruby 2.0.0+
   * A gem can have arbitrary metadata through Gem::Specification#metadata
@@ -2787,8 +2766,6 @@ Major enhancements:
     file (Gemfile, Isolate, gem.deps.rb).
     Set RUBYGEMS_GEMDEPS=path to have it loaded. Use - as the path
     to autodetect (current and parent directories are searched).
-
-Minor enhancements:
   * Added `gem check --doctor` to clean up after failed uninstallation.  Bug
     #419 by Erik Hollensbe
   * RubyGems no longer defaults to uninstalling gems if a dependency would be
@@ -2911,7 +2888,7 @@ Bug fixes:
 
 === 2.0.0.rc.1 / 2013-01-08
 
-Minor enhancements:
+Enhancements:
   * This release of RubyGems can push gems to rubygems.org.  Ordinarily
     prerelease versions of RubyGems cannot push gems.
   * Added `gem check --doctor` to clean up after failed uninstallation.  Bug
@@ -2925,7 +2902,7 @@ Bug fixes:
 
 === 2.0.0.preview2.2 / 2012-12-14
 
-Minor enhancements:
+Enhancements:
   * Added a cmake builder.  Pull request #265 by Allan Espinosa.
   * Removed rubyforge page from gem list output
 
@@ -2935,7 +2912,7 @@ Bug fixes:
 
 === 2.0.0.preview2.1 / 2012-12-08
 
-Minor enhancements:
+Enhancements:
   * Gem::DependencyInstaller now passes build_args down to the installer.
     Pull Request #412 by Sam Rawlins.
   * RubyGems no longer defaults to uninstalling gems if a dependency would be
@@ -2982,7 +2959,7 @@ Breaking changes:
   * Removed support for Ruby 1.9.1
   * Removed many deprecated methods
 
-Major enhancements:
+Enhancements:
 
   * Improved support for default gems shipping with ruby 2.0.0+
   * A gem can have arbitrary metadata through Gem::Specification#metadata
@@ -3000,9 +2977,6 @@ Major enhancements:
     file (Gemfile, Isolate, gem.deps.rb).
     Set RUBYGEMS_GEMDEPS=path to have it loaded. Use - as the path
     to autodetect (current and parent directories are searched).
-
-Minor enhancements:
-
   * Added --only-executables option to `gem pristine`.  Fixes #326
   * Added -I flag for 'gem query' to exclude installed items
   * Added Gem.install(name, version=default) for interactive sessions
@@ -3175,7 +3149,7 @@ Security fixes:
   * Disallow redirects from https to http
   * Turn on verification of server SSL certs
 
-Minor enhancements:
+Enhancements:
   * Add --clear-sources to fetch
 
 Bug fixes:
@@ -3227,7 +3201,7 @@ Bug fixes:
 
 === 1.8.17 / 2012-02-17
 
-Minor enhancements:
+Enhancements:
 
   * Add MacRuby to the list of special cases for platforms (ferrous26)
   * Add a default for where to install rubygems itself
@@ -3267,7 +3241,7 @@ Bug fixes:
 
   * Check loaded_specs properly when trying to satisfy a dep
 
-Minor enhancements:
+Enhancements:
 
   * Remove using #loaded_path? for performance
   * Remove Zlib workaround for Windows build.
@@ -3331,7 +3305,7 @@ Bug fixes:
 
 === 1.8.6 / 2011-07-25
 
-Minor enhancements:
+Enhancements:
 
   * Add autorequires and delay startup of RubyGems until require is called.
     See Ruby bug #4962
@@ -3350,7 +3324,7 @@ Bug fixes:
 
 === 1.8.5 / 2011-05-31
 
-Minor enhancements:
+Enhancements:
 
   * The -u option to 'update local source cache' is official deprecated.
   * Remove has_rdoc deprecations from Specification.
@@ -3362,7 +3336,7 @@ Bug fixes:
 
 === 1.8.4 / 2011-05-25
 
-Minor enhancements:
+Enhancements:
 
   * Removed default_executable deprecations from Specification.
 
@@ -3379,7 +3353,7 @@ Bug fixes:
 
 === 1.8.2 / 2011-05-11
 
-Minor enhancements:
+Enhancements:
 
   * Moved #outdated from OutdatedCommand to Specification (for Isolate).
   * Print out a warning about missing executables.
@@ -3392,7 +3366,7 @@ Bug fixes:
 
 === 1.8.1 / 2011-05-05
 
-Minor enhancements:
+Enhancements:
 
   * Added Gem::Requirement#specific? and Gem::Dependency#specific?
 
@@ -3439,14 +3413,11 @@ Deprecations:
   * Deprecated all of Gem::GemPathSearcher.
   * Deprecated Gem::Specification#default_executable.
 
-Major enhancements:
+Enhancements:
 
   * Gem::SourceIndex functionality has been moved to Gem::Specification.
     Gem::SourceIndex is completely disconnected from Gem::Specification
   * Refactored GemPathSearcher entirely out. RIPMF
-
-Minor enhancements:
-
   * Added CommandManager#unregister_command
   * Added Dependency#matching_specs + to_specs.
   * Added Dependency#to_spec
@@ -3526,7 +3497,7 @@ Deprecations:
     test_suite_file(=).
   * Deprecated Specification#has_rdoc= and default_executable=
 
-Minor enhancements:
+Enhancements:
   * Added stupid simple deprecation module.
   * Added --spec option to `gem unpack` to output a gem's original metadata
   * Added packaging option to Specification#validate
@@ -3604,14 +3575,11 @@ Deprecations:
 * Gem::LoadError#version_requirements has been removed.  Use
   Gem::LoadError#requirement.
 
-Major enhancements:
+Enhancements:
 
 * Rewrote how Gem::activate (gem and require) resolves dependencies.
 * Gem::LoadError#version_requirement has been removed. Use
   Gem::LoadError#requirement.
-
-Minor enhancements:
-
 * Added --key to `gem push` for setting alternate API keys.
 * Added --format-executable support to gem uninstall.
 * Added Gem::DependencyList#clear.
@@ -3665,7 +3633,7 @@ Bug fixes:
 
 ==== NOTE: `gem update --system` is broken. See UPGRADING.rdoc.
 
-Minor enhancements:
+Enhancements:
 
 * Added ability to do gem update --system X.Y.Z.
 
@@ -3682,13 +3650,10 @@ Bug fixes:
 
 ==== NOTE: `gem update --system` is broken. See UPGRADING.rdoc.
 
-Major enhancements:
+Enhancements:
 
 * Finally fixed all known 1.9.x issues. Upgrading is now possible!
 * Merged huge 1.3.7/ruby-core changes to master.
-
-Minor enhancements:
-
 * Added UPGRADING.rdoc to help deal with 1.9 issues.
 * Gem::Format now gives better errors for corrupt gem files and includes paths
 * Pre-install hooks can now abort gem installation by returning false
@@ -4045,7 +4010,7 @@ Bug fixes:
 * `gem lock --strict` works again.  Patch #21814 by Sven Engelhardt.
 * Platform detection for Solaris was improved.  Patch #21911 by Bob Remeika.
 
-Minor enhancements:
+Enhancements:
 
 * `gem help install` now describes _version_ argument to executable stubs
 * `gem help environment` describes environment variables and ~/.gemrc and
@@ -4107,7 +4072,7 @@ Bug fixes:
 * Gem::DependencyInstaller resets installed gems every install, bug #19444
 * Gem.default_path is now honored if GEM_PATH is not set, patch #19502
 
-Minor enhancements:
+Enhancements:
 
 * setup.rb
   * stub files created by RubyGems 0.7.x and older are no longer removed.  When
@@ -4173,7 +4138,7 @@ Bug fixes:
 * Gem stub scripts on windows now work outside Gem.bindir.
 * `gem sources -r` now works without network access.
 
-Minor enhancements:
+Enhancements:
 
 * RubyGems now requires Ruby > 1.8.3.
 * Release notes are now printed upon installation.
@@ -4191,7 +4156,7 @@ Bug fixes:
 * Installation on Ruby 1.8.3 through 1.8.5 fixed
 * `gem build` on 1.8.3 fixed
 
-Minor enhancements:
+Enhancements:
 
 * Since RubyGems 0.9.5, RubyGems is no longer supported on Ruby 1.8.2 or older,
   this is official in RubyGems 1.0.1.
@@ -4203,7 +4168,7 @@ Features:
 * RubyGems warns about various problems with gemspecs during gem building
 * More-consistent versioning for the RubyGems software
 
-Minor enhancements:
+Enhancements:
 
 * Fixed various bugs and problems with installing gems on Windows
 * Fixed using `gem server` for installing gems
@@ -4243,7 +4208,7 @@ Features:
 * Improved stubs and `gem.bat` on mswin, including better compatibility
   with the One-Click Installer.
 
-Minor enhancements:
+Enhancements:
 
 * Time::today is deprecated and will be removed at a future date
 * Gem::manage_gems is deprecated and will be removed at a future date
@@ -4336,7 +4301,7 @@ number one change is that we can now download the gem index
 incrementally.  This will greatly speed up the gem command when only a
 few gems are out of date.
 
-Major enhancements:
+Enhancements:
 
 * The gem index is now downloaded incrementally, only updating entries
   that are out of date.  If more than 50 entries are out of date, we
@@ -4351,9 +4316,6 @@ Major enhancements:
 * Both RI and RDOC documents are now generated by default.
 * A gemri command is included to read gem RI docs (only needed for
   Ruby 1.8.4 or earlier).
-
-Minor enhancements:
-
 * Version 0.0.0 is now a valid gem version.
 * Better detection of missing SSL functionality.
 * SSL is not required if the security policy does not require

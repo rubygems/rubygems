@@ -28,7 +28,7 @@ RSpec.describe "bundle install with specific_platform enabled" do
     it "caches both the universal-darwin and ruby gems when --all-platforms is passed and properly picks them up on further bundler invocations" do
       setup_multiplatform_gem
       gemfile(google_protobuf)
-      bundle "package --all-platforms"
+      bundle "cache --all-platforms"
       expect([cached_gem("google-protobuf-3.0.0.alpha.5.0.5.1"), cached_gem("google-protobuf-3.0.0.alpha.5.0.5.1-universal-darwin")]).
         to all(exist)
 

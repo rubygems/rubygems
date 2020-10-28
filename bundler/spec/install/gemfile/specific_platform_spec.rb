@@ -36,6 +36,18 @@ RSpec.describe "bundle install with specific_platform enabled" do
       expect(err).to be_empty
     end
 
+    it "caches both the universal-darwin and ruby gems when cache_all_platforms is configured and properly picks them up on further bundler invocations" do
+      setup_multiplatform_gem
+      gemfile(google_protobuf)
+      bundle "config set --local cache_all_platforms true"
+      bundle "cache"
+      expect([cached_gem("google-protobuf-3.0.0.alpha.5.0.5.1"), cached_gem("google-protobuf-3.0.0.alpha.5.0.5.1-universal-darwin")]).
+        to all(exist)
+
+      bundle "install --verbose"
+      expect(err).to be_empty
+    end
+
     it "caches multiplatform git gems with a single gemspec when --all-platforms is passed" do
       git = build_git "pg_array_parser", "1.0"
 

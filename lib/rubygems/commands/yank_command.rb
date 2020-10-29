@@ -92,8 +92,4 @@ data you will need to change them immediately and yank your gem.
   rescue
     nil
   end
-
-  def get_platform_from_requirements(requirements)
-    Gem.platforms[1].to_s if requirements.key? :added_platform
-  end
 end

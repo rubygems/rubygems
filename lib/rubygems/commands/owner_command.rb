@@ -52,9 +52,8 @@ permission to.
 
   def execute
     @host = options[:host]
-    @scope = get_scope
 
-    sign_in
+    sign_in(scope: get_owner_scope)
     name = get_one_gem_name
 
     add_owners    name, options[:add]
@@ -103,17 +102,17 @@ permission to.
   private
 
   def send_owner_request(method, name, owner)
-    rubygems_api_request method, "api/v1/gems/#{name}/owners" do |request|
+    rubygems_api_request method, "api/v1/gems/#{name}/owners", scope: get_owner_scope(method: method) do |request|
       request.set_form_data 'email' => owner
       request.add_field "Authorization", api_key
       request.add_field "OTP", options[:otp] if options[:otp]
     end
   end
 
-  def get_scope
-    if options[:add].any?
+  def get_owner_scope(method: nil)
+    if method == :post || options.any? && options[:add].any?
       :add_owner
-    elsif options[:remove].any?
+    elsif method == :delete || options.any? && options[:remove].any?
       :remove_owner
     end
   end

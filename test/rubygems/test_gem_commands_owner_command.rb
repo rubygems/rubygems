@@ -296,7 +296,7 @@ EOF
     assert_match access_notice, @stub_ui.output
     assert_match "Email:", @stub_ui.output
     assert_match "Password:", @stub_ui.output
-    assert_match "Added remove_owner scope to the API key", @stub_ui.output
+    assert_match "Added remove_owner scope to the existing API key", @stub_ui.output
     assert_match response_success, @stub_ui.output
   end
 
@@ -320,7 +320,7 @@ EOF
     assert_match access_notice, @stub_ui.output
     assert_match "Email:", @stub_ui.output
     assert_match "Password:", @stub_ui.output
-    assert_match "Added add_owner scope to the API key", @stub_ui.output
+    assert_match "Added add_owner scope to the existing API key", @stub_ui.output
     assert_match response_success, @stub_ui.output
   end
 end

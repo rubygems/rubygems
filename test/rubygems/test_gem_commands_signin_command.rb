@@ -82,7 +82,9 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\n"
     util_capture(key_name_ui, nil, api_key, fetcher) { @cmd.execute }
 
-    assert_match "API Key name [#{Socket.gethostname}]", key_name_ui.output
+    user = ENV["USER"] || ENV["USERNAME"]
+
+    assert_match "API Key name [#{Socket.gethostname}-#{user}", key_name_ui.output
     assert_match "index_rubygems [y/N]", key_name_ui.output
     assert_match "push_rubygem [y/N]", key_name_ui.output
     assert_match "yank_rubygem [y/N]", key_name_ui.output

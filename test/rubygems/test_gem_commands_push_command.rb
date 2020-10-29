@@ -426,7 +426,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     assert_match access_notice, @ui.output
     assert_match "Email:", @ui.output
     assert_match "Password:", @ui.output
-    assert_match "Added push_rubygem scope to the API key", @ui.output
+    assert_match "Added push_rubygem scope to the existing API key", @ui.output
     assert_match response_success, @ui.output
   end
 

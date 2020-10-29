@@ -202,7 +202,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
 
     assert_match 'You have enabled multi-factor authentication. Please enter OTP code.', @sign_in_ui.output
     assert_match 'Code: ', @sign_in_ui.output
-    assert_match 'Signed in.', @sign_in_ui.output
+    assert_match 'Signed in with API key:', @sign_in_ui.output
     assert_equal '111111', @fetcher.last_request['OTP']
   end
 

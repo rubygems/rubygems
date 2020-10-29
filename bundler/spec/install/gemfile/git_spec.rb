@@ -933,8 +933,6 @@ RSpec.describe "bundle install with git sources" do
   end
 
   it "prints a friendly error if a file blocks the git repo" do
-    skip "drive letter is not detected correctly in error message" if Gem.win_platform?
-
     build_git "foo"
 
     FileUtils.mkdir_p(default_bundle_path)

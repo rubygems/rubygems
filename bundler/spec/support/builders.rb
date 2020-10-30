@@ -523,6 +523,7 @@ module Spec
           file = Pathname.new(path).join(file)
           FileUtils.mkdir_p(file.dirname)
           File.open(file, "w") {|f| f.puts source }
+          File.chmod("+x", file) if @spec.executables.map {|exe| "#{@spec.bindir}/#{exe}" }.include?(file)
         end
         path
       end

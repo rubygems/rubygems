@@ -663,6 +663,7 @@ test/rubygems/test_gem_source_list.rb
 test/rubygems/test_gem_source_local.rb
 test/rubygems/test_gem_source_lock.rb
 test/rubygems/test_gem_source_specific_file.rb
+test/rubygems/test_gem_source_subpath_problem.rb
 test/rubygems/test_gem_source_vendor.rb
 test/rubygems/test_gem_spec_fetcher.rb
 test/rubygems/test_gem_specification.rb

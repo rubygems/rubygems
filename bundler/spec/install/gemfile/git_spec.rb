@@ -30,11 +30,15 @@ RSpec.describe "bundle install with git sources" do
       expect(Dir["#{default_bundle_path}/cache/bundler/git/foo-1.0-*"]).to have_attributes :size => 1
     end
 
-    it "caches the git repo globally" do
+    it "caches the git repo globally and properly uses the cached repo on the next invocation" do
       simulate_new_machine
       bundle "config set global_gem_cache true"
       bundle :install
       expect(Dir["#{home}/.bundle/cache/git/foo-1.0-*"]).to have_attributes :size => 1
+
+      bundle "install --verbose"
+      expect(err).to be_empty
+      expect(out).to include("Using foo 1.0 from #{lib_path("foo")}")
     end
 
     it "caches the evaluated gemspec" do

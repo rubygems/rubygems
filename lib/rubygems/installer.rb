@@ -530,6 +530,7 @@ class Gem::Installer
   def generate_bin_script(filename, bindir)
     bin_script_path = File.join bindir, formatted_program_filename(filename)
 
+    require 'fileutils'
     FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
 
     File.open bin_script_path, 'wb', 0755 do |file|

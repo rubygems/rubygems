@@ -231,7 +231,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     end
 
     assert_equal '', @ui.output
-    assert_equal "ERROR:  Gemspec file not found: some_gem.gemspec\n", @ui.error
+    assert_equal "ERROR:  Couldn't find a gemspec file matching 'some_gem' in #{@tempdir}\n", @ui.error
   end
 
   def test_execute_outside_dir
@@ -335,7 +335,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     end
 
     assert_equal "", @ui.output
-    assert_equal "ERROR:  No Gemspec in #{gemspec_dir}\n", @ui.error
+    assert_equal "ERROR:  Couldn't find a gemspec file matching '*.gemspec' in #{gemspec_dir}\n", @ui.error
 
     gem_file = File.join gemspec_dir, File.basename(@gem.cache_file)
     refute File.exist?(gem_file)

@@ -59,7 +59,7 @@ class TestGemCommandsHelpCommand < Gem::TestCase
     util_gem 'commands' do |out, err|
       deprecated_commands = mgr.command_names.select {|cmd| mgr[cmd].deprecated? }
       deprecated_commands.each do |cmd|
-        refute_match(/\s+#{cmd}\s+\S+/, out)
+        refute_match(/\A\s+#{cmd}\s+\S+\z/, out)
       end
     end
   end

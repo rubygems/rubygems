@@ -106,9 +106,9 @@ module Bundler
       specification.dependencies_for_activated_platforms
     end
 
-    def search_for(dependency)
-      platform = dependency.__platform
-      dependency = dependency.dep
+    def search_for(dependency_proxy)
+      platform = dependency_proxy.__platform
+      dependency = dependency_proxy.dep
       search = @search_for[dependency] ||= begin
         name = dependency.name
         index = index_for(dependency)

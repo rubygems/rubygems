@@ -51,6 +51,18 @@ RSpec.describe "bundle binstubs <gem>" do
       expect(bundled_app("bin/rake")).to exist
     end
 
+    it "allows installing binstubs for all platforms" do
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        gem "rack"
+      G
+
+      bundle "binstubs rack --all-platforms"
+
+      expect(bundled_app("bin/rackup")).to exist
+      expect(bundled_app("bin/rackup.cmd")).to exist
+    end
+
     it "displays an error when used without any gem" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -354,6 +366,14 @@ RSpec.describe "bundle binstubs <gem>" do
       it "generates a standalone binstub at the given path" do
         bundle "binstubs rack --standalone --path foo"
         expect(bundled_app("foo/rackup")).to exist
+      end
+    end
+
+    context "when specified --all-platforms option" do
+      it "generates standalone binstubs for all platforms" do
+        bundle "binstubs rack --standalone --all-platforms"
+        expect(bundled_app("bin/rackup")).to exist
+        expect(bundled_app("bin/rackup.cmd")).to exist
       end
     end
   end

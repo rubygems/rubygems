@@ -143,7 +143,7 @@ module Bundler
         end
 
         File.write(binstub_path, content, :mode => mode, :perm => 0o777 & ~File.umask)
-        if Bundler::WINDOWS
+        if Bundler::WINDOWS || options[:all_platforms]
           prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
           File.write("#{binstub_path}.cmd", prefix + content, :mode => mode)
         end
@@ -164,7 +164,7 @@ module Bundler
       end
     end
 
-    def generate_standalone_bundler_executable_stubs(spec)
+    def generate_standalone_bundler_executable_stubs(spec, options = {})
       # double-assignment to avoid warnings about variables that will be used by ERB
       bin_path = Bundler.bin_path
       unless path = Bundler.settings[:path]
@@ -190,7 +190,7 @@ module Bundler
         end
 
         File.write("#{bin_path}/#{executable}", content, :mode => mode, :perm => 0o755)
-        if Bundler::WINDOWS
+        if Bundler::WINDOWS || options[:all_platforms]
           prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
           File.write("#{bin_path}/#{executable}.cmd", prefix + content, :mode => mode)
         end

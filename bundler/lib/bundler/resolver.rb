@@ -108,7 +108,7 @@ module Bundler
 
     def search_for(dependency)
       platform = dependency.__platform
-      dependency = dependency.dep unless dependency.is_a? Gem::Dependency
+      dependency = dependency.dep
       search = @search_for[dependency] ||= begin
         name = dependency.name
         index = index_for(dependency)

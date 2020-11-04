@@ -110,14 +110,15 @@ module Bundler
       platform = dependency.__platform
       dependency = dependency.dep unless dependency.is_a? Gem::Dependency
       search = @search_for[dependency] ||= begin
+        name = dependency.name
         index = index_for(dependency)
-        results = index.search(dependency, @base[dependency.name])
+        results = index.search(dependency, @base[name])
 
-        if vertex = @base_dg.vertex_named(dependency.name)
+        if vertex = @base_dg.vertex_named(name)
           locked_requirement = vertex.payload.requirement
         end
 
-        if !@prerelease_specified[dependency.name] && (!@use_gvp || locked_requirement.nil?)
+        if !@prerelease_specified[name] && (!@use_gvp || locked_requirement.nil?)
           # Move prereleases to the beginning of the list, so they're considered
           # last during resolution.
           pre, results = results.partition {|spec| spec.version.prerelease? }

@@ -109,7 +109,7 @@ module Bundler
     def search_for(dependency_proxy)
       platform = dependency_proxy.__platform
       dependency = dependency_proxy.dep
-      search = @search_for[dependency] ||= begin
+      @search_for[dependency_proxy] ||= begin
         name = dependency.name
         index = index_for(dependency)
         results = index.search(dependency, @base[name])
@@ -146,25 +146,25 @@ module Bundler
         end
         # GVP handles major itself, but it's still a bit risky to trust it with it
         # until we get it settled with new behavior. For 2.x it can take over all cases.
-        if !@use_gvp
+        search = if !@use_gvp
           spec_groups
         else
           @gem_version_promoter.sort_versions(dependency, spec_groups)
         end
-      end
-      selected_sgs = []
-      search.each do |sg|
-        next unless sg.for?(platform)
-        sg_all_platforms = sg.copy_for(self.class.sort_platforms(@platforms).reverse)
-        selected_sgs << sg_all_platforms
+        selected_sgs = []
+        search.each do |sg|
+          next unless sg.for?(platform)
+          sg_all_platforms = sg.copy_for(self.class.sort_platforms(@platforms).reverse)
+          selected_sgs << sg_all_platforms
 
-        next if sg_all_platforms.activated_platforms == [Gem::Platform::RUBY]
-        # Add a spec group for "non platform specific spec" as the fallback
-        # spec group.
-        sg_ruby = sg.copy_for([Gem::Platform::RUBY])
-        selected_sgs.insert(-2, sg_ruby) if sg_ruby
+          next if sg_all_platforms.activated_platforms == [Gem::Platform::RUBY]
+          # Add a spec group for "non platform specific spec" as the fallback
+          # spec group.
+          sg_ruby = sg.copy_for([Gem::Platform::RUBY])
+          selected_sgs.insert(-2, sg_ruby) if sg_ruby
+        end
+        selected_sgs
       end
-      selected_sgs
     end
 
     def index_for(dependency)

@@ -430,7 +430,7 @@ RSpec.describe "bundle install with platform conditionals" do
     expect(out).not_to match(/Could not find gem 'some_gem/)
   end
 
-  it "resolves all platforms by default and without warning messages" do
+  it "does not print a warning when a dependency is unused on a platform different from the current one" do
     simulate_platform "ruby"
 
     gemfile <<-G
@@ -447,14 +447,9 @@ RSpec.describe "bundle install with platform conditionals" do
       GEM
         remote: #{file_uri_for(gem_repo1)}/
         specs:
-          rack (1.0.0)
 
       PLATFORMS
-        java
         ruby
-        x64-mingw32
-        x86-mingw32
-        x86-mswin32
 
       DEPENDENCIES
         rack

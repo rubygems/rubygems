@@ -147,4 +147,34 @@ class TestGemCommandsYankCommand < Gem::TestCase
     assert_equal 'key', @fetcher.last_request['Authorization']
     assert_equal [yank_uri], @fetcher.paths
   end
+
+  def test_yank_gem_unathorized_api_key
+    response_forbidden = "The API key doesn't have access"
+    response_success   = 'Successfully yanked'
+    host               = 'http://example'
+
+    @fetcher.data["#{host}/api/v1/gems/yank"] = [
+      [response_forbidden, 403, 'Forbidden'],
+      [response_success, 200, "OK"],
+    ]
+
+    @fetcher.data["#{host}/api/v1/api_key"] = ["", 200, "OK"]
+    @cmd.options[:args]           = %w[a]
+    @cmd.options[:added_platform] = true
+    @cmd.options[:version]        = req('= 1.0')
+    @cmd.instance_variable_set :@host, host
+    @cmd.instance_variable_set :@scope, :yank_rubygem
+
+    @ui = Gem::MockGemUi.new "some@mail.com\npass\n"
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    access_notice = "The existing key doesn't have access of yank_rubygem on http://example. Please sign in to update access."
+    assert_match access_notice, @ui.output
+    assert_match "Email:", @ui.output
+    assert_match "Password:", @ui.output
+    assert_match "Added yank_rubygem scope to the existing API key", @ui.output
+    assert_match response_success, @ui.output
+  end
 end

@@ -239,13 +239,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
       let(:ruby_requirement) { %("#{RUBY_VERSION}") }
       let(:error_message_requirement) { "~> #{RUBY_VERSION}.0" }
-      let(:error_message_platform) do
-        if Bundler.feature_flag.specific_platform?
-          " #{Bundler.local_platform}"
-        else
-          ""
-        end
-      end
+      let(:error_message_platform) { " #{Bundler.local_platform}" }
 
       shared_examples_for "ruby version conflicts" do
         it "raises an error during resolution" do

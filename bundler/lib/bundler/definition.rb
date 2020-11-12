@@ -552,10 +552,7 @@ module Bundler
     end
 
     def current_platforms
-      [].tap do |platforms|
-        platforms << local_platform if Bundler.feature_flag.specific_platform?
-        platforms << generic_local_platform
-      end
+      [local_platform, generic_local_platform].uniq
     end
 
     def change_reason

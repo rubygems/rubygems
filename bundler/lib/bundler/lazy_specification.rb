@@ -82,7 +82,7 @@ module Bundler
         search_object = if source.is_a?(Source::Path)
           Dependency.new(name, version)
         else
-          Bundler.feature_flag.specific_platform? || Bundler.settings[:force_ruby_platform] ? self : Dependency.new(name, version)
+          self
         end
         platform_object = Gem::Platform.new(platform)
         candidates = source.specs.search(search_object)
@@ -90,12 +90,6 @@ module Bundler
           MatchPlatform.platforms_match?(spec.platform, platform_object)
         end
         search = same_platform_candidates.last || candidates.last
-        if search && Gem::Platform.new(search.platform) != platform_object && !search.runtime_dependencies.-(dependencies.reject {|d| d.type == :development }).empty?
-          Bundler.ui.warn "Unable to use the platform-specific (#{search.platform}) version of #{name} (#{version}) " \
-            "because it has different dependencies from the #{platform} version. " \
-            "To use the platform-specific version of the gem, run `bundle config set --local specific_platform true` and install again."
-          search = source.specs.search(self).last
-        end
         search.dependencies = dependencies if search && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
         search
       end

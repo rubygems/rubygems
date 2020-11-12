@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "bundle install with specific_platform enabled" do
-  before do
-    bundle "config set specific_platform true"
-  end
-
+RSpec.describe "bundle install with specific platforms" do
   let(:google_protobuf) { <<-G }
     source "#{file_uri_for(gem_repo2)}"
     gem "google-protobuf"

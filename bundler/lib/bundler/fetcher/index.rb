@@ -19,8 +19,7 @@ module Bundler
           raise BadAuthenticationError, remote_uri if remote_uri.userinfo
           raise AuthenticationRequiredError, remote_uri
         else
-          Bundler.ui.trace e
-          raise HTTPError, "Could not fetch specs from #{display_uri}"
+          raise HTTPError, "Could not fetch specs from #{display_uri} due to underlying error <#{e.message}>"
         end
       end
 

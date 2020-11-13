@@ -90,7 +90,7 @@ RSpec.describe Bundler::Fetcher::Index do
       before { allow(Bundler).to receive(:ui).and_return(double(:trace => nil)) }
 
       it "should raise a Bundler::HTTPError" do
-        expect { subject.specs(gem_names) }.to raise_error(Bundler::HTTPError, "Could not fetch specs from http://sample_uri.com")
+        expect { subject.specs(gem_names) }.to raise_error(Bundler::HTTPError, "Could not fetch specs from http://sample_uri.com due to underlying error <You get an error, you get an error! (http://sample_uri.com)>")
       end
     end
   end

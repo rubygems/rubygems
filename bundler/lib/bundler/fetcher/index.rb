@@ -8,7 +8,7 @@ module Bundler
     class Index < Base
       def specs(_gem_names)
         Bundler.rubygems.fetch_all_remote_specs(remote)
-      rescue Gem::RemoteFetcher::FetchError, OpenSSL::SSL::SSLError, Net::HTTPFatalError => e
+      rescue Gem::RemoteFetcher::FetchError => e
         case e.message
         when /certificate verify failed/
           raise CertificateFailureError.new(display_uri)

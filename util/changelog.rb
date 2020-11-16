@@ -83,7 +83,7 @@ class Changelog
       format_header,
       "",
       unreleased_notes,
-      lines,
+      released_notes,
     ].join("\n") + "\n"
 
     File.write(@file, full_new_changelog)
@@ -227,7 +227,7 @@ class Changelog
   end
 
   def released_notes
-    lines.drop_while {|line| !line.start_with?(release_section_token) }
+    lines.drop_while {|line| !line.start_with?(release_section_token) || !line.include?(@latest_release.tag_name.gsub(/^.*-v/, "")) }
   end
 
   def lines

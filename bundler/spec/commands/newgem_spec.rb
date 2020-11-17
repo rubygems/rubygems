@@ -424,7 +424,7 @@ RSpec.describe "bundle gem" do
     it "requires the version file" do
       bundle "gem #{gem_name}"
 
-      expect(bundled_app("#{gem_name}/lib/#{require_path}.rb").read).to match(%r{require "#{require_path}/version"})
+      expect(bundled_app("#{gem_name}/lib/#{require_path}.rb").read).to match(%r{require_relative "#{require_relative_path}/version"})
     end
 
     it "creates a base error class" do
@@ -911,6 +911,8 @@ RSpec.describe "bundle gem" do
 
     let(:require_path) { "test_gem" }
 
+    let(:require_relative_path) { "test_gem" }
+
     let(:flags) { nil }
 
     it "does not nest constants" do
@@ -963,6 +965,8 @@ RSpec.describe "bundle gem" do
     let(:gem_name) { "test-gem" }
 
     let(:require_path) { "test/gem" }
+
+    let(:require_relative_path) { "gem" }
 
     it "nests constants so they work" do
       bundle "gem #{gem_name}"

@@ -16,7 +16,7 @@ To make reviewing this PR a bit easier, please fill out answers to the following
 determine the cause of the issue and your conclusions. If you considered other
 alternatives, explain why you end up choosing the current implementation -->
 
-## Make sure he following tasks are checked
+## Make sure the following tasks are checked
 
 - [ ] Describe the problem / feature
 - [ ] Write [tests](https://github.com/rubygems/rubygems/blob/master/bundler/doc/development/PULL_REQUESTS.md#tests) for features and bug fixes

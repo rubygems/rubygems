@@ -43,6 +43,14 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     gemspec.bindir = "exe"
     gemspec.executables = ["bundle"]
 
+    # modify bundler's executables: add a ruby shebang so that they're wrapped
+    gemspec.executables.each do |exe|
+      File.open "#{gemspec.name}/#{gemspec.bindir}/#{exe}", 'w' do |io|
+        io.puts '#!/usr/bin/ruby'
+        io.puts "# #{exe}"
+      end
+    end
+
     File.open 'bundler/bundler.gemspec', 'w' do |io|
       io.puts gemspec.to_ruby
     end

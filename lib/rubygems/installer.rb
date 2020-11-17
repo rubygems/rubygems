@@ -513,7 +513,7 @@ class Gem::Installer
 
       check_executable_overwrite filename
 
-      if @wrappers # && wrappable_executable?(bin_path)
+      if @wrappers && wrappable_executable?(bin_path)
         generate_bin_script filename, @bin_dir
       else
         generate_bin_symlink filename, @bin_dir

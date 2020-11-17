@@ -480,17 +480,11 @@ class Gem::Installer
   # If the first line of the file is not a shebang which mentions ruby, then
   # this is not a ruby executable and should not be wrapped
   #
-  # If the first line is a shebang which mentions ruby, but the second line is
-  # `# rubygems: no-wrap` (user-defined opt-out of wrap), don't wrap as well
-  #
   # Otherwise wrap
 
   def wrappable_executable?(bin_path)
     File.open bin_path, 'r' do |f|
-      break false if f.gets !~ /^#!.*ruby/ # not a ruby executable, don't wrap
-      l2 = f.gets
-      # files composed of a single ruby-shebang line are not wrapped
-      l2 && l2.strip != '# rubygems: no-wrap' # user defined no-wrap
+      f.gets =~ /^#!.*ruby/ # is the first line a ruby shebang
     end
   end
 

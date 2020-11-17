@@ -639,7 +639,7 @@ RSpec.describe "bundle clean" do
       end
     end
 
-    realworld_system_gems "fiddle"
+    realworld_system_gems "fiddle --version 1.0.0"
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"

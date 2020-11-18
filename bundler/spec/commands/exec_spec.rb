@@ -698,15 +698,23 @@ RSpec.describe "bundle exec" do
       let(:exit_code) { 1 }
       let(:expected_err) do
         "bundler: failed to load command: #{path} (#{path})" \
-        "\nRuntimeError: ERROR\n  #{path}:10:in `<top (required)>'"
+        "\n#{path}:10:in `<top (required)>': ERROR (RuntimeError)"
       end
-      it_behaves_like "it runs"
+
+      it "runs like a normally executed executable" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
+        subject
+        expect(exitstatus).to eq(exit_code)
+        expect(err).to start_with(expected_err)
+        expect(out).to eq(expected)
+      end
     end
 
     context "the executable raises an error without a backtrace" do
       let(:executable) { super() << "\nclass Err < Exception\ndef backtrace; end;\nend\nraise Err" }
       let(:exit_code) { 1 }
-      let(:expected_err) { "bundler: failed to load command: #{path} (#{path})\nErr: Err" }
+      let(:expected_err) { "bundler: failed to load command: #{path} (#{path})\n#{system_gem_path("bin/bundle")}: Err (Err)" }
       let(:expected) { super() }
 
       it_behaves_like "it runs"

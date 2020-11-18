@@ -865,6 +865,8 @@ __FILE__: #{path.to_s.inspect}
   context "nested bundle exec" do
     context "when bundle in a local path" do
       before do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rack"
@@ -874,8 +876,6 @@ __FILE__: #{path.to_s.inspect}
       end
 
       it "correctly shells out" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         file = bundled_app("file_that_bundle_execs.rb")
         create_file(file, <<-RUBY)
           #!#{Gem.ruby}
@@ -884,6 +884,49 @@ __FILE__: #{path.to_s.inspect}
         file.chmod(0o777)
         bundle "exec #{file}", :env => { "PATH" => path }
         expect(out).to eq("foo")
+      end
+    end
+
+    context "when Kernel.require uses extra monkeypatches" do
+      before do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
+        install_gemfile ""
+      end
+
+      it "does not undo the monkeypatches" do
+        karafka = bundled_app("bin/karafka")
+        create_file(karafka, <<~RUBY)
+          #!#{Gem.ruby}
+
+          module Kernel
+            module_function
+
+            alias_method :require_before_extra_monkeypatches, :require
+
+            def require(path)
+              puts "requiring \#{path} used the monkeypatch"
+
+              require_before_extra_monkeypatches(path)
+            end
+          end
+
+          Bundler.setup(:default)
+
+          require "foo"
+        RUBY
+        karafka.chmod(0o777)
+
+        foreman = bundled_app("bin/foreman")
+        create_file(foreman, <<~RUBY)
+          #!#{Gem.ruby}
+
+          puts `bundle exec bin/karafka`
+        RUBY
+        foreman.chmod(0o777)
+
+        bundle "exec #{foreman}"
+        expect(out).to eq("requiring foo used the monkeypatch")
       end
     end
 

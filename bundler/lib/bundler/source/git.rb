@@ -158,8 +158,6 @@ module Bundler
       end
 
       def specs(*)
-        set_local!(app_cache_path) if has_app_cache? && !local?
-
         if requires_checkout? && !@copied
           fetch
           git_proxy.copy_to(install_path, submodules)
@@ -256,10 +254,6 @@ module Bundler
         @local       = true
         @local_specs = @git_proxy = nil
         @cache_path  = @install_path = path
-      end
-
-      def has_app_cache?
-        cached_revision && super
       end
 
       def requires_checkout?

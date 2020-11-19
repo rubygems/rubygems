@@ -253,7 +253,7 @@ module Bundler
       def set_local!(path)
         @local       = true
         @local_specs = @git_proxy = nil
-        @cache_path  = @install_path = path
+        @install_path = path
       end
 
       def has_app_cache?

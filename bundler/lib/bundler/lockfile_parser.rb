@@ -46,6 +46,16 @@ module Bundler
       attributes
     end
 
+    def self.bundled_with
+      lockfile = Bundler.default_lockfile
+      return unless lockfile.file?
+
+      lockfile_contents = Bundler.read_file(lockfile)
+      return unless lockfile_contents.include?(BUNDLED)
+
+      lockfile_contents.split(BUNDLED).last.strip
+    end
+
     def initialize(lockfile)
       @platforms    = []
       @sources      = []

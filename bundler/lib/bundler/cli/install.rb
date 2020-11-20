@@ -5,6 +5,7 @@ module Bundler
     attr_reader :options
     def initialize(options)
       @options = options
+      ensure_correct_bundler_version
     end
 
     def run
@@ -103,6 +104,14 @@ module Bundler
     end
 
     private
+
+    def ensure_correct_bundler_version
+      bundler_dep = Bundler.load.dependencies.find {|d| d.name == "bundler" }
+      if bundler_dep
+        result = Gem.install(bundler_dep).find {|g| g.name == "bundler" }
+        Kernel.exec("bundle", "_#{result.version}_", *ARGV)
+      end
+    end
 
     def warn_if_root
       return if Bundler.settings[:silence_root_warning] || Bundler::WINDOWS || !Process.uid.zero?

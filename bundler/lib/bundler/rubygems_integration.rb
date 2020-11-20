@@ -25,6 +25,10 @@ module Bundler
       Gem::Requirement.new(req_str).satisfied_by?(version)
     end
 
+    def supports_bundler_trampolining?
+      provides?(">= 3.3.0.a")
+    end
+
     def build_args
       require "rubygems/command"
       Gem::Command.build_args

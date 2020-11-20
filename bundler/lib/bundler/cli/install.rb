@@ -5,6 +5,7 @@ module Bundler
     attr_reader :options
     def initialize(options)
       @options = options
+      ensure_correct_bundler_version
     end
 
     def run
@@ -89,6 +90,35 @@ module Bundler
     end
 
     private
+
+    def ensure_correct_bundler_version
+      return if ignore_locked_bundler?
+
+      version_requirement = Gem::Requirement.new(["= #{lockfile_version}"])
+      bundler_dep = Gem::Dependency.new("bundler", version_requirement)
+
+      Bundler.ui.info \
+        "Bundler #{Bundler::VERSION} is running, but your lockfile was generated with #{lockfile_version}. " \
+        "Installing Bundler #{lockfile_version} and restarting using that version."
+
+      Gem.install(bundler_dep)
+
+      Bundler.with_original_env do
+        Kernel.exec({ "BUNDLER_VERSION" => lockfile_version }, $PROGRAM_NAME, *ARGV)
+      end
+    end
+
+    def ignore_locked_bundler?
+      ENV["BUNDLER_VERSION"] ||
+        !Bundler.rubygems.supports_bundler_trampolining? ||
+        lockfile_version.nil? ||
+        lockfile_version.end_with?(".dev") ||
+        lockfile_version == Bundler::VERSION
+    end
+
+    def lockfile_version
+      @lockfile_version ||= Bundler::LockfileParser.bundled_with
+    end
 
     def warn_if_root
       return if Bundler.settings[:silence_root_warning] || Gem.win_platform? || !Process.uid.zero?

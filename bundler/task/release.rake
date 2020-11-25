@@ -51,7 +51,7 @@ namespace :release do
     initial_branch = `git rev-parse --abbrev-ref HEAD`.strip
     release_branch = "release_bundler/#{version}"
 
-    sh("git", "checkout", "-b", release_branch, stable_branch)
+    system("git", "checkout", "-b", release_branch, stable_branch, exception: true)
 
     begin
       prs = changelog.relevant_pull_requests_since_last_release
@@ -77,10 +77,10 @@ namespace :release do
 
       changelog.cut!
 
-      sh("git", "commit", "-am", "Version #{version} with changelog")
+      system("git", "commit", "-am", "Version #{version} with changelog", exception: true)
     rescue StandardError
-      sh("git", "checkout", initial_branch)
-      sh("git", "branch", "-D", release_branch)
+      system("git", "checkout", initial_branch, exception: true)
+      system("git", "branch", "-D", release_branch, exception: true)
       raise
     end
   end

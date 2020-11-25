@@ -3,6 +3,7 @@
 require_relative "../lib/bundler/gem_tasks"
 require_relative "../spec/support/build_metadata"
 require_relative "../../util/changelog"
+require_relative "../../util/release"
 
 Bundler::GemHelper.tag_prefix = "bundler-"
 
@@ -43,45 +44,6 @@ namespace :release do
 
   desc "Prepare a new release"
   task :prepare, [:version] do |_t, opts|
-    version = opts[:version]
-    changelog = Changelog.for_bundler(version)
-
-    stable_branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
-
-    initial_branch = `git rev-parse --abbrev-ref HEAD`.strip
-    release_branch = "release_bundler/#{version}"
-
-    system("git", "checkout", "-b", release_branch, stable_branch, exception: true)
-
-    begin
-      prs = changelog.relevant_pull_requests_since_last_release
-
-      if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
-        warn <<~MSG
-          Opening a new shell to fix the cherry-pick errors manually. Run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the task.
-
-          Otherwise type `Ctrl-D` to cancel
-        MSG
-
-        unless system(ENV["SHELL"] || "zsh")
-          raise "Failed to resolve conflitcs, resetting original state"
-        end
-      end
-
-      version_file = File.expand_path("../lib/bundler/version.rb", __dir__)
-      version_contents = File.read(version_file)
-      unless version_contents.sub!(/^(\s*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/, "\\1#{version.to_s.dump}")
-        raise "Failed to update #{version_file}, is it in the expected format?"
-      end
-      File.open(version_file, "w") {|f| f.write(version_contents) }
-
-      changelog.cut!
-
-      system("git", "commit", "-am", "Version #{version} with changelog", exception: true)
-    rescue StandardError
-      system("git", "checkout", initial_branch, exception: true)
-      system("git", "branch", "-D", release_branch, exception: true)
-      raise
-    end
+    Release.for_bundler(opts[:version]).prepare!
   end
 end

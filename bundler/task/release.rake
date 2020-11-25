@@ -46,12 +46,12 @@ namespace :release do
     version = opts[:version]
     changelog = Changelog.for_bundler(version)
 
-    branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
+    stable_branch = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join(".")
 
-    previous_branch = `git rev-parse --abbrev-ref HEAD`.strip
+    initial_branch = `git rev-parse --abbrev-ref HEAD`.strip
     release_branch = "release_bundler/#{version}"
 
-    sh("git", "checkout", "-b", release_branch, branch)
+    sh("git", "checkout", "-b", release_branch, stable_branch)
 
     begin
       prs = changelog.relevant_pull_requests_since_last_release
@@ -79,7 +79,7 @@ namespace :release do
 
       sh("git", "commit", "-am", "Version #{version} with changelog")
     rescue StandardError
-      sh("git", "checkout", previous_branch)
+      sh("git", "checkout", initial_branch)
       sh("git", "branch", "-D", release_branch)
       raise
     end

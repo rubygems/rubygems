@@ -4091,7 +4091,7 @@ Enhancements:
 * Tar handling code refactoring and cleanup.
 * Gem::DependencyInstaller's API has changed.
 
-For a full list of changes to RubyGems, see the ChangeLog file.
+For a full list of changes to RubyGems, see the git log.
 
 === 1.0.1 / 2007-12-20
 
@@ -4235,7 +4235,7 @@ Bug fixes:
 
 === 0.9.1 / 2007-01-16
 
-See ChangeLog
+See git log
 
 === 0.9.0 / 2006-06-28
 
@@ -4483,11 +4483,11 @@ There has been some minor usability enhancements and changes ...
 
 === 0.7.0 / 2004-07-09
 
-See ChangeLog
+See git log
 
 === 0.6.1 / 2004-06-08
 
-See ChangeLog
+See git log
 
 === 0.6.0 / 2004-06-08
 

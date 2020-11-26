@@ -2519,13 +2519,6 @@ class Gem::Specification < Gem::BasicSpecification
   def to_yaml(opts = {}) # :nodoc:
     Gem.load_yaml
 
-    # Because the user can switch the YAML engine behind our
-    # back, we have to check again here to make sure that our
-    # psych code was properly loaded, and load it if not.
-    unless Gem.const_defined?(:NoAliasYAMLTree)
-      require 'rubygems/psych_tree'
-    end
-
     builder = Gem::NoAliasYAMLTree.create
     builder << self
     ast = builder.tree

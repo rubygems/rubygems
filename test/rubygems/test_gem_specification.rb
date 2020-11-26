@@ -107,8 +107,6 @@ end
     end
 
     @current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-
-    load 'rubygems/syck_hack.rb'
   end
 
   def test_self_find_active_stub_by_path
@@ -753,9 +751,7 @@ end
     yaml = @a1.to_yaml
     yaml.sub!(/^date:.*/, "date: 2011-04-26 00:00:00.000000000Z")
 
-    spec = with_syck do
-      Gem::Specification.from_yaml yaml
-    end
+    Gem::Specification.from_yaml yaml
 
     assert_kind_of Time, @a1.date
     assert_kind_of Time, spec.date
@@ -788,9 +784,7 @@ test_files: []
 bindir:
     YAML
 
-    spec = with_syck do
-      Gem::Specification.from_yaml yaml
-    end
+    Gem::Specification.from_yaml yaml
 
     op = spec.dependencies.first.requirement.requirements.first.first
     refute_kind_of YAML::Syck::DefaultKey, op
@@ -3876,49 +3870,6 @@ end
       ensure
         File.umask(umask_orig)
       end
-    end
-  end
-
-  def with_syck
-    begin
-      verbose, $VERBOSE = $VERBOSE, nil
-      require "yaml"
-      old_engine = YAML::ENGINE.yamler
-      YAML::ENGINE.yamler = 'syck'
-      load 'rubygems/syck_hack.rb'
-    rescue NameError
-      # probably on 1.8, ignore
-    ensure
-      $VERBOSE = verbose
-    end
-
-    yield
-  ensure
-    begin
-      YAML::ENGINE.yamler = old_engine
-      load 'rubygems/syck_hack.rb'
-    rescue NameError
-      # ignore
-    end
-  end
-
-  def with_psych
-    begin
-      require "yaml"
-      old_engine = YAML::ENGINE.yamler
-      YAML::ENGINE.yamler = 'psych'
-      load 'rubygems/syck_hack.rb'
-    rescue NameError
-      # probably on 1.8, ignore
-    end
-
-    yield
-  ensure
-    begin
-      YAML::ENGINE.yamler = old_engine
-      load 'rubygems/syck_hack.rb'
-    rescue NameError
-      # ignore
     end
   end
 

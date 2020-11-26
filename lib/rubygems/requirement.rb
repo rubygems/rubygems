@@ -246,8 +246,7 @@ class Gem::Requirement
   def satisfied_by?(version)
     raise ArgumentError, "Need a Gem::Version: #{version.inspect}" unless
       Gem::Version === version
-    # #28965: syck has a bug with unquoted '=' YAML.loading as YAML::DefaultKey
-    requirements.all? {|op, rv| (OPS[op] || OPS["="]).call version, rv }
+    requirements.all? {|op, rv| (OPS[op]).call version, rv }
   end
 
   alias :=== :satisfied_by?

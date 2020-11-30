@@ -68,7 +68,7 @@ namespace :release do
         end
       end
 
-      version_file = "lib/bundler/version.rb"
+      version_file = File.expand_path("../lib/bundler/version.rb", __dir__)
       version_contents = File.read(version_file)
       unless version_contents.sub!(/^(\s*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/, "\\1#{version.to_s.dump}")
         raise "Failed to update #{version_file}, is it in the expected format?"

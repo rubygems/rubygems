@@ -51,7 +51,7 @@ class Release
 
         unless system(ENV["SHELL"] || "zsh")
           system("git", "cherry-pick", "--abort", exception: true)
-          raise "Failed to resolve conflitcs, resetting original state"
+          raise "Failed to resolve conflicts, resetting original state"
         end
       end
 

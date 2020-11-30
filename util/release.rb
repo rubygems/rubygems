@@ -11,6 +11,7 @@ class Release
       stable_branch: Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join("."),
       version_file: File.expand_path("../bundler/lib/bundler/version.rb", __dir__),
       title: "Bundler version #{version} with changelog",
+      tag_prefix: "bundler-v",
     )
   end
 
@@ -22,16 +23,18 @@ class Release
       stable_branch: Gem::Version.new(version).segments[0, 2].join("."),
       version_file: File.expand_path("../lib/rubygems.rb", __dir__),
       title: "Rubygems version #{version} with changelog",
+      tag_prefix: "v",
     )
   end
 
-  def initialize(version, changelog:, stable_branch:, release_branch:, version_file:, title:)
+  def initialize(version, changelog:, stable_branch:, release_branch:, version_file:, title:, tag_prefix:)
     @version = version
     @changelog = changelog
     @stable_branch = stable_branch
     @release_branch = release_branch
     @version_file = version_file
     @title = title
+    @tag_prefix = tag_prefix
   end
 
   def prepare!
@@ -40,7 +43,7 @@ class Release
     system("git", "checkout", "-b", @release_branch, @stable_branch, exception: true)
 
     begin
-      prs = @changelog.relevant_pull_requests_since_last_release
+      prs = relevant_pull_requests_since_last_release
 
       if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
         warn <<~MSG
@@ -61,13 +64,75 @@ class Release
       end
       File.open(@version_file, "w") {|f| f.write(version_contents) }
 
-      @changelog.cut!
+      @changelog.cut!(previous_version, prs)
 
       system("git", "commit", "-am", @title, exception: true)
     rescue StandardError
       system("git", "checkout", initial_branch, exception: true)
       system("git", "branch", "-D", @release_branch, exception: true)
       raise
+    end
+  end
+
+  def cut_changelog!
+    @changelog.cut!(previous_version, relevant_pull_requests_since_last_release)
+  end
+
+  def create_for_github!(release_notes)
+    tag = "#{@tag_prefix}#{@version}"
+
+    gh_client.create_release "rubygems/rubygems", tag, :name => tag,
+                                                       :body => release_notes.join("\n").strip,
+                                                       :prerelease => @version.prerelease?
+  end
+
+  private
+
+  def relevant_pull_requests_since_last_release
+    last_release_date = latest_release.created_at
+
+    pr_ids = merged_pr_ids_since(last_release_date)
+
+    relevant_pull_requests_for(pr_ids)
+  end
+
+  def previous_version
+    latest_release.tag_name.gsub(/^.*-v/, "")
+  end
+
+  def latest_release
+    @latest_release ||= gh_client.releases("rubygems/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.sort_by(&:created_at).last
+  end
+
+  def relevant_pull_requests_for(ids)
+    pulls = gh_client.pull_requests("rubygems/rubygems", :sort => :updated, :state => :closed, :direction => :desc)
+
+    loop do
+      pulls.select! {|pull| ids.include?(pull.number) }
+
+      break if (pulls.map(&:number) & ids).to_set == ids.to_set
+
+      pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
+    end
+
+    pulls.select {|pull| @changelog.relevant_label_for(pull) }.sort_by(&:merged_at)
+  end
+
+  def merged_pr_ids_since(date)
+    `git log --oneline --grep "^Merge pull request #" origin/master --since '#{date}'`.split("\n").map do |l|
+      _sha, message = l.split(/\s/, 2)
+
+      /^Merge pull request #(\d+)/.match(message)[1].to_i
+    end
+  end
+
+  def gh_client
+    @gh_client ||= begin
+      require "netrc"
+      _username, token = Netrc.read["api.github.com"]
+
+      require "octokit"
+      Octokit::Client.new(:access_token => token)
     end
   end
 end

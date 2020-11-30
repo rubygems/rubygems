@@ -33,13 +33,8 @@ namespace :release do
   desc "Push the release to Github releases"
   task :github do
     gemspec_version = Bundler::GemHelper.gemspec.version
-    version = Gem::Version.new(gemspec_version)
-    release_notes = Changelog.for_bundler(gemspec_version).release_notes
-    tag = "bundler-v#{version}"
 
-    GithubInfo.client.create_release "rubygems/rubygems", tag, :name => tag,
-                                                               :body => release_notes.join("\n").strip,
-                                                               :prerelease => version.prerelease?
+    Release.for_bundler(gemspec_version).create_for_github!
   end
 
   desc "Prepare a new release"

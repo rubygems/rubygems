@@ -118,9 +118,9 @@ end
 
 desc "Generates the changelog for a specific target version"
 task :generate_changelog, [:version] do |_t, opts|
-  require_relative "util/changelog"
+  require_relative "util/release"
 
-  Changelog.for_rubygems(opts[:version]).cut!
+  Release.for_rubygems(opts[:version]).cut_changelog!
 end
 
 desc "Release rubygems-#{v}"

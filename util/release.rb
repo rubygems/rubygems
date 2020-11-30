@@ -43,7 +43,7 @@ class Release
     system("git", "checkout", "-b", @release_branch, @stable_branch, exception: true)
 
     begin
-      prs = relevant_pull_requests_since_last_release
+      prs = relevant_unreleased_pull_requests
 
       if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
         warn <<~MSG
@@ -88,10 +88,8 @@ class Release
 
   private
 
-  def relevant_pull_requests_since_last_release
-    last_release_date = latest_release.created_at
-
-    pr_ids = merged_pr_ids_since(last_release_date)
+  def relevant_unreleased_pull_requests
+    pr_ids = unreleased_pr_ids
 
     relevant_pull_requests_for(pr_ids)
   end
@@ -118,12 +116,16 @@ class Release
     pulls.select {|pull| @changelog.relevant_label_for(pull) }.sort_by(&:merged_at)
   end
 
-  def merged_pr_ids_since(date)
-    `git log --oneline --grep "^Merge pull request #" origin/master --since '#{date}'`.split("\n").map do |l|
+  def unreleased_pr_ids
+    stable_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@stable_branch}`.split("\n")
+
+    `git log --oneline --grep "^Merge pull request #" origin/master`.split("\n").map do |l|
       _sha, message = l.split(/\s/, 2)
 
+      next if stable_merge_commit_messages.include?(message)
+
       /^Merge pull request #(\d+)/.match(message)[1].to_i
-    end
+    end.compact
   end
 
   def gh_client

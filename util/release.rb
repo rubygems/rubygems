@@ -14,6 +14,17 @@ class Release
     )
   end
 
+  def self.for_rubygems(version)
+    new(
+      version,
+      changelog: Changelog.for_rubygems(version),
+      release_branch: "release_rubygems/#{version}",
+      stable_branch: Gem::Version.new(version).segments[0, 2].join("."),
+      version_file: File.expand_path("../lib/rubygems.rb", __dir__),
+      title: "Rubygems version #{version} with changelog",
+    )
+  end
+
   def initialize(version, changelog:, stable_branch:, release_branch:, version_file:, title:)
     @version = version
     @changelog = changelog

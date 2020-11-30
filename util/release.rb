@@ -50,6 +50,7 @@ class Release
         MSG
 
         unless system(ENV["SHELL"] || "zsh")
+          system("git", "cherry-pick", "--abort", exception: true)
           raise "Failed to resolve conflitcs, resetting original state"
         end
       end

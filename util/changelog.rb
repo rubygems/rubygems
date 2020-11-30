@@ -203,13 +203,11 @@ class Changelog
   end
 
   def merged_pr_ids_since(date)
-    commits = `git log --oneline origin/master --since '#{date}'`.split("\n").map {|l| l.split(/\s/, 2) }
-    commits.map do |_sha, message|
-      match = /^Merge pull request #(\d+)/.match(message)
-      next unless match
+    `git log --oneline --grep "^Merge pull request #" origin/master --since '#{date}'`.split("\n").map do |l|
+      _sha, message = l.split(/\s/, 2)
 
-      match[1].to_i
-    end.compact
+      /^Merge pull request #(\d+)/.match(message)[1].to_i
+    end
   end
 
   def relevant_pull_requests_for(ids)

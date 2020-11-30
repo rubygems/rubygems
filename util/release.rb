@@ -95,7 +95,7 @@ class Release
   end
 
   def previous_version
-    latest_release.tag_name.gsub(/^.*-v/, "")
+    latest_release.tag_name.gsub(/^#{@tag_prefix}/, "")
   end
 
   def latest_release

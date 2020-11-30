@@ -47,9 +47,11 @@ class Release
 
       if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
         warn <<~MSG
-          Opening a new shell to fix the cherry-pick errors manually. Run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the task.
+          Opening a new shell to fix the cherry-pick errors manually. You can do the following now:
 
-          Otherwise type `Ctrl-D` to cancel
+          * Find the PR that caused the merge conflict.
+          * If you'd like to include that PR in the release, tag it with an appropriate label. Then type `Ctrl-D` and rerun the task so that the PR is cherry-picked before and the conflict is fixed.
+          * If you don't want to include that PR in the release, fix conflicts manually, run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the release preparation.
         MSG
 
         unless system(ENV["SHELL"] || "zsh")

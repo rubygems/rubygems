@@ -9,7 +9,7 @@ class Release
       changelog: Changelog.for_bundler(version),
       release_branch: "release_bundler/#{version}",
       stable_branch: Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }[0, 2].join("."),
-      version_file: File.expand_path("../bundler/lib/bundler/version.rb", __dir__),
+      version_files: [File.expand_path("../bundler/lib/bundler/version.rb", __dir__)],
       title: "Bundler version #{version} with changelog",
       tag_prefix: "bundler-v",
     )
@@ -21,18 +21,18 @@ class Release
       changelog: Changelog.for_rubygems(version),
       release_branch: "release_rubygems/#{version}",
       stable_branch: Gem::Version.new(version).segments[0, 2].join("."),
-      version_file: File.expand_path("../lib/rubygems.rb", __dir__),
+      version_files: [File.expand_path("../lib/rubygems.rb", __dir__), File.expand_path("../rubygems-update.gemspec", __dir__)],
       title: "Rubygems version #{version} with changelog",
       tag_prefix: "v",
     )
   end
 
-  def initialize(version, changelog:, stable_branch:, release_branch:, version_file:, title:, tag_prefix:)
+  def initialize(version, changelog:, stable_branch:, release_branch:, version_files:, title:, tag_prefix:)
     @version = version
     @changelog = changelog
     @stable_branch = stable_branch
     @release_branch = release_branch
-    @version_file = version_file
+    @version_files = version_files
     @title = title
     @tag_prefix = tag_prefix
   end
@@ -62,11 +62,13 @@ class Release
         end
       end
 
-      version_contents = File.read(@version_file)
-      unless version_contents.sub!(/^(\s*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/, "\\1#{@version.to_s.dump}")
-        raise "Failed to update #{@version_file}, is it in the expected format?"
+      @version_files.each do |version_file|
+        version_contents = File.read(version_file)
+        unless version_contents.sub!(/^(.*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/i, "\\1#{@version.to_s.dump}")
+          raise "Failed to update #{version_file}, is it in the expected format?"
+        end
+        File.open(version_file, "w") {|f| f.write(version_contents) }
       end
-      File.open(@version_file, "w") {|f| f.write(version_contents) }
 
       @changelog.cut!(previous_version, prs)
 

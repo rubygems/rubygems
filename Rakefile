@@ -151,7 +151,7 @@ file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
       sh "7z a -ttar  rubygems-#{v}.tar rubygems-#{v}"
       sh "7z a -tgzip rubygems-#{v}.tgz rubygems-#{v}.tar"
     else
-      sh "tar -czf rubygems-#{v}.tgz rubygems-#{v}"
+      sh "tar -czf rubygems-#{v}.tgz --owner=rubygems:0 --group=rubygems:0 rubygems-#{v}"
     end
   end
 end

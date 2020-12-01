@@ -129,7 +129,7 @@ end
 
 file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
   cd 'pkg' do
-    sh "tar -czf rubygems-#{v}.tgz rubygems-#{v}"
+    sh "tar -czf rubygems-#{v}.tgz --owner=rubygems:0 --group=rubygems:0 rubygems-#{v}"
   end
 end
 

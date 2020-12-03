@@ -99,6 +99,13 @@ task :check_deprecations do
   end
 end
 
+desc "Prepare stable branch"
+task :prepare_stable_branch, [:version] do |_t, opts|
+  require_relative "util/release"
+
+  Release.for_rubygems(opts[:version] || v.to_s).prepare!
+end
+
 desc "Install rubygems to local system"
 task :install => [:clear_package, :package] do
   sh "ruby -Ilib bin/gem install --no-document pkg/rubygems-update-#{v}.gem && update_rubygems --no-document"
@@ -111,9 +118,9 @@ end
 
 desc "Generates the changelog for a specific target version"
 task :generate_changelog, [:version] do |_t, opts|
-  require_relative "util/changelog"
+  require_relative "util/release"
 
-  Changelog.for_rubygems(opts[:version]).cut!
+  Release.for_rubygems(opts[:version]).cut_changelog!
 end
 
 desc "Release rubygems-#{v}"

@@ -574,6 +574,9 @@ Style/Encoding:
 Style/EndBlock:
   Enabled: true
 
+Style/EvalWithLocation:
+  Enabled: true
+
 Style/EvenOdd:
   Enabled: true
 

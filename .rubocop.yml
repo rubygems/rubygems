@@ -108,6 +108,9 @@ Style/Encoding:
   Exclude:
     - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
 
+Style/EvalWithLocation:
+  Enabled: true
+
 Style/IfInsideElse:
   Enabled: false
 

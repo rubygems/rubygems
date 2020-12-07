@@ -37,14 +37,39 @@ git branching, documentation site updates, and a blog post.
 
 Patch and minor releases are made by cherry-picking pill requests from `master`.
 
-There is a `bin/rake release:prepare[<target_version>]` rake task that helps
-with creating a release. It takes a single argument, the _exact_ release being
-made (e.g.  `2.2.3`). This task checks out the appropriate stable branch
-(`3.2`), grabs all merged but unreleased PRs from GitHub that are compatible
-with the target release level, and then cherry-picks those changes (and only
-those changes) to a new branch based off the stable branch.  Then bumps the
-version in the version file, synchronizes the changelog to include all
-backported changes and commits that change on top of the cherry-picks.
+### Branching
+
+Bundler releases are syncronized with rubygems releases at the moment. That
+means that releases for both share the same stable branch, and they should
+generally happen together.
+
+Minor releases of the next version start with a new release branch from the
+current state of master: `3.2`, and are immediately followed by a prerelease
+(might be a `.pre.1` version or a `.rc.1` version depending on the readiness of
+the stable branch) or even directly by the final stable release.
+
+The current conventional naming for stable branches is `x+1.y`, where `x.y` is
+the version of `bundler` that will be released. This is because `rubygems-x+1.y`
+will be released at the same time.
+
+For example, `rubygems-3.2.0` and `bundler-2.2.0` will be both released from the
+`3.2` stable branch.
+
+Once a stable branch has been cut from `master`, changes for that minor release
+series (bundler 2.2) will only be made _intentionally_, via patch releases.
+That is to say, changes to `master` by default _won't_ make their way into any
+`2.2` version, and development on `master` will be targeting the next minor
+or major release.
+
+There is a `rake prepare_stable_branch[<target_rubugems_version>]` rake task
+that helps with creating a release. It takes a single argument, the _exact
+rubygems release_ being made (e.g.  `3.2.3` when releasing bundler `2.2.3`).
+This task checks out the appropriate stable branch (`3.2`), grabs all merged but
+unreleased PRs from both bundler & rubygems from GitHub that are compatible with
+the target release level, and then cherry-picks those changes (and only those
+changes) to a new branch based off the stable branch. Then bumps the version in
+all version files, synchronizes both changelogs to include all backported
+changes and commits that change on top of the cherry-picks.
 
 Note that this task requires all user facing pull requests to be tagged with
 specific labels. See [Merging a PR](/bundler/doc/playbooks/MERGING_A_PR.md) for
@@ -76,8 +101,8 @@ Here's the checklist for releasing new minor versions:
 * [ ] Check with the core team to ensure that there is consensus around shipping a
   feature release. As a general rule, this should always be okay, since features
   should _never break backwards compatibility_
-* [ ] Run `bin/rake release:prepare[<target_pre_version>]` and create a PR to
-  the stable branch with the generated changes.
+* [ ] Run `rake prepare_stable_branch[<target_rubygems_pre_version>]` and create
+  a PR to the stable branch with the generated changes.
 * [ ] Get the PR reviewed, make sure CI is green, and merge it.
 * [ ] Pull the updated stable branch, wait for CI to complete on it and get excited.
 * [ ] Run `bin/rake release` from the updated stable branch, tweet, blog, let people know about the prerelease!
@@ -88,8 +113,8 @@ Here's the checklist for releasing new minor versions:
 
 Wait! You're not done yet! After your prelease looks good:
 
-* [ ] Run `bin/rake release:prepare[<target_version>]` and create a PR to the
-  stable branch.
+* [ ] Run `rake prepare_stable_branch[<target_rubygems_version>]` and create a
+  PR to the stable branch.
 * [ ] Get the PR reviewed, make sure CI is green, and merge it.
 * [ ] In the [rubygems/bundler-site](https://github.com/rubygems/bundler-site) repo,
   copy the previous version's docs to create a new version (e.g. `cp -r v2.1 v2.2`)
@@ -106,30 +131,6 @@ think about taking a vacation in the tropics.
 Beware, the first couple of days after the first non-prerelease version in a minor version
 series can often yield a lot of bug reports. This is normal, and doesn't mean you've done
 _anything_ wrong as the release manager.
-
-#### Branching
-
-Bundler releases are syncronized with rubygems releases at the moment. That
-means that releases for both share the same stable branch, and they should
-generally happen together.
-
-Minor releases of the next version start with a new release branch from the
-current state of master: `3.2`, and are immediately followed by a prerelease
-(might be a `.pre.1` version or a `.rc.1` version depending on the readiness of
-the stable branch) or even directly by the final stable release.
-
-The current conventional naming for stable branches is `x+1.y`, where `x.y` is
-the version of `bundler` that will be released. This is because `rubygems-x+1.y`
-will be released at the same time.
-
-For example, `rubygems-3.2.0` and `bundler-2.2.0` will be both released from the
-`3.2` stable branch.
-
-Once a stable branch has been cut from `master`, changes for that minor release
-series (bundler 2.2) will only be made _intentionally_, via patch releases.
-That is to say, changes to `master` by default _won't_ make their way into any
-`2.2` version, and development on `master` will be targeting the next minor
-or major release.
 
 ## Beta testing
 

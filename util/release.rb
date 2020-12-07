@@ -84,11 +84,11 @@ class Release
     @changelog.cut!(previous_version, relevant_pull_requests_since_last_release)
   end
 
-  def create_for_github!(release_notes)
+  def create_for_github!
     tag = "#{@tag_prefix}#{@version}"
 
     gh_client.create_release "rubygems/rubygems", tag, :name => tag,
-                                                       :body => release_notes.join("\n").strip,
+                                                       :body => @changelog.release_notes.join("\n").strip,
                                                        :prerelease => @version.prerelease?
   end
 

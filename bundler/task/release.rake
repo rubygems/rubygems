@@ -2,7 +2,6 @@
 
 require_relative "../lib/bundler/gem_tasks"
 require_relative "../spec/support/build_metadata"
-require_relative "../../util/changelog"
 require_relative "../../util/release"
 
 Bundler::GemHelper.tag_prefix = "bundler-"
@@ -24,7 +23,7 @@ task "release:rubygem_push" => ["release:verify_docs", "build_metadata", "releas
 
 desc "Generates the changelog for a specific target version"
 task :generate_changelog, [:version] do |_t, opts|
-  Changelog.for_bundler(opts[:version]).cut!
+  Release.for_bundler(opts[:version]).cut_changelog!
 end
 
 namespace :release do

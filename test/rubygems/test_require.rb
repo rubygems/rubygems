@@ -709,7 +709,7 @@ class TestGemRequire < Gem::TestCase
         RUBY
 
         _, err = capture_subprocess_io do
-          system(*ruby_with_rubygems_in_load_path, "-w", "--enable=gems", "-C", dir, "-I", dir, "main.rb")
+          system(*ruby_with_rubygems_in_load_path, "-w", "--disable=gems", "-C", dir, "-I", dir, "main.rb")
         end
         assert_match(/main\.rb:2: warning: This is a deprecated method$/, err)
         _, err = capture_subprocess_io do

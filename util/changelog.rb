@@ -161,7 +161,7 @@ class Changelog
   end
 
   def group_by_labels(pulls)
-    grouped_pulls = pulls.group_by do |pull|
+    grouped_pulls = pulls.sort_by(&:merged_at).group_by do |pull|
       relevant_label_for(pull)
     end
 

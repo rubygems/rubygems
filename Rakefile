@@ -103,7 +103,7 @@ desc "Prepare stable branch"
 task :prepare_stable_branch, [:version] do |_t, opts|
   require_relative "util/release"
 
-  Release.for_rubygems(opts[:version] || v.to_s).prepare!
+  Release.new(opts[:version] || v.to_s).prepare!
 end
 
 desc "Install rubygems to local system"

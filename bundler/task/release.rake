@@ -35,9 +35,4 @@ namespace :release do
 
     Release.for_bundler(gemspec_version).create_for_github!
   end
-
-  desc "Prepare a new release"
-  task :prepare, [:version] do |_t, opts|
-    Release.for_bundler(opts[:version]).prepare!
-  end
 end

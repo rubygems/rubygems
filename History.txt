@@ -1,3 +1,59 @@
+=== 3.2.0 / 2020-12-7
+
+Enhancements:
+
+* Do not override Kernel#warn when there is no need. Pull request #4075 by
+  eregon
+* Update endpoint of gem signin command. Pull request #3840 by sonalkr132
+* Omit deprecated commands from command help output. Pull request #4023 by
+  landongrindheim
+* Suggest alternatives in `gem query` deprecation. Pull request #4021 by
+  landongrindheim
+* Lazily load `time`, `cgi`, and `zlib`. Pull request #4010 by
+  deivid-rodriguez
+* Don't hit the network when installing dependencyless local gemspec. Pull
+  request #3968 by deivid-rodriguez
+* Add `--force` option to `gem sources` command. Pull request #3956 by
+  andy-smith-msm
+* Lazily load `openssl`. Pull request #3850 by deivid-rodriguez
+* Pass more information when comparing platforms. Pull request #3817 by
+  eregon
+
+Bug fixes:
+
+* Use better owner & group for files in rubygems package. Pull request
+  #4065 by deivid-rodriguez
+* Improve gem build -C flag. Pull request #3983 by bronzdoc
+* Handle unexpected behavior with URI#merge and subpaths missing trailing
+  slashes. Pull request #3123 by drcapulet
+* Add missing `fileutils` require in rubygems installer. Pull request
+  #4036 by deivid-rodriguez
+* Fix `--platform` option to `gem specification` being ignored. Pull
+  request #4043 by deivid-rodriguez
+* Expose `--no-minimal-deps` flag to install the latest version of
+  dependencies. Pull request #4030 by deivid-rodriguez
+* Fix "stack level too deep" error when overriding `Warning.warn`. Pull
+  request #3987 by eregon
+* Append '.gemspec' extension only when it is not present. Pull request
+  #3988 by voxik
+* Install to correct plugins dir when using `--build-root`. Pull request
+  #3972 by deivid-rodriguez
+* Fix `--build-root` flag under Windows. Pull request #3975 by
+  deivid-rodriguez
+* Fix `typo_squatting?` false positive for `rubygems.org` itself. Pull
+  request #3951 by andy-smith-msm
+* Make `--default` and `--install-dir` options to `gem install` play nice
+  together. Pull request #3906 by deivid-rodriguez
+
+Deprecations:
+
+* Deprecate server command. Pull request #3868 by bronzdoc
+
+Performance:
+
+* Don't change ruby process CWD when building extensions. Pull request
+  #3498 by deivid-rodriguez
+
 === 3.2.0.rc.2 / 2020-10-8
 
 Enhancements:

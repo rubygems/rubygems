@@ -5,14 +5,14 @@ require "yaml"
 class Changelog
   def self.for_rubygems(version)
     @rubygems ||= new(
-      "History.txt",
+      File.expand_path("../History.txt", __dir__),
       version,
     )
   end
 
   def self.for_bundler(version)
     @bundler ||= new(
-      "CHANGELOG.md",
+      File.expand_path("../bundler/CHANGELOG.md", __dir__),
       version,
     )
   end

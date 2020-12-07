@@ -21,11 +21,6 @@ class Gem::Platform
     match_platforms?(platform, Gem.platforms)
   end
 
-  class << self
-    extend Gem::Deprecate
-    rubygems_deprecate :match, "Gem::Platform.match_spec?"
-  end
-
   def self.match_platforms?(platform, platforms)
     platforms.any? do |local_platform|
       platform.nil? or

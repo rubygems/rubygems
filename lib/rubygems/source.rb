@@ -88,11 +88,7 @@ class Gem::Source
     rescue Gem::RemoteFetcher::FetchError
       Gem::Resolver::IndexSet.new self
     else
-      if response.respond_to? :uri
-        Gem::Resolver::APISet.new response.uri
-      else
-        Gem::Resolver::APISet.new bundler_api_uri
-      end
+      Gem::Resolver::APISet.new response.uri
     end
   end
 

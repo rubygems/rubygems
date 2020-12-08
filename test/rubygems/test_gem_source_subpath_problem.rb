@@ -21,7 +21,7 @@ class TestGemSourceSubpathProblem < Gem::TestCase
 
   def test_dependency_resolver_set
     response = Net::HTTPResponse.new '1.1', 200, 'OK'
-    response.uri = URI('http://example') if response.respond_to? :uri
+    response.uri = URI('http://example')
 
     @fetcher.data["#{@gem_repo}/api/v1/dependencies"] = response
 

@@ -298,6 +298,7 @@ class Gem::TestCase < Minitest::Test
     ENV['XDG_CONFIG_HOME'] = nil
     ENV['XDG_DATA_HOME'] = nil
     ENV['SOURCE_DATE_EPOCH'] = nil
+    ENV['BUNDLER_VERSION'] = nil
     ENV["TMPDIR"] = @tmp
 
     @current_dir = Dir.pwd

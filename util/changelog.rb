@@ -5,14 +5,14 @@ require "yaml"
 class Changelog
   def self.for_rubygems(version)
     @rubygems ||= new(
-      "History.txt",
+      File.expand_path("../History.txt", __dir__),
       version,
     )
   end
 
   def self.for_bundler(version)
     @bundler ||= new(
-      "CHANGELOG.md",
+      File.expand_path("../bundler/CHANGELOG.md", __dir__),
       version,
     )
   end
@@ -161,7 +161,7 @@ class Changelog
   end
 
   def group_by_labels(pulls)
-    grouped_pulls = pulls.group_by do |pull|
+    grouped_pulls = pulls.sort_by(&:merged_at).group_by do |pull|
       relevant_label_for(pull)
     end
 

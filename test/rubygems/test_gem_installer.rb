@@ -1627,7 +1627,7 @@ gem 'other', version
         installer.pre_install_checks
       end
       rv = Gem.ruby_version
-      assert_equal "old_ruby_required requires Ruby version = 1.4.6. The current ruby version is #{rv}.",
+      assert_equal "old_ruby_required-1 requires Ruby version = 1.4.6. The current ruby version is #{rv}.",
                    e.message
     end
   end
@@ -1642,7 +1642,7 @@ gem 'other', version
     e = assert_raises Gem::RuntimeRequirementNotMetError do
       assert installer.pre_install_checks
     end
-    assert_equal "old_ruby_required requires Ruby version > 2.6.0.preview2. The current ruby version is 2.6.0.preview2.",
+    assert_equal "old_ruby_required-1 requires Ruby version > 2.6.0.preview2. The current ruby version is 2.6.0.preview2.",
                  e.message
   ensure
     util_restore_RUBY_VERSION
@@ -1663,7 +1663,7 @@ gem 'other', version
         installer.pre_install_checks
       end
       rgv = Gem::VERSION
-      assert_equal "old_rubygems_required requires RubyGems version < 0. The current RubyGems version is #{rgv}. " +
+      assert_equal "old_rubygems_required-1 requires RubyGems version < 0. The current RubyGems version is #{rgv}. " +
         "Try 'gem update --system' to update RubyGems itself.", e.message
     end
   end

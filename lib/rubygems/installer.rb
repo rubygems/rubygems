@@ -643,7 +643,7 @@ class Gem::Installer
       ruby_version = Gem.ruby_version
       unless rrv.satisfied_by? ruby_version
         raise Gem::RuntimeRequirementNotMetError,
-          "#{spec.name} requires Ruby version #{rrv}. The current ruby version is #{ruby_version}."
+          "#{spec.full_name} requires Ruby version #{rrv}. The current ruby version is #{ruby_version}."
       end
     end
   end
@@ -653,7 +653,7 @@ class Gem::Installer
       unless rrgv.satisfied_by? Gem.rubygems_version
         rg_version = Gem::VERSION
         raise Gem::RuntimeRequirementNotMetError,
-          "#{spec.name} requires RubyGems version #{rrgv}. The current RubyGems version is #{rg_version}. " +
+          "#{spec.full_name} requires RubyGems version #{rrgv}. The current RubyGems version is #{rg_version}. " +
           "Try 'gem update --system' to update RubyGems itself."
       end
     end

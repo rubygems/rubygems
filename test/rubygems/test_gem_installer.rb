@@ -1620,54 +1620,6 @@ gem 'other', version
     end
   end
 
-  def test_pre_install_checks_ruby_version
-    use_ui @ui do
-      installer = Gem::Installer.at old_ruby_required('= 1.4.6')
-      e = assert_raises Gem::RuntimeRequirementNotMetError do
-        installer.pre_install_checks
-      end
-      rv = Gem.ruby_version
-      assert_equal "old_ruby_required-1 requires Ruby version = 1.4.6. The current ruby version is #{rv}.",
-                   e.message
-    end
-  end
-
-  def test_pre_install_checks_ruby_version_with_prereleases
-    util_set_RUBY_VERSION '2.6.0', -1, '63539', 'ruby 2.6.0preview2 (2018-05-31 trunk 63539) [x86_64-linux]'
-
-    installer = Gem::Installer.at old_ruby_required('>= 2.6.0.preview2')
-    assert installer.pre_install_checks
-
-    installer = Gem::Installer.at old_ruby_required('> 2.6.0.preview2')
-    e = assert_raises Gem::RuntimeRequirementNotMetError do
-      assert installer.pre_install_checks
-    end
-    assert_equal "old_ruby_required-1 requires Ruby version > 2.6.0.preview2. The current ruby version is 2.6.0.preview2.",
-                 e.message
-  ensure
-    util_restore_RUBY_VERSION
-  end
-
-  def test_pre_install_checks_wrong_rubygems_version
-    spec = util_spec 'old_rubygems_required', '1' do |s|
-      s.required_rubygems_version = '< 0'
-    end
-
-    util_build_gem spec
-
-    gem = File.join(@gemhome, 'cache', spec.file_name)
-
-    use_ui @ui do
-      installer = Gem::Installer.at gem
-      e = assert_raises Gem::RuntimeRequirementNotMetError do
-        installer.pre_install_checks
-      end
-      rgv = Gem::VERSION
-      assert_equal "old_rubygems_required-1 requires RubyGems version < 0. The current RubyGems version is #{rgv}. " +
-        "Try 'gem update --system' to update RubyGems itself.", e.message
-    end
-  end
-
   def test_pre_install_checks_malicious_name
     spec = util_spec '../malicious', '1'
     def spec.full_name # so the spec is buildable

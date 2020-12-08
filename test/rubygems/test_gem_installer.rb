@@ -1172,12 +1172,16 @@ gem 'other', version
   end
 
   def test_install_force
+    _, missing_dep_gem = util_gem 'missing_dep', '1' do |s|
+      s.add_dependency 'doesnt_exist', '1'
+    end
+
     use_ui @ui do
-      installer = Gem::Installer.at old_ruby_required('= 1.4.6'), :force => true
+      installer = Gem::Installer.at missing_dep_gem, :force => true
       installer.install
     end
 
-    gem_dir = File.join(@gemhome, 'gems', 'old_ruby_required-1')
+    gem_dir = File.join(@gemhome, 'gems', 'missing_dep-1')
     assert_path_exists gem_dir
   end
 
@@ -2202,16 +2206,6 @@ gem 'other', version
     installer = util_installer(gem, @gemhome)
     assert_respond_to(installer, :gem)
     assert_kind_of(String, installer.gem)
-  end
-
-  def old_ruby_required(requirement)
-    spec = util_spec 'old_ruby_required', '1' do |s|
-      s.required_ruby_version = requirement
-    end
-
-    util_build_gem spec
-
-    spec.cache_file
   end
 
   def util_execless

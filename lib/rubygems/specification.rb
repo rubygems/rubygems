@@ -668,6 +668,14 @@ class Gem::Specification < Gem::BasicSpecification
 
   def required_ruby_version=(req)
     @required_ruby_version = Gem::Requirement.create req
+
+    if ENV["RUBYGEMS_IGNORE_RUBY_VERSION_REQUIREMENT"]
+      req = @required_ruby_version.requirements.map do |op, version|
+        op = op == "~>" ? ">=" : op
+        "#{op} #{version}"
+      end
+      @required_ruby_version = Gem::Requirement.new req
+    end
   end
 
   ##
@@ -1049,6 +1057,10 @@ class Gem::Specification < Gem::BasicSpecification
 
     input = normalize_yaml_input input
     spec = Gem::SafeYAML.safe_load input
+    if ENV["RUBYGEMS_IGNORE_RUBY_VERSION_REQUIREMENT"]
+      # Call the method "required_ruby_version=" to replace "~>" with ">="
+      spec.required_ruby_version = spec.required_ruby_version
+    end
 
     if spec && spec.class == FalseClass
       raise Gem::EndOfYAMLException

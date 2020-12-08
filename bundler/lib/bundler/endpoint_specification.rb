@@ -121,6 +121,14 @@ module Bundler
           @required_rubygems_version = Gem::Requirement.new(v)
         when "ruby"
           @required_ruby_version = Gem::Requirement.new(v)
+
+          if ENV["RUBYGEMS_IGNORE_RUBY_VERSION_REQUIREMENT"]
+            req = @required_ruby_version.requirements.map do |op, version|
+              op = op == "~>" ? ">=" : op
+              "#{op} #{version}"
+            end
+            @required_ruby_version = Gem::Requirement.new req
+          end
         end
       end
     rescue StandardError => e

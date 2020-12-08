@@ -57,9 +57,10 @@ smooth and no needed steps are missed.
 
 ### Steps for all releases
 
-*   Confirm milestone on GitHub is complete
-*   Update History.txt
-*   Update Manifest.txt
+*   Confirm all PRs that you want backported are properly tagged with `rubygems:
+    <type>` labels at GitHub.
+*   Run `rake prepare_stable_branch[<target_version>]`, create a PR and merge it
+    to the stable branch once CI passes.
 *   Create and push git tag
 *   Create and push `rubygems-update` gem and tgz
 *   Publish blog post

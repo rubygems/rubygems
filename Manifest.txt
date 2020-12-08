@@ -433,6 +433,7 @@ lib/rubygems/source_specific_file.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
 lib/rubygems/ssl_certs/.document
+lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA.pem
 lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/syck_hack.rb

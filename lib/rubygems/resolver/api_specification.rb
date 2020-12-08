@@ -44,12 +44,11 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
       @set          == other.set and
       @name         == other.name and
       @version      == other.version and
-      @platform     == other.platform and
-      @dependencies == other.dependencies
+      @platform     == other.platform
   end
 
   def hash
-    @set.hash ^ @name.hash ^ @version.hash ^ @platform.hash ^ @dependencies.hash
+    @set.hash ^ @name.hash ^ @version.hash ^ @platform.hash
   end
 
   def fetch_development_dependencies # :nodoc:

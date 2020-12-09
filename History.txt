@@ -1,5 +1,12 @@
 # coding: UTF-8
 
+=== 3.1.5 / 2020-12-09
+
+Minor enhancements:
+
+* Add GlobalSign Root CA - R3 cert and remove outdated certs. Pull request #4100
+  by Aditya Prakash.
+
 === 3.1.4 / 2020-06-03
 
 Minor enhancements:

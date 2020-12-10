@@ -7,9 +7,7 @@ on:
 jobs:
   daily_bundler:
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        ruby: [ ruby-head ]
+    if: github.repository == 'rubygems/rubygems'
     env:
       RGV: ..
     steps:
@@ -18,7 +16,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby }}
+          ruby-version: ruby-head
           bundler: none
 
       - name: Show Ruby version
@@ -37,7 +35,7 @@ jobs:
 
       - name: Get previous status
         if: always()
-        run: echo "::set-env name=OLD_STATUS::$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/runs?event=schedule&branch=master' | jq '.workflow_runs | map(select(.workflow_id == 982279)) | .[0].conclusion')"
+        run: echo "OLD_STATUS=$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/workflows/daily-bundler.yml/runs?event=schedule&branch=master' | jq '.workflow_runs | .[1].conclusion')" >> $GITHUB_ENV
 
       - uses: 8398a7/action-slack@v3
         with:

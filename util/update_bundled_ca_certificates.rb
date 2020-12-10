@@ -5,16 +5,13 @@ require 'fileutils'
 
 URIS = [
   URI('https://rubygems.org'),
+  URI('https://www.rubygems.org'),
   URI('https://index.rubygems.org'),
   URI('https://staging.rubygems.org'),
-  URI('https://fastly.rubygems.org'),
-  URI('https://rubygems.global.ssl.fastly.net'),
 ].freeze
 
 HOSTNAMES_TO_MAP = [
-  'rubygems.global.ssl.fastly.net',
   'rubygems.org',
-  'index.rubygems.org'
 ].freeze
 
 def connect_to(uri, store)

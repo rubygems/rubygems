@@ -77,72 +77,80 @@ namespace :man do
   if RUBY_ENGINE == "jruby"
     task(:build) {}
   else
-    begin
-      Spec::Rubygems.gem_require("ronn")
-    rescue Gem::LoadError => e
-      desc "Build the man pages"
-      task(:build) { abort "We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages" }
+    directory "man"
 
-      desc "Verify man pages are in sync"
-      task(:check) { abort "We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages" }
-    else
-      directory "man"
+    index = Dir["lib/bundler/man/*.ronn"].map do |source|
+      ronn = "lib/bundler/man/#{File.basename(source)}"
+      roff = "man/#{File.basename(source, ".ronn")}"
 
-      index = Dir["man/*.ronn"].map do |source|
-        ronn = "man/#{File.basename(source)}"
-        roff = "man/#{File.basename(source, ".ronn")}"
-
-        file roff => ["man", ronn] do
-          sh "bin/ronn --warnings --roff --pipe --date #{Time.now.strftime("%Y-%m-%d")} #{ronn} > #{roff}"
-        end
-
-        task :build_all_pages => roff
-
-        [ronn, File.basename(roff)]
+      file roff => ["man", ronn] do
+        date = ENV["MAN_PAGES_DATE"] || Time.now.strftime("%Y-%m-%d")
+        sh "bin/ronn --warnings --roff --pipe --date #{date} #{ronn} > #{roff}"
       end
 
-      file "index.txt" do
-        index.map! do |(ronn, roff)|
-          [File.read(ronn).split(" ").first, roff]
-        end
-        index = index.sort_by(&:first)
-        justification = index.map {|(n, _f)| n.length }.max + 4
-        File.open("man/index.txt", "w") do |f|
-          index.each do |name, filename|
-            f << name.ljust(justification) << filename << "\n"
-          end
+      task :build_all_pages => roff
+
+      [ronn, File.basename(roff)]
+    end
+
+    file "index.txt" do
+      index.map! do |(ronn, roff)|
+        [File.read(ronn).split(" ").first, roff]
+      end
+      index = index.sort_by(&:first)
+      justification = index.map {|(n, _f)| n.length }.max + 4
+      File.open("man/index.txt", "w") do |f|
+        index.each do |name, filename|
+          f << name.ljust(justification) << filename << "\n"
         end
       end
-      task :build_all_pages => "index.txt"
+    end
+    task :build_all_pages => "index.txt"
 
-      desc "Remove all built man pages"
-      task :clean do
-        leftovers = Dir["man/*"].reject do |f|
-          File.extname(f) == ".ronn"
-        end
-        rm leftovers if leftovers.any?
+    desc "Make sure ronn is installed"
+    task :check_ronn do
+      begin
+        Spec::Rubygems.gem_require("ronn")
+      rescue Gem::LoadError => e
+        abort("We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages")
       end
+    end
 
-      desc "Build the man pages"
-      task :build => ["man:clean", "man:build_all_pages"]
+    desc "Remove all built man pages"
+    task :clean do
+      leftovers = Dir["man/*"].reject do |f|
+        File.extname(f) == ".ronn"
+      end
+      rm leftovers if leftovers.any?
+    end
 
-      desc "Verify man pages are in sync"
-      task :check => :build do
-        sh("git diff --quiet --ignore-all-space man") do |outcome, _|
-          if outcome
-            puts
-            puts "Manpages are in sync!"
-            puts
-          else
-            sh("GIT_PAGER=cat git diff --ignore-all-space man")
+    desc "Build the man pages"
+    task :build => [:check_ronn, :clean, :build_all_pages]
 
-            puts
-            puts "Man pages are out of sync. Above you can see the diff that got generated from rebuilding them. Please review and commit the results."
-            puts
+    desc "Sets target date for building man pages to the one currently present"
+    task :set_current_date do
+      require "date"
+      ENV["MAN_PAGES_DATE"] = Date.parse(File.readlines("man/bundle-add.1")[3].split('"')[5]).strftime("%Y-%m-%d")
+    end
 
-            exit(1)
-          end
-        end
+    desc "Verify man pages are in sync"
+    task :check => [:check_ronn, :set_current_date, :build] do
+      require "open3"
+
+      output, status = Open3.capture2e("git status --porcelain")
+
+      if status.success? && output.empty?
+        puts
+        puts "Man pages are in sync"
+        puts
+      else
+        sh("git status --porcelain")
+
+        puts
+        puts "Man pages are out of sync. Above you can see the list of files that got modified or generated from rebuilding them. Please review and commit the results."
+        puts
+
+        exit(1)
       end
     end
   end
@@ -152,6 +160,7 @@ load "task/automatiek.rake"
 
 desc "Vendor a specific version of molinillo"
 Automatiek::RakeTask.new("molinillo") do |lib|
+  lib.version = "0.7.0"
   lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
   lib.namespace = "Molinillo"
   lib.prefix = "Bundler"
@@ -167,19 +176,35 @@ Automatiek::RakeTask.new("thor") do |lib|
   lib.vendor_lib = "lib/bundler/vendor/thor"
 end
 
-desc "Vendor a specific version of fileutils"
-Automatiek::RakeTask.new("fileutils") do |lib|
-  lib.version = "v1.4.1"
-  lib.download = { :github => "https://github.com/ruby/fileutils" }
-  lib.namespace = "FileUtils"
+# We currently include the official version as of
+# https://github.com/ruby/tmpdir/tree/a3e06bd49829dc49c346aa10f8b91116fd7e17ad,
+# with the following changes on top:
+# * require fileutils relatively to use our vendored version.
+# * Inherit from `Dir` so that code assuming we're inside the
+#   `Dir` class still works. Also change the `systmpdir` class variable to an
+#   instance variable since otherwise inheriting from dir doesn't work.
+# * Remove a "block variable shadowing outer variable" warning on older rubies
+#   that was breaking some specs.
+desc "Vendor a specific version of tmpdir"
+Automatiek::RakeTask.new("tmpdir") do |lib|
+  lib.version = "master"
+  lib.download = { :github => "https://github.com/ruby/tmpdir" }
+  lib.namespace = "Dir"
   lib.prefix = "Bundler"
-  lib.vendor_lib = "lib/bundler/vendor/fileutils"
+  lib.vendor_lib = "lib/bundler/vendor/tmpdir"
+
+  lib.dependency("fileutils") do |sublib|
+    sublib.version = "v1.4.1"
+    sublib.download = { :github => "https://github.com/ruby/fileutils" }
+    sublib.namespace = "FileUtils"
+    sublib.prefix = "Bundler"
+    sublib.vendor_lib = "lib/bundler/vendor/fileutils"
+  end
 end
 
 # We currently include the following changes over the official version:
 # * Avoid requiring the optional `net-http-pipeline` dependency, so that its version can be selected by end users.
 # * We also include changes to require the vendored dependencies `uri` and `connection_pool` relatively.
-# * Avoid autoloading `OpenSSL` since it causes problems on jruby.
 desc "Vendor a specific version of net-http-persistent"
 Automatiek::RakeTask.new("net-http-persistent") do |lib|
   lib.version = "v4.0.0"

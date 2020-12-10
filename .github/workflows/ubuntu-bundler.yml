@@ -12,42 +12,17 @@ jobs:
   ubuntu_bundler:
     runs-on: ubuntu-18.04
     strategy:
+      fail-fast: false
       matrix:
-        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.1 ]
-        rgv: [ v2.5.2, v2.6.14, v2.7.10, v3.0.8, v3.1.4, .. ]
-        bundler: [ '' ]
+        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.2 ]
+        bundler: [ '', 3.0.0 ]
         exclude:
-          - { bundler: '', ruby: 2.4.10, rgv: v2.5.2  }
-          - { bundler: '', ruby: 2.5.8, rgv: v2.5.2  }
-          - { bundler: '', ruby: 2.5.8, rgv: v2.6.14 }
-          - { bundler: '', ruby: 2.6.6, rgv: v2.5.2  }
-          - { bundler: '', ruby: 2.6.6, rgv: v2.6.14 }
-          - { bundler: '', ruby: 2.6.6, rgv: v2.7.10 }
-          - { bundler: '', ruby: 2.7.1, rgv: v2.5.2  }
-          - { bundler: '', ruby: 2.7.1, rgv: v2.6.14 }
-          - { bundler: '', ruby: 2.7.1, rgv: v2.7.10 }
-          - { bundler: '', ruby: 2.7.1, rgv: v3.0.8  }
-        include:
-          - { bundler: 3.0.0, ruby: 2.4.10, rgv: v3.1.4 }
-          - { bundler: 3.0.0, ruby: 2.4.10, rgv: .. }
-          - { bundler: 3.0.0, ruby: 2.5.8, rgv: v3.1.4 }
-          - { bundler: 3.0.0, ruby: 2.5.8, rgv: .. }
-          - { bundler: 3.0.0, ruby: 2.6.6, rgv: v3.1.4 }
-          - { bundler: 3.0.0, ruby: 2.6.6, rgv: .. }
-          - { bundler: 3.0.0, ruby: 2.7.1, rgv: v3.1.4 }
-          - { bundler: 3.0.0, ruby: 2.7.1, rgv: .. }
+          - { bundler: 3.0.0, ruby: 2.3.8 }
     env:
-      RGV: ${{ matrix.rgv }}
+      RGV: ..
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-        if: matrix.rgv != '..'
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-        if: matrix.rgv == '..'
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:

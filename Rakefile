@@ -53,6 +53,7 @@ begin
   require "automatiek"
 
   Automatiek::RakeTask.new("molinillo") do |lib|
+    lib.version = "0.7.0"
     lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
     lib.namespace = "Molinillo"
     lib.prefix = "Gem::Resolver"
@@ -161,7 +162,7 @@ file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
       sh "7z a -ttar  rubygems-#{v}.tar rubygems-#{v}"
       sh "7z a -tgzip rubygems-#{v}.tgz rubygems-#{v}.tar"
     else
-      sh "tar -czf rubygems-#{v}.tgz rubygems-#{v}"
+      sh "tar -czf rubygems-#{v}.tgz --owner=rubygems:0 --group=rubygems:0 rubygems-#{v}"
     end
   end
 end
@@ -278,6 +279,7 @@ namespace 'blog' do
     name  = `git config --get user.name`.strip
     email = `git config --get user.email`.strip
 
+    require_relative "util/changelog"
     history = Changelog.for_rubygems(v.to_s)
 
     require 'tempfile'

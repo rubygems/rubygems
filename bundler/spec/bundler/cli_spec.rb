@@ -7,7 +7,7 @@ using Module.new {
   # non-tty.
   refine Spec::Helpers do
     def out
-      super.gsub(/.[\b]/, '')
+      super.gsub(/.[\b]/, "")
     end
   end
 }

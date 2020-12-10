@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - macos_ci
       - 3.2
 
 jobs:

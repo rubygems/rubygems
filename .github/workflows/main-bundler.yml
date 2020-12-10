@@ -1,4 +1,4 @@
-name: ubuntu-bundler
+name: main-bundler
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - 3.2
 
 jobs:
-  ubuntu_bundler:
+  main_bundler:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

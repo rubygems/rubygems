@@ -10,7 +10,7 @@ using Module.new {
       super.gsub(/.[\b]/, "")
     end
   end
-}
+} if RUBY_VERSION >= "2.4"
 
 RSpec.describe "bundle executable" do
   it "returns non-zero exit status when passed unrecognized options" do

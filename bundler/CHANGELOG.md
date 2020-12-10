@@ -1,3 +1,37 @@
+# 2.2.0 (December 7, 2020)
+
+## Enhancements:
+
+  - New gem template: prefer `require_relative` to `require` [#4066](https://github.com/rubygems/rubygems/pull/4066)
+  - Always show underlying error when fetching specs fails [#4061](https://github.com/rubygems/rubygems/pull/4061)
+  - Add `--all-platforms` flag to `bundle binstubs` to generate binstubs for all platforms [#3886](https://github.com/rubygems/rubygems/pull/3886)
+  - Improve gem not found in source error messages [#4019](https://github.com/rubygems/rubygems/pull/4019)
+  - Revert resolving all Gemfile platforms automatically [#4052](https://github.com/rubygems/rubygems/pull/4052)
+  - Remove extra empty line from README template [#4041](https://github.com/rubygems/rubygems/pull/4041)
+  - Lazily load `erb` [#4011](https://github.com/rubygems/rubygems/pull/4011)
+
+## Bug fixes:
+
+  - Fix `Bundler::Plugin::API::Source#to_s` having empty source type [#4084](https://github.com/rubygems/rubygems/pull/4084)
+  - Raise consistent errors with or without `bundle exec` [#4063](https://github.com/rubygems/rubygems/pull/4063)
+  - Fix edge case resulting in a crash when using `zeitwerk` inside a nested `bundle exec` invocation [#4062](https://github.com/rubygems/rubygems/pull/4062)
+  - Enable `specific_platform` by default [#4015](https://github.com/rubygems/rubygems/pull/4015)
+  - Prevent remove command from deleting gemfile lines that are comments [#4045](https://github.com/rubygems/rubygems/pull/4045)
+  - Fix issue with `cache_all_platforms` and `specific_platform` configured [#4042](https://github.com/rubygems/rubygems/pull/4042)
+  - Fix incorrect error message on Windows [#4039](https://github.com/rubygems/rubygems/pull/4039)
+  - Make printed drive letters consistent on Windows [#4038](https://github.com/rubygems/rubygems/pull/4038)
+  - Load rubygems plugins from RUBYLIB during `bundle install` and `bundle update` [#3534](https://github.com/rubygems/rubygems/pull/3534)
+  - Fix `specific_platform` and `cache_all` with `bundle cache --all-platforms` [#4022](https://github.com/rubygems/rubygems/pull/4022)
+  - Bring back the possibility to install a plugin from path [#4020](https://github.com/rubygems/rubygems/pull/4020)
+  - Move ronn pages to lib [#3997](https://github.com/rubygems/rubygems/pull/3997)
+  - Fix fileutils double load when using `bundler/inline` [#3991](https://github.com/rubygems/rubygems/pull/3991)
+  - Accept responses with no etag header [#3865](https://github.com/rubygems/rubygems/pull/3865)
+
+## Documentation:
+
+  - Fix typo of `bundle-install.1` (v2.1) [#4079](https://github.com/rubygems/rubygems/pull/4079)
+  - Add commented out example and more information link to generated gemspec [#4034](https://github.com/rubygems/rubygems/pull/4034)
+
 # 2.2.0.rc.2 (October 6, 2020)
 
 ## Features:

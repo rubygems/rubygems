@@ -174,6 +174,13 @@ file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
   end
 end
 
+desc "Upload the release to Github releases"
+task :upload_to_github do
+  require_relative "util/release"
+
+  Release.for_rubygems(v).create_for_github!
+end
+
 desc "Upload release to S3"
 task :upload_to_s3 do
   begin
@@ -190,7 +197,7 @@ task :upload_to_s3 do
 end
 
 desc "Upload release to rubygems.org"
-task :upload => %w[upload_to_s3]
+task :upload => %w[upload_to_github upload_to_s3]
 
 directory '../guides.rubygems.org' do
   sh 'git', 'clone',

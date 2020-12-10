@@ -10,14 +10,17 @@ on:
 
 jobs:
   ubuntu_bundler:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.2 ]
         bundler: [ '', 3.0.0 ]
+        os: [ ubuntu-18.04 ]
         exclude:
           - { bundler: 3.0.0, ruby: 2.3.8 }
+        include:
+          - { bundler: '', ruby: 2.7.2, os: macos-10.15 }
     env:
       RGV: ..
       RUBYOPT: --disable-gems

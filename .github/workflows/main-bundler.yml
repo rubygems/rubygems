@@ -21,7 +21,7 @@ jobs:
         exclude:
           - { bundler: 3.0.0, ruby: 2.3.8 }
         include:
-          - { bundler: '', ruby: 2.7.2, os: macos-10.15 }
+          - { bundler: 3.0.0, ruby: 2.7.2, os: macos-10.15 }
     env:
       RGV: ..
       RUBYOPT: --disable-gems

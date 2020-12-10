@@ -62,6 +62,7 @@ class Changelog
     types = release_notes
       .select {|line| change_types.include?(line) }
       .map {|line| line.downcase.tr '^a-z ', '' }
+      .uniq
 
     last_change_type = types.pop
 

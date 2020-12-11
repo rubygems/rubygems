@@ -123,6 +123,15 @@ RSpec.describe "bundle install with specific platforms" do
           google-protobuf-3.0.0.alpha.5.0.5.1-universal-darwin
         ])
       end
+
+      it "fails if force_ruby_platform is set" do
+        setup_multiplatform_gem
+        bundle "config set force_ruby_platform true"
+        install_gemfile(google_protobuf)
+        bundle "lock --add-platform=#{linux}", :raise_on_error => false
+
+        expect(err).to start_with("Unable to add the platform `#{linux}` because `force_ruby_platform` is true:\nSet for the current user")
+      end
     end
   end
 

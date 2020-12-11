@@ -524,6 +524,11 @@ module Bundler
     end
 
     def add_platform(platform)
+      if Bundler.settings[:force_ruby_platform] && platform != Gem::Platform::RUBY
+        setting_locations = Bundler.settings.pretty_values_for(:force_ruby_platform).join("\n")
+        raise InvalidOption, "Unable to add the platform `#{platform}` because `force_ruby_platform` is true:\n#{setting_locations}"
+      end
+
       @new_platform ||= !@platforms.include?(platform)
       @platforms |= [platform]
     end

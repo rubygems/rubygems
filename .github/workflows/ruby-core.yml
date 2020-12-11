@@ -10,11 +10,12 @@ on:
 
 jobs:
   ruby_core:
+    name: ${{matrix.target}} under a ruby-core setup
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
       matrix:
-        target: [rubygems, bundler]
+        target: [Rubygems, Bundler]
     steps:
       - name: Set up latest ruby head
         uses: ruby/setup-ruby@v1
@@ -50,7 +51,7 @@ jobs:
           ruby tool/sync_default_gems.rb rubygems
           make test-all TESTS="rubygems -j2"
         working-directory: ruby/ruby
-        if: matrix.target == 'rubygems'
+        if: matrix.target == 'Rubygems'
       - name: Test Bundler
         run: |
           ruby tool/sync_default_gems.rb bundler
@@ -58,4 +59,4 @@ jobs:
           git add .
           make test-bundler-parallel
         working-directory: ruby/ruby
-        if: matrix.target == 'bundler'
+        if: matrix.target == 'Bundler'

@@ -39,9 +39,9 @@ module Bundler
       end
 
       def copy_for(platform)
+        return unless for?(platform)
         copied_sg = self.class.new(@all_specs)
         copied_sg.ignores_bundler_dependencies = @ignores_bundler_dependencies
-        return nil unless copied_sg.for?(platform)
         copied_sg.activate_platform!(platform)
         copied_sg
       end

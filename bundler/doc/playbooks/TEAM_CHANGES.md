@@ -15,7 +15,7 @@ Interested in adding someone to the team? Here's the process.
     - Add them to the [maintainers team][org_team] on GitHub
     - Add them to the [Team page][team] on bundler.io, in the [maintainers list][maintainers]
     - Add them to the [list of team members][list] in `contributors.rake`
-    - Add them to the authors list in `bundler.gemspec`
+    - Add them to the authors list in `bundler.gemspec` && `rubygems-update.gemspec`
     - Add them to the owners list on RubyGems.org by running
       ```
       $ gem owner -a EMAIL bundler

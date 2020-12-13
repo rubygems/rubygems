@@ -274,8 +274,9 @@ module Bundler
           else
             # Run a resolve against the locally available gems
             Bundler.ui.debug("Found changes from the lockfile, re-resolving dependencies because #{change_reason}")
-            expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, @remote)
-            last_resolve.merge Resolver.resolve(expanded_dependencies, index, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
+            platforms_for_resolve = platforms.one? {|p| generic(p) == Gem::Platform::RUBY } ? platforms : platforms.reject{|p| p == Gem::Platform::RUBY }
+            expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, @remote, platforms_for_resolve.map {|p| generic(p) })
+            last_resolve.merge Resolver.resolve(expanded_dependencies, index, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms_for_resolve)
           end
 
         # filter out gems that _can_ be installed on multiple platforms, but don't need
@@ -556,11 +557,7 @@ module Bundler
     private
 
     def add_current_platform
-      current_platforms.each {|platform| add_platform(platform) }
-    end
-
-    def current_platforms
-      [local_platform, generic_local_platform].uniq
+      add_platform(local_platform)
     end
 
     def change_reason
@@ -881,7 +878,8 @@ module Bundler
       end
     end
 
-    def expand_dependencies(dependencies, remote = false)
+    def expand_dependencies(dependencies, remote = false, platforms = nil)
+      platforms ||= @platforms
       deps = []
       dependencies.each do |dep|
         dep = Dependency.new(dep, ">= 0") unless dep.respond_to?(:name)

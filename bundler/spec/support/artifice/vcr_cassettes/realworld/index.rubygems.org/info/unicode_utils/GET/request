@@ -1,7 +1,7 @@
 > GET /info/unicode_utils
 > accept-encoding: gzip
 > accept: */*
-> user-agent: bundler/2.2.0.rc.2 rubygems/3.2.0.rc.1 ruby/2.7.2 (x86_64-pc-linux-gnu) command/install options/no_install,jobs,spec_run 10a763b193c2b689
+> user-agent: bundler/2.2.0 rubygems/3.2.0 ruby/2.7.2 (x86_64-pc-linux-gnu) command/install options/no_install,retry,spec_run bdf25077170bf727
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

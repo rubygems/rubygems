@@ -1,7 +1,7 @@
 > GET /info/em-hiredis
 > accept-encoding: gzip
 > accept: */*
-> user-agent: bundler/2.2.0.rc.2 rubygems/3.2.0.rc.1 ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run f4c2f3b927a5f203
+> user-agent: bundler/2.2.0 rubygems/3.2.0 ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run 8d89e1e831cfbaf8
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

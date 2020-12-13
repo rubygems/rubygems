@@ -174,7 +174,7 @@ file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
   end
 end
 
-desc "Upload the release to Github releases"
+desc "Upload the release to GitHub releases"
 task :upload_to_github do
   require_relative "util/release"
 

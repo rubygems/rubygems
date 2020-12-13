@@ -274,6 +274,7 @@ module Bundler
           else
             # Run a resolve against the locally available gems
             Bundler.ui.debug("Found changes from the lockfile, re-resolving dependencies because #{change_reason}")
+            expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, @remote)
             last_resolve.merge Resolver.resolve(expanded_dependencies, index, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
           end
 
@@ -852,14 +853,6 @@ module Bundler
 
     def satisfies_locked_spec?(dep)
       @locked_specs[dep].any? {|s| s.satisfies?(dep) && (!dep.source || s.source.include?(dep.source)) }
-    end
-
-    # This list of dependencies is only used in #resolve, so it's OK to add
-    # the metadata dependencies here
-    def expanded_dependencies
-      @expanded_dependencies ||= begin
-        expand_dependencies(dependencies + metadata_dependencies, @remote)
-      end
     end
 
     def metadata_dependencies

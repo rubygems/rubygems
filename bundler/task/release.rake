@@ -29,7 +29,7 @@ end
 namespace :release do
   task :verify_docs => :"man:check"
 
-  desc "Push the release to Github releases"
+  desc "Push the release to GitHub releases"
   task :github do
     gemspec_version = Bundler::GemHelper.gemspec.version
 

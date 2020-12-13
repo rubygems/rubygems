@@ -369,7 +369,7 @@ Or you can set the credentials as an environment variable like so:
 
     export BUNDLE_GITHUB__COM=username:password
 
-This is especially useful for private repositories on hosts such as Github,
+This is especially useful for private repositories on hosts such as GitHub,
 where you can use personal OAuth tokens:
 
     export BUNDLE_GITHUB__COM=abcd0123generatedtoken:x-oauth-basic

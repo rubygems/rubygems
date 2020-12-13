@@ -36,7 +36,7 @@ When the conditions in [POLICIES](https://github.com/rubygems/rubygems/blob/mast
 - Remove them from the maintainers Slack channel
 
 [policies]: https://github.com/rubygems/rubygems/blob/master/bundler/doc/POLICIES.md#bundler-policies
-[org_team]: https://github.com/orgs/bundler/teams/maintainers/members
+[org_team]: https://github.com/orgs/rubygems/teams/maintainers/members
 [team]: https://bundler.io/contributors.html
 [maintainers]: https://github.com/rubygems/bundler-site/blob/02483d3f79f243774722b3fc18a471ca77b1c424/source/contributors.html.haml#L25
 [list]: https://github.com/rubygems/bundler-site/blob/02483d3f79f243774722b3fc18a471ca77b1c424/lib/tasks/contributors.rake#L8

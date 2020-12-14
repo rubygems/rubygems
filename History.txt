@@ -1,3 +1,17 @@
+=== 3.2.1 / 2020-12-14
+
+Enhancements:
+
+* Added help message for gem i webrick in gem server command. Pull request
+  #4117 by hsbt
+
+Bug fixes:
+
+* Added the missing loading of fileutils same as load_specs. Pull request
+  #4124 by hsbt
+* Fix Resolver::APISet to always include prereleases when necessary. Pull
+  request #4113 by deivid-rodriguez
+
 === 3.2.0 / 2020-12-7
 
 Enhancements:

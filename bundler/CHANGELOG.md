@@ -1,3 +1,14 @@
+# 2.2.1 (December 14, 2020)
+
+## Bug fixes:
+
+  - Ad-hoc fix for platform regression [#4127](https://github.com/rubygems/rubygems/pull/4127)
+  - Workaround JRuby + Windows issue with net-http-persistent vendored code [#4138](https://github.com/rubygems/rubygems/pull/4138)
+  - Reset also root when in a nested invocation [#4140](https://github.com/rubygems/rubygems/pull/4140)
+  - Restore 2.1.4 resolution times [#4134](https://github.com/rubygems/rubygems/pull/4134)
+  - Fix `bundle outdated --strict` crash [#4133](https://github.com/rubygems/rubygems/pull/4133)
+  - Autoload `Bundler::RemoteSpecification` to workaround crash on jruby [#4114](https://github.com/rubygems/rubygems/pull/4114)
+
 # 2.2.0 (December 7, 2020)
 
 ## Enhancements:

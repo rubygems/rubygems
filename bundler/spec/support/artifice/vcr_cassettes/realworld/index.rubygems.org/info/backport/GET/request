@@ -1,0 +1,7 @@
+> GET /info/backport
+> accept-encoding: gzip
+> accept: */*
+> user-agent: bundler/2.2.0 rubygems/3.2.0 ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run c23a66d8c6448737
+> connection: keep-alive
+> keep-alive: 30
+> host: index.rubygems.org

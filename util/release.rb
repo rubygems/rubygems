@@ -169,6 +169,10 @@ class Release
     @current_library.cut_changelog_for!(unreleased_pull_requests)
   end
 
+  def create_for_github!
+    @current_library.create_for_github!
+  end
+
   private
 
   def relevant_unreleased_pull_requests

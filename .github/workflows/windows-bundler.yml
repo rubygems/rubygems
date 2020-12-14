@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ 'jruby-9.2.11.1', '2.4', '2.5', '2.6', '2.7' ]
+        ruby: [ 'jruby-9.2.11.1', '2.4.10', '2.5.8', '2.6.6', '2.7.2' ]
 
     steps:
       - uses: actions/checkout@v2

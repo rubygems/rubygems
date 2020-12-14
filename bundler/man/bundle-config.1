@@ -57,6 +57,9 @@ Executing \fBbundle config unset \-\-local <name> <value>\fR will delete the con
 Executing bundle with the \fBBUNDLE_IGNORE_CONFIG\fR environment variable set will cause it to ignore all configuration\.
 .
 .P
+Executing bundle with the \fBBUNDLE_NO_SUDO\fR environment variable set will disallow using sudo\.
+.
+.P
 Executing \fBbundle config set \-\-local disable_multisource true\fR upgrades the warning about the Gemfile containing multiple primary sources to an error\. Executing \fBbundle config unset disable_multisource\fR downgrades this error to a warning\.
 .
 .SH "REMEMBERING OPTIONS"

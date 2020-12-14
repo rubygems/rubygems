@@ -47,6 +47,9 @@ configuration only from the local application.
 Executing bundle with the `BUNDLE_IGNORE_CONFIG` environment variable set will
 cause it to ignore all configuration.
 
+Executing bundle with the `BUNDLE_NO_SUDO` environment variable set will
+disallow using sudo.
+
 Executing `bundle config set --local disable_multisource true` upgrades the warning about
 the Gemfile containing multiple primary sources to an error. Executing `bundle
 config unset disable_multisource` downgrades this error to a warning.

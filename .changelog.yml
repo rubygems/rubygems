@@ -4,7 +4,7 @@ header_template: "=== %new_version / %release_date"
 
 entry_template: "* %pull_request_title. Pull request #%pull_request_number by %pull_request_author"
 
-release_date_format: "%Y-%m-%-d"
+release_date_format: "%Y-%m-%d"
 
 entry_wrapping: 74
 

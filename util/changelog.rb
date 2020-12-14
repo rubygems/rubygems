@@ -5,7 +5,7 @@ require "yaml"
 class Changelog
   def self.for_rubygems(version)
     @rubygems ||= new(
-      File.expand_path("../History.txt", __dir__),
+      File.expand_path("../CHANGELOG.md", __dir__),
       version,
     )
   end

@@ -9,23 +9,21 @@ release_date_format: "%B %-d, %Y"
 changelog_label_mapping:
   "bundler: security fix": "## Security fixes:"
   "bundler: breaking change": "## Breaking changes:"
-  "bundler: major enhancement": "## Major enhancements:"
   "bundler: deprecation": "## Deprecations:"
   "bundler: feature": "## Features:"
   "bundler: performance": "## Performance:"
-  "bundler: minor enhancement": "## Minor enhancements:"
+  "bundler: enhancement": "## Enhancements:"
   "bundler: bug fix": "## Bug fixes:"
   "bundler: documentation": "## Documentation:"
   "bundler: backport": null
 
 patch_level_labels:
   - "bundler: security fix"
-  - "bundler: minor enhancement"
+  - "bundler: enhancement"
   - "bundler: bug fix"
   - "bundler: backport"
 
 minor_level_labels:
-  - "bundler: major enhancement"
   - "bundler: deprecation"
   - "bundler: feature"
   - "bundler: performance"

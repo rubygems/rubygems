@@ -1,26 +1,23 @@
 # frozen_string_literal: true
 
-require_relative "github_info"
 require "yaml"
 
 class Changelog
   def self.for_rubygems(version)
     @rubygems ||= new(
-      "History.txt",
+      File.expand_path("../History.txt", __dir__),
       version,
-      :latest_release => GithubInfo.latest_release_for("rubygems"),
     )
   end
 
   def self.for_bundler(version)
     @bundler ||= new(
-      "CHANGELOG.md",
+      File.expand_path("../bundler/CHANGELOG.md", __dir__),
       version,
-      :latest_release => GithubInfo.latest_release_for("bundler"),
     )
   end
 
-  def initialize(file, version, latest_release:)
+  def initialize(file, version)
     @version = Gem::Version.new(version)
     @file = File.expand_path(file)
     @config = YAML.load_file("#{File.dirname(file)}/.changelog.yml")
@@ -31,7 +28,6 @@ class Changelog
              else
                :patch
                end
-    @latest_release = latest_release
   end
 
   def release_notes
@@ -66,6 +62,7 @@ class Changelog
     types = release_notes
       .select {|line| change_types.include?(line) }
       .map {|line| line.downcase.tr '^a-z ', '' }
+      .uniq
 
     last_change_type = types.pop
 
@@ -78,21 +75,21 @@ class Changelog
     types << last_change_type
   end
 
-  def cut!
+  def cut!(previous_version, included_pull_requests)
     full_new_changelog = [
       format_header,
       "",
-      unreleased_notes,
-      lines,
+      unreleased_notes_for(included_pull_requests),
+      released_notes_until(previous_version),
     ].join("\n") + "\n"
 
     File.write(@file, full_new_changelog)
   end
 
-  def unreleased_notes
+  def unreleased_notes_for(included_pull_requests)
     lines = []
 
-    group_by_labels(relevant_pull_requests_since_last_release).each do |label, pulls|
+    group_by_labels(included_pull_requests).each do |label, pulls|
       category = changelog_label_mapping[label]
 
       lines << category
@@ -108,12 +105,13 @@ class Changelog
     lines
   end
 
-  def relevant_pull_requests_since_last_release
-    last_release_date = @latest_release.created_at
+  def relevant_label_for(pull)
+    relevant_labels = pull.labels.map(&:name) & changelog_labels
+    return unless relevant_labels.any?
 
-    pr_ids = merged_pr_ids_since(last_release_date)
+    raise "#{pull.html_url} has multiple labels that map to changelog sections" unless relevant_labels.size == 1
 
-    relevant_pull_requests_for(pr_ids)
+    relevant_labels.first
   end
 
   private
@@ -164,7 +162,7 @@ class Changelog
   end
 
   def group_by_labels(pulls)
-    grouped_pulls = pulls.group_by do |pull|
+    grouped_pulls = pulls.sort_by(&:merged_at).group_by do |pull|
       relevant_label_for(pull)
     end
 
@@ -173,15 +171,6 @@ class Changelog
     grouped_pulls.sort do |a, b|
       changelog_labels.index(a[0]) <=> changelog_labels.index(b[0])
     end.to_h
-  end
-
-  def relevant_label_for(pull)
-    relevant_labels = pull.labels.map(&:name) & changelog_labels
-    return unless relevant_labels.any?
-
-    raise "#{pull.html_url} has multiple labels that map to changelog sections" unless relevant_labels.size == 1
-
-    relevant_labels.first
   end
 
   def relevant_changelog_label_mapping
@@ -202,32 +191,8 @@ class Changelog
     relevant_changelog_label_mapping.values
   end
 
-  def merged_pr_ids_since(date)
-    commits = `git log --oneline origin/master --since '#{date}'`.split("\n").map {|l| l.split(/\s/, 2) }
-    commits.map do |_sha, message|
-      match = /Merge pull request #(\d+)/.match(message)
-      next unless match
-
-      match[1].to_i
-    end.compact
-  end
-
-  def relevant_pull_requests_for(ids)
-    pulls = gh_client.pull_requests("rubygems/rubygems", :sort => :updated, :state => :closed, :direction => :desc)
-
-    loop do
-      pulls.select! {|pull| ids.include?(pull.number) }
-
-      break if (pulls.map(&:number) & ids).to_set == ids.to_set
-
-      pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
-    end
-
-    pulls.select {|pull| relevant_label_for(pull) }.sort_by(&:merged_at)
-  end
-
-  def released_notes
-    lines.drop_while {|line| !line.start_with?(release_section_token) }
+  def released_notes_until(version)
+    lines.drop_while {|line| !line.start_with?(release_section_token) || !line.include?(version) }
   end
 
   def lines
@@ -268,9 +233,5 @@ class Changelog
 
   def minor_level_labels
     @config["minor_level_labels"]
-  end
-
-  def gh_client
-    GithubInfo.client
   end
 end

@@ -57,7 +57,7 @@ class Release
     include SubRelease
 
     def initialize(version)
-      @version = version
+      @version = Gem::Version.new(version)
       @changelog = Changelog.for_bundler(version)
       @version_files = [File.expand_path("../bundler/lib/bundler/version.rb", __dir__)]
       @title = "Bundler version #{version} with changelog"
@@ -69,7 +69,7 @@ class Release
     include SubRelease
 
     def initialize(version)
-      @version = version
+      @version = Gem::Version.new(version)
       @changelog = Changelog.for_rubygems(version)
       @version_files = [File.expand_path("../lib/rubygems.rb", __dir__), File.expand_path("../rubygems-update.gemspec", __dir__)]
       @title = "Rubygems version #{version} with changelog"

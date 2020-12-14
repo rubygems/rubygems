@@ -602,8 +602,9 @@ EOF
       reset_rubygems!
     end
 
-    def reset_settings!
+    def reset_settings_and_root!
       @settings = nil
+      @root = nil
     end
 
     def reset_paths!

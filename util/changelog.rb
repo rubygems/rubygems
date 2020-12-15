@@ -27,7 +27,7 @@ class Changelog
                :minor
              else
                :patch
-               end
+             end
   end
 
   def release_notes

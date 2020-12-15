@@ -89,6 +89,9 @@ Lint/DuplicateMethods:
 Lint/ParenthesesAsGroupedExpression:
   Enabled: true
 
+Layout/EndAlignment:
+  Enabled: true
+
 Naming/HeredocDelimiterCase:
   Enabled: true
 

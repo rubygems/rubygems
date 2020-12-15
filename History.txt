@@ -12,7 +12,7 @@ Bug fixes:
 * Fix Resolver::APISet to always include prereleases when necessary. Pull
   request #4113 by deivid-rodriguez
 
-=== 3.2.0 / 2020-12-7
+=== 3.2.0 / 2020-12-07
 
 Enhancements:
 
@@ -68,7 +68,7 @@ Performance:
 * Don't change ruby process CWD when building extensions. Pull request
   #3498 by deivid-rodriguez
 
-=== 3.2.0.rc.2 / 2020-10-8
+=== 3.2.0.rc.2 / 2020-10-08
 
 Enhancements:
 

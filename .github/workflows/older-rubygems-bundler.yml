@@ -14,31 +14,46 @@ on:
 
 jobs:
   older_rubygems_bundler:
+    name: Bundler ${{ matrix.bundler.name }} against old Rubygems (${{ matrix.ruby.name }}, ${{ matrix.rgv.name}})
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ 2.3.8, 2.4.10, 2.5.8, 2.6.6, 2.7.2 ]
-        rgv: [ v2.5.2, v2.6.14, v2.7.10, v3.0.8, v3.1.4 ]
-        bundler: [ '' ]
+        ruby:
+          - { name: ruby-2.3, value: 2.3.8 }
+          - { name: ruby-2.4, value: 2.4.10 }
+          - { name: ruby-2.5, value: 2.5.8 }
+          - { name: ruby-2.6, value: 2.6.6 }
+          - { name: ruby-2.7, value: 2.7.2 }
+        rgv:
+          - { name: rgv-2.5, value: v2.5.2 }
+          - { name: rgv-2.6, value: v2.6.14 }
+          - { name: rgv-2.7, value: v2.7.10 }
+          - { name: rgv-3.0, value: v3.0.8 }
+          - { name: rgv-3.1, value: v3.1.4 }
+
+        bundler:
+          - { name: 2, value: '' }
+
         exclude:
-          - { bundler: '', ruby: 2.4.10, rgv: v2.5.2  }
-          - { bundler: '', ruby: 2.5.8, rgv: v2.5.2  }
-          - { bundler: '', ruby: 2.5.8, rgv: v2.6.14 }
-          - { bundler: '', ruby: 2.6.6, rgv: v2.5.2  }
-          - { bundler: '', ruby: 2.6.6, rgv: v2.6.14 }
-          - { bundler: '', ruby: 2.6.6, rgv: v2.7.10 }
-          - { bundler: '', ruby: 2.7.2, rgv: v2.5.2  }
-          - { bundler: '', ruby: 2.7.2, rgv: v2.6.14 }
-          - { bundler: '', ruby: 2.7.2, rgv: v2.7.10 }
-          - { bundler: '', ruby: 2.7.2, rgv: v3.0.8  }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.4, value: 2.4.10 }, rgv: { name: rgv-2.5, value: v2.5.2 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.5, value: 2.5.8 }, rgv: { name: rgv-2.5, value: v2.5.2 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.5, value: 2.5.8 }, rgv: { name: rgv-2.6, value: v2.6.14 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.6 }, rgv: { name: rgv-2.5, value: v2.5.2 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.6 }, rgv: { name: rgv-2.6, value: v2.6.14 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.6 }, rgv: { name: rgv-2.7, value: v2.7.10 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-2.5, value: v2.5.2 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-2.6, value: v2.6.14 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-2.7, value: v2.7.10 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-3.0, value: v3.0.8 } }
+
         include:
-          - { bundler: 3.0.0, ruby: 2.4.10, rgv: v3.1.4 }
-          - { bundler: 3.0.0, ruby: 2.5.8, rgv: v3.1.4 }
-          - { bundler: 3.0.0, ruby: 2.6.6, rgv: v3.1.4 }
-          - { bundler: 3.0.0, ruby: 2.7.2, rgv: v3.1.4 }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.4, value: 2.4.10 }, rgv: { name: rgv-3.1, value: v3.1.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.5, value: 2.5.8 }, rgv: { name: rgv-3.1, value: v3.1.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.6, value: 2.6.6 }, rgv: { name: rgv-3.1, value: v3.1.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-3.1, value: v3.1.4 } }
     env:
-      RGV: ${{ matrix.rgv }}
+      RGV: ${{ matrix.rgv.value }}
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
@@ -47,14 +62,14 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby }}
+          ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Install graphviz
         run: sudo apt-get install graphviz -y
-        if: matrix.bundler == ''
+        if: matrix.bundler.value == ''
       - name: Replace version
-        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler }} bin/rake override_version
-        if: matrix.bundler != ''
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
+        if: matrix.bundler.value != ''
         working-directory: ./bundler
       - name: Prepare dependencies
         run: |

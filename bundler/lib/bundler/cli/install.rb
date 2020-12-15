@@ -163,11 +163,14 @@ module Bundler
       without |= Bundler.settings[:without].map(&:to_s)
       without -= options[:with] if options[:with]
 
+      options[:with]    = with
+      options[:without] = without
+
       # need to nil them out first to get around validation for backwards compatibility
       Bundler.settings.set_command_option :without, nil
       Bundler.settings.set_command_option :with,    nil
-      Bundler.settings.set_command_option :without, without - with
-      Bundler.settings.set_command_option :with,    with
+      Bundler.settings.set_command_option :without, options[:without] - options[:with]
+      Bundler.settings.set_command_option :with,    options[:with]
     end
 
     def normalize_settings

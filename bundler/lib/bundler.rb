@@ -283,13 +283,7 @@ module Bundler
     end
 
     def root
-      @root ||= begin
-                  SharedHelpers.root
-                rescue GemfileNotFound
-                  bundle_dir = default_bundle_dir
-                  raise GemfileNotFound, "Could not locate Gemfile or .bundle/ directory" unless bundle_dir
-                  Pathname.new(File.expand_path("..", bundle_dir))
-                end
+      @root ||= SharedHelpers.root
     end
 
     def app_config_path
@@ -297,13 +291,17 @@ module Bundler
         app_config_pathname = Pathname.new(app_config)
 
         if app_config_pathname.absolute?
-          app_config_pathname
-        else
-          app_config_pathname.expand_path(root)
+          return app_config_pathname
         end
-      else
-        root.join(".bundle")
       end
+
+      app_config_root.join(app_config || ".bundle")
+    end
+
+    def app_config_root
+      root
+    rescue GemfileNotFound
+      Pathname.pwd.expand_path
     end
 
     def app_cache(custom_path = nil)
@@ -330,8 +328,6 @@ EOF
 
     def settings
       @settings ||= Settings.new(app_config_path)
-    rescue GemfileNotFound
-      @settings = Settings.new(Pathname.new(".bundle").expand_path)
     end
 
     # @return [Hash] Environment present before Bundler was activated

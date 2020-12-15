@@ -21,7 +21,7 @@ jobs:
           - { name: 2.5, value: 2.5.8 }
           - { name: 2.6, value: 2.6.6 }
           - { name: 2.7, value: 2.7.2 }
-          - { name: jruby-9.2, value: jruby-9.2.11.1 }
+          - { name: jruby-9.2, value: jruby-9.2.14.0 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }

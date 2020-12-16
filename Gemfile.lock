@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    libv8 (3.16.14.19)
+    ref (2.0.0)
+    therubyracer (0.12.3)
+      libv8 (~> 3.16.14.15)
+      ref
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  therubyracer
+
+BUNDLED WITH
+   2.2.9

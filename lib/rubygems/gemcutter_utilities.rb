@@ -98,16 +98,21 @@ module Gem::GemcutterUtilities
     request_method = Net::HTTP.const_get method.to_s.capitalize
     response = Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)
 
+    otp = ""
     if mfa_unauthorized?(response)
       response = Gem::RemoteFetcher.fetcher.request(uri, request_method) do |req|
-        req.add_field "OTP", get_otp
+        otp = get_otp
+        req.add_field "OTP", otp
         block.call(req)
       end
     end
 
     if api_key_forbidden?(response)
-      update_scope(scope)
-      Gem::RemoteFetcher.fetcher.request(uri, request_method, &block)
+      update_scope(scope, otp)
+      Gem::RemoteFetcher.fetcher.request(uri, request_method) do |req|
+        req.add_field "OTP", otp unless otp.empty?
+        block.call(req)
+      end
     else
       response
     end
@@ -122,10 +127,11 @@ module Gem::GemcutterUtilities
     ask 'Code: '
   end
 
-  def update_scope(scope)
+  def update_scope(scope, otp)
     sign_in_host        = self.host
     pretty_host         = pretty_host(sign_in_host)
     update_scope_params = { scope => true }
+    otp                 = options[:otp] || otp
 
     say "The existing key doesn't have access of #{scope} on #{pretty_host}. Please sign in to update access."
 
@@ -135,7 +141,7 @@ module Gem::GemcutterUtilities
     response = rubygems_api_request(:put, "api/v1/api_key",
                                     sign_in_host, scope: scope) do |request|
       request.basic_auth email, password
-      request.add_field "OTP", options[:otp] if options[:otp]
+      request.add_field "OTP", otp unless otp.empty?
       request.body = URI.encode_www_form({:api_key => api_key }.merge(update_scope_params))
     end
 

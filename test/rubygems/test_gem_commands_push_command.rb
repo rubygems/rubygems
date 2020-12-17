@@ -435,6 +435,40 @@ class TestGemCommandsPushCommand < Gem::TestCase
     assert_equal '11111', @fetcher.last_request['OTP']
   end
 
+  def test_sending_gem_with_no_local_creds
+    Gem.configuration.rubygems_api_key = nil
+
+    response_mfa_enabled = "You have enabled multifactor authentication but your request doesn't have the correct OTP code. Please check it and retry."
+    response_success     = 'Successfully registered gem: freewill (1.0.0)'
+
+    @fetcher.data["#{@host}/api/v1/gems"] = [
+      [response_success, 200, "OK"],
+    ]
+
+    @fetcher.data["#{@host}/api/v1/api_key"] = [
+      [response_mfa_enabled, 401, 'Unauthorized'],
+      ["", 200, "OK"],
+    ]
+
+    @cmd.instance_variable_set :@scope, :push_rubygem
+    @cmd.options[:args] = [@path]
+    @cmd.options[:host] = @host
+
+    @ui = Gem::MockGemUi.new "some@mail.com\npass\n11111\n"
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    mfa_notice = "You have enabled multi-factor authentication. Please enter OTP code."
+    assert_match mfa_notice, @ui.output
+    assert_match "Enter your https://rubygems.example credentials.", @ui.output
+    assert_match "Email:", @ui.output
+    assert_match "Password:", @ui.output
+    assert_match "Signed in with API key:", @ui.output
+    assert_match response_success, @ui.output
+    assert_equal '11111', @fetcher.last_request['OTP']
+  end
+
   private
 
   def singleton_gem_class

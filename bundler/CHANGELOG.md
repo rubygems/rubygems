@@ -1,3 +1,10 @@
+# 2.2.2 (December 17, 2020)
+
+## Bug fixes:
+
+  - Fix resolver crash when a candidate has 0 matching platforms [#4163](https://github.com/rubygems/rubygems/pull/4163)
+  - Restore change to copy global with/without config locally upon `bundle install` [#4154](https://github.com/rubygems/rubygems/pull/4154)
+
 # 2.2.1 (December 14, 2020)
 
 ## Bug fixes:

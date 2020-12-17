@@ -1,3 +1,15 @@
+=== 3.2.2 / 2020-12-17
+
+Bug fixes:
+
+* Fix issue where CLI commands making more than one request to
+  rubygems.org needing an OTP code would crash or ask for the code twice.
+  Pull request #4162 by sonalkr132
+* Fix building rake extensions that require openssl. Pull request #4165 by
+  deivid-rodriguez
+* Fix `gem update --system` displaying too many changelog entries. Pull
+  request #4145 by deivid-rodriguez
+
 === 3.2.1 / 2020-12-14
 
 Enhancements:
@@ -12,7 +24,7 @@ Bug fixes:
 * Fix Resolver::APISet to always include prereleases when necessary. Pull
   request #4113 by deivid-rodriguez
 
-=== 3.2.0 / 2020-12-7
+=== 3.2.0 / 2020-12-07
 
 Enhancements:
 
@@ -68,7 +80,7 @@ Performance:
 * Don't change ruby process CWD when building extensions. Pull request
   #3498 by deivid-rodriguez
 
-=== 3.2.0.rc.2 / 2020-10-8
+=== 3.2.0.rc.2 / 2020-10-08
 
 Enhancements:
 

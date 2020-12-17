@@ -6,6 +6,7 @@ on:
 
 jobs:
   daily_rubygems:
+    name: Rubygems (ruby-head)
     runs-on: ubuntu-18.04
     if: github.repository == 'rubygems/rubygems'
     strategy:

@@ -35,7 +35,8 @@ class Release
 
       gh_client.create_release "rubygems/rubygems", tag, :name => tag,
                                                          :body => @changelog.release_notes.join("\n").strip,
-                                                         :prerelease => @version.prerelease?
+                                                         :prerelease => @version.prerelease?,
+                                                         :target_commitish => @stable_branch
     end
 
     def previous_version
@@ -56,8 +57,9 @@ class Release
   class Bundler
     include SubRelease
 
-    def initialize(version)
-      @version = version
+    def initialize(version, stable_branch)
+      @version = Gem::Version.new(version)
+      @stable_branch = stable_branch
       @changelog = Changelog.for_bundler(version)
       @version_files = [File.expand_path("../bundler/lib/bundler/version.rb", __dir__)]
       @title = "Bundler version #{version} with changelog"
@@ -68,8 +70,9 @@ class Release
   class Rubygems
     include SubRelease
 
-    def initialize(version)
-      @version = version
+    def initialize(version, stable_branch)
+      @version = Gem::Version.new(version)
+      @stable_branch = stable_branch
       @changelog = Changelog.for_rubygems(version)
       @version_files = [File.expand_path("../lib/rubygems.rb", __dir__), File.expand_path("../rubygems-update.gemspec", __dir__)]
       @title = "Rubygems version #{version} with changelog"
@@ -99,13 +102,14 @@ class Release
   def initialize(version)
     segments = Gem::Version.new(version).segments
 
+    @stable_branch = segments[0, 2].join(".")
+
     rubygems_version = segments.join(".")
-    @rubygems = Rubygems.new(rubygems_version)
+    @rubygems = Rubygems.new(rubygems_version, @stable_branch)
 
     bundler_version = segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")
-    @bundler = Bundler.new(bundler_version)
+    @bundler = Bundler.new(bundler_version, @stable_branch)
 
-    @stable_branch = segments[0, 2].join(".")
     @release_branch = "release/bundler_#{bundler_version}_rubygems_#{rubygems_version}"
   end
 
@@ -167,6 +171,10 @@ class Release
 
   def cut_changelog!
     @current_library.cut_changelog_for!(unreleased_pull_requests)
+  end
+
+  def create_for_github!
+    @current_library.create_for_github!
   end
 
   private

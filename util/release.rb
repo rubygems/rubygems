@@ -30,6 +30,16 @@ class Release
       @changelog.cut!(previous_version, relevant_pull_requests)
     end
 
+    def bump_versions!
+      version_files.each do |version_file|
+        version_contents = File.read(version_file)
+        unless version_contents.sub!(/^(.*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/i, "\\1#{version.to_s.dump}")
+          raise "Failed to update #{version_file}, is it in the expected format?"
+        end
+        File.open(version_file, "w") {|f| f.write(version_contents) }
+      end
+    end
+
     def create_for_github!
       tag = "#{@tag_prefix}#{@version}"
 
@@ -150,14 +160,7 @@ class Release
       end
 
       [@bundler, @rubygems].each do |library|
-        library.version_files.each do |version_file|
-          version_contents = File.read(version_file)
-          unless version_contents.sub!(/^(.*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/i, "\\1#{library.version.to_s.dump}")
-            raise "Failed to update #{version_file}, is it in the expected format?"
-          end
-          File.open(version_file, "w") {|f| f.write(version_contents) }
-        end
-
+        library.bump_versions!
         library.cut_changelog!
 
         system("git", "commit", "-am", library.title, exception: true)

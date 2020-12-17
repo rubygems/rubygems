@@ -519,8 +519,7 @@ module Bundler
       end
 
       raise ProductionError, "Your bundle only supports platforms #{@platforms.map(&:to_s)} " \
-        "but your local platform is #{Bundler.local_platform}, and " \
-        "there's no compatible match between those."
+        "but your local platform is #{Bundler.local_platform}.
     end
 
     def add_platform(platform)

@@ -667,7 +667,7 @@ RSpec.describe "bundle install with gem sources" do
     it "should fail loudly if the lockfile platforms don't include the current platform" do
       simulate_platform(Gem::Platform.new("x86_64-linux")) { bundle "install", :raise_on_error => false }
 
-      expect(err).to eq("Your bundle only supports platforms [\"x86_64-darwin-19\"] but your local platform is x86_64-linux, and there's no compatible match between those.")
+      expect(err).to eq("Your bundle only supports platforms [\"x86_64-darwin-19\"] but your local platform is x86_64-linux.")
     end
   end
 end

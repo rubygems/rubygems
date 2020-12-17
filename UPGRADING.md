@@ -2,7 +2,7 @@
 
 ## Downgrade Recipe
 
-    $ gem update --system 1.3.7
+    $ gem update --system 3.1.4
 
 ## Upgrade Recipe
 

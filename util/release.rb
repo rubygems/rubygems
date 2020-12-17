@@ -18,7 +18,7 @@ class Release
   module SubRelease
     include GithubAPI
 
-    attr_reader :version, :changelog, :version_files, :title, :tag_prefix
+    attr_reader :version, :changelog, :version_files, :name, :tag_prefix
 
     def cut_changelog_for!(pull_requests)
       set_relevant_pull_requests_from(pull_requests)
@@ -72,7 +72,7 @@ class Release
       @stable_branch = stable_branch
       @changelog = Changelog.for_bundler(version)
       @version_files = [File.expand_path("../bundler/lib/bundler/version.rb", __dir__)]
-      @title = "Bundler version #{version} with changelog"
+      @name = "Bundler"
       @tag_prefix = "bundler-v"
     end
   end
@@ -85,7 +85,7 @@ class Release
       @stable_branch = stable_branch
       @changelog = Changelog.for_rubygems(version)
       @version_files = [File.expand_path("../lib/rubygems.rb", __dir__), File.expand_path("../rubygems-update.gemspec", __dir__)]
-      @title = "Rubygems version #{version} with changelog"
+      @name = "Rubygems"
       @tag_prefix = "v"
     end
   end
@@ -160,10 +160,11 @@ class Release
       end
 
       [@bundler, @rubygems].each do |library|
-        library.bump_versions!
         library.cut_changelog!
+        system("git", "commit", "-am", "Changelog for #{library.name} version #{library.version}", exception: true)
 
-        system("git", "commit", "-am", library.title, exception: true)
+        library.bump_versions!
+        system("git", "commit", "-am", "Bump #{library.name} version to #{library.version}", exception: true)
       end
     rescue StandardError
       system("git", "checkout", initial_branch, exception: true)

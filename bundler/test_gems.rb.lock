@@ -20,6 +20,7 @@ GEM
       rack-protection (= 2.0.8.1)
       tilt (~> 2.0)
     tilt (2.0.10)
+    webrick (1.7.0)
 
 PLATFORMS
   java
@@ -35,6 +36,7 @@ DEPENDENCIES
   rack-test (~> 1.1)
   rake (= 13.0.1)
   sinatra (~> 2.0)
+  webrick (= 1.7.0)
 
 BUNDLED WITH
    2.2.0.rc.2

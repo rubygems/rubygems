@@ -41,8 +41,14 @@ module Bundler
     module_function :platform_specificity_match
 
     def select_best_platform_match(specs, platform)
-      specs.select {|spec| spec.match_platform(platform) }.
-        min_by {|spec| platform_specificity_match(spec.platform, platform) }
+      matching = specs.select {|spec| spec.match_platform(platform) }
+      exact = matching.select {|spec| spec.platform == platform }
+      return exact if exact.any?
+
+      sorted_matching = matching.sort_by {|spec| platform_specificity_match(spec.platform, platform) }
+      exemplary_spec = sorted_matching.first
+
+      sorted_matching.take_while{|spec| same_specificity(platform, spec, exemplary_spec) && same_deps(spec, exemplary_spec) }
     end
     module_function :select_best_platform_match
 
@@ -86,5 +92,19 @@ module Bundler
         end
       end
     end
+
+    def same_specificity(platform, spec, exemplary_spec)
+      platform_specificity_match(spec.platform, platform) == platform_specificity_match(exemplary_spec.platform, platform)
+    end
+    module_function :same_specificity
+
+    def same_deps(spec, exemplary_spec)
+      same_runtime_deps = spec.dependencies.sort == exemplary_spec.dependencies.sort
+      return same_runtime_deps unless spec.is_a?(Gem::Specification) && exemplary_spec.is_a?(Gem::Specification)
+
+      same_metadata_deps = spec.required_ruby_version == exemplary_spec.required_ruby_version && spec.required_rubygems_version == exemplary_spec.required_rubygems_version
+      same_runtime_deps && same_metadata_deps
+    end
+    module_function :same_deps
   end
 end

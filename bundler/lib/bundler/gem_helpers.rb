@@ -35,14 +35,8 @@ module Bundler
 
     def platform_specificity_match(spec_platform, user_platform)
       spec_platform = Gem::Platform.new(spec_platform)
-      return PlatformMatch::EXACT_MATCH if spec_platform == user_platform
-      return PlatformMatch::WORST_MATCH if spec_platform.nil? || spec_platform == Gem::Platform::RUBY || user_platform == Gem::Platform::RUBY
 
-      PlatformMatch.new(
-        PlatformMatch.os_match(spec_platform, user_platform),
-        PlatformMatch.cpu_match(spec_platform, user_platform),
-        PlatformMatch.platform_version_match(spec_platform, user_platform)
-      )
+      PlatformMatch.specificity_score(spec_platform, user_platform)
     end
     module_function :platform_specificity_match
 
@@ -52,23 +46,15 @@ module Bundler
     end
     module_function :select_best_platform_match
 
-    PlatformMatch = Struct.new(:os_match, :cpu_match, :platform_version_match)
     class PlatformMatch
-      def <=>(other)
-        return nil unless other.is_a?(PlatformMatch)
+      def self.specificity_score(spec_platform, user_platform)
+        return -1 if spec_platform == user_platform
+        return 1_000_000 if spec_platform.nil? || spec_platform == Gem::Platform::RUBY || user_platform == Gem::Platform::RUBY
 
-        m = os_match <=> other.os_match
-        return m unless m.zero?
-
-        m = cpu_match <=> other.cpu_match
-        return m unless m.zero?
-
-        m = platform_version_match <=> other.platform_version_match
-        m
+        os_match(spec_platform, user_platform) +
+          cpu_match(spec_platform, user_platform) * 10 +
+          platform_version_match(spec_platform, user_platform) * 100
       end
-
-      EXACT_MATCH = new(-1, -1, -1).freeze
-      WORST_MATCH = new(1_000_000, 1_000_000, 1_000_000).freeze
 
       def self.os_match(spec_platform, user_platform)
         if spec_platform.os == user_platform.os

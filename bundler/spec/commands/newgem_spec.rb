@@ -588,6 +588,22 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/lib/#{require_path}.rb").read).to match(/class Error < StandardError; end$/)
     end
 
+    it "does not include git related files in files" do
+      bundle "gem #{gem_name}"
+
+      bundler_gemspec = Bundler::GemHelper.new(gemspec_dir).gemspec
+
+      expect(bundler_gemspec.file).to eq([])
+    end
+
+    it "does not include the gemspec file in files" do
+      bundle "gem #{gem_name}"
+
+      bundler_gemspec = Bundler::GemHelper.new(gemspec_dir).gemspec
+
+      expect(bundler_gemspec.file).not_to include("#{gemname}.gemspec")
+    end
+
     it "runs rake without problems" do
       bundle "gem #{gem_name}"
 

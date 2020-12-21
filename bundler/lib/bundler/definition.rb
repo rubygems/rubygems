@@ -530,6 +530,12 @@ module Bundler
       raise InvalidOption, "Unable to remove the platform `#{platform}` since the only platforms are #{@platforms.join ", "}"
     end
 
+    def most_specific_locked_platform
+      @platforms.min_by do |bundle_platform|
+        platform_specificity_match(bundle_platform, local_platform)
+      end
+    end
+
     def find_resolved_spec(current_spec)
       specs.find_by_name_and_platform(current_spec.name, current_spec.platform)
     end

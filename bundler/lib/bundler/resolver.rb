@@ -203,7 +203,21 @@ module Bundler
     end
 
     def requirement_satisfied_by?(requirement, activated, spec)
-      requirement.matches_spec?(spec) || allows_conflicts?(requirement, activated, spec)
+      return true if spec.source.is_a?(Source::Gemspec)
+      return true if requirement.matches_spec?(spec) &&
+        forced_or_no_forced_alternative_spec(requirement, activated, spec)
+      return true if !requirement.matches_spec?(spec) && is_forced_spec(activated, spec)
+      false
+    end
+
+    # Forced version overrides all other requirements
+    def requirements_satisfied_by?(requirements, activated, possibility)
+      forced_req = requirements.find(&:force_version?)
+      if forced_req
+        requirement_satisfied_by?(forced_req, activated, possibility)
+      else
+        requirements.all? {|req| requirement_satisfied_by?(req, activated, possibility) }
+      end
     end
 
     def relevant_sources_for_vertex(vertex)
@@ -225,6 +239,7 @@ module Bundler
           @base_dg.vertex_named(name) ? 0 : 1,
           vertex.payload ? 0 : 1,
           vertex.root? ? 0 : 1,
+          dependency.force_version? ? 0 : 1,
           amount_constrained(dependency),
           conflicts[name] ? 0 : 1,
           vertex.payload ? 0 : search_for(dependency).count,
@@ -437,11 +452,14 @@ module Bundler
       end
     end
 
-    def allows_conflicts?(requirement, activated, spec)
-      return true if spec.source.is_a?(Source::Gemspec)
-      return false if requirement.force_version?
-      return true if activated.vertex_named(spec.name).requirements.any?(&:force_version?)
-      false
+    def forced_or_no_forced_alternative_spec(requirement, activated, spec)
+      requirement.force_version? || !activated.vertex_named(spec.name)&.requirements&.any?(&:force_version?)
+    end
+
+    def is_forced_spec(activated, spec)
+      activated.vertex_named(spec.name)&.
+        requirements&.select(&:force_version?)&.
+        any? {|r| r.matches_spec?(spec) }
     end
   end
 end

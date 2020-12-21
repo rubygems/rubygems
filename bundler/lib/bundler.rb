@@ -196,6 +196,10 @@ module Bundler
       end
     end
 
+    def definition?
+      defined?(@definition) && @definition
+    end
+
     def frozen_bundle?
       frozen = settings[:deployment]
       frozen ||= settings[:frozen] unless feature_flag.deployment_means_frozen?
@@ -204,7 +208,7 @@ module Bundler
 
     def locked_gems
       @locked_gems ||=
-        if defined?(@definition) && @definition
+        if definition?
           definition.locked_gems
         elsif Bundler.default_lockfile.file?
           lock = Bundler.read_file(Bundler.default_lockfile)
@@ -213,7 +217,7 @@ module Bundler
     end
 
     def most_specific_locked_platform?(platform)
-      return false unless defined?(@definition) && @definition
+      return false unless definition?
 
       definition.most_specific_locked_platform == platform
     end

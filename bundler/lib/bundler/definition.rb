@@ -508,14 +508,12 @@ module Bundler
 
     def validate_platforms!
       return if @platforms.any? do |bundle_platform|
-        Bundler.rubygems.platforms.any? do |local_platform|
-          MatchPlatform.platforms_match?(bundle_platform, local_platform)
-        end
+        MatchPlatform.platforms_match?(bundle_platform, Bundler.local_platform)
       end
 
       raise ProductionError, "Your bundle only supports platforms #{@platforms.map(&:to_s)} " \
-        "but your local platforms are #{Bundler.rubygems.platforms.map(&:to_s)}, and " \
-        "there's no compatible match between those two lists."
+        "but your local platform is #{Bundler.local_platform}. " \
+        "Add the current platform to the lockfile with `bundle lock --add-platform #{Bundler.local_platform}` and try again."
     end
 
     def add_platform(platform)

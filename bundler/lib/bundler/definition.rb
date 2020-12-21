@@ -157,7 +157,7 @@ module Bundler
     end
 
     def resolve_remotely!
-      raise "Specs already loaded" if @specs
+      return if @specs
       @remote = true
       sources.remote!
       specs

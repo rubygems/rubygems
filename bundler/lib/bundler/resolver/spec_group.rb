@@ -42,12 +42,8 @@ module Bundler
         copied_sg
       end
 
-      def spec_for(platform)
-        @specs[platform]
-      end
-
       def for?(platform)
-        !spec_for(platform).nil?
+        !@specs[platform].nil?
       end
 
       def to_s

@@ -89,6 +89,7 @@ module Bundler
       @gemfile        = options["gemfile"]
 
       @autorequire = Array(options["require"] || []) if options.key?("require")
+      @force_version = options.fetch("force_version", false)
     end
 
     # Returns the platforms this dependency is valid for, in the same order as
@@ -109,6 +110,10 @@ module Bundler
 
     def should_include?
       @should_include && current_env? && current_platform?
+    end
+
+    def force_version?
+      @force_version
     end
 
     def current_env?

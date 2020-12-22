@@ -383,6 +383,43 @@ RSpec.describe "bundle lock" do
     expect(out).to match(/Writing lockfile to.+Gemfile\.lock/)
   end
 
+  it "adds all more specific candidates when they all have the same dependencies" do
+    build_repo4 do
+      build_gem "libv8", "8.4.255.0" do |s|
+        s.platform = "x86_64-darwin-19"
+      end
+
+      build_gem "libv8", "8.4.255.0" do |s|
+        s.platform = "x86_64-darwin-20"
+      end
+    end
+
+    gemfile <<-G
+      source "#{file_uri_for(gem_repo4)}"
+
+      gem "libv8"
+    G
+
+    simulate_platform(Gem::Platform.new("x86_64-darwin")) { bundle "lock" }
+
+    lockfile_should_be <<-G
+      GEM
+        remote: #{file_uri_for(gem_repo4)}/
+        specs:
+          libv8 (8.4.255.0-x86_64-darwin-19)
+          libv8 (8.4.255.0-x86_64-darwin-20)
+
+      PLATFORMS
+        x86_64-darwin
+
+      DEPENDENCIES
+        libv8
+
+      BUNDLED WITH
+         #{Bundler::VERSION}
+    G
+  end
+
   context "when an update is available" do
     let(:repo) { gem_repo2 }
 

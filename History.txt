@@ -1,3 +1,15 @@
+=== 3.2.3 / 2020-12-22
+
+Enhancements:
+
+* Fix misspellings in default API key name. Pull request #4177 by hsbt
+
+Bug fixes:
+
+* Respect `required_ruby_version` and `required_rubygems_version`
+  constraints when looking for `gem install` candidates. Pull request #4110
+  by deivid-rodriguez
+
 === 3.2.2 / 2020-12-17
 
 Bug fixes:

@@ -4,7 +4,7 @@ require_relative "match_platform"
 
 module Bundler
   class LazySpecification
-    Identifier = Struct.new(:name, :version, :source, :platform, :dependencies)
+    Identifier = Struct.new(:name, :version, :platform)
     class Identifier
       include Comparable
       def <=>(other)
@@ -108,7 +108,7 @@ module Bundler
     end
 
     def identifier
-      @__identifier ||= Identifier.new(name, version, source, platform, dependencies)
+      @__identifier ||= Identifier.new(name, version, platform)
     end
 
     def git_version

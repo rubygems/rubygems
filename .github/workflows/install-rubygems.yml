@@ -62,6 +62,8 @@ jobs:
       - name: Check bundler install didn't hit the network
         run: if grep -q 'GET http' output.txt; then false; else true; fi
         working-directory: ./bundler
+      - name: Check rails can be installed
+        run: gem install rails
     timeout-minutes: 10
 
   install_rubygems_windows:

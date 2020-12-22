@@ -118,7 +118,7 @@ module Bundler
       end
       @unlocking ||= @unlock[:ruby] ||= (!@locked_ruby_version ^ !@ruby_version)
 
-      add_current_platform unless Bundler.frozen_bundle?
+      add_current_platform unless current_ruby_platform_locked? || Bundler.frozen_bundle?
 
       converge_path_sources_to_gemspec_sources
       @path_changes = converge_paths
@@ -506,9 +506,7 @@ module Bundler
     end
 
     def validate_platforms!
-      return if @platforms.any? do |bundle_platform|
-        MatchPlatform.platforms_match?(bundle_platform, Bundler.local_platform)
-      end
+      return if current_platform_locked?
 
       raise ProductionError, "Your bundle only supports platforms #{@platforms.map(&:to_s)} " \
         "but your local platform is #{Bundler.local_platform}. " \
@@ -523,6 +521,12 @@ module Bundler
     def remove_platform(platform)
       return if @platforms.delete(Gem::Platform.new(platform))
       raise InvalidOption, "Unable to remove the platform `#{platform}` since the only platforms are #{@platforms.join ", "}"
+    end
+
+    def most_specific_locked_platform
+      @platforms.min_by do |bundle_platform|
+        platform_specificity_match(bundle_platform, local_platform)
+      end
     end
 
     def find_resolved_spec(current_spec)
@@ -545,6 +549,18 @@ module Bundler
     end
 
     private
+
+    def current_ruby_platform_locked?
+      return false unless generic_local_platform == Gem::Platform::RUBY
+
+      current_platform_locked?
+    end
+
+    def current_platform_locked?
+      @platforms.any? do |bundle_platform|
+        MatchPlatform.platforms_match?(bundle_platform, Bundler.local_platform)
+      end
+    end
 
     def add_current_platform
       add_platform(local_platform)

@@ -106,10 +106,7 @@ module Bundler
       end
 
       def metadata_dependencies(spec, platform)
-        return [] unless spec
-        # Only allow endpoint specifications since they won't hit the network to
-        # fetch the full gemspec when calling required_ruby_version
-        return [] unless spec.is_a?(Gem::Specification)
+        return [] unless spec && spec.is_a?(Gem::Specification)
         dependencies = []
         if !spec.required_ruby_version.nil? && !spec.required_ruby_version.none?
           dependencies << DepProxy.new(Gem::Dependency.new("Ruby\0", spec.required_ruby_version), platform)

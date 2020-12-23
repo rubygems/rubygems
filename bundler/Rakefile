@@ -135,23 +135,10 @@ namespace :man do
 
     desc "Verify man pages are in sync"
     task :check => [:check_ronn, :set_current_date, :build] do
-      require "open3"
-
-      output, status = Open3.capture2e("git status --porcelain")
-
-      if status.success? && output.empty?
-        puts
-        puts "Man pages are in sync"
-        puts
-      else
-        sh("git status --porcelain")
-
-        puts
-        puts "Man pages are out of sync. Above you can see the list of files that got modified or generated from rebuilding them. Please review and commit the results."
-        puts
-
-        exit(1)
-      end
+      Spec::Rubygems.check_source_control_changes(
+        :success_message => "Man pages are in sync",
+        :error_message => "Man pages are out of sync. Above you can see the list of files that got modified or generated from rebuilding them. Please review and commit the results."
+      )
     end
   end
 end

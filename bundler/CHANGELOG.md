@@ -1,3 +1,12 @@
+# 2.2.3 (December 22, 2020)
+
+## Bug fixes:
+
+  - Restore full compatibility with previous lockfiles [#4179](https://github.com/rubygems/rubygems/pull/4179)
+  - Add all matching variants with the same platform specificity to the lockfile [#4180](https://github.com/rubygems/rubygems/pull/4180)
+  - Fix bundler installing gems for a different platform when running in frozen mode and current platform not in the lockfile [#4172](https://github.com/rubygems/rubygems/pull/4172)
+  - Fix crash when `bundle exec`'ing to bundler [#4175](https://github.com/rubygems/rubygems/pull/4175)
+
 # 2.2.2 (December 17, 2020)
 
 ## Bug fixes:

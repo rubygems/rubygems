@@ -56,7 +56,7 @@ class Gem::Ext::Builder
         p(command)
       end
       results << "current directory: #{dir}"
-      results << (command.respond_to?(:shelljoin) ? command.shelljoin : command)
+      results << (command.respond_to?(:join) ? command.join(' ') : command)
 
       require "open3"
       # Set $SOURCE_DATE_EPOCH for the subprocess.

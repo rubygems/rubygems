@@ -64,6 +64,8 @@ jobs:
         working-directory: ./bundler
       - name: Check rails can be installed
         run: gem install rails
+      - name: Check we can install using non https sources
+        run: gem install benchmark-ips --clear-sources --source http://rubygems.org --backtrace --verbose
     timeout-minutes: 10
 
   install_rubygems_windows:

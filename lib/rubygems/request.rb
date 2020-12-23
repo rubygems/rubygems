@@ -44,9 +44,9 @@ class Gem::Request
   end
 
   def self.configure_connection_for_https(connection, cert_files)
-    raise Gem::Exception.new('OpenSSl is not available. Install OpenSSL and rebuild Ruby (preferred) or use non-HTTPS sources') unless Gem::HAVE_OPENSSL
+    connection.use_ssl = Gem::HAVE_OPENSSL
+    return connection unless Gem::HAVE_OPENSSL
 
-    connection.use_ssl = true
     connection.verify_mode =
       Gem.configuration.ssl_verify_mode || OpenSSL::SSL::VERIFY_PEER
     store = OpenSSL::X509::Store.new

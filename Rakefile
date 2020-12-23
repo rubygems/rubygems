@@ -183,11 +183,7 @@ end
 
 desc "Upload release to S3"
 task :upload_to_s3 do
-  begin
-    require "aws-sdk-s3"
-  rescue LoadError
-    abort "Install the aws-sdk-s3 gem to be able to upload gems to rubygems.org."
-  end
+  require "aws-sdk-s3"
 
   s3 = Aws::S3::Resource.new(region:'us-west-2')
   %w[zip tgz].each do |ext|

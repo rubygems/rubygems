@@ -26,7 +26,7 @@ jobs:
       - name: Generate docs
         run: rake docs
       - name: Install Dependencies in Bundler
-        run: bin/rake spec:deps
+        run: bin/rake dev:deps
         working-directory: ./bundler
       - name: "Check RVM integration, man:check"
         run: bin/rake check_rvm_integration man:check

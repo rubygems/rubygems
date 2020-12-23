@@ -12,6 +12,14 @@ namespace :dev do
   task :deps do
     Spec::Rubygems.dev_setup
   end
+
+  desc "Ensure dev dependencies are installed, and make sure no lockifle changes are generated"
+  task :frozen_deps => :deps do
+    Spec::Rubygems.check_source_control_changes(
+      :success_message => "Development dependencies were installed and the lockfile is in sync",
+      :error_message => "Development dependencies were installed but the lockfile is out of sync. Commit the updated lockfile and try again"
+    )
+  end
 end
 
 namespace :spec do

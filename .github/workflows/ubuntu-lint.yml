@@ -25,8 +25,8 @@ jobs:
         run: rake rubocop
       - name: Generate docs
         run: rake docs
-      - name: Install Dependencies
-        run: bin/rake dev:deps
+      - name: Install & Check Dependencies
+        run: bin/rake dev:frozen_deps
         working-directory: ./bundler
       - name: "Check RVM integration, man:check"
         run: bin/rake check_rvm_integration man:check

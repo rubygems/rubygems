@@ -149,14 +149,14 @@ module Bundler
           check_allowed(command)
 
           out, status = SharedHelpers.with_clean_git_env do
-            capture_and_ignore_stderr("git", *command, :chdir => dir.to_s)
+            capture_and_ignore_stderr("git", "-C", dir.to_s, *command)
           end
 
           [URICredentialsFilter.credential_filtered_string(out, uri), status]
         end
 
         def git_retry(*command, dir: SharedHelpers.pwd)
-          Bundler::Retry.new("`git #{URICredentialsFilter.credential_filtered_string(command.shelljoin, uri)}`", GitNotAllowedError).attempts do
+          Bundler::Retry.new("`git -C #{dir} #{URICredentialsFilter.credential_filtered_string(command.shelljoin, uri)}`", GitNotAllowedError).attempts do
             git(*command, :dir => dir)
           end
         end
@@ -165,7 +165,7 @@ module Bundler
           command_with_no_credentials = check_allowed(command)
 
           out, status = SharedHelpers.with_clean_git_env do
-            capture_and_filter_stderr("git", *command, :chdir => dir.to_s)
+            capture_and_filter_stderr("git", "-C", dir.to_s, *command)
           end
 
           raise GitCommandError.new(command_with_no_credentials, path, dir) unless status.success?
@@ -225,16 +225,16 @@ module Bundler
           command_with_no_credentials
         end
 
-        def capture_and_filter_stderr(*cmd, chdir: SharedHelpers.pwd)
+        def capture_and_filter_stderr(*cmd)
           require "open3"
-          return_value, captured_err, status = Open3.capture3(*cmd, :chdir => chdir)
+          return_value, captured_err, status = Open3.capture3(*cmd)
           Bundler.ui.warn URICredentialsFilter.credential_filtered_string(captured_err, uri) unless captured_err.empty?
           [return_value, status]
         end
 
-        def capture_and_ignore_stderr(*cmd, chdir: SharedHelpers.pwd)
+        def capture_and_ignore_stderr(*cmd)
           require "open3"
-          return_value, _, status = Open3.capture3(*cmd, :chdir => chdir)
+          return_value, _, status = Open3.capture3(*cmd)
           [return_value, status]
         end
       end

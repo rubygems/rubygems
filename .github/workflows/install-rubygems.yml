@@ -71,14 +71,20 @@ jobs:
     timeout-minutes: 10
 
   install_rubygems_windows:
-    name: Install Rubygems on Windows
+    name: Install Rubygems on Windows (${{ matrix.ruby.name }})
     runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - { name: 2.7, value: 2.7.2 }
+          - { name: jruby-9.2, value: jruby-9.2.14.0 }
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.2
+          ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Install rubygems
         run: ruby setup.rb
@@ -86,4 +92,8 @@ jobs:
       - name: Check installation didn't modify any source controlled files
         run: git diff --exit-code
         shell: bash
+      - name: Check we can install a Gemfile with git sources
+        run: bundle init && bundle add fileutils --git https://github.com/ruby/fileutils
+        shell: bash
+
     timeout-minutes: 10

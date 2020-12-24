@@ -165,7 +165,7 @@ module Bundler
           command_with_no_credentials = check_allowed(command)
 
           out, status = SharedHelpers.with_clean_git_env do
-            capture_and_filter_stderr(uri, "git", *command, :chdir => dir.to_s)
+            capture_and_filter_stderr("git", *command, :chdir => dir.to_s)
           end
 
           raise GitCommandError.new(command_with_no_credentials, path, dir) unless status.success?
@@ -225,10 +225,10 @@ module Bundler
           command_with_no_credentials
         end
 
-        def capture_and_filter_stderr(uri, *cmd, chdir: SharedHelpers.pwd)
+        def capture_and_filter_stderr(*cmd, chdir: SharedHelpers.pwd)
           require "open3"
           return_value, captured_err, status = Open3.capture3(*cmd, :chdir => chdir)
-          Bundler.ui.warn URICredentialsFilter.credential_filtered_string(captured_err, uri) if uri && !captured_err.empty?
+          Bundler.ui.warn URICredentialsFilter.credential_filtered_string(captured_err, uri) unless captured_err.empty?
           [return_value, status]
         end
 

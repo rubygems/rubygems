@@ -85,9 +85,8 @@ namespace :man do
   if RUBY_ENGINE == "jruby"
     task(:build) {}
   else
-    index = Dir["lib/bundler/man/*.ronn"].map do |source|
-      ronn = "lib/bundler/man/#{File.basename(source)}"
-      roff = "man/#{File.basename(source, ".ronn")}"
+    index = Dir["lib/bundler/man/*.ronn"].map do |ronn|
+      roff = "man/#{File.basename(ronn, ".ronn")}"
 
       file roff => ronn do
         date = ENV["MAN_PAGES_DATE"] || Time.now.strftime("%Y-%m-%d")

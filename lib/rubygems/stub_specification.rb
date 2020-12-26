@@ -188,7 +188,11 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # List of files in the gem
 
   def files
-    data.files
+    if default_gem?
+      data.files.any? ? data.files : to_spec.files
+    else
+      to_spec.files
+    end
   end
 
   def full_name

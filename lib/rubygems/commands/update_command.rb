@@ -213,13 +213,7 @@ command to remove old versions.
     version = options[:system]
     update_latest = version == true
 
-    if update_latest
-      version     = Gem::Version.new     Gem::VERSION
-      requirement = Gem::Requirement.new ">= #{Gem::VERSION}"
-    else
-      version     = Gem::Version.new     version
-      requirement = Gem::Requirement.new version
-    end
+    version = Gem::Version.new(update_latest ? Gem::VERSION : version)
 
     rubygems_update         = Gem::Specification.new
     rubygems_update.name    = 'rubygems-update'
@@ -238,7 +232,7 @@ command to remove old versions.
                version
              end
 
-    return target, requirement
+    return target
   end
 
   def update_gem(name, version = Gem::Requirement.default)
@@ -280,7 +274,7 @@ command to remove old versions.
 
     check_update_arguments
 
-    version, requirement = rubygems_target_version
+    version = rubygems_target_version
 
     check_latest_rubygems version
 

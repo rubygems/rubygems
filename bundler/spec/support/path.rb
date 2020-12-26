@@ -63,6 +63,10 @@ module Spec
       @spec_dir ||= source_root.join(ruby_core? ? "spec/bundler" : "spec")
     end
 
+    def man_dir
+      @man_dir ||= root.join("man")
+    end
+
     def tracked_files
       @tracked_files ||= git_ls_files(tracked_files_glob)
     end

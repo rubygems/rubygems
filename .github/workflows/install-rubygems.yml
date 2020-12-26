@@ -65,6 +65,10 @@ jobs:
         working-directory: ./bundler
       - name: Check rails can be installed
         run: gem install rails
+        if: matrix.ruby.name != 'truffleruby-20.2'
+      - name: Check activesupport can be installed
+        run: gem install activesupport
+        if: matrix.ruby.name == 'truffleruby-20.2'
     timeout-minutes: 10
 
   install_rubygems_windows:

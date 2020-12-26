@@ -26,12 +26,12 @@ class TestGemCommandsSetupCommand < Gem::TestCase
       bundler/exe/bundle
       bundler/lib/bundler.rb
       bundler/lib/bundler/b.rb
+      bundler/bin/bundler/man/bundle-b.1
       bundler/lib/bundler/man/bundle-b.1.ronn
+      bundler/lib/bundler/man/gemfile.5
       bundler/lib/bundler/man/gemfile.5.ronn
       bundler/lib/bundler/templates/.circleci/config.yml
       bundler/lib/bundler/templates/.travis.yml
-      bundler/man/bundle-b.1
-      bundler/man/gemfile.5
     ]
 
     create_dummy_files(filelist)
@@ -160,16 +160,6 @@ class TestGemCommandsSetupCommand < Gem::TestCase
                  @cmd.files_in('lib').sort
   end
 
-  def test_bundler_man1_files_in
-    assert_equal %w[bundle-b.1],
-                 @cmd.bundler_man1_files_in('bundler/man').sort
-  end
-
-  def test_bundler_man5_files_in
-    assert_equal %w[gemfile.5],
-                 @cmd.bundler_man5_files_in('bundler/man').sort
-  end
-
   def test_install_lib
     @cmd.extend FileUtils
 
@@ -184,19 +174,6 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
       assert_path_exists File.join(dir, 'bundler/templates/.circleci/config.yml') unless RUBY_ENGINE == "truffleruby" # https://github.com/oracle/truffleruby/issues/2116
       assert_path_exists File.join(dir, 'bundler/templates/.travis.yml')
-    end
-  end
-
-  def test_install_man
-    @cmd.extend FileUtils
-
-    Dir.mktmpdir 'man' do |dir|
-      @cmd.install_man dir
-
-      assert_path_exists File.join("#{dir}/man1", 'bundle-b.1')
-      refute_path_exists File.join("#{dir}/man1", 'bundle-b.1.ronn')
-      assert_path_exists File.join("#{dir}/man5", 'gemfile.5')
-      refute_path_exists File.join("#{dir}/man5", 'gemfile.5.ronn')
     end
   end
 
@@ -308,8 +285,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     gemfile_5_ronn     = File.join man, 'man5', 'gemfile.5.ronn'
     gemfile_5_txt      = File.join man, 'man5', 'gemfile.5.txt'
 
-    files_that_go   = [bundle_b_1_txt, bundle_b_1_ronn, gemfile_5_txt, gemfile_5_ronn]
-    files_that_stay = [ruby_1, bundle_b_1, gemfile_5]
+    files_that_go   = [bundle_b_1, bundle_b_1_txt, bundle_b_1_ronn, gemfile_5, gemfile_5_txt, gemfile_5_ronn]
+    files_that_stay = [ruby_1]
 
     create_dummy_files(files_that_go + files_that_stay)
 

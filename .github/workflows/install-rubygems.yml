@@ -69,6 +69,13 @@ jobs:
       - name: Check activesupport can be installed
         run: gem install activesupport
         if: matrix.ruby.name == 'truffleruby-20.2'
+      - name: Check default gem gets activated
+        run: ruby -rjson -e 'exit(Gem.loaded_specs["json"].version.to_s != "2.5.1")'
+      - name: Check upgraded default gem gets activated
+        run: |
+          gem install json:2.5.1
+          ruby -rjson -e 'puts "Checking json 2.5.1 gets activated...."; exit(Gem.loaded_specs["json"].version.to_s == "2.5.1")'
+          ruby -rjson -e 'puts "Checking only json 2.5.1 features are loaded between #{$LOADED_FEATURES}"; exit($LOADED_FEATURES.grep(/json/).all?{|lf| lf =~ /json-2.5.1/})'
     timeout-minutes: 10
 
   install_rubygems_windows:

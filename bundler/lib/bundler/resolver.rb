@@ -154,7 +154,7 @@ module Bundler
         selected_sgs = []
         search.each do |sg|
           next unless sg.for?(platform)
-          sg_all_platforms = sg.copy_for(self.class.sort_platforms(@platforms).reverse)
+          sg_all_platforms = sg.copy_for(self.class.sort_platforms(dependency.gem_platforms(@platforms)).reverse)
           next unless sg_all_platforms
 
           selected_sgs << sg_all_platforms

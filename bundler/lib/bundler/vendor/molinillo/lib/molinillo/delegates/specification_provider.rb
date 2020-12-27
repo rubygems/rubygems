@@ -26,13 +26,6 @@ module Bundler::Molinillo
         end
       end
 
-      # (see Bundler::Molinillo::SpecificationProvider#requirements_satisfied_by?)
-      def requirements_satisfied_by?(requirements, activated, spec)
-        with_no_such_dependency_error_handling do
-          specification_provider.requirements_satisfied_by?(requirements, activated, spec)
-        end
-      end
-
       # (see Bundler::Molinillo::SpecificationProvider#name_for)
       def name_for(dependency)
         with_no_such_dependency_error_handling do

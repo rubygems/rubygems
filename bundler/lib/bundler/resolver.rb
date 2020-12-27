@@ -204,23 +204,20 @@ module Bundler
 
     def requirement_satisfied_by?(requirement, activated, spec)
       return true if spec.source.is_a?(Source::Gemspec)
-      return true if requirement.matches_spec?(spec) &&
-        forced_or_no_forced_alternative_spec(requirement, activated, spec)
-      return true if !requirement.matches_spec?(spec) && is_forced_spec(activated, spec)
+
+      requirements = activated.vertex_named(spec.name)&.requirements
+      if requirements&.any?(&:force_version?)
+        # true if spec matches the forced requirement
+        return true if requirements&.select(&:force_version?)&.
+          any? {|r| r.matches_spec?(spec) }
+      else
+        return true if requirement.matches_spec?(spec)
+      end
+
       false
     end
 
-    # Forced version overrides all other requirements
-    def requirements_satisfied_by?(requirements, activated, possibility)
-      forced_req = requirements.find(&:force_version?)
-      if forced_req
-        requirement_satisfied_by?(forced_req, activated, possibility)
-      else
-        requirements.all? {|req| requirement_satisfied_by?(req, activated, possibility) }
-      end
-    end
-
-    def relevant_sources_for_vertex(vertex)
+   def relevant_sources_for_vertex(vertex)
       if vertex.root?
         [@source_requirements[vertex.name]]
       elsif @lockfile_uses_separate_rubygems_sources
@@ -450,16 +447,6 @@ module Bundler
         raise SecurityError, msg if multisource_disabled
         Bundler.ui.warn "Warning: #{msg}"
       end
-    end
-
-    def forced_or_no_forced_alternative_spec(requirement, activated, spec)
-      requirement.force_version? || !activated.vertex_named(spec.name)&.requirements&.any?(&:force_version?)
-    end
-
-    def is_forced_spec(activated, spec)
-      activated.vertex_named(spec.name)&.
-        requirements&.select(&:force_version?)&.
-        any? {|r| r.matches_spec?(spec) }
     end
   end
 end

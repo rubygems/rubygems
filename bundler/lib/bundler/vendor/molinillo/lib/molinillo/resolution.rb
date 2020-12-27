@@ -218,7 +218,7 @@ module Bundler::Molinillo
           next unless vertex.payload
 
           latest_version = vertex.payload.possibilities.reverse_each.find do |possibility|
-            requirements_satisfied_by?(vertex.requirements, activated, possibility)
+            vertex.requirements.all? { |req| requirement_satisfied_by?(req, activated, possibility) }
           end
 
           activated.set_payload(vertex.name, latest_version)
@@ -473,7 +473,7 @@ module Bundler::Molinillo
 
         activated.tag(:swap)
         activated.set_payload(name, possibility) if activated.vertex_named(name)
-        satisfied = requirements_satisfied_by?(requirements, activated, possibility)
+        satisfied = requirements.all? { |r| requirement_satisfied_by?(r, activated, possibility) }
         activated.rewind_to(:swap)
 
         satisfied

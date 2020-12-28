@@ -144,7 +144,7 @@ RSpec.describe "Bundler.setup" do
       G
 
       # We require an absolute path because relying on the $LOAD_PATH behaves
-      # inconsistenly depending on whether we're in a ruby-core setup (and
+      # inconsistently depending on whether we're in a ruby-core setup (and
       # bundler's lib is in RUBYLIB) or not.
 
       ruby <<-RUBY
@@ -176,7 +176,7 @@ RSpec.describe "Bundler.setup" do
       G
 
       # We require an absolute path because relying on the $LOAD_PATH behaves
-      # inconsistenly depending on whether we're in a ruby-core setup (and
+      # inconsistently depending on whether we're in a ruby-core setup (and
       # bundler's lib is in RUBYLIB) or not.
 
       ruby <<-RUBY

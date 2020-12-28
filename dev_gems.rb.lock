@@ -31,6 +31,11 @@ GEM
     json (2.3.0)
     json (2.3.0-java)
     minitest (5.14.2)
+    minitest-bisect (1.5.1)
+      minitest-server (~> 1.0)
+      path_expander (~> 1.1)
+    minitest-server (1.0.6)
+      minitest (~> 5.0)
     multipart-post (2.1.1)
     mustache (1.1.1)
     netrc (0.11.0)
@@ -42,6 +47,7 @@ GEM
       parallel
     parser (2.7.0.5)
       ast (~> 2.4.0)
+    path_expander (1.1.0)
     public_suffix (4.0.6)
     rainbow (3.0.0)
     rdiscount (2.2.0.2)
@@ -91,6 +97,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk-s3 (~> 1.87)
   minitest (~> 5.14, >= 5.14.2)
+  minitest-bisect (~> 1.5)
   netrc (~> 0.11.0)
   octokit (~> 4.18)
   parallel_tests (~> 2.29)

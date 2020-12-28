@@ -61,14 +61,16 @@ class Gem::Ext::Builder
       require "open3"
       # Set $SOURCE_DATE_EPOCH for the subprocess.
       env = {'SOURCE_DATE_EPOCH' => Gem.source_date_epoch_string}
-      output, status = Open3.capture2e(env, *command, :chdir => dir)
+      output, status = begin
+                         Open3.capture2e(env, *command, :chdir => dir)
+                       rescue => error
+                         raise Gem::InstallError, "#{command_name || class_name} failed#{error.message}"
+                       end
       if verbose
         puts output
       else
         results << output
       end
-    rescue => error
-      raise Gem::InstallError, "#{command_name || class_name} failed#{error.message}"
     ensure
       ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
     end

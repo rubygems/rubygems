@@ -26,7 +26,11 @@ begin
 rescue LoadError
 end
 
-require 'bundler'
+if File.exist?(bundler_gemspec)
+  require_relative '../../bundler/lib/bundler'
+else
+  require 'bundler'
+end
 
 require 'minitest/autorun'
 

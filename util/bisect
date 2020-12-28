@@ -9,8 +9,14 @@ seed = begin
 
 ENV["MTB_VERBOSE"] = "2"
 
+require_relative "../bundler/lib/bundler"
+
+locked_specs = Bundler::LockfileParser.new(File.read("dev_gems.rb.lock")).specs
+
+minitest_bisect_version = locked_specs.find{|spec| spec.name == "minitest-bisect" }.version
+
 begin
-  minitest_bisect = Gem.bin_path("minitest-bisect", "minitest_bisect")
+  minitest_bisect = Gem.bin_path("minitest-bisect", "minitest_bisect", minitest_bisect_version)
 rescue Gem::GemNotFoundException
   abort "Install minitest-bisect gem to run a rubygems test suite bisection"
 end

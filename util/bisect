@@ -23,7 +23,7 @@ minitest_bisect_version = locked_specs.find{|spec| spec.name == "minitest-bisect
 begin
   minitest_bisect = Gem.bin_path("minitest-bisect", "minitest_bisect", minitest_bisect_version)
 rescue Gem::GemNotFoundException
-  abort "Install minitest-bisect gem to run a rubygems test suite bisection"
+  abort "Install minitest-bisect through `rake setup` to run a rubygems test suite bisection"
 end
 
 load minitest_bisect

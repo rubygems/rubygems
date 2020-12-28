@@ -46,6 +46,8 @@ module Bundler
       @gem_version_promoter.prerelease_specified = @prerelease_specified = {}
       requirements.each {|dep| @prerelease_specified[dep.name] ||= dep.prerelease? }
 
+      @forced_requirements = requirements.select {|dep| dep.force_version? }
+
       verify_gemfile_dependencies_are_found!(requirements)
       dg = @resolver.resolve(requirements, @base_dg)
       dg.
@@ -103,7 +105,14 @@ module Bundler
     include Molinillo::SpecificationProvider
 
     def dependencies_for(specification)
-      specification.dependencies_for_activated_platforms
+      deps = specification.dependencies_for_activated_platforms
+      deps.map do |dep|
+        if @forced_requirements.map(&:name).include?(dep.name)
+          @forced_requirements.find {|r| r.name == dep.name }
+        else
+          dep
+        end
+      end
     end
 
     def search_for(dependency_proxy)

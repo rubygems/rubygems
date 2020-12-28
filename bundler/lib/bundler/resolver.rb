@@ -46,7 +46,7 @@ module Bundler
       @gem_version_promoter.prerelease_specified = @prerelease_specified = {}
       requirements.each {|dep| @prerelease_specified[dep.name] ||= dep.prerelease? }
 
-      @forced_requirements = requirements.select {|dep| dep.force_version? }
+      @forced_requirements = requirements.select(&:force_version?).map {|dep| [dep.name, dep] }.to_h
 
       verify_gemfile_dependencies_are_found!(requirements)
       dg = @resolver.resolve(requirements, @base_dg)
@@ -106,13 +106,7 @@ module Bundler
 
     def dependencies_for(specification)
       deps = specification.dependencies_for_activated_platforms
-      deps.map do |dep|
-        if @forced_requirements.map(&:name).include?(dep.name)
-          @forced_requirements.find {|r| r.name == dep.name }
-        else
-          dep
-        end
-      end
+      deps.map {|dep| @forced_requirements[dep.name] || dep }
     end
 
     def search_for(dependency_proxy)
@@ -212,21 +206,10 @@ module Bundler
     end
 
     def requirement_satisfied_by?(requirement, activated, spec)
-      return true if spec.source.is_a?(Source::Gemspec)
-
-      requirements = activated.vertex_named(spec.name)&.requirements
-      if requirements&.any?(&:force_version?)
-        # true if spec matches the forced requirement
-        return true if requirements&.select(&:force_version?)&.
-          any? {|r| r.matches_spec?(spec) }
-      else
-        return true if requirement.matches_spec?(spec)
-      end
-
-      false
+      requirement.matches_spec?(spec) || spec.source.is_a?(Source::Gemspec)
     end
 
-   def relevant_sources_for_vertex(vertex)
+    def relevant_sources_for_vertex(vertex)
       if vertex.root?
         [@source_requirements[vertex.name]]
       elsif @lockfile_uses_separate_rubygems_sources
@@ -238,14 +221,13 @@ module Bundler
 
     def sort_dependencies(dependencies, activated, conflicts)
       dependencies.sort_by do |dependency|
-        dependency.all_sources = relevant_sources_for_vertex(activated.vertex_named(dependency.name))
         name = name_for(dependency)
+        dependency.all_sources = relevant_sources_for_vertex(activated.vertex_named(name))
         vertex = activated.vertex_named(name)
         [
           @base_dg.vertex_named(name) ? 0 : 1,
           vertex.payload ? 0 : 1,
           vertex.root? ? 0 : 1,
-          dependency.force_version? ? 0 : 1,
           amount_constrained(dependency),
           conflicts[name] ? 0 : 1,
           vertex.payload ? 0 : search_for(dependency).count,

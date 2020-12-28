@@ -171,7 +171,7 @@ By default, this RubyGems will install gem as:
 
     install_lib lib_dir
 
-    install_man man_dir
+    install_man man_dir if man_dir
 
     install_executables bin_dir
 
@@ -179,7 +179,7 @@ By default, this RubyGems will install gem as:
 
     remove_old_lib_files lib_dir
 
-    remove_old_man_files man_dir
+    remove_old_man_files man_dir if man_dir
 
     install_default_bundler_gem bin_dir
 
@@ -457,6 +457,7 @@ By default, this RubyGems will install gem as:
 
   def make_man_dir(install_destdir)
     man_dir = generate_default_man_dir(install_destdir)
+    return unless man_dir
 
     mkdir_p man_dir, :mode => 0755
 
@@ -468,6 +469,7 @@ By default, this RubyGems will install gem as:
 
     if prefix.empty?
       man_dir = RbConfig::CONFIG['mandir']
+      return unless man_dir
     else
       man_dir = File.join prefix, 'man'
     end

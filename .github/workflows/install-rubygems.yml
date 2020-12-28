@@ -83,7 +83,7 @@ jobs:
       - name: Install rubygems
         run: ruby setup.rb
         shell: bash
-      - name: Check installation didn't modify gemspec line feeds
-        run: ruby -Ilib -e'exit 1 if File.readlines("bundler/bundler.gemspec").first.end_with?("\r\n")'
+      - name: Check installation didn't modify any source controlled files
+        run: git diff --exit-code
         shell: bash
     timeout-minutes: 10

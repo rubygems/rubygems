@@ -39,7 +39,7 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
   doc.title  = "RubyGems #{v} API Documentation"
 
   rdoc_files = Rake::FileList.new %w[lib bundler/lib]
-  rdoc_files.add %w[History.txt LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.md
+  rdoc_files.add %w[CHANGELOG.md LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.md
                     MAINTAINERS.txt Manifest.txt POLICIES.md README.md UPGRADING.md bundler/CHANGELOG.md
                     bundler/doc/contributing/README.md bundler/LICENSE.md bundler/README.md
                     hide_lib_for_update/note.txt].map(&:freeze)

@@ -1,3 +1,19 @@
+# 3.2.4 / 2020-12-31
+
+## Enhancements:
+
+* Use a CHANGELOG in markdown for rubygems. Pull request #4168 by
+  deivid-rodriguez
+* Never spawn subshells when building extensions. Pull request #4190 by
+  deivid-rodriguez
+
+## Bug fixes:
+
+* Fix fallback to the old index and installation from it not working. Pull
+  request #4213 by deivid-rodriguez
+* Fix installing from source on truffleruby. Pull request #4201 by
+  deivid-rodriguez
+
 # 3.2.3 / 2020-12-22
 
 ## Enhancements:

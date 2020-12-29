@@ -5,7 +5,7 @@ on: [pull_request]
 jobs:
   misspell:
     name: 🧹 Check Spelling
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: 🍓 Check Out
         uses: actions/checkout@v2

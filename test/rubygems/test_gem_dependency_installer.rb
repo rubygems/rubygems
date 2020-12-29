@@ -1108,39 +1108,9 @@ class TestGemDependencyInstaller < Gem::TestCase
     end
   end
 
-  def util_setup_c1_pre
-    @c1_pre, @c1_pre_gem = util_spec 'c', '1.a' do |s|
-      s.add_dependency 'a', '1.a'
-      s.add_dependency 'b', '1'
-    end
-
-    util_reset_gems
-  end
-
   def util_setup_d
     @d1, @d1_gem = util_gem 'd', '1'
     @d2, @d2_gem = util_gem 'd', '2'
-
-    util_reset_gems
-  end
-
-  def util_setup_wxyz
-    @x1_m, @x1_m_gem = util_spec 'x', '1' do |s|
-      s.platform = Gem::Platform.new %w[cpu my_platform 1]
-    end
-
-    @x1_o, @x1_o_gem = util_spec 'x', '1' do |s|
-      s.platform = Gem::Platform.new %w[cpu other_platform 1]
-    end
-
-    @w1, @w1_gem = util_spec 'w', '1', 'x' => nil
-
-    @y1, @y1_gem = util_spec 'y', '1'
-    @y1_1_p, @y1_1_p_gem = util_spec 'y', '1.1' do |s|
-      s.platform = Gem::Platform.new %w[cpu my_platform 1]
-    end
-
-    @z1, @z1_gem = util_spec 'z', '1', 'y' => nil
 
     util_reset_gems
   end
@@ -1149,18 +1119,9 @@ class TestGemDependencyInstaller < Gem::TestCase
     @a1     ||= nil
     @b1     ||= nil
     @a1_pre ||= nil
-    @c1_pre ||= nil
     @d1     ||= nil
     @d2     ||= nil
-    @w1     ||= nil
-    @x1_m   ||= nil
-    @x1_o   ||= nil
-    @y1     ||= nil
-    @y1_1_p ||= nil
-    @z1     ||= nil
 
-    util_setup_spec_fetcher(*[@a1, @a1_pre, @b1, @c1_pre,
-                              @d1, @d2, @x1_m, @x1_o, @w1, @y1,
-                              @y1_1_p, @z1].compact)
+    util_setup_spec_fetcher(*[@a1, @a1_pre, @b1, @d1, @d2].compact)
   end
 end

@@ -1102,12 +1102,6 @@ class TestGemDependencyInstaller < Gem::TestCase
     assert_equal %w[a-1], requests
   end
 
-  def util_write_a1_bin
-    write_file File.join('gems', 'a-1', 'bin', 'a_bin') do |fp|
-      fp.puts "#!/usr/bin/ruby"
-    end
-  end
-
   def util_setup_d
     @d1, @d1_gem = util_gem 'd', '1'
     @d2, @d2_gem = util_gem 'd', '2'

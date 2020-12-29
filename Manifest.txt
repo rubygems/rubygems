@@ -512,6 +512,7 @@ test/rubygems/child_key.pem
 test/rubygems/client.pem
 test/rubygems/data/gem-private_key.pem
 test/rubygems/data/gem-public_cert.pem
+test/rubygems/data/null-required-rubygems-version.gemspec.rz
 test/rubygems/data/null-type.gemspec.rz
 test/rubygems/encrypted_private_key.pem
 test/rubygems/expired_cert.pem

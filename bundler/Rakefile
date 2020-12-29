@@ -77,13 +77,10 @@ namespace :man do
   if RUBY_ENGINE == "jruby"
     task(:build) {}
   else
-    directory "man"
+    index = Dir["lib/bundler/man/*.ronn"].map do |ronn|
+      roff = "#{File.dirname(ronn)}/#{File.basename(ronn, ".ronn")}"
 
-    index = Dir["lib/bundler/man/*.ronn"].map do |source|
-      ronn = "lib/bundler/man/#{File.basename(source)}"
-      roff = "man/#{File.basename(source, ".ronn")}"
-
-      file roff => ["man", ronn] do
+      file roff => ronn do
         date = ENV["MAN_PAGES_DATE"] || Time.now.strftime("%Y-%m-%d")
         sh "bin/ronn --warnings --roff --pipe --date #{date} #{ronn} > #{roff}"
       end
@@ -99,7 +96,7 @@ namespace :man do
       end
       index = index.sort_by(&:first)
       justification = index.map {|(n, _f)| n.length }.max + 4
-      File.open("man/index.txt", "w") do |f|
+      File.open("lib/bundler/man/index.txt", "w") do |f|
         index.each do |name, filename|
           f << name.ljust(justification) << filename << "\n"
         end
@@ -118,7 +115,7 @@ namespace :man do
 
     desc "Remove all built man pages"
     task :clean do
-      leftovers = Dir["man/*"].reject do |f|
+      leftovers = Dir["lib/bundler/man/*"].reject do |f|
         File.extname(f) == ".ronn"
       end
       rm leftovers if leftovers.any?
@@ -130,7 +127,7 @@ namespace :man do
     desc "Sets target date for building man pages to the one currently present"
     task :set_current_date do
       require "date"
-      ENV["MAN_PAGES_DATE"] = Date.parse(File.readlines("man/bundle-add.1")[3].split('"')[5]).strftime("%Y-%m-%d")
+      ENV["MAN_PAGES_DATE"] = Date.parse(File.readlines("lib/bundler/man/bundle-add.1")[3].split('"')[5]).strftime("%Y-%m-%d")
     end
 
     desc "Verify man pages are in sync"

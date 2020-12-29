@@ -167,11 +167,9 @@ By default, this RubyGems will install gem as:
     extend MakeDirs
 
     lib_dir, bin_dir = make_destination_dirs install_destdir
-    man_dir = make_man_dir install_destdir
+    man_dir = generate_default_man_dir install_destdir
 
     install_lib lib_dir
-
-    install_man man_dir if man_dir
 
     install_executables bin_dir
 
@@ -179,7 +177,8 @@ By default, this RubyGems will install gem as:
 
     remove_old_lib_files lib_dir
 
-    remove_old_man_files man_dir if man_dir
+    # Can be removed one we drop support for bundler 2.2.3 (the last version installing man files to man_dir)
+    remove_old_man_files man_dir if man_dir && File.exist?(man_dir)
 
     install_default_bundler_gem bin_dir
 
@@ -330,21 +329,6 @@ By default, this RubyGems will install gem as:
     end
   end
 
-  def install_man(man_dir)
-    mans = { 'Bundler' => 'bundler/man' }
-    mans.each do |tool, path|
-      say "Installing #{tool} manpages" if @verbose
-
-      bundler_man1_files = bundler_man1_files_in(path)
-      bundler_man5_files = bundler_man5_files_in(path)
-
-      Dir.chdir path do
-        install_file_list(bundler_man1_files, "#{man_dir}/man1")
-        install_file_list(bundler_man5_files, "#{man_dir}/man5")
-      end
-    end
-  end
-
   def install_rdoc
     gem_doc_dir = File.join Gem.dir, 'doc'
     rubygems_name = "rubygems-#{Gem::VERSION}"
@@ -392,7 +376,7 @@ By default, this RubyGems will install gem as:
     mkdir_p specs_dir, :mode => 0755
 
     bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
-    bundler_spec.files = Dir.chdir("bundler") { Dir["{*.md,{lib,exe,man}/**/*}"] }
+    bundler_spec.files = Dir.chdir("bundler") { Dir["{*.md,{lib,exe}/**/*}"] }
     bundler_spec.executables -= %w[bundler bundle_ruby]
 
     # Remove bundler-*.gemspec in default specification directory.
@@ -455,15 +439,6 @@ By default, this RubyGems will install gem as:
     return lib_dir, bin_dir
   end
 
-  def make_man_dir(install_destdir)
-    man_dir = generate_default_man_dir(install_destdir)
-    return unless man_dir
-
-    mkdir_p man_dir, :mode => 0755
-
-    return man_dir
-  end
-
   def generate_default_man_dir(install_destdir)
     prefix = options[:prefix]
 
@@ -520,20 +495,6 @@ By default, this RubyGems will install gem as:
     end
   end
 
-  # for installation of bundler as default gems
-  def bundler_man1_files_in(dir)
-    Dir.chdir dir do
-      Dir['bundle*.1']
-    end
-  end
-
-  # for installation of bundler as default gems
-  def bundler_man5_files_in(dir)
-    Dir.chdir dir do
-      Dir['gemfile.5']
-    end
-  end
-
   def remove_old_bin_files(bin_dir)
     old_bin_files = {
       'gem_mirror' => 'gem mirror',
@@ -587,26 +548,19 @@ abort "#{deprecation_message}"
     end
   end
 
-  def remove_old_man_files(man_dir)
-    man_dirs = { man_dir => "bundler/man" }
-    man_dirs.each do |old_man_dir, new_man_dir|
-      man1_files = bundler_man1_files_in(new_man_dir)
+  def remove_old_man_files(old_man_dir)
+    old_man1_dir = "#{old_man_dir}/man1"
 
-      old_man1_dir = "#{old_man_dir}/man1"
-      old_man1_files = bundler_man1_files_in(old_man1_dir)
-      old_man1_files += Dir.chdir(old_man1_dir) { Dir["bundle*.1.{txt,ronn}"] }
-
-      man1_to_remove = old_man1_files - man1_files
+    if File.exist?(old_man1_dir)
+      man1_to_remove = Dir.chdir(old_man1_dir) { Dir["bundle*.1{,.txt,.ronn}"] }
 
       remove_file_list(man1_to_remove, old_man1_dir)
+    end
 
-      man5_files = bundler_man5_files_in(new_man_dir)
+    old_man5_dir = "#{old_man_dir}/man5"
 
-      old_man5_dir = "#{old_man_dir}/man5"
-      old_man5_files = bundler_man5_files_in(old_man5_dir)
-      old_man5_files += Dir.chdir(old_man5_dir) { Dir["gemfile.5.{txt,ronn}"] }
-
-      man5_to_remove = old_man5_files - man5_files
+    if File.exist?(old_man5_dir)
+      man5_to_remove = Dir.chdir(old_man5_dir) { Dir["gemfile.5{,.txt,.ronn}"] }
 
       remove_file_list(man5_to_remove, old_man5_dir)
     end

@@ -1,3 +1,10 @@
+# 2.2.4 (December 31, 2020)
+
+## Bug fixes:
+
+  - Fix bundle man pages display on truffleruby [#4209](https://github.com/rubygems/rubygems/pull/4209)
+  - Fix Windows + JRuby no longer being able to install git sources [#4196](https://github.com/rubygems/rubygems/pull/4196)
+
 # 2.2.3 (December 22, 2020)
 
 ## Bug fixes:

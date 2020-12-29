@@ -326,22 +326,22 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.options[:previous_version] = Gem::Version.new '2.0.2'
 
-    File.open 'History.txt', 'w' do |io|
+    File.open 'CHANGELOG.md', 'w' do |io|
       io.puts <<-HISTORY_TXT
-=== #{Gem::VERSION} / 2013-03-26
+# #{Gem::VERSION} / 2013-03-26
 
-* Bug fixes:
+## Bug fixes:
   * Fixed release note display for LANG=C when installing rubygems
   * π is tasty
 
-=== 2.0.2 / 2013-03-06
+# 2.0.2 / 2013-03-06
 
-* Bug fixes:
+## Bug fixes:
   * Other bugs fixed
 
-=== 2.0.1 / 2013-03-05
+# 2.0.1 / 2013-03-05
 
-* Bug fixes:
+## Bug fixes:
   * Yet more bugs fixed
       HISTORY_TXT
     end
@@ -351,9 +351,9 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     end
 
     expected = <<-EXPECTED
-=== #{Gem::VERSION} / 2013-03-26
+# #{Gem::VERSION} / 2013-03-26
 
-* Bug fixes:
+## Bug fixes:
   * Fixed release note display for LANG=C when installing rubygems
   * π is tasty
 

@@ -123,7 +123,6 @@ module Bundler
 
     def default_remote
       current_branch = sh(%w[git rev-parse --abbrev-ref HEAD]).strip
-      return "origin" if current_branch.empty?
 
       remote_for_branch = sh(%W[git config --get branch.#{current_branch}.remote]).strip
       return "origin" if remote_for_branch.empty?

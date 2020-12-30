@@ -64,7 +64,7 @@ module Spec
     end
 
     def man_dir
-      @man_dir ||= lib_dir.join("bundler/man")
+      @man_dir ||= root.join("man")
     end
 
     def tracked_files
@@ -240,7 +240,7 @@ module Spec
     end
 
     def man_tracked_files_glob
-      ruby_core? ? "man/bundle* man/gemfile*" : "lib/bundler/man/bundle*.1 lib/bundler/man/gemfile*.5"
+      ruby_core? ? "man/bundle* man/gemfile*" : "man"
     end
 
     def git_root

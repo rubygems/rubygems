@@ -600,6 +600,27 @@ RSpec.describe "bundle install with gem sources" do
     end
   end
 
+  describe "when bundle cache path does not have write access", :permissions do
+    let(:cache_path) { bundled_app("vendor/#{Bundler.ruby_scope}/cache") }
+
+    before do
+      FileUtils.mkdir_p(cache_path)
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        gem 'rack'
+      G
+    end
+
+    it "should display a proper message to explain the problem" do
+      FileUtils.chmod(0o500, cache_path)
+
+      bundle "config set --local path vendor"
+      bundle :install, :raise_on_error => false
+      expect(err).to include(cache_path.to_s)
+      expect(err).to include("grant write permissions")
+    end
+  end
+
   context "after installing with --standalone" do
     before do
       install_gemfile <<-G

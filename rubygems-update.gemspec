@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["hide_lib_for_update"]
   s.rdoc_options = ["--main", "README.md", "--title=RubyGems Update Documentation"]
   s.extra_rdoc_files = [
-    "History.txt", "LICENSE.txt", "MAINTAINERS.txt",
+    "CHANGELOG.md", "LICENSE.txt", "MAINTAINERS.txt",
     "MIT.txt", "Manifest.txt", "README.md",
     "UPGRADING.md", "POLICIES.md", "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md", "bundler/CHANGELOG.md",

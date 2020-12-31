@@ -13,6 +13,17 @@ RSpec.describe "bundle install" do
       expect(the_bundle).to include_gems "foo 1.0", :source => "git@#{lib_path("foo")}"
     end
 
+    it "displays the correct default branch" do
+      build_git "foo", "1.0", :path => lib_path("foo"), :default_branch => "main"
+
+      install_gemfile <<-G, :verbose => true
+        gem "foo", :git => "#{file_uri_for(lib_path("foo"))}"
+      G
+
+      expect(out).to include("Using foo 1.0 from #{file_uri_for(lib_path("foo"))} (at main@#{revision_for(lib_path("foo"))[0..6]})")
+      expect(the_bundle).to include_gems "foo 1.0", :source => "git@#{lib_path("foo")}"
+    end
+
     it "displays the ref of the gem repository when using branch~num as a ref" do
       skip "maybe branch~num notation doesn't work on Windows' git" if Gem.win_platform?
 

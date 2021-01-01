@@ -7,13 +7,23 @@ seed = begin
          abort "Specify the failing seed as the SEED environment variable"
        end
 
-ENV["RUBYOPT"] = "-Ilib:bundler/lib:test:#{Gem.dir}/gems/minitest-server-1.0.5/lib"
 ENV["MTB_VERBOSE"] = "2"
 
+require_relative "../bundler/lib/bundler"
+
+locked_specs = Bundler::LockfileParser.new(File.read("dev_gems.rb.lock")).specs
+minitest_server = locked_specs.find{|spec| spec.name == "minitest-server" }.full_name
+minitest_server_path = Gem::Specification.find_all_by_full_name(minitest_server).first.gem_dir
+minitest_server_plugin = Gem::Util.glob_files_in_dir("**/minitest/*_plugin.rb", minitest_server_path).first
+
+ENV["RG_BISECT_SERVER_PLUGIN"] = minitest_server_plugin
+
+minitest_bisect_version = locked_specs.find{|spec| spec.name == "minitest-bisect" }.version
+
 begin
-  minitest_bisect = Gem.bin_path("minitest-bisect", "minitest_bisect")
+  minitest_bisect = Gem.bin_path("minitest-bisect", "minitest_bisect", minitest_bisect_version)
 rescue Gem::GemNotFoundException
-  abort "Install minitest-bisect gem to run a rubygems test suite bisection"
+  abort "Install minitest-bisect through `rake setup` to run a rubygems test suite bisection"
 end
 
 load minitest_bisect

@@ -17,7 +17,7 @@ module Bundler
       class GitNotAllowedError < GitError
         def initialize(command)
           msg = String.new
-          msg << "Bundler is trying to run `git #{command}` at runtime. You probably need to run `bundle install`. However, "
+          msg << "Bundler is trying to run `#{command}` at runtime. You probably need to run `bundle install`. However, "
           msg << "this error message could probably be more useful. Please submit a ticket at https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md "
           msg << "with steps to reproduce as well as the following\n\nCALLER: #{caller.join("\n")}"
           super msg
@@ -31,7 +31,7 @@ module Bundler
           @command = command
 
           msg = String.new
-          msg << "Git error: command `git #{command}` in directory #{path} has failed."
+          msg << "Git error: command `#{command}` in directory #{path} has failed."
           msg << "\n#{extra_info}" if extra_info
           msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if path.exist?
           super msg
@@ -156,7 +156,9 @@ module Bundler
         end
 
         def git_retry(*command, dir: SharedHelpers.pwd)
-          Bundler::Retry.new("`git #{URICredentialsFilter.credential_filtered_string(command.shelljoin, uri)}` at #{dir}", GitNotAllowedError).attempts do
+          command_with_no_credentials = check_allowed(command)
+
+          Bundler::Retry.new("`#{command_with_no_credentials}` at #{dir}").attempts do
             git(*command, :dir => dir)
           end
         end
@@ -222,7 +224,7 @@ module Bundler
         end
 
         def check_allowed(command)
-          command_with_no_credentials = URICredentialsFilter.credential_filtered_string(command.shelljoin, uri)
+          command_with_no_credentials = URICredentialsFilter.credential_filtered_string("git #{command.shelljoin}", uri)
           raise GitNotAllowedError.new(command_with_no_credentials) unless allow?
           command_with_no_credentials
         end

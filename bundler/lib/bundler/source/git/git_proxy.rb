@@ -156,7 +156,7 @@ module Bundler
         end
 
         def git_retry(*command, dir: SharedHelpers.pwd)
-          Bundler::Retry.new("`git -C #{dir} #{URICredentialsFilter.credential_filtered_string(command.shelljoin, uri)}`", GitNotAllowedError).attempts do
+          Bundler::Retry.new("`git #{URICredentialsFilter.credential_filtered_string(command.shelljoin, uri)}` at #{dir}", GitNotAllowedError).attempts do
             git(*command, :dir => dir)
           end
         end

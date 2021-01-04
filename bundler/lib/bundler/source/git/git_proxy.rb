@@ -168,9 +168,11 @@ module Bundler
             capture_and_filter_stderr("git", "-C", dir.to_s, *command)
           end
 
-          raise GitCommandError.new(command_with_no_credentials, dir) unless status.success?
+          filtered_out = URICredentialsFilter.credential_filtered_string(out, uri)
 
-          URICredentialsFilter.credential_filtered_string(out, uri)
+          raise GitCommandError.new(command_with_no_credentials, dir, filtered_out) unless status.success?
+
+          filtered_out
         end
 
         def has_revision_cached?

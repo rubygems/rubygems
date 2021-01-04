@@ -309,9 +309,7 @@ To update to the latest RubyGems you can run:
 
     gem update --system
 
-If you need to upgrade or downgrade please follow the [how to upgrade/downgrade
-RubyGems][upgrading] instructions.  To install RubyGems by hand see the
-[Download RubyGems][download] page.
+To install RubyGems by hand see the [Download RubyGems][download] page.
 
 #{history.release_notes_for_blog.join("\n")}
 
@@ -320,7 +318,6 @@ SHA256 Checksums:
 #{checksums}
 
 [download]: https://rubygems.org/pages/download
-[upgrading]: http://docs.seattlerb.org/rubygems/UPGRADING_rdoc.html
 
       ANNOUNCEMENT
 

@@ -145,34 +145,34 @@ module Bundler
 
         private
 
-        def git_null(*command, dir: SharedHelpers.pwd)
+        def git_null(*command, dir: nil)
           check_allowed(command)
 
           out, status = SharedHelpers.with_clean_git_env do
-            capture_and_ignore_stderr("git", "-C", dir.to_s, *command)
+            capture_and_ignore_stderr(*capture3_args_for(command, dir))
           end
 
           [URICredentialsFilter.credential_filtered_string(out, uri), status]
         end
 
-        def git_retry(*command, dir: SharedHelpers.pwd)
+        def git_retry(*command, dir: nil)
           command_with_no_credentials = check_allowed(command)
 
-          Bundler::Retry.new("`#{command_with_no_credentials}` at #{dir}").attempts do
+          Bundler::Retry.new("`#{command_with_no_credentials}` at #{dir || SharedHelpers.pwd}").attempts do
             git(*command, :dir => dir)
           end
         end
 
-        def git(*command, dir: SharedHelpers.pwd)
+        def git(*command, dir: nil)
           command_with_no_credentials = check_allowed(command)
 
           out, status = SharedHelpers.with_clean_git_env do
-            capture_and_filter_stderr("git", "-C", dir.to_s, *command)
+            capture_and_filter_stderr(*capture3_args_for(command, dir))
           end
 
           filtered_out = URICredentialsFilter.credential_filtered_string(out, uri)
 
-          raise GitCommandError.new(command_with_no_credentials, dir, filtered_out) unless status.success?
+          raise GitCommandError.new(command_with_no_credentials, dir || SharedHelpers.pwd, filtered_out) unless status.success?
 
           filtered_out
         end
@@ -240,6 +240,20 @@ module Bundler
           require "open3"
           return_value, _, status = Open3.capture3(*cmd)
           [return_value, status]
+        end
+
+        def capture3_args_for(cmd, dir)
+          return ["git", *cmd] unless dir
+
+          if Bundler.feature_flag.bundler_3_mode? || supports_minus_c?
+            ["git", "-C", dir.to_s, *cmd]
+          else
+            ["git", *cmd, { :chdir => dir.to_s }]
+          end
+        end
+
+        def supports_minus_c?
+          @supports_minus_c ||= Gem::Version.new(version) >= Gem::Version.new("1.8.5")
         end
       end
     end

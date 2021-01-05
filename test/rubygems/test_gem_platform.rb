@@ -386,6 +386,10 @@ class TestGemPlatform < Gem::TestCase
     util_set_arch 'sparc-solaris2.8' do
       assert_local_match 'sparc-solaris2.8-mq5.3'
     end
+
+    util_set_arch 'universal.x86_64-darwin19' do
+      assert_local_match 'x86_64-darwin'
+    end
   end
 
   def assert_local_match(name)

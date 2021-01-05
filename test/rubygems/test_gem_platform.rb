@@ -5,9 +5,9 @@ require 'rbconfig'
 
 class TestGemPlatform < Gem::TestCase
   def test_self_local
-    util_set_arch 'i686-darwin8.10.1'
-
-    assert_equal Gem::Platform.new(%w[x86 darwin 8]), Gem::Platform.local
+    util_set_arch 'i686-darwin8.10.1' do
+      assert_equal Gem::Platform.new(%w[x86 darwin 8]), Gem::Platform.local
+    end
   end
 
   def test_self_match
@@ -234,20 +234,23 @@ class TestGemPlatform < Gem::TestCase
     uni_darwin8 = Gem::Platform.new 'universal-darwin8.0'
     x86_darwin8 = Gem::Platform.new 'i686-darwin8.0'
 
-    util_set_arch 'powerpc-darwin8'
-    assert((ppc_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
-    assert((uni_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
-    refute((x86_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
+    util_set_arch 'powerpc-darwin8' do
+      assert((ppc_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
+      assert((uni_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
+      refute((x86_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
+    end
 
-    util_set_arch 'i686-darwin8'
-    refute((ppc_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
-    assert((uni_darwin8 === Gem::Platform.local), 'x86 =~ universal')
-    assert((x86_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
+    util_set_arch 'i686-darwin8' do
+      refute((ppc_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
+      assert((uni_darwin8 === Gem::Platform.local), 'x86 =~ universal')
+      assert((x86_darwin8 === Gem::Platform.local), 'powerpc =~ universal')
+    end
 
-    util_set_arch 'universal-darwin8'
-    assert((ppc_darwin8 === Gem::Platform.local), 'universal =~ ppc')
-    assert((uni_darwin8 === Gem::Platform.local), 'universal =~ universal')
-    assert((x86_darwin8 === Gem::Platform.local), 'universal =~ x86')
+    util_set_arch 'universal-darwin8' do
+      assert((ppc_darwin8 === Gem::Platform.local), 'universal =~ ppc')
+      assert((uni_darwin8 === Gem::Platform.local), 'universal =~ universal')
+      assert((x86_darwin8 === Gem::Platform.local), 'universal =~ x86')
+    end
   end
 
   def test_nil_cpu_arch_is_treated_as_universal
@@ -266,94 +269,106 @@ class TestGemPlatform < Gem::TestCase
     armv5 = Gem::Platform.new 'armv5-linux'
     armv7 = Gem::Platform.new 'armv7-linux'
 
-    util_set_arch 'armv5-linux'
-    assert((arm   === Gem::Platform.local), 'arm   === armv5')
-    assert((armv5 === Gem::Platform.local), 'armv5 === armv5')
-    refute((armv7 === Gem::Platform.local), 'armv7 === armv5')
-    refute((Gem::Platform.local === arm), 'armv5 === arm')
+    util_set_arch 'armv5-linux' do
+      assert((arm   === Gem::Platform.local), 'arm   === armv5')
+      assert((armv5 === Gem::Platform.local), 'armv5 === armv5')
+      refute((armv7 === Gem::Platform.local), 'armv7 === armv5')
+      refute((Gem::Platform.local === arm), 'armv5 === arm')
+    end
 
-    util_set_arch 'armv7-linux'
-    assert((arm   === Gem::Platform.local), 'arm   === armv7')
-    refute((armv5 === Gem::Platform.local), 'armv5 === armv7')
-    assert((armv7 === Gem::Platform.local), 'armv7 === armv7')
-    refute((Gem::Platform.local === arm), 'armv7 === arm')
+    util_set_arch 'armv7-linux' do
+      assert((arm   === Gem::Platform.local), 'arm   === armv7')
+      refute((armv5 === Gem::Platform.local), 'armv5 === armv7')
+      assert((armv7 === Gem::Platform.local), 'armv7 === armv7')
+      refute((Gem::Platform.local === arm), 'armv7 === arm')
+    end
   end
 
   def test_equals3_version
-    util_set_arch 'i686-darwin8'
+    util_set_arch 'i686-darwin8' do
+      x86_darwin = Gem::Platform.new ['x86', 'darwin', nil]
+      x86_darwin7 = Gem::Platform.new ['x86', 'darwin', '7']
+      x86_darwin8 = Gem::Platform.new ['x86', 'darwin', '8']
+      x86_darwin9 = Gem::Platform.new ['x86', 'darwin', '9']
 
-    x86_darwin = Gem::Platform.new ['x86', 'darwin', nil]
-    x86_darwin7 = Gem::Platform.new ['x86', 'darwin', '7']
-    x86_darwin8 = Gem::Platform.new ['x86', 'darwin', '8']
-    x86_darwin9 = Gem::Platform.new ['x86', 'darwin', '9']
+      assert((x86_darwin  === Gem::Platform.local), 'x86_darwin === x86_darwin8')
+      assert((x86_darwin8 === Gem::Platform.local), 'x86_darwin8 === x86_darwin8')
 
-    assert((x86_darwin  === Gem::Platform.local), 'x86_darwin === x86_darwin8')
-    assert((x86_darwin8 === Gem::Platform.local), 'x86_darwin8 === x86_darwin8')
-
-    refute((x86_darwin7 === Gem::Platform.local), 'x86_darwin7 === x86_darwin8')
-    refute((x86_darwin9 === Gem::Platform.local), 'x86_darwin9 === x86_darwin8')
+      refute((x86_darwin7 === Gem::Platform.local), 'x86_darwin7 === x86_darwin8')
+      refute((x86_darwin9 === Gem::Platform.local), 'x86_darwin9 === x86_darwin8')
+    end
   end
 
   def test_equals_tilde
-    util_set_arch 'i386-mswin32'
+    util_set_arch 'i386-mswin32' do
+      assert_local_match 'mswin32'
+      assert_local_match 'i386-mswin32'
 
-    assert_local_match 'mswin32'
-    assert_local_match 'i386-mswin32'
+      # oddballs
+      assert_local_match 'i386-mswin32-mq5.3'
+      assert_local_match 'i386-mswin32-mq6'
+      refute_local_match 'win32-1.8.2-VC7'
+      refute_local_match 'win32-1.8.4-VC6'
+      refute_local_match 'win32-source'
+      refute_local_match 'windows'
+    end
 
-    # oddballs
-    assert_local_match 'i386-mswin32-mq5.3'
-    assert_local_match 'i386-mswin32-mq6'
-    refute_local_match 'win32-1.8.2-VC7'
-    refute_local_match 'win32-1.8.4-VC6'
-    refute_local_match 'win32-source'
-    refute_local_match 'windows'
+    util_set_arch 'i686-linux' do
+      assert_local_match 'i486-linux'
+      assert_local_match 'i586-linux'
+      assert_local_match 'i686-linux'
+    end
 
-    util_set_arch 'i686-linux'
-    assert_local_match 'i486-linux'
-    assert_local_match 'i586-linux'
-    assert_local_match 'i686-linux'
+    util_set_arch 'i686-darwin8' do
+      assert_local_match 'i686-darwin8.4.1'
+      assert_local_match 'i686-darwin8.8.2'
+    end
 
-    util_set_arch 'i686-darwin8'
-    assert_local_match 'i686-darwin8.4.1'
-    assert_local_match 'i686-darwin8.8.2'
+    util_set_arch 'java' do
+      assert_local_match 'java'
+      assert_local_match 'jruby'
+    end
 
-    util_set_arch 'java'
-    assert_local_match 'java'
-    assert_local_match 'jruby'
+    util_set_arch 'universal-dotnet2.0' do
+      assert_local_match 'universal-dotnet'
+      assert_local_match 'universal-dotnet-2.0'
+      refute_local_match 'universal-dotnet-4.0'
+      assert_local_match 'dotnet'
+      assert_local_match 'dotnet-2.0'
+      refute_local_match 'dotnet-4.0'
+    end
 
-    util_set_arch 'universal-dotnet2.0'
-    assert_local_match 'universal-dotnet'
-    assert_local_match 'universal-dotnet-2.0'
-    refute_local_match 'universal-dotnet-4.0'
-    assert_local_match 'dotnet'
-    assert_local_match 'dotnet-2.0'
-    refute_local_match 'dotnet-4.0'
+    util_set_arch 'universal-dotnet4.0' do
+      assert_local_match 'universal-dotnet'
+      refute_local_match 'universal-dotnet-2.0'
+      assert_local_match 'universal-dotnet-4.0'
+      assert_local_match 'dotnet'
+      refute_local_match 'dotnet-2.0'
+      assert_local_match 'dotnet-4.0'
+    end
 
-    util_set_arch 'universal-dotnet4.0'
-    assert_local_match 'universal-dotnet'
-    refute_local_match 'universal-dotnet-2.0'
-    assert_local_match 'universal-dotnet-4.0'
-    assert_local_match 'dotnet'
-    refute_local_match 'dotnet-2.0'
-    assert_local_match 'dotnet-4.0'
+    util_set_arch 'universal-macruby-1.0' do
+      assert_local_match 'universal-macruby'
+      assert_local_match 'macruby'
+      refute_local_match 'universal-macruby-0.10'
+      assert_local_match 'universal-macruby-1.0'
+    end
 
-    util_set_arch 'universal-macruby-1.0'
-    assert_local_match 'universal-macruby'
-    assert_local_match 'macruby'
-    refute_local_match 'universal-macruby-0.10'
-    assert_local_match 'universal-macruby-1.0'
+    util_set_arch 'powerpc-darwin' do
+      assert_local_match 'powerpc-darwin'
+    end
 
-    util_set_arch 'powerpc-darwin'
-    assert_local_match 'powerpc-darwin'
+    util_set_arch 'powerpc-darwin7' do
+      assert_local_match 'powerpc-darwin7.9.0'
+    end
 
-    util_set_arch 'powerpc-darwin7'
-    assert_local_match 'powerpc-darwin7.9.0'
+    util_set_arch 'powerpc-darwin8' do
+      assert_local_match 'powerpc-darwin8.10.0'
+    end
 
-    util_set_arch 'powerpc-darwin8'
-    assert_local_match 'powerpc-darwin8.10.0'
-
-    util_set_arch 'sparc-solaris2.8'
-    assert_local_match 'sparc-solaris2.8-mq5.3'
+    util_set_arch 'sparc-solaris2.8' do
+      assert_local_match 'sparc-solaris2.8-mq5.3'
+    end
   end
 
   def assert_local_match(name)

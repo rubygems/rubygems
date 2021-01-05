@@ -9,7 +9,7 @@ class TestGemRequestSetLockfile < Gem::TestCase
 
     Gem::RemoteFetcher.fetcher = @fetcher = Gem::FakeFetcher.new
 
-    util_set_arch 'i686-darwin8.10.1'
+    @previous_arch = util_change_arch 'i686-darwin8.10.1'
 
     @set = Gem::RequestSet.new
 
@@ -20,6 +20,12 @@ class TestGemRequestSetLockfile < Gem::TestCase
     @set.instance_variable_set :@vendor_set, @vendor_set
 
     @gem_deps_file = 'gem.deps.rb'
+  end
+
+  def teardown
+    util_change_arch @previous_arch
+
+    super
   end
 
   def lockfile

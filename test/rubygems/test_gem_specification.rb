@@ -463,10 +463,11 @@ end
 
     @w1 = util_spec 'w', '1', 'x' => nil
 
-    util_set_arch 'cpu-my_platform1'
-    install_specs @x1_m, @x1_o, @w1
+    util_set_arch 'cpu-my_platform1' do
+      install_specs @x1_m, @x1_o, @w1
 
-    assert_activate %w[x-1-cpu-my_platform-1 w-1], @w1, @x1_m
+      assert_activate %w[x-1-cpu-my_platform-1 w-1], @w1, @x1_m
+    end
   end
 
   ##
@@ -1997,9 +1998,10 @@ dependencies: []
 
     test_cases.each do |arch, expected|
       @a1 = Gem::Specification.new "a", 1
-      util_set_arch arch
-      @a1.platform = 'current'
-      assert_equal expected, @a1.full_name
+      util_set_arch arch do
+        @a1.platform = 'current'
+        assert_equal expected, @a1.full_name
+      end
     end
   end
 
@@ -2100,9 +2102,10 @@ dependencies: []
     }
 
     test_cases.each do |arch, expected|
-      util_set_arch arch
-      @a1.platform = Gem::Platform::CURRENT
-      assert_equal Gem::Platform.new(expected), @a1.platform
+      util_set_arch arch do
+        @a1.platform = Gem::Platform::CURRENT
+        assert_equal Gem::Platform.new(expected), @a1.platform
+      end
     end
   end
 

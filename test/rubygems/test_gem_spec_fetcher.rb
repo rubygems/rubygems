@@ -106,39 +106,39 @@ class TestGemSpecFetcher < Gem::TestCase
   end
 
   def test_spec_for_dependency_platform
-    util_set_arch 'i386-linux'
+    util_set_arch 'i386-linux' do
+      spec_fetcher do |fetcher|
+        fetcher.legacy_platform
+      end
 
-    spec_fetcher do |fetcher|
-      fetcher.legacy_platform
+      dep = Gem::Dependency.new 'pl', 1
+      specs_and_sources, _ = @sf.spec_for_dependency dep
+
+      spec_names = specs_and_sources.map do |spec, source_uri|
+        [spec.full_name, source_uri]
+      end
+
+      assert_equal [['pl-1-x86-linux', Gem::Source.new(@gem_repo)]],
+                   spec_names
     end
-
-    dep = Gem::Dependency.new 'pl', 1
-    specs_and_sources, _ = @sf.spec_for_dependency dep
-
-    spec_names = specs_and_sources.map do |spec, source_uri|
-      [spec.full_name, source_uri]
-    end
-
-    assert_equal [['pl-1-x86-linux', Gem::Source.new(@gem_repo)]],
-                 spec_names
   end
 
   def test_spec_for_dependency_mismatched_platform
-    util_set_arch 'hrpa-989'
+    util_set_arch 'hrpa-989' do
+      spec_fetcher do |fetcher|
+        fetcher.legacy_platform
+      end
 
-    spec_fetcher do |fetcher|
-      fetcher.legacy_platform
+      dep = Gem::Dependency.new 'pl', 1
+      specs_and_sources, errors = @sf.spec_for_dependency dep
+
+      assert_equal 0, specs_and_sources.size
+      assert_equal 1, errors.size
+      pmm = errors.first
+
+      assert_equal "i386-linux", pmm.platforms.first
+      assert_equal "Found pl (1), but was for platform i386-linux", pmm.wordy
     end
-
-    dep = Gem::Dependency.new 'pl', 1
-    specs_and_sources, errors = @sf.spec_for_dependency dep
-
-    assert_equal 0, specs_and_sources.size
-    assert_equal 1, errors.size
-    pmm = errors.first
-
-    assert_equal "i386-linux", pmm.platforms.first
-    assert_equal "Found pl (1), but was for platform i386-linux", pmm.wordy
   end
 
   def test_spec_for_dependency_bad_fetch_spec

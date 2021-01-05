@@ -416,9 +416,7 @@ RSpec.describe "bundle gem" do
     it "sets a minimum ruby version" do
       bundle "gem #{gem_name}"
 
-      bundler_gemspec = Bundler::GemHelper.new(gemspec_dir).gemspec
-
-      expect(bundler_gemspec.required_ruby_version).to eq(generated_gemspec.required_ruby_version)
+      expect(generated_gemspec.required_ruby_version).to eq(Gem::Requirement.new(Gem.ruby_version < Gem::Version.new("2.4.a") ? ">= 2.3.0" : ">= 2.4.0"))
     end
 
     it "requires the version file" do

@@ -59,6 +59,7 @@ module Bundler
         :exe              => options[:exe],
         :bundler_version  => bundler_dependency_version,
         :github_username  => github_username.empty? ? "[USERNAME]" : github_username,
+        :required_ruby_version => Gem.ruby_version < Gem::Version.new("2.4.a") ? "2.3.0" : "2.4.0",
       }
       ensure_safe_gem_name(name, constant_array)
 

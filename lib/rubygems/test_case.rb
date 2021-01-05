@@ -977,15 +977,33 @@ Also, a list:
   end
 
   ##
-  # Set the platform to +arch+
+  # Set the platform to +arch+, and restore the previous value if a block is
+  # given
 
   def util_set_arch(arch)
+    orig_arch = util_change_arch(arch)
+
+    return unless block_given?
+
+    begin
+      yield
+    ensure
+      util_change_arch(orig_arch)
+    end
+  end
+
+  ##
+  # Set the platform to +arch+ and return the previous value
+
+  def util_change_arch(arch)
+    orig_arch = RbConfig::CONFIG['arch']
+
     RbConfig::CONFIG['arch'] = arch
 
     Gem.instance_variable_set :@platforms, nil
     Gem::Platform.instance_variable_set :@local, nil
 
-    yield if block_given?
+    orig_arch
   end
 
   ##

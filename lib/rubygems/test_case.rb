@@ -296,8 +296,7 @@ class Gem::TestCase < Minitest::Test
   # directed to a temporary directory.  All install plugins are removed.
   #
   # If the +RUBY+ environment variable is set the given path is used for
-  # Gem::ruby.  The local platform is set to <tt>i386-mswin32</tt> for Windows
-  # or <tt>i686-darwin8.10.1</tt> otherwise.
+  # Gem::ruby.
 
   def setup
     @orig_env = ENV.to_hash
@@ -409,14 +408,6 @@ class Gem::TestCase < Minitest::Test
     Gem.searcher = nil
     Gem::SpecFetcher.fetcher = nil
 
-    @orig_arch = RbConfig::CONFIG['arch']
-
-    if win_platform?
-      util_set_arch 'i386-mswin32'
-    else
-      util_set_arch 'i686-darwin8.10.1'
-    end
-
     @orig_hooks = {}
     %w[post_install_hooks done_installing_hooks post_uninstall_hooks pre_uninstall_hooks pre_install_hooks pre_reset_hooks post_reset_hooks post_build_hooks].each do |name|
       @orig_hooks[name] = Gem.send(name).dup
@@ -441,8 +432,6 @@ class Gem::TestCase < Minitest::Test
         $LOADED_FEATURES.replace @orig_LOADED_FEATURES
       end
     end
-
-    RbConfig::CONFIG['arch'] = @orig_arch
 
     if defined? Gem::RemoteFetcher
       Gem::RemoteFetcher.fetcher = nil

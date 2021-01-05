@@ -203,14 +203,6 @@ class TestGemPlatform < Gem::TestCase
     assert_equal '1', platform.version
   end
 
-  def test_to_s
-    if win_platform?
-      assert_equal 'x86-mswin32-60', Gem::Platform.local.to_s
-    else
-      assert_equal 'x86-darwin-8', Gem::Platform.local.to_s
-    end
-  end
-
   def test_equals2
     my = Gem::Platform.new %w[cpu my_platform 1]
     other = Gem::Platform.new %w[cpu other_platform 1]

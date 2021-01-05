@@ -1671,13 +1671,15 @@ dependencies: []
   end
 
   def test_contains_requirable_file_eh_extension_different_platform
-    ext_spec(platform: Gem::Platform.new("java"))
+    util_set_arch 'i686-darwin8.10.1' do
+      ext_spec(platform: Gem::Platform.new("java"))
 
-    _, err = capture_io do
-      refute @ext.contains_requirable_file? 'nonexistent'
+      _, err = capture_io do
+        refute @ext.contains_requirable_file? 'nonexistent'
+      end
+
+      assert_empty err
     end
-
-    assert_empty err
   end
 
   def test_date
@@ -1972,21 +1974,23 @@ dependencies: []
   end
 
   def test_full_name
-    assert_equal 'a-1', @a1.full_name
+    util_set_arch 'i686-darwin8.10.1' do
+      assert_equal 'a-1', @a1.full_name
 
-    @a1 = Gem::Specification.new "a", 1
-    @a1.platform = Gem::Platform.new ['universal', 'darwin', nil]
-    assert_equal 'a-1-universal-darwin', @a1.full_name
+      @a1 = Gem::Specification.new "a", 1
+      @a1.platform = Gem::Platform.new ['universal', 'darwin', nil]
+      assert_equal 'a-1-universal-darwin', @a1.full_name
 
-    @a1 = Gem::Specification.new "a", 1
-    @a1.instance_variable_set :@new_platform, 'mswin32'
-    assert_equal 'a-1-mswin32', @a1.full_name, 'legacy'
+      @a1 = Gem::Specification.new "a", 1
+      @a1.instance_variable_set :@new_platform, 'mswin32'
+      assert_equal 'a-1-mswin32', @a1.full_name, 'legacy'
 
-    return if win_platform?
+      return if win_platform?
 
-    @a1 = Gem::Specification.new "a", 1
-    @a1.platform = 'current'
-    assert_equal 'a-1-x86-darwin-8', @a1.full_name
+      @a1 = Gem::Specification.new "a", 1
+      @a1.platform = 'current'
+      assert_equal 'a-1-x86-darwin-8', @a1.full_name
+    end
   end
 
   def test_full_name_windows
@@ -2509,20 +2513,21 @@ end
   end
 
   def test_to_ruby_fancy
-    make_spec_c1
+    util_set_arch 'i686-darwin8.10.1' do
+      make_spec_c1
 
-    @c1.platform = Gem::Platform.local
-    ruby_code = @c1.to_ruby
+      @c1.platform = Gem::Platform.local
+      ruby_code = @c1.to_ruby
 
-    local = Gem::Platform.local
-    expected_platform = "[#{local.cpu.inspect}, #{local.os.inspect}, #{local.version.inspect}]"
-    stub_require_paths =
-      @c1.instance_variable_get(:@require_paths).join "\u0000"
-    extensions = @c1.extensions.join "\u0000"
+      local = Gem::Platform.local
+      expected_platform = "[#{local.cpu.inspect}, #{local.os.inspect}, #{local.version.inspect}]"
+      stub_require_paths =
+        @c1.instance_variable_get(:@require_paths).join "\u0000"
+      extensions = @c1.extensions.join "\u0000"
 
-    expected = <<-SPEC
+      expected = <<-SPEC
 # -*- encoding: utf-8 -*-
-# stub: a 1 #{win_platform? ? "x86-mswin32-60" : "x86-darwin-8"} #{stub_require_paths}
+# stub: a 1 x86-darwin-8 #{stub_require_paths}
 # stub: #{extensions}
 
 Gem::Specification.new do |s|
@@ -2560,13 +2565,14 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<pqa>.freeze, [\"> 0.4\", \"<= 0.6\"])
   end
 end
-    SPEC
+      SPEC
 
-    assert_equal expected, ruby_code
+      assert_equal expected, ruby_code
 
-    same_spec = eval ruby_code
+      same_spec = eval ruby_code
 
-    assert_equal @c1, same_spec
+      assert_equal @c1, same_spec
+    end
   end
 
   def test_to_ruby_keeps_requirements_as_originally_specified

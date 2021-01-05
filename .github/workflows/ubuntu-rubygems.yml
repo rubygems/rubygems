@@ -35,7 +35,10 @@ jobs:
         run: rake setup
       - name: Run Test
         run: rake test
-        if: "!startsWith(matrix.ruby.name, 'truffleruby')"
+        if: "!startsWith(matrix.ruby.name, 'truffleruby') && !startsWith(matrix.ruby.name, 'jruby')"
+      - name: Run Test (JRuby)
+        run: JRUBY_OPTS=--debug rake test
+        if: startsWith(matrix.ruby.name, 'jruby')
       - name: Run Test (Truffleruby)
         run: TRUFFLERUBYOPT="--experimental-options --testing-rubygems" rake test
         if: startsWith(matrix.ruby.name, 'truffleruby')

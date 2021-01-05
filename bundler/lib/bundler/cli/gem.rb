@@ -147,6 +147,7 @@ module Bundler
         "For more information, see the RuboCop docs (https://docs.rubocop.org/en/stable/) " \
         "and the Ruby Style Guides (https://github.com/rubocop-hq/ruby-style-guide).")
         config[:rubocop] = true
+        config[:rubocop_version] = Gem.ruby_version < Gem::Version.new("2.4.a") ? "0.80.1" : "0.90.0"
         Bundler.ui.info "RuboCop enabled in config"
         templates.merge!("rubocop.yml.tt" => ".rubocop.yml")
       end

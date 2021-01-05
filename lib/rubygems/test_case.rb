@@ -1000,7 +1000,7 @@ Also, a list:
 
     RbConfig::CONFIG['arch'] = arch
 
-    Gem.instance_variable_set :@platforms, nil
+    Gem.platforms = []
     Gem::Platform.instance_variable_set :@local, nil
 
     orig_arch

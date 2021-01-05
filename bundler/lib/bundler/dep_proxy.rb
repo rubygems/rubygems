@@ -7,7 +7,7 @@ module Bundler
     @proxies = {}
 
     def self.get_proxy(dep, platform)
-      @proxies[[dep, platform].hash] ||= new(dep, platform)
+      @proxies[[dep, platform].hash] ||= new(dep, platform).freeze
     end
 
     def initialize(dep, platform)

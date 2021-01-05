@@ -20,4 +20,13 @@ RSpec.describe Bundler::DepProxy do
     it { expect { subject.dup }.to raise_error NoMethodError }
     it { expect { subject.clone }.to raise_error NoMethodError }
   end
+
+  describe "frozen" do
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.5.0")
+      error = Object.const_get("FrozenError")
+    else
+      error = RuntimeError
+    end
+    it { expect { subject.instance_variable_set(:@__platform, {}) }.to raise_error error }
+  end
 end

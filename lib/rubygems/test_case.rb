@@ -981,14 +981,11 @@ Also, a list:
 
   def util_set_arch(arch)
     RbConfig::CONFIG['arch'] = arch
-    platform = Gem::Platform.new arch
 
     Gem.instance_variable_set :@platforms, nil
     Gem::Platform.instance_variable_set :@local, nil
 
     yield if block_given?
-
-    platform
   end
 
   ##

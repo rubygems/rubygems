@@ -31,6 +31,8 @@ class TestGemCommandsYankCommand < Gem::TestCase
     assert_equal "HOST",       @cmd.options[:host]
     assert_nil                 @cmd.options[:platform]
     assert_equal req('= 1.0'), @cmd.options[:version]
+  ensure
+    Gem.platforms = []
   end
 
   def test_handle_options_missing_argument

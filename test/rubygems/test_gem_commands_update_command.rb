@@ -681,17 +681,21 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
     # equivalent to --platform=ruby
     Gem.platforms = [Gem::Platform::RUBY]
 
-    @cmd.options[:explain] = true
-    @cmd.options[:args] = %w[a]
+    begin
+      @cmd.options[:explain] = true
+      @cmd.options[:args] = %w[a]
 
-    use_ui @ui do
-      @cmd.execute
+      use_ui @ui do
+        @cmd.execute
+      end
+
+      out = @ui.output.split "\n"
+
+      assert_equal "Gems to update:", out.shift
+      assert_equal "  a-2", out.shift
+      assert_empty out
+    ensure
+      Gem.platforms = []
     end
-
-    out = @ui.output.split "\n"
-
-    assert_equal "Gems to update:", out.shift
-    assert_equal "  a-2", out.shift
-    assert_empty out
   end
 end

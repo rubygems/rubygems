@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "BUNDLE\-CONFIG" "1" "December 2020" "" ""
+.TH "BUNDLE\-CONFIG" "1" "January 2021" "" ""
 .
 .SH "NAME"
 \fBbundle\-config\fR \- Set bundler configuration options
@@ -182,6 +182,9 @@ The following is a list of all configuration keys and their purpose\. You can le
 .
 .IP "\(bu" 4
 \fBdisable_local_branch_check\fR (\fBBUNDLE_DISABLE_LOCAL_BRANCH_CHECK\fR): Allow Bundler to use a local git override without a branch specified in the Gemfile\.
+.
+.IP "\(bu" 4
+\fBdisable_local_revision_check\fR (\fBBUNDLE_DISABLE_LOCAL_REVISION_CHECK\fR): Allow Bundler to use a local git override without checking if the revision present in the lockfile is present in the repository\.
 .
 .IP "\(bu" 4
 \fBdisable_multisource\fR (\fBBUNDLE_DISABLE_MULTISOURCE\fR): When set, Gemfiles containing multiple sources will produce errors instead of warnings\. Use \fBbundle config unset disable_multisource\fR to unset\.

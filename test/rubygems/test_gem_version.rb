@@ -214,6 +214,7 @@ class TestGemVersion < Gem::TestCase
     assert_equal [1], v("1.0.0").canonical_segments
     assert_equal [1, "a", 1], v("1.0.0.a.1.0").canonical_segments
     assert_equal [1, 2, 3, "pre", 1], v("1.2.3-1").canonical_segments
+    assert v("1.0.0").canonical_segments.frozen?
   end
 
   def test_frozen_version

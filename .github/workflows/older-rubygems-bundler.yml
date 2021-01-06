@@ -29,9 +29,9 @@ jobs:
         rgv:
           - { name: rgv-2.5, value: v2.5.2 }
           - { name: rgv-2.6, value: v2.6.14 }
-          - { name: rgv-2.7, value: v2.7.10 }
-          - { name: rgv-3.0, value: v3.0.8 }
-          - { name: rgv-3.1, value: v3.1.4 }
+          - { name: rgv-2.7, value: v2.7.11 }
+          - { name: rgv-3.0, value: v3.0.9 }
+          - { name: rgv-3.1, value: v3.1.5 }
           - { name: rgv-3.2, value: v3.2.4 }
 
         bundler:
@@ -43,16 +43,16 @@ jobs:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.5, value: 2.5.8 }, rgv: { name: rgv-2.6, value: v2.6.14 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.6 }, rgv: { name: rgv-2.5, value: v2.5.2 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.6 }, rgv: { name: rgv-2.6, value: v2.6.14 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.6 }, rgv: { name: rgv-2.7, value: v2.7.10 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.6 }, rgv: { name: rgv-2.7, value: v2.7.11 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-2.5, value: v2.5.2 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-2.6, value: v2.6.14 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-2.7, value: v2.7.10 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-3.0, value: v3.0.8 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-2.7, value: v2.7.11 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.2 }, rgv: { name: rgv-3.0, value: v3.0.9 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.0 }, rgv: { name: rgv-2.5, value: v2.5.2 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.0 }, rgv: { name: rgv-2.6, value: v2.6.14 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.0 }, rgv: { name: rgv-2.7, value: v2.7.10 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.0 }, rgv: { name: rgv-3.0, value: v3.0.8 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.0 }, rgv: { name: rgv-3.1, value: v3.1.4 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.0 }, rgv: { name: rgv-2.7, value: v2.7.11 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.0 }, rgv: { name: rgv-3.0, value: v3.0.9 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.0 }, rgv: { name: rgv-3.1, value: v3.1.5 } }
 
         include:
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.4, value: 2.4.10 }, rgv: { name: rgv-3.2, value: v3.2.4 } }

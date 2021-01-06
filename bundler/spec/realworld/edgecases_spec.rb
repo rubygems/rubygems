@@ -222,7 +222,7 @@ RSpec.describe "real world edgecases", :realworld => true do
   end
 
   it "doesn't hang on big gemfile" do
-    skip "Only for ruby 2.7.3" if RUBY_VERSION != "2.7.3"
+    skip "Only for ruby 2.7.3" if RUBY_VERSION != "2.7.3" || RUBY_PLATFORM =~ /darwin/
 
     gemfile <<~G
       # frozen_string_literal: true
@@ -334,7 +334,7 @@ RSpec.describe "real world edgecases", :realworld => true do
   end
 
   it "doesn't hang on tricky gemfile" do
-    skip "Only for ruby 2.7.3" if RUBY_VERSION != "2.7.3"
+    skip "Only for ruby 2.7.3" if RUBY_VERSION != "2.7.3" || RUBY_PLATFORM =~ /darwin/
 
     gemfile <<~G
       source 'https://rubygems.org'
@@ -360,7 +360,7 @@ RSpec.describe "real world edgecases", :realworld => true do
   end
 
   it "doesn't hang on nix gemfile" do
-    skip "Only for ruby 3.0.1" if RUBY_VERSION != "3.0.1"
+    skip "Only for ruby 3.0.1" if RUBY_VERSION != "3.0.1" || RUBY_PLATFORM =~ /darwin/
 
     gemfile <<~G
       source "https://rubygems.org" do

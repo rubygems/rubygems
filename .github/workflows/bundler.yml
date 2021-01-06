@@ -1,4 +1,4 @@
-name: ubuntu-bundler
+name: bundler
 
 on:
   pull_request:
@@ -9,12 +9,16 @@ on:
       - 3.2
 
 jobs:
-  ubuntu_bundler:
-    name: Bundler ${{ matrix.bundler.name }} (${{ matrix.ruby.name }})
-    runs-on: ubuntu-20.04
+  bundler:
+    name: Bundler ${{ matrix.bundler.name }} on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
+    runs-on: ${{ matrix.os.value }}
     strategy:
       fail-fast: false
       matrix:
+        os:
+          - { name: Ubuntu, value: ubuntu-20.04 }
+          - { name: MacOS, value: macos-10.15 }
+
         ruby:
           - { name: ruby-2.3, value: 2.3.8 }
           - { name: ruby-2.4, value: 2.4.10 }
@@ -41,9 +45,12 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Install graphviz
+      - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
-        if: matrix.bundler.value == ''
+        if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'
+      - name: Install graphviz (MacOS)
+        run: brew install graphviz
+        if: matrix.bundler.value == '' && matrix.os.name == 'MacOS'
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''

@@ -287,8 +287,6 @@ class TestGemDependencyInstaller < Gem::TestCase
 
     @aa1, @aa1_gem = util_gem 'aa', '1'
 
-    util_reset_gems
-
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @aa1_gem, @tempdir
     FileUtils.mv @b1_gem, @tempdir
@@ -306,8 +304,6 @@ class TestGemDependencyInstaller < Gem::TestCase
     util_setup_gems
 
     @aa1, @aa1_gem = util_gem 'aa', '1'
-
-    util_reset_gems
 
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @aa1_gem, @tempdir
@@ -328,8 +324,6 @@ class TestGemDependencyInstaller < Gem::TestCase
     util_setup_gems
 
     @aa1, @aa1_gem = util_gem 'aa', '1'
-
-    util_reset_gems
 
     FileUtils.mv @a1_gem, @tempdir
     FileUtils.mv @aa1_gem, @tempdir

@@ -14,7 +14,7 @@ on:
 
 jobs:
   older_rubygems_bundler:
-    name: Bundler ${{ matrix.bundler.name }} against old Rubygems (${{ matrix.ruby.name }}, ${{ matrix.rgv.name}})
+    name: Bundler ${{ matrix.bundler.name }} against old Rubygems (${{ matrix.ruby.name }}, ${{ matrix.rgv.name }})
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false

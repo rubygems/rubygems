@@ -844,7 +844,9 @@ class Gem::Specification < Gem::BasicSpecification
     specs.sort! do |a, b|
       names = a.name <=> b.name
       next names if names.nonzero?
-      b.version <=> a.version
+      versions = b.version <=> a.version
+      next versions if versions.nonzero?
+      b.platform == Gem::Platform::RUBY ? -1 : 1
     end
   end
 
@@ -1080,20 +1082,15 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def self._latest_specs(specs, prerelease = false) # :nodoc:
-    result = Hash.new {|h,k| h[k] = {} }
-    native = {}
+    result = {}
 
     specs.reverse_each do |spec|
       next if spec.version.prerelease? unless prerelease
 
-      native[spec.name] = spec.version if spec.platform == Gem::Platform::RUBY
-      result[spec.name][spec.platform] = spec
+      result[spec.name] = spec
     end
 
-    result.map(&:last).map(&:values).flatten.reject do |spec|
-      minimum = native[spec.name]
-      minimum && spec.version < minimum
-    end.sort_by{|tup| tup.name }
+    result.map(&:last).flatten.sort_by{|tup| tup.name }
   end
 
   ##

@@ -144,8 +144,11 @@ RSpec.describe "bundle install with install-time dependencies" do
 
         bundle :install, :env => { "DEBUG_RESOLVER_TREE" => "1" }
 
-        activated_groups = "net_b (1.0) (ruby)"
-        activated_groups += ", net_b (1.0) (#{local_platforms.join(", ")})" if local_platforms.any? && local_platforms != ["ruby"]
+        activated_groups = if local_platforms.any?
+          "net_b (1.0) (#{local_platforms.join(", ")})"
+        else
+          "net_b (1.0) (ruby)"
+        end
 
         expect(out).to include(" net_b").
           and include("BUNDLER: Starting resolution").
@@ -259,7 +262,7 @@ RSpec.describe "bundle install with install-time dependencies" do
                 Ruby\0 (#{error_message_requirement}) #{error_message_platform}
 
                 require_ruby #{error_message_platform} was resolved to 1.0, which depends on
-                  Ruby\0 (> 9000)
+                  Ruby\0 (> 9000) #{error_message_platform}
 
             Ruby\0 (> 9000), which is required by gem 'require_ruby', is not available in the local ruby installation
           E

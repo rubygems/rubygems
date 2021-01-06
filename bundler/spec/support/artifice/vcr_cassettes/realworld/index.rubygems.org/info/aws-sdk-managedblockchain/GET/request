@@ -1,0 +1,7 @@
+> GET /info/aws-sdk-managedblockchain
+> accept-encoding: gzip
+> accept: */*
+> user-agent: bundler/2.3.0.dev rubygems/3.3.0.dev ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run ed0941ad7231bb53
+> connection: keep-alive
+> keep-alive: 30
+> host: index.rubygems.org

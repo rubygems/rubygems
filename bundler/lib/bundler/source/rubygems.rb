@@ -145,6 +145,8 @@ module Bundler
 
           Bundler.mkdir_p bin_path, :no_sudo => true unless spec.executables.empty? || Bundler.rubygems.provides?(">= 2.7.5")
 
+          require_relative "../rubygems_gem_installer"
+
           installed_spec = Bundler::RubyGemsGemInstaller.at(
             path,
             :install_dir         => install_path.to_s,

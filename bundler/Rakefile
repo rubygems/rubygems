@@ -60,7 +60,7 @@ namespace :spec do
     raise "Couldn't read sudoers file: #{output}" unless status.success?
 
     begin
-      output, status = Open3.capture2e("sudo sed -i '/secure_path/d' /etc/sudoers")
+      output, status = Open3.capture2e("sudo", "sh", "-c", "sed -e'/secure_path/d' /etc/sudoers > /etc/sudoers.bak && mv /etc/sudoers.bak /etc/sudoers")
       raise "Couldn't configure sudo to preserve path: #{output}" unless status.success?
 
       raise "Couldn't configure sudo correctly to preserve path" unless `ruby -v` == `sudo -E ruby -v`

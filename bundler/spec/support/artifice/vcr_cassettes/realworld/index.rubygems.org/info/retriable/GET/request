@@ -1,7 +1,7 @@
 > GET /info/retriable
 > accept-encoding: gzip
 > accept: */*
-> user-agent: bundler/2.2.0 rubygems/3.2.0 ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run ed2149aee672c42f
+> user-agent: bundler/3.0.0.dev rubygems/3.3.0.dev ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run 200764447a6443bc
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

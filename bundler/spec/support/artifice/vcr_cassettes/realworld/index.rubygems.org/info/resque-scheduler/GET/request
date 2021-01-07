@@ -1,7 +1,7 @@
 > GET /info/resque-scheduler
 > accept-encoding: gzip
 > accept: */*
-> user-agent: bundler/2.2.0 rubygems/3.2.0 ruby/2.7.2 (x86_64-pc-linux-gnu) command/install options/no_install,retry,path,spec_run f2c28f48754dd0f6
+> user-agent: bundler/3.0.0.dev rubygems/3.3.0.dev ruby/2.7.2 (x86_64-pc-linux-gnu) command/install options/retry,no_install,path,spec_run f19d38c0ec59f306
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

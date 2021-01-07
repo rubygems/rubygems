@@ -1,7 +1,7 @@
 > GET /info/cucumber-html-formatter
 > accept-encoding: gzip
 > accept: */*
-> user-agent: bundler/2.2.0 rubygems/3.2.0 ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run 83f5647d4d94f60c
+> user-agent: bundler/3.0.0.dev rubygems/3.3.0.dev ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run c43c6e8ef89c855f
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

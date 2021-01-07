@@ -1,7 +1,7 @@
 > GET /info/mini_portile2
 > accept-encoding: gzip
 > accept: */*
-> user-agent: bundler/2.2.0 rubygems/3.2.0 ruby/2.7.2 (x86_64-pc-linux-gnu) command/ options/frozen,inline,spec_run,gemfile bf7e32e10e872287
+> user-agent: bundler/3.0.0.dev rubygems/3.3.0.dev ruby/2.7.2 (x86_64-pc-linux-gnu) command/ options/frozen,inline,spec_run,gemfile 900b14c5a182182f
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

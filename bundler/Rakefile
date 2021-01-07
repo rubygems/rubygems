@@ -150,6 +150,9 @@ end
 
 load "task/automatiek.rake"
 
+# We currently ship Molinillo 0.7.0 with a patch on top to make use of `Array#-`
+# instead of `Array#&` on hot resolution code paths because it performs a lot
+# better.
 desc "Vendor a specific version of molinillo"
 Automatiek::RakeTask.new("molinillo") do |lib|
   lib.version = "0.7.0"

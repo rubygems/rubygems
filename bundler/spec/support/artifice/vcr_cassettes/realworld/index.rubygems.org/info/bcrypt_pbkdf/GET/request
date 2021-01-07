@@ -1,7 +1,7 @@
 > GET /info/bcrypt_pbkdf
-> accept-encoding: gzip
+> accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
 > accept: */*
-> user-agent: bundler/3.0.0.dev rubygems/3.3.0.dev ruby/2.7.2 (x86_64-pc-linux-gnu) command/ options/frozen,inline,spec_run,gemfile 900b14c5a182182f
+> user-agent: bundler/2.3.0.dev rubygems/3.3.0.dev ruby/3.0.0 (x86_64-pc-linux) command/install options/no_install,jobs,spec_run 01db7553f6372ebb
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

@@ -451,9 +451,9 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
     bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
 
     if Bundler.feature_flag.bundler_3_mode?
-      expect(out).to include("BUNDLER: Finished resolution (1122 steps)")
+      expect(out).to include("BUNDLER: Finished resolution (1336 steps)")
     else
-      expect(out).to include("BUNDLER: Finished resolution (1195 steps)")
+      expect(out).to include("BUNDLER: Finished resolution (1395 steps)")
     end
   end
 

@@ -191,7 +191,7 @@ module Bundler
 
         def find_local_revision
           allowed_with_path do
-            git("rev-parse", "--verify", ref, :dir => path).strip
+            git("rev-parse", "--verify", ref || "HEAD", :dir => path).strip
           end
         rescue GitCommandError => e
           raise MissingGitRevisionError.new(e.command, path, ref, URICredentialsFilter.credential_filtered_uri(uri))

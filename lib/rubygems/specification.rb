@@ -820,8 +820,6 @@ class Gem::Specification < Gem::BasicSpecification
     end
   end
 
-  EMPTY = [].freeze # :nodoc:
-
   ##
   # Returns a Gem::StubSpecification for installed gem named +name+
   # only returns stubs that match Gem.platforms
@@ -832,11 +830,10 @@ class Gem::Specification < Gem::BasicSpecification
     else
       pattern = "#{name}-*.gemspec"
       stubs = installed_stubs(dirs, pattern).select {|s| Gem::Platform.match_spec? s } + default_stubs(pattern)
-      stubs = stubs.uniq {|stub| stub.full_name }.group_by(&:name)
-      stubs.each_value {|v| _resort!(v) }
+      stubs = stubs.uniq {|stub| stub.full_name }
+      _resort!(stubs)
 
-      @@stubs_by_name.merge! stubs
-      @@stubs_by_name[name] ||= EMPTY
+      @@stubs_by_name[name] = stubs
     end
   end
 

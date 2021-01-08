@@ -182,6 +182,7 @@ class Gem::Specification < Gem::BasicSpecification
     @@default_value[k].nil?
   end
 
+  @@stubs = nil
   @@stubs_by_name = {}
 
   # Sentinel object to represent "not found" stubs
@@ -823,10 +824,10 @@ class Gem::Specification < Gem::BasicSpecification
   # only returns stubs that match Gem.platforms
 
   def self.stubs_for(name)
-    if @@stubs_by_name[name]
-      @@stubs_by_name[name]
+    if @@stubs
+      @@stubs_by_name[name] || []
     else
-      @@stubs_by_name[name] = stubs_for_pattern("#{name}-*.gemspec")
+      @@stubs_by_name[name] ||= stubs_for_pattern("#{name}-*.gemspec")
     end
   end
 

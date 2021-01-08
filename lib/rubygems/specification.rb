@@ -800,10 +800,8 @@ class Gem::Specification < Gem::BasicSpecification
   def self.stubs
     @@stubs ||= begin
       pattern = "*.gemspec"
-      stubs = installed_stubs(dirs, pattern) + default_stubs(pattern)
-      stubs = stubs.uniq {|stub| stub.full_name }
+      stubs = stubs_for_pattern(pattern, false)
 
-      _resort!(stubs)
       @@stubs_by_name = stubs.select {|s| Gem::Platform.match_spec? s }.group_by(&:name)
       stubs
     end
@@ -829,12 +827,23 @@ class Gem::Specification < Gem::BasicSpecification
       @@stubs_by_name[name]
     else
       pattern = "#{name}-*.gemspec"
-      stubs = installed_stubs(dirs, pattern).select {|s| Gem::Platform.match_spec? s } + default_stubs(pattern)
-      stubs = stubs.uniq {|stub| stub.full_name }
-      _resort!(stubs)
+      stubs = stubs_for_pattern(pattern)
 
       @@stubs_by_name[name] = stubs
     end
+  end
+
+  ##
+  # Finds stub specifications matching a pattern from the standard locations,
+  # optionally filtering out specs not matching the current platform
+  #
+  def self.stubs_for_pattern(pattern, match_platform = true) # :nodoc:
+    installed_stubs = installed_stubs(Gem::Specification.dirs, pattern)
+    installed_stubs.select! {|s| Gem::Platform.match_spec? s } if match_platform
+    stubs = installed_stubs + default_stubs(pattern)
+    stubs = stubs.uniq {|stub| stub.full_name }
+    _resort!(stubs)
+    stubs
   end
 
   def self._resort!(specs) # :nodoc:

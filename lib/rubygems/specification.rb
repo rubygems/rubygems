@@ -826,10 +826,7 @@ class Gem::Specification < Gem::BasicSpecification
     if @@stubs_by_name[name]
       @@stubs_by_name[name]
     else
-      pattern = "#{name}-*.gemspec"
-      stubs = stubs_for_pattern(pattern)
-
-      @@stubs_by_name[name] = stubs
+      @@stubs_by_name[name] = stubs_for_pattern("#{name}-*.gemspec")
     end
   end
 

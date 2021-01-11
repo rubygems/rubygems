@@ -1,3 +1,12 @@
+# 3.2.5 / 2021-01-11
+
+## Bug fixes:
+
+* Don't load more specs after the whole set of specs has been setup. Pull
+  request #4262 by deivid-rodriguez
+* Fix broken `bundler` executable after `gem update --system`. Pull
+  request #4221 by deivid-rodriguez
+
 # 3.2.4 / 2020-12-31
 
 ## Enhancements:

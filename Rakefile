@@ -7,7 +7,12 @@ require 'psych'
 
 desc "Setup Rubygems dev environment"
 task :setup do
-  sh "ruby bundler/bin/bundle install --gemfile=dev_gems.rb"
+  sh "ruby", "bundler/bin/bundle", "install", "--gemfile=dev_gems.rb"
+end
+
+desc "Update Rubygems dev environment"
+task :update do |_, args|
+  sh "ruby", "bundler/bin/bundle", "update", *args, "--gemfile=dev_gems.rb"
 end
 
 desc "Setup git hooks"

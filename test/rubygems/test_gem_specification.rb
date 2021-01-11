@@ -1630,20 +1630,6 @@ dependencies: []
     refute_path_exists @a1.extension_dir
   end
 
-  def test_build_extensions_old
-    skip "extensions don't quite work on jruby" if Gem.java_platform?
-    ext_spec
-
-    refute_empty @ext.extensions, 'sanity check'
-
-    @ext.installed_by_version = v(0)
-
-    @ext.build_extensions
-
-    gem_make_out = File.join @ext.extension_dir, 'gem_make.out'
-    refute_path_exists gem_make_out
-  end
-
   def test_build_extensions_preview
     skip "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec
@@ -3735,18 +3721,6 @@ end
     spec.extensions << 'extconf.rb'
 
     refute spec.missing_extensions?
-  end
-
-  def test_missing_extensions_eh_legacy
-    ext_spec
-
-    @ext.installed_by_version = v '2.2.0.preview.2'
-
-    assert @ext.missing_extensions?
-
-    @ext.installed_by_version = v '2.2.0.preview.1'
-
-    refute @ext.missing_extensions?
   end
 
   def test_missing_extensions_eh_none

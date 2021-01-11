@@ -142,7 +142,7 @@ RSpec.describe "bundle install with install-time dependencies" do
           gem "net_e"
         G
 
-        bundle :install, :env => { "DEBUG_RESOLVER_TREE" => "1" }
+        bundle :install, :env => { "DEBUG_RESOLVER_TREE" => "1", "DEBUG" => "1" }
 
         activated_groups = if local_platforms.any?
           "net_b (1.0) (#{local_platforms.join(", ")})"

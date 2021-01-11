@@ -161,6 +161,7 @@ class Release
       system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
 
       @bundler.bump_versions!
+      system("rake", "update[--bundler]", exception: true)
       system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
 
       @rubygems.cut_changelog!

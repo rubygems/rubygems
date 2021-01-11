@@ -129,6 +129,9 @@ Style/MultilineIfThen:
 Style/MutableConstant:
   Enabled: true
 
+Style/NilComparison:
+  Enabled: true
+
 Style/BlockDelimiters:
   Enabled: true
 

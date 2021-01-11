@@ -66,7 +66,7 @@ class Changelog
     last_change_type = types.pop
 
     if types.empty?
-      types = ''
+      types = +''
     else
       types = types.join(', ') << ' and '
     end

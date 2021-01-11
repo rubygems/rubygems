@@ -18,7 +18,7 @@ class Release
   module SubRelease
     include GithubAPI
 
-    attr_reader :version, :changelog, :version_files, :name, :tag_prefix
+    attr_reader :version, :changelog, :version_files, :tag_prefix
 
     def cut_changelog_for!(pull_requests)
       set_relevant_pull_requests_from(pull_requests)
@@ -72,7 +72,6 @@ class Release
       @stable_branch = stable_branch
       @changelog = Changelog.for_bundler(version)
       @version_files = [File.expand_path("../bundler/lib/bundler/version.rb", __dir__)]
-      @name = "Bundler"
       @tag_prefix = "bundler-v"
     end
   end
@@ -85,7 +84,6 @@ class Release
       @stable_branch = stable_branch
       @changelog = Changelog.for_rubygems(version)
       @version_files = [File.expand_path("../lib/rubygems.rb", __dir__), File.expand_path("../rubygems-update.gemspec", __dir__)]
-      @name = "Rubygems"
       @tag_prefix = "v"
     end
   end
@@ -159,13 +157,17 @@ class Release
         end
       end
 
-      [@bundler, @rubygems].each do |library|
-        library.cut_changelog!
-        system("git", "commit", "-am", "Changelog for #{library.name} version #{library.version}", exception: true)
+      @bundler.cut_changelog!
+      system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
 
-        library.bump_versions!
-        system("git", "commit", "-am", "Bump #{library.name} version to #{library.version}", exception: true)
-      end
+      @bundler.bump_versions!
+      system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
+
+      @rubygems.cut_changelog!
+      system("git", "commit", "-am", "Changelog for Rubygems version #{@rubygems.version}", exception: true)
+
+      @rubygems.bump_versions!
+      system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
     rescue StandardError
       system("git", "checkout", initial_branch, exception: true)
       system("git", "branch", "-D", @release_branch, exception: true)

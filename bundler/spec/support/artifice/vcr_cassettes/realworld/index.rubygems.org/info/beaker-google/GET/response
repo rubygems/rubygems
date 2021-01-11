@@ -1,0 +1,32 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 393
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "61c5e4e75e835e1b2088614a150b9f0d"
+last-modified: Mon, 14 Dec 2020 17:09:59 GMT
+cache-control: max-age=60, public
+x-request-id: 6a8cac38-d576-43d0-a72f-eef8c71d6bdf
+x-runtime: 0.008018
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.237.26.162:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:06 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22025-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048346.892014,VS0,VE646
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.1.0 google-api-client:~> 0.9,stringify-hash:~> 0.0.0|checksum:68b84be7bd075733d018cd52375a0eb8aa87ef192002b0d572d5b27466297c5b
+0.2.0 google-api-client:~> 0.8.0,stringify-hash:~> 0.0.0|checksum:0fc85fe1ddd904e97c5e277023ee76e21d750f4c2acbd237dcbf2bf10b78ae90
+0.2.1 google-api-client:~> 0.8,stringify-hash:~> 0.0.0|checksum:6b5bd6f693ffa7bfdfd1f7bb97aa55ad6f5081da9261fbc1f0bfab46dae99b96

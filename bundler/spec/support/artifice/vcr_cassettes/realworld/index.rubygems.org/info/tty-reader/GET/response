@@ -1,0 +1,38 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1280
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "6682e37f0f5179852b8f3846a82799d5"
+last-modified: Mon, 14 Dec 2020 17:19:10 GMT
+cache-control: max-age=60, public
+x-request-id: 7647607f-beaf-4968-a0a8-8b533e10d975
+x-runtime: 0.008018
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 54.214.179.27:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:09 GMT
+via: 1.1 varnish
+age: 2773
+x-served-by: cache-mad22040-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048349.394939,VS0,VE1
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.1.0 wisper:~> 2.0.0|checksum:e29f0d81c03b3231f01d2069059bad8e09f80998abda30ad8c5dc567f4d98f61
+0.2.0 tty-cursor:~> 0.5.0,tty-screen:~> 0.6.4,wisper:~> 2.0.0|checksum:895d35b6c1e0a2fa8711b48968ae78a4023a770875960060f31055a3af9b57fd,ruby:>= 2.0.0
+0.3.0 tty-cursor:~> 0.5.0,tty-screen:~> 0.6.4,wisper:~> 2.0.0|checksum:99dcec3ed2cfea0e13473c2512a4d857064a41aa410b38795003653bddf83066,ruby:>= 2.0.0
+0.4.0 tty-cursor:~> 0.6.0,tty-screen:~> 0.6.4,wisper:~> 2.0.0|checksum:43f8278b0c59b6f506957e98b9956cbc2f2ac5e77129f380efdd3f6795f7c533,ruby:>= 2.0.0
+0.5.0 tty-cursor:~> 0.6.0,tty-screen:~> 0.6.4,wisper:~> 2.0.0|checksum:968f9a6e5667a37f9f6eff0dd9713faa7d61b14cc515b724aae2e63bab5b2c64,ruby:>= 2.0.0
+0.6.0 tty-cursor:~> 0.7,tty-screen:~> 0.7,wisper:~> 2.0.0|checksum:769124c3321f6e2ee5674b8925880ad65751ba49edafbd79275ba1825e3c0b09,ruby:>= 2.0.0
+0.7.0 tty-cursor:~> 0.7,tty-screen:~> 0.7,wisper:~> 2.0.0|checksum:2407d5c55585e9eab311a6d7f436edb80dc361a0c6558c116a90779db454e7a4,ruby:>= 2.0.0
+0.8.0 tty-cursor:~> 0.7,tty-screen:~> 0.8,wisper:~> 2.0|checksum:1934cd1abb8fadd7f31d2ff1861128c43dadf42dd69f54ee93521cde16a6191d,ruby:>= 2.0.0
+0.9.0 tty-cursor:~> 0.7,tty-screen:~> 0.8,wisper:~> 2.0|checksum:c62972c985c0b1566f0e56743b6a7882f979d3dc32ff491ed490a076f899c2b1,ruby:>= 2.0.0

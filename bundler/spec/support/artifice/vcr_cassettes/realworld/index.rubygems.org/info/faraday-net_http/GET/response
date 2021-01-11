@@ -1,0 +1,32 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 289
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "a5abb77d9984c69d9988d7654d0fb68b"
+last-modified: Tue, 29 Dec 2020 11:04:49 GMT
+cache-control: max-age=60, public
+x-request-id: f4749efe-5149-4cdf-969f-d225b246febf
+x-runtime: 0.006408
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.240.15.233:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:38:18 GMT
+via: 1.1 varnish
+age: 215
+x-served-by: cache-mad22034-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048299.689976,VS0,VE1
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.0.5 |checksum:9ab84875d94f484b4ba6e571ab1083ad228ea21eee5018e6c041d70f7a43ff84,ruby:>= 2.4.0
+0.0.6 |checksum:5004457a4bb75602038da3b7dfdb0c148bf6517e65201d23c8fb7bac509b4c72,ruby:>= 2.4.0
+1.0.0 |checksum:cd648c0343e41cb93fcd1db63dbe25e24ba623b79fbd42b9e275755b586865ce,ruby:>= 2.4.0

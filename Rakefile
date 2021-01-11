@@ -7,9 +7,7 @@ require 'psych'
 
 desc "Setup Rubygems dev environment"
 task :setup do
-  version = File.read("dev_gems.rb.lock").split(/BUNDLED WITH\n   /).last
-  sh "gem install bundler:#{version}"
-  sh "bundle install --gemfile=dev_gems.rb"
+  sh "ruby bundler/bin/bundle install --gemfile=dev_gems.rb"
 end
 
 desc "Setup git hooks"
@@ -183,11 +181,7 @@ end
 
 desc "Upload release to S3"
 task :upload_to_s3 do
-  begin
-    require "aws-sdk-s3"
-  rescue LoadError
-    abort "Install the aws-sdk-s3 gem to be able to upload gems to rubygems.org."
-  end
+  require "aws-sdk-s3"
 
   s3 = Aws::S3::Resource.new(region:'us-west-2')
   %w[zip tgz].each do |ext|
@@ -313,9 +307,7 @@ To update to the latest RubyGems you can run:
 
     gem update --system
 
-If you need to upgrade or downgrade please follow the [how to upgrade/downgrade
-RubyGems][upgrading] instructions.  To install RubyGems by hand see the
-[Download RubyGems][download] page.
+To install RubyGems by hand see the [Download RubyGems][download] page.
 
 #{history.release_notes_for_blog.join("\n")}
 
@@ -324,7 +316,6 @@ SHA256 Checksums:
 #{checksums}
 
 [download]: https://rubygems.org/pages/download
-[upgrading]: http://docs.seattlerb.org/rubygems/UPGRADING_rdoc.html
 
       ANNOUNCEMENT
 

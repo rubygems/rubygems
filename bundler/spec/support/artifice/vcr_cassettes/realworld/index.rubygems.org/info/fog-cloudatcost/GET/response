@@ -1,0 +1,37 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1142
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "4a41fabcd729b72c62024157a129fad5"
+last-modified: Mon, 14 Dec 2020 16:51:48 GMT
+cache-control: max-age=60, public
+x-request-id: a4097104-712a-46b3-8d13-9bbd4c303b89
+x-runtime: 0.007523
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.240.15.233:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:06 GMT
+via: 1.1 varnish
+age: 2706
+x-served-by: cache-mad22048-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048347.882865,VS0,VE1
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.1.0 fog-core:~> 1.27,fog-json:~> 1.0,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:46cee138252ddf852598953d4d2686dc55c844612a311e39c2f074e20d9d4db0
+0.1.1 fog-core:~> 1.27,fog-json:~> 1.0,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:072d105f85883b6e8156f9fb2979b7ae58d9e1d9343fe1b52560ba0ea6d1e397
+0.1.2 fog-core:~> 1.36,fog-json:~> 1.0,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:fec5072aa186d3859f93d4dbd35538e7461bcaf115fe37bbb2ad3fd44b57408c
+0.2.0 fog-core:~> 1.36,fog-json:~> 1.0,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:461e6894bc7824666441d0061291edb1bf645a1bbaef0becd735fcb816f8ca82
+0.2.1 fog-core:~> 1.36,fog-json:~> 1.0,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:d2bb142047f011024c8f50fe340144c78997b410eeb4fb3e66127bd15cd448e5
+0.2.2 fog-core:~> 1.40,fog-json:~> 1.0,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:f4878c4e92ec492e93930661b2084655f3ceeec6434c48f4b2c34c4b54d5a5d5
+0.2.3 fog-core:~> 1.41,fog-json:~> 1.0,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:a5b9605ff8f7013005fcd00a76d14cf14d323761da4136b9b4288348c66de29c
+0.4.0 fog-core:>= 0,fog-json:>= 0,ipaddress:>= 0|checksum:b93dd31a523f16d737ad0ad9b9e0fbd4aefd89f468ea90002065c6091e3d23af

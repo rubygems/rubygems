@@ -1,0 +1,55 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 3241
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "3356c7ffd04985a9b377bdc53ea9fed6"
+last-modified: Mon, 14 Dec 2020 17:17:27 GMT
+cache-control: max-age=60, public
+x-request-id: 33757a96-c922-4a0b-b46b-df6364731fdf
+x-runtime: 0.007669
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 54.214.179.27:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:08 GMT
+via: 1.1 varnish
+age: 2481
+x-served-by: cache-mad22077-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048348.164213,VS0,VE1
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+1.0.0 aws-sdk-core:~> 3,aws-sigv4:~> 1.0|checksum:28ca84209a7eade7d1e5bfa2078c55d939cc6d3be5211eef2be1658d1b454de5
+1.1.0 aws-sdk-core:~> 3,aws-sigv4:~> 1.0|checksum:049c3c8bf64eacdc819ad0efe951812477b57aa16204ef7640d64c90d1cc4050
+1.2.0 aws-sdk-core:~> 3,aws-sigv4:~> 1.0|checksum:ff6b657be3863e7af20c413dd18ddf0f853e3610d4cb8d32ab1948c50dc32176
+1.3.0 aws-sdk-core:>= 3.26.0&~> 3,aws-sigv4:~> 1.0|checksum:73aa0180c8acc2c02ceaa7913fdbb7c1fdc128b7bdc22ea485bd7f381e7df01c
+1.4.0 aws-sdk-core:>= 3.26.0&~> 3,aws-sigv4:~> 1.0|checksum:03c9c463dd151ece88bab2ea4285ecaa9e51631791d56d82af82b3b701a16b9e
+1.5.0 aws-sdk-core:>= 3.26.0&~> 3,aws-sigv4:~> 1.0|checksum:f87f746bbb9156fe2185565d9e450f6ed4e7b7f29e683ddf8aa327c483e7685f
+1.6.0 aws-sdk-core:>= 3.39.0&~> 3,aws-sigv4:~> 1.0|checksum:4ecb63c01b1948474bb8f3d610b6871e540dc5cdc750b97db522cd7c7ed17647
+1.7.0 aws-sdk-core:>= 3.47.0&~> 3,aws-sigv4:~> 1.1|checksum:14a31a73910347d04c91435ea634a87424e07d8bdb698a68435dcab94b0d5267
+1.8.0 aws-sdk-core:>= 3.48.0&~> 3,aws-sigv4:~> 1.1|checksum:7c860d22a2cb108a605d111918acfacb6b015d76fddb281c81a80315713f545a
+1.9.0 aws-sdk-core:>= 3.48.2&~> 3,aws-sigv4:~> 1.1|checksum:d32ae7ba135f66025be707b3b032f94b3d3303f82d7555d047d095ca390c42fd
+1.10.0 aws-sdk-core:>= 3.48.2&~> 3,aws-sigv4:~> 1.1|checksum:1ddfcc97476ba9e8cfa5d1d1fa973172a54fa481154c2752198db1d9d4b4223e
+1.11.0 aws-sdk-core:>= 3.52.1&~> 3,aws-sigv4:~> 1.1|checksum:5eab9fc3fca4515e242bea00d4def2a62c3c1ac914d590091f20fd990f81a915
+1.12.0 aws-sdk-core:>= 3.53.0&~> 3,aws-sigv4:~> 1.1|checksum:029c8397f48ed98755709febe75d4fa6918e1aa12ff413c56259c592769a48e3
+1.13.0 aws-sdk-core:>= 3.56.0&~> 3,aws-sigv4:~> 1.1|checksum:6313275ad676ad0a3c828502ae1c7bd25f5ac3f57d78a36f93f6d46b3bd7a84b
+1.14.0 aws-sdk-core:>= 3.58.0&~> 3,aws-sigv4:~> 1.1|checksum:94db26324c92b53887adc8c1b095e25e6b759c5ec1bec7374bc3f32513d6a244
+1.15.0 aws-sdk-core:>= 3.61.1&~> 3,aws-sigv4:~> 1.1|checksum:471f1a8f86a98db97f7c7ac7efdb707d07aef918650454a629d0ecda313c157d
+1.16.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:f9ae78cb2ae2fd2c3f944c2dd3cc402853948f123dc7520c5e06f5c41d0a3da6
+1.17.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:dfd1411c650a0361906c18377ec045eaa2e3db625bde392bdb438aff2f556b70
+1.18.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:b28deacc6e299f04d5c202c4f67af0764c0ba8a417846da92c47c0bd611dc342
+1.19.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:5043a9efe6df54f8c04cbadd693f3c281ac059038125b56ccce636dd3d8a0017
+1.20.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:35deff012907ce6b44a966f7912fb67593a43d3134da08539de94f2a2dd8685a
+1.21.1 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:032a9f5af73199558162280ceb3813a5170d30e376714a8513a5b242e5bdff59
+1.22.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:fd7beb5435658cca1d38a5ba92d5083e3ad53e1f951c5d95c30a5782fdd7bd13
+1.23.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:771a991f49564ad678f4e1429e54345891de5d15af22691006f4b966f63be58c
+1.24.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:f9c9e23c8ddff99a4424e7afb32985fdc08157de0ae2105486c2c7de1a2176d4
+1.25.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:99eea2ade929ce93eea51176f7ad31114e4a50f5c0b5ee538b2ed8bc1da56b47

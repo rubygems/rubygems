@@ -1,0 +1,44 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1807
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "079d05cdc3cd4cb8f007294955a4d9f8"
+last-modified: Mon, 14 Dec 2020 17:16:56 GMT
+cache-control: max-age=60, public
+x-request-id: 3035340a-c8fe-4e58-a01c-df45a4d5b624
+x-runtime: 0.008282
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 54.214.179.27:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:04 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22020-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048344.813514,VS0,VE645
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.1.0 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:fa2aa3ae0823f17610376e9c4dad998b955365612fb0294faa7b8378a854f7c1
+0.2.0 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:e110f61fffad056092cffda71222fc916fd1fb90c0c465ff1a005369d2e5f66c
+0.3.0 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:0e79b485249cff8711e3147a354c399852ae276bd209fbbc4c8edf4a46477691
+0.3.1 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:8fd0ca18987a7121f5bfaca3e8a6680e29862bc7a48827a5ece5c1b6c79db91c
+0.3.2 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:4baaa0182640a71ad3ee6b02e5c11c1e846e4729b0c3b5c449fd3cc3eef1c1d3
+0.3.3 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:65e10bd7e951ce87901dc42c3d531c0bf1c82f739210b99f7797c9fdaa715f05
+0.4.0 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:11513f91cd862c7721a1fca1f4d669cd3ca7cb28c5f2ce94358b0f25d645c37b
+0.5.0 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:b8f960e5683d2d93d1bc01e589b1f453daba71127ece25328ffdbb3d3c84a1f9
+0.5.1 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:ede0eeacc28cd042624113df4e387eda19526089c844062fed2b082631a3d2b0
+0.5.2 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:9d95a0e8ee16ae9375f4af97504808b11b41e1e3025afe113befe0a88bfcf69e
+0.5.3 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:8ac509f4f5dead3836e207c7537fa34d6b215d29913c3e7e6750e975f9d08144
+0.5.4 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:083e7ab1c08c5c7e4209fcc2b701220e95923dabfdef7a5876609c994e2c3c26
+0.6.0 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:4eabebf618b84932bee40d27e5cb5559c7cf1f1fd787ee1d563cb4fe6c767b33
+0.7.0 docker-api:>= 0,stringify-hash:~> 0.0.0|checksum:52c880bcbda224d1e33cf9bca574b5e91690aa2fb0f03139e72433f8d2427130
+0.7.1 docker-api:< 2.0.0,stringify-hash:~> 0.0.0|checksum:24a5b7f8dbc9586b4ce60d01770bca2f8dbc46f6e8b5011200a72bac3fb51091

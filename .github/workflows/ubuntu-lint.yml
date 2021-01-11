@@ -11,13 +11,13 @@ on:
 jobs:
   ubuntu_lint:
     name: Lint
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.2
+          ruby-version: 3.0.0
           bundler: none
       - name: Install Dependencies
         run: rake setup

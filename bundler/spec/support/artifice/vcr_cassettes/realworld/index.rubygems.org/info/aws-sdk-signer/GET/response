@@ -1,0 +1,56 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 3379
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "1d63c31ee3fce6e93276cbf8ff0efd0d"
+last-modified: Mon, 14 Dec 2020 17:18:48 GMT
+cache-control: max-age=60, public
+x-request-id: 048e5d01-5cae-405f-afed-aa1b71ac7044
+x-runtime: 0.007128
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.237.26.162:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:08 GMT
+via: 1.1 varnish
+age: 2481
+x-served-by: cache-mad22036-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048348.163467,VS0,VE1
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+1.1.0 aws-sdk-core:~> 3,aws-sigv4:~> 1.0|checksum:8b2d7583f97a03e8a0ae348892ec112724e83d96061194df442ecc508638ba92
+1.2.0 aws-sdk-core:~> 3,aws-sigv4:~> 1.0|checksum:859521ceb990f536ec771cf3439c602a5d927641f8172c3e6c194046d2331514
+1.3.0 aws-sdk-core:>= 3.26.0&~> 3,aws-sigv4:~> 1.0|checksum:32474248135f975ff03115f46b8ae13d0c313e832a6f8669478a28a7221c6f9b
+1.4.0 aws-sdk-core:>= 3.26.0&~> 3,aws-sigv4:~> 1.0|checksum:b498bb95a4df77d8b1e575caa51eaa42612948b9da189f43fae8804199706b5f
+1.5.0 aws-sdk-core:>= 3.39.0&~> 3,aws-sigv4:~> 1.0|checksum:b5f8693e405692ccf3068afffe4a2384abc2752606c80ba5582d7405f6b2ed74
+1.6.0 aws-sdk-core:>= 3.47.0&~> 3,aws-sigv4:~> 1.1|checksum:3eda9932cbde5f380c63ba7a0ba34f9a9b49611d35ccebea1a3a7eadeaa4c879
+1.7.0 aws-sdk-core:>= 3.48.0&~> 3,aws-sigv4:~> 1.1|checksum:40dcd3c9e524cf96e6cbc71de83eaec99a15169f87bb1968f977b898b515be57
+1.8.0 aws-sdk-core:>= 3.48.2&~> 3,aws-sigv4:~> 1.1|checksum:792536ec4b5ca7b0659236c0ca04ec030e86069143fadb48a9058548686a42e5
+1.9.0 aws-sdk-core:>= 3.48.2&~> 3,aws-sigv4:~> 1.1|checksum:7782eda78df155345927710d4d32ae25a32d38d81aca43a2bbd942acd903414d
+1.10.0 aws-sdk-core:>= 3.48.2&~> 3,aws-sigv4:~> 1.1|checksum:96cd14b3c599fc596ff0bda25351ecee8fcc63783d89f1d125ad5af3503e1bc3
+1.11.0 aws-sdk-core:>= 3.52.1&~> 3,aws-sigv4:~> 1.1|checksum:7360deeeec67ee784f30287bf56c63558058ab22de9c241dc1edef31084b0eaa
+1.12.0 aws-sdk-core:>= 3.53.0&~> 3,aws-sigv4:~> 1.1|checksum:e2b247ad7d6f48acf7f31cd961d54eba05611d5740551c1394f9e0f2d85737d3
+1.13.0 aws-sdk-core:>= 3.56.0&~> 3,aws-sigv4:~> 1.1|checksum:5b8574f77543f15afd969fd1066381fa82980607fac17977811f2a0d813448b1
+1.14.0 aws-sdk-core:>= 3.58.0&~> 3,aws-sigv4:~> 1.1|checksum:c1c1e7cf9b85b7e4945f4bf81c749b998073b29937f601675448a9547c8711eb
+1.15.0 aws-sdk-core:>= 3.61.1&~> 3,aws-sigv4:~> 1.1|checksum:e0ef2842718e15cd7e00468b247fcc5c4296c120a62902a26801f50a5e5c8aab
+1.16.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:2841274ae5917fb42dd039ed5ed711dcea05bd833bb04dc45ff6cb64269f38db
+1.17.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:8f51a316b2256e910b55e2841823e261f909b67e634a3bf0cb5309728099e9a8
+1.18.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:7e3b6dbfb523cadd90db783518ebf89e24842cde08c8d5010899dafa5e95abbb
+1.19.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:78ac87e7b4282b8be81bf3ac28e25fb3e815ac5f4924a52423fbebb81275441f
+1.20.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:4015a62f3efdee7d13da161b8fb995563c6baebf26b1d522da6cca3637464396
+1.21.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:4c5404de97a9b5ac3754548a9e78da587090bbc5ed24de5dc3f9bffc7a2fd07d
+1.22.1 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:f6e226dc2c64da0e47509ae43e088aec7fe58a7449ba871150f2b4198a98e2ab
+1.23.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:f19efec4890bea7b4b367f1fe7e14fafca1fe70522874eba1b700bd968e244b9
+1.24.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:9898a5b1dec6b4eb418cc28e61d65cb75b32ee63c397469f50133290b93f8397
+1.25.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:4fd05a6ec2bc6c8c4b0f1b91650092a8cb0653d2636cc76616657b610119a4fa
+1.26.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:2d30b83bb29132c95128d222812a8c4fc3f08d6b45c10647ce0367b47ac0a11d
+1.27.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:5691fe1f85809eb9b44a36793b3036fbdb49e046235bd2014a1f67bf67e2b782

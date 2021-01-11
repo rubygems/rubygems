@@ -1,3 +1,19 @@
+# 2.2.5 (January 11, 2021)
+
+## Enhancements:
+
+  - Improve rubocop setup in the new gem template [#4220](https://github.com/rubygems/rubygems/pull/4220)
+  - Support repositories with default branch not named master [#4224](https://github.com/rubygems/rubygems/pull/4224)
+
+## Bug fixes:
+
+  - Let Net::HTTP decompress the index instead of doing it manually [#4081](https://github.com/rubygems/rubygems/pull/4081)
+  - Workaround for another jruby crash when autoloading a constant [#4252](https://github.com/rubygems/rubygems/pull/4252)
+  - Fix another performance regression in the resolver [#4243](https://github.com/rubygems/rubygems/pull/4243)
+  - Restore support for old git versions [#4233](https://github.com/rubygems/rubygems/pull/4233)
+  - Give a proper error if cache path does not have write access [#4215](https://github.com/rubygems/rubygems/pull/4215)
+  - Fix running `rake release` from an ambiguous ref [#4219](https://github.com/rubygems/rubygems/pull/4219)
+
 # 2.2.4 (December 31, 2020)
 
 ## Bug fixes:
@@ -327,7 +343,7 @@
   - Fix `bundle update` message about exclude groups saying "installed" instead of "updated" ([#7150](https://github.com/rubygems/bundler/pull/7150))
   - Fix `bundle licenses` not showing correct information about bundler itself ([#7147](https://github.com/rubygems/bundler/pull/7147))
   - Fix installation path not including ruby scope when `BUNDLE_PATH` was set ([#7163](https://github.com/rubygems/bundler/pull/7163))
-  - Fix `bundle clean` incorrectly removing git depedencies present in the Gemfile when rubygems 3.0+ was used and path involved a symlink ([#7211](https://github.com/rubygems/bundler/pull/7211))
+  - Fix `bundle clean` incorrectly removing git dependencies present in the Gemfile when rubygems 3.0+ was used and path involved a symlink ([#7211](https://github.com/rubygems/bundler/pull/7211))
   - Fix platform specific gems always being re-resolved when bundler was not running under that platform ([#7212](https://github.com/rubygems/bundler/pull/7212))
   - Fix `bundle package --all-platforms` causing `bundle install` to ignore `--with` and `--without` ([#6113](https://github.com/rubygems/bundler/pull/6113))
   - Fix `MissingRevision` git errors to include the specific `git` command that failed under the hood ([#7225](https://github.com/rubygems/bundler/pull/7225))
@@ -499,7 +515,7 @@ Changes
 ## Bug fixes:
 
   - Fix issue where updating a gem resulted in the gem's version being downgraded when `BUNDLE_ONLY_UPDATE_TO_NEWER_VERSIONS` was set ([#6529](https://github.com/rubygems/bundler/issues/6529), @theflow)
-  - Fix some rescue calls that don't specifiy error type (@utilum)
+  - Fix some rescue calls that don't specify error type (@utilum)
   - Fix an issue when the Lockfile would contain platform-specific gems that it didn't need ([#6491](https://github.com/rubygems/bundler/issues/6491), @segiddins)
   - Improve handling of adding new gems with only a single group to the Gemfile in `bundle add` (@agrim123)
   - Refactor check for OpenSSL in `bundle env` (@voxik)

@@ -1,7 +1,7 @@
 > GET /info/monetize
-> accept-encoding: gzip
+> accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
 > accept: */*
-> user-agent: bundler/2.2.0 rubygems/3.2.0 ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run c23a66d8c6448737
+> user-agent: bundler/2.3.0.dev rubygems/3.3.0.dev ruby/2.7.2 (x86_64-pc-linux-gnu) command/lock options/spec_run 72421dfcf2ae699b
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

@@ -1,0 +1,39 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1256
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "b1761bd320b899e0df5b4cb43804c545"
+last-modified: Mon, 14 Dec 2020 17:18:38 GMT
+cache-control: max-age=60, public
+x-request-id: 50c35637-83f2-4c0d-9719-5a297153811a
+x-runtime: 0.007112
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.237.26.162:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:08 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22031-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048348.267185,VS0,VE642
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+1.0.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:3cfc85ae1c648575463c9b5c90797016d89eaa63301dbb5351cd7c516cca2eca
+1.1.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:a204bb8c7ad523b97ab393b4d297c239af965a73feb894a9a928731e2dbe7448
+1.2.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:d96fc1b4364f26cc8c3c040ae24adbd5dbb3a17d26a190d303f34ff9bc064cf4
+1.3.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:ca076f116ea09ccc0861aa8be4d8e2268235a2a31683431c5697359bc91210f7
+1.4.1 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:2d1630b2f81d531b17154cea84eefab5926b63cb4b08b4e321eb9ee230b5d73b
+1.5.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:c6bad05ea58dbd9ff330f545b55d14250cd28f391996c0b0e86d4ec2280056ad
+1.6.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:d494a0351a1088cf40d2ea715f27f288e62e1328491fbacc245b4097ca107a7f
+1.7.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:1dd41e9d604b377b0e3318eadadc75b5eed58059fd57862b3e85cd209aaac8f3
+1.8.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:1f8aaf25366ec15ded5b59e19787274a08ba41bcc069097f64f2196a2421b023
+1.9.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:b7ab34d3441b93e0ba3d592a54265a83ed027f8512fa4d5464a42ea9d5c9c304

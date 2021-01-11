@@ -1,0 +1,39 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1256
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "a0f3a916d6e1ab7f8610087f6202acdb"
+last-modified: Mon, 14 Dec 2020 17:17:37 GMT
+cache-control: max-age=60, public
+x-request-id: 9673341c-f2b5-4a98-80d2-b974ae11bb67
+x-runtime: 0.007616
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 54.214.179.27:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:08 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22020-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048348.257452,VS0,VE169
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+1.0.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:31d916a175f7ee6c999161b6a36dd5cd2281027987a13c3e4a143355667337ff
+1.1.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:888b04085999247807d8e61db0bf88e3131e33a687e35153d92c09b1b316df59
+1.2.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:fdd1fbf9728fedb2bcc79e567c825525bcd28b294b88cd8b5fcda61bab9be97a
+1.3.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:655712a1c392b1a24cfa5f9a49dd5010de83f8fdcd4acaf5312a0b8c3cb3081f
+1.4.1 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:6a6567d36818964a1e2092110ea8068eed817dc45b8bfb88e99e5f5dbb652dbd
+1.5.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:d32a79d575fde4267f31d4a1f6dc940604c1c9dfaa5a7d94e7a0e9188b0b82d1
+1.6.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:796e2910afde82e64db1577dc217fab5ac88bc0a0685cd7eed08f157e1a5306d
+1.7.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:1f6b3b5776c237dde3746d104f730d14d680e4b06cdd9cdcdb837db2b81ff6cb
+1.8.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:c644ad8f1aed2fe38b1d4f31484ae0d6b934b8a608d170ce8bb4f62042308d8e
+1.9.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:a4af21cfcdcc53b14ca57f3291e445f408d884855a1b3e62d152fabdc35c0bde

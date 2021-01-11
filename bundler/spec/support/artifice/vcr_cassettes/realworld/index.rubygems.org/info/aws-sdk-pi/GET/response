@@ -1,0 +1,55 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 3242
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "e3609c2908f75911ece16d60fff56802"
+last-modified: Mon, 14 Dec 2020 17:19:15 GMT
+cache-control: max-age=60, public
+x-request-id: 150f19b1-921e-4358-a91d-75d0f403c17a
+x-runtime: 0.008654
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.240.15.233:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:08 GMT
+via: 1.1 varnish
+age: 2481
+x-served-by: cache-mad22026-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048348.152366,VS0,VE1
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+1.0.0 aws-sdk-core:~> 3,aws-sigv4:~> 1.0|checksum:f038cfffc1a1c60a0818647bc0deb7c5035176da45bc7790aa76f1dffac17e99
+1.1.0 aws-sdk-core:~> 3,aws-sigv4:~> 1.0|checksum:912310c5ad3d9d6a0ec6a5f85b68e3073db951d418a4fb0e080213ab756aa776
+1.2.0 aws-sdk-core:~> 3,aws-sigv4:~> 1.0|checksum:0dbac0cfcd91cfb1caa4ba4fae1ff7d8997f4ba938192302385bfdec7bc700b4
+1.3.0 aws-sdk-core:>= 3.26.0&~> 3,aws-sigv4:~> 1.0|checksum:9f66274c82321e4d6929bd350e8101934f13c9008c8d8b90c9bac3a238972541
+1.4.0 aws-sdk-core:>= 3.26.0&~> 3,aws-sigv4:~> 1.0|checksum:35155588e14ced27c318c4a3a4cfece346540db4278df28ee378202097cebef4
+1.5.0 aws-sdk-core:>= 3.26.0&~> 3,aws-sigv4:~> 1.0|checksum:43115b00c83425dac568c6cb46c02d4b411306f60b4dd4df573fb9f804086b18
+1.6.0 aws-sdk-core:>= 3.39.0&~> 3,aws-sigv4:~> 1.0|checksum:9747bfa59305d8e22cf485e0f5be021ac97b706b68944ee13aa2965082c2edad
+1.7.0 aws-sdk-core:>= 3.47.0&~> 3,aws-sigv4:~> 1.1|checksum:c0b21ea2f2ec7718c4773386afe2c9f62323562940f8c2bff17474845898b6c6
+1.8.0 aws-sdk-core:>= 3.48.0&~> 3,aws-sigv4:~> 1.1|checksum:54de27a5861e8452efb3c657869d6f4872ebca46dd35fd3fb379993ae4f16df9
+1.9.0 aws-sdk-core:>= 3.48.2&~> 3,aws-sigv4:~> 1.1|checksum:3560b64f8a0b97c2e9d81afe35d5908ccbd3b722e4609a4c15fe2d76d7adaaef
+1.10.0 aws-sdk-core:>= 3.48.2&~> 3,aws-sigv4:~> 1.1|checksum:1b681a7932091b4a3129d3ced7e7a35ceb05a8cb92edea6adf3ed12e322e6115
+1.11.0 aws-sdk-core:>= 3.52.1&~> 3,aws-sigv4:~> 1.1|checksum:96d2eeaaa71c205124377401049bc867fb6e5c4cc040ac86518eb91190ec6817
+1.12.0 aws-sdk-core:>= 3.53.0&~> 3,aws-sigv4:~> 1.1|checksum:32ed1de5d179d569d38114a982eb6b5cc7257d5fd8c417e65e3a0db25ea8536c
+1.13.0 aws-sdk-core:>= 3.56.0&~> 3,aws-sigv4:~> 1.1|checksum:4117f11f4259af1c613ddb7b9eaf1e1b5074976ca23b2f310a964d06891d699e
+1.14.0 aws-sdk-core:>= 3.58.0&~> 3,aws-sigv4:~> 1.1|checksum:8bafa836fb00a01f3d2d17618611044194940bb1a271cbc4febc14861198c90c
+1.15.0 aws-sdk-core:>= 3.61.1&~> 3,aws-sigv4:~> 1.1|checksum:85f58d3db42ebfa0a18f302cbe419db2a821a396d7731dcca0f5a7ae9e8932ec
+1.16.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:8348ca0f0a6f2ac00d47dbbcea329b1ae6ee6cce37d761466ec5299085a1155a
+1.17.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:a1924a0133395278ea6ea29f75321421a293f15fcf74d43bc7ae272d955d4b1a
+1.18.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:1ae01c6a5996791763a089642b94cd82621e805aa925bab9c8d839384179b532
+1.19.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:4a3fa91b42dcafadc5920c968bf01fa362437099205cf7a3712920cecd5f1566
+1.20.1 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:b348d7e137953a821793da71223f4fbe446ba302393539af9c367aacbe99ef38
+1.21.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:4786f310a04e31f8fb1350753fd79bd10bbf27b2529afb171c1ae88585c0b3fb
+1.22.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:0eb0a5ad893a67345083147f9dc85b9535db64cf75e87b5bd57380711fff2464
+1.23.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:eaf30bd6bb3f967beebd526a1e1579f0a38e7212effb6ccaeee368b84821e7d3
+1.24.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:8553efeb9d6460c2ec1fedffd5a0e4a5f4f51aab2fc68e0b866b34ec20903f86
+1.25.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:8d002eae61fc32d9d56bde45e39852bbfff389e95336de6f86710bb83aadfbf4

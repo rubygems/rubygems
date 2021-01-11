@@ -11,18 +11,19 @@ on:
 jobs:
   install_rubygems_ubuntu:
     name: Install Rubygems on Ubuntu (${{ matrix.ruby.name }}, ${{ matrix.openssl.name }})
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         ruby:
-          - { name: 2.3, value: 2.3.8 }
-          - { name: 2.4, value: 2.4.10 }
-          - { name: 2.5, value: 2.5.8 }
-          - { name: 2.6, value: 2.6.6 }
-          - { name: 2.7, value: 2.7.2 }
+          - { name: "2.3", value: 2.3.8 }
+          - { name: "2.4", value: 2.4.10 }
+          - { name: "2.5", value: 2.5.8 }
+          - { name: "2.6", value: 2.6.6 }
+          - { name: "2.7", value: 2.7.2 }
+          - { name: "3.0", value: 3.0.0 }
           - { name: jruby-9.2, value: jruby-9.2.14.0 }
-          - { name: truffleruby-20.2, value: truffleruby-20.2.0 }
+          - { name: truffleruby-20.3, value: truffleruby-20.3.0 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }
@@ -52,10 +53,10 @@ jobs:
         run: bundle --version
       - name: Check bundler man pages were installed and are properly picked up
         run: bundle install --help | grep -q BUNDLE-INSTALL
-        if: matrix.ruby.name != 'truffleruby-20.2'
+        if: matrix.ruby.name != 'truffleruby-20.3'
       - name: Check bundler fallback man pages are properly picked up
         run: sudo rm $(which man) && bundle install --help
-        if: matrix.ruby.name != 'truffleruby-20.2'
+        if: matrix.ruby.name != 'truffleruby-20.3'
       - name: Build bundler
         run: gem build bundler.gemspec
         working-directory: ./bundler
@@ -67,7 +68,7 @@ jobs:
         working-directory: ./bundler
       - name: Check rails can be installed
         run: gem install rails
-        if: matrix.ruby.name != 'truffleruby-20.2'
+        if: matrix.ruby.name != 'truffleruby-20.3'
     timeout-minutes: 10
 
   install_rubygems_windows:
@@ -77,7 +78,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: 2.7, value: 2.7.2 }
+          - { name: "3.0", value: 3.0.0 }
           - { name: jruby-9.2, value: jruby-9.2.14.0 }
     steps:
       - uses: actions/checkout@v2

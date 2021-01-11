@@ -1,0 +1,35 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 724
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "2b328a3e2ec53c7cabfb13992db47f7d"
+last-modified: Mon, 14 Dec 2020 15:50:11 GMT
+cache-control: max-age=60, public
+x-request-id: 8ebe023f-2ab9-4460-afbd-bef934e7ab4e
+x-runtime: 0.007983
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.237.26.162:443
+accept-ranges: bytes
+date: Thu, 07 Jan 2021 19:39:09 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22029-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1610048350.555441,VS0,VE167
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.0.1 faraday_middleware:>= 0,multi_json:>= 0|checksum:ce4cb40069f7b02353893050f45b7ff87eed47821b7605db67ee635c2477234a
+0.0.2 faraday_middleware:>= 0,multi_json:>= 0|checksum:f4f95128046284d4bd893f0efbea2c6a867f88f08947df73f39aad5f47d0f5aa
+0.0.3 faraday_middleware:>= 0,multi_json:>= 0|checksum:f1a3e3f9e01b6841e380c2fcbc7f411fc9413fe5606a8ef0bad76b0ee3cc8eaf
+0.0.4 faraday_middleware:>= 0,multi_json:>= 0|checksum:4605c8a987934c327f64b4a602907eb0be282e2532f27ccee1d5f187fcb0371e
+0.0.5 faraday_middleware:>= 0,multi_json:>= 0|checksum:403595573a55cf2902fbbdee1cc2f3eff5e9a67d68e8111557a88f8b8471bcfa
+0.0.6 faraday_middleware:>= 0,multi_json:>= 0|checksum:38fc4dab7a78916ad09827d5a164aab62fbf2cb8b9de0507763de1f561d7a118

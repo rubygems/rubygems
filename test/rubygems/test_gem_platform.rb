@@ -10,6 +10,31 @@ class TestGemPlatform < Gem::TestCase
     end
   end
 
+  def test_self_local_is_inferred_from_RUBY_PLATFORM_when_universal_darwin
+    orig_arch_config = RbConfig::CONFIG["arch"]
+    orig_platform = RUBY_PLATFORM
+
+    Object.send :remove_const, :RUBY_PLATFORM
+    Object.const_set :RUBY_PLATFORM, "universal.x86_64-darwin19"
+
+    RbConfig::CONFIG["arch"] = "universal-darwin19"
+
+    Gem::Platform.instance_variable_set :@local, nil
+
+    local_platform = Gem::Platform.local
+
+    assert_equal "x86_64", local_platform.cpu
+    assert_equal "darwin", local_platform.os
+    assert_equal "19", local_platform.version
+  ensure
+    RbConfig::CONFIG["arch"] = orig_arch_config
+
+    Object.send :remove_const, :RUBY_PLATFORM
+    Object.const_set :RUBY_PLATFORM, orig_platform
+
+    Gem::Platform.instance_variable_set :@local, nil
+  end
+
   def test_self_match
     Gem::Deprecate.skip_during do
       assert Gem::Platform.match(nil), 'nil == ruby'

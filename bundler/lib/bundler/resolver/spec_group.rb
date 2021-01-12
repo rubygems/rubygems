@@ -92,19 +92,16 @@ module Bundler
       def __dependencies
         @dependencies = Hash.new do |dependencies, platform|
           dependencies[platform] = []
-          specs = @specs[platform]
-          if spec = specs.first
-            spec.dependencies.each do |dep|
-              next if dep.type == :development
-              dependencies[platform] << DepProxy.get_proxy(dep, platform)
-            end
+          @specs[platform].first.dependencies.each do |dep|
+            next if dep.type == :development
+            dependencies[platform] << DepProxy.get_proxy(dep, platform)
           end
           dependencies[platform]
         end
       end
 
       def metadata_dependencies(spec, platform)
-        return [] unless spec && spec.is_a?(Gem::Specification)
+        return [] unless spec.is_a?(Gem::Specification)
         dependencies = []
         if !spec.required_ruby_version.nil? && !spec.required_ruby_version.none?
           dependencies << DepProxy.get_proxy(Gem::Dependency.new("Ruby\0", spec.required_ruby_version), platform)

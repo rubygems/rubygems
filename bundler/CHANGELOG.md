@@ -1,3 +1,19 @@
+# 2.2.5 (January 11, 2021)
+
+## Enhancements:
+
+  - Improve rubocop setup in the new gem template [#4220](https://github.com/rubygems/rubygems/pull/4220)
+  - Support repositories with default branch not named master [#4224](https://github.com/rubygems/rubygems/pull/4224)
+
+## Bug fixes:
+
+  - Let Net::HTTP decompress the index instead of doing it manually [#4081](https://github.com/rubygems/rubygems/pull/4081)
+  - Workaround for another jruby crash when autoloading a constant [#4252](https://github.com/rubygems/rubygems/pull/4252)
+  - Fix another performance regression in the resolver [#4243](https://github.com/rubygems/rubygems/pull/4243)
+  - Restore support for old git versions [#4233](https://github.com/rubygems/rubygems/pull/4233)
+  - Give a proper error if cache path does not have write access [#4215](https://github.com/rubygems/rubygems/pull/4215)
+  - Fix running `rake release` from an ambiguous ref [#4219](https://github.com/rubygems/rubygems/pull/4219)
+
 # 2.2.4 (December 31, 2020)
 
 ## Bug fixes:

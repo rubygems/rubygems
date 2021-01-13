@@ -147,7 +147,7 @@ module Bundler
 
             next groups if @platforms == [Gem::Platform::RUBY]
 
-            spec_group = SpecGroup.create_for(specs_by_platform, self.class.sort_platforms(@platforms).reverse, platform)
+            spec_group = SpecGroup.create_for(specs_by_platform, @platforms, platform)
             groups << spec_group if spec_group
 
             groups
@@ -230,13 +230,6 @@ module Bundler
           vertex.payload ? 0 : search_for(dependency).count,
           self.class.platform_sort_key(dependency.__platform),
         ]
-      end
-    end
-
-    # Sort platforms from most general to most specific
-    def self.sort_platforms(platforms)
-      platforms.sort_by do |platform|
-        platform_sort_key(platform)
       end
     end
 

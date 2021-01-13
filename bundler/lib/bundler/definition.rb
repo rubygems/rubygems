@@ -890,7 +890,7 @@ module Bundler
       dependencies.each do |dep|
         dep = Dependency.new(dep, ">= 0") unless dep.respond_to?(:name)
         next unless remote || dep.current_platform?
-        target_platforms = dep.gem_platforms(remote ? Resolver.sort_platforms(@platforms) : [generic_local_platform])
+        target_platforms = dep.gem_platforms(remote ? @platforms : [generic_local_platform])
         deps += expand_dependency_with_platforms(dep, target_platforms)
       end
       deps

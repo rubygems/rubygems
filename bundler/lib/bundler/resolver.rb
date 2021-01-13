@@ -5,6 +5,8 @@ module Bundler
     require_relative "vendored_molinillo"
     require_relative "resolver/spec_group"
 
+    include GemHelpers
+
     # Figures out the best possible configuration of gems that satisfies
     # the list of passed dependencies and any child dependencies without
     # causing any gem activation errors.
@@ -135,32 +137,31 @@ module Bundler
           end
           nested.reduce([]) do |groups, (version, specs)|
             next groups if locked_requirement && !locked_requirement.satisfied_by?(version)
-            spec_group = SpecGroup.new(specs)
-            groups << spec_group
+
+            specs_by_platform = Hash.new do |current_specs, current_platform|
+              current_specs[current_platform] = select_best_platform_match(specs, current_platform)
+            end
+
+            spec_group_ruby = SpecGroup.create_for(specs_by_platform, [Gem::Platform::RUBY], Gem::Platform::RUBY)
+            groups << spec_group_ruby if spec_group_ruby
+
+            next groups if @platforms == [Gem::Platform::RUBY]
+
+            spec_group = SpecGroup.create_for(specs_by_platform, self.class.sort_platforms(@platforms).reverse, platform)
+            groups << spec_group if spec_group
+
+            groups
           end
         else
           []
         end
         # GVP handles major itself, but it's still a bit risky to trust it with it
         # until we get it settled with new behavior. For 2.x it can take over all cases.
-        search = if !@use_gvp
+        if !@use_gvp
           spec_groups
         else
           @gem_version_promoter.sort_versions(dependency, spec_groups)
         end
-        selected_sgs = []
-        search.each do |sg|
-          next unless sg.for?(platform)
-
-          sg_ruby = sg.copy_for([Gem::Platform::RUBY])
-          selected_sgs << sg_ruby if sg_ruby
-
-          next if @platforms == [Gem::Platform::RUBY]
-
-          sg_all_platforms = sg.copy_for(self.class.sort_platforms(@platforms).reverse)
-          selected_sgs << sg_all_platforms if sg_all_platforms
-        end
-        selected_sgs
       end
     end
 

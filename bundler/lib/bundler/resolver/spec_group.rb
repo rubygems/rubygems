@@ -3,25 +3,29 @@
 module Bundler
   class Resolver
     class SpecGroup
-      include GemHelpers
-
       attr_accessor :name, :version, :source
       attr_accessor :activated_platforms
 
-      def initialize(all_specs)
-        @all_specs = all_specs
-        exemplary_spec = all_specs.first
+      def self.create_for(specs, all_platforms, specific_platform)
+        specific_platform_specs = specs[specific_platform]
+        return unless specific_platform_specs.any?
+
+        platforms = all_platforms.select {|p| specs[p].any? }
+
+        new(specific_platform_specs.first, specs, platforms)
+      end
+
+      def initialize(exemplary_spec, specs, relevant_platforms)
+        @exemplary_spec = exemplary_spec
         @name = exemplary_spec.name
         @version = exemplary_spec.version
         @source = exemplary_spec.source
 
-        @activated_platforms = []
+        @activated_platforms = relevant_platforms
         @dependencies = Hash.new do |dependencies, platforms|
           dependencies[platforms] = dependencies_for(platforms)
         end
-        @specs = Hash.new do |specs, platform|
-          specs[platform] = select_best_platform_match(all_specs, platform)
-        end
+        @specs = specs
       end
 
       def to_specs
@@ -35,19 +39,6 @@ module Bundler
             lazy_spec
           end
         end.flatten.compact.uniq
-      end
-
-      def copy_for(platforms)
-        platforms.select! {|p| for?(p) }
-        return unless platforms.any?
-
-        copied_sg = self.class.new(@all_specs)
-        copied_sg.activated_platforms = platforms
-        copied_sg
-      end
-
-      def for?(platform)
-        @specs[platform].any?
       end
 
       def to_s

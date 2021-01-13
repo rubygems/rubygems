@@ -904,7 +904,7 @@ module Bundler
 
     def expand_dependency_with_platforms(dep, platforms)
       platforms.map do |p|
-        DepProxy.new(dep, p)
+        DepProxy.get_proxy(dep, p)
       end
     end
 
@@ -984,7 +984,7 @@ module Bundler
         next requirements if @locked_gems.dependencies[name] != dependency
         next requirements if dependency.source.is_a?(Source::Path)
         dep = Gem::Dependency.new(name, ">= #{locked_spec.version}")
-        requirements[name] = DepProxy.new(dep, locked_spec.platform)
+        requirements[name] = DepProxy.get_proxy(dep, locked_spec.platform)
         requirements
       end.values
     end

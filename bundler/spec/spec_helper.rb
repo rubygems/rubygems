@@ -104,7 +104,7 @@ RSpec.configure do |config|
 
         all_output = all_commands_output
         if example.exception && !all_output.empty?
-          message = example.exception.message + all_output
+          message = all_output + "\n" + example.exception.message
           (class << example.exception; self; end).send(:define_method, :message) do
             message
           end

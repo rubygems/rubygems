@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4063
+content-length: 4181
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "9de63ebc6dbda300fd1a5c23ba08b2e6"
-last-modified: Mon, 14 Dec 2020 17:18:50 GMT
+etag: "4218ec6f116c1ac76c6500fd979a7bb4"
+last-modified: Tue, 12 Jan 2021 09:26:33 GMT
 cache-control: max-age=60, public
-x-request-id: 4121cbd6-0d93-49ec-967c-823ff13b3e60
-x-runtime: 0.006592
+x-request-id: 787e0649-c177-4c92-8ef5-1ad42a596360
+x-runtime: 0.008293
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.237.26.162:443
+x-backend: F_Rails 54.214.179.27:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:38:13 GMT
+date: Mon, 25 Jan 2021 13:29:49 GMT
 via: 1.1 varnish
-age: 2787
-x-served-by: cache-mad22066-MAD
+age: 3050
+x-served-by: cache-mad22060-MAD
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1610048294.786361,VS0,VE1
+x-timer: S1611581389.058632,VS0,VE0
 vary: Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -63,3 +63,4 @@ server: RubyGems.org
 1.3.9 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.3|checksum:95b1153e4524a099cb8720e2647641b2b51fe329e9b6cf53b4c8a4827995bf6e
 1.4.0 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:bd8915b34a1d8ac20ba2d5cf859853f0159fc2932c8c24729f5c04d51bfca1a1
 1.4.1 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:22a4537fa42f71850e023a90df6966ddb815c7f66ed58fd70d3e52dc10d7782e
+1.4.2 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:3e65b19aab35c7656fbd98f6afc1c57090f3b0f725b1c18ff448be0f50f7e66b

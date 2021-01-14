@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 5292
+content-length: 5502
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "79fce142e61d0d8daf9a0daf5dccbc18"
-last-modified: Mon, 14 Dec 2020 17:19:11 GMT
+etag: "c267d082d8d557a55c5ab8372ee1bfaf"
+last-modified: Thu, 07 Jan 2021 23:00:11 GMT
 cache-control: max-age=60, public
-x-request-id: c2d2bfb1-446a-4402-9985-4af372f09ffc
-x-runtime: 0.008549
+x-request-id: 5de17f92-cb94-4828-9b27-f376da481c3a
+x-runtime: 0.008552
 strict-transport-security: max-age=31536000
 x-backend: F_Rails 44.237.26.162:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:37:54 GMT
+date: Mon, 25 Jan 2021 13:29:42 GMT
 via: 1.1 varnish
-age: 489
-x-served-by: cache-mad22048-MAD
+age: 37
+x-served-by: cache-mad22074-MAD
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1610048274.407781,VS0,VE0
-vary: Accept-Encoding,Fastly-SSL
+x-timer: S1611581383.666116,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -50,3 +50,4 @@ server: RubyGems.org
 6.1.0.rc1 actionpack:= 6.1.0.rc1,activejob:= 6.1.0.rc1,activerecord:= 6.1.0.rc1,activestorage:= 6.1.0.rc1,activesupport:= 6.1.0.rc1,mail:>= 2.7.1|checksum:30139743a0e894de61d5773ea1675a527e92560faeefc63de6fbd7390440b5ef,ruby:>= 2.5.0,rubygems:> 1.3.1
 6.1.0.rc2 actionpack:= 6.1.0.rc2,activejob:= 6.1.0.rc2,activerecord:= 6.1.0.rc2,activestorage:= 6.1.0.rc2,activesupport:= 6.1.0.rc2,mail:>= 2.7.1|checksum:aeeab286149b60ab1c98bcd6eadc76ba30e17268eb5a9d25e5adfc80cba99d8c,ruby:>= 2.5.0,rubygems:> 1.3.1
 6.1.0 actionpack:= 6.1.0,activejob:= 6.1.0,activerecord:= 6.1.0,activestorage:= 6.1.0,activesupport:= 6.1.0,mail:>= 2.7.1|checksum:8e83134721e9659333d7bbf73baf6e2df772660d68b0f7d5504f7a41838a0c93,ruby:>= 2.5.0
+6.1.1 actionpack:= 6.1.1,activejob:= 6.1.1,activerecord:= 6.1.1,activestorage:= 6.1.1,activesupport:= 6.1.1,mail:>= 2.7.1|checksum:34146a9e7a3ea23824c53f42593d6a621ffc653686c186f9a379fce30737e2fa,ruby:>= 2.5.0

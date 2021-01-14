@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
+RSpec.describe "real world edgecases", :realworld => true do
   def rubygems_version(name, requirement)
     ruby <<-RUBY
       require "#{spec_dir}/support/artifice/vcr"

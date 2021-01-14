@@ -23,7 +23,6 @@ require_relative "support/indexes"
 require_relative "support/matchers"
 require_relative "support/permissions"
 require_relative "support/platforms"
-require_relative "support/sometimes"
 require_relative "support/sudo"
 
 $debug = false

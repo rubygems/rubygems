@@ -469,7 +469,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       next if File.exist? subdir
       begin
         FileUtils.mkdir_p subdir, **options
-      rescue Errno::EACCES
+      rescue Errno::EACCES, Errno::ENOTDIR
       end
     end
   ensure

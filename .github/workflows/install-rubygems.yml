@@ -67,7 +67,7 @@ jobs:
         run: if grep -q 'GET http' output.txt; then false; else true; fi
         working-directory: ./bundler
       - name: Check rails can be installed
-        run: gem install rails
+        run: gem install rails --verbose
         if: matrix.ruby.name != 'truffleruby-20.3'
     timeout-minutes: 10
 

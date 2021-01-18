@@ -61,13 +61,13 @@ jobs:
         run: gem build bundler.gemspec
         working-directory: ./bundler
       - name: Install built bundler
-        run: gem install bundler-*.gem --verbose > output.txt
+        run: gem install bundler-*.gem --verbose --backtrace > output.txt
         working-directory: ./bundler
       - name: Check bundler install didn't hit the network
         run: if grep -q 'GET http' output.txt; then false; else true; fi
         working-directory: ./bundler
       - name: Check rails can be installed
-        run: gem install rails
+        run: gem install rails --verbose --backtrace
         if: matrix.ruby.name != 'truffleruby-20.3'
     timeout-minutes: 10
 

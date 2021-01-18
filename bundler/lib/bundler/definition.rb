@@ -825,11 +825,6 @@ module Bundler
           # commonly happens if the version changed in the gemspec
           next unless new_spec
 
-          new_runtime_deps = new_spec.dependencies.select {|d| d.type != :development }
-          old_runtime_deps = s.dependencies.select {|d| d.type != :development }
-          # If the dependencies of the path source have changed and locked spec can't satisfy new dependencies, unlock it
-          next unless new_runtime_deps.sort == old_runtime_deps.sort || new_runtime_deps.all? {|d| satisfies_locked_spec?(d) }
-
           s.dependencies.replace(new_spec.dependencies)
         end
 

@@ -54,8 +54,10 @@ end
 
 load "util/automatiek.rake"
 
+# We currently ship Molinillo master branch as of
+# https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
 Automatiek::RakeTask.new("molinillo") do |lib|
-  lib.version = "0.7.0"
+  lib.version = "master"
   lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
   lib.namespace = "Molinillo"
   lib.prefix = "Gem::Resolver"

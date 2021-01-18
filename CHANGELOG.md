@@ -1,3 +1,17 @@
+# 3.2.6 / 2021-01-18
+
+## Enhancements:
+
+* Fix `Gem::Platform#inspect` showing duplicate information. Pull request
+  #4276 by deivid-rodriguez
+
+## Bug fixes:
+
+* Swallow any system call error in `ensure_gem_subdirs` to support jruby
+  embedded paths. Pull request #4291 by kares
+* Restore accepting custom make command with extra options as the `make`
+  env variable. Pull request #4271 by terceiro
+
 # 3.2.5 / 2021-01-11
 
 ## Bug fixes:

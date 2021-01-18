@@ -21,10 +21,10 @@ patch_level_labels:
   - "bundler: security fix"
   - "bundler: enhancement"
   - "bundler: bug fix"
+  - "bundler: performance"
   - "bundler: backport"
 
 minor_level_labels:
   - "bundler: deprecation"
   - "bundler: feature"
-  - "bundler: performance"
   - "bundler: documentation"

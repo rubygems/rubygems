@@ -18,7 +18,7 @@ class Release
   module SubRelease
     include GithubAPI
 
-    attr_reader :version, :changelog, :version_files, :title, :tag_prefix
+    attr_reader :version, :changelog, :version_files, :tag_prefix
 
     def cut_changelog_for!(pull_requests)
       set_relevant_pull_requests_from(pull_requests)
@@ -28,6 +28,16 @@ class Release
 
     def cut_changelog!
       @changelog.cut!(previous_version, relevant_pull_requests)
+    end
+
+    def bump_versions!
+      version_files.each do |version_file|
+        version_contents = File.read(version_file)
+        unless version_contents.sub!(/^(.*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/i, "\\1#{version.to_s.dump}")
+          raise "Failed to update #{version_file}, is it in the expected format?"
+        end
+        File.open(version_file, "w") {|f| f.write(version_contents) }
+      end
     end
 
     def create_for_github!
@@ -62,7 +72,6 @@ class Release
       @stable_branch = stable_branch
       @changelog = Changelog.for_bundler(version)
       @version_files = [File.expand_path("../bundler/lib/bundler/version.rb", __dir__)]
-      @title = "Bundler version #{version} with changelog"
       @tag_prefix = "bundler-v"
     end
   end
@@ -75,7 +84,6 @@ class Release
       @stable_branch = stable_branch
       @changelog = Changelog.for_rubygems(version)
       @version_files = [File.expand_path("../lib/rubygems.rb", __dir__), File.expand_path("../rubygems-update.gemspec", __dir__)]
-      @title = "Rubygems version #{version} with changelog"
       @tag_prefix = "v"
     end
   end
@@ -149,19 +157,18 @@ class Release
         end
       end
 
-      [@bundler, @rubygems].each do |library|
-        library.version_files.each do |version_file|
-          version_contents = File.read(version_file)
-          unless version_contents.sub!(/^(.*VERSION = )"#{Gem::Version::VERSION_PATTERN}"/i, "\\1#{library.version.to_s.dump}")
-            raise "Failed to update #{version_file}, is it in the expected format?"
-          end
-          File.open(version_file, "w") {|f| f.write(version_contents) }
-        end
+      @bundler.cut_changelog!
+      system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
 
-        library.cut_changelog!
+      @bundler.bump_versions!
+      system("rake", "update[--bundler]", exception: true)
+      system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
 
-        system("git", "commit", "-am", library.title, exception: true)
-      end
+      @rubygems.cut_changelog!
+      system("git", "commit", "-am", "Changelog for Rubygems version #{@rubygems.version}", exception: true)
+
+      @rubygems.bump_versions!
+      system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
     rescue StandardError
       system("git", "checkout", initial_branch, exception: true)
       system("git", "branch", "-D", @release_branch, exception: true)

@@ -329,7 +329,7 @@ module Bundler
             "The source does not contain any versions of '#{name}'"
           end
         else
-          message = "Could not find gem '#{requirement}' in any of the gem sources " \
+          message = "Could not find gem '#{SharedHelpers.pretty_dependency(requirement)}' in any of the gem sources " \
             "listed in your Gemfile#{cache_message}."
         end
         raise GemNotFound, message

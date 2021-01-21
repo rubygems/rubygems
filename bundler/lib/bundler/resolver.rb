@@ -329,10 +329,16 @@ module Bundler
     def version_conflict_message(e)
       # only show essential conflicts, if possible
       conflicts = e.conflicts.dup
-      conflicts.delete_if do |_name, conflict|
-        deps = conflict.requirement_trees.map(&:last).flatten(1)
-        !Bundler::VersionRanges.empty?(*Bundler::VersionRanges.for_many(deps.map(&:requirement)))
+
+      if conflicts["bundler"]
+        conflicts.replace("bundler" => conflicts["bundler"])
+      else
+        conflicts.delete_if do |_name, conflict|
+          deps = conflict.requirement_trees.map(&:last).flatten(1)
+          !Bundler::VersionRanges.empty?(*Bundler::VersionRanges.for_many(deps.map(&:requirement)))
+        end
       end
+
       e = Molinillo::VersionConflict.new(conflicts, e.specification_provider) unless conflicts.empty?
 
       solver_name = "Bundler"

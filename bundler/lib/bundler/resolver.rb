@@ -364,16 +364,25 @@ module Bundler
         :additional_message_for_conflict => lambda do |o, name, conflict|
           if name == "bundler"
             o << %(\n  Current Bundler version:\n    bundler (#{Bundler::VERSION}))
-            other_bundler_required = !conflict.requirement.requirement.satisfied_by?(Gem::Version.new(Bundler::VERSION))
+
+            conflict_dependency = conflict.requirement
+            conflict_requirement = conflict_dependency.requirement
+            other_bundler_required = !conflict_requirement.satisfied_by?(Gem::Version.new(Bundler::VERSION))
 
             if other_bundler_required
-              o << "\n"
-              o << "This Gemfile requires a different version of Bundler.\n"
-              o << "Perhaps you need to update Bundler by running `gem install bundler`?\n"
-            end
-          end
+              o << "\n\n"
 
-          if conflict.locked_requirement
+              candidate_specs = @source_requirements[:default_bundler].specs.search(conflict_dependency)
+              if candidate_specs.any?
+                target_version = candidate_specs.last.version
+                new_command = [File.basename($PROGRAM_NAME), "_#{target_version}_", *ARGV].join(" ")
+                o << "Your bundle requires a different version of Bundler than the one you're running.\n"
+                o << "Install the necessary version with `gem install bundler:#{target_version}` and rerun bundler using `#{new_command}`\n"
+              else
+                o << "Your bundle requires a different version of Bundler than the one you're running, and that version could not be found.\n"
+              end
+            end
+          elsif conflict.locked_requirement
             o << "\n"
             o << %(Running `bundle update` will rebuild your snapshot from scratch, using only\n)
             o << %(the gems in your Gemfile, which may resolve the conflict.\n)

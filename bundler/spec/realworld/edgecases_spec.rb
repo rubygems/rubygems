@@ -453,10 +453,10 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
     if Bundler.feature_flag.bundler_3_mode?
       # Conflicts on bundler version, so fails earlier
       bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }, :raise_on_error => false
-      expect(out).to include("BUNDLER: Finished resolution (211 steps)")
+      expect(out).to include("BUNDLER: Finished resolution (435 steps)")
     else
       bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
-      expect(out).to include("BUNDLER: Finished resolution (1395 steps)")
+      expect(out).to include("BUNDLER: Finished resolution (1019 steps)")
     end
   end
 
@@ -480,9 +480,9 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
     bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
 
     if Bundler.feature_flag.bundler_3_mode?
-      expect(out).to include("BUNDLER: Finished resolution (369 steps)")
+      expect(out).to include("BUNDLER: Finished resolution (870 steps)")
     else
-      expect(out).to include("BUNDLER: Finished resolution (372 steps)")
+      expect(out).to include("BUNDLER: Finished resolution (871 steps)")
     end
   end
 end

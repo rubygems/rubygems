@@ -367,13 +367,14 @@ module Bundler
           if name == "bundler"
             o << %(\n  Current Bundler version:\n    bundler (#{Bundler::VERSION}))
             other_bundler_required = !conflict.requirement.requirement.satisfied_by?(Gem::Version.new(Bundler::VERSION))
+
+            if other_bundler_required
+              o << "\n"
+              o << "This Gemfile requires a different version of Bundler.\n"
+              o << "Perhaps you need to update Bundler by running `gem install bundler`?\n"
+            end
           end
 
-          if name == "bundler" && other_bundler_required
-            o << "\n"
-            o << "This Gemfile requires a different version of Bundler.\n"
-            o << "Perhaps you need to update Bundler by running `gem install bundler`?\n"
-          end
           if conflict.locked_requirement
             o << "\n"
             o << %(Running `bundle update` will rebuild your snapshot from scratch, using only\n)

@@ -37,7 +37,6 @@ module Bundler
       additional_base_requirements.each {|d| @base_dg.add_vertex(d.name, d) }
       @platforms = platforms
       @gem_version_promoter = gem_version_promoter
-      @allow_bundler_dependency_conflicts = Bundler.feature_flag.allow_bundler_dependency_conflicts?
       @use_gvp = Bundler.feature_flag.use_gem_version_promoter_for_major_updates? || !@gem_version_promoter.major?
       @lockfile_uses_separate_rubygems_sources = Bundler.feature_flag.disable_multisource?
     end
@@ -138,7 +137,6 @@ module Bundler
           nested.reduce([]) do |groups, (version, specs)|
             next groups if locked_requirement && !locked_requirement.satisfied_by?(version)
             spec_group = SpecGroup.new(specs)
-            spec_group.ignores_bundler_dependencies = @allow_bundler_dependency_conflicts
             groups << spec_group
           end
         else

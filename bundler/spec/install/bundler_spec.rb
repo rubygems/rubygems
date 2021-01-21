@@ -197,27 +197,5 @@ RSpec.describe "bundle install" do
       bundle "check"
       expect(out).to include("The Gemfile's dependencies are satisfied")
     end
-
-    context "with allow_bundler_dependency_conflicts set" do
-      before { bundle "config set allow_bundler_dependency_conflicts true" }
-
-      it "are forced to the current bundler version with warnings when no compatible version is found" do
-        build_repo4 do
-          build_gem "requires_nonexistant_bundler" do |s|
-            s.add_runtime_dependency "bundler", "99.99.99.99"
-          end
-        end
-
-        install_gemfile <<-G
-          source "#{file_uri_for(gem_repo4)}"
-          gem "requires_nonexistant_bundler"
-        G
-
-        expect(err).to include "requires_nonexistant_bundler (1.0) has dependency bundler (= 99.99.99.99), " \
-                               "which is unsatisfied by the current bundler version #{Bundler::VERSION}, so the dependency is being ignored"
-
-        expect(the_bundle).to include_gems "bundler #{Bundler::VERSION}", "requires_nonexistant_bundler 1.0"
-      end
-    end
   end
 end

@@ -178,6 +178,9 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
 * `disable_local_branch_check` (`BUNDLE_DISABLE_LOCAL_BRANCH_CHECK`):
    Allow Bundler to use a local git override without a branch specified in the
    Gemfile.
+* `disable_local_revision_check` (`BUNDLE_DISABLE_LOCAL_REVISION_CHECK`):
+   Allow Bundler to use a local git override without checking if the revision
+   present in the lockfile is present in the repository.
 * `disable_multisource` (`BUNDLE_DISABLE_MULTISOURCE`):
    When set, Gemfiles containing multiple sources will produce errors
    instead of warnings.

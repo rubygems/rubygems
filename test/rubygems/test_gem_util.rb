@@ -46,8 +46,8 @@ class TestGemUtil < Gem::TestCase
 
     assert_equal File.join(@tempdir, 'd'), paths[0]
     assert_equal @tempdir, paths[1]
-    assert_equal File.realpath(Dir.tmpdir), paths[2]
-    assert_equal File.realpath("..", Dir.tmpdir), paths[3]
+    assert_equal File.realpath("..", @tempdir), paths[2]
+    assert_equal File.realpath("../..", @tempdir), paths[3]
   ensure
     # restore default permissions, allow the directory to be removed
     FileUtils.chmod(0775, 'd/e') unless win_platform? || java_platform?

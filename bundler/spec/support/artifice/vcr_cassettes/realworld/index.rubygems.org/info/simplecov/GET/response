@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 7506
+content-length: 7670
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "cbe7b851613b1037046107b600ea1040"
-last-modified: Mon, 04 Jan 2021 19:30:02 GMT
+etag: "08b220dc80d1cbd043b57a54832be291"
+last-modified: Sat, 09 Jan 2021 13:35:22 GMT
 cache-control: max-age=60, public
-x-request-id: f6e606c8-80c1-4505-ad77-03791d285012
-x-runtime: 0.012349
+x-request-id: f92ca64c-282d-4224-9d8a-42edb7cd2623
+x-runtime: 0.008004
 strict-transport-security: max-age=31536000
 x-backend: F_Rails 54.214.179.27:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:38:18 GMT
+date: Mon, 25 Jan 2021 13:29:43 GMT
 via: 1.1 varnish
-age: 507
-x-served-by: cache-mad22056-MAD
+age: 3591
+x-served-by: cache-mad22050-MAD
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1610048299.722164,VS0,VE1
+x-timer: S1611581383.373028,VS0,VE0
 vary: Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -83,3 +83,4 @@ server: RubyGems.org
 0.20.0 docile:~> 1.1,simplecov-html:~> 0.11,simplecov_json_formatter:~> 0.1|checksum:8b8d390017743fcbe83387563b17b8b73da9cb4f3486300b358413d37603a2d6,ruby:>= 2.5.0
 0.21.0 docile:~> 1.1,simplecov-html:~> 0.11,simplecov_json_formatter:~> 0.1|checksum:6c94e8a32d4f3c92dcc5ef15511ec14b40b2e13ae6da52a96bcf3a50515a1955,ruby:>= 2.5.0
 0.21.1 docile:~> 1.1,simplecov-html:~> 0.11,simplecov_json_formatter:~> 0.1|checksum:c2a6ec3f6b0c566672fbdf31fe9d6e96af0e84802362114bf69665164c46666f,ruby:>= 2.5.0
+0.21.2 docile:~> 1.1,simplecov-html:~> 0.11,simplecov_json_formatter:~> 0.1|checksum:990db6aedb55086d6bf8874993ff1f796e4830abfa11937468ca502a0d013bc3,ruby:>= 2.5.0

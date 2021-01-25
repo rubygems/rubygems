@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 13185
+content-length: 13350
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "681505a10bf2abce3ec9bbf58057bce8"
-last-modified: Mon, 14 Dec 2020 17:15:37 GMT
+etag: "e73deab2a806348125457f4230c824ae"
+last-modified: Sat, 16 Jan 2021 21:49:29 GMT
 cache-control: max-age=60, public
-x-request-id: b033dd4b-2646-4c3d-b77c-3b9fec163903
-x-runtime: 0.009717
+x-request-id: f078451f-2050-4463-b80e-1852707f255c
+x-runtime: 0.008558
 strict-transport-security: max-age=31536000
 x-backend: F_Rails 44.240.15.233:443
 accept-ranges: bytes
-date: Fri, 15 Jan 2021 15:01:15 GMT
+date: Mon, 25 Jan 2021 14:04:42 GMT
 via: 1.1 varnish
-age: 1532
-x-served-by: cache-mad22026-MAD
+age: 374
+x-served-by: cache-mad22067-MAD
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1610722875.406613,VS0,VE0
+x-timer: S1611583482.205316,VS0,VE0
 vary: Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -138,3 +138,4 @@ server: RubyGems.org
 1.16.4 native-package-installer:>= 1.0.3,pkg-config:>= 1.2.2|checksum:e81e58381f1d4059bdd96ae8dc6c26aa0d6169ddd1d56c035f7f79bd18157b7b
 1.16.5 native-package-installer:>= 1.0.3,pkg-config:>= 1.2.2|checksum:f11f243d74b6902bb0306c860e17b8be530883a617b0ece1abe488ab40085bba
 1.16.6 native-package-installer:>= 1.0.3,pkg-config:>= 1.2.2|checksum:8b8390d0520b7f2709d99da3bf5cee6ccd69dfa5e0c17378c272ae6895f11102,ruby:>= 2.2.1
+1.17.4 native-package-installer:>= 1.0.3,pkg-config:>= 1.2.2,red-colors:>= 0|checksum:fb39b3e7902798025c9d82814771dd7203980cfc3155837f18659859c8fa2eb7,ruby:>= 2.2.1

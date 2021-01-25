@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 112177
+content-length: 112573
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "d267a40948bdde8c85cdfa01ab160ef9"
-last-modified: Wed, 09 Dec 2020 19:58:25 GMT
+etag: "60bf634fbd1ea3953cd27835ec28b907"
+last-modified: Thu, 07 Jan 2021 23:00:39 GMT
 cache-control: max-age=60, public
-x-request-id: 4db62517-afe0-41a1-9c68-c63d94a20034
-x-runtime: 0.024213
+x-request-id: 6c618476-13ca-46ba-bacb-146abcc1b550
+x-runtime: 0.030037
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.240.15.233:443
+x-backend: F_Rails 44.237.26.162:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:37:54 GMT
+date: Mon, 25 Jan 2021 13:29:42 GMT
 via: 1.1 varnish
-age: 488
-x-served-by: cache-mad22063-MAD
+age: 3541
+x-served-by: cache-mad22069-MAD
 x-cache: HIT
-x-cache-hits: 1
-x-timer: S1610048274.332283,VS0,VE1
-vary: Accept-Encoding,Fastly-SSL
+x-cache-hits: 267
+x-timer: S1611581383.588045,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -404,3 +404,4 @@ server: RubyGems.org
 6.1.0.rc1 actioncable:= 6.1.0.rc1,actionmailbox:= 6.1.0.rc1,actionmailer:= 6.1.0.rc1,actionpack:= 6.1.0.rc1,actiontext:= 6.1.0.rc1,actionview:= 6.1.0.rc1,activejob:= 6.1.0.rc1,activemodel:= 6.1.0.rc1,activerecord:= 6.1.0.rc1,activestorage:= 6.1.0.rc1,activesupport:= 6.1.0.rc1,bundler:>= 1.15.0,railties:= 6.1.0.rc1,sprockets-rails:>= 2.0.0|checksum:68666e4cf3ed5fc7dda1257e9923b9859388084f0464dd4140fcaae3d706815e,ruby:>= 2.5.0,rubygems:>= 1.8.11
 6.1.0.rc2 actioncable:= 6.1.0.rc2,actionmailbox:= 6.1.0.rc2,actionmailer:= 6.1.0.rc2,actionpack:= 6.1.0.rc2,actiontext:= 6.1.0.rc2,actionview:= 6.1.0.rc2,activejob:= 6.1.0.rc2,activemodel:= 6.1.0.rc2,activerecord:= 6.1.0.rc2,activestorage:= 6.1.0.rc2,activesupport:= 6.1.0.rc2,bundler:>= 1.15.0,railties:= 6.1.0.rc2,sprockets-rails:>= 2.0.0|checksum:096df9b6ff41006daefe6565ed36524ff3f44c5b214920c2bf8d3604772359ad,ruby:>= 2.5.0,rubygems:>= 1.8.11
 6.1.0 actioncable:= 6.1.0,actionmailbox:= 6.1.0,actionmailer:= 6.1.0,actionpack:= 6.1.0,actiontext:= 6.1.0,actionview:= 6.1.0,activejob:= 6.1.0,activemodel:= 6.1.0,activerecord:= 6.1.0,activestorage:= 6.1.0,activesupport:= 6.1.0,bundler:>= 1.15.0,railties:= 6.1.0,sprockets-rails:>= 2.0.0|checksum:e66d0b9a1dd8640c5a98da5b4ebd7ef5d1e01be67477f910e0cf514fa89c221b,ruby:>= 2.5.0,rubygems:>= 1.8.11
+6.1.1 actioncable:= 6.1.1,actionmailbox:= 6.1.1,actionmailer:= 6.1.1,actionpack:= 6.1.1,actiontext:= 6.1.1,actionview:= 6.1.1,activejob:= 6.1.1,activemodel:= 6.1.1,activerecord:= 6.1.1,activestorage:= 6.1.1,activesupport:= 6.1.1,bundler:>= 1.15.0,railties:= 6.1.1,sprockets-rails:>= 2.0.0|checksum:b7710f82e68af72db1ffa30ff3d67437e8fb91c26255659f3c2602964b834a64,ruby:>= 2.5.0,rubygems:>= 1.8.11

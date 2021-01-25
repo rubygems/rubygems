@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 35166
+content-length: 35444
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "c14a66dc23669706b8c228fe88818665"
-last-modified: Thu, 07 Jan 2021 08:56:11 GMT
+etag: "d5fef8110a7ddf4b293d9dc6af832747"
+last-modified: Mon, 11 Jan 2021 11:18:45 GMT
 cache-control: max-age=60, public
-x-request-id: bbf3c5be-74a2-42c6-8b38-bf758dc9c10d
-x-runtime: 0.011009
+x-request-id: 0f5fd81c-0a37-43f0-bfa1-776dba893492
+x-runtime: 0.011481
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 54.214.179.27:443
+x-backend: F_Rails 44.240.15.233:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:38:18 GMT
+date: Mon, 25 Jan 2021 13:29:43 GMT
 via: 1.1 varnish
-age: 508
-x-served-by: cache-mad22083-MAD
+age: 3591
+x-served-by: cache-mad22053-MAD
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1610048299.634050,VS0,VE0
+x-timer: S1611581383.208556,VS0,VE1
 vary: Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -194,3 +194,4 @@ server: RubyGems.org
 1.6.1 parallel:~> 1.10,parser:>= 2.7.1.5,rainbow:< 4.0&>= 2.2.2,regexp_parser:< 3.0&>= 1.8,rexml:>= 0,rubocop-ast:< 2.0&>= 1.2.0,ruby-progressbar:~> 1.7,unicode-display_width:< 2.0&>= 1.4.0|checksum:89b638e3975463d2b0749617ec7a372f3a597bfa2465e1e396aee82824839626,ruby:>= 2.4.0
 1.7.0 parallel:~> 1.10,parser:>= 2.7.1.5,rainbow:< 4.0&>= 2.2.2,regexp_parser:< 3.0&>= 1.8,rexml:>= 0,rubocop-ast:< 2.0&>= 1.2.0,ruby-progressbar:~> 1.7,unicode-display_width:< 2.0&>= 1.4.0|checksum:343c1b2ebf906a0e889c5135a65227548538e50d8c8aa27b8a150cf8fdf7738a,ruby:>= 2.4.0
 1.8.0 parallel:~> 1.10,parser:>= 3.0.0.0,rainbow:< 4.0&>= 2.2.2,regexp_parser:< 3.0&>= 1.8,rexml:>= 0,rubocop-ast:< 2.0&>= 1.2.0,ruby-progressbar:~> 1.7,unicode-display_width:< 3.0&>= 1.4.0|checksum:2d7a5c2eacd9e1b322a8b910acc1f16c109e793b76f56af435228821b5755989,ruby:>= 2.4.0
+1.8.1 parallel:~> 1.10,parser:>= 3.0.0.0,rainbow:< 4.0&>= 2.2.2,regexp_parser:< 3.0&>= 1.8,rexml:>= 0,rubocop-ast:< 2.0&>= 1.2.0,ruby-progressbar:~> 1.7,unicode-display_width:< 3.0&>= 1.4.0|checksum:bffc58b0a398bd3fd46ad6f6310befb981e5cd1d706a8f8de18251e981620299,ruby:>= 2.4.0

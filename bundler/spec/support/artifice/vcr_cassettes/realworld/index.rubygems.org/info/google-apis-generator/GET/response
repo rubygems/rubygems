@@ -1,0 +1,32 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 592
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "a7be78d64a1e8d11fc4ffa701732a602"
+last-modified: Tue, 19 Jan 2021 19:36:08 GMT
+cache-control: max-age=60, public
+x-request-id: 882f4c52-fc38-46c8-b4a2-62148a84d357
+x-runtime: 0.005874
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 54.214.179.27:443
+accept-ranges: bytes
+date: Mon, 25 Jan 2021 13:29:42 GMT
+via: 1.1 varnish
+age: 138
+x-served-by: cache-mad22026-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1611581383.904844,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.1.0 activesupport:>= 5.0,gems:~> 1.2,google-apis-core:~> 0.1,google-apis-discovery_v1:~> 0.0,thor:~> 0.20|checksum:90c69e59e1705bac41de514bc20665c8c399957c629174ecae7e9fc9815091b8,ruby:>= 2.4
+0.1.1 activesupport:>= 5.0,gems:~> 1.2,google-apis-core:~> 0.1,google-apis-discovery_v1:~> 0.0,thor:~> 0.20|checksum:107a898a78fd0f56ee358d611b563143da02aca585d93b1bc2c0734ca89debc6,ruby:>= 2.4
+0.1.2 activesupport:>= 5.0,gems:~> 1.2,google-apis-core:~> 0.1,google-apis-discovery_v1:~> 0.0,thor:< 2.a&>= 0.20|checksum:9b581981caa3703086a52d4147145f49f2dc6d422b276ca40ef432b84ffab6cc,ruby:>= 2.4

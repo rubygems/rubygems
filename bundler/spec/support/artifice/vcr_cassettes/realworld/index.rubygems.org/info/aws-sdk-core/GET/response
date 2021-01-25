@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 151143
+content-length: 151671
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "9c51a51f9ae3064f5f489856fd364629"
-last-modified: Mon, 14 Dec 2020 17:19:03 GMT
+etag: "d82485de8a735d1298ec376fb0d49d71"
+last-modified: Tue, 19 Jan 2021 20:09:24 GMT
 cache-control: max-age=60, public
-x-request-id: 8019fe88-9681-4ec7-aba0-bac4becbdc92
-x-runtime: 0.031924
+x-request-id: ab066432-1097-4e66-a9b0-32c7b04fb2c8
+x-runtime: 0.023418
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.230.114.12:443
+x-backend: F_Rails 44.240.15.233:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:39:08 GMT
+date: Mon, 25 Jan 2021 13:30:02 GMT
 via: 1.1 varnish
-age: 3806
-x-served-by: cache-mad22073-MAD
+age: 3384
+x-served-by: cache-mad22060-MAD
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1610048348.087315,VS0,VE1
+x-timer: S1611581403.628255,VS0,VE1
 vary: Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -1266,3 +1266,6 @@ server: RubyGems.org
 2.11.631 aws-sigv4:~> 1.0,jmespath:~> 1.0|checksum:e27e12b89cdf67958daf6ea58d19342c6a53620bba68f6ea9bcdadbf26f9cc42
 2.11.632 aws-sigv4:~> 1.0,jmespath:~> 1.0|checksum:57a0b2eb3bd118e5ecd9a8faa3ee988697cc0848045774fe1786de43c547723b
 3.110.0 aws-eventstream:>= 1.0.2&~> 1,aws-partitions:>= 1.239.0&~> 1,aws-sigv4:~> 1.1,jmespath:~> 1.0|checksum:844eb2204fa8624fcf190968ed052b9e7b78aaaaeb70a31e6b77911a53e43dd3
+3.111.0 aws-eventstream:>= 1.0.2&~> 1,aws-partitions:>= 1.239.0&~> 1,aws-sigv4:~> 1.1,jmespath:~> 1.0|checksum:68ba5613d5974ac5950fe956ede183fe0041fdf0d878208ce96c77e2c9c2c669
+3.111.1 aws-eventstream:>= 1.0.2&~> 1,aws-partitions:>= 1.239.0&~> 1,aws-sigv4:~> 1.1,jmespath:~> 1.0|checksum:c86905e11fbbb75d439dbeb4c0a3111e48694c54db98829b2a5f0f81b398468d
+3.111.2 aws-eventstream:>= 1.0.2&~> 1,aws-partitions:>= 1.239.0&~> 1,aws-sigv4:~> 1.1,jmespath:~> 1.0|checksum:24be3799c92416dc9df913d34df162298d4279937412c264ca92827b2d0bd22d

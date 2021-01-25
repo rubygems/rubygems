@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 19355
+content-length: 19743
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "7c29be1c4383b642d9ed1e9b88d08e07"
-last-modified: Mon, 14 Dec 2020 17:17:24 GMT
+etag: "dfc9aec30c40f89a718b9f25de456a2d"
+last-modified: Tue, 19 Jan 2021 22:41:53 GMT
 cache-control: max-age=60, public
-x-request-id: b02de696-d8e6-4181-bce4-fc7fd0a28a77
-x-runtime: 0.008657
+x-request-id: cf209a22-d547-4f2c-b0c7-d4e6a3e8a72b
+x-runtime: 0.009734
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.240.15.233:443
+x-backend: F_Rails 44.237.26.162:443
 accept-ranges: bytes
-date: Fri, 15 Jan 2021 15:01:15 GMT
+date: Mon, 25 Jan 2021 14:04:44 GMT
 via: 1.1 varnish
-age: 3094
-x-served-by: cache-mad22082-MAD
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1610722876.679783,VS0,VE0
-vary: Accept-Encoding,Fastly-SSL
+age: 0
+x-served-by: cache-mad22067-MAD
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1611583484.782679,VS0,VE786
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -186,3 +186,6 @@ server: RubyGems.org
 2.1.3 |checksum:6bbb9a1ad2e09adddc95feffafbdaa5b793016a9126611866f9e5bb3d89ac343,ruby:>= 2.0.0
 2.1.3-x86-mingw32 |checksum:c4f0290fa39be21538f76aef861e19fa987b0c0bdc2cf4099c82a9551f5cd5e0,ruby:< 2.8.dev&>= 2.4
 2.1.3-x64-mingw32 |checksum:635690fd5bb0e9d1d440b7f18341a43d98899d2b65e3eb0e67bcb852c0103ce5,ruby:< 2.8.dev&>= 2.4
+2.1.4.pre |checksum:8517fef7f2c6d76198dc66a175ef7ceb8d1ed614a4226bfe39e950b1929a2a0f,ruby:>= 2.0.0,rubygems:> 1.3.1
+2.1.4.pre-x86-mingw32 |checksum:96925e54f8cf5c3b8ccf422e7d200f130182a3ff45e704579cf3c29281eeffc6,ruby:< 2.8.dev&>= 2.4,rubygems:> 1.3.1
+2.1.4.pre-x64-mingw32 |checksum:df8060cd30cdb332edd91c31e9d69aa7d79b43406162e98176c33848f915730d,ruby:< 2.8.dev&>= 2.4,rubygems:> 1.3.1

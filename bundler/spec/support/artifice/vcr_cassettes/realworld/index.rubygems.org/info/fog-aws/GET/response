@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 8061
+content-length: 8219
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "7d2f378a18bf5ae3412726d91b5cf642"
-last-modified: Mon, 14 Dec 2020 17:18:59 GMT
+etag: "749613fcc9942f946439867a3a169f44"
+last-modified: Wed, 13 Jan 2021 17:42:20 GMT
 cache-control: max-age=60, public
-x-request-id: 789aeb98-fb0e-46d5-b8e2-2e80c27f4a99
-x-runtime: 0.009260
+x-request-id: e16f6fce-0d26-4d14-afd5-80eaad3e130f
+x-runtime: 0.008966
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.237.26.162:443
+x-backend: F_Rails 54.214.179.27:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:39:06 GMT
+date: Mon, 25 Jan 2021 13:30:02 GMT
 via: 1.1 varnish
-age: 2709
-x-served-by: cache-mad22049-MAD
+age: 3384
+x-served-by: cache-mad22061-MAD
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1610048347.864766,VS0,VE1
-vary: Accept-Encoding,Fastly-SSL
+x-timer: S1611581402.159408,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -81,3 +81,4 @@ server: RubyGems.org
 3.6.6 fog-core:~> 2.1,fog-json:~> 1.1,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:08a780f88d3de46024cdf5bb5b7eaed58caf00c0d0621e238270afd5fe0d1284,ruby:>= 2.0.0
 3.6.7 fog-core:~> 2.1,fog-json:~> 1.1,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:51f63bbffb928cf59d89f4f87f6f1749a049e026eb52609b9d3c676e33dda284,ruby:>= 2.0.0
 3.7.0 fog-core:~> 2.1,fog-json:~> 1.1,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:76e5b547d5cb3fe09083bb5a21cfa9f45e5c02c6f73df77ae55dbdf8fd9ec49c,ruby:>= 2.0.0
+3.8.0 fog-core:~> 2.1,fog-json:~> 1.1,fog-xml:~> 0.1,ipaddress:~> 0.8|checksum:896d121e1e44bf9f9a5ee823502670b46dc9b8a1fa2d91c76f4b4e354046f6e0,ruby:>= 2.0.0

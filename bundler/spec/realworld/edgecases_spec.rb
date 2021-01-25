@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
+RSpec.describe "real world edgecases", :realworld => true do
   def rubygems_version(name, requirement)
     ruby <<-RUBY
       require "#{spec_dir}/support/artifice/vcr"
@@ -453,10 +453,10 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
     if Bundler.feature_flag.bundler_3_mode?
       # Conflicts on bundler version, so fails earlier
       bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }, :raise_on_error => false
-      expect(out).to include("BUNDLER: Finished resolution (435 steps)")
+      expect(out).to display_total_steps_of(435)
     else
       bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
-      expect(out).to include("BUNDLER: Finished resolution (1019 steps)")
+      expect(out).to display_total_steps_of(1025)
     end
   end
 
@@ -480,9 +480,9 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
     bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
 
     if Bundler.feature_flag.bundler_3_mode?
-      expect(out).to include("BUNDLER: Finished resolution (870 steps)")
+      expect(out).to display_total_steps_of(890)
     else
-      expect(out).to include("BUNDLER: Finished resolution (871 steps)")
+      expect(out).to display_total_steps_of(891)
     end
   end
 
@@ -646,9 +646,23 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
     bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
 
     if Bundler.feature_flag.bundler_3_mode?
-      expect(out).to include("BUNDLER: Finished resolution (1872 steps)")
+      expect(out).to display_total_steps_of(1874)
     else
-      expect(out).to include("BUNDLER: Finished resolution (1918 steps)")
+      expect(out).to display_total_steps_of(1922)
+    end
+  end
+
+  private
+
+  RSpec::Matchers.define :display_total_steps_of do |expected_steps|
+    match do |out|
+      out.include?("BUNDLER: Finished resolution (#{expected_steps} steps)")
+    end
+
+    failure_message do |out|
+      actual_steps = out.scan(/BUNDLER: Finished resolution \((\d+) steps\)/).first.first
+
+      "Expected resolution to finish in #{expected_steps} steps, but took #{actual_steps}"
     end
   end
 end

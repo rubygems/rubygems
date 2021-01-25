@@ -1,0 +1,32 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 773
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "917bb34a440b7b1c3664bf4a823aae8b"
+last-modified: Mon, 25 Jan 2021 09:40:07 GMT
+cache-control: max-age=60, public
+x-request-id: 9e4b94b9-af1e-4edd-a489-f16a5b037a08
+x-runtime: 0.006304
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 54.214.179.27:443
+accept-ranges: bytes
+date: Mon, 25 Jan 2021 13:29:42 GMT
+via: 1.1 varnish
+age: 1951
+x-served-by: cache-mad22083-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1611581383.903766,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.1.0 addressable:>= 2.5.1&~> 2.5,googleauth:~> 0.14,httpclient:< 3.0&>= 2.8.1,mini_mime:~> 1.0,representable:~> 3.0,retriable:< 4.0&>= 2.0,rexml:>= 0,signet:~> 0.14|checksum:da52ecad0f745e207ccdef928d58491dfa7be007f76e8b7cbaf7c037a4d6704f,ruby:>= 2.4
+0.2.0 addressable:>= 2.5.1&~> 2.5,googleauth:~> 0.14,httpclient:< 3.0&>= 2.8.1,mini_mime:~> 1.0,representable:~> 3.0,retriable:< 4.0&>= 2.0,rexml:>= 0,signet:~> 0.14|checksum:286b3f1f93846688736645745f816168c2e9c7ee7788a97ddacd4538ab425aaf,ruby:>= 2.4
+0.2.1 addressable:>= 2.5.1&~> 2.5,googleauth:~> 0.14,httpclient:< 3.0&>= 2.8.1,mini_mime:~> 1.0,representable:~> 3.0,retriable:< 4.0&>= 2.0,rexml:>= 0,signet:~> 0.14,webrick:>= 0|checksum:4efc94daaf4b73f98a746d83823b28e6a3bbbb390ec957726015e9f30fc797a0,ruby:>= 2.4

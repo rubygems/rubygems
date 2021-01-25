@@ -1,3 +1,17 @@
+# 2.2.6 (January 18, 2021)
+
+## Enhancements:
+
+  - Improve resolver debugging [#4288](https://github.com/rubygems/rubygems/pull/4288)
+
+## Bug fixes:
+
+  - Fix dependency locking for path source [#4293](https://github.com/rubygems/rubygems/pull/4293)
+
+## Performance:
+
+  - Speed up complex dependency resolves by creating DepProxy factory and cache [#4216](https://github.com/rubygems/rubygems/pull/4216)
+
 # 2.2.5 (January 11, 2021)
 
 ## Enhancements:

@@ -150,12 +150,12 @@ end
 
 load "task/automatiek.rake"
 
-# We currently ship Molinillo 0.7.0 with a patch on top to make use of `Array#-`
-# instead of `Array#&` on hot resolution code paths because it performs a lot
-# better.
+# We currently ship Molinillo master branch as of
+# https://github.com/CocoaPods/Molinillo/commit/0f3d33d004214f5e3a426c3382c4af37bc3f27e5,
+# plus a fix to properly print requirements.
 desc "Vendor a specific version of molinillo"
 Automatiek::RakeTask.new("molinillo") do |lib|
-  lib.version = "0.7.0"
+  lib.version = "master"
   lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
   lib.namespace = "Molinillo"
   lib.prefix = "Bundler"

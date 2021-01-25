@@ -64,6 +64,8 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
   it "is able to update a top-level dependency when there is a conflict on a shared transitive child" do
     # from https://github.com/rubygems/bundler/issues/5031
 
+    system_gems "bundler-2.99.0"
+
     gemfile <<-G
       source "https://rubygems.org"
       gem 'rails', '~> 4.2.7.1'
@@ -189,7 +191,7 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
         rails (~> 4.2.7.1)
     L
 
-    bundle "lock --update paperclip"
+    bundle "lock --update paperclip", :env => { "BUNDLER_VERSION" => "2.99.0" }
 
     expect(lockfile).to include(rubygems_version("paperclip", "~> 5.1.0"))
   end
@@ -448,11 +450,12 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
       end
     G
 
-    bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
-
     if Bundler.feature_flag.bundler_3_mode?
-      expect(out).to include("BUNDLER: Finished resolution (1336 steps)")
+      # Conflicts on bundler version, so fails earlier
+      bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }, :raise_on_error => false
+      expect(out).to include("BUNDLER: Finished resolution (211 steps)")
     else
+      bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
       expect(out).to include("BUNDLER: Finished resolution (1395 steps)")
     end
   end
@@ -477,7 +480,7 @@ RSpec.describe "real world edgecases", :realworld => true, :sometimes => true do
     bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
 
     if Bundler.feature_flag.bundler_3_mode?
-      expect(out).to include("BUNDLER: Finished resolution (366 steps)")
+      expect(out).to include("BUNDLER: Finished resolution (369 steps)")
     else
       expect(out).to include("BUNDLER: Finished resolution (372 steps)")
     end

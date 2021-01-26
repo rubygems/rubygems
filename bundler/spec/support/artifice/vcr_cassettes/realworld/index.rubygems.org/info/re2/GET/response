@@ -1,0 +1,47 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1483
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "583e12de7c5f80d8918daeb13d07e6a1"
+last-modified: Mon, 14 Dec 2020 17:12:32 GMT
+cache-control: max-age=60, public
+x-request-id: a6b254cb-f6a5-448a-810e-eca4e9cf7862
+x-runtime: 0.008200
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.237.26.162:443
+accept-ranges: bytes
+date: Mon, 25 Jan 2021 14:04:44 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22077-MAD
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1611583483.244593,VS0,VE797
+vary: Accept,Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.0.1 |checksum:fc4618251bc74da1c5414c4a13cdfae47a73a5ab60ea599e0cd1de615d665d1f
+0.0.2 |checksum:fd2f8bb40f3bea5a0cb5c62f3c65d8632ff02c4a07a21b5ea5d5ff53724a1316
+0.0.3 |checksum:93a183c0ef472351e919829051f970c67cd062feb333193cd23460ca6db0c375
+0.0.4 |checksum:2de4c9bff82953baa2ae88080fa82ed0dd45c30e931a50dcff40a9b9725a01c6
+0.1.0 |checksum:654867e4538c8aeb9fd9b71dc9389082d6fb0401c790ccc761669e169d26258a
+0.1.1 |checksum:47ebc97b3375235e03469ef03e244a97225601475485add1ff2f474ddf7441b1
+0.2.0 |checksum:90b4fac7111717647f2216c607617e60d6c06df21b96f0e914fc4e42bcfea731
+0.3.0 |checksum:66d4c77aa240133f8bdea14b4776f043f256b25beef7c2d14febb3b5459e9ed3
+0.4.0 |checksum:67fbbce83942d107dc1e06da70990e7d6362cf423fb022641d319b8451ff721c
+0.5.0 |checksum:eb791a09f46e04f3494a58b10148dd3ce566496be190d1d3d1db65bb877d69a7
+0.6.0.pre |checksum:48486750640b2ca222b9f16bd9e9a7bda55d875982a6cb611ba2da3967dc7744,rubygems:> 1.3.1
+0.6.0 |checksum:a808a345aa0ea5758c1877e0db1a44ffe7994f98f1e816f2d1f4c2bd08275987
+0.6.1 |checksum:2ad23868064921d8449c44089b77fb5f278db5cb79e0b5cdaddc9902fe388eb0
+0.7.0 |checksum:768224509305fa4069ba8ec702d5dd55dc695a39e8e89b762f029e7e0de5a7d8
+1.0.0 |checksum:4348d704b5f5bf9cf21f5e438380ec50f27ef79de1ecec4d669b05b453dd5756
+1.1.0 |checksum:fa1cd9cccae777dbe4a1be8f5ffb20889e6c8c81136333333602ca2b493e42e6
+1.1.1 |checksum:51347c8360e46328e0d01e7345c23c144095b0f3ded93c9d1d7fec09c34c8e03
+1.2.0 |checksum:0090dd2675af066736e10c9ed424b3a4fa14febc28e0930c1364749e180b079b

@@ -1,0 +1,38 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 835
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "33befb93916cd7ead7444efffe807b98"
+last-modified: Mon, 14 Dec 2020 16:29:21 GMT
+cache-control: max-age=60, public
+x-request-id: 8337a919-7111-4533-9d4b-94196d8256f6
+x-runtime: 0.007600
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.237.26.162:443
+accept-ranges: bytes
+date: Mon, 25 Jan 2021 14:04:42 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22033-MAD
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1611583482.304584,VS0,VE205
+vary: Accept,Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.0.1 |checksum:41317df4394bab6ddb7c9d0f47a0603d9fa64c64a05e3e17619aea6465107a21
+0.0.2 |checksum:63ee3d3177fcde75f1f4b46eb81b2308b86126cda489d9da67fd275f50c81183
+0.0.3 |checksum:a85f5b60af12f75011680caae44993b5a55ed9a150e505da6f6744ca530314c7
+0.1.0 |checksum:8c9f8dcb4e0c230b3bbb85119ab9f1d611721e9eaf5e3c3e2a9e7a2403090684
+1.0.0 cocoapods:~> 1.0.0|checksum:e9660a583eb5d2f99991e9ca8bc93a7f405b80d9e8123d228e765effba4d05a1
+1.1.0 cocoapods:~> 1.0.0|checksum:0526d8674b9f423076f7c198e6e490d808293ba4c04488d3148d64c5c90f839e
+1.2.0 cocoapods:~> 1.0.0|checksum:7ff8e92e01b40f9ed8284f0e83567b52f1e0710314a6c82854c35630b6b23b1d
+1.2.1 cocoapods:< 2.0&>= 1.0.0|checksum:262ff7c06528c58d45acc8e85b7a7621989eaaaf8fe38099e5926b8895167443
+1.2.2 cocoapods:< 2.0&>= 1.0.0|checksum:96c23aa66af6abf4a75dab7e9db1f4a8fd2d0ddb0021fd3fab03362313224c4b

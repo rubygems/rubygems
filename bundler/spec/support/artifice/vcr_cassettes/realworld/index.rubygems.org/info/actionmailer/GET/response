@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 61434
+content-length: 61652
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "6aeee0bcabbc1a96465a4e338da8c59b"
-last-modified: Mon, 14 Dec 2020 17:19:11 GMT
+etag: "61fab67a68b0dd31f0ed04ee9552fbda"
+last-modified: Thu, 07 Jan 2021 22:59:31 GMT
 cache-control: max-age=60, public
-x-request-id: a8612000-e182-4f42-8033-8a51b3673b90
-x-runtime: 0.015469
+x-request-id: 0c28da41-6cf7-4c74-86dd-76251de222fe
+x-runtime: 0.014728
 strict-transport-security: max-age=31536000
 x-backend: F_Rails 54.214.179.27:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:37:54 GMT
+date: Mon, 25 Jan 2021 13:29:42 GMT
 via: 1.1 varnish
-age: 1291
-x-served-by: cache-mad22078-MAD
+age: 3542
+x-served-by: cache-mad22026-MAD
 x-cache: HIT
-x-cache-hits: 1
-x-timer: S1610048274.407185,VS0,VE1
+x-cache-hits: 4
+x-timer: S1611581383.654782,VS0,VE0
 vary: Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -399,3 +399,4 @@ server: RubyGems.org
 6.1.0.rc1 actionpack:= 6.1.0.rc1,actionview:= 6.1.0.rc1,activejob:= 6.1.0.rc1,activesupport:= 6.1.0.rc1,mail:>= 2.5.4&~> 2.5,rails-dom-testing:~> 2.0|checksum:44a20acc058c7b1a5e56b1287e9c0e45e402e6b8bc69dc12516ecc78c504a8b2,ruby:>= 2.5.0,rubygems:> 1.3.1
 6.1.0.rc2 actionpack:= 6.1.0.rc2,actionview:= 6.1.0.rc2,activejob:= 6.1.0.rc2,activesupport:= 6.1.0.rc2,mail:>= 2.5.4&~> 2.5,rails-dom-testing:~> 2.0|checksum:e93019b0e45220d2b375a29d09119cbba14bcabb0553a341cacafbb4ae59dcf0,ruby:>= 2.5.0,rubygems:> 1.3.1
 6.1.0 actionpack:= 6.1.0,actionview:= 6.1.0,activejob:= 6.1.0,activesupport:= 6.1.0,mail:>= 2.5.4&~> 2.5,rails-dom-testing:~> 2.0|checksum:bc62372b5968363ecf5bcd5519fe047bbcd51b07e4568cb9a174bd12afe0969d,ruby:>= 2.5.0
+6.1.1 actionpack:= 6.1.1,actionview:= 6.1.1,activejob:= 6.1.1,activesupport:= 6.1.1,mail:>= 2.5.4&~> 2.5,rails-dom-testing:~> 2.0|checksum:9c4394d61b22d791c38dcf026b91039e1b5a86ea634b67fe2cd9b7cc06168f17,ruby:>= 2.5.0

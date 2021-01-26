@@ -1,0 +1,41 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1217
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "bcaad9f196603492a6bfb4a3f6c19057"
+last-modified: Mon, 14 Dec 2020 16:25:34 GMT
+cache-control: max-age=60, public
+x-request-id: e15bcbc9-5074-410c-9520-128422b8eecf
+x-runtime: 0.009113
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.237.26.162:443
+accept-ranges: bytes
+date: Mon, 25 Jan 2021 14:04:42 GMT
+via: 1.1 varnish
+age: 1402
+x-served-by: cache-mad22077-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1611583482.342288,VS0,VE1
+vary: Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.1.0 cocoapods:>= 0,nap:>= 0|checksum:983c2307445239d4912c0c7a1b9e646a9c283d4bb7ec420a7b4dead2714c810b
+0.1.1 nap:>= 0|checksum:729a4058b2b7e1a19c79fdcccab05d0ac5d39f463cba9032360896df32062825
+0.2.0 nap:>= 0|checksum:95c48eae12405658c56ccec5a4c487fadc6252277c739fa89b51dd0eef4f0cd3
+0.3.0 nap:>= 0|checksum:af41cfcacbb2ff661101860b08f1c37a6cc4d3be5aa86ad73780da8739910492
+0.3.1 nap:>= 0|checksum:44d998cd55ab32b57d249970a1b722a420acefd19fe3dcb9bfb5b9cae331d215
+0.3.2 nap:>= 0|checksum:eea1046e2eb4e505598a4b4adf6cf6ce140ed886a522c785c6a11d03e90d0df5
+0.4.0 nap:>= 0|checksum:52e27118ab6122a298346f3e1eb52076db6ccba42d3f31cd8c50f352a1bd96a7,ruby:>= 2.0.0
+0.4.1 nap:>= 0|checksum:13b585fb47368d808c2e437198b0f5de6dadb185790b7c0372e76ed55632424f,ruby:>= 2.0.0
+0.4.2 nap:>= 0|checksum:64fc11d75b93b28e5b636bc926db132ba01078a66a4883c96442532cdb528ba5,ruby:>= 2.0.0
+1.0.0.beta.1 nap:>= 0|checksum:a879599cad60654b6804c9c7a8992cbe042315c099d3d1f2634fcc378861dd58,ruby:>= 2.0.0,rubygems:> 1.3.1
+1.0.0.rc.1 nap:>= 0|checksum:94a2b423501f7d442ec893f6971d002a224df2e7df392748c154caa784545ebb,ruby:>= 2.0.0,rubygems:> 1.3.1
+1.0.0 nap:>= 0|checksum:725d17ce90b52f862e73476623fd91441b4430b742d8a071000831efb440ca9a,ruby:>= 2.0.0

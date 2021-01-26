@@ -1,3 +1,10 @@
+# 3.2.7 / 2021-01-26
+
+## Bug fixes:
+
+* Generate plugin wrappers with relative requires. Pull request #4317 by
+  deivid-rodriguez
+
 # 3.2.6 / 2021-01-18
 
 ## Enhancements:

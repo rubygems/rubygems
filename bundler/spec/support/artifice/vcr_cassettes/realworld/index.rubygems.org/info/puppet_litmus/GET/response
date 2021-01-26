@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 6944
+content-length: 7558
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "c843949f2e663ccaa118efc35407e787"
-last-modified: Mon, 14 Dec 2020 17:18:52 GMT
+etag: "943592e61cd9b1dbd9aea39ab69bc7ed"
+last-modified: Thu, 21 Jan 2021 17:30:03 GMT
 cache-control: max-age=60, public
-x-request-id: 469756d7-3159-4abb-9106-9782f880d431
-x-runtime: 0.007788
+x-request-id: 25ca9ef1-d296-4683-b76c-8cd5861faa16
+x-runtime: 0.008160
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.237.26.162:443
+x-backend: F_Rails 44.240.15.233:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:39:05 GMT
+date: Mon, 25 Jan 2021 13:30:01 GMT
 via: 1.1 varnish
-age: 0
-x-served-by: cache-mad22040-MAD
+age: 159
+x-served-by: cache-mad22044-MAD
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1610048345.614489,VS0,VE692
-vary: Accept-Encoding,Fastly-SSL
+x-timer: S1611581402.550149,VS0,VE1
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -63,3 +63,5 @@ server: RubyGems.org
 0.18.4 bolt:< 3.0.0&>= 2.0.1,docker-api:< 2.0.0&>= 1.34,honeycomb-beeline:>= 0,parallel:>= 0,puppet-modulebuilder:< 1.0.0&>= 0.2.1,rspec:>= 0,rspec_honeycomb_formatter:>= 0,tty-spinner:< 1.0.0&>= 0.5.0|checksum:b3b13977e321fc11246acf9685c360b7f0f20b233703ce6e428f6b3e06f28640
 0.19.0 bolt:< 3.0.0&>= 2.0.1,docker-api:< 3.0.0&>= 1.34,honeycomb-beeline:>= 0,parallel:>= 0,puppet-modulebuilder:< 1.0.0&>= 0.2.1,rspec:>= 0,rspec_honeycomb_formatter:>= 0,tty-spinner:< 1.0.0&>= 0.5.0|checksum:c011d2fad08652d954a36b47a17e4ac946f976504dcd6538aed881e6931f0421
 0.20.0 bolt:< 3.0.0&>= 2.0.1,docker-api:< 3.0.0&>= 1.34,honeycomb-beeline:>= 0,parallel:>= 0,puppet-modulebuilder:< 1.0.0&>= 0.2.1,retryable:~> 3.0,rspec:>= 0,rspec_honeycomb_formatter:>= 0,tty-spinner:< 1.0.0&>= 0.5.0|checksum:75260c266c41b95c6d11776e2961eb3e865cb92704e4383669e3fdbd18ee69ac
+0.21.0 bolt:< 3.0.0&>= 2.0.1,docker-api:< 3.0.0&>= 1.34,honeycomb-beeline:>= 0,parallel:>= 0,puppet-modulebuilder:< 1.0.0&>= 0.2.1,retryable:~> 3.0,rspec:>= 0,rspec_honeycomb_formatter:>= 0,tty-spinner:< 1.0.0&>= 0.5.0|checksum:b849d40ee11912bf29dd792ef005644015843ae4a4f12bedb51fa37979fb4c8e,ruby:>= 2.5.0
+0.22.0 bolt:< 3.0.0&>= 2.0.1,docker-api:< 3.0.0&>= 1.34,honeycomb-beeline:>= 0,parallel:>= 0,puppet-modulebuilder:< 1.0.0&>= 0.2.1,retryable:~> 3.0,rspec:>= 0,rspec_honeycomb_formatter:>= 0,tty-spinner:< 1.0.0&>= 0.5.0|checksum:2d95fb6df17f44c2f15594f539f782ecc78891267f22a4ca271ff115108cd252,ruby:>= 2.5.0

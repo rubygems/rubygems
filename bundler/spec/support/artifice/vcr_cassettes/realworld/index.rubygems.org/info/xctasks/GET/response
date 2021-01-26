@@ -1,0 +1,41 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1206
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "d3ff3c1fe712cc7fd2999dd3e479ddbd"
+last-modified: Mon, 14 Dec 2020 16:08:58 GMT
+cache-control: max-age=60, public
+x-request-id: 0a5db3ee-bb21-41c2-aac7-616ae8416cc4
+x-runtime: 0.006797
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.240.15.233:443
+accept-ranges: bytes
+date: Mon, 25 Jan 2021 14:04:45 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22077-MAD
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1611583485.912199,VS0,VE799
+vary: Accept,Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.0.1 |checksum:4b5174143ef310ceddbab6e1c871fb5e5166b791a5c31ac6da2aad6a81368ca2
+0.0.2 |checksum:992b40e4bc89587f6927e1ad71678ffe4ff88a8105b8c335236c97cc905a599b
+0.1.0 |checksum:852feb269ec68420eeb56f27aabf7870a01dc8c6a79dd381da42aa920edbbc22
+0.1.1 |checksum:3295a947ad8cbdce63c845ecf02ac1fcd6822aa80ceb9704449a7267ca5575af
+0.2.0 |checksum:b5dd20e5a9a6665ae344e69ff9106ff483b1717c1fa97c9605bf734568641962
+0.2.1 |checksum:acb9210272105d7acf1f374f48100e947aebde5ab2d5e87f6d9f0b007646c5de
+0.2.2 |checksum:f4f05502900ea8329ca6abe0c59496dac79baa86797a8684d19860b11bc0bdca
+0.3.0 nokogiri:~> 1.6.2.1,rake:>= 10.0.0|checksum:b2946902d0c1c27da1447f306652aef2818db4b23ca2177ce84d1bce0cf37423
+0.4.0 nokogiri:>= 1.6.3.1&~> 1.6,rake:>= 10.0.0&~> 10.0|checksum:c038dcdfffef5345ea5c44d6e644ea8f149d86f7d6b795b9090ec87cb491fbe0
+0.4.1 nokogiri:>= 1.6.3.1&~> 1.6,rake:>= 10.0.0&~> 10.0|checksum:10f3fba7fb56fdbb0d02d2e1571c7a63891f6c4bfa10ff8f7e441cf925877fb8
+0.5.0 nokogiri:>= 1.6.3.1&~> 1.6,rake:>= 10.0.0&~> 10.0|checksum:459db9663aa1d8ab10c86e95f7e1b53e66ab1bc3a508353ba68d094ba901222a
+0.6.0 nokogiri:>= 1.6.3.1&~> 1.6,rake:>= 10.0.0&~> 10.0|checksum:41cee8028777a7830d3119a8d190d758b992ca2e514a559085a426dfaadd01d4

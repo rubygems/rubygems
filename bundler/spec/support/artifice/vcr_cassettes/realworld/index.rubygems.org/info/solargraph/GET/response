@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 37101
+content-length: 37424
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "8df82539cea9a7c41bef5de3cbe73bae"
-last-modified: Mon, 28 Dec 2020 11:26:05 GMT
+etag: "5dcfb0a93ee31ac40f32c6bff52196ad"
+last-modified: Mon, 18 Jan 2021 18:50:18 GMT
 cache-control: max-age=60, public
-x-request-id: 821ac355-cdef-460b-8c10-489dac05c877
-x-runtime: 0.016292
+x-request-id: ec3fbd5e-a85d-41ae-b267-884cb812e7a1
+x-runtime: 0.011319
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.237.26.162:443
+x-backend: F_Rails 44.240.15.233:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:39:31 GMT
+date: Mon, 25 Jan 2021 13:29:51 GMT
 via: 1.1 varnish
-age: 124
-x-served-by: cache-mad22071-MAD
+age: 165
+x-served-by: cache-mad22023-MAD
 x-cache: HIT
-x-cache-hits: 1
-x-timer: S1610048371.320035,VS0,VE0
-vary: Accept-Encoding,Fastly-SSL
+x-cache-hits: 3
+x-timer: S1611581392.814434,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -177,3 +177,4 @@ server: RubyGems.org
 0.39.17 backport:~> 1.1,benchmark:>= 0,bundler:>= 1.17.2,e2mmap:>= 0,jaro_winkler:~> 1.5,maruku:>= 0.7.3&~> 0.7,nokogiri:>= 1.9.1&~> 1.9,parser:~> 2.3,reverse_markdown:< 3&>= 1.0.5,rubocop:~> 0.52,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:0f8af6c7e83290369acab322d0fa1512fdddc88b4d51d4c1c04c067c9bf1cb19,ruby:>= 2.1
 0.40.0 backport:~> 1.1,benchmark:>= 0,bundler:>= 1.17.2,e2mmap:>= 0,jaro_winkler:~> 1.5,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,parser:~> 2.3,reverse_markdown:< 3&>= 1.0.5,rubocop:>= 0.52,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:cacc864b29abb756a2df1f78024b55dbea8a3c172ded9c0fc768e07a7313f399,ruby:>= 2.4
 0.40.1 backport:~> 1.1,benchmark:>= 0,bundler:>= 1.17.2,e2mmap:>= 0,jaro_winkler:~> 1.5,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,parser:~> 2.3,reverse_markdown:< 3&>= 1.0.5,rubocop:>= 0.52,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:67c22706fc11beda2bfda3e7dabed0b05d520d071f73b945b2cf63a21a810d60,ruby:>= 2.4
+0.40.2 backport:~> 1.1,benchmark:>= 0,bundler:>= 1.17.2,e2mmap:>= 0,jaro_winkler:~> 1.5,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,parser:~> 3.0,reverse_markdown:< 3&>= 1.0.5,rubocop:>= 0.52,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:fcbb013419313b30501bf3f520947e3a337316020b7a377ff14c3d5c50efbb4c,ruby:>= 2.4

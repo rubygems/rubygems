@@ -1,0 +1,48 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1761
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "93eaafb5fe08ea9236c8575d93a60f95"
+last-modified: Mon, 14 Dec 2020 17:17:24 GMT
+cache-control: max-age=60, public
+x-request-id: 3d321eb6-4f88-48f2-9902-cd05bd66451e
+x-runtime: 0.007109
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 44.240.15.233:443
+accept-ranges: bytes
+date: Mon, 25 Jan 2021 14:04:43 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22067-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1611583484.535086,VS0,VE205
+vary: Accept,Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.0.810255.1 |checksum:d6e9fceb7a4609dfb6ad20d617cf0bb8585590499e1aaf2e7445c17c8b91d524,rubygems:>= 1.2
+0.0.820831 |checksum:bf0be8170fd40fbb742924e4696d0c32a9beaceeaa30b602161b43b2fc82bd5c,rubygems:>= 1.2
+0.2.0 |checksum:16182660874acbb6df97fe364900013e29ebe4f6c8920b4f161ecdc2c7f631ab,rubygems:>= 1.2
+0.0.751142 |checksum:b7d90b54293ae58dd0ed02d7b5dd9283c2fc9ff6014b42d40fa67adfa1bdc73b,rubygems:>= 1.2
+0.2.0.2 |checksum:92548981fff96b783578589f2c87700c50a1acb0c87242e3c88bf9d7bd6f46dc,rubygems:>= 1.2
+0.2.0.3 |checksum:4c0a3e72628efc5ef1e475ffe55c5ea0326861213992dc2792c2a13e60ccad1e,rubygems:>= 1.2
+0.2.0.4 |checksum:076635f21597320a61c39d1d3f7ccfd6544c858a52ea21c32d2ecba87e004341,rubygems:>= 1.2
+0.4.0 |checksum:9ee989e2baa00d8472ecd554de53405930e57888282f2f2a21cace998cce21ba,rubygems:>= 1.2.0
+0.5.0 |checksum:097535bb2d2911741ca2db32bcb2e3bd19228804d69d442f5b1e6e3f3c3597b4,rubygems:>= 1.2.0
+0.6.0 |checksum:e66712bc9bc6b9f153a5f981a70f2242b07c80dbaf97db7fceb306924939a2c6,rubygems:>= 1.2.0
+0.7.0 |checksum:9e4450888f961e02b7c0ac6be2403289a3fdd26ebdcf4f1710a57467cc89a642,rubygems:>= 1.2.0
+0.8.0 |checksum:9b11f2a259fb8bae8c358ed96f0cbd7df342f7f122307237c3bed8029b1d422a
+0.9.0 |checksum:2bff773b338aee874928d6523b4fb7cbe567a0cfaaecbf5bfdcbd85fc5397f92
+0.9.1 |checksum:9869f9a406329e249d2dd3bf8a385a321125444313a632b027c179a12e609d34
+0.9.2.0 |checksum:29a9908de8d09cd8f5fc7d4db74f879099572fdb997b0e0815a34d19a23a1555
+0.9.3.0 |checksum:2b8cb950cacd6265ea3d93ef716a5394c6d5de1f560b665098eba2d06fa1574d
+0.10.0.0 |checksum:875aaa664bc22e410da11ebfae15d0144d805c86d239da4246fef71b44f92278
+0.11.0.0 |checksum:9b6a5489b79f6843abc4f3d9acd4ece6b50ea254fbb5eb0c9c569ecee701e10a
+0.13.0 |checksum:580431d8154c5203c0c1b14139a68dd4d94232edb49d36b30fe581de2a330720

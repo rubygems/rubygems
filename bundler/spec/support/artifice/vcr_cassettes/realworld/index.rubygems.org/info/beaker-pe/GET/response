@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 14869
+content-length: 15071
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "b28983d06e147633f3f139ddd4384e59"
-last-modified: Mon, 14 Dec 2020 17:18:48 GMT
+etag: "61d1687bd0dad890e073addd72c7a490"
+last-modified: Fri, 15 Jan 2021 00:57:16 GMT
 cache-control: max-age=60, public
-x-request-id: 054c7a52-b23c-4883-bb0f-267c95743994
-x-runtime: 0.009296
+x-request-id: a173535d-6b42-4e00-b57d-954ef0edcc38
+x-runtime: 0.008838
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.240.15.233:443
+x-backend: F_Rails 44.237.26.162:443
 accept-ranges: bytes
-date: Thu, 07 Jan 2021 19:39:05 GMT
+date: Mon, 25 Jan 2021 13:30:01 GMT
 via: 1.1 varnish
-age: 0
-x-served-by: cache-mad22053-MAD
+age: 160
+x-served-by: cache-mad22062-MAD
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1610048345.800284,VS0,VE686
-vary: Accept-Encoding,Fastly-SSL
+x-timer: S1611581402.663164,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -128,3 +128,4 @@ server: RubyGems.org
 2.11.7 beaker:~> 4.0,beaker-abs:>= 0,beaker-answers:~> 0.0,beaker-puppet:~> 1.0,beaker-vmpooler:~> 1.0,stringify-hash:~> 0.0.0|checksum:cbeaf3b3550694e3c0da422221b3b15e02384e1e2b1c47a8ced0ed34b7f96df4
 2.11.8 beaker:~> 4.0,beaker-abs:>= 0,beaker-answers:~> 0.0,beaker-puppet:~> 1.0,beaker-vmpooler:~> 1.0,stringify-hash:~> 0.0.0|checksum:3e13db7889f4b2ff36996558a3d8392c8165f3d9b9bd09f098fcba75ed1d4813
 2.11.9 beaker:~> 4.0,beaker-abs:>= 0,beaker-answers:~> 0.0,beaker-puppet:~> 1.0,beaker-vmpooler:~> 1.0,stringify-hash:~> 0.0.0|checksum:02985b9acd8099eadae90ad2075be637feaeb1a8b589f1e93e9134019ca41c9a
+2.11.10 beaker:~> 4.0,beaker-abs:>= 0,beaker-answers:~> 0.0,beaker-puppet:~> 1.0,beaker-vmpooler:~> 1.0,stringify-hash:~> 0.0.0|checksum:daa73ae2518720abf7eaf227e8f919cbab1e999f40de94162cedda8b6e32266b

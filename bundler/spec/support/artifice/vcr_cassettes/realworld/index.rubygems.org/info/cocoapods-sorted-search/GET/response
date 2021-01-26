@@ -1,0 +1,37 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1184
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "175a09fb368fe329182306a4da553ef4"
+last-modified: Mon, 14 Dec 2020 16:03:49 GMT
+cache-control: max-age=60, public
+x-request-id: 0a60a3a7-83c8-4f4f-a0b7-77f7bbda88bc
+x-runtime: 0.007043
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 54.214.179.27:443
+accept-ranges: bytes
+date: Mon, 25 Jan 2021 14:04:43 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22069-MAD
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1611583483.512490,VS0,VE788
+vary: Accept,Accept-Encoding,Fastly-SSL
+server: RubyGems.org
+
+---
+0.1.0 cocoapods:~> 0.28,ruby-progressbar:>= 0|checksum:6faa9bc8c06bbf8c13c0a5944489585a613813cb87a57a98e5530614f08885a5
+0.1.1 cocoapods:~> 0.28,ruby-progressbar:>= 0|checksum:6df5c653cbf32faf3f35d62288c985e7482f8e6709f8ab2bbd65a44c5d1f06d7
+0.1.2 cocoapods:~> 0.28,ruby-progressbar:>= 0|checksum:62f498bc03ba0b31aa76fdd2d466e8c85af622352b72fe80d3c9e9739adf193a
+0.2.0 cocoapods:~> 0.28,hashie:>= 0,osx_keychain:>= 0,ruby-progressbar:>= 0,typhoeus:>= 0|checksum:f06a4955f38383661eba2a8fb66f921205bccf20e5f517f1279a0d0868e8896e
+0.2.1 cocoapods:~> 0.28,hashie:>= 0,osx_keychain:>= 0,ruby-progressbar:>= 0,typhoeus:>= 0|checksum:93381bd6d3f12265ac3eb4708e4f4203d0510c1020855e79535bfff2a0e50af4
+0.2.2 cocoapods:>= 0.28,hashie:>= 0,osx_keychain:>= 0,ruby-progressbar:>= 0,typhoeus:>= 0|checksum:d8e7daf4f09a41e3bd1d0e6d0099e1b138c460e86326036d61e3c52b87255c5b
+0.2.3 cocoapods:>= 0.28,hashie:>= 0,osx_keychain:>= 0,ruby-progressbar:>= 0,typhoeus:>= 0|checksum:b3390d9d7d06af87244ad5797e098c12568b635c5468d4359fa5eebc2bb7fe85
+0.2.4 cocoapods:>= 0.28,hashie:>= 0,osx_keychain:>= 0,ruby-progressbar:>= 0,typhoeus:>= 0|checksum:f7d6464a44d0e4445defe9a5e1535443902237f5f84cd94dd7ee6a82653548b5

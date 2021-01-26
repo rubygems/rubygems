@@ -1,3 +1,22 @@
+# 2.2.7 (January 26, 2021)
+
+## Enhancements:
+
+  - Improve error messages when dependency on bundler conflicts with running version [#4308](https://github.com/rubygems/rubygems/pull/4308)
+  - Avoid showing platforms with requirements in error messages [#4310](https://github.com/rubygems/rubygems/pull/4310)
+  - Introduce disable_local_revision_check config [#4237](https://github.com/rubygems/rubygems/pull/4237)
+  - Reverse rubygems require mixin with bundler standalone [#4299](https://github.com/rubygems/rubygems/pull/4299)
+
+## Bug fixes:
+
+  - Fix releasing from a not yet pushed branch [#4309](https://github.com/rubygems/rubygems/pull/4309)
+  - Install cache only once if it already exists [#4304](https://github.com/rubygems/rubygems/pull/4304)
+  - Fix `force_ruby_platform` no longer being respected [#4302](https://github.com/rubygems/rubygems/pull/4302)
+
+## Performance:
+
+  - Fix resolver dependency comparison [#4289](https://github.com/rubygems/rubygems/pull/4289)
+
 # 2.2.6 (January 18, 2021)
 
 ## Enhancements:

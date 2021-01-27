@@ -16,8 +16,8 @@ module Bundler
         @source = exemplary_spec.source
 
         @activated_platforms = []
-        @dependencies = Hash.new do |dependencies, platform|
-          dependencies[platform] = __dependencies(platform)
+        @dependencies = Hash.new do |dependencies, platforms|
+          dependencies[platforms] = dependencies_for(platforms)
         end
         @specs = Hash.new do |specs, platform|
           specs[platform] = select_best_platform_match(all_specs, platform)
@@ -56,7 +56,7 @@ module Bundler
       end
 
       def dependencies_for_activated_platforms
-        dependencies_for(activated_platforms)
+        @dependencies[activated_platforms]
       end
 
       def ==(other)

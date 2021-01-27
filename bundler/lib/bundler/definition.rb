@@ -276,10 +276,6 @@ module Bundler
             expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, @remote)
             last_resolve.merge Resolver.resolve(expanded_dependencies, index, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
           end
-
-        # filter out gems that _can_ be installed on multiple platforms, but don't need
-        # to be
-        resolve.for(expand_dependencies(dependencies, true), [], false, false, false)
       end
     end
 

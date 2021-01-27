@@ -23,7 +23,7 @@ module Bundler
       end
 
       def to_specs
-        @activated_platforms.map do |p|
+        activated_platforms.map do |p|
           specs = @specs[p]
           next unless specs.any?
 
@@ -54,7 +54,7 @@ module Bundler
       end
 
       def dependencies_for_activated_platforms
-        @activated_platforms.map do |platform|
+        activated_platforms.map do |platform|
           __dependencies[platform] + metadata_dependencies(platform)
         end.flatten
       end
@@ -82,7 +82,7 @@ module Bundler
       protected
 
       def sorted_activated_platforms
-        @activated_platforms.sort_by(&:to_s)
+        activated_platforms.sort_by(&:to_s)
       end
 
       private

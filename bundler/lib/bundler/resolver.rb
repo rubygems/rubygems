@@ -157,8 +157,7 @@ module Bundler
           selected_sgs << sg_all_platforms
 
           next if sg_all_platforms.activated_platforms == [Gem::Platform::RUBY]
-          # Add a spec group for "non platform specific spec" as the fallback
-          # spec group.
+
           sg_ruby = sg.copy_for([Gem::Platform::RUBY])
           next unless sg_ruby
 

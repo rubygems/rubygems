@@ -54,11 +54,9 @@ module Bundler
       end
 
       def dependencies_for_activated_platforms
-        dependencies = @activated_platforms.map {|p| __dependencies[p] }
-        metadata_dependencies = @activated_platforms.map do |platform|
-          metadata_dependencies(@specs[platform].first, platform)
-        end
-        dependencies.concat(metadata_dependencies).flatten
+        @activated_platforms.map do |platform|
+          __dependencies[platform] + metadata_dependencies(@specs[platform].first, platform)
+        end.flatten
       end
 
       def ==(other)

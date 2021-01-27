@@ -151,17 +151,14 @@ module Bundler
         selected_sgs = []
         search.each do |sg|
           next unless sg.for?(platform)
-          sg_all_platforms = sg.copy_for(self.class.sort_platforms(@platforms).reverse)
-          next unless sg_all_platforms
 
-          selected_sgs << sg_all_platforms
+          sg_ruby = sg.copy_for([Gem::Platform::RUBY])
+          selected_sgs << sg_ruby if sg_ruby
 
           next if @platforms == [Gem::Platform::RUBY]
 
-          sg_ruby = sg.copy_for([Gem::Platform::RUBY])
-          next unless sg_ruby
-
-          selected_sgs.insert(-2, sg_ruby)
+          sg_all_platforms = sg.copy_for(self.class.sort_platforms(@platforms).reverse)
+          selected_sgs << sg_all_platforms if sg_all_platforms
         end
         selected_sgs
       end

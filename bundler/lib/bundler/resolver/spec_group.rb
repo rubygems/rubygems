@@ -16,7 +16,9 @@ module Bundler
         @source = exemplary_spec.source
 
         @activated_platforms = []
-        @dependencies = nil
+        @dependencies = Hash.new do |dependencies, platform|
+          dependencies[platform] = __dependencies(platform)
+        end
         @specs = Hash.new do |specs, platform|
           specs[platform] = select_best_platform_match(all_specs, platform)
         end
@@ -87,19 +89,17 @@ module Bundler
 
       def dependencies_for(platforms)
         platforms.map do |platform|
-          __dependencies[platform] + metadata_dependencies(platform)
+          __dependencies(platform) + metadata_dependencies(platform)
         end.flatten
       end
 
-      def __dependencies
-        @dependencies = Hash.new do |dependencies, platform|
-          dependencies[platform] = []
-          @specs[platform].first.dependencies.each do |dep|
-            next if dep.type == :development
-            dependencies[platform] << DepProxy.get_proxy(dep, platform)
-          end
-          dependencies[platform]
+      def __dependencies(platform)
+        dependencies = []
+        @specs[platform].first.dependencies.each do |dep|
+          next if dep.type == :development
+          dependencies << DepProxy.get_proxy(dep, platform)
         end
+        dependencies
       end
 
       def metadata_dependencies(platform)

@@ -156,7 +156,7 @@ module Bundler
 
           selected_sgs << sg_all_platforms
 
-          next if sg_all_platforms.activated_platforms == [Gem::Platform::RUBY]
+          next if @platforms == [Gem::Platform::RUBY]
 
           sg_ruby = sg.copy_for([Gem::Platform::RUBY])
           next unless sg_ruby

@@ -10,7 +10,7 @@ module Bundler
 
       def initialize(all_specs)
         @all_specs = all_specs
-        raise ArgumentError, "cannot initialize with an empty value" unless exemplary_spec = all_specs.first
+        exemplary_spec = all_specs.first
         @name = exemplary_spec.name
         @version = exemplary_spec.version
         @source = exemplary_spec.source

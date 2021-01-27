@@ -54,9 +54,7 @@ module Bundler
       end
 
       def dependencies_for_activated_platforms
-        activated_platforms.map do |platform|
-          __dependencies[platform] + metadata_dependencies(platform)
-        end.flatten
+        dependencies_for(activated_platforms)
       end
 
       def ==(other)
@@ -86,6 +84,12 @@ module Bundler
       end
 
       private
+
+      def dependencies_for(platforms)
+        platforms.map do |platform|
+          __dependencies[platform] + metadata_dependencies(platform)
+        end.flatten
+      end
 
       def __dependencies
         @dependencies = Hash.new do |dependencies, platform|

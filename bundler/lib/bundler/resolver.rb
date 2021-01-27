@@ -37,6 +37,7 @@ module Bundler
       end
       additional_base_requirements.each {|d| @base_dg.add_vertex(d.name, d) }
       @platforms = platforms
+      @resolving_only_for_ruby = platforms == [Gem::Platform::RUBY]
       @gem_version_promoter = gem_version_promoter
       @use_gvp = Bundler.feature_flag.use_gem_version_promoter_for_major_updates? || !@gem_version_promoter.major?
       @lockfile_uses_separate_rubygems_sources = Bundler.feature_flag.disable_multisource?
@@ -145,7 +146,7 @@ module Bundler
             spec_group_ruby = SpecGroup.create_for(specs_by_platform, [Gem::Platform::RUBY], Gem::Platform::RUBY)
             groups << spec_group_ruby if spec_group_ruby
 
-            next groups if @platforms == [Gem::Platform::RUBY]
+            next groups if @resolving_only_for_ruby
 
             spec_group = SpecGroup.create_for(specs_by_platform, @platforms, platform)
             groups << spec_group if spec_group

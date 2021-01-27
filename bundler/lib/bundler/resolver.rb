@@ -41,6 +41,9 @@ module Bundler
       @gem_version_promoter = gem_version_promoter
       @use_gvp = Bundler.feature_flag.use_gem_version_promoter_for_major_updates? || !@gem_version_promoter.major?
       @lockfile_uses_separate_rubygems_sources = Bundler.feature_flag.disable_multisource?
+
+      @variant_specific_names = []
+      @generic_names = []
     end
 
     def start(requirements)
@@ -104,14 +107,24 @@ module Bundler
     include Molinillo::SpecificationProvider
 
     def dependencies_for(specification)
-      specification.dependencies_for_activated_platforms
+      all_dependencies = specification.dependencies_for_activated_platforms
+
+      if @variant_specific_names.include?(specification.name)
+        @variant_specific_names |= all_dependencies.map(&:name) - @generic_names
+      else
+        generic_names, variant_specific_names = specification.partitioned_dependency_names_for_activated_platforms
+        @variant_specific_names |= variant_specific_names - @generic_names
+        @generic_names |= generic_names
+      end
+
+      all_dependencies
     end
 
     def search_for(dependency_proxy)
       platform = dependency_proxy.__platform
       dependency = dependency_proxy.dep
-      @search_for[dependency_proxy] ||= begin
-        name = dependency.name
+      name = dependency.name
+      search_result = @search_for[dependency_proxy] ||= begin
         index = index_for(dependency)
         results = index.search(dependency, @base[name])
 
@@ -164,6 +177,22 @@ module Bundler
           @gem_version_promoter.sort_versions(dependency, spec_groups)
         end
       end
+
+      unless search_result.empty?
+        specific_dependency = @variant_specific_names.include?(name)
+        return search_result unless specific_dependency
+
+        search_result.each do |sg|
+          if @generic_names.include?(name)
+            @variant_specific_names -= [name]
+            sg.activate_all_platforms!
+          else
+            sg.activate_platform!(platform)
+          end
+        end
+      end
+
+      search_result
     end
 
     def index_for(dependency)

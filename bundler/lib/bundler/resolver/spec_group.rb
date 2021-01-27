@@ -55,7 +55,7 @@ module Bundler
 
       def dependencies_for_activated_platforms
         @activated_platforms.map do |platform|
-          __dependencies[platform] + metadata_dependencies(@specs[platform].first, platform)
+          __dependencies[platform] + metadata_dependencies(platform)
         end.flatten
       end
 
@@ -98,7 +98,8 @@ module Bundler
         end
       end
 
-      def metadata_dependencies(spec, platform)
+      def metadata_dependencies(platform)
+        spec = @specs[platform].first
         return [] unless spec.is_a?(Gem::Specification)
         dependencies = []
         if !spec.required_ruby_version.nil? && !spec.required_ruby_version.none?

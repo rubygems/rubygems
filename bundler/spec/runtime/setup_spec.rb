@@ -1252,7 +1252,7 @@ end
         exempts << "fiddle" if Gem.win_platform? && Gem::Version.new(Gem::VERSION) >= Gem::Version.new("2.7")
         exempts << "uri" if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.7")
         exempts << "pathname" if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0")
-        exempts << "set" if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0")
+        exempts << "set" unless Gem::Version.new(Gem::VERSION) >= Gem::Version.new("3.2.6")
         exempts << "tsort" if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0")
         exempts
       end

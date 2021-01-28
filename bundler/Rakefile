@@ -153,13 +153,10 @@ namespace :man do
   end
 end
 
-load "task/automatiek.rake"
+load "../util/automatiek.rake"
 
 # We currently ship Molinillo master branch as of
-# https://github.com/CocoaPods/Molinillo/commit/0f3d33d004214f5e3a426c3382c4af37bc3f27e5,
-# plus the following changes:
-# * Properly print requirements (https://github.com/CocoaPods/Molinillo/pull/149).
-# * Allow custom comparison of dependencies (https://github.com/CocoaPods/Molinillo/pull/150).
+# https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
 desc "Vendor a specific version of molinillo"
 Automatiek::RakeTask.new("molinillo") do |lib|
   lib.version = "master"
@@ -171,7 +168,7 @@ end
 
 desc "Vendor a specific version of thor"
 Automatiek::RakeTask.new("thor") do |lib|
-  lib.version = "v1.0.1"
+  lib.version = "v1.1.0"
   lib.download = { :github => "https://github.com/erikhuda/thor" }
   lib.namespace = "Thor"
   lib.prefix = "Bundler"

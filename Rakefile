@@ -52,20 +52,16 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
   doc.rdoc_dir = 'doc'
 end
 
-begin
-  require "automatiek"
+load "util/automatiek.rake"
 
-  Automatiek::RakeTask.new("molinillo") do |lib|
-    lib.version = "0.7.0"
-    lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
-    lib.namespace = "Molinillo"
-    lib.prefix = "Gem::Resolver"
-    lib.vendor_lib = "lib/rubygems/resolver/molinillo"
-  end
-rescue LoadError
-  namespace :vendor do
-    task(:molinillo) { abort "Install the automatiek gem to be able to vendor gems." }
-  end
+# We currently ship Molinillo master branch as of
+# https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
+Automatiek::RakeTask.new("molinillo") do |lib|
+  lib.version = "master"
+  lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
+  lib.namespace = "Molinillo"
+  lib.prefix = "Gem::Resolver"
+  lib.vendor_lib = "lib/rubygems/resolver/molinillo"
 end
 
 namespace :rubocop do

@@ -263,23 +263,18 @@ module Bundler
     def resolve
       @resolve ||= begin
         last_resolve = converge_locked_specs
-        resolve =
-          if Bundler.frozen_bundle?
-            Bundler.ui.debug "Frozen, using resolution from the lockfile"
-            last_resolve
-          elsif !unlocking? && nothing_changed?
-            Bundler.ui.debug("Found no changes, using resolution from the lockfile")
-            last_resolve
-          else
-            # Run a resolve against the locally available gems
-            Bundler.ui.debug("Found changes from the lockfile, re-resolving dependencies because #{change_reason}")
-            expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, @remote)
-            last_resolve.merge Resolver.resolve(expanded_dependencies, index, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
-          end
-
-        # filter out gems that _can_ be installed on multiple platforms, but don't need
-        # to be
-        resolve.for(expand_dependencies(dependencies, true), [], false, false, false)
+        if Bundler.frozen_bundle?
+          Bundler.ui.debug "Frozen, using resolution from the lockfile"
+          last_resolve
+        elsif !unlocking? && nothing_changed?
+          Bundler.ui.debug("Found no changes, using resolution from the lockfile")
+          last_resolve
+        else
+          # Run a resolve against the locally available gems
+          Bundler.ui.debug("Found changes from the lockfile, re-resolving dependencies because #{change_reason}")
+          expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, @remote)
+          Resolver.resolve(expanded_dependencies, index, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
+        end
       end
     end
 
@@ -890,7 +885,7 @@ module Bundler
       dependencies.each do |dep|
         dep = Dependency.new(dep, ">= 0") unless dep.respond_to?(:name)
         next unless remote || dep.current_platform?
-        target_platforms = dep.gem_platforms(remote ? Resolver.sort_platforms(@platforms) : [generic_local_platform])
+        target_platforms = dep.gem_platforms(remote ? @platforms : [generic_local_platform])
         deps += expand_dependency_with_platforms(dep, target_platforms)
       end
       deps

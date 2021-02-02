@@ -1,3 +1,10 @@
+# 3.2.8 / 2021-02-02
+
+## Bug fixes:
+
+* Fix `gem install` crashing on gemspec with nil required_ruby_version.
+  Pull request #4334 by pbernays
+
 # 3.2.7 / 2021-01-26
 
 ## Bug fixes:

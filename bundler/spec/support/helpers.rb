@@ -296,7 +296,7 @@ module Spec
           if gem_name.start_with?("bundler")
             version = gem_name.match(/\Abundler-(?<version>.*)\z/)[:version] if gem_name != "bundler"
             with_built_bundler(version) {|gem_path| install_gem(gem_path, default) }
-          elsif gem_name =~ %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}
+          elsif %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}.match?(gem_name)
             install_gem(gem_name, default)
           else
             install_gem("#{gem_repo}/gems/#{gem_name}.gem", default)

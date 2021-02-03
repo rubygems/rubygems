@@ -251,7 +251,7 @@ module Gem::GemcutterUtilities
       say "Please select scopes you want to enable for the API key (y/n)"
       API_SCOPES.each do |scope|
         selected = ask "#{scope} [y/N]: "
-        scope_params[scope] = true if selected =~ /^[yY](es)?$/
+        scope_params[scope] = true if /^[yY](es)?$/.match?(selected)
       end
       say "\n"
     end

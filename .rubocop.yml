@@ -7,7 +7,7 @@ AllCops:
     - 'lib/rubygems/resolver/molinillo/**/*'
     - 'pkg/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
 
 Layout/AccessModifierIndentation:
   Enabled: true
@@ -99,6 +99,12 @@ Naming/HeredocDelimiterNaming:
   Enabled: true
   ForbiddenDelimiters:
     - ^RB$
+
+Performance/RegexpMatch:
+  Enabled: true
+  Exclude:
+    - lib/rubygems/dependency_installer.rb
+    - lib/rubygems/resolver.rb
 
 Performance/StartWith:
   Enabled: true

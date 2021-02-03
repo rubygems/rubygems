@@ -59,7 +59,7 @@ module Bundler
         :exe              => options[:exe],
         :bundler_version  => bundler_dependency_version,
         :github_username  => github_username.empty? ? "[USERNAME]" : github_username,
-        :required_ruby_version => Gem.ruby_version < Gem::Version.new("2.4.a") ? "2.3.0" : "2.4.0",
+        :required_ruby_version => "2.4.0",
       }
       ensure_safe_gem_name(name, constant_array)
 
@@ -160,7 +160,7 @@ module Bundler
         "For more information, see the RuboCop docs (https://docs.rubocop.org/en/stable/) " \
         "and the Ruby Style Guides (https://github.com/rubocop-hq/ruby-style-guide).")
         config[:rubocop] = true
-        config[:rubocop_version] = Gem.ruby_version < Gem::Version.new("2.4.a") ? "0.81.0" : "1.7"
+        config[:rubocop_version] = "1.7"
         Bundler.ui.info "RuboCop enabled in config"
         templates.merge!("rubocop.yml.tt" => ".rubocop.yml")
       end
@@ -243,7 +243,7 @@ module Bundler
         Bundler.ui.info hint_text("test")
 
         result = Bundler.ui.ask "Enter a test framework. rspec/minitest/test-unit/(none):"
-        if result =~ /rspec|minitest|test-unit/
+        if /rspec|minitest|test-unit/.match?(result)
           test_framework = result
         else
           test_framework = false
@@ -284,7 +284,7 @@ module Bundler
         Bundler.ui.info hint_text("ci")
 
         result = Bundler.ui.ask "Enter a CI service. github/travis/gitlab/circle/(none):"
-        if result =~ /github|travis|gitlab|circle/
+        if /github|travis|gitlab|circle/.match?(result)
           ci_template = result
         else
           ci_template = false
@@ -310,7 +310,7 @@ module Bundler
     end
 
     def ensure_safe_gem_name(name, constant_array)
-      if name =~ /^\d/
+      if /^\d/.match?(name)
         Bundler.ui.error "Invalid gem name #{name} Please give a name which does not start with numbers."
         exit 1
       end

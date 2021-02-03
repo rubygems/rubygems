@@ -2,7 +2,7 @@ require: rubocop-performance
 
 AllCops:
   DisabledByDefault: true
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
   Include:
     - bundler/**/*.rb
     - bundler/**/*.gemspec
@@ -465,6 +465,8 @@ Performance/FixedSize:
 
 Performance/RegexpMatch:
   Enabled: true
+  Exclude:
+    - bundler/spec/support/indexes.rb
 
 Performance/ReverseEach:
   Enabled: true

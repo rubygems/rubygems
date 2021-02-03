@@ -16,7 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "2.3", value: 2.3.8 }
           - { name: "2.4", value: 2.4.10 }
           - { name: "2.5", value: 2.5.8 }
           - { name: "2.6", value: 2.6.6 }

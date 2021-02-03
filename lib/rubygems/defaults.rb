@@ -185,7 +185,7 @@ module Gem
   def self.default_exec_format
     exec_format = RbConfig::CONFIG['ruby_install_name'].sub('ruby', '%s') rescue '%s'
 
-    unless exec_format =~ /%s/
+    unless /%s/.match?(exec_format)
       raise Gem::Exception,
         "[BUG] invalid exec_format #{exec_format.inspect}, no %s"
     end

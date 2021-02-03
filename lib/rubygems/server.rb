@@ -495,7 +495,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/
+    if /\.gz$/.match?(req.path)
       specs = Gem::Util.gzip specs
       res['content-type'] = 'application/x-gzip'
     else
@@ -523,7 +523,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
         @server.listen address, @port
         @server.listeners[listeners..-1].each do |listener|
           host, port = listener.addr.values_at 2, 1
-          host = "[#{host}]" if host =~ /:/ # we don't reverse lookup
+          host = "[#{host}]" if /:/.match?(host) # we don't reverse lookup
           say "Server started at http://#{host}:#{port}"
         end
 
@@ -556,7 +556,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/
+    if /\.gz$/.match?(req.path)
       specs = Gem::Util.gzip specs
       res['content-type'] = 'application/x-gzip'
     else
@@ -855,7 +855,7 @@ div.method-source-code pre { color: #ffdead; overflow: hidden; }
 
     specs = Marshal.dump specs
 
-    if req.path =~ /\.gz$/
+    if /\.gz$/.match?(req.path)
       specs = Gem::Util.gzip specs
       res['content-type'] = 'application/x-gzip'
     else

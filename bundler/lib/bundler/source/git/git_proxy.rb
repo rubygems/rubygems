@@ -199,7 +199,7 @@ module Bundler
 
         # Adds credentials to the URI as Fetcher#configured_uri_for does
         def configured_uri_for(uri)
-          if /https?:/ =~ uri
+          if /https?:/.match?(uri)
             remote = Bundler::URI(uri)
             config_auth = Bundler.settings[remote.to_s] || Bundler.settings[remote.host]
             remote.userinfo ||= config_auth

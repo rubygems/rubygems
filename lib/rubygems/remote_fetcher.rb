@@ -136,7 +136,7 @@ class Gem::RemoteFetcher
     scheme = source_uri.scheme
 
     # URI.parse gets confused by MS Windows paths with forward slashes.
-    scheme = nil if scheme =~ /^[a-z]$/i
+    scheme = nil if /^[a-z]$/i.match?(scheme)
 
     # REFACTOR: split this up and dispatch on scheme (eg download_http)
     # REFACTOR: be sure to clean up fake fetcher when you do this... cleaner
@@ -265,7 +265,7 @@ class Gem::RemoteFetcher
     raise UnknownHostError.new('timed out', uri)
   rescue IOError, SocketError, SystemCallError,
          *(OpenSSL::SSL::SSLError if Gem::HAVE_OPENSSL) => e
-    if e.message =~ /getaddrinfo/
+    if /getaddrinfo/.match?(e.message)
       raise UnknownHostError.new('no such name', uri)
     else
       raise FetchError.new("#{e.class}: #{e}", uri)

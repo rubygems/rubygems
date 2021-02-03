@@ -72,10 +72,10 @@ class TestGemUtil < Gem::TestCase
     ]
 
     files_with_absolute_base = Gem::Util.glob_files_in_dir('*.rb', File.join(@tempdir, 'g'))
-    assert_equal expected_paths.to_set, files_with_absolute_base.to_set
+    assert_equal expected_paths.sort, files_with_absolute_base.sort
 
     files_with_relative_base = Gem::Util.glob_files_in_dir('*.rb', 'g')
-    assert_equal expected_paths.to_set, files_with_relative_base.to_set
+    assert_equal expected_paths.sort, files_with_relative_base.sort
   end
 
   def test_correct_for_windows_path

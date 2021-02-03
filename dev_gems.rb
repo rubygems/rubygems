@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "rdoc", "6.2.0" # 6.2.1 is required > Ruby 2.3
+gem "rdoc", "~> 6.2"
 gem "test-unit", "~> 3.0"
 
 group :lint do

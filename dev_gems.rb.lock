@@ -15,7 +15,7 @@ GEM
     power_assert (2.0.1)
     rainbow (3.1.1)
     rdiscount (2.2.0.2)
-    rdoc (6.2.0)
+    rdoc (6.3.3)
     rexml (3.2.5)
     ronn (0.7.3)
       hpricot (>= 0.8.2)
@@ -58,7 +58,7 @@ PLATFORMS
 DEPENDENCIES
   parallel (= 1.19.2)
   parallel_tests (~> 2.29)
-  rdoc (= 6.2.0)
+  rdoc (~> 6.2)
   ronn (~> 0.7.3)
   rspec-core (~> 3.8)
   rspec-expectations (~> 3.8)

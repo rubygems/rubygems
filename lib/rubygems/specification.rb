@@ -2550,7 +2550,7 @@ class Gem::Specification < Gem::BasicSpecification
     begin
       dependencies.each do |dep|
         next unless dep.runtime?
-        dep.to_specs.each do |dep_spec|
+        dep.matching_specs(true).each do |dep_spec|
           next if visited.has_key?(dep_spec)
           visited[dep_spec] = true
           trail.push(dep_spec)

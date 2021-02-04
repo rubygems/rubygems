@@ -3516,19 +3516,6 @@ Did you mean 'Ruby'?
     specfile.delete
   end
 
-  ##
-  # KEEP p-1-x86-darwin-8
-  # KEEP p-1
-  # KEEP c-1.2
-  # KEEP a_evil-9
-  #      a-1
-  #      a-1-x86-my_platform-1
-  # KEEP a-2
-  #      a-2-x86-other_platform-1
-  # KEEP a-2-x86-my_platform-1
-  #      a-3.a
-  # KEEP a-3-x86-other_platform-1
-
   def test_latest_specs
     spec_fetcher do |fetcher|
       fetcher.spec 'a', 1 do |s|
@@ -3551,8 +3538,6 @@ Did you mean 'Ruby'?
     end
 
     expected = %W[
-      a-2
-      a-2-x86-my_platform-1
       a-3-x86-other_platform-1
     ]
 

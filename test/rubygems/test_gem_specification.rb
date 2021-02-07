@@ -1208,6 +1208,16 @@ dependencies: []
     Gem.platforms = orig_platform
   end
 
+  def test_self_stubs_returns_only_specified_named_specs
+    dir_standard_specs = File.join Gem.dir, 'specifications'
+
+    save_gemspec('a-1', '1', dir_standard_specs){|s| s.name = 'a' }
+    save_gemspec('a-2', '2', dir_standard_specs){|s| s.name = 'a' }
+    save_gemspec('a-a', '3', dir_standard_specs){|s| s.name = 'a-a' }
+
+    assert_equal ['a-1', 'a-2'], Gem::Specification.stubs_for('a').map(&:full_name).sort
+  end
+
   def test_handles_private_null_type
     path = File.expand_path "../data/null-type.gemspec.rz", __FILE__
 

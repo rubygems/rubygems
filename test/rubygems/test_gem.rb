@@ -468,6 +468,32 @@ class TestGem < Gem::TestCase
     assert_equal %w[bundler-1.17.3], loaded_spec_names
   end
 
+  def test_activate_bin_path_gives_proper_error_for_bundler_when_underscore_selection_given
+    File.open("Gemfile.lock", "w") do |f|
+      f.write <<-L.gsub(/ {8}/, "")
+        GEM
+          remote: https://rubygems.org/
+          specs:
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+
+        BUNDLED WITH
+          2.1.4
+      L
+    end
+
+    File.open("Gemfile", "w") {|f| f.puts('source "https://rubygems.org"') }
+
+    e = assert_raises Gem::GemNotFoundException do
+      load Gem.activate_bin_path("bundler", "bundle", "= 2.2.8")
+    end
+
+    assert_equal "can't find gem bundler (= 2.2.8) with executable bundle", e.message
+  end
+
   def test_self_bin_path_no_exec_name
     e = assert_raises ArgumentError do
       Gem.bin_path 'a'

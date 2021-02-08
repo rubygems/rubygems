@@ -1,3 +1,16 @@
+# 3.2.9 / 2021-02-08
+
+## Bug fixes:
+
+* Fix error message when underscore selection can't find bundler. Pull
+  request #4363 by deivid-rodriguez
+* Fix `Gem::Specification.stubs_for` returning wrong named specs. Pull
+  request #4356 by tompng
+* Don't error out when activating a binstub unless necessary. Pull request
+  #4351 by deivid-rodriguez
+* Fix `gem outdated` incorrectly handling platform specific gems. Pull
+  request #4248 by deivid-rodriguez
+
 # 3.2.8 / 2021-02-02
 
 ## Bug fixes:

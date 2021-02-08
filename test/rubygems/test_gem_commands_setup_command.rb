@@ -139,6 +139,15 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     assert_equal "\t#{default_bundler_bin_path}", out.shift
   end
 
+  def test_execute_silent
+    @cmd.options[:document] = []
+    @cmd.options[:silent] = true
+
+    @cmd.execute
+
+    assert_kind_of Gem::SilentUI, @cmd.ui
+  end
+
   def test_env_shebang_flag
     gem_bin_path = gem_install 'a'
     write_file gem_bin_path do |io|

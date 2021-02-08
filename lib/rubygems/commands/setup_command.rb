@@ -148,6 +148,7 @@ By default, this RubyGems will install gem as:
 
   def execute
     @verbose = Gem.configuration.really_verbose
+    self.ui = Gem::SilentUI.new if options[:silent]
 
     install_destdir = options[:destdir]
 

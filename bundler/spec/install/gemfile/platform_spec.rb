@@ -88,11 +88,7 @@ RSpec.describe "bundle install across platforms" do
     simulate_new_machine
 
     simulate_platform "ruby"
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
-
-      gem "nokogiri"
-    G
+    bundle "install"
 
     expect(the_bundle).to include_gems "nokogiri 1.4.2"
     expect(the_bundle).not_to include_gems "weakling"

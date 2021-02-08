@@ -92,6 +92,11 @@ RSpec.describe "bundle install across platforms" do
 
     expect(the_bundle).to include_gems "nokogiri 1.4.2"
     expect(the_bundle).not_to include_gems "weakling"
+
+    simulate_platform "java"
+    bundle "install"
+
+    expect(the_bundle).to include_gems "nokogiri 1.4.2 JAVA", "weakling 0.0.3"
   end
 
   it "does not keep unneeded platforms for gems that are used" do
@@ -235,20 +240,6 @@ RSpec.describe "bundle install across platforms" do
       bundle :lock
       lockfile_should_be good_lockfile
     end
-  end
-
-  it "works the other way with gems that have different dependencies" do
-    simulate_platform "ruby"
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
-
-      gem "nokogiri"
-    G
-
-    simulate_platform "java"
-    bundle "install"
-
-    expect(the_bundle).to include_gems "nokogiri 1.4.2 JAVA", "weakling 0.0.3"
   end
 
   it "works with gems with platform-specific dependency having different requirements order" do

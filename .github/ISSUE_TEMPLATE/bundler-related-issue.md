@@ -50,6 +50,4 @@ Ideally, we recommend you to set up the list of steps as a [Dockerfile](https://
 
 <!-- Replace this with the actual result you got. Paste the output of your command here. -->
 
-### If not included with the output of your command, run `bundle env` and paste the output below
-
-<!-- Replace this with the result of `bundle env`. -->
+### Whatever you do, do not run `bundle env` and paste the output below as you will potentially expose secrets to the public internet

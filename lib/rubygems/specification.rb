@@ -827,7 +827,9 @@ class Gem::Specification < Gem::BasicSpecification
     if @@stubs
       @@stubs_by_name[name] || []
     else
-      @@stubs_by_name[name] ||= stubs_for_pattern("#{name}-*.gemspec")
+      @@stubs_by_name[name] ||= stubs_for_pattern("#{name}-*.gemspec").select do |s|
+        s.name == name
+      end
     end
   end
 

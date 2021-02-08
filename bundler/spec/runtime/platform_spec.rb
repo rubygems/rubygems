@@ -57,6 +57,38 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
     expect(the_bundle).to include_gems "nokogiri 1.4.2"
   end
 
+  it "will use the java platform if both generic java and generic ruby platforms are locked", :jruby do
+    gemfile <<-G
+      source "#{file_uri_for(gem_repo1)}"
+      gem "nokogiri"
+    G
+
+    lockfile <<-G
+      GEM
+        remote: #{file_uri_for(gem_repo1)}/
+        specs:
+          nokogiri (1.4.2)
+          nokogiri (1.4.2-java)
+            weakling (>= 0.0.3)
+          weakling (0.0.3)
+
+      PLATFORMS
+        java
+        ruby
+
+      DEPENDENCIES
+        nokogiri
+
+      BUNDLED WITH
+        2.1.4
+    G
+
+    bundle "install"
+
+    expect(out).to include("Fetching nokogiri 1.4.2 (java)")
+    expect(the_bundle).to include_gems "nokogiri 1.4.2 JAVA"
+  end
+
   it "will add the resolve for the current platform" do
     lockfile <<-G
       GEM

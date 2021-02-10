@@ -904,9 +904,9 @@ module Bundler
       source_requirements = { :default => default }
       default = nil unless Bundler.feature_flag.disable_multisource?
       dependencies.each do |dep|
-        source = dep.source || default
-        next unless source
-        source_requirements[dep.name] = source
+        dep_source = dep.source || default
+        next unless dep_source
+        source_requirements[dep.name] = dep_source
       end
       metadata_dependencies.each do |dep|
         source_requirements[dep.name] = sources.metadata_source

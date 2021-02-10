@@ -900,9 +900,8 @@ module Bundler
       # Record the specs available in each gem's source, so that those
       # specs will be available later when the resolver knows where to
       # look for that gemspec (or its dependencies)
-      default = sources.default_source
-      source_requirements = { :default => default }
-      default = nil unless Bundler.feature_flag.disable_multisource?
+      source_requirements = { :default => sources.default_source }
+      default = Bundler.feature_flag.disable_multisource? && sources.default_source
       dependencies.each do |dep|
         dep_source = dep.source || default
         next unless dep_source

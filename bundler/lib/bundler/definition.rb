@@ -918,7 +918,7 @@ module Bundler
     def pinned_spec_names(skip = nil)
       pinned_names = []
       default = Bundler.feature_flag.disable_multisource? && sources.default_source
-      @dependencies.each do |dep|
+      dependencies.each do |dep|
         dep_source = dep.source || default
         next unless dep_source
         next if dep_source == skip

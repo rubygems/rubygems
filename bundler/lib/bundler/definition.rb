@@ -111,6 +111,19 @@ module Bundler
         @locked_platforms = []
       end
 
+      @locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
+      @disable_multisource = !Bundler.frozen_bundle? || @locked_gem_sources.none? {|s| s.remotes.size > 1 }
+
+      unless @disable_multisource
+        msg = "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. " \
+          "You should regenerate your lockfile in a non frozen environment."
+
+        Bundler::SharedHelpers.major_deprecation 2, msg
+
+        @sources.allow_multisource!
+        @locked_gem_sources.each(&:allow_multisource!)
+      end
+
       @unlock[:gems] ||= []
       @unlock[:sources] ||= []
       @unlock[:ruby] ||= if @ruby_version && locked_ruby_version_object
@@ -148,6 +161,14 @@ module Bundler
           end
         GemVersionPromoter.new(locked_specs, @unlock[:gems])
       end
+    end
+
+    def disable_multisource?
+      @disable_multisource
+    end
+
+    def allow_multisource!
+      @disable_multisource = false
     end
 
     def resolve_with_cache!
@@ -537,6 +558,9 @@ module Bundler
     attr_reader :sources
     private :sources
 
+    attr_reader :locked_gem_sources
+    private :locked_gem_sources
+
     def nothing_changed?
       !@source_changes && !@dependency_changes && !@new_platform && !@path_changes && !@local_changes && !@locked_specs_incomplete_for_platform
     end
@@ -661,10 +685,8 @@ module Bundler
     end
 
     def converge_rubygems_sources
-      return false if Bundler.feature_flag.disable_multisource?
+      return false if disable_multisource?
 
-      # Get the RubyGems sources from the Gemfile.lock
-      locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
       return false if locked_gem_sources.empty?
 
       # Get the RubyGems remotes from the Gemfile
@@ -905,7 +927,7 @@ module Bundler
       metadata_dependencies.each do |dep|
         source_requirements[dep.name] = sources.metadata_source
       end
-      source_requirements[:global] = index unless Bundler.feature_flag.disable_multisource?
+      source_requirements[:global] = index unless disable_multisource?
       source_requirements[:default_bundler] = source_requirements["bundler"] || source_requirements[:default]
       source_requirements["bundler"] = sources.metadata_source # needs to come last to override
       source_requirements
@@ -973,7 +995,7 @@ module Bundler
     def dependency_source_requirements
       @dependency_source_requirements ||= begin
         source_requirements = {}
-        default = Bundler.feature_flag.disable_multisource? && sources.default_source
+        default = disable_multisource? && sources.default_source
         dependencies.each do |dep|
           dep_source = dep.source || default
           next unless dep_source

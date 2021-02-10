@@ -171,7 +171,7 @@ module Bundler::Molinillo
           break if !state.requirement && state.requirements.empty?
           indicate_progress
           if state.respond_to?(:pop_possibility_state) # DependencyState
-            debug(depth) { "Creating possibility state for #{requirement} (#{possibilities.count} remaining)" }
+            debug(depth) { "Creating possibility state for #{requirement} (#{possibilities.count} [#{possibilities.map(&:to_s)}] remaining)" }
             state.pop_possibility_state.tap do |s|
               if s
                 states.push(s)

@@ -904,7 +904,8 @@ module Bundler
       source_requirements = { :default => default }
       default = nil unless Bundler.feature_flag.disable_multisource?
       dependencies.each do |dep|
-        next unless source = dep.source || default
+        source = dep.source || default
+        next unless source
         source_requirements[dep.name] = source
       end
       metadata_dependencies.each do |dep|
@@ -919,7 +920,8 @@ module Bundler
       pinned_names = []
       default = Bundler.feature_flag.disable_multisource? && sources.default_source
       @dependencies.each do |dep|
-        next unless dep_source = dep.source || default
+        dep_source = dep.source || default
+        next unless dep_source
         next if dep_source == skip
         pinned_names << dep.name
       end

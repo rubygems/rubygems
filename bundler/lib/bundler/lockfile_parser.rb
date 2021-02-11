@@ -131,11 +131,13 @@ module Bundler
             @sources << @current_source
           end
         when GEM
-          if Bundler.feature_flag.disable_multisource?
+          source_remotes = Array(@opts["remote"])
+
+          if source_remotes.size == 1
             @opts["remotes"] = @opts.delete("remote")
             @current_source = TYPES[@type].from_lock(@opts)
           else
-            Array(@opts["remote"]).each do |url|
+            source_remotes.each do |url|
               rubygems_aggregate.add_remote(url)
             end
             @current_source = rubygems_aggregate

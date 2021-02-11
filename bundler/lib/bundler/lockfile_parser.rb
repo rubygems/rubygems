@@ -89,7 +89,6 @@ module Bundler
           send("parse_#{@state}", line)
         end
       end
-      @sources << @rubygems_aggregate unless Bundler.feature_flag.disable_multisource?
       @specs = @specs.values.sort_by(&:identifier)
       warn_for_outdated_bundler_version
     rescue ArgumentError => e
@@ -137,13 +136,14 @@ module Bundler
           if Bundler.feature_flag.disable_multisource?
             @opts["remotes"] = @opts.delete("remote")
             @current_source = TYPES[@type].from_lock(@opts)
-            @sources << @current_source
           else
             Array(@opts["remote"]).each do |url|
               @rubygems_aggregate.add_remote(url)
             end
             @current_source = @rubygems_aggregate
           end
+
+          @sources << @current_source
         when PLUGIN
           @current_source = Plugin.source_from_lock(@opts)
           @sources << @current_source

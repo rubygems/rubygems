@@ -5,6 +5,7 @@ module Bundler
     attr_reader :path_sources,
       :git_sources,
       :plugin_sources,
+      :global_path_source,
       :metadata_source
 
     def global_rubygems_source
@@ -16,6 +17,7 @@ module Bundler
       @git_sources            = []
       @plugin_sources         = []
       @global_rubygems_source = nil
+      @global_path_source     = nil
       @rubygems_sources       = []
       @metadata_source        = Source::Metadata.new
     end
@@ -24,7 +26,9 @@ module Bundler
       if options["gemspec"]
         add_source_to_list Source::Gemspec.new(options), path_sources
       else
-        add_source_to_list Source::Path.new(options), path_sources
+        path_source = add_source_to_list Source::Path.new(options), path_sources
+        @global_path_source ||= path_source if options["global"]
+        path_source
       end
     end
 

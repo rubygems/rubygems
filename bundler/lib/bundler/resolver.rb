@@ -457,14 +457,12 @@ module Bundler
         sources.uniq!
         next if sources.size <= 1
 
-        multisource_disabled = Bundler.feature_flag.disable_multisource?
-
         msg = ["The gem '#{name}' was found in multiple relevant sources."]
         msg.concat sources.map {|s| "  * #{s}" }.sort
-        msg << "You #{multisource_disabled ? :must : :should} add this gem to the source block for the source you wish it to be installed from."
+        msg << "You #{@lockfile_uses_separate_rubygems_sources ? :must : :should} add this gem to the source block for the source you wish it to be installed from."
         msg = msg.join("\n")
 
-        raise SecurityError, msg if multisource_disabled
+        raise SecurityError, msg if @lockfile_uses_separate_rubygems_sources
         Bundler.ui.warn "Warning: #{msg}"
       end
     end

@@ -24,6 +24,9 @@ module Bundler
     def initialize
       @source               = nil
       @sources              = SourceList.new
+
+      @global_rubygems_sources = []
+
       @git_sources          = {}
       @dependencies         = []
       @groups               = []
@@ -45,6 +48,7 @@ module Bundler
       @gemfiles << expanded_gemfile_path
       contents ||= Bundler.read_file(@gemfile.to_s)
       instance_eval(contents.dup.tap{|x| x.untaint if RUBY_VERSION < "2.7" }, gemfile.to_s, 1)
+      check_primary_source_safety
     rescue Exception => e # rubocop:disable Lint/RescueException
       message = "There was an error " \
         "#{e.is_a?(GemfileEvalError) ? "evaluating" : "parsing"} " \
@@ -164,7 +168,7 @@ module Bundler
       elsif block_given?
         with_source(@sources.add_rubygems_source("remotes" => source), &blk)
       else
-        check_primary_source_safety(@sources)
+        @global_rubygems_sources << source
         @sources.global_rubygems_source = source
       end
     end
@@ -439,8 +443,8 @@ repo_name ||= user_name
       end
     end
 
-    def check_primary_source_safety(source_list)
-      return if source_list.rubygems_primary_remotes.empty? && source_list.global_rubygems_source.nil?
+    def check_primary_source_safety
+      return if @global_rubygems_sources.size <= 1
 
       if Bundler.feature_flag.disable_multisource?
         msg = "This Gemfile contains multiple primary sources. " \

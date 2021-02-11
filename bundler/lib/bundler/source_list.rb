@@ -110,10 +110,6 @@ module Bundler
       all_sources.each(&:remote!)
     end
 
-    def rubygems_primary_remotes
-      @rubygems_aggregate.remotes
-    end
-
     private
 
     def rubygems_aggregate_class

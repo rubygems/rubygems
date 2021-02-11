@@ -17,15 +17,14 @@ module Bundler
     # ==== Returns
     # <GemBundle>,nil:: If the list of dependencies can be resolved, a
     #   collection of gemspecs is returned. Otherwise, nil is returned.
-    def self.resolve(requirements, index, source_requirements = {}, base = [], gem_version_promoter = GemVersionPromoter.new, additional_base_requirements = [], platforms = nil)
+    def self.resolve(requirements, source_requirements = {}, base = [], gem_version_promoter = GemVersionPromoter.new, additional_base_requirements = [], platforms = nil)
       base = SpecSet.new(base) unless base.is_a?(SpecSet)
-      resolver = new(index, source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
+      resolver = new(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
       result = resolver.start(requirements)
       SpecSet.new(result)
     end
 
-    def initialize(index, source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
-      @index = index
+    def initialize(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
       @source_requirements = source_requirements
       @base = base
       @resolver = Molinillo::Resolver.new(self, self)
@@ -40,7 +39,7 @@ module Bundler
       @resolving_only_for_ruby = platforms == [Gem::Platform::RUBY]
       @gem_version_promoter = gem_version_promoter
       @use_gvp = Bundler.feature_flag.use_gem_version_promoter_for_major_updates? || !@gem_version_promoter.major?
-      @lockfile_uses_separate_rubygems_sources = Bundler.feature_flag.disable_multisource?
+      @lockfile_uses_separate_rubygems_sources = @source_requirements[:global].nil?
 
       @variant_specific_names = []
       @generic_names = ["Ruby\0", "RubyGems\0"]
@@ -204,7 +203,7 @@ module Bundler
           dependency.all_sources.each {|s| idx.add_source(s.specs) if s }
         end
       else
-        @index
+        @source_requirements[:global]
       end
     end
 

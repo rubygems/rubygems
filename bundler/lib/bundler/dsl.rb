@@ -187,23 +187,14 @@ module Bundler
     end
 
     def path(path, options = {}, &blk)
-      unless block_given?
-        msg = "You can no longer specify a path source by itself. Instead, \n" \
-              "either use the :path option on a gem, or specify the gems that \n" \
-              "bundler should find in the path source by passing a block to \n" \
-              "the path method, like: \n\n" \
-              "    path 'dir/containing/rails' do\n" \
-              "      gem 'rails'\n" \
-              "    end\n\n"
-
-        SharedHelpers.major_deprecation(2, msg.strip)
-      end
-
       source_options = normalize_hash(options).merge(
         "path" => Pathname.new(path),
         "root_path" => gemfile_root,
         "gemspec" => gemspecs.find {|g| g.name == options["name"] }
       )
+
+      source_options["global"] = true unless block_given?
+
       source = @sources.add_path_source(source_options)
       with_source(source, &blk)
     end
@@ -444,6 +435,25 @@ repo_name ||= user_name
     end
 
     def check_primary_source_safety
+      check_path_source_safety
+      check_rubygems_source_safety
+    end
+
+    def check_path_source_safety
+      return if @sources.global_path_source.nil?
+
+      msg = "You can no longer specify a path source by itself. Instead, \n" \
+              "either use the :path option on a gem, or specify the gems that \n" \
+              "bundler should find in the path source by passing a block to \n" \
+              "the path method, like: \n\n" \
+              "    path 'dir/containing/rails' do\n" \
+              "      gem 'rails'\n" \
+              "    end\n\n"
+
+      SharedHelpers.major_deprecation(2, msg.strip)
+    end
+
+    def check_rubygems_source_safety
       return if @global_rubygems_sources.size <= 1
 
       if Bundler.feature_flag.disable_multisource?

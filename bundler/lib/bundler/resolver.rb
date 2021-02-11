@@ -39,7 +39,7 @@ module Bundler
       @resolving_only_for_ruby = platforms == [Gem::Platform::RUBY]
       @gem_version_promoter = gem_version_promoter
       @use_gvp = Bundler.feature_flag.use_gem_version_promoter_for_major_updates? || !@gem_version_promoter.major?
-      @lockfile_uses_separate_rubygems_sources = @source_requirements[:global].nil?
+      @no_aggregate_global_source = @source_requirements[:global].nil?
 
       @variant_specific_names = []
       @generic_names = ["Ruby\0", "RubyGems\0"]
@@ -198,7 +198,7 @@ module Bundler
       source = @source_requirements[dependency.name]
       if source
         source.specs
-      elsif @lockfile_uses_separate_rubygems_sources
+      elsif @no_aggregate_global_source
         Index.build do |idx|
           dependency.all_sources.each {|s| idx.add_source(s.specs) if s }
         end
@@ -234,7 +234,7 @@ module Bundler
     def relevant_sources_for_vertex(vertex)
       if vertex.root?
         [@source_requirements[vertex.name]]
-      elsif @lockfile_uses_separate_rubygems_sources
+      elsif @no_aggregate_global_source
         vertex.recursive_predecessors.map do |v|
           @source_requirements[v.name]
         end << @source_requirements[:default]
@@ -458,10 +458,10 @@ module Bundler
 
         msg = ["The gem '#{name}' was found in multiple relevant sources."]
         msg.concat sources.map {|s| "  * #{s}" }.sort
-        msg << "You #{@lockfile_uses_separate_rubygems_sources ? :must : :should} add this gem to the source block for the source you wish it to be installed from."
+        msg << "You #{@no_aggregate_global_source ? :must : :should} add this gem to the source block for the source you wish it to be installed from."
         msg = msg.join("\n")
 
-        raise SecurityError, msg if @lockfile_uses_separate_rubygems_sources
+        raise SecurityError, msg if @no_aggregate_global_source
         Bundler.ui.warn "Warning: #{msg}"
       end
     end

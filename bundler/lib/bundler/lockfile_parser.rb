@@ -64,8 +64,6 @@ module Bundler
       @state        = nil
       @specs        = {}
 
-      @rubygems_aggregate = Source::Rubygems.new
-
       if lockfile.match(/<<<<<<<|=======|>>>>>>>|\|\|\|\|\|\|\|/)
         raise LockfileError, "Your #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)} contains merge conflicts.\n" \
           "Run `git checkout HEAD -- #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)}` first to get a clean lock."
@@ -138,9 +136,9 @@ module Bundler
             @current_source = TYPES[@type].from_lock(@opts)
           else
             Array(@opts["remote"]).each do |url|
-              @rubygems_aggregate.add_remote(url)
+              rubygems_aggregate.add_remote(url)
             end
-            @current_source = @rubygems_aggregate
+            @current_source = rubygems_aggregate
           end
 
           @sources << @current_source
@@ -244,6 +242,10 @@ module Bundler
 
     def parse_ruby(line)
       @ruby_version = line.strip
+    end
+
+    def rubygems_aggregate
+      @rubygems_aggregate ||= Source::Rubygems.new
     end
   end
 end

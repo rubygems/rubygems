@@ -269,7 +269,7 @@ module Bundler
           # Run a resolve against the locally available gems
           Bundler.ui.debug("Found changes from the lockfile, re-resolving dependencies because #{change_reason}")
           expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, @remote)
-          Resolver.resolve(expanded_dependencies, index, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
+          Resolver.resolve(expanded_dependencies, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
         end
       end
     end
@@ -904,6 +904,7 @@ module Bundler
       metadata_dependencies.each do |dep|
         source_requirements[dep.name] = sources.metadata_source
       end
+      source_requirements[:global] = index unless Bundler.feature_flag.disable_multisource?
       source_requirements[:default_bundler] = source_requirements["bundler"] || source_requirements[:default]
       source_requirements["bundler"] = sources.metadata_source # needs to come last to override
       source_requirements

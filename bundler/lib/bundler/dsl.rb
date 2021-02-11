@@ -169,7 +169,6 @@ module Bundler
         with_source(@sources.add_rubygems_source("remotes" => source), &blk)
       else
         @global_rubygems_sources << source
-        @sources.global_rubygems_source = source
       end
     end
 
@@ -271,6 +270,11 @@ module Bundler
 
     def method_missing(name, *args)
       raise GemfileError, "Undefined local variable or method `#{name}' for Gemfile"
+    end
+
+    def check_primary_source_safety
+      check_path_source_safety
+      check_rubygems_source_safety
     end
 
     private
@@ -434,11 +438,6 @@ repo_name ||= user_name
       end
     end
 
-    def check_primary_source_safety
-      check_path_source_safety
-      check_rubygems_source_safety
-    end
-
     def check_path_source_safety
       return if @sources.global_path_source.nil?
 
@@ -454,7 +453,12 @@ repo_name ||= user_name
     end
 
     def check_rubygems_source_safety
-      return if @global_rubygems_sources.size <= 1
+      @sources.global_rubygems_source = @global_rubygems_sources.shift
+      return if @global_rubygems_sources.empty?
+
+      @global_rubygems_sources.each do |source|
+        @sources.add_rubygems_remote(source)
+      end
 
       if Bundler.feature_flag.disable_multisource?
         msg = "This Gemfile contains multiple primary sources. " \

@@ -663,19 +663,20 @@ module Bundler
     def converge_rubygems_sources
       return false if Bundler.feature_flag.disable_multisource?
 
-      changes = false
-
       # Get the RubyGems sources from the Gemfile.lock
       locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
+      return false if locked_gem_sources.empty?
+
       # Get the RubyGems remotes from the Gemfile
       actual_remotes = sources.rubygems_remotes
+      return false if actual_remotes.empty?
+
+      changes = false
 
       # If there is a RubyGems source in both
-      if !locked_gem_sources.empty? && !actual_remotes.empty?
-        locked_gem_sources.each do |locked_gem|
-          # Merge the remotes from the Gemfile into the Gemfile.lock
-          changes |= locked_gem.replace_remotes(actual_remotes, Bundler.settings[:allow_deployment_source_credential_changes])
-        end
+      locked_gem_sources.each do |locked_gem|
+        # Merge the remotes from the Gemfile into the Gemfile.lock
+        changes |= locked_gem.replace_remotes(actual_remotes, Bundler.settings[:allow_deployment_source_credential_changes])
       end
 
       changes

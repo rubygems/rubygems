@@ -130,8 +130,7 @@ module Bundler
       dependency = dependency_proxy.dep
       name = dependency.name
       search_result = @search_for[dependency_proxy] ||= begin
-        index = index_for(dependency)
-        results = index.search(dependency, @base[name])
+        results = results_for(dependency, @base[name])
 
         if vertex = @base_dg.vertex_named(name)
           locked_requirement = vertex.payload.requirement
@@ -211,6 +210,10 @@ module Bundler
       else
         @index_requirements[:global]
       end
+    end
+
+    def results_for(dependency, base)
+      index_for(dependency).search(dependency, base)
     end
 
     def name_for(dependency)

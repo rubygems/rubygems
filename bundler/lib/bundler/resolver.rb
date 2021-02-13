@@ -43,7 +43,7 @@ module Bundler
       @lockfile_uses_separate_rubygems_sources = Bundler.feature_flag.disable_multisource?
 
       @variant_specific_names = []
-      @generic_names = []
+      @generic_names = ["Ruby\0", "RubyGems\0"]
     end
 
     def start(requirements)

@@ -199,7 +199,7 @@ module Bundler
         source.specs
       elsif @no_aggregate_global_source
         Index.build do |idx|
-          dependency.all_sources.each {|s| idx.add_source(s.specs) if s }
+          dependency.all_sources.each {|s| idx.add_source(s.specs) }
         end
       else
         @source_requirements[:global]
@@ -236,11 +236,11 @@ module Bundler
 
     def relevant_sources_for_vertex(vertex)
       if vertex.root?
-        [@source_requirements[vertex.name]]
+        [@source_requirements[vertex.name]].compact
       elsif @no_aggregate_global_source
         vertex.recursive_predecessors.map do |v|
           @source_requirements[v.name]
-        end << @source_requirements[:default]
+        end.compact << @source_requirements[:default]
       else
         []
       end

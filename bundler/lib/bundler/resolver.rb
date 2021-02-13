@@ -193,13 +193,16 @@ module Bundler
       search_result
     end
 
-    def index_for(dependency)
+    def index_for(dependency, base)
       source = @source_requirements[dependency.name]
       if source
         source.specs
       elsif @no_aggregate_global_source
-        Index.build do |idx|
-          dependency.all_sources.each {|s| idx.add_source(s.specs) }
+        dependency.all_sources.find(-> { Index.new }) do |s|
+          idx = s.specs
+          results = idx.search(dependency, base)
+          next if results.empty? || results == base
+          return idx
         end
       else
         @source_requirements[:global]
@@ -207,7 +210,7 @@ module Bundler
     end
 
     def results_for(dependency, base)
-      index_for(dependency).search(dependency, base)
+      index_for(dependency, base).search(dependency, base)
     end
 
     def name_for(dependency)
@@ -283,7 +286,7 @@ module Bundler
         if (base = @base[dependency.name]) && !base.empty?
           dependency.requirement.satisfied_by?(base.first.version) ? 0 : 1
         else
-          all = index_for(dependency).search(dependency.name).size
+          all = index_for(dependency, base).search(dependency.name).size
 
           if all <= 1
             all - 1_000_000

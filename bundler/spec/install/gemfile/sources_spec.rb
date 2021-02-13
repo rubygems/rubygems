@@ -202,6 +202,24 @@ RSpec.describe "bundle install with gems on multiple sources" do
             expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0", :source => "remote3")
           end
         end
+
+        context "and in another source with a higher version" do
+          before do
+            # need this to be broken to check for correct source ordering
+            build_repo gem_repo2 do
+              build_gem "rack", "1.0.1" do |s|
+                s.write "lib/rack.rb", "RACK = 'FAIL'"
+              end
+            end
+          end
+
+          it "installs from the same source without any warning" do
+            bundle :install
+
+            expect(err).not_to include("Warning: the gem 'rack' was found in multiple sources.")
+            expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0", :source => "remote3")
+          end
+        end
       end
 
       context "when the indirect dependency is in a different source" do

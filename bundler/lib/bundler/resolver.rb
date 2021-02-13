@@ -205,7 +205,7 @@ module Bundler
         source
       elsif @no_aggregate_global_source
         Index.build do |idx|
-          dependency.all_sources.each {|s| idx.add_source(s.specs) if s }
+          dependency.all_sources.each {|s| idx.add_source(s.specs) }
         end
       else
         @index_requirements[:global]
@@ -246,7 +246,7 @@ module Bundler
       elsif @no_aggregate_global_source
         vertex.recursive_predecessors.map do |v|
           @source_requirements[v.name]
-        end << @source_requirements[:default]
+        end.compact << @source_requirements[:default]
       else
         []
       end

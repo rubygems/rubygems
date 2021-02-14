@@ -1,3 +1,13 @@
+# 2.2.9 (February 8, 2021)
+
+## Enhancements:
+
+  - Stop removing existing platforms when force_ruby_platform is true [#4336](https://github.com/rubygems/rubygems/pull/4336)
+
+## Bug fixes:
+
+  - Don't install platform specific gems on truffleruby [#4333](https://github.com/rubygems/rubygems/pull/4333)
+
 # 2.2.8 (February 2, 2021)
 
 ## Enhancements:

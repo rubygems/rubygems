@@ -248,9 +248,9 @@ module Bundler
 
     def sort_dependencies(dependencies, activated, conflicts)
       dependencies.sort_by do |dependency|
-        dependency.all_sources = relevant_sources_for_vertex(activated.vertex_named(dependency.name))
         name = name_for(dependency)
         vertex = activated.vertex_named(name)
+        dependency.all_sources = relevant_sources_for_vertex(vertex)
         [
           @base_dg.vertex_named(name) ? 0 : 1,
           vertex.payload ? 0 : 1,

@@ -457,7 +457,6 @@ module Bundler
         name = v.name
         sources = relevant_sources_for_vertex(v)
         next unless sources.any?
-        sources.compact!
         if default_index = sources.index(@source_requirements[:default])
           sources.delete_at(default_index)
         end

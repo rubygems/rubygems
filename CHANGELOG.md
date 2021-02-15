@@ -1,3 +1,12 @@
+# 3.2.10 / 2021-02-15
+
+## Documentation:
+
+* Add a `gem push` example to `gem help`. Pull request #4373 by
+  deivid-rodriguez
+* Improve documentation for `required_ruby_version`. Pull request #4343 by
+  AlexWayfer
+
 # 3.2.9 / 2021-02-08
 
 ## Bug fixes:

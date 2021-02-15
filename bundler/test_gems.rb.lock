@@ -39,4 +39,4 @@ DEPENDENCIES
   webrick (= 1.7.0)
 
 BUNDLED WITH
-   2.2.0.rc.2
+   2.3.0.dev

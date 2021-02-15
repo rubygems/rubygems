@@ -21,3 +21,4 @@ jobs:
           bundler: none
       - run: gem env platform
       - run: DEBUG_RESOLVER=1 ruby -Ilib bundler/exe/bundle lock --add-platform x86_64-darwin
+      - run: cat Gemfile.lock

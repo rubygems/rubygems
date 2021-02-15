@@ -551,6 +551,50 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
     end
 
+    context "when a pinned gem has an indirect dependency with more than one level of indirection in the default source ", :bundler => "< 3" do
+      before do
+        build_repo gem_repo3 do
+          build_gem "handsoap", "0.2.5.5" do |s|
+            s.add_dependency "nokogiri", ">= 1.2.3"
+          end
+        end
+
+        update_repo gem_repo2 do
+          build_gem "nokogiri", "1.11.1" do |s|
+            s.add_dependency "racca", "~> 1.4"
+          end
+
+          build_gem "racca", "1.5.2"
+        end
+
+        gemfile <<-G
+          source "#{file_uri_for(gem_repo2)}"
+
+          source "#{file_uri_for(gem_repo3)}" do
+            gem "handsoap"
+          end
+
+          gem "nokogiri"
+        G
+      end
+
+      it "installs from the proper sources without any warnings or errors" do
+        bundle "install --verbose"
+        expect(err).not_to include("Warning")
+        expect(the_bundle).to include_gems("handsoap 0.2.5.5", "nokogiri 1.11.1", "racca 1.5.2")
+        expect(the_bundle).to include_gems("handsoap 0.2.5.5", :source => "remote3")
+        expect(the_bundle).to include_gems("nokogiri 1.11.1", "racca 1.5.2", :source => "remote2")
+
+        # Even if the gems are already installed
+        FileUtils.rm bundled_app_lock
+        bundle "install --verbose"
+        expect(err).not_to include("Warning")
+        expect(the_bundle).to include_gems("handsoap 0.2.5.5", "nokogiri 1.11.1", "racca 1.5.2")
+        expect(the_bundle).to include_gems("handsoap 0.2.5.5", :source => "remote3")
+        expect(the_bundle).to include_gems("nokogiri 1.11.1", "racca 1.5.2", :source => "remote2")
+      end
+    end
+
     context "with a gem that is only found in the wrong source" do
       before do
         build_repo gem_repo3 do

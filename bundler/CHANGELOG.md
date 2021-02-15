@@ -1,3 +1,18 @@
+# 2.2.10 (February 15, 2021)
+
+## Security fixes:
+
+  - Fix source priority for transitive dependencies and split lockfile rubygems source sections [#3655](https://github.com/rubygems/rubygems/pull/3655)
+
+## Bug fixes:
+
+  - Fix adding platforms to lockfile sometimes conflicting on ruby requirements [#4371](https://github.com/rubygems/rubygems/pull/4371)
+  - Fix bundler sometimes choosing ruby variants over java ones [#4367](https://github.com/rubygems/rubygems/pull/4367)
+
+## Documentation:
+
+  - Update man pages to reflect to new default for bundle install jobs [#4188](https://github.com/rubygems/rubygems/pull/4188)
+
 # 2.2.9 (February 8, 2021)
 
 ## Enhancements:

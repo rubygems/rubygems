@@ -25,6 +25,7 @@ GEM
 PLATFORMS
   java
   ruby
+  universal-java-11
   x64-mingw32
   x86_64-linux
 

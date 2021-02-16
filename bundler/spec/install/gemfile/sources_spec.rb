@@ -518,6 +518,39 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
     end
 
+    context "when a top-level gem has an indirect dependency present in the default source, but with a different version from the one resolved", :bundler => "< 3" do
+      before do
+        build_lib "activesupport", "7.0.0.alpha", :path => lib_path("rails/activesupport")
+        build_lib "rails", "7.0.0.alpha", :path => lib_path("rails") do |s|
+          s.add_dependency "activesupport", "= 7.0.0.alpha"
+        end
+
+        build_repo gem_repo2 do
+          build_gem "activesupport", "6.1.2"
+
+          build_gem "webpacker", "5.2.1" do |s|
+            s.add_dependency "activesupport", ">= 5.2"
+          end
+        end
+
+        gemfile <<-G
+          source "#{file_uri_for(gem_repo2)}"
+
+          gemspec :path => "#{lib_path("rails")}"
+
+          gem "webpacker", "~> 5.0"
+        G
+      end
+
+      it "installs all gems without warning" do
+        bundle :install
+        expect(err).not_to include("Warning")
+        expect(the_bundle).to include_gems("activesupport 7.0.0.alpha", "rails 7.0.0.alpha")
+        expect(the_bundle).to include_gems("activesupport 7.0.0.alpha", :source => "path@#{lib_path("rails/activesupport")}")
+        expect(the_bundle).to include_gems("rails 7.0.0.alpha", :source => "path@#{lib_path("rails")}")
+      end
+    end
+
     context "with a gem that is only found in the wrong source" do
       before do
         build_repo gem_repo3 do

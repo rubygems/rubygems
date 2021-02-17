@@ -1,3 +1,10 @@
+# 3.2.11 / 2021-02-17
+
+## Enhancements:
+
+* Optionally fallback to IPv4 when IPv6 is unreachable. Pull request #2662
+  by sonalkr132
+
 # 3.2.10 / 2021-02-15
 
 ## Documentation:

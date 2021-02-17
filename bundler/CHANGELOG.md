@@ -1,3 +1,9 @@
+# 2.2.11 (February 17, 2021)
+
+## Bug fixes:
+
+  - Revert disable_multisource changes [#4385](https://github.com/rubygems/rubygems/pull/4385)
+
 # 2.2.10 (February 15, 2021)
 
 ## Security fixes:

@@ -354,6 +354,7 @@ lib/rubygems/config_file.rb
 lib/rubygems/core_ext/kernel_gem.rb
 lib/rubygems/core_ext/kernel_require.rb
 lib/rubygems/core_ext/kernel_warn.rb
+lib/rubygems/core_ext/tcpsocket_init.rb
 lib/rubygems/defaults.rb
 lib/rubygems/dependency.rb
 lib/rubygems/dependency_installer.rb

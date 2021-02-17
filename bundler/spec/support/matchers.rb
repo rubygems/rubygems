@@ -145,7 +145,7 @@ module Spec
 
       match_when_negated do
         opts = names.last.is_a?(Hash) ? names.pop : {}
-        groups = Array(opts[:groups]) || []
+        groups = Array(opts[:groups])
         opts[:raise_on_error] = false
         @errors = names.map do |name|
           name, version = name.split(/\s+/, 2)

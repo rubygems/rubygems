@@ -99,7 +99,6 @@ module Bundler
       @global_rubygems_source = replacement_rubygems if replacement_rubygems
 
       return true if !equal_sources?(lock_sources, replacement_sources) && !equivalent_sources?(lock_sources, replacement_sources)
-      return true if replacement_rubygems && rubygems_remotes.sort_by(&:to_s) != replacement_rubygems.remotes.sort_by(&:to_s)
 
       false
     end

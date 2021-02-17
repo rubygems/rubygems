@@ -401,7 +401,7 @@ RSpec.describe "install in deployment or frozen mode" do
         gem "rack-obama"
       G
 
-      expect(the_bundle).not_to include_gems "rack 1.0.0"
+      run "require 'rack'", :raise_on_error => false
       expect(err).to include strip_whitespace(<<-E).strip
 The dependencies in your gemfile changed
 

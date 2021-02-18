@@ -165,7 +165,6 @@ class Gem::Platform
     # version
     (
       (@os != 'linux' and (@version.nil? or other.version.nil?)) or
-      (@os == 'linux' and ((@version.nil? and other.version == 'gnu') or (@version == 'gnu' and other.version == nil))) or
       @version == other.version
     )
   end

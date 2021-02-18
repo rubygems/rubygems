@@ -973,10 +973,9 @@ module Bundler
     def dependency_source_requirements
       @dependency_source_requirements ||= begin
         source_requirements = {}
-        default = Bundler.feature_flag.disable_multisource? && sources.default_source
+        default = sources.default_source
         dependencies.each do |dep|
           dep_source = dep.source || default
-          next unless dep_source
           source_requirements[dep.name] = dep_source
         end
         source_requirements

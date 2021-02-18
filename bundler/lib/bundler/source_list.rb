@@ -56,11 +56,11 @@ module Bundler
     end
 
     def default_source
-      global_rubygems_source
+      global_path_source || global_rubygems_source
     end
 
     def rubygems_sources
-      @rubygems_sources + [default_source]
+      @rubygems_sources + [global_rubygems_source]
     end
 
     def rubygems_remotes

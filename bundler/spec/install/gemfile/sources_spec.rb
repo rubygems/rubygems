@@ -295,6 +295,33 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
     end
 
+    context "when a top-level gem can only be found in an scoped source" do
+      before do
+        build_repo2
+
+        build_repo gem_repo3 do
+          build_gem "private_gem_1", "1.0.0"
+          build_gem "private_gem_2", "1.0.0"
+        end
+
+        gemfile <<-G
+          source "#{file_uri_for(gem_repo2)}"
+
+          gem "private_gem_1"
+
+          source "#{file_uri_for(gem_repo3)}" do
+            gem "private_gem_2"
+          end
+        G
+      end
+
+      it "fails" do
+        bundle :install, :raise_on_error => false
+        expect(err).to include("Could not find gem 'private_gem_1' in rubygems repository #{file_uri_for(gem_repo2)}/ or installed locally.")
+        expect(err).to include("The source does not contain any versions of 'private_gem_1'")
+      end
+    end
+
     context "when a top-level gem has an indirect dependency" do
       context "when disable_multisource is set" do
         before do

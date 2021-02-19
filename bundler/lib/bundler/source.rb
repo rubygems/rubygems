@@ -33,6 +33,10 @@ module Bundler
       spec.source == self
     end
 
+    def cached!; end
+
+    def remote!; end
+
     # it's possible that gems from one source depend on gems from some
     # other source, so now we download gemspecs and iterate over those
     # dependencies, looking for gems we don't have info on yet.

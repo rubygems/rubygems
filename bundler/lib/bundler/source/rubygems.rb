@@ -26,11 +26,15 @@ module Bundler
       end
 
       def remote!
+        return if @allow_remote
+
         @specs = nil
         @allow_remote = true
       end
 
       def cached!
+        return if @allow_cached
+
         @specs = nil
         @allow_cached = true
       end

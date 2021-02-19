@@ -33,6 +33,8 @@ module Bundler
       spec.source == self
     end
 
+    def local!; end
+
     def cached!; end
 
     def remote!; end

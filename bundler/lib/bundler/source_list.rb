@@ -9,7 +9,7 @@ module Bundler
       :metadata_source
 
     def global_rubygems_source
-      @global_rubygems_source ||= rubygems_aggregate_class.new
+      @global_rubygems_source ||= rubygems_aggregate_class.new("allow_local" => true)
     end
 
     def initialize
@@ -57,7 +57,7 @@ module Bundler
     end
 
     def global_rubygems_source=(uri)
-      @global_rubygems_source ||= rubygems_aggregate_class.new("remotes" => uri)
+      @global_rubygems_source ||= rubygems_aggregate_class.new("remotes" => uri, "allow_local" => true)
     end
 
     def add_rubygems_remote(uri)

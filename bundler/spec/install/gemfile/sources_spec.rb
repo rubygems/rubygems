@@ -694,7 +694,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
     end
 
-    context "when a pinned gem has an indirect dependency with more than one level of indirection in the default source ", :bundler => "< 3" do
+    context "when a pinned gem has an indirect dependency with more than one level of indirection in the default source " do
       before do
         build_repo gem_repo3 do
           build_gem "handsoap", "0.2.5.5" do |s|
@@ -721,12 +721,38 @@ RSpec.describe "bundle install with gems on multiple sources" do
         G
       end
 
-      it "installs from the proper sources without any warnings or errors" do
+      it "installs from the default source without any warnings or errors and generates a proper lockfile" do
+        expected_lockfile = <<~L
+          GEM
+            remote: #{file_uri_for(gem_repo2)}/
+            specs:
+              nokogiri (1.11.1)
+                racca (~> 1.4)
+              racca (1.5.2)
+
+          GEM
+            remote: #{file_uri_for(gem_repo3)}/
+            specs:
+              handsoap (0.2.5.5)
+                nokogiri (>= 1.2.3)
+
+          PLATFORMS
+            #{specific_local_platform}
+
+          DEPENDENCIES
+            handsoap!
+            nokogiri
+
+          BUNDLED WITH
+             #{Bundler::VERSION}
+        L
+
         bundle "install --verbose"
         expect(err).not_to include("Warning")
         expect(the_bundle).to include_gems("handsoap 0.2.5.5", "nokogiri 1.11.1", "racca 1.5.2")
         expect(the_bundle).to include_gems("handsoap 0.2.5.5", :source => "remote3")
         expect(the_bundle).to include_gems("nokogiri 1.11.1", "racca 1.5.2", :source => "remote2")
+        expect(lockfile).to eq(expected_lockfile)
 
         # Even if the gems are already installed
         FileUtils.rm bundled_app_lock
@@ -735,6 +761,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
         expect(the_bundle).to include_gems("handsoap 0.2.5.5", "nokogiri 1.11.1", "racca 1.5.2")
         expect(the_bundle).to include_gems("handsoap 0.2.5.5", :source => "remote3")
         expect(the_bundle).to include_gems("nokogiri 1.11.1", "racca 1.5.2", :source => "remote2")
+        expect(lockfile).to eq(expected_lockfile)
       end
     end
 
@@ -1052,6 +1079,31 @@ RSpec.describe "bundle install with gems on multiple sources" do
     it "installs the higher version in the new repo" do
       expect(the_bundle).to include_gems("rack 1.2")
     end
+  end
+
+  it "doesn't update version when a gem uses a source block but a higher version from another source is already installed locally" do
+    build_repo2 do
+      build_gem "example", "0.1.0"
+    end
+
+    build_repo4 do
+      build_gem "example", "1.0.2"
+    end
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo4)}"
+
+      gem "example", :source => "#{file_uri_for(gem_repo2)}"
+    G
+
+    bundle "info example"
+    expect(out).to include("example (0.1.0)")
+
+    system_gems "example-1.0.2", :path => default_bundle_path, :gem_repo => gem_repo4
+
+    bundle "update example --verbose"
+    expect(out).not_to include("Using example 1.0.2")
+    expect(out).to include("Using example 0.1.0")
   end
 
   context "when a gem is available from multiple ambiguous sources", :bundler => "3" do

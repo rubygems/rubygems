@@ -314,7 +314,7 @@ module Bundler
             "If you are updating multiple gems in your Gemfile at once,\n" \
             "try passing them all to `bundle update`"
         elsif source = @source_requirements[name]
-          specs = source.specs[name]
+          specs = source.specs.search(name)
           versions_with_platforms = specs.map {|s| [s.version, s.platform] }
           message = String.new("Could not find gem '#{SharedHelpers.pretty_dependency(requirement)}' in #{source}#{cache_message}.\n")
           message << if versions_with_platforms.any?
@@ -452,7 +452,7 @@ module Bundler
         if default_index = sources.index(@source_requirements[:default])
           sources.delete_at(default_index)
         end
-        sources.reject! {|s| s.specs[name].empty? }
+        sources.reject! {|s| s.specs.search(name).empty? }
         sources.uniq!
         next if sources.size <= 1
 

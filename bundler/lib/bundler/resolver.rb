@@ -26,6 +26,12 @@ module Bundler
 
     def initialize(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
       @source_requirements = source_requirements
+
+      @index_requirements = source_requirements.each_with_object({}) do |source_requirement, index_requirements|
+        name, source = source_requirement
+        index_requirements[name] = name == :global ? source : source.specs
+      end
+
       @base = base
       @resolver = Molinillo::Resolver.new(self, self)
       @search_for = {}
@@ -195,15 +201,15 @@ module Bundler
     end
 
     def index_for(dependency)
-      source = @source_requirements[dependency.name]
+      source = @index_requirements[dependency.name]
       if source
-        source.specs
+        source
       elsif @no_aggregate_global_source
         Index.build do |idx|
           dependency.all_sources.each {|s| idx.add_source(s.specs) if s }
         end
       else
-        @source_requirements[:global]
+        @index_requirements[:global]
       end
     end
 
@@ -389,7 +395,7 @@ module Bundler
             if other_bundler_required
               o << "\n\n"
 
-              candidate_specs = @source_requirements[:default_bundler].specs.search(conflict_dependency)
+              candidate_specs = @index_requirements[:default_bundler].search(conflict_dependency)
               if candidate_specs.any?
                 target_version = candidate_specs.last.version
                 new_command = [File.basename($PROGRAM_NAME), "_#{target_version}_", *ARGV].join(" ")

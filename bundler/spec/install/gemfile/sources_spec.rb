@@ -511,9 +511,149 @@ RSpec.describe "bundle install with gems on multiple sources" do
           L
         end
 
-        it "upgrades gems when running bundle update, without printing any warnings or errors" do
+        it "does not install newer versions or generate lockfile changes when running bundle install, and warns", :bundler => "< 3" do
+          initial_lockfile = lockfile
+
+          bundle :install
+
+          expect(err).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure.")
+
+          expect(the_bundle).to include_gems("activesupport 6.0.3.4")
+          expect(the_bundle).not_to include_gems("activesupport 6.1.2.1")
+          expect(the_bundle).to include_gems("tzinfo 1.2.9")
+          expect(the_bundle).not_to include_gems("tzinfo 2.0.4")
+          expect(the_bundle).to include_gems("concurrent-ruby 1.1.8")
+          expect(the_bundle).not_to include_gems("concurrent-ruby 1.1.9")
+
+          expect(lockfile).to eq(initial_lockfile)
+        end
+
+        it "fails when running bundle install", :bundler => "3" do
+          initial_lockfile = lockfile
+
+          bundle :install, :raise_on_error => false
+
+          expect(err).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure.")
+
+          expect(lockfile).to eq(initial_lockfile)
+        end
+
+        it "splits sections and upgrades gems when running bundle update, and doesn't warn" do
           bundle "update --all"
           expect(err).to be_empty
+
+          expect(the_bundle).not_to include_gems("activesupport 6.0.3.4")
+          expect(the_bundle).to include_gems("activesupport 6.1.2.1")
+          expect(the_bundle).not_to include_gems("tzinfo 1.2.9")
+          expect(the_bundle).to include_gems("tzinfo 2.0.4")
+          expect(the_bundle).not_to include_gems("concurrent-ruby 1.1.8")
+          expect(the_bundle).to include_gems("concurrent-ruby 1.1.9")
+
+          expect(lockfile).to eq <<~L
+            GEM
+              remote: #{file_uri_for(gem_repo2)}/
+              specs:
+                activesupport (6.1.2.1)
+                  concurrent-ruby (~> 1.0, >= 1.0.2)
+                  i18n (>= 1.6, < 2)
+                  minitest (>= 5.1)
+                  tzinfo (~> 2.0)
+                  zeitwerk (~> 2.3)
+                concurrent-ruby (1.1.9)
+                connection_pool (2.2.3)
+                i18n (1.8.9)
+                  concurrent-ruby (~> 1.0)
+                minitest (5.14.3)
+                rack (2.2.3)
+                redis (4.2.5)
+                sidekiq (6.1.3)
+                  connection_pool (>= 2.2.2)
+                  rack (~> 2.0)
+                  redis (>= 4.2.0)
+                tzinfo (2.0.4)
+                  concurrent-ruby (~> 1.0)
+                zeitwerk (2.4.2)
+
+            GEM
+              remote: #{file_uri_for(gem_repo3)}/
+              specs:
+                sidekiq-pro (5.2.1)
+                  connection_pool (>= 2.2.3)
+                  sidekiq (>= 6.1.0)
+
+            PLATFORMS
+              #{specific_local_platform}
+
+            DEPENDENCIES
+              activesupport
+              sidekiq-pro!
+
+            BUNDLED WITH
+               #{Bundler::VERSION}
+          L
+        end
+
+        it "it keeps the currrent lockfile format and upgrades the requested gem when running bundle update with an argument, and warns", :bundler => "< 3" do
+          bundle "update concurrent-ruby"
+          expect(err).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure.")
+
+          expect(the_bundle).to include_gems("activesupport 6.0.3.4")
+          expect(the_bundle).not_to include_gems("activesupport 6.1.2.1")
+          expect(the_bundle).to include_gems("tzinfo 1.2.9")
+          expect(the_bundle).not_to include_gems("tzinfo 2.0.4")
+          expect(the_bundle).to include_gems("concurrent-ruby 1.1.9")
+          expect(the_bundle).not_to include_gems("concurrent-ruby 1.1.8")
+
+          expect(lockfile).to eq <<~L
+            GEM
+              remote: #{file_uri_for(gem_repo2)}/
+              remote: #{file_uri_for(gem_repo3)}/
+              specs:
+                activesupport (6.0.3.4)
+                  concurrent-ruby (~> 1.0, >= 1.0.2)
+                  i18n (>= 0.7, < 2)
+                  minitest (~> 5.1)
+                  tzinfo (~> 1.1)
+                  zeitwerk (~> 2.2, >= 2.2.2)
+                concurrent-ruby (1.1.9)
+                connection_pool (2.2.3)
+                i18n (1.8.9)
+                  concurrent-ruby (~> 1.0)
+                minitest (5.14.3)
+                rack (2.2.3)
+                redis (4.2.5)
+                sidekiq (6.1.3)
+                  connection_pool (>= 2.2.2)
+                  rack (~> 2.0)
+                  redis (>= 4.2.0)
+                sidekiq-pro (5.2.1)
+                  connection_pool (>= 2.2.3)
+                  sidekiq (>= 6.1.0)
+                thread_safe (0.3.6)
+                tzinfo (1.2.9)
+                  thread_safe (~> 0.1)
+                zeitwerk (2.4.2)
+
+            PLATFORMS
+              #{specific_local_platform}
+
+            DEPENDENCIES
+              activesupport
+              sidekiq-pro!
+
+            BUNDLED WITH
+               #{Bundler::VERSION}
+          L
+        end
+
+        it "fails when running bundle update with an argument", :bundler => "3" do
+          initial_lockfile = lockfile
+
+          bundle "update concurrent-ruby", :raise_on_error => false
+
+          expect(err).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure.")
+
+          expect(lockfile).to eq(initial_lockfile)
         end
       end
     end
@@ -619,6 +759,9 @@ RSpec.describe "bundle install with gems on multiple sources" do
         lockfile <<-L
           GEM
             remote: #{file_uri_for(gem_repo1)}
+            specs:
+
+          GEM
             remote: #{file_uri_for(gem_repo3)}
             specs:
               rack (0.9.1)
@@ -641,6 +784,84 @@ RSpec.describe "bundle install with gems on multiple sources" do
       # Reproduction of https://github.com/rubygems/bundler/issues/3298
       it "does not unlock the installed gem on exec" do
         expect(the_bundle).to include_gems("rack 0.9.1")
+      end
+    end
+
+    context "with a lockfile with aggregated rubygems sources" do
+      let(:aggregate_gem_section_lockfile) do
+        <<~L
+          GEM
+            remote: #{file_uri_for(gem_repo1)}/
+            remote: #{file_uri_for(gem_repo3)}/
+            specs:
+              rack (0.9.1)
+
+          PLATFORMS
+            #{specific_local_platform}
+
+          DEPENDENCIES
+            rack!
+
+          BUNDLED WITH
+             #{Bundler::VERSION}
+        L
+      end
+
+      let(:split_gem_section_lockfile) do
+        <<~L
+          GEM
+            remote: #{file_uri_for(gem_repo1)}/
+            specs:
+
+          GEM
+            remote: #{file_uri_for(gem_repo3)}/
+            specs:
+              rack (0.9.1)
+
+          PLATFORMS
+            #{specific_local_platform}
+
+          DEPENDENCIES
+            rack!
+
+          BUNDLED WITH
+             #{Bundler::VERSION}
+        L
+      end
+
+      before do
+        build_repo gem_repo3 do
+          build_gem "rack", "0.9.1"
+        end
+
+        gemfile <<-G
+          source "#{file_uri_for(gem_repo1)}"
+          source "#{file_uri_for(gem_repo3)}" do
+            gem 'rack'
+          end
+        G
+
+        lockfile aggregate_gem_section_lockfile
+      end
+
+      it "installs the existing lockfile but prints a warning", :bundler => "< 3" do
+        bundle "config set --local deployment true"
+
+        bundle "install"
+
+        expect(lockfile).to eq(aggregate_gem_section_lockfile)
+        expect(err).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure.")
+        expect(the_bundle).to include_gems("rack 0.9.1", :source => "remote3")
+      end
+
+      it "refuses to install the existing lockfile and prints an error", :bundler => "3" do
+        bundle "config set --local deployment true"
+
+        bundle "install", :raise_on_error =>false
+
+        expect(lockfile).to eq(aggregate_gem_section_lockfile)
+        expect(err).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure.")
+        expect(out).to be_empty
       end
     end
 
@@ -825,11 +1046,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
       G
     end
 
-    it "keeps the old version", :bundler => "< 3" do
-      expect(the_bundle).to include_gems("rack 1.0.0")
-    end
-
-    it "installs the higher version in the new repo", :bundler => "3" do
+    it "installs the higher version in the new repo" do
       expect(the_bundle).to include_gems("rack 1.2")
     end
   end

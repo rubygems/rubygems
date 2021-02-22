@@ -390,6 +390,46 @@ RSpec.describe "major deprecations" do
     pending "fails with a helpful error", :bundler => "3"
   end
 
+  context "bundle install with a lockfile with a single rubygems section with multiple remotes" do
+    before do
+      build_repo gem_repo3 do
+        build_gem "rack", "0.9.1"
+      end
+
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        source "#{file_uri_for(gem_repo3)}" do
+          gem 'rack'
+        end
+      G
+
+      lockfile <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo1)}/
+          remote: #{file_uri_for(gem_repo3)}/
+          specs:
+            rack (0.9.1)
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+          rack!
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+
+    it "shows a deprecation", :bundler => "< 3" do
+      bundle "install"
+
+      expect(deprecations).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. You should run `bundle update` or generate your lockfile from scratch.")
+    end
+
+    pending "fails with a helpful error", :bundler => "3"
+  end
+
   context "when Bundler.setup is run in a ruby script" do
     before do
       create_file "gems.rb"

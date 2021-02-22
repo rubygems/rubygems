@@ -49,8 +49,12 @@ module Bundler
         o.is_a?(Rubygems) && (o.credless_remotes - credless_remotes).empty?
       end
 
+      def disable_multisource?
+        @remotes.size <= 1
+      end
+
       def can_lock?(spec)
-        return super if Bundler.feature_flag.disable_multisource?
+        return super if disable_multisource?
         spec.source.is_a?(Rubygems)
       end
 

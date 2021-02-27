@@ -591,6 +591,8 @@ module Bundler
                          :desc => "Generate a test directory for your library, either rspec, minitest or test-unit. Set a default with `bundle config set --global gem.test (rspec|minitest|test-unit)`."
     method_option :ci, :type => :string, :lazy_default => Bundler.settings["gem.ci"] || "",
                        :desc => "Generate CI configuration, either GitHub Actions, Travis CI, GitLab CI or CircleCI. Set a default with `bundle config set --global gem.ci (github|travis|gitlab|circle)`"
+    method_option :linter, :type => :string, :lazy_default => Bundler.settings["gem.linter"] || "",
+                           :desc => "Add a linter and code formatter, either RuboCop or Standard. Set a default with `bundle config set --global gem.linter (rubocop|standard)`"
 
     def gem(name)
     end

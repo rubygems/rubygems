@@ -25,6 +25,7 @@ GEM
 PLATFORMS
   java
   ruby
+  universal-java-11
   x64-mingw32
   x86_64-linux
 
@@ -39,4 +40,4 @@ DEPENDENCIES
   webrick (= 1.7.0)
 
 BUNDLED WITH
-   2.2.0.rc.2
+   2.3.0.dev

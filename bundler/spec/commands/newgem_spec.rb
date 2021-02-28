@@ -28,12 +28,12 @@ RSpec.describe "bundle gem" do
   let(:require_path) { "mygem" }
 
   before do
-    git_config_content = <<-EOF
-    [user]
-      name = "Bundler User"
-      email = user@example.com
-    [github]
-      user = bundleuser
+    git_config_content = <<~EOF
+      [user]
+        name = "Bundler User"
+        email = user@example.com
+      [github]
+        user = bundleuser
     EOF
     @git_config_location = ENV["GIT_CONFIG"]
     path = "#{tmp}/test_git_config.txt"

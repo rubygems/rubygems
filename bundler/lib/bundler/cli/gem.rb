@@ -58,6 +58,7 @@ module Bundler
         :ext              => options[:ext],
         :exe              => options[:exe],
         :bundler_version  => bundler_dependency_version,
+        :git              => use_git,
         :github_username  => github_username.empty? ? "[USERNAME]" : github_username,
         :required_ruby_version => Gem.ruby_version < Gem::Version.new("2.4.a") ? "2.3.0" : "2.4.0",
       }

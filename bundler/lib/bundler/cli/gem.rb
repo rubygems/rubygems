@@ -39,11 +39,11 @@ module Bundler
       constant_name = name.gsub(/-[_-]*(?![_-]|$)/) { "::" }.gsub(/([_-]+|(::)|^)(.|$)/) { $2.to_s + $3.upcase }
       constant_array = constant_name.split("::")
 
-      git_installed = Bundler.git_present?
+      use_git = Bundler.git_present? && options[:git]
 
-      git_author_name = git_installed ? `git config user.name`.chomp : ""
-      github_username = git_installed ? `git config github.user`.chomp : ""
-      git_user_email = git_installed ? `git config user.email`.chomp : ""
+      git_author_name = use_git ? `git config user.name`.chomp : ""
+      github_username = use_git ? `git config github.user`.chomp : ""
+      git_user_email = use_git ? `git config user.email`.chomp : ""
 
       config = {
         :name             => name,
@@ -79,7 +79,7 @@ module Bundler
         bin/setup
       ]
 
-      templates.merge!("gitignore.tt" => ".gitignore") if Bundler.git_present?
+      templates.merge!("gitignore.tt" => ".gitignore") if use_git
 
       if test_framework = ask_and_set_test_framework
         config[:test] = test_framework
@@ -189,7 +189,7 @@ module Bundler
         end
       end
 
-      if Bundler.git_present? && options[:git]
+      if use_git
         Bundler.ui.info "Initializing git repo in #{target}"
         Dir.chdir(target) do
           `git init`

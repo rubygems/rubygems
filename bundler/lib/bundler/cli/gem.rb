@@ -184,6 +184,8 @@ module Bundler
       if use_git
         Bundler.ui.info "Initializing git repo in #{target}"
         `git init #{target}`
+
+        config[:git_default_branch] = File.read("#{target}/.git/HEAD").split("/").last.chomp
       end
 
       templates.each do |src, dst|

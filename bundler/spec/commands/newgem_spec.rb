@@ -90,17 +90,24 @@ RSpec.describe "bundle gem" do
   end
 
   shared_examples_for "--coc flag" do
-    before do
-      bundle "gem #{gem_name} --coc"
-    end
     it "generates a gem skeleton with MIT license" do
+      bundle "gem #{gem_name} --coc"
       gem_skeleton_assertions
       expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
     end
 
     it "generates the README with a section for the Code of Conduct" do
+      bundle "gem #{gem_name} --coc"
       expect(bundled_app("#{gem_name}/README.md").read).to include("## Code of Conduct")
       expect(bundled_app("#{gem_name}/README.md").read).to match(%r{https://github\.com/bundleuser/#{gem_name}/blob/.*/CODE_OF_CONDUCT.md})
+    end
+
+    it "generates the README with a section for the Code of Conduct, respecting the configured git default branch" do
+      sys_exec("git config --global init.defaultBranch main")
+      bundle "gem #{gem_name} --coc"
+
+      expect(bundled_app("#{gem_name}/README.md").read).to include("## Code of Conduct")
+      expect(bundled_app("#{gem_name}/README.md").read).to include("https://github.com/bundleuser/#{gem_name}/blob/main/CODE_OF_CONDUCT.md")
     end
   end
 

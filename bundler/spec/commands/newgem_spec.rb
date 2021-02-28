@@ -133,11 +133,9 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
     end
 
-    describe "README additions" do
-      it "generates the README with a section for the Code of Conduct" do
-        expect(bundled_app("#{gem_name}/README.md").read).to include("## Code of Conduct")
-        expect(bundled_app("#{gem_name}/README.md").read).to match(%r{https://github\.com/bundleuser/#{gem_name}/blob/.*/CODE_OF_CONDUCT.md})
-      end
+    it "generates the README with a section for the Code of Conduct" do
+      expect(bundled_app("#{gem_name}/README.md").read).to include("## Code of Conduct")
+      expect(bundled_app("#{gem_name}/README.md").read).to match(%r{https://github\.com/bundleuser/#{gem_name}/blob/.*/CODE_OF_CONDUCT.md})
     end
   end
 
@@ -150,11 +148,9 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to_not exist
     end
 
-    describe "README additions" do
-      it "generates the README without a section for the Code of Conduct" do
-        expect(bundled_app("#{gem_name}/README.md").read).not_to include("## Code of Conduct")
-        expect(bundled_app("#{gem_name}/README.md").read).not_to match(%r{https://github\.com/bundleuser/#{gem_name}/blob/.*/CODE_OF_CONDUCT.md})
-      end
+    it "generates the README without a section for the Code of Conduct" do
+      expect(bundled_app("#{gem_name}/README.md").read).not_to include("## Code of Conduct")
+      expect(bundled_app("#{gem_name}/README.md").read).not_to match(%r{https://github\.com/bundleuser/#{gem_name}/blob/.*/CODE_OF_CONDUCT.md})
     end
   end
 

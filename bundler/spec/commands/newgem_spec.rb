@@ -1140,7 +1140,7 @@ Usage: "bundle gem NAME [OPTIONS]"
     it "should fail gracefully" do
       FileUtils.touch(bundled_app("conflict-foobar"))
       bundle "gem conflict-foobar", :raise_on_error => false
-      expect(err).to include("Errno::ENOTDIR")
+      expect(err).to eq("Couldn't create a new gem named `conflict-foobar` because there's an existing file named `conflict-foobar`.")
       expect(exitstatus).to eql(32)
     end
   end

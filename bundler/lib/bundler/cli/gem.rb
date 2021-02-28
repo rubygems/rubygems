@@ -176,6 +176,11 @@ module Bundler
         )
       end
 
+      if File.exist?(target) && !File.directory?(target)
+        Bundler.ui.error "Couldn't create a new gem named `#{gem_name}` because there's an existing file named `#{gem_name}`."
+        exit Bundler::BundlerError.all_errors[Bundler::GenericSystemCallError]
+      end
+
       if use_git
         Bundler.ui.info "Initializing git repo in #{target}"
         `git init #{target}`
@@ -183,16 +188,13 @@ module Bundler
 
       templates.each do |src, dst|
         destination = target.join(dst)
-        SharedHelpers.filesystem_access(destination) do
-          thor.template("newgem/#{src}", destination, config)
-        end
+        thor.template("newgem/#{src}", destination, config)
       end
 
       executables.each do |file|
-        SharedHelpers.filesystem_access(target.join(file)) do |path|
-          executable = (path.stat.mode | 0o111)
-          path.chmod(executable)
-        end
+        path = target.join(file)
+        executable = (path.stat.mode | 0o111)
+        path.chmod(executable)
       end
 
       if use_git
@@ -206,8 +208,6 @@ module Bundler
 
       Bundler.ui.info "Gem '#{name}' was successfully created. " \
         "For more information on making a RubyGem visit https://bundler.io/guides/creating_gem.html"
-    rescue Errno::EEXIST => e
-      raise GenericSystemCallError.new(e, "There was a conflict while creating the new gem.")
     end
 
     private

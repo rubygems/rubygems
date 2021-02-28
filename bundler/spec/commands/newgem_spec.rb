@@ -46,28 +46,6 @@ RSpec.describe "bundle gem" do
     ENV["GIT_CONFIG"] = @git_config_location
   end
 
-  shared_examples_for "git config is present" do
-    context "git config user.{name,email} present" do
-      it "sets gemspec author to git user.name if available" do
-        expect(generated_gemspec.authors.first).to eq("Bundler User")
-      end
-
-      it "sets gemspec email to git user.email if available" do
-        expect(generated_gemspec.email.first).to eq("user@example.com")
-      end
-    end
-  end
-
-  shared_examples_for "git config is absent" do
-    it "sets gemspec author to default message if git user.name is not set or empty" do
-      expect(generated_gemspec.authors.first).to eq("TODO: Write your name")
-    end
-
-    it "sets gemspec email to default message if git user.email is not set or empty" do
-      expect(generated_gemspec.email.first).to eq("TODO: Write your email address")
-    end
-  end
-
   describe "git repo initialization" do
     shared_examples_for "a gem with an initial git repo" do
       before do
@@ -409,7 +387,13 @@ RSpec.describe "bundle gem" do
         bundle "gem #{gem_name}"
       end
 
-      it_should_behave_like "git config is present"
+      it "sets gemspec author to git user.name if available" do
+        expect(generated_gemspec.authors.first).to eq("Bundler User")
+      end
+
+      it "sets gemspec email to git user.email if available" do
+        expect(generated_gemspec.email.first).to eq("user@example.com")
+      end
     end
 
     context "git config user.{name,email} is not set" do
@@ -419,7 +403,13 @@ RSpec.describe "bundle gem" do
         bundle "gem #{gem_name}"
       end
 
-      it_should_behave_like "git config is absent"
+      it "sets gemspec author to default message if git user.name is not set or empty" do
+        expect(generated_gemspec.authors.first).to eq("TODO: Write your name")
+      end
+
+      it "sets gemspec email to default message if git user.email is not set or empty" do
+        expect(generated_gemspec.email.first).to eq("TODO: Write your email address")
+      end
     end
 
     it "sets gemspec metadata['allowed_push_host']" do

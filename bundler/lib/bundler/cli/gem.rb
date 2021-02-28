@@ -176,6 +176,11 @@ module Bundler
         )
       end
 
+      if use_git
+        Bundler.ui.info "Initializing git repo in #{target}"
+        `git init #{target}`
+      end
+
       templates.each do |src, dst|
         destination = target.join(dst)
         SharedHelpers.filesystem_access(destination) do
@@ -191,8 +196,6 @@ module Bundler
       end
 
       if use_git
-        Bundler.ui.info "Initializing git repo in #{target}"
-        `git init #{target}`
         Dir.chdir(target) do
           `git add .`
         end

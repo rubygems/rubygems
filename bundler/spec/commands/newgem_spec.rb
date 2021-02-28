@@ -398,8 +398,8 @@ RSpec.describe "bundle gem" do
 
     context "git config user.{name,email} is not set" do
       before do
-        sys_exec("git config --unset user.name", :dir => bundled_app)
-        sys_exec("git config --unset user.email", :dir => bundled_app)
+        sys_exec("git config --unset user.name")
+        sys_exec("git config --unset user.email")
         bundle "gem #{gem_name}"
       end
 

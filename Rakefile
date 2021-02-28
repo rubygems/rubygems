@@ -15,6 +15,12 @@ task :update do |_, args|
   sh "ruby", "bundler/bin/bundle", "update", *args, "--gemfile=dev_gems.rb"
 end
 
+desc "Update the locked bundler version in dev environment"
+task :update_locked_bundler do |_, args|
+  sh "ruby", "bundler/bin/bundle", "update", "--bundler", "--gemfile=dev_gems.rb"
+  sh "ruby", "bundler/bin/bundle", "update", "--bundler", "--gemfile=bundler/test_gems.rb"
+end
+
 desc "Setup git hooks"
 task :git_hooks do
   sh "git config core.hooksPath .githooks"

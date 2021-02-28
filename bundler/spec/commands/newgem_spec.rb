@@ -28,22 +28,9 @@ RSpec.describe "bundle gem" do
   let(:require_path) { "mygem" }
 
   before do
-    git_config_content = <<~EOF
-      [user]
-        name = "Bundler User"
-        email = user@example.com
-      [github]
-        user = bundleuser
-    EOF
-    @git_config_location = ENV["GIT_CONFIG"]
-    path = "#{tmp}/test_git_config.txt"
-    File.open(path, "w") {|f| f.write(git_config_content) }
-    ENV["GIT_CONFIG"] = path
-  end
-
-  after do
-    FileUtils.rm(ENV["GIT_CONFIG"]) if File.exist?(ENV["GIT_CONFIG"])
-    ENV["GIT_CONFIG"] = @git_config_location
+    sys_exec("git config --global user.name 'Bundler User'")
+    sys_exec("git config --global user.email user@example.com")
+    sys_exec("git config --global github.user bundleuser")
   end
 
   describe "git repo initialization" do
@@ -276,7 +263,7 @@ RSpec.describe "bundle gem" do
 
     context "git config github.user is absent" do
       before do
-        sys_exec("git config --unset github.user")
+        sys_exec("git config --global --unset github.user")
         bundle "gem #{gem_name}"
       end
 
@@ -398,8 +385,8 @@ RSpec.describe "bundle gem" do
 
     context "git config user.{name,email} is not set" do
       before do
-        sys_exec("git config --unset user.name")
-        sys_exec("git config --unset user.email")
+        sys_exec("git config --global --unset user.name")
+        sys_exec("git config --global --unset user.email")
         bundle "gem #{gem_name}"
       end
 

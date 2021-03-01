@@ -1,3 +1,10 @@
+# 3.2.12 / 2021-03-01
+
+## Bug fixes:
+
+* Restore the ability to manually install extension gems. Pull request
+  #4384 by cfis
+
 # 3.2.11 / 2021-02-17
 
 ## Enhancements:

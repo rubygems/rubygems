@@ -52,4 +52,4 @@ Ideally, we recommend you to set up the list of steps as a [Dockerfile](https://
 
 ### If not included with the output of your command, run `bundle env` and paste the output below
 
-<!-- Replace this with the result of `bundle env`. -->
+<!-- Replace this with the result of `bundle env`. Don't forget to anonymize any private data! -->

@@ -875,7 +875,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Loads the default specifications. It should be called only once.
 
   def self.load_defaults
-    each_spec([Gem.default_specifications_dir]) do |spec|
+    default_stubs.each do |spec|
       # #load returns nil if the spec is bad, so we just ignore
       # it at this stage
       Gem.register_default_spec(spec)
@@ -2462,13 +2462,14 @@ class Gem::Specification < Gem::BasicSpecification
   # be eval'ed and reconstruct the same specification later.  Attributes that
   # still have their default values are omitted.
 
-  def to_ruby
+  def to_ruby(include_stub_files: true)
     mark_version
     result = []
     result << "# -*- encoding: utf-8 -*-"
     result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{raw_require_paths.join("\0")}"
     result << "#{Gem::StubSpecification::PREFIX}#{extensions.join "\0"}" unless
       extensions.empty?
+    result << "#{Gem::StubSpecification::FILES_PREFIX}#{files.join("\0")}" if include_stub_files && default_gem?
     result << nil
     result << "Gem::Specification.new do |s|"
 

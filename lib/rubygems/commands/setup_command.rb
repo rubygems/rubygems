@@ -18,7 +18,8 @@ class Gem::Commands::SetupCommand < Gem::Command
           :site_or_vendor => "sitelibdir",
           :destdir => "", :prefix => "", :previous_version => "",
           :regenerate_binstubs => true,
-          :regenerate_plugins => true
+          :regenerate_plugins => true,
+          :regenerate_default_specs => true
 
     add_option "--previous-version=VERSION",
                "Previous version of RubyGems",
@@ -90,6 +91,11 @@ class Gem::Commands::SetupCommand < Gem::Command
     add_option "--[no-]regenerate-plugins",
                "Regenerate gem plugins" do |value, options|
       options[:regenerate_plugins] = value
+    end
+
+    add_option "--[no-]regenerate-default-specifications",
+               "Regenerate default gem specifications" do |value, options|
+      options[:regenerate_default_specifications] = value
     end
 
     add_option "-f", "--[no-]force",
@@ -182,6 +188,7 @@ By default, this RubyGems will install gem as:
 
     regenerate_binstubs(bin_dir) if options[:regenerate_binstubs]
     regenerate_plugins(bin_dir) if options[:regenerate_plugins]
+    regenerate_default_specs if options[:regenerate_default_specs]
 
     uninstall_old_gemcutter
 
@@ -605,6 +612,10 @@ abort "#{deprecation_message}"
 
     command = Gem::Commands::PristineCommand.new
     command.invoke(*args)
+  end
+
+  def regenerate_default_specs
+    Gem.regenerate_default_specs(include_stub_files: true)
   end
 
   private

@@ -1203,10 +1203,18 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
           next unless $~
         end
 
-        spec.activate if already_loaded?(file)
+        spec.to_spec.activate if already_loaded?(file)
 
         @path_to_default_spec_map[file] = spec
         @path_to_default_spec_map[file.sub(suffix_regexp, "")] = spec
+      end
+    end
+
+    def regenerate_default_specs(include_stub_files:)
+      Gem::Util.glob_files_in_dir("*.gemspec", Gem.default_specifications_dir).map do |path|
+        spec = Gem::Specification.load path
+
+        write_binary(spec.loaded_from, spec.to_ruby(include_stub_files: include_stub_files))
       end
     end
 

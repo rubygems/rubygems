@@ -7,15 +7,17 @@
 class Gem::StubSpecification < Gem::BasicSpecification
   # :nodoc:
   PREFIX = "# stub: ".freeze
+  FILES_PREFIX = "# files-stub: ".freeze
 
   # :nodoc:
   OPEN_MODE = "r:UTF-8:-".freeze
 
   class StubLine # :nodoc: all
-    attr_reader :name, :version, :platform, :require_paths, :extensions,
+    attr_reader :name, :version, :platform, :require_paths, :files, :extensions,
                 :full_name
 
     NO_EXTENSIONS = [].freeze
+    NO_FILES = [].freeze
 
     # These are common require paths.
     REQUIRE_PATHS = { # :nodoc:
@@ -32,13 +34,14 @@ class Gem::StubSpecification < Gem::BasicSpecification
       "lib" => ["lib"].freeze,
     }.freeze
 
-    def initialize(data, extensions)
+    def initialize(data, files, extensions)
       parts          = data[PREFIX.length..-1].split(" ".freeze, 4)
       @name          = parts[0].freeze
       parts.insert(1, 0) unless Gem::Version.correct?(parts[1])
       @version       = Gem::Version.new(parts[1])
 
       @platform      = Gem::Platform.new parts[2]
+      @files         = files
       @extensions    = extensions
       @full_name     = if platform == Gem::Platform::RUBY
         "#{name}-#{version}"
@@ -112,13 +115,21 @@ class Gem::StubSpecification < Gem::BasicSpecification
             file.readline # discard encoding line
             stubline = file.readline.chomp
             if stubline.start_with?(PREFIX)
-              extensions = if /\A#{PREFIX}/ =~ file.readline.chomp
+              second_stub_line = file.readline.chomp
+
+              extensions = if /\A#{PREFIX}/ =~ second_stub_line
                 $'.split "\0"
               else
                 StubLine::NO_EXTENSIONS
               end
 
-              @data = StubLine.new stubline, extensions
+              files = if default_gem? && (/\A#{FILES_PREFIX}/ =~ second_stub_line || /\A#{FILES_PREFIX}/ =~ file.readline.chomp)
+                $'.split "\0"
+              else
+                StubLine::NO_FILES
+              end
+
+              @data = StubLine.new stubline, files, extensions
             end
           rescue EOFError
           end
@@ -171,6 +182,13 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def version
     data.version
+  end
+
+  ##
+  # List of files in the gem
+
+  def files
+    data.files
   end
 
   def full_name

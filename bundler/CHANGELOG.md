@@ -1,3 +1,10 @@
+# 2.2.12 (March 1, 2021)
+
+## Bug fixes:
+
+  - Fix sporadic warnings about `nil` gemspec on install/update and make those faster [#4409](https://github.com/rubygems/rubygems/pull/4409)
+  - Fix deployment install with duplicate path gems added to Gemfile [#4410](https://github.com/rubygems/rubygems/pull/4410)
+
 # 2.2.11 (February 17, 2021)
 
 ## Bug fixes:

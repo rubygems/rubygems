@@ -1,3 +1,17 @@
+# 3.2.12 / 2021-03-01
+
+## Bug fixes:
+
+* Restore the ability to manually install extension gems. Pull request
+  #4384 by cfis
+
+# 3.2.11 / 2021-02-17
+
+## Enhancements:
+
+* Optionally fallback to IPv4 when IPv6 is unreachable. Pull request #2662
+  by sonalkr132
+
 # 3.2.10 / 2021-02-15
 
 ## Documentation:

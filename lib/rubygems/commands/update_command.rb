@@ -300,10 +300,7 @@ command to remove old versions.
     args << '--prefix' << Gem.prefix if Gem.prefix
     args << '--no-document' unless options[:document].include?('rdoc') || options[:document].include?('ri')
     args << '--no-format-executable' if options[:no_format_executable]
-    args << '--previous-version' << Gem::VERSION if
-      options[:system] == true or
-        Gem::Version.new(options[:system]) >= Gem::Version.new(2)
-    args
+    args << '--previous-version' << Gem::VERSION
   end
 
   def which_to_update(highest_installed_gems, gem_names, system = false)

@@ -88,6 +88,14 @@ jobs:
         working-directory: ./bundler
       - name: Check rails can be installed
         run: gem install rails --verbose --backtrace
+      - name: Check default gem gets activated
+        run: ruby -rpsych -e 'exit(Gem.loaded_specs["psych"].version.to_s != "4.0.4")'
+      - name: Check upgraded default gem gets activated
+        run: |
+          gem install psych:4.0.4
+          ruby -rpsych -e 'puts "Checking psych 4.0.4 gets activated...."; exit(Gem.loaded_specs["psych"].version.to_s == "4.0.4")'
+          ruby -rpsych -e 'puts "Checking only psych 4.0.4 features are loaded between #{$LOADED_FEATURES}"; exit($LOADED_FEATURES.grep(/psych/).all?{|lf| lf =~ /psych-4.0.4/})'
+        if: matrix.ruby.name != '2.3'
     timeout-minutes: 10
 
   install_rubygems_windows:

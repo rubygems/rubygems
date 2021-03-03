@@ -1,3 +1,9 @@
+# 3.2.13 / 2021-03-03
+
+## Bug fixes:
+
+* Support non-gnu libc linux platforms. Pull request #4082 by lloeki
+
 # 3.2.12 / 2021-03-01
 
 ## Bug fixes:

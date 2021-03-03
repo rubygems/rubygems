@@ -1,3 +1,13 @@
+# 2.2.13 (March 3, 2021)
+
+## Enhancements:
+
+  - Respect user configured default branch in README links in new generated gems [#4303](https://github.com/rubygems/rubygems/pull/4303)
+
+## Bug fixes:
+
+  - Fix gems sometimes being pulled from irrelevant sources [#4418](https://github.com/rubygems/rubygems/pull/4418)
+
 # 2.2.12 (March 1, 2021)
 
 ## Bug fixes:

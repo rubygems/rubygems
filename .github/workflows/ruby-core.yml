@@ -46,15 +46,17 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: rubygems/rubygems
-      - name: Test RubyGems
+      - name: Sync tools
         run: |
           ruby tool/sync_default_gems.rb rubygems
-          make -j2 -s test-all TESTS="rubygems --no-retry"
+          ruby tool/sync_default_gems.rb bundler
+        working-directory: ruby/ruby
+      - name: Test RubyGems
+        run: make -j2 -s test-all TESTS="rubygems --no-retry"
         working-directory: ruby/ruby
         if: matrix.target == 'Rubygems'
       - name: Test Bundler
         run: |
-          ruby tool/sync_default_gems.rb bundler
           git checkout lib/bundler/bundler.gemspec
           git add .
           make test-bundler-parallel

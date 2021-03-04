@@ -26,7 +26,6 @@ class Endpoint < Sinatra::Base
     @all_requests ||= []
   end
 
-  GEM_REPO = Pathname.new(ENV["BUNDLER_SPEC_GEM_REPO"] || Spec::Path.gem_repo1)
   set :raise_errors, true
   set :show_exceptions, false
 
@@ -41,7 +40,11 @@ class Endpoint < Sinatra::Base
   helpers do
     include Spec::Path
 
-    def dependencies_for(gem_names, gem_repo = GEM_REPO)
+    def default_gem_repo
+      Pathname.new(ENV["BUNDLER_SPEC_GEM_REPO"] || Spec::Path.gem_repo1)
+    end
+
+    def dependencies_for(gem_names, gem_repo = default_gem_repo)
       return [] if gem_names.nil? || gem_names.empty?
 
       all_specs = %w[specs.4.8 prerelease_specs.4.8].map do |filename|
@@ -74,11 +77,11 @@ class Endpoint < Sinatra::Base
   end
 
   get "/fetch/actual/gem/:id" do
-    File.binread("#{GEM_REPO}/quick/Marshal.4.8/#{params[:id]}")
+    File.binread("#{default_gem_repo}/quick/Marshal.4.8/#{params[:id]}")
   end
 
   get "/gems/:id" do
-    File.binread("#{GEM_REPO}/gems/#{params[:id]}")
+    File.binread("#{default_gem_repo}/gems/#{params[:id]}")
   end
 
   get "/api/v1/dependencies" do
@@ -86,11 +89,11 @@ class Endpoint < Sinatra::Base
   end
 
   get "/specs.4.8.gz" do
-    File.binread("#{GEM_REPO}/specs.4.8.gz")
+    File.binread("#{default_gem_repo}/specs.4.8.gz")
   end
 
   get "/prerelease_specs.4.8.gz" do
-    File.binread("#{GEM_REPO}/prerelease_specs.4.8.gz")
+    File.binread("#{default_gem_repo}/prerelease_specs.4.8.gz")
   end
 end
 

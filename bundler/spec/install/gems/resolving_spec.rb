@@ -81,6 +81,25 @@ RSpec.describe "bundle install with install-time dependencies" do
     expect(out).to eq("YES\nYES")
   end
 
+  it "installs gems with implicit rake dependencies without rake previously installed" do
+    with_path_as("") do
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "with_implicit_rake_dep"
+        gem "another_implicit_rake_dep"
+        gem "rake"
+      G
+    end
+
+    run <<-R
+      require 'implicit_rake_dep'
+      require 'another_implicit_rake_dep'
+      puts IMPLICIT_RAKE_DEP
+      puts ANOTHER_IMPLICIT_RAKE_DEP
+    R
+    expect(out).to eq("YES\nYES")
+  end
+
   it "installs gems with a dependency with no type" do
     skip "incorrect data check error" if Gem.win_platform?
 

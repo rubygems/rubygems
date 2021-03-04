@@ -88,6 +88,11 @@ module Bundler
     def call
       check_for_corrupt_lockfile
 
+      if @rake
+        do_install(@rake, 0)
+        Gem::Specification.reset
+      end
+
       if @size > 1
         install_with_worker
       else
@@ -212,8 +217,6 @@ module Bundler
     # are installed.
     def enqueue_specs
       @specs.select(&:ready_to_enqueue?).each do |spec|
-        next if @rake && !@rake.installed? && spec.name != @rake.name
-
         if spec.dependencies_installed? @specs
           spec.state = :enqueued
           worker_pool.enq spec

@@ -30,7 +30,11 @@ module Spec
     end
 
     def build_repo1
+      rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
+
       build_repo gem_repo1 do
+        FileUtils.cp rake_path, "#{gem_repo1}/gems/"
+
         build_gem "rack", %w[0.9.1 1.0.0] do |s|
           s.executables = "rackup"
           s.post_install_message = "Rack's post install message"
@@ -256,9 +260,7 @@ module Spec
     def build_repo(path, &blk)
       return if File.directory?(path)
 
-      rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
       FileUtils.mkdir_p("#{path}/gems")
-      FileUtils.cp rake_path, "#{path}/gems/"
 
       update_repo(path, &blk)
     end

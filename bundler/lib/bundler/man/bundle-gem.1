@@ -90,6 +90,19 @@ When Bundler is configured to not generate CI files, an interactive prompt will 
 When Bundler is unconfigured, an interactive prompt will be displayed and the answer will be saved in Bundler\'s global config for future \fBbundle gem\fR use\.
 .
 .TP
+\fB\-\-linter\fR, \fB\-\-linter=rubocop\fR, \fB\-\-linter=standard\fR
+Specify the linter and code formatter that Bundler should add to the project\'s development dependencies\. Acceptable values are \fBrubocop\fR and \fBstandard\fR\. A configuration file will be generated in the project directory\. Given no option is specified:
+.
+.IP
+When Bundler is configured to add a linter, this defaults to Bundler\'s global config setting \fBgem\.linter\fR\.
+.
+.IP
+When Bundler is configured not to add a linter, an interactive prompt will be displayed and the answer will be used for the current rubygem project\.
+.
+.IP
+When Bundler is unconfigured, an interactive prompt will be displayed and the answer will be saved in Bundler\'s global config for future \fBbundle gem\fR use\.
+.
+.TP
 \fB\-e\fR, \fB\-\-edit[=EDITOR]\fR
 Open the resulting GEM_NAME\.gemspec in EDITOR, or the default editor if not specified\. The default is \fB$BUNDLER_EDITOR\fR, \fB$VISUAL\fR, or \fB$EDITOR\fR\.
 .

@@ -212,6 +212,7 @@ bundler/lib/bundler/templates/newgem/rspec.tt
 bundler/lib/bundler/templates/newgem/rubocop.yml.tt
 bundler/lib/bundler/templates/newgem/spec/newgem_spec.rb.tt
 bundler/lib/bundler/templates/newgem/spec/spec_helper.rb.tt
+bundler/lib/bundler/templates/newgem/standard.yml.tt
 bundler/lib/bundler/templates/newgem/test/minitest/test_helper.rb.tt
 bundler/lib/bundler/templates/newgem/test/minitest/test_newgem.rb.tt
 bundler/lib/bundler/templates/newgem/test/test-unit/newgem_test.rb.tt

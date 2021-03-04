@@ -255,6 +255,15 @@ module Spec
 
     def build_repo(path, &blk)
       return if File.directory?(path)
+
+      rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
+      FileUtils.mkdir_p("#{path}/gems")
+      FileUtils.cp rake_path, "#{path}/gems/"
+
+      update_repo(path, &blk)
+    end
+
+    def check_test_gems!
       rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
 
       if rake_path.nil?
@@ -263,14 +272,9 @@ module Spec
         rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
       end
 
-      if rake_path
-        FileUtils.mkdir_p("#{path}/gems")
-        FileUtils.cp rake_path, "#{path}/gems/"
-      else
+      if rake_path.nil?
         abort "Your test gems are missing! Run `rm -rf #{tmp}` and try again."
       end
-
-      update_repo(path, &blk)
     end
 
     def update_repo(path)

@@ -2,6 +2,7 @@
 
 require "pathname"
 require "rbconfig"
+require "shellwords"
 
 require_relative "version"
 require_relative "constants"
@@ -306,7 +307,7 @@ module Bundler
       setup_require = "\"-r#{File.expand_path("setup", __dir__)}\""
       return if !rubyopt.empty? && rubyopt.first =~ /#{setup_require}/
       rubyopt.unshift setup_require
-      Bundler::SharedHelpers.set_env "RUBYOPT", rubyopt.join(" ")
+      Bundler::SharedHelpers.set_env "RUBYOPT", Shellwords.join(rubyopt)
     end
 
     def set_rubylib

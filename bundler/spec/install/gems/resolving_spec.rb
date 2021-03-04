@@ -3,6 +3,32 @@
 RSpec.describe "bundle install with install-time dependencies" do
   before do
     build_repo2 do
+      build_gem "with_implicit_rake_dep" do |s|
+        s.extensions << "Rakefile"
+        s.write "Rakefile", <<-RUBY
+          task :default do
+            path = File.expand_path("../lib", __FILE__)
+            FileUtils.mkdir_p(path)
+            File.open("\#{path}/implicit_rake_dep.rb", "w") do |f|
+              f.puts "IMPLICIT_RAKE_DEP = 'YES'"
+            end
+          end
+        RUBY
+      end
+
+      build_gem "another_implicit_rake_dep" do |s|
+        s.extensions << "Rakefile"
+        s.write "Rakefile", <<-RUBY
+          task :default do
+            path = File.expand_path("../lib", __FILE__)
+            FileUtils.mkdir_p(path)
+            File.open("\#{path}/another_implicit_rake_dep.rb", "w") do |f|
+              f.puts "ANOTHER_IMPLICIT_RAKE_DEP = 'YES'"
+            end
+          end
+        RUBY
+      end
+
       # Test complicated gem dependencies for install
       build_gem "net_a" do |s|
         s.add_dependency "net_b"

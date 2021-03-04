@@ -154,32 +154,6 @@ module Spec
 
         build_gem "duradura", "7.0"
 
-        build_gem "with_implicit_rake_dep" do |s|
-          s.extensions << "Rakefile"
-          s.write "Rakefile", <<-RUBY
-            task :default do
-              path = File.expand_path("../lib", __FILE__)
-              FileUtils.mkdir_p(path)
-              File.open("\#{path}/implicit_rake_dep.rb", "w") do |f|
-                f.puts "IMPLICIT_RAKE_DEP = 'YES'"
-              end
-            end
-          RUBY
-        end
-
-        build_gem "another_implicit_rake_dep" do |s|
-          s.extensions << "Rakefile"
-          s.write "Rakefile", <<-RUBY
-            task :default do
-              path = File.expand_path("../lib", __FILE__)
-              FileUtils.mkdir_p(path)
-              File.open("\#{path}/another_implicit_rake_dep.rb", "w") do |f|
-                f.puts "ANOTHER_IMPLICIT_RAKE_DEP = 'YES'"
-              end
-            end
-          RUBY
-        end
-
         build_gem "very_simple_binary", &:add_c_extension
         build_gem "simple_binary", &:add_c_extension
 

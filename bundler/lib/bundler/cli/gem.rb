@@ -162,7 +162,7 @@ module Bundler
         Bundler.ui.info "RuboCop enabled in config"
         templates.merge!("rubocop.yml.tt" => ".rubocop.yml")
       when "standard"
-        config[:linter_version] = "0.2.5" if Gem.ruby_version < Gem::Version.new("2.4.a")
+        config[:linter_version] = Gem.ruby_version < Gem::Version.new("2.4.a") ? "0.2.5" : "1.0"
         Bundler.ui.info "Standard enabled in config"
         templates.merge!("standard.yml.tt" => ".standard.yml")
       end

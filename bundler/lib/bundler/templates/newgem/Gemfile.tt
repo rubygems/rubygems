@@ -19,5 +19,5 @@ gem "<%= config[:test] %>", "~> <%= config[:test_framework_version] %>"
 gem "rubocop", "~> <%= config[:linter_version] %>"
 <%- elsif config[:linter] == "standard" -%>
 
-gem "standard"<%= ", \"~> #{config[:linter_version]}\"" if config[:linter_version] %>
+gem "standard", "~> <%= config[:linter_version] %>"
 <%- end -%>

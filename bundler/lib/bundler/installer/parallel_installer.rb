@@ -27,13 +27,8 @@ module Bundler
         state == :failed
       end
 
-      def installation_attempted?
-        installed? || failed?
-      end
-
-      # Only true when spec in neither installed nor already enqueued
       def ready_to_enqueue?
-        !enqueued? && !installation_attempted?
+        state == :none
       end
 
       def has_post_install_message?

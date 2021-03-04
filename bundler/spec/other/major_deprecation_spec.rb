@@ -670,4 +670,50 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
 
     pending "fails with a helpful message", :bundler => "3"
   end
+
+  describe "deprecating rubocop", :readline do
+    context "bundle gem --rubocop" do
+      before do
+        bundle "gem my_new_gem --rubocop", :raise_on_error => false
+      end
+
+      it "prints a deprecation warning", :bundler => "< 3" do
+        expect(deprecations).to include \
+          "--rubocop is deprecated, use --linter=rubocop"
+      end
+    end
+
+    context "bundle gem --no-rubocop" do
+      before do
+        bundle "gem my_new_gem --no-rubocop", :raise_on_error => false
+      end
+
+      it "prints a deprecation warning", :bundler => "< 3" do
+        expect(deprecations).to include \
+          "--no-rubocop is deprecated, use --linter"
+      end
+    end
+
+    context "bundle gem with gem.rubocop set to true" do
+      before do
+        bundle "gem my_new_gem", :env => { "BUNDLE_GEM__RUBOCOP" => "true" }, :raise_on_error => false
+      end
+
+      it "prints a deprecation warning", :bundler => "< 3" do
+        expect(deprecations).to include \
+          "config gem.rubocop is deprecated; we've updated your config to use gem.linter instead"
+      end
+    end
+
+    context "bundle gem with gem.rubocop set to false" do
+      before do
+        bundle "gem my_new_gem", :env => { "BUNDLE_GEM__RUBOCOP" => "false" }, :raise_on_error => false
+      end
+
+      it "prints a deprecation warning", :bundler => "< 3" do
+        expect(deprecations).to include \
+          "config gem.rubocop is deprecated; we've updated your config to use gem.linter instead"
+      end
+    end
+  end
 end

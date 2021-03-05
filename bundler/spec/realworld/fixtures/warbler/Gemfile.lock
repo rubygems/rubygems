@@ -19,6 +19,7 @@ GEM
 PLATFORMS
   java
   ruby
+  universal-java-11
 
 DEPENDENCIES
   demo!
@@ -26,4 +27,4 @@ DEPENDENCIES
   warbler (~> 2.0)
 
 BUNDLED WITH
-   2.2.0.rc.2
+   2.3.0.dev

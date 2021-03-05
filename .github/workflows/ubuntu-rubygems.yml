@@ -22,7 +22,7 @@ jobs:
           - { name: "2.6", value: 2.6.6 }
           - { name: "2.7", value: 2.7.2 }
           - { name: "3.0", value: 3.0.0 }
-          - { name: jruby-9.2, value: jruby-9.2.14.0 }
+          - { name: jruby-9.2, value: jruby-9.2.16.0 }
           - { name: truffleruby-20.3, value: truffleruby-20.3.0 }
     steps:
       - uses: actions/checkout@v2

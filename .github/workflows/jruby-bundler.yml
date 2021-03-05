@@ -21,7 +21,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: jruby-9.2.14.0
+          ruby-version: jruby-9.2.16.0
           bundler: none
       - name: Prepare dependencies
         run: |

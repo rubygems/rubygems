@@ -41,7 +41,18 @@ class Endpoint < Sinatra::Base
     include Spec::Path
 
     def default_gem_repo
-      Pathname.new(ENV["BUNDLER_SPEC_GEM_REPO"] || Spec::Path.gem_repo1)
+      if ENV["BUNDLER_SPEC_GEM_REPO"]
+        Pathname.new(ENV["BUNDLER_SPEC_GEM_REPO"])
+      else
+        case request.host
+        when "gem.repo2"
+          Spec::Path.gem_repo2
+        when "gem.repo3"
+          Spec::Path.gem_repo3
+        else
+          Spec::Path.gem_repo1
+        end
+      end
     end
 
     def dependencies_for(gem_names, gem_repo = default_gem_repo)

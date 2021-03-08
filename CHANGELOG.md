@@ -1,3 +1,14 @@
+# 3.2.14 / 2021-03-08
+
+## Enhancements:
+
+* Less wrapping of network errors. Pull request #4064 by deivid-rodriguez
+
+## Bug fixes:
+
+* Revert addition of support for `musl` variants to restore graceful
+  fallback on Alpine. Pull request #4434 by deivid-rodriguez
+
 # 3.2.13 / 2021-03-03
 
 ## Bug fixes:

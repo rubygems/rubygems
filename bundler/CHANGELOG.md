@@ -1,3 +1,14 @@
+# 2.2.14 (March 8, 2021)
+
+## Security fixes:
+
+  - Lock GEM sources separately and fix locally installed specs confusing bundler [#4381](https://github.com/rubygems/rubygems/pull/4381)
+
+## Bug fixes:
+
+  - Make `rake` available to other gems' installers right after it's installed [#4428](https://github.com/rubygems/rubygems/pull/4428)
+  - Fix encoding issue on compact index updater [#4362](https://github.com/rubygems/rubygems/pull/4362)
+
 # 2.2.13 (March 3, 2021)
 
 ## Enhancements:

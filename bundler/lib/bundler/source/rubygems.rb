@@ -423,12 +423,11 @@ module Bundler
         spec.fetch_platform
 
         download_path = requires_sudo? ? Bundler.tmp(spec.full_name) : rubygems_dir
-        gem_path = "#{rubygems_dir}/cache/#{spec.full_name}.gem"
 
         SharedHelpers.filesystem_access("#{download_path}/cache") do |p|
           FileUtils.mkdir_p(p)
         end
-        download_gem(spec, download_path)
+        gem_path = download_gem(spec, download_path)
 
         if requires_sudo?
           SharedHelpers.filesystem_access("#{rubygems_dir}/cache") do |p|
@@ -484,6 +483,7 @@ module Bundler
           SharedHelpers.filesystem_access(local_path) do
             FileUtils.cp(cache_path, local_path)
           end
+          local_path
         else
           uri = spec.remote.uri
           Bundler.ui.confirm("Fetching #{version_message(spec)}")
@@ -493,12 +493,9 @@ module Bundler
           rubygems_local_path = rubygems_local_path.gsub(/\Afile:/, "") unless Bundler.rubygems.provides?(">= 3.2.0.rc.2")
           rubygems_local_path = rubygems_local_path.gsub(%r{\A//}, "") if Bundler.rubygems.provides?("< 3.1.0")
 
-          if rubygems_local_path != local_path
-            SharedHelpers.filesystem_access(local_path) do
-              FileUtils.mv(rubygems_local_path, local_path)
-            end
-          end
-          cache_globally(spec, local_path)
+          cache_globally(spec, rubygems_local_path)
+
+          rubygems_local_path
         end
       end
 

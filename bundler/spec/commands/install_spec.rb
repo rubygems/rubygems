@@ -611,13 +611,15 @@ RSpec.describe "bundle install with gem sources" do
       G
     end
 
-    it "should display a proper message to explain the problem" do
+    it "still works, saving the cache inside the user's home folder, and reusing it on further invokations" do
       FileUtils.chmod(0o500, cache_path)
 
       bundle "config set --local path vendor"
-      bundle :install, :raise_on_error => false
-      expect(err).to include(cache_path.to_s)
-      expect(err).to include("grant write permissions")
+      bundle :install
+
+      FileUtils.rm_r bundled_app("vendor/#{Bundler.ruby_scope}/gems")
+      FileUtils.rm_r bundled_app("vendor/#{Bundler.ruby_scope}/specifications")
+      bundle :install, :artifice => "compact_index_no_gem"
     end
   end
 

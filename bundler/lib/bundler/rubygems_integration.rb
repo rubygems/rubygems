@@ -186,7 +186,7 @@ module Bundler
     end
 
     def gem_cache
-      gem_path.map {|p| File.expand_path("cache", p) }
+      [*gem_path, Gem.user_dir].map {|p| File.expand_path("cache", p) }
     end
 
     def spec_cache_dirs

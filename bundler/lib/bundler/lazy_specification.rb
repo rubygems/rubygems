@@ -73,7 +73,7 @@ module Bundler
         same_platform_candidates = candidates.select do |spec|
           MatchPlatform.platforms_match?(spec.platform, platform_object)
         end
-        search = same_platform_candidates.last || candidates.last
+        search = same_platform_candidates.last
         search.dependencies = dependencies if search && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
         search
       end

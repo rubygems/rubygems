@@ -61,16 +61,20 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
   doc.rdoc_dir = 'doc'
 end
 
-load "util/automatiek.rake"
+# No big deal if Automatiek is not available. This might be just because
+# `rake` is executed from release tarball.
+if File.exist?("util/automatiek.rake")
+  load "util/automatiek.rake"
 
-# We currently ship Molinillo master branch as of
-# https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
-Automatiek::RakeTask.new("molinillo") do |lib|
-  lib.version = "master"
-  lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
-  lib.namespace = "Molinillo"
-  lib.prefix = "Gem::Resolver"
-  lib.vendor_lib = "lib/rubygems/resolver/molinillo"
+  # We currently ship Molinillo master branch as of
+  # https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
+  Automatiek::RakeTask.new("molinillo") do |lib|
+    lib.version = "master"
+    lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
+    lib.namespace = "Molinillo"
+    lib.prefix = "Gem::Resolver"
+    lib.vendor_lib = "lib/rubygems/resolver/molinillo"
+  end
 end
 
 namespace :rubocop do

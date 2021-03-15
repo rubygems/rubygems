@@ -53,8 +53,7 @@ module Bundler
       end
 
       def missing_lockfile_dependencies(all_spec_names)
-        deps = all_dependencies.reject {|dep| ignorable_dependency? dep }
-        deps.reject {|dep| all_spec_names.include? dep.name }
+        dependencies.reject {|dep| all_spec_names.include? dep.name }
       end
 
       # Represents all dependencies

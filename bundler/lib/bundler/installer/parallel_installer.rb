@@ -6,10 +6,11 @@ require_relative "gem_installer"
 module Bundler
   class ParallelInstaller
     class SpecInstallation
-      attr_accessor :spec, :name, :post_install_message, :state, :error
+      attr_accessor :spec, :name, :full_name, :post_install_message, :state, :error
       def initialize(spec)
         @spec = spec
         @name = spec.name
+        @full_name = spec.full_name
         @state = :none
         @post_install_message = ""
         @error = nil
@@ -62,7 +63,7 @@ module Bundler
       end
 
       def to_s
-        "#<#{self.class} #{@spec.full_name} (#{state})>"
+        "#<#{self.class} #{full_name} (#{state})>"
       end
     end
 

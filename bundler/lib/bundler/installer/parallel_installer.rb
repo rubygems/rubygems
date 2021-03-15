@@ -49,9 +49,7 @@ module Bundler
       # Represents only the non-development dependencies, the ones that are
       # itself and are in the total list.
       def dependencies
-        @dependencies ||= begin
-          all_dependencies.reject {|dep| ignorable_dependency? dep }
-        end
+        @dependencies ||= all_dependencies.reject {|dep| ignorable_dependency? dep }
       end
 
       def missing_lockfile_dependencies(all_spec_names)

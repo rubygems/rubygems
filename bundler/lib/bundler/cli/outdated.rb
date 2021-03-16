@@ -153,6 +153,12 @@ module Bundler
         if !current_spec.version.prerelease? && !options[:pre] && active_specs.size > 1
           active_specs.delete_if {|b| b.respond_to?(:version) && b.version.prerelease? }
         end
+
+        active_specs.delete_if do |spec|
+          spec.respond_to?(:required_ruby_version) &&
+            !spec.required_ruby_version.satisfied_by?(Gem.ruby_version)
+        end
+
         active_spec = active_specs.last
       end
 

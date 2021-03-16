@@ -652,6 +652,41 @@ RSpec.describe "bundle outdated" do
     it_behaves_like "version update is detected"
   end
 
+  context "update available for a gem that requires a specific version of Ruby" do
+    before do
+      build_repo4 do
+        {
+          "1.0.0" => nil,
+          "2.0.0" => ">= #{Gem.ruby_version}",
+          "3.0.0" => "> #{Gem.ruby_version}",
+        }.each do |gem_version, required_ruby_version|
+          build_gem "ruby_support", gem_version do |s|
+            s.required_ruby_version = required_ruby_version
+          end
+        end
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo4)}"
+        gem "ruby_support", '1.0.0'
+      G
+    end
+
+    subject { bundle "outdated", :raise_on_error => false }
+
+    it_behaves_like "version update is detected"
+
+    it "detects the gem version supported on this version of Ruby" do
+      subject
+      expect(out).to include("2.0.0")
+    end
+
+    it "excludes the gem version that requires a more recent version of Ruby" do
+      subject
+      expect(out).not_to include("3.0.0")
+    end
+  end
+
   context "when on a new machine" do
     before do
       simulate_new_machine

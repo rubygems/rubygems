@@ -1415,7 +1415,7 @@ In Gemfile:
         to include("You need to install git to be able to use gems from git repositories. For help installing git, please refer to GitHub's tutorial at https://help.github.com/articles/set-up-git")
     end
 
-    it "doesn't need git in the new machine if an installed git gem is copied to another machine" do
+    it "installs a packaged git gem successfully" do
       build_git "foo"
 
       install_gemfile <<-G
@@ -1423,8 +1423,8 @@ In Gemfile:
           gem 'foo'
         end
       G
-      bundle "config set path vendor/bundle"
-      bundle :install
+      bundle "config set cache_all true"
+      bundle :cache
       simulate_new_machine
 
       bundle "install", :env => { "PATH" => "" }

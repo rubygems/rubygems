@@ -193,31 +193,14 @@ RSpec.describe "bundle cache with git" do
     expect(gemspec).to_not match("`echo bob`")
   end
 
-  it "can install after bundle cache without cloning remote repositories" do
+  it "can install after bundle cache with git not installed" do
     build_git "foo"
 
     gemfile <<-G
       gem "foo", :git => '#{lib_path("foo-1.0")}'
     G
     bundle "config set cache_all true"
-    bundle "config set path vendor/bundle"
     bundle :cache, "all-platforms" => true, :install => false
-
-    simulate_new_machine
-    bundle "config set deployment true"
-    bundle "install --local --verbose"
-    expect(out).to_not include("Fetching")
-    expect(the_bundle).to include_gem "foo 1.0"
-  end
-
-  it "can use gems after copying install folder to a different machine with git not installed" do
-    build_git "foo"
-
-    gemfile <<-G
-      gem "foo", :git => '#{lib_path("foo-1.0")}'
-    G
-    bundle "config set path vendor/bundle"
-    bundle :install
 
     simulate_new_machine
     with_path_as "" do
@@ -225,34 +208,5 @@ RSpec.describe "bundle cache with git" do
       bundle :install, :local => true
       expect(the_bundle).to include_gem "foo 1.0"
     end
-  end
-
-  it "doesn't fail when git gem has extensions and an empty cache folder is present before bundle install" do
-    build_git "puma" do |s|
-      s.add_dependency "rake"
-      s.extensions << "Rakefile"
-      s.executables = "puma"
-      s.write "Rakefile", <<-RUBY
-        task :default do
-          path = File.expand_path("../lib", __FILE__)
-          FileUtils.mkdir_p(path)
-          File.open("\#{path}/puma.rb", "w") do |f|
-            f.puts "PUMA = 'YES'"
-          end
-        end
-      RUBY
-    end
-
-    FileUtils.mkdir_p(bundled_app("vendor/cache"))
-    bundle "config set cache_all all"
-
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
-      gem "puma", :git => "#{lib_path("puma-1.0")}"
-    G
-
-    bundle "exec puma"
-
-    expect(out).to eq("YES")
   end
 end

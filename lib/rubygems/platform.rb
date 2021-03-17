@@ -13,6 +13,7 @@ class Gem::Platform
 
   def self.local
     arch = RbConfig::CONFIG['arch']
+    arch = RUBY_PLATFORM if RUBY_PLATFORM =~ /universal\..*darwin/
     arch = "#{arch}_60" if arch =~ /mswin(?:32|64)$/
     @local ||= new(arch)
   end
@@ -75,6 +76,7 @@ class Gem::Platform
 
       @cpu = case cpu
              when /i\d86/ then 'x86'
+             when /universal\.(.*)/ then $1
              else cpu
              end
 

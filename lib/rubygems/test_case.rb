@@ -296,8 +296,7 @@ class Gem::TestCase < Minitest::Test
   # directed to a temporary directory.  All install plugins are removed.
   #
   # If the +RUBY+ environment variable is set the given path is used for
-  # Gem::ruby.  The local platform is set to <tt>i386-mswin32</tt> for Windows
-  # or <tt>i686-darwin8.10.1</tt> otherwise.
+  # Gem::ruby.
 
   def setup
     @orig_env = ENV.to_hash
@@ -407,14 +406,6 @@ class Gem::TestCase < Minitest::Test
     Gem.searcher = nil
     Gem::SpecFetcher.fetcher = nil
 
-    @orig_arch = RbConfig::CONFIG['arch']
-
-    if win_platform?
-      util_set_arch 'i386-mswin32'
-    else
-      util_set_arch 'i686-darwin8.10.1'
-    end
-
     @orig_hooks = {}
     %w[post_install_hooks done_installing_hooks post_uninstall_hooks pre_uninstall_hooks pre_install_hooks pre_reset_hooks post_reset_hooks post_build_hooks].each do |name|
       @orig_hooks[name] = Gem.send(name).dup
@@ -439,8 +430,6 @@ class Gem::TestCase < Minitest::Test
         $LOADED_FEATURES.replace @orig_LOADED_FEATURES
       end
     end
-
-    RbConfig::CONFIG['arch'] = @orig_arch
 
     if defined? Gem::RemoteFetcher
       Gem::RemoteFetcher.fetcher = nil
@@ -975,18 +964,33 @@ Also, a list:
   end
 
   ##
-  # Set the platform to +arch+
+  # Set the platform to +arch+, and restore the previous value if a block is
+  # given
 
   def util_set_arch(arch)
-    RbConfig::CONFIG['arch'] = arch
-    platform = Gem::Platform.new arch
+    orig_arch = util_change_arch(arch)
 
-    Gem.instance_variable_set :@platforms, nil
+    return unless block_given?
+
+    begin
+      yield
+    ensure
+      util_change_arch(orig_arch)
+    end
+  end
+
+  ##
+  # Set the platform to +arch+ and return the previous value
+
+  def util_change_arch(arch)
+    orig_arch = RbConfig::CONFIG['arch']
+
+    RbConfig::CONFIG['arch'] = arch
+
+    Gem.platforms = []
     Gem::Platform.instance_variable_set :@local, nil
 
-    yield if block_given?
-
-    platform
+    orig_arch
   end
 
   ##

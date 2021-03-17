@@ -1431,20 +1431,24 @@ ERROR:  Possible alternatives: non_existent_with_hint
     # equivalent to --platform=ruby
     Gem.platforms = [Gem::Platform::RUBY]
 
-    @cmd.options[:explain] = true
-    @cmd.options[:args] = %w[a]
+    begin
+      @cmd.options[:explain] = true
+      @cmd.options[:args] = %w[a]
 
-    use_ui @ui do
-      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
-        @cmd.execute
+      use_ui @ui do
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+          @cmd.execute
+        end
       end
+
+      out = @ui.output.split "\n"
+
+      assert_equal "Gems to install:", out.shift
+      assert_equal "  a-2", out.shift
+      assert_empty out
+    ensure
+      Gem.platforms = []
     end
-
-    out = @ui.output.split "\n"
-
-    assert_equal "Gems to install:", out.shift
-    assert_equal "  a-2", out.shift
-    assert_empty out
   end
 
   def test_explain_platform_ruby_ignore_dependencies
@@ -1460,20 +1464,24 @@ ERROR:  Possible alternatives: non_existent_with_hint
     # equivalent to --platform=ruby
     Gem.platforms = [Gem::Platform::RUBY]
 
-    @cmd.options[:ignore_dependencies] = true
-    @cmd.options[:explain] = true
-    @cmd.options[:args] = %w[a]
+    begin
+      @cmd.options[:ignore_dependencies] = true
+      @cmd.options[:explain] = true
+      @cmd.options[:args] = %w[a]
 
-    use_ui @ui do
-      assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
-        @cmd.execute
+      use_ui @ui do
+        assert_raises Gem::MockGemUi::SystemExitException, @ui.error do
+          @cmd.execute
+        end
       end
+
+      out = @ui.output.split "\n"
+
+      assert_equal "Gems to install:", out.shift
+      assert_equal "  a-3", out.shift
+      assert_empty out
+    ensure
+      Gem.platforms = []
     end
-
-    out = @ui.output.split "\n"
-
-    assert_equal "Gems to install:", out.shift
-    assert_equal "  a-3", out.shift
-    assert_empty out
   end
 end

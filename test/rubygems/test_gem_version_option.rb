@@ -15,6 +15,8 @@ class TestGemVersionOption < Gem::TestCase
     @cmd.add_platform_option
 
     assert @cmd.handles?(%w[--platform x86-darwin])
+  ensure
+    Gem.platforms = []
   end
 
   def test_add_version_option
@@ -48,6 +50,8 @@ class TestGemVersionOption < Gem::TestCase
     ]
 
     assert_equal expected, Gem.platforms
+  ensure
+    Gem.platforms = []
   end
 
   def test_platform_option_ruby
@@ -60,6 +64,8 @@ class TestGemVersionOption < Gem::TestCase
     ]
 
     assert_equal expected, Gem.platforms
+  ensure
+    Gem.platforms = []
   end
 
   def test_platform_option_twice
@@ -73,6 +79,8 @@ class TestGemVersionOption < Gem::TestCase
     ]
 
     assert_equal expected, Gem.platforms
+  ensure
+    Gem.platforms = []
   end
 
   def test_version_option

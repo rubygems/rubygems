@@ -1,3 +1,15 @@
+# 2.2.15 (March 19, 2021)
+
+## Enhancements:
+
+  - Add a hint about bundler installing executables for path gems [#4461](https://github.com/rubygems/rubygems/pull/4461)
+  - Warn lockfiles with incorrect resolutions [#4459](https://github.com/rubygems/rubygems/pull/4459)
+  - Don't generate duplicate redundant sources in the lockfile [#4456](https://github.com/rubygems/rubygems/pull/4456)
+
+## Bug fixes:
+
+  - Respect running ruby when resolving platforms [#4449](https://github.com/rubygems/rubygems/pull/4449)
+
 # 2.2.14 (March 8, 2021)
 
 ## Security fixes:

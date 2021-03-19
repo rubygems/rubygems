@@ -170,8 +170,8 @@ class Release
       @rubygems.bump_versions!
       system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
     rescue StandardError
-      system("git", "checkout", initial_branch, exception: true)
-      system("git", "branch", "-D", @release_branch, exception: true)
+      system("git", "checkout", initial_branch)
+      system("git", "branch", "-D", @release_branch)
       raise
     end
   end

@@ -1,3 +1,14 @@
+# 3.2.15 / 2021-03-19
+
+## Enhancements:
+
+* Prevent downgrades to untested rubygems versions. Pull request #4460 by
+  deivid-rodriguez
+
+## Bug fixes:
+
+* Fix missing require breaking `gem cert`. Pull request #4464 by lukehinds
+
 # 3.2.14 / 2021-03-08
 
 ## Enhancements:

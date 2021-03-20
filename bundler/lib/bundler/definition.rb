@@ -224,7 +224,6 @@ module Bundler
       Bundler.ui.debug "The definition is missing #{missing.map(&:full_name)}"
       true
     rescue BundlerError => e
-      @index = nil
       @resolve = nil
       @specs = nil
       @gem_version_promoter = nil
@@ -287,8 +286,8 @@ module Bundler
       end
     end
 
-    def index
-      @index ||= Index.build do |idx|
+    def build_index
+      Index.build do |idx|
         dependency_names = @dependencies.map(&:name)
 
         sources.all_sources.each do |source|
@@ -902,7 +901,7 @@ module Bundler
 
     def source_requirements
       # Load all specs from remote sources
-      index
+      index = build_index
 
       # Record the specs available in each gem's source, so that those
       # specs will be available later when the resolver knows where to

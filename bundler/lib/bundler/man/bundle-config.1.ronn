@@ -218,9 +218,6 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
    Whether `bundle package` should skip installing gems.
 * `no_prune` (`BUNDLE_NO_PRUNE`):
    Whether Bundler should leave outdated gems unpruned when caching.
-* `only_update_to_newer_versions` (`BUNDLE_ONLY_UPDATE_TO_NEWER_VERSIONS`):
-   During `bundle update`, only resolve to newer versions of the gems in the
-   lockfile.
 * `path` (`BUNDLE_PATH`):
    The location on disk where all gems in your bundle will be located regardless
    of `$GEM_HOME` or `$GEM_PATH` values. Bundle gems not found in this location

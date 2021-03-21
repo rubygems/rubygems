@@ -159,6 +159,7 @@ class Release
 
       @bundler.cut_changelog!
       system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
+      bundler_changelog = `git show --no-patch --pretty=format:%h`
 
       @bundler.bump_versions!
       system("rake", "update_locked_bundler", exception: true)
@@ -166,12 +167,22 @@ class Release
 
       @rubygems.cut_changelog!
       system("git", "commit", "-am", "Changelog for Rubygems version #{@rubygems.version}", exception: true)
+      rubygems_changelog = `git show --no-patch --pretty=format:%h`
 
       @rubygems.bump_versions!
       system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
+
+      system("git", "checkout", "-b", "cherry_pick_changelogs", "master", exception: true)
+
+      begin
+        system("git", "cherry-pick", bundler_changelog, rubygems_changelog, exception: true)
+      rescue StandardError
+        system("git", "cherry-pick", "--abort")
+        system("git", "branch", "-D", "cherry_pick_changelogs")
+      end
     rescue StandardError
-      system("git", "checkout", initial_branch, exception: true)
-      system("git", "branch", "-D", @release_branch, exception: true)
+      system("git", "checkout", initial_branch)
+      system("git", "branch", "-D", @release_branch)
       raise
     end
   end

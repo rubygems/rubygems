@@ -105,7 +105,6 @@ module Bundler
         end
 
         def copy_to(destination, submodules = false)
-          # method 1
           unless File.exist?(destination.join(".git"))
             begin
               SharedHelpers.filesystem_access(destination.dirname) do |p|
@@ -123,7 +122,7 @@ module Bundler
                 "this file and try again."
             end
           end
-          # method 2
+
           git_retry "fetch", "--force", "--quiet", "--tags", path.to_s, :dir => destination
 
           begin

@@ -11,21 +11,24 @@ RSpec.describe Bundler::Source::Git::GitProxy do
   context "with configured credentials" do
     it "adds username and password to URI" do
       Bundler.settings.temporary(uri => "u:p") do
-        expect(subject).to receive(:git_retry).with("clone", "--bare", "--no-hardlinks", "--quiet", "--", "https://u:p@github.com/rubygems/rubygems.git", path.to_s)
+        allow(subject).to receive(:git).with("--version").and_return("git version 2.14.0")
+        expect(subject).to receive(:git_retry).with("clone", "--bare", "--no-hardlinks", "--quiet", "--no-tags", "--depth", "1", "--single-branch", "--", "https://u:p@github.com/rubygems/rubygems.git", path.to_s)
         subject.checkout
       end
     end
 
     it "adds username and password to URI for host" do
       Bundler.settings.temporary("github.com" => "u:p") do
-        expect(subject).to receive(:git_retry).with("clone", "--bare", "--no-hardlinks", "--quiet", "--", "https://u:p@github.com/rubygems/rubygems.git", path.to_s)
+        allow(subject).to receive(:git).with("--version").and_return("git version 2.14.0")
+        expect(subject).to receive(:git_retry).with("clone", "--bare", "--no-hardlinks", "--quiet", "--no-tags", "--depth", "1", "--single-branch", "--", "https://u:p@github.com/rubygems/rubygems.git", path.to_s)
         subject.checkout
       end
     end
 
     it "does not add username and password to mismatched URI" do
       Bundler.settings.temporary("https://u:p@github.com/rubygems/rubygems-mismatch.git" => "u:p") do
-        expect(subject).to receive(:git_retry).with("clone", "--bare", "--no-hardlinks", "--quiet", "--", uri, path.to_s)
+        allow(subject).to receive(:git).with("--version").and_return("git version 2.14.0")
+        expect(subject).to receive(:git_retry).with("clone", "--bare", "--no-hardlinks", "--quiet", "--no-tags", "--depth", "1", "--single-branch", "--", uri, path.to_s)
         subject.checkout
       end
     end
@@ -34,7 +37,8 @@ RSpec.describe Bundler::Source::Git::GitProxy do
       Bundler.settings.temporary("github.com" => "u:p") do
         original = "https://orig:info@github.com/rubygems/rubygems.git"
         subject = described_class.new(Pathname("path"), original, "HEAD")
-        expect(subject).to receive(:git_retry).with("clone", "--bare", "--no-hardlinks", "--quiet", "--", original, path.to_s)
+        allow(subject).to receive(:git).with("--version").and_return("git version 2.14.0")
+        expect(subject).to receive(:git_retry).with("clone", "--bare", "--no-hardlinks", "--quiet", "--no-tags", "--depth", "1", "--single-branch", "--", original, path.to_s)
         subject.checkout
       end
     end

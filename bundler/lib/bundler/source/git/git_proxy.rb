@@ -87,7 +87,6 @@ module Bundler
 
         def checkout
           return if has_revision_cached?
-          extra_ref = ref && ref.start_with?("refs/")
 
           Bundler.ui.info "Fetching #{credential_filtered_uri}"
 
@@ -95,11 +94,11 @@ module Bundler
             SharedHelpers.filesystem_access(path.dirname) do |p|
               FileUtils.mkdir_p(p)
             end
-            git_retry "clone", "--bare", "--no-hardlinks", "--quiet", "--", configured_uri, path.to_s
+            git_retry "clone", "--bare", "--no-hardlinks", "--quiet", *extra_clone_args, "--", configured_uri, path.to_s
             return unless extra_ref
           end
 
-          git_retry(*["fetch", "--force", "--quiet", "--no-tags", "--", configured_uri, refspec].compact, :dir => path)
+          git_retry(*["fetch", "--force", "--quiet", "--no-tags", *extra_fetch_args, "--", configured_uri, refspec].compact, :dir => path)
         end
 
         def copy_to(destination, submodules = false)
@@ -121,7 +120,7 @@ module Bundler
             end
           end
 
-          git "fetch", "--force", "--quiet", "--tags", path.to_s, :dir => destination
+          git(*["fetch", "--force", "--quiet", *extra_fetch_args, path.to_s, revision_refspec].compact, :dir => destination)
 
           git "reset", "--hard", @revision, :dir => destination
 
@@ -134,6 +133,30 @@ module Bundler
         end
 
         private
+
+        def extra_ref
+          return false if not_pinned?
+          return true unless full_clone?
+
+          ref.start_with?("refs/")
+        end
+
+        def depth
+          return @depth if defined?(@depth)
+
+          @depth = if legacy_locked_revision? || !supports_fetching_unreachable_refs?
+            nil
+          elsif not_pinned?
+            1
+          elsif ref.include?("~")
+            parsed_depth = ref.split("~").last
+            parsed_depth.to_i + 1
+          elsif abbreviated_ref?
+            nil
+          else
+            1
+          end
+        end
 
         def refspec
           if fully_qualified_ref
@@ -162,8 +185,16 @@ module Bundler
           end
         end
 
+        def not_pinned?
+          branch || tag || ref.nil?
+        end
+
         def abbreviated_ref?
           ref =~ /\A\h+\z/ && ref !~ /\A\h{40}\z/
+        end
+
+        def legacy_locked_revision?
+          !@revision.nil? && @revision =~ /\A\h{7}\z/
         end
 
         def git_null(*command, dir: nil)
@@ -225,6 +256,8 @@ module Bundler
             config_auth = Bundler.settings[remote.to_s] || Bundler.settings[remote.host]
             remote.userinfo ||= config_auth
             remote.to_s
+          elsif File.exist?(uri)
+            "file://#{uri}"
           else
             uri.to_s
           end
@@ -283,8 +316,42 @@ module Bundler
           end
         end
 
+        def extra_clone_args
+          return [] if full_clone?
+
+          args = ["--depth", depth.to_s, "--single-branch"]
+          args.unshift("--no-tags") if supports_cloning_with_no_tags?
+
+          args += ["--branch", branch || tag] if branch || tag
+          args
+        end
+
+        def extra_fetch_args
+          return [] if full_clone?
+
+          ["--depth", depth.to_s]
+        end
+
+        def revision_refspec
+          return if legacy_locked_revision?
+
+          revision
+        end
+
+        def full_clone?
+          depth.nil?
+        end
+
         def supports_minus_c?
           @supports_minus_c ||= Gem::Version.new(version) >= Gem::Version.new("1.8.5")
+        end
+
+        def supports_fetching_unreachable_refs?
+          @supports_fetching_unreachable_refs ||= Gem::Version.new(version) >= Gem::Version.new("2.5.0")
+        end
+
+        def supports_cloning_with_no_tags?
+          @supports_cloning_with_no_tags ||= Gem::Version.new(version) >= Gem::Version.new("2.14.0-rc0")
         end
       end
     end

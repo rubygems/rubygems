@@ -111,7 +111,7 @@ module Bundler
               SharedHelpers.filesystem_access(destination) do |p|
                 FileUtils.rm_rf(p)
               end
-              git_retry "clone", "--no-checkout", "--quiet", path.to_s, destination.to_s
+              git "clone", "--no-checkout", "--quiet", path.to_s, destination.to_s
               File.chmod(((File.stat(destination).mode | 0o777) & ~File.umask), destination)
             rescue Errno::EEXIST => e
               file_path = e.message[%r{.*?((?:[a-zA-Z]:)?/.*)}, 1]
@@ -121,7 +121,7 @@ module Bundler
             end
           end
 
-          git_retry "fetch", "--force", "--quiet", "--tags", path.to_s, :dir => destination
+          git "fetch", "--force", "--quiet", "--tags", path.to_s, :dir => destination
 
           begin
             git "reset", "--hard", @revision, :dir => destination

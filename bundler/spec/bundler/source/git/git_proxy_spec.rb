@@ -133,8 +133,8 @@ RSpec.describe Bundler::Source::Git::GitProxy do
       let(:command_for_display) { "git #{command.shelljoin}" }
 
       it "fails gracefully when resetting to the revision fails" do
-        expect(subject).to receive(:git_retry).with("clone", any_args) { destination.mkpath }
-        expect(subject).to receive(:git_retry).with("fetch", any_args, :dir => destination)
+        expect(subject).to receive(:git).with("clone", any_args) { destination.mkpath }
+        expect(subject).to receive(:git).with("fetch", any_args, :dir => destination)
         expect(subject).to receive(:git).with(*command, :dir => destination).and_raise(Bundler::Source::Git::GitCommandError.new(command_for_display, destination))
         expect(subject).not_to receive(:git)
 

@@ -99,9 +99,7 @@ module Bundler
             return unless extra_ref
           end
 
-          with_path do
-            git_retry(*["fetch", "--force", "--quiet", "--tags", "--", configured_uri, "refs/heads/*:refs/heads/*", extra_ref].compact, :dir => path)
-          end
+          git_retry(*["fetch", "--force", "--quiet", "--tags", "--", configured_uri, "refs/heads/*:refs/heads/*", extra_ref].compact, :dir => path)
         end
 
         def copy_to(destination, submodules = false)

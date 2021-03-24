@@ -98,7 +98,10 @@ module Bundler
             return unless extra_ref
           end
 
-          git_retry(*["fetch", "--force", "--quiet", "--no-tags", *extra_fetch_args, "--", configured_uri, refspec].compact, :dir => path)
+          fetch_args = extra_fetch_args
+          fetch_args.unshift("--unshallow") if path.join("shallow").exist? && full_clone?
+
+          git_retry(*["fetch", "--force", "--quiet", "--no-tags", *fetch_args, "--", configured_uri, refspec].compact, :dir => path)
         end
 
         def copy_to(destination, submodules = false)

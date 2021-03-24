@@ -219,6 +219,22 @@ RSpec.describe "bundle install with git sources" do
       expect(out).to eq("WIN")
     end
 
+    it "works when an abbreviated revision is added after an initial, potentially shallow clone" do
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        git "#{lib_path("foo-1.0")}" do
+          gem "foo"
+        end
+      G
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        git "#{lib_path("foo-1.0")}", :ref => #{@revision[0..7].inspect} do
+          gem "foo"
+        end
+      G
+    end
+
     it "works when the revision is a non-head ref" do
       # want to ensure we don't fallback to main
       update_git "foo", :path => lib_path("foo-1.0") do |s|

@@ -87,9 +87,7 @@ module Bundler
           return if path.exist? && has_revision_cached?
           extra_ref = "#{ref}:#{ref}" if ref && ref.start_with?("refs/")
 
-          Bundler.ui.info "Fetching #{URICredentialsFilter.credential_filtered_uri(uri)}"
-
-          configured_uri = configured_uri_for(uri).to_s
+          Bundler.ui.info "Fetching #{credential_filtered_uri}"
 
           unless path.exist?
             SharedHelpers.filesystem_access(path.dirname) do |p|
@@ -126,7 +124,7 @@ module Bundler
           begin
             git "reset", "--hard", @revision, :dir => destination
           rescue GitCommandError => e
-            raise MissingGitRevisionError.new(e.command, destination, @revision, URICredentialsFilter.credential_filtered_uri(uri))
+            raise MissingGitRevisionError.new(e.command, destination, @revision, credential_filtered_uri)
           end
 
           if submodules
@@ -188,19 +186,24 @@ module Bundler
             git("rev-parse", "--verify", ref || "HEAD", :dir => path).strip
           end
         rescue GitCommandError => e
-          raise MissingGitRevisionError.new(e.command, path, ref, URICredentialsFilter.credential_filtered_uri(uri))
+          raise MissingGitRevisionError.new(e.command, path, ref, credential_filtered_uri)
         end
 
         # Adds credentials to the URI
-        def configured_uri_for(uri)
+        def configured_uri
           if /https?:/ =~ uri
             remote = Bundler::URI(uri)
             config_auth = Bundler.settings[remote.to_s] || Bundler.settings[remote.host]
             remote.userinfo ||= config_auth
             remote.to_s
           else
-            uri
+            uri.to_s
           end
+        end
+
+        # Removes credentials from the URI
+        def credential_filtered_uri
+          URICredentialsFilter.credential_filtered_uri(uri)
         end
 
         def allow?

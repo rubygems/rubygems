@@ -191,7 +191,7 @@ module Bundler
           raise MissingGitRevisionError.new(e.command, path, ref, URICredentialsFilter.credential_filtered_uri(uri))
         end
 
-        # Adds credentials to the URI as Fetcher#configured_uri_for does
+        # Adds credentials to the URI
         def configured_uri_for(uri)
           if /https?:/ =~ uri
             remote = Bundler::URI(uri)

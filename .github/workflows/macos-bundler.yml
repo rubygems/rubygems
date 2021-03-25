@@ -1,0 +1,28 @@
+name: homebrew
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
+      - homebrew_ruby
+      - 3.2
+
+jobs:
+  macos_bundler:
+    name: Rubygems on Homebrew Ruby
+    runs-on: macos-11.0
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - { name: "3.0", value: 3.0.0 }
+    steps:
+      - name: Install Ruby
+        run: |
+          brew install ruby
+          bundle env
+      - name: Run Test
+        run: bundle init && bundle add smashing
+    timeout-minutes: 15

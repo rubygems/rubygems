@@ -36,6 +36,7 @@ module Bundler
     def self.without_groups_message(command)
       command_in_past_tense = command == :install ? "installed" : "updated"
       groups = Bundler.settings[:without]
+      groups.map!{|g| "'#{g}'" }
       group_list = [groups[0...-1].join(", "), groups[-1..-1]].
         reject {|s| s.to_s.empty? }.join(" and ")
       group_str = groups.size == 1 ? "group" : "groups"

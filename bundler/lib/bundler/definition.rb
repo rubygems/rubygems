@@ -187,10 +187,10 @@ module Bundler
           gem_name, gem_version = extract_gem_info(e)
           locked_gem = @locked_specs[gem_name].last
           raise if locked_gem.nil? || locked_gem.version.to_s != gem_version || !@remote
-          raise GemNotFound, "Your bundle is locked to #{locked_gem}, but that version could not " \
-                             "be found in any of the sources listed in your Gemfile. If you haven't changed sources, " \
-                             "that means the author of #{locked_gem} has removed it. You'll need to update your bundle " \
-                             "to a version other than #{locked_gem} that hasn't been removed in order to install."
+          raise GemNotFound, "Your bundle is locked to #{locked_gem} from #{locked_gem.source}, but that version can " \
+                             "no longer be found in that source. That means the author of #{locked_gem} has removed it. " \
+                             "You'll need to update your bundle to a version other than #{locked_gem} that hasn't been " \
+                             "removed in order to install."
         end
         unless specs["bundler"].any?
           bundler = sources.metadata_source.specs.search(Gem::Dependency.new("bundler", VERSION)).last

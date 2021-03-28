@@ -13,7 +13,4 @@ jobs:
         ruby-version: <%= RUBY_VERSION %>
         bundler-cache: true
     - name: Run the default task
-      run: |
-        gem install bundler -v <%= Bundler::VERSION %>
-        bundle install
-        bundle exec rake
+      run: bundle exec rake

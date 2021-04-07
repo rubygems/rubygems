@@ -58,6 +58,8 @@ jobs:
       - name: Test Bundler
         run: |
           git checkout lib/bundler/bundler.gemspec
+          rm -rf tool/bundler
+          cp -r ../../rubygems/rubygems/bundler/tool/bundler tool/bundler
           git add .
           make test-bundler-parallel
         working-directory: ruby/ruby

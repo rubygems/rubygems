@@ -30,7 +30,7 @@ module Spec
     end
 
     def test_gemfile
-      @test_gemfile ||= source_root.join(ruby_core? ? "tool/bundler/test_gems.rb" : "test_gems.rb")
+      @test_gemfile ||= source_root.join("tool/bundler/test_gems.rb")
     end
 
     def dev_gemfile

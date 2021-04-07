@@ -100,7 +100,7 @@ module Spec
     # tests. To workaround, we remove `rake` from the loaded specs when running
     # under those versions, so that `bundler` does the right thing.
     def workaround_loaded_specs_issue
-      current_rubygems_version = Gem::Version.new(Gem::VERSION)
+      current_rubygems_version = Gem.rubygems_version
 
       Gem.loaded_specs.delete("rake") if current_rubygems_version >= Gem::Version.new("3.0.0.beta2") && current_rubygems_version < Gem::Version.new("3.2.0")
     end

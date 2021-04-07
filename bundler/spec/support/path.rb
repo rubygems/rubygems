@@ -119,7 +119,7 @@ module Spec
     end
 
     def vendored_gems(path = nil)
-      bundled_app(*["vendor/bundle", Gem.ruby_engine, RbConfig::CONFIG["ruby_version"], path].compact)
+      scoped_gem_path(bundled_app("vendor/bundle")).join(*[path].compact)
     end
 
     def cached_gem(path)
@@ -178,7 +178,11 @@ module Spec
     end
 
     def local_gem_path(*path, base: bundled_app)
-      base.join(*[".bundle", Gem.ruby_engine, RbConfig::CONFIG["ruby_version"], *path].compact)
+      scoped_gem_path(base.join(".bundle")).join(*path)
+    end
+
+    def scoped_gem_path(base)
+      base.join(Gem.ruby_engine, RbConfig::CONFIG["ruby_version"])
     end
 
     def lib_path(*args)

@@ -18,7 +18,11 @@ end
 desc "Update the locked bundler version in dev environment"
 task :update_locked_bundler do |_, args|
   sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=dev_gems.rb"
-  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/test_gems.rb"
+  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/test_gems.rb"
+  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
+  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
+  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard_gems.rb"
+  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard23_gems.rb"
 end
 
 desc "Setup git hooks"

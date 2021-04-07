@@ -33,6 +33,14 @@ module Spec
       @test_gemfile ||= source_root.join("tool/bundler/test_gems.rb")
     end
 
+    def rubocop_gemfile
+      @rubocop_gemfile ||= source_root.join(rubocop_gemfile_basename)
+    end
+
+    def standard_gemfile
+      @standard_gemfile ||= source_root.join(standard_gemfile_basename)
+    end
+
     def dev_gemfile
       @dev_gemfile ||= git_root.join("dev_gems.rb")
     end
@@ -136,6 +144,14 @@ module Spec
 
     def base_system_gems
       tmp.join("gems/base")
+    end
+
+    def rubocop_gems
+      tmp.join("gems/rubocop")
+    end
+
+    def standard_gems
+      tmp.join("gems/standard")
     end
 
     def file_uri_for(path)
@@ -253,6 +269,14 @@ module Spec
 
     def ruby_core_tarball?
       !git_root.join(".git").directory?
+    end
+
+    def rubocop_gemfile_basename
+      source_root.join("tool/bundler/#{RUBY_VERSION.start_with?("2.3") ? "rubocop23_gems.rb" : "rubocop_gems.rb"}")
+    end
+
+    def standard_gemfile_basename
+      source_root.join("tool/bundler/#{RUBY_VERSION.start_with?("2.3") ? "standard23_gems.rb" : "standard_gems.rb"}")
     end
 
     extend self

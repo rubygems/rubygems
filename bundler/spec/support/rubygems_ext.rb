@@ -68,6 +68,8 @@ module Spec
       setup_test_paths
 
       install_gems(test_gemfile)
+      install_gems(rubocop_gemfile, Path.rubocop_gems.to_s)
+      install_gems(standard_gemfile, Path.standard_gems.to_s)
     end
 
     def check_source_control_changes(success_message:, error_message:)
@@ -105,17 +107,40 @@ module Spec
       gem gem_name, gem_requirement
     end
 
-    def install_gems(gemfile)
+    def install_gems(gemfile, path = nil)
       old_gemfile = ENV["BUNDLE_GEMFILE"]
       ENV["BUNDLE_GEMFILE"] = gemfile.to_s
+
+      if path
+        old_path = ENV["BUNDLE_PATH"]
+        ENV["BUNDLE_PATH"] = path
+      else
+        old_path__system = ENV["BUNDLE_PATH__SYSTEM"]
+        ENV["BUNDLE_PATH__SYSTEM"] = "true"
+      end
+
       output = `#{Gem.ruby} #{File.expand_path("support/bundle.rb", Path.spec_dir)} install`
       raise "Error when installing gems in #{gemfile}: #{output}" unless $?.success?
     ensure
+      if path
+        ENV["BUNDLE_PATH"] = old_path
+      else
+        ENV["BUNDLE_PATH__SYSTEM"] = old_path__system
+      end
+
       ENV["BUNDLE_GEMFILE"] = old_gemfile
     end
 
     def test_gemfile
       Path.test_gemfile
+    end
+
+    def rubocop_gemfile
+      Path.rubocop_gemfile
+    end
+
+    def standard_gemfile
+      Path.standard_gemfile
     end
 
     def dev_gemfile

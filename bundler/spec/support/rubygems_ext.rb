@@ -40,17 +40,16 @@ module Spec
 
     def install_parallel_test_deps
       require "parallel"
+      require "fileutils"
 
-      prev_env_test_number = ENV["TEST_ENV_NUMBER"]
+      install_test_deps
 
-      begin
-        Parallel.processor_count.times do |n|
-          ENV["TEST_ENV_NUMBER"] = (n + 1).to_s
+      (2..Parallel.processor_count).each do |n|
+        source = Path.source_root.join("tmp", "1")
+        destination = Path.source_root.join("tmp", n.to_s)
 
-          install_test_deps
-        end
-      ensure
-        ENV["TEST_ENV_NUMBER"] = prev_env_test_number
+        FileUtils.rm_rf destination
+        FileUtils.cp_r source, destination
       end
     end
 

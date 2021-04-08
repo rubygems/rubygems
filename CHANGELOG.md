@@ -1,3 +1,9 @@
+# 3.2.16 / 2021-04-08
+
+## Bug fixes:
+
+* Correctly handle symlinks. Pull request #2836 by voxik
+
 # 3.2.15 / 2021-03-19
 
 ## Enhancements:

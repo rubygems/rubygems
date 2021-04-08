@@ -346,6 +346,55 @@ RSpec.describe "bundle gem" do
     end
   end
 
+  shared_examples_for "--github-username option" do |github_username|
+    before do
+      bundle "gem #{gem_name} --github-username=#{github_username}"
+    end
+
+    it "generates a gem skeleton" do
+      gem_skeleton_assertions
+    end
+
+    it "contribute URL set to given github username" do
+      expect(bundled_app("#{gem_name}/README.md").read).not_to include("[USERNAME]")
+      expect(bundled_app("#{gem_name}/README.md").read).to include("github.com/#{github_username}")
+    end
+  end
+
+  shared_examples_for "github_username configuration" do
+    context "with github_username setting set to some value" do
+      before do
+        global_config "BUNDLE_GEM__GITHUB_USERNAME" => "different_username"
+        bundle "gem #{gem_name}"
+      end
+
+      it "generates a gem skeleton" do
+        gem_skeleton_assertions
+      end
+
+      it "contribute URL set to bundle config setting" do
+        expect(bundled_app("#{gem_name}/README.md").read).not_to include("[USERNAME]")
+        expect(bundled_app("#{gem_name}/README.md").read).to include("github.com/different_username")
+      end
+    end
+
+    context "with github_username setting set to false" do
+      before do
+        global_config "BUNDLE_GEM__GITHUB_USERNAME" => "false"
+        bundle "gem #{gem_name}"
+      end
+
+      it "generates a gem skeleton" do
+        gem_skeleton_assertions
+      end
+
+      it "contribute URL set to [USERNAME]" do
+        expect(bundled_app("#{gem_name}/README.md").read).to include("[USERNAME]")
+        expect(bundled_app("#{gem_name}/README.md").read).not_to include("github.com/bundleuser")
+      end
+    end
+  end
+
   shared_examples_for "generating a gem" do
     it "generates a gem skeleton" do
       bundle "gem #{gem_name}"
@@ -912,6 +961,57 @@ RSpec.describe "bundle gem" do
       end
       it_behaves_like "--changelog flag"
       it_behaves_like "--no-changelog flag"
+    end
+  end
+
+  context "testing --github-username option against git and bundle config settings", :readline do
+    context "without git config set" do
+      before do
+        sys_exec("git config --global --unset github.user")
+      end
+      context "with github-username option in bundle config settings set to some value" do
+        before do
+          global_config "BUNDLE_GEM__GITHUB_USERNAME" => "different_username"
+        end
+        it_behaves_like "--github-username option", "gh_user"
+      end
+
+      context "with github-username option in bundle config settings set to false" do
+        before do
+          global_config "BUNDLE_GEM__GITHUB_USERNAME" => "false"
+        end
+        it_behaves_like "--github-username option", "gh_user"
+      end
+    end
+
+    context "with git config set" do
+      context "with github-username option in bundle config settings set to some value" do
+        before do
+          global_config "BUNDLE_GEM__GITHUB_USERNAME" => "different_username"
+        end
+        it_behaves_like "--github-username option", "gh_user"
+      end
+
+      context "with github-username option in bundle config settings set to false" do
+        before do
+          global_config "BUNDLE_GEM__GITHUB_USERNAME" => "false"
+        end
+        it_behaves_like "--github-username option", "gh_user"
+      end
+    end
+  end
+
+  context "testing github_username bundle config against git config settings", :readline do
+    context "without git config set" do
+      before do
+        sys_exec("git config --global --unset github.user")
+      end
+
+      it_behaves_like "github_username configuration"
+    end
+
+    context "with git config set" do
+      it_behaves_like "github_username configuration"
     end
   end
 

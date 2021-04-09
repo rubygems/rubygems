@@ -1,4 +1,21 @@
-# 2.2.15 (March 18, 2021)
+# 2.2.16 (April 8, 2021)
+
+## Enhancements:
+
+  - Add `--github-username` option and config to `bundle gem` [#3687](https://github.com/rubygems/rubygems/pull/3687)
+  - Bump vendored `tmpdir` library copy [#4506](https://github.com/rubygems/rubygems/pull/4506)
+  - Add `rake build:checksum` task to build cheksums for a gem package [#4156](https://github.com/rubygems/rubygems/pull/4156)
+  - Enable bundler-cache for GitHub Actions template [#4498](https://github.com/rubygems/rubygems/pull/4498)
+  - Improve `bundle info` error when gem is on a "disabled" group [#4492](https://github.com/rubygems/rubygems/pull/4492)
+  - Small tweak to yank message [#4494](https://github.com/rubygems/rubygems/pull/4494)
+  - Don't show duplicate entries in `bundle outdated` output [#4474](https://github.com/rubygems/rubygems/pull/4474)
+  - Never downgrade top level gems when running `bundle update` [#4473](https://github.com/rubygems/rubygems/pull/4473)
+
+## Bug fixes:
+
+  - Fix incorrect logic for filtering metadata matching candidates [#4497](https://github.com/rubygems/rubygems/pull/4497)
+
+# 2.2.15 (March 19, 2021)
 
 ## Enhancements:
 

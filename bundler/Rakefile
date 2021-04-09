@@ -176,7 +176,7 @@ Automatiek::RakeTask.new("thor") do |lib|
 end
 
 # We currently include the official version as of
-# https://github.com/ruby/tmpdir/tree/a3e06bd49829dc49c346aa10f8b91116fd7e17ad,
+# https://github.com/ruby/tmpdir/commit/c79bc7adf66a39617d0d6bae21085adc77c02b0e
 # with the following changes on top:
 # * require fileutils relatively to use our vendored version.
 # * Inherit from `Dir` so that code assuming we're inside the

@@ -373,6 +373,9 @@ Layout/SpaceInsideArrayPercentLiteral:
 Layout/SpaceInsideBlockBraces:
   Enabled: true
   SpaceBeforeBlockParameters: false
+  Exclude:
+  - bundler/lib/bundler/templates/Gemfile
+  - bundler/lib/bundler/templates/gems.rb
 
 Layout/SpaceInsideHashLiteralBraces:
   Enabled: true

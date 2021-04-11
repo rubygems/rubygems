@@ -15,7 +15,6 @@ module Bundler
       cache_all_platforms
       default_install_uses_path
       deployment
-      deployment_means_frozen
       disable_checksum_validation
       disable_exec_load
       disable_local_branch_check

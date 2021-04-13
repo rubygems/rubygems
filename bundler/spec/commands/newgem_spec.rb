@@ -1149,7 +1149,7 @@ RSpec.describe "bundle gem" do
       it_behaves_like "--no-mit flag"
     end
 
-    context "with coc option in bundle config settings set to true" do
+    context "with coc option in bundle config settings set to true", :git => ">= 2.28.0" do
       before do
         global_config "BUNDLE_GEM__COC" => "true"
       end
@@ -1157,7 +1157,7 @@ RSpec.describe "bundle gem" do
       it_behaves_like "--no-coc flag"
     end
 
-    context "with coc option in bundle config settings set to false" do
+    context "with coc option in bundle config settings set to false", :git => ">= 2.28.0" do
       before do
         global_config "BUNDLE_GEM__COC" => "false"
       end

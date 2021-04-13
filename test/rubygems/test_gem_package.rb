@@ -937,7 +937,7 @@ class TestGemPackage < Gem::Package::TarTestCase
     build = Gem::Package.new @gem
     build.spec = @spec
     build.setup_signer
-    open @gem, 'wb' do |gem_io|
+    File.open @gem, 'wb' do |gem_io|
       Gem::Package::TarWriter.new gem_io do |gem|
         build.add_metadata gem
         build.add_contents gem

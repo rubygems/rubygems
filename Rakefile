@@ -263,7 +263,7 @@ namespace 'blog' do
     Dir['pkg/*{tgz,zip,gem}'].map do |file|
       digest = Digest::SHA256.new
 
-      open file, 'rb' do |io|
+      File.open file, 'rb' do |io|
         while chunk = io.read(65536) do
           digest.update chunk
         end

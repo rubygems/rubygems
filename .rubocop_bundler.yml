@@ -492,6 +492,9 @@ Performance/UriDefaultParser:
 Security/JSONLoad:
   Enabled: true
 
+Security/Open:
+  Enabled: true
+
 # Style
 
 Style/Alias:

@@ -11,6 +11,6 @@ cipher = OpenSSL::Cipher.new 'DES-CBC'
 
 encrypted_key_path = "#{test_path}/encrypted_private_key.pem"
 
-open encrypted_key_path, 'w' do |io|
+File.open encrypted_key_path, 'w' do |io|
   io.write key.to_pem cipher, 'Foo bar'
 end

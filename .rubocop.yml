@@ -106,6 +106,9 @@ Performance/StartWith:
 Performance/StringReplacement:
   Enabled: true
 
+Security/Open:
+  Enabled: true
+
 Style/Encoding:
   Enabled: true
   Exclude:

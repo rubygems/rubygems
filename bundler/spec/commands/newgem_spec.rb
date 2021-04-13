@@ -103,7 +103,7 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/README.md").read).to match(%r{https://github\.com/bundleuser/#{gem_name}/blob/.*/CODE_OF_CONDUCT.md})
     end
 
-    it "generates the README with a section for the Code of Conduct, respecting the configured git default branch" do
+    it "generates the README with a section for the Code of Conduct, respecting the configured git default branch", :git => "2.28.0" do
       sys_exec("git config --global init.defaultBranch main")
       bundle "gem #{gem_name} --coc"
 
@@ -1149,7 +1149,7 @@ RSpec.describe "bundle gem" do
       it_behaves_like "--no-mit flag"
     end
 
-    context "with coc option in bundle config settings set to true", :git => ">= 2.28.0" do
+    context "with coc option in bundle config settings set to true" do
       before do
         global_config "BUNDLE_GEM__COC" => "true"
       end
@@ -1157,7 +1157,7 @@ RSpec.describe "bundle gem" do
       it_behaves_like "--no-coc flag"
     end
 
-    context "with coc option in bundle config settings set to false", :git => ">= 2.28.0" do
+    context "with coc option in bundle config settings set to false" do
       before do
         global_config "BUNDLE_GEM__COC" => "false"
       end

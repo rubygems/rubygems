@@ -36,11 +36,10 @@ Gem::Specification.new do |s|
 
   s.files = Dir.glob("lib/bundler{.rb,/**/*}", File::FNM_DOTMATCH).reject {|f| File.directory?(f) }
 
-  # Include the CHANGELOG.md, LICENSE.md, README.md manually
-  s.files += %w[CHANGELOG.md LICENSE.md README.md]
   # include the gemspec itself because warbler breaks w/o it
   s.files += %w[bundler.gemspec]
 
+  s.extra_rdoc_files = %w[CHANGELOG.md LICENSE.md README.md]
   s.bindir        = "exe"
   s.executables   = %w[bundle bundler]
   s.require_paths = ["lib"]

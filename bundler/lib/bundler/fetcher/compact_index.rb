@@ -68,7 +68,10 @@ module Bundler
       compact_index_request :fetch_spec
 
       def available?
-        return nil unless SharedHelpers.md5_available?
+        unless SharedHelpers.md5_available?
+          Bundler.ui.debug("FIPS mode is enabled, bundler can't use the CompactIndex API")
+          return nil
+        end
         # Read info file checksums out of /versions, so we can know if gems are up to date
         fetch_uri.scheme != "file" && compact_index_client.update_and_parse_checksums!
       rescue CompactIndexClient::Updater::MisMatchedChecksumError => e

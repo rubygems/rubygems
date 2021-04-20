@@ -72,8 +72,12 @@ module Bundler
           Bundler.ui.debug("FIPS mode is enabled, bundler can't use the CompactIndex API")
           return nil
         end
+        if fetch_uri.scheme == "file"
+          Bundler.ui.debug("Using a local server, bundler won't use the CompactIndex API")
+          return false
+        end
         # Read info file checksums out of /versions, so we can know if gems are up to date
-        fetch_uri.scheme != "file" && compact_index_client.update_and_parse_checksums!
+        compact_index_client.update_and_parse_checksums!
       rescue CompactIndexClient::Updater::MisMatchedChecksumError => e
         Bundler.ui.debug(e.message)
         nil

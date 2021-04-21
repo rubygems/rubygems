@@ -211,11 +211,9 @@ RSpec.describe "bundle cache" do
   end
 
   context "with --all-platforms" do
-    before do
-      skip "doesn't put gems where it should" if Gem.win_platform?
-    end
-
     it "puts the gems in vendor/cache even for other rubies" do
+      skip "doesn't put gems where it should" if Gem.win_platform?
+
       gemfile <<-D
         source "#{file_uri_for(gem_repo1)}"
         gem 'rack', :platforms => :ruby_19

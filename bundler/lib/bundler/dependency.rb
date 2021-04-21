@@ -96,9 +96,7 @@ module Bundler
     def gem_platforms(valid_platforms)
       return valid_platforms if @platforms.empty?
 
-      valid_generic_platforms = valid_platforms.map {|p| [p, GemHelpers.generic(p)] }.to_h
-      filtered_generic_platforms = valid_generic_platforms.values & expanded_platforms
-      valid_generic_platforms.select {|_, v| filtered_generic_platforms.include?(v) }.keys
+      valid_platforms.select {|p| expanded_platforms.include?(GemHelpers.generic(p)) }
     end
 
     def expanded_platforms

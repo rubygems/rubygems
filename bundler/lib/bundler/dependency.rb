@@ -97,14 +97,12 @@ module Bundler
       return valid_platforms if @platforms.empty?
 
       valid_generic_platforms = valid_platforms.map {|p| [p, GemHelpers.generic(p)] }.to_h
-      @gem_platforms ||= expanded_platforms.compact.uniq
-
-      filtered_generic_platforms = valid_generic_platforms.values & @gem_platforms
+      filtered_generic_platforms = valid_generic_platforms.values & expanded_platforms
       valid_generic_platforms.select {|_, v| filtered_generic_platforms.include?(v) }.keys
     end
 
     def expanded_platforms
-      @platforms.map {|pl| PLATFORM_MAP[pl] }
+      @expanded_platforms ||= @platforms.map {|pl| PLATFORM_MAP[pl] }.compact.uniq
     end
 
     def should_include?

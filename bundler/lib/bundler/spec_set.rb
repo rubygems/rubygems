@@ -82,8 +82,8 @@ module Bundler
       materialized.group_by(&:source).each do |source, specs|
         next unless specs.any?{|s| s.is_a?(LazySpecification) }
 
-        names = specs.map(&:name).uniq
-        source.dependency_names = names if source.respond_to?(:dependency_names)
+        names = -> { specs.map(&:name).uniq }
+        source.double_check_for(names)
         source.local!
       end
 
@@ -108,8 +108,8 @@ module Bundler
       @specs.group_by(&:source).each do |source, specs|
         next unless specs.any?{|s| s.is_a?(LazySpecification) }
 
-        names = specs.map(&:name).uniq
-        source.dependency_names = names if source.respond_to?(:dependency_names)
+        names = -> { specs.map(&:name).uniq }
+        source.double_check_for(names)
         source.local!
         source.remote!
       end

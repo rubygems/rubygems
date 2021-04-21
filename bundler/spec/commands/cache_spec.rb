@@ -234,11 +234,11 @@ RSpec.describe "bundle cache" do
 
       bundle "config set --local without wo"
       install_gemfile <<-G
-        source "file:#{gem_repo1}"
+        source "#{file_uri_for(gem_repo1)}"
         gem "rack"
         group :wo do
           gem "weakling"
-          gem "uninstallable", :source => "file:#{gem_repo4}"
+          gem "uninstallable", :source => "#{file_uri_for(gem_repo4)}"
         end
       G
 

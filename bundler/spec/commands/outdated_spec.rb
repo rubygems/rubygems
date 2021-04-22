@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle outdated" do
-  before do
-    build_repo2 do
-      build_git "foo", :path => lib_path("foo")
-      build_git "zebra", :path => lib_path("zebra")
+  describe "with no arguments" do
+    before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
     end
 
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
-      gem "zebra", :git => "#{lib_path("zebra")}"
-      gem "foo", :git => "#{lib_path("foo")}"
-      gem "activesupport", "2.3.5"
-      gem "weakling", "~> 0.0.1"
-      gem "duradura", '7.0'
-      gem "terranova", '8'
-    G
-  end
-
-  describe "with no arguments" do
     it "returns a sorted list of outdated gems" do
       update_repo2 do
         build_gem "activesupport", "3.0"
@@ -102,6 +102,23 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --verbose option" do
+    before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+    end
+
     it "shows the location of the latest version's gemspec if installed" do
       bundle "config set clean false"
 
@@ -136,6 +153,11 @@ RSpec.describe "bundle outdated" do
 
   describe "with --group option" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
 
@@ -201,7 +223,10 @@ RSpec.describe "bundle outdated" do
 
   describe "with --groups option and outdated transitive dependencies" do
     before do
-      update_repo2 do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+
         build_gem "bar", %w[2.0.0]
 
         build_gem "bar_dependant", "7.0" do |s|
@@ -234,6 +259,11 @@ RSpec.describe "bundle outdated" do
 
   describe "with --groups option" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
 
@@ -272,6 +302,24 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with --local option" do
+    before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+
+        gem "weakling", "~> 0.0.1"
+        gem "terranova", '8'
+        group :development, :test do
+          gem 'activesupport', '2.3.5'
+          gem "duradura", '7.0'
+        end
+      G
+    end
+
     it "uses local cache to return a list of outdated gems" do
       update_repo2 do
         build_gem "activesupport", "2.3.4"
@@ -305,10 +353,23 @@ RSpec.describe "bundle outdated" do
   shared_examples_for "a minimal output is desired" do
     context "and gems are outdated" do
       before do
-        update_repo2 do
+        build_repo2 do
+          build_git "foo", :path => lib_path("foo")
+          build_git "zebra", :path => lib_path("zebra")
+
           build_gem "activesupport", "3.0"
           build_gem "weakling", "0.2"
         end
+
+        install_gemfile <<-G
+          source "#{file_uri_for(gem_repo2)}"
+          gem "zebra", :git => "#{lib_path("zebra")}"
+          gem "foo", :git => "#{lib_path("foo")}"
+          gem "activesupport", "2.3.5"
+          gem "weakling", "~> 0.0.1"
+          gem "duradura", '7.0'
+          gem "terranova", '8'
+        G
       end
 
       it "outputs a sorted list of outdated gems with a more minimal format" do
@@ -341,6 +402,21 @@ RSpec.describe "bundle outdated" do
 
   describe "with specified gems" do
     it "returns list of outdated gems" do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+
       update_repo2 do
         build_gem "activesupport", "3.0"
         update_git "foo", :path => lib_path("foo")
@@ -358,6 +434,23 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "pre-release gems" do
+    before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+    end
+
     context "without the --pre option" do
       it "ignores pre-release versions" do
         update_repo2 do
@@ -413,6 +506,23 @@ RSpec.describe "bundle outdated" do
 
   filter_strict_option = Bundler.feature_flag.bundler_2_mode? ? :"filter-strict" : :strict
   describe "with --#{filter_strict_option} option" do
+    before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+    end
+
     it "only reports gems that have a newer version that matches the specified dependency version requirements" do
       update_repo2 do
         build_gem "activesupport", "3.0"
@@ -521,6 +631,23 @@ RSpec.describe "bundle outdated" do
   end
 
   describe "with invalid gem name" do
+    before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+    end
+
     it "returns could not find gem name" do
       bundle "outdated invalid_gem_name", :raise_on_error => false
       expect(err).to include("Could not find gem 'invalid_gem_name'.")
@@ -546,12 +673,16 @@ RSpec.describe "bundle outdated" do
 
   context "after bundle install --deployment", :bundler => "< 3" do
     before do
-      install_gemfile <<-G, :deployment => true, :raise_on_error => false
+      build_repo2
+
+      gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
 
         gem "rack"
         gem "foo"
       G
+      bundle :lock
+      bundle :install, :deployment => true
     end
 
     it "outputs a helpful message about being in deployment mode" do
@@ -568,6 +699,11 @@ RSpec.describe "bundle outdated" do
 
   context "after bundle config set --local deployment true" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
 
@@ -591,6 +727,8 @@ RSpec.describe "bundle outdated" do
 
   context "update available for a gem on a different platform" do
     before do
+      build_repo2
+
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "laduradura", '= 5.15.2'
@@ -604,6 +742,10 @@ RSpec.describe "bundle outdated" do
   end
 
   context "update available for a gem on the same platform while multiple platforms used for gem" do
+    before do
+      build_repo2
+    end
+
     it "reports that updates are available if the Ruby platform is used" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
@@ -643,6 +785,21 @@ RSpec.describe "bundle outdated" do
 
   shared_examples_for "major version updates are detected" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+
       update_repo2 do
         build_gem "activesupport", "3.3.5"
         build_gem "weakling", "0.8.0"
@@ -654,6 +811,21 @@ RSpec.describe "bundle outdated" do
 
   context "when on a new machine" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+
       simulate_new_machine
 
       update_git "foo", :path => lib_path("foo")
@@ -669,6 +841,21 @@ RSpec.describe "bundle outdated" do
 
   shared_examples_for "minor version updates are detected" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+
       update_repo2 do
         build_gem "activesupport", "2.7.5"
         build_gem "weakling", "2.0.1"
@@ -680,6 +867,21 @@ RSpec.describe "bundle outdated" do
 
   shared_examples_for "patch version updates are detected" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+
       update_repo2 do
         build_gem "activesupport", "2.3.7"
         build_gem "weakling", "0.3.1"
@@ -698,6 +900,21 @@ RSpec.describe "bundle outdated" do
 
   shared_examples_for "major version is ignored" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+
       update_repo2 do
         build_gem "activesupport", "3.3.5"
         build_gem "weakling", "1.0.1"
@@ -709,6 +926,21 @@ RSpec.describe "bundle outdated" do
 
   shared_examples_for "minor version is ignored" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+
       update_repo2 do
         build_gem "activesupport", "2.4.5"
         build_gem "weakling", "0.3.1"
@@ -720,6 +952,21 @@ RSpec.describe "bundle outdated" do
 
   shared_examples_for "patch version is ignored" do
     before do
+      build_repo2 do
+        build_git "foo", :path => lib_path("foo")
+        build_git "zebra", :path => lib_path("zebra")
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "zebra", :git => "#{lib_path("zebra")}"
+        gem "foo", :git => "#{lib_path("foo")}"
+        gem "activesupport", "2.3.5"
+        gem "weakling", "~> 0.0.1"
+        gem "duradura", '7.0'
+        gem "terranova", '8'
+      G
+
       update_repo2 do
         build_gem "activesupport", "2.3.6"
         build_gem "weakling", "0.0.4"

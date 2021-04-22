@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle outdated" do
-  before :each do
+  before do
     build_repo2 do
       build_git "foo", :path => lib_path("foo")
       build_git "zebra", :path => lib_path("zebra")

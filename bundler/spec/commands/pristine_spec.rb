@@ -208,7 +208,7 @@ RSpec.describe "bundle pristine", :ruby_repo do
       bundle "pristine", :env => { "BUNDLE_GEMFILE" => "does/not/exist" }, :raise_on_error => false
     end
 
-    it "shows a meaninful error" do
+    it "shows a meaningful error" do
       expect(err).to eq("#{bundled_app("does/not/exist")} not found")
     end
   end

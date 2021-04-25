@@ -211,14 +211,10 @@ RSpec.describe "bundle cache" do
   end
 
   context "with --all-platforms" do
-    before do
-      skip "doesn't put gems where it should" if Gem.win_platform?
-    end
-
     it "puts the gems in vendor/cache even for other rubies" do
       gemfile <<-D
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack', :platforms => :ruby_19
+        gem 'rack', :platforms => [:ruby_20, :x64_mingw_20]
       D
 
       bundle "cache --all-platforms"
@@ -236,11 +232,11 @@ RSpec.describe "bundle cache" do
 
       bundle "config set --local without wo"
       install_gemfile <<-G
-        source "file:#{gem_repo1}"
+        source "#{file_uri_for(gem_repo1)}"
         gem "rack"
         group :wo do
           gem "weakling"
-          gem "uninstallable", :source => "file:#{gem_repo4}"
+          gem "uninstallable", :source => "#{file_uri_for(gem_repo4)}"
         end
       G
 

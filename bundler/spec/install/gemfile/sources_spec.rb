@@ -974,7 +974,10 @@ RSpec.describe "bundle install with gems on multiple sources" do
   context "re-resolving" do
     context "when there is a mix of sources in the gemfile" do
       before do
-        build_repo3
+        build_repo gem_repo3 do
+          build_gem "rack"
+        end
+
         build_lib "path1"
         build_lib "path2"
         build_git "git1"

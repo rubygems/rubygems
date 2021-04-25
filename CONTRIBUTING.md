@@ -114,7 +114,7 @@ listed in rough  progression order from submitted to closed.
 *   **ready** - An issue that is available for collaboration. This issue
     should have existing discussion on the problem, and a description of how
     to go about solving it.
-*   **working** - An issue that has a specific invidual assigned to and
+*   **working** - An issue that has a specific individual assigned to and
     planning to do work on it.
 *   **user feedback required** - The issue/pull request is blocked pending
     more feedback from an end user
@@ -132,7 +132,7 @@ closed reason labels are maroon `closed: *`.
 
 *   **duplicate** - This is a duplicate of an existing bug. The comments must
     reference the existing issue.
-*   **abandonded** - This is an issue/pull request that has aged off, is no
+*   **abandoned** - This is an issue/pull request that has aged off, is no
     longer applicable or similar.
 *   **declined** - An issue that won't be fixed/implemented or a pull request
     that is not accepted.

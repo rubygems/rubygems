@@ -39,7 +39,7 @@ Patch and minor releases are made by cherry-picking pill requests from `master`.
 
 ### Branching
 
-Bundler releases are syncronized with rubygems releases at the moment. That
+Bundler releases are synchronized with rubygems releases at the moment. That
 means that releases for both share the same stable branch, and they should
 generally happen together.
 

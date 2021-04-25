@@ -723,7 +723,7 @@
 * Clean which command. Pull request #2801 by Luis Sagastume.
 * Upgrading S3 source signature to AWS SigV4. Pull request #2807 by
   Alexander Pakulov.
-* Remove missleading comment, no reason to move Gem.host to Gem::Util.
+* Remove misleading comment, no reason to move Gem.host to Gem::Util.
   Pull request #2811 by Luis Sagastume.
 * Drop support for 'gem env packageversion'. Pull request #2813 by Luis
   Sagastume.
@@ -1723,7 +1723,7 @@ Security fixes:
 * Clean up the PathSupport object. Pull request #1094 by Aaron Patterson.
 * Join with File::PATH_SEPARATOR in Gem.use_paths. Pull request #1476 by
   Samuel E. Giddins.
-* Handle when the gem home and gem path arent set in the config file. Pull
+* Handle when the gem home and gem path aren't set in the config file. Pull
   request #1478 by Samuel E. Giddins.
 * Terminate TimeoutHandler. Pull request #1479 by Nobuyoshi Nakada.
 * Remove redundant cache. Pull request #1482 by Eileen M. Uchitelle.
@@ -2068,7 +2068,7 @@ This release was sponsored by Ruby Central.
 * Fixed activating gems from a Gemfile for default gems.  Issue #991 by khoan.
 * Fixed windows stub script generation for Cygwin.  Issue #1000 by Brett
   DiFrischia.
-* Allow gem bindir and ruby.exe to live in separate diretories.  Pull request
+* Allow gem bindir and ruby.exe to live in separate directories.  Pull request
   #942 by Ian Flynn.
 * Fixed handling of gemspec in gem dependencies files to match Bundler
   behavior.  Issue #1020 by Michal Papis.
@@ -2162,7 +2162,7 @@ This release was sponsored by Ruby Central.
 * Gem.use_gemdeps now accepts an argument specifying the path of the gem
   dependencies file.  When the file is not found an ArgumentError is raised.
 * Writing a .lock file for a gem dependencies file is now controlled by the
-  --[no-]lock option.  Pull reuqest #774 by Jeremy Evans.
+  --[no-]lock option.  Pull request #774 by Jeremy Evans.
 * Suggestion of alternate names and spelling corrections during install can be
   suppressed with the --no-suggestions option.  Issue #867 by Jimmy Cuadra.
 * Added mswin64 support.  Pull request #881 by U. Nakamura.
@@ -2261,7 +2261,7 @@ This release was sponsored by Ruby Central.
 * Check for nil extensions as BasicSpecification does not initialize them.
   Pull request #882 by André Arko.
 * Fixed Gem::BasicSpecification#require_paths receives a String for
-  @require_paths. Pull requrest #904 by @danielpclark
+  @require_paths. Pull request #904 by @danielpclark
 * Fixed circular require warnings.  Bug #908 by Zachary Scott.
 * Gem::Specification#require_paths can no longer accidentally be an Array.
   Pull requests #904, #909 by Daniel P. Clark.
@@ -3697,7 +3697,7 @@ build arguments.
   * Fixed `gem contents` to work with the lightweight specifications
   * Fixed `gem update --system x.y.z` where x.y.z == latest version. (MGPalmer)
   * Fixed gem contents sorting and tests. (MGPalmer)
-  * Fixed intermittant problem in `gem fetch` with --platform specified (quix)
+  * Fixed intermittent problem in `gem fetch` with --platform specified (quix)
   * Fixed lightweight specifications so `gem rdoc` will generate proper
     documentation
   * MockGemUI#terminate_interaction should not raise Gem::SystemExitException.
@@ -4378,7 +4378,7 @@ For a full list of changes to RubyGems, see the ChangeLog file.
   installation
 * Multi-version diamond dependencies only are installed once
 * Processing a YAML bulk index update takes less memory
-* `gem install -i` makes sure all depenencies are installed
+* `gem install -i` makes sure all dependencies are installed
 * `gem update --system` reinstalls into the prefix it was originally installed
   in
 * `gem update --system` respects --no-rdoc and --no-ri flags
@@ -4418,7 +4418,7 @@ Special thanks to:
 
 If you are experiencing problems with the source index (e.g. strange
 "No Method" errors), or problems with zlib (e.g. "Buffer Error"
-messsage), we recommend upgrading to RubyGems 0.9.4.
+message), we recommend upgrading to RubyGems 0.9.4.
 
 ## Bug fixes:
 

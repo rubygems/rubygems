@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle update" do
-  before do
-    build_repo2
-
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
-      gem "activesupport"
-      gem "rack-obama"
-      gem "platform_specific"
-    G
-  end
-
   describe "with no arguments" do
+    before do
+      build_repo2
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "activesupport"
+        gem "rack-obama"
+        gem "platform_specific"
+      G
+    end
+
     it "updates the entire bundle" do
       update_repo2 do
         build_gem "rack", "1.2" do |s|
@@ -40,6 +40,17 @@ RSpec.describe "bundle update" do
   end
 
   describe "with --all" do
+    before do
+      build_repo2
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "activesupport"
+        gem "rack-obama"
+        gem "platform_specific"
+      G
+    end
+
     it "updates the entire bundle" do
       update_repo2 do
         build_gem "rack", "1.2" do |s|
@@ -55,6 +66,8 @@ RSpec.describe "bundle update" do
     end
 
     it "doesn't delete the Gemfile.lock file if something goes wrong" do
+      install_gemfile ""
+
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
@@ -102,6 +115,17 @@ RSpec.describe "bundle update" do
   end
 
   describe "--quiet argument" do
+    before do
+      build_repo2
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "activesupport"
+        gem "rack-obama"
+        gem "platform_specific"
+      G
+    end
+
     it "hides UI messages" do
       bundle "update --quiet"
       expect(out).not_to include("Bundle updated!")
@@ -109,6 +133,17 @@ RSpec.describe "bundle update" do
   end
 
   describe "with a top level dependency" do
+    before do
+      build_repo2
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "activesupport"
+        gem "rack-obama"
+        gem "platform_specific"
+      G
+    end
+
     it "unlocks all child dependencies that are unrelated to other locked dependencies" do
       update_repo2 do
         build_gem "rack", "1.2" do |s|
@@ -124,6 +159,17 @@ RSpec.describe "bundle update" do
   end
 
   describe "with an unknown dependency" do
+    before do
+      build_repo2
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "activesupport"
+        gem "rack-obama"
+        gem "platform_specific"
+      G
+    end
+
     it "should inform the user" do
       bundle "update halting-problem-solver", :raise_on_error => false
       expect(err).to include "Could not find gem 'halting-problem-solver'"
@@ -135,6 +181,17 @@ RSpec.describe "bundle update" do
   end
 
   describe "with a child dependency" do
+    before do
+      build_repo2
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "activesupport"
+        gem "rack-obama"
+        gem "platform_specific"
+      G
+    end
+
     it "should update the child dependency" do
       update_repo2 do
         build_gem "rack", "1.2" do |s|
@@ -212,6 +269,17 @@ RSpec.describe "bundle update" do
   end
 
   describe "with --local option" do
+    before do
+      build_repo2
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "activesupport"
+        gem "rack-obama"
+        gem "platform_specific"
+      G
+    end
+
     it "doesn't hit repo2" do
       FileUtils.rm_rf(gem_repo2)
 
@@ -221,6 +289,10 @@ RSpec.describe "bundle update" do
   end
 
   describe "with --group option" do
+    before do
+      build_repo2
+    end
+
     it "should update only specified group gems" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
@@ -299,6 +371,17 @@ RSpec.describe "bundle update" do
   end
 
   describe "in a frozen bundle" do
+    before do
+      build_repo2
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "activesupport"
+        gem "rack-obama"
+        gem "platform_specific"
+      G
+    end
+
     it "should fail loudly", :bundler => "< 3" do
       bundle "install --deployment"
       bundle "update", :all => true, :raise_on_error => false
@@ -324,6 +407,10 @@ RSpec.describe "bundle update" do
   end
 
   describe "with --source option" do
+    before do
+      build_repo2
+    end
+
     it "should not update gems not included in the source that happen to have the same name", :bundler => "< 3" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"

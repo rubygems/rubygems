@@ -12,7 +12,7 @@ RSpec.describe "bundle update" do
     G
   end
 
-  describe "with no arguments", :bundler => "< 3" do
+  describe "with no arguments" do
     it "updates the entire bundle" do
       update_repo2 do
         build_gem "rack", "1.2" do |s|
@@ -39,7 +39,7 @@ RSpec.describe "bundle update" do
     end
   end
 
-  describe "with --all", :bundler => "3" do
+  describe "with --all" do
     it "updates the entire bundle" do
       update_repo2 do
         build_gem "rack", "1.2" do |s|

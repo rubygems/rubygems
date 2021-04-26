@@ -536,6 +536,64 @@ RSpec.describe "bundle update" do
       expect(the_bundle).to include_gems "harry 1.0", "fred 1.0", "george 1.0"
     end
   end
+
+  it "shows the previous version of the gem when updated from rubygems source", :bundler => "< 3" do
+    build_repo2
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo2)}"
+      gem "activesupport"
+    G
+
+    bundle "update", :all => true
+    expect(out).to include("Using activesupport 2.3.5")
+
+    update_repo2 do
+      build_gem "activesupport", "3.0"
+    end
+
+    bundle "update", :all => true
+    expect(out).to include("Installing activesupport 3.0 (was 2.3.5)")
+  end
+
+  context "with suppress_install_using_messages set" do
+    before { bundle "config set suppress_install_using_messages true" }
+
+    it "only prints `Using` for versions that have changed" do
+      build_repo4 do
+        build_gem "bar"
+        build_gem "foo"
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo4)}"
+        gem "bar"
+        gem "foo"
+      G
+
+      bundle "update", :all => true
+      expect(out).to match(/Resolving dependencies\.\.\.\.*\nBundle updated!/)
+
+      update_repo4 do
+        build_gem "foo", "2.0"
+      end
+
+      bundle "update", :all => true
+      out.sub!("Removing foo (1.0)\n", "")
+      expect(out).to match(/Resolving dependencies\.\.\.\.*\nFetching foo 2\.0 \(was 1\.0\)\nInstalling foo 2\.0 \(was 1\.0\)\nBundle updated/)
+    end
+  end
+
+  it "shows error message when Gemfile.lock is not preset and gem is specified" do
+    gemfile <<-G
+      source "#{file_uri_for(gem_repo2)}"
+      gem "activesupport"
+    G
+
+    bundle "update nonexisting", :raise_on_error => false
+    expect(err).to include("This Bundle hasn't been installed yet. Run `bundle install` to update and install the bundled gems.")
+    expect(exitstatus).to eq(22)
+  end
 end
 
 RSpec.describe "bundle update in more complicated situations" do
@@ -747,66 +805,6 @@ RSpec.describe "bundle update when a gem depends on a newer version of bundler" 
     expect(last_command.stdboth).not_to match(/in snapshot/i)
     expect(err).to match(/current Bundler version/i).
       and match(/Install the necessary version with `gem install bundler:#{Bundler::VERSION.succ}`/i)
-  end
-end
-
-RSpec.describe "bundle update" do
-  it "shows the previous version of the gem when updated from rubygems source", :bundler => "< 3" do
-    build_repo2
-
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
-      gem "activesupport"
-    G
-
-    bundle "update", :all => true
-    expect(out).to include("Using activesupport 2.3.5")
-
-    update_repo2 do
-      build_gem "activesupport", "3.0"
-    end
-
-    bundle "update", :all => true
-    expect(out).to include("Installing activesupport 3.0 (was 2.3.5)")
-  end
-
-  context "with suppress_install_using_messages set" do
-    before { bundle "config set suppress_install_using_messages true" }
-
-    it "only prints `Using` for versions that have changed" do
-      build_repo4 do
-        build_gem "bar"
-        build_gem "foo"
-      end
-
-      install_gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
-        gem "bar"
-        gem "foo"
-      G
-
-      bundle "update", :all => true
-      expect(out).to match(/Resolving dependencies\.\.\.\.*\nBundle updated!/)
-
-      update_repo4 do
-        build_gem "foo", "2.0"
-      end
-
-      bundle "update", :all => true
-      out.sub!("Removing foo (1.0)\n", "")
-      expect(out).to match(/Resolving dependencies\.\.\.\.*\nFetching foo 2\.0 \(was 1\.0\)\nInstalling foo 2\.0 \(was 1\.0\)\nBundle updated/)
-    end
-  end
-
-  it "shows error message when Gemfile.lock is not preset and gem is specified" do
-    gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
-      gem "activesupport"
-    G
-
-    bundle "update nonexisting", :raise_on_error => false
-    expect(err).to include("This Bundle hasn't been installed yet. Run `bundle install` to update and install the bundled gems.")
-    expect(exitstatus).to eq(22)
   end
 end
 

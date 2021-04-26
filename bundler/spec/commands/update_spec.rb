@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle update" do
-  before :each do
+  before do
     build_repo2
 
     install_gemfile <<-G
@@ -257,7 +257,7 @@ RSpec.describe "bundle update" do
     end
 
     context "when there is a source with the same name as a gem in a group" do
-      before :each do
+      before do
         build_git "foo", :path => lib_path("activesupport")
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo2)}"
@@ -452,7 +452,7 @@ RSpec.describe "bundle update" do
 end
 
 RSpec.describe "bundle update in more complicated situations" do
-  before :each do
+  before do
     build_repo2
   end
 
@@ -640,7 +640,7 @@ RSpec.describe "bundle update without a Gemfile.lock" do
 end
 
 RSpec.describe "bundle update when a gem depends on a newer version of bundler" do
-  before(:each) do
+  before do
     build_repo2 do
       build_gem "rails", "3.0.1" do |s|
         s.add_dependency "bundler", Bundler::VERSION.succ

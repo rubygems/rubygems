@@ -594,6 +594,68 @@ RSpec.describe "bundle update" do
     expect(err).to include("This Bundle hasn't been installed yet. Run `bundle install` to update and install the bundled gems.")
     expect(exitstatus).to eq(22)
   end
+
+  context "with multiple, duplicated sources, with lockfile in old format", :bundler => "< 3" do
+    before do
+      build_repo2 do
+        build_gem "dotenv", "2.7.6"
+
+        build_gem "oj", "3.11.3"
+        build_gem "oj", "3.11.5"
+
+        build_gem "vcr", "6.0.0"
+      end
+
+      build_repo gem_repo3 do
+        build_gem "pkg-gem-flowbyte-with-dep", "1.0.0" do |s|
+          s.add_dependency "oj"
+        end
+      end
+
+      gemfile <<~G
+        source "https://gem.repo2"
+
+        gem "dotenv"
+
+        source "https://gem.repo3" do
+          gem 'pkg-gem-flowbyte-with-dep'
+        end
+
+        gem "vcr",source: "https://gem.repo2"
+      G
+
+      lockfile <<~L
+        GEM
+          remote: https://gem.repo2/
+          remote: https://gem.repo3/
+          specs:
+            dotenv (2.7.6)
+            oj (3.11.3)
+            pkg-gem-flowbyte-with-dep (1.0.0)
+              oj
+            vcr (6.0.0)
+
+        PLATFORMS
+          #{specific_local_platform}
+
+        DEPENDENCIES
+          dotenv
+          pkg-gem-flowbyte-with-dep!
+          vcr!
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+
+    it "works" do
+      bundle :install, :artifice => :compact_index
+      bundle "update oj", :artifice => :compact_index
+
+      expect(out).to include("Bundle updated!")
+      expect(the_bundle).to include_gems "oj 3.11.5"
+    end
+  end
 end
 
 RSpec.describe "bundle update in more complicated situations" do

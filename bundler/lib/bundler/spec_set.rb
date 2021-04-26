@@ -82,9 +82,9 @@ module Bundler
       materialized.group_by(&:source).each do |source, specs|
         next unless specs.any?{|s| s.is_a?(LazySpecification) }
 
+        source.local!
         names = -> { specs.map(&:name).uniq }
         source.double_check_for(names)
-        source.local!
       end
 
       materialized.map! do |s|
@@ -108,10 +108,10 @@ module Bundler
       @specs.group_by(&:source).each do |source, specs|
         next unless specs.any?{|s| s.is_a?(LazySpecification) }
 
-        names = -> { specs.map(&:name).uniq }
-        source.double_check_for(names)
         source.local!
         source.remote!
+        names = -> { specs.map(&:name).uniq }
+        source.double_check_for(names)
       end
 
       @specs.map do |s|

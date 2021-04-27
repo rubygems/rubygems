@@ -129,7 +129,7 @@ module Bundler
 
       keys.map do |key|
         key.sub(/^BUNDLE_/, "").gsub(/__/, ".").downcase
-      end
+      end.sort
     end
 
     def local_overrides

@@ -13,6 +13,7 @@ module Bundler
       auto_install
       cache_all
       cache_all_platforms
+      clean
       default_install_uses_path
       deployment
       disable_checksum_validation
@@ -25,11 +26,14 @@ module Bundler
       force_ruby_platform
       forget_cli_options
       frozen
+      gem.changelog
       gem.coc
       gem.mit
+      git.allow_insecure
       global_gem_cache
       ignore_messages
       init_gems_rb
+      inline
       no_install
       no_prune
       path_relative_to_cwd

@@ -170,8 +170,10 @@ RSpec.describe "The library itself" do
   it "documents all used settings" do
     exemptions = %w[
       forget_cli_options
+      gem.changelog
       gem.coc
       gem.mit
+      git.allow_insecure
       inline
       use_gem_version_promoter_for_major_updates
     ]

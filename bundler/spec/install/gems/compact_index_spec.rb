@@ -614,6 +614,17 @@ The checksum of /versions does not match the checksum provided by the server! So
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
 
+    it "passes basic authentication details and strips out creds also in verbose mode" do
+      gemfile <<-G
+        source "#{basic_auth_source_uri}"
+        gem "rack"
+      G
+
+      bundle :install, :verbose => true, :artifice => "compact_index_basic_authentication"
+      expect(out).not_to include("#{user}:#{password}")
+      expect(the_bundle).to include_gems "rack 1.0.0"
+    end
+
     it "strips http basic auth creds when warning about ambiguous sources", :bundler => "< 3" do
       gemfile <<-G
         source "#{basic_auth_source_uri}"

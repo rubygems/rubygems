@@ -376,6 +376,10 @@ where you can use personal OAuth tokens:
 
     export BUNDLE_GITHUB__COM=abcd0123generatedtoken:x-oauth-basic
 
+Note that any configured credentials will be redacted by informative commands
+such as `bundle config list` or `bundle config get`, unless you use the
+`--parseable` flag. This is to avoid unintentially leaking credentials when
+copy-pasting bundler output.
 
 ## CONFIGURE BUNDLER DIRECTORIES
 

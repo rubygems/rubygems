@@ -470,6 +470,9 @@ export BUNDLE_GITHUB__COM=abcd0123generatedtoken:x\-oauth\-basic
 .
 .IP "" 0
 .
+.P
+Note that any configured credentials will be redacted by informative commands such as \fBbundle config list\fR or \fBbundle config get\fR, unless you use the \fB\-\-parseable\fR flag\. This is to avoid unintentially leaking credentials when copy\-pasting bundler output\.
+.
 .SH "CONFIGURE BUNDLER DIRECTORIES"
 Bundler\'s home, config, cache and plugin directories are able to be configured through environment variables\. The default location for Bundler\'s home directory is \fB~/\.bundle\fR, which all directories inherit from by default\. The following outlines the available environment variables and their default values
 .

@@ -826,6 +826,28 @@ The checksum of /versions does not match the checksum provided by the server! So
     expect(the_bundle).to include_gems "rack 1.0.0"
   end
 
+  it "performs full update if server endpoints serve partial content responses but don't have incremental content and provide no Etag" do
+    build_repo4 do
+      build_gem "rack", "0.9.1"
+    end
+
+    install_gemfile <<-G, :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+      source "#{source_uri}"
+      gem 'rack', '0.9.1'
+    G
+
+    update_repo4 do
+      build_gem "rack", "1.0.0"
+    end
+
+    install_gemfile <<-G, :artifice => "compact_index_partial_update_no_etag_not_incremental", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+      source "#{source_uri}"
+      gem 'rack', '1.0.0'
+    G
+
+    expect(the_bundle).to include_gems "rack 1.0.0"
+  end
+
   it "performs full update of compact index info cache if range is not satisfiable" do
     gemfile <<-G
       source "#{source_uri}"

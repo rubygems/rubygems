@@ -52,7 +52,7 @@ GEM
     rainbow (3.0.0)
     rdiscount (2.2.0.2)
     rdoc (6.2.0)
-    rexml (3.2.4)
+    rexml (3.2.5)
     ronn (0.7.3)
       hpricot (>= 0.8.2)
       mustache (>= 0.7.0)

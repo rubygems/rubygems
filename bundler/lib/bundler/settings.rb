@@ -144,7 +144,7 @@ module Bundler
       keys = @temporary.keys | @global_config.keys | @local_config.keys | @env_config.keys
 
       keys.map do |key|
-        key.sub(/^BUNDLE_/, "").gsub(/__/, ".").downcase
+        key.sub(/^BUNDLE_/, "").gsub(/___/, "-").gsub(/__/, ".").downcase
       end.sort
     end
 
@@ -296,7 +296,7 @@ module Bundler
 
     def key_for(key)
       key = Settings.normalize_uri(key).to_s if key.is_a?(String) && /https?:/ =~ key
-      key = key.to_s.gsub(".", "__").upcase
+      key = key.to_s.gsub(".", "__").gsub("-", "___").upcase
       "BUNDLE_#{key}"
     end
 

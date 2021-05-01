@@ -641,6 +641,22 @@ RSpec.describe "gemcutter's dependency API" do
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
 
+    describe "with host including dashes" do
+      before do
+        gemfile <<-G
+          source "http://local-gemserver.test"
+          gem "rack"
+        G
+      end
+
+      it "reads authentication details from a valid ENV variable" do
+        bundle :install, :artifice => "endpoint_strict_basic_authentication", :env => { "BUNDLE_LOCAL___GEMSERVER__TEST" => "#{user}:#{password}" }
+
+        expect(out).to include("Fetching gem metadata from http://local-gemserver.test")
+        expect(the_bundle).to include_gems "rack 1.0.0"
+      end
+    end
+
     describe "with authentication details in bundle config" do
       before do
         gemfile <<-G

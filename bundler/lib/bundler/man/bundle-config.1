@@ -473,6 +473,20 @@ export BUNDLE_GITHUB__COM=abcd0123generatedtoken:x\-oauth\-basic
 .P
 Note that any configured credentials will be redacted by informative commands such as \fBbundle config list\fR or \fBbundle config get\fR, unless you use the \fB\-\-parseable\fR flag\. This is to avoid unintentially leaking credentials when copy\-pasting bundler output\.
 .
+.P
+Also note that to guarantee a sane mapping between valid environment variable names and valid host names, bundler makes the following transformations:
+.
+.IP "\(bu" 4
+Any \fB\-\fR characters in a host name are mapped to a triple dash (\fB___\fR) in the corresponding enviroment variable\.
+.
+.IP "\(bu" 4
+Any \fB\.\fR characters in a host name are mapped to a double dash (\fB__\fR) in the corresponding environment variable\.
+.
+.IP "" 0
+.
+.P
+This means that if you have a gem server named \fBmy\.gem\-host\.com\fR, you\'ll need to use the \fBBUNDLE_MY__GEM___HOST__COM\fR variable to configure credentials for it through ENV\.
+.
 .SH "CONFIGURE BUNDLER DIRECTORIES"
 Bundler\'s home, config, cache and plugin directories are able to be configured through environment variables\. The default location for Bundler\'s home directory is \fB~/\.bundle\fR, which all directories inherit from by default\. The following outlines the available environment variables and their default values
 .

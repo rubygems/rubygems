@@ -381,6 +381,19 @@ such as `bundle config list` or `bundle config get`, unless you use the
 `--parseable` flag. This is to avoid unintentially leaking credentials when
 copy-pasting bundler output.
 
+Also note that to guarantee a sane mapping between valid environment variable
+names and valid host names, bundler makes the following transformations:
+
+* Any `-` characters in a host name are mapped to a triple dash (`___`) in the
+  corresponding enviroment variable.
+
+* Any `.` characters in a host name are mapped to a double dash (`__`) in the
+  corresponding environment variable.
+
+This means that if you have a gem server named `my.gem-host.com`, you'll need to
+use the `BUNDLE_MY__GEM___HOST__COM` variable to configure credentials for it
+through ENV.
+
 ## CONFIGURE BUNDLER DIRECTORIES
 
 Bundler's home, config, cache and plugin directories are able to be configured

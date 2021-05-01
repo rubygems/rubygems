@@ -7,12 +7,12 @@ require 'psych'
 
 desc "Setup Rubygems dev environment"
 task :setup do
-  sh "ruby", "bundler/spec/support/bundle.rb", "install", "--gemfile=dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=dev_gems.rb"
 end
 
 desc "Update Rubygems dev environment"
 task :update do |_, args|
-  sh "ruby", "bundler/spec/support/bundle.rb", "update", *args, "--gemfile=dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", *args, "--gemfile=dev_gems.rb"
 end
 
 desc "Update the locked bundler version in dev environment"

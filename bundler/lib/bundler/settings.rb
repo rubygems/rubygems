@@ -296,9 +296,7 @@ module Bundler
     end
 
     def key_for(key)
-      key = Settings.normalize_uri(key).to_s if key.is_a?(String) && /https?:/ =~ key
-      key = key.to_s.gsub(".", "__").gsub("-", "___").upcase
-      "BUNDLE_#{key}"
+      self.class.key_for(key)
     end
 
     private
@@ -461,6 +459,12 @@ module Bundler
         (\.#{Regexp.union(PER_URI_OPTIONS)})? # optional suffix key
         \z
       /ix.freeze
+
+    def self.key_for(key)
+      key = normalize_uri(key).to_s if key.is_a?(String) && /https?:/ =~ key
+      key = key.to_s.gsub(".", "__").gsub("-", "___").upcase
+      "BUNDLE_#{key}"
+    end
 
     # TODO: duplicates Rubygems#normalize_uri
     # TODO: is this the correct place to validate mirror URIs?

@@ -260,7 +260,7 @@ end
 
 directory '../blog.rubygems.org' do
   sh 'git', 'clone',
-     'git@github.com:rubygems/rubygems.github.com.git',
+     'git@github.com:rubygems/rubygems.github.io.git',
      '../blog.rubygems.org'
 end
 

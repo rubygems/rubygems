@@ -1,10 +1,34 @@
+# 2.2.17 (May 5, 2021)
+
+## Enhancements:
+
+  - Improve authentication required error message to include an alternative using `ENV` [#4565](https://github.com/rubygems/rubygems/pull/4565)
+  - Discard partial range responses without etag [#4563](https://github.com/rubygems/rubygems/pull/4563)
+  - Fix configuring ENV for a gem server with a name including dashes [#4571](https://github.com/rubygems/rubygems/pull/4571)
+  - Redact credentials from `bundle env` and `bundle config` [#4566](https://github.com/rubygems/rubygems/pull/4566)
+  - Redact all sources in verbose mode [#4564](https://github.com/rubygems/rubygems/pull/4564)
+  - Improve `bundle pristine` error if `BUNDLE_GEMFILE` does not exist [#4536](https://github.com/rubygems/rubygems/pull/4536)
+  - [CurrentRuby] Add 3.0 as a known minor [#4535](https://github.com/rubygems/rubygems/pull/4535)
+  - Prefer File.read instead of IO.read [#4530](https://github.com/rubygems/rubygems/pull/4530)
+  - Add space after open curly bracket in Gemfile and gems.rb template [#4518](https://github.com/rubygems/rubygems/pull/4518)
+
+## Bug fixes:
+
+  - Make sure specs are fetched from the right source when materializing [#4562](https://github.com/rubygems/rubygems/pull/4562)
+  - Fix `bundle cache` with an up-to-date lockfile and specs not already installed [#4554](https://github.com/rubygems/rubygems/pull/4554)
+  - Ignore `deployment` setting in inline mode [#4523](https://github.com/rubygems/rubygems/pull/4523)
+
+## Performance:
+
+  - Don't materialize resolutions when not necessary [#4556](https://github.com/rubygems/rubygems/pull/4556)
+
 # 2.2.16 (April 8, 2021)
 
 ## Enhancements:
 
   - Add `--github-username` option and config to `bundle gem` [#3687](https://github.com/rubygems/rubygems/pull/3687)
   - Bump vendored `tmpdir` library copy [#4506](https://github.com/rubygems/rubygems/pull/4506)
-  - Add `rake build:checksum` task to build cheksums for a gem package [#4156](https://github.com/rubygems/rubygems/pull/4156)
+  - Add `rake build:checksum` task to build checksums for a gem package [#4156](https://github.com/rubygems/rubygems/pull/4156)
   - Enable bundler-cache for GitHub Actions template [#4498](https://github.com/rubygems/rubygems/pull/4498)
   - Improve `bundle info` error when gem is on a "disabled" group [#4492](https://github.com/rubygems/rubygems/pull/4492)
   - Small tweak to yank message [#4494](https://github.com/rubygems/rubygems/pull/4494)
@@ -472,7 +496,7 @@
   - Ignore `frozen` setting in inline mode ([#7125](https://github.com/rubygems/bundler/pull/7125))
   - Fix incorrect "bundler attempted to update GEM but version stayed the same" message when updating git sourced gems ([#6325](https://github.com/rubygems/bundler/pull/6325))
   - Don't check for existence of a writable home directory if `BUNDLE_USER_HOME` is set ([#6885](https://github.com/rubygems/bundler/pull/6885))
-  - Fix error message when server would respond to a bad username/password requiest with a 401 ([#6928](https://github.com/rubygems/bundler/pull/6928))
+  - Fix error message when server would respond to a bad username/password request with a 401 ([#6928](https://github.com/rubygems/bundler/pull/6928))
   - Fix `bundle outdated` pluralization when multiple groups are requested ([#7063](https://github.com/rubygems/bundler/pull/7063))
   - Fix `bundle install` not updating conservatively when gemspec is changed ([#7143](https://github.com/rubygems/bundler/pull/7143))
   - Fix `bundle exec` not respecting custom process titles inside scripts ([#7140](https://github.com/rubygems/bundler/pull/7140))
@@ -2117,7 +2141,7 @@ Changes
   - fix Bundler.which for directories ([#2697](https://github.com/rubygems/bundler/issues/2697), @rhysd)
   - properly require `Capistrano::Version` ([#2690](https://github.com/rubygems/bundler/issues/2690), @steveklabnik)
   - search for git.exe and git
-  - fix the bug that downloads every spec when API fetcher encouters an error
+  - fix the bug that downloads every spec when API fetcher encounters an error
   - only retry network requests
 
 # 1.4.0.rc.1 (September 29, 2013)
@@ -2741,7 +2765,7 @@ Changes
 
   - Implement `to_ary` to avoid calls to method_missing (@tenderlove, [#1274](https://github.com/rubygems/bundler/issues/1274))
   - bundle clean removes old .gem files (@cldwalker, [#1293](https://github.com/rubygems/bundler/issues/1293))
-  - Correcly identify missing child dependency in error message
+  - Correctly identify missing child dependency in error message
   - Run pre-install, post-build, and post-install gem hooks for git gems (@warhammerkid, [#1120](https://github.com/rubygems/bundler/issues/1120))
   - create Gemfile.lock for empty Gemfile ([#1218](https://github.com/rubygems/bundler/issues/1218))
 
@@ -2892,7 +2916,7 @@ Changes
 
   - Performance fix for MRI 1.9 (@efficientcloud, [#1288](https://github.com/rubygems/bundler/issues/1288))
   - Shortcuts (like `bundle i`) for all commands (@amatsuda)
-  - Correcly identify missing child dependency in error message
+  - Correctly identify missing child dependency in error message
 
 ## Bug fixes:
 
@@ -3128,7 +3152,7 @@ Changes
 
   - Various bugfixes to the built-in rake helpers
   - Fix a bug where shortrefs weren't unique enough and were
-    therfore colliding
+    therefore colliding
   - Fix a small bug involving checking whether a local git
     clone is up to date
   - Correctly handle explicit '=' dependencies with gems

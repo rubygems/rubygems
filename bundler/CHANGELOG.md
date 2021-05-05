@@ -1,3 +1,27 @@
+# 2.2.17 (May 5, 2021)
+
+## Enhancements:
+
+  - Improve authentication required error message to include an alternative using `ENV` [#4565](https://github.com/rubygems/rubygems/pull/4565)
+  - Discard partial range responses without etag [#4563](https://github.com/rubygems/rubygems/pull/4563)
+  - Fix configuring ENV for a gem server with a name including dashes [#4571](https://github.com/rubygems/rubygems/pull/4571)
+  - Redact credentials from `bundle env` and `bundle config` [#4566](https://github.com/rubygems/rubygems/pull/4566)
+  - Redact all sources in verbose mode [#4564](https://github.com/rubygems/rubygems/pull/4564)
+  - Improve `bundle pristine` error if `BUNDLE_GEMFILE` does not exist [#4536](https://github.com/rubygems/rubygems/pull/4536)
+  - [CurrentRuby] Add 3.0 as a known minor [#4535](https://github.com/rubygems/rubygems/pull/4535)
+  - Prefer File.read instead of IO.read [#4530](https://github.com/rubygems/rubygems/pull/4530)
+  - Add space after open curly bracket in Gemfile and gems.rb template [#4518](https://github.com/rubygems/rubygems/pull/4518)
+
+## Bug fixes:
+
+  - Make sure specs are fetched from the right source when materializing [#4562](https://github.com/rubygems/rubygems/pull/4562)
+  - Fix `bundle cache` with an up-to-date lockfile and specs not already installed [#4554](https://github.com/rubygems/rubygems/pull/4554)
+  - Ignore `deployment` setting in inline mode [#4523](https://github.com/rubygems/rubygems/pull/4523)
+
+## Performance:
+
+  - Don't materialize resolutions when not necessary [#4556](https://github.com/rubygems/rubygems/pull/4556)
+
 # 2.2.16 (April 8, 2021)
 
 ## Enhancements:

@@ -1,3 +1,19 @@
+# 3.2.17 / 2021-05-05
+
+## Enhancements:
+
+* Only print month & year in deprecation messages. Pull request #3085 by
+  Schwad
+* Make deprecate method support ruby3's keyword arguments. Pull request
+  #4558 by mame
+* Update the default bindir on macOS. Pull request #4524 by nobu
+* Prefer File.open instead of Kernel#open. Pull request #4529 by mame
+
+## Documentation:
+
+* Fix usage messages to reflect the current POSIX-compatible behaviour.
+  Pull request #4551 by graywolf-at-work
+
 # 3.2.16 / 2021-04-08
 
 ## Bug fixes:

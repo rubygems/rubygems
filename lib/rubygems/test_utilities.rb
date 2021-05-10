@@ -153,14 +153,14 @@ class Gem::FakeFetcher
     path
   end
 
-  def download_to_cache(dependency)
+  def download_to_cache(dependency, install_dir = Gem.dir)
     found, _ = Gem::SpecFetcher.fetcher.spec_for_dependency dependency
 
     return if found.empty?
 
     spec, source = found.first
 
-    download spec, source.uri.to_s
+    download spec, source.uri.to_s, install_dir
   end
 end
 

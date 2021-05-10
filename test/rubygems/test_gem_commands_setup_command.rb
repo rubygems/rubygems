@@ -210,6 +210,9 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     # expect to remove normal gem that was same version. because it's promoted default gems.
     refute_path_exists File.join(Gem.dir, "specifications", "bundler-#{BUNDLER_VERS}.gemspec")
 
+    # expect to add normal gem that was same version. because it's demoted from a default gem.
+    assert_path_exists File.join(Gem.dir, "specifications", "bundler-1.15.4.gemspec")
+
     assert_path_exists "#{Gem.dir}/gems/bundler-#{BUNDLER_VERS}"
     assert_path_exists "#{Gem.dir}/gems/bundler-1.15.4"
     assert_path_exists "#{Gem.dir}/gems/bundler-audit-1.0.0"
@@ -244,6 +247,19 @@ class TestGemCommandsSetupCommand < Gem::TestCase
         assert_path_exists File.join bin_dir, e
       end
     end
+  end
+
+  def test_install_default_bundler_gem_when_previous_version_not_in_cache
+    @cmd.extend FileUtils
+
+    File.delete File.join(Gem.dir, "cache", "bundler-1.15.4.gem")
+
+    bin_dir = File.join(@gemhome, 'bin')
+    @cmd.install_default_bundler_gem bin_dir
+
+    refute_path_exists File.join(Gem.default_specifications_dir, "bundler-1.15.4.gemspec")
+    assert_path_exists File.join(Gem.dir, "specifications", "bundler-1.15.4.gemspec")
+    assert_path_exists File.join(Gem.dir, "gems", "bundler-1.15.4")
   end
 
   def test_remove_old_lib_files

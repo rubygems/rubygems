@@ -200,8 +200,6 @@ RSpec.describe "Bundler.setup" do
       gem "rack"
     G
 
-    entrypoint = mis_activates_prerelease_default_bundler? ? "#{lib_dir}/bundler" : "bundler"
-
     ruby <<-R
       require '#{entrypoint}'
 
@@ -473,8 +471,6 @@ RSpec.describe "Bundler.setup" do
       FileUtils.rm(bundled_app_lock)
 
       break_git!
-
-      entrypoint = mis_activates_prerelease_default_bundler? ? "#{lib_dir}/bundler" : "bundler"
 
       ruby <<-R
         require "#{entrypoint}"
@@ -1126,9 +1122,8 @@ end
 
     context "is not present" do
       it "does not change the lock" do
-        entrypoint = mis_activates_prerelease_default_bundler? ? "#{lib_dir}/bundler/setup" : "bundler/setup"
         lockfile lock_with(nil)
-        ruby "require '#{entrypoint}'"
+        ruby "require '#{entrypoint}/setup'"
         lockfile_should_be lock_with(nil)
       end
     end
@@ -1145,10 +1140,9 @@ end
 
     context "is older" do
       it "does not change the lock" do
-        entrypoint = mis_activates_prerelease_default_bundler? ? "#{lib_dir}/bundler/setup" : "bundler/setup"
         system_gems "bundler-1.10.1"
         lockfile lock_with("1.10.1")
-        ruby "require '#{entrypoint}'"
+        ruby "require '#{entrypoint}/setup'"
         lockfile_should_be lock_with("1.10.1")
       end
     end
@@ -1219,9 +1213,8 @@ end
   describe "with gemified standard libraries" do
     it "does not load Psych" do
       gemfile ""
-      entrypoint = mis_activates_prerelease_default_bundler? ? "#{lib_dir}/bundler/setup" : "bundler/setup"
       ruby <<-RUBY
-        require '#{entrypoint}'
+        require '#{entrypoint}/setup'
         puts defined?(Psych::VERSION) ? Psych::VERSION : "undefined"
         require 'psych'
         puts Psych::VERSION
@@ -1423,8 +1416,10 @@ end
     end
   end
 
-  # Tested rubygems does not include https://github.com/rubygems/rubygems/pull/2728 and will not always end up activating the current bundler
-  def mis_activates_prerelease_default_bundler?
-    Gem.rubygems_version < Gem::Version.new("3.1.a")
+  # Sometimes rubygems version under test does not include
+  # https://github.com/rubygems/rubygems/pull/2728 and will not always end up
+  # activating the current bundler. In that case, require bundler absolutely.
+  def entrypoint
+    Gem.rubygems_version < Gem::Version.new("3.1.a") ? "#{lib_dir}/bundler" : "bundler"
   end
 end

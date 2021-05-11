@@ -116,7 +116,7 @@ class TestGemVersion < Gem::TestCase
       version_string =~ Gem::Version::ANCHORED_VERSION_PATTERN
     end
   rescue RegexpError
-    skip "It fails to allocate the memory for regex pattern of Gem::Version::ANCHORED_VERSION_PATTERN"
+    pend "It fails to allocate the memory for regex pattern of Gem::Version::ANCHORED_VERSION_PATTERN"
   end
 
   def test_empty_version

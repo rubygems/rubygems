@@ -25,7 +25,6 @@ GEM
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
     hpricot (0.8.6)
-    hpricot (0.8.6-java)
     jaro_winkler (1.5.4)
     jaro_winkler (1.5.4-java)
     jmespath (1.4.0)

@@ -461,7 +461,7 @@ RSpec.describe "major deprecations" do
       G
 
       ruby <<-RUBY
-        require '#{lib_dir}/bundler'
+        require '#{entrypoint}'
 
         Bundler.setup
         Bundler.setup

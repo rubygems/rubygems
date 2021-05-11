@@ -7,6 +7,7 @@ gem "rubocop", "~> 0.80.1"
 gem "rubocop-performance", "~> 1.5.2"
 gem "webrick", "~> 1.6"
 gem "parallel_tests", "~> 2.29"
+gem "parallel", "1.19.2" # 1.20+ is required > Ruby 2.3
 gem "ronn", "~> 0.7.3", :platform => :ruby
 gem "rspec-core", "~> 3.8"
 gem "rspec-expectations", "~> 3.8"

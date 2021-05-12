@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require "minitest/autorun"
 require_relative "../util/changelog"
 require "rubygems/commands/setup_command"
 
-class ChangelogTest < Minitest::Test
+class ChangelogTest < Test::Unit::TestCase
   def setup
     @changelog = Changelog.for_rubygems(Gem::VERSION)
   end

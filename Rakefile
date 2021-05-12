@@ -92,11 +92,6 @@ end
 
 task rubocop: %w[rubocop:rubygems rubocop:bundler]
 
-desc "Run a test suite bisection"
-task(:bisect) do
-  sh "util/bisect"
-end
-
 # --------------------------------------------------------------------
 # Creating a release
 

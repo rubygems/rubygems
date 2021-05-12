@@ -16,11 +16,11 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
   def test_class_build
     if java_platform?
-      skip("failing on jruby")
+      pend("failing on jruby")
     end
 
     if vc_windows? && !nmake_found?
-      skip("test_class_build skipped - nmake not found")
+      pend("test_class_build skipped - nmake not found")
     end
 
     File.open File.join(@ext, 'extconf.rb'), 'w' do |extconf|
@@ -45,7 +45,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
   def test_class_build_rbconfig_make_prog
     if java_platform?
-      skip("failing on jruby")
+      pend("failing on jruby")
     end
 
     configure_args do
@@ -70,7 +70,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
     ENV['MAKE'] = 'anothermake'
 
     if java_platform?
-      skip("failing on jruby")
+      pend("failing on jruby")
     end
 
     configure_args '' do
@@ -80,7 +80,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
       output = []
 
-      assert_raises Gem::InstallError do
+      assert_raise Gem::InstallError do
         Gem::Ext::ExtConfBuilder.build 'extconf.rb', @dest_path, output, [], nil, @ext
       end
 
@@ -93,7 +93,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
   def test_class_build_extconf_fail
     if vc_windows? && !nmake_found?
-      skip("test_class_build_extconf_fail skipped - nmake not found")
+      pend("test_class_build_extconf_fail skipped - nmake not found")
     end
 
     File.open File.join(@ext, 'extconf.rb'), 'w' do |extconf|
@@ -104,7 +104,7 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
     output = []
 
-    error = assert_raises Gem::InstallError do
+    error = assert_raise Gem::InstallError do
       Gem::Ext::ExtConfBuilder.build 'extconf.rb', @dest_path, output, [], nil, @ext
     end
 
@@ -114,12 +114,12 @@ class TestGemExtExtConfBuilder < Gem::TestCase
     assert_match(File.join(@dest_path, 'mkmf.log'), output[4])
     assert_includes(output, "To see why this extension failed to compile, please check the mkmf.log which can be found here:\n")
 
-    assert_path_exists File.join @dest_path, 'mkmf.log'
+    assert_path_exist File.join @dest_path, 'mkmf.log'
   end
 
   def test_class_build_extconf_success_without_warning
     if vc_windows? && !nmake_found?
-      skip("test_class_build_extconf_fail skipped - nmake not found")
+      pend("test_class_build_extconf_fail skipped - nmake not found")
     end
 
     File.open File.join(@ext, 'extconf.rb'), 'w' do |extconf|
@@ -134,12 +134,12 @@ class TestGemExtExtConfBuilder < Gem::TestCase
 
     refute_includes(output, "To see why this extension failed to compile, please check the mkmf.log which can be found here:\n")
 
-    assert_path_exists File.join @dest_path, 'mkmf.log'
+    assert_path_exist File.join @dest_path, 'mkmf.log'
   end
 
   def test_class_build_unconventional
     if vc_windows? && !nmake_found?
-      skip("test_class_build skipped - nmake not found")
+      pend("test_class_build skipped - nmake not found")
     end
 
     File.open File.join(@ext, 'extconf.rb'), 'w' do |extconf|
@@ -180,7 +180,7 @@ end
 
   def test_class_make
     if vc_windows? && !nmake_found?
-      skip("test_class_make skipped - nmake not found")
+      pend("test_class_make skipped - nmake not found")
     end
 
     output = []
@@ -202,7 +202,7 @@ end
   end
 
   def test_class_make_no_Makefile
-    error = assert_raises Gem::InstallError do
+    error = assert_raise Gem::InstallError do
       Gem::Ext::ExtConfBuilder.make @ext, ['output'], @ext
     end
 

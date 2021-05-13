@@ -48,4 +48,4 @@ If you have either `rubygems-bundler` or `open_gem` installed, please try removi
 
 [Create a gist](https://gist.github.com) containing all of that information, then visit the [Bundler issue tracker](https://github.com/rubygems/rubygems/issues?q=is%3Aopen+is%3Aissue+label%3ABundler) and [create a ticket](https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md) describing your problem and linking to your gist.
 
-Thanks for reporting issues and helping make Bundler better!
+Thanks for reporting issues and helping make Bundler better! 

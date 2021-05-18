@@ -911,7 +911,7 @@ module Bundler
         source_requirements[dep.name] = sources.metadata_source
       end
       source_requirements[:global] = index unless Bundler.feature_flag.disable_multisource?
-      source_requirements[:default_bundler] = source_requirements["bundler"] || source_requirements[:default]
+      source_requirements[:default_bundler] = source_requirements["bundler"] || sources.default_source
       source_requirements["bundler"] = sources.metadata_source # needs to come last to override
       source_requirements
     end

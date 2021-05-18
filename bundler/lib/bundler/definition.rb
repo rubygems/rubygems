@@ -679,9 +679,9 @@ module Bundler
       changes = false
 
       # If there is a RubyGems source in both
-      locked_gem_sources.each do |locked_gem|
+      locked_gem_sources.each do |locked_gem_source|
         # Merge the remotes from the Gemfile into the Gemfile.lock
-        changes |= locked_gem.replace_remotes(actual_remotes, Bundler.settings[:allow_deployment_source_credential_changes])
+        changes |= locked_gem_source.replace_remotes(actual_remotes, Bundler.settings[:allow_deployment_source_credential_changes])
       end
 
       changes

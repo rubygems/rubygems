@@ -298,14 +298,13 @@ module Bundler
         remote_specs.each do |spec|
           case spec
           when EndpointSpecification, Gem::Specification, StubSpecification, LazySpecification
-            names.concat(spec.runtime_dependencies)
+            names.concat(spec.runtime_dependencies.map(&:name))
           when RemoteSpecification # from the full index
             return nil
           else
             raise "unhandled spec type (#{spec.inspect})"
           end
         end
-        names.map!(&:name) if names
         names
       end
 

@@ -25,7 +25,6 @@ module Spec
           deps << Bundler::DepProxy.get_proxy(d, p)
         end
       end
-      source_requirements ||= {}
       args[0] ||= [] # base
       args[1] ||= Bundler::GemVersionPromoter.new # gem_version_promoter
       args[2] ||= [] # additional_base_requirements

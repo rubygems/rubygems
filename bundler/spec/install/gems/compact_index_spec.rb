@@ -467,7 +467,7 @@ The checksum of /versions does not match the checksum provided by the server! So
     expect(the_bundle).to include_gems "foo 1.0"
   end
 
-  it "fetches again when more dependencies are found in subsequent sources using --deployment", :bundler => "< 3" do
+  it "fetches again when more dependencies are found in subsequent sources using deployment mode", :bundler => "< 3" do
     build_repo2 do
       build_gem "back_deps" do |s|
         s.add_dependency "foo"
@@ -482,8 +482,8 @@ The checksum of /versions does not match the checksum provided by the server! So
     G
 
     bundle :install, :artifice => "compact_index_extra"
-
-    bundle "install --deployment", :artifice => "compact_index_extra"
+    bundle "config --set local deployment true"
+    bundle :install, :artifice => "compact_index_extra"
     expect(the_bundle).to include_gems "back_deps 1.0"
   end
 

@@ -510,6 +510,10 @@ module Bundler
 
     private
 
+    def precompute_source_requirements_for_indirect_dependencies?
+      sources.non_global_rubygems_sources.all?(&:dependency_api_available?) && sources.no_aggregate_global_source?
+    end
+
     def current_ruby_platform_locked?
       return false unless generic_local_platform == Gem::Platform::RUBY
 
@@ -856,17 +860,17 @@ module Bundler
     end
 
     def source_requirements
-      # Load all specs from remote sources
-      global_source = Source::RubygemsAggregate.new(sources, source_map)
-
       # Record the specs available in each gem's source, so that those
       # specs will be available later when the resolver knows where to
       # look for that gemspec (or its dependencies)
-      source_requirements = { :default => sources.default_source }.merge(source_map.direct_requirements)
+      source_requirements = if precompute_source_requirements_for_indirect_dependencies?
+        { :default => sources.default_source }.merge(source_map.all_requirements)
+      else
+        { :global => Source::RubygemsAggregate.new(sources, source_map) }.merge(source_map.direct_requirements)
+      end
       metadata_dependencies.each do |dep|
         source_requirements[dep.name] = sources.metadata_source
       end
-      source_requirements[:global] = global_source unless Bundler.feature_flag.disable_multisource?
       source_requirements[:default_bundler] = source_requirements["bundler"] || sources.default_source
       source_requirements["bundler"] = sources.metadata_source # needs to come last to override
       source_requirements

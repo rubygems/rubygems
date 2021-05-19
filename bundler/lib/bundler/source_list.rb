@@ -32,6 +32,10 @@ module Bundler
       @merged_gem_lockfile_sections = true
     end
 
+    def no_aggregate_global_source?
+      global_rubygems_source.remotes.size <= 1
+    end
+
     def add_path_source(options = {})
       if options["gemspec"]
         add_source_to_list Source::Gemspec.new(options), path_sources
@@ -70,7 +74,11 @@ module Bundler
     end
 
     def rubygems_sources
-      @rubygems_sources + [global_rubygems_source]
+      non_global_rubygems_sources + [global_rubygems_source]
+    end
+
+    def non_global_rubygems_sources
+      @rubygems_sources
     end
 
     def rubygems_remotes
@@ -79,6 +87,10 @@ module Bundler
 
     def all_sources
       path_sources + git_sources + plugin_sources + rubygems_sources + [metadata_source]
+    end
+
+    def non_default_explicit_sources
+      all_sources - [default_source, metadata_source]
     end
 
     def get(source)

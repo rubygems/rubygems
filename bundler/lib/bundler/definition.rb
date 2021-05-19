@@ -906,7 +906,7 @@ module Bundler
       # Record the specs available in each gem's source, so that those
       # specs will be available later when the resolver knows where to
       # look for that gemspec (or its dependencies)
-      source_requirements = { :default => sources.default_source }.merge(dependency_source_requirements)
+      source_requirements = { :default => sources.default_source }.merge(direct_dependency_source_requirements)
       metadata_dependencies.each do |dep|
         source_requirements[dep.name] = sources.metadata_source
       end
@@ -917,7 +917,7 @@ module Bundler
     end
 
     def pinned_spec_names(skip = nil)
-      dependency_source_requirements.reject {|_, source| source == skip }.keys
+      direct_dependency_source_requirements.reject {|_, source| source == skip }.keys
     end
 
     def requested_groups
@@ -975,8 +975,8 @@ module Bundler
       Bundler.settings[:allow_deployment_source_credential_changes] && source.equivalent_remotes?(sources.rubygems_remotes)
     end
 
-    def dependency_source_requirements
-      @dependency_source_requirements ||= begin
+    def direct_dependency_source_requirements
+      @direct_dependency_source_requirements ||= begin
         source_requirements = {}
         default = sources.default_source
         dependencies.each do |dep|

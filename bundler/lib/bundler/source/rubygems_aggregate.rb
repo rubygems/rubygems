@@ -16,6 +16,10 @@ module Bundler
         @index
       end
 
+      def to_s
+        "any of the sources"
+      end
+
       private
 
       def build_index

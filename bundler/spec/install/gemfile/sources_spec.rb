@@ -325,6 +325,31 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
     end
 
+    context "when an indirect dependency can't be found in the aggregate rubygems source", :bundler => "< 3" do
+      before do
+        build_repo2
+
+        build_repo gem_repo3 do
+          build_gem "depends_on_missing", "1.0.1" do |s|
+            s.add_dependency "missing"
+          end
+        end
+
+        gemfile <<-G
+          source "https://gem.repo2"
+
+          source "https://gem.repo3"
+
+          gem "depends_on_missing"
+        G
+      end
+
+      it "fails" do
+        bundle :install, :artifice => "compact_index", :raise_on_error => false
+        expect(err).to include("Could not find gem 'missing', which is required by gem 'depends_on_missing', in any of the sources.")
+      end
+    end
+
     context "when a top-level gem has an indirect dependency" do
       before do
         build_repo gem_repo2 do

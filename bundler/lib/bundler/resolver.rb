@@ -26,12 +26,6 @@ module Bundler
 
     def initialize(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
       @source_requirements = source_requirements
-
-      @index_requirements = source_requirements.each_with_object({}) do |source_requirement, index_requirements|
-        name, source = source_requirement
-        index_requirements[name] = source.specs
-      end
-
       @base = base
       @resolver = Molinillo::Resolver.new(self, self)
       @search_for = {}
@@ -45,7 +39,6 @@ module Bundler
       @resolving_only_for_ruby = platforms == [Gem::Platform::RUBY]
       @gem_version_promoter = gem_version_promoter
       @use_gvp = Bundler.feature_flag.use_gem_version_promoter_for_major_updates? || !@gem_version_promoter.major?
-      @no_aggregate_global_source = @source_requirements[:global].nil?
     end
 
     def start(requirements)
@@ -170,14 +163,11 @@ module Bundler
     end
 
     def index_for(dependency)
-      source = @index_requirements[dependency.name]
-      if source
-        source
-      elsif @no_aggregate_global_source
-        @index_requirements[:default]
-      else
-        @index_requirements[:global]
-      end
+      source_for(dependency.name).specs
+    end
+
+    def source_for(name)
+      @source_requirements[name] || @source_requirements[:default]
     end
 
     def results_for(dependency, base)
@@ -353,7 +343,7 @@ module Bundler
             if other_bundler_required
               o << "\n\n"
 
-              candidate_specs = @index_requirements[:default_bundler].search(conflict_dependency)
+              candidate_specs = source_for(:default_bundler).specs.search(conflict_dependency)
               if candidate_specs.any?
                 target_version = candidate_specs.last.version
                 new_command = [File.basename($PROGRAM_NAME), "_#{target_version}_", *ARGV].join(" ")
@@ -370,7 +360,7 @@ module Bundler
           elsif !conflict.existing
             o << "\n"
 
-            relevant_source = conflict.requirement.source || @source_requirements[name] || @source_requirements[:default]
+            relevant_source = conflict.requirement.source || source_for(name)
 
             metadata_requirement = name.end_with?("\0")
 
@@ -383,9 +373,7 @@ module Bundler
             end
             o << " "
 
-            o << if relevant_source.nil?
-              "in any of the sources.\n"
-            elsif metadata_requirement
+            o << if metadata_requirement
               "is not available in #{relevant_source}"
             else
               "in #{relevant_source}.\n"

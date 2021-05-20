@@ -866,7 +866,7 @@ module Bundler
       source_requirements = if precompute_source_requirements_for_indirect_dependencies?
         { :default => sources.default_source }.merge(source_map.all_requirements)
       else
-        { :global => Source::RubygemsAggregate.new(sources, source_map) }.merge(source_map.direct_requirements)
+        { :default => Source::RubygemsAggregate.new(sources, source_map) }.merge(source_map.direct_requirements)
       end
       metadata_dependencies.each do |dep|
         source_requirements[dep.name] = sources.metadata_source

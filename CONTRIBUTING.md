@@ -13,7 +13,6 @@ contributors to follow to reduce the time it takes to get changes merged in.
     *   Match indentation (two spaces)
     *   Match coding style (run `rake rubocop`)
 
-
 3.  If any new files are added or existing files removed in a commit or PR,
     please update the `Manifest.txt` accordingly. This can be done by running
     `rake update_manifest`
@@ -31,13 +30,26 @@ here: https://guides.rubygems.org/contributing/
 ## Getting Started
 
     $ rake setup
-    $ rake test
 
-> Optional you can configure git hooks with: rake git_hooks
+> Optionally you can configure git hooks with: rake git_hooks
 
 To run commands like `gem install` from the repo:
 
     $ ruby -Ilib bin/gem install
+
+### Running Tests
+
+To run the entire test suite you can use: 
+
+    $ rake test
+
+To run an individual test file located for example in `test/rubygems/test_deprecate.rb` you can use: 
+
+    $ ruby -Ilib:test test/rubygems/test_deprecate.rb 
+    
+And to run an individual test method named `test_default` within a test file, you can use: 
+
+    $ ruby -Ilib:test test/rubygems/test_deprecate.rb -n /test_default/ 
 
 To run bundler test:
 

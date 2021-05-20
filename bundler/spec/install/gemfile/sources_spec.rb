@@ -376,7 +376,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
         it "does not find the dependency" do
           bundle :install, :artifice => "compact_index", :raise_on_error => false
           expect(err).to include(
-            "Could not find gem 'rack', which is required by gem 'depends_on_rack', in any of the relevant sources"
+            "Could not find gem 'rack', which is required by gem 'depends_on_rack', in rubygems repository https://gem.repo2/ or installed locally."
           )
         end
       end

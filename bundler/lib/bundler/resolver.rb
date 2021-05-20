@@ -370,11 +370,7 @@ module Bundler
           elsif !conflict.existing
             o << "\n"
 
-            relevant_sources = if conflict.requirement.source
-              [conflict.requirement.source]
-            else
-              [@source_requirements[name] || @source_requirements[:default]]
-            end.compact.map(&:to_s).uniq.sort
+            relevant_source = conflict.requirement.source || @source_requirements[name] || @source_requirements[:default]
 
             metadata_requirement = name.end_with?("\0")
 
@@ -387,12 +383,12 @@ module Bundler
             end
             o << " "
 
-            o << if relevant_sources.empty?
+            o << if relevant_source.nil?
               "in any of the sources.\n"
             elsif metadata_requirement
-              "is not available in #{relevant_sources.join(" or ")}"
+              "is not available in #{relevant_source}"
             else
-              "in any of the relevant sources:\n  #{relevant_sources * "\n  "}\n"
+              "in #{relevant_source}.\n"
             end
           end
         end,

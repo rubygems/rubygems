@@ -286,45 +286,6 @@ module Bundler
       end
     end
 
-    def build_index
-      Index.build do |idx|
-        dependency_names = @dependencies.map(&:name)
-
-        sources.all_sources.each do |source|
-          source.dependency_names = dependency_names - source_map.pinned_spec_names(source)
-          idx.add_source source.specs
-          dependency_names.concat(source.unmet_deps).uniq!
-        end
-
-        double_check_for_index(idx, dependency_names)
-      end
-    end
-
-    # Suppose the gem Foo depends on the gem Bar.  Foo exists in Source A.  Bar has some versions that exist in both
-    # sources A and B.  At this point, the API request will have found all the versions of Bar in source A,
-    # but will not have found any versions of Bar from source B, which is a problem if the requested version
-    # of Foo specifically depends on a version of Bar that is only found in source B. This ensures that for
-    # each spec we found, we add all possible versions from all sources to the index.
-    def double_check_for_index(idx, dependency_names)
-      pinned_names = source_map.pinned_spec_names
-
-      names = :names # do this so we only have to traverse to get dependency_names from the index once
-      unmet_dependency_names = lambda do
-        return names unless names == :names
-        new_names = sources.all_sources.map(&:dependency_names_to_double_check)
-        return names = nil if new_names.compact!
-        names = new_names.flatten(1).concat(dependency_names)
-        names.uniq!
-        names -= pinned_names
-        names
-      end
-
-      sources.all_sources.each do |source|
-        source.double_check_for(unmet_dependency_names)
-      end
-    end
-    private :double_check_for_index
-
     def has_rubygems_remotes?
       sources.rubygems_sources.any? {|s| s.remotes.any? }
     end
@@ -896,7 +857,7 @@ module Bundler
 
     def source_requirements
       # Load all specs from remote sources
-      index = build_index
+      global_source = Source::RubygemsAggregate.new(sources, source_map)
 
       # Record the specs available in each gem's source, so that those
       # specs will be available later when the resolver knows where to
@@ -905,7 +866,7 @@ module Bundler
       metadata_dependencies.each do |dep|
         source_requirements[dep.name] = sources.metadata_source
       end
-      source_requirements[:global] = index unless Bundler.feature_flag.disable_multisource?
+      source_requirements[:global] = global_source unless Bundler.feature_flag.disable_multisource?
       source_requirements[:default_bundler] = source_requirements["bundler"] || sources.default_source
       source_requirements["bundler"] = sources.metadata_source # needs to come last to override
       source_requirements

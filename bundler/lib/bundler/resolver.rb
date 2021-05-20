@@ -29,7 +29,7 @@ module Bundler
 
       @index_requirements = source_requirements.each_with_object({}) do |source_requirement, index_requirements|
         name, source = source_requirement
-        index_requirements[name] = name == :global ? source : source.specs
+        index_requirements[name] = source.specs
       end
 
       @base = base

@@ -7,6 +7,7 @@ module Bundler
     autoload :Metadata, File.expand_path("source/metadata", __dir__)
     autoload :Path,     File.expand_path("source/path", __dir__)
     autoload :Rubygems, File.expand_path("source/rubygems", __dir__)
+    autoload :RubygemsAggregate, File.expand_path("source/rubygems_aggregate", __dir__)
 
     attr_accessor :dependency_names
 

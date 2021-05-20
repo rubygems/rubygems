@@ -291,7 +291,7 @@ module Bundler
         dependency_names = @dependencies.map(&:name)
 
         sources.all_sources.each do |source|
-          source.dependency_names = dependency_names - pinned_spec_names(source)
+          source.dependency_names = dependency_names - source_map.pinned_spec_names(source)
           idx.add_source source.specs
           dependency_names.concat(source.unmet_deps).uniq!
         end
@@ -306,7 +306,7 @@ module Bundler
     # of Foo specifically depends on a version of Bar that is only found in source B. This ensures that for
     # each spec we found, we add all possible versions from all sources to the index.
     def double_check_for_index(idx, dependency_names)
-      pinned_names = pinned_spec_names
+      pinned_names = source_map.pinned_spec_names
 
       names = :names # do this so we only have to traverse to get dependency_names from the index once
       unmet_dependency_names = lambda do
@@ -901,7 +901,7 @@ module Bundler
       # Record the specs available in each gem's source, so that those
       # specs will be available later when the resolver knows where to
       # look for that gemspec (or its dependencies)
-      source_requirements = { :default => sources.default_source }.merge(direct_dependency_source_requirements)
+      source_requirements = { :default => sources.default_source }.merge(source_map.direct_requirements)
       metadata_dependencies.each do |dep|
         source_requirements[dep.name] = sources.metadata_source
       end
@@ -909,10 +909,6 @@ module Bundler
       source_requirements[:default_bundler] = source_requirements["bundler"] || sources.default_source
       source_requirements["bundler"] = sources.metadata_source # needs to come last to override
       source_requirements
-    end
-
-    def pinned_spec_names(skip = nil)
-      direct_dependency_source_requirements.reject {|_, source| source == skip }.keys
     end
 
     def requested_groups
@@ -970,16 +966,8 @@ module Bundler
       Bundler.settings[:allow_deployment_source_credential_changes] && source.equivalent_remotes?(sources.rubygems_remotes)
     end
 
-    def direct_dependency_source_requirements
-      @direct_dependency_source_requirements ||= begin
-        source_requirements = {}
-        default = sources.default_source
-        dependencies.each do |dep|
-          dep_source = dep.source || default
-          source_requirements[dep.name] = dep_source
-        end
-        source_requirements
-      end
+    def source_map
+      @source_map ||= SourceMap.new(sources, dependencies)
     end
   end
 end

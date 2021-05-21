@@ -307,25 +307,20 @@ module Bundler
     # each spec we found, we add all possible versions from all sources to the index.
     def double_check_for_index(idx, dependency_names)
       pinned_names = pinned_spec_names
-      loop do
-        idxcount = idx.size
 
-        names = :names # do this so we only have to traverse to get dependency_names from the index once
-        unmet_dependency_names = lambda do
-          return names unless names == :names
-          new_names = sources.all_sources.map(&:dependency_names_to_double_check)
-          return names = nil if new_names.compact!
-          names = new_names.flatten(1).concat(dependency_names)
-          names.uniq!
-          names -= pinned_names
-          names
-        end
+      names = :names # do this so we only have to traverse to get dependency_names from the index once
+      unmet_dependency_names = lambda do
+        return names unless names == :names
+        new_names = sources.all_sources.map(&:dependency_names_to_double_check)
+        return names = nil if new_names.compact!
+        names = new_names.flatten(1).concat(dependency_names)
+        names.uniq!
+        names -= pinned_names
+        names
+      end
 
-        sources.all_sources.each do |source|
-          source.double_check_for(unmet_dependency_names)
-        end
-
-        break if idxcount == idx.size
+      sources.all_sources.each do |source|
+        source.double_check_for(unmet_dependency_names)
       end
     end
     private :double_check_for_index

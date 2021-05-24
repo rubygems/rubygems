@@ -73,6 +73,16 @@ RSpec.describe "bundle exec" do
     expect(out).to eq("hi")
   end
 
+  it "works when exec'ing to ruby and using -r flag to ruby" do
+    bundle "config set --local path vendor/bundle"
+
+    install_gemfile <<~G
+      source "#{file_uri_for(gem_repo1)}"
+      gem "rack"
+    G
+    bundle "exec ruby -rrack"
+  end
+
   it "works when exec'ing to rubygems" do
     system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile "source \"#{file_uri_for(gem_repo1)}\"; gem \"rack\""

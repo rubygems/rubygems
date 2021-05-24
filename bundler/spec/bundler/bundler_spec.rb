@@ -159,7 +159,7 @@ RSpec.describe Bundler do
     context "when the executable in inside a quoted path" do
       let(:expected) do
         if Gem.win_platform?
-          "C:/e/executable"
+          "C:/e/executable.cmd"
         else
           "/e/executable"
         end

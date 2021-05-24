@@ -2,11 +2,9 @@
 
 RSpec.describe "bundle exec" do
   let(:system_gems_to_install) { %w[rack-1.0.0 rack-0.9.1] }
-  before :each do
-    system_gems(system_gems_to_install, :path => default_bundle_path)
-  end
 
   it "works with --gemfile flag" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     create_file "CustomGemfile", <<-G
       gem "rack", "1.0.0"
     G
@@ -16,6 +14,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "activates the correct gem" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     gemfile <<-G
       gem "rack", "0.9.1"
     G
@@ -25,6 +24,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "works when the bins are in ~/.bundle" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile <<-G
       gem "rack"
     G
@@ -34,6 +34,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "works when running from a random directory" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile <<-G
       gem "rack"
     G
@@ -44,30 +45,35 @@ RSpec.describe "bundle exec" do
   end
 
   it "works when exec'ing something else" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile 'gem "rack"'
     bundle "exec echo exec"
     expect(out).to eq("exec")
   end
 
   it "works when exec'ing to ruby" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile 'gem "rack"'
     bundle "exec ruby -e 'puts %{hi}'"
     expect(out).to eq("hi")
   end
 
   it "works when exec'ing to rubygems" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile 'gem "rack"'
     bundle "exec #{gem_cmd} --version"
     expect(out).to eq(Gem::VERSION)
   end
 
   it "works when exec'ing to rubygems through sh -c" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile 'gem "rack"'
     bundle "exec sh -c '#{gem_cmd} --version'"
     expect(out).to eq(Gem::VERSION)
   end
 
   it "works when exec'ing back to bundler with a lockfile that doesn't include the current platform" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile <<-G
       gem "rack", "0.9.1"
     G
@@ -107,12 +113,14 @@ RSpec.describe "bundle exec" do
   end
 
   it "accepts --verbose" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile 'gem "rack"'
     bundle "exec --verbose echo foobar"
     expect(out).to eq("foobar")
   end
 
   it "passes --verbose to command if it is given after the command" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile 'gem "rack"'
     bundle "exec echo --verbose"
     expect(out).to eq("--verbose")
@@ -154,6 +162,7 @@ RSpec.describe "bundle exec" do
   it "can run a command named --verbose" do
     skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
 
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile 'gem "rack"'
     File.open(bundled_app("--verbose"), "w") do |f|
       f.puts "#!/bin/sh"
@@ -314,6 +323,7 @@ RSpec.describe "bundle exec" do
   it "does not duplicate already exec'ed RUBYOPT" do
     skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
 
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile <<-G
       gem "rack"
     G
@@ -332,6 +342,7 @@ RSpec.describe "bundle exec" do
   it "does not duplicate already exec'ed RUBYLIB" do
     skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
 
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile <<-G
       gem "rack"
     G
@@ -348,6 +359,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "errors nicely when the argument doesn't exist" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile <<-G
       gem "rack"
     G
@@ -359,6 +371,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "errors nicely when the argument is not executable" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile <<-G
       gem "rack"
     G
@@ -370,6 +383,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "errors nicely when no arguments are passed" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     install_gemfile <<-G
       gem "rack"
     G
@@ -380,6 +394,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "raises a helpful error when exec'ing to something outside of the bundle" do
+    system_gems(system_gems_to_install, :path => default_bundle_path)
     bundle "config set clean false" # want to keep the rackup binstub
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
@@ -401,6 +416,7 @@ RSpec.describe "bundle exec" do
         before(:each) do
           skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
 
+          system_gems(system_gems_to_install, :path => default_bundle_path)
           install_gemfile <<-G
             gem "rack"
           G
@@ -485,6 +501,7 @@ RSpec.describe "bundle exec" do
   describe "with gem executables" do
     describe "run from a random directory" do
       before(:each) do
+        system_gems(system_gems_to_install, :path => default_bundle_path)
         install_gemfile <<-G
           gem "rack"
         G
@@ -646,6 +663,8 @@ RSpec.describe "bundle exec" do
     RUBY
 
     before do
+      system_gems(system_gems_to_install, :path => default_bundle_path)
+
       bundled_app(path).open("w") {|f| f << executable }
       bundled_app(path).chmod(0o755)
 
@@ -696,6 +715,7 @@ RSpec.describe "bundle exec" do
 
         it "runs" do
           skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+          system_gems(system_gems_to_install, :path => default_bundle_path)
 
           subject
           expect(exitstatus).to eq(exit_code)

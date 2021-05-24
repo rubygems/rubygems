@@ -27,6 +27,7 @@ module Bundler
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
           return kernel_load(bin_path, *args)
         end
+        args.unshift("-r#{File.expand_path("../setup.rb", __dir__)}") if bin_path == Gem.ruby
         kernel_exec(bin_path, *args)
       else
         # exec using the given command

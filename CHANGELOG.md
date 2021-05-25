@@ -1,3 +1,10 @@
+# 3.2.18 / 2021-05-25
+
+## Enhancements:
+
+* Don't leave temporary directory around when building extensions to
+  improve build reproducibility. Pull request #4610 by baloo
+
 # 3.2.17 / 2021-05-05
 
 ## Enhancements:

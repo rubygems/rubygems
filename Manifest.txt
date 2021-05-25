@@ -180,7 +180,9 @@ bundler/lib/bundler/source/path.rb
 bundler/lib/bundler/source/path/installer.rb
 bundler/lib/bundler/source/rubygems.rb
 bundler/lib/bundler/source/rubygems/remote.rb
+bundler/lib/bundler/source/rubygems_aggregate.rb
 bundler/lib/bundler/source_list.rb
+bundler/lib/bundler/source_map.rb
 bundler/lib/bundler/spec_set.rb
 bundler/lib/bundler/stub_specification.rb
 bundler/lib/bundler/templates/.document

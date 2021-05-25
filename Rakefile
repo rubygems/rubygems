@@ -86,11 +86,6 @@ end
 
 task rubocop: %w[rubocop:rubygems rubocop:bundler]
 
-desc "Run a test suite bisection"
-task(:bisect) do
-  sh "util/bisect"
-end
-
 # --------------------------------------------------------------------
 # Creating a release
 
@@ -254,7 +249,7 @@ end
 
 directory '../blog.rubygems.org' do
   sh 'git', 'clone',
-     'git@github.com:rubygems/rubygems.github.com.git',
+     'git@github.com:rubygems/rubygems.github.io.git',
      '../blog.rubygems.org'
 end
 

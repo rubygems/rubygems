@@ -49,7 +49,6 @@ jobs:
       - name: Sync tools
         run: |
           ruby tool/sync_default_gems.rb rubygems
-          ruby tool/sync_default_gems.rb bundler
         working-directory: ruby/ruby
       - name: Test RubyGems
         run: make -j2 -s test-all TESTS="rubygems --no-retry"
@@ -57,9 +56,6 @@ jobs:
         if: matrix.target == 'Rubygems'
       - name: Test Bundler
         run: |
-          git checkout lib/bundler/bundler.gemspec
-          rm -rf tool/bundler
-          cp -r ../../rubygems/rubygems/bundler/tool/bundler tool/bundler
           git add .
           make test-bundler-parallel
         working-directory: ruby/ruby

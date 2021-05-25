@@ -1,3 +1,19 @@
+# 2.2.18 (May 25, 2021)
+
+## Security fixes:
+
+  - Fix dependency confusion issues with implicit dependencies [#4609](https://github.com/rubygems/rubygems/pull/4609)
+
+## Enhancements:
+
+  - Use simpler notation for generated `required_ruby_version` [#4598](https://github.com/rubygems/rubygems/pull/4598)
+  - Undeprecate bundle show [#4586](https://github.com/rubygems/rubygems/pull/4586)
+  - Make sure link to new issue uses the proper template [#4592](https://github.com/rubygems/rubygems/pull/4592)
+
+## Bug fixes:
+
+  - Fix platform specific gems being removed from the lockfile [#4580](https://github.com/rubygems/rubygems/pull/4580)
+
 # 2.2.17 (May 5, 2021)
 
 ## Enhancements:

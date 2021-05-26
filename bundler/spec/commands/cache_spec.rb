@@ -317,7 +317,7 @@ RSpec.describe "bundle install with gem sources" do
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
 
-    it "does not hit the remote at all" do
+    it "does not hit the remote at all in frozen mode" do
       build_repo2
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"

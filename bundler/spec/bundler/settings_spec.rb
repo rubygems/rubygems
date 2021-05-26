@@ -312,12 +312,12 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
   describe "BUNDLE_ keys format" do
     let(:settings) { described_class.new(bundled_app(".bundle")) }
 
-    it "converts older keys without double dashes" do
+    it "converts older keys without double underscore" do
       config("BUNDLE_MY__PERSONAL.RACK" => "~/Work/git/rack")
       expect(settings["my.personal.rack"]).to eq("~/Work/git/rack")
     end
 
-    it "converts older keys without trailing slashes and double dashes" do
+    it "converts older keys without trailing slashes and double underscore" do
       config("BUNDLE_MIRROR__HTTPS://RUBYGEMS.ORG" => "http://rubygems-mirror.org")
       expect(settings["mirror.https://rubygems.org/"]).to eq("http://rubygems-mirror.org")
     end

@@ -13,9 +13,6 @@ jobs:
     name: Bundler (Truffleruby)
     runs-on: ubuntu-20.04
 
-    env:
-      RGV: ..
-
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby

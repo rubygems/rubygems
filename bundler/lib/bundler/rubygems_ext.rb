@@ -182,14 +182,6 @@ module Gem
     MSWIN64 = Gem::Platform.new("mswin64") unless defined?(MSWIN64)
     MINGW = Gem::Platform.new("x86-mingw32") unless defined?(MINGW)
     X64_MINGW = Gem::Platform.new("x64-mingw32") unless defined?(X64_MINGW)
-
-    undef_method :hash if method_defined? :hash
-    def hash
-      @cpu.hash ^ @os.hash ^ @version.hash
-    end
-
-    undef_method :eql? if method_defined? :eql?
-    alias_method :eql?, :==
   end
 
   require "rubygems/util"

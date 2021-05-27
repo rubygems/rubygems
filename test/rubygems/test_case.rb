@@ -1293,7 +1293,11 @@ Also, a list:
   end
 
   def ruby_with_rubygems_in_load_path
-    [Gem.ruby, "-I", File.expand_path("../../lib", __dir__)]
+    [Gem.ruby, "-I", rubygems_path]
+  end
+
+  def rubygems_path
+    File.expand_path("../../lib", __dir__)
   end
 
   def with_clean_path_to_ruby

@@ -34,7 +34,6 @@ jobs:
         shell: bash
       - name: Run Test
         run: |
-          ridk enable
           rake test
         env:
           BUNDLE_WITHOUT: lint

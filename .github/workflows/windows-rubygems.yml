@@ -29,11 +29,9 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Install Dependencies
-        run: rake setup
-        shell: bash
-      - name: Run Test
+      - name: Install Dependencies and Run Test
         run: |
+          rake setup
           rake test
         env:
           BUNDLE_WITHOUT: lint

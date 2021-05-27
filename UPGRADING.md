@@ -11,5 +11,5 @@
 ## Install from source
 
 *   Download from: https://rubygems.org/pages/download
-*   Unpack into a directory and cd there
-*   Install with: ruby setup.rb
+*   Unpack into a directory and `cd` there
+*   Install with: `ruby setup.rb`

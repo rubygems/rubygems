@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rubygems/installer_test_case'
+require_relative 'installer_test_case'
 
 class TestGemInstaller < Gem::InstallerTestCase
   def setup
@@ -740,7 +740,6 @@ gem 'other', version
 
     installer = Gem::Installer.at(
       gem_with_dangling_symlink,
-      :install_dir => @gem_home,
       :user_install => false,
       :force => true
     )

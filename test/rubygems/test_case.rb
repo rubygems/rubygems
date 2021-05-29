@@ -1293,7 +1293,7 @@ Also, a list:
   end
 
   def ruby_with_rubygems_in_load_path
-    [Gem.ruby, "-I", File.expand_path("../../lib", __dir__)]
+    [Gem.ruby, "-I", $LOAD_PATH.find{|p| p == File.dirname($LOADED_FEATURES.find{|f| f.end_with?("/rubygems.rb") }) }]
   end
 
   def with_clean_path_to_ruby

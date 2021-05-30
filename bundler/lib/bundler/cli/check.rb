@@ -11,9 +11,10 @@ module Bundler
     def run
       Bundler.settings.set_command_option_if_given :path, options[:path]
 
+      definition = Bundler.definition
+      definition.validate_runtime!
+
       begin
-        definition = Bundler.definition
-        definition.validate_runtime!
         not_installed = definition.missing_specs
       rescue GemNotFound, VersionConflict
         Bundler.ui.error "Bundler can't satisfy your Gemfile's dependencies."

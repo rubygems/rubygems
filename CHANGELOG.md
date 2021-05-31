@@ -1,3 +1,9 @@
+# 3.2.19 / 2021-05-31
+
+## Enhancements:
+
+* Fix `gem help build` output format. Pull request #4613 by tnir
+
 # 3.2.18 / 2021-05-25
 
 ## Enhancements:

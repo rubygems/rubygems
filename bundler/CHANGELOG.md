@@ -1,3 +1,10 @@
+# 2.2.19 (May 31, 2021)
+
+## Bug fixes:
+
+  - Restore support for configuration keys with dashes [#4582](https://github.com/rubygems/rubygems/pull/4582)
+  - Fix some cached gems being unintentionally ignored when using rubygems 3.2.18 [#4623](https://github.com/rubygems/rubygems/pull/4623)
+
 # 2.2.18 (May 25, 2021)
 
 ## Security fixes:

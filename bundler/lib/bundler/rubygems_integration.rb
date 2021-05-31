@@ -529,6 +529,7 @@ module Bundler
     end
 
     def gem_remote_fetcher
+      require "rubygems/remote_fetcher"
       proxy = configuration[:http_proxy]
       Gem::RemoteFetcher.new(proxy)
     end

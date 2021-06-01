@@ -25,6 +25,7 @@ module Bundler
         Bundler::CLI::Common.ensure_all_gems_in_lockfile!(update)
         update = { :gems => update, :lock_shared_dependencies => options[:conservative] }
       end
+      definition_old = Bundler.definition
       definition = Bundler.definition(update)
 
       Bundler::CLI::Common.configure_gem_version_promoter(Bundler.definition, options) if options[:update]
@@ -47,6 +48,24 @@ module Bundler
       end
 
       definition.resolve_remotely! unless options[:local]
+
+      if options[:regenerate]
+        # re-read the Gemfile definitions
+        definition = Bundler.definition(true)
+        definition.gem_version_promoter.level = :patch
+        definition.resolve_remotely!
+
+        # resolve to a spec set
+        spec_set = definition.resolve
+        # update the version in the new spec_set to match the old versions
+        definition_old.specs.each do |spec|
+          gem_spec = spec_set[spec.name].first
+          if gem_spec
+            gem_spec.instance_variable_set(:@version, spec.version)
+            gem_spec.instance_variable_set(:@dependencies, spec.dependencies)
+          end
+        end
+      end
 
       if print
         puts definition.to_lock

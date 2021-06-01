@@ -446,7 +446,7 @@ RSpec.describe "major deprecations" do
     it "shows a deprecation", :bundler => "< 3" do
       bundle "install"
 
-      expect(deprecations).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. You should run `bundle update` or generate your lockfile from scratch.")
+      expect(deprecations).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. You should run `bundle lock --regenerate` or generate your lockfile from scratch.")
     end
 
     pending "fails with a helpful error", :bundler => "3"

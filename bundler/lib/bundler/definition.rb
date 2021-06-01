@@ -115,7 +115,7 @@ module Bundler
       @disable_multisource = @locked_gem_sources.all?(&:disable_multisource?)
 
       unless @disable_multisource
-        msg = "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. You should run `bundle update` or generate your lockfile from scratch."
+        msg = "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. You should run `bundle lock --regenerate` or generate your lockfile from scratch."
 
         Bundler::SharedHelpers.major_deprecation 2, msg
 

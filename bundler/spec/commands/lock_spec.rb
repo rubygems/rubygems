@@ -536,13 +536,12 @@ RSpec.describe "bundle lock" do
     bundle "lock --add-platform x86_64-linux", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
   end
 
-  context "with multiple, duplicated sources, with lockfile in old format" do
+  describe "with --regenerate" do
     before do
       build_repo2 do
         build_gem "dotenv", "2.7.6"
 
         build_gem "oj", "3.11.3"
-        build_gem "oj", "3.11.5"
 
         build_gem "vcr", "6.0.0"
       end
@@ -553,46 +552,110 @@ RSpec.describe "bundle lock" do
         end
       end
 
-      gemfile <<~G
-        source "https://gem.repo2"
+      gf = gemfile <<~G
+        source "#{file_uri_for(gem_repo2)}"
 
         gem "dotenv"
 
-        source "https://gem.repo3" do
+        source "#{file_uri_for(gem_repo3)}" do
           gem 'pkg-gem-flowbyte-with-dep'
         end
 
-        gem "vcr",source: "https://gem.repo2"
+        gem "vcr", source: "#{file_uri_for(gem_repo2)}"
       G
-
-      lockfile <<~L
-        GEM
-          remote: https://gem.repo2/
-          remote: https://gem.repo3/
-          specs:
-            dotenv (2.7.6)
-            oj (3.11.3)
-            pkg-gem-flowbyte-with-dep (1.0.0)
-              oj
-            vcr (6.0.0)
-
-        PLATFORMS
-          #{specific_local_platform}
-
-        DEPENDENCIES
-          dotenv
-          pkg-gem-flowbyte-with-dep!
-          vcr!
-
-        BUNDLED WITH
-           #{Bundler::VERSION}
-      L
     end
 
-    it "regenerates the lockfile to be in the new format" do
-      bundle "lock --regenerate"
+    context "with multiple, duplicated sources, with lockfile in old format" do
+      before do
+        lockfile = strip_lockfile(<<-L)
+          GEM
+            remote: "#{file_uri_for(gem_repo2)}"
+            remote: "#{file_uri_for(gem_repo3)}"
+            specs:
+              dotenv (2.7.6)
+              oj (3.11.3)
+              pkg-gem-flowbyte-with-dep (1.0.0)
+                oj
+              vcr (6.0.0)
 
-      expect(read_lockfile).to eq("")
+          PLATFORMS
+            #{specific_local_platform}
+
+          DEPENDENCIES
+            dotenv
+            pkg-gem-flowbyte-with-dep!
+            vcr!
+
+          BUNDLED WITH
+             #{Bundler::VERSION}
+        L
+      end
+
+      it "regenerates the lockfile to be in the new format" do
+        bundle "lock --regenerate", :artifice => "compact_index"
+
+        lockfile_should_be <<-L
+          GEM
+            remote: #{file_uri_for(gem_repo2)}/
+            specs:
+              dotenv (2.7.6)
+              oj (3.11.3)
+              vcr (6.0.0)
+
+          GEM
+            remote: #{file_uri_for(gem_repo3)}/
+            specs:
+              pkg-gem-flowbyte-with-dep (1.0.0)
+                oj
+
+          PLATFORMS
+            #{specific_local_platform}
+
+          DEPENDENCIES
+            dotenv
+            pkg-gem-flowbyte-with-dep!
+            vcr!
+
+          BUNDLED WITH
+             #{Bundler::VERSION}
+        L
+      end
+    end
+
+    context "with multiple sources, with lockfile already in the new format" do
+      before do
+        lockfile = strip_lockfile(<<-L)
+          GEM
+            remote: #{file_uri_for(gem_repo2)}/
+            specs:
+              dotenv (2.7.6)
+              oj (3.11.3)
+              vcr (6.0.0)
+
+          GEM
+            remote: #{file_uri_for(gem_repo3)}/
+            specs:
+              pkg-gem-flowbyte-with-dep (1.0.0)
+                oj
+
+          PLATFORMS
+            #{specific_local_platform}
+
+          DEPENDENCIES
+            dotenv
+            pkg-gem-flowbyte-with-dep!
+            vcr!
+
+          BUNDLED WITH
+             #{Bundler::VERSION}
+        L
+      end
+
+      it "does not change the lockfile" do
+        bundle "lock --regenerate"
+
+        expect(read_lockfile).to eq(lockfile.chomp)
+      end
     end
   end
 

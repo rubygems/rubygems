@@ -523,6 +523,7 @@ test/rubygems/good_rake.rb
 test/rubygems/grandchild_cert.pem
 test/rubygems/grandchild_cert_32.pem
 test/rubygems/grandchild_key.pem
+test/rubygems/helper.rb
 test/rubygems/installer_test_case.rb
 test/rubygems/invalid_client.pem
 test/rubygems/invalid_issuer_cert.pem
@@ -555,7 +556,6 @@ test/rubygems/specifications/rubyforge-0.0.1.gemspec
 test/rubygems/ssl_cert.pem
 test/rubygems/ssl_key.pem
 test/rubygems/test_bundled_ca.rb
-test/rubygems/test_case.rb
 test/rubygems/test_config.rb
 test/rubygems/test_deprecate.rb
 test/rubygems/test_gem.rb
@@ -688,7 +688,7 @@ test/rubygems/test_kernel.rb
 test/rubygems/test_project_sanity.rb
 test/rubygems/test_remote_fetch_error.rb
 test/rubygems/test_require.rb
-test/rubygems/test_utilities.rb
+test/rubygems/utilities.rb
 test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem
 test/test_changelog_generator.rb

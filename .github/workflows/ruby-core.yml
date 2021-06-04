@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - master
-      - 3.2
 
 jobs:
   ruby_core:

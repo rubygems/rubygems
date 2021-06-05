@@ -8,10 +8,13 @@ class TestGemBundlerVersionFinder < Gem::TestCase
     @argv = ARGV.dup
     @env = ENV.to_hash.clone
     ENV.delete("BUNDLER_VERSION")
+    # ignore any gemfiles in parent directories
+    ENV["BUNDLE_GEMFILE"] = Dir.mktmpdir("nobundle") + "/Gemfile"
     @dollar_0 = $0
   end
 
   def teardown
+    Dir.rmdir(File.dirname(ENV["BUNDLE_GEMFILE"]))
     ARGV.replace @argv
     ENV.replace @env
     $0 = @dollar_0

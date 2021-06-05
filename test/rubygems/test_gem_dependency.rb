@@ -3,6 +3,12 @@ require_relative 'helper'
 require 'rubygems/dependency'
 
 class TestGemDependency < Gem::TestCase
+  def setup
+    super
+
+    without_any_upwards_gemfiles
+  end
+
   def test_initialize
     d = dep "pkg", "> 1.0"
 
@@ -338,8 +344,6 @@ class TestGemDependency < Gem::TestCase
   end
 
   def test_to_specs_respects_bundler_version
-    ENV["BUNDLE_GEMFILE"] = @tmp + "/Gemfile"
-
     b = util_spec 'bundler', '2.0.0.pre.1'
     b_1 = util_spec 'bundler', '1'
     install_specs b, b_1

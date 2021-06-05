@@ -6,9 +6,8 @@ class TestGemBundlerVersionFinder < Gem::TestCase
     super
 
     @argv = ARGV.dup
-    # ignore any gemfiles in parent directories
-    ENV["BUNDLE_GEMFILE"] = @tmp + "/Gemfile"
     @dollar_0 = $0
+    without_any_upwards_gemfiles
   end
 
   def teardown

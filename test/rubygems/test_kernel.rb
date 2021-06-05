@@ -8,6 +8,8 @@ class TestKernel < Gem::TestCase
     @old_path = $:.dup
 
     util_make_gems
+
+    without_any_upwards_gemfiles
   end
 
   def teardown
@@ -108,8 +110,6 @@ class TestKernel < Gem::TestCase
   end
 
   def test_gem_bundler
-    ENV["BUNDLE_GEMFILE"] = @tmp + "/Gemfile"
-
     quick_gem 'bundler', '1'
     quick_gem 'bundler', '2.a'
 

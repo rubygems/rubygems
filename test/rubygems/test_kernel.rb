@@ -108,15 +108,13 @@ class TestKernel < Gem::TestCase
   end
 
   def test_gem_bundler
-    ENV["BUNDLE_GEMFILE"] = Dir.mktmpdir("nobundle") + "/Gemfile"
+    ENV["BUNDLE_GEMFILE"] = @tmp + "/Gemfile"
 
     quick_gem 'bundler', '1'
     quick_gem 'bundler', '2.a'
 
     assert gem('bundler')
     assert $:.any? {|p| %r{bundler-1/lib} =~ p }
-  ensure
-    Dir.rmdir(File.dirname(ENV["BUNDLE_GEMFILE"]))
   end
 
   def test_gem_bundler_missing_bundler_version

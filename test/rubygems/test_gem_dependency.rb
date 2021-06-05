@@ -338,7 +338,6 @@ class TestGemDependency < Gem::TestCase
   end
 
   def test_to_specs_respects_bundler_version
-    gemfile = ENV["BUNDLE_GEMFILE"]
     ENV["BUNDLE_GEMFILE"] = Dir.mktmpdir("nobundle") + "/Gemfile"
 
     b = util_spec 'bundler', '2.0.0.pre.1'
@@ -368,7 +367,6 @@ class TestGemDependency < Gem::TestCase
     end
   ensure
     Dir.rmdir(File.dirname(ENV["BUNDLE_GEMFILE"]))
-    ENV["BUNDLE_GEMFILE"] = gemfile
   end
 
   def test_to_specs_indicates_total_gem_set_size

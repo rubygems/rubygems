@@ -6,7 +6,6 @@ class TestGemBundlerVersionFinder < Gem::TestCase
     super
 
     @argv = ARGV.dup
-    ENV.delete("BUNDLER_VERSION")
     # ignore any gemfiles in parent directories
     ENV["BUNDLE_GEMFILE"] = @tmp + "/Gemfile"
     @dollar_0 = $0

@@ -130,7 +130,7 @@ class Gem::SpecificationPolicy
       end
 
       if key.size > 128
-        error "metadata key too large (#{key.size} > 128)"
+        error "metadata key is too large (#{key.size} > 128)"
       end
 
       if !value.kind_of?(String)
@@ -138,7 +138,7 @@ class Gem::SpecificationPolicy
       end
 
       if value.size > 1024
-        error "#{entry} value too large (#{value.size} > 1024)"
+        error "#{entry} value is too large (#{value.size} > 1024)"
       end
 
       if METADATA_LINK_KEYS.include? key

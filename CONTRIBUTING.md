@@ -120,7 +120,7 @@ where it is in the process from being submitted to being closed.  These are
 listed in rough  progression order from submitted to closed.
 
 *   **triage** - This is an issue or pull request that needs to be properly
-    labeled by by a maintainer.
+    labeled by a maintainer.
 *   **confirmed** - This issue/pull request has been accepted as valid, but is
     not yet immediately ready for work.
 *   **ready** - An issue that is available for collaboration. This issue

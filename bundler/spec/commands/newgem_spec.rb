@@ -593,7 +593,7 @@ RSpec.describe "bundle gem" do
 
       bundler_gemspec = Bundler::GemHelper.new(gemspec_dir).gemspec
 
-      expect(bundler_gemspec.file).to eq([])
+      expect(bundler_gemspec.files).to eq([])
     end
 
     it "does not include the gemspec file in files" do
@@ -601,7 +601,7 @@ RSpec.describe "bundle gem" do
 
       bundler_gemspec = Bundler::GemHelper.new(gemspec_dir).gemspec
 
-      expect(bundler_gemspec.file).not_to include("#{gemname}.gemspec")
+      expect(bundler_gemspec.files).not_to include("#{gemname}.gemspec")
     end
 
     it "runs rake without problems" do

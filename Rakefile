@@ -389,6 +389,11 @@ task :check_manifest do
   end
 end
 
+desc "Update License list from SPDX.org"
+task :update_licenses do
+  load "util/generate_spdx_license_list.rb"
+end
+
 namespace :bundler do
   task :build_metadata do
     chdir('bundler') { sh "rake build_metadata" }

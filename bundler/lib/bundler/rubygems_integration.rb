@@ -526,6 +526,8 @@ module Bundler
       Bundler::Retry.new("download gem from #{uri}").attempts do
         fetcher.download(spec, uri, path)
       end
+    rescue Gem::RemoteFetcher::FetchError => e
+      raise Bundler::HTTPError, "Could not download gem from #{uri} due to underlying error <#{e.message}>"
     end
 
     def gem_remote_fetcher

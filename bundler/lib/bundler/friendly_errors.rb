@@ -111,7 +111,7 @@ module Bundler
         First, try this link to see if there are any existing issue reports for this error:
         #{issues_url(e)}
 
-        If there aren't any reports for this error yet, please create copy and paste the report template above into a new issue. Don't forget to anonymize any private data! The new issue form is located at:
+        If there aren't any reports for this error yet, please copy and paste the report template above into a new issue. Don't forget to anonymize any private data! The new issue form is located at:
         https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md
       EOS
     end

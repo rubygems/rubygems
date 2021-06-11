@@ -1,3 +1,19 @@
+# 2.2.20 (June 11, 2021)
+
+## Enhancements:
+
+  - Don't print bug report template on server side errors [#4663](https://github.com/rubygems/rubygems/pull/4663)
+  - Don't load `resolv` unnecessarily [#4640](https://github.com/rubygems/rubygems/pull/4640)
+
+## Bug fixes:
+
+  - Fix `bundle outdated` edge case [#4648](https://github.com/rubygems/rubygems/pull/4648)
+  - Fix `bundle check` with scoped rubygems sources [#4639](https://github.com/rubygems/rubygems/pull/4639)
+
+## Performance:
+
+  - Don't use `extra_rdoc_files` with md files in gemspec to make installing bundler with docs faster [#4628](https://github.com/rubygems/rubygems/pull/4628)
+
 # 2.2.19 (May 31, 2021)
 
 ## Bug fixes:

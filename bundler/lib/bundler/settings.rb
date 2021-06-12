@@ -209,6 +209,13 @@ module Bundler
       locations
     end
 
+    def processor_count
+      require "etc"
+      Etc.nprocessors
+    rescue StandardError
+      1
+    end
+
     # for legacy reasons, in Bundler 2, we do not respect :disable_shared_gems
     def path
       configs.each do |_level, settings|

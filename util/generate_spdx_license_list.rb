@@ -35,10 +35,10 @@ class Gem::Licenses
 
   REGEXP = %r{
     \\A
-    (
+    (?:
       \#{Regexp.union(LICENSE_IDENTIFIERS)}
       \\+?
-      (\\s WITH \\s \#{Regexp.union(EXCEPTION_IDENTIFIERS)})?
+      (?:\\s WITH \\s \#{Regexp.union(EXCEPTION_IDENTIFIERS)})?
       | \#{NONSTANDARD}
     )
     \\Z

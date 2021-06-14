@@ -57,6 +57,13 @@ module Bundler
       definition = Bundler.definition
       definition.validate_runtime!
 
+      if options["fail-on-multisource"] && Bundler.definition.disable_multisource?
+        msg = "This Gemfile.lock file contains multiple primary sources. " \
+          "Each source after the first must include a block to indicate which gems " \
+          "should come from that source"
+        raise GemfileEvalError, msg
+      end
+
       installer = Installer.install(Bundler.root, definition, options)
       Bundler.load.cache if Bundler.app_cache.exist? && !options["no-cache"] && !Bundler.frozen_bundle?
 

@@ -232,6 +232,8 @@ module Bundler
       "Specify a different path than the system default ($BUNDLE_PATH or $GEM_HOME).#{" Bundler will remember this value for future installs on this machine" unless Bundler.feature_flag.forget_cli_options?}"
     method_option "quiet", :type => :boolean, :banner =>
       "Only output warnings and errors."
+    method_option "fail-on-multisource", :type => :boolean, :banner =>
+      "Fails bundle install if lockfile contains multiple primary sources"
     method_option "shebang", :type => :string, :banner =>
       "Specify a different shebang executable name than the default (usually 'ruby')"
     method_option "standalone", :type => :array, :lazy_default => [], :banner =>

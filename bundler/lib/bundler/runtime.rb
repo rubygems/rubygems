@@ -19,6 +19,12 @@ module Bundler
 
       specs = groups.any? ? @definition.specs_for(groups) : requested_specs
 
+      (ENV["BUNDLE_ALLOW_GEMS"] || "").split(",").each do |gem_name|
+        if specs[gem_name].empty?
+          specs[gem_name] = Bundler.rubygems.find_name_latest(gem_name)
+        end
+      end
+
       SharedHelpers.set_bundle_environment
       Bundler.rubygems.replace_entrypoints(specs)
 

@@ -22,7 +22,7 @@ module Bundler
 
     def run
       validate_cmd!
-      SharedHelpers.set_bundle_environment
+      SharedHelpers.set_bundle_environment(@options.allow_gems.to_s.split(","))
       if bin_path = Bundler.which(cmd)
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
           return kernel_load(bin_path, *args)

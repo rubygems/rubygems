@@ -72,8 +72,8 @@ module Bundler
       keys.each {|key| ENV[key] = old_env[key] }
     end
 
-    def set_bundle_environment
-      set_bundle_variables
+    def set_bundle_environment(allowed_gems = [])
+      set_bundle_variables(allowed_gems)
       set_path
       set_rubyopt
       set_rubylib
@@ -279,7 +279,7 @@ module Bundler
     end
     public :set_env
 
-    def set_bundle_variables
+    def set_bundle_variables(allowed_gems = [])
       # bundler exe & lib folders have same root folder, typical gem installation
       exe_file = File.expand_path("../../../exe/bundle", __FILE__)
 
@@ -292,6 +292,7 @@ module Bundler
       Bundler::SharedHelpers.set_env "BUNDLE_BIN_PATH", exe_file
       Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", find_gemfile.to_s
       Bundler::SharedHelpers.set_env "BUNDLER_VERSION", Bundler::VERSION
+      Bundler::SharedHelpers.set_env "BUNDLE_ALLOW_GEMS", allowed_gems.join(",")
     end
 
     def set_path

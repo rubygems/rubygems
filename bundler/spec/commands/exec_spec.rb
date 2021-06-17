@@ -151,6 +151,13 @@ RSpec.describe "bundle exec" do
     expect(err).to be_empty
   end
 
+  it "handles --allow-gems=rack" do
+    install_gemfile ""
+    bundle "exec --allow-gems=rack rackup"
+
+    expect(out).to eq("1.0.0")
+  end
+
   it "can run a command named --verbose" do
     skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
 

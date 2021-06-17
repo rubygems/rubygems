@@ -589,6 +589,10 @@ module Bundler
       Gem::Specification.stubs_for(name).map(&:to_spec)
     end
 
+    def find_name_latest(name)
+      Gem::Specification.latest_spec_for(name)
+    end
+
     if Gem::Specification.respond_to?(:default_stubs)
       def default_stubs
         Gem::Specification.default_stubs("*.gemspec")

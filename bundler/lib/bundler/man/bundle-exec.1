@@ -7,7 +7,7 @@
 \fBbundle\-exec\fR \- Execute a command in the context of the bundle
 .
 .SH "SYNOPSIS"
-\fBbundle exec\fR [\-\-keep\-file\-descriptors] \fIcommand\fR
+\fBbundle exec\fR [\-\-keep\-file\-descriptors] [\-\-allow\-gems=GEM_NAMES] \fIcommand\fR
 .
 .SH "DESCRIPTION"
 This command executes the command, making all gems specified in the [\fBGemfile(5)\fR][Gemfile(5)] available to \fBrequire\fR in Ruby programs\.
@@ -23,6 +23,10 @@ Note that \fBbundle exec\fR does not require that an executable is available on 
 .TP
 \fB\-\-keep\-file\-descriptors\fR
 Exec in Ruby 2\.0 began discarding non\-standard file descriptors\. When this flag is passed, exec will revert to the 1\.9 behaviour of passing all file descriptors to the new process\.
+.
+.TP
+\fB\-\-allow\-gems\fR
+Allow the specified gems to be required regardless of Gemfile\. Multiple gem should be separated by commas\.
 .
 .SH "BUNDLE INSTALL \-\-BINSTUBS"
 If you use the \fB\-\-binstubs\fR flag in bundle install(1) \fIbundle\-install\.1\.html\fR, Bundler will automatically create a directory (which defaults to \fBapp_root/bin\fR) containing all of the executables available from gems in the bundle\.

@@ -67,12 +67,12 @@ module Bundler
         o.is_a?(Rubygems) && (o.credless_remotes - credless_remotes).empty?
       end
 
-      def multisource_allowed?
+      def multiple_remotes?
         @remotes.size > 1
       end
 
       def can_lock?(spec)
-        return super unless multisource_allowed?
+        return super unless multiple_remotes?
         spec.source.is_a?(Rubygems)
       end
 

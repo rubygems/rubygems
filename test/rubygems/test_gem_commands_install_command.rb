@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'helper'
+require 'rubygems/test_case'
 require 'rubygems/commands/install_command'
 require 'rubygems/request_set'
 require 'rubygems/rdoc'

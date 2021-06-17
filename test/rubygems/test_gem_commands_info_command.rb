@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'helper'
+require 'rubygems/test_case'
 require 'rubygems/commands/info_command'
 
 class TestGemCommandsInfoCommand < Gem::TestCase

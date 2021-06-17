@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'helper'
+require 'rubygems/test_case'
 
 class TestGemUnsatisfiableDependencyError < Gem::TestCase
   def setup

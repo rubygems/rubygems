@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'helper'
+require 'rubygems/test_case'
 
 class TestGemImpossibleDependenciesError < Gem::TestCase
   def test_message_conflict

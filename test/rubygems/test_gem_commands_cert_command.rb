@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'helper'
+require 'rubygems/test_case'
 require 'rubygems/commands/cert_command'
 
 unless Gem::HAVE_OPENSSL

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'helper'
+require 'rubygems/test_case'
 
 class TestGemResolverInstallerSet < Gem::TestCase
   def test_add_always_install

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'rubygems'
-require_relative 'helper'
+require 'rubygems/test_case'
 require 'rubygems/rdoc'
 
 class TestGemRDoc < Gem::TestCase

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'helper'
+require 'rubygems/test_case'
 
 unless Gem::HAVE_OPENSSL
   warn 'Skipping Gem::Security::TrustDir tests.  openssl not found.'

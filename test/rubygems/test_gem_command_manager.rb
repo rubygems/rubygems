@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'helper'
+require 'rubygems/test_case'
 require 'rubygems/command_manager'
 
 class TestGemCommandManager < Gem::TestCase

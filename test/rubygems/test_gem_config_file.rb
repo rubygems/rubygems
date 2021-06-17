@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'helper'
+require 'rubygems/test_case'
 require 'rubygems/config_file'
 
 class TestGemConfigFile < Gem::TestCase

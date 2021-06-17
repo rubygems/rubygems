@@ -112,10 +112,10 @@ module Bundler
       end
 
       @locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
-      @disable_multisource = @locked_gem_sources.all?(&:disable_multisource?) || (sources.no_aggregate_global_source? && !Bundler.frozen_bundle?)
+      @multisource_allowed = @locked_gem_sources.any?(&:multisource_allowed?) && (sources.aggregate_global_source? || Bundler.frozen_bundle?)
 
-      unless @disable_multisource
-        if sources.no_aggregate_global_source?
+      if @multisource_allowed
+        unless sources.aggregate_global_source?
           msg = "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure."
 
           Bundler::SharedHelpers.major_deprecation 2, msg
@@ -163,8 +163,8 @@ module Bundler
       end
     end
 
-    def disable_multisource?
-      @disable_multisource
+    def multisource_allowed?
+      @multisource_allowed
     end
 
     def resolve_only_locally!
@@ -519,7 +519,7 @@ module Bundler
     private
 
     def precompute_source_requirements_for_indirect_dependencies?
-      sources.non_global_rubygems_sources.all?(&:dependency_api_available?) && sources.no_aggregate_global_source?
+      sources.non_global_rubygems_sources.all?(&:dependency_api_available?) && !sources.aggregate_global_source?
     end
 
     def current_ruby_platform_locked?
@@ -636,7 +636,7 @@ module Bundler
     end
 
     def converge_rubygems_sources
-      return false if disable_multisource?
+      return false unless multisource_allowed?
 
       return false if locked_gem_sources.empty?
 

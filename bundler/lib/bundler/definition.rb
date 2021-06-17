@@ -115,9 +115,11 @@ module Bundler
       @disable_multisource = @locked_gem_sources.all?(&:disable_multisource?) || (sources.no_aggregate_global_source? && !Bundler.frozen_bundle?)
 
       unless @disable_multisource
-        msg = "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. You should run `bundle update` or generate your lockfile from scratch."
+        if sources.no_aggregate_global_source?
+          msg = "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure."
 
-        Bundler::SharedHelpers.major_deprecation 2, msg
+          Bundler::SharedHelpers.major_deprecation 2, msg
+        end
 
         @sources.merged_gem_lockfile_sections!
       end

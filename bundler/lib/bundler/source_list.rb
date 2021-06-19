@@ -33,7 +33,7 @@ module Bundler
     end
 
     def aggregate_global_source?
-      global_rubygems_source.remotes.size > 1
+      global_rubygems_source.multiple_remotes?
     end
 
     def add_path_source(options = {})

@@ -241,6 +241,34 @@ RSpec.describe "bundle update" do
       expect(the_bundle).to include_gems("slim 3.0.9", "slim-rails 3.1.3", "slim_lint 0.16.1")
     end
 
+    it "does not downgrade indirect dependencies unnecessarily" do
+      build_repo4 do
+        build_gem "a" do |s|
+          s.add_dependency "b"
+          s.add_dependency "c"
+        end
+        build_gem "b"
+        build_gem "c"
+        build_gem "c", "2.0"
+      end
+
+      install_gemfile <<-G, :verbose => true
+        source "#{file_uri_for(gem_repo4)}"
+        gem "a"
+      G
+
+      expect(the_bundle).to include_gems("a 1.0", "b 1.0", "c 2.0")
+
+      update_repo4 do
+        build_gem "b", "2.0" do |s|
+          s.add_dependency "c", "< 2"
+        end
+      end
+
+      bundle "update", :all => true, :verbose => true
+      expect(the_bundle).to include_gems("a 1.0", "b 1.0", "c 2.0")
+    end
+
     it "should still downgrade if forced by the Gemfile" do
       build_repo4 do
         build_gem "a"

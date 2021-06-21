@@ -61,10 +61,8 @@ module Bundler
         @unlocking_bundler = false
         @unlocking = unlock
       else
-        unlock = unlock.dup
         @unlocking_bundler = unlock.delete(:bundler)
-        unlock.delete_if {|_k, v| Array(v).empty? }
-        @unlocking = !unlock.empty?
+        @unlocking = unlock.any? {|_k, v| !Array(v).empty? }
       end
 
       @dependencies    = dependencies

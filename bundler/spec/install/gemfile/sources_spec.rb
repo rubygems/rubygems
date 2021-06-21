@@ -177,8 +177,9 @@ RSpec.describe "bundle install with gems on multiple sources" do
       context "and in another source" do
         before do
           # need this to be broken to check for correct source ordering
+          # version needs to be higher to give it higher priority
           build_repo gem_repo2 do
-            build_gem "rack", "1.0.0" do |s|
+            build_gem "rack", "1.0.1" do |s|
               s.write "lib/rack.rb", "RACK = 'FAIL'"
             end
           end
@@ -484,7 +485,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
       context "and the dependency is in both the top-level and a pinned source" do
         before do
           update_repo gem_repo2 do
-            build_gem "rack", "1.0.0" do |s|
+            build_gem "rack", "1.0.1" do |s|
               s.write "lib/rack.rb", "RACK = 'FAIL'"
             end
           end

@@ -68,7 +68,6 @@ jobs:
         working-directory: ./bundler
       - name: Check rails can be installed
         run: gem install rails --verbose --backtrace
-        if: matrix.ruby.name != 'truffleruby-21.1'
     timeout-minutes: 10
 
   install_rubygems_windows:

@@ -124,7 +124,6 @@ module Bundler
         @sources.merged_gem_lockfile_sections!
       end
 
-      @unlock[:gems] ||= []
       @unlock[:sources] ||= []
       @unlock[:ruby] ||= if @ruby_version && locked_ruby_version_object
         @ruby_version.diff(locked_ruby_version_object)
@@ -137,8 +136,10 @@ module Bundler
       @path_changes = converge_paths
       @source_changes = converge_sources
 
-      unless @unlock[:lock_shared_dependencies]
-        eager_unlock = expand_dependencies(@unlock[:gems], true)
+      if @unlock[:lock_shared_dependencies]
+        @unlock[:gems] ||= @dependencies.map(&:name)
+      else
+        eager_unlock = expand_dependencies(@unlock[:gems] || [], true)
         @unlock[:gems] = @locked_specs.for(eager_unlock, [], false, false, false).map(&:name)
       end
 
@@ -797,7 +798,7 @@ module Bundler
 
       resolve = SpecSet.new(converged)
       @locked_specs_incomplete_for_platform = !resolve.for(expand_dependencies(requested_dependencies & deps), @unlock[:gems], true, true)
-      resolve = SpecSet.new(resolve.for(expand_dependencies(deps, true), @unlock[:gems], false, false, false))
+      resolve = SpecSet.new(resolve.for(expand_dependencies(deps, true), [], false, false, false).reject{|s| @unlock[:gems].include?(s.name) })
       diff    = nil
 
       # Now, we unlock any sources that do not have anymore gems pinned to it

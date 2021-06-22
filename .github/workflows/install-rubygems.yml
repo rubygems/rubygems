@@ -23,7 +23,7 @@ jobs:
           - { name: "2.7", value: 2.7.3 }
           - { name: "3.0", value: 3.0.1 }
           - { name: jruby-9.2, value: jruby-9.2.16.0 }
-          - { name: truffleruby-20.3, value: truffleruby-20.3.0 }
+          - { name: truffleruby-21.1, value: truffleruby-21.1.0 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }
@@ -53,10 +53,10 @@ jobs:
         run: bundle --version
       - name: Check bundler man pages were installed and are properly picked up
         run: bundle install --help | grep -q BUNDLE-INSTALL
-        if: matrix.ruby.name != 'truffleruby-20.3'
+        if: matrix.ruby.name != 'truffleruby-21.1'
       - name: Check bundler fallback man pages are properly picked up
         run: sudo rm $(which man) && bundle install --help
-        if: matrix.ruby.name != 'truffleruby-20.3'
+        if: matrix.ruby.name != 'truffleruby-21.1'
       - name: Build bundler
         run: gem build bundler.gemspec
         working-directory: ./bundler
@@ -68,7 +68,7 @@ jobs:
         working-directory: ./bundler
       - name: Check rails can be installed
         run: gem install rails --verbose --backtrace
-        if: matrix.ruby.name != 'truffleruby-20.3'
+        if: matrix.ruby.name != 'truffleruby-21.1'
     timeout-minutes: 10
 
   install_rubygems_windows:

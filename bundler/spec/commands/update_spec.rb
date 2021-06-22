@@ -1106,9 +1106,9 @@ RSpec.describe "bundle update conservative" do
         gem 'shared_owner_b'
       G
 
-      lockfile <<-L
+      lockfile <<~L
         GEM
-          remote: #{file_uri_for(gem_repo4)}
+          remote: #{file_uri_for(gem_repo4)}/
           specs:
             isolated_dep (2.0.1)
             isolated_owner (1.0.1)
@@ -1120,12 +1120,12 @@ RSpec.describe "bundle update conservative" do
               shared_dep (~> 5.0)
 
         PLATFORMS
-          ruby
+          #{specific_local_platform}
 
         DEPENDENCIES
+          isolated_owner
           shared_owner_a
           shared_owner_b
-          isolated_owner
 
         BUNDLED WITH
            #{Bundler::VERSION}

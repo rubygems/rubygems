@@ -136,7 +136,7 @@ module Bundler
       @path_changes = converge_paths
       @source_changes = converge_sources
 
-      if @unlock[:lock_shared_dependencies]
+      if @unlock[:conservative]
         @unlock[:gems] ||= @dependencies.map(&:name)
       else
         eager_unlock = expand_dependencies(@unlock[:gems] || [], true)

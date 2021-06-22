@@ -31,7 +31,7 @@ module Bundler
 
       if full_update
         if conservative
-          Bundler.definition(:lock_shared_dependencies => conservative)
+          Bundler.definition(:conservative => conservative)
         else
           Bundler.definition(true)
         end
@@ -48,7 +48,7 @@ module Bundler
         end
 
         Bundler.definition(:gems => gems, :sources => sources, :ruby => options[:ruby],
-                           :lock_shared_dependencies => conservative,
+                           :conservative => conservative,
                            :bundler => options[:bundler])
       end
 

@@ -27,8 +27,14 @@ module Bundler
         raise InvalidOption, "Cannot specify --all along with specific options."
       end
 
+      conservative = options[:conservative]
+
       if full_update
-        Bundler.definition(true)
+        if conservative
+          Bundler.definition(:lock_shared_dependencies => conservative)
+        else
+          Bundler.definition(true)
+        end
       else
         unless Bundler.default_lockfile.exist?
           raise GemfileLockNotFound, "This Bundle hasn't been installed yet. " \
@@ -42,7 +48,7 @@ module Bundler
         end
 
         Bundler.definition(:gems => gems, :sources => sources, :ruby => options[:ruby],
-                           :lock_shared_dependencies => options[:conservative],
+                           :lock_shared_dependencies => conservative,
                            :bundler => options[:bundler])
       end
 

@@ -1150,6 +1150,12 @@ RSpec.describe "bundle update conservative" do
       expect(the_bundle).to include_gems "isolated_owner 1.0.2", "isolated_dep 2.0.2", "shared_dep 5.0.1", "shared_owner_a 3.0.2", "shared_owner_b 4.0.1"
     end
 
+    it "should not update indirect dependencies when fully updating with --conservative" do
+      bundle "update --conservative"
+
+      expect(the_bundle).to include_gems "isolated_dep 2.0.1", "shared_dep 5.0.1"
+    end
+
     it "should match bundle install conservative update behavior when not eagerly unlocking" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo4)}"

@@ -49,10 +49,6 @@ module Bundler
       check ? true : SpecSet.new(specs)
     end
 
-    def valid_for?(deps)
-      self.for(deps, [], true)
-    end
-
     def [](key)
       key = key.name if key.respond_to?(:name)
       lookup[key].reverse

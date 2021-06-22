@@ -262,7 +262,7 @@ module Bundler
 
     def specs_for(groups)
       deps = dependencies_for(groups)
-      specs.for(expand_dependencies(deps))
+      SpecSet.new(specs.for(expand_dependencies(deps)))
     end
 
     def dependencies_for(groups)
@@ -797,7 +797,7 @@ module Bundler
 
       resolve = SpecSet.new(converged)
       @locked_specs_incomplete_for_platform = !resolve.for(expand_dependencies(requested_dependencies & deps), @unlock[:gems], true, true)
-      resolve = resolve.for(expand_dependencies(deps, true), @unlock[:gems], false, false, false)
+      resolve = SpecSet.new(resolve.for(expand_dependencies(deps, true), @unlock[:gems], false, false, false))
       diff    = nil
 
       # Now, we unlock any sources that do not have anymore gems pinned to it

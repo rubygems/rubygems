@@ -28,7 +28,6 @@ module Bundler
       end
 
       if full_update
-        # We're doing a full update
         Bundler.definition(true)
       else
         unless Bundler.default_lockfile.exist?

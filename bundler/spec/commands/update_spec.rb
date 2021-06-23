@@ -411,18 +411,7 @@ RSpec.describe "bundle update" do
       build_repo2
     end
 
-    it "should not update gems not included in the source that happen to have the same name", :bundler => "< 3" do
-      install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
-        gem "activesupport"
-      G
-      update_repo2 { build_gem "activesupport", "3.0" }
-
-      bundle "update --source activesupport"
-      expect(the_bundle).to include_gem "activesupport 3.0"
-    end
-
-    it "should not update gems not included in the source that happen to have the same name", :bundler => "3" do
+    it "should not update gems not included in the source that happen to have the same name" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
@@ -433,19 +422,15 @@ RSpec.describe "bundle update" do
       expect(the_bundle).not_to include_gem "activesupport 3.0"
     end
 
-    context "with unlock_source_unlocks_spec set to false" do
-      before { bundle "config set unlock_source_unlocks_spec false" }
+    it "should not update gems not included in the source that happen to have the same name" do
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "activesupport"
+      G
+      update_repo2 { build_gem "activesupport", "3.0" }
 
-      it "should not update gems not included in the source that happen to have the same name" do
-        install_gemfile <<-G
-          source "#{file_uri_for(gem_repo2)}"
-          gem "activesupport"
-        G
-        update_repo2 { build_gem "activesupport", "3.0" }
-
-        bundle "update --source activesupport"
-        expect(the_bundle).not_to include_gems "activesupport 3.0"
-      end
+      bundle "update --source activesupport"
+      expect(the_bundle).not_to include_gems "activesupport 3.0"
     end
   end
 
@@ -465,20 +450,7 @@ RSpec.describe "bundle update" do
       G
     end
 
-    it "should not update the child dependencies of a gem that has the same name as the source", :bundler => "< 3" do
-      update_repo2 do
-        build_gem "fred", "2.0"
-        build_gem "harry", "2.0" do |s|
-          s.add_dependency "fred"
-        end
-      end
-
-      bundle "update --source harry"
-      expect(the_bundle).to include_gems "harry 2.0"
-      expect(the_bundle).to include_gems "fred 1.0"
-    end
-
-    it "should not update the child dependencies of a gem that has the same name as the source", :bundler => "3" do
+    it "should not update the child dependencies of a gem that has the same name as the source" do
       update_repo2 do
         build_gem "fred", "2.0"
         build_gem "harry", "2.0" do |s|
@@ -510,21 +482,7 @@ RSpec.describe "bundle update" do
       G
     end
 
-    it "should not update the child dependencies of a gem that has the same name as the source", :bundler => "< 3" do
-      update_repo2 do
-        build_gem "george", "2.0"
-        build_gem "harry", "2.0" do |s|
-          s.add_dependency "george"
-        end
-      end
-
-      bundle "update --source harry"
-      expect(the_bundle).to include_gems "harry 2.0"
-      expect(the_bundle).to include_gems "fred 1.0"
-      expect(the_bundle).to include_gems "george 1.0"
-    end
-
-    it "should not update the child dependencies of a gem that has the same name as the source", :bundler => "3" do
+    it "should not update the child dependencies of a gem that has the same name as the source" do
       update_repo2 do
         build_gem "george", "2.0"
         build_gem "harry", "2.0" do |s|

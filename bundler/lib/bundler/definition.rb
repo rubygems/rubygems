@@ -749,8 +749,6 @@ module Bundler
         end
       end
 
-      unlock_source_unlocks_spec = Bundler.feature_flag.unlock_source_unlocks_spec?
-
       converged = []
       @locked_specs.each do |s|
         # Replace the locked dependency's source with the equivalent source from the Gemfile
@@ -761,11 +759,6 @@ module Bundler
         # if you change a Git gem to RubyGems.
         next if s.source.nil?
         next if @unlock[:sources].include?(s.source.name)
-
-        # XXX This is a backwards-compatibility fix to preserve the ability to
-        # unlock a single gem by passing its name via `--source`. See issue #3759
-        # TODO: delete in Bundler 2
-        next if unlock_source_unlocks_spec && @unlock[:sources].include?(s.name)
 
         # If the spec is from a path source and it doesn't exist anymore
         # then we unlock it.

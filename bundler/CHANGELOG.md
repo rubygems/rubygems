@@ -1,3 +1,18 @@
+# 2.2.21 (June 23, 2021)
+
+## Security fixes:
+
+  - Auto-update insecure lockfile to split GEM source sections whenever possible [#4647](https://github.com/rubygems/rubygems/pull/4647)
+
+## Enhancements:
+
+  - Use a more limited number of threads when fetching in parallel from the Compact Index API [#4670](https://github.com/rubygems/rubygems/pull/4670)
+  - Update TODO link in bundle gem template to https [#4671](https://github.com/rubygems/rubygems/pull/4671)
+
+## Bug fixes:
+
+  - Fix `bundle install --local` hitting the network when `cache_all_platforms` configured [#4677](https://github.com/rubygems/rubygems/pull/4677)
+
 # 2.2.20 (June 11, 2021)
 
 ## Enhancements:

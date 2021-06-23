@@ -21,7 +21,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: truffleruby-20.3.0
+          ruby-version: truffleruby-21.1.0
           bundler: none
       - name: Prepare dependencies
         run: |

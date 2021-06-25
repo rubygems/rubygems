@@ -119,7 +119,6 @@ module Bundler
         @sources.merged_gem_lockfile_sections!
       end
 
-      @unlock[:gems] ||= []
       @unlock[:sources] ||= []
       @unlock[:ruby] ||= if @ruby_version && locked_ruby_version_object
         @ruby_version.diff(locked_ruby_version_object)
@@ -132,8 +131,10 @@ module Bundler
       @path_changes = converge_paths
       @source_changes = converge_sources
 
-      unless @unlock[:lock_shared_dependencies]
-        eager_unlock = expand_dependencies(@unlock[:gems], true)
+      if @unlock[:conservative]
+        @unlock[:gems] ||= @dependencies.map(&:name)
+      else
+        eager_unlock = expand_dependencies(@unlock[:gems] || [], true)
         @unlock[:gems] = @locked_specs.for(eager_unlock, [], false, false, false).map(&:name)
       end
 
@@ -257,7 +258,7 @@ module Bundler
 
     def specs_for(groups)
       deps = dependencies_for(groups)
-      specs.for(expand_dependencies(deps))
+      SpecSet.new(specs.for(expand_dependencies(deps)))
     end
 
     def dependencies_for(groups)
@@ -741,8 +742,6 @@ module Bundler
         end
       end
 
-      unlock_source_unlocks_spec = Bundler.feature_flag.unlock_source_unlocks_spec?
-
       converged = []
       @locked_specs.each do |s|
         # Replace the locked dependency's source with the equivalent source from the Gemfile
@@ -753,11 +752,6 @@ module Bundler
         # if you change a Git gem to RubyGems.
         next if s.source.nil?
         next if @unlock[:sources].include?(s.source.name)
-
-        # XXX This is a backwards-compatibility fix to preserve the ability to
-        # unlock a single gem by passing its name via `--source`. See issue #3759
-        # TODO: delete in Bundler 2
-        next if unlock_source_unlocks_spec && @unlock[:sources].include?(s.name)
 
         # If the spec is from a path source and it doesn't exist anymore
         # then we unlock it.
@@ -790,7 +784,7 @@ module Bundler
 
       resolve = SpecSet.new(converged)
       @locked_specs_incomplete_for_platform = !resolve.for(expand_dependencies(requested_dependencies & deps), @unlock[:gems], true, true)
-      resolve = resolve.for(expand_dependencies(deps, true), @unlock[:gems], false, false, false)
+      resolve = SpecSet.new(resolve.for(expand_dependencies(deps, true), [], false, false, false).reject{|s| @unlock[:gems].include?(s.name) })
       diff    = nil
 
       # Now, we unlock any sources that do not have anymore gems pinned to it

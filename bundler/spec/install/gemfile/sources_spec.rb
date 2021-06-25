@@ -271,7 +271,9 @@ RSpec.describe "bundle install with gems on multiple sources" do
                #{Bundler::VERSION}
           L
 
+          previous_lockfile = lockfile
           expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0")
+          expect(lockfile).to eq(previous_lockfile)
         end
 
         it "fails", :bundler => "3" do

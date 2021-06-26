@@ -40,12 +40,12 @@ module Gem::GemcutterUtilities
   # The API key from the command options or from the user's configuration.
 
   def api_key
-    if ENV["GEM_HOST_API_KEY"]
-      ENV["GEM_HOST_API_KEY"]
-    elsif options[:key]
+    if options[:key]
       verify_api_key options[:key]
     elsif Gem.configuration.api_keys.key?(host)
       Gem.configuration.api_keys[host]
+    elsif ENV["GEM_HOST_API_KEY"]
+      ENV["GEM_HOST_API_KEY"]
     else
       Gem.configuration.rubygems_api_key
     end

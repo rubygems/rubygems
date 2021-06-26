@@ -14,6 +14,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     Gem.configuration.disable_default_gem_server = nil
 
     ENV['RUBYGEMS_HOST'] = nil
+    ENV['GEM_HOST_API_KEY'] = nil
     Gem.configuration.rubygems_api_key = nil
 
     @cmd = Gem::Command.new '', 'summary'
@@ -22,6 +23,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
 
   def teardown
     ENV['RUBYGEMS_HOST'] = nil
+    ENV['GEM_HOST_API_KEY'] = nil
     Gem.configuration.rubygems_api_key = nil
 
     credential_teardown
@@ -71,6 +73,33 @@ class TestGemGemcutterUtilities < Gem::TestCase
     @cmd.handle_options %w[--key other]
 
     assert_equal 'OTHER', @cmd.api_key
+  end
+
+  def test_api_key_env_override
+    ENV['GEM_HOST_API_KEY'] = 'ENV'
+
+    keys = { :rubygems_api_key => 'KEY', :other => 'OTHER' }
+
+    File.open Gem.configuration.credentials_path, 'w' do |f|
+      f.write keys.to_yaml
+    end
+
+    Gem.configuration.load_api_keys
+
+    @cmd.add_key_option
+    @cmd.handle_options %w[--key other]
+
+    assert_equal 'OTHER', @cmd.api_key
+  end
+
+  def test_api_key_from_env
+    ENV['GEM_HOST_API_KEY'] = 'ENV'
+
+    Gem.configuration.load_api_keys
+
+    @cmd.add_key_option
+
+    assert_equal 'ENV', @cmd.api_key
   end
 
   def test_host

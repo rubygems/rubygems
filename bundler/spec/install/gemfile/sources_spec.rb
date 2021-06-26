@@ -247,6 +247,30 @@ RSpec.describe "bundle install with gems on multiple sources" do
           bundle :install, :artifice => "compact_index"
           expect(err).to include("Warning: the gem 'rack' was found in multiple sources.")
           expect(err).to include("Installed from: https://gem.repo2")
+
+          expect(lockfile).to eq <<~L
+            GEM
+              remote: https://gem.repo1/
+              remote: https://gem.repo2/
+              specs:
+                rack (1.0.0)
+
+            GEM
+              remote: https://gem.repo3/
+              specs:
+                depends_on_rack (1.0.1)
+                  rack
+
+            PLATFORMS
+              #{specific_local_platform}
+
+            DEPENDENCIES
+              depends_on_rack!
+
+            BUNDLED WITH
+               #{Bundler::VERSION}
+          L
+
           expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0")
         end
 

@@ -1280,6 +1280,25 @@ RSpec.describe "bundle install with gems on multiple sources" do
     expect(out).to include("Using example 0.1.0")
   end
 
+  it "fails inmmediately with a helpful error when a non retriable network error happens while resolving sources" do
+    gemfile <<-G
+      source "https://gem.repo1"
+
+      source "https://gem.repo4" do
+        gem "example"
+      end
+    G
+
+    simulate_bundler_version_when_missing_prerelease_default_gem_activation do
+      ruby <<~R, :raise_on_error => false
+        require 'bundler/setup'
+      R
+    end
+
+    expect(last_command).to be_failure
+    expect(err).to include("Could not reach host gem.repo4. Check your network connection and try again.")
+  end
+
   context "when an indirect dependency is available from multiple ambiguous sources", :bundler => "< 3" do
     it "succeeds but warns, suggesting a source block" do
       build_repo4 do

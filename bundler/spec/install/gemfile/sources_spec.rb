@@ -971,7 +971,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
               rack (0.9.1)
 
           PLATFORMS
-            ruby
+            #{specific_local_platform}
 
           DEPENDENCIES
             rack!

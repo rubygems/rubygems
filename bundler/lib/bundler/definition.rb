@@ -112,7 +112,7 @@ module Bundler
       end
 
       @locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
-      @multisource_allowed = @locked_gem_sources.any?(&:multiple_remotes?) && (sources.aggregate_global_source? || Bundler.frozen_bundle?)
+      @multisource_allowed = @locked_gem_sources.any?(&:multiple_remotes?) && Bundler.frozen_bundle?
 
       if @multisource_allowed
         unless sources.aggregate_global_source?

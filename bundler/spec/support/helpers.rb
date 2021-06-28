@@ -486,9 +486,10 @@ module Spec
       end
     end
 
-    # versions not including https://github.com/rubygems/rubygems/commit/929e92d752baad3a08f3ac92eaec162cb96aedd1
+    # versions providing a bundler version finder but not including
+    # https://github.com/rubygems/rubygems/commit/929e92d752baad3a08f3ac92eaec162cb96aedd1
     def rubygems_version_failing_to_activate_bundler_prereleases
-      Gem.rubygems_version < Gem::Version.new("3.1.0.pre.1")
+      Gem.rubygems_version < Gem::Version.new("3.1.0.pre.1") && Gem.rubygems_version >= Gem::Version.new("2.7.0")
     end
 
     def revision_for(path)

@@ -1326,7 +1326,10 @@ RSpec.describe "the lockfile format" do
 
         expect { bundle "update", :all => true }.to change { File.mtime(bundled_app_lock) }
         expect(File.read(bundled_app_lock)).to match("\r\n")
-        expect(the_bundle).to include_gems "rack 1.2"
+
+        simulate_bundler_version_when_missing_prerelease_default_gem_activation do
+          expect(the_bundle).to include_gems "rack 1.2"
+        end
       end
     end
 

@@ -36,16 +36,6 @@ module Gem
   end
 end
 
-if ENV["BUNDLER_SPEC_WINDOWS"] == "true"
-  require_relative "path"
-  require "bundler/constants"
-
-  module Bundler
-    remove_const :WINDOWS if defined?(WINDOWS)
-    WINDOWS = true
-  end
-end
-
 if ENV["BUNDLER_SPEC_API_REQUEST_LIMIT"]
   require_relative "path"
   require "bundler/source"

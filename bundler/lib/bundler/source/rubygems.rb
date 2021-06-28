@@ -73,7 +73,7 @@ module Bundler
 
       def can_lock?(spec)
         return super unless multiple_remotes?
-        spec.source.is_a?(Rubygems)
+        include?(spec.source)
       end
 
       def options

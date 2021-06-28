@@ -31,7 +31,7 @@ module TurboTests
       @failure_count = 0
       @runtime_log = "tmp/parallel_runtime_rspec.log"
 
-      @messages = Queue.new
+      @messages = Thread::Queue.new
       @threads = []
     end
 

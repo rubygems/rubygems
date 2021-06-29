@@ -33,7 +33,10 @@ module Bundler
       aggregate_global_source = @source_requirements[:default].is_a?(Source::RubygemsAggregate)
       @base.each do |ls|
         dep = Dependency.new(ls.name, ls.version)
-        ls.source = source_for(ls.name) unless aggregate_global_source
+        unless aggregate_global_source
+          source = source_for(ls.name)
+          ls.source = source_for(ls.name) if source != @source_requirements[:default]
+        end
         @base_dg.add_vertex(ls.name, DepProxy.get_proxy(dep, ls.platform), true)
       end
       additional_base_requirements.each {|d| @base_dg.add_vertex(d.name, d) }

@@ -81,7 +81,7 @@ class Gem::RemoteFetcher
 
     @proxy = proxy
     @pools = {}
-    @pool_lock = Mutex.new
+    @pool_lock = Thread::Mutex.new
     @cert_files = Gem::Request.get_cert_files
 
     @headers = headers

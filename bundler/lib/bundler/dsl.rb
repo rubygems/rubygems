@@ -24,9 +24,6 @@ module Bundler
     def initialize
       @source               = nil
       @sources              = SourceList.new
-
-      @global_rubygems_sources = []
-
       @git_sources          = {}
       @dependencies         = []
       @groups               = []
@@ -168,7 +165,7 @@ module Bundler
       elsif block_given?
         with_source(@sources.add_rubygems_source("remotes" => source), &blk)
       else
-        @global_rubygems_sources << source
+        @sources.add_rubygems_remote(source)
       end
     end
 
@@ -453,12 +450,7 @@ repo_name ||= user_name
     end
 
     def check_rubygems_source_safety
-      @sources.global_rubygems_source = @global_rubygems_sources.shift
-      return if @global_rubygems_sources.empty?
-
-      @global_rubygems_sources.each do |source|
-        @sources.add_rubygems_remote(source)
-      end
+      return unless @sources.aggregate_global_source?
 
       if Bundler.feature_flag.bundler_3_mode?
         msg = "This Gemfile contains multiple primary sources. " \

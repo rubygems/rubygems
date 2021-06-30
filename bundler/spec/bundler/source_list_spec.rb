@@ -115,7 +115,7 @@ RSpec.describe Bundler::SourceList do
       end
     end
 
-    describe "#add_global_rubygems_remote", :bundler => "< 3" do
+    describe "#add_global_rubygems_remote" do
       let!(:returned_source) { source_list.add_global_rubygems_remote("https://rubygems.org/") }
 
       it "returns the aggregate rubygems source" do

@@ -117,13 +117,18 @@ module Bundler
     def replace_sources!(replacement_sources)
       return false if replacement_sources.empty?
 
-      [path_sources, git_sources, plugin_sources].each do |sources|
-        sources.map! do |source|
-          replacement_sources.find {|s| s == source } || source
-        end
-      end
+      @path_sources, @git_sources, @plugin_sources = map_sources(replacement_sources)
 
-      !equal_sources?(lock_sources, replacement_sources) && !equivalent_sources?(lock_sources, replacement_sources)
+      different_sources?(lock_sources, replacement_sources)
+    end
+
+    # Returns true if there are changes
+    def expired_sources?(replacement_sources)
+      return false if replacement_sources.empty?
+
+      lock_sources = dup_with_replaced_sources(replacement_sources).lock_sources
+
+      different_sources?(lock_sources, replacement_sources)
     end
 
     def local_only!
@@ -139,6 +144,24 @@ module Bundler
     end
 
     private
+
+    def dup_with_replaced_sources(replacement_sources)
+      new_source_list = dup
+      new_source_list.replace_sources!(replacement_sources)
+      new_source_list
+    end
+
+    def map_sources(replacement_sources)
+      [path_sources, git_sources, plugin_sources].map do |sources|
+        sources.map do |source|
+          replacement_sources.find {|s| s == source } || source
+        end
+      end
+    end
+
+    def different_sources?(lock_sources, replacement_sources)
+      !equal_sources?(lock_sources, replacement_sources) && !equivalent_sources?(lock_sources, replacement_sources)
+    end
 
     def rubygems_aggregate_class
       Source::Rubygems

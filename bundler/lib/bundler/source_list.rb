@@ -108,7 +108,7 @@ module Bundler
       if merged_gem_lockfile_sections?
         [combine_rubygems_sources]
       else
-        rubygems_sources.sort_by(&:to_s).uniq
+        rubygems_sources.sort_by(&:to_s)
       end
     end
 

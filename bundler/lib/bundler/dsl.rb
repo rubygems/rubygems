@@ -164,7 +164,7 @@ module Bundler
       elsif block_given?
         with_source(@sources.add_rubygems_source("remotes" => source), &blk)
       else
-        @sources.add_rubygems_remote(source)
+        @sources.add_global_rubygems_remote(source)
       end
     end
 

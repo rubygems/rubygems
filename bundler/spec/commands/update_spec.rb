@@ -241,6 +241,66 @@ RSpec.describe "bundle update" do
       expect(the_bundle).to include_gems("slim 3.0.9", "slim-rails 3.1.3", "slim_lint 0.16.1")
     end
 
+    it "does not go to an older version, even if the version upgrade that could cause another gem to downgrade is activated first" do
+      build_repo4 do
+        # countries is processed before country_select by the resolver due to having less spec groups (groups of versions with the same dependencies) (2 vs 3)
+
+        build_gem "countries", "2.1.4"
+        build_gem "countries", "3.1.0"
+
+        build_gem "countries", "4.0.0" do |s|
+          s.add_dependency "sixarm_ruby_unaccent", "~> 1.1"
+        end
+
+        build_gem "country_select", "1.2.0"
+
+        build_gem "country_select", "2.1.4" do |s|
+          s.add_dependency "countries", "~> 2.0"
+        end
+        build_gem "country_select", "3.1.1" do |s|
+          s.add_dependency "countries", "~> 2.0"
+        end
+
+        build_gem "country_select", "5.1.0" do |s|
+          s.add_dependency "countries", "~> 3.0"
+        end
+
+        build_gem "sixarm_ruby_unaccent", "1.1.0"
+      end
+
+      gemfile <<~G
+        source "#{file_uri_for(gem_repo4)}"
+
+        gem "country_select"
+        gem "countries"
+      G
+
+      lockfile <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            countries (3.1.0)
+            country_select (5.1.0)
+              countries (~> 3.0)
+
+        PLATFORMS
+          #{specific_local_platform}
+
+        DEPENDENCIES
+          countries
+          country_select
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+
+      previous_lockfile = lockfile
+
+      bundle "lock --update"
+
+      expect(lockfile).to eq(previous_lockfile)
+    end
+
     it "does not downgrade indirect dependencies unnecessarily" do
       build_repo4 do
         build_gem "a" do |s|

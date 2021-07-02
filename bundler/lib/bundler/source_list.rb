@@ -53,18 +53,17 @@ module Bundler
     end
 
     def add_rubygems_source(options = {})
-      add_source_to_list Source::Rubygems.new(options), @rubygems_sources
+      new_source = Source::Rubygems.new(options)
+      return @global_rubygems_source if @global_rubygems_source == new_source
+
+      add_source_to_list new_source, @rubygems_sources
     end
 
     def add_plugin_source(source, options = {})
       add_source_to_list Plugin.source(source).new(options), @plugin_sources
     end
 
-    def global_rubygems_source=(uri)
-      @global_rubygems_source ||= rubygems_aggregate_class.new("remotes" => uri, "allow_local" => true)
-    end
-
-    def add_rubygems_remote(uri)
+    def add_global_rubygems_remote(uri)
       global_rubygems_source.add_remote(uri)
       global_rubygems_source
     end

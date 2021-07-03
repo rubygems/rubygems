@@ -123,9 +123,7 @@ module Bundler
         end
       end
 
-      return true if !equal_sources?(lock_sources, replacement_sources) && !equivalent_sources?(lock_sources, replacement_sources)
-
-      false
+      !equal_sources?(lock_sources, replacement_sources) && !equivalent_sources?(lock_sources, replacement_sources)
     end
 
     def local_only!

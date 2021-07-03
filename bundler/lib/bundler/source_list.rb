@@ -28,8 +28,9 @@ module Bundler
       @merged_gem_lockfile_sections
     end
 
-    def merged_gem_lockfile_sections!
+    def merged_gem_lockfile_sections!(replacement_source)
       @merged_gem_lockfile_sections = true
+      @global_rubygems_source = replacement_source
     end
 
     def aggregate_global_source?
@@ -121,10 +122,6 @@ module Bundler
           replacement_sources.find {|s| s == source } || source
         end
       end
-
-      replacement_rubygems = merged_gem_lockfile_sections? &&
-        replacement_sources.detect {|s| s.is_a?(Source::Rubygems) }
-      @global_rubygems_source = replacement_rubygems if replacement_rubygems
 
       return true if !equal_sources?(lock_sources, replacement_sources) && !equivalent_sources?(lock_sources, replacement_sources)
 

@@ -119,7 +119,7 @@ module Bundler
           Bundler::SharedHelpers.major_deprecation 2, msg
         end
 
-        @sources.merged_gem_lockfile_sections!
+        @sources.merged_gem_lockfile_sections!(locked_gem_sources.first)
       end
 
       @unlock[:sources] ||= []

@@ -117,8 +117,8 @@ module Bundler
     def replace_sources!(replacement_sources)
       return false if replacement_sources.empty?
 
-      [path_sources, git_sources, plugin_sources].each do |source_list|
-        source_list.map! do |source|
+      [path_sources, git_sources, plugin_sources].each do |sources|
+        sources.map! do |source|
           replacement_sources.find {|s| s == source } || source
         end
       end

@@ -115,7 +115,7 @@ module Bundler
 
     # Returns true if there are changes
     def replace_sources!(replacement_sources)
-      return true if replacement_sources.empty?
+      return false if replacement_sources.empty?
 
       [path_sources, git_sources, plugin_sources].each do |source_list|
         source_list.map! do |source|

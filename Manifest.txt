@@ -491,7 +491,6 @@ lib/rubygems/uninstaller.rb
 lib/rubygems/unknown_command_spell_checker.rb
 lib/rubygems/uri_formatter.rb
 lib/rubygems/uri_parser.rb
-lib/rubygems/uri_parsing.rb
 lib/rubygems/user_interaction.rb
 lib/rubygems/util.rb
 lib/rubygems/util/licenses.rb

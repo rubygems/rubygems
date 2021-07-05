@@ -1,3 +1,12 @@
+# 3.2.22 / 2021-07-06
+
+## Enhancements:
+
+* Allow setting `--otp` via `GEM_HOST_OTP_CODE`. Pull request #4697 by
+  CGA1123
+* Fixes for the edge case when openssl library is missing. Pull request
+  #4695 by rhenium
+
 # 3.2.21 / 2021-06-23
 
 ## Enhancements:

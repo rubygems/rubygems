@@ -61,4 +61,8 @@ jobs:
         run: |
           bin/rake spec:all
         working-directory: ./bundler
+      - name: Run Rubygems Requirement tests against local bundler, to make sure bundler monkeypatches preserve the behaviour
+        run: |
+          ruby -I../../lib:lib:test test/rubygems/test_gem_requirement.rb
+        working-directory: ./bundler/tmp/rubygems
     timeout-minutes: 60

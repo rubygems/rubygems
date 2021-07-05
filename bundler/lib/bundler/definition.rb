@@ -109,8 +109,8 @@ module Bundler
         @locked_platforms = []
       end
 
-      @locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
-      @multisource_allowed = @locked_gem_sources.any?(&:multiple_remotes?) && Bundler.frozen_bundle?
+      locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
+      @multisource_allowed = locked_gem_sources.size == 1 && locked_gem_sources.first.multiple_remotes? && Bundler.frozen_bundle?
 
       if @multisource_allowed
         unless sources.aggregate_global_source?
@@ -119,7 +119,7 @@ module Bundler
           Bundler::SharedHelpers.major_deprecation 2, msg
         end
 
-        @sources.merged_gem_lockfile_sections!
+        @sources.merged_gem_lockfile_sections!(locked_gem_sources.first)
       end
 
       @unlock[:sources] ||= []
@@ -504,9 +504,6 @@ module Bundler
     attr_reader :sources
     private :sources
 
-    attr_reader :locked_gem_sources
-    private :locked_gem_sources
-
     def nothing_changed?
       !@source_changes && !@dependency_changes && !@new_platform && !@path_changes && !@local_changes && !@locked_specs_incomplete_for_platform
     end
@@ -634,35 +631,11 @@ module Bundler
       end
     end
 
-    def converge_rubygems_sources
-      return false unless multisource_allowed?
-
-      return false if locked_gem_sources.empty?
-
-      # Get the RubyGems remotes from the Gemfile
-      actual_remotes = sources.rubygems_remotes
-      return false if actual_remotes.empty?
-
-      changes = false
-
-      # If there is a RubyGems source in both
-      locked_gem_sources.each do |locked_gem_source|
-        # Merge the remotes from the Gemfile into the Gemfile.lock
-        changes |= locked_gem_source.replace_remotes(actual_remotes, Bundler.settings[:allow_deployment_source_credential_changes])
-      end
-
-      changes
-    end
-
     def converge_sources
-      changes = false
-
-      changes |= converge_rubygems_sources
-
       # Replace the sources from the Gemfile with the sources from the Gemfile.lock,
       # if they exist in the Gemfile.lock and are `==`. If you can't find an equivalent
       # source in the Gemfile.lock, use the one from the Gemfile.
-      changes |= sources.replace_sources!(@locked_sources)
+      changes = sources.replace_sources!(@locked_sources)
 
       sources.all_sources.each do |source|
         # If the source is unlockable and the current command allows an unlock of
@@ -911,7 +884,7 @@ module Bundler
     end
 
     def additional_base_requirements_for_resolve
-      return [] unless @locked_gems && unlocking?
+      return [] unless @locked_gems && unlocking? && !sources.expired_sources?(@locked_gems.sources)
       dependencies_by_name = dependencies.inject({}) {|memo, dep| memo.update(dep.name => dep) }
       @locked_gems.specs.reduce({}) do |requirements, locked_spec|
         name = locked_spec.name

@@ -368,6 +368,28 @@ RSpec.describe "bundle install with gem sources" do
       expect(err).to include("While it's not a problem now, it could cause errors if you change the version of one of them later.")
     end
 
+    it "does not throw a warning if a gem is added once in Gemfile and also inside a gemspec as a development dependency" do
+      build_lib "my-gem", :path => bundled_app do |s|
+        s.add_development_dependency "my-private-gem"
+      end
+
+      build_repo2 do
+        build_gem "my-private-gem"
+      end
+
+      gemfile <<~G
+        source "#{file_uri_for(gem_repo2)}"
+
+        gemspec
+
+        gem "my-private-gem", :group => :development
+      G
+
+      bundle :install
+
+      expect(err).to be_empty
+    end
+
     it "throws an error if a gem is added twice in Gemfile when version of one dependency is not specified" do
       install_gemfile <<-G, :raise_on_error => false
         source "#{file_uri_for(gem_repo2)}"

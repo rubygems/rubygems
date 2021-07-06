@@ -1,3 +1,19 @@
+# 2.2.22 (July 6, 2021)
+
+## Enhancements:
+
+  - Never downgrade indirect dependencies when running `bundle update` [#4713](https://github.com/rubygems/rubygems/pull/4713)
+  - Fix `getaddrinfo` errors not treated as fatal on non darwin platforms [#4703](https://github.com/rubygems/rubygems/pull/4703)
+
+## Bug fixes:
+
+  - Fix `bundle update <gem>` sometimes hanging and `bundle lock --update` not being able to update an insecure lockfile to the new format if it requires downgrades [#4652](https://github.com/rubygems/rubygems/pull/4652)
+  - Fix edge case combination of DSL methods and duplicated sources causing gems to not be found [#4711](https://github.com/rubygems/rubygems/pull/4711)
+  - Fix `bundle doctor` crashing when finding a broken symlink [#4707](https://github.com/rubygems/rubygems/pull/4707)
+  - Fix incorrect re-resolve edge case [#4700](https://github.com/rubygems/rubygems/pull/4700)
+  - Fix some gems being unintentionally locked under multiple lockfile sections [#4701](https://github.com/rubygems/rubygems/pull/4701)
+  - Fix `--conservative` flag unexpectedly updating indirect dependencies [#4692](https://github.com/rubygems/rubygems/pull/4692)
+
 # 2.2.21 (June 23, 2021)
 
 ## Security fixes:

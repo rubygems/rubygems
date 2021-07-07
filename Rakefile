@@ -96,7 +96,7 @@ task rubocop: %w[rubocop:rubygems rubocop:bundler]
 # Creating a release
 
 task :prerelease => %w[clobber test bundler:build_metadata check_deprecations]
-task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:publish]
+task :postrelease => %w[upload guides:publish blog:publish bundler:build_metadata:clean]
 
 desc "Check for deprecated methods with expired deprecation horizon"
 task :check_deprecations do

@@ -266,7 +266,7 @@ namespace 'blog' do
 
   task 'checksums' => 'package' do
     require 'digest'
-    Dir['pkg/*{tgz,zip,gem}'].map do |file|
+    Dir['pkg/*{tgz,zip,gem}'].each do |file|
       digest = Digest::SHA256.new
 
       File.open file, 'rb' do |io|

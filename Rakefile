@@ -267,13 +267,7 @@ namespace 'blog' do
   task 'checksums' => 'package' do
     require 'digest'
     Dir['pkg/*{tgz,zip,gem}'].each do |file|
-      digest = Digest::SHA256.new
-
-      File.open file, 'rb' do |io|
-        while chunk = io.read(65536) do
-          digest.update chunk
-        end
-      end
+      digest = Digest::SHA256.file(file)
 
       checksums << "* #{File.basename(file)}  \n"
       checksums << "  #{digest.hexdigest}\n"

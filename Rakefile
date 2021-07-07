@@ -266,11 +266,28 @@ namespace 'blog' do
 
   task 'checksums' => 'package' do
     require 'digest'
+    require 'net/http'
     Dir['pkg/*{tgz,zip,gem}'].each do |file|
-      digest = Digest::SHA256.file(file)
+      digest = Digest::SHA256.file(file).hexdigest
+      basename = File.basename(file)
 
-      checksums << "* #{File.basename(file)}  \n"
-      checksums << "  #{digest.hexdigest}\n"
+      checksums << "* #{basename}  \n"
+      checksums << "  #{digest}\n"
+
+      release_url = URI("https://rubygems.org/#{file.end_with?("gem") ? "gems" : "rubygems"}/#{basename}")
+      response = Net::HTTP.get_response(release_url)
+
+      if response.is_a?(Net::HTTPSuccess)
+        released_digest = Digest::SHA256.hexdigest(response.body)
+
+        if digest != released_digest
+          abort "Checksum of #{file} (#{digest}) doesn't match checksum of released package at #{release_url} (#{released_digest})"
+        end
+      elsif response.is_a?(Net::HTTPForbidden)
+        abort "#{basename} has not been yet uploaded to rubygems.org"
+      else
+        abort "Error fetching released package to verify checksums: #{response}\n#{response.body}"
+      end
     end
   end
 

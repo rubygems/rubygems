@@ -372,7 +372,7 @@ class Gem::Version
     @canonical_segments ||=
       _split_segments.map! do |segments|
         segments.reverse_each.drop_while {|s| s == 0 }.reverse
-      end.reduce(&:concat)
+      end.reduce(&:concat).freeze
   end
 
   def freeze

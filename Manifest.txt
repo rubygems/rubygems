@@ -299,6 +299,8 @@ bundler/lib/bundler/vendor/uri/lib/uri/mailto.rb
 bundler/lib/bundler/vendor/uri/lib/uri/rfc2396_parser.rb
 bundler/lib/bundler/vendor/uri/lib/uri/rfc3986_parser.rb
 bundler/lib/bundler/vendor/uri/lib/uri/version.rb
+bundler/lib/bundler/vendor/uri/lib/uri/ws.rb
+bundler/lib/bundler/vendor/uri/lib/uri/wss.rb
 bundler/lib/bundler/vendored_fileutils.rb
 bundler/lib/bundler/vendored_molinillo.rb
 bundler/lib/bundler/vendored_persistent.rb

@@ -224,9 +224,9 @@ bundler/lib/bundler/ui/shell.rb
 bundler/lib/bundler/ui/silent.rb
 bundler/lib/bundler/uri_credentials_filter.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool.rb
-bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/monotonic_time.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/timed_stack.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/version.rb
+bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/wrapper.rb
 bundler/lib/bundler/vendor/fileutils/lib/fileutils.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo.rb
 bundler/lib/bundler/vendor/molinillo/lib/molinillo/delegates/resolution_state.rb

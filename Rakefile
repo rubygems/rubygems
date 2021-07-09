@@ -96,7 +96,7 @@ task rubocop: %w[rubocop:rubygems rubocop:bundler]
 # Creating a release
 
 task :prerelease => %w[clobber test bundler:build_metadata check_deprecations]
-task :postrelease => %w[bundler:build_metadata:clean upload guides:publish blog:publish]
+task :postrelease => %w[upload guides:publish blog:publish bundler:build_metadata:clean]
 
 desc "Check for deprecated methods with expired deprecation horizon"
 task :check_deprecations do
@@ -266,17 +266,28 @@ namespace 'blog' do
 
   task 'checksums' => 'package' do
     require 'digest'
-    Dir['pkg/*{tgz,zip,gem}'].map do |file|
-      digest = Digest::SHA256.new
+    require 'net/http'
+    Dir['pkg/*{tgz,zip,gem}'].each do |file|
+      digest = Digest::SHA256.file(file).hexdigest
+      basename = File.basename(file)
 
-      File.open file, 'rb' do |io|
-        while chunk = io.read(65536) do
-          digest.update chunk
+      checksums << "* #{basename}  \n"
+      checksums << "  #{digest}\n"
+
+      release_url = URI("https://rubygems.org/#{file.end_with?("gem") ? "gems" : "rubygems"}/#{basename}")
+      response = Net::HTTP.get_response(release_url)
+
+      if response.is_a?(Net::HTTPSuccess)
+        released_digest = Digest::SHA256.hexdigest(response.body)
+
+        if digest != released_digest
+          abort "Checksum of #{file} (#{digest}) doesn't match checksum of released package at #{release_url} (#{released_digest})"
         end
+      elsif response.is_a?(Net::HTTPForbidden)
+        abort "#{basename} has not been yet uploaded to rubygems.org"
+      else
+        abort "Error fetching released package to verify checksums: #{response}\n#{response.body}"
       end
-
-      checksums << "* #{File.basename(file)}  \n"
-      checksums << "  #{digest.hexdigest}\n"
     end
   end
 
@@ -363,7 +374,7 @@ module Rubygems
   class ProjectFiles
     def self.all
       files = []
-      exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|util/)}
+      exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|util/|Rakefile)}
       tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|

@@ -107,7 +107,7 @@ def write_certificates(certificates)
 
     warn "overwriting certificate #{name}" if File.exist? destination
 
-    open destination, 'w' do |io|
+    File.open destination, 'w' do |io|
       io.write certificate.to_pem
     end
   end
@@ -115,7 +115,7 @@ end
 
 io =
   if ARGV.empty?
-    open OpenSSL::X509::DEFAULT_CERT_FILE
+    File.open OpenSSL::X509::DEFAULT_CERT_FILE
   else
     ARGF
   end

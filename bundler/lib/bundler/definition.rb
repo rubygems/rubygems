@@ -240,17 +240,11 @@ module Bundler
     end
 
     def requested_specs
-      @requested_specs ||= begin
-        groups = requested_groups
-        groups.map!(&:to_sym)
-        specs_for(groups)
-      end
+      @requested_specs ||= specs_for(requested_groups)
     end
 
     def requested_dependencies
-      groups = requested_groups
-      groups.map!(&:to_sym)
-      dependencies_for(groups)
+      dependencies_for(requested_groups)
     end
 
     def current_dependencies
@@ -265,6 +259,7 @@ module Bundler
     end
 
     def dependencies_for(groups)
+      groups.map!(&:to_sym)
       current_dependencies.reject do |d|
         (d.groups & groups).empty?
       end

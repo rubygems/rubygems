@@ -561,6 +561,7 @@ test/rubygems/ssl_key.pem
 test/rubygems/test_bundled_ca.rb
 test/rubygems/test_config.rb
 test/rubygems/test_deprecate.rb
+test/rubygems/test_exit.rb
 test/rubygems/test_gem.rb
 test/rubygems/test_gem_available_set.rb
 test/rubygems/test_gem_bundler_version_finder.rb

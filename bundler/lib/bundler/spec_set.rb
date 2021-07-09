@@ -11,11 +11,11 @@ module Bundler
       @specs = specs
     end
 
-    def for(dependencies, skip = [], check = false, match_current_platform = false, raise_on_missing = true)
+    def for(dependencies, check = false, match_current_platform = false, raise_on_missing = true)
       handled = []
       deps = dependencies.dup
       specs = []
-      skip += ["bundler"]
+      skip = ["bundler"]
 
       loop do
         break unless dep = deps.shift
@@ -73,7 +73,7 @@ module Bundler
     end
 
     def materialize(deps, missing_specs = nil)
-      materialized = self.for(deps, [], false, true, !missing_specs)
+      materialized = self.for(deps, false, true, !missing_specs)
 
       materialized.group_by(&:source).each do |source, specs|
         next unless specs.any?{|s| s.is_a?(LazySpecification) }

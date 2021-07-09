@@ -1,3 +1,15 @@
+# 2.2.23 (July 9, 2021)
+
+## Enhancements:
+
+  - Fix `bundle install` on truffleruby selecting incorrect variant for `sorbet-static` gem [#4625](https://github.com/rubygems/rubygems/pull/4625)
+  - Spare meaningless warning on read-only bundle invocations [#4724](https://github.com/rubygems/rubygems/pull/4724)
+
+## Bug fixes:
+
+  - Fix incorrect warning about duplicated gems in the Gemfile [#4732](https://github.com/rubygems/rubygems/pull/4732)
+  - Fix `bundle plugin install foo` crashing [#4734](https://github.com/rubygems/rubygems/pull/4734)
+
 # 2.2.22 (July 6, 2021)
 
 ## Enhancements:

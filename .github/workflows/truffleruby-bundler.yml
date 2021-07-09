@@ -13,15 +13,12 @@ jobs:
     name: Bundler (Truffleruby)
     runs-on: ubuntu-20.04
 
-    env:
-      RGV: ..
-
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: truffleruby-21.1.0
+          ruby-version: truffleruby-head # Until 21.2.0 is released (20th of July, 2021)
           bundler: none
       - name: Prepare dependencies
         run: |

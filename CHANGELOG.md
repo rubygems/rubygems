@@ -1,3 +1,10 @@
+# 3.2.23 / 2021-07-09
+
+## Enhancements:
+
+* Rewind IO source to allow working with contents in memory. Pull request
+  #4729 by drcapulet
+
 # 3.2.22 / 2021-07-06
 
 ## Enhancements:

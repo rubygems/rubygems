@@ -1,6 +1,14 @@
 name: Ruby
 
-on: [push,pull_request]
+strategy:
+  matrix:
+    ruby: 3.0.0
+
+on:
+  push:
+    config[:git_default_branch]
+
+  pull_request:
 
 jobs:
   build:
@@ -10,7 +18,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: <%= RUBY_VERSION %>
+        ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
     - name: Run the default task
       run: bundle exec rake

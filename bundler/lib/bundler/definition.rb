@@ -133,7 +133,7 @@ module Bundler
         @unlock[:gems] ||= @dependencies.map(&:name)
       else
         eager_unlock = expand_dependencies(@unlock[:gems] || [], true)
-        @unlock[:gems] = @locked_specs.for(eager_unlock, [], false, false, false).map(&:name)
+        @unlock[:gems] = @locked_specs.for(eager_unlock, false, false, false).map(&:name)
       end
 
       @dependency_changes = converge_dependencies
@@ -735,7 +735,7 @@ module Bundler
             # if we won't need the source (according to the lockfile),
             # don't error if the path/git source isn't available
             next if @locked_specs.
-                    for(requested_dependencies, [], false, true, false).
+                    for(requested_dependencies, false, true, false).
                     none? {|locked_spec| locked_spec.source == s.source }
 
             raise
@@ -754,8 +754,8 @@ module Bundler
       end
 
       resolve = SpecSet.new(converged)
-      @locked_specs_incomplete_for_platform = !resolve.for(expand_dependencies(requested_dependencies & deps), @unlock[:gems], true, true)
-      resolve = SpecSet.new(resolve.for(expand_dependencies(deps, true), [], false, false, false).reject{|s| @unlock[:gems].include?(s.name) })
+      @locked_specs_incomplete_for_platform = !resolve.for(expand_dependencies(requested_dependencies & deps), true, true)
+      resolve = SpecSet.new(resolve.for(expand_dependencies(deps, true), false, false, false).reject{|s| @unlock[:gems].include?(s.name) })
       diff    = nil
 
       # Now, we unlock any sources that do not have anymore gems pinned to it

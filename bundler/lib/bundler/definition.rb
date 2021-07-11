@@ -240,7 +240,7 @@ module Bundler
     end
 
     def requested_specs
-      @requested_specs ||= specs_for(requested_groups)
+      specs_for(requested_groups)
     end
 
     def requested_dependencies

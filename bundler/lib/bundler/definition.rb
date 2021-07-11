@@ -254,6 +254,7 @@ module Bundler
     end
 
     def specs_for(groups)
+      groups = requested_groups if groups.empty?
       deps = dependencies_for(groups)
       SpecSet.new(specs.for(expand_dependencies(deps)))
     end

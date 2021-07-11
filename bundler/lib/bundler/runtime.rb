@@ -15,7 +15,7 @@ module Bundler
       # Has to happen first
       clean_load_path
 
-      specs = groups.any? ? @definition.specs_for(groups) : requested_specs
+      specs = @definition.specs_for(groups)
 
       SharedHelpers.set_bundle_environment
       Bundler.rubygems.replace_entrypoints(specs)

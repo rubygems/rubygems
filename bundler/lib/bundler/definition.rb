@@ -185,25 +185,15 @@ module Bundler
     #
     # @return [Bundler::SpecSet]
     def specs
-      @specs ||= begin
-        begin
-          specs = resolve.materialize(requested_dependencies)
-        rescue GemNotFound => e # Handle yanked gem
-          gem_name, gem_version = extract_gem_info(e)
-          locked_gem = @locked_specs[gem_name].last
-          raise if locked_gem.nil? || locked_gem.version.to_s != gem_version || !@remote
-          raise GemNotFound, "Your bundle is locked to #{locked_gem} from #{locked_gem.source}, but that version can " \
-                             "no longer be found in that source. That means the author of #{locked_gem} has removed it. " \
-                             "You'll need to update your bundle to a version other than #{locked_gem} that hasn't been " \
-                             "removed in order to install."
-        end
-        unless specs["bundler"].any?
-          bundler = sources.metadata_source.specs.search(Gem::Dependency.new("bundler", VERSION)).last
-          specs["bundler"] = bundler
-        end
-
-        specs
-      end
+      @specs ||= add_bundler_to(resolve.materialize(requested_dependencies))
+    rescue GemNotFound => e # Handle yanked gem
+      gem_name, gem_version = extract_gem_info(e)
+      locked_gem = @locked_specs[gem_name].last
+      raise if locked_gem.nil? || locked_gem.version.to_s != gem_version || !@remote
+      raise GemNotFound, "Your bundle is locked to #{locked_gem} from #{locked_gem.source}, but that version can " \
+                         "no longer be found in that source. That means the author of #{locked_gem} has removed it. " \
+                         "You'll need to update your bundle to a version other than #{locked_gem} that hasn't been " \
+                         "removed in order to install."
     end
 
     def new_specs
@@ -235,17 +225,11 @@ module Bundler
     end
 
     def requested_specs
-      @requested_specs ||= begin
-        groups = requested_groups
-        groups.map!(&:to_sym)
-        specs_for(groups)
-      end
+      specs_for(requested_groups)
     end
 
     def requested_dependencies
-      groups = requested_groups
-      groups.map!(&:to_sym)
-      dependencies_for(groups)
+      dependencies_for(requested_groups)
     end
 
     def current_dependencies
@@ -255,11 +239,13 @@ module Bundler
     end
 
     def specs_for(groups)
+      groups = requested_groups if groups.empty?
       deps = dependencies_for(groups)
-      SpecSet.new(specs.for(expand_dependencies(deps)))
+      add_bundler_to(resolve.materialize(expand_dependencies(deps)))
     end
 
     def dependencies_for(groups)
+      groups.map!(&:to_sym)
       current_dependencies.reject do |d|
         (d.groups & groups).empty?
       end
@@ -506,6 +492,15 @@ module Bundler
     end
 
     private
+
+    def add_bundler_to(specs)
+      unless specs["bundler"].any?
+        bundler = sources.metadata_source.specs.search(Gem::Dependency.new("bundler", VERSION)).last
+        specs["bundler"] = bundler
+      end
+
+      specs
+    end
 
     def precompute_source_requirements_for_indirect_dependencies?
       sources.non_global_rubygems_sources.all?(&:dependency_api_available?) && !sources.aggregate_global_source?

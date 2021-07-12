@@ -58,6 +58,26 @@ module Bundler
           @ref      = ref
           @revision = revision
           @git      = git
+
+          if (!ref.nil? && ref =~ /\A\h+\z/ && ref !~ /\A\h{40}\z/) || (!revision.nil? && revision !~ /\h{40}/)
+            @depth = nil
+          elsif ref && ref.include?("~")
+            parsed_ref, parsed_depth = ref.split("~")
+            @depth = parsed_depth.to_i + 1
+            @refspec = "#{parsed_ref}:#{parsed_ref}"
+          else
+            @depth = 1
+            @refspec = ref
+          end
+
+          @local_ref = if ref.nil?
+            "HEAD"
+          elsif ref.include?(":")
+            ref.split(":").last
+          else
+            ref
+          end
+
           raise GitNotInstalledError.new if allow? && !Bundler.git_present?
         end
 
@@ -88,27 +108,44 @@ module Bundler
 
         def checkout
           return if path.exist? && has_revision_cached?
-          extra_ref = "#{ref}:#{ref}" if ref && ref.start_with?("refs/")
 
-          Bundler.ui.info "Fetching #{URICredentialsFilter.credential_filtered_uri(uri)}"
+          Bundler.ui.info "Fetching #{credential_filtered_uri}"
 
-          configured_uri = configured_uri_for(uri).to_s
+          if path.join(".git/shallow").exist? && full_clone?
+            SharedHelpers.filesystem_access(path) do |p|
+              FileUtils.rm_rf(p)
+            end
+          end
 
           unless path.exist?
             SharedHelpers.filesystem_access(path.dirname) do |p|
               FileUtils.mkdir_p(p)
             end
-            git_retry "clone", configured_uri, path.to_s, "--bare", "--no-hardlinks", "--quiet"
-            return unless extra_ref
+
+            extra_clone_args = full_clone? ? [] : ["--depth", "1"]
+
+            git_retry "clone", configured_uri, path.to_s, "--bare", "--quiet", *extra_clone_args
+
+            return unless ref
           end
 
-          with_path do
-            git_retry(*["fetch", "--force", "--quiet", "--tags", configured_uri, "refs/heads/*:refs/heads/*", extra_ref].compact, :dir => path)
+          validate_ref
+        end
+
+        def validate_ref
+          if full_clone?
+            extra_ref = ref if ref && ref.start_with?("refs/")
+            git_retry(*["fetch", "--force", "--quiet", "--tags", configured_uri, "refs/heads/*:refs/heads/*", extra_ref].compact, :dir => path) if extra_ref
+
+            revision
+          else
+            git_retry(*["fetch", "--force", "--quiet", "--depth", @depth.to_s, "--tags", configured_uri, "refs/heads/*:refs/heads/*", @refspec].compact, :dir => path)
           end
+        rescue GitCommandError => e
+          raise MissingGitRevisionError.new(e.command, path, @local_ref, credential_filtered_uri)
         end
 
         def copy_to(destination, submodules = false)
-          # method 1
           unless File.exist?(destination.join(".git"))
             begin
               SharedHelpers.filesystem_access(destination.dirname) do |p|
@@ -117,7 +154,7 @@ module Bundler
               SharedHelpers.filesystem_access(destination) do |p|
                 FileUtils.rm_rf(p)
               end
-              git_retry "clone", "--no-checkout", "--quiet", path.to_s, destination.to_s
+              git "clone", "--no-checkout", "--quiet", path.to_s, destination.to_s
               File.chmod(((File.stat(destination).mode | 0o777) & ~File.umask), destination)
             rescue Errno::EEXIST => e
               file_path = e.message[%r{.*?((?:[a-zA-Z]:)?/.*)}, 1]
@@ -126,14 +163,14 @@ module Bundler
                 "this file and try again."
             end
           end
-          # method 2
-          git_retry "fetch", "--force", "--quiet", "--tags", path.to_s, :dir => destination
 
-          begin
-            git "reset", "--hard", @revision, :dir => destination
-          rescue GitCommandError => e
-            raise MissingGitRevisionError.new(e.command, destination, @revision, URICredentialsFilter.credential_filtered_uri(uri))
+          if full_clone?
+            git "fetch", "--force", "--quiet", path.to_s, :dir => destination
+          else
+            git "fetch", "--force", "--quiet", "--depth", "1", path.to_s, revision, :dir => destination
           end
+
+          git "reset", "--hard", revision, :dir => destination
 
           if submodules
             git_retry "submodule", "update", "--init", "--recursive", :dir => destination
@@ -191,22 +228,27 @@ module Bundler
 
         def find_local_revision
           allowed_with_path do
-            git("rev-parse", "--verify", ref || "HEAD", :dir => path).strip
+            git("rev-parse", "--verify", @local_ref, :dir => path).strip
           end
-        rescue GitCommandError => e
-          raise MissingGitRevisionError.new(e.command, path, ref, URICredentialsFilter.credential_filtered_uri(uri))
         end
 
-        # Adds credentials to the URI as Fetcher#configured_uri_for does
-        def configured_uri_for(uri)
+        # Adds credentials to the URI
+        def configured_uri
           if /https?:/ =~ uri
             remote = Bundler::URI(uri)
             config_auth = Bundler.settings[remote.to_s] || Bundler.settings[remote.host]
             remote.userinfo ||= config_auth
             remote.to_s
+          elsif File.exist?(uri)
+            "file://#{uri}"
           else
-            uri
+            uri.to_s
           end
+        end
+
+        # Removes credentials from the URI
+        def credential_filtered_uri
+          URICredentialsFilter.credential_filtered_uri(uri)
         end
 
         def allow?
@@ -252,8 +294,16 @@ module Bundler
           end
         end
 
+        def full_clone?
+          @depth.nil? || !supports_fetching_unreachable_refs?
+        end
+
         def supports_minus_c?
           @supports_minus_c ||= Gem::Version.new(version) >= Gem::Version.new("1.8.5")
+        end
+
+        def supports_fetching_unreachable_refs?
+          @supports_fetching_unreachable_refs ||= Gem::Version.new(version) >= Gem::Version.new("2.5.0")
         end
       end
     end

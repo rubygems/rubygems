@@ -23,6 +23,13 @@ module Bundler
         @safe_uri   = URICredentialsFilter.credential_filtered_uri(@uri)
         @branch     = options["branch"]
         @ref        = options["ref"] || options["branch"] || options["tag"]
+
+        @refspec    = if options["ref"]
+          options["ref"].start_with?("refs/") ? "#{@ref}:#{@ref}" : @ref
+        elsif @ref
+          "#{@ref}:#{@ref}"
+        end
+
         @submodules = options["submodules"]
         @name       = options["name"]
         @version    = options["version"].to_s.strip.gsub("-", ".pre.")
@@ -303,7 +310,7 @@ module Bundler
       end
 
       def git_proxy
-        @git_proxy ||= GitProxy.new(cache_path, uri, ref, cached_revision, self)
+        @git_proxy ||= GitProxy.new(cache_path, uri, @refspec, cached_revision, self)
       end
 
       def fetch

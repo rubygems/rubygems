@@ -45,6 +45,7 @@ module Bundler
       exact = matching.select {|spec| spec.platform == platform }
       return exact if exact.any?
 
+      # p({ specs: matching, platform: platform })
       sorted_matching = matching.sort_by {|spec| platform_specificity_match(spec.platform, platform) }
       exemplary_spec = sorted_matching.first
 
@@ -55,7 +56,8 @@ module Bundler
     class PlatformMatch
       def self.specificity_score(spec_platform, user_platform)
         return -1 if spec_platform == user_platform
-        return 1_000_000 if spec_platform.nil? || spec_platform == Gem::Platform::RUBY || user_platform == Gem::Platform::RUBY
+        return 1_000_000 if spec_platform.nil? || spec_platform == Gem::Platform::RUBY || user_platform == Gem::Platform::RUBY # <= last one is weird, not sure it should happen
+        # maybe return nil when known not to match at all, then .compact! the sort_by result
 
         os_match(spec_platform, user_platform) +
           cpu_match(spec_platform, user_platform) * 10 +

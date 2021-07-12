@@ -140,14 +140,16 @@ module Bundler
             specs_by_platform = Hash.new do |current_specs, current_platform|
               current_specs[current_platform] = select_best_platform_match(specs, current_platform)
             end
+            # p({plat: specs_by_platform})
 
             spec_group_ruby = SpecGroup.create_for(specs_by_platform, [Gem::Platform::RUBY], Gem::Platform::RUBY)
             groups << spec_group_ruby if spec_group_ruby
-
+            # p({ruby: spec_group_ruby})
             next groups if @resolving_only_for_ruby
 
             spec_group = SpecGroup.create_for(specs_by_platform, @platforms, platform)
             groups << spec_group if spec_group
+            # p({group: spec_group})
 
             groups
           end

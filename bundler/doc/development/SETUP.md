@@ -32,6 +32,10 @@ To work on Bundler, you'll probably want to do a couple of things:
 
         $ alias dbundle='/path/to/bundler/repo/bin/bundle'
 
+## Jointly developing on bundler and rubygems
+
+RUBYOPT='-I../lib' bin/rake spec
+
 ## Debugging with `pry`
 
 To dive into the code with Pry: `RUBYOPT=-rpry dbundle` to require pry and then run commands.

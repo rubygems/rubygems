@@ -66,7 +66,7 @@ class Gem::Platform
     when String then
       arch = arch.split '-'
 
-      if arch.length > 2 and arch.last !~ /\d/ # reassemble x86-linux-gnu
+      if arch.length > 2 and arch.last !~ /\d+(\.\d+)?$/ # reassemble x86-linux-{libc}
         extra = arch.pop
         arch.last << "-#{extra}"
       end
@@ -146,10 +146,17 @@ class Gem::Platform
   ##
   # Does +other+ match this platform?  Two platforms match if they have the
   # same CPU, or either has a CPU of 'universal', they have the same OS, and
-  # they have the same version, or either has no version.
+  # they have the same version, or either one has no version
   #
   # Additionally, the platform will match if the local CPU is 'arm' and the
   # other CPU starts with "arm" (for generic ARM family support).
+  #
+  # Of note, this method is not commutative. Indeed the OS 'linux' has a
+  # special case: the version is the libc name, yet while "no version" stands
+  # as a wildcard for a binary gem platform (as for other OSes), for the
+  # runtime platform "no version" stands for 'gnu'. To be able to disinguish
+  # these, the method receiver is the gem platform, while the argument is
+  # the runtime platform.
 
   def ===(other)
     return nil unless Gem::Platform === other
@@ -162,7 +169,11 @@ class Gem::Platform
     @os == other.os and
 
     # version
-    (@version.nil? or other.version.nil? or @version == other.version)
+    (
+      (@os != 'linux' and (@version.nil? or other.version.nil?)) or
+      (@os == 'linux' and (@version.nil? and !other.version.nil?)) or
+      @version == other.version
+    )
   end
 
   ##

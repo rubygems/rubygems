@@ -12,8 +12,18 @@ module Bundler
   module SharedHelpers
     def root
       gemfile = find_gemfile
-      raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
-      Pathname.new(gemfile).tap{|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path.parent
+      return Pathname.new(gemfile).tap{|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path.parent if gemfile
+
+      bundle_dir = default_bundle_dir
+      raise GemfileNotFound, "Could not locate Gemfile or .bundle/ directory" unless bundle_dir
+
+      bundle_dir.parent
+    end
+
+    def config_root
+      bundle_dir = default_bundle_dir
+
+      bundle_dir ? bundle_dir.parent : pwd
     end
 
     def default_gemfile
@@ -220,7 +230,8 @@ module Bundler
     end
 
     def find_gemfile
-      given = ENV["BUNDLE_GEMFILE"]
+      require_relative "../bundler"
+      given = Bundler.settings[:gemfile]
       return given if given && !given.empty?
       find_file(*gemfile_names)
     end

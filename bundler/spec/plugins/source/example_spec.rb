@@ -447,7 +447,6 @@ RSpec.describe "real source plugins" do
         bundle "config set cache_all true"
         bundle :cache
         expect(bundled_app("vendor/cache/foo-1.0-#{ref}")).to exist
-        expect(bundled_app("vendor/cache/foo-1.0-#{ref}/.git")).not_to exist
         expect(bundled_app("vendor/cache/foo-1.0-#{ref}/.bundlecache")).to be_file
 
         FileUtils.rm_rf lib_path("foo-1.0")

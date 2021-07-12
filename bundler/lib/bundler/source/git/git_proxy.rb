@@ -130,9 +130,9 @@ module Bundler
           git_retry "fetch", "--force", "--quiet", "--tags", path.to_s, :dir => destination
 
           begin
-            git "reset", "--hard", @revision, :dir => destination
+            git "reset", "--hard", revision, :dir => destination
           rescue GitCommandError => e
-            raise MissingGitRevisionError.new(e.command, destination, @revision, URICredentialsFilter.credential_filtered_uri(uri))
+            raise MissingGitRevisionError.new(e.command, destination, revision, URICredentialsFilter.credential_filtered_uri(uri))
           end
 
           if submodules

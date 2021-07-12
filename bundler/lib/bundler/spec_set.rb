@@ -18,13 +18,13 @@ module Bundler
 
       loop do
         break unless dep = deps.shift
-        next if handled.include?(dep)
+        next if handled.any?{|d| d.name == dep.name && (match_current_platform || d.__platform == dep.__platform) } || dep.name == "bundler"
 
         handled << dep
 
         specs_for_dep = spec_for_dependency(dep, match_current_platform)
         if specs_for_dep.any?
-          specs |= specs_for_dep
+          specs += specs_for_dep
 
           specs_for_dep.first.dependencies.each do |d|
             next if d.type == :development
@@ -42,7 +42,7 @@ module Bundler
       end
 
       if spec = lookup["bundler"].first
-        specs |= [spec]
+        specs << spec
       end
 
       check ? true : specs

@@ -337,11 +337,7 @@ RSpec.describe "real world edgecases", :realworld => true do
 
     bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
 
-    if Bundler.feature_flag.bundler_3_mode?
-      expect(out).to display_total_steps_of(890)
-    else
-      expect(out).to display_total_steps_of(891)
-    end
+    expect(out).to display_total_steps_of(891)
   end
 
   it "doesn't hang on nix gemfile" do
@@ -503,11 +499,7 @@ RSpec.describe "real world edgecases", :realworld => true do
 
     bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
 
-    if Bundler.feature_flag.bundler_3_mode?
-      expect(out).to display_total_steps_of(1874)
-    else
-      expect(out).to display_total_steps_of(1922)
-    end
+    expect(out).to display_total_steps_of(1922)
   end
 
   private

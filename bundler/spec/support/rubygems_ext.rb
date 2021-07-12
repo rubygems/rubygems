@@ -102,6 +102,7 @@ module Spec
     end
 
     def gem_activate(gem_name)
+      require_relative "activate"
       require "bundler"
       gem_requirement = Bundler::LockfileParser.new(File.read(dev_lockfile)).dependencies[gem_name]&.requirement
       gem gem_name, gem_requirement

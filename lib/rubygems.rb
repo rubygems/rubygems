@@ -1210,11 +1210,11 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       end
     end
 
-    def regenerate_default_specs(include_stub_files:)
+    def regenerate_default_specs
       Gem::Util.glob_files_in_dir("*.gemspec", Gem.default_specifications_dir).map do |path|
         spec = Gem::Specification.load path
 
-        write_binary(spec.loaded_from, spec.to_ruby(include_stub_files: include_stub_files))
+        write_binary(spec.loaded_from, spec.to_ruby)
       end
     end
 

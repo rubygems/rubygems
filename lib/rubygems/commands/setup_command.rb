@@ -615,7 +615,7 @@ abort "#{deprecation_message}"
   end
 
   def regenerate_default_specs
-    Gem.regenerate_default_specs(include_stub_files: true)
+    Gem.regenerate_default_specs
   end
 
   private

@@ -194,24 +194,17 @@ class Gem::Requirement
   end
 
   def marshal_dump # :nodoc:
-    fix_syck_default_key_in_requirements
-
     [@requirements]
   end
 
   def marshal_load(array) # :nodoc:
     @requirements = array[0]
-
-    fix_syck_default_key_in_requirements
   end
 
   def yaml_initialize(tag, vals) # :nodoc:
     vals.each do |ivar, val|
       instance_variable_set "@#{ivar}", val
     end
-
-    Gem.load_yaml
-    fix_syck_default_key_in_requirements
   end
 
   def init_with(coder) # :nodoc:
@@ -288,19 +281,6 @@ class Gem::Requirement
 
   def _tilde_requirements
     @_tilde_requirements ||= _sorted_requirements.select {|r| r.first == "~>" }
-  end
-
-  private
-
-  def fix_syck_default_key_in_requirements # :nodoc:
-    Gem.load_yaml
-
-    # Fixup the Syck DefaultKey bug
-    @requirements.each do |r|
-      if r[0].kind_of? Gem::SyckDefaultKey
-        r[0] = "="
-      end
-    end
   end
 end
 

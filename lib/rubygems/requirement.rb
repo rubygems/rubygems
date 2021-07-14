@@ -295,10 +295,16 @@ class Gem::Requirement
   def fix_syck_default_key_in_requirements # :nodoc:
     Gem.load_yaml
 
+    raise TypeError, "wrong @requirements" unless Array === @requirements
+
     # Fixup the Syck DefaultKey bug
     @requirements.each do |r|
-      if r[0].kind_of? Gem::SyckDefaultKey
+      case r[0]
+      when Gem::SyckDefaultKey
         r[0] = "="
+      when String
+      else
+        raise TypeError, "wrong @requirements"
       end
     end
   end

@@ -1,3 +1,15 @@
+# 3.2.24 / 2021-07-15
+
+## Bug fixes:
+
+* Fix contradictory message about deletion of default gem. Pull request
+  #4739 by jaredbeck
+
+## Documentation:
+
+* Add a description about `GEM_HOST_OTP_CODE` to help text. Pull request
+  #4742 by ybiquitous
+
 # 3.2.23 / 2021-07-09
 
 ## Enhancements:

@@ -1,3 +1,16 @@
+# 2.2.24 (July 15, 2021)
+
+## Bug fixes:
+
+  - Fix development gem unintentionally removed on an edge case [#4751](https://github.com/rubygems/rubygems/pull/4751)
+  - Fix dangling empty plugin hooks [#4755](https://github.com/rubygems/rubygems/pull/4755)
+  - Fix `bundle plugin install --help` showing `bundle install`'s help [#4756](https://github.com/rubygems/rubygems/pull/4756)
+  - Make sure `bundle check` shows uniq missing gems [#4749](https://github.com/rubygems/rubygems/pull/4749)
+
+## Performance:
+
+  - Slightly speed up `bundler/setup` [#4750](https://github.com/rubygems/rubygems/pull/4750)
+
 # 2.2.23 (July 9, 2021)
 
 ## Enhancements:

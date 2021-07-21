@@ -28,11 +28,11 @@ jobs:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.5, value: 2.5.9 }, rgv: { name: rgv-3.2, value: v3.2.4 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.7 }, rgv: { name: rgv-3.0, value: v3.0.9 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.7 }, rgv: { name: rgv-3.2, value: v3.2.4 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.3 }, rgv: { name: rgv-3.1, value: v3.1.5 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.3 }, rgv: { name: rgv-3.2, value: v3.2.4 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.4 }, rgv: { name: rgv-3.1, value: v3.1.5 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.4 }, rgv: { name: rgv-3.2, value: v3.2.4 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.2 }, rgv: { name: rgv-3.2, value: v3.2.4 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.6, value: 2.6.7 }, rgv: { name: rgv-3.2, value: v3.2.4 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.3 }, rgv: { name: rgv-3.2, value: v3.2.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.4 }, rgv: { name: rgv-3.2, value: v3.2.4 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.2 }, rgv: { name: rgv-3.2, value: v3.2.4 } }
     env:
       RGV: ${{ matrix.rgv.value }}

@@ -328,11 +328,21 @@ class Gem::BasicSpecification
   private
 
   def have_extensions?; !extensions.empty?; end
-
   def have_file?(file, suffixes)
     return true if raw_require_paths.any? do |path|
-      base = File.join(gems_dir, full_name, path.tap(&Gem::UNTAINT), file).tap(&Gem::UNTAINT)
-      suffixes.any? {|suf| File.file? base + suf }
+      base_directory =  File.join(gems_dir, full_name, path.tap(&Gem::UNTAINT))
+      base = File.join(base_directory, file).tap(&Gem::UNTAINT)
+      if Dir.exist?(base_directory)
+        candidate_entry_files = Dir.entries(base_directory)
+      else
+        candidate_entry_files = []
+      end
+      res = suffixes.any? {|suf| File.file? base + suf || have_entry_file_with_underscore?(file + suf, candidate_entry_files)}
+      if res == false
+        return  have_entry_file_with_underscore?(suffixes, base_directory, file)
+      else
+        return true
+      end
     end
 
     if have_extensions?
@@ -342,4 +352,17 @@ class Gem::BasicSpecification
       false
     end
   end
-end
+
+  def have_entry_file_with_underscore?(suffixes, base_directory, package_name)
+    if Dir.exist?(base_directory)
+      candidate_entry_files = Dir.entries(base_directory).select { |f| File.file? File.join(base_directory, f) }
+    else
+      candidate_entry_files = []
+    end
+    return true if candidate_entry_files.any? do |candidate_file|
+      suffixes.any? {|suf| package_name + suf == candidate_file.tr("_", "")}
+    end
+    false
+  end
+
+ end

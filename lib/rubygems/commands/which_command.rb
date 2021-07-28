@@ -51,9 +51,7 @@ requiring to see why it does not behave as you expect.
           dirs = $LOAD_PATH + spec.full_require_paths
         end
       end
-
       paths = find_paths arg, dirs
-
       if paths.empty?
         alert_error "Can't find Ruby library file or shared library #{arg}"
         found = false
@@ -69,12 +67,21 @@ requiring to see why it does not behave as you expect.
     result = []
 
     dirs.each do |dir|
+      possible_entry_files = Dir.entries(dir).select { |f| File.file? File.join(dir, f) }
       Gem.suffixes.each do |ext|
         full_path = File.join dir, "#{package_name}#{ext}"
         if File.exist? full_path and not File.directory? full_path
           result << full_path
           return result unless options[:show_all]
         end
+        possible_entry_files.each do |possible_entry_file|
+          possible_entry_file_without_underscore =  possible_entry_file.tr("_", "")
+          possible_entry_full_path = File.join dir, possible_entry_file
+          if ("#{package_name}#{ext}" == possible_entry_file_without_underscore) and not File.directory? possible_entry_full_path
+            result << possible_entry_full_path
+            return result unless options[:show_all]
+          end
+        end 
       end
     end
 

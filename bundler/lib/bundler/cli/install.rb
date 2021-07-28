@@ -60,7 +60,7 @@ module Bundler
       installer = Installer.install(Bundler.root, definition, options)
 
       Bundler.settings.temporary(:cache_all_platforms => options[:local] ? false : Bundler.settings[:cache_all_platforms]) do
-        Bundler.load.cache if Bundler.app_cache.exist? && !options["no-cache"] && !Bundler.frozen_bundle?
+        Bundler.load.cache(nil, options[:local]) if Bundler.app_cache.exist? && !options["no-cache"] && !Bundler.frozen_bundle?
       end
 
       Bundler.ui.confirm "Bundle complete! #{dependencies_count_for(definition)}, #{gems_installed_for(definition)}."
@@ -83,15 +83,9 @@ module Bundler
       end
 
       Bundler::CLI::Common.output_fund_metadata_summary
-    rescue GemNotFound => e
-      if options[:local] && Bundler.app_cache.exist?
-        Bundler.ui.warn "Some gems seem to be missing from your #{Bundler.settings.app_cache_path} directory."
-      end
-
-      raise e
-    rescue Gem::InvalidSpecificationException => e
+    rescue Gem::InvalidSpecificationException
       Bundler.ui.warn "You have one or more invalid gemspecs that need to be fixed."
-      raise e
+      raise
     end
 
     private

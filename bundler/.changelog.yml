@@ -19,6 +19,7 @@ changelog_label_mapping:
 
 patch_level_labels:
   - "bundler: security fix"
+  - "bundler: deprecation"
   - "bundler: enhancement"
   - "bundler: bug fix"
   - "bundler: performance"
@@ -26,5 +27,4 @@ patch_level_labels:
   - "bundler: backport"
 
 minor_level_labels:
-  - "bundler: deprecation"
   - "bundler: feature"

@@ -1,3 +1,20 @@
+# 3.2.25 / 2021-07-30
+
+## Enhancements:
+
+* Don't load the `base64` library since it's not used. Pull request #4785
+  by deivid-rodriguez
+* Don't load the `resolv` library since it's not used. Pull request #4784
+  by deivid-rodriguez
+* Lazily load `shellwords` library. Pull request #4783 by deivid-rodriguez
+* Check requirements class before loading marshalled requirements. Pull
+  request #4651 by nobu
+
+## Bug fixes:
+
+* Add missing `require 'fileutils'` in `Gem::ConfigFile`. Pull request
+  #4768 by ybiquitous
+
 # 3.2.24 / 2021-07-15
 
 ## Bug fixes:

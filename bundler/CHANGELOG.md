@@ -1,3 +1,25 @@
+# 2.2.25 (July 30, 2021)
+
+## Deprecations:
+
+  - Deprecate Gemfile without an explicit global source [#4779](https://github.com/rubygems/rubygems/pull/4779)
+  - Deprecate `bundle cache --path` [#4496](https://github.com/rubygems/rubygems/pull/4496)
+
+## Enhancements:
+
+  - Give better errors when materialization fails [#4788](https://github.com/rubygems/rubygems/pull/4788)
+  - Lazily load `shellwords` library [#4786](https://github.com/rubygems/rubygems/pull/4786)
+  - Show original error and backtrace directly on `bundle install` errors instead of a more brittle `gem install` hint [#4778](https://github.com/rubygems/rubygems/pull/4778)
+  - Remove LoadError message in regards to requiring a relative file [#4772](https://github.com/rubygems/rubygems/pull/4772)
+
+## Bug fixes:
+
+  - Fix `BUNDLE_USER_CONFIG` no longer respected as config location [#4797](https://github.com/rubygems/rubygems/pull/4797)
+  - Fix `--standalone` installation of default gems [#4782](https://github.com/rubygems/rubygems/pull/4782)
+  - Fix `--quiet` flag not printing warnings [#4781](https://github.com/rubygems/rubygems/pull/4781)
+  - Fix bundler binstub version selection [#4775](https://github.com/rubygems/rubygems/pull/4775)
+  - Fix interrupt handling in Bundler workers [#4767](https://github.com/rubygems/rubygems/pull/4767)
+
 # 2.2.24 (July 15, 2021)
 
 ## Bug fixes:

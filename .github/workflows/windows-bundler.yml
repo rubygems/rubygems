@@ -21,9 +21,9 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: jruby-9.2, value: jruby-9.2.16.0 }
+          - { name: jruby-9.2, value: jruby-9.2.19.0 }
           - { name: ruby-2.5, value: 2.5.9 }
-          - { name: ruby-3.0, value: 3.0.1 }
+          - { name: ruby-3.0, value: 3.0.2 }
 
     steps:
       - uses: actions/checkout@v2

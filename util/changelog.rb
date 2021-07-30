@@ -129,7 +129,7 @@ class Changelog
 
   def format_entry_for(pull)
     new_entry = entry_template
-      .gsub(/%pull_request_title/, pull.title)
+      .gsub(/%pull_request_title/, pull.title.strip.delete_suffix(".").tap {|s| s[0] = s[0].upcase })
       .gsub(/%pull_request_number/, pull.number.to_s)
       .gsub(/%pull_request_url/, pull.html_url)
       .gsub(/%pull_request_author/, pull.user.name || pull.user.login)

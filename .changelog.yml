@@ -21,6 +21,7 @@ changelog_label_mapping:
 
 patch_level_labels:
   - "rubygems: security fix"
+  - "rubygems: deprecation"
   - "rubygems: enhancement"
   - "rubygems: bug fix"
   - "rubygems: performance"
@@ -28,5 +29,4 @@ patch_level_labels:
   - "rubygems: backport"
 
 minor_level_labels:
-  - "rubygems: deprecation"
   - "rubygems: feature"

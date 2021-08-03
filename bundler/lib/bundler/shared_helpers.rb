@@ -13,13 +13,13 @@ module Bundler
     def root
       gemfile = find_gemfile
       raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
-      Pathname.new(gemfile).tap{|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path.parent
+      expand(gemfile).parent
     end
 
     def default_gemfile
       gemfile = find_gemfile
       raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
-      Pathname.new(gemfile).tap{|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path
+      expand(gemfile)
     end
 
     def default_lockfile
@@ -199,6 +199,10 @@ module Bundler
     end
 
     private
+
+    def expand(file)
+      Pathname.new(file).tap{|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path
+    end
 
     def validate_bundle_path
       path_separator = Bundler.rubygems.path_separator

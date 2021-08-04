@@ -29,36 +29,32 @@ RSpec.describe "bundle gem" do
   end
 
   describe "git repo initialization" do
-    shared_examples_for "a gem with an initial git repo" do
+    it "generates a gem skeleton with a .git folder", :readline do
+      bundle "gem #{gem_name}"
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/.git")).to exist
+    end
+
+    it "generates a gem skeleton with a .git folder when passing --git", :readline do
+      bundle "gem #{gem_name} --git"
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/.git")).to exist
+    end
+
+    it "generates a gem skeleton without a .git folder when passing --no-git", :readline do
+      bundle "gem #{gem_name} --no-git"
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/.git")).not_to exist
+    end
+
+    context "on a path with spaces" do
       before do
-        bundle "gem #{gem_name} #{flags}"
+        Dir.mkdir(bundled_app("path with spaces"))
       end
 
-      it "generates a gem skeleton with a .git folder", :readline do
-        gem_skeleton_assertions
-        expect(bundled_app("#{gem_name}/.git")).to exist
-      end
-    end
-
-    context "when using the default" do
-      it_behaves_like "a gem with an initial git repo" do
-        let(:flags) { "" }
-      end
-    end
-
-    context "when explicitly passing --git" do
-      it_behaves_like "a gem with an initial git repo" do
-        let(:flags) { "--git" }
-      end
-    end
-
-    context "when passing --no-git", :readline do
-      before do
-        bundle "gem #{gem_name} --no-git"
-      end
-      it "generates a gem skeleton without a .git folder" do
-        gem_skeleton_assertions
-        expect(bundled_app("#{gem_name}/.git")).not_to exist
+      it "properly initializes git repo", :readline do
+        bundle "gem #{gem_name}", :dir => bundled_app("path with spaces")
+        expect(bundled_app("path with spaces/#{gem_name}/.git")).to exist
       end
     end
   end

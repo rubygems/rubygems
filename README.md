@@ -46,8 +46,6 @@ Install RubyGems by running:
 
     $ ruby setup.rb
 
-Note: You may need to run the install script with admin/root privileges.
-
 For more details and other options, see:
 
     $ ruby setup.rb --help
@@ -57,8 +55,6 @@ For more details and other options, see:
 To upgrade to the latest RubyGems, run:
 
     $ gem update --system
-
-Note: You might need to run the command as an administrator or root user.
 
 See [UPGRADING](UPGRADING.md) for more details and alternative instructions.
 

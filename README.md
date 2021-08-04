@@ -34,8 +34,14 @@ For more information about how to use RubyGems, see our RubyGems basics guide at
 ## Installation
 
 RubyGems is already installed in your Ruby environment, you can check the version you have installed by running `gem --version` in your terminal emulator.
-In some cases your OS's package manager may install RubyGems as a separate package from Ruby. It's recommended to check
-with your OS's package manager before installing RubyGems manually.
+
+In some cases Ruby & RubyGems may be provided as OS packages. This is not a
+recommended way to use Ruby & RubyGems. It's better to use a Ruby Version
+Manager, such as [rbenv](https://github.com/rbenv/rbenv) or
+[chruby](https://github.com/postmodern/chruby). If you still want to use the
+version provided by your OS package manager, please also use your OS package
+manager to upgrade rubygems, and disregard any other installation instructions
+given below.
 
 If you would like to manually install RubyGems:
 

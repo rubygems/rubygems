@@ -249,9 +249,6 @@ module Gem
   # you to specify specific gem versions.
 
   def self.bin_path(name, exec_name = nil, *requirements)
-    # TODO: fails test_self_bin_path_bin_file_gone_in_latest
-    # Gem::Specification.find_by_name(name, *requirements).bin_file exec_name
-
     requirements = Gem::Requirement.default if
       requirements.empty?
 
@@ -1112,26 +1109,21 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
     ENV["BUNDLE_GEMFILE"] ||= File.expand_path(path)
     require 'rubygems/user_interaction'
-    Gem::DefaultUserInteraction.use_ui(ui) do
-      require "bundler"
-      begin
-        Bundler.ui.silence do
-          @gemdeps = Bundler.setup
+    require "bundler"
+    begin
+      Gem::DefaultUserInteraction.use_ui(ui) do
+        begin
+          Bundler.ui.silence do
+            @gemdeps = Bundler.setup
+          end
+        ensure
+          Gem::DefaultUserInteraction.ui.close
         end
-      ensure
-        Gem::DefaultUserInteraction.ui.close
       end
-      @gemdeps.requested_specs.map(&:to_spec).sort_by(&:name)
-    end
-
-  rescue => e
-    case e
-    when Gem::LoadError, Gem::UnsatisfiableDependencyError, (defined?(Bundler::GemNotFound) ? Bundler::GemNotFound : Gem::LoadError)
+    rescue Bundler::BundlerError => e
       warn e.message
-      warn "You may need to `gem install -g` to install missing gems"
+      warn "You may need to `bundle install` to install missing gems"
       warn ""
-    else
-      raise
     end
   end
 
@@ -1354,5 +1346,3 @@ Gem::Specification.load_defaults
 require 'rubygems/core_ext/kernel_gem'
 require 'rubygems/core_ext/kernel_require'
 require 'rubygems/core_ext/kernel_warn'
-
-Gem.use_gemdeps

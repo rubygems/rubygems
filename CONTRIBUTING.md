@@ -55,7 +55,7 @@ To run bundler tests:
 
     $ cd bundler
     $ bin/rake spec:deps
-    $ bin/rspec spec
+    $ bin/rspec
 
 ## Issues
 

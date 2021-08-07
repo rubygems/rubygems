@@ -51,11 +51,25 @@ And to run an individual test method named `test_default` within a test file, yo
 
     ruby -Ilib:test test/rubygems/test_deprecate.rb -n /test_default/ 
 
-To run bundler tests:
+### Running bundler tests
 
-    cd bundler
+Everything needs to be run from the `bundler/` subfolder.
+
+To setup bundler tests:
+
     bin/rake spec:parallel_deps
+
+To run the entire bundler test suite in parallel (it takes a while):
+
     bin/parallel_rspec
+
+To run the entire bundler test suite sequentially (get a coffee because it's very slow):
+
+    bin/rspec
+
+To run an individual test file location for example in `spec/install/gems/standalone_spec.rb` you can use:
+
+    bin/rspec spec/install/gems/standalone_spec.rb
 
 ## Issues
 

@@ -51,7 +51,7 @@ And to run an individual test method named `test_default` within a test file, yo
 
     $ ruby -Ilib:test test/rubygems/test_deprecate.rb -n /test_default/ 
 
-To run bundler test:
+To run bundler tests:
 
     $ cd bundler
     $ bin/rake spec:deps

@@ -54,8 +54,8 @@ And to run an individual test method named `test_default` within a test file, yo
 To run bundler tests:
 
     $ cd bundler
-    $ bin/rake spec:deps
-    $ bin/rspec
+    $ bin/rake spec:parallel_deps
+    $ bin/parallel_rspec
 
 ## Issues
 

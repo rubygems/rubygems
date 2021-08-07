@@ -29,33 +29,33 @@ here: https://guides.rubygems.org/contributing/
 
 ## Getting Started
 
-    $ rake setup
+    rake setup
 
 > Optionally you can configure git hooks with: rake git_hooks
 
 To run commands like `gem install` from the repo:
 
-    $ ruby -Ilib bin/gem install
+    ruby -Ilib bin/gem install
 
 ### Running Tests
 
 To run the entire test suite you can use: 
 
-    $ rake test
+    rake test
 
 To run an individual test file located for example in `test/rubygems/test_deprecate.rb` you can use: 
 
-    $ ruby -Ilib:test test/rubygems/test_deprecate.rb 
+    ruby -Ilib:test test/rubygems/test_deprecate.rb 
     
 And to run an individual test method named `test_default` within a test file, you can use: 
 
-    $ ruby -Ilib:test test/rubygems/test_deprecate.rb -n /test_default/ 
+    ruby -Ilib:test test/rubygems/test_deprecate.rb -n /test_default/ 
 
 To run bundler tests:
 
-    $ cd bundler
-    $ bin/rake spec:parallel_deps
-    $ bin/parallel_rspec
+    cd bundler
+    bin/rake spec:parallel_deps
+    bin/parallel_rspec
 
 ## Issues
 

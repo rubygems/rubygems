@@ -77,7 +77,6 @@ bundler/lib/bundler/gem_helper.rb
 bundler/lib/bundler/gem_helpers.rb
 bundler/lib/bundler/gem_tasks.rb
 bundler/lib/bundler/gem_version_promoter.rb
-bundler/lib/bundler/gemdeps.rb
 bundler/lib/bundler/graph.rb
 bundler/lib/bundler/index.rb
 bundler/lib/bundler/injector.rb

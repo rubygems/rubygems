@@ -240,7 +240,7 @@ module Bundler
 
     def search_up(*names)
       previous = nil
-      current  = File.expand_path(SharedHelpers.pwd).tap{|x| x.untaint if RUBY_VERSION < "2.7" }
+      current  = File.expand_path(pwd).tap{|x| x.untaint if RUBY_VERSION < "2.7" }
 
       until !File.directory?(current) || current == previous
         if ENV["BUNDLER_SPEC_RUN"]
@@ -286,16 +286,16 @@ module Bundler
       # bundler is a default gem, exe path is separate
       exe_file = Bundler.rubygems.bin_path("bundler", "bundle", VERSION) unless File.exist?(exe_file)
 
-      Bundler::SharedHelpers.set_env "BUNDLE_BIN_PATH", exe_file
-      Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", find_gemfile.to_s
-      Bundler::SharedHelpers.set_env "BUNDLER_VERSION", Bundler::VERSION
+      set_env "BUNDLE_BIN_PATH", exe_file
+      set_env "BUNDLE_GEMFILE", find_gemfile.to_s
+      set_env "BUNDLER_VERSION", Bundler::VERSION
     end
 
     def set_path
       validate_bundle_path
       paths = (ENV["PATH"] || "").split(File::PATH_SEPARATOR)
       paths.unshift "#{Bundler.bundle_path}/bin"
-      Bundler::SharedHelpers.set_env "PATH", paths.uniq.join(File::PATH_SEPARATOR)
+      set_env "PATH", paths.uniq.join(File::PATH_SEPARATOR)
     end
 
     def set_rubyopt
@@ -303,13 +303,13 @@ module Bundler
       setup_require = "-r#{File.expand_path("setup", __dir__)}"
       return if !rubyopt.empty? && rubyopt.first =~ /#{setup_require}/
       rubyopt.unshift setup_require
-      Bundler::SharedHelpers.set_env "RUBYOPT", rubyopt.join(" ")
+      set_env "RUBYOPT", rubyopt.join(" ")
     end
 
     def set_rubylib
       rubylib = (ENV["RUBYLIB"] || "").split(File::PATH_SEPARATOR)
       rubylib.unshift bundler_ruby_lib unless RbConfig::CONFIG["rubylibdir"] == bundler_ruby_lib
-      Bundler::SharedHelpers.set_env "RUBYLIB", rubylib.uniq.join(File::PATH_SEPARATOR)
+      set_env "RUBYLIB", rubylib.uniq.join(File::PATH_SEPARATOR)
     end
 
     def bundler_ruby_lib

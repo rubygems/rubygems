@@ -5,17 +5,6 @@ require "bundler/settings"
 RSpec.describe Bundler::Settings do
   subject(:settings) { described_class.new(bundled_app) }
 
-  describe "#set_local" do
-    context "when the local config file is not found" do
-      subject(:settings) { described_class.new(nil) }
-
-      it "raises a GemfileNotFound error with explanation" do
-        expect { subject.set_local("foo", "bar") }.
-          to raise_error(Bundler::GemfileNotFound, "Could not locate Gemfile")
-      end
-    end
-  end
-
   describe "load_config" do
     let(:hash) do
       {
@@ -73,16 +62,6 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
   end
 
   describe "#[]" do
-    context "when the local config file is not found" do
-      subject(:settings) { described_class.new }
-
-      it "does not raise" do
-        expect do
-          subject["foo"]
-        end.not_to raise_error
-      end
-    end
-
     context "when not set" do
       context "when default value present" do
         it "retrieves value" do

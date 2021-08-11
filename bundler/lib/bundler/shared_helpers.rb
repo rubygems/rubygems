@@ -13,13 +13,13 @@ module Bundler
     def root
       gemfile = find_gemfile
       raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
-      expand(gemfile).parent
+      gemfile.parent
     end
 
     def default_gemfile
       gemfile = find_gemfile
       raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
-      expand(gemfile)
+      gemfile
     end
 
     def default_lockfile
@@ -34,8 +34,6 @@ module Bundler
     def default_bundle_dir
       bundle_dir = find_directory(".bundle")
       return nil unless bundle_dir
-
-      bundle_dir = Pathname.new(bundle_dir)
 
       global_bundle_dir = Bundler.user_home.join(".bundle")
       return nil if bundle_dir == global_bundle_dir
@@ -218,7 +216,7 @@ module Bundler
 
     def find_gemfile
       given = ENV["BUNDLE_GEMFILE"]
-      return given if given && !given.empty?
+      return expand(given) if given && !given.empty?
       find_file(*gemfile_names)
     end
 
@@ -228,21 +226,21 @@ module Bundler
 
     def find_file(*names)
       search_up(*names) do |filename|
-        return filename if File.file?(filename)
+        return filename if filename.file?
       end
     end
 
     def find_directory(*names)
       search_up(*names) do |dirname|
-        return dirname if File.directory?(dirname)
+        return dirname if dirname.directory?
       end
     end
 
     def search_up(*names)
       previous = nil
-      current  = File.expand_path(pwd).tap{|x| x.untaint if RUBY_VERSION < "2.7" }
+      current  = pwd.tap{|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path
 
-      until !File.directory?(current) || current == previous
+      until !current.directory? || current == previous
         if ENV["BUNDLER_SPEC_RUN"]
           # avoid stepping above the tmp directory when testing
           gemspec = if ENV["GEM_COMMAND"]
@@ -253,15 +251,15 @@ module Bundler
           end
 
           # avoid stepping above the tmp directory when testing
-          return nil if File.file?(File.join(current, gemspec))
+          return nil if current.join(gemspec).file?
         end
 
         names.each do |name|
-          filename = File.join(current, name)
+          filename = current.join(name)
           yield filename
         end
         previous = current
-        current = File.expand_path("..", current)
+        current = current.parent
       end
     end
 

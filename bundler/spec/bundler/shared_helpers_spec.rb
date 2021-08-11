@@ -116,7 +116,7 @@ RSpec.describe Bundler::SharedHelpers do
         after { FileUtils.rm(bundled_app_gemfile) }
 
         it "returns path of the bundle Gemfile" do
-          expect(subject.in_bundle?).to eq("#{bundled_app}/Gemfile")
+          expect(subject.in_bundle?).to eq(bundled_app_gemfile)
         end
       end
 
@@ -131,7 +131,7 @@ RSpec.describe Bundler::SharedHelpers do
       before { ENV["BUNDLE_GEMFILE"] = "/path/Gemfile" }
 
       it "returns ENV['BUNDLE_GEMFILE']" do
-        expect(subject.in_bundle?).to eq("/path/Gemfile")
+        expect(subject.in_bundle?).to eq(Pathname.new("/path/Gemfile").expand_path)
       end
     end
 

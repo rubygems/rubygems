@@ -238,7 +238,7 @@ module Bundler
 
     def search_up(*names)
       previous = nil
-      current  = pwd.tap{|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path
+      current  = pwd.tap{|x| x.untaint if RUBY_VERSION < "2.7" }
 
       until !current.directory? || current == previous
         if ENV["BUNDLER_SPEC_RUN"]

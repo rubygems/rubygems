@@ -86,7 +86,7 @@ module Bundler
         root = begin
                  Bundler.root
                rescue GemfileNotFound
-                 Pathname.pwd.expand_path
+                 Pathname.pwd
                end
 
         path = begin

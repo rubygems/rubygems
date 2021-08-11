@@ -42,7 +42,7 @@ def gemfile(install = false, options = {}, &gemfile)
     bundler_module = class << Bundler; self; end
     bundler_module.send(:remove_method, :root)
     def Bundler.root
-      Bundler::SharedHelpers.pwd.expand_path
+      Bundler::SharedHelpers.pwd
     end
     old_gemfile = ENV["BUNDLE_GEMFILE"]
     Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", "Gemfile"

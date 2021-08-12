@@ -6,7 +6,7 @@ require "rake/testtask"
 
 desc "Setup Rubygems dev environment"
 task :setup do
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  sh({ "BUNDLE_PATH__SYSTEM" => "true" }, "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=bundler/tool/bundler/dev_gems.rb")
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/release_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
@@ -19,7 +19,7 @@ end
 
 desc "Update Rubygems dev environment"
 task :update do
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  sh({ "BUNDLE_PATH__SYSTEM" => "true" }, "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--gemfile=bundler/tool/bundler/dev_gems.rb")
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/release_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
@@ -32,7 +32,7 @@ end
 
 desc "Update the locked bundler version in dev environment"
 task :update_locked_bundler do |_, args|
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  sh({ "BUNDLE_PATH__SYSTEM" => "true" }, "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/dev_gems.rb")
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/release_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
@@ -45,7 +45,7 @@ end
 
 desc "Update specific development dependencies"
 task :update_dev_dep do |_, args|
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", *args, "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  sh({ "BUNDLE_PATH__SYSTEM" => "true" }, "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", *args, "--gemfile=bundler/tool/bundler/dev_gems.rb")
 end
 
 desc "Setup git hooks"

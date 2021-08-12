@@ -55,6 +55,15 @@ module Bundler
     def initialize(*args)
       super
 
+      # At this point, settings have been already resolved, unfortunately,
+      # because some CLI help messages, flag aliases or even whole commands need
+      # to be defined according to some settings being activated or not. So once
+      # we know the `--gemfile` has been passed, we need to force a reload of
+      # everything. This logic seems buggy, since the settings we have used
+      # before this point might not be correct, but so far it has worked fine.
+      # The ideal solution would be to add some features to thor so that stuff
+      # can be defined via procs and lazily loaded, and thus we can be sure we
+      # haven't yet loaded settings at all at this point.
       custom_gemfile = options[:gemfile]
       if custom_gemfile && !custom_gemfile.empty?
         expanded_custom_gemfile = Pathname.new(custom_gemfile).expand_path

@@ -169,7 +169,7 @@ module Spec
       env["RUBYOPT"] = opt_add("-r#{spec_dir}/support/hax.rb", env["RUBYOPT"] || ENV["RUBYOPT"])
       options[:env] = env
       require "shellwords"
-      sys_exec(Path.gem_bin, *command.to_s.shellsplit, options)
+      sys_exec(*Path.gem_bin.shellsplit, *command.to_s.shellsplit, options)
     end
 
     def rake(cmd, options = {})

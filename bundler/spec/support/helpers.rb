@@ -171,8 +171,8 @@ module Spec
       sys_exec("#{Path.gem_bin} #{command}", options)
     end
 
-    def rake
-      "#{Gem.ruby} -S #{ENV["GEM_PATH"]}/bin/rake"
+    def rake(cmd, options = {})
+      sys_exec("#{Gem.ruby} -S #{ENV["GEM_PATH"]}/bin/rake #{cmd}", options)
     end
 
     def git(cmd, path, options = {})

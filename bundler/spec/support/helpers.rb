@@ -121,6 +121,7 @@ module Spec
       end
 
       ruby_cmd = build_ruby_cmd({ :sudo => sudo, :load_path => load_path, :requires => requires })
+      require "shellwords"
       cmd = [*ruby_cmd, bundle_bin.to_s, *cmd.to_s.shellsplit, *args].compact
       sys_exec(*cmd, { :env => env, :dir => dir, :raise_on_error => raise_on_error }, &block)
     end
@@ -167,14 +168,17 @@ module Spec
       env = options[:env] || {}
       env["RUBYOPT"] = opt_add("-r#{spec_dir}/support/hax.rb", env["RUBYOPT"] || ENV["RUBYOPT"])
       options[:env] = env
+      require "shellwords"
       sys_exec(Path.gem_bin, *command.to_s.shellsplit, options)
     end
 
     def rake(cmd, options = {})
+      require "shellwords"
       sys_exec(Gem.ruby, "-S", "#{ENV["GEM_PATH"]}/bin/rake", *cmd.to_s.shellsplit, options)
     end
 
     def git(cmd, options = {})
+      require "shellwords"
       sys_exec("git", *cmd.to_s.shellsplit, options)
     end
 

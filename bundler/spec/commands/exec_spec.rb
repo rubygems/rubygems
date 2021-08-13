@@ -155,7 +155,7 @@ RSpec.describe "bundle exec" do
     G
 
     install_gemfile "source \"#{file_uri_for(gem_repo1)}\""
-    sys_exec "#{Gem.ruby} #{command.path}"
+    sys_exec Gem.ruby, command.path
 
     expect(out).to be_empty
     expect(err).to be_empty
@@ -1164,7 +1164,7 @@ __FILE__: #{path.to_s.inspect}
 
         skip "ruby_core has openssl and rubygems in the same folder, and this test needs rubygems require but default openssl not in a directly added entry in $LOAD_PATH" if ruby_core?
         # sanity check that we get the newer, custom version without bundler
-        sys_exec "#{Gem.ruby} #{file}", :env => env, :raise_on_error => false
+        sys_exec Gem.ruby, file.to_s, :env => env, :raise_on_error => false
         expect(err).to include("custom openssl should not be loaded")
       end
     end

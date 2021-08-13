@@ -390,12 +390,12 @@ RSpec.shared_examples "bundle install --standalone" do
     include_examples "common functionality"
 
     it "creates stubs that use the standalone load path" do
-      expect(sys_exec("bin/rails -v").chomp).to eql "2.3.2"
+      expect(sys_exec("bin/rails", "-v").chomp).to eql "2.3.2"
     end
 
     it "creates stubs that can be executed from anywhere" do
       require "tmpdir"
-      sys_exec(%(#{bundled_app("bin/rails")} -v), :dir => Dir.tmpdir)
+      sys_exec(bundled_app("bin/rails").to_s, "-v", :dir => Dir.tmpdir)
       expect(out).to eq("2.3.2")
     end
 
@@ -407,7 +407,7 @@ RSpec.shared_examples "bundle install --standalone" do
       symlink = File.join(symlink_dir, "rails")
 
       File.symlink(bundled_app("bin/rails"), symlink)
-      sys_exec("#{symlink} -v")
+      sys_exec(symlink, "-v")
       expect(out).to eq("2.3.2")
     end
 

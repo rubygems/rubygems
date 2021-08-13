@@ -132,13 +132,13 @@ RSpec.describe "bundle binstubs <gem>" do
       let(:system_bundler_version) { Bundler::VERSION }
 
       it "runs bundler" do
-        sys_exec "bin/bundle install", :env => { "DEBUG" => "1" }
+        sys_exec "bin/bundle", "install", :env => { "DEBUG" => "1" }
         expect(out).to include %(Using bundler #{system_bundler_version}\n)
       end
 
       context "when BUNDLER_VERSION is set" do
         it "runs the correct version of bundler" do
-          sys_exec "bin/bundle install", :env => { "BUNDLER_VERSION" => "999.999.999" }, :raise_on_error => false
+          sys_exec "bin/bundle", "install", :env => { "BUNDLER_VERSION" => "999.999.999" }, :raise_on_error => false
           expect(exitstatus).to eq(42)
           expect(err).to include("Activating bundler (999.999.999) failed:").
             and include("To install the version of bundler this project requires, run `gem install bundler -v '999.999.999'`")
@@ -147,7 +147,7 @@ RSpec.describe "bundle binstubs <gem>" do
         it "runs the correct version of bundler even if a higher version is installed" do
           system_gems "bundler-999.999.998", "bundler-999.999.999"
 
-          sys_exec "bin/bundle install", :env => { "BUNDLER_VERSION" => "999.999.998", "DEBUG" => "1" }, :raise_on_error => false
+          sys_exec "bin/bundle", "install", :env => { "BUNDLER_VERSION" => "999.999.998", "DEBUG" => "1" }, :raise_on_error => false
           expect(out).to include %(Using bundler 999.999.998\n)
         end
       end
@@ -159,7 +159,7 @@ RSpec.describe "bundle binstubs <gem>" do
           end
 
           it "runs the correct version of bundler" do
-            sys_exec "bin/bundle install", :raise_on_error => false
+            sys_exec "bin/bundle", "install", :raise_on_error => false
             expect(exitstatus).to eq(42)
             expect(err).to include("Activating bundler (~> 999.999) failed:").
               and include("To install the version of bundler this project requires, run `gem install bundler -v '~> 999.999'`")
@@ -174,7 +174,7 @@ RSpec.describe "bundle binstubs <gem>" do
           end
 
           it "runs the correct version of bundler" do
-            sys_exec "bin/bundle install", :raise_on_error => false
+            sys_exec "bin/bundle", "install", :raise_on_error => false
             expect(exitstatus).to eq(42)
             expect(err).to include("Activating bundler (~> 44.0) failed:").
               and include("To install the version of bundler this project requires, run `gem install bundler -v '~> 44.0'`")
@@ -189,7 +189,7 @@ RSpec.describe "bundle binstubs <gem>" do
           end
 
           it "runs the available version of bundler when the version is older and the same major" do
-            sys_exec "bin/bundle install"
+            sys_exec "bin/bundle", "install"
             expect(exitstatus).not_to eq(42)
             expect(err).not_to include("Activating bundler (~> 55.0) failed:")
           end
@@ -203,7 +203,7 @@ RSpec.describe "bundle binstubs <gem>" do
           end
 
           it "runs the correct version of bundler when the version is a pre-release" do
-            sys_exec "bin/bundle install", :raise_on_error => false
+            sys_exec "bin/bundle", "install", :raise_on_error => false
             expect(exitstatus).to eq(42)
             expect(err).to include("Activating bundler (~> 2.12.a) failed:").
               and include("To install the version of bundler this project requires, run `gem install bundler -v '~> 2.12.a'`")
@@ -215,12 +215,12 @@ RSpec.describe "bundle binstubs <gem>" do
         before { lockfile.gsub(system_bundler_version, "1.1.1") }
 
         it "calls through to the latest bundler version" do
-          sys_exec "bin/bundle update --bundler", :env => { "DEBUG" => "1" }
+          sys_exec "bin/bundle", "update", "--bundler", :env => { "DEBUG" => "1" }
           expect(out).to include %(Using bundler #{system_bundler_version}\n)
         end
 
         it "calls through to the explicit bundler version" do
-          sys_exec "bin/bundle update --bundler=999.999.999", :raise_on_error => false
+          sys_exec "bin/bundle", "update", "--bundler=999.999.999", :raise_on_error => false
           expect(exitstatus).to eq(42)
           expect(err).to include("Activating bundler (999.999.999) failed:").
             and include("To install the version of bundler this project requires, run `gem install bundler -v '999.999.999'`")
@@ -230,7 +230,7 @@ RSpec.describe "bundle binstubs <gem>" do
       context "without a lockfile" do
         it "falls back to the latest installed bundler" do
           FileUtils.rm bundled_app_lock
-          sys_exec "bin/bundle install", :env => { "DEBUG" => "1" }
+          sys_exec "bin/bundle", "install", :env => { "DEBUG" => "1" }
           expect(out).to include "Using bundler #{system_bundler_version}\n"
         end
       end

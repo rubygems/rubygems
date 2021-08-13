@@ -501,8 +501,8 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   it "should install when EndpointSpecification has a bin dir owned by root", :sudo => true do
-    sudo "mkdir -p #{system_gem_path("bin")}"
-    sudo "chown -R root #{system_gem_path("bin")}"
+    sudo "mkdir", "-p", system_gem_path("bin").to_s
+    sudo "chown", "-R", "root", system_gem_path("bin").to_s
 
     gemfile <<-G
       source "#{source_uri}"

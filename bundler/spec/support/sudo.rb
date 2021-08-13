@@ -6,13 +6,13 @@ module Spec
       @which_sudo ||= Bundler.which("sudo")
     end
 
-    def sudo(cmd)
+    def sudo(*cmd)
       raise "sudo not present" unless Sudo.present?
-      sys_exec("sudo #{cmd}")
+      sys_exec("sudo", *cmd)
     end
 
     def chown_system_gems_to_root
-      sudo "chown -R root #{system_gem_path}"
+      sudo "chown", "-R", "root", system_gem_path.to_s
     end
   end
 end

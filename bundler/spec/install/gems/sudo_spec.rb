@@ -10,11 +10,11 @@ RSpec.describe "when using sudo", :sudo => true do
       before do
         bundle "config set path.system true"
         subdir.mkpath
-        sudo "chmod u-w #{subdir}"
+        sudo "chmod", "u-w", subdir.to_s
       end
 
       after do
-        sudo "chmod u+w #{subdir}"
+        sudo "chmod", "u+w", subdir.to_s
       end
 
       it "installs" do
@@ -76,7 +76,7 @@ RSpec.describe "when using sudo", :sudo => true do
     it "installs when BUNDLE_PATH is owned by root" do
       bundle_path = tmp("owned_by_root")
       FileUtils.mkdir_p bundle_path
-      sudo "chown -R root #{bundle_path}"
+      sudo "chown", "-R", "root", bundle_path.to_s
 
       ENV["BUNDLE_PATH"] = bundle_path.to_s
       install_gemfile <<-G
@@ -92,7 +92,7 @@ RSpec.describe "when using sudo", :sudo => true do
     it "installs when BUNDLE_PATH does not exist" do
       root_path = tmp("owned_by_root")
       FileUtils.mkdir_p root_path
-      sudo "chown -R root #{root_path}"
+      sudo "chown", "-R", "root", root_path.to_s
       bundle_path = root_path.join("does_not_exist")
 
       ENV["BUNDLE_PATH"] = bundle_path.to_s
@@ -121,11 +121,11 @@ RSpec.describe "when using sudo", :sudo => true do
   describe "and BUNDLE_PATH is not writable" do
     before do
       bundle "config set --local path .bundle"
-      sudo "chmod ugo-w .bundle"
+      sudo "chmod", "ugo-w", ".bundle"
     end
 
     after do
-      sudo "chmod ugo+w .bundle"
+      sudo "chmod", "ugo+w", ".bundle"
     end
 
     it "installs" do
@@ -158,8 +158,8 @@ RSpec.describe "when using sudo", :sudo => true do
     it "installs" do
       bundle "config set path.system true"
       gem_home = tmp("sudo_gem_home")
-      sudo "mkdir -p #{gem_home}"
-      sudo "chmod ugo-w #{gem_home}"
+      sudo "mkdir", "-p", gem_home.to_s
+      sudo "chmod", "ugo-w", gem_home.to_s
 
       system_gems :bundler, :path => gem_home
 
@@ -172,7 +172,7 @@ RSpec.describe "when using sudo", :sudo => true do
       expect(gem_home.join("bin/rackup")).to exist
       expect(the_bundle).to include_gems "rack 1.0", :env => { "GEM_HOME" => gem_home.to_s, "GEM_PATH" => nil }
 
-      sudo "rm -rf #{tmp("sudo_gem_home")}"
+      sudo "rm", "-rf", tmp("sudo_gem_home").to_s
     end
   end
 

@@ -5,7 +5,7 @@ on:
 
   push:
     branches:
-      - master
+      - run_subprocesses_without_shell
 
 jobs:
   ruby_core:

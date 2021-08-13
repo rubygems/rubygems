@@ -489,7 +489,7 @@ module Spec
     end
 
     def revision_for(path)
-      sys_exec("git rev-parse HEAD", :dir => path).strip
+      git("rev-parse HEAD", :dir => path).strip
     end
 
     def with_read_only(pattern)

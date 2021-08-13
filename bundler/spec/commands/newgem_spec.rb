@@ -29,9 +29,9 @@ RSpec.describe "bundle gem" do
   let(:require_path) { "mygem" }
 
   before do
-    sys_exec("git config --global user.name 'Bundler User'")
-    sys_exec("git config --global user.email user@example.com")
-    sys_exec("git config --global github.user bundleuser")
+    git("config --global user.name 'Bundler User'")
+    git("config --global user.email user@example.com")
+    git("config --global github.user bundleuser")
   end
 
   describe "git repo initialization" do
@@ -100,7 +100,7 @@ RSpec.describe "bundle gem" do
     end
 
     it "generates the README with a section for the Code of Conduct, respecting the configured git default branch", :git => ">= 2.28.0" do
-      sys_exec("git config --global init.defaultBranch main")
+      git("config --global init.defaultBranch main")
       bundle "gem #{gem_name} --coc"
 
       expect(bundled_app("#{gem_name}/README.md").read).to include("## Code of Conduct")
@@ -374,7 +374,7 @@ RSpec.describe "bundle gem" do
 
     context "git config github.user is absent" do
       before do
-        sys_exec("git config --global --unset github.user")
+        git("config --global --unset github.user")
         bundle "gem #{gem_name}"
       end
 
@@ -545,8 +545,8 @@ RSpec.describe "bundle gem" do
 
     context "git config user.{name,email} is not set" do
       before do
-        sys_exec("git config --global --unset user.name")
-        sys_exec("git config --global --unset user.email")
+        git("config --global --unset user.name")
+        git("config --global --unset user.email")
         bundle "gem #{gem_name}"
       end
 
@@ -1238,7 +1238,7 @@ RSpec.describe "bundle gem" do
   context "testing --github-username option against git and bundle config settings", :readline do
     context "without git config set" do
       before do
-        sys_exec("git config --global --unset github.user")
+        git("config --global --unset github.user")
       end
       context "with github-username option in bundle config settings set to some value" do
         before do
@@ -1275,7 +1275,7 @@ RSpec.describe "bundle gem" do
   context "testing github_username bundle config against git config settings", :readline do
     context "without git config set" do
       before do
-        sys_exec("git config --global --unset github.user")
+        git("config --global --unset github.user")
       end
 
       it_behaves_like "github_username configuration"

@@ -175,8 +175,8 @@ module Spec
       sys_exec("#{Gem.ruby} -S #{ENV["GEM_PATH"]}/bin/rake #{cmd}", options)
     end
 
-    def git(cmd, path, options = {})
-      sys_exec("git #{cmd}", options.merge(:dir => path))
+    def git(cmd, options = {})
+      sys_exec("git #{cmd}", options)
     end
 
     def sys_exec(cmd, options = {})

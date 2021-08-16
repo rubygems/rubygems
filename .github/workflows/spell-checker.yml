@@ -2,6 +2,10 @@ name: 💎 Spellchecker
 
 on: [pull_request]
 
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   misspell:
     name: 🧹 Check Spelling

@@ -442,7 +442,7 @@ module Bundler
       elsif ENV["BUNDLE_USER_HOME"] && !ENV["BUNDLE_USER_HOME"].empty?
         Pathname.new(ENV["BUNDLE_USER_HOME"]).join("config")
       else
-        Pathname.new(Bundler.rubygems.user_home).join(".bundle/config")
+        Bundler.rubygems.user_home.join(".bundle/config")
       end
     end
 

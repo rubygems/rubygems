@@ -135,7 +135,7 @@ module Bundler
     end
 
     def user_home
-      Gem.user_home
+      Pathname.new(Gem.user_home)
     end
 
     def gem_path

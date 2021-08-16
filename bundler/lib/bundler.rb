@@ -227,11 +227,11 @@ module Bundler
     def user_home
       @user_home ||= begin
         home = Bundler.rubygems.user_home
-        bundle_home = File.join(home, ".bundle")
+        bundle_home = home.join(".bundle")
 
-        warning = if !File.directory?(home)
+        warning = if !home.directory?
           "`#{home}` is not a directory."
-        elsif !File.writable?(home) && (!File.directory?(bundle_home) || !File.writable?(bundle_home))
+        elsif !home.writable? && (!bundle_home.directory? || !bundle_home.writable?)
           "`#{home}` is not writable."
         end
 
@@ -241,7 +241,7 @@ module Bundler
           Bundler.ui.warn "Bundler will use `#{user_home}' as your home directory temporarily.\n"
           user_home
         else
-          Pathname.new(home)
+          home
         end
       end
     end

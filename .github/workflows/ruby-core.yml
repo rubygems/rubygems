@@ -8,7 +8,7 @@ on:
       - master
 
 concurrency:
-  group: ${{ github.head_ref }}
+  group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
 jobs:

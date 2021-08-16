@@ -256,16 +256,6 @@ EOF
         end
       end
     end
-
-    context "home directory is not set" do
-      it "should issue warning and return a temporary user home" do
-        allow(Bundler.rubygems).to receive(:user_home).and_return(nil)
-        allow(Bundler).to receive(:tmp).and_return(Pathname.new("/tmp/trulyrandom"))
-        expect(Bundler.ui).to receive(:warn).with("Your home directory is not set.\n")
-        expect(Bundler.ui).to receive(:warn).with("Bundler will use `/tmp/trulyrandom' as your home directory temporarily.\n")
-        expect(Bundler.user_home).to eq(Pathname("/tmp/trulyrandom"))
-      end
-    end
   end
 
   describe "#requires_sudo?" do

@@ -65,9 +65,9 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
   describe "#global_config_file" do
     context "when $HOME is not accessible" do
       it "does not raise" do
-        expect(Bundler.rubygems).to receive(:user_home).twice.and_return(nil)
+        expect(Bundler.rubygems).to receive(:user_home).twice.and_return(Pathname.new("/"))
 
-        expect(subject.send(:global_config_file)).to be_nil
+        expect(subject.send(:global_config_file)).to eq(Pathname.new("/.bundle/config"))
       end
     end
   end

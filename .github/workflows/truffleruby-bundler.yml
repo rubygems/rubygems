@@ -8,6 +8,10 @@ on:
       - master
       - 3.2
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   jruby_bundler:
     name: Bundler (Truffleruby)

@@ -8,6 +8,10 @@ on:
       - master
       - 3.2
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   legacy_git:
     name: Verify behavior under old git

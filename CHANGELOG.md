@@ -1,3 +1,18 @@
+# 3.2.26 / 2021-08-17
+
+## Enhancements:
+
+* Enhance the error handling for loading the
+  `rubygems/defaults/operating_system` file. Pull request #4824 by
+  intuxicated
+* Ignore `RUBYGEMS_GEMDEPS` for the bundler gem. Pull request #4532 by
+  deivid-rodriguez
+
+## Bug fixes:
+
+* Also load user installed rubygems plugins. Pull request #4829 by
+  deivid-rodriguez
+
 # 3.2.25 / 2021-07-30
 
 ## Enhancements:

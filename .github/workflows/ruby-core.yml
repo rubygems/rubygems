@@ -7,6 +7,10 @@ on:
     branches:
       - master
 
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   ruby_core:
     name: ${{matrix.target}} under a ruby-core setup

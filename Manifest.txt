@@ -681,6 +681,7 @@ test/rubygems/test_gem_text.rb
 test/rubygems/test_gem_uninstaller.rb
 test/rubygems/test_gem_unsatisfiable_dependency_error.rb
 test/rubygems/test_gem_uri_formatter.rb
+test/rubygems/test_gem_uri_parser.rb
 test/rubygems/test_gem_util.rb
 test/rubygems/test_gem_validator.rb
 test/rubygems/test_gem_version.rb

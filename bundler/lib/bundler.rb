@@ -657,7 +657,6 @@ EOF
     def configure_gem_home_and_path
       configure_gem_path
       configure_gem_home
-      bundle_path
     end
 
     def configure_gem_path(env = ENV)

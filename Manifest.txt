@@ -398,6 +398,7 @@ lib/rubygems/package/tar_writer.rb
 lib/rubygems/package_task.rb
 lib/rubygems/path_support.rb
 lib/rubygems/platform.rb
+lib/rubygems/printable_uri.rb
 lib/rubygems/psych_additions.rb
 lib/rubygems/psych_tree.rb
 lib/rubygems/query_utils.rb
@@ -626,6 +627,7 @@ test/rubygems/test_gem_package_tar_writer.rb
 test/rubygems/test_gem_package_task.rb
 test/rubygems/test_gem_path_support.rb
 test/rubygems/test_gem_platform.rb
+test/rubygems/test_gem_printable_uri.rb
 test/rubygems/test_gem_rdoc.rb
 test/rubygems/test_gem_remote_fetcher.rb
 test/rubygems/test_gem_request.rb

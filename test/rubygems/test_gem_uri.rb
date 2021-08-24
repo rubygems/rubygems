@@ -6,10 +6,6 @@ class TestUri < Gem::TestCase
     assert_equal "not_a_uri", Gem::Uri.new(:not_a_uri).to_s
   end
 
-  def test_to_s_invalid_uri
-    assert_equal "https://www.example.com:80index", Gem::Uri.new("https://www.example.com:80index").to_s
-  end
-
   def test_redacted_with_user_pass
     assert_equal "https://user:REDACTED@example.com", Gem::Uri.new("https://user:pass@example.com").redacted.to_s
   end
@@ -24,9 +20,5 @@ class TestUri < Gem::TestCase
 
   def test_redacted_without_credential
     assert_equal "https://www.example.com", Gem::Uri.new("https://www.example.com").redacted.to_s
-  end
-
-  def test_redacted_with_invalid_uri
-    assert_equal "https://www.example.com:80index", Gem::Uri.new("https://www.example.com:80index").redacted.to_s
   end
 end

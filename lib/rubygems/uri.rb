@@ -10,8 +10,6 @@ class Gem::Uri
   end
 
   def redacted
-    return self unless valid_uri?
-
     if token?
       clone.tap(&:redact_user!)
     elsif oauth_basic?
@@ -28,7 +26,7 @@ class Gem::Uri
   end
 
   def redact_credentials_from(text)
-    return text unless valid_uri? && password?
+    return text unless password?
 
     text.sub(password, 'REDACTED')
   end
@@ -47,13 +45,10 @@ class Gem::Uri
 
   private
 
-  ##
-  # Parses the #uri, raising if it's invalid
+  def parse(uri)
+    return uri unless uri.is_a?(String)
 
-  def parse!(uri)
     require "uri"
-
-    raise URI::InvalidURIError unless uri
 
     # Always escape URI's to deal with potential spaces and such
     # It should also be considered that source_uri may already be
@@ -67,27 +62,12 @@ class Gem::Uri
     end
   end
 
-  ##
-  # Parses the #uri, returning the original uri if it's invalid
-
-  def parse(uri)
-    return uri unless uri.is_a?(String)
-
-    parse!(uri)
-  rescue URI::InvalidURIError
-    uri
-  end
-
   def redact_user!
     self.user = 'REDACTED'
   end
 
   def redact_password!
     self.password = 'REDACTED'
-  end
-
-  def valid_uri?
-    !@parsed_uri.is_a?(String)
   end
 
   def password?

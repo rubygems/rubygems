@@ -398,7 +398,6 @@ lib/rubygems/package/tar_writer.rb
 lib/rubygems/package_task.rb
 lib/rubygems/path_support.rb
 lib/rubygems/platform.rb
-lib/rubygems/printable_uri.rb
 lib/rubygems/psych_additions.rb
 lib/rubygems/psych_tree.rb
 lib/rubygems/query_utils.rb
@@ -489,8 +488,8 @@ lib/rubygems/stub_specification.rb
 lib/rubygems/text.rb
 lib/rubygems/uninstaller.rb
 lib/rubygems/unknown_command_spell_checker.rb
+lib/rubygems/uri.rb
 lib/rubygems/uri_formatter.rb
-lib/rubygems/uri_parser.rb
 lib/rubygems/user_interaction.rb
 lib/rubygems/util.rb
 lib/rubygems/util/licenses.rb
@@ -627,7 +626,6 @@ test/rubygems/test_gem_package_tar_writer.rb
 test/rubygems/test_gem_package_task.rb
 test/rubygems/test_gem_path_support.rb
 test/rubygems/test_gem_platform.rb
-test/rubygems/test_gem_printable_uri.rb
 test/rubygems/test_gem_rdoc.rb
 test/rubygems/test_gem_remote_fetcher.rb
 test/rubygems/test_gem_request.rb
@@ -682,8 +680,8 @@ test/rubygems/test_gem_stub_specification.rb
 test/rubygems/test_gem_text.rb
 test/rubygems/test_gem_uninstaller.rb
 test/rubygems/test_gem_unsatisfiable_dependency_error.rb
+test/rubygems/test_gem_uri.rb
 test/rubygems/test_gem_uri_formatter.rb
-test/rubygems/test_gem_uri_parser.rb
 test/rubygems/test_gem_util.rb
 test/rubygems/test_gem_validator.rb
 test/rubygems/test_gem_version.rb

@@ -263,10 +263,15 @@ class Gem::Resolver
   def requirement_satisfied_by?(requirement, activated, spec)
     matches_spec = requirement.matches_spec? spec
     return matches_spec if @soft_missing
-
+  
+    rubygems_v = spec.spec.required_rubygems_version
+    if rubygems_v.nil?
+      rubygems_v = Gem::Requirement.new(">= 0.0.0")
+    end
+  
     matches_spec &&
       spec.spec.required_ruby_version.satisfied_by?(Gem.ruby_version) &&
-      spec.spec.required_rubygems_version.satisfied_by?(Gem.rubygems_version)
+      rubygems_v.satisfied_by?(Gem.rubygems_version)
   end
 
   def name_for(dependency)

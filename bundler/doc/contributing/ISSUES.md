@@ -8,7 +8,7 @@ Before filing an issue, check our [troubleshooting guide](../TROUBLESHOOTING.md)
 
 Instructions for common Bundler uses can be found on the [Bundler documentation site](https://bundler.io/).
 
-Detailed information about each Bundler command, including help with common problems, can be found in the [Bundler man pages](https://bundler.io/man/bundle.1.html) or [Bundler Command Line Reference](https://bundler.io/v1.11/commands.html).
+Detailed information about each Bundler command, including help with common problems, can be found in the [Bundler man pages](https://bundler.io/man/bundle.1.html) or [Bundler Command Line Reference](https://bundler.io/commands.html).
 
 ## Reporting unresolved problems
 

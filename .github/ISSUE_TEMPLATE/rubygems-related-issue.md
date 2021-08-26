@@ -28,7 +28,7 @@ This issue is related to:
 Here are my current environment details:
 
 ```
-$ gem env version
+$ gem env
 PASTE HERE
 ```
 

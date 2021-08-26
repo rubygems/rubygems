@@ -4,11 +4,19 @@ So! You're having problems with Bundler. This file is here to help. If you're ru
 
 Before filing an issue, check our [troubleshooting guide](../TROUBLESHOOTING.md) for quick fixes to common issues.
 
+Also, make sure you're using the latest version of both `bundler` and
+`rubygems`. Running `gem update --system` should get both installed on your
+system, and then `bundle update --bundler` should change your lockfile to use
+the new version of bundler that was just installed.
+
+It's likely that your issue has been fixed in recent versions, so just upgrading
+might do the trick, and will also save us some time :)
+
 ## Documentation
 
 Instructions for common Bundler uses can be found on the [Bundler documentation site](https://bundler.io/).
 
-Detailed information about each Bundler command, including help with common problems, can be found in the [Bundler man pages](https://bundler.io/man/bundle.1.html) or [Bundler Command Line Reference](https://bundler.io/v1.11/commands.html).
+Detailed information about each Bundler command, including help with common problems, can be found in the [Bundler man pages](https://bundler.io/man/bundle.1.html) or [Bundler Command Line Reference](https://bundler.io/commands.html).
 
 ## Reporting unresolved problems
 

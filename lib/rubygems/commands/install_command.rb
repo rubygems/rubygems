@@ -257,7 +257,8 @@ You can use `i` command instead of `install`.
     errors.each do |x|
       return unless Gem::SourceFetchProblem === x
 
-      msg = "Unable to pull data from '#{x.source.uri}': #{x.error.message}"
+      require_relative "../uri"
+      msg = "Unable to pull data from '#{Gem::Uri.new(x.source.uri).redacted}': #{x.error.message}"
 
       alert_warning msg
     end

@@ -485,8 +485,8 @@ lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/text.rb
 lib/rubygems/uninstaller.rb
+lib/rubygems/uri.rb
 lib/rubygems/uri_formatter.rb
-lib/rubygems/uri_parser.rb
 lib/rubygems/user_interaction.rb
 lib/rubygems/util.rb
 lib/rubygems/util/licenses.rb
@@ -677,6 +677,7 @@ test/rubygems/test_gem_stub_specification.rb
 test/rubygems/test_gem_text.rb
 test/rubygems/test_gem_uninstaller.rb
 test/rubygems/test_gem_unsatisfiable_dependency_error.rb
+test/rubygems/test_gem_uri.rb
 test/rubygems/test_gem_uri_formatter.rb
 test/rubygems/test_gem_util.rb
 test/rubygems/test_gem_validator.rb

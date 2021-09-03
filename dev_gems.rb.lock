@@ -82,6 +82,7 @@ GEM
     test-unit (3.4.1)
       power_assert
     unicode-display_width (1.6.1)
+    uri (0.10.1)
     webrick (1.7.0)
 
 PLATFORMS
@@ -107,7 +108,8 @@ DEPENDENCIES
   rubocop-performance (~> 1.5.2)
   simplecov (~> 0.17.0)
   test-unit (~> 3.0)
+  uri (~> 0.10.1)
   webrick (~> 1.6)
 
 BUNDLED WITH
-   2.2.26
+   2.2.27

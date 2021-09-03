@@ -1,4 +1,4 @@
-# 2.2.27 (September 2, 2021)
+# 2.2.27 (September 3, 2021)
 
 ## Enhancements:
 
@@ -9,6 +9,7 @@
 
   - Add missing key `branches:` to template for GitHub Actions [#4883](https://github.com/rubygems/rubygems/pull/4883)
   - Fix `bundle plugin install` detection of already installed plugins [#4869](https://github.com/rubygems/rubygems/pull/4869)
+  - Make plugin installation idempotent [#4864](https://github.com/rubygems/rubygems/pull/4864)
   - Fix `bundle check` showing duplicated gems when multiple platforms are locked [#4854](https://github.com/rubygems/rubygems/pull/4854)
   - Fix `bundle check` incorrectly considering cached gems [#4853](https://github.com/rubygems/rubygems/pull/4853)
 

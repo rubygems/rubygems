@@ -228,10 +228,10 @@ G
         DEPENDENCIES
 
         RUBY VERSION
-           ruby 1.0.0p127
+          ruby 1.0.0p127
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
 
       bundle "platform --ruby"

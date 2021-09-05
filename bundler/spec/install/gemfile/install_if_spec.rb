@@ -38,7 +38,7 @@ RSpec.describe "bundle install with install_if conditionals" do
         thin
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     L
   end
 end

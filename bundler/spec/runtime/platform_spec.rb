@@ -93,7 +93,7 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
         nokogiri (~> 1.11)
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     L
 
     gemfile <<-G
@@ -136,7 +136,7 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
         nokogiri
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     L
 
     bundle "install", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }

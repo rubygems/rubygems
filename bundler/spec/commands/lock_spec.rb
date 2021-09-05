@@ -51,7 +51,7 @@ RSpec.describe "bundle lock" do
         weakling
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     L
   end
 
@@ -107,7 +107,7 @@ RSpec.describe "bundle lock" do
         foo
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     L
     bundle "lock --gemfile CustomGemfile"
 
@@ -334,7 +334,7 @@ RSpec.describe "bundle lock" do
         mixlib-shellout
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     G
 
     simulate_platform(rb) { bundle :lock }
@@ -362,7 +362,7 @@ RSpec.describe "bundle lock" do
         mixlib-shellout
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     G
   end
 
@@ -399,7 +399,7 @@ RSpec.describe "bundle lock" do
         libv8
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     G
 
     simulate_platform(Gem::Platform.new("x86_64-darwin-19")) { bundle "lock --update" }
@@ -440,7 +440,7 @@ RSpec.describe "bundle lock" do
         libv8
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     G
   end
 
@@ -475,7 +475,7 @@ RSpec.describe "bundle lock" do
         libv8
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     G
 
     previous_lockfile = lockfile
@@ -530,7 +530,7 @@ RSpec.describe "bundle lock" do
         raygun-apm
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     L
 
     bundle "lock --add-platform x86_64-linux", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }

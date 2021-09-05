@@ -291,7 +291,7 @@ RSpec.describe "bundle update" do
           country_select
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
 
       previous_lockfile = lockfile
@@ -690,7 +690,7 @@ RSpec.describe "bundle update" do
           vcr!
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
 
@@ -1184,7 +1184,7 @@ RSpec.describe "bundle update conservative" do
           shared_owner_b
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
 
@@ -1237,7 +1237,7 @@ RSpec.describe "bundle update conservative" do
           shared_owner_b
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
 

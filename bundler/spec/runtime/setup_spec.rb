@@ -1189,7 +1189,7 @@ end
       lock += <<-L
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
 
       lock

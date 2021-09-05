@@ -44,7 +44,7 @@ RSpec.describe "bundle install with specific platforms" do
           google-protobuf
 
         BUNDLED WITH
-           2.1.4
+          2.1.4
       L
 
       # force strict usage of the lock file by setting frozen mode
@@ -78,7 +78,7 @@ RSpec.describe "bundle install with specific platforms" do
           google-protobuf
 
         BUNDLED WITH
-           2.1.4
+          2.1.4
       L
 
       bundle "update", :env => { "BUNDLER_VERSION" => Bundler::VERSION }
@@ -100,7 +100,7 @@ RSpec.describe "bundle install with specific platforms" do
           google-protobuf
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
 
@@ -138,7 +138,7 @@ RSpec.describe "bundle install with specific platforms" do
           libv8
 
         BUNDLED WITH
-           2.1.4
+          2.1.4
       L
 
       bundle "install --verbose", :artifice => "compact_index", :env => { "BUNDLER_VERSION" => "2.1.4", "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
@@ -196,7 +196,7 @@ RSpec.describe "bundle install with specific platforms" do
           pg_array_parser!
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
 
       bundle "config set --local cache_all true"
@@ -276,7 +276,7 @@ RSpec.describe "bundle install with specific platforms" do
         sorbet-static (= 0.5.6403)
 
       BUNDLED WITH
-         #{Bundler::VERSION}
+        #{Bundler::VERSION}
     L
 
     bundle "install --verbose"

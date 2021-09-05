@@ -357,7 +357,7 @@ RSpec.describe "bundle check" do
           rack
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
 
@@ -426,7 +426,7 @@ RSpec.describe "bundle check" do
           depends_on_rack!
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
   end

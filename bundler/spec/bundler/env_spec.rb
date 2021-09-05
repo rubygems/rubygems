@@ -86,7 +86,7 @@ RSpec.describe Bundler::Env do
             rack
 
           BUNDLED WITH
-             1.10.0
+            1.10.0
         L
 
         allow(Bundler::SharedHelpers).to receive(:find_gemfile).and_return(bundled_app_gemfile)

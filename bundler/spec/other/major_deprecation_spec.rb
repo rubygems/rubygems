@@ -479,7 +479,7 @@ RSpec.describe "major deprecations" do
           rack!
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
 
       bundle "config set --local frozen true"

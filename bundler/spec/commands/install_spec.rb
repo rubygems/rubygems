@@ -744,7 +744,7 @@ RSpec.describe "bundle install with gem sources" do
           libv8
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
 
       bundle "config set --local deployment true"

@@ -23,10 +23,10 @@ RSpec.describe Bundler::LockfileParser do
       rake
 
     RUBY VERSION
-       ruby 2.1.3p242
+      ruby 2.1.3p242
 
     BUNDLED WITH
-       1.12.0.rc.2
+      1.12.0.rc.2
   L
 
   describe ".sections_in_lockfile" do

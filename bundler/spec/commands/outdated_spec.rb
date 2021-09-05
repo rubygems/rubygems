@@ -200,7 +200,7 @@ RSpec.describe "bundle outdated" do
           vcr!
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
 
@@ -1272,7 +1272,7 @@ RSpec.describe "bundle outdated" do
           nokogiri
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
 
       gemfile <<-G
@@ -1326,7 +1326,7 @@ RSpec.describe "bundle outdated" do
           mini_portile2
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
 

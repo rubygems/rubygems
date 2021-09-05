@@ -88,7 +88,7 @@ RSpec.describe "real source plugins" do
           a-path-gem!
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       G
     end
 
@@ -176,7 +176,7 @@ RSpec.describe "real source plugins" do
             a-path-gem!
 
           BUNDLED WITH
-             #{Bundler::VERSION}
+            #{Bundler::VERSION}
         G
       end
 
@@ -361,7 +361,7 @@ RSpec.describe "real source plugins" do
           ma-gitp-gem!
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       G
     end
 
@@ -387,7 +387,7 @@ RSpec.describe "real source plugins" do
             ma-gitp-gem!
 
           BUNDLED WITH
-             #{Bundler::VERSION}
+            #{Bundler::VERSION}
         G
       end
 

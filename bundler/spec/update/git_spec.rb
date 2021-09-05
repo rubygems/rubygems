@@ -325,7 +325,7 @@ RSpec.describe "bundle update" do
           rack
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       G
     end
 
@@ -361,7 +361,7 @@ RSpec.describe "bundle update" do
           rack
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       G
     end
   end

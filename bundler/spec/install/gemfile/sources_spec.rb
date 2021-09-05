@@ -268,7 +268,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
               depends_on_rack!
 
             BUNDLED WITH
-               #{Bundler::VERSION}
+              #{Bundler::VERSION}
           L
 
           previous_lockfile = lockfile
@@ -633,7 +633,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
             sidekiq-pro!
 
           BUNDLED WITH
-             #{Bundler::VERSION}
+            #{Bundler::VERSION}
         L
       end
 
@@ -689,7 +689,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
             sidekiq-pro!
 
           BUNDLED WITH
-             #{Bundler::VERSION}
+            #{Bundler::VERSION}
         L
       end
 
@@ -773,7 +773,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
             sidekiq-pro!
 
           BUNDLED WITH
-             #{Bundler::VERSION}
+            #{Bundler::VERSION}
         L
       end
 
@@ -829,7 +829,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
             sidekiq-pro!
 
           BUNDLED WITH
-             #{Bundler::VERSION}
+            #{Bundler::VERSION}
         L
       end
     end
@@ -917,7 +917,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
             nokogiri
 
           BUNDLED WITH
-             #{Bundler::VERSION}
+            #{Bundler::VERSION}
         L
 
         bundle "install --verbose", :artifice => "compact_index"
@@ -1006,7 +1006,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
             rack!
 
           BUNDLED WITH
-             #{Bundler::VERSION}
+            #{Bundler::VERSION}
         L
       end
 
@@ -1028,7 +1028,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
             rack!
 
           BUNDLED WITH
-             #{Bundler::VERSION}
+            #{Bundler::VERSION}
         L
       end
 
@@ -1439,7 +1439,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
           mime-types (~> 3.0)!
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
   end

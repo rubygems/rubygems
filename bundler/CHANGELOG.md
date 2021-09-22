@@ -1,3 +1,10 @@
+# 2.2.28 (September 22, 2021)
+
+## Enhancements:
+
+  - Use example.com in new gem template, since it will never have a potentially dangerous backing website [#4918](https://github.com/rubygems/rubygems/pull/4918)
+  - Deprecate `--install` flag to `bundle remove` and trigger install by default [#4891](https://github.com/rubygems/rubygems/pull/4891)
+
 # 2.2.27 (September 3, 2021)
 
 ## Enhancements:

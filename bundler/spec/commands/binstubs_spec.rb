@@ -170,7 +170,7 @@ RSpec.describe "bundle binstubs <gem>" do
           let(:system_bundler_version) { "55" }
 
           before do
-            lockfile lockfile.gsub(/BUNDLED WITH\n   .*$/m, "BUNDLED WITH\n   44.0")
+            lockfile lockfile.gsub(/BUNDLED WITH\n  .*$/m, "BUNDLED WITH\n  44.0")
           end
 
           it "runs the correct version of bundler" do
@@ -185,7 +185,7 @@ RSpec.describe "bundle binstubs <gem>" do
           let(:system_bundler_version) { "55.1" }
 
           before do
-            lockfile lockfile.gsub(/BUNDLED WITH\n   .*$/m, "BUNDLED WITH\n   55.0")
+            lockfile lockfile.gsub(/BUNDLED WITH\n  .*$/m, "BUNDLED WITH\n  55.0")
           end
 
           it "runs the available version of bundler when the version is older and the same major" do
@@ -199,7 +199,7 @@ RSpec.describe "bundle binstubs <gem>" do
           let(:system_bundler_version) { "55" }
 
           before do
-            lockfile lockfile.gsub(/BUNDLED WITH\n   .*$/m, "BUNDLED WITH\n   2.12.0.a")
+            lockfile lockfile.gsub(/BUNDLED WITH\n  .*$/m, "BUNDLED WITH\n  2.12.0.a")
           end
 
           it "runs the correct version of bundler when the version is a pre-release" do

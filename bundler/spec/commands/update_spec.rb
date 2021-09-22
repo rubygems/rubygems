@@ -950,7 +950,7 @@ RSpec.describe "bundle update --ruby" do
        DEPENDENCIES
 
        BUNDLED WITH
-          #{Bundler::VERSION}
+         #{Bundler::VERSION}
       L
     end
   end
@@ -981,7 +981,7 @@ RSpec.describe "bundle update --ruby" do
           ruby 2.1.4p222
 
        BUNDLED WITH
-          #{Bundler::VERSION}
+         #{Bundler::VERSION}
       L
     end
   end
@@ -1028,7 +1028,7 @@ RSpec.describe "bundle update --ruby" do
           ruby 1.8.3p55
 
        BUNDLED WITH
-          #{Bundler::VERSION}
+         #{Bundler::VERSION}
       L
     end
   end

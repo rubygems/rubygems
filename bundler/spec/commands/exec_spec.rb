@@ -102,7 +102,7 @@ RSpec.describe "bundle exec" do
         rack (= 0.9.1)
 
       BUNDLED WITH
-          2.1.4
+        2.1.4
     L
 
     bundle "exec bundle cache", :env => { "BUNDLER_VERSION" => Bundler::VERSION }

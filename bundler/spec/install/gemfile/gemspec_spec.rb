@@ -494,7 +494,7 @@ RSpec.describe "bundle install from an existing gemspec" do
                 platform_specific
 
               BUNDLED WITH
-                 #{Bundler::VERSION}
+                #{Bundler::VERSION}
             L
           end
         end

@@ -447,7 +447,7 @@ RSpec.describe "bundle check" do
       L
 
       if bundler_version
-        lock += "\n        BUNDLED WITH\n           #{bundler_version}\n"
+        lock += "\n        BUNDLED WITH\n          #{bundler_version}\n"
       end
 
       lock

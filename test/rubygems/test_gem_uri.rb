@@ -36,4 +36,9 @@ class TestUri < Gem::TestCase
     assert_equal 'https://user:REDACTED@example.com', uri.redacted.to_s
     assert_equal url, uri.to_s
   end
+
+  def test_no_nested_instances
+    uri = Gem::Uri.new(Gem::Uri.new("https://www.example.com"))
+    assert uri.instance_variable_get(:@parsed_uri).is_a?(URI)
+  end
 end

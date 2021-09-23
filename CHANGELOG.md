@@ -1,3 +1,18 @@
+# 3.2.28 / 2021-09-22
+
+## Enhancements:
+
+* Support MINGW-UCRT. Pull request #4925 by hsbt
+* Only check if descriptions *start with* FIXME/TODO. Pull request #4841
+  by duckinator
+* Avoid loading `uri` unnecessarily when activating gems. Pull request
+  #4897 by deivid-rodriguez
+
+## Bug fixes:
+
+* Fix redacted credentials being sent to gemserver. Pull request #4919 by
+  jdliss
+
 # 3.2.27 / 2021-09-03
 
 ## Enhancements:

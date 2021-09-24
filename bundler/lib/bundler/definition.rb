@@ -670,9 +670,7 @@ module Bundler
       end
 
       changes = false
-      # We want to know if all match, but don't want to check all entries
-      # This means we need to return false if any dependency doesn't match
-      # the lock or doesn't exist in the lock.
+
       @dependencies.each do |dependency|
         unless locked_dep = @locked_deps[dependency.name]
           changes = true

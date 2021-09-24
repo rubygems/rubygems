@@ -711,7 +711,7 @@ module Bundler
         # If the locked_dep doesn't match the dependency we're looking for then we ignore the locked_dep
         locked_dep = nil unless locked_dep == dep
 
-        if in_locked_deps?(dep, locked_dep) || satisfies_locked_spec?(dep)
+        if satisfies_locked_spec?(dep)
           deps << dep
         elsif dep.source.is_a?(Source::Path) && dep.current_platform? && (!locked_dep || dep.source != locked_dep.source)
           @locked_specs.each do |s|
@@ -778,13 +778,6 @@ module Bundler
       end
 
       resolve
-    end
-
-    def in_locked_deps?(dep, locked_dep)
-      # Because the lockfile can't link a dep to a specific remote, we need to
-      # treat sources as equivalent anytime the locked dep has all the remotes
-      # that the Gemfile dep does.
-      locked_dep && locked_dep.source && dep.source && locked_dep.source.include?(dep.source)
     end
 
     def satisfies_locked_spec?(dep)

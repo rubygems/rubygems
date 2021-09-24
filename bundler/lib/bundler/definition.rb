@@ -671,8 +671,8 @@ module Bundler
 
       changes = false
 
-      @dependencies.each do |dependency|
-        unless locked_dep = @locked_deps[dependency.name]
+      @dependencies.each do |dep|
+        unless locked_dep = @locked_deps[dep.name]
           changes = true
           next
         end
@@ -683,11 +683,11 @@ module Bundler
         # directive, the lockfile dependencies and resolved dependencies end up
         # with a mismatch on #type. Work around that by setting the type on the
         # dep from the lockfile.
-        locked_dep.instance_variable_set(:@type, dependency.type)
+        locked_dep.instance_variable_set(:@type, dep.type)
 
         # We already know the name matches from the hash lookup
         # so we only need to check the requirement now
-        changes ||= dependency.requirement != locked_dep.requirement
+        changes ||= dep.requirement != locked_dep.requirement
       end
 
       changes

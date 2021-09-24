@@ -708,12 +708,9 @@ module Bundler
       @dependencies.each do |dep|
         locked_dep = @locked_deps[dep.name]
 
-        # If the locked_dep doesn't match the dependency we're looking for then we ignore the locked_dep
-        locked_dep = nil unless locked_dep == dep
-
         if satisfies_locked_spec?(dep)
           deps << dep
-        elsif dep.source.is_a?(Source::Path) && dep.current_platform? && (!locked_dep || dep.source != locked_dep.source)
+        elsif dep.source.is_a?(Source::Path) && dep.current_platform? && (dep != locked_dep || dep.source != locked_dep.source)
           @locked_specs.each do |s|
             @unlock[:gems] << s.name if s.source == dep.source
           end

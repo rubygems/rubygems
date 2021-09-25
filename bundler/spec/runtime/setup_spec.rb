@@ -1183,7 +1183,7 @@ end
       L
 
       if ruby_version
-        lock += "\n        RUBY VERSION\n           ruby #{ruby_version}\n"
+        lock += "\n        RUBY VERSION\n          ruby #{ruby_version}\n"
       end
 
       lock += <<-L

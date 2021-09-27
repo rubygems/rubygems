@@ -706,17 +706,8 @@ module Bundler
       # the gem in the Gemfile.lock still satisfies it, this is fine
       # too.
       @dependencies.each do |dep|
-        locked_dep = @locked_deps[dep.name]
-
         if satisfies_locked_spec?(dep)
           deps << dep
-        elsif dep.source.is_a?(Source::Path) && dep.current_platform? && (dep != locked_dep || dep.source != locked_dep.source)
-          @locked_specs.each do |s|
-            @unlock[:gems] << s.name if s.source == dep.source
-          end
-
-          dep.source.unlock! if dep.source.respond_to?(:unlock!)
-          dep.source.specs.each {|s| @unlock[:gems] << s.name }
         end
       end
 

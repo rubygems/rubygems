@@ -53,8 +53,8 @@ module Bundler
         @dependencies ||= all_dependencies.reject {|dep| ignorable_dependency? dep }
       end
 
-      def missing_lockfile_dependencies(all_spec_names)
-        dependencies.reject {|dep| all_spec_names.include? dep.name }
+      def depends_on?(name)
+        dependencies.any? {|dep| dep.name == name }
       end
 
       # Represents all dependencies
@@ -129,13 +129,8 @@ module Bundler
     end
 
     def check_for_corrupt_lockfile
-      missing_dependencies = @specs.map do |s|
-        [
-          s,
-          s.missing_lockfile_dependencies(@specs.map(&:name)),
-        ]
-      end.reject {|a| a.last.empty? }
-      return if missing_dependencies.empty?
+      missing_dep_names = @specs.map{|s| s.dependencies.map(&:name) }.flatten.uniq - @specs.map(&:name)
+      return if missing_dep_names.empty?
 
       warning = []
       warning << "Your lockfile was created by an old Bundler that left some things out."
@@ -146,8 +141,8 @@ module Bundler
       warning << "You can fix this by adding the missing gems to your Gemfile, running bundle install, and then removing the gems from your Gemfile."
       warning << "The missing gems are:"
 
-      missing_dependencies.each do |spec, missing|
-        warning << "* #{missing.map(&:name).join(", ")} depended upon by #{spec.name}"
+      missing_dep_names.each do |name|
+        warning << "* #{name} depended upon by #{@specs.select {|s| s.depends_on?(name) }.map(&:name).join(", ")}"
       end
 
       Bundler.ui.warn(warning.join("\n"))

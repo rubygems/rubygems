@@ -45,6 +45,25 @@ The missing gems are:
     end
   end
 
+  context "when missing spec is a dependency on several gems" do
+    let(:all_specs) do
+      [
+        build_spec("alpha", "1.0") {|s| s.runtime "a", "1" },
+        build_spec("beta", "1.0") {|s| s.runtime "a", "1" },
+      ].flatten
+    end
+
+    it "sumarizes warning in a single line" do
+      expect(Bundler.ui).to receive(:warn).with(<<-W.strip)
+Your lockfile was created by an old Bundler that left some things out.
+You can fix this by adding the missing gems to your Gemfile, running bundle install, and then removing the gems from your Gemfile.
+The missing gems are:
+* a depended upon by alpha, beta
+      W
+      subject.check_for_corrupt_lockfile
+    end
+  end
+
   context "when the spec set is not a valid resolution" do
     let(:all_specs) do
       [

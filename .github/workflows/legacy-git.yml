@@ -1,11 +1,11 @@
-name: legacy-git
+name: legacy-git 
 
 on:
   pull_request:
 
   push:
     branches:
-      - master
+      - master 
       - 3.2
 
 concurrency:

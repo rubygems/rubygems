@@ -656,15 +656,8 @@ module Bundler
     end
 
     def converge_dependencies
-      frozen = Bundler.frozen_bundle?
       (@dependencies + locked_dependencies).each do |dep|
-        locked_source = @locked_deps[dep.name]
-        # This is to make sure that if bundler is installing in deployment mode and
-        # after locked_source and sources don't match, we still use locked_source.
-        if frozen && !locked_source.nil? &&
-            locked_source.respond_to?(:source) && locked_source.source.instance_of?(Source::Path) && locked_source.source.path.exist?
-          dep.source = locked_source.source
-        elsif dep.source
+        if dep.source
           dep.source = sources.get(dep.source)
         end
       end

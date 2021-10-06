@@ -1,4 +1,4 @@
-name: macos_rubygems
+name: macos-rubygems
 
 on:
   pull_request:

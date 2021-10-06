@@ -541,6 +541,7 @@ test/rubygems/plugin/exception/rubygems_plugin.rb
 test/rubygems/plugin/load/rubygems_plugin.rb
 test/rubygems/plugin/standarderror/rubygems_plugin.rb
 test/rubygems/private3072_key.pem
+test/rubygems/private_ec_key.pem
 test/rubygems/private_key.pem
 test/rubygems/public3072_cert.pem
 test/rubygems/public_cert.pem

@@ -1,3 +1,20 @@
+# 3.2.29 / 2021-10-08
+
+## Enhancements:
+
+* Only disallow FIXME/TODO for first word of gemspec description. Pull
+  request #4937 by duckinator
+
+## Bug fixes:
+
+* Fix `wordy` method in `SourceFetchProblem` changing the password of
+  source. Pull request #4910 by Huangxiaodui
+
+## Performance:
+
+* Improve `require` performance, particularly on systems with a lot of
+  gems installed. Pull request #4951 by pocke
+
 # 3.2.28 / 2021-09-23
 
 ## Enhancements:

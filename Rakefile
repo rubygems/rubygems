@@ -21,6 +21,7 @@ task :update_locked_bundler do |_, args|
   sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
   sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
+  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop24_gems.rb"
 end
 
 desc "Setup git hooks"
@@ -171,7 +172,14 @@ file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
       sh "7z a -ttar  rubygems-#{v}.tar rubygems-#{v}"
       sh "7z a -tgzip rubygems-#{v}.tgz rubygems-#{v}.tar"
     else
-      sh "tar -czf rubygems-#{v}.tgz --owner=rubygems:0 --group=rubygems:0 rubygems-#{v}"
+      tar_version = `tar --version`
+      if tar_version =~ /bsdtar/
+        # bsdtar, as used by at least FreeBSD and macOS, uses `--uname` and `--gname`.
+        sh "tar -czf rubygems-#{v}.tgz --uname=rubygems:0 --gname=rubygems:0 rubygems-#{v}"
+      else # If a third variant is added, change this line to: elsif tar_version =~ /GNU tar/
+        # GNU Tar, as used by many Linux distros, uses `--owner` and `--group`.
+        sh "tar -czf rubygems-#{v}.tgz --owner=rubygems:0 --group=rubygems:0 rubygems-#{v}"
+      end
     end
   end
 end

@@ -1,3 +1,11 @@
+# 2.2.29 (October 8, 2021)
+
+## Enhancements:
+
+  - Require at least Ruby 2.6.0 for gems created with recent rubies [#4920](https://github.com/rubygems/rubygems/pull/4920)
+  - Include glob information in string representation of git sources to make generated lockfiles deterministic [#4947](https://github.com/rubygems/rubygems/pull/4947)
+  - Add missing `rubygem_push` prerequisite [#4930](https://github.com/rubygems/rubygems/pull/4930)
+
 # 2.2.28 (September 23, 2021)
 
 ## Enhancements:

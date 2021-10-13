@@ -271,10 +271,9 @@ namespace 'blog' do
   checksums = ''
 
   task 'checksums' => 'package' do
-    require 'digest'
     require 'net/http'
     Dir['pkg/*{tgz,zip,gem}'].each do |file|
-      digest = Digest::SHA256.file(file).hexdigest
+      digest = OpenSSL::Digest::SHA256.file(file).hexdigest
       basename = File.basename(file)
 
       checksums << "* #{basename}  \n"
@@ -284,7 +283,7 @@ namespace 'blog' do
       response = Net::HTTP.get_response(release_url)
 
       if response.is_a?(Net::HTTPSuccess)
-        released_digest = Digest::SHA256.hexdigest(response.body)
+        released_digest = OpenSSL::Digest::SHA256.hexdigest(response.body)
 
         if digest != released_digest
           abort "Checksum of #{file} (#{digest}) doesn't match checksum of released package at #{release_url} (#{released_digest})"

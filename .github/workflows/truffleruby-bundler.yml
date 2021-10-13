@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  jruby_bundler:
+  truffleruby_bundler:
     name: Bundler (Truffleruby)
     runs-on: ubuntu-20.04
 

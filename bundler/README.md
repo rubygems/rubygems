@@ -32,7 +32,7 @@ See [bundler.io](https://bundler.io) for the full documentation.
 
 For help with common problems, see [TROUBLESHOOTING](doc/TROUBLESHOOTING.md).
 
-Still stuck? Try [filing an issue](doc/contributing/ISSUES.md).
+Still stuck? Try [filing an issue](https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md).
 
 ### Other questions
 

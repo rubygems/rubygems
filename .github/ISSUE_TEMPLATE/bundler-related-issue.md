@@ -11,15 +11,34 @@ assignees: ''
 
 Thank you for contributing to the [rubygems](https://github.com/rubygems/rubygems) repository, and specifically to the [Bundler](https://bundler.io/) gem.
 
-Before opening your issue, make sure you have checked [our filing issues guide](https://github.com/rubygems/rubygems/blob/master/bundler/doc/contributing/ISSUES.md).
+Sometimes you can find a solution to your issue by reading some documentation.
 
-Please fill in the following sections so we can process your issue as fast as possible:
+* Instructions for common Bundler uses can be found on the [Bundler documentation site](https://bundler.io/).
+* Detailed information about each Bundler command, including help with common problems, can be found in the [Bundler man pages](https://bundler.io/man/bundle.1.html) or [Bundler Command Line Reference](https://bundler.io/commands.html).
+* We also have a document detailing solutions to common problems: https://github.com/rubygems/rubygems/blob/master/bundler/doc/contributing/TROUBLESHOOTING.md.
+
+If you're still stuck, please fill in the following sections so we can process your issue as fast as possible:
 
 -->
 
 ### Describe the problem as clearly as you can
 
 <!-- Replace this with an explanation of the problem you are having. Be as much clear and precise as you can. -->
+
+### Did you try upgrading rubygems & bundler?
+
+<!--
+
+Make sure you're using the latest version of both `bundler` and `rubygems`.
+
+Running `gem update --system` should get both installed on your system, and then
+`bundle update --bundler` should change your lockfile to use the new version of
+bundler that was just installed.
+
+It's likely that your issue has been fixed in recent versions, so just upgrading
+might do the trick, and will also save us some time :)
+
+-->
 
 ### Post steps to reproduce the problem
 

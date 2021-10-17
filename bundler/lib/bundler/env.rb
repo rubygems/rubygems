@@ -44,7 +44,7 @@ module Bundler
           out << "```ruby\n" << read_file(gemfile).chomp << "\n```\n"
         end
 
-        out << "\n### #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)}\n\n"
+        out << "\n### #{Bundler.relative_path_to_lockfile}\n\n"
         out << "```\n" << read_file(Bundler.default_lockfile).chomp << "\n```\n"
       end
 

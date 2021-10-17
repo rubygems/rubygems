@@ -252,7 +252,7 @@ module Bundler
       def base_path_relative_to_pwd
         base_path = Pathname.new(self.base_path)
         expanded_base_path = base_path.expand_path(Bundler.root)
-        relative_path = expanded_base_path.relative_path_from(Pathname.pwd)
+        relative_path = expanded_base_path.relative_path_from(SharedHelpers.pwd)
         if relative_path.to_s.start_with?("..")
           relative_path = base_path if base_path.absolute?
         else

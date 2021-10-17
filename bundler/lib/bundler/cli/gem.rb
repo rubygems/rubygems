@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "pathname"
-
 module Bundler
   class CLI
     Bundler.require_thor_actions
@@ -26,7 +24,7 @@ module Bundler
       thor.destination_root = nil
 
       @name = @gem_name
-      @target = SharedHelpers.pwd.join(gem_name)
+      @target = File.expand_path(gem_name)
 
       validate_ext_name if options[:ext]
     end
@@ -185,7 +183,7 @@ module Bundler
         )
       end
 
-      if target.exist? && !target.directory?
+      if File.exist?(target) && !File.directory?(target)
         Bundler.ui.error "Couldn't create a new gem named `#{gem_name}` because there's an existing file named `#{gem_name}`."
         exit Bundler::BundlerError.all_errors[Bundler::GenericSystemCallError]
       end
@@ -193,20 +191,20 @@ module Bundler
       if use_git
         Bundler.ui.info "Initializing git repo in #{target}"
         require "shellwords"
-        `git init #{target.to_s.shellescape}`
+        `git init #{target.shellescape}`
 
         config[:git_default_branch] = File.read("#{target}/.git/HEAD").split("/").last.chomp
       end
 
       templates.each do |src, dst|
-        destination = target.join(dst)
+        destination = File.join(target, dst)
         thor.template("newgem/#{src}", destination, config)
       end
 
       executables.each do |file|
-        path = target.join(file)
-        executable = (path.stat.mode | 0o111)
-        path.chmod(executable)
+        path = File.join(target, file)
+        executable = (File.stat(path).mode | 0o111)
+        File.chmod(executable, path)
       end
 
       if use_git
@@ -216,7 +214,7 @@ module Bundler
       end
 
       # Open gemspec in editor
-      open_editor(options["edit"], target.join("#{name}.gemspec")) if options[:edit]
+      open_editor(options["edit"], File.join(target, "#{name}.gemspec")) if options[:edit]
 
       Bundler.ui.info "Gem '#{name}' was successfully created. " \
         "For more information on making a RubyGem visit https://bundler.io/guides/creating_gem.html"
@@ -225,7 +223,7 @@ module Bundler
     private
 
     def resolve_name(name)
-      SharedHelpers.pwd.join(name).basename.to_s
+      File.basename(File.expand_path(name))
     end
 
     def ask_and_set(key, header, message)

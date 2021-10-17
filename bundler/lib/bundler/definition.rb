@@ -354,7 +354,7 @@ module Bundler
       msg = String.new
       msg << "You are trying to install in deployment mode after changing\n" \
              "your Gemfile. Run `bundle install` elsewhere and add the\n" \
-             "updated #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)} to version control."
+             "updated #{Bundler.relative_path_to_lockfile} to version control."
 
       unless explicit_flag
         suggested_command = if Bundler.settings.locations("frozen").keys.&([:global, :local]).any?

@@ -84,9 +84,9 @@ module Bundler
         path = path.expand_path
 
         root = begin
-                 Bundler.root
+                 Bundler.root.to_s
                rescue GemfileNotFound
-                 Pathname.pwd.expand_path
+                 SharedHelpers.pwd
                end
 
         path = begin

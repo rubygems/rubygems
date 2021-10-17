@@ -455,6 +455,10 @@ EOF
       SharedHelpers.default_lockfile
     end
 
+    def relative_path_to_lockfile
+      default_lockfile.relative_path_from(SharedHelpers.pwd)
+    end
+
     def default_bundle_dir
       SharedHelpers.default_bundle_dir
     end

@@ -31,7 +31,7 @@ module Bundler
           msg = String.new
           msg << "Git error: command `#{command}` in directory #{path} has failed."
           msg << "\n#{extra_info}" if extra_info
-          msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if path.exist?
+          msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if File.exist?(path)
           super msg
         end
       end
@@ -169,7 +169,7 @@ module Bundler
 
           filtered_out = URICredentialsFilter.credential_filtered_string(out, uri)
 
-          raise GitCommandError.new(command_with_no_credentials, dir || SharedHelpers.pwd, filtered_out) unless status.success?
+          raise GitCommandError.new(command_with_no_credentials, dir ? dir.to_s : SharedHelpers.pwd, filtered_out) unless status.success?
 
           filtered_out
         end

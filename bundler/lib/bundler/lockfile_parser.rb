@@ -54,8 +54,8 @@ module Bundler
       @specs        = {}
 
       if lockfile.match(/<<<<<<<|=======|>>>>>>>|\|\|\|\|\|\|\|/)
-        raise LockfileError, "Your #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)} contains merge conflicts.\n" \
-          "Run `git checkout HEAD -- #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)}` first to get a clean lock."
+        raise LockfileError, "Your #{Bundler.relative_path_to_lockfile} contains merge conflicts.\n" \
+          "Run `git checkout HEAD -- #{Bundler.relative_path_to_lockfile}` first to get a clean lock."
       end
 
       lockfile.split(/(?:\r?\n)+/).each do |line|
@@ -80,7 +80,7 @@ module Bundler
       warn_for_outdated_bundler_version
     rescue ArgumentError => e
       Bundler.ui.debug(e)
-      raise LockfileError, "Your lockfile is unreadable. Run `rm #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)}` " \
+      raise LockfileError, "Your lockfile is unreadable. Run `rm #{Bundler.relative_path_to_lockfile}` " \
         "and then `bundle install` to generate a new lockfile."
     end
 

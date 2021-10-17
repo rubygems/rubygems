@@ -31,7 +31,7 @@ module Bundler
     attr_writer :tag_prefix
 
     def initialize(base = nil, name = nil)
-      @base = File.expand_path(base || SharedHelpers.pwd)
+      @base = base ? File.expand_path(base) : SharedHelpers.pwd
       gemspecs = name ? [File.join(@base, "#{name}.gemspec")] : Gem::Util.glob_files_in_dir("{,*}.gemspec", @base)
       raise "Unable to determine name from existing gemspec. Use :name => 'gemname' in #install_tasks to manually set it." unless gemspecs.size == 1
       @spec_path = gemspecs.first

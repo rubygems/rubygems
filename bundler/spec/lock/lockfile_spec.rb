@@ -1022,7 +1022,7 @@ RSpec.describe "the lockfile format" do
   end
 
   it "stores relative paths when the path is provided for gemspec" do
-    build_lib("foo", :path => tmp.join("foo"))
+    build_lib("foo", :path => tmp("foo"))
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"

@@ -3,8 +3,12 @@
 require "pathname"
 require "rbconfig"
 
+require_relative "env"
+
 module Spec
   module Path
+    include Spec::Env
+
     def source_root
       @source_root ||= Pathname.new(ruby_core? ? "../../.." : "../..").expand_path(__dir__)
     end
@@ -241,10 +245,6 @@ module Spec
       contents = File.read(version_file)
       contents.sub!(/(^\s+VERSION\s*=\s*)"#{Gem::Version::VERSION_PATTERN}"/, %(\\1"#{version}"))
       File.open(version_file, "w") {|f| f << contents }
-    end
-
-    def ruby_core?
-      !ENV["GEM_COMMAND"].nil?
     end
 
     private

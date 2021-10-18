@@ -52,7 +52,7 @@ RSpec.describe "bundle install with git sources" do
       bundle "update foo"
 
       sha = git.ref_for("master", 11)
-      spec_file = default_bundle_path.join("bundler/gems/foo-1.0-#{sha}/foo.gemspec").to_s
+      spec_file = default_bundle_path("bundler/gems/foo-1.0-#{sha}/foo.gemspec").to_s
       ruby_code = Gem::Specification.load(spec_file).to_ruby
       file_code = File.read(spec_file)
       expect(file_code).to eq(ruby_code)

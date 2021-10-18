@@ -175,7 +175,8 @@ module Spec
       "#{Gem.ruby} -S #{ENV["GEM_PATH"]}/bin/rake"
     end
 
-    def git(cmd, path, options = {})
+    def git(cmd, path = Dir.pwd, options = {})
+
       sys_exec("git #{cmd}", options.merge(:dir => path))
     end
 
@@ -489,7 +490,7 @@ module Spec
     end
 
     def revision_for(path)
-      sys_exec("git rev-parse HEAD", :dir => path).strip
+      git("rev-parse HEAD", path).strip
     end
 
     def with_read_only(pattern)

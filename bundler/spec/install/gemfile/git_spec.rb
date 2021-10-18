@@ -228,7 +228,7 @@ RSpec.describe "bundle install with git sources" do
         s.write("lib/foo.rb", "raise 'FAIL'")
       end
 
-      sys_exec("git update-ref -m \"Bundler Spec!\" refs/bundler/1 master~1", :dir => lib_path("foo-1.0"))
+      git("update-ref -m \"Bundler Spec!\" refs/bundler/1 master~1", lib_path("foo-1.0"))
 
       # want to ensure we don't fallback to HEAD
       update_git "foo", :path => lib_path("foo-1.0"), :branch => "rando" do |s|
@@ -264,7 +264,7 @@ RSpec.describe "bundle install with git sources" do
         s.write("lib/foo.rb", "raise 'FAIL'")
       end
 
-      sys_exec("git update-ref -m \"Bundler Spec!\" refs/bundler/1 master~1", :dir => lib_path("foo-1.0"))
+      git("update-ref -m \"Bundler Spec!\" refs/bundler/1 master~1", lib_path("foo-1.0"))
 
       # want to ensure we don't fallback to HEAD
       update_git "foo", :path => lib_path("foo-1.0"), :branch => "rando" do |s|
@@ -288,7 +288,7 @@ RSpec.describe "bundle install with git sources" do
     end
 
     it "does not download random non-head refs" do
-      sys_exec("git update-ref -m \"Bundler Spec!\" refs/bundler/1 master~1", :dir => lib_path("foo-1.0"))
+      git("update-ref -m \"Bundler Spec!\" refs/bundler/1 master~1", lib_path("foo-1.0"))
 
       bundle "config set global_gem_cache true"
 
@@ -302,7 +302,7 @@ RSpec.describe "bundle install with git sources" do
       # ensure we also git fetch after cloning
       bundle :update, :all => true
 
-      sys_exec("git ls-remote .", :dir => Dir[home(".bundle/cache/git/foo-*")].first)
+      git("ls-remote .", Dir[home(".bundle/cache/git/foo-*")].first)
 
       expect(out).not_to include("refs/bundler/1")
     end
@@ -865,7 +865,7 @@ RSpec.describe "bundle install with git sources" do
     bundle "update", :all => true
     expect(the_bundle).to include_gems "forced 1.1"
 
-    sys_exec("git reset --hard HEAD^", :dir => lib_path("forced-1.0"))
+    git("reset --hard HEAD^", lib_path("forced-1.0"))
 
     bundle "update", :all => true
     expect(the_bundle).to include_gems "forced 1.0"
@@ -876,8 +876,8 @@ RSpec.describe "bundle install with git sources" do
     build_git "has_submodule", "1.0" do |s|
       s.add_dependency "submodule"
     end
-    sys_exec "git submodule add #{lib_path("submodule-1.0")} submodule-1.0", :dir => lib_path("has_submodule-1.0")
-    sys_exec "git commit -m \"submodulator\"", :dir => lib_path("has_submodule-1.0")
+    git "submodule add #{lib_path("submodule-1.0")} submodule-1.0", lib_path("has_submodule-1.0")
+    git "commit -m \"submodulator\"", lib_path("has_submodule-1.0")
 
     install_gemfile <<-G, :raise_on_error => false
       source "#{file_uri_for(gem_repo1)}"
@@ -895,8 +895,8 @@ RSpec.describe "bundle install with git sources" do
     build_git "has_submodule", "1.0" do |s|
       s.add_dependency "submodule"
     end
-    sys_exec "git submodule add #{lib_path("submodule-1.0")} submodule-1.0", :dir => lib_path("has_submodule-1.0")
-    sys_exec "git commit -m \"submodulator\"", :dir => lib_path("has_submodule-1.0")
+    git "submodule add #{lib_path("submodule-1.0")} submodule-1.0", lib_path("has_submodule-1.0")
+    git "commit -m \"submodulator\"", lib_path("has_submodule-1.0")
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
@@ -912,8 +912,8 @@ RSpec.describe "bundle install with git sources" do
     build_git "submodule", "1.0"
     build_git "has_submodule", "1.0"
 
-    sys_exec "git submodule add #{lib_path("submodule-1.0")} submodule-1.0", :dir => lib_path("has_submodule-1.0")
-    sys_exec "git commit -m \"submodulator\"", :dir => lib_path("has_submodule-1.0")
+    git "submodule add #{lib_path("submodule-1.0")} submodule-1.0", lib_path("has_submodule-1.0")
+    git "commit -m \"submodulator\"", lib_path("has_submodule-1.0")
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
@@ -1231,7 +1231,7 @@ RSpec.describe "bundle install with git sources" do
             void Init_foo() { rb_define_global_function("foo", &foo, 0); }
           C
         end
-        sys_exec("git commit -m \"commit for iteration #{i}\" ext/foo.c", :dir => git_reader.path)
+        git("commit -m \"commit for iteration #{i}\" ext/foo.c", git_reader.path)
 
         git_commit_sha = git_reader.ref_for("HEAD")
 

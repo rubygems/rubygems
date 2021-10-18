@@ -178,7 +178,7 @@ module Bundler
 
       spec.executables.each do |executable|
         next if executable == "bundle"
-        executable_path = Pathname(spec.full_gem_path).join(spec.bindir, executable).relative_path_from(bin_path)
+        executable_path = Pathname.new(spec.full_gem_path).join(spec.bindir, executable).relative_path_from(bin_path)
         executable_path = executable_path
 
         mode = Gem.win_platform? ? "wb:UTF-8" : "w"

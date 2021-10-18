@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Bundler::Source::Git::GitProxy do
-  let(:path) { Pathname("path") }
+  let(:path) { Pathname.new("path") }
   let(:uri) { "https://github.com/rubygems/rubygems.git" }
   let(:ref) { "HEAD" }
   let(:revision) { nil }
@@ -33,7 +33,7 @@ RSpec.describe Bundler::Source::Git::GitProxy do
     it "keeps original userinfo" do
       Bundler.settings.temporary("github.com" => "u:p") do
         original = "https://orig:info@github.com/rubygems/rubygems.git"
-        subject = described_class.new(Pathname("path"), original, "HEAD")
+        subject = described_class.new(Pathname.new("path"), original, "HEAD")
         expect(subject).to receive(:git_retry).with("clone", original, any_args)
         subject.checkout
       end

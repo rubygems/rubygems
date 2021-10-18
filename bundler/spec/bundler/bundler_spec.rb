@@ -214,7 +214,7 @@ EOF
         allow(Bundler.rubygems).to receive(:user_home).and_return(path)
         allow(File).to receive(:directory?).with(path).and_return true
         allow(File).to receive(:writable?).with(path).and_return true
-        expect(Bundler.user_home).to eq(Pathname(path))
+        expect(Bundler.user_home).to eq(Pathname.new(path))
       end
 
       context "is not a directory" do
@@ -225,7 +225,7 @@ EOF
           allow(Bundler).to receive(:tmp).and_return(Pathname.new("/tmp/trulyrandom"))
           expect(Bundler.ui).to receive(:warn).with("`/home/oggy` is not a directory.\n")
           expect(Bundler.ui).to receive(:warn).with("Bundler will use `/tmp/trulyrandom' as your home directory temporarily.\n")
-          expect(Bundler.user_home).to eq(Pathname("/tmp/trulyrandom"))
+          expect(Bundler.user_home).to eq(Pathname.new("/tmp/trulyrandom"))
         end
       end
 
@@ -241,7 +241,7 @@ EOF
           allow(Bundler).to receive(:tmp).and_return(Pathname.new("/tmp/trulyrandom"))
           expect(Bundler.ui).to receive(:warn).with("`/home/oggy` is not writable.\n")
           expect(Bundler.ui).to receive(:warn).with("Bundler will use `/tmp/trulyrandom' as your home directory temporarily.\n")
-          expect(Bundler.user_home).to eq(Pathname("/tmp/trulyrandom"))
+          expect(Bundler.user_home).to eq(Pathname.new("/tmp/trulyrandom"))
         end
 
         context ".bundle exists and have correct permissions" do
@@ -251,7 +251,7 @@ EOF
             allow(File).to receive(:writable?).with(path).and_return false
             allow(File).to receive(:directory?).with(dotbundle).and_return true
             allow(File).to receive(:writable?).with(dotbundle).and_return true
-            expect(Bundler.user_home).to eq(Pathname(path))
+            expect(Bundler.user_home).to eq(Pathname.new(path))
           end
         end
       end
@@ -263,14 +263,14 @@ EOF
         allow(Bundler).to receive(:tmp).and_return(Pathname.new("/tmp/trulyrandom"))
         expect(Bundler.ui).to receive(:warn).with("Your home directory is not set.\n")
         expect(Bundler.ui).to receive(:warn).with("Bundler will use `/tmp/trulyrandom' as your home directory temporarily.\n")
-        expect(Bundler.user_home).to eq(Pathname("/tmp/trulyrandom"))
+        expect(Bundler.user_home).to eq(Pathname.new("/tmp/trulyrandom"))
       end
     end
   end
 
   describe "#requires_sudo?" do
     let!(:tmpdir) { Dir.mktmpdir }
-    let(:bundle_path) { Pathname("#{tmpdir}/bundle") }
+    let(:bundle_path) { Pathname.new("#{tmpdir}/bundle") }
 
     def clear_cached_requires_sudo
       return unless Bundler.instance_variable_defined?(:@requires_sudo_ran)
@@ -343,7 +343,7 @@ EOF
       end
       context "writable paths" do
         it "should return false and display nothing" do
-          allow(Bundler).to receive(:bundle_path).and_return(Pathname("tmp/vendor/bundle"))
+          allow(Bundler).to receive(:bundle_path).and_return(Pathname.new("tmp/vendor/bundle"))
           expect(Bundler.ui).to_not receive(:warn)
           expect(Bundler.requires_sudo?).to eq(false)
         end
@@ -358,15 +358,15 @@ EOF
           FileUtils.chmod(0o400, "tmp/vendor/bin_dir/unwritable3.txt")
         end
         it "should return true and display warn message" do
-          allow(Bundler).to receive(:bundle_path).and_return(Pathname("tmp/vendor/bundle"))
-          bin_dir = Pathname("tmp/vendor/bin_dir/")
+          allow(Bundler).to receive(:bundle_path).and_return(Pathname.new("tmp/vendor/bundle"))
+          bin_dir = Pathname.new("tmp/vendor/bin_dir/")
 
           # allow File#writable? to be called with args other than the stubbed on below
           allow(File).to receive(:writable?).and_call_original
 
           # fake make the directory unwritable
           allow(File).to receive(:writable?).with(bin_dir).and_return(false)
-          allow(Bundler).to receive(:system_bindir).and_return(Pathname("tmp/vendor/bin_dir/"))
+          allow(Bundler).to receive(:system_bindir).and_return(Pathname.new("tmp/vendor/bin_dir/"))
           message = <<-MESSAGE.chomp
 Following files may not be writable, so sudo is needed:
   tmp/vendor/bin_dir/

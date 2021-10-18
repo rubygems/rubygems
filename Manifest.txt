@@ -60,6 +60,7 @@ bundler/lib/bundler/dep_proxy.rb
 bundler/lib/bundler/dependency.rb
 bundler/lib/bundler/deployment.rb
 bundler/lib/bundler/deprecate.rb
+bundler/lib/bundler/digest.rb
 bundler/lib/bundler/dsl.rb
 bundler/lib/bundler/endpoint_specification.rb
 bundler/lib/bundler/env.rb

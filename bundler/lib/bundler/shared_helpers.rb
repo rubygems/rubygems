@@ -26,7 +26,7 @@ module Bundler
       gemfile = default_gemfile
 
       case gemfile.basename.to_s
-      when "gems.rb" then Pathname.new(gemfile.sub(/.rb$/, ".locked"))
+      when "gems.rb" then gemfile.sub(/.rb$/, ".locked")
       else Pathname.new("#{gemfile}.lock")
       end.tap{|x| x.untaint if RUBY_VERSION < "2.7" }
     end

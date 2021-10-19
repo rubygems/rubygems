@@ -359,14 +359,13 @@ EOF
         end
         it "should return true and display warn message" do
           allow(Bundler).to receive(:bundle_path).and_return(Pathname.new("tmp/vendor/bundle"))
-          bin_dir = Pathname.new("tmp/vendor/bin_dir/")
 
           # allow File#writable? to be called with args other than the stubbed on below
           allow(File).to receive(:writable?).and_call_original
 
           # fake make the directory unwritable
-          allow(File).to receive(:writable?).with(bin_dir).and_return(false)
-          allow(Bundler).to receive(:system_bindir).and_return(Pathname.new("tmp/vendor/bin_dir/"))
+          allow(File).to receive(:writable?).with("tmp/vendor/bin_dir/").and_return(false)
+          allow(Bundler).to receive(:system_bindir).and_return("tmp/vendor/bin_dir/")
           message = <<-MESSAGE.chomp
 Following files may not be writable, so sudo is needed:
   tmp/vendor/bin_dir/

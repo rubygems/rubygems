@@ -496,11 +496,11 @@ EOF
         bin_dir = bin_dir.parent until bin_dir.exist?
 
         # if any directory is not writable, we need sudo
-        files = [path, bin_dir] | Dir[bundle_path.join("build_info/*").to_s] | Dir[bundle_path.join("*").to_s]
+        files = [path.to_s, bin_dir.to_s] | Dir[bundle_path.join("build_info/*").to_s] | Dir[bundle_path.join("*").to_s]
         unwritable_files = files.reject {|f| File.writable?(f) }
         sudo_needed = !unwritable_files.empty?
         if sudo_needed
-          Bundler.ui.warn "Following files may not be writable, so sudo is needed:\n  #{unwritable_files.map(&:to_s).sort.join("\n  ")}"
+          Bundler.ui.warn "Following files may not be writable, so sudo is needed:\n  #{unwritable_files.sort.join("\n  ")}"
         end
       end
 

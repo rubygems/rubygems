@@ -503,7 +503,7 @@ module Bundler
       end
 
       def cache_path
-        Bundler.app_cache
+        Bundler.app_cache.to_s
       end
 
       private

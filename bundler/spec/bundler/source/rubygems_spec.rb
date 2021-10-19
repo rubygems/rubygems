@@ -16,9 +16,9 @@ RSpec.describe Bundler::Source::Rubygems do
       end
     end
 
-    it "is an array of strings or pathnames" do
+    it "is an array of strings" do
       subject.caches.each do |cache|
-        expect([String, Pathname]).to include(cache.class)
+        expect(String).to eq(cache.class)
       end
     end
   end

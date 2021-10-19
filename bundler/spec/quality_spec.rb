@@ -13,7 +13,9 @@ RSpec.describe "The library itself" do
 
     failing_lines = []
     each_line(filename) do |line, number|
-      if line =~ debugging_mechanisms_regex && !line.end_with?("# ignore quality_spec\n")
+      not_a_comment_line = !line.chomp.start_with?("#")
+      not_ignored = !line.end_with?("# ignore quality_spec\n")
+      if not_a_comment_line && not_ignored && line =~ debugging_mechanisms_regex
         failing_lines << number + 1
       end
     end

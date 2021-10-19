@@ -17,7 +17,7 @@ RSpec.describe Bundler::SharedHelpers do
     before { ENV["BUNDLE_GEMFILE"] = "/path/Gemfile" }
 
     context "Gemfile is present" do
-      let(:expected_gemfile_path) { Pathname.new("/path/Gemfile").expand_path }
+      let(:expected_gemfile_path) { Bundler::Pathname.new("/path/Gemfile").expand_path }
 
       it "returns the Gemfile path" do
         expect(subject.default_gemfile).to eq(expected_gemfile_path)
@@ -37,7 +37,7 @@ RSpec.describe Bundler::SharedHelpers do
     context "Gemfile is not an absolute path" do
       before { ENV["BUNDLE_GEMFILE"] = "Gemfile" }
 
-      let(:expected_gemfile_path) { Pathname.new("Gemfile").expand_path }
+      let(:expected_gemfile_path) { Bundler::Pathname.new("Gemfile").expand_path }
 
       it "returns the Gemfile path" do
         expect(subject.default_gemfile).to eq(expected_gemfile_path)
@@ -47,8 +47,8 @@ RSpec.describe Bundler::SharedHelpers do
 
   describe "#default_lockfile" do
     context "gemfile is gems.rb" do
-      let(:gemfile_path)           { Pathname.new("/path/gems.rb") }
-      let(:expected_lockfile_path) { Pathname.new("/path/gems.locked") }
+      let(:gemfile_path)           { Bundler::Pathname.new("/path/gems.rb") }
+      let(:expected_lockfile_path) { Bundler::Pathname.new("/path/gems.locked") }
 
       before { allow(subject).to receive(:default_gemfile).and_return(gemfile_path) }
 
@@ -58,8 +58,8 @@ RSpec.describe Bundler::SharedHelpers do
     end
 
     context "is a regular Gemfile" do
-      let(:gemfile_path)           { Pathname.new("/path/Gemfile") }
-      let(:expected_lockfile_path) { Pathname.new("/path/Gemfile.lock") }
+      let(:gemfile_path)           { Bundler::Pathname.new("/path/Gemfile") }
+      let(:expected_lockfile_path) { Bundler::Pathname.new("/path/Gemfile.lock") }
 
       before { allow(subject).to receive(:default_gemfile).and_return(gemfile_path) }
 
@@ -77,7 +77,7 @@ RSpec.describe Bundler::SharedHelpers do
     end
 
     context ".bundle is global .bundle" do
-      let(:global_rubygems_dir) { Pathname.new(bundled_app) }
+      let(:global_rubygems_dir) { Bundler::Pathname.new(bundled_app) }
 
       before do
         Dir.mkdir bundled_app(".bundle")
@@ -90,8 +90,8 @@ RSpec.describe Bundler::SharedHelpers do
     end
 
     context ".bundle is not global .bundle" do
-      let(:global_rubygems_dir)      { Pathname.new("/path/rubygems") }
-      let(:expected_bundle_dir_path) { Pathname.new("#{bundled_app}/.bundle") }
+      let(:global_rubygems_dir)      { Bundler::Pathname.new("/path/rubygems") }
+      let(:expected_bundle_dir_path) { Bundler::Pathname.new("#{bundled_app}/.bundle") }
 
       before do
         Dir.mkdir bundled_app(".bundle")
@@ -283,7 +283,7 @@ RSpec.describe Bundler::SharedHelpers do
       else
         stub_const("File::PATH_SEPARATOR", ":".freeze)
       end
-      allow(Bundler).to receive(:bundle_path) { Pathname.new("so:me/dir/bin") }
+      allow(Bundler).to receive(:bundle_path) { Bundler::Pathname.new("so:me/dir/bin") }
       expect { subject.send(:validate_bundle_path) }.to raise_error(
         Bundler::PathError,
         "Your bundle path contains text matching \":\", which is the " \
@@ -300,14 +300,14 @@ RSpec.describe Bundler::SharedHelpers do
       let(:regex) { Regexp.new("(?<!jar:file|jar|file|classpath|uri:classloader|uri|http|https):") }
       it "does not exit if bundle path is the standard uri path" do
         allow(Bundler.rubygems).to receive(:path_separator).and_return(regex)
-        allow(Bundler).to receive(:bundle_path) { Pathname.new("uri:classloader:/WEB-INF/gems") }
+        allow(Bundler).to receive(:bundle_path) { Bundler::Pathname.new("uri:classloader:/WEB-INF/gems") }
         expect { subject.send(:validate_bundle_path) }.not_to raise_error
       end
 
       it "exits if bundle path contains another directory" do
         allow(Bundler.rubygems).to receive(:path_separator).and_return(regex)
         allow(Bundler).to receive(:bundle_path) {
-          Pathname.new("uri:classloader:/WEB-INF/gems:other/dir")
+          Bundler::Pathname.new("uri:classloader:/WEB-INF/gems:other/dir")
         }
 
         expect { subject.send(:validate_bundle_path) }.to raise_error(

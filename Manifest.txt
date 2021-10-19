@@ -257,6 +257,8 @@ bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
 bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/connection.rb
 bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/pool.rb
 bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/timed_stack_multi.rb
+bundler/lib/bundler/vendor/pathname/LICENSE.txt
+bundler/lib/bundler/vendor/pathname/lib/pathname.rb
 bundler/lib/bundler/vendor/thor/LICENSE.md
 bundler/lib/bundler/vendor/thor/lib/thor.rb
 bundler/lib/bundler/vendor/thor/lib/thor/actions.rb
@@ -310,6 +312,7 @@ bundler/lib/bundler/vendor/uri/lib/uri/ws.rb
 bundler/lib/bundler/vendor/uri/lib/uri/wss.rb
 bundler/lib/bundler/vendored_fileutils.rb
 bundler/lib/bundler/vendored_molinillo.rb
+bundler/lib/bundler/vendored_pathname.rb
 bundler/lib/bundler/vendored_persistent.rb
 bundler/lib/bundler/vendored_thor.rb
 bundler/lib/bundler/vendored_tmpdir.rb

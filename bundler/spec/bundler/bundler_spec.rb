@@ -214,7 +214,7 @@ EOF
         allow(Bundler.rubygems).to receive(:user_home).and_return(path)
         allow(File).to receive(:directory?).with(path).and_return true
         allow(File).to receive(:writable?).with(path).and_return true
-        expect(Bundler.user_home).to eq(Pathname.new(path))
+        expect(Bundler.user_home.to_s).to eq(path)
       end
 
       context "is not a directory" do
@@ -225,7 +225,7 @@ EOF
           allow(Bundler).to receive(:tmp).and_return(Pathname.new("/tmp/trulyrandom"))
           expect(Bundler.ui).to receive(:warn).with("`/home/oggy` is not a directory.\n")
           expect(Bundler.ui).to receive(:warn).with("Bundler will use `/tmp/trulyrandom' as your home directory temporarily.\n")
-          expect(Bundler.user_home).to eq(Pathname.new("/tmp/trulyrandom"))
+          expect(Bundler.user_home.to_s).to eq("/tmp/trulyrandom")
         end
       end
 
@@ -241,7 +241,7 @@ EOF
           allow(Bundler).to receive(:tmp).and_return(Pathname.new("/tmp/trulyrandom"))
           expect(Bundler.ui).to receive(:warn).with("`/home/oggy` is not writable.\n")
           expect(Bundler.ui).to receive(:warn).with("Bundler will use `/tmp/trulyrandom' as your home directory temporarily.\n")
-          expect(Bundler.user_home).to eq(Pathname.new("/tmp/trulyrandom"))
+          expect(Bundler.user_home.to_s).to eq("/tmp/trulyrandom")
         end
 
         context ".bundle exists and have correct permissions" do
@@ -251,7 +251,7 @@ EOF
             allow(File).to receive(:writable?).with(path).and_return false
             allow(File).to receive(:directory?).with(dotbundle).and_return true
             allow(File).to receive(:writable?).with(dotbundle).and_return true
-            expect(Bundler.user_home).to eq(Pathname.new(path))
+            expect(Bundler.user_home.to_s).to eq(path)
           end
         end
       end
@@ -263,7 +263,7 @@ EOF
         allow(Bundler).to receive(:tmp).and_return(Pathname.new("/tmp/trulyrandom"))
         expect(Bundler.ui).to receive(:warn).with("Your home directory is not set.\n")
         expect(Bundler.ui).to receive(:warn).with("Bundler will use `/tmp/trulyrandom' as your home directory temporarily.\n")
-        expect(Bundler.user_home).to eq(Pathname.new("/tmp/trulyrandom"))
+        expect(Bundler.user_home.to_s).to eq("/tmp/trulyrandom")
       end
     end
   end
@@ -380,7 +380,7 @@ MESSAGE
   end
 
   context "user cache dir" do
-    let(:home_path)                  { Pathname.new(ENV["HOME"]) }
+    let(:home_path)                  { Bundler::Pathname.new(ENV["HOME"]) }
 
     let(:xdg_data_home)              { home_path.join(".local") }
     let(:xdg_cache_home)             { home_path.join(".cache") }

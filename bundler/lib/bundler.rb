@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "bundler/vendored_fileutils"
-require "pathname"
+require_relative "bundler/vendored_pathname"
 require "rbconfig"
 
 require_relative "bundler/errors"
@@ -93,7 +93,7 @@ module Bundler
 
     # Returns absolute path of where gems are installed on the filesystem.
     def bundle_path
-      @bundle_path ||= Pathname.new(configured_bundle_path.path).expand_path(root)
+      @bundle_path ||= Bundler::Pathname.new(configured_bundle_path.path).expand_path(root)
     end
 
     def configured_bundle_path
@@ -104,7 +104,7 @@ module Bundler
     def bin_path
       @bin_path ||= begin
         path = settings[:bin] || "bin"
-        path = Pathname.new(path).expand_path(root).expand_path
+        path = Bundler::Pathname.new(path).expand_path(root).expand_path
         SharedHelpers.filesystem_access(path) {|p| FileUtils.mkdir_p(p) }
         path
       end

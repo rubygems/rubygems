@@ -7,7 +7,7 @@ RSpec.describe Bundler::Source::Rubygems do
 
   describe "caches" do
     it "includes Bundler.app_cache" do
-      expect(subject.caches).to include(Bundler.app_cache)
+      expect(subject.caches).to include(Bundler.app_cache.to_s)
     end
 
     it "includes GEM_PATH entries" do

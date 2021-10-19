@@ -210,6 +210,18 @@ Automatiek::RakeTask.new("tmpdir") do |lib|
 end
 
 # We currently include the following changes over the official version:
+# * Replace the C-extension with a pure ruby implementation.
+# * Add back ruby 2.3 support.
+Automatiek::RakeTask.new("pathname") do |lib|
+  lib.version = "v0.2.0"
+  lib.download = { :github => "https://github.com/ruby/pathname" }
+  lib.namespace = "Pathname"
+  lib.prefix = "Bundler"
+  lib.vendor_lib = "lib/bundler/vendor/pathname"
+  lib.license_path = "LICENSE.txt"
+end
+
+# We currently include the following changes over the official version:
 # * Avoid requiring the optional `net-http-pipeline` dependency, so that its version can be selected by end users.
 # * Workaround for incorrect `Process.getrlimit` on JRuby + Windows.
 # * We also include changes to require the vendored dependencies `uri` and `connection_pool` relatively.

@@ -16,7 +16,7 @@ RSpec.describe "real source plugins" do
               def initialize(opts)
                 super
 
-                @path = Pathname.new options["uri"]
+                @path = Bundler::Pathname.new options["uri"]
               end
 
               def fetch_gemspec_files

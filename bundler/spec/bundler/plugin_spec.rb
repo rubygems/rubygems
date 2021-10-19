@@ -78,7 +78,7 @@ RSpec.describe Bundler::Plugin do
       allow(index).to receive(:installed?).
         with("new-plugin")
       allow(subject).
-        to receive(:validate_plugin!).with(lib_path("new-plugin")).once
+        to receive(:validate_plugin!).with(Bundler::Pathname.new(lib_path("new-plugin").to_s)).once
 
       subject.install ["new-plugin"], opts
     end
@@ -247,7 +247,7 @@ RSpec.describe Bundler::Plugin do
       end
 
       it "returns plugin dir in app .bundle path" do
-        expect(subject.root).to eq(bundled_app(".bundle/plugin"))
+        expect(subject.root.to_s).to eq(bundled_app(".bundle/plugin").to_s)
       end
     end
 
@@ -257,7 +257,7 @@ RSpec.describe Bundler::Plugin do
       end
 
       it "returns plugin dir in global bundle path" do
-        expect(subject.root).to eq(home(".bundle/plugin"))
+        expect(subject.root.to_s).to eq(home(".bundle/plugin").to_s)
       end
     end
   end

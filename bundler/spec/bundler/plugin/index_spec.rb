@@ -19,7 +19,7 @@ RSpec.describe Bundler::Plugin::Index do
 
   describe "#register plugin" do
     it "is available for retrieval" do
-      expect(index.plugin_path(plugin_name)).to eq(lib_path(plugin_name))
+      expect(index.plugin_path(plugin_name).to_s).to eq(lib_path(plugin_name).to_s)
     end
 
     it "load_paths is available for retrieval" do
@@ -28,7 +28,7 @@ RSpec.describe Bundler::Plugin::Index do
 
     it "is persistent" do
       new_index = Index.new
-      expect(new_index.plugin_path(plugin_name)).to eq(lib_path(plugin_name))
+      expect(new_index.plugin_path(plugin_name).to_s).to eq(lib_path(plugin_name).to_s)
     end
 
     it "load_paths are persistent" do

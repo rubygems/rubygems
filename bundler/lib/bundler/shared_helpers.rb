@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "pathname"
+require_relative "vendored_pathname"
 require "rbconfig"
 
 require_relative "version"

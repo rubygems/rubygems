@@ -107,7 +107,7 @@
   - Fix `bundle doctor` crashing when finding a broken symlink [#4707](https://github.com/rubygems/rubygems/pull/4707)
   - Fix incorrect re-resolve edge case [#4700](https://github.com/rubygems/rubygems/pull/4700)
   - Fix some gems being unintentionally locked under multiple lockfile sections [#4701](https://github.com/rubygems/rubygems/pull/4701)
-  - Fix `--conservative` flag unexpectedly updating indirect dependencies [#4692](https://github.com/rubygems/rubygems/pull/4692)
+  - Fix `--conservative` flag unexpectedly updating indirect dependencies. NOTE: As part of this bug fix, some undocumented, unintentional code causing `bundle update --source <gem>` to update conservatively was fixed. Use the documented `bundle update --conservative <gem>` instead [#4692](https://github.com/rubygems/rubygems/pull/4692)
 
 # 2.2.21 (June 23, 2021)
 

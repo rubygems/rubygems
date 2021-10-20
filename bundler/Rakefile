@@ -164,6 +164,7 @@ Automatiek::RakeTask.new("molinillo") do |lib|
   lib.namespace = "Molinillo"
   lib.prefix = "Bundler"
   lib.vendor_lib = "lib/bundler/vendor/molinillo"
+  lib.license_path = "LICENSE"
 end
 
 desc "Vendor a specific version of thor"
@@ -173,6 +174,7 @@ Automatiek::RakeTask.new("thor") do |lib|
   lib.namespace = "Thor"
   lib.prefix = "Bundler"
   lib.vendor_lib = "lib/bundler/vendor/thor"
+  lib.license_path = "LICENSE.md"
 end
 
 # We currently include the official version as of
@@ -191,6 +193,7 @@ Automatiek::RakeTask.new("tmpdir") do |lib|
   lib.namespace = "Dir"
   lib.prefix = "Bundler"
   lib.vendor_lib = "lib/bundler/vendor/tmpdir"
+  lib.license_path = nil # There is no license file in the Repo
 
   lib.dependency("fileutils") do |sublib|
     sublib.version = "v1.4.1"
@@ -198,6 +201,7 @@ Automatiek::RakeTask.new("tmpdir") do |lib|
     sublib.namespace = "FileUtils"
     sublib.prefix = "Bundler"
     sublib.vendor_lib = "lib/bundler/vendor/fileutils"
+    sublib.license_path = "LICENSE.txt"
   end
 end
 
@@ -212,6 +216,7 @@ Automatiek::RakeTask.new("net-http-persistent") do |lib|
   lib.namespace = "Net::HTTP::Persistent"
   lib.prefix = "Bundler::Persistent"
   lib.vendor_lib = "lib/bundler/vendor/net-http-persistent"
+  lib.license_path = "README.rdoc"
 
   # We currently include the official version as of
   # https://github.com/mperham/connection_pool/commit/c5aef742642def23664c4d9c15d12f0786347fb8.
@@ -221,6 +226,7 @@ Automatiek::RakeTask.new("net-http-persistent") do |lib|
     sublib.namespace = "ConnectionPool"
     sublib.prefix = "Bundler"
     sublib.vendor_lib = "lib/bundler/vendor/connection_pool"
+    sublib.license_path = "LICENSE"
   end
 
   # We currently include changes over the official version to require internal paths
@@ -231,6 +237,7 @@ Automatiek::RakeTask.new("net-http-persistent") do |lib|
     sublib.namespace = "URI"
     sublib.prefix = "Bundler"
     sublib.vendor_lib = "lib/bundler/vendor/uri"
+    sublib.license_path = "LICENSE.txt"
   end
 end
 

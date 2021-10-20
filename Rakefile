@@ -77,6 +77,7 @@ if File.exist?("util/automatiek.rake")
     lib.namespace = "Molinillo"
     lib.prefix = "Gem::Resolver"
     lib.vendor_lib = "lib/rubygems/resolver/molinillo"
+    lib.license_path = "LICENSE"
   end
 end
 

@@ -71,6 +71,7 @@ module Automatiek
     attr_accessor :prefix
     attr_accessor :vendor_lib
     attr_accessor :version
+    attr_accessor :license_path
 
     def update(version)
       FileUtils.rm_rf vendor_lib
@@ -97,7 +98,10 @@ module Automatiek
     end
 
     def clean
-      files = Dir.glob("#{vendor_lib}/*", File::FNM_DOTMATCH).reject {|f| %(. .. lib).include? f.split("/").last }
+      files = Dir.glob("#{vendor_lib}/*", File::FNM_DOTMATCH).reject do |f|
+        basename = f.split("/").last
+        allowlist.include? basename
+      end
       FileUtils.rm_r files
     end
 
@@ -109,6 +113,10 @@ module Automatiek
         contents.gsub!(regex, replacement)
         File.open(file, "w") {|f| f << contents }
       end
+    end
+
+    def allowlist
+      %(. .. lib #{license_path}).chomp " "
     end
   end
 end

@@ -37,6 +37,10 @@ To run commands like `gem install` from the repo:
 
     ruby -Ilib bin/gem install
 
+To run commands like `bundle install` from the repo:
+
+    ruby bundler/spec/support/bundle.rb install
+
 ### Running Tests
 
 To run the entire test suite you can use: 

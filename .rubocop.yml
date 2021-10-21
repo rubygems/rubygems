@@ -5,6 +5,7 @@ AllCops:
   Exclude:
     - 'bundler/**/*'
     - 'lib/rubygems/resolver/molinillo/**/*'
+    - 'lib/rubygems/tsort/**/*'
     - 'pkg/**/*'
     - 'tmp/**/*'
   TargetRubyVersion: 2.3

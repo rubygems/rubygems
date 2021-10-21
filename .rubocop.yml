@@ -90,6 +90,9 @@ Lint/DuplicateMethods:
 Lint/ParenthesesAsGroupedExpression:
   Enabled: true
 
+Lint/Debugger:
+  Enabled: true
+
 Layout/EndAlignment:
   Enabled: true
 

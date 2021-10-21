@@ -79,6 +79,16 @@ if File.exist?("util/automatiek.rake")
     lib.vendor_lib = "lib/rubygems/resolver/molinillo"
     lib.license_path = "LICENSE"
   end
+
+  desc "Vendor a specific version of tsort"
+  Automatiek::RakeTask.new("tsort") do |lib|
+    lib.version = "master"
+    lib.download = { :github => "https://github.com/ruby/tsort" }
+    lib.namespace = "TSort"
+    lib.prefix = "Gem"
+    lib.vendor_lib = "lib/rubygems/tsort"
+    lib.license_path = "LICENSE.txt"
+  end
 end
 
 namespace :rubocop do

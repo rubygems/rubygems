@@ -3,27 +3,6 @@
 require "set"
 
 RSpec.describe "The library itself" do
-  def check_for_debugging_mechanisms(filename)
-    debugging_mechanisms_regex = /
-      (binding\.pry)|
-      (debugger)|
-      (sleep\s*\(?\d+)|
-      (fit\s*\(?("|\w))
-    /x
-
-    failing_lines = []
-    each_line(filename) do |line, number|
-      not_a_comment_line = !line.chomp.start_with?("#")
-      not_ignored = !line.end_with?("# ignore quality_spec\n")
-      if not_a_comment_line && not_ignored && line =~ debugging_mechanisms_regex
-        failing_lines << number + 1
-      end
-    end
-
-    return if failing_lines.empty?
-    "#{filename} has debugging mechanisms (like binding.pry, sleep, debugger, rspec focusing, etc.) on lines #{failing_lines.join(", ")}"
-  end
-
   def check_for_git_merge_conflicts(filename)
     merge_conflicts_regex = /
       <<<<<<<|
@@ -123,16 +102,6 @@ RSpec.describe "The library itself" do
     tracked_files.each do |filename|
       next if filename =~ exempt
       error_messages << check_for_straneous_quotes(filename)
-    end
-    expect(error_messages.compact).to be_well_formed
-  end
-
-  it "does not include any leftover debugging or development mechanisms" do
-    exempt = %r{quality_spec.rb|support/helpers|vcr_cassettes|\.md|\.ronn|index\.txt|\.5|\.1}
-    error_messages = []
-    tracked_files.each do |filename|
-      next if filename =~ exempt
-      error_messages << check_for_debugging_mechanisms(filename)
     end
     expect(error_messages.compact).to be_well_formed
   end

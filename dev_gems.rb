@@ -2,7 +2,12 @@ source "https://rubygems.org"
 
 gem "rdoc", "6.2.0" # 6.2.1 is required > Ruby 2.3
 gem "test-unit", "~> 3.0"
-gem "simplecov", "~> 0.17.0"
+
+if RUBY_VERSION >= '2.5'
+  gem "simplecov", "~> 0.21.0"
+else
+  gem "simplecov", "~> 0.17.0"
+end
 
 group :lint do
   gem "rubocop", "~> 0.80.1"

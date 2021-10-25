@@ -1,3 +1,21 @@
+# 3.2.30 / 2021-10-26
+
+## Enhancements:
+
+* Add support to build and sign certificates with multiple key algorithms.
+  Pull request #4991 by doodzik
+* Avoid loading the `digest` gem unnecessarily. Pull request #4979 by
+  deivid-rodriguez
+* Prefer `require_relative` for all internal requires. Pull request #4978
+  by deivid-rodriguez
+* Add missing `require` of `time` within
+  `Gem::Request.verify_certificate_message`. Pull request #4975 by nobu
+
+## Performance:
+
+* Speed up `gem install`, specially under Windows. Pull request #4960 by
+  deivid-rodriguez
+
 # 3.2.29 / 2021-10-08
 
 ## Enhancements:

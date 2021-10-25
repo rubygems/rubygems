@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 17653
+content-length: 18473
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "f3546f78250dc4ba6c682ad272cd1703"
-last-modified: Mon, 14 Dec 2020 17:19:04 GMT
+etag: "6f4404a2f920dc5621c0f3cf5a484a6d"
+last-modified: Fri, 08 Oct 2021 14:22:12 GMT
 cache-control: max-age=60, public
-x-request-id: 5246613f-d91d-4a56-b280-63bf2deadc9d
-x-runtime: 0.008775
+x-request-id: 453a157c-66ab-478b-ab95-0f8795bde5cf
+x-runtime: 0.008816
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.237.26.162:443
+x-backend: F_Rails 44.239.42.136:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:51 GMT
+date: Mon, 25 Oct 2021 23:17:40 GMT
 via: 1.1 varnish
-age: 3244
-x-served-by: cache-mad22028-MAD
+age: 2391
+x-served-by: cache-fra19183-FRA
 x-cache: HIT
-x-cache-hits: 1
-x-timer: S1611581391.386989,VS0,VE0
-vary: Accept-Encoding,Fastly-SSL
+x-cache-hits: 2
+x-timer: S1635203860.170223,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -243,3 +243,13 @@ server: RubyGems.org
 0.76.0 |checksum:fc2725e869a3cd3ff0bbc45cf11ab4900963346df365125be6488262d6043a16
 0.78.0 |checksum:3ae7b3fb588b474052fe2cf307b23b793e785ac38f2299b65b4ad43bca4e28c2
 0.78.1 |checksum:b994a87e250c8c896f2d2d2e93688a771e976b15a3fd20fd005a8e7d8241329a
+0.79.0 |checksum:4344c30920b6307abec145863035fe71bbb1be243fe8d60ce2fa61f333d0a99c
+0.80.0 |checksum:f939f4891d43a8f34ade490e1fc6305473c15505ccb6bf82d4762d6038eca0e0
+0.80.1 |checksum:05b579499c852f6880b0be1d231aba8f893558ce593ab17bdd00ea6ec9d1c84a
+0.81.0 |checksum:e7c78b2114c42e06024fb9812fc5a6b9a984ed973f585c09c67f5ae6e7b6e5a5
+0.82.0 |checksum:6a1641e9b5725ee9a973869458a7d740ae72e3f60d976eb0e7a2341dabf6a984
+0.83.0 |checksum:e5e217f035708dea1e9e83f0b4fec7dd0ce6e4d4e4bd59e31833d531281e2004
+0.84.0 |checksum:746959de8a506ad5ebc4318d2ea6e0c4b6674fa915d64284e20371be84cadaa0
+0.85.0 |checksum:ea0c472e3231eed9d851c3dd8b4cacab66f8fe096ab4f86036a235230577d3c7
+0.86.0 |checksum:674a0a86a16693c913cf33a36d64af718d09cbc674d973650cc3ec1e07d1c55d
+0.87.0 |checksum:828c9f7fa634078de026af5d73d10cd0ac630d6560d4f72971934b06c48a853c

@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 3748
+content-length: 4283
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "947411a745b0c847ef5e2e77dad434da"
-last-modified: Fri, 01 Jan 2021 13:54:49 GMT
+etag: "bfd6616ab8ea4f7861724ef54c8c9135"
+last-modified: Sat, 25 Sep 2021 13:24:52 GMT
 cache-control: max-age=60, public
-x-request-id: de993cfa-9ca8-46c7-926d-cf3b5a18006e
-x-runtime: 0.006803
+x-request-id: fc3a3ea6-0236-4ee2-a966-6130415aaee3
+x-runtime: 0.007711
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 54.214.179.27:443
+x-backend: F_Rails 44.239.42.136:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:43 GMT
+date: Mon, 25 Oct 2021 23:17:40 GMT
 via: 1.1 varnish
-age: 3542
-x-served-by: cache-mad22029-MAD
+age: 3208
+x-served-by: cache-fra19128-FRA
 x-cache: HIT
-x-cache-hits: 1
-x-timer: S1611581383.203073,VS0,VE0
-vary: Accept-Encoding,Fastly-SSL
+x-cache-hits: 6
+x-timer: S1635203860.074596,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -65,3 +65,8 @@ server: RubyGems.org
 1.7.3 ffi:>= 1.1.0|checksum:70d8e7db096f49471da9df9c3dc627639e20e91a57ffb4bf7399a84f72da978d
 1.7.4 ffi:>= 1.1.0|checksum:8df3e223cf34c7bd28e396981678319dce01aa5aeb551ecb6fdad4f037e0b28e
 1.7.5 ffi:~> 1.1|checksum:a1725cf52e739133f25d46ce766029bd02b5e6837ba26a3efa2f5fe47120de7c
+1.7.6 ffi:~> 1.1|checksum:38cb6a4fd049e16269474e9ce0dec053326e15668593c3e8d23d5001b87134b7
+1.8.0 ffi:~> 1.1|checksum:095580fad1821e79cff49791ca726205fd93f3e2b5d13148375fa835c89ad649
+1.8.0-universal-mingw32 ffi:~> 1.1,win32-security:~> 0.5|checksum:61ffda11ef04e7e9d2c4d1e564475d718eee4b0da10768415058889b0d125500
+1.8.1 ffi:~> 1.1|checksum:2da002a7daf3e21aaf2ce89598685cf498d37d48f52c1e276785c3b6b5c226ac
+1.8.1-universal-mingw32 ffi:~> 1.1,win32-security:~> 0.5|checksum:12ad3ad3e7e084130533857109304440fa2b7bd6d6bd32c700696884c15a7abc

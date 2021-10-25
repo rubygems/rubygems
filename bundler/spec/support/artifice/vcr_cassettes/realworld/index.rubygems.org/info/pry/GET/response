@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 78208
+content-length: 78768
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "9d69f2d1aec877e54c90c22f9e1fe18b"
-last-modified: Mon, 14 Dec 2020 17:12:20 GMT
+etag: "d1c7e316ce4edaf8cd2322378ac2d956"
+last-modified: Mon, 12 Apr 2021 10:37:27 GMT
 cache-control: max-age=60, public
-x-request-id: 3a8c9497-6839-427c-852b-6f94785cc6b9
-x-runtime: 0.015680
+x-request-id: 292bafe7-b7d8-4b52-8eec-c9439b598a57
+x-runtime: 0.017969
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 54.214.179.27:443
+x-backend: F_Rails 44.239.42.136:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:52 GMT
+date: Mon, 25 Oct 2021 23:17:32 GMT
 via: 1.1 varnish
-age: 237
-x-served-by: cache-mad22064-MAD
+age: 466
+x-served-by: cache-fra19173-FRA
 x-cache: HIT
-x-cache-hits: 1
-x-timer: S1611581392.109358,VS0,VE1
-vary: Accept-Encoding,Fastly-SSL
+x-cache-hits: 2
+x-timer: S1635203853.869040,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -497,3 +497,7 @@ server: RubyGems.org
 0.13.0-java coderay:~> 1.1,method_source:~> 1.0,spoon:~> 0.0|checksum:7be9d117c255e75a6ff9751480879c1cc7a75ab57d33b9f0f0b72c1711619064,ruby:>= 1.9.3
 0.13.1 coderay:~> 1.1,method_source:~> 1.0|checksum:1393918c415af46b6d09044d2b78dde92b29bc834fd85c369a950bab0826dc47,ruby:>= 1.9.3
 0.13.1-java coderay:~> 1.1,method_source:~> 1.0,spoon:~> 0.0|checksum:9612d825e2c3bc160633b2a4fae21041126ee33f1ac8035c851417e561b2b46c,ruby:>= 1.9.3
+0.14.0 coderay:~> 1.1,method_source:~> 1.0|checksum:3b5e50b6b5e114218d7a103f6b37afbc24da62a61ad17b79a0899dd7dc1e18ea,ruby:>= 1.9.3
+0.14.0-java coderay:~> 1.1,method_source:~> 1.0,spoon:~> 0.0|checksum:432e2a91aa623d43f1a7fe4859b8a12e9c9303dcf9814cc7424ea64d02c91a1b,ruby:>= 1.9.3
+0.14.1 coderay:~> 1.1,method_source:~> 1.0|checksum:99b6df0665875dd5a39d85e0150aa5a12e2bb4fef401b6c4f64d32ee502f8454,ruby:>= 1.9.3
+0.14.1-java coderay:~> 1.1,method_source:~> 1.0,spoon:~> 0.0|checksum:b12bd54504097df565967772871dfe328da826dd356ce19699b3304f546ea000,ruby:>= 1.9.3

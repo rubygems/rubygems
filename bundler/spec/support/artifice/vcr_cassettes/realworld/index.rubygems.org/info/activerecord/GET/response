@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 61390
+content-length: 64022
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "4916c17a0f34a025d7fe043dfe187a9a"
-last-modified: Thu, 07 Jan 2021 22:58:48 GMT
+etag: "63439776fd886d6d949977df804d0827"
+last-modified: Wed, 15 Sep 2021 23:14:57 GMT
 cache-control: max-age=60, public
-x-request-id: 7516c32e-c2ae-482e-9f92-2d027f377eea
-x-runtime: 0.016381
+x-request-id: db536976-5804-49be-b199-5a46d57d955b
+x-runtime: 0.014173
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.240.15.233:443
+x-backend: F_Rails 52.88.209.40:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:34 GMT
+date: Mon, 25 Oct 2021 23:17:39 GMT
 via: 1.1 varnish
-age: 3503
-x-served-by: cache-mad22058-MAD
+age: 3445
+x-served-by: cache-fra19170-FRA
 x-cache: HIT
-x-cache-hits: 2
-x-timer: S1611581374.391831,VS0,VE0
+x-cache-hits: 9
+x-timer: S1635203860.753153,VS0,VE0
 vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -402,3 +402,21 @@ server: RubyGems.org
 6.1.0.rc2 activemodel:= 6.1.0.rc2,activesupport:= 6.1.0.rc2|checksum:dffbfb6f8e33b504654df4acf81fed469d5a466ea1b1251fb4e1cc59a6da4d9c,ruby:>= 2.5.0,rubygems:> 1.3.1
 6.1.0 activemodel:= 6.1.0,activesupport:= 6.1.0|checksum:a8fe5e854039c950c896c7ede5bb6ed6a79ad1148a25f792457b7dafdce5e8a9,ruby:>= 2.5.0
 6.1.1 activemodel:= 6.1.1,activesupport:= 6.1.1|checksum:d10fa2c7a91b3b24a7b42b47590d3d5c46b80eb49a63c184a6cd1743ee31e9da,ruby:>= 2.5.0
+6.1.2 activemodel:= 6.1.2,activesupport:= 6.1.2|checksum:8e8fdeb864b02a7a360d78bc97f5064a53bcacbc812c8ae4e9ea5cf6d1e28f1e,ruby:>= 2.5.0
+5.2.4.5 activemodel:= 5.2.4.5,activesupport:= 5.2.4.5,arel:>= 9.0|checksum:cfc9e2831fac5068b6dbbcf98129a8ba3491ab214d48d7bc5e229faf4232afea,ruby:>= 2.2.2
+6.0.3.5 activemodel:= 6.0.3.5,activesupport:= 6.0.3.5|checksum:684fb6b075c774a193f2253b6373df7b9f96b9d8a199c3f606fe04849c242d9f,ruby:>= 2.5.0
+6.1.2.1 activemodel:= 6.1.2.1,activesupport:= 6.1.2.1|checksum:cab04eb203c17429dab1ddcaf8357865eb5e41dceb7ad1fdef69f815870934fa,ruby:>= 2.5.0
+6.1.3 activemodel:= 6.1.3,activesupport:= 6.1.3|checksum:7ac74827f02bbd01be23cae93b8fcb22e77b2e9557b62813e231354ef536790e,ruby:>= 2.5.0
+5.2.5 activemodel:= 5.2.5,activesupport:= 5.2.5,arel:>= 9.0|checksum:92f273af4904c37aa7c1168280353d46df5cf06e0a22733ff5b5b67e2a96f10f,ruby:>= 2.2.2
+6.0.3.6 activemodel:= 6.0.3.6,activesupport:= 6.0.3.6|checksum:7f13a2f1c085e0182d002ca10e584fd89f44acce897d2eb3abc4d7aab26070a8,ruby:>= 2.5.0
+6.1.3.1 activemodel:= 6.1.3.1,activesupport:= 6.1.3.1|checksum:af7acff9dbd71c974e1eb6c3059067e100d57e377db30e6135475669712c6acb,ruby:>= 2.5.0
+5.2.4.6 activemodel:= 5.2.4.6,activesupport:= 5.2.4.6,arel:>= 9.0|checksum:e6484d9401102074091c5579e4a0fb9bb396691ad91e07b69e3b2a7fc416b987,ruby:>= 2.2.2
+6.1.3.2 activemodel:= 6.1.3.2,activesupport:= 6.1.3.2|checksum:c8400e75c1caa43aefcc6dd1d21c427030f4190ee606931ff8f97da12a46e539,ruby:>= 2.5.0
+6.0.3.7 activemodel:= 6.0.3.7,activesupport:= 6.0.3.7|checksum:515f9e1fb3de980c1932e302b3fd4e403e6271fa5bd9155760225e920dcfa179,ruby:>= 2.5.0
+5.2.6 activemodel:= 5.2.6,activesupport:= 5.2.6,arel:>= 9.0|checksum:ecbb022ce4b00c95323ce3bd8eedbd4d98e88497efb6d0c637b4f60759b41817,ruby:>= 2.2.2
+6.0.4 activemodel:= 6.0.4,activesupport:= 6.0.4|checksum:8dcf08a6c780cc4f34140c624c2f4adfc96e6a6b9538c94db16e221d62976958,ruby:>= 2.5.0
+6.1.4 activemodel:= 6.1.4,activesupport:= 6.1.4|checksum:e0ed04b3da165b2a9f0b2bcf6c664077d4903ac1ce073fdf460ace04933e09a1,ruby:>= 2.5.0
+6.0.4.1 activemodel:= 6.0.4.1,activesupport:= 6.0.4.1|checksum:f4ab8468fd51f50bccb394425be757c8541fb26fe22a68381939d33dbb6e88e0,ruby:>= 2.5.0
+6.1.4.1 activemodel:= 6.1.4.1,activesupport:= 6.1.4.1|checksum:4a22709593cf8e164939286bc1635efcd87378244ad17e87becb1f7324dd8fb1,ruby:>= 2.5.0
+7.0.0.alpha1 activemodel:= 7.0.0.alpha1,activesupport:= 7.0.0.alpha1|checksum:d3b9cbd4df28fb07db7fb2ebede6559fda5051301b70b8a5b71ab6d31a7eba61,ruby:>= 2.7.0,rubygems:> 1.3.1
+7.0.0.alpha2 activemodel:= 7.0.0.alpha2,activesupport:= 7.0.0.alpha2|checksum:f7757b5abd3bd3151f1b8f3ccadb1f485aaef89bcf44066fd882b413636960f6,ruby:>= 2.7.0,rubygems:> 1.3.1

@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 6844
+content-length: 6958
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "f65279236c04e7bd7ccc5be7061f78f7"
-last-modified: Wed, 30 Dec 2020 21:10:21 GMT
+etag: "d2a331a8e7d287b6d73a55263fd66d1a"
+last-modified: Wed, 14 Jul 2021 00:04:29 GMT
 cache-control: max-age=60, public
-x-request-id: 3e44dcfa-30a9-4667-9bc5-cb99e302fc88
-x-runtime: 0.008108
+x-request-id: df6d77d1-0c82-4e4b-bf88-b211505dad27
+x-runtime: 0.007917
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.240.15.233:443
+x-backend: F_Rails 52.41.58.231:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:49 GMT
+date: Mon, 25 Oct 2021 23:17:44 GMT
 via: 1.1 varnish
-age: 3051
-x-served-by: cache-mad22066-MAD
+age: 538
+x-served-by: cache-fra19182-FRA
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1611581389.042093,VS0,VE1
-vary: Accept-Encoding,Fastly-SSL
+x-timer: S1635203865.737828,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -103,3 +103,4 @@ server: RubyGems.org
 3.5.2 fugit:>= 1.1.5&~> 1.1|checksum:518c9a4c7962ef5b1b6cf45e04d71c70c31cdda077368ff662830c8454209c1c,ruby:>= 1.9
 3.6.0 fugit:>= 1.1.6&~> 1.1|checksum:cc9cd71db26334e73897e9722d78551ac2fffefe80de391fe056016c934799ad,ruby:>= 1.9
 3.7.0 fugit:>= 1.1.6&~> 1.1|checksum:5ece427f7bf1793f659ffac4c34d2c328d7106c5261d98f3831aded160ca2cf4,ruby:>= 1.9
+3.8.0 fugit:>= 1.1.6&~> 1.1|checksum:2c0f45c191d26b1fceedd7c6ff5b5a9e3cb42fe74cebe57edafefc9ff8237423,ruby:>= 1.9

@@ -1,3 +1,22 @@
+# 2.2.30 (October 26, 2021)
+
+## Enhancements:
+
+  - Add a custom SHA1 digest implementation to no longer depend on the digest gem before we know which version to activate [#4989](https://github.com/rubygems/rubygems/pull/4989)
+  - Ensure vendored gems have licenses [#4998](https://github.com/rubygems/rubygems/pull/4998)
+  - Update broken link in Bundler::Fetcher::CertificateFailureError [#4987](https://github.com/rubygems/rubygems/pull/4987)
+  - Give better errors for some permission issues [#4965](https://github.com/rubygems/rubygems/pull/4965)
+  - Print better errors when `bundler/gem_tasks` fail [#4872](https://github.com/rubygems/rubygems/pull/4872)
+  - Fix `bundle install` to reinstall deleted gems [#4974](https://github.com/rubygems/rubygems/pull/4974)
+  - Unify issue template and ISSUES.md document [#4980](https://github.com/rubygems/rubygems/pull/4980)
+  - Bump vendored connection_pool to 2.2.5 [#4738](https://github.com/rubygems/rubygems/pull/4738)
+
+## Bug fixes:
+
+  - Fix error message pointing to non existing file when using a global gem cache [#4999](https://github.com/rubygems/rubygems/pull/4999)
+  - Fix install crash when lockfile has missing dependencies for the current platform [#4941](https://github.com/rubygems/rubygems/pull/4941)
+  - Make `bundle info` show a proper warning every time it finds a deleted gem [#4971](https://github.com/rubygems/rubygems/pull/4971)
+
 # 2.2.29 (October 8, 2021)
 
 ## Enhancements:

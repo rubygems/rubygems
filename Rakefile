@@ -61,16 +61,21 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
   doc.rdoc_dir = 'doc'
 end
 
-load "util/automatiek.rake"
+# No big deal if Automatiek is not available. This might be just because
+# `rake` is executed from release tarball.
+if File.exist?("util/automatiek.rake")
+  load "util/automatiek.rake"
 
-# We currently ship Molinillo master branch as of
-# https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
-Automatiek::RakeTask.new("molinillo") do |lib|
-  lib.version = "master"
-  lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
-  lib.namespace = "Molinillo"
-  lib.prefix = "Gem::Resolver"
-  lib.vendor_lib = "lib/rubygems/resolver/molinillo"
+  # We currently ship Molinillo master branch as of
+  # https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
+  Automatiek::RakeTask.new("molinillo") do |lib|
+    lib.version = "master"
+    lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
+    lib.namespace = "Molinillo"
+    lib.prefix = "Gem::Resolver"
+    lib.vendor_lib = "lib/rubygems/resolver/molinillo"
+    lib.license_path = "LICENSE"
+  end
 end
 
 namespace :rubocop do
@@ -267,10 +272,9 @@ namespace 'blog' do
   checksums = ''
 
   task 'checksums' => 'package' do
-    require 'digest'
     require 'net/http'
     Dir['pkg/*{tgz,zip,gem}'].each do |file|
-      digest = Digest::SHA256.file(file).hexdigest
+      digest = OpenSSL::Digest::SHA256.file(file).hexdigest
       basename = File.basename(file)
 
       checksums << "* #{basename}  \n"
@@ -280,7 +284,7 @@ namespace 'blog' do
       response = Net::HTTP.get_response(release_url)
 
       if response.is_a?(Net::HTTPSuccess)
-        released_digest = Digest::SHA256.hexdigest(response.body)
+        released_digest = OpenSSL::Digest::SHA256.hexdigest(response.body)
 
         if digest != released_digest
           abort "Checksum of #{file} (#{digest}) doesn't match checksum of released package at #{release_url} (#{released_digest})"

@@ -11,8 +11,7 @@ We track [small bugs and features](https://github.com/rubygems/rubygems/issues?q
 Generally, great ways to get started helping out with Bundler are:
 
   - using prerelease versions (run `gem install bundler --pre`)
-  - [reporting bugs you encounter or suggesting new features](https://github.com/rubygems/rubygems/issues/new)
-    - see our [issues guide](ISSUES.md) for help on filing issues
+  - [reporting bugs you encounter or suggesting new features](https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md)
     - see the [new features documentation](../development/NEW_FEATURES.md) for more
   - adding to or editing [the Bundler documentation website](https://bundler.io) and [Bundler man pages](https://bundler.io/man/bundle.1.html)
   - [checking issues for completeness](BUG_TRIAGE.md)

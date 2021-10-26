@@ -7,6 +7,12 @@ assignees: ''
 
 ---
 
+<!--
+Before reporting an issue, make sure you're using the latest version of rubygems
+by running `gem update --system`, and double check whether the issue has already
+been fixed in the latest version.
+-->
+
 I'm having a problem or would like to suggest a feature.
 
 My current problem is _________
@@ -22,7 +28,7 @@ This issue is related to:
 Here are my current environment details:
 
 ```
-$ gem env version
+$ gem env
 PASTE HERE
 ```
 

@@ -1,4 +1,4 @@
-name: windows_rubygems
+name: windows-rubygems
 
 on:
   pull_request:

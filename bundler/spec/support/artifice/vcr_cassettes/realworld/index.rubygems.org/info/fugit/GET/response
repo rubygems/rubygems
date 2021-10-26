@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4181
+content-length: 4889
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "4218ec6f116c1ac76c6500fd979a7bb4"
-last-modified: Tue, 12 Jan 2021 09:26:33 GMT
+etag: "8070545551f1efcd4b995c1707779428"
+last-modified: Sat, 18 Sep 2021 00:18:24 GMT
 cache-control: max-age=60, public
-x-request-id: 787e0649-c177-4c92-8ef5-1ad42a596360
-x-runtime: 0.008293
+x-request-id: afcf6aac-f4a3-40b5-a30d-4208198b2274
+x-runtime: 0.007741
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 54.214.179.27:443
+x-backend: F_Rails 52.88.209.40:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:49 GMT
+date: Mon, 25 Oct 2021 23:17:44 GMT
 via: 1.1 varnish
-age: 3050
-x-served-by: cache-mad22060-MAD
+age: 3182
+x-served-by: cache-fra19127-FRA
 x-cache: HIT
-x-cache-hits: 1
-x-timer: S1611581389.058632,VS0,VE0
-vary: Accept-Encoding,Fastly-SSL
+x-cache-hits: 4814
+x-timer: S1635203865.837786,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -64,3 +64,9 @@ server: RubyGems.org
 1.4.0 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:bd8915b34a1d8ac20ba2d5cf859853f0159fc2932c8c24729f5c04d51bfca1a1
 1.4.1 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:22a4537fa42f71850e023a90df6966ddb815c7f66ed58fd70d3e52dc10d7782e
 1.4.2 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:3e65b19aab35c7656fbd98f6afc1c57090f3b0f725b1c18ff448be0f50f7e66b
+1.4.3 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:c86b29367bafd67f0b85d22331d077bcc5e9c70c2ee1d367c59b3d197e07a977
+1.4.4 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:3a6b2b06cda79d626743eba74c0d21353fd6023a6b00361a7500735b6cab0d37
+1.4.5 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:89ecae7b8ac8c90b5aff98eaddc9819a673ad089af2ee757117f934403ab0b4a
+1.5.0 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:c1e9f258a9df33e1e619a43c8095210dcfba0d7f0281e54b7d002653efcbe39f
+1.5.1 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:ddba8e0b59535b82cdb1079a329abd5124c51e27100e2fa10cd593b0dd67a02b
+1.5.2 et-orbi:>= 1.1.8&~> 1.1,raabro:~> 1.4|checksum:6a32fe81b5d44d852d3279013540808feb13ee6dd13ae9e2adbfa087233a0851

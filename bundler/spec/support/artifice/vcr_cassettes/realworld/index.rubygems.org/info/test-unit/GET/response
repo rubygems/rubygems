@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 6702
+content-length: 7780
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "c2ce186a3e149a41378a8debedd91438"
-last-modified: Mon, 28 Dec 2020 21:08:01 GMT
+etag: "059c79dc5f614f306d0c443e09e5ee78"
+last-modified: Mon, 18 Oct 2021 01:08:53 GMT
 cache-control: max-age=60, public
-x-request-id: 27f1588e-1f96-439d-a4d3-af4d7440130f
-x-runtime: 0.006725
+x-request-id: bda0ced6-91f3-49c4-b632-295b3683c8ae
+x-runtime: 0.008003
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.240.15.233:443
+x-backend: F_Rails 44.239.42.136:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:43 GMT
+date: Mon, 25 Oct 2021 23:17:40 GMT
 via: 1.1 varnish
-age: 3542
-x-served-by: cache-mad22033-MAD
+age: 2821
+x-served-by: cache-fra19151-FRA
 x-cache: HIT
-x-cache-hits: 3
-x-timer: S1611581383.370533,VS0,VE0
-vary: Accept-Encoding,Fastly-SSL
+x-cache-hits: 7
+x-timer: S1635203860.214213,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -101,3 +101,14 @@ server: RubyGems.org
 3.3.7 power_assert:>= 0|checksum:e5c83c87e8cc8b08e3bdb52cf45af9ed2fb9427b6481f5921c384569dafa7bd9
 3.3.8 power_assert:>= 0|checksum:803c714ccea88ea7ec2d0c96fa16a643065b0d2350c9c48ce8f4ffefc34c4a8f
 3.3.9 power_assert:>= 0|checksum:d5a87ff380df69418912d175695ad34fbd4708ab01526a526e8c0b9c0a2c3ccd
+3.4.0 power_assert:>= 0|checksum:15c5002e9be8b40604a7dd3f34485793406a3982a83ca25a6c9058f787180cc0
+3.4.1 power_assert:>= 0|checksum:8447f58b8ef0e5b072906f0cb3167d28658198416c99d730bddddf8ed4f8bd61
+3.4.2 power_assert:>= 0|checksum:df542be7fff789bd4ccac69ef6453cb893d7354ba602ab1fc9da19a758e5d6cb
+3.4.3 power_assert:>= 0|checksum:15b9957dd7b00c96652cca39ffd837c62894821b49e5008960b8aeca8683b661
+3.4.4 power_assert:>= 0|checksum:ed623335a339de8e44ad9937f9e7f3c5dcfe92cc914e3100686edd0bf7f13a96
+3.4.5 power_assert:>= 0|checksum:e633c040cf1dd67c20664bb7334a2e1012055e2aca0bad5c87988567f23d38be
+3.4.6 power_assert:>= 0|checksum:28ef23a6a4596a1cb892edbe0856101653b44a1166f725841387e4145a2121c4
+3.4.7 power_assert:>= 0|checksum:f5c4d711d3d6659a861d1b5abc23360da0b55767f0bf074ad948fdb7cf40f60e
+3.4.8 power_assert:>= 0|checksum:accc5963ce1d40fcdfaa08a5c61bf8fa8756f623bec54eef28481a5a413a8d8a
+3.4.9 power_assert:>= 0|checksum:86bfd95327717a2f3572c7b1f27c09f8a902ad5e57c1daa7eecdf569a207edf0
+3.5.0 power_assert:>= 0|checksum:e241fdba08e9313d6d6945fe805eee6d15f4289e68d4874005dfe19e4fc172ab

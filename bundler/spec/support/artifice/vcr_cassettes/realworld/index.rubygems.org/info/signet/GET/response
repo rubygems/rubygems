@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 6305
+content-length: 6877
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "0fe95cb033a1c329a71b6f6d0a03a874"
-last-modified: Mon, 14 Dec 2020 17:12:03 GMT
+etag: "259d2314eaf3bb0d75f807cca679dcb8"
+last-modified: Fri, 03 Sep 2021 21:05:46 GMT
 cache-control: max-age=60, public
-x-request-id: 33ec5778-4d22-4f48-ade5-4cdc20090662
-x-runtime: 0.008712
+x-request-id: 6ea197d9-d5f6-41ba-80d5-ef047a55922d
+x-runtime: 0.009989
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 54.214.179.27:443
+x-backend: F_Rails 52.88.209.40:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:42 GMT
+date: Mon, 25 Oct 2021 23:17:39 GMT
 via: 1.1 varnish
-age: 3232
-x-served-by: cache-mad22083-MAD
+age: 3619
+x-served-by: cache-fra19170-FRA
 x-cache: HIT
 x-cache-hits: 1
-x-timer: S1611581383.854373,VS0,VE0
+x-timer: S1635203860.841609,VS0,VE1
 vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -67,3 +67,6 @@ server: RubyGems.org
 0.13.0 addressable:~> 2.3,faraday:< 2.0&>= 0.17.3,jwt:< 3.0&>= 1.5,multi_json:~> 1.10|checksum:980bd382798240c80c80409a4fbff894e1e4e87d6d9c8b769af42648f0acb76b,ruby:>= 2.4.0,rubygems:>= 1.3.5
 0.13.2 addressable:~> 2.3,faraday:< 2.0&>= 0.17.3,jwt:< 3.0&>= 1.5,multi_json:~> 1.10|checksum:8f1d2a786e51f54b2aba681dc378ca717ba1bbe7ef073c9c0ded24e3345be557,ruby:>= 2.4.0,rubygems:>= 1.3.5
 0.14.0 addressable:~> 2.3,faraday:< 2.0&>= 0.17.3,jwt:< 3.0&>= 1.5,multi_json:~> 1.10|checksum:17dfcaaf40df57eeb7fcc78e3759b64722b7f4e35e85c62028ccf6ed8e31e281,ruby:>= 2.4.0,rubygems:>= 1.3.5
+0.14.1 addressable:~> 2.3,faraday:< 2.0&>= 0.17.3,jwt:< 3.0&>= 1.5,multi_json:~> 1.10|checksum:bb878fe3cc115246c3bfbbec87f6d5bcdd49372347a9ead25d431699b3d5b9fe,ruby:>= 2.4.0,rubygems:>= 1.3.5
+0.15.0 addressable:~> 2.3,faraday:< 2.0&>= 0.17.3,jwt:< 3.0&>= 1.5,multi_json:~> 1.10|checksum:0f184cb36951f56de355a4cf6357a77e2a78a240ac63a47b19b7c399aaab7def,ruby:>= 2.5,rubygems:>= 1.3.5
+0.16.0 addressable:~> 2.8,faraday:< 2.0&>= 0.17.3,jwt:< 3.0&>= 1.5,multi_json:~> 1.10|checksum:939464142cf004d379985a5dde3cc51cbb6c6b528f89ba379decce777353f531,ruby:>= 2.5,rubygems:>= 1.3.5

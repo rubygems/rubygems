@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4034
+content-length: 4489
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "d577761b200a9562249b8035c517f8c6"
-last-modified: Thu, 14 Jan 2021 21:36:56 GMT
+etag: "bdfe82982219a824ca129e450179ab73"
+last-modified: Wed, 11 Aug 2021 17:30:49 GMT
 cache-control: max-age=60, public
-x-request-id: 6a33685c-6582-46e6-885d-78c2013299f0
-x-runtime: 0.008148
+x-request-id: 61ba4db8-2cab-4d2e-b9e4-951b385ab105
+x-runtime: 0.006603
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.237.26.162:443
+x-backend: F_Rails 52.41.58.231:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:35 GMT
+date: Mon, 25 Oct 2021 23:17:33 GMT
 via: 1.1 varnish
-age: 3535
-x-served-by: cache-mad22074-MAD
+age: 525
+x-served-by: cache-fra19173-FRA
 x-cache: HIT
 x-cache-hits: 3
-x-timer: S1611581375.449866,VS0,VE0
+x-timer: S1635203853.018662,VS0,VE0
 vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -65,3 +65,7 @@ server: RubyGems.org
 2.7.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:f8b38df4dfa0dca45230c06ae55916c5e5940441237f7d31087cc1994d0f9faa
 2.8.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:f06b481765062d84a0e494794ef1c8849a8164c8f1ac8c11cc6e8e6972acb159
 2.9.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:93f908512a878ba04fa5e0a0da414cbe8884869e488077c70dfc741a77dffc2f
+2.9.1 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:273e5acaa8c64a948bf6279112b08fdd3cb1d470e24cd23a12b78482625c35f1
+2.10.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:9eceb9e52a0d4e35528d2537a64b7a95d84437c93723a88af4077b2cbf5273a7
+2.11.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:d54c3bcdc8acde2b04c56fde64e4fb935a43ecf83592bda079222957fa98915f
+2.12.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:bcbe9a6c96455a72e14422e5e8890544d1db4004c6bbd88247c58a7e8af20cdb

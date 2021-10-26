@@ -215,7 +215,7 @@ task :upload => %w[upload_to_github upload_to_s3]
 
 directory '../guides.rubygems.org' do
   sh 'git', 'clone',
-     'git@github.com:rubygems/guides.git',
+     'https://github.com/rubygems/guides.git',
      '../guides.rubygems.org'
 end
 
@@ -265,7 +265,7 @@ end
 
 directory '../blog.rubygems.org' do
   sh 'git', 'clone',
-     'git@github.com:rubygems/rubygems.github.io.git',
+    'https://github.com/rubygems/rubygems.github.io.git',
      '../blog.rubygems.org'
 end
 

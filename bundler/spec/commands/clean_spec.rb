@@ -644,6 +644,8 @@ RSpec.describe "bundle clean" do
       source "#{file_uri_for(gem_repo2)}"
     G
 
+    realworld_system_gems "tsort --version 0.1.0", :path => default_bundle_path
+
     bundle "clean --force", :env => { "BUNDLER_GEM_DEFAULT_DIR" => system_gem_path.to_s }
 
     expect(out).not_to include("Removing irb")

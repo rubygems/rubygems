@@ -387,28 +387,6 @@ The checksum of /versions does not match the checksum provided by the server! So
     expect(out).to include("Fetching source index from http://localgemserver.test/extra")
   end
 
-  it "does not fetch every spec if the index of gems is large when doing back deps" do
-    build_repo2 do
-      build_gem "back_deps" do |s|
-        s.add_dependency "foo"
-      end
-      build_gem "missing"
-
-      FileUtils.rm_rf Dir[gem_repo2("gems/foo-*.gem")]
-    end
-
-    api_request_limit = low_api_request_limit_for(gem_repo2)
-
-    install_gemfile <<-G, :artifice => "compact_index_extra_missing", :requires => [api_request_limit_hack_file], :env => { "BUNDLER_SPEC_API_REQUEST_LIMIT" => api_request_limit.to_s }.merge(env_for_missing_prerelease_default_gem_activation)
-      source "#{source_uri}"
-      source "#{source_uri}/extra" do
-        gem "back_deps"
-      end
-    G
-
-    expect(the_bundle).to include_gems "back_deps 1.0"
-  end
-
   it "does not fetch every spec if the index of gems is large when doing back deps & everything is the compact index" do
     build_repo4 do
       build_gem "back_deps" do |s|

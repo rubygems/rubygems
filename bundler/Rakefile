@@ -160,6 +160,15 @@ Automatiek::RakeTask.new("molinillo") do |lib|
   lib.prefix = "Bundler"
   lib.vendor_lib = "lib/bundler/vendor/molinillo"
   lib.license_path = "LICENSE"
+
+  lib.dependency("tsort") do |sublib|
+    sublib.version = "master"
+    sublib.download = { :github => "https://github.com/ruby/tsort" }
+    sublib.namespace = "TSort"
+    sublib.prefix = "Bundler"
+    sublib.vendor_lib = "lib/bundler/vendor/tsort"
+    sublib.license_path = "LICENSE.txt"
+  end
 end
 
 desc "Vendor a specific version of thor"

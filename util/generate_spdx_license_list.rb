@@ -21,6 +21,7 @@ class Gem::Licenses
   extend Gem::Text
 
   NONSTANDARD = 'Nonstandard'.freeze
+  LICENSE_REF = 'LicenseRef-.+'.freeze
 
   # Software Package Data Exchange (SPDX) standard open-source software
   # license identifiers
@@ -40,6 +41,7 @@ class Gem::Licenses
       \\+?
       (?:\\s WITH \\s \#{Regexp.union(EXCEPTION_IDENTIFIERS)})?
       | \#{NONSTANDARD}
+      | \#{LICENSE_REF}
     )
     \\Z
   }ox.freeze

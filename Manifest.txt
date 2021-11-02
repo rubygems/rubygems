@@ -394,6 +394,17 @@ lib/rubygems/local_remote_options.rb
 lib/rubygems/mock_gem_ui.rb
 lib/rubygems/name_tuple.rb
 lib/rubygems/openssl.rb
+lib/rubygems/optparse.rb
+lib/rubygems/optparse/COPYING
+lib/rubygems/optparse/lib/optionparser.rb
+lib/rubygems/optparse/lib/optparse.rb
+lib/rubygems/optparse/lib/optparse/ac.rb
+lib/rubygems/optparse/lib/optparse/date.rb
+lib/rubygems/optparse/lib/optparse/kwargs.rb
+lib/rubygems/optparse/lib/optparse/shellwords.rb
+lib/rubygems/optparse/lib/optparse/time.rb
+lib/rubygems/optparse/lib/optparse/uri.rb
+lib/rubygems/optparse/lib/optparse/version.rb
 lib/rubygems/package.rb
 lib/rubygems/package/digest_io.rb
 lib/rubygems/package/file_source.rb

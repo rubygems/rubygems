@@ -19,11 +19,7 @@ module Bundler
         buffer = string.b
 
         words = SHA1_WORDS.dup
-        generate_split_buffer(buffer) do |chunk|
-          w = []
-          chunk.each_slice(4) do |a, b, c, d|
-            w << (((a << 8 | b) << 8 | c) << 8 | d)
-          end
+        generate_split_buffer(buffer) do |w|
           a, b, c, d, e = *words
           (16..79).each do |i|
             w[i] = SHA1_MASK & rotate((w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16]), 1)
@@ -56,11 +52,10 @@ module Bundler
       private
 
       def generate_split_buffer(string, &block)
-        size   = string.bytesize * 8
-        buffer = string.bytes << 128
-        buffer << 0 while buffer.size % 64 != 56
-        buffer.concat([size].pack("Q>").bytes)
-        buffer.each_slice(64, &block)
+        size = string.bytesize
+        string << "\x80"
+        string << [size * 8].pack("Q>").rjust(72 - (size + 8) % 64, "\0")
+        string.unpack("N*").each_slice(16, &block)
       end
 
       def rotate(value, spaces)

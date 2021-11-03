@@ -7,7 +7,7 @@ private_key_path = "#{test_path}/private_key.pem"
 
 key = OpenSSL::PKey::RSA.new File.read private_key_path
 
-cipher = OpenSSL::Cipher.new 'DES-CBC'
+cipher = OpenSSL::Cipher.new 'AES-256-CBC'
 
 encrypted_key_path = "#{test_path}/encrypted_private_key.pem"
 

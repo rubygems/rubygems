@@ -149,12 +149,6 @@ By default, this RubyGems will install gem as:
   def execute
     @verbose = Gem.configuration.really_verbose
 
-    install_destdir = options[:destdir]
-
-    unless install_destdir.empty?
-      ENV['GEM_HOME'] ||= prepend_destdir(Gem.default_dir)
-    end
-
     check_ruby_version
 
     require 'fileutils'
@@ -257,35 +251,32 @@ By default, this RubyGems will install gem as:
       say "Installing #{tool} executable" if @verbose
 
       Dir.chdir path do
-        bin_files = Dir['*']
+        bin_file = "gem"
 
-        bin_files -= %w[update_rubygems]
+        dest_file = target_bin_path(bin_dir, bin_file)
+        bin_tmp_file = File.join Dir.tmpdir, "#{bin_file}.#{$$}"
 
-        bin_files.each do |bin_file|
-          dest_file = target_bin_path(bin_dir, bin_file)
-          bin_tmp_file = File.join Dir.tmpdir, "#{bin_file}.#{$$}"
+        begin
+          bin = File.readlines bin_file
+          bin[0] = shebang
 
-          begin
-            bin = File.readlines bin_file
-            bin[0] = shebang
-
-            File.open bin_tmp_file, 'w' do |fp|
-              fp.puts bin.join
-            end
-
-            install bin_tmp_file, dest_file, :mode => prog_mode
-            bin_file_names << dest_file
-          ensure
-            rm bin_tmp_file
+          File.open bin_tmp_file, 'w' do |fp|
+            fp.puts bin.join
           end
 
-          next unless Gem.win_platform?
+          install bin_tmp_file, dest_file, :mode => prog_mode
+          bin_file_names << dest_file
+        ensure
+          rm bin_tmp_file
+        end
 
-          begin
-            bin_cmd_file = File.join Dir.tmpdir, "#{bin_file}.bat"
+        next unless Gem.win_platform?
 
-            File.open bin_cmd_file, 'w' do |file|
-              file.puts <<-TEXT
+        begin
+          bin_cmd_file = File.join Dir.tmpdir, "#{bin_file}.bat"
+
+          File.open bin_cmd_file, 'w' do |file|
+            file.puts <<-TEXT
   @ECHO OFF
   IF NOT "%~f0" == "~f0" GOTO :WinNT
   @"#{File.basename(Gem.ruby).chomp('"')}" "#{dest_file}" %1 %2 %3 %4 %5 %6 %7 %8 %9
@@ -293,12 +284,11 @@ By default, this RubyGems will install gem as:
   :WinNT
   @"#{File.basename(Gem.ruby).chomp('"')}" "%~dpn0" %*
   TEXT
-            end
-
-            install bin_cmd_file, "#{dest_file}.bat", :mode => prog_mode
-          ensure
-            rm bin_cmd_file
           end
+
+          install bin_cmd_file, "#{dest_file}.bat", :mode => prog_mode
+        ensure
+          rm bin_cmd_file
         end
       end
     end
@@ -370,7 +360,7 @@ By default, this RubyGems will install gem as:
   end
 
   def install_default_bundler_gem(bin_dir)
-    specs_dir = prepend_destdir_if_present(Gem.default_specifications_dir)
+    specs_dir = File.join(default_dir, "specifications", "default")
     mkdir_p specs_dir, :mode => 0755
 
     bundler_spec = Dir.chdir("bundler") { Gem::Specification.load("bundler.gemspec") }
@@ -398,7 +388,7 @@ By default, this RubyGems will install gem as:
     bundler_spec.instance_variable_set(:@base_dir, File.dirname(File.dirname(specs_dir)))
 
     # Remove gemspec that was same version of vendored bundler.
-    normal_gemspec = File.join(Gem.default_dir, "specifications", "bundler-#{bundler_spec.version}.gemspec")
+    normal_gemspec = File.join(default_dir, "specifications", "bundler-#{bundler_spec.version}.gemspec")
     if File.file? normal_gemspec
       File.delete normal_gemspec
     end
@@ -617,14 +607,22 @@ abort "#{deprecation_message}"
 
   private
 
+  def default_dir
+    prefix = options[:prefix]
+
+    if prefix.empty?
+      dir = Gem.default_dir
+    else
+      dir = prefix
+    end
+
+    prepend_destdir_if_present(dir)
+  end
+
   def prepend_destdir_if_present(path)
     destdir = options[:destdir]
     return path if destdir.empty?
 
-    prepend_destdir(path)
-  end
-
-  def prepend_destdir(path)
     File.join(options[:destdir], path.gsub(/^[a-zA-Z]:/, ''))
   end
 

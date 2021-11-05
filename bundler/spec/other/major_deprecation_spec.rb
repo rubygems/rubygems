@@ -656,21 +656,6 @@ The :gist git source is deprecated, and will be removed in the future. Add this 
     pending "fails with a helpful message", :bundler => "3"
   end
 
-  context "bundle viz" do
-    before do
-      graphviz_version = RUBY_VERSION >= "2.4" ? "1.2.5" : "1.2.4"
-      realworld_system_gems "ruby-graphviz --version #{graphviz_version}"
-      create_file "gems.rb", "source \"#{file_uri_for(gem_repo1)}\""
-      bundle "viz"
-    end
-
-    it "prints a deprecation warning", :bundler => "< 3" do
-      expect(deprecations).to include "The `viz` command has been moved to the `bundle-viz` gem, see https://github.com/rubygems/bundler-viz"
-    end
-
-    pending "fails with a helpful message", :bundler => "3"
-  end
-
   describe "deprecating rubocop", :readline do
     context "bundle gem --rubocop" do
       before do

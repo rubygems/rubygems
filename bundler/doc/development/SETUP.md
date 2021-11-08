@@ -4,13 +4,6 @@ To work on Bundler, you'll probably want to do a couple of things:
 
 * [Fork the Rubygems repo](https://github.com/rubygems/rubygems), and clone the fork onto your machine. ([Follow this tutorial](https://help.github.com/articles/fork-a-repo/) for instructions on forking a repo.)
 
-* Install `graphviz` package using your package manager:
-
-        $ sudo apt-get install graphviz -y
-
-    And for OS X (with brew installed):
-
-        $ brew install graphviz
 
 * From the rubygems root directory change into the bundler directory:
 

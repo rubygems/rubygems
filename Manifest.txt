@@ -48,7 +48,6 @@ bundler/lib/bundler/cli/pristine.rb
 bundler/lib/bundler/cli/remove.rb
 bundler/lib/bundler/cli/show.rb
 bundler/lib/bundler/cli/update.rb
-bundler/lib/bundler/cli/viz.rb
 bundler/lib/bundler/compact_index_client.rb
 bundler/lib/bundler/compact_index_client/cache.rb
 bundler/lib/bundler/compact_index_client/gem_parser.rb
@@ -78,7 +77,6 @@ bundler/lib/bundler/gem_helper.rb
 bundler/lib/bundler/gem_helpers.rb
 bundler/lib/bundler/gem_tasks.rb
 bundler/lib/bundler/gem_version_promoter.rb
-bundler/lib/bundler/graph.rb
 bundler/lib/bundler/index.rb
 bundler/lib/bundler/injector.rb
 bundler/lib/bundler/inline.rb
@@ -134,8 +132,6 @@ bundler/lib/bundler/man/bundle-show.1
 bundler/lib/bundler/man/bundle-show.1.ronn
 bundler/lib/bundler/man/bundle-update.1
 bundler/lib/bundler/man/bundle-update.1.ronn
-bundler/lib/bundler/man/bundle-viz.1
-bundler/lib/bundler/man/bundle-viz.1.ronn
 bundler/lib/bundler/man/bundle.1
 bundler/lib/bundler/man/bundle.1.ronn
 bundler/lib/bundler/man/gemfile.5

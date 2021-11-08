@@ -1,3 +1,23 @@
+# 3.2.31 / 2021-11-08
+
+## Enhancements:
+
+* Don't pass empty `DESTDIR` to `nmake` since it works differently from
+  standard `make`. Pull request #5057 by hsbt
+* Fix `gem install` vs `gem fetch` inconsistency. Pull request #5037 by
+  deivid-rodriguez
+* Lazily load and vendor `optparse`. Pull request #4881 by
+  deivid-rodriguez
+* Use a vendored copy of `tsort` internally. Pull request #5027 by
+  deivid-rodriguez
+
+## Bug fixes:
+
+* Fix `ruby setup.rb` when `--prefix` is passed. Pull request #5051 by
+  deivid-rodriguez
+* Don't apply `--destdir` twice when running `setup.rb`. Pull request
+  #2768 by alyssais
+
 # 3.2.30 / 2021-10-26
 
 ## Enhancements:

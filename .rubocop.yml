@@ -5,6 +5,8 @@ AllCops:
   Exclude:
     - 'bundler/**/*'
     - 'lib/rubygems/resolver/molinillo/**/*'
+    - 'lib/rubygems/tsort/**/*'
+    - 'lib/rubygems/optparse/**/*'
     - 'pkg/**/*'
     - 'tmp/**/*'
   TargetRubyVersion: 2.3
@@ -84,6 +86,9 @@ Lint/DuplicateMethods:
   Enabled: true
 
 Lint/ParenthesesAsGroupedExpression:
+  Enabled: true
+
+Lint/Debugger:
   Enabled: true
 
 Layout/EndAlignment:

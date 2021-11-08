@@ -214,6 +214,7 @@ bundler/lib/bundler/templates/newgem/rspec.tt
 bundler/lib/bundler/templates/newgem/rubocop.yml.tt
 bundler/lib/bundler/templates/newgem/spec/newgem_spec.rb.tt
 bundler/lib/bundler/templates/newgem/spec/spec_helper.rb.tt
+bundler/lib/bundler/templates/newgem/standard.yml.tt
 bundler/lib/bundler/templates/newgem/test/minitest/newgem_test.rb.tt
 bundler/lib/bundler/templates/newgem/test/minitest/test_helper.rb.tt
 bundler/lib/bundler/templates/newgem/test/test-unit/newgem_test.rb.tt
@@ -290,6 +291,8 @@ bundler/lib/bundler/vendor/thor/lib/thor/shell/html.rb
 bundler/lib/bundler/vendor/thor/lib/thor/util.rb
 bundler/lib/bundler/vendor/thor/lib/thor/version.rb
 bundler/lib/bundler/vendor/tmpdir/lib/tmpdir.rb
+bundler/lib/bundler/vendor/tsort/LICENSE.txt
+bundler/lib/bundler/vendor/tsort/lib/tsort.rb
 bundler/lib/bundler/vendor/uri/LICENSE.txt
 bundler/lib/bundler/vendor/uri/lib/uri.rb
 bundler/lib/bundler/vendor/uri/lib/uri/common.rb
@@ -309,6 +312,7 @@ bundler/lib/bundler/vendored_molinillo.rb
 bundler/lib/bundler/vendored_persistent.rb
 bundler/lib/bundler/vendored_thor.rb
 bundler/lib/bundler/vendored_tmpdir.rb
+bundler/lib/bundler/vendored_tsort.rb
 bundler/lib/bundler/vendored_uri.rb
 bundler/lib/bundler/version.rb
 bundler/lib/bundler/version_ranges.rb
@@ -390,6 +394,17 @@ lib/rubygems/local_remote_options.rb
 lib/rubygems/mock_gem_ui.rb
 lib/rubygems/name_tuple.rb
 lib/rubygems/openssl.rb
+lib/rubygems/optparse.rb
+lib/rubygems/optparse/COPYING
+lib/rubygems/optparse/lib/optionparser.rb
+lib/rubygems/optparse/lib/optparse.rb
+lib/rubygems/optparse/lib/optparse/ac.rb
+lib/rubygems/optparse/lib/optparse/date.rb
+lib/rubygems/optparse/lib/optparse/kwargs.rb
+lib/rubygems/optparse/lib/optparse/shellwords.rb
+lib/rubygems/optparse/lib/optparse/time.rb
+lib/rubygems/optparse/lib/optparse/uri.rb
+lib/rubygems/optparse/lib/optparse/version.rb
 lib/rubygems/package.rb
 lib/rubygems/package/digest_io.rb
 lib/rubygems/package/file_source.rb
@@ -492,6 +507,9 @@ lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA.pem
 lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/text.rb
+lib/rubygems/tsort.rb
+lib/rubygems/tsort/LICENSE.txt
+lib/rubygems/tsort/lib/tsort.rb
 lib/rubygems/uninstaller.rb
 lib/rubygems/uri.rb
 lib/rubygems/uri_formatter.rb

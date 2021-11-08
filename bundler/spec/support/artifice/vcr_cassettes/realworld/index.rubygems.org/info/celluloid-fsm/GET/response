@@ -11,19 +11,19 @@ referrer-policy: strict-origin-when-cross-origin
 etag: "f3a03c53fe857e9d1bf7b990bc706127"
 last-modified: Mon, 14 Dec 2020 16:16:29 GMT
 cache-control: max-age=60, public
-x-request-id: 88a43fce-9c7b-4b33-9719-547304199085
-x-runtime: 0.008985
+x-request-id: f9ac07ba-e2a1-47ad-a8f8-0f96908ae614
+x-runtime: 0.008797
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.237.26.162:443
+x-backend: F_Rails 52.41.58.231:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:42 GMT
+date: Mon, 25 Oct 2021 23:17:39 GMT
 via: 1.1 varnish
-age: 3542
-x-served-by: cache-mad22056-MAD
+age: 2697
+x-served-by: cache-fra19183-FRA
 x-cache: HIT
 x-cache-hits: 3
-x-timer: S1611581383.833262,VS0,VE0
-vary: Accept-Encoding,Fastly-SSL
+x-timer: S1635203860.903852,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---

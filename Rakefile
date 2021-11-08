@@ -22,6 +22,9 @@ task :update_locked_bundler do |_, args|
   sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
   sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
   sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop24_gems.rb"
+  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard_gems.rb"
+  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard23_gems.rb"
+  sh "ruby", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard24_gems.rb"
 end
 
 desc "Setup git hooks"
@@ -75,6 +78,34 @@ if File.exist?("util/automatiek.rake")
     lib.prefix = "Gem::Resolver"
     lib.vendor_lib = "lib/rubygems/resolver/molinillo"
     lib.license_path = "LICENSE"
+  end
+
+  desc "Vendor a specific version of tsort"
+  Automatiek::RakeTask.new("tsort") do |lib|
+    lib.version = "master"
+    lib.download = { :github => "https://github.com/ruby/tsort" }
+    lib.namespace = "TSort"
+    lib.prefix = "Gem"
+    lib.vendor_lib = "lib/rubygems/tsort"
+    lib.license_path = "LICENSE.txt"
+  end
+
+  # We currently ship optparse 0.2.0 plus the following changes:
+  # * Remove top aliasing the `::OptParse` constant to `OptionParser`, since we
+  #   don't need it and it triggers redefinition warnings since the default
+  #   optparse gem also does the aliasing.
+  # * Restore support for old versions of `did_you_mean` so that our vendored
+  #   copy works consistently in all supported rubies. This one can be removed
+  #   once we drop ruby 2.4 support, since newer versions include a version of
+  #   `did_you_mean` that does not require any changes.
+  desc "Vendor a specific version of optparse"
+  Automatiek::RakeTask.new("optparse") do |lib|
+    lib.version = "0.2.0"
+    lib.download = { :github => "https://github.com/ruby/optparse" }
+    lib.namespace = "OptionParser"
+    lib.prefix = "Gem"
+    lib.vendor_lib = "lib/rubygems/optparse"
+    lib.license_path = "COPYING"
   end
 end
 

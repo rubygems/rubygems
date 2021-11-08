@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 7750
+content-length: 8156
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,22 +8,22 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "1fad9e1e12df9814378bd61b0405d7ab"
-last-modified: Mon, 04 Jan 2021 10:02:19 GMT
+etag: "ff929ffceae57ec4f8513ad64f2bea70"
+last-modified: Tue, 30 Mar 2021 22:37:02 GMT
 cache-control: max-age=60, public
-x-request-id: e6076d72-15f2-45b2-96c2-22a52c10c17b
-x-runtime: 0.008587
+x-request-id: d98e96d0-d476-424e-ba95-92f33331d885
+x-runtime: 0.011351
 strict-transport-security: max-age=31536000
-x-backend: F_Rails 54.214.179.27:443
+x-backend: F_Rails 44.239.42.136:443
 accept-ranges: bytes
-date: Mon, 25 Jan 2021 13:29:34 GMT
+date: Mon, 25 Oct 2021 23:17:32 GMT
 via: 1.1 varnish
-age: 3583
-x-served-by: cache-mad22047-MAD
+age: 2691
+x-served-by: cache-fra19173-FRA
 x-cache: HIT
-x-cache-hits: 2
-x-timer: S1611581374.386425,VS0,VE0
-vary: Accept-Encoding,Fastly-SSL
+x-cache-hits: 9
+x-timer: S1635203853.841023,VS0,VE0
+vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
 ---
@@ -96,3 +96,6 @@ server: RubyGems.org
 1.8.5 concurrent-ruby:~> 1.0|checksum:f3bb7c9e89804cde8264b89f47f4746527f7293e7b5e4c74e66a9b70cfe97a94,ruby:>= 2.3.0,rubygems:>= 1.3.5
 1.8.6 concurrent-ruby:~> 1.0|checksum:96b433a93476e9fac69578b45645a799ba739feaca805551d2cb533793c0427d,ruby:>= 2.3.0,rubygems:>= 1.3.5
 1.8.7 concurrent-ruby:~> 1.0|checksum:3be7ddd6069e7b8c939a87290349d28bf13a0bf01a526bb42fdb0d31525f20cf,ruby:>= 2.3.0,rubygems:>= 1.3.5
+1.8.8 concurrent-ruby:~> 1.0|checksum:7adb9849c22f4230c1e6d22d3a0cbba2e3de6a6fa40da64ddf385050f91df84c,ruby:>= 2.3.0,rubygems:>= 1.3.5
+1.8.9 concurrent-ruby:~> 1.0|checksum:62a877ff6b5fdb4c20ca614c6bfcd6abd7b426d883069e59ce41a6744758e622,ruby:>= 2.3.0,rubygems:>= 1.3.5
+1.8.10 concurrent-ruby:~> 1.0|checksum:ca24e52fdd6ad7af419241eef8c41e65ef4e3499c6b252df13f697919eb24e3c,ruby:>= 2.3.0,rubygems:>= 1.3.5

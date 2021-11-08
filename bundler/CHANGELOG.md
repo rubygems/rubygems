@@ -1,3 +1,20 @@
+# 2.2.31 (November 8, 2021)
+
+## Enhancements:
+
+  - Link to working `bundler-graph` plugin in `bundle viz` deprecation message [#5061](https://github.com/rubygems/rubygems/pull/5061)
+  - Memoize materialized specs when requiring `bundler/setup` [#5033](https://github.com/rubygems/rubygems/pull/5033)
+  - Allow custom LicenseRef [#5013](https://github.com/rubygems/rubygems/pull/5013)
+  - Better error when installing a lockfile with git sources and git is not installed [#5036](https://github.com/rubygems/rubygems/pull/5036)
+  - Only delete cached gem when it's corrupted [#5031](https://github.com/rubygems/rubygems/pull/5031)
+  - Support gemified `tsort` [#5032](https://github.com/rubygems/rubygems/pull/5032)
+  - Add standard option alongside rubocop to `bundle gem` [#4411](https://github.com/rubygems/rubygems/pull/4411)
+
+## Bug fixes:
+
+  - Fix system man pages no longer working after bundler overrides `MANPATH` [#5039](https://github.com/rubygems/rubygems/pull/5039)
+  - Don't warn when a lockfile is locked to a dev version [#5018](https://github.com/rubygems/rubygems/pull/5018)
+
 # 2.2.30 (October 26, 2021)
 
 ## Enhancements:

@@ -3,7 +3,6 @@ RakeFileUtils.verbose_flag = false
 require 'rubygems'
 require 'rubygems/package_task'
 require "rake/testtask"
-require 'psych'
 
 desc "Setup Rubygems dev environment"
 task :setup do

@@ -13,6 +13,7 @@ end
 desc "Update Rubygems dev environment"
 task :update do |_, args|
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=release_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
@@ -25,6 +26,7 @@ end
 desc "Update the locked bundler version in dev environment"
 task :update_locked_bundler do |_, args|
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=release_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
@@ -133,7 +135,7 @@ task rubocop: %w[rubocop:rubygems rubocop:bundler]
 # --------------------------------------------------------------------
 # Creating a release
 
-task :prerelease => %w[clobber test bundler:build_metadata check_deprecations]
+task :prerelease => %w[clobber install_release_dependencies test bundler:build_metadata check_deprecations]
 task :postrelease => %w[upload guides:publish blog:publish bundler:build_metadata:clean]
 
 desc "Check for deprecated methods with expired deprecation horizon"
@@ -143,6 +145,13 @@ task :check_deprecations do
   else
     puts "Skipping deprecation checks since not releasing a major version."
   end
+end
+
+desc "Install release dependencies"
+task :install_release_dependencies do
+  require_relative "util/release"
+
+  Release.install_dependencies!
 end
 
 desc "Prepare stable branch"
@@ -418,7 +427,7 @@ module Rubygems
   class ProjectFiles
     def self.all
       files = []
-      exclude = %r{\A(?:\.|dev_gems|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|util/|Rakefile)}
+      exclude = %r{\A(?:\.|dev_gems|release_gems|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|util/|Rakefile)}
       tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|

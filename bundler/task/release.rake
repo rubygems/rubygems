@@ -19,7 +19,7 @@ end
 task :build => ["build_metadata"] do
   Rake::Task["build_metadata:clean"].tap(&:reenable).invoke
 end
-task "release:rubygem_push" => ["release:verify_docs", "build_metadata", "release:github"]
+task "release:rubygem_push" => ["man:check", "build_metadata", "release:github"]
 
 desc "Generates the changelog for a specific target version"
 task :generate_changelog, [:version] do |_t, opts|
@@ -27,8 +27,6 @@ task :generate_changelog, [:version] do |_t, opts|
 end
 
 namespace :release do
-  task :verify_docs => :"man:check"
-
   desc "Push the release to GitHub releases"
   task :github do
     gemspec_version = Bundler::GemHelper.gemspec.version

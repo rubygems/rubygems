@@ -429,13 +429,16 @@ RSpec.describe "bundle install from an existing gemspec" do
           gemspec
         G
 
-        simulate_platform("ruby") { bundle "install" }
+        bundle "config set --local force_ruby_platform true"
+        bundle "install"
+
+        simulate_new_machine
         simulate_platform("jruby") { bundle "install" }
       end
 
       context "on ruby" do
         before do
-          simulate_platform("ruby")
+          bundle "config set --local force_ruby_platform true"
           bundle :install
         end
 
@@ -546,7 +549,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     it "installs the ruby platform gemspec" do
-      simulate_platform "ruby"
+      bundle "config set --local force_ruby_platform true"
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -557,7 +560,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     it "installs the ruby platform gemspec and skips dev deps with `without development` configured" do
-      simulate_platform "ruby"
+      bundle "config set --local force_ruby_platform true"
 
       bundle "config set --local without development"
       install_gemfile <<-G

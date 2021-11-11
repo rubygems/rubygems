@@ -739,7 +739,11 @@ module Bundler
           s.dependencies.replace(new_spec.dependencies)
         end
 
-        converged << s
+        if dep.nil? && @dependencies.find {|d| s.name == d.name }
+          @unlock[:gems] << s.name
+        else
+          converged << s
+        end
       end
 
       resolve = SpecSet.new(converged)

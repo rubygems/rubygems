@@ -27,7 +27,7 @@ class Release
     end
 
     def cut_changelog!
-      @changelog.cut!(previous_version, relevant_pull_requests)
+      @changelog.cut!(previous_version, relevant_pull_requests, extra_entry: extra_entry)
     end
 
     def bump_versions!
@@ -74,6 +74,10 @@ class Release
       @version_files = [File.expand_path("../bundler/lib/bundler/version.rb", __dir__)]
       @tag_prefix = "bundler-v"
     end
+
+    def extra_entry
+      nil
+    end
   end
 
   class Rubygems
@@ -85,6 +89,16 @@ class Release
       @changelog = Changelog.for_rubygems(version)
       @version_files = [File.expand_path("../lib/rubygems.rb", __dir__), File.expand_path("../rubygems-update.gemspec", __dir__)]
       @tag_prefix = "v"
+    end
+
+    def extra_entry
+      "Installs bundler #{bundler_version} as a default gem"
+    end
+
+    private
+
+    def bundler_version
+      version.segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")
     end
   end
 

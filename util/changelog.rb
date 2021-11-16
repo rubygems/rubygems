@@ -2,6 +2,41 @@
 
 require "yaml"
 
+class ChangelogEntry
+  attr_reader :title, :template, :labels, :pull_request
+
+  def initialize(title, template, labels:, pull_request: nil)
+    @title = title
+    @template = template
+    @labels = labels
+    @pull_request = pull_request
+  end
+
+  def updated_at
+    return Time.at(0) unless pull_request
+
+    pull_request.merged_at
+  end
+
+  def number
+    return unless pull_request
+
+    pull_request.number
+  end
+
+  def author
+    return unless pull_request
+
+    pull_request.user
+  end
+
+  def html_url
+    return unless pull_request
+
+    pull_request.html_url
+  end
+end
+
 class Changelog
   def self.for_rubygems(version)
     @rubygems ||= new(
@@ -74,28 +109,30 @@ class Changelog
     types << last_change_type
   end
 
-  def cut!(previous_version, included_pull_requests)
+  def cut!(previous_version, included_pull_requests, extra_entry: nil)
     full_new_changelog = [
       format_header,
       "",
-      unreleased_notes_for(included_pull_requests),
+      unreleased_notes_for(included_pull_requests, extra_entry: extra_entry),
       released_notes_until(previous_version),
     ].join("\n") + "\n"
 
     File.write(@file, full_new_changelog)
   end
 
-  def unreleased_notes_for(included_pull_requests)
+  def unreleased_notes_for(included_pull_requests, extra_entry:)
     lines = []
 
-    group_by_labels(included_pull_requests).each do |label, pulls|
+    entries = prepare_entries(included_pull_requests, extra_entry)
+
+    group_by_labels(entries).each do |label, label_entries|
       category = changelog_label_mapping[label]
 
       lines << category
       lines << ""
 
-      pulls.reverse_each do |pull|
-        lines << format_entry_for(pull)
+      label_entries.reverse_each do |label_entry|
+        lines << format_entry_for(label_entry)
       end
 
       lines << ""
@@ -127,12 +164,16 @@ class Changelog
     new_header
   end
 
-  def format_entry_for(pull)
-    new_entry = entry_template
-      .gsub(/%pull_request_title/, pull.title.strip.delete_suffix(".").tap {|s| s[0] = s[0].upcase })
-      .gsub(/%pull_request_number/, pull.number.to_s)
-      .gsub(/%pull_request_url/, pull.html_url)
-      .gsub(/%pull_request_author/, pull.user.name || pull.user.login)
+  def format_entry_for(entry)
+    new_entry = entry.template.gsub(/%title/, entry.title)
+    pull = entry.pull_request
+
+    if pull
+      new_entry
+        .gsub!(/%pull_request_number/, pull.number.to_s)
+        .gsub!(/%pull_request_url/, pull.html_url)
+        .gsub!(/%pull_request_author/, pull.user.name || pull.user.login)
+    end
 
     new_entry = wrap(new_entry, entry_wrapping, 2) if entry_wrapping
 
@@ -160,8 +201,27 @@ class Changelog
     result
   end
 
+  def prepare_entries(pulls, extra_entry)
+    entries = pulls.map do |pull|
+      ChangelogEntry.new(
+        pull.title.strip.delete_suffix(".").tap {|s| s[0] = s[0].upcase },
+        entry_template,
+        labels: pull.labels,
+        pull_request: pull
+      )
+    end
+
+    entries << ChangelogEntry.new(
+      extra_entry,
+      extra_entry_template,
+      labels: [Struct.new(:name).new(extra_entry_label)]
+    ) if extra_entry
+
+    entries
+  end
+
   def group_by_labels(pulls)
-    grouped_pulls = pulls.sort_by(&:merged_at).group_by do |pull|
+    grouped_pulls = pulls.sort_by(&:updated_at).group_by do |pull|
       relevant_label_for(pull)
     end
 
@@ -212,6 +272,14 @@ class Changelog
 
   def entry_template
     @config["entry_template"]
+  end
+
+  def extra_entry_template
+    @config["extra_entry"]["template"]
+  end
+
+  def extra_entry_label
+    @config["extra_entry"]["label"]
   end
 
   def release_date_format

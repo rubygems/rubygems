@@ -10,6 +10,7 @@
   deivid-rodriguez
 * Use a vendored copy of `tsort` internally. Pull request #5027 by
   deivid-rodriguez
+* Install bundler 2.2.31 as a default gem.
 
 ## Bug fixes:
 
@@ -30,6 +31,7 @@
   by deivid-rodriguez
 * Add missing `require` of `time` within
   `Gem::Request.verify_certificate_message`. Pull request #4975 by nobu
+* Install bundler 2.2.30 as a default gem.
 
 ## Performance:
 
@@ -42,6 +44,7 @@
 
 * Only disallow FIXME/TODO for first word of gemspec description. Pull
   request #4937 by duckinator
+* Install bundler 2.2.29 as a default gem.
 
 ## Bug fixes:
 
@@ -62,6 +65,7 @@
   by duckinator
 * Avoid loading `uri` unnecessarily when activating gems. Pull request
   #4897 by deivid-rodriguez
+* Install bundler 2.2.28 as a default gem.
 
 ## Bug fixes:
 
@@ -77,6 +81,7 @@
   request #4858 by deivid-rodriguez
 * Prioritise gems with higher version for fetching metadata, and stop
   fetching once we find a valid candidate. Pull request #4843 by intuxicated
+* Install bundler 2.2.27 as a default gem.
 
 # 3.2.26 / 2021-08-17
 
@@ -87,6 +92,7 @@
   intuxicated
 * Ignore `RUBYGEMS_GEMDEPS` for the bundler gem. Pull request #4532 by
   deivid-rodriguez
+* Install bundler 2.2.26 as a default gem.
 
 ## Bug fixes:
 
@@ -104,6 +110,7 @@
 * Lazily load `shellwords` library. Pull request #4783 by deivid-rodriguez
 * Check requirements class before loading marshalled requirements. Pull
   request #4651 by nobu
+* Install bundler 2.2.25 as a default gem.
 
 ## Bug fixes:
 
@@ -111,6 +118,10 @@
   #4768 by ybiquitous
 
 # 3.2.24 / 2021-07-15
+
+## Enhancements:
+
+* Install bundler 2.2.24 as a default gem.
 
 ## Bug fixes:
 
@@ -128,6 +139,7 @@
 
 * Rewind IO source to allow working with contents in memory. Pull request
   #4729 by drcapulet
+* Install bundler 2.2.23 as a default gem.
 
 # 3.2.22 / 2021-07-06
 
@@ -137,6 +149,7 @@
   CGA1123
 * Fixes for the edge case when openssl library is missing. Pull request
   #4695 by rhenium
+* Install bundler 2.2.22 as a default gem.
 
 # 3.2.21 / 2021-06-23
 
@@ -146,6 +159,7 @@
 * Add the most recent licenses from spdx.org. Pull request #4662 by nobu
 * Simplify setup.rb code to allow installing rubygems from source on
   truffleruby 21.0 and 21.1. Pull request #4624 by deivid-rodriguez
+* Install bundler 2.2.21 as a default gem.
 
 ## Bug fixes:
 
@@ -163,12 +177,14 @@
 
 * Add better specification policy error description. Pull request #4658 by
   ceritium
+* Install bundler 2.2.20 as a default gem.
 
 # 3.2.19 / 2021-05-31
 
 ## Enhancements:
 
 * Fix `gem help build` output format. Pull request #4613 by tnir
+* Install bundler 2.2.19 as a default gem.
 
 # 3.2.18 / 2021-05-25
 
@@ -176,6 +192,7 @@
 
 * Don't leave temporary directory around when building extensions to
   improve build reproducibility. Pull request #4610 by baloo
+* Install bundler 2.2.18 as a default gem.
 
 # 3.2.17 / 2021-05-05
 
@@ -187,6 +204,7 @@
   #4558 by mame
 * Update the default bindir on macOS. Pull request #4524 by nobu
 * Prefer File.open instead of Kernel#open. Pull request #4529 by mame
+* Install bundler 2.2.17 as a default gem.
 
 ## Documentation:
 
@@ -194,6 +212,10 @@
   Pull request #4551 by graywolf-at-work
 
 # 3.2.16 / 2021-04-08
+
+## Enhancements:
+
+* Install bundler 2.2.16 as a default gem.
 
 ## Bug fixes:
 
@@ -205,6 +227,7 @@
 
 * Prevent downgrades to untested rubygems versions. Pull request #4460 by
   deivid-rodriguez
+* Install bundler 2.2.15 as a default gem.
 
 ## Bug fixes:
 
@@ -215,6 +238,7 @@
 ## Enhancements:
 
 * Less wrapping of network errors. Pull request #4064 by deivid-rodriguez
+* Install bundler 2.2.14 as a default gem.
 
 ## Bug fixes:
 
@@ -223,11 +247,19 @@
 
 # 3.2.13 / 2021-03-03
 
+## Enhancements:
+
+* Install bundler 2.2.13 as a default gem.
+
 ## Bug fixes:
 
 * Support non-gnu libc linux platforms. Pull request #4082 by lloeki
 
 # 3.2.12 / 2021-03-01
+
+## Enhancements:
+
+* Install bundler 2.2.12 as a default gem.
 
 ## Bug fixes:
 
@@ -240,8 +272,13 @@
 
 * Optionally fallback to IPv4 when IPv6 is unreachable. Pull request #2662
   by sonalkr132
+* Install bundler 2.2.11 as a default gem.
 
 # 3.2.10 / 2021-02-15
+
+## Enhancements:
+
+* Install bundler 2.2.10 as a default gem.
 
 ## Documentation:
 
@@ -251,6 +288,10 @@
   AlexWayfer
 
 # 3.2.9 / 2021-02-08
+
+## Enhancements:
+
+* Install bundler 2.2.9 as a default gem.
 
 ## Bug fixes:
 
@@ -265,12 +306,20 @@
 
 # 3.2.8 / 2021-02-02
 
+## Enhancements:
+
+* Install bundler 2.2.8 as a default gem.
+
 ## Bug fixes:
 
 * Fix `gem install` crashing on gemspec with nil required_ruby_version.
   Pull request #4334 by pbernays
 
 # 3.2.7 / 2021-01-26
+
+## Enhancements:
+
+* Install bundler 2.2.7 as a default gem.
 
 ## Bug fixes:
 
@@ -283,6 +332,7 @@
 
 * Fix `Gem::Platform#inspect` showing duplicate information. Pull request
   #4276 by deivid-rodriguez
+* Install bundler 2.2.6 as a default gem.
 
 ## Bug fixes:
 
@@ -292,6 +342,10 @@
   env variable. Pull request #4271 by terceiro
 
 # 3.2.5 / 2021-01-11
+
+## Enhancements:
+
+* Install bundler 2.2.5 as a default gem.
 
 ## Bug fixes:
 
@@ -308,6 +362,7 @@
   deivid-rodriguez
 * Never spawn subshells when building extensions. Pull request #4190 by
   deivid-rodriguez
+* Install bundler 2.2.4 as a default gem.
 
 ## Bug fixes:
 
@@ -321,6 +376,7 @@
 ## Enhancements:
 
 * Fix misspellings in default API key name. Pull request #4177 by hsbt
+* Install bundler 2.2.3 as a default gem.
 
 ## Bug fixes:
 
@@ -329,6 +385,10 @@
   by deivid-rodriguez
 
 # 3.2.2 / 2020-12-17
+
+## Enhancements:
+
+* Install bundler 2.2.2 as a default gem.
 
 ## Bug fixes:
 
@@ -346,6 +406,7 @@
 
 * Added help message for gem i webrick in gem server command. Pull request
   #4117 by hsbt
+* Install bundler 2.2.1 as a default gem.
 
 ## Bug fixes:
 
@@ -374,6 +435,7 @@
 * Lazily load `openssl`. Pull request #3850 by deivid-rodriguez
 * Pass more information when comparing platforms. Pull request #3817 by
   eregon
+* Install bundler 2.2.0 as a default gem.
 
 ## Bug fixes:
 

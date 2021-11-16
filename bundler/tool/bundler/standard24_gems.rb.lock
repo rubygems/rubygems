@@ -61,6 +61,7 @@ DEPENDENCIES
   rake
   rake-compiler
   rspec
+  rubocop-ast (= 1.4.1)
   standard (~> 1.0)
   test-unit
 

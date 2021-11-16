@@ -56,6 +56,7 @@ DEPENDENCIES
   rake-compiler
   rspec
   rubocop (~> 1.7)
+  rubocop-ast (= 1.4.1)
   test-unit
 
 BUNDLED WITH

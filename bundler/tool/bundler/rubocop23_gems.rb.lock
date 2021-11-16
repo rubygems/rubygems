@@ -49,6 +49,7 @@ PLATFORMS
 
 DEPENDENCIES
   minitest
+  parallel (= 1.19.2)
   rake
   rake-compiler
   rspec

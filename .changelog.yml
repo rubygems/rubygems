@@ -2,7 +2,11 @@
 
 header_template: "# %new_version / %release_date"
 
-entry_template: "* %pull_request_title. Pull request #%pull_request_number by %pull_request_author"
+entry_template: "* %title. Pull request #%pull_request_number by %pull_request_author"
+
+extra_entry:
+  template: "* %title."
+  label: "rubygems: enhancement"
 
 release_date_format: "%Y-%m-%d"
 

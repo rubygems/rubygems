@@ -8,6 +8,14 @@ require 'psych'
 desc "Setup Rubygems dev environment"
 task :setup do
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=release_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/test_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/rubocop24_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/standard_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/standard23_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/standard24_gems.rb"
 end
 
 desc "Update Rubygems dev environment"

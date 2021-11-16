@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "rubocop", "~> 1.7"
+gem "rubocop", "~> 1.12.1"
 gem "rubocop-ast", "1.4.1" # 1.4.2+ is required > Ruby 2.4
 gem "parallel", "1.19.2" # 1.20+ is required > Ruby 2.4
 

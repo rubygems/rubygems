@@ -1,3 +1,13 @@
+# 3.2.32 / 2021-11-23
+
+## Enhancements:
+
+* Refactor installer thread safety protections. Pull request #5050 by
+  deivid-rodriguez
+* Allow gem activation from `operating_system.rb`. Pull request #5044 by
+  deivid-rodriguez
+* Installs bundler 2.2.32 as a default gem.
+
 # 3.2.31 / 2021-11-08
 
 ## Enhancements:

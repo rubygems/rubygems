@@ -129,16 +129,7 @@ module Bundler
         end
 
         spec_groups = if results.any?
-          nested = []
-          results.each do |spec|
-            version, specs = nested.last
-            if version == spec.version
-              specs << spec
-            else
-              nested << [spec.version, [spec]]
-            end
-          end
-          nested.reduce([]) do |groups, (_, specs)|
+          results.group_by(&:version).reduce([]) do |groups, (_, specs)|
             next groups unless specs.any? {|spec| spec.match_platform(platform) }
 
             specs_by_platform = Hash.new do |current_specs, current_platform|

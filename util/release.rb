@@ -90,6 +90,18 @@ class Release
 
   include GithubAPI
 
+  def self.install_dependencies!
+    system(
+      "ruby",
+      "-I",
+      File.expand_path("../lib", __dir__),
+      File.expand_path("../bundler/spec/support/bundle.rb", __dir__),
+      "install",
+      "--gemfile=#{File.expand_path("../release_gems.rb", __dir__)}",
+      exception: true
+    )
+  end
+
   def self.for_bundler(version)
     rubygems_version = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }.join(".")
 

@@ -3,6 +3,7 @@
 source "https://rubygems.org"
 
 gem "rubocop", "0.81.0"
+gem "parallel", "1.19.2" # 1.20+ is required > Ruby 2.4
 
 gem "minitest"
 gem "rake"

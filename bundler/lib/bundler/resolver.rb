@@ -118,13 +118,10 @@ module Bundler
       dependency = dependency_proxy.dep
       name = dependency.name
       @search_for[dependency_proxy] ||= begin
-        results = results_for(dependency) + @base[name].select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
+        locked_results = @base[name].select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
+        results = results_for(dependency) + locked_results
 
-        if vertex = @base_dg.vertex_named(name)
-          locked_requirement = vertex.payload.requirement
-        end
-
-        if !@prerelease_specified[name] && (!@use_gvp || locked_requirement.nil?)
+        if !@prerelease_specified[name] && (!@use_gvp || locked_results.empty?)
           # Move prereleases to the beginning of the list, so they're considered
           # last during resolution.
           pre, results = results.partition {|spec| spec.version.prerelease? }
@@ -141,8 +138,7 @@ module Bundler
               nested << [spec.version, [spec]]
             end
           end
-          nested.reduce([]) do |groups, (version, specs)|
-            next groups if locked_requirement && !locked_requirement.satisfied_by?(version)
+          nested.reduce([]) do |groups, (_, specs)|
             next groups unless specs.any? {|spec| spec.match_platform(platform) }
 
             specs_by_platform = Hash.new do |current_specs, current_platform|

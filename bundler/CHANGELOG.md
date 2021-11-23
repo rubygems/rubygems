@@ -1,3 +1,16 @@
+# 2.2.32 (November 23, 2021)
+
+## Enhancements:
+
+  - Clarify `bundle viz` deprecation [#5083](https://github.com/rubygems/rubygems/pull/5083)
+  - Unlock dependencies that no longer match lockfile [#5068](https://github.com/rubygems/rubygems/pull/5068)
+  - Use `shellsplit` instead of array of strings for git push [#5062](https://github.com/rubygems/rubygems/pull/5062)
+  - Re-enable `default_ignores` option for standard [#5003](https://github.com/rubygems/rubygems/pull/5003)
+
+## Bug fixes:
+
+  - Fix downgrading dependencies by changing the `Gemfile` and running `bundle update` [#5078](https://github.com/rubygems/rubygems/pull/5078)
+
 # 2.2.31 (November 8, 2021)
 
 ## Enhancements:

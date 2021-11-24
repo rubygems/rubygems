@@ -714,11 +714,8 @@ module Bundler
           deps << dep
         end
 
-        s.source = (dep && dep.source) || sources.get(s.source) unless Bundler.frozen_bundle?
+        s.source = (dep && dep.source) || sources.get(s.source) || sources.default_source unless Bundler.frozen_bundle?
 
-        # Don't add a spec to the list if its source is expired. For example,
-        # if you change a Git gem to RubyGems.
-        next if s.source.nil?
         next if @unlock[:sources].include?(s.source.name)
 
         # If the spec is from a path source and it doesn't exist anymore

@@ -163,10 +163,6 @@ module Bundler
       end
     end
 
-    def multisource_allowed?
-      @multisource_allowed
-    end
-
     def resolve_only_locally!
       @remote = false
       sources.local_only!
@@ -718,7 +714,7 @@ module Bundler
           deps << dep
         end
 
-        s.source = (dep && dep.source) || sources.get(s.source) unless multisource_allowed?
+        s.source = (dep && dep.source) || sources.get(s.source) unless Bundler.frozen_bundle?
 
         # Don't add a spec to the list if its source is expired. For example,
         # if you change a Git gem to RubyGems.

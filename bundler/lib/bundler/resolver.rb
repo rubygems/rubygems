@@ -203,7 +203,7 @@ module Bundler
         name = name_for(dependency)
         vertex = activated.vertex_named(name)
         [
-          @base_dg.vertex_named(name) ? 0 : 1,
+          @base[name].any? ? 0 : 1,
           vertex.payload ? 0 : 1,
           vertex.root? ? 0 : 1,
           amount_constrained(dependency),

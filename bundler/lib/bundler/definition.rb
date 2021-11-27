@@ -490,14 +490,11 @@ module Bundler
 
       if missing_specs.any?
         if @remote
-          missing_specs.each do |s|
-            locked_gem = @locked_specs[s.name].last
-            next if locked_gem.nil? || locked_gem.version != s.version
-            raise GemNotFound, "Your bundle is locked to #{locked_gem} from #{locked_gem.source}, but that version can " \
-                               "no longer be found in that source. That means the author of #{locked_gem} has removed it. " \
-                               "You'll need to update your bundle to a version other than #{locked_gem} that hasn't been " \
-                               "removed in order to install."
-          end
+          locked_gem = missing_specs.first
+          raise GemNotFound, "Your bundle is locked to #{locked_gem} from #{locked_gem.source}, but that version can " \
+                             "no longer be found in that source. That means the author of #{locked_gem} has removed it. " \
+                             "You'll need to update your bundle to a version other than #{locked_gem} that hasn't been " \
+                             "removed in order to install."
         else
           missing_specs_list = missing_specs.group_by(&:source).map do |source, missing_specs_for_source|
             "#{missing_specs_for_source.map(&:full_name).join(", ")} in #{source}"

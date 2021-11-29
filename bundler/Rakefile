@@ -223,7 +223,7 @@ Automatiek::RakeTask.new("net-http-persistent") do |lib|
   lib.license_path = "README.rdoc"
 
   # We currently include the official version as of
-  # https://github.com/mperham/connection_pool/commit/c5aef742642def23664c4d9c15d12f0786347fb8.
+  # https://github.com/mperham/connection_pool/commit/204d9f24b1fff7f893baf9d26e509bf79ed53083.
   lib.dependency("connection_pool") do |sublib|
     sublib.version = "master"
     sublib.download = { :github => "https://github.com/mperham/connection_pool" }

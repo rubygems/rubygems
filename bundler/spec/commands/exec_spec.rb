@@ -620,14 +620,14 @@ RSpec.describe "bundle exec" do
     build_repo4 do
       build_gem "fastlane", "2.192.0" do |s|
         s.executables = "fastlane"
-        s.add_dependency "optparse", "~> 0.1.1"
+        s.add_dependency "optparse", "~> 999.999.999"
       end
 
-      build_gem "optparse", "0.1.0"
-      build_gem "optparse", "0.1.1"
+      build_gem "optparse", "999.999.998"
+      build_gem "optparse", "999.999.999"
     end
 
-    system_gems "optparse-0.1.0", :gem_repo => gem_repo4
+    system_gems "optparse-999.999.998", :gem_repo => gem_repo4
 
     bundle "config set auto_install 1"
     bundle "config set --local path vendor/bundle"
@@ -638,7 +638,7 @@ RSpec.describe "bundle exec" do
     G
 
     bundle "exec fastlane"
-    expect(out).to include("Installing optparse 0.1.1")
+    expect(out).to include("Installing optparse 999.999.999")
     expect(out).to include("2.192.0")
   end
 

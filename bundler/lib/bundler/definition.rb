@@ -76,7 +76,7 @@ module Bundler
 
       @lockfile               = lockfile
       @lockfile_contents      = String.new
-      @locked_bundler_version = nil
+      @bundled_with           = nil
       @locked_ruby_version    = nil
       @new_platform = nil
 
@@ -85,7 +85,7 @@ module Bundler
         @locked_gems = LockfileParser.new(@lockfile_contents)
         @locked_platforms = @locked_gems.platforms
         @platforms = @locked_platforms.dup
-        @locked_bundler_version = @locked_gems.bundler_version
+        @bundled_with = @locked_gems.bundler_version
         @locked_ruby_version = @locked_gems.ruby_version
 
         if unlock != true
@@ -288,13 +288,13 @@ module Bundler
       # i.e., Windows with `git config core.autocrlf=true`
       contents.gsub!(/\n/, "\r\n") if @lockfile_contents.match("\r\n")
 
-      if @locked_bundler_version
-        locked_major = @locked_bundler_version.segments.first
+      if @bundled_with
+        locked_major = @bundled_with.segments.first
         current_major = Gem::Version.create(Bundler::VERSION).segments.first
 
         if updating_major = locked_major < current_major
           Bundler.ui.warn "Warning: the lockfile is being updated to Bundler #{current_major}, " \
-                          "after which you will be unable to return to Bundler #{@locked_bundler_version.segments.first}."
+                          "after which you will be unable to return to Bundler #{@bundled_with.segments.first}."
         end
       end
 
@@ -313,11 +313,11 @@ module Bundler
     end
 
     def locked_bundler_version
-      if @locked_bundler_version && @locked_bundler_version < Gem::Version.new(Bundler::VERSION)
+      if @bundled_with && @bundled_with < Gem::Version.new(Bundler::VERSION)
         new_version = Bundler::VERSION
       end
 
-      new_version || @locked_bundler_version || Bundler::VERSION
+      new_version || @bundled_with || Bundler::VERSION
     end
 
     def locked_ruby_version
@@ -806,7 +806,7 @@ module Bundler
 
     def lockfiles_equal?(current, proposed, preserve_unknown_sections)
       if preserve_unknown_sections
-        sections_to_ignore = LockfileParser.sections_to_ignore(@locked_bundler_version)
+        sections_to_ignore = LockfileParser.sections_to_ignore(@bundled_with)
         sections_to_ignore += LockfileParser.unknown_sections_in_lockfile(current)
         sections_to_ignore += LockfileParser::ENVIRONMENT_VERSION_SECTIONS
         pattern = /#{Regexp.union(sections_to_ignore)}\n(\s{2,}.*\n)+/

@@ -225,6 +225,7 @@ bundler/lib/bundler/ui/rg_proxy.rb
 bundler/lib/bundler/ui/shell.rb
 bundler/lib/bundler/ui/silent.rb
 bundler/lib/bundler/uri_credentials_filter.rb
+bundler/lib/bundler/vendor/.document
 bundler/lib/bundler/vendor/connection_pool/LICENSE
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/timed_stack.rb
@@ -397,6 +398,7 @@ lib/rubygems/mock_gem_ui.rb
 lib/rubygems/name_tuple.rb
 lib/rubygems/openssl.rb
 lib/rubygems/optparse.rb
+lib/rubygems/optparse/.document
 lib/rubygems/optparse/COPYING
 lib/rubygems/optparse/lib/optionparser.rb
 lib/rubygems/optparse/lib/optparse.rb
@@ -509,6 +511,7 @@ lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/text.rb
 lib/rubygems/tsort.rb
+lib/rubygems/tsort/.document
 lib/rubygems/tsort/LICENSE.txt
 lib/rubygems/tsort/lib/tsort.rb
 lib/rubygems/uninstaller.rb

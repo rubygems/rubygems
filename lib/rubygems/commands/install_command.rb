@@ -187,11 +187,11 @@ You can use `i` command instead of `install`.
     terminate_interaction
   end
 
-  def install_gem(name, version) # :nodoc:
+  def install_gem(name, requirement) # :nodoc:
     return if options[:conservative] &&
-              !Gem::Dependency.new(name, version).matching_specs.empty?
+              !Gem::Dependency.new(name, requirement).matching_specs.empty?
 
-    req = Gem::Requirement.create(version)
+    req = Gem::Requirement.create(requirement)
 
     dinst = Gem::DependencyInstaller.new options
 

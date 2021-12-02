@@ -197,6 +197,14 @@ You can use `i` command instead of `install`.
 
     request_set = dinst.resolve_dependencies name, req
 
+    resolved_spec = request_set.always_install.first
+    matching_spec = Gem::Dependency.new(resolved_spec.name, resolved_spec.version).matching_specs.first
+
+    if matching_spec && matching_spec.default_gem?
+      say "Skipping installation of #{resolved_spec.full_name} because it's already a default gem"
+      return
+    end
+
     if options[:explain]
       say "Gems to install:"
 

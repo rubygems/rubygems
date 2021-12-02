@@ -957,6 +957,31 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_match "1 gem installed", @ui.output
   end
 
+  def test_execute_default_gem
+    spec_fetcher do |fetcher|
+      fetcher.download 'bundler', '2.2.32'
+    end
+
+    bundler_2_2_32 = new_default_spec 'bundler', '2.2.32'
+    install_default_gems bundler_2_2_32
+
+    assert_includes Gem::Specification.all_names, 'bundler-2.2.32'
+
+    @cmd.options[:args] = %w[bundler]
+
+    use_ui @ui do
+      assert_raise Gem::MockGemUi::SystemExitException do
+        @cmd.execute
+      end
+    end
+
+    assert_equal %w[bundler-2.2.32], Gem::Specification.all_names.sort
+
+    output = @ui.output.split "\n"
+
+    assert_equal 'Skipping installation of bundler-2.2.32 because it\'s already a default gem', output.shift
+  end
+
   def test_install_gem_ignore_dependencies_both
     done_installing = false
     Gem.done_installing do

@@ -36,6 +36,12 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - name: Setup java
+        uses: actions/setup-java@v2
+        with:
+          distribution: temurin
+          java-version: 11
+        if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install dependencies
         run: |
           bin/rake spec:parallel_deps

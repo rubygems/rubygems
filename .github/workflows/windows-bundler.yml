@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: jruby-9.3, value: jruby-9.3.0.0 }
+          - { name: jruby-9.3, value: jruby-9.3.1.0 }
           - { name: ruby-2.5, value: 2.5.9 }
           - { name: ruby-3.0, value: 3.0.3 }
 
@@ -36,6 +36,12 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - name: Setup java
+        uses: actions/setup-java@v2
+        with:
+          distribution: temurin
+          java-version: 11
+        if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install dependencies
         run: |
           bin/rake spec:parallel_deps

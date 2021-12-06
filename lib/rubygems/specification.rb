@@ -1086,7 +1086,7 @@ class Gem::Specification < Gem::BasicSpecification
   # +prerelease+ is true.
 
   def self.latest_specs(prerelease = false)
-    _latest_specs Gem::Specification._all, prerelease
+    _latest_specs Gem::Specification.stubs, prerelease
   end
 
   ##

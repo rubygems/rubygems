@@ -42,6 +42,14 @@ jobs:
         run: |
           ruby -Ilib -S rake install 2> errors.txt || (cat errors.txt && exit 1)
           test ! -s errors.txt || (cat errors.txt && exit 1)
+      - name: Check downgrading
+        run: gem update --system 3.2.32
+      - name: Check installing fileutils
+        run: gem install fileutils
+      - name: Check installing with upgraded fileutils
+        run: |
+          ruby -Ilib -S rake install 2> errors.txt || (cat errors.txt && exit 1)
+          test ! -s errors.txt || (cat errors.txt && exit 1)
       - name: Run a local rubygems command
         run: gem list bundler
         env:

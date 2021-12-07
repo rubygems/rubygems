@@ -1,3 +1,29 @@
+# 3.2.33 / 2021-12-07
+
+## Deprecations:
+
+* Deprecate typo name. Pull request #5109 by nobu
+
+## Enhancements:
+
+* Add login & logout alias for the signin & signout commands. Pull request
+  #5133 by colby-swandale
+* Fix race conditions when reading & writing gemspecs concurrently. Pull
+  request #4408 by deivid-rodriguez
+* Installs bundler 2.2.33 as a default gem.
+
+## Bug fixes:
+
+* Fix `ruby setup.rb` trying to write outside of `--destdir`. Pull request
+  #5053 by deivid-rodriguez
+
+## Documentation:
+
+* Move required_ruby_version gemspec attribute to recommended section.
+  Pull request #5130 by simi
+* Ignore to generate the documentation from vendored libraries. Pull
+  request #5118 by hsbt
+
 # 3.2.32 / 2021-11-23
 
 ## Enhancements:

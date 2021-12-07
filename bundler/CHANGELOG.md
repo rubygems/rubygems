@@ -1,3 +1,32 @@
+# 2.2.33 (December 7, 2021)
+
+## Security fixes:
+
+  - Pass "--" to git commands to separate positional and optional args [#5142](https://github.com/rubygems/rubygems/pull/5142)
+
+## Enhancements:
+
+  - Accept pull request URLs as github source [#5126](https://github.com/rubygems/rubygems/pull/5126)
+  - Add `--version` parameter to `bundle info` command [#5137](https://github.com/rubygems/rubygems/pull/5137)
+  - Let original `Errno::EACCES` error be raised in compact index updater [#5110](https://github.com/rubygems/rubygems/pull/5110)
+  - Improve gemfile-lockfile source equivalence errors [#5120](https://github.com/rubygems/rubygems/pull/5120)
+  - Avoid float-to-string loss of characters in GitHub Actions configuration labels in new gem template [#5089](https://github.com/rubygems/rubygems/pull/5089)
+  - Add an initial rbs template to `bundle gem` skeleton [#5041](https://github.com/rubygems/rubygems/pull/5041)
+  - Avoid shared libraries not getting environment passed right after argv in memory when `bundle exec` is used [#4815](https://github.com/rubygems/rubygems/pull/4815)
+
+## Bug fixes:
+
+  - Don't cleanup paths from gems already activated from `$LOAD_PATH` [#5111](https://github.com/rubygems/rubygems/pull/5111)
+  - Fix handling prereleases of 0 versions, like 0.0.0.dev or 0.0.0.SNAPSHOT [#5116](https://github.com/rubygems/rubygems/pull/5116)
+  - Fix escape of filenames in `bundle doctor` [#5102](https://github.com/rubygems/rubygems/pull/5102)
+  - Don't unlock dependencies when running `bundle install` after changing global source [#5090](https://github.com/rubygems/rubygems/pull/5090)
+  - Fix missing locked specs when depended on another platform [#5092](https://github.com/rubygems/rubygems/pull/5092)
+  - Fix `bundle info` sometimes claiming that bundler has been deleted [#5097](https://github.com/rubygems/rubygems/pull/5097)
+
+## Documentation:
+
+  - Ignore to generate the documentation from vendored libraries [#5118](https://github.com/rubygems/rubygems/pull/5118)
+
 # 2.2.32 (November 23, 2021)
 
 ## Enhancements:

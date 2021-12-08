@@ -47,14 +47,19 @@ module Bundler
       end
 
       def hash
-        [self.class, uri, ref, branch, name, version, glob, submodules].hash
+        [self.class, uri, ref, branch, name, version, glob, submodules, safe_revision].hash
       end
 
       def eql?(other)
         other.is_a?(Git) && uri == other.uri && ref == other.ref &&
           branch == other.branch && name == other.name &&
           version == other.version && glob == other.glob &&
-          submodules == other.submodules
+          submodules == other.submodules && eql_revision?(other)
+      end
+
+      def eql_revision?(other)
+        return true if safe_revision.nil? || other.safe_revision.nil?
+        safe_revision == other.safe_revision
       end
 
       alias_method :==, :eql?
@@ -230,6 +235,12 @@ module Bundler
 
       def app_cache_dirname
         "#{base_name}-#{shortref_for_path(cached_revision || revision)}"
+      end
+
+      def safe_revision
+        revision
+      rescue StandardError
+        nil
       end
 
       def revision

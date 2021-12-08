@@ -1310,19 +1310,17 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   autoload :Licenses,           File.expand_path('rubygems/util/licenses', __dir__)
   autoload :NameTuple,          File.expand_path('rubygems/name_tuple', __dir__)
   autoload :PathSupport,        File.expand_path('rubygems/path_support', __dir__)
-  autoload :Platform,           File.expand_path('rubygems/platform', __dir__)
   autoload :RequestSet,         File.expand_path('rubygems/request_set', __dir__)
-  autoload :Requirement,        File.expand_path('rubygems/requirement', __dir__)
   autoload :Resolver,           File.expand_path('rubygems/resolver', __dir__)
   autoload :Source,             File.expand_path('rubygems/source', __dir__)
   autoload :SourceList,         File.expand_path('rubygems/source_list', __dir__)
   autoload :SpecFetcher,        File.expand_path('rubygems/spec_fetcher', __dir__)
-  autoload :Specification,      File.expand_path('rubygems/specification', __dir__)
   autoload :Util,               File.expand_path('rubygems/util', __dir__)
   autoload :Version,            File.expand_path('rubygems/version', __dir__)
 end
 
 require_relative 'rubygems/exceptions'
+require_relative 'rubygems/specification'
 
 # REFACTOR: This should be pulled out into some kind of hacks file.
 begin

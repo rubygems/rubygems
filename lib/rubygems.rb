@@ -1325,22 +1325,6 @@ require_relative 'rubygems/specification'
 # REFACTOR: This should be pulled out into some kind of hacks file.
 begin
   ##
-  # Defaults the Ruby implementation wants to provide for RubyGems
-
-  require "rubygems/defaults/#{RUBY_ENGINE}"
-rescue LoadError
-end
-
-##
-# Loads the default specs.
-Gem::Specification.load_defaults
-
-require_relative 'rubygems/core_ext/kernel_gem'
-require_relative 'rubygems/core_ext/kernel_require'
-require_relative 'rubygems/core_ext/kernel_warn'
-
-begin
-  ##
   # Defaults the operating system (or packager) wants to provide for RubyGems.
 
   require 'rubygems/defaults/operating_system'
@@ -1354,3 +1338,19 @@ rescue StandardError => e
     "the problem and ask for help."
   raise e.class, msg
 end
+
+begin
+  ##
+  # Defaults the Ruby implementation wants to provide for RubyGems
+
+  require "rubygems/defaults/#{RUBY_ENGINE}"
+rescue LoadError
+end
+
+##
+# Loads the default specs.
+Gem::Specification.load_defaults
+
+require_relative 'rubygems/core_ext/kernel_gem'
+require_relative 'rubygems/core_ext/kernel_require'
+require_relative 'rubygems/core_ext/kernel_warn'

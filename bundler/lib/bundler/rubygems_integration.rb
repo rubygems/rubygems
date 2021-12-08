@@ -142,10 +142,6 @@ module Bundler
       end
     end
 
-    def sources
-      Gem.sources
-    end
-
     def gem_dir
       Gem.dir
     end

@@ -1293,7 +1293,12 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     end
 
     def default_gem_load_paths
-      @default_gem_load_paths ||= $LOAD_PATH[load_path_insert_index..-1]
+      @default_gem_load_paths ||= $LOAD_PATH[load_path_insert_index..-1].map do |lp|
+        expanded = File.expand_path(lp)
+        next expanded unless File.exist?(expanded)
+
+        File.realpath(expanded)
+      end
     end
   end
 

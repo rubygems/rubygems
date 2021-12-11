@@ -16,7 +16,7 @@ module Bundler
     def initialize(name, version, platform, spec_fetcher)
       @name         = name
       @version      = Gem::Version.create version
-      @platform     = platform
+      @platform     = platform || Gem::Platform::RUBY
       @spec_fetcher = spec_fetcher
       @dependencies = nil
     end
@@ -35,7 +35,7 @@ module Bundler
     end
 
     def full_name
-      if platform == Gem::Platform::RUBY || platform.nil?
+      if platform == Gem::Platform::RUBY
         "#{@name}-#{@version}"
       else
         "#{@name}-#{@version}-#{platform}"

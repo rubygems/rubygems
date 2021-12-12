@@ -12,25 +12,17 @@ module Bundler
       EXT_LOCK = Monitor.new
     end
 
-    def self.version
-      @version ||= Gem.rubygems_version
-    end
-
-    def self.provides?(req_str)
-      Gem::Requirement.new(req_str).satisfied_by?(version)
-    end
-
     def initialize
       @replaced_methods = {}
       backport_ext_builder_monitor
     end
 
     def version
-      self.class.version
+      @version ||= Gem.rubygems_version
     end
 
     def provides?(req_str)
-      self.class.provides?(req_str)
+      Gem::Requirement.new(req_str).satisfied_by?(version)
     end
 
     def build_args

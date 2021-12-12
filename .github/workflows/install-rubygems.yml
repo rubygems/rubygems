@@ -98,10 +98,5 @@ jobs:
       - name: Check we can install a Gemfile with git sources
         run: bundle init && bundle add fileutils --git https://github.com/ruby/fileutils
         shell: bash
-      - name: Check the latest available fiddle version gets activated
-        run: |
-          gem install fiddle:1.1.0
-          ruby -rfiddle -e "exit Fiddle::VERSION == '1.1.0'"
-        if: matrix.ruby.name != 'jruby-9.3'
 
     timeout-minutes: 10

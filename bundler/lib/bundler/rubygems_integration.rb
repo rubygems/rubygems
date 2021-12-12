@@ -13,7 +13,7 @@ module Bundler
     end
 
     def self.version
-      @version ||= Gem::Version.new(Gem::VERSION)
+      @version ||= Gem.rubygems_version
     end
 
     def self.provides?(req_str)

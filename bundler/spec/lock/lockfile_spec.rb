@@ -129,7 +129,7 @@ RSpec.describe "the lockfile format" do
     G
   end
 
-  it "updates the lockfile's bundler version if not present" do
+  it "adds the BUNDLED WITH section if not present" do
     lockfile <<-L
       GEM
         remote: #{file_uri_for(gem_repo2)}/

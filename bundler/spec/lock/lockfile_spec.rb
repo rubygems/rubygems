@@ -166,7 +166,7 @@ RSpec.describe "the lockfile format" do
     G
   end
 
-  it "warns if the current version is older than lockfile's bundler version, and locked version is a final release" do
+  it "does not warn if the current version is older than lockfile's bundler version, and locked version is a final release" do
     current_version = "999.998.999"
     system_gems "bundler-#{current_version}"
     newer_minor = "999.999.0"
@@ -193,11 +193,7 @@ RSpec.describe "the lockfile format" do
       gem "rack"
     G
 
-    warning_message = "the running version of Bundler (#{current_version}) is older " \
-                      "than the version that created the lockfile (#{newer_minor}). " \
-                      "We suggest you to upgrade to the version that created the " \
-                      "lockfile by running `gem install bundler:#{newer_minor}`."
-    expect(err).to include warning_message
+    expect(err).to be_empty
 
     expect(lockfile).to eq <<~G
       GEM
@@ -216,7 +212,7 @@ RSpec.describe "the lockfile format" do
     G
   end
 
-  it "warns if the current version is older than lockfile's bundler version, and locked version is a prerelease" do
+  it "does not warn if the current version is older than lockfile's bundler version, and locked version is a prerelease" do
     current_version = "999.998.999"
     system_gems "bundler-#{current_version}"
     newer_minor = "999.999.0.pre1"
@@ -243,11 +239,7 @@ RSpec.describe "the lockfile format" do
       gem "rack"
     G
 
-    warning_message = "the running version of Bundler (#{current_version}) is older " \
-                      "than the version that created the lockfile (#{newer_minor}). " \
-                      "We suggest you to upgrade to the version that created the " \
-                      "lockfile by running `gem install bundler:#{newer_minor} --pre`."
-    expect(err).to include warning_message
+    expect(err).to be_empty
 
     expect(lockfile).to eq <<~G
       GEM

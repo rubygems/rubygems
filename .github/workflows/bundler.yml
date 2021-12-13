@@ -48,6 +48,6 @@ jobs:
         working-directory: ./bundler
       - name: Run Test
         run: |
-          bin/rake spec:sudo
+          bin/rake spec:realworld spec:sudo
         working-directory: ./bundler
     timeout-minutes: 60

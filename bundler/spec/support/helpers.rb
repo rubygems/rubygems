@@ -166,7 +166,7 @@ module Spec
 
     def gem_command(command, options = {})
       env = options[:env] || {}
-      env["RUBYOPT"] = opt_add("-r#{spec_dir}/support/hax.rb", env["RUBYOPT"] || ENV["RUBYOPT"])
+      env["RUBYOPT"] = opt_add(opt_add("-r#{spec_dir}/support/hax.rb", env["RUBYOPT"]), ENV["RUBYOPT"])
       options[:env] = env
       sys_exec("#{Path.gem_bin} #{command}", options)
     end
@@ -181,7 +181,7 @@ module Spec
 
     def sys_exec(cmd, options = {})
       env = options[:env] || {}
-      env["RUBYOPT"] = opt_add("-r#{spec_dir}/support/switch_rubygems.rb", env["RUBYOPT"] || ENV["RUBYOPT"])
+      env["RUBYOPT"] = opt_add(opt_add("-r#{spec_dir}/support/switch_rubygems.rb", env["RUBYOPT"]), ENV["RUBYOPT"])
       dir = options[:dir] || bundled_app
       command_execution = CommandExecution.new(cmd.to_s, dir)
 

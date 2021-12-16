@@ -141,6 +141,7 @@ module Bundler
       # Return if all groups are already loaded
       return @setup if defined?(@setup) && @setup
 
+      configure_custom_gemfile
       definition.validate_runtime!
 
       SharedHelpers.print_major_deprecations!
@@ -641,6 +642,15 @@ EOF
       configure_gem_path
       configure_gem_home(path)
       Bundler.rubygems.clear_paths
+    end
+
+    def configure_custom_gemfile(custom_gemfile = nil)
+      custom_gemfile ||= Bundler.settings[:gemfile]
+
+      if custom_gemfile && !custom_gemfile.empty?
+        Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", File.expand_path(custom_gemfile)
+        reset_settings_and_root!
+      end
     end
 
     private

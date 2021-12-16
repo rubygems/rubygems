@@ -348,6 +348,7 @@ module Spec
       without_env_side_effects do
         ENV["GEM_HOME"] = path.to_s
         ENV["GEM_PATH"] = path.to_s
+        ENV["BUNDLER_ORIG_GEM_HOME"] = nil
         ENV["BUNDLER_ORIG_GEM_PATH"] = nil
         yield
       end

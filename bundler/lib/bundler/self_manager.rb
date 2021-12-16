@@ -6,6 +6,12 @@ module Bundler
   # by an application.
   #
   class SelfManager
+    def restart_with_locked_bundler_if_needed
+      return unless needs_switching? && installed?
+
+      restart_with_locked_bundler
+    end
+
     def install_locked_bundler_and_restart_with_it_if_needed
       return unless needs_switching?
 
@@ -37,9 +43,16 @@ module Bundler
     def needs_switching?
       ENV["BUNDLER_VERSION"].nil? &&
         Bundler.rubygems.supports_bundler_trampolining? &&
+        SharedHelpers.in_bundle? &&
         lockfile_version &&
         !lockfile_version.end_with?(".dev") &&
         lockfile_version != current_version
+    end
+
+    def installed?
+      Bundler.configure
+
+      Bundler.rubygems.find_bundler(lockfile_version)
     end
 
     def current_version

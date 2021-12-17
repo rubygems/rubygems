@@ -134,6 +134,7 @@ module Bundler
           end
           nested.reduce([]) do |groups, (version, specs)|
             next groups if locked_requirement && !locked_requirement.satisfied_by?(version)
+            next groups unless specs.any? {|spec| spec.match_platform(platform) }
 
             specs_by_platform = Hash.new do |current_specs, current_platform|
               current_specs[current_platform] = select_best_platform_match(specs, current_platform)
@@ -145,7 +146,7 @@ module Bundler
             next groups if @resolving_only_for_ruby
 
             spec_group = SpecGroup.create_for(specs_by_platform, @platforms, platform)
-            groups << spec_group if spec_group
+            groups << spec_group
 
             groups
           end
@@ -262,30 +263,37 @@ module Bundler
             "If you are updating multiple gems in your Gemfile at once,\n" \
             "try passing them all to `bundle update`"
         else
-          source = source_for(name)
-          specs = source.specs.search(name)
-          versions_with_platforms = specs.map {|s| [s.version, s.platform] }
-          cache_message = begin
-                              " or in gems cached in #{Bundler.settings.app_cache_path}" if Bundler.app_cache.exist?
-                            rescue GemfileNotFound
-                              nil
-                            end
-          message = String.new("Could not find gem '#{SharedHelpers.pretty_dependency(requirement)}' in #{source}#{cache_message}.\n")
-          message << "The source contains the following versions of '#{name}': #{formatted_versions_with_platforms(versions_with_platforms)}" if versions_with_platforms.any?
+          message = gem_not_found_message(name, requirement, source_for(name))
         end
         raise GemNotFound, message
       end
     end
 
-    def formatted_versions_with_platforms(versions_with_platforms)
-      version_platform_strs = versions_with_platforms.map do |vwp|
-        version = vwp.first
-        platform = vwp.last
-        version_platform_str = String.new(version.to_s)
-        version_platform_str << " #{platform}" unless platform.nil? || platform == Gem::Platform::RUBY
-        version_platform_str
+    def gem_not_found_message(name, requirement, source, extra_message = "")
+      specs = source.specs.search(name)
+      matching_part = name
+      requirement_label = SharedHelpers.pretty_dependency(requirement)
+      cache_message = begin
+                          " or in gems cached in #{Bundler.settings.app_cache_path}" if Bundler.app_cache.exist?
+                        rescue GemfileNotFound
+                          nil
+                        end
+      specs_matching_requirement = specs.select {| spec| requirement.matches_spec?(spec) }
+
+      if specs_matching_requirement.any?
+        specs = specs_matching_requirement
+        matching_part = requirement_label
+        requirement_label = "#{requirement_label} #{requirement.__platform}"
       end
-      version_platform_strs.join(", ")
+
+      message = String.new("Could not find gem '#{requirement_label}'#{extra_message} in #{source}#{cache_message}.\n")
+
+      if specs.any?
+        message << "\nThe source contains the following gems matching '#{matching_part}':\n"
+        message << specs.map {|s| "  * #{s.full_name}" }.join("\n")
+      end
+
+      message
     end
 
     def version_conflict_message(e)
@@ -357,19 +365,16 @@ module Bundler
 
             metadata_requirement = name.end_with?("\0")
 
-            o << "Could not find gem '" unless metadata_requirement
-            o << SharedHelpers.pretty_dependency(conflict.requirement)
-            o << "'" unless metadata_requirement
-            if conflict.requirement_trees.first.size > 1
-              o << ", which is required by "
-              o << "gem '#{SharedHelpers.pretty_dependency(conflict.requirement_trees.first[-2])}',"
-            end
-            o << " "
-
-            o << if metadata_requirement
-              "is not available in #{relevant_source}"
+            extra_message = if conflict.requirement_trees.first.size > 1
+              ", which is required by gem '#{SharedHelpers.pretty_dependency(conflict.requirement_trees.first[-2])}',"
             else
-              "in #{relevant_source}.\n"
+              ""
+            end
+
+            if metadata_requirement
+              o << "#{SharedHelpers.pretty_dependency(conflict.requirement)}#{extra_message} is not available in #{relevant_source}"
+            else
+              o << gem_not_found_message(name, conflict.requirement, relevant_source, extra_message)
             end
           end
         end,

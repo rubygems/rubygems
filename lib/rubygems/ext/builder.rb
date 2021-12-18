@@ -107,7 +107,6 @@ class Gem::Ext::Builder
     @gem_dir    = spec.full_gem_path
 
     @ran_rake = false
-    @ran_cargo = false
   end
 
   ##
@@ -125,7 +124,7 @@ class Gem::Ext::Builder
     when /CMakeLists.txt/ then
       Gem::Ext::CmakeBuilder
     when /cargo\.toml/ then
-      @ran_cargo = true
+      # We use the spec name here to ensure we invoke the correct init function later
       Gem::Ext::CargoBuilder.new(@spec)
     else
       build_error("No builder for extension '#{extension}'")

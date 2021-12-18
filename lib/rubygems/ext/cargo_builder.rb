@@ -15,22 +15,33 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def build(extension, dest_path, results, args=[], lib_dir=nil, cargo_dir=Dir.pwd)
-    build_rust_static_lib(extension, dest_path, results, args, lib_dir, cargo_dir)
+    build_crate(extension, dest_path, results, args, lib_dir, cargo_dir)
     build_extconf(extension, dest_path, results, args, lib_dir, cargo_dir)
   end
 
-  def build_rust_static_lib(extension, dest_path, results, args=[], lib_dir=nil, cargo_dir=Dir.pwd)
-    manifest = File.join(cargo_dir, 'Cargo.toml')
+  private
 
-    cmd = []
-    cmd += ["cargo", "rustc", "--release"]
-    cmd += ["--target-dir", dest_path]
-    cmd += ["--manifest-path", manifest]
-    cmd += Gem::Command.build_args
-    cmd += [*cargo_rustc_args(dest_path)]
+  def build_crate(extension, dest_path, results, args, lib_dir, cargo_dir)
+    begin
+      manifest = File.join(cargo_dir, 'Cargo.toml')
 
-    self.class.run cmd, results, self.class.class_name, cargo_dir
-    results
+      given_ruby_static = ENV['RUBY_STATIC']
+
+      ENV['RUBY_STATIC'] = 'true' if ruby_static? && !given_ruby_static
+      cargo = ENV.fetch('CARGO', 'cargo')
+
+      cmd = []
+      cmd += [cargo, "rustc", "--release"]
+      cmd += ["--target-dir", dest_path]
+      cmd += ["--manifest-path", manifest]
+      cmd += Gem::Command.build_args
+      cmd += [*cargo_rustc_args(dest_path)]
+
+      self.class.run cmd, results, self.class.class_name, cargo_dir
+      results
+    ensure
+      ENV['RUBY_STATIC'] = given_ruby_static
+    end
   end
 
   def build_extconf(extension, dest_path, results, args=[], lib_dir=nil, cargo_dir=Dir.pwd)
@@ -65,5 +76,9 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       '-C',
       "link-args=#{dynamic_linker_flags}",
     ]
+  end
+
+  def ruby_static?
+    ENV.key?('RUBY_STATIC') || RbConfig::CONFIG['ENABLE_SHARED'] == 'no'
   end
 end

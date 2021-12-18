@@ -107,6 +107,7 @@ class Gem::Ext::Builder
     @gem_dir    = spec.full_gem_path
 
     @ran_rake = false
+    @ran_cargo = false
   end
 
   ##
@@ -119,10 +120,13 @@ class Gem::Ext::Builder
     when /configure/ then
       Gem::Ext::ConfigureBuilder
     when /rakefile/i, /mkrf_conf/i then
-      @ran_rake = true
+      @ran_rake = tru
       Gem::Ext::RakeBuilder
     when /CMakeLists.txt/ then
       Gem::Ext::CmakeBuilder
+    when /cargo\.toml/ then
+      @ran_cargo = true
+      Gem::Ext::CargoBuilder.new(@spec)
     else
       build_error("No builder for extension '#{extension}'")
     end

@@ -1,0 +1,18 @@
+# Loads mkmf which is used to make makefiles for Ruby extensions
+require 'mkmf'
+
+ $defs.push("-DBUILDING_LIB<%= extension_name %>")
+
+# Give it a name
+extension_name = '<%= extension_name %>'
+
+# Find the rust lib
+unless find_library('<%= extension_name %>', 'Init_<%= extension_name %>', File.expand_path("../release"))
+  abort "Could not find the Rust <%= extension_name %> library"
+end
+
+# The destination
+dir_config(extension_name)
+
+# Do the work
+create_makefile(extension_name)

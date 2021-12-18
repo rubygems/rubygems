@@ -70,6 +70,22 @@ RSpec.describe "Self management", :rubygems => ">= 3.3.0.dev" do
       expect(out).to eq(Bundler::VERSION[0] == "2" ? "Bundler version #{Bundler::VERSION}" : Bundler::VERSION)
     end
 
+    it "shows a discreet message if locked bundler does not exist, and something more complete in `--verbose` mode" do
+      missing_minor ="#{Bundler::VERSION[0]}.999.999"
+
+      lockfile_bundled_with(missing_minor)
+
+      bundle "install"
+      expect(err).to eq("There was an error installing the locked bundler version (#{missing_minor}), rerun with the `--verbose` flag for more details. Going on using bundler #{Bundler::VERSION}.")
+
+      bundle "install --verbose"
+      expect(err).to include("There was an error installing the locked bundler version (#{missing_minor}), rerun with the `--verbose` flag for more details. Going on using bundler #{Bundler::VERSION}.")
+      expect(err).to include("Gem::UnsatisfiableDependencyError")
+
+      bundle "-v"
+      expect(out).to eq(Bundler::VERSION[0] == "2" ? "Bundler version #{Bundler::VERSION}" : Bundler::VERSION)
+    end
+
     private
 
     def lockfile_bundled_with(version)

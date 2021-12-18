@@ -19,14 +19,21 @@ module Bundler
         "Bundler #{current_version} is running, but your lockfile was generated with #{lockfile_version}. " \
         "Installing Bundler #{lockfile_version} and restarting using that version."
 
-      bundler_dep = Gem::Dependency.new("bundler", lockfile_version)
-
-      Gem.install(bundler_dep)
-
-      restart_with_locked_bundler
+      install_and_restart_with_locked_bundler
     end
 
     private
+
+    def install_and_restart_with_locked_bundler
+      bundler_dep = Gem::Dependency.new("bundler", lockfile_version)
+
+      Gem.install(bundler_dep)
+    rescue StandardError => e
+      Bundler.ui.trace e
+      Bundler.ui.warn "There was an error installing the locked bundler version (#{lockfile_version}), rerun with the `--verbose` flag for more details. Going on using bundler #{current_version}."
+    else
+      restart_with_locked_bundler
+    end
 
     def restart_with_locked_bundler
       configured_gem_home = ENV["GEM_HOME"]

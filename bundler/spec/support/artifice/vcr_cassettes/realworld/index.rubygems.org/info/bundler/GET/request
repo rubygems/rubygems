@@ -1,7 +1,7 @@
 > GET /info/bundler
 > accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
 > accept: */*
-> user-agent: bundler/2.4.0.dev rubygems/3.3.0 ruby/3.0.3 (arm64-apple-darwin21) command/install options/no_install,path.system 79c23a920803fbfd
+> user-agent: bundler/2.3.3 rubygems/3.2.33 ruby/3.1.0 (arm64-apple-darwin21) command/update options/no_install cc3c0f3340e45a43
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

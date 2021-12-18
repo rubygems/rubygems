@@ -1124,7 +1124,7 @@ RSpec.describe "bundle update --bundler" do
 
     FileUtils.rm_r gem_repo4
 
-    bundle :update, :bundler => true, :verbose => true
+    bundle :update, :bundler => true, :artifice => "compact_index", :verbose => true
     expect(out).to include("Using bundler #{Bundler::VERSION}")
 
     expect(lockfile).to eq <<~L
@@ -1159,7 +1159,7 @@ RSpec.describe "bundle update --bundler" do
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.3.3")
 
-    bundle :update, :bundler => true, :verbose => true
+    bundle :update, :bundler => true, :artifice => "compact_index", :verbose => true
     expect(out).to include("Using bundler #{Bundler::VERSION}")
 
     expect(lockfile).to eq <<~L
@@ -1179,6 +1179,110 @@ RSpec.describe "bundle update --bundler" do
     L
 
     expect(the_bundle).to include_gem "rack 1.0"
+  end
+
+  it "updates the bundler version in the lockfile even if the latest version is not installed", :ruby_repo, :realworld do
+    pristine_system_gems "bundler-2.3.3"
+
+    build_repo4 do
+      build_gem "rack", "1.0"
+    end
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo4)}"
+      gem "rack"
+    G
+    lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.3.3")
+
+    bundle :update, :bundler => true, :artifice => "vcr", :verbose => true
+
+    # Only updates properly on modern RubyGems.
+
+    if Gem.rubygems_version >= Gem::Version.new("3.3.0.dev")
+      expect(out).to include("Updating bundler to 2.3.4")
+      expect(out).to include("Using bundler 2.3.4")
+      expect(out).not_to include("Installing Bundler 2.3.3 and restarting using that version.")
+
+      expect(lockfile).to eq <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            rack (1.0)
+
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          rack
+
+        BUNDLED WITH
+           2.3.4
+      L
+
+      expect(the_bundle).to include_gems "bundler 2.3.4"
+    end
+
+    expect(the_bundle).to include_gems "rack 1.0"
+  end
+
+  it "errors if the explicit target version does not exist", :realworld do
+    pristine_system_gems "bundler-2.3.3"
+
+    build_repo4 do
+      build_gem "rack", "1.0"
+    end
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo4)}"
+      gem "rack"
+    G
+    lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.3.3")
+
+    bundle :update, :bundler => "999.999.999", :artifice => "vcr", :raise_on_error => false
+
+    # Only gives a meaningful error message on modern RubyGems.
+
+    if Gem.rubygems_version >= Gem::Version.new("3.3.0.dev")
+      expect(last_command).to be_failure
+      expect(err).to include("The `bundle update --bundler` target version (999.999.999) does not exist")
+    end
+  end
+
+  it "allows updating to development versions if already installed locally" do
+    system_gems "bundler-2.3.0.dev"
+
+    build_repo4 do
+      build_gem "rack", "1.0"
+    end
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo4)}"
+      gem "rack"
+    G
+
+    bundle :update, :bundler => "2.3.0.dev"
+
+    # Only updates properly on modern RubyGems.
+
+    if Gem.rubygems_version >= Gem::Version.new("3.3.0.dev")
+      expect(lockfile).to eq <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            rack (1.0)
+
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          rack
+
+        BUNDLED WITH
+           2.3.0.dev
+      L
+
+      expect(out).to include("Using bundler 2.3.0.dev")
+    end
   end
 end
 

@@ -22,23 +22,6 @@ class TestGemExtCargoBuilder < Gem::TestCase
     FileUtils.mkdir_p @ext
     FileUtils.mkdir_p @src
     FileUtils.mkdir_p @dest_path
-  end
-
-  def test_build
-    File.open File.join(@ext, 'Cargo.toml'), 'w' do |cargo|
-      cargo.write <<~TOML
-        [package]
-        name = "test"
-        version = "0.1.0"
-
-        [dependencies]
-        rutie = "0.8.2"
-
-        [lib]
-        name = "rutie_ruby_example"
-        crate-type = ["staticlib"]
-      TOML
-    end
 
     File.open File.join(@src, 'lib.rs'), 'w' do |main|
       main.write "fn main() {}"
@@ -78,6 +61,22 @@ class TestGemExtCargoBuilder < Gem::TestCase
         }
       RUST
     end
+  end
+
+  def test_build_staticlib
+    File.open File.join(@ext, 'Cargo.toml'), 'w' do |cargo|
+      cargo.write <<~TOML
+        [package]
+        name = "rutie_ruby_example"
+        version = "0.1.0"
+
+        [dependencies]
+        rutie = "0.8.2"
+
+        [lib]
+        crate-type = ["staticlib"]
+      TOML
+    end
 
     output = []
 
@@ -96,11 +95,52 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     assert_match RutieExample.reverse('hello'), 'olleh'
 
-    assert_match "Compiling test v0.1.0 (#{@ext})", output
+    assert_match "Compiling rutie_ruby_example v0.1.0 (#{@ext})", output
     assert_match "Finished release [optimized] target(s)", output
-  rescue
-    warn output.join("\n")
-    raise
+  rescue Exception => e
+    warn output.join("\n") if output
+
+    raise(e)
+  end
+
+  def test_build_cdylib
+    File.open File.join(@ext, 'Cargo.toml'), 'w' do |cargo|
+      cargo.write <<~TOML
+        [package]
+        name = "rutie_ruby_example"
+        version = "0.1.0"
+
+        [dependencies]
+        rutie = "0.8.2"
+
+        [lib]
+        crate-type = ["cdylib"]
+      TOML
+    end
+
+    output = []
+
+    Dir.chdir @ext do
+      ENV.update(@rust_envs)
+      spec = Gem::Specification.new 'rutie_ruby_example', '0.1.0'
+      builder = Gem::Ext::CargoBuilder.new(spec)
+      builder.build nil, @dest_path, output
+    end
+
+    output = output.join "\n"
+
+    bundle = Dir["#{@dest_path}/gemext/*.{bundle,so}"].first
+
+    require(bundle)
+
+    assert_match RutieExample.reverse('hello'), 'olleh'
+
+    assert_match "Compiling rutie_ruby_example v0.1.0 (#{@ext})", output
+    assert_match "Finished release [optimized] target(s)", output
+  rescue Exception => e
+    warn output.join("\n") if output
+
+    raise(e)
   end
 
   def test_build_fail

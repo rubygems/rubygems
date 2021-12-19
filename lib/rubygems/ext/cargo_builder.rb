@@ -2,6 +2,16 @@
 require 'rubygems/command'
 
 class Gem::Ext::CargoBuilder < Gem::Ext::Builder
+  class DylibNotFoundError < StandardError
+    def initialize(dir)
+      super <<~MSG
+        Dynamic library not found for Rust extension (in #{dir})
+
+        Make sure you set "crate-type" in Cargo.toml to "cdylib"
+      MSG
+    end
+  end
+
   TemplateScope = Struct.new(:extension_name) do
     def binding
       super
@@ -16,6 +26,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def build(extension, dest_path, results, args=[], lib_dir=nil, cargo_dir=Dir.pwd)
     build_crate(extension, dest_path, results, args, lib_dir, cargo_dir)
+    validate_cargo_build!(dest_path)
     build_extconf(extension, dest_path, results, args, lib_dir, cargo_dir)
   end
 
@@ -42,6 +53,12 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     ensure
       ENV['RUBY_STATIC'] = given_ruby_static
     end
+  end
+
+  def validate_cargo_build!(dir)
+    dylibs = Dir.glob(File.join(dir, 'release', "lib#{spec.name}.{so,dylib}"))
+
+    raise DylibNotFoundError.new(dir) if dylibs.empty?
   end
 
   def build_extconf(extension, dest_path, results, args=[], lib_dir=nil, cargo_dir=Dir.pwd)

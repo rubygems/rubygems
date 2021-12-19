@@ -25,37 +25,22 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_build_staticlib
+    content = @fixture_dir.join('Cargo.toml').read.gsub("cdylib", "staticlib")
+    File.write(File.join(@ext, 'Cargo.toml'), content)
+
     output = []
 
     Dir.chdir @ext do
       ENV.update(@rust_envs)
       spec = Gem::Specification.new 'rutie_ruby_example', '0.1.0'
       builder = Gem::Ext::CargoBuilder.new(spec)
-      builder.build nil, @dest_path, output
+      assert_raises(Gem::Ext::CargoBuilder::DylibNotFoundError) do
+        builder.build nil, @dest_path, output
+      end
     end
-
-    output = output.join "\n"
-
-    bundle = Dir["#{@dest_path}/gemext/*.{bundle,so}"].first
-
-    require(bundle)
-
-    assert_match RutieExample.reverse('hello'), 'olleh'
-
-    assert_match "Compiling rutie_ruby_example v0.1.0 (#{@ext})", output
-    assert_match "Finished release [optimized] target(s)", output
-  rescue Exception => e
-    warn output.join("\n") if output
-
-    raise(e)
   end
 
   def test_build_cdylib
-    File.open File.join(@ext, 'Cargo.toml'), 'w' do |cargo|
-      content = @fixture_dir.join('Cargo.toml').read.gsub("cdylib", "staticlib")
-      cargo.write(content)
-    end
-
     output = []
 
     Dir.chdir @ext do

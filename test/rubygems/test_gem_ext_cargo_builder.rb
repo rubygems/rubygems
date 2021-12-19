@@ -7,7 +7,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
     @orig_env = ENV.to_hash
 
     @rust_envs = {
-      'CARGO_HOME' => File.join(File.expand_path('~'), '.cargo'),
+      'CARGO_HOME' => File.join(@orig_env['HOME'], '.cargo'),
+      'RUSTUP_HOME' => File.join(@orig_env['HOME'], '.rustup'),
     }
 
     system(@rust_envs, 'cargo', '-V', out: IO::NULL, err: [:child, :out])
@@ -15,69 +16,15 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     super
 
-    @ext = File.join @tempdir, 'ext'
-    @src = File.join @ext, 'src'
-    @dest_path = File.join @tempdir, 'prefix'
+    @ext = File.join(@tempdir, 'ext')
+    @dest_path = File.join(@tempdir, 'prefix')
+    @fixture_dir = Pathname.new(File.expand_path('../test_gem_ext_cargo_builder/rutie_ruby_example/', __FILE__))
 
-    FileUtils.mkdir_p @ext
-    FileUtils.mkdir_p @src
     FileUtils.mkdir_p @dest_path
-
-    File.open File.join(@src, 'lib.rs'), 'w' do |main|
-      main.write "fn main() {}"
-      main.write <<~RUST
-        #[macro_use]
-        extern crate rutie;
-
-        use rutie::{Class, Object, RString, VM};
-
-        class!(RutieExample);
-
-        methods!(
-            RutieExample,
-            _rtself,
-
-            fn pub_reverse(input: RString) -> RString {
-                let ruby_string = input.
-                  map_err(|e| VM::raise_ex(e) ).
-                  unwrap();
-
-                RString::new_utf8(
-                  &ruby_string.
-                  to_string().
-                  chars().
-                  rev().
-                  collect::<String>()
-                )
-            }
-        );
-
-        #[allow(non_snake_case)]
-        #[no_mangle]
-        pub extern "C" fn Init_rutie_ruby_example() {
-            Class::new("RutieExample", None).define(|klass| {
-                klass.def_self("reverse", pub_reverse);
-            });
-        }
-      RUST
-    end
+    FileUtils.cp_r(@fixture_dir.to_s, @ext)
   end
 
   def test_build_staticlib
-    File.open File.join(@ext, 'Cargo.toml'), 'w' do |cargo|
-      cargo.write <<~TOML
-        [package]
-        name = "rutie_ruby_example"
-        version = "0.1.0"
-
-        [dependencies]
-        rutie = "0.8.2"
-
-        [lib]
-        crate-type = ["staticlib"]
-      TOML
-    end
-
     output = []
 
     Dir.chdir @ext do
@@ -105,17 +52,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
   def test_build_cdylib
     File.open File.join(@ext, 'Cargo.toml'), 'w' do |cargo|
-      cargo.write <<~TOML
-        [package]
-        name = "rutie_ruby_example"
-        version = "0.1.0"
-
-        [dependencies]
-        rutie = "0.8.2"
-
-        [lib]
-        crate-type = ["cdylib"]
-      TOML
+      content = @fixture_dir.join('Cargo.toml').read.gsub("cdylib", "staticlib")
+      cargo.write(content)
     end
 
     output = []
@@ -146,6 +84,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
   def test_build_fail
     output = []
 
+    FileUtils.rm(File.join(@ext, 'src/lib.rs'))
+
     error = assert_raises Gem::InstallError do
       Dir.chdir @ext do
         ENV.update(@rust_envs)
@@ -158,5 +98,12 @@ class TestGemExtCargoBuilder < Gem::TestCase
     output = output.join "\n"
 
     assert_match 'cargo failed', error.message
+  end
+
+  def test_full_integration
+    stdout_and_stderr_str, status = Open3.capture2e(*ruby_with_rubygems_in_load_path, "--disable-gems", File.join(@ext, 'build.rb'))
+
+    assert status.success?, stdout_and_stderr_str
+    assert_match "Result: dlrow olleh", stdout_and_stderr_str
   end
 end

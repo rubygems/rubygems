@@ -1,8 +1,6 @@
 # Loads mkmf which is used to make makefiles for Ruby extensions
 require 'mkmf'
 
- $defs.push("-DBUILDING_LIB<%= extension_name %>")
-
 # Give it a name
 extension_name = '<%= extension_name %>'
 

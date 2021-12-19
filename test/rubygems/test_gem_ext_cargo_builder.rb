@@ -89,6 +89,6 @@ class TestGemExtCargoBuilder < Gem::TestCase
     stdout_and_stderr_str, status = Open3.capture2e(*ruby_with_rubygems_in_load_path, "--disable-gems", File.join(@ext, 'build.rb'))
 
     assert status.success?, stdout_and_stderr_str
-    assert_match "Result: dlrow olleh", stdout_and_stderr_str
+    assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
   end
 end

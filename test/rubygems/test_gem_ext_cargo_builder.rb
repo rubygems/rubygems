@@ -52,7 +52,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     output = output.join "\n"
 
-    bundle = Dir["#{@dest_path}/gemext/*.{bundle,so}"].first
+    bundle = Dir["#{@dest_path}/release/*.{bundle,so}"].first
 
     require(bundle)
 

@@ -26,8 +26,11 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def build(extension, dest_path, results, args=[], lib_dir=nil, cargo_dir=Dir.pwd)
     build_crate(extension, dest_path, results, args, lib_dir, cargo_dir)
-    validate_cargo_build!(dest_path)
-    build_extconf(extension, dest_path, results, args, lib_dir, cargo_dir)
+    dylib = validate_cargo_build!(dest_path)
+    FileUtils.cp(dylib, dylib.gsub(File.basename(dylib), "#{spec.name}.#{RbConfig::CONFIG['DLEXT']}"))
+
+    finalize_directory(extension, dest_path, results, args, lib_dir, cargo_dir)
+    results
   end
 
   private
@@ -59,29 +62,8 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     dylibs = Dir.glob(File.join(dir, 'release', "lib#{spec.name}.{so,dylib}"))
 
     raise DylibNotFoundError.new(dir) if dylibs.empty?
-  end
 
-  def build_extconf(extension, dest_path, results, args=[], lib_dir=nil, cargo_dir=Dir.pwd)
-    require 'erb'
-
-    gemext_dir = File.join(dest_path, 'gemext')
-    FileUtils.mkdir_p(gemext_dir)
-
-    locals = TemplateScope.new(spec.name)
-
-    extension_name = spec.name
-    compile_erb_template('extension.c.erb', locals, gemext_dir, "#{extension_name}.c")
-    compile_erb_template('extension.h.erb', locals, gemext_dir, "#{extension_name}.h")
-    compile_erb_template('extconf.rb.erb', locals, gemext_dir, 'extconf.rb')
-
-    Gem::Ext::ExtConfBuilder.build('extconf.rb', dest_path, results, args, lib_dir, gemext_dir)
-  end
-
-  def compile_erb_template(name, locals, out_dir, out_path)
-    src = File.read(File.expand_path("../cargo_builder/templates/#{name}", __FILE__))
-    result = ERB.new(src).result(locals.__send__(:binding))
-
-    File.write(File.join(out_dir, out_path), result)
+    dylibs.first
   end
 
   def dynamic_linker_flags
@@ -101,5 +83,55 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def ruby_static?
     ENV.key?('RUBY_STATIC') || RbConfig::CONFIG['ENABLE_SHARED'] == 'no'
+  end
+
+  # Copied from ExtConfBuilder
+  def finalize_directory(extension, dest_path, results, args, lib_dir, extension_dir)
+    require 'fileutils'
+    require 'tempfile'
+
+    destdir = ENV["DESTDIR"]
+
+    begin
+      tmp_dest = Dir.mktmpdir(".gem.", extension_dir)
+
+      # Some versions of `mktmpdir` return absolute paths, which will break make
+      # if the paths contain spaces. However, on Ruby 1.9.x on Windows, relative
+      # paths cause all C extension builds to fail.
+      #
+      # As such, we convert to a relative path unless we are using Ruby 1.9.x on
+      # Windows. This means that when using Ruby 1.9.x on Windows, paths with
+      # spaces do not work.
+      #
+      # Details: https://github.com/rubygems/rubygems/issues/977#issuecomment-171544940
+      tmp_dest_relative = get_relative_path(tmp_dest.clone, extension_dir)
+
+      ENV["DESTDIR"] = nil
+
+      if tmp_dest_relative
+        full_tmp_dest = File.join(extension_dir, tmp_dest_relative)
+
+        # TODO remove in RubyGems 3
+        if Gem.install_extension_in_lib and lib_dir
+          FileUtils.mkdir_p lib_dir
+          entries = Dir.entries(full_tmp_dest) - %w[. ..]
+          entries = entries.map {|entry| File.join full_tmp_dest, entry }
+          FileUtils.cp_r entries, lib_dir, :remove_destination => true
+        end
+
+        FileUtils::Entry_.new(full_tmp_dest).traverse do |ent|
+          destent = ent.class.new(dest_path, ent.rel)
+          destent.exist? or FileUtils.mv(ent.path, destent.path)
+        end
+      end
+    ensure
+      ENV["DESTDIR"] = destdir
+      FileUtils.rm_rf tmp_dest if tmp_dest
+    end
+  end
+
+  def get_relative_path(path, base)
+    path[0..base.length - 1] = '.' if path.start_with?(base)
+    path
   end
 end

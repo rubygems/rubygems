@@ -86,9 +86,12 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_full_integration
-    stdout_and_stderr_str, status = Open3.capture2e(*ruby_with_rubygems_in_load_path, "--disable-gems", File.join(@ext, 'build.rb'))
+    Dir.chdir @ext do
+      stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "--disable-gems", File.join(@ext, 'build.rb'))
+      stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "--disable-gems", File.join(@ext, 'build.rb'))
 
-    assert status.success?, stdout_and_stderr_str
-    assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
+      assert status.success?, stdout_and_stderr_str
+      assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
+    end
   end
 end

@@ -85,7 +85,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def cargo_rustc_args(dest_dir)
-    dynamic_linker_flags = RbConfig::CONFIG['DLDFLAGS'].strip
+    dynamic_linker_flags = RbConfig::CONFIG['LDFLAGS'].strip
 
     [
       '--lib',

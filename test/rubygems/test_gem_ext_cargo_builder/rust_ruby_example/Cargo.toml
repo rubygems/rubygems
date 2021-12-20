@@ -1,9 +1,9 @@
 [package]
-name = "rutie_ruby_example"
+name = "rust_ruby_example"
 version = "0.1.0"
 
 [dependencies]
-rutie = "0.8.2"
+libc = "0.2"
 
 [lib]
 crate-type = ["cdylib"]

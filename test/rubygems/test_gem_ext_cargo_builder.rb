@@ -18,7 +18,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     @ext = File.join(@tempdir, 'ext')
     @dest_path = File.join(@tempdir, 'prefix')
-    @fixture_dir = Pathname.new(File.expand_path('../test_gem_ext_cargo_builder/rutie_ruby_example/', __FILE__))
+    @fixture_dir = Pathname.new(File.expand_path('../test_gem_ext_cargo_builder/rust_ruby_example/', __FILE__))
 
     FileUtils.mkdir_p @dest_path
     FileUtils.cp_r(@fixture_dir.to_s, @ext)
@@ -32,7 +32,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     Dir.chdir @ext do
       ENV.update(@rust_envs)
-      spec = Gem::Specification.new 'rutie_ruby_example', '0.1.0'
+      spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
       builder = Gem::Ext::CargoBuilder.new(spec)
       assert_raises(Gem::Ext::CargoBuilder::DylibNotFoundError) do
         builder.build nil, @dest_path, output
@@ -45,7 +45,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     Dir.chdir @ext do
       ENV.update(@rust_envs)
-      spec = Gem::Specification.new 'rutie_ruby_example', '0.1.0'
+      spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
       builder = Gem::Ext::CargoBuilder.new(spec)
       builder.build nil, @dest_path, output
     end
@@ -56,9 +56,9 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     require(bundle)
 
-    assert_match RutieExample.reverse('hello'), 'olleh'
+    assert_match RustRubyExample.reverse('hello'), 'olleh'
 
-    assert_match "Compiling rutie_ruby_example v0.1.0 (#{@ext})", output
+    assert_match "Compiling rust_ruby_example v0.1.0 (#{@ext})", output
     assert_match "Finished release [optimized] target(s)", output
   rescue Exception => e
     warn output.join("\n") if output
@@ -74,7 +74,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
     error = assert_raises Gem::InstallError do
       Dir.chdir @ext do
         ENV.update(@rust_envs)
-        spec = Gem::Specification.new 'rutie_ruby_example', '0.1.0'
+        spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
         builder = Gem::Ext::CargoBuilder.new(spec)
         builder.build nil, @dest_path, output
       end

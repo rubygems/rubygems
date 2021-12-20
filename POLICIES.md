@@ -45,7 +45,7 @@ at version 2.7, so when RubyGems 2.8 is released, it will only support Ruby
 Releases of new versions should follow these steps, to ensure the process is
 smooth and no needed steps are missed.
 
-### Steps for security releases
+### Recommendations for security releases
 
 *   Obtain CVE numbers as needed from HackerOne or Red Hat.
 *   Agree on a release date with ruby-core, so patches can be backported to
@@ -55,16 +55,30 @@ smooth and no needed steps are missed.
 *   Continue with the regular release process below.
 
 
-### Steps for all releases
+### Steps for patch releases
 
 *   Confirm all PRs that you want backported are properly tagged with `rubygems:
-    <type>` labels at GitHub.
-*   Run `rake prepare_stable_branch[<target_version>]`, create a PR and merge it
+    <type>` or `bundler: <type>` labels at GitHub.
+*   Run `rake prepare_release[<target_version>]`, create a PR and merge it
     to the stable branch once CI passes.
-*   Create and push git tag
-*   Create and push `rubygems-update` gem and tgz
-*   Publish blog post
+*   Switch to the stable branch and pull the PR just merged.
+*   Release `bundler` with `(cd bundler && bin/rake release)`.
+*   Release `rubygems` with `rake release`.
 
+### Steps for minor and major releases
+
+*   Confirm all PRs that you want listed in changelogs are properly tagged with
+    `rubygems: <type>` or `bundler: <type>` labels at GitHub.
+*   Run `rake prepare_release[<target_version>]`.
+*   Add the new stable branch `x.y` where `x.y` are the first two components of
+    the rubygems version being released to the CI workflows as an extra commit
+    on top of what the `prepare_release` task generated.
+*   Create a PR to the main branch, and merge it once CI passes.
+*   From the main branch, cut a new stable branch with `git pull && git checkout
+    -b x.y`.
+*   Push the stable branch and wait for CI to be green.
+*   Release `bundler` with `(cd bundler && bin/rake release)`.
+*   Release `rubygems` with `rake release`.
 
 ## Committer Access
 

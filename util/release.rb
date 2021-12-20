@@ -164,24 +164,7 @@ class Release
     @rubygems.set_relevant_pull_requests_from(unreleased_pull_requests)
 
     begin
-      prs = relevant_unreleased_pull_requests
-
-      if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
-        warn <<~MSG
-
-          Opening a new shell to fix the cherry-pick errors manually. You can do the following now:
-
-          * Find the PR that caused the merge conflict.
-          * If you'd like to include that PR in the release, tag it with an appropriate label. Then type `Ctrl-D` and rerun the task so that the PR is cherry-picked before and the conflict is fixed.
-          * If you don't want to include that PR in the release, fix conflicts manually, run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the release preparation.
-
-        MSG
-
-        unless system(ENV["SHELL"] || "zsh")
-          system("git", "cherry-pick", "--abort", exception: true)
-          raise "Failed to resolve conflicts, resetting original state"
-        end
-      end
+      cherry_pick_pull_requests
 
       @bundler.cut_changelog!
       system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
@@ -210,6 +193,27 @@ class Release
       system("git", "checkout", initial_branch)
       system("git", "branch", "-D", @release_branch)
       raise
+    end
+  end
+
+  def cherry_pick_pull_requests
+    prs = relevant_unreleased_pull_requests
+
+    if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
+      warn <<~MSG
+
+        Opening a new shell to fix the cherry-pick errors manually. You can do the following now:
+
+        * Find the PR that caused the merge conflict.
+        * If you'd like to include that PR in the release, tag it with an appropriate label. Then type `Ctrl-D` and rerun the task so that the PR is cherry-picked before and the conflict is fixed.
+        * If you don't want to include that PR in the release, fix conflicts manually, run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the release preparation.
+
+      MSG
+
+      unless system(ENV["SHELL"] || "zsh")
+        system("git", "cherry-pick", "--abort", exception: true)
+        raise "Failed to resolve conflicts, resetting original state"
+      end
     end
   end
 

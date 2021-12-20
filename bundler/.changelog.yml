@@ -25,6 +25,3 @@ patch_level_labels:
   - "bundler: performance"
   - "bundler: documentation"
   - "bundler: backport"
-
-minor_level_labels:
-  - "bundler: feature"

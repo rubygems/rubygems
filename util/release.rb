@@ -136,7 +136,11 @@ class Release
   def initialize(version)
     segments = Gem::Version.new(version).segments
 
+    @level = segments[2] != 0 ? :patch : :minor
+
     @stable_branch = segments[0, 2].join(".")
+    @base_branch = @level == :minor ? "master" : @stable_branch
+    @previous_stable_branch = @level == :minor ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
 
     rubygems_version = segments.join(".")
     @rubygems = Rubygems.new(rubygems_version, @stable_branch)
@@ -158,13 +162,13 @@ class Release
   def prepare!
     initial_branch = `git rev-parse --abbrev-ref HEAD`.strip
 
-    system("git", "checkout", "-b", @release_branch, @stable_branch, exception: true)
+    system("git", "checkout", "-b", @release_branch, @base_branch, exception: true)
 
     @bundler.set_relevant_pull_requests_from(unreleased_pull_requests)
     @rubygems.set_relevant_pull_requests_from(unreleased_pull_requests)
 
     begin
-      cherry_pick_pull_requests
+      cherry_pick_pull_requests if @level == :patch
 
       @bundler.cut_changelog!
       system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
@@ -180,6 +184,8 @@ class Release
 
       @rubygems.bump_versions!
       system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
+
+      return if @level == :minor
 
       system("git", "checkout", "-b", "cherry_pick_changelogs", "master", exception: true)
 
@@ -250,7 +256,7 @@ class Release
   end
 
   def unreleased_pr_ids
-    stable_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@stable_branch}`.split("\n")
+    stable_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@previous_stable_branch}`.split("\n")
 
     `git log --oneline --grep "^Merge pull request #" origin/master`.split("\n").map do |l|
       _sha, message = l.split(/\s/, 2)

@@ -161,8 +161,8 @@ task :install_release_dependencies do
   Release.install_dependencies!
 end
 
-desc "Prepare stable branch"
-task :prepare_stable_branch, [:version] => [:install_release_dependencies] do |_t, opts|
+desc "Prepare a release"
+task :prepare_release, [:version] => [:install_release_dependencies] do |_t, opts|
   require_relative "util/release"
 
   Release.new(opts[:version] || v.to_s).prepare!

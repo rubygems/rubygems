@@ -136,11 +136,11 @@ class Release
   def initialize(version)
     segments = Gem::Version.new(version).segments
 
-    @level = segments[2] != 0 ? :patch : :minor
+    @level = segments[2] != 0 ? :patch : :minor_or_major
 
     @stable_branch = segments[0, 2].join(".")
-    @base_branch = @level == :minor ? "master" : @stable_branch
-    @previous_stable_branch = @level == :minor ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
+    @base_branch = @level == :minor_or_major ? "master" : @stable_branch
+    @previous_stable_branch = @level == :minor_or_major ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
 
     rubygems_version = segments.join(".")
     @rubygems = Rubygems.new(rubygems_version, @stable_branch)
@@ -185,7 +185,7 @@ class Release
       @rubygems.bump_versions!
       system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
 
-      return if @level == :minor
+      return if @level == :minor_or_major
 
       system("git", "checkout", "-b", "cherry_pick_changelogs", "master", exception: true)
 

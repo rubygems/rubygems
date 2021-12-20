@@ -56,7 +56,7 @@ class Changelog
     @version = Gem::Version.new(version)
     @file = File.expand_path(file)
     @config = YAML.load_file("#{File.dirname(file)}/.changelog.yml")
-    @level = @version.segments[2] != 0 ? :patch : :minor
+    @level = @version.segments[2] != 0 ? :patch : :minor_or_major
   end
 
   def release_notes

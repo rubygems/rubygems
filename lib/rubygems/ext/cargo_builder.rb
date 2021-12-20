@@ -84,9 +84,13 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     File.write(File.join(out_dir, out_path), result)
   end
 
-  def cargo_rustc_args(dest_dir)
-    dynamic_linker_flags = RbConfig::CONFIG['LDFLAGS'].strip
+  def dynamic_linker_flags
+    return if RbConfig::CONFIG['build_os'] == 'mingw32'
 
+    RbConfig::CONFIG['LDFLAGS'].strip
+  end
+
+  def cargo_rustc_args(dest_dir)
     [
       '--lib',
       '--',

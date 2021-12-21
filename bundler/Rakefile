@@ -200,7 +200,7 @@ Automatiek::RakeTask.new("tmpdir") do |lib|
   lib.license_path = nil # There is no license file in the Repo
 
   lib.dependency("fileutils") do |sublib|
-    sublib.version = "v1.4.1"
+    sublib.version = "v1.6.0"
     sublib.download = { :github => "https://github.com/ruby/fileutils" }
     sublib.namespace = "FileUtils"
     sublib.prefix = "Bundler"

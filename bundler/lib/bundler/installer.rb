@@ -136,11 +136,7 @@ module Bundler
 
         mode = Gem.win_platform? ? "wb:UTF-8" : "w"
         require "erb"
-        content = if RUBY_VERSION >= "2.6"
-          ERB.new(template, :trim_mode => "-").result(binding)
-        else
-          ERB.new(template, nil, "-").result(binding)
-        end
+        content = ERB.new(template, :trim_mode => "-").result(binding)
 
         File.write(binstub_path, content, :mode => mode, :perm => 0o777 & ~File.umask)
         if Gem.win_platform? || options[:all_platforms]
@@ -183,11 +179,7 @@ module Bundler
 
         mode = Gem.win_platform? ? "wb:UTF-8" : "w"
         require "erb"
-        content = if RUBY_VERSION >= "2.6"
-          ERB.new(template, :trim_mode => "-").result(binding)
-        else
-          ERB.new(template, nil, "-").result(binding)
-        end
+        content = ERB.new(template, :trim_mode => "-").result(binding)
 
         File.write("#{bin_path}/#{executable}", content, :mode => mode, :perm => 0o755)
         if Gem.win_platform? || options[:all_platforms]

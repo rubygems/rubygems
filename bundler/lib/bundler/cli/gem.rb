@@ -406,28 +406,15 @@ module Bundler
     end
 
     def required_ruby_version
-      if Gem.ruby_version < Gem::Version.new("2.4.a") then "2.3.0"
-      elsif Gem.ruby_version < Gem::Version.new("2.5.a") then "2.4.0"
-      elsif Gem.ruby_version < Gem::Version.new("2.6.a") then "2.5.0"
-      else
-        "2.6.0"
-      end
+      "2.6.0"
     end
 
     def rubocop_version
-      if Gem.ruby_version < Gem::Version.new("2.4.a") then "0.81.0"
-      elsif Gem.ruby_version < Gem::Version.new("2.5.a") then "1.12"
-      else
-        "1.21"
-      end
+      "1.21"
     end
 
     def standard_version
-      if Gem.ruby_version < Gem::Version.new("2.4.a") then "0.2.5"
-      elsif Gem.ruby_version < Gem::Version.new("2.5.a") then "1.0"
-      else
-        "1.3"
-      end
+      "1.3"
     end
   end
 end

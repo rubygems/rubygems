@@ -109,7 +109,9 @@ module Spec
 
     def install_gems(gemfile, path = nil)
       old_gemfile = ENV["BUNDLE_GEMFILE"]
+      old_orig_gemfile = ENV["BUNDLER_ORIG_BUNDLE_GEMFILE"]
       ENV["BUNDLE_GEMFILE"] = gemfile.to_s
+      ENV["BUNDLER_ORIG_BUNDLE_GEMFILE"] = nil
 
       if path
         old_path = ENV["BUNDLE_PATH"]
@@ -128,6 +130,7 @@ module Spec
         ENV["BUNDLE_PATH__SYSTEM"] = old_path__system
       end
 
+      ENV["BUNDLER_ORIG_BUNDLE_GEMFILE"] = old_orig_gemfile
       ENV["BUNDLE_GEMFILE"] = old_gemfile
     end
 

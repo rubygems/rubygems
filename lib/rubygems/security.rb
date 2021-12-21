@@ -490,9 +490,13 @@ module Gem::Security
       when 'rsa'
         OpenSSL::PKey::RSA.new(RSA_DSA_KEY_LENGTH)
       when 'ec'
-        domain_key = OpenSSL::PKey::EC.new(EC_NAME)
-        domain_key.generate_key
-        domain_key
+        if RUBY_VERSION >= "2.4.0"
+          OpenSSL::PKey::EC.generate(EC_NAME)
+        else
+          domain_key = OpenSSL::PKey::EC.new(EC_NAME)
+          domain_key.generate_key
+          domain_key
+        end
       else
         raise Gem::Security::Exception,
         "#{algorithm} algorithm not found. RSA, DSA, and EC algorithms are supported."

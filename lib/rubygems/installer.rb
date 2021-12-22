@@ -448,7 +448,7 @@ class Gem::Installer
   def write_spec
     spec.installed_by_version = Gem.rubygems_version
 
-    Gem.write_binary(spec_file, spec.to_ruby_for_cache)
+    Gem.write_binary(spec_file, ensure_loadable_spec)
   end
 
   ##
@@ -456,7 +456,7 @@ class Gem::Installer
   # specifications/default directory.
 
   def write_default_spec
-    Gem.write_binary(default_spec_file, spec.to_ruby)
+    Gem.write_binary(default_spec_file, ensure_loadable_default_spec)
   end
 
   ##
@@ -630,15 +630,15 @@ class Gem::Installer
   # installation.
 
   def ensure_loadable_spec
-    ruby = spec.to_ruby_for_cache
-    ruby.tap(&Gem::UNTAINT)
+    ensure_loadable(spec.to_ruby_for_cache)
+  end
 
-    begin
-      eval ruby
-    rescue StandardError, SyntaxError => e
-      raise Gem::InstallError,
-            "The specification for #{spec.full_name} is corrupt (#{e.class})"
-    end
+  ##
+  # Ensures the Gem::Specification written out for this gem as a default gem is
+  # loadable upon installation.
+
+  def ensure_loadable_default_spec
+    ensure_loadable(spec.to_ruby)
   end
 
   def ensure_dependencies_met # :nodoc:
@@ -909,8 +909,6 @@ TEXT
     # ruby code that would be eval'ed in #ensure_loadable_spec
     verify_spec
 
-    ensure_loadable_spec
-
     if options[:install_as_default]
       Gem.ensure_default_gem_subdirectories gem_home
     else
@@ -966,6 +964,19 @@ TEXT
   end
 
   private
+
+  def ensure_loadable(ruby)
+    ruby.tap(&Gem::UNTAINT)
+
+    begin
+      eval ruby
+    rescue StandardError, SyntaxError => e
+      raise Gem::InstallError,
+            "The specification for #{spec.full_name} is corrupt (#{e.class})"
+    end
+
+    ruby
+  end
 
   def build_args
     @build_args ||= begin

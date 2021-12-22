@@ -1,3 +1,11 @@
+# 2.3.1 (December 22, 2021)
+
+## Enhancements:
+
+  - Vendor latest `thor` with fixes for latest `did_you_mean` deprecations [#5202](https://github.com/rubygems/rubygems/pull/5202)
+  - Avoid unnecessary `shellwords` require on newer rubygems [#5195](https://github.com/rubygems/rubygems/pull/5195)
+  - Re-exec prepending command with `Gem.ruby` if `$PROGRAM_NAME` is not executable [#5193](https://github.com/rubygems/rubygems/pull/5193)
+
 # 2.3.0 (December 21, 2021)
 
 ## Features:

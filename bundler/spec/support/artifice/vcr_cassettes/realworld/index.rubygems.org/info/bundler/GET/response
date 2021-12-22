@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 34772
+content-length: 35341
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
 x-xss-protection: 1; mode=block
@@ -8,21 +8,21 @@ x-content-type-options: nosniff
 x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "0e92a595edaa5eb8769161ea9f1bcfc7"
-last-modified: Fri, 08 Oct 2021 13:29:47 GMT
+etag: "4d15fb62e2aad42786673f9f76686e4b"
+last-modified: Tue, 21 Dec 2021 05:33:47 GMT
 cache-control: max-age=60, public
-x-request-id: 8fe8d1ef-bc8c-4497-9cfa-57bc5031097c
-x-runtime: 0.011476
+x-request-id: f0a5e1c2-fc87-4011-86ab-7f114d843aac
+x-runtime: 0.009967
 strict-transport-security: max-age=31536000
 x-backend: F_Rails 44.239.42.136:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
+date: Wed, 22 Dec 2021 18:32:22 GMT
 via: 1.1 varnish
-age: 3196
-x-served-by: cache-fra19128-FRA
+age: 3511
+x-served-by: cache-mad22026-MAD
 x-cache: HIT
-x-cache-hits: 14
-x-timer: S1635203860.707233,VS0,VE0
+x-cache-hits: 1
+x-timer: S1640197943.957866,VS0,VE1
 vary: Accept,Accept-Encoding,Fastly-SSL
 server: RubyGems.org
 
@@ -341,3 +341,8 @@ server: RubyGems.org
 2.2.27 |checksum:21d85c47937496b08b021df716b4eaa81e2223a04e8eba92ee9e767b9e1b3ed8,ruby:>= 2.3.0,rubygems:>= 2.5.2
 2.2.28 |checksum:ae9022e6a845dc822635bd8884ea91a8f4c454cbff8ee7bc3114391a8525afe7,ruby:>= 2.3.0,rubygems:>= 2.5.2
 2.2.29 |checksum:6f465e70baa7a7ecd6f67f7869b595c2f3e345e2ee4211fb4009dcf508c244ca,ruby:>= 2.3.0,rubygems:>= 2.5.2
+2.2.30 |checksum:65d0c1668a9a4679bd7038e03e1ee97ca6a1474e8da0e1ed8fb0e199933e3f75,ruby:>= 2.3.0,rubygems:>= 2.5.2
+2.2.31 |checksum:307c9a31c5ba920a527a2a5c2384674932df35a4e7405a67cef614403a2f132e,ruby:>= 2.3.0,rubygems:>= 2.5.2
+2.2.32 |checksum:a5fc106134ce2048fd46b68c10c8d1c296a9006a0ee473da7c5116def4a7fb6a,ruby:>= 2.3.0,rubygems:>= 2.5.2
+2.2.33 |checksum:0a6fd4db0d3d9232053d15f1d9062729ba86bae667367da2506b600a24f70654,ruby:>= 2.3.0,rubygems:>= 2.5.2
+2.3.0 |checksum:7533077b794e99ee2a830760ce06bdbf729788cd5734ca32a989f3b5eafeced1,ruby:>= 2.3.0,rubygems:>= 2.5.2

@@ -1,3 +1,12 @@
+# 3.3.1 / 2021-12-22
+
+## Enhancements:
+
+* Fix compatibility with OpenSSL 3.0. Pull request #5196 by rhenium
+* Remove hard errors when matching major bundler not found. Pull request
+  #5181 by deivid-rodriguez
+* Installs bundler 2.3.1 as a default gem.
+
 # 3.3.0 / 2021-12-21
 
 ## Breaking changes:

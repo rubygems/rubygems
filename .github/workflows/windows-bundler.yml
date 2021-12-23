@@ -7,6 +7,7 @@ on:
     branches:
       - master
       - 3.3
+      - try_fix_file_locking_on_windows
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

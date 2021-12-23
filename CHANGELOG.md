@@ -1,3 +1,15 @@
+# 3.3.2 / 2021-12-23
+
+## Enhancements:
+
+* Fix deprecations when activating DidYouMean for misspelled command
+  suggestions. Pull request #5211 by yuki24
+* Installs bundler 2.3.2 as a default gem.
+
+## Bug fixes:
+
+* Fix gemspec truncation. Pull request #5208 by deivid-rodriguez
+
 # 3.3.1 / 2021-12-22
 
 ## Enhancements:

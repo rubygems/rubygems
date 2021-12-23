@@ -1,3 +1,9 @@
+# 2.3.2 (December 23, 2021)
+
+## Enhancements:
+
+  - Remove unnecessary lockfile upgrade warning [#5209](https://github.com/rubygems/rubygems/pull/5209)
+
 # 2.3.1 (December 22, 2021)
 
 ## Enhancements:

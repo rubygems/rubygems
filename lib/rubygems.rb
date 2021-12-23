@@ -788,9 +788,11 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   def self.open_with_flock(path, flags, &block)
     File.open(path, flags) do |io|
-      begin
-        io.flock(File::LOCK_EX)
-      rescue Errno::ENOSYS, Errno::ENOTSUP
+      unless java_platform?
+        begin
+          io.flock(File::LOCK_EX)
+        rescue Errno::ENOSYS, Errno::ENOTSUP
+        end
       end
       yield io
     end

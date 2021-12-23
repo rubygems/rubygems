@@ -41,82 +41,42 @@ jobs:
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash
       - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
-        working-directory: ./bundler
-        shell: bash
-      - name: Run specs
-        run: bin/rspec spec/install/gems/resolving_spec.rb
+        run: bin/parallel_rspec spec/install/gems/
         working-directory: ./bundler
         shell: bash

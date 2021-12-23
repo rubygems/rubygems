@@ -163,16 +163,6 @@ module Gem
     specifications/default
   ].freeze
 
-  ##
-  # Exception classes used in a Gem.read_binary +rescue+ statement
-
-  READ_BINARY_ERRORS = [Errno::EACCES, Errno::EROFS, Errno::ENOSYS, Errno::ENOTSUP].freeze
-
-  ##
-  # Exception classes used in Gem.write_binary +rescue+ statement
-
-  WRITE_BINARY_ERRORS = [Errno::ENOSYS, Errno::ENOTSUP].freeze
-
   @@win_platform = nil
 
   @configuration = nil
@@ -776,40 +766,40 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Safely read a file in binary mode on all platforms.
 
   def self.read_binary(path)
-    File.open path, 'rb+' do |f|
-      f.flock(File::LOCK_EX)
-      f.read
+    open_with_flock(path, 'rb+') do |io|
+      io.read
     end
-  rescue *READ_BINARY_ERRORS
-    File.open path, 'rb' do |f|
-      f.read
-    end
-  rescue Errno::ENOLCK # NFS
-    if Thread.main != Thread.current
-      raise
-    else
-      File.open path, 'rb' do |f|
-        f.read
-      end
+  rescue Errno::EACCES, Errno::EROFS
+    open_with_flock(path, 'rb') do |io|
+      io.read
     end
   end
 
   ##
   # Safely write a file in binary mode on all platforms.
   def self.write_binary(path, data)
-    File.open(path, 'wb') do |io|
+    open_with_flock(path, 'wb') do |io|
+      io.write data
+    end
+  end
+
+  ##
+  # Open a file with given flags, and protect access with flock
+
+  def self.open_with_flock(path, flags, &block)
+    File.open(path, flags) do |io|
       begin
         io.flock(File::LOCK_EX)
-      rescue *WRITE_BINARY_ERRORS
+      rescue Errno::ENOSYS, Errno::ENOTSUP
       end
-      io.write data
+      yield io
     end
   rescue Errno::ENOLCK # NFS
     if Thread.main != Thread.current
       raise
     else
-      File.open(path, 'wb') do |io|
-        io.write data
+      File.open(path, flags) do |io|
+        yield io
       end
     end
   end

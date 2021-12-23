@@ -18,6 +18,7 @@ bundler/bundler.gemspec
 bundler/exe/bundle
 bundler/exe/bundler
 bundler/lib/bundler.rb
+bundler/lib/bundler/.document
 bundler/lib/bundler/build_metadata.rb
 bundler/lib/bundler/capistrano.rb
 bundler/lib/bundler/cli.rb

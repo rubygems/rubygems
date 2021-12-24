@@ -1,3 +1,9 @@
+# 2.3.3 (December 24, 2021)
+
+## Bug fixes:
+
+  - Fix locked bundler not installed to the right path when `deployment` is set [#5217](https://github.com/rubygems/rubygems/pull/5217)
+
 # 2.3.2 (December 23, 2021)
 
 ## Enhancements:

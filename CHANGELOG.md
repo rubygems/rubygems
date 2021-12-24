@@ -1,3 +1,14 @@
+# 3.3.3 / 2021-12-24
+
+## Enhancements:
+
+* Installs bundler 2.3.3 as a default gem.
+
+## Bug fixes:
+
+* Fix gem installation failing in Solaris due to bad `IO#flock` usage.
+  Pull request #5216 by mame
+
 # 3.3.2 / 2021-12-23
 
 ## Enhancements:

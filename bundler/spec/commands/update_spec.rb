@@ -1120,15 +1120,30 @@ RSpec.describe "bundle update --bundler" do
       source "#{file_uri_for(gem_repo4)}"
       gem "rack"
     G
-    allow(Bundler::SharedHelpers).to receive(:find_gemfile).and_return(bundled_app_gemfile)
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, '\11.0.0\2')
 
     FileUtils.rm_r gem_repo4
 
     bundle :update, :bundler => true, :verbose => true
-    expect(the_bundle).to include_gem "rack 1.0"
+    expect(out).to include("Using bundler #{Bundler::VERSION}")
 
-    expect(the_bundle.locked_gems.bundler_version).to eq v(Bundler::VERSION)
+    expect(lockfile).to eq <<~L
+      GEM
+        remote: #{file_uri_for(gem_repo4)}/
+        specs:
+          rack (1.0)
+
+      PLATFORMS
+        #{lockfile_platforms}
+
+      DEPENDENCIES
+        rack
+
+      BUNDLED WITH
+         #{Bundler::VERSION}
+    L
+
+    expect(the_bundle).to include_gem "rack 1.0"
   end
 
   it "updates the bundler version in the lockfile without re-resolving if the locked version is already installed" do

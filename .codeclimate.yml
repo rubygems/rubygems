@@ -23,3 +23,4 @@ exclude_paths:
 - bundler/man/*
 - bundler/spec/**/*
 - bundler/Rakefile
+- test/**/*

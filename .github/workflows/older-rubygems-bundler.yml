@@ -43,6 +43,10 @@ jobs:
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          path: tmp/rubygems
+          ref: ${{ matrix.rgv.value }}
       - name: Fetch target rubygems
         run: git fetch origin refs/tags/${{ matrix.rgv.value }}
       - name: Setup ruby

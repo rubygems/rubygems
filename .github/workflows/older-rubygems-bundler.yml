@@ -47,8 +47,6 @@ jobs:
         with:
           path: tmp/rubygems
           ref: ${{ matrix.rgv.value }}
-      - name: Fetch target rubygems
-        run: git fetch origin refs/tags/${{ matrix.rgv.value }}
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:

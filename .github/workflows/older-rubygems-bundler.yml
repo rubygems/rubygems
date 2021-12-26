@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/checkout@v2
         with:
-          path: tmp/rubygems
+          path: bundler/tmp/rubygems
           ref: ${{ matrix.rgv.value }}
       - name: Setup ruby
         uses: ruby/setup-ruby@v1

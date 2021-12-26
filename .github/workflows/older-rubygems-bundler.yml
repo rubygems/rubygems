@@ -43,8 +43,8 @@ jobs:
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - name: Fetch target rubygems
+        run: git fetch origin refs/tags/${{ matrix.rgv.value }}
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:

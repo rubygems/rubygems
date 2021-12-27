@@ -77,7 +77,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       '--lib',
       '--',
       '-C',
-      "link-args=#{dynamic_linker_flags}",
+      "link-arg=#{dynamic_linker_flags}",
     ]
   end
 

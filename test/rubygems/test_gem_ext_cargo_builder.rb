@@ -61,7 +61,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
     assert_match "Compiling rust_ruby_example v0.1.0 (#{@ext})", output
     assert_match "Finished release [optimized] target(s)", output
   rescue Exception => e
-    pp output if output 
+    pp output if output
 
     raise(e)
   end

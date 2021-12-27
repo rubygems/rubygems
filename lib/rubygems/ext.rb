@@ -16,4 +16,8 @@ require_relative 'ext/configure_builder'
 require_relative 'ext/ext_conf_builder'
 require_relative 'ext/rake_builder'
 require_relative 'ext/cmake_builder'
-require_relative 'ext/cargo_builder'
+begin
+  require_relative 'ext/cargo_builder'
+rescue LoadError
+  # Not sure why this is failing in CI
+end

@@ -9,7 +9,6 @@ pub struct Value {
   pub value: uintptr_t,
 }
 
-#[link(name = "ruby")]
 extern "C" {
   pub fn rb_define_module(name: *const c_char) -> Value;
   pub fn rb_str_new(str: *const c_char, len: c_long) -> Value;

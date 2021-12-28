@@ -12,12 +12,6 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     end
   end
 
-  TemplateScope = Struct.new(:extension_name) do
-    def binding
-      super
-    end
-  end
-
   attr_reader :spec
 
   def initialize(spec)
@@ -69,10 +63,10 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def dynamic_linker_flags
     args = RbConfig::CONFIG['DLDFLAGS'].strip.split(" ")
 
-    args.flat_map {|a| flag_to_link_mofifier(a) }.compact
+    args.flat_map {|a| ldflag_to_link_mofifier(a) }.compact
   end
 
-  def flag_to_link_mofifier(arg)
+  def ldflag_to_link_mofifier(arg)
     flag = arg[0..1]
     val = arg[2..-1]
 
@@ -83,7 +77,34 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       ["-l", "dylib=#{val}"]
     when "-F"
       ["-F", "framework=#{val}"]
+    when "-W"
+      ["-C", "link_arg=#{arg}"]
     end
+  end
+
+  def libruby_flags_to_link_modifiers(str)
+    flags = []
+
+    str.scan(/-framework (\S+)/).flatten.each do |framework|
+      flags << "-l" << "framework=#{framework}"
+    end
+
+    str.scan(/-l\s*(\S+)/).flatten.each do |lib|
+      kind = lib.include?("static") ? "static" : "dylib"
+
+      if lib.include?("ruby")
+        # do not actually link ruby
+        # flags << "-l" << "#{kind}=ruby:#{lib}"
+      else
+        flags << "-l" << "#{kind}=#{lib}"
+      end
+    end
+
+    flags
+  end
+
+  def libruby_arg
+    ruby_static? ? RbConfig::CONFIG['LIBRUBYARG_STATIC'] : RbConfig::CONFIG['LIBRUBYARG_SHARED']
   end
 
   def cargo_rustc_args(dest_dir)
@@ -91,15 +112,14 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       '--lib',
       '--',
       *dynamic_linker_flags,
-      '-l',
-      "dylib=#{RbConfig::CONFIG['RUBY_SO_NAME']}",
+      *libruby_flags_to_link_modifiers(libruby_arg),
       "-C",
       "rpath=yes",
     ]
   end
 
   def ruby_static?
-    ENV.key?('RUBY_STATIC') || RbConfig::CONFIG['ENABLE_SHARED'] == 'no'
+    RbConfig::CONFIG['ENABLE_SHARED'] == 'no' || ['1', 'true'].include?(ENV['RUBY_STATIC'])
   end
 
   # Copied from ExtConfBuilder

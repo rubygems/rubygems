@@ -76,7 +76,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     when "-l"
       ["-l", "dylib=#{val}"]
     when "-F"
-      ["-F", "framework=#{val}"]
+      ["-l", "framework=#{val}"]
     when "-W"
       ["-C", "link_arg=#{arg}"]
     end

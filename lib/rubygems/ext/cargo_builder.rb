@@ -69,7 +69,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def dynamic_linker_flags
     return if RbConfig::CONFIG['build_os'] == 'mingw32'
 
-    RbConfig::CONFIG['LDFLAGS'].strip
+    RbConfig::CONFIG['DLDFLAGS'].strip
   end
 
   def cargo_rustc_args(dest_dir)
@@ -77,7 +77,11 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       '--lib',
       '--',
       '-C',
-      "link-arg=#{dynamic_linker_flags}",
+      "link-args=#{dynamic_linker_flags}",
+      '-C',
+      "link-arg=#{RbConfig::CONFIG['LIBRUBYARG']}",
+      '-C',
+      "link-arg=-Wl,-rpath,#{RbConfig::CONFIG['libdir']}",
     ]
   end
 

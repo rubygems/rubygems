@@ -1,3 +1,20 @@
+# 3.3.4 / 2021-12-29
+
+## Enhancements:
+
+* Don't redownload `rubygems-update` package if already there. Pull
+  request #5230 by deivid-rodriguez
+* Installs bundler 2.3.4 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem update --system` crashing when latest version not supported.
+  Pull request #5191 by deivid-rodriguez
+
+## Performance:
+
+* Make SpecificationPolicy autoload constant. Pull request #5222 by pocke
+
 # 3.3.3 / 2021-12-24
 
 ## Enhancements:

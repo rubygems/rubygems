@@ -1,3 +1,13 @@
+# 2.3.4 (December 29, 2021)
+
+## Enhancements:
+
+  - Improve error message when `BUNDLED WITH` version does not exist [#5205](https://github.com/rubygems/rubygems/pull/5205)
+
+## Bug fixes:
+
+  - Fix `bundle update --bundler` no longer updating lockfile [#5224](https://github.com/rubygems/rubygems/pull/5224)
+
 # 2.3.3 (December 24, 2021)
 
 ## Bug fixes:

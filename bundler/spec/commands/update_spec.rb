@@ -1144,7 +1144,7 @@ RSpec.describe "bundle update --bundler" do
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.3.3")
 
-    bundle :update, :bundler => true, :artifice => "vcr", :verbose => true
+    bundle :update, :bundler => true, :verbose => true
     expect(out).to include("Using bundler #{Bundler::VERSION}")
 
     expect(lockfile).to eq <<~L

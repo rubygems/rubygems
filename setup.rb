@@ -11,7 +11,7 @@ if ENV['RUBYOPT'] or defined? Gem
   ENV.delete 'RUBYOPT'
 
   require 'rbconfig'
-  cmd = [RbConfig.ruby, '--disable-gems', 'setup.rb', *ARGV]
+  cmd = [RbConfig.ruby, '--enable-gems', 'setup.rb', *ARGV]
 
   exec(*cmd)
 end

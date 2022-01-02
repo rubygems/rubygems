@@ -39,7 +39,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       cargo = ENV.fetch('CARGO', 'cargo')
 
       cmd = []
-      cmd += [cargo, "rustc", "--release"]
+      cmd += [cargo, "rustc"]
       cmd += ["--target-dir", dest_path]
       cmd += ["--manifest-path", manifest]
       cmd += Gem::Command.build_args
@@ -92,12 +92,10 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     str.scan(/-l\s*(\S+)/).flatten.each do |lib|
       kind = lib.include?("static") ? "static" : "dylib"
 
-      if lib.include?("ruby")
-        # do not actually link ruby
-        # flags << "-l" << "#{kind}=ruby:#{lib}"
-      else
-        flags << "-l" << "#{kind}=#{lib}"
-      end
+      # Do not actually link ruby since it is loaded at runtime
+      next if lib.start_with?("ruby")
+
+      flags << "-l" << "#{kind}=#{lib}"
     end
 
     flags
@@ -110,11 +108,11 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def cargo_rustc_args(dest_dir)
     [
       '--lib',
+      '--release',
+      '--frozen',
       '--',
       *dynamic_linker_flags,
       *libruby_flags_to_link_modifiers(libruby_arg),
-      "-C",
-      "rpath=yes",
     ]
   end
 

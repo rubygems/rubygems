@@ -17,7 +17,7 @@ jobs:
     name: Install Rubygems on Ubuntu (${{ matrix.ruby.name }}, ${{ matrix.openssl.name }})
     runs-on: ubuntu-20.04
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         ruby:
           - { name: "2.3", value: 2.3.8 }
@@ -30,7 +30,7 @@ jobs:
           - { name: truffleruby-21, value: truffleruby-21.2.0 }
         openssl:
           - { name: "openssl", value: true }
-          - { name: "no-openssl", value: false }
+          - { name: "no-openssl", value: true }
     steps:
       - uses: actions/checkout@v2
       - name: Setup ruby
@@ -54,7 +54,7 @@ jobs:
         run: gem list bundler
         env:
           RUBYOPT: -Itest/rubygems/fake_certlib
-        if: matrix.openssl.value == false
+        if: matrix.openssl.value == true
       - name: Run a local rubygems command
         run: gem list bundler
         if: matrix.openssl.value == true
@@ -84,7 +84,7 @@ jobs:
     name: Install Rubygems on Windows (${{ matrix.ruby.name }})
     runs-on: windows-2019
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         ruby:
           - { name: "3.0", value: 3.0.3 }
@@ -106,4 +106,4 @@ jobs:
         run: bundle init && bundle add fileutils --git https://github.com/ruby/fileutils
         shell: bash
 
-    timeout-minutes: 10
+    timeout-minutes: 0

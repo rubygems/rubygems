@@ -25,7 +25,7 @@ Process.wait
 ext = Dir["#{dest_path}/**/rust_ruby_example.{so,bundle}"].first
 
 puts "Requiring gem..."
-require File.expand_path(ext).gsub(".bundle", "")
+require File.expand_path(ext).delete_suffix(".#{RbConfig::CONFIG['DLEXT']}")
 
 puts "Invoking RustRubyExample.reverse('hello world')..."
 puts "Result: #{RustRubyExample.reverse("hello world")}"

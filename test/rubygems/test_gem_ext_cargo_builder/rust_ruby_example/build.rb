@@ -12,13 +12,17 @@ $LOAD_PATH.unshift(File.expand_path("../../../../../lib", __FILE__))
 require 'rubygems'
 require 'rubygems/gem_runner'
 
+dest_path = ARGV.first || "target"
+
 fork do
-  built_gem = "target/rust_ruby_example.gem"
+  built_gem = File.join(dest_path, "rust_ruby_example.gem")
   Gem::GemRunner.new.run(["build", "rust_ruby_example.gemspec", "--output", built_gem])
-  Gem::GemRunner.new.run(["install", built_gem, "--install-dir", "target/gems"])
+  Gem::GemRunner.new.run(["install", built_gem, "--install-dir", dest_path])
 end
 
-ext = Dir["target/gems/**/rust_ruby_example.{so,bundle}"].first
+Process.wait
+
+ext = Dir["#{dest_path}/**/rust_ruby_example.{so,bundle}"].first
 
 puts "Requiring gem..."
 require File.expand_path(ext).gsub(".bundle", "")

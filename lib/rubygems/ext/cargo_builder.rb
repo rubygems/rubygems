@@ -43,6 +43,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       cmd += ["--manifest-path", manifest]
       cmd += Gem::Command.build_args
       cmd += [*cargo_rustc_args(dest_path)]
+      cmd += args
 
       self.class.run cmd, results, self.class.class_name, cargo_dir
       results

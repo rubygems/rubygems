@@ -123,7 +123,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def validate_cargo_build!(dir)
-    dylib_path = File.join(dir, 'release', "lib#{spec.name}.#{RbConfig::CONFIG['SOEXT']}")
+    dylib_path = File.join(dir, 'release', "lib#{spec.name}.#{so_ext}")
 
     raise DylibNotFoundError.new(dir) unless File.exist?(dylib_path)
 
@@ -152,27 +152,16 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     end
   end
 
-  # Converts the linker args for libruby into the flags needed for rustc
-  def rustc_libruby_flags(str = libruby_arg)
-    flags = []
+  # We have to basically reimplement RbConfig::CONFIG['SOEXT'] here to support Ruby < 2.5
+  #
+  # @see https://github.com/ruby/ruby/blob/c87c027f18c005460746a74c07cd80ee355b16e4/configure.ac#L3185
+  def so_ext
+    return RbConfig::CONFIG['SOEXT'] if RbConfig::CONFIG.key?('SOEXT')
 
-    str.scan(/-framework (\S+)/).flatten.each do |framework|
-      flags << "-l" << "framework=#{framework}"
+    case RbConfig::CONFIG['target_os']
+    when /^darwin/i                        then 'dylib'
+    when /^(cygwin|msys|mingw)/i, /djgpp/i then 'dll'
+    else                                        'so'
     end
-
-    str.scan(/-l\s*(\S+)/).flatten.each do |lib|
-      kind = lib.include?("static") ? "static" : "dylib"
-
-      # Do not actually link ruby since it is loaded at runtime
-      next if lib.start_with?("ruby")
-
-      flags << "-l" << "#{kind}=#{lib}"
-    end
-
-    flags
-  end
-
-  def libruby_arg
-    ruby_static? ? RbConfig::CONFIG['LIBRUBYARG_STATIC'] : RbConfig::CONFIG['LIBRUBYARG_SHARED']
   end
 end

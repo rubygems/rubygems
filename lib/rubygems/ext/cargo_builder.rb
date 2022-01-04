@@ -121,7 +121,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def rustc_dynamic_linker_flags
-    args = RbConfig::CONFIG["DLDFLAGS"].strip.split(" ")
+    args = RbConfig::CONFIG.fetch("DLDFLAGS", "").strip.split(" ")
 
     args.flat_map {|a| ldflag_to_link_mofifier(a) }.compact
   end

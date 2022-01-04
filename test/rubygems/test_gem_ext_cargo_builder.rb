@@ -25,6 +25,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_build_staticlib
+    skip_jruby!
+
     content = @fixture_dir.join('Cargo.toml').read.gsub("cdylib", "staticlib")
     File.write(File.join(@ext, 'Cargo.toml'), content)
 
@@ -41,6 +43,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_build_cdylib
+    skip_jruby!
+
     output = []
 
     Dir.chdir @ext do
@@ -67,6 +71,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_build_fail
+    skip_jruby!
+
     output = []
 
     FileUtils.rm(File.join(@ext, 'src/lib.rs'))
@@ -86,11 +92,17 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_full_integration
+    skip_jruby!
+
     Dir.chdir @ext do
       stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "--disable-gems", File.join(@ext, 'build.rb'), @dest_path)
 
       assert status.success?, stdout_and_stderr_str
       assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
     end
+  end
+
+  def skip_jruby!
+    pend "Rust extensions are not supported on jruby" if java_platform?
   end
 end

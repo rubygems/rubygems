@@ -299,8 +299,6 @@ module Bundler
       store
     end
 
-    private
-
     def remote_uri
       @remote.uri
     end

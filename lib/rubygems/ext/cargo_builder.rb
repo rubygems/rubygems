@@ -19,16 +19,15 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def build(extension, dest_path, results, args=[], lib_dir=nil, cargo_dir=Dir.pwd)
-    build_crate(extension, dest_path, results, args, lib_dir, cargo_dir)
-    dylib_path = validate_cargo_build!(dest_path)
-    rename_cdylib_for_ruby_compatibility(dylib_path)
-    finalize_directory(extension, dest_path, results, args, lib_dir, cargo_dir)
+    build_crate(dest_path, results, args, cargo_dir)
+    ext_path = rename_cdylib_for_ruby_compatibility(dest_path)
+    finalize_directory(ext_path, dest_path, lib_dir, cargo_dir)
     results
   end
 
   private
 
-  def build_crate(extension, dest_path, results, args, lib_dir, cargo_dir)
+  def build_crate(dest_path, results, args, cargo_dir)
     begin
       manifest = File.join(cargo_dir, 'Cargo.toml')
 
@@ -67,11 +66,9 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   # Copied from ExtConfBuilder
-  def finalize_directory(extension, dest_path, results, args, lib_dir, extension_dir)
+  def finalize_directory(ext_path, dest_path, lib_dir, extension_dir)
     require 'fileutils'
     require 'tempfile'
-
-    destdir = ENV["DESTDIR"]
 
     begin
       tmp_dest = Dir.mktmpdir(".gem.", extension_dir)
@@ -87,17 +84,13 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       # Details: https://github.com/rubygems/rubygems/issues/977#issuecomment-171544940
       tmp_dest_relative = get_relative_path(tmp_dest.clone, extension_dir)
 
-      ENV["DESTDIR"] = nil
-
       if tmp_dest_relative
         full_tmp_dest = File.join(extension_dir, tmp_dest_relative)
 
         # TODO remove in RubyGems 3
         if Gem.install_extension_in_lib and lib_dir
           FileUtils.mkdir_p lib_dir
-          entries = Dir.entries(full_tmp_dest) - %w[. ..]
-          entries = entries.map {|entry| File.join full_tmp_dest, entry }
-          FileUtils.cp_r entries, lib_dir, :remove_destination => true
+          FileUtils.cp_r ext_path, lib_dir, :remove_destination => true
         end
 
         FileUtils::Entry_.new(full_tmp_dest).traverse do |ent|
@@ -106,7 +99,6 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
         end
       end
     ensure
-      ENV["DESTDIR"] = destdir
       FileUtils.rm_rf tmp_dest if tmp_dest
     end
   end
@@ -117,9 +109,11 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   # Ruby expects the dylib to follow a file name convention for loading
-  def rename_cdylib_for_ruby_compatibility(dylib_path)
+  def rename_cdylib_for_ruby_compatibility(dest_path)
+    dylib_path = validate_cargo_build!(dest_path)
     new_name = dylib_path.gsub(File.basename(dylib_path), "#{spec.name}.#{RbConfig::CONFIG['DLEXT']}")
     FileUtils.cp(dylib_path, new_name)
+    new_name
   end
 
   def validate_cargo_build!(dir)
@@ -144,7 +138,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     when "-L"
       ["-L", "native=#{val}"]
     when "-l"
-      ["-l", "dylib=#{val}"]
+      ["-l", "#{val}"]
     when "-F"
       ["-l", "framework=#{val}"]
     when "-W"

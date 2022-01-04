@@ -52,7 +52,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     output = output.join "\n"
 
-    bundle = Dir["#{@dest_path}/release/*.{bundle,so}"].first
+    bundle = File.join(@dest_path, "release/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")
 
     require(bundle)
 

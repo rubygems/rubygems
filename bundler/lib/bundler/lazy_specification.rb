@@ -90,7 +90,7 @@ module Bundler
           MatchPlatform.platforms_match?(spec.platform, platform_object)
         end
         installable_candidates = same_platform_candidates.select do |spec|
-          !spec.is_a?(EndpointSpecification) ||
+          spec.is_a?(StubSpecification) ||
             (spec.required_ruby_version.satisfied_by?(Gem.ruby_version) &&
               spec.required_rubygems_version.satisfied_by?(Gem.rubygems_version))
         end

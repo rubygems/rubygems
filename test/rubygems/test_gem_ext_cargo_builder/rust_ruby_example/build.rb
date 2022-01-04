@@ -12,20 +12,16 @@ $LOAD_PATH.unshift(File.expand_path("../../../../../lib", __FILE__))
 require 'rubygems'
 require 'rubygems/gem_runner'
 
-dest_path = ARGV.first || "target"
-
 fork do
-  built_gem = File.join(dest_path, "rust_ruby_example.gem")
-  Gem::GemRunner.new.run(["build", "rust_ruby_example.gemspec", "--output", built_gem])
-  Gem::GemRunner.new.run(["install", built_gem, "--install-dir", dest_path])
+  require 'tmpdir'
+
+  Dir.mktmpdir("rust_ruby_example") do |dir|
+    built_gem = File.join(dir, "rust_ruby_example.gem")
+    Gem::GemRunner.new.run(["build", "rust_ruby_example.gemspec", "--output", built_gem])
+    Gem::GemRunner.new.run(["install", "--verbose", built_gem, *ARGV])
+  end
 end
 
 Process.wait
 
-ext = Dir["#{dest_path}/**/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}"].first
-
-puts "Requiring gem..."
-require File.expand_path(ext).delete_suffix(".#{RbConfig::CONFIG['DLEXT']}")
-
-puts "Invoking RustRubyExample.reverse('hello world')..."
-puts "Result: #{RustRubyExample.reverse("hello world")}"
+system %q(ruby -rrust_ruby_example -e "puts 'Result: ' + RustRubyExample.reverse('hello world')")

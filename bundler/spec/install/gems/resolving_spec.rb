@@ -303,8 +303,6 @@ RSpec.describe "bundle install with install-time dependencies" do
 
                 require_ruby was resolved to 1.0, which depends on
                   Ruby\0 (> 9000)
-
-            Ruby\0 (> 9000), which is required by gem 'require_ruby', is not available in the local ruby installation
           E
           expect(err).to end_with(nice_error)
         end

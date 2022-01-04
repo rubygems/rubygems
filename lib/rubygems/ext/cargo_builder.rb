@@ -58,7 +58,6 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       '--locked',
       '--',
       *rustc_dynamic_linker_flags,
-      *rustc_libruby_flags,
     ]
   end
 

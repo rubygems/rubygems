@@ -22,7 +22,7 @@ end
 
 Process.wait
 
-ext = Dir["#{dest_path}/**/rust_ruby_example.{so,bundle}"].first
+ext = Dir["#{dest_path}/**/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}"].first
 
 puts "Requiring gem..."
 require File.expand_path(ext).delete_suffix(".#{RbConfig::CONFIG['DLEXT']}")

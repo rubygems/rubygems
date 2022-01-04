@@ -137,7 +137,7 @@ module Bundler
 
       specs.each do |name, version, platform, dependencies, metadata|
         spec = if dependencies
-          EndpointSpecification.new(name, version, platform, dependencies, metadata)
+          EndpointSpecification.new(name, version, platform, self, dependencies, metadata)
         else
           RemoteSpecification.new(name, version, platform, self)
         end

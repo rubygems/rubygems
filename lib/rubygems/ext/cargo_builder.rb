@@ -50,10 +50,17 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       "--release",
       "--locked",
       "--",
-      # We want to use the same linker that mkmf uses so arguments work properly
-      "-C", "linker=#{RbConfig::CONFIG.fetch('CC')}",
-      *rustc_dynamic_linker_flags
+      *platform_specific_rustc_args,
+      *rustc_dynamic_linker_flags,
     ]
+  end
+
+  def platform_specific_rustc_args
+    if Gem.win_platform?
+      ["-C", "linker-flavor=ld.lld"]
+    else
+      []
+    end
   end
 
   def ruby_static?

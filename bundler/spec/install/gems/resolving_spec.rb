@@ -286,8 +286,6 @@ RSpec.describe "bundle install with install-time dependencies" do
 
       shared_examples_for "ruby version conflicts" do
         it "raises an error during resolution" do
-          skip "ruby requirement includes platform and it shouldn't" if Gem.win_platform?
-
           install_gemfile <<-G, :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }, :raise_on_error => false
             source "http://localgemserver.test/"
             ruby #{ruby_requirement}

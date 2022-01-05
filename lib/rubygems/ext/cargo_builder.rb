@@ -56,12 +56,9 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def platform_specific_rustc_args
-    if Gem.win_platform?
-      # ["-C", "linker=clang"]
-      []
-    else
-      []
-    end
+    flags = []
+    flags += ["-C", "linker=clang"] if Gem.win_platform?
+    flags
   end
 
   def ruby_static?

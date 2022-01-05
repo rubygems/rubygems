@@ -19,6 +19,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        cargo:
+          - target: x86_64-pc-windows-gnu
+            toolchain: stable
         ruby:
           - { name: "2.4", value: 2.4.10 }
           - { name: "2.5", value: 2.5.9 }
@@ -35,12 +38,13 @@ jobs:
           bundler: none
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
-          target: x86_64-pc-windows-gnu
+          toolchain: ${{ matrix.cargo.toolchain }}
+          target: ${{ matrix.cargo.target }}
       - name: Install Dependencies and Run Test
         run: |
           rake setup
           rake test
         env:
           BUNDLE_WITHOUT: lint
+          CARGO_BUILD_TARGET: ${{ matrix.cargo.target }}
     timeout-minutes: 15

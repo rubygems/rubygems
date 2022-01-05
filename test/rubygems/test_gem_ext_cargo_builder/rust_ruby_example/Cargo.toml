@@ -2,8 +2,5 @@
 name = "rust_ruby_example"
 version = "0.1.0"
 
-[dependencies]
-libc = "0.2"
-
 [lib]
 crate-type = ["cdylib"]

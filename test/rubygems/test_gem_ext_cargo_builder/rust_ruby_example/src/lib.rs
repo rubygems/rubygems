@@ -1,12 +1,10 @@
-extern crate libc;
-
-use libc::{c_char, c_int, c_long, c_void, uintptr_t};
 use std::ffi::{CStr, CString};
+use std::os::raw::{c_char, c_int, c_long, c_void, c_ulong};
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Value {
-  pub value: uintptr_t,
+  pub value: c_ulong,
 }
 
 extern "C" {
@@ -39,10 +37,10 @@ unsafe extern "C" fn pub_reverse(_klass: Value, input: Value) -> Value {
 pub extern "C" fn Init_rust_ruby_example() {
   let name = CString::new("RustRubyExample").unwrap();
   let function_name = CString::new("reverse").unwrap();
+  let callback = pub_reverse as *const fn() as *const c_void;
 
   unsafe {
     let klass = rb_define_module(name.as_ptr());
-    let callback = pub_reverse as *const fn() as *const c_void;
     rb_define_module_function(klass, function_name.as_ptr(), callback, 1)
   }
 }

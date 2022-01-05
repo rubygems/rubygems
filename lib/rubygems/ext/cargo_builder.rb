@@ -133,7 +133,9 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     args.flat_map {|a| ldflag_to_link_mofifier(a) }.compact
   end
 
-  def ldflag_to_link_mofifier(arg)
+  def ldflag_to_link_mofifier(input_arg)
+    # intepolate subsition vars in the arg (i.e. $(DEFFILE))
+    arg = input_arg.gsub(/\$\((\w+)\)/) { RbConfig::CONFIG[$1] }
     flag = arg[0..1]
     val = arg[2..-1]
 
@@ -141,7 +143,6 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     when "-L"         then ["-L", "native=#{val}"]
     when "-l"         then ["-l", val.to_s]
     when "-F"         then ["-l", "framework=#{val}"]
-    when "$("         then [] # ignore interpolated vars
     else                   ["-C", "link_arg=#{arg}"]
     end
   end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rubygems/command"
+require "fileutils"
 
 # This class is used by rubygems to build Rust extensions. It is a thin-wrapper
 # over the `cargo rustc` command which takes care of building Rust code in a way
@@ -135,7 +136,10 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def ldflag_to_link_mofifier(input_arg)
     # Intepolate substition vars in the arg (i.e. $(DEFFILE))
-    arg = input_arg.gsub(/\$\((\w+)\)/) { RbConfig::CONFIG[$1] }
+    arg = input_arg.gsub(/\$\((\w+)\)/) { RbConfig::CONFIG[$1] }.strip
+
+    return if arg == ""
+
     flag = arg[0..1]
     val = arg[2..-1]
 

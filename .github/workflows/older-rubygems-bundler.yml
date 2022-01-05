@@ -10,7 +10,7 @@ on:
   push:
     branches:
       - master
-      - 3.2
+      - 3.3
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
@@ -43,8 +43,10 @@ jobs:
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          path: bundler/tmp/rubygems
+          ref: ${{ matrix.rgv.value }}
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:

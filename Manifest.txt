@@ -18,6 +18,7 @@ bundler/bundler.gemspec
 bundler/exe/bundle
 bundler/exe/bundler
 bundler/lib/bundler.rb
+bundler/lib/bundler/.document
 bundler/lib/bundler/build_metadata.rb
 bundler/lib/bundler/capistrano.rb
 bundler/lib/bundler/cli.rb
@@ -165,6 +166,7 @@ bundler/lib/bundler/rubygems_ext.rb
 bundler/lib/bundler/rubygems_gem_installer.rb
 bundler/lib/bundler/rubygems_integration.rb
 bundler/lib/bundler/runtime.rb
+bundler/lib/bundler/self_manager.rb
 bundler/lib/bundler/settings.rb
 bundler/lib/bundler/settings/validator.rb
 bundler/lib/bundler/setup.rb

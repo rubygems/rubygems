@@ -12,6 +12,8 @@ module Bundler
 
       warn_if_root
 
+      Bundler.self_manager.install_locked_bundler_and_restart_with_it_if_needed
+
       Bundler::SharedHelpers.set_env "RB_USER_INSTALL", "1" if Bundler::FREEBSD
 
       # Disable color in deployment mode
@@ -163,9 +165,6 @@ module Bundler
 
     def normalize_settings
       Bundler.settings.set_command_option :path, nil if options[:system]
-      Bundler.settings.temporary(:path_relative_to_cwd => false) do
-        Bundler.settings.set_command_option :path, "vendor/bundle" if Bundler.settings[:deployment] && Bundler.settings[:path].nil?
-      end
       Bundler.settings.set_command_option_if_given :path, options[:path]
       Bundler.settings.temporary(:path_relative_to_cwd => false) do
         Bundler.settings.set_command_option :path, "bundle" if options["standalone"] && Bundler.settings[:path].nil?

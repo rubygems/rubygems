@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - master
-      - 3.2
+      - 3.3
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
@@ -25,7 +25,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: jruby-9.3.1.0
+          ruby-version: jruby-9.3.2.0
           bundler: none
       - name: Prepare dependencies
         run: |

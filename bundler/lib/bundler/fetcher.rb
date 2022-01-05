@@ -122,7 +122,6 @@ module Bundler
 
     # return the specs in the bundler format as an index
     def specs(gem_names, source)
-      old = Bundler.rubygems.sources
       index = Bundler::Index.new
 
       if Bundler::Fetcher.disable_endpoint
@@ -130,17 +129,15 @@ module Bundler
         specs = fetchers.last.specs(gem_names)
       else
         specs = []
-        fetchers.shift until fetchers.first.available? || fetchers.empty?
-        fetchers.dup.each do |f|
-          break unless f.api_fetcher? && !gem_names || !specs = f.specs(gem_names)
-          fetchers.delete(f)
+        @fetchers = fetchers.drop_while do |f|
+          !f.available? || (f.api_fetcher? && !gem_names) || !specs = f.specs(gem_names)
         end
         @use_api = false if fetchers.none?(&:api_fetcher?)
       end
 
       specs.each do |name, version, platform, dependencies, metadata|
         spec = if dependencies
-          EndpointSpecification.new(name, version, platform, dependencies, metadata)
+          EndpointSpecification.new(name, version, platform, self, dependencies, metadata)
         else
           RemoteSpecification.new(name, version, platform, self)
         end
@@ -153,8 +150,6 @@ module Bundler
     rescue CertificateFailureError
       Bundler.ui.info "" if gem_names && use_api # newline after dots
       raise
-    ensure
-      Bundler.rubygems.sources = old
     end
 
     def use_api
@@ -275,8 +270,7 @@ module Bundler
     # cached gem specification path, if one exists
     def gemspec_cached_path(spec_file_name)
       paths = Bundler.rubygems.spec_cache_dirs.map {|dir| File.join(dir, spec_file_name) }
-      paths = paths.select {|path| File.file? path }
-      paths.first
+      paths.find {|path| File.file? path }
     end
 
     HTTP_ERRORS = [
@@ -303,8 +297,6 @@ module Bundler
       end
       store
     end
-
-    private
 
     def remote_uri
       @remote.uri

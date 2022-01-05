@@ -54,7 +54,7 @@ namespace :spec do
   end
 
   desc "Run the spec suite with the sudo tests"
-  task :sudo do
+  task :sudo, [:specs] => [] do |_t, opts|
     require "open3"
     output, status = Open3.capture2e("sudo", "cp", "/etc/sudoers", "tmp/old_sudoers")
     raise "Couldn't read sudoers file: #{output}" unless status.success?
@@ -65,7 +65,7 @@ namespace :spec do
 
       raise "Couldn't configure sudo correctly to preserve path" unless `ruby -v` == `sudo -E ruby -v`
 
-      sh("sudo -E --preserve-env=RUBYOPT bin/rspec --tag sudo")
+      sh("sudo -E --preserve-env=RUBYOPT bin/rspec --tag sudo #{opts[:specs]}")
     ensure
       system("sudo", "cp", "tmp/old_sudoers", "/etc/sudoers")
       system("sudo", "chown", "-R", ENV["USER"], "tmp")
@@ -171,9 +171,12 @@ Automatiek::RakeTask.new("molinillo") do |lib|
   end
 end
 
+# We currently include the official version as of
+# https://github.com/rails/thor/commit/5c666b4c25e748e57eec2d529d94c5059030979e
+# with a change on top to support did_you_mean-1.6.0.
 desc "Vendor a specific version of thor"
 Automatiek::RakeTask.new("thor") do |lib|
-  lib.version = "v1.1.0"
+  lib.version = "master"
   lib.download = { :github => "https://github.com/erikhuda/thor" }
   lib.namespace = "Thor"
   lib.prefix = "Bundler"

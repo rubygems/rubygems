@@ -31,6 +31,3 @@ patch_level_labels:
   - "rubygems: performance"
   - "rubygems: documentation"
   - "rubygems: backport"
-
-minor_level_labels:
-  - "rubygems: feature"

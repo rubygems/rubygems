@@ -1,3 +1,60 @@
+# 2.3.4 (December 29, 2021)
+
+## Enhancements:
+
+  - Improve error message when `BUNDLED WITH` version does not exist [#5205](https://github.com/rubygems/rubygems/pull/5205)
+
+## Bug fixes:
+
+  - Fix `bundle update --bundler` no longer updating lockfile [#5224](https://github.com/rubygems/rubygems/pull/5224)
+
+# 2.3.3 (December 24, 2021)
+
+## Bug fixes:
+
+  - Fix locked bundler not installed to the right path when `deployment` is set [#5217](https://github.com/rubygems/rubygems/pull/5217)
+
+# 2.3.2 (December 23, 2021)
+
+## Enhancements:
+
+  - Remove unnecessary lockfile upgrade warning [#5209](https://github.com/rubygems/rubygems/pull/5209)
+
+# 2.3.1 (December 22, 2021)
+
+## Enhancements:
+
+  - Vendor latest `thor` with fixes for latest `did_you_mean` deprecations [#5202](https://github.com/rubygems/rubygems/pull/5202)
+  - Avoid unnecessary `shellwords` require on newer rubygems [#5195](https://github.com/rubygems/rubygems/pull/5195)
+  - Re-exec prepending command with `Gem.ruby` if `$PROGRAM_NAME` is not executable [#5193](https://github.com/rubygems/rubygems/pull/5193)
+
+# 2.3.0 (December 21, 2021)
+
+## Features:
+
+  - Change `bundle install` with a lockfile to respect the `BUNDLED WITH` bundler version [#4076](https://github.com/rubygems/rubygems/pull/4076)
+
+## Enhancements:
+
+  - Print warning when running Bundler on potentially problematic RubyGems & Ruby combinations [#5177](https://github.com/rubygems/rubygems/pull/5177)
+  - Error tracing should be printed to stderr [#5179](https://github.com/rubygems/rubygems/pull/5179)
+  - Add `github` and `ref` options to `bundle add` [#5159](https://github.com/rubygems/rubygems/pull/5159)
+  - Add require parameter to `bundle add` [#5021](https://github.com/rubygems/rubygems/pull/5021)
+  - Enable parallel installation on Windows by default [#4822](https://github.com/rubygems/rubygems/pull/4822)
+  - More logging when compact index is not used and we fallback to other APIs [#4546](https://github.com/rubygems/rubygems/pull/4546)
+  - `bundle gem` generated MiniTest file and class now start with 'test' [#3893](https://github.com/rubygems/rubygems/pull/3893)
+  - Add `Bundler::Definition.no_lock` accessor for skipping lock file creation/update [#3401](https://github.com/rubygems/rubygems/pull/3401)
+
+## Bug fixes:
+
+  - Fix crash when when no platform specific matches exist and show a proper error [#5168](https://github.com/rubygems/rubygems/pull/5168)
+  - Ignore dependencies not actually locked from frozen check [#5152](https://github.com/rubygems/rubygems/pull/5152)
+  - Fix `bundle cache --all-platforms` on Windows [#4552](https://github.com/rubygems/rubygems/pull/4552)
+
+## Documentation:
+
+  - Fix gemspec template typo [#4545](https://github.com/rubygems/rubygems/pull/4545)
+
 # 2.2.33 (December 7, 2021)
 
 ## Security fixes:

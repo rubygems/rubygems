@@ -364,7 +364,9 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "throws a warning if a gem is added twice in Gemfile without version requirements" do
-      install_gemfile <<-G, :raise_on_error => false
+      build_repo2
+
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "rack"
         gem "rack"
@@ -376,13 +378,31 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "throws a warning if a gem is added twice in Gemfile with same versions" do
-      install_gemfile <<-G, :raise_on_error => false
+      build_repo2
+
+      install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "rack", "1.0"
         gem "rack", "1.0"
       G
 
       expect(err).to include("Your Gemfile lists the gem rack (= 1.0) more than once.")
+      expect(err).to include("Remove any duplicate entries and specify the gem only once.")
+      expect(err).to include("While it's not a problem now, it could cause errors if you change the version of one of them later.")
+    end
+
+    it "throws a warning if a gem is added twice under different platforms and does not crash when using the generated lockfile" do
+      build_repo2
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "rack", :platform => :jruby
+        gem "rack"
+      G
+
+      bundle "install"
+
+      expect(err).to include("Your Gemfile lists the gem rack (>= 0) more than once.")
       expect(err).to include("Remove any duplicate entries and specify the gem only once.")
       expect(err).to include("While it's not a problem now, it could cause errors if you change the version of one of them later.")
     end
@@ -499,20 +519,17 @@ RSpec.describe "bundle install with gem sources" do
     context "and using an unsupported Ruby version" do
       it "prints an error" do
         install_gemfile <<-G, :raise_on_error => false
-          ::RUBY_VERSION = '2.0.1'
-          ruby '~> 2.2'
+          ruby '~> 1.2'
           source "#{file_uri_for(gem_repo1)}"
         G
-        expect(err).to include("Your Ruby version is 2.0.1, but your Gemfile specified ~> 2.2")
+        expect(err).to include("Your Ruby version is #{RUBY_VERSION}, but your Gemfile specified ~> 1.2")
       end
     end
 
     context "and using a supported Ruby version" do
       before do
         install_gemfile <<-G
-          ::RUBY_VERSION = '2.1.3'
-          ::RUBY_PATCHLEVEL = 100
-          ruby '~> 2.1.0'
+          ruby '~> #{RUBY_VERSION}'
           source "#{file_uri_for(gem_repo1)}"
         G
       end
@@ -529,18 +546,16 @@ RSpec.describe "bundle install with gem sources" do
          DEPENDENCIES
 
          RUBY VERSION
-            ruby 2.1.3p100
+            #{Bundler::RubyVersion.system}
 
          BUNDLED WITH
             #{Bundler::VERSION}
         L
       end
 
-      it "updates Gemfile.lock with updated incompatible ruby version" do
+      it "updates Gemfile.lock with updated yet still compatible ruby version" do
         install_gemfile <<-G
-          ::RUBY_VERSION = '2.2.3'
-          ::RUBY_PATCHLEVEL = 100
-          ruby '~> 2.2.0'
+          ruby '~> #{RUBY_VERSION[0..2]}'
           source "#{file_uri_for(gem_repo1)}"
         G
 
@@ -555,7 +570,7 @@ RSpec.describe "bundle install with gem sources" do
          DEPENDENCIES
 
          RUBY VERSION
-            ruby 2.2.3p100
+            #{Bundler::RubyVersion.system}
 
          BUNDLED WITH
             #{Bundler::VERSION}

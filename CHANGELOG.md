@@ -1,3 +1,93 @@
+# 3.3.4 / 2021-12-29
+
+## Enhancements:
+
+* Don't redownload `rubygems-update` package if already there. Pull
+  request #5230 by deivid-rodriguez
+* Installs bundler 2.3.4 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem update --system` crashing when latest version not supported.
+  Pull request #5191 by deivid-rodriguez
+
+## Performance:
+
+* Make SpecificationPolicy autoload constant. Pull request #5222 by pocke
+
+# 3.3.3 / 2021-12-24
+
+## Enhancements:
+
+* Installs bundler 2.3.3 as a default gem.
+
+## Bug fixes:
+
+* Fix gem installation failing in Solaris due to bad `IO#flock` usage.
+  Pull request #5216 by mame
+
+# 3.3.2 / 2021-12-23
+
+## Enhancements:
+
+* Fix deprecations when activating DidYouMean for misspelled command
+  suggestions. Pull request #5211 by yuki24
+* Installs bundler 2.3.2 as a default gem.
+
+## Bug fixes:
+
+* Fix gemspec truncation. Pull request #5208 by deivid-rodriguez
+
+# 3.3.1 / 2021-12-22
+
+## Enhancements:
+
+* Fix compatibility with OpenSSL 3.0. Pull request #5196 by rhenium
+* Remove hard errors when matching major bundler not found. Pull request
+  #5181 by deivid-rodriguez
+* Installs bundler 2.3.1 as a default gem.
+
+# 3.3.0 / 2021-12-21
+
+## Breaking changes:
+
+* Removed deprecated `gem server` command. Pull request #5034 by hsbt
+* Remove MacOS specific gem layout. Pull request #4833 by deivid-rodriguez
+* Default `gem update` documentation format is now only `ri`. Pull request
+  #3888 by hsbt
+
+## Features:
+
+* Give command misspelled suggestions via `did_you_mean` gem. Pull request
+  #3904 by hsbt
+
+## Performance:
+
+* Avoid some unnecessary stat calls. Pull request #3887 by kares
+* Improve spell checking suggestion performance by
+  vendoring`DidYouMean::Levenshtein.distance` from `did_you_mean-1.4.0`.
+  Pull request #3856 by austinpray
+
+## Enhancements:
+
+* Set `BUNDLER_VERSION` when `bundle _<version>_` is passed. Pull request
+  #5180 by deivid-rodriguez
+* Don't require `rdoc` for `gem uninstall`. Pull request #4691 by ndren
+* More focused rescue on extension builder exception to get more
+  information on errors. Pull request #4189 by deivid-rodriguez
+* Installs bundler 2.3.0 as a default gem.
+
+## Bug fixes:
+
+* Fix encoding mismatch issues when writing gem packages. Pull request
+  #5162 by deivid-rodriguez
+* Fix broken brew formula due to loading `operating_system.rb`
+  customizations too late. Pull request #5154 by deivid-rodriguez
+* Properly fetch `Gem#latest_spec_for` with multiple sources. Pull request
+  #2764 by kevlogan90
+* Fix upgrade crashing when multiple versions of `fileutils` installed.
+  Pull request #5140 by deivid-rodriguez
+
 # 3.2.33 / 2021-12-07
 
 ## Deprecations:

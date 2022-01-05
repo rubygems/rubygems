@@ -68,9 +68,17 @@ module Bundler
         Bundler.rubygems.supports_bundler_trampolining? &&
         SharedHelpers.in_bundle? &&
         lockfile_version &&
-        !lockfile_version.end_with?(".dev") &&
-        lockfile_version != current_version &&
+        released?(lockfile_version) &&
+        !running?(lockfile_version) &&
         !updating?
+    end
+
+    def running?(version)
+      version == current_version
+    end
+
+    def released?(version)
+      !version.end_with?(".dev")
     end
 
     def updating?

@@ -95,7 +95,17 @@ class TestGemExtCargoBuilder < Gem::TestCase
     skip_unsupported_platforms!
 
     Dir.chdir @ext do
-      stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "--disable-gems", File.join(@ext, 'build.rb'), @dest_path)
+      require 'tmpdir'
+
+      gem = [@rust_envs, *ruby_with_rubygems_in_load_path, File.expand_path("./../../../bin/gem", __FILE__)]
+
+      Dir.mktmpdir("rust_ruby_example") do |dir|
+        built_gem = File.expand_path(File.join(dir, "rust_ruby_example.gem"))
+        Open3.capture2e *gem, "build", "rust_ruby_example.gemspec", "--output", built_gem
+        Open3.capture2e *gem, "install", "--verbose", "--local", built_gem, *ARGV
+      end
+
+      stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "-rrust_ruby_example", "-e", "puts 'Result: ' + RustRubyExample.reverse('hello world')")
 
       assert status.success?, stdout_and_stderr_str
       assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str

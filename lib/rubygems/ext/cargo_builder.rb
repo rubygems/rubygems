@@ -134,7 +134,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def ldflag_to_link_mofifier(input_arg)
-    # intepolate substition vars in the arg (i.e. $(DEFFILE))
+    # Intepolate substition vars in the arg (i.e. $(DEFFILE))
     arg = input_arg.gsub(/\$\((\w+)\)/) { RbConfig::CONFIG[$1] }
     flag = arg[0..1]
     val = arg[2..-1]

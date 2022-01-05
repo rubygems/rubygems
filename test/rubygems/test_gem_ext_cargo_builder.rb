@@ -25,7 +25,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_build_staticlib
-    skip_jruby!
+    skip_unsupported_platforms!
 
     content = @fixture_dir.join('Cargo.toml').read.gsub("cdylib", "staticlib")
     File.write(File.join(@ext, 'Cargo.toml'), content)
@@ -43,7 +43,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_build_cdylib
-    skip_jruby!
+    skip_unsupported_platforms!
 
     output = []
 
@@ -71,7 +71,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_build_fail
-    skip_jruby!
+    skip_unsupported_platforms!
 
     output = []
 
@@ -92,7 +92,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def test_full_integration
-    skip_jruby!
+    skip_unsupported_platforms!
 
     Dir.chdir @ext do
       stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "--disable-gems", File.join(@ext, 'build.rb'), @dest_path)
@@ -102,7 +102,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
     end
   end
 
-  def skip_jruby!
+  def skip_unsupported_platforms!
     pend "Rust extensions are not supported on jruby" if java_platform?
+    pend "Pending support for truffleruby in Rust extensions" if RUBY_ENGINE == 'truffleruby'
   end
 end

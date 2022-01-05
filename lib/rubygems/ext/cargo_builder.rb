@@ -141,7 +141,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     when "-L"         then ["-L", "native=#{val}"]
     when "-l"         then ["-l", val.to_s]
     when "-F"         then ["-l", "framework=#{val}"]
-    when "${"         then [] # ignore interpolated vars
+    when "$("         then [] # ignore interpolated vars
     else                   ["-C", "link_arg=#{arg}"]
     end
   end

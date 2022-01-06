@@ -38,13 +38,12 @@ jobs:
           bundler: none
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ matrix.cargo.toolchain }}
-          target: ${{ matrix.cargo.target }}
+          toolchain: ${{ matrix.cargo.toolchain }}-${{ matrix.cargo.target }}
+          default: true
       - name: Install Dependencies and Run Test
         run: |
           rake setup
           rake test
         env:
           BUNDLE_WITHOUT: lint
-          CARGO_BUILD_TARGET: ${{ matrix.cargo.target }}
     timeout-minutes: 15

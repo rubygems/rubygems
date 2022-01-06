@@ -134,7 +134,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def validate_cargo_build!(dir)
-    prefix = Gem.win_platform? ? "" : "lib"
+    prefix = so_ext == "dll" ? "" : "lib"
     dylib_path = File.join(dir, "release", "#{prefix}#{spec.name}.#{so_ext}")
 
     raise DylibNotFoundError, dir unless File.exist?(dylib_path)
@@ -223,10 +223,15 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   # Error raised when no cdylib artificat was created
   class DylibNotFoundError < StandardError
     def initialize(dir)
+      files = Dir.glob(File.join(dir, "**", "*")).map {|f| "- #{f}" }.join "\n"
+
       super <<~MSG
         Dynamic library not found for Rust extension (in #{dir})
 
         Make sure you set "crate-type" in Cargo.toml to "cdylib"
+
+        Found files:
+        #{files}
       MSG
     end
   end

@@ -59,20 +59,26 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def platform_specific_rustc_args(dest_dir)
     flags = []
+
+    # Use the same linker that mkmf would use
+    flags += ["-C", "linker=#{makefile_config('CC')}"]
+
+    # On win platforms, mkmf adds libruby to the linker flags
     flags += libruby_args(dest_dir) if Gem.win_platform?
+
     flags
   end
 
   def libruby_args(dest_dir)
     libs = makefile_config(ruby_static? ? 'LIBRUBYARG_STATIC' : 'LIBRUBYARG_SHARED')
     raw_libs = libs.strip.split(" ").compact
-    raw_libs.map {|l| ldflag_to_link_mofifier(l, dest_dir) }
+    raw_libs.flat_map {|l| ldflag_to_link_mofifier(l, dest_dir) }
   end
 
   def ruby_static?
     return true if %w[1 true].include?(ENV["RUBY_STATIC"])
 
-    RbConfig::CONFIG["ENABLE_SHARED"] == "no"
+    makefile_config("ENABLE_SHARED") == "no"
   end
 
   # Copied from ExtConfBuilder

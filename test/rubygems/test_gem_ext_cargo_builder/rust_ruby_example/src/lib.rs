@@ -1,5 +1,5 @@
 use std::ffi::{CStr, CString};
-use std::os::raw::{c_char, c_int, c_long, c_void, c_ulong};
+use std::os::raw::{c_char, c_int, c_long, c_ulong, c_void};
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -24,7 +24,7 @@ unsafe fn cstr_to_string(str: *const c_char) -> String {
 }
 
 #[no_mangle]
- extern "C" fn pub_reverse(_klass: Value, input: Value) -> Value {
+extern "C" fn pub_reverse(_klass: Value, input: Value) -> Value {
   let ruby_string = unsafe { cstr_to_string(rb_string_value_cstr(&input)) };
   let reversed = ruby_string.to_string().chars().rev().collect::<String>();
   let reversed_cstring = CString::new(reversed).unwrap();

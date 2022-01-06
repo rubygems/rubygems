@@ -2,6 +2,7 @@
 
 require "rubygems/command"
 require "fileutils"
+require "shellwords"
 
 # This class is used by rubygems to build Rust extensions. It is a thin-wrapper
 # over the `cargo rustc` command which takes care of building Rust code in a way
@@ -35,6 +36,8 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     cmd += [cargo, "rustc"]
     cmd += ["--target-dir", dest_path]
     cmd += ["--manifest-path", manifest]
+    cmd += ["--lib", "--release", "--locked"]
+    cmd += ["--"]
     cmd += [*cargo_rustc_args(dest_path)]
     cmd += Gem::Command.build_args
     cmd += args
@@ -47,32 +50,34 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def cargo_rustc_args(dest_dir)
     [
-      "--lib",
-      "--release",
-      "--locked",
-      "--",
+      *linker_args,
       *mkmf_libpath,
       *platform_specific_rustc_args(dest_dir),
       *rustc_dynamic_linker_flags(dest_dir),
-      *debug_flags
+      *debug_flags,
     ]
   end
 
-  def platform_specific_rustc_args(dest_dir)
-    flags = []
-
-    # Use the same linker that mkmf would use
-    flags += ["-C", "linker=#{makefile_config('CC')}"]
-
+  def platform_specific_rustc_args(dest_dir, flags = [])
     # On win platforms, mkmf adds libruby to the linker flags
-    flags += libruby_args(dest_dir) if Gem.win_platform?
-
+    flags += libruby_args(dest_dir) if win_target?
     flags
   end
 
+  # We want to use the same linker that Ruby uses, so that the linker flags from
+  # mkmf work properly.
+  def linker_args
+    # Have to handle CC="cl /nologo" on mswin
+    cc_flag = Shellwords.split(makefile_config("CC"))
+    linker = cc_flag.shift
+    link_args = cc_flag.flat_map {|a| ["-C", "link-arg=#{a}"] }
+
+    ["-C", "linker=#{linker}", *link_args]
+  end
+
   def libruby_args(dest_dir)
-    libs = makefile_config(ruby_static? ? 'LIBRUBYARG_STATIC' : 'LIBRUBYARG_SHARED')
-    raw_libs = libs.strip.split(" ").compact
+    libs = makefile_config(ruby_static? ? "LIBRUBYARG_STATIC" : "LIBRUBYARG_SHARED")
+    raw_libs = Shellwords.split(libs)
     raw_libs.flat_map {|l| ldflag_to_link_mofifier(l, dest_dir) }
   end
 
@@ -80,6 +85,134 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     return true if %w[1 true].include?(ENV["RUBY_STATIC"])
 
     makefile_config("ENABLE_SHARED") == "no"
+  end
+
+  # Ruby expects the dylib to follow a file name convention for loading
+  def rename_cdylib_for_ruby_compatibility(dest_path)
+    dylib_path = validate_cargo_build!(dest_path)
+    dlext_name = "#{spec.name}.#{makefile_config("DLEXT")}"
+    new_name = dylib_path.gsub(File.basename(dylib_path), dlext_name)
+    FileUtils.cp(dylib_path, new_name)
+    new_name
+  end
+
+  def validate_cargo_build!(dir)
+    prefix = so_ext == "dll" ? "" : "lib"
+    dylib_path = File.join(dir, "release", "#{prefix}#{spec.name}.#{so_ext}")
+
+    raise DylibNotFoundError, dir unless File.exist?(dylib_path)
+
+    dylib_path
+  end
+
+  def rustc_dynamic_linker_flags(dest_dir)
+    split_dldflags
+      .map {|arg| maybe_resolve_ldflag_variable(arg, dest_dir) }
+      .compact
+      .flat_map {|arg| ldflag_to_link_mofifier(arg, dest_dir) }
+  end
+
+  def split_dldflags
+    Shellwords.split(RbConfig::CONFIG.fetch("DLDFLAGS", ""))
+  end
+
+  def ldflag_to_link_mofifier(arg, dest_dir)
+    flag = arg[0..1]
+    val = arg[2..-1]
+
+    case flag
+    when "-L" then ["-L", "native=#{val}"]
+    when "-l" then ["-l", val.to_s]
+    when "-F" then ["-l", "framework=#{val}"]
+    else ["-C", "link_arg=#{arg}"]
+    end
+  end
+
+  def link_flag(link_name)
+    # These are provided by the CRT with MSVC
+    # @see https://github.com/rust-lang/pkg-config-rs/blob/49a4ac189aafa365167c72e8e503565a7c2697c2/src/lib.rs#L622
+    return [] if msvc_target? && ["m", "c", "pthread"].include?(link_name)
+
+    # For libruby, we give it a nice link name
+    attr_name = val.include?("ruby") && makefile_confg("RUBY_BASE_NAME")
+    link_spec = attr_name ? "#{attr_name}:#{link_name}" : link_name
+
+    ["-l", link_spec]
+  end
+
+  def msvc_target?
+    makefile_config("target_os").include?("msvc")
+  end
+
+  def darwin_target?
+    makefile_config("target_os").include?("darwin")
+  end
+
+  def win_target?
+    target_platform = RbConfig::CONFIG["target_os"]
+    !!Gem::WIN_PATTERNS.find {|r| target_platform =~ r }
+  end
+
+  # Intepolate substition vars in the arg (i.e. $(DEFFILE))
+  def maybe_resolve_ldflag_variable(input_arg, dest_dir)
+    str = input_arg.gsub(/\$\((\w+)\)/) do |var_name|
+      case var_name
+      # On windows, it is assumed that mkmf has setup an exports file for the
+      # extension, so we have to to create one ourselves.
+      when "DEFFILE"
+        write_deffile(dest_dir)
+      else
+        RbConfig::CONFIG[var_name]
+      end
+    end.strip
+
+    str == "" ? nil : str
+  end
+
+  def write_deffile(dest_dir)
+    deffile_path = File.join(dest_dir, "#{spec.name}-#{RbConfig::CONFIG["arch"]}.def")
+    export_prefix = makefile_config("EXPORT_PREFIX") || ""
+
+    File.open(deffile_path, "w") do |f|
+      f.puts "EXPORTS"
+      f.puts "#{export_prefix.strip}Init_#{spec.name}"
+    end
+
+    deffile_path
+  end
+
+  # We have to basically reimplement RbConfig::CONFIG['SOEXT'] here to support
+  # Ruby < 2.5
+  #
+  # @see https://github.com/ruby/ruby/blob/c87c027f18c005460746a74c07cd80ee355b16e4/configure.ac#L3185
+  def so_ext
+    return RbConfig::CONFIG["SOEXT"] if RbConfig::CONFIG.key?("SOEXT")
+
+    if win_target?
+      "dll"
+    elsif darwin_target?
+      "dylib"
+    else
+      "so"
+    end
+  end
+
+  # Corresponds to $(LIBPATH) in mkmf
+  def mkmf_libpath
+    ["-L", "native=#{makefile_config("libdir")}"]
+  end
+
+  def makefile_config(var_name)
+    val = RbConfig::MAKEFILE_CONFIG[var_name]
+
+    return unless val
+
+    RbConfig.expand(val.dup)
+  end
+
+  # Good balance between binary size and debugability
+  def debug_flags
+    ["-C", "debuginfo=1"]
   end
 
   # Copied from ExtConfBuilder
@@ -123,106 +256,6 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def get_relative_path(path, base)
     path[0..base.length - 1] = "." if path.start_with?(base)
     path
-  end
-
-  # Ruby expects the dylib to follow a file name convention for loading
-  def rename_cdylib_for_ruby_compatibility(dest_path)
-    dylib_path = validate_cargo_build!(dest_path)
-    dlext_name = "#{spec.name}.#{RbConfig::CONFIG['DLEXT']}"
-    new_name = dylib_path.gsub(File.basename(dylib_path), dlext_name)
-    FileUtils.cp(dylib_path, new_name)
-    new_name
-  end
-
-  def validate_cargo_build!(dir)
-    prefix = so_ext == "dll" ? "" : "lib"
-    dylib_path = File.join(dir, "release", "#{prefix}#{spec.name}.#{so_ext}")
-
-    raise DylibNotFoundError, dir unless File.exist?(dylib_path)
-
-    dylib_path
-  end
-
-  def rustc_dynamic_linker_flags(dest_dir)
-    split_dldflags
-      .map {|arg| maybe_resolve_ldflag_variable(arg, dest_dir) }
-      .compact
-      .flat_map {|arg| ldflag_to_link_mofifier(arg, dest_dir) }
-  end
-
-  def split_dldflags
-    RbConfig::CONFIG.fetch("DLDFLAGS", "").strip.split(" ")
-  end
-
-  def ldflag_to_link_mofifier(arg, dest_dir)
-    flag = arg[0..1]
-    val = arg[2..-1]
-
-    case flag
-    when "-L"         then ["-L", "native=#{val}"]
-    when "-l"         then ["-l", val.to_s]
-    when "-F"         then ["-l", "framework=#{val}"]
-    else                   ["-C", "link_arg=#{arg}"]
-    end
-  end
-
-  # Intepolate substition vars in the arg (i.e. $(DEFFILE))
-  def maybe_resolve_ldflag_variable(input_arg, dest_dir)
-    str = input_arg.gsub(/\$\((\w+)\)/) do |var_name|
-      case var_name
-      # On windows, it is assumed that mkmf has setup an exports file for the
-      # extension, so we have to to create one ourselves.
-      when 'DEFFILE'
-        write_deffile(dest_dir)
-      else
-        RbConfig::CONFIG[var_name]
-      end
-    end.strip
-
-    str == "" ? nil : str
-  end
-
-  def write_deffile(dest_dir)
-    deffile_path = File.join(dest_dir, "#{spec.name}-#{RbConfig::CONFIG['arch']}.def")
-    export_prefix = makefile_config('EXPORT_PREFIX') || ""
-
-    File.open(deffile_path, "w") do |f|
-      f.puts "EXPORTS"
-      f.puts "#{export_prefix.strip}Init_#{spec.name}"
-    end
-
-    deffile_path
-  end
-
-  # We have to basically reimplement RbConfig::CONFIG['SOEXT'] here to support
-  # Ruby < 2.5
-  #
-  # @see https://github.com/ruby/ruby/blob/c87c027f18c005460746a74c07cd80ee355b16e4/configure.ac#L3185
-  def so_ext
-    return RbConfig::CONFIG["SOEXT"] if RbConfig::CONFIG.key?("SOEXT")
-
-    case RbConfig::CONFIG["target_os"]
-    when /^darwin/i                        then "dylib"
-    when /^(cygwin|msys|mingw)/i, /djgpp/i then "dll"
-    else                                        "so"
-    end
-  end
-
-  # Corresponds to $(LIBPATH) in mkmf
-  def mkmf_libpath
-    ["-L", "native=#{makefile_config("libdir")}"]
-  end
-
-  def makefile_config(var_name)
-    val = RbConfig::MAKEFILE_CONFIG[var_name]
-
-    return unless val
-
-    RbConfig.expand(val.dup)
-  end
-
-  def debug_flags
-    ["-C", "debuginfo=1"]
   end
 
   # Error raised when no cdylib artificat was created

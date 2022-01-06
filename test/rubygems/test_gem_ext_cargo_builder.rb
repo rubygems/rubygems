@@ -62,7 +62,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     assert_match RustRubyExample.reverse('hello'), 'olleh'
 
-    assert_match "Compiling rust_ruby_example v0.1.0 (#{@ext})", output
+    assert_match "Compiling rust_ruby_example v0.1.0", output
     assert_match "Finished release [optimized] target(s)", output
   rescue Exception => e
     pp output if output
@@ -113,7 +113,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
   end
 
   def skip_unsupported_platforms!
-    pend "Rust extensions are not supported on jruby" if java_platform?
-    pend "Pending support for truffleruby in Rust extensions" if RUBY_ENGINE == 'truffleruby'
+    pend "jruby not supported" if java_platform?
+    pend "truffleruby not supported (yet)" if RUBY_ENGINE == 'truffleruby'
+    pend "mswin not supported (yet)" if /mswin/ =~ RUBY_PLATFORM && ENV.key?('GITHUB_ACTIONS')
   end
 end

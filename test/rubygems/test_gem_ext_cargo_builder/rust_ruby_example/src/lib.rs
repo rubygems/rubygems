@@ -9,7 +9,6 @@ pub struct Value {
 
 extern "C" {
   pub fn rb_define_module(name: *const c_char) -> Value;
-  pub fn rb_str_new(str: *const c_char, len: c_long) -> Value;
   pub fn rb_define_module_function(
     klass: Value,
     name: *const c_char,
@@ -20,16 +19,18 @@ extern "C" {
   pub fn rb_utf8_str_new(str: *const c_char, len: c_long) -> Value;
 }
 
+unsafe fn cstr_to_string(str: *const c_char) -> String {
+  CStr::from_ptr(str).to_string_lossy().into_owned()
+}
+
 #[no_mangle]
-unsafe extern "C" fn pub_reverse(_klass: Value, input: Value) -> Value {
-  let ruby_string = CStr::from_ptr(rb_string_value_cstr(&input))
-    .to_str()
-    .unwrap();
+ extern "C" fn pub_reverse(_klass: Value, input: Value) -> Value {
+  let ruby_string = unsafe { cstr_to_string(rb_string_value_cstr(&input)) };
   let reversed = ruby_string.to_string().chars().rev().collect::<String>();
   let reversed_cstring = CString::new(reversed).unwrap();
   let size = ruby_string.len() as c_long;
 
-  rb_utf8_str_new(reversed_cstring.as_ptr(), size)
+  unsafe { rb_utf8_str_new(reversed_cstring.as_ptr(), size) }
 }
 
 #[allow(non_snake_case)]
@@ -38,9 +39,7 @@ pub extern "C" fn Init_rust_ruby_example() {
   let name = CString::new("RustRubyExample").unwrap();
   let function_name = CString::new("reverse").unwrap();
   let callback = pub_reverse as *const fn() as *const c_void;
+  let klass = unsafe { rb_define_module(name.as_ptr()) };
 
-  unsafe {
-    let klass = rb_define_module(name.as_ptr());
-    rb_define_module_function(klass, function_name.as_ptr(), callback, 1)
-  }
+  unsafe { rb_define_module_function(klass, function_name.as_ptr(), callback, 1) }
 }

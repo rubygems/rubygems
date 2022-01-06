@@ -54,6 +54,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       *mkmf_libpath,
       *platform_specific_rustc_args(dest_dir),
       *rustc_dynamic_linker_flags(dest_dir),
+      *debug_flags
     ]
   end
 
@@ -218,6 +219,10 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     return unless val
 
     RbConfig.expand(val.dup)
+  end
+
+  def debug_flags
+    ["-C", "debuginfo=1"]
   end
 
   # Error raised when no cdylib artificat was created

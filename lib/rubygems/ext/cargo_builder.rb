@@ -45,21 +45,28 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     ENV["RUBY_STATIC"] = given_ruby_static
   end
 
-  def cargo_rustc_args(_dest_dir)
+  def cargo_rustc_args(dest_dir)
     [
       "--lib",
       "--release",
       "--locked",
       "--",
-      *platform_specific_rustc_args,
-      *rustc_dynamic_linker_flags,
+      *mkmf_libpath,
+      *platform_specific_rustc_args(dest_dir),
+      *rustc_dynamic_linker_flags(dest_dir),
     ]
   end
 
-  def platform_specific_rustc_args
+  def platform_specific_rustc_args(dest_dir)
     flags = []
-    flags += ["-C", "link-arg=-Wl,-undefined,dynamic_lookup"] if Gem.win_platform?
+    flags += libruby_args(dest_dir) if Gem.win_platform?
     flags
+  end
+
+  def libruby_args(dest_dir)
+    libs = makefile_config(ruby_static? ? 'LIBRUBYARG_STATIC' : 'LIBRUBYARG_SHARED')
+    raw_libs = libs.strip.split(" ").compact
+    raw_libs.map {|l| ldflag_to_link_mofifier(l, dest_dir) }
   end
 
   def ruby_static?
@@ -128,18 +135,18 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     dylib_path
   end
 
-  def rustc_dynamic_linker_flags
-    args = RbConfig::CONFIG.fetch("DLDFLAGS", "").strip.split(" ")
-
-    args.flat_map {|a| ldflag_to_link_mofifier(a) }.compact
+  def rustc_dynamic_linker_flags(dest_dir)
+    split_dldflags
+      .map {|arg| maybe_resolve_ldflag_variable(arg, dest_dir) }
+      .compact
+      .flat_map {|arg| ldflag_to_link_mofifier(arg, dest_dir) }
   end
 
-  def ldflag_to_link_mofifier(input_arg)
-    # Intepolate substition vars in the arg (i.e. $(DEFFILE))
-    arg = input_arg.gsub(/\$\((\w+)\)/) { RbConfig::CONFIG[$1] }.strip
+  def split_dldflags
+    RbConfig::CONFIG.fetch("DLDFLAGS", "").strip.split(" ")
+  end
 
-    return if arg == ""
-
+  def ldflag_to_link_mofifier(arg, dest_dir)
     flag = arg[0..1]
     val = arg[2..-1]
 
@@ -149,6 +156,34 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     when "-F"         then ["-l", "framework=#{val}"]
     else                   ["-C", "link_arg=#{arg}"]
     end
+  end
+
+  # Intepolate substition vars in the arg (i.e. $(DEFFILE))
+  def maybe_resolve_ldflag_variable(input_arg, dest_dir)
+    str = input_arg.gsub(/\$\((\w+)\)/) do |var_name|
+      case var_name
+      # On windows, it is assumed that mkmf has setup an exports file for the
+      # extension, so we have to to create one ourselves.
+      when 'DEFFILE'
+        write_deffile(dest_dir)
+      else
+        RbConfig::CONFIG[var_name]
+      end
+    end.strip
+
+    str == "" ? nil : str
+  end
+
+  def write_deffile(dest_dir)
+    deffile_path = File.join(dest_dir, "#{spec.name}-#{RbConfig::CONFIG['arch']}.def")
+    export_prefix = makefile_config('EXPORT_PREFIX') || ""
+
+    File.open(deffile_path, "w") do |f|
+      f.puts "EXPORTS"
+      f.puts "#{export_prefix.strip}Init_#{spec.name}"
+    end
+
+    deffile_path
   end
 
   # We have to basically reimplement RbConfig::CONFIG['SOEXT'] here to support
@@ -163,6 +198,19 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     when /^(cygwin|msys|mingw)/i, /djgpp/i then "dll"
     else                                        "so"
     end
+  end
+
+  # Corresponds to $(LIBPATH) in mkmf
+  def mkmf_libpath
+    ["-L", "native=#{makefile_config("libdir")}"]
+  end
+
+  def makefile_config(var_name)
+    val = RbConfig::MAKEFILE_CONFIG[var_name]
+
+    return unless val
+
+    RbConfig.expand(val.dup)
   end
 
   # Error raised when no cdylib artificat was created

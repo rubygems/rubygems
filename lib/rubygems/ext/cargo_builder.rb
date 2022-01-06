@@ -134,7 +134,8 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def validate_cargo_build!(dir)
-    dylib_path = File.join(dir, "release", "lib#{spec.name}.#{so_ext}")
+    prefix = Gem.win_platform? ? "" : "lib"
+    dylib_path = File.join(dir, "release", "#{prefix}#{spec.name}.#{so_ext}")
 
     raise DylibNotFoundError, dir unless File.exist?(dylib_path)
 

@@ -81,6 +81,17 @@ module Gem
       gemfile
     end
 
+    # Backfill missing YAML require when not defined. Fixed since 3.1.0.pre1.
+    module YamlBackfiller
+      def to_yaml(opts = {})
+        Gem.load_yaml unless defined?(::YAML)
+
+        super(opts)
+      end
+    end
+
+    prepend YamlBackfiller
+
     def nondevelopment_dependencies
       dependencies - development_dependencies
     end

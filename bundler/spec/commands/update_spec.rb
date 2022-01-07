@@ -1284,6 +1284,45 @@ RSpec.describe "bundle update --bundler" do
       expect(out).to include("Using bundler 2.3.0.dev")
     end
   end
+
+  it "does not touch the network if not necessary" do
+    system_gems "bundler-2.3.3"
+
+    build_repo4 do
+      build_gem "rack", "1.0"
+    end
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo4)}"
+      gem "rack"
+    G
+
+    bundle :update, :bundler => "2.3.3", :raise_on_error => false
+
+    expect(out).not_to include("Fetching gem metadata from https://rubygems.org/")
+
+    # Only updates properly on modern RubyGems.
+
+    if Gem.rubygems_version >= Gem::Version.new("3.3.0.dev")
+      expect(lockfile).to eq <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            rack (1.0)
+
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          rack
+
+        BUNDLED WITH
+           2.3.3
+      L
+
+      expect(out).to include("Using bundler 2.3.3")
+    end
+  end
 end
 
 # these specs are slow and focus on integration and therefore are not exhaustive. unit specs elsewhere handle that.

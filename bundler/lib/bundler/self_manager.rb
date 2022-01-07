@@ -36,8 +36,13 @@ module Bundler
     private
 
     def install_and_restart_with(version)
-      spec = fetch_spec_for(version)
-      return if spec.nil?
+      requirement = Gem::Requirement.new(version)
+      spec = find_latest_matching_spec(requirement)
+
+      if spec.nil?
+        Bundler.ui.warn "Your lockfile is locked to a version of bundler (#{lockfile_version}) that doesn't exist at https://rubygems.org/. Going on using #{current_version}"
+        return
+      end
 
       spec.source.install(spec)
     rescue StandardError => e
@@ -45,14 +50,6 @@ module Bundler
       Bundler.ui.warn "There was an error installing the locked bundler version (#{lockfile_version}), rerun with the `--verbose` flag for more details. Going on using bundler #{current_version}."
     else
       restart_with(version)
-    end
-
-    def fetch_spec_for(version)
-      spec = specs.find {|s| s.version == version }
-      if spec.nil?
-        Bundler.ui.warn "Your lockfile is locked to a version of bundler (#{lockfile_version}) that doesn't exist at https://rubygems.org/. Going on using #{current_version}"
-      end
-      spec
     end
 
     def restart_with(version)
@@ -86,7 +83,7 @@ module Bundler
 
     def resolve_update_version_from(target)
       requirement = Gem::Requirement.new(target)
-      update_candidate = specs.sort.reverse_each.find {|s| requirement.satisfied_by?(s.version) }
+      update_candidate = find_latest_matching_spec(requirement)
 
       if update_candidate.nil?
         raise InvalidOption, "The `bundle update --bundler` target version (#{target}) does not exist"
@@ -100,14 +97,31 @@ module Bundler
       resolved_version
     end
 
-    def specs
-      @specs ||= begin
+    def local_specs
+      @local_specs ||= Bundler::Source::Rubygems.new("allow_local" => true).specs.select {|spec| spec.name == "bundler" }
+    end
+
+    def remote_specs
+      @remote_specs ||= begin
         source = Bundler::Source::Rubygems.new("remotes" => "https://rubygems.org")
-        source.local!
         source.remote!
         source.add_dependency_names("bundler")
-        source.specs.select {|spec| spec.name == "bundler" }
+        source.specs
       end
+    end
+
+    def find_latest_matching_spec(requirement)
+      local_result = find_latest_matching_spec_from_collection(local_specs, requirement)
+      return local_result if local_result && requirement.specific?
+
+      remote_result = find_latest_matching_spec_from_collection(remote_specs, requirement)
+      return remote_result if local_result.nil?
+
+      [local_result, remote_result].max
+    end
+
+    def find_latest_matching_spec_from_collection(specs, requirement)
+      specs.sort.reverse_each.find {|spec| requirement.satisfied_by?(spec.version) }
     end
 
     def running?(version)

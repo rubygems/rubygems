@@ -133,11 +133,14 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     # @see https://github.com/rust-lang/pkg-config-rs/blob/49a4ac189aafa365167c72e8e503565a7c2697c2/src/lib.rs#L622
     return [] if msvc_target? && ["m", "c", "pthread"].include?(link_name)
 
-    # For libruby, we give it a nice link name
-    attr_name = val.include?("ruby") && makefile_confg("RUBY_BASE_NAME")
-    link_spec = attr_name ? "#{attr_name}:#{link_name}" : link_name
+    if link_name.include?("ruby")
+      # Specify the lib kind and give it the name "ruby" for linking
+      kind = ruby_static? ? "static" : "dylib"
 
-    ["-l", link_spec]
+      ["-l", "#{kind}=ruby:#{link_name}"]
+    else
+      ["-l", link_name]
+    end
   end
 
   def msvc_target?

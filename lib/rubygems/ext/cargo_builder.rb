@@ -54,6 +54,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       *mkmf_libpath,
       *platform_specific_rustc_args(dest_dir),
       *rustc_dynamic_linker_flags(dest_dir),
+      *rustc_lib_flags(dest_dir),
       *debug_flags,
     ]
   end
@@ -106,14 +107,18 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def rustc_dynamic_linker_flags(dest_dir)
-    split_dldflags
+    split_flags("DLDFLAGS")
       .map {|arg| maybe_resolve_ldflag_variable(arg, dest_dir) }
       .compact
       .flat_map {|arg| ldflag_to_link_mofifier(arg, dest_dir) }
   end
 
-  def split_dldflags
-    Shellwords.split(RbConfig::CONFIG.fetch("DLDFLAGS", ""))
+  def rustc_lib_flags(dest_dir)
+    split_flags("LIBS").flat_map {|arg| ldflag_to_link_mofifier(arg, dest_dir) }
+  end
+
+  def split_flags(var)
+    Shellwords.split(RbConfig::CONFIG.fetch(var, ""))
   end
 
   def ldflag_to_link_mofifier(arg, dest_dir)

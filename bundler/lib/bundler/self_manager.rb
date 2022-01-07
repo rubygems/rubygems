@@ -25,12 +25,16 @@ module Bundler
     def update_bundler_and_restart_with_it_if_needed(target)
       return unless autoswitching_applies?
 
-      version = resolve_update_version_from(target)
-      return unless version
+      spec = resolve_update_version_from(target)
+      return unless spec
+
+      version = spec.version
 
       Bundler.ui.info "Updating bundler to #{version}."
 
-      install_and_restart_with(version)
+      install(spec)
+
+      restart_with(version)
     end
 
     private
@@ -44,12 +48,16 @@ module Bundler
         return
       end
 
-      spec.source.install(spec)
+      install(spec)
     rescue StandardError => e
       Bundler.ui.trace e
       Bundler.ui.warn "There was an error installing the locked bundler version (#{lockfile_version}), rerun with the `--verbose` flag for more details. Going on using bundler #{current_version}."
     else
       restart_with(version)
+    end
+
+    def install(spec)
+      spec.source.install(spec)
     end
 
     def restart_with(version)
@@ -94,7 +102,7 @@ module Bundler
 
       return unless needs_update
 
-      resolved_version
+      update_candidate
     end
 
     def local_specs

@@ -62,6 +62,12 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def platform_specific_rustc_args(dest_dir, flags = [])
     # On win platforms, mkmf adds libruby to the linker flags
     flags += libruby_args(dest_dir) if win_target?
+
+    # If the gem is installed on a host with build tools installed, but is
+    # run on one that isn't the missing libraries will cause the extension
+    # to fail on start.
+    flags += ["-C", "link-arg=-static-libgcc"] if win_target?
+
     flags
   end
 

@@ -52,21 +52,28 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     [
       *linker_args,
       *mkmf_libpath,
-      *platform_specific_rustc_args(dest_dir),
       *rustc_dynamic_linker_flags(dest_dir),
       *rustc_lib_flags(dest_dir),
+      *platform_specific_rustc_args(dest_dir),
       *debug_flags,
     ]
   end
 
   def platform_specific_rustc_args(dest_dir, flags = [])
-    # On win platforms, mkmf adds libruby to the linker flags
-    flags += libruby_args(dest_dir) if win_target?
+    if mingw_target?
+      # On mingw platforms, mkmf adds libruby to the linker flags
+      flags += libruby_args(dest_dir)
 
-    # If the gem is installed on a host with build tools installed, but is
-    # run on one that isn't the missing libraries will cause the extension
-    # to fail on start.
-    flags += ["-C", "link-arg=-static-libgcc"] if win_target?
+      # Make sure ALSR is used on mingw
+      # see https://github.com/rust-lang/rust/pull/75406/files
+      flags += ["-C", "link-arg=-Wl,--dynamicbase"]
+      flags += ["-C", "link-arg=-Wl,--disable-auto-image-base"]
+
+      # If the gem is installed on a host with build tools installed, but is
+      # run on one that isn't the missing libraries will cause the extension
+      # to fail on start.
+      flags += ["-C", "link-arg=-static-libgcc"]
+    end
 
     flags
   end
@@ -160,6 +167,10 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def darwin_target?
     makefile_config("target_os").include?("darwin")
+  end
+
+  def mingw_target?
+    makefile_config("target_os").include?("mingw")
   end
 
   def win_target?

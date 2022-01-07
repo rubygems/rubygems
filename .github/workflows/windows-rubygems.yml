@@ -40,6 +40,17 @@ jobs:
         with:
           toolchain: ${{ matrix.cargo.toolchain }}-${{ matrix.cargo.target }}
           default: true
+      - name: Print debugging info
+        run: |
+          echo "rbconfig::MAKEFILE_CONFIG"
+          echo "========================="
+          ruby -rrbconfig -ryaml -e 'puts YAML.dump(RbConfig::MAKEFILE_CONFIG)'
+          echo "========================="
+
+          echo "Machine info"
+          echo "========================="
+          uname -a
+          echo "========================="
       - name: Install Dependencies and Run Test
         run: |
           rake setup

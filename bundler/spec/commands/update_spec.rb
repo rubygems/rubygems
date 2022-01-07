@@ -1146,7 +1146,7 @@ RSpec.describe "bundle update --bundler" do
     expect(the_bundle).to include_gem "rack 1.0"
   end
 
-  it "updates the bundler version in the lockfile without re-resolving if the locked version is already installed" do
+  it "updates the bundler version in the lockfile without re-resolving if the highest version is already installed" do
     system_gems "bundler-2.3.3"
 
     build_repo4 do

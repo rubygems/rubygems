@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "yaml"
+require "psych"
 
 class ChangelogEntry
   attr_reader :title, :template, :labels, :pull_request
@@ -55,7 +55,7 @@ class Changelog
   def initialize(file, version)
     @version = Gem::Version.new(version)
     @file = File.expand_path(file)
-    @config = YAML.load_file("#{File.dirname(file)}/.changelog.yml")
+    @config = Psych.load_file("#{File.dirname(file)}/.changelog.yml")
     @level = @version.segments[2] != 0 ? :patch : :minor_or_major
   end
 

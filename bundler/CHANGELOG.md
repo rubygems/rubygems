@@ -1,3 +1,16 @@
+# 2.3.5 (January 12, 2022)
+
+## Enhancements:
+
+  - Make `bundle update --bundler` actually lock to the latest bundler version (even if not yet installed) [#5182](https://github.com/rubygems/rubygems/pull/5182)
+  - Use thor-1.2.1 [#5260](https://github.com/rubygems/rubygems/pull/5260)
+  - Exclude bin directory for newgem template [#5259](https://github.com/rubygems/rubygems/pull/5259)
+
+## Bug fixes:
+
+  - Fix metadata requirements being bypassed when custom gem servers are used [#5256](https://github.com/rubygems/rubygems/pull/5256)
+  - Fix `rake build:checksum` writing checksum of package path, not package contents [#5250](https://github.com/rubygems/rubygems/pull/5250)
+
 # 2.3.4 (December 29, 2021)
 
 ## Enhancements:

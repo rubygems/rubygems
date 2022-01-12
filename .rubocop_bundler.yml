@@ -204,6 +204,9 @@ Lint/UriEscapeUnescape:
 Lint/UriRegexp:
   Enabled: true
 
+Lint/UselessAccessModifier:
+  Enabled: true
+
 Lint/UselessComparison:
   Enabled: true
 

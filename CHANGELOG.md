@@ -1,3 +1,25 @@
+# 3.3.5 / 2022-01-12
+
+## Enhancements:
+
+* Don't activate `yaml` gem from RubyGems. Pull request #5266 by
+  deivid-rodriguez
+* Let `gem fetch` understand `<gem>:<version>` syntax and
+  `--[no-]suggestions` flag. Pull request #5242 by ximenasandoval
+* Installs bundler 2.3.5 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem install <non-existent-gem> --force` crash. Pull request #5262
+  by deivid-rodriguez
+* Fix longstanding `gem install` failure on JRuby. Pull request #5228 by
+  deivid-rodriguez
+
+## Documentation:
+
+* Markup `Gem::Specification` documentation with RDoc notations. Pull
+  request #5268 by nobu
+
 # 3.3.4 / 2021-12-29
 
 ## Enhancements:

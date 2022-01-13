@@ -35,7 +35,6 @@ jobs:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.5 }, rgv: { name: rgv-3.1, value: v3.1.5 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.5 }, rgv: { name: rgv-3.2, value: v3.2.32 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.3 }, rgv: { name: rgv-3.2, value: v3.2.32 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.6, value: 2.6.9 }, rgv: { name: rgv-3.2, value: v3.2.32 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.5 }, rgv: { name: rgv-3.2, value: v3.2.32 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.3 }, rgv: { name: rgv-3.2, value: v3.2.32 } }
     env:

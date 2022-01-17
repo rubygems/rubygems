@@ -719,12 +719,7 @@ module Bundler
       end
 
       specs.each do |s|
-        dep = @dependencies.find {|d| s.satisfies?(d) }
-
-        # Replace the locked dependency's source with the equivalent source from the Gemfile
-        s.source = (dep && dep.source) || sources.get_with_fallback(s.source)
-
-        next if @unlock[:sources].include?(s.source.name)
+        s.source = sources.get_with_fallback(s.source)
 
         # Path sources have special logic
         if s.source.instance_of?(Source::Path) || s.source.instance_of?(Source::Gemspec)
@@ -749,9 +744,16 @@ module Bundler
           s.dependencies.replace(new_spec.dependencies)
         end
 
+        dep = @dependencies.find {|d| s.satisfies?(d) }
+
         if dep.nil? && requested_dependencies.find {|d| s.name == d.name }
           @unlock[:gems] << s.name
         else
+          # Replace the locked dependency's source with the equivalent source from the Gemfile
+          s.source = dep.source || sources.default_source if dep
+
+          next if @unlock[:sources].include?(s.source.name)
+
           converged << s
         end
       end

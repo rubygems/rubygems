@@ -494,7 +494,13 @@ module Bundler
       uri = Bundler.settings.mirror_for(uri)
       fetcher = gem_remote_fetcher
       fetcher.headers = { "X-Gemfile-Source" => spec.remote.original_uri.to_s } if spec.remote.original_uri
-      Bundler::Retry.new("download gem from #{uri}").attempts do
+
+      uri_for_print = uri.dup
+
+      uri_for_print.user = "**FILTERED**" if uri_for_print.user
+      uri_for_print.password = "**FILTERED**" if uri_for_print.password
+
+      Bundler::Retry.new("download gem from #{uri_for_print}").attempts do
         gem_file_name = spec.file_name
         local_gem_path = File.join cache_dir, gem_file_name
         return if File.exist? local_gem_path
@@ -517,7 +523,7 @@ module Bundler
         end
       end
     rescue Gem::RemoteFetcher::FetchError => e
-      raise Bundler::HTTPError, "Could not download gem from #{uri} due to underlying error <#{e.message}>"
+      raise Bundler::HTTPError, "Could not download gem from #{uri_for_print} due to underlying error <#{e.message}>"
     end
 
     def gem_remote_fetcher

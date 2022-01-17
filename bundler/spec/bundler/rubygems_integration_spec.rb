@@ -43,7 +43,6 @@ RSpec.describe Bundler::RubygemsIntegration do
 
   describe "#download_gem" do
     let(:bundler_retry) { double(Bundler::Retry) }
-    let(:uri) { Bundler::URI.parse("https://foo.bar") }
     let(:cache_dir) { "#{Gem.path.first}/cache" }
     let(:spec) do
       spec = Gem::Specification.new("Foo", Gem::Version.new("2.5.2"))
@@ -52,15 +51,49 @@ RSpec.describe Bundler::RubygemsIntegration do
     end
     let(:fetcher) { double("gem_remote_fetcher") }
 
-    it "successfully downloads gem with retries" do
-      expect(Bundler.rubygems).to receive(:gem_remote_fetcher).and_return(fetcher)
-      expect(fetcher).to receive(:headers=).with("X-Gemfile-Source" => "https://foo.bar")
-      expect(Bundler::Retry).to receive(:new).with("download gem from #{uri}/").
-        and_return(bundler_retry)
-      expect(bundler_retry).to receive(:attempts).and_yield
-      expect(fetcher).to receive(:cache_update_path)
+    context 'when uri is public' do
+      let(:uri) { Bundler::URI.parse("https://foo.bar") }
 
-      Bundler.rubygems.download_gem(spec, uri, cache_dir)
+      it "successfully downloads gem with retries" do
+        expect(Bundler.rubygems).to receive(:gem_remote_fetcher).and_return(fetcher)
+        expect(fetcher).to receive(:headers=).with("X-Gemfile-Source" => "https://foo.bar")
+        expect(Bundler::Retry).to receive(:new).with("download gem from #{uri}/").
+          and_return(bundler_retry)
+        expect(bundler_retry).to receive(:attempts).and_yield
+        expect(fetcher).to receive(:cache_update_path)
+
+        Bundler.rubygems.download_gem(spec, uri, cache_dir)
+      end
+    end
+
+    context 'when uri contains user and password' do
+      let(:uri) { Bundler::URI.parse("https://user:password@foo.bar") }
+
+      it "successfully downloads gem with retries with filtered log" do
+        expect(Bundler.rubygems).to receive(:gem_remote_fetcher).and_return(fetcher)
+        expect(fetcher).to receive(:headers=).with("X-Gemfile-Source" => uri.to_s)
+        expect(Bundler::Retry).to receive(:new).with("download gem from https://**FILTERED**:**FILTERED**@foo.bar/").
+          and_return(bundler_retry)
+        expect(bundler_retry).to receive(:attempts).and_yield
+        expect(fetcher).to receive(:cache_update_path)
+
+        Bundler.rubygems.download_gem(spec, uri, cache_dir)
+      end
+    end
+
+    context 'when uri contains user' do
+      let(:uri) { Bundler::URI.parse("https://user@foo.bar") }
+
+      it "successfully downloads gem with retries with filtered log" do
+        expect(Bundler.rubygems).to receive(:gem_remote_fetcher).and_return(fetcher)
+        expect(fetcher).to receive(:headers=).with("X-Gemfile-Source" => uri.to_s)
+        expect(Bundler::Retry).to receive(:new).with("download gem from https://**FILTERED**@foo.bar/").
+          and_return(bundler_retry)
+        expect(bundler_retry).to receive(:attempts).and_yield
+        expect(fetcher).to receive(:cache_update_path)
+
+        Bundler.rubygems.download_gem(spec, uri, cache_dir)
+      end
     end
   end
 

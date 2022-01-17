@@ -719,40 +719,38 @@ module Bundler
       end
 
       specs.each do |s|
-        s.source = sources.get_with_fallback(s.source)
-
-        # Path sources have special logic
-        if s.source.instance_of?(Source::Path) || s.source.instance_of?(Source::Gemspec)
-          new_specs = begin
-            s.source.specs
-          rescue PathError, GitError
-            # if we won't need the source (according to the lockfile),
-            # don't error if the path/git source isn't available
-            next if specs.
-                    for(requested_dependencies, false).
-                    none? {|locked_spec| locked_spec.source == s.source }
-
-            raise
-          end
-
-          new_spec = new_specs[s].first
-
-          # If the spec is no longer in the path source, unlock it. This
-          # commonly happens if the version changed in the gemspec
-          next unless new_spec
-
-          s.dependencies.replace(new_spec.dependencies)
-        end
-
         dep = @dependencies.find {|d| s.satisfies?(d) }
 
         if dep.nil? && requested_dependencies.find {|d| s.name == d.name }
           @unlock[:gems] << s.name
         else
           # Replace the locked dependency's source with the equivalent source from the Gemfile
-          s.source = dep.source || sources.default_source if dep
+          s.source = (dep && dep.source) || sources.get_with_fallback(s.source)
 
           next if @unlock[:sources].include?(s.source.name)
+
+          # Path sources have special logic
+          if s.source.instance_of?(Source::Path) || s.source.instance_of?(Source::Gemspec)
+            new_specs = begin
+              s.source.specs
+            rescue PathError, GitError
+              # if we won't need the source (according to the lockfile),
+              # don't error if the path/git source isn't available
+              next if specs.
+                      for(requested_dependencies, false, true).
+                      none? {|locked_spec| locked_spec.source == s.source }
+
+              raise
+            end
+
+            new_spec = new_specs[s].first
+
+            # If the spec is no longer in the path source, unlock it. This
+            # commonly happens if the version changed in the gemspec
+            next unless new_spec
+
+            s.dependencies.replace(new_spec.dependencies)
+          end
 
           converged << s
         end

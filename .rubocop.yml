@@ -22,6 +22,7 @@ Layout/BlockAlignment:
 
 Layout/CaseIndentation:
   Enabled: true
+  EnforcedStyle: end
 
 Layout/ClosingParenthesisIndentation:
   Enabled: true
@@ -96,6 +97,7 @@ Lint/Debugger:
 
 Layout/EndAlignment:
   Enabled: true
+  EnforcedStyleAlignWith: variable
 
 Naming/HeredocDelimiterCase:
   Enabled: true

@@ -1,3 +1,18 @@
+# 2.3.6 (January 26, 2022)
+
+## Enhancements:
+
+  - Use `Gem::Platform.local` instead of `RUBY_PLATFORM` when displaying local platform [#5306](https://github.com/rubygems/rubygems/pull/5306)
+  - Lock standard.yml to the required ruby version [#5284](https://github.com/rubygems/rubygems/pull/5284)
+  - Use `Fiddle` in `bundle doctor` to check for dynamic library presence [#5173](https://github.com/rubygems/rubygems/pull/5173)
+
+## Bug fixes:
+
+  - Fix edge case where gems were incorrectly removed from the lockfile [#5302](https://github.com/rubygems/rubygems/pull/5302)
+  - Fix `force_ruby_platform` ignored when lockfile includes current specific platform [#5304](https://github.com/rubygems/rubygems/pull/5304)
+  - Create minitest file to underscored path in "bundle gem" command with dashed gem name [#5273](https://github.com/rubygems/rubygems/pull/5273)
+  - Fix regression with old marshaled specs having null `required_rubygems_version` [#5291](https://github.com/rubygems/rubygems/pull/5291)
+
 # 2.3.5 (January 12, 2022)
 
 ## Enhancements:

@@ -26,6 +26,7 @@ jobs:
           - { name: "2.6", value: 2.6.9 }
           - { name: "2.7", value: 2.7.5 }
           - { name: "3.0", value: 3.0.3 }
+          - { name: "3.1", value: 3.1.0 }
           - { name: jruby-9.3, value: jruby-9.3.2.0 }
           - { name: truffleruby-21, value: truffleruby-21.2.0 }
         openssl:
@@ -43,7 +44,7 @@ jobs:
           ruby -Ilib -S rake install 2> errors.txt || (cat errors.txt && exit 1)
           test ! -s errors.txt || (cat errors.txt && exit 1)
       - name: Check downgrading
-        run: gem update --system 3.2.32
+        run: gem update --system 3.3.3
       - name: Check installing fileutils
         run: gem install fileutils
       - name: Check installing with upgraded fileutils
@@ -87,7 +88,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.0", value: 3.0.3 }
+          - { name: "3.1", value: 3.1.0 }
           - { name: jruby-9.3, value: jruby-9.3.2.0 }
     steps:
       - uses: actions/checkout@v2

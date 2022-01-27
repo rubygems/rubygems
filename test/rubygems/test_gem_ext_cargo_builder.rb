@@ -36,7 +36,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
       ENV.update(@rust_envs)
       spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
       builder = Gem::Ext::CargoBuilder.new(spec)
-      assert_raises(Gem::Ext::CargoBuilder::DylibNotFoundError) do
+      assert_raise(Gem::Ext::CargoBuilder::DylibNotFoundError) do
         builder.build nil, @dest_path, output
       end
     end
@@ -77,7 +77,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
     FileUtils.rm(File.join(@ext, 'src/lib.rs'))
 
-    error = assert_raises Gem::InstallError do
+    error = assert_raise(Gem::InstallError) do
       Dir.chdir @ext do
         ENV.update(@rust_envs)
         spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'

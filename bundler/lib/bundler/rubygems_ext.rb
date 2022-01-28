@@ -86,7 +86,7 @@ module Gem
     end
 
     def deleted_gem?
-      !default_gem? && !File.directory?(full_gem_path)
+      !default_gem? && !File.directory?(full_gem_path) && (full_gem_path !~ %r{/rubygems-integration/})
     end
 
     private

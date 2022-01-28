@@ -1,3 +1,21 @@
+# 3.3.6 / 2022-01-26
+
+## Enhancements:
+
+* Forbid downgrading past the originally shipped version on Ruby 3.1. Pull
+  request #5301 by deivid-rodriguez
+* Support `--enable-load-relative` inside binstubs. Pull request #2929 by
+  deivid-rodriguez
+* Let `Version#<=>` accept a String. Pull request #5275 by amatsuda
+* Installs bundler 2.3.6 as a default gem.
+
+## Bug fixes:
+
+* Avoid `flock` on non Windows systems, since it causing issues on NFS
+  file systems. Pull request #5278 by deivid-rodriguez
+* Fix `gem update --system`  for already installed version of
+  `rubygems-update`. Pull request #5285 by loadkpi
+
 # 3.3.5 / 2022-01-12
 
 ## Enhancements:

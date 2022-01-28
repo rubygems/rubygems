@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "rubygems/command"
-require "fileutils"
-
 # This class is used by rubygems to build Rust extensions. It is a thin-wrapper
 # over the `cargo rustc` command which takes care of building Rust code in a way
 # that Ruby can use.
@@ -14,7 +11,10 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def build(_extension, dest_path, results, args = [], lib_dir = nil, cargo_dir = Dir.pwd)
+    require "rubygems/command"
+    require "fileutils"
     require "shellwords"
+
     build_crate(dest_path, results, args, cargo_dir)
     ext_path = rename_cdylib_for_ruby_compatibility(dest_path)
     finalize_directory(ext_path, dest_path, lib_dir, cargo_dir)

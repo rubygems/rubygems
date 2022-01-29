@@ -44,8 +44,8 @@ jobs:
       - name: Fix clang dep for rust-bindgen (see https://github.com/rubygems/rubygems/pull/5175#discussion_r794873977) 
         if: ${{ matrix.ruby.name != '3.1' }}
         run: |
-          pacman --remove --cascade mingw-w64-x86_64-clang
-          pacman --sync --noconfirm --needed $MINGW_PACKAGE_PREFIX-clang
+          pacman --noconfirm --remove --cascade mingw-w64-x86_64-clang
+          pacman --noconfirm --sync --noconfirm --needed $MINGW_PACKAGE_PREFIX-clang
       - name: Print debugging info
         run: |
           echo "rbconfig::MAKEFILE_CONFIG"

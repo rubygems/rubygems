@@ -775,9 +775,7 @@ RSpec.describe "bundle exec" do
       end
       let(:expected_err) { "" }
       let(:exit_code) do
-        # signal mask 128 + plus signal 15 -> TERM
-        # this is specified by C99
-        128 + 15
+        exit_status_for_signal(Signal.list["TERM"])
       end
 
       it "runs" do

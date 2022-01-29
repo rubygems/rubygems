@@ -199,7 +199,7 @@ module Spec
         command_execution.exitstatus = if status.exited?
           status.exitstatus
         elsif status.signaled?
-          128 + status.termsig
+          exit_status_for_signal(status.termsig)
         end
       end
 
@@ -558,6 +558,11 @@ module Spec
         false
       end
       port
+    end
+
+    def exit_status_for_signal(signal_number)
+      # For details see: https://en.wikipedia.org/wiki/Exit_status#Shell_and_scripts
+      128 + signal_number
     end
 
     private

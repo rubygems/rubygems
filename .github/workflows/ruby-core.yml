@@ -29,7 +29,8 @@ jobs:
         run: echo "REF=$(ruby -v | cut -d')' -f1 | cut -d' ' -f5)" >> $GITHUB_ENV
       - uses: actions/checkout@v2
         with:
-          repository: ruby/ruby
+          repository: deivid-rodriguez/ruby
+          ref: fix-bundler-ci
           path: ruby/ruby
           fetch-depth: 10
       - name: Checkout the latest buildable revision

@@ -61,7 +61,7 @@ Everything needs to be run from the `bundler/` subfolder.
 
 To setup bundler tests:
 
-    bin/rake spec:parallel_deps
+    rake spec:parallel_deps
 
 To run the entire bundler test suite in parallel (it takes a while):
 

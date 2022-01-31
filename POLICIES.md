@@ -62,7 +62,7 @@ smooth and no needed steps are missed.
 *   Run `rake prepare_release[<target_version>]`, create a PR and merge it
     to the stable branch once CI passes.
 *   Switch to the stable branch and pull the PR just merged.
-*   Release `bundler` with `(cd bundler && bin/rake release)`.
+*   Release `bundler` with `(cd bundler && rake release)`.
 *   Release `rubygems` with `rake release`.
 
 ### Steps for minor and major releases
@@ -77,7 +77,7 @@ smooth and no needed steps are missed.
 *   From the main branch, cut a new stable branch with `git pull && git checkout
     -b x.y`.
 *   Push the stable branch and wait for CI to be green.
-*   Release `bundler` with `(cd bundler && bin/rake release)`.
+*   Release `bundler` with `(cd bundler && rake release)`.
 *   Release `rubygems` with `rake release`.
 
 ## Committer Access

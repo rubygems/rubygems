@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source "https://rubygems.org"
 
 gem "rdoc", "6.2.0" # 6.2.1 is required > Ruby 2.3
@@ -15,4 +17,4 @@ gem "ronn", "~> 0.7.3", :platform => :ruby
 gem "rspec-core", "~> 3.8"
 gem "rspec-expectations", "~> 3.8"
 gem "rspec-mocks", "~> 3.8"
-gem 'uri', "~> 0.10.1"
+gem "uri", "~> 0.10.1"

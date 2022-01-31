@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Test
         run: |
-          rake spec:all
+          bin/rake spec:all
         working-directory: ./bundler
 
       - name: Get previous status

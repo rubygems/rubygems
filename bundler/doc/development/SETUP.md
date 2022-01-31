@@ -22,7 +22,7 @@ To work on Bundler, you'll probably want to do a couple of things:
 
 * Run the test suite, to make sure things are working:
 
-        $ rake spec
+        $ bin/rake spec
 
 * Optionally, you can run the test suite in parallel:
 

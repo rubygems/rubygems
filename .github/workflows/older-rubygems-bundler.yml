@@ -52,7 +52,7 @@ jobs:
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == ''
       - name: Replace version
-        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} rake override_version
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
         working-directory: ./bundler
       - name: Prepare dependencies
@@ -61,7 +61,7 @@ jobs:
         working-directory: ./bundler
       - name: Run Test
         run: |
-          rake spec:all
+          bin/rake spec:all
         working-directory: ./bundler
       - name: Run Rubygems Requirement tests against local bundler, to make sure bundler monkeypatches preserve the behaviour
         run: |

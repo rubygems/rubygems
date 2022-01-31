@@ -37,7 +37,7 @@ jobs:
         working-directory: ./bundler
       - name: Install local bundler
         run: |
-          rake install:local
+          bin/rake install:local
         working-directory: ./bundler
       - name: Run a warbler project
         run: |

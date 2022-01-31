@@ -33,6 +33,6 @@ jobs:
         run: rake dev:frozen_deps
         working-directory: ./bundler
       - name: "Check RVM integration, man:check"
-        run: rake check_rvm_integration man:check
+        run: bin/rake check_rvm_integration man:check
         working-directory: ./bundler
     timeout-minutes: 15

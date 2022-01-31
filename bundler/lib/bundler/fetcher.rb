@@ -115,7 +115,7 @@ module Bundler
 
     # return the specs in the bundler format as an index with retries
     def specs_with_retry(gem_names, source)
-      Bundler::Retry.new("fetcher", FAIL_ERRORS).attempts do
+      Bundler::Retry.new("fetcher", HTTP_ERRORS).attempts do
         specs(gem_names, source)
       end
     end

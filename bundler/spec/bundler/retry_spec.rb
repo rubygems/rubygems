@@ -38,7 +38,43 @@ RSpec.describe Bundler::Retry do
     error = Bundler::GemfileNotFound
     attempts = 0
     expect do
-      Bundler::Retry.new(nil, error).attempt do
+      Bundler::Retry.new(nil, Bundler::Fetcher::HTTP_ERRORS).attempt do
+        attempts += 1
+        raise error
+      end
+    end.to raise_error(error)
+    expect(attempts).to eq(1)
+  end
+
+  it "raises exceptions with 4 attempts, no exceptions array" do
+    error = Bundler::GemfileNotFound
+    attempts = 0
+    expect do
+      Bundler::Retry.new(nil).attempt do
+        attempts += 1
+        raise error
+      end
+    end.to raise_error(error)
+    expect(attempts).to eq(4)
+  end
+
+  it "raises exceptions with 4 attempts with exceptions array" do
+    error = Bundler::GemfileNotFound
+    attempts = 0
+    expect do
+      Bundler::Retry.new(nil, [Bundler::GemfileNotFound]).attempt do
+        attempts += 1
+        raise error
+      end
+    end.to raise_error(error)
+    expect(attempts).to eq(4)
+  end
+
+  it "raises exceptions with 1 attempt with exceptions array" do
+    error = Bundler::GemfileNotFound
+    attempts = 0
+    expect do
+      Bundler::Retry.new(nil, Bundler::Fetcher::HTTP_ERRORS).attempt do
         attempts += 1
         raise error
       end

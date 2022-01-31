@@ -494,8 +494,7 @@ module Bundler
       uri = Bundler.settings.mirror_for(uri)
       fetcher = gem_remote_fetcher
       fetcher.headers = { "X-Gemfile-Source" => spec.remote.original_uri.to_s } if spec.remote.original_uri
-      retry_download = Bundler::Retry.new("download gem from #{uri}")
-      retry_download.attempts do
+      Bundler::Retry.new("download gem from #{uri}", Bundler::Fetcher::HTTP_ERRORS).attempts do
         gem_file_name = spec.file_name
         local_gem_path = File.join cache_dir, gem_file_name
         return if File.exist? local_gem_path
@@ -507,24 +506,14 @@ module Bundler
           SharedHelpers.filesystem_access(local_gem_path) do
             fetcher.cache_update_path remote_gem_path, local_gem_path
           end
-        rescue StandardError => e
-          if e.is_a? Gem::RemoteFetcher::FetchError
-            raise if spec.original_platform == spec.platform
+        rescue Gem::RemoteFetcher::FetchError
+          raise if spec.original_platform == spec.platform
 
-            original_gem_file_name = "#{spec.original_name}.gem"
-            raise if gem_file_name == original_gem_file_name
+          original_gem_file_name = "#{spec.original_name}.gem"
+          raise if gem_file_name == original_gem_file_name
 
-            gem_file_name = original_gem_file_name
-            retry
-          end
-
-          raise e if Bundler::Fetcher::HTTP_ERRORS.any? {|k| e.is_a?(k) }
-
-          # If error is not a network error, don't retry
-          # This is not the most elegant way to break the loop and
-          # keep track of the error
-          retry_download.current_run = retry_download.total_runs
-          raise e
+          gem_file_name = original_gem_file_name
+          retry
         end
       end
     rescue Gem::RemoteFetcher::FetchError => e

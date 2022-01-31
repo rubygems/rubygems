@@ -66,15 +66,15 @@ RSpec.describe Bundler::Fetcher::Dependency do
     let(:gem_names)            { %w[foo bar] }
     let(:full_dependency_list) { ["bar"] }
     let(:last_spec_list)       { [["boulder", gem_version1, "ruby", resque]] }
-    let(:fail_errors)          { double(:fail_errors) }
+    let(:network_errors)       { double(:network_errors) }
     let(:bundler_retry)        { double(:bundler_retry) }
     let(:gem_version1)         { double(:gem_version1) }
     let(:resque)               { double(:resque) }
     let(:remote_uri)           { "http://remote-uri.org" }
 
     before do
-      stub_const("Bundler::Fetcher::FAIL_ERRORS", fail_errors)
-      allow(Bundler::Retry).to receive(:new).with("dependency api", fail_errors).and_return(bundler_retry)
+      stub_const("Bundler::Fetcher::HTTP_ERRORS", network_errors)
+      allow(Bundler::Retry).to receive(:new).with("dependency api", network_errors).and_return(bundler_retry)
       allow(bundler_retry).to receive(:attempts) {|&block| block.call }
       allow(subject).to receive(:log_specs) {}
       allow(subject).to receive(:remote_uri).and_return(remote_uri)

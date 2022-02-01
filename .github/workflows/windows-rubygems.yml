@@ -42,6 +42,7 @@ jobs:
           toolchain: ${{ matrix.cargo.toolchain }}-${{ matrix.cargo.target }}
           default: true
       - name: Fix clang dep for rust-bindgen (see https://github.com/rubygems/rubygems/pull/5175#discussion_r794873977) 
+        if: ${{ matrix.ruby.name != 'mswin' }}
         run: |
           pacman --remove --cascade mingw-w64-x86_64-clang
           pacman --sync --noconfirm --needed $ENV:MINGW_PACKAGE_PREFIX-clang

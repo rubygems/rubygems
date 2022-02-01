@@ -4,10 +4,6 @@ require "pathname"
 
 require "rubygems/specification"
 
-# Possible use in Gem::Specification#source below and require
-# shouldn't be deferred.
-require "rubygems/source"
-
 require_relative "match_platform"
 
 module Gem

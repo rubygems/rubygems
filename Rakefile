@@ -6,8 +6,8 @@ require "rake/testtask"
 
 desc "Setup Rubygems dev environment"
 task :setup do
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=dev_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=release_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/release_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
@@ -19,8 +19,8 @@ end
 
 desc "Update Rubygems dev environment"
 task :update do |_, args|
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=dev_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=release_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/release_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
@@ -32,8 +32,8 @@ end
 
 desc "Update the locked bundler version in dev environment"
 task :update_locked_bundler do |_, args|
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=dev_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=release_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/release_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
@@ -434,7 +434,7 @@ module Rubygems
   class ProjectFiles
     def self.all
       files = []
-      exclude = %r{\A(?:\.|dev_gems|release_gems|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|util/|Rakefile)}
+      exclude = %r{\A(?:\.|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|util/|Rakefile)}
       tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|

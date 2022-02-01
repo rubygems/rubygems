@@ -12,6 +12,8 @@ require_relative "match_platform"
 
 module Gem
   class Specification
+    include ::Bundler::MatchPlatform
+
     attr_accessor :remote, :location, :relative_loaded_from
 
     remove_method :source
@@ -237,11 +239,5 @@ module Gem
         Dir.glob(File.join(base_path.to_s.gsub(/[\[\]]/, '\\\\\\&'), glob)).map! {|f| File.expand_path(f) }
       end
     end
-  end
-end
-
-module Gem
-  class Specification
-    include ::Bundler::MatchPlatform
   end
 end

@@ -155,7 +155,6 @@ bundler/lib/bundler/plugin/installer/git.rb
 bundler/lib/bundler/plugin/installer/rubygems.rb
 bundler/lib/bundler/plugin/source_list.rb
 bundler/lib/bundler/process_lock.rb
-bundler/lib/bundler/psyched_yaml.rb
 bundler/lib/bundler/remote_specification.rb
 bundler/lib/bundler/resolver.rb
 bundler/lib/bundler/resolver/spec_group.rb

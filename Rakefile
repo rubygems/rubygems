@@ -43,6 +43,11 @@ task :update_locked_bundler do |_, args|
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard24_gems.rb"
 end
 
+desc "Update specific development dependencies"
+task :update_dev_dep do |_, args|
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", *args, "--gemfile=bundler/tool/bundler/dev_gems.rb"
+end
+
 desc "Setup git hooks"
 task :git_hooks do
   sh "git config core.hooksPath .githooks"

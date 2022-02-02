@@ -19,7 +19,7 @@ end
 
 desc "Update Rubygems dev environment"
 task :update do
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--gemfile=bundler/tool/bundler/dev_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/release_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/test_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"

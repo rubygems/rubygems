@@ -250,9 +250,7 @@ module Bundler
           con.cert_store = bundler_cert_store
         end
 
-        ssl_client_cert = Bundler.settings[:ssl_client_cert] ||
-          (Gem.configuration.ssl_client_cert if
-            Gem.configuration.respond_to?(:ssl_client_cert))
+        ssl_client_cert = Bundler.settings[:ssl_client_cert] || Gem.configuration.ssl_client_cert
         if ssl_client_cert
           pem = File.read(ssl_client_cert)
           con.cert = OpenSSL::X509::Certificate.new(pem)

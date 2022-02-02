@@ -34,13 +34,6 @@ RSpec.describe Bundler::RubygemsIntegration do
     end
   end
 
-  describe "#configuration" do
-    it "handles Gem::SystemExitException errors" do
-      allow(Gem).to receive(:configuration) { raise Gem::SystemExitException.new(1) }
-      expect { Bundler.rubygems.configuration }.to raise_error(Gem::SystemExitException)
-    end
-  end
-
   describe "#download_gem" do
     let(:bundler_retry) { double(Bundler::Retry) }
     let(:uri) { Bundler::URI.parse("https://foo.bar") }

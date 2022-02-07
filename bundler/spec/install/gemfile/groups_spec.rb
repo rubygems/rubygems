@@ -92,7 +92,7 @@ RSpec.describe "bundle install with groups" do
       end
 
       it "respects global `without` configuration, and saves it locally", :bundler => "< 3" do
-        bundle "config set without emo"
+        bundle "config set --global without emo"
         bundle :install
         expect(the_bundle).to include_gems "rack 1.0.0", :groups => [:default]
         bundle "config list"
@@ -101,7 +101,7 @@ RSpec.describe "bundle install with groups" do
       end
 
       it "respects global `without` configuration, but does not save it locally", :bundler => "3" do
-        bundle "config set without emo"
+        bundle "config set --global without emo"
         bundle :install
         expect(the_bundle).to include_gems "rack 1.0.0", :groups => [:default]
         bundle "config list"

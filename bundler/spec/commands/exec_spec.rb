@@ -291,7 +291,7 @@ RSpec.describe "bundle exec" do
       end
     end
 
-    bundle "config set path.system true"
+    bundle "config set --global path.system true"
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"

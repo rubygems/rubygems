@@ -135,9 +135,6 @@ module Bundler
     end
 
     def normalize_groups
-      options[:with] &&= options[:with].join(":").tr(" ", ":").split(":")
-      options[:without] &&= options[:without].join(":").tr(" ", ":").split(":")
-
       check_for_group_conflicts_in_cli_options
 
       # need to nil them out first to get around validation for backwards compatibility

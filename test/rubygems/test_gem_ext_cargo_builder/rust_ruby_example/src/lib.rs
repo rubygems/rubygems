@@ -24,6 +24,7 @@ unsafe extern "C" fn pub_reverse(_klass: VALUE, mut input: VALUE) -> VALUE {
 pub extern "C" fn Init_rust_ruby_example() {
   let name = CString::new("RustRubyExample").unwrap();
   let function_name = CString::new("reverse").unwrap();
+  // bindgen does not properly detect the arity of the ruby callback function, so we have to transmute
   let callback = unsafe { std::mem::transmute::<unsafe extern "C" fn(VALUE, VALUE) -> VALUE, unsafe extern "C" fn() -> VALUE>(pub_reverse) };
   let klass = unsafe { rb_define_module(name.as_ptr()) };
 

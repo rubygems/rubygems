@@ -61,7 +61,7 @@ Everything needs to be run from the `bundler/` subfolder.
 
 To setup bundler tests:
 
-    bin/rake spec:parallel_deps
+    rake spec:parallel_deps
 
 To run the entire bundler test suite in parallel (it takes a while):
 
@@ -84,11 +84,14 @@ in the rubygems repository.
 ### Contribution
 
 These labels are made to guide contributors to issue/pull requests that they
-can help with. That are marked with a light gray `contribution: *`
+can help with.
 
-*   **small** - The issue described here will take a small amount of work to
-    resolve, and is a good option for a new contributor
-*   **unclaimed** - The issue has not been claimed for work, and is awaiting
+*   **good first issue** - The issue described here is considered a good option
+    for a new contributor. We encourage new contributors though to work on
+    whichever issue they find most interesting, the ones labeled here as just
+    estimated to have a reasonable level of complexity for someone new to the
+    code base.
+*   **help wanted** - The issue has not been claimed for work, and is awaiting
     willing volunteers!
 
 

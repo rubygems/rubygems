@@ -1,3 +1,13 @@
+# 3.3.7 / 2022-02-09
+
+## Enhancements:
+
+* Installs bundler 2.3.7 as a default gem.
+
+## Documentation:
+
+* Fix missing rdoc for `Gem::Version`. Pull request #5299 by nevans
+
 # 3.3.6 / 2022-01-26
 
 ## Enhancements:

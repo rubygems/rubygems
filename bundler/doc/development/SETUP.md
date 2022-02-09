@@ -18,7 +18,7 @@ To work on Bundler, you'll probably want to do a couple of things:
 
 * Install Bundler's development dependencies:
 
-        $ bin/rake spec:deps
+        $ rake spec:deps
 
 * Run the test suite, to make sure things are working:
 

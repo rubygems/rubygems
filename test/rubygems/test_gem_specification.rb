@@ -2544,11 +2544,7 @@ end
 
       assert_equal [], @a1.authors
 
-      e = assert_raise Gem::InvalidSpecificationException do
-        @a1.validate
-      end
-
-      assert_equal "authors may not be empty", e.message
+      assert @a1.validate
 
       @a1.authors = ["#{f} (who is writing this software)"]
 

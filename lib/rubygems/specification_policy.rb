@@ -82,8 +82,6 @@ class Gem::SpecificationPolicy
 
     validate_array_attributes
 
-    validate_authors_field
-
     validate_metadata
 
     validate_licenses_length
@@ -346,12 +344,6 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
     unless Array === val && val.all? {|x| x.is_a?(klass) }
       error "#{field} must be an Array of #{klass}"
     end
-  end
-
-  def validate_authors_field
-    return unless @specification.authors.empty?
-
-    error "authors may not be empty"
   end
 
   def validate_licenses_length

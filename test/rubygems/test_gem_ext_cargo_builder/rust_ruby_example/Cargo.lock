@@ -31,7 +31,7 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 [[package]]
 name = "bindgen"
 version = "0.59.2"
-source = "git+https://github.com/daviddrysdale/rust-bindgen?branch=allowlist-file#722f88eb3e572658c5ddea6a059bd879d30ccc8c"
+source = "git+https://github.com/ianks/rust-bindgen?branch=allowlist-file#722f88eb3e572658c5ddea6a059bd879d30ccc8c"
 dependencies = [
  "bitflags",
  "cexpr",
@@ -254,8 +254,8 @@ dependencies = [
 
 [[package]]
 name = "rb-sys"
-version = "0.3.0"
-source = "git+https://github.com/ianks/rb-sys?tag=v0.3.0#52bf9892b353cd858db4dbf7aa974ba5ad2461e8"
+version = "0.3.1"
+source = "git+https://github.com/ianks/rb-sys?tag=v0.3.1#352343e5cef01ad5c96cb88a4643d080e1a6279f"
 dependencies = [
  "bindgen",
  "libc",

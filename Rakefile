@@ -18,16 +18,16 @@ task :setup do
 end
 
 desc "Update Rubygems dev environment"
-task :update do |_, args|
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/dev_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/release_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/test_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/rubocop24_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/standard_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/standard23_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", *args, "--gemfile=bundler/tool/bundler/standard24_gems.rb"
+task :update do
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/release_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/test_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/rubocop24_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/standard_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/standard23_gems.rb"
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/standard24_gems.rb"
 end
 
 desc "Update the locked bundler version in dev environment"
@@ -41,6 +41,11 @@ task :update_locked_bundler do |_, args|
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard23_gems.rb"
   sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard24_gems.rb"
+end
+
+desc "Update specific development dependencies"
+task :update_dev_dep do |_, args|
+  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", *args, "--gemfile=bundler/tool/bundler/dev_gems.rb"
 end
 
 desc "Setup git hooks"

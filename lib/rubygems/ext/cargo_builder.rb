@@ -8,6 +8,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def initialize(spec)
     @spec = spec
+    raise "rust_package not provided" if spec.metadata["rust_package"].to_s.empty?
   end
 
   def build(_extension, dest_path, results, args = [], lib_dir = nil, cargo_dir = Dir.pwd)
@@ -104,7 +105,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   # Ruby expects the dylib to follow a file name convention for loading
   def rename_cdylib_for_ruby_compatibility(dest_path)
     dylib_path = validate_cargo_build!(dest_path)
-    dlext_name = "#{spec.name}.#{makefile_config("DLEXT")}"
+    dlext_name = "#{cargo_name}.#{makefile_config("DLEXT")}"
     new_name = dylib_path.gsub(File.basename(dylib_path), dlext_name)
     FileUtils.cp(dylib_path, new_name)
     new_name
@@ -112,7 +113,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def validate_cargo_build!(dir)
     prefix = so_ext == "dll" ? "" : "lib"
-    dylib_path = File.join(dir, "release", "#{prefix}#{spec.name}.#{so_ext}")
+    dylib_path = File.join(dir, "release", "#{prefix}#{cargo_name}.#{so_ext}")
 
     raise DylibNotFoundError, dir unless File.exist?(dylib_path)
 
@@ -200,7 +201,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
     File.open(deffile_path, "w") do |f|
       f.puts "EXPORTS"
-      f.puts "#{export_prefix.strip}Init_#{spec.name}"
+      f.puts "#{export_prefix.strip}Init_#{cargo_name}"
     end
 
     deffile_path
@@ -281,6 +282,10 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def get_relative_path(path, base)
     path[0..base.length - 1] = "." if path.start_with?(base)
     path
+  end
+
+  def cargo_name
+    spec.metadata['rust_package'].gsub('-', '_')
   end
 
   # Error raised when no cdylib artificat was created

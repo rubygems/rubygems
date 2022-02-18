@@ -15,7 +15,9 @@ module Bundler
       "test-unit" => "3.0",
     }.freeze
 
-    attr_reader :options, :gem_name, :thor, :name, :target
+    EXTENSIONS = ['c', 'rust'].freeze
+
+    attr_reader :options, :gem_name, :thor, :name, :target, :extension
 
     def initialize(options, gem_name, thor)
       @options = options
@@ -28,7 +30,11 @@ module Bundler
       @name = @gem_name
       @target = SharedHelpers.pwd.join(gem_name)
 
-      validate_ext_name if options[:ext]
+      @extension = options[:ext]
+      @extension = 'c' if @extension == 'ext'
+
+      validate_ext_type if @extension
+      validate_ext_name if @extension
     end
 
     def run
@@ -188,11 +194,18 @@ module Bundler
 
       templates.merge!("exe/newgem.tt" => "exe/#{name}") if config[:exe]
 
-      if options[:ext]
+      if options[:ext] == 'c'
         templates.merge!(
           "ext/newgem/extconf.rb.tt" => "ext/#{name}/extconf.rb",
           "ext/newgem/newgem.h.tt" => "ext/#{name}/#{underscored_name}.h",
           "ext/newgem/newgem.c.tt" => "ext/#{name}/#{underscored_name}.c"
+        )
+      end
+
+      if options[:ext] == 'rust'
+        templates.merge!(
+          "Cargo.toml.tt" => "Cargo.toml",
+          "ext/newgem.rs.tt" => "ext/#{underscored_name}.rs"
         )
       end
 
@@ -256,9 +269,16 @@ module Bundler
       return unless gem_name.index("-")
 
       Bundler.ui.error "You have specified a gem name which does not conform to the \n" \
-                       "naming guidelines for C extensions. For more information, \n" \
+                       "naming guidelines for C\Rust extensions. For more information, \n" \
                        "see the 'Extension Naming' section at the following URL:\n" \
                        "https://guides.rubygems.org/gems-with-extensions/\n"
+      exit 1
+    end
+
+    def validate_ext_type
+      return if EXTENSIONS.include?(extension)
+
+      Bundler.ui.error "Unknown extension type '#{extension}'. Please provide one of the valid values (#{EXTENSIONS.join(', ')}) to --ext option."
       exit 1
     end
 

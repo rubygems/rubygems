@@ -1,0 +1,31 @@
+extern crate rb_sys;
+
+use std::ffi::{CStr, CString};
+use std::os::raw::{c_char, c_long};
+use rb_sys::{VALUE, rb_utf8_str_new, rb_string_value_cstr, rb_define_module, rb_define_module_function};
+
+#[inline]
+unsafe fn cstr_to_string(str: *const c_char) -> String {
+  CStr::from_ptr(str).to_string_lossy().into_owned()
+}
+
+#[no_mangle]
+unsafe extern "C" fn pub_hello(_klass: VALUE, mut input: VALUE) -> VALUE {
+  let name = cstr_to_string(rb_string_value_cstr(&mut input));
+  let hello_string = "Hello ".to_owned() + &name + &"!".to_owned();
+  let c_string = CString::new(hello_string).expect("CString::new failed");
+  rb_utf8_str_new(c_string.as_ptr(), c_string.to_bytes().len() as c_long)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Init_<%= config[:name] %>_ext() {
+  let name = CString::new("<%= config[:constant_name] %>").unwrap();
+  let function_name = CString::new("hello").unwrap();
+  // bindgen does not properly detect the arity of the ruby callback function, so we have to transmute
+  let callback = unsafe { std::mem::transmute::<unsafe extern "C" fn(VALUE, VALUE) -> VALUE, unsafe extern "C" fn() -> VALUE>(pub_hello) };
+  let klass = unsafe { rb_define_module(name.as_ptr()) };
+
+  unsafe { rb_define_module_function(klass, function_name.as_ptr(), Some(callback), 1) }
+}
+

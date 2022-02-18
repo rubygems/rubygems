@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require_relative "<%= File.basename(config[:namespaced_path]) %>/version"
-<%- if config[:ext] -%>
+<%- if config[:ext] == 'c' -%>
 require_relative "<%= File.basename(config[:namespaced_path]) %>/<%= config[:underscored_name] %>"
+<%- end -%>
+<%- if config[:ext] == 'rust' -%>
+require_relative "<%= config[:name] %>_ext"
 <%- end -%>
 
 <%- config[:constant_array].each_with_index do |c, i| -%>

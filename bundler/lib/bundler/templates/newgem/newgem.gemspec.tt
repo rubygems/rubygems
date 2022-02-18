@@ -32,8 +32,12 @@ Gem::Specification.new do |spec|
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-<%- if config[:ext] -%>
+<%- if config[:ext] == 'c' -%>
   spec.extensions = ["ext/<%= config[:underscored_name] %>/extconf.rb"]
+<%- end -%>
+<%- if config[:ext] == 'rust' -%>
+  spec.extensions = ["Cargo.toml"]
+  spec.metadata['rust_package'] = "<%= config[:name] %>-ext"
 <%- end -%>
 
   # Uncomment to register a new dependency of your gem

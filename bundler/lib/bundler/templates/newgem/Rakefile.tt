@@ -38,7 +38,7 @@ RuboCop::RakeTask.new
 require "standard/rake"
 
 <% end -%>
-<% if config[:ext] -%>
+<% if config[:ext] == 'c' -%>
 <% default_task_names.unshift(:clobber, :compile) -%>
 require "rake/extensiontask"
 
@@ -49,6 +49,16 @@ Rake::ExtensionTask.new("<%= config[:underscored_name] %>") do |ext|
 end
 
 <% end -%>
+<% if config[:ext] == 'rust' -%>
+<% default_task_names.unshift(:clobber, :compile) -%>
+task :compile do
+  sh "cargo build"
+  sh "cp target/debug/lib<%= config[:name] %>_ext.#{RbConfig::CONFIG["SOEXT"]} lib/<%= config[:name] %>_ext.#{RbConfig::CONFIG["SOEXT"]}"
+end
+
+CLOBBER << "lib/<%= config[:name] %>_ext.#{RbConfig::CONFIG["SOEXT"]}"
+<% end -%>
+
 <% if default_task_names.size == 1 -%>
 task default: <%= default_task_names.first.inspect %>
 <% else -%>

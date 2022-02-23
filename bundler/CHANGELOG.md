@@ -1,3 +1,14 @@
+# 2.3.8 (February 23, 2022)
+
+## Bug fixes:
+
+  - Fix corrupted lockfile when running `bundle check` and having to re-resolve locally [#5344](https://github.com/rubygems/rubygems/pull/5344)
+  - Fix typo in multiple gemfiles warning [#5342](https://github.com/rubygems/rubygems/pull/5342)
+
+## Documentation:
+
+  - Add clarification for bundle-config "with" option [#5346](https://github.com/rubygems/rubygems/pull/5346)
+
 # 2.3.7 (February 9, 2022)
 
 ## Enhancements:

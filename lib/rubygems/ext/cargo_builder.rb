@@ -92,7 +92,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def libruby_args(dest_dir)
     libs = makefile_config(ruby_static? ? "LIBRUBYARG_STATIC" : "LIBRUBYARG_SHARED")
     raw_libs = Shellwords.split(libs)
-    raw_libs.flat_map {|l| ldflag_to_link_mofifier(l, dest_dir) }
+    raw_libs.flat_map {|l| ldflag_to_link_modifier(l, dest_dir) }
   end
 
   def ruby_static?
@@ -123,18 +123,18 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     split_flags("DLDFLAGS")
       .map {|arg| maybe_resolve_ldflag_variable(arg, dest_dir) }
       .compact
-      .flat_map {|arg| ldflag_to_link_mofifier(arg, dest_dir) }
+      .flat_map {|arg| ldflag_to_link_modifier(arg, dest_dir) }
   end
 
   def rustc_lib_flags(dest_dir)
-    split_flags("LIBS").flat_map {|arg| ldflag_to_link_mofifier(arg, dest_dir) }
+    split_flags("LIBS").flat_map {|arg| ldflag_to_link_modifier(arg, dest_dir) }
   end
 
   def split_flags(var)
     Shellwords.split(RbConfig::CONFIG.fetch(var, ""))
   end
 
-  def ldflag_to_link_mofifier(arg, dest_dir)
+  def ldflag_to_link_modifier(arg, dest_dir)
     flag = arg[0..1]
     val = arg[2..-1]
 

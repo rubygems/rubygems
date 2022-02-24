@@ -283,7 +283,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     path
   end
 
-  # Error raised when no cdylib artificat was created
+  # Error raised when no cdylib artifact was created
   class DylibNotFoundError < StandardError
     def initialize(dir)
       files = Dir.glob(File.join(dir, "**", "*")).map {|f| "- #{f}" }.join "\n"

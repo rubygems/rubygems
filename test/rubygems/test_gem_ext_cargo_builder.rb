@@ -15,10 +15,12 @@ class TestGemExtCargoBuilder < Gem::TestCase
     pend 'cargo not present' unless $?.success?
 
     super
+  end
 
+  def setup_rust_gem(name)
     @ext = File.join(@tempdir, 'ext')
     @dest_path = File.join(@tempdir, 'prefix')
-    @fixture_dir = Pathname.new(File.expand_path('../test_gem_ext_cargo_builder/rust_ruby_example/', __FILE__))
+    @fixture_dir = Pathname.new(File.expand_path("../test_gem_ext_cargo_builder/#{name}/", __FILE__))
 
     FileUtils.mkdir_p @dest_path
     FileUtils.cp_r(@fixture_dir.to_s, @ext)
@@ -26,6 +28,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
   def test_build_staticlib
     skip_unsupported_platforms!
+    setup_rust_gem "rust_ruby_example"
 
     content = @fixture_dir.join('Cargo.toml').read.gsub("cdylib", "staticlib")
     File.write(File.join(@ext, 'Cargo.toml'), content)
@@ -44,6 +47,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
   def test_build_cdylib
     skip_unsupported_platforms!
+    setup_rust_gem "rust_ruby_example"
 
     output = []
 
@@ -72,6 +76,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
   def test_build_fail
     skip_unsupported_platforms!
+    setup_rust_gem "rust_ruby_example"
 
     output = []
 
@@ -93,6 +98,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
   def test_full_integration
     skip_unsupported_platforms!
+    setup_rust_gem "rust_ruby_example"
 
     Dir.chdir @ext do
       require 'tmpdir'
@@ -109,6 +115,28 @@ class TestGemExtCargoBuilder < Gem::TestCase
 
       assert status.success?, stdout_and_stderr_str
       assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
+    end
+  end
+
+  def test_custom_name
+    skip_unsupported_platforms!
+    setup_rust_gem "custom_name"
+
+    Dir.chdir @ext do
+      require 'tmpdir'
+
+      gem = [@rust_envs, *ruby_with_rubygems_in_load_path, File.expand_path("./../../../bin/gem", __FILE__)]
+
+      Dir.mktmpdir("custom_name") do |dir|
+        built_gem = File.expand_path(File.join(dir, "custom_name.gem"))
+        Open3.capture2e(*gem, "build", "custom_name.gemspec", "--output", built_gem)
+        Open3.capture2e(*gem, "install", "--verbose", "--local", built_gem, *ARGV)
+      end
+
+      stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "-rcustom_name", "-e", "puts 'Result: ' + CustomName.say_hello")
+
+      assert status.success?, stdout_and_stderr_str
+      assert_match "Result: Hello world!", stdout_and_stderr_str
     end
   end
 

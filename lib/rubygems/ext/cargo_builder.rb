@@ -112,17 +112,15 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def validate_cargo_build!(dir)
     prefix = so_ext == "dll" ? "" : "lib"
-    dylib_path = File.join(dir, "release", "#{prefix}#{rust_crate_name}.#{so_ext}")
+    dylib_path = File.join(dir, "release", "#{prefix}#{cargo_crate_name}.#{so_ext}")
 
     raise DylibNotFoundError, dir unless File.exist?(dylib_path)
 
     dylib_path
   end
 
-  def rust_crate_name
-    metadata_name =  spec.metadata['rust_crate_name'] || spec.metadata[:rust_crate_name] || spec.name
-
-    metadata_name.to_s.tr('-', '_')
+  def cargo_crate_name
+    spec.metadata.fetch('cargo_crate_name', spec.name).tr('-', '_')
   end
 
   def rustc_dynamic_linker_flags(dest_dir)

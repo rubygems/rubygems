@@ -637,6 +637,12 @@ test/rubygems/test_gem_dependency_resolution_error.rb
 test/rubygems/test_gem_doctor.rb
 test/rubygems/test_gem_ext_builder.rb
 test/rubygems/test_gem_ext_cargo_builder.rb
+test/rubygems/test_gem_ext_cargo_builder/custom_name/.gitignore
+test/rubygems/test_gem_ext_cargo_builder/custom_name/Cargo.lock
+test/rubygems/test_gem_ext_cargo_builder/custom_name/Cargo.toml
+test/rubygems/test_gem_ext_cargo_builder/custom_name/build.rb
+test/rubygems/test_gem_ext_cargo_builder/custom_name/custom_name.gemspec
+test/rubygems/test_gem_ext_cargo_builder/custom_name/src/lib.rs
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/.gitignore
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/Cargo.lock
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/Cargo.toml

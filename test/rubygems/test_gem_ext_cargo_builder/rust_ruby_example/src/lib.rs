@@ -7,7 +7,7 @@ use rb_sys::{
 use std::ffi::{CStr, CString};
 use std::os::raw::{c_char, c_long};
 
-rb_module_magic!();
+ruby_extension!();
 
 #[inline]
 unsafe fn cstr_to_string(str: *const c_char) -> String {

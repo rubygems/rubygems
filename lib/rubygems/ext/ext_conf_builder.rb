@@ -11,6 +11,8 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
     require 'tempfile'
 
     tmp_dest = Dir.mktmpdir(".gem.", extension_dir)
+    Dir.mkdir(File.join(tmp_dest, "-arch-"))
+    Dir.mkdir(File.join(tmp_dest, "lib"))
 
     # Some versions of `mktmpdir` return absolute paths, which will break make
     # if the paths contain spaces. However, on Ruby 1.9.x on Windows, relative
@@ -25,8 +27,8 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
 
     Tempfile.open %w[siteconf .rb], extension_dir do |siteconf|
       siteconf.puts "require 'rbconfig'"
-      siteconf.puts "dest_path = #{tmp_dest_relative.dump}"
-      %w[sitearchdir sitelibdir].each do |dir|
+      [["sitearchdir", "/-arch-"], ["sitelibdir", "/lib"]].each do |dir, sub|
+        siteconf.puts "dest_path = #{(tmp_dest_relative + sub).dump}"
         siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
         siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"
       end
@@ -68,12 +70,13 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
           # TODO remove in RubyGems 3
           if Gem.install_extension_in_lib and lib_dir
             FileUtils.mkdir_p lib_dir
-            entries = Dir.entries(full_tmp_dest) - %w[. ..]
-            entries = entries.map {|entry| File.join full_tmp_dest, entry }
+            tmp_dest_lib = full_tmp_dest + "/lib"
+            entries = Dir.entries(tmp_dest_lib) - %w[. ..]
+            entries = entries.map {|entry| File.join tmp_dest_lib, entry }
             FileUtils.cp_r entries, lib_dir, :remove_destination => true
           end
 
-          FileUtils::Entry_.new(full_tmp_dest).traverse do |ent|
+          FileUtils::Entry_.new(full_tmp_dest + "/-arch-").traverse do |ent|
             destent = ent.class.new(dest_path, ent.rel)
             destent.exist? or FileUtils.mv(ent.path, destent.path)
           end

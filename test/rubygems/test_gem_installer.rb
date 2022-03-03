@@ -1558,7 +1558,7 @@ gem 'other', version
         write_file File.join(@tempdir, file)
       end
 
-      so = File.join(@spec.gem_dir, "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}")
+      so = File.join(@spec.extension_dir, "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}")
       assert_path_not_exist so
       use_ui @ui do
         path = Gem::Package.build @spec
@@ -1567,6 +1567,7 @@ gem 'other', version
         installer.install
       end
       assert_path_exist so
+      assert_path_not_exist File.join(@spec.gem_dir, "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}")
     rescue
       puts '-' * 78
       puts File.read File.join(@gemhome, 'gems', 'a-2', 'Makefile')

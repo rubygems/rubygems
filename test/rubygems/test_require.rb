@@ -698,13 +698,14 @@ class TestGemRequire < Gem::TestCase
 
     spec.files += ["extconf.rb", "depend", "#{name}.c"]
 
-    so = File.join(spec.gem_dir, "#{name}.#{RbConfig::CONFIG["DLEXT"]}")
+    so = File.join(spec.extension_dir, "#{name}.#{RbConfig::CONFIG["DLEXT"]}")
     assert_path_not_exist so
 
     path = Gem::Package.build spec
     installer = Gem::Installer.at path
     installer.install
     assert_path_exist so
+    assert_path_not_exist File.join(spec.gem_dir, "#{name}.#{RbConfig::CONFIG["DLEXT"]}")
 
     spec.gem_dir
   end

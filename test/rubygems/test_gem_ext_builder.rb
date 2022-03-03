@@ -136,7 +136,7 @@ install:
     assert_path_exist @spec.extension_dir
     assert_path_exist @spec.gem_build_complete_path
     assert_path_exist File.join @spec.extension_dir, 'gem_make.out'
-    assert_path_exist File.join @spec.extension_dir, 'a.rb'
+    assert_path_not_exist File.join @spec.extension_dir, 'a.rb'
     assert_path_exist File.join @spec.gem_dir, 'lib', 'a.rb'
     assert_path_exist File.join @spec.gem_dir, 'lib', 'a', 'b.rb'
   end
@@ -194,7 +194,7 @@ install:
     assert_path_exist @spec.extension_dir
     assert_path_exist @spec.gem_build_complete_path
     assert_path_exist File.join @spec.extension_dir, 'gem_make.out'
-    assert_path_exist File.join @spec.extension_dir, 'a.rb'
+    assert_path_not_exist File.join @spec.extension_dir, 'a.rb'
     assert_path_not_exist File.join @spec.gem_dir, 'lib', 'a.rb'
     assert_path_not_exist File.join @spec.gem_dir, 'lib', 'a', 'b.rb'
   ensure

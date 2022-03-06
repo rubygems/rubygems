@@ -1,3 +1,26 @@
+# 2.3.8 (February 23, 2022)
+
+## Bug fixes:
+
+  - Fix corrupted lockfile when running `bundle check` and having to re-resolve locally [#5344](https://github.com/rubygems/rubygems/pull/5344)
+  - Fix typo in multiple gemfiles warning [#5342](https://github.com/rubygems/rubygems/pull/5342)
+
+## Documentation:
+
+  - Add clarification for bundle-config "with" option [#5346](https://github.com/rubygems/rubygems/pull/5346)
+
+# 2.3.7 (February 9, 2022)
+
+## Enhancements:
+
+  - Don't activate `yaml` gem from Bundler [#5277](https://github.com/rubygems/rubygems/pull/5277)
+  - Add Reverse Dependencies section to info command [#3966](https://github.com/rubygems/rubygems/pull/3966)
+
+## Bug fixes:
+
+  - Don't silently persist `BUNDLE_WITH` and `BUNDLE_WITHOUT` envs locally [#5335](https://github.com/rubygems/rubygems/pull/5335)
+  - Fix `bundle config` inside an application saving configuration globally [#4152](https://github.com/rubygems/rubygems/pull/4152)
+
 # 2.3.6 (January 26, 2022)
 
 ## Enhancements:

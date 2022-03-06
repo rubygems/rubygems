@@ -15,7 +15,7 @@ Sometimes you can find a solution to your issue by reading some documentation.
 
 * Instructions for common Bundler uses can be found on the [Bundler documentation site](https://bundler.io/).
 * Detailed information about each Bundler command, including help with common problems, can be found in the [Bundler man pages](https://bundler.io/man/bundle.1.html) or [Bundler Command Line Reference](https://bundler.io/commands.html).
-* We also have a document detailing solutions to common problems: https://github.com/rubygems/rubygems/blob/master/bundler/doc/contributing/TROUBLESHOOTING.md.
+* We also have a document detailing solutions to common problems: https://github.com/rubygems/rubygems/blob/master/bundler/doc/TROUBLESHOOTING.md.
 
 If you're still stuck, please fill in the following sections so we can process your issue as fast as possible:
 

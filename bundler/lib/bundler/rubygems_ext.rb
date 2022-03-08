@@ -4,6 +4,17 @@ require "pathname"
 
 require "rubygems/specification"
 
+# We can't let `Gem::Source` be autoloaded in the `Gem::Specification#source`
+# redefinition below, so we need to load it upfront. The reason is that if
+# Bundler monkeypatches are loaded before RubyGems activates an executable (for
+# example, through `ruby -rbundler -S irb`), gem activation might end up calling
+# the redefined `Gem::Specification#source` and triggering the `Gem::Source`
+# autoload. That would result in requiring "rubygems/source" inside another
+# require, which would trigger a monitor error and cause the `autoload` to
+# eventually fail. A better solution is probably to completely avoid autoloading
+# `Gem::Source` from the redefined `Gem::Specification#source`.
+require "rubygems/source"
+
 require_relative "match_platform"
 
 module Gem

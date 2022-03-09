@@ -34,6 +34,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
     cmd = []
     cmd += [cargo, "rustc"]
+    cmd += ["--target", rust_target_triple] if rust_target_triple
     cmd += ["--target-dir", dest_path]
     cmd += ["--manifest-path", manifest]
     cmd += ["--lib", "--release", "--locked"]
@@ -112,7 +113,11 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def validate_cargo_build!(dir)
     prefix = so_ext == "dll" ? "" : "lib"
-    dylib_path = File.join(dir, "release", "#{prefix}#{cargo_crate_name}.#{so_ext}")
+    path_parts = [dir]
+    path_parts << rust_target_triple if rust_target_triple
+    path_parts += ["release", "#{prefix}#{cargo_crate_name}.#{so_ext}"]
+
+    dylib_path = File.join(*path_parts)
 
     raise DylibNotFoundError, dir unless File.exist?(dylib_path)
 
@@ -287,6 +292,12 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     path
   end
 
+  def rust_target_triple
+    return ENV['CARGO_BUILD_TARGET'] if ENV.key?('CARGO_BUILD_TARGET')
+
+    RustTargetTriple.for(makefile_config('target_cpu'), makefile_config('target_os'))
+  end
+
   # Error raised when no cdylib artifact was created
   class DylibNotFoundError < StandardError
     def initialize(dir)
@@ -300,6 +311,26 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
         Found files:
         #{files}
       MSG
+    end
+  end
+
+  class RustTargetTriple
+    MAPPING = Hash[
+      "x86-mingw32" => "i686-pc-windows-gnu",
+      "x64-mingw-ucrt" => "x86_64-pc-windows-gnu",
+      "x64-mingw32" => "x86_64-pc-windows-gnu",
+      "x86-linux" => "i686-unknown-linux-gnu",
+      "x86_64-linux" => "x86_64-unknown-linux-gnu",
+      "aarch64-linux" => "aarch64-unknown-linux-gnu",
+      "x86_64-darwin" => "x86_64-apple-darwin",
+      "arm64-darwin" => "aarch64-apple-darwin",
+    ].freeze
+
+    def self.for(cpu, input_os)
+      os = input_os.start_with?("darwin") ? "darwin" : input_os
+      target = "#{cpu}-#{os}"
+
+      MAPPING[target]
     end
   end
 end

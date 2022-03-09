@@ -324,6 +324,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       "aarch64-linux" => "aarch64-unknown-linux-gnu",
       "x86_64-darwin" => "x86_64-apple-darwin",
       "arm64-darwin" => "aarch64-apple-darwin",
+      "arm-linux" => "arm-unknown-linux-gnueabihf",
     ].freeze
 
     def self.for(cpu, input_os)

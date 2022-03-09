@@ -81,6 +81,14 @@ task :check_rvm_integration do
   sh("gem install rubygems-bundler rake && RUBYOPT=-Ilib rake -T")
 end
 
+desc "Check RubyGems integration"
+task :check_rubygems_integration do
+  # Bundler monkeypatches RubyGems in some ways that could potentially break gem
+  # activation. Run a non trivial binstub activation, with two different
+  # versions of a dependent gem installed.
+  sh("gem install reline:0.3.0 reline:0.3.1 irb && ruby -Ilib -rbundler -S irb --version")
+end
+
 namespace :man do
   if RUBY_ENGINE == "jruby"
     task(:build) {}

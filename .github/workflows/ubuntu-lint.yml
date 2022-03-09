@@ -32,7 +32,7 @@ jobs:
       - name: Install & Check Dependencies
         run: rake dev:frozen_deps
         working-directory: ./bundler
-      - name: "Check RVM integration, man:check"
-        run: bin/rake check_rvm_integration man:check
+      - name: Misc checks
+        run: bin/rake check_rvm_integration man:check check_rubygems_integration
         working-directory: ./bundler
     timeout-minutes: 15

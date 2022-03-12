@@ -1,7 +1,7 @@
 = net-http-persistent
 
 home :: https://github.com/drbrain/net-http-persistent
-rdoc :: http://docs.seattlerb.org/net-http-persistent
+rdoc :: https://rdoc.info/gems/net-http-persistent
 
 == DESCRIPTION:
 

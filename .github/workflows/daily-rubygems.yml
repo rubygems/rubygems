@@ -24,6 +24,10 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
 
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
       - name: Show Ruby version
         run: ruby --version
 

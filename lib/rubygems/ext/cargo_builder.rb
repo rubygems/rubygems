@@ -26,7 +26,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def with_rb_config_env
     old_env = ENV.to_hash
     RbConfig::CONFIG.each do |k, v|
-      ENV["RBCONFIG_#{key}"] = v
+      ENV["RBCONFIG_#{k}"] = v
     end
     yield
   ensure

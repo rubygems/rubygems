@@ -23,6 +23,16 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   private
 
+  def with_rb_config_env
+    old_env = ENV.to_hash
+    RbConfig::CONFIG.each do |k, v|
+      ENV["RBCONFIG_#{key}"] = v
+    end
+    yield
+  ensure
+    ENV.replace(old_env)
+  end
+
   def build_crate(dest_path, results, args, cargo_dir)
     manifest = File.join(cargo_dir, "Cargo.toml")
 
@@ -43,7 +53,9 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     cmd += Gem::Command.build_args
     cmd += args
 
-    self.class.run cmd, results, self.class.class_name, cargo_dir
+    with_rb_config_env do
+      self.class.run cmd, results, self.class.class_name, cargo_dir
+    end
     results
   ensure
     ENV["RUBY_STATIC"] = given_ruby_static

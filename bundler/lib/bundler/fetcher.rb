@@ -5,6 +5,7 @@ require "cgi"
 require "securerandom"
 require "zlib"
 require "rubygems/request"
+require "yaml"
 
 module Bundler
   # Handles all the fetching with the rubygems server

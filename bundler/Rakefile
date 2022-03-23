@@ -167,32 +167,14 @@ Automatiek::RakeTask.new("thor") do |lib|
   lib.license_path = "LICENSE.md"
 end
 
-# We currently include the official version as of
-# https://github.com/ruby/tmpdir/commit/c79bc7adf66a39617d0d6bae21085adc77c02b0e
-# with the following changes on top:
-# * require fileutils relatively to use our vendored version.
-# * Inherit from `Dir` so that code assuming we're inside the
-#   `Dir` class still works. Also change the `systmpdir` class variable to an
-#   instance variable since otherwise inheriting from dir doesn't work.
-# * Remove a "block variable shadowing outer variable" warning on older rubies
-#   that was breaking some specs.
-desc "Vendor a specific version of tmpdir"
-Automatiek::RakeTask.new("tmpdir") do |lib|
-  lib.version = "master"
-  lib.download = { :github => "https://github.com/ruby/tmpdir" }
-  lib.namespace = "Dir"
+desc "Vendor a specific version of fileutils"
+Automatiek::RakeTask.new("fileutils") do |lib|
+  lib.version = "v1.4.1"
+  lib.download = { :github => "https://github.com/ruby/fileutils" }
+  lib.namespace = "FileUtils"
   lib.prefix = "Bundler"
-  lib.vendor_lib = "lib/bundler/vendor/tmpdir"
-  lib.license_path = nil # There is no license file in the Repo
-
-  lib.dependency("fileutils") do |sublib|
-    sublib.version = "v1.4.1"
-    sublib.download = { :github => "https://github.com/ruby/fileutils" }
-    sublib.namespace = "FileUtils"
-    sublib.prefix = "Bundler"
-    sublib.vendor_lib = "lib/bundler/vendor/fileutils"
-    sublib.license_path = "LICENSE.txt"
-  end
+  lib.vendor_lib = "lib/bundler/vendor/fileutils"
+  lib.license_path = "LICENSE.txt"
 end
 
 # We currently include the following changes over the official version:

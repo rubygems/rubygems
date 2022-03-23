@@ -1,3 +1,16 @@
+# 3.3.10 / 2022-03-23
+
+## Enhancements:
+
+* Installs bundler 2.3.10 as a default gem.
+
+## Documentation:
+
+* Enable `Gem::Package` example in RDoc documentation. Pull request #5399
+  by nobu
+* Unhide RDoc documentation from top level `Gem` module. Pull request
+  #5396 by nobu
+
 # 3.3.9 / 2022-03-09
 
 ## Enhancements:

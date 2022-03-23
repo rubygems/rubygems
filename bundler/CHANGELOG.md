@@ -1,3 +1,11 @@
+# 2.3.10 (March 23, 2022)
+
+## Enhancements:
+
+  - More helpful reporting of marshal loading issues [#5416](https://github.com/rubygems/rubygems/pull/5416)
+  - Report Github Actions CI provider within user agent string [#5400](https://github.com/rubygems/rubygems/pull/5400)
+  - Remove extra closing bracket in version warning [#5397](https://github.com/rubygems/rubygems/pull/5397)
+
 # 2.3.9 (March 9, 2022)
 
 ## Enhancements:

@@ -27,7 +27,7 @@ jobs:
           bundler: none
       - name: Save latest buildable revision to environment
         run: echo "REF=$(ruby -v | cut -d')' -f1 | cut -d' ' -f5)" >> $GITHUB_ENV
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: ruby/ruby
           path: ruby/ruby
@@ -51,7 +51,7 @@ jobs:
           mkdir -p ~/.rubies # https://github.com/ruby/ruby-dev-builder/blob/master/.github/workflows/build.yml#L100
           make install
         working-directory: ruby/ruby
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           path: rubygems/rubygems
       - name: Sync tools

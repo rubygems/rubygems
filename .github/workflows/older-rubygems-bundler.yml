@@ -38,8 +38,8 @@ jobs:
       RGV: ${{ matrix.rgv.value }}
       RUBYOPT: --disable-gems
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           path: bundler/tmp/rubygems
           ref: ${{ matrix.rgv.value }}

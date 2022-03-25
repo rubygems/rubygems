@@ -163,11 +163,11 @@ module Bundler
         if path
           begin
             s = Bundler.rubygems.spec_from_gem(path, Bundler.settings["trust-policy"])
-            spec.__swap__(s)
           rescue Gem::Package::FormatError
             Bundler.rm_rf(path)
             raise
           end
+          spec.__swap__(s)
         end
 
         unless Bundler.settings[:no_install]

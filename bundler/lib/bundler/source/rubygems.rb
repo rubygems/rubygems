@@ -153,14 +153,14 @@ module Bundler
           return nil # no post-install message
         end
 
+        # Check for this spec from other sources
+        uris = remotes_for_spec(spec)
+        Installer.ambiguous_gems << [spec.name, *uris] if uris.length > 1
+
         # Download the gem to get the spec, because some specs that are returned
         # by rubygems.org are broken and wrong.
-        if spec.remote
-          # Check for this spec from other sources
-          uris = remotes_for_spec(spec)
-          Installer.ambiguous_gems << [spec.name, *uris] if uris.length > 1
-
-          path = fetch_gem(spec)
+        path = fetch_gem(spec)
+        if path
           begin
             s = Bundler.rubygems.spec_from_gem(path, Bundler.settings["trust-policy"])
             spec.__swap__(s)

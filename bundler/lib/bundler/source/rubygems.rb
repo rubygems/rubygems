@@ -157,9 +157,7 @@ module Bundler
         # by rubygems.org are broken and wrong.
         if spec.remote
           # Check for this spec from other sources
-          uris = [spec.remote.anonymized_uri]
-          uris += remotes_for_spec(spec).map(&:anonymized_uri)
-          uris.uniq!
+          uris = remotes_for_spec(spec)
           Installer.ambiguous_gems << [spec.name, *uris] if uris.length > 1
 
           path = fetch_gem(spec)
@@ -342,10 +340,10 @@ module Bundler
       end
 
       def remotes_for_spec(spec)
-        specs.search_all(spec.name).inject([]) do |uris, s|
-          uris << s.remote if s.remote
+        [spec, *specs.search_all(spec.name)].inject([]) do |uris, s|
+          uris << s.remote.anonymized_uri if s.remote
           uris
-        end
+        end.uniq
       end
 
       def loaded_from(spec)

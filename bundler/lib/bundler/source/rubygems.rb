@@ -181,16 +181,17 @@ module Bundler
           end
 
           spec.__swap__(s)
+        else
+          path = cached_gem(spec)
+          raise GemNotFound, "Could not find #{spec.file_name} for installation" unless path
+
+          package = Bundler.rubygems.gem_from_path(path)
         end
 
         message = "Installing #{version_message(spec)}"
         message += " with native extensions" if spec.extensions.any?
         Bundler.ui.confirm message
 
-        path = cached_gem(spec)
-        package = Bundler.rubygems.gem_from_path(path)
-
-        raise GemNotFound, "Could not find #{spec.file_name} for installation" unless path
         if requires_sudo?
           install_path = Bundler.tmp(spec.full_name)
           bin_path     = install_path.join("bin")

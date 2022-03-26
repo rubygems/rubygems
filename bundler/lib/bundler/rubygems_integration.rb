@@ -203,8 +203,8 @@ module Bundler
       EXT_LOCK
     end
 
-    def spec_from_gem(path, policy = nil)
-      gem_from_path(path, security_policies[policy]).spec
+    def spec_from_gem(path)
+      gem_from_path(path).spec
     end
 
     def build_gem(gem_dir, spec)
@@ -499,6 +499,7 @@ module Bundler
     end
 
     def gem_from_path(path, policy = nil)
+      policy = security_policies[policy]
       require "rubygems/package"
       p = Gem::Package.new(path)
       p.security_policy = policy if policy

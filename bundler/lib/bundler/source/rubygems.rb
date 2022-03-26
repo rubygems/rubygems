@@ -166,6 +166,17 @@ module Bundler
           rescue Gem::Package::FormatError
             Bundler.rm_rf(path)
             raise
+          rescue Exception, Gem::Exception, Gem::Security::Exception => e # rubocop:disable Lint/RescueException
+            Bundler.rm_rf(path)
+            if e.is_a?(Gem::Security::Exception) ||
+                e.message =~ /unknown trust policy|unsigned gem/i ||
+                e.message =~ /couldn't verify (meta)?data signature/i
+              raise SecurityError,
+                "The gem #{File.basename(path, ".gem")} can't be installed because " \
+                "the security policy didn't allow it, with the message: #{e.message}"
+            else
+              raise
+            end
           end
           spec.__swap__(s)
         end

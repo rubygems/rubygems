@@ -215,7 +215,7 @@ module Bundler
           "The gem #{File.basename(path, ".gem")} can't be installed because " \
           "the security policy didn't allow it, with the message: #{e.message}"
       else
-        raise e
+        raise
       end
     end
 

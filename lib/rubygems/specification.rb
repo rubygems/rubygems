@@ -1083,6 +1083,11 @@ class Gem::Specification < Gem::BasicSpecification
     spec.specification_version ||= NONEXISTENT_SPECIFICATION_VERSION
     spec.reset_nil_attributes_to_default
 
+    if spec.raw_require_paths.first.is_a?(Array)
+      warn "#{spec.name} #{spec.version} includes a gemspec with `require_paths` set to an array of arrays. Newer versions of this gem might've already fixed this"
+      spec.raw_require_paths.flatten!
+    end
+
     spec
   end
 

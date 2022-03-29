@@ -567,6 +567,7 @@ test/rubygems/invalidchild_key.pem
 test/rubygems/package/tar_test_case.rb
 test/rubygems/packages/ascii_binder-0.1.10.1.gem
 test/rubygems/packages/ill-formatted-platform-1.0.0.10.gem
+test/rubygems/path.rb
 test/rubygems/plugin/exception/rubygems_plugin.rb
 test/rubygems/plugin/load/rubygems_plugin.rb
 test/rubygems/plugin/standarderror/rubygems_plugin.rb

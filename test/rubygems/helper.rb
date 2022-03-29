@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rubygems'
+require_relative 'path'
 
 # If bundler gemspec exists, add to stubs
 bundler_gemspec = File.expand_path("../../../bundler/bundler.gemspec", __FILE__)

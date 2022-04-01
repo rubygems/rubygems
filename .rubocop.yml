@@ -116,6 +116,9 @@ Performance/StringReplacement:
 Security/Open:
   Enabled: true
 
+Style/Dir:
+  Enabled: true
+
 Style/Encoding:
   Enabled: true
   Exclude:

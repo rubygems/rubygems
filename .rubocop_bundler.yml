@@ -583,6 +583,9 @@ Style/Encoding:
 Style/EndBlock:
   Enabled: true
 
+Style/ExpandPathArguments:
+  Enabled: true
+
 Style/EvalWithLocation:
   Enabled: true
 

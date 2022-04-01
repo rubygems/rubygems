@@ -35,7 +35,7 @@ module Bundler
         end
       end
 
-      if spec = lookup["bundler"].first
+      if spec = self["bundler"].first
         specs << spec
       end
 
@@ -44,7 +44,7 @@ module Bundler
 
     def [](key)
       key = key.name if key.respond_to?(:name)
-      lookup[key].reverse
+      lookup[key]&.reverse || []
     end
 
     def []=(key, value)
@@ -159,8 +159,9 @@ module Bundler
 
     def lookup
       @lookup ||= begin
-        lookup = Hash.new {|h, k| h[k] = [] }
+        lookup = {}
         Index.sort_specs(@specs).reverse_each do |s|
+          lookup[s.name] ||= []
           lookup[s.name] << s
         end
         lookup
@@ -173,7 +174,7 @@ module Bundler
     end
 
     def spec_for_dependency(name, platform)
-      specs_for_platforms = lookup[name]
+      specs_for_platforms = self[name]
       if platform.nil?
         GemHelpers.select_best_platform_match(specs_for_platforms.select {|s| Gem::Platform.match_spec?(s) }, Bundler.local_platform)
       else
@@ -184,7 +185,7 @@ module Bundler
     def tsort_each_child(s)
       s.dependencies.sort_by(&:name).each do |d|
         next if d.type == :development
-        lookup[d.name].each {|s2| yield s2 }
+        self[d.name].each {|s2| yield s2 }
       end
     end
   end

@@ -309,7 +309,7 @@ module Bundler
     end
 
     def bundler_ruby_lib
-      resolve_path File.expand_path("..", __dir__)
+      File.expand_path("..", __dir__)
     end
 
     def clean_load_path

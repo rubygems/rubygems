@@ -20,7 +20,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
   def setup_rust_gem(name)
     @ext = File.join(@tempdir, 'ext')
     @dest_path = File.join(@tempdir, 'prefix')
-    @fixture_dir = Pathname.new(File.expand_path("../test_gem_ext_cargo_builder/#{name}/", __FILE__))
+    @fixture_dir = Pathname.new(File.expand_path("test_gem_ext_cargo_builder/#{name}/", __dir__))
 
     FileUtils.mkdir_p @dest_path
     FileUtils.cp_r(@fixture_dir.to_s, @ext)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'openssl'
 
-test_path = File.expand_path('../../test/rubygems', __FILE__)
+test_path = File.expand_path('../test/rubygems', __dir__)
 
 private_key_path = "#{test_path}/private_key.pem"
 

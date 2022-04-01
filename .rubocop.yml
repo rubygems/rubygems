@@ -121,6 +121,9 @@ Style/Encoding:
   Exclude:
     - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
 
+Style/ExpandPathArguments:
+  Enabled: true
+
 Style/EvalWithLocation:
   Enabled: true
 

@@ -16,7 +16,7 @@ if ENV['RUBYOPT'] or defined? Gem
   exec(*cmd)
 end
 
-Dir.chdir File.dirname(__FILE__)
+Dir.chdir __dir__
 
 $:.unshift File.expand_path('lib')
 require 'rubygems'

@@ -63,6 +63,15 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['test/**/test_*.rb']
 end
 
+namespace 'test' do
+  desc 'Run each test isolatedly by specifying the relative test file path'
+  task 'isolated' do
+    FileList['test/**/test_*.rb'].each do |file|
+      sh Gem.ruby, '-Ilib:test:bundler/lib', file
+    end
+  end
+end
+
 task :default => :test
 
 spec = Gem::Specification.load('rubygems-update.gemspec')

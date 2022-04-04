@@ -160,9 +160,17 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     val = arg[2..-1]
 
     case flag
-    when "-L" then ["-L", "native=#{val}"]
-    when "-l" then ["-l", val.to_s]
-    when "-F" then ["-l", "framework=#{val}"]
+    when "-L" 
+      ["-L", "native=#{val}"]
+    when "-l" 
+      # so rust does not think we are renaming the library
+      if val.start_with?(":")
+        ["-C", "link-arg=#{arg}"]
+      else
+        ["-l", val.to_s]
+      end
+    when "-F"
+      ["-l", "framework=#{val}"]
     else ["-C", "link_arg=#{arg}"]
     end
   end

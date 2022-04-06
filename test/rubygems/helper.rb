@@ -304,7 +304,7 @@ class Gem::TestCase < Test::Unit::TestCase
   def setup
     @orig_hooks = {}
     @orig_env = ENV.to_hash
-    @tmp = File.expand_path("tmp")
+    @tmp = File.expand_path("../../tmp", __dir__)
 
     FileUtils.mkdir_p @tmp
 
@@ -316,7 +316,6 @@ class Gem::TestCase < Test::Unit::TestCase
     ENV['SOURCE_DATE_EPOCH'] = nil
     ENV['BUNDLER_VERSION'] = nil
 
-    @current_dir = Dir.pwd
     @fetcher     = nil
 
     @back_ui                       = Gem::DefaultUserInteraction.ui
@@ -456,8 +455,6 @@ class Gem::TestCase < Test::Unit::TestCase
     if defined? Gem::RemoteFetcher
       Gem::RemoteFetcher.fetcher = nil
     end
-
-    Dir.chdir @current_dir
 
     FileUtils.rm_rf @tempdir
 

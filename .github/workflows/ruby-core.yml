@@ -43,13 +43,8 @@ jobs:
       - name: Build Ruby
         run: |
           autoconf
-          ./configure -C --disable-install-doc --prefix="$HOME/.rubies/ruby-$REF"
+          ./configure -C --disable-install-doc
           make -j2
-
-          # need to install so the ruby.h header is put in the right place
-          chmod 755 $HOME
-          mkdir -p ~/.rubies # https://github.com/ruby/ruby-dev-builder/blob/master/.github/workflows/build.yml#L100
-          make install
         working-directory: ruby/ruby
       - uses: actions/checkout@v3
         with:

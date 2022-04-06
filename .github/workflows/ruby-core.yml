@@ -20,21 +20,17 @@ jobs:
       matrix:
         target: [Rubygems, Bundler]
     steps:
-      - name: Set up latest ruby head
+      - name: Set up latest ruby as baseruby to be able to compile ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: head
+          ruby-version: 3.1.1
           bundler: none
-      - name: Save latest buildable revision to environment
-        run: echo "REF=$(ruby -v | cut -d')' -f1 | cut -d' ' -f5)" >> $GITHUB_ENV
-      - uses: actions/checkout@v3
+      - name: Checkout latest Ruby stable branch, to see how our stable branch fits in there
+        uses: actions/checkout@v3
         with:
           repository: ruby/ruby
           path: ruby/ruby
-          fetch-depth: 10
-      - name: Checkout the latest buildable revision
-        run: git switch -c ${{ env.REF }}
-        working-directory: ruby/ruby
+          ref: ruby_3_1
       - name: Install libraries
         run: |
           set -x

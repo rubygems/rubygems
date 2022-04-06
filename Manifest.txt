@@ -383,6 +383,7 @@ lib/rubygems/ext.rb
 lib/rubygems/ext/build_error.rb
 lib/rubygems/ext/builder.rb
 lib/rubygems/ext/cargo_builder.rb
+lib/rubygems/ext/cargo_builder/link_flag_converter.rb
 lib/rubygems/ext/cmake_builder.rb
 lib/rubygems/ext/configure_builder.rb
 lib/rubygems/ext/ext_conf_builder.rb
@@ -649,6 +650,7 @@ test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/Cargo.toml
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/build.rb
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/rust_ruby_example.gemspec
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/src/lib.rs
+test/rubygems/test_gem_ext_cargo_builder_link_flag_converter.rb
 test/rubygems/test_gem_ext_cmake_builder.rb
 test/rubygems/test_gem_ext_configure_builder.rb
 test/rubygems/test_gem_ext_ext_conf_builder.rb

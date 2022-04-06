@@ -12,6 +12,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def build(_extension, dest_path, results, args = [], lib_dir = nil, cargo_dir = Dir.pwd)
     require "rubygems/command"
+    require "rubygems/ext/cargo_builder/link_flag_converter"
     require "fileutils"
     require "shellwords"
 
@@ -25,9 +26,8 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def with_rb_config_env
     old_env = ENV.to_hash
-    RbConfig::CONFIG.each do |k, v|
-      ENV["RBCONFIG_#{k}"] = v
-    end
+    RbConfig::CONFIG.each {|k, v| ENV["RBCONFIG_#{k}"] = v }
+
     yield
   ensure
     ENV.replace(old_env)
@@ -105,7 +105,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def libruby_args(dest_dir)
     libs = makefile_config(ruby_static? ? "LIBRUBYARG_STATIC" : "LIBRUBYARG_SHARED")
     raw_libs = Shellwords.split(libs)
-    raw_libs.flat_map {|l| ldflag_to_link_modifier(l, dest_dir) }
+    raw_libs.flat_map {|l| ldflag_to_link_modifier(l) }
   end
 
   def ruby_static?
@@ -144,50 +144,19 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     split_flags("DLDFLAGS")
       .map {|arg| maybe_resolve_ldflag_variable(arg, dest_dir) }
       .compact
-      .flat_map {|arg| ldflag_to_link_modifier(arg, dest_dir) }
+      .flat_map {|arg| ldflag_to_link_modifier(arg) }
   end
 
   def rustc_lib_flags(dest_dir)
-    split_flags("LIBS").flat_map {|arg| ldflag_to_link_modifier(arg, dest_dir) }
+    split_flags("LIBS").flat_map {|arg| ldflag_to_link_modifier(arg) }
   end
 
   def split_flags(var)
     Shellwords.split(RbConfig::CONFIG.fetch(var, ""))
   end
 
-  def ldflag_to_link_modifier(arg, dest_dir)
-    flag = arg[0..1]
-    val = arg[2..-1]
-
-    case flag
-    when "-L" 
-      ["-L", "native=#{val}"]
-    when "-l" 
-      # so rust does not think we are renaming the library
-      if val.start_with?(":")
-        ["-C", "link-arg=#{arg}"]
-      else
-        ["-l", val.to_s]
-      end
-    when "-F"
-      ["-l", "framework=#{val}"]
-    else ["-C", "link_arg=#{arg}"]
-    end
-  end
-
-  def link_flag(link_name)
-    # These are provided by the CRT with MSVC
-    # @see https://github.com/rust-lang/pkg-config-rs/blob/49a4ac189aafa365167c72e8e503565a7c2697c2/src/lib.rs#L622
-    return [] if msvc_target? && ["m", "c", "pthread"].include?(link_name)
-
-    if link_name.include?("ruby")
-      # Specify the lib kind and give it the name "ruby" for linking
-      kind = ruby_static? ? "static" : "dylib"
-
-      ["-l", "#{kind}=ruby:#{link_name}"]
-    else
-      ["-l", link_name]
-    end
+  def ldflag_to_link_modifier(arg)
+    LinkFlagConverter.call(arg)
   end
 
   def msvc_target?

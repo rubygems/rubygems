@@ -1,3 +1,17 @@
+# 3.3.11 / 2022-04-07
+
+## Enhancements:
+
+* Enable mfa on specific keys during gem signin. Pull request #5305 by
+  aellispierce
+* Prefer `__dir__` to `__FILE__`. Pull request #5444 by deivid-rodriguez
+* Add cargo builder for rust extensions. Pull request #5175 by ianks
+* Installs bundler 2.3.11 as a default gem.
+
+## Documentation:
+
+* Improve RDoc setup. Pull request #5398 by deivid-rodriguez
+
 # 3.3.10 / 2022-03-23
 
 ## Enhancements:

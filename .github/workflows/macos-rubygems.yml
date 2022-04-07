@@ -25,14 +25,17 @@ jobs:
           - { name: "2.6", value: 2.6.9 }
           - { name: "2.7", value: 2.7.5 }
           - { name: "3.0", value: 3.0.3 }
-          - { name: "3.1", value: 3.1.0 }
+          - { name: "3.1", value: 3.1.1 }
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
       - name: Install Dependencies
         run: rake setup
       - name: Run Test

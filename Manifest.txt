@@ -382,6 +382,7 @@ lib/rubygems/exceptions.rb
 lib/rubygems/ext.rb
 lib/rubygems/ext/build_error.rb
 lib/rubygems/ext/builder.rb
+lib/rubygems/ext/cargo_builder.rb
 lib/rubygems/ext/cmake_builder.rb
 lib/rubygems/ext/configure_builder.rb
 lib/rubygems/ext/ext_conf_builder.rb
@@ -635,6 +636,19 @@ test/rubygems/test_gem_dependency_list.rb
 test/rubygems/test_gem_dependency_resolution_error.rb
 test/rubygems/test_gem_doctor.rb
 test/rubygems/test_gem_ext_builder.rb
+test/rubygems/test_gem_ext_cargo_builder.rb
+test/rubygems/test_gem_ext_cargo_builder/custom_name/.gitignore
+test/rubygems/test_gem_ext_cargo_builder/custom_name/Cargo.lock
+test/rubygems/test_gem_ext_cargo_builder/custom_name/Cargo.toml
+test/rubygems/test_gem_ext_cargo_builder/custom_name/build.rb
+test/rubygems/test_gem_ext_cargo_builder/custom_name/custom_name.gemspec
+test/rubygems/test_gem_ext_cargo_builder/custom_name/src/lib.rs
+test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/.gitignore
+test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/Cargo.lock
+test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/Cargo.toml
+test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/build.rb
+test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/rust_ruby_example.gemspec
+test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/src/lib.rs
 test/rubygems/test_gem_ext_cmake_builder.rb
 test/rubygems/test_gem_ext_configure_builder.rb
 test/rubygems/test_gem_ext_ext_conf_builder.rb

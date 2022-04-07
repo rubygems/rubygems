@@ -26,14 +26,14 @@ jobs:
           - { name: "2.6", value: 2.6.9 }
           - { name: "2.7", value: 2.7.5 }
           - { name: "3.0", value: 3.0.3 }
-          - { name: "3.1", value: 3.1.0 }
-          - { name: jruby-9.3, value: jruby-9.3.2.0 }
+          - { name: "3.1", value: 3.1.1 }
+          - { name: jruby-9.3, value: jruby-9.3.4.0 }
           - { name: truffleruby-21, value: truffleruby-21.2.0 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -88,10 +88,10 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.1", value: 3.1.0 }
-          - { name: jruby-9.3, value: jruby-9.3.2.0 }
+          - { name: "3.1", value: 3.1.1 }
+          - { name: jruby-9.3, value: jruby-9.3.4.0 }
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:

@@ -16,13 +16,17 @@ jobs:
     env:
       TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
 
       - name: Show Ruby version
         run: ruby --version

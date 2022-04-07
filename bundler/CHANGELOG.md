@@ -1,3 +1,14 @@
+# 2.3.11 (April 7, 2022)
+
+## Enhancements:
+
+  - Bump actions/checkout to 3 in bundler gem template [#5445](https://github.com/rubygems/rubygems/pull/5445)
+  - Prefer `__dir__` to `__FILE__` [#5444](https://github.com/rubygems/rubygems/pull/5444)
+
+## Documentation:
+
+  - Update bundler documentation to reflect bundle config scope changes [#5441](https://github.com/rubygems/rubygems/pull/5441)
+
 # 2.3.10 (March 23, 2022)
 
 ## Enhancements:

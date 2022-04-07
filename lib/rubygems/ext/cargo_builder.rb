@@ -4,10 +4,11 @@
 # over the `cargo rustc` command which takes care of building Rust code in a way
 # that Ruby can use.
 class Gem::Ext::CargoBuilder < Gem::Ext::Builder
-  attr_reader :spec
+  attr_reader :spec, :runner
 
-  def initialize(spec)
+  def initialize(spec, runner: nil)
     @spec = spec
+    @runner = runner || self.class.method(:run)
   end
 
   def build(_extension, dest_path, results, args = [], lib_dir = nil, cargo_dir = Dir.pwd)
@@ -16,24 +17,13 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     require "fileutils"
     require "shellwords"
 
-    build_crate(dest_path, results, args, cargo_dir)
+    build_crate(_extension, dest_path, results, args, cargo_dir)
     ext_path = rename_cdylib_for_ruby_compatibility(dest_path)
     finalize_directory(ext_path, dest_path, lib_dir, cargo_dir)
     results
   end
 
-  private
-
-  def with_rb_config_env
-    old_env = ENV.to_hash
-    RbConfig::CONFIG.each {|k, v| ENV["RBCONFIG_#{k}"] = v }
-
-    yield
-  ensure
-    ENV.replace(old_env)
-  end
-
-  def build_crate(dest_path, results, args, cargo_dir)
+  def build_crate(_extension, dest_path, results, args, cargo_dir)
     manifest = File.join(cargo_dir, "Cargo.toml")
 
     given_ruby_static = ENV["RUBY_STATIC"]
@@ -54,11 +44,22 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     cmd += args
 
     with_rb_config_env do
-      self.class.run cmd, results, self.class.class_name, cargo_dir
+      runner.call cmd, results, self.class.class_name, cargo_dir
     end
     results
   ensure
     ENV["RUBY_STATIC"] = given_ruby_static
+  end
+
+  private
+
+  def with_rb_config_env
+    old_env = ENV.to_hash
+    RbConfig::CONFIG.each {|k, v| ENV["RBCONFIG_#{k}"] = v }
+
+    yield
+  ensure
+    ENV.replace(old_env)
   end
 
   def cargo_rustc_args(dest_dir)

@@ -13,7 +13,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   def build(_extension, dest_path, results, args = [], lib_dir = nil, cargo_dir = Dir.pwd)
     require "rubygems/command"
-    require "rubygems/ext/cargo_builder/link_flag_converter"
+    require_relative "cargo_builder/link_flag_converter"
     require "fileutils"
     require "shellwords"
 

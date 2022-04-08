@@ -14,7 +14,8 @@ class TestGemExtCargoBuilderUnit < Gem::TestCase
 
   def test_cargo_command_locks_in_release_profile
     spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
-    builder = Gem::Ext::CargoBuilder.new(spec, profile: :release)
+    builder = Gem::Ext::CargoBuilder.new(spec)
+    builder.profile = :release
     command = builder.cargo_command(Dir.pwd, @tempdir)
 
     assert_includes command, '--locked'
@@ -22,7 +23,8 @@ class TestGemExtCargoBuilderUnit < Gem::TestCase
 
   def test_cargo_command_does_not_lock_in_dev_profile
     spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
-    builder = Gem::Ext::CargoBuilder.new(spec, profile: :dev)
+    builder = Gem::Ext::CargoBuilder.new(spec)
+    builder.profile = :dev
     command = builder.cargo_command(Dir.pwd, @tempdir)
 
     assert_not_includes command, '--locked'

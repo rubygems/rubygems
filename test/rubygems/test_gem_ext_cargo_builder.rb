@@ -74,7 +74,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
     Dir.chdir @ext do
       ENV.update(@rust_envs)
       spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
-      builder = Gem::Ext::CargoBuilder.new(spec, profile: :dev)
+      builder = Gem::Ext::CargoBuilder.new(spec)
+      builder.profile = :dev
       builder.build nil, @dest_path, output
     end
 

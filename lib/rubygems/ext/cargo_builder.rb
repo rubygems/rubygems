@@ -4,17 +4,15 @@
 # over the `cargo rustc` command which takes care of building Rust code in a way
 # that Ruby can use.
 class Gem::Ext::CargoBuilder < Gem::Ext::Builder
-  attr_reader :spec, :runner, :profile
+  attr_accessor :spec, :runner, :profile
 
-  def initialize(spec, runner: nil, profile: :release)
-    raise ArgumentError, "invalid cargo profile: #{profile}" unless [:dev, :release].include?(profile)
-
+  def initialize(spec)
     require_relative "../command"
     require_relative "cargo_builder/link_flag_converter"
 
     @spec = spec
-    @runner = runner || self.class.method(:run)
-    @profile = profile
+    @runner = self.class.method(:run)
+    @profile = :release
   end
 
   def build(_extension, dest_path, results, args = [], lib_dir = nil, cargo_dir = Dir.pwd)

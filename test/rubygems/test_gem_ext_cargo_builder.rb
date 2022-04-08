@@ -8,8 +8,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
     super
 
     @rust_envs = {
-      'CARGO_HOME' => File.join(@orig_env['HOME'], '.cargo'),
-      'RUSTUP_HOME' => File.join(@orig_env['HOME'], '.rustup'),
+      'CARGO_HOME' => ENV.fetch('CARGO_HOME', File.join(@orig_env['HOME'], '.cargo')),
+      'RUSTUP_HOME' => ENV.fetch('RUSTUP_HOME', File.join(@orig_env['HOME'], '.rustup')),
     }
   end
 
@@ -116,6 +116,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
     skip_unsupported_platforms!
     setup_rust_gem "rust_ruby_example"
 
+    require 'open3'
+
     Dir.chdir @ext do
       require 'tmpdir'
 
@@ -125,12 +127,11 @@ class TestGemExtCargoBuilder < Gem::TestCase
         built_gem = File.expand_path(File.join(dir, "rust_ruby_example.gem"))
         Open3.capture2e(*gem, "build", "rust_ruby_example.gemspec", "--output", built_gem)
         Open3.capture2e(*gem, "install", "--verbose", "--local", built_gem, *ARGV)
+
+        stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "-rrust_ruby_example", "-e", "puts 'Result: ' + RustRubyExample.reverse('hello world')")
+        assert status.success?, stdout_and_stderr_str
+        assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
       end
-
-      stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "-rrust_ruby_example", "-e", "puts 'Result: ' + RustRubyExample.reverse('hello world')")
-
-      assert status.success?, stdout_and_stderr_str
-      assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
     end
   end
 

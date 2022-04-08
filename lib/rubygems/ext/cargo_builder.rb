@@ -19,14 +19,14 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     require "fileutils"
     require "shellwords"
 
-    build_crate(_extension, dest_path, results, args, cargo_dir)
+    build_crate(dest_path, results, args, cargo_dir)
     validate_cargo_build!(dest_path)
     rename_cdylib_for_ruby_compatibility(dest_path)
     finalize_directory(dest_path, lib_dir, cargo_dir)
     results
   end
 
-  def build_crate(_extension, dest_path, results, args, cargo_dir)
+  def build_crate(dest_path, results, args, cargo_dir)
     env = build_env
     cmd = cargo_command(cargo_dir, dest_path, args)
     runner.call cmd, results, 'cargo', cargo_dir, env
@@ -169,7 +169,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def ldflag_to_link_modifier(arg)
-    LinkFlagConverter.call(arg)
+    LinkFlagConverter.convert_to_cargo_flag(arg)
   end
 
   def msvc_target?
@@ -298,16 +298,11 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     path
   end
 
-  def rust_target_triple
-    return ENV['CARGO_BUILD_TARGET'] if ENV.key?('CARGO_BUILD_TARGET')
-
-    rust_release_path
-  end
-
   def profile_target_directory
     case profile
     when :release then 'release'
-    when :dev then 'debug'
+    when :dev     then 'debug'
+    else          raise "unknown target directory for profile: #{profile}"
     end
   end
 

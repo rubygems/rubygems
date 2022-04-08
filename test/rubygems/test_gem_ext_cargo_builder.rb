@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative 'helper'
 require 'rubygems/ext'
 
@@ -10,9 +11,6 @@ class TestGemExtCargoBuilder < Gem::TestCase
       'CARGO_HOME' => File.join(@orig_env['HOME'], '.cargo'),
       'RUSTUP_HOME' => File.join(@orig_env['HOME'], '.rustup'),
     }
-
-    system(@rust_envs, 'cargo', '-V', out: IO::NULL, err: [:child, :out])
-    pend 'cargo not present' unless $?.success?
   end
 
   def setup_rust_gem(name)
@@ -57,15 +55,34 @@ class TestGemExtCargoBuilder < Gem::TestCase
     end
 
     output = output.join "\n"
-
     bundle = Dir[File.join(@dest_path, "**/release/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")].first
 
-    require(bundle)
-
-    assert_match RustRubyExample.reverse('hello'), 'olleh'
-
-    assert_match "Compiling rust_ruby_example v0.1.0", output
     assert_match "Finished release [optimized] target(s)", output
+    assert_ffi_handle bundle, 'Init_rust_ruby_example'
+  rescue Exception => e
+    pp output if output
+
+    raise(e)
+  end
+
+  def test_build_dev_profile
+    skip_unsupported_platforms!
+    setup_rust_gem "rust_ruby_example"
+
+    output = []
+
+    Dir.chdir @ext do
+      ENV.update(@rust_envs)
+      spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
+      builder = Gem::Ext::CargoBuilder.new(spec, profile: :dev)
+      builder.build nil, @dest_path, output
+    end
+
+    output = output.join "\n"
+    bundle = Dir[File.join(@dest_path, "**/debug/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")].first
+
+    assert_match "Finished dev [unoptimized + debuginfo] target(s)", output
+    assert_ffi_handle bundle, 'Init_rust_ruby_example'
   rescue Exception => e
     pp output if output
 
@@ -138,9 +155,19 @@ class TestGemExtCargoBuilder < Gem::TestCase
     end
   end
 
+  private
+
   def skip_unsupported_platforms!
     pend "jruby not supported" if java_platform?
     pend "truffleruby not supported (yet)" if RUBY_ENGINE == 'truffleruby'
     pend "mswin not supported (yet)" if /mswin/ =~ RUBY_PLATFORM && ENV.key?('GITHUB_ACTIONS')
+    system(@rust_envs, 'cargo', '-V', out: IO::NULL, err: [:child, :out])
+    pend 'cargo not present' unless $?.success?
+  end
+
+  def assert_ffi_handle(bundle, name)
+    require 'fiddle'
+    dylib_handle = Fiddle.dlopen bundle
+    assert_nothing_raised { dylib_handle[name] }
   end
 end

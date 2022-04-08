@@ -4,32 +4,46 @@
 # over the `cargo rustc` command which takes care of building Rust code in a way
 # that Ruby can use.
 class Gem::Ext::CargoBuilder < Gem::Ext::Builder
-  attr_reader :spec, :runner
+  attr_reader :spec, :runner, :profile
 
-  def initialize(spec, runner: nil)
+  def initialize(spec, runner: nil, profile: :release)
+    raise ArgumentError, "invalid cargo profile: #{profile}" unless [:dev, :release].include?(profile)
+
+    require_relative "../command"
+    require_relative "cargo_builder/link_flag_converter"
+
     @spec = spec
     @runner = runner || self.class.method(:run)
+    @profile = profile
   end
 
   def build(_extension, dest_path, results, args = [], lib_dir = nil, cargo_dir = Dir.pwd)
-    require "rubygems/command"
-    require_relative "cargo_builder/link_flag_converter"
     require "fileutils"
     require "shellwords"
 
     build_crate(_extension, dest_path, results, args, cargo_dir)
-    ext_path = rename_cdylib_for_ruby_compatibility(dest_path)
-    finalize_directory(ext_path, dest_path, lib_dir, cargo_dir)
+    validate_cargo_build!(dest_path)
+    rename_cdylib_for_ruby_compatibility(dest_path)
+    finalize_directory(dest_path, lib_dir, cargo_dir)
     results
   end
 
   def build_crate(_extension, dest_path, results, args, cargo_dir)
+    env = build_env
+    cmd = cargo_command(cargo_dir, dest_path, args)
+    runner.call cmd, results, 'cargo', cargo_dir, env
+
+    results
+  end
+
+  def build_env
+    build_env = rb_config_env
+    build_env["RUBY_STATIC"] = "true" if ruby_static? && ENV.key?('RUBY_STATIC')
+    build_env
+  end
+
+  def cargo_command(cargo_dir, dest_path, args = [])
     manifest = File.join(cargo_dir, "Cargo.toml")
-
-    given_ruby_static = ENV["RUBY_STATIC"]
-
-    ENV["RUBY_STATIC"] = "true" if ruby_static? && !given_ruby_static
-
     cargo = ENV.fetch("CARGO", "cargo")
 
     cmd = []
@@ -37,29 +51,22 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     cmd += ["--target", ENV['CARGO_BUILD_TARGET']] if ENV['CARGO_BUILD_TARGET']
     cmd += ["--target-dir", dest_path]
     cmd += ["--manifest-path", manifest]
-    cmd += ["--lib", "--release", "--locked"]
-    cmd += ["--"]
-    cmd += [*cargo_rustc_args(dest_path)]
+    cmd += ["--lib"]
+    cmd += ["--profile", profile.to_s]
+    cmd += ["--locked"] if profile == :release
     cmd += Gem::Command.build_args
     cmd += args
-
-    with_rb_config_env do
-      runner.call cmd, results, self.class.class_name, cargo_dir
-    end
-    results
-  ensure
-    ENV["RUBY_STATIC"] = given_ruby_static
+    cmd += ["--"]
+    cmd += [*cargo_rustc_args(dest_path)]
+    cmd
   end
 
   private
 
-  def with_rb_config_env
-    old_env = ENV.to_hash
-    RbConfig::CONFIG.each {|k, v| ENV["RBCONFIG_#{k}"] = v }
-
-    yield
-  ensure
-    ENV.replace(old_env)
+  def rb_config_env
+    result = {}
+    RbConfig::CONFIG.each {|k, v| result["RBCONFIG_#{k}"] = v }
+    result
   end
 
   def cargo_rustc_args(dest_dir)
@@ -117,24 +124,31 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   # Ruby expects the dylib to follow a file name convention for loading
   def rename_cdylib_for_ruby_compatibility(dest_path)
-    dylib_path = validate_cargo_build!(dest_path)
-    dlext_name = "#{spec.name}.#{makefile_config("DLEXT")}"
-    new_name = dylib_path.gsub(File.basename(dylib_path), dlext_name)
-    FileUtils.cp(dylib_path, new_name)
-    new_name
+    new_path = final_extension_path(dest_path)
+    FileUtils.cp(cargo_dylib_path(dest_path), new_path)
+    new_path
   end
 
   def validate_cargo_build!(dir)
-    prefix = so_ext == "dll" ? "" : "lib"
-    path_parts = [dir]
-    path_parts << ENV['CARGO_BUILD_TARGET'] if ENV['CARGO_BUILD_TARGET']
-    path_parts += ["release", "#{prefix}#{cargo_crate_name}.#{so_ext}"]
-
-    dylib_path = File.join(*path_parts)
+    dylib_path = cargo_dylib_path(dir)
 
     raise DylibNotFoundError, dir unless File.exist?(dylib_path)
 
     dylib_path
+  end
+
+  def final_extension_path(dest_path)
+    dylib_path = cargo_dylib_path(dest_path)
+    dlext_name = "#{spec.name}.#{makefile_config("DLEXT")}"
+    dylib_path.gsub(File.basename(dylib_path), dlext_name)
+  end
+
+  def cargo_dylib_path(dest_path)
+    prefix = so_ext == "dll" ? "" : "lib"
+    path_parts = [dest_path]
+    path_parts << ENV['CARGO_BUILD_TARGET'] if ENV['CARGO_BUILD_TARGET']
+    path_parts += [profile_target_directory, "#{prefix}#{cargo_crate_name}.#{so_ext}"]
+    File.join(*path_parts)
   end
 
   def cargo_crate_name
@@ -236,13 +250,17 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   # Good balance between binary size and debugability
   def debug_flags
+    return [] if profile == :dev
+
     ["-C", "debuginfo=1"]
   end
 
   # Copied from ExtConfBuilder
-  def finalize_directory(ext_path, dest_path, lib_dir, extension_dir)
+  def finalize_directory(dest_path, lib_dir, extension_dir)
     require "fileutils"
     require "tempfile"
+
+    ext_path = final_extension_path(dest_path)
 
     begin
       tmp_dest = Dir.mktmpdir(".gem.", extension_dir)
@@ -286,6 +304,13 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     return ENV['CARGO_BUILD_TARGET'] if ENV.key?('CARGO_BUILD_TARGET')
 
     rust_release_path
+  end
+
+  def profile_target_directory
+    case profile
+    when :release then 'release'
+    when :dev then 'debug'
+    end
   end
 
   # Error raised when no cdylib artifact was created

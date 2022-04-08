@@ -651,6 +651,7 @@ test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/build.rb
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/rust_ruby_example.gemspec
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/src/lib.rs
 test/rubygems/test_gem_ext_cargo_builder_link_flag_converter.rb
+test/rubygems/test_gem_ext_cargo_builder_unit.rb
 test/rubygems/test_gem_ext_cmake_builder.rb
 test/rubygems/test_gem_ext_configure_builder.rb
 test/rubygems/test_gem_ext_ext_conf_builder.rb

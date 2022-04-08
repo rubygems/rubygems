@@ -55,7 +55,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
     end
 
     output = output.join "\n"
-    bundle = Dir[File.join(@dest_path, "**/release/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")].first
+    bundle = File.join(@dest_path, "release/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")
 
     assert_match "Finished release [optimized] target(s)", output
     assert_ffi_handle bundle, 'Init_rust_ruby_example'
@@ -80,7 +80,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
     end
 
     output = output.join "\n"
-    bundle = Dir[File.join(@dest_path, "**/debug/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")].first
+    bundle = File.join(@dest_path, "debug/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")
 
     assert_match "Finished dev [unoptimized + debuginfo] target(s)", output
     assert_ffi_handle bundle, 'Init_rust_ruby_example'

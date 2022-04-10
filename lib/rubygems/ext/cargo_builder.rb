@@ -191,18 +191,18 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
   # Intepolate substition vars in the arg (i.e. $(DEFFILE))
   def maybe_resolve_ldflag_variable(input_arg, dest_dir)
-    str = input_arg.gsub(/\$\((\w+)\)/) do |var_name|
-      case var_name
-      # On windows, it is assumed that mkmf has setup an exports file for the
-      # extension, so we have to to create one ourselves.
-      when "DEFFILE"
-        write_deffile(dest_dir)
-      else
-        RbConfig::CONFIG[var_name]
-      end
-    end.strip
+    var_name = input_arg.match(/\$\((\w+)\)/)[1]
 
-    str == "" ? nil : str
+    return if var_name.nil? || var_name.chomp.empty?
+
+    case var_name
+    # On windows, it is assumed that mkmf has setup an exports file for the
+    # extension, so we have to to create one ourselves.
+    when "DEFFILE"
+      write_deffile(dest_dir)
+    else
+      RbConfig::CONFIG[var_name]
+    end
   end
 
   def write_deffile(dest_dir)

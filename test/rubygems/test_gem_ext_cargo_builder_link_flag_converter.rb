@@ -26,7 +26,7 @@ class TestGemExtCargoBuilderLinkFlagConverter < Gem::TestCase
     raise "duplicate test name" if instance_methods.include?(test_name)
 
     define_method(test_name) do
-      assert_equal(expected, Gem::Ext::CargoBuilder::LinkFlagConverter.convert_to_cargo_flag(arg))
+      assert_equal(expected, Gem::Ext::CargoBuilder::LinkFlagConverter.convert(arg))
     end
   end
 end

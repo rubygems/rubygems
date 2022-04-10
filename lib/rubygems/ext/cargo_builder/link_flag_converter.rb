@@ -3,7 +3,7 @@
 class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   # Converts Ruby link flags into something cargo understands
   class LinkFlagConverter
-    def self.convert_to_cargo_flag(arg)
+    def self.convert(arg)
       case arg
       when /-L\s*(.+)$/
         ["-L", "native=#{$1}"]

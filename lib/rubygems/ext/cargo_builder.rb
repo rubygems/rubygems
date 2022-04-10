@@ -169,7 +169,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def ldflag_to_link_modifier(arg)
-    LinkFlagConverter.convert_to_cargo_flag(arg)
+    LinkFlagConverter.convert(arg)
   end
 
   def msvc_target?

@@ -189,11 +189,15 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     !!Gem::WIN_PATTERNS.find {|r| target_platform =~ r }
   end
 
-  # Intepolate substition vars in the arg (i.e. $(DEFFILE))
+  # Interpolate substition vars in the arg (i.e. $(DEFFILE))
   def maybe_resolve_ldflag_variable(input_arg, dest_dir)
-    var_name = input_arg.match(/\$\((\w+)\)/)[1]
+    var_matches = input_arg.match(/\$\((\w+)\)/)
 
-    return if var_name.nil? || var_name.chomp.empty?
+    return input_arg unless var_matches
+
+    var_name = var_matches[1]
+
+    return input_arg if var_name.nil? || var_name.chomp.empty?
 
     case var_name
     # On windows, it is assumed that mkmf has setup an exports file for the

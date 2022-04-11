@@ -15,7 +15,7 @@ concurrency:
 jobs:
   windows_rubygems:
     name: Rubygems on Windows (${{ matrix.ruby.name }})
-    runs-on: windows-2019
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:

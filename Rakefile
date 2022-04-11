@@ -128,6 +128,8 @@ if File.exist?("util/automatiek.rake")
   #   copy works consistently in all supported rubies. This one can be removed
   #   once we drop ruby 2.4 support, since newer versions include a version of
   #   `did_you_mean` that does not require any changes.
+  # * Add an empty .document file to the library's root path to hint RDoc that
+  #   this library should not be documented.
   desc "Vendor a specific version of optparse"
   Automatiek::RakeTask.new("optparse") do |lib|
     lib.version = "master"

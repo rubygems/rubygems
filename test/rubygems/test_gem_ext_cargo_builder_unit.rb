@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require_relative 'helper'
-require_relative 'test_gem_ext_cargo_builder'
 require 'rubygems/ext'
 
 class TestGemExtCargoBuilderUnit < Gem::TestCase
-  def test_cargo_command_passes_args
+  def setup
     skip_unsupported_platforms!
+    super
+  end
+
+  def test_cargo_command_passes_args
     spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
     builder = Gem::Ext::CargoBuilder.new(spec)
     command = builder.cargo_command(Dir.pwd, @tempdir, ['--all-features'])
@@ -15,7 +18,6 @@ class TestGemExtCargoBuilderUnit < Gem::TestCase
   end
 
   def test_cargo_command_locks_in_release_profile
-    skip_unsupported_platforms!
     spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
     builder = Gem::Ext::CargoBuilder.new(spec)
     builder.profile = :release
@@ -25,7 +27,6 @@ class TestGemExtCargoBuilderUnit < Gem::TestCase
   end
 
   def test_cargo_command_does_not_lock_in_dev_profile
-    skip_unsupported_platforms!
     spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
     builder = Gem::Ext::CargoBuilder.new(spec)
     builder.profile = :dev
@@ -35,7 +36,6 @@ class TestGemExtCargoBuilderUnit < Gem::TestCase
   end
 
   def test_cargo_command_passes_respects_cargo_env_var
-    skip_unsupported_platforms!
     old_cargo = ENV['CARGO']
     ENV['CARGO'] = 'mycargo'
     spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'

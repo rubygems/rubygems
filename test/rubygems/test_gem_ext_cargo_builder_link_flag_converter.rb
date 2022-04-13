@@ -20,6 +20,7 @@ class TestGemExtCargoBuilderLinkFlagConverter < Gem::TestCase
     test_dll_with_colon_space:          ["-l :libssp.dll", ["-l", "dylib=ssp"]],
     test_framework:                     ["-F/some/path", ["-l", "framework=/some/path"]],
     test_framework_space:               ["-F /some/path", ["-l", "framework=/some/path"]],
+    test_non_lib_dash_l:                ["test_rubygems_20220413-976-lemgf9/prefix", ["-C", "link_arg=test_rubygems_20220413-976-lemgf9/prefix"]],
   }.freeze
 
   CASES.each do |test_name, (arg, expected)|

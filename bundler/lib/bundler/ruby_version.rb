@@ -110,11 +110,6 @@ module Bundler
       @ruby_version ||= RubyVersion.new(ruby_version, patchlevel, ruby_engine, ruby_engine_version)
     end
 
-    def exact?
-      return @exact if defined?(@exact)
-      @exact = versions.all? {|v| Gem::Requirement.create(v).exact? }
-    end
-
     private
 
     def matches?(requirements, version)

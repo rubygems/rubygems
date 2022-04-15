@@ -301,7 +301,7 @@ RSpec.describe "bundle install with install-time dependencies" do
       end
 
       let(:ruby_requirement) { %("#{RUBY_VERSION}") }
-      let(:error_message_requirement) { "~> #{RUBY_VERSION}.0" }
+      let(:error_message_requirement) { "= #{RUBY_VERSION}" }
 
       shared_examples_for "ruby version conflicts" do
         it "raises an error during resolution" do

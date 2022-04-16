@@ -159,7 +159,7 @@ end
 load "../util/automatiek.rake"
 
 # We currently ship Molinillo master branch as of
-# https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
+# https://github.com/CocoaPods/Molinillo/commit/bb368fdc1071a8cfeeb8afe83ee6b7cb785f938a
 desc "Vendor a specific version of molinillo"
 Automatiek::RakeTask.new("molinillo") do |lib|
   lib.version = "master"

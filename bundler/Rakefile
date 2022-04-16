@@ -159,9 +159,11 @@ end
 load "../util/automatiek.rake"
 
 # We currently ship Molinillo master branch as of
-# https://github.com/CocoaPods/Molinillo/commit/b4a510349e6893486b9eb44a71734c05a8034256,
-# with one change on top to require tsort relatively to use our vendored
-# version.
+# https://github.com/CocoaPods/Molinillo/commit/b4a510349e6893486b9eb44a71734c05a8034256
+# plus the following patches:
+# * Require `tsort` relatively to use our vendored version.
+# * Allow full customization of Molinillo's conflict error message
+#   (https://github.com/CocoaPods/Molinillo/pull/164).
 desc "Vendor a specific version of molinillo"
 Automatiek::RakeTask.new("molinillo") do |lib|
   lib.version = "master"

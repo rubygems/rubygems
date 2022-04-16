@@ -742,17 +742,8 @@ module Bundler
 
     def ruby_version_requirements(ruby_version)
       return [] unless ruby_version
-      if ruby_version.patchlevel
-        [ruby_version.to_gem_version_with_patchlevel]
-      else
-        ruby_version.versions.map do |version|
-          requirement = Gem::Requirement.new(version)
-          if requirement.exact?
-            "~> #{version}.0"
-          else
-            requirement
-          end
-        end
+      ruby_version.versions.map do |version|
+        Gem::Requirement.new(version)
       end
     end
 

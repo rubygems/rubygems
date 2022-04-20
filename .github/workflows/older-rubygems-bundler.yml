@@ -35,8 +35,6 @@ jobs:
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.5 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.3 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.1 } }
-    env:
-      RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@v3
       - name: Setup ruby

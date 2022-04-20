@@ -11,6 +11,7 @@ on:
     branches:
       - master
       - 3.3
+      - test-with-stable-branches-of-rubygems
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

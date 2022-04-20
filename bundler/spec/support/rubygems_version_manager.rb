@@ -66,7 +66,7 @@ class RubygemsVersionManager
   def switch_local_copy_if_needed
     return unless local_copy_switch_needed?
 
-    sys_exec("git checkout #{target_tag}", :dir => local_copy_path)
+    sys_exec("git checkout #{@source}", :dir => local_copy_path)
 
     ENV["RGV"] = local_copy_path.to_s
   end
@@ -77,11 +77,7 @@ class RubygemsVersionManager
   end
 
   def local_copy_switch_needed?
-    !source_is_path? && target_tag != local_copy_tag
-  end
-
-  def target_tag
-    @target_tag ||= resolve_target_tag
+    !source_is_path? && @source != local_copy_tag
   end
 
   def local_copy_tag
@@ -110,11 +106,5 @@ class RubygemsVersionManager
 
   def expanded_source
     @expanded_source ||= Pathname.new(@source).expand_path(source_root)
-  end
-
-  def resolve_target_tag
-    return "v#{@source}" if @source.match(/^\d/)
-
-    @source
   end
 end

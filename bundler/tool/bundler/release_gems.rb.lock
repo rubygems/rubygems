@@ -67,4 +67,4 @@ DEPENDENCIES
   octokit (~> 4.18)
 
 BUNDLED WITH
-   2.3.11
+   2.3.12

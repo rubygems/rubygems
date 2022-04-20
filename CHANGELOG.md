@@ -1,3 +1,20 @@
+# 3.3.12 / 2022-04-20
+
+## Enhancements:
+
+* Less error swallowing when installing gems. Pull request #5475 by
+  deivid-rodriguez
+* Stop considering `RUBY_PATCHLEVEL` for resolution. Pull request #5472 by
+  deivid-rodriguez
+* Bump vendored optparse to latest master. Pull request #5466 by
+  deivid-rodriguez
+* Installs bundler 2.3.12 as a default gem.
+
+## Documentation:
+
+* Fix formatting in docs. Pull request #5470 by peterzhu2118
+* Fix a typo. Pull request #5401 by znz
+
 # 3.3.11 / 2022-04-07
 
 ## Enhancements:

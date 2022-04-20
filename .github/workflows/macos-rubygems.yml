@@ -40,4 +40,4 @@ jobs:
         run: rake setup
       - name: Run Test
         run: rake test
-    timeout-minutes: 15
+    timeout-minutes: 20

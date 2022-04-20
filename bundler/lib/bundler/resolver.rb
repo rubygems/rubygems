@@ -43,18 +43,18 @@ module Bundler
         remove_from_candidates(spec)
       end
 
-      @base_dg = Molinillo::DependencyGraph.new
+      @base_requirements = {}
       @base.each do |ls|
         dep = Dependency.new(ls.name, ls.version)
-        @base_dg.add_vertex(ls.name, DepProxy.get_proxy(dep, ls.platform), true)
+        @base_requirements[ls.name] = DepProxy.get_proxy(dep, ls.platform)
       end
-      @additional_base_requirements.each {|d| @base_dg.add_vertex(d.name, d) }
+      @additional_base_requirements.each {|d| @base_requirements[d.name] = d }
 
       @gem_version_promoter.prerelease_specified = @prerelease_specified = {}
       requirements.each {|dep| @prerelease_specified[dep.name] ||= dep.prerelease? }
 
       verify_gemfile_dependencies_are_found!(requirements)
-      result = @resolver.resolve(requirements, @base_dg).
+      result = @resolver.resolve(requirements).
         map(&:payload).
         reject {|sg| sg.name.end_with?("\0") }.
         map(&:to_specs).
@@ -119,7 +119,9 @@ module Bundler
       name = dependency.name
       @search_for[dependency_proxy] ||= begin
         locked_results = @base[name].select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
+        locked_requirement = @base_requirements[name]
         results = results_for(dependency) + locked_results
+        results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
 
         if !@prerelease_specified[name] && (!@use_gvp || locked_results.empty?)
           # Move prereleases to the beginning of the list, so they're considered
@@ -330,7 +332,7 @@ module Bundler
             String.new("Bundler could not find compatible versions for gem \"#{name}\":")
           end
           o << %(\n)
-          locked_requirement = conflict.locked_requirement
+          locked_requirement = @base_requirements[name]
           if locked_requirement
             o << %(  In snapshot (#{name_for_locking_dependency_source}):\n)
             o << %(    #{SharedHelpers.pretty_dependency(locked_requirement)}\n)

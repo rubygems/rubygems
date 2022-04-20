@@ -1,3 +1,11 @@
+# 2.3.12 (April 20, 2022)
+
+## Enhancements:
+
+  - Improve Ruby version resolution conflicts [#5474](https://github.com/rubygems/rubygems/pull/5474)
+  - Stop considering `RUBY_PATCHLEVEL` for resolution [#5472](https://github.com/rubygems/rubygems/pull/5472)
+  - Add modern rubies as valid platform values in Gemfile DSL [#5469](https://github.com/rubygems/rubygems/pull/5469)
+
 # 2.3.11 (April 7, 2022)
 
 ## Enhancements:

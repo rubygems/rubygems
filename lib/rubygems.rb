@@ -866,7 +866,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
     if defined?(RUBY_DESCRIPTION)
       if RUBY_ENGINE == "ruby"
-        desc = RUBY_DESCRIPTION[/\Aruby #{Regexp.quote(RUBY_VERSION)}([^ ]+) /, 1]
+        desc = RUBY_DESCRIPTION[/\Aruby #{Regexp.quote(RUBY_VERSION)}p([^ ]+) /, 1]
       else
         desc = RUBY_DESCRIPTION[/\A#{RUBY_ENGINE} #{Regexp.quote(RUBY_ENGINE_VERSION)} \(#{RUBY_VERSION}([^ ]+)\) /, 1]
       end

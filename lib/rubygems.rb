@@ -864,14 +864,12 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     return @ruby_version if defined? @ruby_version
     version = RUBY_VERSION.dup
 
-    if defined?(RUBY_DESCRIPTION)
-      if RUBY_ENGINE == "ruby"
-        desc = RUBY_DESCRIPTION[/\Aruby #{Regexp.quote(RUBY_VERSION)}([^ ]+) /, 1]
-      else
-        desc = RUBY_DESCRIPTION[/\A#{RUBY_ENGINE} #{Regexp.quote(RUBY_ENGINE_VERSION)} \(#{RUBY_VERSION}([^ ]+)\) /, 1]
-      end
-      version << ".#{desc}" if desc
+    if RUBY_ENGINE == "ruby"
+      desc = RUBY_DESCRIPTION[/\Aruby #{Regexp.quote(RUBY_VERSION)}([^ ]+) /, 1]
+    else
+      desc = RUBY_DESCRIPTION[/\A#{RUBY_ENGINE} #{Regexp.quote(RUBY_ENGINE_VERSION)} \(#{RUBY_VERSION}([^ ]+)\) /, 1]
     end
+    version << ".#{desc}" if desc
 
     @ruby_version = Gem::Version.new version
   end

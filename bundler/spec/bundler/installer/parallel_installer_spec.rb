@@ -26,6 +26,14 @@ The missing gems are:
 * a depended upon by alpha
       W
       subject.check_for_corrupt_lockfile
+
+      expect(Bundler.ui).to receive(:warn).with(<<-W.strip)
+Your lockfile doesn't include a valid resolution.
+You can fix this by regenerating your lockfile or trying to manually editing the bad locked gems to a version that satisfies all dependencies.
+The unmet dependencies are:
+* a (= 1), depended upon alpha-1.0, a missing in lockfile
+      W
+      subject.check_for_unmet_dependencies
     end
 
     context "when size > 1" do

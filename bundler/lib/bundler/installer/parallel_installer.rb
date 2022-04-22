@@ -121,7 +121,12 @@ module Bundler
 
       unmet_dependencies.each do |spec, unmet_spec_dependencies|
         unmet_spec_dependencies.each do |unmet_spec_dependency|
-          warning << "* #{unmet_spec_dependency}, depended upon #{spec.full_name}, unsatisfied by #{@specs.find {|s| s.name == unmet_spec_dependency.name && !unmet_spec_dependency.matches_spec?(s.spec) }.full_name}"
+          existing_spec_with_violation = @specs.find {|s| s.name == unmet_spec_dependency.name && !unmet_spec_dependency.matches_spec?(s.spec) }
+
+          warning_message = "* #{unmet_spec_dependency}, depended upon #{spec.full_name}"
+          warning_message += existing_spec_with_violation ? ", unsatisfied by #{existing_spec_with_violation.full_name}" : ", #{unmet_spec_dependency.name} missing in lockfile"
+
+          warning << warning_message
         end
       end
 

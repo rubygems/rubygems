@@ -330,9 +330,10 @@ module Bundler
             String.new("Bundler could not find compatible versions for gem \"#{name}\":")
           end
           o << %(\n)
-          if conflict.locked_requirement
+          locked_requirement = conflict.locked_requirement
+          if locked_requirement
             o << %(  In snapshot (#{name_for_locking_dependency_source}):\n)
-            o << %(    #{SharedHelpers.pretty_dependency(conflict.locked_requirement)}\n)
+            o << %(    #{SharedHelpers.pretty_dependency(locked_requirement)}\n)
             o << %(\n)
           end
           o << %(  In #{name_for_explicit_dependency_source}:\n)
@@ -401,7 +402,7 @@ module Bundler
             end
           elsif name.end_with?("\0")
             o << %(\n  Current #{name} version:\n    #{SharedHelpers.pretty_dependency(@metadata_requirements.find {|req| req.name == name })}\n\n)
-          elsif conflict.locked_requirement
+          elsif locked_requirement
             o << "\n"
             o << %(Deleting your #{name_for_locking_dependency_source} file and running `bundle install` will rebuild your snapshot from scratch, using only\n)
             o << %(the gems in your Gemfile, which may resolve the conflict.\n)

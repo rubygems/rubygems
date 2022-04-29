@@ -22,7 +22,7 @@ module Bundler
       metadata_requirements, regular_requirements = requirements.partition {|dep| dep.name.end_with?("\0") }
       resolver = new(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms, metadata_requirements)
       result = resolver.start(requirements)
-      SpecSet.new(SpecSet.new(result).for(regular_requirements))
+      SpecSet.new(SpecSet.new(result).for(regular_requirements, false, platforms))
     end
 
     def initialize(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms, metadata_requirements)

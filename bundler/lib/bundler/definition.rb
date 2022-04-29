@@ -138,13 +138,13 @@ module Bundler
         @unlock[:gems] ||= @dependencies.map(&:name)
       else
         eager_unlock = expand_dependencies(@unlock[:gems] || [], true)
-        @unlock[:gems] = @locked_specs.for(eager_unlock, false, false).map(&:name)
+        @unlock[:gems] = @locked_specs.for(eager_unlock, false, platforms).map(&:name)
       end
 
       @dependency_changes = converge_dependencies
       @local_changes = converge_locals
 
-      @locked_specs_incomplete_for_platform = !@locked_specs.for(requested_dependencies & expand_dependencies(locked_dependencies), true, true)
+      @locked_specs_incomplete_for_platform = !@locked_specs.for(requested_dependencies & expand_dependencies(locked_dependencies), true)
 
       @requires = compute_requires
     end
@@ -478,7 +478,7 @@ module Bundler
     private
 
     def filter_specs(specs, deps)
-      SpecSet.new(specs).for(expand_dependencies(deps, true), false, false)
+      SpecSet.new(specs).for(expand_dependencies(deps, true), false, platforms)
     end
 
     def materialize(dependencies)
@@ -725,7 +725,7 @@ module Bundler
             # if we won't need the source (according to the lockfile),
             # don't error if the path/git source isn't available
             next if specs.
-                    for(requested_dependencies, false, true).
+                    for(requested_dependencies, false).
                     none? {|locked_spec| locked_spec.source == s.source }
 
             raise

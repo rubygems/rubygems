@@ -11,25 +11,24 @@ module Bundler
       @specs = specs
     end
 
-    def for(dependencies, check = false, match_current_platform = false)
-      handled = []
-      deps = dependencies.dup
+    def for(dependencies, check = false, platforms = [nil])
+      handled = ["bundler"].product(platforms)
+      deps = dependencies.map(&:name).product(platforms)
       specs = []
 
       loop do
         break unless dep = deps.shift
-        next if handled.any? {|d| d.name == dep.name && (match_current_platform || d.__platform == dep.__platform) } || dep.name == "bundler"
+        next if handled.include?(dep)
 
         handled << dep
 
-        specs_for_dep = spec_for_dependency(dep, match_current_platform)
+        specs_for_dep = spec_for_dependency(*dep)
         if specs_for_dep.any?
           specs.concat(specs_for_dep)
 
           specs_for_dep.first.dependencies.each do |d|
             next if d.type == :development
-            d = DepProxy.get_proxy(d, dep.__platform) unless match_current_platform
-            deps << d
+            deps << [d.name, dep[1]]
           end
         elsif check
           return false
@@ -67,7 +66,7 @@ module Bundler
     end
 
     def materialize(deps)
-      materialized = self.for(deps, false, true).uniq
+      materialized = self.for(deps, false).uniq
 
       materialized.map! do |s|
         next s unless s.is_a?(LazySpecification)
@@ -169,12 +168,12 @@ module Bundler
       @specs.sort_by(&:name).each {|s| yield s }
     end
 
-    def spec_for_dependency(dep, match_current_platform)
-      specs_for_platforms = lookup[dep.name]
-      if match_current_platform
+    def spec_for_dependency(name, platform)
+      specs_for_platforms = lookup[name]
+      if platform.nil?
         GemHelpers.select_best_platform_match(specs_for_platforms.select {|s| Gem::Platform.match_spec?(s) }, Bundler.local_platform)
       else
-        GemHelpers.select_best_platform_match(specs_for_platforms, dep.__platform)
+        GemHelpers.select_best_platform_match(specs_for_platforms, platform)
       end
     end
 

@@ -1,3 +1,14 @@
+# 2.3.13 (May 4, 2022)
+
+## Bug fixes:
+
+  - Fix missing required rubygems version when using old APIs [#5496](https://github.com/rubygems/rubygems/pull/5496)
+  - Fix crash when gem used twice in Gemfile under different platforms [#5187](https://github.com/rubygems/rubygems/pull/5187)
+
+## Performance:
+
+  - Speed up `bundler/setup` time [#5503](https://github.com/rubygems/rubygems/pull/5503)
+
 # 2.3.12 (April 20, 2022)
 
 ## Enhancements:

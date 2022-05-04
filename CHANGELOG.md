@@ -1,3 +1,18 @@
+# 3.3.13 / 2022-05-04
+
+## Enhancements:
+
+* Installs bundler 2.3.13 as a default gem.
+
+## Bug fixes:
+
+* Fix regression when resolving ruby constraints. Pull request #5486 by
+  deivid-rodriguez
+
+## Documentation:
+
+* Clarify description of owner-flags. Pull request #5497 by kronn
+
 # 3.3.12 / 2022-04-20
 
 ## Enhancements:

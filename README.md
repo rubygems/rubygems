@@ -1,5 +1,7 @@
 # RubyGems [![Maintainability](https://api.codeclimate.com/v1/badges/30f913e9c2dd932132c1/maintainability)](https://codeclimate.com/github/rubygems/rubygems/maintainability)
 
+This is a fork with a pull request.
+
 RubyGems is a package management framework for Ruby.
 
 A package (also known as a library) contains a set of functionality that can be invoked by a Ruby program, such as reading and parsing an XML file.

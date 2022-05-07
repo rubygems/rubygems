@@ -61,6 +61,10 @@
 
 # 2.3.7 (February 9, 2022)
 
+## Breaking changes:
+
+  - Change default scope of `bundle config` inside an application from global to local [#4152](https://github.com/rubygems/rubygems/pull/4152)
+
 ## Enhancements:
 
   - Don't activate `yaml` gem from Bundler [#5277](https://github.com/rubygems/rubygems/pull/5277)
@@ -69,7 +73,6 @@
 ## Bug fixes:
 
   - Don't silently persist `BUNDLE_WITH` and `BUNDLE_WITHOUT` envs locally [#5335](https://github.com/rubygems/rubygems/pull/5335)
-  - Fix `bundle config` inside an application saving configuration globally [#4152](https://github.com/rubygems/rubygems/pull/4152)
 
 # 2.3.6 (January 26, 2022)
 

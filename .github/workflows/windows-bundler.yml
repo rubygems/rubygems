@@ -16,7 +16,7 @@ jobs:
   windows_bundler:
     name: Bundler on Windows (${{ matrix.ruby.name }})
 
-    runs-on: windows-2019
+    runs-on: windows-2022
 
     env:
       RGV: ..
@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-java@v3.2.0
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 18.0.0
         if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install dependencies
         run: |

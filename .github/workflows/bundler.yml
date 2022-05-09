@@ -61,13 +61,13 @@ jobs:
       - name: Install graphviz (MacOS)
         run: brew install graphviz
         if: matrix.bundler.value == '' && matrix.os.name == 'MacOS'
+      - name: Prepare dependencies
+        run: |
+          bin/rake spec:parallel_deps
+        working-directory: ./bundler
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
-        working-directory: ./bundler
-      - name: Prepare dependencies
-        run: |
-          rake spec:parallel_deps
         working-directory: ./bundler
       - name: Run Test
         run: |

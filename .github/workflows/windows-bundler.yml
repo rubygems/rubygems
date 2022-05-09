@@ -16,7 +16,7 @@ jobs:
   windows_bundler:
     name: Bundler on Windows (${{ matrix.ruby.name }})
 
-    runs-on: windows-2019
+    runs-on: windows-2022
 
     env:
       RGV: ..

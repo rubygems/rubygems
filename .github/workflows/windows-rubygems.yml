@@ -62,4 +62,4 @@ jobs:
           rake test
         env:
           BUNDLE_WITHOUT: lint
-    timeout-minutes: 20
+    timeout-minutes: 25

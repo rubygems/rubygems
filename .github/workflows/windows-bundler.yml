@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-java@v3.2.0
         with:
           distribution: temurin
-          java-version: 18
+          java-version: 18.0.0
         if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install dependencies
         run: |

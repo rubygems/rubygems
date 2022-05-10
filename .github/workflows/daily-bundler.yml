@@ -3,6 +3,10 @@ name: daily-bundler
 on:
   pull_request:
 
+  push:
+    branches:
+      - fail_earlier_on_ruby_head
+
 jobs:
   daily_bundler:
     name: Bundler (ruby-head)

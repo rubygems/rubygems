@@ -11,6 +11,7 @@ on:
     branches:
       - master
       - 3.3
+      - fail_earlier_on_ruby_head
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

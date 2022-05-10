@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+  push:
+    branches:
+      - fail_earlier_on_ruby_head
+
 jobs:
   daily_rubygems:
     name: Rubygems (ruby-head)

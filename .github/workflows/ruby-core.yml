@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - fail_earlier_on_ruby_head
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

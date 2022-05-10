@@ -355,6 +355,26 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(out).to include("BUNDLE_GEMFILE is empty")
   end
 
+  it "uses already activated specs if they satisfy dependencies" do
+    script <<-RUBY
+      gemfile do
+        source "#{file_uri_for(gem_repo1)}"
+        gem "rack", "0.9.1"
+      end
+
+      gemfile(true) do
+        source "#{file_uri_for(gem_repo1)}"
+        gem "rack", "<= 1.0.0"
+      end
+
+      puts RACK
+    RUBY
+
+    expect(out).to include("Installing rack 1.0.0")
+    expect(out.lines.last).to eq("0.9.1")
+    expect(err).to be_empty
+  end
+
   it "does not error out if library requires optional dependencies" do
     Dir.mkdir tmp("path_without_gemfile")
 

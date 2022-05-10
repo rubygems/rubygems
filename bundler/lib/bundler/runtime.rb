@@ -9,13 +9,14 @@ module Bundler
       @definition = definition
     end
 
-    def setup(*groups)
+    def setup(*groups, allow_compatible_activated_specs: false)
       @definition.ensure_equivalent_gemfile_and_lockfile if Bundler.frozen_bundle?
 
       # Has to happen first
       clean_load_path
 
       specs = @definition.specs_for(groups)
+      specs = exclude_specs_with_compatible_activated_spec(specs) if allow_compatible_activated_specs
 
       SharedHelpers.set_bundle_environment
       Bundler.rubygems.replace_entrypoints(specs)
@@ -285,6 +286,18 @@ module Bundler
       end
 
       output
+    end
+
+    def exclude_specs_with_compatible_activated_spec(specs)
+      dependencies_by_name = (@definition.dependencies + specs.flat_map(&:dependencies)).group_by(&:name)
+
+      specs.reject do |spec|
+        next unless activated_spec = Bundler.rubygems.loaded_specs(spec.name)
+
+        dependencies_by_name[spec.name]&.all? do |dependency|
+          dependency.requirement.satisfied_by?(activated_spec.version)
+        end
+      end
     end
 
     def check_for_activated_spec!(spec)

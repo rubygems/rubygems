@@ -45,7 +45,7 @@ jobs:
         if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install dependencies
         run: |
-          rake spec:parallel_deps
+          bin/rake spec:parallel_deps
         working-directory: ./bundler
         shell: bash
       - name: Run specs

@@ -48,7 +48,7 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
   end
 
   def hash
-    @__hash ||= @set.hash ^ @name.hash ^ @version.hash ^ @platform.hash
+    @set.hash ^ @name.hash ^ @version.hash ^ @platform.hash
   end
 
   def fetch_development_dependencies # :nodoc:

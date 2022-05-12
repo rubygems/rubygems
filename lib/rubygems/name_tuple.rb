@@ -115,6 +115,6 @@ class Gem::NameTuple
   alias_method :eql?, :==
 
   def hash
-    @__hash ||= to_a.hash
+    to_a.hash
   end
 end

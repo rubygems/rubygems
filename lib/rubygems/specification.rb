@@ -1944,7 +1944,7 @@ class Gem::Specification < Gem::BasicSpecification
   # :startdoc:
 
   def hash # :nodoc:
-    @__hash ||= name.hash ^ version.hash
+    name.hash ^ version.hash
   end
 
   def init_with(coder) # :nodoc:

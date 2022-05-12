@@ -123,7 +123,7 @@ module Gem::Resolver::Molinillo
 
       # @return [Fixnum] a hash for the vertex based upon its {#name}
       def hash
-        @__hash ||= name.hash
+        name.hash
       end
 
       # Is there a path from `self` to `other` following edges in the

@@ -62,7 +62,7 @@ class Gem::Resolver::IndexSpecification < Gem::Resolver::Specification
   end
 
   def hash
-    @__hash ||= @name.hash ^ @version.hash ^ @platform.hash
+    @name.hash ^ @version.hash ^ @platform.hash
   end
 
   def inspect # :nodoc:

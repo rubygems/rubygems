@@ -39,7 +39,7 @@ class Gem::Resolver::ActivationRequest
   end
 
   def hash
-    @__hash ||= @spec.hash
+    @spec.hash
   end
 
   ##

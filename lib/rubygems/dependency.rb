@@ -68,7 +68,7 @@ class Gem::Dependency
   # and +requirement+.
 
   def hash # :nodoc:
-    @__hash ||= name.hash ^ type.hash ^ requirement.hash
+    name.hash ^ type.hash ^ requirement.hash
   end
 
   def inspect # :nodoc:

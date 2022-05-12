@@ -67,7 +67,7 @@ module Bundler
       end
 
       def hash
-        name.hash ^ version.hash ^ sorted_activated_platforms.hash ^ source.hash
+        @__hash ||= name.hash ^ version.hash ^ sorted_activated_platforms.hash ^ source.hash
       end
 
       protected

@@ -66,7 +66,7 @@ module Bundler
       end
 
       def hash
-        [self.class, expanded_path, version].hash
+        @__hash ||= [self.class, expanded_path, version].hash
       end
 
       def eql?(other)

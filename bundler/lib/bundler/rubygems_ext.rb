@@ -177,10 +177,12 @@ module Gem
     class Requirement
       module CorrectHashForLambdaOperator
         def hash
-          if requirements.any? {|r| r.first == "~>" }
-            requirements.map {|r| r.first == "~>" ? [r[0], r[1].to_s] : r }.sort.hash
-          else
-            super
+          @__hash ||= begin
+            if requirements.any? {|r| r.first == "~>" }
+              requirements.map {|r| r.first == "~>" ? [r[0], r[1].to_s] : r }.sort.hash
+            else
+              super
+            end
           end
         end
       end

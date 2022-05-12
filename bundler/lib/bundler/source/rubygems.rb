@@ -56,7 +56,7 @@ module Bundler
       end
 
       def hash
-        @remotes.hash
+        @__hash ||= @remotes.hash
       end
 
       def eql?(other)

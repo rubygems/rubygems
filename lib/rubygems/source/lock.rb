@@ -34,7 +34,7 @@ class Gem::Source::Lock < Gem::Source
   end
 
   def hash # :nodoc:
-    @wrapped.hash ^ 3
+    @__hash ||= @wrapped.hash ^ 3
   end
 
   ##

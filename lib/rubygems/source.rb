@@ -101,7 +101,7 @@ class Gem::Source
   end
 
   def hash # :nodoc:
-    @uri.hash
+    @__hash ||= @uri.hash
   end
 
   ##

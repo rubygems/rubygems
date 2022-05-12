@@ -35,7 +35,7 @@ module Bundler
     end
 
     def hash
-      identifier.hash
+      @__hash ||= identifier.hash
     end
 
     ##

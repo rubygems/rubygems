@@ -1379,7 +1379,7 @@ module Bundler::URI
     end
 
     def hash
-      self.component_ary.hash
+      @__hash ||= self.component_ary.hash
     end
 
     def eql?(oth)

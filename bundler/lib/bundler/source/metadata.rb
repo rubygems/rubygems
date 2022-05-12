@@ -52,7 +52,7 @@ module Bundler
       alias_method :eql?, :==
 
       def hash
-        self.class.hash
+        @__hash ||= self.class.hash
       end
 
       def version_message(spec)

@@ -47,7 +47,7 @@ module Bundler
       end
 
       def hash
-        [self.class, uri, ref, branch, name, version, glob, submodules].hash
+        @__hash ||= [self.class, uri, ref, branch, name, version, glob, submodules].hash
       end
 
       def eql?(other)

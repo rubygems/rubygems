@@ -221,7 +221,7 @@ module Bundler
         # docstring for `==` method, i.e. two methods equal by above comparison
         # should have same hash.
         def hash
-          [self.class, uri].hash
+          @__hash = [self.class, uri].hash
         end
 
         # A helper method, not necessary if not used internally.

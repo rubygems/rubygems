@@ -145,7 +145,7 @@ class Gem::Platform
   alias :eql? :==
 
   def hash # :nodoc:
-    to_a.hash
+    @__hash ||= to_a.hash
   end
 
   ##

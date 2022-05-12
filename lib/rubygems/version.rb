@@ -250,7 +250,7 @@ class Gem::Version
   end
 
   def hash # :nodoc:
-    canonical_segments.hash
+    @__hash ||= canonical_segments.hash
   end
 
   def init_with(coder) # :nodoc:

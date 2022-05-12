@@ -3,4 +3,8 @@
 
 require_relative "../spec/support/rubygems_ext"
 
-Spec::Rubygems.gem_load("rake", "rake")
+if ["dev:deps", "dev:frozen_deps", "spec:deps", "spec:parallel_deps"].include?(ARGV[0])
+  Spec::Rubygems.gem_load_and_possibly_install("rake", "rake")
+else
+  Spec::Rubygems.gem_load("rake", "rake")
+end

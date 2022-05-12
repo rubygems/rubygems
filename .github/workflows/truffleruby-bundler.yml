@@ -26,7 +26,7 @@ jobs:
           bundler: none
       - name: Prepare dependencies
         run: |
-          rake spec:parallel_deps
+          bin/rake spec:parallel_deps
         working-directory: ./bundler
       - name: Run Test
         run: |

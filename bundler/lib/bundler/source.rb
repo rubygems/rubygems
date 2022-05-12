@@ -19,6 +19,10 @@ module Bundler
       message = "#{spec.name} #{spec.version}"
       message += " (#{spec.platform})" if spec.platform != Gem::Platform::RUBY && !spec.platform.nil?
 
+      if Bundler.definition? && Bundler.definition.dependencies.select {|d| d.name == spec.name }.any?(&:force_version?)
+        message += " [version forced]"
+      end
+
       if Bundler.locked_gems
         locked_spec = Bundler.locked_gems.specs.find {|s| s.name == spec.name }
         locked_spec_version = locked_spec.version if locked_spec

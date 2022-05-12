@@ -16,7 +16,7 @@ module Bundler
     VALID_PLATFORMS = Bundler::Dependency::PLATFORM_MAP.keys.freeze
 
     VALID_KEYS = %w[group groups git path glob name branch ref tag require submodules
-                    platform platforms type source install_if gemfile].freeze
+                    platform platforms type source install_if gemfile force_version].freeze
 
     GITHUB_PULL_REQUEST_URL = %r{\Ahttps://github\.com/([A-Za-z0-9_\-\.]+/[A-Za-z0-9_\-\.]+)/pull/(\d+)\z}.freeze
 
@@ -361,6 +361,10 @@ module Bundler
       if opts.key?("source")
         source = normalize_source(opts["source"])
         opts["source"] = @sources.add_rubygems_source("remotes" => source)
+      end
+
+      if opts.key?("force_version") && (r = Gem::Requirement.new(version)) && !r.exact?
+        raise GemfileError, "Cannot use force_version for inexact version requirement `#{r}`"
       end
 
       git_name = (git_names & opts.keys).last

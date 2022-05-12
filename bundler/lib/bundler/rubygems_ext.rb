@@ -164,6 +164,10 @@ module Gem
       end
       out
     end
+
+    def force_version?
+      false
+    end
   end
 
   # comparison is done order independently since rubygems 3.2.0.rc.2

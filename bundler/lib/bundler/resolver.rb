@@ -45,6 +45,8 @@ module Bundler
       @gem_version_promoter.prerelease_specified = @prerelease_specified = {}
       requirements.each {|dep| @prerelease_specified[dep.name] ||= dep.prerelease? }
 
+      @forced_requirements = requirements.select(&:force_version?).map {|dep| [dep.name, dep] }.to_h
+
       verify_gemfile_dependencies_are_found!(requirements)
       dg = @resolver.resolve(requirements, @base_dg)
       dg.
@@ -101,7 +103,8 @@ module Bundler
     include Molinillo::SpecificationProvider
 
     def dependencies_for(specification)
-      specification.dependencies_for_activated_platforms
+      deps = specification.dependencies_for_activated_platforms
+      deps.map {|dep| @forced_requirements[dep.name] || dep }
     end
 
     def search_for(dependency_proxy)
@@ -202,6 +205,7 @@ module Bundler
     def sort_dependencies(dependencies, activated, conflicts)
       dependencies.sort_by do |dependency|
         name = name_for(dependency)
+        dependency.all_sources = relevant_sources_for_vertex(activated.vertex_named(name))
         vertex = activated.vertex_named(name)
         [
           @base_dg.vertex_named(name) ? 0 : 1,

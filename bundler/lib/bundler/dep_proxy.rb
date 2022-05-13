@@ -13,6 +13,9 @@ module Bundler
     def initialize(dep, platform)
       @dep = dep
       @__platform = platform
+
+      # save the name to save a method call to the dep's name
+      @name = dep.name
     end
 
     private_class_method :new
@@ -24,7 +27,7 @@ module Bundler
     end
 
     def name
-      @dep.name
+      @name
     end
 
     def requirement

@@ -11,16 +11,18 @@ module Bundler
       @specs = specs
     end
 
-    def for(dependencies, check = false, platforms = [nil])
-      handled = ["bundler"].product(platforms)
-      deps = dependencies.map(&:name).product(platforms)
+    def for(dependencies, check = false, match_current_platform = false)
+      # dep.name => [list, of, deps]
+      handled = ["bundler"].product(platforms).map {|k| [k, true] }.to_h
+      deps = dependencies.dup
       specs = []
 
       loop do
         break unless dep = deps.shift
-        next if handled.include?(dep)
+        next if handled.key?(dep)
 
-        handled << dep
+        # use a hash here to ensure constant lookup time in the `any?` call above
+        handled[dep] = true
 
         specs_for_dep = spec_for_dependency(*dep)
         if specs_for_dep.any?

@@ -35,7 +35,8 @@ module Bundler
     end
 
     def hash
-      identifier.hash
+      # memoize this to help performance when called repeatedly for hash operations
+      @hash ||= identifier.hash
     end
 
     ##

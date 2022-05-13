@@ -158,6 +158,68 @@ RSpec.describe "bundle update" do
     end
   end
 
+  describe "with a transitive dependency released in lockstep with its dependants" do
+    before do
+      build_repo4 do
+        build_gem "rails", "7.0.2.3" do |s|
+          s.add_dependency "actionview", "7.0.2.3"
+        end
+        build_gem "actionview", "7.0.2.3"
+
+        build_gem "rails", "7.0.2.4" do |s|
+          s.add_dependency "actionview", "7.0.2.4"
+        end
+        build_gem "actionview", "7.0.2.4"
+      end
+
+      gemfile <<~G
+        source "#{file_uri_for(gem_repo4)}"
+
+        gem "rails"
+      G
+
+      lockfile <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            actionview (7.0.2.3)
+            rails (7.0.2.3)
+              actionview (= 7.0.2.3)
+
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          rails
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+
+    it "works" do
+      bundle "update actionview"
+
+      expect(lockfile).to eq <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            actionview (7.0.2.4)
+            rails (7.0.2.4)
+              actionview (= 7.0.2.4)
+
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          rails
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+  end
+
   describe "with an unknown dependency" do
     before do
       build_repo2

@@ -731,6 +731,14 @@ module Bundler
         end
       end
 
+      extra_unlocks = specs.select do |s|
+        s.dependencies.any? do |dep|
+          @unlock[:gems].include?(dep.name) && dep.requirement.as_list == ["= #{s.version}"]
+        end
+      end.map(&:name)
+
+      @unlock[:gems] |= extra_unlocks
+
       SpecSet.new(filter_specs(converged, deps).reject{|s| @unlock[:gems].include?(s.name) })
     end
 

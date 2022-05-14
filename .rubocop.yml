@@ -73,6 +73,9 @@ Layout/LeadingEmptyLines:
 Layout/SpaceAroundOperators:
   Enabled: true
 
+Layout/SpaceBeforeBlockBraces:
+  Enabled: true
+
 Layout/SpaceInsideBlockBraces:
   Enabled: true
   SpaceBeforeBlockParameters: false

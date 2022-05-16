@@ -12,15 +12,15 @@ module Bundler
     end
 
     def for(dependencies, check = false, platforms = [nil])
-      handled = ["bundler"].product(platforms)
+      handled = ["bundler"].product(platforms).map {|k| [k, true] }.to_h
       deps = dependencies.product(platforms)
       specs = []
 
       loop do
         break unless dep = deps.shift
-        next if handled.include?(dep)
+        next if handled.key?(dep)
 
-        handled << dep
+        handled[dep] = true
 
         specs_for_dep = spec_for_dependency(*dep)
         if specs_for_dep.any?

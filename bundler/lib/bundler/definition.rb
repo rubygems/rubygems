@@ -469,7 +469,7 @@ module Bundler
 
     def reresolve
       last_resolve = converge_locked_specs
-      expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies)
+      expanded_dependencies = expand_dependencies(dependencies) + metadata_dependencies
       Resolver.resolve(expanded_dependencies, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
     end
 
@@ -755,8 +755,8 @@ module Bundler
     def metadata_dependencies
       @metadata_dependencies ||= begin
         [
-          Dependency.new("Ruby\0", RubyVersion.system.gem_version),
-          Dependency.new("RubyGems\0", Gem::VERSION),
+          DepProxy.get_proxy(Dependency.new("Ruby\0", RubyVersion.system.gem_version), local_platform),
+          DepProxy.get_proxy(Dependency.new("RubyGems\0", Gem::VERSION), local_platform),
         ]
       end
     end

@@ -469,7 +469,7 @@ module Bundler
 
     def reresolve
       last_resolve = converge_locked_specs
-      expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, true)
+      expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies)
       Resolver.resolve(expanded_dependencies, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
     end
 
@@ -761,14 +761,11 @@ module Bundler
       end
     end
 
-    def expand_dependencies(dependencies, remote = false)
-      deps = []
-      dependencies.each do |dep|
-        next unless remote || dep.current_platform?
-        target_platforms = dep.gem_platforms(remote ? @platforms : [generic_local_platform])
-        deps += expand_dependency_with_platforms(dep, target_platforms)
+    def expand_dependencies(dependencies)
+      dependencies.flat_map do |dep|
+        target_platforms = dep.gem_platforms(@platforms)
+        expand_dependency_with_platforms(dep, target_platforms)
       end
-      deps
     end
 
     def expand_dependency_with_platforms(dep, platforms)

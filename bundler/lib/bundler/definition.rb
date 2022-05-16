@@ -137,8 +137,7 @@ module Bundler
       if @unlock[:conservative]
         @unlock[:gems] ||= @dependencies.map(&:name)
       else
-        eager_unlock = expand_dependencies(@unlock[:gems] || [], true)
-        @unlock[:gems] = @locked_specs.for(eager_unlock, false, platforms).map(&:name)
+        @unlock[:gems] = @locked_specs.for(@unlock[:gems] || [], false, platforms).map(&:name)
       end
 
       @dependency_changes = converge_dependencies
@@ -188,7 +187,7 @@ module Bundler
     #
     # @return [Bundler::SpecSet]
     def specs
-      @specs ||= materialize(requested_dependencies)
+      @specs ||= materialize(requested_dependency_names)
     end
 
     def new_specs
@@ -200,7 +199,7 @@ module Bundler
     end
 
     def missing_specs
-      resolve.materialize(requested_dependencies).missing_specs
+      resolve.materialize(requested_dependency_names).missing_specs
     end
 
     def missing_specs?
@@ -237,16 +236,18 @@ module Bundler
 
     def specs_for(groups)
       return specs if groups.empty?
-      deps = dependencies_for(groups)
+      deps = dependency_names_for(groups)
       materialize(deps)
     end
 
+    def dependency_names_for(groups)
+      dependencies_for(groups.map(&:to_sym)).map(&:name)
+    end
+
     def dependencies_for(groups)
-      groups.map!(&:to_sym)
-      deps = current_dependencies.reject do |d|
+      current_dependencies.reject do |d|
         (d.groups & groups).empty?
       end
-      expand_dependencies(deps)
     end
 
     # Resolve all the dependencies specified in Gemfile. It ensures that
@@ -462,6 +463,10 @@ module Bundler
 
     private
 
+    def requested_dependency_names
+      requested_dependencies.map(&:name)
+    end
+
     def reresolve
       last_resolve = converge_locked_specs
       expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, true)
@@ -469,7 +474,7 @@ module Bundler
     end
 
     def filter_specs(specs, deps)
-      SpecSet.new(specs).for(expand_dependencies(deps, true), false, platforms)
+      SpecSet.new(specs).for(deps.map(&:name), false, platforms)
     end
 
     def materialize(dependencies)
@@ -722,7 +727,7 @@ module Bundler
             # if we won't need the source (according to the lockfile),
             # don't error if the path/git source isn't available
             next if specs.
-                    for(requested_dependencies, false).
+                    for(requested_dependency_names, false).
                     none? {|locked_spec| locked_spec.source == s.source }
 
             raise
@@ -737,7 +742,7 @@ module Bundler
           s.dependencies.replace(new_spec.dependencies)
         end
 
-        if dep.nil? && requested_dependencies.find {|d| s.name == d.name }
+        if dep.nil? && requested_dependency_names.include?(s.name)
           @unlock[:gems] << s.name
         else
           converged << s
@@ -759,7 +764,6 @@ module Bundler
     def expand_dependencies(dependencies, remote = false)
       deps = []
       dependencies.each do |dep|
-        dep = Dependency.new(dep, ">= 0") unless dep.respond_to?(:name)
         next unless remote || dep.current_platform?
         target_platforms = dep.gem_platforms(remote ? @platforms : [generic_local_platform])
         deps += expand_dependency_with_platforms(dep, target_platforms)

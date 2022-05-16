@@ -13,7 +13,7 @@ module Bundler
 
     def for(dependencies, check = false, platforms = [nil])
       handled = ["bundler"].product(platforms)
-      deps = dependencies.map(&:name).product(platforms)
+      deps = dependencies.product(platforms)
       specs = []
 
       loop do

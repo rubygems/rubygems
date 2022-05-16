@@ -144,7 +144,7 @@ module Bundler
       @dependency_changes = converge_dependencies
       @local_changes = converge_locals
 
-      @locked_specs_incomplete_for_platform = !@locked_specs.for(requested_dependencies & expand_dependencies(locked_dependencies), true)
+      @reresolve = nil
 
       @requires = compute_requires
     end
@@ -263,10 +263,8 @@ module Bundler
           Bundler.ui.debug("Found no changes, using resolution from the lockfile")
           SpecSet.new(filter_specs(@locked_specs, @dependencies.select {|dep| @locked_specs[dep].any? }))
         else
-          last_resolve = converge_locked_specs
           Bundler.ui.debug("Found changes from the lockfile, re-resolving dependencies because #{change_reason}")
-          expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, true)
-          Resolver.resolve(expanded_dependencies, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
+          @reresolve = reresolve
         end
       end
     end
@@ -455,7 +453,7 @@ module Bundler
     private :sources
 
     def nothing_changed?
-      !@source_changes && !@dependency_changes && !@new_platform && !@path_changes && !@local_changes && !@locked_specs_incomplete_for_platform
+      !@source_changes && !@dependency_changes && !@new_platform && !@path_changes && !@local_changes
     end
 
     def unlocking?
@@ -463,6 +461,12 @@ module Bundler
     end
 
     private
+
+    def reresolve
+      last_resolve = converge_locked_specs
+      expanded_dependencies = expand_dependencies(dependencies + metadata_dependencies, true)
+      Resolver.resolve(expanded_dependencies, source_requirements, last_resolve, gem_version_promoter, additional_base_requirements_for_resolve, platforms)
+    end
 
     def filter_specs(specs, deps)
       SpecSet.new(specs).for(expand_dependencies(deps, true), false, platforms)
@@ -483,6 +487,17 @@ module Bundler
         end
 
         raise GemNotFound, "Could not find #{missing_specs.map(&:full_name).join(", ")} in any of the sources"
+      end
+
+      if @reresolve.nil?
+        incomplete_specs = specs.incomplete_specs
+
+        if incomplete_specs.any?
+          Bundler.ui.debug("The lockfile does not have all gems needed for the current platform though, Bundler will still re-resolve dependencies")
+          @unlock[:gems].concat(incomplete_specs.map(&:name))
+          @resolve = reresolve
+          specs = resolve.materialize(dependencies)
+        end
       end
 
       unless specs["bundler"].any?
@@ -532,7 +547,6 @@ module Bundler
         [@new_platform, "you added a new platform to your gemfile"],
         [@path_changes, "the gemspecs for path gems changed"],
         [@local_changes, "the gemspecs for git local gems changed"],
-        [@locked_specs_incomplete_for_platform, "the lockfile does not have all gems needed for the current platform"],
       ].select(&:first).map(&:last).join(", ")
     end
 

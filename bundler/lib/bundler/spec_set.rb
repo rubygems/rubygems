@@ -31,7 +31,7 @@ module Bundler
             deps << [d.name, dep[1]]
           end
         elsif check
-          return false
+          specs << IncompleteSpecification.new(*dep)
         end
       end
 
@@ -39,7 +39,7 @@ module Bundler
         specs << spec
       end
 
-      check ? true : specs
+      specs
     end
 
     def [](key)
@@ -66,7 +66,7 @@ module Bundler
     end
 
     def materialize(deps)
-      materialized = self.for(deps, false).uniq
+      materialized = self.for(deps, true).uniq
 
       materialized.map! do |s|
         next s unless s.is_a?(LazySpecification)
@@ -92,6 +92,10 @@ module Bundler
 
     def missing_specs
       @specs.select {|s| s.is_a?(LazySpecification) }
+    end
+
+    def incomplete_specs
+      @specs.select {|s| s.is_a?(IncompleteSpecification) }
     end
 
     def merge(set)

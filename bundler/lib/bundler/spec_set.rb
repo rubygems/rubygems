@@ -40,8 +40,6 @@ module Bundler
         specs << spec
       end
 
-      specs.uniq! unless match_current_platform
-
       check ? true : specs
     end
 
@@ -69,7 +67,7 @@ module Bundler
     end
 
     def materialize(deps)
-      materialized = self.for(deps, false, true)
+      materialized = self.for(deps, false, true).uniq
 
       materialized.map! do |s|
         next s unless s.is_a?(LazySpecification)

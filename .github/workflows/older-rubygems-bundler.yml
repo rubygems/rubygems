@@ -11,6 +11,7 @@ on:
     branches:
       - master
       - 3.3
+      - more_speedups
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

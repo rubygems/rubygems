@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - more_speedups
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

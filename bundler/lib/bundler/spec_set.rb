@@ -160,7 +160,7 @@ module Bundler
     def lookup
       @lookup ||= begin
         lookup = {}
-        Index.sort_specs(@specs).reverse_each do |s|
+        @specs.each do |s|
           lookup[s.name] ||= []
           lookup[s.name] << s
         end

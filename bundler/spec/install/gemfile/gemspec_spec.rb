@@ -168,7 +168,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     expect(out.scan(message).size).to eq(1)
   end
 
-  it "should match a lockfile on non-ruby platforms with a transitive platform dependency", :jruby do
+  it "should match a lockfile on non-ruby platforms with a transitive platform dependency", :jruby_only do
     build_lib("foo", :path => tmp.join("foo")) do |s|
       s.add_dependency "platform_specific"
     end
@@ -361,7 +361,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       L
     end
 
-    context "using JRuby with explicit platform", :jruby do
+    context "using JRuby with explicit platform", :jruby_only do
       before do
         create_file(
           tmp.join("foo", "foo-java.gemspec"),
@@ -380,15 +380,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       end
     end
 
-    context "using JRuby", :jruby do
-      it "should install" do
-        results = bundle "install", :artifice => "endpoint"
-        expect(results).to include("Installing rack 1.0.0")
-        expect(the_bundle).to include_gems "rack 1.0.0"
-      end
-    end
-
-    it "should install" do
+    it "should install", :jruby do
       results = bundle "install", :artifice => "endpoint"
       expect(results).to include("Installing rack 1.0.0")
       expect(the_bundle).to include_gems "rack 1.0.0"

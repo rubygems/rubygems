@@ -301,7 +301,7 @@ G
       expect(bundled_app_lock).to exist
     end
 
-    it "installs fine with any engine", :jruby do
+    it "installs fine with any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
@@ -347,7 +347,7 @@ G
       should_be_engine_incorrect
     end
 
-    it "doesn't install when engine version doesn't match", :jruby do
+    it "doesn't install when engine version doesn't match", :jruby_only do
       install_gemfile <<-G, :raise_on_error => false
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
@@ -390,7 +390,7 @@ G
       expect(out).to match(/\AResolving dependencies\.\.\.\.*\nThe Gemfile's dependencies are satisfied\z/)
     end
 
-    it "checks fine with any engine", :jruby do
+    it "checks fine with any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
@@ -441,7 +441,7 @@ G
       should_be_engine_incorrect
     end
 
-    it "fails when engine version doesn't match", :jruby do
+    it "fails when engine version doesn't match", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
@@ -507,7 +507,7 @@ G
       expect(the_bundle).to include_gems "rack 1.2", "rack-obama 1.0", "activesupport 3.0"
     end
 
-    it "updates fine with any engine", :jruby do
+    it "updates fine with any engine", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
@@ -543,7 +543,7 @@ G
       should_be_ruby_version_incorrect
     end
 
-    it "fails when ruby engine doesn't match", :jruby do
+    it "fails when ruby engine doesn't match", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
@@ -559,7 +559,7 @@ G
       should_be_engine_incorrect
     end
 
-    it "fails when ruby engine version doesn't match", :jruby do
+    it "fails when ruby engine version doesn't match", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
@@ -611,7 +611,7 @@ G
       expect(out).to eq(default_bundle_path("gems", "rails-2.3.2").to_s)
     end
 
-    it "prints path if ruby version is correct for any engine", :jruby do
+    it "prints path if ruby version is correct for any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rails"
@@ -647,7 +647,7 @@ G
       should_be_engine_incorrect
     end
 
-    it "fails if engine version doesn't match", :bundler => "< 3", :jruby => true do
+    it "fails if engine version doesn't match", :bundler => "< 3", :jruby_only => true do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rails"
@@ -695,7 +695,7 @@ G
       expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
     end
 
-    it "copies the .gem file to vendor/cache when ruby version matches for any engine", :jruby do
+    it "copies the .gem file to vendor/cache when ruby version matches for any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem 'rack'
@@ -731,7 +731,7 @@ G
       should_be_engine_incorrect
     end
 
-    it "fails if the engine version doesn't match", :jruby do
+    it "fails if the engine version doesn't match", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem 'rack'
@@ -776,7 +776,7 @@ G
       expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
     end
 
-    it "copies the .gem file to vendor/cache when ruby version matches any engine", :jruby do
+    it "copies the .gem file to vendor/cache when ruby version matches any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem 'rack'
@@ -812,7 +812,7 @@ G
       should_be_engine_incorrect
     end
 
-    it "fails if the engine version doesn't match", :jruby do
+    it "fails if the engine version doesn't match", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem 'rack'
@@ -855,7 +855,7 @@ G
       expect(out).to include("0.9.1")
     end
 
-    it "activates the correct gem when ruby version matches any engine", :jruby do
+    it "activates the correct gem when ruby version matches any engine", :jruby_only do
       system_gems "rack-1.0.0", "rack-0.9.1", :path => default_bundle_path
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -892,7 +892,7 @@ G
       should_be_engine_incorrect
     end
 
-    # it "fails when the engine version doesn't match", :jruby do
+    # it "fails when the engine version doesn't match", :jruby_only do
     #   gemfile <<-G
     #     gem "rack", "0.9.1"
     #
@@ -943,7 +943,7 @@ G
       expect(out).to include("0.9.1")
     end
 
-    it "starts IRB with the default group loaded when ruby version matches", :readline, :jruby do
+    it "starts IRB with the default group loaded when ruby version matches", :readline, :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
@@ -988,7 +988,7 @@ G
       should_be_engine_incorrect
     end
 
-    it "fails when engine version doesn't match", :jruby do
+    it "fails when engine version doesn't match", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
@@ -1043,7 +1043,7 @@ G
       expect(bundled_app_lock).to exist
     end
 
-    it "makes a Gemfile.lock if setup succeeds for any engine", :jruby do
+    it "makes a Gemfile.lock if setup succeeds for any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
@@ -1092,7 +1092,7 @@ G
       should_be_engine_incorrect
     end
 
-    it "fails when engine version doesn't match", :jruby do
+    it "fails when engine version doesn't match", :jruby_only do
       install_gemfile <<-G, :raise_on_error => false
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
@@ -1165,7 +1165,7 @@ G
       expect(out).to match(Regexp.new(expected_output))
     end
 
-    it "returns list of outdated gems when the ruby version matches for any engine", :jruby do
+    it "returns list of outdated gems when the ruby version matches for any engine", :jruby_only do
       bundle :install
       update_repo2 do
         build_gem "activesupport", "3.0"
@@ -1227,7 +1227,7 @@ G
       should_be_engine_incorrect
     end
 
-    it "fails when the engine version doesn't match", :jruby do
+    it "fails when the engine version doesn't match", :jruby_only do
       update_repo2 do
         build_gem "activesupport", "3.0"
         update_git "foo", :path => lib_path("foo")
@@ -1245,7 +1245,7 @@ G
       should_be_engine_version_incorrect
     end
 
-    it "fails when the patchlevel doesn't match", :jruby do
+    it "fails when the patchlevel doesn't match", :jruby_only do
       update_repo2 do
         build_gem "activesupport", "3.0"
         update_git "foo", :path => lib_path("foo")
@@ -1263,7 +1263,7 @@ G
       should_be_patchlevel_incorrect
     end
 
-    it "fails when the patchlevel is a fixnum", :jruby do
+    it "fails when the patchlevel is a fixnum", :jruby_only do
       update_repo2 do
         build_gem "activesupport", "3.0"
         update_git "foo", :path => lib_path("foo")

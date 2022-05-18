@@ -50,7 +50,7 @@ RSpec.describe "bundle install across platforms" do
     expect(the_bundle).to include_gems "platform_specific 1.0 JAVA"
   end
 
-  it "pulls the pure ruby version on jruby if the java platform is not present in the lockfile and bundler is run in frozen mode", :jruby do
+  it "pulls the pure ruby version on jruby if the java platform is not present in the lockfile and bundler is run in frozen mode", :jruby_only do
     lockfile <<-G
       GEM
         remote: #{file_uri_for(gem_repo1)}

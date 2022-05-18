@@ -16,7 +16,7 @@ jobs:
   windows_bundler:
     name: Bundler on Windows (${{ matrix.ruby.name }})
 
-    runs-on: windows-2019
+    runs-on: windows-2022
 
     env:
       RGV: ..
@@ -38,14 +38,14 @@ jobs:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@v3.2.0
+        uses: actions/setup-java@v3.3.0
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 18.0.0
         if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install dependencies
         run: |
-          rake spec:parallel_deps
+          bin/rake spec:parallel_deps
         working-directory: ./bundler
         shell: bash
       - name: Run specs

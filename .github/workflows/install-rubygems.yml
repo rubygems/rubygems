@@ -83,7 +83,7 @@ jobs:
 
   install_rubygems_windows:
     name: Install Rubygems on Windows (${{ matrix.ruby.name }})
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
@@ -97,6 +97,12 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - name: Setup java
+        uses: actions/setup-java@v3.3.0
+        with:
+          distribution: temurin
+          java-version: 18.0.0
+        if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install rubygems
         run: ruby setup.rb
         shell: bash

@@ -1,3 +1,19 @@
+# 2.3.14 (May 18, 2022)
+
+## Bug fixes:
+
+  - Fix confusing inline mode install output [#5530](https://github.com/rubygems/rubygems/pull/5530)
+  - Fix error message when locked version of a gem does not support running Ruby [#5525](https://github.com/rubygems/rubygems/pull/5525)
+
+## Performance:
+
+  - Improve `bundler/setup` performance again by not deduplicating intermediate results [#5533](https://github.com/rubygems/rubygems/pull/5533)
+
+## Documentation:
+
+  - Fix typo in documentation [#5514](https://github.com/rubygems/rubygems/pull/5514)
+  - Update man page for `require` option in `bundle add` command [#5513](https://github.com/rubygems/rubygems/pull/5513)
+
 # 2.3.13 (May 4, 2022)
 
 ## Bug fixes:

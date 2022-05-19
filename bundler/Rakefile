@@ -55,8 +55,11 @@ namespace :spec do
 
   desc "Run the spec suite with the sudo tests"
   task :sudo, [:specs] => [] do |_t, opts|
+    require_relative "spec/support/sudo"
+    Spec::Sudo.write_safe_config
+
     begin
-      sh("sudo PATH=#{ENV["PATH"]} RUBYOPT=#{ENV["RUBYOPT"]} bin/rspec --tag sudo #{opts[:specs]}")
+      sh("sudo GIT_CONFIG_GLOBAL=#{Spec::Path.tmp("gitconfig")} PATH=#{ENV["PATH"]} RUBYOPT=#{ENV["RUBYOPT"]} bin/rspec --tag sudo #{opts[:specs]}")
     ensure
       system("sudo", "chown", "-R", ENV["USER"], "tmp")
     end

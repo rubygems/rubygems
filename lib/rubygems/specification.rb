@@ -157,7 +157,7 @@ class Gem::Specification < Gem::BasicSpecification
   }.freeze
 
   # rubocop:disable Style/MutableConstant
-  INITIALIZE_CODE_FOR_DEFAULTS = { } # :nodoc:
+  INITIALIZE_CODE_FOR_DEFAULTS = {} # :nodoc:
   # rubocop:enable Style/MutableConstant
 
   @@default_value.each do |k,v|

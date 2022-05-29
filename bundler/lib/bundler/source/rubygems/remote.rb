@@ -16,6 +16,9 @@ module Bundler
           @anonymized_uri = remove_auth(@uri).freeze
         end
 
+        MAX_CACHE_SLUG_SIZE = 255
+        private_constant :MAX_CACHE_SLUG_SIZE
+
         # @return [String] A slug suitable for use as a cache key for this
         #         remote.
         #
@@ -30,8 +33,11 @@ module Bundler
             uri_parts = [host, cache_uri.user, cache_uri.port, cache_uri.path]
             uri_digest = SharedHelpers.digest(:MD5).hexdigest(uri_parts.compact.join("."))
 
-            uri_parts[-1] = uri_digest
-            uri_parts.compact.join(".")
+            uri_parts_max = MAX_CACHE_SLUG_SIZE - uri_digest.size - 1
+            shortened_uri_parts = uri_parts[0..-2].compact.join(".")[0..uri_parts_max - 1]
+            return uri_digest if shortened_uri_parts.empty?
+
+            [shortened_uri_parts, uri_digest].join(".")
           end
         end
 

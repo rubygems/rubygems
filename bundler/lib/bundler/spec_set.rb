@@ -11,10 +11,10 @@ module Bundler
       @specs = specs
     end
 
-    def for(dependencies, check = false, match_current_platform = false)
+    def for(dependencies, check = false, platforms = [nil])
       # dep.name => [list, of, deps]
       handled = ["bundler"].product(platforms).map {|k| [k, true] }.to_h
-      deps = dependencies.dup
+      deps = dependencies.map(&:name).product(platforms)
       specs = []
 
       loop do

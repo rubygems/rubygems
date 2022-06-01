@@ -1,3 +1,18 @@
+# 3.3.15 / 2022-06-01
+
+## Enhancements:
+
+* Support the change of did_you_mean about `Exception#detailed_message`.
+  Pull request #5560 by mame
+* Installs bundler 2.3.15 as a default gem.
+
+## Bug fixes:
+
+* Fix loading old marshaled specs including `YAML::PrivateType` constant.
+  Pull request #5415 by deivid-rodriguez
+* Fix rubygems update when non default `--install-dir` is configured. Pull
+  request #5566 by deivid-rodriguez
+
 # 3.3.14 / 2022-05-18
 
 ## Enhancements:

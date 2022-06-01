@@ -1,3 +1,22 @@
+# 2.3.15 (June 1, 2022)
+
+## Enhancements:
+
+  - Show better error when previous installation fails to be removed [#5564](https://github.com/rubygems/rubygems/pull/5564)
+  - Show exception cause in bug report template [#5563](https://github.com/rubygems/rubygems/pull/5563)
+
+## Bug fixes:
+
+  - Fix `bundle remove` by invalidating cached `Bundle.definition` [#5443](https://github.com/rubygems/rubygems/pull/5443)
+  - Fix generated standalone script when it includes default gems [#5586](https://github.com/rubygems/rubygems/pull/5586)
+  - Skip duplicated dependency warning for gemspec dev deps [#5587](https://github.com/rubygems/rubygems/pull/5587)
+  - Give better conflict resolution advice [#5581](https://github.com/rubygems/rubygems/pull/5581)
+  - Fix crash when commenting out a mirror in configuration [#5576](https://github.com/rubygems/rubygems/pull/5576)
+  - Fix crash when installing gems with symlinks [#5570](https://github.com/rubygems/rubygems/pull/5570)
+  - Ignore `Errno::EROFS` errors when creating `bundler.lock` [#5580](https://github.com/rubygems/rubygems/pull/5580)
+  - Ignore `Errno::EPERM` errors when creating `bundler.lock` [#5579](https://github.com/rubygems/rubygems/pull/5579)
+  - Fix crash when printing resolution conflicts on metadata requirements [#5562](https://github.com/rubygems/rubygems/pull/5562)
+
 # 2.3.14 (May 18, 2022)
 
 ## Bug fixes:

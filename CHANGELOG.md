@@ -1,3 +1,56 @@
+# 3.3.15 / 2022-06-01
+
+## Enhancements:
+
+* Support the change of did_you_mean about `Exception#detailed_message`.
+  Pull request #5560 by mame
+* Installs bundler 2.3.15 as a default gem.
+
+## Bug fixes:
+
+* Fix loading old marshaled specs including `YAML::PrivateType` constant.
+  Pull request #5415 by deivid-rodriguez
+* Fix rubygems update when non default `--install-dir` is configured. Pull
+  request #5566 by deivid-rodriguez
+
+# 3.3.14 / 2022-05-18
+
+## Enhancements:
+
+* Installs bundler 2.3.14 as a default gem.
+
+# 3.3.13 / 2022-05-04
+
+## Enhancements:
+
+* Installs bundler 2.3.13 as a default gem.
+
+## Bug fixes:
+
+* Fix regression when resolving ruby constraints. Pull request #5486 by
+  deivid-rodriguez
+
+## Documentation:
+
+* Clarify description of owner-flags. Pull request #5497 by kronn
+
+# 3.3.12 / 2022-04-20
+
+## Enhancements:
+
+* Less error swallowing when installing gems. Pull request #5475 by
+  deivid-rodriguez
+* Stop considering `RUBY_PATCHLEVEL` for resolution. Pull request #5472 by
+  deivid-rodriguez
+* Bump vendored optparse to latest master. Pull request #5466 by
+  deivid-rodriguez
+* Installs bundler 2.3.12 as a default gem.
+
+## Documentation:
+
+* Fix formatting in docs. Pull request #5470 by peterzhu2118
+* Fix a typo. Pull request #5401 by znz
+
 # 3.3.11 / 2022-04-07
 
 ## Enhancements:

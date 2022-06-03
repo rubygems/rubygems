@@ -1,3 +1,57 @@
+# 2.3.15 (June 1, 2022)
+
+## Enhancements:
+
+  - Show better error when previous installation fails to be removed [#5564](https://github.com/rubygems/rubygems/pull/5564)
+  - Show exception cause in bug report template [#5563](https://github.com/rubygems/rubygems/pull/5563)
+
+## Bug fixes:
+
+  - Fix `bundle remove` by invalidating cached `Bundle.definition` [#5443](https://github.com/rubygems/rubygems/pull/5443)
+  - Fix generated standalone script when it includes default gems [#5586](https://github.com/rubygems/rubygems/pull/5586)
+  - Skip duplicated dependency warning for gemspec dev deps [#5587](https://github.com/rubygems/rubygems/pull/5587)
+  - Give better conflict resolution advice [#5581](https://github.com/rubygems/rubygems/pull/5581)
+  - Fix crash when commenting out a mirror in configuration [#5576](https://github.com/rubygems/rubygems/pull/5576)
+  - Fix crash when installing gems with symlinks [#5570](https://github.com/rubygems/rubygems/pull/5570)
+  - Ignore `Errno::EROFS` errors when creating `bundler.lock` [#5580](https://github.com/rubygems/rubygems/pull/5580)
+  - Ignore `Errno::EPERM` errors when creating `bundler.lock` [#5579](https://github.com/rubygems/rubygems/pull/5579)
+  - Fix crash when printing resolution conflicts on metadata requirements [#5562](https://github.com/rubygems/rubygems/pull/5562)
+
+# 2.3.14 (May 18, 2022)
+
+## Bug fixes:
+
+  - Fix confusing inline mode install output [#5530](https://github.com/rubygems/rubygems/pull/5530)
+  - Fix error message when locked version of a gem does not support running Ruby [#5525](https://github.com/rubygems/rubygems/pull/5525)
+
+## Performance:
+
+  - Improve `bundler/setup` performance again by not deduplicating intermediate results [#5533](https://github.com/rubygems/rubygems/pull/5533)
+
+## Documentation:
+
+  - Fix typo in documentation [#5514](https://github.com/rubygems/rubygems/pull/5514)
+  - Update man page for `require` option in `bundle add` command [#5513](https://github.com/rubygems/rubygems/pull/5513)
+
+# 2.3.13 (May 4, 2022)
+
+## Bug fixes:
+
+  - Fix missing required rubygems version when using old APIs [#5496](https://github.com/rubygems/rubygems/pull/5496)
+  - Fix crash when gem used twice in Gemfile under different platforms [#5187](https://github.com/rubygems/rubygems/pull/5187)
+
+## Performance:
+
+  - Speed up `bundler/setup` time [#5503](https://github.com/rubygems/rubygems/pull/5503)
+
+# 2.3.12 (April 20, 2022)
+
+## Enhancements:
+
+  - Improve Ruby version resolution conflicts [#5474](https://github.com/rubygems/rubygems/pull/5474)
+  - Stop considering `RUBY_PATCHLEVEL` for resolution [#5472](https://github.com/rubygems/rubygems/pull/5472)
+  - Add modern rubies as valid platform values in Gemfile DSL [#5469](https://github.com/rubygems/rubygems/pull/5469)
+
 # 2.3.11 (April 7, 2022)
 
 ## Enhancements:

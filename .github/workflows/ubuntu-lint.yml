@@ -16,12 +16,14 @@ jobs:
   ubuntu_lint:
     name: Lint
     runs-on: ubuntu-20.04
+    env:
+      RUBYOPT: -Ilib
     steps:
       - uses: actions/checkout@v3
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.3
+          ruby-version: 3.0.4
           bundler: none
       - name: Install Dependencies
         run: rake setup
@@ -30,7 +32,7 @@ jobs:
       - name: Generate docs
         run: rake docs
       - name: Install & Check Dependencies
-        run: rake dev:frozen_deps
+        run: bin/rake dev:frozen_deps
         working-directory: ./bundler
       - name: Misc checks
         run: bin/rake check_rvm_integration man:check check_rubygems_integration

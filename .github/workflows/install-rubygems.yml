@@ -23,12 +23,12 @@ jobs:
           - { name: "2.3", value: 2.3.8 }
           - { name: "2.4", value: 2.4.10 }
           - { name: "2.5", value: 2.5.9 }
-          - { name: "2.6", value: 2.6.9 }
-          - { name: "2.7", value: 2.7.5 }
-          - { name: "3.0", value: 3.0.3 }
-          - { name: "3.1", value: 3.1.1 }
+          - { name: "2.6", value: 2.6.10 }
+          - { name: "2.7", value: 2.7.6 }
+          - { name: "3.0", value: 3.0.4 }
+          - { name: "3.1", value: 3.1.2 }
           - { name: jruby-9.3, value: jruby-9.3.4.0 }
-          - { name: truffleruby-21, value: truffleruby-21.2.0 }
+          - { name: truffleruby-21, value: truffleruby-21.3.0 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }
@@ -83,12 +83,12 @@ jobs:
 
   install_rubygems_windows:
     name: Install Rubygems on Windows (${{ matrix.ruby.name }})
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.1", value: 3.1.1 }
+          - { name: "3.1", value: 3.1.2 }
           - { name: jruby-9.3, value: jruby-9.3.4.0 }
     steps:
       - uses: actions/checkout@v3
@@ -97,6 +97,12 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - name: Setup java
+        uses: actions/setup-java@v3.3.0
+        with:
+          distribution: temurin
+          java-version: 18.0.0
+        if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install rubygems
         run: ruby setup.rb
         shell: bash

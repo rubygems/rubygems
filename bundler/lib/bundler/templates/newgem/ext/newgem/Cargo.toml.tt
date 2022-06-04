@@ -1,0 +1,17 @@
+[package]
+name = <%= config[:name].inspect %>
+version = "0.1.0"
+edition = "2021"
+authors = ["<%= config[:author] %> <<%= config[:email] %>>"]
+<%- if config[:mit] -%>
+license = "MIT"
+<%- end -%>
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+rb-sys = "0.9"
+rb-allocator = "0.9"
+magnus = { version = "0.3", features = ["rb-sys-interop"] }

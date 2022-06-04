@@ -35,6 +35,9 @@ Gem::Specification.new do |spec|
 <%- if config[:ext] -%>
   spec.extensions = ["ext/<%= config[:underscored_name] %>/extconf.rb"]
 <%- end -%>
+<%- if config[:rust] -%>
+  spec.extensions = ["ext/<%= config[:underscored_name] %>/Cargo.toml"]
+<%- end -%>
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"

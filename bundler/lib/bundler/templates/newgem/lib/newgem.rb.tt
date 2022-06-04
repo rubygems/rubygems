@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "<%= File.basename(config[:namespaced_path]) %>/version"
-<%- if config[:ext] -%>
+<%- if config[:ext] || config[:rust] -%>
 require_relative "<%= File.basename(config[:namespaced_path]) %>/<%= config[:underscored_name] %>"
 <%- end -%>
 

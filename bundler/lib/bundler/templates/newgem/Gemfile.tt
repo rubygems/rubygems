@@ -6,9 +6,12 @@ source "https://rubygems.org"
 gemspec
 
 gem "rake", "~> 13.0"
-<%- if config[:ext] -%>
+<%- if config[:ext] || config[:rust] -%>
 
 gem "rake-compiler"
+<%- end -%>
+<%- if config[:rust] -%>
+gem "rb_sys"
 <%- end -%>
 <%- if config[:test] -%>
 

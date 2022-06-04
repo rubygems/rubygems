@@ -65,6 +65,7 @@ module Bundler
         :email            => git_user_email.empty? ? "TODO: Write your email address" : git_user_email,
         :test             => options[:test],
         :ext              => options[:ext],
+        :rust             => options[:rust],
         :exe              => options[:exe],
         :bundler_version  => bundler_dependency_version,
         :git              => use_git,
@@ -193,6 +194,15 @@ module Bundler
           "ext/newgem/extconf.rb.tt" => "ext/#{name}/extconf.rb",
           "ext/newgem/newgem.h.tt" => "ext/#{name}/#{underscored_name}.h",
           "ext/newgem/newgem.c.tt" => "ext/#{name}/#{underscored_name}.c"
+        )
+      end
+
+      if options[:rust]
+        templates.merge!(
+          "ext/newgem/extconf.rb.tt" => "ext/#{name}/extconf.rb",
+          "ext/newgem/Cargo.toml.tt" => "ext/#{name}/Cargo.toml",
+          "ext/newgem/src/lib.rs.tt" => "ext/#{name}/src/lib.rs",
+          "Cargo.toml.tt" => "Cargo.toml",
         )
       end
 

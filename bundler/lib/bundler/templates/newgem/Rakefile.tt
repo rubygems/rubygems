@@ -38,8 +38,9 @@ RuboCop::RakeTask.new
 require "standard/rake"
 
 <% end -%>
-<% if config[:ext] -%>
-<% default_task_names.unshift(:clobber, :compile) -%>
+<% if config[:ext] || config[:rust] -%>
+<% default_task_names.unshift(:compile) -%>
+<% default_task_names.unshift(:clobber) unless config[:rust] -%>
 require "rake/extensiontask"
 
 task build: :compile

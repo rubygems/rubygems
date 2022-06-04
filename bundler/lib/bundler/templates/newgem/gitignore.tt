@@ -6,12 +6,15 @@
 /pkg/
 /spec/reports/
 /tmp/
-<%- if config[:ext] -%>
+<%- if config[:ext] || config[:rust] -%>
 *.bundle
 *.so
 *.o
 *.a
 mkmf.log
+<%- end -%>
+<%- if config[:rust] -%>
+target/
 <%- end -%>
 <%- if config[:test] == "rspec" -%>
 

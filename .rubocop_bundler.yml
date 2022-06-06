@@ -37,6 +37,8 @@ Gemspec/OrderedDependencies:
 
 Gemspec/RequiredRubyVersion:
   Enabled: true
+  Exclude:
+    - bundler/spec/realworld/fixtures/warbler/demo/demo.gemspec
 
 # Lint
 
@@ -80,9 +82,6 @@ Lint/EmptyExpression:
   Enabled: true
 
 Lint/EmptyInterpolation:
-  Enabled: true
-
-Lint/EndInMethod:
   Enabled: true
 
 Lint/EnsureReturn:
@@ -207,7 +206,7 @@ Lint/UriRegexp:
 Lint/UselessAccessModifier:
   Enabled: true
 
-Lint/UselessComparison:
+Lint/BinaryOperatorWithIdenticalOperands:
   Enabled: true
 
 Lint/UselessSetterCall:
@@ -398,7 +397,7 @@ Layout/SpaceInsideReferenceBrackets:
 Layout/SpaceInsideStringInterpolation:
   Enabled: true
 
-Layout/Tab:
+Layout/IndentationStyle:
   Enabled: true
 
 Layout/TrailingEmptyLines:

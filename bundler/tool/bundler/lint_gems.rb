@@ -2,5 +2,5 @@
 
 source "https://rubygems.org"
 
-gem "rubocop", "~> 0.80.1"
+gem "rubocop", "~> 1.30"
 gem "rubocop-performance", "~> 1.5.2"

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative 'helper'
 require 'rubygems/ext'
 
@@ -7,12 +8,9 @@ class TestGemExtCargoBuilder < Gem::TestCase
     super
 
     @rust_envs = {
-      'CARGO_HOME' => File.join(@orig_env['HOME'], '.cargo'),
-      'RUSTUP_HOME' => File.join(@orig_env['HOME'], '.rustup'),
+      'CARGO_HOME' => ENV.fetch('CARGO_HOME', File.join(@orig_env['HOME'], '.cargo')),
+      'RUSTUP_HOME' => ENV.fetch('RUSTUP_HOME', File.join(@orig_env['HOME'], '.rustup')),
     }
-
-    system(@rust_envs, 'cargo', '-V', out: IO::NULL, err: [:child, :out])
-    pend 'cargo not present' unless $?.success?
   end
 
   def setup_rust_gem(name)
@@ -57,15 +55,35 @@ class TestGemExtCargoBuilder < Gem::TestCase
     end
 
     output = output.join "\n"
-
     bundle = File.join(@dest_path, "release/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")
 
-    require(bundle)
-
-    assert_match RustRubyExample.reverse('hello'), 'olleh'
-
-    assert_match "Compiling rust_ruby_example v0.1.0", output
     assert_match "Finished release [optimized] target(s)", output
+    assert_ffi_handle bundle, 'Init_rust_ruby_example'
+  rescue Exception => e
+    pp output if output
+
+    raise(e)
+  end
+
+  def test_build_dev_profile
+    skip_unsupported_platforms!
+    setup_rust_gem "rust_ruby_example"
+
+    output = []
+
+    Dir.chdir @ext do
+      ENV.update(@rust_envs)
+      spec = Gem::Specification.new 'rust_ruby_example', '0.1.0'
+      builder = Gem::Ext::CargoBuilder.new(spec)
+      builder.profile = :dev
+      builder.build nil, @dest_path, output
+    end
+
+    output = output.join "\n"
+    bundle = File.join(@dest_path, "debug/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")
+
+    assert_match "Finished dev [unoptimized + debuginfo] target(s)", output
+    assert_ffi_handle bundle, 'Init_rust_ruby_example'
   rescue Exception => e
     pp output if output
 
@@ -98,6 +116,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
     skip_unsupported_platforms!
     setup_rust_gem "rust_ruby_example"
 
+    require 'open3'
+
     Dir.chdir @ext do
       require 'tmpdir'
 
@@ -107,12 +127,11 @@ class TestGemExtCargoBuilder < Gem::TestCase
         built_gem = File.expand_path(File.join(dir, "rust_ruby_example.gem"))
         Open3.capture2e(*gem, "build", "rust_ruby_example.gemspec", "--output", built_gem)
         Open3.capture2e(*gem, "install", "--verbose", "--local", built_gem, *ARGV)
+
+        stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "-rrust_ruby_example", "-e", "puts 'Result: ' + RustRubyExample.reverse('hello world')")
+        assert status.success?, stdout_and_stderr_str
+        assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
       end
-
-      stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "-rrust_ruby_example", "-e", "puts 'Result: ' + RustRubyExample.reverse('hello world')")
-
-      assert status.success?, stdout_and_stderr_str
-      assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
     end
   end
 
@@ -138,10 +157,20 @@ class TestGemExtCargoBuilder < Gem::TestCase
     end
   end
 
+  private
+
   def skip_unsupported_platforms!
     pend "jruby not supported" if java_platform?
     pend "truffleruby not supported (yet)" if RUBY_ENGINE == 'truffleruby'
     pend "mswin not supported (yet)" if /mswin/ =~ RUBY_PLATFORM && ENV.key?('GITHUB_ACTIONS')
+    system(@rust_envs, 'cargo', '-V', out: IO::NULL, err: [:child, :out])
+    pend 'cargo not present' unless $?.success?
     pend "ruby.h is not provided by ruby repo" if testing_ruby_repo?
+  end
+
+  def assert_ffi_handle(bundle, name)
+    require 'fiddle'
+    dylib_handle = Fiddle.dlopen bundle
+    assert_nothing_raised { dylib_handle[name] }
   end
 end

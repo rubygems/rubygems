@@ -184,7 +184,19 @@ class TestGemRequest < Gem::TestCase
     assert_nil request.proxy_uri
   end
 
-  def test_fetch
+  def test_fetch_with_uri
+    uri = URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}"
+    response = util_stub_net_http(:body => :junk, :code => 200) do
+      @request = make_request(uri, Net::HTTP::Get, nil, nil)
+
+      @request.fetch
+    end
+
+    assert_equal 200, response.code
+    assert_equal :junk, response.body
+  end
+
+  def test_fetch_with_gem_uri
     uri = Gem::Uri.new(URI.parse "#{@gem_repo}/specs.#{Gem.marshal_version}")
     response = util_stub_net_http(:body => :junk, :code => 200) do
       @request = make_request(uri, Net::HTTP::Get, nil, nil)

@@ -45,7 +45,7 @@ class Gem::Uri
 
   protected
 
-  # Add a protected reader for the cloned instance to access the original object's parsed uri
+  # A protected reader for other Gem::Uri instances to access @parsed_uri
   attr_reader :parsed_uri
 
   private
@@ -74,6 +74,7 @@ class Gem::Uri
   # Parses the #uri, returning the original uri if it's invalid
 
   def parse(uri)
+    return uri.parsed_uri if uri.is_a?(Gem::Uri)
     return uri unless uri.is_a?(String)
 
     parse!(uri)

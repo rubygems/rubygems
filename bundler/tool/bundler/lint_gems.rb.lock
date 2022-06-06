@@ -1,0 +1,37 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ast (2.4.2)
+    jaro_winkler (1.5.4)
+    parallel (1.22.1)
+    parser (3.1.2.0)
+      ast (~> 2.4.1)
+    rainbow (3.1.1)
+    rexml (3.2.5)
+    rubocop (0.80.1)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.7.0.1)
+      rainbow (>= 2.2.2, < 4.0)
+      rexml
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-performance (1.5.2)
+      rubocop (>= 0.71.0)
+    ruby-progressbar (1.11.0)
+    unicode-display_width (1.6.1)
+
+PLATFORMS
+  java
+  ruby
+  universal-java-11
+  x64-mingw32
+  x86_64-darwin-20
+  x86_64-linux
+
+DEPENDENCIES
+  rubocop (~> 0.80.1)
+  rubocop-performance (~> 1.5.2)
+
+BUNDLED WITH
+   2.4.0.dev

@@ -210,9 +210,6 @@ Lint/UselessAccessModifier:
 Lint/UselessComparison:
   Enabled: true
 
-Lint/UselessElseWithoutRescue:
-  Enabled: true
-
 Lint/UselessSetterCall:
   Enabled: true
 

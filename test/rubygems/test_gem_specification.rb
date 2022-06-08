@@ -1075,6 +1075,14 @@ dependencies: []
     assert_instance_of Gem::Specification, data
   end
 
+  def test_handles_dependencies_with_syck_requirements_bug
+    path = File.expand_path 'data/excon-0.7.7.gemspec.rz', __dir__
+
+    data = Marshal.load Gem::Util.inflate(Gem.read_binary(path))
+
+    assert_instance_of Gem::Specification, data
+  end
+
   def test_initialize
     spec = Gem::Specification.new do |s|
       s.name = "blah"

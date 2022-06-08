@@ -1,6 +1,6 @@
 use magnus::{define_module, function, prelude::*, Error};
-use rb_sys::ruby_extension;
 use rb_allocator::ruby_global_allocator;
+use rb_sys::ruby_extension;
 
 // Ensure that the Ruby C ABI is being used.
 ruby_extension!();
@@ -9,7 +9,7 @@ ruby_extension!();
 ruby_global_allocator!();
 
 fn hello(subject: String) -> String {
-  format!("Hello from Rust, {}!", subject)
+    format!("Hello from Rust, {}!", subject)
 }
 
 #[magnus::init]

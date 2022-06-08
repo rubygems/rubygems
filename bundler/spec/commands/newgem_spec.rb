@@ -338,6 +338,34 @@ RSpec.describe "bundle gem" do
     expect(last_command).to be_success
   end
 
+  it "has no rubocop offenses when using --rust and --linter=rubocop flag", :readline do
+    skip "ruby_core has an 'ast.rb' file that gets in the middle and breaks this spec" if ruby_core?
+    bundle "gem #{gem_name} --rust --linter=rubocop"
+    bundle_exec_rubocop
+    expect(last_command).to be_success
+  end
+
+  it "has no rubocop offenses when using --rust, --test=minitest, and --linter=rubocop flag", :readline do
+    skip "ruby_core has an 'ast.rb' file that gets in the middle and breaks this spec" if ruby_core?
+    bundle "gem #{gem_name} --rust --test=minitest --linter=rubocop"
+    bundle_exec_rubocop
+    expect(last_command).to be_success
+  end
+
+  it "has no rubocop offenses when using --rust, --test=rspec, and --linter=rubocop flag", :readline do
+    skip "ruby_core has an 'ast.rb' file that gets in the middle and breaks this spec" if ruby_core?
+    bundle "gem #{gem_name} --rust --test=rspec --linter=rubocop"
+    bundle_exec_rubocop
+    expect(last_command).to be_success
+  end
+
+  it "has no rubocop offenses when using --rust, --test=test-unit, and --linter=rubocop flag", :readline do
+    skip "ruby_core has an 'ast.rb' file that gets in the middle and breaks this spec" if ruby_core?
+    bundle "gem #{gem_name} --ext --test=test-unit --linter=rubocop"
+    bundle_exec_rubocop
+    expect(last_command).to be_success
+  end
+
   it "has no standard offenses when using --linter=standard flag", :readline do
     skip "ruby_core has an 'ast.rb' file that gets in the middle and breaks this spec" if ruby_core?
     bundle "gem #{gem_name} --linter=standard"
@@ -1353,6 +1381,53 @@ RSpec.describe "bundle gem" do
           end
 
           task default: %i[clobber compile]
+        RAKEFILE
+
+        expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)
+      end
+    end
+
+    context "--rust parameter set" do
+      let(:flags) { "--rust" }
+
+      before do
+        bundle ["gem", gem_name, flags].compact.join(" ")
+      end
+
+      it "builds ext skeleton" do
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/extconf.rb")).to exist
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/Cargo.toml")).to exist
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/src/lib.rs")).to exist
+      end
+
+      it "includes rake-compiler" do
+        expect(bundled_app("#{gem_name}/Gemfile").read).to include('gem "rake-compiler"')
+      end
+
+      it "includes rb_sys" do
+        expect(bundled_app("#{gem_name}/Gemfile").read).to include('gem "rb_sys"')
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/extconf.rb").read).to include('require "rb_sys/mkmf"')
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/extconf.rb").read).to include("create_rust_makefile")
+      end
+
+      it "includes magnus" do
+        expect(bundled_app("#{gem_name}/Cargo.toml").read).to include("magnus")
+      end
+
+      it "depends on compile task for build" do
+        rakefile = strip_whitespace <<-RAKEFILE
+          # frozen_string_literal: true
+
+          require "bundler/gem_tasks"
+          require "rake/extensiontask"
+
+          task build: :compile
+
+          Rake::ExtensionTask.new("#{gem_name}") do |ext|
+            ext.lib_dir = "lib/#{gem_name}"
+          end
+
+          task default: %i[compile]
         RAKEFILE
 
         expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)

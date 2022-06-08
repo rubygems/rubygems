@@ -193,6 +193,7 @@ bundler/lib/bundler/templates/Gemfile
 bundler/lib/bundler/templates/gems.rb
 bundler/lib/bundler/templates/newgem/CHANGELOG.md.tt
 bundler/lib/bundler/templates/newgem/CODE_OF_CONDUCT.md.tt
+bundler/lib/bundler/templates/newgem/Cargo.toml.tt
 bundler/lib/bundler/templates/newgem/Gemfile.tt
 bundler/lib/bundler/templates/newgem/LICENSE.txt.tt
 bundler/lib/bundler/templates/newgem/README.md.tt
@@ -201,9 +202,11 @@ bundler/lib/bundler/templates/newgem/bin/console.tt
 bundler/lib/bundler/templates/newgem/bin/setup.tt
 bundler/lib/bundler/templates/newgem/circleci/config.yml.tt
 bundler/lib/bundler/templates/newgem/exe/newgem.tt
+bundler/lib/bundler/templates/newgem/ext/newgem/Cargo.toml.tt
 bundler/lib/bundler/templates/newgem/ext/newgem/extconf.rb.tt
 bundler/lib/bundler/templates/newgem/ext/newgem/newgem.c.tt
 bundler/lib/bundler/templates/newgem/ext/newgem/newgem.h.tt
+bundler/lib/bundler/templates/newgem/ext/newgem/src/lib.rs.tt
 bundler/lib/bundler/templates/newgem/github/workflows/main.yml.tt
 bundler/lib/bundler/templates/newgem/gitignore.tt
 bundler/lib/bundler/templates/newgem/gitlab-ci.yml.tt

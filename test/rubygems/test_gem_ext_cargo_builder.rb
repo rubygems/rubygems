@@ -121,14 +121,15 @@ class TestGemExtCargoBuilder < Gem::TestCase
     Dir.chdir @ext do
       require 'tmpdir'
 
-      gem = [@rust_envs, *ruby_with_rubygems_in_load_path, File.expand_path('../../bin/gem', __dir__)]
+      env_for_subprocess = @rust_envs.merge("GEM_HOME" => Gem.paths.home)
+      gem = [env_for_subprocess, *ruby_with_rubygems_in_load_path, File.expand_path('../../bin/gem', __dir__)]
 
       Dir.mktmpdir("rust_ruby_example") do |dir|
         built_gem = File.expand_path(File.join(dir, "rust_ruby_example.gem"))
         Open3.capture2e(*gem, "build", "rust_ruby_example.gemspec", "--output", built_gem)
         Open3.capture2e(*gem, "install", "--verbose", "--local", built_gem, *ARGV)
 
-        stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "-rrust_ruby_example", "-e", "puts 'Result: ' + RustRubyExample.reverse('hello world')")
+        stdout_and_stderr_str, status = Open3.capture2e(env_for_subprocess, *ruby_with_rubygems_in_load_path, "-rrust_ruby_example", "-e", "puts 'Result: ' + RustRubyExample.reverse('hello world')")
         assert status.success?, stdout_and_stderr_str
         assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str
       end
@@ -142,7 +143,8 @@ class TestGemExtCargoBuilder < Gem::TestCase
     Dir.chdir @ext do
       require 'tmpdir'
 
-      gem = [@rust_envs, *ruby_with_rubygems_in_load_path, File.expand_path('../../bin/gem', __dir__)]
+      env_for_subprocess = @rust_envs.merge("GEM_HOME" => Gem.paths.home)
+      gem = [env_for_subprocess, *ruby_with_rubygems_in_load_path, File.expand_path('../../bin/gem', __dir__)]
 
       Dir.mktmpdir("custom_name") do |dir|
         built_gem = File.expand_path(File.join(dir, "custom_name.gem"))
@@ -150,7 +152,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
         Open3.capture2e(*gem, "install", "--verbose", "--local", built_gem, *ARGV)
       end
 
-      stdout_and_stderr_str, status = Open3.capture2e(@rust_envs, *ruby_with_rubygems_in_load_path, "-rcustom_name", "-e", "puts 'Result: ' + CustomName.say_hello")
+      stdout_and_stderr_str, status = Open3.capture2e(env_for_subprocess, *ruby_with_rubygems_in_load_path, "-rcustom_name", "-e", "puts 'Result: ' + CustomName.say_hello")
 
       assert status.success?, stdout_and_stderr_str
       assert_match "Result: Hello world!", stdout_and_stderr_str

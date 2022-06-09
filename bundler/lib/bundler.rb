@@ -187,6 +187,25 @@ module Bundler
       setup(*groups).require(*groups)
     end
 
+    # Same as +Bundler.setup+ but catches errors and prints nicer
+    # message in terminal
+    def nicer_setup(*groups)
+      if STDOUT.tty? || ENV["BUNDLER_FORCE_TTY"]
+        begin
+          Bundler.ui.silence { Bundler.setup(*groups) }
+        rescue Bundler::BundlerError => e
+          Bundler.ui.error e.message
+          Bundler.ui.warn e.backtrace.join("\n") if ENV["DEBUG"]
+          if e.is_a?(Bundler::GemNotFound)
+            Bundler.ui.warn "Run `bundle install` to install missing gems."
+          end
+          exit e.status_code
+        end
+      else
+        Bundler.ui.silence { Bundler.setup(*groups) }
+      end
+    end
+
     def load
       @load ||= Runtime.new(root, definition)
     end

@@ -142,6 +142,11 @@ if File.exist?("util/automatiek.rake")
 end
 
 namespace :rubocop do
+  desc "Setup gems necessary to lint Ruby code"
+  task(:setup) do
+    sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=bundler/tool/bundler/lint_gems.rb"
+  end
+
   desc "Run rubocop for RubyGems. Pass positional arguments, e.g. -a, as Rake arguments."
   task(:rubygems) do |_, args|
     sh "util/rubocop", *args
@@ -153,7 +158,7 @@ namespace :rubocop do
   end
 end
 
-task rubocop: %w[rubocop:rubygems rubocop:bundler]
+task rubocop: %w[rubocop:setup rubocop:rubygems rubocop:bundler]
 
 # --------------------------------------------------------------------
 # Creating a release

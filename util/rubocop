@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-ENV["BUNDLE_GEMFILE"] = File.expand_path("../bundler/tool/bundler/dev_gems.rb", __dir__)
+ENV["BUNDLE_GEMFILE"] = File.expand_path("../bundler/tool/bundler/lint_gems.rb", __dir__)
 require "bundler/setup"
 
 load Gem.bin_path("rubocop", "rubocop")

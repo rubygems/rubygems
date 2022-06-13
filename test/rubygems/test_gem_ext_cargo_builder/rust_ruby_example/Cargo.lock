@@ -247,9 +247,9 @@ dependencies = [
 
 [[package]]
 name = "rb-sys"
-version = "0.9.3"
+version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5397d604589a1403fbd49b1af9265b88cdf12975cc1b2dafc7574af7ff6c5bf"
+checksum = "f5465c5bd695ef70959b91b4ca9cfd515e9af012f6d9f0ae46f09fa4bcc3b722"
 dependencies = [
  "bindgen",
  "cc",

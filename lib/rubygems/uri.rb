@@ -6,6 +6,13 @@
 
 class Gem::Uri
   ##
+  # Parses and redacts uri
+
+  def self.redact(uri)
+    new(uri).redacted
+  end
+
+  ##
   # Parses uri, raising if it's invalid
 
   def self.parse!(uri)

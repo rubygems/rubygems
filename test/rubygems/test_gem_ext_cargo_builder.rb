@@ -167,7 +167,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
     pend "mswin not supported (yet)" if /mswin/ =~ RUBY_PLATFORM && ENV.key?('GITHUB_ACTIONS')
     system(@rust_envs, 'cargo', '-V', out: IO::NULL, err: [:child, :out])
     pend 'cargo not present' unless $?.success?
-    pend "ruby.h is not provided by ruby repo" if testing_ruby_repo?
+    pend "ruby.h is not provided by ruby repo" if ruby_repo?
   end
 
   def assert_ffi_handle(bundle, name)

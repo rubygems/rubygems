@@ -161,7 +161,6 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     ui = Gem::MockGemUi.new("n")
 
     use_ui ui do
-
       assert_raise Gem::MockGemUi::TermError do
         @cmd.execute
       end

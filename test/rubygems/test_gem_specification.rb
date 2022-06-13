@@ -3014,7 +3014,6 @@ Please report a bug if this causes problems.
 
       @a1.homepage = 'https://rubygems.org'
       assert_equal true, @a1.validate
-
     end
   end
 

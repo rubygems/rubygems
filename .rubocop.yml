@@ -44,6 +44,9 @@ Layout/EmptyLines:
 Layout/EmptyLinesAroundAccessModifier:
   Enabled: true
 
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: true
+
 Layout/EmptyLinesAroundClassBody:
   Enabled: true
 

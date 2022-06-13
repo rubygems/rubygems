@@ -64,7 +64,7 @@ class Gem::Uri
   end
 
   def redact_credentials_from(text)
-    return text unless valid_uri? && password?
+    return text unless valid_uri? && password? && text.include?(to_s)
 
     text.sub(password, 'REDACTED')
   end

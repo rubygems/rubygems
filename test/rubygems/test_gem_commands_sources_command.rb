@@ -226,6 +226,31 @@ Error fetching https://u:REDACTED@example.com:
     assert_equal '', @ui.error
   end
 
+  def test_execute_add_existent_source_invalid_uri_with_error_by_chance_including_the_uri_password
+    spec_fetcher
+
+    uri = "https://u:secret@example.com/specs.#{@marshal_version}.gz"
+
+    @cmd.handle_options %w[--add https://u:secret@example.com]
+    @fetcher.data[uri] = proc do
+      raise Gem::RemoteFetcher::FetchError.new('it secretly died', uri)
+    end
+
+    use_ui @ui do
+      assert_raise Gem::MockGemUi::TermError do
+        @cmd.execute
+      end
+    end
+
+    expected = <<-EOF
+Error fetching https://u:REDACTED@example.com:
+\tit secretly died (https://u:REDACTED@example.com/specs.#{@marshal_version}.gz)
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal '', @ui.error
+  end
+
   def test_execute_add_redundant_source
     spec_fetcher
 

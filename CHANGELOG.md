@@ -1,3 +1,19 @@
+# 3.3.16 / 2022-06-15
+
+## Enhancements:
+
+* Auto-fix and warn gem packages including a gemspec with `require_paths`
+  as an array of arrays. Pull request #5615 by deivid-rodriguez
+* Misc cargo builder improvements. Pull request #5459 by ianks
+* Installs bundler 2.3.16 as a default gem.
+
+## Bug fixes:
+
+* Fix incorrect password redaction when there's an error in `gem source
+  -a`. Pull request #5623 by deivid-rodriguez
+* Fix another regression when loading old marshaled specs. Pull request
+  #5610 by deivid-rodriguez
+
 # 3.3.15 / 2022-06-01
 
 ## Enhancements:

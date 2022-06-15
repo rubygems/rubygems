@@ -383,6 +383,7 @@ lib/rubygems/ext.rb
 lib/rubygems/ext/build_error.rb
 lib/rubygems/ext/builder.rb
 lib/rubygems/ext/cargo_builder.rb
+lib/rubygems/ext/cargo_builder/link_flag_converter.rb
 lib/rubygems/ext/cmake_builder.rb
 lib/rubygems/ext/configure_builder.rb
 lib/rubygems/ext/ext_conf_builder.rb
@@ -424,7 +425,6 @@ lib/rubygems/package/tar_writer.rb
 lib/rubygems/package_task.rb
 lib/rubygems/path_support.rb
 lib/rubygems/platform.rb
-lib/rubygems/psych_additions.rb
 lib/rubygems/psych_tree.rb
 lib/rubygems/query_utils.rb
 lib/rubygems/rdoc.rb
@@ -538,11 +538,12 @@ test/rubygems/child_cert.pem
 test/rubygems/child_cert_32.pem
 test/rubygems/child_key.pem
 test/rubygems/client.pem
+test/rubygems/data/excon-0.7.7.gemspec.rz
 test/rubygems/data/gem-private_key.pem
 test/rubygems/data/gem-public_cert.pem
 test/rubygems/data/null-required-ruby-version.gemspec.rz
 test/rubygems/data/null-required-rubygems-version.gemspec.rz
-test/rubygems/data/null-type.gemspec.rz
+test/rubygems/data/pry-0.4.7.gemspec.rz
 test/rubygems/encrypted_private_key.pem
 test/rubygems/expired_cert.pem
 test/rubygems/fake_certlib/openssl.rb
@@ -649,6 +650,8 @@ test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/Cargo.toml
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/build.rb
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/rust_ruby_example.gemspec
 test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/src/lib.rs
+test/rubygems/test_gem_ext_cargo_builder_link_flag_converter.rb
+test/rubygems/test_gem_ext_cargo_builder_unit.rb
 test/rubygems/test_gem_ext_cmake_builder.rb
 test/rubygems/test_gem_ext_configure_builder.rb
 test/rubygems/test_gem_ext_ext_conf_builder.rb

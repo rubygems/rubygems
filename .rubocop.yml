@@ -80,6 +80,9 @@ Layout/SpaceInsideBlockBraces:
   Enabled: true
   SpaceBeforeBlockParameters: false
 
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+
 Layout/SpaceInsideParens:
   Enabled: true
 

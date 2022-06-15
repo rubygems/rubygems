@@ -1,3 +1,9 @@
+# 2.3.16 (June 15, 2022)
+
+## Performance:
+
+  - Improve performance of installing gems from gem server sources [#5614](https://github.com/rubygems/rubygems/pull/5614)
+
 # 2.3.15 (June 1, 2022)
 
 ## Enhancements:

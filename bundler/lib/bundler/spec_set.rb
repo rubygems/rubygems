@@ -174,11 +174,12 @@ module Bundler
     end
 
     def specs_for_dependency(dep, match_current_platform)
-      specs_for_platforms = lookup[dep.name]
+      specs_for_name = lookup[dep.name]
       if match_current_platform
-        GemHelpers.select_best_platform_match(specs_for_platforms.select {|s| Gem::Platform.match_spec?(s) }, Bundler.local_platform)
+        GemHelpers.select_best_platform_match(specs_for_name.select {|s| Gem::Platform.match_spec?(s) }, Bundler.local_platform)
       else
-        GemHelpers.select_best_platform_match(specs_for_platforms, dep.__platform)
+        specs_for_name_and_platform = GemHelpers.select_best_platform_match(specs_for_name, dep.__platform)
+        specs_for_name_and_platform.any? ? specs_for_name_and_platform : specs_for_name
       end
     end
 

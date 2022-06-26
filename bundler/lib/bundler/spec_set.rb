@@ -24,7 +24,7 @@ module Bundler
         # use a hash here to ensure constant lookup time in the `any?` call above
         handled[dep.name] << dep
 
-        specs_for_dep = spec_for_dependency(dep, match_current_platform)
+        specs_for_dep = specs_for_dependency(dep, match_current_platform)
         if specs_for_dep.any?
           specs.concat(specs_for_dep)
 
@@ -173,7 +173,7 @@ module Bundler
       @specs.sort_by(&:name).each {|s| yield s }
     end
 
-    def spec_for_dependency(dep, match_current_platform)
+    def specs_for_dependency(dep, match_current_platform)
       specs_for_platforms = lookup[dep.name]
       if match_current_platform
         GemHelpers.select_best_platform_match(specs_for_platforms.select {|s| Gem::Platform.match_spec?(s) }, Bundler.local_platform)

@@ -283,19 +283,19 @@ RSpec.describe "bundle install with specific platforms" do
   end
 
   it "does not resolve if the current platform does not match any of available platform specific variants for a top level dependency" do
-    build_repo2 do
+    build_repo4 do
       build_gem("sorbet-static", "0.5.6433") {|s| s.platform = "x86_64-linux" }
       build_gem("sorbet-static", "0.5.6433") {|s| s.platform = "universal-darwin-20" }
     end
 
     gemfile <<~G
-      source "#{file_uri_for(gem_repo2)}"
+      source "#{file_uri_for(gem_repo4)}"
 
       gem "sorbet-static", "0.5.6433"
     G
 
     error_message = <<~ERROR.strip
-      Could not find gem 'sorbet-static (= 0.5.6433)' with platform 'arm64-darwin-21' in rubygems repository #{file_uri_for(gem_repo2)}/ or installed locally.
+      Could not find gem 'sorbet-static (= 0.5.6433)' with platform 'arm64-darwin-21' in rubygems repository #{file_uri_for(gem_repo4)}/ or installed locally.
 
       The source contains the following gems matching 'sorbet-static (= 0.5.6433)':
         * sorbet-static-0.5.6433-universal-darwin-20
@@ -318,20 +318,20 @@ RSpec.describe "bundle install with specific platforms" do
   end
 
   it "does not resolve if the current platform does not match any of available platform specific variants for a transitive dependency" do
-    build_repo2 do
+    build_repo4 do
       build_gem("sorbet", "0.5.6433") {|s| s.add_dependency "sorbet-static", "= 0.5.6433" }
       build_gem("sorbet-static", "0.5.6433") {|s| s.platform = "x86_64-linux" }
       build_gem("sorbet-static", "0.5.6433") {|s| s.platform = "universal-darwin-20" }
     end
 
     gemfile <<~G
-      source "#{file_uri_for(gem_repo2)}"
+      source "#{file_uri_for(gem_repo4)}"
 
       gem "sorbet", "0.5.6433"
     G
 
     error_message = <<~ERROR.strip
-      Could not find gem 'sorbet-static (= 0.5.6433)' with platform 'arm64-darwin-21', which is required by gem 'sorbet (= 0.5.6433)', in rubygems repository #{file_uri_for(gem_repo2)}/ or installed locally.
+      Could not find gem 'sorbet-static (= 0.5.6433)' with platform 'arm64-darwin-21', which is required by gem 'sorbet (= 0.5.6433)', in rubygems repository #{file_uri_for(gem_repo4)}/ or installed locally.
 
       The source contains the following gems matching 'sorbet-static (= 0.5.6433)':
         * sorbet-static-0.5.6433-universal-darwin-20

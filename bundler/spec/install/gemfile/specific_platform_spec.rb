@@ -303,7 +303,7 @@ RSpec.describe "bundle install with specific platforms" do
     ERROR
 
     simulate_platform "arm64-darwin-21" do
-      bundle "install", :raise_on_error => false
+      bundle "lock", :raise_on_error => false
     end
 
     expect(err).to include(error_message).once
@@ -311,7 +311,7 @@ RSpec.describe "bundle install with specific platforms" do
     # Make sure it doesn't print error twice in verbose mode
 
     simulate_platform "arm64-darwin-21" do
-      bundle "install --verbose", :raise_on_error => false
+      bundle "lock --verbose", :raise_on_error => false
     end
 
     expect(err).to include(error_message).once
@@ -339,7 +339,7 @@ RSpec.describe "bundle install with specific platforms" do
     ERROR
 
     simulate_platform "arm64-darwin-21" do
-      bundle "install", :raise_on_error => false
+      bundle "lock", :raise_on_error => false
     end
 
     expect(err).to include(error_message).once
@@ -347,7 +347,7 @@ RSpec.describe "bundle install with specific platforms" do
     # Make sure it doesn't print error twice in verbose mode
 
     simulate_platform "arm64-darwin-21" do
-      bundle "install --verbose", :raise_on_error => false
+      bundle "lock --verbose", :raise_on_error => false
     end
 
     expect(err).to include(error_message).once

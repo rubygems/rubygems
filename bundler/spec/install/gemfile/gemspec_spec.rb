@@ -329,8 +329,6 @@ RSpec.describe "bundle install from an existing gemspec" do
     let(:source_uri) { "http://localgemserver.test" }
 
     before do
-      skip "not installing for some reason" if Gem.win_platform?
-
       build_lib("foo", :path => tmp.join("foo")) do |s|
         s.add_dependency "rack", "=1.0.0"
       end
@@ -390,17 +388,13 @@ RSpec.describe "bundle install from an existing gemspec" do
       end
     end
 
-    context "using Windows" do
-      it "should install" do
-        simulate_windows do
-          results = bundle "install", :artifice => "endpoint"
-          expect(results).to include("Installing rack 1.0.0")
-          expect(the_bundle).to include_gems "rack 1.0.0"
-        end
-      end
+    it "should install" do
+      results = bundle "install", :artifice => "endpoint"
+      expect(results).to include("Installing rack 1.0.0")
+      expect(the_bundle).to include_gems "rack 1.0.0"
     end
 
-    context "bundled for ruby and jruby" do
+    context "bundled for multiple platforms" do
       let(:platform_specific_type) { :runtime }
       let(:dependency) { "platform_specific" }
       before do
@@ -430,6 +424,7 @@ RSpec.describe "bundle install from an existing gemspec" do
 
         simulate_new_machine
         simulate_platform("jruby") { bundle "install" }
+        simulate_platform(x64_mingw) { bundle "install" }
       end
 
       context "on ruby" do
@@ -439,7 +434,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         end
 
         context "as a runtime dependency" do
-          it "keeps java dependencies in the lockfile" do
+          it "keeps all platform dependencies in the lockfile" do
             expect(the_bundle).to include_gems "foo 1.0", "platform_specific 1.0 RUBY"
             expect(lockfile).to eq strip_whitespace(<<-L)
               PATH
@@ -453,10 +448,12 @@ RSpec.describe "bundle install from an existing gemspec" do
                 specs:
                   platform_specific (1.0)
                   platform_specific (1.0-java)
+                  platform_specific (1.0-x64-mingw32)
 
               PLATFORMS
                 java
                 ruby
+                x64-mingw32
 
               DEPENDENCIES
                 foo!
@@ -470,7 +467,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         context "as a development dependency" do
           let(:platform_specific_type) { :development }
 
-          it "keeps java dependencies in the lockfile" do
+          it "keeps all platform dependencies in the lockfile" do
             expect(the_bundle).to include_gems "foo 1.0", "platform_specific 1.0 RUBY"
             expect(lockfile).to eq strip_whitespace(<<-L)
               PATH
@@ -483,10 +480,12 @@ RSpec.describe "bundle install from an existing gemspec" do
                 specs:
                   platform_specific (1.0)
                   platform_specific (1.0-java)
+                  platform_specific (1.0-x64-mingw32)
 
               PLATFORMS
                 java
                 ruby
+                x64-mingw32
 
               DEPENDENCIES
                 foo!
@@ -502,7 +501,7 @@ RSpec.describe "bundle install from an existing gemspec" do
           let(:platform_specific_type) { :development }
           let(:dependency) { "indirect_platform_specific" }
 
-          it "keeps java dependencies in the lockfile" do
+          it "keeps all platform dependencies in the lockfile" do
             expect(the_bundle).to include_gems "foo 1.0", "indirect_platform_specific 1.0", "platform_specific 1.0 RUBY"
             expect(lockfile).to eq strip_whitespace(<<-L)
               PATH
@@ -517,10 +516,12 @@ RSpec.describe "bundle install from an existing gemspec" do
                     platform_specific
                   platform_specific (1.0)
                   platform_specific (1.0-java)
+                  platform_specific (1.0-x64-mingw32)
 
               PLATFORMS
                 java
                 ruby
+                x64-mingw32
 
               DEPENDENCIES
                 foo!

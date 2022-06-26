@@ -2,10 +2,6 @@
 
 RSpec.describe "bundle platform" do
   context "without flags" do
-    let(:bundle_platform_platforms_string) do
-      local_platforms.reverse.map {|pl| "* #{pl}" }.join("\n")
-    end
-
     it "returns all the output" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -20,7 +16,7 @@ RSpec.describe "bundle platform" do
 Your platform is: #{Gem::Platform.local}
 
 Your app has gems that work on these platforms:
-#{bundle_platform_platforms_string}
+* #{specific_local_platform}
 
 Your Gemfile specifies a Ruby version requirement:
 * ruby #{RUBY_VERSION}
@@ -43,7 +39,7 @@ G
 Your platform is: #{Gem::Platform.local}
 
 Your app has gems that work on these platforms:
-#{bundle_platform_platforms_string}
+* #{specific_local_platform}
 
 Your Gemfile specifies a Ruby version requirement:
 * ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
@@ -64,7 +60,7 @@ G
 Your platform is: #{Gem::Platform.local}
 
 Your app has gems that work on these platforms:
-#{bundle_platform_platforms_string}
+* #{specific_local_platform}
 
 Your Gemfile does not specify a Ruby version requirement.
 G
@@ -84,7 +80,7 @@ G
 Your platform is: #{Gem::Platform.local}
 
 Your app has gems that work on these platforms:
-#{bundle_platform_platforms_string}
+* #{specific_local_platform}
 
 Your Gemfile specifies a Ruby version requirement:
 * ruby #{not_local_ruby_version}

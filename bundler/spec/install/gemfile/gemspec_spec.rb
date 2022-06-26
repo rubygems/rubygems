@@ -328,78 +328,74 @@ RSpec.describe "bundle install from an existing gemspec" do
   context "with a lockfile and some missing dependencies" do
     let(:source_uri) { "http://localgemserver.test" }
 
-    context "previously bundled for Ruby" do
-      let(:platform) { "ruby" }
+    before do
+      skip "not installing for some reason" if Gem.win_platform?
 
+      build_lib("foo", :path => tmp.join("foo")) do |s|
+        s.add_dependency "rack", "=1.0.0"
+      end
+
+      gemfile <<-G
+        source "#{source_uri}"
+        gemspec :path => "../foo"
+      G
+
+      lockfile <<-L
+        PATH
+          remote: ../foo
+          specs:
+            foo (1.0)
+              rack (= 1.0.0)
+
+        GEM
+          remote: #{source_uri}
+          specs:
+            rack (1.0.0)
+
+        PLATFORMS
+          #{generic_local_platform}
+
+        DEPENDENCIES
+          foo!
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+
+    context "using JRuby with explicit platform", :jruby do
       before do
-        skip "not installing for some reason" if Gem.win_platform?
-
-        build_lib("foo", :path => tmp.join("foo")) do |s|
-          s.add_dependency "rack", "=1.0.0"
-        end
-
-        gemfile <<-G
-          source "#{source_uri}"
-          gemspec :path => "../foo"
-        G
-
-        lockfile <<-L
-          PATH
-            remote: ../foo
-            specs:
-              foo (1.0)
-                rack (= 1.0.0)
-
-          GEM
-            remote: #{source_uri}
-            specs:
-              rack (1.0.0)
-
-          PLATFORMS
-            #{generic_local_platform}
-
-          DEPENDENCIES
-            foo!
-
-          BUNDLED WITH
-             #{Bundler::VERSION}
-        L
+        create_file(
+          tmp.join("foo", "foo-java.gemspec"),
+          build_spec("foo", "1.0", "java") do
+            dep "rack", "=1.0.0"
+            @spec.authors = "authors"
+            @spec.summary = "summary"
+          end.first.to_ruby
+        )
       end
 
-      context "using JRuby with explicit platform", :jruby do
-        before do
-          create_file(
-            tmp.join("foo", "foo-java.gemspec"),
-            build_spec("foo", "1.0", "java") do
-              dep "rack", "=1.0.0"
-              @spec.authors = "authors"
-              @spec.summary = "summary"
-            end.first.to_ruby
-          )
-        end
+      it "should install" do
+        results = bundle "install", :artifice => "endpoint"
+        expect(results).to include("Installing rack 1.0.0")
+        expect(the_bundle).to include_gems "rack 1.0.0"
+      end
+    end
 
-        it "should install" do
+    context "using JRuby", :jruby do
+      it "should install" do
+        results = bundle "install", :artifice => "endpoint"
+        expect(results).to include("Installing rack 1.0.0")
+        expect(the_bundle).to include_gems "rack 1.0.0"
+      end
+    end
+
+    context "using Windows" do
+      it "should install" do
+        simulate_windows do
           results = bundle "install", :artifice => "endpoint"
           expect(results).to include("Installing rack 1.0.0")
           expect(the_bundle).to include_gems "rack 1.0.0"
-        end
-      end
-
-      context "using JRuby", :jruby do
-        it "should install" do
-          results = bundle "install", :artifice => "endpoint"
-          expect(results).to include("Installing rack 1.0.0")
-          expect(the_bundle).to include_gems "rack 1.0.0"
-        end
-      end
-
-      context "using Windows" do
-        it "should install" do
-          simulate_windows do
-            results = bundle "install", :artifice => "endpoint"
-            expect(results).to include("Installing rack 1.0.0")
-            expect(the_bundle).to include_gems "rack 1.0.0"
-          end
         end
       end
     end

@@ -8,6 +8,26 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
   end
 
+  let(:x64_mingw_archs) do
+    if RUBY_PLATFORM == "x64-mingw-ucrt"
+      if Gem.rubygems_version >= Gem::Version.new("3.2.28")
+        ["x64-mingw-ucrt", "x64-mingw32"]
+      else
+        ["x64-mingw32", "x64-unknown"]
+      end
+    else
+      ["x64-mingw32"]
+    end
+  end
+
+  let(:x64_mingw_gems) do
+    x64_mingw_archs.map {|p| "platform_specific (1.0-#{p})" }.join("\n    ")
+  end
+
+  let(:x64_mingw_platforms) do
+    x64_mingw_archs.join("\n  ")
+  end
+
   it "should install runtime and development dependencies" do
     build_lib("foo", :path => tmp.join("foo")) do |s|
       s.write("Gemfile", "source :rubygems\ngemspec")
@@ -440,12 +460,12 @@ RSpec.describe "bundle install from an existing gemspec" do
                 specs:
                   platform_specific (1.0)
                   platform_specific (1.0-java)
-                  platform_specific (1.0-x64-mingw32)
+                  #{x64_mingw_gems}
 
               PLATFORMS
                 java
                 ruby
-                x64-mingw32
+                #{x64_mingw_platforms}
 
               DEPENDENCIES
                 foo!
@@ -472,12 +492,12 @@ RSpec.describe "bundle install from an existing gemspec" do
                 specs:
                   platform_specific (1.0)
                   platform_specific (1.0-java)
-                  platform_specific (1.0-x64-mingw32)
+                  #{x64_mingw_gems}
 
               PLATFORMS
                 java
                 ruby
-                x64-mingw32
+                #{x64_mingw_platforms}
 
               DEPENDENCIES
                 foo!
@@ -508,12 +528,12 @@ RSpec.describe "bundle install from an existing gemspec" do
                     platform_specific
                   platform_specific (1.0)
                   platform_specific (1.0-java)
-                  platform_specific (1.0-x64-mingw32)
+                  #{x64_mingw_gems}
 
               PLATFORMS
                 java
                 ruby
-                x64-mingw32
+                #{x64_mingw_platforms}
 
               DEPENDENCIES
                 foo!
@@ -597,7 +617,7 @@ RSpec.describe "bundle install from an existing gemspec" do
 
         PLATFORMS
           ruby
-          x64-mingw32
+          #{x64_mingw_platforms}
           x86-mingw32
 
         DEPENDENCIES

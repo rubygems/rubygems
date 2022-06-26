@@ -220,7 +220,8 @@ module Gem
     MSWIN = Gem::Platform.new("mswin32")
     MSWIN64 = Gem::Platform.new("mswin64")
     MINGW = Gem::Platform.new("x86-mingw32")
-    X64_MINGW = Gem::Platform.new("x64-mingw32")
+    X64_MINGW = [Gem::Platform.new("x64-mingw32"),
+                 Gem::Platform.new("x64-mingw-ucrt")].freeze
   end
 
   Platform.singleton_class.module_eval do

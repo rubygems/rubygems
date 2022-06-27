@@ -250,10 +250,11 @@ RSpec.describe "bundle install with specific platforms" do
     end
   end
 
-  it "installs sorbet-static, which does not provide a pure ruby variant, just fine on truffleruby", :truffleruby do
+  it "installs sorbet-static, which does not provide a pure ruby variant, just fine", :truffleruby do
+    skip "does not apply to Windows" if Gem.win_platform?
+
     build_repo2 do
-      build_gem("sorbet-static", "0.5.6403") {|s| s.platform = "x86_64-linux" }
-      build_gem("sorbet-static", "0.5.6403") {|s| s.platform = "universal-darwin-20" }
+      build_gem("sorbet-static", "0.5.6403") {|s| s.platform = Bundler.local_platform }
     end
 
     gemfile <<~G
@@ -266,8 +267,7 @@ RSpec.describe "bundle install with specific platforms" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          sorbet-static (0.5.6403-universal-darwin-20)
-          sorbet-static (0.5.6403-x86_64-linux)
+          sorbet-static (0.5.6403-#{Bundler.local_platform})
 
       PLATFORMS
         ruby

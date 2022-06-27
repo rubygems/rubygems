@@ -6,4 +6,4 @@ version = "0.1.0"
 crate-type = ["cdylib"]
 
 [dependencies]
-rb-sys = "0.9.4"
+rb-sys = "0.9.10"

@@ -216,11 +216,11 @@ module Gem
   require "rubygems/platform"
 
   class Platform
-    JAVA  = Gem::Platform.new("java") unless defined?(JAVA)
-    MSWIN = Gem::Platform.new("mswin32") unless defined?(MSWIN)
-    MSWIN64 = Gem::Platform.new("mswin64") unless defined?(MSWIN64)
-    MINGW = Gem::Platform.new("x86-mingw32") unless defined?(MINGW)
-    X64_MINGW = Gem::Platform.new("x64-mingw32") unless defined?(X64_MINGW)
+    JAVA  = Gem::Platform.new("java")
+    MSWIN = Gem::Platform.new("mswin32")
+    MSWIN64 = Gem::Platform.new("mswin64")
+    MINGW = Gem::Platform.new("x86-mingw32")
+    X64_MINGW = Gem::Platform.new("x64-mingw32")
   end
 
   Platform.singleton_class.module_eval do

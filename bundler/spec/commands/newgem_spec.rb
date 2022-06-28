@@ -303,6 +303,66 @@ RSpec.describe "bundle gem" do
     end
   end
 
+  it "generates correct Rakefile with when using --ext, --test=minitest, and --linter=rubocop flag" do
+    skip "ruby_core has an 'ast.rb' file that gets in the middle and breaks this spec" if ruby_core?
+    bundle "gem #{gem_name} --ext --test=minitest --linter=rubocop"
+    rakefile = strip_whitespace <<-RAKEFILE
+          # frozen_string_literal: true
+
+          require "bundler/gem_tasks"
+          require "rake/testtask"
+
+          Rake::TestTask.new(:test) do |t|
+            t.libs << "test"
+            t.libs << "lib"
+            t.test_files = FileList["test/**/test_*.rb"]
+          end
+
+          require "rake/extensiontask"
+
+          task build: :compile
+
+          Rake::ExtensionTask.new("mygem") do |ext|
+            ext.lib_dir = "lib/mygem"
+          end
+
+          require "rubocop/rake_task"
+
+          RuboCop::RakeTask.new
+
+          task default: %i[rubocop clobber compile test]
+    RAKEFILE
+
+    expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)
+  end
+
+  it "generates correct Rakefile with when using --ext, --test=rspec, and --linter=standard flag" do
+    skip "ruby_core has an 'ast.rb' file that gets in the middle and breaks this spec" if ruby_core?
+    bundle "gem #{gem_name} --ext --test=rspec --linter=standard"
+    rakefile = strip_whitespace <<-RAKEFILE
+          # frozen_string_literal: true
+
+          require "bundler/gem_tasks"
+          require "rspec/core/rake_task"
+
+          RSpec::Core::RakeTask.new(:spec)
+
+          require "rake/extensiontask"
+
+          task build: :compile
+
+          Rake::ExtensionTask.new("mygem") do |ext|
+            ext.lib_dir = "lib/mygem"
+          end
+
+          require "standard/rake"
+
+          task default: %i[standard clobber compile spec]
+    RAKEFILE
+
+    expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)
+  end
+
   it "has no rubocop offenses when using --linter=rubocop flag", :readline do
     skip "ruby_core has an 'ast.rb' file that gets in the middle and breaks this spec" if ruby_core?
     bundle "gem #{gem_name} --linter=rubocop"

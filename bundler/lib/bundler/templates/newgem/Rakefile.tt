@@ -27,17 +27,6 @@ require "rspec/core/rake_task"
 RSpec::Core::RakeTask.new(:spec)
 
 <% end -%>
-<% if config[:linter] == "rubocop" -%>
-<% default_task_names << :rubocop -%>
-require "rubocop/rake_task"
-
-RuboCop::RakeTask.new
-
-<% elsif config[:linter] == "standard" -%>
-<% default_task_names << :standard -%>
-require "standard/rake"
-
-<% end -%>
 <% if config[:ext] -%>
 <% default_task_names.unshift(:clobber, :compile) -%>
 require "rake/extensiontask"
@@ -47,6 +36,17 @@ task build: :compile
 Rake::ExtensionTask.new("<%= config[:underscored_name] %>") do |ext|
   ext.lib_dir = "lib/<%= config[:namespaced_path] %>"
 end
+
+<% end -%>
+<% if config[:linter] == "rubocop" -%>
+<% default_task_names.unshift(:rubocop) -%>
+require "rubocop/rake_task"
+
+RuboCop::RakeTask.new
+
+<% elsif config[:linter] == "standard" -%>
+<% default_task_names.unshift(:standard) -%>
+require "standard/rake"
 
 <% end -%>
 <% if default_task_names.size == 1 -%>

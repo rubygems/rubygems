@@ -1,3 +1,24 @@
+# 2.3.17 (June 29, 2022)
+
+## Enhancements:
+
+  - Add support for platform `:x64_mingw` to correctly lookup "x64-mingw-ucrt" [#5649](https://github.com/rubygems/rubygems/pull/5649)
+  - Fix some errors being printed twice in `--verbose` mode [#5654](https://github.com/rubygems/rubygems/pull/5654)
+  - Fix extension paths in generated standalone script [#5632](https://github.com/rubygems/rubygems/pull/5632)
+
+## Bug fixes:
+
+  - Raise if ruby platform is forced and there are no ruby variants [#5495](https://github.com/rubygems/rubygems/pull/5495)
+  - Fix `bundle package --no-install` no longer skipping install [#5639](https://github.com/rubygems/rubygems/pull/5639)
+
+## Performance:
+
+  - Improve performance of `Bundler::SpecSet#for` by using hash lookup of handled deps [#5537](https://github.com/rubygems/rubygems/pull/5537)
+
+## Documentation:
+
+  - Fix formatting issue in `bundle add` man page [#5642](https://github.com/rubygems/rubygems/pull/5642)
+
 # 2.3.16 (June 15, 2022)
 
 ## Performance:

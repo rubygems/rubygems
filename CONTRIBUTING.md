@@ -29,6 +29,8 @@ here: https://guides.rubygems.org/contributing/
 
 ## Getting Started
 
+### Installing dependencies
+
     rake setup
 
 NOTE: If this fails with permission related errors, you're most likely using a
@@ -39,7 +41,7 @@ regular users can write to). Alternatively, consider setting `GEM_HOME`
 environment variable to a writable location with something like
 `export GEM_HOME=/tmp/rubygems.gems` and try again.
 
-> Optionally you can configure git hooks with: rake git_hooks
+### Manually trying your local changes
 
 To run commands like `gem install` from the repo:
 
@@ -82,6 +84,16 @@ To run the entire bundler test suite sequentially (get a coffee because it's ver
 To run an individual test file location for example in `spec/install/gems/standalone_spec.rb` you can use:
 
     bin/rspec spec/install/gems/standalone_spec.rb
+
+### Checking code style
+
+You can check compliance with our code style with
+
+    rake rubocop
+
+Optionally you can configure git hooks with to check this before every commit with
+
+    rake git_hooks
 
 ## Issues
 

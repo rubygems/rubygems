@@ -33,13 +33,16 @@ here: https://guides.rubygems.org/contributing/
 
     rake setup
 
-NOTE: If this fails with permission related errors, you're most likely using a
-global Ruby installation (like the one packaged by your OS), which sets
-`GEM_HOME` to a location regular users can't write to. Consider using a Ruby
-version manager like RVM, Rbenv or Chruby (which install Ruby to a location
-regular users can write to). Alternatively, consider setting `GEM_HOME`
-environment variable to a writable location with something like
-`export GEM_HOME=/tmp/rubygems.gems` and try again.
+> **NOTE**: If the above fails with permission related errors, you're most
+> likely using a global Ruby installation (like the one packaged by your OS),
+> which sets `GEM_HOME` to a location regular users can't write to. Consider
+> using a Ruby version manager like [RVM](https://github.com/rvm/rvm),
+> [rbenv](https://github.com/rbenv/rbenv) or
+> [chruby](https://github.com/postmodern/chruby). These will install Ruby to a
+> location regular users can write to, so you won't run into permission issues.
+> Alternatively, consider setting `GEM_HOME` environment variable to a writable
+> location with something like `export GEM_HOME=/tmp/rubygems.gems` and try
+> again.
 
 ### Manually trying your local changes
 

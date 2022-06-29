@@ -29,17 +29,22 @@ here: https://guides.rubygems.org/contributing/
 
 ## Getting Started
 
+### Installing dependencies
+
     rake setup
 
-NOTE: If this fails with permission related errors, you're most likely using a
-global Ruby installation (like the one packaged by your OS), which sets
-`GEM_HOME` to a location regular users can't write to. Consider using a Ruby
-version manager like RVM, Rbenv or Chruby (which install Ruby to a location
-regular users can write to). Alternatively, consider setting `GEM_HOME`
-environment variable to a writable location with something like
-`export GEM_HOME=/tmp/rubygems.gems` and try again.
+> **NOTE**: If the above fails with permission related errors, you're most
+> likely using a global Ruby installation (like the one packaged by your OS),
+> which sets `GEM_HOME` to a location regular users can't write to. Consider
+> using a Ruby version manager like [RVM](https://github.com/rvm/rvm),
+> [rbenv](https://github.com/rbenv/rbenv) or
+> [chruby](https://github.com/postmodern/chruby). These will install Ruby to a
+> location regular users can write to, so you won't run into permission issues.
+> Alternatively, consider setting `GEM_HOME` environment variable to a writable
+> location with something like `export GEM_HOME=/tmp/rubygems.gems` and try
+> again.
 
-> Optionally you can configure git hooks with: rake git_hooks
+### Manually trying your local changes
 
 To run commands like `gem install` from the repo:
 
@@ -82,6 +87,16 @@ To run the entire bundler test suite sequentially (get a coffee because it's ver
 To run an individual test file location for example in `spec/install/gems/standalone_spec.rb` you can use:
 
     bin/rspec spec/install/gems/standalone_spec.rb
+
+### Checking code style
+
+You can check compliance with our code style with
+
+    rake rubocop
+
+Optionally you can configure git hooks with to check this before every commit with
+
+    rake git_hooks
 
 ## Issues
 

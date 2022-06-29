@@ -1,3 +1,21 @@
+# 3.3.17 / 2022-06-29
+
+## Enhancements:
+
+* Document `gem env` argument aliases and add `gem env user_gemhome` and
+  `gem env user_gemdir`. Pull request #5644 by deivid-rodriguez
+* Improve error message when `operating_system.rb` fails to load. Pull
+  request #5658 by deivid-rodriguez
+* Clean up temporary directory after `generate_index --update`. Pull
+  request #5653 by graywolf-at-work
+* Simplify extension builder. Pull request #5626 by deivid-rodriguez
+* Installs bundler 2.3.17 as a default gem.
+
+## Documentation:
+
+* Modify RubyGems issue template to be like the one for Bundler. Pull
+  request #5643 by deivid-rodriguez
+
 # 3.3.16 / 2022-06-15
 
 ## Enhancements:

@@ -495,8 +495,8 @@ the `.gemspec` file.
 
 The `gemspec` method adds any runtime dependencies as gem requirements in the
 default group. It also adds development dependencies as gem requirements in the
-`development` group. Finally, it adds a gem requirement on your project (`:path
-=> '.'`). In conjunction with `Bundler.setup`, this allows you to require project
+`development` group. Finally, it adds a gem requirement on your project (`path:
+'.'`). In conjunction with `Bundler.setup`, this allows you to require project
 files in your test code as you would if the project were installed as a gem; you
 need not manipulate the load path manually or require project files via relative
 paths.

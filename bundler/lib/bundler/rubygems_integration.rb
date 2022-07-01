@@ -394,15 +394,10 @@ module Bundler
 
     def redefine_method(klass, method, unbound_method = nil, &block)
       visibility = method_visibility(klass, method)
-      begin
-        if (instance_method = klass.instance_method(method))
-          # doing this to ensure we also get private methods
-          klass.send(:remove_method, method)
-          @replaced_methods[[method, klass]] = instance_method
-        end
-      rescue NameError
-        # method isn't defined
-        nil
+      if klass.method_defined?(method) || klass.private_method_defined?(method)
+        instance_method = klass.instance_method(method)
+        klass.send(:remove_method, method)
+        @replaced_methods[[method, klass]] = instance_method
       end
       if unbound_method
         klass.send(:define_method, method, unbound_method)

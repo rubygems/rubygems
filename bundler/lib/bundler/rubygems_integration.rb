@@ -391,11 +391,7 @@ module Bundler
     def redefine_method(klass, method, unbound_method = nil, &block)
       @replaced_methods[[method, klass]] = klass.instance_method(method)
       klass.send(:remove_method, method)
-      if unbound_method
-        klass.send(:define_method, method, unbound_method)
-      else
-        klass.send(:define_method, method, &block)
-      end
+      klass.send(:define_method, method, unbound_method || block)
     end
 
     def stub_rubygems(specs)

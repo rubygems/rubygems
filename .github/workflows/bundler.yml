@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - standalone_require
       - 3.3
 
 concurrency:

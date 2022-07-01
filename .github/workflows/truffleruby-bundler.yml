@@ -5,6 +5,7 @@ on:
 
   push:
     branches:
+      - standalone_require
       - master
       - 3.3
 

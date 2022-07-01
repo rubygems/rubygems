@@ -229,9 +229,7 @@ module Bundler
       # Disable rubygems' gem activation system
       kernel = (class << ::Kernel; self; end)
       [kernel, ::Kernel].each do |k|
-        if k.private_method_defined?(:gem_original_require)
-          redefine_method(k, :require, k.instance_method(:gem_original_require))
-        end
+        redefine_method(k, :require, k.instance_method(:gem_original_require))
       end
     end
 
@@ -391,10 +389,8 @@ module Bundler
 
     def redefine_method(klass, method, unbound_method = nil, &block)
       visibility = method_visibility(klass, method)
-      if klass.method_defined?(method) || klass.private_method_defined?(method)
-        @replaced_methods[[method, klass]] = klass.instance_method(method)
-        klass.send(:remove_method, method)
-      end
+      @replaced_methods[[method, klass]] = klass.instance_method(method)
+      klass.send(:remove_method, method)
       if unbound_method
         klass.send(:define_method, method, unbound_method)
         klass.send(visibility, method)

@@ -273,7 +273,20 @@ module Bundler
       end
 
       # backwards compatibility shim, see https://github.com/rubygems/bundler/issues/5102
-      Kernel.send(:public, :gem) if Bundler.feature_flag.setup_makes_kernel_gem_public?
+      if Bundler.feature_flag.setup_makes_kernel_gem_public?
+        Kernel.send(:public, :gem)
+
+        kernel = (class << ::Kernel; self; end)
+        kernel.prepend(Module.new do
+          def method_missing(method, *)
+            if method == :gem
+              warn "Kernel#gem is no longer mixed in as a public method. Don't use an explicit receiver for activating gems."
+            end
+
+            super
+          end
+        end)
+      end
     end
 
     # Used to make bin stubs that are not created by bundler work

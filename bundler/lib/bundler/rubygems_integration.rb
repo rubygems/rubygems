@@ -376,8 +376,8 @@ module Bundler
     end
 
     def undo_replacements
-      @replaced_methods.each do |(sym, klass), method|
-        redefine_method(klass, sym, method)
+      @replaced_methods.each_key do |sym, klass|
+        silent_define_method(klass, sym, @replaced_methods.delete([sym, klass]))
       end
       Kernel.send(:private, :require)
       if Binding.public_method_defined?(:source_location)
@@ -385,13 +385,16 @@ module Bundler
       else
         post_reset_hooks.reject! {|proc| proc.binding.eval("__FILE__") == __FILE__ }
       end
-      @replaced_methods.clear
     end
 
     def redefine_method(klass, method, unbound_method = nil, &block)
       @replaced_methods[[method, klass]] = klass.instance_method(method)
+      silent_define_method(klass, method, unbound_method || block)
+    end
+
+    def silent_define_method(klass, method, unbound_method)
       klass.send(:remove_method, method)
-      klass.send(:define_method, method, unbound_method || block)
+      klass.send(:define_method, method, unbound_method)
     end
 
     def stub_rubygems(specs)

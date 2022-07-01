@@ -289,7 +289,7 @@ module Bundler
     def replace_bin_path(specs_by_name)
       gem_class = (class << Gem; self; end)
 
-      redefine_method(gem_class, :find_spec_for_exe) do |gem_name, *args|
+      find_spec_for_exe = ->(gem_name, *args) do
         exec_name = args.first
         raise ArgumentError, "you must supply exec_name" unless exec_name
 
@@ -325,29 +325,35 @@ module Bundler
         spec
       end
 
-      redefine_method(gem_class, :activate_bin_path) do |name, *args|
-        exec_name = args.first
-        return ENV["BUNDLE_BIN_PATH"] if exec_name == "bundle"
+      if provides?(">= 2.6.2")
+        redefine_method(gem_class, :find_spec_for_exe, find_spec_for_exe)
 
-        # Copy of Rubygems activate_bin_path impl
-        requirement = args.last
-        spec = find_spec_for_exe name, exec_name, [requirement]
+        redefine_method(gem_class, :activate_bin_path) do |name, *args|
+          exec_name = args.first
+          return ENV["BUNDLE_BIN_PATH"] if exec_name == "bundle"
 
-        gem_bin = File.join(spec.full_gem_path, spec.bindir, exec_name)
-        gem_from_path_bin = File.join(File.dirname(spec.loaded_from), spec.bindir, exec_name)
-        File.exist?(gem_bin) ? gem_bin : gem_from_path_bin
-      end
+          # Copy of Rubygems activate_bin_path impl
+          requirement = args.last
+          spec = find_spec_for_exe name, exec_name, [requirement]
 
-      redefine_method(gem_class, :bin_path) do |name, *args|
-        exec_name = args.first
-        return ENV["BUNDLE_BIN_PATH"] if exec_name == "bundle"
+          gem_bin = File.join(spec.full_gem_path, spec.bindir, exec_name)
+          gem_from_path_bin = File.join(File.dirname(spec.loaded_from), spec.bindir, exec_name)
+          File.exist?(gem_bin) ? gem_bin : gem_from_path_bin
+        end
+      else
+        silent_define_method(gem_class, :find_spec_for_exec, find_spec_for_exe)
 
-        spec = find_spec_for_exe(name, *args)
-        exec_name ||= spec.default_executable
+        redefine_method(gem_class, :bin_path) do |name, *args|
+          exec_name = args.first
+          return ENV["BUNDLE_BIN_PATH"] if exec_name == "bundle"
 
-        gem_bin = File.join(spec.full_gem_path, spec.bindir, exec_name)
-        gem_from_path_bin = File.join(File.dirname(spec.loaded_from), spec.bindir, exec_name)
-        File.exist?(gem_bin) ? gem_bin : gem_from_path_bin
+          spec = find_speca_for_exe(specs_by_name, name, *args)
+          exec_name ||= spec.default_executable
+
+          gem_bin = File.join(spec.full_gem_path, spec.bindir, exec_name)
+          gem_from_path_bin = File.join(File.dirname(spec.loaded_from), spec.bindir, exec_name)
+          File.exist?(gem_bin) ? gem_bin : gem_from_path_bin
+        end
       end
     end
 

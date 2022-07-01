@@ -240,45 +240,42 @@ module Bundler
 
       executables = nil
 
-      kernel = (class << ::Kernel; self; end)
-      [kernel, ::Kernel].each do |kernel_class|
-        redefine_method(kernel_class, :gem) do |dep, *reqs|
-          if executables && executables.include?(File.basename(caller.first.split(":").first))
-            break
-          end
-
-          reqs.pop if reqs.last.is_a?(Hash)
-
-          unless dep.respond_to?(:name) && dep.respond_to?(:requirement)
-            dep = Gem::Dependency.new(dep, reqs)
-          end
-
-          if spec = specs_by_name[dep.name]
-            return true if dep.matches_spec?(spec)
-          end
-
-          message = if spec.nil?
-            target_file = begin
-                            Bundler.default_gemfile.basename
-                          rescue GemfileNotFound
-                            "inline Gemfile"
-                          end
-            "#{dep.name} is not part of the bundle." \
-            " Add it to your #{target_file}."
-          else
-            "can't activate #{dep}, already activated #{spec.full_name}. " \
-            "Make sure all dependencies are added to Gemfile."
-          end
-
-          e = Gem::LoadError.new(message)
-          e.name = dep.name
-          e.requirement = dep.requirement
-          raise e
+      redefine_method(Kernel, :gem) do |dep, *reqs|
+        if executables && executables.include?(File.basename(caller.first.split(":").first))
+          break
         end
 
-        # backwards compatibility shim, see https://github.com/rubygems/bundler/issues/5102
-        kernel_class.send(:public, :gem) if Bundler.feature_flag.setup_makes_kernel_gem_public?
+        reqs.pop if reqs.last.is_a?(Hash)
+
+        unless dep.respond_to?(:name) && dep.respond_to?(:requirement)
+          dep = Gem::Dependency.new(dep, reqs)
+        end
+
+        if spec = specs_by_name[dep.name]
+          return true if dep.matches_spec?(spec)
+        end
+
+        message = if spec.nil?
+          target_file = begin
+                          Bundler.default_gemfile.basename
+                        rescue GemfileNotFound
+                          "inline Gemfile"
+                        end
+          "#{dep.name} is not part of the bundle." \
+          " Add it to your #{target_file}."
+        else
+          "can't activate #{dep}, already activated #{spec.full_name}. " \
+          "Make sure all dependencies are added to Gemfile."
+        end
+
+        e = Gem::LoadError.new(message)
+        e.name = dep.name
+        e.requirement = dep.requirement
+        raise e
       end
+
+      # backwards compatibility shim, see https://github.com/rubygems/bundler/issues/5102
+      Kernel.send(:public, :gem) if Bundler.feature_flag.setup_makes_kernel_gem_public?
     end
 
     # Used to make bin stubs that are not created by bundler work

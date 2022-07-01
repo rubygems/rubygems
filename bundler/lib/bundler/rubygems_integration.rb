@@ -393,7 +393,7 @@ module Bundler
       klass.send(:remove_method, method)
       if unbound_method
         klass.send(:define_method, method, unbound_method)
-      elsif block
+      else
         klass.send(:define_method, method, &block)
       end
     end

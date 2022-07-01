@@ -398,12 +398,12 @@ module Bundler
         if (instance_method = klass.instance_method(method))
           # doing this to ensure we also get private methods
           klass.send(:remove_method, method)
+          @replaced_methods[[method, klass]] = instance_method
         end
       rescue NameError
         # method isn't defined
         nil
       end
-      @replaced_methods[[method, klass]] = instance_method
       if unbound_method
         klass.send(:define_method, method, unbound_method)
         klass.send(visibility, method)

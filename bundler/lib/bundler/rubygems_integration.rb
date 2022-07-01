@@ -236,13 +236,7 @@ module Bundler
     def replace_gem(specs, specs_by_name)
       reverse_rubygems_kernel_mixin
 
-      executables = nil
-
       redefine_method(Kernel, :gem) do |dep, *reqs|
-        if executables && executables.include?(File.basename(caller.first.split(":").first))
-          break
-        end
-
         reqs.pop if reqs.last.is_a?(Hash)
 
         unless dep.respond_to?(:name) && dep.respond_to?(:requirement)

@@ -228,9 +228,9 @@ module Bundler
     def reverse_rubygems_kernel_mixin
       # Disable rubygems' gem activation system
       kernel = (class << ::Kernel; self; end)
-      redefine_method(kernel, :require, kernel.instance_method(:gem_original_require))
-      redefine_method(Kernel, :require, Kernel.instance_method(:gem_original_require))
-      Kernel.send(:private, :require)
+      [kernel, ::Kernel].each do |k|
+        redefine_method(k, :require, k.instance_method(:gem_original_require))
+      end
     end
 
     def replace_gem(specs, specs_by_name)
@@ -386,7 +386,6 @@ module Bundler
       @replaced_methods.each_key do |sym, klass|
         silent_define_method(klass, sym, @replaced_methods.delete([sym, klass]))
       end
-      Kernel.send(:private, :require)
       if Binding.public_method_defined?(:source_location)
         post_reset_hooks.reject! {|proc| proc.binding.source_location[0] == __FILE__ }
       else
@@ -400,8 +399,25 @@ module Bundler
     end
 
     def silent_define_method(klass, method, unbound_method)
+      visibility = method_visibility(klass, method)
       klass.send(:remove_method, method)
-      klass.send(:define_method, method, unbound_method)
+      if unbound_method
+        klass.send(:define_method, method, unbound_method)
+        klass.send(visibility, method)
+      elsif block
+        klass.send(:define_method, method, &block)
+        klass.send(visibility, method)
+      end
+    end
+
+    def method_visibility(klass, method)
+      if klass.private_method_defined?(method)
+        :private
+      elsif klass.protected_method_defined?(method)
+        :protected
+      else
+        :public
+      end
     end
 
     def stub_rubygems(specs)

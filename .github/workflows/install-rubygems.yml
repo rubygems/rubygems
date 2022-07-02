@@ -62,6 +62,15 @@ jobs:
       - name: Run a remote rubygems command
         run: gem outdated
         if: matrix.openssl.value == true
+      - name: Check commands in presence of a plugin that leaves unresolved dependencies print no warnings
+        run: |
+          gem install attempt:0.6.2 rspec:3.10.0 rspec:3.11.0
+          mkdir -p tmp/plugin-home
+          echo "require 'attempt'" > tmp/plugin-home/rubygems_plugin.rb
+          RUBYOPT=-Itmp/plugin-home gem env version 2> errors.txt || (cat errors.txt && exit 1)
+          test ! -s errors.txt || (cat errors.txt && exit 1)
+          RUBYOPT=-Itmp/plugin-home gem install sys-admin:1.8.1 2> errors.txt || (cat errors.txt && exit 1)
+          test ! -s errors.txt || (cat errors.txt && exit 1)
       - name: Run bundler installed as a default gem
         run: bundle --version
       - name: Check bundler man pages were installed and are properly picked up

@@ -79,11 +79,11 @@ creating a new gem, security practices and other resources at https://guides.rub
 Got a bug and you're not sure?  You're sure you have a bug, but don't know
 what to do next?  In any case, let us know about it!  The best place
 for letting the RubyGems team know about bugs or problems you're having is
-[on the RubyGems issues page at GitHub](http://github.com/rubygems/rubygems/issues).
+[on the RubyGems issues page at GitHub](https://github.com/rubygems/rubygems/issues).
 
 ### Bundler Compatibility
 
-See http://bundler.io/compatibility for known issues.
+See https://bundler.io/compatibility for known issues.
 
 ### Supporting
 

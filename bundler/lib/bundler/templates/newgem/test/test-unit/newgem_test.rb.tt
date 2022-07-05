@@ -10,10 +10,6 @@ class <%= config[:constant_name] %>Test < Test::Unit::TestCase
   end
 
   test "something useful" do
-    <%- if config[:rust] -%>
-    assert_equal "Hello from Rust, sea creature!", <%= config[:constant_name] %>.hello("fellow rustacean")
-    <%- else -%>
-    assert false
-    <%- end -%>
+    assert_equal("expected", "actual")
   end
 end

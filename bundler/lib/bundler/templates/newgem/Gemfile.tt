@@ -11,6 +11,7 @@ gem "rake", "~> 13.0"
 gem "rake-compiler"
 <%- end -%>
 <%- if config[:rust] -%>
+
 gem "rb_sys"
 <%- end -%>
 <%- if config[:test] -%>

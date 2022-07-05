@@ -6,10 +6,6 @@ RSpec.describe <%= config[:constant_name] %> do
   end
 
   it "does something useful" do
-    <%- if config[:rust] -%>
-    expect(<%= config[:constant_name] %>.hello("fellow rustacean")).to eq("Hello from Rust, sea creature!")
-    <%- else -%>
     expect(false).to eq(true)
-    <%- end -%>
   end
 end

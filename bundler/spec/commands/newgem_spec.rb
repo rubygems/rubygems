@@ -1411,7 +1411,7 @@ RSpec.describe "bundle gem" do
       end
 
       it "includes magnus" do
-        expect(bundled_app("#{gem_name}/Cargo.toml").read).to include("magnus")
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/Cargo.toml").read).to include("magnus")
       end
 
       it "depends on compile task for build" do
@@ -1427,7 +1427,7 @@ RSpec.describe "bundle gem" do
             ext.lib_dir = "lib/#{gem_name}"
           end
 
-          task default: %i[compile]
+          task default: :compile
         RAKEFILE
 
         expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)

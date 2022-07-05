@@ -12,6 +12,7 @@ GEM
     rake (13.0.6)
     rake-compiler (1.1.7)
       rake
+    rb_sys (0.9.18)
     regexp_parser (2.2.0)
     rexml (3.2.5)
     rspec (3.10.0)
@@ -57,6 +58,7 @@ DEPENDENCIES
   minitest
   rake
   rake-compiler
+  rb_sys
   rspec
   rubocop (~> 1.7)
   test-unit

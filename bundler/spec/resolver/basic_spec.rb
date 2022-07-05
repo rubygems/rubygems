@@ -174,7 +174,7 @@ Bundler could not find compatible versions for gem "a":
     dep "foo"
     dep "Ruby\0", "1.8.7"
 
-    should_resolve_and_include %w[foo-1.0.0 bar-1.0.0], [[]]
+    should_resolve_and_include %w[foo-1.0.0 bar-1.0.0]
   end
 
   context "conservative" do

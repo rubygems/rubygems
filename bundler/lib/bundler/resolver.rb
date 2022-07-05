@@ -8,22 +8,6 @@ module Bundler
 
     include GemHelpers
 
-    # Figures out the best possible configuration of gems that satisfies
-    # the list of passed dependencies and any child dependencies without
-    # causing any gem activation errors.
-    #
-    # ==== Parameters
-    # *dependencies<Gem::Dependency>:: The list of dependencies to resolve
-    #
-    # ==== Returns
-    # <GemBundle>,nil:: If the list of dependencies can be resolved, a
-    #   collection of gemspecs is returned. Otherwise, nil is returned.
-    def self.resolve(requirements, source_requirements = {}, base = [], gem_version_promoter = GemVersionPromoter.new, additional_base_requirements = [], platforms = nil)
-      base = SpecSet.new(base) unless base.is_a?(SpecSet)
-      resolver = new(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
-      resolver.start(requirements)
-    end
-
     def initialize(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
       @source_requirements = source_requirements
       @base = Resolver::Base.new(base, additional_base_requirements)

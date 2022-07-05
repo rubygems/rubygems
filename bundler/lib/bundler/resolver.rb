@@ -143,9 +143,12 @@ module Bundler
             end
 
             spec_group_ruby = SpecGroup.create_for(specs_by_platform, [Gem::Platform::RUBY], Gem::Platform::RUBY)
-            groups << spec_group_ruby if spec_group_ruby
+            if spec_group_ruby
+              spec_group_ruby.force_ruby_platform = dependency.force_ruby_platform
+              groups << spec_group_ruby
+            end
 
-            next groups if @resolving_only_for_ruby
+            next groups if @resolving_only_for_ruby || dependency.force_ruby_platform
 
             spec_group = SpecGroup.create_for(specs_by_platform, @platforms, platform)
             groups << spec_group
@@ -233,19 +236,17 @@ module Bundler
     # before dependencies that are unconstrained
     def amount_constrained(dependency)
       @amount_constrained ||= {}
-      @amount_constrained[dependency.name] ||= begin
-        if (base = @base[dependency.name]) && !base.empty?
-          dependency.requirement.satisfied_by?(base.first.version) ? 0 : 1
-        else
-          all = index_for(dependency).search(dependency.name).size
+      @amount_constrained[dependency.name] ||= if (base = @base[dependency.name]) && !base.empty?
+        dependency.requirement.satisfied_by?(base.first.version) ? 0 : 1
+      else
+        all = index_for(dependency).search(dependency.name).size
 
-          if all <= 1
-            all - 1_000_000
-          else
-            search = search_for(dependency)
-            search = @prerelease_specified[dependency.name] ? search.count : search.count {|s| !s.version.prerelease? }
-            search - all
-          end
+        if all <= 1
+          all - 1_000_000
+        else
+          search = search_for(dependency)
+          search = @prerelease_specified[dependency.name] ? search.count : search.count {|s| !s.version.prerelease? }
+          search - all
         end
       end
     end
@@ -286,7 +287,7 @@ module Bundler
       if specs_matching_requirement.any?
         specs = specs_matching_requirement
         matching_part = requirement_label
-        requirement_label = "#{requirement_label} #{requirement.__platform}"
+        requirement_label = "#{requirement_label}' with platform '#{requirement.__platform}"
       end
 
       message = String.new("Could not find gem '#{requirement_label}'#{extra_message} in #{source}#{cache_message}.\n")

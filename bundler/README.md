@@ -38,7 +38,7 @@ Still stuck? Try [filing an issue](https://github.com/rubygems/rubygems/issues/n
 
 To see what has changed in recent versions of Bundler, see the [CHANGELOG](CHANGELOG.md).
 
-To get in touch with the Bundler core team and other Bundler users, please see [getting help](doc/contributing/GETTING_HELP.md).
+To get in touch with the Bundler core team and other Bundler users, please join [the Bundler slack](https://slack.bundler.io).
 
 ### Contributing
 

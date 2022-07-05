@@ -10,7 +10,6 @@ require_relative 'deprecate'
 require_relative 'basic_specification'
 require_relative 'stub_specification'
 require_relative 'platform'
-require_relative 'requirement'
 require_relative 'util/list'
 
 ##
@@ -884,6 +883,21 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # Adds +spec+ to the known specifications, keeping the collection
+  # properly sorted.
+
+  def self.add_spec(spec)
+    return if _all.include? spec
+
+    _all << spec
+    stubs << spec
+    (@@stubs_by_name[spec.name] ||= []) << spec
+
+    _resort!(@@stubs_by_name[spec.name])
+    _resort!(stubs)
+  end
+
+  ##
   # Returns all specifications. This method is discouraged from use.
   # You probably want to use one of the Enumerable methods instead.
 
@@ -1082,6 +1096,7 @@ class Gem::Specification < Gem::BasicSpecification
 
     spec.specification_version ||= NONEXISTENT_SPECIFICATION_VERSION
     spec.reset_nil_attributes_to_default
+    spec.flatten_require_paths
 
     spec
   end
@@ -1241,8 +1256,7 @@ class Gem::Specification < Gem::BasicSpecification
     clear_load_cache
     unresolved = unresolved_deps
     unless unresolved.empty?
-      w = "W" + "ARN"
-      warn "#{w}: Unresolved or ambiguous specs during Gem::Specification.reset:"
+      warn "WARN: Unresolved or ambiguous specs during Gem::Specification.reset:"
       unresolved.values.each do |dep|
         warn "      #{dep}"
 
@@ -1252,7 +1266,7 @@ class Gem::Specification < Gem::BasicSpecification
           versions.each {|s| warn "      - #{s.version}" }
         end
       end
-      warn "#{w}: Clearing out unresolved specs. Try 'gem cleanup <gem>'"
+      warn "WARN: Clearing out unresolved specs. Try 'gem cleanup <gem>'"
       warn "Please report a bug if this causes problems."
       unresolved.clear
     end
@@ -1273,10 +1287,26 @@ class Gem::Specification < Gem::BasicSpecification
     array = begin
       Marshal.load str
     rescue ArgumentError => e
-      raise unless e.message.include?("YAML")
+      #
+      # Some very old marshaled specs included references to `YAML::PrivateType`
+      # and `YAML::Syck::DefaultKey` constants due to bugs in the old emitter
+      # that generated them. Workaround the issue by defining the necessary
+      # constants and retrying.
+      #
+      message = e.message
+      raise unless message.include?("YAML::")
 
-      Object.const_set "YAML", Psych
-      Marshal.load str
+      Object.const_set "YAML", Psych unless Object.const_defined?(:YAML)
+
+      if message.include?("YAML::Syck::")
+        YAML.const_set "Syck", YAML unless YAML.const_defined?(:Syck)
+
+        YAML::Syck.const_set "DefaultKey", Class.new if message.include?("YAML::Syck::DefaultKey")
+      elsif message.include?("YAML::PrivateType")
+        YAML.const_set "PrivateType", Class.new
+      end
+
+      retry
     end
 
     spec = Gem::Specification.new
@@ -2674,6 +2704,13 @@ class Gem::Specification < Gem::BasicSpecification
     end
 
     @installed_by_version ||= nil
+  end
+
+  def flatten_require_paths # :nodoc:
+    return unless raw_require_paths.first.is_a?(Array)
+
+    warn "#{name} #{version} includes a gemspec with `require_paths` set to an array of arrays. Newer versions of this gem might've already fixed this"
+    raw_require_paths.flatten!
   end
 
   def raw_require_paths # :nodoc:

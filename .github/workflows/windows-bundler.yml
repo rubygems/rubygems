@@ -38,7 +38,7 @@ jobs:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@v3.3.0
+        uses: actions/setup-java@v3.4.0
         with:
           distribution: temurin
           java-version: 18.0.0

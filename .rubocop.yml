@@ -33,15 +33,18 @@ Layout/CommentIndentation:
 Layout/ElseAlignment:
   Enabled: true
 
-Layout/EmptyLinesAroundAccessModifier:
-  Enabled: true
-
 # Force Unix line endings.
 Layout/EndOfLine:
   Enabled: true
   EnforcedStyle: lf
 
 Layout/EmptyLines:
+  Enabled: true
+
+Layout/EmptyLinesAroundAccessModifier:
+  Enabled: true
+
+Layout/EmptyLinesAroundBlockBody:
   Enabled: true
 
 Layout/EmptyLinesAroundClassBody:

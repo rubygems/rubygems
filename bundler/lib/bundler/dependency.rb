@@ -7,8 +7,9 @@ require_relative "rubygems_ext"
 module Bundler
   class Dependency < Gem::Dependency
     attr_reader :autorequire
-    attr_reader :groups, :platforms, :gemfile, :git, :github, :branch, :ref
+    attr_reader :groups, :platforms, :gemfile, :git, :github, :branch, :ref, :force_ruby_platform
 
+    # rubocop:disable Naming/VariableNumber
     PLATFORM_MAP = {
       :ruby     => Gem::Platform::RUBY,
       :ruby_18  => Gem::Platform::RUBY,
@@ -91,6 +92,7 @@ module Bundler
       :x64_mingw_30 => Gem::Platform::X64_MINGW,
       :x64_mingw_31 => Gem::Platform::X64_MINGW,
     }.freeze
+    # rubocop:enable Naming/VariableNumber
 
     def initialize(name, version, options = {}, &blk)
       type = options["type"] || :runtime
@@ -107,6 +109,7 @@ module Bundler
       @env            = options["env"]
       @should_include = options.fetch("should_include", true)
       @gemfile        = options["gemfile"]
+      @force_ruby_platform = options.fetch("force_ruby_platform", default_force_ruby_platform)
 
       @autorequire = Array(options["require"] || []) if options.key?("require")
     end
@@ -120,7 +123,7 @@ module Bundler
     end
 
     def expanded_platforms
-      @expanded_platforms ||= @platforms.map {|pl| PLATFORM_MAP[pl] }.compact.uniq
+      @expanded_platforms ||= @platforms.map {|pl| PLATFORM_MAP[pl] }.compact.flatten.uniq
     end
 
     def should_include?
@@ -155,6 +158,18 @@ module Bundler
       super
     rescue NoMethodError
       requirement != ">= 0"
+    end
+
+    private
+
+    # The `:force_ruby_platform` attribute is `false` by default, except for
+    # TruffleRuby. TruffleRuby generally needs to force the RUBY platform
+    # variant unless the name is explicitly allowlisted.
+
+    def default_force_ruby_platform
+      return false unless Bundler.current_ruby.truffleruby?
+
+      !Gem::Platform::REUSE_AS_BINARY_ON_TRUFFLERUBY.include?(name)
     end
   end
 end

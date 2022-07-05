@@ -33,7 +33,7 @@ jobs:
         working-directory: ./bundler
       - name: Run Test
         run: |
-          bin/parallel_rspec --tag jruby
+          bin/parallel_rspec --tag jruby_only --tag jruby
         working-directory: ./bundler
       - name: Install local bundler
         run: |

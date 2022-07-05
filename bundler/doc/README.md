@@ -11,7 +11,7 @@ If you'd like to help make Bundler better, you totally rock! Thanks for helping 
 * [Overview & getting started](contributing/README.md)
 * [How you can help: your first contributions!](contributing/HOW_YOU_CAN_HELP.md)
 * [Bug triage](contributing/BUG_TRIAGE.md)
-* [Getting help](contributing/GETTING_HELP.md)
+* [Getting help](https://slack.bundler.io)
 * [Filing issues](https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md)
 * [Community](contributing/COMMUNITY.md)
 

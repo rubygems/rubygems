@@ -116,41 +116,33 @@ module Bundler
       specification.dependencies_for_activated_platforms
     end
 
-    def search_for(dependency_proxy)
-      platform = dependency_proxy.__platform
-      dependency = dependency_proxy.dep
+    def search_for(dependency)
       name = dependency.name
-      @search_for[dependency_proxy] ||= begin
+      @search_for[dependency] ||= begin
         locked_results = @base[name].select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
         locked_requirement = base_requirements[name]
         results = results_for(dependency) + locked_results
         results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
+        dep_platforms = dependency.gem_platforms(@platforms)
+        results = results.select { |spec| dep_platforms.any? {|platform| spec.match_platform(platform) } }
 
-        if results.any?
-          results = @gem_version_promoter.sort_versions(dependency, results)
-
-          results.group_by(&:version).reduce([]) do |groups, (_, specs)|
-            next groups unless specs.any? {|spec| spec.match_platform(platform) }
-
-            specs_by_platform = Hash.new do |current_specs, current_platform|
-              current_specs[current_platform] = select_best_platform_match(specs, current_platform)
-            end
-
-            if specs_by_platform[Gem::Platform::RUBY].any?
-              spec_group_ruby = SpecGroup.create_for(specs_by_platform, [Gem::Platform::RUBY])
-              spec_group_ruby.force_ruby_platform = dependency.force_ruby_platform
-              groups << spec_group_ruby
-            end
-
-            next groups if @resolving_only_for_ruby || dependency.force_ruby_platform
-
-            spec_group = SpecGroup.create_for(specs_by_platform, @platforms)
-            groups << spec_group
-
-            groups
+        @gem_version_promoter.sort_versions(dependency, results).group_by(&:version).reduce([]) do |groups, (_, specs)|
+          specs_by_platform = Hash.new do |current_specs, current_platform|
+            current_specs[current_platform] = select_best_platform_match(specs, current_platform)
           end
-        else
-          []
+
+          if specs_by_platform[Gem::Platform::RUBY].any?
+            spec_group_ruby = SpecGroup.create_for(specs_by_platform, [Gem::Platform::RUBY])
+            spec_group_ruby.force_ruby_platform = dependency.force_ruby_platform
+            groups << spec_group_ruby
+          end
+
+          next groups if @resolving_only_for_ruby || dependency.force_ruby_platform
+
+          spec_group = SpecGroup.create_for(specs_by_platform, dep_platforms)
+          groups << spec_group
+
+          groups
         end
       end
     end
@@ -181,10 +173,6 @@ module Bundler
       requirement.matches_spec?(spec) || spec.source.is_a?(Source::Gemspec)
     end
 
-    def dependencies_equal?(dependencies, other_dependencies)
-      dependencies.map(&:dep) == other_dependencies.map(&:dep)
-    end
-
     def sort_dependencies(dependencies, activated, conflicts)
       dependencies.sort_by do |dependency|
         name = name_for(dependency)
@@ -196,15 +184,8 @@ module Bundler
           amount_constrained(dependency),
           conflicts[name] ? 0 : 1,
           vertex.payload ? 0 : search_for(dependency).count,
-          self.class.platform_sort_key(dependency.__platform),
         ]
       end
-    end
-
-    def self.platform_sort_key(platform)
-      # Prefer specific platform to not specific platform
-      return ["99-LAST", "", "", ""] if Gem::Platform::RUBY == platform
-      ["00", *platform.to_a.map {|part| part || "" }]
     end
 
     private
@@ -261,6 +242,7 @@ module Bundler
       requirements.map! do |requirement|
         name = requirement.name
         next requirement if name == "bundler"
+        next if requirement.gem_platforms(@platforms).empty?
         next requirement unless search_for(requirement).empty?
         next unless requirement.current_platform?
 
@@ -282,7 +264,9 @@ module Bundler
       if specs_matching_requirement.any?
         specs = specs_matching_requirement
         matching_part = requirement_label
-        requirement_label = "#{requirement_label}' with platform '#{requirement.__platform}"
+        platforms = requirement.gem_platforms(@platforms)
+        platform_label = platforms.size == 1 ? "platform '#{platforms.first}" : "platforms '#{platforms.join("', '")}"
+        requirement_label = "#{requirement_label}' with #{platform_label}"
       end
 
       message = String.new("Could not find gem '#{requirement_label}'#{extra_message} in #{source}#{cache_message}.\n")

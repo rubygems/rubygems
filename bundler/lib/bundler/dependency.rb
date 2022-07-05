@@ -47,6 +47,10 @@ module Bundler
       @autorequire = Array(options["require"] || []) if options.key?("require")
     end
 
+    def hash # :nodoc:
+      [name, type, requirement, platforms].hash
+    end
+
     # Returns the platforms this dependency is valid for, in the same order as
     # passed in the `valid_platforms` parameter
     def gem_platforms(valid_platforms)

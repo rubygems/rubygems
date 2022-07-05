@@ -83,7 +83,7 @@ module Bundler
         dependencies = []
         @specs[platform].first.dependencies.each do |dep|
           next if dep.type == :development
-          dependencies << DepProxy.get_proxy(Dependency.new(dep.name, dep.requirement), platform)
+          dependencies << Dependency.new(dep.name, dep.requirement)
         end
         dependencies
       end
@@ -93,15 +93,15 @@ module Bundler
         return [] if spec.is_a?(LazySpecification)
 
         [
-          metadata_dependency("Ruby", spec.required_ruby_version, platform),
-          metadata_dependency("RubyGems", spec.required_rubygems_version, platform),
+          metadata_dependency("Ruby", spec.required_ruby_version),
+          metadata_dependency("RubyGems", spec.required_rubygems_version),
         ].compact
       end
 
-      def metadata_dependency(name, requirement, platform)
+      def metadata_dependency(name, requirement)
         return if requirement.nil? || requirement.none?
 
-        DepProxy.get_proxy(Dependency.new("#{name}\0", requirement), platform)
+        Dependency.new("#{name}\0", requirement)
       end
     end
   end

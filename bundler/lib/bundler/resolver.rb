@@ -36,6 +36,8 @@ module Bundler
     end
 
     def start(requirements, exclude_specs: [])
+      requirements = requirements.flat_map {|dep| dep.gem_platforms(@platforms).map {|p| DepProxy.get_proxy(dep, p) } }
+
       @metadata_requirements, regular_requirements = requirements.partition {|dep| dep.name.end_with?("\0") }
 
       exclude_specs.each do |spec|

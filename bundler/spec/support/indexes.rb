@@ -25,12 +25,12 @@ module Spec
           deps << Bundler::DepProxy.get_proxy(d, p)
         end
       end
-      args[0] ||= [] # base
+      args[0] ||= Bundler::SpecSet.new([]) # base
       args[0].each {|ls| ls.source = default_source }
       args[1] ||= Bundler::GemVersionPromoter.new # gem_version_promoter
       args[2] ||= [] # additional_base_requirements
       args[3] ||= @platforms # platforms
-      Bundler::Resolver.resolve(deps, source_requirements, *args)
+      Bundler::Resolver.new(source_requirements, *args).start(deps)
     end
 
     def should_not_resolve

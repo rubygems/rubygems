@@ -14,7 +14,7 @@ GEM
     rake (13.0.6)
     rake-compiler (1.1.7)
       rake
-    rb_sys (0.9.18)
+    rb_sys (0.9.19)
     rexml (3.2.5)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
@@ -61,7 +61,7 @@ DEPENDENCIES
   parallel (= 1.19.2)
   rake
   rake-compiler
-  rb_sys
+  rb_sys (~> 0.9.19)
   rspec
   standard (= 0.2.5)
   test-unit

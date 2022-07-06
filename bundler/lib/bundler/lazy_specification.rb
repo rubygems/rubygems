@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
+require_relative "force_platform"
 require_relative "match_platform"
 
 module Bundler
   class LazySpecification
+    include ForcePlatform
     include MatchPlatform
 
     attr_reader :name, :version, :dependencies, :platform
-    attr_accessor :source, :remote, :force_ruby_platform
+    attr_writer :force_ruby_platform
+    attr_accessor :source, :remote
 
     def initialize(name, version, platform, source = nil)
       @name          = name
@@ -16,6 +19,7 @@ module Bundler
       @platform      = platform || Gem::Platform::RUBY
       @source        = source
       @specification = nil
+      @force_ruby_platform = nil
     end
 
     def full_name
@@ -24,6 +28,12 @@ module Bundler
       else
         "#{@name}-#{@version}-#{platform}"
       end
+    end
+
+    def force_ruby_platform
+      return @force_ruby_platform unless @force_ruby_platform.nil?
+
+      default_force_ruby_platform
     end
 
     def ==(other)

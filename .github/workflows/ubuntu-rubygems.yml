@@ -28,7 +28,7 @@ jobs:
           - { name: "3.0", value: 3.0.4 }
           - { name: "3.1", value: 3.1.2 }
           - { name: jruby-9.3, value: jruby-9.3.4.0 }
-          - { name: truffleruby-21, value: truffleruby-21.3.0 }
+          - { name: truffleruby-22, value: truffleruby-22.1.0 }
     steps:
       - uses: actions/checkout@v3
       - name: Setup ruby

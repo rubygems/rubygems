@@ -235,6 +235,14 @@ module Bundler
       @locked_deps.values
     end
 
+    def new_deps
+      @new_deps ||= @dependencies - locked_dependencies
+    end
+
+    def deleted_deps
+      @deleted_deps ||= locked_dependencies - @dependencies
+    end
+
     def specs_for(groups)
       return specs if groups.empty?
       deps = dependencies_for(groups)
@@ -259,8 +267,13 @@ module Bundler
         Bundler.ui.debug "Frozen, using resolution from the lockfile"
         @locked_specs
       elsif !unlocking? && nothing_changed?
-        Bundler.ui.debug("Found no changes, using resolution from the lockfile")
-        SpecSet.new(filter_specs(@locked_specs, @dependencies.select {|dep| @locked_specs[dep].any? }))
+        if deleted_deps.any?
+          Bundler.ui.debug("Some dependencies were deleted, using a subset of the resolution from the lockfile")
+          SpecSet.new(filter_specs(@locked_specs, @dependencies - deleted_deps))
+        else
+          Bundler.ui.debug("Found no changes, using resolution from the lockfile")
+          SpecSet.new(filter_specs(@locked_specs, @dependencies))
+        end
       else
         last_resolve = converge_locked_specs
         # Run a resolve against the locally available gems
@@ -358,9 +371,6 @@ module Bundler
       deleted_platforms = @locked_platforms - @platforms
       added.concat new_platforms.map {|p| "* platform: #{p}" }
       deleted.concat deleted_platforms.map {|p| "* platform: #{p}" }
-
-      new_deps = @dependencies - locked_dependencies
-      deleted_deps = locked_dependencies - @dependencies
 
       added.concat new_deps.map {|d| "* #{pretty_dep(d)}" } if new_deps.any?
       deleted.concat deleted_deps.map {|d| "* #{pretty_dep(d)}" } if deleted_deps.any?

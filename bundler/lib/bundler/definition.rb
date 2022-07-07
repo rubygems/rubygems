@@ -272,7 +272,11 @@ module Bundler
           SpecSet.new(filter_specs(@locked_specs, @dependencies - deleted_deps))
         else
           Bundler.ui.debug("Found no changes, using resolution from the lockfile")
-          SpecSet.new(filter_specs(@locked_specs, @dependencies))
+          if @locked_gems.may_include_redundant_platform_specific_gems?
+            SpecSet.new(filter_specs(@locked_specs, @dependencies))
+          else
+            @locked_specs
+          end
         end
       else
         last_resolve = converge_locked_specs

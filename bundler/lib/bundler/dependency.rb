@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require "rubygems/dependency"
+require_relative "force_platform"
 require_relative "shared_helpers"
 require_relative "rubygems_ext"
 
 module Bundler
   class Dependency < Gem::Dependency
+    include ForcePlatform
+
     attr_reader :autorequire
     attr_reader :groups, :platforms, :gemfile, :git, :github, :branch, :ref, :force_ruby_platform
 
@@ -158,18 +161,6 @@ module Bundler
       super
     rescue NoMethodError
       requirement != ">= 0"
-    end
-
-    private
-
-    # The `:force_ruby_platform` attribute is `false` by default, except for
-    # TruffleRuby. TruffleRuby generally needs to force the RUBY platform
-    # variant unless the name is explicitly allowlisted.
-
-    def default_force_ruby_platform
-      return false unless Bundler.current_ruby.truffleruby?
-
-      !Gem::Platform::REUSE_AS_BINARY_ON_TRUFFLERUBY.include?(name)
     end
   end
 end

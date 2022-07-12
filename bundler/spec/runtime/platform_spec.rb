@@ -281,38 +281,40 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
 
     expect(the_bundle).to include_gems "platform_specific 1.0 RUBY"
 
-    build_repo4 do
-      build_gem "libv8"
+    simulate_platform "x86_64-linux" do
+      build_repo4 do
+        build_gem "libv8"
 
-      build_gem "libv8" do |s|
-        s.platform = Bundler.local_platform
+        build_gem "libv8" do |s|
+          s.platform = "x86_64-linux"
+        end
       end
+
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo4)}"
+        gem "libv8"
+      G
+
+      lockfile <<-L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            libv8 (1.0)
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+          libv8
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+
+      bundle "install"
+
+      expect(the_bundle).to include_gems "libv8 1.0 x86_64-linux"
     end
-
-    gemfile <<-G
-      source "#{file_uri_for(gem_repo4)}"
-      gem "libv8"
-    G
-
-    lockfile <<-L
-      GEM
-        remote: #{file_uri_for(gem_repo4)}/
-        specs:
-          libv8 (1.0)
-
-      PLATFORMS
-        ruby
-
-      DEPENDENCIES
-        libv8
-
-      BUNDLED WITH
-         #{Bundler::VERSION}
-    L
-
-    bundle "install"
-
-    expect(the_bundle).to include_gems "libv8 1.0 #{Bundler.local_platform}"
   end
 
   it "allows specifying only-ruby-platform on windows with dependency platforms" do

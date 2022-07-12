@@ -550,7 +550,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     @cmd.options[:args] = [@path]
     @cmd.options[:host] = @host
 
-    @ui = Gem::MockGemUi.new "some@mail.com\npass\n11111\n"
+    @ui = Gem::MockGemUi.new "some@mail.com\npass\n\n11111\n"
     use_ui @ui do
       @cmd.execute
     end

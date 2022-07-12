@@ -266,9 +266,9 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\ngem\n"
     util_capture(key_name_ui, host, api_key, fetcher) { @cmd.execute }
 
-    refute_match "Enter the name of the gem you want to scope this key to.", key_name_ui.output
-    refute_match "Gem name [All gems]:", key_name_ui.output
-    assert_equal "name=test-key&push_rubygem=true", fetcher.last_request.body
+    assert_match "Enter the name of the gem you want to scope this key to.", key_name_ui.output
+    assert_match "Gem name [All gems]:", key_name_ui.output
+    assert_equal "name=test-key&push_rubygem=true&rubygem_name=gem", fetcher.last_request.body
   end
 
   def test_execute_with_warnings
@@ -293,7 +293,7 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     api_key   = "1234abcd"
     fetcher   = Gem::RemoteFetcher.fetcher
 
-    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\ny"
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\n\n"
 
     # Set the expected response for the Web-API supplied
     ENV["RUBYGEMS_HOST"]       = host
@@ -314,6 +314,7 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     assert_match "remove_owner [yN]", key_name_ui.output
     assert_match "access_webhooks [yN]", key_name_ui.output
     assert_match "show_dashboard [yN]", key_name_ui.output
+    refute_match "Would you like to enable MFA for this key? (strongly recommended) [yn]", key_name_ui.output
     assert_equal "name=test-key&push_rubygem=true", fetcher.last_request.body
   end
 

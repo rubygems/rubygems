@@ -74,7 +74,6 @@ bundler/lib/bundler/fetcher/compact_index.rb
 bundler/lib/bundler/fetcher/dependency.rb
 bundler/lib/bundler/fetcher/downloader.rb
 bundler/lib/bundler/fetcher/index.rb
-bundler/lib/bundler/force_platform.rb
 bundler/lib/bundler/friendly_errors.rb
 bundler/lib/bundler/gem_helper.rb
 bundler/lib/bundler/gem_helpers.rb

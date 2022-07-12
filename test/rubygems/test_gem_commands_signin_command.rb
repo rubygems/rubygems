@@ -112,7 +112,7 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     api_key   = "1234abcd"
     fetcher   = Gem::RemoteFetcher.fetcher
 
-    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\n"
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\n\n"
     util_capture(key_name_ui, nil, api_key, fetcher) { @cmd.execute }
 
     user = ENV["USER"] || ENV["USERNAME"]
@@ -138,7 +138,7 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     fetcher   = Gem::RemoteFetcher.fetcher
     mfa_level = "ui_only"
 
-    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\ny"
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\ny\n\n"
     util_capture(key_name_ui, nil, api_key, fetcher, mfa_level) { @cmd.execute }
 
     user = ENV["USER"] || ENV["USERNAME"]
@@ -165,7 +165,7 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     fetcher   = Gem::RemoteFetcher.fetcher
     mfa_level = "ui_and_gem_signin"
 
-    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\ny"
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\ny\n\n"
     util_capture(key_name_ui, nil, api_key, fetcher, mfa_level) { @cmd.execute }
 
     user = ENV["USER"] || ENV["USERNAME"]

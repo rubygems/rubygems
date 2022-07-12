@@ -185,6 +185,92 @@ class TestGemCommandsSigninCommand < Gem::TestCase
     assert_equal api_key, credentials[:rubygems_api_key]
   end
 
+  def test_execute_with_gem_scope_and_push_rubygem
+    email     = "you@example.com"
+    password  = "secret"
+    api_key   = "1234"
+    fetcher   = Gem::RemoteFetcher.fetcher
+
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\ngem\n"
+    util_capture(key_name_ui, nil, api_key, fetcher) { @cmd.execute }
+
+    assert_match "Enter the name of the gem you want to scope this key to.", key_name_ui.output
+    assert_match "Gem name [All gems]:", key_name_ui.output
+    assert_equal "name=test-key&push_rubygem=true&rubygem_name=gem", fetcher.last_request.body
+  end
+
+  def test_execute_with_gem_scope_and_yank_rubygem
+    email     = "you@example.com"
+    password  = "secret"
+    api_key   = "1234"
+    fetcher   = Gem::RemoteFetcher.fetcher
+
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\n\ny\n\n\n\n\ngem\n"
+    util_capture(key_name_ui, nil, api_key, fetcher) { @cmd.execute }
+
+    assert_match "Enter the name of the gem you want to scope this key to.", key_name_ui.output
+    assert_match "Gem name [All gems]:", key_name_ui.output
+    assert_equal "name=test-key&yank_rubygem=true&rubygem_name=gem", fetcher.last_request.body
+  end
+
+  def test_execute_with_gem_scope_and_add_owner
+    email     = "you@example.com"
+    password  = "secret"
+    api_key   = "1234"
+    fetcher   = Gem::RemoteFetcher.fetcher
+
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\n\n\ny\n\n\n\ngem\n"
+    util_capture(key_name_ui, nil, api_key, fetcher) { @cmd.execute }
+
+    assert_match "Enter the name of the gem you want to scope this key to.", key_name_ui.output
+    assert_match "Gem name [All gems]:", key_name_ui.output
+    assert_equal "name=test-key&add_owner=true&rubygem_name=gem", fetcher.last_request.body
+  end
+
+  def test_execute_with_gem_scope_and_remove_owner
+    email     = "you@example.com"
+    password  = "secret"
+    api_key   = "1234"
+    fetcher   = Gem::RemoteFetcher.fetcher
+
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\n\n\n\ny\n\n\ngem\n"
+    util_capture(key_name_ui, nil, api_key, fetcher) { @cmd.execute }
+
+    assert_match "Enter the name of the gem you want to scope this key to.", key_name_ui.output
+    assert_match "Gem name [All gems]:", key_name_ui.output
+    assert_equal "name=test-key&remove_owner=true&rubygem_name=gem", fetcher.last_request.body
+  end
+
+  def test_execute_without_gem_scope_compatible_api_scope
+    email     = "you@example.com"
+    password  = "secret"
+    api_key   = "1234"
+    fetcher   = Gem::RemoteFetcher.fetcher
+
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\ny\n\n\n\n\n\n\ngem\n"
+    util_capture(key_name_ui, nil, api_key, fetcher) { @cmd.execute }
+
+    refute_match "Enter the name of the gem you want to scope this key to.", key_name_ui.output
+    refute_match "Gem name [All gems]:", key_name_ui.output
+    assert_equal "name=test-key&index_rubygems=true", fetcher.last_request.body
+  end
+
+  def test_execute_on_gemserver_with_gem_scope
+    host = "http://some-gemcutter-compatible-host.org"
+
+    email     = "you@example.com"
+    password  = "secret"
+    api_key   = "1234"
+    fetcher   = Gem::RemoteFetcher.fetcher
+
+    key_name_ui = Gem::MockGemUi.new "#{email}\n#{password}\ntest-key\n\ny\n\n\n\n\n\ngem\n"
+    util_capture(key_name_ui, host, api_key, fetcher) { @cmd.execute }
+
+    refute_match "Enter the name of the gem you want to scope this key to.", key_name_ui.output
+    refute_match "Gem name [All gems]:", key_name_ui.output
+    assert_equal "name=test-key&push_rubygem=true", fetcher.last_request.body
+  end
+
   def test_execute_with_warnings
     email     = "you@example.com"
     password  = "secret"

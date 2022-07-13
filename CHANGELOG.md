@@ -1,3 +1,18 @@
+# 3.3.18 / 2022-07-13
+
+## Enhancements:
+
+* Make platform `universal-mingw32` match "x64-mingw-ucrt". Pull request
+  #5655 by johnnyshields
+* Add more descriptive messages when `gem update` fails to update some
+  gems. Pull request #5676 by brianleshopify
+* Installs bundler 2.3.18 as a default gem.
+
+## Bug fixes:
+
+* Make sure RubyGems prints no warnings when loading plugins. Pull request
+  #5607 by deivid-rodriguez
+
 # 3.3.17 / 2022-06-29
 
 ## Enhancements:

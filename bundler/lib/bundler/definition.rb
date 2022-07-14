@@ -723,19 +723,7 @@ module Bundler
 
         # Path sources have special logic
         if s.source.instance_of?(Source::Path) || s.source.instance_of?(Source::Gemspec)
-          new_specs = begin
-            s.source.specs
-          rescue PathError, GitError
-            # if we won't need the source (according to the lockfile),
-            # don't error if the path/git source isn't available
-            next if specs.
-                    for(requested_dependencies, false, true).
-                    none? {|locked_spec| locked_spec.source == s.source }
-
-            raise
-          end
-
-          new_spec = new_specs[s].first
+          new_spec = s.source.specs[s].first
 
           # If the spec is no longer in the path source, unlock it. This
           # commonly happens if the version changed in the gemspec

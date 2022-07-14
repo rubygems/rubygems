@@ -33,7 +33,6 @@ module Bundler
       @platforms = platforms
       @resolving_only_for_ruby = platforms == [Gem::Platform::RUBY]
       @gem_version_promoter = gem_version_promoter
-      @use_gvp = Bundler.feature_flag.use_gem_version_promoter_for_major_updates? || !@gem_version_promoter.major?
     end
 
     def start(requirements, exclude_specs: [])
@@ -116,14 +115,16 @@ module Bundler
         results = results_for(dependency) + locked_results
         results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
 
-        if !@prerelease_specified[name] && (!@use_gvp || locked_results.empty?)
+        if !@prerelease_specified[name] && locked_results.empty?
           # Move prereleases to the beginning of the list, so they're considered
           # last during resolution.
           pre, results = results.partition {|spec| spec.version.prerelease? }
           results = pre + results
         end
 
-        spec_groups = if results.any?
+        if results.any?
+          results = @gem_version_promoter.sort_versions(dependency, results)
+
           results.group_by(&:version).reduce([]) do |groups, (_, specs)|
             next groups unless specs.any? {|spec| spec.match_platform(platform) }
 
@@ -146,13 +147,6 @@ module Bundler
           end
         else
           []
-        end
-        # GVP handles major itself, but it's still a bit risky to trust it with it
-        # until we get it settled with new behavior. For 2.x it can take over all cases.
-        if !@use_gvp
-          spec_groups
-        else
-          @gem_version_promoter.sort_versions(dependency, spec_groups)
         end
       end
     end

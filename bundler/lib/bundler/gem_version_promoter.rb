@@ -55,15 +55,15 @@ module Bundler
       @level = v
     end
 
-    # Given a Dependency and an Array of SpecGroups of available versions for a
-    # gem, this method will return the Array of SpecGroups sorted (and possibly
+    # Given a Dependency and an Array of Specifications of available versions for a
+    # gem, this method will return the Array of Specifications sorted (and possibly
     # truncated if strict is true) in an order to give preference to the current
     # level (:major, :minor or :patch) when resolution is deciding what versions
     # best resolve all dependencies in the bundle.
     # @param dep [Dependency] The Dependency of the gem.
-    # @param spec_groups [SpecGroup] An array of SpecGroups for the same gem
+    # @param spec_groups [Specification] An array of Specifications for the same gem
     #    named in the @dep param.
-    # @return [SpecGroup] A new instance of the SpecGroup Array sorted and
+    # @return [Specification] A new instance of the Specification Array sorted and
     #    possibly filtered.
     def sort_versions(dep, spec_groups)
       @sort_versions[dep] ||= begin

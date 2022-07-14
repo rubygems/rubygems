@@ -325,7 +325,7 @@ module Gem::GemcutterUtilities
 
   def get_rubygem_scope_params(scope_params)
     rubygem_scope_params = {}
-    return rubygem_scope_params unless gem_scope_compatible_api_scope_enabled?(scope_params)
+    return rubygem_scope_params if (GEM_SCOPE_COMPATIBLE_API_SCOPES & enabled_scopes(scope_params)).empty?
 
     say "Enter the name of the gem you want to scope this key to."
     rubygem_name = ask "Gem name [All gems]: "
@@ -338,8 +338,8 @@ module Gem::GemcutterUtilities
     rubygem_scope_params
   end
 
-  def gem_scope_compatible_api_scope_enabled?(scope_params)
-    (GEM_SCOPE_COMPATIBLE_API_SCOPES & scope_params.select {|_, v| v }.keys).any?
+  def enabled_scopes(scope_params)
+    scope_params.select {|_, v| v }.keys
   end
 
   def default_host?

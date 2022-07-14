@@ -1,4 +1,4 @@
-# 2.3.18 (July 13, 2022)
+# 2.3.18 (July 14, 2022)
 
 ## Enhancements:
 
@@ -6,6 +6,7 @@
 
 ## Bug fixes:
 
+  - Fix misleading error if compact index cannot be copied [#5709](https://github.com/rubygems/rubygems/pull/5709)
   - Fix TruffleRuby no longer able to install lockfiles generated with other implementations [#5711](https://github.com/rubygems/rubygems/pull/5711)
   - Fix TruffleRuby no longer installing lockfiles using "ruby" platform correctly [#5694](https://github.com/rubygems/rubygems/pull/5694)
   - Fix crash when updating vendor cache of default gems [#5679](https://github.com/rubygems/rubygems/pull/5679)

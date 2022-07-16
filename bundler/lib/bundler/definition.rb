@@ -188,7 +188,7 @@ module Bundler
     #
     # @return [Bundler::SpecSet]
     def specs
-      @specs ||= materialize(requested_dependencies)
+      @specs ||= check_materialized_specs!(materialized_requested_dependencies)
     end
 
     def new_specs
@@ -200,7 +200,11 @@ module Bundler
     end
 
     def missing_specs
-      resolve.materialize(requested_dependencies).missing_specs
+      materialized_requested_dependencies.missing_specs
+    end
+
+    def materialized_requested_dependencies
+      resolve.materialize(requested_dependencies)
     end
 
     def missing_specs?
@@ -486,6 +490,11 @@ module Bundler
 
     def materialize(dependencies)
       specs = resolve.materialize(dependencies)
+
+      check_materialized_specs!(specs)
+    end
+
+    def check_materialized_specs!(specs)
       missing_specs = specs.missing_specs
 
       if missing_specs.any?

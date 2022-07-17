@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://rubygems.org"
   s.licenses = ["Ruby", "MIT"]
 
-  s.files = File.read('Manifest.txt').split
+  s.files = File.read("Manifest.txt").split
   s.executables = ["update_rubygems"]
   s.require_paths = ["hide_lib_for_update"]
   s.rdoc_options = ["--main", "README.md", "--title=RubyGems Update Documentation"]

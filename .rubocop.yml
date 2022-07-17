@@ -163,6 +163,9 @@ Style/BlockDelimiters:
 Style/PercentLiteralDelimiters:
   Enabled: true
 
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
 # Having these make it easier to *not* forget to add one when adding a new
 # value and you can simply copy the previous line.
 Style/TrailingCommaInArrayLiteral:

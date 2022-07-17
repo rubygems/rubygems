@@ -1,18 +1,18 @@
 # frozen_string_literal: true
-require 'json'
-require 'net/http'
-require 'uri'
+require "json"
+require "net/http"
+require "uri"
 
-licenses_json = Net::HTTP.get(URI('https://spdx.org/licenses/licenses.json'))
-licenses = JSON.parse(licenses_json)['licenses'].map do |licenseObject|
-  licenseObject['licenseId']
+licenses_json = Net::HTTP.get(URI("https://spdx.org/licenses/licenses.json"))
+licenses = JSON.parse(licenses_json)["licenses"].map do |licenseObject|
+  licenseObject["licenseId"]
 end
-exceptions_json = Net::HTTP.get(URI('https://spdx.org/licenses/exceptions.json'))
-exceptions = JSON.parse(exceptions_json)['exceptions'].map do |exceptionObject|
-  exceptionObject['licenseExceptionId']
+exceptions_json = Net::HTTP.get(URI("https://spdx.org/licenses/exceptions.json"))
+exceptions = JSON.parse(exceptions_json)["exceptions"].map do |exceptionObject|
+  exceptionObject["licenseExceptionId"]
 end
 
-open 'lib/rubygems/util/licenses.rb', 'w' do |io|
+open "lib/rubygems/util/licenses.rb", "w" do |io|
   io.write <<-RUBY
 # frozen_string_literal: true
 

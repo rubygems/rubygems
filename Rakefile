@@ -455,7 +455,7 @@ module Rubygems
   class ProjectFiles
     def self.all
       files = []
-      exclude = %r{\A(?:\.|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|util/|Rakefile)}
+      exclude = %r{\A(?:\.|bundler/|util/|Rakefile)}
       tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|

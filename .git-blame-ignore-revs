@@ -1,0 +1,5 @@
+# .git-blame-ignore-revs
+# RubyGems
+# Enable Style/StringLiterals cop
+dca5fa728437383428a593644f537aaa1020ee63
+# Bundler

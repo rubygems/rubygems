@@ -89,15 +89,15 @@ class Changelog
   def change_types_for_blog
     types = release_notes
       .select {|line| change_types.include?(line) }
-      .map {|line| line.downcase.tr('^a-z ', '').strip }
+      .map {|line| line.downcase.tr("^a-z ", "").strip }
       .uniq
 
     last_change_type = types.pop
 
     if types.empty?
-      types = +''
+      types = +""
     else
-      types = types.join(', ') << ' and '
+      types = types.join(", ") << " and "
     end
 
     types << last_change_type
@@ -189,7 +189,7 @@ class Changelog
 
     result << work unless work.empty?
     result = result.reduce(String.new) do |acc, elem|
-      acc << "\n" << ' ' * indent unless acc.empty?
+      acc << "\n" << " " * indent unless acc.empty?
       acc << elem
     end
     result

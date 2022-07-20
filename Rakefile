@@ -1,7 +1,7 @@
 RakeFileUtils.verbose_flag = false
 
-require 'rubygems'
-require 'rubygems/package_task'
+require "rubygems"
+require "rubygems/package_task"
 require "rake/testtask"
 
 desc "Setup Rubygems dev environment"
@@ -55,32 +55,32 @@ end
 
 Rake::TestTask.new do |t|
   t.ruby_opts = %w[-w]
-  t.ruby_opts << '-rdevkit' if RbConfig::CONFIG['host_os'].include?('mingw')
+  t.ruby_opts << "-rdevkit" if RbConfig::CONFIG["host_os"].include?("mingw")
 
   t.libs << "test"
   t.libs << "bundler/lib"
 
-  t.test_files = FileList['test/**/test_*.rb']
+  t.test_files = FileList["test/**/test_*.rb"]
 end
 
-namespace 'test' do
-  desc 'Run each test isolatedly by specifying the relative test file path'
-  task 'isolated' do
-    FileList['test/**/test_*.rb'].each do |file|
-      sh Gem.ruby, '-Ilib:test:bundler/lib', file
+namespace "test" do
+  desc "Run each test isolatedly by specifying the relative test file path"
+  task "isolated" do
+    FileList["test/**/test_*.rb"].each do |file|
+      sh Gem.ruby, "-Ilib:test:bundler/lib", file
     end
   end
 end
 
 task :default => :test
 
-spec = Gem::Specification.load('rubygems-update.gemspec')
+spec = Gem::Specification.load("rubygems-update.gemspec")
 v = spec.version
 
-require 'rdoc/task'
+require "rdoc/task"
 
-RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
-  doc.main   = 'README.md'
+RDoc::Task.new :rdoc => "docs", :clobber_rdoc => "clobber_docs" do |doc|
+  doc.main   = "README.md"
   doc.title  = "RubyGems #{v} API Documentation"
 
   rdoc_files = Rake::FileList.new %w[lib bundler/lib]
@@ -91,7 +91,7 @@ RDoc::Task.new :rdoc => 'docs', :clobber_rdoc => 'clobber_docs' do |doc|
 
   doc.rdoc_files = rdoc_files
 
-  doc.rdoc_dir = 'doc'
+  doc.rdoc_dir = "doc"
 end
 
 # No big deal if Automatiek is not available. This might be just because
@@ -218,12 +218,12 @@ Gem::PackageTask.new(spec) {}
 Rake::Task["package"].enhance ["pkg/rubygems-#{v}.tgz", "pkg/rubygems-#{v}.zip"]
 
 file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
-  require 'find'
+  require "find"
 
   dest_root = File.expand_path t.name
 
   cd t.source do
-    Find.find '.' do |file|
+    Find.find "." do |file|
       dest = File.expand_path file, dest_root
 
       if File.directory? file
@@ -237,7 +237,7 @@ file "pkg/rubygems-#{v}" => "pkg/rubygems-update-#{v}" do |t|
 end
 
 file "pkg/rubygems-#{v}.zip" => "pkg/rubygems-#{v}" do
-  cd 'pkg' do
+  cd "pkg" do
     if Gem.win_platform?
       sh "7z a rubygems-#{v}.zip rubygems-#{v}"
     else
@@ -247,8 +247,8 @@ file "pkg/rubygems-#{v}.zip" => "pkg/rubygems-#{v}" do
 end
 
 file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
-  cd 'pkg' do
-    if Gem.win_platform? && RUBY_VERSION < '2.4'
+  cd "pkg" do
+    if Gem.win_platform? && RUBY_VERSION < "2.4"
       sh "7z a -ttar  rubygems-#{v}.tar rubygems-#{v}"
       sh "7z a -tgzip rubygems-#{v}.tgz rubygems-#{v}.tar"
     else
@@ -275,59 +275,59 @@ desc "Upload release to S3"
 task :upload_to_s3 do
   require "aws-sdk-s3"
 
-  s3 = Aws::S3::Resource.new(region:'us-west-2')
+  s3 = Aws::S3::Resource.new(region:"us-west-2")
   %w[zip tgz].each do |ext|
-    obj = s3.bucket('oregon.production.s3.rubygems.org').object("rubygems/rubygems-#{v}.#{ext}")
-    obj.upload_file("pkg/rubygems-#{v}.#{ext}", acl: 'public-read')
+    obj = s3.bucket("oregon.production.s3.rubygems.org").object("rubygems/rubygems-#{v}.#{ext}")
+    obj.upload_file("pkg/rubygems-#{v}.#{ext}", acl: "public-read")
   end
 end
 
 desc "Upload release to rubygems.org"
 task :upload => %w[upload_to_github upload_to_s3]
 
-directory '../guides.rubygems.org' do
-  sh 'git', 'clone',
-     'https://github.com/rubygems/guides.git',
-     '../guides.rubygems.org'
+directory "../guides.rubygems.org" do
+  sh "git", "clone",
+     "https://github.com/rubygems/guides.git",
+     "../guides.rubygems.org"
 end
 
-namespace 'guides' do
-  task 'pull' => %w[../guides.rubygems.org] do
-    chdir '../guides.rubygems.org' do
-      sh 'git', 'pull'
+namespace "guides" do
+  task "pull" => %w[../guides.rubygems.org] do
+    chdir "../guides.rubygems.org" do
+      sh "git", "pull"
     end
   end
 
-  task 'update' => %w[../guides.rubygems.org] do
-    lib_dir = File.join Dir.pwd, 'lib'
+  task "update" => %w[../guides.rubygems.org] do
+    lib_dir = File.join Dir.pwd, "lib"
 
-    chdir '../guides.rubygems.org' do
-      ruby '-I', lib_dir, '-S', 'rake', 'command_guide'
-      ruby '-I', lib_dir, '-S', 'rake', 'spec_guide'
+    chdir "../guides.rubygems.org" do
+      ruby "-I", lib_dir, "-S", "rake", "command_guide"
+      ruby "-I", lib_dir, "-S", "rake", "spec_guide"
     end
   end
 
-  task 'commit' => %w[../guides.rubygems.org] do
-    chdir '../guides.rubygems.org' do
+  task "commit" => %w[../guides.rubygems.org] do
+    chdir "../guides.rubygems.org" do
       begin
-        sh 'git', 'diff', '--quiet'
+        sh "git", "diff", "--quiet"
       rescue
-        sh 'git', 'commit', 'command-reference.md', 'specification-reference.md',
-           '-m', "Rebuild for RubyGems #{v}"
+        sh "git", "commit", "command-reference.md", "specification-reference.md",
+           "-m", "Rebuild for RubyGems #{v}"
       end
     end
   end
 
-  task 'push' => %w[../guides.rubygems.org] do
-    chdir '../guides.rubygems.org' do
-      sh 'git', 'push'
+  task "push" => %w[../guides.rubygems.org] do
+    chdir "../guides.rubygems.org" do
+      sh "git", "push"
     end
   end
 
-  desc 'Updates and publishes the guides for the just-released RubyGems'
-  task 'publish'
+  desc "Updates and publishes the guides for the just-released RubyGems"
+  task "publish"
 
-  task 'publish' => %w[
+  task "publish" => %w[
     guides:pull
     guides:update
     guides:commit
@@ -335,20 +335,20 @@ namespace 'guides' do
   ]
 end
 
-directory '../blog.rubygems.org' do
-  sh 'git', 'clone',
-    'https://github.com/rubygems/rubygems.github.io.git',
-     '../blog.rubygems.org'
+directory "../blog.rubygems.org" do
+  sh "git", "clone",
+    "https://github.com/rubygems/rubygems.github.io.git",
+     "../blog.rubygems.org"
 end
 
-namespace 'blog' do
-  date = Time.now.strftime '%Y-%m-%d'
+namespace "blog" do
+  date = Time.now.strftime "%Y-%m-%d"
   post_page = "_posts/#{date}-#{v}-released.md"
-  checksums = ''
+  checksums = ""
 
-  task 'checksums' => 'package' do
-    require 'net/http'
-    Dir['pkg/*{tgz,zip,gem}'].each do |file|
+  task "checksums" => "package" do
+    require "net/http"
+    Dir["pkg/*{tgz,zip,gem}"].each do |file|
       digest = OpenSSL::Digest::SHA256.file(file).hexdigest
       basename = File.basename(file)
 
@@ -372,26 +372,26 @@ namespace 'blog' do
     end
   end
 
-  task 'pull' => %w[../blog.rubygems.org] do
-    chdir '../blog.rubygems.org' do
-      sh 'git', 'pull'
+  task "pull" => %w[../blog.rubygems.org] do
+    chdir "../blog.rubygems.org" do
+      sh "git", "pull"
     end
   end
 
-  path = File.join '../blog.rubygems.org', post_page
+  path = File.join "../blog.rubygems.org", post_page
 
-  task 'update' => [path]
+  task "update" => [path]
 
-  file path => 'checksums' do
+  file path => "checksums" do
     name  = `git config --get user.name`.strip
     email = `git config --get user.email`.strip
 
     require_relative "util/changelog"
     history = Changelog.for_rubygems(v.to_s)
 
-    require 'tempfile'
+    require "tempfile"
 
-    Tempfile.open 'blog_post' do |io|
+    Tempfile.open "blog_post" do |io|
       io.write <<-ANNOUNCEMENT
 ---
 title: #{v} Released
@@ -420,28 +420,28 @@ SHA256 Checksums:
 
       io.flush
 
-      sh(ENV['EDITOR'] || 'vim', io.path)
+      sh(ENV["EDITOR"] || "vim", io.path)
 
       FileUtils.cp io.path, path
     end
   end
 
-  task 'commit' => %w[../blog.rubygems.org] do
-    chdir '../blog.rubygems.org' do
-      sh 'git', 'add', post_page
-      sh 'git', 'commit', post_page,
-         '-m', "Added #{v} release announcement"
+  task "commit" => %w[../blog.rubygems.org] do
+    chdir "../blog.rubygems.org" do
+      sh "git", "add", post_page
+      sh "git", "commit", post_page,
+         "-m", "Added #{v} release announcement"
     end
   end
 
-  task 'push' => %w[../blog.rubygems.org] do
-    chdir '../blog.rubygems.org' do
-      sh 'git', 'push'
+  task "push" => %w[../blog.rubygems.org] do
+    chdir "../blog.rubygems.org" do
+      sh "git", "push"
     end
   end
 
-  desc 'Updates and publishes the blog for the just-released RubyGems'
-  task 'publish' => %w[
+  desc "Updates and publishes the blog for the just-released RubyGems"
+  task "publish" => %w[
     blog:pull
     blog:update
     blog:commit
@@ -471,7 +471,7 @@ end
 
 desc "Update the manifest to reflect what's on disk"
 task :update_manifest do
-  File.open('Manifest.txt', 'w') {|f| f.puts(Rubygems::ProjectFiles.all) }
+  File.open("Manifest.txt", "w") {|f| f.puts(Rubygems::ProjectFiles.all) }
 end
 
 desc "Check the manifest is up to date"
@@ -488,12 +488,12 @@ end
 
 namespace :bundler do
   task :build_metadata do
-    chdir('bundler') { sh "rake build_metadata" }
+    chdir("bundler") { sh "rake build_metadata" }
   end
 
   namespace :build_metadata do
     task :clean do
-      chdir('bundler') { sh "rake build_metadata:clean" }
+      chdir("bundler") { sh "rake build_metadata:clean" }
     end
   end
 end

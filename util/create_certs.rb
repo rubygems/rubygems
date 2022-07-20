@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'openssl'
+require "openssl"
 
 class CertificateBuilder
   attr_reader :start
@@ -53,20 +53,20 @@ class CertificateBuilder
     ef = OpenSSL::X509::ExtensionFactory.new issuer_cert, cert
 
     cert.extensions = [
-      ef.create_extension('subjectAltName', "email:#{subject}@example"),
-      ef.create_extension('subjectKeyIdentifier', 'hash'),
+      ef.create_extension("subjectAltName", "email:#{subject}@example"),
+      ef.create_extension("subjectKeyIdentifier", "hash"),
     ]
 
     if cert != issuer_cert # not self-signed cert
-      cert.add_extension ef.create_extension('authorityKeyIdentifier', 'keyid:always')
+      cert.add_extension ef.create_extension("authorityKeyIdentifier", "keyid:always")
     end
 
     if is_ca
-      cert.add_extension ef.create_extension('basicConstraints', 'CA:TRUE', true)
-      cert.add_extension ef.create_extension('keyUsage', 'keyCertSign', true)
+      cert.add_extension ef.create_extension("basicConstraints", "CA:TRUE", true)
+      cert.add_extension ef.create_extension("keyUsage", "keyCertSign", true)
     end
 
-    cert.sign issuer_key, 'SHA1'
+    cert.sign issuer_key, "SHA1"
 
     puts "created cert - subject: #{cert.subject}, issuer: #{cert.issuer}"
     cert
@@ -120,39 +120,39 @@ keys[:public] = keys[:private].public_key
 
 certs = {}
 certs[:public] =
-  cb.create_certificates(keys[:private], 'nobody',
+  cb.create_certificates(keys[:private], "nobody",
                          is_ca: true)
 certs[:child] =
-  cb.create_certificates(keys[:child], 'child',
+  cb.create_certificates(keys[:child], "child",
                          keys[:private], certs[:public],
                          is_ca: true)
 certs[:alternate] =
-  cb.create_certificates(keys[:alternate], 'alternate')
+  cb.create_certificates(keys[:alternate], "alternate")
 certs[:expired] =
-  cb.create_certificates(keys[:private], 'nobody',
+  cb.create_certificates(keys[:private], "nobody",
                          not_before: Time.at(0),
                          not_after: Time.at(0))
 certs[:future] =
-  cb.create_certificates(keys[:private], 'nobody',
+  cb.create_certificates(keys[:private], "nobody",
                          not_before: :end_of_time,
                          not_after: :end_of_time)
 certs[:invalid_issuer] =
-  cb.create_certificates(keys[:invalid], 'invalid',
+  cb.create_certificates(keys[:invalid], "invalid",
                          keys[:invalid], certs[:public],
                          is_ca: true)
 certs[:grandchild] =
-  cb.create_certificates(keys[:grandchild], 'grandchild',
+  cb.create_certificates(keys[:grandchild], "grandchild",
                          keys[:child], certs[:child])
 certs[:invalid_signer] =
-  cb.create_certificates(keys[:invalid], 'invalid',
+  cb.create_certificates(keys[:invalid], "invalid",
                          keys[:private], certs[:invalid])
 certs[:invalidchild] =
-  cb.create_certificates(keys[:invalidchild], 'invalidchild',
+  cb.create_certificates(keys[:invalidchild], "invalidchild",
                          keys[:invalid], certs[:child])
 certs[:wrong_key] =
-  cb.create_certificates(keys[:alternate], 'nobody')
+  cb.create_certificates(keys[:alternate], "nobody")
 
-base_dir = 'test/rubygems'
+base_dir = "test/rubygems"
 
 keys.each do |name, key|
   dest = File.join base_dir, "#{name}_key.pem"

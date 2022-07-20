@@ -5,9 +5,9 @@
 # See LICENSE.txt for permissions.
 #++
 
-require 'rubygems'
+require "rubygems"
 
-if ARGV.include? '-h' or ARGV.include? '--help'
+if ARGV.include? "-h" or ARGV.include? "--help"
   $stderr.puts "rubygems_update [options]"
   $stderr.puts
   $stderr.puts "This will install the latest version of RubyGems."
@@ -17,7 +17,7 @@ if ARGV.include? '-h' or ARGV.include? '--help'
 end
 
 unless ARGV.grep(/--version=([\d\.]*)/).empty?
-  exec Gem.ruby, '-S', $PROGRAM_NAME, "_#{$1}_"
+  exec Gem.ruby, "-S", $PROGRAM_NAME, "_#{$1}_"
 end
 
 update_dir = $LOAD_PATH.find {|dir| dir =~ /rubygems-update/ }
@@ -32,5 +32,5 @@ else
   update_dir = File.dirname(update_dir)
   Dir.chdir update_dir
   ENV["GEM_PREV_VER"] = Gem::VERSION
-  abort unless system(Gem.ruby, 'setup.rb', *ARGV)
+  abort unless system(Gem.ruby, "setup.rb", *ARGV)
 end

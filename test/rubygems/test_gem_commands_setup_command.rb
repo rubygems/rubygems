@@ -54,7 +54,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     spec_fetcher do |fetcher|
       fetcher.download "bundler", "1.15.4"
 
-      fetcher.gem "bundler", BUNDLER_VERS
+      fetcher.gem "bundler", bundler_version
 
       fetcher.gem "bundler-audit", "1.0.0"
     end
@@ -164,10 +164,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     @cmd.options[:destdir] = destdir
     @cmd.execute
 
-    spec = Gem::Specification.load("bundler/bundler.gemspec")
-
-    spec.executables.each do |e|
-      assert_path_exist File.join destdir, @gemhome.gsub(/^[a-zA-Z]:/, ''), 'gems', spec.full_name, spec.bindir, e
+    bundler_spec.executables.each do |e|
+      assert_path_exist prepend_destdir(destdir, File.join(@gemhome, 'gems', bundler_spec.full_name, bundler_spec.bindir, e))
     end
   end
 
@@ -199,7 +197,6 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     bin_dir = File.join(@gemhome, 'bin')
     @cmd.install_default_bundler_gem bin_dir
 
-    bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
     default_spec_path = File.join(Gem.default_specifications_dir, "#{bundler_spec.full_name}.gemspec")
     spec = Gem::Specification.load(default_spec_path)
 
@@ -211,19 +208,17 @@ class TestGemCommandsSetupCommand < Gem::TestCase
       assert_path_exist File.join bin_dir, e
     end
 
-    default_dir = Gem.default_specifications_dir
-
     # expect to remove other versions of bundler gemspecs on default specification directory.
-    assert_path_not_exist File.join(default_dir, "bundler-1.15.4.gemspec")
-    assert_path_exist File.join(default_dir, "bundler-#{BUNDLER_VERS}.gemspec")
+    assert_path_not_exist previous_bundler_specification_path
+    assert_path_exist new_bundler_specification_path
 
     # expect to not remove bundler-* gemspecs.
     assert_path_exist File.join(Gem.dir, "specifications", "bundler-audit-1.0.0.gemspec")
 
     # expect to remove normal gem that was same version. because it's promoted default gems.
-    assert_path_not_exist File.join(Gem.dir, "specifications", "bundler-#{BUNDLER_VERS}.gemspec")
+    assert_path_not_exist File.join(Gem.dir, "specifications", "bundler-#{bundler_version}.gemspec")
 
-    assert_path_exist "#{Gem.dir}/gems/bundler-#{BUNDLER_VERS}"
+    assert_path_exist "#{Gem.dir}/gems/bundler-#{bundler_version}"
     assert_path_exist "#{Gem.dir}/gems/bundler-1.15.4"
     assert_path_exist "#{Gem.dir}/gems/bundler-audit-1.0.0"
   end
@@ -239,11 +234,9 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.install_default_bundler_gem bin_dir
 
-    default_dir = Gem.default_specifications_dir
-
     # expect to remove other versions of bundler gemspecs on default specification directory.
-    assert_path_not_exist File.join(default_dir, "bundler-1.15.4.gemspec")
-    assert_path_exist File.join(default_dir, "bundler-#{BUNDLER_VERS}.gemspec")
+    assert_path_not_exist previous_bundler_specification_path
+    assert_path_exist new_bundler_specification_path
   end
 
   def test_install_default_bundler_gem_with_force_flag
@@ -262,7 +255,6 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.install_default_bundler_gem bin_dir
 
-    bundler_spec = Gem::Specification.load("bundler/bundler.gemspec")
     default_spec_path = File.join(Gem.default_specifications_dir, "#{bundler_spec.full_name}.gemspec")
     spec = Gem::Specification.load(default_spec_path)
 
@@ -287,10 +279,16 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.install_default_bundler_gem bin_dir
 
-    spec = Gem::Specification.load("bundler/bundler.gemspec")
+    # leaves other versions of bundler gemspecs on default specification directory.
+    assert_path_exist previous_bundler_specification_path
+    assert_path_not_exist new_bundler_specification_path
 
-    spec.executables.each do |e|
-      assert_path_exist File.join destdir, @gemhome.gsub(/^[a-zA-Z]:/, ''), 'gems', spec.full_name, spec.bindir, e
+    # installs the updated bundler gemspec to destdir
+    assert_path_not_exist prepend_destdir(destdir, previous_bundler_specification_path)
+    assert_path_exist prepend_destdir(destdir, new_bundler_specification_path)
+
+    bundler_spec.executables.each do |e|
+      assert_path_exist prepend_destdir(destdir, File.join(@gemhome, 'gems', bundler_spec.full_name, bundler_spec.bindir, e))
     end
   ensure
     FileUtils.chmod "+w", @gemhome
@@ -307,10 +305,8 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.install_default_bundler_gem bin_dir
 
-    spec = Gem::Specification.load("bundler/bundler.gemspec")
-
-    spec.executables.each do |e|
-      assert_path_exist File.join destdir, 'gems', spec.full_name, spec.bindir, e
+    bundler_spec.executables.each do |e|
+      assert_path_exist File.join destdir, 'gems', bundler_spec.full_name, bundler_spec.bindir, e
     end
   end
 
@@ -461,5 +457,25 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
   def default_bundler_bin_path
     File.join RbConfig::CONFIG['bindir'], 'bundler'
+  end
+
+  def previous_bundler_specification_path
+    File.join(Gem.default_specifications_dir, "bundler-1.15.4.gemspec")
+  end
+
+  def new_bundler_specification_path
+    File.join(Gem.default_specifications_dir, "bundler-#{bundler_version}.gemspec")
+  end
+
+  def bundler_spec
+    Gem::Specification.load("bundler/bundler.gemspec")
+  end
+
+  def bundler_version
+    bundler_spec.version
+  end
+
+  def prepend_destdir(destdir, path)
+    File.join(destdir, path.gsub(/^[a-zA-Z]:/, ''))
   end
 end unless Gem.java_platform?

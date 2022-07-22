@@ -84,7 +84,7 @@ module Bundler
         else
           ruby_platform_materializes_to_ruby_platform? ? self : Dependency.new(name, version)
         end
-        platform_object = ruby_platform_materializes_to_ruby_platform? ? Gem::Platform.new(platform) : Gem::Platform.local
+        platform_object = ruby_platform_materializes_to_ruby_platform? ? Gem::Platform.new(platform) : Bundler.local_platform
         candidates = source.specs.search(search_object)
         same_platform_candidates = candidates.select do |spec|
           MatchPlatform.platforms_match?(spec.platform, platform_object)

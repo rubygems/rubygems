@@ -17,7 +17,7 @@ module Bundler
         filtered_specs_by_groups
       else
         begin
-          Bundler.load.specs
+          Bundler.definition.specs
         rescue GemNotFound => e
           Bundler.ui.error e.message
           Bundler.ui.warn "Install missing gems with `bundle install`."

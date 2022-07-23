@@ -78,38 +78,42 @@ module Bundler
     def materialize_for_installation
       source.local!
 
-      __materialize__(ruby_platform_materializes_to_ruby_platform? ? platform : Bundler.local_platform)
+      @specification = materialize_gemspec_source
+      return @specification if @specification
+
+      candidates = if source.is_a?(Source::Path) || !ruby_platform_materializes_to_ruby_platform?
+        target_platform = ruby_platform_materializes_to_ruby_platform? ? platform : Bundler.local_platform
+
+        source.specs.search(Dependency.new(name, version)).select do |spec|
+          MatchPlatform.platforms_match?(spec.platform, target_platform)
+        end
+      else
+        source.specs.search(self)
+      end
+
+      return self if candidates.empty?
+
+      __materialize__(candidates)
     end
 
     def materialize_for_resolution
       return self unless Gem::Platform.match_spec?(self)
 
-      __materialize__(platform, true)
+      candidates = source.specs.search(self)
+
+      __materialize__(candidates)
     end
 
-    def __materialize__(platform, strict = false)
-      @specification = if source.is_a?(Source::Gemspec) && source.gemspec.name == name
-        source.gemspec.tap {|s| s.source = source }
-      else
-        candidates = if source.is_a?(Source::Path) || !ruby_platform_materializes_to_ruby_platform?
-          source.specs.search(Dependency.new(name, version)).select do |spec|
-            MatchPlatform.platforms_match?(spec.platform, platform)
-          end
-        else
-          source.specs.search(self)
+    def __materialize__(candidates)
+      @specification = begin
+        installable_candidates = candidates.select do |spec|
+          spec.is_a?(StubSpecification) ||
+            (spec.required_ruby_version.satisfied_by?(Gem.ruby_version) &&
+              spec.required_rubygems_version.satisfied_by?(Gem.rubygems_version))
         end
-        if candidates.empty? && !strict
-          self
-        else
-          installable_candidates = candidates.select do |spec|
-            spec.is_a?(StubSpecification) ||
-              (spec.required_ruby_version.satisfied_by?(Gem.ruby_version) &&
-                spec.required_rubygems_version.satisfied_by?(Gem.rubygems_version))
-          end
-          search = installable_candidates.last
-          search.dependencies = dependencies if search && search.full_name == full_name && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
-          search
-        end
+        search = installable_candidates.last
+        search.dependencies = dependencies if search && search.full_name == full_name && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
+        search
       end
     end
 
@@ -135,6 +139,12 @@ module Bundler
     end
 
     private
+
+    def materialize_gemspec_source
+      if source.is_a?(Source::Gemspec) && source.gemspec.name == name
+        source.gemspec.tap {|s| s.source = source }
+      end
+    end
 
     def to_ary
       nil

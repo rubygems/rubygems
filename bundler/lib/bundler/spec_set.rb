@@ -84,8 +84,7 @@ module Bundler
 
     def materialized_for_resolution
       materialized = @specs.map do |s|
-        matches_platform = Gem::Platform.match_spec?(s)
-        spec = matches_platform ? s.materialize_for_resolution : s
+        spec = s.materialize_for_resolution
         yield spec if spec
         spec
       end.compact

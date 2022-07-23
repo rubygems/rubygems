@@ -82,6 +82,8 @@ module Bundler
     end
 
     def materialize_for_resolution
+      return self unless Gem::Platform.match_spec?(self)
+
       __materialize__(platform, true)
     end
 

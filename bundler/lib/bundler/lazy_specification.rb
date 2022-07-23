@@ -91,19 +91,17 @@ module Bundler
       @specification = if source.is_a?(Source::Gemspec) && source.gemspec.name == name
         source.gemspec.tap {|s| s.source = source }
       else
-        search_object = if source.is_a?(Source::Path) || !ruby_platform_materializes_to_ruby_platform?
-          Dependency.new(name, version)
+        candidates = if source.is_a?(Source::Path) || !ruby_platform_materializes_to_ruby_platform?
+          source.specs.search(Dependency.new(name, version)).select do |spec|
+            MatchPlatform.platforms_match?(spec.platform, platform)
+          end
         else
-          self
+          source.specs.search(self)
         end
-        candidates = source.specs.search(search_object)
         if candidates.empty? && !strict
           self
         else
-          same_platform_candidates = candidates.select do |spec|
-            MatchPlatform.platforms_match?(spec.platform, platform)
-          end
-          installable_candidates = same_platform_candidates.select do |spec|
+          installable_candidates = candidates.select do |spec|
             spec.is_a?(StubSpecification) ||
               (spec.required_ruby_version.satisfied_by?(Gem.ruby_version) &&
                 spec.required_rubygems_version.satisfied_by?(Gem.rubygems_version))

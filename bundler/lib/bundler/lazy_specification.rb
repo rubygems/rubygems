@@ -106,12 +106,11 @@ module Bundler
 
     def __materialize__(candidates)
       @specification = begin
-        installable_candidates = candidates.select do |spec|
+        search = candidates.reverse.find do |spec|
           spec.is_a?(StubSpecification) ||
             (spec.required_ruby_version.satisfied_by?(Gem.ruby_version) &&
               spec.required_rubygems_version.satisfied_by?(Gem.rubygems_version))
         end
-        search = installable_candidates.last
         search.dependencies = dependencies if search && search.full_name == full_name && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
         search
       end

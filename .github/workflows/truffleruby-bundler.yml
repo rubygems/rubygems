@@ -4,9 +4,6 @@ on:
   pull_request:
 
   push:
-    branches:
-      - master
-      - 3.3
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

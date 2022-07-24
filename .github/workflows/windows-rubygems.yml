@@ -29,7 +29,6 @@ jobs:
           - { name: "2.7", value: 2.7.6 }
           - { name: "3.0", value: 3.0.4 }
           - { name: "3.1", value: 3.1.2 }
-          - { name: mswin, value: mswin }
     steps:
       - uses: actions/checkout@v3
       - name: Setup ruby
@@ -42,7 +41,6 @@ jobs:
           toolchain: ${{ matrix.cargo.toolchain }}-${{ matrix.cargo.target }}
           default: true
       - name: Add missing clang dep for rust-bindgen (see https://github.com/rubygems/rubygems/pull/5175#discussion_r794873977)
-        if: ${{ matrix.ruby.name != 'mswin' }}
         run: |
           pacman --sync --noconfirm --needed $ENV:MINGW_PACKAGE_PREFIX-clang
       - name: Print debugging info

@@ -6,13 +6,17 @@ on:
 
 jobs:
   daily_rubygems:
-    name: Rubygems (ruby-head)
-    runs-on: ubuntu-20.04
+    name: Rubygems (${{ matrix.ruby }})
+    runs-on: ${{ matrix.os }}
     if: github.repository == 'rubygems/rubygems'
     strategy:
       fail-fast: false
       matrix:
+        os: [ ubuntu-20.04 ]
         ruby: [ ruby-head, truffleruby-head ]
+        cargo: [ stable ]
+        include:
+          - { os: windows-2022, ruby: mswin, cargo: stable-x86_64-pc-windows-gnu }
     env:
       TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
     steps:
@@ -26,7 +30,7 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: ${{ matrix.cargo }}
 
       - name: Show Ruby version
         run: ruby --version

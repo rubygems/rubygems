@@ -1000,6 +1000,26 @@ RSpec.describe "bundle install with gem sources" do
     end
   end
 
+  context "with only option" do
+    before do
+      bundle "config set only a:b"
+    end
+
+    it "installs only gems of the specified groups" do
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        gem "rails"
+        gem "rack", group: :a
+        gem "rake", group: :b
+        gem "yard", group: :c
+      G
+
+      expect(out).to include("Installing rack")
+      expect(out).to include("Installing rake")
+      expect(out).not_to include("Installing yard")
+    end
+  end
+
   context "with a symlinked configured as bundle path and a gem with symlinks" do
     before do
       symlinked_bundled_app = tmp("bundled_app-symlink")

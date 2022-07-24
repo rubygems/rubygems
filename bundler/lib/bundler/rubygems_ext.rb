@@ -17,6 +17,10 @@ require "rubygems/source"
 
 require_relative "match_platform"
 
+unless Gem.ruby_version.to_s == RUBY_VERSION || RUBY_PATCHLEVEL == -1
+  Gem.instance_variable_set(:@ruby_version, Gem::Version.new(RUBY_VERSION))
+end
+
 module Gem
   class Specification
     include ::Bundler::MatchPlatform

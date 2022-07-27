@@ -1,3 +1,27 @@
+# 3.3.19 / 2022-07-27
+
+## Enhancements:
+
+* Display mfa warnings on `gem signin`. Pull request #5590 by aellispierce
+* Require fileutils more lazily when installing gems. Pull request #5738
+  by deivid-rodriguez
+* Fix upgrading RubyGems with a customized `Gem.default_dir`. Pull request
+  #5728 by deivid-rodriguez
+* Stop using `/dev/null` for silent ui for WASI platform. Pull request
+  #5703 by kateinoigakukun
+* Unify loading `Gem::Requirement`. Pull request #5596 by deivid-rodriguez
+* Installs bundler 2.3.19 as a default gem.
+
+## Bug fixes:
+
+* Fix `ruby setup.rb` with `--destdir` writing outside of `--destdir`.
+  Pull request #5737 by deivid-rodriguez
+
+## Documentation:
+
+* Fix wrong information about default RubyGems source. Pull request #5723
+  by tnir
+
 # 3.3.18 / 2022-07-14
 
 ## Enhancements:

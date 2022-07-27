@@ -522,14 +522,14 @@ RSpec.describe "bundle install with gem sources" do
           ruby '~> 1.2'
           source "#{file_uri_for(gem_repo1)}"
         G
-        expect(err).to include("Your Ruby version is #{RUBY_VERSION}, but your Gemfile specified ~> 1.2")
+        expect(err).to include("Your Ruby version is #{Gem.ruby_version}, but your Gemfile specified ~> 1.2")
       end
     end
 
     context "and using a supported Ruby version" do
       before do
         install_gemfile <<-G
-          ruby '~> #{RUBY_VERSION}'
+          ruby '~> #{Gem.ruby_version}'
           source "#{file_uri_for(gem_repo1)}"
         G
       end
@@ -555,7 +555,7 @@ RSpec.describe "bundle install with gem sources" do
 
       it "updates Gemfile.lock with updated yet still compatible ruby version" do
         install_gemfile <<-G
-          ruby '~> #{RUBY_VERSION[0..2]}'
+          ruby '~> #{current_ruby_minor}'
           source "#{file_uri_for(gem_repo1)}"
         G
 
@@ -913,7 +913,7 @@ RSpec.describe "bundle install with gem sources" do
       gemfile <<-G
         source "https://gem.repo4"
 
-        ruby "#{RUBY_VERSION}"
+        ruby "#{Gem.ruby_version}"
 
         gem "loofah", "~> 2.12.0"
       G

@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "rubygems-update"
-  s.version = "3.3.18"
+  s.version = "3.3.19"
   s.authors = ["Jim Weirich", "Chad Fowler", "Eric Hodel", "Luis Lavena", "Aaron Patterson", "Samuel Giddins", "André Arko", "Evan Phoenix", "Hiroshi SHIBATA"]
   s.email = ["", "", "drbrain@segment7.net", "luislavena@gmail.com", "aaron@tenderlovemaking.com", "segiddins@segiddins.me", "andre@arko.net", "evan@phx.io", "hsbt@ruby-lang.org"]
 
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://rubygems.org"
   s.licenses = ["Ruby", "MIT"]
 
-  s.files = File.read('Manifest.txt').split
+  s.files = File.read("Manifest.txt").split
   s.executables = ["update_rubygems"]
   s.require_paths = ["hide_lib_for_update"]
   s.rdoc_options = ["--main", "README.md", "--title=RubyGems Update Documentation"]

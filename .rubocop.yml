@@ -33,15 +33,18 @@ Layout/CommentIndentation:
 Layout/ElseAlignment:
   Enabled: true
 
-Layout/EmptyLinesAroundAccessModifier:
-  Enabled: true
-
 # Force Unix line endings.
 Layout/EndOfLine:
   Enabled: true
   EnforcedStyle: lf
 
 Layout/EmptyLines:
+  Enabled: true
+
+Layout/EmptyLinesAroundAccessModifier:
+  Enabled: true
+
+Layout/EmptyLinesAroundBlockBody:
   Enabled: true
 
 Layout/EmptyLinesAroundClassBody:
@@ -159,6 +162,9 @@ Style/BlockDelimiters:
 
 Style/PercentLiteralDelimiters:
   Enabled: true
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
 
 # Having these make it easier to *not* forget to add one when adding a new
 # value and you can simply copy the previous line.

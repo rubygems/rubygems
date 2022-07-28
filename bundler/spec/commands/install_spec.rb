@@ -1020,6 +1020,30 @@ RSpec.describe "bundle install with gem sources" do
     end
   end
 
+  context "with --prefer-local flag" do
+    before do
+      build_repo4 do
+        build_gem "foo", "1.0.1"
+        build_gem "foo", "1.0.0"
+        build_gem "bar", "1.0.0"
+      end
+
+      system_gems "foo-1.0.0", :path => default_bundle_path, :gem_repo => gem_repo4
+    end
+
+    it "fetches remote sources only when not available locally" do
+      install_gemfile <<-G, :"prefer-local" => true, :verbose => true
+        source "#{file_uri_for(gem_repo4)}"
+
+        gem "foo"
+        gem "bar"
+      G
+
+      expect(out).to include("Using foo 1.0.0").and include("Fetching bar 1.0.0").and include("Installing bar 1.0.0")
+      expect(last_command).to be_success
+    end
+  end
+
   context "with a symlinked configured as bundle path and a gem with symlinks" do
     before do
       symlinked_bundled_app = tmp("bundled_app-symlink")

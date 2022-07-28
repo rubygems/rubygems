@@ -1,0 +1,11 @@
+bundle-package(1) -- Renamed command. See `bundle-cache(1)`
+===========================================================
+
+## SYNOPSIS
+
+`bundle package`
+
+## DESCRIPTION
+
+This command was renamed to `bundle cache` in Bundler 2.1 and now is an alias
+of [`bundle-cache(1)`](bundle-cache.1.html).

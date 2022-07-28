@@ -17,6 +17,7 @@ bundle-list(1)        bundle-list.1
 bundle-lock(1)        bundle-lock.1
 bundle-open(1)        bundle-open.1
 bundle-outdated(1)    bundle-outdated.1
+bundle-package(1)     bundle-package.1
 bundle-platform(1)    bundle-platform.1
 bundle-pristine(1)    bundle-pristine.1
 bundle-remove(1)      bundle-remove.1

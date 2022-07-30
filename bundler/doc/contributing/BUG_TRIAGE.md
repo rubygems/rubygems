@@ -12,9 +12,9 @@ When you're looking at a ticket, here are the main questions to ask:
 
   * Can I reproduce this bug myself?
   * Are the steps to reproduce the bug clearly documented in the ticket?
-  * Which versions of Bundler (1.1.x, 1.2.x, git, etc.) manifest this bug?
-  * Which operating systems (OS X, Windows, Ubuntu, CentOS, etc.) manifest this bug?
-  * Which rubies (MRI, JRuby, Rubinius, etc.) and which versions (2.5, 2.6, etc.) have this bug?
+  * Which versions of Bundler (2.1.x, 2.2.x, git, etc.) manifest this bug?
+  * Which operating systems (macOS, Windows, Ubuntu, CentOS, etc.) manifest this bug?
+  * Which rubies (MRI, JRuby, Rubinius, etc.) and which versions (3.0.1, 3.1.2, etc.) have this bug?
 
 Strategies for triaging a ticket:
   * Be sure to ask the user to output the entirety of their `bundle env`. Sometimes users forget to post all of their `bundle env` output in the issue.
@@ -33,11 +33,11 @@ If you can reproduce an issue, you're well on your way to fixing it. :)
 Everyone is welcome and encouraged to fix any open bug, improve an error message or add documentation. If you have a fix or an improvement to a ticket that you would like to contribute, we have a small guide to help:
 
   1. Discuss the fix on the existing issue. Coordinating with everyone else saves duplicate work and serves as a great way to get suggestions and ideas if you need any.
-  2. Base your commits on the correct branch. Bugfixes for 1.x versions of Bundler should be based on the matching 1-x-stable branch.
-  3. Review the [pull request guide](../development/PULL_REQUESTS.md).
-  4. Commit the code with at least one test covering your changes to a named branch in your fork.
-  5. Put a line in the [CHANGELOG](../../CHANGELOG.md) summarizing your changes under the next release under the “Bugfixes” heading.
-  6. Send us a [pull request](https://help.github.com/articles/using-pull-requests) from your bugfix branch.
+  2. Review the [pull request guide](../development/PULL_REQUESTS.md).
+  3. Commit the code with at least one test covering your changes to a named branch in your fork.
+  4. Send us a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) from your bugfix branch.
+
+You do not have to update [CHANGELOG](../../CHANGELOG.md) in your PR. Our release scripts will automatically prepare it from the title of each PR.
 
 ## Duplicates!
 

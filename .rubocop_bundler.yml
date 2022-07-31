@@ -483,6 +483,9 @@ Performance/Size:
 Performance/StartWith:
   Enabled: true
 
+Performance/StringInclude:
+  Enabled: true
+
 Performance/StringReplacement:
   Enabled: true
 

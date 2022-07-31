@@ -20,7 +20,7 @@ unless ARGV.grep(/--version=([\d\.]*)/).empty?
   exec Gem.ruby, "-S", $PROGRAM_NAME, "_#{$1}_"
 end
 
-update_dir = $LOAD_PATH.find {|dir| dir =~ /rubygems-update/ }
+update_dir = $LOAD_PATH.find {|dir| dir.include?("rubygems-update") }
 
 if update_dir.nil?
   puts "Error: Cannot find RubyGems update path!"

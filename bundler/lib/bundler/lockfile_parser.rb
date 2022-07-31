@@ -2,10 +2,11 @@
 
 module Bundler
   class LockfileParser
-    attr_reader :sources, :dependencies, :specs, :platforms, :bundler_version, :ruby_version
+    attr_reader :sources, :dependencies, :specs, :platforms, :bundler_version, :ruby_version, :checksums
 
     BUNDLED      = "BUNDLED WITH"
     DEPENDENCIES = "DEPENDENCIES"
+    CHECKSUMS    = "CHECKSUMS"
     PLATFORMS    = "PLATFORMS"
     RUBY         = "RUBY VERSION"
     GIT          = "GIT"
@@ -15,12 +16,14 @@ module Bundler
     SPECS        = "  specs:"
     OPTIONS      = /^  ([a-z]+): (.*)$/i.freeze
     SOURCE       = [GIT, GEM, PATH, PLUGIN].freeze
+    CHECKSUM_LINE = /^    ([a-z0-9]+)$/i.freeze
 
     SECTIONS_BY_VERSION_INTRODUCED = {
       Gem::Version.create("1.0") => [DEPENDENCIES, PLATFORMS, GIT, GEM, PATH].freeze,
       Gem::Version.create("1.10") => [BUNDLED].freeze,
       Gem::Version.create("1.12") => [RUBY].freeze,
       Gem::Version.create("1.13") => [PLUGIN].freeze,
+      Gem::Version.create("2.4.0") => [CHECKSUMS].freeze,
     }.freeze
 
     KNOWN_SECTIONS = SECTIONS_BY_VERSION_INTRODUCED.values.flatten.freeze
@@ -61,6 +64,7 @@ module Bundler
       @platforms    = []
       @sources      = []
       @dependencies = {}
+      @checksums    = []
       @state        = nil
       @specs        = {}
 
@@ -75,6 +79,8 @@ module Bundler
           parse_source(line)
         elsif line == DEPENDENCIES
           @state = :dependency
+        elsif line == CHECKSUMS
+          @state = :checksum
         elsif line == PLATFORMS
           @state = :platform
         elsif line == RUBY
@@ -184,6 +190,24 @@ module Bundler
       end
 
       @dependencies[dep.name] = dep
+    end
+
+    def parse_checksum(line)
+      if line =~ CHECKSUM_LINE
+        checksum = $1
+        @current_checksum.checksum = checksum
+      elsif line =~ NAME_VERSION
+        spaces = $1
+        return unless spaces.size == 2
+        name = $2
+        version = $3
+        platform = $4
+
+        version = Gem::Version.new(version)
+        platform = platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
+        @current_checksum = Bundler::Checksum.new(name, version, platform)
+        @checksums << @current_checksum
+      end
     end
 
     def parse_spec(line)

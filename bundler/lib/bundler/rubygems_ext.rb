@@ -115,6 +115,18 @@ module Gem
       gemfile
     end
 
+    def to_checksum
+      digest = if File.exist?(cache_file)
+        File.open(cache_file) do |f|
+          digest = Bundler::SharedHelpers.digest(:SHA256).new
+          digest << f.read(16_384) until f.eof?
+          digest.hexdigest!
+        end
+      end
+
+      Bundler::Checksum.new(name, version, platform, digest)
+    end
+
     # Backfill missing YAML require when not defined. Fixed since 3.1.0.pre1.
     module YamlBackfiller
       def to_yaml(opts = {})

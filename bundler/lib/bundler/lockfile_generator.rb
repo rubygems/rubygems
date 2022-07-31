@@ -19,6 +19,7 @@ module Bundler
       add_sources
       add_platforms
       add_dependencies
+      add_checksums
       add_locked_ruby_version
       add_bundled_with
 
@@ -62,6 +63,19 @@ module Bundler
         next if handled.include?(dep.name)
         out << dep.to_lock << "\n"
         handled << dep.name
+      end
+    end
+
+    def add_checksums
+      out << "\nCHECKSUMS\n"
+
+      definition.resolve.sort_by(&:full_name).each do |spec|
+        if spec.respond_to?(:to_checksum)
+          out << spec.to_checksum.to_lock
+        else
+          locked_checksum = definition.locked_checksums.find {|c| c.match_spec?(spec) }
+          out << locked_checksum.to_lock if locked_checksum
+        end
       end
     end
 

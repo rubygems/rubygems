@@ -21,6 +21,7 @@ bundler/lib/bundler.rb
 bundler/lib/bundler/.document
 bundler/lib/bundler/build_metadata.rb
 bundler/lib/bundler/capistrano.rb
+bundler/lib/bundler/checksum.rb
 bundler/lib/bundler/cli.rb
 bundler/lib/bundler/cli/add.rb
 bundler/lib/bundler/cli/binstubs.rb

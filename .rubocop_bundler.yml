@@ -9,6 +9,8 @@ AllCops:
     - bundler/**/Rakefile
     - bundler/**/Gemfile
     - bundler/**/*.rake
+    - bundler/**/Executable
+    - bundler/**/Executable.*
   Exclude:
     - bin/*
     - pkg/**/*
@@ -172,6 +174,7 @@ Lint/ScriptPermission:
   Enabled: true
   Exclude:
     - 'bundler/lib/bundler/templates/Executable'
+    - 'bundler/lib/bundler/templates/Executable.*'
 
 Lint/ShadowedArgument:
   Enabled: true

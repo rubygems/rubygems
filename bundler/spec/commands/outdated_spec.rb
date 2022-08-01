@@ -1114,8 +1114,7 @@ RSpec.describe "bundle outdated" do
           gem 'major', '1.0.0'
         G
 
-        # remove 1.4.3 requirement and bar altogether
-        # to setup update specs below
+        # remove all version requirements
         gemfile <<-G
           source "#{file_uri_for(gem_repo4)}"
           gem 'patch'
@@ -1202,6 +1201,18 @@ RSpec.describe "bundle outdated" do
 
         expected_output = <<~TABLE.strip
           Gem  Current  Latest  Requested  Groups
+          bar  2.0.3    2.0.5
+          foo  1.4.3    1.4.4   >= 0       default
+        TABLE
+
+        expect(out).to end_with(expected_output)
+      end
+
+      it "shows gems with --strict updating to patch and filtering to patch, in debug mode" do
+        bundle "outdated --patch --strict --filter-patch", :raise_on_error => false, :env => { "DEBUG" => "1" }
+
+        expected_output = <<~TABLE.strip
+          Gem  Current  Latest  Requested  Groups   Path
           bar  2.0.3    2.0.5
           foo  1.4.3    1.4.4   >= 0       default
         TABLE

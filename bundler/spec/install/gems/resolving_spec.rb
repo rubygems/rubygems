@@ -216,7 +216,7 @@ RSpec.describe "bundle install with install-time dependencies" do
           gem 'rack'
         G
 
-        expect(out).to_not include("rack-9001.0.0 requires ruby version > 9000")
+        expect(err).to_not include("rack-9001.0.0 requires ruby version > 9000")
         expect(the_bundle).to include_gems("rack 1.2")
       end
 
@@ -237,45 +237,72 @@ RSpec.describe "bundle install with install-time dependencies" do
           gem 'rack'
         G
 
-        expect(out).to_not include("rack-9001.0.0 requires ruby version > 9000")
+        expect(err).to_not include("rack-9001.0.0 requires ruby version > 9000")
         expect(the_bundle).to include_gems("rack 1.2")
       end
 
-      it "gives a meaningful error if there's a lockfile using the newer incompatible version" do
-        build_repo2 do
-          build_gem "parallel_tests", "3.7.0" do |s|
-            s.required_ruby_version = ">= #{current_ruby_minor}"
+      context "when there is a lockfile using the newer incompatible version" do
+        before do
+          build_repo2 do
+            build_gem "parallel_tests", "3.7.0" do |s|
+              s.required_ruby_version = ">= #{current_ruby_minor}"
+            end
+
+            build_gem "parallel_tests", "3.8.0" do |s|
+              s.required_ruby_version = ">= #{next_ruby_minor}"
+            end
           end
 
-          build_gem "parallel_tests", "3.8.0" do |s|
-            s.required_ruby_version = ">= #{next_ruby_minor}"
-          end
+          gemfile <<-G
+            source "http://localgemserver.test/"
+            gem 'parallel_tests'
+          G
+
+          lockfile <<~L
+            GEM
+              remote: http://localgemserver.test/
+              specs:
+                parallel_tests (3.8.0)
+
+            PLATFORMS
+              #{lockfile_platforms}
+
+            DEPENDENCIES
+              parallel_tests
+
+            BUNDLED WITH
+               #{Bundler::VERSION}
+          L
         end
 
-        gemfile <<-G
-          source "http://localgemserver.test/"
-          gem 'parallel_tests'
-        G
+        it "automatically updates lockfile to use the older version" do
+          bundle "install --verbose", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
 
-        lockfile <<~L
-          GEM
-            remote: http://localgemserver.test/
-            specs:
-              parallel_tests (3.8.0)
+          expect(lockfile).to eq <<~L
+            GEM
+              remote: http://localgemserver.test/
+              specs:
+                parallel_tests (3.7.0)
 
-          PLATFORMS
-            #{lockfile_platforms}
+            PLATFORMS
+              #{lockfile_platforms}
 
-          DEPENDENCIES
-            parallel_tests
+            DEPENDENCIES
+              parallel_tests
 
-          BUNDLED WITH
-             #{Bundler::VERSION}
-        L
+            BUNDLED WITH
+               #{Bundler::VERSION}
+          L
+        end
 
-        bundle "install --verbose", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }, :raise_on_error => false
-        expect(err).to include("parallel_tests-3.8.0 requires ruby version >= #{next_ruby_minor}")
-        expect(err).not_to include("That means the author of parallel_tests (3.8.0) has removed it.")
+        it "gives a meaningful error if we're in frozen mode" do
+          expect do
+            bundle "install --verbose", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s, "BUNDLE_FROZEN" => "true" }, :raise_on_error => false
+          end.not_to change { lockfile }
+
+          expect(err).to include("parallel_tests-3.8.0 requires ruby version >= #{next_ruby_minor}")
+          expect(err).not_to include("That means the author of parallel_tests (3.8.0) has removed it.")
+        end
       end
 
       it "gives a meaningful error on ruby version mismatches between dependencies" do
@@ -315,7 +342,7 @@ RSpec.describe "bundle install with install-time dependencies" do
           gem 'foo1'
         G
 
-        expect(out).to_not include("rack-9001.0.0 requires ruby version > 9000")
+        expect(err).to_not include("rack-9001.0.0 requires ruby version > 9000")
         expect(the_bundle).to include_gems("rack 1.2")
       end
 
@@ -339,8 +366,8 @@ RSpec.describe "bundle install with install-time dependencies" do
           G
         end
 
-        expect(out).to_not include("rack-9001.0.0 requires ruby version > 9000")
-        expect(out).to_not include("rack-1.2-#{Bundler.local_platform} requires ruby version > 9000")
+        expect(err).to_not include("rack-9001.0.0 requires ruby version > 9000")
+        expect(err).to_not include("rack-1.2-#{Bundler.local_platform} requires ruby version > 9000")
         expect(the_bundle).to include_gems("rack 1.2")
       end
     end

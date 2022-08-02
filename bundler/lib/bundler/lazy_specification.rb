@@ -76,35 +76,43 @@ module Bundler
     end
 
     def materialize_for_installation
-      __materialize__(ruby_platform_materializes_to_ruby_platform? ? platform : Bundler.local_platform)
+      source.local!
+
+      candidates = if source.is_a?(Source::Path) || !ruby_platform_materializes_to_ruby_platform?
+        target_platform = ruby_platform_materializes_to_ruby_platform? ? platform : Bundler.local_platform
+
+        source.specs.search(Dependency.new(name, version)).select do |spec|
+          MatchPlatform.platforms_match?(spec.platform, target_platform)
+        end
+      else
+        source.specs.search(self)
+      end
+
+      return self if candidates.empty?
+
+      __materialize__(candidates)
     end
 
     def materialize_for_resolution
       return self unless Gem::Platform.match_spec?(self)
 
-      __materialize__(platform)
+      candidates = source.specs.search(self)
+
+      __materialize__(candidates)
     end
 
-    def __materialize__(platform)
-      @specification = if source.is_a?(Source::Gemspec) && source.gemspec.name == name
-        source.gemspec.tap {|s| s.source = source }
-      else
-        search_object = if source.is_a?(Source::Path)
-          Dependency.new(name, version)
-        else
-          ruby_platform_materializes_to_ruby_platform? ? self : Dependency.new(name, version)
-        end
-        candidates = source.specs.search(search_object)
-        same_platform_candidates = candidates.select do |spec|
-          MatchPlatform.platforms_match?(spec.platform, platform)
-        end
-        installable_candidates = same_platform_candidates.select do |spec|
+    def __materialize__(candidates)
+      @specification = begin
+        search = candidates.reverse.find do |spec|
           spec.is_a?(StubSpecification) ||
             (spec.required_ruby_version.satisfied_by?(Gem.ruby_version) &&
               spec.required_rubygems_version.satisfied_by?(Gem.rubygems_version))
         end
-        search = installable_candidates.last || same_platform_candidates.last
-        search.dependencies = dependencies if search && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
+        if search.nil? && Bundler.frozen_bundle?
+          search = candidates.last
+        else
+          search.dependencies = dependencies if search && search.full_name == full_name && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
+        end
         search
       end
     end

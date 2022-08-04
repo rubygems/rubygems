@@ -15,9 +15,9 @@ These policies are intended to be examples of how to apply these goals, and we r
 
 Bundler tries for perfect backwards compatibility. That means that if something worked in version 1.x, it should continue to work in 1.y and 1.z. That thing may or may not continue to work in 2.x. We may not always get it right, and there may be extenuating circumstances that force us into choosing between different kinds of breakage, but compatibility is very important to us. Infrastructure should be as unsurprising as possible.
 
-Bundler will provide features and bugfixes to older versions on a schedule similar to Ruby itself. For example, when Bundler 4.x is the current version, Bundler 4 will be eligible for new features and bugfixes. Bundler 3 will be eligible for bugfixes only. Bundler 2 will be eligible for security bugfixes only. Bundler 1 will be unsupported.
+As of August, 2022, the Bundler team ships features and bugfixes as 2.3.x versions, and may exceptionally backport security fixes to older series shipped with supported Rubies by default, namely, Bundler 2.1 (shipped with Ruby 2.7) and Bundler 2.2 (shipped with Ruby 3.0).
 
-Bundler supports Ruby and RubyGems versions until the next major release after the Ruby core team drops support. For example, the Ruby core team will drop all Ruby 2.4 support on March 31, 2020. The next Bundler major release after that date will drop support for Ruby 2.4.
+As a August, 2022, Bundler supports Ruby and RubyGems versions all the way back to Ruby 2.3, for backwards compatibility reasons. Several improvements have been introduced to not break anything when dropping support for old Rubies, so we're aiming at dropping support for old Rubies at Christmas 2022, and follow the Ruby core team support policy more closely from then on.
 
 These policies are not a guarantee that any particular fix will be backported. Instead, this is a way for us to set an upper limit on the versions of Ruby, RubyGems, and Bundler that we have to consider while making changes. Without the limit, the number of versions grows exponentially over time and quickly becomes overwhelming, which leads to maintainer burnout. We want to avoid that.
 

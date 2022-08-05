@@ -82,7 +82,7 @@ Do you want to add this source?
   def check_rubygems_https(source_uri) # :nodoc:
     uri = URI source_uri
 
-    if uri.scheme and uri.scheme.downcase == "http" and
+    if uri.scheme && uri.scheme.downcase == "http" &&
        uri.host.downcase == "rubygems.org"
       question = <<-QUESTION.chomp
 https://rubygems.org is recommended for security over #{uri}

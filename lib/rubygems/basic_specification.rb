@@ -131,7 +131,7 @@ class Gem::BasicSpecification
   # default Ruby platform.
 
   def full_name
-    if platform == Gem::Platform::RUBY or platform.nil?
+    if platform == Gem::Platform::RUBY || platform.nil?
       "#{name}-#{version}".dup.tap(&Gem::UNTAINT)
     else
       "#{name}-#{version}-#{platform}".dup.tap(&Gem::UNTAINT)

@@ -128,6 +128,10 @@ Performance/StringReplacement:
 Security/Open:
   Enabled: true
 
+Style/AndOr:
+  Enabled: true
+  EnforcedStyle: always
+
 Style/Dir:
   Enabled: true
 

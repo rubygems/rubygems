@@ -247,7 +247,7 @@ class Gem::RemoteFetcher
 
     data = send "fetch_#{uri.scheme}", uri, mtime, head
 
-    if data and !head and uri.to_s.end_with?(".gz")
+    if data && !head && uri.to_s.end_with?(".gz")
       begin
         data = Gem::Util.gunzip data
       rescue Zlib::GzipFile::Error
@@ -288,7 +288,7 @@ class Gem::RemoteFetcher
       return Gem.read_binary(path)
     end
 
-    if update and path
+    if update && path
       Gem.write_binary(path, data)
     end
 

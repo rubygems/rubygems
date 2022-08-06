@@ -739,16 +739,24 @@ module Bundler
         specs[dep].any? {|s| s.satisfies?(dep) && (!dep.source || s.source.include?(dep.source)) }
       end
 
+      @specs_that_changed_sources = []
+
       specs.each do |s|
-        # Replace the locked dependency's source with the equivalent source from the Gemfile
         dep = @dependencies.find {|d| s.satisfies?(d) }
 
-        s.source = (dep && dep.source) || sources.get(s.source) || sources.default_source
+        # Replace the locked dependency's source with the equivalent source from the Gemfile
+        s.source = if dep && dep.source
+          gemfile_source = dep.source
+          lockfile_source = s.source
+
+          @specs_that_changed_sources << s if gemfile_source != lockfile_source
+
+          gemfile_source
+        else
+          sources.get_with_fallback(s.source)
+        end
 
         next if @unlock[:sources].include?(s.source.name)
-
-        # If the spec is from a path source and it doesn't exist anymore
-        # then we unlock it.
 
         # Path sources have special logic
         if s.source.instance_of?(Source::Path) || s.source.instance_of?(Source::Gemspec)
@@ -824,7 +832,16 @@ module Bundler
       end
       source_requirements[:default_bundler] = source_requirements["bundler"] || sources.default_source
       source_requirements["bundler"] = sources.metadata_source # needs to come last to override
+      verify_changed_sources!
       source_requirements
+    end
+
+    def verify_changed_sources!
+      @specs_that_changed_sources.each do |s|
+        if s.source.specs.search(s.name).empty?
+          raise GemNotFound, "Could not find gem '#{s.name}' in #{s.source}"
+        end
+      end
     end
 
     def requested_groups

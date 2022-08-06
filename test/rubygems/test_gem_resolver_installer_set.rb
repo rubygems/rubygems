@@ -200,6 +200,18 @@ class TestGemResolverInstallerSet < Gem::TestCase
                  set.find_all(req).map {|spec| spec.full_name }.sort
   end
 
+  def test_find_all_prerelease_dependencies_with_add_local
+    activesupport_7_1_0_alpha = util_spec "activesupport", "7.1.0.alpha"
+
+    install_gem activesupport_7_1_0_alpha
+
+    set = Gem::Resolver::InstallerSet.new :both
+
+    req = Gem::Resolver::DependencyRequest.new dep("activesupport", ">= 4.2.0"), nil
+
+    assert_equal %w[activesupport-7.1.0.alpha], set.find_all(req).map {|spec| spec.full_name }
+  end
+
   def test_load_spec
     specs = spec_fetcher do |fetcher|
       fetcher.spec "a", 2

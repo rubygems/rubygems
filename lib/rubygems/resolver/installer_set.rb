@@ -168,10 +168,6 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
       end
     end
 
-    res.delete_if do |spec|
-      spec.version.prerelease? && !dep.prerelease?
-    end
-
     res.concat @remote_set.find_all req if consider_remote?
 
     res

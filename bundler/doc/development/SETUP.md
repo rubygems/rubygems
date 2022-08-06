@@ -32,6 +32,27 @@ To work on Bundler, you'll probably want to do a couple of things:
 
         $ alias dbundle='ruby /path/to/bundler/repo/spec/support/bundle.rb'
 
+## Jointly developing on Bundler and RubyGems
+
+When developing Bundler features or bug fixes that require changes in RubyGems,
+you can make sure Bundler's test suite picks up those changes by setting the
+`RGV` environment variable to point to the root of the repository, like this:
+
+```
+RGV=.. bin/parallel_rspec
+```
+
+It's a good idea to make sure that your changes always work against the latest
+RubyGems, so setting this variable permanently might be a good idea. You can use
+[direnv](https://direnv.net) for that.
+
+The `RGV` environment variable can also be set to arbitrary RubyGems versions,
+to make sure your changes in Bundler work fine with those versions. For example,
+
+```
+RGV=v3.2.33 bin/parallel_rspec
+```
+
 ## Debugging with `pry`
 
 To dive into the code with Pry: `RUBYOPT=-rpry dbundle` to require pry and then run commands.

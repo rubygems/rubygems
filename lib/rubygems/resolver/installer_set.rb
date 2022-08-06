@@ -138,7 +138,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     dep = req.dependency
 
     return res if @ignore_dependencies &&
-              @always_install.none? {|spec| dep.match? spec }
+                  @always_install.none? {|spec| dep.match? spec }
 
     name = dep.name
 

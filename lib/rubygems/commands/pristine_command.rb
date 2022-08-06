@@ -105,7 +105,7 @@ extensions will be restored.
     elsif options[:extensions_set] and
                   options[:extensions] and options[:args].empty?
       Gem::Specification.select do |spec|
-        spec.extensions and not spec.extensions.empty?
+        spec.extensions and !spec.extensions.empty?
       end
     else
       get_all_gem_names.sort.map do |gem_name|

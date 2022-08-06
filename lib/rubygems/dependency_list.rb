@@ -175,7 +175,7 @@ class Gem::DependencyList
   def remove_specs_unsatisfied_by(dependencies)
     specs.reject! do |spec|
       dep = dependencies[spec.name]
-      dep and not dep.requirement.satisfied_by? spec.version
+      dep and !dep.requirement.satisfied_by? spec.version
     end
   end
 

@@ -133,7 +133,7 @@ use with other commands.
   end
 
   def ensure_local_only_reverse_dependencies # :nodoc:
-    if options[:reverse_dependencies] and remote? and not local?
+    if options[:reverse_dependencies] and remote? and !local?
       alert_error "Only reverse dependencies for local gems are supported."
       terminate_interaction 1
     end

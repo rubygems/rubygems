@@ -301,7 +301,7 @@ command to remove old versions.
     result = []
 
     highest_installed_gems.each do |l_name, l_spec|
-      next if not gem_names.empty? and
+      next if !gem_names.empty? and
               gem_names.none? {|name| name == l_spec.name }
 
       highest_remote_tup = highest_remote_name_tuple l_spec

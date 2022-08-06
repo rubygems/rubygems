@@ -78,7 +78,7 @@ class Gem::Request::ConnectionPools # :nodoc:
 
     no_proxy = get_no_proxy_from_env
 
-    if proxy_uri and not no_proxy?(hostname, no_proxy)
+    if proxy_uri and !no_proxy?(hostname, no_proxy)
       proxy_hostname = proxy_uri.respond_to?(:hostname) ? proxy_uri.hostname : proxy_uri.host
       net_http_args + [
         proxy_hostname,

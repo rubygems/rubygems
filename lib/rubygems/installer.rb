@@ -251,7 +251,7 @@ class Gem::Installer
     return if spec.name == existing
 
     # somebody has written to RubyGems' directory, overwrite, too bad
-    return if Gem.default_bindir != @bin_dir and not ruby_executable
+    return if Gem.default_bindir != @bin_dir and !ruby_executable
 
     question = "#{spec.name}'s executable \"#{filename}\" conflicts with ".dup
 
@@ -421,7 +421,7 @@ class Gem::Installer
     return true if @options[:development] and dependency.type == :development
     return true if installed_specs.detect {|s| dependency.matches_spec? s }
     return false if @only_install_dir
-    not dependency.matching_specs.empty?
+    !dependency.matching_specs.empty?
   end
 
   ##

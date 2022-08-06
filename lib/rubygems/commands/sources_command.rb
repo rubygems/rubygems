@@ -215,9 +215,9 @@ To remove a source use the --remove argument:
   def remove_cache_file(desc, path) # :nodoc:
     FileUtils.rm_rf path
 
-    if not File.exist?(path)
+    if !File.exist?(path)
       say "*** Removed #{desc} source cache ***"
-    elsif not File.writable?(path)
+    elsif !File.writable?(path)
       say "*** Unable to remove #{desc} source cache (write protected) ***"
     else
       say "*** Unable to remove #{desc} source cache ***"

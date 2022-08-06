@@ -1668,7 +1668,7 @@ class Gem::Specification < Gem::BasicSpecification
     conflicts = {}
     self.runtime_dependencies.each do |dep|
       spec = Gem.loaded_specs[dep.name]
-      if spec and not spec.satisfies_requirement? dep
+      if spec and !spec.satisfies_requirement? dep
         (conflicts[spec] ||= []) << dep
       end
     end
@@ -1695,7 +1695,7 @@ class Gem::Specification < Gem::BasicSpecification
     self.dependencies.any? do |dep|
       if dep.runtime?
         spec = Gem.loaded_specs[dep.name]
-        spec and not spec.satisfies_requirement? dep
+        spec and !spec.satisfies_requirement? dep
       else
         false
       end
@@ -1987,7 +1987,7 @@ class Gem::Specification < Gem::BasicSpecification
   # True if this gem has files in test_files
 
   def has_unit_tests? # :nodoc:
-    not test_files.empty?
+    !test_files.empty?
   end
 
   # :stopdoc:

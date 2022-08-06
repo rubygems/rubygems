@@ -97,7 +97,7 @@ class Gem::Security::Policy
       raise Gem::Security::Exception, "#{message} not valid after #{not_after}"
     end
 
-    if issuer and not signer.verify issuer.public_key
+    if issuer and !signer.verify issuer.public_key
       raise Gem::Security::Exception,
             "#{message} was not issued by #{issuer.subject}"
     end

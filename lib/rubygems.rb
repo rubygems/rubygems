@@ -944,7 +944,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
                    ".rb",
                    *%w[DLEXT DLEXT2].map do |key|
                      val = RbConfig::CONFIG[key]
-                     next unless val and not val.empty?
+                     next unless val and !val.empty?
                      ".#{val}"
                    end,
                   ].compact.uniq

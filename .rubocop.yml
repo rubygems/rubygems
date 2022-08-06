@@ -160,6 +160,9 @@ Style/MutableConstant:
 Style/NilComparison:
   Enabled: true
 
+Style/Not:
+  Enabled: true
+
 Style/BlockDelimiters:
   Enabled: true
 

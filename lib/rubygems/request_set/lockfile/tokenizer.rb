@@ -26,7 +26,7 @@ class Gem::RequestSet::Lockfile::Tokenizer
   end
 
   def skip(type)
-    @tokens.shift while not @tokens.empty? and peek.type == type
+    @tokens.shift while !@tokens.empty? and peek.type == type
   end
 
   ##

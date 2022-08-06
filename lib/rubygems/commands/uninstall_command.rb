@@ -125,7 +125,7 @@ that is a dependency of an existing gem.  You can use the
   def execute
     check_version
 
-    if options[:all] and not options[:args].empty?
+    if options[:all] and !options[:args].empty?
       uninstall_specific
     elsif options[:all]
       uninstall_all

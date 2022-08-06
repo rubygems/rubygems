@@ -44,7 +44,7 @@ class Gem::RequestSet::Lockfile::Parser
   def get(expected_types = nil, expected_value = nil) # :nodoc:
     token = @tokens.shift
 
-    if expected_types and not Array(expected_types).include? token.type
+    if expected_types and !Array(expected_types).include? token.type
       unget token
 
       message = "unexpected token [#{token.type.inspect}, #{token.value.inspect}], " +
@@ -67,7 +67,7 @@ class Gem::RequestSet::Lockfile::Parser
   end
 
   def parse_DEPENDENCIES # :nodoc:
-    while not @tokens.empty? and :text == peek.type do
+    while !@tokens.empty? and :text == peek.type do
       token = get :text
 
       requirements = []
@@ -127,7 +127,7 @@ class Gem::RequestSet::Lockfile::Parser
     set = Gem::Resolver::LockSet.new sources
     last_specs = nil
 
-    while not @tokens.empty? and :text == peek.type do
+    while !@tokens.empty? and :text == peek.type do
       token = get :text
       name = token.value
       column = token.column
@@ -199,7 +199,7 @@ class Gem::RequestSet::Lockfile::Parser
 
     last_spec = nil
 
-    while not @tokens.empty? and :text == peek.type do
+    while !@tokens.empty? and :text == peek.type do
       token = get :text
       name = token.value
       column = token.column
@@ -246,7 +246,7 @@ class Gem::RequestSet::Lockfile::Parser
     set = Gem::Resolver::VendorSet.new
     last_spec = nil
 
-    while not @tokens.empty? and :text == peek.first do
+    while !@tokens.empty? and :text == peek.first do
       token = get :text
       name = token.value
       column = token.column
@@ -281,7 +281,7 @@ class Gem::RequestSet::Lockfile::Parser
   end
 
   def parse_PLATFORMS # :nodoc:
-    while not @tokens.empty? and :text == peek.first do
+    while !@tokens.empty? and :text == peek.first do
       name = get(:text).value
 
       @platforms << name

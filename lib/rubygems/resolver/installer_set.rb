@@ -61,7 +61,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     found = find_all request
 
     found.delete_if do |s|
-      s.version.prerelease? and not s.local?
+      s.version.prerelease? and !s.local?
     end unless dependency.prerelease?
 
     found = found.select do |s|
@@ -169,7 +169,7 @@ class Gem::Resolver::InstallerSet < Gem::Resolver::Set
     end
 
     res.delete_if do |spec|
-      spec.version.prerelease? and not dep.prerelease?
+      spec.version.prerelease? and !dep.prerelease?
     end
 
     res.concat @remote_set.find_all req if consider_remote?

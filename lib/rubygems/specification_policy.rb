@@ -188,7 +188,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
           prerelease_dep && !@specification.version.prerelease?
 
       open_ended = dep.requirement.requirements.all? do |op, version|
-        not version.prerelease? and (op == ">" or op == ">=")
+        !version.prerelease? and (op == ">" or op == ">=")
       end
 
       if open_ended
@@ -404,7 +404,7 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
     homepage = @specification.homepage
 
     # Make sure a homepage is valid HTTP/HTTPS URI
-    if homepage and not homepage.empty?
+    if homepage and !homepage.empty?
       require "uri"
       begin
         homepage_uri = URI.parse(homepage)

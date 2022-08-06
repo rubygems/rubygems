@@ -296,7 +296,7 @@ class Gem::Indexer
     files = @files
     files.delete @quick_marshal_dir if files.include? @quick_dir
 
-    if files.include? @quick_marshal_dir and not files.include? @quick_dir
+    if files.include? @quick_marshal_dir and !files.include? @quick_dir
       files.delete @quick_marshal_dir
 
       dst_name = File.join(@dest_directory, @quick_marshal_dir_base)

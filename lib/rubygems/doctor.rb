@@ -59,7 +59,7 @@ class Gem::Doctor
   # Are we doctoring a gem repository?
 
   def gem_repository?
-    not installed_specs.empty?
+    !installed_specs.empty?
   end
 
   ##

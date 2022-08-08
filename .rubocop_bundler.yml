@@ -347,7 +347,6 @@ Layout/MultilineMethodDefinitionBraceLayout:
 
 Layout/MultilineOperationIndentation:
   Enabled: true
-  EnforcedStyle: indented
 
 Layout/SpaceBeforeComma:
   Enabled: true

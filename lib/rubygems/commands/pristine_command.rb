@@ -103,7 +103,7 @@ extensions will be restored.
     # `--extensions` must be explicitly given to pristine only gems
     # with extensions.
     elsif options[:extensions_set] &&
-                  options[:extensions] && options[:args].empty?
+          options[:extensions] && options[:args].empty?
       Gem::Specification.select do |spec|
         spec.extensions && !spec.extensions.empty?
       end

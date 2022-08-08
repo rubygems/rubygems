@@ -121,7 +121,7 @@ module Gem
 
   # When https://bugs.ruby-lang.org/issues/17259 is available, there is no need to override Kernel#warn
   KERNEL_WARN_IGNORES_INTERNAL_ENTRIES = RUBY_ENGINE == "truffleruby" ||
-      (RUBY_ENGINE == "ruby" && RUBY_VERSION >= "3.0")
+                                         (RUBY_ENGINE == "ruby" && RUBY_VERSION >= "3.0")
 
   ##
   # An Array of Regexps that match windows Ruby platforms.

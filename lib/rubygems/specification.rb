@@ -2157,7 +2157,7 @@ class Gem::Specification < Gem::BasicSpecification
     end
 
     if @specification_version > CURRENT_SPECIFICATION_VERSION &&
-      sym.to_s.end_with?("=")
+       sym.to_s.end_with?("=")
       warn "ignoring #{sym} loading #{full_name}" if $DEBUG
     else
       super
@@ -2375,7 +2375,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   def satisfies_requirement?(dependency)
     return @name == dependency.name &&
-      dependency.requirement.satisfied_by?(@version)
+           dependency.requirement.satisfied_by?(@version)
   end
 
   ##

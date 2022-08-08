@@ -155,6 +155,9 @@ Style/MethodDefParentheses:
 Style/MultilineIfThen:
   Enabled: true
 
+Layout/MultilineOperationIndentation:
+  Enabled: true
+
 Style/MutableConstant:
   Enabled: true
 

@@ -30,7 +30,7 @@ class Gem::Doctor
 
   missing =
     Gem::REPOSITORY_SUBDIRECTORIES.sort -
-      REPOSITORY_EXTENSION_MAP.map {|(k,_)| k }.sort
+    REPOSITORY_EXTENSION_MAP.map {|(k,_)| k }.sort
 
   raise "Update REPOSITORY_EXTENSION_MAP, missing: #{missing.join ', '}" unless
     missing.empty?

@@ -56,7 +56,7 @@ class Gem::Commands::UpdateCommand < Gem::Command
 
   def defaults_str # :nodoc:
     "--no-force --install-dir #{Gem.dir}\n" +
-    install_update_defaults_str
+      install_update_defaults_str
   end
 
   def description # :nodoc:
@@ -293,7 +293,7 @@ command to remove old versions.
     args << "--no-format-executable" if options[:no_format_executable]
     args << "--previous-version" << Gem::VERSION if
       options[:system] == true ||
-        Gem::Version.new(options[:system]) >= Gem::Version.new(2)
+      Gem::Version.new(options[:system]) >= Gem::Version.new(2)
     args
   end
 

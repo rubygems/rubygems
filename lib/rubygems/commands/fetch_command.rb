@@ -53,7 +53,7 @@ then repackaging it.
 
   def check_version # :nodoc:
     if options[:version] != Gem::Requirement.default &&
-         get_all_gem_names.size > 1
+       get_all_gem_names.size > 1
       alert_error "Can't use --version with multiple gems. You can specify multiple gems with" \
                   " version requirements using `gem fetch 'my_gem:1.0.0' 'my_other_gem:~>2.0.0'`"
       terminate_interaction 1

@@ -68,14 +68,14 @@ class Gem::Package
   class PathError < Error
     def initialize(destination, destination_dir)
       super "installing into parent path %s of %s is not allowed" %
-              [destination, destination_dir]
+        [destination, destination_dir]
     end
   end
 
   class SymlinkError < Error
     def initialize(name, destination, destination_dir)
       super "installing symlink '%s' pointing to parent path %s of %s is not allowed" %
-              [name, destination, destination_dir]
+        [name, destination, destination_dir]
     end
   end
 

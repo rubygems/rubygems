@@ -46,8 +46,8 @@ class Gem::Commands::InstallCommand < Gem::Command
 
   def defaults_str # :nodoc:
     "--both --version '#{Gem::Requirement.default}' --no-force\n" +
-    "--install-dir #{Gem.dir} --lock\n" +
-    install_update_defaults_str
+      "--install-dir #{Gem.dir} --lock\n" +
+      install_update_defaults_str
   end
 
   def description # :nodoc:
@@ -142,7 +142,7 @@ You can use `i` command instead of `install`.
 
   def check_version # :nodoc:
     if options[:version] != Gem::Requirement.default &&
-         get_all_gem_names.size > 1
+       get_all_gem_names.size > 1
       alert_error "Can't use --version with multiple gems. You can specify multiple gems with" \
                   " version requirements using `gem install 'my_gem:1.0.0' 'my_other_gem:~>2.0.0'`"
       terminate_interaction 1
@@ -192,7 +192,7 @@ You can use `i` command instead of `install`.
 
   def install_gem(name, version) # :nodoc:
     return if options[:conservative] &&
-      !Gem::Dependency.new(name, version).matching_specs.empty?
+              !Gem::Dependency.new(name, version).matching_specs.empty?
 
     req = Gem::Requirement.create(version)
 

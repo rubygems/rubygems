@@ -741,8 +741,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   def self.prefix
     prefix = File.dirname RUBYGEMS_DIR
 
-    if prefix != File.expand_path(RbConfig::CONFIG["sitelibdir"]) and
-       prefix != File.expand_path(RbConfig::CONFIG["libdir"]) and
+    if prefix != File.expand_path(RbConfig::CONFIG["sitelibdir"]) &&
+       prefix != File.expand_path(RbConfig::CONFIG["libdir"]) &&
        "lib" == File.basename(RUBYGEMS_DIR)
       prefix
     end
@@ -845,8 +845,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Returns the latest release version of RubyGems.
 
   def self.latest_rubygems_version
-    latest_version_for("rubygems-update") or
-      raise "Can't find 'rubygems-update' in any repo. Check `gem source list`."
+    latest_version_for("rubygems-update") ||
+      raise("Can't find 'rubygems-update' in any repo. Check `gem source list`.")
   end
 
   ##
@@ -854,7 +854,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   def self.latest_version_for(name)
     spec = latest_spec_for name
-    spec and spec.version
+    spec && spec.version
   end
 
   ##
@@ -944,7 +944,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
                    ".rb",
                    *%w[DLEXT DLEXT2].map do |key|
                      val = RbConfig::CONFIG[key]
-                     next unless val and not val.empty?
+                     next unless val && !val.empty?
                      ".#{val}"
                    end,
                   ].compact.uniq

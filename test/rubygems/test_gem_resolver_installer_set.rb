@@ -51,6 +51,25 @@ class TestGemResolverInstallerSet < Gem::TestCase
     assert_equal %w[a-1], set.always_install.map {|s| s.full_name }
   end
 
+  def test_add_always_install_platform_if_gem_platforms_modified_by_platform_flag
+    freebsd = Gem::Platform.new "x86-freebsd-9"
+
+    spec_fetcher do |fetcher|
+      fetcher.download "a", 1
+      fetcher.download "a", 1 do |s|
+        s.platform = freebsd
+      end
+    end
+
+    # equivalent to --platform=x86-freebsd-9
+    Gem.platforms << freebsd
+    set = Gem::Resolver::InstallerSet.new :both
+
+    set.add_always_install dep("a")
+
+    assert_equal %w[a-1-x86-freebsd-9], set.always_install.map {|s| s.full_name }
+  end
+
   def test_add_always_install_index_spec_platform
     _, a_1_local_gem = util_gem "a", 1 do |s|
       s.platform = Gem::Platform.local

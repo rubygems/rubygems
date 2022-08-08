@@ -7,7 +7,7 @@
 
 require "rubygems"
 
-if ARGV.include? "-h" or ARGV.include? "--help"
+if ARGV.include?("-h") || ARGV.include?("--help")
   $stderr.puts "rubygems_update [options]"
   $stderr.puts
   $stderr.puts "This will install the latest version of RubyGems."

@@ -12,6 +12,7 @@ AllCops:
   Exclude:
     - bin/*
     - pkg/**/*
+    - tmp/**/*
     - util/**/*
     - bundler/tmp/**/*
     - bundler/lib/bundler/vendor/**/*

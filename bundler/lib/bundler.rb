@@ -48,6 +48,7 @@ module Bundler
   autoload :EndpointSpecification,  File.expand_path("bundler/endpoint_specification", __dir__)
   autoload :Env,                    File.expand_path("bundler/env", __dir__)
   autoload :Fetcher,                File.expand_path("bundler/fetcher", __dir__)
+  autoload :FetchMetadata,          File.expand_path("bundler/fetch_metadata", __dir__)
   autoload :FeatureFlag,            File.expand_path("bundler/feature_flag", __dir__)
   autoload :GemHelper,              File.expand_path("bundler/gem_helper", __dir__)
   autoload :GemHelpers,             File.expand_path("bundler/gem_helpers", __dir__)

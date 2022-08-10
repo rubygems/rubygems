@@ -1,3 +1,23 @@
+# 3.3.20 / 2022-08-10
+
+## Enhancements:
+
+* Include backtrace with crashes by default. Pull request #5811 by
+  deivid-rodriguez
+* Don't create broken symlinks when a gem includes them, but print a
+  warning instead. Pull request #5801 by deivid-rodriguez
+* Warn (rather than crash) when setting `nil` specification versions. Pull
+  request #5794 by deivid-rodriguez
+* Installs bundler 2.3.20 as a default gem.
+
+## Bug fixes:
+
+* Always consider installed specs for resolution, even if prereleases.
+  Pull request #5821 by deivid-rodriguez
+* Fix `gem install` with `--platform` flag not matching simulated platform
+  correctly. Pull request #5820 by deivid-rodriguez
+* Fix platform matching for index specs. Pull request #5795 by Ilushkanama
+
 # 3.3.19 / 2022-07-27
 
 ## Enhancements:

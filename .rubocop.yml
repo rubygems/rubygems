@@ -125,6 +125,10 @@ Performance/StringReplacement:
 Security/Open:
   Enabled: true
 
+Style/AndOr:
+  Enabled: true
+  EnforcedStyle: always
+
 Style/Dir:
   Enabled: true
 
@@ -151,10 +155,16 @@ Style/MethodDefParentheses:
 Style/MultilineIfThen:
   Enabled: true
 
+Layout/MultilineOperationIndentation:
+  Enabled: true
+
 Style/MutableConstant:
   Enabled: true
 
 Style/NilComparison:
+  Enabled: true
+
+Style/Not:
   Enabled: true
 
 Style/BlockDelimiters:

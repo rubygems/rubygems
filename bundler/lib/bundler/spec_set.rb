@@ -57,6 +57,12 @@ module Bundler
       @sorted = nil
     end
 
+    def delete(spec)
+      @specs.delete(spec)
+      @lookup = nil
+      @sorted = nil
+    end
+
     def sort!
       self
     end

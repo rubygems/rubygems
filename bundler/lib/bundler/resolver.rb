@@ -19,15 +19,12 @@ module Bundler
     #   collection of gemspecs is returned. Otherwise, nil is returned.
     def self.resolve(requirements, source_requirements = {}, base = [], gem_version_promoter = GemVersionPromoter.new, additional_base_requirements = [], platforms = nil)
       base = SpecSet.new(base) unless base.is_a?(SpecSet)
-      metadata_requirements, regular_requirements = requirements.partition {|dep| dep.name.end_with?("\0") }
-      resolver = new(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms, metadata_requirements)
-      result = resolver.start(requirements)
-      SpecSet.new(SpecSet.new(result).for(regular_requirements, false, platforms))
+      resolver = new(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
+      resolver.start(requirements)
     end
 
-    def initialize(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms, metadata_requirements)
+    def initialize(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
       @source_requirements = source_requirements
-      @metadata_requirements = metadata_requirements
       @base = base
       @resolver = Molinillo::Resolver.new(self, self)
       @search_for = {}
@@ -44,16 +41,19 @@ module Bundler
     end
 
     def start(requirements)
+      @metadata_requirements, regular_requirements = requirements.partition {|dep| dep.name.end_with?("\0") }
+
       @gem_version_promoter.prerelease_specified = @prerelease_specified = {}
       requirements.each {|dep| @prerelease_specified[dep.name] ||= dep.prerelease? }
 
       verify_gemfile_dependencies_are_found!(requirements)
-      dg = @resolver.resolve(requirements, @base_dg)
-      dg.
+      result = @resolver.resolve(requirements, @base_dg).
         map(&:payload).
         reject {|sg| sg.name.end_with?("\0") }.
         map(&:to_specs).
         flatten
+
+      SpecSet.new(SpecSet.new(result).for(regular_requirements, false, @platforms))
     rescue Molinillo::VersionConflict => e
       message = version_conflict_message(e)
       raise VersionConflict.new(e.conflicts.keys.uniq, message)

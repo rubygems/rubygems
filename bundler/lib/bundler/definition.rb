@@ -877,10 +877,8 @@ module Bundler
     def additional_base_requirements_for_resolve
       return [] unless @locked_gems && unlocking? && !sources.expired_sources?(@locked_gems.sources)
       converge_specs(@originally_locked_specs).map do |locked_spec|
-        name = locked_spec.name
-        dep = Dependency.new(name, ">= #{locked_spec.version}")
-        DepProxy.get_proxy(dep, locked_spec.platform)
-      end
+        Dependency.new(locked_spec.name, ">= #{locked_spec.version}")
+      end.uniq
     end
 
     def remove_ruby_from_platforms_if_necessary!(dependencies)

@@ -45,7 +45,7 @@ RSpec.describe "bundler/inline#gemfile" do
     end
   end
 
-  it "requires the gems" do
+  it "requires the gems", :bundler => "< 3" do
     script <<-RUBY
       gemfile do
         source "#{file_uri_for(gem_repo1)}"
@@ -88,12 +88,12 @@ RSpec.describe "bundler/inline#gemfile" do
     RUBY
 
     expect(out).to include("Installing activesupport")
-    err_lines = err.split("\n")
+    err_lines = err_without_deprecations.split("\n")
     err_lines.reject! {|line| line =~ /\.rb:\d+: warning: / } unless RUBY_VERSION < "2.7"
     expect(err_lines).to be_empty
   end
 
-  it "lets me use my own ui object" do
+  it "lets me use my own ui object", :bundler => "< 3" do
     script <<-RUBY, :artifice => "endpoint"
       require '#{entrypoint}'
       class MyBundlerUI < Bundler::UI::Silent
@@ -110,7 +110,7 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(out).to eq("CONFIRMED!\nCONFIRMED!")
   end
 
-  it "has an option for quiet installation" do
+  it "has an option for quiet installation", :bundler => "< 3" do
     script <<-RUBY, :artifice => "endpoint"
       require '#{entrypoint}/inline'
 
@@ -239,7 +239,7 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(err).to be_empty
   end
 
-  it "does not leak Gemfile.lock versions to the installation output" do
+  it "does not leak Gemfile.lock versions to the installation output", :bundler => "< 3" do
     gemfile <<-G
       source "https://notaserver.com"
       gem "rake"
@@ -270,7 +270,7 @@ RSpec.describe "bundler/inline#gemfile" do
 
     expect(out).to include("Installing rake 13.0")
     expect(out).not_to include("was 11.3.0")
-    expect(err).to be_empty
+    expect(err_without_deprecations).to be_empty
   end
 
   it "installs inline gems when frozen is set" do
@@ -330,7 +330,7 @@ RSpec.describe "bundler/inline#gemfile" do
   end
 
   context "when BUNDLE_PATH is set" do
-    it "installs inline gems to the system path regardless" do
+    it "installs inline gems to the system path regardless", :bundler => "< 3" do
       script <<-RUBY, :env => { "BUNDLE_PATH" => "./vendor/inline" }
         gemfile(true) do
           source "#{file_uri_for(gem_repo1)}"
@@ -342,9 +342,8 @@ RSpec.describe "bundler/inline#gemfile" do
     end
   end
 
-  it "skips platform warnings" do
+  it "skips platform warnings", :bundler => "< 3" do
     bundle "config set --local force_ruby_platform true"
-
     script <<-RUBY
       gemfile(true) do
         source "#{file_uri_for(gem_repo1)}"
@@ -352,7 +351,7 @@ RSpec.describe "bundler/inline#gemfile" do
       end
     RUBY
 
-    expect(err).to be_empty
+    expect(err_without_deprecations).to be_empty
   end
 
   it "preserves previous BUNDLE_GEMFILE value" do
@@ -420,7 +419,7 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(err).to be_empty
   end
 
-  it "when requiring fileutils after does not show redefinition warnings" do
+  it "when requiring fileutils after does not show redefinition warnings", :bundler => "< 3" do
     dependency_installer_loads_fileutils = ruby "require 'rubygems/dependency_installer'; puts $LOADED_FEATURES.grep(/fileutils/)", :raise_on_error => false
     skip "does not work if rubygems/dependency_installer loads fileutils, which happens until rubygems 3.2.0" unless dependency_installer_loads_fileutils.empty?
 
@@ -449,6 +448,6 @@ RSpec.describe "bundler/inline#gemfile" do
       require "fileutils"
     RUBY
 
-    expect(err).to eq("The Gemfile specifies no dependencies")
+    expect(err_without_deprecations).to eq("The Gemfile specifies no dependencies")
   end
 end

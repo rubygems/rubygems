@@ -647,4 +647,29 @@ RSpec.describe "major deprecations" do
       end
     end
   end
+
+  context "when user set install parameter of inline gem to true" do
+    def script(code, options = {})
+      requires = ["#{entrypoint}/inline"]
+      requires.unshift "#{spec_dir}/support/artifice/" + options.delete(:artifice) if options.key?(:artifice)
+      requires = requires.map {|r| "require '#{r}'" }.join("\n")
+      ruby("#{requires}\n\n" + code, options)
+    end
+
+    it "shows platform warnings", :bundler => "< 3"do
+      script <<-RUBY
+        gemfile(true) do
+          source "#{file_uri_for(gem_repo1)}"
+          gem "rack", platform: :jruby
+        end
+      RUBY
+
+      expect(deprecations).to include \
+        "The optional install parameter to the gemfile(install = false, &block) helper is getting"\
+        " removed because regardless of what you pass in there, it still installs missing gems."\
+        " Remove the explicitly install parameter to get rid of this message. (called at -e:3)"
+    end
+
+    pending "fails with a helpful error", :bundler => "3"
+  end
 end

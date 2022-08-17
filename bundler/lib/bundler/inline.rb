@@ -41,6 +41,9 @@ def gemfile(install = false, options = {}, &gemfile)
     Bundler.instance_variable_set(:@bundle_path, Pathname.new(Gem.dir))
     old_gemfile = ENV["BUNDLE_GEMFILE"]
     Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", "Gemfile"
+    Bundler::SharedHelpers.major_deprecation 2, "The optional install parameter to the gemfile(install = false, &block) helper is getting"\
+    " removed because regardless of what you pass in there, it still installs missing gems."\
+    " Remove the explicitly install parameter to get rid of this message.", :print_caller_location => true if install
 
     Bundler::Plugin.gemfile_install(&gemfile) if Bundler.feature_flag.plugins?
     builder = Bundler::Dsl.new

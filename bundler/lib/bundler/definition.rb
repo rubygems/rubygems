@@ -719,7 +719,9 @@ module Bundler
     # commonly happen if the Gemfile has changed since the lockfile was last
     # generated
     def converge_locked_specs
-      resolve = converge_specs(@locked_specs)
+      converged = converge_specs(@locked_specs)
+
+      resolve = SpecSet.new(converged.reject {|s| @unlock[:gems].include?(s.name) })
 
       diff = nil
 
@@ -792,7 +794,7 @@ module Bundler
         end
       end
 
-      SpecSet.new(filter_specs(converged, deps).reject {|s| @unlock[:gems].include?(s.name) })
+      filter_specs(converged, deps)
     end
 
     def metadata_dependencies

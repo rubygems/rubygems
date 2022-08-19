@@ -142,7 +142,9 @@ bundler/lib/bundler/man/bundle.1.ronn
 bundler/lib/bundler/man/gemfile.5
 bundler/lib/bundler/man/gemfile.5.ronn
 bundler/lib/bundler/man/index.txt
+bundler/lib/bundler/match_metadata.rb
 bundler/lib/bundler/match_platform.rb
+bundler/lib/bundler/match_remote_metadata.rb
 bundler/lib/bundler/mirror.rb
 bundler/lib/bundler/plugin.rb
 bundler/lib/bundler/plugin/api.rb

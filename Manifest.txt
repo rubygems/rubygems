@@ -127,6 +127,8 @@ bundler/lib/bundler/man/bundle-outdated.1
 bundler/lib/bundler/man/bundle-outdated.1.ronn
 bundler/lib/bundler/man/bundle-platform.1
 bundler/lib/bundler/man/bundle-platform.1.ronn
+bundler/lib/bundler/man/bundle-plugin.1
+bundler/lib/bundler/man/bundle-plugin.1.ronn
 bundler/lib/bundler/man/bundle-pristine.1
 bundler/lib/bundler/man/bundle-pristine.1.ronn
 bundler/lib/bundler/man/bundle-remove.1

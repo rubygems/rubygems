@@ -32,7 +32,8 @@ RSpec.describe "bundler plugin install" do
   it "shows help when --help flag is given" do
     bundle "plugin install --help"
 
-    expect(out).to include("bundle plugin install PLUGINS    # Install the plugin from the source")
+    # The help message defined in ../../lib/bundler/man/bundle-plugin.1.ronn will be output.
+    expect(out).to include("You can install, uninstall, and list plugin(s)")
   end
 
   context "plugin is already installed" do

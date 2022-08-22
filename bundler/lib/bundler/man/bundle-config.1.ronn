@@ -5,9 +5,9 @@ bundle-config(1) -- Set bundler configuration options
 
 `bundle config` list
 
-`bundle config`[ get] NAME
+`bundle config` [get] NAME
 
-`bundle config`[ set] NAME VALUE
+`bundle config` [set] NAME VALUE
 
 `bundle config` unset NAME
 

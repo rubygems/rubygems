@@ -3,7 +3,13 @@ bundle-config(1) -- Set bundler configuration options
 
 ## SYNOPSIS
 
-`bundle config` [list|get|set|unset] [<name> [<value>]]
+`bundle config` list
+
+`bundle config`[ get] NAME
+
+`bundle config`[ set] NAME VALUE
+
+`bundle config` unset NAME
 
 ## DESCRIPTION
 

@@ -25,7 +25,7 @@ I'll be dividing the deprecations into four groups: CLI deprecations, Helper
 deprecations, DSL deprecations, and misc deprecations. Let's dive into each of
 them.
 
-#### CLI deprecations
+### CLI deprecations
 
 The CLI defines a set of commands and options that can be used by our users to
 create command lines that bundler can understand. There's a number of changes
@@ -82,7 +82,6 @@ in the upcoming 3 version.
   in favor of a `bin/console` script created by `bundle gem` on gem generation
   that users can tweak to their needs.
 
-* ~The `bundle update` command will no longer update all gems, you'll need to pass `--all` to it.~ (postponed)
 
 * The `bundle install` command will no longer accept a `--binstubs` flag.
 
@@ -94,7 +93,6 @@ in the upcoming 3 version.
   likely unused files into source control. Because of this, binstubs now must
   be created and checked into version control individually.
 
-* ~The `bundle config` command has a new subcommand-based interface.~ (postponed)
 
 * The `bundle inject` command is deprecated and replaced with `bundle add`.
 
@@ -103,7 +101,16 @@ in the upcoming 3 version.
   exactly the same in `bundle add`, so it should be easy to migrate to the new
   command.
 
-#### Helper deprecations
+#### Cancelled CLI deprecations
+
+These deprecations have been initally announced before, but the deprecations
+were cancelled before the release of Bundler 2.1.0 in [rubygems/bundler#7475](https://github.com/rubygems/bundler/pull/7475).
+
+* ~The `bundle update` command will no longer update all gems, you'll need to pass `--all` to it.~ (postponed)
+
+* ~The `bundle config` command will no longer accept old subcommand-based interface before Bundler 2.1.~ (postponed)
+
+### Helper deprecations
 
 * `Bundler.clean_env`, `Bundler.with_clean_env`, `Bundler.clean_system`, and `Bundler.clean_exec` are deprecated.
 

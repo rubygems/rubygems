@@ -4,7 +4,7 @@ bundle-plugin(1) -- Manage Bundler plugins
 ## SYNOPSIS
 
 `bundle plugin` install PLUGINS [--source=<SOURCE>] [--version=<version>]
-                              [--git|--local_git=<git-url>] [--branch=<branch>] [--ref=<rev>]
+                              [--git|--local_git=<git-url>] [--branch=<branch>|--ref=<rev>]
 
 `bundle plugin` uninstall PLUGINS
 

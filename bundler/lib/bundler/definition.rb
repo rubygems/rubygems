@@ -223,9 +223,7 @@ module Bundler
     end
 
     def current_dependencies
-      dependencies.select do |d|
-        d.should_include? && !d.gem_platforms([generic_local_platform]).empty?
-      end
+      dependencies.select(&:should_include?)
     end
 
     def locked_dependencies

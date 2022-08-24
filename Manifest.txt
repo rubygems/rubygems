@@ -80,7 +80,6 @@ bundler/lib/bundler/gem_helpers.rb
 bundler/lib/bundler/gem_tasks.rb
 bundler/lib/bundler/gem_version_promoter.rb
 bundler/lib/bundler/graph.rb
-bundler/lib/bundler/incomplete_specification.rb
 bundler/lib/bundler/index.rb
 bundler/lib/bundler/injector.rb
 bundler/lib/bundler/inline.rb
@@ -128,6 +127,8 @@ bundler/lib/bundler/man/bundle-outdated.1
 bundler/lib/bundler/man/bundle-outdated.1.ronn
 bundler/lib/bundler/man/bundle-platform.1
 bundler/lib/bundler/man/bundle-platform.1.ronn
+bundler/lib/bundler/man/bundle-plugin.1
+bundler/lib/bundler/man/bundle-plugin.1.ronn
 bundler/lib/bundler/man/bundle-pristine.1
 bundler/lib/bundler/man/bundle-pristine.1.ronn
 bundler/lib/bundler/man/bundle-remove.1
@@ -143,7 +144,9 @@ bundler/lib/bundler/man/bundle.1.ronn
 bundler/lib/bundler/man/gemfile.5
 bundler/lib/bundler/man/gemfile.5.ronn
 bundler/lib/bundler/man/index.txt
+bundler/lib/bundler/match_metadata.rb
 bundler/lib/bundler/match_platform.rb
+bundler/lib/bundler/match_remote_metadata.rb
 bundler/lib/bundler/mirror.rb
 bundler/lib/bundler/plugin.rb
 bundler/lib/bundler/plugin/api.rb

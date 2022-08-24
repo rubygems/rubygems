@@ -1,3 +1,26 @@
+# 2.3.21 (August 24, 2022)
+
+## Enhancements:
+
+  - Backport non gnu libc linux support from RubyGems [#4488](https://github.com/rubygems/rubygems/pull/4488)
+  - Improve `Bundler.rm_rf` error message [#5861](https://github.com/rubygems/rubygems/pull/5861)
+  - Disallow both `--branch` and `--ref` at the same time in bundle-plugin [#5855](https://github.com/rubygems/rubygems/pull/5855)
+  - Restore previous performance of private RubyGems servers [#5826](https://github.com/rubygems/rubygems/pull/5826)
+
+## Bug fixes:
+
+  - Fix conservative update downgrading top level gems [#5847](https://github.com/rubygems/rubygems/pull/5847)
+  - Fix edge case where `bundler/inline` unintentionally skips install [#5848](https://github.com/rubygems/rubygems/pull/5848)
+  - Fix `bundle platform` crash when there's a lockfile with no Ruby locked [#5850](https://github.com/rubygems/rubygems/pull/5850)
+  - Fix crash when incomplete locked specifications are found in transitive dependencies [#5840](https://github.com/rubygems/rubygems/pull/5840)
+  - Fix Ruby platform incorrectly removed on `bundle update` [#5832](https://github.com/rubygems/rubygems/pull/5832)
+
+## Documentation:
+
+  - Explain cancelled CLI deprecations clearly [#5864](https://github.com/rubygems/rubygems/pull/5864)
+  - Improve `bundle config` command synopsis [#5854](https://github.com/rubygems/rubygems/pull/5854)
+  - Introduce bundle-plugin(1) man [#5853](https://github.com/rubygems/rubygems/pull/5853)
+
 # 2.3.20 (August 10, 2022)
 
 ## Enhancements:

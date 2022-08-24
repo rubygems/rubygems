@@ -1,3 +1,11 @@
+# 3.3.21 / 2022-08-24
+
+## Enhancements:
+
+* Support non gnu libc linux platforms. Pull request #5852 by
+  deivid-rodriguez
+* Installs bundler 2.3.21 as a default gem.
+
 # 3.3.20 / 2022-08-10
 
 ## Enhancements:

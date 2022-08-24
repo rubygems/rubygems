@@ -245,10 +245,7 @@ module Bundler
     end
 
     def dependencies_for(groups)
-      groups.map!(&:to_sym)
-      current_dependencies.reject do |d|
-        (d.groups & groups).empty?
-      end
+      dependencies.select {|d| d.include_with_groups?(groups.map(&:to_sym)) }
     end
 
     # Resolve all the dependencies specified in Gemfile. It ensures that

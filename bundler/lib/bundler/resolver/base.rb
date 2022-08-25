@@ -17,6 +17,26 @@ module Bundler
       end
 
       def base_requirements
+        @base_requirements ||= build_base_requirements
+      end
+
+      def unlock_deps(deps)
+        exact, lower_bound = deps.partition(&:specific?)
+
+        exact.each do |exact_dep|
+          @base.delete_by_name_and_version(exact_dep.name, exact_dep.requirement.requirements.first.last)
+        end
+
+        lower_bound.each do |lower_bound_dep|
+          @additional_base_requirements.delete(lower_bound_dep)
+        end
+
+        @base_requirements = nil
+      end
+
+      private
+
+      def build_base_requirements
         base_requirements = {}
         @base.each do |ls|
           dep = Dependency.new(ls.name, ls.version)

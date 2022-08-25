@@ -54,8 +54,20 @@ module Bundler
 
       SpecSet.new(SpecSet.new(result).for(regular_requirements, false, @platforms))
     rescue Molinillo::VersionConflict => e
+      conflicts = e.conflicts
+
+      deps_to_unlock = conflicts.values.inject([]) do |deps, conflict|
+        deps |= conflict.requirement_trees.flatten.map {|req| base_requirements[req.name] }.compact
+      end
+
+      if deps_to_unlock.any?
+        @base.unlock_deps(deps_to_unlock)
+        reset_spec_cache
+        retry
+      end
+
       message = version_conflict_message(e)
-      raise VersionConflict.new(e.conflicts.keys.uniq, message)
+      raise VersionConflict.new(conflicts.keys.uniq, message)
     rescue Molinillo::CircularDependencyError => e
       names = e.dependencies.sort_by(&:name).map {|d| "gem '#{d.name}'" }
       raise CyclicDependencyError, "Your bundle requires gems that depend" \
@@ -173,12 +185,6 @@ module Bundler
       "Gemfile"
     end
 
-    def name_for_locking_dependency_source
-      Bundler.default_lockfile.basename.to_s
-    rescue StandardError
-      "Gemfile.lock"
-    end
-
     def requirement_satisfied_by?(requirement, activated, spec)
       requirement.matches_spec?(spec) || spec.source.is_a?(Source::Gemspec)
     end
@@ -217,7 +223,6 @@ module Bundler
 
     def remove_from_candidates(spec)
       @base.delete(spec)
-      @gem_version_promoter.reset
 
       @results_for.keys.each do |dep|
         next unless dep.name == spec.name
@@ -225,7 +230,12 @@ module Bundler
         @results_for[dep].reject {|s| s.name == spec.name && s.version == spec.version }
       end
 
+      reset_spec_cache
+    end
+
+    def reset_spec_cache
       @search_for = {}
+      @gem_version_promoter.reset
     end
 
     # returns an integer \in (-\infty, 0]
@@ -342,14 +352,7 @@ module Bundler
               String.new("Bundler could not find compatible versions for gem \"#{name}\":")
             end
             o << %(\n)
-            locked_requirement = base_requirements[name]
-            if locked_requirement
-              o << %(  In snapshot (#{name_for_locking_dependency_source}):\n)
-              o << %(    #{SharedHelpers.pretty_dependency(locked_requirement)}\n)
-              o << %(\n)
-            end
             o << %(  In #{name_for_explicit_dependency_source}:\n)
-
             o << trees.map do |tree|
               t = "".dup
               depth = 2
@@ -400,10 +403,6 @@ module Bundler
             end
           elsif name.end_with?("\0")
             o << %(\n  Current #{name} version:\n    #{SharedHelpers.pretty_dependency(@metadata_requirements.find {|req| req.name == name })}\n\n)
-          elsif locked_requirement
-            o << "\n"
-            o << %(Deleting your #{name_for_locking_dependency_source} file and running `bundle install` will rebuild your snapshot from scratch, using only\n)
-            o << %(the gems in your Gemfile, which may resolve the conflict.\n)
           elsif !conflict.existing
             o << "\n"
 

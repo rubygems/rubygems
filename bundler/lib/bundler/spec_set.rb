@@ -122,6 +122,12 @@ module Bundler
       @specs.detect {|spec| spec.name == name && spec.match_platform(platform) }
     end
 
+    def delete_by_name_and_version(name, version)
+      @specs.reject! {|spec| spec.name == name && spec.version == version }
+      @lookup = nil
+      @sorted = nil
+    end
+
     def what_required(spec)
       unless req = find {|s| s.dependencies.any? {|d| d.type == :runtime && d.name == spec.name } }
         return [spec]

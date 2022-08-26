@@ -413,8 +413,8 @@ module Bundler
 
             relevant_source = conflict.requirement.source || source_for(name)
 
-            extra_message = if conflict.requirement_trees.first.size > 1
-              ", which is required by gem '#{SharedHelpers.pretty_dependency(conflict.requirement_trees.first[-2])}',"
+            extra_message = if trees.first.size > 1
+              ", which is required by gem '#{SharedHelpers.pretty_dependency(trees.first[-2])}',"
             else
               ""
             end

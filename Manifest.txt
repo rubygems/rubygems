@@ -161,6 +161,7 @@ bundler/lib/bundler/plugin/source_list.rb
 bundler/lib/bundler/process_lock.rb
 bundler/lib/bundler/remote_specification.rb
 bundler/lib/bundler/resolver.rb
+bundler/lib/bundler/resolver/base.rb
 bundler/lib/bundler/resolver/spec_group.rb
 bundler/lib/bundler/retry.rb
 bundler/lib/bundler/ruby_dsl.rb

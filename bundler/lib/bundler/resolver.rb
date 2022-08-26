@@ -3,6 +3,7 @@
 module Bundler
   class Resolver
     require_relative "vendored_molinillo"
+    require_relative "resolver/base"
     require_relative "resolver/spec_group"
 
     include GemHelpers
@@ -25,11 +26,10 @@ module Bundler
 
     def initialize(source_requirements, base, gem_version_promoter, additional_base_requirements, platforms)
       @source_requirements = source_requirements
-      @base = base
+      @base = Resolver::Base.new(base, additional_base_requirements)
       @resolver = Molinillo::Resolver.new(self, self)
       @results_for = {}
       @search_for = {}
-      @additional_base_requirements = additional_base_requirements
       @platforms = platforms
       @resolving_only_for_ruby = platforms == [Gem::Platform::RUBY]
       @gem_version_promoter = gem_version_promoter
@@ -42,13 +42,6 @@ module Bundler
       exclude_specs.each do |spec|
         remove_from_candidates(spec)
       end
-
-      @base_requirements = {}
-      @base.each do |ls|
-        dep = Dependency.new(ls.name, ls.version)
-        @base_requirements[ls.name] = DepProxy.get_proxy(dep, ls.platform)
-      end
-      @additional_base_requirements.each {|d| @base_requirements[d.name] = d }
 
       @gem_version_promoter.prerelease_specified = @prerelease_specified = {}
       requirements.each {|dep| @prerelease_specified[dep.name] ||= dep.prerelease? }
@@ -119,7 +112,7 @@ module Bundler
       name = dependency.name
       @search_for[dependency_proxy] ||= begin
         locked_results = @base[name].select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
-        locked_requirement = @base_requirements[name]
+        locked_requirement = base_requirements[name]
         results = results_for(dependency) + locked_results
         results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
 
@@ -223,6 +216,10 @@ module Bundler
     end
 
     private
+
+    def base_requirements
+      @base.base_requirements
+    end
 
     def remove_from_candidates(spec)
       @base.delete(spec)
@@ -332,7 +329,7 @@ module Bundler
             String.new("Bundler could not find compatible versions for gem \"#{name}\":")
           end
           o << %(\n)
-          locked_requirement = @base_requirements[name]
+          locked_requirement = base_requirements[name]
           if locked_requirement
             o << %(  In snapshot (#{name_for_locking_dependency_source}):\n)
             o << %(    #{SharedHelpers.pretty_dependency(locked_requirement)}\n)

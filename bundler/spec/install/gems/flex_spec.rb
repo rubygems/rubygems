@@ -269,7 +269,7 @@ RSpec.describe "bundle flex_install" do
         the gems in your Gemfile, which may resolve the conflict.
       E
 
-      bundle :update, :raise_on_error => false
+      bundle :update, :raise_on_error => false, :all => true
       expect(err).to end_with(nice_error)
     end
   end

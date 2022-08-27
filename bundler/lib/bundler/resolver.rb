@@ -323,19 +323,6 @@ module Bundler
 
       e.message_with_trees(
         :full_message_for_conflict => lambda do |name, conflict|
-          o = if name.end_with?("\0")
-            String.new("Bundler found conflicting requirements for the #{name} version:")
-          else
-            String.new("Bundler could not find compatible versions for gem \"#{name}\":")
-          end
-          o << %(\n)
-          locked_requirement = base_requirements[name]
-          if locked_requirement
-            o << %(  In snapshot (#{name_for_locking_dependency_source}):\n)
-            o << %(    #{SharedHelpers.pretty_dependency(locked_requirement)}\n)
-            o << %(\n)
-          end
-          o << %(  In #{name_for_explicit_dependency_source}:\n)
           trees = conflict.requirement_trees
 
           # called first, because we want to reduce the amount of work required to find maximal empty sets
@@ -354,30 +341,48 @@ module Bundler
             trees.sort_by! {|t| t.reverse.map(&:name) }
           end
 
-          o << trees.map do |tree|
-            t = "".dup
-            depth = 2
-
-            base_tree = tree.first
-            base_tree_name = base_tree.name
-
-            if base_tree_name.end_with?("\0")
-              t = nil
+          if trees.size > 1 || name == "bundler"
+            o = if name.end_with?("\0")
+              String.new("Bundler found conflicting requirements for the #{name} version:")
             else
-              tree.each do |req|
-                t << "  " * depth << SharedHelpers.pretty_dependency(req)
-                unless tree.last == req
-                  if spec = conflict.activated_by_name[req.name]
-                    t << %( was resolved to #{spec.version}, which)
-                  end
-                  t << %( depends on)
-                end
-                t << %(\n)
-                depth += 1
-              end
+              String.new("Bundler could not find compatible versions for gem \"#{name}\":")
             end
-            t
-          end.compact.join("\n")
+            o << %(\n)
+            locked_requirement = base_requirements[name]
+            if locked_requirement
+              o << %(  In snapshot (#{name_for_locking_dependency_source}):\n)
+              o << %(    #{SharedHelpers.pretty_dependency(locked_requirement)}\n)
+              o << %(\n)
+            end
+            o << %(  In #{name_for_explicit_dependency_source}:\n)
+
+            o << trees.map do |tree|
+              t = "".dup
+              depth = 2
+
+              base_tree = tree.first
+              base_tree_name = base_tree.name
+
+              if base_tree_name.end_with?("\0")
+                t = nil
+              else
+                tree.each do |req|
+                  t << "  " * depth << SharedHelpers.pretty_dependency(req)
+                  unless tree.last == req
+                    if spec = conflict.activated_by_name[req.name]
+                      t << %( was resolved to #{spec.version}, which)
+                    end
+                    t << %( depends on)
+                  end
+                  t << %(\n)
+                  depth += 1
+                end
+              end
+              t
+            end.compact.join("\n")
+          else
+            o = String.new
+          end
 
           if name == "bundler"
             o << %(\n  Current Bundler version:\n    bundler (#{Bundler::VERSION}))

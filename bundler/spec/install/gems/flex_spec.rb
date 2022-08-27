@@ -212,6 +212,19 @@ RSpec.describe "bundle flex_install" do
       bundle :install, :retry => 0, :raise_on_error => false
       expect(err).to end_with(nice_error)
     end
+
+    it "does not include conflicts with a single requirement tree, because that can't possibly be a conflict" do
+      bundle "config set force_ruby_platform true"
+
+      bad_error = <<-E.strip.gsub(/^ {8}/, "")
+        Bundler could not find compatible versions for gem "rack-obama":
+          In Gemfile:
+            rack-obama (= 2.0)
+      E
+
+      bundle "update rack_middleware", :retry => 0, :raise_on_error => false
+      expect(err).not_to end_with(bad_error)
+    end
   end
 
   describe "when running bundle update and Gemfile conflicts with lockfile" do

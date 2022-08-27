@@ -66,8 +66,6 @@ module Bundler
     # @return [SpecGroup] A new instance of the SpecGroup Array sorted and
     #    possibly filtered.
     def sort_versions(dep, spec_groups)
-      before_result = "before sort_versions: #{debug_format_result(dep, spec_groups).inspect}" if DEBUG
-
       @sort_versions[dep] ||= begin
         gem_name = dep.name
 
@@ -79,11 +77,6 @@ module Bundler
           filter_dep_specs(spec_groups, locked_spec)
         else
           sort_dep_specs(spec_groups, locked_spec)
-        end.tap do |specs|
-          if DEBUG
-            puts before_result
-            puts " after sort_versions: #{debug_format_result(dep, specs).inspect}"
-          end
         end
       end
     end
@@ -182,13 +175,6 @@ module Bundler
     def move_version_to_end(result, version)
       move, keep = result.partition {|s| s.version.to_s == version.to_s }
       keep.concat(move)
-    end
-
-    def debug_format_result(dep, spec_groups)
-      a = [dep.to_s,
-           spec_groups.map {|sg| [sg.version, sg.dependencies_for_activated_platforms.map {|dp| [dp.name, dp.requirement.to_s] }] }]
-      last_map = a.last.map {|sg_data| [sg_data.first.version, sg_data.last.map {|aa| aa.join(" ") }] }
-      [a.first, last_map, level, strict ? :strict : :not_strict]
     end
   end
 end

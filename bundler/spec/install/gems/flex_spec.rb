@@ -243,22 +243,6 @@ RSpec.describe "bundle flex_install" do
         gem "jekyll-feed", "~> 0.12"
       G
 
-      lockfile <<-L
-        GEM
-          remote: #{file_uri_for(gem_repo4)}/
-          specs:
-            jekyll-feed (0.16.0)
-
-        PLATFORMS
-          #{lockfile_platforms}
-
-        DEPENDENCIES
-          jekyll-feed
-
-        BUNDLED WITH
-           #{Bundler::VERSION}
-      L
-
       gemfile <<-G
         source "#{file_uri_for(gem_repo4)}"
         gem "github-pages", "~> 226"

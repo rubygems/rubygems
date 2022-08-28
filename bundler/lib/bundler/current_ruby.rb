@@ -29,15 +29,11 @@ module Bundler
     KNOWN_PLATFORMS = %w[
       jruby
       maglev
-      mingw
       mri
-      mswin
-      mswin64
       rbx
       ruby
       truffleruby
       windows
-      x64_mingw
     ].freeze
 
     def ruby?
@@ -68,26 +64,6 @@ module Bundler
 
     def windows?
       Gem.win_platform?
-    end
-
-    def mswin?
-      # For backwards compatibility
-      windows?
-
-      # TODO: This should correctly be:
-      # windows? && Bundler.local_platform != Gem::Platform::RUBY && Bundler.local_platform.os == "mswin32" && Bundler.local_platform.cpu == "x86"
-    end
-
-    def mswin64?
-      windows? && Bundler.local_platform != Gem::Platform::RUBY && Bundler.local_platform.os == "mswin64" && Bundler.local_platform.cpu == "x64"
-    end
-
-    def mingw?
-      windows? && Bundler.local_platform != Gem::Platform::RUBY && Bundler.local_platform.os == "mingw32" && Bundler.local_platform.cpu != "x64"
-    end
-
-    def x64_mingw?
-      Gem.win_platform? && Bundler.local_platform != Gem::Platform::RUBY && Bundler.local_platform.os.start_with?("mingw") && Bundler.local_platform.cpu == "x64"
     end
 
     (KNOWN_MINOR_VERSIONS + KNOWN_MAJOR_VERSIONS).each do |version|

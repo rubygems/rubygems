@@ -475,7 +475,7 @@ RSpec.describe "bundle install with platform conditionals" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
 
-      gem "rack", :platform => [:mingw, :mswin, :x64_mingw, :jruby]
+      gem "rack", :platform => [:windows, :jruby]
     G
 
     bundle "install"
@@ -496,6 +496,49 @@ RSpec.describe "bundle install with platform conditionals" do
       BUNDLED WITH
          #{Bundler::VERSION}
     L
+  end
+
+  [:mswin, :mswin64, :mingw, :x64_mingw].each do |platform|
+    it "prints a warning when deprecated platform :#{platform} is used", :bundler => "< 3" do
+      bundle "config set --local force_ruby_platform true"
+
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+
+        gem "rack", :platform => :#{platform}
+      G
+
+      bundle "install"
+
+      expect(err).to match(/should be replaced with :windows/)
+
+      expect(lockfile).to eq <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo1)}/
+          specs:
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+          rack
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+
+    it "raises an error when deprecated platform :#{platform} is used", :bundler => ">= 3" do
+      bundle "config set --local force_ruby_platform true"
+
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+
+        gem "rack", :platform => :#{platform}
+      G
+
+      expect { bundle "install" }.to raise_error(RuntimeError, /should be replaced with :windows/)
+    end
   end
 end
 

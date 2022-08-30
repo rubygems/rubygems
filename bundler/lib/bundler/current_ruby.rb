@@ -71,6 +71,8 @@ module Bundler
     end
 
     def mswin?
+      self.class.deprecate_platform(:mswin, :windows)
+
       # For backwards compatibility
       windows?
 
@@ -79,14 +81,17 @@ module Bundler
     end
 
     def mswin64?
+      self.class.deprecate_platform(:mswin64, :windows)
       windows? && Bundler.local_platform != Gem::Platform::RUBY && Bundler.local_platform.os == "mswin64" && Bundler.local_platform.cpu == "x64"
     end
 
     def mingw?
+      self.class.deprecate_platform(:mingw, :windows)
       windows? && Bundler.local_platform != Gem::Platform::RUBY && Bundler.local_platform.os == "mingw32" && Bundler.local_platform.cpu != "x64"
     end
 
     def x64_mingw?
+      self.class.deprecate_platform(:x64_mingw, :windows)
       Gem.win_platform? && Bundler.local_platform != Gem::Platform::RUBY && Bundler.local_platform.os.start_with?("mingw") && Bundler.local_platform.cpu == "x64"
     end
 
@@ -101,6 +106,18 @@ module Bundler
           send(:"#{platform}?") && send(:"on_#{trimmed_version}?")
         end
       end
+    end
+
+    def self.deprecate_platform(old_platform, new_platform)
+      @deprecated_platforms ||= []
+      return if @deprecated_platforms.include?(old_platform)
+      @deprecated_platforms << old_platform
+
+      Bundler::SharedHelpers.major_deprecation(
+        2,
+        "Platform :#{old_platform} is deprecated and should be replaced with :#{new_platform}",
+        :print_caller_location => false
+      )
     end
   end
 end

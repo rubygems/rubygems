@@ -318,6 +318,9 @@ Layout/FirstHashElementIndentation:
 Layout/FirstArgumentIndentation:
   Enabled: true
 
+Layout/HashAlignment:
+  Enabled: true
+
 Layout/IndentationConsistency:
   Enabled: true
 

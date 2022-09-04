@@ -42,9 +42,6 @@ at version 2.7, so when RubyGems 2.8 is released, it will only support Ruby
 
 ## Release Process
 
-Releases of new versions should follow these steps, to ensure the process is
-smooth and no needed steps are missed.
-
 ### Recommendations for security releases
 
 *   Obtain CVE numbers as needed from HackerOne or Red Hat.

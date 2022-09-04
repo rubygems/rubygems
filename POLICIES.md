@@ -42,6 +42,20 @@ at version 2.7, so when RubyGems 2.8 is released, it will only support Ruby
 
 ## Release Process
 
+### Permissions
+
+You'll need the following environment variables set to release RubyGems &
+Bundler:
+
+* AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY: to be able to push RubyGems zip
+  files to s3 so that they appear at RubyGems [download page].
+
+* GITHUB_RELEASE_PAT: A [GitHub PAT] with repo permissions, in order to push
+  GitHub releases and to use the GitHub API for changelog generation.
+
+[download page]: https://rubygems.org/pages/download
+[GitHub PAT]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+
 ### Recommendations for security releases
 
 *   Obtain CVE numbers as needed from HackerOne or Red Hat.

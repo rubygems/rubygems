@@ -6,11 +6,8 @@ class Release
   module GithubAPI
     def gh_client
       @gh_client ||= begin
-        require "netrc"
-        _username, token = Netrc.read["api.github.com"]
-
         require "octokit"
-        Octokit::Client.new(:access_token => token)
+        Octokit::Client.new(:access_token => ENV["GITHUB_RELEASE_PAT"])
       end
     end
   end

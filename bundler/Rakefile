@@ -34,7 +34,7 @@ namespace :spec do
   end
 
   desc "Run all specs"
-  task :all => %w[spec:regular spec:realworld spec:sudo]
+  task :all => %w[spec:regular spec:realworld]
 
   desc "Run the regular spec suite"
   task :regular do
@@ -50,18 +50,6 @@ namespace :spec do
     desc "Re-record cassettes for the realworld specs"
     task :record do
       sh("rm -rf spec/support/artifice/vcr_cassettes && bin/rspec --tag realworld")
-    end
-  end
-
-  desc "Run the spec suite with the sudo tests"
-  task :sudo, [:specs] => [] do |_t, opts|
-    require_relative "spec/support/sudo"
-    Spec::Sudo.write_safe_config
-
-    begin
-      sh("sudo GIT_CONFIG_GLOBAL=#{Spec::Path.tmp("gitconfig")} PATH=#{ENV["PATH"]} RUBYOPT=#{ENV["RUBYOPT"]} bin/rspec --tag sudo #{opts[:specs]}")
-    ensure
-      system("sudo", "chown", "-R", ENV["USER"], "tmp")
     end
   end
 end

@@ -109,6 +109,8 @@ bundler/lib/bundler/man/bundle-exec.1
 bundler/lib/bundler/man/bundle-exec.1.ronn
 bundler/lib/bundler/man/bundle-gem.1
 bundler/lib/bundler/man/bundle-gem.1.ronn
+bundler/lib/bundler/man/bundle-help.1
+bundler/lib/bundler/man/bundle-help.1.ronn
 bundler/lib/bundler/man/bundle-info.1
 bundler/lib/bundler/man/bundle-info.1.ronn
 bundler/lib/bundler/man/bundle-init.1

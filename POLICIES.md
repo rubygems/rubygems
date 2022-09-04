@@ -69,9 +69,12 @@ Bundler:
 
 *   Confirm all PRs that you want backported are properly tagged with `rubygems:
     <type>` or `bundler: <type>` labels at GitHub.
-*   Run `rake prepare_release[<target_version>]`, create a PR and merge it
-    to the stable branch once CI passes.
-*   Switch to the stable branch and pull the PR just merged.
+*   Run `rake prepare_release[<target_version>]`. This will create a PR to the
+    stable branch with the backports included in the release, and proper
+    changelogs and version bumps. It will also create a PR to merge release
+    changelogs into master.
+*   Once CI passes, merge the release PR, switch to the stable branch and pull
+    the PR just merged.
 *   Release `bundler` with `(cd bundler && bin/rake release)`.
 *   Release `rubygems` with `rake release`.
 

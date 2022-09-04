@@ -184,13 +184,32 @@ class Release
 
       return if @level == :minor_or_major
 
+      system("git", "push", exception: true)
+
+      gh_client.create_pull_request(
+        "rubygems/rubygems",
+        @base_branch,
+        @release_branch,
+        "Prepare RubyGems #{@rubygems.version} and Bundler #{@bundler.version}",
+        "It's release day!"
+      )
+
       system("git", "checkout", "-b", "cherry_pick_changelogs", "master", exception: true)
 
       begin
         system("git", "cherry-pick", bundler_changelog, rubygems_changelog, exception: true)
+        system("git", "push", exception: true)
       rescue StandardError
         system("git", "cherry-pick", "--abort")
         system("git", "branch", "-D", "cherry_pick_changelogs")
+      else
+        gh_client.create_pull_request(
+          "rubygems/rubygems",
+          "master",
+          "cherry_pick_changelogs",
+          "Changelogs for RubyGems #{@rubygems.version} and Bundler #{@bundler.version}",
+          "Cherry-picking change logs from future RubyGems #{@rubygems.version} and Bundler #{@bundler.version} into master."
+        )
       end
     rescue StandardError
       system("git", "checkout", initial_branch)

@@ -51,7 +51,6 @@ at version 2.7, so when RubyGems 2.8 is released, it will only support Ruby
     have to work on weekends.
 *   Continue with the regular release process below.
 
-
 ### Steps for patch releases
 
 *   Confirm all PRs that you want backported are properly tagged with `rubygems:

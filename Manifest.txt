@@ -139,6 +139,8 @@ bundler/lib/bundler/man/bundle-show.1
 bundler/lib/bundler/man/bundle-show.1.ronn
 bundler/lib/bundler/man/bundle-update.1
 bundler/lib/bundler/man/bundle-update.1.ronn
+bundler/lib/bundler/man/bundle-version.1
+bundler/lib/bundler/man/bundle-version.1.ronn
 bundler/lib/bundler/man/bundle-viz.1
 bundler/lib/bundler/man/bundle-viz.1.ronn
 bundler/lib/bundler/man/bundle.1

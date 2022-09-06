@@ -103,6 +103,8 @@ bundler/lib/bundler/man/bundle-clean.1
 bundler/lib/bundler/man/bundle-clean.1.ronn
 bundler/lib/bundler/man/bundle-config.1
 bundler/lib/bundler/man/bundle-config.1.ronn
+bundler/lib/bundler/man/bundle-console.1
+bundler/lib/bundler/man/bundle-console.1.ronn
 bundler/lib/bundler/man/bundle-doctor.1
 bundler/lib/bundler/man/bundle-doctor.1.ronn
 bundler/lib/bundler/man/bundle-exec.1

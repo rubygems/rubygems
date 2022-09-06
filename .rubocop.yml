@@ -64,6 +64,9 @@ Layout/FirstArrayElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
+Layout/HashAlignment:
+  Enabled: true
+
 Layout/IndentationConsistency:
   Enabled: true
 

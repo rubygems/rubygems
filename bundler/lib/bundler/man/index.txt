@@ -6,6 +6,7 @@ bundle-cache(1)       bundle-cache.1
 bundle-check(1)       bundle-check.1
 bundle-clean(1)       bundle-clean.1
 bundle-config(1)      bundle-config.1
+bundle-console(1)     bundle-console.1
 bundle-doctor(1)      bundle-doctor.1
 bundle-exec(1)        bundle-exec.1
 bundle-gem(1)         bundle-gem.1

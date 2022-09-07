@@ -42,8 +42,19 @@ at version 2.7, so when RubyGems 2.8 is released, it will only support Ruby
 
 ## Release Process
 
-Releases of new versions should follow these steps, to ensure the process is
-smooth and no needed steps are missed.
+### Permissions
+
+You'll need the following environment variables set to release RubyGems &
+Bundler:
+
+* AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY: to be able to push RubyGems zip
+  files to s3 so that they appear at RubyGems [download page].
+
+* GITHUB_RELEASE_PAT: A [GitHub PAT] with repo permissions, in order to push
+  GitHub releases and to use the GitHub API for changelog generation.
+
+[download page]: https://rubygems.org/pages/download
+[GitHub PAT]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
 ### Recommendations for security releases
 
@@ -54,14 +65,16 @@ smooth and no needed steps are missed.
     have to work on weekends.
 *   Continue with the regular release process below.
 
-
 ### Steps for patch releases
 
 *   Confirm all PRs that you want backported are properly tagged with `rubygems:
     <type>` or `bundler: <type>` labels at GitHub.
-*   Run `rake prepare_release[<target_version>]`, create a PR and merge it
-    to the stable branch once CI passes.
-*   Switch to the stable branch and pull the PR just merged.
+*   Run `rake prepare_release[<target_version>]`. This will create a PR to the
+    stable branch with the backports included in the release, and proper
+    changelogs and version bumps. It will also create a PR to merge release
+    changelogs into master.
+*   Once CI passes, merge the release PR, switch to the stable branch and pull
+    the PR just merged.
 *   Release `bundler` with `(cd bundler && bin/rake release)`.
 *   Release `rubygems` with `rake release`.
 

@@ -1,3 +1,16 @@
+# 3.3.22 / 2022-09-07
+
+## Enhancements:
+
+* Support non gnu libc arm-linux-eabi platforms. Pull request #5889 by
+  ntkme
+* Installs bundler 2.3.22 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem info` with explicit `--version`. Pull request #5884 by
+  tonyaraujop
+
 # 3.3.21 / 2022-08-24
 
 ## Enhancements:

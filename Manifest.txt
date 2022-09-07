@@ -103,12 +103,16 @@ bundler/lib/bundler/man/bundle-clean.1
 bundler/lib/bundler/man/bundle-clean.1.ronn
 bundler/lib/bundler/man/bundle-config.1
 bundler/lib/bundler/man/bundle-config.1.ronn
+bundler/lib/bundler/man/bundle-console.1
+bundler/lib/bundler/man/bundle-console.1.ronn
 bundler/lib/bundler/man/bundle-doctor.1
 bundler/lib/bundler/man/bundle-doctor.1.ronn
 bundler/lib/bundler/man/bundle-exec.1
 bundler/lib/bundler/man/bundle-exec.1.ronn
 bundler/lib/bundler/man/bundle-gem.1
 bundler/lib/bundler/man/bundle-gem.1.ronn
+bundler/lib/bundler/man/bundle-help.1
+bundler/lib/bundler/man/bundle-help.1.ronn
 bundler/lib/bundler/man/bundle-info.1
 bundler/lib/bundler/man/bundle-info.1.ronn
 bundler/lib/bundler/man/bundle-init.1
@@ -137,6 +141,8 @@ bundler/lib/bundler/man/bundle-show.1
 bundler/lib/bundler/man/bundle-show.1.ronn
 bundler/lib/bundler/man/bundle-update.1
 bundler/lib/bundler/man/bundle-update.1.ronn
+bundler/lib/bundler/man/bundle-version.1
+bundler/lib/bundler/man/bundle-version.1.ronn
 bundler/lib/bundler/man/bundle-viz.1
 bundler/lib/bundler/man/bundle-viz.1.ronn
 bundler/lib/bundler/man/bundle.1
@@ -161,6 +167,7 @@ bundler/lib/bundler/plugin/source_list.rb
 bundler/lib/bundler/process_lock.rb
 bundler/lib/bundler/remote_specification.rb
 bundler/lib/bundler/resolver.rb
+bundler/lib/bundler/resolver/base.rb
 bundler/lib/bundler/resolver/spec_group.rb
 bundler/lib/bundler/retry.rb
 bundler/lib/bundler/ruby_dsl.rb

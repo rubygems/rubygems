@@ -55,6 +55,7 @@ GEM
       faraday (> 0.8, < 2.0)
 
 PLATFORMS
+  aarch64-linux
   arm64-darwin-20
   arm64-darwin-21
   universal-java-11
@@ -68,4 +69,4 @@ DEPENDENCIES
   octokit (~> 4.18)
 
 BUNDLED WITH
-   2.3.21
+   2.3.22

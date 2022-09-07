@@ -1,3 +1,25 @@
+# 2.3.22 (September 7, 2022)
+
+## Enhancements:
+
+  - Use a more accurate source code uri in gemspec [#5896](https://github.com/rubygems/rubygems/pull/5896)
+  - Support `--path` option in `bundle add` [#5897](https://github.com/rubygems/rubygems/pull/5897)
+  - Improve lockfile dependency unlocking [#5881](https://github.com/rubygems/rubygems/pull/5881)
+  - Add platform alias `:windows` to Gemfile DSL [#5650](https://github.com/rubygems/rubygems/pull/5650)
+  - Make `#to_lock` consistent between `Gem::Dependency` and `Bundler::Dependency` [#5872](https://github.com/rubygems/rubygems/pull/5872)
+  - Support marshaled index specifications with `nil` required ruby version [#5824](https://github.com/rubygems/rubygems/pull/5824)
+
+## Bug fixes:
+
+  - Fix resolution hanging on musl platforms [#5875](https://github.com/rubygems/rubygems/pull/5875)
+  - Fix another regression affecting the sorbet family of gems [#5874](https://github.com/rubygems/rubygems/pull/5874)
+
+## Documentation:
+
+  - Introduce bundle-console(1) man [#5901](https://github.com/rubygems/rubygems/pull/5901)
+  - Introduce bundle-version(1) man [#5895](https://github.com/rubygems/rubygems/pull/5895)
+  - Introduce bundle-help(1) man [#5886](https://github.com/rubygems/rubygems/pull/5886)
+
 # 2.3.21 (August 24, 2022)
 
 ## Enhancements:

@@ -47,6 +47,7 @@ GEM
     unicode-display_width (1.6.1)
 
 PLATFORMS
+  aarch64-linux
   arm64-darwin-20
   arm64-darwin-21
   universal-java-11
@@ -65,4 +66,4 @@ DEPENDENCIES
   test-unit
 
 BUNDLED WITH
-   2.3.21
+   2.3.22

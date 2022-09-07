@@ -4,6 +4,9 @@ module Bundler
   class LockfileParser
     attr_reader :sources, :dependencies, :specs, :platforms, :bundler_version, :ruby_version
 
+    # @return [Boolean] Does the lockfile contain the new warning about hand editing?
+    attr_reader :edit_warning
+
     BUNDLED      = "BUNDLED WITH".freeze
     DEPENDENCIES = "DEPENDENCIES".freeze
     PLATFORMS    = "PLATFORMS".freeze
@@ -15,12 +18,14 @@ module Bundler
     SPECS        = "  specs:".freeze
     OPTIONS      = /^  ([a-z]+): (.*)$/i.freeze
     SOURCE       = [GIT, GEM, PATH, PLUGIN].freeze
+    EDIT_WARNING = "EDIT WARNING".freeze
 
     SECTIONS_BY_VERSION_INTRODUCED = {
       Gem::Version.create("1.0") => [DEPENDENCIES, PLATFORMS, GIT, GEM, PATH].freeze,
       Gem::Version.create("1.10") => [BUNDLED].freeze,
       Gem::Version.create("1.12") => [RUBY].freeze,
       Gem::Version.create("1.13") => [PLUGIN].freeze,
+      Gem::Version.create("2.4.0.dev") => [EDIT_WARNING].freeze,
     }.freeze
 
     KNOWN_SECTIONS = SECTIONS_BY_VERSION_INTRODUCED.values.flatten.freeze
@@ -80,6 +85,8 @@ module Bundler
           @state = :ruby
         elsif line == BUNDLED
           @state = :bundled_with
+        elsif line == EDIT_WARNING
+          @edit_warning = true
         elsif line =~ /^[^\s]/
           @state = nil
         elsif @state

@@ -22,6 +22,9 @@ module Bundler
       :gemfiles
     )
 
+    # @return [Boolean] Does the lockfile contain the new warning about hand editing?
+    attr_reader :edit_warning
+
     # Given a gemfile and lockfile creates a Bundler definition
     #
     # @param gemfile [Pathname] Path to Gemfile
@@ -81,6 +84,9 @@ module Bundler
       @locked_ruby_version    = nil
       @new_platform = nil
 
+      # Default to including this so it's included in newly generated lockfiles
+      @edit_warning = true
+
       if lockfile && File.exist?(lockfile)
         @lockfile_contents = Bundler.read_file(lockfile)
         @locked_gems = LockfileParser.new(@lockfile_contents)
@@ -89,6 +95,7 @@ module Bundler
         @locked_bundler_version = @locked_gems.bundler_version
         @locked_ruby_version = @locked_gems.ruby_version
         @originally_locked_specs = SpecSet.new(@locked_gems.specs)
+        @edit_warning = @locked_gems.edit_warning
 
         if unlock != true
           @locked_deps    = @locked_gems.dependencies

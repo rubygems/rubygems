@@ -66,7 +66,7 @@ class CertificateBuilder
       cert.add_extension ef.create_extension("keyUsage", "keyCertSign", true)
     end
 
-    cert.sign issuer_key, "SHA1"
+    cert.sign issuer_key, "SHA256"
 
     puts "created cert - subject: #{cert.subject}, issuer: #{cert.issuer}"
     cert

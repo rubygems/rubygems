@@ -108,22 +108,24 @@ module Bundler
         results = results_for(dependency) + locked_results
         results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
         dep_platforms = dependency.gem_platforms(@platforms)
-        results = results.select { |spec| dep_platforms.any? {|platform| spec.match_platform(platform) } }
 
         @gem_version_promoter.sort_versions(dependency, results).group_by(&:version).reduce([]) do |groups, (_, specs)|
+          relevant_platforms = dep_platforms.select {|platform| specs.any? {|spec| spec.match_platform(platform) } }
+          next groups unless relevant_platforms.any?
+
           specs_by_platform = Hash.new do |current_specs, current_platform|
             current_specs[current_platform] = select_best_platform_match(specs, current_platform)
           end
 
           if specs_by_platform[Gem::Platform::RUBY].any?
-            spec_group_ruby = SpecGroup.create_for(specs_by_platform, [Gem::Platform::RUBY])
+            spec_group_ruby = SpecGroup.new(specs_by_platform, [Gem::Platform::RUBY])
             spec_group_ruby.force_ruby_platform = dependency.force_ruby_platform
             groups << spec_group_ruby
           end
 
           next groups if @resolving_only_for_ruby || dependency.force_ruby_platform
 
-          spec_group = SpecGroup.create_for(specs_by_platform, dep_platforms)
+          spec_group = SpecGroup.new(specs_by_platform, relevant_platforms)
           groups << spec_group
 
           groups

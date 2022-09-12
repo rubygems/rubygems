@@ -7,7 +7,7 @@ module Bundler
       attr_accessor :activated_platforms, :force_ruby_platform
 
       def initialize(specs, relevant_platforms)
-        @exemplary_spec = specs[relevant_platforms.first].first
+        @exemplary_spec = specs.first
         @name = @exemplary_spec.name
         @version = @exemplary_spec.version
         @source = @exemplary_spec.source
@@ -17,17 +17,12 @@ module Bundler
       end
 
       def to_specs
-        activated_platforms.map do |p|
-          specs = @specs[p]
-          next unless specs.any?
-
-          specs.map do |s|
-            lazy_spec = LazySpecification.new(name, version, s.platform, source)
-            lazy_spec.force_ruby_platform = force_ruby_platform
-            lazy_spec.dependencies.replace s.dependencies
-            lazy_spec
-          end
-        end.flatten.compact.uniq
+        @specs.map do |s|
+          lazy_spec = LazySpecification.new(name, version, s.platform, source)
+          lazy_spec.force_ruby_platform = force_ruby_platform
+          lazy_spec.dependencies.replace s.dependencies
+          lazy_spec
+        end
       end
 
       def to_s
@@ -36,7 +31,9 @@ module Bundler
       end
 
       def dependencies_for_activated_platforms
-        @dependencies_for_activated_platforms ||= dependencies_for(activated_platforms)
+        @dependencies_for_activated_platforms ||= @specs.map do |spec|
+          __dependencies(spec) + metadata_dependencies(spec)
+        end.flatten.uniq
       end
 
       def ==(other)
@@ -67,23 +64,16 @@ module Bundler
 
       private
 
-      def dependencies_for(platforms)
-        platforms.map do |platform|
-          __dependencies(platform) + metadata_dependencies(platform)
-        end.flatten
-      end
-
-      def __dependencies(platform)
+      def __dependencies(spec)
         dependencies = []
-        @specs[platform].first.dependencies.each do |dep|
+        spec.dependencies.each do |dep|
           next if dep.type == :development
           dependencies << Dependency.new(dep.name, dep.requirement)
         end
         dependencies
       end
 
-      def metadata_dependencies(platform)
-        spec = @specs[platform].first
+      def metadata_dependencies(spec)
         return [] if spec.is_a?(LazySpecification)
 
         [

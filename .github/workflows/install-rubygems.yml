@@ -101,17 +101,13 @@ jobs:
           - { name: jruby-9.3, value: jruby-9.3.4.0 }
     steps:
       - uses: actions/checkout@v3
+      # set JDK version, see https://github.com/actions/runner-images
+      - run: echo JAVA_HOME=$env:JAVA_HOME_17_X64 >> $env:GITHUB_ENV
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Setup java
-        uses: actions/setup-java@v3.4.1
-        with:
-          distribution: temurin
-          java-version: 18.0.0
-        if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install rubygems
         run: ruby setup.rb
         shell: bash

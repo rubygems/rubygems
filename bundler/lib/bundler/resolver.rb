@@ -129,19 +129,17 @@ module Bundler
           relevant_platforms = dep_platforms.select {|platform| specs.any? { |spec| spec.match_platform(platform) } }
           next groups unless relevant_platforms.any?
 
-          specs_by_platform = Hash.new do |current_specs, current_platform|
-            current_specs[current_platform] = select_best_platform_match(specs, current_platform)
-          end
-
-          if specs_by_platform[Gem::Platform::RUBY].any?
-            spec_group_ruby = SpecGroup.new(specs_by_platform, [Gem::Platform::RUBY])
+          ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
+          if ruby_specs.any?
+            spec_group_ruby = SpecGroup.new(ruby_specs, [Gem::Platform::RUBY])
             spec_group_ruby.force_ruby_platform = dependency.force_ruby_platform
             groups << spec_group_ruby
           end
 
           next groups if @resolving_only_for_ruby || dependency.force_ruby_platform
 
-          spec_group = SpecGroup.new(specs_by_platform, relevant_platforms)
+          platform_specs = relevant_platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
+          spec_group = SpecGroup.new(platform_specs, relevant_platforms)
           groups << spec_group
 
           groups

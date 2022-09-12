@@ -139,6 +139,8 @@ module Bundler
           next groups if @resolving_only_for_ruby || dependency.force_ruby_platform
 
           platform_specs = relevant_platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
+          next groups if platform_specs == ruby_specs
+
           spec_group = SpecGroup.new(platform_specs, relevant_platforms)
           groups << spec_group
 

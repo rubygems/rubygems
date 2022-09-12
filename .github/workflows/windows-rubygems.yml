@@ -32,17 +32,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Setup ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby-pkgs@v1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+          mingw: clang
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.cargo.toolchain }}-${{ matrix.cargo.target }}
           default: true
-      - name: Add missing clang dep for rust-bindgen (see https://github.com/rubygems/rubygems/pull/5175#discussion_r794873977)
-        run: |
-          pacman --sync --noconfirm --needed $ENV:MINGW_PACKAGE_PREFIX-clang
       - name: Print debugging info
         run: |
           echo "RbConfig::MAKEFILE_CONFIG"

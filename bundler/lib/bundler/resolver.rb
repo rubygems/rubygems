@@ -101,8 +101,8 @@ module Bundler
     end
 
     def search_for(dependency)
-      name = dependency.name
       @search_for[dependency] ||= begin
+        name = dependency.name
         locked_results = @base[name].select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
         locked_requirement = base_requirements[name]
         results = results_for(dependency) + locked_results

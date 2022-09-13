@@ -15,6 +15,8 @@ module Bundler
       end
 
       def to_specs(force_ruby_platform)
+        return [] if name.end_with?("\0")
+
         @specs.map do |s|
           lazy_spec = LazySpecification.new(name, version, s.platform, source)
           lazy_spec.force_ruby_platform = force_ruby_platform

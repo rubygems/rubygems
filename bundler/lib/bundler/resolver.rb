@@ -48,7 +48,6 @@ module Bundler
       requirements = verify_gemfile_dependencies_are_found!(requirements)
       result = @resolver.resolve(requirements).
         map(&:payload).
-        reject {|sg| sg.name.end_with?("\0") }.
         map {|sg| sg.to_specs(forced_ruby_platform_for[sg.name]) }.
         flatten
 

@@ -43,12 +43,13 @@ module Bundler
       end
 
       @platforms_for = requirements.map {|req| [req.name, req.gem_platforms(@platforms)] }.to_h
+      forced_ruby_platform_for = requirements.map {|req| [req.name, req.force_ruby_platform] }.to_h
 
       requirements = verify_gemfile_dependencies_are_found!(requirements)
       result = @resolver.resolve(requirements).
         map(&:payload).
         reject {|sg| sg.name.end_with?("\0") }.
-        map(&:to_specs).
+        map {|sg| sg.to_specs(forced_ruby_platform_for[sg.name]) }.
         flatten
 
       SpecSet.new(SpecSet.new(result).for(regular_requirements, false, @platforms))
@@ -133,7 +134,7 @@ module Bundler
           next groups if platform_specs.empty?
 
           ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
-          groups << SpecGroup.new(ruby_specs, dependency.force_ruby_platform) if ruby_specs.any?
+          groups << SpecGroup.new(ruby_specs) if ruby_specs.any?
 
           next groups if @resolving_only_for_ruby || platform_specs == ruby_specs
 

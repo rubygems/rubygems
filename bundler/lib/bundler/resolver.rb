@@ -112,10 +112,10 @@ module Bundler
     def search_for(dependency)
       @search_for[dependency] ||= begin
         name = dependency.name
-        results = all_versions_for(name).select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
+        results = all_versions_for(name)
         dep_platforms = dependency.gem_platforms(@platforms)
 
-        @gem_version_promoter.sort_versions(@packages[name], results).group_by(&:version).reduce([]) do |groups, (_, specs)|
+        spec_groups = @gem_version_promoter.sort_versions(@packages[name], results).group_by(&:version).reduce([]) do |groups, (_, specs)|
           platform_specs = dep_platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
           next groups if platform_specs.empty?
 
@@ -132,6 +132,8 @@ module Bundler
 
           groups
         end
+
+        spec_groups.select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
       end
     end
 

@@ -7,6 +7,10 @@ module Bundler
         @specs = specs
       end
 
+      def empty?
+        @specs.empty?
+      end
+
       def name
         @name ||= exemplary_spec.name
       end
@@ -20,8 +24,6 @@ module Bundler
       end
 
       def to_specs(force_ruby_platform)
-        return [] if name.end_with?("\0")
-
         @specs.map do |s|
           lazy_spec = LazySpecification.new(name, version, s.platform, source)
           lazy_spec.force_ruby_platform = force_ruby_platform
@@ -38,21 +40,6 @@ module Bundler
         @dependencies ||= @specs.map do |spec|
           __dependencies(spec) + metadata_dependencies(spec)
         end.flatten.uniq
-      end
-
-      def ==(other)
-        return unless other.is_a?(SpecGroup)
-
-        sorted_spec_names == other.sorted_spec_names
-      end
-
-      def eql?(other)
-        return unless other.is_a?(SpecGroup)
-        sorted_spec_names.eql?(other.sorted_spec_names)
-      end
-
-      def hash
-        sorted_spec_names.hash
       end
 
       protected

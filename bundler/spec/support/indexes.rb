@@ -31,7 +31,7 @@ module Spec
         name = d.name
         platforms = d.gem_platforms(@platforms)
         source_requirements[name] = d.source = default_source
-        packages[name] = Bundler::Resolver::Package.new(name, platforms, originally_locked, unlock)
+        packages[name] = Bundler::Resolver::Package.new(name, platforms, originally_locked, unlock, :dependency => d)
       end
       Bundler::Resolver.new(source_requirements, *args[0..2]).start(@deps, packages)
     end

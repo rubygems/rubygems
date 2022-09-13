@@ -90,39 +90,36 @@ module Bundler
       locked_version = package.locked_version
 
       result = specs.sort do |a, b|
-        a_ver = a.version
-        b_ver = b.version
-
         unless locked_version && package.prerelease_specified?
-          a_pre = a_ver.prerelease?
-          b_pre = b_ver.prerelease?
+          a_pre = a.prerelease?
+          b_pre = b.prerelease?
 
           next -1 if a_pre && !b_pre
           next  1 if b_pre && !a_pre
         end
 
         if major?
-          a_ver <=> b_ver
-        elsif either_version_older_than_locked(a_ver, b_ver, locked_version)
-          a_ver <=> b_ver
-        elsif segments_do_not_match(a_ver, b_ver, :major)
-          b_ver <=> a_ver
-        elsif !minor? && segments_do_not_match(a_ver, b_ver, :minor)
-          b_ver <=> a_ver
+          a <=> b
+        elsif either_version_older_than_locked(a, b, locked_version)
+          a <=> b
+        elsif segments_do_not_match(a, b, :major)
+          b <=> a
+        elsif !minor? && segments_do_not_match(a, b, :minor)
+          b <=> a
         else
-          a_ver <=> b_ver
+          a <=> b
         end
       end
       post_sort(result, package.unlock?, locked_version)
     end
 
-    def either_version_older_than_locked(a_ver, b_ver, locked_version)
-      locked_version && (a_ver < locked_version || b_ver < locked_version)
+    def either_version_older_than_locked(a, b, locked_version)
+      locked_version && (a.version < locked_version || b.version < locked_version)
     end
 
-    def segments_do_not_match(a_ver, b_ver, level)
+    def segments_do_not_match(a, b, level)
       index = [:major, :minor].index(level)
-      a_ver.segments[index] != b_ver.segments[index]
+      a.segments[index] != b.segments[index]
     end
 
     # Specific version moves can't always reliably be done during sorting

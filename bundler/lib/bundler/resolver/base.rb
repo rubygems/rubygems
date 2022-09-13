@@ -35,10 +35,10 @@ module Bundler
       def build_base_requirements
         base_requirements = {}
         @base.each do |ls|
-          dep = Dependency.new(ls.name, ls.version)
-          base_requirements[ls.name] = dep
+          req = Gem::Requirement.new(ls.version)
+          base_requirements[ls.name] = req
         end
-        @additional_base_requirements.each {|d| base_requirements[d.name] = d }
+        @additional_base_requirements.each {|d| base_requirements[d.name] = d.requirement }
         base_requirements
       end
     end

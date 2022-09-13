@@ -165,7 +165,7 @@ module Bundler
         cgems = extract_circular_gems(error)
         raise CyclicDependencyError, "Your bundle requires gems that depend" \
           " on each other, creating an infinite loop. Please remove either" \
-          " gem '#{cgems[1]}' or gem '#{cgems[0]}' and try again."
+          " gem '#{cgems[0]}' or gem '#{cgems[1]}' and try again."
       end
     end
 

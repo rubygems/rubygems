@@ -55,20 +55,17 @@ module Bundler
       @level = v
     end
 
-    # Given a Dependency and an Array of Specifications of available versions for a
-    # gem, this method will return the Array of Specifications sorted (and possibly
-    # truncated if strict is true) in an order to give preference to the current
-    # level (:major, :minor or :patch) when resolution is deciding what versions
-    # best resolve all dependencies in the bundle.
-    # @param dep [Dependency] The Dependency of the gem.
-    # @param spec_groups [Specification] An array of Specifications for the same gem
-    #    named in the @dep param.
+    # Given a gem name and an Array of Specifications of available versions for
+    # a gem, this method will return the Array of Specifications sorted (and
+    # possibly truncated if strict is true) in an order to give preference to
+    # the current level (:major, :minor or :patch) when resolution is deciding
+    # what versions best resolve all dependencies in the bundle.
+    # @param gem_name String The name of the gem.
+    # @param spec_groups [Specification] An array of Specifications for the gem.
     # @return [Specification] A new instance of the Specification Array sorted and
     #    possibly filtered.
-    def sort_versions(dep, spec_groups)
-      @sort_versions[dep] ||= begin
-        gem_name = dep.name
-
+    def sort_versions(gem_name, spec_groups)
+      @sort_versions[[gem_name, spec_groups]] ||= begin
         # An Array per version returned, different entries for different platforms.
         # We only need the version here so it's ok to hard code this to the first instance.
         locked_spec = locked_specs[gem_name].first

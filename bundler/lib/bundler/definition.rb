@@ -511,7 +511,7 @@ module Bundler
         specs = resolve.materialize(dependencies)
       end
 
-      bundler = sources.metadata_source.specs.search(Gem::Dependency.new("bundler", VERSION)).last
+      bundler = sources.metadata_source.specs.search("bundler").find {|spec| spec.version.to_s == VERSION }
       specs["bundler"] = bundler
 
       specs

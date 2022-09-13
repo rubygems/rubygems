@@ -79,8 +79,8 @@ module Bundler
       candidates = if source.is_a?(Source::Path) || !ruby_platform_materializes_to_ruby_platform?
         target_platform = ruby_platform_materializes_to_ruby_platform? ? platform : Bundler.local_platform
 
-        source.specs.search(Dependency.new(name, version)).select do |spec|
-          MatchPlatform.platforms_match?(spec.platform, target_platform)
+        source.specs.search(name).select do |spec|
+          spec.version == version && MatchPlatform.platforms_match?(spec.platform, target_platform)
         end
       else
         source.specs.search(self)

@@ -70,7 +70,6 @@ module Bundler
       case query
       when Gem::Specification, RemoteSpecification, LazySpecification, EndpointSpecification then search_by_spec(query)
       when String then specs_by_name(query)
-      when Gem::Dependency then search_by_dependency(query)
       else
         raise "You can't search for a #{query.inspect}."
       end
@@ -159,18 +158,6 @@ module Bundler
 
     def specs_by_name(name)
       @specs[name].values
-    end
-
-    def search_by_dependency(dependency)
-      @cache[dependency] ||= begin
-        specs = specs_by_name(dependency.name)
-        found = specs.select do |spec|
-          next true if spec.source.is_a?(Source::Gemspec)
-          dependency.matches_spec?(spec)
-        end
-
-        found
-      end
     end
 
     EMPTY_SEARCH = [].freeze

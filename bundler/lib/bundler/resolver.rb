@@ -135,7 +135,7 @@ module Bundler
           ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
           groups << SpecGroup.new(ruby_specs, dependency.force_ruby_platform) if ruby_specs.any?
 
-          next groups if @resolving_only_for_ruby || dependency.force_ruby_platform || platform_specs == ruby_specs
+          next groups if @resolving_only_for_ruby || platform_specs == ruby_specs
 
           groups << SpecGroup.new(platform_specs)
 

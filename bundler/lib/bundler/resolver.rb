@@ -42,6 +42,8 @@ module Bundler
         remove_from_candidates(spec)
       end
 
+      @platforms_for = requirements.map {|req| [req.name, req.gem_platforms(@platforms)] }.to_h
+
       requirements = verify_gemfile_dependencies_are_found!(requirements)
       result = @resolver.resolve(requirements).
         map(&:payload).
@@ -125,10 +127,9 @@ module Bundler
       @search_for[dependency] ||= begin
         name = dependency.name
         results = all_versions_for(name)
-        dep_platforms = dependency.gem_platforms(@platforms)
 
         spec_groups = @gem_version_promoter.sort_versions(name, results).group_by(&:version).reduce([]) do |groups, (_, specs)|
-          platform_specs = dep_platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
+          platform_specs = platforms_for(name).flat_map {|platform| select_best_platform_match(specs, platform) }
           next groups if platform_specs.empty?
 
           ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
@@ -187,6 +188,10 @@ module Bundler
     end
 
     private
+
+    def platforms_for(name)
+      @platforms_for[name] ||= @platforms
+    end
 
     def base_requirements
       @base.base_requirements
@@ -274,7 +279,7 @@ module Bundler
       if specs_matching_requirement.any?
         specs = specs_matching_requirement
         matching_part = requirement_label
-        platforms = requirement.gem_platforms(@platforms)
+        platforms = platforms_for(name)
         platform_label = platforms.size == 1 ? "platform '#{platforms.first}" : "platforms '#{platforms.join("', '")}"
         requirement_label = "#{requirement_label}' with #{platform_label}"
       end

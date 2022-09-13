@@ -42,8 +42,6 @@ module Bundler
         remove_from_candidates(spec)
       end
 
-      requirements.each {|dep| prerelease_specified[dep.name] ||= dep.prerelease? }
-
       verify_gemfile_dependencies_are_found!(requirements)
       result = @resolver.resolve(requirements).
         map(&:payload).
@@ -241,6 +239,8 @@ module Bundler
     def verify_gemfile_dependencies_are_found!(requirements)
       requirements.map! do |requirement|
         name = requirement.name
+        prerelease_specified[name] ||= requirement.prerelease?
+
         next requirement if name == "bundler"
         next requirement unless search_for(requirement).empty?
         next unless requirement.current_platform?

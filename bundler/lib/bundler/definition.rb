@@ -299,7 +299,7 @@ module Bundler
 
       if @locked_bundler_version
         locked_major = @locked_bundler_version.segments.first
-        current_major = Gem::Version.create(Bundler::VERSION).segments.first
+        current_major = Bundler.gem_version.segments.first
 
         updating_major = locked_major < current_major
       end
@@ -516,7 +516,7 @@ module Bundler
         specs = resolve.materialize(dependencies)
       end
 
-      bundler = sources.metadata_source.specs.search(Gem::Dependency.new("bundler", VERSION)).last
+      bundler = sources.metadata_source.specs.search(["bundler", Bundler.gem_version]).last
       specs["bundler"] = bundler
 
       specs

@@ -102,9 +102,8 @@ module Bundler
     def search_for(dependency)
       @search_for[dependency] ||= begin
         name = dependency.name
-        locked_results = @base[name].select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
+        results = (@base[name] + results_for(name)).select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
         locked_requirement = base_requirements[name]
-        results = results_for(dependency) + locked_results
         results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
         dep_platforms = dependency.gem_platforms(@platforms)
 
@@ -128,16 +127,16 @@ module Bundler
       end
     end
 
-    def index_for(dependency)
-      source_for(dependency.name).specs
+    def index_for(name)
+      source_for(name).specs
     end
 
     def source_for(name)
       @source_requirements[name] || @source_requirements[:default]
     end
 
-    def results_for(dependency)
-      @results_for[dependency] ||= index_for(dependency).search(dependency)
+    def results_for(name)
+      @results_for[name] ||= index_for(name).search(name)
     end
 
     def name_for(dependency)
@@ -182,10 +181,10 @@ module Bundler
     def remove_from_candidates(spec)
       @base.delete(spec)
 
-      @results_for.keys.each do |dep|
-        next unless dep.name == spec.name
+      @results_for.keys.each do |name|
+        next unless name == spec.name
 
-        @results_for[dep].reject {|s| s.name == spec.name && s.version == spec.version }
+        @results_for[name].reject {|s| s.version == spec.version }
       end
 
       reset_spec_cache
@@ -206,7 +205,7 @@ module Bundler
       @amount_constrained[dependency.name] ||= if (base = @base[dependency.name]) && !base.empty?
         dependency.requirement.satisfied_by?(base.first.version) ? 0 : 1
       else
-        all = index_for(dependency).search(dependency.name).size
+        all = results_for(dependency.name).size
 
         if all <= 1
           all - 1_000_000
@@ -337,7 +336,7 @@ module Bundler
 
             o << "\n\n"
 
-            candidate_specs = source_for(:default_bundler).specs.search(conflict_dependency)
+            candidate_specs = source_for(:default_bundler).specs.search(name).select {|spec| requirement_satisfied_by?(conflict_dependency, nil, spec) }
             if candidate_specs.any?
               target_version = candidate_specs.last.version
               new_command = [File.basename($PROGRAM_NAME), "_#{target_version}_", *ARGV].join(" ")

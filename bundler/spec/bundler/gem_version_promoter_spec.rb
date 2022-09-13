@@ -96,7 +96,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[1.5.4 1.6.5 1.7.6 1.7.7 1.7.8 1.7.9 1.8.0 1.8.1 2.0.0 2.0.1]),
           build_spec("foo", "1.7.7").first,
-          Bundler::Resolver::Package.new("foo")
+          Bundler::Resolver::Package.new("foo", @platforms)
         )
         expect(versions(res)).to eq %w[1.5.4 1.6.5 1.7.6 2.0.0 2.0.1 1.8.0 1.8.1 1.7.8 1.7.9 1.7.7]
       end
@@ -106,7 +106,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[1.7.7 1.7.8 1.7.9 1.8.0]),
           build_spec("foo", "1.7.8").first,
-          Bundler::Resolver::Package.new("foo")
+          Bundler::Resolver::Package.new("foo", @platforms)
         )
         expect(versions(res)).to eq %w[1.7.7 1.8.0 1.7.8 1.7.9]
       end
@@ -116,7 +116,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[1.7.7 1.7.8 1.7.9 1.7.15 1.8.0]),
           build_spec("foo", "1.7.8").first,
-          Bundler::Resolver::Package.new("foo")
+          Bundler::Resolver::Package.new("foo", @platforms)
         )
         expect(versions(res)).to eq %w[1.7.7 1.8.0 1.7.8 1.7.9 1.7.15]
       end
@@ -126,7 +126,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[1.7.9 1.8.0 2.0.0]),
           build_spec("foo", "1.7.9").first,
-          Bundler::Resolver::Package.new("foo")
+          Bundler::Resolver::Package.new("foo", @platforms)
         )
         expect(versions(res)).to eq %w[2.0.0 1.8.0 1.7.9]
       end
@@ -138,7 +138,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[0.2.0 0.3.0 0.3.1 0.9.0 1.0.0 2.0.0 2.0.1]),
           build_spec("foo", "0.2.0").first,
-          Bundler::Resolver::Package.new("foo")
+          Bundler::Resolver::Package.new("foo", @platforms)
         )
         expect(versions(res)).to eq %w[2.0.0 2.0.1 1.0.0 0.2.0 0.3.0 0.3.1 0.9.0]
       end

@@ -28,7 +28,7 @@ module Bundler
       end
 
       @packages = Hash.new do |h, k|
-        h[k] = Resolver::Package.new(k)
+        h[k] = Resolver::Package.new(k, @platforms)
       end
 
       requirements = verify_gemfile_dependencies_are_found!(requirements)
@@ -113,10 +113,10 @@ module Bundler
       @search_for[dependency] ||= begin
         name = dependency.name
         results = all_versions_for(name)
-        dep_platforms = dependency.gem_platforms(@platforms)
+        package = @packages[name]
 
-        spec_groups = @gem_version_promoter.sort_versions(@packages[name], results).group_by(&:version).reduce([]) do |groups, (_, specs)|
-          platform_specs = dep_platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
+        spec_groups = @gem_version_promoter.sort_versions(package, results).group_by(&:version).reduce([]) do |groups, (_, specs)|
+          platform_specs = package.platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
           next groups if platform_specs.empty?
 
           ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
@@ -225,11 +225,13 @@ module Bundler
 
     def verify_gemfile_dependencies_are_found!(requirements)
       requirements.map do |requirement|
+        platforms = requirement.gem_platforms(@platforms)
+        next if platforms.empty?
+
         name = requirement.name
-        @packages[name] = Resolver::Package.new(name, :prerelease_specified => requirement.prerelease?)
+        @packages[name] = Resolver::Package.new(name, platforms, :prerelease_specified => requirement.prerelease?)
 
         next requirement if name == "bundler"
-        next if requirement.gem_platforms(@platforms).empty?
         next requirement unless search_for(requirement).empty?
         next unless requirement.current_platform?
 
@@ -251,7 +253,7 @@ module Bundler
       if specs_matching_requirement.any?
         specs = specs_matching_requirement
         matching_part = requirement_label
-        platforms = requirement.gem_platforms(@platforms)
+        platforms = @packages[name].platforms
         platform_label = platforms.size == 1 ? "platform '#{platforms.first}" : "platforms '#{platforms.join("', '")}"
         requirement_label = "#{requirement_label}' with #{platform_label}"
       end

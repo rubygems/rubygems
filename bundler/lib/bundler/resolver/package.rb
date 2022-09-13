@@ -3,10 +3,11 @@
 module Bundler
   class Resolver
     class Package
-      attr_reader :name
+      attr_reader :name, :platforms
 
-      def initialize(name, prerelease_specified: false)
+      def initialize(name, platforms, prerelease_specified: false)
         @name = name
+        @platforms = platforms
         @prerelease_specified = prerelease_specified
       end
 

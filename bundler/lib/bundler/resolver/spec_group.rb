@@ -3,16 +3,16 @@
 module Bundler
   class Resolver
     class SpecGroup
-      attr_reader :name, :version, :source
-      attr_accessor :force_ruby_platform
+      attr_reader :name, :version, :source, :force_ruby_platform
 
-      def initialize(specs)
+      def initialize(specs, force_ruby_platform = false)
         exemplary_spec = specs.first
         @name = exemplary_spec.name
         @version = exemplary_spec.version
         @source = exemplary_spec.source
         @specs = specs
         @platforms = specs.map(&:platform).sort_by(&:to_s).uniq
+        @force_ruby_platform = force_ruby_platform
       end
 
       def to_specs

@@ -130,16 +130,11 @@ module Bundler
           next groups if platform_specs.empty?
 
           ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
-          if ruby_specs.any?
-            spec_group_ruby = SpecGroup.new(ruby_specs)
-            spec_group_ruby.force_ruby_platform = dependency.force_ruby_platform
-            groups << spec_group_ruby
-          end
+          groups << SpecGroup.new(ruby_specs, dependency.force_ruby_platform) if ruby_specs.any?
 
           next groups if @resolving_only_for_ruby || dependency.force_ruby_platform || platform_specs == ruby_specs
 
-          spec_group = SpecGroup.new(platform_specs)
-          groups << spec_group
+          groups << SpecGroup.new(platform_specs)
 
           groups
         end

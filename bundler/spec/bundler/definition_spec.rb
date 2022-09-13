@@ -126,9 +126,6 @@ RSpec.describe Bundler::Definition do
       G
 
       bundle "lock --add-platform java"
-      bundle :check, :env => { "DEBUG" => "1" }
-
-      expect(out).to match(/using resolution from the lockfile/)
       expect(lockfile).to eq <<~G
         GEM
           remote: #{file_uri_for(gem_repo1)}/
@@ -144,6 +141,9 @@ RSpec.describe Bundler::Definition do
         BUNDLED WITH
            #{Bundler::VERSION}
       G
+
+      bundle :check, :env => { "DEBUG" => "1" }
+      expect(out).to match(/using resolution from the lockfile/)
     end
 
     it "for a rubygems gem" do

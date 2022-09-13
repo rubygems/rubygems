@@ -64,11 +64,7 @@ module Bundler
     end
 
     def should_include?
-      @should_include && current_env? && current_platform? && gem_platforms([GemHelpers.generic_local_platform]).any?
-    end
-
-    def include_with_groups?(activated_groups)
-      should_include? && (groups & activated_groups).any?
+      @should_include && current_env? && current_platform? && !gem_platforms([GemHelpers.generic_local_platform]).empty?
     end
 
     def current_env?

@@ -97,7 +97,7 @@ module Bundler
     include Molinillo::SpecificationProvider
 
     def dependencies_for(specification)
-      specification.dependencies_for_activated_platforms
+      specification.dependencies
     end
 
     def search_for(dependency)

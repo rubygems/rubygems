@@ -27,8 +27,8 @@ module Bundler
         sorted_spec_names.join(", ")
       end
 
-      def dependencies_for_activated_platforms
-        @dependencies_for_activated_platforms ||= @specs.map do |spec|
+      def dependencies
+        @dependencies ||= @specs.map do |spec|
           __dependencies(spec) + metadata_dependencies(spec)
         end.flatten.uniq
       end

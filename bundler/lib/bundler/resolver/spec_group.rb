@@ -12,7 +12,7 @@ module Bundler
         @version = exemplary_spec.version
         @source = exemplary_spec.source
         @specs = specs
-        @activated_platforms = specs.map(&:platform).uniq
+        @platforms = specs.map(&:platform).uniq
       end
 
       def to_specs
@@ -25,12 +25,12 @@ module Bundler
       end
 
       def to_s
-        activated_platforms_string = sorted_activated_platforms.join(", ")
-        "#{name} (#{version}) (#{activated_platforms_string})"
+        platforms_string = sorted_platforms.join(", ")
+        "#{name} (#{version}) (#{platforms_string})"
       end
 
-      def dependencies_for_activated_platforms
-        @dependencies_for_activated_platforms ||= @specs.map do |spec|
+      def dependencies
+        @dependencies ||= @specs.map do |spec|
           __dependencies(spec) + metadata_dependencies(spec)
         end.flatten.uniq
       end
@@ -52,8 +52,8 @@ module Bundler
 
       protected
 
-      def sorted_activated_platforms
-        @activated_platforms.sort_by(&:to_s)
+      def sorted_platforms
+        @platforms.sort_by(&:to_s)
       end
 
       def sorted_spec_names

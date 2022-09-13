@@ -102,33 +102,31 @@ module Bundler
       specification.dependencies
     end
 
-    def all_versions_for(name)
+    def all_versions_for(package)
+      name = package.name
       results = @base[name] + results_for(name)
       locked_requirement = base_requirements[name]
       results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
-      results
+
+      @gem_version_promoter.sort_versions(package, results).group_by(&:version).reduce([]) do |groups, (_, specs)|
+        platform_specs = package.platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
+        next groups if platform_specs.empty?
+
+        ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
+        groups << SpecGroup.new(ruby_specs) if ruby_specs.any?
+
+        next groups if @resolving_only_for_ruby || platform_specs == ruby_specs
+
+        groups << SpecGroup.new(platform_specs)
+
+        groups
+      end
     end
 
     def search_for(dependency)
       @search_for[dependency] ||= begin
-        name = dependency.name
-        results = all_versions_for(name)
-        package = @packages[name]
-
-        spec_groups = @gem_version_promoter.sort_versions(package, results).group_by(&:version).reduce([]) do |groups, (_, specs)|
-          platform_specs = package.platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
-          next groups if platform_specs.empty?
-
-          ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
-          groups << SpecGroup.new(ruby_specs) if ruby_specs.any?
-
-          next groups if @resolving_only_for_ruby || platform_specs == ruby_specs
-
-          groups << SpecGroup.new(platform_specs)
-
-          groups
-        end
-
+        package = @packages[dependency.name]
+        spec_groups = all_versions_for(package)
         spec_groups.select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
       end
     end

@@ -4,7 +4,6 @@ module Bundler
   class Resolver
     class SpecGroup
       attr_reader :name, :version, :source
-      attr_accessor :force_ruby_platform
 
       def initialize(specs)
         exemplary_spec = specs.first
@@ -14,7 +13,7 @@ module Bundler
         @specs = specs
       end
 
-      def to_specs
+      def to_specs(force_ruby_platform)
         return [] if name.end_with?("\0")
 
         @specs.map do |s|

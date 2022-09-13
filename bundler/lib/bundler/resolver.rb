@@ -110,8 +110,8 @@ module Bundler
         dep_platforms = dependency.gem_platforms(@platforms)
 
         @gem_version_promoter.sort_versions(dependency, results).group_by(&:version).reduce([]) do |groups, (_, specs)|
-          relevant_platforms = dep_platforms.select {|platform| specs.any? {|spec| spec.match_platform(platform) } }
-          next groups unless relevant_platforms.any?
+          platform_specs = dep_platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
+          next groups if platform_specs.empty?
 
           ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
           if ruby_specs.any?
@@ -120,10 +120,7 @@ module Bundler
             groups << spec_group_ruby
           end
 
-          next groups if @resolving_only_for_ruby
-
-          platform_specs = relevant_platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
-          next groups if platform_specs == ruby_specs
+          next groups if @resolving_only_for_ruby || platform_specs == ruby_specs
 
           spec_group = SpecGroup.new(platform_specs)
           groups << spec_group

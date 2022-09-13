@@ -99,12 +99,17 @@ module Bundler
       specification.dependencies
     end
 
+    def all_versions_for(name)
+      results = @base[name] + results_for(name)
+      locked_requirement = base_requirements[name]
+      results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
+      results
+    end
+
     def search_for(dependency)
       @search_for[dependency] ||= begin
         name = dependency.name
-        results = (@base[name] + results_for(name)).select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
-        locked_requirement = base_requirements[name]
-        results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
+        results = all_versions_for(name).select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
         dep_platforms = dependency.gem_platforms(@platforms)
 
         @gem_version_promoter.sort_versions(dependency, results).group_by(&:version).reduce([]) do |groups, (_, specs)|

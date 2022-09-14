@@ -5,10 +5,11 @@ module Bundler
     class Package
       attr_reader :name, :platforms
 
-      def initialize(name, platforms, locked_specs, prerelease_specified: false, force_ruby_platform: false)
+      def initialize(name, platforms, locked_specs, unlock, prerelease_specified: false, force_ruby_platform: false)
         @name = name
         @platforms = platforms
         @locked_specs = locked_specs
+        @unlock = unlock
         @prerelease_specified = prerelease_specified
         @force_ruby_platform = force_ruby_platform
       end
@@ -23,6 +24,10 @@ module Bundler
 
       def locked_version
         @locked_specs[name].first&.version
+      end
+
+      def unlock?
+        @unlock.empty? || @unlock.include?(name)
       end
 
       def prerelease_specified?

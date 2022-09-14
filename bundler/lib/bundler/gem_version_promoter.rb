@@ -9,7 +9,7 @@ module Bundler
   class GemVersionPromoter
     DEBUG = ENV["BUNDLER_DEBUG_RESOLVER"] || ENV["DEBUG_RESOLVER"]
 
-    attr_reader :level, :unlock_gems
+    attr_reader :level
 
     # By default, strict is false, meaning every available version of a gem
     # is returned from sort_versions. The order gives preference to the
@@ -24,15 +24,12 @@ module Bundler
     # existing in the referenced source.
     attr_accessor :strict
 
-    # Given a list of locked_specs creates a GemVersionPromoter instance.
+    # Creates a GemVersionPromoter instance.
     #
-    # @param unlock_gems [String] List of gem names being unlocked. If empty,
-    #   all gems will be considered unlocked.
     # @return [GemVersionPromoter]
-    def initialize(unlock_gems = [])
+    def initialize
       @level = :major
       @strict = false
-      @unlock_gems = unlock_gems
     end
 
     # @param value [Symbol] One of three Symbols: :major, :minor or :patch.
@@ -94,7 +91,6 @@ module Bundler
 
     def sort_dep_specs(spec_groups, package)
       locked_version = package.locked_version
-      gem_name = package.name if locked_version
 
       result = spec_groups.sort do |a, b|
         a_ver = a.version
@@ -120,7 +116,7 @@ module Bundler
           a_ver <=> b_ver
         end
       end
-      post_sort(result, gem_name, locked_version)
+      post_sort(result, package.unlock?, locked_version)
     end
 
     def either_version_older_than_locked(a_ver, b_ver, locked_version)
@@ -132,16 +128,12 @@ module Bundler
       a_ver.segments[index] != b_ver.segments[index]
     end
 
-    def unlocking_gem?(gem_name, locked_version)
-      unlock_gems.empty? || locked_version.nil? || unlock_gems.include?(gem_name)
-    end
-
     # Specific version moves can't always reliably be done during sorting
     # as not all elements are compared against each other.
-    def post_sort(result, gem_name, locked_version)
+    def post_sort(result, unlock, locked_version)
       # default :major behavior in Bundler does not do this
       return result if major?
-      if unlocking_gem?(gem_name, locked_version)
+      if unlock || locked_version.nil?
         result
       else
         move_version_to_end(result, locked_version)

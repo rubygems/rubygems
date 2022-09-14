@@ -23,14 +23,15 @@ module Spec
       args[1] ||= Bundler::GemVersionPromoter.new # gem_version_promoter
       args[2] ||= [] # additional_base_requirements
       originally_locked = args[3] || Bundler::SpecSet.new([])
+      unlock = args[4] || []
       packages = Hash.new do |h, k|
-        h[k] = Bundler::Resolver::Package.new(k, @platforms, originally_locked)
+        h[k] = Bundler::Resolver::Package.new(k, @platforms, originally_locked, unlock)
       end
       @deps.each do |d|
         name = d.name
         platforms = d.gem_platforms(@platforms)
         source_requirements[name] = d.source = default_source
-        packages[name] = Bundler::Resolver::Package.new(name, platforms, originally_locked)
+        packages[name] = Bundler::Resolver::Package.new(name, platforms, originally_locked, unlock)
       end
       Bundler::Resolver.new(source_requirements, *args[0..2]).start(@deps, packages)
     end
@@ -73,11 +74,11 @@ module Spec
     def should_conservative_resolve_and_include(opts, unlock, specs)
       # empty unlock means unlock all
       opts = Array(opts)
-      search = Bundler::GemVersionPromoter.new(unlock).tap do |s|
+      search = Bundler::GemVersionPromoter.new.tap do |s|
         s.level = opts.first
         s.strict = opts.include?(:strict)
       end
-      should_resolve_and_include specs, [@base, search, [], @locked]
+      should_resolve_and_include specs, [@base, search, [], @locked, unlock]
     end
 
     def an_awesome_index

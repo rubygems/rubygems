@@ -142,7 +142,7 @@ module Bundler
     end
 
     def unlocking_gem?
-      unlock_gems.empty? || (@locked_version && unlock_gems.include?(@gem_name))
+      unlock_gems.empty? || @locked_version.nil? || unlock_gems.include?(@gem_name)
     end
 
     # Specific version moves can't always reliably be done during sorting
@@ -150,7 +150,7 @@ module Bundler
     def post_sort(result)
       # default :major behavior in Bundler does not do this
       return result if major?
-      if unlocking_gem? || @locked_version.nil?
+      if unlocking_gem?
         result
       else
         move_version_to_end(result, @locked_version)

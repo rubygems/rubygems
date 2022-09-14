@@ -7,8 +7,6 @@ module Bundler
   # available dependency versions as found in its index, before returning it to
   # to the resolution engine to select the best version.
   class GemVersionPromoter
-    DEBUG = ENV["BUNDLER_DEBUG_RESOLVER"] || ENV["DEBUG_RESOLVER"]
-
     attr_reader :level
 
     # By default, strict is false, meaning every available version of a gem

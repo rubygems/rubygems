@@ -18,15 +18,21 @@ module Spec
       @platforms ||= ["ruby"]
       default_source = instance_double("Bundler::Source::Rubygems", :specs => @index, :to_s => "locally install gems")
       source_requirements = { :default => default_source }
-      @deps.each do |d|
-        source_requirements[d.name] = d.source = default_source
-      end
       args[0] ||= Bundler::SpecSet.new([]) # base
       args[0].each {|ls| ls.source = default_source }
       args[1] ||= Bundler::GemVersionPromoter.new # gem_version_promoter
       args[2] ||= [] # additional_base_requirements
-      args[3] ||= @platforms # platforms
-      Bundler::Resolver.new(source_requirements, *args).start(@deps)
+      originally_locked = args[3] || Bundler::SpecSet.new([])
+      packages = Hash.new do |h, k|
+        h[k] = Bundler::Resolver::Package.new(k, @platforms, originally_locked)
+      end
+      @deps.each do |d|
+        name = d.name
+        platforms = d.gem_platforms(@platforms)
+        source_requirements[name] = d.source = default_source
+        packages[name] = Bundler::Resolver::Package.new(name, platforms, originally_locked)
+      end
+      Bundler::Resolver.new(source_requirements, *args[0..2]).start(@deps, packages)
     end
 
     def should_not_resolve
@@ -67,11 +73,11 @@ module Spec
     def should_conservative_resolve_and_include(opts, unlock, specs)
       # empty unlock means unlock all
       opts = Array(opts)
-      search = Bundler::GemVersionPromoter.new(@locked, unlock).tap do |s|
+      search = Bundler::GemVersionPromoter.new(unlock).tap do |s|
         s.level = opts.first
         s.strict = opts.include?(:strict)
       end
-      should_resolve_and_include specs, [@base, search]
+      should_resolve_and_include specs, [@base, search, [], @locked]
     end
 
     def an_awesome_index

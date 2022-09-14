@@ -13,14 +13,14 @@ RSpec.describe Bundler::GemVersionPromoter do
     end
 
     def unlocking(options)
-      make_instance(Bundler::SpecSet.new([]), ["foo"]).tap do |p|
+      make_instance(["foo"]).tap do |p|
         p.level = options[:level] if options[:level]
         p.strict = options[:strict] if options[:strict]
       end
     end
 
     def keep_locked(options)
-      make_instance(Bundler::SpecSet.new([]), ["bar"]).tap do |p|
+      make_instance(["bar"]).tap do |p|
         p.level = options[:level] if options[:level]
         p.strict = options[:strict] if options[:strict]
       end
@@ -30,6 +30,10 @@ RSpec.describe Bundler::GemVersionPromoter do
       versions.map do |v|
         Bundler::Resolver::SpecGroup.new(build_spec(name, v))
       end
+    end
+
+    def build_spec_set(name, v)
+      Bundler::SpecSet.new(build_spec(name, v))
     end
 
     # Rightmost (highest array index) in result is most preferred.
@@ -46,7 +50,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         keep_locked(:level => :patch)
         res = @gvp.filter_dep_specs(
           build_spec_groups("foo", %w[1.7.8 1.7.9 1.8.0]),
-          build_spec("foo", "1.7.8").first
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "1.7.8"))
         )
         expect(versions(res)).to match_array %w[1.7.9 1.7.8]
       end
@@ -55,7 +59,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         unlocking(:level => :patch)
         res = @gvp.filter_dep_specs(
           build_spec_groups("foo", %w[1.7.8 1.7.9 1.8.0]),
-          build_spec("foo", "1.7.8").first
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "1.7.8"))
         )
         expect(versions(res)).to eq %w[1.7.8 1.7.9]
       end
@@ -64,7 +68,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         unlocking(:level => :patch)
         res = @gvp.filter_dep_specs(
           build_spec_groups("foo", %w[1.7.9 1.8.0 2.0.0]),
-          build_spec("foo", "1.7.9").first
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "1.7.9"))
         )
         expect(versions(res)).to eq %w[1.7.9]
       end
@@ -75,7 +79,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         unlocking(:level => :minor)
         res = @gvp.filter_dep_specs(
           build_spec_groups("foo", %w[0.2.0 0.3.0 0.3.1 0.9.0 1.0.0 2.0.0 2.0.1]),
-          build_spec("foo", "0.2.0").first
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "0.2.0"))
         )
         expect(versions(res)).to eq %w[0.2.0 0.3.0 0.3.1 0.9.0]
       end
@@ -84,7 +88,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         keep_locked(:level => :minor)
         res = @gvp.filter_dep_specs(
           build_spec_groups("foo", %w[0.2.0 0.3.0 0.3.1 0.9.0 1.0.0 2.0.0 2.0.1]),
-          build_spec("foo", "0.2.0").first
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "0.2.0"))
         )
         expect(versions(res)).to match_array %w[0.3.0 0.3.1 0.9.0 0.2.0]
       end
@@ -95,8 +99,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         keep_locked(:level => :patch)
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[1.5.4 1.6.5 1.7.6 1.7.7 1.7.8 1.7.9 1.8.0 1.8.1 2.0.0 2.0.1]),
-          build_spec("foo", "1.7.7").first,
-          Bundler::Resolver::Package.new("foo", @platforms)
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "1.7.7"))
         )
         expect(versions(res)).to eq %w[1.5.4 1.6.5 1.7.6 2.0.0 2.0.1 1.8.0 1.8.1 1.7.8 1.7.9 1.7.7]
       end
@@ -105,8 +108,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         unlocking(:level => :patch)
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[1.7.7 1.7.8 1.7.9 1.8.0]),
-          build_spec("foo", "1.7.8").first,
-          Bundler::Resolver::Package.new("foo", @platforms)
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "1.7.8"))
         )
         expect(versions(res)).to eq %w[1.7.7 1.8.0 1.7.8 1.7.9]
       end
@@ -115,8 +117,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         unlocking(:level => :patch)
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[1.7.7 1.7.8 1.7.9 1.7.15 1.8.0]),
-          build_spec("foo", "1.7.8").first,
-          Bundler::Resolver::Package.new("foo", @platforms)
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "1.7.8"))
         )
         expect(versions(res)).to eq %w[1.7.7 1.8.0 1.7.8 1.7.9 1.7.15]
       end
@@ -125,8 +126,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         unlocking(:level => :patch)
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[1.7.9 1.8.0 2.0.0]),
-          build_spec("foo", "1.7.9").first,
-          Bundler::Resolver::Package.new("foo", @platforms)
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "1.7.9"))
         )
         expect(versions(res)).to eq %w[2.0.0 1.8.0 1.7.9]
       end
@@ -137,8 +137,7 @@ RSpec.describe Bundler::GemVersionPromoter do
         unlocking(:level => :minor)
         res = @gvp.sort_dep_specs(
           build_spec_groups("foo", %w[0.2.0 0.3.0 0.3.1 0.9.0 1.0.0 2.0.0 2.0.1]),
-          build_spec("foo", "0.2.0").first,
-          Bundler::Resolver::Package.new("foo", @platforms)
+          Bundler::Resolver::Package.new("foo", [], build_spec_set("foo", "0.2.0"))
         )
         expect(versions(res)).to eq %w[2.0.0 2.0.1 1.0.0 0.2.0 0.3.0 0.3.1 0.9.0]
       end

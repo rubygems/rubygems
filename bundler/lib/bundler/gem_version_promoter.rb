@@ -9,7 +9,7 @@ module Bundler
   class GemVersionPromoter
     DEBUG = ENV["BUNDLER_DEBUG_RESOLVER"] || ENV["DEBUG_RESOLVER"]
 
-    attr_reader :level, :locked_specs, :unlock_gems
+    attr_reader :level, :unlock_gems
 
     # By default, strict is false, meaning every available version of a gem
     # is returned from sort_versions. The order gives preference to the
@@ -24,19 +24,14 @@ module Bundler
     # existing in the referenced source.
     attr_accessor :strict
 
-    # Given a list of locked_specs and a list of gems to unlock creates a
-    # GemVersionPromoter instance.
+    # Given a list of locked_specs creates a GemVersionPromoter instance.
     #
-    # @param locked_specs [SpecSet] All current locked specs. Unlike Definition
-    #   where this list is empty if all gems are being updated, this should
-    #   always be populated for all gems so this class can properly function.
     # @param unlock_gems [String] List of gem names being unlocked. If empty,
     #   all gems will be considered unlocked.
     # @return [GemVersionPromoter]
-    def initialize(locked_specs = SpecSet.new([]), unlock_gems = [])
+    def initialize(unlock_gems = [])
       @level = :major
       @strict = false
-      @locked_specs = locked_specs
       @unlock_gems = unlock_gems
     end
 
@@ -62,15 +57,9 @@ module Bundler
     # @return [Specification] A new instance of the Specification Array sorted and
     #    possibly filtered.
     def sort_versions(package, spec_groups)
-      gem_name = package.name
+      spec_groups = filter_dep_specs(spec_groups, package) if strict
 
-      # An Array per version returned, different entries for different platforms.
-      # We only need the version here so it's ok to hard code this to the first instance.
-      locked_spec = locked_specs[gem_name].first
-
-      spec_groups = filter_dep_specs(spec_groups, locked_spec) if strict
-
-      sort_dep_specs(spec_groups, locked_spec, package)
+      sort_dep_specs(spec_groups, package)
     end
 
     # @return [bool] Convenience method for testing value of level variable.
@@ -85,11 +74,13 @@ module Bundler
 
     private
 
-    def filter_dep_specs(spec_groups, locked_spec)
+    def filter_dep_specs(spec_groups, package)
+      locked_version = package.locked_version
+
       spec_groups.select do |spec_group|
-        if locked_spec && !major?
+        if locked_version && !major?
           gsv = spec_group.version
-          lsv = locked_spec.version
+          lsv = locked_version
 
           must_match = minor? ? [0] : [0, 1]
 
@@ -101,9 +92,9 @@ module Bundler
       end
     end
 
-    def sort_dep_specs(spec_groups, locked_spec, package)
-      locked_version = locked_spec&.version
-      gem_name = locked_spec&.name
+    def sort_dep_specs(spec_groups, package)
+      locked_version = package.locked_version
+      gem_name = package.name if locked_version
 
       result = spec_groups.sort do |a, b|
         a_ver = a.version

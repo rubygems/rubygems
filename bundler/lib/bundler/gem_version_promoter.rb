@@ -40,7 +40,6 @@ module Bundler
       @strict = false
       @locked_specs = locked_specs
       @unlock_gems = unlock_gems
-      @sort_versions = {}
       @prerelease_specified = {}
     end
 
@@ -66,23 +65,17 @@ module Bundler
     # @return [Specification] A new instance of the Specification Array sorted and
     #    possibly filtered.
     def sort_versions(dep, spec_groups)
-      @sort_versions[dep] ||= begin
-        gem_name = dep.name
+      gem_name = dep.name
 
-        # An Array per version returned, different entries for different platforms.
-        # We only need the version here so it's ok to hard code this to the first instance.
-        locked_spec = locked_specs[gem_name].first
+      # An Array per version returned, different entries for different platforms.
+      # We only need the version here so it's ok to hard code this to the first instance.
+      locked_spec = locked_specs[gem_name].first
 
-        if strict
-          filter_dep_specs(spec_groups, locked_spec)
-        else
-          sort_dep_specs(spec_groups, locked_spec)
-        end
+      if strict
+        filter_dep_specs(spec_groups, locked_spec)
+      else
+        sort_dep_specs(spec_groups, locked_spec)
       end
-    end
-
-    def reset
-      @sort_versions = {}
     end
 
     # @return [bool] Convenience method for testing value of level variable.

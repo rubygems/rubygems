@@ -71,11 +71,9 @@ module Bundler
       # We only need the version here so it's ok to hard code this to the first instance.
       locked_spec = locked_specs[gem_name].first
 
-      if strict
-        filter_dep_specs(spec_groups, locked_spec)
-      else
-        sort_dep_specs(spec_groups, locked_spec)
-      end
+      spec_groups = filter_dep_specs(spec_groups, locked_spec) if strict
+
+      sort_dep_specs(spec_groups, locked_spec)
     end
 
     # @return [bool] Convenience method for testing value of level variable.
@@ -91,7 +89,7 @@ module Bundler
     private
 
     def filter_dep_specs(spec_groups, locked_spec)
-      res = spec_groups.select do |spec_group|
+      spec_groups.select do |spec_group|
         if locked_spec && !major?
           gsv = spec_group.version
           lsv = locked_spec.version
@@ -104,8 +102,6 @@ module Bundler
           true
         end
       end
-
-      sort_dep_specs(res, locked_spec)
     end
 
     def sort_dep_specs(spec_groups, locked_spec)

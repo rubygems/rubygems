@@ -48,7 +48,7 @@ RSpec.describe Bundler::GemVersionPromoter do
           build_spec_groups("foo", %w[1.7.8 1.7.9 1.8.0]),
           build_spec("foo", "1.7.8").first
         )
-        expect(versions(res)).to eq %w[1.7.9 1.7.8]
+        expect(versions(res)).to match_array %w[1.7.9 1.7.8]
       end
 
       it "when unlocking prefer next release first" do
@@ -86,7 +86,7 @@ RSpec.describe Bundler::GemVersionPromoter do
           build_spec_groups("foo", %w[0.2.0 0.3.0 0.3.1 0.9.0 1.0.0 2.0.0 2.0.1]),
           build_spec("foo", "0.2.0").first
         )
-        expect(versions(res)).to eq %w[0.3.0 0.3.1 0.9.0 0.2.0]
+        expect(versions(res)).to match_array %w[0.3.0 0.3.1 0.9.0 0.2.0]
       end
     end
 

@@ -24,8 +24,6 @@ module Bundler
     # existing in the referenced source.
     attr_accessor :strict
 
-    attr_accessor :prerelease_specified
-
     # Given a list of locked_specs and a list of gems to unlock creates a
     # GemVersionPromoter instance.
     #
@@ -40,7 +38,6 @@ module Bundler
       @strict = false
       @locked_specs = locked_specs
       @unlock_gems = unlock_gems
-      @prerelease_specified = {}
     end
 
     # @param value [Symbol] One of three Symbols: :major, :minor or :patch.
@@ -54,18 +51,18 @@ module Bundler
       @level = v
     end
 
-    # Given a Dependency and an Array of Specifications of available versions for a
-    # gem, this method will return the Array of Specifications sorted (and possibly
-    # truncated if strict is true) in an order to give preference to the current
-    # level (:major, :minor or :patch) when resolution is deciding what versions
-    # best resolve all dependencies in the bundle.
-    # @param dep [Dependency] The Dependency of the gem.
-    # @param spec_groups [Specification] An array of Specifications for the same gem
-    #    named in the @dep param.
+    # Given a Resolver::Package and an Array of Specifications of available
+    # versions for a gem, this method will return the Array of Specifications
+    # sorted (and possibly truncated if strict is true) in an order to give
+    # preference to the current level (:major, :minor or :patch) when resolution
+    # is deciding what versions best resolve all dependencies in the bundle.
+    # @param package [Resolver::Package] The package being resolved.
+    # @param spec_groups [Specification] An array of Specifications for the
+    #    package.
     # @return [Specification] A new instance of the Specification Array sorted and
     #    possibly filtered.
-    def sort_versions(dep, spec_groups)
-      gem_name = dep.name
+    def sort_versions(package, spec_groups)
+      gem_name = package.name
 
       # An Array per version returned, different entries for different platforms.
       # We only need the version here so it's ok to hard code this to the first instance.
@@ -73,7 +70,7 @@ module Bundler
 
       spec_groups = filter_dep_specs(spec_groups, locked_spec) if strict
 
-      sort_dep_specs(spec_groups, locked_spec)
+      sort_dep_specs(spec_groups, locked_spec, package)
     end
 
     # @return [bool] Convenience method for testing value of level variable.
@@ -104,7 +101,7 @@ module Bundler
       end
     end
 
-    def sort_dep_specs(spec_groups, locked_spec)
+    def sort_dep_specs(spec_groups, locked_spec, package)
       @locked_version = locked_spec&.version
       @gem_name = locked_spec&.name
 
@@ -112,7 +109,7 @@ module Bundler
         @a_ver = a.version
         @b_ver = b.version
 
-        unless @gem_name && @prerelease_specified[@gem_name]
+        unless @gem_name && package.prerelease_specified?
           a_pre = @a_ver.prerelease?
           b_pre = @b_ver.prerelease?
 

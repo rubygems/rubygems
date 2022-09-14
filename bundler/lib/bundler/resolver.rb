@@ -4,6 +4,7 @@ module Bundler
   class Resolver
     require_relative "vendored_molinillo"
     require_relative "resolver/base"
+    require_relative "resolver/package"
     require_relative "resolver/spec_group"
 
     include GemHelpers
@@ -24,6 +25,10 @@ module Bundler
 
       exclude_specs.each do |spec|
         remove_from_candidates(spec)
+      end
+
+      @packages = Hash.new do |h, k|
+        h[k] = Resolver::Package.new(k)
       end
 
       verify_gemfile_dependencies_are_found!(requirements)
@@ -110,7 +115,7 @@ module Bundler
         results = all_versions_for(name).select {|spec| requirement_satisfied_by?(dependency, nil, spec) }
         dep_platforms = dependency.gem_platforms(@platforms)
 
-        @gem_version_promoter.sort_versions(dependency, results).group_by(&:version).reduce([]) do |groups, (_, specs)|
+        @gem_version_promoter.sort_versions(@packages[name], results).group_by(&:version).reduce([]) do |groups, (_, specs)|
           platform_specs = dep_platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
           next groups if platform_specs.empty?
 
@@ -177,10 +182,6 @@ module Bundler
       @base.base_requirements
     end
 
-    def prerelease_specified
-      @gem_version_promoter.prerelease_specified
-    end
-
     def remove_from_candidates(spec)
       @base.delete(spec)
 
@@ -214,7 +215,7 @@ module Bundler
           all - 1_000_000
         else
           search = search_for(dependency)
-          search = prerelease_specified[dependency.name] ? search.count : search.count {|s| !s.version.prerelease? }
+          search = @packages[dependency.name].prerelease_specified? ? search.count : search.count {|s| !s.version.prerelease? }
           search - all
         end
       end
@@ -223,7 +224,7 @@ module Bundler
     def verify_gemfile_dependencies_are_found!(requirements)
       requirements.map! do |requirement|
         name = requirement.name
-        prerelease_specified[name] ||= requirement.prerelease?
+        @packages[name] = Resolver::Package.new(name, :prerelease_specified => requirement.prerelease?)
 
         next requirement if name == "bundler"
         next if requirement.gem_platforms(@platforms).empty?

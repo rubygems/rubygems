@@ -70,7 +70,6 @@ module Spec
       search = Bundler::GemVersionPromoter.new(@locked, unlock).tap do |s|
         s.level = opts.first
         s.strict = opts.include?(:strict)
-        s.prerelease_specified = Hash[@deps.map {|d| [d.name, d.requirement.prerelease?] }]
       end
       should_resolve_and_include specs, [@base, search]
     end

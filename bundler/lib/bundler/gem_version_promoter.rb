@@ -109,7 +109,7 @@ module Bundler
         @a_ver = a.version
         @b_ver = b.version
 
-        unless @gem_name && package.prerelease_specified?
+        unless @locked_version && package.prerelease_specified?
           a_pre = @a_ver.prerelease?
           b_pre = @b_ver.prerelease?
 
@@ -142,7 +142,7 @@ module Bundler
     end
 
     def unlocking_gem?
-      unlock_gems.empty? || (@gem_name && unlock_gems.include?(@gem_name))
+      unlock_gems.empty? || (@locked_version && unlock_gems.include?(@gem_name))
     end
 
     # Specific version moves can't always reliably be done during sorting

@@ -113,58 +113,58 @@ module Bundler
     end
 
     def sort_dep_specs(spec_groups, locked_spec)
-      @locked_version = locked_spec&.version
-      @gem_name = locked_spec&.name
+      locked_version = locked_spec&.version
+      gem_name = locked_spec&.name
 
       result = spec_groups.sort do |a, b|
-        @a_ver = a.version
-        @b_ver = b.version
+        a_ver = a.version
+        b_ver = b.version
 
-        unless @gem_name && @prerelease_specified[@gem_name]
-          a_pre = @a_ver.prerelease?
-          b_pre = @b_ver.prerelease?
+        unless gem_name && @prerelease_specified[gem_name]
+          a_pre = a_ver.prerelease?
+          b_pre = b_ver.prerelease?
 
           next -1 if a_pre && !b_pre
           next  1 if b_pre && !a_pre
         end
 
         if major?
-          @a_ver <=> @b_ver
-        elsif either_version_older_than_locked
-          @a_ver <=> @b_ver
-        elsif segments_do_not_match(:major)
-          @b_ver <=> @a_ver
-        elsif !minor? && segments_do_not_match(:minor)
-          @b_ver <=> @a_ver
+          a_ver <=> b_ver
+        elsif either_version_older_than_locked(a_ver, b_ver, locked_version)
+          a_ver <=> b_ver
+        elsif segments_do_not_match(a_ver, b_ver, :major)
+          b_ver <=> a_ver
+        elsif !minor? && segments_do_not_match(a_ver, b_ver, :minor)
+          b_ver <=> a_ver
         else
-          @a_ver <=> @b_ver
+          a_ver <=> b_ver
         end
       end
-      post_sort(result)
+      post_sort(result, gem_name, locked_version)
     end
 
-    def either_version_older_than_locked
-      @locked_version && (@a_ver < @locked_version || @b_ver < @locked_version)
+    def either_version_older_than_locked(a_ver, b_ver, locked_version)
+      locked_version && (a_ver < locked_version || b_ver < locked_version)
     end
 
-    def segments_do_not_match(level)
+    def segments_do_not_match(a_ver, b_ver, level)
       index = [:major, :minor].index(level)
-      @a_ver.segments[index] != @b_ver.segments[index]
+      a_ver.segments[index] != b_ver.segments[index]
     end
 
-    def unlocking_gem?
-      unlock_gems.empty? || (@gem_name && unlock_gems.include?(@gem_name))
+    def unlocking_gem?(gem_name)
+      unlock_gems.empty? || (gem_name && unlock_gems.include?(gem_name))
     end
 
     # Specific version moves can't always reliably be done during sorting
     # as not all elements are compared against each other.
-    def post_sort(result)
+    def post_sort(result, gem_name, locked_version)
       # default :major behavior in Bundler does not do this
       return result if major?
-      if unlocking_gem? || @locked_version.nil?
+      if unlocking_gem?(gem_name) || locked_version.nil?
         result
       else
-        move_version_to_end(result, @locked_version)
+        move_version_to_end(result, locked_version)
       end
     end
 

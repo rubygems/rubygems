@@ -47,14 +47,13 @@ module Bundler
     # preference to the current level (:major, :minor or :patch) when resolution
     # is deciding what versions best resolve all dependencies in the bundle.
     # @param package [Resolver::Package] The package being resolved.
-    # @param spec_groups [Specification] An array of Specifications for the
-    #    package.
+    # @param specs [Specification] An array of Specifications for the package.
     # @return [Specification] A new instance of the Specification Array sorted and
     #    possibly filtered.
-    def sort_versions(package, spec_groups)
-      spec_groups = filter_dep_specs(spec_groups, package) if strict
+    def sort_versions(package, specs)
+      specs = filter_dep_specs(specs, package) if strict
 
-      sort_dep_specs(spec_groups, package)
+      sort_dep_specs(specs, package)
     end
 
     # @return [bool] Convenience method for testing value of level variable.
@@ -69,12 +68,12 @@ module Bundler
 
     private
 
-    def filter_dep_specs(spec_groups, package)
+    def filter_dep_specs(specs, package)
       locked_version = package.locked_version
 
-      spec_groups.select do |spec_group|
+      specs.select do |spec|
         if locked_version && !major?
-          gsv = spec_group.version
+          gsv = spec.version
           lsv = locked_version
 
           must_match = minor? ? [0] : [0, 1]
@@ -87,10 +86,10 @@ module Bundler
       end
     end
 
-    def sort_dep_specs(spec_groups, package)
+    def sort_dep_specs(specs, package)
       locked_version = package.locked_version
 
-      result = spec_groups.sort do |a, b|
+      result = specs.sort do |a, b|
         a_ver = a.version
         b_ver = b.version
 

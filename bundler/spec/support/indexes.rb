@@ -54,13 +54,6 @@ module Spec
       end
     end
 
-    def should_conflict_on(names)
-      got = resolve
-      raise "The resolve succeeded with: #{got.map(&:full_name).sort.inspect}"
-    rescue Bundler::VersionConflict => e
-      expect(Array(names).sort).to eq(e.conflicts.sort)
-    end
-
     def gem(*args, &blk)
       build_spec(*args, &blk).first
     end

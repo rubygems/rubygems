@@ -65,6 +65,26 @@ Bundler:
     have to work on weekends.
 *   Continue with the regular release process below.
 
+### Automatic changelog and backport generation
+
+PR labels and titles are used to automatically generate changelogs for patch and
+minor releases.
+
+When releasing, a changelog generation script goes through all PRs that have
+never made it into a release, and selects only the ones with specific labels as
+detailed in the `.changelog.yml` and `bundler/.changelog.yml` files. Those
+particular PRs get backported to the stable branch and included in the release
+changelog.
+
+If PRs don't have a proper label, they won't be backported to patch releases.
+
+If you want a PR to be backported to a patch level release, but don't want to
+include it in the changelog, you can use the special `rubygems: backport` and
+`bundler: backport` labels. For example, this is useful when backporting a PR
+generates conflicts that are solved by backporting another PR with no user
+visible changes. You can use these special labels to also backport the other PR
+and not get any conflicts.
+
 ### Steps for patch releases
 
 *   Confirm all PRs that you want backported are properly tagged with `rubygems:

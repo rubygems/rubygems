@@ -33,9 +33,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
       - name: Install Dependencies
         run: rake setup
       - name: Run Test

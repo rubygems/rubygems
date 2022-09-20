@@ -62,7 +62,7 @@ Every pull request should explain:
 
 ### RFC guidelines
 
-Large changes often benefit from being written out more completely, read by others, and discussed. The [Bundler RFC repo](https://github.com/bundler/rfcs) is the preferred place for that to happen.
+Large changes often benefit from being written out more completely, read by others, and discussed. The [Bundler RFC repo](https://github.com/rubygems/rfcs) is the preferred place for that to happen.
 
 ### Maintainer team guidelines
 

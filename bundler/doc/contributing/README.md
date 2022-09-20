@@ -11,7 +11,7 @@ And be sure to [set up your development environment](https://github.com/rubygems
 
 ## Feature Requests
 
-To request substantial changes to Bundler and/or Bundler documentation, please refer to the [README](https://github.com/bundler/rfcs/blob/master/README.md) in the [RFC repository](https://github.com/bundler/rfcs) for instructions.
+To request substantial changes to Bundler and/or Bundler documentation, please refer to the [README](https://github.com/rubygems/rfcs/blob/master/README.md) in the [RFC repository](https://github.com/rubygems/rfcs) for instructions.
 
 ## Contributing to Bundler
 

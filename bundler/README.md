@@ -44,7 +44,7 @@ To get in touch with the Bundler core team and other Bundler users, please join 
 
 If you'd like to contribute to Bundler, that's awesome, and we <3 you. We've put together [the Bundler contributor guide](https://github.com/rubygems/rubygems/blob/master/bundler/doc/contributing/README.md) with all of the information you need to get started.
 
-If you'd like to request a substantial change to Bundler or its documentation, refer to the [Bundler RFC process](https://github.com/bundler/rfcs) for more information.
+If you'd like to request a substantial change to Bundler or its documentation, refer to the [Bundler RFC process](https://github.com/rubygems/rfcs) for more information.
 
 While some Bundler contributors are compensated by Ruby Together, the project maintainers make decisions independent of Ruby Together. As a project, we welcome contributions regardless of the author's affiliation with Ruby Together.
 

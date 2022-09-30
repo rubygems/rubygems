@@ -492,7 +492,7 @@ module Bundler
           name = dep.name
           platforms = dep.gem_platforms(@platforms)
 
-          packages[name] = Resolver::Package.new(name, platforms, @originally_locked_specs, @unlock[:gems], :prerelease_specified => dep.prerelease?, :force_ruby_platform => dep.force_ruby_platform)
+          packages[name] = Resolver::Package.new(name, platforms, @originally_locked_specs, @unlock[:gems], :dependency => dep)
         end
 
         packages

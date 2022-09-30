@@ -5,13 +5,12 @@ module Bundler
     class Package
       attr_reader :name, :platforms
 
-      def initialize(name, platforms, locked_specs, unlock, prerelease_specified: false, force_ruby_platform: false)
+      def initialize(name, platforms, locked_specs, unlock, dependency: nil)
         @name = name
         @platforms = platforms
         @locked_specs = locked_specs
         @unlock = unlock
-        @prerelease_specified = prerelease_specified
-        @force_ruby_platform = force_ruby_platform
+        @dependency = dependency
       end
 
       def ==(other)
@@ -31,11 +30,11 @@ module Bundler
       end
 
       def prerelease_specified?
-        @prerelease_specified
+        @dependency&.prerelease?
       end
 
       def force_ruby_platform?
-        @force_ruby_platform
+        @dependency&.force_ruby_platform
       end
     end
   end

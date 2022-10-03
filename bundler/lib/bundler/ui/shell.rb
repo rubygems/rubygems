@@ -20,36 +20,36 @@ module Bundler
         @shell.set_color(string, *color)
       end
 
-      def info(msg, newline = nil)
+      def info(msg = nil, newline = nil)
         return unless info?
 
-        tell_me(msg, nil, newline)
+        tell_me(msg || yield, nil, newline)
       end
 
-      def confirm(msg, newline = nil)
+      def confirm(msg = nil, newline = nil)
         return unless confirm?
 
-        tell_me(msg, :green, newline)
+        tell_me(msg || yield, :green, newline)
       end
 
-      def warn(msg, newline = nil, color = :yellow)
+      def warn(msg = nil, newline = nil, color = :yellow)
         return unless warn?
         return if @warning_history.include? msg
         @warning_history << msg
 
-        tell_err(msg, color, newline)
+        tell_err(msg || yield, color, newline)
       end
 
-      def error(msg, newline = nil, color = :red)
+      def error(msg = nil, newline = nil, color = :red)
         return unless error?
 
-        tell_err(msg, color, newline)
+        tell_err(msg || yield, color, newline)
       end
 
-      def debug(msg, newline = nil)
+      def debug(msg = nil, newline = nil)
         return unless debug?
 
-        tell_me(msg, nil, newline)
+        tell_me(msg || yield, nil, newline)
       end
 
       def info?

@@ -21,15 +21,19 @@ module Bundler
       end
 
       def info(msg, newline = nil)
-        tell_me(msg, nil, newline) if level("info")
+        return unless info?
+
+        tell_me(msg, nil, newline)
       end
 
       def confirm(msg, newline = nil)
-        tell_me(msg, :green, newline) if level("confirm")
+        return unless confirm?
+
+        tell_me(msg, :green, newline)
       end
 
       def warn(msg, newline = nil, color = :yellow)
-        return unless level("warn")
+        return unless warn?
         return if @warning_history.include? msg
         @warning_history << msg
 
@@ -37,12 +41,31 @@ module Bundler
       end
 
       def error(msg, newline = nil, color = :red)
-        return unless level("error")
+        return unless error?
+
         tell_err(msg, color, newline)
       end
 
       def debug(msg, newline = nil)
-        tell_me(msg, nil, newline) if debug?
+        return unless debug?
+
+        tell_me(msg, nil, newline)
+      end
+
+      def info?
+        level("info")
+      end
+
+      def confirm?
+        level("confirm")
+      end
+
+      def warn?
+        level("warn")
+      end
+
+      def error?
+        level("error")
       end
 
       def debug?

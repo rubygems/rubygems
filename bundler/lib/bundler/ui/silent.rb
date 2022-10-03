@@ -29,11 +29,27 @@ module Bundler
       def debug(message, newline = nil)
       end
 
+      def confirm?
+        false
+      end
+
+      def error?
+        false
+      end
+
       def debug?
         false
       end
 
+      def info?
+        false
+      end
+
       def quiet?
+        false
+      end
+
+      def warn?
         false
       end
 

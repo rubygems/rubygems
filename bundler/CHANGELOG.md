@@ -1,3 +1,21 @@
+# 2.3.23 (October 5, 2022)
+
+## Enhancements:
+
+  - Update GitLab CI template with new one [#5944](https://github.com/rubygems/rubygems/pull/5944)
+
+## Bug fixes:
+
+  - Fix `bundle init` not respecting umask in generated gem's Gemfile [#5947](https://github.com/rubygems/rubygems/pull/5947)
+
+## Performance:
+
+  - Further speed up Bundler by not sorting specs unnecessarily [#5868](https://github.com/rubygems/rubygems/pull/5868)
+
+## Documentation:
+
+  - Update Bundler new feature instructions [#5912](https://github.com/rubygems/rubygems/pull/5912)
+
 # 2.3.22 (September 7, 2022)
 
 ## Enhancements:

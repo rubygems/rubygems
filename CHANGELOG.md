@@ -1,3 +1,22 @@
+# 3.3.23 / 2022-10-05
+
+## Enhancements:
+
+* Add better error handling for permanent redirect responses. Pull request
+  #5931 by jenshenny
+* Installs bundler 2.3.23 as a default gem.
+
+## Bug fixes:
+
+* Fix generic arm platform matching against runtime arm platforms with
+  eabi modifiers. Pull request #5957 by deivid-rodriguez
+* Fix `Gem::Platform.match` not handling String argument properly. Pull
+  request #5939 by flavorjones
+* Fix resolution on non-musl platforms. Pull request #5915 by
+  deivid-rodriguez
+* Mask the file mode when extracting files. Pull request #5906 by
+  kddnewton
+
 # 3.3.22 / 2022-09-07
 
 ## Enhancements:

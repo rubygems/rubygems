@@ -57,7 +57,6 @@ bundler/lib/bundler/compact_index_client/updater.rb
 bundler/lib/bundler/constants.rb
 bundler/lib/bundler/current_ruby.rb
 bundler/lib/bundler/definition.rb
-bundler/lib/bundler/dep_proxy.rb
 bundler/lib/bundler/dependency.rb
 bundler/lib/bundler/deployment.rb
 bundler/lib/bundler/deprecate.rb

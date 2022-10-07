@@ -176,12 +176,6 @@ module Bundler
     def remove_from_candidates(spec)
       @base.delete(spec)
 
-      @results_for.keys.each do |name|
-        next unless name == spec.name
-
-        @results_for[name].reject {|s| s.version == spec.version }
-      end
-
       reset_spec_cache
     end
 

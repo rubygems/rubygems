@@ -9,4 +9,4 @@ If you would like to add a new feature to Bundler, please follow these steps:
 
 If you don't hear back immediately, don't get discouraged! We all have day jobs, but we respond to most tickets within a day or two.
 
-If you'd like to add a substantial feature to Bundler, refer to the [Bundler RFC process](https://github.com/bundler/rfcs) for more information.
+If you'd like to add a substantial feature to Bundler, refer to the [Bundler RFC process](https://github.com/rubygems/rfcs) for more information.

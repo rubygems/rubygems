@@ -121,5 +121,8 @@ jobs:
       - name: Check we can install a Gemfile with git sources
         run: bundle init && bundle add fileutils --git https://github.com/ruby/fileutils
         shell: bash
+      - name: Generate a Rails application
+        run: gem install rails && rails new foo
+        shell: bash
 
     timeout-minutes: 10

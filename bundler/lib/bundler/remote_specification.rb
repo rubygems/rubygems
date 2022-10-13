@@ -30,14 +30,14 @@ module Bundler
     end
 
     def identifier
-      @__identifier ||= [name, version, @original_platform.to_s]
+      @__identifier ||= [name, version, @platform.to_s]
     end
 
     def full_name
-      if @original_platform == Gem::Platform::RUBY
+      if @platform == Gem::Platform::RUBY
         "#{@name}-#{@version}"
       else
-        "#{@name}-#{@version}-#{@original_platform}"
+        "#{@name}-#{@version}-#{@platform}"
       end
     end
 

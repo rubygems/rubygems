@@ -1,3 +1,14 @@
+# 2.3.24 (October 17, 2022)
+
+## Enhancements:
+
+  - Only add extra resolver spec group for Ruby platform when needed [#5698](https://github.com/rubygems/rubygems/pull/5698)
+  - Fix little UI issue when bundler shows duplicated gems in a list [#5965](https://github.com/rubygems/rubygems/pull/5965)
+
+## Bug fixes:
+
+  - Fix incorrect materialization on Windows [#5975](https://github.com/rubygems/rubygems/pull/5975)
+
 # 2.3.23 (October 5, 2022)
 
 ## Enhancements:

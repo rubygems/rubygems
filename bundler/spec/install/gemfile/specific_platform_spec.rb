@@ -592,6 +592,68 @@ RSpec.describe "bundle install with specific platforms" do
     bundle :install
   end
 
+  context "when a gem has a source gem and a precompiled gem" do
+    context "when another platform-only gem is present" do
+      context "the Ruby version is not locked" do
+        it "does not remove the source gem nor RUBY platform from lockfile" do
+          build_repo2 do
+            # Source gem with no Ruby version requirement
+            build_gem("my-precompiled-gem", "3.0.0")
+
+            # Optional precompiled gem for the current platform, but wont work with
+            # future ruby versions
+            build_gem("my-precompiled-gem", "3.0.0") do |s|
+              s.platform = Bundler.local_platform # e.g. x86_64-linux
+              s.required_ruby_version = "< #{future_ruby_minor_version}"
+            end
+
+            # Platform-only
+            build_gem("no-ruby-platform-gem", "1.0.0") do |s|
+              s.platform = Bundler.local_platform # e.g. x86_64-linux
+            end
+          end
+
+          source = file_uri_for(gem_repo2)
+
+          # IMPORTANT: We cannot rule out the possibility that gems will be
+          # bundled on future ruby version.
+          gemfile <<~G
+            source "#{source}"
+
+            raise "This should not be loaded" unless RUBY_VERSION < "#{future_ruby_minor_version}"
+
+            gem "my-precompiled-gem"
+            gem "no-ruby-platform-gem"
+          G
+
+          bundle :install
+
+          # If the Ruby version is not locked, we shouldn't disqualify the
+          # source gem which will work on a more recent Ruby version.
+          expect(lockfile).to eq <<~L
+            GEM
+              remote: #{source}/
+              specs:
+                my-precompiled-gem (3.0.0)
+                my-precompiled-gem (3.0.0-#{Bundler.local_platform})
+                no-ruby-platform-gem (1.0.0-#{Bundler.local_platform})
+
+            PLATFORMS
+              ruby
+              #{Bundler.local_platform}
+
+            DEPENDENCIES
+              my-precompiled-gem
+              no-ruby-platform-gem
+
+            BUNDLED WITH
+              #{Bundler::VERSION}
+          L
+        end
+      end
+    end
+  end
+
   private
 
   def setup_multiplatform_gem
@@ -623,7 +685,7 @@ RSpec.describe "bundle install with specific platforms" do
     end
   end
 
-  def setup_multiplatform_gem_with_source_gem
+  def setup_multiplatform_gem_with_source_gem(&block)
     build_repo2 do
       build_gem("my-precompiled-gem", "3.0.0")
       build_gem("my-precompiled-gem", "3.0.0") do |s|
@@ -633,5 +695,12 @@ RSpec.describe "bundle install with specific platforms" do
         s.required_ruby_version = ">= 1000.0.0"
       end
     end
+  end
+
+  def future_ruby_minor_version
+    current = RUBY_VERSION
+    parts = current.split(".").map(&:to_i)
+    parts[1] += 1
+    parts.join(".")
   end
 end

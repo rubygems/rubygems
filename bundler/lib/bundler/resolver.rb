@@ -340,21 +340,17 @@ module Bundler
             o << %(\n  Current Bundler version:\n    bundler (#{Bundler::VERSION}))
 
             conflict_dependency = conflict.requirement
-            conflict_requirement = conflict_dependency.requirement
-            other_bundler_required = !conflict_requirement.satisfied_by?(Gem::Version.new(Bundler::VERSION))
 
-            if other_bundler_required
-              o << "\n\n"
+            o << "\n\n"
 
-              candidate_specs = source_for(:default_bundler).specs.search(conflict_dependency)
-              if candidate_specs.any?
-                target_version = candidate_specs.last.version
-                new_command = [File.basename($PROGRAM_NAME), "_#{target_version}_", *ARGV].join(" ")
-                o << "Your bundle requires a different version of Bundler than the one you're running.\n"
-                o << "Install the necessary version with `gem install bundler:#{target_version}` and rerun bundler using `#{new_command}`\n"
-              else
-                o << "Your bundle requires a different version of Bundler than the one you're running, and that version could not be found.\n"
-              end
+            candidate_specs = source_for(:default_bundler).specs.search(conflict_dependency)
+            if candidate_specs.any?
+              target_version = candidate_specs.last.version
+              new_command = [File.basename($PROGRAM_NAME), "_#{target_version}_", *ARGV].join(" ")
+              o << "Your bundle requires a different version of Bundler than the one you're running.\n"
+              o << "Install the necessary version with `gem install bundler:#{target_version}` and rerun bundler using `#{new_command}`\n"
+            else
+              o << "Your bundle requires a different version of Bundler than the one you're running, and that version could not be found.\n"
             end
           elsif name.end_with?("\0")
             o << %(\n  Current #{name} version:\n    #{SharedHelpers.pretty_dependency(@metadata_requirements.find {|req| req.name == name })}\n\n)

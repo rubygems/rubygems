@@ -2,9 +2,14 @@
 
 require_relative "../bundler"
 require "shellwords"
+require "digest/sha2"
 
 module Bundler
   class GemHelper
+    CHECKSUMS = {
+      "sha256" => ::Digest::SHA256,
+      "sha512" => ::Digest::SHA512,
+    }.freeze
     include Rake::DSL if defined? Rake::DSL
 
     class << self
@@ -47,9 +52,9 @@ module Bundler
         built_gem_path = build_gem
       end
 
-      desc "Generate SHA512 checksum if #{name}-#{version}.gem into the checksums directory."
+      desc "Build #{name}-#{version}.gem into pkg directory, then generate SHA256 & SHA512 checksums in checksums directory."
       task "build:checksum" => "build" do
-        build_checksum(built_gem_path)
+        build_checksums(built_gem_path)
       end
 
       desc "Build and install #{name}-#{version}.gem into system gems."
@@ -102,18 +107,23 @@ module Bundler
       Bundler.ui.confirm "#{name} (#{version}) installed."
     end
 
-    def build_checksum(built_gem_path = nil)
+    def build_checksums(built_gem_path = nil)
       built_gem_path ||= build_gem
+      CHECKSUMS.each do |extension, type|
+        write_checksum(built_gem_path, extension, type)
+      end
+    end
+
+    protected
+
+    def write_checksum(built_gem_path, extension, type)
       SharedHelpers.filesystem_access(File.join(base, "checksums")) {|p| FileUtils.mkdir_p(p) }
-      file_name = "#{File.basename(built_gem_path)}.sha512"
-      require "digest/sha2"
-      checksum = ::Digest::SHA512.file(built_gem_path).hexdigest
+      file_name = "#{File.basename(built_gem_path)}.#{extension}"
+      checksum = type.file(built_gem_path).hexdigest
       target = File.join(base, "checksums", file_name)
       File.write(target, checksum + "\n")
       Bundler.ui.confirm "#{name} #{version} checksum written to checksums/#{file_name}."
     end
-
-    protected
 
     def rubygem_push(path)
       cmd = [*gem_command, "push", path]

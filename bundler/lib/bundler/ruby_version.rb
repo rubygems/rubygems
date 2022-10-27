@@ -66,8 +66,7 @@ module Bundler
     def ==(other)
       versions == other.versions &&
         engine == other.engine &&
-        engine_versions == other.engine_versions &&
-        patchlevel == other.patchlevel
+        engine_versions == other.engine_versions
     end
 
     def host
@@ -92,8 +91,6 @@ module Bundler
         [:version, versions_string(versions), versions_string(other.versions)]
       elsif @input_engine && !matches?(engine_versions, other.engine_gem_version)
         [:engine_version, versions_string(engine_versions), versions_string(other.engine_versions)]
-      elsif patchlevel && (!patchlevel.is_a?(String) || !other.patchlevel.is_a?(String) || !matches?(patchlevel, other.patchlevel))
-        [:patchlevel, patchlevel, other.patchlevel]
       end
     end
 

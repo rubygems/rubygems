@@ -62,20 +62,15 @@ RSpec.describe Bundler::GemHelper do
       mock_confirm_message message
     end
 
-    def mock_checksum_message(name, version)
-      message = "#{name} #{version} checksum written to checksums/#{name}-#{version}.gem.sha512."
+    def mock_checksum_message(name, version, extension)
+      message = "#{name} #{version} checksum written to checksums/#{name}-#{version}.gem.#{extension}."
       mock_confirm_message message
-    end
-
-    def sha512_hexdigest(path)
-      Digest::SHA512.file(path).hexdigest
     end
 
     subject! { Bundler::GemHelper.new(app_path) }
     let(:app_version) { "0.1.0" }
     let(:app_gem_dir) { app_path.join("pkg") }
     let(:app_gem_path) { app_gem_dir.join("#{app_name}-#{app_version}.gem") }
-    let(:app_sha_path) { app_path.join("checksums", "#{app_name}-#{app_version}.gem.sha512") }
     let(:app_gemspec_content) { File.read(app_gemspec_path) }
 
     before(:each) do
@@ -173,44 +168,52 @@ RSpec.describe Bundler::GemHelper do
       end
     end
 
-    describe "#build_checksum" do
-      it "calculates SHA512 of the content" do
-        FileUtils.mkdir_p(app_gem_dir)
-        File.write(app_gem_path, "")
-        mock_checksum_message app_name, app_version
-        subject.build_checksum(app_gem_path)
-        expect(File.read(app_sha_path).chomp).to eql(Digest::SHA512.hexdigest(""))
-      end
+    describe "#build_checksums" do
+      %w[SHA256 SHA512].each do |sha_bits|
+        let(:digest) { Object.const_get("Digest::#{sha_bits}") }
+        let(:hex_digest) { digest.file(app_gem_path).hexdigest }
+        let(:app_sha_path) { app_path.join("checksums", "#{app_name}-#{app_version}.gem.#{sha_bits.downcase}") }
 
-      context "when build was successful" do
-        it "creates .sha512 file" do
-          mock_build_message app_name, app_version
-          mock_checksum_message app_name, app_version
-          subject.build_checksum
-          expect(app_sha_path).to exist
-          expect(File.read(app_sha_path).chomp).to eql(sha512_hexdigest(app_gem_path))
+        it "calculates #{sha_bits} of the content" do
+          FileUtils.mkdir_p(app_gem_dir)
+          File.write(app_gem_path, "")
+          subject.build_checksums(app_gem_path)
+          expect(File.read(app_sha_path).chomp).to eql(digest.hexdigest(""))
         end
-      end
-      context "when building in the current working directory" do
-        it "creates a .sha512 file" do
-          mock_build_message app_name, app_version
-          mock_checksum_message app_name, app_version
-          Dir.chdir app_path do
-            Bundler::GemHelper.new.build_checksum
+
+        context "with messages" do
+          before do
+            mock_build_message app_name, app_version
+            %w[sha256 sha512].each do |extension|
+              mock_checksum_message app_name, app_version, extension
+            end
           end
-          expect(app_sha_path).to exist
-          expect(File.read(app_sha_path).chomp).to eql(sha512_hexdigest(app_gem_path))
-        end
-      end
-      context "when building in a location relative to the current working directory" do
-        it "creates a .sha512 file" do
-          mock_build_message app_name, app_version
-          mock_checksum_message app_name, app_version
-          Dir.chdir File.dirname(app_path) do
-            Bundler::GemHelper.new(File.basename(app_path)).build_checksum
+
+          context "when build was successful" do
+            it "creates .#{sha_bits} file" do
+              subject.build_checksums
+              expect(app_sha_path).to exist
+              expect(File.read(app_sha_path).chomp).to eql(hex_digest)
+            end
           end
-          expect(app_sha_path).to exist
-          expect(File.read(app_sha_path).chomp).to eql(sha512_hexdigest(app_gem_path))
+          context "when building in the current working directory" do
+            it "creates a .#{sha_bits} file" do
+              Dir.chdir app_path do
+                Bundler::GemHelper.new.build_checksums
+              end
+              expect(app_sha_path).to exist
+              expect(File.read(app_sha_path).chomp).to eql(hex_digest)
+            end
+          end
+          context "when building in a location relative to the current working directory" do
+            it "creates a .#{sha_bits} file" do
+              Dir.chdir File.dirname(app_path) do
+                Bundler::GemHelper.new(File.basename(app_path)).build_checksums
+              end
+              expect(app_sha_path).to exist
+              expect(File.read(app_sha_path).chomp).to eql(hex_digest)
+            end
+          end
         end
       end
     end

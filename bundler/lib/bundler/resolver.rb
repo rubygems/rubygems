@@ -36,12 +36,12 @@ module Bundler
     rescue Molinillo::VersionConflict => e
       conflicts = e.conflicts
 
-      deps_to_unlock = conflicts.values.inject([]) do |deps, conflict|
-        deps |= conflict.requirement_trees.flatten.map {|req| base_requirements[req.name] }.compact
+      names_to_unlock = conflicts.values.inject([]) do |names, conflict|
+        names |= conflict.requirement_trees.flatten.select {|req| base_requirements[req.name] }.map(&:name)
       end
 
-      if deps_to_unlock.any?
-        @base.unlock_deps(deps_to_unlock)
+      if names_to_unlock.any?
+        @base.unlock_names(names_to_unlock)
         reset_spec_cache
         retry
       end

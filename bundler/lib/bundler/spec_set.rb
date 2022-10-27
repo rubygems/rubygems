@@ -122,8 +122,8 @@ module Bundler
       @specs.detect {|spec| spec.name == name && spec.match_platform(platform) }
     end
 
-    def delete_by_name_and_version(name, version)
-      @specs.reject! {|spec| spec.name == name && spec.version == version }
+    def delete_by_name(name)
+      @specs.reject! {|spec| spec.name == name }
       @lookup = nil
       @sorted = nil
     end

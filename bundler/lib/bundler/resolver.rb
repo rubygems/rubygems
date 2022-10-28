@@ -318,20 +318,8 @@ module Bundler
 
           if name == "bundler"
             o << %(\n  Current Bundler version:\n    bundler (#{Bundler::VERSION}))
-
-            conflict_dependency = conflict.requirement
-
             o << "\n\n"
-
-            candidate_specs = source_for(:default_bundler).specs.search(name).select {|spec| requirement_satisfied_by?(conflict_dependency, nil, spec) }
-            if candidate_specs.any?
-              target_version = candidate_specs.last.version
-              new_command = [File.basename($PROGRAM_NAME), "_#{target_version}_", *ARGV].join(" ")
-              o << "Your bundle requires a different version of Bundler than the one you're running.\n"
-              o << "Install the necessary version with `gem install bundler:#{target_version}` and rerun bundler using `#{new_command}`\n"
-            else
-              o << "Your bundle requires a different version of Bundler than the one you're running, and that version could not be found.\n"
-            end
+            o << bundler_not_found_message(conflict.requirement)
           elsif name.end_with?("\0")
             o << %(\n  Current #{name} version:\n    #{SharedHelpers.pretty_dependency(@metadata_requirements.find {|req| req.name == name })}\n\n)
           elsif !conflict.existing
@@ -351,6 +339,18 @@ module Bundler
           o
         end
       )
+    end
+
+    def bundler_not_found_message(conflict_dependency)
+      candidate_specs = source_for(:default_bundler).specs.search("bundler").select {|spec| requirement_satisfied_by?(conflict_dependency, nil, spec) }
+      if candidate_specs.any?
+        target_version = candidate_specs.last.version
+        new_command = [File.basename($PROGRAM_NAME), "_#{target_version}_", *ARGV].join(" ")
+        "Your bundle requires a different version of Bundler than the one you're running.\n" \
+        "Install the necessary version with `gem install bundler:#{target_version}` and rerun bundler using `#{new_command}`\n"
+      else
+        "Your bundle requires a different version of Bundler than the one you're running, and that version could not be found.\n"
+      end
     end
   end
 end

@@ -125,7 +125,7 @@ RSpec.describe "bundle update" do
     describe "with submodules" do
       before :each do
         # CVE-2022-39253: https://lore.kernel.org/lkml/xmqq4jw1uku5.fsf@gitster.g/
-        system(*%W[git config --global protocol.file.allow always])
+        system("git", "config", "--global", "protocol.file.allow", "always")
 
         build_repo4 do
           build_gem "submodule" do |s|

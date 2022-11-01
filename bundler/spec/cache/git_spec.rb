@@ -157,7 +157,7 @@ RSpec.describe "bundle cache with git" do
 
   it "copies repository to vendor cache, including submodules" do
     # CVE-2022-39253: https://lore.kernel.org/lkml/xmqq4jw1uku5.fsf@gitster.g/
-    system(*%W[git config --global protocol.file.allow always])
+    system("git", "config", "--global", "protocol.file.allow", "always")
 
     build_git "submodule", "1.0"
 

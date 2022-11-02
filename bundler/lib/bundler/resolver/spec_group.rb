@@ -3,7 +3,7 @@
 module Bundler
   class Resolver
     class SpecGroup
-      attr_accessor :name, :version, :source
+      attr_reader :name, :version, :source
       attr_accessor :activated_platforms, :force_ruby_platform
 
       def initialize(specs)

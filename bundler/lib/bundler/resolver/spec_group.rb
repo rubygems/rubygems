@@ -6,13 +6,13 @@ module Bundler
       attr_accessor :name, :version, :source
       attr_accessor :activated_platforms, :force_ruby_platform
 
-      def initialize(specs, relevant_platforms)
+      def initialize(specs)
         @exemplary_spec = specs.first
         @name = @exemplary_spec.name
         @version = @exemplary_spec.version
         @source = @exemplary_spec.source
 
-        @activated_platforms = relevant_platforms
+        @activated_platforms = specs.map(&:platform)
         @specs = specs
       end
 

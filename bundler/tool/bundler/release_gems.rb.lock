@@ -60,6 +60,7 @@ PLATFORMS
   universal-java-11
   universal-java-18
   x86_64-darwin-20
+  x86_64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
@@ -67,4 +68,4 @@ DEPENDENCIES
   octokit (~> 4.18)
 
 BUNDLED WITH
-   2.3.24
+   2.3.25

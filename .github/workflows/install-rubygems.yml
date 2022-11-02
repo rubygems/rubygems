@@ -27,7 +27,7 @@ jobs:
           - { name: "2.7", value: 2.7.6 }
           - { name: "3.0", value: 3.0.4 }
           - { name: "3.1", value: 3.1.2 }
-          - { name: jruby-9.3, value: jruby-9.3.4.0 }
+          - { name: jruby-9.3, value: jruby-9.3.9.0 }
           - { name: truffleruby-22, value: truffleruby-22.1.0 }
         openssl:
           - { name: "openssl", value: true }
@@ -98,7 +98,7 @@ jobs:
       matrix:
         ruby:
           - { name: "3.1", value: 3.1.2 }
-          - { name: jruby-9.3, value: jruby-9.3.4.0 }
+          - { name: jruby-9.3, value: jruby-9.3.9.0 }
     steps:
       - uses: actions/checkout@v3
       - name: Setup ruby
@@ -107,7 +107,7 @@ jobs:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@v3.4.1
+        uses: actions/setup-java@v3.6.0
         with:
           distribution: temurin
           java-version: 18.0.0

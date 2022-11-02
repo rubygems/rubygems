@@ -3,14 +3,20 @@
 module Bundler
   class Resolver
     class SpecGroup
-      attr_reader :name, :version, :source
-
       def initialize(specs)
-        exemplary_spec = specs.first
-        @name = exemplary_spec.name
-        @version = exemplary_spec.version
-        @source = exemplary_spec.source
         @specs = specs
+      end
+
+      def name
+        @name ||= exemplary_spec.name
+      end
+
+      def version
+        @version ||= exemplary_spec.version
+      end
+
+      def source
+        @source ||= exemplary_spec.source
       end
 
       def to_specs(force_ruby_platform)
@@ -56,6 +62,10 @@ module Bundler
       end
 
       private
+
+      def exemplary_spec
+        @specs.first
+      end
 
       def __dependencies(spec)
         dependencies = []

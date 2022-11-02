@@ -4,15 +4,13 @@ module Bundler
   class Resolver
     class SpecGroup
       attr_reader :name, :version, :source
-      attr_accessor :activated_platforms, :force_ruby_platform
+      attr_accessor :force_ruby_platform
 
       def initialize(specs)
         exemplary_spec = specs.first
         @name = exemplary_spec.name
         @version = exemplary_spec.version
         @source = exemplary_spec.source
-
-        @activated_platforms = specs.map(&:platform)
         @specs = specs
       end
 
@@ -26,8 +24,7 @@ module Bundler
       end
 
       def to_s
-        activated_platforms_string = sorted_activated_platforms.join(", ")
-        "#{name} (#{version}) (#{activated_platforms_string})"
+        sorted_spec_names.join(", ")
       end
 
       def dependencies_for_activated_platforms
@@ -38,28 +35,23 @@ module Bundler
 
       def ==(other)
         return unless other.is_a?(SpecGroup)
-        name == other.name &&
-          version == other.version &&
-          sorted_activated_platforms == other.sorted_activated_platforms &&
-          source == other.source
+
+        sorted_spec_names == other.sorted_spec_names
       end
 
       def eql?(other)
         return unless other.is_a?(SpecGroup)
-        name.eql?(other.name) &&
-          version.eql?(other.version) &&
-          sorted_activated_platforms.eql?(other.sorted_activated_platforms) &&
-          source.eql?(other.source)
+        sorted_spec_names.eql?(other.sorted_spec_names)
       end
 
       def hash
-        name.hash ^ version.hash ^ sorted_activated_platforms.hash ^ source.hash
+        sorted_spec_names.hash
       end
 
       protected
 
-      def sorted_activated_platforms
-        activated_platforms.sort_by(&:to_s)
+      def sorted_spec_names
+        @sorted_spec_names ||= @specs.map(&:full_name).sort
       end
 
       private

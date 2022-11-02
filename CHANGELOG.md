@@ -1,3 +1,13 @@
+# 3.3.25 / 2022-11-02
+
+## Enhancements:
+
+* Github source should default to secure protocol. Pull request #6026 by
+  jasonkarns
+* Allow upcoming JRuby to pass keywords to Kernel#warn. Pull request #6002
+  by enebo
+* Installs bundler 2.3.25 as a default gem.
+
 # 3.3.24 / 2022-10-17
 
 ## Enhancements:

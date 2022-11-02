@@ -122,8 +122,7 @@ module Bundler
 
           next groups if @resolving_only_for_ruby || platform_specs == ruby_specs
 
-          spec_group = SpecGroup.new(platform_specs)
-          groups << spec_group
+          groups << SpecGroup.new(platform_specs)
 
           groups
         end

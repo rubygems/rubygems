@@ -7,10 +7,10 @@ module Bundler
       attr_accessor :activated_platforms, :force_ruby_platform
 
       def initialize(specs)
-        @exemplary_spec = specs.first
-        @name = @exemplary_spec.name
-        @version = @exemplary_spec.version
-        @source = @exemplary_spec.source
+        exemplary_spec = specs.first
+        @name = exemplary_spec.name
+        @version = exemplary_spec.version
+        @source = exemplary_spec.source
 
         @activated_platforms = specs.map(&:platform)
         @specs = specs

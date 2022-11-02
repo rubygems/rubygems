@@ -1,3 +1,15 @@
+# 2.3.25 (November 2, 2022)
+
+## Bug fixes:
+
+  - Properly sort specs when materializing [#6015](https://github.com/rubygems/rubygems/pull/6015)
+  - Fix bad unfreeze recommendation [#6013](https://github.com/rubygems/rubygems/pull/6013)
+
+## Documentation:
+
+  - Bring docs for gemfile(5) manpage up to date [#6007](https://github.com/rubygems/rubygems/pull/6007)
+  - Fix `github` DSL docs to mention they use https protocol over git under the hood [#5993](https://github.com/rubygems/rubygems/pull/5993)
+
 # 2.3.24 (October 17, 2022)
 
 ## Enhancements:

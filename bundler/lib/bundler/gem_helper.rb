@@ -2,13 +2,12 @@
 
 require_relative "../bundler"
 require "shellwords"
-require "digest/sha2"
 
 module Bundler
   class GemHelper
     CHECKSUMS = {
-      "sha256" => ::Digest::SHA256,
-      "sha512" => ::Digest::SHA512,
+      "sha256" => "::Digest::SHA256",
+      "sha512" => "::Digest::SHA512",
     }.freeze
     include Rake::DSL if defined? Rake::DSL
 
@@ -109,8 +108,9 @@ module Bundler
 
     def build_checksums(built_gem_path = nil)
       built_gem_path ||= build_gem
-      CHECKSUMS.each do |extension, type|
-        write_checksum(built_gem_path, extension, type)
+      require "digest/sha2"
+      CHECKSUMS.each do |extension, digest_klass|
+        write_checksum(built_gem_path, extension, Object.const_get(digest_klass))
       end
     end
 

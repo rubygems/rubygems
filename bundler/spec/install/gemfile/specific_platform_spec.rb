@@ -374,7 +374,7 @@ RSpec.describe "bundle install with specific platforms" do
       Could not find compatible versions
 
       Because every version of sorbet depends on sorbet-static = 0.5.6433
-        and no versions in rubygems repository #{file_uri_for(gem_repo4)}/ or installed locally satisfy sorbet-static = 0.5.6433,
+        and sorbet-static = 0.5.6433 could not be found in rubygems repository #{file_uri_for(gem_repo4)}/ or installed locally,
         every version of sorbet is forbidden.
       So, because Gemfile depends on sorbet = 0.5.6433,
         version solving has failed.

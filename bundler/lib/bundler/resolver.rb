@@ -115,7 +115,7 @@ module Bundler
       custom_explanation = if package.name == "bundler"
         "the current Bundler version (#{Bundler::VERSION}) does not satisfy #{cause.constraint}"
       else
-        "no versions in #{repository_for(package)} satisfy #{cause.constraint}"
+        "#{cause.constraint} could not be found in #{repository_for(package)}"
       end
 
       PubGrub::Incompatibility.new([unsatisfied_term], :cause => cause, :custom_explanation => custom_explanation)

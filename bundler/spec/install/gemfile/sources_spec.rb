@@ -375,7 +375,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
           Could not find compatible versions
 
           Because every version of depends_on_missing depends on missing >= 0
-            and no versions in any of the sources satisfy missing >= 0,
+            and missing >= 0 could not be found in any of the sources,
             every version of depends_on_missing is forbidden.
           So, because Gemfile depends on depends_on_missing >= 0,
             version solving has failed.
@@ -437,7 +437,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
             Could not find compatible versions
 
             Because every version of depends_on_rack depends on rack >= 0
-              and no versions in rubygems repository https://gem.repo2/ or installed locally satisfy rack >= 0,
+              and rack >= 0 could not be found in rubygems repository https://gem.repo2/ or installed locally,
               every version of depends_on_rack is forbidden.
             So, because Gemfile depends on depends_on_rack >= 0,
               version solving has failed.

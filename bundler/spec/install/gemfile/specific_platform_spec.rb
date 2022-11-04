@@ -102,7 +102,6 @@ RSpec.describe "bundle install with specific platforms" do
           google-protobuf
 
         CHECKSUMS
-          #{checksum_for_repo_gem gem_repo2, "google-protobuf", "3.0.0.alpha.5.0.5.1", "universal-darwin"}
 
         BUNDLED WITH
            #{Bundler::VERSION}

@@ -134,6 +134,47 @@ module Bundler
       " #{source.revision[0..6]}"
     end
 
+    def to_checksum
+      return nil unless @specification
+
+      # If a spec started off as a generic ruby platform, and is resolved
+      # to something more specific on install time, we skip recording the
+      # checksum.
+      # For example if we have:
+      #
+      #     specs:
+      #       pry (0.11.3)
+      #
+      #   PLATFORMS
+      #     ruby
+      #     java
+      #
+      # Recording the checksum for ruby does not make sense, because we
+      # will end up with something like:
+      #
+      #     specs:
+      #       pry (0.11.3)
+      #
+      #   CHECKSUMS
+      #     pry(0.11.3-java)
+      #       1f0bd9ce0282e8a20151011e4677746206a0c84b648e0a1c981b3232bb47a3b9
+      #     pry(0.11.3-java)
+      #       1f0bd9ce0282e8a20151011e4677746206a0c84b648e0a1c981b3232bb47a3b9
+      #
+      #   PLATFORMS
+      #     ruby
+      #     java
+      return nil if generic_platform_with_specific_installed_platform?
+
+      @specification.to_checksum
+    end
+
+    def generic_platform_with_specific_installed_platform?
+      raise "LazySpecification has not been materialized yet" unless @specification
+
+      !ruby_platform_materializes_to_ruby_platform? && @specification.platform != platform
+    end
+
     private
 
     def use_exact_resolved_specifications?

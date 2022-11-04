@@ -70,12 +70,11 @@ module Bundler
       out << "\nCHECKSUMS\n"
 
       definition.resolve.sort_by(&:full_name).each do |spec|
-        if spec.respond_to?(:to_checksum)
-          out << spec.to_checksum.to_lock
-        else
-          locked_checksum = definition.locked_checksums.find {|c| c.match_spec?(spec) }
-          out << locked_checksum.to_lock if locked_checksum
-        end
+        checksum = spec.to_checksum if spec.respond_to?(:to_checksum)
+
+        checksum ||= definition.locked_checksums.find {|c| c.match_spec?(spec) }
+
+        out << checksum.to_lock if checksum
       end
     end
 

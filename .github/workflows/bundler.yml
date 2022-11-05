@@ -29,6 +29,7 @@ jobs:
           - { name: ruby-2.6, value: 2.6.9 }
           - { name: ruby-2.7, value: 2.7.5 }
           - { name: ruby-3.0, value: 3.0.3 }
+          - { name: ruby-3.1, value: 3.1.2 }
 
         bundler:
           - { name: 2, value: '' }

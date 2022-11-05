@@ -139,25 +139,10 @@ end
 
 load "../util/automatiek.rake"
 
-# We currently ship a custom version of pub_grub that includes the following
-# patches:
-#
-# * https://github.com/jhawthorn/pub_grub/pull/15, for easier handling and
-#   customization of the "root package", which we call "Gemfile" in our error
-#   messages.
-#
-# * https://github.com/jhawthorn/pub_grub/pull/16, for easier access to pub_grub
-#   errors, in order to retry resolution with more flexible constraints when it
-#   fails.
-#
-# * https://github.com/jhawthorn/pub_grub/pull/17, for easier customization of
-#   error messages to include sources and better metadata dependency conflict
-#   explanations.
-#
 desc "Vendor a specific version of pub_grub"
 Automatiek::RakeTask.new("pub_grub") do |lib|
-  lib.version = "custom-explanations"
-  lib.download = { :github => "https://github.com/deivid-rodriguez/pub_grub" }
+  lib.version = "main"
+  lib.download = { :github => "https://github.com/jhawthorn/pub_grub" }
   lib.namespace = "PubGrub"
   lib.prefix = "Bundler"
   lib.vendor_lib = "lib/bundler/vendor/pub_grub"

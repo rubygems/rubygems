@@ -140,7 +140,8 @@ module Gem
         File.open(cache_file) do |f|
           digest = Bundler::SharedHelpers.digest(:SHA256).new
           digest << f.read(16_384) until f.eof?
-          digest.hexdigest!
+
+          "sha256-#{digest.hexdigest!}"
         end
       end
 

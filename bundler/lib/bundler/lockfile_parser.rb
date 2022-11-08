@@ -16,7 +16,6 @@ module Bundler
     SPECS        = "  specs:"
     OPTIONS      = /^  ([a-z]+): (.*)$/i.freeze
     SOURCE       = [GIT, GEM, PATH, PLUGIN].freeze
-    CHECKSUM_LINE = /^    ([a-z0-9]+)$/i.freeze
 
     SECTIONS_BY_VERSION_INTRODUCED = {
       Gem::Version.create("1.0") => [DEPENDENCIES, PLATFORMS, GIT, GEM, PATH].freeze,
@@ -160,6 +159,7 @@ module Bundler
       (?:#{space}\(([^-]*)                               # Space, followed by version
       (?:-(.*))?\))?                                     # Optional platform
       (!)?                                               # Optional pinned marker
+      (?:#{space}(.*))?                                  # Optional checksum
       $                                                  # Line end
     /xo.freeze
 
@@ -193,20 +193,17 @@ module Bundler
     end
 
     def parse_checksum(line)
-      if line =~ CHECKSUM_LINE
-        checksum = $1
-        @current_checksum.checksum = checksum
-      elsif line =~ NAME_VERSION
+      if line =~ NAME_VERSION
         spaces = $1
         return unless spaces.size == 2
         name = $2
         version = $3
         platform = $4
+        checksum = $6
 
         version = Gem::Version.new(version)
         platform = platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
-        @current_checksum = Bundler::Checksum.new(name, version, platform)
-        @checksums << @current_checksum
+        @checksums << Bundler::Checksum.new(name, version, platform, checksum)
       end
     end
 

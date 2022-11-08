@@ -5,11 +5,17 @@ module Bundler
     attr_reader :name, :version, :platform
     attr_accessor :checksum
 
+    SHA256 = /\Asha256-[a-z0-9]{64}\z/.freeze
+
     def initialize(name, version, platform, checksum = nil)
       @name     = name
       @version  = version
       @platform = platform || Gem::Platform::RUBY
       @checksum = checksum
+
+      if @checksum && @checksum !~ SHA256
+        raise ArgumentError, "invalid checksum (#{@checksum})"
+      end
     end
 
     def match_spec?(spec)
@@ -22,12 +28,13 @@ module Bundler
       out = String.new
 
       if platform == Gem::Platform::RUBY
-        out << "  #{name} (#{version})\n"
+        out << "  #{name} (#{version})"
       else
-        out << "  #{name} (#{version}-#{platform})\n"
+        out << "  #{name} (#{version}-#{platform})"
       end
 
-      out << "    #{checksum}\n" if checksum
+      out << " #{checksum}" if checksum
+      out << "\n"
 
       out
     end

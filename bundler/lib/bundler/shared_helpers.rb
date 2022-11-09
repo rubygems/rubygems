@@ -261,12 +261,6 @@ module Bundler
     end
 
     def set_env(key, value)
-      raise ArgumentError, "new key #{key}" unless EnvironmentPreserver::BUNDLER_KEYS.include?(key)
-      orig_key = "#{EnvironmentPreserver::BUNDLER_PREFIX}#{key}"
-      orig = ENV[key]
-      orig ||= EnvironmentPreserver::INTENTIONALLY_NIL
-      ENV[orig_key] ||= orig
-
       ENV[key] = value
     end
     public :set_env

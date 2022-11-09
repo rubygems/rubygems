@@ -34,9 +34,6 @@ require_relative "bundler/build_metadata"
 # of loaded and required modules.
 #
 module Bundler
-  environment_preserver = EnvironmentPreserver.from_env
-  ORIGINAL_ENV = environment_preserver.restore
-  environment_preserver.replace_with_backup
   SUDO_MUTEX = Thread::Mutex.new
 
   autoload :Definition,             File.expand_path("bundler/definition", __dir__)
@@ -78,6 +75,8 @@ module Bundler
   autoload :VersionRanges,          File.expand_path("bundler/version_ranges", __dir__)
 
   class << self
+    include EnvironmentPreserver
+
     def configure
       @configured ||= configure_gem_home_and_path
     end
@@ -342,11 +341,6 @@ EOF
       @settings ||= Settings.new(app_config_path)
     rescue GemfileNotFound
       @settings = Settings.new(Pathname.new(".bundle").expand_path)
-    end
-
-    # @return [Hash] Environment present before Bundler was activated
-    def original_env
-      ORIGINAL_ENV.clone
     end
 
     # @deprecated Use `unbundled_env` instead

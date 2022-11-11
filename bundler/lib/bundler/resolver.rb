@@ -233,6 +233,36 @@ module Bundler
       "Gemfile"
     end
 
+    def raise_not_found!(package)
+      name = package.name
+      source = source_for(name)
+      specs = @all_specs[name]
+      matching_part = name
+      requirement_label = SharedHelpers.pretty_dependency(package.dependency)
+      cache_message = begin
+                          " or in gems cached in #{Bundler.settings.app_cache_path}" if Bundler.app_cache.exist?
+                        rescue GemfileNotFound
+                          nil
+                        end
+      specs_matching_requirement = filter_matching_specs(specs, package.dependency.requirement)
+
+      if specs_matching_requirement.any?
+        specs = specs_matching_requirement
+        matching_part = requirement_label
+        platforms = package.platforms
+        platform_label = platforms.size == 1 ? "platform '#{platforms.first}" : "platforms '#{platforms.join("', '")}"
+        requirement_label = "#{requirement_label}' with #{platform_label}"
+      end
+
+      message = String.new("Could not find gem '#{requirement_label}' in #{source}#{cache_message}.\n")
+
+      if specs.any?
+        message << "\n#{other_specs_matching_message(specs, matching_part)}"
+      end
+
+      raise GemNotFound, message
+    end
+
     private
 
     def filter_matching_specs(specs, requirement)
@@ -271,38 +301,8 @@ module Bundler
         next [dep_package, dep_constraint] unless versions_for(dep_package, dep_constraint.range).empty?
         next unless dep_package.current_platform?
 
-        raise GemNotFound, gem_not_found_message(dep_package)
+        raise_not_found!(dep_package)
       end.compact.to_h
-    end
-
-    def gem_not_found_message(package)
-      name = package.name
-      source = source_for(name)
-      specs = @all_specs[name]
-      matching_part = name
-      requirement_label = SharedHelpers.pretty_dependency(package.dependency)
-      cache_message = begin
-                          " or in gems cached in #{Bundler.settings.app_cache_path}" if Bundler.app_cache.exist?
-                        rescue GemfileNotFound
-                          nil
-                        end
-      specs_matching_requirement = filter_matching_specs(specs, package.dependency.requirement)
-
-      if specs_matching_requirement.any?
-        specs = specs_matching_requirement
-        matching_part = requirement_label
-        platforms = package.platforms
-        platform_label = platforms.size == 1 ? "platform '#{platforms.first}" : "platforms '#{platforms.join("', '")}"
-        requirement_label = "#{requirement_label}' with #{platform_label}"
-      end
-
-      message = String.new("Could not find gem '#{requirement_label}' in #{source}#{cache_message}.\n")
-
-      if specs.any?
-        message << "\n#{other_specs_matching_message(specs, matching_part)}"
-      end
-
-      message
     end
 
     def other_specs_matching_message(specs, requirement)

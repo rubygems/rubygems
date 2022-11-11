@@ -1304,19 +1304,22 @@ end
 
     describe "default gem activation" do
       let(:exemptions) do
-        exempts = if Gem.rubygems_version >= Gem::Version.new("2.7")
-          %w[did_you_mean]
-        else
-          %w[io-console openssl]
-        end << "bundler"
+        exempts = %w[bundler]
+        exempts += %w[io-console openssl] if Gem.rubygems_version < Gem::Version.new("2.7")
         exempts << "uri" if Gem.ruby_version >= Gem::Version.new("2.7")
         exempts << "pathname" if Gem.ruby_version >= Gem::Version.new("3.0")
         exempts << "set" unless Gem.rubygems_version >= Gem::Version.new("3.2.6")
         exempts << "tsort" unless Gem.rubygems_version >= Gem::Version.new("3.2.31")
-        exempts << "error_highlight" # added in Ruby 3.1 as a default gem
-        exempts << "ruby2_keywords" # added in Ruby 3.1 as a default gem
-        exempts << "syntax_suggest" # added in Ruby 3.2 as a default gem
+        exempts += early_default_gems
         exempts
+      end
+
+      let(:early_default_gems) do
+        default_gems = []
+        default_gems << "did_you_mean" if Gem.rubygems_version >= Gem::Version.new("2.7")
+        default_gems << "error_hightlight" if Gem.ruby_version >= Gem::Version.new("3.1")
+        default_gems << "syntax_suggest" if Gem.ruby_version >= Gem::Version.new("3.1")
+        default_gems
       end
 
       let(:activation_warning_hack) { strip_whitespace(<<-RUBY) }
@@ -1394,6 +1397,36 @@ end
         bundle :check
 
         expect(out).to eq("The Gemfile's dependencies are satisfied")
+      end
+
+      it "activates newer versions of early default gems with RUBYGEMS_GEMDEPS", :ruby_repo do
+        early_default_gems.each do |g|
+          build_repo4 do
+            build_gem g, "999999"
+          end
+
+          install_gemfile <<-G
+            source "#{file_uri_for(gem_repo4)}"
+            gem "#{g}", "999999"
+          G
+
+          expect(the_bundle).to include_gem("#{g} 999999", :env => { "RUBYOPT" => activation_warning_hack_rubyopt, "RUBYGEMS_GEMDEPS" => "-" })
+        end
+      end
+
+      it "activates older versions of early default gems with RUBYGEMS_GEMDEPS", :ruby_repo do
+        early_default_gems.each do |g|
+          build_repo4 do
+            build_gem g, "0.0.0.a"
+          end
+
+          install_gemfile <<-G
+            source "#{file_uri_for(gem_repo4)}"
+            gem "#{g}", "0.0.0.a"
+          G
+
+          expect(the_bundle).to include_gem("#{g} 0.0.0.a", :env => { "RUBYOPT" => activation_warning_hack_rubyopt, "RUBYGEMS_GEMDEPS" => "-" })
+        end
       end
 
       Gem::Specification.select(&:default_gem?).map(&:name).each do |g|

@@ -758,7 +758,7 @@ class Gem::Installer
 #
 
 require 'rubygems'
-#{gemdeps_load(spec.name)}
+
 version = "#{Gem::Requirement.default_prerelease}"
 
 str = ARGV.first
@@ -776,15 +776,6 @@ else
 gem #{spec.name.dump}, version
 load Gem.bin_path(#{spec.name.dump}, #{bin_file_name.dump}, version)
 end
-TEXT
-  end
-
-  def gemdeps_load(name)
-    return "" if name == "bundler"
-
-    <<-TEXT
-
-Gem.use_gemdeps
 TEXT
   end
 

@@ -139,29 +139,24 @@ end
 
 load "../util/automatiek.rake"
 
-# We currently ship Molinillo master branch as of
-# https://github.com/CocoaPods/Molinillo/commit/b4a510349e6893486b9eb44a71734c05a8034256
-# plus the following patches:
-# * Require `tsort` relatively to use our vendored version.
-# * Allow full customization of Molinillo's conflict error message
-#   (https://github.com/CocoaPods/Molinillo/pull/164).
-desc "Vendor a specific version of molinillo"
-Automatiek::RakeTask.new("molinillo") do |lib|
-  lib.version = "master"
-  lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
-  lib.namespace = "Molinillo"
+desc "Vendor a specific version of pub_grub"
+Automatiek::RakeTask.new("pub_grub") do |lib|
+  lib.version = "main"
+  lib.download = { :github => "https://github.com/jhawthorn/pub_grub" }
+  lib.namespace = "PubGrub"
   lib.prefix = "Bundler"
-  lib.vendor_lib = "lib/bundler/vendor/molinillo"
-  lib.license_path = "LICENSE"
+  lib.vendor_lib = "lib/bundler/vendor/pub_grub"
+  lib.license_path = "LICENSE.txt"
+end
 
-  lib.dependency("tsort") do |sublib|
-    sublib.version = "master"
-    sublib.download = { :github => "https://github.com/ruby/tsort" }
-    sublib.namespace = "TSort"
-    sublib.prefix = "Bundler"
-    sublib.vendor_lib = "lib/bundler/vendor/tsort"
-    sublib.license_path = "LICENSE.txt"
-  end
+desc "Vendor a specific version of tsort"
+Automatiek::RakeTask.new("tsort") do |lib|
+  lib.version = "master"
+  lib.download = { :github => "https://github.com/ruby/tsort" }
+  lib.namespace = "TSort"
+  lib.prefix = "Bundler"
+  lib.vendor_lib = "lib/bundler/vendor/tsort"
+  lib.license_path = "LICENSE.txt"
 end
 
 desc "Vendor a specific version of thor"

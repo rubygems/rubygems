@@ -64,6 +64,17 @@ task :update_dev_dep do |_, args|
   RubyGems::DevTasks.bundle_dev_gemfile "update", *args
 end
 
+desc "Update RSpec related gems"
+task :update_rspec_deps do |_, args|
+  RubyGems::DevTasks.bundle_dev_gemfile "update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop23_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop24_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "standard23_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "standard24_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+end
+
 desc "Setup git hooks"
 task :git_hooks do
   sh "git config core.hooksPath .githooks"

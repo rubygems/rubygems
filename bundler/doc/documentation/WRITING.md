@@ -41,7 +41,7 @@ To preview your changes as they will print out for Bundler users, you'll need to
 ```
 $ rake spec:deps
 $ rake man:build
-$ man man/bundle-cookies.1
+$ man ./lib/bundler/man/bundle-cookies.1
 ```
 
 If you make more changes to `bundle-cookies.1.ronn`, you'll need to run the `rake man:build` again before previewing.

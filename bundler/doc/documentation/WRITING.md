@@ -59,7 +59,7 @@ $ bin/rspec ./spec/quality_spec.rb
 
 If you'd like to submit a pull request for any of the primary commands or utilities on [the Bundler documentation site](https://bundler.io), please follow the instructions above for writing documentation for man pages from the `rubygems/rubygems` repository. They are the same in each case.
 
-Note: Editing `.ronn` files from the `rubygems/rubygems` repository for the primary commands and utilities documentation is all you need 🎉. There is no need to manually change anything in the `rubygems/bundler-site` repository, because the man pages and the docs for primary commands and utilities on [the Bundler documentation site](https://bundler.io) are one in the same. They are generated automatically from the `rubygems/rubygems` repository's `.ronn` files from the `rake man/build` command.
+Note: Editing `.ronn` files from the `rubygems/rubygems` repository for the primary commands and utilities documentation is all you need 🎉. There is no need to manually change anything in the `rubygems/bundler-site` repository, because the man pages and the docs for primary commands and utilities on [the Bundler documentation site](https://bundler.io) are one in the same. They are generated automatically from the `rubygems/rubygems` repository's `.ronn` files from the `rake man:build` command.
 
 Additionally, if you'd like to add a guide or tutorial: in the `rubygems/bundler-site` repository, go to `/bundler-site/source/current_version_of_bundler/guides` and add [a new Markdown file](https://guides.github.com/features/mastering-markdown/) (with an extension ending in `.md`). Be sure to correctly format the title of your new guide, like so:
 ```

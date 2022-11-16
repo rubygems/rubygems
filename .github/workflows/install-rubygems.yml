@@ -97,8 +97,8 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.1", value: 3.1.2 }
-          - { name: jruby-9.3, value: jruby-9.3.9.0 }
+          - { name: "3.1", value: 3.1.2 } # Rails 7
+          - { name: jruby-9.3, value: jruby-9.3.9.0, rails-args: "--skip-webpack-install" } # Rails 6
     steps:
       - uses: actions/checkout@v3
       - name: Setup ruby
@@ -122,7 +122,7 @@ jobs:
         run: bundle init && bundle add fileutils --git https://github.com/ruby/fileutils
         shell: bash
       - name: Generate a Rails application
-        run: gem install rails && rails new foo
+        run: gem install rails && rails new foo ${{ matrix.ruby.rails-args }}
         shell: bash
 
     timeout-minutes: 10

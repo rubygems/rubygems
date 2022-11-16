@@ -1,3 +1,10 @@
+# 3.3.26 / 2022-11-16
+
+## Enhancements:
+
+* Upgrade rb-sys to 0.9.37. Pull request #6047 by ianks
+* Installs bundler 2.3.26 as a default gem.
+
 # 3.3.25 / 2022-11-02
 
 ## Enhancements:

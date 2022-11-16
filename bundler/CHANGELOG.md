@@ -1,3 +1,13 @@
+# 2.3.26 (November 16, 2022)
+
+## Enhancements:
+
+  - Map 'universal' to the real arch in Bundler for prebuilt gem selection [#5978](https://github.com/rubygems/rubygems/pull/5978)
+
+## Documentation:
+
+  - Fix '--force' option documentation of 'bundle clean' [#6050](https://github.com/rubygems/rubygems/pull/6050)
+
 # 2.3.25 (November 2, 2022)
 
 ## Bug fixes:

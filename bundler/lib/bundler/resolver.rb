@@ -11,6 +11,7 @@ module Bundler
     require_relative "resolver/base"
     require_relative "resolver/package"
     require_relative "resolver/candidate"
+    require_relative "resolver/incompatibility"
     require_relative "resolver/root"
 
     include GemHelpers
@@ -64,7 +65,7 @@ module Bundler
       incompatibility = e.incompatibility
 
       names_to_unlock = []
-      conflict_on_bundler = nil
+      extended_explanation = nil
 
       while incompatibility.conflict?
         cause = incompatibility.cause
@@ -73,12 +74,11 @@ module Bundler
         incompatibility.terms.each do |term|
           name = term.package.name
           names_to_unlock << name if base_requirements[name]
-          next unless name == "bundler"
 
           no_versions_incompat = [cause.incompatibility, cause.satisfier].find {|incompat| incompat.cause.is_a?(PubGrub::Incompatibility::NoVersions) }
           next unless no_versions_incompat
 
-          conflict_on_bundler ||= Gem::Requirement.new(no_versions_incompat.cause.constraint.constraint.constraint_string.split(","))
+          extended_explanation = no_versions_incompat.extended_explanation
         end
       end
 
@@ -89,9 +89,9 @@ module Bundler
 
       explanation = e.message
 
-      if conflict_on_bundler
+      if extended_explanation
         explanation << "\n\n"
-        explanation << bundler_not_found_message(conflict_on_bundler)
+        explanation << extended_explanation
       end
 
       raise SolveFailure.new(explanation)
@@ -115,15 +115,25 @@ module Bundler
 
     def no_versions_incompatibility_for(package, unsatisfied_term)
       cause = PubGrub::Incompatibility::NoVersions.new(unsatisfied_term)
+      name = package.name
       constraint = unsatisfied_term.constraint
+      requirement = Gem::Requirement.new(constraint.constraint_string.split(","))
 
-      custom_explanation = if package.name == "bundler"
-        "the current Bundler version (#{Bundler::VERSION}) does not satisfy #{constraint}"
+      if name == "bundler"
+        custom_explanation = "the current Bundler version (#{Bundler::VERSION}) does not satisfy #{constraint}"
+        extended_explanation = bundler_not_found_message(requirement)
       else
-        "#{constraint} could not be found in #{repository_for(package)}"
+        specs_matching_other_platforms = filter_matching_specs(@all_specs[name], requirement)
+
+        platforms_explanation = specs_matching_other_platforms.any? ? " for any resolution platforms (#{package.platforms.join(", ")})" : ""
+        custom_explanation = "#{constraint} could not be found in #{repository_for(package)}#{platforms_explanation}"
+
+        dependency = Dependency.new(name, requirement)
+        label = SharedHelpers.pretty_dependency(dependency)
+        extended_explanation = other_specs_matching_message(specs_matching_other_platforms, label) if specs_matching_other_platforms.any?
       end
 
-      PubGrub::Incompatibility.new([unsatisfied_term], :cause => cause, :custom_explanation => custom_explanation)
+      Incompatibility.new([unsatisfied_term], :cause => cause, :custom_explanation => custom_explanation, :extended_explanation => extended_explanation)
     end
 
     def debug?
@@ -289,10 +299,15 @@ module Bundler
       message = String.new("Could not find gem '#{requirement_label}' in #{source}#{cache_message}.\n")
 
       if specs.any?
-        message << "\nThe source contains the following gems matching '#{matching_part}':\n"
-        message << specs.map {|s| "  * #{s.full_name}" }.join("\n")
+        message << "\n#{other_specs_matching_message(specs, matching_part)}"
       end
 
+      message
+    end
+
+    def other_specs_matching_message(specs, requirement)
+      message = String.new("The source contains the following gems matching '#{requirement}':\n")
+      message << specs.map {|s| "  * #{s.full_name}" }.join("\n")
       message
     end
 

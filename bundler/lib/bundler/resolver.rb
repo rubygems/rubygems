@@ -29,6 +29,10 @@ module Bundler
       root = Resolver::Root.new(name_for_explicit_dependency_source)
       root_version = Resolver::Candidate.new(0)
 
+      @all_specs = Hash.new do |specs, name|
+        specs[name] = source_for(name).specs.search(name).sort_by {|s| [s.version, s.platform.to_s] }
+      end
+
       @sorted_versions = Hash.new do |candidates, package|
         candidates[package] = if package.root?
           [root_version]
@@ -187,7 +191,7 @@ module Bundler
 
     def all_versions_for(package)
       name = package.name
-      results = @base[name] + results_for(name)
+      results = @base[name] + @all_specs[name]
       locked_requirement = base_requirements[name]
       results = filter_matching_specs(results, locked_requirement) if locked_requirement
 
@@ -208,16 +212,8 @@ module Bundler
       sort_versions(package, versions)
     end
 
-    def index_for(name)
-      source_for(name).specs
-    end
-
     def source_for(name)
       @source_requirements[name] || @source_requirements[:default]
-    end
-
-    def results_for(name)
-      index_for(name).search(name)
     end
 
     def name_for_explicit_dependency_source
@@ -271,7 +267,7 @@ module Bundler
     def gem_not_found_message(package, requirement)
       name = package.name
       source = source_for(name)
-      specs = source.specs.search(name).sort_by {|s| [s.version, s.platform.to_s] }
+      specs = @all_specs[name]
       matching_part = name
       requirement_label = SharedHelpers.pretty_dependency(package.dependency)
       cache_message = begin

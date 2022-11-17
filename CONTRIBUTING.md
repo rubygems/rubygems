@@ -37,8 +37,8 @@ here: https://guides.rubygems.org/contributing/
 > likely using a global Ruby installation (like the one packaged by your OS),
 > which sets `GEM_HOME` to a location regular users can't write to. Consider
 > using a Ruby version manager like [RVM](https://github.com/rvm/rvm),
-> [rbenv](https://github.com/rbenv/rbenv) or
-> [chruby](https://github.com/postmodern/chruby). These will install Ruby to a
+> [rbenv](https://github.com/rbenv/rbenv),
+> [chruby](https://github.com/postmodern/chruby) or [asdf](https://github.com/asdf-vm/asdf-ruby). These will install Ruby to a
 > location regular users can write to, so you won't run into permission issues.
 > Alternatively, consider setting `GEM_HOME` environment variable to a writable
 > location with something like `export GEM_HOME=/tmp/rubygems.gems` and try

@@ -271,11 +271,11 @@ module Bundler
         next [dep_package, dep_constraint] unless versions_for(dep_package, dep_constraint.range).empty?
         next unless dep_package.current_platform?
 
-        raise GemNotFound, gem_not_found_message(dep_package, dep_constraint)
+        raise GemNotFound, gem_not_found_message(dep_package)
       end.compact.to_h
     end
 
-    def gem_not_found_message(package, requirement)
+    def gem_not_found_message(package)
       name = package.name
       source = source_for(name)
       specs = @all_specs[name]

@@ -189,7 +189,7 @@ module Bundler
       name = package.name
       results = @base[name] + results_for(name)
       locked_requirement = base_requirements[name]
-      results = results.select {|spec| requirement_satisfied_by?(locked_requirement, spec) } if locked_requirement
+      results = filter_matching_specs(results, locked_requirement) if locked_requirement
 
       versions = results.group_by(&:version).reduce([]) do |groups, (version, specs)|
         platform_specs = package.platforms.flat_map {|platform| select_best_platform_match(specs, platform) }
@@ -226,11 +226,15 @@ module Bundler
       "Gemfile"
     end
 
+    private
+
+    def filter_matching_specs(specs, requirement)
+      specs.select {| spec| requirement_satisfied_by?(requirement, spec) }
+    end
+
     def requirement_satisfied_by?(requirement, spec)
       requirement.satisfied_by?(spec.version) || spec.source.is_a?(Source::Gemspec)
     end
-
-    private
 
     def sort_versions(package, versions)
       if versions.size > 1
@@ -275,7 +279,7 @@ module Bundler
                         rescue GemfileNotFound
                           nil
                         end
-      specs_matching_requirement = specs.select {| spec| requirement_satisfied_by?(package.dependency.requirement, spec) }
+      specs_matching_requirement = filter_matching_specs(specs, package.dependency.requirement)
 
       if specs_matching_requirement.any?
         specs = specs_matching_requirement
@@ -342,7 +346,7 @@ module Bundler
     end
 
     def bundler_not_found_message(conflict_dependency)
-      candidate_specs = source_for(:default_bundler).specs.search("bundler").select {|spec| requirement_satisfied_by?(conflict_dependency, spec) }
+      candidate_specs = filter_matching_specs(source_for(:default_bundler).specs.search("bundler"), conflict_dependency)
       if candidate_specs.any?
         target_version = candidate_specs.last.version
         new_command = [File.basename($PROGRAM_NAME), "_#{target_version}_", *ARGV].join(" ")

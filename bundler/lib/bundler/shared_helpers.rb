@@ -284,7 +284,7 @@ module Bundler
       Bundler::SharedHelpers.set_env "BUNDLE_BIN_PATH", exe_file
       Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", find_gemfile.to_s
       Bundler::SharedHelpers.set_env "BUNDLER_VERSION", Bundler::VERSION
-      Bundler::SharedHelpers.set_env "BUNDLER_SETUP", File.expand_path("setup", __dir__)
+      Bundler::SharedHelpers.set_env "RUBYGEMS_GEMDEPS", find_gemfile.to_s
     end
 
     def set_path

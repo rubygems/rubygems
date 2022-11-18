@@ -115,11 +115,12 @@ module Bundler
 
     def no_versions_incompatibility_for(package, unsatisfied_term)
       cause = PubGrub::Incompatibility::NoVersions.new(unsatisfied_term)
+      constraint = unsatisfied_term.constraint
 
       custom_explanation = if package.name == "bundler"
-        "the current Bundler version (#{Bundler::VERSION}) does not satisfy #{cause.constraint}"
+        "the current Bundler version (#{Bundler::VERSION}) does not satisfy #{constraint}"
       else
-        "#{cause.constraint} could not be found in #{repository_for(package)}"
+        "#{constraint} could not be found in #{repository_for(package)}"
       end
 
       PubGrub::Incompatibility.new([unsatisfied_term], :cause => cause, :custom_explanation => custom_explanation)

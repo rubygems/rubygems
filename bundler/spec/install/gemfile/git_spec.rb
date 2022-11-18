@@ -865,6 +865,9 @@ RSpec.describe "bundle install with git sources" do
   end
 
   it "ignores submodules if :submodule is not passed" do
+    # CVE-2022-39253: https://lore.kernel.org/lkml/xmqq4jw1uku5.fsf@gitster.g/
+    system(*%W[git config --global protocol.file.allow always])
+
     build_git "submodule", "1.0"
     build_git "has_submodule", "1.0" do |s|
       s.add_dependency "submodule"
@@ -878,12 +881,15 @@ RSpec.describe "bundle install with git sources" do
         gem "has_submodule"
       end
     G
-    expect(err).to match(/could not find gem 'submodule/i)
+    expect(err).to match(%r{submodule >= 0 could not be found in rubygems repository #{file_uri_for(gem_repo1)}/ or installed locally})
 
     expect(the_bundle).not_to include_gems "has_submodule 1.0"
   end
 
   it "handles repos with submodules" do
+    # CVE-2022-39253: https://lore.kernel.org/lkml/xmqq4jw1uku5.fsf@gitster.g/
+    system(*%W[git config --global protocol.file.allow always])
+
     build_git "submodule", "1.0"
     build_git "has_submodule", "1.0" do |s|
       s.add_dependency "submodule"
@@ -902,6 +908,9 @@ RSpec.describe "bundle install with git sources" do
   end
 
   it "does not warn when deiniting submodules" do
+    # CVE-2022-39253: https://lore.kernel.org/lkml/xmqq4jw1uku5.fsf@gitster.g/
+    system(*%W[git config --global protocol.file.allow always])
+
     build_git "submodule", "1.0"
     build_git "has_submodule", "1.0"
 

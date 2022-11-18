@@ -4,48 +4,75 @@ require "rubygems"
 require "rubygems/package_task"
 require "rake/testtask"
 
+module RubyGems
+  module DevTasks
+    include FileUtils
+
+    extend self
+
+    def bundle_dev_gemfile(*args)
+      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=bundler/tool/bundler/dev_gems.rb"
+    end
+
+    def bundle_support_gemfile(name, *args)
+      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=bundler/tool/bundler/#{name}.rb"
+    end
+  end
+end
+
 desc "Setup Rubygems dev environment"
 task :setup do
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=bundler/tool/bundler/dev_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/release_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/test_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/rubocop24_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/standard_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/standard23_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--gemfile=bundler/tool/bundler/standard24_gems.rb"
+  RubyGems::DevTasks.bundle_dev_gemfile "install"
+  RubyGems::DevTasks.bundle_support_gemfile "release_gems","lock"
+  RubyGems::DevTasks.bundle_support_gemfile "test_gems", "lock"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop23_gems", "lock"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop24_gems", "lock"
+  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock"
+  RubyGems::DevTasks.bundle_support_gemfile "standard23_gems", "lock"
+  RubyGems::DevTasks.bundle_support_gemfile "standard24_gems", "lock"
 end
 
 desc "Update Rubygems dev environment"
 task :update do
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--gemfile=bundler/tool/bundler/dev_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/release_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/test_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/rubocop24_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/standard_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/standard23_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "lock", "--update", "--gemfile=bundler/tool/bundler/standard24_gems.rb"
+  RubyGems::DevTasks.bundle_dev_gemfile "update"
+  RubyGems::DevTasks.bundle_support_gemfile "release_gems", "lock", "--update"
+  RubyGems::DevTasks.bundle_support_gemfile "test_gems", "lock", "--update"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock", "--update"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop23_gems", "lock", "--update"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop24_gems", "lock", "--update"
+  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock", "--update"
+  RubyGems::DevTasks.bundle_support_gemfile "standard23_gems", "lock", "--update"
+  RubyGems::DevTasks.bundle_support_gemfile "standard24_gems", "lock", "--update"
 end
 
 desc "Update the locked bundler version in dev environment"
 task :update_locked_bundler do |_, args|
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/dev_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/release_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/test_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop23_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/rubocop24_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard23_gems.rb"
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", "--bundler", "--gemfile=bundler/tool/bundler/standard24_gems.rb"
+  RubyGems::DevTasks.bundle_support_gemfile "dev_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "release_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "test_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop23_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop24_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "standard23_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "standard24_gems", "update", "--bundler"
 end
 
 desc "Update specific development dependencies"
 task :update_dev_dep do |_, args|
-  sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "update", *args, "--gemfile=bundler/tool/bundler/dev_gems.rb"
+  RubyGems::DevTasks.bundle_dev_gemfile "update", *args
+end
+
+desc "Update RSpec related gems"
+task :update_rspec_deps do |_, args|
+  RubyGems::DevTasks.bundle_dev_gemfile "update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop23_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "rubocop24_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "standard23_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  RubyGems::DevTasks.bundle_support_gemfile "standard24_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
 end
 
 desc "Setup git hooks"

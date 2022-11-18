@@ -161,10 +161,10 @@ class Release
 
     system("git", "checkout", "-b", @release_branch, @base_branch, exception: true)
 
-    @bundler.set_relevant_pull_requests_from(unreleased_pull_requests)
-    @rubygems.set_relevant_pull_requests_from(unreleased_pull_requests)
-
     begin
+      @bundler.set_relevant_pull_requests_from(unreleased_pull_requests)
+      @rubygems.set_relevant_pull_requests_from(unreleased_pull_requests)
+
       cherry_pick_pull_requests if @level == :patch
 
       @bundler.cut_changelog!

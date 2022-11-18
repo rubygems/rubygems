@@ -1,3 +1,36 @@
+# 2.3.26 (November 16, 2022)
+
+## Enhancements:
+
+  - Map 'universal' to the real arch in Bundler for prebuilt gem selection [#5978](https://github.com/rubygems/rubygems/pull/5978)
+
+## Documentation:
+
+  - Fix '--force' option documentation of 'bundle clean' [#6050](https://github.com/rubygems/rubygems/pull/6050)
+
+# 2.3.25 (November 2, 2022)
+
+## Bug fixes:
+
+  - Properly sort specs when materializing [#6015](https://github.com/rubygems/rubygems/pull/6015)
+  - Fix bad unfreeze recommendation [#6013](https://github.com/rubygems/rubygems/pull/6013)
+
+## Documentation:
+
+  - Bring docs for gemfile(5) manpage up to date [#6007](https://github.com/rubygems/rubygems/pull/6007)
+  - Fix `github` DSL docs to mention they use https protocol over git under the hood [#5993](https://github.com/rubygems/rubygems/pull/5993)
+
+# 2.3.24 (October 17, 2022)
+
+## Enhancements:
+
+  - Only add extra resolver spec group for Ruby platform when needed [#5698](https://github.com/rubygems/rubygems/pull/5698)
+  - Fix little UI issue when bundler shows duplicated gems in a list [#5965](https://github.com/rubygems/rubygems/pull/5965)
+
+## Bug fixes:
+
+  - Fix incorrect materialization on Windows [#5975](https://github.com/rubygems/rubygems/pull/5975)
+
 # 2.3.23 (October 5, 2022)
 
 ## Enhancements:

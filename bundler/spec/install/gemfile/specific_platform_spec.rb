@@ -148,6 +148,38 @@ RSpec.describe "bundle install with specific platforms" do
       expect(out).to include("Using libv8 8.4.255.0 (universal-darwin)")
     end
 
+    it "chooses platform specific gems even when resolving upon materialization and the API returns more specific plaforms first" do
+      build_repo4 do
+        build_gem("grpc", "1.50.0")
+        build_gem("grpc", "1.50.0") {|s| s.platform = "universal-darwin" }
+      end
+
+      gemfile <<-G
+        source "https://localgemserver.test"
+        gem "grpc"
+      G
+
+      # simulate lockfile created with old bundler, which only locks for ruby platform
+      lockfile <<-L
+        GEM
+          remote: https://localgemserver.test/
+          specs:
+            grpc (1.50.0)
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+          grpc
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+
+      bundle "install --verbose", :artifice => "compact_index_precompiled_before", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+      expect(out).to include("Installing grpc 1.50.0 (universal-darwin)")
+    end
+
     it "caches the universal-darwin gem when --all-platforms is passed and properly picks it up on further bundler invocations" do
       setup_multiplatform_gem
       gemfile(google_protobuf)
@@ -336,6 +368,16 @@ RSpec.describe "bundle install with specific platforms" do
       The source contains the following gems matching 'sorbet-static (= 0.5.6433)':
         * sorbet-static-0.5.6433-universal-darwin-20
         * sorbet-static-0.5.6433-x86_64-linux
+    ERROR
+
+    error_message = <<~ERROR.strip
+      Could not find compatible versions
+
+      Because every version of sorbet depends on sorbet-static = 0.5.6433
+        and sorbet-static = 0.5.6433 could not be found in rubygems repository #{file_uri_for(gem_repo4)}/ or installed locally,
+        every version of sorbet is forbidden.
+      So, because Gemfile depends on sorbet = 0.5.6433,
+        version solving has failed.
     ERROR
 
     simulate_platform "arm64-darwin-21" do

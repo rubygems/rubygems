@@ -1349,4 +1349,4 @@ require_relative "rubygems/core_ext/kernel_gem"
 require_relative "rubygems/core_ext/kernel_require"
 require_relative "rubygems/core_ext/kernel_warn"
 
-require "bundler/setup" if ENV["RUBYGEMS_GEMDEPS"]
+Gem.use_gemdeps

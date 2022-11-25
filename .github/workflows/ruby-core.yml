@@ -11,6 +11,9 @@ concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
 jobs:
   ruby_core:
     name: ${{matrix.target}} under a ruby-core setup

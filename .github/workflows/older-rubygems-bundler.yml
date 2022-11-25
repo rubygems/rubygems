@@ -16,6 +16,9 @@ concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
 jobs:
   older_rubygems_bundler:
     name: Bundler ${{ matrix.bundler.name }} against old Rubygems (${{ matrix.ruby.name }}, ${{ matrix.rgv.name }})

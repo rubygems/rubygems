@@ -30,14 +30,14 @@ jobs:
           - { name: "3.0", value: 3.0.4 }
           - { name: "3.1", value: 3.1.2 }
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
       - name: Setup ruby
-        uses: ruby/setup-ruby-pkgs@v1
+        uses: ruby/setup-ruby-pkgs@e5897b3f277d700f7b9e24b5819112945add74ff # v1.32.3
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
           mingw: clang
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
         with:
           toolchain: ${{ matrix.cargo.toolchain }}-${{ matrix.cargo.target }}
           default: true

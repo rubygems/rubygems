@@ -20,15 +20,15 @@ jobs:
     env:
       TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@de6f5b9c340068d049670c6b6ae8dc94cff4667a # v1.125.0
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
 
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
         with:
           toolchain: ${{ matrix.cargo }}
 
@@ -44,7 +44,7 @@ jobs:
         if: always()
         run: echo "OLD_STATUS=$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/workflows/daily-rubygems.yml/runs?event=schedule&branch=master' | jq '.workflow_runs | .[1].conclusion')" >> $GITHUB_ENV
 
-      - uses: 8398a7/action-slack@v3
+      - uses: 8398a7/action-slack@a189acbf0b7ea434558662ae25a0de71df69a435 # v3.14.0
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,action,workflow

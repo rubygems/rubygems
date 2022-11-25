@@ -21,13 +21,13 @@ jobs:
         target: [Rubygems, Bundler]
     steps:
       - name: Set up latest ruby head
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@de6f5b9c340068d049670c6b6ae8dc94cff4667a # v1.125.0
         with:
           ruby-version: head
           bundler: none
       - name: Save latest buildable revision to environment
         run: echo "REF=$(ruby -v | cut -d')' -f1 | cut -d' ' -f5)" >> $GITHUB_ENV
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
         with:
           repository: ruby/ruby
           path: ruby/ruby
@@ -46,7 +46,7 @@ jobs:
           ./configure -C --disable-install-doc
           make -j2
         working-directory: ruby/ruby
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
         with:
           path: rubygems/rubygems
       - name: Sync tools

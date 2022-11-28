@@ -37,9 +37,7 @@ module Bundler
     class SSLError < HTTPError
       def initialize(msg = nil)
         super msg || "Could not load OpenSSL.\n" \
-            "You must recompile Ruby with OpenSSL support. Instructions for " \
-            "compiling with OpenSSL using RVM are available at " \
-            "rvm.io/packages/openssl."
+            "You must recompile Ruby with OpenSSL support."
       end
     end
 

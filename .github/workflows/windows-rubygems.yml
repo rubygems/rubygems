@@ -12,6 +12,9 @@ concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   windows_rubygems:
     name: Rubygems on Windows (${{ matrix.ruby.name }})

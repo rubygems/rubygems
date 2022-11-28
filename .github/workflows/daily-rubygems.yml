@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+permissions:
+  contents: read
+
 jobs:
   daily_rubygems:
     name: Rubygems (${{ matrix.ruby }})

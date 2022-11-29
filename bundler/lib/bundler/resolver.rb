@@ -108,7 +108,7 @@ module Bundler
         results = results.select {|spec| requirement_satisfied_by?(locked_requirement, nil, spec) } if locked_requirement
         dep_platforms = dependency.gem_platforms(@platforms)
 
-        @gem_version_promoter.sort_versions(dependency, results).group_by(&:version).reduce([]) do |groups, (_, specs)|
+        spec_groups = results.group_by(&:version).reduce([]) do |groups, (_, specs)|
           relevant_platforms = dep_platforms.select {|platform| specs.any? {|spec| spec.match_platform(platform) } }
           next groups unless relevant_platforms.any?
 
@@ -129,6 +129,8 @@ module Bundler
 
           groups
         end
+
+        @gem_version_promoter.sort_versions(dependency, spec_groups)
       end
     end
 

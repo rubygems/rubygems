@@ -84,7 +84,7 @@ module Bundler
         end
 
         def checkout
-          return if path.exist? && has_revision_cached?
+          return if has_revision_cached?
           extra_ref = "#{ref}:#{ref}" if ref && ref.start_with?("refs/")
 
           Bundler.ui.info "Fetching #{credential_filtered_uri}"
@@ -166,8 +166,8 @@ module Bundler
         end
 
         def has_revision_cached?
-          return unless @revision
-          with_path { git("cat-file", "-e", @revision, :dir => path) }
+          return unless @revision && path.exist?
+          git("cat-file", "-e", @revision, :dir => path)
           true
         rescue GitError
           false

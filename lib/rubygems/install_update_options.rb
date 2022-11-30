@@ -178,6 +178,11 @@ module Gem::InstallUpdateOptions
                "Suggest alternates when gems are not found") do |v,o|
       options[:suggest_alternate] = v
     end
+
+    add_option(:"Install/Update", "--dirty",
+               "Leave build artifacts on the gem directory") do |v,o|
+      options[:dirty] = v
+    end
   end
 
   ##

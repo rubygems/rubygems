@@ -841,7 +841,7 @@ TEXT
     builder = Gem::Ext::Builder.new spec, build_args
 
     builder.build_extensions
-    builder.clean_intermediate_files
+    builder.clean_intermediate_files unless options[:dirty]
   end
 
   ##

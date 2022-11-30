@@ -1619,6 +1619,42 @@ gem 'other', version
     assert_path_not_exist intermediate_file
   end
 
+  def test_dirty_install_extension
+    pend "extensions don't quite work on jruby" if Gem.java_platform?
+    @spec = setup_base_spec
+    @spec.require_paths = ["."]
+    @spec.extensions << "extconf.rb"
+
+    File.write File.join(@tempdir, "extconf.rb"), <<-RUBY
+      require "mkmf"
+      CONFIG['CC'] = '$(TOUCH) $@ ||'
+      CONFIG['LDSHARED'] = '$(TOUCH) $@ ||'
+      $ruby = '#{Gem.ruby}'
+      create_makefile("#{@spec.name}")
+    RUBY
+
+    # empty depend file for no auto dependencies
+    @spec.files += %W[depend #{@spec.name}.c].each do |file|
+      write_file File.join(@tempdir, file)
+    end
+
+    shared_object = "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}"
+    extension_file = File.join @spec.extension_dir, shared_object
+    intermediate_file = File.join @spec.gem_dir, shared_object
+
+    assert_path_not_exist extension_file, "no before installing"
+    use_ui @ui do
+      path = Gem::Package.build @spec
+
+      installer = Gem::Installer.at path
+      installer.options[:dirty] = true
+      installer.install
+    end
+
+    assert_path_exist extension_file
+    assert_path_exist intermediate_file
+  end
+
   def test_installation_satisfies_dependency_eh
     installer = setup_base_installer
 

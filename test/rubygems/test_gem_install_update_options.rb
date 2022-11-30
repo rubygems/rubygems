@@ -26,6 +26,7 @@ class TestGemInstallUpdateOptions < Gem::InstallerTestCase
       -i /install_to
       -w
       --post-install-message
+      --dirty
     ]
 
     args.concat %w[--vendor] unless Gem.java_platform?

@@ -40,7 +40,9 @@ class Gem::Ext::Builder
       env << "sitelibdir=%s" % sitedir
     end
 
-    ["clean", "", "install"].each do |target|
+    steps = ["clean", "", "install", ENV["RUBYGEMS_POST_MAKE_TASK"]]
+
+    steps.compact.each do |target|
       # Pass DESTDIR via command line to override what's in MAKEFLAGS
       cmd = [
         *make_program,

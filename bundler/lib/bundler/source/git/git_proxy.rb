@@ -76,11 +76,11 @@ module Bundler
         end
 
         def version
-          git("--version").match(/(git version\s*)?((\.?\d+)+).*/)[2]
+          @version ||= full_version.match(/((\.?\d+)+).*/)[1]
         end
 
         def full_version
-          git("--version").sub("git version", "").strip
+          @full_version ||= git("--version").sub(/git version\s*/, "").strip
         end
 
         def checkout

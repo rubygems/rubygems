@@ -222,4 +222,8 @@ EOF
 
     destination
   end
+
+  def clean_intermediate_files
+    FileUtils.rm Dir["#{@spec.gem_dir}/**/*.{so,o,bundle}"]
+  end
 end

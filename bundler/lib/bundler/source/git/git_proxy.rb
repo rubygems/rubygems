@@ -121,11 +121,7 @@ module Bundler
 
           git "fetch", "--force", "--quiet", "--tags", path.to_s, :dir => destination
 
-          begin
-            git "reset", "--hard", @revision, :dir => destination
-          rescue GitCommandError => e
-            raise MissingGitRevisionError.new(e.command, destination, @revision, credential_filtered_uri)
-          end
+          git "reset", "--hard", @revision, :dir => destination
 
           if submodules
             git_retry "submodule", "update", "--init", "--recursive", :dir => destination

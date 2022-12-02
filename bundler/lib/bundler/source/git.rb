@@ -126,7 +126,7 @@ module Bundler
         path = Pathname.new(path)
         path = path.expand_path(Bundler.root) unless path.relative?
 
-        unless options["branch"] || Bundler.settings[:disable_local_branch_check]
+        unless branch || Bundler.settings[:disable_local_branch_check]
           raise GitError, "Cannot use local override for #{name} at #{path} because " \
             ":branch is not specified in Gemfile. Specify a branch or run " \
             "`bundle config unset local.#{override_for(original_path)}` to remove the local override"
@@ -143,9 +143,9 @@ module Bundler
         # so the Gemfile.lock always picks up the new revision.
         @git_proxy = GitProxy.new(path, uri, ref)
 
-        if git_proxy.branch != options["branch"] && !Bundler.settings[:disable_local_branch_check]
+        if git_proxy.branch != branch && !Bundler.settings[:disable_local_branch_check]
           raise GitError, "Local override for #{name} at #{path} is using branch " \
-            "#{git_proxy.branch} but Gemfile specifies #{options["branch"]}"
+            "#{git_proxy.branch} but Gemfile specifies #{branch}"
         end
 
         changed = cached_revision && cached_revision != git_proxy.revision

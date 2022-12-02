@@ -53,7 +53,7 @@ RSpec.describe "bundle install with :allow_offline_install" do
       File.open(tmp("broken_path/git"), "w", 0o755) do |f|
         f.puts strip_whitespace(<<-RUBY)
           #!/usr/bin/env ruby
-          if %w(fetch --force --quiet --tags refs/heads/*:refs/heads/*).-(ARGV).empty? || %w(clone --bare --no-hardlinks --quiet).-(ARGV).empty?
+          if %w(fetch --force --quiet --).-(ARGV).empty? || %w(clone --bare --no-hardlinks --quiet).-(ARGV).empty?
             warn "git remote ops have been disabled"
             exit 1
           end

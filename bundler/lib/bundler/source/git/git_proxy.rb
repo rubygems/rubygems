@@ -47,13 +47,15 @@ module Bundler
       # All actions required by the Git source is encapsulated in this
       # object.
       class GitProxy
-        attr_accessor :path, :uri, :ref
+        attr_accessor :path, :uri, :branch, :tag, :ref
         attr_writer :revision
 
-        def initialize(path, uri, ref, revision = nil, git = nil)
+        def initialize(path, uri, options = {}, revision = nil, git = nil)
           @path     = path
           @uri      = uri
-          @ref      = ref
+          @branch   = options["branch"]
+          @tag      = options["tag"]
+          @ref      = options["ref"]
           @revision = revision
           @git      = git
         end
@@ -62,8 +64,8 @@ module Bundler
           @revision ||= find_local_revision
         end
 
-        def branch
-          @branch ||= allowed_with_path do
+        def current_branch
+          @current_branch ||= allowed_with_path do
             git("rev-parse", "--abbrev-ref", "HEAD", :dir => path).strip
           end
         end
@@ -85,7 +87,7 @@ module Bundler
 
         def checkout
           return if has_revision_cached?
-          extra_ref = "#{ref}:#{ref}" if ref && ref.start_with?("refs/")
+          extra_ref = ref && ref.start_with?("refs/")
 
           Bundler.ui.info "Fetching #{credential_filtered_uri}"
 
@@ -97,7 +99,7 @@ module Bundler
             return unless extra_ref
           end
 
-          git_retry(*["fetch", "--force", "--quiet", "--tags", "--", configured_uri, "refs/heads/*:refs/heads/*", extra_ref].compact, :dir => path)
+          git_retry(*["fetch", "--force", "--quiet", "--no-tags", "--", configured_uri, refspec].compact, :dir => path)
         end
 
         def copy_to(destination, submodules = false)
@@ -132,6 +134,37 @@ module Bundler
         end
 
         private
+
+        def refspec
+          if fully_qualified_ref
+            "#{fully_qualified_ref}:#{fully_qualified_ref}"
+          elsif ref.include?("~")
+            parsed_ref = ref.split("~").first
+            "#{parsed_ref}:#{parsed_ref}"
+          elsif ref.start_with?("refs/")
+            "#{ref}:#{ref}"
+          elsif abbreviated_ref?
+            nil
+          else
+            ref
+          end
+        end
+
+        def fully_qualified_ref
+          return @fully_qualified_ref if defined?(@fully_qualified_ref)
+
+          @fully_qualified_ref = if branch
+            "refs/heads/#{branch}"
+          elsif tag
+            "refs/tags/#{tag}"
+          elsif ref.nil?
+            "refs/heads/#{current_branch}"
+          end
+        end
+
+        def abbreviated_ref?
+          ref =~ /\A\h+\z/ && ref !~ /\A\h{40}\z/
+        end
 
         def git_null(*command, dir: nil)
           check_allowed(command)
@@ -179,10 +212,10 @@ module Bundler
 
         def find_local_revision
           allowed_with_path do
-            git("rev-parse", "--verify", ref || "HEAD", :dir => path).strip
+            git("rev-parse", "--verify", branch || tag || ref || "HEAD", :dir => path).strip
           end
         rescue GitCommandError => e
-          raise MissingGitRevisionError.new(e.command, path, ref, credential_filtered_uri)
+          raise MissingGitRevisionError.new(e.command, path, branch || tag || ref, credential_filtered_uri)
         end
 
         # Adds credentials to the URI

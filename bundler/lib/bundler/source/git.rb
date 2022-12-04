@@ -72,7 +72,7 @@ module Bundler
           elsif ref
             ref
           else
-            git_proxy.branch
+            current_branch
           end
 
           rev = "at #{at}@#{shortref_for_display(revision)}"
@@ -143,9 +143,9 @@ module Bundler
         # so the Gemfile.lock always picks up the new revision.
         @git_proxy = GitProxy.new(path, uri, ref)
 
-        if git_proxy.branch != branch && !Bundler.settings[:disable_local_branch_check]
+        if current_branch != branch && !Bundler.settings[:disable_local_branch_check]
           raise GitError, "Local override for #{name} at #{path} is using branch " \
-            "#{git_proxy.branch} but Gemfile specifies #{branch}"
+            "#{current_branch} but Gemfile specifies #{branch}"
         end
 
         changed = cached_revision && cached_revision != git_proxy.revision
@@ -226,6 +226,10 @@ module Bundler
 
       def revision
         git_proxy.revision
+      end
+
+      def current_branch
+        git_proxy.branch
       end
 
       def allow_git_ops?

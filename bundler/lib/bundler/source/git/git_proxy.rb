@@ -237,10 +237,6 @@ module Bundler
           false
         end
 
-        def remove_cache
-          FileUtils.rm_rf(path)
-        end
-
         def find_local_revision
           allowed_with_path do
             git("rev-parse", "--verify", branch || tag || ref || "HEAD", :dir => path).strip

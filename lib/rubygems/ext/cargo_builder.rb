@@ -139,9 +139,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   end
 
   def final_extension_path(dest_path)
-    dylib_path = cargo_dylib_path(dest_path)
-    dlext_name = "#{spec.name}.#{makefile_config("DLEXT")}"
-    dylib_path.gsub(File.basename(dylib_path), dlext_name)
+    File.join dest_path, "#{spec.name}.#{makefile_config("DLEXT")}"
   end
 
   def cargo_dylib_path(dest_path)

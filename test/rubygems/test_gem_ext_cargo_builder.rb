@@ -55,7 +55,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
     end
 
     output = output.join "\n"
-    bundle = File.join(@dest_path, "release/rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")
+    bundle = File.join(@dest_path, "rust_ruby_example.#{RbConfig::CONFIG['DLEXT']}")
 
     assert_match(/Finished/, output)
     assert_match(/release/, output)

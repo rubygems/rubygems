@@ -141,6 +141,8 @@ RSpec.describe "installing a gem with native extensions" do
       gem "c_extension_two", :git => #{lib_path("gems").to_s.dump}
     G
 
+    run 'puts $LOAD_PATH.grep(/extensions/).each { |path| raise "Invalid LOAD_PATH: #{ path }" unless File.directory?(path) }'
+
     run "Bundler.require; puts CExtension_one.new.value; puts CExtension_two.new.value"
     expect(out).to eq("one\ntwo")
   end

@@ -16,8 +16,9 @@ module Bundler
       # Stub has no concept of source, which means that extension_dir may be wrong
       # This is the case for git-based gems. So, instead manually assign the extension dir
       return unless source.respond_to?(:extension_dir_name)
-      path = File.join(stub.extensions_dir, source.extension_dir_name)
-      stub.extension_dir = File.expand_path(path)
+      unique_extension_dir = [source.extension_dir_name, File.basename(full_gem_path)].uniq.join("-")
+      extension_dir = File.join(extensions_dir, unique_extension_dir)
+      stub.extension_dir = File.expand_path(extension_dir)
     end
 
     def to_yaml

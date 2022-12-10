@@ -103,11 +103,9 @@ namespace :man do
 
     desc "Make sure ronn is installed"
     task :check_ronn do
-      begin
-        Spec::Rubygems.gem_require("ronn")
-      rescue Gem::LoadError => e
-        abort("We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages")
-      end
+      Spec::Rubygems.gem_require("ronn")
+    rescue Gem::LoadError => e
+      abort("We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages")
     end
 
     desc "Remove all built man pages"

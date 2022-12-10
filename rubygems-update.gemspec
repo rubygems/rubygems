@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
     "hide_lib_for_update/note.txt", *Dir["bundler/man/*.1"]
   ]
 
-  s.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
+  s.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
   s.required_rubygems_version = Gem::Requirement.new(">= 0")
 
   s.specification_version = 4

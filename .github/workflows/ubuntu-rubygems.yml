@@ -18,7 +18,7 @@ permissions:  # added using https://github.com/step-security/secure-workflows
 jobs:
   ubuntu_rubygems:
     name: Rubygems on Ubuntu (${{ matrix.ruby.name }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -28,7 +28,7 @@ jobs:
           - { name: "3.0", value: 3.0.4 }
           - { name: "3.1", value: 3.1.2 }
           - { name: jruby-9.3, value: jruby-9.3.9.0 }
-          - { name: truffleruby-22, value: truffleruby-22.1.0 }
+          - { name: truffleruby-22, value: truffleruby-22.3.0 }
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
       - name: Setup ruby

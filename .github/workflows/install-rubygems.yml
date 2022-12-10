@@ -28,7 +28,7 @@ jobs:
           - { name: "3.0", value: 3.0.4 }
           - { name: "3.1", value: 3.1.2 }
           - { name: jruby-9.3, value: jruby-9.3.9.0 }
-          - { name: truffleruby-22, value: truffleruby-22.1.0 }
+          - { name: truffleruby-22, value: truffleruby-22.3.0 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }

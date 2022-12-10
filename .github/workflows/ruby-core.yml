@@ -17,7 +17,7 @@ permissions:  # added using https://github.com/step-security/secure-workflows
 jobs:
   ruby_core:
     name: ${{matrix.target}} under a ruby-core setup
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:

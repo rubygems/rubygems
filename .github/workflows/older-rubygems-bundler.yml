@@ -22,7 +22,7 @@ permissions:  # added using https://github.com/step-security/secure-workflows
 jobs:
   older_rubygems_bundler:
     name: Bundler ${{ matrix.bundler.name }} against old Rubygems (${{ matrix.ruby.name }}, ${{ matrix.rgv.name }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:

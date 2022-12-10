@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04 ]
+        os: [ ubuntu-22.04 ]
         ruby: [ ruby-head, truffleruby-head ]
         cargo: [ stable ]
         include:

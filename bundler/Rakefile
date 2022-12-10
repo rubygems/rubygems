@@ -149,7 +149,7 @@ end
 
 desc "Vendor a specific version of tsort"
 Automatiek::RakeTask.new("tsort") do |lib|
-  lib.version = "master"
+  lib.version = "v0.1.1"
   lib.download = { :github => "https://github.com/ruby/tsort" }
   lib.namespace = "TSort"
   lib.prefix = "Bundler"

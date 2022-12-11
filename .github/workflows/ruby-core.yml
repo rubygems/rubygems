@@ -55,6 +55,7 @@ jobs:
       - name: Sync tools
         run: |
           ruby tool/sync_default_gems.rb rubygems
+          rm lib/bundler/vendor/fileutils/lib/fileutils.rb~ # previous script leaves a backup file around for some reason
         working-directory: ruby/ruby
       - name: Test RubyGems
         run: make -j2 -s test-all TESTS="rubygems --no-retry"

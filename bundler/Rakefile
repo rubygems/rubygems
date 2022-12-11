@@ -189,10 +189,8 @@ Automatiek::RakeTask.new("net-http-persistent") do |lib|
   lib.vendor_lib = "lib/bundler/vendor/net-http-persistent"
   lib.license_path = "README.rdoc"
 
-  # We currently include the official version as of
-  # https://github.com/mperham/connection_pool/commit/813c271e41be0714334834d6517ce68ca1357fc0.
   lib.dependency("connection_pool") do |sublib|
-    sublib.version = "master"
+    sublib.version = "v2.3.0"
     sublib.download = { :github => "https://github.com/mperham/connection_pool" }
     sublib.namespace = "ConnectionPool"
     sublib.prefix = "Bundler"

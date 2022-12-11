@@ -123,31 +123,26 @@ if File.exist?("util/automatiek.rake")
     lib.prefix = "Gem::Resolver"
     lib.vendor_lib = "lib/rubygems/resolver/molinillo"
     lib.license_path = "LICENSE"
+
+    lib.dependency("tsort") do |sublib|
+      sublib.version = "v0.1.1"
+      sublib.download = { :github => "https://github.com/ruby/tsort" }
+      sublib.namespace = "TSort"
+      sublib.prefix = "Gem"
+      sublib.vendor_lib = "lib/rubygems/tsort"
+      sublib.license_path = "LICENSE.txt"
+    end
   end
 
-  desc "Vendor a specific version of tsort"
-  Automatiek::RakeTask.new("tsort") do |lib|
-    lib.version = "master"
-    lib.download = { :github => "https://github.com/ruby/tsort" }
-    lib.namespace = "TSort"
-    lib.prefix = "Gem"
-    lib.vendor_lib = "lib/rubygems/tsort"
-    lib.license_path = "LICENSE.txt"
-  end
-
-  # We currently ship optparse 0.2.0 plus the following changes:
+  # We currently ship optparse 0.3.0 plus the following changes:
   # * Remove top aliasing the `::OptParse` constant to `OptionParser`, since we
   #   don't need it and it triggers redefinition warnings since the default
   #   optparse gem also does the aliasing.
-  # * Restore support for old versions of `did_you_mean` so that our vendored
-  #   copy works consistently in all supported rubies. This one can be removed
-  #   once we drop ruby 2.4 support, since newer versions include a version of
-  #   `did_you_mean` that does not require any changes.
   # * Add an empty .document file to the library's root path to hint RDoc that
   #   this library should not be documented.
   desc "Vendor a specific version of optparse"
   Automatiek::RakeTask.new("optparse") do |lib|
-    lib.version = "master"
+    lib.version = "v0.3.0"
     lib.download = { :github => "https://github.com/ruby/optparse" }
     lib.namespace = "OptionParser"
     lib.prefix = "Gem"

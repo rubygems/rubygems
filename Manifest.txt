@@ -302,7 +302,6 @@ bundler/lib/bundler/vendor/thor/lib/thor/shell/color.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/html.rb
 bundler/lib/bundler/vendor/thor/lib/thor/util.rb
 bundler/lib/bundler/vendor/thor/lib/thor/version.rb
-bundler/lib/bundler/vendor/tmpdir/lib/tmpdir.rb
 bundler/lib/bundler/vendor/tsort/LICENSE.txt
 bundler/lib/bundler/vendor/tsort/lib/tsort.rb
 bundler/lib/bundler/vendor/uri/LICENSE.txt
@@ -325,7 +324,6 @@ bundler/lib/bundler/vendored_fileutils.rb
 bundler/lib/bundler/vendored_persistent.rb
 bundler/lib/bundler/vendored_pub_grub.rb
 bundler/lib/bundler/vendored_thor.rb
-bundler/lib/bundler/vendored_tmpdir.rb
 bundler/lib/bundler/vendored_tsort.rb
 bundler/lib/bundler/vendored_uri.rb
 bundler/lib/bundler/version.rb

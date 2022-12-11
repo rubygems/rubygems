@@ -145,7 +145,7 @@ module Bundler
         end
 
         if installed?(spec) && !force
-          print_using_message "Using #{version_message(spec)}"
+          print_using_message "Using #{version_message(spec, options[:previous_spec])}"
           return nil # no post-install message
         end
 

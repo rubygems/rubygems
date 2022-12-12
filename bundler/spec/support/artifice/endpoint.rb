@@ -2,9 +2,9 @@
 
 require_relative "../path"
 
-$LOAD_PATH.unshift(*Dir[Spec::Path.base_system_gem_path.join("gems/{artifice,mustermann,rack,tilt,sinatra,ruby2_keywords}-*/lib")].map(&:to_s))
+$LOAD_PATH.unshift(*Dir[Spec::Path.base_system_gem_path.join("gems/{mustermann,rack,tilt,sinatra,ruby2_keywords}-*/lib")].map(&:to_s))
 
-require "artifice"
+require_relative "base"
 require "sinatra/base"
 
 ALL_REQUESTS = [] # rubocop:disable Style/MutableConstant

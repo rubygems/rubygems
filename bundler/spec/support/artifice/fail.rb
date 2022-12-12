@@ -2,10 +2,6 @@
 
 require "net/http"
 
-# We can't use artifice here because it uses rack
-
-module Artifice; end
-
 class Fail < Net::HTTP
   # Net::HTTP uses a @newimpl instance variable to decide whether
   # to use a legacy implementation. Since we are subclassing

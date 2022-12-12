@@ -23,8 +23,7 @@ class Fail < Net::HTTP
   end
 end
 
+require_relative "helpers/artifice"
+
 # Replace Net::HTTP with our failing subclass
-::Net.class_eval do
-  remove_const(:HTTP)
-  const_set(:HTTP, ::Fail)
-end
+Artifice.replace_net_http(::Fail)

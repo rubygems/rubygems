@@ -40,5 +40,4 @@ module Artifice
       const_set(:HTTP, value)
     end
   end
-  private_class_method :replace_net_http
 end

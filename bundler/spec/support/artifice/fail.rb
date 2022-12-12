@@ -4,7 +4,7 @@ require "net/http"
 
 # We can't use artifice here because it uses rack
 
-module Artifice; end # for < 2.0, Net::HTTP::Persistent::SSLReuse
+module Artifice; end
 
 class Fail < Net::HTTP
   # Net::HTTP uses a @newimpl instance variable to decide whether

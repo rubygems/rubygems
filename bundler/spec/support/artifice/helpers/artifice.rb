@@ -9,22 +9,11 @@ module Artifice
   # Rack endpoint.
   #
   # @param [#call] endpoint A valid Rack endpoint
-  # @yield An optional block that uses Net::HTTP
-  #   In this case, Artifice will be used only for
-  #   the duration of the block
   def self.activate_with(endpoint)
     require_relative "rack_request"
 
     Net::HTTP.endpoint = endpoint
     replace_net_http(Artifice::Net::HTTP)
-
-    if block_given?
-      begin
-        yield
-      ensure
-        deactivate
-      end
-    end
   end
 
   # Deactivate the Artifice replacement.

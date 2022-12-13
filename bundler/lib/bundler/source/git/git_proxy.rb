@@ -98,8 +98,8 @@ module Bundler
             return unless extra_ref
           end
 
-          fetch_args = extra_fetch_args
-          fetch_args.unshift("--unshallow") if path.join("shallow").exist? && full_clone?
+          unshallow = path.join("shallow").exist? && full_clone?
+          fetch_args = unshallow ? ["--unshallow"] : depth_args
 
           git_retry(*["fetch", "--force", "--quiet", "--no-tags", *fetch_args, "--", configured_uri, refspec].compact, :dir => path)
         end
@@ -123,7 +123,7 @@ module Bundler
             end
           end
 
-          git(*["fetch", "--force", "--quiet", *extra_fetch_args, path.to_s, revision_refspec].compact, :dir => destination)
+          git "fetch", "--force", "--quiet", *extra_fetch_args, :dir => destination
 
           git "reset", "--hard", @revision, :dir => destination
 
@@ -338,16 +338,16 @@ module Bundler
           args
         end
 
-        def extra_fetch_args
+        def depth_args
           return [] if full_clone?
 
           ["--depth", depth.to_s]
         end
 
-        def revision_refspec
-          return if legacy_locked_revision?
-
-          revision
+        def extra_fetch_args
+          extra_args = [path.to_s, *depth_args]
+          extra_args.push(revision) unless legacy_locked_revision?
+          extra_args
         end
 
         def full_clone?

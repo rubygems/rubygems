@@ -91,9 +91,9 @@ module Bundler
           Bundler.ui.info "Fetching #{credential_filtered_uri}"
 
           extra_fetch_needed = clone_needs_extra_fetch?
-          return unless extra_fetch_needed
-
           unshallow_needed = clone_needs_unshallow?
+          return unless extra_fetch_needed || unshallow_needed
+
           fetch_args = unshallow_needed ? ["--unshallow"] : depth_args
 
           git_retry(*["fetch", "--force", "--quiet", "--no-tags", *fetch_args, "--", configured_uri, refspec].compact, :dir => path)
@@ -144,7 +144,10 @@ module Bundler
         end
 
         def clone_needs_unshallow?
-          path.join("shallow").exist? && full_clone?
+          return false unless path.join("shallow").exist?
+          return true if full_clone?
+
+          @revision && @revision != head_revision
         end
 
         def extra_ref

@@ -160,7 +160,7 @@ module Bundler
         def depth
           return @depth if defined?(@depth)
 
-          @depth = if legacy_locked_revision? || !supports_fetching_unreachable_refs?
+          @depth = if !supports_fetching_unreachable_refs?
             nil
           elsif not_pinned?
             1

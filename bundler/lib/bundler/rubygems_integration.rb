@@ -243,7 +243,7 @@ module Bundler
       kernel = (class << ::Kernel; self; end)
       [kernel, ::Kernel].each do |kernel_class|
         redefine_method(kernel_class, :gem) do |dep, *reqs|
-          if executables&.include?(File.basename(caller.first.split(":").first))
+          if executables&.include?(File.basename(caller_locations(1, 1).first.path))
             break
           end
 

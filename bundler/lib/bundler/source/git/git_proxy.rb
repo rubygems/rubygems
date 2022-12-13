@@ -90,16 +90,11 @@ module Bundler
 
           Bundler.ui.info "Fetching #{credential_filtered_uri}"
 
-          unless path.exist?
-            SharedHelpers.filesystem_access(path.dirname) do |p|
-              FileUtils.mkdir_p(p)
-            end
-            git_retry "clone", "--bare", "--no-hardlinks", "--quiet", *extra_clone_args, "--", configured_uri, path.to_s
-            return unless extra_ref
-          end
+          extra_fetch_needed = clone_needs_extra_fetch?
+          return unless extra_fetch_needed
 
-          unshallow = path.join("shallow").exist? && full_clone?
-          fetch_args = unshallow ? ["--unshallow"] : depth_args
+          unshallow_needed = clone_needs_unshallow?
+          fetch_args = unshallow_needed ? ["--unshallow"] : depth_args
 
           git_retry(*["fetch", "--force", "--quiet", "--no-tags", *fetch_args, "--", configured_uri, refspec].compact, :dir => path)
         end
@@ -136,6 +131,21 @@ module Bundler
         end
 
         private
+
+        def clone_needs_extra_fetch?
+          return true if path.exist?
+
+          SharedHelpers.filesystem_access(path.dirname) do |p|
+            FileUtils.mkdir_p(p)
+          end
+          git_retry "clone", "--bare", "--no-hardlinks", "--quiet", *extra_clone_args, "--", configured_uri, path.to_s
+
+          extra_ref
+        end
+
+        def clone_needs_unshallow?
+          path.join("shallow").exist? && full_clone?
+        end
 
         def extra_ref
           return false if not_pinned?

@@ -61,7 +61,7 @@ module Bundler
         end
 
         def revision
-          @revision ||= find_local_revision
+          @revision ||= allowed_with_path { find_local_revision }
         end
 
         def current_branch
@@ -241,11 +241,24 @@ module Bundler
         end
 
         def find_local_revision
-          allowed_with_path do
-            git("rev-parse", "--verify", branch || tag || ref || "HEAD", :dir => path).strip
-          end
+          options_ref = branch || tag || ref
+          return head_revision if options_ref.nil?
+
+          find_revision_for(options_ref)
+        end
+
+        def head_revision
+          verify("HEAD")
+        end
+
+        def find_revision_for(reference)
+          verify(reference)
         rescue GitCommandError => e
-          raise MissingGitRevisionError.new(e.command, path, branch || tag || ref, credential_filtered_uri)
+          raise MissingGitRevisionError.new(e.command, path, reference, credential_filtered_uri)
+        end
+
+        def verify(reference)
+          git("rev-parse", "--verify", reference, :dir => path).strip
         end
 
         # Adds credentials to the URI

@@ -31,7 +31,6 @@ module Bundler
           msg = String.new
           msg << "Git error: command `#{command}` in directory #{path} has failed."
           msg << "\n#{extra_info}" if extra_info
-          msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if path.exist?
           super msg
         end
       end

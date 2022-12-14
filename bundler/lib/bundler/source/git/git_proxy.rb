@@ -216,9 +216,7 @@ module Bundler
         def git_null(*command, dir: nil)
           check_allowed(command)
 
-          SharedHelpers.with_clean_git_env do
-            capture_and_ignore_stderr(*capture3_args_for(command, dir))
-          end
+          capture(command, dir, :ignore_err => true)
         end
 
         def git_retry(*command, dir: nil)
@@ -232,9 +230,7 @@ module Bundler
         def git(*command, dir: nil)
           command_with_no_credentials = check_allowed(command)
 
-          out, err, status = SharedHelpers.with_clean_git_env do
-            capture(*capture3_args_for(command, dir))
-          end
+          out, err, status = capture(command, dir)
 
           Bundler.ui.warn err unless err.empty?
 
@@ -316,16 +312,17 @@ module Bundler
           command_with_no_credentials
         end
 
-        def capture(*cmd)
-          require "open3"
-          out, err, status = Open3.capture3(*cmd)
-          [URICredentialsFilter.credential_filtered_string(out, uri), URICredentialsFilter.credential_filtered_string(err, uri), status]
-        end
+        def capture(cmd, dir, ignore_err: false)
+          SharedHelpers.with_clean_git_env do
+            require "open3"
+            out, err, status = Open3.capture3(*capture3_args_for(cmd, dir))
 
-        def capture_and_ignore_stderr(*cmd)
-          require "open3"
-          return_value, _, status = Open3.capture3(*cmd)
-          [URICredentialsFilter.credential_filtered_string(return_value, uri), status]
+            filtered_out = URICredentialsFilter.credential_filtered_string(out, uri)
+            return [filtered_out, status] if ignore_err
+
+            filtered_err = URICredentialsFilter.credential_filtered_string(err, uri)
+            [filtered_out, filtered_err, status]
+          end
         end
 
         def capture3_args_for(cmd, dir)

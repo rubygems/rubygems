@@ -46,7 +46,7 @@ module Bundler
       # All actions required by the Git source is encapsulated in this
       # object.
       class GitProxy
-        attr_accessor :path, :uri, :branch, :tag, :ref
+        attr_accessor :path, :uri, :branch, :tag, :ref, :explicit_ref
         attr_writer :revision
 
         def initialize(path, uri, options = {}, revision = nil, git = nil)
@@ -55,6 +55,7 @@ module Bundler
           @branch   = options["branch"]
           @tag      = options["tag"]
           @ref      = options["ref"]
+          @explicit_ref = branch || tag || ref
           @revision = revision
           @git      = git
         end
@@ -247,10 +248,9 @@ module Bundler
         end
 
         def find_local_revision
-          options_ref = branch || tag || ref
-          return head_revision if options_ref.nil?
+          return head_revision if explicit_ref.nil?
 
-          find_revision_for(options_ref)
+          find_revision_for(explicit_ref)
         end
 
         def head_revision

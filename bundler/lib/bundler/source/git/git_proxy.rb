@@ -94,9 +94,7 @@ module Bundler
           unshallow_needed = clone_needs_unshallow?
           return unless extra_fetch_needed || unshallow_needed
 
-          fetch_args = unshallow_needed ? ["--unshallow"] : depth_args
-
-          git_retry(*["fetch", "--force", "--quiet", "--no-tags", *fetch_args, "--", configured_uri, refspec].compact, :dir => path)
+          git_remote_fetch(unshallow_needed ? ["--unshallow"] : depth_args)
         end
 
         def copy_to(destination, submodules = false)
@@ -131,6 +129,22 @@ module Bundler
         end
 
         private
+
+        def git_remote_fetch(args)
+          command = ["fetch", "--force", "--quiet", "--no-tags", *args, "--", configured_uri, refspec].compact
+          command_with_no_credentials = check_allowed(command)
+
+          Bundler::Retry.new("`#{command_with_no_credentials}` at #{path}", [MissingGitRevisionError]).attempts do
+            out, err, status = capture(command, path)
+            return out if status.success?
+
+            if err.include?("couldn't find remote ref")
+              raise MissingGitRevisionError.new(command_with_no_credentials, path, explicit_ref, credential_filtered_uri)
+            else
+              raise GitCommandError.new(command_with_no_credentials, path, err)
+            end
+          end
+        end
 
         def clone_needs_extra_fetch?
           return true if path.exist?

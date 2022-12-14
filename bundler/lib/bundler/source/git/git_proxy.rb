@@ -216,11 +216,9 @@ module Bundler
         def git_null(*command, dir: nil)
           check_allowed(command)
 
-          out, status = SharedHelpers.with_clean_git_env do
+          SharedHelpers.with_clean_git_env do
             capture_and_ignore_stderr(*capture3_args_for(command, dir))
           end
-
-          [URICredentialsFilter.credential_filtered_string(out, uri), status]
         end
 
         def git_retry(*command, dir: nil)
@@ -234,15 +232,15 @@ module Bundler
         def git(*command, dir: nil)
           command_with_no_credentials = check_allowed(command)
 
-          out, status = SharedHelpers.with_clean_git_env do
-            capture_and_filter_stderr(*capture3_args_for(command, dir))
+          out, err, status = SharedHelpers.with_clean_git_env do
+            capture(*capture3_args_for(command, dir))
           end
 
-          filtered_out = URICredentialsFilter.credential_filtered_string(out, uri)
+          Bundler.ui.warn err unless err.empty?
 
-          raise GitCommandError.new(command_with_no_credentials, dir || SharedHelpers.pwd, filtered_out) unless status.success?
+          raise GitCommandError.new(command_with_no_credentials, dir || SharedHelpers.pwd, out) unless status.success?
 
-          filtered_out
+          out
         end
 
         def has_revision_cached?
@@ -318,17 +316,16 @@ module Bundler
           command_with_no_credentials
         end
 
-        def capture_and_filter_stderr(*cmd)
+        def capture(*cmd)
           require "open3"
-          return_value, captured_err, status = Open3.capture3(*cmd)
-          Bundler.ui.warn URICredentialsFilter.credential_filtered_string(captured_err, uri) unless captured_err.empty?
-          [return_value, status]
+          out, err, status = Open3.capture3(*cmd)
+          [URICredentialsFilter.credential_filtered_string(out, uri), URICredentialsFilter.credential_filtered_string(err, uri), status]
         end
 
         def capture_and_ignore_stderr(*cmd)
           require "open3"
           return_value, _, status = Open3.capture3(*cmd)
-          [return_value, status]
+          [URICredentialsFilter.credential_filtered_string(return_value, uri), status]
         end
 
         def capture3_args_for(cmd, dir)

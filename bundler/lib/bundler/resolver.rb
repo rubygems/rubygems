@@ -156,10 +156,9 @@ module Bundler
       package_deps = @cached_dependencies[package]
       sorted_versions = @sorted_versions[package]
       package_deps[version].map do |dep_package, dep_constraint|
-        unless dep_constraint
-          # falsey indicates this dependency was invalid
-          cause = PubGrub::Incompatibility::InvalidDependency.new(dep_package, dep_constraint.constraint_string)
-          return [PubGrub::Incompatibility.new([PubGrub::Term.new(self_constraint, true)], :cause => cause)]
+        if package == dep_package
+          cause = PubGrub::Incompatibility::CircularDependency.new(dep_package, dep_constraint.constraint_string)
+          return [PubGrub::Incompatibility.new([PubGrub::Term.new(dep_constraint, true)], :cause => cause)]
         end
 
         low = high = sorted_versions.index(version)
@@ -191,12 +190,13 @@ module Bundler
         self_constraint = PubGrub::VersionConstraint.new(package, :range => range)
 
         dep_term = PubGrub::Term.new(dep_constraint, false)
+        self_term = PubGrub::Term.new(self_constraint, true)
 
         custom_explanation = if dep_package.meta? && package.root?
           "current #{dep_package} version is #{dep_constraint.constraint_string}"
         end
 
-        PubGrub::Incompatibility.new([PubGrub::Term.new(self_constraint, true), dep_term], :cause => :dependency, :custom_explanation => custom_explanation)
+        PubGrub::Incompatibility.new([self_term, dep_term], :cause => :dependency, :custom_explanation => custom_explanation)
       end
     end
 

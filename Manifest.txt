@@ -234,7 +234,6 @@ bundler/lib/bundler/templates/newgem/test/minitest/test_helper.rb.tt
 bundler/lib/bundler/templates/newgem/test/minitest/test_newgem.rb.tt
 bundler/lib/bundler/templates/newgem/test/test-unit/newgem_test.rb.tt
 bundler/lib/bundler/templates/newgem/test/test-unit/test_helper.rb.tt
-bundler/lib/bundler/templates/newgem/travis.yml.tt
 bundler/lib/bundler/ui.rb
 bundler/lib/bundler/ui/rg_proxy.rb
 bundler/lib/bundler/ui/shell.rb

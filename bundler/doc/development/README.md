@@ -6,7 +6,7 @@ So, you're ready to start contributing to Bundler! You've come to the right plac
 
 Guidelines for setting up your local development environment.
 
-## [Submitting pull requests](PULL_REQUESTS.md)
+## [Contributing guidelines](../../../CONTRIBUTING.md)
 
 An overview of our preferred PR process, including how to run the test suite and what to expect when you submit code for review.
 

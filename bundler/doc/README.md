@@ -8,6 +8,7 @@ If you'd like to help make Bundler better, you totally rock! Thanks for helping 
 
 ## Contributing
 
+* [Guidelines](../CONTRIBUTING.md)
 * [Overview & getting started](contributing/README.md)
 * [How you can help: your first contributions!](contributing/HOW_YOU_CAN_HELP.md)
 * [Bug triage](contributing/BUG_TRIAGE.md)
@@ -19,7 +20,6 @@ If you'd like to help make Bundler better, you totally rock! Thanks for helping 
 
 * [Overview](development/README.md)
 * [Development setup](development/SETUP.md)
-* [Submitting pull requests](development/PULL_REQUESTS.md)
 * [Adding new features](development/NEW_FEATURES.md)
 
 ## Documentation

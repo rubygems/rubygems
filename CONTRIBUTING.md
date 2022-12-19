@@ -6,23 +6,73 @@ contributors to follow to reduce the time it takes to get changes merged in.
 
 ## Guidelines
 
-1.  New features should be coupled with tests.
+### Tests
 
-2.  Ensure that your code blends well with ours:
-    *   No trailing whitespace
-    *   Match indentation (two spaces)
-    *   Match coding style (run `rake rubocop`)
+New features and bug fixes should be coupled tests. Prior to submitting your PR,
+please run the test suite:
 
-3.  If any new files are added or existing files removed in a commit or PR,
-    please update the `Manifest.txt` accordingly. This can be done by running
-    `rake update_manifest`
+    $ bin/parallel_rspec
 
-4.  Don't modify the history file or version number.
+If you are unable to run the entire test suite, please run the unit test suite
+and at least the integration specs related to the command or domain of Bundler
+that your code changes relate to.
 
-5.  If you have any questions, Feel free to join us on Slack, you can register
-    by signing up at http://slack.bundler.io or file an issue here:
-    http://github.com/rubygems/rubygems/issues
+Ex. For a pull request that changes something with `bundle update`, you might run:
 
+    $ bin/rspec spec/bundler
+    $ bin/rspec spec/commands/update_spec.rb
+
+### Code formatting
+
+Make sure the code formatting and styling adheres to the guidelines. We use
+RuboCop for this (`rake rubocop`). Lack of formatting adherence will result in
+automatic GitHub Actions build failures.
+
+### Commit messages
+
+Please ensure that the commit messages included in the pull request __do not__
+have the following:
+
+  * `@tag` GitHub user or team references (ex. `@indirect` or `@bundler/core`)
+  *  `#id` references to issues or pull requests (ex. `#43` or `rubygems/bundler-site#12`)
+
+If you want to use these mechanisms, please instead include them in the pull
+request description. This prevents multiple notifications or references being
+created on commit rebases or pull request/branch force pushes.
+
+Additionally, do not use `[ci skip]` or `[skip ci]` mechanisms in your pull
+request titles/descriptions or commit messages. Every potential commit and pull
+request should run through Bundler's CI system. This applies to all
+changes/commits (ex. even a change to just documentation or the removal of a
+comment).
+
+### Adding or removing new files
+
+If any new files are added or existing files removed in a commit or PR,
+please update the `Manifest.txt` accordingly. This can be done by running `rake
+update_manifest`
+
+### Changelog
+
+Our changelog is managed automatically, so don't modify the history file or
+version number.
+
+Changelog entries are generated from PR titles, so make sure your PR has a title
+that properly describe the improvements in your PR from an end user point of
+view.
+
+### Questions
+
+If you have any questions, Feel free to join us on Slack, you can register by
+signing up at http://slack.bundler.io or file an issue here:
+http://github.com/rubygems/rubygems/issues
+
+### Code of Conduct
+
+Make sure to follow our [Code of
+Conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).
+By participating in RubyGems, you agree to abide by the terms laid out in the
+CoC.)
 
 For more information and ideas on how to contribute to RubyGems ecosystem, see
 here: https://guides.rubygems.org/contributing/

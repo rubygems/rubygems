@@ -33,7 +33,7 @@ If you can reproduce an issue, you're well on your way to fixing it. :)
 Everyone is welcome and encouraged to fix any open bug, improve an error message or add documentation. If you have a fix or an improvement to a ticket that you would like to contribute, we have a small guide to help:
 
   1. Discuss the fix on the existing issue. Coordinating with everyone else saves duplicate work and serves as a great way to get suggestions and ideas if you need any.
-  2. Review the [pull request guide](../development/PULL_REQUESTS.md).
+  2. Review the [contributing guidelines](../../../CONTRIBUTING.md).
   3. Commit the code with at least one test covering your changes to a named branch in your fork.
   4. Send us a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) from your bugfix branch.
 

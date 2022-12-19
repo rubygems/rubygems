@@ -12,19 +12,19 @@ To work on Bundler, you'll probably want to do a couple of things:
 
         $ brew install graphviz
 
-* From the rubygems root directory change into the bundler directory:
+* Install development dependencies from the rubygems root directory:
+
+        $ rake setup
+
+* Change into the bundler directory:
 
         $ cd bundler
 
-* Install Bundler's development dependencies:
+* Install Bundler's test dependencies:
 
-        $ rake spec:deps
+        $ bin/rake spec:parallel_deps
 
-* Run the test suite, to make sure things are working:
-
-        $ bin/rake spec
-
-* Optionally, you can run the test suite in parallel:
+* Now you can run the test suite in parallel:
 
         $ bin/parallel_rspec
 

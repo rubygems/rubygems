@@ -23,13 +23,16 @@ jobs:
       fail-fast: false
       matrix:
         cargo:
-          - target: x86_64-pc-windows-gnu
+          - target: x86_64-pc-windows-gnu # mingw
             toolchain: stable
         ruby:
           - { name: "2.6", value: 2.6.10 }
           - { name: "2.7", value: 2.7.6 }
           - { name: "3.0", value: 3.0.4 }
           - { name: "3.1", value: 3.1.2 }
+        include:
+          - ruby: { name: "mswin", value: "mswin" }
+            cargo: { target: x86_64-pc-windows-msvc, toolchain: stable } # mswin
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
@@ -53,6 +56,13 @@ jobs:
           echo "========================="
           uname -a
           echo "========================="
+      # Taken from https://github.com/oxidize-rb/actions/blob/0d21ce09c5500315bc61815440f8c4211530f413/setup-ruby-and-rust/action.yml#LL300-L305C116
+      - name: Configure bindgen
+        if: contains(matrix.cargo.target, 'msvc')
+        shell: pwsh
+        run: |
+          echo "LIBCLANG_PATH=$((gcm clang).source -replace "clang.exe")" >> $env:GITHUB_ENV
+          echo "BINDGEN_EXTRA_CLANG_ARGS=$((gcm clang).source -replace "bin\clang.exe","include")" >> $env:GITHUB_ENV
       - name: Install Dependencies and Run Test
         run: |
           rake setup

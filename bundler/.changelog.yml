@@ -7,7 +7,7 @@ entry_template: "  - %title [#%pull_request_number](%pull_request_url)"
 release_date_format: "%B %-d, %Y"
 
 changelog_label_mapping:
-  "bundler: security fix": "## Security fixes:"
+  "bundler: security": "## Security:"
   "bundler: breaking change": "## Breaking changes:"
   "bundler: deprecation": "## Deprecations:"
   "bundler: feature": "## Features:"
@@ -18,7 +18,7 @@ changelog_label_mapping:
   "bundler: backport": null
 
 patch_level_labels:
-  - "bundler: security fix"
+  - "bundler: security"
   - "bundler: deprecation"
   - "bundler: enhancement"
   - "bundler: bug fix"

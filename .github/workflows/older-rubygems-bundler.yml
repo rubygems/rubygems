@@ -28,12 +28,12 @@ jobs:
       matrix:
         include:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.10 }, rgv: { name: rgv-3.0, value: v3.0.9 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.6 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.4 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.2 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.6 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.4 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.2 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.7 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.5 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.3 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
     env:
       RGV: ${{ matrix.rgv.value }}
       RUBYOPT: --disable-gems

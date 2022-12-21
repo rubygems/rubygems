@@ -13,7 +13,7 @@ release_date_format: "%Y-%m-%d"
 entry_wrapping: 74
 
 changelog_label_mapping:
-  "rubygems: security fix": "## Security fixes:"
+  "rubygems: security": "## Security:"
   "rubygems: breaking change": "## Breaking changes:"
   "rubygems: deprecation": "## Deprecations:"
   "rubygems: feature": "## Features:"
@@ -24,7 +24,7 @@ changelog_label_mapping:
   "rubygems: backport": null
 
 patch_level_labels:
-  - "rubygems: security fix"
+  - "rubygems: security"
   - "rubygems: deprecation"
   - "rubygems: enhancement"
   - "rubygems: bug fix"

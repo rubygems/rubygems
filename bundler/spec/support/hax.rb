@@ -24,10 +24,13 @@ module Gem
   end
 
   if ENV["BUNDLER_SPEC_PLATFORM"]
+    previous_platforms = @platforms
+    previous_local = Platform.local
+
     class Platform
       @local = new(ENV["BUNDLER_SPEC_PLATFORM"])
     end
-    @platforms = [Gem::Platform::RUBY, Gem::Platform.local]
+    @platforms = previous_platforms.map {|platform| platform == previous_local ? Platform.local : platform }
   end
 
   if ENV["BUNDLER_SPEC_GEM_SOURCES"]

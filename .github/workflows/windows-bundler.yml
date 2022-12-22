@@ -29,14 +29,14 @@ jobs:
       matrix:
         ruby:
           - { name: jruby-9.3, value: jruby-9.3.9.0 }
-          - { name: ruby-2.7, value: 2.7.6 }
-          - { name: ruby-3.0, value: 3.0.4 }
-          - { name: ruby-3.1, value: 3.1.2 }
+          - { name: ruby-2.7, value: 2.7.7 }
+          - { name: ruby-3.0, value: 3.0.5 }
+          - { name: ruby-3.1, value: 3.1.3 }
 
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@ee2113536afb7f793eed4ce60e8d3b26db912da4 # v1.127.0
+        uses: ruby/setup-ruby@4b2d1d631efa087f8896c15a0c6023dc2f483198 # v1.128.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

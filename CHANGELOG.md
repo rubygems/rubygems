@@ -1,3 +1,32 @@
+# 3.4.0 / 2022-12-24
+
+## Breaking changes:
+
+* Drop support for Ruby 2.3, 2.4, 2.5 and RubyGems 2.5, 2.6, 2.7. Pull
+  request #6107 by deivid-rodriguez
+* Remove support for deprecated OS. Pull request #6041 by peterzhu2118
+
+## Features:
+
+* Add 'call for update' to RubyGems install command. Pull request #5922 by
+  simi
+
+## Enhancements:
+
+* Add `mswin` support for cargo builder. Pull request #6167 by ianks
+* Validate Cargo.lock is present for Rust based extensions. Pull request
+  #6151 by simi
+* Clean built artifacts after building extensions. Pull request #6133 by
+  deivid-rodriguez
+* Installs bundler 2.4.0 as a default gem.
+
+## Bug fixes:
+
+* Fix crash due to `BundlerVersionFinder` not defined. Pull request #6152
+  by deivid-rodriguez
+* Don't leave corrupted partial package download around when running out
+  of disk space. Pull request #5681 by duckinator
+
 # 3.3.26 / 2022-11-16
 
 ## Enhancements:

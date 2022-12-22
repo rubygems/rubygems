@@ -186,8 +186,6 @@ class Release
       @rubygems.bump_versions!
       system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
 
-      return if @level == :minor_or_major
-
       system("git", "push", exception: true)
 
       gh_client.create_pull_request(

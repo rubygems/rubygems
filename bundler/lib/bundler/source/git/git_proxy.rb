@@ -140,6 +140,8 @@ module Bundler
 
             if err.include?("couldn't find remote ref")
               raise MissingGitRevisionError.new(command_with_no_credentials, path, explicit_ref, credential_filtered_uri)
+            elsif err.include?("--unshallow on a complete repository does not make sense")
+              out
             else
               raise GitCommandError.new(command_with_no_credentials, path, err)
             end

@@ -806,12 +806,13 @@ module Bundler
           end
 
           new_spec = new_specs[s].first
-
-          # If the spec is no longer in the path source, unlock it. This
-          # commonly happens if the version changed in the gemspec
-          next unless new_spec
-
-          s.dependencies.replace(new_spec.dependencies)
+          if new_spec
+            s.dependencies.replace(new_spec.dependencies)
+          else
+            # If the spec is no longer in the path source, unlock it. This
+            # commonly happens if the version changed in the gemspec
+            @unlock[:gems] << s.name
+          end
         end
 
         if dep.nil? && requested_dependencies.find {|d| s.name == d.name }

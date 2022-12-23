@@ -322,6 +322,57 @@ RSpec.describe "bundle install with explicit source paths" do
     expect(the_bundle).to include_gems "rack 1.0", :dir => lib_path("foo")
   end
 
+  it "does not unlock dependencies of path sources" do
+    build_repo4 do
+      build_gem "graphql", "2.0.15"
+      build_gem "graphql", "2.0.16"
+    end
+
+    build_lib "foo", "0.1.0", :path => lib_path("foo") do |s|
+      s.add_dependency "graphql", "~> 2.0"
+    end
+
+    gemfile_path = lib_path("foo/Gemfile")
+
+    gemfile gemfile_path, <<-G
+      source "#{file_uri_for(gem_repo4)}"
+      gemspec
+    G
+
+    lockfile_path = lib_path("foo/Gemfile.lock")
+
+    original_lockfile = <<~L
+      PATH
+        remote: .
+        specs:
+          foo (0.1.0)
+            graphql (~> 2.0)
+
+      GEM
+        remote: #{file_uri_for(gem_repo4)}/
+        specs:
+          graphql (2.0.15)
+
+      PLATFORMS
+        #{lockfile_platforms}
+
+      DEPENDENCIES
+        foo!
+
+      BUNDLED WITH
+         #{Bundler::VERSION}
+    L
+
+    lockfile lockfile_path, original_lockfile
+
+    build_lib "foo", "0.1.1", :path => lib_path("foo") do |s|
+      s.add_dependency "graphql", "~> 2.0"
+    end
+
+    bundle "install", :dir => lib_path("foo")
+    expect(lockfile_path).to read_as(original_lockfile.gsub("foo (0.1.0)", "foo (0.1.1)"))
+  end
+
   it "supports gemspec syntax with an alternative path" do
     build_lib "foo", "1.0", :path => lib_path("foo") do |s|
       s.add_dependency "rack", "1.0"

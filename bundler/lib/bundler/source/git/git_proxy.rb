@@ -241,9 +241,7 @@ module Bundler
 
           out, err, status = capture(command, dir)
 
-          Bundler.ui.warn err unless err.empty?
-
-          raise GitCommandError.new(command_with_no_credentials, dir || SharedHelpers.pwd, out) unless status.success?
+          raise GitCommandError.new(command_with_no_credentials, dir || SharedHelpers.pwd, err) unless status.success?
 
           out
         end

@@ -116,7 +116,7 @@ module Bundler
             end
           end
 
-          git "fetch", "--force", "--quiet", *extra_fetch_args, :dir => destination
+          git "fetch", "--force", "--quiet", path.to_s, *depth_args, :dir => destination
 
           git "reset", "--hard", @revision, :dir => destination
 
@@ -187,13 +187,11 @@ module Bundler
         end
 
         def refspec
-          return ref if pinned_to_full_sha?
-
           ref_to_fetch = @revision || fully_qualified_ref
 
           ref_to_fetch ||= if ref.include?("~")
             ref.split("~").first
-          elsif ref.start_with?("refs/")
+          elsif ref.start_with?("refs/") || pinned_to_full_sha?
             ref
           else
             "refs/*"
@@ -218,10 +216,6 @@ module Bundler
 
         def pinned_to_full_sha?
           ref =~ /\A\h{40}\z/
-        end
-
-        def legacy_locked_revision?
-          !@revision.nil? && @revision =~ /\A\h{7}\z/
         end
 
         def git_null(*command, dir: nil)
@@ -357,12 +351,6 @@ module Bundler
           return [] if full_clone?
 
           ["--depth", depth.to_s]
-        end
-
-        def extra_fetch_args
-          extra_args = [path.to_s, *depth_args]
-          extra_args.push(revision) unless legacy_locked_revision?
-          extra_args
         end
 
         def full_clone?

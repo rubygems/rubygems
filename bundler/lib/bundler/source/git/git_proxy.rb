@@ -58,6 +58,7 @@ module Bundler
           @explicit_ref = branch || tag || ref
           @revision = revision
           @git      = git
+          @commit_ref = nil
         end
 
         def revision
@@ -116,7 +117,7 @@ module Bundler
             end
           end
 
-          git "fetch", "--force", "--quiet", *extra_fetch_args, :dir => destination
+          git "fetch", "--force", "--quiet", *extra_fetch_args, :dir => destination if @commit_ref
 
           git "reset", "--hard", @revision, :dir => destination
 
@@ -185,11 +186,16 @@ module Bundler
         end
 
         def refspec
-          return ref if pinned_to_full_sha?
+          commit = pinned_to_full_sha? ? ref : @revision
 
-          ref_to_fetch = @revision || fully_qualified_ref
+          if commit
+            @commit_ref = "refs/#{commit}-sha"
+            return "#{commit}:#{@commit_ref}"
+          end
 
-          ref_to_fetch ||= if ref.include?("~")
+          reference = fully_qualified_ref
+
+          reference ||= if ref.include?("~")
             ref.split("~").first
           elsif ref.start_with?("refs/")
             ref
@@ -197,7 +203,7 @@ module Bundler
             "refs/*"
           end
 
-          "#{ref_to_fetch}:#{ref_to_fetch}"
+          "#{reference}:#{reference}"
         end
 
         def fully_qualified_ref
@@ -216,10 +222,6 @@ module Bundler
 
         def pinned_to_full_sha?
           ref =~ /\A\h{40}\z/
-        end
-
-        def legacy_locked_revision?
-          !@revision.nil? && @revision =~ /\A\h{7}\z/
         end
 
         def git_null(*command, dir: nil)
@@ -362,7 +364,7 @@ module Bundler
 
         def extra_fetch_args
           extra_args = [path.to_s, *depth_args]
-          extra_args.push(revision) unless legacy_locked_revision?
+          extra_args.push(@commit_ref)
           extra_args
         end
 

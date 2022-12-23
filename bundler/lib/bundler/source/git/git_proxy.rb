@@ -176,15 +176,11 @@ module Bundler
 
           @depth = if !supports_fetching_unreachable_refs?
             nil
-          elsif not_pinned?
+          elsif not_pinned? || pinned_to_full_sha?
             1
           elsif ref.include?("~")
             parsed_depth = ref.split("~").last
             parsed_depth.to_i + 1
-          elsif abbreviated_ref?
-            nil
-          else
-            1
           end
         end
 
@@ -196,10 +192,10 @@ module Bundler
             "#{parsed_ref}:#{parsed_ref}"
           elsif ref.start_with?("refs/")
             "#{ref}:#{ref}"
-          elsif abbreviated_ref?
-            nil
-          else
+          elsif pinned_to_full_sha?
             ref
+          else
+            "refs/*:refs/*"
           end
         end
 
@@ -219,8 +215,8 @@ module Bundler
           branch || tag || ref.nil?
         end
 
-        def abbreviated_ref?
-          ref =~ /\A\h+\z/ && ref !~ /\A\h{40}\z/
+        def pinned_to_full_sha?
+          ref =~ /\A\h{40}\z/
         end
 
         def legacy_locked_revision?

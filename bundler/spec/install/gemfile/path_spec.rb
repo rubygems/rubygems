@@ -92,13 +92,11 @@ RSpec.describe "bundle install with explicit source paths" do
     build_lib "demo", :path => lib_path("demo")
     build_lib "aaa", :path => lib_path("demo/aaa")
 
-    gemfile = <<-G
+    gemfile lib_path("demo/Gemfile"), <<-G
       source "#{file_uri_for(gem_repo1)}"
       gemspec
       gem "aaa", :path => "./aaa"
     G
-
-    File.open(lib_path("demo/Gemfile"), "w") {|f| f.puts gemfile }
 
     lockfile = <<~L
       PATH
@@ -314,12 +312,10 @@ RSpec.describe "bundle install with explicit source paths" do
       s.add_dependency "rack", "1.0"
     end
 
-    gemfile = <<-G
+    gemfile lib_path("foo/Gemfile"), <<-G
       source "#{file_uri_for(gem_repo1)}"
       gemspec
     G
-
-    File.open(lib_path("foo/Gemfile"), "w") {|f| f.puts gemfile }
 
     bundle "install", :dir => lib_path("foo")
     expect(the_bundle).to include_gems "foo 1.0", :dir => lib_path("foo")
@@ -791,13 +787,11 @@ RSpec.describe "bundle install with explicit source paths" do
   describe "when there are both a gemspec and remote gems" do
     it "doesn't query rubygems for local gemspec name" do
       build_lib "private_lib", "2.2", :path => lib_path("private_lib")
-      gemfile = <<-G
+      gemfile lib_path("private_lib/Gemfile"), <<-G
         source "http://localgemserver.test"
         gemspec
         gem 'rack'
       G
-      File.open(lib_path("private_lib/Gemfile"), "w") {|f| f.puts gemfile }
-
       bundle :install, :env => { "DEBUG" => "1" }, :artifice => "endpoint", :dir => lib_path("private_lib")
       expect(out).to match(%r{^HTTP GET http://localgemserver\.test/api/v1/dependencies\?gems=rack$})
       expect(out).not_to match(/^HTTP GET.*private_lib/)

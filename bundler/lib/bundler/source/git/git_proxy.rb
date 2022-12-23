@@ -187,7 +187,7 @@ module Bundler
         def refspec
           return ref if pinned_to_full_sha?
 
-          ref_to_fetch = fully_qualified_ref
+          ref_to_fetch = @revision || fully_qualified_ref
 
           ref_to_fetch ||= if ref.include?("~")
             ref.split("~").first

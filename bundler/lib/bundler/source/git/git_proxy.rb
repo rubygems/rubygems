@@ -344,9 +344,10 @@ module Bundler
         end
 
         def extra_clone_args
-          return [] if full_clone?
+          args = depth_args
+          return [] if args.empty?
 
-          args = ["--depth", depth.to_s, "--single-branch"]
+          args += ["--single-branch"]
           args.unshift("--no-tags") if supports_cloning_with_no_tags?
 
           args += ["--branch", branch || tag] if branch || tag

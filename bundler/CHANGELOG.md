@@ -1,3 +1,14 @@
+# 2.4.1 (December 24, 2022)
+
+## Enhancements:
+
+  - Allow Bundler to run on old RubyGems + Ruby 2.7 without warnings [#6187](https://github.com/rubygems/rubygems/pull/6187)
+
+## Bug fixes:
+
+  - Fix dependencies scoped to other platforms making resolver fail [#6189](https://github.com/rubygems/rubygems/pull/6189)
+  - Restore annotated git tag support [#6186](https://github.com/rubygems/rubygems/pull/6186)
+
 # 2.4.0 (December 24, 2022)
 
 ## Security:

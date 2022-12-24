@@ -185,24 +185,23 @@ module Bundler
         end
 
         def refspec
-          if fully_qualified_ref
-            "#{fully_qualified_ref}:#{fully_qualified_ref}"
-          elsif ref.include?("~")
-            parsed_ref = ref.split("~").first
-            "#{parsed_ref}:#{parsed_ref}"
+          return ref if pinned_to_full_sha?
+
+          ref_to_fetch = @revision || fully_qualified_ref
+
+          ref_to_fetch ||= if ref.include?("~")
+            ref.split("~").first
           elsif ref.start_with?("refs/")
-            "#{ref}:#{ref}"
-          elsif pinned_to_full_sha?
             ref
           else
-            "refs/*:refs/*"
+            "refs/*"
           end
+
+          "#{ref_to_fetch}:#{ref_to_fetch}"
         end
 
         def fully_qualified_ref
-          return @fully_qualified_ref if defined?(@fully_qualified_ref)
-
-          @fully_qualified_ref = if branch
+          if branch
             "refs/heads/#{branch}"
           elsif tag
             "refs/tags/#{tag}"

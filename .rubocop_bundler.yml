@@ -765,6 +765,10 @@ Style/RescueModifier:
 Style/RescueStandardError:
   Enabled: true
 
+Style/SafeNavigation:
+  Enabled: true
+  MaxChainLength: 1
+
 Style/Sample:
   Enabled: true
 

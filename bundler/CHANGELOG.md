@@ -37,7 +37,6 @@
 
 ## Enhancements:
 
-  - Add `bundle lock --update --bundler` [#6134](https://github.com/rubygems/rubygems/pull/6134)
   - Support for pre flag in `bundle update`/`bundle lock` [#5258](https://github.com/rubygems/rubygems/pull/5258)
   - Improve error message when changing Gemfile to a mistyped git ref [#6130](https://github.com/rubygems/rubygems/pull/6130)
   - Remove special handling of some `LoadError` and `NoMethodError` [#6115](https://github.com/rubygems/rubygems/pull/6115)

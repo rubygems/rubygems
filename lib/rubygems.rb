@@ -856,8 +856,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Returns the version of the latest release-version of gem +name+
 
   def self.latest_version_for(name)
-    spec = latest_spec_for name
-    spec && spec.version
+    latest_spec_for(name)&.version
   end
 
   ##

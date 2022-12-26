@@ -489,7 +489,14 @@ module Bundler
     end
 
     def expanded_dependencies
-      dependencies + metadata_dependencies
+      dependencies_with_bundler + metadata_dependencies
+    end
+
+    def dependencies_with_bundler
+      return dependencies unless @unlocking_bundler
+      return dependencies if dependencies.map(&:name).include?("bundler")
+
+      [Dependency.new("bundler", @unlocking_bundler)] + dependencies
     end
 
     def resolution_packages
@@ -868,8 +875,12 @@ module Bundler
       metadata_dependencies.each do |dep|
         source_requirements[dep.name] = sources.metadata_source
       end
-      source_requirements[:default_bundler] = source_requirements["bundler"] || sources.default_source
-      source_requirements["bundler"] = sources.metadata_source # needs to come last to override
+
+      unless @unlocking_bundler
+        source_requirements[:default_bundler] = source_requirements["bundler"] || sources.default_source
+        source_requirements["bundler"] = sources.metadata_source # needs to come last to override
+      end
+
       verify_changed_sources!
       source_requirements
     end

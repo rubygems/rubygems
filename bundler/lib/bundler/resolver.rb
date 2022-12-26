@@ -160,7 +160,7 @@ module Bundler
       constraint_string = constraint.constraint_string
       requirements = constraint_string.split(" OR ").map {|req| Gem::Requirement.new(req.split(",")) }
 
-      if name == "bundler"
+      if name == "bundler" && bundler_pinned_to_current_version?
         custom_explanation = "the current Bundler version (#{Bundler::VERSION}) does not satisfy #{constraint}"
         extended_explanation = bundler_not_found_message(requirements)
       else
@@ -252,6 +252,14 @@ module Bundler
 
     def source_for(name)
       @source_requirements[name] || @source_requirements[:default]
+    end
+
+    def default_bundler_source
+      @source_requirements[:default_bundler]
+    end
+
+    def bundler_pinned_to_current_version?
+      !default_bundler_source.nil?
     end
 
     def name_for_explicit_dependency_source
@@ -398,7 +406,7 @@ module Bundler
     end
 
     def bundler_not_found_message(conflict_dependencies)
-      candidate_specs = filter_matching_specs(source_for(:default_bundler).specs.search("bundler"), conflict_dependencies)
+      candidate_specs = filter_matching_specs(default_bundler_source.specs.search("bundler"), conflict_dependencies)
 
       if candidate_specs.any?
         target_version = candidate_specs.last.version

@@ -179,6 +179,9 @@ Style/BlockDelimiters:
 Style/PercentLiteralDelimiters:
   Enabled: true
 
+Style/RedundantFreeze:
+  Enabled: true
+
 Style/SafeNavigation:
   Enabled: true
   MaxChainLength: 1

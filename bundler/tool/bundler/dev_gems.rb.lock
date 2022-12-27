@@ -18,7 +18,7 @@ GEM
       rdiscount (>= 1.5.8)
     rspec-core (3.12.0)
       rspec-support (~> 3.12.0)
-    rspec-expectations (3.12.0)
+    rspec-expectations (3.12.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-mocks (3.12.1)
@@ -35,8 +35,8 @@ PLATFORMS
   ruby
   universal-java-11
   universal-java-18
-  x64-mingw-ucrt
   x64-mingw32
+  x64-unknown
   x86_64-darwin-20
   x86_64-linux
 
@@ -52,6 +52,25 @@ DEPENDENCIES
   test-unit (~> 3.0)
   uri (~> 0.12.0)
   webrick (~> 1.6)
+
+CHECKSUMS
+  diff-lcs (1.5.0) sha256-49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67
+  hpricot (0.8.6) sha256-dfe8f4b3414ba8377d7626030f3aa605caadee9de87cffbeadf8a50359eac8ca
+  mustache (1.1.1) sha256-90891fdd50b53919ca334c8c1031eada1215e78d226d5795e523d6123a2717d0
+  parallel (1.22.1) sha256-ebdf1f0c51f182df38522f70ba770214940bef998cdb6e00f36492b29699761f
+  parallel_tests (2.32.0) sha256-f1d3470b169e365642ec12d2a8c7fbab2d3cfa14df0574c2c7087ba9b59d7e6e
+  power_assert (2.0.2) sha256-1d3e2d70e9bfd7afc5bacdc75f3d9ee69c3e81c50a29de3ca4028509d822dd9f
+  rake (13.0.6) sha256-5ce4bf5037b4196c24ac62834d8db1ce175470391026bd9e557d669beeb19097
+  rb_sys (0.9.52) sha256-4e7950f9e60405ae13b88bb65a00eb6fee535db091eae50edc8fdd90e0529bf1
+  rdiscount (2.2.7) sha256-ce2ead92bd012de244f8f6fa1c03356db32611f460a092ee39ffbc8059dbeba1
+  ronn (0.7.3) sha256-82df6fd4a3aa91734866710d2811a6387e50a7513fc528ce6c7d95ee7ad7f41e
+  rspec-core (3.12.0) sha256-c466f4137966526e177d2156ca45c249eeecc7ed519b23ae2fb80c4675406bc5
+  rspec-expectations (3.12.1) sha256-808b29f7f3ef4535fc897c10235b662bb6b58219406fec56158623b3a8e06c9e
+  rspec-mocks (3.12.1) sha256-e0dd725c7d1c1417c3a1715ccc4e41c124fab6c05b2de5a91ce22d74ee301801
+  rspec-support (3.12.0) sha256-dd4d44b247ff679b95b5607ac5641d197a5f9b1d33f916123cb98fc5f917c58b
+  test-unit (3.5.5) sha256-2c24596882077421cccec1f1291c392efd1d18de96cde0d7744cdf810de1d746
+  uri (0.12.0) sha256-de78451db9d3f646d6cc58dc09a819105794ac39efe679082ba4a19873b18485
+  webrick (1.7.0) sha256-87e9b8e39947b7925338a5eb55427b11ce1f2b25a3645770ec9f39d8ebdb8cb4
 
 BUNDLED WITH
    2.5.0.dev

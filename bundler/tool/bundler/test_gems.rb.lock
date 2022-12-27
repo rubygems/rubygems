@@ -26,8 +26,8 @@ PLATFORMS
   ruby
   universal-java-11
   universal-java-18
-  x64-mingw-ucrt
   x64-mingw32
+  x64-unknown
   x86_64-darwin-20
   x86_64-linux
 
@@ -40,6 +40,20 @@ DEPENDENCIES
   rb_sys
   sinatra (~> 2.0)
   webrick (= 1.7.0)
+
+CHECKSUMS
+  builder (3.2.4) sha256-99caf08af60c8d7f3a6b004029c4c3c0bdaebced6c949165fe98f1db27fbbc10
+  compact_index (0.13.0) sha256-adda43cc3c7068dea3deb171ca99953f3a6b9cdc247413c47779a1273adbd18b
+  mustermann (1.1.2) sha256-7b64de2f39ae6b623b6d4f7d2ced10d3442817ca9bb6200cf7bff3b9f6447b7e
+  rack (2.0.8) sha256-f98171fb30e104950abe1e9fb97c177d8bb5643dd649bc2ed837864eb596a0c5
+  rack-protection (2.0.8.1) sha256-d187dee7708ca93301854127e81b2675b60af86ab53532f9735087ecd649d2ff
+  rack-test (1.1.0) sha256-154161f40f162b1c009a655b7b0c5de3a3102cc6d7d2e94b64e1f46ace800866
+  rake (13.0.1) sha256-292a08eb3064e972e3e07e4c297d54a93433439ff429e58a403ae05584fad870
+  rb_sys (0.9.52) sha256-4e7950f9e60405ae13b88bb65a00eb6fee535db091eae50edc8fdd90e0529bf1
+  ruby2_keywords (0.0.5) sha256-ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef
+  sinatra (2.0.8.1) sha256-b8845f060fde0157940172a4d006b757f3ba6a5ea36326c7c9352c25391c3e66
+  tilt (2.0.11) sha256-7b180fc472cbdeb186c85d31c0f2d1e61a2c0d77e1d9fd0ca28482a9d972d6a0
+  webrick (1.7.0) sha256-87e9b8e39947b7925338a5eb55427b11ce1f2b25a3645770ec9f39d8ebdb8cb4
 
 BUNDLED WITH
    2.5.0.dev

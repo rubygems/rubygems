@@ -38,5 +38,18 @@ DEPENDENCIES
   rubocop (~> 1.30)
   rubocop-performance (~> 1.14)
 
+CHECKSUMS
+  ast (2.4.2) sha256-1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
+  parallel (1.22.1) sha256-ebdf1f0c51f182df38522f70ba770214940bef998cdb6e00f36492b29699761f
+  parser (3.1.2.0) sha256-eda4d7b49bbfddad3b6ca9cdfb23302eec6cf73c2e808b6d5b0cc9161f7c0e76
+  rainbow (3.1.1) sha256-039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
+  regexp_parser (2.5.0) sha256-a076d2d35ab8d11feab5fecf8aa09ec6df68c2429810748cba079f7b021ecde5
+  rexml (3.2.5) sha256-a33c3bf95fda7983ec7f05054f3a985af41dbc25a0339843bd2479e93cabb123
+  rubocop (1.30.1) sha256-e1fcbed368d823ff8bbda00819f0abf0d522a914dfe62499884fcb6df0ff1d21
+  rubocop-ast (1.18.0) sha256-f4fa69a90e9c75145e344c5c4be3f0306a483932c5970a37c27e4a643c2777ac
+  rubocop-performance (1.14.2) sha256-551afc2df245c3d745d69296707e0b0192ea2b593574f7b264404be30f86ccb4
+  ruby-progressbar (1.11.0) sha256-cc127db3866dc414ffccbf92928a241e585b3aa2b758a5563e74a6ee0f57d50a
+  unicode-display_width (2.1.0) sha256-b6ff8c329fdbfcf67e4e6de642ba3df0f5e1e05935be9a2203333a0875aa5233
+
 BUNDLED WITH
    2.5.0.dev

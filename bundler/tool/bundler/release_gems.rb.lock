@@ -48,5 +48,7 @@ DEPENDENCIES
   aws-sdk-s3 (~> 1.87)
   octokit (~> 4.18)
 
+CHECKSUMS
+
 BUNDLED WITH
    2.5.0.dev

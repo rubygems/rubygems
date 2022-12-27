@@ -23,7 +23,7 @@ GEM
       rspec-mocks (~> 3.12.0)
     rspec-core (3.12.0)
       rspec-support (~> 3.12.0)
-    rspec-expectations (3.12.0)
+    rspec-expectations (3.12.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-mocks (3.12.1)
@@ -54,7 +54,7 @@ PLATFORMS
   arm64-darwin-22
   universal-java-11
   universal-java-18
-  x64-mingw-ucrt
+  x64-unknown
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-darwin-21
@@ -68,6 +68,30 @@ DEPENDENCIES
   rspec
   rubocop (~> 1.7)
   test-unit
+
+CHECKSUMS
+  ast (2.4.2) sha256-1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
+  diff-lcs (1.5.0) sha256-49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67
+  json (2.6.3) sha256-86aaea16adf346a2b22743d88f8dcceeb1038843989ab93cda44b5176c845459
+  minitest (5.16.3) sha256-60f81ad96ca5518e1457bd29eb826db60f86fbbdf8c05eac63b4824ef1f52614
+  parallel (1.22.1) sha256-ebdf1f0c51f182df38522f70ba770214940bef998cdb6e00f36492b29699761f
+  parser (3.1.3.0) sha256-4593da6a6c0dc1b0a0b47b68aa79c36655e19b9d8636f7c27d02a76cb7840e9f
+  power_assert (2.0.2) sha256-1d3e2d70e9bfd7afc5bacdc75f3d9ee69c3e81c50a29de3ca4028509d822dd9f
+  rainbow (3.1.1) sha256-039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
+  rake (13.0.6) sha256-5ce4bf5037b4196c24ac62834d8db1ce175470391026bd9e557d669beeb19097
+  rake-compiler (1.2.0) sha256-e02bcf56d2f3d80cb878b760268e8f13dc8e4251c9fba080ded779b167ae6ff5
+  rb_sys (0.9.52) sha256-4e7950f9e60405ae13b88bb65a00eb6fee535db091eae50edc8fdd90e0529bf1
+  regexp_parser (2.6.1) sha256-4e7b6a95c3b207c2d5274ff5f6334e7a564bf4f0e871028137dccd751eeb4766
+  rexml (3.2.5) sha256-a33c3bf95fda7983ec7f05054f3a985af41dbc25a0339843bd2479e93cabb123
+  rspec (3.12.0) sha256-ccc41799a43509dc0be84070e3f0410ac95cbd480ae7b6c245543eb64162399c
+  rspec-core (3.12.0) sha256-c466f4137966526e177d2156ca45c249eeecc7ed519b23ae2fb80c4675406bc5
+  rspec-mocks (3.12.1) sha256-e0dd725c7d1c1417c3a1715ccc4e41c124fab6c05b2de5a91ce22d74ee301801
+  rspec-support (3.12.0) sha256-dd4d44b247ff679b95b5607ac5641d197a5f9b1d33f916123cb98fc5f917c58b
+  rubocop (1.40.0) sha256-031881f824594fdb08713d5187c7bf07a11ff83fda869a7dd2d7765f92846a35
+  rubocop-ast (1.24.0) sha256-a917dc38015ccfa4397d34e71adaca2187ec7f2adc903f1af909fb6b097a136b
+  ruby-progressbar (1.11.0) sha256-cc127db3866dc414ffccbf92928a241e585b3aa2b758a5563e74a6ee0f57d50a
+  test-unit (3.5.5) sha256-2c24596882077421cccec1f1291c392efd1d18de96cde0d7744cdf810de1d746
+  unicode-display_width (2.3.0) sha256-4796ca01137fe8cf59cada263b74ebe6bb9583c555ec2239be4cb97c91064765
 
 BUNDLED WITH
    2.5.0.dev

@@ -179,6 +179,9 @@ Style/BlockDelimiters:
 Style/PercentLiteralDelimiters:
   Enabled: true
 
+Style/RedundantFreeze:
+  Enabled: true
+
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 

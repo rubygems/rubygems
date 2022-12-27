@@ -14,13 +14,23 @@ concurrency:
 permissions:  # added using https://github.com/step-security/secure-workflows
   contents: read
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./bundler
+
 jobs:
   jruby_bundler:
-    name: Bundler (JRuby)
-    runs-on: ubuntu-22.04
+    name: Bundler on JRuby (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
 
     env:
       RGV: ..
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
 
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
@@ -29,22 +39,27 @@ jobs:
         with:
           ruby-version: jruby-9.3.9.0
           bundler: none
+      - name: Setup java
+        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b # v3.9.0
+        with:
+          distribution: temurin
+          java-version: 18.0.0
+        if: "!startsWith(matrix.os.name, 'ubuntu')"
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps
-        working-directory: ./bundler
       - name: Run Test
         run: |
           bin/parallel_rspec --tag jruby_only --tag jruby
-        working-directory: ./bundler
+        if: startsWith(matrix.os.name, 'ubuntu')
       - name: Install local bundler
         run: |
           bin/rake install:local
-        working-directory: ./bundler
+        if: startsWith(matrix.os.name, 'ubuntu')
       - name: Run a warbler project
         run: |
           cd spec/realworld/fixtures/warbler
           bundle install
           bundle exec warble
           java -jar warbler.jar
-        working-directory: ./bundler
+        if: startsWith(matrix.os.name, 'ubuntu')

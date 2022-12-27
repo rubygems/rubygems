@@ -99,6 +99,9 @@ RSpec.describe "bundle install with specific platforms" do
         DEPENDENCIES
           google-protobuf
 
+        CHECKSUMS
+          #{checksum_for_repo_gem gem_repo2, "google-protobuf", "3.0.0.alpha.5.0.5.1", "universal-darwin"}
+
         BUNDLED WITH
            #{Bundler::VERSION}
       L
@@ -460,6 +463,13 @@ RSpec.describe "bundle install with specific platforms" do
 
     bundle "update"
 
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo4, "sorbet", "0.5.10160"
+      c.repo_gem gem_repo4, "sorbet-runtime", "0.5.10160"
+      c.repo_gem gem_repo4, "sorbet-static", "0.5.10160", Gem::Platform.local
+      c.repo_gem gem_repo4, "sorbet-static-and-runtime", "0.5.10160"
+    end
+
     expect(lockfile).to eq <<~L
       GEM
         remote: #{file_uri_for(gem_repo4)}/
@@ -477,6 +487,9 @@ RSpec.describe "bundle install with specific platforms" do
 
       DEPENDENCIES
         sorbet-static-and-runtime
+
+      CHECKSUMS
+        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -531,6 +544,13 @@ RSpec.describe "bundle install with specific platforms" do
 
     bundle "update"
 
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo4, "sorbet", "0.5.10160"
+      c.repo_gem gem_repo4, "sorbet-runtime", "0.5.10160"
+      c.repo_gem gem_repo4, "sorbet-static", "0.5.10160", Gem::Platform.local
+      c.repo_gem gem_repo4, "sorbet-static-and-runtime", "0.5.10160"
+    end
+
     expect(lockfile).to eq <<~L
       GEM
         remote: #{file_uri_for(gem_repo4)}/
@@ -548,6 +568,9 @@ RSpec.describe "bundle install with specific platforms" do
 
       DEPENDENCIES
         sorbet-static-and-runtime
+
+      CHECKSUMS
+        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -583,6 +606,8 @@ RSpec.describe "bundle install with specific platforms" do
       DEPENDENCIES
         nokogiri
         tzinfo (~> 1.2)
+
+      CHECKSUMS
 
       BUNDLED WITH
          #{Bundler::VERSION}

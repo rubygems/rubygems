@@ -24,6 +24,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rack
 
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -74,6 +77,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         rack
+
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -202,6 +208,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rack (> 0)
 
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -249,6 +258,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rack
 
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
+
       BUNDLED WITH
          #{current_version}
     G
@@ -260,6 +272,11 @@ RSpec.describe "the lockfile format" do
 
       gem "rack-obama"
     G
+
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "rack", "1.0.0"
+      c.repo_gem gem_repo2, "rack-obama", "1.0"
+    end
 
     expect(lockfile).to eq <<~G
       GEM
@@ -275,6 +292,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rack-obama
 
+      CHECKSUMS
+        #{expected_checksums}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -286,6 +306,11 @@ RSpec.describe "the lockfile format" do
 
       gem "rack-obama", ">= 1.0"
     G
+
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "rack", "1.0.0"
+      c.repo_gem gem_repo2, "rack-obama", "1.0"
+    end
 
     expect(lockfile).to eq <<~G
       GEM
@@ -300,6 +325,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         rack-obama (>= 1.0)
+
+      CHECKSUMS
+        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -320,6 +348,11 @@ RSpec.describe "the lockfile format" do
         gem "rack-obama", ">= 1.0"
       end
     G
+
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "rack", "1.0.0"
+      c.repo_gem gem_repo2, "rack-obama", "1.0"
+    end
 
     expect(lockfile).to eq <<~G
       GEM
@@ -343,6 +376,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rack-obama (>= 1.0)!
 
+      CHECKSUMS
+        #{expected_checksums}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -353,6 +389,11 @@ RSpec.describe "the lockfile format" do
       source "#{file_uri_for(gem_repo2)}/"
       gem "net-sftp"
     G
+
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "net-sftp", "1.1.1"
+      c.repo_gem gem_repo2, "net-ssh", "1.0"
+    end
 
     expect(lockfile).to eq <<~G
       GEM
@@ -367,6 +408,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         net-sftp
+
+      CHECKSUMS
+        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -399,6 +443,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         foo!
+
+      CHECKSUMS
+        foo (1.0)
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -471,6 +518,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         foo!
 
+      CHECKSUMS
+        foo (1.0)
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -502,6 +552,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         foo!
+
+      CHECKSUMS
+        foo (1.0)
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -535,6 +588,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         foo!
 
+      CHECKSUMS
+        foo (1.0)
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -563,6 +619,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         foo!
+
+      CHECKSUMS
+        foo (1.0)
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -596,6 +655,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         foo!
+
+      CHECKSUMS
+        foo (1.0)
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -639,6 +701,11 @@ RSpec.describe "the lockfile format" do
         foo!
         rack
 
+      CHECKSUMS
+        bar (1.0)
+        foo (1.0)
+        #{checksum_for_repo_gem gem_repo2, "rack", "1.0.0"}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -651,6 +718,10 @@ RSpec.describe "the lockfile format" do
       gem "rack", :source => "#{file_uri_for(gem_repo2)}/"
     G
 
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "rack", "1.0.0"
+    end
+
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
@@ -662,6 +733,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         rack!
+
+      CHECKSUMS
+        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -676,6 +750,14 @@ RSpec.describe "the lockfile format" do
       gem "actionpack"
       gem "rack-obama"
     G
+
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "actionpack", "2.3.2"
+      c.repo_gem gem_repo2, "activesupport", "2.3.2"
+      c.repo_gem gem_repo2, "rack", "1.0.0"
+      c.repo_gem gem_repo2, "rack-obama", "1.0"
+      c.repo_gem gem_repo2, "thin", "1.0"
+    end
 
     expect(lockfile).to eq <<~G
       GEM
@@ -698,6 +780,9 @@ RSpec.describe "the lockfile format" do
         rack-obama
         thin
 
+      CHECKSUMS
+        #{expected_checksums}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -709,6 +794,16 @@ RSpec.describe "the lockfile format" do
 
       gem "rails"
     G
+
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "actionmailer", "2.3.2"
+      c.repo_gem gem_repo2, "actionpack", "2.3.2"
+      c.repo_gem gem_repo2, "activerecord", "2.3.2"
+      c.repo_gem gem_repo2, "activeresource", "2.3.2"
+      c.repo_gem gem_repo2, "activesupport", "2.3.2"
+      c.repo_gem gem_repo2, "rails", "2.3.2"
+      c.repo_gem gem_repo2, "rake", "13.0.1"
+    end
 
     expect(lockfile).to eq <<~G
       GEM
@@ -737,6 +832,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rails
 
+      CHECKSUMS
+        #{expected_checksums}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -758,6 +856,11 @@ RSpec.describe "the lockfile format" do
       gem 'double_deps'
     G
 
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "double_deps", "1.0"
+      c.repo_gem gem_repo2, "net-ssh", "1.0"
+    end
+
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
@@ -773,6 +876,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         double_deps
 
+      CHECKSUMS
+        #{expected_checksums}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -784,6 +890,11 @@ RSpec.describe "the lockfile format" do
 
       gem "rack-obama", ">= 1.0", :require => "rack/obama"
     G
+
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "rack", "1.0.0"
+      c.repo_gem gem_repo2, "rack-obama", "1.0"
+    end
 
     expect(lockfile).to eq <<~G
       GEM
@@ -798,6 +909,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         rack-obama (>= 1.0)
+
+      CHECKSUMS
+        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -811,6 +925,11 @@ RSpec.describe "the lockfile format" do
       gem "rack-obama", ">= 1.0", :group => :test
     G
 
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "rack", "1.0.0"
+      c.repo_gem gem_repo2, "rack-obama", "1.0"
+    end
+
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
@@ -824,6 +943,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         rack-obama (>= 1.0)
+
+      CHECKSUMS
+        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -856,6 +978,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         foo!
 
+      CHECKSUMS
+        foo (1.0)
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -886,6 +1011,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         foo!
+
+      CHECKSUMS
+        foo (1.0)
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -918,6 +1046,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         foo!
 
+      CHECKSUMS
+        foo (1.0)
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -946,6 +1077,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         foo!
+
+      CHECKSUMS
+        foo (1.0)
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -987,6 +1121,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rack
 
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -1006,6 +1143,10 @@ RSpec.describe "the lockfile format" do
       gem "platform_specific"
     G
 
+    expected_checksums = construct_checksum_section do |c|
+      c.repo_gem gem_repo2, "platform_specific", "1.0", "universal-java-16"
+    end
+
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
@@ -1017,6 +1158,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         platform_specific
+
+      CHECKSUMS
+        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1049,6 +1193,10 @@ RSpec.describe "the lockfile format" do
         activesupport
         rack
 
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "activesupport", "2.3.5")}
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -1072,6 +1220,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         rack
+
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1097,6 +1248,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rack (= 1.0)
 
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -1120,6 +1274,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         rack (= 1.0)
+
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1166,6 +1323,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rack (> 0.9, < 1.0)
 
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "0.9.1")}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     G
@@ -1189,6 +1349,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         rack (> 0.9, < 1.0)
+
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "0.9.1")}
 
       RUBY VERSION
          #{Bundler::RubyVersion.system}
@@ -1268,6 +1431,10 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         minitest-bisect
+
+      CHECKSUMS
+        #{checksum_for_repo_gem gem_repo4, "minitest-bisect", "1.6.0"}
+        #{checksum_for_repo_gem gem_repo4, "path_expander", "1.1.1"}
 
       BUNDLED WITH
          #{Bundler::VERSION}

@@ -91,6 +91,11 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
       DEPENDENCIES
         nokogiri (~> 1.11)
 
+      CHECKSUMS
+        nokogiri (1.11.1)
+        #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.11.1", Bundler.local_platform}
+        #{checksum_for_repo_gem gem_repo4, "racc", "1.5.2"}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     L

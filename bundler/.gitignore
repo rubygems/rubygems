@@ -11,3 +11,6 @@
 
 # rspec failure tracking
 .rspec_status
+
+# used cassettes
+/spec/support/artifice/used_cassettes.txt

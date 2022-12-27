@@ -4,6 +4,7 @@ require "net/http"
 require_relative "../path"
 
 CASSETTE_PATH = "#{Spec::Path.spec_dir}/support/artifice/vcr_cassettes"
+USED_CASSETTES_PATH = "#{Spec::Path.spec_dir}/support/artifice/used_cassettes.txt"
 CASSETTE_NAME = ENV.fetch("BUNDLER_SPEC_VCR_CASSETTE_NAME") { "realworld" }
 
 class BundlerVCRHTTP < Net::HTTP
@@ -20,6 +21,10 @@ class BundlerVCRHTTP < Net::HTTP
       handler = self
       request.instance_eval do
         @__vcr_request_handler = handler
+      end
+
+      File.open(USED_CASSETTES_PATH, "a+") do |f|
+        f.puts request_pair_paths.map {|path| Pathname.new(path).relative_path_from(Spec::Path.source_root).to_s }.join("\n")
       end
 
       if recorded_response?

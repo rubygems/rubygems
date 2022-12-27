@@ -63,7 +63,7 @@ jobs:
         if: matrix.bundler.value != ''
       - name: Run Test
         run: |
-          bin/rake spec:all
+          bin/parallel_rspec
       - name: Run Rubygems Requirement tests against local bundler, to make sure bundler monkeypatches preserve the behaviour
         run: |
           ruby -I../../lib:lib:test test/rubygems/test_gem_requirement.rb

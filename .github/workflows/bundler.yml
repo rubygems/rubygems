@@ -75,5 +75,5 @@ jobs:
         if: matrix.bundler.value != ''
       - name: Run Test
         run: |
-          bin/rake spec:all
+          bin/parallel_rspec
     timeout-minutes: ${{ matrix.timeout || 60 }}

@@ -1,0 +1,58 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 2660
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "c034438f6b08402aae3653fd12051637"
+last-modified: Tue, 07 Jun 2022 00:44:33 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: acecfe71-da71-46f7-86c6-96d58f3208ce
+x-runtime: 0.009263
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.43.103.69:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:30 GMT
+via: 1.1 varnish
+age: 1719
+x-served-by: cache-mad22077-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140331.902144,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.5 |checksum:f71b7ed106b91301b624bae78d3bed0622eb755615b9cd30442b221f0f705037
+0.1.0 |checksum:1886293d750fdf916d87a7495b139591006717818eb63c5d061ce07c1046e1b5,ruby:>= 1.8.7
+0.1.1 |checksum:2fcd667de9aa93c91401f27b5d9e137cd58bbdf193c79fe07c5145230e21e337,ruby:>= 1.8.7
+0.2 |checksum:86939933abacf020a81f8c439bab2ec825b7b6045f8a7cf43c8bf1406ee12098,ruby:>= 1.8.7
+0.2.1 |checksum:c77de1bdb1f12435cc918369c59ed06ad9f509fc4f95d015e91e010dc4d3360a,ruby:>= 1.8.7
+0.2.2 |checksum:5350921b2abf5184f5fd45ac481b1176414eca879036d8b95d5c4244100a9561,ruby:>= 1.8.7
+0.3.0 |checksum:5ca0ae2946a1cf1a2e7b6ee3775de5524476ca7c2ddf48766728c42a08de5595,ruby:>= 1.8.7
+0.3.1 |checksum:953551665fb0d398740a72a26314c6d34bd70fa35419c96dc58351f17d9a5081,ruby:>= 1.8.7
+0.5.1 |checksum:4a2ecd74bed0c9a3aad43d2a714f5433e788010585250e172a21f46ae5d1176e,ruby:>= 1.8.7
+0.6.0 |checksum:4ef0bd1cf2df7ac71ba957f2c43ff6d48e50755f332a253946bebe97348bbfe1,ruby:>= 1.8.7
+0.6.1 |checksum:a489af4c664b6d698b698be71efa78c0c5e40f54ad974c0d24fe7054e4f91018,ruby:>= 1.8.7
+0.7.0 |checksum:d39d341c992abb7273d8b83cbe32a38e69fdeb4eab684dbd2db1232e4065a4b4,ruby:>= 1.8.7
+0.8.0 |checksum:e1b7f21b58a4c2ff6f2c3361f584342017f46d4a965f377f192b4cd8855b0242,ruby:>= 1.8.7
+0.9.0 |checksum:2331c7e760cfb30b4a67cc0c04d7b1b4d7822d69a5c1d0ec430b113f34b4c1e5,ruby:>= 1.9.3
+0.10.0 |checksum:d6169598658ff1aeb23d080a0eefab915fea8f5a0f59a62b47db0f45b963160f,ruby:>= 1.9.3
+0.10.1 |checksum:cc9305c1aa12abe16645b4f028eebd6d6ae123465af18a2cd54602198dc313bd,ruby:>= 1.9.3
+0.11 |checksum:fc5487b0c81cbf2beaede0e6c07af036559deb4ab6df185f61ac16562949d8f5,ruby:>= 1.9.3
+0.12.0 |checksum:cfac33a3b76dd03938f272fefcdbfdc20e0ad419c4b79b6e9d8edb6c003b8a04,ruby:>= 1.9.3
+0.12.1 |checksum:864ce59bc51ab5a83a344a477a07def3b9691dd8a2b11f52dca3af45e707327c,ruby:>= 1.9.3
+0.13.0 |checksum:e48f8d5a9e6fb119187a6cf63282d6d59afb0af6cf705a0463a396a4d029faf5,ruby:>= 2.0.0
+0.14.0 |checksum:179b88a4feb592c2a93b4178328a3cb883e7004f1afdc7993851890197ebdea1,ruby:>= 2.0.0
+0.15.0 |checksum:bb2338e3b20f9b58d9f16f7109691561c7fda290f91d7baeddd2629561840b7f,ruby:>= 2.0.0
+0.16.0 |checksum:d8c138ce9a690767744fe5107ef14880fa330949b34b7bad826f67ed3ea204ba,ruby:>= 2.0.0
+0.16.1 |checksum:f0492138e45da35f961d329ee27c9d5aac8a7d866b95fb31671fa9803e7ed104,ruby:>= 2.0.0
+0.16.2 |checksum:af9f05383fedd4eb081a644de21377462d86c78bfd583a61313865277784eeef,ruby:>= 2.0.0
+0.16.3 |checksum:db464d2f8236e5f8546c07abb51b08e0a62b77136b1c7f91fa0ec5fe2336908e,ruby:>= 2.0.0
+0.17.0 |checksum:d62474b28b9f18d9108a7c859171bb1b9ebf0e1bc1d218e79170c0f373f729c8,ruby:>= 2.0.0
+0.17.1 |checksum:52571b55f9157120833ac1667f2969ce0139251811d0a9b64657c1c135069cf9,ruby:>= 2.0.0

@@ -1,0 +1,90 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 9482
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "387304212939a2d4e1eee1e983aecbc0"
+last-modified: Mon, 23 Aug 2021 16:17:43 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 442444af-4240-4383-9990-8884c0bcd413
+x-runtime: 0.012755
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.26.151.153:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:22 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22087-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140322.233596,VS0,VE195
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.1.0 mocha:>= 0.10.5,rake:>= 0,rspec:>= 2.9.0,rspec-puppet:>= 0.1.1|checksum:f7f2e424deb626bbd3829f479b419f2d97e9f0e06a6273a53cf164c6b9115402
+0.2.0 mocha:>= 0.10.5,rake:>= 0,rspec:>= 2.9.0,rspec-puppet:>= 0.1.1|checksum:81b95a08e7ebc864d214605d2432bc7cd7a65540cde180dce1846f786540ee41
+0.3.0 mocha:>= 0.10.5,rake:>= 0,rspec:>= 2.9.0,rspec-puppet:>= 0.1.1|checksum:b30e6dcde5518603161c529cae209c01ac1331d2a87ae74491293593ed9414a5
+0.4.0.rc1 mocha:>= 0.10.5,rake:>= 0,rspec:>= 2.9.0,rspec-puppet:>= 0.1.1|checksum:beb9dd730e19c57ce228dc0c0a068b6b702a23641d29750412a70a6dc5ee873a,rubygems:> 1.3.1
+0.4.0 mocha:>= 0.10.5,rake:>= 0,rspec:>= 2.9.0,rspec-puppet:>= 0.1.1|checksum:aff859cfea317ecd001dc8dff0c7de21dd1b54c76a21d939943c333010bedc67
+0.4.1 mocha:>= 0.10.5,rake:>= 0,rspec:>= 2.9.0,rspec-puppet:>= 0.1.1|checksum:d5ccb5e4ba13ab41cd2fd67586c11c8ba4b2db80ae6c4c657d6955c80b45ab8b
+0.5.0 puppet:>= 0,puppet-lint:>= 0,rake:>= 0,rspec:>= 0,rspec-puppet:>= 0|checksum:8a814290dd4a7dbd4392ab54c1e2fcd2ad3938e97b6726b9bf589a6f5bd82f9b
+0.5.1 mocha:>= 0,puppet:>= 0,puppet-lint:>= 0,rake:>= 0,rspec:>= 0,rspec-puppet:>= 0|checksum:3bc5bcd9724a1326eda5796b3304b644a2b0bc02720e59ad39039f1984f825df
+0.5.2 mocha:>= 0,puppet-lint:>= 0,rake:>= 0,rspec:>= 0,rspec-puppet:>= 0|checksum:394edc6d785c298177ed26a6bbf5a9032b1f435e8485a6d33ecd8de7409cf134
+0.6.0 mocha:>= 0,puppet-lint:>= 0,rake:>= 0,rspec:>= 0,rspec-puppet:>= 0|checksum:066fc916790ac56e865d279afa5f9e46ba70cd4496f35910e0cef1c39580290c
+0.7.0 mocha:>= 0,puppet-lint:>= 0,rake:>= 0,rspec:>= 0,rspec-puppet:>= 0|checksum:2e48378ad64e674fe6e4dad6c0b11dff65438de0856d8800c672711bd4d980eb
+0.8.0 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec:>= 0,rspec-puppet:>= 0|checksum:1754c8bb7474de284336dcef1038536db50b35363d05e98bdd46afbf37131073
+0.8.1 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec:>= 0,rspec-puppet:>= 0|checksum:a53b680962bb7f7aba5109bc072d38088d7162c330205c798c16628161c580ce
+0.8.2 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec:>= 0,rspec-puppet:>= 0|checksum:94c0b72868a6524d8fcad11403091f830ebe23e949a9bf52811b89c3959ffe20
+0.9.0 metadata-json-lint:>= 0,mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:1401b0a25ad44e0c60e1736867e4eb2058cfccbe2e6ac836c5f67a64fbb36a86
+0.9.1 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:d7b234d14f6d9ef9575115809a1bcef9a6d45e175b37fdc944c19d9e4d0ed162
+0.10.0 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:24e0f5010ae82ce6eff65f32bc932a436de19bc2d27715069510c3a0ea689d71
+0.10.1 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:d45e361d9d6650330a1d8bd3be97219e1a29598ac4ab640dcd9fc83fd029be1b
+0.10.2 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:021ba6c8c3a07ec66ae7a14a7e7f95127ddd366fcd824b2c01017fd590dae15d
+0.10.3 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:63a387d3b19246a6305b510674adf4a4847cb54aa13b3343c16a7f6978641361
+1.0.0 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:2a2417ac388a8b4c56c9a181b85b7ee20cc2daa13338f73c30d423d669a5f1ab
+1.0.1 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:9deb8952cc43d72de613b70e11c45864927f550fda08028a0a80bf94ab78596a
+1.1.0 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:52175233aecf6b6489d7a3d63e9154bc70f5ba97523488e7e14b3e432b158208
+1.1.1 mocha:>= 0,puppet-lint:>= 0,puppet-syntax:>= 0,rake:>= 0,rspec-puppet:>= 0|checksum:588ccfae4a64afe4422f2a1fa4f3c14bf1a3a0c3f95244adcefc6663fe4243ab
+1.2.1 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:6a45812cc7b38686e485a0d03dc8ca5081d812ae569ae1062bccb3065cadbdbf
+1.2.2 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:d8bcbe42d89ea97d55ef2682cca0918beeeec04cc698535f6aa01b0b20a965ac
+2.0.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:ae2dd750f8d6d6c184d46515d93ba5e21b341f7c954e502cea46d78680a4eda7
+2.0.1 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:2fdd7c4ab47638d5cadddbd747216b73a94c26a2d822f1c0d7072de6121f6c69
+2.0.2 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:e9875c1c3ba074beb95c98d9d6b01335275876f7664d0cc2e71ad14c09054203
+2.1.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:4a09ca0b904252c2c4907d5734ab9bcf7accefe8ed5c3dd53b7975ba4d9bccda
+2.1.1 mocha:~> 1.0,parallel_tests:>= 0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:95c4986682cd814d69177dba846984fae11ac3aac96979e007bdba066ead0434
+2.1.2 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:f020379f0d6a0b31fc25508216ed4271c7d9dcaea7042b84dd7701b03a9a2f11
+2.1.3 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:594b3543c7cbe2b99add8ca45ab8cbda125d82f411a6190ad6dd93804e997109
+2.1.4 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:89e6767b8ffb108fbebb9bd732061b759afb42f7bda05c55c9a427dc57faa1f7
+2.1.5 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:06990aab14e41047d3489d715ca2444fd835b2d5f821161f7f79fc72f998e862
+2.2.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:2c39f1d96cd4f9d624faf0b5a1db4ce056c339b1662f35703f2b74244d17ddf9
+2.3.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:6d2f59d784cb58b2b67803394a7deb2c2e8835dc12128f068721bf7880446f8a
+2.3.1 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:cfe76b8eb681a23668572cbc817c94ffe50c846cad8a7a7d19ad6f8965d22042
+2.3.2 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:2869755d183d047fd25ed0d0cbff8402ba77087ded2ba19824bfcbd29cab24cd
+2.4.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:76336bc9888c6f30027c5a37c2d5eed67664bfa1bae09238996fa90b15c236ca
+2.5.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:793409a568d0645dd4335a418c9e3a891fe9f1ef654b7cce1eb137e9a3740271
+2.5.1 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:47eff962b854b164e5961a54fa249e6590514a0e14d98b2d99fddb8304d8ef9e
+2.6.1 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:f205dc7469faf7c2bad28f8bc4a70f4fd65eb21acf3b7f9ffcc71987d680f889
+2.6.2 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:aa67ce09e67d5cb929a50c8c00caab87b6feba4cc1fc78604a29643ff2bb30db
+2.7.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:4bb154fdc7cd5ef1f0e84912c9745b1b74491b0a6b62b2d3b8b6a5103343c0ad
+2.8.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:c49a4df4691e3e2ef7578735296368386c7512d755627303248021a8eaeef7fd
+2.9.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:11ac39b79feb703c2e3579a411a81e39852a37b47f9d6aa0f5985b77675f4626
+2.9.1 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:2c05173036c17a4aabbcf7042af258e017c1f5a351f2857ddd3f1f9a49750f9d
+2.10.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:4b0502ed70539f0210bc0cf45408a3a2fa29c72eb67a50fc4e0c024e0d8df403
+2.11.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:9972a32abe3f0579e85d0d86524003e15e6f02592a06bb26b29cb704b3380b9d
+2.12.0 mocha:~> 1.0,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:f4baee54a814a562314c4f7bdb7823c81ee3c56d0ec86a51ba4eb0e8e1237202
+2.13.0 mocha:~> 1.0,pathspec:~> 0.2.1,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:29107fba906ea45d4b15dddae09b3a5eda277367c1b30a0d0106c4d25c807f29
+2.13.1 mocha:~> 1.0,pathspec:~> 0.2.1,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:de06f5ba5b2c49d9db9c00692e32d1851ca2bda18597d8d56e9f06a07699d89d
+2.14.0 mocha:~> 1.0,pathspec:~> 0.2.1,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:986b18a60578cb8f74668fe710cd3b00a98dd3bfcf1a60c76beb4eda06e36654
+2.14.1 mocha:~> 1.0,pathspec:~> 0.2.1,puppet-lint:~> 2.0,puppet-syntax:~> 2.0,rspec-puppet:~> 2.0|checksum:70bfbda59f99cf8ef46ea171f006ecf857c80e686b5e69502ed6c6530c4fb15f
+2.15.0 mocha:~> 1.0,pathspec:~> 0.2.1,puppet-lint:~> 2.0,puppet-syntax:< 4&>= 2.0,rspec-puppet:~> 2.0|checksum:119cef852f33bb6bae857a353f3f6d741e2cc897402ff1414628299e4748cc2e
+2.16.0 mocha:~> 1.0,pathspec:< 1.1.0&>= 0.2.1,puppet-lint:~> 2.0,puppet-syntax:< 4&>= 2.0,rspec-puppet:~> 2.0|checksum:b17c38d5dcba5c3c0591025235135bb2fa548e8ff2858f472cae461b08998aed
+3.0.0 mocha:~> 1.0,pathspec:< 1.1.0&>= 0.2.1,puppet-lint:~> 2.0,puppet-syntax:< 4&>= 2.0,rspec-puppet:~> 2.0|checksum:2d682e235b706d1e76bfad20f8d5a16c3970edb0118d333af523bdc8ea63c6ae
+4.0.0 mocha:~> 1.0,pathspec:< 1.1.0&>= 0.2.1,puppet-lint:~> 2.0,puppet-syntax:< 4&>= 2.0,rspec-puppet:~> 2.0|checksum:e6f30eea3281c1cb692f0aeba1cb08d2441502e171e5ed827a9d4f56ffc56895,ruby:>= 2.4
+4.0.1 mocha:~> 1.0,pathspec:< 1.1.0&>= 0.2.1,puppet-lint:~> 2.0,puppet-syntax:< 4&>= 2.0,rspec-puppet:~> 2.0|checksum:8229cc84b03a94937d4c228fa23ecc384b0ba9a2af4e901e34d2ad9ad4061507,ruby:>= 2.4

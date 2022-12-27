@@ -1,0 +1,36 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 897
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "4acc83d24de053069d42e9e6d3ed8b5d"
+last-modified: Mon, 09 Aug 2021 08:16:33 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: a214880f-ab7e-4b1f-8968-63d6c14d8c46
+x-runtime: 0.009179
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.43.103.69:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:28 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22071-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140327.478169,VS0,VE561
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.1.0 beaker-vmpooler:>= 0,rbvmomi:~> 1.9,stringify-hash:~> 0.0.0|checksum:fe461873e6fb8000663a861670bf84b2fb72938360d01d594f355a830f3fb99c
+0.2.0 beaker-vmpooler:>= 0,beaker-vmware:>= 0,rbvmomi:~> 1.9,stringify-hash:~> 0.0.0|checksum:aa99c5b4b9a45b3cfc8fad0cfb0500ad80525ad878947e5cb8b092afb89c79be
+0.3.0 beaker-vmpooler:>= 0,beaker-vmware:>= 0,rbvmomi:~> 1.9,stringify-hash:~> 0.0.0|checksum:a7100ba1fd6ee281afa8881ac675d169501c8af1dad058446bfd1b2c2423936c
+0.4.0 beaker-vmpooler:>= 0,beaker-vmware:>= 0,rbvmomi:~> 1.9,stringify-hash:~> 0.0.0|checksum:d864609ccab73bb1af8376255fe7df090f8c8f187f79774c496d8ec7c808ee41
+1.0.0 beaker-vmware:>= 0,rbvmomi:~> 1.9,stringify-hash:~> 0.0.0|checksum:2d6ec1108046f293d53d4dce8f301d3c01cfff5832c846a5c3dd795b4d28321d
+1.1.0 beaker-vmware:>= 0,rbvmomi:~> 1.9,stringify-hash:~> 0.0.0|checksum:be9a07673f1557bfade0deba0b5895ca6e5686075fb786fa663354696dd9c5de

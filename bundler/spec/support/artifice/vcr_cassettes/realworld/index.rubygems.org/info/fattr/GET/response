@@ -1,0 +1,41 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 895
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "134fca6227c26b055bc6fd6c7cf26197"
+last-modified: Mon, 14 Dec 2020 16:48:12 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: a06616d6-e9e3-4858-885a-cc5bc1b783bd
+x-runtime: 0.011794
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.43.103.69:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:24:53 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22063-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140293.018140,VS0,VE732
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+1.0.1 |checksum:347f705355397e2991a1828db4edef22f58172daa0d4e5864acdf82b88c05bf1
+1.0.2 |checksum:bcc3c10a35ef0f66da09845fbae15208d1b98d930a73b88e7a0e166d25e23bcc
+1.0.3 |checksum:4ecadaa0b118ee7148bd5dabae4bf40842f4bf66345fd5c2c374d6ffa322be6e
+1.1.0 |checksum:1fffa81301efe8ed543774c673cbca56fabbefa31447a910b62987cccd0393c7
+2.0.0 |checksum:24d4b36f772a8c7949d8d8c53d0aa4bc2a92b1c7c5049c716c2dd0e89128d6ac
+2.1.0 |checksum:20ba71ddec16e34707e65c25855735a543b9378a1e9345ced46f392d8c61afaa
+2.2.0 |checksum:4671287dc64e0cd7e16aec393b226cac2062fe4984f5026134d7cf9acd5439f6
+2.2.1 |checksum:070930def3fdc2e25066400463ba776f8da58cd1b105a53175203d2013d89411
+2.2.2 |checksum:628a998d404d0417bb4ce72a126ff2d8dced608a11b57ade8fcf64509d6def8c
+2.3.0 |checksum:0430a798270a7097c8c14b56387331808b8d9bb83904ba643b196c895bdf5993
+2.4.0 |checksum:a7544665977e6ff2945e204436f3b8e932edf8ed3d7174d5d027a265e328fc08

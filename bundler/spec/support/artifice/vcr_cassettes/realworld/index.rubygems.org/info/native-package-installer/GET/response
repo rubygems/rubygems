@@ -1,0 +1,45 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1219
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "efc3301990aef626c331a48cdb0fe6e1"
+last-modified: Sun, 24 Jul 2022 01:55:09 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 1843ded4-fc1d-4ffc-a017-55ead525579f
+x-runtime: 0.008608
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.26.151.153:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:31:13 GMT
+via: 1.1 varnish
+age: 839
+x-served-by: cache-mad22038-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140673.113060,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+1.0.0 |checksum:5a180c767b3ac0a223c3cc54e3ec088be3827fe08bdf728f2067d795ad0529fe
+1.0.1 |checksum:5243ec71053a2ddb88bf304ea31d2fb3e46bf360c2c57d583421b7e40fea05fe
+1.0.2 |checksum:932207db7b7891e59563c24fb0b87b75b3f8b04aeeb0181623cf5f85b9e939d4
+1.0.3 |checksum:e156f0972bb4667cde054278909a22049d212c9f5f0eeef2a2c11a6074b33957
+1.0.4 |checksum:4a20c4c74681d60075cad4b435f64278e6b09813edef8c41a23f1e7f9e16726b
+1.0.5 |checksum:c299002a4a05652598c26614a0fc4b75bc2c619d253e0db775d419382e0b54b9
+1.0.6 |checksum:7cff2ddbedc529e5f98422288e198428fcf420d78ffabfd4c88536870dda0c3f
+1.0.7 |checksum:d6f9330f74d10d7fe895e4b71c957565793d993a8319cfdb42c91d8026fc190f
+1.0.8 |checksum:0254465181272c9a17aa0daefe7934030d52b651b64d689ef8e0661bef3284a0
+1.0.9 |checksum:80bad0273706eeb4fc49ac8fa589b25eb6728c85a09fd241c8f0f06bdca32c5e
+1.1.1 |checksum:e87a8d5af579ae0bce18a36eae1ada234c345bc155fa554e522d1f1c08ae81f3
+1.1.2 |checksum:efa3029d2c46bb05a41c785f810987f516d4d1a8bf19c64ca544427c6ef61187
+1.1.3 |checksum:ba899df70489b748a3fe1b48afe6325d1cb8ca67fdff759266c275b911c797dd
+1.1.4 |checksum:273a53890e808653f203d072a1282311c3e53264b5c689560d722252f85a0edc
+1.1.5 |checksum:516ebbacd7382b7e424da96eda6666d60dfad4dd407245a6ad5c1ad94e803ae4

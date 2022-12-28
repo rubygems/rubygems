@@ -1,0 +1,55 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 3775
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "b9aeac908e4a4c361a1bda24001aec60"
+last-modified: Wed, 17 Aug 2022 06:50:35 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 0f4e3f23-f577-48d6-8b9d-245f9419fd1c
+x-runtime: 0.011666
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.25.15.240:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:32 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22077-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140332.004423,VS0,VE191
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.7 fog-core:~> 1.27,fog-json:~> 1.0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:20cebb98c1348be9f307371b86513872270f078677000a6a9fd75d8ee1670b77
+0.1.0 fog-core:~> 1.27,fog-json:~> 1.0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:f2863abbff1cc12e32bbda383e1eafede8534e4cd634cb1e60ce4fdd347ae6c4
+0.2.0 fog-core:~> 1.27,fog-json:~> 1.0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:1571284a3eb2a1eb6c66a9784336d3081a5c7ec551ab9a9cc91e2ac2b3efc674
+0.2.1 fog-core:~> 1.27,fog-json:~> 1.0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:2721d3358ea234ca45ace873a6ca77bbf7f9d6e5c7b0670fc6fd200916d2063a
+0.2.2 fog-core:~> 1.27,fog-json:~> 1.0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:89bbe8a722eaf83a9dbda779793cd32cc45bf1fa99e7536ce9dd2853a2b66eb1
+0.3.0 fog-core:~> 1.27,fog-json:~> 1.0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:83b76b3c2bf9b2a6f02eff92d44c2198f11abe42a7598be7890dd10fe77b7e57
+0.3.1 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:cbeae74553781ef25ceda1b48473e6a6d04435eea22d5463f212026c33e6b9e7
+0.3.2 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:58b532da71915f197a980ead0ab63d4a01332c1a993091db05c8a16478166a59
+0.3.3 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:d0aa317f7c1473a1d684fff51699f216bb9cb78b9ee9ce55a81c9bcc93fb85ee
+0.3.4 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:49173ee6149d396b3b92e06809fec3a73fa4e3f980b89e632d264a50859aeb0f
+0.3.5 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:9d2c94d6af6e4f1bef6cece975d99abf79671bd8315d05f125521cd8772ebceb
+0.3.6 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:6232f765d43f74db939e44c29a4af44f5232c17b5e3427f6ad80fdd9ae4bcec7
+0.3.7 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:d0e4efe4a9aa8ed8e5286fb3a6a71310e9ec8a839f752540e7a6097a4b4b802a
+0.3.8 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:4027b8c01e21aff5af11aae8b2892ec88e5217cbabdbfcb39544bb214f722444
+0.3.9 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:8b2eb76c19b17d96cb8e55419f3b23f811331cada90eae4b1d95ff9142244475
+0.3.10 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:e39786cce60cf222e411b20eb6b3aedce2831be5f9b2ed7f6e1ef50999f2b83b
+0.3.11 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:b7c631516b33bca11765369d42148ae20bf450d2bcbdc82a974bd60ea71f01cb
+0.3.12 aliyun-sdk:>= 0,fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:bb700b36622004ce63f14e8f54f36b13acfed6bb350f9b7acb09cc96bba59c91
+0.3.13 fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:437df817cb34f10367335772cd85d72b1aacd0ac208da04b4bc0f5a9f549ba7e
+0.3.15 aliyun-sdk:~> 0.7.2,fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:f7a74a77fffd76017e939c77b4d82837413b93f653aeaf22f2449517e66fb0d9
+0.3.16 aliyun-sdk:~> 0.7.2,fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:7322b8be8e986a8e4fb07b74e51345d0e49aa42e4f857234f98b59f990d204e1
+0.3.17 aliyun-sdk:~> 0.7.3,fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:f1455c0ee15f2764919bb9d2cdab3c70b86d882276d162d010d38922d3667311
+0.3.18 aliyun-sdk:~> 0.7.3,fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:cd12c20341fbbba8592ec8359055e8e0a025827df2f3ef21982a8c2d817aefd3
+0.3.19 aliyun-sdk:~> 0.8.0,fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:6b85c2114655a76012ca17b044ef5bd094a2bd6576f048571655915328e1d825
+0.4.0 addressable:~> 2.8.0,aliyun-sdk:~> 0.8.0,fog-core:>= 0,fog-json:>= 0,ipaddress:~> 0.8,xml-simple:~> 1.1|checksum:8f2334604beb781eafbb9cd5f50141fbb2c7eb77c7f2b01f45c2e04db0e5cc38

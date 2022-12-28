@@ -1,0 +1,39 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 733
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "e0ff641160ec9de90ed07c385f668363"
+last-modified: Mon, 14 Dec 2020 15:34:15 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: dec15744-ac82-40f0-b02d-f8d3d681d1f5
+x-runtime: 0.007927
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.26.151.153:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:31:13 GMT
+via: 1.1 varnish
+age: 2293
+x-served-by: cache-mad22092-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140673.416705,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.1 |checksum:6ce917e120db2c88a971520492fb1caf2cd5330617f1d936fe720778ff9f8a00
+0.0.2 |checksum:88520651bb1e8fa83ba0d4b59317d5eb4011940bb88d7cbcdce3ab5bd976c0d6
+0.0.3 |checksum:5078ce6d29faba50b9927ce5463b3ff9bb1b635687601c5c1c0c6df80885f36f
+0.0.4 |checksum:a9e49e298f9ee6c468e83d29cee958c03f507e917e8558365ed485969b1ac734
+0.1.0 |checksum:ab472f663f5713152f8828bf91db4d8bdb9de7daaef4c78b883505ddc57d12ff
+0.2.0 |checksum:84a616cc42eb325ba3659cc16fcbcc3adb57a92dc124b168b7de55d1f20a20db
+0.2.1 |checksum:cb55f0ec0015997cf0be0b8fe797a4d0588e5332c1dab84d9cf04d3214c44761
+0.2.2 |checksum:2a7cab853faaafb8c8a812b81dbc5954546baaccf3acb8289f8527c8a4412685
+0.2.3 |checksum:d9b6305cccf8a2b16a69a045454349c863a6ee8d33d9b50f9c98119e5be1dc7d

@@ -25,11 +25,19 @@ class TestStubSpecification < Gem::TestCase
   def test_initialize_extension
     stub = stub_with_extension
 
-    assert_equal "stub_e",                    stub.name
-    assert_equal v(2),                        stub.version
-    assert_equal Gem::Platform::RUBY,         stub.platform
+    assert_equal "stub_e", stub.name
+    assert_equal v(2), stub.version
+    assert_equal Gem::Platform::RUBY, stub.platform
     assert_equal [stub.extension_dir, "lib"], stub.require_paths
-    assert_equal %w[ext/stub_e/extconf.rb],   stub.extensions
+    assert_equal %w[ext/stub_e/extconf.rb], stub.extensions
+
+    stub = stub_with_multiple_extensions
+
+    assert_equal "stub_me", stub.name
+    assert_equal v(2), stub.version
+    assert_equal Gem::Platform::RUBY, stub.platform
+    assert_equal [stub.extension_dir, "lib"], stub.require_paths
+    assert_equal %w[ext/stub_me/extconf.rb ext/stub_me/ext/parser/extconf.rb], stub.extensions
   end
 
   def test_initialize_version
@@ -238,6 +246,32 @@ Gem::Specification.new do |s|
   s.name = 'stub_e'
   s.version = Gem::Version.new '2'
   s.extensions = ['ext/stub_e/extconf.rb']
+  s.installed_by_version = '2.2'
+end
+      STUB
+
+      io.flush
+
+      stub = Gem::StubSpecification.gemspec_stub io.path, @gemhome, File.join(@gemhome, "gems")
+
+      yield stub if block_given?
+
+      return stub
+    end
+  end
+
+  def stub_with_multiple_extensions
+    spec = File.join @gemhome, "specifications", "stub_me-2.gemspec"
+    File.open spec, "w" do |io|
+      io.write <<-STUB
+# -*- encoding: utf-8 -*-
+# stub: stub_me 2 ruby lib
+# stub: ext/stub_me/extconf.rb:ext/stub_me/ext/parser/extconf.rb
+
+Gem::Specification.new do |s|
+  s.name = 'stub_me'
+  s.version = Gem::Version.new '2'
+  s.extensions = ['ext/stub_me/extconf.rb', 'ext/stub_me/ext/parser/extconf.rb']
   s.installed_by_version = '2.2'
 end
       STUB

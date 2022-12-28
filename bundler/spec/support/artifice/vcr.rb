@@ -78,23 +78,6 @@ class BundlerVCRHTTP < Net::HTTP
       end
     end
 
-    def read_stored_request(path)
-      contents = File.binread(path)
-      headers = {}
-      method = nil
-      path = nil
-      contents.lines.grep(/^> /).each do |line|
-        if line =~ /^> (GET|HEAD|POST|PATCH|PUT|DELETE) (.*)/
-          method = $1
-          path = $2.strip
-        elsif line =~ /^> (.*?): (.*)/
-          headers[$1] = $2
-        end
-      end
-      body = contents =~ /^([^>].*)/m && $1
-      Net::HTTP.const_get(method.capitalize).new(path, headers).tap {|r| r.body = body if body }
-    end
-
     def request_to_string(request)
       request_string = []
       request_string << "> #{request.method.upcase} #{request.path}"

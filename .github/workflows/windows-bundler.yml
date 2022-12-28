@@ -14,6 +14,11 @@ concurrency:
 permissions:  # added using https://github.com/step-security/secure-workflows
   contents: read
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./bundler
+
 jobs:
   windows_bundler:
     name: Bundler on Windows (${{ matrix.ruby.name }})
@@ -41,10 +46,6 @@ jobs:
       - name: Install dependencies
         run: |
           bin/rake spec:parallel_deps
-        working-directory: ./bundler
-        shell: bash
       - name: Run specs
         run: |
           bin/parallel_rspec
-        working-directory: ./bundler
-        shell: bash

@@ -7,6 +7,11 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./bundler
+
 jobs:
   daily_bundler:
     name: Bundler (ruby-head)
@@ -30,12 +35,10 @@ jobs:
         run: |
           sudo apt-get install graphviz -y
           bin/rake spec:parallel_deps
-        working-directory: ./bundler
 
       - name: Run Test
         run: |
           bin/rake spec:all
-        working-directory: ./bundler
 
       - name: Get previous status
         if: always()

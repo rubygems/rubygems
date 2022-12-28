@@ -74,7 +74,7 @@ class BundlerVCRHTTP < Net::HTTP
 
     def request_pair_paths
       %w[request response].map do |kind|
-        File.join(CASSETTE_PATH, CASSETTE_NAME, file_name_for_key(key + [kind]))
+        File.join(CASSETTE_PATH, CASSETTE_NAME, file_name_for_key(key), kind)
       end
     end
 

@@ -1,0 +1,39 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 864
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "e2880495099b42a438b13354fbe199ef"
+last-modified: Tue, 13 Sep 2022 09:08:18 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 2fd7d65d-4f92-421d-a553-e08685f921ec
+x-runtime: 0.009616
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.25.15.240:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:31:11 GMT
+via: 1.1 varnish
+age: 3411
+x-served-by: cache-mad22057-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140672.795767,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+1.0.0 |checksum:d9cb7800f47ea01c99a015706570cc515ca7c24c4ce1aa5a510081c0aa8eb55e
+1.0.1 cocoapods:~> 0.39.0|checksum:f4bc81cbd8d05d0fc6ae36f83e7e00f96aea3dc1f3fc48b87f67212f26ff8800
+2.0.0 cocoapods:~> 1.0|checksum:ac59c5e698a8c4c6bc3d76d708d752e2faf0712f4e4a91b5c4e1808973dce5f7
+2.0.1 cocoapods:~> 1.0|checksum:8a178cbd35a71afa8a11e5fee085c7ba0b9021b438996e15f49a6b9c8d8164e4
+2.1.0 cocoapods:~> 1.0|checksum:04b3313c57a8533333a8920974938fdbfc2439db33b29db7fcde716ea100f31f
+2.2.0 cocoapods:~> 1.0|checksum:c20061fac477cf1d69f0f71bff3b9dec733f5fa4af3b3e6c4a7adc4de6a1b628
+2.2.1 cocoapods:~> 1.0|checksum:ea2fb56d84745697bdaa7ab77ddb97fc7d0ecc4eacdfbf44fbb5a1fb4cf7c403
+2.2.2 cocoapods:~> 1.0|checksum:6e106d1b63cf1bc86d164f11261e21fd5387f9f89dde50fdb81fb61203ee237a
+2.3.0 cocoapods:~> 1.0|checksum:50300a41e34fbde4d038c59cce204765c148b4be783b8f3b947fd409701af4d9

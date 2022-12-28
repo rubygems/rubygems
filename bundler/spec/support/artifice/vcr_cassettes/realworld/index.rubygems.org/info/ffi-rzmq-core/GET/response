@@ -1,0 +1,38 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 726
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "50a87693ba4dd4d4c44a19c7ed3a4a64"
+last-modified: Mon, 14 Dec 2020 16:57:14 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 5caea1c4-bff7-4116-ba45-16b4cf1cdfe1
+x-runtime: 0.009721
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.25.15.240:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:31:12 GMT
+via: 1.1 varnish
+age: 3408
+x-served-by: cache-mad22057-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140672.021665,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+1.0.0 ffi:~> 1.9|checksum:4d764e6eeec1cb9e87ce8545d288e34e2ed58e2d9c7e4a971fca281e59afeebf
+1.0.1 ffi:~> 1.9|checksum:63f6b1f153ca394401fc40b0617cba41b866eb60d77177794c2d19d3ea2b5fcc
+1.0.2 ffi:~> 1.9|checksum:e17a65dd9dd5d4022d6d252dc872fdd3a9057f495ef357fb2ef6b7a5679a8246
+1.0.3 ffi:~> 1.9|checksum:d9b596d506ae76899aaa2f9cd5eff3f859d4acaa1fabe3513dfad9d3c453d586
+1.0.4 ffi:~> 1.9|checksum:3bbb593c1e36a3ea8a3e54043a9157103ecb0d2571019340897dd65c88937a8b
+1.0.5 ffi:>= 0|checksum:e58315c0b5cf61b0c5a3c87737d812b3ddfedf3dbdd40c76eab24ddcbac95bea
+1.0.6 ffi:>= 0|checksum:c53c5c9304dbc3a67c0fb707bcbaef7bbe606ad880e8330804f9347dfb1eaee6
+1.0.7 ffi:>= 0|checksum:6541625a0f80016e4cb1b22a68b3870bd711c30de7d77625d8d6c92be95eb32a

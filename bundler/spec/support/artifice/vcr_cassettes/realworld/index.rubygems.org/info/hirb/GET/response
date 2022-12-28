@@ -1,0 +1,61 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 2858
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "c3d67cdbc980f76dfb3e279845b8e9b6"
+last-modified: Mon, 14 Dec 2020 16:04:14 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 8e2bc8a3-66b9-457a-9c41-2a8a3b89f09c
+x-runtime: 0.012310
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.43.103.69:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:26 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22071-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140326.875927,VS0,VE817
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.1.2 |checksum:78c5f79f42ba98b4224f126b45461b6751f753ca80192bcc7b2d4db54e3e48ac
+0.2.5 |checksum:f14761753b4515dd6164f55d826f2a1d4b203d953d5e27065cd468979da107fb
+0.2.4 |checksum:8be3b410c9c7f1ce51d45d0fe81236ccd89fa56fadd113619063a6527a660409
+0.2.3 |checksum:f2356035db2710d0cf2359de64db2440b4063ec8d7cc6f46b495073f4328f378
+0.2.2 |checksum:dfde9d6fa7a7cc4fb002c427cc8ed71669aab194df6c627e4f83bd17a4bdaa1c
+0.2.6 |checksum:b771f46368d33702d46942b9f3622be1b498bd4b6fa9441fc0efe80aac52281b
+0.2.7 |checksum:28ee4823453a87ab5abef8158a14ee6c556b8b61c7e93a7508fa08211e571310
+0.2.8 |checksum:5feb36952924eea9d93e941394895fec59e359cb0e8975ca4cc9750278519664
+0.2.9 |checksum:33d50db51a6571e3aa871e02e8c4b22194f0800989a192ee63b556c8a386a1d8
+0.2.10 |checksum:db16809ba6893582da24ab548d5db2cc51e7a206a75135c221ea2fb2dd14c5d2
+0.3.0 |checksum:96953061e97ba568ed59c6da6fd6b9ee7fbaa4ff85afb4427f4a29580d90a956
+0.3.1 |checksum:4ad205c2e7aa34cc62223561f08c24d18959d9238d15b7dfe70d9bf0932ced27
+0.3.2 |checksum:7675394aaa0638d98372ba5abcff0b846d0fc844deb04895f3ae3d6b85df05c7,rubygems:>= 1.3.6
+0.3.3 |checksum:d48afe63ae2d0cbefbfe46d3177fdec21e04dd66ec3f76235a6eaf1d58ed2dd6,rubygems:>= 1.3.6
+0.3.4 |checksum:4663df4d51ed5cf6b42a86f2e00aec04213e6d3f1bcc244ecb8b4185fa86904d,rubygems:>= 1.3.6
+0.3.5 |checksum:3feb607ef8db02cfe52f431e459ba9fbe5a69610c270f041f7fb6d4a6594f052,rubygems:>= 1.3.5
+0.3.6 |checksum:cbfaebff08cb47237faa993222810433ca34d40812d7b6ea04d842275c8b5420,rubygems:>= 1.3.5
+0.4.0 |checksum:dfd80c3497faa5b4b77a205bdee81ce556a64d7dcd2a74bd7053644f4b172a29,rubygems:>= 1.3.5
+0.4.1 |checksum:61e88576360e38c6f3bc631dcfe4eb1fd01b839913105f6f6e1512435a419c93,rubygems:>= 1.3.5
+0.4.2 |checksum:c80b59857b8151a2505c88f865d885ce239ef5bfc812249877e1d2fa0f41e3f5,rubygems:>= 1.3.5
+0.4.3 |checksum:483f52987582630affc6ad8d1fe738b39e36bc5b8fff04b6d5daaac50a887c6b,rubygems:>= 1.3.5
+0.4.4 |checksum:a999925df64f9bcb60226f6a174e246a06abb1ec95b623a900b0fbcf98ee3506,rubygems:>= 1.3.5
+0.4.5 |checksum:f908c8c90796f4470781e2c2c15521d22f79970934ec77b33dde50e2b66f9cbe,rubygems:>= 1.3.5
+0.5.0 |checksum:9df0f0377ce373470628363fddeb6d8a6658de4b1ff04f9324f64dce95fa7fc2,rubygems:>= 1.3.5
+0.6.0 |checksum:6a5b504a10e97e39279be88b52a12cccc10b36a20f2026903f038943ad7dc740,rubygems:>= 1.3.5
+0.6.1 |checksum:8dff0b06ad907ec52db612afb460712a842bc43b372cb0d206b9d7884380cea5,rubygems:>= 1.3.5
+0.6.2 |checksum:c230cef535f15815192e72b46ee1ca13c1bdbde98a31288d1bc01c71468a98d4,rubygems:>= 1.3.5
+0.7.0 |checksum:43f849b7d6e2e780b974fbb9e73bf09b170c910e2a16bcf4332d4f8d0c53a498,rubygems:>= 1.3.5
+0.7.1 |checksum:5a0e5cab058aedff79944c354d40bb05cfd972a18d9fe6a51d42306553bcee18,rubygems:>= 1.3.5
+0.7.2 |checksum:7076fc8c4ff9d54d57c3297a91768b5179978d4f03f9b6eae93fb5f5d9cd27bf,rubygems:>= 1.3.5
+0.7.3 |checksum:5132733ca44b1f41f36c624693a3201284368a349dfe37f543ae6e2ad880ec57,rubygems:>= 1.3.5

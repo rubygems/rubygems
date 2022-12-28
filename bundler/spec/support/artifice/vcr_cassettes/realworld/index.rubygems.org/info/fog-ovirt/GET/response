@@ -1,0 +1,56 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 4204
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "706636a9dfd329fe508187c341f3b889"
+last-modified: Tue, 07 Jun 2022 10:44:52 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: a6490c37-76c1-41f6-89dc-e31199d8d375
+x-runtime: 0.008901
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.25.15.240:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:32 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22071-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140332.464606,VS0,VE202
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.1 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1|checksum:a6c4ee054a23aae072f591c1319f6768e2c7908f5863ebe25db44c019a85c6f6
+0.1.0 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1,rbovirt:~> 0.1.4|checksum:a3d636031f6d18d8c18253b4ae714e24873a89c25b76ba6a4e8f03737429a73d
+0.1.1 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1,rbovirt:~> 0.1.4|checksum:1063bfe3103fe416751cdb9c5923d24dfde65abe6893b4ff12d30f82fc3ea2db
+0.1.2 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1,rbovirt:~> 0.1.4|checksum:064adc0e5c72783f2228683c24fb8fdaa77f211401e0c9121dec46d4e54d3967
+0.1.3 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1,rbovirt:~> 0.1.5|checksum:dcc3cabfc317e364e88148b0f93cafe82013f04d51aefe139006ead721c13795
+1.0.0 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1,rbovirt:~> 0.1.5|checksum:250320f35170036ea3a0c965e06bb9b941c3eab146d2ea32eb9e1dda25745e87
+1.0.1 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1,rbovirt:~> 0.1.5|checksum:d76a78924d9ab1d8aefd71b9f45c5e8b2afe352546e705cf19417cd0c1d509e0
+1.0.2 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:a981c08466b485088c5b30e699dce8c552d1752b03fa3e9dd16952cdf6662d5f
+1.0.3 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:afe22e0c6dc4eb4fec9ed9a5182244940b653cddcea46c18778f4b01da0ce093
+1.0.4 fog-core:~> 1.45,fog-json:>= 0,fog-xml:~> 0.1.1,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:3b77c1bd50644b84ed79aba4dbbf2d84c8db9904ca0477e4d6e4cb7e060240b0
+1.1.0 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:4e2f35a38bdf89631042cab49534f3f112c77d116fe20e8af60bee40e84c45ef
+1.1.1 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:8f925eb9f755165976c6dd3f756d649d9573e21cbd678f48b18ba8b572b30624
+1.1.2 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:95fe163a206826b34e8f555f026abbd0d68d13fea68fcf745edf7751658c301e
+1.1.3 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:d533fcfab6aa5ba6442874ae5c8724dcf331fcd81e0bc47b78983c79a71772ee
+1.1.4 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:fa5c59c4a60c7f240dca24e4c4b1496fbd1604557689b4d28ee5720a63cc5e93
+1.1.5 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:83c1557a75c7a6c9bb56873bcf5de0662cf3373586c55a79c322a227d3916ed7
+1.1.6 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:c20262f8fd7518940a9d420a0f539abbfa5d5d20c04bb769627caa34b155f7f3
+1.2.0 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:9ca0f673290daae26f20eb08f0bd1b724755092d1e083996458c424a9a3a4b5c
+1.2.1 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:f5ed40029aed5311b6443d46503b448074ca1df6ba0872f33412d3ba1d74388c
+1.2.2 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:1da3fa30ed28939c20eb4a762b806ccc24b30b62e2a9ca62174b35cb86cd8c46
+1.2.3 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:99eacaf066227a056b442bc3a1d3651c57da53faa88ee77271ffdb68655f64eb
+1.2.4 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:1c61988a430c0435f8fe1fbccedd7bc571a17e543f5010f100f6056da91bd264
+1.2.5 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.1.3,rbovirt:~> 0.1.5|checksum:2b27806cbd3137f99e47537fbeb7f1623ffe0a3100223af78f2f5a18777c3b22
+2.0.0 activesupport:>= 0,fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.3.1,rbovirt:~> 0.1.5|checksum:9d7d593039d23850e22bc0e8d831bde6fc944635ee40319fa49202afdf5ab665,ruby:>= 2.0.0
+2.0.1 activesupport:>= 0,fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.3.1|checksum:b7d67b29e5ff2369ffab901acc28ed78f6396dacc0a589717d3a227413eef76d,ruby:>= 2.0.0
+2.0.2 activesupport:>= 0,fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0,ovirt-engine-sdk:>= 4.3.1|checksum:3d4a1555fe78d8c30c6298f0a306c01591197a7ee25a788777b013f6a5e474c0,ruby:>= 2.0.0

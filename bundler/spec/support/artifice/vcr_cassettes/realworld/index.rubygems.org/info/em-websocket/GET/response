@@ -1,0 +1,53 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 2821
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "c7425856a4b59d3d09a93b10b8fac291"
+last-modified: Thu, 11 Nov 2021 05:04:02 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 0b954c60-60b3-4623-bcf0-d36ba609df73
+x-runtime: 0.009823
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.26.151.153:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:31:13 GMT
+via: 1.1 varnish
+age: 3405
+x-served-by: cache-mad22057-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140673.385672,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.1 eventmachine:>= 0.12.9|checksum:dd1c61a830da1cc0e5a06485c547e6d0d784998a9a0a7187e0e818f947a97f34
+0.0.2 eventmachine:>= 0.12.9|checksum:73a71c28da959b0ce45bccd026f63b4ede37b62436e97bba40bfc38b3d4bbfd0
+0.0.4 addressable:>= 0,eventmachine:>= 0.12.9|checksum:3ff3de93a1c61383d1b90c99a7cce0fdca08ea0d6af83c453c9cff746d175c7f
+0.0.5 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:10b83bb919a8e6dee8d5639df5fea4c6d76b8ae93e4beb7e204a778e8e7b5d1b
+0.0.6 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:68f1883023e849cdc763ff35b988f95ca770e1bcca9c9993a8146c0464b3cb89
+0.1.1 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:8cebb77747b5600d985f7b1ab1c937bfc3f69a1afd677f0e85feed2ac4780200
+0.1.2 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:95eac7eb68262f55516ed80555ae65c16f64ade1a57187f4738fbcb5eb5b1d92
+0.1.3 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:aceff68598a000775bc041d1563cb51aeab45df28ab6f0d27c20ad71a7ea250a
+0.1.4 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:d746396adc5f7cfd0d90618d4b5acc8bb729f364f0e9b1d7ef3dae1bd277586e
+0.2.0 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:aeb6eea404211face7f35d068045dd1c3e60d50a99d551869c638d5f39805ab9
+0.2.1 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:bb790f1602bd30ba8be3fa0db5d3968a12e9d931038377b279cfd17d1a765200
+0.3.0 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:96e09a12206bab47aec245b697ca8c39c7113dd6339f492b26efaf737550ecf1
+0.3.1 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:da7093412df18104a75a1c6ab1b6a17312a7943e8a627189fcf5eab31916d99b
+0.3.2 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:b7e1a2ade1c720112012417ea0cc374c606080c8e95616508fa639b6a4560e40
+0.3.5 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:59b0258294e9cf2d9d4c2f8e00e98b8a8f9c5922bc528aa6b33165ab44d849c4
+0.3.6 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:6461e0bc4202ee845455918c1d3624551190436d2f828d364544297b8e83acdd
+0.3.7 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:a249208708ee7733101250ef105c1ad09ade3fae1b001e4678141a8374ee4b4b
+0.3.8 addressable:>= 2.1.1,eventmachine:>= 0.12.9|checksum:38927b5b978188fb78379b73bb97e62fd91173c69c5c8d8f2e7eb466580e6b76
+0.4.0 eventmachine:>= 0.12.9,http_parser.rb:~> 0.5.3|checksum:21355c3b75f8bb249b359759a3f036be65b83b8ec2097b269e680de75befe4a7
+0.5.0 eventmachine:>= 0.12.9,http_parser.rb:~> 0.5.3|checksum:a950845073aa8d983e1333b54c80b260a8957a3314df251b993a68a7a7f53607
+0.5.1 eventmachine:>= 0.12.9,http_parser.rb:~> 0.6.0|checksum:c39e6d64352eca13aedf4f5d7009666ab7f3ddce75410b883c467cf0e5465caf
+0.5.2 eventmachine:>= 0.12.9,http_parser.rb:~> 0.6.0|checksum:6bae6d8dd9c05c0d1619aef91903c82542de7a15fa92e0110d13a8324eafe1d5
+0.5.3 eventmachine:>= 0.12.9,http_parser.rb:~> 0|checksum:f56a92bde4e6cb879256d58ee31f124181f68f8887bd14d53d5d9a292758c6a8

@@ -1,0 +1,41 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1192
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "d2428482c8cfb39b7c9d573d0a697aa6"
+last-modified: Mon, 14 Dec 2020 17:04:43 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 04adb3a0-bcaf-4f3e-b595-d887653f349d
+x-runtime: 0.008200
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.43.103.69:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:24:51 GMT
+via: 1.1 varnish
+age: 461
+x-served-by: cache-mad22065-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140292.541861,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.2 nenv:~> 0.1,shellany:~> 0.0|checksum:0decb18ecef2b2d9a91df8bf1a0ec94c0bfd8bde1ec98f9bd15b1f8847b0d992
+0.0.3 nenv:~> 0.1,shellany:~> 0.0|checksum:d0266870dda75e422b3c1ed804fe1919b76d1bb25d7fa5a80b12a9542bf58b37
+0.0.4 nenv:~> 0.1,shellany:~> 0.0|checksum:68445f535305d5e6d27a09492d53b49c40bc7deb9ee5e08eec2c97adbdfb3e06
+0.0.5 nenv:~> 0.1,shellany:~> 0.0|checksum:50b574a43ce598db525bc456db007fbaa91bf97c306e196de603c479e0259bc2
+0.0.6 nenv:~> 0.1,shellany:~> 0.0|checksum:124e34e0cad5c697363864b7d9d3ad8e418c0b8d6547f3192d27fbf723e01cca
+0.0.7 nenv:~> 0.1,shellany:~> 0.0|checksum:11aef7a689a0bec3d5f4d1771cd484a7b946867ac98f7d9bc905619c0a0fbdec
+0.0.8 nenv:~> 0.1,shellany:~> 0.0|checksum:7c4976da3a3a6e2f1c8a1b236a5e280b928f5b3146db90ad9cd487b2bee8c5eb
+0.1.0 nenv:~> 0.1,shellany:~> 0.0|checksum:181ea27dcf6cd5edb85876918906d9a28e2afc85ff2d82c9b2fda2605387a69a
+0.1.1 nenv:~> 0.1,shellany:~> 0.0|checksum:dda20d5fa14df72a9857d594927677c5b1eed69d9d8eba7e6a0dd05894430375
+0.1.2 nenv:~> 0.1,shellany:~> 0.0|checksum:97f6d48e7156f83a45e79bd2735d5de684186201c34a4ce468ca96b26ec08efe
+0.1.3 nenv:~> 0.1,shellany:~> 0.0|checksum:d37669605b7f8dcb04e004e6373e2a780b98c776f8eb503ac9578557d7808738

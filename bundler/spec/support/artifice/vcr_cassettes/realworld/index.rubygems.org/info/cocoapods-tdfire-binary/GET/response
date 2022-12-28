@@ -1,0 +1,89 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 7343
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "51aa8a6975246a55c492c6bfd4a00d38"
+last-modified: Mon, 14 Dec 2020 16:58:58 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: c17a1900-08c9-4ef7-bf4d-dd29a83d54c4
+x-runtime: 0.011539
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.26.151.153:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:31:11 GMT
+via: 1.1 varnish
+age: 3409
+x-served-by: cache-mad22027-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140672.957595,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.1.0 cocoapods:~> 1.4,colorize:~> 0.8|checksum:3a8cbe6cffc5d0f1ac18fcf942d3dcf5b2382c0c0aaf71b085164a6ccca0230e
+0.1.2 cocoapods:~> 1.4,colorize:~> 0.8|checksum:6ef9dc66646f6e6c383b0f05eddac3ddaf4fb7e919e5f18a36aa6c18f487bed4
+0.1.3 cocoapods:~> 1.4,colorize:~> 0.8|checksum:b3e09f7c53dded5c7ab2d97c9bda6e66edc20f9853e68b3a00ee0cf709a05fd5
+0.1.4 cocoapods:~> 1.4|checksum:3b8bb85c8d08d117b385a8620c51cf5ee76f1d9a00cfd74d6724c965f9f052ee
+0.1.6 cocoapods:~> 1.4,colored2:~> 3.1|checksum:138cc92253abb80c51cb63fb03a64f5afc6743d1da2531d54194e0e98b50e08e
+0.1.7 cocoapods:~> 1.4,colored2:~> 3.1|checksum:07d2ab278e7f5281a977a13dce8a46013c8c393ee25c05097c0005706aa668f7
+0.1.8 cocoapods:~> 1.4|checksum:4132ed2f786826e46890e98e8f622dd6fb7b6dabd99ef4577cb0e4c38a463a3a
+0.1.9 cocoapods:~> 1.4|checksum:64765bb83134f53bb5a557c48252064684b1d7fb6322210ca8d131abe4823e92
+0.1.10 cocoapods:~> 1.4|checksum:69226218a2a1a836833e5fddd3d3876f2580ab528f0d06ef2603e02109199034
+1.0.0 cocoapods:~> 1.4,cocoapods-packager:~> 1.5.0|checksum:55556959b8d4b26ee70208089a167fb4ba226ea5630cf5f7649c2bf9c1df2fcc
+1.0.1 cocoapods:~> 1.5,cocoapods-packager:~> 1.5.0|checksum:affdc5e951796c76abafe78f4c6ef2c7542169a0ae056fcc893785da9b10e5c9
+1.0.2 cocoapods:~> 1.5,cocoapods-packager:~> 1.5.0|checksum:e1b26e3cd9b6995c9c457e4a4ae08f38eff6ae6496f729d65c1944d5318d3a86
+1.0.3 cocoapods:~> 1.4,cocoapods-packager:~> 1.5.0|checksum:d61d2df9aa55e9a42ba19885a8725932e01fff76380d9e5258e07eb3b277e8a1
+1.0.4 cocoapods:= 1.4,cocoapods-packager:~> 1.5.0|checksum:2a03a5d28dd396e299a2348d2eb7092124309b7950497d39a4cc297650ee16e5
+1.0.5 cocoapods:= 1.2.1,cocoapods-packager:~> 1.5.0|checksum:081b19f39d505416bd23c0cdeb6c02d14d68ded0fb2544cf948c5cd0e5c0971a
+1.0.6 cocoapods:= 1.2.1,cocoapods-packager:~> 1.5.0|checksum:c193dd0e2abbdb1970ba391aba929c615050bb045dea5194a46e2feea22d0445
+1.0.7 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:76220c599383634fbc6eeac5ac4c5d1a54606b71aeb08466ea2cac50bb65bc59
+1.0.8 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:0f594a4d5f72036d2fa4a1c0c7276f7f8f70e3877d25cb67a9f1b10742dc9af0
+1.0.9 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:7da73a8419a72486fd0c651bfc77f98dff9944e76e956bf793cbc312b374f2e0
+1.0.10 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:6c442be6436838284c2360c22b76fd70a43e1f5c811f2a6d8843c81dd1636884
+1.1.0 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:bfc8e3a893bbc1eba7150e1fab175549e32e9f01ca5ed79b60a0cdff208fa17b
+1.2.0 cocoapods:~> 1.2.1,cocoapods-packager:~> 1.5.0|checksum:a2ed08b7f7f4a3c3435e2aedc91e0371e85cdef6a46e92a66a4d5e95ea5be5d0
+1.2.1 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:b034912ade452db0334b6d725cbc247d6cf8887fff8e96726319ab5e2fc80301
+1.2.2 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:34f90755bf3bcfe4a3115e18968002469812b2a38b43139dcc486132bd2db724
+1.2.3 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:8adcb830b79cf4f7d1ccecae99ef3b8d0b9211ad7e432d5fff02ec4cbcb54103
+1.2.4 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:23253a2682429e43994832924b3e6dc20f480f362571653dedc0de51a8711819
+1.2.5 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:190788c2377f183f0cd612c762aa2849079a7b105ce699647d8e85e47ce6f1d8
+1.2.6 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:727930520c8539246044b6fffd106861e2feed790652d40ff2afcbfe4fa12909
+1.3.6 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:638e515ea60c164b5afd3ef77cb52d1f0de6ce40e607175a07396e16b2ffc843
+1.3.7 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:8e89d0afe0aa0350ecdeb2bf78ec9bafc896e07bd7b44c2166a1c50a27ed5987
+1.3.8 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:3f5f1f9384b4334da22bd25cc6647e7c87c961e8f70c6b24fc6acbc456b34552
+1.3.9 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:19ca9b0151abfbd90081bab5c9656340b1d52541182ed196a136e1e69366febc
+1.3.10 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:9d5e4090a680be0d58f4b76e647553807179afedd322c0c4609ae23804a41ea8
+1.3.11 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:7016d64c930090b4727a77692d2c1ba7fdf8b0b11882beae891a8aee003851a6
+1.3.12 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:f2ad514c4eeed62843a6f42ed6cf830f6c0d90cf107ecd196c95e6112249c5bf
+1.3.13 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:9e9ace5e5fdc2bf86a97e4e47f4426d0126c39a0567e768610295540d7596d0c
+1.3.14 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:50031a21c13fb0fd1251651e0007b88bdc9a17b3bbe3101d6632911eaf5ff05d
+1.3.16 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:6e8a8d6e4946c1597f9e0f9ab6551a1126123dad5a9e647c9b7fdbd7ca8a97bd
+1.3.17 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:de86f60100ddbbfeea6911e018497b285105d1f74ec9cee98023c29170fe08c8
+1.3.18 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:2477e631b126bd817a2b9baf71db1295b9fe73573100e24f7046301573f88487
+1.4.18 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:93c85fcfd236aaf01451227815fa40e36cd2e20a7bcd54c94821f9496ba1d28a
+1.4.19 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:e924054c01bda2350f1330ac1791dab8d83b9b7c15be9ed616462ff2c1a41f64
+1.4.20 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:78677ef780571ad69ed94bd519b04ee5fd2facce22bc75eb05d337be2b27bf4b
+1.4.21 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:d8492ae81221224341266bb902899c33c1a7122b9886c81534420ec96eb83d23
+1.4.22 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:e20de3cee305d840abbd5ffb911da760376a3c1d75e9aa5862069036942c08ef
+1.4.23 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:d9120e980490474cd2da257272bf81f88b248b7c5f7921e876376714d5d1e434
+1.4.24 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:92a0ae0224ef4662e3db2a8850ab7c81238ea21cf98a93877c24d5e591cf9b48
+1.4.25 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:0838b197afed90099079a3f765fa8eadf584284e67419b5344921f0fcc265c5e
+1.4.26 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:e506abe70a70bf413ccea79241ec5da40a85079738ce05886d9abedc221745bb
+1.4.28 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:b24bb1e5f0bdc202f1df07910546d9f436ed372b333eb5072c343685c9962a52
+1.4.29 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:a241de1d99bbc0539a5595b20f588560dfdc78ac4a17ab640215591280486793
+1.4.30 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:d02beed6fa913a8610fc34cc3919190e2a05963b7a2b5d281b8835dd9637e156
+2.0.3 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:091bd34ef05db4630ce8c60fddd6c796a65f2bcc3c2131962e9c5dfea67e78bf
+2.0.4 cocoapods:~> 1.2,cocoapods-packager:~> 1.5.0|checksum:08c3dbee629c0d745c6b200ca1db05f4b910b213654190ab1d008bf5fdf464ad
+2.0.5 cocoapods:~> 1.2,cocoapods-bin:>= 0,cocoapods-packager:~> 1.5.0|checksum:da5ca4b077fedef9dda633ae1d4b9db45efca44f6e4afcb8a1dfc34e6c0ae966
+2.0.6 cocoapods:~> 1.2,cocoapods-bin:>= 0,cocoapods-packager-pro:~> 1.5.0|checksum:1cf51e9965c23389d70497594f210be224941dbfd50e09156ae4c7e9e2121d29
+2.0.7 cocoapods:~> 1.2,cocoapods-bin:>= 0,cocoapods-packager-pro:~> 1.5.0|checksum:50c09d47730746b3c4f855f3aa9c6f76eaa293ea9dd53e28c03a9f4a4bb01304
+2.0.8 cocoapods:~> 1.2,cocoapods-bin:>= 0,cocoapods-packager-pro:~> 1.5.0|checksum:3b5c387486a30aa328c46c569324073db72c378d1e68feb3e3e0772556169827
+2.0.9 cocoapods:~> 1.2,cocoapods-bin:>= 0,cocoapods-packager-pro:~> 1.5.0|checksum:a0124345913656148158f2c7581c22afccc9899cf80679e137d17e91fdb92d82

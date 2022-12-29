@@ -203,15 +203,6 @@ RSpec.describe "bundle install across platforms" do
       gem "pry"
     G
 
-    expected_checksums = construct_checksum_section do |c|
-      c.repo_gem gem_repo4, "coderay", "1.1.2"
-      c.repo_gem gem_repo4, "empyrean", "0.1.0"
-      c.repo_gem gem_repo4, "ffi", "1.9.23", "java"
-      c.repo_gem gem_repo4, "method_source", "0.9.0"
-      c.repo_gem gem_repo4, "pry", "0.11.3", "java"
-      c.repo_gem gem_repo4, "spoon", "0.0.6"
-    end
-
     expect(lockfile).to eq <<~L
       GEM
         remote: #{file_uri_for(gem_repo4)}/
@@ -235,7 +226,6 @@ RSpec.describe "bundle install across platforms" do
         pry
 
       CHECKSUMS
-        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -270,7 +260,6 @@ RSpec.describe "bundle install across platforms" do
         pry
 
       CHECKSUMS
-        #{expected_checksums}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -306,7 +295,6 @@ RSpec.describe "bundle install across platforms" do
         pry
 
       CHECKSUMS
-        #{expected_checksums}
 
       BUNDLED WITH
          1.16.1

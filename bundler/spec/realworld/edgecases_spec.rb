@@ -323,7 +323,7 @@ RSpec.describe "real world edgecases", :realworld => true do
     if Bundler.feature_flag.bundler_3_mode?
       # Conflicts on bundler version, so we count attempts differently
       bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }, :raise_on_error => false
-      expect(out.split("\n").grep(/backtracking to/).count).to eq(15)
+      expect(out.split("\n").grep(/backtracking to/).count).to eq(8)
     else
       bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
       expect(out).to include("Solution found after 7 attempts")
@@ -349,11 +349,7 @@ RSpec.describe "real world edgecases", :realworld => true do
 
     bundle :lock, :env => { "DEBUG_RESOLVER" => "1" }
 
-    if Bundler.feature_flag.bundler_3_mode?
-      expect(out).to include("Solution found after 14 attempts")
-    else
-      expect(out).to include("Solution found after 18 attempts")
-    end
+    expect(out).to include("Solution found after 6 attempts")
   end
 
   it "doesn't hang on nix gemfile" do

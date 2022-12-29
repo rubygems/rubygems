@@ -39,4 +39,4 @@ DEPENDENCIES
   rubocop-performance (~> 1.14)
 
 BUNDLED WITH
-   2.4.0.dev
+   2.5.0.dev

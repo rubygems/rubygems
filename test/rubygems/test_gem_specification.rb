@@ -10,7 +10,7 @@ require "rubygems/installer"
 require "rubygems/platform"
 
 class TestGemSpecification < Gem::TestCase
-  LEGACY_YAML_SPEC = <<-EOF.freeze
+  LEGACY_YAML_SPEC = <<-EOF
 --- !ruby/object:Gem::Specification
 rubygems_version: "1.0"
 name: keyedlist
@@ -29,7 +29,7 @@ email: flgr@ccan.de
 has_rdoc: true
   EOF
 
-  LEGACY_RUBY_SPEC = <<-EOF.freeze
+  LEGACY_RUBY_SPEC = <<-EOF
 Gem::Specification.new do |s|
   s.name = %q{keyedlist}
   s.version = %q{0.4.0}
@@ -2705,6 +2705,39 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
       end
 
       refute_match(/add rake as a dependency/, @ui.error)
+    end
+  end
+
+  def test_validate_rust_extension_have_missing_cargo_toml_error
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @a1.extensions = ["Cargo.toml"]
+      File.write File.join(@tempdir, "Cargo.toml"), ""
+
+      e = assert_raise Gem::InvalidSpecificationException do
+        use_ui @ui do
+          @a1.validate
+        end
+      end
+
+      assert_match(/but Cargo.lock is not part of the gem files/, e.message)
+    end
+  end
+
+  def test_validate_rust_extension_have_no_missing_cargo_toml_error
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @a1.extensions = ["Cargo.toml"]
+      @a1.files << "Cargo.toml"
+      @a1.files << "Cargo.lock"
+      File.write File.join(@tempdir, "Cargo.toml"), ""
+      File.write File.join(@tempdir, "Cargo.lock"), ""
+
+      use_ui @ui do
+        @a1.validate
+      end
     end
   end
 

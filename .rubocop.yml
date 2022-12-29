@@ -9,7 +9,7 @@ AllCops:
     - 'lib/rubygems/optparse/**/*'
     - 'pkg/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.6
 
 Layout/AccessModifierIndentation:
   Enabled: true
@@ -178,6 +178,13 @@ Style/BlockDelimiters:
 
 Style/PercentLiteralDelimiters:
   Enabled: true
+
+Style/RedundantFreeze:
+  Enabled: true
+
+Style/SafeNavigation:
+  Enabled: true
+  MaxChainLength: 1
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes

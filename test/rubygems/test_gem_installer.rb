@@ -1559,7 +1559,7 @@ gem 'other', version
         write_file File.join(@tempdir, file)
       end
 
-      so = File.join(@spec.gem_dir, "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}")
+      so = File.join(@spec.extension_dir, "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}")
       assert_path_not_exist so
       use_ui @ui do
         path = Gem::Package.build @spec
@@ -1582,6 +1582,41 @@ gem 'other', version
 
       raise
     end
+  end
+
+  def test_install_extension_clean_intermediate_files
+    pend "extensions don't quite work on jruby" if Gem.java_platform?
+    @spec = setup_base_spec
+    @spec.require_paths = ["."]
+    @spec.extensions << "extconf.rb"
+
+    File.write File.join(@tempdir, "extconf.rb"), <<-RUBY
+      require "mkmf"
+      CONFIG['CC'] = '$(TOUCH) $@ ||'
+      CONFIG['LDSHARED'] = '$(TOUCH) $@ ||'
+      $ruby = '#{Gem.ruby}'
+      create_makefile("#{@spec.name}")
+    RUBY
+
+    # empty depend file for no auto dependencies
+    @spec.files += %W[depend #{@spec.name}.c].each do |file|
+      write_file File.join(@tempdir, file)
+    end
+
+    shared_object = "#{@spec.name}.#{RbConfig::CONFIG["DLEXT"]}"
+    extension_file = File.join @spec.extension_dir, shared_object
+    intermediate_file = File.join @spec.gem_dir, shared_object
+
+    assert_path_not_exist extension_file, "no before installing"
+    use_ui @ui do
+      path = Gem::Package.build @spec
+
+      installer = Gem::Installer.at path
+      installer.install
+    end
+
+    assert_path_exist extension_file, "installed"
+    assert_path_not_exist intermediate_file
   end
 
   def test_installation_satisfies_dependency_eh
@@ -2220,6 +2255,37 @@ gem 'other', version
     @spec.files = []
 
     assert_equal @spec, eval(File.read(@spec.spec_file))
+  end
+
+  def test_leaves_no_empty_cached_spec_when_no_more_disk_space
+    @spec = setup_base_spec
+    FileUtils.rm @spec.spec_file
+    assert_path_not_exist @spec.spec_file
+
+    @spec.files = %w[a.rb b.rb c.rb]
+
+    installer = Gem::Installer.for_spec @spec
+    installer.gem_home = @gemhome
+
+    File.class_eval do
+      alias_method :original_write, :write
+
+      def write(data)
+        raise Errno::ENOSPC
+      end
+    end
+
+    assert_raise Errno::ENOSPC do
+      installer.write_spec
+    end
+
+    assert_path_not_exist @spec.spec_file
+  ensure
+    File.class_eval do
+      remove_method :write
+      alias_method :write, :original_write # rubocop:disable Lint/DuplicateMethods
+      remove_method :original_write
+    end
   end
 
   def test_dir

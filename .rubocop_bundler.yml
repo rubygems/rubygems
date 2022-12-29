@@ -2,7 +2,7 @@ require: rubocop-performance
 
 AllCops:
   DisabledByDefault: true
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.6
   Include:
     - bundler/**/*.rb
     - bundler/**/*.gemspec
@@ -741,6 +741,9 @@ Lint/RedundantCopEnableDirective:
 Style/RedundantException:
   Enabled: true
 
+Style/RedundantFreeze:
+  Enabled: true
+
 Style/RedundantInterpolation:
   Enabled: true
 
@@ -764,6 +767,10 @@ Style/RescueModifier:
 
 Style/RescueStandardError:
   Enabled: true
+
+Style/SafeNavigation:
+  Enabled: true
+  MaxChainLength: 1
 
 Style/Sample:
   Enabled: true

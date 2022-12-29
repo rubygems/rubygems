@@ -10,41 +10,45 @@ on:
   push:
     branches:
       - master
-      - 3.3
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./bundler
+
 jobs:
   older_rubygems_bundler:
     name: Bundler ${{ matrix.bundler.name }} against old Rubygems (${{ matrix.ruby.name }}, ${{ matrix.rgv.name }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.3, value: 2.3.8 }, rgv: { name: rgv-2.5, value: v2.5.2 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.4, value: 2.4.10 }, rgv: { name: rgv-2.6, value: v2.6.14 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.5, value: 2.5.9 }, rgv: { name: rgv-2.7, value: v2.7.11 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.10 }, rgv: { name: rgv-3.0, value: v3.0.9 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.6 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.4 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.2 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.6 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.4 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.2 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.7 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.5 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.3 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
     env:
       RGV: ${{ matrix.rgv.value }}
       RUBYOPT: --disable-gems
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
         with:
           path: bundler/tmp/rubygems
           ref: ${{ matrix.rgv.value }}
       - name: Setup ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@03b78bdda287ae04217ee12e4b64996630a03542 # v1.131.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -54,15 +58,12 @@ jobs:
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps
-        working-directory: ./bundler
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
-        working-directory: ./bundler
       - name: Run Test
         run: |
-          bin/rake spec:all
-        working-directory: ./bundler
+          bin/parallel_rspec
       - name: Run Rubygems Requirement tests against local bundler, to make sure bundler monkeypatches preserve the behaviour
         run: |
           ruby -I../../lib:lib:test test/rubygems/test_gem_requirement.rb

@@ -1,0 +1,35 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 437
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "f3abe505a0675c56f3c7c485c958beb0"
+last-modified: Mon, 05 Dec 2022 06:15:32 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: d52ad3da-2d92-4109-a9ed-07c46d7ea663
+x-runtime: 0.011116
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.25.15.240:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:33 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22071-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140333.435940,VS0,VE195
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+1.2.0 |checksum:e0f0d14dd1a733f19ddb9c5911fdf64f12a531f4f22ddb3726ab5aaea5bc81c9
+1.3.0 |checksum:a0f86012b1825fb4f571af36e2654432730f4fecfa104d66b629940761c65a15
+1.3.1 |checksum:4491026a7a0907db053fbf105c34617ed2fb890c36d686e95601c3b85c7cee79
+1.3.2 |checksum:6ae8df9e8f97d7b10adb0ca5170efb2d45a0681127884c4ce05b9a43c3f25080,ruby:>= 2.4.0
+1.3.3 |checksum:f17df4bd6afa6f46a003217023fe5716ef88ce261f5c4cf0edbdeed6470cafac,ruby:>= 2.4.0

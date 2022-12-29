@@ -1,0 +1,38 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 756
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "2cad864cced81ffc335a405a4960f1c9"
+last-modified: Mon, 14 Dec 2020 16:08:07 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 2f7aa3b6-3cff-47c2-9a86-ff6ea62d61e0
+x-runtime: 0.009304
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.25.15.240:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:31:11 GMT
+via: 1.1 varnish
+age: 3409
+x-served-by: cache-mad22057-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140672.967707,VS0,VE20
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.1 xctasks:>= 0|checksum:dc167938f09e721d2d7dfca9222b9fbe511e35737e19ffcca1766526e60a4d11
+0.0.2 xctasks:>= 0|checksum:913891b7ba229ea1e15ad80c0e012252e4544f8db0b76f44e9b22ba7c36fc74b
+0.0.3 xctasks:>= 0|checksum:53388c31559da7906281d86db0a66ca268dbf2b306d652071b96eadf737d2ed8
+0.0.4 xctasks:>= 0|checksum:6d34f4a56f2008600de23262caceddae8fbf356419ee6a1e89f6b36e8f2350cc
+0.0.5 xctasks:>= 0|checksum:da161c3016bce8cbb0592bd1d011efbfac621c9ce02a9d5b1e60c95c22228b2d
+0.0.6 xctasks:>= 0|checksum:6f05b3965848e34b1a3037e6f1d1e56c72b97e16d5cd3ff05ff5e879d367b80d
+0.1.0 xctasks:>= 0.5.0|checksum:c9cf535193ca3c1c72394a34bbdbd1c329059718d397f085d5c53fac68232b6a
+0.2.0 xctasks:>= 0.5.0|checksum:b4e43c414771fb8a0c635b84af7d0720c6ef241a785d671413a41692fb23fc38

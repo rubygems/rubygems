@@ -8,7 +8,7 @@
 require "rbconfig"
 
 module Gem
-  VERSION = "3.4.0.dev".freeze
+  VERSION = "3.5.0.dev"
 end
 
 # Must be first since it unloads the prelude from 1.9.2
@@ -774,6 +774,10 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     open_file(path, "wb") do |io|
       io.write data
     end
+  rescue Errno::ENOSPC
+    # If we ran out of space but the file exists, it's *guaranteed* to be corrupted.
+    File.delete(path) if File.exist?(path)
+    raise
   end
 
   ##
@@ -822,7 +826,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   def self.env_requirement(gem_name)
     @env_requirements_by_name ||= {}
     @env_requirements_by_name[gem_name] ||= begin
-      req = ENV["GEM_REQUIREMENT_#{gem_name.upcase}"] || ">= 0".freeze
+      req = ENV["GEM_REQUIREMENT_#{gem_name.upcase}"] || ">= 0"
       Gem::Requirement.create(req)
     end
   end
@@ -853,8 +857,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Returns the version of the latest release-version of gem +name+
 
   def self.latest_version_for(name)
-    spec = latest_spec_for name
-    spec && spec.version
+    latest_spec_for(name)&.version
   end
 
   ##
@@ -1291,9 +1294,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   ##
   # Location of Marshal quick gemspecs on remote repositories
 
-  MARSHAL_SPEC_DIR = "quick/Marshal.#{Gem.marshal_version}/".freeze
+  MARSHAL_SPEC_DIR = "quick/Marshal.#{Gem.marshal_version}/"
 
-  autoload :BundlerVersionFinder, File.expand_path("rubygems/bundler_version_finder", __dir__)
   autoload :ConfigFile,         File.expand_path("rubygems/config_file", __dir__)
   autoload :Dependency,         File.expand_path("rubygems/dependency", __dir__)
   autoload :DependencyList,     File.expand_path("rubygems/dependency_list", __dir__)
@@ -1349,4 +1351,4 @@ require_relative "rubygems/core_ext/kernel_gem"
 require_relative "rubygems/core_ext/kernel_require"
 require_relative "rubygems/core_ext/kernel_warn"
 
-require ENV["BUNDLER_SETUP"] if ENV["BUNDLER_SETUP"]
+require ENV["BUNDLER_SETUP"] if ENV["BUNDLER_SETUP"] && !defined?(Bundler)

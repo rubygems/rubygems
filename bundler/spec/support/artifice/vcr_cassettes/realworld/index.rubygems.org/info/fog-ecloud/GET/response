@@ -1,0 +1,38 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 860
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "620b64f9e3534e90a5e05483903ad0aa"
+last-modified: Mon, 14 Dec 2020 16:11:52 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: cf6618b7-8d57-4287-8b37-0b2220b7b7fe
+x-runtime: 0.009999
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.26.151.153:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:32 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22087-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140332.776426,VS0,VE744
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.1 fog-core:>= 0,fog-xml:>= 0|checksum:73cd2c73d5f12e4f30170e76c0d7fe56a44ea64d333426fd8571ab9243bd0de4
+0.0.2 fog-core:>= 0,fog-xml:>= 0|checksum:28db3b9a907bc8816999eeb93855a076527065879eae59b1551f91f8cc951d52
+0.1.0 fog-core:>= 0,fog-xml:>= 0|checksum:b206700fe14323c96f43f40ae40218f73e4804e4a394a1398149b88f48bea456
+0.1.1 fog-core:>= 0,fog-xml:>= 0|checksum:bdc9c175f26b4a5cc19a6f3d4419769fd3aaed77b9f8f521abe8cfa034dc5b78
+0.1.2 fog-core:>= 0,fog-xml:>= 0|checksum:903736ddfbf4471c80076c4b23014c69f77e628977da6205b61d3206d446a7fd
+0.1.3 fog-core:>= 0,fog-xml:>= 0|checksum:350e541b8a0948d9c3ccc9e7d2ca4001a06b7009f4fc666944cc8e2dc2cb1fc1
+0.2.0 fog-core:>= 0,fog-xml:>= 0|checksum:ebf31d8d5c41d77115c97e2e0411ddf41893ec22e5586d86acaaa8ab610f4b0b
+0.3.0 fog-core:>= 0,fog-xml:>= 0|checksum:06c456b3729635860473a3917ac3f15ba708011419c9bb37e6bca7a624262ba3

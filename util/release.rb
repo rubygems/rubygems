@@ -136,7 +136,6 @@ class Release
     @level = segments[2] != 0 ? :patch : :minor_or_major
 
     @stable_branch = segments[0, 2].join(".")
-    @base_branch = @level == :minor_or_major ? "master" : @stable_branch
     @previous_stable_branch = @level == :minor_or_major ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
 
     rubygems_version = segments.join(".")
@@ -159,7 +158,12 @@ class Release
   def prepare!
     initial_branch = `git rev-parse --abbrev-ref HEAD`.strip
 
-    system("git", "checkout", "-b", @release_branch, @base_branch, exception: true)
+    if @level == :minor_or_major
+      system("git", "checkout", "-b", @stable_branch, "master", exception: true)
+      system("git", "push", "origin", @stable_branch, exception: true)
+    end
+
+    system("git", "checkout", "-b", @release_branch, @stable_branch, exception: true)
 
     begin
       @bundler.set_relevant_pull_requests_from(unreleased_pull_requests)
@@ -182,13 +186,11 @@ class Release
       @rubygems.bump_versions!
       system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
 
-      return if @level == :minor_or_major
-
       system("git", "push", exception: true)
 
       gh_client.create_pull_request(
         "rubygems/rubygems",
-        @base_branch,
+        @stable_branch,
         @release_branch,
         "Prepare RubyGems #{@rubygems.version} and Bundler #{@bundler.version}",
         "It's release day!"

@@ -29,7 +29,7 @@ module Automatiek
     def initialize(gem_name, &block)
       @gem_name = gem_name
       @dependencies = []
-      block.call(self) if block
+      block&.call(self)
     end
 
     def vendor!(version = nil)

@@ -1,0 +1,75 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 6896
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "6c91bcc29adebf4996d8ec97964fa533"
+last-modified: Tue, 08 Mar 2022 13:56:46 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 6ed5d38a-5874-4437-bde1-00b8f00d8157
+x-runtime: 0.011873
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.26.151.153:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:30 GMT
+via: 1.1 varnish
+age: 17
+x-served-by: cache-mad22071-MAD
+x-cache: HIT
+x-cache-hits: 2
+x-timer: S1672140331.646925,VS0,VE0
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+1.21.0 builder:>= 0,excon:~> 0.31.0,formatador:~> 0.2.0,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:c2eba11201e70e6a6d53012f14dec5307a6c4a86dc4537901b77b0dc7c78a85d
+1.21.1 builder:>= 0,excon:~> 0.32,formatador:~> 0.2.0,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:64e023ca8de23a0317ff3608c65068bbf722691c07a26c00752b9e51168d9df1
+1.22.0 builder:>= 0,excon:~> 0.33,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:187e189b7e126e873ba5041a25f1fc1286c5001332c4db9261ac2a05d59ee0a3
+1.23.0 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:361848c17dc1072a13bfb450aaa998e94c0084950b7dec812da7470ca60784db
+1.24.0 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:e8c85132418dc8fce67f9aa9adde371fa2b6bd0d5efb9ef20ec05f3a151a90ac
+1.25.0 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:5bd84ee4a7bad03db187c190d6a5ac9cff71c43a1078a8a9d684ccac5c2b1e94
+1.27.0 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:54451e80ea978b8c49ca4bb2f855a7e1b6e3c0b4bef6d6006578d1f4e0c48944
+1.27.1 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:283d3f22848a970227b5a6b246034ccd7a3abf189ea68a52d7a17d56af42bd2a
+1.27.2 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:1044541b40c70b049d98734c1b5ec3dff42128bc65a4962d07b5b468702c324a
+1.27.3 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:3fb4c940fbafaba46d698285e37c2f8620c35150319587da600f29d9c04416fe
+1.27.4 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:f20effec4c47fe81943d26baa061c0ee3e295da020e4ac98e795a100961a66cc
+1.28.0 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:b572afa1f821417c1b9bacd5f4d6e92859ee5a7940a472691d52788bf868f49e
+1.29.0 builder:>= 0,excon:~> 0.38,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:77d45dd361b26d7cf2ddd71905521186a2f52073daf0476868c2cb13874cdb2b
+1.30.0 builder:>= 0,excon:~> 0.45,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:b84ae27a68b0f8418695d8db5b40b5c93100ca7eff8019cea07a186003c620bf
+1.31.0 builder:>= 0,excon:~> 0.45,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:0fa1fa825daa7eea4ed6347b0ca210148b0c2d2733db93910bea31a636b021d5
+1.31.1 builder:>= 0,excon:~> 0.45,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:6742db953fea3b5ee4e3db6560e1359b18e9a0c1670b385cabd2ef8319f19aad
+1.32.0 builder:>= 0,excon:~> 0.45,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:fdb0e194d01342cc030b25dfd7609e1be6ae02c8215d5b55b7101950e42dfa4e
+1.32.1 builder:>= 0,excon:~> 0.45,formatador:~> 0.2,mime-types:>= 0,net-scp:~> 1.1,net-ssh:>= 2.1.3|checksum:75a0eec81ada33c19247dc308411d8affd8d1070e7be2d61ed5028f8e81bd55e
+1.33.0 builder:>= 0,excon:~> 0.45,formatador:~> 0.2,mime-types:>= 0|checksum:844f444d002948ca78bb18fc0ec9ef7cf07f0160938fdaa438d9a2532bd8fce4,ruby:>= 1.9
+1.34.0 builder:>= 0,excon:~> 0.45,formatador:~> 0.2,mime-types:>= 0|checksum:7ed02f7570d5e5c8cb0eec5a9d3077a1579a075739ebb691c3a39ad393626a5c
+1.35.0 builder:>= 0,excon:~> 0.45,formatador:~> 0.2|checksum:147ebef885e95e7af7076a6f3ce614d4a373c04e039a4a1585c4a8e2460ee90b
+1.36.0 builder:>= 0,excon:~> 0.45,formatador:~> 0.2|checksum:86df339773425e7a85a9a87ede966dd44fb70bf8ba2dacb18c6a1eab4e587e84
+1.37.0 builder:>= 0,excon:~> 0.45,formatador:~> 0.2|checksum:87ee4e599e2415ca969da8bf43891eb785d60fbd4be202becdd21d052e7e2a6e
+1.38.0 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:778adf37f78fa56de0d81535ea0c5fcc9c67857a5fc242248c3b5810f9d74f11
+1.39.0 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:ea04db515096f83163c3fb6abab3f62ba78f86ebb00a89f61ccf4f817850ad50
+1.40.0 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:e70365a03431692a2f9ae2ad1da1fea572b6e6ed1ca0f6171a1987da74be93ba
+1.40.1 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:b37ca7c0adc442b41125e74f9f14342c90aa0ab84908b53b7a10ed612f4147ed
+1.41.0 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:332f44592477ce4f9013e0b0968bf0c2b120499fed08420d459d955fcbb359a7
+1.42.0 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:9b5b4ac804bcc1eac48f43e3ea8d1d83cf22cdae4a5ddf0330e82cc0b4f5a44b
+1.43.0 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:866b816e7516d6787bc074fcec8bb530ebf196685fee03cf56a69ecd852e8229
+1.44.0 builder:>= 0,excon:~> 0.49,formatador:~> 0.2,xmlrpc:>= 0|checksum:b7bf34c10a3f8529ea1422c0c47cd3c86a6a687532479a5c85134d79db961218
+1.44.1 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:b5ad39e9651fde69242ac744eb1f96667256b24817a015ad0edbf64965a2e850
+1.44.2 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:eb0470d8df51b0db9f7635d4e74c277717d74d507787759db0e23b7114902dad
+1.44.3 builder:>= 0,excon:~> 0.49,formatador:~> 0.2|checksum:5cd52101d6bf4cefe291435805fc113b0d77e138aae4df3008e84ad0d38117f1
+1.45.0 builder:>= 0,excon:~> 0.58,formatador:~> 0.2|checksum:e3c225fc8f5e7886e790afbc2cf7f459affb91df02d4af7b4ff28f2ee04c8408
+2.0.0 builder:>= 0,excon:~> 0.58,formatador:~> 0.2,mime-types:>= 0|checksum:85a7355d2ddd499f4cbdc4a97db5b45303e2b4e5d5666e844480c71757e17674,ruby:>= 2.0.0
+2.1.0 builder:>= 0,excon:~> 0.58,formatador:~> 0.2,mime-types:>= 0|checksum:53e5d793554d7080d015ef13cd44b54027e421d924d9dba4ce3d83f95f37eda9,ruby:>= 2.0.0
+2.1.1 builder:>= 0,excon:~> 0.58,formatador:~> 0.2,mime-types:>= 0|checksum:922ee16886b66f46ddc2831eccc13555f74a36d7a06dc7942a9b568921b2644e,ruby:>= 2.0.0
+2.1.2 builder:>= 0,excon:~> 0.58,formatador:~> 0.2,mime-types:>= 0|checksum:e8fe8133851538b33f1ef520afe3aec0fe4f723e8bd47546d9b0534e80aa4abb,ruby:>= 2.0.0
+2.2.0 builder:>= 0,excon:~> 0.71,formatador:~> 0.2,mime-types:>= 0|checksum:3d6930b6cda7ab3523e0f73eb1043034d483761204bfe2e3e45012bc32ed32e8,ruby:>= 2.0.0
+2.2.1 builder:>= 0,excon:~> 0.71,formatador:~> 0.2,mime-types:>= 0|checksum:35bbd0ea9e36e2d7a332bf5085f4369341b12062085362a3570bfde8a5b92992,ruby:>= 2.0.0
+2.2.2 builder:>= 0,excon:~> 0.71,formatador:~> 0.2,mime-types:>= 0|checksum:ac0dd87bdf17f9e712e3e0d4f40e316982944ce602bec6de9075d04a493b1f35,ruby:>= 2.0.0
+2.2.3 builder:>= 0,excon:~> 0.71,formatador:~> 0.2,mime-types:>= 0|checksum:565ab854a3415a7616fa8e63ea06ad90f0f3511979b2188b02bef8646caa982f,ruby:>= 2.0.0
+2.2.4 builder:>= 0,excon:~> 0.71,formatador:~> 0.2,mime-types:>= 0|checksum:0f03d08dcc7f03434c4d61d591dac6e45175d2f7262ac1fd56cd67ff6f99bf50,ruby:>= 2.0.0
+2.3.0 builder:>= 0,excon:~> 0.71,formatador:< 2.0&>= 0.2,mime-types:>= 0|checksum:bc2a33c3c301161cb6cb74ed42e8d6ea4b536a0a5ab0b7124cfdea8d7087a61a,ruby:>= 2.0.0

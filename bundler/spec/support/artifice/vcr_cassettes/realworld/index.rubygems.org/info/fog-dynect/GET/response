@@ -1,0 +1,38 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 972
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "f012cc9c39009fd563a31601aa76cc5c"
+last-modified: Wed, 28 Apr 2021 16:46:40 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 9fd3da5d-b041-4e4b-936b-1b7632b99334
+x-runtime: 0.011350
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.25.15.240:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:32 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22071-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140332.986472,VS0,VE203
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.1 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0|checksum:a2680c3b6d1be87b64223d40792bc2a45bcd520bd860779dc3474c0de29b978d
+0.0.2 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0|checksum:90cd33d521328eaf0e0735b4d1d65b68e29d76526a4069d02745085167ab98a2
+0.0.3 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0|checksum:28b5e3f64f711d70461cc5a2d8c1cd078feb4c5bc498b7c7a06c2d27bf08bb2e
+0.1.0 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0|checksum:458f3c62008c75ec462dccf8ca5209960be2131ea24be1c1b8fd0ad7195bcc6a
+0.2.0 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0|checksum:06d0c31cd8e8a4056bc1cbc6ef23cc1f8b5c3f92e6166d0a184b3ddf8cc9a87b
+0.3.0 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0|checksum:56fc0b2a8d64e7ade1d7a21dcc72b97d1c05592d9b9c02a0a2758d60f8c47a0d
+0.4.0 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0|checksum:e4bc257d666764185ee30d5ff49d4d7df62ce3e4ff4779479cee43b43e5d2856
+0.5.0 fog-core:>= 0,fog-json:>= 0,fog-xml:>= 0|checksum:9e5bfb38931ed27d9077149b3e7504c895bb991605ef34edafa8b97e279f85e9

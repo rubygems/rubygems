@@ -16,7 +16,6 @@ module Bundler
       :locked_deps,
       :locked_gems,
       :platforms,
-      :requires,
       :ruby_version,
       :lockfile,
       :gemfiles
@@ -146,7 +145,7 @@ module Bundler
       @dependency_changes = converge_dependencies
       @local_changes = converge_locals
 
-      @requires = compute_requires
+      @incomplete_lockfile = check_missing_lockfile_specs
     end
 
     def gem_version_promoter
@@ -264,10 +263,10 @@ module Bundler
         @locked_specs
       elsif !unlocking? && nothing_changed?
         if deleted_deps.any?
-          Bundler.ui.debug("Some dependencies were deleted, using a subset of the resolution from the lockfile")
+          Bundler.ui.debug "Some dependencies were deleted, using a subset of the resolution from the lockfile"
           SpecSet.new(filter_specs(@locked_specs, @dependencies - deleted_deps))
         else
-          Bundler.ui.debug("Found no changes, using resolution from the lockfile")
+          Bundler.ui.debug "Found no changes, using resolution from the lockfile"
           if @locked_gems.may_include_redundant_platform_specific_gems?
             SpecSet.new(filter_specs(@locked_specs, @dependencies))
           else
@@ -275,7 +274,7 @@ module Bundler
           end
         end
       else
-        Bundler.ui.debug("Found changes from the lockfile, re-resolving dependencies because #{change_reason}")
+        Bundler.ui.debug "Found changes from the lockfile, re-resolving dependencies because #{change_reason}"
         start_resolution
       end
     end
@@ -295,7 +294,7 @@ module Bundler
 
       # Convert to \r\n if the existing lock has them
       # i.e., Windows with `git config core.autocrlf=true`
-      contents.gsub!(/\n/, "\r\n") if @lockfile_contents.match("\r\n")
+      contents.gsub!(/\n/, "\r\n") if @lockfile_contents.match?("\r\n")
 
       if @locked_bundler_version
         locked_major = @locked_bundler_version.segments.first
@@ -461,7 +460,7 @@ module Bundler
     private :sources
 
     def nothing_changed?
-      !@source_changes && !@dependency_changes && !@new_platform && !@path_changes && !@local_changes
+      !@source_changes && !@dependency_changes && !@new_platform && !@path_changes && !@local_changes && !@incomplete_lockfile
     end
 
     def unlocking?
@@ -524,13 +523,22 @@ module Bundler
         raise GemNotFound, "Could not find #{missing_specs_list.join(" nor ")}"
       end
 
+      incomplete_specs = specs.incomplete_specs
       loop do
-        incomplete_specs = specs.incomplete_specs
         break if incomplete_specs.empty?
 
         Bundler.ui.debug("The lockfile does not have all gems needed for the current platform though, Bundler will still re-resolve dependencies")
         @resolve = start_resolution(:exclude_specs => incomplete_specs)
         specs = resolve.materialize(dependencies)
+
+        still_incomplete_specs = specs.incomplete_specs
+
+        if still_incomplete_specs == incomplete_specs
+          package = resolution_packages[incomplete_specs.first.name]
+          resolver.raise_not_found! package
+        end
+
+        incomplete_specs = still_incomplete_specs
       end
 
       bundler = sources.metadata_source.specs.search(["bundler", Bundler.gem_version]).last
@@ -597,6 +605,7 @@ module Bundler
         [@new_platform, "you added a new platform to your gemfile"],
         [@path_changes, "the gemspecs for path gems changed"],
         [@local_changes, "the gemspecs for git local gems changed"],
+        [@incomplete_lockfile, "your lock file is missing some gems"],
       ].select(&:first).map(&:last).join(", ")
     end
 
@@ -638,8 +647,8 @@ module Bundler
 
       Bundler.settings.local_overrides.map do |k, v|
         spec   = @dependencies.find {|s| s.name == k }
-        source = spec && spec.source
-        if source && source.respond_to?(:local_override!)
+        source = spec&.source
+        if source&.respond_to?(:local_override!)
           source.unlock! if @unlock[:gems].include?(spec.name)
           locals << [source, source.local_override!(v)]
         end
@@ -649,6 +658,14 @@ module Bundler
         changed || specs_changed?(source)
       end.map(&:first)
       !sources_with_changes.each {|source| @unlock[:sources] << source.name }.empty?
+    end
+
+    def check_missing_lockfile_specs
+      all_locked_specs = @locked_specs.map(&:name) << "bundler"
+
+      @locked_specs.any? do |s|
+        s.dependencies.any? {|dep| !all_locked_specs.include?(dep.name) }
+      end
     end
 
     def converge_paths
@@ -761,7 +778,7 @@ module Bundler
         dep = @dependencies.find {|d| s.satisfies?(d) }
 
         # Replace the locked dependency's source with the equivalent source from the Gemfile
-        s.source = if dep && dep.source
+        s.source = if dep&.source
           gemfile_source = dep.source
           lockfile_source = s.source
 
@@ -789,12 +806,13 @@ module Bundler
           end
 
           new_spec = new_specs[s].first
-
-          # If the spec is no longer in the path source, unlock it. This
-          # commonly happens if the version changed in the gemspec
-          next unless new_spec
-
-          s.dependencies.replace(new_spec.dependencies)
+          if new_spec
+            s.dependencies.replace(new_spec.dependencies)
+          else
+            # If the spec is no longer in the path source, unlock it. This
+            # commonly happens if the version changed in the gemspec
+            @unlock[:gems] << s.name
+          end
         end
 
         if dep.nil? && requested_dependencies.find {|d| s.name == d.name }
@@ -860,17 +878,6 @@ module Bundler
         proposed = proposed.gsub(pattern, "\n").gsub(whitespace_cleanup, "\n\n").strip
       end
       current == proposed
-    end
-
-    def compute_requires
-      dependencies.reduce({}) do |requires, dep|
-        next requires unless dep.should_include?
-        requires[dep.name] = Array(dep.autorequire || dep.name).map do |file|
-          # Allow `require: true` as an alias for `require: <name>`
-          file == true ? dep.name : file
-        end
-        requires
-      end
     end
 
     def additional_base_requirements_for_resolve(last_resolve)

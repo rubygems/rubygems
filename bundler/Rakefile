@@ -13,7 +13,7 @@ namespace :dev do
     Spec::Rubygems.dev_setup
   end
 
-  desc "Ensure dev dependencies are installed, and make sure no lockifle changes are generated"
+  desc "Ensure dev dependencies are installed, and make sure no lockfile changes are generated"
   task :frozen_deps => :deps do
     Spec::Rubygems.check_source_control_changes(
       :success_message => "Development dependencies were installed and the lockfile is in sync",
@@ -50,6 +50,16 @@ namespace :spec do
     desc "Re-record cassettes for the realworld specs"
     task :record do
       sh("rm -rf spec/support/artifice/vcr_cassettes && bin/rspec --tag realworld")
+    end
+
+    task :check_unused_cassettes do
+      used_cassettes = Dir.glob("spec/support/artifice/used_vcr_cassettes/**/*.txt").flat_map {|f| File.readlines(f).map(&:strip) }
+      all_cassettes = Dir.glob("spec/support/artifice/vcr_cassettes/**/*").select {|f| File.file?(f) }
+      unused_cassettes = all_cassettes - used_cassettes
+
+      raise "The following cassettes are unused:\n#{unused_cassettes.join("\n")}\n" if unused_cassettes.any?
+
+      puts "No cassettes unused"
     end
   end
 end
@@ -103,11 +113,9 @@ namespace :man do
 
     desc "Make sure ronn is installed"
     task :check_ronn do
-      begin
-        Spec::Rubygems.gem_require("ronn")
-      rescue Gem::LoadError => e
-        abort("We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages")
-      end
+      Spec::Rubygems.gem_require("ronn")
+    rescue Gem::LoadError => e
+      abort("We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages")
     end
 
     desc "Remove all built man pages"
@@ -151,7 +159,7 @@ end
 
 desc "Vendor a specific version of tsort"
 Automatiek::RakeTask.new("tsort") do |lib|
-  lib.version = "master"
+  lib.version = "v0.1.1"
   lib.download = { :github => "https://github.com/ruby/tsort" }
   lib.namespace = "TSort"
   lib.prefix = "Bundler"
@@ -169,32 +177,14 @@ Automatiek::RakeTask.new("thor") do |lib|
   lib.license_path = "LICENSE.md"
 end
 
-# We currently include the official version as of
-# https://github.com/ruby/tmpdir/commit/c79bc7adf66a39617d0d6bae21085adc77c02b0e
-# with the following changes on top:
-# * require fileutils relatively to use our vendored version.
-# * Inherit from `Dir` so that code assuming we're inside the
-#   `Dir` class still works. Also change the `systmpdir` class variable to an
-#   instance variable since otherwise inheriting from dir doesn't work.
-# * Remove a "block variable shadowing outer variable" warning on older rubies
-#   that was breaking some specs.
-desc "Vendor a specific version of tmpdir"
-Automatiek::RakeTask.new("tmpdir") do |lib|
-  lib.version = "master"
-  lib.download = { :github => "https://github.com/ruby/tmpdir" }
-  lib.namespace = "Dir"
+desc "Vendor a specific version of fileutils"
+Automatiek::RakeTask.new("fileutils") do |lib|
+  lib.version = "v1.7.0"
+  lib.download = { :github => "https://github.com/ruby/fileutils" }
+  lib.namespace = "FileUtils"
   lib.prefix = "Bundler"
-  lib.vendor_lib = "lib/bundler/vendor/tmpdir"
-  lib.license_path = nil # There is no license file in the Repo
-
-  lib.dependency("fileutils") do |sublib|
-    sublib.version = "v1.4.1"
-    sublib.download = { :github => "https://github.com/ruby/fileutils" }
-    sublib.namespace = "FileUtils"
-    sublib.prefix = "Bundler"
-    sublib.vendor_lib = "lib/bundler/vendor/fileutils"
-    sublib.license_path = "LICENSE.txt"
-  end
+  lib.vendor_lib = "lib/bundler/vendor/fileutils"
+  lib.license_path = "LICENSE.txt"
 end
 
 # We currently include the following changes over the official version:
@@ -209,10 +199,8 @@ Automatiek::RakeTask.new("net-http-persistent") do |lib|
   lib.vendor_lib = "lib/bundler/vendor/net-http-persistent"
   lib.license_path = "README.rdoc"
 
-  # We currently include the official version as of
-  # https://github.com/mperham/connection_pool/commit/813c271e41be0714334834d6517ce68ca1357fc0.
   lib.dependency("connection_pool") do |sublib|
-    sublib.version = "master"
+    sublib.version = "v2.3.0"
     sublib.download = { :github => "https://github.com/mperham/connection_pool" }
     sublib.namespace = "ConnectionPool"
     sublib.prefix = "Bundler"
@@ -221,7 +209,7 @@ Automatiek::RakeTask.new("net-http-persistent") do |lib|
   end
 
   lib.dependency("uri") do |sublib|
-    sublib.version = "v0.10.1"
+    sublib.version = "v0.12.0"
     sublib.download = { :github => "https://github.com/ruby/uri" }
     sublib.namespace = "URI"
     sublib.prefix = "Bundler"

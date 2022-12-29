@@ -6,30 +6,35 @@ on:
   push:
     branches:
       - master
-      - 3.3
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./bundler
+
 jobs:
   truffleruby_bundler:
     name: Bundler (Truffleruby)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@03b78bdda287ae04217ee12e4b64996630a03542 # v1.131.0
         with:
-          ruby-version: truffleruby-22.1
+          ruby-version: truffleruby-22.3
           bundler: none
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps
-        working-directory: ./bundler
       - name: Run Test
         run: |
           bin/parallel_rspec --tag truffleruby_only --tag truffleruby
-        working-directory: ./bundler
     timeout-minutes: 20

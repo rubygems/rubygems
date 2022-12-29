@@ -102,14 +102,16 @@ and not get any conflicts.
 
 *   Confirm all PRs that you want listed in changelogs are properly tagged with
     `rubygems: <type>` or `bundler: <type>` labels at GitHub.
-*   Run `rake prepare_release[<target_version>]`.
-*   Add the new stable branch `x.y` where `x.y` are the first two components of
-    the rubygems version being released to the CI workflows as an extra commit
-    on top of what the `prepare_release` task generated.
-*   Create a PR to the main branch, and merge it once CI passes.
-*   From the main branch, cut a new stable branch with `git pull && git checkout
-    -b x.y`.
-*   Push the stable branch and wait for CI to be green.
+*   Run `rake prepare_release[<target_version>]`. This will create a new stable
+    branch off the master branch, and create a PR to it with the proper version
+    bumps and changelogs. It will also create a PR to merge release changelogs
+    into master.
+*   Replace the stable branch in the workflows with the new stable branch, and
+    push that change to the release PR.
+*   Replace version numbers with the next ".dev" version, and push that change
+    to the master PR.
+*   Once CI passes, merge the release PR, switch to  the stable branch and pull
+    the PR just merged.
 *   Release `bundler` with `(cd bundler && bin/rake release)`.
 *   Release `rubygems` with `rake release`.
 

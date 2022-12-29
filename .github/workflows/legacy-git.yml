@@ -6,21 +6,23 @@ on:
   push:
     branches:
       - master
-      - 3.3
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
 jobs:
   legacy_git:
     name: Verify behavior under old git
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     container:
       image: centos/ruby-27-centos7@sha256:b24b875dcdb6cb8f2145706dcaac74bb25ae3b9d9f7ba69d7ae700a7aee1e1bd
       options: --user=root
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Install rubygems
         run: ruby setup.rb
       - name: Check we can install a Gemfile with git sources

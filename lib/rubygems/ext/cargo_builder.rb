@@ -37,7 +37,8 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def build_env
     build_env = rb_config_env
     build_env["RUBY_STATIC"] = "true" if ruby_static? && ENV.key?("RUBY_STATIC")
-    build_env["RUSTFLAGS"] = "#{ENV["RUSTFLAGS"]} --cfg=rb_sys_gem".strip
+    cfg = "--cfg=rb_sys_gem --cfg=rubygems --cfg=rubygems_#{Gem::VERSION.tr(".", "_")}"
+    build_env["RUSTFLAGS"] = [ENV["RUSTFLAGS"], cfg].compact.join(" ")
     build_env
   end
 
@@ -47,12 +48,13 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
 
     cmd = []
     cmd += [cargo, "rustc"]
+    cmd += ["--crate-type", "cdylib"]
     cmd += ["--target", ENV["CARGO_BUILD_TARGET"]] if ENV["CARGO_BUILD_TARGET"]
     cmd += ["--target-dir", dest_path]
     cmd += ["--manifest-path", manifest]
     cmd += ["--lib"]
     cmd += ["--profile", profile.to_s]
-    cmd += ["--locked"] if profile == :release
+    cmd += ["--locked"]
     cmd += Gem::Command.build_args
     cmd += args
     cmd += ["--"]
@@ -75,7 +77,6 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
       *rustc_dynamic_linker_flags(dest_dir),
       *rustc_lib_flags(dest_dir),
       *platform_specific_rustc_args(dest_dir),
-      *debug_flags,
     ]
   end
 
@@ -104,12 +105,21 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   # We want to use the same linker that Ruby uses, so that the linker flags from
   # mkmf work properly.
   def linker_args
-    # Have to handle CC="cl /nologo" on mswin
     cc_flag = Shellwords.split(makefile_config("CC"))
     linker = cc_flag.shift
     link_args = cc_flag.flat_map {|a| ["-C", "link-arg=#{a}"] }
 
+    return mswin_link_args if linker == "cl"
+
     ["-C", "linker=#{linker}", *link_args]
+  end
+
+  def mswin_link_args
+    args = []
+    args += ["-l", makefile_config("LIBRUBYARG_SHARED").chomp(".lib")]
+    args += split_flags("LIBS").flat_map {|lib| ["-l", lib.chomp(".lib")] }
+    args += split_flags("LOCAL_LIBS").flat_map {|lib| ["-l", lib.chomp(".lib")] }
+    args
   end
 
   def libruby_args(dest_dir)
@@ -149,7 +159,7 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     prefix = so_ext == "dll" ? "" : "lib"
     path_parts = [dest_path]
     path_parts << ENV["CARGO_BUILD_TARGET"] if ENV["CARGO_BUILD_TARGET"]
-    path_parts += [profile_target_directory, "#{prefix}#{cargo_crate_name}.#{so_ext}"]
+    path_parts += ["release", "#{prefix}#{cargo_crate_name}.#{so_ext}"]
     File.join(*path_parts)
   end
 
@@ -254,13 +264,6 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     RbConfig.expand(val.dup)
   end
 
-  # Good balance between binary size and debugability
-  def debug_flags
-    return [] if profile == :dev
-
-    ["-C", "debuginfo=1"]
-  end
-
   # Copied from ExtConfBuilder
   def finalize_directory(dest_path, lib_dir, extension_dir)
     require "fileutils"
@@ -297,14 +300,6 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   def get_relative_path(path, base)
     path[0..base.length - 1] = "." if path.start_with?(base)
     path
-  end
-
-  def profile_target_directory
-    case profile
-    when :release then "release"
-    when :dev     then "debug"
-    else          raise "unknown target directory for profile: #{profile}"
-    end
   end
 
   # Error raised when no cdylib artifact was created

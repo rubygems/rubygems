@@ -26,11 +26,7 @@ task :setup do
   RubyGems::DevTasks.bundle_support_gemfile "release_gems","lock"
   RubyGems::DevTasks.bundle_support_gemfile "test_gems", "lock"
   RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop23_gems", "lock"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop24_gems", "lock"
   RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock"
-  RubyGems::DevTasks.bundle_support_gemfile "standard23_gems", "lock"
-  RubyGems::DevTasks.bundle_support_gemfile "standard24_gems", "lock"
 end
 
 desc "Update Rubygems dev environment"
@@ -39,11 +35,7 @@ task :update do
   RubyGems::DevTasks.bundle_support_gemfile "release_gems", "lock", "--update"
   RubyGems::DevTasks.bundle_support_gemfile "test_gems", "lock", "--update"
   RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop23_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop24_gems", "lock", "--update"
   RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "standard23_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "standard24_gems", "lock", "--update"
 end
 
 desc "Update the locked bundler version in dev environment"
@@ -52,11 +44,7 @@ task :update_locked_bundler do |_, args|
   RubyGems::DevTasks.bundle_support_gemfile "release_gems", "update", "--bundler"
   RubyGems::DevTasks.bundle_support_gemfile "test_gems", "update", "--bundler"
   RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop23_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop24_gems", "update", "--bundler"
   RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "standard23_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "standard24_gems", "update", "--bundler"
 end
 
 desc "Update specific development dependencies"
@@ -135,31 +123,26 @@ if File.exist?("util/automatiek.rake")
     lib.prefix = "Gem::Resolver"
     lib.vendor_lib = "lib/rubygems/resolver/molinillo"
     lib.license_path = "LICENSE"
+
+    lib.dependency("tsort") do |sublib|
+      sublib.version = "v0.1.1"
+      sublib.download = { :github => "https://github.com/ruby/tsort" }
+      sublib.namespace = "TSort"
+      sublib.prefix = "Gem"
+      sublib.vendor_lib = "lib/rubygems/tsort"
+      sublib.license_path = "LICENSE.txt"
+    end
   end
 
-  desc "Vendor a specific version of tsort"
-  Automatiek::RakeTask.new("tsort") do |lib|
-    lib.version = "master"
-    lib.download = { :github => "https://github.com/ruby/tsort" }
-    lib.namespace = "TSort"
-    lib.prefix = "Gem"
-    lib.vendor_lib = "lib/rubygems/tsort"
-    lib.license_path = "LICENSE.txt"
-  end
-
-  # We currently ship optparse 0.2.0 plus the following changes:
+  # We currently ship optparse 0.3.0 plus the following changes:
   # * Remove top aliasing the `::OptParse` constant to `OptionParser`, since we
   #   don't need it and it triggers redefinition warnings since the default
   #   optparse gem also does the aliasing.
-  # * Restore support for old versions of `did_you_mean` so that our vendored
-  #   copy works consistently in all supported rubies. This one can be removed
-  #   once we drop ruby 2.4 support, since newer versions include a version of
-  #   `did_you_mean` that does not require any changes.
   # * Add an empty .document file to the library's root path to hint RDoc that
   #   this library should not be documented.
   desc "Vendor a specific version of optparse"
   Automatiek::RakeTask.new("optparse") do |lib|
-    lib.version = "master"
+    lib.version = "v0.3.0"
     lib.download = { :github => "https://github.com/ruby/optparse" }
     lib.namespace = "OptionParser"
     lib.prefix = "Gem"
@@ -275,18 +258,13 @@ end
 
 file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
   cd "pkg" do
-    if Gem.win_platform? && RUBY_VERSION < "2.4"
-      sh "7z a -ttar  rubygems-#{v}.tar rubygems-#{v}"
-      sh "7z a -tgzip rubygems-#{v}.tgz rubygems-#{v}.tar"
-    else
-      tar_version = `tar --version`
-      if tar_version.include?("bsdtar")
-        # bsdtar, as used by at least FreeBSD and macOS, uses `--uname` and `--gname`.
-        sh "tar -czf rubygems-#{v}.tgz --uname=rubygems:0 --gname=rubygems:0 rubygems-#{v}"
-      else # If a third variant is added, change this line to: elsif tar_version =~ /GNU tar/
-        # GNU Tar, as used by many Linux distros, uses `--owner` and `--group`.
-        sh "tar -czf rubygems-#{v}.tgz --owner=rubygems:0 --group=rubygems:0 rubygems-#{v}"
-      end
+    tar_version = `tar --version`
+    if tar_version.include?("bsdtar")
+      # bsdtar, as used by at least FreeBSD and macOS, uses `--uname` and `--gname`.
+      sh "tar -czf rubygems-#{v}.tgz --uname=rubygems:0 --gname=rubygems:0 rubygems-#{v}"
+    else # If a third variant is added, change this line to: elsif tar_version =~ /GNU tar/
+      # GNU Tar, as used by many Linux distros, uses `--owner` and `--group`.
+      sh "tar -czf rubygems-#{v}.tgz --owner=rubygems:0 --group=rubygems:0 rubygems-#{v}"
     end
   end
 end

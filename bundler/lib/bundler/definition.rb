@@ -288,7 +288,7 @@ module Bundler
     end
 
     def lock(file, preserve_unknown_sections = false)
-      return if Definition.no_lock
+      return if Definition.no_lock || file.nil?
 
       contents = to_lock
 
@@ -305,7 +305,7 @@ module Bundler
 
       preserve_unknown_sections ||= !updating_major && (Bundler.frozen_bundle? || !(unlocking? || @unlocking_bundler))
 
-      return if file && File.exist?(file) && lockfiles_equal?(@lockfile_contents, contents, preserve_unknown_sections)
+      return if File.exist?(file) && lockfiles_equal?(@lockfile_contents, contents, preserve_unknown_sections)
 
       if Bundler.frozen_bundle?
         Bundler.ui.error "Cannot write a changed lockfile while frozen."

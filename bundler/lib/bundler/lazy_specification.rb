@@ -16,7 +16,6 @@ module Bundler
       @dependencies  = []
       @platform      = platform || Gem::Platform::RUBY
       @source        = source
-      @specification = nil
       @force_ruby_platform = default_force_ruby_platform
     end
 
@@ -94,23 +93,17 @@ module Bundler
     end
 
     def __materialize__(candidates)
-      @specification = begin
-        search = candidates.reverse.find do |spec|
-          spec.is_a?(StubSpecification) ||
-            (spec.matches_current_ruby? &&
-              spec.matches_current_rubygems?)
-        end
-        if search.nil? && Bundler.frozen_bundle?
-          search = candidates.last
-        else
-          search.dependencies = dependencies if search && search.full_name == full_name && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
-        end
-        search
+      search = candidates.reverse.find do |spec|
+        spec.is_a?(StubSpecification) ||
+          (spec.matches_current_ruby? &&
+            spec.matches_current_rubygems?)
       end
-    end
-
-    def respond_to?(*args)
-      super || @specification ? @specification.respond_to?(*args) : nil
+      if search.nil? && Bundler.frozen_bundle?
+        search = candidates.last
+      else
+        search.dependencies = dependencies if search && search.full_name == full_name && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
+      end
+      search
     end
 
     def to_s
@@ -134,14 +127,6 @@ module Bundler
 
     def to_ary
       nil
-    end
-
-    def method_missing(method, *args, &blk)
-      raise "LazySpecification has not been materialized yet (calling :#{method} #{args.inspect})" unless @specification
-
-      return super unless respond_to?(method)
-
-      @specification.send(method, *args, &blk)
     end
 
     #

@@ -1,0 +1,85 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 7649
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "a64b5db12a08651503cf9699c820a800"
+last-modified: Sun, 20 Nov 2022 04:15:39 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 51124a75-fdbd-4a4b-bcc8-c805ebaa8b37
+x-runtime: 0.010284
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.25.15.240:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:31:13 GMT
+via: 1.1 varnish
+age: 3407
+x-served-by: cache-mad22027-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140673.180664,VS0,VE2
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.1 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:61e26e5a8c091d7ae9142fa290efda18b2ae7b274c4756d7dc895541c877921f
+0.0.2 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:9fd10e7c2d33d65f4830540cae1e0536943c720e4e9f01d669377be4a00953a0
+0.0.21 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:69368f850b1c888105e392ca70f0a9f35bf5a13bbd22cf05f2733ac962b8a606
+0.0.22 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:5c738e6b908067d5829e2aecb53e2042315947336395c6c90f32be1799a9073f
+0.0.23 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:7c3e7996c15d9d6d0a49f949871ee04281f0450ccd8dfe63053dc4a237cde711
+0.0.231 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:b30a4a4564bb7a067f5e8164740e05bb3702167aee12ebb0d8468489b3524d3c
+0.0.232 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:9379278d6d39194bd9e2789bac7ae70fdd66bd5c6c18c77316331b850768c24a
+0.0.233 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:130a5a9a35c9d82841980c0869d74991e24b795ce6535637df2b8b5f02d726e5
+0.0.234 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:28dc54232cb58402aac202cbc5148c57f474bfda134f2d18e75a61cccc9f3035
+0.0.235 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:403c5838d7ea37008938cb1f19f6d2a3d01a4aa18e6e35e44e9c40a95f08553a
+0.0.3 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:5a97b06ad9eecf435a23bf8fbc1ed0f2b3e3572b5f6f1d1a1ae79e5a5ebbe3f5
+0.0.31 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:e9832c19f022c1bc92a18f3ab89141c7cdf345797e8349f589284e05588b67a1
+1.0.0 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:7365ae0a9bc1d3c0ec221fd3ca05f88681535d8510d5192f7174654e454e6ec6
+1.0.1 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:e0b3861d8d12b925ffc33cf56ec7d2a6815440a207b700edbcf6709f1d8c207d
+1.1.0 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:fddb2e6d65e911eb48a4617efb18f3603362d073853a44953c575dab43de8acd
+1.2.0 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:9af799a58cfd6d2962f548a18259e1bcd01e91d7998dc2f6e96755157b32dc83
+1.2.1 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:056ae7f3a0505c6f63fd307920789887f898cf0bfb8020afda6906c4c6140615
+1.3.0 clamp:~> 0.6,xcodeproj:~> 0.17|checksum:58eba872b957afc7519ebbc4443be4d95a1c5ceb32bbc6f29f681b59f20c3044
+1.4.0 clamp:~> 0.6,xcodeproj:~> 0.19.2|checksum:db1a9140f0ed0c109692c05139e9619b8e281084223b9d5f6a5810e04b23db2c
+1.5.0 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.19.2|checksum:7885b07bdbde53f6fe3848209efe063bda3b2307bde52fe1b9d5de77cd75f928
+1.5.1 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.19.2|checksum:6835898f367245f25a0584cf10e38a1fafe27dba4fe58f9d8ea793a6701ec7f0
+1.5.2 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.19.2|checksum:db786e6f0cdb75eebf7dca13e071bca81ad27ebfd0926e087ed8514f8cf4a668
+1.5.3 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.20.0|checksum:52e77f9a896f9feeacb2896a3948e37a381453a447b78c0741bf26acae3390b9
+1.5.4 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.20.0|checksum:52f6d4d487ed9bcf245d1d145b6d21b831fb5dd1c68efef614fe2d93d789e758
+1.5.5 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.20.0|checksum:fc218d088e0c39fc81f9a1d1e64b3290b6abd1bc02e8b8500391864add73c807
+1.6.0 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.23.0|checksum:e5c58aad90bc98cab02b4131e450da974ae23fd910c0f7f71409d636d3f59e06
+1.7.0 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.23.0|checksum:fddc5da881b9b1e5811dacee6d1b9c64023bdcc631b12237efd216959cc10a40
+1.7.1 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.24.1|checksum:86fa2e3834db8b415e03590245c4006d7890ebf1ebe32d95635f2a57995282f4
+1.8 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.24.1|checksum:598f0ac6e4a84100ee4faaf74c14e80bebd8da0e92f9c06c477b729d93eebf2e
+1.8.1 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.26.2|checksum:0dd155fae21f502365656b00dd712c7d756198914c7febebd5fc4199a18ee2ba
+1.8.3 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 0.28.0|checksum:1bb2b27dd72944fa54a9f18f3443723cee07e6496795b3ac6a52a53f14988573
+2.0.0 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:< 1.1.0&>= 0.28.2|checksum:5330bbd5fb903fae14a2fdeb425cf7cb351000b14fff9f1d519548c29705e0fb
+2.0.1 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:< 1.1.0&>= 0.28.2|checksum:7402f1c202f7e129a762572eacf8082964afdc037aef59917701eb34b2473e4a
+2.0.2 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:< 1.1.0&>= 0.28.2|checksum:528a7b5383cb353e8773e84be499c096b6a7a8d95611f0d217ff8934cd100642
+2.1.0 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:< 1.1.0&>= 0.28.2|checksum:391215cdfda62ccc6339ca00b1afeab69d6bdd826bbc56d5206765e781da6569
+2.2.0 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:< 1.1.0&>= 0.28.2|checksum:126487f51da0ceeb50b96f0eb738838e04f8aeab8f2c6d9c0214686085100972
+2.2.1 clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:~> 1.1|checksum:f63d0161eb31c0310a2b49caef51302ffbfa016aba5896a9645601b3df4b91f5
+2.3.0 activesupport:< 5&>= 4.0.2,clamp:~> 0.6,nokogiri:~> 1.6.3,xcodeproj:< 2.0.0&>= 0.20|checksum:2b96d318d01b7155f5e53b4cef1abb90d249fbf6c72ea09abf4717816853b765
+2.4.0 activesupport:< 5&>= 4.0.2,clamp:~> 0.6,nokogiri:~> 1.6,xcodeproj:< 2.0.0&>= 0.20|checksum:6a6d119fc7727f3bf4002dffbf19a4e5ef92c94f2f3a142c4484f7f929ed5523
+2.4.1 activesupport:< 5&>= 4.0.2,CFPropertyList:~> 2.2,clamp:~> 0.6,nokogiri:~> 1.6,xcodeproj:~> 1.4|checksum:c630d5e89fb6f23ef7dc632999f7cc96b275bcda8a104af598e3ecdaec20fe4a
+2.4.2 activesupport:< 5&>= 4.0.2,CFPropertyList:~> 2.2,clamp:~> 0.6,nokogiri:~> 1.6,xcodeproj:~> 1.4|checksum:ee8524245be09f8268d3816c957524aac414058f0777a4894cd84ac7851ab4b3
+2.4.3 activesupport:< 5&>= 4.0.2,CFPropertyList:~> 2.2,clamp:~> 0.6,nokogiri:< 1.7&>= 1.6,xcodeproj:~> 1.4|checksum:3dc24aa2f2d8e74a7911dbea9911e1251f7fd173966cd7774c56876948946020
+2.4.4 activesupport:< 5&>= 4.0.2,CFPropertyList:~> 2.2,clamp:~> 0.6,nokogiri:< 1.7&>= 1.6,xcodeproj:~> 1.4|checksum:0f380e0cf328583d0e0f0ed396fd19772726b334f6f716ca6b0d98717080799e
+2.4.5 activesupport:>= 4.0.2,CFPropertyList:~> 2.2,clamp:~> 0.6,nokogiri:~> 1.8.2,xcodeproj:~> 1.4|checksum:9f7be79eb925b14ea9153fe5902177702d0c14aab89b449bcf492150365dc605
+2.4.6 activesupport:>= 4.0.2,CFPropertyList:~> 2.2,clamp:~> 0.6,nokogiri:~> 1.8.2,xcodeproj:~> 1.4|checksum:9d1b9e6b5ea30209614e2f9197ac5c5cb84a5535e312b0ab869c715347e6ea4f
+2.4.7 activesupport:< 5&>= 4.0.2,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:~> 1.8,xcodeproj:~> 1.7|checksum:d6fb2ec1d801092b78b6557c481f1e93e91bf29be13cb185b4bef20a02a59c6c
+2.4.8 activesupport:< 5&>= 4.0.2,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:~> 1.8,xcodeproj:~> 1.7|checksum:d159bdbc1984aa481982b3a6e3f2028ef07023c64512d8a8db3770f229029a91
+2.4.9 activesupport:< 5&>= 4.0.2,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:~> 1.8,xcodeproj:~> 1.7|checksum:17341b882751c446a02ec365424f3a8809be6c8869c4c00c6a32d001d107b909
+2.5.0 activesupport:>= 0,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:~> 1.8,xcodeproj:~> 1.7|checksum:554fe02f1b2958791dea0e5cbc84b02d82090ef217d03c1c2e16c78cbd6336e2
+2.6.0 activesupport:>= 0,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:~> 1.8,xcodeproj:~> 1.7|checksum:ca14411ea1baf4bedaa6dc53d242cae5cbdf5ed5cb00b2f867abfe484e551e5b
+2.6.1 activesupport:>= 0,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:~> 1.11,xcodeproj:~> 1.7|checksum:f44262d4bc4f2986296ea44bbf28dfb459fe851241bbb221799ba7a4fe348f85
+2.7.0 activesupport:>= 0,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:~> 1.11,xcodeproj:~> 1.7|checksum:f211de111a36c6f7fdabcf41781f7ed16cf87cb2a87ec4a9704ffbeb599d2614
+2.7.1 activesupport:>= 0,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:~> 1.11,xcodeproj:~> 1.7|checksum:7e030ba6c1519d53f3018a251aad4ad6cc216c600dc60401a5153dd78b2e561d
+2.7.2 activesupport:>= 0,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:~> 1.12,xcodeproj:~> 1.21|checksum:96acb26b73883a2edef06712fe19837731c9e72637c3c5ec7c7d3f618be6c873
+2.7.3 activesupport:>= 0,CFPropertyList:< 4&>= 2.2,clamp:~> 1.3,nokogiri:>= 1.13.9,xcodeproj:~> 1.21|checksum:1058ab77e9dbe708badd2bdecfbb9fcfd14877968a9dfdd474f86173d635e17c

@@ -1,0 +1,65 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 3652
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "1e003bff32894637e17e8aaaac7e615a"
+last-modified: Wed, 07 Dec 2022 08:02:12 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 145ff21f-5456-4df9-9a0b-5f49fdf8595a
+x-runtime: 0.009669
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.26.151.153:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:31:11 GMT
+via: 1.1 varnish
+age: 3410
+x-served-by: cache-mad22093-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140672.928224,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.5.2 osx_keychain:>= 0|checksum:227598d7267e5866bd44e835dea70cb3be46babe40827d659090b90288fff6b1
+0.6.0 osx_keychain:>= 0|checksum:d6eb5956465f5ba9fb00bbea113e15c22953ff303abbd2b3977713d357d49c22
+0.6.1 osx_keychain:>= 0|checksum:97c641b12abf87e8d2c92c2b64974ccb3fc6732afd064613a0d8ad2ee40add72
+0.6.2 osx_keychain:>= 0|checksum:7d35b0978fce1779e2e1fcf59c545e245473c933bc0389c1a193b3ce156f8725
+0.9.0 osx_keychain:>= 0|checksum:dbbc21d57e0505d1b5467fc8c2b6a9aaffb0053860724c1a8c4605ecd428e2be
+0.9.5 osx_keychain:>= 0|checksum:b96347bb16283c91c8c34912ab98e17f6ae2d5d94dcb8b37ebd22859bc7369fa
+1.0.0 osx_keychain:>= 0|checksum:09f5d05074a371ebed090b3486ebd6101399fa0314484d2f21461ba7520a9c2f
+1.0.1 osx_keychain:>= 0|checksum:b59f7f5781c7cb5ae0258437f45cdcbf2c7dad2aecf7cbee2b9e01201516dcac
+1.0.2 osx_keychain:>= 0|checksum:dc9e423b5046fcc4a02cc34e35fa05e219eee5baa53ec163eb7ac9d7d35aa3f7
+1.1.0 osx_keychain:>= 0|checksum:e3be25893aca25719a66a6746d9e3abaad59e964cee04f662360f68c0ef4e05e
+1.2.0 osx_keychain:>= 0|checksum:13b3636244e423713a1c49eb22dea74dc1416cfe7bb020e049ea9dcc9e3d1213
+1.2.1 osx_keychain:>= 0|checksum:ae91f7cf9e8677b30597bb7a7e5ae0b672342c73cede2c4e7e137c30a1e72a82
+1.3.0 osx_keychain:>= 0|checksum:7ba738ec2009cddb51d5188b38e8a54b855c0c08be792455f7e7b4aee3fd2945
+1.3.1 osx_keychain:>= 0|checksum:7dcccc2b7ccb69901758e4df3b39029f97649920d468d9a21363f49ac013c83f
+1.3.2 osx_keychain:>= 0|checksum:18aa9d65b6de3242586e733596069fe272c9d6f02f60b778c97be3372931a7f9
+1.4.0 osx_keychain:>= 0|checksum:f4bd86e429548f6d6077ea792e5f551d7a7b9f997a083c6e6a2b84c5d858bd75
+1.5.0 osx_keychain:>= 0|checksum:89c92378c48ce3b935212aba85e0451c177c0bf49f976a2a12039161700f9a4d
+1.5.1 dotenv:>= 0,osx_keychain:>= 0|checksum:4822db42acf7dfdfce4db158d63f509d3ba0c7ef9762d1cd4fd610e60c2d6a9d
+1.5.2 dotenv:>= 0,osx_keychain:>= 0|checksum:b33b8012eb947cdc598240fcd521a754897f8c3871b52a30e0f939988fba36af
+1.6.0 dotenv:>= 0,osx_keychain:>= 0|checksum:04915bcb6ba3291e7c89fb72d35a57f0845440399376e8395aa0f5bc7f06524b
+1.6.1 dotenv:>= 0,osx_keychain:>= 0|checksum:a216801bcda7602ec473d144fb631e55ac72f5f33725474e7961f97de585198f
+1.7.0 dotenv:>= 0,osx_keychain:>= 0|checksum:e8645ee36eac5ab6f5b8604bdaab09701b67ec866787040ff4e7b1ec319381c0
+2.0.0 dotenv:>= 0,osx_keychain:>= 0|checksum:3d73f9e964fad83a96bc4496f83536527aaf2c29c388ba7d7635cb48cb89e126
+2.0.1 dotenv:>= 0,osx_keychain:>= 0|checksum:c0e7dc81b82edb00687387011e5cd0ffee427cd8b2eaba1ba4f530fcae8e4a68
+2.0.2 dotenv:>= 0,osx_keychain:>= 0|checksum:297763bfd4c30328769d9a1452073ffaab8c32edff7d5f9f34cadb43318f47d3
+2.0.3 dotenv:>= 0,osx_keychain:>= 0|checksum:45420d18472b4da32c1d5fdf3f02e651da7b27562bacb4da65be913ce058addd
+2.0.4 dotenv:>= 0,osx_keychain:>= 0|checksum:e781d6eabd7477418e4b51bc3a2a488f7eaa1038424f12a25881e75365a5a4c9
+2.0.5 dotenv:>= 0,osx_keychain:>= 0|checksum:47d849f90e03e55977531cd2ca7c1e1359eb2d673a92f2af3057477dcde91a7f
+2.0.6 dotenv:>= 0,osx_keychain:>= 0|checksum:d3c84df609844a9a3507660a25fda7b932633ae6a292b5aed7621f9f4da95743
+2.0.7 dotenv:>= 0,osx_keychain:>= 0|checksum:5bc4a87a005a454a6b431c6bb24ed0fb86cf86a3a5893b655e593ae62b1963ed
+2.1.0 dotenv:>= 0,osx_keychain:>= 0|checksum:05d58cd5ecca424472e48344a2cf35417970da406f4878e1861dc3fd57745592
+2.2.0 dotenv:>= 0,osx_keychain:>= 0|checksum:5aa9ee35ef55d5d397e3bf018fb6259a3388e6405de66ac7754e6d07f48d1e82
+2.2.1 dotenv:>= 0,osx_keychain:>= 0|checksum:b45b89d386592ae02a33a0cb30783b6caf4688c646c68c097bbe9d1375ef6c94
+2.3.0 dotenv:>= 0,ruby-keychain:>= 0|checksum:6c4cb8173f481146b57fa4d64dc3128c20c427513b10fc6e7769b419b5fface8
+2.3.1 dotenv:>= 0,ruby-keychain:>= 0|checksum:ce415ce3b3bd66a47aefa0314ccacabe1c908db932d4677bbc1fcf110396ccff

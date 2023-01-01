@@ -1,0 +1,38 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 764
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "8fe445af1f2f14a35140c3dc7cebb5af"
+last-modified: Fri, 29 Jul 2022 16:43:24 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 8bcbb7e4-e669-404a-909b-82c627b92681
+x-runtime: 0.008007
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.43.103.69:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:33 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22087-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140334.751865,VS0,VE198
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.1 |checksum:d4873e38b2a7c8bbc6a5f3a4ebe7160decf85ef8214fe0f1a3f18149aa00f9ed,ruby:>= 2.0.0
+1.0.0 |checksum:d0a61970d697b9bc6aef2e63b6737e0b575e5233aea948fcc03b70c29c140ba1,ruby:>= 2.0.0
+1.1.0 |checksum:3d191b25b79a48897874f03c1f9b52f359bea3eca1ab229b5d928dc56da6eb6c,ruby:>= 2.0.0
+1.1.1 |checksum:89e08c164b23315cbc69fa80a966ce6db7c400c65fb82f347bee58e52506df53,ruby:>= 2.0.0
+1.2.0 |checksum:e4906decb6a356a613f854c7371231a24d186776d86361803fa39dbaab95d2e1,ruby:>= 2.0.0
+1.2.1 |checksum:2cc989e04018e43fcda72c4c81d75f5b803ecc77b541cb811392c00f76a705a2,ruby:>= 2.0.0
+1.2.2 |checksum:e0f2571e0d8e8b0701db1d5df721e8f8d4e2df9eec32548b16cacb53ccecbc3f,ruby:>= 2.0.0
+1.2.3 |checksum:23e69de01aabd80192c7619ed9870b7c06a4c1bf82e98e130e4c3ac6d12819d7,ruby:>= 2.0.0

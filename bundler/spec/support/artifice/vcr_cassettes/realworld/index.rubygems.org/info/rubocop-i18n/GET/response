@@ -1,0 +1,40 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 979
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "4a571157045c856fbc3f28651c30b7e4"
+last-modified: Mon, 14 Dec 2020 18:33:38 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: dfd33e24-64d3-42a4-a8e5-863dd0f312b8
+x-runtime: 0.009853
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.43.103.69:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:23 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22076-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140323.004536,VS0,VE808
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.0.1 rubocop:~> 0.49|checksum:2510fedcde440ca147dc3d981527b1d501f6193068eb47d65161b83491acee75
+1.0.0 rubocop:~> 0.49|checksum:144de00bf95ee0b241f50ed5f2b012469833dfd197229c5d3efe2b39bf7faa44
+1.1.0 rubocop:~> 0.49|checksum:912c9893b6ae40f23087abfbfc1d22095c9c605eade90c6e6fca44cea2d230e8
+1.2.0 rubocop:~> 0.49.0|checksum:bd0748c5e69edcae35f5d0a8e3acdfe9813bb496cf9c0787778316fb71d96858
+1.3.0 rubocop:~> 0.51|checksum:cae12346c2b11e8acb48b1075d1dd8ae052de4d2f28e6a6aad109cbccdb2f957
+1.3.1 rubocop:~> 0.51|checksum:9e1d37b9ab2ec5d65b77b7c93a689baff0b5be4ecd08008654aff314b7c97528
+2.0.0 rubocop:~> 0.51|checksum:c21ea0a79603ef0dc636c75b129c8276e02697808ad17e83867bb110a7e4a889
+2.0.1 rubocop:~> 0.51|checksum:28ff5f2681dbfbf801d7343c947352ee5452c0fdff135734cdba571c6c1798ff
+2.0.2 rubocop:~> 0.51|checksum:7e6ea6bd7abec201c135a64c9a6697c8c7129565213546987e838b034775f122
+3.0.0 rubocop:~> 1.0|checksum:75138f55c4d9c02074a6db031f31f0071bb3d396c6f39fcb0199ae0b30753589,ruby:>= 2.5.8

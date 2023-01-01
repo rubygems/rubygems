@@ -1,0 +1,40 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1122
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "e1c2ca94209c1807b3f654b70904d649"
+last-modified: Mon, 14 Dec 2020 15:40:59 GMT
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
+x-request-id: 90e552a1-4fd5-44e0-bda8-5619661236fc
+x-runtime: 0.008447
+strict-transport-security: max-age=31536000
+x-backend: F_Rails 52.26.151.153:443
+accept-ranges: bytes
+date: Tue, 27 Dec 2022 11:25:26 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-mad22076-MAD
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1672140327.630071,VS0,VE218
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.1.0 |checksum:65e5c5513bf5a897220f7f7fa31483ff64894300261bebc6694690f158c14a3c
+0.2.0 |checksum:2903b9132e5b46c593331ac085bea77c5f371ffe3c9103f0f2edcc85fa9cbe32
+0.3.0.beta.1 CFPropertyList:~> 2.0.17|checksum:03bc25479662075f04db0149442150dcb088dba508feead21bec0a3666854ba7,rubygems:> 1.3.1
+0.3.0 CFPropertyList:~> 2.0.17|checksum:4054411f06c80d7973509b93c4accc148fbf6c68f6bb264c03512a6588ea996c
+0.4.0.beta.1 CFPropertyList:~> 2.0.17|checksum:8aaa9e77b60e644893978cd5eadaedd4ec4dfe7961e30de21f45215cb7dac92c,rubygems:> 1.3.1
+0.4.0.beta.2 CFPropertyList:~> 2.0.17|checksum:a8f1a8c49f081a4a7fb67bc9b9b95605ddc3be57030936c865380d8252800fb4,rubygems:> 1.3.1
+0.4.0.beta.3 CFPropertyList:~> 2.0.17|checksum:18a4253eda180e4df89d7ad615d26a563aded165271da2ba9db2286ff7d3005f,rubygems:> 1.3.1
+0.4.0 CFPropertyList:~> 2.0.17|checksum:9f9c1551228bdb01ac5ba36a39f7c1743f74cfe0587c79befe680f4797655282
+0.5.0.beta.1 CFPropertyList:~> 2.1.1|checksum:953f9e2514cf1cf3187ea0b9f5fcd3d30418b919d6c25605705c7636a81b7e75,rubygems:> 1.3.1
+0.5.0 CFPropertyList:~> 2.2|checksum:f0cb26612fdb64a446ec29c9be644c32e8a3a95056d855d91d19e51c64b8f526

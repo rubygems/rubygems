@@ -1,3 +1,13 @@
+# 2.4.2 (January 1, 2023)
+
+## Performance:
+
+  - Speed up resolution by properly merging incompatibility ranges [#6215](https://github.com/rubygems/rubygems/pull/6215)
+
+## Documentation:
+
+  - Remove stray word in `bundle config` man page [#6220](https://github.com/rubygems/rubygems/pull/6220)
+
 # 2.4.1 (December 24, 2022)
 
 ## Enhancements:

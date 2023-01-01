@@ -15,6 +15,11 @@ concurrency:
 permissions:  # added using https://github.com/step-security/secure-workflows
   contents: read
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./bundler
+
 jobs:
   bundler:
     name: Bundler ${{ matrix.bundler.name }} on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
@@ -42,13 +47,18 @@ jobs:
           - { os: { name: MacOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 }, timeout: 90 }
           - { os: { name: MacOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 }, timeout: 90 }
           - { os: { name: MacOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 }, timeout: 90 }
+
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 }, timeout: 120 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 }, timeout: 120 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 }, timeout: 120 }
+
     env:
       RGV: ..
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@4b2d1d631efa087f8896c15a0c6023dc2f483198 # v1.128.0
+        uses: ruby/setup-ruby@03b78bdda287ae04217ee12e4b64996630a03542 # v1.131.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -61,13 +71,10 @@ jobs:
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps
-        working-directory: ./bundler
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
-        working-directory: ./bundler
       - name: Run Test
         run: |
-          bin/rake spec:all
-        working-directory: ./bundler
+          bin/parallel_rspec
     timeout-minutes: ${{ matrix.timeout || 60 }}

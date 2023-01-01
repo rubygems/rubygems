@@ -1,3 +1,11 @@
+# 3.4.2 / 2023-01-01
+
+## Enhancements:
+
+* Add global flag (`-C`) to change execution directory. Pull request #6180
+  by gustavothecoder
+* Installs bundler 2.4.2 as a default gem.
+
 # 3.4.1 / 2022-12-24
 
 ## Enhancements:

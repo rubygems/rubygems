@@ -125,10 +125,6 @@ module Bundler
 
     private
 
-    def to_ary
-      nil
-    end
-
     #
     # For backwards compatibility with existing lockfiles, if the most specific
     # locked platform is not a specific platform like x86_64-linux or

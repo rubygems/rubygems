@@ -87,7 +87,16 @@ module Bundler
       else
         target_platform = ruby_platform_materializes_to_ruby_platform? ? platform : local_platform
 
-        GemHelpers.select_best_platform_match(matching_specs, target_platform)
+        installable_candidates = GemHelpers.select_best_platform_match(matching_specs, target_platform)
+
+        specification = __materialize__(installable_candidates)
+        return specification unless specification.nil?
+
+        if target_platform != platform
+          installable_candidates = GemHelpers.select_best_platform_match(matching_specs, platform)
+        end
+
+        installable_candidates
       end
 
       __materialize__(candidates)

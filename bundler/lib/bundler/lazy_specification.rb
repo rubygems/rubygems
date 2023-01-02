@@ -79,15 +79,16 @@ module Bundler
     def materialize_for_installation
       source.local!
 
-      candidates = if source.is_a?(Source::Path) || !ruby_platform_materializes_to_ruby_platform?
+      matching_specs = source.specs.search(use_exact_resolved_specifications? ? self : [name, version])
+      return self if matching_specs.empty?
+
+      candidates = if use_exact_resolved_specifications?
+        matching_specs
+      else
         target_platform = ruby_platform_materializes_to_ruby_platform? ? platform : local_platform
 
-        GemHelpers.select_best_platform_match(source.specs.search([name, version]), target_platform)
-      else
-        source.specs.search(self)
+        GemHelpers.select_best_platform_match(matching_specs, target_platform)
       end
-
-      return self if candidates.empty?
 
       __materialize__(candidates)
     end
@@ -124,6 +125,10 @@ module Bundler
     end
 
     private
+
+    def use_exact_resolved_specifications?
+      @use_exact_resolved_specifications ||= !source.is_a?(Source::Path) && ruby_platform_materializes_to_ruby_platform?
+    end
 
     #
     # For backwards compatibility with existing lockfiles, if the most specific

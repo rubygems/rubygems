@@ -637,7 +637,7 @@
 
 ## Security fixes:
 
-* Verify plaform before installing to avoid potential remote code
+* Verify platform before installing to avoid potential remote code
   execution. Pull request #4667 by sonalkr132
 
 ## Enhancements:
@@ -4269,7 +4269,7 @@ work focused on moving functionality out of Gem::SourceIndex and
 Gem::GemPathSearcher into Gem::Specification where it belongs.
 
 After installing RubyGems 1.8.0 you will see deprecations when loading your
-exsting gems.  Run `gem pristine --all --no-extensions` to regenerate your
+existing gems.  Run `gem pristine --all --no-extensions` to regenerate your
 gem specifications safely.
 
 Currently RubyGems does not save the build arguments used to build gems with
@@ -4796,8 +4796,8 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
     Steve Purcell.
 * `gem generate_index`
   * Can now generate an RSS feed.
-  * Modern indicies can now be updated incrementally.
-  * Legacy indicies can be updated separately from modern.
+  * Modern indices can now be updated incrementally.
+  * Legacy indices can be updated separately from modern.
 
 ## Bug fixes:
 

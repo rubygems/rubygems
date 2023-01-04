@@ -1518,7 +1518,7 @@ Changes
 
   - avoid new RubyGems warning about unsafe YAML loading (to keep output consistent) (@segiddins)
   - load digest subclasses in a thread-safe manner (@segiddins, @colby-swandale)
-  - avoid unusued variable warnings under ruby 2.5 (@amatsuda)
+  - avoid unused variable warnings under ruby 2.5 (@amatsuda)
   - fix printing the same message twice in verbose mode ([#6028](https://github.com/rubygems/bundler/issues/6028), @akhramov)
   - allow `SignalException`s to bubble up to the interpreter during `bundle exec` ([#6090](https://github.com/rubygems/bundler/issues/6090), @dekellum)
   - avoid activating stdlib digest under Ruby 2.5 (@segiddins)

@@ -148,7 +148,7 @@ RSpec.describe "bundle install with specific platforms" do
       expect(out).to include("Using libv8 8.4.255.0 (universal-darwin)")
     end
 
-    it "chooses platform specific gems even when resolving upon materialization and the API returns more specific plaforms first" do
+    it "chooses platform specific gems even when resolving upon materialization and the API returns more specific platforms first" do
       build_repo4 do
         build_gem("grpc", "1.50.0")
         build_gem("grpc", "1.50.0") {|s| s.platform = "universal-darwin" }
@@ -268,7 +268,7 @@ RSpec.describe "bundle install with specific platforms" do
         ])
       end
 
-      it "falls back on plain ruby when that version doesnt have a platform-specific gem" do
+      it "falls back on plain ruby when that version doesn't have a platform-specific gem" do
         setup_multiplatform_gem
         install_gemfile(google_protobuf)
         bundle "lock --add-platform=#{java}"
@@ -607,7 +607,7 @@ RSpec.describe "bundle install with specific platforms" do
     G
 
     # simulate lockfile which includes both a precompiled gem with:
-    # - Gem the current platform (with imcompatible ruby version)
+    # - Gem the current platform (with incompatible ruby version)
     # - A source gem with compatible ruby version
     lockfile <<-L
       GEM

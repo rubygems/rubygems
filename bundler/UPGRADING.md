@@ -103,7 +103,7 @@ in the upcoming 3 version.
 
 #### Cancelled CLI deprecations
 
-These deprecations have been initally announced before, but the deprecations
+These deprecations have been initially announced before, but the deprecations
 were cancelled before the release of Bundler 2.1.0 in [rubygems/bundler#7475](https://github.com/rubygems/bundler/pull/7475).
 
 * ~The `bundle update` command will no longer update all gems, you'll need to pass `--all` to it.~ (postponed)

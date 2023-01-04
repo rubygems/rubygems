@@ -49,6 +49,12 @@ module Bundler
         end
       end
 
+      def include_prereleases(names)
+        names.each do |name|
+          get_package(name).consider_prereleases!
+        end
+      end
+
       private
 
       def build_base_requirements

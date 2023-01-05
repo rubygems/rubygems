@@ -79,6 +79,7 @@ module Bundler
       @locked_bundler_version = nil
       @locked_ruby_version    = nil
       @new_platform = nil
+      @removed_platform = nil
 
       if lockfile && File.exist?(lockfile)
         @lockfile_contents = Bundler.read_file(lockfile)
@@ -267,7 +268,7 @@ module Bundler
           SpecSet.new(filter_specs(@locked_specs, @dependencies - deleted_deps))
         else
           Bundler.ui.debug "Found no changes, using resolution from the lockfile"
-          if @locked_gems.may_include_redundant_platform_specific_gems?
+          if @removed_platform || @locked_gems.may_include_redundant_platform_specific_gems?
             SpecSet.new(filter_specs(@locked_specs, @dependencies))
           else
             @locked_specs
@@ -446,7 +447,9 @@ module Bundler
     end
 
     def remove_platform(platform)
-      return if @platforms.delete(Gem::Platform.new(platform))
+      removed_platform = @platforms.delete(Gem::Platform.new(platform))
+      @removed_platform ||= removed_platform
+      return if removed_platform
       raise InvalidOption, "Unable to remove the platform `#{platform}` since the only platforms are #{@platforms.join ", "}"
     end
 

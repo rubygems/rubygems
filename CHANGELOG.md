@@ -1,3 +1,13 @@
+# 3.4.3 / 2023-01-06
+
+## Enhancements:
+
+* Installs bundler 2.4.3 as a default gem.
+
+## Documentation:
+
+* Fix several typos. Pull request #6224 by jdufresne
+
 # 3.4.2 / 2023-01-01
 
 ## Enhancements:

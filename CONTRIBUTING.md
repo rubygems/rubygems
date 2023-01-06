@@ -56,15 +56,15 @@ To run commands like `bundle install` from the repo:
 
 ### Running Tests
 
-To run the entire test suite you can use: 
+To run the entire test suite you can use:
 
     rake test
 
-To run an individual test file located for example in `test/rubygems/test_deprecate.rb` you can use: 
+To run an individual test file located for example in `test/rubygems/test_deprecate.rb` you can use:
 
     ruby -Ilib:test:bundler/lib test/rubygems/test_deprecate.rb
-    
-And to run an individual test method named `test_default` within a test file, you can use: 
+
+And to run an individual test method named `test_default` within a test file, you can use:
 
     ruby -Ilib:test:bundler/lib test/rubygems/test_deprecate.rb -n /test_default/
 

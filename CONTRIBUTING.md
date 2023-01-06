@@ -80,6 +80,10 @@ To run the entire bundler test suite in parallel (it takes a while):
 
     bin/parallel_rspec
 
+There are some realworld higher level specs run in CI, but not run by `bin/parallel_rspec`. You can run those with:
+
+    bin/rake spec:realworld
+
 To run an individual test file location for example in `spec/install/gems/standalone_spec.rb` you can use:
 
     bin/rspec spec/install/gems/standalone_spec.rb

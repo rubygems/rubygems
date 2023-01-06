@@ -80,10 +80,6 @@ To run the entire bundler test suite in parallel (it takes a while):
 
     bin/parallel_rspec
 
-To run the entire bundler test suite sequentially (get a coffee because it's very slow):
-
-    bin/rspec
-
 To run an individual test file location for example in `spec/install/gems/standalone_spec.rb` you can use:
 
     bin/rspec spec/install/gems/standalone_spec.rb

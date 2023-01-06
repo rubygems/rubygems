@@ -1,3 +1,21 @@
+# 2.4.3 (January 6, 2023)
+
+## Enhancements:
+
+  - Enhance `bundle open` command to allow opening subdir/file of gem [#6146](https://github.com/rubygems/rubygems/pull/6146)
+
+## Bug fixes:
+
+  - Fix pointing GitHub sources to PRs [#6241](https://github.com/rubygems/rubygems/pull/6241)
+  - Fix version ranges incorrectly handling platforms [#6240](https://github.com/rubygems/rubygems/pull/6240)
+  - Cleanup unnecessary gems when removing lockfile platforms [#6234](https://github.com/rubygems/rubygems/pull/6234)
+  - When auto-removing RUBY platform don't add specific platform if not needed [#6233](https://github.com/rubygems/rubygems/pull/6233)
+  - Fallback to selecting installable candidates if possible when materializing specs [#6225](https://github.com/rubygems/rubygems/pull/6225)
+
+## Documentation:
+
+  - Fix several typos [#6224](https://github.com/rubygems/rubygems/pull/6224)
+
 # 2.4.2 (January 1, 2023)
 
 ## Performance:
@@ -1518,7 +1536,7 @@ Changes
 
   - avoid new RubyGems warning about unsafe YAML loading (to keep output consistent) (@segiddins)
   - load digest subclasses in a thread-safe manner (@segiddins, @colby-swandale)
-  - avoid unusued variable warnings under ruby 2.5 (@amatsuda)
+  - avoid unused variable warnings under ruby 2.5 (@amatsuda)
   - fix printing the same message twice in verbose mode ([#6028](https://github.com/rubygems/bundler/issues/6028), @akhramov)
   - allow `SignalException`s to bubble up to the interpreter during `bundle exec` ([#6090](https://github.com/rubygems/bundler/issues/6090), @dekellum)
   - avoid activating stdlib digest under Ruby 2.5 (@segiddins)

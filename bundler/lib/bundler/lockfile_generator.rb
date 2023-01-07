@@ -72,6 +72,12 @@ module Bundler
       definition.resolve.sort_by(&:full_name).each do |spec|
         checksum = spec.to_checksum if spec.respond_to?(:to_checksum)
 
+        #if spec.is_a?(LazySpecification)
+          #spec.materialize_for_checksum do
+            #checksum ||= spec.to_checksum if spec.respond_to?(:to_checksum)
+          #end
+        #end
+
         checksum ||= definition.locked_checksums.find {|c| c.match_spec?(spec) }
 
         out << checksum.to_lock if checksum

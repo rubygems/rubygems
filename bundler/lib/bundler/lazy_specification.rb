@@ -76,6 +76,18 @@ module Bundler
       out
     end
 
+    #def materialize_for_checksum
+      #if @specification
+        #yield
+      #else
+        #materialize_for_installation
+
+        #yield
+
+        #@specification = nil
+      #end
+    #end
+
     def materialize_for_installation
       source.local!
 

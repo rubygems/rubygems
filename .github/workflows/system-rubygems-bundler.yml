@@ -1,10 +1,10 @@
-name: older-rubygems-bundler
+name: system-rubygems-bundler
 
 on:
   pull_request:
     paths:
       - bundler/**
-      - .github/workflows/older-rubygems-bundler.yml
+      - .github/workflows/system-rubygems-bundler.yml
       - .rubocop_bundler.yml
 
   push:
@@ -25,29 +25,22 @@ defaults:
     working-directory: ./bundler
 
 jobs:
-  older_rubygems_bundler:
-    name: Bundler ${{ matrix.bundler.name }} against old Rubygems (${{ matrix.ruby.name }}, ${{ matrix.rgv.name }})
+  system_rubygems_bundler:
+    name: Bundler ${{ matrix.bundler.name }} against system Rubygems (${{ matrix.ruby.name }})
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.10 }, rgv: { name: rgv-3.0, value: v3.0.9 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.7 }, rgv: { name: rgv-3.1, value: v3.1.6 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.5 }, rgv: { name: rgv-3.2, value: v3.2.33 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.3 }, rgv: { name: rgv-3.3, value: v3.3.5 } }
-    env:
-      RGV: ${{ matrix.rgv.value }}
-      RUBYOPT: --disable-gems
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.10 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.7 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.5 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.3 } }
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
-      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
-        with:
-          path: bundler/tmp/rubygems
-          ref: ${{ matrix.rgv.value }}
       - name: Setup ruby
         uses: ruby/setup-ruby@09c10210cc6e998d842ce8433cd9d245933cd797 # v1.133.0
         with:
@@ -65,6 +58,14 @@ jobs:
       - name: Run Test
         run: |
           bin/parallel_rspec
+      - name: Save system RubyGems version to ENV
+        run: |
+          RGV=$(ruby -e 'puts Gem::VERSION.split(".")[0..2].join(".")')
+          echo "RGV=v$RGV" >> $GITHUB_ENV
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        with:
+          path: bundler/tmp/rubygems
+          ref: ${{ env.RGV }}
       - name: Run Rubygems Requirement tests against local bundler, to make sure bundler monkeypatches preserve the behaviour
         run: |
           ruby -I../../lib:lib:test test/rubygems/test_gem_requirement.rb

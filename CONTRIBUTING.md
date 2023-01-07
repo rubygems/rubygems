@@ -56,15 +56,15 @@ To run commands like `bundle install` from the repo:
 
 ### Running Tests
 
-To run the entire test suite you can use: 
+To run the entire test suite you can use:
 
     rake test
 
-To run an individual test file located for example in `test/rubygems/test_deprecate.rb` you can use: 
+To run an individual test file located for example in `test/rubygems/test_deprecate.rb` you can use:
 
     ruby -Ilib:test:bundler/lib test/rubygems/test_deprecate.rb
-    
-And to run an individual test method named `test_default` within a test file, you can use: 
+
+And to run an individual test method named `test_default` within a test file, you can use:
 
     ruby -Ilib:test:bundler/lib test/rubygems/test_deprecate.rb -n /test_default/
 
@@ -80,9 +80,9 @@ To run the entire bundler test suite in parallel (it takes a while):
 
     bin/parallel_rspec
 
-To run the entire bundler test suite sequentially (get a coffee because it's very slow):
+There are some realworld higher level specs run in CI, but not run by `bin/parallel_rspec`. You can run those with:
 
-    bin/rspec
+    bin/rake spec:realworld
 
 To run an individual test file location for example in `spec/install/gems/standalone_spec.rb` you can use:
 

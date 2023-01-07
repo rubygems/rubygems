@@ -5,7 +5,7 @@ module Bundler
     attr_reader :name, :version, :platform
     attr_accessor :checksum
 
-    SHA256 = /\Asha256-[a-z0-9]{64}\z/.freeze
+    SHA256 = /\Asha256-([a-z0-9]{64}|[A-Za-z0-9+\/=]{44})\z/.freeze
 
     def initialize(name, version, platform, checksum = nil)
       @name     = name

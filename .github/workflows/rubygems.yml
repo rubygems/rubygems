@@ -1,4 +1,4 @@
-name: ubuntu-rubygems
+name: rubygems
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ permissions:  # added using https://github.com/step-security/secure-workflows
   contents: read
 
 jobs:
-  ubuntu_rubygems:
+  rubygems:
     name: Rubygems on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
     runs-on: ${{ matrix.os.value }}
     strategy:

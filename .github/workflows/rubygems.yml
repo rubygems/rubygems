@@ -52,7 +52,7 @@ jobs:
             cargo: { target: x86_64-pc-windows-msvc, toolchain: stable }
 
     steps:
-      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
       - name: Setup ruby (Ubuntu/MacOS)
         uses: ruby/setup-ruby@9669f3ee51dc3f4eda8447ab696b3ab19a90d14b # v1.144.0
         with:

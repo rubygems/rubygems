@@ -21,19 +21,14 @@ module Spec
       base = args[0] || Bundler::SpecSet.new([])
       base.each {|ls| ls.source = default_source }
       gem_version_promoter = args[1] || Bundler::GemVersionPromoter.new
-      additional_base_requirements = args[2] || []
-      originally_locked = args[3] || Bundler::SpecSet.new([])
-      unlock = args[4] || []
-      packages = Hash.new do |h, k|
-        h[k] = Bundler::Resolver::Package.new(k, @platforms, originally_locked, unlock)
-      end
+      originally_locked = args[2] || Bundler::SpecSet.new([])
+      unlock = args[3] || []
       @deps.each do |d|
         name = d.name
-        platforms = d.gem_platforms(@platforms)
         source_requirements[name] = d.source = default_source
-        packages[name] = Bundler::Resolver::Package.new(name, platforms, originally_locked, unlock, :dependency => d)
       end
-      Bundler::Resolver.new(source_requirements, base, gem_version_promoter, additional_base_requirements).start(@deps, packages)
+      packages = Bundler::Resolver::Base.new(source_requirements, @deps, base, @platforms, :locked_specs => originally_locked, :unlock => unlock)
+      Bundler::Resolver.new(packages, gem_version_promoter).start(@deps)
     end
 
     def should_not_resolve
@@ -71,7 +66,7 @@ module Spec
         s.level = opts.first
         s.strict = opts.include?(:strict)
       end
-      should_resolve_and_include specs, [@base, search, [], @locked, unlock]
+      should_resolve_and_include specs, [@base, search, @locked, unlock]
     end
 
     def an_awesome_index

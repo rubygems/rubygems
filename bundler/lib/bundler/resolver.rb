@@ -9,26 +9,21 @@ module Bundler
   class Resolver
     require_relative "vendored_pub_grub"
     require_relative "resolver/base"
-    require_relative "resolver/package"
     require_relative "resolver/candidate"
     require_relative "resolver/incompatibility"
     require_relative "resolver/root"
 
     include GemHelpers
 
-    def initialize(source_requirements, base, gem_version_promoter, additional_base_requirements)
-      @source_requirements = source_requirements
-      @base = Resolver::Base.new(base, additional_base_requirements)
+    def initialize(base, gem_version_promoter)
+      @source_requirements = base.source_requirements
+      @base = base
       @gem_version_promoter = gem_version_promoter
     end
 
-    def start(requirements, packages, exclude_specs: [])
-      exclude_specs.each do |spec|
-        remove_from_candidates(spec)
-      end
-
+    def start(requirements)
       @requirements = requirements
-      @packages = packages
+      @packages = @base.packages
 
       root, logger = setup_solver
 
@@ -302,10 +297,6 @@ module Bundler
 
     def base_requirements
       @base.base_requirements
-    end
-
-    def remove_from_candidates(spec)
-      @base.delete(spec)
     end
 
     def prepare_dependencies(requirements, packages)

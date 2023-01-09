@@ -15,7 +15,7 @@ module Bundler
     class Package
       attr_reader :name, :platforms, :dependency, :locked_version
 
-      def initialize(name, platforms, locked_specs, unlock, dependency: nil)
+      def initialize(name, platforms, locked_specs:, unlock:, dependency: nil)
         @name = name
         @platforms = platforms
         @locked_version = locked_specs[name].first&.version

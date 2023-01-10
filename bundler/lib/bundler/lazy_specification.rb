@@ -102,6 +102,11 @@ module Bundler
       __materialize__(candidates)
     end
 
+    # If in frozen mode, we fallback to a non-installable candidate because by
+    # doing this we avoid re-resolving and potentially end up changing the
+    # lock file, which is not allowed. In that case, we will give a proper error
+    # about the mismatch higher up the stack, right before trying to install the
+    # bad gem.
     def __materialize__(candidates, fallback_to_non_installable: Bundler.frozen_bundle?)
       search = candidates.reverse.find do |spec|
         spec.is_a?(StubSpecification) ||

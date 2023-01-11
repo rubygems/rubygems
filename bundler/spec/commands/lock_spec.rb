@@ -896,5 +896,31 @@ RSpec.describe "bundle lock" do
               version solving has failed.
       ERR
     end
+
+    it "does not accidentally resolves to prereleases" do
+      build_repo4 do
+        build_gem "autoproj", "2.0.3" do |s|
+          s.add_dependency "autobuild", ">= 1.10.0.a"
+          s.add_dependency "tty-prompt"
+        end
+
+        build_gem "tty-prompt", "0.6.0"
+        build_gem "tty-prompt", "0.7.0"
+
+        build_gem "autobuild", "1.10.0.b3"
+        build_gem "autobuild", "1.10.1" do |s|
+          s.add_dependency "tty-prompt", "~> 0.6.0"
+        end
+      end
+
+      gemfile <<~G
+        source "#{file_uri_for(gem_repo4)}"
+        gem "autoproj", ">= 2.0.0"
+      G
+
+      bundle "lock"
+      expect(lockfile).to_not include("autobuild (1.10.0.b3)")
+      expect(lockfile).to include("autobuild (1.10.1)")
+    end
   end
 end

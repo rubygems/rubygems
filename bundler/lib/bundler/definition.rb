@@ -557,7 +557,27 @@ module Bundler
     end
 
     def precompute_source_requirements_for_indirect_dependencies?
-      @remote && sources.non_global_rubygems_sources.all?(&:dependency_api_available?) && !sources.aggregate_global_source?
+      return false unless @remote && !sources.aggregate_global_source?
+
+      if sources.non_global_rubygems_sources.all?(&:dependency_api_available?)
+        true
+      else
+        non_dependency_api_warning
+        false
+      end
+    end
+
+    def non_dependency_api_warning
+      non_api_sources = sources.non_global_rubygems_sources.reject(&:dependency_api_available?)
+      non_api_source_names = non_api_sources.map {|d| "  * #{d}" }.join("\n")
+
+      msg = String.new
+      msg << "Your Gemfile contains scoped sources that don't implement a dependency API, namely:\n\n"
+      msg << non_api_source_names
+      msg << "\n\nUsing the above gem servers may result in installing unexpected gems. " \
+        "To resolve this warning, make sure you use gem servers that implement dependency APIs, " \
+        "such as gemstash or geminabox gem servers."
+      Bundler.ui.warn msg
     end
 
     def pin_locally_available_names(source_requirements)

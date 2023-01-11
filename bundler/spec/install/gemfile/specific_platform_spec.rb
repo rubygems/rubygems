@@ -688,6 +688,63 @@ RSpec.describe "bundle install with specific platforms" do
     L
   end
 
+  it "automatically fixes the lockfile without removing other variants if it's missing platform gems, but they are installed locally" do
+    simulate_platform "x86_64-darwin-21" do
+      build_repo4 do
+        build_gem("sorbet-static", "0.5.10549") do |s|
+          s.platform = "universal-darwin-20"
+        end
+
+        build_gem("sorbet-static", "0.5.10549") do |s|
+          s.platform = "universal-darwin-21"
+        end
+      end
+
+      # Make sure sorbet-static-0.5.10549-universal-darwin-21 is installed
+      install_gemfile <<~G
+        source "#{file_uri_for(gem_repo4)}"
+
+        gem "sorbet-static", "= 0.5.10549"
+      G
+
+      # Make sure the lockfile is missing sorbet-static-0.5.10549-universal-darwin-21
+      lockfile <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            sorbet-static (0.5.10549-universal-darwin-20)
+
+        PLATFORMS
+          x86_64-darwin
+
+        DEPENDENCIES
+          sorbet-static (= 0.5.10549)
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+
+      bundle "install"
+
+      expect(lockfile).to eq <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            sorbet-static (0.5.10549-universal-darwin-20)
+            sorbet-static (0.5.10549-universal-darwin-21)
+
+        PLATFORMS
+          x86_64-darwin
+
+        DEPENDENCIES
+          sorbet-static (= 0.5.10549)
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+  end
+
   it "does not remove ruby if gems for other platforms, and not present in the lockfile, exist in the Gemfile" do
     build_repo4 do
       build_gem "nokogiri", "1.13.8"

@@ -159,13 +159,6 @@ module Bundler
       resolve
     end
 
-    def resolve_prefering_local!
-      @prefer_local = true
-      @remote = true
-      sources.remote!
-      resolve
-    end
-
     def resolve_with_cache!
       sources.cached!
       resolve
@@ -175,6 +168,23 @@ module Bundler
       @remote = true
       sources.remote!
       resolve
+    end
+
+    def resolution_mode=(options)
+      if options["local"]
+        @remote = false
+      else
+        @remote = true
+        @prefer_local = options["prefer-local"]
+      end
+    end
+
+    def setup_sources_for_resolve
+      if @remote == false
+        sources.cached!
+      else
+        sources.remote!
+      end
     end
 
     # For given dependency list returns a SpecSet with Gemspec of all the required
@@ -519,6 +529,7 @@ module Bundler
         break if incomplete_specs.empty?
 
         Bundler.ui.debug("The lockfile does not have all gems needed for the current platform though, Bundler will still re-resolve dependencies")
+        setup_sources_for_resolve
         resolution_packages.delete(incomplete_specs)
         @resolve = start_resolution
         specs = resolve.materialize(dependencies)

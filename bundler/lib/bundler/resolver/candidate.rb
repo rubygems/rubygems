@@ -26,9 +26,8 @@ module Bundler
 
       def initialize(version, specs: [])
         @spec_group = Resolver::SpecGroup.new(specs)
-        @platforms = specs.map(&:platform).uniq
         @version = Gem::Version.new(version)
-        @ruby_only = @platforms == [Gem::Platform::RUBY]
+        @ruby_only = specs.map(&:platform).uniq == [Gem::Platform::RUBY]
       end
 
       def dependencies

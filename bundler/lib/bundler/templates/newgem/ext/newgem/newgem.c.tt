@@ -2,8 +2,20 @@
 
 VALUE rb_m<%= config[:constant_array].join %>;
 
+VALUE rb_<%= config[:constant_array].join %>_hello(VALUE self, VALUE str);
+
 void
 Init_<%= config[:underscored_name] %>(void)
 {
   rb_m<%= config[:constant_array].join %> = rb_define_module(<%= config[:constant_name].inspect %>);
+  rb_define_singleton_method(rb_m<%= config[:constant_array].join %>, "hello", rb_<%= config[:constant_array].join %>_hello, 1);
+}
+
+VALUE
+rb_<%= config[:constant_array].join %>_hello(VALUE self, VALUE str)
+{
+  if (RB_TYPE_P(str, T_STRING) == 1) {
+    return rb_sprintf("Hello from C, %s!", StringValueCStr(str));
+  }
+  return Qnil;
 }

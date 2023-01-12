@@ -923,4 +923,31 @@ RSpec.describe "bundle lock" do
     expect(lockfile).to_not include("autobuild (1.10.0.b3)")
     expect(lockfile).to include("autobuild (1.10.1)")
   end
+
+  it "deals with platform specific incompatibilities" do
+    build_repo4 do
+      build_gem "activerecord", "6.0.6"
+      build_gem "activerecord-jdbc-adapter", "60.4" do |s|
+        s.platform = "java"
+        s.add_dependency "activerecord", "~> 6.0.0"
+      end
+      build_gem "activerecord-jdbc-adapter", "61.0" do |s|
+        s.platform = "java"
+        s.add_dependency "activerecord", "~> 6.1.0"
+      end
+    end
+
+    gemfile <<~G
+      source "#{file_uri_for(gem_repo4)}"
+      gem "activerecord", "6.0.6"
+      gem "activerecord-jdbc-adapter", "61.0"
+    G
+
+    simulate_platform "universal-java-19" do
+      bundle "lock", :raise_on_error => false
+    end
+
+    expect(err).to include("Could not find compatible versions")
+    expect(err).not_to include("ERROR REPORT TEMPLATE")
+  end
 end

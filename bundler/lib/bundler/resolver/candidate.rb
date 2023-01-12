@@ -88,9 +88,7 @@ module Bundler
       end
 
       def to_s
-        return @version.to_s if @platforms.empty? || @ruby_only
-
-        "#{@version} (#{@platforms.join(", ")})"
+        @version.to_s
       end
     end
   end

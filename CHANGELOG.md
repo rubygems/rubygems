@@ -1,3 +1,14 @@
+# 3.4.4 / 2023-01-16
+
+## Enhancements:
+
+* Installs bundler 2.4.4 as a default gem.
+
+## Documentation:
+
+* Improve documentation about `Kernel` monkeypatches. Pull request #6217
+  by nobu
+
 # 3.4.3 / 2023-01-06
 
 ## Enhancements:

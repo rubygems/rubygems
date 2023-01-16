@@ -1,0 +1,75 @@
+name: system-rubygems-bundler
+
+on:
+  pull_request:
+    paths:
+      - bundler/**
+      - .github/workflows/system-rubygems-bundler.yml
+      - .rubocop_bundler.yml
+
+  push:
+    branches:
+      - master
+      - 3.4
+
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./bundler
+
+jobs:
+  system_rubygems_bundler:
+    name: Bundler ${{ matrix.bundler.name }} against system Rubygems (${{ matrix.ruby.name }})
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.10 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.0 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.7 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.5 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.3 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.0 } }
+    steps:
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      - name: Setup ruby
+        uses: ruby/setup-ruby@09c10210cc6e998d842ce8433cd9d245933cd797 # v1.133.0
+        with:
+          ruby-version: ${{ matrix.ruby.value }}
+          bundler: none
+      - name: Install graphviz
+        run: sudo apt-get install graphviz -y
+        if: matrix.bundler.value == ''
+      - name: Prepare dependencies
+        run: |
+          bin/rake spec:parallel_deps
+      - name: Replace version
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
+        if: matrix.bundler.value != ''
+      - name: Run Test
+        run: |
+          bin/parallel_rspec
+      - name: Save system RubyGems version to ENV
+        run: |
+          RGV=$(ruby -e 'puts Gem::VERSION.split(".")[0..2].join(".")')
+          echo "RGV=v$RGV" >> $GITHUB_ENV
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        with:
+          path: bundler/tmp/rubygems
+          ref: ${{ env.RGV }}
+      - name: Run Rubygems Requirement tests against local bundler, to make sure bundler monkeypatches preserve the behaviour
+        run: |
+          ruby -I../../lib:lib:test test/rubygems/test_gem_requirement.rb
+        working-directory: ./bundler/tmp/rubygems
+    timeout-minutes: 60

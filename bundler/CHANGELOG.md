@@ -1,3 +1,14 @@
+# 2.4.4 (January 16, 2023)
+
+## Bug fixes:
+
+  - Fix platform specific gems removed from the lockfile [#6266](https://github.com/rubygems/rubygems/pull/6266)
+  - Properly handle incompatibilities on platform specific gems [#6270](https://github.com/rubygems/rubygems/pull/6270)
+  - Optimistically exclude prereleases from initial resolution [#6246](https://github.com/rubygems/rubygems/pull/6246)
+  - Fix another case of not properly falling back to ruby variant when materializing [#6261](https://github.com/rubygems/rubygems/pull/6261)
+  - Skip setting `BUNDLER_SETUP` on Ruby 2.6 [#6252](https://github.com/rubygems/rubygems/pull/6252)
+  - Let resolver deal with legacy gems with equivalent version and different dependencies [#6219](https://github.com/rubygems/rubygems/pull/6219)
+
 # 2.4.3 (January 6, 2023)
 
 ## Enhancements:

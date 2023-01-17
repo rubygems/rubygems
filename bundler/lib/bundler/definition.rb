@@ -557,7 +557,7 @@ module Bundler
     end
 
     def precompute_source_requirements_for_indirect_dependencies?
-      @remote && sources.non_global_rubygems_sources.all?(&:dependency_api_available?) && !sources.aggregate_global_source?
+      sources.non_global_rubygems_sources.all?(&:dependency_api_available?) && !sources.aggregate_global_source?
     end
 
     def pin_locally_available_names(source_requirements)

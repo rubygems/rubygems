@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@319066216501fbd5e2d568f14b7d68c19fb67a5d # v1.133.1
+        uses: ruby/setup-ruby@93287a1fa82c6ddbb6d8db978df4b0119cd8879f # v1.133.2
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -104,7 +104,7 @@ jobs:
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@319066216501fbd5e2d568f14b7d68c19fb67a5d # v1.133.1
+        uses: ruby/setup-ruby@93287a1fa82c6ddbb6d8db978df4b0119cd8879f # v1.133.2
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

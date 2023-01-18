@@ -487,7 +487,7 @@ module Bundler
     end
 
     def expanded_dependencies
-      @expanded_dependencies ||= dependencies + metadata_dependencies
+      dependencies + metadata_dependencies
     end
 
     def resolution_packages

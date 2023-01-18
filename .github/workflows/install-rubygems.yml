@@ -26,15 +26,16 @@ jobs:
           - { name: "2.7", value: 2.7.7 }
           - { name: "3.0", value: 3.0.5 }
           - { name: "3.1", value: 3.1.3 }
+          - { name: "3.2", value: 3.2.0 }
           - { name: jruby-9.3, value: jruby-9.3.9.0 }
           - { name: truffleruby-22, value: truffleruby-22.3.0 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }
     steps:
-      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@03b78bdda287ae04217ee12e4b64996630a03542 # v1.131.0
+        uses: ruby/setup-ruby@93287a1fa82c6ddbb6d8db978df4b0119cd8879f # v1.133.2
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -97,11 +98,12 @@ jobs:
       matrix:
         ruby:
           - { name: "3.1", value: 3.1.3 } # Rails 7
+          - { name: "3.2", value: 3.2.0 } # Rails 7
           - { name: jruby-9.3, value: jruby-9.3.9.0, rails-args: "--skip-webpack-install" } # Rails 6
     steps:
-      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@03b78bdda287ae04217ee12e4b64996630a03542 # v1.131.0
+        uses: ruby/setup-ruby@93287a1fa82c6ddbb6d8db978df4b0119cd8879f # v1.133.2
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -124,4 +126,4 @@ jobs:
         run: gem install rails && rails new foo ${{ matrix.ruby.rails-args }}
         shell: bash
 
-    timeout-minutes: 10
+    timeout-minutes: 20

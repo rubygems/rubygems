@@ -1,0 +1,92 @@
+name: rubygems
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
+jobs:
+  rubygems:
+    name: Rubygems on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
+    runs-on: ${{ matrix.os.value }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - { name: Ubuntu, value: ubuntu-22.04 }
+          - { name: MacOS, value: macos-12 }
+          - { name: Windows, value: windows-2022 }
+
+        ruby:
+          - { name: "2.6", value: 2.6.10 }
+          - { name: "2.7", value: 2.7.7 }
+          - { name: "3.0", value: 3.0.5 }
+          - { name: "3.1", value: 3.1.3 }
+          - { name: "3.2", value: 3.2.0 }
+
+        include:
+          - ruby: { name: jruby-9.3, value: jruby-9.3.9.0 }
+            os: { name: Ubuntu, value: ubuntu-22.04 }
+
+          - ruby: { name: truffleruby-22, value: truffleruby-22.3.0 }
+            os: { name: Ubuntu, value: ubuntu-22.04 }
+
+          - os: { name: Windows, value: windows-2022 }
+            cargo: { target: x86_64-pc-windows-gnu, toolchain: stable }
+
+          - os: { name: Windows, value: windows-2022 }
+            ruby: { name: mswin, value: mswin }
+            cargo: { target: x86_64-pc-windows-msvc, toolchain: stable }
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+      - name: Setup ruby (Ubuntu/MacOS)
+        uses: ruby/setup-ruby@93287a1fa82c6ddbb6d8db978df4b0119cd8879f # v1.133.2
+        with:
+          ruby-version: ${{ matrix.ruby.value }}
+          bundler: none
+        if: matrix.os.name != 'Windows'
+      - name: Setup ruby (Windows)
+        uses: ruby/setup-ruby-pkgs@af45875e8df3485265907b05fe263a4a1a07eeb2 # v1.32.4
+        with:
+          ruby-version: ${{ matrix.ruby.value }}
+          bundler: none
+          mingw: clang
+        if: matrix.os.name == 'Windows'
+      - uses: dtolnay/rust-toolchain@e645b0cf01249a964ec099494d38d2da0f0b349f
+        with:
+          toolchain: ${{ matrix.cargo.toolchain }}-${{ matrix.cargo.target }}
+          components: rustfmt
+        if: matrix.cargo
+      # Taken from https://github.com/oxidize-rb/actions/blob/0d21ce09c5500315bc61815440f8c4211530f413/setup-ruby-and-rust/action.yml#LL300-L305C116
+      - name: Configure bindgen
+        shell: pwsh
+        run: |
+          echo "LIBCLANG_PATH=$((gcm clang).source -replace "clang.exe")" >> $env:GITHUB_ENV
+          echo "BINDGEN_EXTRA_CLANG_ARGS=$((gcm clang).source -replace "bin\clang.exe","include")" >> $env:GITHUB_ENV
+        if: matrix.ruby.name == 'mswin'
+      - name: Install Dependencies
+        run: rake setup
+      - name: Run Test
+        run: rake test
+        if: "!startsWith(matrix.ruby.name, 'truffleruby') && !startsWith(matrix.ruby.name, 'jruby')"
+      - name: Run Test isolatedly
+        run: rake test:isolated
+        if: matrix.ruby.name == '3.2' && matrix.os.name != 'Windows'
+      - name: Run Test (JRuby)
+        run: JRUBY_OPTS=--debug rake test
+        if: startsWith(matrix.ruby.name, 'jruby')
+      - name: Run Test (Truffleruby)
+        run: TRUFFLERUBYOPT="--experimental-options --testing-rubygems" rake test
+        if: startsWith(matrix.ruby.name, 'truffleruby')
+
+    timeout-minutes: 60

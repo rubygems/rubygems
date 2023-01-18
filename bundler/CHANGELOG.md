@@ -1,3 +1,42 @@
+# 2.4.4 (January 16, 2023)
+
+## Bug fixes:
+
+  - Fix platform specific gems removed from the lockfile [#6266](https://github.com/rubygems/rubygems/pull/6266)
+  - Properly handle incompatibilities on platform specific gems [#6270](https://github.com/rubygems/rubygems/pull/6270)
+  - Optimistically exclude prereleases from initial resolution [#6246](https://github.com/rubygems/rubygems/pull/6246)
+  - Fix another case of not properly falling back to ruby variant when materializing [#6261](https://github.com/rubygems/rubygems/pull/6261)
+  - Skip setting `BUNDLER_SETUP` on Ruby 2.6 [#6252](https://github.com/rubygems/rubygems/pull/6252)
+  - Let resolver deal with legacy gems with equivalent version and different dependencies [#6219](https://github.com/rubygems/rubygems/pull/6219)
+
+# 2.4.3 (January 6, 2023)
+
+## Enhancements:
+
+  - Enhance `bundle open` command to allow opening subdir/file of gem [#6146](https://github.com/rubygems/rubygems/pull/6146)
+
+## Bug fixes:
+
+  - Fix pointing GitHub sources to PRs [#6241](https://github.com/rubygems/rubygems/pull/6241)
+  - Fix version ranges incorrectly handling platforms [#6240](https://github.com/rubygems/rubygems/pull/6240)
+  - Cleanup unnecessary gems when removing lockfile platforms [#6234](https://github.com/rubygems/rubygems/pull/6234)
+  - When auto-removing RUBY platform don't add specific platform if not needed [#6233](https://github.com/rubygems/rubygems/pull/6233)
+  - Fallback to selecting installable candidates if possible when materializing specs [#6225](https://github.com/rubygems/rubygems/pull/6225)
+
+## Documentation:
+
+  - Fix several typos [#6224](https://github.com/rubygems/rubygems/pull/6224)
+
+# 2.4.2 (January 1, 2023)
+
+## Performance:
+
+  - Speed up resolution by properly merging incompatibility ranges [#6215](https://github.com/rubygems/rubygems/pull/6215)
+
+## Documentation:
+
+  - Remove stray word in `bundle config` man page [#6220](https://github.com/rubygems/rubygems/pull/6220)
+
 # 2.4.1 (December 24, 2022)
 
 ## Enhancements:
@@ -1508,7 +1547,7 @@ Changes
 
   - avoid new RubyGems warning about unsafe YAML loading (to keep output consistent) (@segiddins)
   - load digest subclasses in a thread-safe manner (@segiddins, @colby-swandale)
-  - avoid unusued variable warnings under ruby 2.5 (@amatsuda)
+  - avoid unused variable warnings under ruby 2.5 (@amatsuda)
   - fix printing the same message twice in verbose mode ([#6028](https://github.com/rubygems/bundler/issues/6028), @akhramov)
   - allow `SignalException`s to bubble up to the interpreter during `bundle exec` ([#6090](https://github.com/rubygems/bundler/issues/6090), @dekellum)
   - avoid activating stdlib digest under Ruby 2.5 (@segiddins)

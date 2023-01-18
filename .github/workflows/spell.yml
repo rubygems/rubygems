@@ -1,0 +1,19 @@
+name: spell
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  spell:
+    name: Check spelling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+      - uses: codespell-project/actions-codespell@22ff5a2e4b591290baf82d47c9feadac31c65441 # v1.0

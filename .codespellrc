@@ -1,0 +1,5 @@
+[codespell]
+check-filenames=
+check-hidden=
+ignore-words=.codespellignore
+skip=*.pem,.git,man,vcr_cassettes,vendor

@@ -335,8 +335,11 @@ module Bundler
         # one, we ignore it. However, it may reappear during resolution as a
         # transitive dependency of another package, so we need to reset the
         # package so the proper versions are considered if reintroduced later.
+        # We also need to delete the dependency itself so that it's not
+        # reintroduced if we retry resolving under different conditions.
         if dep_package.platforms.empty?
           packages.delete(name)
+          requirements.reject! {|requirement| requirement.name == name }
           next
         end
 

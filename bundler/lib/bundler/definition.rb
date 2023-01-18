@@ -551,7 +551,7 @@ module Bundler
     end
 
     def start_resolution
-      result = resolver.start(expanded_dependencies)
+      result = resolver.start
 
       SpecSet.new(SpecSet.new(result).for(dependencies, false, @platforms))
     end

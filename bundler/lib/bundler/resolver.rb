@@ -336,7 +336,7 @@ module Bundler
         # transitive dependency of another package, so we need to reset the
         # package so the proper versions are considered if reintroduced later.
         if dep_package.platforms.empty?
-          @packages.delete(name)
+          packages.delete(name)
           next
         end
 

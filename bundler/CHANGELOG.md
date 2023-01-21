@@ -1,3 +1,14 @@
+# 2.4.5 (January 21, 2023)
+
+## Bug fixes:
+
+  - Fix `bundler/inline` not resolving properly if gems not preinstalled [#6282](https://github.com/rubygems/rubygems/pull/6282)
+  - Fix packages for external platforms being introduced in lockfile when Bundler retries resolution [#6285](https://github.com/rubygems/rubygems/pull/6285)
+
+## Documentation:
+
+  - Update bundle-exec man page to not use deprecated `Bundler.with_clean_env` [#6284](https://github.com/rubygems/rubygems/pull/6284)
+
 # 2.4.4 (January 16, 2023)
 
 ## Bug fixes:

@@ -40,7 +40,7 @@ module Bundler
       add_git_sources
     end
 
-    def eval_gemfile(gemfile, contents = nil)
+    def eval_gemfile(gemfile, contents = nil) # :nodoc:
       expanded_gemfile_path = Pathname.new(gemfile).expand_path(@gemfile&.parent)
       original_gemfile = @gemfile
       @gemfile = expanded_gemfile_path

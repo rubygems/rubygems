@@ -5387,11 +5387,11 @@ annoying issues involving other libraries that RubyGems depends upon.
 0.8.3 contains some workarounds for these issues.  In particular:
 
 * Added workaround for the null byte in Dir string issue. (see
-  http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121702).
+  https://blade.ruby-lang.org/ruby-talk/121702).
   (Thanks to Mauricio Fernández for the quick response on this one).
 * Added workaround for old version of Zlib on windows that caused
   Ruwiki to fail to install. (see
-  http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/121770)
+  https://blade.ruby-lang.org/ruby-talk/121770)
 * Added workaround for large YAML file issues.  (We dynamically cut
   down the size of the source index YAML file and seem to have worked
   around immediate issues.

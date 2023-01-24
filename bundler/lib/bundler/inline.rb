@@ -10,6 +10,13 @@
 #
 # @param install [Boolean] whether gems that aren't already installed on the
 #                          user's system should be installed.
+#                          Defaults to `true`.
+#
+# @param ui [Bundler::UI::*] `Bundler.ui` component to use.
+#                          Defaults to `Bundler::UI::Shell`
+#                          with `ui.level = "confirm"`
+#
+# @param quiet [Boolean]   suppress any ui output.
 #                          Defaults to `false`.
 #
 # @param gemfile [Proc]    a block that is evaluated as a `Gemfile`.
@@ -29,22 +36,28 @@
 #
 #          puts Pod::VERSION # => "0.34.4"
 #
-def gemfile(install = false, options = {}, &gemfile)
+def gemfile(legacy_install = nil, install: true, ui: nil, quiet: false, &gemfile)
   require_relative "../bundler"
 
-  opts = options.dup
-  ui = opts.delete(:ui) { Bundler::UI::Shell.new }
-  ui.level = "silent" if opts.delete(:quiet) || !install
+  unless legacy_install.nil?
+    Bundler::SharedHelpers.major_deprecation 2,
+      "The positional install parameter to the `gemfile(install = false, &block)` helper is getting"\
+      " removed because regardless of what you pass in there, it still installs missing gems."\
+      " Remove the positional parameter to get rid of this message, and optionally replace with"\
+      "   `gemfile(install: false, &block)`", :print_caller_location => true
+    install = legacy_install
+  end
+
+  if ui.nil?
+    ui = Bundler::UI::Shell.new
+    ui.level = quiet ? "silent" : "confirm"
+  end
   Bundler.ui = ui
-  raise ArgumentError, "Unknown options: #{opts.keys.join(", ")}" unless opts.empty?
 
   begin
     Bundler.instance_variable_set(:@bundle_path, Pathname.new(Gem.dir))
     old_gemfile = ENV["BUNDLE_GEMFILE"]
     Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", "Gemfile"
-    Bundler::SharedHelpers.major_deprecation 2, "The optional install parameter to the `gemfile(install = false, &block)` helper is getting"\
-    " removed because regardless of what you pass in there, it still installs missing gems."\
-    " Remove the explicit `install` parameter to get rid of this message.", :print_caller_location => true if install
 
     Bundler::Plugin.gemfile_install(&gemfile) if Bundler.feature_flag.plugins?
     builder = Bundler::Dsl.new
@@ -56,7 +69,7 @@ def gemfile(install = false, options = {}, &gemfile)
       def definition.lock(*); end
       definition.validate_runtime!
 
-      if install || definition.missing_specs?
+      if install && definition.missing_specs?
         Bundler.settings.temporary(:inline => true, :no_install => false) do
           installer = Bundler::Installer.install(Bundler.root, definition, :system => true)
           installer.post_install_messages.each do |name, message|

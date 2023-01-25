@@ -545,6 +545,7 @@ test/rubygems/alternate_cert.pem
 test/rubygems/alternate_cert_32.pem
 test/rubygems/alternate_key.pem
 test/rubygems/bad_rake.rb
+test/rubygems/bundler_test_gem.rb
 test/rubygems/ca_cert.pem
 test/rubygems/child_cert.pem
 test/rubygems/child_cert_32.pem

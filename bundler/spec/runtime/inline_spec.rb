@@ -230,6 +230,72 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(err).to be_empty
   end
 
+  it "doesn't reinstall already installed gems" do
+    system_gems "rack-1.0.0"
+
+    script <<-RUBY
+      require '#{entrypoint}'
+      ui = Bundler::UI::Shell.new
+      ui.level = "confirm"
+
+      gemfile(true, ui: ui) do
+        source "#{file_uri_for(gem_repo1)}"
+        gem "activesupport"
+        gem "rack"
+      end
+    RUBY
+
+    expect(out).to include("Installing activesupport")
+    expect(out).not_to include("Installing rack")
+    expect(err).to be_empty
+  end
+
+  it "installs gems in later gemfile calls" do
+    system_gems "rack-1.0.0"
+
+    script <<-RUBY
+      require '#{entrypoint}'
+      ui = Bundler::UI::Shell.new
+      ui.level = "confirm"
+      gemfile(true, ui: ui) do
+        source "#{file_uri_for(gem_repo1)}"
+        gem "rack"
+      end
+
+      gemfile(true, ui: ui) do
+        source "#{file_uri_for(gem_repo1)}"
+        gem "activesupport"
+      end
+    RUBY
+
+    expect(out).to include("Installing activesupport")
+    expect(out).not_to include("Installing rack")
+    expect(err).to be_empty
+  end
+
+  it "doesn't reinstall already installed gems in later gemfile calls" do
+    system_gems "rack-1.0.0"
+
+    script <<-RUBY
+      require '#{entrypoint}'
+      ui = Bundler::UI::Shell.new
+      ui.level = "confirm"
+      gemfile(true, ui: ui) do
+        source "#{file_uri_for(gem_repo1)}"
+        gem "activesupport"
+      end
+
+      gemfile(true, ui: ui) do
+        source "#{file_uri_for(gem_repo1)}"
+        gem "rack"
+      end
+    RUBY
+
+    expect(out).to include("Installing activesupport")
+    expect(out).not_to include("Installing rack")
+    expect(err).to be_empty
+  end
+
   it "installs inline gems when a Gemfile.lock is present" do
     gemfile <<-G
       source "https://notaserver.com"

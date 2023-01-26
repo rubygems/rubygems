@@ -617,6 +617,7 @@ test/rubygems/test_gem_commands_cleanup_command.rb
 test/rubygems/test_gem_commands_contents_command.rb
 test/rubygems/test_gem_commands_dependency_command.rb
 test/rubygems/test_gem_commands_environment_command.rb
+test/rubygems/test_gem_commands_exec_command.rb
 test/rubygems/test_gem_commands_fetch_command.rb
 test/rubygems/test_gem_commands_generate_index_command.rb
 test/rubygems/test_gem_commands_help_command.rb

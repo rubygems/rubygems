@@ -190,7 +190,6 @@ if File.exist?("tool/automatiek.rake")
 
   # We currently include the following changes over the official version:
   # * Avoid requiring the optional `net-http-pipeline` dependency, so that its version can be selected by end users.
-  # * We also include changes to require the vendored dependencies `uri` and `connection_pool` relatively.
   desc "Vendor a specific version of net-http-persistent to bundler"
   Automatiek::RakeTask.new("net-http-persistent") do |lib|
     lib.version = "master"

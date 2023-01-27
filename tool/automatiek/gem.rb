@@ -23,6 +23,7 @@
 # THE SOFTWARE.
 
 require "fileutils"
+require "pathname"
 
 module Automatiek
   class Gem
@@ -86,6 +87,10 @@ module Automatiek
       @require_entrypoint ||= gem_name.tr("-", "/")
     end
 
+    def relative_require_target_from(file)
+      Pathname.new("#{vendor_lib}/lib/#{require_entrypoint}").relative_path_from(File.dirname(file))
+    end
+
     attr_writer :require_entrypoint
 
     def namespace_files(folder)
@@ -97,7 +102,10 @@ module Automatiek
         contents.gsub!(/module Kernel/, "module #{prefix}")
         contents.gsub!(/::#{namespace}/, "::#{prefix}::#{namespace}")
         contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
+
+        contents.gsub!(/^require (["'])#{Regexp.escape require_entrypoint}/, "require_relative \\1#{relative_require_target_from(file)}")
         contents.gsub!(/require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
+
         contents.gsub!(%r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")
 
         File.open(file, "w") {|f| f << contents }

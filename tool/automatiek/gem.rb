@@ -90,11 +90,18 @@ module Automatiek
 
     def namespace_files(folder)
       files = Dir.glob("#{folder}/**/*.rb")
-      process(files, /module Kernel/, "module #{prefix}")
-      process(files, /::#{namespace}/, "::#{prefix}::#{namespace}")
-      process(files, /(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
-      process(files, /require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
-      process(files, %r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")
+
+      files.each do |file|
+        contents = File.read(file)
+
+        contents.gsub!(/module Kernel/, "module #{prefix}")
+        contents.gsub!(/::#{namespace}/, "::#{prefix}::#{namespace}")
+        contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
+        contents.gsub!(/require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
+        contents.gsub!(%r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")
+
+        File.open(file, "w") {|f| f << contents }
+      end
     end
 
     def clean
@@ -106,14 +113,6 @@ module Automatiek
     end
 
     private
-
-    def process(files, regex, replacement = "")
-      files.each do |file|
-        contents = File.read(file)
-        contents.gsub!(regex, replacement)
-        File.open(file, "w") {|f| f << contents }
-      end
-    end
 
     def allowlist
       %(. .. lib #{license_path}).chomp " "

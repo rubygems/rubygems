@@ -147,6 +147,25 @@ if File.exist?("tool/automatiek.rake")
     lib.license_path = "COPYING"
   end
 
+  desc "Vendor a specific version of net-http"
+  Automatiek::RakeTask.new("net-http") do |lib|
+    lib.version = "v0.4.0"
+    lib.download = { github: "https://github.com/ruby/net-http" }
+    lib.namespace = "Net"
+    lib.prefix = "Gem"
+    lib.vendor_lib = "lib/rubygems/net-http"
+    lib.license_path = "LICENSE.txt"
+
+    lib.dependency("net-protocol") do |sublib|
+      sublib.version = "v0.2.2"
+      sublib.download = { github: "https://github.com/ruby/net-protocol" }
+      sublib.namespace = "Net"
+      sublib.prefix = "Gem"
+      sublib.vendor_lib = "lib/rubygems/net-protocol"
+      sublib.license_path = "License.txt"
+    end
+  end
+
   desc "Vendor a specific version of pub_grub to bundler"
   Automatiek::RakeTask.new("pub_grub") do |lib|
     lib.version = "main"

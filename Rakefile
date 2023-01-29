@@ -147,25 +147,6 @@ if File.exist?("tool/automatiek.rake")
     lib.license_path = "COPYING"
   end
 
-  desc "Vendor a specific version of net-http"
-  Automatiek::RakeTask.new("net-http") do |lib|
-    lib.version = "v0.4.0"
-    lib.download = { github: "https://github.com/ruby/net-http" }
-    lib.namespace = "Net"
-    lib.prefix = "Gem"
-    lib.vendor_lib = "lib/rubygems/net-http"
-    lib.license_path = "LICENSE.txt"
-
-    lib.dependency("net-protocol") do |sublib|
-      sublib.version = "v0.2.2"
-      sublib.download = { github: "https://github.com/ruby/net-protocol" }
-      sublib.namespace = "Net"
-      sublib.prefix = "Gem"
-      sublib.vendor_lib = "lib/rubygems/net-protocol"
-      sublib.license_path = "License.txt"
-    end
-  end
-
   desc "Vendor a specific version of pub_grub to bundler"
   Automatiek::RakeTask.new("pub_grub") do |lib|
     lib.version = "main"
@@ -208,12 +189,13 @@ if File.exist?("tool/automatiek.rake")
 
   # We currently include the following changes over the official version:
   # * Avoid requiring the optional `net-http-pipeline` dependency, so that its version can be selected by end users.
+  # * Require vendored net/http version RubyGems if available, otherwise the stdlib version.
   desc "Vendor a specific version of net-http-persistent to bundler"
   Automatiek::RakeTask.new("net-http-persistent") do |lib|
     lib.version = "v4.0.2"
     lib.download = { github: "https://github.com/drbrain/net-http-persistent" }
     lib.namespace = "Net::HTTP::Persistent"
-    lib.prefix = "Bundler::Persistent"
+    lib.prefix = "Gem"
     lib.vendor_lib = "bundler/lib/bundler/vendor/net-http-persistent"
     lib.license_path = "README.rdoc"
 
@@ -233,6 +215,24 @@ if File.exist?("tool/automatiek.rake")
       sublib.prefix = "Bundler"
       sublib.vendor_lib = "bundler/lib/bundler/vendor/uri"
       sublib.license_path = "LICENSE.txt"
+    end
+
+    lib.dependency("net-http") do |sublib|
+      sublib.version = "v0.4.0"
+      sublib.download = { github: "https://github.com/ruby/net-http" }
+      sublib.namespace = "Net"
+      sublib.prefix = "Gem"
+      sublib.vendor_lib = "lib/rubygems/net-http"
+      sublib.license_path = "LICENSE.txt"
+
+      sublib.dependency("net-protocol") do |subsublib|
+        subsublib.version = "v0.2.2"
+        subsublib.download = { github: "https://github.com/ruby/net-protocol" }
+        subsublib.namespace = "Net"
+        subsublib.prefix = "Gem"
+        subsublib.vendor_lib = "lib/rubygems/net-protocol"
+        subsublib.license_path = "License.txt"
+      end
     end
   end
 end

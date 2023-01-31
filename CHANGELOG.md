@@ -1,3 +1,23 @@
+# 3.4.6 / 2023-01-31
+
+## Enhancements:
+
+* Allow `require` decorations be disabled. Pull request
+  [#6319](https://github.com/rubygems/rubygems/pull/6319) by
+  deivid-rodriguez
+* Installs bundler 2.4.6 as a default gem.
+
+## Bug fixes:
+
+* Include directory in CargoBuilder install path. Pull request
+  [#6298](https://github.com/rubygems/rubygems/pull/6298) by matsadler
+
+## Documentation:
+
+* Include links to pull requests in changelog. Pull request
+  [#6316](https://github.com/rubygems/rubygems/pull/6316) by
+  deivid-rodriguez
+
 # 3.4.5 / 2023-01-21
 
 ## Enhancements:

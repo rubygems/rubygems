@@ -1,3 +1,15 @@
+# 2.4.6 (January 31, 2023)
+
+## Enhancements:
+
+  - Don't warn on `bundle binstubs --standalone --all` [#6312](https://github.com/rubygems/rubygems/pull/6312)
+
+## Bug fixes:
+
+  - Don't undo require decorations made by other gems [#6308](https://github.com/rubygems/rubygems/pull/6308)
+  - Fix `bundler/inline` not properly installing gems with extensions when used more than once [#6306](https://github.com/rubygems/rubygems/pull/6306)
+  - Fix `bundler/inline` not skipping installation when gems already there, when used more than once [#6305](https://github.com/rubygems/rubygems/pull/6305)
+
 # 2.4.5 (January 21, 2023)
 
 ## Bug fixes:

@@ -73,15 +73,13 @@ Rake::TestTask.new do |t|
   t.ruby_opts << "-rdevkit" if RbConfig::CONFIG["host_os"].include?("mingw")
 
   t.libs << "test"
-  t.libs << "bundler/lib"
-
   t.test_files = FileList["test/**/test_*.rb"]
 end
 
 namespace "test" do
   desc "Run each test isolatedly by specifying the relative test file path"
   task "isolated" do
-    FileList["test/**/test_*.rb"].each do |file|
+    FileList["test/**/{bundler_,}test_*.rb"].each do |file|
       sh Gem.ruby, "-Ilib:test:bundler/lib", file
     end
   end

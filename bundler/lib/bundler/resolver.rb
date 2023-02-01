@@ -37,7 +37,9 @@ module Bundler
       root_version = Resolver::Candidate.new(0)
 
       @all_specs = Hash.new do |specs, name|
-        specs[name] = source_for(name).specs.search(name).sort_by {|s| [s.version, s.platform.to_s] }
+        specs[name] = source_for(name).specs.search(name).reject do |s|
+          s.dependencies.any? {|d| d.name == name } # ignore versions that depend on themselves
+        end.sort_by {|s| [s.version, s.platform.to_s] }
       end
 
       @sorted_versions = Hash.new do |candidates, package|
@@ -186,11 +188,6 @@ module Bundler
       package_deps = @cached_dependencies[package]
       sorted_versions = @sorted_versions[package]
       package_deps[version].map do |dep_package, dep_constraint|
-        if package == dep_package
-          cause = PubGrub::Incompatibility::CircularDependency.new(dep_package, dep_constraint.constraint_string)
-          return [PubGrub::Incompatibility.new([PubGrub::Term.new(dep_constraint, true)], :cause => cause)]
-        end
-
         low = high = sorted_versions.index(version)
 
         # find version low such that all >= low share the same dep

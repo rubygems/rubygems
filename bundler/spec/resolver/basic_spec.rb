@@ -302,7 +302,7 @@ RSpec.describe "Resolving" do
     end
   end
 
-  it "ignores versions that depend on themselves" do
+  it "handles versions that redundantly depend on themselves" do
     @index = build_index do
       gem "rack", "3.0.0"
 
@@ -312,6 +312,29 @@ RSpec.describe "Resolving" do
 
       gem "standalone_migrations", "2.0.4" do
         dep "standalone_migrations", ">= 0"
+      end
+
+      gem "standalone_migrations", "1.0.13" do
+        dep "rack", ">= 0"
+      end
+    end
+
+    dep "rack", "~> 3.0"
+    dep "standalone_migrations"
+
+    should_resolve_as %w[rack-3.0.0 standalone_migrations-2.0.4]
+  end
+
+  it "ignores versions that incorrectly depend on themselves" do
+    @index = build_index do
+      gem "rack", "3.0.0"
+
+      gem "standalone_migrations", "7.1.0" do
+        dep "rack", "~> 2.0"
+      end
+
+      gem "standalone_migrations", "2.0.4" do
+        dep "standalone_migrations", ">= 2.0.5"
       end
 
       gem "standalone_migrations", "1.0.13" do

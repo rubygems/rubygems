@@ -38,7 +38,7 @@ module Bundler
 
       @all_specs = Hash.new do |specs, name|
         specs[name] = source_for(name).specs.search(name).reject do |s|
-          s.dependencies.any? {|d| d.name == name } # ignore versions that depend on themselves
+          s.dependencies.any? {|d| d.name == name && !d.requirement.satisfied_by?(s.version) } # ignore versions that depend on themselves incorrectly
         end.sort_by {|s| [s.version, s.platform.to_s] }
       end
 
@@ -57,7 +57,7 @@ module Bundler
           { root_version => root_dependencies }
         else
           Hash.new do |versions, version|
-            versions[version] = to_dependency_hash(version.dependencies, @packages)
+            versions[version] = to_dependency_hash(version.dependencies.reject {|d| d.name == package.name }, @packages)
           end
         end
       end

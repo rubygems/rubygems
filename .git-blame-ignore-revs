@@ -2,4 +2,6 @@
 # RubyGems
 # Enable Style/StringLiterals cop
 dca5fa728437383428a593644f537aaa1020ee63
+# enable Style/MethodDefParentheses in Rubocop
+79e6bafd945e358480ac2253995e82e229bb4f5c
 # Bundler

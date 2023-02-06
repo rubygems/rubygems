@@ -1,3 +1,15 @@
+# 3.2.34 / 2022-02-06
+
+## Enhancements:
+
+* Introduce to specify deprecated version for rubygems_deprecate_command.
+  Pull request #6331 by hsbt
+
+## Bug fixes:
+
+* Fix broken brew formula due to loading operating_system.rb customizations
+  too late. Pull request #5154 by deivid-rodriguez
+
 # 3.2.33 / 2021-12-07
 
 ## Deprecations:

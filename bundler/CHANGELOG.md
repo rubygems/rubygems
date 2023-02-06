@@ -1,3 +1,10 @@
+# 2.2.34 (February 9, 2022)
+
+## Enhancements:
+
+  - Vendor latest `thor` with fixes for latest `did_you_mean` deprecations [#5202](https://github.com/rubygems/rubygems/pull/5202)
+  - Use thor-1.2.1 [#5260](https://github.com/rubygems/rubygems/pull/5260)
+
 # 2.2.33 (December 7, 2021)
 
 ## Security fixes:

@@ -178,7 +178,7 @@ end
 
 desc "Vendor a specific version of thor"
 Automatiek::RakeTask.new("thor") do |lib|
-  lib.version = "v1.1.0"
+  lib.version = "v1.2.1"
   lib.download = { :github => "https://github.com/erikhuda/thor" }
   lib.namespace = "Thor"
   lib.prefix = "Bundler"

@@ -27,7 +27,8 @@ jobs:
         ruby:
           - { name: jruby-9.3, value: jruby-9.3.1.0 }
           - { name: ruby-2.5, value: 2.5.9 }
-          - { name: ruby-3.0, value: 3.0.3 }
+          - { name: ruby-3.0, value: 3.0.5 }
+          # - { name: ruby-3.1, value: 3.1.3 }
 
     steps:
       - uses: actions/checkout@v2

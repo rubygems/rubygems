@@ -93,10 +93,46 @@ module Bundler
       " #{source.revision[0..6]}"
     end
 
+    # we don't get the checksum from a server like we could with EndpointSpecs
+    # calculating the checksum from the file on disk still provides some measure of security
+    # if it changes from install to install, that is cause for concern
+    def checksum
+      @checksum ||= begin
+        return unless _fetched_gem
+
+        File.open(_fetched_gem) do |f|
+          digest = Bundler::SharedHelpers.digest(:SHA256).new
+          digest << f.read(16_384) until f.eof?
+
+          hexdigest = digest.hexdigest!
+          hexdigest
+        end
+      end
+    end
+
+    def to_checksum
+      digest = "sha256-#{checksum}" if checksum
+      Bundler::Checksum.new(name, version, platform, digest)
+    end
+
     private
 
     def to_ary
       nil
+    end
+
+    def _fetched_gem
+      @_fetched_gem ||= begin
+        fetcher = gem_remote_fetcher
+        fetcher.headers = { "X-Gemfile-Source" => remote.original_uri.to_s } if remote&.original_uri
+        fetcher.download(self, remote.uri)
+      end
+    end
+
+    def gem_remote_fetcher
+      require "rubygems/remote_fetcher"
+      proxy = Gem.configuration[:http_proxy]
+      Gem::RemoteFetcher.new(proxy)
     end
 
     def _remote_specification

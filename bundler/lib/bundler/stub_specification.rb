@@ -9,7 +9,7 @@ module Bundler
       spec
     end
 
-    attr_accessor :stub, :ignored
+    attr_accessor :stub, :ignored, :checksum
 
     def source=(source)
       super

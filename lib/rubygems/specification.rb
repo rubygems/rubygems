@@ -761,6 +761,13 @@ class Gem::Specification < Gem::BasicSpecification
 
   attr_accessor :specification_version
 
+  ##
+  # The checksum for this gem
+  #
+  # Do not set this, it is when the gemspec is indexed (if possible).
+
+  attr_accessor :checksum
+
   def self._all # :nodoc:
     @@all ||= Gem.loaded_specs.values | stubs.map(&:to_spec)
   end
@@ -2740,6 +2747,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def to_checksum
-    return Bundler::Checksum.new(name, version, platform)
+    digest = "sha256-#{checksum}" if checksum
+    return Bundler::Checksum.new(name, version, platform, digest)
   end
 end

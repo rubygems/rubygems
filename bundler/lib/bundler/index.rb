@@ -79,6 +79,10 @@ module Bundler
     alias_method :[], :search
 
     def <<(spec)
+      already_indexed_spec = @specs[spec.name][spec.full_name]
+      if already_indexed_spec && already_indexed_spec.respond_to?(:checksum) && spec.respond_to?(:checksum=)
+        spec.checksum = already_indexed_spec.checksum
+      end
       @specs[spec.name][spec.full_name] = spec
       spec
     end

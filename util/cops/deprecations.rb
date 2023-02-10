@@ -14,19 +14,12 @@ module RuboCop
       #   # good
       #   # the `deprecate` call is fully removed
       #
-      class Deprecations < Cop
+      class Deprecations < Base
+        MSG = "Remove `%<method_name>s` calls for the next major release."
+        RESTRICT_ON_SEND = %i[rubygems_deprecate rubygems_deprecate_command].freeze
+
         def on_send(node)
-          _receiver, method_name, *args = *node
-          return unless method_name == :rubygems_deprecate || method_name == :rubygems_deprecate_command
-
-          add_offense(node)
-        end
-
-        private
-
-        def message(node)
-          msg = "Remove `#{node.method_name}` calls for the next major release "
-          format(msg, method: node.method_name)
+          add_offense(node, message: format(MSG, method_name: node.method_name))
         end
       end
     end

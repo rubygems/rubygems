@@ -2738,4 +2738,8 @@ class Gem::Specification < Gem::BasicSpecification
   def raw_require_paths # :nodoc:
     @require_paths
   end
+
+  def to_checksum
+    return Bundler::Checksum.new(name, version, platform)
+  end
 end

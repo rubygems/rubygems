@@ -2,6 +2,7 @@ name: legacy-git
 
 on:
   pull_request:
+  merge_group:
 
   push:
     branches:

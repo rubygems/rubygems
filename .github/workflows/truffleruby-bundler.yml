@@ -2,6 +2,7 @@ name: truffleruby-bundler
 
 on:
   pull_request:
+  merge_group:
 
   push:
     branches:

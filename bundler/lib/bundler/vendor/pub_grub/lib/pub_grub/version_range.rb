@@ -19,7 +19,7 @@ module Bundler::PubGrub
         true
       end
 
-      def eql?
+      def eql?(other)
         other.empty?
       end
 

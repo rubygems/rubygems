@@ -82,9 +82,9 @@ module Bundler
 
     def add(spec)
       indexed_spec = @specs[spec.name][spec.full_name]
-      indexed_checksum = indexed_spec && indexed_spec.respond_to?(:checksum) && indexed_spec.checksum
-      
-      if  indexed_checksum && spec.respond_to?(:checksum=)
+      indexed_checksum = indexed_spec&.respond_to?(:checksum) && indexed_spec.checksum
+
+      if indexed_checksum && spec.respond_to?(:checksum=)
         spec.checksum = indexed_spec.checksum
       end
       @specs[spec.name][spec.full_name] = spec

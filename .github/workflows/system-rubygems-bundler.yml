@@ -13,10 +13,6 @@ on:
       - .github/workflows/system-rubygems-bundler.yml
       - .rubocop_bundler.yml
 
-  push:
-    branches:
-      - master
-
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true

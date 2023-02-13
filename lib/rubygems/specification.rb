@@ -764,7 +764,7 @@ class Gem::Specification < Gem::BasicSpecification
   ##
   # The checksum for this gem
   #
-  # Do not set this, it is when the gemspec is indexed (if possible).
+  # Do not set this, it is set when the gemspec is indexed (if possible).
 
   attr_accessor :checksum
 
@@ -2746,8 +2746,21 @@ class Gem::Specification < Gem::BasicSpecification
     @require_paths
   end
 
+  # if we don't get the checksum from the server
+  # calculating the checksum from the file on disk still provides some measure of security
+  # if it changes from install to install, that is cause for concern
   def to_checksum
-    digest = "sha256-#{checksum}" if checksum
-    return Bundler::Checksum.new(name, version, platform, digest)
+    return Bundler::Checksum.new(name, version, platform, "sha256-#{checksum}") if checksum
+    return Bundler::Checksum.new(name, version, platform) unless File.exist?(cache_file)
+
+    calculated_checksum = File.open(cache_file) do |f|
+      digest = Bundler::SharedHelpers.digest(:SHA256).new
+      digest << f.read(16_384) until f.eof?
+
+      hexdigest = digest.hexdigest!
+      hexdigest
+    end
+    
+    Bundler::Checksum.new(name, version, platform, "sha256-#{calculated_checksum}") if calculated_checksum
   end
 end

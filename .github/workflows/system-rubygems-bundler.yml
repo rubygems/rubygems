@@ -7,9 +7,11 @@ on:
       - .github/workflows/system-rubygems-bundler.yml
       - .rubocop_bundler.yml
 
-  push:
-    branches:
-      - master
+  merge_group:
+    paths:
+      - bundler/**
+      - .github/workflows/system-rubygems-bundler.yml
+      - .rubocop_bundler.yml
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

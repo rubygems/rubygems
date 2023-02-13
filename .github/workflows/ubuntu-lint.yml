@@ -2,10 +2,7 @@ name: ubuntu-lint
 
 on:
   pull_request:
-
-  push:
-    branches:
-      - master
+  merge_group:
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

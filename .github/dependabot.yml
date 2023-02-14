@@ -3,12 +3,12 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'daily'
   - package-ecosystem: 'cargo'
     directory: '/test/rubygems/test_gem_ext_cargo_builder/custom_name/'
     schedule:
-      interval: 'weekly'
+      interval: 'daily'
   - package-ecosystem: 'cargo'
     directory: '/test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/'
     schedule:
-      interval: 'weekly'
+      interval: 'daily'

@@ -2760,7 +2760,7 @@ class Gem::Specification < Gem::BasicSpecification
       hexdigest = digest.hexdigest!
       hexdigest
     end
-    
+
     Bundler::Checksum.new(name, version, platform, "sha256-#{calculated_checksum}") if calculated_checksum
   end
 end

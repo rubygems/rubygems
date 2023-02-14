@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@f60ef1e8084a2e64569f928c3f1cfac6c7e12ad7 # v1.137.2
+        uses: ruby/setup-ruby@d3c9825d67b0d8720afdfdde5af56c79fdb38d16 # v1.138.0
         with:
           ruby-version: truffleruby-22.3
           bundler: none

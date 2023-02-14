@@ -63,7 +63,7 @@ jobs:
           bundler: none
           mingw: clang
         if: matrix.os.name == 'Windows'
-      - uses: dtolnay/rust-toolchain@9cd00a88a73addc8617065438eff914dd08d0955
+      - uses: dtolnay/rust-toolchain@25dc93b901a87e864900a8aec6c12e9aa794c0c3
         with:
           toolchain: ${{ matrix.cargo.toolchain }}-${{ matrix.cargo.target }}
           components: rustfmt

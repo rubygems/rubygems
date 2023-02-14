@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@f60ef1e8084a2e64569f928c3f1cfac6c7e12ad7 # v1.137.2
+        uses: ruby/setup-ruby@d3c9825d67b0d8720afdfdde5af56c79fdb38d16 # v1.138.0
         with:
           ruby-version: jruby-9.3.9.0
           bundler: none

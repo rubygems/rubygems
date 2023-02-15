@@ -51,7 +51,7 @@ class Release
     end
 
     def latest_release
-      @latest_release ||= gh_client.releases("rubygems/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.sort_by(&:created_at).last
+      @latest_release ||= gh_client.releases("rubygems/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.max_by(&:tag_name)
     end
 
     attr_reader :relevant_pull_requests

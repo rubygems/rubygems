@@ -29,7 +29,7 @@ jobs:
           - { name: ruby-2.7, value: 2.7.7 }
           - { name: ruby-3.0, value: 3.0.5 }
           - { name: ruby-3.1, value: 3.1.3 }
-          - { name: ruby-3.2, value: 3.2.0 }
+          - { name: ruby-3.2, value: 3.2.1 }
 
         bundler:
           - { name: 2, value: '' }
@@ -42,7 +42,7 @@ jobs:
           - { os: { name: MacOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 } }
           - { os: { name: MacOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 } }
           - { os: { name: MacOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 } }
-          - { os: { name: MacOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.0 } }
+          - { os: { name: MacOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.1 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems
@@ -81,11 +81,11 @@ jobs:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.0 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.1 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.7 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.5 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.3 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.0 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.1 } }
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
@@ -119,7 +119,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@d3c9825d67b0d8720afdfdde5af56c79fdb38d16 # v1.138.0
         with:
-          ruby-version: 3.2.0
+          ruby-version: 3.2.1
           bundler: none
       - name: Download all used cassettes as artifacts
         uses: actions/download-artifact@v3

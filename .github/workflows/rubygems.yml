@@ -32,7 +32,7 @@ jobs:
           - { name: "2.7", value: 2.7.7 }
           - { name: "3.0", value: 3.0.5 }
           - { name: "3.1", value: 3.1.3 }
-          - { name: "3.2", value: 3.2.0 }
+          - { name: "3.2", value: 3.2.1 }
 
         include:
           - ruby: { name: jruby-9.3, value: jruby-9.3.9.0 }

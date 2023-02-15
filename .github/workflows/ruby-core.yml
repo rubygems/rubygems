@@ -24,7 +24,7 @@ jobs:
         target: [Rubygems, Bundler]
     steps:
       - name: Set up latest ruby head
-        uses: ruby/setup-ruby@09c10210cc6e998d842ce8433cd9d245933cd797 # v1.133.0
+        uses: ruby/setup-ruby@d3c9825d67b0d8720afdfdde5af56c79fdb38d16 # v1.138.0
         with:
           ruby-version: head
           bundler: none

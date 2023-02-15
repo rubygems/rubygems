@@ -27,7 +27,7 @@ jobs:
           - { name: "2.7", value: 2.7.7 }
           - { name: "3.0", value: 3.0.5 }
           - { name: "3.1", value: 3.1.3 }
-          - { name: "3.2", value: 3.2.0 }
+          - { name: "3.2", value: 3.2.1 }
           - { name: jruby-9.3, value: jruby-9.3.9.0 }
           - { name: truffleruby-22, value: truffleruby-22.3.0 }
         openssl:
@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@09c10210cc6e998d842ce8433cd9d245933cd797 # v1.133.0
+        uses: ruby/setup-ruby@d3c9825d67b0d8720afdfdde5af56c79fdb38d16 # v1.138.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -99,17 +99,17 @@ jobs:
       matrix:
         ruby:
           - { name: "3.1", value: 3.1.3 } # Rails 7
-          - { name: "3.2", value: 3.2.0 } # Rails 7
+          - { name: "3.2", value: 3.2.1 } # Rails 7
           - { name: jruby-9.3, value: jruby-9.3.9.0, rails-args: "--skip-webpack-install" } # Rails 6
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@09c10210cc6e998d842ce8433cd9d245933cd797 # v1.133.0
+        uses: ruby/setup-ruby@d3c9825d67b0d8720afdfdde5af56c79fdb38d16 # v1.138.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b # v3.9.0
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98 # v3.10.0
         with:
           distribution: temurin
           java-version: 18.0.0

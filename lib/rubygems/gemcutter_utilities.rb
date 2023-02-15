@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require_relative "remote_fetcher"
 require_relative "text"
+require_relative "webauthn_listener"
 
 ##
 # Utility methods for using the RubyGems API.
@@ -261,13 +262,16 @@ module Gem::GemcutterUtilities
   end
 
   def wait_for_otp(webauthn_url)
+    server = TCPServer.new 0
+    port = server.addr[1].to_s
+
     thread = Thread.new do
-      Thread.current[:otp] = "Uvh6T57tkWuUnWYo"
+      Thread.current[:otp] = Gem::WebauthnListener.wait_for_otp_code(host, server)
     end
     thread.abort_on_exception = true
     thread.report_on_exception = false
 
-    url_with_port = "#{webauthn_url}?port=5678"
+    url_with_port = "#{webauthn_url}?port=#{port}"
     say "You have enabled multi-factor authentication. Please visit #{url_with_port} to authenticate via security device."
 
     thread.join

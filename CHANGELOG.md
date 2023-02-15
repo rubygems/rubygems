@@ -1,3 +1,16 @@
+# 3.4.7 / 2023-02-15
+
+## Enhancements:
+
+* Warn on self referencing gemspec dependency. Pull request
+  [#6335](https://github.com/rubygems/rubygems/pull/6335) by simi
+* Installs bundler 2.4.7 as a default gem.
+
+## Bug fixes:
+
+* Fix inconsistent behavior of zero byte files in archive. Pull request
+  [#6329](https://github.com/rubygems/rubygems/pull/6329) by martinemde
+
 # 3.4.6 / 2023-01-31
 
 ## Enhancements:

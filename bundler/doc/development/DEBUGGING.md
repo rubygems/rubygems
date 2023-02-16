@@ -34,9 +34,9 @@ To learn more about using IRB, [TODO: link to doc]
 
 Interactive debugging is like REPL + the ability to advance the code execution line by line.
 
-When testing Bundler locally, you can use any debugger that you are comfortable with for interactive debugging. 
+When testing Bundler locally, you can use any debugger that you are comfortable with for interactive debugging.
 
-[`debug`](https://github.com/ruby/debug) and [`pry-byebug`](https://github.com/deivid-rodriguez/pry-byebug) are common favorites. `debug` has been included with Ruby since v3.1. 
+[`debug`](https://github.com/ruby/debug) and [`pry-byebug`](https://github.com/deivid-rodriguez/pry-byebug) are common favorites. `debug` has been included with Ruby since v3.1.
 
 You just need your chosen debugger gem installed globally. Then you will need to require it on the command line before running your local Bundler.
 
@@ -92,7 +92,7 @@ bin/parallel_rspec
 
 Then you'll find built gems in the `bundler/tmp` directory, e.g. `bundler/tmp/1/gems/remote1/`
 
-You can set up your Gemfile 
+You can set up your Gemfile with a file source pointing to the built gems from your test run.
 
 ```ruby
 # frozen_string_literal: true
@@ -102,4 +102,4 @@ source "file:///[path to repo's bundler directory]/tmp/1/gems/remote1/"
 gem "rack", '=0.9.1'
 ```
 
-And then you can test in the same way as you did in the previous example when fetching the gem from the RubyGems source.
+Then you can test in the same way as you did in the previous example when fetching the gem from the RubyGems source.

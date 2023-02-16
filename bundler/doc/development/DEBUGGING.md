@@ -9,7 +9,7 @@ Make sure you've followed the [development setup](SETUP.md) docs before trying t
 Your best option is to print debug in the test suite. Put `puts` statements anywhere you want to see an object or variable and you'll see your `puts` in the console output.
 
 ```ruby
-puts "@defintion: #{@defintion}"
+puts "@definition: #{@definition}"
 puts "specification.class.name: #{specification.class.name}"
 puts "spec.method(:to_checksum).source_location: #{spec.method(:to_checksum).source_location}"
 # etc

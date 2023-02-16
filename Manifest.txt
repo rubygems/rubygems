@@ -540,6 +540,13 @@ lib/rubygems/util/list.rb
 lib/rubygems/validator.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
+lib/rubygems/webauthn_listener.rb
+lib/rubygems/webauthn_listener/response.rb
+lib/rubygems/webauthn_listener/response/response_bad_request.rb
+lib/rubygems/webauthn_listener/response/response_method_not_allowed.rb
+lib/rubygems/webauthn_listener/response/response_no_content.rb
+lib/rubygems/webauthn_listener/response/response_not_found.rb
+lib/rubygems/webauthn_listener/response/response_ok.rb
 rubygems-update.gemspec
 setup.rb
 test/rubygems/alternate_cert.pem
@@ -753,6 +760,8 @@ test/rubygems/test_project_sanity.rb
 test/rubygems/test_remote_fetch_error.rb
 test/rubygems/test_require.rb
 test/rubygems/test_rubygems.rb
+test/rubygems/test_webauthn_listener.rb
+test/rubygems/test_webauthn_listener_response.rb
 test/rubygems/utilities.rb
 test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem

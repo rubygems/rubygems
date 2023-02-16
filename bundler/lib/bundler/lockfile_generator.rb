@@ -75,8 +75,7 @@ module Bundler
             checksum ||= materialized_spec.to_checksum if materialized_spec&.respond_to?(:to_checksum)
           end
         end
-
-        checksum ||= definition.locked_checksums.find {|c| c.match_spec?(spec) }
+        checksum ||= definition.locked_checksums[spec.full_name]
 
         out << checksum.to_lock if checksum
       end

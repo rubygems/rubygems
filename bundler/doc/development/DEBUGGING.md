@@ -4,9 +4,11 @@ Debugging Bundler can be challenging, don't be discouraged 🤗.
 
 Make sure you've followed the [development setup](SETUP.md) docs before trying to debug.
 
-## Debugging in tests
+## Print debugging
 
-Your best option is to print debug in the test suite. Put `puts` statements anywhere you want to see an object or variable and you'll see your `puts` in the console output.
+The easiest way to debug is to print debug. Put `puts` statements anywhere in the code that you want to see an object or variable and you'll see your `puts` in the console output.
+
+This can be especially helpful when running tests.
 
 ```ruby
 puts "stacktrace: #{caller_locations(0).join("\n")}"
@@ -16,11 +18,37 @@ puts "spec.method(:to_checksum).source_location: #{spec.method(:to_checksum).sou
 # etc
 ```
 
-Most tests use Open3 to run Bundler in a sub process and capture the output into a string, which makes it impossible to use pry even if you can get it to load.
+To learn more print debugging strategies, [TODO: link to doc]
 
-## Interactive debugging locally
+## REPL debugging
 
-When testing Bundler locally, you can use pry for interactive debugging.
+REPL (or Read-Eval-Print Loop) is a way to interact with your code.
+
+With REPL you can look at the values of objects and variables, the stack trace, where methods are defined etc.
+
+To use REPL, place a `binding.irb` wherever you'd like to take a look around. An interactive `irb` console will open when your code gets to your breakpoint.
+
+To learn more about using IRB, [TODO: link to doc]
+
+## Interactive debugging
+
+Interactive debugging is like REPL + the ability to advance the code execution line by line.
+
+When testing Bundler locally, you can use any debugger that you are comfortable with for interactive debugging. 
+
+[`debug`](https://github.com/ruby/debug) and [`pry-byebug`](https://github.com/deivid-rodriguez/pry-byebug) are common favorites. `debug` has been included with Ruby since v3.1. 
+
+You just need your chosen debugger gem installed globally. Then you will need to require it on the command line before running your local Bundler.
+
+```bash
+RUBYOPT=-rdebug dbundle # for the debug gem
+RUBYOPT=-rpry-byebug dbundle # for pry-byebug
+```
+
+> **Note**
+> Interactive debugging is not possible in the test suite. Most tests use Open3 to run Bundler in a sub process and capture the output into a string, which makes it impossible to use pry even if you can get it to load.
+
+### Local setup
 
 The easiest way to test locally is to set up a directory with a Gemfile and run your Bundler shell alias (see the [development setup](SETUP.md) docs for instructions on setting up the alias).
 
@@ -45,10 +73,10 @@ source "https://rubygems.org"
 gem 'tiny_css'
 ```
 
-Put a `binding.pry` anywhere you want the debugger to break. Run your Bundler shell alias.
+Put a breakpoint anywhere you want the debugger to pause (`binding.break` for `debug` or `binding.pry` for `pry-byebug`). Run your Bundler shell alias.
 
 ```bash
-RUBYOPT=-rpry dbundle
+RUBYOPT=-rdebug dbundle
 ```
 
 And your breakpoint will display, paused, in your console.

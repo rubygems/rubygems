@@ -18,6 +18,14 @@ module Bundler
       end
     end
 
+    def spec_full_name
+      if platform == Gem::Platform::RUBY
+        "#{@name}-#{@version}"
+      else
+        "#{@name}-#{@version}-#{platform}"
+      end
+    end
+
     def match_spec?(spec)
       name == spec.name &&
         version == spec.version &&

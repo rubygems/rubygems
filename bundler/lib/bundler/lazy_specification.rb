@@ -76,7 +76,7 @@ module Bundler
       out
     end
 
-    def materialize_for_checksum
+    def materialize_for_checksum(&blk)
       #
       # See comment about #ruby_platform_materializes_to_ruby_platform?
       # If the old lockfile format is present where there is no specific

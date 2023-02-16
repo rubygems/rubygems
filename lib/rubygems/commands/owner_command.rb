@@ -98,10 +98,8 @@ permission to.
         action = method == :delete ? "Removing" : "Adding"
 
         with_response response, "#{action} #{owner}"
-      rescue Gem::WebauthnVerificationError => e
-        raise e
       rescue
-        # ignore
+        # ignore early exits to allow for completing the iteration of all owners
       end
     end
   end

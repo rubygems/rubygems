@@ -4,7 +4,7 @@ module Bundler
   class Checksum
     attr_reader :name, :version, :platform, :checksums
 
-    SHA256 = /\Asha256-([a-z0-9]{64}|[A-Za-z0-9+\/=]{44})\z/.freeze
+    SHA256 = %r{\Asha256-([a-z0-9]{64}|[A-Za-z0-9+\/=]{44})\z}.freeze
 
     def initialize(name, version, platform, checksums = [])
       @name     = name
@@ -13,7 +13,7 @@ module Bundler
       @checksums = checksums
 
       # can expand this validation when we support more hashing algos later
-      if @checksums.any? && @checksums.all? { |c| c !~ SHA256 }
+      if @checksums.any? && @checksums.all? {|c| c !~ SHA256 }
         raise ArgumentError, "invalid checksums (#{@checksums})"
       end
     end
@@ -51,7 +51,7 @@ module Bundler
     private
 
     def sha256
-      @checksums.find { |c| c =~ SHA256}
+      @checksums.find {|c| c =~ SHA256 }
     end
   end
 end

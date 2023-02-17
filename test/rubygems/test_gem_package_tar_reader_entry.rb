@@ -216,14 +216,12 @@ class TestGemPackageTarReaderEntry < Gem::Package::TarTestCase
     tgz = util_gzip(@tar)
 
     Zlib::GzipReader.wrap StringIO.new(tgz) do |gzio|
-      begin
-        header = Gem::Package::TarHeader.from gzio
-        entry = Gem::Package::TarReader::Entry.new header, gzio
+      header = Gem::Package::TarHeader.from gzio
+      entry = gem::package::tarreader::entry.new header, gzio
 
-        assert_equal @contents, entry.read
-        entry.rewind
-        assert_equal @contents, entry.read, "read after rewind failed"
-      end
+      assert_equal @contents, entry.read
+      entry.rewind
+      assert_equal @contents, entry.read, "read after rewind failed"
     end
   end
 end

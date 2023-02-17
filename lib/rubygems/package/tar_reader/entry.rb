@@ -159,11 +159,18 @@ class Gem::Package::TarReader::Entry
 
   ##
   # Rewinds to the beginning of the tar file entry
+  # This doesn't work when reading the inner data.tar.gz because the gzip io
+  # doesn't support `#pos=`.
 
   def rewind
     check_closed
 
-    @io.pos = @orig_pos
+    if @io.respond_to?(:pos=)
+      @io.pos = @orig_pos
+    else
+      @io.rewind
+      @io.read(@orig_pos)
+    end
     @read = 0
   end
 end

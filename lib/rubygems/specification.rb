@@ -2752,14 +2752,10 @@ class Gem::Specification < Gem::BasicSpecification
     return Bundler::Checksum.new(name, version, platform, "sha256-#{checksum}") if checksum
     return Bundler::Checksum.new(name, version, platform) unless File.exist?(cache_file)
 
-    calculated_checksum = File.open(cache_file) do |f|
-      digest = Bundler::SharedHelpers.digest(:SHA256).new
-      digest << f.read(16_384) until f.eof?
-
-      hexdigest = digest.hexdigest!
-      hexdigest
-    end
-
+    require "rubygems/package"
+    package = Gem::Package.new(cache_file)
+    digest = Bundler::Checksum.digest_from_file_source(package.gem)
+    calculated_checksum = digest.hexdigest!
     Bundler::Checksum.new(name, version, platform, "sha256-#{calculated_checksum}") if calculated_checksum
   end
 end

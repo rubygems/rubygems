@@ -18,6 +18,17 @@ module Bundler
       end
     end
 
+    def self.digest_from_file_source(file_source)
+      raise ArgumentError, "not a valid file source: #{file_source}" unless file_source.respond_to?(:with_read_io)
+
+      file_source.with_read_io do |io|
+        digest = Bundler::SharedHelpers.digest(:SHA256).new
+        digest << io.read(16_384) until io.eof?
+        io.rewind
+        digest
+      end
+    end
+
     def spec_full_name
       if platform == Gem::Platform::RUBY
         "#{@name}-#{@version}"

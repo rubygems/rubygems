@@ -101,12 +101,8 @@ module Bundler
         gem_path = fetch_gem
         require "rubygems/package"
         package = Gem::Package.new(gem_path)
-        digest = package.gem.with_read_io do |io|
-          digest = Bundler::SharedHelpers.digest(:SHA256).new
-          digest << io.read(16_384) until io.eof?
-          io.rewind
-          digest.hexdigest!
-        end
+        digest = Bundler::Checksum.digest_from_file_source(package.gem)
+        digest.hexdigest!
       end
 
       digest = "sha256-#{@checksum}" if @checksum

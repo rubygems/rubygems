@@ -106,7 +106,7 @@ module Bundler
       end
 
       digest = "sha256-#{@checksum}" if @checksum
-      Bundler::Checksum.new(name, version, platform, digest)
+      Bundler::Checksum.new(name, version, platform, [digest])
     end
 
     private

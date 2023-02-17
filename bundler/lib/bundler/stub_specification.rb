@@ -97,7 +97,7 @@ module Bundler
     end
 
     def to_checksum
-      return Bundler::Checksum.new(name, version, platform, "sha256-#{checksum}") if checksum
+      return Bundler::Checksum.new(name, version, platform, ["sha256-#{checksum}"]) if checksum
 
       _remote_specification.to_checksum if _remote_specification
     end

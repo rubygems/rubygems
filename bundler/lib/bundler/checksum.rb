@@ -2,19 +2,19 @@
 
 module Bundler
   class Checksum
-    attr_reader :name, :version, :platform
-    attr_accessor :checksum
+    attr_reader :name, :version, :platform, :checksums
 
     SHA256 = /\Asha256-([a-z0-9]{64}|[A-Za-z0-9+\/=]{44})\z/.freeze
 
-    def initialize(name, version, platform, checksum = nil)
+    def initialize(name, version, platform, checksums = [])
       @name     = name
       @version  = version
       @platform = platform || Gem::Platform::RUBY
-      @checksum = checksum
+      @checksums = checksums
 
-      if @checksum && @checksum !~ SHA256
-        raise ArgumentError, "invalid checksum (#{@checksum})"
+      # can expand this validation when we support more hashing algos later
+      if @checksums.any? && @checksums.all? { |c| c !~ SHA256 }
+        raise ArgumentError, "invalid checksums (#{@checksums})"
       end
     end
 
@@ -42,10 +42,16 @@ module Bundler
     def to_lock
       out = String.new
       out << "  #{GemHelpers.lock_name(name, version, platform)}"
-      out << " #{checksum}" if checksum
+      out << " #{sha256}" if sha256
       out << "\n"
 
       out
+    end
+
+    private
+
+    def sha256
+      @checksums.find { |c| c =~ SHA256}
     end
   end
 end

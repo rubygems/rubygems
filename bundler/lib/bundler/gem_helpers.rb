@@ -113,5 +113,14 @@ module Bundler
       same_runtime_deps && same_metadata_deps
     end
     module_function :same_deps
+
+    def lock_name(name, version, platform)
+      if platform == Gem::Platform::RUBY
+        "#{name} (#{version})"
+      else
+        "#{name} (#{version}-#{platform})"
+      end
+    end
+    module_function :lock_name
   end
 end

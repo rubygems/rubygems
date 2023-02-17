@@ -45,13 +45,7 @@ module Bundler
 
     def to_lock
       out = String.new
-
-      if platform == Gem::Platform::RUBY
-        out << "  #{name} (#{version})"
-      else
-        out << "  #{name} (#{version}-#{platform})"
-      end
-
+      out << "  #{GemHelpers.lock_name(name, version, platform)}"
       out << " #{checksum}" if checksum
       out << "\n"
 

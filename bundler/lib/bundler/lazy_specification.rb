@@ -20,11 +20,7 @@ module Bundler
     end
 
     def full_name
-      @full_name ||= if platform == Gem::Platform::RUBY
-        "#{@name}-#{@version}"
-      else
-        "#{@name}-#{@version}-#{platform}"
-      end
+      @full_name ||= GemHelpers.spec_full_name(@name, @version, platform)
     end
 
     def ==(other)

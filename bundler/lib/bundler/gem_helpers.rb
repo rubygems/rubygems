@@ -114,6 +114,15 @@ module Bundler
     end
     module_function :same_deps
 
+    def spec_full_name(name, version, platform)
+      if platform == Gem::Platform::RUBY
+        "#{name}-#{version}"
+      else
+        "#{name}-#{version}-#{platform}"
+      end
+    end
+    module_function :spec_full_name
+
     def lock_name(name, version, platform)
       if platform == Gem::Platform::RUBY
         "#{name} (#{version})"

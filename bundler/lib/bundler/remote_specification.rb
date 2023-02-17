@@ -93,20 +93,19 @@ module Bundler
       " #{source.revision[0..6]}"
     end
 
-    
     # we don't get the checksum from a server like we could with EndpointSpecs
     # calculating the checksum from the file on disk still provides some measure of security
     # if it changes from install to install, that is cause for concern
     def to_checksum
       @checksum ||= begin
-        return unless _fetched_gem
-
-        File.open(_fetched_gem) do |f|
+        gem_path = fetch_gem
+        require "rubygems/package"
+        package = Gem::Package.new(gem_path)
+        digest = package.gem.with_read_io do |io|
           digest = Bundler::SharedHelpers.digest(:SHA256).new
-          digest << f.read(16_384) until f.eof?
-
-          hexdigest = digest.hexdigest!
-          hexdigest
+          digest << io.read(16_384) until io.eof?
+          io.rewind
+          digest.hexdigest!
         end
       end
 
@@ -120,18 +119,32 @@ module Bundler
       nil
     end
 
-    def _fetched_gem
-      @_fetched_gem ||= begin
-        fetcher = gem_remote_fetcher
-        fetcher.headers = { "X-Gemfile-Source" => remote.original_uri.to_s } if remote&.original_uri
-        fetcher.download(self, remote.uri)
+    def fetch_gem
+      fetch_platform
+
+      cache_path = download_cache_path || default_cache_path_for_rubygems_dir
+      gem_path = "#{cache_path}/#{file_name}"
+      return gem_path if File.exist?(gem_path)
+
+      SharedHelpers.filesystem_access(cache_path) do |p|
+        FileUtils.mkdir_p(p)
       end
+
+      Bundler.rubygems.download_gem(self, remote.uri, cache_path)
+
+      gem_path
     end
 
-    def gem_remote_fetcher
-      require "rubygems/remote_fetcher"
-      proxy = Gem.configuration[:http_proxy]
-      Gem::RemoteFetcher.new(proxy)
+    def download_cache_path
+      return unless Bundler.feature_flag.global_gem_cache?
+      return unless remote
+      return unless remote.cache_slug
+
+      Bundler.user_cache.join("gems", remote.cache_slug)
+    end
+
+    def default_cache_path_for_rubygems_dir
+      "#{Bundler.bundle_path}/cache"
     end
 
     def _remote_specification

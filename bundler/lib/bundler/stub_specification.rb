@@ -9,7 +9,8 @@ module Bundler
       spec
     end
 
-    attr_accessor :stub, :ignored, :checksum
+    attr_reader :checksum
+    attr_accessor :stub, :ignored
 
     def source=(source)
       super
@@ -89,6 +90,10 @@ module Bundler
 
     def raw_require_paths
       stub.raw_require_paths
+    end
+
+    def add_checksum(checksum)
+      @checksum ||= checksum
     end
 
     def to_checksum

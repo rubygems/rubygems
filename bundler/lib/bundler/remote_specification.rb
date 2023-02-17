@@ -93,10 +93,11 @@ module Bundler
       " #{source.revision[0..6]}"
     end
 
+    
     # we don't get the checksum from a server like we could with EndpointSpecs
     # calculating the checksum from the file on disk still provides some measure of security
     # if it changes from install to install, that is cause for concern
-    def checksum
+    def to_checksum
       @checksum ||= begin
         return unless _fetched_gem
 
@@ -108,10 +109,8 @@ module Bundler
           hexdigest
         end
       end
-    end
 
-    def to_checksum
-      digest = "sha256-#{checksum}" if checksum
+      digest = "sha256-#{@checksum}" if @checksum
       Bundler::Checksum.new(name, version, platform, digest)
     end
 

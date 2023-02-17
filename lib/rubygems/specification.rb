@@ -761,12 +761,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   attr_accessor :specification_version
 
-  ##
-  # The checksum for this gem
-  #
-  # Do not set this, it is set when the gemspec is indexed (if possible).
-
-  attr_accessor :checksum
+  attr_reader :checksum
 
   def self._all # :nodoc:
     @@all ||= Gem.loaded_specs.values | stubs.map(&:to_spec)
@@ -2744,6 +2739,10 @@ class Gem::Specification < Gem::BasicSpecification
 
   def raw_require_paths # :nodoc:
     @require_paths
+  end
+
+  def add_checksum(checksum)
+    @checksum ||= checksum
   end
 
   # if we don't get the checksum from the server

@@ -78,7 +78,7 @@ module Bundler
     def materialize(deps)
       materialized = self.for(deps, true)
 
-      SpecSet.new(materialized, incomplete_specs)
+      SpecSet.new(materialized, incomplete_specs + specs_with_missing_dependencies(materialized))
     end
 
     # Materialize for all the specs in the spec set, regardless of what platform they're for
@@ -201,6 +201,16 @@ module Bundler
         next if d.type == :development
         lookup[d.name].each {|s2| yield s2 }
       end
+    end
+
+    def specs_with_missing_dependencies(materialized)
+      materialized.
+        select {|spec| missing_dependencies?(spec) }.
+        flat_map {|spec| lookup[spec.name] }
+    end
+
+    def missing_dependencies?(spec)
+      spec.dependencies.any? {|dep| lookup[dep.name].empty? }
     end
   end
 end

@@ -347,6 +347,7 @@ lib/rubygems/commands/cleanup_command.rb
 lib/rubygems/commands/contents_command.rb
 lib/rubygems/commands/dependency_command.rb
 lib/rubygems/commands/environment_command.rb
+lib/rubygems/commands/exec_command.rb
 lib/rubygems/commands/fetch_command.rb
 lib/rubygems/commands/generate_index_command.rb
 lib/rubygems/commands/help_command.rb
@@ -616,6 +617,7 @@ test/rubygems/test_gem_commands_cleanup_command.rb
 test/rubygems/test_gem_commands_contents_command.rb
 test/rubygems/test_gem_commands_dependency_command.rb
 test/rubygems/test_gem_commands_environment_command.rb
+test/rubygems/test_gem_commands_exec_command.rb
 test/rubygems/test_gem_commands_fetch_command.rb
 test/rubygems/test_gem_commands_generate_index_command.rb
 test/rubygems/test_gem_commands_help_command.rb

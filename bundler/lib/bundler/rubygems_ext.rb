@@ -126,6 +126,41 @@ module Gem
 
     prepend YamlBackfiller
 
+    module SafeLoadMarshal
+      def _load(str)
+        Gem.load_yaml
+
+        begin
+          Bundler.safe_load_marshal str
+        rescue ArgumentError => e
+          #
+          # Some very old marshaled specs included references to `YAML::PrivateType`
+          # and `YAML::Syck::DefaultKey` constants due to bugs in the old emitter
+          # that generated them. Workaround the issue by defining the necessary
+          # constants and retrying.
+          #
+          message = e.message
+          raise unless message.include?("YAML::")
+
+          Object.const_set "YAML", Psych unless Object.const_defined?(:YAML)
+
+          if message.include?("YAML::Syck::")
+            YAML.const_set "Syck", YAML unless YAML.const_defined?(:Syck)
+
+            YAML::Syck.const_set "DefaultKey", Gem::Util::DefaultKey if message.include?("YAML::Syck::DefaultKey")
+          elsif message.include?("YAML::PrivateType")
+            YAML.const_set "PrivateType", Gem::Util::PrivateType
+          end
+
+          retry
+        end
+
+        super(str)
+      end
+    end
+
+    singleton_class.prepend SafeLoadMarshal unless Gem::Util.public_method_defined?(:safe_load_marshal)
+
     def nondevelopment_dependencies
       dependencies - development_dependencies
     end
@@ -349,5 +384,12 @@ module Gem
     def glob_files_in_dir(glob, base_path)
       Dir.glob(glob, :base => base_path).map! {|f| File.expand_path(f, base_path) }
     end
+  end
+
+  module Util
+    class DefaultKey
+    end unless defined?(DefaultKey)
+    class PrivateType
+    end unless defined?(PrivateType)
   end
 end

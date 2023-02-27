@@ -137,7 +137,7 @@ class Gem::Source
 
     if File.exist? local_spec
       spec = Gem.read_binary local_spec
-      spec = Marshal.load(spec) rescue nil
+      spec = Gem::Util.safe_load_marshal(spec) rescue nil
       return spec if spec
     end
 
@@ -156,7 +156,7 @@ class Gem::Source
     end
 
     # TODO: Investigate setting Gem::Specification#loaded_from to a URI
-    Marshal.load spec
+    Gem::Util.safe_load_marshal spec
   end
 
   ##
@@ -187,7 +187,7 @@ class Gem::Source
     spec_dump = fetcher.cache_update_path spec_path, local_file, update_cache?
 
     begin
-      Gem::NameTuple.from_list Marshal.load(spec_dump)
+      Gem::NameTuple.from_list Gem::Util.safe_load_marshal(spec_dump)
     rescue ArgumentError
       if update_cache? && !retried
         FileUtils.rm local_file

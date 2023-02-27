@@ -410,7 +410,7 @@ class Gem::Indexer
   # +dest+.  For a latest index, does not ensure the new file is minimal.
 
   def update_specs_index(index, source, dest)
-    specs_index = Marshal.load Gem.read_binary(source)
+    specs_index = Gem::Util.safe_load_marshal Gem.read_binary(source)
 
     index.each do |spec|
       platform = spec.original_platform

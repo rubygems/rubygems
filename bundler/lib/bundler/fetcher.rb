@@ -108,9 +108,9 @@ module Bundler
       else
         Bundler.safe_load_marshal Bundler.rubygems.inflate(downloader.fetch(uri).body)
       end
-    rescue MarshalError
+    rescue MarshalError => e
       raise HTTPError, "Gemspec #{spec} contained invalid data.\n" \
-        "Your network or your gem server is probably having issues right now."
+        "Your network or your gem server is probably having issues right now.\n#{e}"
     end
 
     # return the specs in the bundler format as an index with retries

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "bundler/vendored_fileutils"
+require "date"
 require "pathname"
 require "rbconfig"
 
@@ -39,7 +40,31 @@ module Bundler
   environment_preserver.replace_with_backup
   SUDO_MUTEX = Thread::Mutex.new
 
-  SAFE_MARSHAL_CLASSES = [Symbol, TrueClass, String, Array, Hash, Gem::Version, Gem::Specification].freeze
+  SAFE_MARSHAL_CLASSES = [
+    Array,
+    Date,
+    Float,
+    Hash,
+    Integer,
+    String,
+    Symbol,
+    Time,
+
+    TrueClass,
+    FalseClass,
+
+    NilClass,
+
+    Gem::Dependency,
+    Gem::NameTuple,
+    Gem::Platform,
+    Gem::Requirement,
+    Gem::Specification,
+    Gem::Version,
+
+    Gem::Util::DefaultKey,
+    Gem::Util::PrivateType,
+  ].freeze
   SAFE_MARSHAL_ERROR = "Unexpected class %s present in marshaled data. Only %s are allowed."
   SAFE_MARSHAL_PROC = proc do |object|
     object.tap do
@@ -48,6 +73,8 @@ module Bundler
       end
     end
   end
+
+  private_constant :SAFE_MARSHAL_CLASSES, :SAFE_MARSHAL_ERROR, :SAFE_MARSHAL_PROC
 
   autoload :Definition,             File.expand_path("bundler/definition", __dir__)
   autoload :Dependency,             File.expand_path("bundler/dependency", __dir__)

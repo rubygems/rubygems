@@ -22,6 +22,22 @@ RSpec.describe Bundler do
       expect { Bundler.safe_load_marshal(data) }.to raise_error(Bundler::MarshalError)
     end
 
+    it "fails on unexpected nested object" do
+      data = Marshal.dump({ "name" => Bundler })
+      expect { Bundler.safe_load_marshal(data) }.to raise_error(Bundler::MarshalError)
+      data = Marshal.dump(["name", Bundler])
+      expect { Bundler.safe_load_marshal(data) }.to raise_error(Bundler::MarshalError)
+      data = Marshal.dump(Gem::Specification.new("name", "1") do |s|
+        s.instance_variable_set(:@version, Bundler)
+      end)
+      expect { Bundler.safe_load_marshal(data) }.to raise_error(Bundler::MarshalError)
+      data = Marshal.dump(Gem::Version.new("1").tap {|v| v.instance_variable_set :@version, Set.new })
+      expect { Bundler.safe_load_marshal(data) }.to raise_error(Bundler::MarshalError)
+      data = Hash.new
+      data.default = Bundler
+      expect { Bundler.safe_load_marshal(data) }.to raise_error(Bundler::MarshalError)
+    end
+
     it "loads simple structure" do
       simple_structure = { "name" => [:abc] }
       data = Marshal.dump(simple_structure)
@@ -36,6 +52,12 @@ RSpec.describe Bundler do
 
     it "loads Gem::Specification" do
       gem_spec = Gem::Specification.new("name", "3.7.2")
+      data = Marshal.dump(gem_spec)
+      expect(Bundler.safe_load_marshal(data)).to eq(gem_spec)
+
+      gem_spec = Gem::Specification.new("name", "3.7.2") do |s|
+        s.original_platform = Gem::Platform.new "ppc-darwin"
+      end
       data = Marshal.dump(gem_spec)
       expect(Bundler.safe_load_marshal(data)).to eq(gem_spec)
     end

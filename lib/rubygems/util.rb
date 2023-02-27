@@ -112,4 +112,50 @@ module Gem::Util
     end
   end
 
+  class DefaultKey
+  end
+
+  class PrivateType
+  end
+
+  require "date"
+  SAFE_MARSHAL_CLASSES = [
+    Array,
+    Date,
+    Float,
+    Hash,
+    Integer,
+    String,
+    Symbol,
+    Time,
+
+    TrueClass,
+    FalseClass,
+
+    NilClass,
+
+    Gem::Dependency,
+    Gem::NameTuple,
+    Gem::Platform,
+    Gem::Requirement,
+    Gem::Specification,
+    Gem::Version,
+
+    DefaultKey,
+    PrivateType,
+  ].freeze
+  SAFE_MARSHAL_ERROR = "Unexpected class %s present in marshaled data. Only %s are allowed."
+  SAFE_MARSHAL_PROC = proc do |object|
+    object.tap do
+      unless SAFE_MARSHAL_CLASSES.include?(object.class)
+        raise TypeError, format(SAFE_MARSHAL_ERROR, object.class, SAFE_MARSHAL_CLASSES.join(", "))
+      end
+    end
+  end
+
+  private_constant :SAFE_MARSHAL_CLASSES, :SAFE_MARSHAL_ERROR, :SAFE_MARSHAL_PROC
+
+  def self.safe_load_marshal(data)
+    Marshal.load(data, SAFE_MARSHAL_PROC)
+  end
 end

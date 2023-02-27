@@ -1294,7 +1294,7 @@ class Gem::Specification < Gem::BasicSpecification
     Gem.load_yaml
 
     array = begin
-      Marshal.load str
+      Gem::Util.safe_load_marshal str
     rescue ArgumentError => e
       #
       # Some very old marshaled specs included references to `YAML::PrivateType`
@@ -1310,9 +1310,9 @@ class Gem::Specification < Gem::BasicSpecification
       if message.include?("YAML::Syck::")
         YAML.const_set "Syck", YAML unless YAML.const_defined?(:Syck)
 
-        YAML::Syck.const_set "DefaultKey", Class.new if message.include?("YAML::Syck::DefaultKey")
+        YAML::Syck.const_set "DefaultKey", Gem::Util::DefaultKey if message.include?("YAML::Syck::DefaultKey")
       elsif message.include?("YAML::PrivateType")
-        YAML.const_set "PrivateType", Class.new
+        YAML.const_set "PrivateType", Gem::Util::PrivateType
       end
 
       retry

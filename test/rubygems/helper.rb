@@ -648,7 +648,7 @@ class Gem::TestCase < Test::Unit::TestCase
 
   def read_cache(path)
     File.open path.dup.tap(&Gem::UNTAINT), "rb" do |io|
-      Marshal.load io.read
+      Gem::Util.safe_load_marshal io.read
     end
   end
 

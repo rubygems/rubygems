@@ -20,7 +20,7 @@ module Bundler
       current_dependencies = definition.requested_dependencies
       current_specs = definition.specs
 
-      count = current_dependencies.count {|dep| current_specs[dep.name].first.metadata.key?("funding_uri") }
+      count = current_dependencies.count {|dep| current_specs[dep.name]&.first&.metadata&.key?("funding_uri") }
 
       return if count.zero?
 

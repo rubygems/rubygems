@@ -1103,4 +1103,39 @@ RSpec.describe "bundle install with gem sources" do
       expect(err).to include("Could not find compatible versions")
     end
   end
+
+  context "with a lockfile that has mismatched 'specs:' and 'DEPENDENCIES' sections" do
+    it "does not throw a NoMethodError" do
+      build_repo4 do
+        build_gem "indirect_dependency", "1.2.3" do |s|
+          s.metadata["funding_uri"] = "https://example.com/donate"
+        end
+
+        build_gem "direct_dependency", "4.5.6" do |s|
+          s.add_dependency "indirect_dependency", ">= 0"
+        end
+      end
+
+      lockfile <<-G
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+          direct_dependency
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      G
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo4)}"
+
+        gem "direct_dependency"
+      G
+    end
+  end
 end

@@ -128,8 +128,8 @@ permissions compromised or exposed.
 
 ## Changing These Policies
 
-These policies were set in order to reduce the burden of maintenance and to
-keep committers current with existing development and policies. RubyGems work
-is primarily volunteer-driven which limits the ability to provide long-term
-support. By joining [Ruby Together](https://rubytogether.org) you can help
-extend support for older RubyGems versions.
+These policies were set in order to reduce the burden of maintenance and to keep
+committers current with existing development and policies. RubyGems work is
+primarily volunteer-driven which limits the ability to provide long-term
+support. By joining [Ruby Central](https://rubycentral.org/#/portal/signup) you
+can help extend support for older RubyGems versions.

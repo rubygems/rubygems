@@ -5,3 +5,9 @@ dca5fa728437383428a593644f537aaa1020ee63
 # enable Style/MethodDefParentheses in Rubocop
 79e6bafd945e358480ac2253995e82e229bb4f5c
 # Bundler
+# [RuboCop] Enable Style/StringLiterals
+b0d532adb80521271fbde4d3955c252f2ee09a5c
+# [RuboCop] Enable Style/SymbolProc
+cf58bc4b1ee83b2697fbdbcc76ced09515525141
+# [RuboCop] Enable Style/EmptyLines
+ff426fdbc1bde3582b6e1d5137abd21d74c38f87

@@ -1262,7 +1262,7 @@ RSpec.describe "the lockfile format" do
           indirect_dependency (1.2.3)
 
       PLATFORMS
-        #{lockfile_platforms}
+        ruby
 
       DEPENDENCIES
         direct_dependency

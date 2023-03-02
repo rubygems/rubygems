@@ -30,6 +30,9 @@ Layout/ClosingParenthesisIndentation:
 Layout/CommentIndentation:
   Enabled: true
 
+Layout/DefEndAlignment:
+  Enabled: true
+
 Layout/ElseAlignment:
   Enabled: true
 

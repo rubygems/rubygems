@@ -1488,7 +1488,8 @@ gem 'other', version
     expected = File.join @spec.full_require_paths.find {|path|
       File.exist? File.join path, "b.rb"
     }, "b.rb"
-    assert_equal expected, @spec.matches_for_glob("b.rb").first
+    actual = File.join @spec.extension_dir, "b.rb"
+    assert_equal expected, actual
   end
 
   def test_install_extension_and_script

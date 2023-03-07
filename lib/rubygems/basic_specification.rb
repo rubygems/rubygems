@@ -151,7 +151,9 @@ class Gem::BasicSpecification
 
       full_paths << extension_dir if have_extensions?
 
-      full_paths
+      # We should search `extension_dir` first. because lib_dir mixed with
+      # several archtecture and ruby versions is a mess.
+      full_paths.reverse
     end
   end
 

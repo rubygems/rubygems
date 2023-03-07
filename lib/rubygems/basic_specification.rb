@@ -145,15 +145,17 @@ class Gem::BasicSpecification
   def full_require_paths
     @full_require_paths ||=
     begin
-      full_paths = raw_require_paths.map do |path|
-        File.join full_gem_path, path.tap(&Gem::UNTAINT)
-      end
-
-      full_paths << extension_dir if have_extensions?
+      full_paths = []
 
       # We should search `extension_dir` first. because lib_dir mixed with
       # several architecture and ruby versions is a mess.
-      full_paths.reverse
+      full_paths << extension_dir if have_extensions?
+
+      full_paths = full_paths + raw_require_paths.map do |path|
+        File.join full_gem_path, path.tap(&Gem::UNTAINT)
+      end
+
+      full_paths
     end
   end
 

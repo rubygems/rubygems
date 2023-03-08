@@ -1,3 +1,26 @@
+# 2.4.8 (March 8, 2023)
+
+## Security:
+
+  - Safe load all marshaled data [#6384](https://github.com/rubygems/rubygems/pull/6384)
+
+## Enhancements:
+
+  - Better suggestion when `bundler/setup` fails due to missing gems and Gemfile is not the default [#6428](https://github.com/rubygems/rubygems/pull/6428)
+  - Simplify the gem package file filter in the gemspec template [#6344](https://github.com/rubygems/rubygems/pull/6344)
+  - Auto-heal corrupted `Gemfile.lock` with no specs [#6423](https://github.com/rubygems/rubygems/pull/6423)
+  - Auto-heal on corrupted lockfile with missing deps [#6400](https://github.com/rubygems/rubygems/pull/6400)
+  - Give a better message when Gemfile branch does not exist [#6383](https://github.com/rubygems/rubygems/pull/6383)
+
+## Bug fixes:
+
+  - Respect --no-install option for git: sources [#6088](https://github.com/rubygems/rubygems/pull/6088)
+  - Fix `gems.rb` lockfile for bundler version lookup in template [#6413](https://github.com/rubygems/rubygems/pull/6413)
+
+## Documentation:
+
+  - Switch supporting explanations to all Ruby Central [#6419](https://github.com/rubygems/rubygems/pull/6419)
+
 # 2.4.7 (February 15, 2023)
 
 ## Enhancements:

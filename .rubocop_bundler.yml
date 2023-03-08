@@ -741,6 +741,9 @@ Lint/RedundantCopEnableDirective:
 Style/RedundantException:
   Enabled: true
 
+Style/RedundantFreeze:
+  Enabled: true
+
 Style/RedundantInterpolation:
   Enabled: true
 

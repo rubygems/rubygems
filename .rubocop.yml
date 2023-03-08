@@ -30,6 +30,9 @@ Layout/ClosingParenthesisIndentation:
 Layout/CommentIndentation:
   Enabled: true
 
+Layout/DefEndAlignment:
+  Enabled: true
+
 Layout/ElseAlignment:
   Enabled: true
 
@@ -177,6 +180,9 @@ Style/BlockDelimiters:
   Enabled: true
 
 Style/PercentLiteralDelimiters:
+  Enabled: true
+
+Style/RedundantFreeze:
   Enabled: true
 
 Style/StringLiterals:

@@ -1,3 +1,35 @@
+# 3.4.8 / 2023-03-08
+
+## Enhancements:
+
+* Add TarReader::Entry#seek to seek within the tar file entry. Pull
+  request [#6390](https://github.com/rubygems/rubygems/pull/6390) by
+  martinemde
+* Avoid calling String#dup in Gem::Version#marshal_dump. Pull request
+  [#6438](https://github.com/rubygems/rubygems/pull/6438) by segiddins
+* Remove hardcoded "master" branch references. Pull request
+  [#6425](https://github.com/rubygems/rubygems/pull/6425) by
+  deivid-rodriguez
+* [Experimental] Add `gem exec` command to run executables from gems that
+  may or may not be installed. Pull request
+  [#6309](https://github.com/rubygems/rubygems/pull/6309) by segiddins
+* Installs bundler 2.4.8 as a default gem.
+
+## Bug fixes:
+
+* Fix installation error of same version of default gems with local
+  installation. Pull request
+  [#6430](https://github.com/rubygems/rubygems/pull/6430) by hsbt
+* Use proper memoized var name for Gem.state_home. Pull request
+  [#6420](https://github.com/rubygems/rubygems/pull/6420) by simi
+
+## Documentation:
+
+* Switch supporting explanations to all Ruby Central. Pull request
+  [#6419](https://github.com/rubygems/rubygems/pull/6419) by indirect
+* Update the link to OpenSource.org. Pull request
+  [#6392](https://github.com/rubygems/rubygems/pull/6392) by nobu
+
 # 3.4.7 / 2023-02-15
 
 ## Enhancements:

@@ -64,6 +64,22 @@ To upgrade to the latest RubyGems, run:
 
 See [UPGRADING](UPGRADING.md) for more details and alternative instructions.
 
+## Release policy
+
+RubyGems and Bundler are released in sync, although they do not share their
+major version number. It is planned that also their major version numbers will
+be sync'ed in the future.
+
+The release policy is somewhat similar to the release policy of Ruby itself:
+
+* Frequent patch releases (every 2-4 weeks) including bug fixes, minor
+  enhancements, small features, or even medium sized features declared as
+  experimental for battle testing.
+* Yearly minor releases including bigger features, and minor breaking changes
+  (affecting only edge cases and a very small set of users).
+* Occasional major releases (replacing yearly minors) including major breaking
+  changes.
+
 ## Documentation
 
 RubyGems uses [rdoc](https://github.com/rdoc/rdoc) for documentation. A compiled set of the docs

@@ -50,4 +50,9 @@ module Gem
       end
     end
   end
+
+  class Specification < BasicSpecification
+    remove_const :DEFAULT_GEMS_LIST
+    DEFAULT_GEMS_LIST = %w[irb foo bar].freeze
+  end
 end

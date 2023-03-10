@@ -701,8 +701,10 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     expected = {
       args: [],
+      conservative: true,
       document: %w[ri],
       force: false,
+      minimal_deps: true,
       system: true,
     }
 
@@ -720,8 +722,10 @@ class TestGemCommandsUpdateCommand < Gem::TestCase
 
     expected = {
       args: [],
+      conservative: true,
       document: %w[ri],
       force: false,
+      minimal_deps: true,
       system: "1.3.7",
     }
 

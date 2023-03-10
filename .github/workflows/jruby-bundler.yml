@@ -32,15 +32,15 @@ jobs:
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@31a7f6d628878b80bc63375a93ae079ec50a1601 # v1.143.0
+        uses: ruby/setup-ruby@9669f3ee51dc3f4eda8447ab696b3ab19a90d14b # v1.144.0
         with:
-          ruby-version: jruby-9.3.9.0
+          ruby-version: jruby-9.4.2.0
           bundler: none
       - name: Setup java
         uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98 # v3.10.0
         with:
           distribution: temurin
-          java-version: 18.0.0
+          java-version: 19.0.2
         if: "!startsWith(matrix.os.name, 'ubuntu')"
       - name: Prepare dependencies
         run: |

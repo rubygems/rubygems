@@ -54,7 +54,7 @@ module Gem
   class Specification < BasicSpecification
     if defined?(DEFAULT_GEMS_LIST)
       remove_const :DEFAULT_GEMS_LIST
-      DEFAULT_GEMS_LIST = %w[irb foo bar].freeze
+      DEFAULT_GEMS_LIST = %w[irb json foo bar].freeze
     end
   end
 end

@@ -65,7 +65,7 @@ end
 
 class Gem::Specification < Gem::BasicSpecification
   remove_const :DEFAULT_GEMS_LIST
-  DEFAULT_GEMS_LIST = %w[systemgem default bundler a b c z]
+  DEFAULT_GEMS_LIST = %w[systemgem default bundler a b c z].freeze
 end
 
 ##

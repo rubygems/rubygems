@@ -2486,10 +2486,11 @@ class Gem::Specification < Gem::BasicSpecification
 
   def to_ruby
     mark_version
+    path_separator = ":"
     result = []
     result << "# -*- encoding: utf-8 -*-"
-    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{raw_require_paths.join("\0")}"
-    result << "#{Gem::StubSpecification::PREFIX}#{extensions.join "\0"}" unless
+    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{raw_require_paths.join(path_separator)}"
+    result << "#{Gem::StubSpecification::PREFIX}#{extensions.join path_separator}" unless
       extensions.empty?
     result << nil
     result << "Gem::Specification.new do |s|"

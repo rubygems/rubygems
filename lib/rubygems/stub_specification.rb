@@ -11,6 +11,10 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # :nodoc:
   OPEN_MODE = "r:UTF-8:-"
 
+  # `\0` is the path separator used in old gemspecs, the new ones use `:`.
+  # That's why this pattern needs to match both.
+  PATH_SEPARATOR = /\0|:/.freeze
+
   class StubLine # :nodoc: all
     attr_reader :name, :version, :platform, :require_paths, :extensions,
                 :full_name
@@ -50,7 +54,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
       end
 
       path_list = parts.last
-      @require_paths = REQUIRE_PATH_LIST[path_list] || path_list.split("\0").map! do |x|
+      @require_paths = REQUIRE_PATH_LIST[path_list] || path_list.split(PATH_SEPARATOR).map! do |x|
         REQUIRE_PATHS[x] || x
       end
     end
@@ -116,7 +120,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
             stubline = file.readline.chomp
             if stubline.start_with?(PREFIX)
               extensions = if /\A#{PREFIX}/ =~ file.readline.chomp
-                $'.split "\0"
+                $'.split PATH_SEPARATOR
               else
                 StubLine::NO_EXTENSIONS
               end

@@ -2259,7 +2259,7 @@ dependencies: []
 
     expected = <<-SPEC
 # -*- encoding: utf-8 -*-
-# stub: a 2 ruby lib\0other
+# stub: a 2 ruby lib:other
 
 Gem::Specification.new do |s|
   s.name = "a".freeze
@@ -2287,6 +2287,25 @@ end
     same_spec = eval ruby_code
 
     assert_equal @a2, same_spec
+  end
+
+  def test_to_ruby_extensions
+    first_extension = "ext/a/extconf.rb"
+    @a2.extensions << first_extension
+
+    ruby_code = @a2.to_ruby.split("\n")
+
+    assert_includes ruby_code, "# stub: #{first_extension}"
+    assert_includes ruby_code, "  s.extensions = [\"#{first_extension}\".freeze]"
+
+    second_extension = "ext/a/ext/parser/extconf.rb"
+    @a2.extensions << second_extension
+
+    ruby_code = @a2.to_ruby.split("\n")
+
+    assert_includes ruby_code, "# stub: #{first_extension}:#{second_extension}"
+    assert_includes ruby_code,
+                    "  s.extensions = [\"#{first_extension}\".freeze, \"#{second_extension}\".freeze]"
   end
 
   def test_to_ruby_with_rsa_key

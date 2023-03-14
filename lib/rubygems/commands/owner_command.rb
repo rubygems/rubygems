@@ -99,7 +99,7 @@ permission to.
 
         with_response response, "#{action} #{owner}"
       rescue
-        # ignore
+        # ignore early exits to allow for completing the iteration of all owners
       end
     end
   end

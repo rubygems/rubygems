@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require_relative "remote_fetcher"
 require_relative "text"
+require_relative "webauthn_listener"
 
 ##
 # Utility methods for using the RubyGems API.
@@ -105,7 +106,7 @@ module Gem::GemcutterUtilities
     response = request_with_otp(method, uri, &block)
 
     if mfa_unauthorized?(response)
-      ask_otp(credentials)
+      fetch_otp(credentials)
       response = request_with_otp(method, uri, &block)
     end
 
@@ -251,14 +252,38 @@ module Gem::GemcutterUtilities
     end
   end
 
-  def ask_otp(credentials)
-    if webauthn_url = webauthn_verification_url(credentials)
-      say "You have enabled multi-factor authentication. Please enter OTP code from your security device by visiting #{webauthn_url}."
+  def fetch_otp(credentials)
+    options[:otp] = if webauthn_url = webauthn_verification_url(credentials)
+      wait_for_otp(webauthn_url)
     else
       say "You have enabled multi-factor authentication. Please enter OTP code."
+      ask "Code: "
+    end
+  end
+
+  def wait_for_otp(webauthn_url)
+    server = TCPServer.new 0
+    port = server.addr[1].to_s
+
+    thread = Thread.new do
+      Thread.current[:otp] = Gem::WebauthnListener.wait_for_otp_code(host, server)
+    rescue Gem::WebauthnVerificationError => e
+      Thread.current[:error] = e
+    end
+    thread.abort_on_exception = true
+    thread.report_on_exception = false
+
+    url_with_port = "#{webauthn_url}?port=#{port}"
+    say "You have enabled multi-factor authentication. Please visit #{url_with_port} to authenticate via security device."
+
+    thread.join
+    if error = thread[:error]
+      alert_error error.message
+      terminate_interaction(1)
     end
 
-    options[:otp] = ask "Code: "
+    say "You are verified with a security device. You may close the browser window."
+    thread[:otp]
   end
 
   def webauthn_verification_url(credentials)

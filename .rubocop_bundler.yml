@@ -18,16 +18,6 @@ AllCops:
     - bundler/lib/bundler/vendor/**/*
 
 
-# Gemspec
-
-Gemspec/OrderedDependencies:
-  Enabled: true
-
-Gemspec/RequiredRubyVersion:
-  Enabled: true
-  Exclude:
-    - bundler/spec/realworld/fixtures/warbler/demo/demo.gemspec
-
 # Lint
 
 Lint/AmbiguousOperator:

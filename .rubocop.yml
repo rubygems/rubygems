@@ -22,6 +22,16 @@ Bundler/InsecureProtocolSource:
 Bundler/OrderedGems:
   Enabled: true
 
+Gemspec/OrderedDependencies:
+  Enabled: true
+
+Gemspec/RequiredRubyVersion:
+  Enabled: true
+  Exclude:
+    - bundler/spec/realworld/fixtures/warbler/demo/demo.gemspec
+    - test/rubygems/specifications/*.gemspec
+    - test/rubygems/test_gem_ext_cargo_builder/**/*.gemspec
+
 Layout/AccessModifierIndentation:
   Enabled: true
 

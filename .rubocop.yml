@@ -10,6 +10,8 @@ AllCops:
     - 'lib/rubygems/optparse/**/*'
     - 'pkg/**/*'
     - 'tmp/**/*'
+  CacheRootDirectory: tmp/rubocop
+  MaxFilesInCache: 5000
 
 Layout/AccessModifierIndentation:
   Enabled: true

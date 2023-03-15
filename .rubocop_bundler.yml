@@ -17,16 +17,6 @@ AllCops:
     - bundler/tmp/**/*
     - bundler/lib/bundler/vendor/**/*
 
-# Bundler
-
-Bundler/DuplicatedGem:
-  Enabled: true
-
-Bundler/InsecureProtocolSource:
-  Enabled: true
-
-Bundler/OrderedGems:
-  Enabled: true
 
 # Gemspec
 

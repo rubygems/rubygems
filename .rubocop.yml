@@ -13,6 +13,15 @@ AllCops:
   CacheRootDirectory: tmp/rubocop
   MaxFilesInCache: 5000
 
+Bundler/DuplicatedGem:
+  Enabled: true
+
+Bundler/InsecureProtocolSource:
+  Enabled: true
+
+Bundler/OrderedGems:
+  Enabled: true
+
 Layout/AccessModifierIndentation:
   Enabled: true
 

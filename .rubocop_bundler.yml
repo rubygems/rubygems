@@ -16,7 +16,6 @@ AllCops:
     - util/**/*
     - bundler/tmp/**/*
     - bundler/lib/bundler/vendor/**/*
-  DisplayCopNames: true
   CacheRootDirectory: tmp/rubocop
   MaxFilesInCache: 5000
 

@@ -205,22 +205,10 @@ Style/Alias:
   Enabled: true
   EnforcedStyle: prefer_alias_method
 
-Style/ArrayJoin:
-  Enabled: true
-
 Style/AsciiComments:
   Enabled: true
 
-Style/Attr:
-  Enabled: true
-
 Style/BarePercentLiterals:
-  Enabled: true
-
-Style/BeginBlock:
-  Enabled: true
-
-Style/BlockComments:
   Enabled: true
 
 Style/CharacterLiteral:
@@ -229,19 +217,10 @@ Style/CharacterLiteral:
 Style/ClassCheck:
   Enabled: true
 
-Style/ClassMethods:
-  Enabled: true
-
 Style/ClassVars:
   Enabled: true
 
 Style/ColonMethodCall:
-  Enabled: true
-
-Style/ColonMethodDefinition:
-  Enabled: true
-
-Style/CommandLiteral:
   Enabled: true
 
 Style/CommentAnnotation:
@@ -253,28 +232,10 @@ Style/DefWithParentheses:
 Style/DoubleNegation:
   Enabled: true
 
-Style/EachForSimpleLoop:
-  Enabled: true
-
-Style/EmptyBlockParameter:
-  Enabled: true
-
 Style/EmptyCaseCondition:
   Enabled: true
 
 Style/EmptyElse:
-  Enabled: true
-
-Style/EmptyLambdaParameter:
-  Enabled: true
-
-Style/EndBlock:
-  Enabled: true
-
-Style/EvenOdd:
-  Enabled: true
-
-Style/For:
   Enabled: true
 
 Style/FormatString:
@@ -295,22 +256,7 @@ Style/IdenticalConditionalBranches:
 Style/IfUnlessModifierOfIfUnless:
   Enabled: true
 
-Style/IfWithSemicolon:
-  Enabled: true
-
-Style/InfiniteLoop:
-  Enabled: true
-
-Style/LambdaCall:
-  Enabled: true
-
 Style/LineEndConcatenation:
-  Enabled: true
-
-Style/MinMax:
-  Enabled: true
-
-Style/MixinGrouping:
   Enabled: true
 
 Style/MultilineMemoization:
@@ -325,16 +271,10 @@ Style/MultipleComparison:
 Style/NegatedIf:
   Enabled: true
 
-Style/NegatedWhile:
-  Enabled: true
-
 Style/NestedModifier:
   Enabled: true
 
 Style/NestedParenthesizedCalls:
-  Enabled: true
-
-Style/NestedTernaryOperator:
   Enabled: true
 
 Style/Next:
@@ -343,16 +283,10 @@ Style/Next:
 Style/NonNilCheck:
   Enabled: true
 
-Style/NumericLiteralPrefix:
-  Enabled: true
-
 Style/NumericLiterals:
   Enabled: true
 
-Style/OneLineConditional:
-  Enabled: true
-
-Style/OptionalArguments:
+Style/NumericLiteralPrefix:
   Enabled: true
 
 Style/OrAssignment:
@@ -364,25 +298,10 @@ Style/ParallelAssignment:
 Style/ParenthesesAroundCondition:
   Enabled: true
 
-Style/PercentQLiterals:
-  Enabled: true
-
 Style/PreferredHashMethods:
   Enabled: true
 
-Style/Proc:
-  Enabled: true
-
-Style/RandomWithOffset:
-  Enabled: true
-
 Style/RedundantBegin:
-  Enabled: true
-
-Style/RedundantConditional:
-  Enabled: true
-
-Style/RedundantException:
   Enabled: true
 
 Style/RedundantInterpolation:
@@ -406,19 +325,11 @@ Style/RescueModifier:
 Style/RescueStandardError:
   Enabled: true
 
-Style/Sample:
-  Enabled: true
-
 Style/SelfAssignment:
   Enabled: true
 
 Style/Semicolon:
   Enabled: true
-
-# We adopted raise instead of fail.
-Style/SignalException:
-  Enabled: true
-  EnforcedStyle: only_raise
 
 Style/SingleLineMethods:
   Enabled: true
@@ -433,35 +344,14 @@ Style/StringLiteralsInInterpolation:
   Enabled: true
   EnforcedStyle: double_quotes
 
-Style/Strip:
-  Enabled: true
-
-Style/StructInheritance:
-  Enabled: true
-
 Style/SymbolArray:
   Enabled: true
   EnforcedStyle: brackets
-
-Style/SymbolLiteral:
-  Enabled: true
 
 Style/SymbolProc:
   Enabled: true
 
 Style/TernaryParentheses:
-  Enabled: true
-
-Style/TrailingBodyOnClass:
-  Enabled: true
-
-Style/TrailingBodyOnMethodDefinition:
-  Enabled: true
-
-Style/TrailingBodyOnModule:
-  Enabled: true
-
-Style/TrailingMethodEndStatement:
   Enabled: true
 
 Style/UnlessElse:

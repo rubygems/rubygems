@@ -22,7 +22,6 @@ Layout/BlockAlignment:
 
 Layout/CaseIndentation:
   Enabled: true
-  EnforcedStyle: end
 
 Layout/ClosingParenthesisIndentation:
   Enabled: true

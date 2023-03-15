@@ -269,6 +269,20 @@ Naming/HeredocDelimiterNaming:
   ForbiddenDelimiters:
     - ^RB$
 
+Naming/AsciiIdentifiers:
+  Enabled: true
+
+Naming/BinaryOperatorParameterName:
+  Enabled: true
+
+Naming/ClassAndModuleCamelCase:
+  Enabled: true
+
+Naming/FileName:
+  Enabled: true
+  Exclude:
+    - 'bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb'
+
 Performance/StartWith:
   Enabled: true
 

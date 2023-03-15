@@ -161,27 +161,13 @@ Layout/IndentationStyle:
 
 # Naming
 
-Naming/AsciiIdentifiers:
-  Enabled: true
-
-Naming/BinaryOperatorParameterName:
-  Enabled: true
-
-Naming/ClassAndModuleCamelCase:
+Naming/BlockParameterName:
   Enabled: true
 
 Naming/ConstantName:
   Enabled: true
 
-Naming/FileName:
-  Enabled: true
-  Exclude:
-    - 'bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb'
-
 Naming/MethodName:
-  Enabled: true
-
-Naming/BlockParameterName:
   Enabled: true
 
 Naming/VariableName:

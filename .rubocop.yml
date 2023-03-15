@@ -2,6 +2,7 @@ require: rubocop-performance
 
 AllCops:
   DisabledByDefault: true
+  TargetRubyVersion: 2.6
   Exclude:
     - 'bundler/**/*'
     - 'lib/rubygems/resolver/molinillo/**/*'
@@ -9,7 +10,150 @@ AllCops:
     - 'lib/rubygems/optparse/**/*'
     - 'pkg/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.6
+  CacheRootDirectory: tmp/rubocop
+  MaxFilesInCache: 5000
+
+Bundler/DuplicatedGem:
+  Enabled: true
+
+Bundler/InsecureProtocolSource:
+  Enabled: true
+
+Bundler/OrderedGems:
+  Enabled: true
+
+Gemspec/OrderedDependencies:
+  Enabled: true
+
+Gemspec/RequiredRubyVersion:
+  Enabled: true
+  Exclude:
+    - bundler/spec/realworld/fixtures/warbler/demo/demo.gemspec
+    - test/rubygems/specifications/*.gemspec
+    - test/rubygems/test_gem_ext_cargo_builder/**/*.gemspec
+
+Lint/AmbiguousOperator:
+  Enabled: true
+
+Lint/AmbiguousRegexpLiteral:
+  Enabled: true
+
+Lint/BigDecimalNew:
+  Enabled: true
+
+Lint/BooleanSymbol:
+  Enabled: true
+
+Lint/DeprecatedClassMethods:
+  Enabled: true
+
+Lint/DuplicateHashKey:
+  Enabled: true
+
+Lint/EachWithObjectArgument:
+  Enabled: true
+
+Lint/ElseLayout:
+  Enabled: true
+
+Lint/EmptyEnsure:
+  Enabled: true
+
+Lint/EmptyInterpolation:
+  Enabled: true
+
+Lint/EnsureReturn:
+  Enabled: true
+
+Lint/ErbNewArguments:
+  Enabled: true
+
+Lint/FlipFlop:
+  Enabled: true
+
+Lint/FloatOutOfRange:
+  Enabled: true
+
+Lint/FormatParameterMismatch:
+  Enabled: true
+
+Lint/ImplicitStringConcatenation:
+  Enabled: true
+
+Lint/InheritException:
+  Enabled: true
+
+Lint/LiteralAsCondition:
+  Enabled: true
+
+Lint/LiteralInInterpolation:
+  Enabled: true
+
+Lint/Loop:
+  Enabled: true
+
+Lint/MultipleComparison:
+  Enabled: true
+
+Lint/NestedPercentLiteral:
+  Enabled: true
+
+Lint/NextWithoutAccumulator:
+  Enabled: true
+
+Lint/OrderedMagicComments:
+  Enabled: true
+
+Lint/PercentStringArray:
+  Enabled: true
+
+Lint/PercentSymbolArray:
+  Enabled: true
+
+Lint/RandOne:
+  Enabled: true
+
+Lint/RedundantWithIndex:
+  Enabled: true
+
+Lint/RedundantWithObject:
+  Enabled: true
+
+Lint/RegexpAsCondition:
+  Enabled: true
+
+Lint/RescueType:
+  Enabled: true
+
+Lint/SafeNavigationChain:
+  Enabled: true
+
+Lint/SafeNavigationConsistency:
+  Enabled: true
+
+Lint/ScriptPermission:
+  Enabled: true
+  Exclude:
+    - 'bundler/lib/bundler/templates/Executable'
+    - 'bundler/lib/bundler/templates/Executable.*'
+
+Lint/ShadowedArgument:
+  Enabled: true
+
+Lint/Syntax:
+  Enabled: true
+
+Lint/UnifiedInteger:
+  Enabled: true
+
+Lint/UriEscapeUnescape:
+  Enabled: true
+
+Lint/UriRegexp:
+  Enabled: true
+
+Lint/UselessSetterCall:
+  Enabled: true
 
 Layout/AccessModifierIndentation:
   Enabled: true
@@ -22,7 +166,6 @@ Layout/BlockAlignment:
 
 Layout/CaseIndentation:
   Enabled: true
-  EnforcedStyle: end
 
 Layout/ClosingParenthesisIndentation:
   Enabled: true
@@ -88,6 +231,9 @@ Layout/SpaceBeforeBlockBraces:
 Layout/SpaceInsideBlockBraces:
   Enabled: true
   SpaceBeforeBlockParameters: false
+  Exclude:
+  - bundler/lib/bundler/templates/Gemfile
+  - bundler/lib/bundler/templates/gems.rb
 
 Layout/SpaceInsideHashLiteralBraces:
   Enabled: true
@@ -110,9 +256,43 @@ Lint/ParenthesesAsGroupedExpression:
 Lint/Debugger:
   Enabled: true
 
+Lint/RedundantCopEnableDirective:
+  Enabled: true
+
 Layout/EndAlignment:
   Enabled: true
   EnforcedStyleAlignWith: variable
+  AutoCorrect: true
+
+Layout/ConditionPosition:
+  Enabled: true
+
+Layout/EmptyComment:
+  Enabled: true
+
+Layout/EmptyLinesAroundArguments:
+  Enabled: true
+
+Layout/EmptyLinesAroundBeginBody:
+  Enabled: true
+
+Layout/InitialIndentation:
+  Enabled: true
+
+Layout/MultilineMethodDefinitionBraceLayout:
+  Enabled: true
+
+Layout/SpaceBeforeComment:
+  Enabled: true
+
+Layout/SpaceBeforeFirstArg:
+  Enabled: true
+
+Layout/SpaceInsideReferenceBrackets:
+  Enabled: true
+
+Layout/IndentationStyle:
+  Enabled: true
 
 Naming/HeredocDelimiterCase:
   Enabled: true
@@ -121,6 +301,20 @@ Naming/HeredocDelimiterNaming:
   Enabled: true
   ForbiddenDelimiters:
     - ^RB$
+
+Naming/AsciiIdentifiers:
+  Enabled: true
+
+Naming/BinaryOperatorParameterName:
+  Enabled: true
+
+Naming/ClassAndModuleCamelCase:
+  Enabled: true
+
+Naming/FileName:
+  Enabled: true
+  Exclude:
+    - 'bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb'
 
 Performance/StartWith:
   Enabled: true
@@ -131,7 +325,31 @@ Performance/StringInclude:
 Performance/StringReplacement:
   Enabled: true
 
+Performance/CompareWithBlock:
+  Enabled: true
+
+Performance/Detect:
+  Enabled: true
+
+Performance/EndWith:
+  Enabled: true
+
+Performance/FixedSize:
+  Enabled: true
+
+Performance/ReverseEach:
+  Enabled: true
+
+Performance/Size:
+  Enabled: true
+
+Performance/UriDefaultParser:
+  Enabled: true
+
 Security/Open:
+  Enabled: true
+
+Security/JSONLoad:
   Enabled: true
 
 Style/AndOr:
@@ -190,6 +408,7 @@ Style/SafeNavigation:
   MaxChainLength: 1
 
 Style/StringLiterals:
+  Enabled: true
   EnforcedStyle: double_quotes
 
 # Having these make it easier to *not* forget to add one when adding a new
@@ -201,3 +420,113 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   Enabled: true
   EnforcedStyleForMultiline: comma
+
+Style/ArrayJoin:
+  Enabled: true
+
+Style/Attr:
+  Enabled: true
+
+Style/BeginBlock:
+  Enabled: true
+
+Style/BlockComments:
+  Enabled: true
+
+Style/ClassMethods:
+  Enabled: true
+
+Style/ColonMethodDefinition:
+  Enabled: true
+
+Style/CommandLiteral:
+  Enabled: true
+
+Style/EachForSimpleLoop:
+  Enabled: true
+
+Style/EmptyBlockParameter:
+  Enabled: true
+
+Style/EmptyLambdaParameter:
+  Enabled: true
+
+Style/EndBlock:
+  Enabled: true
+
+Style/EvenOdd:
+  Enabled: true
+
+Style/For:
+  Enabled: true
+
+Style/IfWithSemicolon:
+  Enabled: true
+
+Style/InfiniteLoop:
+  Enabled: true
+
+Style/LambdaCall:
+  Enabled: true
+
+Style/MinMax:
+  Enabled: true
+
+Style/MixinGrouping:
+  Enabled: true
+
+Style/NegatedWhile:
+  Enabled: true
+
+Style/NestedTernaryOperator:
+  Enabled: true
+
+Style/OneLineConditional:
+  Enabled: true
+
+Style/OptionalArguments:
+  Enabled: true
+
+Style/PercentQLiterals:
+  Enabled: true
+
+Style/Proc:
+  Enabled: true
+
+Style/RandomWithOffset:
+  Enabled: true
+
+Style/RedundantConditional:
+  Enabled: true
+
+Style/RedundantException:
+  Enabled: true
+
+Style/Sample:
+  Enabled: true
+
+# We adopted raise instead of fail.
+Style/SignalException:
+  Enabled: true
+  EnforcedStyle: only_raise
+
+Style/Strip:
+  Enabled: true
+
+Style/StructInheritance:
+  Enabled: true
+
+Style/SymbolLiteral:
+  Enabled: true
+
+Style/TrailingBodyOnClass:
+  Enabled: true
+
+Style/TrailingBodyOnMethodDefinition:
+  Enabled: true
+
+Style/TrailingBodyOnModule:
+  Enabled: true
+
+Style/TrailingMethodEndStatement:
+  Enabled: true

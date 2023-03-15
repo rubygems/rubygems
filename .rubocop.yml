@@ -264,6 +264,36 @@ Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
   AutoCorrect: true
 
+Layout/ConditionPosition:
+  Enabled: true
+
+Layout/EmptyComment:
+  Enabled: true
+
+Layout/EmptyLinesAroundArguments:
+  Enabled: true
+
+Layout/EmptyLinesAroundBeginBody:
+  Enabled: true
+
+Layout/InitialIndentation:
+  Enabled: true
+
+Layout/MultilineMethodDefinitionBraceLayout:
+  Enabled: true
+
+Layout/SpaceBeforeComment:
+  Enabled: true
+
+Layout/SpaceBeforeFirstArg:
+  Enabled: true
+
+Layout/SpaceInsideReferenceBrackets:
+  Enabled: true
+
+Layout/IndentationStyle:
+  Enabled: true
+
 Naming/HeredocDelimiterCase:
   Enabled: true
 

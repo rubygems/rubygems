@@ -70,30 +70,17 @@ Lint/Void:
 
 # Layout
 
-Layout/ParameterAlignment:
-  Enabled: true
-  EnforcedStyle: with_fixed_indentation
-
-Layout/ConditionPosition:
+Layout/AssignmentIndentation:
   Enabled: true
 
 Layout/DotPosition:
   Enabled: true
   EnforcedStyle: trailing
 
-Layout/EmptyComment:
-  Enabled: true
-
 Layout/EmptyLineAfterMagicComment:
   Enabled: true
 
 Layout/EmptyLineBetweenDefs:
-  Enabled: true
-
-Layout/EmptyLinesAroundArguments:
-  Enabled: true
-
-Layout/EmptyLinesAroundBeginBody:
   Enabled: true
 
 Layout/EmptyLinesAroundExceptionHandlingKeywords:
@@ -102,13 +89,7 @@ Layout/EmptyLinesAroundExceptionHandlingKeywords:
 Layout/EmptyLinesAroundModuleBody:
   Enabled: true
 
-Layout/AssignmentIndentation:
-  Enabled: true
-
 Layout/FirstArgumentIndentation:
-  Enabled: true
-
-Layout/InitialIndentation:
   Enabled: true
 
 Layout/LeadingCommentSpace:
@@ -126,16 +107,11 @@ Layout/MultilineHashBraceLayout:
 Layout/MultilineMethodCallBraceLayout:
   Enabled: true
 
-Layout/MultilineMethodDefinitionBraceLayout:
+Layout/ParameterAlignment:
   Enabled: true
+  EnforcedStyle: with_fixed_indentation
 
 Layout/SpaceBeforeComma:
-  Enabled: true
-
-Layout/SpaceBeforeComment:
-  Enabled: true
-
-Layout/SpaceBeforeFirstArg:
   Enabled: true
 
 Layout/SpaceBeforeSemicolon:
@@ -156,13 +132,7 @@ Layout/SpaceInsidePercentLiteralDelimiters:
 Layout/SpaceInsideRangeLiteral:
   Enabled: true
 
-Layout/SpaceInsideReferenceBrackets:
-  Enabled: true
-
 Layout/SpaceInsideStringInterpolation:
-  Enabled: true
-
-Layout/IndentationStyle:
   Enabled: true
 
 # Naming

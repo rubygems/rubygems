@@ -2,6 +2,7 @@ require: rubocop-performance
 
 AllCops:
   DisabledByDefault: true
+  TargetRubyVersion: 2.6
   Exclude:
     - 'bundler/**/*'
     - 'lib/rubygems/resolver/molinillo/**/*'
@@ -9,7 +10,6 @@ AllCops:
     - 'lib/rubygems/optparse/**/*'
     - 'pkg/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.6
 
 Layout/AccessModifierIndentation:
   Enabled: true
@@ -88,6 +88,9 @@ Layout/SpaceBeforeBlockBraces:
 Layout/SpaceInsideBlockBraces:
   Enabled: true
   SpaceBeforeBlockParameters: false
+  Exclude:
+  - bundler/lib/bundler/templates/Gemfile
+  - bundler/lib/bundler/templates/gems.rb
 
 Layout/SpaceInsideHashLiteralBraces:
   Enabled: true
@@ -113,6 +116,7 @@ Lint/Debugger:
 Layout/EndAlignment:
   Enabled: true
   EnforcedStyleAlignWith: variable
+  AutoCorrect: true
 
 Naming/HeredocDelimiterCase:
   Enabled: true
@@ -190,6 +194,7 @@ Style/SafeNavigation:
   MaxChainLength: 1
 
 Style/StringLiterals:
+  Enabled: true
   EnforcedStyle: double_quotes
 
 # Having these make it easier to *not* forget to add one when adding a new

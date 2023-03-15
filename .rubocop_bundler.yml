@@ -1,8 +1,6 @@
-require: rubocop-performance
+inherit_from: .rubocop.yml
 
 AllCops:
-  DisabledByDefault: true
-  TargetRubyVersion: 2.6
   Include:
     - bundler/**/*.rb
     - bundler/**/*.gemspec
@@ -57,16 +55,10 @@ Lint/BigDecimalNew:
 Lint/BooleanSymbol:
   Enabled: true
 
-Lint/Debugger:
-  Enabled: true
-
 Lint/DeprecatedClassMethods:
   Enabled: true
 
 Lint/DuplicateCaseCondition:
-  Enabled: true
-
-Lint/DuplicateMethods:
   Enabled: true
 
 Lint/DuplicateHashKey:
@@ -130,9 +122,6 @@ Lint/NonLocalExitFromIterator:
   Enabled: true
 
 Lint/OrderedMagicComments:
-  Enabled: true
-
-Lint/ParenthesesAsGroupedExpression:
   Enabled: true
 
 Lint/PercentStringArray:
@@ -221,40 +210,16 @@ Lint/Void:
 
 # Layout
 
-Layout/AccessModifierIndentation:
-  Enabled: true
-
-Layout/ArrayAlignment:
-  Enabled: true
-
 Layout/ParameterAlignment:
   Enabled: true
   EnforcedStyle: with_fixed_indentation
 
-Layout/BlockAlignment:
-  Enabled: true
-
-Layout/CaseIndentation:
-  Enabled: true
-
-Layout/ClosingParenthesisIndentation:
-  Enabled: true
-
-Layout/CommentIndentation:
-  Enabled: true
-
 Layout/ConditionPosition:
-  Enabled: true
-
-Layout/DefEndAlignment:
   Enabled: true
 
 Layout/DotPosition:
   Enabled: true
   EnforcedStyle: trailing
-
-Layout/ElseAlignment:
-  Enabled: true
 
 Layout/EmptyComment:
   Enabled: true
@@ -265,72 +230,25 @@ Layout/EmptyLineAfterMagicComment:
 Layout/EmptyLineBetweenDefs:
   Enabled: true
 
-Layout/EmptyLines:
-  Enabled: true
-
-Layout/EmptyLinesAroundAccessModifier:
-  Enabled: true
-
 Layout/EmptyLinesAroundArguments:
   Enabled: true
 
 Layout/EmptyLinesAroundBeginBody:
   Enabled: true
 
-Layout/EmptyLinesAroundBlockBody:
-  Enabled: true
-
-Layout/EmptyLinesAroundClassBody:
-  Enabled: true
-
 Layout/EmptyLinesAroundExceptionHandlingKeywords:
-  Enabled: true
-
-Layout/EmptyLinesAroundMethodBody:
   Enabled: true
 
 Layout/EmptyLinesAroundModuleBody:
   Enabled: true
 
-Layout/EndAlignment:
-  Enabled: true
-  EnforcedStyleAlignWith: variable
-  AutoCorrect: true
-
-Layout/EndOfLine:
-  Enabled: true
-  EnforcedStyle: lf
-
-Layout/ExtraSpacing:
-  Enabled: true
-
 Layout/AssignmentIndentation:
   Enabled: true
-
-Layout/FirstArrayElementIndentation:
-  Enabled: true
-  EnforcedStyle: consistent
-
-Layout/FirstHashElementIndentation:
-  Enabled: true
-  EnforcedStyle: special_inside_parentheses
 
 Layout/FirstArgumentIndentation:
   Enabled: true
 
-Layout/HashAlignment:
-  Enabled: true
-
-Layout/IndentationConsistency:
-  Enabled: true
-
-Layout/IndentationWidth:
-  Enabled: true
-
 Layout/InitialIndentation:
-  Enabled: true
-
-Layout/LeadingEmptyLines:
   Enabled: true
 
 Layout/LeadingCommentSpace:
@@ -349,9 +267,6 @@ Layout/MultilineMethodCallBraceLayout:
   Enabled: true
 
 Layout/MultilineMethodDefinitionBraceLayout:
-  Enabled: true
-
-Layout/MultilineOperationIndentation:
   Enabled: true
 
 Layout/SpaceBeforeComma:
@@ -375,22 +290,6 @@ Layout/SpaceInsideArrayLiteralBrackets:
 Layout/SpaceInsideArrayPercentLiteral:
   Enabled: true
 
-Layout/SpaceBeforeBlockBraces:
-  Enabled: true
-
-Layout/SpaceInsideBlockBraces:
-  Enabled: true
-  SpaceBeforeBlockParameters: false
-  Exclude:
-  - bundler/lib/bundler/templates/Gemfile
-  - bundler/lib/bundler/templates/gems.rb
-
-Layout/SpaceInsideHashLiteralBraces:
-  Enabled: true
-
-Layout/SpaceInsideParens:
-  Enabled: true
-
 Layout/SpaceInsidePercentLiteralDelimiters:
   Enabled: true
 
@@ -404,12 +303,6 @@ Layout/SpaceInsideStringInterpolation:
   Enabled: true
 
 Layout/IndentationStyle:
-  Enabled: true
-
-Layout/TrailingEmptyLines:
-  Enabled: true
-
-Layout/TrailingWhitespace:
   Enabled: true
 
 # Naming
@@ -430,14 +323,6 @@ Naming/FileName:
   Enabled: true
   Exclude:
     - 'bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb'
-
-Naming/HeredocDelimiterCase:
-  Enabled: true
-
-Naming/HeredocDelimiterNaming:
-  Enabled: true
-  ForbiddenDelimiters:
-    - ^RB$
 
 Naming/MethodName:
   Enabled: true
@@ -483,15 +368,6 @@ Performance/ReverseEach:
 Performance/Size:
   Enabled: true
 
-Performance/StartWith:
-  Enabled: true
-
-Performance/StringInclude:
-  Enabled: true
-
-Performance/StringReplacement:
-  Enabled: true
-
 Performance/TimesMap:
   Enabled: true
 
@@ -503,18 +379,11 @@ Performance/UriDefaultParser:
 Security/JSONLoad:
   Enabled: true
 
-Security/Open:
-  Enabled: true
-
 # Style
 
 Style/Alias:
   Enabled: true
   EnforcedStyle: prefer_alias_method
-
-Style/AndOr:
-  Enabled: true
-  EnforcedStyle: always
 
 Style/ArrayJoin:
   Enabled: true
@@ -532,9 +401,6 @@ Style/BeginBlock:
   Enabled: true
 
 Style/BlockComments:
-  Enabled: true
-
-Style/BlockDelimiters:
   Enabled: true
 
 Style/CharacterLiteral:
@@ -564,9 +430,6 @@ Style/CommentAnnotation:
 Style/DefWithParentheses:
   Enabled: true
 
-Style/Dir:
-  Enabled: true
-
 Style/DoubleNegation:
   Enabled: true
 
@@ -585,16 +448,7 @@ Style/EmptyElse:
 Style/EmptyLambdaParameter:
   Enabled: true
 
-Style/Encoding:
-  Enabled: true
-
 Style/EndBlock:
-  Enabled: true
-
-Style/ExpandPathArguments:
-  Enabled: true
-
-Style/EvalWithLocation:
   Enabled: true
 
 Style/EvenOdd:
@@ -618,9 +472,6 @@ Style/HashSyntax:
 Style/IdenticalConditionalBranches:
   Enabled: true
 
-Style/IfInsideElse:
-  Enabled: false
-
 Style/IfUnlessModifierOfIfUnless:
   Enabled: true
 
@@ -636,19 +487,10 @@ Style/LambdaCall:
 Style/LineEndConcatenation:
   Enabled: true
 
-Style/MethodCallWithoutArgsParentheses:
-  Enabled: true
-
-Style/MethodDefParentheses:
-  Enabled: true
-
 Style/MinMax:
   Enabled: true
 
 Style/MixinGrouping:
-  Enabled: true
-
-Style/MultilineIfThen:
   Enabled: true
 
 Style/MultilineMemoization:
@@ -658,9 +500,6 @@ Style/MultilineTernaryOperator:
   Enabled: true
 
 Style/MultipleComparison:
-  Enabled: true
-
-Style/MutableConstant:
   Enabled: true
 
 Style/NegatedIf:
@@ -681,13 +520,7 @@ Style/NestedTernaryOperator:
 Style/Next:
   Enabled: true
 
-Style/NilComparison:
-  Enabled: true
-
 Style/NonNilCheck:
-  Enabled: true
-
-Style/Not:
   Enabled: true
 
 Style/NumericLiteralPrefix:
@@ -709,9 +542,6 @@ Style/ParallelAssignment:
   Enabled: true
 
 Style/ParenthesesAroundCondition:
-  Enabled: true
-
-Style/PercentLiteralDelimiters:
   Enabled: true
 
 Style/PercentQLiterals:
@@ -741,9 +571,6 @@ Lint/RedundantCopEnableDirective:
 Style/RedundantException:
   Enabled: true
 
-Style/RedundantFreeze:
-  Enabled: true
-
 Style/RedundantInterpolation:
   Enabled: true
 
@@ -768,10 +595,6 @@ Style/RescueModifier:
 Style/RescueStandardError:
   Enabled: true
 
-Style/SafeNavigation:
-  Enabled: true
-  MaxChainLength: 1
-
 Style/Sample:
   Enabled: true
 
@@ -794,10 +617,6 @@ Style/StabbyLambdaParentheses:
 
 Style/StderrPuts:
   Enabled: true
-
-Style/StringLiterals:
-  Enabled: true
-  EnforcedStyle: double_quotes
 
 Style/StringLiteralsInInterpolation:
   Enabled: true
@@ -830,16 +649,6 @@ Style/TrailingBodyOnMethodDefinition:
 
 Style/TrailingBodyOnModule:
   Enabled: true
-
-# Having these make it easier to *not* forget to add one when adding a new
-# value and you can simply copy the previous line.
-Style/TrailingCommaInArrayLiteral:
-  Enabled: true
-  EnforcedStyleForMultiline: comma
-
-Style/TrailingCommaInHashLiteral:
-  Enabled: true
-  EnforcedStyleForMultiline: comma
 
 Style/TrailingMethodEndStatement:
   Enabled: true

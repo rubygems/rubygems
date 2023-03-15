@@ -278,6 +278,27 @@ Performance/StringInclude:
 Performance/StringReplacement:
   Enabled: true
 
+Performance/CompareWithBlock:
+  Enabled: true
+
+Performance/Detect:
+  Enabled: true
+
+Performance/EndWith:
+  Enabled: true
+
+Performance/FixedSize:
+  Enabled: true
+
+Performance/ReverseEach:
+  Enabled: true
+
+Performance/Size:
+  Enabled: true
+
+Performance/UriDefaultParser:
+  Enabled: true
+
 Security/Open:
   Enabled: true
 

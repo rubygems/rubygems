@@ -195,37 +195,16 @@ Naming/VariableNumber:
 Performance/Casecmp:
   Enabled: true
 
-Performance/CompareWithBlock:
-  Enabled: true
-
 Performance/Count:
-  Enabled: true
-
-Performance/Detect:
   Enabled: true
 
 Performance/DoubleStartEndWith:
   Enabled: true
 
-Performance/EndWith:
-  Enabled: true
-
-Performance/FixedSize:
-  Enabled: true
-
 Performance/RegexpMatch:
   Enabled: true
 
-Performance/ReverseEach:
-  Enabled: true
-
-Performance/Size:
-  Enabled: true
-
 Performance/TimesMap:
-  Enabled: true
-
-Performance/UriDefaultParser:
   Enabled: true
 
 # Security

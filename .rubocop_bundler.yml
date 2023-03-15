@@ -207,11 +207,6 @@ Performance/RegexpMatch:
 Performance/TimesMap:
   Enabled: true
 
-# Security
-
-Security/JSONLoad:
-  Enabled: true
-
 # Style
 
 Style/Alias:

@@ -302,6 +302,9 @@ Performance/UriDefaultParser:
 Security/Open:
   Enabled: true
 
+Security/JSONLoad:
+  Enabled: true
+
 Style/AndOr:
   Enabled: true
   EnforcedStyle: always

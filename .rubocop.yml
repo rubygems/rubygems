@@ -32,6 +32,129 @@ Gemspec/RequiredRubyVersion:
     - test/rubygems/specifications/*.gemspec
     - test/rubygems/test_gem_ext_cargo_builder/**/*.gemspec
 
+Lint/AmbiguousOperator:
+  Enabled: true
+
+Lint/AmbiguousRegexpLiteral:
+  Enabled: true
+
+Lint/BigDecimalNew:
+  Enabled: true
+
+Lint/BooleanSymbol:
+  Enabled: true
+
+Lint/DeprecatedClassMethods:
+  Enabled: true
+
+Lint/DuplicateHashKey:
+  Enabled: true
+
+Lint/EachWithObjectArgument:
+  Enabled: true
+
+Lint/ElseLayout:
+  Enabled: true
+
+Lint/EmptyEnsure:
+  Enabled: true
+
+Lint/EmptyInterpolation:
+  Enabled: true
+
+Lint/EnsureReturn:
+  Enabled: true
+
+Lint/ErbNewArguments:
+  Enabled: true
+
+Lint/FlipFlop:
+  Enabled: true
+
+Lint/FloatOutOfRange:
+  Enabled: true
+
+Lint/FormatParameterMismatch:
+  Enabled: true
+
+Lint/ImplicitStringConcatenation:
+  Enabled: true
+
+Lint/InheritException:
+  Enabled: true
+
+Lint/LiteralAsCondition:
+  Enabled: true
+
+Lint/LiteralInInterpolation:
+  Enabled: true
+
+Lint/Loop:
+  Enabled: true
+
+Lint/MultipleComparison:
+  Enabled: true
+
+Lint/NestedPercentLiteral:
+  Enabled: true
+
+Lint/NextWithoutAccumulator:
+  Enabled: true
+
+Lint/OrderedMagicComments:
+  Enabled: true
+
+Lint/PercentStringArray:
+  Enabled: true
+
+Lint/PercentSymbolArray:
+  Enabled: true
+
+Lint/RandOne:
+  Enabled: true
+
+Lint/RedundantWithIndex:
+  Enabled: true
+
+Lint/RedundantWithObject:
+  Enabled: true
+
+Lint/RegexpAsCondition:
+  Enabled: true
+
+Lint/RescueType:
+  Enabled: true
+
+Lint/SafeNavigationChain:
+  Enabled: true
+
+Lint/SafeNavigationConsistency:
+  Enabled: true
+
+Lint/ScriptPermission:
+  Enabled: true
+  Exclude:
+    - 'bundler/lib/bundler/templates/Executable'
+    - 'bundler/lib/bundler/templates/Executable.*'
+
+Lint/ShadowedArgument:
+  Enabled: true
+
+Lint/Syntax:
+  Enabled: true
+
+Lint/UnifiedInteger:
+  Enabled: true
+
+Lint/UriEscapeUnescape:
+  Enabled: true
+
+Lint/UriRegexp:
+  Enabled: true
+
+Lint/UselessSetterCall:
+  Enabled: true
+
 Layout/AccessModifierIndentation:
   Enabled: true
 

@@ -256,6 +256,9 @@ Lint/ParenthesesAsGroupedExpression:
 Lint/Debugger:
   Enabled: true
 
+Lint/RedundantCopEnableDirective:
+  Enabled: true
+
 Layout/EndAlignment:
   Enabled: true
   EnforcedStyleAlignWith: variable

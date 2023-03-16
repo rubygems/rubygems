@@ -169,9 +169,6 @@ Style/NumericLiteralPrefix:
 Style/OrAssignment:
   Enabled: true
 
-Style/ParallelAssignment:
-  Enabled: true
-
 Style/ParenthesesAroundCondition:
   Enabled: true
 

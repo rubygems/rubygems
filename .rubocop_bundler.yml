@@ -91,9 +91,6 @@ Style/BarePercentLiterals:
 Style/CharacterLiteral:
   Enabled: true
 
-Style/ClassCheck:
-  Enabled: true
-
 Style/ClassVars:
   Enabled: true
 

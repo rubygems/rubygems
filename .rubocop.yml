@@ -319,6 +319,9 @@ Naming/FileName:
   Exclude:
     - 'bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb'
 
+Performance/Casecmp:
+  Enabled: true
+
 Performance/StartWith:
   Enabled: true
 

@@ -151,9 +151,6 @@ Naming/VariableNumber:
 
 # Performance
 
-Performance/Casecmp:
-  Enabled: true
-
 Performance/Count:
   Enabled: true
 

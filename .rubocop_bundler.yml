@@ -82,9 +82,6 @@ Layout/MultilineArrayBraceLayout:
 Layout/MultilineBlockLayout:
   Enabled: true
 
-Layout/MultilineHashBraceLayout:
-  Enabled: true
-
 Layout/MultilineMethodCallBraceLayout:
   Enabled: true
 

@@ -170,6 +170,9 @@ Lint/UriRegexp:
 Lint/UselessSetterCall:
   Enabled: true
 
+Layout/MultilineHashBraceLayout:
+  Enabled: true
+
 Layout/DotPosition:
   Enabled: true
   EnforcedStyle: trailing

@@ -189,6 +189,3 @@ Style/TernaryParentheses:
 
 Style/UnlessElse:
   Enabled: true
-
-Style/YodaCondition:
-  Enabled: true

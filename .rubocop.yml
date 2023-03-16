@@ -158,6 +158,9 @@ Style/StderrPuts:
 Style/NegatedIf:
   Enabled: true
 
+Style/NumericLiterals:
+  Enabled: true
+
 Style/ClassCheck:
   Enabled: true
 

@@ -56,9 +56,6 @@ Lint/UnderscorePrefixedVariableName:
 Lint/UnreachableCode:
   Enabled: true
 
-Lint/UnusedBlockArgument:
-  Enabled: true
-
 Lint/UselessAccessModifier:
   Enabled: true
 

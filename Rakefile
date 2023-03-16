@@ -39,7 +39,7 @@ task :update do
 end
 
 desc "Update the locked bundler version in dev environment"
-task :update_locked_bundler do |_, args|
+task :update_locked_bundler do |_, _args|
   RubyGems::DevTasks.bundle_support_gemfile "dev_gems", "update", "--bundler"
   RubyGems::DevTasks.bundle_support_gemfile "release_gems", "update", "--bundler"
   RubyGems::DevTasks.bundle_support_gemfile "test_gems", "update", "--bundler"
@@ -53,7 +53,7 @@ task :update_dev_dep do |_, args|
 end
 
 desc "Update RSpec related gems"
-task :update_rspec_deps do |_, args|
+task :update_rspec_deps do |_, _args|
   RubyGems::DevTasks.bundle_dev_gemfile "update", "rspec-core", "rspec-expectations", "rspec-mocks"
   RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
   RubyGems::DevTasks.bundle_support_gemfile "rubocop23_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"

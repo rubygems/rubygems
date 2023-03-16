@@ -94,9 +94,6 @@ Style/CharacterLiteral:
 Style/ClassVars:
   Enabled: true
 
-Style/ColonMethodCall:
-  Enabled: true
-
 Style/CommentAnnotation:
   Enabled: true
 

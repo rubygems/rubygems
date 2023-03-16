@@ -85,9 +85,6 @@ Performance/RegexpMatch:
 Style/AsciiComments:
   Enabled: true
 
-Style/BarePercentLiterals:
-  Enabled: true
-
 Style/CharacterLiteral:
   Enabled: true
 

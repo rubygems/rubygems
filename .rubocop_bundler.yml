@@ -50,9 +50,6 @@ Lint/UnderscorePrefixedVariableName:
 Lint/UnreachableCode:
   Enabled: true
 
-Lint/UselessAccessModifier:
-  Enabled: true
-
 Lint/Void:
   Enabled: true
 

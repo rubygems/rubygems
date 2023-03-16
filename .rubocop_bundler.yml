@@ -172,9 +172,6 @@ Style/PreferredHashMethods:
 Style/RedundantBegin:
   Enabled: true
 
-Style/RedundantInterpolation:
-  Enabled: true
-
 Style/RedundantParentheses:
   Enabled: true
 

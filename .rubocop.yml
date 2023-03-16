@@ -441,6 +441,9 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/RedundantInterpolation:
+  Enabled: true
+
 Style/ClassCheck:
   Enabled: true
 

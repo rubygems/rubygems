@@ -64,9 +64,6 @@ Layout/EmptyLineAfterMagicComment:
 Layout/EmptyLinesAroundExceptionHandlingKeywords:
   Enabled: true
 
-Layout/EmptyLinesAroundModuleBody:
-  Enabled: true
-
 Layout/FirstArgumentIndentation:
   Enabled: true
 

@@ -441,6 +441,10 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
 Style/SymbolProc:
   Enabled: true
 

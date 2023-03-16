@@ -217,10 +217,6 @@ Style/StabbyLambdaParentheses:
 Style/StderrPuts:
   Enabled: true
 
-Style/StringLiteralsInInterpolation:
-  Enabled: true
-  EnforcedStyle: double_quotes
-
 Style/SymbolArray:
   Enabled: true
   EnforcedStyle: brackets

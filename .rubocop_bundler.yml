@@ -151,9 +151,6 @@ Naming/VariableNumber:
 
 # Performance
 
-Performance/DoubleStartEndWith:
-  Enabled: true
-
 Performance/RegexpMatch:
   Enabled: true
 

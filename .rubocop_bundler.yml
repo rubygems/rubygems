@@ -41,9 +41,6 @@ Lint/RequireParentheses:
 Lint/RescueException:
   Enabled: true
 
-Lint/RedundantCopDisableDirective:
-  Enabled: true
-
 Lint/RedundantSplatExpansion:
   Enabled: true
 

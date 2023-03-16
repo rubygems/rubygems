@@ -441,6 +441,9 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/SymbolProc:
+  Enabled: true
+
 Style/Alias:
   Enabled: true
   EnforcedStyle: prefer_alias_method

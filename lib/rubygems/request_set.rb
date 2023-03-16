@@ -374,7 +374,7 @@ class Gem::RequestSet
       q.text "sets:"
 
       q.breakable
-      q.pp @sets.map {|set| set.class }
+      q.pp @sets.map(&:class)
     end
   end
 
@@ -428,7 +428,7 @@ class Gem::RequestSet
   end
 
   def specs
-    @specs ||= @requests.map {|r| r.full_spec }
+    @specs ||= @requests.map(&:full_spec)
   end
 
   def specs_in(dir)

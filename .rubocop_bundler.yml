@@ -225,9 +225,6 @@ Style/SymbolArray:
   Enabled: true
   EnforcedStyle: brackets
 
-Style/SymbolProc:
-  Enabled: true
-
 Style/TernaryParentheses:
   Enabled: true
 

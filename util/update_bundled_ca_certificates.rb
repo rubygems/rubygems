@@ -63,7 +63,7 @@ def test_certificates(certificates, uri)
       if match
         $needed_combinations << match
         puts
-        puts match.map {|certificate| certificate.subject }
+        puts match.map(&:subject)
         return
       else
         print "."

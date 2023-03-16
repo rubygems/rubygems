@@ -166,9 +166,6 @@ Style/RescueModifier:
 Style/RescueStandardError:
   Enabled: true
 
-Style/SelfAssignment:
-  Enabled: true
-
 Style/Semicolon:
   Enabled: true
 

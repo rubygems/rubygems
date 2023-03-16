@@ -136,9 +136,6 @@ Style/MultilineTernaryOperator:
 Style/MultipleComparison:
   Enabled: true
 
-Style/NegatedIf:
-  Enabled: true
-
 Style/NestedModifier:
   Enabled: true
 

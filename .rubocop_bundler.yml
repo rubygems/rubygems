@@ -55,9 +55,6 @@ Lint/Void:
 
 # Layout
 
-Layout/AssignmentIndentation:
-  Enabled: true
-
 Layout/EmptyLineAfterMagicComment:
   Enabled: true
 

@@ -190,9 +190,6 @@ Style/SelfAssignment:
 Style/Semicolon:
   Enabled: true
 
-Style/SingleLineMethods:
-  Enabled: true
-
 Style/StabbyLambdaParentheses:
   Enabled: true
 

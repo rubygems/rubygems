@@ -150,6 +150,3 @@ Style/Semicolon:
 
 Style/StderrPuts:
   Enabled: true
-
-Style/UnlessElse:
-  Enabled: true

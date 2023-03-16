@@ -441,6 +441,9 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/IdenticalConditionalBranches:
+  Enabled: true
+
 Style/RescueStandardError:
   Enabled: true
 

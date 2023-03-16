@@ -100,9 +100,6 @@ Style/ColonMethodCall:
 Style/CommentAnnotation:
   Enabled: true
 
-Style/DefWithParentheses:
-  Enabled: true
-
 Style/DoubleNegation:
   Enabled: true
 

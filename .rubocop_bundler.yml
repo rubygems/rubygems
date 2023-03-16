@@ -148,9 +148,6 @@ Style/RedundantSortBy:
 Style/RegexpLiteral:
   Enabled: true
 
-Style/RescueStandardError:
-  Enabled: true
-
 Style/Semicolon:
   Enabled: true
 

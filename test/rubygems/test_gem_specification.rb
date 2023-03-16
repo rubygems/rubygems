@@ -3463,7 +3463,7 @@ Did you mean 'Ruby'?
       capture_output do
         Gem::Specification.load(specfile.path)
       end
-    rescue => e
+    rescue StandardError => e
       name_rexp = Regexp.new(Regexp.escape(specfile.path))
       assert e.backtrace.grep(name_rexp).any?
     end

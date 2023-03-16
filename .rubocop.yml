@@ -170,6 +170,9 @@ Lint/UriRegexp:
 Lint/UselessSetterCall:
   Enabled: true
 
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: true
+
 Layout/SpaceInsideStringInterpolation:
   Enabled: true
 

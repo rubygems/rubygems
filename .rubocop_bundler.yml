@@ -64,9 +64,6 @@ Layout/MultilineArrayBraceLayout:
 Layout/MultilineBlockLayout:
   Enabled: true
 
-Layout/MultilineMethodCallBraceLayout:
-  Enabled: true
-
 Layout/ParameterAlignment:
   Enabled: true
   EnforcedStyle: with_fixed_indentation

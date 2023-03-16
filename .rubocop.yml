@@ -170,6 +170,9 @@ Lint/UriRegexp:
 Lint/UselessSetterCall:
   Enabled: true
 
+Layout/LeadingCommentSpace:
+  Enabled: true
+
 Layout/SpaceInsidePercentLiteralDelimiters:
   Enabled: true
 

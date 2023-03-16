@@ -70,9 +70,6 @@ Layout/EmptyLinesAroundModuleBody:
 Layout/FirstArgumentIndentation:
   Enabled: true
 
-Layout/LeadingCommentSpace:
-  Enabled: true
-
 Layout/MultilineArrayBraceLayout:
   Enabled: true
 

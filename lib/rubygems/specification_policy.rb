@@ -127,7 +127,7 @@ class Gem::SpecificationPolicy
 
     metadata.each do |key, value|
       entry = "metadata['#{key}']"
-      if !key.kind_of?(String)
+      if !key.is_a?(String)
         error "metadata keys must be a String"
       end
 
@@ -135,7 +135,7 @@ class Gem::SpecificationPolicy
         error "metadata key is too large (#{key.size} > 128)"
       end
 
-      if !value.kind_of?(String)
+      if !value.is_a?(String)
         error "#{entry} value must be a String"
       end
 
@@ -345,7 +345,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       String
     end
 
-    unless Array === val && val.all? {|x| x.kind_of?(klass) }
+    unless Array === val && val.all? {|x| x.is_a?(klass) }
       error "#{field} must be an Array of #{klass}"
     end
   end

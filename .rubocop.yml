@@ -152,6 +152,9 @@ Style/FrozenStringLiteralComment:
 Style/StderrPuts:
   Enabled: true
 
+Style/ClassCheck:
+  Enabled: true
+
 Style/AndOr:
   Enabled: true
   EnforcedStyle: always

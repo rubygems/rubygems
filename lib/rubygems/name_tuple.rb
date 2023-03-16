@@ -10,7 +10,7 @@ class Gem::NameTuple
     @name = name
     @version = version
 
-    unless platform.kind_of? Gem::Platform
+    unless platform.is_a? Gem::Platform
       platform = "ruby" if !platform || platform.empty?
     end
 

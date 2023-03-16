@@ -137,6 +137,9 @@ Performance/StringReplacement:
 Security/Open:
   Enabled: true
 
+Style/StderrPuts:
+  Enabled: true
+
 Style/AndOr:
   Enabled: true
   EnforcedStyle: always

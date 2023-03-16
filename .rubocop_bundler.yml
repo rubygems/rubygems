@@ -791,9 +791,6 @@ Style/SingleLineMethods:
 Style/StabbyLambdaParentheses:
   Enabled: true
 
-Style/StderrPuts:
-  Enabled: true
-
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes

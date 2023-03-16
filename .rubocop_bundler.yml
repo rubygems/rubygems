@@ -32,9 +32,6 @@ Lint/EmptyExpression:
 Lint/NonLocalExitFromIterator:
   Enabled: true
 
-Lint/RedundantStringCoercion:
-  Enabled: true
-
 Lint/RequireParentheses:
   Enabled: true
 

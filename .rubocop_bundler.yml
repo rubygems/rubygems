@@ -58,10 +58,6 @@ Lint/Void:
 Layout/AssignmentIndentation:
   Enabled: true
 
-Layout/DotPosition:
-  Enabled: true
-  EnforcedStyle: trailing
-
 Layout/EmptyLineAfterMagicComment:
   Enabled: true
 

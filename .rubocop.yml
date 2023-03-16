@@ -170,6 +170,9 @@ Lint/UriRegexp:
 Lint/UselessSetterCall:
   Enabled: true
 
+Layout/MultilineBlockLayout:
+  Enabled: true
+
 Layout/MultilineArrayBraceLayout:
   Enabled: true
 

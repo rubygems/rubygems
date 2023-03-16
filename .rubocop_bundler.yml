@@ -58,9 +58,6 @@ Lint/Void:
 Layout/EmptyLineAfterMagicComment:
   Enabled: true
 
-Layout/MultilineBlockLayout:
-  Enabled: true
-
 Layout/SpaceInsideRangeLiteral:
   Enabled: true
 

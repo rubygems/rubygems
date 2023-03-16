@@ -441,6 +441,9 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/PreferredHashMethods:
+  Enabled: true
+
 Style/NonNilCheck:
   Enabled: true
 

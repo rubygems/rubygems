@@ -100,9 +100,6 @@ Style/DoubleNegation:
 Style/EmptyCaseCondition:
   Enabled: true
 
-Style/EmptyElse:
-  Enabled: true
-
 Style/FormatString:
   Enabled: true
 

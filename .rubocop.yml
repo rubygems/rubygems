@@ -441,6 +441,9 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/EmptyElse:
+  Enabled: true
+
 Style/RedundantParentheses:
   Enabled: true
 

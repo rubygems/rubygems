@@ -133,9 +133,6 @@ Style/Next:
 Style/NumericLiteralPrefix:
   Enabled: true
 
-Style/OrAssignment:
-  Enabled: true
-
 Style/RedundantBegin:
   Enabled: true
 

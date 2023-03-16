@@ -14,8 +14,7 @@ class CertificateBuilder
   end
 
   def create_certificates(key, subject, issuer_key = key, issuer_cert = nil,
-                          not_before: @start, not_after: :end_of_time,
-                          is_ca: false)
+    not_before: @start, not_after: :end_of_time, is_ca: false)
     certificates = []
 
     not_before, not_before_32 = validity_for not_before
@@ -33,7 +32,7 @@ class CertificateBuilder
   end
 
   def create_certificate(key, subject, issuer_key, issuer_cert,
-                         not_before, not_after, is_ca)
+    not_before, not_after, is_ca)
     cert = OpenSSL::X509::Certificate.new
     issuer_cert ||= cert # if not specified, create self signing cert
 

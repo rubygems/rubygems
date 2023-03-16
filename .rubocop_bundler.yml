@@ -64,10 +64,6 @@ Layout/MultilineArrayBraceLayout:
 Layout/MultilineBlockLayout:
   Enabled: true
 
-Layout/ParameterAlignment:
-  Enabled: true
-  EnforcedStyle: with_fixed_indentation
-
 Layout/SpaceInsideRangeLiteral:
   Enabled: true
 

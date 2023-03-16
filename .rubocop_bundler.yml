@@ -82,10 +82,6 @@ Performance/RegexpMatch:
 
 # Style
 
-Style/Alias:
-  Enabled: true
-  EnforcedStyle: prefer_alias_method
-
 Style/AsciiComments:
   Enabled: true
 

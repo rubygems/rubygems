@@ -286,5 +286,5 @@ class Gem::Security::Policy
     true
   end
 
-  alias to_s name # :nodoc:
+  alias_method :to_s, :name # :nodoc:
 end

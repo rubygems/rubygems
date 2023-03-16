@@ -441,6 +441,10 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/Alias:
+  Enabled: true
+  EnforcedStyle: prefer_alias_method
+
 Style/AndOr:
   Enabled: true
   EnforcedStyle: always

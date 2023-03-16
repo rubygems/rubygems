@@ -142,9 +142,6 @@ Style/NumericLiteralPrefix:
 Style/OrAssignment:
   Enabled: true
 
-Style/ParenthesesAroundCondition:
-  Enabled: true
-
 Style/PreferredHashMethods:
   Enabled: true
 

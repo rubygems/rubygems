@@ -170,6 +170,9 @@ Lint/UriRegexp:
 Lint/UselessSetterCall:
   Enabled: true
 
+Layout/FirstArgumentIndentation:
+  Enabled: true
+
 Layout/SpaceInLambdaLiteral:
   Enabled: true
 

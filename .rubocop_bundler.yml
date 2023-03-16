@@ -58,9 +58,6 @@ Lint/Void:
 Layout/EmptyLineAfterMagicComment:
   Enabled: true
 
-Layout/FirstArgumentIndentation:
-  Enabled: true
-
 Layout/MultilineArrayBraceLayout:
   Enabled: true
 

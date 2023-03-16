@@ -170,6 +170,9 @@ Lint/UriRegexp:
 Lint/UselessSetterCall:
   Enabled: true
 
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: true
+
 Layout/EmptyLinesAroundModuleBody:
   Enabled: true
 

@@ -507,7 +507,7 @@ class TestGemCommandsExecCommand < Gem::TestCase
         end
       end
       fetcher.gem "a", "1.1.a" do |s|
-        s.executables = %w[foo ]
+        s.executables = %w[foo]
         s.files = %w[bin/foo lib/a.rb]
 
         write_file File.join(*%W[gems #{s.original_name} bin foo]) do |f|
@@ -535,7 +535,7 @@ class TestGemCommandsExecCommand < Gem::TestCase
         end
       end
       fetcher.download "a", "1.1.a" do |s|
-        s.executables = %w[foo ]
+        s.executables = %w[foo]
         s.files = %w[bin/foo lib/a.rb]
 
         write_file File.join(*%W[gems #{s.original_name} bin foo]) do |f|

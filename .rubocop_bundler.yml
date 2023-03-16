@@ -95,9 +95,6 @@ Layout/SpaceInLambdaLiteral:
 Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: true
 
-Layout/SpaceInsidePercentLiteralDelimiters:
-  Enabled: true
-
 Layout/SpaceInsideRangeLiteral:
   Enabled: true
 

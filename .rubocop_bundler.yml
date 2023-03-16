@@ -97,9 +97,6 @@ Style/ClassVars:
 Style/DoubleNegation:
   Enabled: true
 
-Style/EmptyCaseCondition:
-  Enabled: true
-
 Style/FormatString:
   Enabled: true
 

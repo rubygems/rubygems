@@ -172,9 +172,6 @@ Style/RedundantBegin:
 Style/RedundantParentheses:
   Enabled: true
 
-Style/RedundantSelf:
-  Enabled: true
-
 Style/RedundantSortBy:
   Enabled: true
 

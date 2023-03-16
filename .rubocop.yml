@@ -441,6 +441,10 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/SymbolArray:
+  Enabled: true
+  EnforcedStyle: brackets
+
 Style/DefWithParentheses:
   Enabled: true
 

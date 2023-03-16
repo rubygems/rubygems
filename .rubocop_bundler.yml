@@ -193,10 +193,6 @@ Style/StabbyLambdaParentheses:
 Style/StderrPuts:
   Enabled: true
 
-Style/SymbolArray:
-  Enabled: true
-  EnforcedStyle: brackets
-
 Style/TernaryParentheses:
   Enabled: true
 

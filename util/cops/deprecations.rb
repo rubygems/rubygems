@@ -16,7 +16,7 @@ module RuboCop
       #
       class Deprecations < Base
         MSG = "Remove `%<method_name>s` calls for the next major release."
-        RESTRICT_ON_SEND = %i[rubygems_deprecate rubygems_deprecate_command].freeze
+        RESTRICT_ON_SEND = [:rubygems_deprecate, :rubygems_deprecate_command].freeze
 
         def on_send(node)
           add_offense(node, message: format(MSG, method_name: node.method_name))

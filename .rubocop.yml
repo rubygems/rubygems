@@ -170,6 +170,9 @@ Lint/UriRegexp:
 Lint/UselessSetterCall:
   Enabled: true
 
+Layout/MultilineArrayBraceLayout:
+  Enabled: true
+
 Layout/ParameterAlignment:
   Enabled: true
   EnforcedStyle: with_fixed_indentation

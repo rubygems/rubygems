@@ -121,9 +121,6 @@ Style/Next:
 Style/NumericLiteralPrefix:
   Enabled: true
 
-Style/RedundantBegin:
-  Enabled: true
-
 Style/RegexpLiteral:
   Enabled: true
 

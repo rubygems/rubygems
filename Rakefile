@@ -312,12 +312,10 @@ namespace "guides" do
 
   task "commit" => %w[../guides.rubygems.org] do
     chdir "../guides.rubygems.org" do
-      begin
-        sh "git", "diff", "--quiet"
-      rescue StandardError
-        sh "git", "commit", "command-reference.md", "specification-reference.md",
-           "-m", "Rebuild for RubyGems #{v}"
-      end
+      sh "git", "diff", "--quiet"
+    rescue StandardError
+      sh "git", "commit", "command-reference.md", "specification-reference.md",
+         "-m", "Rebuild for RubyGems #{v}"
     end
   end
 

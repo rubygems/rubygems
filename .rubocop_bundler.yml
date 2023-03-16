@@ -121,9 +121,6 @@ Style/MultilineMemoization:
 Style/MultilineTernaryOperator:
   Enabled: true
 
-Style/MultipleComparison:
-  Enabled: true
-
 Style/NestedModifier:
   Enabled: true
 

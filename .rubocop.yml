@@ -170,6 +170,9 @@ Lint/UriRegexp:
 Lint/UselessSetterCall:
   Enabled: true
 
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
 Layout/SpaceBeforeComma:
   Enabled: true
 

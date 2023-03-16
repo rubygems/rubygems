@@ -148,9 +148,6 @@ Style/RedundantSortBy:
 Style/RegexpLiteral:
   Enabled: true
 
-Style/RescueModifier:
-  Enabled: true
-
 Style/RescueStandardError:
   Enabled: true
 

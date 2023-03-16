@@ -441,6 +441,9 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/RescueModifier:
+  Enabled: true
+
 Style/PreferredHashMethods:
   Enabled: true
 

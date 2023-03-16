@@ -91,9 +91,6 @@ Style/CharacterLiteral:
 Style/ClassVars:
   Enabled: true
 
-Style/DoubleNegation:
-  Enabled: true
-
 Style/FormatString:
   Enabled: true
 

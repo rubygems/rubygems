@@ -38,9 +38,6 @@ Lint/RequireParentheses:
 Lint/RescueException:
   Enabled: true
 
-Lint/RedundantSplatExpansion:
-  Enabled: true
-
 Lint/ReturnInVoidContext:
   Enabled: true
 

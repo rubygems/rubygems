@@ -32,6 +32,9 @@ Gemspec/RequiredRubyVersion:
     - test/rubygems/specifications/*.gemspec
     - test/rubygems/test_gem_ext_cargo_builder/**/*.gemspec
 
+Lint/RedundantSplatExpansion:
+  Enabled: true
+
 Lint/RedundantStringCoercion:
   Enabled: true
 

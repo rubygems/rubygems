@@ -120,6 +120,3 @@ Style/NumericLiteralPrefix:
 
 Style/RegexpLiteral:
   Enabled: true
-
-Style/Semicolon:
-  Enabled: true

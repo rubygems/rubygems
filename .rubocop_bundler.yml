@@ -133,9 +133,6 @@ Style/NestedModifier:
 Style/Next:
   Enabled: true
 
-Style/NonNilCheck:
-  Enabled: true
-
 Style/NumericLiteralPrefix:
   Enabled: true
 

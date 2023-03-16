@@ -154,9 +154,6 @@ Style/Next:
 Style/NonNilCheck:
   Enabled: true
 
-Style/NumericLiterals:
-  Enabled: true
-
 Style/NumericLiteralPrefix:
   Enabled: true
 

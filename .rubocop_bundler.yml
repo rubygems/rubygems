@@ -151,9 +151,6 @@ Style/NegatedIf:
 Style/NestedModifier:
   Enabled: true
 
-Style/NestedParenthesizedCalls:
-  Enabled: true
-
 Style/Next:
   Enabled: true
 

@@ -151,9 +151,6 @@ Naming/VariableNumber:
 
 # Performance
 
-Performance/Count:
-  Enabled: true
-
 Performance/DoubleStartEndWith:
   Enabled: true
 

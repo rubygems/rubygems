@@ -61,9 +61,6 @@ Layout/AssignmentIndentation:
 Layout/EmptyLineAfterMagicComment:
   Enabled: true
 
-Layout/EmptyLinesAroundExceptionHandlingKeywords:
-  Enabled: true
-
 Layout/FirstArgumentIndentation:
   Enabled: true
 

@@ -154,9 +154,6 @@ Naming/VariableNumber:
 Performance/RegexpMatch:
   Enabled: true
 
-Performance/TimesMap:
-  Enabled: true
-
 # Style
 
 Style/Alias:

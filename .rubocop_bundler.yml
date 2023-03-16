@@ -157,9 +157,6 @@ Style/PreferredHashMethods:
 Style/RedundantBegin:
   Enabled: true
 
-Style/RedundantParentheses:
-  Enabled: true
-
 Style/RedundantSortBy:
   Enabled: true
 

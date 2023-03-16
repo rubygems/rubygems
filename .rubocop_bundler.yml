@@ -138,6 +138,3 @@ Style/RegexpLiteral:
 
 Style/Semicolon:
   Enabled: true
-
-Style/StderrPuts:
-  Enabled: true

@@ -8,11 +8,11 @@
 require "rubygems"
 
 if ARGV.include?("-h") || ARGV.include?("--help")
-  $stderr.puts "rubygems_update [options]"
-  $stderr.puts
-  $stderr.puts "This will install the latest version of RubyGems."
-  $stderr.puts
-  $stderr.puts "\t--version=X.Y\tUpdate RubyGems from the X.Y version."
+  warn "rubygems_update [options]"
+  warn ""
+  warn "This will install the latest version of RubyGems."
+  warn ""
+  warn "\t--version=X.Y\tUpdate RubyGems from the X.Y version."
   exit
 end
 

@@ -74,9 +74,6 @@ Layout/ParameterAlignment:
   Enabled: true
   EnforcedStyle: with_fixed_indentation
 
-Layout/SpaceInLambdaLiteral:
-  Enabled: true
-
 Layout/SpaceInsideRangeLiteral:
   Enabled: true
 

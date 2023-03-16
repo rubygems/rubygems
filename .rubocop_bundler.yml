@@ -178,9 +178,6 @@ Style/SelfAssignment:
 Style/Semicolon:
   Enabled: true
 
-Style/StabbyLambdaParentheses:
-  Enabled: true
-
 Style/StderrPuts:
   Enabled: true
 

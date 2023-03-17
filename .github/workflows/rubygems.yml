@@ -20,7 +20,6 @@ jobs:
       matrix:
         os:
           - { name: Ubuntu, value: ubuntu-22.04 }
-          # - { name: macOS, value: macos-12 }
           - { name: Windows, value: windows-2022 }
 
         ruby:
@@ -31,6 +30,7 @@ jobs:
           - { name: "3.2", value: 3.2.1 }
 
         include:
+          #  We only test the latest Ruby on macOS because of lack of available CI runners
           - ruby: { name: "3.2", value: 3.2.1 }
             os: { name: macOS, value: macos-12 }
 
@@ -49,7 +49,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
-      - name: Setup ruby (Ubuntu/MacOS)
+      - name: Setup ruby (Ubuntu/macOS)
         uses: ruby/setup-ruby@e6689b4deb1cb2062ea45315001f687c0b52111b # v1.144.1
         with:
           ruby-version: ${{ matrix.ruby.value }}

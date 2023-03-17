@@ -4,7 +4,7 @@ Stuck using Bundler? Browse these common issues before [filing a new issue](http
 
 ## Permission denied when installing bundler
 
-Certain operating systems such as MacOS and Ubuntu have versions of Ruby that require elevated privileges to install gems.
+Certain operating systems such as macOS and Ubuntu have versions of Ruby that require elevated privileges to install gems.
 
     ERROR:  While executing gem ... (Gem::FilePermissionError)
       You don't have write permissions for the /Library/Ruby/Gems/2.0.0 directory.

@@ -137,6 +137,13 @@ Performance/StringReplacement:
 Security/Open:
   Enabled: true
 
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
+  Exclude:
+    - test/rubygems/test_gem.rb
+    - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
+
 Style/StderrPuts:
   Enabled: true
 

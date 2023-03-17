@@ -609,10 +609,6 @@ Style/For:
 Style/FormatString:
   Enabled: true
 
-Style/FrozenStringLiteralComment:
-  Enabled: true
-  EnforcedStyle: always
-
 # 1.8.7 support
 Style/HashSyntax:
   Enabled: true

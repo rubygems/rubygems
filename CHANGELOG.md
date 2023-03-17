@@ -485,7 +485,7 @@
 ## Breaking changes:
 
 * Removed deprecated `gem server` command. Pull request [#5034](https://github.com/rubygems/rubygems/pull/5034) by hsbt
-* Remove MacOS specific gem layout. Pull request [#4833](https://github.com/rubygems/rubygems/pull/4833) by deivid-rodriguez
+* Remove macOS specific gem layout. Pull request [#4833](https://github.com/rubygems/rubygems/pull/4833) by deivid-rodriguez
 * Default `gem update` documentation format is now only `ri`. Pull request
   [#3888](https://github.com/rubygems/rubygems/pull/3888) by hsbt
 

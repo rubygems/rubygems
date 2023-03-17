@@ -64,9 +64,9 @@ jobs:
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'
-      - name: Install graphviz (MacOS)
+      - name: Install graphviz (macOS)
         run: brew install graphviz
-        if: matrix.bundler.value == '' && matrix.os.name == 'MacOS'
+        if: matrix.bundler.value == '' && matrix.os.name == 'macOS'
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps

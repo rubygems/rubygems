@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "openssl"
 
 test_path = File.expand_path("../test/rubygems", __dir__)

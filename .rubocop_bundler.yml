@@ -53,11 +53,6 @@ Lint/UnreachableCode:
 Lint/Void:
   Enabled: true
 
-# Layout
-
-Layout/EmptyLineAfterMagicComment:
-  Enabled: true
-
 # Naming
 
 Naming/BlockParameterName:

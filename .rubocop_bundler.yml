@@ -53,11 +53,6 @@ Lint/UnreachableCode:
 Lint/Void:
   Enabled: true
 
-# Layout
-
-Layout/EmptyLineAfterMagicComment:
-  Enabled: true
-
 # Naming
 
 Naming/BlockParameterName:
@@ -90,10 +85,6 @@ Style/ClassVars:
 
 Style/FormatString:
   Enabled: true
-
-Style/FrozenStringLiteralComment:
-  Enabled: true
-  EnforcedStyle: always
 
 # 1.8.7 support
 Style/HashSyntax:

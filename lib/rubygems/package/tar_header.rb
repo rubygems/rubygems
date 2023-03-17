@@ -209,7 +209,7 @@ class Gem::Package::TarHeader
   private
 
   def calculate_checksum(header)
-    header.bytes.sum
+    header.sum(0)
   end
 
   def header(checksum = @checksum)

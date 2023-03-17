@@ -87,10 +87,10 @@ class Changelog
   end
 
   def change_types_for_blog
-    types = release_notes
-      .select {|line| change_types.include?(line) }
-      .map {|line| line.downcase.tr("^a-z ", "").strip }
-      .uniq
+    types = release_notes.
+      select {|line| change_types.include?(line) }.
+      map {|line| line.downcase.tr("^a-z ", "").strip }.
+      uniq
 
     last_change_type = types.pop
 
@@ -163,10 +163,10 @@ class Changelog
     pull = entry.pull_request
 
     if pull
-      new_entry = new_entry
-        .gsub(/%pull_request_number/, pull.number.to_s)
-        .gsub(/%pull_request_url/, pull.html_url)
-        .gsub(/%pull_request_author/, pull.user.name || pull.user.login)
+      new_entry = new_entry.
+        gsub(/%pull_request_number/, pull.number.to_s).
+        gsub(/%pull_request_url/, pull.html_url).
+        gsub(/%pull_request_author/, pull.user.name || pull.user.login)
     end
 
     new_entry = wrap(new_entry, entry_wrapping, 2) if entry_wrapping

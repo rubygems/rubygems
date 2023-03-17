@@ -32,6 +32,21 @@ Gemspec/RequiredRubyVersion:
     - test/rubygems/specifications/*.gemspec
     - test/rubygems/test_gem_ext_cargo_builder/**/*.gemspec
 
+Lint/UselessAccessModifier:
+  Enabled: true
+
+Lint/RedundantSplatExpansion:
+  Enabled: true
+
+Lint/RedundantStringCoercion:
+  Enabled: true
+
+Lint/UnusedBlockArgument:
+  Enabled: true
+
+Lint/RedundantCopDisableDirective:
+  Enabled: true
+
 Lint/AmbiguousOperator:
   Enabled: true
 
@@ -154,6 +169,68 @@ Lint/UriRegexp:
 
 Lint/UselessSetterCall:
   Enabled: true
+
+Layout/SpaceInsideRangeLiteral:
+  Enabled: true
+
+Layout/MultilineBlockLayout:
+  Enabled: true
+
+Layout/MultilineArrayBraceLayout:
+  Enabled: true
+
+Layout/ParameterAlignment:
+  Enabled: true
+  EnforcedStyle: with_fixed_indentation
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: true
+
+Layout/SpaceInsideStringInterpolation:
+  Enabled: true
+
+Layout/FirstArgumentIndentation:
+  Enabled: true
+
+Layout/SpaceInLambdaLiteral:
+  Enabled: true
+
+Layout/SpaceBeforeSemicolon:
+  Enabled: true
+
+Layout/AssignmentIndentation:
+  Enabled: true
+
+Layout/EmptyLinesAroundExceptionHandlingKeywords:
+  Enabled: true
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: true
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: true
+
+Layout/LeadingCommentSpace:
+  Enabled: true
+
+Layout/SpaceInsidePercentLiteralDelimiters:
+  Enabled: true
+
+Layout/SpaceInsideArrayPercentLiteral:
+  Enabled: true
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+Layout/SpaceBeforeComma:
+  Enabled: true
+
+Layout/MultilineHashBraceLayout:
+  Enabled: true
+
+Layout/DotPosition:
+  Enabled: true
+  EnforcedStyle: trailing
 
 Layout/AccessModifierIndentation:
   Enabled: true
@@ -316,6 +393,18 @@ Naming/FileName:
   Exclude:
     - 'bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb'
 
+Performance/TimesMap:
+  Enabled: true
+
+Performance/DoubleStartEndWith:
+  Enabled: true
+
+Performance/Count:
+  Enabled: true
+
+Performance/Casecmp:
+  Enabled: true
+
 Performance/StartWith:
   Enabled: true
 
@@ -351,6 +440,126 @@ Security/Open:
 
 Security/JSONLoad:
   Enabled: true
+
+Style/Semicolon:
+  Enabled: true
+
+Style/CharacterLiteral:
+  Enabled: true
+
+Style/RedundantBegin:
+  Enabled: true
+
+Style/RedundantSortBy:
+  Enabled: true
+
+Style/DoubleNegation:
+  Enabled: true
+
+Style/IfUnlessModifierOfIfUnless:
+  Enabled: true
+
+Style/StderrPuts:
+  Enabled: true
+
+Style/BarePercentLiterals:
+  Enabled: true
+
+Style/MultipleComparison:
+  Enabled: true
+
+Style/OrAssignment:
+  Enabled: true
+
+Style/UnlessElse:
+  Enabled: true
+
+Style/TernaryParentheses:
+  Enabled: true
+
+Style/IdenticalConditionalBranches:
+  Enabled: true
+
+Style/RescueStandardError:
+  Enabled: true
+
+Style/RescueModifier:
+  Enabled: true
+
+Style/PreferredHashMethods:
+  Enabled: true
+
+Style/NonNilCheck:
+  Enabled: true
+
+Style/ParenthesesAroundCondition:
+  Enabled: true
+
+Style/EmptyCaseCondition:
+  Enabled: true
+
+Style/SelfAssignment:
+  Enabled: true
+
+Style/EmptyElse:
+  Enabled: true
+
+Style/RedundantParentheses:
+  Enabled: true
+
+Style/StabbyLambdaParentheses:
+  Enabled: true
+
+Style/YodaCondition:
+  Enabled: true
+
+Style/CommentAnnotation:
+  Enabled: true
+
+Style/NegatedIf:
+  Enabled: true
+
+Style/ColonMethodCall:
+  Enabled: true
+
+Style/SymbolArray:
+  Enabled: true
+  EnforcedStyle: brackets
+
+Style/DefWithParentheses:
+  Enabled: true
+
+Style/SingleLineMethods:
+  Enabled: true
+
+Style/RedundantSelf:
+  Enabled: true
+
+Style/NumericLiterals:
+  Enabled: true
+
+Style/RedundantInterpolation:
+  Enabled: true
+
+Style/ClassCheck:
+  Enabled: true
+
+Style/NestedParenthesizedCalls:
+  Enabled: true
+
+Style/ParallelAssignment:
+  Enabled: true
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/SymbolProc:
+  Enabled: true
+
+Style/Alias:
+  Enabled: true
+  EnforcedStyle: prefer_alias_method
 
 Style/AndOr:
   Enabled: true

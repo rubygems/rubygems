@@ -32,19 +32,10 @@ Lint/EmptyExpression:
 Lint/NonLocalExitFromIterator:
   Enabled: true
 
-Lint/RedundantStringCoercion:
-  Enabled: true
-
 Lint/RequireParentheses:
   Enabled: true
 
 Lint/RescueException:
-  Enabled: true
-
-Lint/RedundantCopDisableDirective:
-  Enabled: true
-
-Lint/RedundantSplatExpansion:
   Enabled: true
 
 Lint/ReturnInVoidContext:
@@ -59,80 +50,12 @@ Lint/UnderscorePrefixedVariableName:
 Lint/UnreachableCode:
   Enabled: true
 
-Lint/UnusedBlockArgument:
-  Enabled: true
-
-Lint/UselessAccessModifier:
-  Enabled: true
-
 Lint/Void:
   Enabled: true
 
 # Layout
 
-Layout/AssignmentIndentation:
-  Enabled: true
-
-Layout/DotPosition:
-  Enabled: true
-  EnforcedStyle: trailing
-
 Layout/EmptyLineAfterMagicComment:
-  Enabled: true
-
-Layout/EmptyLineBetweenDefs:
-  Enabled: true
-
-Layout/EmptyLinesAroundExceptionHandlingKeywords:
-  Enabled: true
-
-Layout/EmptyLinesAroundModuleBody:
-  Enabled: true
-
-Layout/FirstArgumentIndentation:
-  Enabled: true
-
-Layout/LeadingCommentSpace:
-  Enabled: true
-
-Layout/MultilineArrayBraceLayout:
-  Enabled: true
-
-Layout/MultilineBlockLayout:
-  Enabled: true
-
-Layout/MultilineHashBraceLayout:
-  Enabled: true
-
-Layout/MultilineMethodCallBraceLayout:
-  Enabled: true
-
-Layout/ParameterAlignment:
-  Enabled: true
-  EnforcedStyle: with_fixed_indentation
-
-Layout/SpaceBeforeComma:
-  Enabled: true
-
-Layout/SpaceBeforeSemicolon:
-  Enabled: true
-
-Layout/SpaceInLambdaLiteral:
-  Enabled: true
-
-Layout/SpaceInsideArrayLiteralBrackets:
-  Enabled: true
-
-Layout/SpaceInsideArrayPercentLiteral:
-  Enabled: true
-
-Layout/SpaceInsidePercentLiteralDelimiters:
-  Enabled: true
-
-Layout/SpaceInsideRangeLiteral:
-  Enabled: true
-
-Layout/SpaceInsideStringInterpolation:
   Enabled: true
 
 # Naming
@@ -154,58 +77,15 @@ Naming/VariableNumber:
 
 # Performance
 
-Performance/Casecmp:
-  Enabled: true
-
-Performance/Count:
-  Enabled: true
-
-Performance/DoubleStartEndWith:
-  Enabled: true
-
 Performance/RegexpMatch:
-  Enabled: true
-
-Performance/TimesMap:
   Enabled: true
 
 # Style
 
-Style/Alias:
-  Enabled: true
-  EnforcedStyle: prefer_alias_method
-
 Style/AsciiComments:
   Enabled: true
 
-Style/BarePercentLiterals:
-  Enabled: true
-
-Style/CharacterLiteral:
-  Enabled: true
-
-Style/ClassCheck:
-  Enabled: true
-
 Style/ClassVars:
-  Enabled: true
-
-Style/ColonMethodCall:
-  Enabled: true
-
-Style/CommentAnnotation:
-  Enabled: true
-
-Style/DefWithParentheses:
-  Enabled: true
-
-Style/DoubleNegation:
-  Enabled: true
-
-Style/EmptyCaseCondition:
-  Enabled: true
-
-Style/EmptyElse:
   Enabled: true
 
 Style/FormatString:
@@ -220,12 +100,6 @@ Style/HashSyntax:
   Enabled: true
   EnforcedStyle: hash_rockets
 
-Style/IdenticalConditionalBranches:
-  Enabled: true
-
-Style/IfUnlessModifierOfIfUnless:
-  Enabled: true
-
 Style/LineEndConcatenation:
   Enabled: true
 
@@ -235,97 +109,14 @@ Style/MultilineMemoization:
 Style/MultilineTernaryOperator:
   Enabled: true
 
-Style/MultipleComparison:
-  Enabled: true
-
-Style/NegatedIf:
-  Enabled: true
-
 Style/NestedModifier:
-  Enabled: true
-
-Style/NestedParenthesizedCalls:
   Enabled: true
 
 Style/Next:
   Enabled: true
 
-Style/NonNilCheck:
-  Enabled: true
-
-Style/NumericLiterals:
-  Enabled: true
-
 Style/NumericLiteralPrefix:
   Enabled: true
 
-Style/OrAssignment:
-  Enabled: true
-
-Style/ParallelAssignment:
-  Enabled: true
-
-Style/ParenthesesAroundCondition:
-  Enabled: true
-
-Style/PreferredHashMethods:
-  Enabled: true
-
-Style/RedundantBegin:
-  Enabled: true
-
-Style/RedundantInterpolation:
-  Enabled: true
-
-Style/RedundantParentheses:
-  Enabled: true
-
-Style/RedundantSelf:
-  Enabled: true
-
-Style/RedundantSortBy:
-  Enabled: true
-
 Style/RegexpLiteral:
-  Enabled: true
-
-Style/RescueModifier:
-  Enabled: true
-
-Style/RescueStandardError:
-  Enabled: true
-
-Style/SelfAssignment:
-  Enabled: true
-
-Style/Semicolon:
-  Enabled: true
-
-Style/SingleLineMethods:
-  Enabled: true
-
-Style/StabbyLambdaParentheses:
-  Enabled: true
-
-Style/StderrPuts:
-  Enabled: true
-
-Style/StringLiteralsInInterpolation:
-  Enabled: true
-  EnforcedStyle: double_quotes
-
-Style/SymbolArray:
-  Enabled: true
-  EnforcedStyle: brackets
-
-Style/SymbolProc:
-  Enabled: true
-
-Style/TernaryParentheses:
-  Enabled: true
-
-Style/UnlessElse:
-  Enabled: true
-
-Style/YodaCondition:
   Enabled: true

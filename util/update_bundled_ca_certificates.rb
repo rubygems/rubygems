@@ -18,7 +18,7 @@ def connect_to(uri, store)
   # None of the URIs are IPv6, so URI::Generic#hostname(ruby 1.9.3+) isn't needed
   http = Net::HTTP.new uri.host, uri.port
 
-  http.use_ssl = uri.scheme.downcase == "https"
+  http.use_ssl = uri.scheme.casecmp("https").zero?
   http.ssl_version = :TLSv1_2
   http.verify_mode = OpenSSL::SSL::VERIFY_PEER
   http.cert_store = store
@@ -63,7 +63,7 @@ def test_certificates(certificates, uri)
       if match
         $needed_combinations << match
         puts
-        puts match.map {|certificate| certificate.subject }
+        puts match.map(&:subject)
         return
       else
         print "."

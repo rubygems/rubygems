@@ -18,8 +18,7 @@ class Gem::Commands::UninstallCommand < Gem::Command
           :check_dev => false, :vendor => false
 
     add_option("-a", "--[no-]all",
-      "Uninstall all matching versions"
-    ) do |value, options|
+      "Uninstall all matching versions") do |value, options|
       options[:all] = value
     end
 
@@ -79,7 +78,7 @@ class Gem::Commands::UninstallCommand < Gem::Command
 
     add_option("--vendor",
                "Uninstall gem from the vendor directory.",
-               "Only for use by gem repackagers.") do |value, options|
+               "Only for use by gem repackagers.") do |_value, options|
       unless Gem.vendor_dir
         raise Gem::OptionParser::InvalidOption.new "your platform is not supported"
       end
@@ -138,7 +137,7 @@ that is a dependency of an existing gem.  You can use the
   end
 
   def uninstall_all
-    specs = Gem::Specification.reject {|spec| spec.default_gem? }
+    specs = Gem::Specification.reject(&:default_gem?)
 
     specs.each do |spec|
       options[:version] = spec.version

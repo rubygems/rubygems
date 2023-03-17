@@ -11,6 +11,11 @@ AllCops:
     - 'tmp/**/*'
   TargetRubyVersion: 2.6
 
+Layout/EmptyLineAfterMagicComment:
+  Enabled: true
+  Exclude:
+    - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
+
 Layout/AccessModifierIndentation:
   Enabled: true
 

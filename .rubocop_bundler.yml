@@ -259,9 +259,6 @@ Layout/ElseAlignment:
 Layout/EmptyComment:
   Enabled: true
 
-Layout/EmptyLineAfterMagicComment:
-  Enabled: true
-
 Layout/EmptyLineBetweenDefs:
   Enabled: true
 

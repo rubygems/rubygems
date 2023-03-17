@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "helper"
 require_relative "multifactor_auth_utilities"
 require "rubygems"

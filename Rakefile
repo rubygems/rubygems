@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RakeFileUtils.verbose_flag = false
 
 require "rubygems"

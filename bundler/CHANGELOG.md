@@ -1,3 +1,28 @@
+# 2.4.9 (March 20, 2023)
+
+## Security:
+
+  - Don't recommend `--full-index` on errors [#6493](https://github.com/rubygems/rubygems/pull/6493)
+
+## Enhancements:
+
+  - Fix duplicated specs in some error messages [#6475](https://github.com/rubygems/rubygems/pull/6475)
+  - When running `bundle lock --update <name>`, checkout locked revision of unrelated git sources directly [#6459](https://github.com/rubygems/rubygems/pull/6459)
+  - Avoid expiring git sources when unnecessary [#6458](https://github.com/rubygems/rubygems/pull/6458)
+  - Use `RbSys::ExtensionTask` when creating new rust gems [#6352](https://github.com/rubygems/rubygems/pull/6352)
+  - Don't ignore pre-releases when there's only one candidate [#6441](https://github.com/rubygems/rubygems/pull/6441)
+
+## Bug fixes:
+
+  - Fix incorrect removal of ruby platform when auto-healing corrupted lockfiles [#6495](https://github.com/rubygems/rubygems/pull/6495)
+  - Don't consider platform specific candidates when `force_ruby_platform` set [#6442](https://github.com/rubygems/rubygems/pull/6442)
+  - Better deal with circular dependencies [#6330](https://github.com/rubygems/rubygems/pull/6330)
+
+## Documentation:
+
+  - Add debugging docs [#6387](https://github.com/rubygems/rubygems/pull/6387)
+  - Document our current release policy [#6450](https://github.com/rubygems/rubygems/pull/6450)
+
 # 2.4.8 (March 8, 2023)
 
 ## Security:

@@ -80,6 +80,7 @@ bundler/lib/bundler/gem_helpers.rb
 bundler/lib/bundler/gem_tasks.rb
 bundler/lib/bundler/gem_version_promoter.rb
 bundler/lib/bundler/graph.rb
+bundler/lib/bundler/incomplete_specification.rb
 bundler/lib/bundler/index.rb
 bundler/lib/bundler/injector.rb
 bundler/lib/bundler/inline.rb
@@ -243,6 +244,7 @@ bundler/lib/bundler/ui/rg_proxy.rb
 bundler/lib/bundler/ui/shell.rb
 bundler/lib/bundler/ui/silent.rb
 bundler/lib/bundler/uri_credentials_filter.rb
+bundler/lib/bundler/uri_normalizer.rb
 bundler/lib/bundler/vendor/.document
 bundler/lib/bundler/vendor/connection_pool/LICENSE
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool.rb

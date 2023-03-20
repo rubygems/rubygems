@@ -1,3 +1,28 @@
+# 3.4.9 / 2023-03-20
+
+## Enhancements:
+
+* Improve `TarHeader#calculate_checksum` speed and readability. Pull
+  request [#6476](https://github.com/rubygems/rubygems/pull/6476) by
+  Maumagnaguagno
+* Added only missing extensions option into pristine command. Pull request
+  [#6446](https://github.com/rubygems/rubygems/pull/6446) by hsbt
+* Installs bundler 2.4.9 as a default gem.
+
+## Bug fixes:
+
+* Fix `$LOAD_PATH` in rake and ext_conf builder. Pull request
+  [#6490](https://github.com/rubygems/rubygems/pull/6490) by ntkme
+* Fix `gem uninstall` with `--install-dir`. Pull request
+  [#6481](https://github.com/rubygems/rubygems/pull/6481) by
+  deivid-rodriguez
+
+## Documentation:
+
+* Document our current release policy. Pull request
+  [#6450](https://github.com/rubygems/rubygems/pull/6450) by
+  deivid-rodriguez
+
 # 3.4.8 / 2023-03-08
 
 ## Enhancements:

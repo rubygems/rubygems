@@ -464,6 +464,9 @@ Performance/Size:
 Performance/UriDefaultParser:
   Enabled: true
 
+Style/MultilineMemoization:
+  Enabled: true
+
 Security/Open:
   Enabled: true
 

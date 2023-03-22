@@ -70,9 +70,6 @@ Style/HashSyntax:
 Style/LineEndConcatenation:
   Enabled: true
 
-Style/MultilineMemoization:
-  Enabled: true
-
 Style/Next:
   Enabled: true
 

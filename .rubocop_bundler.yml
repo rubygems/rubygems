@@ -73,9 +73,6 @@ Style/LineEndConcatenation:
 Style/MultilineMemoization:
   Enabled: true
 
-Style/MultilineTernaryOperator:
-  Enabled: true
-
 Style/Next:
   Enabled: true
 

@@ -26,9 +26,6 @@ Lint/BinaryOperatorWithIdenticalOperands:
 Lint/RequireParentheses:
   Enabled: true
 
-Lint/RescueException:
-  Enabled: true
-
 Lint/ReturnInVoidContext:
   Enabled: true
 

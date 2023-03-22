@@ -17,12 +17,6 @@ AllCops:
     - bundler/tmp/**/*
     - bundler/lib/bundler/vendor/**/*
 
-
-# Lint
-
-Lint/BinaryOperatorWithIdenticalOperands:
-  Enabled: true
-
 # Naming
 
 Naming/ConstantName:

@@ -408,6 +408,9 @@ Naming/HeredocDelimiterNaming:
   ForbiddenDelimiters:
     - ^RB$
 
+Naming/BlockParameterName:
+  Enabled: true
+
 Naming/AsciiIdentifiers:
   Enabled: true
 

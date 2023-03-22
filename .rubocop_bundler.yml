@@ -31,9 +31,6 @@ Lint/Void:
 
 # Naming
 
-Naming/BlockParameterName:
-  Enabled: true
-
 Naming/ConstantName:
   Enabled: true
 

@@ -5,13 +5,9 @@ require "net/http"
 require "uri"
 
 licenses_json = Net::HTTP.get(URI("https://spdx.org/licenses/licenses.json"))
-licenses = JSON.parse(licenses_json)["licenses"].map do |licenseObject|
-  licenseObject["licenseId"]
-end
+licenses = JSON.parse(licenses_json)["licenses"].map {|lo| lo["licenseId"] }
 exceptions_json = Net::HTTP.get(URI("https://spdx.org/licenses/exceptions.json"))
-exceptions = JSON.parse(exceptions_json)["exceptions"].map do |exceptionObject|
-  exceptionObject["licenseExceptionId"]
-end
+exceptions = JSON.parse(exceptions_json)["exceptions"].map {|eo| eo["licenseExceptionId"] }
 
 open "lib/rubygems/util/licenses.rb", "w" do |io|
   io.write <<-RUBY

@@ -29,9 +29,6 @@ Lint/RequireParentheses:
 Lint/ShadowingOuterLocalVariable:
   Enabled: true
 
-Lint/UnderscorePrefixedVariableName:
-  Enabled: true
-
 Lint/UnreachableCode:
   Enabled: true
 

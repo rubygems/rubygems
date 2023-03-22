@@ -32,6 +32,9 @@ Gemspec/RequiredRubyVersion:
     - test/rubygems/specifications/*.gemspec
     - test/rubygems/test_gem_ext_cargo_builder/**/*.gemspec
 
+Lint/NonLocalExitFromIterator:
+  Enabled: true
+
 Lint/EmptyExpression:
   Enabled: true
 

@@ -23,9 +23,6 @@ AllCops:
 Lint/BinaryOperatorWithIdenticalOperands:
   Enabled: true
 
-Lint/DuplicateCaseCondition:
-  Enabled: true
-
 Lint/EmptyExpression:
   Enabled: true
 

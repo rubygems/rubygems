@@ -356,6 +356,9 @@ Layout/TrailingEmptyLines:
 Layout/TrailingWhitespace:
   Enabled: true
 
+Lint/Void:
+  Enabled: true
+
 Lint/DuplicateMethods:
   Enabled: true
 

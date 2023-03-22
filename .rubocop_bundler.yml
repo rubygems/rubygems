@@ -70,9 +70,6 @@ Style/HashSyntax:
 Style/LineEndConcatenation:
   Enabled: true
 
-Style/Next:
-  Enabled: true
-
 Style/NumericLiteralPrefix:
   Enabled: true
 

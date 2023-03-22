@@ -473,6 +473,9 @@ Security/Open:
 Security/JSONLoad:
   Enabled: true
 
+Style/Next:
+  Enabled: true
+
 Style/MultilineTernaryOperator:
   Enabled: true
 

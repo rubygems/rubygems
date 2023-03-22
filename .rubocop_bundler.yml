@@ -47,9 +47,6 @@ Performance/RegexpMatch:
 
 # Style
 
-Style/AsciiComments:
-  Enabled: true
-
 Style/ClassVars:
   Enabled: true
 

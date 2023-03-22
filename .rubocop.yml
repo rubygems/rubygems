@@ -32,6 +32,9 @@ Gemspec/RequiredRubyVersion:
     - test/rubygems/specifications/*.gemspec
     - test/rubygems/test_gem_ext_cargo_builder/**/*.gemspec
 
+Lint/RequireParentheses:
+  Enabled: true
+
 Lint/ShadowingOuterLocalVariable:
   Enabled: true
 

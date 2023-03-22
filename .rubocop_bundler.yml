@@ -76,9 +76,6 @@ Style/MultilineMemoization:
 Style/MultilineTernaryOperator:
   Enabled: true
 
-Style/NestedModifier:
-  Enabled: true
-
 Style/Next:
   Enabled: true
 

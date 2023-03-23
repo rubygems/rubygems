@@ -189,7 +189,7 @@ class Gem::Package
       end
     end
 
-    return spec, metadata
+    [spec, metadata]
   end
 
   ##

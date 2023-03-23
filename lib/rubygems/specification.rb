@@ -1432,7 +1432,7 @@ class Gem::Specification < Gem::BasicSpecification
     @activated = true
     @loaded = true
 
-    return true
+    true
   end
 
   ##
@@ -1522,7 +1522,7 @@ class Gem::Specification < Gem::BasicSpecification
       executables
     end
   rescue StandardError
-    return nil
+    nil
   end
 
   ##
@@ -2383,8 +2383,8 @@ class Gem::Specification < Gem::BasicSpecification
   # Checks if this specification meets the requirement of +dependency+.
 
   def satisfies_requirement?(dependency)
-    return @name == dependency.name &&
-           dependency.requirement.satisfied_by?(@version)
+    @name == dependency.name &&
+      dependency.requirement.satisfied_by?(@version)
   end
 
   ##
@@ -2670,8 +2670,6 @@ class Gem::Specification < Gem::BasicSpecification
       self.required_rubygems_version = "> 1.3.1"
     end
     invalidate_memoized_attributes
-
-    return
   end
 
   def stubbed?

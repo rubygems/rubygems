@@ -211,7 +211,7 @@ module Gem
       end
     end
 
-    return true
+    true
   end
 
   def self.needs
@@ -489,7 +489,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     # the spec dirs directly, so we prune.
     files.uniq! if check_load_path
 
-    return files
+    files
   end
 
   def self.find_files_from_load_path(glob) # :nodoc:
@@ -524,7 +524,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     # the spec dirs directly, so we prune.
     files.uniq! if check_load_path
 
-    return files
+    files
   end
 
   ##

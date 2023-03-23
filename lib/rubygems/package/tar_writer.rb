@@ -326,6 +326,6 @@ class Gem::Package::TarWriter
       end
     end
 
-    return name, prefix
+    [name, prefix]
   end
 end

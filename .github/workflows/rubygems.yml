@@ -20,6 +20,7 @@ jobs:
       matrix:
         os:
           - { name: Ubuntu, value: ubuntu-22.04 }
+          - { name: macOS, value: macos-12 }
           - { name: Windows, value: windows-2022 }
 
         ruby:
@@ -30,7 +31,6 @@ jobs:
           - { name: "3.2", value: 3.2.1 }
 
         include:
-          #  We only test the latest Ruby on macOS because of lack of available CI runners
           - ruby: { name: "3.2", value: 3.2.1 }
             os: { name: macOS, value: macos-12 }
 

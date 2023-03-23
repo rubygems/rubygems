@@ -1528,7 +1528,7 @@ class TestGem < Gem::TestCase
     util_remove_interrupt_command
 
     # Should attempt to cause an Exception
-    with_plugin("exception") { Gem.load_env_plugins }
+    with_plugin("scripterror") { Gem.load_env_plugins }
     begin
       assert_equal :loaded, TEST_PLUGIN_EXCEPTION
     rescue StandardError
@@ -1557,8 +1557,8 @@ class TestGem < Gem::TestCase
       [:dir1, [Gem.user_dir, Gem.dir], m1],
     ]
 
-    tests.each do |_name, _paths, expected|
-      Gem.use_paths _paths.first, _paths
+    tests.each do |name, paths, expected|
+      Gem.use_paths paths.first, paths
       Gem::Specification.reset
       Gem.searcher = nil
 
@@ -1568,25 +1568,25 @@ class TestGem < Gem::TestCase
       assert_equal \
         [expected.gem_dir],
         Gem::Dependency.new("m","1").to_specs.map(&:gem_dir).sort,
-        "Wrong specs for #{_name}"
+        "Wrong specs for #{name}"
 
       spec = Gem::Dependency.new("m","1").to_spec
 
       assert_equal \
-        File.join(_paths.first, "gems", "m-1"),
+        File.join(paths.first, "gems", "m-1"),
         spec.gem_dir,
-        "Wrong spec before require for #{_name}"
-      refute spec.activated?, "dependency already activated for #{_name}"
+        "Wrong spec before require for #{name}"
+      refute spec.activated?, "dependency already activated for #{name}"
 
       gem "m"
 
       spec = Gem::Dependency.new("m","1").to_spec
-      assert spec.activated?, "dependency not activated for #{_name}"
+      assert spec.activated?, "dependency not activated for #{name}"
 
       assert_equal \
-        File.join(_paths.first, "gems", "m-1"),
+        File.join(paths.first, "gems", "m-1"),
         spec.gem_dir,
-        "Wrong spec after require for #{_name}"
+        "Wrong spec after require for #{name}"
 
       spec.instance_variable_set :@activated, false
       Gem.loaded_specs.delete(spec.name)

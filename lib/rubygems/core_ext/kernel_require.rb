@@ -71,7 +71,7 @@ module Kernel
 
         begin
           Kernel.send(:gem, spec.name, Gem::Requirement.default_prerelease)
-        rescue Exception
+        rescue StandardError
           RUBYGEMS_ACTIVATION_MONITOR.exit
           raise
         end unless resolved_path
@@ -143,7 +143,7 @@ module Kernel
       end
 
       RUBYGEMS_ACTIVATION_MONITOR.exit
-      return gem_original_require(path)
+      gem_original_require(path)
     rescue LoadError => load_error
       if load_error.path == path
         RUBYGEMS_ACTIVATION_MONITOR.enter

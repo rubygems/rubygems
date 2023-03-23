@@ -17,46 +17,7 @@ AllCops:
     - bundler/tmp/**/*
     - bundler/lib/bundler/vendor/**/*
 
-
-# Lint
-
-Lint/BinaryOperatorWithIdenticalOperands:
-  Enabled: true
-
-Lint/DuplicateCaseCondition:
-  Enabled: true
-
-Lint/EmptyExpression:
-  Enabled: true
-
-Lint/NonLocalExitFromIterator:
-  Enabled: true
-
-Lint/RequireParentheses:
-  Enabled: true
-
-Lint/RescueException:
-  Enabled: true
-
-Lint/ReturnInVoidContext:
-  Enabled: true
-
-Lint/ShadowingOuterLocalVariable:
-  Enabled: true
-
-Lint/UnderscorePrefixedVariableName:
-  Enabled: true
-
-Lint/UnreachableCode:
-  Enabled: true
-
-Lint/Void:
-  Enabled: true
-
 # Naming
-
-Naming/BlockParameterName:
-  Enabled: true
 
 Naming/ConstantName:
   Enabled: true
@@ -77,9 +38,6 @@ Performance/RegexpMatch:
 
 # Style
 
-Style/AsciiComments:
-  Enabled: true
-
 Style/ClassVars:
   Enabled: true
 
@@ -92,18 +50,6 @@ Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
 Style/LineEndConcatenation:
-  Enabled: true
-
-Style/MultilineMemoization:
-  Enabled: true
-
-Style/MultilineTernaryOperator:
-  Enabled: true
-
-Style/NestedModifier:
-  Enabled: true
-
-Style/Next:
   Enabled: true
 
 Style/NumericLiteralPrefix:

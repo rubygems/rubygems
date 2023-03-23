@@ -65,7 +65,7 @@ def test_certificates(certificates, uri)
         $needed_combinations << match
         puts
         puts match.map(&:subject)
-        return
+        break
       else
         print "."
       end

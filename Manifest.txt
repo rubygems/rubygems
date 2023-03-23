@@ -584,8 +584,8 @@ test/rubygems/package/tar_test_case.rb
 test/rubygems/packages/Bluebie-legs-0.6.2.gem
 test/rubygems/packages/ascii_binder-0.1.10.1.gem
 test/rubygems/packages/ill-formatted-platform-1.0.0.10.gem
-test/rubygems/plugin/exception/rubygems_plugin.rb
 test/rubygems/plugin/load/rubygems_plugin.rb
+test/rubygems/plugin/scripterror/rubygems_plugin.rb
 test/rubygems/plugin/standarderror/rubygems_plugin.rb
 test/rubygems/private3072_key.pem
 test/rubygems/private_ec_key.pem

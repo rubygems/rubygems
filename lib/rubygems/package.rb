@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-#--
+# rubocop:disable Style/AsciiComments
+
 # Copyright (C) 2004 Mauricio Julio Fernández Pradier
 # See LICENSE.txt for additional licensing information.
-#++
+
+# rubocop:enable Style/AsciiComments
 
 require_relative "../rubygems"
 require_relative "security"
@@ -187,7 +189,7 @@ class Gem::Package
       end
     end
 
-    return spec, metadata
+    [spec, metadata]
   end
 
   ##
@@ -392,7 +394,7 @@ EOM
 
         extract_tar_gz entry, destination_dir, pattern
 
-        return # ignore further entries
+        break # ignore further entries
       end
     end
   end

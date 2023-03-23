@@ -32,6 +32,36 @@ Gemspec/RequiredRubyVersion:
     - test/rubygems/specifications/*.gemspec
     - test/rubygems/test_gem_ext_cargo_builder/**/*.gemspec
 
+Lint/BinaryOperatorWithIdenticalOperands:
+  Enabled: true
+
+Lint/RequireParentheses:
+  Enabled: true
+
+Lint/ShadowingOuterLocalVariable:
+  Enabled: true
+
+Lint/UnreachableCode:
+  Enabled: true
+
+Lint/UnderscorePrefixedVariableName:
+  Enabled: true
+
+Lint/ReturnInVoidContext:
+  Enabled: true
+
+Lint/RescueException:
+  Enabled: true
+
+Lint/NonLocalExitFromIterator:
+  Enabled: true
+
+Lint/EmptyExpression:
+  Enabled: true
+
+Lint/DuplicateCaseCondition:
+  Enabled: true
+
 Lint/UselessAccessModifier:
   Enabled: true
 
@@ -329,6 +359,9 @@ Layout/TrailingEmptyLines:
 Layout/TrailingWhitespace:
   Enabled: true
 
+Lint/Void:
+  Enabled: true
+
 Lint/DuplicateMethods:
   Enabled: true
 
@@ -383,6 +416,9 @@ Naming/HeredocDelimiterNaming:
   Enabled: true
   ForbiddenDelimiters:
     - ^RB$
+
+Naming/BlockParameterName:
+  Enabled: true
 
 Naming/AsciiIdentifiers:
   Enabled: true
@@ -440,10 +476,28 @@ Performance/Size:
 Performance/UriDefaultParser:
   Enabled: true
 
+Style/MultilineMemoization:
+  Enabled: true
+
 Security/Open:
   Enabled: true
 
 Security/JSONLoad:
+  Enabled: true
+
+Style/RedundantReturn:
+  Enabled: true
+
+Style/AsciiComments:
+  Enabled: true
+
+Style/Next:
+  Enabled: true
+
+Style/MultilineTernaryOperator:
+  Enabled: true
+
+Style/NestedModifier:
   Enabled: true
 
 Style/FrozenStringLiteralComment:

@@ -434,6 +434,9 @@ Naming/FileName:
   Exclude:
     - 'bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb'
 
+Naming/MemoizedInstanceVariableName:
+  Enabled: true
+
 Performance/TimesMap:
   Enabled: true
 

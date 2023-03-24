@@ -39,14 +39,14 @@ end
 
 class Changelog
   def self.for_rubygems(version)
-    @rubygems ||= new(
+    @for_rubygems ||= new(
       File.expand_path("../CHANGELOG.md", __dir__),
       version,
     )
   end
 
   def self.for_bundler(version)
-    @bundler ||= new(
+    @for_bundler ||= new(
       File.expand_path("../bundler/CHANGELOG.md", __dir__),
       version,
     )

@@ -47,7 +47,7 @@ class Release
     end
 
     def previous_version
-      @latest_release ||= latest_release.tag_name.gsub(/^#{@tag_prefix}/, "")
+      @previous_version ||= latest_release.tag_name.gsub(/^#{@tag_prefix}/, "")
     end
 
     def latest_release

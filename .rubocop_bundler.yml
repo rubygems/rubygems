@@ -22,9 +22,6 @@ AllCops:
 Naming/ConstantName:
   Enabled: true
 
-Naming/MemoizedInstanceVariableName:
-  Enabled: false
-
 Naming/MethodName:
   Enabled: true
 

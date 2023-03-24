@@ -1,3 +1,9 @@
+# 3.4.10 / 2023-03-27
+
+## Enhancements:
+
+* Installs bundler 2.4.10 as a default gem.
+
 # 3.4.9 / 2023-03-20
 
 ## Enhancements:

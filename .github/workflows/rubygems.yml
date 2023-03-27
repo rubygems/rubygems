@@ -24,7 +24,7 @@ jobs:
       matrix:
         os:
           - { name: Ubuntu, value: ubuntu-22.04 }
-          # - { name: macOS, value: macos-12 }
+          - { name: macOS, value: macos-12 }
           - { name: Windows, value: windows-2022 }
 
         ruby:
@@ -52,9 +52,9 @@ jobs:
             cargo: { target: x86_64-pc-windows-msvc, toolchain: stable }
 
     steps:
-      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
-      - name: Setup ruby (Ubuntu/MacOS)
-        uses: ruby/setup-ruby@9669f3ee51dc3f4eda8447ab696b3ab19a90d14b # v1.144.0
+      - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+      - name: Setup ruby (Ubuntu/macOS)
+        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1 # v1.144.2
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

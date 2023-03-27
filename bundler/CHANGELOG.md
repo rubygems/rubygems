@@ -1,3 +1,12 @@
+# 2.4.10 (March 27, 2023)
+
+## Bug fixes:
+
+  - Fix some unnecessary top level dependency downgrades [#6535](https://github.com/rubygems/rubygems/pull/6535)
+  - Fix incorrect ruby platform removal from lockfile when adding Gemfile dependencies [#6540](https://github.com/rubygems/rubygems/pull/6540)
+  - Fix installing plugins in frozen mode [#6543](https://github.com/rubygems/rubygems/pull/6543)
+  - Restore "enumerability" of `SpecSet` [#6532](https://github.com/rubygems/rubygems/pull/6532)
+
 # 2.4.9 (March 20, 2023)
 
 ## Security:

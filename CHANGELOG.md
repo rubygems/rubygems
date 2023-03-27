@@ -1,3 +1,9 @@
+# 3.4.10 / 2023-03-27
+
+## Enhancements:
+
+* Installs bundler 2.4.10 as a default gem.
+
 # 3.4.9 / 2023-03-20
 
 ## Enhancements:
@@ -510,7 +516,7 @@
 ## Breaking changes:
 
 * Removed deprecated `gem server` command. Pull request [#5034](https://github.com/rubygems/rubygems/pull/5034) by hsbt
-* Remove MacOS specific gem layout. Pull request [#4833](https://github.com/rubygems/rubygems/pull/4833) by deivid-rodriguez
+* Remove macOS specific gem layout. Pull request [#4833](https://github.com/rubygems/rubygems/pull/4833) by deivid-rodriguez
 * Default `gem update` documentation format is now only `ri`. Pull request
   [#3888](https://github.com/rubygems/rubygems/pull/3888) by hsbt
 

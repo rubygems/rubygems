@@ -3,6 +3,7 @@ name: daily-rubygems
 on:
   schedule:
     - cron: '0 0 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -19,7 +20,7 @@ jobs:
         ruby: [ ruby-head, truffleruby-head ]
         cargo: [ stable ]
         include:
-          - { os: windows-2022, ruby: mswin, cargo: stable-x86_64-pc-windows-gnu }
+          - { os: windows-2022, ruby: mswin, cargo: stable-x86_64-pc-windows-msvc }
     env:
       TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
     steps:

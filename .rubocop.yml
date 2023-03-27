@@ -122,6 +122,9 @@ Naming/HeredocDelimiterNaming:
   ForbiddenDelimiters:
     - ^RB$
 
+Naming/MemoizedInstanceVariableName:
+  Enabled: true
+
 Performance/StartWith:
   Enabled: true
 

@@ -209,7 +209,7 @@ Automatiek::RakeTask.new("net-http-persistent") do |lib|
   end
 
   lib.dependency("uri") do |sublib|
-    sublib.version = "v0.12.0"
+    sublib.version = "v0.12.1"
     sublib.download = { :github => "https://github.com/ruby/uri" }
     sublib.namespace = "URI"
     sublib.prefix = "Bundler"

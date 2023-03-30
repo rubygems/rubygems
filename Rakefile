@@ -157,18 +157,13 @@ namespace :rubocop do
     sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=bundler/tool/bundler/lint_gems.rb"
   end
 
-  desc "Run rubocop for RubyGems. Pass positional arguments, e.g. -a, as Rake arguments."
-  task(:rubygems) do |_, args|
+  desc "Run rubocop. Pass positional arguments as Rake arguments, e.g. `rake 'rubocop:run[-a]'`"
+  task :run do |_, args|
     sh "util/rubocop", *args
-  end
-
-  desc "Run rubocop for Bundler. Pass positional arguments, e.g. -a, as Rake arguments."
-  task(:bundler) do |_, args|
-    sh "bundler/bin/rubocop", *args
   end
 end
 
-task rubocop: %w[rubocop:setup rubocop:rubygems rubocop:bundler]
+task rubocop: %w[rubocop:setup rubocop:run]
 
 # --------------------------------------------------------------------
 # Creating a release

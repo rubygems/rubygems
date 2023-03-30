@@ -4,11 +4,9 @@ AllCops:
   DisabledByDefault: true
   TargetRubyVersion: 2.6
   Exclude:
-    - bin/*
     - pkg/**/*
     - tmp/**/*
     - bundler/tmp/**/*
-    - util/**/*
     - lib/rubygems/resolver/molinillo/**/*
     - lib/rubygems/tsort/**/*
     - lib/rubygems/optparse/**/*
@@ -44,6 +42,7 @@ Naming/VariableNumber:
   Exclude:
     - lib/**/*
     - test/**/*
+    - util/**/*
 
 # Performance
 
@@ -76,6 +75,7 @@ Style/HashSyntax:
     - Rakefile
     - lib/**/*
     - test/**/*
+    - util/**/*
 
 Style/LineEndConcatenation:
   Enabled: true
@@ -88,6 +88,7 @@ Style/NumericLiteralPrefix:
   Exclude:
     - lib/**/*
     - test/**/*
+    - util/**/*
 
 Style/RegexpLiteral:
   Enabled: true

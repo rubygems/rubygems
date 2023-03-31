@@ -13,7 +13,6 @@ module Bundler
       @dependencies  = []
       @platform      = platform || Gem::Platform::RUBY
       @source        = source
-      @specification = nil
     end
 
     def full_name
@@ -76,37 +75,41 @@ module Bundler
     def materialize_for_installation
       source.local!
 
-      candidates = if source.is_a?(Source::Path) || !ruby_platform_materializes_to_ruby_platform?
-        target_platform = ruby_platform_materializes_to_ruby_platform? ? platform : local_platform
+      matching_specs = source.specs.search(use_exact_resolved_specifications? ? self : [name, version])
+      return self if matching_specs.empty?
 
-        GemHelpers.select_best_platform_match(source.specs.search(Dependency.new(name, version)), target_platform)
-      else
-        source.specs.search(self)
-      end
+      candidates = if use_exact_resolved_specifications?
+                     matching_specs
+                   else
+                     target_platform = ruby_platform_materializes_to_ruby_platform? ? platform : local_platform
 
-      return self if candidates.empty?
+                     installable_candidates = GemHelpers.select_best_platform_match(matching_specs, target_platform)
+
+                     specification = __materialize__(installable_candidates)
+                     return specification unless specification.nil?
+
+                     if target_platform != platform
+                       installable_candidates = GemHelpers.select_best_platform_match(matching_specs, platform)
+                     end
+
+                     installable_candidates
+                   end
 
       __materialize__(candidates)
     end
 
     def __materialize__(candidates)
-      @specification = begin
-        search = candidates.reverse.find do |spec|
-          spec.is_a?(StubSpecification) ||
-            (spec.matches_current_ruby? &&
-              spec.matches_current_rubygems?)
-        end
-        if search.nil? && Bundler.frozen_bundle?
-          search = candidates.last
-        else
-          search.dependencies = dependencies if search && search.full_name == full_name && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
-        end
-        search
+      search = candidates.reverse.find do |spec|
+        spec.is_a?(StubSpecification) ||
+          (spec.matches_current_ruby? &&
+           spec.matches_current_rubygems?)
       end
-    end
-
-    def respond_to?(*args)
-      super || @specification ? @specification.respond_to?(*args) : nil
+      if search.nil? && Bundler.frozen_bundle?
+        search = candidates.last
+      else
+        search.dependencies = dependencies if search && search.full_name == full_name && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
+      end
+      search
     end
 
     def to_s
@@ -127,17 +130,8 @@ module Bundler
     end
 
     private
-
-    def to_ary
-      nil
-    end
-
-    def method_missing(method, *args, &blk)
-      raise "LazySpecification has not been materialized yet (calling :#{method} #{args.inspect})" unless @specification
-
-      return super unless respond_to?(method)
-
-      @specification.send(method, *args, &blk)
+    def use_exact_resolved_specifications?
+      @use_exact_resolved_specifications ||= !source.is_a?(Source::Path) && ruby_platform_materializes_to_ruby_platform?
     end
 
     #

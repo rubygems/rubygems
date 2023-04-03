@@ -116,6 +116,7 @@ if File.exist?("util/automatiek.rake")
 
   # We currently ship Molinillo master branch as of
   # https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
+  desc "Vendor a specific version of molinillo to rubygems"
   Automatiek::RakeTask.new("molinillo") do |lib|
     lib.version = "master"
     lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
@@ -140,7 +141,7 @@ if File.exist?("util/automatiek.rake")
   #   optparse gem also does the aliasing.
   # * Add an empty .document file to the library's root path to hint RDoc that
   #   this library should not be documented.
-  desc "Vendor a specific version of optparse"
+  desc "Vendor a specific version of optparse to rubygems"
   Automatiek::RakeTask.new("optparse") do |lib|
     lib.version = "v0.3.0"
     lib.download = { :github => "https://github.com/ruby/optparse" }
@@ -148,6 +149,77 @@ if File.exist?("util/automatiek.rake")
     lib.prefix = "Gem"
     lib.vendor_lib = "lib/rubygems/optparse"
     lib.license_path = "COPYING"
+  end
+
+  desc "Vendor a specific version of pub_grub to bundler"
+  Automatiek::RakeTask.new("pub_grub") do |lib|
+    lib.version = "main"
+    lib.download = { :github => "https://github.com/jhawthorn/pub_grub" }
+    lib.namespace = "PubGrub"
+    lib.prefix = "Bundler"
+    lib.vendor_lib = "bundler/lib/bundler/vendor/pub_grub"
+    lib.license_path = "LICENSE.txt"
+  end
+
+  desc "Vendor a specific version of tsort to bundler"
+  Automatiek::RakeTask.new("tsort") do |lib|
+    lib.version = "v0.1.1"
+    lib.download = { :github => "https://github.com/ruby/tsort" }
+    lib.namespace = "TSort"
+    lib.prefix = "Bundler"
+    lib.vendor_lib = "bundler/lib/bundler/vendor/tsort"
+    lib.license_path = "LICENSE.txt"
+  end
+
+  desc "Vendor a specific version of thor to bundler"
+  Automatiek::RakeTask.new("thor") do |lib|
+    lib.version = "v1.2.1"
+    lib.download = { :github => "https://github.com/erikhuda/thor" }
+    lib.namespace = "Thor"
+    lib.prefix = "Bundler"
+    lib.vendor_lib = "bundler/lib/bundler/vendor/thor"
+    lib.license_path = "LICENSE.md"
+  end
+
+  desc "Vendor a specific version of fileutils to bundler"
+  Automatiek::RakeTask.new("fileutils") do |lib|
+    lib.version = "v1.7.0"
+    lib.download = { :github => "https://github.com/ruby/fileutils" }
+    lib.namespace = "FileUtils"
+    lib.prefix = "Bundler"
+    lib.vendor_lib = "bundler/lib/bundler/vendor/fileutils"
+    lib.license_path = "LICENSE.txt"
+  end
+
+  # We currently include the following changes over the official version:
+  # * Avoid requiring the optional `net-http-pipeline` dependency, so that its version can be selected by end users.
+  # * We also include changes to require the vendored dependencies `uri` and `connection_pool` relatively.
+  desc "Vendor a specific version of net-http-persistent to bundler"
+  Automatiek::RakeTask.new("net-http-persistent") do |lib|
+    lib.version = "master"
+    lib.download = { :github => "https://github.com/drbrain/net-http-persistent" }
+    lib.namespace = "Net::HTTP::Persistent"
+    lib.prefix = "Bundler::Persistent"
+    lib.vendor_lib = "bundler/lib/bundler/vendor/net-http-persistent"
+    lib.license_path = "README.rdoc"
+
+    lib.dependency("connection_pool") do |sublib|
+      sublib.version = "v2.3.0"
+      sublib.download = { :github => "https://github.com/mperham/connection_pool" }
+      sublib.namespace = "ConnectionPool"
+      sublib.prefix = "Bundler"
+      sublib.vendor_lib = "bundler/lib/bundler/vendor/connection_pool"
+      sublib.license_path = "LICENSE"
+    end
+
+    lib.dependency("uri") do |sublib|
+      sublib.version = "v0.12.1"
+      sublib.download = { :github => "https://github.com/ruby/uri" }
+      sublib.namespace = "URI"
+      sublib.prefix = "Bundler"
+      sublib.vendor_lib = "bundler/lib/bundler/vendor/uri"
+      sublib.license_path = "LICENSE.txt"
+    end
   end
 end
 

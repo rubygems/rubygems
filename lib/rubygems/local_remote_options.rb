@@ -105,7 +105,7 @@ module Gem::LocalRemoteOptions
 
     add_option(:"Local/Remote", "-s", "--source URL", URI::HTTP,
                "Append URL to list of remote gem sources") do |source, options|
-      source << "/" if source !~ /\/\z/
+      source << "/" unless source.end_with?("/")
 
       if options.delete :sources_cleared
         Gem.sources = [source]

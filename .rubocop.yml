@@ -130,6 +130,9 @@ Naming/HeredocDelimiterNaming:
 Naming/MemoizedInstanceVariableName:
   Enabled: true
 
+Performance/RegexpMatch:
+  Enabled: true
+
 Performance/StartWith:
   Enabled: true
 

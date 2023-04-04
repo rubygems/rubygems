@@ -48,10 +48,6 @@ Naming/VariableNumber:
 
 Performance/RegexpMatch:
   Enabled: true
-  Exclude:
-    - Rakefile
-    - lib/**/*
-    - test/**/*
 
 # Style
 

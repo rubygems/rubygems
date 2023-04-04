@@ -458,7 +458,7 @@ module Rubygems
 
       tracked_files.each do |path|
         next unless File.file?(path)
-        next if path =~ exclude
+        next if path&.match?(exclude)
         files << path
       end
 

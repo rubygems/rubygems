@@ -67,7 +67,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.execute
 
-    assert_match %r{\A#!}, File.read(gem_bin_path)
+    assert_match(/\A#!/, File.read(gem_bin_path))
   end
 
   def test_execute_no_regenerate_binstubs
@@ -90,7 +90,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.execute
 
-    assert_match %r{\Arequire}, File.read(gem_plugin_path)
+    assert_match(/\Arequire/, File.read(gem_plugin_path))
   end
 
   def test_execute_no_regenerate_plugins
@@ -113,7 +113,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
 
     @cmd.execute
 
-    assert_match %r{\Arequire}, File.read(gem_plugin_path)
+    assert_match(/\Arequire/, File.read(gem_plugin_path))
   end
 
   def test_execute_informs_about_installed_executables
@@ -141,10 +141,10 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     ruby_exec = sprintf Gem.default_exec_format, "ruby"
 
     bin_env = Gem.win_platform? ? "" : %w[/usr/bin/env /bin/env].find {|f| File.executable?(f) } + " "
-    assert_match %r{\A#!\s*#{bin_env}#{ruby_exec}}, File.read(default_gem_bin_path)
-    assert_match %r{\A#!\s*#{bin_env}#{ruby_exec}}, File.read(default_bundle_bin_path)
-    assert_match %r{\A#!\s*#{bin_env}#{ruby_exec}}, File.read(default_bundler_bin_path)
-    assert_match %r{\A#!\s*#{bin_env}#{ruby_exec}}, File.read(gem_bin_path)
+    assert_match(/\A#!\s*#{bin_env}#{ruby_exec}/, File.read(default_gem_bin_path))
+    assert_match(/\A#!\s*#{bin_env}#{ruby_exec}/, File.read(default_bundle_bin_path))
+    assert_match(/\A#!\s*#{bin_env}#{ruby_exec}/, File.read(default_bundler_bin_path))
+    assert_match(/\A#!\s*#{bin_env}#{ruby_exec}/, File.read(gem_bin_path))
   end
 
   def test_destdir_flag_does_not_try_to_write_to_the_default_gem_home

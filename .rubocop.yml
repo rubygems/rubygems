@@ -88,9 +88,6 @@ Style/NumericLiteralPrefix:
 
 Style/RegexpLiteral:
   Enabled: true
-  Exclude:
-    - lib/**/*
-    - test/**/*
 
 # Following cops are enabled rubygems and bundler
 

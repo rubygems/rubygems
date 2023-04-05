@@ -1,0 +1,47 @@
+name: windows-bundler
+
+on:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./bundler
+
+jobs:
+  bundler:
+    name: Bundler 2 on Windows (${{ matrix.ruby.name }})
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - { name: ruby-2.7, value: 2.7.7 }
+          - { name: ruby-3.0, value: 3.0.5 }
+          - { name: ruby-3.1, value: 3.1.3 }
+          - { name: ruby-3.2, value: 3.2.1 }
+
+    env:
+      RGV: ..
+      RUBYOPT: --disable-gems
+    steps:
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+      - name: Setup ruby
+        uses: ruby/setup-ruby@904f3fef85a9c80a3750cbe7d5159268fd5caa9f # v1.145.0
+        with:
+          ruby-version: ${{ matrix.ruby.value }}
+          bundler: none
+      - name: Prepare dependencies
+        run: |
+          bin/rake spec:parallel_deps
+      - name: Run Test
+        run: |
+          bin/parallel_rspec
+    timeout-minutes: 150

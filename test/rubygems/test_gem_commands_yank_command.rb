@@ -194,6 +194,48 @@ class TestGemCommandsYankCommand < Gem::TestCase
     refute_match "Successfully yanked", @ui.output
   end
 
+  def test_with_webauthn_enabled_with_safari_as_default_browser
+    omit("Safari is only available on macOS") unless RUBY_PLATFORM.include?("darwin")
+
+    set_default_browser_safari
+    webauthn_verification_url = "http://example/api/v1/webauthn_verification/odow34b93t6aPCdY"
+    response_fail = "You have enabled multifactor authentication but your request doesn't have the correct OTP code. Please check it and retry."
+    yank_uri = "http://example/api/v1/gems/yank"
+    webauthn_uri = "http://example/api/v1/webauthn_verification"
+    port = 5678
+    server = TCPServer.new(port)
+
+    @fetcher.data[webauthn_uri] = HTTPResponseFactory.create(body: webauthn_verification_url, code: 200, msg: "OK")
+    @fetcher.data[yank_uri] = [
+      HTTPResponseFactory.create(body: response_fail, code: 401, msg: "Unauthorized"),
+      HTTPResponseFactory.create(body: "Successfully yanked", code: 200, msg: "OK"),
+    ]
+
+    @cmd.options[:args]           = %w[a]
+    @cmd.options[:added_platform] = true
+    @cmd.options[:version]        = req("= 1.0")
+
+    TCPServer.stub(:new, server) do
+      Gem::WebauthnListener.stub(:wait_for_otp_code, "Uvh6T57tkWuUnWYo") do
+        use_ui @ui do
+          @cmd.execute
+        end
+      end
+    ensure
+      server.close
+    end
+
+    url_with_port = "#{webauthn_verification_url}?port=#{port}"
+
+    assert_match "You have enabled multi-factor authentication. Please visit #{url_with_port} to authenticate " \
+      "via security device. If you can't verify using WebAuthn but have OTP enabled, you can re-run the gem signin " \
+      "command with the `--otp [your_code]` option.", @ui.output
+    assert_match "\n[WARNING] It looks like your default browser is Safari. Due to limitations within Safari, " \
+      "you will be unable to authenticate using this browser. Please visit the link in another browser.", @ui.output
+  ensure
+    restore_default_browser if RUBY_PLATFORM.include?("darwin")
+  end
+
   def test_execute_key
     yank_uri = "http://example/api/v1/gems/yank"
     @fetcher.data[yank_uri] = HTTPResponseFactory.create(body: "Successfully yanked", code: 200, msg: "OK")

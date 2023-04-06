@@ -275,6 +275,11 @@ module Gem::GemcutterUtilities
     url_with_port = "#{webauthn_url}?port=#{port}"
     say "You have enabled multi-factor authentication. Please visit #{url_with_port} to authenticate via security device. If you can't verify using WebAuthn but have OTP enabled, you can re-run the gem signin command with the `--otp [your_code]` option."
 
+    if default_browser_safari?
+      say "\n[WARNING] It looks like your default browser is Safari. Due to limitations within Safari, you will be unable to " \
+        "authenticate using this browser. Please visit the link in another browser."
+    end
+
     thread.join
     if error = thread[:error]
       alert_error error.message
@@ -294,6 +299,18 @@ module Gem::GemcutterUtilities
       end
     end
     response.is_a?(Net::HTTPSuccess) ? response.body : nil
+  end
+
+  def default_browser_safari?
+    return false unless RUBY_PLATFORM.include?("darwin")
+
+    require "json"
+
+    launch_services = JSON.parse(`defaults read com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers \
+      | plutil -convert json -o - -`)
+    default_browser = launch_services.find {|handler| handler["LSHandlerURLScheme"] == "https" }&.[]("LSHandlerRoleAll")
+
+    default_browser.nil? ? false : default_browser.include?("safari")
   end
 
   def pretty_host(host)

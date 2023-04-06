@@ -1491,6 +1491,23 @@ Also, a list:
     "#{__dir__}/#{key_name}_key.pem"
   end
 
+  ##
+  # Sets default browser to Safari in macOS by saving current configuration and overwriting LSHandlers
+
+  def set_default_browser_safari
+    @launch_services = `defaults read com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers`
+    default_browser_setting = "{ LSHandlerURLScheme = \"https\"; LSHandlerRoleAll = \"com.apple.safari\"; }"
+
+    `defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array '#{default_browser_setting}'`
+  end
+
+  ##
+  # Resets default browser to previous configuration set in set_default_browser_safari
+
+  def restore_default_browser
+    `defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers "#{@launch_services}"`
+  end
+
   # :stopdoc:
   # only available in RubyGems tests
 

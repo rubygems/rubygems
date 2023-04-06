@@ -490,6 +490,43 @@ class TestGemCommandsPushCommand < Gem::TestCase
     refute_match response_success, @ui.output
   end
 
+  def test_with_webauthn_enabled_with_safari_as_default_browser
+    omit("Safari is only available on macOS") unless RUBY_PLATFORM.include?("darwin")
+
+    set_default_browser_safari
+    webauthn_verification_url = "rubygems.org/api/v1/webauthn_verification/odow34b93t6aPCdY"
+    response_fail = "You have enabled multifactor authentication but your request doesn't have the correct OTP code. Please check it and retry."
+    response_success = "Successfully registered gem: freewill (1.0.0)"
+    port = 5678
+    server = TCPServer.new(port)
+
+    @fetcher.data["#{Gem.host}/api/v1/gems"] = [
+      HTTPResponseFactory.create(body: response_fail, code: 401, msg: "Unauthorized"),
+      HTTPResponseFactory.create(body: response_success, code: 200, msg: "OK"),
+    ]
+    @fetcher.data["#{Gem.host}/api/v1/webauthn_verification"] = HTTPResponseFactory.create(body: webauthn_verification_url, code: 200, msg: "OK")
+
+    TCPServer.stub(:new, server) do
+      Gem::WebauthnListener.stub(:wait_for_otp_code, "Uvh6T57tkWuUnWYo") do
+        use_ui @ui do
+          @cmd.send_gem(@path)
+        end
+      end
+    ensure
+      server.close
+    end
+
+    url_with_port = "#{webauthn_verification_url}?port=#{port}"
+
+    assert_match "You have enabled multi-factor authentication. Please visit #{url_with_port} to authenticate " \
+      "via security device. If you can't verify using WebAuthn but have OTP enabled, you can re-run the gem signin " \
+      "command with the `--otp [your_code]` option.", @ui.output
+    assert_match "\n[WARNING] It looks like your default browser is Safari. Due to limitations within Safari, " \
+      "you will be unable to authenticate using this browser. Please visit the link in another browser.", @ui.output
+  ensure
+    restore_default_browser if RUBY_PLATFORM.include?("darwin")
+  end
+
   def test_sending_gem_unathorized_api_key_with_mfa_enabled
     response_mfa_enabled = "You have enabled multifactor authentication but your request doesn't have the correct OTP code. Please check it and retry."
     response_forbidden = "The API key doesn't have access"

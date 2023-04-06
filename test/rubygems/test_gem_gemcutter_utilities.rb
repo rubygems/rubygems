@@ -259,6 +259,42 @@ class TestGemGemcutterUtilities < Gem::TestCase
     assert_equal "Uvh6T57tkWuUnWYo", @fetcher.last_request["OTP"]
   end
 
+  def test_sign_in_with_webauthn_enabled_with_safari_as_default_browser
+    omit("Safari is only available on macOS") unless RUBY_PLATFORM.include?("darwin")
+
+    set_default_browser_safari
+    webauthn_verification_url = "rubygems.org/api/v1/webauthn_verification/odow34b93t6aPCdY"
+    response_fail = "You have enabled multifactor authentication"
+    api_key = "a5fdbb6ba150cbb83aad2bb2fede64cf040453903"
+    port = 5678
+    server = TCPServer.new(port)
+
+    TCPServer.stub(:new, server) do
+      Gem::WebauthnListener.stub(:wait_for_otp_code, "Uvh6T57tkWuUnWYo") do
+        util_sign_in(proc do
+          @call_count ||= 0
+          if (@call_count += 1).odd?
+            HTTPResponseFactory.create(body: response_fail, code: 401, msg: "Unauthorized")
+          else
+            HTTPResponseFactory.create(body: api_key, code: 200, msg: "OK")
+          end
+        end, nil, [], "", webauthn_verification_url)
+      end
+    ensure
+      server.close
+    end
+
+    url_with_port = "#{webauthn_verification_url}?port=#{port}"
+
+    assert_match "You have enabled multi-factor authentication. Please visit #{url_with_port} to authenticate " \
+      "via security device. If you can't verify using WebAuthn but have OTP enabled, you can re-run the gem signin " \
+      "command with the `--otp [your_code]` option.", @sign_in_ui.output
+    assert_match "\n[WARNING] It looks like your default browser is Safari. Due to limitations within Safari, " \
+      "you will be unable to authenticate using this browser. Please visit the link in another browser.", @sign_in_ui.output
+  ensure
+    restore_default_browser if RUBY_PLATFORM.include?("darwin")
+  end
+
   def test_sign_in_with_webauthn_enabled_with_error
     webauthn_verification_url = "rubygems.org/api/v1/webauthn_verification/odow34b93t6aPCdY"
     response_fail = "You have enabled multifactor authentication"

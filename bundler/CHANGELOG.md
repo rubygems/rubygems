@@ -1,3 +1,19 @@
+# 2.4.11 (April 10, 2023)
+
+## Security:
+
+  - Use URI-0.12.1 (safe against CVE-2023-28755 ReDoS vulnerability) [#6558](https://github.com/rubygems/rubygems/pull/6558)
+
+## Enhancements:
+
+  - Remove one fallback to full indexes on big gemfiles [#6578](https://github.com/rubygems/rubygems/pull/6578)
+  - Generate native gems with `-fvisibility=hidden` [#6541](https://github.com/rubygems/rubygems/pull/6541)
+
+## Bug fixes:
+
+  - Fix resolver hangs when dealing with an incomplete lockfile [#6552](https://github.com/rubygems/rubygems/pull/6552)
+  - Fix prereleases not being considered by gem version promoter when there's no lockfile [#6537](https://github.com/rubygems/rubygems/pull/6537)
+
 # 2.4.10 (March 27, 2023)
 
 ## Bug fixes:

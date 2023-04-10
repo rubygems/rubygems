@@ -47,17 +47,25 @@ class Release
     end
 
     def previous_version
-      @latest_release ||= latest_release.tag_name.gsub(/^#{@tag_prefix}/, "")
+      @previous_version ||= remove_tag_prefix(latest_release.tag_name)
     end
 
     def latest_release
-      @latest_release ||= gh_client.releases("rubygems/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.max_by(&:tag_name)
+      @latest_release ||= gh_client.releases("rubygems/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.max_by do |release|
+        Gem::Version.new(remove_tag_prefix(release.tag_name))
+      end
     end
 
     attr_reader :relevant_pull_requests
 
     def set_relevant_pull_requests_from(pulls)
       @relevant_pull_requests = pulls.select {|pull| @changelog.relevant_label_for(pull) }
+    end
+
+    private
+
+    def remove_tag_prefix(name)
+      name.gsub(/^#{@tag_prefix}/, "")
     end
   end
 

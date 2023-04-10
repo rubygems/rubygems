@@ -439,6 +439,9 @@ Naming/HeredocDelimiterNaming:
   ForbiddenDelimiters:
     - ^RB$
 
+Naming/MemoizedInstanceVariableName:
+  Enabled: true
+
 Naming/MethodName:
   Enabled: true
 

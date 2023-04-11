@@ -6,9 +6,9 @@ class CertificateBuilder
   attr_reader :start
 
   def initialize(key_size = 2048)
-    @start          = Time.utc 2012, 01, 01, 00, 00, 00
+    @start          = Time.utc 2012, 1, 1, 0, 0, 0
     @end_of_time    = Time.utc 9999, 12, 31, 23, 59, 59
-    @end_of_time_32 = Time.utc 2038, 01, 19, 03, 14, 07
+    @end_of_time_32 = Time.utc 2038, 1, 19, 3, 14, 7
 
     @key_size = key_size
     @serial = 0

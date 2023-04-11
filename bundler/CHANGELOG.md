@@ -1,3 +1,9 @@
+# 2.4.12 (April 11, 2023)
+
+## Enhancements:
+
+  - Remove reference to `pry` gem from generated `bin/console` file [#6515](https://github.com/rubygems/rubygems/pull/6515)
+
 # 2.4.11 (April 10, 2023)
 
 ## Security:

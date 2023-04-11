@@ -75,10 +75,6 @@ Style/LineEndConcatenation:
 
 Style/NumericLiteralPrefix:
   Enabled: true
-  Exclude:
-    - lib/**/*
-    - test/**/*
-    - util/**/*
 
 Style/RegexpLiteral:
   Enabled: true

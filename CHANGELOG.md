@@ -1,3 +1,11 @@
+# 3.4.12 / 2023-04-11
+
+## Enhancements:
+
+* [Experimental] Add WebAuthn Support to the CLI. Pull request
+  [#6560](https://github.com/rubygems/rubygems/pull/6560) by jenshenny
+* Installs bundler 2.4.12 as a default gem.
+
 # 3.4.11 / 2023-04-10
 
 ## Enhancements:

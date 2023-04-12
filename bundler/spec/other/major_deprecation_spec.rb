@@ -646,4 +646,26 @@ RSpec.describe "major deprecations" do
       end
     end
   end
+
+  context "when user set install parameter of inline gem to true" do
+    it "shows platform warnings", :bundler => "< 3"do
+      ruby <<-RUBY
+
+        require "bundler/inline"
+
+        gemfile(true) do
+          source "#{file_uri_for(gem_repo1)}"
+          gem "rack", platform: :jruby
+        end
+      RUBY
+
+      expect(deprecations).to include \
+        "The positional install parameter to the `gemfile(install = false, &block)` helper is getting"\
+        " removed because regardless of what you pass in there, it still installs missing gems."\
+        " Remove the positional parameter to get rid of this message, and optionally replace with"\
+        "   `gemfile(install: false, &block)` (called at -e:4)"
+    end
+
+    pending "fails with a helpful error", :bundler => "3"
+  end
 end

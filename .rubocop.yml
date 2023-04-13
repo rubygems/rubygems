@@ -33,9 +33,6 @@ Naming/MethodName:
 
 Naming/VariableName:
   Enabled: true
-  Exclude:
-    - lib/**/*
-    - test/**/*
 
 Naming/VariableNumber:
   Enabled: true

@@ -409,7 +409,6 @@ lib/rubygems/install_update_options.rb
 lib/rubygems/installer.rb
 lib/rubygems/installer_uninstaller_utils.rb
 lib/rubygems/local_remote_options.rb
-lib/rubygems/mock_gem_ui.rb
 lib/rubygems/name_tuple.rb
 lib/rubygems/openssl.rb
 lib/rubygems/optparse.rb
@@ -581,6 +580,7 @@ test/rubygems/invalid_signer_cert_32.pem
 test/rubygems/invalidchild_cert.pem
 test/rubygems/invalidchild_cert_32.pem
 test/rubygems/invalidchild_key.pem
+test/rubygems/mock_gem_ui.rb
 test/rubygems/package/tar_test_case.rb
 test/rubygems/packages/Bluebie-legs-0.6.2.gem
 test/rubygems/packages/ascii_binder-0.1.10.1.gem

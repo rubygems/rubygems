@@ -541,6 +541,7 @@ lib/rubygems/version.rb
 lib/rubygems/version_option.rb
 lib/rubygems/webauthn_listener.rb
 lib/rubygems/webauthn_listener/response.rb
+lib/rubygems/yaml_serializer.rb
 rubygems-update.gemspec
 setup.rb
 test/rubygems/alternate_cert.pem

@@ -338,7 +338,7 @@ module Gem::GemcutterUtilities
     end
 
     with_response response do |resp|
-      Gem::SafeYAML.load clean_text(resp.body)
+      Gem::ConfigFile.load_with_rubygems_config_hash(clean_text(resp.body))
     end
   end
 

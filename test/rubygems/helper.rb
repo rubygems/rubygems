@@ -692,11 +692,8 @@ class Gem::TestCase < Test::Unit::TestCase
   # Load a YAML file, the psych 3 way
 
   def load_yaml_file(file)
-    if Psych.respond_to?(:unsafe_load_file)
-      Psych.unsafe_load_file(file)
-    else
-      Psych.load_file(file)
-    end
+    require "rubygems/config_file"
+    Gem::ConfigFile.load_with_rubygems_config_hash(File.read(file))
   end
 
   def all_spec_names

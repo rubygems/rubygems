@@ -5,6 +5,7 @@ require_relative "multifactor_auth_utilities"
 require "rubygems"
 require "rubygems/command"
 require "rubygems/gemcutter_utilities"
+require "rubygems/config_file"
 
 class TestGemGemcutterUtilities < Gem::TestCase
   def setup
@@ -41,7 +42,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     }
 
     File.open Gem.configuration.credentials_path, "w" do |f|
-      f.write keys.to_yaml
+      f.write Gem::ConfigFile.dump_with_rubygems_yaml(keys)
     end
 
     ENV["RUBYGEMS_HOST"] = "http://rubygems.engineyard.com"
@@ -55,7 +56,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     keys = { :rubygems_api_key => "KEY" }
 
     File.open Gem.configuration.credentials_path, "w" do |f|
-      f.write keys.to_yaml
+      f.write Gem::ConfigFile.dump_with_rubygems_yaml(keys)
     end
 
     Gem.configuration.load_api_keys
@@ -67,7 +68,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     keys = { :rubygems_api_key => "KEY", :other => "OTHER" }
 
     File.open Gem.configuration.credentials_path, "w" do |f|
-      f.write keys.to_yaml
+      f.write Gem::ConfigFile.dump_with_rubygems_yaml(keys)
     end
 
     Gem.configuration.load_api_keys
@@ -163,8 +164,10 @@ class TestGemGemcutterUtilities < Gem::TestCase
   def test_sign_in_with_other_credentials_doesnt_overwrite_other_keys
     other_api_key = "f46dbb18bb6a9c97cdc61b5b85c186a17403cdcbf"
 
+    config = Hash[:other_api_key, other_api_key]
+
     File.open Gem.configuration.credentials_path, "w" do |f|
-      f.write Hash[:other_api_key, other_api_key].to_yaml
+      f.write Gem::ConfigFile.dump_with_rubygems_yaml(config)
     end
     util_sign_in
 
@@ -317,7 +320,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
   def test_verify_api_key
     keys = { :other => "a5fdbb6ba150cbb83aad2bb2fede64cf040453903" }
     File.open Gem.configuration.credentials_path, "w" do |f|
-      f.write keys.to_yaml
+      f.write Gem::ConfigFile.dump_with_rubygems_yaml(keys)
     end
     Gem.configuration.load_api_keys
 

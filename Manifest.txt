@@ -545,6 +545,7 @@ lib/rubygems/util/list.rb
 lib/rubygems/validator.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
+lib/rubygems/yaml_serializer.rb
 rubygems-update.gemspec
 setup.rb
 test/rubygems/alternate_cert.pem

@@ -15,7 +15,7 @@ module Spec
         :release => true,
       }
 
-      replace_build_metadata(build_metadata, dir: dir) # rubocop:disable Style/HashSyntax
+      replace_build_metadata(build_metadata, dir: dir)
     end
 
     def reset_build_metadata(dir: source_root)
@@ -23,7 +23,7 @@ module Spec
         :release => false,
       }
 
-      replace_build_metadata(build_metadata, dir: dir) # rubocop:disable Style/HashSyntax
+      replace_build_metadata(build_metadata, dir: dir)
     end
 
     private

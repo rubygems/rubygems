@@ -57,16 +57,6 @@ Style/ClassVars:
 Style/FormatString:
   Enabled: true
 
-# 1.8.7 support
-Style/HashSyntax:
-  Enabled: true
-  EnforcedStyle: hash_rockets
-  Exclude:
-    - Rakefile
-    - lib/**/*
-    - test/**/*
-    - tool/**/*
-
 Style/LineEndConcatenation:
   Enabled: true
 

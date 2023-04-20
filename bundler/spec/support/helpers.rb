@@ -336,9 +336,9 @@ module Spec
           FileUtils.cp shipped_file, target_shipped_file, :preserve => true
         end
 
-        replace_version_file(version, dir: build_path) # rubocop:disable Style/HashSyntax
+        replace_version_file(version, dir: build_path)
 
-        Spec::BuildMetadata.write_build_metadata(dir: build_path) # rubocop:disable Style/HashSyntax
+        Spec::BuildMetadata.write_build_metadata(dir: build_path)
 
         gem_command "build #{relative_gemspec}", :dir => build_path
 

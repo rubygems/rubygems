@@ -219,6 +219,25 @@ RSpec.describe Bundler::Dsl do
       dep = subject.dependencies.last
       expect(dep.name).to eq "foo"
     end
+
+    it "allows specifying metadata" do
+      subject.gem("foo", meta: { bar: "baz" })
+      dep = subject.dependencies.last
+      expect(dep.meta).to eq(bar: "baz")
+    end
+  end
+
+  context "when using the meta DSL" do
+    it "allows specifying metadata" do
+      # meta :owner => :platform do
+      #   gem "waffles", "~> 1.0"
+      # end
+      deps = subject.meta(owner: :platform) do |meta|
+        expect(meta).to eq(owner: :platform)
+        subject.gem("waffles", "~> 1.0")
+      end
+      expect(deps.last.meta).to eq(owner: :platform)
+    end
   end
 
   context "can bundle groups of gems with" do

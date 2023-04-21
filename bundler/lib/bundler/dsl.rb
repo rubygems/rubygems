@@ -15,7 +15,7 @@ module Bundler
 
     VALID_PLATFORMS = Bundler::Dependency::PLATFORM_MAP.keys.freeze
 
-    VALID_KEYS = %w[group groups git path glob name branch ref tag require submodules
+    VALID_KEYS = %w[group groups git path glob name branch ref tag require submodules meta
                     platform platforms type source install_if gemfile force_ruby_platform].freeze
 
     GITHUB_PULL_REQUEST_URL = %r{\Ahttps://github\.com/([A-Za-z0-9_\-\.]+/[A-Za-z0-9_\-\.]+)/pull/(\d+)\z}
@@ -33,6 +33,7 @@ module Bundler
       @optional_groups      = []
       @platforms            = []
       @env                  = nil
+      @meta                 = nil
       @ruby_version         = nil
       @gemspecs             = []
       @gemfile              = nil
@@ -264,6 +265,14 @@ module Bundler
       @env = old
     end
 
+    def meta(data = {})
+      old = @meta
+      @meta = data
+      yield @meta
+    ensure
+      @meta = old
+    end
+
     def plugin(*args)
       # Pass on
     end
@@ -389,6 +398,7 @@ module Bundler
 
       opts["source"]         ||= @source
       opts["env"]            ||= @env
+      opts["meta"]           ||= @meta
       opts["platforms"]      = platforms.dup
       opts["group"]          = groups
       opts["should_include"] = install_if

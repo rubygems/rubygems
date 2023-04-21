@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../vendored_fileutils"
+require 'base64'
 
 module Bundler
   class CompactIndexClient
@@ -49,16 +50,16 @@ module Bundler
 
         content = response.body
 
-        etag = (response["ETag"] || "").gsub(%r{\AW/}, "")
+        remote_sha256_digest = sha256_from_digest(response["Digest"]) || sha256_from_x_checksum(response["X-Checksum-Sha256"])
         correct_response = SharedHelpers.filesystem_access(local_temp_path) do
           if response.is_a?(Net::HTTPPartialContent) && local_temp_path.size.nonzero?
             local_temp_path.open("a") {|f| f << slice_body(content, 1..-1) }
 
-            etag_for(local_temp_path) == etag
+            sha256_digest_for_file(local_temp_path) == remote_sha256_digest
           else
             local_temp_path.open("wb") {|f| f << content }
 
-            etag.length.zero? || etag_for(local_temp_path) == etag
+            remote_sha256_digest.length.zero? || sha256_digest_for_file(local_temp_path) == remote_sha256_digest
           end
         end
 
@@ -70,7 +71,7 @@ module Bundler
         end
 
         if retrying
-          raise MisMatchedChecksumError.new(remote_path, etag, etag_for(local_temp_path))
+          raise MisMatchedChecksumError.new(remote_path, remote_sha256_digest, sha256_digest_for_file(local_temp_path))
         end
 
         update(local_path, remote_path, :retrying)
@@ -99,7 +100,22 @@ module Bundler
         end
       end
 
+      def sha256_digest_for_file(path)
+        return nil unless path.file?
+        SharedHelpers.filesystem_access(path, :read) do
+          Base64.strict_encode64(SharedHelpers.digest(:SHA256).digest(File.read(path)))
+        end
+      end
+
       private
+
+      def sha256_from_digest(digest)
+        digest&.split(",")&.find{ |s| s.start_with?("sha-256=") }&.delete_prefix('sha-256=')&.delete('"')
+      end
+
+      def sha256_from_x_checksum(x_checksum)
+        Base64.strict_encode64([x_checksum].pack('H*'))
+      end
 
       def copy_file(source, dest)
         SharedHelpers.filesystem_access(source, :read) do

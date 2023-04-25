@@ -24,3 +24,6 @@ exclude_paths:
 - bundler/spec/**/*
 - bundler/Rakefile
 - test/**/*
+- lib/rubygems/optparse.rb
+- lib/rubygems/optparse/**/*
+- lib/rubygems/tsort/**/*

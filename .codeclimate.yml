@@ -1,5 +1,6 @@
 ---
-engines:
+version: "2"
+plugins:
   duplication:
     enabled: true
     config:
@@ -9,12 +10,7 @@ engines:
     enabled: true
   rubocop:
     enabled: false
-ratings:
-  paths:
-  - "bundler/**.rb"
-  - "bundler/bin/*"
-  - "bundler/exe/*"
-exclude_paths:
+exclude_patterns:
 - bundler/bundler.gemspec
 - "bundler/*.md"
 - bundler/lib/bundler/ssl_certs/*.pem

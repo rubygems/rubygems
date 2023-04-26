@@ -15,7 +15,7 @@ checks:
       # - @duckinator
       #
       # Default: 5.
-      threshold: 20
+      threshold: 30
   method-count:
     config:
       # Default: 20

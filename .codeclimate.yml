@@ -1,19 +1,44 @@
 ---
 version: "2"
 checks:
+  method-complexity:
+    config:
+      # We have multiple methods where CodeClimate measures the
+      # Cognitive Complexity at 50 or higher.
+      #
+      # I think it's reasonable to focus CodeClimate on the really high
+      # ones, and lower this value later.
+      # - @duckinator
+      #
+      # Default: 5.
+      threshold: 20
+  method-count:
+    config:
+      # Default: 20
+      threshold: 30
+  method-lines:
+    config:
+      # We have individual methods with 175 lines of code.
+      # I think it's reasonable to focus on things like that for now.
+      # - @duckinator
+      #
+      # Default: 25.
+      threshold: 100
   file-lines:
     config:
-      # The there is a correlation between the files CodeClimate rates the
+      # There is a correlation between the files CodeClimate rates the
       # worst and the biggest biggest files.
       #
       # I am trying to prioritize the files with the most problems, so
       # I chose a threshold that seems to accomplish this.
       #
       # Sorting https://codeclimate.com/github/rubygems/rubygems/code
-      # by "lines of code" and "maintainability" can be useful to find
-      # these correlations.
+      # by "lines of code" and "maintainability" can be useful to see if
+      # this correlation still exists.
       #
       # - @duckinator
+      #
+      # Default: 250.
       threshold: 400
 plugins:
   duplication:

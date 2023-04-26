@@ -1,6 +1,10 @@
 ---
 version: "2"
 checks:
+  argument-count:
+    config:
+      # Default: 4
+      threshold: 7
   method-complexity:
     config:
       # We have multiple methods where CodeClimate measures the
@@ -40,6 +44,11 @@ checks:
       #
       # Default: 250.
       threshold: 400
+  return-statements:
+    # This was adding flagging a lot of functions where having many
+    # return statements made sense.
+    # - @duckinator
+    enabled: false
 plugins:
   duplication:
     enabled: true

@@ -35,7 +35,7 @@ class Gem::Licenses
     #{exceptions.sort.join "\n    "}
   ].freeze
 
-  REGEXP = %r{
+  REGEXP = /
     \\A
     (?:
       \#{Regexp.union(LICENSE_IDENTIFIERS)}
@@ -45,7 +45,7 @@ class Gem::Licenses
       | \#{LICENSE_REF}
     )
     \\Z
-  }ox.freeze
+  /ox.freeze
 
   def self.match?(license)
     !REGEXP.match(license).nil?

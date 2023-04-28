@@ -114,6 +114,9 @@ module Bundler
         return if definition.dependencies.empty?
 
         plugins = definition.dependencies.map(&:name).reject {|p| index.installed? p }
+
+        return if plugins.empty?
+
         installed_specs = Installer.new.install_definition(definition)
 
         save_plugins plugins, installed_specs, builder.inferred_plugins

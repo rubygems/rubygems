@@ -129,6 +129,14 @@ RSpec.describe Bundler::Plugin do
       subject.gemfile_install(gemfile)
     end
 
+    it "doesn't calls installer when plugins already installed" do
+      allow(index).to receive(:installed?).and_return(true)
+      allow(definition).to receive(:dependencies) { [Bundler::Dependency.new("new-plugin", ">=0")] }
+      allow(installer).to receive(:install_definition).never
+
+      subject.gemfile_install(gemfile)
+    end
+
     context "with dependencies" do
       let(:plugin_specs) do
         {

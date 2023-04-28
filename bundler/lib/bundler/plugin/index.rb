@@ -111,6 +111,17 @@ module Bundler
         @commands[command]
       end
 
+      # Plugin cannot be installed and updating to install
+      def cannot_install?(name, version)
+        installed?(name) && !updating?(name, version)
+      end
+
+      # An existing plugin must have a diff version to install again
+      def updating?(name, version)
+        version.to_s != @plugin_paths[name][/#{name}-(.*)$/, 1].to_s
+      end
+
+      # Plugin is already installed?
       def installed?(name)
         @plugin_paths[name]
       end

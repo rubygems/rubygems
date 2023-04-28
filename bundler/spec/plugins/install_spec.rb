@@ -232,6 +232,45 @@ RSpec.describe "bundler plugin install" do
       plugin_should_be_installed("foo")
     end
 
+    it "install only plugins not installed yet listed in gemfile" do
+      gemfile <<-G
+        source '#{file_uri_for(gem_repo2)}'
+        plugin 'foo'
+        gem 'rack', "1.0.0"
+      G
+
+      2.times { bundle "install" }
+
+      expect(out).to_not include("Installing foo")
+      expect(out).to_not include("Installed plugin foo")
+
+      expect(out).to include("Bundle complete!")
+
+      expect(the_bundle).to include_gems("rack 1.0.0")
+      plugin_should_be_installed("foo")
+
+      gemfile <<-G
+        source '#{file_uri_for(gem_repo2)}'
+        plugin 'foo'
+        plugin 'kung-foo'
+        gem 'rack', "1.0.0"
+      G
+
+      bundle "install"
+
+      expect(out).to include("Installing kung-foo")
+      expect(out).to include("Installed plugin kung-foo")
+
+      expect(out).to_not include("Installing foo")
+      expect(out).to_not include("Installed plugin foo")
+
+      expect(out).to include("Bundle complete!")
+
+      expect(the_bundle).to include_gems("rack 1.0.0")
+      plugin_should_be_installed("foo")
+      plugin_should_be_installed("kung-foo")
+    end
+
     it "accepts plugin version" do
       update_repo2 do
         build_plugin "foo", "1.1.0"

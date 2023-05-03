@@ -2,11 +2,13 @@ module Bundler
   module SafeMarshal
     ALLOWED_CLASSES = [
       Array,
+      FalseClass,
       Gem::Specification
       Gem::Version,
       Hash,
       String,
       Symbol,
+      Time,
       TrueClass,
     ].freeze
 

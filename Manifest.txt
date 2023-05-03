@@ -180,6 +180,7 @@ bundler/lib/bundler/rubygems_ext.rb
 bundler/lib/bundler/rubygems_gem_installer.rb
 bundler/lib/bundler/rubygems_integration.rb
 bundler/lib/bundler/runtime.rb
+bundler/lib/bundler/safe_marshal.rb
 bundler/lib/bundler/self_manager.rb
 bundler/lib/bundler/settings.rb
 bundler/lib/bundler/settings/validator.rb

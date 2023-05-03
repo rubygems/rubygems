@@ -3,13 +3,13 @@ module Bundler
     ALLOWED_CLASSES = [
       Array,
       FalseClass,
-      Gem::Specification
+      Gem::Specification,
       Gem::Version,
       Hash,
       String,
       Symbol,
       Time,
-      TrueClass,
+      TrueClass
     ].freeze
 
     ERROR = "Unexpected class %s present in marshaled data. Only %s are allowed."

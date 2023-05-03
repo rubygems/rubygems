@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Bundler
   module SafeMarshal
     ALLOWED_CLASSES = [
@@ -9,7 +11,7 @@ module Bundler
       String,
       Symbol,
       Time,
-      TrueClass
+      TrueClass,
     ].freeze
 
     ERROR = "Unexpected class %s present in marshaled data. Only %s are allowed."

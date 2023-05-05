@@ -62,6 +62,7 @@ RSpec.describe Bundler do
         s.rubygems_version = "3.4.7"
         s.specification_version = 4
         s.summary = "The best way to manage your application's dependencies"
+        s.license = false
       end
       data = Marshal.dump(gem_spec)
       expect(Bundler.safe_load_marshal(data)).to eq(gem_spec)

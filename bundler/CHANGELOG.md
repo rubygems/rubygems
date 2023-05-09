@@ -1,3 +1,13 @@
+# 2.4.13 (May 9, 2023)
+
+## Bug fixes:
+
+  - Fix unexpected fallbacks to full index by adding FalseClass and Time to the SafeMarshal list [#6655](https://github.com/rubygems/rubygems/pull/6655)
+
+## Documentation:
+
+  - Fix broken hyperlinks in bundle cache documentation [#6606](https://github.com/rubygems/rubygems/pull/6606)
+
 # 2.4.12 (April 11, 2023)
 
 ## Enhancements:

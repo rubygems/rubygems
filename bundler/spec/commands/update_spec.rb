@@ -1451,6 +1451,31 @@ RSpec.describe "bundle update --bundler" do
       expect(out).to include("Using bundler 2.3.9")
     end
   end
+
+  it "prints an error when trying to update bundler in frozen mode" do
+    system_gems "bundler-2.3.9"
+
+    gemfile <<~G
+      source "#{file_uri_for(gem_repo2)}"
+    G
+
+    lockfile <<-L
+      GEM
+        remote: #{file_uri_for(gem_repo2)}/
+        specs:
+
+      PLATFORMS
+        ruby
+
+      DEPENDENCIES
+
+      BUNDLED WITH
+         2.1.4
+    L
+
+    bundle "update --bundler=2.3.9", :env => { "BUNDLE_FROZEN" => "true" }
+    expect(err).to include("Cannot write a changed lockfile while frozen")
+  end
 end
 
 # these specs are slow and focus on integration and therefore are not exhaustive. unit specs elsewhere handle that.

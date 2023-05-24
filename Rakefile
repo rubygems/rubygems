@@ -644,22 +644,15 @@ namespace :man do
   if RUBY_ENGINE == "jruby"
     task(:build) {}
   else
-    index = Dir["bundler/lib/bundler/man/*.ronn"].map do |ronn|
-      roff = "#{File.dirname(ronn)}/#{File.basename(ronn, ".ronn")}"
-
-      file roff => ronn do
+    file "index.txt" do
+      index = Dir["bundler/lib/bundler/man/*.ronn"].map do |ronn|
+        roff = "#{File.dirname(ronn)}/#{File.basename(ronn, ".ronn")}"
+        [ronn, roff]
+      end
+      index.map! do |(ronn, roff)|
         date = ENV["MAN_PAGES_DATE"] || Time.now.strftime("%Y-%m-%d")
         sh "bundler/bin/ronn --warnings --roff --pipe --date #{date} #{ronn} > #{roff}"
-      end
-
-      task :build_all_pages => roff
-
-      [ronn, File.basename(roff)]
-    end
-
-    file "index.txt" do
-      index.map! do |(ronn, roff)|
-        [File.read(ronn).split(" ").first, roff]
+        [File.read(ronn).split(" ").first, File.basename(roff)]
       end
       index = index.sort_by(&:first)
       justification = index.map {|(n, _f)| n.length }.max + 4

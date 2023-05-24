@@ -56,7 +56,9 @@ jobs:
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} rake override_version
         if: matrix.bundler.value != ''
       - name: Run Test
-        run: rake spec:realworld
+        # rake spec:realworld is failing with Ruby 2.6. We should use `bin/rspec` until dropping Ruby 2.6 support.
+        run: BUNDLER_SPEC_PRE_RECORDED=1 bin/rspec --tag realworld
+        working-directory: ./bundler
       - name: Upload used cassettes as artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:

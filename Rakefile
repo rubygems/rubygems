@@ -710,11 +710,13 @@ task :override_version do
   Spec::Path.replace_version_file(version)
 end
 
-require_relative "bundler/lib/bundler/gem_tasks"
-require_relative "bundler/spec/support/build_metadata"
-require_relative "util/release"
-
 namespace :bundler do
+  chdir("bundler") do
+    require_relative "bundler/lib/bundler/gem_tasks"
+  end
+  require_relative "bundler/spec/support/build_metadata"
+  require_relative "util/release"
+
   Bundler::GemHelper.tag_prefix = "bundler-"
 
   task :build_metadata do
@@ -727,10 +729,10 @@ namespace :bundler do
     end
   end
 
-  task :build => ["build_metadata"] do
-    Rake::Task["build_metadata:clean"].tap(&:reenable).invoke
+  task :build => ["bundler:build_metadata"] do
+    Rake::Task["bundler:build_metadata:clean"].tap(&:reenable).invoke
   end
-  task "release:rubygem_push" => ["release:setup", "man:check", "build_metadata", "release:github"]
+  task "bundler:release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "bundler:release:github"]
 
   desc "Generates the changelog for a specific target version"
   task :generate_changelog, [:version] do |_t, opts|

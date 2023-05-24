@@ -613,13 +613,15 @@ namespace :spec do
     end
 
     task :check_unused_cassettes do
-      used_cassettes = Dir.glob("bundler/spec/support/artifice/used_vcr_cassettes/**/*.txt").flat_map {|f| File.readlines(f).map(&:strip) }
-      all_cassettes = Dir.glob("bundler/spec/support/artifice/vcr_cassettes/**/*").select {|f| File.file?(f) }
-      unused_cassettes = all_cassettes - used_cassettes
+      chdir("bundler") do
+        used_cassettes = Dir.glob("spec/support/artifice/used_vcr_cassettes/**/*.txt").flat_map {|f| File.readlines(f).map(&:strip) }
+        all_cassettes = Dir.glob("spec/support/artifice/vcr_cassettes/**/*").select {|f| File.file?(f) }
+        unused_cassettes = all_cassettes - used_cassettes
 
-      raise "The following cassettes are unused:\n#{unused_cassettes.join("\n")}\n" if unused_cassettes.any?
+        raise "The following cassettes are unused:\n#{unused_cassettes.join("\n")}\n" if unused_cassettes.any?
 
-      puts "No cassettes unused"
+        puts "No cassettes unused"
+      end
     end
   end
 end

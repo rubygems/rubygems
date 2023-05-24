@@ -361,10 +361,8 @@ module Bundler
              "updated #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)} to version control."
 
       unless explicit_flag
-        suggested_command = if Bundler.settings.locations("frozen").keys.&([:global, :local]).any?
-          "bundle config unset frozen"
-        elsif Bundler.settings.locations("deployment").keys.&([:global, :local]).any?
-          "bundle config unset deployment"
+        suggested_command = unless Bundler.settings.locations("frozen").keys.include?(:env)
+          "bundle config set frozen false"
         end
         msg << "\n\nIf this is a development machine, remove the #{Bundler.default_gemfile} " \
                "freeze \nby running `#{suggested_command}`." if suggested_command

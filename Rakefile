@@ -631,7 +631,7 @@ task :check_rvm_integration do
   # The rubygems-bundler gem is installed by RVM by default and it could easily
   # break when we change bundler. Make sure that binstubs still run with it
   # installed.
-  sh("RUBYOPT=-Ilib gem install rubygems-bundler rake && RUBYOPT=-Ilib rake -T")
+  sh("RUBYOPT=-Ilib gem install rubygems-bundler rake && RUBYOPT=-Ibundler/lib rake -T")
 end
 
 desc "Check RubyGems integration"
@@ -639,7 +639,7 @@ task :check_rubygems_integration do
   # Bundler monkeypatches RubyGems in some ways that could potentially break gem
   # activation. Run a non trivial binstub activation, with two different
   # versions of a dependent gem installed.
-  sh("ruby -Ilib -S gem install reline:0.3.0 reline:0.3.1 irb && ruby -Ilib -rbundler -S irb --version")
+  sh("ruby -Ilib -S gem install reline:0.3.0 reline:0.3.1 irb && ruby -Ibundler/lib -rbundler -S irb --version")
 end
 
 namespace :man do

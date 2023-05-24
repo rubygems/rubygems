@@ -886,7 +886,8 @@ module Bundler
       if preserve_unknown_sections
         sections_to_ignore = LockfileParser.sections_to_ignore(@locked_bundler_version)
         sections_to_ignore += LockfileParser.unknown_sections_in_lockfile(current)
-        sections_to_ignore += LockfileParser::ENVIRONMENT_VERSION_SECTIONS
+        sections_to_ignore << LockfileParser::RUBY
+        sections_to_ignore << LockfileParser::BUNDLED unless @unlocking_bundler
         pattern = /#{Regexp.union(sections_to_ignore)}\n(\s{2,}.*\n)+/
         whitespace_cleanup = /\n{2,}/
         current = current.gsub(pattern, "\n").gsub(whitespace_cleanup, "\n\n").strip

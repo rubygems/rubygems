@@ -564,11 +564,13 @@ namespace :bundler do
   end
 end
 
-require_relative "spec/support/rubygems_ext"
+require_relative "bundler/spec/support/rubygems_ext"
 
 desc "Run specs"
 task :spec do
-  sh("bin/rspec")
+  chdir("bundler") do
+    sh("bin/rspec")
+  end
 end
 
 namespace :dev do
@@ -602,23 +604,29 @@ namespace :spec do
 
   desc "Run the regular spec suite"
   task :regular do
-    sh("bin/parallel_rspec")
+    chdir("bundler") do
+      sh("bin/parallel_rspec")
+    end
   end
 
   desc "Run the real-world spec suite"
   task :realworld do
-    sh("BUNDLER_SPEC_PRE_RECORDED=1 bin/rspec --tag realworld")
+    chdir("bundler") do
+      sh("BUNDLER_SPEC_PRE_RECORDED=1 bin/rspec --tag realworld")
+    end
   end
 
   namespace :realworld do
     desc "Re-record cassettes for the realworld specs"
     task :record do
-      sh("rm -rf spec/support/artifice/vcr_cassettes && bin/rspec --tag realworld")
+      chdir("bundler") do
+        sh("rm -rf spec/support/artifice/vcr_cassettes && bin/rspec --tag realworld")
+      end
     end
 
     task :check_unused_cassettes do
-      used_cassettes = Dir.glob("spec/support/artifice/used_vcr_cassettes/**/*.txt").flat_map {|f| File.readlines(f).map(&:strip) }
-      all_cassettes = Dir.glob("spec/support/artifice/vcr_cassettes/**/*").select {|f| File.file?(f) }
+      used_cassettes = Dir.glob("bundler/spec/support/artifice/used_vcr_cassettes/**/*.txt").flat_map {|f| File.readlines(f).map(&:strip) }
+      all_cassettes = Dir.glob("bundler/spec/support/artifice/vcr_cassettes/**/*").select {|f| File.file?(f) }
       unused_cassettes = all_cassettes - used_cassettes
 
       raise "The following cassettes are unused:\n#{unused_cassettes.join("\n")}\n" if unused_cassettes.any?
@@ -633,7 +641,7 @@ task :check_rvm_integration do
   # The rubygems-bundler gem is installed by RVM by default and it could easily
   # break when we change bundler. Make sure that binstubs still run with it
   # installed.
-  sh("RUBYOPT=-I../lib gem install rubygems-bundler rake && RUBYOPT=-Ilib rake -T")
+  sh("RUBYOPT=-Ilib gem install rubygems-bundler rake && RUBYOPT=-Ilib rake -T")
 end
 
 desc "Check RubyGems integration"
@@ -641,19 +649,19 @@ task :check_rubygems_integration do
   # Bundler monkeypatches RubyGems in some ways that could potentially break gem
   # activation. Run a non trivial binstub activation, with two different
   # versions of a dependent gem installed.
-  sh("ruby -I../lib -S gem install reline:0.3.0 reline:0.3.1 irb && ruby -Ilib -rbundler -S irb --version")
+  sh("ruby -Ilib -S gem install reline:0.3.0 reline:0.3.1 irb && ruby -Ilib -rbundler -S irb --version")
 end
 
 namespace :man do
   if RUBY_ENGINE == "jruby"
     task(:build) {}
   else
-    index = Dir["lib/bundler/man/*.ronn"].map do |ronn|
+    index = Dir["bundler/lib/bundler/man/*.ronn"].map do |ronn|
       roff = "#{File.dirname(ronn)}/#{File.basename(ronn, ".ronn")}"
 
       file roff => ronn do
         date = ENV["MAN_PAGES_DATE"] || Time.now.strftime("%Y-%m-%d")
-        sh "bin/ronn --warnings --roff --pipe --date #{date} #{ronn} > #{roff}"
+        sh "bundler/bin/ronn --warnings --roff --pipe --date #{date} #{ronn} > #{roff}"
       end
 
       task :build_all_pages => roff
@@ -667,7 +675,7 @@ namespace :man do
       end
       index = index.sort_by(&:first)
       justification = index.map {|(n, _f)| n.length }.max + 4
-      File.open("lib/bundler/man/index.txt", "w") do |f|
+      File.open("bundler/lib/bundler/man/index.txt", "w") do |f|
         index.each do |name, filename|
           f << name.ljust(justification) << filename << "\n"
         end
@@ -684,7 +692,7 @@ namespace :man do
 
     desc "Remove all built man pages"
     task :clean do
-      leftovers = Dir["lib/bundler/man/*"].reject do |f|
+      leftovers = Dir["bundler/lib/bundler/man/*"].reject do |f|
         File.extname(f) == ".ronn"
       end
       rm leftovers if leftovers.any?
@@ -696,7 +704,7 @@ namespace :man do
     desc "Sets target date for building man pages to the one currently present"
     task :set_current_date do
       require "date"
-      ENV["MAN_PAGES_DATE"] = Date.parse(File.readlines("lib/bundler/man/bundle-add.1")[3].split('"')[5]).strftime("%Y-%m-%d")
+      ENV["MAN_PAGES_DATE"] = Date.parse(File.readlines("bundler/lib/bundler/man/bundle-add.1")[3].split('"')[5]).strftime("%Y-%m-%d")
     end
 
     desc "Verify man pages are in sync"
@@ -761,6 +769,6 @@ namespace :bundler3 do
     ENV["BUNDLER_SPEC_SUB_VERSION"] = "3.0.0"
     Rake::Task["override_version"].invoke
     Rake::Task["install"].invoke
-    sh("git", "checkout", "--", "lib/bundler/version.rb")
+    sh("git", "checkout", "--", "bundler/lib/bundler/version.rb")
   end
 end

@@ -83,7 +83,7 @@ namespace "test" do
   end
 end
 
-task :default => :test
+task :default => [:test, :spec]
 
 spec = Gem::Specification.load("rubygems-update.gemspec")
 v = spec.version
@@ -721,8 +721,6 @@ task :override_version do
   next unless version = ENV["BUNDLER_SPEC_SUB_VERSION"]
   Spec::Path.replace_version_file(version)
 end
-
-task :default => :spec
 
 require_relative "../lib/bundler/gem_tasks"
 require_relative "../spec/support/build_metadata"

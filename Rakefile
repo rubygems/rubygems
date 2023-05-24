@@ -552,18 +552,6 @@ task :update_licenses do
   load "util/generate_spdx_license_list.rb"
 end
 
-namespace :bundler do
-  task :build_metadata do
-    chdir("bundler") { sh "rake build_metadata" }
-  end
-
-  namespace :build_metadata do
-    task :clean do
-      chdir("bundler") { sh "rake build_metadata:clean" }
-    end
-  end
-end
-
 require_relative "bundler/spec/support/rubygems_ext"
 
 desc "Run specs"
@@ -722,43 +710,45 @@ task :override_version do
   Spec::Path.replace_version_file(version)
 end
 
-require_relative "../lib/bundler/gem_tasks"
-require_relative "../spec/support/build_metadata"
-require_relative "../../util/release"
+require_relative "bundler/lib/bundler/gem_tasks"
+require_relative "bundler/spec/support/build_metadata"
+require_relative "util/release"
 
-Bundler::GemHelper.tag_prefix = "bundler-"
+namespace :bundler do
+  Bundler::GemHelper.tag_prefix = "bundler-"
 
-task :build_metadata do
-  Spec::BuildMetadata.write_build_metadata
-end
-
-namespace :build_metadata do
-  task :clean do
-    Spec::BuildMetadata.reset_build_metadata
-  end
-end
-
-task :build => ["build_metadata"] do
-  Rake::Task["build_metadata:clean"].tap(&:reenable).invoke
-end
-task "release:rubygem_push" => ["release:setup", "man:check", "build_metadata", "release:github"]
-
-desc "Generates the changelog for a specific target version"
-task :generate_changelog, [:version] do |_t, opts|
-  Release.for_bundler(opts[:version]).cut_changelog!
-end
-
-namespace :release do
-  desc "Install gems needed for releasing"
-  task :setup do
-    Release.install_dependencies!
+  task :build_metadata do
+    Spec::BuildMetadata.write_build_metadata
   end
 
-  desc "Push the release to GitHub releases"
-  task :github do
-    gemspec_version = Bundler::GemHelper.gemspec.version
+  namespace :build_metadata do
+    task :clean do
+      Spec::BuildMetadata.reset_build_metadata
+    end
+  end
 
-    Release.for_bundler(gemspec_version).create_for_github!
+  task :build => ["build_metadata"] do
+    Rake::Task["build_metadata:clean"].tap(&:reenable).invoke
+  end
+  task "release:rubygem_push" => ["release:setup", "man:check", "build_metadata", "release:github"]
+
+  desc "Generates the changelog for a specific target version"
+  task :generate_changelog, [:version] do |_t, opts|
+    Release.for_bundler(opts[:version]).cut_changelog!
+  end
+
+  namespace :release do
+    desc "Install gems needed for releasing"
+    task :setup do
+      Release.install_dependencies!
+    end
+
+    desc "Push the release to GitHub releases"
+    task :github do
+      gemspec_version = Bundler::GemHelper.gemspec.version
+
+      Release.for_bundler(gemspec_version).create_for_github!
+    end
   end
 end
 

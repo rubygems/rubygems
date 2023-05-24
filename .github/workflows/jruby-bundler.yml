@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      RGV: ..
+      RGV: .
 
     strategy:
       fail-fast: false
@@ -47,6 +47,8 @@ jobs:
       - name: Run Test
         run: |
           bin/parallel_rspec --tag jruby_only --tag jruby
+        env:
+          RGV: ..
         working-directory: ./bundler
         if: startsWith(matrix.os.name, 'ubuntu')
       - name: Install local bundler

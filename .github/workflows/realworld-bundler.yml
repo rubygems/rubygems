@@ -51,15 +51,12 @@ jobs:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Prepare dependencies
-        run: bin/rake spec:deps
-        working-directory: ./bundler
+        run: rake spec:deps
       - name: Replace version
-        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} rake override_version
         if: matrix.bundler.value != ''
-        working-directory: ./bundler
       - name: Run Test
-        run: bin/rake spec:realworld
-        working-directory: ./bundler
+        run: rake spec:realworld
       - name: Upload used cassettes as artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
@@ -91,15 +88,12 @@ jobs:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Prepare dependencies
-        run: bin/rake spec:deps
-        working-directory: ./bundler
+        run: rake spec:deps
       - name: Replace version
-        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} rake override_version
         if: matrix.bundler.value != ''
-        working-directory: ./bundler
       - name: Run Test
-        run: bin/rake spec:realworld
-        working-directory: ./bundler
+        run: rake spec:realworld
       - name: Upload used cassettes as artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
@@ -123,5 +117,4 @@ jobs:
         with:
           path: ./bundler/spec/support/artifice/used_vcr_cassettes
       - name: Check unused cassettes
-        run: bin/rake spec:realworld:check_unused_cassettes
-        working-directory: ./bundler
+        run: rake spec:realworld:check_unused_cassettes

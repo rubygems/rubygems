@@ -31,9 +31,7 @@ jobs:
       - name: Generate docs
         run: rake docs
       - name: Install & Check Dependencies
-        run: bin/rake dev:frozen_deps
-        working-directory: ./bundler
+        run: rake dev:frozen_deps
       - name: Misc checks
-        run: bin/rake check_rvm_integration man:check check_rubygems_integration
-        working-directory: ./bundler
+        run: rake check_rvm_integration man:check check_rubygems_integration
     timeout-minutes: 15

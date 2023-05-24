@@ -14,7 +14,6 @@ permissions:  # added using https://github.com/step-security/secure-workflows
 defaults:
   run:
     shell: bash
-    working-directory: ./bundler
 
 jobs:
   jruby_bundler:
@@ -44,14 +43,15 @@ jobs:
         if: "!startsWith(matrix.os.name, 'ubuntu')"
       - name: Prepare dependencies
         run: |
-          bin/rake spec:parallel_deps
+          rake spec:parallel_deps
       - name: Run Test
         run: |
           bin/parallel_rspec --tag jruby_only --tag jruby
+        working-directory: ./bundler
         if: startsWith(matrix.os.name, 'ubuntu')
       - name: Install local bundler
         run: |
-          bin/rake install:local
+          rake bundler:install:local
         if: startsWith(matrix.os.name, 'ubuntu')
       - name: Run a warbler project
         run: |

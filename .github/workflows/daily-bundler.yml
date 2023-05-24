@@ -10,7 +10,6 @@ permissions:
 defaults:
   run:
     shell: bash
-    working-directory: ./bundler
 
 jobs:
   daily_bundler:
@@ -34,11 +33,11 @@ jobs:
       - name: Prepare dependencies
         run: |
           sudo apt-get install graphviz -y
-          bin/rake spec:parallel_deps
+          rake spec:parallel_deps
 
       - name: Run Test
         run: |
-          bin/rake spec:all
+          rake spec:all
 
       - name: Get previous status
         if: always()

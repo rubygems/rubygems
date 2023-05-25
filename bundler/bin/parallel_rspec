@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "../spec/support/switch_rubygems"
+require_relative "../spec/support/rubygems_ext"
 
-require_relative "../tool/turbo_tests/cli"
+Spec::Rubygems.gem_load("turbo_tests", "turbo_tests")
 
 TurboTests::CLI.new(ARGV).run

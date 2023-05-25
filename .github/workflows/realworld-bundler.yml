@@ -59,7 +59,14 @@ jobs:
         run: rake spec:realworld
         env:
           RGV: ..
+        if: matrix.ruby.value != '2.6.10'
+      - name: Run Test
+        # rake spec:realworld is failing with Ruby 2.6. We should use `bin/rspec` until dropping Ruby 2.6 support.
+        run: BUNDLER_SPEC_PRE_RECORDED=1 bin/rspec --tag realworld
+        env:
+          RGV: ..
         working-directory: ./bundler
+        if: matrix.ruby.value == '2.6.10'
       - name: Upload used cassettes as artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:

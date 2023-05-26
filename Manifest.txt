@@ -8,6 +8,7 @@ Manifest.txt
 POLICIES.md
 README.md
 UPGRADING.md
+bin/rake
 bundler/CHANGELOG.md
 bundler/LICENSE.md
 bundler/README.md

@@ -653,7 +653,7 @@ namespace :man do
       end
       index.map! do |(ronn, roff)|
         date = ENV["MAN_PAGES_DATE"] || Time.now.strftime("%Y-%m-%d")
-        sh "bundler/bin/ronn --warnings --roff --pipe --date #{date} #{ronn} > #{roff}"
+        sh "bin/ronn --warnings --roff --pipe --date #{date} #{ronn} > #{roff}"
         [File.read(ronn).split(" ").first, File.basename(roff)]
       end
       index = index.sort_by(&:first)

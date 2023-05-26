@@ -70,7 +70,7 @@ jobs:
         run: |
           bin/rake spec:parallel_deps
       - name: Replace version
-        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} rake override_version
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
       - name: Run Test
         run: |

@@ -8,8 +8,6 @@ Manifest.txt
 POLICIES.md
 README.md
 UPGRADING.md
-bin/gem
-bin/update_rubygems
 bundler/CHANGELOG.md
 bundler/LICENSE.md
 bundler/README.md
@@ -335,6 +333,8 @@ bundler/lib/bundler/version.rb
 bundler/lib/bundler/vlad.rb
 bundler/lib/bundler/worker.rb
 bundler/lib/bundler/yaml_serializer.rb
+exe/gem
+exe/update_rubygems
 hide_lib_for_update/note.txt
 lib/rubygems.rb
 lib/rubygems/available_set.rb

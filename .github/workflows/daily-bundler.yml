@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-22.04
     if: github.repository == 'rubygems/rubygems'
     env:
-      RGV: .
+      RGV: ..
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
 
@@ -33,13 +33,11 @@ jobs:
       - name: Prepare dependencies
         run: |
           sudo apt-get install graphviz -y
-          rake spec:parallel_deps
+          bin/rake spec:parallel_deps
 
       - name: Run Test
         run: |
-          rake spec:all
-        env:
-          RGV: ..
+          bin/rake spec:all
       - name: Get previous status
         if: always()
         run: echo "OLD_STATUS=$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/workflows/daily-bundler.yml/runs?event=schedule&branch=master' | jq '.workflow_runs | .[1].conclusion')" >> $GITHUB_ENV

@@ -51,7 +51,7 @@ jobs:
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.1 }, timeout: 150 }
 
     env:
-      RGV: .
+      RGV: ..
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
@@ -68,14 +68,12 @@ jobs:
         if: matrix.bundler.value == '' && matrix.os.name == 'macOS'
       - name: Prepare dependencies
         run: |
-          rake spec:parallel_deps
+          bin/rake spec:parallel_deps
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} rake override_version
         if: matrix.bundler.value != ''
       - name: Run Test
         run: |
           bin/parallel_rspec
-        env:
-          RGV: ..
         working-directory: ./bundler
     timeout-minutes: ${{ matrix.timeout || 60 }}

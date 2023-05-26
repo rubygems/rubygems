@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      RGV: .
+      RGV: ..
 
     strategy:
       fail-fast: false
@@ -43,17 +43,15 @@ jobs:
         if: "!startsWith(matrix.os.name, 'ubuntu')"
       - name: Prepare dependencies
         run: |
-          rake spec:parallel_deps
+          bin/rake spec:parallel_deps
       - name: Run Test
         run: |
           bin/parallel_rspec --tag jruby_only --tag jruby
-        env:
-          RGV: ..
         working-directory: ./bundler
         if: startsWith(matrix.os.name, 'ubuntu')
       - name: Install local bundler
         run: |
-          rake bundler:install:local
+          bin/rake bundler:install:local
         if: startsWith(matrix.os.name, 'ubuntu')
       - name: Run a warbler project
         run: |

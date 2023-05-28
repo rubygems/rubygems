@@ -232,6 +232,78 @@ RSpec.describe "bundler plugin install" do
       plugin_should_be_installed("foo")
     end
 
+    it "upgrade plugins version listed in gemfile" do
+      update_repo2 do
+        build_plugin "foo", "1.4.0"
+        build_plugin "foo", "1.5.0"
+      end
+
+      gemfile <<-G
+        source '#{file_uri_for(gem_repo2)}'
+        plugin 'foo', "1.4.0"
+        gem 'rack', "1.0.0"
+      G
+
+      bundle "install"
+
+      expect(out).to include("Installing foo 1.4.0")
+      expect(out).to include("Installed plugin foo")
+      expect(out).to include("Bundle complete!")
+
+      expect(the_bundle).to include_gems("rack 1.0.0")
+      plugin_should_be_installed("foo")
+
+      gemfile <<-G
+        source '#{file_uri_for(gem_repo2)}'
+        plugin 'foo', "1.5.0"
+        gem 'rack', "1.0.0"
+      G
+
+      bundle "install"
+
+      expect(out).to include("Installing foo 1.5.0")
+      expect(out).to include("Bundle complete!")
+
+      expect(the_bundle).to include_gems("rack 1.0.0")
+      plugin_should_be_installed("foo")
+    end
+
+    it "downgrade plugins version listed in gemfile" do
+      update_repo2 do
+        build_plugin "foo", "1.4.0"
+        build_plugin "foo", "1.5.0"
+      end
+
+      gemfile <<-G
+        source '#{file_uri_for(gem_repo2)}'
+        plugin 'foo', "1.5.0"
+        gem 'rack', "1.0.0"
+      G
+
+      bundle "install"
+
+      expect(out).to include("Installing foo 1.5.0")
+      expect(out).to include("Installed plugin foo")
+      expect(out).to include("Bundle complete!")
+
+      expect(the_bundle).to include_gems("rack 1.0.0")
+      plugin_should_be_installed("foo")
+
+      gemfile <<-G
+        source '#{file_uri_for(gem_repo2)}'
+        plugin 'foo', "1.4.0"
+        gem 'rack', "1.0.0"
+      G
+
+      bundle "install"
+
+      expect(out).to include("Installing foo 1.4.0")
+      expect(out).to include("Bundle complete!")
+
+      expect(the_bundle).to include_gems("rack 1.0.0")
+      plugin_should_be_installed("foo")
+    end
+
     it "install only plugins not installed yet listed in gemfile" do
       gemfile <<-G
         source '#{file_uri_for(gem_repo2)}'

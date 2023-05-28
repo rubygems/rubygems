@@ -100,7 +100,7 @@ module Bundler
         paths = {}
 
         specs.each do |spec|
-          next if cannot_install?(spec.name, spec.version)
+          next if version_already_installed?(spec.name, spec.version)
 
           spec.source.install spec
           paths[spec.name] = spec
@@ -109,14 +109,14 @@ module Bundler
         paths
       end
 
-      # Check if the Plugin is already installed or has a diff version to install
+      # Check if the Plugin version is already installed or has a diff version to install
       #
       # @param [String] name of the plugin gem to search in the source
       # @param [String] version of the gem to install
       #
       # @return [Boolean] true if installed or not updating plugin
-      def cannot_install?(plugin, version)
-        Index.new.cannot_install?(plugin, version)
+      def version_already_installed?(plugin, version)
+        Index.new.version_already_installed?(plugin, version)
       end
     end
   end

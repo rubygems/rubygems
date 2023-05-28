@@ -112,7 +112,7 @@ module Bundler
       end
 
       # Plugin cannot be installed and updating to install
-      def cannot_install?(name, version)
+      def version_already_installed?(name, version)
         installed?(name) && !updating?(name, version)
       end
 

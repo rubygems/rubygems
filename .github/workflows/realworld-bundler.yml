@@ -52,14 +52,11 @@ jobs:
           bundler: none
       - name: Prepare dependencies
         run: bin/rake spec:deps
-        working-directory: ./bundler
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
-        working-directory: ./bundler
       - name: Run Test
         run: bin/rake spec:realworld
-        working-directory: ./bundler
       - name: Upload used cassettes as artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
@@ -92,14 +89,11 @@ jobs:
           bundler: none
       - name: Prepare dependencies
         run: bin/rake spec:deps
-        working-directory: ./bundler
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
-        working-directory: ./bundler
       - name: Run Test
         run: bin/rake spec:realworld
-        working-directory: ./bundler
       - name: Upload used cassettes as artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
@@ -124,4 +118,3 @@ jobs:
           path: ./bundler/spec/support/artifice/used_vcr_cassettes
       - name: Check unused cassettes
         run: bin/rake spec:realworld:check_unused_cassettes
-        working-directory: ./bundler

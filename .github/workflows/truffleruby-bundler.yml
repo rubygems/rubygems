@@ -14,7 +14,6 @@ permissions:  # added using https://github.com/step-security/secure-workflows
 defaults:
   run:
     shell: bash
-    working-directory: ./bundler
 
 jobs:
   truffleruby_bundler:
@@ -34,4 +33,5 @@ jobs:
       - name: Run Test
         run: |
           bin/parallel_rspec --tag truffleruby_only --tag truffleruby
+        working-directory: ./bundler
     timeout-minutes: 20

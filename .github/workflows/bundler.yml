@@ -18,7 +18,6 @@ permissions:  # added using https://github.com/step-security/secure-workflows
 defaults:
   run:
     shell: bash
-    working-directory: ./bundler
 
 jobs:
   bundler:
@@ -80,4 +79,5 @@ jobs:
       - name: Run Test
         run: |
           bin/parallel_rspec
+        working-directory: ./bundler
     timeout-minutes: ${{ matrix.timeout || 60 }}

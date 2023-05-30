@@ -39,7 +39,7 @@ Naming/VariableNumber:
   Exclude:
     - lib/**/*
     - test/**/*
-    - util/**/*
+    - tool/**/*
 
 # Performance
 
@@ -65,7 +65,7 @@ Style/HashSyntax:
     - Rakefile
     - lib/**/*
     - test/**/*
-    - util/**/*
+    - tool/**/*
 
 Style/LineEndConcatenation:
   Enabled: true

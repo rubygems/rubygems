@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../util/changelog"
+require_relative "../tool/changelog"
 require "rubygems/commands/setup_command"
 require_relative "rubygems/helper"
 

@@ -7,5 +7,4 @@ if RUBY_VERSION.start_with?("2.6") || RUBY_PLATFORM =~ /mingw|mswin/
   Spec::Rubygems.gem_load("parallel_tests", "parallel_rspec")
 else
   Spec::Rubygems.gem_load("turbo_tests", "turbo_tests")
-  TurboTests::CLI.new(ARGV).run
 end

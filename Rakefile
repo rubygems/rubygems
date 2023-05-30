@@ -227,7 +227,7 @@ namespace :rubocop do
 
   desc "Run rubocop. Pass positional arguments as Rake arguments, e.g. `rake 'rubocop:run[-a]'`"
   task :run do |_, args|
-    sh "util/rubocop", *args
+    sh "bin/rubocop", *args
   end
 end
 
@@ -242,7 +242,7 @@ task :postrelease => %w[upload guides:publish blog:publish bundler:build_metadat
 desc "Check for deprecated methods with expired deprecation horizon"
 task :check_deprecations do
   if v.segments[1] == 0 && v.segments[2] == 0
-    sh("util/rubocop -r ./util/cops/deprecations --only Rubygems/Deprecations")
+    sh("bin/rubocop -r ./util/cops/deprecations --only Rubygems/Deprecations")
   else
     puts "Skipping deprecation checks since not releasing a major version."
   end

@@ -13,7 +13,8 @@ module RubyGems
     extend self
 
     def bundle_dev_gemfile(*args)
-      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=bundler/tool/bundler/dev_gems.rb"
+      name = RUBY_VERSION.start_with?("2.6") ? "dev26_gems" : "dev_gems"
+      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=bundler/tool/bundler/#{name}.rb"
     end
 
     def bundle_support_gemfile(name, *args)

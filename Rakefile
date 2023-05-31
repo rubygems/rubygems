@@ -14,11 +14,11 @@ module RubyGems
 
     def bundle_dev_gemfile(*args)
       name = RUBY_VERSION.start_with?("2.6") ? "dev26_gems" : "dev_gems"
-      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=bundler/tool/bundler/#{name}.rb"
+      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=tool/bundler/#{name}.rb"
     end
 
     def bundle_support_gemfile(name, *args)
-      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=bundler/tool/bundler/#{name}.rb"
+      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=tool/bundler/#{name}.rb"
     end
   end
 end
@@ -108,8 +108,8 @@ end
 
 # No big deal if Automatiek is not available. This might be just because
 # `rake` is executed from release tarball.
-if File.exist?("util/automatiek.rake")
-  load "util/automatiek.rake"
+if File.exist?("tool/automatiek.rake")
+  load "tool/automatiek.rake"
 
   # We currently ship Molinillo master branch as of
   # https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
@@ -223,7 +223,7 @@ end
 namespace :rubocop do
   desc "Setup gems necessary to lint Ruby code"
   task(:setup) do
-    sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=bundler/tool/bundler/lint_gems.rb"
+    sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=tool/bundler/lint_gems.rb"
   end
 
   desc "Run rubocop. Pass positional arguments as Rake arguments, e.g. `rake 'rubocop:run[-a]'`"
@@ -243,7 +243,7 @@ task :postrelease => %w[upload guides:publish blog:publish bundler:build_metadat
 desc "Check for deprecated methods with expired deprecation horizon"
 task :check_deprecations do
   if v.segments[1] == 0 && v.segments[2] == 0
-    sh("bin/rubocop -r ./util/cops/deprecations --only Rubygems/Deprecations")
+    sh("bin/rubocop -r ./tool/cops/deprecations --only Rubygems/Deprecations")
   else
     puts "Skipping deprecation checks since not releasing a major version."
   end
@@ -251,14 +251,14 @@ end
 
 desc "Install release dependencies"
 task :install_release_dependencies do
-  require_relative "util/release"
+  require_relative "tool/release"
 
   Release.install_dependencies!
 end
 
 desc "Prepare a release"
 task :prepare_release, [:version] => [:install_release_dependencies] do |_t, opts|
-  require_relative "util/release"
+  require_relative "tool/release"
 
   Release.new(opts[:version] || v.to_s).prepare!
 end
@@ -275,7 +275,7 @@ end
 
 desc "Generates the changelog for a specific target version"
 task :generate_changelog, [:version] do |_t, opts|
-  require_relative "util/release"
+  require_relative "tool/release"
 
   Release.for_rubygems(opts[:version]).cut_changelog!
 end
@@ -335,7 +335,7 @@ end
 
 desc "Upload the release to GitHub releases"
 task :upload_to_github do
-  require_relative "util/release"
+  require_relative "tool/release"
 
   Release.for_rubygems(v).create_for_github!
 end
@@ -453,7 +453,7 @@ namespace "blog" do
     name  = `git config --get user.name`.strip
     email = `git config --get user.email`.strip
 
-    require_relative "util/changelog"
+    require_relative "tool/changelog"
     history = Changelog.for_rubygems(v.to_s)
 
     require "tempfile"
@@ -522,7 +522,7 @@ module Rubygems
   class ProjectFiles
     def self.all
       files = []
-      exclude = %r{\A(?:\.|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|util/|Rakefile|bin)}
+      exclude = %r{\A(?:\.|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|tool/|Rakefile|bin)}
       tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|
@@ -550,7 +550,7 @@ end
 
 desc "Update License list from SPDX.org"
 task :update_licenses do
-  load "util/generate_spdx_license_list.rb"
+  load "tool/generate_spdx_license_list.rb"
 end
 
 require_relative "bundler/spec/support/rubygems_ext"
@@ -711,7 +711,7 @@ namespace :bundler do
     require_relative "bundler/lib/bundler/gem_tasks"
   end
   require_relative "bundler/spec/support/build_metadata"
-  require_relative "util/release"
+  require_relative "tool/release"
 
   Bundler::GemHelper.tag_prefix = "bundler-"
 

@@ -2,7 +2,7 @@
 
 require_relative "../lib/bundler/gem_tasks"
 require_relative "../spec/support/build_metadata"
-require_relative "../../util/release"
+require_relative "../../tool/release"
 
 Bundler::GemHelper.tag_prefix = "bundler-"
 

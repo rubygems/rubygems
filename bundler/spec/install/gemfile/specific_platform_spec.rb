@@ -104,39 +104,52 @@ RSpec.describe "bundle install with specific platforms" do
       L
     end
 
-    it "still installs the generic RUBY variant if necessary even when running on a legacy lockfile locked only to RUBY" do
-      build_repo4 do
-        build_gem "nokogiri", "1.3.10"
-        build_gem "nokogiri", "1.3.10" do |s|
-          s.platform = "arm64-darwin"
-          s.required_ruby_version = "< #{Gem.ruby_version}"
+    context "when running on a legacy lockfile locked only to RUBY" do
+      around do |example|
+        build_repo4 do
+          build_gem "nokogiri", "1.3.10"
+          build_gem "nokogiri", "1.3.10" do |s|
+            s.platform = "arm64-darwin"
+            s.required_ruby_version = "< #{Gem.ruby_version}"
+          end
+
+          build_gem "bundler", "2.1.4"
         end
 
-        build_gem "bundler", "2.1.4"
-      end
-
-      gemfile <<~G
+        gemfile <<~G
         source "#{file_uri_for(gem_repo4)}"
-        gem "nokogiri"
-      G
 
-      lockfile <<-L
+        gem "nokogiri"
+        G
+
+        lockfile <<-L
         GEM
           remote: #{file_uri_for(gem_repo4)}/
           specs:
             nokogiri (1.3.10)
+
         PLATFORMS
           ruby
+
         DEPENDENCIES
           nokogiri
+
         RUBY VERSION
           2.5.3p105
+
         BUNDLED WITH
            2.1.4
-      L
+        L
 
-      simulate_platform "arm64-darwin-22" do
+        simulate_platform "arm64-darwin-22", &example
+      end
+
+      it "still installs the generic RUBY variant if necessary" do
         bundle "update --bundler", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+      end
+
+      it "still installs the generic RUBY variant if necessary, even in frozen mode" do
+        bundle "update --bundler", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s, "BUNDLE_FROZEN" => "true" }
       end
     end
 

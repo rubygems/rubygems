@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.authors = ["Jim Weirich", "Chad Fowler", "Eric Hodel", "Luis Lavena", "Aaron Patterson", "Samuel Giddins", "André Arko", "Evan Phoenix", "Hiroshi SHIBATA"]
   s.email = ["", "", "drbrain@segment7.net", "luislavena@gmail.com", "aaron@tenderlovemaking.com", "segiddins@segiddins.me", "andre@arko.net", "evan@phx.io", "hsbt@ruby-lang.org"]
 
-  s.summary = "RubyGems is a package management framework for Ruby—this gem allows the gem command to update itself."
+  s.summary = "RubyGems is a package management framework for Ruby. This gem is downloaded and installed by `gem update --system`, so that the `gem` CLI can update itself."
   s.description = "A package (also known as a library) contains a set of functionality
   that can be invoked by a Ruby program, such as reading and parsing an XML file. We call
   these packages 'gems' and RubyGems is a tool to install, create, manage and load these

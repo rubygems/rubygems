@@ -13,7 +13,8 @@ Gem::Specification.new do |s|
   packages in your Ruby environment. RubyGems is also a client for RubyGems.org, a public
   repository of Gems that allows you to publish a Gem that can be shared and used by other
   developers. See our guide on publishing a Gem at guides.rubygems.org"
-  s.homepage = "https://github.com/rubygems/rubygems/"
+  s.homepage = "https://guides.rubygems.org"
+  s.metadata = { "source_code_uri" => "https://github.com/rubygems/rubygems" }
   s.licenses = ["Ruby", "MIT"]
 
   s.files = File.read("Manifest.txt").split

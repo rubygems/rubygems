@@ -89,7 +89,7 @@ RSpec.describe "bundler plugin install" do
     expect(out).to include("Installing foo 1.1")
 
     bundle "plugin install foo --source #{file_uri_for(gem_repo2)} --verbose"
-    expect(out).to include("Using foo 1.1")
+    expect(out).to_not include("foo 1.1")
   end
 
   it "installs when --branch specified" do
@@ -251,7 +251,7 @@ RSpec.describe "bundler plugin install" do
       expect(out).to include("Bundle complete!")
 
       expect(the_bundle).to include_gems("rack 1.0.0")
-      plugin_should_be_installed("foo")
+      plugin_should_be_installed("foo", version: "1.4.0")
 
       gemfile <<-G
         source '#{file_uri_for(gem_repo2)}'
@@ -265,7 +265,7 @@ RSpec.describe "bundler plugin install" do
       expect(out).to include("Bundle complete!")
 
       expect(the_bundle).to include_gems("rack 1.0.0")
-      plugin_should_be_installed("foo")
+      plugin_should_be_installed("foo", version: "1.5.0")
     end
 
     it "downgrade plugins version listed in gemfile" do
@@ -287,7 +287,7 @@ RSpec.describe "bundler plugin install" do
       expect(out).to include("Bundle complete!")
 
       expect(the_bundle).to include_gems("rack 1.0.0")
-      plugin_should_be_installed("foo")
+      plugin_should_be_installed("foo", version: "1.5.0")
 
       gemfile <<-G
         source '#{file_uri_for(gem_repo2)}'
@@ -301,7 +301,7 @@ RSpec.describe "bundler plugin install" do
       expect(out).to include("Bundle complete!")
 
       expect(the_bundle).to include_gems("rack 1.0.0")
-      plugin_should_be_installed("foo")
+      plugin_should_be_installed("foo", version: "1.4.0")
     end
 
     it "install only plugins not installed yet listed in gemfile" do

@@ -114,7 +114,7 @@ module Bundler
       # @param [String] name of the plugin gem to search in the source
       # @param [String] version of the gem to install
       #
-      # @return [Boolean] true if installed or not updating plugin
+      # @return [Boolean] true if plugin version already installed
       def version_already_installed?(plugin, version)
         Index.new.version_already_installed?(plugin, version)
       end

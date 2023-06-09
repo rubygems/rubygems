@@ -111,14 +111,12 @@ module Bundler
         @commands[command]
       end
 
-      # Plugin cannot be installed and updating to install
+      # Plugin version is already installed?
       def version_already_installed?(name, version)
-        installed?(name) && !updating?(name, version)
-      end
+        plugin_path = @plugin_paths[name]
+        return false unless plugin_path
 
-      # An existing plugin must have a diff version to install again
-      def updating?(name, version)
-        version.to_s != @plugin_paths[name][/#{name}-(.*)$/, 1].to_s
+        File.basename(plugin_path) == "#{name}-#{version}"
       end
 
       # Plugin is already installed?

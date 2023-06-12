@@ -1,3 +1,19 @@
+# 2.4.14 (June 12, 2023)
+
+## Enhancements:
+
+  - Stop publishing Gemfile in default gem template [#6723](https://github.com/rubygems/rubygems/pull/6723)
+  - Avoid infinite loops when hitting resolution bugs [#6722](https://github.com/rubygems/rubygems/pull/6722)
+  - Make `LockfileParser` usable with just a lockfile [#6694](https://github.com/rubygems/rubygems/pull/6694)
+  - Always rely on `$LOAD_PATH` when jumping from `exe/` to `lib/` [#6702](https://github.com/rubygems/rubygems/pull/6702)
+  - Make `frozen` setting take precedence over `deployment` setting [#6685](https://github.com/rubygems/rubygems/pull/6685)
+  - Show an error when trying to update bundler in frozen mode [#6684](https://github.com/rubygems/rubygems/pull/6684)
+
+## Bug fixes:
+
+  - Fix `deployment` vs `path` precedence [#6703](https://github.com/rubygems/rubygems/pull/6703)
+  - Fix inline mode with multiple sources [#6699](https://github.com/rubygems/rubygems/pull/6699)
+
 # 2.4.13 (May 9, 2023)
 
 ## Bug fixes:

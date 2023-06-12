@@ -1,3 +1,17 @@
+# 3.4.14 / 2023-06-12
+
+## Enhancements:
+
+* Load plugin immediately. Pull request
+  [#6673](https://github.com/rubygems/rubygems/pull/6673) by kou
+* Installs bundler 2.4.14 as a default gem.
+
+## Documentation:
+
+* Clarify what the `rubygems-update` gem is for, and link to source code
+  and guides. Pull request
+  [#6710](https://github.com/rubygems/rubygems/pull/6710) by davetron5000
+
 # 3.4.13 / 2023-05-09
 
 ## Enhancements:

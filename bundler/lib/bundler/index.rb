@@ -175,7 +175,7 @@ module Bundler
     end
 
     def search_by_name_and_version(name, version)
-      specs_by_name(name).select { |spec| spec.version == version }
+      specs_by_name(name).select {|spec| spec.version == version }
     end
 
     EMPTY_SEARCH = [].freeze

@@ -79,21 +79,21 @@ module Bundler
       return self if matching_specs.empty?
 
       candidates = if use_exact_resolved_specifications?
-                     matching_specs
-                   else
-                     target_platform = ruby_platform_materializes_to_ruby_platform? ? platform : local_platform
+        matching_specs
+      else
+        target_platform = ruby_platform_materializes_to_ruby_platform? ? platform : local_platform
 
-                     installable_candidates = GemHelpers.select_best_platform_match(matching_specs, target_platform)
+        installable_candidates = GemHelpers.select_best_platform_match(matching_specs, target_platform)
 
-                     specification = __materialize__(installable_candidates, :fallback_to_non_installable => false)
-                     return specification unless specification.nil?
+        specification = __materialize__(installable_candidates, :fallback_to_non_installable => false)
+        return specification unless specification.nil?
 
-                     if target_platform != platform
-                       installable_candidates = GemHelpers.select_best_platform_match(matching_specs, platform)
-                     end
+        if target_platform != platform
+          installable_candidates = GemHelpers.select_best_platform_match(matching_specs, platform)
+        end
 
-                     installable_candidates
-                   end
+        installable_candidates
+      end
 
       __materialize__(candidates)
     end
@@ -135,6 +135,7 @@ module Bundler
     end
 
     private
+
     def use_exact_resolved_specifications?
       @use_exact_resolved_specifications ||= !source.is_a?(Source::Path) && ruby_platform_materializes_to_ruby_platform?
     end

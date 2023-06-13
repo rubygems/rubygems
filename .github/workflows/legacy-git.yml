@@ -23,7 +23,7 @@ jobs:
       image: centos/ruby-27-centos7@sha256:b24b875dcdb6cb8f2145706dcaac74bb25ae3b9d9f7ba69d7ae700a7aee1e1bd
       options: --user=root
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Install rubygems
         run: ruby setup.rb
       - name: Check we can install a Gemfile with git sources

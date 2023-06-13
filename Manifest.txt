@@ -509,6 +509,7 @@ lib/rubygems/security/policy.rb
 lib/rubygems/security/signer.rb
 lib/rubygems/security/trust_dir.rb
 lib/rubygems/security_option.rb
+lib/rubygems/shellwords.rb
 lib/rubygems/source.rb
 lib/rubygems/source/git.rb
 lib/rubygems/source/installed.rb

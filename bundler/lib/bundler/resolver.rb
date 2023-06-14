@@ -230,6 +230,12 @@ module Bundler
     def all_versions_for(package)
       name = package.name
       results = (@base[name] + filter_prereleases(@all_specs[name], package)).uniq {|spec| [spec.version.hash, spec.platform] }
+
+      if name == "bundler" && !bundler_pinned_to_current_version?
+        bundler_spec = Gem.loaded_specs["bundler"]
+        results << bundler_spec if bundler_spec
+      end
+
       locked_requirement = base_requirements[name]
       results = filter_matching_specs(results, locked_requirement) if locked_requirement
 

@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "rubocop", ">= 1.52.1", "< 2"
+gem "rubocop", "< 1.51.0"
 
 gem "minitest"
 gem "rake"

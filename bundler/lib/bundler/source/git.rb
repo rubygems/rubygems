@@ -32,7 +32,9 @@ module Bundler
       end
 
       def self.from_lock(options)
-        new(options.merge("uri" => options.delete("remote")))
+        git = new(options.merge("uri" => options.delete("remote")))
+        git.cached!
+        git
       end
 
       def to_lock

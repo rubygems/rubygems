@@ -467,7 +467,7 @@ RSpec.describe "install in deployment or frozen mode" do
       expect(err).to include("frozen mode")
       expect(err).not_to include("You have deleted from the Gemfile")
       expect(err).not_to include("You have added to the Gemfile")
-      expect(err).to include("You have changed in the Gemfile:\n* rack from `#{lib_path("rack-1.0")}` to `no specified source`")
+      expect(err).to include("You have changed in the Gemfile:\n* rack from `#{lib_path("rack-1.0")} (at main@#{revision_for(lib_path("rack-1.0"))[0..6]})` to `no specified source`")
     end
 
     it "explodes if you change a source" do
@@ -489,7 +489,7 @@ RSpec.describe "install in deployment or frozen mode" do
       bundle "config set --local deployment true"
       bundle :install, :raise_on_error => false
       expect(err).to include("frozen mode")
-      expect(err).to include("You have changed in the Gemfile:\n* rack from `#{lib_path("rack")}` to `no specified source`")
+      expect(err).to include("You have changed in the Gemfile:\n* rack from `#{lib_path("rack")} (at main@#{revision_for(lib_path("rack"))[0..6]})` to `no specified source`")
       expect(err).not_to include("You have added to the Gemfile")
       expect(err).not_to include("You have deleted from the Gemfile")
     end

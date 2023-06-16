@@ -158,7 +158,7 @@ RSpec.describe "compact index api" do
     bundle :install, :verbose => true, :artifice => "compact_index_checksum_mismatch"
     expect(out).to include("Fetching gem metadata from #{source_uri}")
     expect(out).to include <<-'WARN'
-The checksum of /versions does not match the checksum provided by the server! Something is wrong (local checksum is "d41d8cd98f00b204e9800998ecf8427e", was expecting "123").
+The checksum of /versions does not match the checksum provided by the server! Something is wrong (local checksum is "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=", was expecting "N2bXv5dX2oizwqyjfHIr4DlQXKuctwo0snCf5h6NMj0=").
     WARN
     expect(the_bundle).to include_gems "rack 1.0.0"
   end

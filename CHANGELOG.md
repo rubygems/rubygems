@@ -700,7 +700,7 @@
 
 ## Enhancements:
 
-* Redact credentails when printing URI. Pull request [#4868](https://github.com/rubygems/rubygems/pull/4868) by intuxicated
+* Redact credentials when printing URI. Pull request [#4868](https://github.com/rubygems/rubygems/pull/4868) by intuxicated
 * Prefer `require_relative` to `require` for internal requires. Pull
   request [#4858](https://github.com/rubygems/rubygems/pull/4858) by deivid-rodriguez
 * Prioritise gems with higher version for fetching metadata, and stop

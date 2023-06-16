@@ -514,6 +514,9 @@ Performance/Count:
 Performance/Casecmp:
   Enabled: true
 
+Performance/FlatMap:
+  Enabled: true
+
 Performance/StartWith:
   Enabled: true
 

@@ -3,7 +3,9 @@
 
 require_relative "../spec/support/rubygems_ext"
 
-if RUBY_VERSION.start_with?("2.6") || RUBY_PLATFORM =~ /mingw|mswin/
+if RUBY_PLATFORM.match?(/mingw|mswin/)
+  Spec::Rubygems.gem_load("rspec-core", "rspec")
+elsif RUBY_VERSION.start_with?("2.6")
   Spec::Rubygems.gem_load("parallel_tests", "parallel_rspec")
 else
   Spec::Rubygems.gem_load("turbo_tests", "turbo_tests")

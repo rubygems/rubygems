@@ -41,7 +41,7 @@ RSpec.describe Bundler::CompactIndexClient::Updater do
     end
 
     it "accepts unquoted digest" do
-      allow(response).to receive(:[]).with("Digest") { 'sha-256=bKE9UspwyIPg8LsQHkJaiehiTeUdstI5JZOvaoQRgJA=' }
+      allow(response).to receive(:[]).with("Digest") { "sha-256=bKE9UspwyIPg8LsQHkJaiehiTeUdstI5JZOvaoQRgJA=" }
       expect(fetcher).to receive(:call) { response }
 
       updater.update(local_path, remote_path)
@@ -70,7 +70,6 @@ RSpec.describe Bundler::CompactIndexClient::Updater do
       expect(response).to have_received(:[]).with("Digest")
       expect(response).to have_received(:[]).with("X-Checksum-Sha256")
     end
-
 
     it "raises an error on the sha256 digest mismatch" do
       allow(response).to receive(:[]).with("X-Checksum-Sha256") { "bfb9bf6a3e7a783ff953ce150d2a222a0e838529372c326f604d98fa521de1cd" }

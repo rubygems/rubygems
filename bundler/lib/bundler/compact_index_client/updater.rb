@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../vendored_fileutils"
-require 'base64'
+require "base64"
 
 module Bundler
   class CompactIndexClient
@@ -110,11 +110,11 @@ module Bundler
       private
 
       def sha256_from_digest(digest)
-        digest&.split(",")&.find{ |s| s.start_with?("sha-256=") }&.delete_prefix('sha-256=')&.delete('"')
+        digest&.split(",")&.find {|s| s.start_with?("sha-256=") }&.delete_prefix("sha-256=")&.delete('"')
       end
 
       def sha256_from_x_checksum(x_checksum)
-        Base64.strict_encode64([x_checksum].pack('H*'))
+        Base64.strict_encode64([x_checksum].pack("H*"))
       end
 
       def copy_file(source, dest)

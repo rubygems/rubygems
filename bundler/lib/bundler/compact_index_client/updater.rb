@@ -50,7 +50,7 @@ module Bundler
 
         content = response.body
 
-        remote_sha256_digest = sha256_from_digest(response["Digest"]) || sha256_from_x_checksum(response["X-Checksum-Sha256"])
+        remote_sha256_digest = sha256_from_digest(response["Digest"]) || sha256_from_x_checksum(response["X-Checksum-Sha256"]) || ""
         correct_response = SharedHelpers.filesystem_access(local_temp_path) do
           if response.is_a?(Net::HTTPPartialContent) && local_temp_path.size.nonzero?
             local_temp_path.open("a") {|f| f << slice_body(content, 1..-1) }
@@ -110,10 +110,14 @@ module Bundler
       private
 
       def sha256_from_digest(digest)
+        return nil if digest.nil?
+
         digest&.split(",")&.find {|s| s.start_with?("sha-256=") }&.delete_prefix("sha-256=")&.delete('"')
       end
 
       def sha256_from_x_checksum(x_checksum)
+        return nil if x_checksum.nil?
+
         Base64.strict_encode64([x_checksum].pack("H*"))
       end
 

@@ -290,7 +290,7 @@ class Gem::Package
   ##
   # Builds this package based on the specification set by #spec=
 
-  def build(skip_validation = false, strict_validation = false)
+  def build(skip_validation = false, strict_validation = false, silent: false)
     raise ArgumentError, "skip_validation = true and strict_validation = true are incompatible" if skip_validation && strict_validation
 
     Gem.load_yaml
@@ -312,12 +312,14 @@ class Gem::Package
       end
     end
 
-    say <<-EOM
+    unless silent
+      say <<-EOM
   Successfully built RubyGem
   Name: #{@spec.name}
   Version: #{@spec.version}
   File: #{File.basename @gem.path}
-EOM
+      EOM
+    end
   ensure
     @signer = nil
   end

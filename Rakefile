@@ -207,6 +207,15 @@ if File.exist?("tool/automatiek.rake")
       sublib.prefix = "Bundler"
       sublib.vendor_lib = "bundler/lib/bundler/vendor/connection_pool"
       sublib.license_path = "LICENSE"
+
+      sublib.dependency("timeout") do |subsublib|
+        subsublib.version = "v0.4.0"
+        subsublib.download = { :github => "https://github.com/ruby/timeout" }
+        subsublib.namespace = "Timeout"
+        subsublib.prefix = "Bundler"
+        subsublib.vendor_lib = "bundler/lib/bundler/vendor/timeout"
+        subsublib.license_path = "LICENSE.txt"
+      end
     end
 
     lib.dependency("uri") do |sublib|

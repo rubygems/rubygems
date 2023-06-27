@@ -1,3 +1,19 @@
+# 3.4.15 / 2023-06-29
+
+## Enhancements:
+
+* Installs bundler 2.4.15 as a default gem.
+
+## Bug fixes:
+
+* Autoload shellwords when it's needed. Pull request
+  [#6734](https://github.com/rubygems/rubygems/pull/6734) by ioquatix
+
+## Documentation:
+
+* Update command to test local gem command changes. Pull request
+  [#6761](https://github.com/rubygems/rubygems/pull/6761) by jenshenny
+
 # 3.4.14 / 2023-06-12
 
 ## Enhancements:

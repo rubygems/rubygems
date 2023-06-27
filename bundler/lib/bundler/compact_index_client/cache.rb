@@ -49,6 +49,10 @@ module Bundler
         directory.join("versions")
       end
 
+      def versions_etag_path
+        directory.join("versions.etag")
+      end
+
       def checksums
         checksums = {}
 

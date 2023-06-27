@@ -76,20 +76,20 @@ module Bundler
     def update_and_parse_checksums!
       Bundler::CompactIndexClient.debug { "update_and_parse_checksums!" }
       return @info_checksums_by_name if @parsed_checksums
-      update(@cache.versions_path, "versions")
+      update(@cache.versions_path, "versions", @cache.versions_etag_path)
       @info_checksums_by_name = @cache.checksums
       @parsed_checksums = true
     end
 
     private
 
-    def update(local_path, remote_path)
+    def update(local_path, remote_path, local_etag_path = nil)
       Bundler::CompactIndexClient.debug { "update(#{local_path}, #{remote_path})" }
       unless synchronize { @endpoints.add?(remote_path) }
         Bundler::CompactIndexClient.debug { "already fetched #{remote_path}" }
         return
       end
-      @updater.update(local_path, url(remote_path))
+      @updater.update(local_path, url(remote_path), nil, local_etag_path)
     end
 
     def update_info(name)

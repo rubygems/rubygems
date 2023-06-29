@@ -1,3 +1,13 @@
+# 2.4.15 (June 29, 2023)
+
+## Enhancements:
+
+  - Improve edge case error message [#6733](https://github.com/rubygems/rubygems/pull/6733)
+
+## Bug fixes:
+
+  - Fix `bundle lock --update --bundler` [#6213](https://github.com/rubygems/rubygems/pull/6213)
+
 # 2.4.14 (June 12, 2023)
 
 ## Enhancements:

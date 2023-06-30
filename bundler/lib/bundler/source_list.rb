@@ -90,7 +90,7 @@ module Bundler
     end
 
     def all_sources
-      path_sources + git_sources + plugin_sources + rubygems_sources + [metadata_source]
+      other_sources + rubygems_sources + [metadata_source]
     end
 
     def non_default_explicit_sources
@@ -110,7 +110,7 @@ module Bundler
     end
 
     def lock_other_sources
-      (path_sources + git_sources + plugin_sources).sort_by(&:identifier)
+      other_sources.sort_by(&:identifier)
     end
 
     def lock_rubygems_sources
@@ -153,6 +153,10 @@ module Bundler
     end
 
     private
+
+    def other_sources
+      path_sources + git_sources + plugin_sources
+    end
 
     def dup_with_replaced_sources(replacement_sources)
       new_source_list = dup

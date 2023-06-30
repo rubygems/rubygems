@@ -1308,7 +1308,7 @@ module Gem::Net   #:nodoc:
     # Sets the maximum number of times to retry an idempotent request in case of
     # \Gem::Net::ReadTimeout, IOError, EOFError, Errno::ECONNRESET,
     # Errno::ECONNABORTED, Errno::EPIPE, OpenSSL::SSL::SSLError,
-    # Timeout::Error.
+    # Gem::Timeout::Error.
     # The initial value is 1.
     #
     # Argument +retries+ must be a non-negative numeric value:
@@ -1598,7 +1598,7 @@ module Gem::Net   #:nodoc:
       end
 
       debug "opening connection to #{conn_addr}:#{conn_port}..."
-      s = Timeout.timeout(@open_timeout, Gem::Net::OpenTimeout) {
+      s = Gem::Timeout.timeout(@open_timeout, Gem::Net::OpenTimeout) {
         begin
           TCPSocket.open(conn_addr, conn_port, @local_host, @local_port)
         rescue => e
@@ -2358,7 +2358,7 @@ module Gem::Net   #:nodoc:
              Errno::ECONNRESET, Errno::ECONNABORTED, Errno::EPIPE, Errno::ETIMEDOUT,
              # avoid a dependency on OpenSSL
              defined?(OpenSSL::SSL) ? OpenSSL::SSL::SSLError : IOError,
-             Timeout::Error => exception
+             Gem::Timeout::Error => exception
         if count < max_retries && IDEMPOTENT_METHODS_.include?(req.method)
           count += 1
           @socket.close if @socket

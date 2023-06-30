@@ -559,6 +559,8 @@ lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA.pem
 lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/text.rb
+lib/rubygems/timeout.rb
+lib/rubygems/timeout/lib/timeout.rb
 lib/rubygems/tsort.rb
 lib/rubygems/tsort/.document
 lib/rubygems/tsort/LICENSE.txt

@@ -210,7 +210,7 @@ if File.exist?("tool/automatiek.rake")
     end
 
     lib.dependency("uri") do |sublib|
-      sublib.version = "v0.12.1"
+      sublib.version = "v0.12.2"
       sublib.download = { :github => "https://github.com/ruby/uri" }
       sublib.namespace = "URI"
       sublib.prefix = "Bundler"

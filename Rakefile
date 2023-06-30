@@ -193,7 +193,7 @@ if File.exist?("tool/automatiek.rake")
   # * We also include changes to require the vendored dependencies `uri` and `connection_pool` relatively.
   desc "Vendor a specific version of net-http-persistent to bundler"
   Automatiek::RakeTask.new("net-http-persistent") do |lib|
-    lib.version = "master"
+    lib.version = "v4.0.2"
     lib.download = { :github => "https://github.com/drbrain/net-http-persistent" }
     lib.namespace = "Net::HTTP::Persistent"
     lib.prefix = "Bundler::Persistent"

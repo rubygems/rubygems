@@ -170,7 +170,7 @@ if File.exist?("tool/automatiek.rake")
 
   desc "Vendor a specific version of thor to bundler"
   Automatiek::RakeTask.new("thor") do |lib|
-    lib.version = "v1.2.1"
+    lib.version = "v1.2.2"
     lib.download = { :github => "https://github.com/erikhuda/thor" }
     lib.namespace = "Thor"
     lib.prefix = "Bundler"

@@ -170,7 +170,7 @@ if File.exist?("tool/automatiek.rake")
 
   desc "Vendor a specific version of thor to bundler"
   Automatiek::RakeTask.new("thor") do |lib|
-    lib.version = "v1.2.1"
+    lib.version = "v1.2.2"
     lib.download = { :github => "https://github.com/erikhuda/thor" }
     lib.namespace = "Thor"
     lib.prefix = "Bundler"
@@ -193,7 +193,7 @@ if File.exist?("tool/automatiek.rake")
   # * We also include changes to require the vendored dependencies `uri` and `connection_pool` relatively.
   desc "Vendor a specific version of net-http-persistent to bundler"
   Automatiek::RakeTask.new("net-http-persistent") do |lib|
-    lib.version = "master"
+    lib.version = "v4.0.2"
     lib.download = { :github => "https://github.com/drbrain/net-http-persistent" }
     lib.namespace = "Net::HTTP::Persistent"
     lib.prefix = "Bundler::Persistent"
@@ -210,7 +210,7 @@ if File.exist?("tool/automatiek.rake")
     end
 
     lib.dependency("uri") do |sublib|
-      sublib.version = "v0.12.1"
+      sublib.version = "v0.12.2"
       sublib.download = { :github => "https://github.com/ruby/uri" }
       sublib.namespace = "URI"
       sublib.prefix = "Bundler"

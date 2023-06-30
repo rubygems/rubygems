@@ -105,6 +105,10 @@ module Bundler
       get(source) || default_source
     end
 
+    def unsorted_lock_sources
+      other_sources + lock_rubygems_sources
+    end
+
     def lock_sources
       lock_other_sources + lock_rubygems_sources
     end
@@ -128,14 +132,14 @@ module Bundler
       @rubygems_sources, @path_sources, @git_sources, @plugin_sources = map_sources(replacement_sources)
       @global_rubygems_source = global_replacement_source(replacement_sources)
 
-      different_sources?(lock_sources, replacement_sources)
+      different_sources?(unsorted_lock_sources, replacement_sources)
     end
 
     # Returns true if there are changes
     def expired_sources?(replacement_sources)
       return false if replacement_sources.empty?
 
-      lock_sources = dup_with_replaced_sources(replacement_sources).lock_sources
+      lock_sources = dup_with_replaced_sources(replacement_sources).unsorted_lock_sources
 
       different_sources?(lock_sources, replacement_sources)
     end
@@ -225,7 +229,7 @@ module Bundler
     end
 
     def equivalent_sources?(lock_sources, replacement_sources)
-      lock_sources.sort_by(&:identifier) == replacement_sources.sort_by(&:identifier)
+      lock_sources.sort_by(&:hash) == replacement_sources.sort_by(&:hash)
     end
 
     def equivalent_source?(source, other_source)

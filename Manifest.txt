@@ -480,6 +480,7 @@ lib/rubygems/request_set/lockfile.rb
 lib/rubygems/request_set/lockfile/parser.rb
 lib/rubygems/request_set/lockfile/tokenizer.rb
 lib/rubygems/requirement.rb
+lib/rubygems/resolv/lib/resolv.rb
 lib/rubygems/resolver.rb
 lib/rubygems/resolver/activation_request.rb
 lib/rubygems/resolver/api_set.rb

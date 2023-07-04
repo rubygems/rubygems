@@ -260,6 +260,24 @@ if File.exist?("tool/automatiek.rake")
         subsublib.vendor_lib = "lib/rubygems/timeout"
         subsublib.license_path = "License.txt"
       end
+
+      sublib.dependency("resolv") do |subsublib|
+        subsublib.version = "v0.2.2"
+        subsublib.download = { github: "https://github.com/ruby/resolv" }
+        subsublib.namespace = "Resolv"
+        subsublib.prefix = "Gem"
+        subsublib.vendor_lib = "lib/rubygems/resolv"
+        subsublib.license_path = "License.txt"
+
+        subsublib.dependency("timeout") do |ssslib|
+          ssslib.version = "v0.4.1"
+          ssslib.download = { github: "https://github.com/ruby/timeout" }
+          ssslib.namespace = "Timeout"
+          ssslib.prefix = "Gem"
+          ssslib.vendor_lib = "lib/rubygems/timeout"
+          ssslib.license_path = "License.txt"
+        end
+      end
     end
   end
 end

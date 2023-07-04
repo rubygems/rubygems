@@ -10,6 +10,7 @@ AllCops:
     - lib/rubygems/resolver/molinillo/**/*
     - lib/rubygems/tsort/**/*
     - lib/rubygems/timeout/**/*
+    - lib/rubygems/resolv/**/*
     - lib/rubygems/optparse/**/*
     - lib/rubygems/net-protocol/**/*
     - lib/rubygems/net-http/**/*

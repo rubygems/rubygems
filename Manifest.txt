@@ -337,6 +337,7 @@ bundler/lib/bundler/vendored_net_http.rb
 bundler/lib/bundler/vendored_persistent.rb
 bundler/lib/bundler/vendored_pub_grub.rb
 bundler/lib/bundler/vendored_thor.rb
+bundler/lib/bundler/vendored_timeout.rb
 bundler/lib/bundler/vendored_tsort.rb
 bundler/lib/bundler/vendored_uri.rb
 bundler/lib/bundler/version.rb

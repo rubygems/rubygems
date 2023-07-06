@@ -1,3 +1,15 @@
+# 2.4.16 (July 10, 2023)
+
+## Bug fixes:
+
+  - Exclude Bundler from missing locked dependencies check [#6792](https://github.com/rubygems/rubygems/pull/6792)
+  - Fix another incorrect removal of "ruby" platform from lockfile when changing path sources [#6784](https://github.com/rubygems/rubygems/pull/6784)
+  - Fix git source lockfile instability [#6786](https://github.com/rubygems/rubygems/pull/6786)
+
+## Documentation:
+
+  - `gemfile.5`: Code format the default glob to escape Markdown [#6790](https://github.com/rubygems/rubygems/pull/6790)
+
 # 2.4.15 (June 29, 2023)
 
 ## Enhancements:

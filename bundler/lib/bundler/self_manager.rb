@@ -76,7 +76,8 @@ module Bundler
     end
 
     def needs_switching?
-      autoswitching_applies? &&
+      !Gem::Version.new(Bundler::VERSION).prerelease? &&
+        autoswitching_applies? &&
         released?(lockfile_version) &&
         !running?(lockfile_version) &&
         !updating?

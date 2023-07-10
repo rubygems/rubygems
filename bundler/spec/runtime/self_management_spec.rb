@@ -16,6 +16,13 @@ RSpec.describe "Self management", :rubygems => ">= 3.3.0.dev", :realworld => tru
       G
     end
 
+    it "don't install locked version when using prerelease version" do
+      lockfile_bundled_with(previous_minor)
+
+      bundle "install", :artifice => "vcr"
+      expect(out).to_not include("Bundler #{Bundler::VERSION} is running, but your lockfile was generated with #{previous_minor}")
+    end
+
     it "installs locked version when using system path and uses it" do
       lockfile_bundled_with(previous_minor)
 

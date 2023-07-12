@@ -1,3 +1,15 @@
+# 3.4.17 / 2023-07-14
+
+## Enhancements:
+
+* Installs bundler 2.4.17 as a default gem.
+
+## Performance:
+
+* Avoid unnecessary work for private local gem installation. Pull request
+  [#6810](https://github.com/rubygems/rubygems/pull/6810) by
+  deivid-rodriguez
+
 # 3.4.16 / 2023-07-10
 
 ## Enhancements:

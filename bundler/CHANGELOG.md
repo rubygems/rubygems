@@ -1,3 +1,13 @@
+# 2.4.17 (July 14, 2023)
+
+## Enhancements:
+
+  - Avoid printing "Using ..." messages when version has not changed [#6804](https://github.com/rubygems/rubygems/pull/6804)
+
+## Bug fixes:
+
+  - Fix `bundler/setup` unintendedly writing to the filesystem [#6814](https://github.com/rubygems/rubygems/pull/6814)
+
 # 2.4.16 (July 10, 2023)
 
 ## Bug fixes:

@@ -220,14 +220,20 @@ module Spec
     RSpec::Matchers.define_negated_matcher :not_include_gems, :include_gems
     RSpec::Matchers.alias_matcher :include_gem, :include_gems
 
-    def plugin_should_be_installed(*names, version: nil)
+    def plugin_should_be_installed(*names)
       names.each do |name|
         expect(Bundler::Plugin).to be_installed(name)
         path = Pathname.new(Bundler::Plugin.installed?(name))
-
-        expect(File.basename(path)).to eq("#{name}-#{version}") unless version.nil?
         expect(path + "plugins.rb").to exist
       end
+    end
+
+    def plugin_should_be_installed_with_version(name, version)
+      expect(Bundler::Plugin).to be_installed(name)
+      path = Pathname.new(Bundler::Plugin.installed?(name))
+
+      expect(File.basename(path)).to eq("#{name}-#{version}")
+      expect(path + "plugins.rb").to exist
     end
 
     def plugin_should_not_be_installed(*names)

@@ -74,6 +74,7 @@ module Bundler
       shebang
       system_bindir
       trust-policy
+      version
     ].freeze
 
     DEFAULT_CONFIG = {
@@ -83,6 +84,7 @@ module Bundler
       "BUNDLE_REDIRECT" => 5,
       "BUNDLE_RETRY" => 3,
       "BUNDLE_TIMEOUT" => 10,
+      "BUNDLE_VERSION" => "local",
     }.freeze
 
     def initialize(root = nil)

@@ -8,6 +8,7 @@ require "tmpdir"
 RSpec.describe Bundler::CompactIndexClient::Updater do
   let(:fetcher) { double(:fetcher) }
   let(:local_path) { Pathname.new Dir.mktmpdir("localpath") }
+  let(:local_etag_path) { Pathname.new Dir.mktmpdir("localpath-etags") }
   let(:remote_path) { double(:remote_path) }
 
   let!(:updater) { described_class.new(fetcher) }
@@ -18,9 +19,10 @@ RSpec.describe Bundler::CompactIndexClient::Updater do
 
     it "treats the response as an update" do
       expect(response).to receive(:[]).with("ETag") { nil }
+      expect(response).to receive(:[]).with("Digest") { nil }
       expect(fetcher).to receive(:call) { response }
 
-      updater.update(local_path, remote_path)
+      updater.update(local_path, remote_path, local_etag_path)
     end
   end
 
@@ -31,7 +33,7 @@ RSpec.describe Bundler::CompactIndexClient::Updater do
       expect(fetcher).to receive(:call).and_raise(Zlib::GzipFile::Error)
 
       expect do
-        updater.update(local_path, remote_path)
+        updater.update(local_path, remote_path, local_etag_path)
       end.to raise_error(Bundler::HTTPError)
     end
   end
@@ -47,9 +49,10 @@ RSpec.describe Bundler::CompactIndexClient::Updater do
         $VERBOSE = false
         Encoding.default_internal = "ASCII"
         expect(response).to receive(:[]).with("ETag") { nil }
+        expect(response).to receive(:[]).with("Digest") { nil }
         expect(fetcher).to receive(:call) { response }
 
-        updater.update(local_path, remote_path)
+        updater.update(local_path, remote_path, local_etag_path)
       ensure
         Encoding.default_internal = previous_internal_encoding
         $VERBOSE = old_verbose

@@ -6,7 +6,7 @@ module Bundler
   class CompactIndexClient
     class Updater
       # TODO: support more algorithms, at least sha-512
-      SUPPORTED_DIGESTS = ['sha-256']
+      SUPPORTED_DIGESTS = ["sha-256"].freeze
 
       class MisMatchedChecksumError < Error
         def initialize(path, server_checksum, local_checksum)
@@ -25,7 +25,7 @@ module Bundler
         @fetcher = fetcher
       end
 
-      def update(local_path, remote_path, retrying = nil, local_etag_path = nil)
+      def update(local_path, remote_path, local_etag_path, retrying = nil)
         headers = {}
 
         local_temp_path = local_path.sub(/$/, ".#{$$}")
@@ -56,17 +56,16 @@ module Bundler
 
         etag = (response["ETag"] || "").gsub(%r{\AW/}, "")
         # TODO: support Repr-Digest as well
-        response_digests = parse_digest_list(response["Digest"])
-        supported_digest = response_digests.find {|digest| SUPPORTED_DIGESTS.include?(digest.algorithm)}
+        response_digests = parse_digest_list(response["Digest"] || "")
+        supported_digest = response_digests.find {|digest| SUPPORTED_DIGESTS.include?(digest.algorithm) }
 
         correct_response = SharedHelpers.filesystem_access(local_temp_path) do
           if response.is_a?(Net::HTTPPartialContent) && local_temp_path.size.nonzero?
             local_temp_path.open("a") {|f| f << slice_body(content, 1..-1) }
-            local_etag_temp_path.open("wb") {|f| f << etag } if local_etag_path
           else
             local_temp_path.open("wb") {|f| f << content }
-            local_etag_temp_path.open("wb") {|f| f << etag } if local_etag_path
           end
+          local_etag_temp_path.open("wb") {|f| f << etag } if local_etag_path
 
           if supported_digest
             supported_digest.value == digest_for_file(supported_digest.algorithm, local_temp_path)
@@ -138,11 +137,10 @@ module Bundler
 
       def parse_digest_list(header)
         [].tap do |digest_list|
-
           # Split the header by commas
-          header.split(',').each do |param|
+          header.split(",").each do |param|
             # split only on first `=` sign
-            parts = param.split('=', 2)
+            parts = param.split("=", 2)
             algorithm = parts[0].strip
             value = parts[1]
 

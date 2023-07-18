@@ -89,12 +89,13 @@ module Bundler
         Bundler::CompactIndexClient.debug { "already fetched #{remote_path}" }
         return
       end
-      @updater.update(local_path, url(remote_path), nil, local_etag_path)
+      @updater.update(local_path, url(remote_path), local_etag_path)
     end
 
     def update_info(name)
       Bundler::CompactIndexClient.debug { "update_info(#{name})" }
       path = @cache.info_path(name)
+      etag_path = @cache.info_etag_path(name)
       checksum = @updater.checksum_for_file(path)
       unless existing = @info_checksums_by_name[name]
         Bundler::CompactIndexClient.debug { "skipping updating info for #{name} since it is missing from versions" }
@@ -105,7 +106,7 @@ module Bundler
         return
       end
       Bundler::CompactIndexClient.debug { "updating info for #{name} since the versions checksum #{existing} != the local checksum #{checksum}" }
-      update(path, "info/#{name}")
+      update(path, "info/#{name}", etag_path)
     end
 
     def url(path)

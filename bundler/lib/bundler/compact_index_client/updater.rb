@@ -31,14 +31,15 @@ module Bundler
         local_temp_path = local_path.sub(/$/, ".#{$$}")
         local_temp_path = local_temp_path.sub(/$/, ".retrying") if retrying
         local_etag_temp_path = local_temp_path.sub(/$/, ".etag.tmp")
+        local_etag_temp_path = local_temp_path.sub(/$/, ".etag.tmp.retrying") if retrying
         local_temp_path = local_temp_path.sub(/$/, ".tmp")
 
         # first try to fetch any new bytes on the existing file
         if retrying.nil? && local_path.file? && local_etag_path.file?
           copy_file local_path, local_temp_path
-          copy_file local_etag_path, local_etag_temp_path if local_etag_path
+          copy_file local_etag_path, local_etag_temp_path
 
-          headers["If-None-Match"] = local_etag_temp_path.read if local_etag_path
+          headers["If-None-Match"] = local_etag_temp_path.read
           headers["Range"] =
             if local_temp_path.size.nonzero?
               # Subtract a byte to ensure the range won't be empty.
@@ -65,7 +66,7 @@ module Bundler
           else
             local_temp_path.open("wb") {|f| f << content }
           end
-          local_etag_temp_path.open("wb") {|f| f << etag } if local_etag_path
+          local_etag_temp_path.open("wb") {|f| f << etag }
 
           if supported_digest
             supported_digest.value == digest_for_file(supported_digest.algorithm, local_temp_path)
@@ -81,7 +82,7 @@ module Bundler
           end
           SharedHelpers.filesystem_access(local_etag_path) do
             FileUtils.mv(local_etag_temp_path, local_etag_path)
-          end if local_etag_path
+          end
 
           return nil
         end
@@ -90,7 +91,7 @@ module Bundler
           raise MisMatchedChecksumError.new(remote_path, supported_digest.value, digest_for_file(supported_digest.algorithm, local_temp_path))
         end
 
-        update(local_path, remote_path, :retrying)
+        update(local_path, remote_path, local_etag_path, :retrying)
       rescue Zlib::GzipFile::Error
         raise Bundler::HTTPError
       ensure

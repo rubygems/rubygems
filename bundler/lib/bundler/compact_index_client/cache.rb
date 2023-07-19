@@ -24,6 +24,10 @@ module Bundler
         directory.join("names")
       end
 
+      def names_etag_path
+        directory.join("names.etag")
+      end
+
       def versions
         versions_by_name = Hash.new {|hash, key| hash[key] = [] }
         info_checksums_by_name = {}

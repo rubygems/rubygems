@@ -54,13 +54,13 @@ module Bundler
 
     def names
       Bundler::CompactIndexClient.debug { "/names" }
-      update(@cache.names_path, "names")
+      update(@cache.names_path, "names", @cache.names_etag_path)
       @cache.names
     end
 
     def versions
       Bundler::CompactIndexClient.debug { "/versions" }
-      update(@cache.versions_path, "versions")
+      update(@cache.versions_path, "versions", @cache.versions_etag_path)
       versions, @info_checksums_by_name = @cache.versions
       versions
     end
@@ -83,7 +83,7 @@ module Bundler
 
     private
 
-    def update(local_path, remote_path, local_etag_path = nil)
+    def update(local_path, remote_path, local_etag_path)
       Bundler::CompactIndexClient.debug { "update(#{local_path}, #{remote_path})" }
       unless synchronize { @endpoints.add?(remote_path) }
         Bundler::CompactIndexClient.debug { "already fetched #{remote_path}" }

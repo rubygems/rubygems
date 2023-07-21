@@ -239,6 +239,7 @@ class Gem::StreamUI
     return nil, nil unless result
 
     result = result.strip.to_i - 1
+    return nil, nil unless (0...list.size) === result
     return list[result], result
   end
 

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 require "rubygems" unless defined?(Gem)
+begin
+  require "bundled_gems" unless defined?(Gem::BUNDLED_GEMS)
+rescue LoadError
+end
 
 module Bundler
   class RubygemsIntegration
@@ -239,9 +243,35 @@ module Bundler
       end
     end
 
-    def replace_gem(specs, specs_by_name)
-      reverse_rubygems_kernel_mixin
+    def replace_require(specs)
+      return if [::Kernel.singleton_class, ::Kernel].any? {|klass| klass.respond_to?(:no_warning_require) }
 
+      [::Kernel.singleton_class, ::Kernel].each do |kernel_class|
+        kernel_class.send(:alias_method, :no_warning_require, :require)
+        kernel_class.send(:define_method, :require) do |file|
+          name = file.tr("/", "-")
+          if (::Gem::BUNDLED_GEMS.keys - specs.to_a.map(&:name)).include?(name)
+            unless $LOADED_FEATURES.any? {|f| f.end_with?("#{name}.rb", "#{name}.#{RbConfig::CONFIG["DLEXT"]}") }
+              target_file = begin
+                              Bundler.default_gemfile.basename
+                            rescue GemfileNotFound
+                              "inline Gemfile"
+                            end
+              warn "#{name} is not part of the default gems since Ruby #{::Gem::BUNDLED_GEMS[file]}." \
+              " Add it to your #{target_file}."
+            end
+          end
+          kernel_class.send(:no_warning_require, file)
+        end
+        if kernel_class == ::Kernel
+          kernel_class.send(:private, :require)
+        else
+          kernel_class.send(:public, :require)
+        end
+      end
+    end
+
+    def replace_gem(specs, specs_by_name)
       executables = nil
 
       kernel = (class << ::Kernel; self; end)
@@ -358,6 +388,11 @@ module Bundler
     def replace_entrypoints(specs)
       specs_by_name = add_default_gems_to(specs)
 
+      if defined?(::Gem::BUNDLED_GEMS)
+        replace_require(specs)
+      else
+        reverse_rubygems_kernel_mixin
+      end
       replace_gem(specs, specs_by_name)
       stub_rubygems(specs)
       replace_bin_path(specs_by_name)

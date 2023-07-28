@@ -403,6 +403,9 @@ lib/rubygems/ext/ext_conf_builder.rb
 lib/rubygems/ext/rake_builder.rb
 lib/rubygems/gem_runner.rb
 lib/rubygems/gemcutter_utilities.rb
+lib/rubygems/gemcutter_utilities/webauthn_listener.rb
+lib/rubygems/gemcutter_utilities/webauthn_listener/response.rb
+lib/rubygems/gemcutter_utilities/webauthn_poller.rb
 lib/rubygems/indexer.rb
 lib/rubygems/install_default_message.rb
 lib/rubygems/install_message.rb
@@ -542,8 +545,6 @@ lib/rubygems/util/list.rb
 lib/rubygems/validator.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
-lib/rubygems/webauthn_listener.rb
-lib/rubygems/webauthn_listener/response.rb
 rubygems-update.gemspec
 setup.rb
 test/rubygems/alternate_cert.pem
@@ -583,6 +584,7 @@ test/rubygems/invalid_signer_cert_32.pem
 test/rubygems/invalidchild_cert.pem
 test/rubygems/invalidchild_cert_32.pem
 test/rubygems/invalidchild_key.pem
+test/rubygems/multifactor_auth_utilities.rb
 test/rubygems/package/tar_test_case.rb
 test/rubygems/packages/Bluebie-legs-0.6.2.gem
 test/rubygems/packages/ascii_binder-0.1.10.1.gem
@@ -759,6 +761,7 @@ test/rubygems/test_require.rb
 test/rubygems/test_rubygems.rb
 test/rubygems/test_webauthn_listener.rb
 test/rubygems/test_webauthn_listener_response.rb
+test/rubygems/test_webauthn_poller.rb
 test/rubygems/utilities.rb
 test/rubygems/wrong_key_cert.pem
 test/rubygems/wrong_key_cert_32.pem

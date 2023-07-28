@@ -403,6 +403,9 @@ lib/rubygems/ext/ext_conf_builder.rb
 lib/rubygems/ext/rake_builder.rb
 lib/rubygems/gem_runner.rb
 lib/rubygems/gemcutter_utilities.rb
+lib/rubygems/gemcutter_utilities/webauthn_listener.rb
+lib/rubygems/gemcutter_utilities/webauthn_listener/response.rb
+lib/rubygems/gemcutter_utilities/webauthn_poller.rb
 lib/rubygems/indexer.rb
 lib/rubygems/install_default_message.rb
 lib/rubygems/install_message.rb
@@ -541,8 +544,6 @@ lib/rubygems/util/list.rb
 lib/rubygems/validator.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
-lib/rubygems/webauthn_listener.rb
-lib/rubygems/webauthn_listener/response.rb
 lib/rubygems/yaml_serializer.rb
 rubygems-update.gemspec
 setup.rb

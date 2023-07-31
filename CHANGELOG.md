@@ -1,3 +1,15 @@
+# 3.4.18 / 2023-08-01
+
+## Enhancements:
+
+* Add poller to fetch WebAuthn OTP. Pull request
+  [#6774](https://github.com/rubygems/rubygems/pull/6774) by jenshenny
+* Remove side effects when unmarshaling old `Gem::Specification`. Pull
+  request [#6825](https://github.com/rubygems/rubygems/pull/6825) by nobu
+* Ship rubygems executables in `exe` folder. Pull request
+  [#6704](https://github.com/rubygems/rubygems/pull/6704) by hsbt
+* Installs bundler 2.4.18 as a default gem.
+
 # 3.4.17 / 2023-07-14
 
 ## Enhancements:

@@ -2,5 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "octokit", "~> 4.18"
+gem "octokit", "~> 7.0"
+gem "faraday-retry", "~> 2.2"
 gem "aws-sdk-s3", "~> 1.87"

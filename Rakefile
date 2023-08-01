@@ -729,7 +729,7 @@ namespace :bundler do
   end
 
   desc "Push to rubygems.org"
-  task "bundler:release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "bundler:release:github"]
+  task "release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "bundler:release:github"]
 
   desc "Generates the changelog for a specific target version"
   task :generate_changelog, [:version] do |_t, opts|

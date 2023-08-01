@@ -148,6 +148,16 @@ if File.exist?("tool/automatiek.rake")
     lib.license_path = "COPYING"
   end
 
+  desc "Vendor a specific version of compact_index to rubygems"
+  Automatiek::RakeTask.new("compact_index") do |lib|
+    lib.version = "v0.14.0"
+    lib.download = { :github => "https://github.com/rubygems/compact_index" }
+    lib.namespace = "CompactIndex"
+    lib.prefix = "Gem::Indexer"
+    lib.vendor_lib = "lib/rubygems/indexer/compact_index"
+    lib.license_path = "LICENSE.txt"
+  end
+
   desc "Vendor a specific version of pub_grub to bundler"
   Automatiek::RakeTask.new("pub_grub") do |lib|
     lib.version = "main"

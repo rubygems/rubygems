@@ -28,8 +28,13 @@ class Gem::Commands::GenerateIndexCommand < Gem::Command
     deprecate_option("--modern", version: "4.0", extra_msg: "Modern indexes (specs, latest_specs, and prerelease_specs) are always generated, so this option is not needed.")
     deprecate_option("--no-modern", version: "4.0", extra_msg: "The `--no-modern` option is currently ignored. Modern indexes (specs, latest_specs, and prerelease_specs) are always generated.")
 
+    add_option "--[no-]compact",
+                "Generate compact index files" do |value, options|
+      options[:build_compact] = value
+    end
+
     add_option "--update",
-               "Update modern indexes with gems added",
+               "Update modern and compact indices with gems added",
                "since the last update" do |value, options|
       options[:update] = value
     end

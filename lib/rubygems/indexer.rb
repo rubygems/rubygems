@@ -2,6 +2,7 @@
 
 require_relative "../rubygems"
 require_relative "package"
+require_relative "indexer/compact_index/"
 require "tmpdir"
 
 ##
@@ -14,6 +15,11 @@ class Gem::Indexer
   # Build indexes for RubyGems 1.2.0 and newer when true
 
   attr_accessor :build_modern
+
+  ##
+  # Build compact index files when true
+
+  attr_accessor :build_compact
 
   ##
   # Index install location
@@ -51,6 +57,7 @@ class Gem::Indexer
     options = { :build_modern => true }.merge options
 
     @build_modern = options[:build_modern]
+    @build_compact = options[:build_compact]
 
     @dest_directory = directory
     @directory = Dir.mktmpdir "gem_generate_index"
@@ -90,6 +97,7 @@ class Gem::Indexer
     Gem::Specification._resort! specs
     build_marshal_gemspecs specs
     build_modern_indices specs if @build_modern
+    build_compact_index specs if @build_compact
 
     compress_indices
   end
@@ -181,6 +189,57 @@ class Gem::Indexer
                "#{@latest_specs_index}.gz",
                @prerelease_specs_index,
                "#{@prerelease_specs_index}.gz"]
+  end
+
+  ##
+  # Builds compact index files
+
+  def build_compact_index(specs)
+    gems = compact_index_gems(specs)
+
+    progress = ui.progress_reporter gems.count + 2,
+      "Generating compact index files for #{gems.count} gems",
+      "Complete"
+
+    Gem.time "Generated compact index files" do
+      info_dir = File.join(@directory, "info")
+      FileUtils.mkdir_p info_dir, :mode => 0o700
+
+      gems.each do |gem|
+        info = CompactIndex.info(gem.versions)
+
+        info_checksum = Digest::MD5.hexdigest(info)
+        gem[:versions].last[:info_checksum] = info_checksum
+
+        info_path = File.join(@directory, "info", gem.name)
+        if File.exist?(info_path)
+          raise "info file already exists: #{info_path}"
+        end
+
+        File.open(info_path, "w") do |io|
+          io.write info
+        end
+
+        progress.updated "/info/#{gem.name}"
+      end
+
+      File.open(File.join(@directory, "names"), "w") do |io|
+        io.write CompactIndex.names(gems.map(&:name))
+      end
+      progress.updated "/names"
+
+      CompactIndex::VersionsFile.new(
+        File.join(@directory, "versions")
+      ).create(
+        gems,
+      )
+
+      progress.updated "/versions"
+
+      @files << info_dir << File.join(@directory, "names") << File.join(@directory, "versions")
+
+      progress.done
+    end
   end
 
   def map_gems_to_specs(gems)
@@ -376,6 +435,10 @@ class Gem::Indexer
                          @prerelease_specs_index)
     end
 
+    Gem.time "Updated compact index files" do
+      files += update_compact_index released, @dest_directory, @directory
+    end if @build_compact
+
     compress_indices
 
     verbose = Gem.configuration.really_verbose
@@ -424,5 +487,86 @@ class Gem::Indexer
     File.open dest, "wb" do |io|
       Marshal.dump specs_index, io
     end
+  end
+
+  ##
+  # Combines specs in +index+ and +source+ then writes out a new
+  # compact index to +dest+.
+
+  def update_compact_index(new_specs, source, dest)
+    files = []
+    source_versions_path = File.join(source, "versions")
+    versions_file = CompactIndex::VersionsFile.new source_versions_path
+
+    gems = compact_index_gems new_specs
+
+    FileUtils.mkdir_p File.join(dest, "info")
+
+    new_names = []
+    gems.each do |gem|
+      existing_info_path = File.join(source, "info", gem.name)
+      if File.exist? existing_info_path
+        info = File.read(existing_info_path) +
+               CompactIndex.info(gem.versions).sub(/\A---\n/, "")
+      else
+        new_names << gem.name
+        info = CompactIndex.info gem.versions
+      end
+
+      info_checksum = Digest::MD5.hexdigest(info)
+      gem[:versions].last[:info_checksum] = info_checksum
+
+      info_path = File.join(dest, "info", gem.name)
+      if File.exist?(info_path)
+        raise "info file already exists: #{info_path}"
+      end
+
+      File.open(info_path, "w") do |io|
+        io.write info
+      end
+      files << info_path
+    end
+
+    versions_path = File.join(dest, "versions")
+    File.open(versions_path, "w") do |io|
+      io.write versions_file.contents(gems)
+    end
+    files << versions_path
+
+    unless new_names.empty?
+      old_names = File.read(File.join(source, "names")).lines(chomp: true)[2..]
+      names_path = File.join(dest, "names")
+
+      names = old_names + new_names
+      names.sort!
+
+      File.open(names_path, "w") do |io|
+        io.write CompactIndex.names(names)
+      end
+
+      files << names_path
+    end
+
+    files
+  end
+
+  def compact_index_gems(specs)
+    versions_by_name = Hash.new {|h, k| h[k] = [] }
+    specs.each do |spec|
+      checksum = spec.loaded_from && Digest::SHA256.file(spec.loaded_from).base64digest!
+      versions_by_name[spec.name] << CompactIndex::GemVersion.new(
+        spec.version.version,
+        spec.platform,
+        checksum,
+        nil, # info_checksum
+        spec.dependencies.map {|d| CompactIndex::Dependency.new(d.name, d.requirement.to_s) },
+        spec.required_ruby_version&.to_s,
+        spec.required_rubygems_version&.to_s
+      )
+    end
+    versions_by_name.map do |name, versions|
+      versions.sort!
+      CompactIndex::Gem.new(name, versions)
+    end.tap(&:sort!)
   end
 end

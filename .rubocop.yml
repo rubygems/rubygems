@@ -10,6 +10,7 @@ AllCops:
     - lib/rubygems/resolver/molinillo/**/*
     - lib/rubygems/tsort/**/*
     - lib/rubygems/optparse/**/*
+    - lib/rubygems/indexer/compact_index/**/*
     - bundler/lib/bundler/vendor/**/*
   CacheRootDirectory: tmp/rubocop
   MaxFilesInCache: 5000

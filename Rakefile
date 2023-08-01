@@ -727,7 +727,9 @@ namespace :bundler do
   task :build => ["bundler:build_metadata"] do
     Rake::Task["bundler:build_metadata:clean"].tap(&:reenable).invoke
   end
-  task "bundler:release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "bundler:release:github"]
+
+  desc "Push to rubygems.org"
+  task "release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "bundler:release:github"]
 
   desc "Generates the changelog for a specific target version"
   task :generate_changelog, [:version] do |_t, opts|

@@ -259,9 +259,6 @@ Layout/ElseAlignment:
 Layout/EmptyComment:
   Enabled: true
 
-Layout/EmptyLineAfterMagicComment:
-  Enabled: true
-
 Layout/EmptyLineBetweenDefs:
   Enabled: true
 
@@ -609,10 +606,6 @@ Style/For:
 Style/FormatString:
   Enabled: true
 
-Style/FrozenStringLiteralComment:
-  Enabled: true
-  EnforcedStyle: always
-
 # 1.8.7 support
 Style/HashSyntax:
   Enabled: true
@@ -789,9 +782,6 @@ Style/SingleLineMethods:
   Enabled: true
 
 Style/StabbyLambdaParentheses:
-  Enabled: true
-
-Style/StderrPuts:
   Enabled: true
 
 Style/StringLiterals:

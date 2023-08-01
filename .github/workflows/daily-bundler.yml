@@ -10,7 +10,6 @@ permissions:
 defaults:
   run:
     shell: bash
-    working-directory: ./bundler
 
 jobs:
   daily_bundler:
@@ -39,7 +38,6 @@ jobs:
       - name: Run Test
         run: |
           bin/rake spec:all
-
       - name: Get previous status
         if: always()
         run: echo "OLD_STATUS=$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/workflows/daily-bundler.yml/runs?event=schedule&branch=master' | jq '.workflow_runs | .[1].conclusion')" >> $GITHUB_ENV

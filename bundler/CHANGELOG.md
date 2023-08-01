@@ -1,3 +1,17 @@
+# 2.4.18 (August 1, 2023)
+
+## Security:
+
+  - Merge URI-0.12.2 for Bundler [#6779](https://github.com/rubygems/rubygems/pull/6779)
+
+## Enhancements:
+
+  - Update Magnus version in Rust extension gem template [#6843](https://github.com/rubygems/rubygems/pull/6843)
+
+## Documentation:
+
+  - Update bundle-outdated(1) man to use table output [#6833](https://github.com/rubygems/rubygems/pull/6833)
+
 # 2.4.17 (July 14, 2023)
 
 ## Enhancements:

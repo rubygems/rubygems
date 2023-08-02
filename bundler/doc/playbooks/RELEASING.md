@@ -93,8 +93,8 @@ $ git cherry-pick -m 1 dd6aef9
 
 After running the task, you'll have a release branch ready to be merged into the
 stable branch. You'll want to open a PR from this branch into the stable branch
-and provided CI is green, you can go ahead, merge the PR and run `bin/rake
-release` from `bundler/` directory in the updated stable branch.
+and provided CI is green, you can go ahead, merge the PR and run `rake
+bundler:release` from the updated stable branch.
 
 Here's the checklist for releasing new minor versions:
 
@@ -105,8 +105,8 @@ Here's the checklist for releasing new minor versions:
   a PR to the stable branch with the generated changes.
 * [ ] Get the PR reviewed, make sure CI is green, and merge it.
 * [ ] Pull the updated stable branch, wait for CI to complete on it and get excited.
-* [ ] Run `bin/rake release` from the `bundler/` directory updated stable
-  branch, tweet, blog, let people know about the prerelease!
+* [ ] Run `rake bundler:release` from the updated stable branch, tweet, blog,
+  let people know about the prerelease!
 * [ ] Wait a **minimum of 7 days**
 * [ ] If significant problems are found, increment the prerelease (i.e. 2.2.pre.2)
   and repeat, but treating `.pre.2` as a _patch release_. In general, once a stable
@@ -124,8 +124,8 @@ Wait! You're not done yet! After your prelease looks good:
 * [ ] Write a blog post announcing the new version, highlighting new features and
   notable bugfixes
 * [ ] Pull the updated stable branch, wait for CI to complete on it and get excited.
-* [ ] Run `bin/rake release` in the `bundler/` directory of the updated stable
-  branch, tweet, link to the blog post, etc.
+* [ ] Run `rake bundler:release` from the updated stable branch, tweet, link to
+  the blog post, etc.
 
 At this point, you're a release manager! Pour yourself several tasty drinks and
 think about taking a vacation in the tropics.

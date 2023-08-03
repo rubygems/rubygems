@@ -140,6 +140,21 @@ class TestGemPackage < Gem::Package::TarTestCase
     ENV["SOURCE_DATE_EPOCH"] = epoch
   end
 
+  def test_build_time_ignores_invalid_source_date_epoch
+    ENV["SOURCE_DATE_EPOCH"] = "315532800"
+
+    spec = Gem::Specification.new "build", "1"
+    spec.summary = "build"
+    spec.authors = "build"
+    spec.files = ["lib/code.rb"]
+    spec.rubygems_version = Gem::Version.new "0"
+
+    package = Gem::Package.new spec.file_name
+
+    refute_equal Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc, package.build_time
+  end
+
+
   def test_add_files
     spec = Gem::Specification.new
     spec.files = %w[lib/code.rb lib/empty]

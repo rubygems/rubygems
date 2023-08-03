@@ -1126,8 +1126,8 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
     specified_epoch = ENV["SOURCE_DATE_EPOCH"]
 
-    # If it's empty or just whitespace, treat it like it wasn't set at all.
-    specified_epoch = nil if !specified_epoch.nil? && specified_epoch.strip.empty?
+    # If it's empty, just whitespace, or a unique placeholder, treat it like it wasn't set at all.
+    specified_epoch = nil if !specified_epoch.nil? && (specified_epoch.strip.empty? || specified_epoch === "315532800")
 
     epoch = specified_epoch || @default_source_date_epoch
 

@@ -429,8 +429,8 @@ namespace "blog" do
       digest = OpenSSL::Digest::SHA256.file(file).hexdigest
       basename = File.basename(file)
 
-      checksums << "* #{basename}  \n"
-      checksums << "  #{digest}\n"
+      checksums += "* #{basename}  \n"
+      checksums += "  #{digest}\n"
 
       release_url = URI("https://rubygems.org/#{file.end_with?("gem") ? "gems" : "rubygems"}/#{basename}")
       response = Net::HTTP.get_response(release_url)

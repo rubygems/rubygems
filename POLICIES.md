@@ -95,7 +95,7 @@ and not get any conflicts.
     changelogs into master.
 *   Once CI passes, merge the release PR, switch to the stable branch and pull
     the PR just merged.
-*   Release `bundler` with `(cd bundler && bin/rake release)`.
+*   Release `bundler` with `rake bundler:release`.
 *   Release `rubygems` with `rake release`.
 
 ### Steps for minor and major releases
@@ -112,7 +112,7 @@ and not get any conflicts.
     to the master PR.
 *   Once CI passes, merge the release PR, switch to  the stable branch and pull
     the PR just merged.
-*   Release `bundler` with `(cd bundler && bin/rake release)`.
+*   Release `bundler` with `rake bundler:release`.
 *   Release `rubygems` with `rake release`.
 
 ## Committer Access

@@ -154,7 +154,6 @@ class TestGemPackage < Gem::Package::TarTestCase
     refute_equal Time.at(ENV["SOURCE_DATE_EPOCH"].to_i).utc, package.build_time
   end
 
-
   def test_add_files
     spec = Gem::Specification.new
     spec.files = %w[lib/code.rb lib/empty]

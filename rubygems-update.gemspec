@@ -21,15 +21,6 @@ Gem::Specification.new do |s|
   s.bindir = "exe"
   s.executables = ["update_rubygems"]
   s.require_paths = ["hide_lib_for_update"]
-  s.rdoc_options = ["--main", "README.md", "--title=RubyGems Update Documentation"]
-  s.extra_rdoc_files = [
-    "CHANGELOG.md", "LICENSE.txt", "MAINTAINERS.txt",
-    "MIT.txt", "Manifest.txt", "README.md",
-    "UPGRADING.md", "POLICIES.md", "CODE_OF_CONDUCT.md",
-    "CONTRIBUTING.md", "bundler/CHANGELOG.md",
-    "bundler/LICENSE.md", "bundler/README.md",
-    "hide_lib_for_update/note.txt", *Dir["bundler/man/*.1"]
-  ]
 
   s.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
   s.required_rubygems_version = Gem::Requirement.new(">= 0")

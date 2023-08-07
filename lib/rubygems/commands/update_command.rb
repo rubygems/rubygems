@@ -292,7 +292,7 @@ command to remove old versions.
     args = []
     args << "--silent" if options[:silent]
     args << "--prefix" << Gem.prefix if Gem.prefix
-    args << "--no-document" unless options[:document].include?("rdoc") || options[:document].include?("ri")
+    args << "--no-document"
     args << "--no-format-executable" if options[:no_format_executable]
     args << "--previous-version" << Gem::VERSION if
       options[:system] == true ||

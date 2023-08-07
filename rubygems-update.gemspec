@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
     "UPGRADING.md", "POLICIES.md", "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md", "bundler/CHANGELOG.md",
     "bundler/LICENSE.md", "bundler/README.md",
-    "hide_lib_for_update/note.txt", *Dir["bundler/man/*.1"]
+    "hide_lib_for_update/note.txt", *Dir["bundler/lib/bundler/man/*.1"]
   ]
 
   s.required_ruby_version = Gem::Requirement.new(">= 2.6.0")

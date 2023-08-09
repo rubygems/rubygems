@@ -93,22 +93,6 @@ module Bundler
       " #{source.revision[0..6]}"
     end
 
-    # we don't get the checksum from a server like we could with EndpointSpecs
-    # calculating the checksum from the file on disk still provides some measure of security
-    # if it changes from install to install, that is cause for concern
-    def to_checksum
-      @checksum ||= begin
-        gem_path = fetch_gem
-        require "rubygems/package"
-        package = Gem::Package.new(gem_path)
-        digest = Bundler::Checksum.digest_from_file_source(package.gem)
-        digest.hexdigest!
-      end
-
-      digest = "sha256-#{@checksum}" if @checksum
-      Bundler::Checksum.new(name, version, platform, [digest])
-    end
-
     private
 
     def to_ary
@@ -140,7 +124,11 @@ module Bundler
     end
 
     def default_cache_path_for_rubygems_dir
-      "#{Bundler.bundle_path}/cache"
+      if Bundler.use_system_gems?
+        Bundler.user_cache
+      else
+        "#{Bundler.bundle_path}/cache"
+      end
     end
 
     def _remote_specification

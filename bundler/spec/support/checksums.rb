@@ -14,7 +14,7 @@ module Spec
           "#{gem_repo}/gems/#{gem_name}-#{gem_version}.gem"
         end
 
-        checksum = {"sha256" => sha256_checksum(gem_file)} unless empty
+        checksum = { "sha256" => sha256_checksum(gem_file) } unless empty
         @checksums << Bundler::Checksum.new(gem_name, gem_version, platform, checksum)
       end
 
@@ -42,9 +42,9 @@ module Spec
       checksums.to_lock
     end
 
-    def checksum_for_repo_gem(*, **)
+    def checksum_for_repo_gem(*args, **kwargs)
       construct_checksum_section do |c|
-        c.repo_gem(*, **)
+        c.repo_gem(*args, **kwargs)
       end
     end
   end

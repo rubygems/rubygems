@@ -123,7 +123,7 @@ module Bundler
       digests = Bundler::Checksum.digests_from_file_source(source).transform_values(&:hexdigest!)
 
       checksum = checksum_store[spec]
-      unless checksum.match_digests?(digests) || true
+      unless checksum.match_digests?(digests)
         expected = checksum_store.send(:store)[spec.full_name]
 
         raise SecurityError, <<~MESSAGE
@@ -152,7 +152,7 @@ module Bundler
             next if actual == multi
 
             "(More info: The expected #{algo.upcase} checksum was #{multi.digest.inspect}, but the " \
-            "checksum for the downloaded gem was #{actual.inspect}. The expected checksum came from: #{multi.sources.join(', ')})"
+            "checksum for the downloaded gem was #{actual.inspect}. The expected checksum came from: #{multi.sources.join(", ")})"
           end.compact.join("\n")}
           MESSAGE
       end
@@ -165,7 +165,7 @@ module Bundler
     def register_digests(digests, checksum_store, source)
       checksum_store.register(
         spec,
-        digests.map { |algo, digest| Checksum::Single.new(algo, digest, "downloaded gem @ `#{source.path}`") }
+        digests.map {|algo, digest| Checksum::Single.new(algo, digest, "downloaded gem @ `#{source.path}`") }
       )
     end
   end

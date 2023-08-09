@@ -113,7 +113,7 @@ module Bundler
     end
 
     def to_s
-      @__to_s ||= GemHelpers.lock_name(name, version, platform)
+      @to_s ||= GemHelpers.lock_name(name, version, platform)
     end
 
     def git_version

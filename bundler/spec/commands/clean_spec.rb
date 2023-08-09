@@ -905,7 +905,7 @@ RSpec.describe "bundle clean" do
     bundle :lock
     bundle "config set without development"
     bundle "config set path vendor/bundle"
-    bundle "install", verbose: true
+    bundle "install", :verbose => true
     bundle :clean
 
     very_simple_binary_extensions_dir =

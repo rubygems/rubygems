@@ -738,7 +738,7 @@ module Bundler
       sources.all_sources.each do |source|
         # has to be done separately, because we want to keep the locked checksum
         # store for a source, even when doing a full update
-        if @locked_gems && locked_source = @locked_gems.sources.find { |s| s == source}
+        if @locked_gems && locked_source = @locked_gems.sources.find {|s| s == source }
           source.checksum_store&.use(locked_source.checksum_store)
         end
         # If the source is unlockable and the current command allows an unlock of

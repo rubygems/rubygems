@@ -119,7 +119,7 @@ RSpec.describe "bundle lock" do
         foo
 
       CHECKSUMS
-        #{checksum_for_repo_gem repo, "foo", "1.0", empty: true}
+        #{checksum_for_repo_gem repo, "foo", "1.0", :empty => true}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -289,7 +289,7 @@ RSpec.describe "bundle lock" do
     G
     bundle "config set without test"
     bundle "config set path vendor/bundle"
-    bundle "lock", verbose: true
+    bundle "lock", :verbose => true
     expect(bundled_app("vendor/bundle")).not_to exist
   end
 
@@ -579,10 +579,10 @@ RSpec.describe "bundle lock" do
         mixlib-shellout
 
       CHECKSUMS
-        #{checksum_for_repo_gem gem_repo4, "ffi", "1.9.14", "x86-mingw32", empty: true}
-        #{checksum_for_repo_gem gem_repo4, "gssapi", "1.2.0", empty: true}
-        #{checksum_for_repo_gem gem_repo4, "mixlib-shellout", "2.2.6", "universal-mingw32", empty: true}
-        #{checksum_for_repo_gem gem_repo4, "win32-process", "0.8.3", empty: true}
+        #{checksum_for_repo_gem gem_repo4, "ffi", "1.9.14", "x86-mingw32", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "gssapi", "1.2.0", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "mixlib-shellout", "2.2.6", "universal-mingw32", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "win32-process", "0.8.3", :empty => true}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -614,12 +614,12 @@ RSpec.describe "bundle lock" do
         mixlib-shellout
 
       CHECKSUMS
-        #{checksum_for_repo_gem gem_repo4, "ffi", "1.9.14", empty: true}
-        #{checksum_for_repo_gem gem_repo4, "ffi", "1.9.14", "x86-mingw32", empty: true}
-        #{checksum_for_repo_gem gem_repo4, "gssapi", "1.2.0", empty: true}
-        #{checksum_for_repo_gem gem_repo4, "mixlib-shellout", "2.2.6", empty: true}
-        #{checksum_for_repo_gem gem_repo4, "mixlib-shellout", "2.2.6", "universal-mingw32", empty: true}
-        #{checksum_for_repo_gem gem_repo4, "win32-process", "0.8.3", empty: true}
+        #{checksum_for_repo_gem gem_repo4, "ffi", "1.9.14", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "ffi", "1.9.14", "x86-mingw32", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "gssapi", "1.2.0", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "mixlib-shellout", "2.2.6", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "mixlib-shellout", "2.2.6", "universal-mingw32", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "win32-process", "0.8.3", :empty => true}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -700,8 +700,8 @@ RSpec.describe "bundle lock" do
         libv8
 
       CHECKSUMS
-        #{checksum_for_repo_gem gem_repo4, "libv8", "8.4.255.0", "x86_64-darwin-19", empty: true}
-        #{checksum_for_repo_gem gem_repo4, "libv8", "8.4.255.0", "x86_64-darwin-20", empty: true}
+        #{checksum_for_repo_gem gem_repo4, "libv8", "8.4.255.0", "x86_64-darwin-19", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "libv8", "8.4.255.0", "x86_64-darwin-20", :empty => true}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -896,12 +896,12 @@ RSpec.describe "bundle lock" do
   end
 
   context "when an update is available" do
-    let(:repo) {
+    let(:repo) do
       build_repo2 do
         build_gem "foo", "2.0"
       end
       gem_repo2
-    }
+    end
 
     before do
       lockfile(@lockfile)
@@ -1013,7 +1013,7 @@ RSpec.describe "bundle lock" do
           weakling
 
         CHECKSUMS
-        #{expected_checksums.prepend("  ").lines(chomp: true).append("  foo (2.0)").sort.join("\n")}
+        #{expected_checksums.prepend("  ").lines(:chomp => true).append("  foo (2.0)").sort.join("\n")}
 
         BUNDLED WITH
            #{Bundler::VERSION}
@@ -1090,8 +1090,8 @@ RSpec.describe "bundle lock" do
           debug
 
         CHECKSUMS
-          #{checksum_for_repo_gem gem_repo4, "debug", "1.6.3", empty: true}
-          #{checksum_for_repo_gem gem_repo4, "irb", "1.5.0", empty: true}
+          #{checksum_for_repo_gem gem_repo4, "debug", "1.6.3", :empty => true}
+          #{checksum_for_repo_gem gem_repo4, "irb", "1.5.0", :empty => true}
 
         BUNDLED WITH
            #{Bundler::VERSION}
@@ -1480,10 +1480,10 @@ RSpec.describe "bundle lock" do
           govuk_app_config
 
         CHECKSUMS
-          #{checksum_for_repo_gem gem_repo4, "actionpack", "7.0.4.3", empty: true}
-          #{checksum_for_repo_gem gem_repo4, "activesupport", "7.0.4.3", empty: true}
-          #{checksum_for_repo_gem gem_repo4, "govuk_app_config", "4.13.0", empty: true}
-          #{checksum_for_repo_gem gem_repo4, "railties", "7.0.4.3", empty: true}
+          #{checksum_for_repo_gem gem_repo4, "actionpack", "7.0.4.3", :empty => true}
+          #{checksum_for_repo_gem gem_repo4, "activesupport", "7.0.4.3", :empty => true}
+          #{checksum_for_repo_gem gem_repo4, "govuk_app_config", "4.13.0", :empty => true}
+          #{checksum_for_repo_gem gem_repo4, "railties", "7.0.4.3", :empty => true}
 
         BUNDLED WITH
            #{Bundler::VERSION}

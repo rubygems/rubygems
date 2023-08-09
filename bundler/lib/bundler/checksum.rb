@@ -88,7 +88,7 @@ module Bundler
         digest.hash
       end
 
-      alias eql? ==
+      alias_method :eql?, :==
 
       def to_s
         "#{algo}-#{digest} (from #{source})"
@@ -122,7 +122,7 @@ module Bundler
         unless digest == other.digest
           raise SecurityError, <<~MESSAGE
             #{other}
-            #{to_s} from:
+            #{self} from:
             * #{sources.join("\n* ")}
           MESSAGE
         end

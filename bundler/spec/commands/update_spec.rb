@@ -300,7 +300,7 @@ RSpec.describe "bundle update" do
 
       previous_lockfile = lockfile
 
-      bundle "lock --update", env: {"DEBUG"=> "1"}, verbose: true
+      bundle "lock --update", :env => { "DEBUG" => "1" }, :verbose => true
 
       expect(lockfile).to eq(previous_lockfile)
     end
@@ -541,7 +541,7 @@ RSpec.describe "bundle update" do
 
       # needed because regressing to versions already present on the system
       # won't add a checksum
-      expected_lockfile = expected_lockfile.gsub(/ sha256-[a-f0-9]+$/, '')
+      expected_lockfile = expected_lockfile.gsub(/ sha256-[a-f0-9]+$/, "")
 
       lockfile original_lockfile
       bundle "update"

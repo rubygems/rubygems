@@ -92,7 +92,7 @@ module Bundler
       rescue GemfileNotFound
         "Gemfile.lock"
       end
-      @pos         = Position.new(1, 1)
+      @pos = Position.new(1, 1)
 
       if lockfile.match?(/<<<<<<<|=======|>>>>>>>|\|\|\|\|\|\|\|/)
         raise LockfileError, "Your #{@lockfile_path} contains merge conflicts.\n" \
@@ -233,12 +233,11 @@ module Bundler
       checksums = $6
       return unless checksums
 
-
       version = Gem::Version.new(version)
       platform = platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
       source = "#{@lockfile_path}:#{@pos} in the CHECKSUMS lockfile section"
       checksums = checksums.split(",").map do |c|
-        algo, digest = c.split('-', 2)
+        algo, digest = c.split("-", 2)
         Checksum::Single.new(algo, digest, source)
       end
 

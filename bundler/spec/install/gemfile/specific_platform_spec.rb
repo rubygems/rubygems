@@ -79,6 +79,9 @@ RSpec.describe "bundle install with specific platforms" do
         DEPENDENCIES
           google-protobuf
 
+        CHECKSUMS
+          google-protobuf (3.0.0.alpha.4.0)
+
         BUNDLED WITH
            2.1.4
       L
@@ -102,6 +105,7 @@ RSpec.describe "bundle install with specific platforms" do
           google-protobuf
 
         CHECKSUMS
+          google-protobuf (3.0.0.alpha.5.0.5.1)
 
         BUNDLED WITH
            #{Bundler::VERSION}
@@ -622,8 +626,8 @@ RSpec.describe "bundle install with specific platforms" do
         sorbet-static
 
       CHECKSUMS
-        #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.13.0", "x86_64-darwin"}
-        #{checksum_for_repo_gem gem_repo4, "sorbet-static", "0.5.10601", "x86_64-darwin"}
+        #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.13.0", "x86_64-darwin", empty: true}
+        #{checksum_for_repo_gem gem_repo4, "sorbet-static", "0.5.10601", "x86_64-darwin", empty: true}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -743,6 +747,10 @@ RSpec.describe "bundle install with specific platforms" do
         DEPENDENCIES
           sorbet-static (= 0.5.10549)
 
+        CHECKSUMS
+          #{checksum_for_repo_gem gem_repo4, "sorbet-static", "0.5.10549", "universal-darwin-20"}
+          #{checksum_for_repo_gem gem_repo4, "sorbet-static", "0.5.10549", "universal-darwin-21"}
+
         BUNDLED WITH
            #{Bundler::VERSION}
       L
@@ -764,7 +772,7 @@ RSpec.describe "bundle install with specific platforms" do
 
         CHECKSUMS
           #{checksum_for_repo_gem gem_repo4, "sorbet-static", "0.5.10549", "universal-darwin-20"}
-          #{checksum_for_repo_gem gem_repo4, "sorbet-static", "0.5.10549", "universal-darwin-21"}
+          #{checksum_for_repo_gem gem_repo4, "sorbet-static", "0.5.10549", "universal-darwin-21", empty: true}
 
         BUNDLED WITH
            #{Bundler::VERSION}
@@ -820,15 +828,15 @@ RSpec.describe "bundle install with specific platforms" do
           nokogiri (1.13.8-#{Gem::Platform.local})
 
       PLATFORMS
-        #{lockfile_platforms_for([specific_local_platform, "ruby"])}
+        #{lockfile_platforms("ruby")}
 
       DEPENDENCIES
         nokogiri
         tzinfo (~> 1.2)
 
       CHECKSUMS
-        #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.13.8"}
-        #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.13.8", "arm64-darwin-22"}
+        #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.13.8", empty: true}
+        #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.13.8", "arm64-darwin-22", empty: true}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -881,6 +889,10 @@ RSpec.describe "bundle install with specific platforms" do
       DEPENDENCIES
         concurrent-ruby
         rack
+
+      CHECKSUMS
+        #{checksum_for_repo_gem gem_repo4, "concurrent-ruby", "1.2.2", empty: true}
+        #{checksum_for_repo_gem gem_repo4, "rack", "3.0.7", empty: true}
 
       BUNDLED WITH
          #{Bundler::VERSION}

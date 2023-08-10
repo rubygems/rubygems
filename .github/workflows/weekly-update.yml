@@ -1,0 +1,43 @@
+name: weekly-update
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  weekly_update:
+    name: Rubygems weekly update
+    runs-on: ${{ matrix.os }}
+    if: github.repository == 'rubygems/rubygems'
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    steps:
+      - name: Config git
+        run: |
+          git config --global user.name "License Update"
+          git config --global user.email license.update@rubygems.org
+          git config --global push.autoSetupRemote true
+
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+
+      - name: Check versions
+        run: |
+          ruby --version
+          rake --version
+
+      - name: Update SPDX license list
+        run: |
+          rake update_licenses_branch
+          git diff --no-ext-diff --ignore-submodules --quiet "${BASE##*/}" -- || {
+            git push origin
+            gh pr create --base "${BASE##*/}" --fill
+          }
+        env:
+          BASE: ${{ github.ref }}
+          GH_TOKEN: ${{ github.token }}

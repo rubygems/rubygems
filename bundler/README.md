@@ -50,6 +50,9 @@ If you'd like to request a substantial change to Bundler or its documentation, r
 
 RubyGems is managed by [Ruby Central](https://rubycentral.org), a non-profit organization that supports the Ruby community through projects like this one, as well as [RubyConf](https://rubyconf.org), [RailsConf](https://railsconf.org), and [RubyGems.org](https://rubygems.org). You can support Ruby Central by attending or [sponsoring](sponsors@rubycentral.org) a conference, or by [joining as a supporting member](https://rubycentral.org/#/portal/signup).
 
+
+filter required file: (https://rubygem.org)
+
 ### Code of Conduct
 
 Everyone interacting in the Bundler project's codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [Bundler code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).

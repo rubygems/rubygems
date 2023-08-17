@@ -1,3 +1,19 @@
+# 2.4.19 (August 17, 2023)
+
+## Enhancements:
+
+  - Add `file` option to `ruby` method in Gemfile [#6876](https://github.com/rubygems/rubygems/pull/6876)
+  - Show better error when PAT can't authenticate to a private server [#6871](https://github.com/rubygems/rubygems/pull/6871)
+  - Don't fallback to old dependency API when bad credentials are configured [#6869](https://github.com/rubygems/rubygems/pull/6869)
+
+## Bug fixes:
+
+  - Fix git source conservativeness [#6850](https://github.com/rubygems/rubygems/pull/6850)
+
+## Documentation:
+
+  - Clarify that `bundle info` takes a gem name [#6875](https://github.com/rubygems/rubygems/pull/6875)
+
 # 2.4.18 (August 2, 2023)
 
 ## Security:

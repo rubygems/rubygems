@@ -547,9 +547,23 @@ task :check_manifest do
   end
 end
 
+license_last_update = nil
+
 desc "Update License list from SPDX.org"
 task :update_licenses do
   load "tool/generate_spdx_license_list.rb"
+  license_last_update = generate_spdx_license_list
+end
+
+desc "Create branch to update License list"
+task :update_licenses_branch => :update_licenses do
+  if license_last_update
+    file, mtime = license_last_update
+    date = mtime.strftime("%Y-%m-%d")
+    branch_name = "license-list-#{date}"
+    system(*%w[git checkout -b], branch_name, exception: true)
+    system(*%w[git commit -m], "[License] Update SPDX license list #{date}", *file, exception: true)
+  end
 end
 
 require_relative "bundler/spec/support/rubygems_ext"

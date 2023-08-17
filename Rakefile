@@ -562,7 +562,7 @@ task :update_licenses_branch => :update_licenses do
     date = mtime.strftime("%Y-%m-%d")
     branch_name = "license-list-#{date}"
     system(*%w[git checkout -b], branch_name, exception: true)
-    system(*%w[git commit -m], "[License] Update SPDX license list #{date}", *file, exception: true)
+    system(*%w[git commit -m], "Update SPDX license list as of #{date}", *file, exception: true)
   end
 end
 

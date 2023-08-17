@@ -138,7 +138,7 @@ module Bundler
       fetch_specs(gem_names).each do |name, version, platform, dependencies, metadata|
         spec = if dependencies
           EndpointSpecification.new(name, version, platform, self, dependencies, metadata).tap do |es|
-            source.checksum_store.register(es, [es.checksum]) if es.checksum
+            source.checksum_store.register(es, [es.checksum]) if source && es.checksum
           end
         else
           RemoteSpecification.new(name, version, platform, self)

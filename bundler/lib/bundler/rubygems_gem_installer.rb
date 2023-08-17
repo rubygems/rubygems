@@ -139,7 +139,7 @@ module Bundler
           2. run `bundle install`
 
           If you are sure that the new checksum is correct, you can \
-          remove the `#{spec.lock_name}` entry under the lockfile `CHECKSUMS` \
+          remove the `#{GemHelpers.lock_name spec.name, spec.version, spec.platform}` entry under the lockfile `CHECKSUMS` \
           section and rerun `bundle install`.
 
           If you wish to continue installing the downloaded gem, and are certain it does not pose a \

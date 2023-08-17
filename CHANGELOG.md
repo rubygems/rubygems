@@ -1,3 +1,15 @@
+# 3.4.19 / 2023-08-17
+
+## Enhancements:
+
+* Installs bundler 2.4.19 as a default gem.
+
+## Performance:
+
+* Speedup building docs when updating rubygems. Pull request
+  [#6864](https://github.com/rubygems/rubygems/pull/6864) by
+  deivid-rodriguez
+
 # 3.4.18 / 2023-08-02
 
 ## Enhancements:

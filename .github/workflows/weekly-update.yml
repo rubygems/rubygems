@@ -36,7 +36,7 @@ jobs:
           rake update_licenses_branch
           git diff --no-ext-diff --ignore-submodules --quiet "${BASE##*/}" -- || {
             git push origin
-            gh pr create --base "${BASE##*/}" --fill
+            gh pr create --base "${BASE##*/}" --fill --label "rubygems:enhancement"
           }
         env:
           BASE: ${{ github.ref }}

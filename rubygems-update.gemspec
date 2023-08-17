@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "rubygems-update"
-  s.version = "3.4.18"
+  s.version = "3.4.19"
   s.authors = ["Jim Weirich", "Chad Fowler", "Eric Hodel", "Luis Lavena", "Aaron Patterson", "Samuel Giddins", "André Arko", "Evan Phoenix", "Hiroshi SHIBATA"]
   s.email = ["", "", "drbrain@segment7.net", "luislavena@gmail.com", "aaron@tenderlovemaking.com", "segiddins@segiddins.me", "andre@arko.net", "evan@phx.io", "hsbt@ruby-lang.org"]
 
@@ -23,12 +23,12 @@ Gem::Specification.new do |s|
   s.require_paths = ["hide_lib_for_update"]
   s.rdoc_options = ["--main", "README.md", "--title=RubyGems Update Documentation"]
   s.extra_rdoc_files = [
-    "CHANGELOG.md", "LICENSE.txt", "MAINTAINERS.txt",
+    "LICENSE.txt", "MAINTAINERS.txt",
     "MIT.txt", "Manifest.txt", "README.md",
     "UPGRADING.md", "POLICIES.md", "CODE_OF_CONDUCT.md",
-    "CONTRIBUTING.md", "bundler/CHANGELOG.md",
+    "CONTRIBUTING.md",
     "bundler/LICENSE.md", "bundler/README.md",
-    "hide_lib_for_update/note.txt", *Dir["bundler/man/*.1"]
+    "hide_lib_for_update/note.txt", *Dir["bundler/lib/bundler/man/*.1"]
   ]
 
   s.required_ruby_version = Gem::Requirement.new(">= 2.6.0")

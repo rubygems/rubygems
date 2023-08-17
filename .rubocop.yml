@@ -203,6 +203,10 @@ Style/PercentLiteralDelimiters:
 Style/RedundantFreeze:
   Enabled: true
 
+Style/SafeNavigation:
+  Enabled: true
+  MaxChainLength: 1
+
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 

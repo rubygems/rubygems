@@ -14,7 +14,7 @@ module Bundler
         file_content = Bundler.read_file(Bundler.root.join(options[:file]))
         matched_ruby_version = /^ruby\s+([\d.]+)(?:\s*#\s*.*)?$/.match(file_content)
         # if a line in the file begins with "ruby" use that else use the whole file
-        ruby_version << matched_ruby_version.present? ? matched_ruby_version[1].strip : file_content.strip
+        ruby_version << matched_ruby_version ? matched_ruby_version[1].strip : file_content.strip
       end
 
       if options[:engine] == "ruby" && options[:engine_version] &&

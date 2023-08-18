@@ -11,7 +11,10 @@ module Bundler
 
       if options[:file]
         raise GemfileError, "Cannot specify version when using the file option" if ruby_version.any?
-        ruby_version << Bundler.read_file(Bundler.root.join(options[:file])).strip
+        file_content = Bundler.read_file(Bundler.root.join(options[:file]))
+        matched_ruby_version = /^ruby\s(.*)$/.match(file_content)
+        # if a line in the file begins with "ruby" use that else use the whole file
+        ruby_version << matched_ruby_version.present? ? matched_ruby_version[1].strip : file_content.strip
       end
 
       if options[:engine] == "ruby" && options[:engine_version] &&

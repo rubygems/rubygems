@@ -10,8 +10,14 @@ module Bundler
       raise GemfileError, "Please define :engine" if options[:engine_version] && options[:engine].nil?
 
       if options[:file]
-        raise GemfileError, "Cannot specify version when using the file option" if ruby_version.any?
+        raise GemfileError, "Ruby version already specified: #{ruby_version}" if ruby_version.any?
         ruby_version << Bundler.read_file(Bundler.root.join(options[:file])).strip
+      elsif options[:from]
+        raise GemfileError, "Ruby version already specified: #{ruby_version}" if ruby_version.any?
+        ruby_version << RubyVersionResolvers.resolvers[options[:from]]&.call
+        if ruby_version.empty?
+          raise GemfileError, "Unable to determine Ruby version from '#{options[:from]}'"
+        end
       end
 
       if options[:engine] == "ruby" && options[:engine_version] &&

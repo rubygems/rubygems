@@ -64,6 +64,7 @@ module Bundler
   autoload :Retry,                  File.expand_path("bundler/retry", __dir__)
   autoload :RubyDsl,                File.expand_path("bundler/ruby_dsl", __dir__)
   autoload :RubyVersion,            File.expand_path("bundler/ruby_version", __dir__)
+  autoload :RubyVersionResolvers,   File.expand_path("bundler/ruby_version_resolvers", __dir__)
   autoload :Runtime,                File.expand_path("bundler/runtime", __dir__)
   autoload :SelfManager,            File.expand_path("bundler/self_manager", __dir__)
   autoload :Settings,               File.expand_path("bundler/settings", __dir__)

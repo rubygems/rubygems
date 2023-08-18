@@ -133,7 +133,7 @@ RSpec.describe Bundler::RubyDsl do
       let(:project_root) { Pathname.new("/path/to/project") }
 
       before do
-        allow(Bundler).to receive(:read_file).with(project_root.join("foo")).and_return("nodejs 18.16.0\nruby #{version}\npnpm 8.6.12\n")
+        allow(Bundler).to receive(:read_file).with(project_root.join("foo")).and_return("nodejs 18.16.0\nruby #{version} # This is a comment\npnpm 8.6.12\n")
         allow(Bundler).to receive(:root).and_return(Pathname.new("/path/to/project"))
       end
 

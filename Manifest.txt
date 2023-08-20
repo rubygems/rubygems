@@ -507,6 +507,7 @@ lib/rubygems/s3_uri_signer.rb
 lib/rubygems/safe_marshal.rb
 lib/rubygems/safe_marshal/elements.rb
 lib/rubygems/safe_marshal/reader.rb
+lib/rubygems/safe_marshal/visitors/stream_printer.rb
 lib/rubygems/safe_marshal/visitors/to_ruby.rb
 lib/rubygems/safe_marshal/visitors/visitor.rb
 lib/rubygems/safe_yaml.rb

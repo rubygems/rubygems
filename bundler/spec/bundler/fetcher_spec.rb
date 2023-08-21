@@ -189,4 +189,75 @@ RSpec.describe Bundler::Fetcher do
       end
     end
   end
+
+  describe "#specs_with_retry" do
+    let(:downloader)  { double(:downloader) }
+    let(:remote)      { double(:remote, cache_slug: "slug", uri: uri, original_uri: nil, anonymized_uri: uri) }
+    let(:compact_index) { double(Bundler::Fetcher::CompactIndex, available?: true, api_fetcher?: true) }
+    let(:dependency)    { double(Bundler::Fetcher::Dependency, available?: true, api_fetcher?: true) }
+    let(:index)         { double(Bundler::Fetcher::Index, available?: true, api_fetcher?: false) }
+
+    before do
+      allow(Bundler::Fetcher::CompactIndex).to receive(:new).and_return(compact_index)
+      allow(Bundler::Fetcher::Dependency).to receive(:new).and_return(dependency)
+      allow(Bundler::Fetcher::Index).to receive(:new).and_return(index)
+    end
+
+    it "picks the first fetcher that works" do
+      expect(compact_index).to receive(:specs).with("name").and_return([["name", "1.2.3", "ruby"]])
+      expect(dependency).not_to receive(:specs)
+      expect(index).not_to receive(:specs)
+      fetcher.specs_with_retry("name", double(Bundler::Source::Rubygems))
+    end
+
+    context "when no network is available" do
+      before do
+        allow(compact_index).to receive(:available?).and_return(false)
+        allow(dependency).to receive(:available?).and_return(false)
+      end
+
+      it "uses the index" do
+        expect(compact_index).not_to receive(:specs)
+        expect(dependency).not_to receive(:specs)
+        expect(index).to receive(:specs).with("name").and_return([["name", "1.1.1", "ruby"]])
+
+        fetcher.specs_with_retry("name", double(Bundler::Source::Rubygems))
+      end
+    end
+  end
+
+  describe "#api_fetcher?" do
+    let(:remote)      { double(:remote, cache_slug: "slug", uri: uri, original_uri: nil, anonymized_uri: uri) }
+    let(:downloader)  { double(:downloader) }
+    let(:compact_index) { double(Bundler::Fetcher::CompactIndex, available?: false, api_fetcher?: true) }
+    let(:dependency)    { double(Bundler::Fetcher::Dependency, available?: false, api_fetcher?: true) }
+    let(:index)         { double(Bundler::Fetcher::Index, available?: true, api_fetcher?: false) }
+
+    before do
+      allow(Bundler::Fetcher::CompactIndex).to receive(:new).and_return(compact_index)
+      allow(Bundler::Fetcher::Dependency).to receive(:new).and_return(dependency)
+      allow(Bundler::Fetcher::Index).to receive(:new).and_return(index)
+    end
+
+    context "when an api fetcher is available" do
+      before do
+        allow(compact_index).to receive(:available?).and_return(true)
+        allow(compact_index).to receive(:specs).with("name").and_return([["name", "1.2.3", "ruby"]])
+      end
+
+      it "is truthy" do
+        expect(fetcher).to be_api_fetcher
+      end
+    end
+
+    context "when only the index fetcher is available" do
+      before do
+        allow(index).to receive(:specs).with("name").and_return([["name", "1.2.3", "ruby"]])
+      end
+
+      it "is falsey" do
+        expect(fetcher).not_to be_api_fetcher
+      end
+    end
+  end
 end

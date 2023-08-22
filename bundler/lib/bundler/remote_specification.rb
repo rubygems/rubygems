@@ -99,38 +99,6 @@ module Bundler
       nil
     end
 
-    def fetch_gem
-      fetch_platform
-
-      cache_path = download_cache_path || default_cache_path_for_rubygems_dir
-      gem_path = "#{cache_path}/#{file_name}"
-      return gem_path if File.exist?(gem_path)
-
-      SharedHelpers.filesystem_access(cache_path) do |p|
-        FileUtils.mkdir_p(p)
-      end
-
-      Bundler.rubygems.download_gem(self, remote.uri, cache_path)
-
-      gem_path
-    end
-
-    def download_cache_path
-      return unless Bundler.feature_flag.global_gem_cache?
-      return unless remote
-      return unless remote.cache_slug
-
-      Bundler.user_cache.join("gems", remote.cache_slug)
-    end
-
-    def default_cache_path_for_rubygems_dir
-      if Bundler.use_system_gems?
-        Bundler.user_cache
-      else
-        "#{Bundler.bundle_path}/cache"
-      end
-    end
-
     def _remote_specification
       @_remote_specification ||= @spec_fetcher.fetch_spec([@name, @version, @original_platform])
       @_remote_specification || raise(GemspecError, "Gemspec data for #{full_name} was" \

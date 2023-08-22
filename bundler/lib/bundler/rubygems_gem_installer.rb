@@ -158,8 +158,6 @@ module Bundler
       end
       register_digests(digests, checksum_store, source)
       true
-    rescue SecurityError
-      raise
     end
 
     def register_digests(digests, checksum_store, source)

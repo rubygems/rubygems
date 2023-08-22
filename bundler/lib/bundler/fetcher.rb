@@ -214,9 +214,7 @@ module Bundler
     end
 
     def fetchers
-      @fetchers ||= available_fetchers
-        .map {|f| f.new(downloader, @remote, uri) }
-        .drop_while { |f| !f.available? }
+      @fetchers ||= available_fetchers.map {|f| f.new(downloader, @remote, uri) }.drop_while {|f| !f.available? }
     end
 
     def fetch_specs(gem_names)

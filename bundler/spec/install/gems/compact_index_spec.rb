@@ -885,23 +885,21 @@ The checksum of /versions does not match the checksum provided by the server! So
       expect(exitstatus).to eq(19)
       expect(err).
         to  eq <<~E.strip
-          Bundler found multiple different checksums for rack-1.0.0.
-          This means that there are multiple different `rack-1.0.0.gem` files.
-          This is a potential security issue, since Bundler could be attempting to install a different gem than what you expect.
-
-          sha256-58caf0784c0adcca39bce1db6e3ebeee709430b01beb74415b3c787c9b9f7cf1 (from downloaded gem @ `/Users/segiddins/Development/github.com/rubygems/rubygems/bundler/tmp/1/gems/system/cache/rack-1.0.0.gem`)
-          sha256-69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b from:
-          * API response from http://localgemserver.test/
+          Bundler cannot continue installing rack (1.0.0).
+          The checksum for the downloaded `rack-1.0.0.gem` does not match the known checksum for the gem.
+          This means the contents of the downloaded gem is different from what was uploaded to the server or first used by your teammates, and could be a potential security issue.
 
           To resolve this issue:
-          1. delete any downloaded gems referenced above
+          1. delete the downloaded gem located at: `/Users/segiddins/Development/github.com/rubygems/rubygems/bundler/tmp/1/gems/system/cache/rack-1.0.0.gem`
           2. run `bundle install`
 
-          If you are sure that the new checksum is correct, you can remove the `rack-1.0.0` entry under the lockfile `CHECKSUMS` section and rerun `bundle install`.
+          If you are sure that the new checksum is correct, you can remove the `rack (1.0.0)` entry under the lockfile `CHECKSUMS` section and rerun `bundle install`.
 
           If you wish to continue installing the downloaded gem, and are certain it does not pose a security issue despite the mismatching checksum, do the following:
           1. run `bundle config set --local disable_checksum_validation true` to turn off checksum verification
           2. run `bundle install`
+
+          (More info: The expected SHA256 checksum was "69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b", but the checksum for the downloaded gem was "58caf0784c0adcca39bce1db6e3ebeee709430b01beb74415b3c787c9b9f7cf1". The expected checksum came from: API response from http://localgemserver.test/)
         E
     end
 

@@ -9,6 +9,7 @@ require "rubygems/request"
 module Bundler
   # Handles all the fetching with the rubygems server
   class Fetcher
+    autoload :Base, File.expand_path("fetcher/base", __dir__)
     autoload :CompactIndex, File.expand_path("fetcher/compact_index", __dir__)
     autoload :Downloader, File.expand_path("fetcher/downloader", __dir__)
     autoload :Dependency, File.expand_path("fetcher/dependency", __dir__)

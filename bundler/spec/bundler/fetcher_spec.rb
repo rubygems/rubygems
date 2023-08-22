@@ -210,7 +210,7 @@ RSpec.describe Bundler::Fetcher do
       fetcher.specs_with_retry("name", double(Bundler::Source::Rubygems))
     end
 
-    context "when no network is available" do
+    context "when APIs are not available" do
       before do
         allow(compact_index).to receive(:available?).and_return(false)
         allow(dependency).to receive(:available?).and_return(false)
@@ -219,7 +219,7 @@ RSpec.describe Bundler::Fetcher do
       it "uses the index" do
         expect(compact_index).not_to receive(:specs)
         expect(dependency).not_to receive(:specs)
-        expect(index).to receive(:specs).with("name").and_return([["name", "1.1.1", "ruby"]])
+        expect(index).to receive(:specs).with("name").and_return([["name", "1.2.3", "ruby"]])
 
         fetcher.specs_with_retry("name", double(Bundler::Source::Rubygems))
       end
@@ -242,7 +242,6 @@ RSpec.describe Bundler::Fetcher do
     context "when an api fetcher is available" do
       before do
         allow(compact_index).to receive(:available?).and_return(true)
-        allow(compact_index).to receive(:specs).with("name").and_return([["name", "1.2.3", "ruby"]])
       end
 
       it "is truthy" do
@@ -251,10 +250,6 @@ RSpec.describe Bundler::Fetcher do
     end
 
     context "when only the index fetcher is available" do
-      before do
-        allow(index).to receive(:specs).with("name").and_return([["name", "1.2.3", "ruby"]])
-      end
-
       it "is falsey" do
         expect(fetcher).not_to be_api_fetcher
       end

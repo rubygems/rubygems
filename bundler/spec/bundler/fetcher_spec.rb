@@ -192,10 +192,10 @@ RSpec.describe Bundler::Fetcher do
 
   describe "#specs_with_retry" do
     let(:downloader)  { double(:downloader) }
-    let(:remote)      { double(:remote, cache_slug: "slug", uri: uri, original_uri: nil, anonymized_uri: uri) }
-    let(:compact_index) { double(Bundler::Fetcher::CompactIndex, available?: true, api_fetcher?: true) }
-    let(:dependency)    { double(Bundler::Fetcher::Dependency, available?: true, api_fetcher?: true) }
-    let(:index)         { double(Bundler::Fetcher::Index, available?: true, api_fetcher?: false) }
+    let(:remote)      { double(:remote, :cache_slug => "slug", :uri => uri, :original_uri => nil, :anonymized_uri => uri) }
+    let(:compact_index) { double(Bundler::Fetcher::CompactIndex, :available? => true, :api_fetcher? => true) }
+    let(:dependency)    { double(Bundler::Fetcher::Dependency, :available? => true, :api_fetcher? => true) }
+    let(:index)         { double(Bundler::Fetcher::Index, :available? => true, :api_fetcher? => false) }
 
     before do
       allow(Bundler::Fetcher::CompactIndex).to receive(:new).and_return(compact_index)
@@ -227,11 +227,11 @@ RSpec.describe Bundler::Fetcher do
   end
 
   describe "#api_fetcher?" do
-    let(:remote)      { double(:remote, cache_slug: "slug", uri: uri, original_uri: nil, anonymized_uri: uri) }
     let(:downloader)  { double(:downloader) }
-    let(:compact_index) { double(Bundler::Fetcher::CompactIndex, available?: false, api_fetcher?: true) }
-    let(:dependency)    { double(Bundler::Fetcher::Dependency, available?: false, api_fetcher?: true) }
-    let(:index)         { double(Bundler::Fetcher::Index, available?: true, api_fetcher?: false) }
+    let(:remote)      { double(:remote, :cache_slug => "slug", :uri => uri, :original_uri => nil, :anonymized_uri => uri) }
+    let(:compact_index) { double(Bundler::Fetcher::CompactIndex, :available? => false, :api_fetcher? => true) }
+    let(:dependency)    { double(Bundler::Fetcher::Dependency, :available? => false, :api_fetcher? => true) }
+    let(:index)         { double(Bundler::Fetcher::Index, :available? => true, :api_fetcher? => false) }
 
     before do
       allow(Bundler::Fetcher::CompactIndex).to receive(:new).and_return(compact_index)

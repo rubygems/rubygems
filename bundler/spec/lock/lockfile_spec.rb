@@ -677,6 +677,10 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         ckeditor!
 
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo4, "ckeditor", "4.0.8", :empty => true)}
+        #{checksum_for_repo_gem(gem_repo4, "orm_adapter", "0.4.1", :empty => true)}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     L

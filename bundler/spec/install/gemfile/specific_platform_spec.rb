@@ -836,7 +836,7 @@ RSpec.describe "bundle install with specific platforms" do
 
       CHECKSUMS
         #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.13.8", :empty => true}
-        #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.13.8", "arm64-darwin-22", :empty => true}
+        #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.13.8", Gem::Platform.local, :empty => true}
 
       BUNDLED WITH
          #{Bundler::VERSION}

@@ -31,6 +31,10 @@ module Bundler
         register_full_name(GemHelpers.spec_full_name(name, version, platform), checksums)
       end
 
+      def delete_full_name(full_name)
+        @store.delete(full_name)
+      end
+
       def register_full_name(full_name, checksums)
         sums = (@store[full_name] ||= {})
 

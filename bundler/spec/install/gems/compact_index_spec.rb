@@ -882,7 +882,7 @@ The checksum of /versions does not match the checksum provided by the server! So
         gem "rack"
       G
 
-      api_checksum = ChecksumsBuilder.new.repo_gem gem_repo1, "rack", "1.0.0"
+      api_checksum = Spec::Checksums::ChecksumsBuilder.new.repo_gem(gem_repo1, "rack", "1.0.0").first.checksums.fetch("sha256")
 
       expect(exitstatus).to eq(19)
       expect(err).

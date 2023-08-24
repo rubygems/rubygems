@@ -135,7 +135,7 @@ module Bundler
           or first used by your teammates, and could be a potential security issue.
 
           To resolve this issue:
-          1. delete the downloaded gem located at: `#{gem}`
+          1. delete the downloaded gem located at: `#{source.path}`
           2. run `bundle install`
 
           If you are sure that the new checksum is correct, you can \

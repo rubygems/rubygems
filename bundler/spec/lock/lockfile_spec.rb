@@ -146,6 +146,9 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         rack
 
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
+
       BUNDLED WITH
          #{version}
     L
@@ -170,6 +173,9 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         rack
+
+      CHECKSUMS
+        #{checksum_for_repo_gem(gem_repo2, "rack", "1.0.0")}
 
       BUNDLED WITH
          #{version}

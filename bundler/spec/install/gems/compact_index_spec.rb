@@ -884,15 +884,21 @@ The checksum of /versions does not match the checksum provided by the server! So
 
       api_checksum = Spec::Checksums::ChecksumsBuilder.new.repo_gem(gem_repo1, "rack", "1.0.0").first.checksums.fetch("sha256")
 
+      gem_path = if Bundler.feature_flag.global_gem_cache?
+        default_cache_path.dirname.join("cache", "gems", "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "rack-1.0.0.gem")
+      else
+        default_cache_path.dirname.join("rack-1.0.0.gem")
+      end
+
       expect(exitstatus).to eq(19)
       expect(err).
-        to  eq <<~E.strip
+        to eq <<~E.strip
           Bundler cannot continue installing rack (1.0.0).
           The checksum for the downloaded `rack-1.0.0.gem` does not match the known checksum for the gem.
           This means the contents of the downloaded gem is different from what was uploaded to the server or first used by your teammates, and could be a potential security issue.
 
           To resolve this issue:
-          1. delete the downloaded gem located at: `#{default_bundle_path("cache", "rack-1.0.0.gem")}`
+          1. delete the downloaded gem located at: `#{gem_path}`
           2. run `bundle install`
 
           If you are sure that the new checksum is correct, you can remove the `rack (1.0.0)` entry under the lockfile `CHECKSUMS` section and rerun `bundle install`.

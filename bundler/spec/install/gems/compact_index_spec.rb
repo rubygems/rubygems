@@ -892,7 +892,7 @@ The checksum of /versions does not match the checksum provided by the server! So
           This means the contents of the downloaded gem is different from what was uploaded to the server or first used by your teammates, and could be a potential security issue.
 
           To resolve this issue:
-          1. delete the downloaded gem located at: `/Users/segiddins/Development/github.com/rubygems/rubygems/bundler/tmp/1/gems/system/cache/rack-1.0.0.gem`
+          1. delete the downloaded gem located at: `#{default_bundle_path("cache", "rack-1.0.0.gem")}`
           2. run `bundle install`
 
           If you are sure that the new checksum is correct, you can remove the `rack (1.0.0)` entry under the lockfile `CHECKSUMS` section and rerun `bundle install`.

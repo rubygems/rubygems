@@ -1397,8 +1397,8 @@ RSpec.describe "bundle lock" do
           foo!
 
         CHECKSUMS
-          #{checksum_for(gem_repo4, "foo", "1.0", :empty => true)}
-          #{checksum_for(gem_repo4, "nokogiri", "1.14.2", :empty => true)}
+          #{checksum_for_repo_gem(gem_repo4, "foo", "1.0", :empty => true)}
+          #{checksum_for_repo_gem(gem_repo4, "nokogiri", "1.14.2", :empty => true)}
 
         BUNDLED WITH
            #{Bundler::VERSION}

@@ -248,7 +248,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
           expect(err).to include("Warning: the gem 'rack' was found in multiple sources.")
           expect(err).to include("Installed from: https://gem.repo2")
 
-          expected_checksums = construct_checksum_section do |c|
+          expected_checksums = checksum_section do |c|
             c.repo_gem gem_repo3, "depends_on_rack", "1.0.1"
             c.repo_gem gem_repo2, "rack", "1.0.0"
           end
@@ -670,7 +670,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
         expect(the_bundle).to include_gems("concurrent-ruby 1.1.8")
         expect(the_bundle).not_to include_gems("concurrent-ruby 1.1.9")
 
-        expected_checksums = construct_checksum_section do |c|
+        expected_checksums = checksum_section do |c|
           c.repo_gem gem_repo2, "activesupport", "6.0.3.4"
           c.repo_gem gem_repo2, "concurrent-ruby", "1.1.8"
           c.repo_gem gem_repo2, "connection_pool", "2.2.3"
@@ -773,7 +773,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
         expect(the_bundle).not_to include_gems("concurrent-ruby 1.1.8")
         expect(the_bundle).to include_gems("concurrent-ruby 1.1.9")
 
-        expected_checksums = construct_checksum_section do |c|
+        expected_checksums = checksum_section do |c|
           c.repo_gem gem_repo2, "activesupport", "6.1.2.1"
           c.repo_gem gem_repo2, "concurrent-ruby", "1.1.9"
           c.repo_gem gem_repo2, "connection_pool", "2.2.3"
@@ -845,7 +845,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
         expect(the_bundle).to include_gems("concurrent-ruby 1.1.9")
         expect(the_bundle).not_to include_gems("concurrent-ruby 1.1.8")
 
-        expected_checksums = construct_checksum_section do |c|
+        expected_checksums = checksum_section do |c|
           c.repo_gem gem_repo2, "activesupport", "6.0.3.4"
           c.repo_gem gem_repo2, "concurrent-ruby", "1.1.9"
           c.repo_gem gem_repo2, "connection_pool", "2.2.3"
@@ -970,7 +970,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
 
       it "installs from the default source without any warnings or errors and generates a proper lockfile" do
-        expected_checksums = construct_checksum_section do |c|
+        expected_checksums = checksum_section do |c|
           c.repo_gem gem_repo3, "handsoap", "0.2.5.5"
           c.repo_gem gem_repo2, "nokogiri", "1.11.1"
           c.repo_gem gem_repo2, "racca", "1.5.2"
@@ -1531,7 +1531,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
     it "upgrades the lockfile correctly" do
       bundle "lock --update", :artifice => "compact_index"
 
-      expected_checksums = construct_checksum_section do |c|
+      expected_checksums = checksum_section do |c|
         c.repo_gem gem_repo2, "capybara", "2.5.0"
         c.repo_gem gem_repo4, "mime-types", "3.0.0"
       end
@@ -1650,7 +1650,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
     it "handles that fine" do
       bundle "install", :artifice => "compact_index_extra", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
 
-      expected_checksums = construct_checksum_section do |c|
+      expected_checksums = checksum_section do |c|
         c.repo_gem gem_repo4, "pdf-writer", "1.1.8"
         c.repo_gem gem_repo2, "ruport", "1.7.0.3"
       end
@@ -1705,7 +1705,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
     it "handles that fine" do
       bundle "install --verbose", :artifice => "endpoint", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
 
-      expected_checksums = construct_checksum_section do |c|
+      expected_checksums = checksum_section do |c|
         c.repo_gem gem_repo4, "pdf-writer", "1.1.8"
       end
 

@@ -90,7 +90,7 @@ module Bundler
     end
 
     def autoswitching_applies?
-      ENV["BUNDLER_VERSION"].nil? &&
+      (ENV["BUNDLER_VERSION"].nil? || ENV["BUNDLER_VERSION"].empty?) &&
         Bundler.rubygems.supports_bundler_trampolining? &&
         SharedHelpers.in_bundle? &&
         lockfile_version

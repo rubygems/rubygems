@@ -420,6 +420,13 @@ module Bundler
             index.use f.specs_with_retry(nil, self)
           end
         end
+
+        if dependency_names
+          index.each do |s|
+            next unless s.remote
+            checksum_store.register(s.full_name, s.checksum) if s.respond_to?(:checksum) && s.checksum
+          end
+        end
       end
 
       def fetch_gem_if_possible(spec, previous_spec = nil)

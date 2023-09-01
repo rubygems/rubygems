@@ -30,6 +30,23 @@ module Bundler
           Checksum.new(algo, digest.hexdigest!, source)
         end
       end
+
+      def from_api(digest, source_uri)
+        if digest.length == 64
+          # nothing to do, it's a hexdigest
+        elsif digest.length == 44
+          # transform the bytes from base64 to hex
+          digest = digest.unpack("m0").first.unpack("H*").first
+        else
+          raise ArgumentError, "#{digest.inspect} is not a valid SHA256 hexdigest nor base64digest"
+        end
+        Checksum.new("sha256", digest, "#{source_uri} API response")
+      end
+
+      def from_lock(checksum, source)
+        algo, digest = checksum.split("-")
+        Checksum.new(algo, digest, source)
+      end
     end
 
     attr_reader :algo, :digest, :sources
@@ -74,6 +91,12 @@ module Bundler
 
       @sources.concat(other.sources).uniq!
       self
+    end
+
+    def inspect
+      abbr = "#{algo == "sha256" ? nil : algo + "-"}#{digest[0, 8]}"
+      from = "(from #{sources.first}#{", ..." if sources.size > 1})"
+      "#<#{self.class}:#{object_id} #{abbr} #{from}>"
     end
 
     class Store
@@ -134,6 +157,10 @@ module Bundler
         MESSAGE
       end
 
+      def register_lock(full_name, checksum, source)
+        register(full_name, Checksum.from_lock(checksum, source))
+      end
+
       def register(full_name, checksum)
         return unless checksum
 
@@ -160,10 +187,6 @@ module Bundler
           1. run `bundle config set --local disable_checksum_validation true` to turn off checksum verification
           2. run `bundle install`
         MESSAGE
-      end
-
-      def replace(full_name, checksum)
-        store[full_name] = checksum ? [checksum] : nil
       end
 
       def register_store(other)

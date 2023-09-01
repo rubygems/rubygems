@@ -137,13 +137,7 @@ module Bundler
 
       fetch_specs(gem_names).each do |name, version, platform, dependencies, metadata|
         spec = if dependencies
-          EndpointSpecification.new(name, version, platform, self, dependencies, metadata).tap do |es|
-            # Duplicate spec.full_names, different spec.original_names
-            # index#<< ensures that the last one added wins, so if we're overriding
-            # here, make sure to also override the checksum, otherwise downloading the
-            # specs (even if that version is completely unused) will cause a SecurityError
-            source.checksum_store.replace(es.full_name, es.checksum)
-          end
+          EndpointSpecification.new(name, version, platform, self, dependencies, metadata)
         else
           RemoteSpecification.new(name, version, platform, self)
         end

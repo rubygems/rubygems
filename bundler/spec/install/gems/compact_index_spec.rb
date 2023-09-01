@@ -907,7 +907,7 @@ The checksum of /versions does not match the checksum provided by the server! So
           1. run `bundle config set --local disable_checksum_validation true` to turn off checksum verification
           2. run `bundle install`
 
-          (More info: The expected SHA256 checksum was "69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b", but the checksum for the downloaded gem was "#{api_checksum}". The expected checksum came from: API response from http://localgemserver.test/)
+          (More info: The expected SHA256 checksum was "69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b69b", but the checksum for the downloaded gem was "#{api_checksum}". The expected checksum came from: http://localgemserver.test/ API response)
         E
     end
 
@@ -917,7 +917,7 @@ The checksum of /versions does not match the checksum provided by the server! So
         gem "rack"
       G
       expect(exitstatus).to eq(14)
-      expect(err).to include("The given checksum for rack-0.9.1 (\"checksum!\") is not a valid SHA256 hexdigest nor base64digest")
+      expect(err).to include("Invalid checksum for rack-0.9.1: \"checksum!\" is not a valid SHA256 hexdigest nor base64digest")
     end
 
     it "does not raise when disable_checksum_validation is set" do

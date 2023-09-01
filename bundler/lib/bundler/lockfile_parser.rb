@@ -240,10 +240,9 @@ module Bundler
       # we prefer to heal invalid lockfiles
       return unless spec = @specs[full_name]
 
-      checksums.split(",").each do |c|
-        algo, digest = c.split("-", 2)
+      checksums.split(",").each do |checksum|
         lock_name = GemHelpers.lock_name(spec.name, spec.version, spec.platform)
-        spec.source.checksum_store.register(full_name, Checksum.new(algo, digest, "#{@lockfile_path}:#{@pos} CHECKSUMS #{lock_name}"))
+        spec.source.checksum_store.register_lock(full_name, checksum, "#{@lockfile_path}:#{@pos} CHECKSUMS #{lock_name}")
       end
     end
 

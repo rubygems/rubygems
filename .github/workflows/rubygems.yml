@@ -56,7 +56,7 @@ jobs:
           bundler: none
         if: matrix.os.name != 'Windows'
       - name: Setup ruby (Windows)
-        uses: ruby/setup-ruby-pkgs@af45875e8df3485265907b05fe263a4a1a07eeb2 # v1.32.4
+        uses: ruby/setup-ruby-pkgs@070791aab73b96ab166e572b2e4a0f056c410394 # v1.33.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

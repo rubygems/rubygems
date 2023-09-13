@@ -55,7 +55,8 @@ module Bundler
     #   to be updated or true if all gems should be updated
     # @param ruby_version [Bundler::RubyVersion, nil] Requested Ruby Version
     # @param optional_groups [Array(String)] A list of optional groups
-    def initialize(lockfile, dependencies, sources, unlock, ruby_version = nil, optional_groups = [], gemfiles = [])
+    # @param lockfile_contents [String, nil] The contents of the lockfile
+    def initialize(lockfile, dependencies, sources, unlock, ruby_version = nil, optional_groups = [], gemfiles = [], lockfile_contents = nil)
       if [true, false].include?(unlock)
         @unlocking_bundler = false
         @unlocking = unlock
@@ -75,7 +76,6 @@ module Bundler
       @gemfiles        = gemfiles
 
       @lockfile               = lockfile
-      @lockfile_contents      = String.new
 
       @locked_bundler_version = nil
       @resolved_bundler_version = nil
@@ -84,8 +84,8 @@ module Bundler
       @new_platform = nil
       @removed_platform = nil
 
-      if lockfile && File.exist?(lockfile)
-        @lockfile_contents = Bundler.read_file(lockfile)
+      if lockfile && File.exist?(lockfile) || lockfile_contents
+        @lockfile_contents = lockfile_contents || Bundler.read_file(lockfile)
         @locked_gems = LockfileParser.new(@lockfile_contents)
         @locked_platforms = @locked_gems.platforms
         @platforms = @locked_platforms.dup
@@ -104,6 +104,7 @@ module Bundler
           @locked_sources = []
         end
       else
+        @lockfile_contents = String.new
         @unlock         = {}
         @platforms      = []
         @locked_gems    = nil

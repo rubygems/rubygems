@@ -213,9 +213,9 @@ module Bundler
       with_source(git_source) { yield }
     end
 
-    def to_definition(lockfile, unlock)
+    def to_definition(lockfile, unlock, lockfile_contents: nil)
       check_primary_source_safety
-      Definition.new(lockfile, @dependencies, @sources, unlock, @ruby_version, @optional_groups, @gemfiles)
+      Definition.new(lockfile, @dependencies, @sources, unlock, @ruby_version, @optional_groups, @gemfiles, lockfile_contents)
     end
 
     def group(*args, &blk)

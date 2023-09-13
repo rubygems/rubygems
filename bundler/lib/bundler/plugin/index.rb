@@ -136,6 +136,37 @@ module Bundler
         @hooks[event] || []
       end
 
+      # generate an in-memory lockfile from the index
+      def generate_lockfile(sources, dependencies)
+        specs = []
+        sources.cached!
+        default_source = sources.global_rubygems_source
+
+        installed_plugins.each do |plugin|
+          path = plugin_path(plugin)
+          # path gems may have a gemspec, which is the most trustworthy
+          # way to determine the version
+          version = if (gemspec = path.join("#{plugin}.gemspec")).file?
+            Gem::Specification.load(gemspec.to_s).version
+          elsif (version_index = path.to_s.index("#{plugin}-"))
+            path.to_s[(version_index + plugin.length + 1)..]
+          end
+
+          next unless version
+
+          dep = dependencies.find {|d| d.name == plugin }
+          next unless dep
+
+          spec = LazySpecification.new(plugin, version, nil, dep.source || default_source)
+          next unless spec.satisfies?(dep)
+
+          specs << spec
+        end
+
+        require_relative "../lockfile_generator"
+        LockfileGenerator.generate(IndexDefinition.new(sources, specs, dependencies))
+      end
+
       private
 
       # Reads the index file from the directory and initializes the instance

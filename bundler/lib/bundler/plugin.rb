@@ -117,7 +117,7 @@ module Bundler
           Installer.new.install_definition(definition)
         end
 
-        plugins = definition.dependencies.map(&:name)
+        plugins = definition.requested_dependencies.select(&:should_include?).map(&:name)
         installed_specs = plugins.to_h {|p| [p, definition.specs[p].first] }
 
         save_plugins plugins, installed_specs, builder.inferred_plugins

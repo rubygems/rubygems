@@ -41,9 +41,17 @@ module Bundler
       "#<#{self.class}:0x#{object_id} sources=#{sources.map(&:inspect)} specs.size=#{specs.size}>"
     end
 
-    def empty?
-      each { return false }
+    def empty?(query = nil)
+      if query
+        first_result(query).nil?
+      else
+        each { return false }
+      end
       true
+    end
+
+    def any?(query = nil)
+      !empty?(query)
     end
 
     def search_all(name, &blk)
@@ -65,8 +73,31 @@ module Bundler
       results.uniq!(&:full_name) unless results.empty? # avoid modifying frozen EMPTY_SEARCH
       results
     end
-
     alias_method :[], :search
+
+    def first_result(query)
+      result = local_search(query)
+      return result.first if result
+
+      @sources.each do |source|
+        result = source.first(query)
+        return result if result
+      end
+
+      nil
+    end
+
+    def last_result(query)
+      @sources.reverse_each do |source|
+        result = source.last(query)
+        return result if result
+      end
+
+      result = local_search(query)
+      return result.last if result
+
+      nil
+    end
 
     def local_search(query)
       case query

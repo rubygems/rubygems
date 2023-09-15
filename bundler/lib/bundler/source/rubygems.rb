@@ -222,7 +222,7 @@ module Bundler
       def cached_built_in_gem(spec)
         cached_path = cached_path(spec)
         if cached_path.nil?
-          remote_spec = remote_specs.search(spec).first
+          remote_spec = remote_specs.first_result(spec)
           if remote_spec
             cached_path = fetch_gem(remote_spec)
           else

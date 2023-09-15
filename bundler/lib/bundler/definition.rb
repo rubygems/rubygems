@@ -560,7 +560,7 @@ module Bundler
         incomplete_specs = still_incomplete_specs
       end
 
-      bundler = sources.metadata_source.specs.search(["bundler", Bundler.gem_version]).last
+      bundler = sources.metadata_source.specs.last_result(["bundler", Bundler.gem_version])
       specs["bundler"] = bundler
 
       specs
@@ -583,7 +583,7 @@ module Bundler
         local_source = original_source.dup
         local_source.local_only!
 
-        new_source_requirements[name] = if local_source.specs.search(name).any?
+        new_source_requirements[name] = if local_source.specs.any?(name)
           local_source
         else
           original_source
@@ -906,7 +906,7 @@ module Bundler
 
     def verify_changed_sources!
       @specs_that_changed_sources.each do |s|
-        if s.source.specs.search(s.name).empty?
+        if s.source.specs.empty?(s.name)
           raise GemNotFound, "Could not find gem '#{s.name}' in #{s.source}"
         end
       end

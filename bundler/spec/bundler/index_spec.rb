@@ -14,7 +14,7 @@ RSpec.describe Bundler::Index do
     end
     let(:specs) { [spec] }
 
-    describe "#search_by_spec" do
+    describe "#search" do
       it "finds the spec when a nil platform is specified" do
         expect(subject.search(spec)).to eq([spec])
       end

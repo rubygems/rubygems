@@ -451,6 +451,48 @@ RSpec.describe "bundler plugin install" do
         plugin_should_be_installed("foo")
       end
     end
+
+    it "fails bundle commands if plugins are not yet installed" do
+      gemfile <<-G
+        source '#{file_uri_for(gem_repo2)}'
+        group :development do
+          plugin 'foo'
+        end
+
+        source '#{file_uri_for(gem_repo1)}' do
+          gem 'rake'
+        end
+      G
+
+      plugin_should_not_be_installed("foo")
+
+      bundle "check", :raise_on_error => false
+      expect(err).to include("Plugin foo (>= 0) is not installed")
+
+      bundle "exec rake", :raise_on_error => false
+      expect(err).to include("Plugin foo (>= 0) is not installed")
+
+      bundle "config set --local without development"
+      bundle "install"
+      bundle "config unset --local without"
+
+      plugin_should_not_be_installed("foo")
+
+      bundle "check", :raise_on_error => false
+      expect(err).to include("Plugin foo (>= 0) is not installed")
+
+      bundle "exec rake", :raise_on_error => false
+      expect(err).to include("Plugin foo (>= 0) is not installed")
+
+      plugin_should_not_be_installed("foo")
+
+      bundle "install"
+      plugin_should_be_installed("foo")
+
+      bundle "check"
+      bundle "exec rake -T", :raise_on_error => false
+      expect(err).not_to include("Plugin foo (>= 0) is not installed")
+    end
   end
 
   context "inline gemfiles" do

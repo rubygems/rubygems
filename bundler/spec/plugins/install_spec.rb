@@ -493,6 +493,27 @@ RSpec.describe "bundler plugin install" do
       bundle "exec rake -T", :raise_on_error => false
       expect(err).not_to include("Plugin foo (>= 0) is not installed")
     end
+
+    it "fails bundle commands gracefully when a plugin index reference is left dangling" do
+      build_lib "ga-plugin" do |s|
+        s.write "plugins.rb"
+      end
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        plugin 'ga-plugin', :path => "#{lib_path("ga-plugin-1.0")}"
+      G
+
+      expect(out).to include("Installed plugin ga-plugin")
+      plugin_should_be_installed("ga-plugin")
+
+      FileUtils.rm_rf(lib_path("ga-plugin-1.0"))
+
+      plugin_should_not_be_installed("ga-plugin")
+
+      bundle "check", :raise_on_error => false
+      expect(err).to include("Plugin ga-plugin (>= 0) is not installed")
+    end
   end
 
   context "inline gemfiles" do

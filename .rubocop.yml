@@ -152,6 +152,9 @@ Style/FrozenStringLiteralComment:
     - test/rubygems/test_gem.rb
     - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
 
+Style/RedundantBegin:
+  Enabled: true
+
 Style/StderrPuts:
   Enabled: true
 

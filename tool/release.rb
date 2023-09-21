@@ -171,7 +171,7 @@ class Release
       system("git", "push", "origin", @stable_branch, exception: true)
     end
 
-    system("git", "checkout", "-b", @release_branch, @stable_branch, exception: true)
+    create_if_not_exist_and_switch_to_release_branch
 
     begin
       @bundler.set_relevant_pull_requests_from(unreleased_pull_requests)
@@ -226,6 +226,12 @@ class Release
       system("git", "branch", "-D", @release_branch)
       raise
     end
+  end
+
+  def create_if_not_exist_and_switch_to_release_branch
+    system("git", "checkout", @release_branch, exception: true, err: IO::NULL)
+  rescue StandardError
+    system("git", "checkout", "-b", @release_branch, @stable_branch, exception: true)
   end
 
   def cherry_pick_pull_requests

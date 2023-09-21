@@ -223,6 +223,8 @@ class Release
     prs = relevant_unreleased_pull_requests
     raise "No unreleased PRs were found. Make sure to tag them with appropriate labels so that they are selected for backport." unless prs.any?
 
+    puts "The following unreleased prs were found:\n#{prs.map {|pr| "* #{pr.url}" }.join("\n")}"
+
     unless system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
       warn <<~MSG
 

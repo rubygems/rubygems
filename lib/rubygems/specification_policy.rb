@@ -127,7 +127,7 @@ class Gem::SpecificationPolicy
 
     metadata.each do |key, value|
       entry = "metadata['#{key}']"
-      if !key.is_a?(String)
+      unless key.is_a?(String)
         error "metadata keys must be a String"
       end
 
@@ -135,7 +135,7 @@ class Gem::SpecificationPolicy
         error "metadata key is too large (#{key.size} > 128)"
       end
 
-      if !value.is_a?(String)
+      unless value.is_a?(String)
         error "#{entry} value must be a String"
       end
 
@@ -370,7 +370,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
     licenses = @specification.licenses
 
     licenses.each do |license|
-      if !Gem::Licenses.match?(license)
+      unless Gem::Licenses.match?(license)
         suggestions = Gem::Licenses.suggestions(license)
         message = <<-WARNING
 license value '#{license}' is invalid.  Use a license identifier from

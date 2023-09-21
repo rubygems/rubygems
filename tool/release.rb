@@ -279,7 +279,7 @@ class Release
   private
 
   def relevant_unreleased_pull_requests
-    (@bundler.relevant_pull_requests + @rubygems.relevant_pull_requests).sort_by(&:merged_at)
+    (@bundler.relevant_pull_requests + @rubygems.relevant_pull_requests).uniq.sort_by(&:merged_at)
   end
 
   def unreleased_pull_requests

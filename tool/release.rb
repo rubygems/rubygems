@@ -179,20 +179,7 @@ class Release
 
       cherry_pick_pull_requests if @level == :patch
 
-      @bundler.cut_changelog!
-      system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
-      bundler_changelog = `git show --no-patch --pretty=format:%h`
-
-      @bundler.bump_versions!
-      system("rake", "update_locked_bundler", exception: true)
-      system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
-
-      @rubygems.cut_changelog!
-      system("git", "commit", "-am", "Changelog for Rubygems version #{@rubygems.version}", exception: true)
-      rubygems_changelog = `git show --no-patch --pretty=format:%h`
-
-      @rubygems.bump_versions!
-      system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
+      bundler_changelog, rubygems_changelog = cut_changelogs_and_bump_versions
 
       system("git", "push", exception: true)
 
@@ -223,7 +210,6 @@ class Release
       end
     rescue StandardError
       system("git", "checkout", initial_branch)
-      system("git", "branch", "-D", @release_branch)
       raise
     end
   end
@@ -253,6 +239,31 @@ class Release
         raise "Failed to resolve conflicts, resetting original state"
       end
     end
+  end
+
+  def cut_changelogs_and_bump_versions
+    system("git", "branch", "#{@release_branch}-bkp")
+
+    @bundler.cut_changelog!
+    system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
+    bundler_changelog = `git show --no-patch --pretty=format:%h`
+
+    @bundler.bump_versions!
+    system("rake", "update_locked_bundler", exception: true)
+    system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
+
+    @rubygems.cut_changelog!
+    system("git", "commit", "-am", "Changelog for Rubygems version #{@rubygems.version}", exception: true)
+    rubygems_changelog = `git show --no-patch --pretty=format:%h`
+
+    @rubygems.bump_versions!
+    system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
+
+    [bundler_changelog, rubygems_changelog]
+  rescue StandardError
+    system("git", "reset", "--hard", "#{@release_branch}-bkp")
+  ensure
+    system("git", "branch", "-D", "#{@release_branch}-bkp")
   end
 
   def cut_changelog!

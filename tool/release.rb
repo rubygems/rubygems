@@ -171,7 +171,7 @@ class Release
       system("git", "push", "origin", @stable_branch, exception: true)
     end
 
-    create_if_not_exist_and_switch_to_release_branch
+    create_if_not_exist_and_switch_to(@release_branch, from: @stable_branch)
 
     begin
       @bundler.set_relevant_pull_requests_from(unreleased_pull_requests)
@@ -191,14 +191,13 @@ class Release
         "It's release day!"
       )
 
-      system("git", "checkout", "-b", "cherry_pick_changelogs", "master", exception: true)
+      create_if_not_exist_and_switch_to("cherry_pick_changelogs", from: "master")
 
       begin
         system("git", "cherry-pick", bundler_changelog, rubygems_changelog, exception: true)
         system("git", "push", exception: true)
       rescue StandardError
         system("git", "cherry-pick", "--abort")
-        system("git", "branch", "-D", "cherry_pick_changelogs")
       else
         gh_client.create_pull_request(
           "rubygems/rubygems",
@@ -214,10 +213,10 @@ class Release
     end
   end
 
-  def create_if_not_exist_and_switch_to_release_branch
-    system("git", "checkout", @release_branch, exception: true, err: IO::NULL)
+  def create_if_not_exist_and_switch_to(branch, from:)
+    system("git", "checkout", branch, exception: true, err: IO::NULL)
   rescue StandardError
-    system("git", "checkout", "-b", @release_branch, @stable_branch, exception: true)
+    system("git", "checkout", "-b", branch, from, exception: true)
   end
 
   def cherry_pick_pull_requests

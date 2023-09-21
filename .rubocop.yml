@@ -142,6 +142,9 @@ Performance/StringReplacement:
 Security/Open:
   Enabled: true
 
+Style/Next:
+  Enabled: true
+
 Style/FrozenStringLiteralComment:
   Enabled: true
   EnforcedStyle: always

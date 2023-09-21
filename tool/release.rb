@@ -221,8 +221,9 @@ class Release
 
   def cherry_pick_pull_requests
     prs = relevant_unreleased_pull_requests
+    raise "No unreleased PRs were found. Make sure to tag them with appropriate labels so that they are selected for backport." unless prs.any?
 
-    if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
+    unless system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
       warn <<~MSG
 
         Opening a new shell to fix the cherry-pick errors manually. You can do the following now:

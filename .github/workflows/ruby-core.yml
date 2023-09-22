@@ -2,7 +2,6 @@ name: ruby-core
 
 on:
   pull_request:
-  merge_group:
 
   push:
     branches:

@@ -708,7 +708,7 @@ namespace :man do
     task :check => [:check_ronn, :set_current_date, :build] do
       Spec::Rubygems.check_source_control_changes(
         :success_message => "Man pages are in sync",
-        :error_message => "Man pages are out of sync. Above you can see the list of files that got modified or generated from rebuilding them. Please review and commit the results."
+        :error_message => "Man pages are out of sync. Please run `rake man:build` and commit the results."
       )
     end
   end

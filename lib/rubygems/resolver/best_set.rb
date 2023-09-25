@@ -30,9 +30,13 @@ class Gem::Resolver::BestSet < Gem::Resolver::ComposedSet
 
     super
   rescue Gem::RemoteFetcher::FetchError => e
-    replace_failed_api_set e
+    if e.message.include?("Not Found 404")
+      []
+    else
+      replace_failed_api_set e
 
-    retry
+      retry
+    end
   end
 
   def prefetch(reqs) # :nodoc:

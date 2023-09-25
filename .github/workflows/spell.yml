@@ -2,7 +2,10 @@ name: spell
 
 on:
   pull_request:
-  merge_group:
+
+  push:
+    branches:
+      - master
 
 permissions:
   contents: read

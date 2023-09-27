@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.metadata = { "source_code_uri" => "https://github.com/rubygems/rubygems" }
   s.licenses = ["Ruby", "MIT"]
 
-  s.files = File.read("Manifest.txt").split
+  s.files = File.read(File.expand_path("Manifest.txt", __dir__)).split
   s.bindir = "exe"
   s.executables = ["update_rubygems"]
   s.require_paths = ["hide_lib_for_update"]
@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
     "UPGRADING.md", "POLICIES.md", "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
     "bundler/LICENSE.md", "bundler/README.md",
-    "hide_lib_for_update/note.txt", *Dir["bundler/lib/bundler/man/*.1"]
+    "hide_lib_for_update/note.txt", *Dir["bundler/lib/bundler/man/*.1", :base => __dir__]
   ]
 
   s.required_ruby_version = Gem::Requirement.new(">= 2.6.0")

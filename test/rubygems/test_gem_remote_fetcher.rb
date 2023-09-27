@@ -749,7 +749,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       "my-bucket" => { :id => "testuser", :secret => "testpass" },
     }
     url = "s3://my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "20f974027db2f3cd6193565327a7c73457a138efb1a63ea248d185ce6827d41b"
     end
   ensure
@@ -761,7 +761,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       "my-bucket" => { :id => "testuser", :secret => "testpass", :region => "us-west-2" },
     }
     url = "s3://my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "4afc3010757f1fd143e769f1d1dabd406476a4fc7c120e9884fd02acbb8f26c9", nil, "us-west-2"
     end
   ensure
@@ -773,7 +773,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       "my-bucket" => { :id => "testuser", :secret => "testpass", :security_token => "testtoken" },
     }
     url = "s3://my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "935160a427ef97e7630f799232b8f208c4a4e49aad07d0540572a2ad5fe9f93c", "testtoken"
     end
   ensure
@@ -788,7 +788,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       "my-bucket" => { :provider => "env" },
     }
     url = "s3://my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "20f974027db2f3cd6193565327a7c73457a138efb1a63ea248d185ce6827d41b"
     end
   ensure
@@ -804,7 +804,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       "my-bucket" => { :provider => "env", :region => "us-west-2" },
     }
     url = "s3://my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "4afc3010757f1fd143e769f1d1dabd406476a4fc7c120e9884fd02acbb8f26c9", nil, "us-west-2"
     end
   ensure
@@ -820,7 +820,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       "my-bucket" => { :provider => "env" },
     }
     url = "s3://my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "935160a427ef97e7630f799232b8f208c4a4e49aad07d0540572a2ad5fe9f93c", "testtoken"
     end
   ensure
@@ -830,7 +830,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
 
   def test_fetch_s3_url_creds
     url = "s3://testuser:testpass@my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "20f974027db2f3cd6193565327a7c73457a138efb1a63ea248d185ce6827d41b"
     end
   end
@@ -841,7 +841,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     }
 
     url = "s3://my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "20f974027db2f3cd6193565327a7c73457a138efb1a63ea248d185ce6827d41b", nil, "us-east-1",
                       '{"AccessKeyId": "testuser", "SecretAccessKey": "testpass"}'
     end
@@ -855,7 +855,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     }
 
     url = "s3://my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "4afc3010757f1fd143e769f1d1dabd406476a4fc7c120e9884fd02acbb8f26c9", nil, "us-west-2",
                       '{"AccessKeyId": "testuser", "SecretAccessKey": "testpass"}'
     end
@@ -869,7 +869,7 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     }
 
     url = "s3://my-bucket/gems/specs.4.8.gz"
-    Time.stub :now, Time.at(1561353581) do
+    Time.stub :now, Time.at(1_561_353_581) do
       assert_fetch_s3 url, "935160a427ef97e7630f799232b8f208c4a4e49aad07d0540572a2ad5fe9f93c", "testtoken", "us-east-1",
                       '{"AccessKeyId": "testuser", "SecretAccessKey": "testpass", "Token": "testtoken"}'
     end
@@ -1151,14 +1151,12 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
     end
     server.ssl_context.tmp_dh_callback = proc { TEST_KEY_DH2048 }
     t = Thread.new do
-      begin
-        server.start
-      rescue Exception => ex
-        puts "ERROR during server thread: #{ex.message}"
-        raise
-      ensure
-        server.shutdown
-      end
+      server.start
+    rescue Exception => ex
+      puts "ERROR during server thread: #{ex.message}"
+      raise
+    ensure
+      server.shutdown
     end
     while server.status != :Running
       sleep 0.1
@@ -1205,13 +1203,11 @@ PeIQQkFng2VVot/WAQbv3ePqWq07g1BBcwIBAg==
       end
     end
     th = Thread.new do
-      begin
-        s.start
-      rescue Exception => ex
-        abort "ERROR during server thread: #{ex.message}"
-      ensure
-        s.shutdown
-      end
+      s.start
+    rescue Exception => ex
+      abort "ERROR during server thread: #{ex.message}"
+    ensure
+      s.shutdown
     end
     th[:server] = s
     th

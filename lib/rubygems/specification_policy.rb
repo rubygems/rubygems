@@ -127,7 +127,7 @@ class Gem::SpecificationPolicy
 
     metadata.each do |key, value|
       entry = "metadata['#{key}']"
-      if !key.kind_of?(String)
+      unless key.is_a?(String)
         error "metadata keys must be a String"
       end
 
@@ -135,7 +135,7 @@ class Gem::SpecificationPolicy
         error "metadata key is too large (#{key.size} > 128)"
       end
 
-      if !value.kind_of?(String)
+      unless value.is_a?(String)
         error "#{entry} value must be a String"
       end
 
@@ -143,10 +143,9 @@ class Gem::SpecificationPolicy
         error "#{entry} value is too large (#{value.size} > 1024)"
       end
 
-      if METADATA_LINK_KEYS.include? key
-        if value !~ VALID_URI_PATTERN
-          error "#{entry} has invalid link: #{value.inspect}"
-        end
+      next unless METADATA_LINK_KEYS.include? key
+      if value !~ VALID_URI_PATTERN
+        error "#{entry} has invalid link: #{value.inspect}"
       end
     end
   end
@@ -198,28 +197,27 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
         !version.prerelease? && (op == ">" || op == ">=")
       end
 
-      if open_ended
-        op, dep_version = dep.requirement.requirements.first
+      next unless open_ended
+      op, dep_version = dep.requirement.requirements.first
 
-        segments = dep_version.segments
+      segments = dep_version.segments
 
-        base = segments.first 2
+      base = segments.first 2
 
-        recommendation = if (op == ">" || op == ">=") && segments == [0]
-          "  use a bounded requirement, such as '~> x.y'"
-        else
-          bugfix = if op == ">"
-            ", '> #{dep_version}'"
-          elsif op == ">=" && base != segments
-            ", '>= #{dep_version}'"
-          end
-
-          "  if #{dep.name} is semantically versioned, use:\n" \
-          "    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}"
+      recommendation = if (op == ">" || op == ">=") && segments == [0]
+        "  use a bounded requirement, such as '~> x.y'"
+      else
+        bugfix = if op == ">"
+          ", '> #{dep_version}'"
+        elsif op == ">=" && base != segments
+          ", '>= #{dep_version}'"
         end
 
-        warning_messages << ["open-ended dependency on #{dep} is not recommended", recommendation].join("\n") + "\n"
+        "  if #{dep.name} is semantically versioned, use:\n" \
+        "    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}"
       end
+
+      warning_messages << ["open-ended dependency on #{dep} is not recommended", recommendation].join("\n") + "\n"
     end
     if warning_messages.any?
       warning_messages.each {|warning_message| warning warning_message }
@@ -345,7 +343,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       String
     end
 
-    unless Array === val && val.all? {|x| x.kind_of?(klass) }
+    unless Array === val && val.all? {|x| x.is_a?(klass) || (field == :licenses && x.nil?) }
       error "#{field} must be an Array of #{klass}"
     end
   end
@@ -360,6 +358,8 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
     licenses = @specification.licenses
 
     licenses.each do |license|
+      next if license.nil?
+
       if license.length > 64
         error "each license must be 64 characters or less"
       end
@@ -370,20 +370,21 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
     licenses = @specification.licenses
 
     licenses.each do |license|
-      if !Gem::Licenses.match?(license)
-        suggestions = Gem::Licenses.suggestions(license)
-        message = <<-WARNING
+      next if Gem::Licenses.match?(license) || license.nil?
+      suggestions = Gem::Licenses.suggestions(license)
+      message = <<-WARNING
 license value '#{license}' is invalid.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
-        WARNING
-        message += "Did you mean #{suggestions.map {|s| "'#{s}'" }.join(', ')}?\n" unless suggestions.nil?
-        warning(message)
-      end
+http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license,
+or set it to nil if you don't want to specify a license.
+      WARNING
+      message += "Did you mean #{suggestions.map {|s| "'#{s}'" }.join(', ')}?\n" unless suggestions.nil?
+      warning(message)
     end
 
     warning <<-WARNING if licenses.empty?
 licenses is empty, but is recommended.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license.
+http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license,
+or set it to nil if you don't want to specify a license.
     WARNING
   end
 

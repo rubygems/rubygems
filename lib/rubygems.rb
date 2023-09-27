@@ -9,7 +9,7 @@
 require "rbconfig"
 
 module Gem
-  VERSION = "3.4.19"
+  VERSION = "3.4.20"
 end
 
 # Must be first since it unloads the prelude from 1.9.2
@@ -1102,13 +1102,11 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     require "bundler"
     begin
       Gem::DefaultUserInteraction.use_ui(ui) do
-        begin
-          Bundler.ui.silence do
-            @gemdeps = Bundler.setup
-          end
-        ensure
-          Gem::DefaultUserInteraction.ui.close
+        Bundler.ui.silence do
+          @gemdeps = Bundler.setup
         end
+      ensure
+        Gem::DefaultUserInteraction.ui.close
       end
     rescue Bundler::BundlerError => e
       warn e.message

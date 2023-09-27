@@ -118,30 +118,28 @@ class Gem::TestCase < Test::Unit::TestCase
   # https://github.com/seattlerb/minitest/blob/21d9e804b63c619f602f3f4ece6c71b48974707a/lib/minitest/assertions.rb#L546
   def capture_subprocess_io
     _synchronize do
-      begin
-        require "tempfile"
+      require "tempfile"
 
-        captured_stdout, captured_stderr = Tempfile.new("out"), Tempfile.new("err")
+      captured_stdout, captured_stderr = Tempfile.new("out"), Tempfile.new("err")
 
-        orig_stdout, orig_stderr = $stdout.dup, $stderr.dup
-        $stdout.reopen captured_stdout
-        $stderr.reopen captured_stderr
+      orig_stdout, orig_stderr = $stdout.dup, $stderr.dup
+      $stdout.reopen captured_stdout
+      $stderr.reopen captured_stderr
 
-        yield
+      yield
 
-        $stdout.rewind
-        $stderr.rewind
+      $stdout.rewind
+      $stderr.rewind
 
-        return captured_stdout.read, captured_stderr.read
-      ensure
-        $stdout.reopen orig_stdout
-        $stderr.reopen orig_stderr
+      return captured_stdout.read, captured_stderr.read
+    ensure
+      $stdout.reopen orig_stdout
+      $stderr.reopen orig_stderr
 
-        orig_stdout.close
-        orig_stderr.close
-        captured_stdout.close!
-        captured_stderr.close!
-      end
+      orig_stdout.close
+      orig_stderr.close
+      captured_stdout.close!
+      captured_stderr.close!
     end
   end
 
@@ -935,7 +933,7 @@ class Gem::TestCase < Test::Unit::TestCase
     @a1 = quick_gem "a", "1" do |s|
       s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
-      s.date = Gem::Specification::TODAY - 86400
+      s.date = Gem::Specification::TODAY - 86_400
       s.homepage = "http://a.example.com"
       s.email = %w[example@example.com example2@example.com]
       s.authors = %w[Example Example2]

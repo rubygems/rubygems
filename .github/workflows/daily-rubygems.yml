@@ -24,15 +24,15 @@ jobs:
     env:
       TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
     steps:
-      - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@904f3fef85a9c80a3750cbe7d5159268fd5caa9f # v1.145.0
+        uses: ruby/setup-ruby@5311f05890856149502132d25c4a24985a00d426 # v1.153.0
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
 
-      - uses: dtolnay/rust-toolchain@e12eda571dc9a5ee5d58eecf4738ec291c66f295
+      - uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8
         with:
           toolchain: ${{ matrix.cargo }}
           components: rustfmt

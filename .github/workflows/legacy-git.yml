@@ -23,7 +23,8 @@ jobs:
       image: centos/ruby-27-centos7@sha256:b24b875dcdb6cb8f2145706dcaac74bb25ae3b9d9f7ba69d7ae700a7aee1e1bd
       options: --user=root
     steps:
-      - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+      # This locked with v3.6.0 for node18, centos7 image is only working with actions/checkout@v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       - name: Install rubygems
         run: ruby setup.rb
       - name: Check we can install a Gemfile with git sources

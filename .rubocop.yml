@@ -142,6 +142,9 @@ Performance/StringReplacement:
 Security/Open:
   Enabled: true
 
+Style/Next:
+  Enabled: true
+
 Style/FrozenStringLiteralComment:
   Enabled: true
   EnforcedStyle: always
@@ -149,7 +152,19 @@ Style/FrozenStringLiteralComment:
     - test/rubygems/test_gem.rb
     - test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
 
+Style/RedundantBegin:
+  Enabled: true
+
 Style/StderrPuts:
+  Enabled: true
+
+Style/NegatedIf:
+  Enabled: true
+
+Style/NumericLiterals:
+  Enabled: true
+
+Style/ClassCheck:
   Enabled: true
 
 Style/AndOr:

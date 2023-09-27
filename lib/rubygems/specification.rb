@@ -1301,10 +1301,20 @@ class Gem::Specification < Gem::BasicSpecification
     Gem.load_yaml
 
     yaml_set = false
+    retry_count = 0
 
     array = begin
       Marshal.load str
     rescue ArgumentError => e
+      # Avoid an infinite retry loop when the argument error has nothing to do
+      # with the classes not being defined.
+      # 1 retry each allowed in case all 3 of
+      # - YAML
+      # - YAML::Syck::DefaultKey
+      # - YAML::PrivateType
+      # need to be defined
+      raise if retry_count >= 3
+
       #
       # Some very old marshaled specs included references to `YAML::PrivateType`
       # and `YAML::Syck::DefaultKey` constants due to bugs in the old emitter
@@ -1322,11 +1332,12 @@ class Gem::Specification < Gem::BasicSpecification
       if message.include?("YAML::Syck::")
         YAML.const_set "Syck", YAML unless YAML.const_defined?(:Syck)
 
-        YAML::Syck.const_set "DefaultKey", Class.new if message.include?("YAML::Syck::DefaultKey")
-      elsif message.include?("YAML::PrivateType")
+        YAML::Syck.const_set "DefaultKey", Class.new if message.include?("YAML::Syck::DefaultKey") && !YAML::Syck.const_defined?(:DefaultKey)
+      elsif message.include?("YAML::PrivateType") && !YAML.const_defined?(:PrivateType)
         YAML.const_set "PrivateType", Class.new
       end
 
+      retry_count += 1
       retry
     ensure
       Object.__send__(:remove_const, "YAML") if yaml_set
@@ -1623,8 +1634,8 @@ class Gem::Specification < Gem::BasicSpecification
     # we need to fresh build when same name and version of default gems
     return if self.class.find_by_full_name(full_name)&.default_gem?
     return if File.exist? gem_build_complete_path
-    return if !File.writable?(base_dir)
-    return if !File.exist?(File.join(base_dir, "extensions"))
+    return unless File.writable?(base_dir)
+    return unless File.exist?(File.join(base_dir, "extensions"))
 
     begin
       # We need to require things in $LOAD_PATH without looking for the
@@ -1811,13 +1822,12 @@ class Gem::Specification < Gem::BasicSpecification
     Gem::Specification.each do |spec|
       deps = check_dev ? spec.dependencies : spec.runtime_dependencies
       deps.each do |dep|
-        if self.satisfies_requirement?(dep)
-          sats = []
-          find_all_satisfiers(dep) do |sat|
-            sats << sat
-          end
-          out << [spec, dep, sats]
+        next unless self.satisfies_requirement?(dep)
+        sats = []
+        find_all_satisfiers(dep) do |sat|
+          sats << sat
         end
+        out << [spec, dep, sats]
       end
     end
     out
@@ -2256,21 +2266,20 @@ class Gem::Specification < Gem::BasicSpecification
       attributes.each do |attr_name|
         current_value = self.send attr_name
         current_value = current_value.sort if %i[files test_files].include? attr_name
-        if current_value != default_value(attr_name) ||
-           self.class.required_attribute?(attr_name)
+        next unless current_value != default_value(attr_name) ||
+                    self.class.required_attribute?(attr_name)
 
-          q.text "s.#{attr_name} = "
+        q.text "s.#{attr_name} = "
 
-          if attr_name == :date
-            current_value = current_value.utc
+        if attr_name == :date
+          current_value = current_value.utc
 
-            q.text "Time.utc(#{current_value.year}, #{current_value.month}, #{current_value.day})"
-          else
-            q.pp current_value
-          end
-
-          q.breakable
+          q.text "Time.utc(#{current_value.year}, #{current_value.month}, #{current_value.day})"
+        else
+          q.pp current_value
         end
+
+        q.breakable
       end
     end
   end
@@ -2612,11 +2621,10 @@ class Gem::Specification < Gem::BasicSpecification
           ensure
             trail.pop
           end
-          unless result == :next
-            spec_name = dep_spec.name
-            dep_spec.traverse(trail, visited, &block) unless
-              trail.any? {|s| s.name == spec_name }
-          end
+          next if result == :next
+          spec_name = dep_spec.name
+          dep_spec.traverse(trail, visited, &block) unless
+            trail.any? {|s| s.name == spec_name }
         end
       end
     ensure

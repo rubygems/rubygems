@@ -41,9 +41,9 @@ jobs:
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.3 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.1 } }
     steps:
-      - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       - name: Setup ruby
-        uses: ruby/setup-ruby@904f3fef85a9c80a3750cbe7d5159268fd5caa9f # v1.145.0
+        uses: ruby/setup-ruby@5311f05890856149502132d25c4a24985a00d426 # v1.153.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -64,7 +64,7 @@ jobs:
         run: |
           RGV=$(ruby -e 'puts Gem::VERSION.split(".")[0..2].join(".")')
           echo "RGV=v$RGV" >> $GITHUB_ENV
-      - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
         with:
           path: bundler/tmp/rubygems
           ref: ${{ env.RGV }}

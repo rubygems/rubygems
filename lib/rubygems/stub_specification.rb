@@ -35,7 +35,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
     def initialize(data, extensions)
       parts          = data[PREFIX.length..-1].split(" ", 4)
-      @name          = parts[0].freeze
+      @name          = -parts[0]
       @version       = if Gem::Version.correct?(parts[1])
         Gem::Version.new(parts[1])
       else
@@ -112,20 +112,23 @@ class Gem::StubSpecification < Gem::BasicSpecification
         saved_lineno = $.
 
         Gem.open_file loaded_from, OPEN_MODE do |file|
-          begin
-            file.readline # discard encoding line
-            stubline = file.readline.chomp
-            if stubline.start_with?(PREFIX)
-              extensions = if /\A#{PREFIX}/ =~ file.readline.chomp
-                $'.split "\0"
+          file.readline # discard encoding line
+          stubline = file.readline
+          if stubline.start_with?(PREFIX)
+            extline = file.readline
+
+            extensions =
+              if extline.delete_prefix!(PREFIX)
+                extline.chomp!
+                extline.split "\0"
               else
                 StubLine::NO_EXTENSIONS
               end
 
-              @data = StubLine.new stubline, extensions
-            end
-          rescue EOFError
+            stubline.chomp! # readline(chomp: true) allocates 3x as much as .readline.chomp!
+            @data = StubLine.new stubline, extensions
           end
+        rescue EOFError
         end
       ensure
         $. = saved_lineno

@@ -54,10 +54,12 @@ PLATFORMS
   arm64-darwin-22
   universal-java-11
   universal-java-18
+  universal-java-19
   x64-mingw-ucrt
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-darwin-21
+  x86_64-darwin-22
   x86_64-linux
 
 DEPENDENCIES
@@ -70,4 +72,4 @@ DEPENDENCIES
   test-unit
 
 BUNDLED WITH
-   2.4.19
+   2.4.20

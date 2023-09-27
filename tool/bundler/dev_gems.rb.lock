@@ -35,9 +35,12 @@ PLATFORMS
   ruby
   universal-java-11
   universal-java-18
+  universal-java-19
   x64-mingw-ucrt
   x64-mingw32
   x86_64-darwin-20
+  x86_64-darwin-21
+  x86_64-darwin-22
   x86_64-linux
 
 DEPENDENCIES
@@ -54,4 +57,4 @@ DEPENDENCIES
   webrick (~> 1.6)
 
 BUNDLED WITH
-   2.4.19
+   2.4.20

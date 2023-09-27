@@ -94,7 +94,7 @@ class Gem::Command
   # array or a string to be split on white space.
 
   def self.add_specific_extra_args(cmd,args)
-    args = args.split(/\s+/) if args.kind_of? String
+    args = args.split(/\s+/) if args.is_a? String
     specific_extra_args_hash[cmd] = args
   end
 
@@ -398,22 +398,21 @@ class Gem::Command
 
   def check_deprecated_options(options)
     options.each do |option|
-      if option_is_deprecated?(option)
-        deprecation = @deprecated_options[command][option]
-        version_to_expire = deprecation["rg_version_to_expire"]
+      next unless option_is_deprecated?(option)
+      deprecation = @deprecated_options[command][option]
+      version_to_expire = deprecation["rg_version_to_expire"]
 
-        deprecate_option_msg = if version_to_expire
-          "The \"#{option}\" option has been deprecated and will be removed in Rubygems #{version_to_expire}."
-        else
-          "The \"#{option}\" option has been deprecated and will be removed in future versions of Rubygems."
-        end
-
-        extra_msg = deprecation["extra_msg"]
-
-        deprecate_option_msg += " #{extra_msg}" if extra_msg
-
-        alert_warning(deprecate_option_msg)
+      deprecate_option_msg = if version_to_expire
+        "The \"#{option}\" option has been deprecated and will be removed in Rubygems #{version_to_expire}."
+      else
+        "The \"#{option}\" option has been deprecated and will be removed in future versions of Rubygems."
       end
+
+      extra_msg = deprecation["extra_msg"]
+
+      deprecate_option_msg += " #{extra_msg}" if extra_msg
+
+      alert_warning(deprecate_option_msg)
     end
   end
 
@@ -430,12 +429,10 @@ class Gem::Command
   # True if the command handles the given argument list.
 
   def handles?(args)
-    begin
-      parser.parse!(args.dup)
-      return true
-    rescue
-      return false
-    end
+    parser.parse!(args.dup)
+    return true
+  rescue
+    return false
   end
 
   ##

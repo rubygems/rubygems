@@ -94,16 +94,14 @@ permission to.
 
   def manage_owners(method, name, owners)
     owners.each do |owner|
-      begin
-        response = send_owner_request(method, name, owner)
-        action = method == :delete ? "Removing" : "Adding"
+      response = send_owner_request(method, name, owner)
+      action = method == :delete ? "Removing" : "Adding"
 
-        with_response response, "#{action} #{owner}"
-      rescue Gem::WebauthnVerificationError => e
-        raise e
-      rescue StandardError
-        # ignore early exits to allow for completing the iteration of all owners
-      end
+      with_response response, "#{action} #{owner}"
+    rescue Gem::WebauthnVerificationError => e
+      raise e
+    rescue StandardError
+      # ignore early exits to allow for completing the iteration of all owners
     end
   end
 

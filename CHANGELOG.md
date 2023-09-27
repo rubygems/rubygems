@@ -1,3 +1,39 @@
+# 3.4.20 / 2023-09-27
+
+## Enhancements:
+
+* Raise `Gem::Package::FormatError` when gem encounters corrupt EOF.
+  Pull request [#6882](https://github.com/rubygems/rubygems/pull/6882)
+  by martinemde
+* Allow skipping empty license `gem build` warning by setting license to
+  `nil`. Pull request
+  [#6879](https://github.com/rubygems/rubygems/pull/6879) by jhong97
+* Update SPDX license list as of 2023-06-18. Pull request
+  [#6891](https://github.com/rubygems/rubygems/pull/6891) by
+  github-actions[bot]
+* Update SPDX license list as of 2023-04-28. Pull request
+  [#6642](https://github.com/rubygems/rubygems/pull/6642) by segiddins
+* Update SPDX license list as of 2023-01-26. Pull request
+  [#6310](https://github.com/rubygems/rubygems/pull/6310) by segiddins
+* Installs bundler 2.4.20 as a default gem.
+
+## Bug fixes:
+
+* Fixed false positive SymlinkError in symbolic link directory. Pull
+  request [#6947](https://github.com/rubygems/rubygems/pull/6947) by
+  negi0109
+* Ensure that loading multiple gemspecs with legacy YAML class references
+  does not warn. Pull request
+  [#6889](https://github.com/rubygems/rubygems/pull/6889) by segiddins
+* Fix NoMethodError when choosing a too big number from `gem uni` list.
+  Pull request [#6901](https://github.com/rubygems/rubygems/pull/6901) by
+  amatsuda
+
+## Performance:
+
+* Reduce allocations for stub specifications. Pull request
+  [#6972](https://github.com/rubygems/rubygems/pull/6972) by segiddins
+
 # 3.4.19 / 2023-08-17
 
 ## Enhancements:

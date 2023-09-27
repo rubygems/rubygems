@@ -1,3 +1,32 @@
+# 2.4.20 (September 27, 2023)
+
+## Enhancements:
+
+  - Bump actions/checkout to v4 in bundler gem template [#6966](https://github.com/rubygems/rubygems/pull/6966)
+  - Add support for the `ruby-3.2.2` format in the `ruby file:` Gemfile directive, and explicitly test the `3.2.2@gemset` format as rejected [#6954](https://github.com/rubygems/rubygems/pull/6954)
+  - Support `ruby file: ".tool-versions"` in Gemfile [#6898](https://github.com/rubygems/rubygems/pull/6898)
+  - Unify LockfileParser loading of SPECS section [#6933](https://github.com/rubygems/rubygems/pull/6933)
+  - Only check circular deps when dependency api is available, not on full index sources [#6919](https://github.com/rubygems/rubygems/pull/6919)
+
+## Bug fixes:
+
+  - Allow standalone mode to work on a Windows edge case [#6989](https://github.com/rubygems/rubygems/pull/6989)
+  - Fix `bundle outdated` crashing when both `ref` and `branch` specified for a git gem in Gemfile [#6959](https://github.com/rubygems/rubygems/pull/6959)
+  - Fix `bundle update --redownload` [#6924](https://github.com/rubygems/rubygems/pull/6924)
+  - Fixed malformed bundler version in lockfile making Bundler crash [#6920](https://github.com/rubygems/rubygems/pull/6920)
+  - Fix standalone install crashing when using legacy gemfiles with multiple global sources [#6918](https://github.com/rubygems/rubygems/pull/6918)
+  - Resolve ruby version file relative to bundle root [#6892](https://github.com/rubygems/rubygems/pull/6892)
+
+## Performance:
+
+  - Lazily construct fetcher debug messages [#6973](https://github.com/rubygems/rubygems/pull/6973)
+  - Avoid allocating empty hashes in Index [#6962](https://github.com/rubygems/rubygems/pull/6962)
+  - Stop allocating the same settings keys repeatedly [#6963](https://github.com/rubygems/rubygems/pull/6963)
+  - Improve `Bundler::Index` efficiency by removing unnecessary creation and dups [#6931](https://github.com/rubygems/rubygems/pull/6931)
+  - (Further) Improve Bundler::Settings#[] performance and memory usage [#6923](https://github.com/rubygems/rubygems/pull/6923)
+  - Don't use full indexes unnecessarily on legacy Gemfiles [#6916](https://github.com/rubygems/rubygems/pull/6916)
+  - Improve memory usage in Bundler::Settings, and thus improve boot time [#6884](https://github.com/rubygems/rubygems/pull/6884)
+
 # 2.4.19 (August 17, 2023)
 
 ## Enhancements:

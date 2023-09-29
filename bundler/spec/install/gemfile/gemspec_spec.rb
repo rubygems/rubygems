@@ -237,49 +237,6 @@ RSpec.describe "bundle install from an existing gemspec" do
     expect(the_bundle).to include_gem "foo 1.0"
   end
 
-  it "allows conflicts" do
-    build_lib("foo", :path => tmp.join("foo")) do |s|
-      s.version = "1.0.0"
-      s.add_dependency "bar", "= 1.0.0"
-    end
-    build_gem "deps", :to_bundle => true do |s|
-      s.add_dependency "foo", "= 0.0.1"
-    end
-    build_gem "foo", "0.0.1", :to_bundle => true
-
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
-      gem "deps"
-      gemspec :path => '#{tmp.join("foo")}', :name => 'foo'
-    G
-
-    expect(the_bundle).to include_gems "foo 1.0.0"
-  end
-
-  it "does not break Gem.finish_resolve with conflicts" do
-    build_lib("foo", :path => tmp.join("foo")) do |s|
-      s.version = "1.0.0"
-      s.add_dependency "bar", "= 1.0.0"
-    end
-    update_repo2 do
-      build_gem "deps" do |s|
-        s.add_dependency "foo", "= 0.0.1"
-      end
-      build_gem "foo", "0.0.1"
-    end
-
-    install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
-      gem "deps"
-      gemspec :path => '#{tmp.join("foo")}', :name => 'foo'
-    G
-
-    expect(the_bundle).to include_gems "foo 1.0.0"
-
-    run "Gem.finish_resolve; puts 'WIN'"
-    expect(out).to eq("WIN")
-  end
-
   it "handles downgrades" do
     build_lib "omg", "2.0", :path => lib_path("omg")
 

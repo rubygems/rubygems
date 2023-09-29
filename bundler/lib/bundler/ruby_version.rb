@@ -23,7 +23,7 @@ module Bundler
       #   specified must match the version.
 
       @versions = Array(versions).map do |v|
-        op, v = Gem::Requirement.parse(v)
+        op, v = Gem::Requirement.parse(v.tr("-", "."))
         op == "=" ? v.to_s : "#{op} #{v}"
       end
 

@@ -21,7 +21,6 @@
 
   - Lazily construct fetcher debug messages [#6973](https://github.com/rubygems/rubygems/pull/6973)
   - Avoid allocating empty hashes in Index [#6962](https://github.com/rubygems/rubygems/pull/6962)
-  - Stop allocating the same settings keys repeatedly [#6963](https://github.com/rubygems/rubygems/pull/6963)
   - Improve `Bundler::Index` efficiency by removing unnecessary creation and dups [#6931](https://github.com/rubygems/rubygems/pull/6931)
   - (Further) Improve Bundler::Settings#[] performance and memory usage [#6923](https://github.com/rubygems/rubygems/pull/6923)
   - Don't use full indexes unnecessarily on legacy Gemfiles [#6916](https://github.com/rubygems/rubygems/pull/6916)

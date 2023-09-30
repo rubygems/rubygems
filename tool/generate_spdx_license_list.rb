@@ -7,21 +7,29 @@ require "time"
 def generate_spdx_license_list(dest = "lib/rubygems/util/licenses.rb")
   base = URI("https://spdx.org/licenses/")
   updates = [
-    %w[licenses licenseId],
-    %w[exceptions licenseExceptionId],
-  ].map do |uri, id|
+    %w[licenses licenseId isDeprecatedLicenseId],
+    %w[exceptions licenseExceptionId isDeprecatedLicenseId],
+  ].map do |uri, id, deprecated_id|
     (base + "#{uri}.json").open do |f|
       begin
         mtime = Time.parse(f.meta["last-modified"])
       rescue ArgumentError
       end
-      list = JSON.parse(f.read)[uri].map {|o| o[id] }
-      [mtime, list]
+      valid = []
+      deprecated = []
+      JSON.parse(f.read)[uri].each do |o|
+        if o[deprecated_id]
+          deprecated << o[id]
+        else
+          valid << o[id]
+        end
+      end
+      [mtime, valid, deprecated]
     end
   end
 
   mtime = updates.filter_map {|t,| t }.max
-  (_, licenses), (_, exceptions) = updates
+  (_, valid_licenses, deprecated_licenses), (_, valid_exceptions, deprecated_exceptions) = updates
 
   content = "#{<<-RUBY}#{<<-'RUBY'}"
 # frozen_string_literal: true
@@ -40,16 +48,24 @@ class Gem::Licenses
   # Software Package Data Exchange (SPDX) standard open-source software
   # license identifiers
   LICENSE_IDENTIFIERS = %w[
-    #{licenses.sort.join "\n    "}
+    #{valid_licenses.sort.join "\n    "}
+  ].freeze
+
+  DEPRECATED_LICENSE_IDENTIFIERS = %w[
+    #{deprecated_licenses.sort.join "\n    "}
   ].freeze
 
   # exception identifiers
   EXCEPTION_IDENTIFIERS = %w[
-    #{exceptions.sort.join "\n    "}
+    #{valid_exceptions.sort.join "\n    "}
+  ].freeze
+
+  DEPRECATED_EXCEPTION_IDENTIFIERS = %w[
+    #{deprecated_exceptions.sort.join "\n    "}
   ].freeze
 
   RUBY
-  REGEXP = /
+  VALID_REGEXP = /
     \A
     (?:
       #{Regexp.union(LICENSE_IDENTIFIERS)}
@@ -61,8 +77,32 @@ class Gem::Licenses
     \Z
   /ox.freeze
 
+  DEPRECATED_LICENSE_REGEXP = /
+    \A
+    #{Regexp.union(DEPRECATED_LICENSE_IDENTIFIERS)}
+    \+?
+    (?:\s WITH \s .+?)?
+    \Z
+  /ox.freeze
+
+  DEPRECATED_EXCEPTION_REGEXP = /
+    \A
+    .+?
+    \+?
+    (?:\s WITH \s #{Regexp.union(DEPRECATED_EXCEPTION_IDENTIFIERS)})
+    \Z
+  /ox.freeze
+
   def self.match?(license)
-    REGEXP.match?(license)
+    VALID_REGEXP.match?(license)
+  end
+
+  def self.deprecated_license_id?(license)
+    DEPRECATED_LICENSE_REGEXP.match?(license)
+  end
+
+  def self.deprecated_exception_id?(license)
+    DEPRECATED_EXCEPTION_REGEXP.match?(license)
   end
 
   def self.suggestions(license)

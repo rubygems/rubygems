@@ -76,11 +76,6 @@ jobs:
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
-      - name: Download previous runtimes
-        uses: actions/download-artifact@v3
-        with:
-          name: test-runtimes-${{ matrix.ruby.name }}-bundler-${{ matrix.bundler.name }}-${{ matrix.os.name }}
-          path: ./bundler/tmp/turbo_rspec_runtime.log
       - name: Run Test
         run: |
           bin/parallel_rspec

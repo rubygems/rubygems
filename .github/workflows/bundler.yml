@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - parallel-ci-test-runtimes
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
@@ -79,4 +80,9 @@ jobs:
         run: |
           bin/parallel_rspec
         working-directory: ./bundler
+      - name: Save test runtimes
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-runtimes-${{ matrix.ruby.name }}-bundler-${{ matrix.bundler.name }}-${{ matrix.os.name }}
+          path: ./bundler/tmp/turbo_rspec_runtime.log
     timeout-minutes: ${{ matrix.timeout || 60 }}

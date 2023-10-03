@@ -2181,7 +2181,7 @@ Changes
 
   - retry gem downloads ([#4846](https://github.com/rubygems/bundler/issues/4846), @jkeiser)
   - improve the CompactIndex to handle capitalized legacy gems ([#4867](https://github.com/rubygems/bundler/issues/4867), @segiddins)
-  - re-use persistent HTTP connections for CompactIndex (@NickLaMuro)
+  - reuse persistent HTTP connections for CompactIndex (@NickLaMuro)
   - respect `required_ruby_version` when Gemfile contains `ruby` version (@indirect)
   - allow `rake release` to sign git tags ([#4743](https://github.com/rubygems/bundler/issues/4743), @eagletmt)
   - set process titles when using `#load` during `exec` (@yob)
@@ -3377,7 +3377,7 @@ Changes
   - `gem` option --test can generate rspec stubs (@MafcoCinco)
   - `gem` option --test can generate minitest stubs (@kcurtin)
   - `gem` command generates MIT license (@BrentWheeldon)
-  - gem rake task 'release' resuses existing tags (@shtirlic)
+  - gem rake task 'release' reuses existing tags (@shtirlic)
 
 ## Bug fixes:
 

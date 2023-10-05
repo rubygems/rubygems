@@ -3,46 +3,59 @@
 module Spec
   module Checksums
     class ChecksumsBuilder
-      def initialize(&block)
+      def initialize(enabled = true, &block)
+        @enabled = enabled
         @checksums = {}
         yield self if block_given?
       end
 
-      def repo_gem(repo, name, version, platform = Gem::Platform::RUBY)
+      def checksum(repo, name, version, platform = Gem::Platform::RUBY)
         name_tuple = Gem::NameTuple.new(name, version, platform)
         gem_file = File.join(repo, "gems", "#{name_tuple.full_name}.gem")
         File.open(gem_file, "rb") do |f|
-          @checksums[name_tuple] = Bundler::Checksum.from_gem(f, "#{gem_file} (via ChecksumsBuilder#repo_gem)")
+          register(name_tuple, Bundler::Checksum.from_gem(f, "#{gem_file} (via ChecksumsBuilder#repo_gem)"))
         end
       end
 
       def no_checksum(name, version, platform = Gem::Platform::RUBY)
         name_tuple = Gem::NameTuple.new(name, version, platform)
-        @checksums[name_tuple] = nil
+        register(name_tuple, nil)
       end
 
-      def to_lock
-        @checksums.map do |name_tuple, checksum|
+      def delete(name, platform = nil)
+        @checksums.reject! {|k, _| k.name == name && (platform.nil? || k.platform == platform) }
+      end
+
+      def to_s
+        return "" unless @enabled
+
+        locked_checksums = @checksums.map do |name_tuple, checksum|
           checksum &&= " #{checksum.to_lock}"
           "  #{name_tuple.lock_name}#{checksum}\n"
-        end.sort.join.strip
+        end
+
+        "\nCHECKSUMS\n#{locked_checksums.sort.join}"
+      end
+
+      private
+
+      def register(name_tuple, checksum)
+        delete(name_tuple.name, name_tuple.platform)
+        @checksums[name_tuple] = checksum
       end
     end
 
-    def checksum_section(&block)
-      ChecksumsBuilder.new(&block).to_lock
+    def checksums_section(enabled = true, &block)
+      ChecksumsBuilder.new(enabled, &block)
     end
 
-    def checksum_for_repo_gem(*args)
-      checksum_section do |c|
-        c.repo_gem(*args)
+    def checksums_section_when_existing(&block)
+      begin
+        enabled = lockfile.match?(/^CHECKSUMS$/)
+      rescue Errno::ENOENT
+        enabled = false
       end
-    end
-
-    def gem_no_checksum(*args)
-      checksum_section do |c|
-        c.no_checksum(*args)
-      end
+      checksums_section(enabled, &block)
     end
 
     # if prefixes is given, removes all checksums where the line
@@ -50,6 +63,7 @@ module Spec
     # otherwise, removes all checksums from the lockfile
     def remove_checksums_from_lockfile(lockfile, *prefixes)
       head, remaining = lockfile.split(/^CHECKSUMS$/, 2)
+      return lockfile unless remaining
       checksums, tail = remaining.split("\n\n", 2)
 
       prefixes =
@@ -73,6 +87,12 @@ module Spec
         "\n\n",
         tail
       )
+    end
+
+    def remove_checksums_section_from_lockfile(lockfile)
+      head, remaining = lockfile.split(/^CHECKSUMS$/, 2)
+      _checksums, tail = remaining.split("\n\n", 2)
+      head.concat(tail)
     end
   end
 end

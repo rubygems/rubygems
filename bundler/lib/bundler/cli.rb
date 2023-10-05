@@ -214,6 +214,8 @@ module Bundler
       "Install using defaults tuned for deployment environments"
     method_option "frozen", :type => :boolean, :banner =>
       "Do not allow the Gemfile.lock to be updated after this install"
+    method_option "checksums", :type => :boolean, :default => false, :banner =>
+      "Enable gem checksum verification"
     method_option "full-index", :type => :boolean, :banner =>
       "Fall back to using the single-file index of all gems"
     method_option "gemfile", :type => :string, :banner =>
@@ -658,6 +660,8 @@ module Bundler
       "do not attempt to fetch remote gemspecs and use the local gem cache only"
     method_option "print", :type => :boolean, :default => false, :banner =>
       "print the lockfile to STDOUT instead of writing to the file system"
+    method_option "checksums", :type => :boolean, :default => false, :banner =>
+      "Enable gem checksum verification"
     method_option "gemfile", :type => :string, :banner =>
       "Use the specified gemfile instead of Gemfile"
     method_option "lockfile", :type => :string, :default => nil, :banner =>

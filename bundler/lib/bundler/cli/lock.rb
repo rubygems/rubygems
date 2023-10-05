@@ -31,7 +31,14 @@ module Bundler
         update = { :conservative => conservative }
       elsif update && bundler
         update = { :bundler => bundler }
+      else
+        update = { :update => update }
       end
+
+      if Bundler.settings[:disable_checksum_validation] && options[:checksums]
+        raise InvalidOption, "Cannot specify --checksums with bundle config disable_checksum_validation true"
+      end
+      update[:checksums] = options[:checksums]
 
       Bundler.settings.temporary(:frozen => false) do
         definition = Bundler.definition(update)

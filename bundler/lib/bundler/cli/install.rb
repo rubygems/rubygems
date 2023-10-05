@@ -56,7 +56,7 @@ module Bundler
 
       Plugin.gemfile_install(Bundler.default_gemfile) if Bundler.feature_flag.plugins?
 
-      definition = Bundler.definition
+      definition = Bundler.definition(checksums: options["checksums"])
       definition.validate_runtime!
 
       installer = Installer.install(Bundler.root, definition, options)
@@ -166,6 +166,10 @@ module Bundler
       Bundler.settings.set_command_option_if_given :no_install, options["no-install"]
 
       Bundler.settings.set_command_option_if_given :clean, options["clean"]
+
+      if Bundler.settings[:disable_checksum_validation] && options["checksums"]
+        raise InvalidOption, "Cannot specify --checksums with bundle config disable_checksum_validation true"
+      end
 
       normalize_groups if options[:without] || options[:with]
 

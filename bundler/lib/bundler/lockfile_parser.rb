@@ -24,7 +24,7 @@ module Bundler
       end
     end
 
-    attr_reader :sources, :dependencies, :specs, :platforms, :bundler_version, :ruby_version, :checksums
+    attr_reader :sources, :dependencies, :specs, :platforms, :bundler_version, :ruby_version, :checksum_store
 
     BUNDLED      = "BUNDLED WITH"
     DEPENDENCIES = "DEPENDENCIES"
@@ -111,6 +111,7 @@ module Bundler
         elsif line == DEPENDENCIES
           @parse_method = :parse_dependency
         elsif line == CHECKSUMS
+          @checksum_store = Bundler::Checksum::Store.new # TODO: move this to initialize when checksums are always enabled
           @parse_method = :parse_checksum
         elsif line == PLATFORMS
           @parse_method = :parse_platform
@@ -226,15 +227,13 @@ module Bundler
       platform = $4
 
       version = Gem::Version.new(version)
-      platform = platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
       full_name = Gem::NameTuple.new(name, version, platform).full_name
-      # Don't raise exception if there's a checksum for a gem that's not in the lockfile,
-      # we prefer to heal invalid lockfiles
       return unless spec = @specs[full_name]
 
       checksums.split(",") do |lock_checksum|
         column = line.index(lock_checksum) + 1
         checksum = Checksum.from_lock(lock_checksum, "#{@lockfile_path}:#{@pos.line}:#{column}")
+        @checksum_store.register(spec, checksum)
         spec.source.checksum_store.register(spec, checksum)
       end
     end

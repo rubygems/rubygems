@@ -399,6 +399,10 @@ RSpec.describe "bundle install across platforms" do
 
       DEPENDENCIES
         platform_specific
+
+      CHECKSUMS
+        #{gem_no_checksum "platform_specific", "1.0"}
+        #{gem_no_checksum "platform_specific", "1.0", "java"}
     G
 
     bundle "config set --local force_ruby_platform true"

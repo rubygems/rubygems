@@ -1039,11 +1039,11 @@ RSpec.describe "bundle install with gem sources" do
         gem "loofah", "~> 2.12.0"
       G
 
-      checksums = checksum_section do |c|
-        c.repo_gem gem_repo4, "crass", "1.0.6"
-        c.repo_gem gem_repo4, "loofah", "2.12.0"
-        c.repo_gem gem_repo4, "nokogiri", "1.12.4", "x86_64-darwin"
-        c.repo_gem gem_repo4, "racca", "1.5.2"
+      checksums = checksums_section do |c|
+        c.checksum gem_repo4, "crass", "1.0.6"
+        c.checksum gem_repo4, "loofah", "2.12.0"
+        c.checksum gem_repo4, "nokogiri", "1.12.4", "x86_64-darwin"
+        c.checksum gem_repo4, "racca", "1.5.2"
       end
 
       lockfile <<-L
@@ -1064,10 +1064,7 @@ RSpec.describe "bundle install with gem sources" do
 
         DEPENDENCIES
           loofah (~> 2.12.0)
-
-        CHECKSUMS
-          #{checksums}
-
+        #{checksums}
         RUBY VERSION
            #{Bundler::RubyVersion.system}
 
@@ -1083,13 +1080,7 @@ RSpec.describe "bundle install with gem sources" do
         bundle "install", :artifice => "compact_index"
       end
 
-      expected_checksums = checksum_section do |c|
-        c.repo_gem gem_repo4, "crass", "1.0.6"
-        c.repo_gem gem_repo4, "loofah", "2.12.0"
-        c.repo_gem gem_repo4, "nokogiri", "1.12.4", "x86_64-darwin"
-        c.repo_gem gem_repo4, "nokogiri", "1.12.4", "x86_64-linux"
-        c.repo_gem gem_repo4, "racca", "1.5.2"
-      end
+      checksums.checksum(gem_repo4, "nokogiri", "1.12.4", "x86_64-linux")
 
       expect(lockfile).to eq <<~L
         GEM
@@ -1111,10 +1102,7 @@ RSpec.describe "bundle install with gem sources" do
 
         DEPENDENCIES
           loofah (~> 2.12.0)
-
-        CHECKSUMS
-          #{expected_checksums}
-
+        #{checksums}
         RUBY VERSION
            #{Bundler::RubyVersion.system}
 

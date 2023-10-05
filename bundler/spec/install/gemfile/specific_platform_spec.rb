@@ -528,11 +528,11 @@ RSpec.describe "bundle install with specific platforms" do
 
     bundle "update"
 
-    expected_checksums = checksum_section do |c|
-      c.repo_gem gem_repo4, "sorbet", "0.5.10160"
-      c.repo_gem gem_repo4, "sorbet-runtime", "0.5.10160"
-      c.repo_gem gem_repo4, "sorbet-static", "0.5.10160", Gem::Platform.local
-      c.repo_gem gem_repo4, "sorbet-static-and-runtime", "0.5.10160"
+    checksums = checksums_section_when_existing do |c|
+      c.checksum gem_repo4, "sorbet", "0.5.10160"
+      c.checksum gem_repo4, "sorbet-runtime", "0.5.10160"
+      c.checksum gem_repo4, "sorbet-static", "0.5.10160", Gem::Platform.local
+      c.checksum gem_repo4, "sorbet-static-and-runtime", "0.5.10160"
     end
 
     expect(lockfile).to eq <<~L
@@ -552,10 +552,7 @@ RSpec.describe "bundle install with specific platforms" do
 
       DEPENDENCIES
         sorbet-static-and-runtime
-
-      CHECKSUMS
-        #{expected_checksums}
-
+      #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
     L
@@ -602,6 +599,10 @@ RSpec.describe "bundle install with specific platforms" do
       DEPENDENCIES
         nokogiri
         sorbet-static
+
+      CHECKSUMS
+        #{gem_no_checksum "nokogiri", "1.13.0", "x86_64-darwin"}
+        #{gem_no_checksum "sorbet-static", "0.5.10601", "x86_64-darwin"}
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -682,11 +683,11 @@ RSpec.describe "bundle install with specific platforms" do
 
     bundle "update"
 
-    expected_checksums = checksum_section do |c|
-      c.repo_gem gem_repo4, "sorbet", "0.5.10160"
-      c.repo_gem gem_repo4, "sorbet-runtime", "0.5.10160"
-      c.repo_gem gem_repo4, "sorbet-static", "0.5.10160", Gem::Platform.local
-      c.repo_gem gem_repo4, "sorbet-static-and-runtime", "0.5.10160"
+    checksums = checksums_section_when_existing do |c|
+      c.checksum gem_repo4, "sorbet", "0.5.10160"
+      c.checksum gem_repo4, "sorbet-runtime", "0.5.10160"
+      c.checksum gem_repo4, "sorbet-static", "0.5.10160", Gem::Platform.local
+      c.checksum gem_repo4, "sorbet-static-and-runtime", "0.5.10160"
     end
 
     expect(lockfile).to eq <<~L
@@ -706,10 +707,7 @@ RSpec.describe "bundle install with specific platforms" do
 
       DEPENDENCIES
         sorbet-static-and-runtime
-
-      CHECKSUMS
-        #{expected_checksums}
-
+      #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
     L
@@ -760,9 +758,9 @@ RSpec.describe "bundle install with specific platforms" do
 
       bundle "update"
 
-      expected_checksums = checksum_section do |c|
-        c.repo_gem gem_repo4, "nokogiri", "1.14.0", "x86_64-linux"
-        c.repo_gem gem_repo4, "sorbet-static", "0.5.10696", "x86_64-linux"
+      checksums = checksums_section_when_existing do |c|
+        c.checksum gem_repo4, "nokogiri", "1.14.0", "x86_64-linux"
+        c.checksum gem_repo4, "sorbet-static", "0.5.10696", "x86_64-linux"
       end
 
       expect(lockfile).to eq <<~L
@@ -778,10 +776,7 @@ RSpec.describe "bundle install with specific platforms" do
         DEPENDENCIES
           nokogiri
           sorbet-static
-
-        CHECKSUMS
-          #{expected_checksums}
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       L
@@ -943,6 +938,10 @@ RSpec.describe "bundle install with specific platforms" do
       DEPENDENCIES
         concurrent-ruby
 
+      CHECKSUMS
+        #{gem_no_checksum "concurrent-ruby", "1.2.2"}
+        #{gem_no_checksum "rack", "3.0.7"}
+
       BUNDLED WITH
          #{Bundler::VERSION}
     L
@@ -1040,6 +1039,9 @@ RSpec.describe "bundle install with specific platforms" do
 
         DEPENDENCIES
           nokogiri (= 1.14.0)
+
+        CHECKSUMS
+          #{checksum_for_repo_gem gem_repo4, "nokogiri", "1.14.0", "x86_64-linux"}
 
         BUNDLED WITH
            #{Bundler::VERSION}

@@ -386,6 +386,9 @@ RSpec.describe "bundle install from an existing gemspec" do
         DEPENDENCIES
           foo!
 
+        CHECKSUMS
+          foo (1.0)
+
         BUNDLED WITH
            #{Bundler::VERSION}
       L

@@ -65,7 +65,12 @@ GEM
     unicode-display_width (2.4.2)
 
 PLATFORMS
+  arm64-darwin-22
   arm64-darwin-23
+  x86_64-darwin-20
+  x86_64-darwin-21
+  x86_64-darwin-22
+  x86_64-linux
 
 DEPENDENCIES
   minitest
@@ -78,4 +83,4 @@ DEPENDENCIES
   test-unit
 
 BUNDLED WITH
-   2.4.13
+   2.4.20

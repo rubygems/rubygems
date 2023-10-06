@@ -452,8 +452,8 @@ module Bundler
       return if current_platform_locked?
 
       raise ProductionError, "Your bundle only supports platforms #{@platforms.map(&:to_s)} " \
-        "but your local platform is #{Bundler.local_platform}. " \
-        "Add the current platform to the lockfile with\n`bundle lock --add-platform #{Bundler.local_platform}` and try again."
+        "but your local platform is #{local_platform}. " \
+        "Add the current platform to the lockfile with\n`bundle lock --add-platform #{local_platform}` and try again."
     end
 
     def add_platform(platform)
@@ -509,7 +509,7 @@ module Bundler
     def resolution_packages
       @resolution_packages ||= begin
         last_resolve = converge_locked_specs
-        remove_ruby_from_platforms_if_necessary!(current_dependencies)
+        remove_invalid_platforms!(current_dependencies)
         packages = Resolver::Base.new(source_requirements, expanded_dependencies, last_resolve, @platforms, :locked_specs => @originally_locked_specs, :unlock => @unlock[:gems], :prerelease => gem_version_promoter.pre?)
         additional_base_requirements_for_resolve(packages, last_resolve)
       end
@@ -600,7 +600,7 @@ module Bundler
 
     def current_platform_locked?
       @platforms.any? do |bundle_platform|
-        MatchPlatform.platforms_match?(bundle_platform, Bundler.local_platform)
+        MatchPlatform.platforms_match?(bundle_platform, local_platform)
       end
     end
 
@@ -956,17 +956,19 @@ module Bundler
       resolution_packages
     end
 
-    def remove_ruby_from_platforms_if_necessary!(dependencies)
-      return if Bundler.frozen_bundle? ||
-                Bundler.local_platform == Gem::Platform::RUBY ||
-                !platforms.include?(Gem::Platform::RUBY) ||
-                (@new_platform && platforms.last == Gem::Platform::RUBY) ||
+    def remove_invalid_platforms!(dependencies)
+      return if Bundler.frozen_bundle?
+
+      platforms.each do |platform|
+        next if local_platform == platform ||
+                (@new_platform && platforms.last == platform) ||
                 @path_changes ||
                 @dependency_changes ||
-                !@originally_locked_specs.incomplete_ruby_specs?(dependencies)
+                !@originally_locked_specs.incomplete_for_platform?(dependencies, platform)
 
-      remove_platform(Gem::Platform::RUBY)
-      add_current_platform
+        remove_platform(platform)
+        add_current_platform if platform == Gem::Platform::RUBY
+      end
     end
 
     def source_map

@@ -124,7 +124,7 @@ jobs:
         run: bundle init && bundle add fileutils --git https://github.com/ruby/fileutils
         shell: bash
       - name: Generate a Rails application
-        run: gem install rails && rails new foo ${{ matrix.ruby.rails-args }}
+        run: gem install rails --version 7.0.8 && rails new foo ${{ matrix.ruby.rails-args }}
         shell: bash
 
     timeout-minutes: 20

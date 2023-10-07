@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../vendored_fileutils"
+require "rubygems/package"
 
 module Bundler
   class CompactIndexClient
@@ -29,11 +30,13 @@ module Bundler
         local_temp_path = local_temp_path.sub(/$/, ".retrying") if retrying
         local_temp_path = local_temp_path.sub(/$/, ".tmp")
 
+        digests = { :MD5 => SharedHelpers.digest(:MD5).new }
+
         # first try to fetch any new bytes on the existing file
         if retrying.nil? && local_path.file?
-          copy_file local_path, local_temp_path
+          copy_file local_path, local_temp_path, digests
 
-          headers["If-None-Match"] = etag_for(local_temp_path)
+          headers["If-None-Match"] = etag_for(digests)
           headers["Range"] =
             if local_temp_path.size.nonzero?
               # Subtract a byte to ensure the range won't be empty.
@@ -52,13 +55,14 @@ module Bundler
         etag = (response["ETag"] || "").gsub(%r{\AW/}, "")
         correct_response = SharedHelpers.filesystem_access(local_temp_path) do
           if response.is_a?(Net::HTTPPartialContent) && local_temp_path.size.nonzero?
-            local_temp_path.open("a") {|f| f << slice_body(content, 1..-1) }
+            local_temp_path.open("a") {|f| digest_io(f, digests).write slice_body(content, 1..-1) }
 
-            etag_for(local_temp_path) == etag
+            etag_for(digests) == etag
           else
-            local_temp_path.open("wb") {|f| f << content }
+            digests[:MD5] = SharedHelpers.digest(:MD5).new
+            local_temp_path.open("wb") {|f| digest_io(f, digests).write content }
 
-            etag.length.zero? || etag_for(local_temp_path) == etag
+            etag.length.zero? || etag_for(digests) == etag
           end
         end
 
@@ -70,7 +74,7 @@ module Bundler
         end
 
         if retrying
-          raise MisMatchedChecksumError.new(remote_path, etag, etag_for(local_temp_path))
+          raise MisMatchedChecksumError.new(remote_path, etag, etag_for(digests))
         end
 
         update(local_path, remote_path, :retrying)
@@ -80,9 +84,12 @@ module Bundler
         FileUtils.remove_file(local_temp_path) if File.exist?(local_temp_path)
       end
 
-      def etag_for(path)
-        sum = checksum_for_file(path)
-        sum ? %("#{sum}") : nil
+      def etag_for(digests)
+        %("#{digests[:MD5].hexdigest}")
+      end
+
+      def digest_io(io, digests)
+        Gem::Package::DigestIO.new(io, digests)
       end
 
       def slice_body(body, range)
@@ -90,28 +97,17 @@ module Bundler
       end
 
       def checksum_for_file(path)
-        return nil unless path.file?
-        # This must use File.read instead of Digest.file().hexdigest
-        # because we need to preserve \n line endings on windows when calculating
-        # the checksum
-        SharedHelpers.filesystem_access(path, :read) do
-          File.open(path, "rb") do |f|
-            digest = SharedHelpers.digest(:MD5).new
-            buf = String.new(:capacity => 16_384, :encoding => Encoding::BINARY)
-            digest << buf while f.read(16_384, buf)
-            digest.hexdigest
-          end
-        end
+        SharedHelpers.checksum_for_file(path, :MD5)
       end
 
       private
 
-      def copy_file(source, dest)
+      def copy_file(source, dest, digests)
         SharedHelpers.filesystem_access(source, :read) do
           File.open(source, "r") do |s|
             SharedHelpers.filesystem_access(dest, :write) do
               File.open(dest, "wb", s.stat.mode) do |f|
-                IO.copy_stream(s, f)
+                IO.copy_stream(s, digest_io(f, digests))
               end
             end
           end

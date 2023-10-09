@@ -5,7 +5,7 @@ length=${#files}
 
 # Run rubocop hook only when analyzable files are present
 if [[ $length -ne 0 ]]; then
-  ./bin/rubocop $files
+  ./bin/rubocop --only-recognized-file-types $files
 else
   echo "No files to analyze"
 fi

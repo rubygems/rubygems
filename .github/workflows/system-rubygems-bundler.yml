@@ -31,14 +31,14 @@ jobs:
       matrix:
         include:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.10 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.1 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.7 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.5 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.3 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.1 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.8 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.8 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.6 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.2 } }
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Setup ruby

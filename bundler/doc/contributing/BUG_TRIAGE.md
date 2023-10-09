@@ -37,7 +37,7 @@ Everyone is welcome and encouraged to fix any open bug, improve an error message
   3. Commit the code with at least one test covering your changes to a named branch in your fork.
   4. Send us a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) from your bugfix branch.
 
-You do not have to update [CHANGELOG](../../CHANGELOG.md) in your PR. Our release scripts will automatically prepare it from the title of each PR.
+You do not have to update [CHANGELOG](https://github.com/rubygems/rubygems/blob/master/bundler/CHANGELOG.md) in your PR. Our release scripts will automatically prepare it from the title of each PR.
 
 ## Duplicates!
 

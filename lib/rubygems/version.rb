@@ -417,8 +417,10 @@ class Gem::Version
   end
 
   def partition_segments(ver)
-    ver.scan(/\d+|[a-z]+/i).map! do |s|
-      /\A\d/.match?(s) ? s.to_i : -s
-    end.freeze
+    segments = []
+    ver.scan(/\d+|[a-z]+/i) do |s|
+      segments << (/\A\d/.match?(s) ? s.to_i : -s)
+    end
+    segments.freeze
   end
 end

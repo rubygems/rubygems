@@ -420,13 +420,16 @@ class Gem::Version
   protected
 
   def _segments
+    return @segments if @segments
     # segments is lazy so it can pick up version values that come from
     # old marshaled versions, which don't go through marshal_load.
     # since this version object is cached in @@all, its @segments should be frozen
 
-    @segments ||= @version.scan(/[0-9]+|[a-z]+/i).map! do |s|
-      /^\d+$/.match?(s) ? s.to_i : -s
-    end.freeze
+    segments = []
+    @version.scan(/\d+|[a-z]+/i) do |s|
+      segments << (/^\d+$/.match?(s) ? s.to_i : -s)
+    end
+    @segments = segments.freeze
   end
 
   def _split_segments

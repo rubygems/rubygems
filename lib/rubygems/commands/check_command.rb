@@ -43,7 +43,7 @@ class Gem::Commands::CheckCommand < Gem::Command
     say
     gems = begin
              get_all_gem_names
-           rescue
+           rescue StandardError
              []
            end
 

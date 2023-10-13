@@ -676,7 +676,7 @@ EOM
     when "data.tar.gz" then
       verify_gz entry
     end
-  rescue
+  rescue StandardError
     warn "Exception while verifying #{@gem.path}"
     raise
   end

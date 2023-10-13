@@ -145,6 +145,9 @@ Security/Open:
 Style/NumericLiteralPrefix:
   Enabled: true
 
+Style/RescueStandardError:
+  Enabled: true
+
 Style/RescueModifier:
   Enabled: true
 

@@ -1538,7 +1538,7 @@ class Gem::Specification < Gem::BasicSpecification
     else
       executables
     end
-  rescue
+  rescue StandardError
     return nil
   end
 

@@ -246,7 +246,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_platforms
-    win_platform, Gem.win_platform = Gem.win_platform?, false
+    win_platform = Gem.win_platform?
+    Gem.win_platform = false
 
     with_engine_version "ruby", "2.0.0" do
       @gda.gem "a", :platforms => :ruby
@@ -258,7 +259,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_platforms_bundler_ruby
-    win_platform, Gem.win_platform = Gem.win_platform?, false
+    win_platform = Gem.win_platform?
+    Gem.win_platform = false
 
     with_engine_version "ruby", "2.0.0" do
       set = Gem::RequestSet.new
@@ -320,7 +322,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_platforms_maglev
-    win_platform, Gem.win_platform = Gem.win_platform?, false
+    win_platform = Gem.win_platform?
+    Gem.win_platform = false
 
     with_engine_version "maglev", "1.0.0" do
       set = Gem::RequestSet.new
@@ -356,7 +359,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_platforms_multiple
-    win_platform, Gem.win_platform = Gem.win_platform?, false
+    win_platform = Gem.win_platform?
+    Gem.win_platform = false
 
     with_engine_version "ruby", "2.0.0" do
       @gda.gem "a", :platforms => [:mswin, :jruby]
@@ -369,7 +373,8 @@ class TestGemRequestSetGemDependencyAPI < Gem::TestCase
   end
 
   def test_gem_platforms_platform
-    win_platform, Gem.win_platform = Gem.win_platform?, false
+    win_platform = Gem.win_platform?
+    Gem.win_platform = false
 
     with_engine_version "ruby", "2.0.0" do
       @gda.gem "a", :platforms => :jruby, :platform => :ruby
@@ -696,7 +701,8 @@ end
   end
 
   def test_platform_multiple
-    win_platform, Gem.win_platform = Gem.win_platform?, false
+    win_platform = Gem.win_platform?
+    Gem.win_platform = false
 
     gda = @GDA.new @set, nil
 
@@ -722,7 +728,8 @@ end
   end
 
   def test_platform_ruby
-    win_platform, Gem.win_platform = Gem.win_platform?, false
+    win_platform = Gem.win_platform?
+    Gem.win_platform = false
 
     @gda.platform :ruby do
       @gda.gem "a"

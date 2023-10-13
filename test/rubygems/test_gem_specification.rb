@@ -1712,8 +1712,8 @@ dependencies: []
   end
 
   def test_extension_dir
-    enable_shared, RbConfig::CONFIG["ENABLE_SHARED"] =
-      RbConfig::CONFIG["ENABLE_SHARED"], "no"
+    enable_shared = RbConfig::CONFIG["ENABLE_SHARED"]
+    RbConfig::CONFIG["ENABLE_SHARED"] = "no"
 
     ext_spec
 
@@ -1729,8 +1729,8 @@ dependencies: []
   end
 
   def test_extension_dir_override
-    enable_shared, RbConfig::CONFIG["ENABLE_SHARED"] =
-      RbConfig::CONFIG["ENABLE_SHARED"], "no"
+    enable_shared = RbConfig::CONFIG["ENABLE_SHARED"]
+    RbConfig::CONFIG["ENABLE_SHARED"] = "no"
 
     class << Gem
       alias orig_default_ext_dir_for default_ext_dir_for

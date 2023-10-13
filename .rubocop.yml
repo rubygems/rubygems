@@ -170,6 +170,9 @@ Style/NumericLiterals:
 Style/ClassCheck:
   Enabled: true
 
+Style/ParallelAssignment:
+  Enabled: true
+
 Style/AndOr:
   Enabled: true
   EnforcedStyle: always

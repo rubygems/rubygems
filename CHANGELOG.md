@@ -1,3 +1,25 @@
+# 3.4.21 / 2023-10-17
+
+## Enhancements:
+
+* Abort `setup.rb` if Ruby is too old. Pull request
+  [#7011](https://github.com/rubygems/rubygems/pull/7011) by
+  deivid-rodriguez
+* Remove usage of Dir.chdir that only execute a subprocess. Pull request
+  [#6930](https://github.com/rubygems/rubygems/pull/6930) by segiddins
+* Freeze more strings in generated gemspecs. Pull request
+  [#6974](https://github.com/rubygems/rubygems/pull/6974) by segiddins
+* Use pure-ruby YAML parser for loading configuration at RubyGems. Pull
+  request [#6615](https://github.com/rubygems/rubygems/pull/6615) by hsbt
+* Installs bundler 2.4.21 as a default gem.
+
+## Documentation:
+
+* Update suggested variable for bindir. Pull request
+  [#7028](https://github.com/rubygems/rubygems/pull/7028) by hsbt
+* Fix invalid links in documentation. Pull request
+  [#7008](https://github.com/rubygems/rubygems/pull/7008) by simi
+
 # 3.4.20 / 2023-09-27
 
 ## Enhancements:

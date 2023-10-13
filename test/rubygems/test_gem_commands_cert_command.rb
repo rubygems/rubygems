@@ -129,9 +129,9 @@ Added '/CN=alternate/DC=example'
                  output.shift
     assert_equal "Please repeat the passphrase for your Private Key:  ",
                  output.shift
-    assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
+    assert_equal "Certificate: #{File.join @tempdir, "gem-public_cert.pem"}",
                  output.shift
-    assert_equal "Private Key: #{File.join @tempdir, 'gem-private_key.pem'}",
+    assert_equal "Private Key: #{File.join @tempdir, "gem-private_key.pem"}",
                  output.shift
 
     assert_equal "Don't forget to move the key file to somewhere private!",
@@ -161,9 +161,9 @@ Added '/CN=alternate/DC=example'
                  output.shift
     assert_equal "Please repeat the passphrase for your Private Key:  ",
                  output.shift
-    assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
+    assert_equal "Certificate: #{File.join @tempdir, "gem-public_cert.pem"}",
                  output.shift
-    assert_equal "Private Key: #{File.join @tempdir, 'gem-private_key.pem'}",
+    assert_equal "Private Key: #{File.join @tempdir, "gem-private_key.pem"}",
                  output.shift
 
     assert_equal "Don't forget to move the key file to somewhere private!",
@@ -221,9 +221,9 @@ Added '/CN=alternate/DC=example'
                  output.shift
     assert_equal "Please repeat the passphrase for your Private Key:  ",
                  output.shift
-    assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
+    assert_equal "Certificate: #{File.join @tempdir, "gem-public_cert.pem"}",
                  output.shift
-    assert_equal "Private Key: #{File.join @tempdir, 'gem-private_key.pem'}",
+    assert_equal "Private Key: #{File.join @tempdir, "gem-private_key.pem"}",
                  output.shift
 
     assert_equal "Don't forget to move the key file to somewhere private!",
@@ -284,7 +284,7 @@ Added '/CN=alternate/DC=example'
 
     output = @ui.output.split "\n"
 
-    assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
+    assert_equal "Certificate: #{File.join @tempdir, "gem-public_cert.pem"}",
                  output.shift
 
     assert_empty output
@@ -306,7 +306,7 @@ Added '/CN=alternate/DC=example'
 
     output = @ui.output.split "\n"
 
-    assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
+    assert_equal "Certificate: #{File.join @tempdir, "gem-public_cert.pem"}",
                  output.shift
 
     assert_empty output
@@ -327,7 +327,7 @@ Added '/CN=alternate/DC=example'
 
     output = @ui.output.split "\n"
 
-    assert_equal "Certificate: #{File.join @tempdir, 'gem-public_cert.pem'}",
+    assert_equal "Certificate: #{File.join @tempdir, "gem-public_cert.pem"}",
                  output.shift
 
     assert_empty output

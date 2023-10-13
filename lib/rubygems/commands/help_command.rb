@@ -328,7 +328,7 @@ platform.
 
     summary_width = 80 - margin_width - desc_width
     wrap_indent = " " * (margin_width + desc_width)
-    format = "#{' ' * margin_width}%-#{desc_width}s%s"
+    format = "#{" " * margin_width}%-#{desc_width}s%s"
 
     @command_manager.command_names.each do |cmd_name|
       command = @command_manager[cmd_name]
@@ -367,7 +367,7 @@ platform.
       command = @command_manager[possibilities.first]
       command.invoke("--help")
     elsif possibilities.size > 1
-      alert_warning "Ambiguous command #{command_name} (#{possibilities.join(', ')})"
+      alert_warning "Ambiguous command #{command_name} (#{possibilities.join(", ")})"
     else
       alert_warning "Unknown command #{command_name}. Try: gem help commands"
     end

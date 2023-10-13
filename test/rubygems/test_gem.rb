@@ -669,7 +669,7 @@ class TestGem < Gem::TestCase
       nil
     end
     refute File.exist?(File.join(@tempdir, "a")),
-           "manually remove #{File.join @tempdir, 'a'}, tests are broken"
+           "manually remove #{File.join @tempdir, "a"}, tests are broken"
     Gem.use_paths gemdir
 
     Gem.ensure_gem_subdirectories gemdir

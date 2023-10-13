@@ -337,7 +337,7 @@ class Gem::TestCase < Test::Unit::TestCase
       ruby
     end
 
-    @git = ENV["GIT"] || "git#{RbConfig::CONFIG['EXEEXT']}"
+    @git = ENV["GIT"] || "git#{RbConfig::CONFIG["EXEEXT"]}"
 
     Gem.ensure_gem_subdirectories @gemhome
     Gem.ensure_default_gem_subdirectories @gemhome
@@ -1280,7 +1280,7 @@ Also, a list:
     ruby = ENV["RUBY"]
     return ruby if ruby
     ruby = "ruby"
-    rubyexe = "#{ruby}#{RbConfig::CONFIG['EXEEXT']}"
+    rubyexe = "#{ruby}#{RbConfig::CONFIG["EXEEXT"]}"
 
     3.times do
       if File.exist?(ruby) && File.executable?(ruby) && !File.directory?(ruby)
@@ -1356,8 +1356,8 @@ Also, a list:
     end
   end
 
-  @@good_rake = "#{rubybin} #{escape_path(__dir__, 'good_rake.rb')}"
-  @@bad_rake = "#{rubybin} #{escape_path(__dir__, 'bad_rake.rb')}"
+  @@good_rake = "#{rubybin} #{escape_path(__dir__, "good_rake.rb")}"
+  @@bad_rake = "#{rubybin} #{escape_path(__dir__, "bad_rake.rb")}"
 
   ##
   # Construct a new Gem::Dependency.

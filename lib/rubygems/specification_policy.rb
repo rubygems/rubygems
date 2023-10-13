@@ -214,7 +214,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
         end
 
         "  if #{dep.name} is semantically versioned, use:\n" \
-        "    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join '.'}'#{bugfix}"
+        "    add_#{dep.type}_dependency '#{dep.name}', '~> #{base.join "."}'#{bugfix}"
       end
 
       warning_messages << ["open-ended dependency on #{dep} is not recommended", recommendation].join("\n") + "\n"
@@ -253,7 +253,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
       @specification.instance_variable_get("@#{attrname}").nil?
     end
     return if nil_attributes.empty?
-    error "#{nil_attributes.join ', '} must not be nil"
+    error "#{nil_attributes.join ", "} must not be nil"
   end
 
   def validate_rubygems_version
@@ -300,7 +300,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
     non_files = @specification.files.reject {|x| File.file?(x) || File.symlink?(x) }
 
     unless non_files.empty?
-      error "[\"#{non_files.join "\", \""}\"] are not files"
+      error "[\"#{non_files.join '", "'}\"] are not files"
     end
   end
 
@@ -377,7 +377,7 @@ license value '#{license}' is invalid.  Use a license identifier from
 http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license,
 or set it to nil if you don't want to specify a license.
       WARNING
-      message += "Did you mean #{suggestions.map {|s| "'#{s}'" }.join(', ')}?\n" unless suggestions.nil?
+      message += "Did you mean #{suggestions.map {|s| "'#{s}'" }.join(", ")}?\n" unless suggestions.nil?
       warning(message)
     end
 

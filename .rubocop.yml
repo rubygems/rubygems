@@ -179,6 +179,10 @@ Style/ClassCheck:
 Style/ParallelAssignment:
   Enabled: true
 
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
 Style/AndOr:
   Enabled: true
   EnforcedStyle: always

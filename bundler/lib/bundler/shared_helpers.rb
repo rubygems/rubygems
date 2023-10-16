@@ -11,24 +11,26 @@ require_relative "current_ruby"
 module Bundler
   module SharedHelpers
     def root
-      gemfile = find_gemfile
-      raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
-      Pathname.new(gemfile).tap {|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path.parent
+      @_root ||= default_gemfile.parent
     end
 
     def default_gemfile
-      gemfile = find_gemfile
-      raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
-      Pathname.new(gemfile).tap {|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path
+      @_default_gemfile ||= begin
+        gemfile = find_gemfile
+        raise GemfileNotFound, "Could not locate Gemfile" unless gemfile
+        Pathname.new(gemfile).tap {|x| x.untaint if RUBY_VERSION < "2.7" }.expand_path
+      end
     end
 
     def default_lockfile
-      gemfile = default_gemfile
+      @_default_lockfile ||= begin
+        gemfile = default_gemfile
 
-      case gemfile.basename.to_s
-      when "gems.rb" then Pathname.new(gemfile.sub(/.rb$/, ".locked"))
-      else Pathname.new("#{gemfile}.lock")
-      end.tap {|x| x.untaint if RUBY_VERSION < "2.7" }
+        case gemfile.basename.to_s
+        when "gems.rb" then Pathname.new(gemfile.sub(/.rb$/, ".locked"))
+        else Pathname.new("#{gemfile}.lock")
+        end.tap {|x| x.untaint if RUBY_VERSION < "2.7" }
+      end
     end
 
     def default_bundle_dir

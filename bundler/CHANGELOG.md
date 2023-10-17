@@ -1,3 +1,35 @@
+# 2.4.21 (October 17, 2023)
+
+## Enhancements:
+
+  - Avoid duplicates -rbundler/setup in RUBYOPT with Ruby preview [#7002](https://github.com/rubygems/rubygems/pull/7002)
+  - Prevent gem activation in standalone mode [#6925](https://github.com/rubygems/rubygems/pull/6925)
+  - Support Ruby's preview version format (Ex: 3.3.0-preview2) in Gemfile [#7016](https://github.com/rubygems/rubygems/pull/7016)
+  - Fix `bundle install` when older revisions of git source [#6980](https://github.com/rubygems/rubygems/pull/6980)
+  - Remove usage of Dir.chdir that only execute a subprocess [#6930](https://github.com/rubygems/rubygems/pull/6930)
+
+## Bug fixes:
+
+  - Don't delete the release version from pre-release string more than once [#7054](https://github.com/rubygems/rubygems/pull/7054)
+  - Make the `lock` command not be affected by the `frozen` setting [#7034](https://github.com/rubygems/rubygems/pull/7034)
+  - Raise an error when adding a gem incompatible with some locked platform [#7035](https://github.com/rubygems/rubygems/pull/7035)
+  - Re-resolve when lockfile is invalid [#7020](https://github.com/rubygems/rubygems/pull/7020)
+  - Don't re-resolve with prereleases if unlocked gem has no prereleases [#7021](https://github.com/rubygems/rubygems/pull/7021)
+  - Include gemspec in ExtensionTask for native gem tasks [#7015](https://github.com/rubygems/rubygems/pull/7015)
+  - Avoid error reporting relative path when validating frozen [#5128](https://github.com/rubygems/rubygems/pull/5128)
+  - Fix `bundle lock --minor --update <dep>` edge case [#6992](https://github.com/rubygems/rubygems/pull/6992)
+  - Stop bundler eagerly loading all specs with exts [#6945](https://github.com/rubygems/rubygems/pull/6945)
+
+## Performance:
+
+  - Reduce allocations when parsing lockfile [#6976](https://github.com/rubygems/rubygems/pull/6976)
+  - Stop allocating the same settings keys repeatedly [#6963](https://github.com/rubygems/rubygems/pull/6963)
+
+## Documentation:
+
+  - Improve formatting and global source information in `bundle plugin` man page [#7045](https://github.com/rubygems/rubygems/pull/7045)
+  - Update man page of `bundle exec` to reflect default true of flag `--keep-file-descriptors` [#7033](https://github.com/rubygems/rubygems/pull/7033)
+
 # 2.4.20 (September 27, 2023)
 
 ## Enhancements:

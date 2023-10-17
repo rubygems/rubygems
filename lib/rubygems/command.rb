@@ -228,7 +228,7 @@ class Gem::Command
 
     if args.size > 1
       raise Gem::CommandLineError,
-            "Too many gem names (#{args.join(', ')}); please specify only one"
+            "Too many gem names (#{args.join(", ")}); please specify only one"
     end
 
     args.first
@@ -431,7 +431,7 @@ class Gem::Command
   def handles?(args)
     parser.parse!(args.dup)
     return true
-  rescue
+  rescue StandardError
     return false
   end
 

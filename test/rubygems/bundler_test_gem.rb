@@ -384,8 +384,10 @@ You may need to `bundle install` to install missing gems
   end
 
   def with_path_and_rubyopt(path_value, rubyopt_value)
-    path, ENV["PATH"] = ENV["PATH"], path_value
-    rubyopt, ENV["RUBYOPT"] = ENV["RUBYOPT"], rubyopt_value
+    path = ENV["PATH"]
+    ENV["PATH"] = path_value
+    rubyopt = ENV["RUBYOPT"]
+    ENV["RUBYOPT"] = rubyopt_value
 
     yield
   ensure
@@ -394,7 +396,8 @@ You may need to `bundle install` to install missing gems
   end
 
   def with_rubygems_gemdeps(value)
-    rubygems_gemdeps, ENV["RUBYGEMS_GEMDEPS"] = ENV["RUBYGEMS_GEMDEPS"], value
+    rubygems_gemdeps = ENV["RUBYGEMS_GEMDEPS"]
+    ENV["RUBYGEMS_GEMDEPS"] = value
 
     yield
   ensure

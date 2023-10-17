@@ -204,8 +204,8 @@ gem 'other', version
       bin_dir = bin_dir.downcase
     end
 
-    orig_PATH, ENV["PATH"] =
-      ENV["PATH"], [ENV["PATH"], bin_dir].join(File::PATH_SEPARATOR)
+    orig_PATH = ENV["PATH"]
+    ENV["PATH"] = [ENV["PATH"], bin_dir].join(File::PATH_SEPARATOR)
 
     use_ui @ui do
       installer.check_that_user_bin_dir_is_in_path
@@ -229,8 +229,8 @@ gem 'other', version
   def test_check_that_user_bin_dir_is_in_path_tilde
     pend "Tilde is PATH is not supported under MS Windows" if win_platform?
 
-    orig_PATH, ENV["PATH"] =
-      ENV["PATH"], [ENV["PATH"], "~/bin"].join(File::PATH_SEPARATOR)
+    orig_PATH = ENV["PATH"]
+    ENV["PATH"] = [ENV["PATH"], "~/bin"].join(File::PATH_SEPARATOR)
 
     installer = setup_base_installer
     installer.bin_dir.replace File.join @userhome, "bin"
@@ -467,14 +467,14 @@ gem 'other', version
     elsif Process.uid.zero?
       pend("test_generate_bin_script_no_perms skipped in root privilege")
     else
-      FileUtils.chmod 0000, util_inst_bindir
+      FileUtils.chmod 0o000, util_inst_bindir
 
       assert_raise Gem::FilePermissionError do
         installer.generate_bin
       end
     end
   ensure
-    FileUtils.chmod 0755, util_inst_bindir unless ($DEBUG || win_platform?)
+    FileUtils.chmod 0o755, util_inst_bindir unless ($DEBUG || win_platform?)
   end
 
   def test_generate_bin_script_no_shebang
@@ -571,14 +571,14 @@ gem 'other', version
     elsif Process.uid.zero?
       pend("test_user_install_disabled_read_only test skipped in root privilege")
     else
-      FileUtils.chmod 0000, util_inst_bindir
+      FileUtils.chmod 0o000, util_inst_bindir
 
       assert_raise Gem::FilePermissionError do
         installer.generate_bin
       end
     end
   ensure
-    FileUtils.chmod 0755, util_inst_bindir unless ($DEBUG || win_platform?)
+    FileUtils.chmod 0o755, util_inst_bindir unless ($DEBUG || win_platform?)
   end
 
   def test_generate_bin_symlink_update_newer
@@ -816,7 +816,7 @@ gem 'other', version
 
     util_build_gem spec
 
-    File.chmod(0555, Gem.plugindir)
+    File.chmod(0o555, Gem.plugindir)
     system_path = File.join(Gem.plugindir, "a_plugin.rb")
     user_path = File.join(Gem.plugindir(Gem.user_dir), "a_plugin.rb")
     installer = util_installer spec, Gem.dir, :user
@@ -838,7 +838,7 @@ gem 'other', version
 
     util_build_gem spec
 
-    File.chmod(0555, Gem.plugindir)
+    File.chmod(0o555, Gem.plugindir)
     system_path = File.join(Gem.plugindir, "a_plugin.rb")
 
     build_root = File.join(@tempdir, "build_root")
@@ -1032,8 +1032,8 @@ end
     exe = File.join gemdir, "bin", "executable"
     assert_path_exist exe
 
-    exe_mode = File.stat(exe).mode & 0111
-    assert_equal 0111, exe_mode, "0%o" % exe_mode unless win_platform?
+    exe_mode = File.stat(exe).mode & 0o111
+    assert_equal 0o111, exe_mode, "0%o" % exe_mode unless win_platform?
 
     assert_path_exist File.join gemdir, "lib", "code.rb"
 
@@ -1617,7 +1617,7 @@ end
         installer.install
       end
       assert_path_exist so
-    rescue
+    rescue StandardError
       puts "-" * 78
       puts File.read File.join(@gemhome, "gems", "a-2", "Makefile")
       puts "-" * 78
@@ -2021,7 +2021,7 @@ end
 
     bin_env = get_bin_env
 
-    assert_equal("#!#{bin_env} #{RbConfig::CONFIG['ruby_install_name']}",
+    assert_equal("#!#{bin_env} #{RbConfig::CONFIG["ruby_install_name"]}",
                  shebang)
   end
 
@@ -2498,7 +2498,7 @@ end
   end
 
   def mask
-    0100755
+    0o100755
   end
 
   def load_relative(value)

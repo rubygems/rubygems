@@ -85,7 +85,11 @@ module Gem::Util
 
     here = File.expand_path directory
     loop do
-      Dir.chdir here, &block rescue Errno::EACCES
+      begin
+        Dir.chdir here, &block
+      rescue StandardError
+        Errno::EACCES
+      end
 
       new_here = File.expand_path("..", here)
       return if new_here == here # toplevel

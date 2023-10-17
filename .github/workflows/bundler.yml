@@ -31,10 +31,10 @@ jobs:
 
         ruby:
           - { name: ruby-2.6, value: 2.6.10 }
-          - { name: ruby-2.7, value: 2.7.7 }
-          - { name: ruby-3.0, value: 3.0.5 }
-          - { name: ruby-3.1, value: 3.1.3 }
-          - { name: ruby-3.2, value: 3.2.1 }
+          - { name: ruby-2.7, value: 2.7.8 }
+          - { name: ruby-3.0, value: 3.0.6 }
+          - { name: ruby-3.1, value: 3.1.4 }
+          - { name: ruby-3.2, value: 3.2.2 }
 
         bundler:
           - { name: 2, value: '' }
@@ -44,15 +44,15 @@ jobs:
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.6, value: 2.6.10 } }
 
         include:
-          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.1 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.8 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 }, timeout: 90 }
 
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.1 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.8 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 }, timeout: 150 }
 
     env:
       RGV: ..

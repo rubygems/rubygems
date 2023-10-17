@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Bundler
+module Gem
   # A stub yaml serializer that can handle only hashes and strings (as of now).
   module YAMLSerializer
     module_function

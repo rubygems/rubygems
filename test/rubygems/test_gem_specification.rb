@@ -1472,15 +1472,15 @@ dependencies: []
     end
 
     FileUtils.mkdir_p File.join @ext.base_dir, "extensions"
-    FileUtils.chmod 0555, @ext.base_dir
-    FileUtils.chmod 0555, File.join(@ext.base_dir, "extensions")
+    FileUtils.chmod 0o555, @ext.base_dir
+    FileUtils.chmod 0o555, File.join(@ext.base_dir, "extensions")
 
     @ext.build_extensions
     assert_path_not_exist @ext.extension_dir
   ensure
     unless ($DEBUG || win_platform? || Process.uid.zero? || Gem.java_platform?)
-      FileUtils.chmod 0755, File.join(@ext.base_dir, "extensions")
-      FileUtils.chmod 0755, @ext.base_dir
+      FileUtils.chmod 0o755, File.join(@ext.base_dir, "extensions")
+      FileUtils.chmod 0o755, @ext.base_dir
     end
   end
 
@@ -1505,14 +1505,14 @@ dependencies: []
     end
 
     FileUtils.rm_r File.join @gemhome, "extensions"
-    FileUtils.chmod 0555, @gemhome
+    FileUtils.chmod 0o555, @gemhome
 
     @ext.build_extensions
 
     gem_make_out = File.join @ext.extension_dir, "gem_make.out"
     assert_path_not_exist gem_make_out
   ensure
-    FileUtils.chmod 0755, @gemhome
+    FileUtils.chmod 0o755, @gemhome
   end
 
   def test_build_extensions_none
@@ -1620,12 +1620,12 @@ dependencies: []
 
   def test_date_tolerates_hour_sec_zulu
     @a1.date = "2012-01-12 11:22:33.4444444 Z"
-    assert_equal Time.utc(2012,01,12,0,0,0), @a1.date
+    assert_equal Time.utc(2012,0o1,12,0,0,0), @a1.date
   end
 
   def test_date_tolerates_hour_sec_and_timezone
     @a1.date = "2012-01-12 11:22:33.4444444 +02:33"
-    assert_equal Time.utc(2012,01,12,0,0,0), @a1.date
+    assert_equal Time.utc(2012,0o1,12,0,0,0), @a1.date
   end
 
   def test_date_use_env_source_date_epoch
@@ -1712,8 +1712,8 @@ dependencies: []
   end
 
   def test_extension_dir
-    enable_shared, RbConfig::CONFIG["ENABLE_SHARED"] =
-      RbConfig::CONFIG["ENABLE_SHARED"], "no"
+    enable_shared = RbConfig::CONFIG["ENABLE_SHARED"]
+    RbConfig::CONFIG["ENABLE_SHARED"] = "no"
 
     ext_spec
 
@@ -1729,8 +1729,8 @@ dependencies: []
   end
 
   def test_extension_dir_override
-    enable_shared, RbConfig::CONFIG["ENABLE_SHARED"] =
-      RbConfig::CONFIG["ENABLE_SHARED"], "no"
+    enable_shared = RbConfig::CONFIG["ENABLE_SHARED"]
+    RbConfig::CONFIG["ENABLE_SHARED"] = "no"
 
     class << Gem
       alias orig_default_ext_dir_for default_ext_dir_for
@@ -2291,7 +2291,7 @@ dependencies: []
 
 Gem::Specification.new do |s|
   s.name = "a".freeze
-  s.version = "2"
+  s.version = "2".freeze
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze, "other".freeze]
@@ -2306,7 +2306,7 @@ Gem::Specification.new do |s|
 
   s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
 
-  s.add_runtime_dependency(%q<b>.freeze, [\"= 1\"])
+  s.add_runtime_dependency(%q<b>.freeze, [\"= 1\".freeze])
 end
     SPEC
 
@@ -2331,7 +2331,7 @@ end
 
 Gem::Specification.new do |s|
   s.name = "a".freeze
-  s.version = "2"
+  s.version = "2".freeze
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
@@ -2364,7 +2364,7 @@ end
 
 Gem::Specification.new do |s|
   s.name = "a".freeze
-  s.version = "2"
+  s.version = "2".freeze
 
   s.required_rubygems_version = Gem::Requirement.new(\"> 0\".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
@@ -2376,11 +2376,11 @@ Gem::Specification.new do |s|
   s.rubygems_version = "#{Gem::VERSION}".freeze
   s.summary = "this is a summary".freeze
 
-  s.installed_by_version = "#{Gem::VERSION}" if s.respond_to? :installed_by_version
+  s.installed_by_version = "#{Gem::VERSION}".freeze if s.respond_to? :installed_by_version
 
   s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
 
-  s.add_runtime_dependency(%q<b>.freeze, [\"= 1\"])
+  s.add_runtime_dependency(%q<b>.freeze, ["= 1".freeze])
 end
     SPEC
 
@@ -2400,7 +2400,7 @@ end
     ruby_code = @c1.to_ruby
 
     local = Gem::Platform.local
-    expected_platform = "[#{local.cpu.inspect}, #{local.os.inspect}, #{local.version.inspect}]"
+    expected_platform = "[#{local.cpu.inspect}.freeze, #{local.os.inspect}.freeze, #{local.version.inspect}.freeze]"
     stub_require_paths =
       @c1.instance_variable_get(:@require_paths).join "\u0000"
     extensions = @c1.extensions.join "\u0000"
@@ -2412,7 +2412,7 @@ end
 
 Gem::Specification.new do |s|
   s.name = "a".freeze
-  s.version = "1"
+  s.version = "1".freeze
   s.platform = Gem::Platform.new(#{expected_platform})
 
   s.required_rubygems_version = Gem::Requirement.new(\">= 0\".freeze) if s.respond_to? :required_rubygems_version=
@@ -2433,9 +2433,9 @@ Gem::Specification.new do |s|
 
   s.specification_version = 4
 
-  s.add_runtime_dependency(%q<rake>.freeze, [\"> 0.4\"])
-  s.add_runtime_dependency(%q<jabber4r>.freeze, [\"> 0.0.0\"])
-  s.add_runtime_dependency(%q<pqa>.freeze, [\"> 0.4\", \"<= 0.6\"])
+  s.add_runtime_dependency(%q<rake>.freeze, [\"> 0.4\".freeze])
+  s.add_runtime_dependency(%q<jabber4r>.freeze, [\"> 0.0.0\".freeze])
+  s.add_runtime_dependency(%q<pqa>.freeze, [\"> 0.4\".freeze, \"<= 0.6\".freeze])
 end
     SPEC
 
@@ -2451,7 +2451,7 @@ end
       s.add_dependency "b", ["~> 1.0", ">= 1.0.0"]
     end
 
-    assert_includes spec.to_ruby, '"~> 1.0", ">= 1.0.0"'
+    assert_includes spec.to_ruby, '"~> 1.0".freeze, ">= 1.0.0".freeze'
   end
 
   def test_to_ruby_legacy
@@ -3350,8 +3350,8 @@ Did you mean 'Ruby'?
     util_setup_validate
 
     Dir.chdir @tempdir do
-      File.chmod 0640, File.join("lib", "code.rb")
-      File.chmod 0640, File.join("bin", "exec")
+      File.chmod 0o640, File.join("lib", "code.rb")
+      File.chmod 0o640, File.join("bin", "exec")
 
       use_ui @ui do
         @a1.validate
@@ -3499,7 +3499,7 @@ Did you mean 'Ruby'?
       capture_output do
         Gem::Specification.load(specfile.path)
       end
-    rescue => e
+    rescue StandardError => e
       name_rexp = Regexp.new(Regexp.escape(specfile.path))
       assert e.backtrace.grep(name_rexp).any?
     end
@@ -3654,7 +3654,7 @@ Did you mean 'Ruby'?
 
 Gem::Specification.new do |s|
   s.name = "m".freeze
-  s.version = "1"
+  s.version = "1".freeze
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.metadata = { "one" => "two", "two" => "three" } if s.respond_to? :metadata=
@@ -3845,7 +3845,7 @@ end
         FileUtils.touch File.join("lib", "code.rb")
         FileUtils.touch File.join("test", "suite.rb")
 
-        File.open "bin/exec", "w", 0755 do |fp|
+        File.open "bin/exec", "w", 0o755 do |fp|
           fp.puts "#!#{Gem.ruby}"
         end
       ensure

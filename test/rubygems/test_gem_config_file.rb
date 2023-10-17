@@ -185,7 +185,7 @@ class TestGemConfigFile < Gem::TestCase
 
     temp_cred = File.join Gem.user_home, ".gem", "credentials"
     FileUtils.mkdir_p File.dirname(temp_cred)
-    File.open temp_cred, "w", 0600 do |fp|
+    File.open temp_cred, "w", 0o600 do |fp|
       fp.puts ":rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97"
     end
 
@@ -200,7 +200,7 @@ class TestGemConfigFile < Gem::TestCase
 
     @cfg.rubygems_api_key = "x"
 
-    File.chmod 0644, @cfg.credentials_path
+    File.chmod 0o644, @cfg.credentials_path
 
     use_ui @ui do
       assert_raise Gem::MockGemUi::TermError do
@@ -323,15 +323,20 @@ if you believe they were disclosed to a third party.
   def test_load_api_keys
     temp_cred = File.join Gem.user_home, ".gem", "credentials"
     FileUtils.mkdir_p File.dirname(temp_cred)
-    File.open temp_cred, "w", 0600 do |fp|
-      fp.puts ":rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97"
-      fp.puts ":other: a5fdbb6ba150cbb83aad2bb2fede64c"
+    File.open temp_cred, "w", 0o600 do |fp|
+      fp.puts ":rubygems_api_key: rubygems_b9ce70c306b3a2e248679fbbbd66722d408d3c8c4f00566c"
+      fp.puts ":other: rubygems_9636a120106ea8b81fbc792188251738665711d2ece160c5"
+      fp.puts "http://localhost:3000: rubygems_be293ad9dd71550a012b17d848893b41960b811ce9312b47"
     end
 
     util_config_file
 
-    assert_equal({ :rubygems => "701229f217cdf23b1344c7b4b54ca97",
-                   :other => "a5fdbb6ba150cbb83aad2bb2fede64c" }, @cfg.api_keys)
+    assert_equal(
+      { :rubygems => "rubygems_b9ce70c306b3a2e248679fbbbd66722d408d3c8c4f00566c",
+        :other => "rubygems_9636a120106ea8b81fbc792188251738665711d2ece160c5",
+        "http://localhost:3000" => "rubygems_be293ad9dd71550a012b17d848893b41960b811ce9312b47" },
+      @cfg.api_keys
+    )
   end
 
   def test_load_api_keys_bad_permission
@@ -339,7 +344,7 @@ if you believe they were disclosed to a third party.
 
     @cfg.rubygems_api_key = "x"
 
-    File.chmod 0644, @cfg.credentials_path
+    File.chmod 0o644, @cfg.credentials_path
 
     assert_raise Gem::MockGemUi::TermError do
       @cfg.load_api_keys
@@ -372,7 +377,7 @@ if you believe they were disclosed to a third party.
     unless win_platform?
       stat = File.stat @cfg.credentials_path
 
-      assert_equal 0600, stat.mode & 0600
+      assert_equal 0o600, stat.mode & 0o600
     end
   end
 
@@ -381,7 +386,7 @@ if you believe they were disclosed to a third party.
 
     @cfg.rubygems_api_key = "x"
 
-    File.chmod 0644, @cfg.credentials_path
+    File.chmod 0o644, @cfg.credentials_path
 
     assert_raise Gem::MockGemUi::TermError do
       @cfg.rubygems_api_key = "y"
@@ -395,7 +400,7 @@ if you believe they were disclosed to a third party.
 
     stat = File.stat @cfg.credentials_path
 
-    assert_equal 0644, stat.mode & 0644
+    assert_equal 0o644, stat.mode & 0o644
   end
 
   def test_write
@@ -471,7 +476,8 @@ if you believe they were disclosed to a third party.
     end
 
     begin
-      verbose, $VERBOSE = $VERBOSE, nil
+      verbose = $VERBOSE
+      $VERBOSE = nil
 
       util_config_file
     ensure
@@ -513,5 +519,33 @@ if you believe they were disclosed to a third party.
     end
     util_config_file
     assert_equal(true, @cfg.disable_default_gem_server)
+  end
+
+  def test_load_with_rubygems_config_hash
+    yaml = <<~YAML
+      ---
+      :foo: bar
+      bar: 100
+      buzz: true
+      alpha: :bravo
+      charlie: ""
+      delta:
+    YAML
+    actual = Gem::ConfigFile.load_with_rubygems_config_hash(yaml)
+
+    assert_equal "bar", actual[:foo]
+    assert_equal 100, actual["bar"]
+    assert_equal true, actual["buzz"]
+    assert_equal :bravo, actual["alpha"]
+    assert_equal nil, actual["charlie"]
+    assert_equal nil, actual["delta"]
+  end
+
+  def test_dump_with_rubygems_yaml
+    symbol_key_hash = { :foo => "bar" }
+
+    actual = Gem::ConfigFile.dump_with_rubygems_yaml(symbol_key_hash)
+
+    assert_equal("---\n:foo: \"bar\"\n", actual)
   end
 end

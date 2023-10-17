@@ -731,7 +731,11 @@ class TestGemCommandsExecCommand < Gem::TestCase
       assert_includes @ui.output, "a (2)\n"
       assert_includes @ui.output, "b (2)\n"
 
-      invoke "gem", "uninstall", "--verbose", "-x", "a" rescue nil
+      begin
+        invoke "gem", "uninstall", "--verbose", "-x", "a"
+      rescue StandardError
+        nil
+      end
       refute_includes @ui.output, "running gem exec with"
       assert_includes @ui.output, "Successfully uninstalled a-2\n"
 

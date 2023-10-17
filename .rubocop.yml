@@ -142,6 +142,15 @@ Performance/StringReplacement:
 Security/Open:
   Enabled: true
 
+Style/NumericLiteralPrefix:
+  Enabled: true
+
+Style/RescueStandardError:
+  Enabled: true
+
+Style/RescueModifier:
+  Enabled: true
+
 Style/Next:
   Enabled: true
 
@@ -166,6 +175,13 @@ Style/NumericLiterals:
 
 Style/ClassCheck:
   Enabled: true
+
+Style/ParallelAssignment:
+  Enabled: true
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
 
 Style/AndOr:
   Enabled: true

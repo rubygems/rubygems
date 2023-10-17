@@ -120,9 +120,11 @@ class Gem::TestCase < Test::Unit::TestCase
     _synchronize do
       require "tempfile"
 
-      captured_stdout, captured_stderr = Tempfile.new("out"), Tempfile.new("err")
+      captured_stdout = Tempfile.new("out")
+      captured_stderr = Tempfile.new("err")
 
-      orig_stdout, orig_stderr = $stdout.dup, $stderr.dup
+      orig_stdout = $stdout.dup
+      orig_stderr = $stderr.dup
       $stdout.reopen captured_stdout
       $stderr.reopen captured_stderr
 
@@ -335,14 +337,18 @@ class Gem::TestCase < Test::Unit::TestCase
       ruby
     end
 
-    @git = ENV["GIT"] || "git#{RbConfig::CONFIG['EXEEXT']}"
+    @git = ENV["GIT"] || "git#{RbConfig::CONFIG["EXEEXT"]}"
 
     Gem.ensure_gem_subdirectories @gemhome
     Gem.ensure_default_gem_subdirectories @gemhome
 
     @orig_LOAD_PATH = $LOAD_PATH.dup
     $LOAD_PATH.map! do |s|
-      expand_path = File.realpath(s) rescue File.expand_path(s)
+      expand_path = begin
+                      File.realpath(s)
+                    rescue StandardError
+                      File.expand_path(s)
+                    end
       if expand_path != s
         expand_path.tap(&Gem::UNTAINT)
         if s.instance_variable_defined?(:@gem_prelude_index)
@@ -484,7 +490,7 @@ class Gem::TestCase < Test::Unit::TestCase
     @temp_cred = File.join(@userhome, ".gem", "credentials")
     FileUtils.mkdir_p File.dirname(@temp_cred)
     File.write @temp_cred, ":rubygems_api_key: 701229f217cdf23b1344c7b4b54ca97"
-    File.chmod 0600, @temp_cred
+    File.chmod 0o600, @temp_cred
   end
 
   def credential_teardown
@@ -686,11 +692,8 @@ class Gem::TestCase < Test::Unit::TestCase
   # Load a YAML file, the psych 3 way
 
   def load_yaml_file(file)
-    if Psych.respond_to?(:unsafe_load_file)
-      Psych.unsafe_load_file(file)
-    else
-      Psych.load_file(file)
-    end
+    require "rubygems/config_file"
+    Gem::ConfigFile.load_with_rubygems_config_hash(File.read(file))
   end
 
   def all_spec_names
@@ -1274,7 +1277,7 @@ Also, a list:
     ruby = ENV["RUBY"]
     return ruby if ruby
     ruby = "ruby"
-    rubyexe = "#{ruby}#{RbConfig::CONFIG['EXEEXT']}"
+    rubyexe = "#{ruby}#{RbConfig::CONFIG["EXEEXT"]}"
 
     3.times do
       if File.exist?(ruby) && File.executable?(ruby) && !File.directory?(ruby)
@@ -1325,7 +1328,8 @@ Also, a list:
   end
 
   def silence_warnings
-    old_verbose, $VERBOSE = $VERBOSE, false
+    old_verbose = $VERBOSE
+    $VERBOSE = false
     yield
   ensure
     $VERBOSE = old_verbose
@@ -1349,8 +1353,8 @@ Also, a list:
     end
   end
 
-  @@good_rake = "#{rubybin} #{escape_path(__dir__, 'good_rake.rb')}"
-  @@bad_rake = "#{rubybin} #{escape_path(__dir__, 'bad_rake.rb')}"
+  @@good_rake = "#{rubybin} #{escape_path(__dir__, "good_rake.rb")}"
+  @@bad_rake = "#{rubybin} #{escape_path(__dir__, "bad_rake.rb")}"
 
   ##
   # Construct a new Gem::Dependency.
@@ -1536,7 +1540,11 @@ Also, a list:
   # <tt>test/rubygems/</tt>.
 
   def self.cert_path(cert_name)
-    if 32 == (Time.at(2**32) rescue 32)
+    if 32 == begin
+               Time.at(2**32)
+             rescue StandardError
+               32
+             end
       cert_file = "#{__dir__}/#{cert_name}_cert_32.pem"
 
       return cert_file if File.exist? cert_file

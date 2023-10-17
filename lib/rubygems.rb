@@ -9,7 +9,7 @@
 require "rbconfig"
 
 module Gem
-  VERSION = "3.4.20"
+  VERSION = "3.4.21"
 end
 
 # Must be first since it unloads the prelude from 1.9.2
@@ -439,7 +439,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   def self.ensure_subdirectories(dir, mode, subdirs) # :nodoc:
     old_umask = File.umask
-    File.umask old_umask | 002
+    File.umask old_umask | 0o02
 
     options = {}
 
@@ -582,7 +582,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   ##
   # The number of paths in the +$LOAD_PATH+ from activated gems. Used to
-  # prioritize +-I+ and +ENV['RUBYLIB']+ entries during +require+.
+  # prioritize +-I+ and <code>ENV['RUBYLIB']</code> entries during +require+.
 
   def self.activated_gem_paths
     @activated_gem_paths ||= 0
@@ -914,7 +914,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Glob pattern for require-able path suffixes.
 
   def self.suffix_pattern
-    @suffix_pattern ||= "{#{suffixes.join(',')}}"
+    @suffix_pattern ||= "{#{suffixes.join(",")}}"
   end
 
   ##

@@ -7,6 +7,8 @@
 # See LICENSE.txt for permissions.
 #++
 
+abort "RubyGems only supports Ruby 2.6 or higher" if RUBY_VERSION < "2.6.0"
+
 # Make sure rubygems isn't already loaded.
 if ENV["RUBYOPT"] || defined? Gem
   ENV.delete "RUBYOPT"

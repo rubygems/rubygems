@@ -112,8 +112,8 @@ class TestGemRequest < Gem::TestCase
   end
 
   def test_configure_connection_for_https_ssl_ca_cert
-    ssl_ca_cert, Gem.configuration.ssl_ca_cert =
-      Gem.configuration.ssl_ca_cert, CA_CERT_FILE
+    ssl_ca_cert = Gem.configuration.ssl_ca_cert
+    Gem.configuration.ssl_ca_cert = CA_CERT_FILE
 
     connection = Net::HTTP.new "localhost", 443
 
@@ -214,7 +214,7 @@ class TestGemRequest < Gem::TestCase
     end
 
     auth_header = conn.payload["Authorization"]
-    assert_equal "Basic #{base64_encode64('user:pass')}".strip, auth_header
+    assert_equal "Basic #{base64_encode64("user:pass")}".strip, auth_header
     assert_includes @ui.output, "GET https://user:REDACTED@example.rubygems/specs.#{Gem.marshal_version}"
   end
 
@@ -231,7 +231,7 @@ class TestGemRequest < Gem::TestCase
     end
 
     auth_header = conn.payload["Authorization"]
-    assert_equal "Basic #{base64_encode64('user:{DEScede}pass')}".strip, auth_header
+    assert_equal "Basic #{base64_encode64("user:{DEScede}pass")}".strip, auth_header
     assert_includes @ui.output, "GET https://user:REDACTED@example.rubygems/specs.#{Gem.marshal_version}"
   end
 
@@ -248,7 +248,7 @@ class TestGemRequest < Gem::TestCase
     end
 
     auth_header = conn.payload["Authorization"]
-    assert_equal "Basic #{base64_encode64('{DEScede}pass:x-oauth-basic')}".strip, auth_header
+    assert_equal "Basic #{base64_encode64("{DEScede}pass:x-oauth-basic")}".strip, auth_header
     assert_includes @ui.output, "GET https://REDACTED:x-oauth-basic@example.rubygems/specs.#{Gem.marshal_version}"
   end
 

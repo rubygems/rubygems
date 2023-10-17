@@ -39,7 +39,7 @@ module Kernel
 
     if gem_name.is_a? Gem::Dependency
       unless Gem::Deprecate.skip
-        warn "#{Gem.location_of_caller.join ':'}:Warning: Kernel.gem no longer "\
+        warn "#{Gem.location_of_caller.join ":"}:Warning: Kernel.gem no longer "\
           "accepts a Gem::Dependency object, please pass the name "\
           "and requirements directly"
       end

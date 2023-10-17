@@ -125,7 +125,11 @@ class Gem::RemoteFetcher
     local_gem_path = File.join cache_dir, gem_file_name
 
     require "fileutils"
-    FileUtils.mkdir_p cache_dir rescue nil unless File.exist? cache_dir
+    begin
+      FileUtils.mkdir_p cache_dir
+    rescue StandardError
+      nil
+    end unless File.exist? cache_dir
 
     source_uri = Gem::Uri.new(source_uri)
 
@@ -281,7 +285,11 @@ class Gem::RemoteFetcher
   # passes the data.
 
   def cache_update_path(uri, path = nil, update = true)
-    mtime = path && File.stat(path).mtime rescue nil
+    mtime = begin
+              path && File.stat(path).mtime
+            rescue StandardError
+              nil
+            end
 
     data = fetch_path(uri, mtime)
 

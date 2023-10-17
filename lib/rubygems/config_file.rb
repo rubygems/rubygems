@@ -241,9 +241,9 @@ class Gem::ConfigFile
     return if Gem.win_platform? # windows doesn't write 0600 as 0600
     return unless File.exist? credentials_path
 
-    existing_permissions = File.stat(credentials_path).mode & 0777
+    existing_permissions = File.stat(credentials_path).mode & 0o777
 
-    return if existing_permissions == 0600
+    return if existing_permissions == 0o600
 
     alert_error <<-ERROR
 Your gem push credentials file located at:
@@ -324,11 +324,9 @@ if you believe they were disclosed to a third party.
     require "fileutils"
     FileUtils.mkdir_p(dirname)
 
-    Gem.load_yaml
-
-    permissions = 0600 & (~File.umask)
+    permissions = 0o600 & (~File.umask)
     File.open(credentials_path, "w", permissions) do |f|
-      f.write config.to_yaml
+      f.write self.class.dump_with_rubygems_yaml(config)
     end
 
     load_api_keys # reload
@@ -344,20 +342,18 @@ if you believe they were disclosed to a third party.
   end
 
   def load_file(filename)
-    Gem.load_yaml
-
     yaml_errors = [ArgumentError]
-    yaml_errors << Psych::SyntaxError if defined?(Psych::SyntaxError)
 
     return {} unless filename && !filename.empty? && File.exist?(filename)
 
     begin
-      content = Gem::SafeYAML.load(File.read(filename))
-      unless content.is_a? Hash
+      config = self.class.load_with_rubygems_config_hash(File.read(filename))
+      if config.keys.any? {|k| k.to_s.gsub(%r{https?:\/\/}, "").include?(": ") }
         warn "Failed to load #{filename} because it doesn't contain valid YAML hash"
         return {}
+      else
+        return config
       end
-      return content
     rescue *yaml_errors => e
       warn "Failed to load #{filename}, #{e}"
     rescue Errno::EACCES
@@ -487,7 +483,7 @@ if you believe they were disclosed to a third party.
       yaml_hash[key.to_s] = value
     end
 
-    yaml_hash.to_yaml
+    self.class.dump_with_rubygems_yaml(yaml_hash)
   end
 
   # Writes out this config file, replacing its source.
@@ -521,6 +517,57 @@ if you believe they were disclosed to a third party.
 
   attr_reader :hash
   protected :hash
+
+  def self.dump_with_rubygems_yaml(content)
+    content.transform_keys! do |k|
+      k.is_a?(Symbol) ? ":#{k}" : k
+    end
+
+    require_relative "yaml_serializer"
+    Gem::YAMLSerializer.dump(content)
+  end
+
+  def self.load_with_rubygems_config_hash(yaml)
+    require_relative "yaml_serializer"
+
+    content = Gem::YAMLSerializer.load(yaml)
+
+    content.transform_keys! do |k|
+      if k.match?(/\A:(.*)\Z/)
+        k[1..-1].to_sym
+      elsif k.include?("__") || k.match?(%r{/\Z})
+        if k.is_a?(Symbol)
+          k.to_s.gsub(/__/,".").gsub(%r{/\Z}, "").to_sym
+        else
+          k.dup.gsub(/__/,".").gsub(%r{/\Z}, "")
+        end
+      else
+        k
+      end
+    end
+
+    content.transform_values! do |v|
+      if v.is_a?(String)
+        if v.match?(/\A:(.*)\Z/)
+          v[1..-1].to_sym
+        elsif v.match?(/\A[+-]?\d+\Z/)
+          v.to_i
+        elsif v.match?(/\Atrue|false\Z/)
+          v == "true"
+        elsif v.empty?
+          nil
+        else
+          v
+        end
+      elsif v.is_a?(Hash) && v.empty?
+        nil
+      else
+        v
+      end
+    end
+
+    content
+  end
 
   private
 

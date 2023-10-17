@@ -107,7 +107,11 @@ Specific fields in the specification can be extracted in YAML format:
 
     if local?
       if File.exist? gem
-        specs << Gem::Package.new(gem).spec rescue nil
+        begin
+          specs << Gem::Package.new(gem).spec
+        rescue StandardError
+          nil
+        end
       end
 
       if specs.empty?

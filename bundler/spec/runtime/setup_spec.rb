@@ -727,6 +727,27 @@ end
     R
 
     run <<-R
+      File.open(File.join(Gem.dir, "specifications", "broken-ext.gemspec"), "w") do |f|
+        f.write <<-RUBY
+# -*- encoding: utf-8 -*-
+# stub: broken-ext 1.0.0 ruby lib
+# stub: a.ext\\0b.ext
+
+Gem::Specification.new do |s|
+  s.name = "broken-ext"
+  s.version = "1.0.0"
+  raise "BROKEN GEMSPEC EXT"
+end
+        RUBY
+      end
+      # Need to write the gem.build_complete file,
+      # otherwise the full spec is loaded to check the installed_by_version
+      extensions_dir = Gem.default_ext_dir_for(Gem.dir) || File.join(Gem.dir, "extensions", Gem::Platform.local.to_s, Gem.extension_api_version)
+      Bundler::FileUtils.mkdir_p(File.join(extensions_dir, "broken-ext-1.0.0"))
+      File.open(File.join(extensions_dir, "broken-ext-1.0.0", "gem.build_complete"), "w") {}
+    R
+
+    run <<-R
       puts "WIN"
     R
 
@@ -1317,6 +1338,7 @@ end
         exempts = %w[did_you_mean bundler]
         exempts << "uri" if Gem.ruby_version >= Gem::Version.new("2.7")
         exempts << "pathname" if Gem.ruby_version >= Gem::Version.new("3.0")
+        exempts << "etc" if Gem.ruby_version < Gem::Version.new("3.2") && Gem.win_platform?
         exempts << "set" unless Gem.rubygems_version >= Gem::Version.new("3.2.6")
         exempts << "tsort" unless Gem.rubygems_version >= Gem::Version.new("3.2.31")
         exempts << "error_highlight" # added in Ruby 3.1 as a default gem
@@ -1325,7 +1347,7 @@ end
         exempts
       end
 
-      let(:activation_warning_hack) { strip_whitespace(<<-RUBY) }
+      let(:activation_warning_hack) { <<~RUBY }
         require #{spec_dir.join("support/hax").to_s.dump}
 
         Gem::Specification.send(:alias_method, :bundler_spec_activate, :activate)
@@ -1345,7 +1367,7 @@ end
         "-r#{bundled_app("activation_warning_hack.rb")} #{ENV["RUBYOPT"]}"
       end
 
-      let(:code) { strip_whitespace(<<-RUBY) }
+      let(:code) { <<~RUBY }
         require "pp"
         loaded_specs = Gem.loaded_specs.dup
         #{exemptions.inspect}.each {|s| loaded_specs.delete(s) }

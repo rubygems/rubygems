@@ -302,7 +302,12 @@ bundler/lib/bundler/vendor/thor/lib/thor/runner.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/basic.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/color.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/column_printer.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/html.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/lcs_diff.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/table_printer.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/terminal.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/wrapped_printer.rb
 bundler/lib/bundler/vendor/thor/lib/thor/util.rb
 bundler/lib/bundler/vendor/thor/lib/thor/version.rb
 bundler/lib/bundler/vendor/tsort/LICENSE.txt

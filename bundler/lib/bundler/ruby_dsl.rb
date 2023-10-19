@@ -21,6 +21,10 @@ module Bundler
       @ruby_version = RubyVersion.new(ruby_version, options[:patchlevel], options[:engine], options[:engine_version])
     end
 
+    def ruby_version_file
+      File.read(".ruby-version").chomp
+    end
+
     # Support the various file formats found in .ruby-version files.
     #
     #     3.2.2

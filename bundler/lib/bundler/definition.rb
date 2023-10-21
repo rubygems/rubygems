@@ -657,8 +657,7 @@ module Bundler
       locked_index = Index.new
       locked_index.use(@locked_specs.select {|s| source.can_lock?(s) })
 
-      # order here matters, since Index#== is checking source.specs.include?(locked_index)
-      locked_index != source.specs
+      !locked_index.subset?(source.specs)
     rescue PathError, GitError => e
       Bundler.ui.debug "Assuming that #{source} has not changed since fetching its specs errored (#{e})"
       false
@@ -750,6 +749,11 @@ module Bundler
       changes = sources.replace_sources!(@locked_sources)
 
       sources.all_sources.each do |source|
+        # has to be done separately, because we want to keep the locked checksum
+        # store for a source, even when doing a full update
+        if @locked_gems && locked_source = @locked_gems.sources.find {|s| s == source && !s.equal?(source) }
+          source.checksum_store.merge!(locked_source.checksum_store)
+        end
         # If the source is unlockable and the current command allows an unlock of
         # the source (for example, you are doing a `bundle update <foo>` of a git-pinned
         # gem), unlock it. For git sources, this means to unlock the revision, which

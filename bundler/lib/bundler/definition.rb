@@ -14,6 +14,7 @@ module Bundler
     attr_reader(
       :dependencies,
       :locked_deps,
+      :plugins,
       :locked_gems,
       :platforms,
       :ruby_version,
@@ -55,7 +56,17 @@ module Bundler
     #   to be updated or true if all gems should be updated
     # @param ruby_version [Bundler::RubyVersion, nil] Requested Ruby Version
     # @param optional_groups [Array(String)] A list of optional groups
-    def initialize(lockfile, dependencies, sources, unlock, ruby_version = nil, optional_groups = [], gemfiles = [])
+    # @param lockfile_contents [String, nil] The contents of the lockfile
+    # @param plugins [Array(Bundler::Dependency)] array of plugin dependencies from Gemfile
+    def initialize(lockfile,
+      dependencies,
+      sources,
+      unlock,
+      ruby_version = nil,
+      optional_groups = [],
+      gemfiles = [],
+      lockfile_contents = nil,
+      plugins = [])
       if [true, false].include?(unlock)
         @unlocking_bundler = false
         @unlocking = unlock
@@ -65,6 +76,7 @@ module Bundler
       end
 
       @dependencies    = dependencies
+      @plugins         = plugins
       @sources         = sources
       @unlock          = unlock
       @optional_groups = optional_groups
@@ -75,7 +87,6 @@ module Bundler
       @gemfiles        = gemfiles
 
       @lockfile               = lockfile
-      @lockfile_contents      = String.new
 
       @locked_bundler_version = nil
       @resolved_bundler_version = nil
@@ -84,8 +95,8 @@ module Bundler
       @new_platform = nil
       @removed_platform = nil
 
-      if lockfile && File.exist?(lockfile)
-        @lockfile_contents = Bundler.read_file(lockfile)
+      if lockfile && File.exist?(lockfile) || lockfile_contents
+        @lockfile_contents = lockfile_contents || Bundler.read_file(lockfile)
         @locked_gems = LockfileParser.new(@lockfile_contents)
         @locked_platforms = @locked_gems.platforms
         @platforms = @locked_platforms.dup
@@ -104,6 +115,7 @@ module Bundler
           @locked_sources = []
         end
       else
+        @lockfile_contents = String.new
         @unlock         = {}
         @platforms      = []
         @locked_gems    = nil
@@ -236,8 +248,16 @@ module Bundler
       dependencies_for(requested_groups)
     end
 
+    def requested_plugins
+      plugins_for(requested_groups)
+    end
+
     def current_dependencies
       filter_relevant(dependencies)
+    end
+
+    def current_plugins
+      filter_relevant(plugins)
     end
 
     def current_locked_dependencies
@@ -275,6 +295,13 @@ module Bundler
       end
     end
 
+    def plugins_for(groups)
+      groups.map!(&:to_sym)
+      current_plugins.reject do |d|
+        (d.groups & groups).empty?
+      end
+    end
+
     # Resolve all the dependencies specified in Gemfile. It ensures that
     # dependencies that have been already resolved via locked file and are fresh
     # are reused when resolving dependencies
@@ -307,7 +334,7 @@ module Bundler
     end
 
     def groups
-      dependencies.map(&:groups).flatten.uniq
+      (dependencies + plugins).map(&:groups).flatten.uniq
     end
 
     def lock(file, preserve_unknown_sections = false)
@@ -421,6 +448,7 @@ module Bundler
     def validate_runtime!
       validate_ruby!
       validate_platforms!
+      validate_plugins!
     end
 
     def validate_ruby!
@@ -454,6 +482,18 @@ module Bundler
       raise ProductionError, "Your bundle only supports platforms #{@platforms.map(&:to_s)} " \
         "but your local platform is #{local_platform}. " \
         "Add the current platform to the lockfile with\n`bundle lock --add-platform #{local_platform}` and try again."
+    end
+
+    def validate_plugins!
+      missing_plugins_list = []
+      requested_plugins.each do |plugin|
+        missing_plugins_list << plugin unless Plugin.installed?(plugin.name)
+      end
+      if missing_plugins_list.size > 1
+        raise GemNotFound, "Plugins #{missing_plugins_list.join(", ")} are not installed"
+      elsif missing_plugins_list.any?
+        raise GemNotFound, "Plugin #{missing_plugins_list.join(", ")} is not installed"
+      end
     end
 
     def add_platform(platform)

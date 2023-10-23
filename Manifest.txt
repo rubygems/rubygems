@@ -159,6 +159,7 @@ bundler/lib/bundler/plugin/api/source.rb
 bundler/lib/bundler/plugin/dsl.rb
 bundler/lib/bundler/plugin/events.rb
 bundler/lib/bundler/plugin/index.rb
+bundler/lib/bundler/plugin/index_definition.rb
 bundler/lib/bundler/plugin/installer.rb
 bundler/lib/bundler/plugin/installer/git.rb
 bundler/lib/bundler/plugin/installer/rubygems.rb

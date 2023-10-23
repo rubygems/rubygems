@@ -4,10 +4,11 @@ require_relative "plugin/api"
 
 module Bundler
   module Plugin
-    autoload :DSL,        File.expand_path("plugin/dsl", __dir__)
-    autoload :Events,     File.expand_path("plugin/events", __dir__)
-    autoload :Index,      File.expand_path("plugin/index", __dir__)
-    autoload :Installer,  File.expand_path("plugin/installer", __dir__)
+    autoload :DSL, File.expand_path("plugin/dsl", __dir__)
+    autoload :Events, File.expand_path("plugin/events", __dir__)
+    autoload :Index, File.expand_path("plugin/index", __dir__)
+    autoload :IndexDefinition, File.expand_path("plugin/index_definition", __dir__)
+    autoload :Installer, File.expand_path("plugin/installer", __dir__)
     autoload :SourceList, File.expand_path("plugin/source_list", __dir__)
 
     class MalformattedPlugin < PluginError; end
@@ -26,6 +27,7 @@ module Bundler
       @commands = {}
       @hooks_by_event = Hash.new {|h, k| h[k] = [] }
       @loaded_plugin_names = []
+      @index = nil
     end
 
     reset!
@@ -99,7 +101,7 @@ module Bundler
     #
     # @param [Pathname] gemfile path
     # @param [Proc] block that can be evaluated for (inline) Gemfile
-    def gemfile_install(gemfile = nil, &inline)
+    def gemfile_install(gemfile = nil, unlock: false, &inline)
       Bundler.settings.temporary(:frozen => false, :deployment => false) do
         builder = DSL.new
         if block_given?
@@ -107,13 +109,17 @@ module Bundler
         else
           builder.eval_gemfile(gemfile)
         end
-        builder.check_primary_source_safety
-        definition = builder.to_definition(nil, true)
 
-        return if definition.dependencies.empty?
+        return if builder.dependencies.empty?
 
-        plugins = definition.dependencies.map(&:name).reject {|p| index.installed? p }
-        installed_specs = Installer.new.install_definition(definition)
+        lockfile_contents = index.generate_lockfile(builder.instance_variable_get(:@sources), builder.dependencies)
+        definition = builder.to_definition(nil, unlock || {}, :lockfile_contents => lockfile_contents)
+        unless definition.no_resolve_needed?
+          Installer.new.install_definition(definition)
+        end
+
+        plugins = definition.requested_dependencies.select(&:should_include?).map(&:name)
+        installed_specs = plugins.to_h {|p| [p, definition.specs[p].first] }
 
         save_plugins plugins, installed_specs, builder.inferred_plugins
       end
@@ -232,11 +238,11 @@ module Bundler
       @hooks_by_event[event].each {|blk| blk.call(*args, &arg_blk) }
     end
 
-    # currently only intended for specs
-    #
     # @return [String, nil] installed path
     def installed?(plugin)
-      Index.new.installed?(plugin)
+      (path = index.installed?(plugin)) &&
+        index.plugin_path(plugin).join(PLUGIN_FILE_NAME).file? &&
+        path
     end
 
     # Post installation processing and registering with index
@@ -247,8 +253,6 @@ module Bundler
     # @param [Array<String>] names of inferred source plugins that can be ignored
     def save_plugins(plugins, specs, optional_plugins = [])
       plugins.each do |name|
-        next if index.installed?(name)
-
         spec = specs[name]
 
         save_plugin(name, spec, optional_plugins.include?(name))
@@ -295,6 +299,8 @@ module Bundler
       commands = @commands
       sources = @sources
       hooks = @hooks_by_event
+
+      return false if index.installed?(name) == spec.full_gem_path
 
       @commands = {}
       @sources = {}

@@ -28,6 +28,7 @@ module Bundler
       @sources              = SourceList.new
       @git_sources          = {}
       @dependencies         = []
+      @plugins              = []
       @groups               = []
       @install_conditionals = []
       @optional_groups      = []
@@ -96,7 +97,7 @@ module Bundler
       options["gemfile"] = @gemfile
       version = args || [">= 0"]
 
-      normalize_options(name, version, options)
+      normalize_options(name, version, true, options)
 
       dep = Dependency.new(name, version, options)
 
@@ -213,9 +214,9 @@ module Bundler
       with_source(git_source) { yield }
     end
 
-    def to_definition(lockfile, unlock)
+    def to_definition(lockfile, unlock, lockfile_contents: nil)
       check_primary_source_safety
-      Definition.new(lockfile, @dependencies, @sources, unlock, @ruby_version, @optional_groups, @gemfiles)
+      Definition.new(lockfile, @dependencies, @sources, unlock, @ruby_version, @optional_groups, @gemfiles, lockfile_contents, @plugins)
     end
 
     def group(*args, &blk)
@@ -257,8 +258,29 @@ module Bundler
       @env = old
     end
 
-    def plugin(*args)
-      # Pass on
+    def plugin(name, *args)
+      options = args.last.is_a?(Hash) ? args.pop.dup : {}
+      options["gemfile"] = @gemfile
+      version = args || [">= 0"]
+
+      # We don't care to add sources for plugins in this pass over the gemfile
+      # since we're not actually installing plugins here (they should already
+      # be installed), just keeping track of them so that we can verify they
+      # are actually installed. This is important because otherwise sources
+      # unique to the plugin (like a git source) would end up in the lockfile,
+      # which we don't want.
+      normalize_options(name, version, false, options)
+
+      dep = Dependency.new(name, version, options)
+
+      # if there's already a dependency with this name we try to prefer one
+      if current = @plugins.find {|d| d.name == dep.name }
+        Bundler.ui.warn "Your Gemfile lists the plugin #{current.name} (#{current.requirement}) more than once.\n" \
+                        "You should keep only one of them.\n" \
+                        "Remove any duplicate entries and specify the plugin only once."
+      end
+
+      @plugins << dep
     end
 
     def method_missing(name, *args)
@@ -320,7 +342,7 @@ module Bundler
       @valid_keys ||= VALID_KEYS
     end
 
-    def normalize_options(name, version, opts)
+    def normalize_options(name, version, add_to_sources, opts)
       if name.is_a?(Symbol)
         raise GemfileError, %(You need to specify gem names as Strings. Use 'gem "#{name}"' instead)
       end
@@ -355,7 +377,7 @@ module Bundler
       end
 
       # Save sources passed in a key
-      if opts.key?("source")
+      if opts.key?("source") && add_to_sources
         source = normalize_source(opts["source"])
         opts["source"] = @sources.add_rubygems_source("remotes" => source)
       end
@@ -376,8 +398,10 @@ module Bundler
         else
           options = opts.dup
         end
-        source = send(type, param, options) {}
-        opts["source"] = source
+        if add_to_sources
+          source = send(type, param, options) {}
+          opts["source"] = source
+        end
       end
 
       opts["source"]         ||= @source

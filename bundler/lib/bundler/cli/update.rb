@@ -15,8 +15,6 @@ module Bundler
 
       Bundler.self_manager.update_bundler_and_restart_with_it_if_needed(update_bundler) if update_bundler
 
-      Plugin.gemfile_install(Bundler.default_gemfile) if Bundler.feature_flag.plugins?
-
       sources = Array(options[:source])
       groups  = Array(options[:group]).map(&:to_sym)
 
@@ -32,6 +30,8 @@ module Bundler
       end
 
       conservative = options[:conservative]
+
+      Plugin.gemfile_install(Bundler.default_gemfile, :unlock => full_update && !conservative) if Bundler.feature_flag.plugins?
 
       if full_update
         if conservative

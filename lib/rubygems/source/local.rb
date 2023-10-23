@@ -42,10 +42,11 @@ class Gem::Source::Local < Gem::Source
 
       Dir["*.gem"].each do |file|
         pkg = Gem::Package.new(file)
+        spec = pkg.spec
       rescue SystemCallError, Gem::Package::FormatError
       # ignore
       else
-        tup = pkg.spec.name_tuple
+        tup = spec.name_tuple
         @specs[tup] = [File.expand_path(file), pkg]
 
         case type

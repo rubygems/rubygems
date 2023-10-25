@@ -446,6 +446,10 @@ class TestGemRequire < Gem::TestCase
     omit "this test can't work under ruby-core setup" if ruby_repo?
 
     cmd = <<-RUBY
+      Gem::Specification.reset
+      Gem.instance_variable_set(:@default_specifications_dir, "#{util_system_default_specifications_dir}")
+      Gem::Specification.load_defaults
+
       $stderr = $stdout
       require "json"
       puts Gem.loaded_specs["json"]
@@ -463,6 +467,10 @@ class TestGemRequire < Gem::TestCase
 
     path = "#{@tempdir}/test_realworld_upgraded_default_gem.rb"
     code = <<-RUBY
+      Gem::Specification.reset
+      Gem.instance_variable_set(:@default_specifications_dir, "#{util_system_default_specifications_dir}")
+      Gem::Specification.load_defaults
+
       $stderr = $stdout
       require "json"
       puts Gem.loaded_specs["json"].version
@@ -730,5 +738,14 @@ class TestGemRequire < Gem::TestCase
     File.open(a_rb, "w") {|f| f.write "# #{name}.rb" }
 
     dash_i_lib_arg
+  end
+
+  def util_system_default_specifications_dir
+    cmd = <<-RUBY
+      $stderr = $stdout
+      puts Gem.default_specifications_dir
+    RUBY
+
+    Gem::Util.popen(Gem.ruby, "-e", cmd).strip
   end
 end

@@ -167,6 +167,22 @@ class Gem::InstallerTestCase < Gem::TestCase
   end
 
   ##
+  # Creates the following instance variables:
+  #
+  # @spec::
+  #   a spec named 'a', intended for default gem installs
+  #
+  # @gem::
+  #   the path to a built gem from @spec
+  #
+  # And returns a Gem::Installer for the @spec that installs into @default_dir
+
+  def setup_default_installer
+    @gem = setup_base_gem
+    Gem::Installer.at @gem, :install_as_default => true
+  end
+
+  ##
   # Sets up the base @gem, builds it and returns an installer for it.
   #
   def util_setup_installer(&block)

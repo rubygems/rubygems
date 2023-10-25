@@ -1942,7 +1942,7 @@ dependencies: []
 
     @a1.instance_variable_set :@loaded_from, default_dir
 
-    assert_equal Gem.default_dir, @a1.base_dir
+    assert_equal Gem.default_gems_dir, @a1.base_dir
   end
 
   def test_lib_files
@@ -3844,7 +3844,7 @@ end
 
     default_gem_spec = new_default_spec("default", "2.0.0.0",
                                         nil, "default/gem.rb")
-    spec_path = File.join(@gemhome, "specifications", "default", default_gem_spec.spec_name)
+    spec_path = File.join(@defaultgemhome, "specifications", default_gem_spec.spec_name)
     write_file(spec_path) do |file|
       file.print(default_gem_spec.to_ruby)
     end

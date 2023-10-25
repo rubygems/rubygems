@@ -157,7 +157,7 @@ module Gem
 
   REPOSITORY_DEFAULT_GEM_SUBDIRECTORIES = %w[
     gems
-    specifications/default
+    specifications
   ].freeze
 
   @@win_platform = nil

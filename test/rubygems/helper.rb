@@ -313,7 +313,8 @@ class Gem::TestCase < Test::Unit::TestCase
     Gem::ConfigFile.send :const_set, :SYSTEM_WIDE_CONFIG_FILE,
                          File.join(@tempdir, "system-gemrc")
 
-    @gemhome  = File.join @tempdir, "gemhome"
+    @gemhome = File.join @tempdir, "gemhome"
+    @defaultgemhome = File.join @tempdir, "defaultgemhome"
     @userhome = File.join @tempdir, "userhome"
     @statehome = File.join @tempdir, "statehome"
     ENV["GEM_SPEC_CACHE"] = File.join @tempdir, "spec_cache"
@@ -327,7 +328,7 @@ class Gem::TestCase < Test::Unit::TestCase
     @git = ENV["GIT"] || "git#{RbConfig::CONFIG["EXEEXT"]}"
 
     Gem.ensure_gem_subdirectories @gemhome
-    Gem.ensure_default_gem_subdirectories @gemhome
+    Gem.ensure_default_gem_subdirectories @defaultgemhome
 
     @orig_load_path = $LOAD_PATH.dup
     $LOAD_PATH.map! do |s|
@@ -370,6 +371,7 @@ class Gem::TestCase < Test::Unit::TestCase
       RbConfig::CONFIG["default_gem_home"] = @gemhome
     else
       Gem.instance_variable_set(:@default_dir, @gemhome)
+      Gem.instance_variable_set(:@default_gems_dir, @defaultgemhome)
     end
 
     @orig_bindir = RbConfig::CONFIG["bindir"]
@@ -461,6 +463,7 @@ class Gem::TestCase < Test::Unit::TestCase
       RbConfig::CONFIG["default_gem_home"] = @orig_default_gem_home
     else
       Gem.instance_variable_set :@default_dir, nil
+      Gem.instance_variable_set :@default_gems_dir, nil
     end
 
     Gem::Specification.unresolved_deps.clear
@@ -757,13 +760,13 @@ class Gem::TestCase < Test::Unit::TestCase
   end
 
   ##
-  # Removes all installed gems from +@gemhome+.
+  # Removes all installed gems from specified +gemhome+.
 
-  def util_clear_gems
-    FileUtils.rm_rf File.join(@gemhome, "gems")
-    FileUtils.mkdir File.join(@gemhome, "gems")
-    FileUtils.rm_rf File.join(@gemhome, "specifications")
-    FileUtils.mkdir File.join(@gemhome, "specifications")
+  def util_clear_gems(gemhome = @gemhome)
+    FileUtils.rm_rf File.join(gemhome, "gems")
+    FileUtils.mkdir File.join(gemhome, "gems")
+    FileUtils.rm_rf File.join(gemhome, "specifications")
+    FileUtils.mkdir File.join(gemhome, "specifications")
     Gem::Specification.reset
   end
 
@@ -800,7 +803,7 @@ class Gem::TestCase < Test::Unit::TestCase
   def new_default_spec(name, version, deps = nil, *files)
     spec = util_spec name, version, deps
 
-    spec.loaded_from = File.join(@gemhome, "specifications", "default", spec.spec_name)
+    spec.loaded_from = File.join(@defaultgemhome, "specifications", spec.spec_name)
     spec.files = files
 
     lib_dir = File.join(@tempdir, "default_gems", "lib")

@@ -825,7 +825,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Returns a Gem::StubSpecification for default gems
 
   def self.default_stubs(pattern = "*.gemspec")
-    base_dir = Gem.default_dir
+    base_dir = Gem.default_gems_dir
     gems_dir = File.join base_dir, "gems"
     gemspec_stubs_in(Gem.default_specifications_dir, pattern) do |path|
       Gem::StubSpecification.default_gemspec_stub(path, base_dir, gems_dir)
@@ -2100,11 +2100,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   def base_dir
     return Gem.dir unless loaded_from
-    @base_dir ||= if default_gem?
-      File.dirname File.dirname File.dirname loaded_from
-    else
-      File.dirname File.dirname loaded_from
-    end
+    @base_dir ||= File.dirname File.dirname loaded_from
   end
 
   ##

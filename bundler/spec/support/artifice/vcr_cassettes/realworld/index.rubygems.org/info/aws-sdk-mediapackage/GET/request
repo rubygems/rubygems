@@ -1,7 +1,0 @@
-> GET /info/aws-sdk-mediapackage
-> accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-> accept: */*
-> user-agent: bundler/3.0.0 rubygems/3.1.6 ruby/2.7.7 (x86_64-pc-linux) command/lock options/ dbea14278e71a98b
-> connection: keep-alive
-> keep-alive: 30
-> host: index.rubygems.org

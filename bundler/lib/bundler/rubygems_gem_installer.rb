@@ -45,6 +45,14 @@ module Bundler
       spec
     end
 
+    def pre_install_checks
+      super && validate_bundler_checksum(options[:bundler_expected_checksum])
+    rescue Gem::FilePermissionError
+      # Ignore permission checks in RubyGems. Instead, go on, and try to write
+      # for real. We properly handle permission errors when they happen.
+      nil
+    end
+
     def generate_plugins
       return unless Gem::Installer.instance_methods(false).include?(:generate_plugins)
 
@@ -58,10 +66,6 @@ module Bundler
       else
         regenerate_plugins_for(spec, @plugins_dir)
       end
-    end
-
-    def pre_install_checks
-      super && validate_bundler_checksum(options[:bundler_expected_checksum])
     end
 
     def build_extensions

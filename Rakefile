@@ -561,8 +561,19 @@ task :update_licenses_branch => :update_licenses do
     file, mtime = license_last_update
     date = mtime.strftime("%Y-%m-%d")
     branch_name = "license-list-#{date}"
-    system(*%w[git checkout -b], branch_name, exception: true)
-    system(*%w[git commit -m], "Update SPDX license list as of #{date}", *file, exception: true)
+
+    require "open3"
+    stdout, stderr, status = Open3.capture3(*%w[git ls-remote --heads origin], "refs/heads/#{branch_name}")
+    raise stderr unless status.success?
+
+    if stdout.empty?
+      system(*%w[git checkout -b], branch_name, exception: true)
+      system(*%w[git commit -m], "Update SPDX license list as of #{date}", *file, exception: true)
+    else
+      puts "A license update PR already exists"
+    end
+  else
+    puts "Licenses are in sync"
   end
 end
 

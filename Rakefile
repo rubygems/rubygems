@@ -572,6 +572,8 @@ task :update_licenses_branch => :update_licenses do
     else
       puts "A license update PR already exists"
     end
+  else
+    puts "Licenses are in sync"
   end
 end
 

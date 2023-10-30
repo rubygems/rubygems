@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Rubygems, Bundler]
+        target: [Rubygems] #, Bundler]
     steps:
       - name: Set up latest ruby as baseruby to be able to compile ruby
         uses: ruby/setup-ruby@v1

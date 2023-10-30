@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "rack", "2.0.8"
+gem "rack", "~> 2.0"
 gem "webrick", "1.7.0"
 gem "rack-test", "~> 1.1"
 gem "artifice", "~> 0.6.0"

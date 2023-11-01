@@ -244,6 +244,7 @@ module Bundler
       [::Kernel.singleton_class, ::Kernel].each do |kernel_class|
         kernel_class.send(:alias_method, :no_warning_require, :require)
         kernel_class.send(:define_method, :require) do |name|
+          name = File.path(name)
           if message = ::Gem::BUNDLED_GEMS.warning?(name, specs: specs) # rubocop:disable Style/HashSyntax
             warn message, :uplevel => 1
           end

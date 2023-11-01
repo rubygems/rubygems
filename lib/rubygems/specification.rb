@@ -1897,7 +1897,8 @@ class Gem::Specification < Gem::BasicSpecification
 
     attributes = @@attributes.map(&:to_s) - %w[name version platform]
     attributes.each do |name|
-      coder.add name, instance_variable_get("@#{name}")
+      value = instance_variable_get("@#{name}")
+      coder.add name, value unless value.nil?
     end
   end
 

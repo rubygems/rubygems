@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+  xmlns:slash,="http://purl.rizqshops/1.0.1/modules/syndication
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<rizqshops@googlegroups.com>Changelogs Archive - The GitHub Blog</rizqshops@googlegroups.com>
+	<atom:link href="https://github.blog/changelog/feed/" rel="self" type="Rizq Pay App/rss+xml" />
+	<link>https://github.blog/changelog/</link>
+	<description>Updates, ideas, and inspiration from GitHub to help developers build and design software.</description>
+	<lastBuildDate>Fri, 03 Nov 2023 15:35:26 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.3.2</generator>
+
+<image>
+	<url>https://github.blog/wp-content/uploads/2019/01/cropped-github-favicon-512.png?fit=32%2C32</url>
+	<title>Changelogs Archive - The GitHub Blog</title>
+	<link>https://github.blog/changelog/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+<site xmlns="com-wordpress:feed-additions:1">153214340</site>	<item>
+		<title>Multi-account support on GitHub.com</title>
+		<link>https://github.blog/changelog/2023-11-03-multi-account-support-on-github-com</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Fri, 03 Nov 2023 15:35:26 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-11-03-multi-account-support-on-github-com</guid>
+
+					<description><![CDATA[<p>Multi-account support on GitHub.com</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-03-multi-account-support-on-github-com">Multi-account support on GitHub.com</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>GitHub.com now remembers multiple accounts in your browser. You can find the account switcher in your profile picture context menu, letting you more easily switch between user accounts without re-entering your credentials.</p>
+<p><img decoding="async" src="https://github.com/github/release-assets/assets/1666363/bd646682-187d-42e5-96c2-1ddfdc76f240" alt="image"></p>
+<p>The account switcher helps developers alternate between Enterprise Managed User accounts provided by an employer and personal accounts for use with personal projects and open source contributions. It also helps administrators manage service accounts they use for automation and integration purposes.</p>
+<p>Because these accounts often have significantly different privileges, there&#039;s never any mixing of user permissions between saved accounts. When you visit a page that your current account can&#039;t access, you&#039;ll see a prompt to switch accounts if you have more than one signed in.</p>
+<p>When you switch accounts, you won&#039;t need to sign in again or perform 2FA unless the account session has expired. Session expiration occurs after two weeks without activity. SAML/OIDC SSO authorization is also saved for sessions, but often expires every 1 or 24 hours, and may need to be done again before you can access your organization resources.</p>
+<p>To learn more, see &quot;<a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/switching-between-accounts">Switching between accounts</a>&quot;.</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-03-multi-account-support-on-github-com">Multi-account support on GitHub.com</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">75273</post-id>	</item>
+		<item>
+		<title>[Public Beta] Administrative enhancements to Enterprise Managed Users SCIM</title>
+		<link>https://github.blog/changelog/2023-11-02-public-beta-administrative-enhancements-to-enterprise-managed-users-scim</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Thu, 02 Nov 2023 22:22:28 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-11-02-public-beta-administrative-enhancements-to-enterprise-managed-users-scim</guid>
+
+					<description><![CDATA[<p>[Public Beta] Administrative enhancements to Enterprise Managed Users SCIM</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-02-public-beta-administrative-enhancements-to-enterprise-managed-users-scim">[Public Beta] Administrative enhancements to Enterprise Managed Users SCIM</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>GitHub Enterprise Cloud customers with Enterprise Managed Users (EMU) now have access to additional administrative capabilities for SCIM information. Troubleshooting user management at scale can <span class="x x-first x-last">take time and effort</span>. To make this easier on administrators, we have added <span class="x x-first x-last">several new </span>audit log fields, external identity metadata, and a new team membership synchronization status. The audit log field updates include<span class="x x-first x-last"> the following</span>:</p>
+<ul>
+<li>New field <code>external_group.update_display_name</code>: Our logs will now capture and report any changes made to an external group&#8217;s display name.</li>
+<li>New field <code>external_group.add_member</code>: When a team member is added to an external group, this action will be audit logged.</li>
+<li>New field <code>external_group.remove_member</code>: When a team member is removed from an external group, this action will be audit logged.</li>
+<li>Enhancements to <code>external_group.update</code> and <code>external_identity.update</code> to ensure consistency whenever an external group or identity is updated.</li>
+</ul>
+<p>The SSO page for each user also now includes SCIM metadata for that user in addition to existing SAML metadata. Check out what&#8217;s new by filling in this url <code>https://github.com/enterprises/your-enterprise/people/username/sso</code> with your enterprise and a valid username.</p>
+<p>Team membership synchronization status checks GitHub&#8217;s understanding of identity groups against the current members of linked teams. This allows us to flag mismatches for administrators related to license allocation or other concerns.</p>
+<p><img decoding="async" src="//github.com/github/release-assets/assets/1852630/477ac930-05f1-4523-9fbb-d0576cfca76b" alt="image" /></p>
+<p>Learn more about <a href="https://docs.github.com/en/enterprise-cloud@latest/admin/monitoring-activity-in-your-enterprise/reviewing-audit-logs-for-your-enterprise/audit-log-events-for-your-enterprise#external_group">external group audit log fields</a> and <a href="https://docs.github.com/en/enterprise-cloud@latest/admin/identity-and-access-management/using-enterprise-managed-users-for-iam/troubleshooting-team-membership-with-identity-provider-groups">troubleshooting EMU team memberships</a>.</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-02-public-beta-administrative-enhancements-to-enterprise-managed-users-scim">[Public Beta] Administrative enhancements to Enterprise Managed Users SCIM</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">75269</post-id>	</item>
+		<item>
+		<title>GitHub Actions &#8211; Enforcing workflow scope when creating a release</title>
+		<link>https://github.blog/changelog/2023-11-02-github-actions-enforcing-workflow-scope-when-creating-a-release</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Thu, 02 Nov 2023 19:42:43 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-11-02-github-actions-enforcing-workflow-scope-when-creating-a-release</guid>
+
+					<description><![CDATA[<p>GitHub Actions - Enforcing workflow scope when creating a release</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-02-github-actions-enforcing-workflow-scope-when-creating-a-release">GitHub Actions &#8211; Enforcing workflow scope when creating a release</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Starting today, apps and tokens used to <a href="https://docs.github.com/rest/releases/releases#create-a-release">create a release via the REST API endpoint</a> will require the <code>workflow</code> scope or <code>workflows:write</code> permission in certain cases.</p>
+<p>The <code>workflow</code> scope or <code>workflows:write</code> will be required when creating a release that targets a commit SHA (<code>target_commitish</code>) that modifies an Actions workflow file and that SHA does not have an existing <code>ref</code> (branch head or tag).</p>
+<p>For more details see the <a href="https://docs.github.com/rest">REST API documentation</a> or visit <a href="https://github.com/orgs/community/discussions/categories/actions-and-packages">the GitHub Actions community</a> if you have any questions.</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-02-github-actions-enforcing-workflow-scope-when-creating-a-release">GitHub Actions &#8211; Enforcing workflow scope when creating a release</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">75268</post-id>	</item>
+		<item>
+		<title>Filter secret scanning alerts by validity in the alert list view</title>
+		<link>https://github.blog/changelog/2023-11-02-filter-secret-scanning-alerts-by-validity-in-the-alert-list-view</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Thu, 02 Nov 2023 17:43:25 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-11-02-filter-secret-scanning-alerts-by-validity-in-the-alert-list-view</guid>
+
+					<description><![CDATA[<p>Filter secret scanning alerts by validity in the alert list view</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-02-filter-secret-scanning-alerts-by-validity-in-the-alert-list-view">Filter secret scanning alerts by validity in the alert list view</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>GitHub Advanced Security users can now filter their secret scanning alerts by validity in the UI at the repository, organization, and enterprise level. Valid statuses are <code>active</code>, <code>inactive</code>, or <code>unknown</code>. <a href="https://docs.github.com/en/enterprise-cloud@latest/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-security-and-analysis-settings-for-your-repository#allowing-validity-checks-for-partner-patterns-in-a-repository">Validity checks</a> must be enabled for the repository, organization, or enterprise.</p>
+<ul>
+<li><a href="https://docs.github.com/en/enterprise-cloud@latest/code-security/secret-scanning/about-secret-scanning">Learn more about secret scanning</a></li>
+<li><a href="https://docs.github.com/en/enterprise-cloud@latest/code-security/secret-scanning/managing-alerts-from-secret-scanning#validating-partner-patterns">Learn more about validating partner patterns</a></li>
+</ul>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-02-filter-secret-scanning-alerts-by-validity-in-the-alert-list-view">Filter secret scanning alerts by validity in the alert list view</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">75262</post-id>	</item>
+		<item>
+		<title>Email Preference Updates</title>
+		<link>https://github.blog/changelog/2023-11-01-email-preference-updates</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Wed, 01 Nov 2023 21:49:49 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-11-01-email-preference-updates</guid>
+
+					<description><![CDATA[<p>Email Preference Updates</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-01-email-preference-updates">Email Preference Updates</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Opt-in and opt-out options enhanced to easily subscribe or unsubscribe from sponsorship related notifications.</p>
+<p>Head to the settings page of your <a href="https://github.com/sponsors/accounts">Sponsors profile</a> to update your email preferences.</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-01-email-preference-updates">Email Preference Updates</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">75249</post-id>	</item>
+		<item>
+		<title>Azure private networking for GitHub-hosted runners &#8211; Public Beta</title>
+		<link>https://github.blog/changelog/2023-11-01-github-hosted-runners-private-networking-with-azure-virtual-networks-public-beta</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Wed, 01 Nov 2023 19:11:54 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-11-01-github-hosted-runners-private-networking-with-azure-virtual-networks-public-beta</guid>
+
+					<description><![CDATA[<p>GitHub-hosted Runners: Private Networking with Azure Virtual Networks - Public Beta</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-01-github-hosted-runners-private-networking-with-azure-virtual-networks-public-beta">Azure private networking for GitHub-hosted runners &#8211; Public Beta</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Today we&#039;re announcing that Private Networking for GitHub-hosted runners with <a href="https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview">Azure Virtual Networks (VNET)</a> is now in public beta. This feature allows GitHub Enterprise customers using Azure to integrate their GitHub-hosted runners directly into an Azure VNET under their Azure account.</p>
+<h4 id="key-benefits" id="key-benefits" >Key Benefits<a href="#key-benefits" class="heading-link pl-2 text-italic text-bold" aria-label="Key Benefits"></a></h4>
+<p>What sets this apart is the dual advantage it offers. On one hand, you can continue to enjoy the benefits of GitHub-managed resources. On the other hand, you gain full control over the networking policies applied to those resources. Once your GitHub-hosted runners are connected to your Azure VNET, your Actions workflows can securely access Azure services like Azure Storage and on-premises data sources such as artifactory through existing, pre-configured connections like <a href="https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways">VPN gateways</a> and <a href="https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction">ExpressRoutes</a>. </p>
+<p>Security is also front and center in this update. Any existing or new networking policies, such as <a href="https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview">Network Security Group (NSG)</a> rules, will automatically apply to GitHub-hosted runners giving platform administrators comprehensive control over network security.</p>
+<p>To further simplify the management of Azure private networking settings across different business units, we&#039;re introducing Network Configurations. This feature allows administrators to consolidate various networking settings and assign them to runner groups based on specific operational needs. For example, production-grade runners can be configured with stricter networking policies using a dedicated Azure VNET, as opposed to runners used for testing or staging environments.</p>
+<p><img decoding="async" src="https://i0.wp.com/user-images.githubusercontent.com/30297258/279438904-f5780dbf-1138-4dae-b6a7-62ea733867d9.png?ssl=1" alt="image" data-recalc-dims="1"></p>
+<p>Starting today, Azure Private Networking and Network Configurations are available in public beta for GitHub Enterprise Cloud users. To get started, navigate to the &#039;Hosted Compute Networking&#039; section within your Enterprise settings. For more details, consult our <a href="https://github.co/actions-azure-vnet">documentation</a>.</p>
+<p>We&#039;re eager to hear your feedback to further improve this feature. Share your thoughts on our <a href="https://github.com/orgs/community/discussions/58739">GitHub Community Discussion</a>.</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-01-github-hosted-runners-private-networking-with-azure-virtual-networks-public-beta">Azure private networking for GitHub-hosted runners &#8211; Public Beta</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">75242</post-id>	</item>
+		<item>
+		<title>Scheduled Sponsorships</title>
+		<link>https://github.blog/changelog/2023-11-01-scheduled-sponsorships</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Wed, 01 Nov 2023 19:01:45 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-11-01-scheduled-sponsorships</guid>
+
+					<description><![CDATA[<p>Scheduled Sponsorships</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-01-scheduled-sponsorships">Scheduled Sponsorships</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Invoiced sponsors can now opt to pay for new sponsorships in full, the prorated amount or delay payment until your next billing cycle date.</p>
+<p>Learn more about <a href="https://docs.github.com/en/sponsors/sponsoring-open-source-contributors/sponsoring-an-open-source-contributor-through-github#sponsoring-an-account">schedule sponsorships</a>.</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-11-01-scheduled-sponsorships">Scheduled Sponsorships</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">75241</post-id>	</item>
+		<item>
+		<title>Enabling reactive 2FA requirements for release creation</title>
+		<link>https://github.blog/changelog/2023-10-31-enabling-reactive-2fa-requirements-for-release-creation</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Tue, 31 Oct 2023 19:54:40 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-10-31-enabling-reactive-2fa-requirements-for-release-creation</guid>
+
+					<description><![CDATA[<p>Enabling reactive 2FA requirements for release creation</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-10-31-enabling-reactive-2fa-requirements-for-release-creation">Enabling reactive 2FA requirements for release creation</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Users who are not part of the <a href="https://github.blog/2023-03-09-raising-the-bar-for-software-security-github-2fa-begins-march-13/">mandatory 2FA program</a> will now be added to it within 24 hours of creating their first <a href="https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository">release</a>. In August we expanded the 2FA requirement to include most GitHub.com users that had created a release. Those groups have now completed their 2FA enrollment, but additional developers have since created their first release. They will be added to the 2FA program in the coming days, as will more users over time as they create releases.  </p>
+<p>Enterprise or organization administrators can learn more about their users&#039; current 2FA requirements by visiting the <a href="https://github.blog/changelog/2023-07-31-2fa-requirement-status-on-the-people-pages/">People page</a> for their enterprise or organization.</p>
+<p>To learn more about the 2FA program, see our <a href="https://github.blog/2023-03-09-raising-the-bar-for-software-security-github-2fa-begins-march-13/">May 2023 blog post</a>, as well as the <a href="https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/about-mandatory-two-factor-authentication">&#8220;About the mandatory 2FA program&#8221; documentation</a>.</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-10-31-enabling-reactive-2fa-requirements-for-release-creation">Enabling reactive 2FA requirements for release creation</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">75179</post-id>	</item>
+		<item>
+		<title>Copilot in GitHub Support (Beta)</title>
+		<link>https://github.blog/changelog/2023-10-31-copilot-in-github-support-beta</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Tue, 31 Oct 2023 17:43:53 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-10-31-auto-draft</guid>
+
+					<description><![CDATA[<p>We are excited to announce the beta release of Copilot in GitHub Support, a faster way to find answers to your GitHub related questions! In August, we launched the Alpha to a limited number of randomly selected GitHub Enterprise Cloud customers. We have made lots of improvements to the experience since and are excited to [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-10-31-copilot-in-github-support-beta">Copilot in GitHub Support (Beta)</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>We are excited to announce the beta release of Copilot in GitHub Support, a faster way to find answers to your GitHub related questions! In August, we launched the Alpha to a limited number of randomly selected GitHub Enterprise Cloud customers. We have made lots of improvements to the experience since and are excited to welcome more customers into the new experience. Copilot in GitHub Support is now trained on the latest <a href="https://docs.github.com/en/enterprise-server@3.10">GitHub Enterprise Server documentation</a> in addition to GitHub Enterprise Cloud documentation it was previously trained on.</p>
+<p>Initially, we&#8217;re offering the Copilot experience to a limited number of randomly selected GitHub Enterprise customers. We hope to continue rolling out the experience to a wider audience over the coming months.</p>
+<p>During the beta, GitHub will be reviewing answers provided and collecting feedback from participating customers to improve the accuracy.</p>
+<p>Copilot in GitHub Support is part of our ongoing effort to make GitHub the best place for all developers to collaborate, innovate, and ship great software. We believe that Copilot in GitHub Support will enhance your experience and productivity.</p>
+<p>We look forward to hearing from you and learning from your feedback.</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-10-31-copilot-in-github-support-beta">Copilot in GitHub Support (Beta)</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">75152</post-id>	</item>
+		<item>
+		<title>The Comment Box Becomes More Consistent and Accessible</title>
+		<link>https://github.blog/changelog/2023-10-31-the-comment-box-becomes-more-consistent-and-accessible</link>
+		
+		<dc:creator><![CDATA[Kevin Duck]]></dc:creator>
+		<pubDate>Tue, 31 Oct 2023 17:11:56 +0000</pubDate>
+				<guid isPermaLink="false">https://github.blog/changelog/2023-10-31-the-comment-box-becomes-more-consistent-and-accessible</guid>
+
+					<description><![CDATA[<p>The Comment Box Becomes More Consistent and Accessible</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-10-31-the-comment-box-becomes-more-consistent-and-accessible">The Comment Box Becomes More Consistent and Accessible</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>We are excited to announce a significant update to the comment box used in GitHub issues, discussions, and pull requests, aiming to refine and enhance how you interact and collaborate. This release is a testament to our ongoing efforts to provide an exceptional user experience, making GitHub more intuitive, consistent, and accessible across the platform.</p>
+<p><img decoding="async" src="//github.com/github/release-assets/assets/3369400/c4972040-6dd5-492d-916b-314cfec2a920" alt="A screenshot of the new comment box"></p>
+<p>The updated comment box is designed to integrate seamlessly with the existing GitHub environment, ensuring a familiar yet improved experience for all users. Highlights and improvements include:</p>
+<ul>
+<li><strong>Enhanced User Experience:</strong> The newly revamped comment box brings an elevated experience to a wider range of users across various devices. With this update, we&#039;ve enhanced the responsiveness and streamlined the markup to better accommodate keyboard and screen reader users. This ensures a uniform and smooth user experience across issues, discussions, and pull requests, promoting seamless communication and collaboration.</li>
+<li><strong>Consistency and Familiarity:</strong> Our design philosophy for the new comment box was clear: keep it familiar, make it better. We’ve developed the updated version to closely resemble the original while enhancing it with improved accessibility, consistency, and ease of use across various screen sizes. The transition for you will be smooth, with no disruptions to your workflow.</li>
+<li><strong>Commitment to Accessibility:</strong> This update contributes to our continuous journey to make GitHub more accessible to everyone. The comment box now aligns more closely with our accessibility commitment, enhancing the experience in features such as issues, pull requests, and discussions. Check out our <a href="https://accessibility.github.com">Accessibility Commitment</a> to learn more about how we are making GitHub more inclusive.</li>
+</ul>
+<p>We are excited for you to experience the new comment box and we welcome <a href="https://github.com/orgs/community/discussions/73066">feedback</a> to continue improving GitHub for everyone.</p>
+<p>The post <a rel="nofollow" href="https://github.blog/changelog/2023-10-31-the-comment-box-becomes-more-consistent-and-accessible">The Comment Box Becomes More Consistent and Accessible</a> appeared first on <a rel="nofollow" href="https://github.blog">The GitHub Blog</a>.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-rizqshops:feed-additions:1">75153</post-mmu094>	</item>
+	</channel>
+</rss

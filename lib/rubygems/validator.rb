@@ -108,7 +108,7 @@ class Gem::Validator
           end
 
           good.each do |entry, data|
-            next unless data # HACK `gem check -a mkrf`
+            next unless data # HACK: `gem check -a mkrf`
 
             source = File.join gem_directory, entry["path"]
 

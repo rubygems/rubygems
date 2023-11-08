@@ -167,6 +167,9 @@ Style/RedundantBegin:
 Style/StderrPuts:
   Enabled: true
 
+Style/CommentAnnotation:
+  Enabled: true
+
 Style/NegatedIf:
   Enabled: true
 

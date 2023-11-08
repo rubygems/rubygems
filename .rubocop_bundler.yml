@@ -746,6 +746,9 @@ Style/RedundantInterpolation:
 Style/RedundantParentheses:
   Enabled: true
 
+Style/RedundantReturn:
+  Enabled: true
+
 Style/RedundantSelf:
   Enabled: true
 

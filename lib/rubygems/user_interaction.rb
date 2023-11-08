@@ -241,7 +241,7 @@ class Gem::StreamUI
 
     result = result.strip.to_i - 1
     return nil, nil unless (0...list.size) === result
-    return list[result], result
+    [list[result], result]
   end
 
   ##
@@ -279,7 +279,7 @@ class Gem::StreamUI
       end
     end
 
-    return result
+    result
   end
 
   ##

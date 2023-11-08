@@ -83,7 +83,7 @@ class Gem::Package::TarReader
 
     return unless found
 
-    return yield found
+    yield found
   ensure
     rewind
   end

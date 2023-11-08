@@ -178,7 +178,7 @@ prefix or only the files that are requireable.
       @spec_dirs.sort.each {|dir| say dir }
     end
 
-    return nil
+    nil
   end
 
   def specification_directories # :nodoc:

@@ -430,9 +430,9 @@ class Gem::Command
 
   def handles?(args)
     parser.parse!(args.dup)
-    return true
+    true
   rescue StandardError
-    return false
+    false
   end
 
   ##

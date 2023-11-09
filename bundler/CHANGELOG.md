@@ -1,3 +1,24 @@
+# 2.4.22 (November 9, 2023)
+
+## Enhancements:
+
+  - Add Bundler::Plugin.loaded? helper [#6964](https://github.com/rubygems/rubygems/pull/6964)
+  - Give better error when previous installation folder is insecure to remove [#7030](https://github.com/rubygems/rubygems/pull/7030)
+  - Set file path when eval-ing local specification in EndpointSpecification [#7106](https://github.com/rubygems/rubygems/pull/7106)
+  - Git ignore the proper files for the CI service selected for `bundle gem` [#7101](https://github.com/rubygems/rubygems/pull/7101)
+  - Update vendored thor to v1.3.0 [#7078](https://github.com/rubygems/rubygems/pull/7078)
+  - Restore using old way of passing Ruby version to resolver [#7066](https://github.com/rubygems/rubygems/pull/7066)
+  - Bump vendored net-http-persistent to 4.0.2 [#6787](https://github.com/rubygems/rubygems/pull/6787)
+
+## Bug fixes:
+
+  - Fix regression when installing native extensions on universal rubies [#7077](https://github.com/rubygems/rubygems/pull/7077)
+  - Only remove bundler plugin gem when it's inside the cache [#7001](https://github.com/rubygems/rubygems/pull/7001)
+  - Don't show bug report template when GEM_HOME has no writable bit [#7113](https://github.com/rubygems/rubygems/pull/7113)
+  - Fix regression in old git versions [#7114](https://github.com/rubygems/rubygems/pull/7114)
+  - Handle empty array at built-in YAML serializer [#7099](https://github.com/rubygems/rubygems/pull/7099)
+  - Fix force_ruby_platform: when the lockfile only locks the ruby platform [#6936](https://github.com/rubygems/rubygems/pull/6936)
+
 # 2.4.21 (October 17, 2023)
 
 ## Enhancements:

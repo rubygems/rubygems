@@ -534,13 +534,6 @@ class Gem::Specification < Gem::BasicSpecification
   attr_reader :required_rubygems_version
 
   ##
-  # The version of RubyGems used to create this gem.
-  #
-  # Do not set this, it is set automatically when the gem is packaged.
-
-  attr_accessor :rubygems_version
-
-  ##
   # The key used to sign this gem.  See Gem::Security for details.
 
   attr_accessor :signing_key
@@ -725,6 +718,21 @@ class Gem::Specification < Gem::BasicSpecification
 
   def test_files=(files) # :nodoc:
     @test_files = Array files
+  end
+
+  ######################################################################
+  # :section: Read-only attributes
+
+  ##
+  # The version of RubyGems used to create this gem.
+
+  attr_accessor :rubygems_version
+
+  ##
+  # The path where this gem installs its extensions.
+
+  def extensions_dir
+    @extensions_dir ||= super
   end
 
   ######################################################################
@@ -1449,7 +1457,7 @@ class Gem::Specification < Gem::BasicSpecification
     @activated = true
     @loaded = true
 
-    return true
+    true
   end
 
   ##
@@ -1520,7 +1528,7 @@ class Gem::Specification < Gem::BasicSpecification
   def sanitize_string(string)
     return string unless string
 
-    # HACK the #to_s is in here because RSpec has an Array of Arrays of
+    # HACK: the #to_s is in here because RSpec has an Array of Arrays of
     # Strings for authors.  Need a way to disallow bad values on gemspec
     # generation.  (Probably won't happen.)
     string.to_s
@@ -1539,7 +1547,7 @@ class Gem::Specification < Gem::BasicSpecification
       executables
     end
   rescue StandardError
-    return nil
+    nil
   end
 
   ##
@@ -2398,8 +2406,8 @@ class Gem::Specification < Gem::BasicSpecification
   # Checks if this specification meets the requirement of +dependency+.
 
   def satisfies_requirement?(dependency)
-    return @name == dependency.name &&
-           dependency.requirement.satisfied_by?(@version)
+    @name == dependency.name &&
+      dependency.requirement.satisfied_by?(@version)
   end
 
   ##
@@ -2685,7 +2693,7 @@ class Gem::Specification < Gem::BasicSpecification
     end
     invalidate_memoized_attributes
 
-    return @version
+    @version
   end
 
   def stubbed?

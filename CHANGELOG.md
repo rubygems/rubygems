@@ -1,3 +1,36 @@
+# 3.4.22 / 2023-11-09
+
+## Enhancements:
+
+* Update SPDX license list as of 2023-10-05. Pull request
+  [#7040](https://github.com/rubygems/rubygems/pull/7040) by
+  github-actions[bot]
+* Remove unnecessary rescue. Pull request
+  [#7109](https://github.com/rubygems/rubygems/pull/7109) by
+  deivid-rodriguez
+* Installs bundler 2.4.22 as a default gem.
+
+## Bug fixes:
+
+* Handle empty array at built-in YAML serializer. Pull request
+  [#7099](https://github.com/rubygems/rubygems/pull/7099) by hsbt
+* Ignore non-tar format `.gem` files during search. Pull request
+  [#7095](https://github.com/rubygems/rubygems/pull/7095) by dearblue
+* Allow explicitly uninstalling multiple versions of same gem. Pull
+  request [#7063](https://github.com/rubygems/rubygems/pull/7063) by
+  kstevens715
+
+## Performance:
+
+* Avoid regexp match on every call to `Gem::Platform.local`. Pull request
+  [#7104](https://github.com/rubygems/rubygems/pull/7104) by segiddins
+
+## Documentation:
+
+* Get `Gem::Specification#extensions_dir` documented. Pull request
+  [#6218](https://github.com/rubygems/rubygems/pull/6218) by
+  deivid-rodriguez
+
 # 3.4.21 / 2023-10-17
 
 ## Enhancements:

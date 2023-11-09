@@ -45,6 +45,7 @@ class Gem::Licenses
     AdaCore-doc
     Adobe-2006
     Adobe-Glyph
+    Adobe-Utopia
     Afmparse
     Aladdin
     Apache-1.0
@@ -65,6 +66,7 @@ class Gem::Licenses
     BSD-3-Clause
     BSD-3-Clause-Attribution
     BSD-3-Clause-Clear
+    BSD-3-Clause-HP
     BSD-3-Clause-LBNL
     BSD-3-Clause-Modification
     BSD-3-Clause-No-Military-License
@@ -72,6 +74,8 @@ class Gem::Licenses
     BSD-3-Clause-No-Nuclear-License-2014
     BSD-3-Clause-No-Nuclear-Warranty
     BSD-3-Clause-Open-MPI
+    BSD-3-Clause-Sun
+    BSD-3-Clause-flex
     BSD-4-Clause
     BSD-4-Clause-Shortened
     BSD-4-Clause-UC
@@ -79,8 +83,10 @@ class Gem::Licenses
     BSD-4.3TAHOE
     BSD-Advertising-Acknowledgement
     BSD-Attribution-HPND-disclaimer
+    BSD-Inferno-Nettverk
     BSD-Protection
     BSD-Source-Code
+    BSD-Systemics
     BSL-1.0
     BUSL-1.1
     Baekmuk
@@ -184,11 +190,13 @@ class Gem::Licenses
     Community-Spec-1.0
     Condor-1.1
     Cornell-Lossless-JPEG
+    Cronyx
     Crossword
     CrystalStacker
     Cube
     D-FSL-1.0
     DL-DE-BY-2.0
+    DL-DE-ZERO-2.0
     DOC
     DRL-1.0
     DSDP
@@ -208,6 +216,7 @@ class Gem::Licenses
     Entessa
     ErlPL-1.1
     Eurosym
+    FBM
     FDK-AAC
     FSFAP
     FSFUL
@@ -215,9 +224,11 @@ class Gem::Licenses
     FSFULLRWD
     FTL
     Fair
+    Ferguson-Twofish
     Frameworx-1.0
     FreeBSD-DOC
     FreeImage
+    Furuseth
     GD
     GFDL-1.1
     GFDL-1.1-invariants-only
@@ -266,9 +277,17 @@ class Gem::Licenses
     Glulxe
     Graphics-Gems
     HP-1986
+    HP-1989
     HPND
+    HPND-DEC
     HPND-Markus-Kuhn
+    HPND-Pbmplus
+    HPND-UC
+    HPND-doc
+    HPND-doc-sell
     HPND-export-US
+    HPND-export-US-modify
+    HPND-sell-regexpr
     HPND-sell-variant
     HPND-sell-variant-MIT-disclaimer
     HTMLTIDY
@@ -294,6 +313,7 @@ class Gem::Licenses
     JSON
     Jam
     JasPer-2.0
+    Kastrup
     Kazlib
     Knuth-CTAN
     LAL-1.2
@@ -333,6 +353,7 @@ class Gem::Licenses
     Linux-man-pages-copyleft
     Linux-man-pages-copyleft-2-para
     Linux-man-pages-copyleft-var
+    Lucida-Bitmap-Fonts
     MIT
     MIT-0
     MIT-CMU
@@ -343,7 +364,10 @@ class Gem::Licenses
     MIT-enna
     MIT-feh
     MIT-open-group
+    MIT-testregex
     MITNFA
+    MMIXware
+    MPEG-SSG
     MPL-1.0
     MPL-1.1
     MPL-2.0
@@ -354,6 +378,7 @@ class Gem::Licenses
     MTLL
     MakeIndex
     Martin-Birgmeier
+    McPhee-slideshow
     Minpack
     MirOS
     Motosoto
@@ -436,6 +461,7 @@ class Gem::Licenses
     OSL-3.0
     OpenPBS-2.3
     OpenSSL
+    PADL
     PDDL-1.0
     PHP-3.0
     PHP-3.01
@@ -464,11 +490,13 @@ class Gem::Licenses
     SGI-B-1.0
     SGI-B-1.1
     SGI-B-2.0
+    SGI-OpenGL
     SGP4
     SHL-0.5
     SHL-0.51
     SISSL
     SISSL-1.2
+    SL
     SMLNJ
     SMPPL
     SNIA
@@ -483,6 +511,7 @@ class Gem::Licenses
     Sendmail-8.23
     SimPL-2.0
     Sleepycat
+    Soundex
     Spencer-86
     Spencer-94
     Spencer-99
@@ -499,12 +528,14 @@ class Gem::Licenses
     TPDL
     TPL-1.0
     TTWL
+    TTYP0
     TU-Berlin-1.0
     TU-Berlin-2.0
     TermReadKey
     UCAR
     UCL-1.0
     UPL-1.0
+    URT-RLE
     Unicode-DFS-2015
     Unicode-DFS-2016
     Unicode-TOU
@@ -534,6 +565,7 @@ class Gem::Licenses
     ZPL-2.0
     ZPL-2.1
     Zed
+    Zeeff
     Zend-2.0
     Zimbra-1.3
     Zimbra-1.4
@@ -541,6 +573,7 @@ class Gem::Licenses
     blessing
     bzip2-1.0.5
     bzip2-1.0.6
+    check-cvs
     checkmk
     copyleft-next-0.3.0
     copyleft-next-0.3.1
@@ -551,6 +584,7 @@ class Gem::Licenses
     eCos-2.0
     eGenix
     etalab-2.0
+    fwlw
     gSOAP-1.3b
     gnuplot
     iMatix
@@ -558,13 +592,20 @@ class Gem::Licenses
     libselinux-1.0
     libtiff
     libutil-David-Nugent
+    lsof
+    magaz
     metamail
     mpi-permissive
     mpich2
     mplus
+    pnmstitch
     psfrag
     psutils
+    python-ldap
     snprintf
+    ssh-keyscan
+    swrule
+    ulem
     w3m
     wxWindows
     xinetd
@@ -580,6 +621,7 @@ class Gem::Licenses
     Autoconf-exception-2.0
     Autoconf-exception-3.0
     Autoconf-exception-generic
+    Autoconf-exception-generic-3.0
     Autoconf-exception-macro
     Bison-exception-2.2
     Bootloader-exception
@@ -590,8 +632,10 @@ class Gem::Licenses
     Fawkes-Runtime-exception
     Font-exception-2.0
     GCC-exception-2.0
+    GCC-exception-2.0-note
     GCC-exception-3.1
     GNAT-exception
+    GNU-compiler-exception
     GPL-3.0-interface-exception
     GPL-3.0-linking-exception
     GPL-3.0-linking-source-exception
@@ -614,10 +658,13 @@ class Gem::Licenses
     Qt-GPL-exception-1.0
     Qt-LGPL-exception-1.1
     Qwt-exception-1.0
+    SANE-exception
     SHL-2.0
     SHL-2.1
     SWI-exception
     Swift-exception
+    Texinfo-exception
+    UBDL-exception
     Universal-FOSS-exception-1.0
     WxWindows-exception-3.1
     cryptsetup-OpenSSL-exception
@@ -628,6 +675,7 @@ class Gem::Licenses
     libpri-OpenH323-exception
     mif-exception
     openvpn-openssl-exception
+    stunnel-exception
     u-boot-exception-2.0
     vsftpd-openssl-exception
     x11vnc-openssl-exception

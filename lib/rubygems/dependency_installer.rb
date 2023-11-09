@@ -19,12 +19,12 @@ class Gem::DependencyInstaller
   DEFAULT_OPTIONS = { # :nodoc:
     :env_shebang => false,
     :document => %w[ri],
-    :domain => :both, # HACK dup
+    :domain => :both, # HACK: dup
     :force => false,
-    :format_executable => false, # HACK dup
+    :format_executable => false, # HACK: dup
     :ignore_dependencies => false,
     :prerelease => false,
-    :security_policy => nil, # HACK NoSecurity requires OpenSSL. AlmostNo? Low?
+    :security_policy => nil, # HACK: NoSecurity requires OpenSSL. AlmostNo? Low?
     :wrappers => true,
     :build_args => nil,
     :build_docs_in_background => false,
@@ -292,7 +292,7 @@ class Gem::DependencyInstaller
         src = Gem::Source::SpecificFile.new dep_or_name
         installer_set.add_local dep_or_name, src.spec, src
         version = src.spec.version if version == Gem::Requirement.default
-      elsif dep_or_name =~ /\.gem$/
+      elsif dep_or_name =~ /\.gem$/ # rubocop:disable Performance/RegexpMatch
         Dir[dep_or_name].each do |name|
           src = Gem::Source::SpecificFile.new name
           installer_set.add_local dep_or_name, src.spec, src

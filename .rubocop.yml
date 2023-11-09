@@ -130,6 +130,9 @@ Naming/HeredocDelimiterNaming:
 Naming/MemoizedInstanceVariableName:
   Enabled: true
 
+Performance/RegexpMatch:
+  Enabled: true
+
 Performance/StartWith:
   Enabled: true
 
@@ -140,6 +143,9 @@ Performance/StringReplacement:
   Enabled: true
 
 Security/Open:
+  Enabled: true
+
+Style/RedundantReturn:
   Enabled: true
 
 Style/NumericLiteralPrefix:
@@ -165,6 +171,9 @@ Style/RedundantBegin:
   Enabled: true
 
 Style/StderrPuts:
+  Enabled: true
+
+Style/CommentAnnotation:
   Enabled: true
 
 Style/NegatedIf:

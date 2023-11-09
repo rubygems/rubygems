@@ -817,7 +817,7 @@ Gem dependencies file #{@path} includes git reference for both ref/branch and ta
       end
     end
 
-    return true
+    true
   end
 
   ##

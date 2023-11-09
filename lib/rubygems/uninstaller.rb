@@ -46,7 +46,7 @@ class Gem::Uninstaller
   # Constructs an uninstaller that will uninstall +gem+
 
   def initialize(gem, options = {})
-    # TODO document the valid options
+    # TODO: document the valid options
     @gem                = gem
     @version            = options[:version] || Gem::Requirement.default
     @gem_home           = File.realpath(options[:install_dir] || Gem.dir)
@@ -350,7 +350,7 @@ class Gem::Uninstaller
 
     msg << "If you remove this gem, these dependencies will not be met."
     msg << "Continue with Uninstall?"
-    return ask_yes_no(msg.join("\n"), false)
+    ask_yes_no(msg.join("\n"), false)
   end
 
   ##

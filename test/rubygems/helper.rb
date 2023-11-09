@@ -576,7 +576,7 @@ class Gem::TestCase < Test::Unit::TestCase
       head = Gem::Util.popen(@git, "rev-parse", "HEAD").strip
     end
 
-    return name, git_spec.version, directory, head
+    [name, git_spec.version, directory, head]
   end
 
   ##
@@ -734,7 +734,7 @@ class Gem::TestCase < Test::Unit::TestCase
 
     Gem::Specification.reset
 
-    return spec
+    spec
   end
 
   ##
@@ -869,7 +869,7 @@ class Gem::TestCase < Test::Unit::TestCase
       FileUtils.rm spec.spec_file
     end
 
-    return spec
+    spec
   end
 
   ##
@@ -1047,7 +1047,7 @@ Also, a list:
       spec_fetcher.prerelease_specs[@uri] << spec.name_tuple
     end
 
-    # HACK for test_download_to_cache
+    # HACK: for test_download_to_cache
     unless Gem::RemoteFetcher === @fetcher
       v = Gem.marshal_version
 
@@ -1345,7 +1345,7 @@ Also, a list:
 
     def escape_path(*path)
       path = File.join(*path)
-      if %r{\A[-+:/=@,.\w]+\z} =~ path
+      if %r{\A[-+:/=@,.\w]+\z}.match?(path)
         path
       else
         "\"#{path.gsub(/[`$"]/, '\\&')}\""
@@ -1460,7 +1460,7 @@ Also, a list:
       io.write vendor_spec.to_ruby
     end
 
-    return name, vendor_spec.version, directory
+    [name, vendor_spec.version, directory]
   end
 
   ##

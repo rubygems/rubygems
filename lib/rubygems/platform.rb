@@ -13,9 +13,11 @@ class Gem::Platform
   attr_accessor :cpu, :os, :version
 
   def self.local
-    arch = RbConfig::CONFIG["arch"]
-    arch = "#{arch}_60" if arch =~ /mswin(?:32|64)$/
-    @local ||= new(arch)
+    @local ||= begin
+      arch = RbConfig::CONFIG["arch"]
+      arch = "#{arch}_60" if /mswin(?:32|64)$/.match?(arch)
+      new(arch)
+    end
   end
 
   def self.match(platform)
@@ -37,7 +39,7 @@ class Gem::Platform
   end
 
   def self.match_gem?(platform, gem_name)
-    # Note: this method might be redefined by Ruby implementations to
+    # NOTE: this method might be redefined by Ruby implementations to
     # customize behavior per RUBY_ENGINE, gem_name or other criteria.
     match_platforms?(platform, Gem.platforms)
   end

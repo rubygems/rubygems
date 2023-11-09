@@ -9,7 +9,7 @@
 require "rbconfig"
 
 module Gem
-  VERSION = "3.4.21"
+  VERSION = "3.4.22"
 end
 
 # Must be first since it unloads the prelude from 1.9.2
@@ -211,7 +211,7 @@ module Gem
       end
     end
 
-    return true
+    true
   end
 
   def self.needs
@@ -499,7 +499,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     # the spec dirs directly, so we prune.
     files.uniq! if check_load_path
 
-    return files
+    files
   end
 
   def self.find_files_from_load_path(glob) # :nodoc:
@@ -534,7 +534,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     # the spec dirs directly, so we prune.
     files.uniq! if check_load_path
 
-    return files
+    files
   end
 
   ##
@@ -809,7 +809,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     if @ruby.nil?
       @ruby = RbConfig.ruby
 
-      @ruby = "\"#{@ruby}\"" if @ruby =~ /\s/
+      @ruby = "\"#{@ruby}\"" if /\s/.match?(@ruby)
     end
 
     @ruby
@@ -1023,7 +1023,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
       # Skip older versions of the GemCutter plugin: Its commands are in
       # RubyGems proper now.
 
-      next if plugin =~ /gemcutter-0\.[0-3]/
+      next if /gemcutter-0\.[0-3]/.match?(plugin)
 
       begin
         load plugin

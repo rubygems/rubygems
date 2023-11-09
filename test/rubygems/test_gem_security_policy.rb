@@ -33,7 +33,7 @@ class TestGemSecurityPolicy < Gem::TestCase
     end
 
     @digest = OpenSSL::Digest.new Gem::Security::DIGEST_NAME
-    @trust_dir = Gem::Security.trust_dir.dir # HACK use the object
+    @trust_dir = Gem::Security.trust_dir.dir # HACK: use the object
 
     @no        = Gem::Security::NoSecurity
     @almost_no = Gem::Security::AlmostNoSecurity
@@ -530,6 +530,6 @@ class TestGemSecurityPolicy < Gem::TestCase
     digests    = { Gem::Security::DIGEST_NAME => { 0 => data } }
     signatures = { 0 => sign(data, key) }
 
-    return digests, signatures
+    [digests, signatures]
   end
 end if Gem::HAVE_OPENSSL

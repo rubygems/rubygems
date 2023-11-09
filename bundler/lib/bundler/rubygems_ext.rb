@@ -320,7 +320,7 @@ module Gem
   end
 
   # On universal Rubies, resolve the "universal" arch to the real CPU arch, without changing the extension directory.
-  class Specification
+  class BasicSpecification
     if /^universal\.(?<arch>.*?)-/ =~ (CROSS_COMPILING || RUBY_PLATFORM)
       local_platform = Platform.local
       if local_platform.cpu == "universal"
@@ -333,9 +333,8 @@ module Gem
         end
 
         def extensions_dir
-          Gem.default_ext_dir_for(base_dir) ||
-            File.join(base_dir, "extensions", ORIGINAL_LOCAL_PLATFORM,
-                      Gem.extension_api_version)
+          @extensions_dir ||=
+            Gem.default_ext_dir_for(base_dir) || File.join(base_dir, "extensions", ORIGINAL_LOCAL_PLATFORM, Gem.extension_api_version)
         end
       end
     end

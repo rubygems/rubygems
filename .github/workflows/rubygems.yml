@@ -48,15 +48,15 @@ jobs:
             ruby: { name: mswin, value: mswin }
 
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby (Ubuntu/macOS)
-        uses: ruby/setup-ruby@5311f05890856149502132d25c4a24985a00d426 # v1.153.0
+        uses: ruby/setup-ruby@54a18e26dbbb1eabc604f317ade9a5788dddef81 # v1.159.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
         if: matrix.os.name != 'Windows'
       - name: Setup ruby (Windows)
-        uses: ruby/setup-ruby-pkgs@070791aab73b96ab166e572b2e4a0f056c410394 # v1.33.0
+        uses: ruby/setup-ruby-pkgs@c7f324bc4a9434f2ce3e55fa1cc19e41daecb231 # v1.33.1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

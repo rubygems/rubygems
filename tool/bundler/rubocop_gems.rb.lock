@@ -52,6 +52,7 @@ PLATFORMS
   arm64-darwin-20
   arm64-darwin-21
   arm64-darwin-22
+  arm64-darwin-23
   universal-java-11
   universal-java-18
   universal-java-19
@@ -72,4 +73,4 @@ DEPENDENCIES
   test-unit
 
 BUNDLED WITH
-   2.5.0.dev
+   2.4.22

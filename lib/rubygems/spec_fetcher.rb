@@ -124,7 +124,7 @@ class Gem::SpecFetcher
 
     tuples = tuples.sort_by {|x| x[0].version }
 
-    return [tuples, errors]
+    [tuples, errors]
   end
 
   ##
@@ -162,7 +162,7 @@ class Gem::SpecFetcher
       specs << [spec, source]
     end
 
-    return [specs, errors]
+    [specs, errors]
   end
 
   ##

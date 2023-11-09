@@ -136,7 +136,7 @@ class Gem::RemoteFetcher
     scheme = source_uri.scheme
 
     # URI.parse gets confused by MS Windows paths with forward slashes.
-    scheme = nil if scheme =~ /^[a-z]$/i
+    scheme = nil if /^[a-z]$/i.match?(scheme)
 
     # REFACTOR: split this up and dispatch on scheme (eg download_http)
     # REFACTOR: be sure to clean up fake fetcher when you do this... cleaner
@@ -174,7 +174,7 @@ class Gem::RemoteFetcher
       end
 
       verbose "Using local gem #{local_gem_path}"
-    when nil then # TODO test for local overriding cache
+    when nil then # TODO: test for local overriding cache
       source_path = if Gem.win_platform? && source_uri.scheme &&
                        !source_uri.path.include?(":")
         "#{source_uri.scheme}:#{source_uri.path}"

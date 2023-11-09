@@ -1212,7 +1212,7 @@ RSpec.describe "the lockfile format" do
           rack (1.0.0)
 
       PLATFORMS
-        #{lockfile_platforms("java")}
+        #{lockfile_platforms("java", local_platform, :defaults => [])}
 
       DEPENDENCIES
         rack
@@ -1521,7 +1521,7 @@ RSpec.describe "the lockfile format" do
           indirect_dependency (1.2.3)
 
       PLATFORMS
-        #{formatted_lockfile_platforms(*["ruby", generic_local_platform].uniq)}
+        #{lockfile_platforms("ruby", generic_local_platform, :defaults => [])}
 
       DEPENDENCIES
         direct_dependency

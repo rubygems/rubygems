@@ -3,16 +3,12 @@
 
 require_relative "../spec/support/rubygems_ext"
 
-if RUBY_VERSION.start_with?("2.6")
-  Spec::Rubygems.gem_load("parallel_tests", "parallel_rspec")
-else
-  require_relative "../spec/support/switch_rubygems"
-  require "turbo_tests"
+require_relative "../spec/support/switch_rubygems"
+require "turbo_tests"
 
-  if RUBY_PLATFORM.match?(/mingw|mswin/)
-    require_relative "../../tool/turbo_tests_windows_patch"
-  end
-
-  require "turbo_tests/cli"
-  TurboTests::CLI.new(ARGV).run
+if RUBY_PLATFORM.match?(/mingw|mswin/)
+  require_relative "../../tool/turbo_tests_windows_patch"
 end
+
+require "turbo_tests/cli"
+TurboTests::CLI.new(ARGV).run

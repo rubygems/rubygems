@@ -18,7 +18,7 @@ module Bundler
     VALID_KEYS = %w[group groups git path glob name branch ref tag require submodules
                     platform platforms type source install_if gemfile force_ruby_platform].freeze
 
-    GITHUB_PULL_REQUEST_URL = %r{\Ahttps://github\.com/([A-Za-z0-9_\-\.]+/[A-Za-z0-9_\-\.]+)/pull/(\d+)\z}.freeze
+    GITHUB_PULL_REQUEST_URL = %r{\Ahttps://github\.com/([A-Za-z0-9_\-\.]+/[A-Za-z0-9_\-\.]+)/pull/(\d+)\z}
 
     attr_reader :gemspecs
     attr_accessor :dependencies
@@ -46,7 +46,7 @@ module Bundler
       @gemfile = expanded_gemfile_path
       @gemfiles << expanded_gemfile_path
       contents ||= Bundler.read_file(@gemfile.to_s)
-      instance_eval(contents.dup.tap {|x| x.untaint if RUBY_VERSION < "2.7" }, gemfile.to_s, 1)
+      instance_eval(contents, gemfile.to_s, 1)
     rescue Exception => e # rubocop:disable Lint/RescueException
       message = "There was an error " \
         "#{e.is_a?(GemfileEvalError) ? "evaluating" : "parsing"} " \

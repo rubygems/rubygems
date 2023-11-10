@@ -1,3 +1,10 @@
+# 3.3.27 / 2023-11-10
+
+## Bug fixes:
+
+* Provide fix for bundler Gemfile resolving regression. Pull request #6165
+  by Hiroshi SHIBATA.
+
 # 3.3.26 / 2022-11-16
 
 ## Enhancements:

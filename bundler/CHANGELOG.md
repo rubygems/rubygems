@@ -1,3 +1,10 @@
+# 2.3.27 (November 10, 2023)
+
+## Bug fixes:
+
+* Provide fix for bundler Gemfile resolving regression. Pull request #6165
+  by Hiroshi SHIBATA.
+
 # 2.3.26 (November 16, 2022)
 
 ## Enhancements:

@@ -32,6 +32,7 @@ module Bundler
       @install_conditionals = []
       @optional_groups      = []
       @platforms            = []
+      @lock_platforms       = []
       @env                  = nil
       @ruby_version         = nil
       @gemspecs             = []
@@ -220,7 +221,7 @@ module Bundler
 
     def to_definition(lockfile, unlock)
       check_primary_source_safety
-      Definition.new(lockfile, @dependencies, @sources, unlock, @ruby_version, @optional_groups, @gemfiles)
+      Definition.new(lockfile, @dependencies, @sources, unlock, @ruby_version, @optional_groups, @gemfiles, @lock_platforms)
     end
 
     def group(*args, &blk)
@@ -253,6 +254,19 @@ module Bundler
       platforms.each { @platforms.pop }
     end
     alias_method :platform, :platforms
+
+    # Name collision, working around it for a proof
+    def lock_platform(*platforms)
+      platforms.each do |p|
+        gem_platform = Gem::Platform.new(p)
+        # TODO: this is copied from lock
+        if gem_platform.to_s == "unknown"
+          Bundler.ui.warn "The platform `#{platform_string}` is unknown to RubyGems " \
+            "and adding it will likely lead to resolution errors"
+        end
+        @lock_platforms << gem_platform
+      end
+    end
 
     def env(name)
       old = @env

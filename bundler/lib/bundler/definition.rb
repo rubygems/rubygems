@@ -55,7 +55,7 @@ module Bundler
     #   to be updated or true if all gems should be updated
     # @param ruby_version [Bundler::RubyVersion, nil] Requested Ruby Version
     # @param optional_groups [Array(String)] A list of optional groups
-    def initialize(lockfile, dependencies, sources, unlock, ruby_version = nil, optional_groups = [], gemfiles = [])
+    def initialize(lockfile, dependencies, sources, unlock, ruby_version = nil, optional_groups = [], gemfiles = [], platforms = [])
       if [true, false].include?(unlock)
         @unlocking_bundler = false
         @unlocking = unlock
@@ -89,6 +89,7 @@ module Bundler
         @locked_gems = LockfileParser.new(@lockfile_contents)
         @locked_platforms = @locked_gems.platforms
         @platforms = @locked_platforms.dup
+        platforms.each {|p| add_platform(p) }
         @locked_bundler_version = @locked_gems.bundler_version
         @locked_ruby_version = @locked_gems.ruby_version
         @originally_locked_specs = SpecSet.new(@locked_gems.specs)
@@ -105,13 +106,14 @@ module Bundler
         end
       else
         @unlock         = {}
-        @platforms      = []
         @locked_gems    = nil
         @locked_deps    = {}
         @locked_specs   = SpecSet.new([])
         @originally_locked_specs = @locked_specs
         @locked_sources = []
         @locked_platforms = []
+        @platforms = platforms
+        @new_platform = true unless @platforms.empty?
       end
 
       locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
@@ -143,7 +145,7 @@ module Bundler
         @unlock[:gems] ||= @dependencies.map(&:name)
       else
         eager_unlock = (@unlock[:gems] || []).map {|name| Dependency.new(name, ">= 0") }
-        @unlock[:gems] = @locked_specs.for(eager_unlock, false, platforms).map(&:name).uniq
+        @unlock[:gems] = @locked_specs.for(eager_unlock, false, @platforms).map(&:name).uniq
       end
 
       @dependency_changes = converge_dependencies

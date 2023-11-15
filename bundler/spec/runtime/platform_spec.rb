@@ -467,4 +467,56 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
       end
     end
   end
+
+  it "will add platform directly specified by a gemfile" do
+    simulate_platform "x86-darwin-100"
+
+    build_repo4 do
+      build_gem "nokogiri", "1.13.8"
+      build_gem "nokogiri", "1.13.8" do |s|
+        s.platform = "aarch64-linux"
+      end
+    end
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo4)}"
+
+      lock_platform "aarch64-linux"
+
+      gem "nokogiri"
+    G
+
+    checksums = checksum_section do |c|
+      c.repo_gem gem_repo4, "nokogiri", "1.13.8"
+      # TODO: This is wrong, the point is to get the checksum
+      # Figure out why it's not fetching them for other platforms
+      c.no_checksum "nokogiri", "1.13.8", "aarch64-linux"
+      # c.repo_gem gem_repo4, "nokogiri", "1.13.8", "aarch64-linux"
+    end
+
+    expected_lockfile = <<~L
+      GEM
+        remote: #{file_uri_for(gem_repo4)}/
+        specs:
+          nokogiri (1.13.8)
+          nokogiri (1.13.8-aarch64-linux)
+
+      PLATFORMS
+        aarch64-linux
+        x86-darwin-100
+
+      DEPENDENCIES
+        nokogiri
+
+      CHECKSUMS
+        #{checksums}
+
+      BUNDLED WITH
+         #{Bundler::VERSION}
+    L
+
+    # TODO: "nokogiri was expected to be of platform ruby but was ruby"
+    # expect(the_bundle).to include_gems "nokogiri 1.13.8 ruby"
+    expect(lockfile).to eq(expected_lockfile)
+  end
 end

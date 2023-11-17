@@ -261,8 +261,7 @@ module Bundler
         gem_platform = Gem::Platform.new(p)
         # TODO: this is copied from lock
         if gem_platform.to_s == "unknown"
-          Bundler.ui.warn "The platform `#{platform_string}` is unknown to RubyGems " \
-            "and adding it will likely lead to resolution errors"
+          raise GemfileError, "Unknown lock_platform #{platform_string.inspect} in Gemfile"
         end
         @lock_platforms << gem_platform
       end

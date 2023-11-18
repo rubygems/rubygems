@@ -259,7 +259,6 @@ module Bundler
     def lock_platform(*platforms)
       platforms.each do |p|
         gem_platform = Gem::Platform.new(p)
-        # TODO: this is copied from lock
         if gem_platform.to_s == "unknown"
           raise GemfileError, "Unknown lock_platform #{platform_string.inspect} in Gemfile"
         end

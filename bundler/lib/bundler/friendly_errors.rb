@@ -108,7 +108,7 @@ module Bundler
     end
 
     def new_issue_url
-      "https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md"
+      "https://github.com/rubygems/rubygems/discussions/new?category=q-a"
     end
   end
 

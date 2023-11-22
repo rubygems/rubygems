@@ -209,7 +209,7 @@ First line of the exception message
 Second line of the exception message
 END
 
-      expect(Bundler::FriendlyErrors.discussions_url(exception)).to eq("https://github.com/rubygems/rubygems/search?q=First+line+of+the+exception+message&type=Issues")
+      expect(Bundler::FriendlyErrors.discussions_url(exception)).to eq("https://github.com/rubygems/rubygems/search?q=First+line+of+the+exception+message&type=Discussions")
     end
 
     it "generates the url without colons" do
@@ -228,7 +228,7 @@ END
       allow(exception).to receive(:is_a?).with(Errno).and_return(true)
       discussions_url = Bundler::FriendlyErrors.discussions_url(exception)
       expect(discussions_url).not_to include("/Users/foo/bar")
-      expect(discussions_url).to eq("https://github.com/rubygems/rubygems/search?q=#{CGI.escape("Errno  EACCES  Permission denied @ dir_s_mkdir ")}&type=Issues")
+      expect(discussions_url).to eq("https://github.com/rubygems/rubygems/search?q=#{CGI.escape("Errno  EACCES  Permission denied @ dir_s_mkdir ")}&type=Discussions")
     end
   end
 end

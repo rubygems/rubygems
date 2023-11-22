@@ -78,7 +78,7 @@ module Bundler
       Bundler.ui.error <<~EOS, nil, :yellow
 
         First, try this link to see if there are any existing issue reports for this error:
-        #{issues_url(e)}
+        #{discussions_url(e)}
 
         If there aren't any reports for this error yet, please fill in the new issue form located at #{new_issue_url}, and copy and paste the report template above in there.
       EOS
@@ -99,12 +99,12 @@ module Bundler
       EOS
     end
 
-    def issues_url(exception)
+    def discussions_url(exception)
       message = exception.message.lines.first.tr(":", " ").chomp
       message = message.split("-").first if exception.is_a?(Errno)
       require "cgi"
       "https://github.com/rubygems/rubygems/search?q=" \
-        "#{CGI.escape(message)}&type=Issues"
+        "#{CGI.escape(message)}&type=Discussions"
     end
 
     def new_issue_url

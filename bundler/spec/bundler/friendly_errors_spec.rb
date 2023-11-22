@@ -187,7 +187,7 @@ RSpec.describe Bundler, "friendly errors" do
 
     it "includes error class, message and backlog" do
       error = StandardError.new
-      allow(Bundler::FriendlyErrors).to receive(:issues_url).and_return("")
+      allow(Bundler::FriendlyErrors).to receive(:discussions_url).and_return("")
 
       expect(error).to receive(:class).at_least(:once)
       expect(error).to receive(:message).at_least(:once)
@@ -196,11 +196,11 @@ RSpec.describe Bundler, "friendly errors" do
     end
   end
 
-  describe "#issues_url" do
+  describe "#discussions_url" do
     it "generates a search URL for the exception message" do
       exception = Exception.new("Exception message")
 
-      expect(Bundler::FriendlyErrors.issues_url(exception)).to eq("https://github.com/rubygems/rubygems/search?q=Exception+message&type=Issues")
+      expect(Bundler::FriendlyErrors.discussions_url(exception)).to eq("https://github.com/rubygems/rubygems/search?q=Exception+message&type=Discussions")
     end
 
     it "generates a search URL for only the first line of a multi-line exception message" do
@@ -209,16 +209,16 @@ First line of the exception message
 Second line of the exception message
 END
 
-      expect(Bundler::FriendlyErrors.issues_url(exception)).to eq("https://github.com/rubygems/rubygems/search?q=First+line+of+the+exception+message&type=Issues")
+      expect(Bundler::FriendlyErrors.discussions_url(exception)).to eq("https://github.com/rubygems/rubygems/search?q=First+line+of+the+exception+message&type=Issues")
     end
 
     it "generates the url without colons" do
       exception = Exception.new(<<END)
 Exception ::: with ::: colons :::
 END
-      issues_url = Bundler::FriendlyErrors.issues_url(exception)
-      expect(issues_url).not_to include("%3A")
-      expect(issues_url).to eq("https://github.com/rubygems/rubygems/search?q=#{CGI.escape("Exception     with     colons    ")}&type=Issues")
+      discussions_url = Bundler::FriendlyErrors.discussions_url(exception)
+      expect(discussions_url).not_to include("%3A")
+      expect(discussions_url).to eq("https://github.com/rubygems/rubygems/search?q=#{CGI.escape("Exception     with     colons    ")}&type=Discussions")
     end
 
     it "removes information after - for Errono::EACCES" do
@@ -226,9 +226,9 @@ END
 Errno::EACCES: Permission denied @ dir_s_mkdir - /Users/foo/bar/
 END
       allow(exception).to receive(:is_a?).with(Errno).and_return(true)
-      issues_url = Bundler::FriendlyErrors.issues_url(exception)
-      expect(issues_url).not_to include("/Users/foo/bar")
-      expect(issues_url).to eq("https://github.com/rubygems/rubygems/search?q=#{CGI.escape("Errno  EACCES  Permission denied @ dir_s_mkdir ")}&type=Issues")
+      discussions_url = Bundler::FriendlyErrors.discussions_url(exception)
+      expect(discussions_url).not_to include("/Users/foo/bar")
+      expect(discussions_url).to eq("https://github.com/rubygems/rubygems/search?q=#{CGI.escape("Errno  EACCES  Permission denied @ dir_s_mkdir ")}&type=Issues")
     end
   end
 end

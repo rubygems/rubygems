@@ -80,7 +80,7 @@ module Bundler
         First, try this link to see if anyone has reported this error:
         #{discussions_url(e)}
 
-        If there aren't any reports for this error yet, please fill in the new issue form located at #{new_issue_url}, and copy and paste the report template above in there.
+        If there aren't any reports for this error yet, please fill in the new issue form located at #{new_discussion_url}, and copy and paste the report template above in there.
       EOS
     end
 
@@ -107,7 +107,7 @@ module Bundler
         "#{CGI.escape(message)}&type=Discussions"
     end
 
-    def new_issue_url
+    def new_discussion_url
       "https://github.com/rubygems/rubygems/discussions/new?category=q-a"
     end
   end

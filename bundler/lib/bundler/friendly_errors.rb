@@ -77,7 +77,7 @@ module Bundler
 
       Bundler.ui.error <<~EOS, nil, :yellow
 
-        First, try this link to see if there are any existing issue reports for this error:
+        First, try this link to see if anyone has reported this error:
         #{discussions_url(e)}
 
         If there aren't any reports for this error yet, please fill in the new issue form located at #{new_issue_url}, and copy and paste the report template above in there.

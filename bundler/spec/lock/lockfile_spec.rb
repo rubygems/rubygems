@@ -300,7 +300,7 @@ RSpec.describe "the lockfile format" do
       gem "rack-obama", ">= 1.0"
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "rack", "1.0.0"
       c.checksum gem_repo2, "rack-obama", "1.0"
     end
@@ -339,7 +339,7 @@ RSpec.describe "the lockfile format" do
       end
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "rack", "1.0.0"
       c.checksum gem_repo2, "rack-obama", "1.0"
     end
@@ -377,7 +377,7 @@ RSpec.describe "the lockfile format" do
       gem "net-sftp"
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "net-sftp", "1.1.1"
       c.checksum gem_repo2, "net-ssh", "1.0"
     end
@@ -795,7 +795,7 @@ RSpec.describe "the lockfile format" do
       gem "rack", :source => "#{file_uri_for(gem_repo2)}/"
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "rack", "1.0.0"
     end
 
@@ -825,7 +825,7 @@ RSpec.describe "the lockfile format" do
       gem "rack-obama"
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "actionpack", "2.3.2"
       c.checksum gem_repo2, "activesupport", "2.3.2"
       c.checksum gem_repo2, "rack", "1.0.0"
@@ -866,7 +866,7 @@ RSpec.describe "the lockfile format" do
       gem "rails"
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "actionmailer", "2.3.2"
       c.checksum gem_repo2, "actionpack", "2.3.2"
       c.checksum gem_repo2, "activerecord", "2.3.2"
@@ -924,7 +924,7 @@ RSpec.describe "the lockfile format" do
       gem 'double_deps'
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "double_deps", "1.0"
       c.checksum gem_repo2, "net-ssh", "1.0"
     end
@@ -956,7 +956,7 @@ RSpec.describe "the lockfile format" do
       gem "rack-obama", ">= 1.0", :require => "rack/obama"
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "rack", "1.0.0"
       c.checksum gem_repo2, "rack-obama", "1.0"
     end
@@ -987,7 +987,7 @@ RSpec.describe "the lockfile format" do
       gem "rack-obama", ">= 1.0", :group => :test
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "rack", "1.0.0"
       c.checksum gem_repo2, "rack-obama", "1.0"
     end
@@ -1209,7 +1209,7 @@ RSpec.describe "the lockfile format" do
       gem "platform_specific"
     G
 
-    checksums = checksums_section do |c|
+    checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "platform_specific", "1.0", "universal-java-16"
     end
 

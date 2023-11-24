@@ -9,11 +9,16 @@ module Spec
         yield self if block_given?
       end
 
+      def initialize_copy(original)
+        super
+        @checksums = @checksums.dup
+      end
+
       def checksum(repo, name, version, platform = Gem::Platform::RUBY)
         name_tuple = Gem::NameTuple.new(name, version, platform)
         gem_file = File.join(repo, "gems", "#{name_tuple.full_name}.gem")
         File.open(gem_file, "rb") do |f|
-          register(name_tuple, Bundler::Checksum.from_gem(f, "#{gem_file} (via ChecksumsBuilder#repo_gem)"))
+          register(name_tuple, Bundler::Checksum.from_gem(f, "#{gem_file} (via ChecksumsBuilder#checksum)"))
         end
       end
 
@@ -56,6 +61,16 @@ module Spec
         enabled = false
       end
       checksums_section(enabled, &block)
+    end
+
+    def checksum_to_lock(*args)
+      checksums_section do |c|
+        c.checksum(*args)
+      end.to_s
+    end
+
+    def checksum_digest(*args)
+      checksum_to_lock(*args).split(Bundler::Checksum::ALGO_SEPARATOR, 2).last
     end
 
     # if prefixes is given, removes all checksums where the line

@@ -82,7 +82,6 @@ RSpec.describe Bundler::Definition do
         DEPENDENCIES
           foo!
         #{checksums}
-
         BUNDLED WITH
            #{Bundler::VERSION}
       G
@@ -204,7 +203,6 @@ RSpec.describe Bundler::Definition do
         DEPENDENCIES
           foo
         #{checksums}
-
         BUNDLED WITH
            #{Bundler::VERSION}
       G

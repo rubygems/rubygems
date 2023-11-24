@@ -256,6 +256,10 @@ RSpec.describe "bundle install with install-time dependencies" do
             gem 'parallel_tests'
           G
 
+          checksums = checksums_section do |c|
+            c.checksum gem_repo2, "parallel_tests", "3.8.0"
+          end
+
           lockfile <<~L
             GEM
               remote: http://localgemserver.test/
@@ -267,10 +271,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
             DEPENDENCIES
               parallel_tests
-
-            CHECKSUMS
-              #{checksum_for_repo_gem gem_repo2, "parallel_tests", "3.8.0"}
-
+            #{checksums}
             BUNDLED WITH
                #{Bundler::VERSION}
           L
@@ -278,6 +279,10 @@ RSpec.describe "bundle install with install-time dependencies" do
 
         it "automatically updates lockfile to use the older version" do
           bundle "install --verbose", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+
+          checksums = checksums_section_when_existing do |c|
+            c.no_checksum "parallel_tests", "3.7.0"
+          end
 
           expect(lockfile).to eq <<~L
             GEM
@@ -290,10 +295,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
             DEPENDENCIES
               parallel_tests
-
-            CHECKSUMS
-              #{checksum_for_repo_gem gem_repo2, "parallel_tests", "3.7.0"}
-
+            #{checksums}
             BUNDLED WITH
                #{Bundler::VERSION}
           L
@@ -338,6 +340,11 @@ RSpec.describe "bundle install with install-time dependencies" do
             gem 'rubocop'
           G
 
+          checksums = checksums_section do |c|
+            c.checksum gem_repo2, "rubocop", "1.35.0"
+            c.checksum gem_repo2, "rubocop-ast", "1.21.0"
+          end
+
           lockfile <<~L
             GEM
               remote: http://localgemserver.test/
@@ -351,11 +358,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
             DEPENDENCIES
               parallel_tests
-
-            CHECKSUMS
-              #{checksum_for_repo_gem gem_repo2, "rubocop", "1.35.0"}
-              #{checksum_for_repo_gem gem_repo2, "rubocop-ast", "1.21.0"}
-
+            #{checksums}
             BUNDLED WITH
                #{Bundler::VERSION}
           L
@@ -363,6 +366,11 @@ RSpec.describe "bundle install with install-time dependencies" do
 
         it "automatically updates lockfile to use the older compatible versions" do
           bundle "install --verbose", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+
+          checksums = checksums_section_when_existing do |c|
+            c.no_checksum "rubocop", "1.28.2"
+            c.no_checksum "rubocop-ast", "1.17.0"
+          end
 
           expect(lockfile).to eq <<~L
             GEM
@@ -377,11 +385,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
             DEPENDENCIES
               rubocop
-
-            CHECKSUMS
-              #{checksum_for_repo_gem gem_repo2, "rubocop", "1.28.2"}
-              #{checksum_for_repo_gem gem_repo2, "rubocop-ast", "1.17.0"}
-
+            #{checksums}
             BUNDLED WITH
                #{Bundler::VERSION}
           L

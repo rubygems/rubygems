@@ -1126,9 +1126,7 @@ RSpec.describe "bundle lock" do
 
         DEPENDENCIES
           debug
-
-        CHECKSUMS
-
+        #{checksums_section}
         BUNDLED WITH
            #{Bundler::VERSION}
       L

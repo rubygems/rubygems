@@ -289,10 +289,20 @@ RSpec.describe "bundle cache" do
       expect(cached_gem("rack-1.0.0")).to exist
     end
 
-    it "raises an error when the gem file is altered and produces a different checksum" do
+    it "raises an error when the gem is altered and produces a different checksum" do
       cached_gem("rack-1.0.0").rmtree
       build_gem "rack", "1.0.0", :path => bundled_app("vendor/cache")
       simulate_new_machine
+
+      lockfile <<-L
+        GEM
+          remote: #{file_uri_for(gem_repo2)}/
+          specs:
+            rack (1.0.0)
+
+        CHECKSUMS
+          rack (1.0.0)
+      L
 
       bundle :install, :raise_on_error => false
       expect(exitstatus).to eq(37)
@@ -301,6 +311,22 @@ RSpec.describe "bundle cache" do
 
       expect(cached_gem("rack-1.0.0")).to exist
       cached_gem("rack-1.0.0").rmtree
+      bundle :install
+      expect(cached_gem("rack-1.0.0")).to exist
+    end
+
+    it "installs a modified gem with a non-matching checksum when checksums is not opted in" do
+      cached_gem("rack-1.0.0").rmtree
+      build_gem "rack", "1.0.0", :path => bundled_app("vendor/cache")
+      simulate_new_machine
+
+      lockfile <<-L
+        GEM
+          remote: #{file_uri_for(gem_repo2)}/
+          specs:
+            rack (1.0.0)
+      L
+
       bundle :install
       expect(cached_gem("rack-1.0.0")).to exist
     end

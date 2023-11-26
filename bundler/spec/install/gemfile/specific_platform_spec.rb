@@ -1264,6 +1264,178 @@ RSpec.describe "bundle install with specific platforms" do
     end
   end
 
+  context "with platform locking" do
+    # This tests the situation where gems with native extensions remain in the lockfile
+    # even though the lockfile would be invalid on some platforms.
+    # This is a requirement for using sorbet in dev but deploying to a platform that doesn't support sorbet.
+
+    it "preserves ruby platform in lockfile when an optional gem has no RUBY variant available" do
+      build_repo4 do
+        build_gem("sorbet-static-and-runtime", "0.5.10160") do |s|
+          s.add_runtime_dependency "sorbet", "= 0.5.10160"
+          s.add_runtime_dependency "sorbet-runtime", "= 0.5.10160"
+        end
+
+        build_gem("sorbet", "0.5.10160") do |s|
+          s.add_runtime_dependency "sorbet-static", "= 0.5.10160"
+        end
+
+        build_gem("sorbet-runtime", "0.5.10160")
+
+        build_gem("sorbet-static", "0.5.10160") do |s|
+          s.platform = "x86_64-linux"
+        end
+      end
+
+      gemfile <<~G
+        source "#{file_uri_for(gem_repo4)}"
+
+        lock_platform "ruby"
+
+        group :typecheck, optional: true do
+          gem "sorbet-static-and-runtime", require: false
+        end
+      G
+
+      lockfile <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            sorbet (0.5.10160)
+              sorbet-static (= 0.5.10160)
+            sorbet-runtime (0.5.10160)
+            sorbet-static (0.5.10160-x86_64-linux)
+            sorbet-static-and-runtime (0.5.10160)
+              sorbet (= 0.5.10160)
+              sorbet-runtime (= 0.5.10160)
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+          sorbet-static-and-runtime
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+
+      bundle "update"
+
+      expected_checksums = checksum_section do |c|
+        c.repo_gem gem_repo4, "sorbet", "0.5.10160"
+        c.repo_gem gem_repo4, "sorbet-runtime", "0.5.10160"
+        c.repo_gem gem_repo4, "sorbet-static", "0.5.10160", "x86_64-linux"
+        c.repo_gem gem_repo4, "sorbet-static-and-runtime", "0.5.10160"
+      end
+
+      expect(lockfile).to eq <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            sorbet (0.5.10160)
+              sorbet-static (= 0.5.10160)
+            sorbet-runtime (0.5.10160)
+            sorbet-static (0.5.10160-x86_64-linux)
+            sorbet-static-and-runtime (0.5.10160)
+              sorbet (= 0.5.10160)
+              sorbet-runtime (= 0.5.10160)
+
+        PLATFORMS
+          ruby
+          x86_64-linux
+
+        DEPENDENCIES
+          nokogiri
+          sass-embedded
+
+        CHECKSUMS
+          #{expected_checksums}
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+
+    it "automatically fixes the lockfile if multiple platforms locked, but no valid versions of direct dependencies for all of them" do
+      simulate_platform "x86_64-linux" do
+        build_repo4 do
+          build_gem "nokogiri", "1.14.0" do |s|
+            s.platform = "x86_64-linux"
+          end
+          build_gem "nokogiri", "1.14.0" do |s|
+            s.platform = "arm-linux"
+          end
+
+          build_gem "sorbet-static", "0.5.10696" do |s|
+            s.platform = "x86_64-linux"
+          end
+        end
+
+        gemfile <<~G
+          source "#{file_uri_for(gem_repo4)}"
+
+          lock_platform "arm-linux"
+
+          gem "nokogiri"
+
+          group :typecheck, optional: true do
+            gem "sorbet-static"
+          end
+        G
+
+        lockfile <<~L
+          GEM
+            remote: #{file_uri_for(gem_repo4)}/
+            specs:
+              nokogiri (1.14.0-arm-linux)
+              nokogiri (1.14.0-x86_64-linux)
+              sorbet-static (0.5.10696-x86_64-linux)
+
+          PLATFORMS
+            arm-linux
+            x86_64-linux
+
+          DEPENDENCIES
+            nokogiri
+            sorbet-static
+
+          BUNDLED WITH
+             #{Bundler::VERSION}
+        L
+
+        bundle "update"
+
+        expected_checksums = checksum_section do |c|
+          c.repo_gem gem_repo4, "nokogiri", "1.14.0", "x86_64-linux"
+          c.repo_gem gem_repo4, "sorbet-static", "0.5.10696", "x86_64-linux"
+        end
+
+        expect(lockfile).to eq <<~L
+          GEM
+            remote: #{file_uri_for(gem_repo4)}/
+            specs:
+              nokogiri (1.14.0-arm-linux)
+              nokogiri (1.14.0-x86_64-linux)
+              sorbet-static (0.5.10696-x86_64-linux)
+
+          PLATFORMS
+            arm-linux
+            x86_64-linux
+
+          DEPENDENCIES
+            nokogiri
+            sorbet-static
+
+          CHECKSUMS
+            #{expected_checksums}
+
+          BUNDLED WITH
+             #{Bundler::VERSION}
+        L
+      end
+    end
+  end
+
   private
 
   def setup_multiplatform_gem

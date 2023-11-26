@@ -977,6 +977,7 @@ module Bundler
       platforms.reverse_each do |platform|
         next if local_platform == platform ||
                 (@new_platform && platforms.last == platform) ||
+                @locked_platforms.include?(platform) ||
                 @path_changes ||
                 @dependency_changes ||
                 !@originally_locked_specs.incomplete_for_platform?(dependencies, platform)

@@ -1058,6 +1058,7 @@ module Bundler
       platforms.reverse_each do |platform|
         next if local_platform == platform ||
                 @new_platforms.include?(platform) ||
+                @locked_platforms.include?(platform) ||
                 @path_changes ||
                 @dependency_changes ||
                 @locked_spec_with_invalid_deps ||

@@ -766,23 +766,23 @@ class Gem::Installer
 
 require 'rubygems'
 #{gemdeps_load(spec.name)}
-version = "#{Gem::Requirement.default_prerelease}"
+"#{Gem::Requirement.default_prerelease}".tap { |version|
 
-str = ARGV.first
-if str
-  str = str.b[/\\A_(.*)_\\z/, 1]
-  if str and Gem::Version.correct?(str)
-    #{explicit_version_requirement(spec.name)}
-    ARGV.shift
+  if ARGV.first =~ /\\A_(.*)_\\z/
+    str = $1
+    if Gem::Version.correct?(str)
+      #{explicit_version_requirement(spec.name)}
+      ARGV.shift
+    end
   end
-end
 
-if Gem.respond_to?(:activate_bin_path)
-load Gem.activate_bin_path('#{spec.name}', '#{bin_file_name}', version)
-else
-gem #{spec.name.dump}, version
-load Gem.bin_path(#{spec.name.dump}, #{bin_file_name.dump}, version)
-end
+  if Gem.respond_to?(:activate_bin_path)
+    load Gem.activate_bin_path('#{spec.name}', '#{bin_file_name}', version)
+  else
+    gem #{spec.name.dump}, version
+    load Gem.bin_path(#{spec.name.dump}, #{bin_file_name.dump}, version)
+  end
+}
 TEXT
   end
 
@@ -799,9 +799,9 @@ TEXT
     code = "version = str"
     return code unless name == "bundler"
 
-    code += <<-TEXT
+    code << <<-TEXT
 
-    ENV['BUNDLER_VERSION'] = str
+      ENV['BUNDLER_VERSION'] = str
 TEXT
   end
 

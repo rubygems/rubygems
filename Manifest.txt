@@ -348,6 +348,7 @@ lib/rubygems.rb
 lib/rubygems/available_set.rb
 lib/rubygems/basic_specification.rb
 lib/rubygems/bundler_version_finder.rb
+lib/rubygems/ci_detector.rb
 lib/rubygems/command.rb
 lib/rubygems/command_manager.rb
 lib/rubygems/commands/build_command.rb

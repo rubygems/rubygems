@@ -83,7 +83,7 @@ namespace "test" do
   end
 end
 
-task :default => [:test, :spec]
+task :default => [:test]
 
 spec = Gem::Specification.load(File.expand_path("rubygems-update.gemspec", __dir__))
 v = spec.version

@@ -229,6 +229,7 @@ module Bundler
       platform = $4
 
       version = Gem::Version.new(version)
+      platform = platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
       full_name = Gem::NameTuple.new(name, version, platform).full_name
       return unless spec = @specs[full_name]
 

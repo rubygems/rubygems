@@ -103,7 +103,7 @@ module Bundler
     end
 
     def gem_checksum
-      return nil if Bundler.settings[:disable_checksum_validation]
+      return nil unless Bundler::Checksum.enabled?
       return nil unless source = @package.instance_variable_get(:@gem)
       return nil unless source.respond_to?(:with_read_io)
 

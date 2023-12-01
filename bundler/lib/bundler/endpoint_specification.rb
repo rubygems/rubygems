@@ -125,7 +125,7 @@ module Bundler
         next unless v
         case k.to_s
         when "checksum"
-          next if Bundler.settings[:disable_checksum_validation]
+          next unless Bundler::Checksum.enabled?
           begin
             @checksum = Checksum.from_api(v.last, @spec_fetcher.uri)
           rescue ArgumentError => e

@@ -67,6 +67,7 @@ module Bundler
     end
 
     def add_checksums
+      return unless Bundler::Checksum.enabled?
       checksums = definition.resolve.map do |spec|
         spec.source.checksum_store.to_lock(spec)
       end

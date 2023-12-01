@@ -9,6 +9,23 @@ module Bundler
     private_constant :DEFAULT_BLOCK_SIZE
 
     class << self
+      # This is used by the lockfile parser to enable checksum validation
+      # when checksums are found in the lockfile.
+      # We don't enable if the user has explicitly disabled checksum validation.
+      # TODO: This can be removed when checksums are enabled by default.
+      # The enable_checksum_validation setting may also be removed once this
+      # is opt-out instead of opt-in
+      def enable!
+        return if Bundler.settings[:disable_checksum_validation]
+        @enabled = true
+      end
+
+      def enabled?
+        return @enabled if instance_variable_defined?(:@enabled)
+        @enabled = false if Bundler.settings[:disable_checksum_validation]
+        @enabled ||= false
+      end
+
       def from_gem(io, pathname, algo = DEFAULT_ALGORITHM)
         digest = Bundler::SharedHelpers.digest(algo.upcase).new
         buf = String.new(:capacity => DEFAULT_BLOCK_SIZE)
@@ -177,7 +194,7 @@ module Bundler
       # This ensures a mismatch error where there are multiple top level sources
       # that contain the same gem with different checksums.
       def replace(spec, checksum)
-        return if Bundler.settings[:disable_checksum_validation]
+        return unless Bundler::Checksum.enabled?
         return unless checksum
 
         name_tuple = spec.name_tuple
@@ -193,7 +210,7 @@ module Bundler
       end
 
       def register(spec, checksum)
-        return if Bundler.settings[:disable_checksum_validation]
+        return unless Bundler::Checksum.enabled?
         return unless checksum
         register_checksum(spec.name_tuple, checksum)
       end

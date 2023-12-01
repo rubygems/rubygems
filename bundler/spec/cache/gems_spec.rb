@@ -290,6 +290,7 @@ RSpec.describe "bundle cache" do
     end
 
     it "raises an error when the gem is altered and produces a different checksum" do
+      pending "This test depends on lockfile checksums being enabled by default"
       cached_gem("rack-1.0.0").rmtree
       build_gem "rack", "1.0.0", :path => bundled_app("vendor/cache")
       simulate_new_machine

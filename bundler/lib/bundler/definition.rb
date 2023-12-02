@@ -92,6 +92,7 @@ module Bundler
         @locked_bundler_version = @locked_gems.bundler_version
         @locked_ruby_version = @locked_gems.ruby_version
         @originally_locked_specs = SpecSet.new(@locked_gems.specs)
+        @enable_checksums = @locked_gems.checksums
 
         if unlock != true
           @locked_deps    = @locked_gems.dependencies
@@ -112,7 +113,12 @@ module Bundler
         @originally_locked_specs = @locked_specs
         @locked_sources = []
         @locked_platforms = []
+        @enable_checksums = false
       end
+
+      # This is a temporary solution to make checksums disabled by default
+      # for all gemfiles that don't already explicitly include the feature.
+      Bundler::Checksum.enable! if @enable_checksums
 
       locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
       @multisource_allowed = locked_gem_sources.size == 1 && locked_gem_sources.first.multiple_remotes? && Bundler.frozen_bundle?

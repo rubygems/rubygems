@@ -17,13 +17,12 @@ module Bundler
       # is opt-out instead of opt-in
       def enable!
         return if Bundler.settings[:disable_checksum_validation]
-        @enabled = true
+        Bundler.settings.temporary(:enable_checksum_validation => true)
       end
 
       def enabled?
-        return @enabled if instance_variable_defined?(:@enabled)
-        @enabled = false if Bundler.settings[:disable_checksum_validation]
-        @enabled ||= false
+        !Bundler.settings[:disable_checksum_validation] &&
+          Bundler.settings[:enable_checksum_validation]
       end
 
       def from_gem(io, pathname, algo = DEFAULT_ALGORITHM)

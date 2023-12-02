@@ -22,6 +22,7 @@ module Bundler
       disable_local_revision_check
       disable_shared_gems
       disable_version_check
+      enable_checksum_validation
       force_ruby_platform
       forget_cli_options
       frozen

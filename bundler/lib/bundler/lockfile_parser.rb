@@ -113,7 +113,7 @@ module Bundler
         elsif line == CHECKSUMS
           # This is a temporary solution to make this feature disabled by default
           # for all gemfiles that don't already explicitly include the feature.
-          Bundler::Checksum.enable!
+          @checksums = true
           @parse_method = :parse_checksum
         elsif line == PLATFORMS
           @parse_method = :parse_platform

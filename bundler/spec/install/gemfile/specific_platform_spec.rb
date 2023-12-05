@@ -459,6 +459,44 @@ RSpec.describe "bundle install with specific platforms" do
     expect(err).to include(error_message).once
   end
 
+  it "does not resolve if a locked platform does not match any of available platform specific variants for a top level dependency" do
+    build_repo4 do
+      build_gem("sorbet-static", "0.5.6433") {|s| s.platform = "x86_64-linux" }
+      build_gem("sorbet-static", "0.5.6433") {|s| s.platform = "universal-darwin-20" }
+    end
+
+    gemfile <<~G
+      source "#{file_uri_for(gem_repo4)}"
+
+      lock_platform "arm64-darwin-21"
+
+      gem "sorbet-static", "0.5.6433"
+    G
+
+    error_message = <<~ERROR.strip
+      Could not find gems matching 'sorbet-static (= 0.5.6433)' valid for all resolution platforms (arm64-darwin-21, arm64-darwin-20) in rubygems repository #{file_uri_for(gem_repo4)}/ or installed locally.
+
+      The source contains the following gems matching 'sorbet-static (= 0.5.6433)':
+        * sorbet-static-0.5.6433-universal-darwin-20
+        * sorbet-static-0.5.6433-x86_64-linux
+    ERROR
+
+    # simulate a platform that is available and is not the locked platform
+    simulate_platform "arm64-darwin-20" do
+      bundle "lock", :raise_on_error => false
+    end
+
+    expect(err).to include(error_message).once
+
+    # Make sure it doesn't print error twice in verbose mode
+
+    simulate_platform "arm64-darwin-20" do
+      bundle "lock --verbose", :raise_on_error => false
+    end
+
+    expect(err).to include(error_message).once
+  end
+
   it "does not generate a lockfile if RUBY platform is forced and some gem has no RUBY variant available" do
     build_repo4 do
       build_gem("sorbet-static", "0.5.9889") {|s| s.platform = Gem::Platform.local }

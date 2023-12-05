@@ -1426,6 +1426,23 @@ end
         expect(out).to eq("The Gemfile's dependencies are satisfied")
       end
 
+      it "raises Gem::LoadError if evaluating the Gemfile activates the default versions of a gem" do
+        skip if exemptions.include?("date")
+
+        build_repo4 do
+          build_gem "date", "3.0.0"
+        end
+
+        install_gemfile <<-G
+          source "#{file_uri_for(gem_repo4)}"
+          require "date"
+          gem "date", "3.0.0"
+        G
+
+        ruby code, :raise_on_error => false, :env => { "RUBYOPT" => activation_warning_hack_rubyopt + " -rbundler/setup" }
+        expect(err).to eq("You have already activated date 3.3.3, but your Gemfile requires date 3.0.0.")
+      end
+
       Gem::Specification.select(&:default_gem?).map(&:name).each do |g|
         it "activates newer versions of #{g}", :ruby_repo do
           skip if exemptions.include?(g)

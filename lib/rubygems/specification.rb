@@ -134,7 +134,7 @@ class Gem::Specification < Gem::BasicSpecification
     strscan
     webrick
     zlib
-  ].freeze #:nodoc:
+  ].freeze # :nodoc:
 
   # :startdoc:
 

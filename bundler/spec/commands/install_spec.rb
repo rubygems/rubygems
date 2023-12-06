@@ -430,6 +430,95 @@ RSpec.describe "bundle install with gem sources" do
       expect(the_bundle).to include_gems("my-private-gem 1.0")
     end
 
+    it "throws a warning if a gem is added once in Gemfile and also inside a gemspec as a development dependency, with different requirements" do
+      build_lib "my-gem", :path => bundled_app do |s|
+        s.add_development_dependency "rubocop", "~> 1.36.0"
+      end
+
+      build_repo4 do
+        build_gem "rubocop", "1.36.0"
+        build_gem "rubocop", "1.37.1"
+      end
+
+      gemfile <<~G
+        source "#{file_uri_for(gem_repo4)}"
+
+        gemspec
+
+        gem "rubocop", group: :development
+      G
+
+      bundle :install
+
+      expect(err).to include("A gemspec development dependency (rubocop, ~> 1.36.0) is being overridden by a Gemfile dependency (rubocop, >= 0).")
+      expect(err).to include("This behaviour may change in the future. Please remove either of them, or make sure they both have the same requirement")
+
+      # This is not the best behavior I believe, it would be better if both
+      # requirements are considered if they are compatible, and a version
+      # satisfying both is chosen. But not sure about changing it right now, so
+      # I went with a warning for the time being.
+      expect(the_bundle).to include_gems("rubocop 1.37.1")
+    end
+
+    it "does not warn if a gem is added once in Gemfile and also inside a gemspec as a development dependency, with same requirements, and different sources" do
+      build_lib "my-gem", :path => bundled_app do |s|
+        s.add_development_dependency "activesupport"
+      end
+
+      build_repo4 do
+        build_gem "activesupport"
+      end
+
+      build_git "activesupport", "1.0", :path => lib_path("activesupport")
+
+      install_gemfile <<~G
+        source "#{file_uri_for(gem_repo4)}"
+
+        gemspec
+
+        gem "activesupport", :git => "#{file_uri_for(lib_path("activesupport"))}"
+      G
+
+      expect(err).to be_empty
+      expect(the_bundle).to include_gems "activesupport 1.0", :source => "git@#{lib_path("activesupport")}"
+
+      # if the Gemfile dependency is specified first
+      install_gemfile <<~G
+        source "#{file_uri_for(gem_repo4)}"
+
+        gem "activesupport", :git => "#{file_uri_for(lib_path("activesupport"))}"
+
+        gemspec
+      G
+
+      expect(err).to be_empty
+      expect(the_bundle).to include_gems "activesupport 1.0", :source => "git@#{lib_path("activesupport")}"
+    end
+
+    it "considers both dependencies for resolution if a gem is added once in Gemfile and also inside a local gemspec as a runtime dependency, with different requirements" do
+      build_lib "my-gem", :path => bundled_app do |s|
+        s.add_dependency "rubocop", "~> 1.36.0"
+      end
+
+      build_repo4 do
+        build_gem "rubocop", "1.36.0"
+        build_gem "rubocop", "1.37.1"
+      end
+
+      gemfile <<~G
+        source "#{file_uri_for(gem_repo4)}"
+
+        gemspec
+
+        gem "rubocop"
+      G
+
+      bundle :install
+
+      expect(err).to be_empty
+      expect(the_bundle).to include_gems("rubocop 1.36.0")
+    end
+
     it "throws an error if a gem is added twice in Gemfile when version of one dependency is not specified" do
       install_gemfile <<-G, :raise_on_error => false
         source "#{file_uri_for(gem_repo2)}"
@@ -533,6 +622,7 @@ RSpec.describe "bundle install with gem sources" do
       end
 
       it "writes current Ruby version to Gemfile.lock" do
+        checksums = checksums_section_when_existing
         expect(lockfile).to eq <<~L
          GEM
            remote: #{file_uri_for(gem_repo1)}/
@@ -542,9 +632,7 @@ RSpec.describe "bundle install with gem sources" do
            #{lockfile_platforms}
 
          DEPENDENCIES
-
-         CHECKSUMS
-
+         #{checksums}
          RUBY VERSION
             #{Bundler::RubyVersion.system}
 
@@ -559,6 +647,8 @@ RSpec.describe "bundle install with gem sources" do
           source "#{file_uri_for(gem_repo1)}"
         G
 
+        checksums = checksums_section_when_existing
+
         expect(lockfile).to eq <<~L
          GEM
            remote: #{file_uri_for(gem_repo1)}/
@@ -568,9 +658,7 @@ RSpec.describe "bundle install with gem sources" do
            #{lockfile_platforms}
 
          DEPENDENCIES
-
-         CHECKSUMS
-
+         #{checksums}
          RUBY VERSION
             #{Bundler::RubyVersion.system}
 
@@ -985,11 +1073,11 @@ RSpec.describe "bundle install with gem sources" do
         gem "loofah", "~> 2.12.0"
       G
 
-      checksums = checksum_section do |c|
-        c.repo_gem gem_repo4, "crass", "1.0.6"
-        c.repo_gem gem_repo4, "loofah", "2.12.0"
-        c.repo_gem gem_repo4, "nokogiri", "1.12.4", "x86_64-darwin"
-        c.repo_gem gem_repo4, "racca", "1.5.2"
+      checksums = checksums_section do |c|
+        c.checksum gem_repo4, "crass", "1.0.6"
+        c.checksum gem_repo4, "loofah", "2.12.0"
+        c.checksum gem_repo4, "nokogiri", "1.12.4", "x86_64-darwin"
+        c.checksum gem_repo4, "racca", "1.5.2"
       end
 
       lockfile <<-L
@@ -1010,10 +1098,7 @@ RSpec.describe "bundle install with gem sources" do
 
         DEPENDENCIES
           loofah (~> 2.12.0)
-
-        CHECKSUMS
-          #{checksums}
-
+        #{checksums}
         RUBY VERSION
            #{Bundler::RubyVersion.system}
 
@@ -1029,12 +1114,12 @@ RSpec.describe "bundle install with gem sources" do
         bundle "install", :artifice => "compact_index"
       end
 
-      expected_checksums = checksum_section do |c|
-        c.repo_gem gem_repo4, "crass", "1.0.6"
-        c.repo_gem gem_repo4, "loofah", "2.12.0"
-        c.repo_gem gem_repo4, "nokogiri", "1.12.4", "x86_64-darwin"
-        c.repo_gem gem_repo4, "nokogiri", "1.12.4", "x86_64-linux"
-        c.repo_gem gem_repo4, "racca", "1.5.2"
+      checksums = checksums_section_when_existing do |c|
+        c.checksum gem_repo4, "crass", "1.0.6"
+        c.checksum gem_repo4, "loofah", "2.12.0"
+        c.checksum gem_repo4, "nokogiri", "1.12.4", "x86_64-darwin"
+        c.checksum gem_repo4, "racca", "1.5.2"
+        c.checksum gem_repo4, "nokogiri", "1.12.4", "x86_64-linux"
       end
 
       expect(lockfile).to eq <<~L
@@ -1057,10 +1142,7 @@ RSpec.describe "bundle install with gem sources" do
 
         DEPENDENCIES
           loofah (~> 2.12.0)
-
-        CHECKSUMS
-          #{expected_checksums}
-
+        #{checksums}
         RUBY VERSION
            #{Bundler::RubyVersion.system}
 
@@ -1232,6 +1314,16 @@ RSpec.describe "bundle install with gem sources" do
     it "does not install, but raises a resolution error" do
       bundle "install", :raise_on_error => false
       expect(err).to include("Could not find compatible versions")
+    end
+  end
+
+  context "when --jobs option given" do
+    before do
+      install_gemfile "source \"#{file_uri_for(gem_repo1)}\"", :jobs => 1
+    end
+
+    it "does not save the flag to config" do
+      expect(bundled_app(".bundle/config")).not_to exist
     end
   end
 end

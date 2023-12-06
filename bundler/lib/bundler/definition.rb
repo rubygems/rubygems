@@ -18,7 +18,8 @@ module Bundler
       :platforms,
       :ruby_version,
       :lockfile,
-      :gemfiles
+      :gemfiles,
+      :locked_checksums
     )
 
     # Given a gemfile and lockfile creates a Bundler definition
@@ -84,7 +85,7 @@ module Bundler
       @new_platform = nil
       @removed_platform = nil
 
-      if lockfile && File.exist?(lockfile)
+      if lockfile_exists?
         @lockfile_contents = Bundler.read_file(lockfile)
         @locked_gems = LockfileParser.new(@lockfile_contents)
         @locked_platforms = @locked_gems.platforms
@@ -92,6 +93,7 @@ module Bundler
         @locked_bundler_version = @locked_gems.bundler_version
         @locked_ruby_version = @locked_gems.ruby_version
         @originally_locked_specs = SpecSet.new(@locked_gems.specs)
+        @locked_checksums = @locked_gems.checksums
 
         if unlock != true
           @locked_deps    = @locked_gems.dependencies
@@ -112,6 +114,7 @@ module Bundler
         @originally_locked_specs = @locked_specs
         @locked_sources = []
         @locked_platforms = []
+        @locked_checksums = nil
       end
 
       locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
@@ -245,8 +248,9 @@ module Bundler
     end
 
     def filter_relevant(dependencies)
+      platforms_array = [generic_local_platform].freeze
       dependencies.select do |d|
-        d.should_include? && !d.gem_platforms([generic_local_platform]).empty?
+        d.should_include? && !d.gem_platforms(platforms_array).empty?
       end
     end
 
@@ -270,9 +274,15 @@ module Bundler
 
     def dependencies_for(groups)
       groups.map!(&:to_sym)
-      current_dependencies.reject do |d|
-        (d.groups & groups).empty?
+      deps = current_dependencies # always returns a new array
+      deps.select! do |d|
+        if RUBY_VERSION >= "3.1"
+          d.groups.intersect?(groups)
+        else
+          !(d.groups & groups).empty?
+        end
       end
+      deps
     end
 
     # Resolve all the dependencies specified in Gemfile. It ensures that
@@ -300,6 +310,10 @@ module Bundler
         Bundler.ui.debug "Found changes from the lockfile, re-resolving dependencies because #{change_reason}"
         start_resolution
       end
+    end
+
+    def should_complete_platforms?
+      !lockfile_exists? && generic_local_platform_is_ruby? && !Bundler.settings[:force_ruby_platform]
     end
 
     def spec_git_paths
@@ -491,6 +505,10 @@ module Bundler
 
     private
 
+    def lockfile_exists?
+      lockfile && File.exist?(lockfile)
+    end
+
     def resolver
       @resolver ||= Resolver.new(resolution_packages, gem_version_promoter)
     end
@@ -567,11 +585,12 @@ module Bundler
     end
 
     def start_resolution
-      result = resolver.start
+      result = SpecSet.new(resolver.start)
 
       @resolved_bundler_version = result.find {|spec| spec.name == "bundler" }&.version
+      @platforms = result.complete_platforms!(platforms) if should_complete_platforms?
 
-      SpecSet.new(SpecSet.new(result).for(dependencies, false, @platforms))
+      SpecSet.new(result.for(dependencies, false, @platforms))
     end
 
     def precompute_source_requirements_for_indirect_dependencies?
@@ -592,7 +611,7 @@ module Bundler
     end
 
     def current_ruby_platform_locked?
-      return false unless generic_local_platform == Gem::Platform::RUBY
+      return false unless generic_local_platform_is_ruby?
       return false if Bundler.settings[:force_ruby_platform] && !@platforms.include?(Gem::Platform::RUBY)
 
       current_platform_locked?
@@ -751,7 +770,7 @@ module Bundler
       sources.all_sources.each do |source|
         # has to be done separately, because we want to keep the locked checksum
         # store for a source, even when doing a full update
-        if @locked_gems && locked_source = @locked_gems.sources.find {|s| s == source && !s.equal?(source) }
+        if @locked_checksums && @locked_gems && locked_source = @locked_gems.sources.find {|s| s == source && !s.equal?(source) }
           source.checksum_store.merge!(locked_source.checksum_store)
         end
         # If the source is unlockable and the current command allows an unlock of
@@ -963,7 +982,7 @@ module Bundler
     def remove_invalid_platforms!(dependencies)
       return if Bundler.frozen_bundle?
 
-      platforms.each do |platform|
+      platforms.reverse_each do |platform|
         next if local_platform == platform ||
                 (@new_platform && platforms.last == platform) ||
                 @path_changes ||

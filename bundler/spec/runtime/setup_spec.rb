@@ -194,7 +194,7 @@ RSpec.describe "Bundler.setup" do
     G
 
     ruby <<-R
-      require '#{entrypoint}'
+      require 'bundler'
 
       begin
         Bundler.setup
@@ -441,7 +441,7 @@ RSpec.describe "Bundler.setup" do
       break_git!
 
       ruby <<-R
-        require "#{entrypoint}"
+        require "bundler"
 
         begin
           Bundler.setup
@@ -1187,7 +1187,7 @@ end
     context "is not present" do
       it "does not change the lock" do
         lockfile lock_with(nil)
-        ruby "require '#{entrypoint}/setup'"
+        ruby "require 'bundler/setup'"
         expect(lockfile).to eq lock_with(nil)
       end
     end
@@ -1206,7 +1206,7 @@ end
       it "does not change the lock" do
         system_gems "bundler-1.10.1"
         lockfile lock_with("1.10.1")
-        ruby "require '#{entrypoint}/setup'"
+        ruby "require 'bundler/setup'"
         expect(lockfile).to eq lock_with("1.10.1")
       end
     end
@@ -1216,6 +1216,10 @@ end
     let(:ruby_version) { nil }
 
     def lock_with(ruby_version = nil)
+      checksums = checksums_section do |c|
+        c.checksum gem_repo1, "rack", "1.0.0"
+      end
+
       lock = <<~L
         GEM
           remote: #{file_uri_for(gem_repo1)}/
@@ -1227,9 +1231,7 @@ end
 
         DEPENDENCIES
           rack
-
-        CHECKSUMS
-          #{checksum_for_repo_gem gem_repo1, "rack", "1.0.0"}
+        #{checksums}
       L
 
       if ruby_version
@@ -1279,8 +1281,6 @@ end
 
   describe "with gemified standard libraries" do
     it "does not load Digest", :ruby_repo do
-      skip "Only for Ruby 3.0+" unless RUBY_VERSION >= "3.0"
-
       build_git "bar", :gemspec => false do |s|
         s.write "lib/bar/version.rb", %(BAR_VERSION = '1.0')
         s.write "bar.gemspec", <<-G
@@ -1306,7 +1306,7 @@ end
       bundle :install
 
       ruby <<-RUBY
-        require '#{entrypoint}/setup'
+        require 'bundler/setup'
         puts defined?(::Digest) ? "Digest defined" : "Digest undefined"
         require 'digest'
       RUBY
@@ -1316,7 +1316,7 @@ end
     it "does not load Psych" do
       gemfile "source \"#{file_uri_for(gem_repo1)}\""
       ruby <<-RUBY
-        require '#{entrypoint}/setup'
+        require 'bundler/setup'
         puts defined?(Psych::VERSION) ? Psych::VERSION : "undefined"
         require 'psych'
         puts Psych::VERSION
@@ -1339,9 +1339,7 @@ end
 
     describe "default gem activation" do
       let(:exemptions) do
-        exempts = %w[did_you_mean bundler]
-        exempts << "uri" if Gem.ruby_version >= Gem::Version.new("2.7")
-        exempts << "pathname" if Gem.ruby_version >= Gem::Version.new("3.0")
+        exempts = %w[did_you_mean bundler uri pathname]
         exempts << "etc" if Gem.ruby_version < Gem::Version.new("3.2") && Gem.win_platform?
         exempts << "set" unless Gem.rubygems_version >= Gem::Version.new("3.2.6")
         exempts << "tsort" unless Gem.rubygems_version >= Gem::Version.new("3.2.31")
@@ -1508,12 +1506,6 @@ end
 
       expect(last_command.stdboth).not_to include "FAIL"
       expect(err).to include "private method `require'"
-    end
-
-    it "takes care of requiring rubygems" do
-      sys_exec("#{Gem.ruby} -I#{lib_dir} -rbundler/setup -e'puts true'", :env => { "RUBYOPT" => opt_add("--disable=gems", ENV["RUBYOPT"]) })
-
-      expect(last_command.stdboth).to eq("true")
     end
 
     it "memoizes initial set of specs when requiring bundler/setup, so that even if further code mutates dependencies, Bundler.definition.specs is not affected" do

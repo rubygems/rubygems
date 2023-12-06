@@ -226,7 +226,8 @@ class Gem::Installer
       line = io.gets
       shebang = /^#!.*ruby/
 
-      if load_relative_enabled?
+      # TruffleRuby uses a bash prelude in default launchers
+      if load_relative_enabled? || RUBY_ENGINE == "truffleruby"
         until line.nil? || line =~ shebang do
           line = io.gets
         end
@@ -350,6 +351,9 @@ class Gem::Installer
     run_post_install_hooks
 
     spec
+  rescue Errno::EACCES => e
+    # Permission denied - /path/to/foo
+    raise Gem::FilePermissionError, e.message.split(" - ").last
   end
 
   def run_pre_install_hooks # :nodoc:
@@ -390,7 +394,7 @@ class Gem::Installer
       specs = []
 
       Gem::Util.glob_files_in_dir("*.gemspec", File.join(gem_home, "specifications")).each do |path|
-        spec = Gem::Specification.load path.tap(&Gem::UNTAINT)
+        spec = Gem::Specification.load path
         specs << spec if spec
       end
 
@@ -489,7 +493,6 @@ class Gem::Installer
     ensure_writable_dir @bin_dir
 
     spec.executables.each do |filename|
-      filename.tap(&Gem::UNTAINT)
       bin_path = File.join gem_dir, spec.bindir, filename
       next unless File.exist? bin_path
 
@@ -631,7 +634,6 @@ class Gem::Installer
 
   def ensure_loadable_spec
     ruby = spec.to_ruby_for_cache
-    ruby.tap(&Gem::UNTAINT)
 
     begin
       eval ruby
@@ -673,8 +675,17 @@ class Gem::Installer
 
     @build_args = options[:build_args]
 
-    @gem_home = @install_dir
-    @gem_home ||= options[:user_install] ? Gem.user_dir : Gem.dir
+    @gem_home = @install_dir || Gem.dir
+
+    # `--build-root` overrides `--user-install` and auto-user-install
+    if @build_root.nil? && @install_dir.nil?
+      if options[:user_install]
+        @gem_home = Gem.user_dir
+      elsif !ENV.key?("GEM_HOME") && (File.exist?(Gem.dir) && !File.writable?(Gem.dir))
+        say "Defaulting to user installation because default installation directory (#{Gem.dir}) is not writable."
+        @gem_home = Gem.user_dir
+      end
+    end
 
     # If the user has asked for the gem to be installed in a directory that is
     # the system gem directory, then use the system bin directory, else create
@@ -717,7 +728,6 @@ class Gem::Installer
 
   def verify_gem_home # :nodoc:
     FileUtils.mkdir_p gem_home, :mode => options[:dir_mode] && 0o755
-    raise Gem::FilePermissionError, gem_home unless File.writable?(gem_home)
   end
 
   def verify_spec

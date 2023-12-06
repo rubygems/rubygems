@@ -157,9 +157,8 @@ RSpec.describe "compact index api" do
 
     bundle :install, :verbose => true, :artifice => "compact_index_checksum_mismatch"
     expect(out).to include("Fetching gem metadata from #{source_uri}")
-    expect(out).to include <<-'WARN'
-The checksum of /versions does not match the checksum provided by the server! Something is wrong (local checksum is "\"d41d8cd98f00b204e9800998ecf8427e\"", was expecting "\"123\"").
-    WARN
+    expect(out).to include("The checksum of /versions does not match the checksum provided by the server!")
+    expect(out).to include('Calculated checksums {"sha-256"=>"8KfZiM/fszVkqhP/m5s9lvE6M9xKu4I1bU4Izddp5Ms="} did not match expected {"sha-256"=>"ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0="}')
     expect(the_bundle).to include_gems "rack 1.0.0"
   end
 
@@ -169,10 +168,12 @@ The checksum of /versions does not match the checksum provided by the server! So
       gem "rack"
     G
 
-    versions = File.join(Bundler.rubygems.user_home, ".bundle", "cache", "compact_index",
-      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "versions")
-    FileUtils.mkdir_p(File.dirname(versions))
-    FileUtils.touch(versions)
+    versions = Pathname.new(Bundler.rubygems.user_home).join(
+      ".bundle", "cache", "compact_index",
+      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "versions"
+    )
+    versions.dirname.mkpath
+    versions.write("created_at")
     FileUtils.chmod("-r", versions)
 
     bundle :install, :artifice => "compact_index", :raise_on_error => false
@@ -416,7 +417,7 @@ The checksum of /versions does not match the checksum provided by the server! So
       FileUtils.rm_rf Dir[gem_repo2("gems/foo-*.gem")]
     end
 
-    install_gemfile <<-G, :artifice => "compact_index_extra_missing", :env => env_for_missing_prerelease_default_gem_activation
+    install_gemfile <<-G, :artifice => "compact_index_extra_missing"
       source "#{source_uri}"
       source "#{source_uri}/extra" do
         gem "back_deps"
@@ -436,7 +437,7 @@ The checksum of /versions does not match the checksum provided by the server! So
       FileUtils.rm_rf Dir[gem_repo4("gems/foo-*.gem")]
     end
 
-    install_gemfile <<-G, :artifice => "compact_index_extra_api_missing", :env => env_for_missing_prerelease_default_gem_activation
+    install_gemfile <<-G, :artifice => "compact_index_extra_api_missing"
       source "#{source_uri}"
       source "#{source_uri}/extra" do
         gem "back_deps"
@@ -772,14 +773,23 @@ The checksum of /versions does not match the checksum provided by the server! So
     end
   end
 
-  it "performs partial update with a non-empty range" do
+  it "performs update with etag not-modified" do
+    versions_etag = Pathname.new(Bundler.rubygems.user_home).join(
+      ".bundle", "cache", "compact_index",
+      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "versions.etag"
+    )
+    expect(versions_etag.file?).to eq(false)
+
     gemfile <<-G
       source "#{source_uri}"
       gem 'rack', '0.9.1'
     G
 
-    # Initial install creates the cached versions file
+    # Initial install creates the cached versions file and etag file
     bundle :install, :artifice => "compact_index"
+
+    expect(versions_etag.file?).to eq(true)
+    previous_content = versions_etag.binread
 
     # Update the Gemfile so we can check subsequent install was successful
     gemfile <<-G
@@ -787,8 +797,59 @@ The checksum of /versions does not match the checksum provided by the server! So
       gem 'rack', '1.0.0'
     G
 
-    # Second install should make only a partial request to /versions
-    bundle :install, :artifice => "compact_index_partial_update"
+    # Second install should match etag
+    bundle :install, :artifice => "compact_index_etag_match"
+
+    expect(versions_etag.binread).to eq(previous_content)
+    expect(the_bundle).to include_gems "rack 1.0.0"
+  end
+
+  it "performs full update when range is ignored" do
+    gemfile <<-G
+      source "#{source_uri}"
+      gem 'rack', '0.9.1'
+    G
+
+    # Initial install creates the cached versions file and etag file
+    bundle :install, :artifice => "compact_index"
+
+    gemfile <<-G
+      source "#{source_uri}"
+      gem 'rack', '1.0.0'
+    G
+
+    versions = Pathname.new(Bundler.rubygems.user_home).join(
+      ".bundle", "cache", "compact_index",
+      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "versions"
+    )
+    # Modify the cached file. The ranged request will be based on this but,
+    # in this test, the range is ignored so this gets overwritten, allowing install.
+    versions.write "ruining this file"
+
+    bundle :install, :artifice => "compact_index_range_ignored"
+
+    expect(the_bundle).to include_gems "rack 1.0.0"
+  end
+
+  it "performs partial update with a non-empty range" do
+    build_repo4 do
+      build_gem "rack", "0.9.1"
+    end
+
+    # Initial install creates the cached versions file
+    install_gemfile <<-G, :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+      source "#{source_uri}"
+      gem 'rack', '0.9.1'
+    G
+
+    update_repo4 do
+      build_gem "rack", "1.0.0"
+    end
+
+    install_gemfile <<-G, :artifice => "compact_index_partial_update", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+      source "#{source_uri}"
+      gem 'rack', '1.0.0'
+    G
 
     expect(the_bundle).to include_gems "rack 1.0.0"
   end
@@ -799,19 +860,21 @@ The checksum of /versions does not match the checksum provided by the server! So
       gem 'rack'
     G
 
-    # Create an empty file to trigger a partial download
-    versions = File.join(Bundler.rubygems.user_home, ".bundle", "cache", "compact_index",
-      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "versions")
-    FileUtils.mkdir_p(File.dirname(versions))
-    FileUtils.touch(versions)
+    # Create a partial cache versions file
+    versions = Pathname.new(Bundler.rubygems.user_home).join(
+      ".bundle", "cache", "compact_index",
+      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "versions"
+    )
+    versions.dirname.mkpath
+    versions.write("created_at")
 
     bundle :install, :artifice => "compact_index_concurrent_download"
 
-    expect(File.read(versions)).to start_with("created_at")
+    expect(versions.read).to start_with("created_at")
     expect(the_bundle).to include_gems "rack 1.0.0"
   end
 
-  it "performs full update if server endpoints serve partial content responses but don't have incremental content and provide no Etag" do
+  it "performs a partial update that fails digest check, then a full update" do
     build_repo4 do
       build_gem "rack", "0.9.1"
     end
@@ -825,7 +888,29 @@ The checksum of /versions does not match the checksum provided by the server! So
       build_gem "rack", "1.0.0"
     end
 
-    install_gemfile <<-G, :artifice => "compact_index_partial_update_no_etag_not_incremental", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+    install_gemfile <<-G, :artifice => "compact_index_partial_update_bad_digest", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+      source "#{source_uri}"
+      gem 'rack', '1.0.0'
+    G
+
+    expect(the_bundle).to include_gems "rack 1.0.0"
+  end
+
+  it "performs full update if server endpoints serve partial content responses but don't have incremental content and provide no digest" do
+    build_repo4 do
+      build_gem "rack", "0.9.1"
+    end
+
+    install_gemfile <<-G, :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+      source "#{source_uri}"
+      gem 'rack', '0.9.1'
+    G
+
+    update_repo4 do
+      build_gem "rack", "1.0.0"
+    end
+
+    install_gemfile <<-G, :artifice => "compact_index_partial_update_no_digest_not_incremental", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
       source "#{source_uri}"
       gem 'rack', '1.0.0'
     G
@@ -847,7 +932,7 @@ The checksum of /versions does not match the checksum provided by the server! So
     expected_rack_info_content = File.read(rake_info_path)
 
     # Modify the cache files. We expect them to be reset to the normal ones when we re-run :install
-    File.open(rake_info_path, "w") {|f| f << (expected_rack_info_content + "this is different") }
+    File.open(rake_info_path, "a") {|f| f << "this is different" }
 
     # Update the Gemfile so the next install does its normal things
     gemfile <<-G
@@ -876,8 +961,25 @@ The checksum of /versions does not match the checksum provided by the server! So
   end
 
   describe "checksum validation" do
+    before do
+      lockfile <<-L
+        GEM
+          remote: #{source_uri}
+          specs:
+            rack (1.0.0)
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+        #{checksums_section}
+        BUNDLED WITH
+            #{Bundler::VERSION}
+      L
+    end
+
     it "handles checksums from the server in base64" do
-      api_checksum = checksum_for_repo_gem(gem_repo1, "rack", "1.0.0").split("sha256=").last
+      api_checksum = checksum_digest(gem_repo1, "rack", "1.0.0")
       rack_checksum = [[api_checksum].pack("H*")].pack("m0")
       install_gemfile <<-G, :artifice => "compact_index", :env => { "BUNDLER_SPEC_RACK_CHECKSUM" => rack_checksum }
         source "#{source_uri}"
@@ -894,8 +996,6 @@ The checksum of /versions does not match the checksum provided by the server! So
         gem "rack"
       G
 
-      api_checksum = checksum_for_repo_gem(gem_repo1, "rack", "1.0.0").split("sha256=").last
-
       gem_path = if Bundler.feature_flag.global_gem_cache?
         default_cache_path.dirname.join("cache", "gems", "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "rack-1.0.0.gem")
       else
@@ -907,7 +1007,7 @@ The checksum of /versions does not match the checksum provided by the server! So
         Bundler found mismatched checksums. This is a potential security risk.
           rack (1.0.0) sha256=2222222222222222222222222222222222222222222222222222222222222222
             from the API at http://localgemserver.test/
-          rack (1.0.0) sha256=#{api_checksum}
+          #{checksum_to_lock(gem_repo1, "rack", "1.0.0")}
             from the gem at #{gem_path}
 
         If you trust the API at http://localgemserver.test/, to resolve this issue you can:
@@ -972,6 +1072,7 @@ Running `bundle update rails` should fix the problem.
     G
     gem_command "uninstall activemerchant"
     bundle "update rails", :artifice => "compact_index"
-    expect(lockfile.scan(/activemerchant \(/).size).to eq(2) # Once in the specs, and once in CHECKSUMS
+    count = lockfile.match?("CHECKSUMS") ? 2 : 1 # Once in the specs, and once in CHECKSUMS
+    expect(lockfile.scan(/activemerchant \(/).size).to eq(count)
   end
 end

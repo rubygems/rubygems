@@ -42,8 +42,7 @@ module Spec
     end
 
     def dev_gemfile
-      name = RUBY_VERSION.start_with?("2.6") ? "dev26_gems.rb" : "dev_gems.rb"
-      @dev_gemfile ||= tool_dir.join(name)
+      @dev_gemfile ||= tool_dir.join("dev_gems.rb")
     end
 
     def bindir
@@ -226,13 +225,6 @@ module Spec
       root.join("lib")
     end
 
-    # Sometimes rubygems version under test does not include
-    # https://github.com/rubygems/rubygems/pull/2728 and will not always end up
-    # activating the current bundler. In that case, require bundler absolutely.
-    def entrypoint
-      Gem.rubygems_version < Gem::Version.new("3.1.a") ? "#{lib_dir}/bundler" : "bundler"
-    end
-
     def global_plugin_gem(*args)
       home ".bundle", "plugin", "gems", *args
     end
@@ -292,11 +284,11 @@ module Spec
     end
 
     def rubocop_gemfile_basename
-      tool_dir.join(RUBY_VERSION.start_with?("2.6") ? "rubocop26_gems.rb" : "rubocop_gems.rb")
+      tool_dir.join("rubocop_gems.rb")
     end
 
     def standard_gemfile_basename
-      tool_dir.join(RUBY_VERSION.start_with?("2.6") ? "standard26_gems.rb" : "standard_gems.rb")
+      tool_dir.join("standard_gems.rb")
     end
 
     def tool_dir

@@ -20,6 +20,7 @@ bundler/lib/bundler/.document
 bundler/lib/bundler/build_metadata.rb
 bundler/lib/bundler/capistrano.rb
 bundler/lib/bundler/checksum.rb
+bundler/lib/bundler/ci_detector.rb
 bundler/lib/bundler/cli.rb
 bundler/lib/bundler/cli/add.rb
 bundler/lib/bundler/cli/binstubs.rb
@@ -348,6 +349,7 @@ lib/rubygems.rb
 lib/rubygems/available_set.rb
 lib/rubygems/basic_specification.rb
 lib/rubygems/bundler_version_finder.rb
+lib/rubygems/ci_detector.rb
 lib/rubygems/command.rb
 lib/rubygems/command_manager.rb
 lib/rubygems/commands/build_command.rb

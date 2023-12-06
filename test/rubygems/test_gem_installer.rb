@@ -821,7 +821,7 @@ gem 'other', version
     File.chmod(0o555, Gem.plugindir)
     system_path = File.join(Gem.plugindir, "a_plugin.rb")
     user_path = File.join(Gem.plugindir(Gem.user_dir), "a_plugin.rb")
-    installer = util_installer spec, Gem.dir, :user
+    installer = Gem::Installer.at spec.cache_file, :user_install => true, :force => true
 
     assert_equal spec, installer.install
 
@@ -993,6 +993,19 @@ end
     assert_equal File.join(Gem.user_dir, "gems", @spec.full_name),
                  installer.gem_dir
     assert_equal @tempdir, installer.bin_dir
+  end
+
+  def test_install_dir_takes_precedence_to_user_install
+    gemhome2 = "#{@gemhome}2"
+
+    @gem = setup_base_gem
+
+    installer =
+      Gem::Installer.at @gem, :install_dir => gemhome2, :user_install => true
+    installer.install
+
+    assert_path_exist File.join(gemhome2, "gems", @spec.full_name)
+    assert_path_not_exist File.join(Gem.user_dir, "gems", @spec.full_name)
   end
 
   def test_install
@@ -1270,6 +1283,26 @@ end
     installer = Gem::Installer.at @gem, :build_root => build_root
 
     assert_equal @spec, installer.install
+  end
+
+  def test_install_build_root_when_gem_home_not_writable_does_not_fallback_to_user_install_inside_build_root
+    build_root = File.join(@tempdir, "build_root")
+
+    orig_gem_home = ENV.delete("GEM_HOME")
+
+    @gem = setup_base_gem
+
+    FileUtils.chmod "-w", @gemhome
+
+    installer = Gem::Installer.at @gem, :build_root => build_root
+
+    assert_equal @spec, installer.install
+
+    build_root_path = File.join(build_root, @gemhome.gsub(/^[a-zA-Z]:/, ""))
+    assert File.exist?(build_root_path), "gem not written to build_root"
+  ensure
+    FileUtils.chmod "+w", @gemhome
+    ENV["GEM_HOME"] = orig_gem_home
   end
 
   def test_install_missing_dirs
@@ -1940,6 +1973,26 @@ end
     assert_equal "  Bin dir: #{bin_dir}", errors.shift
     assert_equal "  Gem home: #{gem_home}", errors.shift
     assert_equal "  Plugins dir: #{plugins_dir}", errors.shift
+  end
+
+  def test_process_options_fallback_to_user_install_when_gem_home_not_writable
+    if Process.uid.zero?
+      pend("skipped in root privilege")
+      return
+    end
+
+    orig_gem_home = ENV.delete("GEM_HOME")
+
+    @gem = setup_base_gem
+
+    FileUtils.chmod 0o000, @gemhome
+
+    use_ui(@ui) { Gem::Installer.at @gem }
+
+    assert_equal "Defaulting to user installation because default installation directory (#{@gemhome}) is not writable.", @ui.output.strip
+  ensure
+    FileUtils.chmod 0o755, @gemhome
+    ENV["GEM_HOME"] = orig_gem_home
   end
 
   def test_shebang_arguments

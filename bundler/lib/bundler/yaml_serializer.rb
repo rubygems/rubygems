@@ -17,7 +17,11 @@ module Bundler
         if v.is_a?(Hash)
           yaml << dump_hash(v).gsub(/^(?!$)/, "  ") # indent all non-empty lines
         elsif v.is_a?(Array) # Expected to be array of strings
-          yaml << "\n- " << v.map {|s| s.to_s.gsub(/\s+/, " ").inspect }.join("\n- ") << "\n"
+          if v.empty?
+            yaml << " []\n"
+          else
+            yaml << "\n- " << v.map {|s| s.to_s.gsub(/\s+/, " ").inspect }.join("\n- ") << "\n"
+          end
         else
           yaml << " " << v.to_s.gsub(/\s+/, " ").inspect << "\n"
         end
@@ -32,7 +36,7 @@ module Bundler
       (.*) # value
       \1 # matching closing quote
       $
-    /xo.freeze
+    /xo
 
     HASH_REGEX = /
       ^
@@ -44,14 +48,14 @@ module Bundler
       (.*) # value
       \3 # matching closing quote
       $
-    /xo.freeze
+    /xo
 
     def load(str)
       res = {}
       stack = [res]
       last_hash = nil
       last_empty_key = nil
-      str.split(/\r?\n/).each do |line|
+      str.split(/\r?\n/) do |line|
         if match = HASH_REGEX.match(line)
           indent, key, quote, val = match.captures
           convert_to_backward_compatible_key!(key)
@@ -63,6 +67,7 @@ module Bundler
             last_empty_key = key
             last_hash = stack[depth]
           else
+            val = [] if val == "[]" # empty array
             stack[depth][key] = val
           end
         elsif match = ARRAY_REGEX.match(line)

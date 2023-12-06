@@ -19,6 +19,7 @@ module Bundler
         @allow_remote = false
         @allow_cached = false
         @allow_local = options["allow_local"] || false
+        @checksum_store = Checksum::Store.new
 
         Array(options["remotes"]).reverse_each {|r| add_remote(r) }
       end
@@ -177,7 +178,6 @@ module Bundler
           :wrappers => true,
           :env_shebang => true,
           :build_args => options[:build_args],
-          :bundler_expected_checksum => spec.respond_to?(:checksum) && spec.checksum,
           :bundler_extension_cache_path => extension_cache_path(spec)
         )
 
@@ -195,6 +195,8 @@ module Bundler
 
           spec.__swap__(s)
         end
+
+        spec.source.checksum_store.register(spec, installer.gem_checksum)
 
         message = "Installing #{version_message(spec, options[:previous_spec])}"
         message += " with native extensions" if spec.extensions.any?
@@ -253,11 +255,15 @@ module Bundler
         end
       end
 
-      def fetchers
-        @fetchers ||= remotes.map do |uri|
+      def remote_fetchers
+        @remote_fetchers ||= remotes.to_h do |uri|
           remote = Source::Rubygems::Remote.new(uri)
-          Bundler::Fetcher.new(remote)
-        end
+          [remote, Bundler::Fetcher.new(remote)]
+        end.freeze
+      end
+
+      def fetchers
+        @fetchers ||= remote_fetchers.values.freeze
       end
 
       def double_check_for(unmet_dependency_names)
@@ -478,7 +484,8 @@ module Bundler
       def download_gem(spec, download_cache_path, previous_spec = nil)
         uri = spec.remote.uri
         Bundler.ui.confirm("Fetching #{version_message(spec, previous_spec)}")
-        Bundler.rubygems.download_gem(spec, uri, download_cache_path)
+        gem_remote_fetcher = remote_fetchers.fetch(spec.remote).gem_remote_fetcher
+        Bundler.rubygems.download_gem(spec, uri, download_cache_path, gem_remote_fetcher)
       end
 
       # Returns the global cache path of the calling Rubygems::Source object.

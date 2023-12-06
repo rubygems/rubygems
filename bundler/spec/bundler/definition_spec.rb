@@ -56,6 +56,11 @@ RSpec.describe Bundler::Definition do
         s.add_dependency "rack", "1.0"
       end
 
+      checksums = checksums_section_when_existing do |c|
+        c.no_checksum "foo", "1.0"
+        c.checksum gem_repo1, "rack", "1.0.0"
+      end
+
       bundle :install, :env => { "DEBUG" => "1" }
 
       expect(out).to match(/re-resolving dependencies/)
@@ -76,7 +81,7 @@ RSpec.describe Bundler::Definition do
 
         DEPENDENCIES
           foo!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G
@@ -106,6 +111,11 @@ RSpec.describe Bundler::Definition do
         s.add_development_dependency "net-ssh", "1.0"
       end
 
+      checksums = checksums_section_when_existing do |c|
+        c.no_checksum "foo", "1.0"
+        c.checksum gem_repo1, "rack", "1.0.0"
+      end
+
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "foo", :path => "#{lib_path("foo")}"
@@ -131,13 +141,17 @@ RSpec.describe Bundler::Definition do
 
         DEPENDENCIES
           foo!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G
     end
 
     it "for a locked gem for another platform" do
+      checksums = checksums_section_when_existing do |c|
+        c.no_checksum "only_java", "1.1", "java"
+      end
+
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "only_java", platform: :jruby
@@ -158,13 +172,17 @@ RSpec.describe Bundler::Definition do
 
         DEPENDENCIES
           only_java
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G
     end
 
     it "for a rubygems gem" do
+      checksums = checksums_section_when_existing do |c|
+        c.checksum gem_repo1, "foo", "1.0"
+      end
+
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "foo"
@@ -184,7 +202,7 @@ RSpec.describe Bundler::Definition do
 
         DEPENDENCIES
           foo
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G

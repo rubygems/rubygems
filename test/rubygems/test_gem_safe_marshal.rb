@@ -212,7 +212,7 @@ class TestGemSafeMarshal < Gem::TestCase
     Time.at(secs, 1.00001, :nanosecond),
     Time.at(secs, 1.00001, :nanosecond),
   ].tap do |times|
-    unless RUBY_ENGINE == "truffleruby" && RUBY_ENGINE_VERSION < "23" || RUBY_VERSION < "2.7"
+    unless RUBY_ENGINE == "truffleruby" && RUBY_ENGINE_VERSION < "23"
       times.concat [
         Time.at(secs, in: "UTC"),
         Time.at(secs, in: "Z"),
@@ -308,6 +308,23 @@ class TestGemSafeMarshal < Gem::TestCase
     end
 
     assert_equal e.message, "Attempting to set unpermitted ivar \"@foobar\" on object of class Hash @ root.[18].ivar_0"
+  end
+
+  def test_unexpected_eof
+    e = assert_raise(Gem::SafeMarshal::Reader::EOFError) do
+      Gem::SafeMarshal.safe_load("\x04\x08")
+    end
+    assert_equal e.message, "Unexpected EOF"
+
+    e = assert_raise(Gem::SafeMarshal::Reader::EOFError) do
+      Gem::SafeMarshal.safe_load("\x04\x08[")
+    end
+    assert_equal e.message, "Unexpected EOF"
+
+    e = assert_raise(Gem::SafeMarshal::Reader::EOFError) do
+      Gem::SafeMarshal.safe_load("\x04\x08[\x06")
+    end
+    assert_equal e.message, "Unexpected EOF"
   end
 
   def assert_safe_load_marshal(dumped, additional_methods: [], permitted_ivars: nil, equality: true, marshal_dump_equality: true)

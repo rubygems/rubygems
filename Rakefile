@@ -13,8 +13,7 @@ module RubyGems
     extend self
 
     def bundle_dev_gemfile(*args)
-      name = RUBY_VERSION.start_with?("2.6") ? "dev26_gems" : "dev_gems"
-      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=tool/bundler/#{name}.rb"
+      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=tool/bundler/dev_gems.rb"
     end
 
     def bundle_support_gemfile(name, *args)
@@ -86,7 +85,7 @@ end
 
 task :default => [:test, :spec]
 
-spec = Gem::Specification.load("rubygems-update.gemspec")
+spec = Gem::Specification.load(File.expand_path("rubygems-update.gemspec", __dir__))
 v = spec.version
 
 require "rdoc/task"
@@ -170,8 +169,8 @@ if File.exist?("tool/automatiek.rake")
 
   desc "Vendor a specific version of thor to bundler"
   Automatiek::RakeTask.new("thor") do |lib|
-    lib.version = "v1.2.2"
-    lib.download = { :github => "https://github.com/erikhuda/thor" }
+    lib.version = "v1.3.0"
+    lib.download = { :github => "https://github.com/rails/thor" }
     lib.namespace = "Thor"
     lib.prefix = "Bundler"
     lib.vendor_lib = "bundler/lib/bundler/vendor/thor"
@@ -561,8 +560,19 @@ task :update_licenses_branch => :update_licenses do
     file, mtime = license_last_update
     date = mtime.strftime("%Y-%m-%d")
     branch_name = "license-list-#{date}"
-    system(*%w[git checkout -b], branch_name, exception: true)
-    system(*%w[git commit -m], "Update SPDX license list as of #{date}", *file, exception: true)
+
+    require "open3"
+    stdout, stderr, status = Open3.capture3(*%w[git ls-remote --heads origin], "refs/heads/#{branch_name}")
+    raise stderr unless status.success?
+
+    if stdout.empty?
+      system(*%w[git checkout -b], branch_name, exception: true)
+      system(*%w[git commit -m], "Update SPDX license list as of #{date}", *file, exception: true)
+    else
+      puts "A license update PR already exists"
+    end
+  else
+    puts "Licenses are in sync"
   end
 end
 
@@ -708,7 +718,7 @@ namespace :man do
     task :check => [:check_ronn, :set_current_date, :build] do
       Spec::Rubygems.check_source_control_changes(
         :success_message => "Man pages are in sync",
-        :error_message => "Man pages are out of sync. Above you can see the list of files that got modified or generated from rebuilding them. Please review and commit the results."
+        :error_message => "Man pages are out of sync. Please run `rake man:build` and commit the results."
       )
     end
   end
@@ -720,7 +730,7 @@ task :override_version do
 end
 
 namespace :bundler do
-  chdir("bundler") do
+  chdir(File.expand_path("bundler", __dir__)) do
     require_relative "bundler/lib/bundler/gem_tasks"
   end
   require_relative "bundler/spec/support/build_metadata"

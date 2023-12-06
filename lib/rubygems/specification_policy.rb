@@ -5,11 +5,11 @@ require_relative "user_interaction"
 class Gem::SpecificationPolicy
   include Gem::UserInteraction
 
-  VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/.freeze # :nodoc:
+  VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/ # :nodoc:
 
-  SPECIAL_CHARACTERS = /\A[#{Regexp.escape('.-_')}]+/.freeze # :nodoc:
+  SPECIAL_CHARACTERS = /\A[#{Regexp.escape('.-_')}]+/ # :nodoc:
 
-  VALID_URI_PATTERN = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z}.freeze # :nodoc:
+  VALID_URI_PATTERN = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z} # :nodoc:
 
   METADATA_LINK_KEYS = %w[
     bug_tracker_uri
@@ -371,10 +371,21 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
 
     licenses.each do |license|
       next if Gem::Licenses.match?(license) || license.nil?
+      license_id_deprecated = Gem::Licenses.deprecated_license_id?(license)
+      exception_id_deprecated = Gem::Licenses.deprecated_exception_id?(license)
       suggestions = Gem::Licenses.suggestions(license)
+
+      if license_id_deprecated
+        main_message = "License identifier '#{license}' is deprecated"
+      elsif exception_id_deprecated
+        main_message = "Exception identifier at '#{license}' is deprecated"
+      else
+        main_message = "License identifier '#{license}' is invalid"
+      end
+
       message = <<-WARNING
-license value '#{license}' is invalid.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license,
+#{main_message}. Use an identifier from
+https://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license,
 or set it to nil if you don't want to specify a license.
       WARNING
       message += "Did you mean #{suggestions.map {|s| "'#{s}'" }.join(", ")}?\n" unless suggestions.nil?
@@ -382,15 +393,15 @@ or set it to nil if you don't want to specify a license.
     end
 
     warning <<-WARNING if licenses.empty?
-licenses is empty, but is recommended.  Use a license identifier from
-http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license,
+licenses is empty, but is recommended. Use an license identifier from
+https://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard license,
 or set it to nil if you don't want to specify a license.
     WARNING
   end
 
   LAZY = '"FIxxxXME" or "TOxxxDO"'.gsub(/xxx/, "")
-  LAZY_PATTERN = /\AFI XME|\ATO DO/x.freeze
-  HOMEPAGE_URI_PATTERN = /\A[a-z][a-z\d+.-]*:/i.freeze
+  LAZY_PATTERN = /\AFI XME|\ATO DO/x
+  HOMEPAGE_URI_PATTERN = /\A[a-z][a-z\d+.-]*:/i
 
   def validate_lazy_metadata
     unless @specification.authors.grep(LAZY_PATTERN).empty?

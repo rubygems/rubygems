@@ -137,10 +137,13 @@ module Bundler
       case config[:ci]
       when "github"
         templates.merge!("github/workflows/main.yml.tt" => ".github/workflows/main.yml")
+        config[:ci_config_path] = ".github "
       when "gitlab"
         templates.merge!("gitlab-ci.yml.tt" => ".gitlab-ci.yml")
+        config[:ci_config_path] = ".gitlab-ci.yml "
       when "circle"
         templates.merge!("circleci/config.yml.tt" => ".circleci/config.yml")
+        config[:ci_config_path] = ".circleci "
       end
 
       if ask_and_set(:mit, "Do you want to license your code permissively under the MIT license?",
@@ -377,15 +380,20 @@ module Bundler
     def deprecated_rubocop_option
       if !options[:rubocop].nil?
         if options[:rubocop]
-          Bundler::SharedHelpers.major_deprecation 2, "--rubocop is deprecated, use --linter=rubocop"
+          Bundler::SharedHelpers.major_deprecation 2,
+            "--rubocop is deprecated, use --linter=rubocop",
+            :removed_message => "--rubocop has been removed, use --linter=rubocop"
           "rubocop"
         else
-          Bundler::SharedHelpers.major_deprecation 2, "--no-rubocop is deprecated, use --linter"
+          Bundler::SharedHelpers.major_deprecation 2,
+            "--no-rubocop is deprecated, use --linter",
+            :removed_message => "--no-rubocop has been removed, use --linter"
           false
         end
       elsif !Bundler.settings["gem.rubocop"].nil?
         Bundler::SharedHelpers.major_deprecation 2,
-          "config gem.rubocop is deprecated; we've updated your config to use gem.linter instead"
+          "config gem.rubocop is deprecated; we've updated your config to use gem.linter instead",
+          :removed_message => "config gem.rubocop has been removed; we've updated your config to use gem.linter instead"
         Bundler.settings["gem.rubocop"] ? "rubocop" : false
       end
     end

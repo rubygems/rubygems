@@ -19,6 +19,7 @@ bundler/lib/bundler.rb
 bundler/lib/bundler/.document
 bundler/lib/bundler/build_metadata.rb
 bundler/lib/bundler/capistrano.rb
+bundler/lib/bundler/checksum.rb
 bundler/lib/bundler/cli.rb
 bundler/lib/bundler/cli/add.rb
 bundler/lib/bundler/cli/binstubs.rb
@@ -50,6 +51,7 @@ bundler/lib/bundler/cli/update.rb
 bundler/lib/bundler/cli/viz.rb
 bundler/lib/bundler/compact_index_client.rb
 bundler/lib/bundler/compact_index_client/cache.rb
+bundler/lib/bundler/compact_index_client/cache_file.rb
 bundler/lib/bundler/compact_index_client/gem_parser.rb
 bundler/lib/bundler/compact_index_client/updater.rb
 bundler/lib/bundler/constants.rb
@@ -70,6 +72,7 @@ bundler/lib/bundler/fetcher/base.rb
 bundler/lib/bundler/fetcher/compact_index.rb
 bundler/lib/bundler/fetcher/dependency.rb
 bundler/lib/bundler/fetcher/downloader.rb
+bundler/lib/bundler/fetcher/gem_remote_fetcher.rb
 bundler/lib/bundler/fetcher/index.rb
 bundler/lib/bundler/force_platform.rb
 bundler/lib/bundler/friendly_errors.rb
@@ -302,7 +305,12 @@ bundler/lib/bundler/vendor/thor/lib/thor/runner.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/basic.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/color.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/column_printer.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/html.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/lcs_diff.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/table_printer.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/terminal.rb
+bundler/lib/bundler/vendor/thor/lib/thor/shell/wrapped_printer.rb
 bundler/lib/bundler/vendor/thor/lib/thor/util.rb
 bundler/lib/bundler/vendor/thor/lib/thor/version.rb
 bundler/lib/bundler/vendor/tsort/LICENSE.txt

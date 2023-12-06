@@ -27,27 +27,72 @@ RSpec.describe "bundle install with gems on multiple sources" do
         G
       end
 
-      it "warns about ambiguous gems, but installs anyway, prioritizing sources last to first", :bundler => "< 3" do
-        bundle :install, :artifice => "compact_index"
+      it "refuses to install mismatched checksum because one gem has been tampered with", :bundler => "< 3" do
+        lockfile <<~L
+          GEM
+            remote: https://gem.repo3/
+            remote: https://gem.repo1/
+            specs:
+              rack (1.0.0)
 
-        expect(err).to include("Warning: the gem 'rack' was found in multiple sources.")
-        expect(err).to include("Installed from: https://gem.repo1")
-        expect(the_bundle).to include_gems("rack-obama 1.0.0", "rack 1.0.0", :source => "remote1")
-      end
+          PLATFORMS
+            #{local_platform}
 
-      it "does not use the full index unnecessarily", :bundler => "< 3" do
-        bundle :install, :artifice => "compact_index", :verbose => true
+          DEPENDENCIES
+            depends_on_rack!
 
-        expect(out).to include("https://gem.repo1/versions")
-        expect(out).to include("https://gem.repo3/versions")
-        expect(out).not_to include("https://gem.repo1/quick/Marshal.4.8/")
-        expect(out).not_to include("https://gem.repo3/quick/Marshal.4.8/")
-      end
+          BUNDLED WITH
+            #{Bundler::VERSION}
+        L
 
-      it "fails", :bundler => "3" do
         bundle :install, :artifice => "compact_index", :raise_on_error => false
-        expect(err).to include("Each source after the first must include a block")
-        expect(exitstatus).to eq(4)
+
+        expect(exitstatus).to eq(37)
+        expect(err).to eq <<~E.strip
+          [DEPRECATED] Your Gemfile contains multiple global sources. Using `source` more than once without a block is a security risk, and may result in installing unexpected gems. To resolve this warning, use a block to indicate which gems should come from the secondary source.
+          Bundler found mismatched checksums. This is a potential security risk.
+            #{checksum_to_lock(gem_repo1, "rack", "1.0.0")}
+              from the API at https://gem.repo1/
+            #{checksum_to_lock(gem_repo3, "rack", "1.0.0")}
+              from the API at https://gem.repo3/
+
+          Mismatched checksums each have an authoritative source:
+            1. the API at https://gem.repo1/
+            2. the API at https://gem.repo3/
+          You may need to alter your Gemfile sources to resolve this issue.
+
+          To ignore checksum security warnings, disable checksum validation with
+            `bundle config set --local disable_checksum_validation true`
+        E
+      end
+
+      context "when checksum validation is disabled" do
+        before do
+          bundle "config set --local disable_checksum_validation true"
+        end
+
+        it "warns about ambiguous gems, but installs anyway, prioritizing sources last to first", :bundler => "< 3" do
+          bundle :install, :artifice => "compact_index"
+
+          expect(err).to include("Warning: the gem 'rack' was found in multiple sources.")
+          expect(err).to include("Installed from: https://gem.repo1")
+          expect(the_bundle).to include_gems("rack-obama 1.0.0", "rack 1.0.0", :source => "remote1")
+        end
+
+        it "does not use the full index unnecessarily", :bundler => "< 3" do
+          bundle :install, :artifice => "compact_index", :verbose => true
+
+          expect(out).to include("https://gem.repo1/versions")
+          expect(out).to include("https://gem.repo3/versions")
+          expect(out).not_to include("https://gem.repo1/quick/Marshal.4.8/")
+          expect(out).not_to include("https://gem.repo3/quick/Marshal.4.8/")
+        end
+
+        it "fails", :bundler => "3" do
+          bundle :install, :artifice => "compact_index", :raise_on_error => false
+          expect(err).to include("Each source after the first must include a block")
+          expect(exitstatus).to eq(4)
+        end
       end
     end
 
@@ -101,7 +146,8 @@ RSpec.describe "bundle install with gems on multiple sources" do
     end
 
     it "works in standalone mode", :bundler => "< 3" do
-      bundle "install --standalone", :artifice => "compact_index"
+      gem_checksum = checksum_digest(gem_repo4, "foo", "1.0")
+      bundle "install --standalone", :artifice => "compact_index", :env => { "BUNDLER_SPEC_FOO_CHECKSUM" => gem_checksum }
     end
   end
 
@@ -279,10 +325,62 @@ RSpec.describe "bundle install with gems on multiple sources" do
           G
         end
 
-        it "installs from the other source and warns about ambiguous gems", :bundler => "< 3" do
-          bundle :install, :artifice => "compact_index"
+        it "fails when the two sources don't have the same checksum", :bundler => "< 3" do
+          bundle :install, :artifice => "compact_index", :raise_on_error => false
+
+          expect(err).to eq(<<~E.strip)
+            [DEPRECATED] Your Gemfile contains multiple global sources. Using `source` more than once without a block is a security risk, and may result in installing unexpected gems. To resolve this warning, use a block to indicate which gems should come from the secondary source.
+            Bundler found mismatched checksums. This is a potential security risk.
+              #{checksum_to_lock(gem_repo2, "rack", "1.0.0")}
+                from the API at https://gem.repo2/
+              #{checksum_to_lock(gem_repo1, "rack", "1.0.0")}
+                from the API at https://gem.repo1/
+
+            Mismatched checksums each have an authoritative source:
+              1. the API at https://gem.repo2/
+              2. the API at https://gem.repo1/
+            You may need to alter your Gemfile sources to resolve this issue.
+
+            To ignore checksum security warnings, disable checksum validation with
+              `bundle config set --local disable_checksum_validation true`
+          E
+          expect(exitstatus).to eq(37)
+        end
+
+        it "fails when the two sources agree, but the local gem calculates a different checksum", :bundler => "< 3" do
+          rack_checksum = "c0ffee11" * 8
+          bundle :install, :artifice => "compact_index", :env => { "BUNDLER_SPEC_RACK_CHECKSUM" => rack_checksum }, :raise_on_error => false
+
+          expect(err).to eq(<<~E.strip)
+            [DEPRECATED] Your Gemfile contains multiple global sources. Using `source` more than once without a block is a security risk, and may result in installing unexpected gems. To resolve this warning, use a block to indicate which gems should come from the secondary source.
+            Bundler found mismatched checksums. This is a potential security risk.
+              rack (1.0.0) sha256=#{rack_checksum}
+                from the API at https://gem.repo2/
+                and the API at https://gem.repo1/
+              #{checksum_to_lock(gem_repo2, "rack", "1.0.0")}
+                from the gem at #{default_bundle_path("cache", "rack-1.0.0.gem")}
+
+            If you trust the API at https://gem.repo2/, to resolve this issue you can:
+              1. remove the gem at #{default_bundle_path("cache", "rack-1.0.0.gem")}
+              2. run `bundle install`
+
+            To ignore checksum security warnings, disable checksum validation with
+              `bundle config set --local disable_checksum_validation true`
+          E
+          expect(exitstatus).to eq(37)
+        end
+
+        it "installs from the other source and warns about ambiguous gems when the sources have the same checksum", :bundler => "< 3" do
+          gem_checksum = checksum_digest(gem_repo2, "rack", "1.0.0")
+          bundle :install, :artifice => "compact_index", :env => { "BUNDLER_SPEC_RACK_CHECKSUM" => gem_checksum, "DEBUG" => "1" }
+
           expect(err).to include("Warning: the gem 'rack' was found in multiple sources.")
           expect(err).to include("Installed from: https://gem.repo2")
+
+          checksums = checksums_section_when_existing do |c|
+            c.checksum gem_repo3, "depends_on_rack", "1.0.1"
+            c.checksum gem_repo2, "rack", "1.0.0"
+          end
 
           expect(lockfile).to eq <<~L
             GEM
@@ -298,11 +396,51 @@ RSpec.describe "bundle install with gems on multiple sources" do
                   rack
 
             PLATFORMS
-              #{local_platform}
+              #{lockfile_platforms}
 
             DEPENDENCIES
               depends_on_rack!
+            #{checksums}
+            BUNDLED WITH
+               #{Bundler::VERSION}
+          L
 
+          previous_lockfile = lockfile
+          expect(the_bundle).to include_gems("depends_on_rack 1.0.1", "rack 1.0.0")
+          expect(lockfile).to eq(previous_lockfile)
+        end
+
+        it "installs from the other source and warns about ambiguous gems when checksum validation is disabled", :bundler => "< 3" do
+          bundle "config set --local disable_checksum_validation true"
+          bundle :install, :artifice => "compact_index"
+
+          expect(err).to include("Warning: the gem 'rack' was found in multiple sources.")
+          expect(err).to include("Installed from: https://gem.repo2")
+
+          checksums = checksums_section_when_existing do |c|
+            c.no_checksum "depends_on_rack", "1.0.1"
+            c.no_checksum "rack", "1.0.0"
+          end
+
+          expect(lockfile).to eq <<~L
+            GEM
+              remote: https://gem.repo1/
+              remote: https://gem.repo2/
+              specs:
+                rack (1.0.0)
+
+            GEM
+              remote: https://gem.repo3/
+              specs:
+                depends_on_rack (1.0.1)
+                  rack
+
+            PLATFORMS
+              #{lockfile_platforms}
+
+            DEPENDENCIES
+              depends_on_rack!
+            #{checksums}
             BUNDLED WITH
                #{Bundler::VERSION}
           L
@@ -645,6 +783,21 @@ RSpec.describe "bundle install with gems on multiple sources" do
           end
         G
 
+        @locked_checksums = checksums_section_when_existing do |c|
+          c.checksum gem_repo2, "activesupport", "6.0.3.4"
+          c.checksum gem_repo2, "concurrent-ruby", "1.1.8"
+          c.checksum gem_repo2, "connection_pool", "2.2.3"
+          c.checksum gem_repo2, "i18n", "1.8.9"
+          c.checksum gem_repo2, "minitest", "5.14.3"
+          c.checksum gem_repo2, "rack", "2.2.3"
+          c.checksum gem_repo2, "redis", "4.2.5"
+          c.checksum gem_repo2, "sidekiq", "6.1.3"
+          c.checksum gem_repo3, "sidekiq-pro", "5.2.1"
+          c.checksum gem_repo2, "thread_safe", "0.3.6"
+          c.checksum gem_repo2, "tzinfo", "1.2.9"
+          c.checksum gem_repo2, "zeitwerk", "2.4.2"
+        end
+
         lockfile <<~L
           GEM
             remote: https://gem.repo2/
@@ -676,12 +829,12 @@ RSpec.describe "bundle install with gems on multiple sources" do
               zeitwerk (2.4.2)
 
           PLATFORMS
-            #{local_platform}
+            #{lockfile_platforms}
 
           DEPENDENCIES
             activesupport
             sidekiq-pro!
-
+          #{@locked_checksums}
           BUNDLED WITH
              #{Bundler::VERSION}
         L
@@ -732,12 +885,12 @@ RSpec.describe "bundle install with gems on multiple sources" do
                 sidekiq (>= 6.1.0)
 
           PLATFORMS
-            #{local_platform}
+            #{lockfile_platforms}
 
           DEPENDENCIES
             activesupport
             sidekiq-pro!
-
+          #{@locked_checksums}
           BUNDLED WITH
              #{Bundler::VERSION}
         L
@@ -778,10 +931,16 @@ RSpec.describe "bundle install with gems on multiple sources" do
 
         expect(the_bundle).not_to include_gems("activesupport 6.0.3.4")
         expect(the_bundle).to include_gems("activesupport 6.1.2.1")
+        @locked_checksums.checksum gem_repo2, "activesupport", "6.1.2.1"
+
         expect(the_bundle).not_to include_gems("tzinfo 1.2.9")
         expect(the_bundle).to include_gems("tzinfo 2.0.4")
+        @locked_checksums.checksum gem_repo2, "tzinfo", "2.0.4"
+        @locked_checksums.delete "thread_safe"
+
         expect(the_bundle).not_to include_gems("concurrent-ruby 1.1.8")
         expect(the_bundle).to include_gems("concurrent-ruby 1.1.9")
+        @locked_checksums.checksum gem_repo2, "concurrent-ruby", "1.1.9"
 
         expect(lockfile).to eq <<~L
           GEM
@@ -816,12 +975,12 @@ RSpec.describe "bundle install with gems on multiple sources" do
                 sidekiq (>= 6.1.0)
 
           PLATFORMS
-            #{local_platform}
+            #{lockfile_platforms}
 
           DEPENDENCIES
             activesupport
             sidekiq-pro!
-
+          #{@locked_checksums}
           BUNDLED WITH
              #{Bundler::VERSION}
         L
@@ -837,6 +996,8 @@ RSpec.describe "bundle install with gems on multiple sources" do
         expect(the_bundle).not_to include_gems("tzinfo 2.0.4")
         expect(the_bundle).to include_gems("concurrent-ruby 1.1.9")
         expect(the_bundle).not_to include_gems("concurrent-ruby 1.1.8")
+
+        @locked_checksums.checksum gem_repo2, "concurrent-ruby", "1.1.9"
 
         expect(lockfile).to eq <<~L
           GEM
@@ -872,12 +1033,12 @@ RSpec.describe "bundle install with gems on multiple sources" do
                 sidekiq (>= 6.1.0)
 
           PLATFORMS
-            #{local_platform}
+            #{lockfile_platforms}
 
           DEPENDENCIES
             activesupport
             sidekiq-pro!
-
+          #{@locked_checksums}
           BUNDLED WITH
              #{Bundler::VERSION}
         L
@@ -945,6 +1106,12 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
 
       it "installs from the default source without any warnings or errors and generates a proper lockfile" do
+        checksums = checksums_section_when_existing do |c|
+          c.checksum gem_repo3, "handsoap", "0.2.5.5"
+          c.checksum gem_repo2, "nokogiri", "1.11.1"
+          c.checksum gem_repo2, "racca", "1.5.2"
+        end
+
         expected_lockfile = <<~L
           GEM
             remote: https://gem.repo2/
@@ -960,12 +1127,12 @@ RSpec.describe "bundle install with gems on multiple sources" do
                 nokogiri (>= 1.2.3)
 
           PLATFORMS
-            #{local_platform}
+            #{lockfile_platforms}
 
           DEPENDENCIES
             handsoap!
             nokogiri
-
+          #{checksums}
           BUNDLED WITH
              #{Bundler::VERSION}
         L
@@ -1020,7 +1187,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
               rack (0.9.1)
 
           PLATFORMS
-            #{local_platform}
+            #{lockfile_platforms}
 
           DEPENDENCIES
             rack!
@@ -1050,11 +1217,11 @@ RSpec.describe "bundle install with gems on multiple sources" do
               rack (0.9.1)
 
           PLATFORMS
-            #{local_platform}
+            #{lockfile_platforms}
 
           DEPENDENCIES
             rack!
-
+          #{checksums_section}
           BUNDLED WITH
              #{Bundler::VERSION}
         L
@@ -1072,7 +1239,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
               rack (0.9.1)
 
           PLATFORMS
-            #{local_platform}
+            #{lockfile_platforms}
 
           DEPENDENCIES
             rack!
@@ -1097,14 +1264,42 @@ RSpec.describe "bundle install with gems on multiple sources" do
         lockfile aggregate_gem_section_lockfile
       end
 
-      it "installs the existing lockfile but prints a warning", :bundler => "< 3" do
+      it "installs the existing lockfile but prints a warning when checksum validation is disabled", :bundler => "< 3" do
         bundle "config set --local deployment true"
+        bundle "config set --local disable_checksum_validation true"
 
         bundle "install", :artifice => "compact_index"
 
         expect(lockfile).to eq(aggregate_gem_section_lockfile)
         expect(err).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure.")
         expect(the_bundle).to include_gems("rack 0.9.1", :source => "remote3")
+      end
+
+      it "prints a checksum warning when the checksums from both sources do not match", :bundler => "< 3" do
+        bundle "config set --local deployment true"
+
+        bundle "install", :artifice => "compact_index", :raise_on_error => false
+
+        api_checksum1 = checksum_digest(gem_repo1, "rack", "0.9.1")
+        api_checksum3 = checksum_digest(gem_repo3, "rack", "0.9.1")
+
+        expect(exitstatus).to eq(37)
+        expect(err).to eq(<<~E.strip)
+          [DEPRECATED] Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure.
+          Bundler found mismatched checksums. This is a potential security risk.
+            rack (0.9.1) sha256=#{api_checksum3}
+              from the API at https://gem.repo3/
+            rack (0.9.1) sha256=#{api_checksum1}
+              from the API at https://gem.repo1/
+
+          Mismatched checksums each have an authoritative source:
+            1. the API at https://gem.repo3/
+            2. the API at https://gem.repo1/
+          You may need to alter your Gemfile sources to resolve this issue.
+
+          To ignore checksum security warnings, disable checksum validation with
+            `bundle config set --local disable_checksum_validation true`
+        E
       end
 
       it "refuses to install the existing lockfile and prints an error", :bundler => "3" do
@@ -1365,11 +1560,9 @@ RSpec.describe "bundle install with gems on multiple sources" do
       end
     G
 
-    simulate_bundler_version_when_missing_prerelease_default_gem_activation do
-      ruby <<~R, :raise_on_error => false
-        require 'bundler/setup'
-      R
-    end
+    ruby <<~R, :raise_on_error => false
+      require 'bundler/setup'
+    R
 
     expect(last_command).to be_failure
     expect(err).to include("Could not find gem 'example' in locally installed gems.")
@@ -1484,16 +1677,23 @@ RSpec.describe "bundle install with gems on multiple sources" do
             mime-types (3.3.1)
 
         PLATFORMS
-          #{local_platform}
+          #{lockfile_platforms}
 
         DEPENDENCIES
           capybara (~> 2.5.0)
           mime-types (~> 3.0)!
+
+        CHECKSUMS
       L
     end
 
     it "upgrades the lockfile correctly" do
       bundle "lock --update", :artifice => "compact_index"
+
+      checksums = checksums_section_when_existing do |c|
+        c.checksum gem_repo2, "capybara", "2.5.0"
+        c.checksum gem_repo4, "mime-types", "3.0.0"
+      end
 
       expect(lockfile).to eq <<~L
         GEM
@@ -1508,12 +1708,12 @@ RSpec.describe "bundle install with gems on multiple sources" do
             mime-types (3.0.0)
 
         PLATFORMS
-          #{local_platform}
+          #{lockfile_platforms}
 
         DEPENDENCIES
           capybara (~> 2.5.0)
           mime-types (~> 3.0)!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       L
@@ -1549,6 +1749,11 @@ RSpec.describe "bundle install with gems on multiple sources" do
     it "handles that fine" do
       bundle "install", :artifice => "compact_index_extra", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
 
+      checksums = checksums_section_when_existing do |c|
+        c.checksum gem_repo4, "pdf-writer", "1.1.8"
+        c.checksum gem_repo2, "ruport", "1.7.0.3"
+      end
+
       expect(lockfile).to eq <<~L
         GEM
           remote: https://localgemserver.test/
@@ -1562,11 +1767,11 @@ RSpec.describe "bundle install with gems on multiple sources" do
               pdf-writer (= 1.1.8)
 
         PLATFORMS
-          #{local_platform}
+          #{lockfile_platforms}
 
         DEPENDENCIES
           ruport (= 1.7.0.3)!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       L
@@ -1602,6 +1807,11 @@ RSpec.describe "bundle install with gems on multiple sources" do
     it "handles that fine" do
       bundle "install", :artifice => "compact_index_extra", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
 
+      checksums = checksums_section_when_existing do |c|
+        c.checksum gem_repo4, "pdf-writer", "1.1.8"
+        c.checksum gem_repo2, "ruport", "1.7.0.3"
+      end
+
       expect(lockfile).to eq <<~L
         GEM
           remote: https://localgemserver.test/
@@ -1615,11 +1825,11 @@ RSpec.describe "bundle install with gems on multiple sources" do
               pdf-writer (= 1.1.8)
 
         PLATFORMS
-          #{local_platform}
+          #{lockfile_platforms}
 
         DEPENDENCIES
           ruport (= 1.7.0.3)!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       L
@@ -1649,6 +1859,10 @@ RSpec.describe "bundle install with gems on multiple sources" do
     it "handles that fine" do
       bundle "install --verbose", :artifice => "endpoint", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
 
+      checksums = checksums_section_when_existing do |c|
+        c.checksum gem_repo4, "pdf-writer", "1.1.8"
+      end
+
       expect(lockfile).to eq <<~L
         GEM
           remote: https://localgemserver.test/
@@ -1656,11 +1870,11 @@ RSpec.describe "bundle install with gems on multiple sources" do
             pdf-writer (1.1.8)
 
         PLATFORMS
-          #{local_platform}
+          #{lockfile_platforms}
 
         DEPENDENCIES
           pdf-writer (= 1.1.8)
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       L

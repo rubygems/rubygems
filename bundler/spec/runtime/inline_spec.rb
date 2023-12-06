@@ -2,7 +2,7 @@
 
 RSpec.describe "bundler/inline#gemfile" do
   def script(code, options = {})
-    requires = ["#{entrypoint}/inline"]
+    requires = ["bundler/inline"]
     requires.unshift "#{spec_dir}/support/artifice/" + options.delete(:artifice) if options.key?(:artifice)
     requires = requires.map {|r| "require '#{r}'" }.join("\n")
     ruby("#{requires}\n\n" + code, options)
@@ -89,13 +89,13 @@ RSpec.describe "bundler/inline#gemfile" do
 
     expect(out).to include("Installing activesupport")
     err_lines = err.split("\n")
-    err_lines.reject! {|line| line =~ /\.rb:\d+: warning: / } unless RUBY_VERSION < "2.7"
+    err_lines.reject! {|line| line =~ /\.rb:\d+: warning: / }
     expect(err_lines).to be_empty
   end
 
   it "lets me use my own ui object" do
     script <<-RUBY, :artifice => "endpoint"
-      require '#{entrypoint}'
+      require 'bundler'
       class MyBundlerUI < Bundler::UI::Shell
         def confirm(msg, newline = nil)
           puts "CONFIRMED!"
@@ -114,7 +114,7 @@ RSpec.describe "bundler/inline#gemfile" do
 
   it "has an option for quiet installation" do
     script <<-RUBY, :artifice => "endpoint"
-      require '#{entrypoint}/inline'
+      require 'bundler/inline'
 
       gemfile(true, :quiet => true) do
         source "https://notaserver.com"
@@ -140,7 +140,7 @@ RSpec.describe "bundler/inline#gemfile" do
 
   it "does not mutate the option argument" do
     script <<-RUBY
-      require '#{entrypoint}'
+      require 'bundler'
       options = { :ui => Bundler::UI::Shell.new }
       gemfile(false, options) do
         source "#{file_uri_for(gem_repo1)}"
@@ -259,7 +259,7 @@ RSpec.describe "bundler/inline#gemfile" do
     system_gems "rack-1.0.0"
 
     script <<-RUBY
-      require '#{entrypoint}'
+      require 'bundler'
       ui = Bundler::UI::Shell.new
       ui.level = "confirm"
 
@@ -279,7 +279,7 @@ RSpec.describe "bundler/inline#gemfile" do
     system_gems "rack-1.0.0"
 
     script <<-RUBY
-      require '#{entrypoint}'
+      require 'bundler'
       ui = Bundler::UI::Shell.new
       ui.level = "confirm"
       gemfile(true, ui: ui) do
@@ -302,7 +302,7 @@ RSpec.describe "bundler/inline#gemfile" do
     system_gems "rack-1.0.0"
 
     script <<-RUBY
-      require '#{entrypoint}'
+      require 'bundler'
       ui = Bundler::UI::Shell.new
       ui.level = "confirm"
       gemfile(true, ui: ui) do
@@ -339,7 +339,7 @@ RSpec.describe "bundler/inline#gemfile" do
     end
 
     script <<-RUBY
-      require '#{entrypoint}'
+      require 'bundler'
       ui = Bundler::UI::Shell.new
       ui.level = "confirm"
       gemfile(true, ui: ui) do
@@ -594,8 +594,6 @@ RSpec.describe "bundler/inline#gemfile" do
   it "when requiring fileutils after does not show redefinition warnings", :realworld do
     dependency_installer_loads_fileutils = ruby "require 'rubygems/dependency_installer'; puts $LOADED_FEATURES.grep(/fileutils/)", :raise_on_error => false
     skip "does not work if rubygems/dependency_installer loads fileutils, which happens until rubygems 3.2.0" unless dependency_installer_loads_fileutils.empty?
-
-    skip "pathname does not install cleanly on this ruby" if RUBY_VERSION < "2.7.0"
 
     Dir.mkdir tmp("path_without_gemfile")
 

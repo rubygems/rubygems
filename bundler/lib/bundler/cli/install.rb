@@ -28,8 +28,8 @@ module Bundler
           flag   = "--deployment flag" if options[:deployment]
           flag ||= "--frozen flag"     if options[:frozen]
           flag ||= "deployment setting"
-          raise ProductionError, "The #{flag} requires a #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)}. Please make " \
-                                 "sure you have checked your #{Bundler.default_lockfile.relative_path_from(SharedHelpers.pwd)} into version control " \
+          raise ProductionError, "The #{flag} requires a lockfile. Please make " \
+                                 "sure you have checked your #{SharedHelpers.relative_lockfile_path} into version control " \
                                  "before deploying."
         end
 
@@ -51,7 +51,8 @@ module Bundler
 
       if options["binstubs"]
         Bundler::SharedHelpers.major_deprecation 2,
-          "The --binstubs option will be removed in favor of `bundle binstubs --all`"
+          "The --binstubs option will be removed in favor of `bundle binstubs --all`",
+          :removed_message => "The --binstubs option have been removed in favor of `bundle binstubs --all`"
       end
 
       Plugin.gemfile_install(Bundler.default_gemfile) if Bundler.feature_flag.plugins?

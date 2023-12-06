@@ -7,11 +7,9 @@ on:
       - .github/workflows/system-rubygems-bundler.yml
       - .rubocop_bundler.yml
 
-  merge_group:
-    paths:
-      - bundler/**
-      - .github/workflows/system-rubygems-bundler.yml
-      - .rubocop_bundler.yml
+  push:
+    branches:
+      - master
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
@@ -32,19 +30,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.6, value: 2.6.10 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-2.7, value: 2.7.7 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.5 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.3 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.1 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-2.7, value: 2.7.7 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.5 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.3 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.1 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.6 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.2 } }
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby
-        uses: ruby/setup-ruby@5311f05890856149502132d25c4a24985a00d426 # v1.153.0
+        uses: ruby/setup-ruby@8575951200e472d5f2d95c625da0c7bec8217c42 # v1.161.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -65,7 +60,7 @@ jobs:
         run: |
           RGV=$(ruby -e 'puts Gem::VERSION.split(".")[0..2].join(".")')
           echo "RGV=v$RGV" >> $GITHUB_ENV
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           path: bundler/tmp/rubygems
           ref: ${{ env.RGV }}

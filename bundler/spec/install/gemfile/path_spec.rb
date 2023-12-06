@@ -98,6 +98,11 @@ RSpec.describe "bundle install with explicit source paths" do
       gem "aaa", :path => "./aaa"
     G
 
+    checksums = checksums_section_when_existing do |c|
+      c.no_checksum "aaa", "1.0"
+      c.no_checksum "demo", "1.0"
+    end
+
     lockfile = <<~L
       PATH
         remote: .
@@ -119,7 +124,7 @@ RSpec.describe "bundle install with explicit source paths" do
       DEPENDENCIES
         aaa!
         demo!
-
+      #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
     L
@@ -341,6 +346,11 @@ RSpec.describe "bundle install with explicit source paths" do
 
     lockfile_path = lib_path("foo/Gemfile.lock")
 
+    checksums = checksums_section_when_existing do |c|
+      c.no_checksum "foo", "0.1.0"
+      c.checksum gem_repo4, "graphql", "2.0.15"
+    end
+
     original_lockfile = <<~L
       PATH
         remote: .
@@ -358,7 +368,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
       DEPENDENCIES
         foo!
-
+      #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
     L
@@ -665,6 +675,11 @@ RSpec.describe "bundle install with explicit source paths" do
 
       expect(the_bundle).to include_gems "rack 0.9.1"
 
+      checksums = checksums_section_when_existing do |c|
+        c.no_checksum "foo", "1.0"
+        c.checksum gem_repo1, "rack", "0.9.1"
+      end
+
       expect(lockfile).to eq <<~G
         PATH
           remote: #{lib_path("foo")}
@@ -682,7 +697,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
         DEPENDENCIES
           foo!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G
@@ -710,7 +725,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
         DEPENDENCIES
           foo!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G
@@ -726,6 +741,11 @@ RSpec.describe "bundle install with explicit source paths" do
       bundle "install"
 
       expect(the_bundle).to include_gems "rack 0.9.1"
+
+      checksums = checksums_section_when_existing do |c|
+        c.no_checksum "foo", "1.0"
+        c.checksum gem_repo1, "rack", "0.9.1"
+      end
 
       expect(lockfile).to eq <<~G
         PATH
@@ -744,7 +764,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
         DEPENDENCIES
           foo!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G
@@ -755,6 +775,8 @@ RSpec.describe "bundle install with explicit source paths" do
       end
 
       bundle "install"
+
+      checksums.checksum gem_repo1, "rake", "13.0.1"
 
       expect(lockfile).to eq <<~G
         PATH
@@ -775,7 +797,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
         DEPENDENCIES
           foo!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G
@@ -786,6 +808,10 @@ RSpec.describe "bundle install with explicit source paths" do
     it "does not remove existing ruby platform" do
       build_lib "foo", "1.0", :path => lib_path("foo") do |s|
         s.add_dependency "rack", "0.9.1"
+      end
+
+      checksums = checksums_section_when_existing do |c|
+        c.no_checksum "foo", "1.0"
       end
 
       lockfile <<~L
@@ -799,12 +825,14 @@ RSpec.describe "bundle install with explicit source paths" do
 
         DEPENDENCIES
           foo!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       L
 
       bundle "lock"
+
+      checksums.no_checksum "rack", "0.9.1"
 
       expect(lockfile).to eq <<~G
         PATH
@@ -823,7 +851,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
         DEPENDENCIES
           foo!
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G

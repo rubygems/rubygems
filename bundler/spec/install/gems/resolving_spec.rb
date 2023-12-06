@@ -256,6 +256,10 @@ RSpec.describe "bundle install with install-time dependencies" do
             gem 'parallel_tests'
           G
 
+          checksums = checksums_section do |c|
+            c.checksum gem_repo2, "parallel_tests", "3.8.0"
+          end
+
           lockfile <<~L
             GEM
               remote: http://localgemserver.test/
@@ -267,7 +271,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
             DEPENDENCIES
               parallel_tests
-
+            #{checksums}
             BUNDLED WITH
                #{Bundler::VERSION}
           L
@@ -275,6 +279,10 @@ RSpec.describe "bundle install with install-time dependencies" do
 
         it "automatically updates lockfile to use the older version" do
           bundle "install --verbose", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+
+          checksums = checksums_section_when_existing do |c|
+            c.checksum gem_repo2, "parallel_tests", "3.7.0"
+          end
 
           expect(lockfile).to eq <<~L
             GEM
@@ -287,7 +295,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
             DEPENDENCIES
               parallel_tests
-
+            #{checksums}
             BUNDLED WITH
                #{Bundler::VERSION}
           L
@@ -332,6 +340,11 @@ RSpec.describe "bundle install with install-time dependencies" do
             gem 'rubocop'
           G
 
+          checksums = checksums_section do |c|
+            c.checksum gem_repo2, "rubocop", "1.35.0"
+            c.checksum gem_repo2, "rubocop-ast", "1.21.0"
+          end
+
           lockfile <<~L
             GEM
               remote: http://localgemserver.test/
@@ -345,7 +358,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
             DEPENDENCIES
               parallel_tests
-
+            #{checksums}
             BUNDLED WITH
                #{Bundler::VERSION}
           L
@@ -353,6 +366,11 @@ RSpec.describe "bundle install with install-time dependencies" do
 
         it "automatically updates lockfile to use the older compatible versions" do
           bundle "install --verbose", :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+
+          checksums = checksums_section_when_existing do |c|
+            c.checksum gem_repo2, "rubocop", "1.28.2"
+            c.checksum gem_repo2, "rubocop-ast", "1.17.0"
+          end
 
           expect(lockfile).to eq <<~L
             GEM
@@ -367,7 +385,7 @@ RSpec.describe "bundle install with install-time dependencies" do
 
             DEPENDENCIES
               rubocop
-
+            #{checksums}
             BUNDLED WITH
                #{Bundler::VERSION}
           L
@@ -416,10 +434,66 @@ RSpec.describe "bundle install with install-time dependencies" do
           end
 
           nice_error = <<~E.strip
-            Could not find gem 'sorbet-static (= 0.5.10554)' with platforms 'arm64-darwin-21', 'aarch64-linux' in rubygems repository #{file_uri_for(gem_repo4)}/ or installed locally.
+            Could not find gems matching 'sorbet-static (= 0.5.10554)' valid for all resolution platforms (arm64-darwin-21, aarch64-linux) in rubygems repository #{file_uri_for(gem_repo4)}/ or installed locally.
 
             The source contains the following gems matching 'sorbet-static (= 0.5.10554)':
               * sorbet-static-0.5.10554-universal-darwin-21
+          E
+          expect(err).to end_with(nice_error)
+        end
+      end
+
+      context "when adding a new gem that does not resolve under all locked platforms" do
+        before do
+          simulate_platform "x86_64-linux" do
+            build_repo4 do
+              build_gem "nokogiri", "1.14.0" do |s|
+                s.platform = "x86_64-linux"
+              end
+              build_gem "nokogiri", "1.14.0" do |s|
+                s.platform = "arm-linux"
+              end
+
+              build_gem "sorbet-static", "0.5.10696" do |s|
+                s.platform = "x86_64-linux"
+              end
+            end
+
+            lockfile <<~L
+              GEM
+                remote: #{file_uri_for(gem_repo4)}/
+                specs:
+                  nokogiri (1.14.0-arm-linux)
+                  nokogiri (1.14.0-x86_64-linux)
+
+              PLATFORMS
+                arm-linux
+                x86_64-linux
+
+              DEPENDENCIES
+                nokogiri
+
+              BUNDLED WITH
+                 #{Bundler::VERSION}
+            L
+
+            gemfile <<~G
+              source "#{file_uri_for(gem_repo4)}"
+
+              gem "nokogiri"
+              gem "sorbet-static"
+            G
+
+            bundle "lock", :raise_on_error => false
+          end
+        end
+
+        it "raises a proper error" do
+          nice_error = <<~E.strip
+            Could not find gems matching 'sorbet-static' valid for all resolution platforms (arm-linux, x86_64-linux) in rubygems repository #{file_uri_for(gem_repo4)}/ or installed locally.
+
+            The source contains the following gems matching 'sorbet-static':
+              * sorbet-static-0.5.10696-x86_64-linux
           E
           expect(err).to end_with(nice_error)
         end

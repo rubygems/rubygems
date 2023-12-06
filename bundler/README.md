@@ -1,5 +1,4 @@
 [![Version ](https://img.shields.io/gem/v/bundler.svg?style=flat)](https://rubygems.org/gems/bundler)
-[![Slack   ](https://bundler-slackin.herokuapp.com/badge.svg)](https://bundler-slackin.herokuapp.com)
 
 # Bundler: a gem to bundle gems
 
@@ -38,7 +37,7 @@ Still stuck? Try [filing an issue](https://github.com/rubygems/rubygems/issues/n
 
 To see what has changed in recent versions of Bundler, see the [CHANGELOG](CHANGELOG.md).
 
-To get in touch with the Bundler core team and other Bundler users, please join [the Bundler slack](https://slack.bundler.io).
+To get in touch with the Bundler core team and other Bundler users, please join [the Bundler slack](https://join.slack.com/t/bundler/shared_invite/zt-1rrsuuv3m-OmXKWQf8K6iSla4~F1DBjQ).
 
 ### Contributing
 

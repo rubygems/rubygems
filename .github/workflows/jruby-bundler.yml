@@ -2,7 +2,10 @@ name: jruby-bundler
 
 on:
   pull_request:
-  merge_group:
+
+  push:
+    branches:
+      - master
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
@@ -29,14 +32,14 @@ jobs:
         os: [ubuntu-22.04, windows-2022]
 
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby
-        uses: ruby/setup-ruby@5311f05890856149502132d25c4a24985a00d426 # v1.153.0
+        uses: ruby/setup-ruby@8575951200e472d5f2d95c625da0c7bec8217c42 # v1.161.0
         with:
           ruby-version: jruby-9.4.2.0
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2 # v3.12.0
+        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4.0.0
         with:
           distribution: temurin
           java-version: 19.0.2

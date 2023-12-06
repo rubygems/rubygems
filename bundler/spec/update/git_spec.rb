@@ -309,6 +309,11 @@ RSpec.describe "bundle update" do
 
       bundle "update --source bar"
 
+      checksums = checksums_section_when_existing do |c|
+        c.no_checksum "foo", "2.0"
+        c.checksum gem_repo2, "rack", "1.0.0"
+      end
+
       expect(lockfile).to eq <<~G
         GIT
           remote: #{@git.path}
@@ -327,7 +332,7 @@ RSpec.describe "bundle update" do
         DEPENDENCIES
           foo!
           rack
-
+        #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}
       G

@@ -101,6 +101,22 @@ RSpec.shared_examples "bundle install --standalone" do
 
       expect(out).to eq(expected_gems.values.join("\n"))
     end
+
+    it "skips activating gems" do
+      testrb = String.new <<-RUBY
+        $:.unshift File.expand_path("bundle")
+        require "bundler/setup"
+
+        gem "do_not_activate_me"
+      RUBY
+      expected_gems.each do |k, _|
+        testrb << "\nrequire \"#{k}\""
+        testrb << "\nputs #{k.upcase}"
+      end
+      sys_exec %(#{Gem.ruby} -w -e #{testrb.shellescape})
+
+      expect(out).to eq(expected_gems.values.join("\n"))
+    end
   end
 
   describe "with simple gems" do
@@ -126,7 +142,6 @@ RSpec.shared_examples "bundle install --standalone" do
   describe "with default gems and a lockfile", :ruby_repo do
     before do
       skip "does not work on rubygems versions where `--install_dir` doesn't respect --default" unless Gem::Installer.for_spec(loaded_gemspec, :install_dir => "/foo").default_spec_file == "/foo/specifications/default/bundler-#{Bundler::VERSION}.gemspec" # Since rubygems 3.2.0.rc.2
-      skip "does not work on old rubies because the realworld gems that need to be installed don't support them" if RUBY_VERSION < "2.7.0"
 
       realworld_system_gems "tsort --version 0.1.0"
 

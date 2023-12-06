@@ -7,13 +7,23 @@ module Bundler
     include MatchPlatform
     include ForcePlatform
 
-    attr_reader :name, :version, :dependencies, :platform
-    attr_accessor :source, :remote, :force_ruby_platform
+    attr_reader :name, :version, :platform
+    attr_accessor :source, :remote, :force_ruby_platform, :dependencies, :required_ruby_version, :required_rubygems_version
+
+    def self.from_spec(s)
+      lazy_spec = new(s.name, s.version, s.platform, s.source)
+      lazy_spec.dependencies = s.dependencies
+      lazy_spec.required_ruby_version = s.required_ruby_version
+      lazy_spec.required_rubygems_version = s.required_rubygems_version
+      lazy_spec
+    end
 
     def initialize(name, version, platform, source = nil)
       @name          = name
       @version       = version
       @dependencies  = []
+      @required_ruby_version = Gem::Requirement.default
+      @required_rubygems_version = Gem::Requirement.default
       @platform      = platform || Gem::Platform::RUBY
       @source        = source
       @force_ruby_platform = default_force_ruby_platform
@@ -25,6 +35,14 @@ module Bundler
       else
         "#{@name}-#{@version}-#{platform}"
       end
+    end
+
+    def lock_name
+      @lock_name ||= name_tuple.lock_name
+    end
+
+    def name_tuple
+      Gem::NameTuple.new(@name, @version, @platform)
     end
 
     def ==(other)
@@ -61,12 +79,7 @@ module Bundler
 
     def to_lock
       out = String.new
-
-      if platform == Gem::Platform::RUBY
-        out << "    #{name} (#{version})\n"
-      else
-        out << "    #{name} (#{version}-#{platform})\n"
-      end
+      out << "    #{lock_name}\n"
 
       dependencies.sort_by(&:to_s).uniq.each do |dep|
         next if dep.type == :development
@@ -109,9 +122,7 @@ module Bundler
     # bad gem.
     def __materialize__(candidates, fallback_to_non_installable: Bundler.frozen_bundle?)
       search = candidates.reverse.find do |spec|
-        spec.is_a?(StubSpecification) ||
-          (spec.matches_current_ruby? &&
-            spec.matches_current_rubygems?)
+        spec.is_a?(StubSpecification) || spec.matches_current_metadata?
       end
       if search.nil? && fallback_to_non_installable
         search = candidates.last
@@ -122,16 +133,16 @@ module Bundler
     end
 
     def to_s
-      @to_s ||= if platform == Gem::Platform::RUBY
-        "#{name} (#{version})"
-      else
-        "#{name} (#{version}-#{platform})"
-      end
+      lock_name
     end
 
     def git_version
       return unless source.is_a?(Bundler::Source::Git)
       " #{source.revision[0..6]}"
+    end
+
+    def force_ruby_platform!
+      @force_ruby_platform = true
     end
 
     private

@@ -171,7 +171,7 @@ class Release
       system("git", "push", "origin", @stable_branch, exception: true)
     end
 
-    system("git", "checkout", "-b", @release_branch, @stable_branch, exception: true)
+    create_if_not_exist_and_switch_to(@release_branch, from: @stable_branch)
 
     begin
       @bundler.set_relevant_pull_requests_from(unreleased_pull_requests)
@@ -179,20 +179,7 @@ class Release
 
       cherry_pick_pull_requests if @level == :patch
 
-      @bundler.cut_changelog!
-      system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
-      bundler_changelog = `git show --no-patch --pretty=format:%h`
-
-      @bundler.bump_versions!
-      system("rake", "update_locked_bundler", exception: true)
-      system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
-
-      @rubygems.cut_changelog!
-      system("git", "commit", "-am", "Changelog for Rubygems version #{@rubygems.version}", exception: true)
-      rubygems_changelog = `git show --no-patch --pretty=format:%h`
-
-      @rubygems.bump_versions!
-      system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
+      bundler_changelog, rubygems_changelog = cut_changelogs_and_bump_versions
 
       system("git", "push", exception: true)
 
@@ -204,14 +191,13 @@ class Release
         "It's release day!"
       )
 
-      system("git", "checkout", "-b", "cherry_pick_changelogs", "master", exception: true)
+      create_if_not_exist_and_switch_to("cherry_pick_changelogs", from: "master")
 
       begin
         system("git", "cherry-pick", bundler_changelog, rubygems_changelog, exception: true)
         system("git", "push", exception: true)
       rescue StandardError
         system("git", "cherry-pick", "--abort")
-        system("git", "branch", "-D", "cherry_pick_changelogs")
       else
         gh_client.create_pull_request(
           "rubygems/rubygems",
@@ -223,21 +209,29 @@ class Release
       end
     rescue StandardError
       system("git", "checkout", initial_branch)
-      system("git", "branch", "-D", @release_branch)
       raise
     end
   end
 
+  def create_if_not_exist_and_switch_to(branch, from:)
+    system("git", "checkout", branch, exception: true, err: IO::NULL)
+  rescue StandardError
+    system("git", "checkout", "-b", branch, from, exception: true)
+  end
+
   def cherry_pick_pull_requests
     prs = relevant_unreleased_pull_requests
+    raise "No unreleased PRs were found. Make sure to tag them with appropriate labels so that they are selected for backport." unless prs.any?
 
-    if prs.any? && !system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
+    puts "The following unreleased prs were found:\n#{prs.map {|pr| "* #{pr.url}" }.join("\n")}"
+
+    unless system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
       warn <<~MSG
 
         Opening a new shell to fix the cherry-pick errors manually. You can do the following now:
 
         * Find the PR that caused the merge conflict.
-        * If you'd like to include that PR in the release, tag it with an appropriate label. Then type `Ctrl-D` and rerun the task so that the PR is cherry-picked before and the conflict is fixed.
+        * If you'd like to include that PR in the release, tag it with an appropriate label. Then type `exit 1` and rerun the task so that the PR is cherry-picked before and the conflict is fixed.
         * If you don't want to include that PR in the release, fix conflicts manually, run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the release preparation.
 
       MSG
@@ -247,6 +241,31 @@ class Release
         raise "Failed to resolve conflicts, resetting original state"
       end
     end
+  end
+
+  def cut_changelogs_and_bump_versions
+    system("git", "branch", "#{@release_branch}-bkp")
+
+    @bundler.cut_changelog!
+    system("git", "commit", "-am", "Changelog for Bundler version #{@bundler.version}", exception: true)
+    bundler_changelog = `git show --no-patch --pretty=format:%h`
+
+    @bundler.bump_versions!
+    system("rake", "update_locked_bundler", exception: true)
+    system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
+
+    @rubygems.cut_changelog!
+    system("git", "commit", "-am", "Changelog for Rubygems version #{@rubygems.version}", exception: true)
+    rubygems_changelog = `git show --no-patch --pretty=format:%h`
+
+    @rubygems.bump_versions!
+    system("git", "commit", "-am", "Bump Rubygems version to #{@rubygems.version}", exception: true)
+
+    [bundler_changelog, rubygems_changelog]
+  rescue StandardError
+    system("git", "reset", "--hard", "#{@release_branch}-bkp")
+  ensure
+    system("git", "branch", "-D", "#{@release_branch}-bkp")
   end
 
   def cut_changelog!
@@ -260,7 +279,7 @@ class Release
   private
 
   def relevant_unreleased_pull_requests
-    (@bundler.relevant_pull_requests + @rubygems.relevant_pull_requests).sort_by(&:merged_at)
+    (@bundler.relevant_pull_requests + @rubygems.relevant_pull_requests).uniq.sort_by(&:merged_at)
   end
 
   def unreleased_pull_requests

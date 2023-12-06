@@ -797,28 +797,6 @@ dependencies: []
     assert_equal File.join(@tempdir, "a-2.gemspec"), spec.loaded_from
   end
 
-  if RUBY_ENGINE == "ruby" && RUBY_VERSION < "2.7"
-    def test_self_load_tainted
-      full_path = @a2.spec_file
-      write_file full_path do |io|
-        io.write @a2.to_ruby_for_cache
-      end
-
-      full_path.taint
-      loader = Thread.new do
-        $SAFE = 1
-        Gem::Specification.load full_path
-      end
-      spec = loader.value
-
-      @a2.files.clear
-
-      assert_equal @a2, spec
-    ensure
-      $SAFE = 0
-    end
-  end
-
   def test_self_load_escape_curly
     @a2.name = 'a};raise "improper escaping";%q{'
 
@@ -3104,8 +3082,8 @@ Please report a bug if this causes problems.
     end
 
     assert_match <<-WARNING, @ui.error
-WARNING:  licenses is empty, but is recommended.  Use a license identifier from
-http://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
+WARNING:  licenses is empty, but is recommended. Use an license identifier from
+https://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
 or set it to nil if you don't want to specify a license.
     WARNING
   end
@@ -3156,8 +3134,8 @@ or set it to nil if you don't want to specify a license.
     end
 
     assert_match <<-WARNING, @ui.error
-WARNING:  license value 'BSD' is invalid.  Use a license identifier from
-http://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
+WARNING:  License identifier 'BSD' is invalid. Use an identifier from
+https://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
 or set it to nil if you don't want to specify a license.
     WARNING
   end
@@ -3173,7 +3151,7 @@ or set it to nil if you don't want to specify a license.
     assert_empty @ui.error
   end
 
-  def test_validate_license_values_plus
+  def test_validate_deprecated_license_values_plus
     util_setup_validate
 
     use_ui @ui do
@@ -3181,7 +3159,11 @@ or set it to nil if you don't want to specify a license.
       @a1.validate
     end
 
-    assert_empty @ui.error
+    assert_match <<-WARNING, @ui.error
+WARNING:  License identifier 'GPL-2.0+' is deprecated. Use an identifier from
+https://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
+or set it to nil if you don't want to specify a license.
+    WARNING
   end
 
   def test_validate_license_values_or_later
@@ -3199,7 +3181,7 @@ or set it to nil if you don't want to specify a license.
     util_setup_validate
 
     use_ui @ui do
-      @a1.licenses = ["GPL-2.0+ WITH Autoconf-exception-2.0"]
+      @a1.licenses = ["GPL-2.0-or-later WITH Autoconf-exception-2.0"]
       @a1.validate
     end
 
@@ -3215,13 +3197,13 @@ or set it to nil if you don't want to specify a license.
     end
 
     assert_match <<-WARNING, @ui.error
-WARNING:  license value 'GPL-2.0+ FOO' is invalid.  Use a license identifier from
-http://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
+WARNING:  License identifier 'GPL-2.0+ FOO' is invalid. Use an identifier from
+https://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
 or set it to nil if you don't want to specify a license.
     WARNING
     assert_match <<-WARNING, @ui.error
-WARNING:  license value 'GPL-2.0 FOO' is invalid.  Use a license identifier from
-http://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
+WARNING:  License identifier 'GPL-2.0+ FOO' is invalid. Use an identifier from
+https://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
 or set it to nil if you don't want to specify a license.
     WARNING
   end
@@ -3230,13 +3212,28 @@ or set it to nil if you don't want to specify a license.
     util_setup_validate
 
     use_ui @ui do
-      @a1.licenses = ["GPL-2.0+ WITH Autocofn-exception-2.0"]
+      @a1.licenses = ["GPL-2.0-only WITH Autocofn-exception-2.0"]
       @a1.validate
     end
 
     assert_match <<-WARNING, @ui.error
-WARNING:  license value 'GPL-2.0+ WITH Autocofn-exception-2.0' is invalid.  Use a license identifier from
-http://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
+WARNING:  License identifier 'GPL-2.0-only WITH Autocofn-exception-2.0' is invalid. Use an identifier from
+https://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
+or set it to nil if you don't want to specify a license.
+    WARNING
+  end
+
+  def test_validate_license_with_deprecated_exception
+    util_setup_validate
+
+    use_ui @ui do
+      @a1.licenses = ["GPL-2.0-only WITH Nokia-Qt-exception-1.1"]
+      @a1.validate
+    end
+
+    assert_match <<-WARNING, @ui.error
+WARNING:  Exception identifier at 'GPL-2.0-only WITH Nokia-Qt-exception-1.1' is deprecated. Use an identifier from
+https://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
 or set it to nil if you don't want to specify a license.
     WARNING
   end
@@ -3250,8 +3247,8 @@ or set it to nil if you don't want to specify a license.
     end
 
     assert_match <<-WARNING, @ui.error
-WARNING:  license value 'ruby' is invalid.  Use a license identifier from
-http://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
+WARNING:  License identifier 'ruby' is invalid. Use an identifier from
+https://spdx.org/licenses or 'Nonstandard' for a nonstandard license,
 or set it to nil if you don't want to specify a license.
 Did you mean 'Ruby'?
     WARNING

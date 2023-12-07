@@ -3,4 +3,4 @@
 
 require_relative "../bundler/spec/support/rubygems_ext"
 
-Spec::Rubygems.gem_load("ronn", "ronn")
+Spec::Rubygems.gem_load("nronn", "ronn")

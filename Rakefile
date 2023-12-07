@@ -690,11 +690,11 @@ namespace :man do
     end
     task :build_all_pages => "index.txt"
 
-    desc "Make sure ronn is installed"
+    desc "Make sure nronn is installed"
     task :check_ronn do
-      Spec::Rubygems.gem_require("ronn")
+      Spec::Rubygems.gem_require("nronn", "ronn")
     rescue Gem::LoadError => e
-      abort("We couldn't activate ronn (#{e.requirement}). Try `gem install ronn:'#{e.requirement}'` to be able to build the help pages")
+      abort("We couldn't activate nronn (#{e.requirement}). Try `gem install nronn:'#{e.requirement}'` to be able to build the help pages")
     end
 
     desc "Remove all built man pages"
@@ -711,7 +711,7 @@ namespace :man do
     desc "Sets target date for building man pages to the one currently present"
     task :set_current_date do
       require "date"
-      ENV["MAN_PAGES_DATE"] = Date.parse(File.readlines("bundler/lib/bundler/man/bundle-add.1")[3].split('"')[5]).strftime("%Y-%m-%d")
+      ENV["MAN_PAGES_DATE"] = Date.parse(File.readlines("bundler/lib/bundler/man/bundle-add.1")[2].split('"')[5]).strftime("%Y-%m-%d")
     end
 
     desc "Verify man pages are in sync"

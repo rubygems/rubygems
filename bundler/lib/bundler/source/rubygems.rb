@@ -176,7 +176,7 @@ module Bundler
           :bin_dir => bin_path.to_s,
           :ignore_dependencies => true,
           :wrappers => true,
-          :env_shebang => true,
+          :env_shebang => Bundler.settings[:shebang],
           :build_args => options[:build_args],
           :bundler_extension_cache_path => extension_cache_path(spec)
         )

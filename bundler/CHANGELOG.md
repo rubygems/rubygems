@@ -757,6 +757,7 @@
 
 ## Enhancements:
 
+  - Cancel deprecation of custom git sources [#5147](https://github.com/rubygems/rubygems/pull/5147)
   - Print warning when running Bundler on potentially problematic RubyGems & Ruby combinations [#5177](https://github.com/rubygems/rubygems/pull/5177)
   - Error tracing should be printed to stderr [#5179](https://github.com/rubygems/rubygems/pull/5179)
   - Add `github` and `ref` options to `bundle add` [#5159](https://github.com/rubygems/rubygems/pull/5159)

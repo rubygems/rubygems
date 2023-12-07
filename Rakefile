@@ -83,14 +83,14 @@ namespace "test" do
   end
 end
 
-task :default => [:test, :spec]
+task default: [:test, :spec]
 
 spec = Gem::Specification.load(File.expand_path("rubygems-update.gemspec", __dir__))
 v = spec.version
 
 require "rdoc/task"
 
-RDoc::Task.new :rdoc => "docs", :clobber_rdoc => "clobber_docs" do |doc|
+RDoc::Task.new rdoc: "docs", clobber_rdoc: "clobber_docs" do |doc|
   doc.main   = "README.md"
   doc.title  = "RubyGems #{v} API Documentation"
 
@@ -115,7 +115,7 @@ if File.exist?("tool/automatiek.rake")
   desc "Vendor a specific version of molinillo to rubygems"
   Automatiek::RakeTask.new("molinillo") do |lib|
     lib.version = "master"
-    lib.download = { :github => "https://github.com/CocoaPods/Molinillo" }
+    lib.download = { github: "https://github.com/CocoaPods/Molinillo" }
     lib.namespace = "Molinillo"
     lib.prefix = "Gem::Resolver"
     lib.vendor_lib = "lib/rubygems/resolver/molinillo"
@@ -123,7 +123,7 @@ if File.exist?("tool/automatiek.rake")
 
     lib.dependency("tsort") do |sublib|
       sublib.version = "v0.1.1"
-      sublib.download = { :github => "https://github.com/ruby/tsort" }
+      sublib.download = { github: "https://github.com/ruby/tsort" }
       sublib.namespace = "TSort"
       sublib.prefix = "Gem"
       sublib.vendor_lib = "lib/rubygems/tsort"
@@ -140,7 +140,7 @@ if File.exist?("tool/automatiek.rake")
   desc "Vendor a specific version of optparse to rubygems"
   Automatiek::RakeTask.new("optparse") do |lib|
     lib.version = "v0.3.0"
-    lib.download = { :github => "https://github.com/ruby/optparse" }
+    lib.download = { github: "https://github.com/ruby/optparse" }
     lib.namespace = "OptionParser"
     lib.prefix = "Gem"
     lib.vendor_lib = "lib/rubygems/optparse"
@@ -150,7 +150,7 @@ if File.exist?("tool/automatiek.rake")
   desc "Vendor a specific version of pub_grub to bundler"
   Automatiek::RakeTask.new("pub_grub") do |lib|
     lib.version = "main"
-    lib.download = { :github => "https://github.com/jhawthorn/pub_grub" }
+    lib.download = { github: "https://github.com/jhawthorn/pub_grub" }
     lib.namespace = "PubGrub"
     lib.prefix = "Bundler"
     lib.vendor_lib = "bundler/lib/bundler/vendor/pub_grub"
@@ -160,7 +160,7 @@ if File.exist?("tool/automatiek.rake")
   desc "Vendor a specific version of tsort to bundler"
   Automatiek::RakeTask.new("tsort") do |lib|
     lib.version = "v0.1.1"
-    lib.download = { :github => "https://github.com/ruby/tsort" }
+    lib.download = { github: "https://github.com/ruby/tsort" }
     lib.namespace = "TSort"
     lib.prefix = "Bundler"
     lib.vendor_lib = "bundler/lib/bundler/vendor/tsort"
@@ -170,7 +170,7 @@ if File.exist?("tool/automatiek.rake")
   desc "Vendor a specific version of thor to bundler"
   Automatiek::RakeTask.new("thor") do |lib|
     lib.version = "v1.3.0"
-    lib.download = { :github => "https://github.com/rails/thor" }
+    lib.download = { github: "https://github.com/rails/thor" }
     lib.namespace = "Thor"
     lib.prefix = "Bundler"
     lib.vendor_lib = "bundler/lib/bundler/vendor/thor"
@@ -180,7 +180,7 @@ if File.exist?("tool/automatiek.rake")
   desc "Vendor a specific version of fileutils to bundler"
   Automatiek::RakeTask.new("fileutils") do |lib|
     lib.version = "v1.7.0"
-    lib.download = { :github => "https://github.com/ruby/fileutils" }
+    lib.download = { github: "https://github.com/ruby/fileutils" }
     lib.namespace = "FileUtils"
     lib.prefix = "Bundler"
     lib.vendor_lib = "bundler/lib/bundler/vendor/fileutils"
@@ -192,7 +192,7 @@ if File.exist?("tool/automatiek.rake")
   desc "Vendor a specific version of net-http-persistent to bundler"
   Automatiek::RakeTask.new("net-http-persistent") do |lib|
     lib.version = "v4.0.2"
-    lib.download = { :github => "https://github.com/drbrain/net-http-persistent" }
+    lib.download = { github: "https://github.com/drbrain/net-http-persistent" }
     lib.namespace = "Net::HTTP::Persistent"
     lib.prefix = "Bundler::Persistent"
     lib.vendor_lib = "bundler/lib/bundler/vendor/net-http-persistent"
@@ -200,7 +200,7 @@ if File.exist?("tool/automatiek.rake")
 
     lib.dependency("connection_pool") do |sublib|
       sublib.version = "v2.3.0"
-      sublib.download = { :github => "https://github.com/mperham/connection_pool" }
+      sublib.download = { github: "https://github.com/mperham/connection_pool" }
       sublib.namespace = "ConnectionPool"
       sublib.prefix = "Bundler"
       sublib.vendor_lib = "bundler/lib/bundler/vendor/connection_pool"
@@ -209,7 +209,7 @@ if File.exist?("tool/automatiek.rake")
 
     lib.dependency("uri") do |sublib|
       sublib.version = "v0.12.2"
-      sublib.download = { :github => "https://github.com/ruby/uri" }
+      sublib.download = { github: "https://github.com/ruby/uri" }
       sublib.namespace = "URI"
       sublib.prefix = "Bundler"
       sublib.vendor_lib = "bundler/lib/bundler/vendor/uri"
@@ -235,8 +235,8 @@ task rubocop: %w[rubocop:setup rubocop:run]
 # --------------------------------------------------------------------
 # Creating a release
 
-task :prerelease => %w[clobber install_release_dependencies test bundler:build_metadata check_deprecations]
-task :postrelease => %w[upload guides:publish blog:publish bundler:build_metadata:clean]
+task prerelease: %w[clobber install_release_dependencies test bundler:build_metadata check_deprecations]
+task postrelease: %w[upload guides:publish blog:publish bundler:build_metadata:clean]
 
 desc "Check for deprecated methods with expired deprecation horizon"
 task :check_deprecations do
@@ -262,7 +262,7 @@ task :prepare_release, [:version] => [:install_release_dependencies] do |_t, opt
 end
 
 desc "Install rubygems to local system"
-task :install => [:clear_package, :package] do
+task install: [:clear_package, :package] do
   sh "ruby -Ilib exe/gem install --no-document pkg/rubygems-update-#{v}.gem --backtrace && update_rubygems --no-document --backtrace"
 end
 
@@ -279,7 +279,7 @@ task :generate_changelog, [:version] do |_t, opts|
 end
 
 desc "Release rubygems-#{v}"
-task :release => :prerelease do
+task release: :prerelease do
   Rake::Task["package"].invoke
   sh "gem push pkg/rubygems-update-#{v}.gem"
   Rake::Task["postrelease"].invoke
@@ -350,7 +350,7 @@ task :upload_to_s3 do
 end
 
 desc "Upload release to rubygems.org"
-task :upload => %w[upload_to_github upload_to_s3]
+task upload: %w[upload_to_github upload_to_s3]
 
 directory "../guides.rubygems.org" do
   sh "git", "clone",
@@ -555,7 +555,7 @@ task :update_licenses do
 end
 
 desc "Create branch to update License list"
-task :update_licenses_branch => :update_licenses do
+task update_licenses_branch: :update_licenses do
   if license_last_update
     file, mtime = license_last_update
     date = mtime.strftime("%Y-%m-%d")
@@ -592,27 +592,27 @@ namespace :dev do
   end
 
   desc "Ensure dev dependencies are installed, and make sure no lockfile changes are generated"
-  task :frozen_deps => :deps do
+  task frozen_deps: :deps do
     Spec::Rubygems.check_source_control_changes(
-      :success_message => "Development dependencies were installed and the lockfile is in sync",
-      :error_message => "Development dependencies were installed but the lockfile is out of sync. Commit the updated lockfile and try again"
+      success_message: "Development dependencies were installed and the lockfile is in sync",
+      error_message: "Development dependencies were installed but the lockfile is out of sync. Commit the updated lockfile and try again"
     )
   end
 end
 
 namespace :spec do
   desc "Ensure spec dependencies are installed"
-  task :deps => "dev:deps" do
+  task deps: "dev:deps" do
     Spec::Rubygems.install_test_deps
   end
 
   desc "Ensure spec dependencies for running in parallel are installed"
-  task :parallel_deps => "dev:deps" do
+  task parallel_deps: "dev:deps" do
     Spec::Rubygems.install_parallel_test_deps
   end
 
   desc "Run all specs"
-  task :all => %w[spec:regular spec:realworld]
+  task all: %w[spec:regular spec:realworld]
 
   desc "Run the regular spec suite"
   task :regular do
@@ -688,7 +688,7 @@ namespace :man do
         end
       end
     end
-    task :build_all_pages => "index.txt"
+    task build_all_pages: "index.txt"
 
     desc "Make sure nronn is installed"
     task :check_ronn do
@@ -706,7 +706,7 @@ namespace :man do
     end
 
     desc "Build the man pages"
-    task :build => [:check_ronn, :clean, :build_all_pages]
+    task build: [:check_ronn, :clean, :build_all_pages]
 
     desc "Sets target date for building man pages to the one currently present"
     task :set_current_date do
@@ -715,10 +715,10 @@ namespace :man do
     end
 
     desc "Verify man pages are in sync"
-    task :check => [:check_ronn, :set_current_date, :build] do
+    task check: [:check_ronn, :set_current_date, :build] do
       Spec::Rubygems.check_source_control_changes(
-        :success_message => "Man pages are in sync",
-        :error_message => "Man pages are out of sync. Please run `rake man:build` and commit the results."
+        success_message: "Man pages are in sync",
+        error_message: "Man pages are out of sync. Please run `rake man:build` and commit the results."
       )
     end
   end
@@ -748,7 +748,7 @@ namespace :bundler do
     end
   end
 
-  task :build => ["bundler:build_metadata"] do
+  task build: ["bundler:build_metadata"] do
     Rake::Task["bundler:build_metadata:clean"].tap(&:reenable).invoke
   end
 

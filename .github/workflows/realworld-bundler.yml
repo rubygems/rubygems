@@ -28,6 +28,7 @@ jobs:
           - { name: ruby-3.0, value: 3.0.6 }
           - { name: ruby-3.1, value: 3.1.4 }
           - { name: ruby-3.2, value: 3.2.2 }
+          - { name: ruby-3.3, value: 3.3.0-rc1 }
 
         bundler:
           - { name: 2, value: '' }
@@ -37,6 +38,7 @@ jobs:
           - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
           - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
           - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 } }
+          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0-rc1 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems
@@ -71,9 +73,11 @@ jobs:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0-rc1 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.6 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.4 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.2 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.0-rc1 } }
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby
@@ -104,7 +108,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@af848b40be8bb463a751551a1180d74782ba8a72 # v1.162.0
         with:
-          ruby-version: 3.2.2
+          ruby-version: 3.3.0-rc1
           bundler: none
       - name: Download all used cassettes as artifacts
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2

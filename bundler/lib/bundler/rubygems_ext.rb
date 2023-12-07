@@ -352,14 +352,6 @@ module Gem
   require "rubygems/name_tuple"
 
   class NameTuple
-    def self.new(name, version, platform="ruby")
-      if Gem::Platform === platform
-        super(name, version, platform.to_s)
-      else
-        super
-      end
-    end
-
     def lock_name
       @lock_name ||=
         if platform == Gem::Platform::RUBY

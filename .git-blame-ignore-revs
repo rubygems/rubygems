@@ -11,3 +11,5 @@ b0d532adb80521271fbde4d3955c252f2ee09a5c
 cf58bc4b1ee83b2697fbdbcc76ced09515525141
 # [RuboCop] Enable Style/EmptyLines
 ff426fdbc1bde3582b6e1d5137abd21d74c38f87
+# Use modern hashes consistently
+bb66253f2ceddee527b82971423348d8bbc1b606

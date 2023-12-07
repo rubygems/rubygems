@@ -7,7 +7,7 @@ class Release
     def gh_client
       @gh_client ||= begin
         require "octokit"
-        Octokit::Client.new(:access_token => ENV["GITHUB_RELEASE_PAT"])
+        Octokit::Client.new(access_token: ENV["GITHUB_RELEASE_PAT"])
       end
     end
   end
@@ -40,10 +40,10 @@ class Release
     def create_for_github!
       tag = "#{@tag_prefix}#{@version}"
 
-      gh_client.create_release "rubygems/rubygems", tag, :name => tag,
-                                                         :body => @changelog.release_notes.join("\n").strip,
-                                                         :prerelease => @version.prerelease?,
-                                                         :target_commitish => @stable_branch
+      gh_client.create_release "rubygems/rubygems", tag, name: tag,
+                                                         body: @changelog.release_notes.join("\n").strip,
+                                                         prerelease: @version.prerelease?,
+                                                         target_commitish: @stable_branch
     end
 
     def previous_version
@@ -287,7 +287,7 @@ class Release
   end
 
   def scan_unreleased_pull_requests(ids)
-    pulls = gh_client.pull_requests("rubygems/rubygems", :sort => :updated, :state => :closed, :direction => :desc)
+    pulls = gh_client.pull_requests("rubygems/rubygems", sort: :updated, state: :closed, direction: :desc)
 
     loop do
       pulls.select! {|pull| ids.include?(pull.number) }

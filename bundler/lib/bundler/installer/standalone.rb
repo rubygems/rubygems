@@ -140,7 +140,7 @@ module Bundler
           def local_platform
             force_mswin_version = true
             Gem::Platform::StringParser
-              .run(RbConfig::CONFIG["arch"])
+              .run(RbConfig::CONFIG["arch"], force_mswin_version)
               .compact
               .join "-"
           end

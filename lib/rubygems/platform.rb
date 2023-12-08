@@ -14,9 +14,8 @@ class Gem::Platform
 
   def self.local
     @local ||= begin
-      arch = RbConfig::CONFIG["arch"]
-      arch = "#{arch}_60" if /mswin(?:32|64)$/.match?(arch)
-      new(arch)
+      force_mswin_version = true
+      new(StringParser.run(RbConfig::CONFIG["arch"], force_mswin_version))
     end
   end
 

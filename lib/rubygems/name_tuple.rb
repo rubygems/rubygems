@@ -10,7 +10,8 @@ class Gem::NameTuple
     @name = name
     @version = version
 
-    platform &&= platform.to_s
+    # Mimic rubygems before string platform in NameTuple
+    # platform &&= platform.to_s
     platform = Gem::Platform::RUBY if !platform || platform.empty?
     @platform = platform
   end

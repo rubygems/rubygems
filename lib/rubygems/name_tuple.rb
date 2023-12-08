@@ -12,6 +12,9 @@ class Gem::NameTuple
 
     # Mimic rubygems before string platform in NameTuple
     # platform &&= platform.to_s
+    return @platform = platform if platform.is_a?(Gem::Platform)
+    # end mimic
+
     platform = Gem::Platform::RUBY if !platform || platform.empty?
     @platform = platform
   end

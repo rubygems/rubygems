@@ -111,4 +111,4 @@ jobs:
         with:
           path: ./bundler/spec/support/artifice/used_vcr_cassettes
       - name: Check unused cassettes
-        run: bin/rake spec:realworld:check_unused_cassettes
+        run: bin/rake dev:rake spec:realworld:check_unused_cassettes

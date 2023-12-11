@@ -20,7 +20,7 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.8.1)
       tilt (~> 2.0)
-    tilt (2.0.11)
+    tilt (2.3.0)
     webrick (1.7.0)
 
 PLATFORMS
@@ -43,7 +43,6 @@ DEPENDENCIES
   rb_sys
   rubygems-generate_index (~> 1.1)
   sinatra (~> 2.0)
-  tilt (~> 2.0.11)
   webrick (= 1.7.0)
 
 CHECKSUMS
@@ -58,7 +57,7 @@ CHECKSUMS
   ruby2_keywords (0.0.5) sha256=ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef
   rubygems-generate_index (1.1.2) sha256=b5cfafe811b18bc45780b4cccc92593cf3115d2c8ea2a9f93a253eb9b2a8b955
   sinatra (2.0.8.1) sha256=b8845f060fde0157940172a4d006b757f3ba6a5ea36326c7c9352c25391c3e66
-  tilt (2.0.11) sha256=7b180fc472cbdeb186c85d31c0f2d1e61a2c0d77e1d9fd0ca28482a9d972d6a0
+  tilt (2.3.0) sha256=82dd903d61213c63679d28e404ee8e10d1b0fdf5270f1ad0898ec314cc3e745c
   webrick (1.7.0) sha256=87e9b8e39947b7925338a5eb55427b11ce1f2b25a3645770ec9f39d8ebdb8cb4
 
 BUNDLED WITH

@@ -586,9 +586,6 @@ task :spec do
 end
 
 namespace :dev do
-  desc "Ensure the rake version we use for development is installed"
-  task :rake
-
   desc "Ensure dev dependencies are installed"
   task :deps do
     Spec::Rubygems.dev_setup

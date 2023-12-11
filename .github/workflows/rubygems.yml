@@ -30,11 +30,9 @@ jobs:
           - { name: "3.0", value: 3.0.6 }
           - { name: "3.1", value: 3.1.4 }
           - { name: "3.2", value: 3.2.2 }
+          - { name: "3.3", value: 3.3.0-rc1 }
 
         include:
-          - ruby: { name: "3.2", value: 3.2.2 }
-            os: { name: macOS, value: macos-12 }
-
           - ruby: { name: jruby-9.4, value: jruby-9.4.2.0 }
             os: { name: Ubuntu, value: ubuntu-22.04 }
 
@@ -43,6 +41,10 @@ jobs:
 
           - os: { name: Windows, value: windows-2022 }
             ruby: { name: mswin, value: mswin }
+
+        exclude:
+          - os: { name: Windows, value: windows-2022 }
+            ruby: { name: "3.3", value: 3.3.0-rc1 }
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -72,7 +74,7 @@ jobs:
         if: "!startsWith(matrix.ruby.name, 'truffleruby') && !startsWith(matrix.ruby.name, 'jruby')"
       - name: Run Test isolatedly
         run: rake test:isolated
-        if: matrix.ruby.name == '3.2' && matrix.os.name != 'Windows'
+        if: matrix.ruby.name == '3.3' && matrix.os.name != 'Windows'
       - name: Run Test (JRuby)
         run: JRUBY_OPTS=--debug rake test
         if: startsWith(matrix.ruby.name, 'jruby')

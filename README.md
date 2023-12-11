@@ -27,7 +27,7 @@ For more information about how to use RubyGems, see our RubyGems basics guide at
 
 ## Requirements
 
-* RubyGems supports Ruby 2.6 or later.
+* RubyGems supports Ruby 3.0 or later.
 
 ## Installation
 

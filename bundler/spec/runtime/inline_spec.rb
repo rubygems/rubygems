@@ -592,9 +592,6 @@ RSpec.describe "bundler/inline#gemfile" do
   end
 
   it "when requiring fileutils after does not show redefinition warnings", :realworld do
-    dependency_installer_loads_fileutils = ruby "require 'rubygems/dependency_installer'; puts $LOADED_FEATURES.grep(/fileutils/)", raise_on_error: false
-    skip "does not work if rubygems/dependency_installer loads fileutils, which happens until rubygems 3.2.0" unless dependency_installer_loads_fileutils.empty?
-
     Dir.mkdir tmp("path_without_gemfile")
 
     default_fileutils_version = ruby "gem 'fileutils', '< 999999'; require 'fileutils'; puts FileUtils::VERSION", raise_on_error: false

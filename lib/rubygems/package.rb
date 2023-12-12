@@ -715,7 +715,7 @@ EOM
 
   if RUBY_ENGINE == "truffleruby"
     def copy_stream(src, dst) # :nodoc:
-      dst.write src.read 16_384 until src.eof?
+      dst.write src.read
     end
   else
     def copy_stream(src, dst) # :nodoc:

@@ -680,9 +680,13 @@ class Gem::Installer
     unless @gem_home
       # `--build-root` overrides `--user-install` and auto-user-install
       if @build_root.nil?
+        # Please note that `options[:user_install]` might have three states:
+        # * `true`: `--user-install`
+        # * `false`: `--no-user-install` and
+        # * `nil`: option was not specified
         if options[:user_install]
           @gem_home = Gem.user_dir
-        elsif !ENV.key?("GEM_HOME") && (File.exist?(Gem.dir) && !File.writable?(Gem.dir))
+        elsif options[:user_install].nil? && !ENV.key?("GEM_HOME") && (File.exist?(Gem.dir) && !File.writable?(Gem.dir))
           say "Defaulting to user installation because default installation directory (#{Gem.dir}) is not writable."
           @gem_home = Gem.user_dir
         end

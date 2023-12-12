@@ -179,6 +179,7 @@ module Gem
     end
   end
 
+  # Requirements using lambda operator differentiate trailing zeros since rubygems 3.2.6
   if Gem::Requirement.new("~> 2.0").hash == Gem::Requirement.new("~> 2.0.0").hash
     class Requirement
       module CorrectHashForLambdaOperator

@@ -100,7 +100,9 @@ module Automatiek
         contents = File.read(file)
 
         contents.gsub!(/module Kernel/, "module #{prefix}")
-        contents.gsub!(/::#{namespace}/, "::#{prefix}::#{namespace}")
+        contents.gsub!(/#{prefix}::#{namespace}::/, "#{namespace}::")
+        contents.gsub!(/#{namespace}::/, "#{prefix}::#{namespace}::")
+        contents.gsub!(/(\s)::#{namespace}/, '\1' + "::#{prefix}::#{namespace}")
         contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
 
         contents.gsub!(/^require (["'])#{Regexp.escape require_entrypoint}/, "require_relative \\1#{relative_require_target_from(file)}")

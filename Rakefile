@@ -189,12 +189,13 @@ if File.exist?("tool/automatiek.rake")
 
   # We currently include the following changes over the official version:
   # * Avoid requiring the optional `net-http-pipeline` dependency, so that its version can be selected by end users.
+  # * Require vendored net/http version RubyGems if available, otherwise the stdlib version.
   desc "Vendor a specific version of net-http-persistent to bundler"
   Automatiek::RakeTask.new("net-http-persistent") do |lib|
     lib.version = "v4.0.2"
     lib.download = { github: "https://github.com/drbrain/net-http-persistent" }
     lib.namespace = "Net::HTTP::Persistent"
-    lib.prefix = "Bundler::Persistent"
+    lib.prefix = "Gem"
     lib.vendor_lib = "bundler/lib/bundler/vendor/net-http-persistent"
     lib.license_path = "README.rdoc"
 
@@ -205,6 +206,15 @@ if File.exist?("tool/automatiek.rake")
       sublib.prefix = "Bundler"
       sublib.vendor_lib = "bundler/lib/bundler/vendor/connection_pool"
       sublib.license_path = "LICENSE"
+
+      sublib.dependency("timeout") do |subsublib|
+        subsublib.version = "v0.4.1"
+        subsublib.download = { github: "https://github.com/ruby/timeout" }
+        subsublib.namespace = "Timeout"
+        subsublib.prefix = "Gem"
+        subsublib.vendor_lib = "lib/rubygems/timeout"
+        subsublib.license_path = "License.txt"
+      end
     end
 
     lib.dependency("uri") do |sublib|
@@ -214,6 +224,60 @@ if File.exist?("tool/automatiek.rake")
       sublib.prefix = "Bundler"
       sublib.vendor_lib = "bundler/lib/bundler/vendor/uri"
       sublib.license_path = "LICENSE.txt"
+    end
+
+    lib.dependency("net-http") do |sublib|
+      sublib.version = "v0.4.0"
+      sublib.download = { github: "https://github.com/ruby/net-http" }
+      sublib.namespace = "Net"
+      sublib.prefix = "Gem"
+      sublib.vendor_lib = "lib/rubygems/net-http"
+      sublib.license_path = "LICENSE.txt"
+
+      sublib.dependency("net-protocol") do |subsublib|
+        subsublib.version = "v0.2.2"
+        subsublib.download = { github: "https://github.com/ruby/net-protocol" }
+        subsublib.namespace = "Net"
+        subsublib.prefix = "Gem"
+        subsublib.vendor_lib = "lib/rubygems/net-protocol"
+        subsublib.license_path = "License.txt"
+
+        subsublib.dependency("timeout") do |ssslib|
+          ssslib.version = "v0.4.1"
+          ssslib.download = { github: "https://github.com/ruby/timeout" }
+          ssslib.namespace = "Timeout"
+          ssslib.prefix = "Gem"
+          ssslib.vendor_lib = "lib/rubygems/timeout"
+          ssslib.license_path = "License.txt"
+        end
+      end
+
+      sublib.dependency("timeout") do |subsublib|
+        subsublib.version = "v0.4.1"
+        subsublib.download = { github: "https://github.com/ruby/timeout" }
+        subsublib.namespace = "Timeout"
+        subsublib.prefix = "Gem"
+        subsublib.vendor_lib = "lib/rubygems/timeout"
+        subsublib.license_path = "License.txt"
+      end
+
+      sublib.dependency("resolv") do |subsublib|
+        subsublib.version = "v0.2.2"
+        subsublib.download = { github: "https://github.com/ruby/resolv" }
+        subsublib.namespace = "Resolv"
+        subsublib.prefix = "Gem"
+        subsublib.vendor_lib = "lib/rubygems/resolv"
+        subsublib.license_path = "License.txt"
+
+        subsublib.dependency("timeout") do |ssslib|
+          ssslib.version = "v0.4.1"
+          ssslib.download = { github: "https://github.com/ruby/timeout" }
+          ssslib.namespace = "Timeout"
+          ssslib.prefix = "Gem"
+          ssslib.vendor_lib = "lib/rubygems/timeout"
+          ssslib.license_path = "License.txt"
+        end
+      end
     end
   end
 end

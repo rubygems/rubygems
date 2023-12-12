@@ -10,7 +10,7 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
-    rake (13.0.1)
+    rake (13.1.0)
     rb_sys (0.9.83)
     ruby2_keywords (0.0.5)
     rubygems-generate_index (1.1.2)
@@ -39,7 +39,7 @@ DEPENDENCIES
   compact_index (~> 0.15.0)
   rack (= 2.0.8)
   rack-test (~> 1.1)
-  rake (= 13.0.1)
+  rake (~> 13.1)
   rb_sys
   rubygems-generate_index (~> 1.1)
   sinatra (~> 2.0)
@@ -52,7 +52,7 @@ CHECKSUMS
   rack (2.0.8) sha256=f98171fb30e104950abe1e9fb97c177d8bb5643dd649bc2ed837864eb596a0c5
   rack-protection (2.0.8.1) sha256=d187dee7708ca93301854127e81b2675b60af86ab53532f9735087ecd649d2ff
   rack-test (1.1.0) sha256=154161f40f162b1c009a655b7b0c5de3a3102cc6d7d2e94b64e1f46ace800866
-  rake (13.0.1) sha256=292a08eb3064e972e3e07e4c297d54a93433439ff429e58a403ae05584fad870
+  rake (13.1.0) sha256=be6a3e1aa7f66e6c65fa57555234eb75ce4cf4ada077658449207205474199c6
   rb_sys (0.9.83) sha256=0ed80df79aa08b942af731d93a676f2d885428267f2fbf138f9b6b7809c6455e
   ruby2_keywords (0.0.5) sha256=ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef
   rubygems-generate_index (1.1.2) sha256=b5cfafe811b18bc45780b4cccc92593cf3115d2c8ea2a9f93a253eb9b2a8b955

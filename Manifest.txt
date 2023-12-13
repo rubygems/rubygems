@@ -438,6 +438,7 @@ lib/rubygems/net-http/lib/net/http/response.rb
 lib/rubygems/net-http/lib/net/http/responses.rb
 lib/rubygems/net-http/lib/net/http/status.rb
 lib/rubygems/net-http/lib/net/https.rb
+lib/rubygems/net-protocol/LICENSE.txt
 lib/rubygems/net-protocol/lib/net/protocol.rb
 lib/rubygems/net/http.rb
 lib/rubygems/openssl.rb
@@ -480,6 +481,7 @@ lib/rubygems/request_set/lockfile.rb
 lib/rubygems/request_set/lockfile/parser.rb
 lib/rubygems/request_set/lockfile/tokenizer.rb
 lib/rubygems/requirement.rb
+lib/rubygems/resolv/LICENSE.txt
 lib/rubygems/resolv/lib/resolv.rb
 lib/rubygems/resolver.rb
 lib/rubygems/resolver/activation_request.rb
@@ -562,6 +564,7 @@ lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/text.rb
 lib/rubygems/timeout.rb
+lib/rubygems/timeout/LICENSE.txt
 lib/rubygems/timeout/lib/timeout.rb
 lib/rubygems/tsort.rb
 lib/rubygems/tsort/.document

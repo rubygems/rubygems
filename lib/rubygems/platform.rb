@@ -14,9 +14,8 @@ class Gem::Platform
 
   def self.local
     @local ||= begin
-      arch = RbConfig::CONFIG["arch"]
-      arch = "#{arch}_60" if /mswin(?:32|64)$/.match?(arch)
-      new(arch)
+      force_mswin_version = true
+      new(StringParser.run(RbConfig::CONFIG["arch"], force_mswin_version))
     end
   end
 
@@ -87,57 +86,8 @@ class Gem::Platform
     when Array then
       @cpu, @os, @version = arch
     when String then
-      arch = arch.split "-"
-
-      if arch.length > 2 && arch.last !~ /\d+(\.\d+)?$/ # reassemble x86-linux-{libc}
-        extra = arch.pop
-        arch.last << "-#{extra}"
-      end
-
-      cpu = arch.shift
-
-      @cpu = case cpu
-             when /i\d86/ then "x86"
-             else cpu
-      end
-
-      if arch.length == 2 && arch.last =~ /^\d+(\.\d+)?$/ # for command-line
-        @os, @version = arch
-        return
-      end
-
-      os, = arch
-      if os.nil?
-        @cpu = nil
-        os = cpu
-      end # legacy jruby
-
-      @os, @version = case os
-                      when /aix(\d+)?/ then             ["aix",       $1]
-                      when /cygwin/ then                ["cygwin",    nil]
-                      when /darwin(\d+)?/ then          ["darwin",    $1]
-                      when /^macruby$/ then             ["macruby",   nil]
-                      when /freebsd(\d+)?/ then         ["freebsd",   $1]
-                      when /^java$/, /^jruby$/ then     ["java",      nil]
-                      when /^java([\d.]*)/ then         ["java",      $1]
-                      when /^dalvik(\d+)?$/ then        ["dalvik",    $1]
-                      when /^dotnet$/ then              ["dotnet",    nil]
-                      when /^dotnet([\d.]*)/ then       ["dotnet",    $1]
-                      when /linux-?(\w+)?/ then         ["linux",     $1]
-                      when /mingw32/ then               ["mingw32",   nil]
-                      when /mingw-?(\w+)?/ then         ["mingw",     $1]
-                      when /(mswin\d+)(\_(\d+))?/ then
-                        os = $1
-                        version = $3
-                        @cpu = "x86" if @cpu.nil? && os =~ /32$/
-                        [os, version]
-                      when /netbsdelf/ then             ["netbsdelf", nil]
-                      when /openbsd(\d+\.\d+)?/ then    ["openbsd",   $1]
-                      when /solaris(\d+\.\d+)?/ then    ["solaris",   $1]
-                      # test
-                      when /^(\w+_platform)(\d+)?/ then [$1,          $2]
-                      else ["unknown", nil]
-      end
+      # The string parser has its own file because we need to reuse it in Bundler::Standalone.
+      @cpu, @os, @version = StringParser.run(arch)
     when Gem::Platform then
       @cpu = arch.cpu
       @os = arch.os
@@ -265,3 +215,5 @@ class Gem::Platform
 
   CURRENT = "current"
 end
+
+require_relative "platform/string_parser"

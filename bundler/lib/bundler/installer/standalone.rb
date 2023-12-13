@@ -15,6 +15,7 @@ module Bundler
         file.puts prevent_gem_activation
         file.puts define_path_helpers
         file.puts reverse_rubygems_kernel_mixin
+        file.puts platform_parser
         paths.each do |path|
           if Pathname.new(path).absolute?
             file.puts %($:.unshift "#{path}")
@@ -33,7 +34,7 @@ module Bundler
         Array(spec.require_paths).map do |path|
           gem_path(path, spec).
             sub(version_dir, '#{RUBY_ENGINE}/#{Gem.ruby_api_version}').
-            sub(extensions_dir, 'extensions/\k<platform>/#{Gem.extension_api_version}')
+            sub(extensions_dir, new_extensions_dir)
           # This is a static string intentionally. It's interpolated at a later time.
         end
       end.flatten.compact
@@ -111,6 +112,40 @@ module Bundler
         end
       end
       END
+    end
+
+    def platform_parser_path
+      "#{RbConfig::CONFIG["rubylibdir"]}/rubygems/platform/string_parser.rb"
+    end
+
+    def support_multiplatform_setup_script?
+      File.exist?(platform_parser_path)
+    end
+
+    def new_extensions_dir
+      if support_multiplatform_setup_script?
+        'extensions/#{local_platform}/#{Gem.extension_api_version}'
+      else
+        'extensions/\k<platform>/#{Gem.extension_api_version}'
+      end
+    end
+
+    def platform_parser
+      if support_multiplatform_setup_script?
+        parser_code = File.read(platform_parser_path).gsub("# frozen_string_literal: true\n\n", "")
+        <<~END
+          unless defined?(Gem::Platform::StringParser)
+          #{parser_code.chomp}
+          end
+          def local_platform
+            force_mswin_version = true
+            Gem::Platform::StringParser
+              .run(RbConfig::CONFIG["arch"], force_mswin_version)
+              .compact
+              .join "-"
+          end
+        END
+      end
     end
   end
 end

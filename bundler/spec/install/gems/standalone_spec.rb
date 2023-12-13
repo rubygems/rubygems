@@ -251,15 +251,56 @@ RSpec.shared_examples "bundle install --standalone" do
       G
     end
 
-    it "generates a bundle/bundler/setup.rb with the proper paths" do
-      expected_path = bundled_app("bundle/bundler/setup.rb")
-      script_content = File.read(expected_path)
-      expect(script_content).to include("def self.ruby_api_version")
-      expect(script_content).to include("def self.extension_api_version")
-      extension_line = script_content.each_line.find {|line| line.include? "/extensions/" }.strip
-      platform = Gem::Platform.local
-      expect(extension_line).to start_with '$:.unshift File.expand_path("#{__dir__}/../#{RUBY_ENGINE}/#{Gem.ruby_api_version}/extensions/'
-      expect(extension_line).to end_with platform.to_s + '/#{Gem.extension_api_version}/very_simple_binary-1.0")'
+    context "when multiplatform setup.rb isn't supported" do
+      before do
+        if File.exist?("#{RbConfig::CONFIG["rubylibdir"]}/rubygems/platform/string_parser.rb")
+          skip "multiplatform setup.rb is supported"
+        end
+      end
+
+      it "generates a bundle/bundler/setup.rb with the necessary path helpers" do
+        expected_path = bundled_app("bundle/bundler/setup.rb")
+        script_content = File.read(expected_path)
+
+        expect(script_content).to include("def self.ruby_api_version")
+        expect(script_content).to include("def self.extension_api_version")
+        expect(script_content).to_not include("def local_platform")
+      end
+
+      it "generates a bundle/bundler/setup.rb with the proper paths" do
+        expected_path = bundled_app("bundle/bundler/setup.rb")
+        script_content = File.read(expected_path)
+        extension_line = script_content.each_line.find {|line| line.include? "/extensions/" }.strip
+        platform = Gem::Platform.local
+
+        expect(extension_line).to start_with '$:.unshift File.expand_path("#{__dir__}/../#{RUBY_ENGINE}/#{Gem.ruby_api_version}/extensions/'
+        expect(extension_line).to end_with platform.to_s + '/#{Gem.extension_api_version}/very_simple_binary-1.0")'
+      end
+    end
+
+    context "when multiplatform setup.rb is supported" do
+      before do
+        unless File.exist?("#{RbConfig::CONFIG["rubylibdir"]}/rubygems/platform/string_parser.rb")
+          skip "multiplatform setup.rb isn't supported"
+        end
+      end
+
+      it "generates a bundle/bundler/setup.rb with the local_platform helper" do
+        expected_path = bundled_app("bundle/bundler/setup.rb")
+        script_content = File.read(expected_path)
+        expect(script_content).to include("def self.ruby_api_version")
+        expect(script_content).to include("def self.extension_api_version")
+        expect(script_content).to include("def local_platform")
+      end
+
+      it "generates a bundle/bundler/setup.rb that is multiplatform" do
+        expected_path = bundled_app("bundle/bundler/setup.rb")
+        script_content = File.read(expected_path)
+        extension_line = script_content.each_line.find {|line| line.include? "/extensions/" }.strip
+
+        expect(extension_line).to start_with '$:.unshift File.expand_path("#{__dir__}/../#{RUBY_ENGINE}/#{Gem.ruby_api_version}/extensions/'
+        expect(extension_line).to end_with '#{local_platform}/#{Gem.extension_api_version}/very_simple_binary-1.0")'
+      end
     end
   end
 

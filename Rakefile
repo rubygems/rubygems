@@ -213,7 +213,7 @@ if File.exist?("tool/automatiek.rake")
         subsublib.namespace = "Timeout"
         subsublib.prefix = "Gem"
         subsublib.vendor_lib = "lib/rubygems/timeout"
-        subsublib.license_path = "License.txt"
+        subsublib.license_path = "LICENSE.txt"
       end
     end
 
@@ -240,7 +240,7 @@ if File.exist?("tool/automatiek.rake")
         subsublib.namespace = "Net"
         subsublib.prefix = "Gem"
         subsublib.vendor_lib = "lib/rubygems/net-protocol"
-        subsublib.license_path = "License.txt"
+        subsublib.license_path = "LICENSE.txt"
 
         subsublib.dependency("timeout") do |ssslib|
           ssslib.version = "v0.4.1"
@@ -248,7 +248,7 @@ if File.exist?("tool/automatiek.rake")
           ssslib.namespace = "Timeout"
           ssslib.prefix = "Gem"
           ssslib.vendor_lib = "lib/rubygems/timeout"
-          ssslib.license_path = "License.txt"
+          ssslib.license_path = "LICENSE.txt"
         end
       end
 
@@ -258,7 +258,7 @@ if File.exist?("tool/automatiek.rake")
         subsublib.namespace = "Timeout"
         subsublib.prefix = "Gem"
         subsublib.vendor_lib = "lib/rubygems/timeout"
-        subsublib.license_path = "License.txt"
+        subsublib.license_path = "LICENSE.txt"
       end
 
       sublib.dependency("resolv") do |subsublib|
@@ -267,7 +267,7 @@ if File.exist?("tool/automatiek.rake")
         subsublib.namespace = "Resolv"
         subsublib.prefix = "Gem"
         subsublib.vendor_lib = "lib/rubygems/resolv"
-        subsublib.license_path = "License.txt"
+        subsublib.license_path = "LICENSE.txt"
 
         subsublib.dependency("timeout") do |ssslib|
           ssslib.version = "v0.4.1"
@@ -275,7 +275,7 @@ if File.exist?("tool/automatiek.rake")
           ssslib.namespace = "Timeout"
           ssslib.prefix = "Gem"
           ssslib.vendor_lib = "lib/rubygems/timeout"
-          ssslib.license_path = "License.txt"
+          ssslib.license_path = "LICENSE.txt"
         end
       end
     end

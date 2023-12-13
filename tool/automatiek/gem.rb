@@ -115,10 +115,17 @@ module Automatiek
     end
 
     def clean
-      files = Dir.glob("#{vendor_lib}/*", File::FNM_DOTMATCH).reject do |f|
+      all_files = Dir.glob("#{vendor_lib}/*", File::FNM_DOTMATCH)
+
+      unless all_files.include?("#{vendor_lib}/#{license_path}")
+        raise "#{license_path} was not found in gem #{gem_name}. The gem includes the following files:\n  * #{all_files.join("\n  * ")}"
+      end
+
+      files = all_files.reject do |f|
         basename = f.split("/").last
         allowlist.include? basename
       end
+
       FileUtils.rm_r files
     end
 

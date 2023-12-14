@@ -1,3 +1,100 @@
+# 3.5.0 / 2023-12-15
+
+## Security:
+
+* Replace `Marshal.load` with a fully-checked safe gemspec loader. Pull
+  request [#6896](https://github.com/rubygems/rubygems/pull/6896) by
+  segiddins
+
+## Breaking changes:
+
+* Drop ruby 2.6 and 2.7 support. Pull request
+  [#7116](https://github.com/rubygems/rubygems/pull/7116) by
+  deivid-rodriguez
+* Release package no longer includes test files. Pull request
+  [#6781](https://github.com/rubygems/rubygems/pull/6781) by hsbt
+* Hide `Gem::MockGemUi` from users. Pull request
+  [#6623](https://github.com/rubygems/rubygems/pull/6623) by hsbt
+* Deprecated `Gem.datadir` has been removed. Pull request
+  [#6469](https://github.com/rubygems/rubygems/pull/6469) by hsbt
+
+## Deprecations:
+
+* Deprecate `Gem::Platform.match?`. Pull request
+  [#6783](https://github.com/rubygems/rubygems/pull/6783) by hsbt
+* Deprecate `Gem::List`. Pull request
+  [#6311](https://github.com/rubygems/rubygems/pull/6311) by segiddins
+
+## Features:
+
+* The `generate_index` command can now generate compact index files and
+  lives as an external `rubygems-generate_index` gem. Pull request
+  [#7085](https://github.com/rubygems/rubygems/pull/7085) by segiddins
+* Make `gem install` fallback to user installation directory if default
+  gem home is not writable. Pull request
+  [#5327](https://github.com/rubygems/rubygems/pull/5327) by duckinator
+* Leverage ruby feature to warn when requiring default gems from stdlib
+  that will be turned into bundled gems in the future. Pull request
+  [#6840](https://github.com/rubygems/rubygems/pull/6840) by hsbt
+
+## Performance:
+
+* Use match? when regexp match data is unused. Pull request
+  [#7263](https://github.com/rubygems/rubygems/pull/7263) by segiddins
+* Fewer allocations in gem installation. Pull request
+  [#6975](https://github.com/rubygems/rubygems/pull/6975) by segiddins
+* Optimize allocations in `Gem::Version`. Pull request
+  [#6970](https://github.com/rubygems/rubygems/pull/6970) by segiddins
+
+## Enhancements:
+
+* Warn for duplicate meta data links when building gems. Pull request
+  [#7213](https://github.com/rubygems/rubygems/pull/7213) by etherbob
+* Vendor `net-http`, `net-protocol`, `resolv`, and `timeout` to reduce
+  conflicts between Gemfile gems and internal dependencies. Pull request
+  [#6793](https://github.com/rubygems/rubygems/pull/6793) by
+  deivid-rodriguez
+* Remove non-transparent requirement added to prerelease gems. Pull
+  request [#7226](https://github.com/rubygems/rubygems/pull/7226) by
+  deivid-rodriguez
+* Stream output from ext builds when --verbose. Pull request
+  [#7240](https://github.com/rubygems/rubygems/pull/7240) by osyoyu
+* Add missing services to CI detection and make it consistent between
+  RubyGems and Bundler. Pull request
+  [#7205](https://github.com/rubygems/rubygems/pull/7205) by nevinera
+* Update generate licenses template to not freeze regexps. Pull request
+  [#7154](https://github.com/rubygems/rubygems/pull/7154) by
+  github-actions[bot]
+* Don't check `LIBRUBY_RELATIVE` in truffleruby to signal a bash prelude
+  in rubygems binstubs. Pull request
+  [#7156](https://github.com/rubygems/rubygems/pull/7156) by
+  deivid-rodriguez
+* Update SPDX list and warn on deprecated identifiers. Pull request
+  [#6926](https://github.com/rubygems/rubygems/pull/6926) by simi
+* Simplify extended `require` to potentially fix some deadlocks. Pull
+  request [#6827](https://github.com/rubygems/rubygems/pull/6827) by nobu
+* Small refactors for `Gem::Resolver`. Pull request
+  [#6766](https://github.com/rubygems/rubygems/pull/6766) by hsbt
+* Use double-quotes instead of single-quotes consistently in warnings.
+  Pull request [#6550](https://github.com/rubygems/rubygems/pull/6550) by
+  hsbt
+* Add debug message for `nil` version gemspec. Pull request
+  [#6436](https://github.com/rubygems/rubygems/pull/6436) by hsbt
+* Installs bundler 2.5.0 as a default gem.
+
+## Bug fixes:
+
+* Fix installing from source with same default bundler version already
+  installed. Pull request
+  [#7244](https://github.com/rubygems/rubygems/pull/7244) by
+  deivid-rodriguez
+
+## Documentation:
+
+* Improve comment explaining the necessity of `write_default_spec` method.
+  Pull request [#6563](https://github.com/rubygems/rubygems/pull/6563) by
+  voxik
+
 # 3.4.22 / 2023-11-09
 
 ## Enhancements:

@@ -164,6 +164,10 @@ module Gem::UserInteraction
   def verbose(msg = nil)
     say(clean_text(msg || yield)) if Gem.configuration.really_verbose
   end
+
+  def qrcode(qrcode)
+    ui.qrcode qrcode
+  end
 end
 
 ##
@@ -378,6 +382,41 @@ class Gem::StreamUI
     else
       VerboseProgressReporter.new(@outs, *args)
     end
+  end
+
+  def qrcode(qrcode)
+    return unless tty?
+
+    quiet_zone_size = 2
+    output = []
+    fill = "\u2588"
+    quiet_row = fill * (quiet_zone_size * 2 + qrcode.module_count)
+    output << quiet_row
+    chars = {
+      [true, true] => " ",
+      [true, false] => "\u2584",
+      [false, false] => "\u2588",
+      [false, true] => "\u2580",
+    }
+    (qrcode.module_count + 1)./(2).times do |y|
+      row = fill * quiet_zone_size
+      qrcode.module_count.times do |x|
+        top = qrcode.checked?(2 * y, x)
+        if y * 2 == qrcode.module_count - 1
+          bottom = false
+        else
+          bottom = qrcode.checked?(2 * y + 1, x)
+        end
+
+        row << chars.fetch([top, bottom])
+      end
+      row << fill * quiet_zone_size
+
+      output << row
+    end
+    output << quiet_row
+
+    say(output.join("\n"))
   end
 
   ##

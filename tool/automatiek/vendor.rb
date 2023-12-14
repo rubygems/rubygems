@@ -109,6 +109,7 @@ vendored_gems = [
   VendoredGem.new(name: "connection_pool", namespace: "ConnectionPool", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/connection_pool", license_path: "LICENSE", patch_name: "connection_pool-v2.4.1.patch", extra_dependencies: %w[timeout]),
   VendoredGem.new(name: "fileutils", namespace: "FileUtils", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/fileutils", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "pub_grub", namespace: "PubGrub", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/pub_grub", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "rqrcode_core", namespace: "RQRCodeCore", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/rqrcode_core", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/thor", license_path: "LICENSE.md", patch_name: "thor-v1.3.0.patch"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/tsort", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "uri", namespace: "URI", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/uri", license_path: "LICENSE.txt"),

@@ -336,7 +336,7 @@ task :clear_package do
 end
 
 desc "Generates the changelog for a specific target version"
-task :generate_changelog, [:version] do |_t, opts|
+task :generate_changelog, [:version] => [:install_release_dependencies] do |_t, opts|
   require_relative "tool/release"
 
   Release.for_rubygems(opts[:version]).cut_changelog!

@@ -5,7 +5,7 @@ on:
 
   push:
     branches:
-      - master
+      - 3.5
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

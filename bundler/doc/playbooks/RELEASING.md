@@ -8,6 +8,10 @@ _Note: In the documentation listed below, the *current* minor version number is
 Regardless of the version, *all releases* must update the `CHANGELOG.md` and `lib/bundler/version.rb`
 files.
 
+While pushing a gem version to RubyGems.org is as simple as `rake release`,
+releasing a new version of Bundler includes a lot of communication: team
+consensus, git branching, documentation site updates, and a blog post.
+
 ## Workflow
 
 In general, `master` will accept PRs for:
@@ -33,10 +37,6 @@ breaking changes in minor releases. "Small" here means that we expect them to
 affect only very few users in rare cases.
 
 ### Patch && minor releases
-
-While pushing a gem version to RubyGems.org is as simple as `rake release`,
-releasing a new version of Bundler includes a lot of communication: team
-consensus, git branching, documentation site updates, and a blog post.
 
 Patch and minor releases are made by cherry-picking pill requests from `master`.
 

@@ -6,10 +6,7 @@ _Note: In the documentation listed below, the *current* minor version number is
 2.1 and the *next* minor version number is 2.2_
 
 Regardless of the version, *all releases* must update the `CHANGELOG.md` and `lib/bundler/version.rb`
-files. The changelog for the first stable minor release (`2.2.0`) is a sum of all
-the preceding pre-release versions (`2.2.pre.1`, `2.2.pre.2`, etc) for that
-minor version. The changelog for the first stable minor release is left blank
-unless there are fixes included since the last pre/rc release.
+files.
 
 ## Workflow
 
@@ -44,9 +41,8 @@ means that releases for both share the same stable branch, and they should
 generally happen together.
 
 Minor releases of the next version start with a new release branch from the
-current state of master: `3.2`, and are immediately followed by a prerelease
-(might be a `.pre.1` version or a `.rc.1` version depending on the readiness of
-the stable branch) or even directly by the final stable release.
+current state of master: `3.2`, and are immediately followed by a stable
+release.
 
 The current conventional naming for stable branches is `x+1.y`, where `x.y` is
 the version of `bundler` that will be released. This is because `rubygems-x+1.y`

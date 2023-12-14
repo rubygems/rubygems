@@ -122,7 +122,7 @@ if File.exist?("tool/automatiek.rake")
     lib.license_path = "LICENSE"
 
     lib.dependency("tsort") do |sublib|
-      sublib.version = "v0.1.1"
+      sublib.version = "v0.2.0"
       sublib.download = { github: "https://github.com/ruby/tsort" }
       sublib.namespace = "TSort"
       sublib.prefix = "Gem"
@@ -139,7 +139,7 @@ if File.exist?("tool/automatiek.rake")
   #   this library should not be documented.
   desc "Vendor a specific version of optparse to rubygems"
   Automatiek::RakeTask.new("optparse") do |lib|
-    lib.version = "v0.3.0"
+    lib.version = "v0.4.0"
     lib.download = { github: "https://github.com/ruby/optparse" }
     lib.namespace = "OptionParser"
     lib.prefix = "Gem"
@@ -159,7 +159,7 @@ if File.exist?("tool/automatiek.rake")
 
   desc "Vendor a specific version of tsort to bundler"
   Automatiek::RakeTask.new("tsort") do |lib|
-    lib.version = "v0.1.1"
+    lib.version = "v0.2.0"
     lib.download = { github: "https://github.com/ruby/tsort" }
     lib.namespace = "TSort"
     lib.prefix = "Bundler"
@@ -179,7 +179,7 @@ if File.exist?("tool/automatiek.rake")
 
   desc "Vendor a specific version of fileutils to bundler"
   Automatiek::RakeTask.new("fileutils") do |lib|
-    lib.version = "v1.7.0"
+    lib.version = "v1.7.2"
     lib.download = { github: "https://github.com/ruby/fileutils" }
     lib.namespace = "FileUtils"
     lib.prefix = "Bundler"
@@ -200,7 +200,7 @@ if File.exist?("tool/automatiek.rake")
     lib.license_path = "README.rdoc"
 
     lib.dependency("connection_pool") do |sublib|
-      sublib.version = "v2.3.0"
+      sublib.version = "v2.4.1"
       sublib.download = { github: "https://github.com/mperham/connection_pool" }
       sublib.namespace = "ConnectionPool"
       sublib.prefix = "Bundler"
@@ -218,7 +218,7 @@ if File.exist?("tool/automatiek.rake")
     end
 
     lib.dependency("uri") do |sublib|
-      sublib.version = "v0.12.2"
+      sublib.version = "v0.13.0"
       sublib.download = { github: "https://github.com/ruby/uri" }
       sublib.namespace = "URI"
       sublib.prefix = "Bundler"
@@ -262,7 +262,7 @@ if File.exist?("tool/automatiek.rake")
       end
 
       sublib.dependency("resolv") do |subsublib|
-        subsublib.version = "v0.2.2"
+        subsublib.version = "v0.3.0"
         subsublib.download = { github: "https://github.com/ruby/resolv" }
         subsublib.namespace = "Resolv"
         subsublib.prefix = "Gem"

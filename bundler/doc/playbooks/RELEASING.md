@@ -36,19 +36,21 @@ versions from their meaning. Because of this, we also may release "small"
 breaking changes in minor releases. "Small" here means that we expect them to
 affect only very few users in rare cases.
 
-### Patch && minor releases
+### Minor releases
 
-Patch and minor releases are made by cherry-picking pill requests from `master`.
+Minor releases of the next version start with a new release branch from the
+current state of master: `3.2`, and are immediately followed by a stable
+release.
+
+### Patch releases
+
+Patch releases are made by cherry-picking pull requests from `master`.
 
 ### Branching
 
 Bundler releases are synchronized with rubygems releases at the moment. That
 means that releases for both share the same stable branch, and they should
 generally happen together.
-
-Minor releases of the next version start with a new release branch from the
-current state of master: `3.2`, and are immediately followed by a stable
-release.
 
 The current conventional naming for stable branches is `x+1.y`, where `x.y` is
 the version of `bundler` that will be released. This is because `rubygems-x+1.y`

@@ -23,8 +23,14 @@ break backwards compatibility should (whenever this is possible) include a featu
 release that is backwards compatible, and issue warnings for all options and
 behaviors that will change.
 
-We try very hard to only release breaking changes when incrementing the _major_
-version of Bundler.
+We only release major breaking changes when incrementing the _major_ version of
+Bundler and RubyGems. However, experience shows that almost every single part of
+Bundler and RubyGems is depended on by someone in ways hard to anticipate. So if
+we were strict about breaking changes we'd need to hold on from making progress
+a lot, or continuously increment the major version, emptying "really major"
+versions from their meaning. Because of this, we also may release "small"
+breaking changes in minor releases. "Small" here means that we expect them to
+affect only very few users in rare cases.
 
 ### Patch && minor releases
 

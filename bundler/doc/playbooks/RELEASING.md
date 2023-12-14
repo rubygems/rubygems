@@ -14,7 +14,7 @@ In general, `master` will accept PRs for:
 
 * feature merges for the next minor version (2.2)
 * regression fix merges for a patch release on the current minor version (2.1)
-* feature-flagged development for the next major version (2.0)
+* feature-flagged development for the next major version (3.0)
 
 ### Breaking releases
 

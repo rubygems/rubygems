@@ -116,7 +116,7 @@ jobs:
         run: ruby setup.rb
         shell: bash
       - name: Check installation didn't modify any source controlled files
-        run: git diff --exit-code
+        run: git add . && git diff --cached --exit-code
         shell: bash
       - name: Check we can install a Gemfile with git sources
         run: bundle init && bundle add fileutils --git https://github.com/ruby/fileutils

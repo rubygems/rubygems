@@ -1,0 +1,11 @@
+diff --git b/lib/rubygems/timeout/lib/timeout.rb a/lib/rubygems/timeout/lib/timeout.rb
+index 9f8c79204..24d877b99 100644
+--- b/lib/rubygems/timeout/lib/timeout.rb
++++ a/lib/rubygems/timeout/lib/timeout.rb
+@@ -1,5 +1,5 @@
+ # frozen_string_literal: true
+-# Gem::Timeout long-running blocks
++# Timeout long-running blocks
+ #
+ # == Synopsis
+ #

@@ -1,0 +1,11 @@
+diff --git b/lib/rubygems/optparse/lib/optparse.rb a/lib/rubygems/optparse/lib/optparse.rb
+index b93ad51c6..8e700016b 100644
+--- b/lib/rubygems/optparse/lib/optparse.rb
++++ a/lib/rubygems/optparse/lib/optparse.rb
+@@ -2328,6 +2328,3 @@ module Acceptables
+ 
+ # ARGV is arguable by Gem::OptionParser
+ ARGV.extend(Gem::OptionParser::Arguable)
+-
+-# An alias for Gem::OptionParser.
+-OptParse = Gem::OptionParser  # :nodoc:

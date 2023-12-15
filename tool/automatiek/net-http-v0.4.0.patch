@@ -1,0 +1,22 @@
+diff --git b/lib/rubygems/net-http/lib/net/http/status.rb a/lib/rubygems/net-http/lib/net/http/status.rb
+index ca1ddcee8..10cbc8e3e 100644
+--- b/lib/rubygems/net-http/lib/net/http/status.rb
++++ a/lib/rubygems/net-http/lib/net/http/status.rb
+@@ -50,7 +50,7 @@
+   405 => 'Method Not Allowed',
+   406 => 'Not Acceptable',
+   407 => 'Proxy Authentication Required',
+-  408 => 'Request Gem::Timeout',
++  408 => 'Request Timeout',
+   409 => 'Conflict',
+   410 => 'Gone',
+   411 => 'Length Required',
+@@ -74,7 +74,7 @@
+   501 => 'Not Implemented',
+   502 => 'Bad Gateway',
+   503 => 'Service Unavailable',
+-  504 => 'Gateway Gem::Timeout',
++  504 => 'Gateway Timeout',
+   505 => 'HTTP Version Not Supported',
+   506 => 'Variant Also Negotiates',
+   507 => 'Insufficient Storage',

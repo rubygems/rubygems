@@ -1,0 +1,10 @@
+diff --git b/bundler/lib/bundler/vendor/connection_pool/lib/connection_pool.rb a/bundler/lib/bundler/vendor/connection_pool/lib/connection_pool.rb
+index e680ab363..317088a86 100644
+--- b/bundler/lib/bundler/vendor/connection_pool/lib/connection_pool.rb
++++ a/bundler/lib/bundler/vendor/connection_pool/lib/connection_pool.rb
+@@ -1,4 +1,4 @@
+-require_relative "../../../../../../lib/rubygems/timeout/lib/timeout"
++require_relative "../../../vendored_timeout"
+ require_relative "connection_pool/version"
+ 
+ class Bundler::ConnectionPool

@@ -248,18 +248,22 @@ bundler/lib/bundler/ui/silent.rb
 bundler/lib/bundler/uri_credentials_filter.rb
 bundler/lib/bundler/uri_normalizer.rb
 bundler/lib/bundler/vendor/.document
+bundler/lib/bundler/vendor/connection_pool/.document
 bundler/lib/bundler/vendor/connection_pool/LICENSE
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/timed_stack.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/version.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/wrapper.rb
+bundler/lib/bundler/vendor/fileutils/.document
 bundler/lib/bundler/vendor/fileutils/LICENSE.txt
 bundler/lib/bundler/vendor/fileutils/lib/fileutils.rb
+bundler/lib/bundler/vendor/net-http-persistent/.document
 bundler/lib/bundler/vendor/net-http-persistent/README.rdoc
 bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
 bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/connection.rb
 bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/pool.rb
 bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/timed_stack_multi.rb
+bundler/lib/bundler/vendor/pub_grub/.document
 bundler/lib/bundler/vendor/pub_grub/LICENSE.txt
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/assignment.rb
@@ -277,6 +281,7 @@ bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_constraint.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_range.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_solver.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_union.rb
+bundler/lib/bundler/vendor/thor/.document
 bundler/lib/bundler/vendor/thor/LICENSE.md
 bundler/lib/bundler/vendor/thor/lib/thor.rb
 bundler/lib/bundler/vendor/thor/lib/thor/actions.rb
@@ -314,8 +319,10 @@ bundler/lib/bundler/vendor/thor/lib/thor/shell/terminal.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/wrapped_printer.rb
 bundler/lib/bundler/vendor/thor/lib/thor/util.rb
 bundler/lib/bundler/vendor/thor/lib/thor/version.rb
+bundler/lib/bundler/vendor/tsort/.document
 bundler/lib/bundler/vendor/tsort/LICENSE.txt
 bundler/lib/bundler/vendor/tsort/lib/tsort.rb
+bundler/lib/bundler/vendor/uri/.document
 bundler/lib/bundler/vendor/uri/LICENSE.txt
 bundler/lib/bundler/vendor/uri/lib/uri.rb
 bundler/lib/bundler/vendor/uri/lib/uri/common.rb
@@ -425,6 +432,7 @@ lib/rubygems/installer.rb
 lib/rubygems/installer_uninstaller_utils.rb
 lib/rubygems/local_remote_options.rb
 lib/rubygems/name_tuple.rb
+lib/rubygems/net-http/.document
 lib/rubygems/net-http/LICENSE.txt
 lib/rubygems/net-http/lib/net/http.rb
 lib/rubygems/net-http/lib/net/http/backward.rb
@@ -438,6 +446,7 @@ lib/rubygems/net-http/lib/net/http/response.rb
 lib/rubygems/net-http/lib/net/http/responses.rb
 lib/rubygems/net-http/lib/net/http/status.rb
 lib/rubygems/net-http/lib/net/https.rb
+lib/rubygems/net-protocol/.document
 lib/rubygems/net-protocol/LICENSE.txt
 lib/rubygems/net-protocol/lib/net/protocol.rb
 lib/rubygems/net/http.rb
@@ -481,6 +490,7 @@ lib/rubygems/request_set/lockfile.rb
 lib/rubygems/request_set/lockfile/parser.rb
 lib/rubygems/request_set/lockfile/tokenizer.rb
 lib/rubygems/requirement.rb
+lib/rubygems/resolv/.document
 lib/rubygems/resolv/LICENSE.txt
 lib/rubygems/resolv/lib/resolv.rb
 lib/rubygems/resolver.rb
@@ -503,6 +513,7 @@ lib/rubygems/resolver/local_specification.rb
 lib/rubygems/resolver/lock_set.rb
 lib/rubygems/resolver/lock_specification.rb
 lib/rubygems/resolver/molinillo.rb
+lib/rubygems/resolver/molinillo/.document
 lib/rubygems/resolver/molinillo/LICENSE
 lib/rubygems/resolver/molinillo/lib/molinillo.rb
 lib/rubygems/resolver/molinillo/lib/molinillo/delegates/resolution_state.rb
@@ -564,6 +575,7 @@ lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/text.rb
 lib/rubygems/timeout.rb
+lib/rubygems/timeout/.document
 lib/rubygems/timeout/LICENSE.txt
 lib/rubygems/timeout/lib/timeout.rb
 lib/rubygems/tsort.rb

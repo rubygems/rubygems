@@ -11,7 +11,7 @@ concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-permissions:  # added using https://github.com/step-security/secure-workflows
+permissions: # added using https://github.com/step-security/secure-workflows
   contents: read
 
 jobs:
@@ -36,5 +36,5 @@ jobs:
       - name: Install & Check Dependencies
         run: bin/rake dev:frozen_deps
       - name: Misc checks
-        run: bin/rake check_rvm_integration man:check check_rubygems_integration
+        run: bin/rake check_rvm_integration man:check vendor:check check_rubygems_integration
     timeout-minutes: 15

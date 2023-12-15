@@ -1,3 +1,13 @@
+# 2.5.1 (December 15, 2023)
+
+## Bug fixes:
+
+  - Fix `ruby` Gemfile DSL with `file:` parameter no longer working [#7288](https://github.com/rubygems/rubygems/pull/7288)
+
+## Performance:
+
+  - Save array allocation for every dependency in Gemfile [#7270](https://github.com/rubygems/rubygems/pull/7270)
+
 # 2.5.0 (December 15, 2023)
 
 ## Breaking changes:

@@ -1,3 +1,9 @@
+# 3.5.1 / 2023-12-15
+
+## Enhancements:
+
+* Installs bundler 2.5.1 as a default gem.
+
 # 3.5.0 / 2023-12-15
 
 ## Security:

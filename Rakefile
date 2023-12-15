@@ -47,6 +47,8 @@ task :update_locked_bundler do |_, _args|
   RubyGems::DevTasks.bundle_support_gemfile "test_gems", "update", "--bundler"
   RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "update", "--bundler"
   RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "lint_gems", "update", "--bundler"
+  RubyGems::DevTasks.bundle_support_gemfile "vendor_gems", "update", "--bundler"
 end
 
 desc "Update specific development dependencies"

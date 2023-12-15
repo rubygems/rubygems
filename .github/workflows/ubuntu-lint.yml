@@ -36,5 +36,5 @@ jobs:
       - name: Install & Check Dependencies
         run: bin/rake dev:frozen_deps
       - name: Misc checks
-        run: bin/rake check_rvm_integration man:check vendor:check check_rubygems_integration
+        run: bin/rake check_rvm_integration man:check vendor:check version:check check_rubygems_integration
     timeout-minutes: 15

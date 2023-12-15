@@ -1,0 +1,120 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "rubygems"
+require "bundler"
+require "find"
+
+VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendor_lib, :license_path, :patch_name, :require_target, :skip_dependencies, keyword_init: true) do
+  def vendor(spec)
+    raise "#{name} missing license #{license_path.inspect}" unless File.file? File.join(spec.full_gem_path, license_path)
+    FileUtils.rm_rf(vendor_lib)
+    FileUtils.cp_r(spec.full_gem_path, vendor_lib)
+    namespace_files(vendor_lib)
+
+    clean
+
+    File.write(File.join(vendor_lib, ".document"), "# Vendored files do not need to be documented\n")
+
+    raise "#{name} missing license #{license_path.inspect}" unless File.file? File.join(vendor_lib, license_path)
+  end
+
+  def namespace_files(folder)
+    files = Dir.glob("#{folder}/**/*.rb")
+
+    files.each do |file|
+      contents = File.read(file)
+
+      contents.gsub!(/module Kernel/, "module #{prefix}")
+      contents.gsub!(/#{prefix}::#{namespace}::/, "#{namespace}::")
+      contents.gsub!(/#{namespace}::/, "#{prefix}::#{namespace}::")
+      contents.gsub!(/(\s)::#{namespace}/, '\1' + "::#{prefix}::#{namespace}")
+      contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
+
+      contents.gsub!(/^require (["'])#{Regexp.escape require_entrypoint}/, "require_relative \\1#{relative_require_target_from(file)}")
+      contents.gsub!(/require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
+
+      contents.gsub!(%r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")
+
+      File.open(file, "w") {|f| f << contents }
+    end
+  end
+
+  def clean
+    Find.find(vendor_lib) do |f|
+      if File.directory?(f) && File.dirname(f) == vendor_lib && f != File.join(vendor_lib, "lib")
+        FileUtils.rm_r f
+      end
+      next unless File.file?(f)
+      next if f.end_with?(".rb")
+      next if f == File.join(vendor_lib, license_path)
+      FileUtils.rm_r f
+    end
+  end
+
+  def apply_patch
+    return unless patch_name
+
+    system("git", "apply", "--verbose", File.join("tool", "automatiek", patch_name), exception: true)
+  end
+
+  def require_entrypoint
+    @require_entrypoint ||= gem_name.tr("-", "/")
+  end
+
+  alias_method :gem_name, :name
+
+  def relative_require_target_from(file)
+    Pathname.new("#{vendor_lib}/lib/#{require_entrypoint}").relative_path_from(File.dirname(file))
+  end
+
+  def require_target
+    @require_target ||= vendor_lib.sub(%r{^(.+?/)?lib/}, "") << "/lib"
+  end
+end
+
+ignore = ["bundler"]
+
+vendored_gems = [
+  VendoredGem.new(name: "connection_pool", namespace: "ConnectionPool", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/connection_pool", license_path: "LICENSE", patch_name: "connection_pool-v2.4.1.patch", extra_dependencies: %w[timeout]),
+  VendoredGem.new(name: "fileutils", namespace: "FileUtils", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/fileutils", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "molinillo", namespace: "Molinillo", prefix: "Gem::Resolver", vendor_lib: "lib/rubygems/resolver/molinillo", license_path: "LICENSE", extra_dependencies: %w[tsort/lib/rubygems/tsort], patch_name: "molinillo-master.patch"),
+  VendoredGem.new(name: "net-http-persistent", namespace: "Net::HTTP::Persistent", prefix: "Gem", vendor_lib: "bundler/lib/bundler/vendor/net-http-persistent", license_path: "README.rdoc", extra_dependencies: %w[net-http uri], patch_name: "net-http-persistent-v4.0.2.patch"),
+  VendoredGem.new(name: "net-http", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/net-http", license_path: "LICENSE.txt", extra_dependencies: %w[net-protocol resolv timeout], skip_dependencies: %w[uri], patch_name: "net-http-v0.4.0.patch"),
+  VendoredGem.new(name: "net-protocol", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/net-protocol", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/optparse", license_path: "COPYING", patch_name: "optparse-v0.4.0.patch"),
+  VendoredGem.new(name: "pub_grub", namespace: "PubGrub", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/pub_grub", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/resolv", license_path: "LICENSE.txt", extra_dependencies: %w[timeout]),
+  VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/thor", license_path: "LICENSE.md"),
+  VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/timeout", license_path: "LICENSE.txt", patch_name: "timeout-v0.4.1.patch"),
+  VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/tsort", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Gem", vendor_lib: "lib/rubygems/tsort", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "uri", namespace: "URI", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/uri", license_path: "LICENSE.txt"),
+].group_by(&:name)
+
+Bundler.definition.resolve.materialized_for_all_platforms.reject {|s| ignore.include?(s.name) }.each do |s|
+  raise "Vendoring default gem #{s.full_name} doesn't work..." if s.default_gem?
+
+  vendored_gems.fetch(s.name)&.each do |vg|
+    vg.vendor(s)
+  end
+end.each do |s|
+  vendored_gems.fetch(s.name)&.each do |vg|
+    dep_names = s.runtime_dependencies.map(&:name).uniq
+    vg.skip_dependencies&.each {|sd| dep_names.delete(sd) || raise("#{vg.name} does not depend on #{sd} so cannot skip it") }
+    if vg.extra_dependencies && (dupes = vg.extra_dependencies & dep_names) && !dupes.empty?
+      raise "Extra dependencies #{dupes.inspect} are already in the list of dependencies for #{vg.name}"
+    end
+    dep_names.concat vg.extra_dependencies if vg.extra_dependencies
+
+    dep_names.each do |ed|
+      ed, vl = ed.split("/", 2)
+      deps = vendored_gems.fetch(ed)
+      deps = deps.select {|d| d.vendor_lib == vl } if vl
+      raise "#{vg.name} (in #{vg.namespace}) missing dep on #{ed}: #{deps.inspect}" unless deps.size == 1
+      deps.first.namespace_files(vg.vendor_lib)
+    end
+
+    vg.apply_patch
+  end
+end

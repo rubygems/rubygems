@@ -1,0 +1,43 @@
+diff --git b/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb a/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
+index b3ebf6ecb..546409d03 100644
+--- b/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
++++ a/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
+@@ -1,13 +1,8 @@
+-require_relative '../../../../../../../../lib/rubygems/net-http/lib/net/http'
++require_relative '../../../../../vendored_net_http'
+ require_relative '../../../../uri/lib/uri'
+ require 'cgi' # for escaping
+ require_relative '../../../../connection_pool/lib/connection_pool'
+ 
+-begin
+-  require 'rubygems/net-http/lib/net/http/pipeline'
+-rescue LoadError
+-end
+-
+ autoload :OpenSSL, 'openssl'
+ 
+ ##
+@@ -712,23 +707,6 @@ def max_retries= retries
+     reconnect
+   end
+ 
+-  ##
+-  # Pipelines +requests+ to the HTTP server at +uri+ yielding responses if a
+-  # block is given.  Returns all responses received.
+-  #
+-  # See
+-  # Gem::Net::HTTP::Pipeline[https://rdoc.info/gems/net-http-pipeline/Gem::Net/HTTP/Pipeline]
+-  # for further details.
+-  #
+-  # Only if <tt>net-http-pipeline</tt> was required before
+-  # <tt>net-http-persistent</tt> #pipeline will be present.
+-
+-  def pipeline uri, requests, &block # :yields: responses
+-    connection_for uri do |connection|
+-      connection.http.pipeline requests, &block
+-    end
+-  end
+-
+   ##
+   # Sets this client's SSL private key
+ 

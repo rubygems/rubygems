@@ -39,10 +39,10 @@ jobs:
           - { name: 3, value: 3.0.0 }
 
         include:
-          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-12 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0-rc1 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0-rc1 }, timeout: 90 }
 
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 150 }
@@ -61,9 +61,6 @@ jobs:
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'
-      - name: Install graphviz (macOS)
-        run: brew install graphviz
-        if: matrix.bundler.value == '' && matrix.os.name == 'macOS'
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps

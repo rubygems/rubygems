@@ -115,6 +115,14 @@ module Bundler
         []
       end
 
+      def table(header, rows, _options = {})
+        cols = header.keys
+        matrix = ([header] + rows).map do |row|
+          cols.map {|key| stringify(row[key]) }
+        end
+        print_indented matrix
+      end
+
       private
 
       # valimism
@@ -159,6 +167,32 @@ module Bundler
         yield
       ensure
         @level = original
+      end
+
+      def print_indented(matrix)
+        header = matrix[0]
+        data = matrix[1..-1]
+
+        column_sizes = Array.new(header.size) do |index|
+          matrix.max_by {|row| row[index].length }[index].length
+        end
+
+        info justify(header, column_sizes)
+        data.each {|row| info justify(row, column_sizes) }
+      end
+
+      def justify(row, sizes)
+        row.each_with_index.map do |element, index|
+          element.ljust(sizes[index])
+        end.join("  ").strip + "\n"
+      end
+
+      def stringify(value)
+        if value.is_a?(Enumerable)
+          value.map {|x| stringify(x) }.join(", ")
+        else
+          value.to_s
+        end
       end
     end
   end

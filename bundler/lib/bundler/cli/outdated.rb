@@ -2,7 +2,7 @@
 
 module Bundler
   class CLI::Outdated
-    attr_reader :options, :gems, :options_include_groups, :filter_options_patch, :sources, :strict
+    attr_reader :options, :gems, :filter_options_patch, :sources, :strict
     attr_accessor :outdated_gems
 
     def initialize(options, gems)
@@ -13,10 +13,6 @@ module Bundler
       @filter_options_patch = options.keys & %w[filter-major filter-minor filter-patch]
 
       @outdated_gems = []
-
-      @options_include_groups = [:group, :groups].any? do |v|
-        options.keys.include?(v.to_s)
-      end
 
       # the patch level options imply strict is also true. It wouldn't make
       # sense otherwise.
@@ -53,13 +49,13 @@ module Bundler
         options[:local] ? definition.resolve_with_cache! : definition.resolve_remotely!
       end
 
-      if options[:parseable]
+      if options[:parseable] || options[:json]
         Bundler.ui.silence(&definition_resolution)
       else
         definition_resolution.call
       end
 
-      Bundler.ui.info ""
+      Bundler.ui.info "" unless options[:json]
 
       # Loop through the current specs
       gemfile_specs, dependency_specs = current_specs.partition do |spec|
@@ -84,10 +80,7 @@ module Bundler
         next unless gem_outdated || (current_spec.git_version != active_spec.git_version)
 
         dependency = current_dependencies[current_spec.name]
-        groups = ""
-        if dependency && !options[:parseable]
-          groups = dependency.groups.join(", ")
-        end
+        groups = dependency && !options[:parseable] ? dependency.groups : []
 
         outdated_gems << {
           active_spec: active_spec,
@@ -98,27 +91,20 @@ module Bundler
       end
 
       if outdated_gems.empty?
-        unless options[:parseable]
+        if options[:json]
+          Bundler.ui.table(table_headers, [])
+        elsif !options[:parseable]
           Bundler.ui.info(nothing_outdated_message)
         end
       else
-        if options_include_groups
-          relevant_outdated_gems = outdated_gems.group_by {|g| g[:groups] }.sort.flat_map do |groups, gems|
-            contains_group = groups.split(", ").include?(options[:group])
-            next unless options[:groups] || contains_group
+        relevant_gems = outdated_gems
+        relevant_gems = ordered_by_group(relevant_gems) if options[:groups]
+        relevant_gems = filtered_by_group(relevant_gems, options[:group]) if options[:group]
 
-            gems
-          end.compact
-
-          if options[:parseable]
-            print_gems(relevant_outdated_gems)
-          else
-            print_gems_table(relevant_outdated_gems)
-          end
-        elsif options[:parseable]
-          print_gems(outdated_gems)
+        if options[:parseable]
+          print_gems_as_porcelain(relevant_gems)
         else
-          print_gems_table(outdated_gems)
+          Bundler.ui.table(table_headers, table_data(relevant_gems), pretty: true)
         end
 
         exit 1
@@ -127,14 +113,51 @@ module Bundler
 
     private
 
+    def table_headers
+      headers = {
+        gem_name: "Gem",
+        current_version: "Current",
+        latest_version: "Latest",
+        requested_version: "Requested",
+        groups: "Groups",
+      }
+      headers[:path] = "Path" if Bundler.ui.debug?
+      headers
+    end
+
+    def table_data(gems)
+      gems.map do |gem|
+        table_row_data(
+          gem[:current_spec],
+          gem[:active_spec],
+          gem[:dependency],
+          gem[:groups],
+        )
+      end.sort_by {|row| row[:gem_name] }
+    end
+
+    def table_row_data(current_spec, active_spec, dependency, groups)
+      current_version = "#{current_spec.version}#{current_spec.git_version}"
+      spec_version = "#{active_spec.version}#{active_spec.git_version}"
+      dependency = dependency.requirement if dependency
+
+      row = {
+        gem_name: active_spec.name,
+        current_version: current_version,
+        latest_version: spec_version,
+        latest_required_ruby: active_spec.required_ruby_version.to_s,
+        latest_required_rubygems: active_spec.required_rubygems_version.to_s,
+        requested_version: dependency.to_s,
+        groups: groups,
+      }
+      row[:path] = loaded_from_for(active_spec).to_s if Bundler.ui.debug?
+      row
+    end
+
     def loaded_from_for(spec)
       return unless spec.respond_to?(:loaded_from)
 
       spec.loaded_from
-    end
-
-    def groups_text(group_text, groups)
-      "#{group_text}#{groups.split(",").size > 1 ? "s" : ""} \"#{groups}\""
     end
 
     def nothing_outdated_message
@@ -162,31 +185,21 @@ module Bundler
       active_specs.last
     end
 
-    def print_gems(gems_list)
+    def ordered_by_group(gems)
+      gems.group_by {|g| g[:groups] && g[:groups].sort }.values.flatten.compact
+    end
+
+    def filtered_by_group(gems, filter)
+      gems.select {|g| g[:groups]&.include?(filter.to_sym) }
+    end
+
+    def print_gems_as_porcelain(gems_list)
       gems_list.each do |gem|
-        print_gem(
-          gem[:current_spec],
-          gem[:active_spec],
-          gem[:dependency],
-          gem[:groups],
-        )
+        print_gem_as_porcelain(gem[:current_spec], gem[:active_spec], gem[:dependency])
       end
     end
 
-    def print_gems_table(gems_list)
-      data = gems_list.map do |gem|
-        gem_column_for(
-          gem[:current_spec],
-          gem[:active_spec],
-          gem[:dependency],
-          gem[:groups],
-        )
-      end
-
-      print_indented([table_header] + data)
-    end
-
-    def print_gem(current_spec, active_spec, dependency, groups)
+    def print_gem_as_porcelain(current_spec, active_spec, dependency)
       spec_version = "#{active_spec.version}#{active_spec.git_version}"
       if Bundler.ui.debug?
         loaded_from = loaded_from_for(active_spec)
@@ -201,25 +214,7 @@ module Bundler
       spec_outdated_info = "#{active_spec.name} (newest #{spec_version}, " \
         "installed #{current_version}#{dependency_version})"
 
-      output_message = if options[:parseable]
-        spec_outdated_info.to_s
-      elsif options_include_groups || groups.empty?
-        "  * #{spec_outdated_info}"
-      else
-        "  * #{spec_outdated_info} in #{groups_text("group", groups)}"
-      end
-
-      Bundler.ui.info output_message.rstrip
-    end
-
-    def gem_column_for(current_spec, active_spec, dependency, groups)
-      current_version = "#{current_spec.version}#{current_spec.git_version}"
-      spec_version = "#{active_spec.version}#{active_spec.git_version}"
-      dependency = dependency.requirement if dependency
-
-      ret_val = [active_spec.name, current_version, spec_version, dependency.to_s, groups.to_s]
-      ret_val << loaded_from_for(active_spec).to_s if Bundler.ui.debug?
-      ret_val
+      Bundler.ui.info spec_outdated_info.to_s.rstrip
     end
 
     def check_for_deployment_mode!
@@ -263,35 +258,6 @@ module Bundler
     def get_version_semver_portion_value(spec, version_portion_index)
       version_section = spec.version.segments[version_portion_index, 1]
       version_section.to_a[0].to_i
-    end
-
-    def print_indented(matrix)
-      header = matrix[0]
-      data = matrix[1..-1]
-
-      column_sizes = Array.new(header.size) do |index|
-        matrix.max_by {|row| row[index].length }[index].length
-      end
-
-      Bundler.ui.info justify(header, column_sizes)
-
-      data.sort_by! {|row| row[0] }
-
-      data.each do |row|
-        Bundler.ui.info justify(row, column_sizes)
-      end
-    end
-
-    def table_header
-      header = ["Gem", "Current", "Latest", "Requested", "Groups"]
-      header << "Path" if Bundler.ui.debug?
-      header
-    end
-
-    def justify(row, sizes)
-      row.each_with_index.map do |element, index|
-        element.ljust(sizes[index])
-      end.join("  ").strip + "\n"
     end
   end
 end

@@ -10,6 +10,7 @@ module Bundler
 
     AUTO_INSTALL_CMDS = %w[show binstubs outdated exec open console licenses clean].freeze
     PARSEABLE_COMMANDS = %w[check config help exec platform show version].freeze
+    JSON_SUPPORTING_COMMANDS = %w[outdated].freeze
     EXTENSIONS = ["c", "rust"].freeze
 
     COMMAND_ALIASES = {
@@ -75,7 +76,9 @@ module Bundler
     ensure
       self.options ||= {}
       unprinted_warnings = Bundler.ui.unprinted_warnings
-      Bundler.ui = UI::Shell.new(options)
+      use_json = options["json"] && JSON_SUPPORTING_COMMANDS.include?(current_cmd)
+      ui_class = use_json ? UI::JsonShell : UI::Shell
+      Bundler.ui = ui_class.new(options)
       Bundler.ui.level = "debug" if options["verbose"]
       unprinted_warnings.each {|w| Bundler.ui.warn(w) }
     end
@@ -379,6 +382,7 @@ module Bundler
     method_option "filter-minor", type: :boolean, banner: "Only list minor newer versions"
     method_option "filter-patch", type: :boolean, banner: "Only list patch newer versions"
     method_option "parseable", aliases: "--porcelain", type: :boolean, banner: "Use minimal formatting for more parseable output"
+    method_option "json", type: :boolean, banner: "Produce parseable json output (for 'outdated' command)"
     method_option "only-explicit", type: :boolean, banner: "Only list gems specified in your Gemfile, not their dependencies"
     def outdated(*gems)
       require_relative "cli/outdated"

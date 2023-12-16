@@ -57,4 +57,30 @@ RSpec.describe Bundler::UI::Shell do
       end
     end
   end
+
+  describe "#table" do
+    before { subject.level = "info" }
+    let(:header) { { foo: "Foo", bar: "Bar (but longer)", baz: "Baz" } }
+    let(:records) do
+      [
+        { foo: "Entry 1", bar: 5, baz: ["a", "few", :words] },
+        { foo: :two, bar: [1, 2, 3], baz: "less", extra_key: "extra data" },
+        { foo: 3, baz: "not as long" },
+      ]
+    end
+
+    it "constructs and prints the table to stdout properly" do
+      # * Skips the extra data (doesn't match anything in the header)
+      # * Handles the missing entry
+      # * Converts the non-strings (collapsing/stringifying the arrays)
+      # * ignores the extra_key
+      expected_table = <<~TABLE
+        Foo      Bar (but longer)  Baz
+        Entry 1  5                 a, few, words
+        two      1, 2, 3           less
+        3                          not as long
+      TABLE
+      expect { subject.table(header, records) }.to output(expected_table).to_stdout
+    end
+  end
 end

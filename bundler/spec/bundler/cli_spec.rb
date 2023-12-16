@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "bundler/cli"
+require "json"
 
 RSpec.describe "bundle executable" do
   it "returns non-zero exit status when passed unrecognized options" do
@@ -151,6 +152,26 @@ RSpec.describe "bundle executable" do
 
         expect(out).to include("Gem   Current  Latest  Requested  Groups")
         expect(out).to include("rack  0.9.1    1.0.0   = 0.9.1    default")
+      end
+    end
+
+    context "with --json" do
+      let(:flags) { "--json" }
+
+      it "prints json output data when there are outdated gems" do
+        run_command
+        out_data = JSON.parse(out)
+        expect(out_data.length).to eq(1)
+
+        expect(out_data.first).to eq({
+          "gem_name" => "rack",
+          "current_version" => "0.9.1",
+          "latest_version" => "1.0.0",
+          "latest_required_ruby" => ">= 0",
+          "latest_required_rubygems" => ">= 0",
+          "requested_version" => "= 0.9.1",
+          "groups" => ["default"],
+        })
       end
     end
 

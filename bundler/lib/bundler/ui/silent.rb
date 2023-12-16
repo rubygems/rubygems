@@ -80,6 +80,9 @@ module Bundler
       def unprinted_warnings
         @warnings
       end
+
+      def table(header, rows, options = {})
+      end
     end
   end
 end

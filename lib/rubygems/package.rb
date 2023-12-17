@@ -448,7 +448,10 @@ EOM
           end
 
         unless directories.include?(mkdir)
-          FileUtils.mkdir_p mkdir, mode: dir_mode ? 0o755 : (entry.header.mode if entry.directory?)
+          mkdir_mode = 0o755 if dir_mode
+          mkdir_mode ||= entry.header.mode if entry.directory?
+          mkdir_mode &= ~File.umask if mkdir_mode
+          FileUtils.mkdir_p mkdir, mode: mkdir_mode
           directories << mkdir
         end
 
@@ -475,12 +478,13 @@ EOM
   end
 
   def file_mode(mode) # :nodoc:
-    ((mode & 0o111).zero? ? data_mode : prog_mode) ||
-      # If we're not using one of the default modes, then we're going to fall
-      # back to the mode from the tarball. In this case we need to mask it down
-      # to fit into 2^16 bits (the maximum value for a mode in CRuby since it
-      # gets put into an unsigned short).
-      (mode & ((1 << 16) - 1))
+    fmode = ((mode & 0o111).zero? ? data_mode : prog_mode)
+    # If we're not using one of the default modes, then we're going to fall
+    # back to the mode from the tarball. In this case we need to mask it down
+    # to fit into 2^16 bits (the maximum value for a mode in CRuby since it
+    # gets put into an unsigned short).
+    fmode ||= (mode & ((1 << 16) - 1))
+    fmode & (~File.umask)
   end
 
   ##

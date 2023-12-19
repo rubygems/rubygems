@@ -1422,6 +1422,48 @@ RSpec.describe "bundle update --bundler" do
     end
   end
 
+  it "does not update the bundler version in the lockfile if the latest version is not compatible with current ruby", :ruby_repo do
+    pristine_system_gems "bundler-2.3.9"
+
+    build_repo4 do
+      build_gem "rack", "1.0"
+
+      build_bundler "2.3.9"
+      build_bundler "999.0.0" do |s|
+        s.required_ruby_version = "> #{Gem.ruby_version}"
+      end
+    end
+
+    install_gemfile <<-G, env: { "BUNDLER_IGNORE_DEFAULT_GEM" => "true" }
+      source "#{file_uri_for(gem_repo4)}"
+      gem "rack"
+    G
+    lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.3.9")
+
+    bundle :update, bundler: true, artifice: "compact_index", verbose: true, env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s, "BUNDLER_IGNORE_DEFAULT_GEM" => "true" }
+
+    expect(out).to include("Using bundler 2.3.9")
+
+    expect(lockfile).to eq <<~L
+      GEM
+        remote: #{file_uri_for(gem_repo4)}/
+        specs:
+          rack (1.0)
+
+      PLATFORMS
+        #{lockfile_platforms}
+
+      DEPENDENCIES
+        rack
+
+      BUNDLED WITH
+         2.3.9
+    L
+
+    expect(the_bundle).to include_gems "bundler 2.3.9"
+    expect(the_bundle).to include_gems "rack 1.0"
+  end
+
   it "errors if the explicit target version does not exist" do
     pristine_system_gems "bundler-2.3.9"
 

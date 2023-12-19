@@ -407,6 +407,8 @@ module Spec
     end
 
     class BundlerBuilder
+      attr_writer :required_ruby_version
+
       def initialize(context, name, version)
         raise "can only build bundler" unless name == "bundler"
 
@@ -431,6 +433,7 @@ module Spec
         end
 
         @context.replace_version_file(@version, dir: build_path)
+        @context.replace_required_ruby_version(@required_ruby_version, dir: build_path) if @required_ruby_version
 
         Spec::BuildMetadata.write_build_metadata(dir: build_path)
 

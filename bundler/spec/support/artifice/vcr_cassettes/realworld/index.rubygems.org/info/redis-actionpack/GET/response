@@ -1,0 +1,45 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 3639
+last-modified: Mon, 04 Dec 2023 22:45:00 GMT
+etag: "a22ed6a6a21125a35bc8e9d93f38664f"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="vsQ8iLypYWCm6Jpa1UqZRoS9/ao6sCm/jaAtwHnKpXw="
+repr-digest: sha-256="vsQ8iLypYWCm6Jpa1UqZRoS9/ao6sCm/jaAtwHnKpXw="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400085_BFI 167.82.142.85:443
+accept-ranges: bytes
+date: Fri, 15 Dec 2023 19:03:07 GMT
+age: 3455
+x-served-by: cache-bfi-kbfi7400085-BFI, cache-mad22080-MAD
+x-cache: HIT, HIT
+x-cache-hits: 33528, 1
+x-timer: S1702666988.596833,VS0,VE1
+server: RubyGems.org
+
+---
+0.0.0 |checksum:66b6b19b447a30244ce94db4f0f0804f887aead314e0d535c8619b530a65ae91
+3.1.3.rc actionpack:= 3.1.3,redis-rack-cache:= 1.1.rc,redis-store:= 1.1.0.rc|checksum:e90227c0c794f8913bb40d70e6473cdb9bd4c54e9ca544a6fb5ab98f2d3d8ccd,rubygems:> 1.3.1
+3.1.3.rc2 actionpack:= 3.1.3,redis-rack-cache:= 1.1.rc2,redis-store:= 1.1.0.rc|checksum:6e578334a37a787b3cdf2caf90fea1ded6b6648a843917ac7839337a3160809c,rubygems:> 1.3.1
+3.1.3.rc3 actionpack:= 3.1.3,redis-rack:= 1.3.5.rc,redis-rack-cache:= 1.1.rc2,redis-store:= 1.1.0.rc2|checksum:301f9a207fdeafc34eb2744c40a43da27f009d5a291f699f4012e8d733ac1db3,rubygems:> 1.3.1
+3.1.3.rc4 actionpack:= 3.1.3,redis-rack:= 1.3.5.rc,redis-store:= 1.1.0.rc2|checksum:12964fc56d5f0e2a1202b84abce2172ea9875bd8bf225eccc3792544d272c9b5,rubygems:> 1.3.1
+3.1.3 actionpack:= 3.1.3,redis-rack:= 1.3.5,redis-store:= 1.1.0|checksum:549f6203a77a0672b055314810c5d689383852c7cba6881e4e1eade4fc860684
+3.2.1.rc actionpack:= 3.2.1,redis-rack:= 1.4.0.rc2,redis-store:= 1.1.0|checksum:9627cee622b6cf65e4d0f5b79b6ca6ad24ebdf457618600ff1484b3e7af5128c,rubygems:> 1.3.1
+3.2.1 actionpack:= 3.2.1,redis-rack:~> 1.4.0,redis-store:~> 1.1.0|checksum:3f32e72f10d334cd931bcafcf16249ca0d3f70ef6d7e82cc5167f27c7e107bd4
+3.2.2 actionpack:= 3.2.2,redis-rack:~> 1.4.0,redis-store:~> 1.1.0|checksum:e02331f910eb0488c46643807a963d6d3968fdbca75d3a5ef117a70e2bf029c1
+3.1.4 actionpack:= 3.1.4,redis-rack:= 1.3.6,redis-store:~> 1.1.0|checksum:c82bf9bad78f3b1ae1dc41838463b1c73182b9225c1f48f5316be1e32fc61685
+3.2.3 actionpack:~> 3.2.3,redis-rack:~> 1.4.0,redis-store:~> 1.1.0|checksum:645bc5ce5f4abe864090f07c42cc7f652f81884858de48e15409009cd8a6061c
+3.1.5 actionpack:~> 3.1.5,redis-rack:~> 1.3.6,redis-store:~> 1.1.0|checksum:8d2ff402cc1b6ea8f2eaf416882d420d16376e5a6dffc1685939099ef8ba235f
+4.0.0 actionpack:~> 4,redis-rack:~> 1.5.0,redis-store:~> 1.1.0|checksum:e49029df46b15434591962cc004a1f0b07ab11276e00fd53ec835b85c7064d55
+3.2.4 actionpack:~> 3.2.0,redis-rack:~> 1.4.4,redis-store:~> 1.1.4|checksum:5daa9cee9c778c92850007dc41bc2c0fabad2c3ebe076128560036147de15131
+4.0.1 actionpack:~> 4,redis-rack:~> 1.5.0,redis-store:~> 1.1.0|checksum:fcf9186b3f7b315e18e360546019e08b5733fef93816ccbd6a57b50b613354ca
+5.0.0.pre actionpack:< 6&>= 4.0.0,redis-rack:~> 2.0.0.pre,redis-store:~> 1.2.0.pre|checksum:8eb2bbdb2d70a85c826706b74e869a9813c7a61e3ca5dab5563e10b027bc5b94,rubygems:> 1.3.1
+5.0.0 actionpack:< 6&>= 4.0.0,redis-rack:~> 2.0.0.pre,redis-store:~> 1.2.0.pre|checksum:79eb2e7450d97e5a605baebb9d327f7871e6bd08288507a4a0868bf2c0160b3d
+5.0.1 actionpack:< 6&>= 4.0,redis-rack:< 3&>= 1,redis-store:< 1.4.0&>= 1.1.0|checksum:593a69718e7b0897fd4069eb89db5819df70a62867a1ca9d2f5844c94ec4d33e
+5.0.2 actionpack:< 6&>= 4.0,redis-rack:< 3&>= 1,redis-store:< 2&>= 1.1.0|checksum:c3d425b9e5cba89c5b25d3c56ff0914179f85e11cd8bd9bc27ed797bfe0b6496
+5.1.0 actionpack:< 7&>= 4.0,redis-rack:< 3&>= 1,redis-store:< 2&>= 1.1.0|checksum:1fdefd7ba06d1754ef17464bb0e73e353fa8518d1c2588304f31faf97c896ac3
+5.2.0.pre actionpack:< 7&>= 5,redis-rack:< 3&>= 1,redis-store:< 2&>= 1.1.0|checksum:ac8f854a954fac25e09c65bcc254b765c6c8bf30ae4b1494da5883960c794ffd,ruby:>= 2.3.0,rubygems:> 1.3.1
+5.2.0 actionpack:< 7&>= 5,redis-rack:< 3&>= 2.1.0,redis-store:< 2&>= 1.1.0|checksum:6337f72c5ed21e7d4909468479fe51d9c2b343cf0ea933e0270400f6bf394230,ruby:>= 2.3.0
+5.3.0 actionpack:< 8&>= 5,redis-rack:< 3&>= 2.1.0,redis-store:< 2&>= 1.1.0|checksum:3fb1ad0a8fd9d26a289c9399bb609dcaef38bf37711e6f677a53ca728fc19140,ruby:>= 2.3.0
+5.4.0 actionpack:< 8&>= 5,redis-rack:< 4&>= 2.1.0,redis-store:< 2&>= 1.1.0|checksum:f10cf649ab05914716d63334d7f709221ecc883b87cf348f90ecfe0c35ea3540,ruby:>= 2.3.0

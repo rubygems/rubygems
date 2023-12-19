@@ -1,0 +1,49 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 2347
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "46d6724659164812ab8b51d78bd8423e"
+last-modified: Fri, 29 Sep 2023 20:31:49 GMT
+digest: sha-256=Vd/9yVLKyRxjM5sCA8ZXZhTzVQeqC6C0X0ktCTPmDWI=
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com https://unpkg.com/@hotwired/stimulus/dist/stimulus.umd.js https://unpkg.com/stimulus-rails-nested-form/dist/stimulus-rails-nested-form.umd.js 'nonce-'; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3A6ee3a7cd9ba7c50c5f3dacbbcaf722de865eda8f%2Cenv%3Aproduction%2Ctrace_id%3A958479075584127587
+x-request-id: c0394e98-bf58-4fe1-96be-67d79e03e5e3
+x-runtime: 0.011439
+strict-transport-security: max-age=31536000
+fastly-restarts: 1
+via: 1.1 varnish, 1.1 varnish
+x-backend: F_Rails 44.225.119.68:443, fastlyshield--shield_ssl_cache_bfi_kbfi7400030_BFI 167.82.142.30:443
+accept-ranges: bytes
+date: Fri, 15 Dec 2023 19:03:08 GMT
+age: 3633
+x-served-by: cache-bfi-kbfi7400030-BFI, cache-mad2200136-MAD
+x-cache: HIT, HIT
+x-cache-hits: 146319, 1
+x-timer: S1702666988.337984,VS0,VE1
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+1.0.0.alpha.13 multi_json:~> 1.0,sass:>= 3.3.rc.1|checksum:dae5a27b1eb372f9a374e5c0c01a404d2111e40b86f11466d75794b389737af2,rubygems:> 1.3.1
+1.0.0.alpha.14 multi_json:~> 1.0,sass:>= 3.3.rc.1|checksum:4c4bc75a1c823e8e6fdfcd75d60b1a6fc7b927b3acbe4f8a8d5841a25f7f6ac6,rubygems:> 1.3.1
+1.0.0.alpha.15 multi_json:~> 1.0,sass:>= 3.3.rc.1|checksum:ba28c9c22046f54ce191b0eb030d2fc5770e0d00659a824eac2e13fe1efdcf5e,rubygems:> 1.3.1
+1.0.0.alpha.16 multi_json:~> 1.0,sass:>= 3.3.rc.1|checksum:78506a8850899bb13c61ce950ee1c9299bc6a4f4500afbdbf55b4e31e4d0cb44,rubygems:> 1.3.1
+1.0.0.alpha.17 multi_json:~> 1.0,sass:>= 3.3.rc.3|checksum:d6f225988fe8c0e639d47572a6717aa00dbe88c83c2cc56385a8b8549b0fb57d,rubygems:> 1.3.1
+1.0.0.alpha.19 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:2c99d90c660dbc4bed0056abd1937874a6404a784a5c680e20ef9deda97c34af,rubygems:> 1.3.1
+1.0.0.alpha.20 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:a79fc20cbff0486368245b427179da4ef6816c7d0f3cdc420e9c6a8abc072cc5,rubygems:> 1.3.1
+1.0.0.alpha.21 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:9506eaa009c201991aaac900a089c4173b7624380da5c2b39aca4985cd5fd176,rubygems:> 1.3.1
+1.0.0.rc.0 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:6a1e56a9c04e2d94d73f9ea0c56603d8031a86409d51eb95554775b04cd65121,rubygems:> 1.3.1
+1.0.0.rc.1 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:7781af2d1b53333ce1dffdd7c00a33e06ad1055afe275fd7b38d4429b82af7df,rubygems:> 1.3.1
+1.0.0 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:556f3b6b3f332232343b8b0a5f0544d5b7952b97bcaebaff5637b39aa931ecd9
+1.0.1 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:fd07ea734e56113670fd8ecceac143b09a2034dae0b3d11b16326983e5ab0b7e
+1.1.0.alpha.0 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:c68c32bd66fef6be8cdc011618fcd32a2b898fe74cb1ba5e0156590979470392,rubygems:> 1.3.1
+1.1.0.alpha.1 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:96718256e43d3ab823b9cf05e66eb9570bc5f0d359b0d898034651f02711038c,rubygems:> 1.3.1
+1.1.0.alpha.2 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:e7d47dc5142a9abc31e75257461a2ff786fbeda62794f463fea5a43866247ba7,rubygems:> 1.3.1
+1.1.0.alpha.3 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:8fbfe857f03c7551d123a87e6d229b7c2e9582e24dac33ecc80eff8b1675cc97,rubygems:> 1.3.1
+1.0.3 multi_json:~> 1.0,sass:< 3.5&>= 3.3.0|checksum:6ac8bb4cabb5bf80d1a7febbacfd35c1aa83e91a7a511637668dffda38be5a79

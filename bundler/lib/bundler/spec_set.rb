@@ -64,7 +64,9 @@ module Bundler
         valid_platform = lookup.all? do |_, specs|
           spec = specs.first
           matching_specs = spec.source.specs.search([spec.name, spec.version])
-          platform_spec = GemHelpers.select_best_platform_match(matching_specs, platform).find(&:matches_current_metadata?)
+          platform_spec = GemHelpers.select_best_platform_match(matching_specs, platform).find do |s|
+            s.matches_current_metadata? && valid_dependencies?(s)
+          end
 
           if platform_spec
             new_specs << LazySpecification.from_spec(platform_spec)
@@ -88,6 +90,17 @@ module Bundler
       @lookup = nil
 
       platforms
+    end
+
+    def validate_deps(s)
+      s.runtime_dependencies.each do |dep|
+        next if dep.name == "bundler"
+
+        return :missing unless names.include?(dep.name)
+        return :invalid if none? {|spec| dep.matches_spec?(spec) }
+      end
+
+      :valid
     end
 
     def [](key)
@@ -198,6 +211,10 @@ module Bundler
     end
 
     private
+
+    def valid_dependencies?(s)
+      validate_deps(s) == :valid
+    end
 
     def sorted
       rake = @specs.find {|s| s.name == "rake" }

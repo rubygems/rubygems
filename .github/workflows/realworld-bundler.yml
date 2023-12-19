@@ -57,7 +57,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
         with:
           name: cassettes-bundler-${{ matrix.bundler.name }}-${{ matrix.os.value }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -93,7 +93,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
         with:
           name: cassettes-system-rubygems-bundler-${{ matrix.bundler.name }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt

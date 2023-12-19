@@ -193,6 +193,10 @@ module Bundler
       sorted.each(&b)
     end
 
+    def names
+      lookup.keys
+    end
+
     private
 
     def sorted

@@ -402,6 +402,40 @@ module Spec
       alias_method :dep, :runtime
     end
 
+    class BundlerBuilder
+      def initialize(context, version)
+        @context = context
+        @version = version || Bundler::VERSION
+      end
+
+      def _build
+        full_name = "bundler-#{@version}"
+        build_path = @context.tmp + full_name
+        bundler_path = build_path + "#{full_name}.gem"
+
+        Dir.mkdir build_path
+
+        @context.shipped_files.each do |shipped_file|
+          target_shipped_file = shipped_file
+          target_shipped_file = shipped_file.sub(/\Alibexec/, "exe") if @context.ruby_core?
+          target_shipped_file = build_path + target_shipped_file
+          target_shipped_dir = File.dirname(target_shipped_file)
+          FileUtils.mkdir_p target_shipped_dir unless File.directory?(target_shipped_dir)
+          FileUtils.cp shipped_file, target_shipped_file, preserve: true
+        end
+
+        @context.replace_version_file(@version, dir: build_path)
+
+        Spec::BuildMetadata.write_build_metadata(dir: build_path)
+
+        @context.gem_command "build #{@context.relative_gemspec}", dir: build_path
+
+        yield(bundler_path)
+      ensure
+        build_path.rmtree
+      end
+    end
+
     class LibBuilder
       def initialize(context, name, version)
         @context = context

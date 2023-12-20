@@ -1,0 +1,93 @@
+diff --git a/bundler/lib/bundler/vendor/thor/lib/thor/shell/color.rb b/bundler/lib/bundler/vendor/thor/lib/thor/shell/color.rb
+index 6a9176331..5d708fadc 100644
+--- a/bundler/lib/bundler/vendor/thor/lib/thor/shell/color.rb
++++ b/bundler/lib/bundler/vendor/thor/lib/thor/shell/color.rb
+@@ -1,5 +1,4 @@
+ require_relative "basic"
+-require_relative "lcs_diff"
+ 
+ class Bundler::Thor
+   module Shell
+@@ -7,8 +6,6 @@ module Shell
+     # Bundler::Thor::Shell::Basic to see all available methods.
+     #
+     class Color < Basic
+-      include LCSDiff
+-
+       # Embed in a String to clear all previous ANSI sequences.
+       CLEAR      = "\e[0m"
+       # The start of an ANSI bold sequence.
+diff --git a/bundler/lib/bundler/vendor/thor/lib/thor/shell/html.rb b/bundler/lib/bundler/vendor/thor/lib/thor/shell/html.rb
+index 6091485ac..0277b882b 100644
+--- a/bundler/lib/bundler/vendor/thor/lib/thor/shell/html.rb
++++ b/bundler/lib/bundler/vendor/thor/lib/thor/shell/html.rb
+@@ -1,5 +1,4 @@
+ require_relative "basic"
+-require_relative "lcs_diff"
+ 
+ class Bundler::Thor
+   module Shell
+@@ -7,8 +6,6 @@ module Shell
+     # Bundler::Thor::Shell::Basic to see all available methods.
+     #
+     class HTML < Basic
+-      include LCSDiff
+-
+       # The start of an HTML bold sequence.
+       BOLD       = "font-weight: bold"
+ 
+diff --git a/bundler/lib/bundler/vendor/thor/lib/thor/shell/lcs_diff.rb b/bundler/lib/bundler/vendor/thor/lib/thor/shell/lcs_diff.rb
+deleted file mode 100644
+index 81268a9f0..000000000
+--- a/bundler/lib/bundler/vendor/thor/lib/thor/shell/lcs_diff.rb
++++ /dev/null
+@@ -1,49 +0,0 @@
+-module LCSDiff
+-protected
+-
+-  # Overwrite show_diff to show diff with colors if Diff::LCS is
+-  # available.
+-  def show_diff(destination, content) #:nodoc:
+-    if diff_lcs_loaded? && ENV["THOR_DIFF"].nil? && ENV["RAILS_DIFF"].nil?
+-      actual  = File.binread(destination).to_s.split("\n")
+-      content = content.to_s.split("\n")
+-
+-      Diff::LCS.sdiff(actual, content).each do |diff|
+-        output_diff_line(diff)
+-      end
+-    else
+-      super
+-    end
+-  end
+-
+-private
+-
+-  def output_diff_line(diff) #:nodoc:
+-    case diff.action
+-    when "-"
+-      say "- #{diff.old_element.chomp}", :red, true
+-    when "+"
+-      say "+ #{diff.new_element.chomp}", :green, true
+-    when "!"
+-      say "- #{diff.old_element.chomp}", :red, true
+-      say "+ #{diff.new_element.chomp}", :green, true
+-    else
+-      say "  #{diff.old_element.chomp}", nil, true
+-    end
+-  end
+-
+-  # Check if Diff::LCS is loaded. If it is, use it to create pretty output
+-  # for diff.
+-  def diff_lcs_loaded? #:nodoc:
+-    return true if defined?(Diff::LCS)
+-    return @diff_lcs_loaded unless @diff_lcs_loaded.nil?
+-
+-    @diff_lcs_loaded = begin
+-      require "diff/lcs"
+-      true
+-    rescue LoadError
+-      false
+-    end
+-  end
+-
+-end

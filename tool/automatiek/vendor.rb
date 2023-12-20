@@ -4,6 +4,7 @@
 require "rubygems"
 require "bundler"
 require "find"
+require "fileutils"
 
 VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendor_lib, :license_path, :patch_name, :require_target, :skip_dependencies, keyword_init: true) do
   def vendor(spec)
@@ -85,7 +86,7 @@ vendored_gems = [
   VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/optparse", license_path: "COPYING", patch_name: "optparse-v0.4.0.patch"),
   VendoredGem.new(name: "pub_grub", namespace: "PubGrub", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/pub_grub", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/resolv", license_path: "LICENSE.txt", extra_dependencies: %w[timeout]),
-  VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/thor", license_path: "LICENSE.md"),
+  VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/thor", license_path: "LICENSE.md", patch_name: "thor-v1.3.0.patch"),
   VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/timeout", license_path: "LICENSE.txt", patch_name: "timeout-v0.4.1.patch"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/tsort", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Gem", vendor_lib: "lib/rubygems/tsort", license_path: "LICENSE.txt"),

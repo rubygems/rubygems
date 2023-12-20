@@ -327,7 +327,7 @@ module Spec
     end
 
     def with_built_bundler(version = nil, &block)
-      Builders::BundlerBuilder.new(self, version)._build(&block)
+      Builders::BundlerBuilder.new(self, "bundler", version)._build(&block)
     end
 
     def with_gem_path_as(path)

@@ -297,6 +297,10 @@ module Spec
       build_with(LibBuilder, name, args, &blk)
     end
 
+    def build_bundler(*args, &blk)
+      build_with(BundlerBuilder, "bundler", args, &blk)
+    end
+
     def build_gem(name, *args, &blk)
       build_with(GemBuilder, name, args, &blk)
     end
@@ -403,12 +407,14 @@ module Spec
     end
 
     class BundlerBuilder
-      def initialize(context, version)
+      def initialize(context, name, version)
+        raise "can only build bundler" unless name == "bundler"
+
         @context = context
         @version = version || Bundler::VERSION
       end
 
-      def _build
+      def _build(options = {})
         full_name = "bundler-#{@version}"
         build_path = @context.tmp + full_name
         bundler_path = build_path + "#{full_name}.gem"
@@ -430,7 +436,11 @@ module Spec
 
         @context.gem_command "build #{@context.relative_gemspec}", dir: build_path
 
-        yield(bundler_path)
+        if block_given?
+          yield(bundler_path)
+        else
+          FileUtils.mv bundler_path, options[:path]
+        end
       ensure
         build_path.rmtree
       end

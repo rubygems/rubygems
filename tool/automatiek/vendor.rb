@@ -4,6 +4,7 @@
 require "rubygems"
 require "bundler"
 require "find"
+require "fileutils"
 
 VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendor_lib, :license_path, :patch_name, :require_target, :skip_dependencies, keyword_init: true) do
   def vendor(spec)

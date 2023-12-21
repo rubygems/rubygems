@@ -1,0 +1,40 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1753
+last-modified: Fri, 24 Nov 2023 16:18:11 GMT
+etag: "3402ed97e9978a09382f17add60df20f"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="Y4dnjwzIg2bQSx7QhcWY8TrN0fD0epV832zvaY1eUr0="
+repr-digest: sha-256="Y4dnjwzIg2bQSx7QhcWY8TrN0fD0epV832zvaY1eUr0="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300096_BFI 167.82.143.96:443
+accept-ranges: bytes
+date: Fri, 15 Dec 2023 19:03:07 GMT
+age: 1945
+x-served-by: cache-bfi-krnt7300096-BFI, cache-mad2200136-MAD
+x-cache: HIT, HIT
+x-cache-hits: 33328, 1
+x-timer: S1702666988.560101,VS0,VE1
+server: RubyGems.org
+
+---
+0.1.2 |checksum:23aa1cb3036c1960bec18ae5ec8a818176bdb8275577467d6e6ce304021f7d1d,ruby:> 0.0.0
+0.1.3 |checksum:13e9bc9d9832a5ee1c04581b0bb3cd12a5defa8e17040baa97c4a23982c39f90,ruby:> 0.0.0
+0.1.4 |checksum:9a5b380625ebb60b30f4c6950c91a3f9aa38b2a3b5cd2c96a84cafc03aff4b40,ruby:> 0.0.0
+1.0.0 |checksum:7dde52d4a325f49ac3cdb0ccb855019f78e21b3f9e57ff8a674f50555e54793b,ruby:> 0.0.0
+1.0.1 |checksum:5088e38fa25b769c6321e7344392dd88e1dc46132772a02d8571231a4717c094,ruby:> 0.0.0
+1.0.2 |checksum:28157898aa89394aced646fa2c815742fe2afa7371a226f600ce4e639878f85a,ruby:> 0.0.0
+1.0.3 |checksum:a09b8f05236ca9100d453a4d061b7c40166efcf17d71d10f3f6544489589f71f
+1.0.4 |checksum:7243c9aa5dffa379608403303b5ffb2909dc7e6cf1799239e591508d83f8873b
+1.0.5 spruz:>= 0.1.0|checksum:6f9d986cb58e33ba31911dbc41d5e4baaf31552e9579fe9ed3f39beeafa8a86b
+1.0.6 spruz:~> 0.2|checksum:12f58e02f82f16633dcb230e0b3f4f9915937228f9663dac47b002d31f4cabf8
+1.0.7 tins:~> 0.3|checksum:7d859355183bba284af9e4d9cfe21bd948cfee197be8a448c85633f98ab7bd0a
+1.0.8 tins:~> 0.3|checksum:f4da08de18a3b0a7d1e9e6fef1716c373cb60f1d2b9cb57d4171309640eeba76
+1.0.9 tins:~> 0.3|checksum:b932f465c3c52b2f065df0cffb0272e60d82de3447099abb7f015c32a64dd53c
+1.0.10 tins:~> 0.4.3|checksum:6dfe2aa87f71320e8e58dadcab245a7185154d57b07686d79f31d64418e9b53b
+1.0.11 tins:~> 0.5.0|checksum:efa8ccd8ecbc31470fc5baee0549b09880f097a48b464253b52cfa2e6f9c0193
+1.0.12 tins:~> 0.5|checksum:32c490ba6b9f4036291e4e03d20ffffbfd40d65875b50c74e7b7cc23b9edfd57
+1.1.0 tins:~> 1.0|checksum:c4d8e4e293436c831b7ecc7b690b480def5c09fad0490be19f889ef9a2babe45
+1.1.1 tins:~> 1.0|checksum:1094d5b2b424a4c38abdda767238737f0122590e2ab07c7278c196ba65c0ce3d
+1.2.0 tins:~> 1.0|checksum:152f6ca64c009c754b89f06e7636ead96e5b55413641021402118ca66b6b43d9

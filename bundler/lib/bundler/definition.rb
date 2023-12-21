@@ -722,17 +722,14 @@ module Bundler
       @locked_spec_with_invalid_deps = nil
       @locked_spec_with_missing_deps = nil
 
-      locked_names = @locked_specs.map(&:name)
       missing = []
       invalid = []
 
       @locked_specs.each do |s|
-        s.dependencies.each do |dep|
-          next if dep.name == "bundler"
+        validation = @locked_specs.validate_deps(s)
 
-          missing << s unless locked_names.include?(dep.name)
-          invalid << s if @locked_specs.none? {|spec| dep.matches_spec?(spec) }
-        end
+        missing << s if validation == :missing
+        invalid << s if validation == :invalid
       end
 
       if missing.any?

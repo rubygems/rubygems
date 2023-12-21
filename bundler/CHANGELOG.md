@@ -1,3 +1,15 @@
+# 2.5.2 (December 21, 2023)
+
+## Enhancements:
+
+  - Avoid vendored thor gem polluting the global namespace [#7305](https://github.com/rubygems/rubygems/pull/7305)
+
+## Bug fixes:
+
+  - Fix `bundle update --bundler` when latest version does not support current ruby [#7310](https://github.com/rubygems/rubygems/pull/7310)
+  - Fix incorrect lockfiles being generated in some situations [#7307](https://github.com/rubygems/rubygems/pull/7307)
+  - Fix incorrect re-resolve messages [#7306](https://github.com/rubygems/rubygems/pull/7306)
+
 # 2.5.1 (December 15, 2023)
 
 ## Bug fixes:

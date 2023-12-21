@@ -1,3 +1,18 @@
+# 3.5.2 / 2023-12-21
+
+## Enhancements:
+
+* Support dynamic library loading with extension .so or .o. Pull request
+  [#7241](https://github.com/rubygems/rubygems/pull/7241) by hogelog
+* Installs bundler 2.5.2 as a default gem.
+
+## Performance:
+
+* Replace `object_id` comparison with identity Hash. Pull request
+  [#7303](https://github.com/rubygems/rubygems/pull/7303) by amomchilov
+* Use IO.copy_stream when reading, writing. Pull request
+  [#6958](https://github.com/rubygems/rubygems/pull/6958) by martinemde
+
 # 3.5.1 / 2023-12-15
 
 ## Enhancements:

@@ -108,11 +108,16 @@ module Bundler
         if current.requirement != dep.requirement
           current_requirement_open = current.requirements_list.include?(">= 0")
 
-          if current.gemspec_dev_dep?
-            unless current_requirement_open || dep.gemspec_dev_dep?
-              Bundler.ui.warn "A gemspec development dependency (#{dep.name}, #{current.requirement}) is being overridden by a Gemfile dependency (#{dep.name}, #{dep.requirement}).\n" \
-                              "This behaviour may change in the future. Please remove either of them, or make sure they both have the same requirement\n" \
+          gemspec_dep = [dep, current].find(&:gemspec_dev_dep?)
+          if gemspec_dep
+            gemfile_dep = [dep, current].find(&:runtime?)
+
+            unless current_requirement_open
+              Bundler.ui.warn "A gemspec development dependency (#{gemspec_dep.name}, #{gemspec_dep.requirement}) is being overridden by a Gemfile dependency (#{gemfile_dep.name}, #{gemfile_dep.requirement}).\n" \
+                              "This behaviour may change in the future. Please remove either of them, or make sure they both have the same requirement\n"
             end
+
+            return if dep.gemspec_dev_dep?
           else
             update_prompt = ""
 

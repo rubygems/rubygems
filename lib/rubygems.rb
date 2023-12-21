@@ -943,6 +943,13 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
+  # Suffixes for dynamic library require-able paths.
+
+  def self.dynamic_library_suffixes
+    @dynamic_library_suffixes ||= suffixes - [".rb"]
+  end
+
+  ##
   # Prints the amount of time the supplied block takes to run using the debug
   # UI output.
 

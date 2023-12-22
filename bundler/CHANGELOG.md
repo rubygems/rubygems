@@ -1,3 +1,9 @@
+# 2.5.3 (December 22, 2023)
+
+## Bug fixes:
+
+  - Fix incorrect error when Gemfile overrides a gemspec development dependency [#7319](https://github.com/rubygems/rubygems/pull/7319)
+
 # 2.5.2 (December 21, 2023)
 
 ## Enhancements:

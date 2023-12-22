@@ -29,7 +29,6 @@ module Bundler
       gem.coc
       gem.mit
       git.allow_insecure
-      global_gem_cache
       ignore_messages
       init_gems_rb
       inline

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe "global gem caching" do
-  before { bundle "config set global_gem_cache true" }
-
   describe "using the cross-application user cache" do
     let(:source)  { "http://localgemserver.test" }
     let(:source2) { "http://gemserver.example.org" }

@@ -351,6 +351,8 @@ RSpec.describe "bundle install with gems on multiple sources" do
           rack_checksum = "c0ffee11" * 8
           bundle :install, artifice: "compact_index", env: { "BUNDLER_SPEC_RACK_CHECKSUM" => rack_checksum }, raise_on_error: false
 
+          gem_path = default_cache_path.dirname.join("cache", "gems", "gem.repo2.443.0c6866cb34f3fc6d95f4fcfa60e6c430", "rack-1.0.0.gem")
+
           expect(err).to eq(<<~E.strip)
             [DEPRECATED] Your Gemfile contains multiple global sources. Using `source` more than once without a block is a security risk, and may result in installing unexpected gems. To resolve this warning, use a block to indicate which gems should come from the secondary source.
             Bundler found mismatched checksums. This is a potential security risk.
@@ -358,10 +360,10 @@ RSpec.describe "bundle install with gems on multiple sources" do
                 from the API at https://gem.repo2/
                 and the API at https://gem.repo1/
               #{checksum_to_lock(gem_repo2, "rack", "1.0.0")}
-                from the gem at #{default_bundle_path("cache", "rack-1.0.0.gem")}
+                from the gem at #{gem_path}
 
             If you trust the API at https://gem.repo2/, to resolve this issue you can:
-              1. remove the gem at #{default_bundle_path("cache", "rack-1.0.0.gem")}
+              1. remove the gem at #{gem_path}
               2. run `bundle install`
 
             To ignore checksum security warnings, disable checksum validation with

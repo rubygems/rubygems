@@ -25,7 +25,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@b256bd96bb4867e7d23e92e087d9bb697270b725 # v1.163.0
         with:
-          ruby-version: 3.3.0-rc1
+          ruby-version: 3.3.0
           bundler: none
       - name: Install Dependencies
         run: rake setup

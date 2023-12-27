@@ -42,10 +42,6 @@ jobs:
           - os: { name: Windows, value: windows-2022 }
             ruby: { name: mswin, value: mswin }
 
-        exclude:
-          - os: { name: Windows, value: windows-2022 }
-            ruby: { name: "3.3", value: 3.3.0 }
-
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby (Ubuntu/macOS)

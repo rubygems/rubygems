@@ -44,10 +44,18 @@ module Bundler
         return digest if digest.match?(/\A[0-9a-f]{64}\z/i)
 
         if digest.match?(%r{\A[-0-9a-z_+/]{43}={0,2}\z}i)
-          digest = digest.tr("-_", "+/") # fix urlsafe base64
-          digest.unpack1("m0").unpack1("H*")
+          urlsafe_base64(digest).unpack1("m0").unpack1("H*")
         else
           raise ArgumentError, "#{digest.inspect} is not a valid SHA256 hex or base64 digest"
+        end
+      end
+
+      def urlsafe_base64(digest)
+        if !digest.end_with?("=") && digest.length % 4 != 0 #  Base64.urlsafe_decode64(digest)
+          digest = digest.ljust((digest.length + 3) & ~3, "=")
+          digest.tr!("-_", "+/")
+        else
+          digest = digest.tr("-_", "+/")
         end
       end
     end

@@ -168,7 +168,7 @@ RSpec.describe Bundler::LockfileParser do
       let(:lockfile_contents) do
         super().sub(
           "sha256=814828c34f1315d7e7b7e8295184577cc4e969bad6156ac069d02d63f58d82e8",
-          "sha256=gUgow08TFdfnt-gpUYRXfMTpabrWFWrAadAtY_WNgug="
+          "sha256=gUgow08TFdfnt-gpUYRXfMTpabrWFWrAadAtY_WNgug"
         )
       end
       include_examples "parsing"

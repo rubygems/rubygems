@@ -98,6 +98,7 @@ jobs:
         ruby:
           - { name: "3.1", value: 3.1.4 } # Rails 7
           - { name: "3.2", value: 3.2.2 } # Rails 7
+          - { name: "3.3", value: 3.3.0 } # Rails 7
           - { name: jruby-9.4, value: jruby-9.4.2.0, rails-args: "--skip-webpack-install" } # Rails 6
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1

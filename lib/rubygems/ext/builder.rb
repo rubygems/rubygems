@@ -27,7 +27,15 @@ class Gem::Ext::Builder
     # try to find make program from Ruby configure arguments first
     RbConfig::CONFIG["configure_args"] =~ /with-make-prog\=(\w+)/
     make_program_name = ENV["MAKE"] || ENV["make"] || $1
-    make_program_name ||= RUBY_PLATFORM.include?("mswin") ? "nmake" : "make"
+    make_program_name ||=
+      case RUBY_PLATFORM
+      when /mswin/
+        "nmake"
+      when /(bsd|solaris)/
+        "gmake"
+      else
+        "make"
+      end
     make_program = Shellwords.split(make_program_name)
 
     # The installation of the bundled gems is failed when DESTDIR is empty in mswin platform.

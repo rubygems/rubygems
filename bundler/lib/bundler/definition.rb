@@ -312,10 +312,6 @@ module Bundler
       end
     end
 
-    def should_complete_platforms?
-      !lockfile_exists? && generic_local_platform_is_ruby? && !Bundler.settings[:force_ruby_platform]
-    end
-
     def spec_git_paths
       sources.git_sources.map {|s| File.realpath(s.path) if File.exist?(s.path) }.compact
     end
@@ -496,7 +492,15 @@ module Bundler
     private :sources
 
     def nothing_changed?
-      !@source_changes && !@dependency_changes && !@new_platform && !@path_changes && !@local_changes && !@missing_lockfile_dep && !@unlocking_bundler && !@invalid_lockfile_dep
+      !@source_changes &&
+        !@dependency_changes &&
+        !@new_platform &&
+        !@path_changes &&
+        !@local_changes &&
+        !@missing_lockfile_dep &&
+        !@unlocking_bundler &&
+        !@locked_spec_with_missing_deps &&
+        !@locked_spec_with_invalid_deps
     end
 
     def no_resolve_needed?
@@ -508,6 +512,10 @@ module Bundler
     end
 
     private
+
+    def should_add_extra_platforms?
+      !lockfile_exists? && generic_local_platform_is_ruby? && !Bundler.settings[:force_ruby_platform]
+    end
 
     def lockfile_exists?
       lockfile && File.exist?(lockfile)
@@ -592,7 +600,9 @@ module Bundler
       result = SpecSet.new(resolver.start)
 
       @resolved_bundler_version = result.find {|spec| spec.name == "bundler" }&.version
-      @platforms = result.complete_platforms!(platforms) if should_complete_platforms?
+      @platforms = result.add_extra_platforms!(platforms) if should_add_extra_platforms?
+
+      result.complete_platforms!(platforms)
 
       SpecSet.new(result.for(dependencies, false, @platforms))
     end
@@ -653,7 +663,8 @@ module Bundler
         [@local_changes, "the gemspecs for git local gems changed"],
         [@missing_lockfile_dep, "your lock file is missing \"#{@missing_lockfile_dep}\""],
         [@unlocking_bundler, "an update to the version of Bundler itself was requested"],
-        [@invalid_lockfile_dep, "your lock file has an invalid dependency \"#{@invalid_lockfile_dep}\""],
+        [@locked_spec_with_missing_deps, "your lock file includes \"#{@locked_spec_with_missing_deps}\" but not some of its dependencies"],
+        [@locked_spec_with_invalid_deps, "your lockfile does not satisfy dependencies of \"#{@locked_spec_with_invalid_deps}\""],
       ].select(&:first).map(&:last).join(", ")
     end
 
@@ -708,26 +719,25 @@ module Bundler
     end
 
     def check_lockfile
-      @invalid_lockfile_dep = nil
       @missing_lockfile_dep = nil
 
-      locked_names = @locked_specs.map(&:name)
+      @locked_spec_with_invalid_deps = nil
+      @locked_spec_with_missing_deps = nil
+
       missing = []
       invalid = []
 
       @locked_specs.each do |s|
-        s.dependencies.each do |dep|
-          next if dep.name == "bundler"
+        validation = @locked_specs.validate_deps(s)
 
-          missing << s unless locked_names.include?(dep.name)
-          invalid << s if @locked_specs.none? {|spec| dep.matches_spec?(spec) }
-        end
+        missing << s if validation == :missing
+        invalid << s if validation == :invalid
       end
 
       if missing.any?
         @locked_specs.delete(missing)
 
-        @missing_lockfile_dep = missing.first.name
+        @locked_spec_with_missing_deps = missing.first.name
       elsif !@dependency_changes
         @missing_lockfile_dep = current_dependencies.find do |d|
           @locked_specs[d.name].empty? && d.name != "bundler"
@@ -737,7 +747,7 @@ module Bundler
       if invalid.any?
         @locked_specs.delete(invalid)
 
-        @invalid_lockfile_dep = invalid.first.name
+        @locked_spec_with_invalid_deps = invalid.first.name
       end
     end
 

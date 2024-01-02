@@ -32,7 +32,7 @@ jobs:
           - { name: ruby-3.0, value: 3.0.6 }
           - { name: ruby-3.1, value: 3.1.4 }
           - { name: ruby-3.2, value: 3.2.2 }
-          - { name: ruby-3.3, value: 3.3.0-rc1 }
+          - { name: ruby-3.3, value: 3.3.0 }
 
         bundler:
           - { name: 2, value: '' }
@@ -42,7 +42,7 @@ jobs:
           - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 90 }
           - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 90 }
           - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0-rc1 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 }, timeout: 90 }
 
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 150 }
@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby
-        uses: ruby/setup-ruby@af848b40be8bb463a751551a1180d74782ba8a72 # v1.162.0
+        uses: ruby/setup-ruby@df99e806d4462b1b0f1d13061fa63fce294b3d46 # v1.164.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

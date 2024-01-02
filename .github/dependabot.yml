@@ -4,6 +4,10 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    groups:
+      artifacts:
+        patterns:
+          - "*-artifact"
   - package-ecosystem: 'cargo'
     directory: '/test/rubygems/test_gem_ext_cargo_builder/custom_name/ext/custom_name_lib'
     schedule:

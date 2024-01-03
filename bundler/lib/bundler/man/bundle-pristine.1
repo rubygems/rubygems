@@ -1,10 +1,10 @@
 .\" generated with nRonn/v0.11.1
 .\" https://github.com/n-ronn/nronn/tree/0.11.1
-.TH "BUNDLE\-PRISTINE" "1" "December 2023" ""
+.TH "BUNDLE\-PRISTINE" "1" "January 2024" ""
 .SH "NAME"
 \fBbundle\-pristine\fR \- Restores installed gems to their pristine condition
 .SH "SYNOPSIS"
-\fBbundle pristine\fR
+\fBbundle pristine\fR [\-\-gemfile=GEMFILE]
 .SH "DESCRIPTION"
 \fBpristine\fR restores the installed gems in the bundle to their pristine condition using the local gem cache from RubyGems\. For git gems, a forced checkout will be performed\.
 .P
@@ -21,3 +21,8 @@ Why use \fBbundle pristine\fR over \fBgem pristine \-\-all\fR?
 Both commands are very similar\. For context: \fBbundle pristine\fR, without arguments, cleans all gems from the lockfile\. Meanwhile, \fBgem pristine \-\-all\fR cleans all installed gems for that Ruby version\.
 .P
 If a developer forgets which gems in their project they might have been debugging, the Rubygems \fBgem pristine [GEMNAME]\fR command may be inconvenient\. One can avoid waiting for \fBgem pristine \-\-all\fR, and instead run \fBbundle pristine\fR\.
+.SH "OPTIONS"
+.TP
+\fB\-\-gemfile=<gemfile>\fR
+The location of the Gemfile(5) which Bundler should use\. This defaults to a Gemfile(5) in the current working directory\. In general, Bundler will assume that the location of the Gemfile(5) is also the project's root and will try to find \fBGemfile\.lock\fR and \fBvendor/cache\fR relative to this location\.
+

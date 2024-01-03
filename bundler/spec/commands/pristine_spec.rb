@@ -203,13 +203,37 @@ RSpec.describe "bundle pristine" do
     end
   end
 
-  context "when BUNDLE_GEMFILE doesn't exist" do
-    before do
+  context "when referencing a different gemfile" do
+    it "shows a meaningful error when BUNDLE_GEMFILE doesn't exist" do
       bundle "pristine", env: { "BUNDLE_GEMFILE" => "does/not/exist" }, raise_on_error: false
+      expect(err).to eq("#{bundled_app("does/not/exist")} not found")
     end
 
-    it "shows a meaningful error" do
-      expect(err).to eq("#{bundled_app("does/not/exist")} not found")
+    it "works with --gemfile flag" do
+      create_file "CustomGemfile", <<-G
+        source "#{file_uri_for(gem_repo2)}"
+        gem "foo", :git => "#{lib_path("foo")}", :branch => "main"
+      G
+
+      bundle "install --gemfile CustomGemfile"
+
+      # change weakling so we can confirm it used the right gemfile.
+      weakling_spec = find_spec("weakling")
+      weakling_changes_txt = Pathname.new(weakling_spec.full_gem_path).join("lib/changes.txt")
+      FileUtils.touch(weakling_changes_txt)
+      expect(weakling_changes_txt).to be_file
+
+      # only foo will be fixed as long as --gemfile is respected.
+      foo_spec = find_spec("foo")
+      foo_changed_file = Pathname.new(foo_spec.full_gem_path).join("lib/foo.rb")
+      diff = "#Pristine spec changes"
+      File.open(foo_changed_file, "a") {|f| f.puts diff }
+      expect(File.read(foo_changed_file)).to include(diff)
+
+      bundle "pristine --gemfile CustomGemfile"
+
+      expect(weakling_changes_txt).to be_file # didn't fix weakling
+      expect(File.read(foo_changed_file)).to_not include(diff) # did fix foo
     end
   end
 

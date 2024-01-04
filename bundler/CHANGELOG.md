@@ -1,4 +1,4 @@
-# 2.5.4 (January 3, 2024)
+# 2.5.4 (January 4, 2024)
 
 ## Bug fixes:
 

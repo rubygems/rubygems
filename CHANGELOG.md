@@ -1,3 +1,18 @@
+# 3.5.4 / 2024-01-03
+
+## Enhancements:
+
+* Always avoid "Updating rubygems-update" message. Pull request
+  [#7335](https://github.com/rubygems/rubygems/pull/7335) by
+  deivid-rodriguez
+* Installs bundler 2.5.4 as a default gem.
+
+## Bug fixes:
+
+* Make `gem update --system` respect ruby version constraints. Pull
+  request [#7334](https://github.com/rubygems/rubygems/pull/7334) by
+  deivid-rodriguez
+
 # 3.5.3 / 2023-12-22
 
 ## Enhancements:

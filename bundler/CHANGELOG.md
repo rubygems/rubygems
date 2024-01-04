@@ -1,3 +1,9 @@
+# 2.5.4 (January 3, 2024)
+
+## Bug fixes:
+
+  - Fix resolution when different platform specific gems have different dependencies [#7324](https://github.com/rubygems/rubygems/pull/7324)
+
 # 2.5.3 (December 22, 2023)
 
 ## Bug fixes:

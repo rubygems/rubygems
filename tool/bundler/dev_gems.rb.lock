@@ -11,6 +11,8 @@ GEM
     nokogiri (1.15.5)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.15.5-java)
+      racc (~> 1.4)
     nronn (0.11.1)
       kramdown (~> 2.1)
       kramdown-parser-gfm (>= 1.0.1, < 1.2)
@@ -81,6 +83,7 @@ CHECKSUMS
   mini_portile2 (2.8.5) sha256=7a37db8ae758086c3c3ac3a59c036704d331e965d5e106635e4a42d6e66089ce
   mustache (1.1.1) sha256=90891fdd50b53919ca334c8c1031eada1215e78d226d5795e523d6123a2717d0
   nokogiri (1.15.5) sha256=22448ca35dbcbdcec60dbe25ccf452b685a5436c28f21b2fec2e20917aba9100
+  nokogiri (1.15.5-java) sha256=5f87e71aaeb4f7479b94698737a0aacea77836b4805c7433b655e9565bd56cfe
   nronn (0.11.1) sha256=60305c7a42dcaf6bdd33210993a7e38087520717561da101bea1df7197546369
   parallel (1.23.0) sha256=27154713ad6ef32fa3dcb7788a721d6c07bca77e72443b4c6080a14145288c49
   parallel_tests (3.8.1) sha256=c781c0910be3b489411f24e3a3397d57f481d6ee4eb27dba2a1cd4b8a0967f06
@@ -101,4 +104,4 @@ CHECKSUMS
   webrick (1.8.1) sha256=19411ec6912911fd3df13559110127ea2badd0c035f7762873f58afc803e158f
 
 BUNDLED WITH
-   2.5.3
+   2.5.4

@@ -222,9 +222,6 @@ By default, this RubyGems will install gem as:
         say "  gem server"
         say "and then peruse beautifully formatted documentation for your gems"
         say "with your web browser."
-        say "If you do not wish to install this documentation in the future, use the"
-        say "--no-document flag, or set it as the default in your ~/.gemrc file. See"
-        say "'gem help env' for details."
         say
       end
 
@@ -234,9 +231,6 @@ By default, this RubyGems will install gem as:
         say "  ri Classname"
         say "  ri Classname.class_method"
         say "  ri Classname#instance_method"
-        say "If you do not wish to install this documentation in the future, use the"
-        say "--no-document flag, or set it as the default in your ~/.gemrc file. See"
-        say "'gem help env' for details."
         say
       end
     end

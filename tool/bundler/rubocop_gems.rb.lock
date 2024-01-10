@@ -7,8 +7,8 @@ GEM
     json (2.7.1-java)
     language_server-protocol (3.17.0.3)
     minitest (5.20.0)
-    parallel (1.23.0)
-    parser (3.2.2.4)
+    parallel (1.24.0)
+    parser (3.3.0.2)
       ast (~> 2.4.1)
       racc
     power_assert (2.0.3)
@@ -18,8 +18,8 @@ GEM
     rake (13.1.0)
     rake-compiler (1.2.5)
       rake
-    rb_sys (0.9.83)
-    regexp_parser (2.8.3)
+    rb_sys (0.9.86)
+    regexp_parser (2.9.0)
     rexml (3.2.6)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
@@ -84,16 +84,16 @@ CHECKSUMS
   json (2.7.1-java) sha256=bfd628c0f8357058c2cf848febfa6f140f70f94ec492693a31a0a1933038a61b
   language_server-protocol (3.17.0.3) sha256=3d5c58c02f44a20d972957a9febe386d7e7468ab3900ce6bd2b563dd910c6b3f
   minitest (5.20.0) sha256=a3faf26a757ced073aaae0bd10481340f53e221a4f50d8a6033591555374752e
-  parallel (1.23.0) sha256=27154713ad6ef32fa3dcb7788a721d6c07bca77e72443b4c6080a14145288c49
-  parser (3.2.2.4) sha256=edbe6751f85599c8152173ccadbd708f444b7214de2a1d4969441a68e06ac964
+  parallel (1.24.0) sha256=5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397
+  parser (3.3.0.2) sha256=418c5d5b56143c541693b9a00968b7005f94440e94e0b2945b55dc543e562ea0
   power_assert (2.0.3) sha256=cd5e13c267370427c9804ce6a57925d6030613e341cb48e02eec1f3c772d4cf8
   racc (1.7.3) sha256=b785ab8a30ec43bce073c51dbbe791fd27000f68d1c996c95da98bf685316905
   racc (1.7.3-java) sha256=b2ad737e788cfa083263ce7c9290644bb0f2c691908249eb4f6eb48ed2815dbf
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   rake (13.1.0) sha256=be6a3e1aa7f66e6c65fa57555234eb75ce4cf4ada077658449207205474199c6
   rake-compiler (1.2.5) sha256=ab9b03a6db5fce88fb8dcff23c0cae3bccd7166f036c7fc8b2199f53ee38b2ac
-  rb_sys (0.9.83) sha256=0ed80df79aa08b942af731d93a676f2d885428267f2fbf138f9b6b7809c6455e
-  regexp_parser (2.8.3) sha256=953277d2268bfb2f03275f36222ba9b36342f744a886cb7c8eefa8b985842ff7
+  rb_sys (0.9.86) sha256=65d35ad5f2f2e7257607310186d6a178f34d0fee807d3b1af5611db6a5503a8c
+  regexp_parser (2.9.0) sha256=81a00ba141cec0d4b4bf58cb80cd9193e5180836d3fa6ef623f7886d3ba8bdd9
   rexml (3.2.6) sha256=e0669a2d4e9f109951cb1fde723d8acd285425d81594a2ea929304af50282816
   rspec (3.12.0) sha256=ccc41799a43509dc0be84070e3f0410ac95cbd480ae7b6c245543eb64162399c
   rspec-core (3.12.2) sha256=155b54480f28e2b2813185077fe435c2d663031616360ed3b179a9d6a55d2551

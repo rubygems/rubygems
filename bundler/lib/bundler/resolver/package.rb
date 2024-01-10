@@ -18,10 +18,19 @@ module Bundler
       def initialize(name, platforms, locked_specs:, unlock:, prerelease: false, dependency: nil)
         @name = name
         @platforms = platforms
-        @locked_version = locked_specs[name].first&.version
         @unlock = unlock
-        @dependency = dependency || Dependency.new(name, @locked_version)
         @top_level = !dependency.nil?
+
+        locked_spec = locked_specs[name].first
+
+        if @top_level
+          @locked_version = locked_spec.version if locked_spec && dependency.matches_spec?(locked_spec)
+          @dependency = dependency
+        else
+          @locked_version = locked_spec&.version
+          @dependency = Dependency.new(name, @locked_version)
+        end
+
         @prerelease = @dependency.prerelease? || @locked_version&.prerelease? || prerelease ? :consider_first : :ignore
       end
 

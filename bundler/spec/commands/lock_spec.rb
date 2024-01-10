@@ -135,6 +135,42 @@ RSpec.describe "bundle lock" do
     expect(read_lockfile).to eq(@lockfile)
   end
 
+  it "writes a lockfile when there is an outdated lockfile and --patch is used with a specific dependency" do
+    build_repo4 do
+      build_gem "playbook_ui", "13.14.0"
+      build_gem "playbook_ui", "13.15.0"
+    end
+
+    gemfile <<-G
+      source "#{file_uri_for(gem_repo4)}"
+      gem "playbook_ui", "13.15.0"
+    G
+
+    original_lockfile = <<~L
+      GEM
+        remote: #{file_uri_for(gem_repo4)}/
+        specs:
+          playbook_ui (13.14.0)
+
+      PLATFORMS
+        arm64-darwin-23
+
+      DEPENDENCIES
+        playbook_ui (= 13.14.0)
+
+      BUNDLED WITH
+         #{Bundler::VERSION}
+    L
+
+    lockfile original_lockfile
+
+    simulate_platform "arm64-darwin-23" do
+      bundle "lock --update playbook_ui --patch --strict"
+    end
+
+    expect(read_lockfile).to eq(original_lockfile.gsub("13.14.0", "13.15.0"))
+  end
+
   it "does not fetch remote specs when using the --local option" do
     bundle "lock --update --local", raise_on_error: false
 

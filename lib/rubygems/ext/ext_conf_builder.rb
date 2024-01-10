@@ -37,6 +37,10 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
         end
       end
 
+      if File.exist?(File.join(extension_dir, "gem.build_skipped"))
+        return ["Skipping the extension build"]
+      end
+
       ENV["DESTDIR"] = nil
 
       make dest_path, results, extension_dir, tmp_dest_relative

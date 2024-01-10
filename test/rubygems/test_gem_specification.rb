@@ -1416,6 +1416,27 @@ dependencies: []
     assert_path_not_exist spec.extension_dir
   end
 
+  def test_extconf_skip_build
+    ext_spec
+
+    assert_path_not_exist @ext.extension_dir, "sanity check"
+    refute_empty @ext.extensions, "sanity check"
+
+    extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
+    FileUtils.mkdir_p File.dirname extconf_rb
+
+    File.open extconf_rb, "w" do |f|
+      f.write <<-'RUBY'
+        File.write("gem.build_skipped", "")
+        File.write("Makefile", "syntax-error")
+      RUBY
+    end
+
+    @ext.build_extensions
+
+    assert_path_exist @ext.extension_dir
+  end
+
   def test_build_extensions_error
     pend "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec

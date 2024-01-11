@@ -4,6 +4,7 @@ GEM
     ast (2.4.2)
     json (2.7.1)
     json (2.7.1-java)
+    language_server-protocol (3.17.0.3)
     parallel (1.24.0)
     parser (3.3.0.2)
       ast (~> 2.4.1)
@@ -13,21 +14,22 @@ GEM
     rainbow (3.1.1)
     regexp_parser (2.9.0)
     rexml (3.2.6)
-    rubocop (1.52.1)
+    rubocop (1.59.0)
       json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.2.3)
+      parser (>= 3.2.2.4)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.28.0, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.30.0)
       parser (>= 3.2.1.0)
-    rubocop-performance (1.14.2)
-      rubocop (>= 1.7.0, < 2.0)
-      rubocop-ast (>= 0.4.0)
+    rubocop-performance (1.20.2)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
     ruby-progressbar (1.13.0)
     unicode-display_width (2.5.0)
 
@@ -48,6 +50,7 @@ CHECKSUMS
   ast (2.4.2) sha256=1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
   json (2.7.1) sha256=187ea312fb58420ff0c40f40af1862651d4295c8675267c6a1c353f1a0ac3265
   json (2.7.1-java) sha256=bfd628c0f8357058c2cf848febfa6f140f70f94ec492693a31a0a1933038a61b
+  language_server-protocol (3.17.0.3) sha256=3d5c58c02f44a20d972957a9febe386d7e7468ab3900ce6bd2b563dd910c6b3f
   parallel (1.24.0) sha256=5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397
   parser (3.3.0.2) sha256=418c5d5b56143c541693b9a00968b7005f94440e94e0b2945b55dc543e562ea0
   racc (1.7.3) sha256=b785ab8a30ec43bce073c51dbbe791fd27000f68d1c996c95da98bf685316905
@@ -55,9 +58,9 @@ CHECKSUMS
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   regexp_parser (2.9.0) sha256=81a00ba141cec0d4b4bf58cb80cd9193e5180836d3fa6ef623f7886d3ba8bdd9
   rexml (3.2.6) sha256=e0669a2d4e9f109951cb1fde723d8acd285425d81594a2ea929304af50282816
-  rubocop (1.52.1) sha256=908718035c4771f414280412be0d9168a7abd310da1ab859a50d41bece0dac2f
+  rubocop (1.59.0) sha256=09cf4b874ce87f777e8dc711b0f5e2ef4b123eb20d7e38ae2b85c43015a0fc43
   rubocop-ast (1.30.0) sha256=faad6452b1018fee0dd9e21a44445908e94ee2a4435932a9dae0e0740b6349b3
-  rubocop-performance (1.14.2) sha256=551afc2df245c3d745d69296707e0b0192ea2b593574f7b264404be30f86ccb4
+  rubocop-performance (1.20.2) sha256=1bb1fa8c427fac7ba3c8dd2decb9860f23cb2d6c40350bedc88538de8875c731
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   unicode-display_width (2.5.0) sha256=7e7681dcade1add70cb9fda20dd77f300b8587c81ebbd165d14fd93144ff0ab4
 

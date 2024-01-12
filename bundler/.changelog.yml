@@ -15,7 +15,7 @@ changelog_label_mapping:
   "bundler: enhancement": "## Enhancements:"
   "bundler: bug fix": "## Bug fixes:"
   "bundler: documentation": "## Documentation:"
-  "bundler: backport": null
+  "bundler: skip changelog": null
 
 patch_level_labels:
   - "bundler: security"
@@ -24,4 +24,4 @@ patch_level_labels:
   - "bundler: bug fix"
   - "bundler: performance"
   - "bundler: documentation"
-  - "bundler: backport"
+  - "bundler: skip changelog"

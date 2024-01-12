@@ -79,11 +79,11 @@ changelog.
 If PRs don't have a proper label, they won't be backported to patch releases.
 
 If you want a PR to be backported to a patch level release, but don't want to
-include it in the changelog, you can use the special `rubygems: backport` and
-`bundler: backport` labels. For example, this is useful when backporting a PR
-generates conflicts that are solved by backporting another PR with no user
-visible changes. You can use these special labels to also backport the other PR
-and not get any conflicts.
+include it in the changelog, you can use the special `rubygems: skip changelog`
+and `bundler: skip changelog` labels. For example, this is useful when
+backporting a PR generates conflicts that are solved by backporting another PR
+with no user visible changes. You can use these special labels to also backport
+the other PR and not get any conflicts.
 
 ### Steps for patch releases
 

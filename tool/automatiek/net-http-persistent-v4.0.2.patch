@@ -4,7 +4,7 @@ index b3ebf6ecb..546409d03 100644
 +++ a/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
 @@ -1,13 +1,8 @@
 -require_relative '../../../../../../../../lib/rubygems/net-http/lib/net/http'
--require_relative '../../../../uri/lib/uri'
+-require_relative '../../../../../../../../lib/rubygems/vendor/uri/lib/uri'
 +require_relative '../../../../../vendored_net_http'
 +require_relative '../../../../../vendored_uri'
  require 'cgi' # for escaping

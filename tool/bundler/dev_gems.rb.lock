@@ -45,7 +45,7 @@ GEM
     turbo_tests (2.2.0)
       parallel_tests (>= 3.3.0, < 5)
       rspec (>= 3.10)
-    uri (0.12.2)
+    uri (0.13.0)
     webrick (1.8.1)
 
 PLATFORMS
@@ -73,7 +73,7 @@ DEPENDENCIES
   rspec-mocks (~> 3.12)
   test-unit (~> 3.0)
   turbo_tests (~> 2.1)
-  uri (~> 0.12.0)
+  uri (~> 0.13.0)
   webrick (~> 1.6)
 
 CHECKSUMS
@@ -100,7 +100,7 @@ CHECKSUMS
   rspec-support (3.12.1) sha256=f969b85d0068ff97bc47c9d6fc2bca9706d73406f2b4e5d3b346443d8734c8cf
   test-unit (3.6.1) sha256=0aa5c45910725d44e38d0340b31fab3ea8bfac02b11f7201d0ca2a978d52600b
   turbo_tests (2.2.0) sha256=1fc08defd07aef5329c35f69b08827eb66daddf642dcf40adc426543fabbfdcc
-  uri (0.12.2) sha256=be79bd8017858c9fc36c78765c69e92b6a7e049ea6a83364909476ad1b4b4439
+  uri (0.13.0) sha256=26553c2a9399762e1e8bebd4444b4361c4b21298cf1c864b22eeabc9c4998f24
   webrick (1.8.1) sha256=19411ec6912911fd3df13559110127ea2badd0c035f7762873f58afc803e158f
 
 BUNDLED WITH

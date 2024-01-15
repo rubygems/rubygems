@@ -57,7 +57,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595 # v4.1.0
         with:
           name: cassettes-bundler-${{ matrix.bundler.name }}-${{ matrix.os.value }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -93,7 +93,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595 # v4.1.0
         with:
           name: cassettes-system-rubygems-bundler-${{ matrix.bundler.name }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -111,7 +111,7 @@ jobs:
           ruby-version: 3.3.0
           bundler: none
       - name: Download all used cassettes as artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
         with:
           path: ./bundler/spec/support/artifice/used_vcr_cassettes
       - name: Check unused cassettes

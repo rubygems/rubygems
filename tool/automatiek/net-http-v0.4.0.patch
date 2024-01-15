@@ -1,8 +1,97 @@
-diff --git b/lib/rubygems/net-http/lib/net/http/status.rb a/lib/rubygems/net-http/lib/net/http/status.rb
-index ca1ddcee8..10cbc8e3e 100644
---- b/lib/rubygems/net-http/lib/net/http/status.rb
-+++ a/lib/rubygems/net-http/lib/net/http/status.rb
-@@ -50,7 +50,7 @@
+diff --git a/lib/rubygems/net-http/lib/net/http.rb b/lib/rubygems/net-http/lib/net/http.rb
+index 76be463244..31073e34ac 100644
+--- a/lib/rubygems/net-http/lib/net/http.rb
++++ b/lib/rubygems/net-http/lib/net/http.rb
+@@ -100,14 +100,14 @@ class HTTPHeaderSyntaxError < StandardError; end
+   #
+   # == URIs
+   #
+-  # On the internet, a Gem::URI
++  # On the internet, a URI
+   # ({Universal Resource Identifier}[https://en.wikipedia.org/wiki/Uniform_Resource_Identifier])
+   # is a string that identifies a particular resource.
+   # It consists of some or all of: scheme, hostname, path, query, and fragment;
+-  # see {Gem::URI syntax}[https://en.wikipedia.org/wiki/Uniform_Resource_Identifier#Syntax].
++  # see {URI syntax}[https://en.wikipedia.org/wiki/Uniform_Resource_Identifier#Syntax].
+   #
+-  # A Ruby {Gem::URI::Generic}[https://docs.ruby-lang.org/en/master/Gem::URI/Generic.html] object
+-  # represents an internet Gem::URI.
++  # A Ruby {Gem::URI::Generic}[https://docs.ruby-lang.org/en/master/Gem/URI/Generic.html] object
++  # represents an internet URI.
+   # It provides, among others, methods
+   # +scheme+, +hostname+, +path+, +query+, and +fragment+.
+   #
+@@ -142,7 +142,7 @@ class HTTPHeaderSyntaxError < StandardError; end
+   #
+   # === Queries
+   #
+-  # A host-specific query adds name/value pairs to the Gem::URI:
++  # A host-specific query adds name/value pairs to the URI:
+   #
+   #   _uri = uri.dup
+   #   params = {userId: 1, completed: false}
+@@ -152,7 +152,7 @@ class HTTPHeaderSyntaxError < StandardError; end
+   #
+   # === Fragments
+   #
+-  # A {Gem::URI fragment}[https://en.wikipedia.org/wiki/URI_fragment] has no effect
++  # A {URI fragment}[https://en.wikipedia.org/wiki/URI_fragment] has no effect
+   # in \Gem::Net::HTTP;
+   # the same data is returned, regardless of whether a fragment is included.
+   #
+@@ -325,9 +325,9 @@ class HTTPHeaderSyntaxError < StandardError; end
+   #     res = http.request(req)
+   #   end
+   #
+-  # Or if you simply want to make a GET request, you may pass in a Gem::URI
++  # Or if you simply want to make a GET request, you may pass in a URI
+   # object that has an \HTTPS URL. \Gem::Net::HTTP automatically turns on TLS
+-  # verification if the Gem::URI object has a 'https' Gem::URI scheme:
++  # verification if the URI object has a 'https' :URI scheme:
+   #
+   #   uri # => #<Gem::URI::HTTPS https://jsonplaceholder.typicode.com/>
+   #   Gem::Net::HTTP.get(uri)
+@@ -372,7 +372,7 @@ class HTTPHeaderSyntaxError < StandardError; end
+   #
+   # When environment variable <tt>'http_proxy'</tt>
+   # is set to a \Gem::URI string,
+-  # the returned +http+ will have the server at that Gem::URI as its proxy;
++  # the returned +http+ will have the server at that URI as its proxy;
+   # note that the \Gem::URI string must have a protocol
+   # such as <tt>'http'</tt> or <tt>'https'</tt>:
+   #
+@@ -788,7 +788,7 @@ def HTTP.get_print(uri_or_host, path_or_headers = nil, port = nil)
+     #     "completed": false
+     #   }
+     #
+-    # With Gem::URI object +uri+ and optional hash argument +headers+:
++    # With URI object +uri+ and optional hash argument +headers+:
+     #
+     #   uri = Gem::URI('https://jsonplaceholder.typicode.com/todos/1')
+     #   headers = {'Content-type' => 'application/json; charset=UTF-8'}
+@@ -861,7 +861,7 @@ def HTTP.post(url, data, header = nil)
+ 
+     # Posts data to a host; returns a Gem::Net::HTTPResponse object.
+     #
+-    # Argument +url+ must be a Gem::URI;
++    # Argument +url+ must be a URI;
+     # argument +data+ must be a hash:
+     #
+     #   _uri = uri.dup
+@@ -1793,7 +1793,7 @@ def proxy_from_env?
+       @proxy_from_env
+     end
+ 
+-    # The proxy Gem::URI determined from the environment for this connection.
++    # The proxy URI determined from the environment for this connection.
+     def proxy_uri # :nodoc:
+       return if @proxy_uri == false
+       @proxy_uri ||= Gem::URI::HTTP.new(
+diff --git a/lib/rubygems/net-http/lib/net/http/status.rb b/lib/rubygems/net-http/lib/net/http/status.rb
+index 9110b108b8..cd5177fcbc 100644
+--- a/lib/rubygems/net-http/lib/net/http/status.rb
++++ b/lib/rubygems/net-http/lib/net/http/status.rb
+@@ -50,13 +50,13 @@
    405 => 'Method Not Allowed',
    406 => 'Not Acceptable',
    407 => 'Proxy Authentication Required',
@@ -11,6 +100,13 @@ index ca1ddcee8..10cbc8e3e 100644
    409 => 'Conflict',
    410 => 'Gone',
    411 => 'Length Required',
+   412 => 'Precondition Failed',
+   413 => 'Content Too Large',
+-  414 => 'Gem::URI Too Long',
++  414 => 'URI Too Long',
+   415 => 'Unsupported Media Type',
+   416 => 'Range Not Satisfiable',
+   417 => 'Expectation Failed',
 @@ -74,7 +74,7 @@
    501 => 'Not Implemented',
    502 => 'Bad Gateway',

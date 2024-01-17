@@ -1,3 +1,14 @@
+# 2.5.5 (January 18, 2024)
+
+## Bug fixes:
+
+  - Fix development dependency not being added if introduced by two gemspecs [#7358](https://github.com/rubygems/rubygems/pull/7358)
+  - Fix ETag quoting regression in If-None-Match header of compact index request [#7352](https://github.com/rubygems/rubygems/pull/7352)
+
+## Documentation:
+
+  - Refer to underscores as underscores [#7364](https://github.com/rubygems/rubygems/pull/7364)
+
 # 2.5.4 (January 4, 2024)
 
 ## Bug fixes:

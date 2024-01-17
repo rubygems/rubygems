@@ -37,6 +37,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  base64
   builder (~> 3.2)
   compact_index (~> 0.15.0)
   rack (~> 2.0)

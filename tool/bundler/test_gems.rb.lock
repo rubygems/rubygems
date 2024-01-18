@@ -1,24 +1,26 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    base64 (0.2.0)
     builder (3.2.4)
     compact_index (0.15.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
     rack (2.2.8)
-    rack-protection (3.1.0)
+    rack-protection (3.2.0)
+      base64 (>= 0.1.0)
       rack (~> 2.2, >= 2.2.4)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (13.1.0)
-    rb_sys (0.9.83)
+    rb_sys (0.9.86)
     ruby2_keywords (0.0.5)
     rubygems-generate_index (1.1.2)
       compact_index (~> 0.15.0)
-    sinatra (3.1.0)
+    sinatra (3.2.0)
       mustermann (~> 3.0)
       rack (~> 2.2, >= 2.2.4)
-      rack-protection (= 3.1.0)
+      rack-protection (= 3.2.0)
       tilt (~> 2.0)
     tilt (2.3.0)
     webrick (1.7.0)
@@ -35,6 +37,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  base64
   builder (~> 3.2)
   compact_index (~> 0.15.0)
   rack (~> 2.0)
@@ -46,19 +49,20 @@ DEPENDENCIES
   webrick (= 1.7.0)
 
 CHECKSUMS
+  base64 (0.2.0) sha256=0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507
   builder (3.2.4) sha256=99caf08af60c8d7f3a6b004029c4c3c0bdaebced6c949165fe98f1db27fbbc10
   compact_index (0.15.0) sha256=5c6c404afca8928a7d9f4dde9524f6e1610db17e675330803055db282da84a8b
   mustermann (3.0.0) sha256=6d3569aa3c3b2f048c60626f48d9b2d561cc8d2ef269296943b03da181c08b67
   rack (2.2.8) sha256=7b83a1f1304a8f5554c67bc83632d29ecd2ed1daeb88d276b7898533fde22d97
-  rack-protection (3.1.0) sha256=f9bc997fa87ab5fe3eb5d9d00e2a6222df3f9b8e6e9d610909ea3fc6203a5f77
+  rack-protection (3.2.0) sha256=3c74ba7fc59066453d61af9bcba5b6fe7a9b3dab6f445418d3b391d5ea8efbff
   rack-test (1.1.0) sha256=154161f40f162b1c009a655b7b0c5de3a3102cc6d7d2e94b64e1f46ace800866
   rake (13.1.0) sha256=be6a3e1aa7f66e6c65fa57555234eb75ce4cf4ada077658449207205474199c6
-  rb_sys (0.9.83) sha256=0ed80df79aa08b942af731d93a676f2d885428267f2fbf138f9b6b7809c6455e
+  rb_sys (0.9.86) sha256=65d35ad5f2f2e7257607310186d6a178f34d0fee807d3b1af5611db6a5503a8c
   ruby2_keywords (0.0.5) sha256=ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef
   rubygems-generate_index (1.1.2) sha256=b5cfafe811b18bc45780b4cccc92593cf3115d2c8ea2a9f93a253eb9b2a8b955
-  sinatra (3.1.0) sha256=e89e7352a9e5cacf89d52ad4e47acc4e25b5cda7b87747a3ad01eaeb2d0ba400
+  sinatra (3.2.0) sha256=6e727f4d034e87067d9aab37f328021d7c16722ffd293ef07b6e968915109807
   tilt (2.3.0) sha256=82dd903d61213c63679d28e404ee8e10d1b0fdf5270f1ad0898ec314cc3e745c
   webrick (1.7.0) sha256=87e9b8e39947b7925338a5eb55427b11ce1f2b25a3645770ec9f39d8ebdb8cb4
 
 BUNDLED WITH
-   2.5.4
+   2.5.5

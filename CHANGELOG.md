@@ -1,4 +1,25 @@
-# 3.5.4 / 2024-01-03
+# 3.5.5 / 2024-01-18
+
+## Enhancements:
+
+* Installs bundler 2.5.5 as a default gem.
+
+## Bug fixes:
+
+* Fix `require` activation conflicts when requiring default gems under
+  some situations. Pull request
+  [#7379](https://github.com/rubygems/rubygems/pull/7379) by
+  deivid-rodriguez
+* Use cache_home instead of data_home in default_spec_cache_dir. Pull
+  request [#7331](https://github.com/rubygems/rubygems/pull/7331) by mrkn
+
+## Documentation:
+
+* Use squiggly heredocs in `Gem::Specification#description` documentation,
+  so it doesn't add leading whitespace. Pull request
+  [#7373](https://github.com/rubygems/rubygems/pull/7373) by bravehager
+
+# 3.5.4 / 2024-01-04
 
 ## Enhancements:
 

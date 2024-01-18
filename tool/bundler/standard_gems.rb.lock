@@ -8,8 +8,8 @@ GEM
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
     minitest (5.20.0)
-    parallel (1.23.0)
-    parser (3.2.2.4)
+    parallel (1.24.0)
+    parser (3.3.0.2)
       ast (~> 2.4.1)
       racc
     power_assert (2.0.3)
@@ -19,8 +19,8 @@ GEM
     rake (13.1.0)
     rake-compiler (1.2.5)
       rake
-    rb_sys (0.9.83)
-    regexp_parser (2.8.3)
+    rb_sys (0.9.86)
+    regexp_parser (2.9.0)
     rexml (3.2.6)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
@@ -35,7 +35,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.1)
-    rubocop (1.57.2)
+    rubocop (1.59.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -43,27 +43,27 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.28.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.30.0)
       parser (>= 3.2.1.0)
-    rubocop-performance (1.19.1)
-      rubocop (>= 1.7.0, < 2.0)
-      rubocop-ast (>= 0.4.0)
+    rubocop-performance (1.20.2)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
     ruby-progressbar (1.13.0)
-    standard (1.32.1)
+    standard (1.33.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
-      rubocop (~> 1.57.2)
+      rubocop (~> 1.59.0)
       standard-custom (~> 1.0.0)
-      standard-performance (~> 1.2)
+      standard-performance (~> 1.3)
     standard-custom (1.0.2)
       lint_roller (~> 1.0)
       rubocop (~> 1.50)
-    standard-performance (1.2.1)
+    standard-performance (1.3.0)
       lint_roller (~> 1.1)
-      rubocop-performance (~> 1.19.1)
+      rubocop-performance (~> 1.20.1)
     test-unit (3.6.1)
       power_assert
     unicode-display_width (2.5.0)
@@ -101,31 +101,31 @@ CHECKSUMS
   language_server-protocol (3.17.0.3) sha256=3d5c58c02f44a20d972957a9febe386d7e7468ab3900ce6bd2b563dd910c6b3f
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
   minitest (5.20.0) sha256=a3faf26a757ced073aaae0bd10481340f53e221a4f50d8a6033591555374752e
-  parallel (1.23.0) sha256=27154713ad6ef32fa3dcb7788a721d6c07bca77e72443b4c6080a14145288c49
-  parser (3.2.2.4) sha256=edbe6751f85599c8152173ccadbd708f444b7214de2a1d4969441a68e06ac964
+  parallel (1.24.0) sha256=5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397
+  parser (3.3.0.2) sha256=418c5d5b56143c541693b9a00968b7005f94440e94e0b2945b55dc543e562ea0
   power_assert (2.0.3) sha256=cd5e13c267370427c9804ce6a57925d6030613e341cb48e02eec1f3c772d4cf8
   racc (1.7.3) sha256=b785ab8a30ec43bce073c51dbbe791fd27000f68d1c996c95da98bf685316905
   racc (1.7.3-java) sha256=b2ad737e788cfa083263ce7c9290644bb0f2c691908249eb4f6eb48ed2815dbf
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   rake (13.1.0) sha256=be6a3e1aa7f66e6c65fa57555234eb75ce4cf4ada077658449207205474199c6
   rake-compiler (1.2.5) sha256=ab9b03a6db5fce88fb8dcff23c0cae3bccd7166f036c7fc8b2199f53ee38b2ac
-  rb_sys (0.9.83) sha256=0ed80df79aa08b942af731d93a676f2d885428267f2fbf138f9b6b7809c6455e
-  regexp_parser (2.8.3) sha256=953277d2268bfb2f03275f36222ba9b36342f744a886cb7c8eefa8b985842ff7
+  rb_sys (0.9.86) sha256=65d35ad5f2f2e7257607310186d6a178f34d0fee807d3b1af5611db6a5503a8c
+  regexp_parser (2.9.0) sha256=81a00ba141cec0d4b4bf58cb80cd9193e5180836d3fa6ef623f7886d3ba8bdd9
   rexml (3.2.6) sha256=e0669a2d4e9f109951cb1fde723d8acd285425d81594a2ea929304af50282816
   rspec (3.12.0) sha256=ccc41799a43509dc0be84070e3f0410ac95cbd480ae7b6c245543eb64162399c
   rspec-core (3.12.2) sha256=155b54480f28e2b2813185077fe435c2d663031616360ed3b179a9d6a55d2551
   rspec-expectations (3.12.3) sha256=093d18e2e7e0a2c619ef8f7343d442fc6c0793fb7897d56f16f26c8a9d244416
   rspec-mocks (3.12.6) sha256=de51a4148ba2ce6f1c1646a2a03e9df2f52da9a42b164f2e7467b2cbe37e07bf
   rspec-support (3.12.1) sha256=f969b85d0068ff97bc47c9d6fc2bca9706d73406f2b4e5d3b346443d8734c8cf
-  rubocop (1.57.2) sha256=8f679dfe42d7821dc61dafb17d14b1294343157a197b9f8a23720ca17fb9161b
+  rubocop (1.59.0) sha256=09cf4b874ce87f777e8dc711b0f5e2ef4b123eb20d7e38ae2b85c43015a0fc43
   rubocop-ast (1.30.0) sha256=faad6452b1018fee0dd9e21a44445908e94ee2a4435932a9dae0e0740b6349b3
-  rubocop-performance (1.19.1) sha256=52664172d944eb45d478ed6d04c8b02c36cf0ee15726fabb6c90a95ca5cdfadf
+  rubocop-performance (1.20.2) sha256=1bb1fa8c427fac7ba3c8dd2decb9860f23cb2d6c40350bedc88538de8875c731
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
-  standard (1.32.1) sha256=2bfb8c6591fc757d96bced5bfa16a49c7781e7bef040d9ca7029d6d563aa702e
+  standard (1.33.0) sha256=c8e42a41a0facd7b916fdd1d2f02c8e1d264d3fcc6bd91b43e7e90b27ffd92a0
   standard-custom (1.0.2) sha256=424adc84179a074f1a2a309bb9cf7cd6bfdb2b6541f20c6bf9436c0ba22a652b
-  standard-performance (1.2.1) sha256=a757913b44ba9724ca681789c911d5c0b65f8c6d2ded1e9e0add7c1cb56eef23
+  standard-performance (1.3.0) sha256=5dc770db836e03a1c4e9978002f062d947847646768eb6269790001c7d88fa7a
   test-unit (3.6.1) sha256=0aa5c45910725d44e38d0340b31fab3ea8bfac02b11f7201d0ca2a978d52600b
   unicode-display_width (2.5.0) sha256=7e7681dcade1add70cb9fda20dd77f300b8587c81ebbd165d14fd93144ff0ab4
 
 BUNDLED WITH
-   2.5.4
+   2.5.5

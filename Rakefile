@@ -19,6 +19,23 @@ module RubyGems
     def bundle_support_gemfile(name, *args)
       sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=tool/bundler/#{name}.rb"
     end
+
+    def update_locked_bundler
+      require "open3"
+
+      stdout, status = Open3.capture2e("ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "--version")
+      raise "Failed to find current version of Bundler" unless status.success?
+
+      version = stdout.split(" ").last
+
+      bundle_support_gemfile "dev_gems", "update", "--bundler", version
+      bundle_support_gemfile "release_gems", "update", "--bundler", version
+      bundle_support_gemfile "test_gems", "update", "--bundler", version
+      bundle_support_gemfile "rubocop_gems", "update", "--bundler", version
+      bundle_support_gemfile "standard_gems", "update", "--bundler", version
+      bundle_support_gemfile "lint_gems", "update", "--bundler", version
+      bundle_support_gemfile "vendor_gems", "update", "--bundler", version
+    end
   end
 end
 
@@ -42,14 +59,8 @@ end
 
 namespace :version do
   desc "Update the locked bundler version in dev environment"
-  task :update_locked_bundler do |_, _args|
-    RubyGems::DevTasks.bundle_support_gemfile "dev_gems", "update", "--bundler"
-    RubyGems::DevTasks.bundle_support_gemfile "release_gems", "update", "--bundler"
-    RubyGems::DevTasks.bundle_support_gemfile "test_gems", "update", "--bundler"
-    RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "update", "--bundler"
-    RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "update", "--bundler"
-    RubyGems::DevTasks.bundle_support_gemfile "lint_gems", "update", "--bundler"
-    RubyGems::DevTasks.bundle_support_gemfile "vendor_gems", "update", "--bundler"
+  task update_locked_bundler: [:"bundler:install"] do |_, _args|
+    RubyGems::DevTasks.update_locked_bundler
   end
 
   desc "Check locked bundler version is up to date"

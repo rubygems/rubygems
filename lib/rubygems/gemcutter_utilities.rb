@@ -11,6 +11,7 @@ require_relative "gemcutter_utilities/webauthn_poller"
 module Gem::GemcutterUtilities
   ERROR_CODE = 1
   API_SCOPES = [:index_rubygems, :push_rubygem, :yank_rubygem, :add_owner, :remove_owner, :access_webhooks, :show_dashboard].freeze
+  GEM_SCOPE_COMPATIBLE_API_SCOPES = [:push_rubygem, :yank_rubygem, :add_owner, :remove_owner].freeze
 
   include Gem::Text
 
@@ -166,7 +167,8 @@ module Gem::GemcutterUtilities
     scope_params = get_scope_params(scope)
     profile      = get_user_profile(email, password)
     mfa_params   = get_mfa_params(profile)
-    all_params   = scope_params.merge(mfa_params)
+    rubygem_scope_params = get_rubygem_scope_params(scope_params)
+    all_params   = scope_params.merge(mfa_params).merge(rubygem_scope_params)
     warning      = profile["warning"]
     credentials  = { email: email, password: password }
 
@@ -323,6 +325,25 @@ module Gem::GemcutterUtilities
     end
 
     scope_params
+  end
+
+  def get_rubygem_scope_params(scope_params)
+    rubygem_scope_params = {}
+    return rubygem_scope_params if (GEM_SCOPE_COMPATIBLE_API_SCOPES & enabled_scopes(scope_params)).empty?
+
+    say "Enter the name of the gem you want to scope this key to."
+    rubygem_name = ask "Gem name [All gems]: "
+    say "\n"
+
+    unless rubygem_name.nil? || rubygem_name.empty?
+      rubygem_scope_params[:rubygem_name] = rubygem_name
+    end
+
+    rubygem_scope_params
+  end
+
+  def enabled_scopes(scope_params)
+    scope_params.select {|_, v| v }.keys
   end
 
   def default_host?

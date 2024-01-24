@@ -14,6 +14,7 @@ AllCops:
     - lib/rubygems/optparse/**/*
     - lib/rubygems/net-protocol/**/*
     - lib/rubygems/net-http/**/*
+    - lib/rubygems/rqrcode_core/**/*
     - bundler/lib/bundler/vendor/**/*
   CacheRootDirectory: tmp/rubocop
   MaxFilesInCache: 5000
@@ -241,8 +242,8 @@ Lint/SafeNavigationConsistency:
 Lint/ScriptPermission:
   Enabled: true
   Exclude:
-    - 'bundler/lib/bundler/templates/Executable'
-    - 'bundler/lib/bundler/templates/Executable.*'
+    - "bundler/lib/bundler/templates/Executable"
+    - "bundler/lib/bundler/templates/Executable.*"
 
 Lint/ShadowedArgument:
   Enabled: true
@@ -406,8 +407,8 @@ Layout/SpaceInsideBlockBraces:
   Enabled: true
   SpaceBeforeBlockParameters: false
   Exclude:
-  - bundler/lib/bundler/templates/Gemfile
-  - bundler/lib/bundler/templates/gems.rb
+    - bundler/lib/bundler/templates/Gemfile
+    - bundler/lib/bundler/templates/gems.rb
 
 Layout/SpaceInsideHashLiteralBraces:
   Enabled: true
@@ -494,7 +495,7 @@ Naming/ClassAndModuleCamelCase:
 Naming/FileName:
   Enabled: true
   Exclude:
-    - 'bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb'
+    - "bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb"
 
 Naming/MemoizedInstanceVariableName:
   Enabled: true

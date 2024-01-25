@@ -129,14 +129,17 @@ RDoc::Task.new rdoc: "docs", clobber_rdoc: "clobber_docs" do |doc|
 end
 
 namespace :vendor do
+  desc "Download vendored gems to tmp"
   task :bundle do
     sh({ "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "--disable-gems", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=tool/bundler/vendor_gems.rb")
   end
 
+  desc "Install patched vendored gems"
   task install: :bundle do
     sh({ "BUNDLE_GEMFILE" => "tool/bundler/vendor_gems.rb", "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "-rpathname", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "exec", "tool/automatiek/vendor.rb")
   end
 
+  desc "Check vendored gems are up to date"
   task check: :install do
     Spec::Rubygems.check_source_control_changes(
       success_message: "Vendored gems are in sync",

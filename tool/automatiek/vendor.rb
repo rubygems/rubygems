@@ -83,7 +83,7 @@ vendored_gems = [
   VendoredGem.new(name: "net-http", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/net-http", license_path: "LICENSE.txt", extra_dependencies: %w[net-protocol resolv timeout uri/lib/rubygems/vendor/uri], skip_dependencies: %w[uri], patch_name: "net-http-v0.4.0.patch"),
   VendoredGem.new(name: "net-http-persistent", namespace: "Net::HTTP::Persistent", prefix: "Gem", vendor_lib: "bundler/lib/bundler/vendor/net-http-persistent", license_path: "README.rdoc", extra_dependencies: %w[net-http uri/lib/rubygems/vendor/uri], patch_name: "net-http-persistent-v4.0.2.patch"),
   VendoredGem.new(name: "net-protocol", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/net-protocol", license_path: "LICENSE.txt"),
-  VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/optparse", license_path: "COPYING", extra_dependencies: %w[uri/lib/rubygems/vendor/uri], patch_name: "optparse-v0.4.0.patch"),
+  VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/optparse", license_path: "COPYING", extra_dependencies: %w[uri/lib/rubygems/vendor/uri], patch_name: "optparse-v0.4.0.patch"),
   VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/resolv", license_path: "LICENSE.txt", extra_dependencies: %w[timeout]),
   VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/timeout", license_path: "LICENSE.txt", patch_name: "timeout-v0.4.1.patch"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Gem", vendor_lib: "lib/rubygems/tsort", license_path: "LICENSE.txt"),

@@ -480,7 +480,6 @@ lib/rubygems/resolver/installer_set.rb
 lib/rubygems/resolver/local_specification.rb
 lib/rubygems/resolver/lock_set.rb
 lib/rubygems/resolver/lock_specification.rb
-lib/rubygems/resolver/molinillo.rb
 lib/rubygems/resolver/requirement_list.rb
 lib/rubygems/resolver/set.rb
 lib/rubygems/resolver/source_set.rb
@@ -608,6 +607,7 @@ lib/rubygems/vendor/uri/lib/uri/rfc3986_parser.rb
 lib/rubygems/vendor/uri/lib/uri/version.rb
 lib/rubygems/vendor/uri/lib/uri/ws.rb
 lib/rubygems/vendor/uri/lib/uri/wss.rb
+lib/rubygems/vendored_molinillo.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
 lib/rubygems/yaml_serializer.rb

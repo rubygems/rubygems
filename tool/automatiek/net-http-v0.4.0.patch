@@ -1,7 +1,7 @@
-diff --git a/lib/rubygems/net-http/lib/net/http.rb b/lib/rubygems/net-http/lib/net/http.rb
+diff --git a/lib/rubygems/vendor/net-http/lib/net/http.rb b/lib/rubygems/vendor/net-http/lib/net/http.rb
 index 76be463244..31073e34ac 100644
---- a/lib/rubygems/net-http/lib/net/http.rb
-+++ b/lib/rubygems/net-http/lib/net/http.rb
+--- a/lib/rubygems/vendor/net-http/lib/net/http.rb
++++ b/lib/rubygems/vendor/net-http/lib/net/http.rb
 @@ -100,14 +100,14 @@ class HTTPHeaderSyntaxError < StandardError; end
    #
    # == URIs
@@ -87,10 +87,10 @@ index 76be463244..31073e34ac 100644
      def proxy_uri # :nodoc:
        return if @proxy_uri == false
        @proxy_uri ||= Gem::URI::HTTP.new(
-diff --git a/lib/rubygems/net-http/lib/net/http/status.rb b/lib/rubygems/net-http/lib/net/http/status.rb
+diff --git a/lib/rubygems/vendor/net-http/lib/net/http/status.rb b/lib/rubygems/vendor/net-http/lib/net/http/status.rb
 index 9110b108b8..cd5177fcbc 100644
---- a/lib/rubygems/net-http/lib/net/http/status.rb
-+++ b/lib/rubygems/net-http/lib/net/http/status.rb
+--- a/lib/rubygems/vendor/net-http/lib/net/http/status.rb
++++ b/lib/rubygems/vendor/net-http/lib/net/http/status.rb
 @@ -50,13 +50,13 @@
    405 => 'Method Not Allowed',
    406 => 'Not Acceptable',

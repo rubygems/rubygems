@@ -3,7 +3,7 @@ index b3ebf6ecb..546409d03 100644
 --- b/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
 +++ a/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
 @@ -1,13 +1,8 @@
--require_relative '../../../../../../../../lib/rubygems/net-http/lib/net/http'
+-require_relative '../../../../../../../../lib/rubygems/vendor/net-http/lib/net/http'
 -require_relative '../../../../../../../../lib/rubygems/vendor/uri/lib/uri'
 +require_relative '../../../../../vendored_net_http'
 +require_relative '../../../../../vendored_uri'
@@ -11,7 +11,7 @@ index b3ebf6ecb..546409d03 100644
  require_relative '../../../../connection_pool/lib/connection_pool'
  
 -begin
--  require 'rubygems/net-http/lib/net/http/pipeline'
+-  require 'rubygems/vendor/net-http/lib/net/http/pipeline'
 -rescue LoadError
 -end
 -

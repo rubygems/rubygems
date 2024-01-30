@@ -14,7 +14,12 @@ Gem::Specification.new do |s|
   repository of Gems that allows you to publish a Gem that can be shared and used by other
   developers. See our guide on publishing a Gem at guides.rubygems.org"
   s.homepage = "https://guides.rubygems.org"
-  s.metadata = { "source_code_uri" => "https://github.com/rubygems/rubygems" }
+  s.metadata = {
+    "source_code_uri" => "https://github.com/rubygems/rubygems",
+    "bug_tracker_uri" => "https://github.com/rubygems/rubygems/issues",
+    "changelog_uri" => "https://github.com/rubygems/rubygems/blob/master/CHANGELOG.md",
+    "funding_uri" => "https://rubycentral.org/#/portal/signup",
+  }
   s.licenses = ["Ruby", "MIT"]
 
   s.files = File.read(File.expand_path("Manifest.txt", __dir__)).split

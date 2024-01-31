@@ -35,10 +35,10 @@ jobs:
           - { name: 3, value: 3.0.0 }
 
         include:
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 } }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems

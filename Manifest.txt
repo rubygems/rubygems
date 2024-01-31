@@ -431,9 +431,7 @@ lib/rubygems/installer.rb
 lib/rubygems/installer_uninstaller_utils.rb
 lib/rubygems/local_remote_options.rb
 lib/rubygems/name_tuple.rb
-lib/rubygems/net/http.rb
 lib/rubygems/openssl.rb
-lib/rubygems/optparse.rb
 lib/rubygems/package.rb
 lib/rubygems/package/digest_io.rb
 lib/rubygems/package/file_source.rb
@@ -519,8 +517,6 @@ lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA.pem
 lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/text.rb
-lib/rubygems/timeout.rb
-lib/rubygems/tsort.rb
 lib/rubygems/uninstaller.rb
 lib/rubygems/unknown_command_spell_checker.rb
 lib/rubygems/update_suggestion.rb
@@ -608,6 +604,10 @@ lib/rubygems/vendor/uri/lib/uri/version.rb
 lib/rubygems/vendor/uri/lib/uri/ws.rb
 lib/rubygems/vendor/uri/lib/uri/wss.rb
 lib/rubygems/vendored_molinillo.rb
+lib/rubygems/vendored_net_http.rb
+lib/rubygems/vendored_optparse.rb
+lib/rubygems/vendored_timeout.rb
+lib/rubygems/vendored_tsort.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
 lib/rubygems/yaml_serializer.rb

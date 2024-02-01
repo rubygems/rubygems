@@ -50,11 +50,30 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
   end
 
   def self.get_relative_path(path, base)
-    path.split("/").zip(base.split("/")).inject(String.new) do |result, (path_component, base_component)|
-      next result if path_component == base_component
-      result.prepend("../") if base_component
-      result.concat("#{path_component}/") if path_component
-      result
+    path_parts = get_path_parts(path)
+    base_parts = get_path_parts(base)
+    # Right pad path_parts to be at least as long as base_parts so we can
+    # zip without losing any components from base_parts
+    path_parts.fill(nil, path_parts.length...base_parts.length)
+
+    relative_path_parts, relative_base_parts = path_parts.
+      zip(base_parts).
+      drop_while {|path_part, base_part| path_part == base_part }.
+      transpose.
+      map(&:compact)
+
+    File.join(relative_base_parts.fill(".."), relative_path_parts)
+  end
+
+  def self.get_path_parts(path)
+    parts = []
+
+    until File.dirname(path) == path
+      dirname, basename = File.split(path)
+      path = dirname
+      parts << basename
     end
+
+    parts.reverse
   end
 end

@@ -263,6 +263,8 @@ class Release
     [bundler_changelog, rubygems_changelog]
   rescue StandardError
     system("git", "reset", "--hard", "#{@release_branch}-bkp")
+
+    raise
   ensure
     system("git", "branch", "-D", "#{@release_branch}-bkp")
   end

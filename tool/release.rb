@@ -250,7 +250,7 @@ class Release
     bundler_changelog = `git show --no-patch --pretty=format:%h`
 
     @bundler.bump_versions!
-    system("rake", "update_locked_bundler", exception: true)
+    system("rake", "version:update_locked_bundler", exception: true)
     system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
 
     @rubygems.cut_changelog!

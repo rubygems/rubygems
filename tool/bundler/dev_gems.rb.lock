@@ -11,7 +11,15 @@ GEM
     nokogiri (1.16.0)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.16.0-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.16.0-java)
+      racc (~> 1.4)
+    nokogiri (1.16.0-x64-mingw-ucrt)
+      racc (~> 1.4)
+    nokogiri (1.16.0-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.0-x86_64-linux)
       racc (~> 1.4)
     nronn (0.11.1)
       kramdown (~> 2.1)
@@ -83,7 +91,11 @@ CHECKSUMS
   mini_portile2 (2.8.5) sha256=7a37db8ae758086c3c3ac3a59c036704d331e965d5e106635e4a42d6e66089ce
   mustache (1.1.1) sha256=90891fdd50b53919ca334c8c1031eada1215e78d226d5795e523d6123a2717d0
   nokogiri (1.16.0) sha256=341388184e975d091e6e38ce3f3b3388bfb7e4ac3d790efd8e39124844040bd1
+  nokogiri (1.16.0-arm64-darwin) sha256=10c08f246085709790ea628b5fa031cf23dadd843e173711b335ba6287b59d0a
   nokogiri (1.16.0-java) sha256=f76f2dc353993862d07eccfc5561e373e8058d62e265bae9bcf4f4793c35c9e2
+  nokogiri (1.16.0-x64-mingw-ucrt) sha256=5c59792f7f5f8a76e17a87b89b9057544853a6f713b692a75b7f8895a854b74f
+  nokogiri (1.16.0-x86_64-darwin) sha256=237aa89b9ef6b8e014f197167677926ebc4bdb9cafb2b101399d8001fda4fa43
+  nokogiri (1.16.0-x86_64-linux) sha256=6f55093bb47e75d412138f4b9462f960d3aad96cb6b43dbe9a3de62c2d31a742
   nronn (0.11.1) sha256=60305c7a42dcaf6bdd33210993a7e38087520717561da101bea1df7197546369
   parallel (1.24.0) sha256=5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397
   parallel_tests (3.8.1) sha256=c781c0910be3b489411f24e3a3397d57f481d6ee4eb27dba2a1cd4b8a0967f06
@@ -104,4 +116,4 @@ CHECKSUMS
   webrick (1.8.1) sha256=19411ec6912911fd3df13559110127ea2badd0c035f7762873f58afc803e158f
 
 BUNDLED WITH
-   2.5.5
+   2.5.6

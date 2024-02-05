@@ -1,3 +1,29 @@
+# 3.5.6 / 2024-02-06
+
+## Enhancements:
+
+* Deep copy requirements in `Gem::Specification` and `Gem::Requirement`.
+  Pull request [#7439](https://github.com/rubygems/rubygems/pull/7439) by
+  flavorjones
+* Change gem login message to clear up that username can be also used.
+  Pull request [#7422](https://github.com/rubygems/rubygems/pull/7422) by
+  VitaliySerov
+* Add metadata for rubygems.org. Pull request
+  [#7435](https://github.com/rubygems/rubygems/pull/7435) by m-nakamura145
+* Improve gem login scope selection. Pull request
+  [#7342](https://github.com/rubygems/rubygems/pull/7342) by williantenfen
+* Vendor uri in RubyGems. Pull request
+  [#7386](https://github.com/rubygems/rubygems/pull/7386) by
+  deivid-rodriguez
+* Installs bundler 2.5.6 as a default gem.
+
+## Bug fixes:
+
+* Skip to load commented out words. Pull request
+  [#7413](https://github.com/rubygems/rubygems/pull/7413) by hsbt
+* Fix rake runtime dependency warning for rake based extension. Pull
+  request [#7395](https://github.com/rubygems/rubygems/pull/7395) by ntkme
+
 # 3.5.5 / 2024-01-18
 
 ## Enhancements:

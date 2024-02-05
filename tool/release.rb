@@ -166,10 +166,9 @@ class Release
   def prepare!
     initial_branch = `git rev-parse --abbrev-ref HEAD`.strip
 
-    if @level == :minor_or_major
-      system("git", "checkout", "-b", @stable_branch, "master", exception: true)
-      system("git", "push", "origin", @stable_branch, exception: true)
-    end
+    create_if_not_exist_and_switch_to(@stable_branch, from: "master")
+
+    system("git", "push", "origin", @stable_branch, exception: true) if @level == :minor_or_major
 
     create_if_not_exist_and_switch_to(@release_branch, from: @stable_branch)
 

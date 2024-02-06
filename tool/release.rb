@@ -166,10 +166,9 @@ class Release
   def prepare!
     initial_branch = `git rev-parse --abbrev-ref HEAD`.strip
 
-    if @level == :minor_or_major
-      system("git", "checkout", "-b", @stable_branch, "master", exception: true)
-      system("git", "push", "origin", @stable_branch, exception: true)
-    end
+    create_if_not_exist_and_switch_to(@stable_branch, from: "master")
+
+    system("git", "push", "origin", @stable_branch, exception: true) if @level == :minor_or_major
 
     create_if_not_exist_and_switch_to(@release_branch, from: @stable_branch)
 
@@ -251,7 +250,7 @@ class Release
     bundler_changelog = `git show --no-patch --pretty=format:%h`
 
     @bundler.bump_versions!
-    system("rake", "update_locked_bundler", exception: true)
+    system("rake", "version:update_locked_bundler", exception: true)
     system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
 
     @rubygems.cut_changelog!
@@ -264,6 +263,8 @@ class Release
     [bundler_changelog, rubygems_changelog]
   rescue StandardError
     system("git", "reset", "--hard", "#{@release_branch}-bkp")
+
+    raise
   ensure
     system("git", "branch", "-D", "#{@release_branch}-bkp")
   end

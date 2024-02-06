@@ -27,7 +27,7 @@ jobs:
         ruby:
           - { name: ruby-3.0, value: 3.0.6 }
           - { name: ruby-3.1, value: 3.1.4 }
-          - { name: ruby-3.2, value: 3.2.2 }
+          - { name: ruby-3.2, value: 3.2.3 }
           - { name: ruby-3.3, value: 3.3.0 }
 
         bundler:
@@ -35,17 +35,17 @@ jobs:
           - { name: 3, value: 3.0.0 }
 
         include:
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 } }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby
-        uses: ruby/setup-ruby@360dc864d5da99d54fcb8e9148c14a84b90d3e88 # v1.165.1
+        uses: ruby/setup-ruby@22fdc77bf4148f810455b226c90fb81b5cbc00a7 # v1.171.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -57,7 +57,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595 # v4.1.0
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
           name: cassettes-bundler-${{ matrix.bundler.name }}-${{ matrix.os.value }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -72,16 +72,16 @@ jobs:
         include:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.6 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.4 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.2 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.3 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.0 } }
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby
-        uses: ruby/setup-ruby@360dc864d5da99d54fcb8e9148c14a84b90d3e88 # v1.165.1
+        uses: ruby/setup-ruby@22fdc77bf4148f810455b226c90fb81b5cbc00a7 # v1.171.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -93,7 +93,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595 # v4.1.0
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
           name: cassettes-system-rubygems-bundler-${{ matrix.bundler.name }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -106,7 +106,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby
-        uses: ruby/setup-ruby@360dc864d5da99d54fcb8e9148c14a84b90d3e88 # v1.165.1
+        uses: ruby/setup-ruby@22fdc77bf4148f810455b226c90fb81b5cbc00a7 # v1.171.0
         with:
           ruby-version: 3.3.0
           bundler: none

@@ -10,6 +10,7 @@ VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendo
   def vendor(spec)
     raise "#{name} missing license #{license_path.inspect}" unless File.file? File.join(spec.full_gem_path, license_path)
     FileUtils.rm_rf(vendor_lib)
+    FileUtils.mkdir_p(File.dirname(vendor_lib))
     FileUtils.cp_r(spec.full_gem_path, vendor_lib)
     namespace_files(vendor_lib)
 
@@ -77,19 +78,22 @@ end
 ignore = ["bundler"]
 
 vendored_gems = [
+  # RubyGems
+  VendoredGem.new(name: "molinillo", namespace: "Molinillo", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/molinillo", license_path: "LICENSE", extra_dependencies: %w[tsort/lib/rubygems/vendor/tsort], patch_name: "molinillo-master.patch"),
+  VendoredGem.new(name: "net-http", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-http", license_path: "LICENSE.txt", extra_dependencies: %w[net-protocol resolv timeout uri/lib/rubygems/vendor/uri], skip_dependencies: %w[uri], patch_name: "net-http-v0.4.0.patch"),
+  VendoredGem.new(name: "net-http-persistent", namespace: "Net::HTTP::Persistent", prefix: "Gem", vendor_lib: "bundler/lib/bundler/vendor/net-http-persistent", license_path: "README.rdoc", extra_dependencies: %w[net-http uri/lib/rubygems/vendor/uri], patch_name: "net-http-persistent-v4.0.2.patch"),
+  VendoredGem.new(name: "net-protocol", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-protocol", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/optparse", license_path: "COPYING", extra_dependencies: %w[uri/lib/rubygems/vendor/uri], patch_name: "optparse-v0.4.0.patch"),
+  VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/resolv", license_path: "LICENSE.txt", extra_dependencies: %w[timeout]),
+  VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/timeout", license_path: "LICENSE.txt", patch_name: "timeout-v0.4.1.patch"),
+  VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/tsort", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "uri", namespace: "URI", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/uri", license_path: "LICENSE.txt"),
+  # Bundler
   VendoredGem.new(name: "connection_pool", namespace: "ConnectionPool", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/connection_pool", license_path: "LICENSE", patch_name: "connection_pool-v2.4.1.patch", extra_dependencies: %w[timeout]),
   VendoredGem.new(name: "fileutils", namespace: "FileUtils", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/fileutils", license_path: "LICENSE.txt"),
-  VendoredGem.new(name: "molinillo", namespace: "Molinillo", prefix: "Gem::Resolver", vendor_lib: "lib/rubygems/resolver/molinillo", license_path: "LICENSE", extra_dependencies: %w[tsort/lib/rubygems/tsort], patch_name: "molinillo-master.patch"),
-  VendoredGem.new(name: "net-http-persistent", namespace: "Net::HTTP::Persistent", prefix: "Gem", vendor_lib: "bundler/lib/bundler/vendor/net-http-persistent", license_path: "README.rdoc", extra_dependencies: %w[net-http uri], patch_name: "net-http-persistent-v4.0.2.patch"),
-  VendoredGem.new(name: "net-http", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/net-http", license_path: "LICENSE.txt", extra_dependencies: %w[net-protocol resolv timeout], skip_dependencies: %w[uri], patch_name: "net-http-v0.4.0.patch"),
-  VendoredGem.new(name: "net-protocol", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/net-protocol", license_path: "LICENSE.txt"),
-  VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/optparse", license_path: "COPYING", patch_name: "optparse-v0.4.0.patch"),
   VendoredGem.new(name: "pub_grub", namespace: "PubGrub", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/pub_grub", license_path: "LICENSE.txt"),
-  VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/resolv", license_path: "LICENSE.txt", extra_dependencies: %w[timeout]),
   VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/thor", license_path: "LICENSE.md", patch_name: "thor-v1.3.0.patch"),
-  VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/timeout", license_path: "LICENSE.txt", patch_name: "timeout-v0.4.1.patch"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/tsort", license_path: "LICENSE.txt"),
-  VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Gem", vendor_lib: "lib/rubygems/tsort", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "uri", namespace: "URI", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/uri", license_path: "LICENSE.txt"),
 ].group_by(&:name)
 

@@ -31,7 +31,7 @@ jobs:
         ruby:
           - { name: ruby-3.0, value: 3.0.6 }
           - { name: ruby-3.1, value: 3.1.4 }
-          - { name: ruby-3.2, value: 3.2.2 }
+          - { name: ruby-3.2, value: 3.2.3 }
           - { name: ruby-3.3, value: 3.3.0 }
 
         bundler:
@@ -39,14 +39,15 @@ jobs:
           - { name: 3, value: 3.0.0 }
 
         include:
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-13 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 }, timeout: 90 }
 
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.2 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 }, timeout: 150 }
 
     env:
       RGV: ..
@@ -54,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby
-        uses: ruby/setup-ruby@360dc864d5da99d54fcb8e9148c14a84b90d3e88 # v1.165.1
+        uses: ruby/setup-ruby@22fdc77bf4148f810455b226c90fb81b5cbc00a7 # v1.171.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

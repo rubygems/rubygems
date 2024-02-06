@@ -1,7 +1,16 @@
-diff --git b/lib/rubygems/optparse/lib/optparse.rb a/lib/rubygems/optparse/lib/optparse.rb
+diff --git b/lib/rubygems/vendor/optparse/lib/optparse.rb a/lib/rubygems/vendor/optparse/lib/optparse.rb
 index b93ad51c6..8e700016b 100644
---- b/lib/rubygems/optparse/lib/optparse.rb
-+++ a/lib/rubygems/optparse/lib/optparse.rb
+--- b/lib/rubygems/vendor/optparse/lib/optparse.rb
++++ a/lib/rubygems/vendor/optparse/lib/optparse.rb
+@@ -158,7 +158,7 @@
+ # - Date  -- Anything accepted by +Date.parse+ (need to require +optparse/date+)
+ # - DateTime -- Anything accepted by +DateTime.parse+ (need to require +optparse/date+)
+ # - Time -- Anything accepted by +Time.httpdate+ or +Time.parse+ (need to require +optparse/time+)
+-# - Gem::URI  -- Anything accepted by +Gem::URI.parse+ (need to require +optparse/uri+)
++# - URI  -- Anything accepted by +Gem::URI.parse+ (need to require +optparse/uri+)
+ # - Shellwords -- Anything accepted by +Shellwords.shellwords+ (need to require +optparse/shellwords+)
+ # - String -- Any non-empty string
+ # - Integer -- Any integer. Will convert octal. (e.g. 124, -3, 040)
 @@ -2328,6 +2328,3 @@ module Acceptables
  
  # ARGV is arguable by Gem::OptionParser

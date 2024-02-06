@@ -1,3 +1,18 @@
+# 2.5.6 (February 6, 2024)
+
+## Deprecations:
+
+  - Refactor lockfile generation and deprecate `Definition#lock` with explicit lockfile [#7047](https://github.com/rubygems/rubygems/pull/7047)
+
+## Enhancements:
+
+  - Bump `required_ruby_version` to be used in `bundle gem` template [#7430](https://github.com/rubygems/rubygems/pull/7430)
+
+## Bug fixes:
+
+  - Fix musl platform not being added to the lockfile [#7441](https://github.com/rubygems/rubygems/pull/7441)
+  - Let `Bundler.with_original_env` properly restore env variables originally empty [#7383](https://github.com/rubygems/rubygems/pull/7383)
+
 # 2.5.5 (January 18, 2024)
 
 ## Bug fixes:

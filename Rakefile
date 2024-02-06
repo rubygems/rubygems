@@ -19,6 +19,23 @@ module RubyGems
     def bundle_support_gemfile(name, *args)
       sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=tool/bundler/#{name}.rb"
     end
+
+    def update_locked_bundler
+      require "open3"
+
+      stdout, status = Open3.capture2e("ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "--version")
+      raise "Failed to find current version of Bundler" unless status.success?
+
+      version = stdout.split(" ").last
+
+      bundle_support_gemfile "dev_gems", "update", "--bundler", version
+      bundle_support_gemfile "release_gems", "update", "--bundler", version
+      bundle_support_gemfile "test_gems", "update", "--bundler", version
+      bundle_support_gemfile "rubocop_gems", "update", "--bundler", version
+      bundle_support_gemfile "standard_gems", "update", "--bundler", version
+      bundle_support_gemfile "lint_gems", "update", "--bundler", version
+      bundle_support_gemfile "vendor_gems", "update", "--bundler", version
+    end
   end
 end
 
@@ -40,13 +57,19 @@ task :update do
   RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock", "--update"
 end
 
-desc "Update the locked bundler version in dev environment"
-task :update_locked_bundler do |_, _args|
-  RubyGems::DevTasks.bundle_support_gemfile "dev_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "release_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "test_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "update", "--bundler"
+namespace :version do
+  desc "Update the locked bundler version in dev environment"
+  task update_locked_bundler: [:"bundler:install"] do |_, _args|
+    RubyGems::DevTasks.update_locked_bundler
+  end
+
+  desc "Check locked bundler version is up to date"
+  task check: :update_locked_bundler do
+    Spec::Rubygems.check_source_control_changes(
+      success_message: "Locked bundler version is out of sync",
+      error_message: "Please run `rake version:update_locked_bundler` and commit the result."
+    )
+  end
 end
 
 desc "Update specific development dependencies"
@@ -106,14 +129,17 @@ RDoc::Task.new rdoc: "docs", clobber_rdoc: "clobber_docs" do |doc|
 end
 
 namespace :vendor do
+  desc "Download vendored gems to tmp"
   task :bundle do
     sh({ "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "--disable-gems", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=tool/bundler/vendor_gems.rb")
   end
 
+  desc "Install patched vendored gems"
   task install: :bundle do
     sh({ "BUNDLE_GEMFILE" => "tool/bundler/vendor_gems.rb", "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "-rpathname", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "exec", "tool/automatiek/vendor.rb")
   end
 
+  desc "Check vendored gems are up to date"
   task check: :install do
     Spec::Rubygems.check_source_control_changes(
       success_message: "Vendored gems are in sync",

@@ -3,7 +3,7 @@ bundle-pristine(1) -- Restores installed gems to their pristine condition
 
 ## SYNOPSIS
 
-`bundle pristine`
+`bundle pristine` [--gemfile=GEMFILE]
 
 ## DESCRIPTION
 
@@ -32,3 +32,12 @@ Meanwhile, `gem pristine --all` cleans all installed gems for that Ruby version.
 If a developer forgets which gems in their project they might
 have been debugging, the Rubygems `gem pristine [GEMNAME]` command may be inconvenient.
 One can avoid waiting for `gem pristine --all`, and instead run `bundle pristine`.
+
+## OPTIONS
+
+* `--gemfile=<gemfile>`:
+  The location of the Gemfile(5) which Bundler should use. This defaults
+  to a Gemfile(5) in the current working directory. In general, Bundler
+  will assume that the location of the Gemfile(5) is also the project's
+  root and will try to find `Gemfile.lock` and `vendor/cache` relative
+  to this location.

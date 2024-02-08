@@ -657,6 +657,7 @@ module Bundler
       gem cache. Gems installed from a git repository will be issued `git
       checkout --force`.
     D
+    method_option "gemfile", type: :string, banner: "Use the specified gemfile instead of Gemfile"
     def pristine(*gems)
       require_relative "cli/pristine"
       Bundler.settings.temporary(no_install: false) do

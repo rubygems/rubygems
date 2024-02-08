@@ -28,13 +28,10 @@ module RubyGems
 
       version = stdout.split(" ").last
 
-      bundle_support_gemfile "dev_gems", "update", "--bundler", version
-      bundle_support_gemfile "release_gems", "update", "--bundler", version
-      bundle_support_gemfile "test_gems", "update", "--bundler", version
-      bundle_support_gemfile "rubocop_gems", "update", "--bundler", version
-      bundle_support_gemfile "standard_gems", "update", "--bundler", version
-      bundle_support_gemfile "lint_gems", "update", "--bundler", version
-      bundle_support_gemfile "vendor_gems", "update", "--bundler", version
+      Dir.glob("tool/bundler/*_gems.rb").each do |file|
+        name = File.basename(file, ".rb")
+        bundle_support_gemfile(name, "update", "--bundler", version)
+      end
     end
   end
 end
@@ -42,19 +39,21 @@ end
 desc "Setup Rubygems dev environment"
 task :setup do
   RubyGems::DevTasks.bundle_dev_gemfile "install"
-  RubyGems::DevTasks.bundle_support_gemfile "release_gems","lock"
-  RubyGems::DevTasks.bundle_support_gemfile "test_gems", "lock"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock"
-  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock"
+  Dir.glob("tool/bundler/*_gems.rb").each do |file|
+    name = File.basename(file, ".rb")
+    next if name == "dev_gems"
+    RubyGems::DevTasks.bundle_support_gemfile name, "lock"
+  end
 end
 
 desc "Update Rubygems dev environment"
 task :update do
   RubyGems::DevTasks.bundle_dev_gemfile "update"
-  RubyGems::DevTasks.bundle_support_gemfile "release_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "test_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock", "--update"
+  Dir.glob("tool/bundler/*_gems.rb").each do |file|
+    name = File.basename(file, ".rb")
+    next if name == "dev_gems"
+    RubyGems::DevTasks.bundle_support_gemfile name, "lock", "--update"
+  end
 end
 
 namespace :version do

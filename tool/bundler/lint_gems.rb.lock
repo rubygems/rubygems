@@ -6,7 +6,7 @@ GEM
     json (2.7.1-java)
     language_server-protocol (3.17.0.3)
     parallel (1.24.0)
-    parser (3.3.0.2)
+    parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
     racc (1.7.3)
@@ -14,11 +14,11 @@ GEM
     rainbow (3.1.1)
     regexp_parser (2.9.0)
     rexml (3.2.6)
-    rubocop (1.59.0)
+    rubocop (1.60.2)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.2.4)
+      parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
@@ -52,13 +52,13 @@ CHECKSUMS
   json (2.7.1-java) sha256=bfd628c0f8357058c2cf848febfa6f140f70f94ec492693a31a0a1933038a61b
   language_server-protocol (3.17.0.3) sha256=3d5c58c02f44a20d972957a9febe386d7e7468ab3900ce6bd2b563dd910c6b3f
   parallel (1.24.0) sha256=5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397
-  parser (3.3.0.2) sha256=418c5d5b56143c541693b9a00968b7005f94440e94e0b2945b55dc543e562ea0
+  parser (3.3.0.5) sha256=7748313e505ca87045dc0465c776c802043f777581796eb79b1654c5d19d2687
   racc (1.7.3) sha256=b785ab8a30ec43bce073c51dbbe791fd27000f68d1c996c95da98bf685316905
   racc (1.7.3-java) sha256=b2ad737e788cfa083263ce7c9290644bb0f2c691908249eb4f6eb48ed2815dbf
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   regexp_parser (2.9.0) sha256=81a00ba141cec0d4b4bf58cb80cd9193e5180836d3fa6ef623f7886d3ba8bdd9
   rexml (3.2.6) sha256=e0669a2d4e9f109951cb1fde723d8acd285425d81594a2ea929304af50282816
-  rubocop (1.59.0) sha256=09cf4b874ce87f777e8dc711b0f5e2ef4b123eb20d7e38ae2b85c43015a0fc43
+  rubocop (1.60.2) sha256=000da0bffba2da48efdab233b13085afc3fabad2aa17ef0470cbaa0fd7cbc76c
   rubocop-ast (1.30.0) sha256=faad6452b1018fee0dd9e21a44445908e94ee2a4435932a9dae0e0740b6349b3
   rubocop-performance (1.20.2) sha256=1bb1fa8c427fac7ba3c8dd2decb9860f23cb2d6c40350bedc88538de8875c731
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33

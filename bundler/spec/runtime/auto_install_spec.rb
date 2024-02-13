@@ -22,4 +22,3 @@ RSpec.describe "Bundler.auto_install" do
     end
   end
 end
-

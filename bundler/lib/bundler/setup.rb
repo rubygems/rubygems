@@ -5,8 +5,7 @@ require_relative "shared_helpers"
 if Bundler::SharedHelpers.in_bundle?
   require_relative "../bundler"
 
-  # this happens in Bundler.setup too, but we call it here early
-  # so it can happen without being Bundler.ui.silence'd
+  # try to auto_install first before we get to the `Bundler.ui.silence`, so user knows what is happening
   if Bundler.settings[:auto_install]
     Bundler.auto_install
   end

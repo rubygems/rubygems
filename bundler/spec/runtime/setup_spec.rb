@@ -1609,8 +1609,7 @@ end
     bundle "config set auto_install 1"
 
     ruby <<-RUBY
-      require 'bundler'
-      Bundler.setup
+      require 'bundler/setup'
     RUBY
     expect(err).to be_empty
     expect(out).to include("Installing rack 1.0.0")

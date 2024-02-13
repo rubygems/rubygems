@@ -1194,10 +1194,13 @@ dependencies: []
     assert_same spec.bindir, dup_spec.bindir
 
     assert_equal ">= 0", spec.required_ruby_version.to_s
-    assert_same spec.required_ruby_version, dup_spec.required_ruby_version
+    assert_equal spec.required_ruby_version, dup_spec.required_ruby_version
+    refute_same spec.required_ruby_version, dup_spec.required_ruby_version
 
     assert_equal ">= 0", spec.required_rubygems_version.to_s
-    assert_same spec.required_rubygems_version,
+    assert_equal spec.required_rubygems_version,
+                 dup_spec.required_rubygems_version
+    refute_same spec.required_rubygems_version,
                 dup_spec.required_rubygems_version
   end
 
@@ -1559,6 +1562,17 @@ dependencies: []
     end
 
     assert_empty err
+  end
+
+  def test_contains_requirable_file_extension_soext
+    ext_spec
+    dlext = RbConfig::CONFIG["DLEXT"]
+    @ext.files += ["lib/ext.#{dlext}"]
+
+    FileUtils.mkdir_p @ext.extension_dir
+    FileUtils.touch File.join(@ext.extension_dir, "ext.#{dlext}")
+    FileUtils.touch File.join(@ext.extension_dir, "gem.build_complete")
+    assert @ext.contains_requirable_file? "ext.so"
   end
 
   def test_date
@@ -2716,7 +2730,7 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
         @a1.validate
       end
 
-      assert_match(/add rake as a dependency/, @ui.error)
+      assert_match(/add rake as a runtime dependency/, @ui.error)
     end
   end
 
@@ -2732,7 +2746,7 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
         @a1.validate
       end
 
-      refute_match(/add rake as a dependency/, @ui.error)
+      refute_match(/add rake as a runtime dependency/, @ui.error)
     end
   end
 
@@ -3644,6 +3658,38 @@ Did you mean 'Ruby'?
     end
   end
 
+  def test_metadata_link_validation_warns_for_duplicates
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @m2 = quick_gem "m", "2" do |s|
+        s.files = %w[lib/code.rb]
+        s.licenses = "BSD-2-Clause"
+        s.metadata = {
+          "source_code_uri" => "http://example.com",
+          "homepage_uri" => "http://example.com",
+          "changelog_uri" => "http://example.com/changelog",
+        }
+      end
+
+      use_ui @ui do
+        @m2.validate
+      end
+
+      expected = <<~EXPECTED
+        #{w}:  You have specified the uri:
+          http://example.com
+        for all of the following keys:
+          homepage_uri
+          source_code_uri
+        Only the first one will be shown on rubygems.org
+        #{w}:  See https://guides.rubygems.org/specification-reference/ for help
+      EXPECTED
+
+      assert_equal expected, @ui.error, "warning"
+    end
+  end
+
   def test_metadata_specs
     @m1 = quick_gem "m", "1" do |s|
       s.files = %w[lib/code.rb]
@@ -3753,6 +3799,13 @@ end
     install_specs q
 
     assert Gem::Specification.find_by_name "q"
+  end
+
+  def test_find_by_name_with_only_prereleases_with_requirements
+    q = util_spec "q", "2.a"
+    install_specs q
+
+    assert Gem::Specification.find_by_name "q", ">= 1"
   end
 
   def test_find_by_name_prerelease

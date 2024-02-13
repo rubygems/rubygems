@@ -1,0 +1,28 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 694
+last-modified: Fri, 24 Nov 2023 16:29:35 GMT
+etag: "754315aa889637b1fbbf70c6a60dafbf"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="wrgUbHw++tc6Cjf+qFWnIs2MF3Q7LKYCd3eeJqtd7J0="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300030_BFI 167.82.143.30:443
+accept-ranges: bytes
+date: Fri, 15 Dec 2023 19:03:07 GMT
+age: 845
+x-served-by: cache-bfi-krnt7300030-BFI, cache-mad22080-MAD
+x-cache: HIT, HIT
+x-cache-hits: 34407, 1
+x-timer: S1702666988.629727,VS0,VE168
+server: RubyGems.org
+
+---
+0.1.0 ruby-hmac:>= 0|checksum:9ca74c5fd1cf798850aa74cbe27a013aa5a38b2b8fa6a4436e2c708d543c2917
+0.1.1 ruby-hmac:>= 0|checksum:3d902c4dbea51feae2f88fd86e50aa434cd8e455e744da3207bf84411881dfe8
+0.1.2 ruby-hmac:>= 0|checksum:5da57ae479babd31130500c0ac624dfab4e8b8bf1eb7b65be042555814f04807
+0.1.3 |checksum:a6d4048d2632409f13442d02f5207fbd43dfb8ca6467126a5a5cd5faf6249b38
+0.1.4 |checksum:63ac4dea00e5c43aa071bfbc303bde9bb2cabd70cc7186685541fd5b834b7c1c
+0.1.6 |checksum:15233e28432cd4c75ee7e25867b68914d10c9587505076046173c939a62a5456
+0.1.7 |checksum:e9c2dfc4721209cc8b1b7e988676747903e70f283b9499d6e2147759fe533cc3
+0.1.8 |checksum:b4cc485e881efd9134402e77b866ac9ae1158a09b47130e0281310e1707f47af

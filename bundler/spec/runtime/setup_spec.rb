@@ -1281,10 +1281,6 @@ end
 
   describe "with gemified standard libraries" do
     it "does not load Digest", :ruby_repo do
-      build_repo2 do
-        build_gem "digest"
-      end
-
       build_git "bar", gemspec: false do |s|
         s.write "lib/bar/version.rb", %(BAR_VERSION = '1.0')
         s.write "bar.gemspec", <<-G
@@ -1303,7 +1299,7 @@ end
       end
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "#{file_uri_for(gem_repo1)}"
         gem "bar", :git => "#{lib_path("bar-1.0")}"
       G
 
@@ -1337,6 +1333,33 @@ end
         puts defined?(OpenSSL) || "undefined"
         require "openssl"
         puts defined?(OpenSSL) || "undefined"
+      RUBY
+      expect(out).to eq("undefined\nconstant")
+    end
+
+    it "does not load uri while reading gemspecs", rubygems: ">= 3.6.0.dev" do
+      Dir.mkdir bundled_app("test")
+
+      create_file(bundled_app("test/test.gemspec"), <<-G)
+        Gem::Specification.new do |s|
+          s.name = "test"
+          s.version = "1.0.0"
+          s.summary = "test"
+          s.authors = ['John Doe']
+          s.homepage = 'https://example.com'
+        end
+      G
+
+      install_gemfile <<-G
+        source "#{file_uri_for(gem_repo1)}"
+        gem "test", path: "#{bundled_app("test")}"
+      G
+
+      ruby <<-RUBY
+        require "bundler/setup"
+        puts defined?(URI) || "undefined"
+        require "uri"
+        puts defined?(URI) || "undefined"
       RUBY
       expect(out).to eq("undefined\nconstant")
     end

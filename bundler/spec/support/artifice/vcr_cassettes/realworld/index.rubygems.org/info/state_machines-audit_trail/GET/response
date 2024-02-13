@@ -1,0 +1,39 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 604
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "9bac558bb5903f278d1c8d8b1a7f3768"
+last-modified: Sat, 30 Sep 2023 08:03:49 GMT
+digest: sha-256=n1Pd1GBHXh34HWjUe/u0I/UVEZzRMaZj9Ciq99eaF4o=
+repr-digest: sha-256=:n1Pd1GBHXh34HWjUe/u0I/UVEZzRMaZj9Ciq99eaF4o=:
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com https://unpkg.com/@hotwired/stimulus/dist/stimulus.umd.js https://unpkg.com/stimulus-rails-nested-form/dist/stimulus-rails-nested-form.umd.js 'nonce-'; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3A3113886f07cd49dd68d657757cad3774145eb280%2Cenv%3Aproduction%2Ctrace_id%3A3760691114462787610
+x-request-id: 9e8314d1-0447-4d7a-aabd-d97066cf6530
+x-runtime: 0.009532
+strict-transport-security: max-age=31536000
+fastly-restarts: 1
+via: 1.1 varnish, 1.1 varnish
+x-backend: F_Rails 52.33.104.137:443, fastlyshield--shield_ssl_cache_bfi_krnt7300067_BFI 167.82.143.67:443
+accept-ranges: bytes
+date: Fri, 15 Dec 2023 19:03:06 GMT
+age: 3072
+x-served-by: cache-bfi-krnt7300067-BFI, cache-mad2200142-MAD
+x-cache: HIT, HIT
+x-cache-hits: 1323, 1
+x-timer: S1702666987.644853,VS0,VE168
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+1.0.0 state_machines:>= 0|checksum:efb95ccecbbe1bd4b9aa8743108f4f582c5f33e817bf4741871d9cccdadbd831
+1.0.1 state_machines:>= 0|checksum:0bd20aa01bc86cba8d51b0aca913f505261de01869ed885e4f09200c3b3e103a
+1.0.2 state_machines:>= 0|checksum:82ec723d60fef0b7a543b4b07d2c7ca30f788dcf5754e9385e541f10fe807627
+2.0.0 state_machines:>= 0|checksum:74bdd4de64b4fbc2350f92ed37a1c30582b328de83354ac2a5ec630b704690dd
+2.0.1 state_machines:>= 0|checksum:33964c96bf81a69d8c59045fad7b67381e2545224a61b2148833195c8bbb20d7
+2.0.2 state_machines:>= 0|checksum:2c69cbdc709faa44b836ba800402bd79dec97da8b760177d592b762bbb19dc66

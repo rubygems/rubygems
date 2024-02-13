@@ -11,7 +11,7 @@ concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-permissions:  # added using https://github.com/step-security/secure-workflows
+permissions: # added using https://github.com/step-security/secure-workflows
   contents: read
 
 jobs:
@@ -23,9 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup ruby
-        uses: ruby/setup-ruby@af848b40be8bb463a751551a1180d74782ba8a72 # v1.162.0
+        uses: ruby/setup-ruby@22fdc77bf4148f810455b226c90fb81b5cbc00a7 # v1.171.0
         with:
-          ruby-version: 3.3.0-rc1
+          ruby-version: 3.3.0
           bundler: none
       - name: Install Dependencies
         run: rake setup
@@ -36,5 +36,5 @@ jobs:
       - name: Install & Check Dependencies
         run: bin/rake dev:frozen_deps
       - name: Misc checks
-        run: bin/rake check_rvm_integration man:check check_rubygems_integration
+        run: bin/rake check_rvm_integration man:check vendor:check version:check check_rubygems_integration
     timeout-minutes: 15

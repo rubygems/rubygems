@@ -4,11 +4,14 @@ require_relative "force_platform"
 
 module Bundler
   class LazySpecification
+    include MatchMetadata
     include MatchPlatform
     include ForcePlatform
 
     attr_reader :name, :version, :platform
     attr_accessor :source, :remote, :force_ruby_platform, :dependencies, :required_ruby_version, :required_rubygems_version
+
+    alias_method :runtime_dependencies, :dependencies
 
     def self.from_spec(s)
       lazy_spec = new(s.name, s.version, s.platform, s.source)

@@ -225,7 +225,11 @@ module Bundler
         cached_path = cached_path(spec)
         if cached_path.nil?
           remote_spec = remote_specs.search(spec).first
-          cached_path = fetch_gem(remote_spec)
+          if remote_spec
+            cached_path = fetch_gem(remote_spec)
+          else
+            Bundler.ui.warn "#{spec.full_name} is built in to Ruby, and can't be cached because your Gemfile doesn't have any sources that contain it."
+          end
         end
         cached_path
       end
@@ -345,9 +349,9 @@ module Bundler
       def normalize_uri(uri)
         uri = URINormalizer.normalize_suffix(uri.to_s)
         require_relative "../vendored_uri"
-        uri = Bundler::URI(uri)
+        uri = Gem::URI(uri)
         raise ArgumentError, "The source must be an absolute URI. For example:\n" \
-          "source 'https://rubygems.org'" if !uri.absolute? || (uri.is_a?(Bundler::URI::HTTP) && uri.host.nil?)
+          "source 'https://rubygems.org'" if !uri.absolute? || (uri.is_a?(Gem::URI::HTTP) && uri.host.nil?)
         uri
       end
 

@@ -1,0 +1,39 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1544
+last-modified: Fri, 24 Nov 2023 16:14:08 GMT
+etag: "7025ccf5a44dcabf3797f76f39332af7"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="JIblrttPcqWKAGxOczmI1oBVRxybbQTG7ZQlRAtcolo="
+repr-digest: sha-256="JIblrttPcqWKAGxOczmI1oBVRxybbQTG7ZQlRAtcolo="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400073_BFI 167.82.142.73:443
+accept-ranges: bytes
+date: Fri, 15 Dec 2023 19:03:07 GMT
+age: 3220
+x-served-by: cache-bfi-kbfi7400073-BFI, cache-mad22080-MAD
+x-cache: HIT, HIT
+x-cache-hits: 65148, 1
+x-timer: S1702666988.622488,VS0,VE1
+server: RubyGems.org
+
+---
+0.1.1 |checksum:ee4e4ab5dc5269a4dac220052e4161c7ca791493908d6d54d4ecccddb72a00db
+0.1.2 |checksum:e1d73cc7aded368e2023227c78f4456f5ef0e7df7423752111deeb4e5925528d
+0.1.4 |checksum:b76a98daf260befdaa24edaecee1985386e4fa8858c751569b444711dc822baa
+0.1.3 |checksum:0d7846e1976236f784c4a7bc574ece63d235dd2316d249f1b2d445ae14e0b920
+0.1.5 |checksum:0b6722a4a0dd9596db24f0188c0fc6d463aa50895a4986f17090357660b4b9ef
+0.1.6 |checksum:fe08a90d0af77f35810ee39af58176bd48a0e5435d1effd3a4a16e7160549cbe
+0.1.7 |checksum:69ef3757c452987b929a671cf1a13de2ee365e9b3b01758ab8fbfcd1cdc36911
+0.1.8 |checksum:64f83dca7216104bb421f5a08003b9b4fbdfcdc67a3a5394c8b7e5f90dbb3008
+0.2.0 |checksum:5adf887a4449fd3d637699000c2a268b52e7300aa842505859afc27a65b4b41b
+0.3.0 |checksum:5fab3a1b453a7f330785e14b2d2d00c82e459c08b1d08301a8f4201d0186422c
+0.3.1 |checksum:6a533ba1cc99948bb5784eb57ba849784cf213d219656e5006dcc8b7f93a92f3
+0.3.2 |checksum:e7d4f68502e9ee41ce193589e65f47f280850f17202709c9bac9aa1266f3fe82
+0.4.0 safe_yaml:~> 0.9.0|checksum:3d2eac4f7b86317181cc7374385c9eba28eada741d95734b5c35cdf45aead05f
+0.4.1 safe_yaml:~> 0.9.0|checksum:4f9690bc66278494e0c525989b8ebfa89ce44087cd1733857d6ca9162dd16271
+0.4.2 safe_yaml:~> 1.0.0|checksum:ea4c34f052106f571235f627f561d28309151c09b841130bb7627c2d522589c6
+0.4.3 safe_yaml:~> 1.0.0|checksum:5318ba8cd9cf7e0b5feb38948048503ba4b1fdc1b6ff30a39f0a00feb6036b29
+0.4.4 |checksum:8c9ef58ba2ed1c28e37414093b06944bfe1feceee3ef76fb3e0e5849bc4491ab
+0.4.5 rexml:>= 0|checksum:798416fb29b8c9f655d139d5559169b39c4a0a3b8f8f39b7f670eec1af9b21b3

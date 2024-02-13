@@ -105,11 +105,11 @@ module Gem::Util
   end
 
   ##
-  # Corrects +path+ (usually returned by `URI.parse().path` on Windows), that
+  # Corrects +path+ (usually returned by `Gem::URI.parse().path` on Windows), that
   # comes with a leading slash.
 
   def self.correct_for_windows_path(path)
-    if path[0].chr == "/" && path[1].chr =~ /[a-z]/i && path[2].chr == ":"
+    if path[0].chr == "/" && path[1].chr.match?(/[a-z]/i) && path[2].chr == ":"
       path[1..-1]
     else
       path

@@ -100,9 +100,7 @@ module Bundler
     end
 
     def create_bundle_path
-      SharedHelpers.filesystem_access(bundle_path.to_s) do |p|
-        mkdir_p(p)
-      end unless bundle_path.exist?
+      mkdir_p(bundle_path) unless bundle_path.exist?
 
       @bundle_path = bundle_path.realpath
     rescue Errno::EEXIST
@@ -119,7 +117,7 @@ module Bundler
       @bin_path ||= begin
         path = settings[:bin] || "bin"
         path = Pathname.new(path).expand_path(root).expand_path
-        SharedHelpers.filesystem_access(path) {|p| FileUtils.mkdir_p(p) }
+        mkdir_p(path)
         path
       end
     end
@@ -222,12 +220,13 @@ module Bundler
     #
     # @param unlock [Hash, Boolean, nil] Gems that have been requested
     #   to be updated or true if all gems should be updated
+    # @param lockfile [Pathname] Path to Gemfile.lock
     # @return [Bundler::Definition]
-    def definition(unlock = nil)
+    def definition(unlock = nil, lockfile = default_lockfile)
       @definition = nil if unlock
       @definition ||= begin
         configure
-        Definition.build(default_gemfile, default_lockfile, unlock)
+        Definition.build(default_gemfile, lockfile, unlock)
       end
     end
 
@@ -503,7 +502,7 @@ module Bundler
       configured_bundle_path.use_system_gems?
     end
 
-    def mkdir_p(path, options = {})
+    def mkdir_p(path)
       SharedHelpers.filesystem_access(path, :write) do |p|
         FileUtils.mkdir_p(p)
       end

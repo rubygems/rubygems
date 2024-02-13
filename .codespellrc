@@ -2,4 +2,4 @@
 check-filenames=
 check-hidden=
 ignore-words=.codespellignore
-skip=*.pem,.git,man,vcr_cassettes,vendor,net-http
+skip=*.pem,.git,man,vcr_cassettes,vendor,./lib/rubygems/net*,./lib/rubygems/resolv,./lib/rubygems/tsort,./lib/rubygems/timeout,./lib/rubygems/optparse

@@ -1,0 +1,58 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 2201
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "ec7cc54004773d0b2cb2984c1f6e4079"
+last-modified: Sat, 30 Sep 2023 13:47:36 GMT
+digest: sha-256=SWhtyqDJtPHB4FlUOGzZ23sW9OJD2wXAbop68huPgoY=
+repr-digest: sha-256=:SWhtyqDJtPHB4FlUOGzZ23sW9OJD2wXAbop68huPgoY=:
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com https://unpkg.com/@hotwired/stimulus/dist/stimulus.umd.js https://unpkg.com/stimulus-rails-nested-form/dist/stimulus-rails-nested-form.umd.js 'nonce-'; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3A6eb44c41cd8e1c639b6aaf07c0b14fcd78e0674c%2Cenv%3Aproduction%2Ctrace_id%3A2965043087961142293
+x-request-id: 731e1016-a628-473a-bf7f-03c4ccc5e640
+x-runtime: 0.008365
+strict-transport-security: max-age=31536000
+fastly-restarts: 1
+via: 1.1 varnish, 1.1 varnish
+x-backend: F_Rails 44.225.119.68:443, fastlyshield--shield_ssl_cache_bfi_krnt7300106_BFI 167.82.143.106:443
+accept-ranges: bytes
+date: Fri, 15 Dec 2023 19:03:06 GMT
+age: 409
+x-served-by: cache-bfi-krnt7300106-BFI, cache-mad2200087-MAD
+x-cache: HIT, MISS
+x-cache-hits: 135681, 0
+x-timer: S1702666986.341656,VS0,VE169
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.1.0 |checksum:c37b7c7e1bd2e1d464d864a14315b1b2cdec64e14c5a70ad73685134d233091b
+0.1.1 |checksum:03de27e0a75624380d6e99b8443ef37358837b2b8a807164c6dca45840fb9ae2
+0.2.0 |checksum:a32bb83a65a3d1d749d6c6712df0f1719d354ce54f579bb29bd17bd36e2356fc
+0.2.2 |checksum:97dc060ff1c6f14734f4d9eaa3f7d7d8080d007a7397dc90c74231e02aff3e27
+0.2.4 rack:>= 0|checksum:a677790f53a68d248d38a0e365e0e5b8ba3e8c2de50d1ac6eeedb6e608b05b70
+0.2.5 rack:>= 0,rack-cors:>= 0|checksum:8b3548815f2d4a74eae063e3674f01f1f84522fb2f05462029d3a5413ed3c68e
+0.2.6 rack:>= 0|checksum:7eb5c948662c66d4137f4d7885a41ca29ace1285889b0ae0b0cad3a40008c48d
+0.2.7 rack:>= 0|checksum:93f39f9b23986fa310d61795da972b9d58133638dff617a77f6fdc80f2ef2857
+0.2.8 rack:>= 0|checksum:398212f298424f74e867a0b14b31690cdbb87363570f73bccfbbd0ee3f7e91e1
+0.2.9 |checksum:5a256bda2673c7bbba014587b1f93fd2e6fd80b7ac9804a0f90665add6ba087d
+0.3.0 |checksum:8b205aa4ba7f7d3ef869a7bc6f2351c2ec60c134abb6eb60eea7272f2dc93098
+0.3.1 |checksum:c99906478abeb8d00ff0fe0f5a1d0a4bfdeba8d3b0af35c343609afac3b6d3da
+0.4.0 |checksum:7c8609d980027578597c675c8d66096286059311f3b70607955bec2a5f6ae9eb
+0.4.1 |checksum:4970e56c0594f8b22270518085eeb9c980bce66b9403d6767480011cf8079551
+1.0.0 |checksum:99a9d15e3f2d1fd8a8187ebf3d306ca27ca194c0bc34f8e344341f5e96663af7
+1.0.1 |checksum:bcbe6198025b04937beddc7ccb44efe8efdd064fe0e391fcc3379594ae8a6f56
+1.0.2 |checksum:2300c7108e0e9bcf197754c99ecce9aa6aadf0010dbd0ebf6778c1ba82df47c8
+1.0.3 |checksum:944c40408e67b0d337f45b31f67065c87daa9129af80ec821896d5f68f03afb6
+1.0.5 rack:>= 1.6.0|checksum:872ce45fc7052c9d936fb326590ed9ad20a65f45d926adb0774eb9d79dad71b0
+1.0.6 rack:>= 1.6.0|checksum:33dac9bf37cc16411013a9dd2af9c73bf9a6e6cc7e95a5c3d02f40156abdb71d
+1.1.0 rack:>= 2.0.0|checksum:9de95507e530d815b3afa3e87a4df2b1b50d8def4ae6e21de28175fcd5d24789
+1.1.1 rack:>= 2.0.0|checksum:4702644ac6d63ebbddff372a3cd4cd573513287e3524b5a5415f678970057a4b
+2.0.0.rc1 rack:>= 2.0.0|checksum:4bd0e3bdd30ff0cb1abe4826d3d3034a38430dcf4d2918fe7a9dd45ab023c9e6,rubygems:> 1.3.1
+2.0.0 rack:>= 2.0.0|checksum:776365dc67ea5c222f1f06d99b4c2d3b57fd1d9faa15487420e34403cb4d3591
+2.0.1 rack:>= 2.0.0|checksum:bcc66bdf5c6a4af05d571c4d01d35ac4a873552ba4f86c05fbe39365c39b9b0a

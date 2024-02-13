@@ -1,5 +1,6 @@
 *.rbc
 *.swp
+.ruby-version
 .DS_Store
 /.idea
 /.rdoc

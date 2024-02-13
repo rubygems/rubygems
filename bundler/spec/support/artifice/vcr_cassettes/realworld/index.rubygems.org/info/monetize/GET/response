@@ -1,0 +1,60 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 2521
+content-type: text/plain; charset=utf-8
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+etag: "041ab1fd02a8cd209e3f946977be80dd"
+last-modified: Sat, 30 Sep 2023 10:47:35 GMT
+digest: sha-256=K85HkBOtE7vg9H1GtvU/j7NqOzl5sGl5xEQkTubkWjo=
+repr-digest: sha-256=:K85HkBOtE7vg9H1GtvU/j7NqOzl5sGl5xEQkTubkWjo=:
+cache-control: max-age=60, public
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com https://unpkg.com/@hotwired/stimulus/dist/stimulus.umd.js https://unpkg.com/stimulus-rails-nested-form/dist/stimulus-rails-nested-form.umd.js 'nonce-'; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3A6ceaba7df81ecaf04e71919571e4049b86386cec%2Cenv%3Aproduction%2Ctrace_id%3A1525930264651882064
+x-request-id: ede16702-ee95-4e99-9082-73ea72c6bd69
+x-runtime: 0.019876
+strict-transport-security: max-age=31536000
+fastly-restarts: 1
+via: 1.1 varnish, 1.1 varnish
+x-backend: F_Rails 44.225.119.68:443, fastlyshield--shield_ssl_cache_bfi_kbfi7400084_BFI 167.82.142.84:443
+accept-ranges: bytes
+date: Fri, 15 Dec 2023 19:03:07 GMT
+age: 1265
+x-served-by: cache-bfi-kbfi7400084-BFI, cache-mad22044-MAD
+x-cache: HIT, HIT
+x-cache-hits: 63419, 1
+x-timer: S1702666988.741877,VS0,VE169
+vary: Accept,Accept-Encoding
+server: RubyGems.org
+
+---
+0.1.0 money:~> 6.0|checksum:0417165a3dad7bb637869e5a3b238ba77bb7342930d4dc22006109c9e22ced36
+0.1.1 money:~> 6.0|checksum:68bbbd235e185167e0fe6c35ee2a3766ebd09594e0f07d473bcb797127d65198
+0.1.2 |checksum:f79cd38e033a4082953e7e9961a863a870c9781a6f173e72bd556a9952073175
+0.1.3 |checksum:1365cb976ca71f066604ea73a06fb0571bfd26e6c4b286d09472728da0bf9973
+0.1.4 |checksum:0de9ffe8d36a9eb6de89d496a41e7cb7cbaf9e66c5c94f6075318f8f65a25d75
+0.2.0 money:~> 6.1.0.beta1|checksum:729656f7695a4d66c0a5aec8d72ed31fe5a5b0808f3975a49f6dba258c81c380
+0.3.0 money:~> 6.1.0.beta1|checksum:ab69b7a0b23cd686adf6c002c277b9014beaa61f2527df28c53ddeabc8725add
+0.4.0 money:~> 6.2.0|checksum:0c9fc99367c3d6094f31053fb733aec9135b79137122612acda3d0e4f882c6ea
+0.4.1 money:~> 6.2.1|checksum:ca546ad830c88ebb4cecc5735605e933f385c772fdfe4b9e40d963fe64fea6e1
+1.0.0 money:~> 6.4.0|checksum:35ec93b5dca0c0a66ca30ee9827e849eff573ea4571deca9a7ec350a3ae152f6
+1.1.0 money:~> 6.5.0|checksum:f9c64523e6462762f00f6e2c6d854f5d18e066d9252efdf38fa60d7c8470288e
+1.2.0 money:~> 6.5.0|checksum:facdaa1a2ac44963b3aee16b716df43414eb33bb068edf36ebd9ab8502ffd716
+1.3.0 money:~> 6.5.0|checksum:f6d8713efbcb101c33168db7ac79f1334ab79ebcec04d689578dbfee6540ae86
+1.3.1 money:~> 6.6|checksum:f2c355a2dba63a57d821a0bca84d028dde704c3cba0dd45b66a03f89bfd91fb9
+1.4.0 money:~> 6.7|checksum:c07f0d5cecfa9833c72c13e03600d4674ee28a367c01f9a268c7977a850b0b17
+1.5.0 money:~> 6.7|checksum:a30a985442b193f740936b6bcca1b2b9e32713ba5b27a8a4b21071b8344cb241
+1.6.0 money:~> 6.8|checksum:36777d60b8375c6ca6ae10103e83418d36a7d205856e0afdb01ec34288984fed
+1.7.0 money:~> 6.9|checksum:be77360cf0d2600511f0752c6ae54aafdf2f0dfb7f4cfe9e26ec2e93c1feb53b
+1.8.0 money:~> 6.11.2|checksum:0009bb7164c25b715e32315a721f9c056210754840ade46cbf1a1a476cbfd34a
+1.9.0 money:~> 6.12|checksum:fe6d0571e13a3f40088f4920b693b187ed125e7e89d0baf0f279688a67dd3fdb
+1.9.1 money:~> 6.12|checksum:e96003ba3650a6692f6f2989803faa790ea1619cf08ecae1eae640ed4ce619b7
+1.9.2 money:~> 6.12|checksum:b46cca81ed479168d0fc74ec3bcbc1a1feb1dbf27b5a9e221dc17b392e35ce42
+1.9.3 money:~> 6.12|checksum:182ea8f5af5b5d5159400f429037e7dd9254b54bd85c504b8019fd3759aab8f4
+1.9.4 money:~> 6.12|checksum:af690401bca50bdf73353d05e1dc30a1c59640cf01dfe108f56850c9d3ae941f
+1.10.0 money:~> 6.12|checksum:e4c59793fbfcc71bed650f26c707386c71308a6104c60686519c3505a80cb828
+1.11.0 money:~> 6.12|checksum:d6c506daf4da0f424caa74cad1283fb82133607e504c631fc08eafd67d15ca32
+1.12.0 money:~> 6.12|checksum:3f47d6a4fb66349a2628094b14c1941e72037c110ff1b25aa3710e0b6252f79a

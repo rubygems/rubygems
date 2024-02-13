@@ -87,7 +87,7 @@ module Bundler
         def contains?(commit)
           allowed_with_path do
             result, status = git_null("branch", "--contains", commit, dir: path)
-            status.success? && result =~ /^\* (.*)$/
+            status.success? && result.match?(/^\* (.*)$/)
           end
         end
 
@@ -320,7 +320,7 @@ module Bundler
         # Adds credentials to the URI
         def configured_uri
           if /https?:/.match?(uri)
-            remote = Bundler::URI(uri)
+            remote = Gem::URI(uri)
             config_auth = Bundler.settings[remote.to_s] || Bundler.settings[remote.host]
             remote.userinfo ||= config_auth
             remote.to_s

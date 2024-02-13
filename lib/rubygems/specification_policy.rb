@@ -7,18 +7,19 @@ class Gem::SpecificationPolicy
 
   VALID_NAME_PATTERN = /\A[a-zA-Z0-9\.\-\_]+\z/ # :nodoc:
 
-  SPECIAL_CHARACTERS = /\A[#{Regexp.escape('.-_')}]+/ # :nodoc:
+  SPECIAL_CHARACTERS = /\A[#{Regexp.escape(".-_")}]+/ # :nodoc:
 
   VALID_URI_PATTERN = %r{\Ahttps?:\/\/([^\s:@]+:[^\s:@]*@)?[A-Za-z\d\-]+(\.[A-Za-z\d\-]+)+\.?(:\d{1,5})?([\/?]\S*)?\z} # :nodoc:
 
   METADATA_LINK_KEYS = %w[
-    bug_tracker_uri
-    changelog_uri
-    documentation_uri
     homepage_uri
-    mailing_list_uri
+    changelog_uri
     source_code_uri
+    documentation_uri
     wiki_uri
+    mailing_list_uri
+    bug_tracker_uri
+    download_uri
     funding_uri
   ].freeze # :nodoc:
 
@@ -105,6 +106,8 @@ class Gem::SpecificationPolicy
     validate_extensions
 
     validate_removed_attributes
+
+    validate_unique_links
 
     if @warnings > 0
       if strict
@@ -424,13 +427,13 @@ or set it to nil if you don't want to specify a license.
 
     # Make sure a homepage is valid HTTP/HTTPS URI
     if homepage && !homepage.empty?
-      require "uri"
+      require_relative "vendor/uri/lib/uri"
       begin
-        homepage_uri = URI.parse(homepage)
-        unless [URI::HTTP, URI::HTTPS].member? homepage_uri.class
+        homepage_uri = Gem::URI.parse(homepage)
+        unless [Gem::URI::HTTP, Gem::URI::HTTPS].member? homepage_uri.class
           error "\"#{homepage}\" is not a valid HTTP URI"
         end
-      rescue URI::InvalidURIError
+      rescue Gem::URI::InvalidURIError
         error "\"#{homepage}\" is not a valid HTTP URI"
       end
     end
@@ -494,11 +497,27 @@ You have specified rust based extension, but Cargo.lock is not part of the gem f
 
   def validate_rake_extensions(builder) # :nodoc:
     rake_extension = @specification.extensions.any? {|s| builder.builder_for(s) == Gem::Ext::RakeBuilder }
-    rake_dependency = @specification.dependencies.any? {|d| d.name == "rake" }
+    rake_dependency = @specification.dependencies.any? {|d| d.name == "rake" && d.type == :runtime }
 
     warning <<-WARNING if rake_extension && !rake_dependency
-You have specified rake based extension, but rake is not added as dependency. It is recommended to add rake as a dependency in gemspec since there's no guarantee rake will be already installed.
+You have specified rake based extension, but rake is not added as runtime dependency. It is recommended to add rake as a runtime dependency in gemspec since there's no guarantee rake will be already installed.
     WARNING
+  end
+
+  def validate_unique_links
+    links = @specification.metadata.slice(*METADATA_LINK_KEYS)
+    grouped = links.group_by {|_key, uri| uri }
+    grouped.each do |uri, copies|
+      next unless copies.length > 1
+      keys = copies.map(&:first).join("\n  ")
+      warning <<~WARNING
+        You have specified the uri:
+          #{uri}
+        for all of the following keys:
+          #{keys}
+        Only the first one will be shown on rubygems.org
+      WARNING
+    end
   end
 
   def warning(statement) # :nodoc:

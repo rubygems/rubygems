@@ -18,11 +18,11 @@ class Gem::Request
   end
 
   def self.proxy_uri(proxy) # :nodoc:
-    require "uri"
+    require_relative "vendor/uri/lib/uri"
     case proxy
     when :no_proxy then nil
-    when URI::HTTP then proxy
-    else URI.parse(proxy)
+    when Gem::URI::HTTP then proxy
+    else Gem::URI.parse(proxy)
     end
   end
 
@@ -30,7 +30,7 @@ class Gem::Request
     @uri = uri
     @request_class = request_class
     @last_modified = last_modified
-    @requests = Hash.new 0
+    @requests = Hash.new(0).compare_by_identity
     @user_agent = user_agent
 
     @connection_pool = pool
@@ -176,7 +176,7 @@ class Gem::Request
     end
 
     require "uri"
-    uri = URI(Gem::UriFormatter.new(env_proxy).normalize)
+    uri = Gem::URI(Gem::UriFormatter.new(env_proxy).normalize)
 
     if uri && uri.user.nil? && uri.password.nil?
       user     = ENV["#{downcase_scheme}_proxy_user"] || ENV["#{upcase_scheme}_PROXY_USER"]
@@ -196,7 +196,7 @@ class Gem::Request
     bad_response = false
 
     begin
-      @requests[connection.object_id] += 1
+      @requests[connection] += 1
 
       verbose "#{request.method} #{Gem::Uri.redact(@uri)}"
 
@@ -247,7 +247,7 @@ class Gem::Request
     rescue EOFError, Gem::Timeout::Error,
            Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE
 
-      requests = @requests[connection.object_id]
+      requests = @requests[connection]
       verbose "connection reset after #{requests} requests, retrying"
 
       raise Gem::RemoteFetcher::FetchError.new("too many connection resets", @uri) if retried
@@ -267,7 +267,7 @@ class Gem::Request
   # Resets HTTP connection +connection+.
 
   def reset(connection)
-    @requests.delete connection.object_id
+    @requests.delete connection
 
     connection.finish
     connection.start

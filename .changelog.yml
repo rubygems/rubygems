@@ -21,7 +21,7 @@ changelog_label_mapping:
   "rubygems: enhancement": "## Enhancements:"
   "rubygems: bug fix": "## Bug fixes:"
   "rubygems: documentation": "## Documentation:"
-  "rubygems: backport": null
+  "rubygems: skip changelog": null
 
 patch_level_labels:
   - "rubygems: security"
@@ -30,4 +30,4 @@ patch_level_labels:
   - "rubygems: bug fix"
   - "rubygems: performance"
   - "rubygems: documentation"
-  - "rubygems: backport"
+  - "rubygems: skip changelog"

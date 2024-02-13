@@ -19,34 +19,56 @@ module RubyGems
     def bundle_support_gemfile(name, *args)
       sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=tool/bundler/#{name}.rb"
     end
+
+    def update_locked_bundler
+      require "open3"
+
+      stdout, status = Open3.capture2e("ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "--version")
+      raise "Failed to find current version of Bundler" unless status.success?
+
+      version = stdout.split(" ").last
+
+      Dir.glob("tool/bundler/*_gems.rb").each do |file|
+        name = File.basename(file, ".rb")
+        bundle_support_gemfile(name, "update", "--bundler", version)
+      end
+    end
   end
 end
 
 desc "Setup Rubygems dev environment"
 task :setup do
   RubyGems::DevTasks.bundle_dev_gemfile "install"
-  RubyGems::DevTasks.bundle_support_gemfile "release_gems","lock"
-  RubyGems::DevTasks.bundle_support_gemfile "test_gems", "lock"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock"
-  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock"
+  Dir.glob("tool/bundler/*_gems.rb").each do |file|
+    name = File.basename(file, ".rb")
+    next if name == "dev_gems"
+    RubyGems::DevTasks.bundle_support_gemfile name, "lock"
+  end
 end
 
 desc "Update Rubygems dev environment"
 task :update do
   RubyGems::DevTasks.bundle_dev_gemfile "update"
-  RubyGems::DevTasks.bundle_support_gemfile "release_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "test_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock", "--update"
-  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock", "--update"
+  Dir.glob("tool/bundler/*_gems.rb").each do |file|
+    name = File.basename(file, ".rb")
+    next if name == "dev_gems"
+    RubyGems::DevTasks.bundle_support_gemfile name, "lock", "--update"
+  end
 end
 
-desc "Update the locked bundler version in dev environment"
-task :update_locked_bundler do |_, _args|
-  RubyGems::DevTasks.bundle_support_gemfile "dev_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "release_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "test_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "update", "--bundler"
-  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "update", "--bundler"
+namespace :version do
+  desc "Update the locked bundler version in dev environment"
+  task update_locked_bundler: [:"bundler:install"] do |_, _args|
+    RubyGems::DevTasks.update_locked_bundler
+  end
+
+  desc "Check locked bundler version is up to date"
+  task check: :update_locked_bundler do
+    Spec::Rubygems.check_source_control_changes(
+      success_message: "Locked bundler version is out of sync",
+      error_message: "Please run `rake version:update_locked_bundler` and commit the result."
+    )
+  end
 end
 
 desc "Update specific development dependencies"
@@ -105,180 +127,23 @@ RDoc::Task.new rdoc: "docs", clobber_rdoc: "clobber_docs" do |doc|
   doc.rdoc_dir = "doc"
 end
 
-# No big deal if Automatiek is not available. This might be just because
-# `rake` is executed from release tarball.
-if File.exist?("tool/automatiek.rake")
-  load "tool/automatiek.rake"
-
-  # We currently ship Molinillo master branch as of
-  # https://github.com/CocoaPods/Molinillo/commit/7cc27a355e861bdf593e2cde7bf1bca3daae4303
-  desc "Vendor a specific version of molinillo to rubygems"
-  Automatiek::RakeTask.new("molinillo") do |lib|
-    lib.version = "master"
-    lib.download = { github: "https://github.com/CocoaPods/Molinillo" }
-    lib.namespace = "Molinillo"
-    lib.prefix = "Gem::Resolver"
-    lib.vendor_lib = "lib/rubygems/resolver/molinillo"
-    lib.license_path = "LICENSE"
-
-    lib.dependency("tsort") do |sublib|
-      sublib.version = "v0.1.1"
-      sublib.download = { github: "https://github.com/ruby/tsort" }
-      sublib.namespace = "TSort"
-      sublib.prefix = "Gem"
-      sublib.vendor_lib = "lib/rubygems/tsort"
-      sublib.license_path = "LICENSE.txt"
-    end
+namespace :vendor do
+  desc "Download vendored gems to tmp"
+  task :bundle do
+    sh({ "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "--disable-gems", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=tool/bundler/vendor_gems.rb")
   end
 
-  # We currently ship optparse 0.3.0 plus the following changes:
-  # * Remove top aliasing the `::OptParse` constant to `OptionParser`, since we
-  #   don't need it and it triggers redefinition warnings since the default
-  #   optparse gem also does the aliasing.
-  # * Add an empty .document file to the library's root path to hint RDoc that
-  #   this library should not be documented.
-  desc "Vendor a specific version of optparse to rubygems"
-  Automatiek::RakeTask.new("optparse") do |lib|
-    lib.version = "v0.3.0"
-    lib.download = { github: "https://github.com/ruby/optparse" }
-    lib.namespace = "OptionParser"
-    lib.prefix = "Gem"
-    lib.vendor_lib = "lib/rubygems/optparse"
-    lib.license_path = "COPYING"
+  desc "Install patched vendored gems"
+  task install: :bundle do
+    sh({ "BUNDLE_GEMFILE" => "tool/bundler/vendor_gems.rb", "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "-rpathname", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "exec", "tool/automatiek/vendor.rb")
   end
 
-  desc "Vendor a specific version of pub_grub to bundler"
-  Automatiek::RakeTask.new("pub_grub") do |lib|
-    lib.version = "main"
-    lib.download = { github: "https://github.com/jhawthorn/pub_grub" }
-    lib.namespace = "PubGrub"
-    lib.prefix = "Bundler"
-    lib.vendor_lib = "bundler/lib/bundler/vendor/pub_grub"
-    lib.license_path = "LICENSE.txt"
-  end
-
-  desc "Vendor a specific version of tsort to bundler"
-  Automatiek::RakeTask.new("tsort") do |lib|
-    lib.version = "v0.1.1"
-    lib.download = { github: "https://github.com/ruby/tsort" }
-    lib.namespace = "TSort"
-    lib.prefix = "Bundler"
-    lib.vendor_lib = "bundler/lib/bundler/vendor/tsort"
-    lib.license_path = "LICENSE.txt"
-  end
-
-  desc "Vendor a specific version of thor to bundler"
-  Automatiek::RakeTask.new("thor") do |lib|
-    lib.version = "v1.3.0"
-    lib.download = { github: "https://github.com/rails/thor" }
-    lib.namespace = "Thor"
-    lib.prefix = "Bundler"
-    lib.vendor_lib = "bundler/lib/bundler/vendor/thor"
-    lib.license_path = "LICENSE.md"
-  end
-
-  desc "Vendor a specific version of fileutils to bundler"
-  Automatiek::RakeTask.new("fileutils") do |lib|
-    lib.version = "v1.7.0"
-    lib.download = { github: "https://github.com/ruby/fileutils" }
-    lib.namespace = "FileUtils"
-    lib.prefix = "Bundler"
-    lib.vendor_lib = "bundler/lib/bundler/vendor/fileutils"
-    lib.license_path = "LICENSE.txt"
-  end
-
-  # We currently include the following changes over the official version:
-  # * Avoid requiring the optional `net-http-pipeline` dependency, so that its version can be selected by end users.
-  # * Require vendored net/http version RubyGems if available, otherwise the stdlib version.
-  desc "Vendor a specific version of net-http-persistent to bundler"
-  Automatiek::RakeTask.new("net-http-persistent") do |lib|
-    lib.version = "v4.0.2"
-    lib.download = { github: "https://github.com/drbrain/net-http-persistent" }
-    lib.namespace = "Net::HTTP::Persistent"
-    lib.prefix = "Gem"
-    lib.vendor_lib = "bundler/lib/bundler/vendor/net-http-persistent"
-    lib.license_path = "README.rdoc"
-
-    lib.dependency("connection_pool") do |sublib|
-      sublib.version = "v2.3.0"
-      sublib.download = { github: "https://github.com/mperham/connection_pool" }
-      sublib.namespace = "ConnectionPool"
-      sublib.prefix = "Bundler"
-      sublib.vendor_lib = "bundler/lib/bundler/vendor/connection_pool"
-      sublib.license_path = "LICENSE"
-
-      sublib.dependency("timeout") do |subsublib|
-        subsublib.version = "v0.4.1"
-        subsublib.download = { github: "https://github.com/ruby/timeout" }
-        subsublib.namespace = "Timeout"
-        subsublib.prefix = "Gem"
-        subsublib.vendor_lib = "lib/rubygems/timeout"
-        subsublib.license_path = "LICENSE.txt"
-      end
-    end
-
-    lib.dependency("uri") do |sublib|
-      sublib.version = "v0.12.2"
-      sublib.download = { github: "https://github.com/ruby/uri" }
-      sublib.namespace = "URI"
-      sublib.prefix = "Bundler"
-      sublib.vendor_lib = "bundler/lib/bundler/vendor/uri"
-      sublib.license_path = "LICENSE.txt"
-    end
-
-    lib.dependency("net-http") do |sublib|
-      sublib.version = "v0.4.0"
-      sublib.download = { github: "https://github.com/ruby/net-http" }
-      sublib.namespace = "Net"
-      sublib.prefix = "Gem"
-      sublib.vendor_lib = "lib/rubygems/net-http"
-      sublib.license_path = "LICENSE.txt"
-
-      sublib.dependency("net-protocol") do |subsublib|
-        subsublib.version = "v0.2.2"
-        subsublib.download = { github: "https://github.com/ruby/net-protocol" }
-        subsublib.namespace = "Net"
-        subsublib.prefix = "Gem"
-        subsublib.vendor_lib = "lib/rubygems/net-protocol"
-        subsublib.license_path = "LICENSE.txt"
-
-        subsublib.dependency("timeout") do |ssslib|
-          ssslib.version = "v0.4.1"
-          ssslib.download = { github: "https://github.com/ruby/timeout" }
-          ssslib.namespace = "Timeout"
-          ssslib.prefix = "Gem"
-          ssslib.vendor_lib = "lib/rubygems/timeout"
-          ssslib.license_path = "LICENSE.txt"
-        end
-      end
-
-      sublib.dependency("timeout") do |subsublib|
-        subsublib.version = "v0.4.1"
-        subsublib.download = { github: "https://github.com/ruby/timeout" }
-        subsublib.namespace = "Timeout"
-        subsublib.prefix = "Gem"
-        subsublib.vendor_lib = "lib/rubygems/timeout"
-        subsublib.license_path = "LICENSE.txt"
-      end
-
-      sublib.dependency("resolv") do |subsublib|
-        subsublib.version = "v0.2.2"
-        subsublib.download = { github: "https://github.com/ruby/resolv" }
-        subsublib.namespace = "Resolv"
-        subsublib.prefix = "Gem"
-        subsublib.vendor_lib = "lib/rubygems/resolv"
-        subsublib.license_path = "LICENSE.txt"
-
-        subsublib.dependency("timeout") do |ssslib|
-          ssslib.version = "v0.4.1"
-          ssslib.download = { github: "https://github.com/ruby/timeout" }
-          ssslib.namespace = "Timeout"
-          ssslib.prefix = "Gem"
-          ssslib.vendor_lib = "lib/rubygems/timeout"
-          ssslib.license_path = "LICENSE.txt"
-        end
-      end
-    end
+  desc "Check vendored gems are up to date"
+  task check: :install do
+    Spec::Rubygems.check_source_control_changes(
+      success_message: "Vendored gems are in sync",
+      error_message: "Vendored gems are out of sync. Please update the vendored lib patches."
+    )
   end
 end
 
@@ -336,7 +201,7 @@ task :clear_package do
 end
 
 desc "Generates the changelog for a specific target version"
-task :generate_changelog, [:version] do |_t, opts|
+task :generate_changelog, [:version] => [:install_release_dependencies] do |_t, opts|
   require_relative "tool/release"
 
   Release.for_rubygems(opts[:version]).cut_changelog!

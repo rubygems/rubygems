@@ -1,3 +1,115 @@
+# 2.5.6 (February 6, 2024)
+
+## Deprecations:
+
+  - Refactor lockfile generation and deprecate `Definition#lock` with explicit lockfile [#7047](https://github.com/rubygems/rubygems/pull/7047)
+
+## Enhancements:
+
+  - Bump `required_ruby_version` to be used in `bundle gem` template [#7430](https://github.com/rubygems/rubygems/pull/7430)
+
+## Bug fixes:
+
+  - Fix musl platform not being added to the lockfile [#7441](https://github.com/rubygems/rubygems/pull/7441)
+  - Let `Bundler.with_original_env` properly restore env variables originally empty [#7383](https://github.com/rubygems/rubygems/pull/7383)
+
+# 2.5.5 (January 18, 2024)
+
+## Bug fixes:
+
+  - Fix development dependency not being added if introduced by two gemspecs [#7358](https://github.com/rubygems/rubygems/pull/7358)
+  - Fix ETag quoting regression in If-None-Match header of compact index request [#7352](https://github.com/rubygems/rubygems/pull/7352)
+
+## Documentation:
+
+  - Refer to underscores as underscores [#7364](https://github.com/rubygems/rubygems/pull/7364)
+
+# 2.5.4 (January 4, 2024)
+
+## Bug fixes:
+
+  - Fix resolution when different platform specific gems have different dependencies [#7324](https://github.com/rubygems/rubygems/pull/7324)
+
+# 2.5.3 (December 22, 2023)
+
+## Bug fixes:
+
+  - Fix incorrect error when Gemfile overrides a gemspec development dependency [#7319](https://github.com/rubygems/rubygems/pull/7319)
+
+# 2.5.2 (December 21, 2023)
+
+## Enhancements:
+
+  - Avoid vendored thor gem polluting the global namespace [#7305](https://github.com/rubygems/rubygems/pull/7305)
+
+## Bug fixes:
+
+  - Fix `bundle update --bundler` when latest version does not support current ruby [#7310](https://github.com/rubygems/rubygems/pull/7310)
+  - Fix incorrect lockfiles being generated in some situations [#7307](https://github.com/rubygems/rubygems/pull/7307)
+  - Fix incorrect re-resolve messages [#7306](https://github.com/rubygems/rubygems/pull/7306)
+
+# 2.5.1 (December 15, 2023)
+
+## Bug fixes:
+
+  - Fix `ruby` Gemfile DSL with `file:` parameter no longer working [#7288](https://github.com/rubygems/rubygems/pull/7288)
+
+## Performance:
+
+  - Save array allocation for every dependency in Gemfile [#7270](https://github.com/rubygems/rubygems/pull/7270)
+
+# 2.5.0 (December 15, 2023)
+
+## Breaking changes:
+
+  - Drop ruby 2.6 and 2.7 support [#7116](https://github.com/rubygems/rubygems/pull/7116)
+  - The `:mswin`, `:mswin64`, `:mingw`, and `:x64_mingw` Gemfile `platform` values are soft-deprecated and aliased to `:windows` [#6391](https://github.com/rubygems/rubygems/pull/6391)
+
+## Features:
+
+  - Leverage ruby feature to warn when requiring default gems not included in the bundle that will be turned into bundled gems in the future [#6831](https://github.com/rubygems/rubygems/pull/6831)
+  - Introduce `bundle config set version` feature to choose the version of Bundler that should be used and potentially disable using the `lockfile` version by setting it to `system` [#6817](https://github.com/rubygems/rubygems/pull/6817)
+
+## Performance:
+
+  - Use match? when regexp match data is unused [#7263](https://github.com/rubygems/rubygems/pull/7263)
+  - Avoid some allocations when evaluating `ruby` Gemfile DSL [#7251](https://github.com/rubygems/rubygems/pull/7251)
+  - Reduce array allocations when loading definition [#7199](https://github.com/rubygems/rubygems/pull/7199)
+  - Avoid re-compiling static regexp in a loop [#7198](https://github.com/rubygems/rubygems/pull/7198)
+  - Reduce allocations when installing gems with bundler [#6977](https://github.com/rubygems/rubygems/pull/6977)
+  - Use a shared connection pool for fetching gems [#7079](https://github.com/rubygems/rubygems/pull/7079)
+  - Reduce allocations when parsing compact index [#6971](https://github.com/rubygems/rubygems/pull/6971)
+
+## Enhancements:
+
+  - Add 3.4 as a supported ruby version in Gemfile DSL [#7264](https://github.com/rubygems/rubygems/pull/7264)
+  - Improve install advice when some gems are not found [#7265](https://github.com/rubygems/rubygems/pull/7265)
+  - Vendor `net-http`, `net-protocol`, `resolv`, and `timeout` to reduce conflicts between Gemfile gems and internal dependencies [#6793](https://github.com/rubygems/rubygems/pull/6793)
+  - Allow `bundle pristine` to run in parallel [#6927](https://github.com/rubygems/rubygems/pull/6927)
+  - Make `bundle lock` always touch the lockfile in non-frozen mode [#7220](https://github.com/rubygems/rubygems/pull/7220)
+  - Use `Minitest::TestTask` in a template file for `minitest` [#7234](https://github.com/rubygems/rubygems/pull/7234)
+  - Add missing services to CI detection and make it consistent between RubyGems and Bundler [#7205](https://github.com/rubygems/rubygems/pull/7205)
+  - Allow auto-install to install missing git gems [#7197](https://github.com/rubygems/rubygems/pull/7197)
+  - Stop remembering cli flags like `--jobs` or `--retry` in configuration [#7191](https://github.com/rubygems/rubygems/pull/7191)
+  - Simplify remembered flags deprecation message [#7189](https://github.com/rubygems/rubygems/pull/7189)
+  - Make sure to `require "rubygems"` explicitly [#7139](https://github.com/rubygems/rubygems/pull/7139)
+  - Handle development dependencies duplicated in gemspec vs Gemfile [#6014](https://github.com/rubygems/rubygems/pull/6014)
+  - Make lockfiles generated on macOS include a lock for Linux by default [#5700](https://github.com/rubygems/rubygems/pull/5700)
+  - Only add a dummy bundler spec to the metadata source when necessary [#4443](https://github.com/rubygems/rubygems/pull/4443)
+
+## Bug fixes:
+
+  - Resolve `ruby file: ".ruby-version"` relative to containing Gemfile [#7250](https://github.com/rubygems/rubygems/pull/7250)
+  - Implement opaque ETag in Compact Index to avoid falling back to old index in servers with different etag implementations [#7122](https://github.com/rubygems/rubygems/pull/7122)
+  - Fix `bundle install --system` deprecation advice [#7190](https://github.com/rubygems/rubygems/pull/7190)
+  - Fix invalid platform removal missing adjacent platforms [#7170](https://github.com/rubygems/rubygems/pull/7170)
+
+## Documentation:
+
+  - Add missing --prefer-local to Synopsis in bundle-install.1.ronn [#7194](https://github.com/rubygems/rubygems/pull/7194)
+  - Update GitHub organization of Standard Ruby in `bundle gem` output and generated configuration [#6818](https://github.com/rubygems/rubygems/pull/6818)
+  - Replace "prior to" with "immediately after" in `bundle gem` generated README file [#6338](https://github.com/rubygems/rubygems/pull/6338)
+
 # 2.4.22 (November 9, 2023)
 
 ## Enhancements:

@@ -6,10 +6,11 @@ _Note: In the documentation listed below, the *current* minor version number is
 2.1 and the *next* minor version number is 2.2_
 
 Regardless of the version, *all releases* must update the `CHANGELOG.md` and `lib/bundler/version.rb`
-files. The changelog for the first stable minor release (`2.2.0`) is a sum of all
-the preceding pre-release versions (`2.2.pre.1`, `2.2.pre.2`, etc) for that
-minor version. The changelog for the first stable minor release is left blank
-unless there are fixes included since the last pre/rc release.
+files.
+
+While pushing a gem version to RubyGems.org is as simple as `rake release`,
+releasing a new version of Bundler includes a lot of communication: team
+consensus, git branching, documentation site updates, and a blog post.
 
 ## Workflow
 
@@ -17,7 +18,7 @@ In general, `master` will accept PRs for:
 
 * feature merges for the next minor version (2.2)
 * regression fix merges for a patch release on the current minor version (2.1)
-* feature-flagged development for the next major version (2.0)
+* feature-flagged development for the next major version (3.0)
 
 ### Breaking releases
 
@@ -26,27 +27,30 @@ break backwards compatibility should (whenever this is possible) include a featu
 release that is backwards compatible, and issue warnings for all options and
 behaviors that will change.
 
-We try very hard to only release breaking changes when incrementing the _major_
-version of Bundler.
+We only release major breaking changes when incrementing the _major_ version of
+Bundler and RubyGems. However, experience shows that almost every single part of
+Bundler and RubyGems is depended on by someone in ways hard to anticipate. So if
+we were strict about breaking changes we'd need to hold on from making progress
+a lot, or continuously increment the major version, emptying "really major"
+versions from their meaning. Because of this, we also may release "small"
+breaking changes in minor releases. "Small" here means that we expect them to
+affect only very few users in rare cases.
 
-### Patch && minor releases
+### Minor releases
 
-While pushing a gem version to RubyGems.org is as simple as `rake release`,
-releasing a new version of Bundler includes a lot of communication: team
-consensus, git branching, documentation site updates, and a blog post.
+Minor releases of the next version start with a new release branch from the
+current state of master: `3.2`, and are immediately followed by a stable
+release.
 
-Patch and minor releases are made by cherry-picking pill requests from `master`.
+### Patch releases
+
+Patch releases are made by cherry-picking pull requests from `master`.
 
 ### Branching
 
 Bundler releases are synchronized with rubygems releases at the moment. That
 means that releases for both share the same stable branch, and they should
 generally happen together.
-
-Minor releases of the next version start with a new release branch from the
-current state of master: `3.2`, and are immediately followed by a prerelease
-(might be a `.pre.1` version or a `.rc.1` version depending on the readiness of
-the stable branch) or even directly by the final stable release.
 
 The current conventional naming for stable branches is `x+1.y`, where `x.y` is
 the version of `bundler` that will be released. This is because `rubygems-x+1.y`

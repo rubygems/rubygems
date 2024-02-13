@@ -1,0 +1,50 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 3664
+last-modified: Fri, 24 Nov 2023 16:19:11 GMT
+etag: "db94cbb96f01ecea855406d4ff0a0a58"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="0GSBhwPMrHORyyTzCm7CXLOTQ44kquxbDJHmMM7iOeU="
+repr-digest: sha-256="0GSBhwPMrHORyyTzCm7CXLOTQ44kquxbDJHmMM7iOeU="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300045_BFI 167.82.143.45:443
+accept-ranges: bytes
+date: Fri, 15 Dec 2023 19:03:07 GMT
+age: 1981
+x-served-by: cache-bfi-krnt7300045-BFI, cache-mad2200142-MAD
+x-cache: HIT, HIT
+x-cache-hits: 35792, 1
+x-timer: S1702666987.293495,VS0,VE169
+server: RubyGems.org
+
+---
+2.4.0 |checksum:b4668bc23458a05ac998bd2098f77ee334153f422efeb786c494bf17c28ba5a5
+2.4.1.beta1 |checksum:9d3fef7eb773a2357f2eb72e2981b6e6dac76e4f8072dccd81e5cb9e22616c2f,rubygems:> 1.3.1
+2.5.0.pre1 rake:>= 0|checksum:35554acb70d4304db96afc3a0cfe3f0be1b797edeb59b1ce568999d5eb04a73a,rubygems:> 1.3.1
+2.5.0.pre2 rake:>= 0|checksum:7d8f04507bcd5f26c8f9b0b345519b6081580aa15ee1cab3feb2a3f796aea88c,rubygems:> 1.3.1
+2.5.0.pre3 rake:>= 0|checksum:5bd4ab846f8c66c159b686e6852d88a571ba9fcc10cbf5d0578df491abc02410,rubygems:> 1.3.1
+2.5.0 rake:>= 0|checksum:d24d54a36867c21c47e25ac29dc383c9fb036bd0d728b1af982eef76b3c194d2
+2.6.0.beta2 activerecord:>= 2.3.0,rake:>= 0.8.7|checksum:83fd5ddd71d807b056c1bd5bbd9a80822a39fa60bd82fd27c395de2d0fcf8f6a,rubygems:> 1.3.1
+2.6.0 activerecord:>= 2.3.0,rake:>= 0.8.7|checksum:d92ab99c6d10d98fec361bb5501ee91f8f30d1a7b2a6267334d74a1c6b363656
+2.6.1 activerecord:>= 2.3.0,rake:>= 0.8.7|checksum:584a7798c8323d298cbd837f34ce7b4498b61222c095068306439a7a86eb7fc6
+2.6.2 activerecord:>= 2.3.0,rake:>= 0.8.7|checksum:e5a684d51cf3e2c8cae088e678665fcd82da1e3898d053098f6c899ab813616f
+2.6.3 activerecord:>= 2.3.0,rake:>= 0.8.7|checksum:72399a46ae818bf10eda4dbb36004aa84074b0619db451a53c5fd4330c850d65
+2.6.5 activerecord:>= 2.3.0,rake:>= 0.8.7|checksum:14dc2adae397080ee14bf6e3fd6f1d8de81aa1d28c4ca670e734d11bf6b97d26
+2.6.6 activerecord:>= 2.3.0,rake:>= 10.4.2&~> 10.4.2|checksum:caa6bd034e22e0ca5f06ce7535d80fd549e9e675403d09176a12c63ea3a911ca
+2.6.7 activerecord:>= 2.3.0,rake:>= 10.4.2&~> 10.4.2|checksum:5d957f27d1a92b2571b2e20990bfe362874849bf81b7b358c4162edc49ab6fef
+2.6.8 activerecord:<= 4.3&>= 3.2,rake:~> 10.4|checksum:89f4fa2b823fdc133662ba2c8da925db5af85589059c0881a9c050c78500d0bc,ruby:>= 1.9.3
+2.6.9 activerecord:<= 4.3&>= 3.2,rake:~> 10.4|checksum:a5621b8c25bc37705c486f62dfa8f50011443feb77bce05056ae050778eda811,ruby:>= 1.9.3
+2.6.10 activerecord:<= 4.3&>= 3.2,rake:~> 10.4|checksum:0f9e08baea407d9eaff931311982e7cc7f422180a8ddd1e26bb689ade14dbcf1,ruby:>= 1.9.3
+2.7.0 activerecord:< 6.0&>= 3.2,rake:~> 10.4|checksum:fe1395af3f79194a173f20b7502d6c15d52070079a4b2d092f780ad9386d6e98,ruby:>= 1.9.3
+2.7.1 activerecord:< 6.0&>= 3.2,rake:< 12.0&>= 10.4|checksum:1d4f208fed98e313a6c2f5d781821f938927ff7ee9ca274dcecb8c76a62f3bd2,ruby:>= 1.9.3
+2.7.2 activerecord:< 6.0&>= 3.2,rake:< 13.0&>= 10.4|checksum:e4ab6936406cd43260e3c2e9ffc70fd7272ff688f50768310bdb16e3e3183e1d,ruby:>= 1.9.3
+2.7.3 activerecord:< 6.0&>= 3.2,rake:< 13.0&>= 10.4|checksum:663b9e976688c831edb05bd73c6ac93f0ec846d84b011664cf7f0ced3b8e45f9,ruby:>= 2.2.0
+2.7.4 activerecord:< 6.0&>= 3.2,rake:< 13.0&>= 10.4|checksum:26bce8288aba950ddc851a185d91ee2a972ec4e8613d83bdcdd31a60a7a0c9d0,ruby:>= 2.2.0
+2.7.5 activerecord:< 7.0&>= 3.2,rake:< 13.0&>= 10.4|checksum:9303f8e57dd379f53ef6785ac2b25fd392aa8f2a599ce14df7e63f31fed174cc,ruby:>= 2.2.0
+3.0.0 activerecord:< 7.0&>= 3.2,rake:< 13.0&>= 10.4|checksum:ef001879585932f5f805a4cc3fb7b2baf036fb74f23d46594c7e8f7756eae3fb,ruby:>= 2.2.0
+3.0.2 activerecord:< 7.0&>= 3.2,rake:< 13.0&>= 10.4|checksum:accc4282d046c26e0b3c3495331366662cb1f6b63d784278d089472f79b3ad5c,ruby:>= 2.2.0
+3.0.3 activerecord:< 7.0&>= 3.2,rake:< 14.0&>= 10.4|checksum:2347702771f99d63f7f986560f90b55a8395a9571c8b46b5d22da6bb2b75c47f,ruby:>= 2.2.0
+3.1.0 activerecord:< 7.0&>= 3.2,rake:< 14.0&>= 10.4|checksum:5152e4ea8dda8d8bdafbbbad7fc5697cb68f95d51300d58164d8c453c2125da3,ruby:>= 2.2.0
+3.1.1 activerecord:< 7.0&>= 3.2,rake:< 14.0&>= 10.4|checksum:9c3a5f5ef8c3ef4d08f322a3e2d96b1a2329bb297aadaa2ade233cc7ef75b9b7,ruby:>= 2.4.0
+3.2.0 activerecord:< 8.0&>= 3.2,rake:< 14.0&>= 10.4|checksum:9a61baa1fb13880aa3a8d9f62553889bb2a3b7970f88bbc66d3ac75a567780d3,ruby:>= 2.4.0

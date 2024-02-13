@@ -14,6 +14,7 @@ AllCops:
     - lib/rubygems/optparse/**/*
     - lib/rubygems/net-protocol/**/*
     - lib/rubygems/net-http/**/*
+    - lib/rubygems/vendor/**/*
     - bundler/lib/bundler/vendor/**/*
   CacheRootDirectory: tmp/rubocop
   MaxFilesInCache: 5000

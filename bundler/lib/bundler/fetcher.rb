@@ -111,9 +111,9 @@ module Bundler
       spec -= [nil, "ruby", ""]
       spec_file_name = "#{spec.join "-"}.gemspec"
 
-      uri = Bundler::URI.parse("#{remote_uri}#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}.rz")
+      uri = Gem::URI.parse("#{remote_uri}#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}.rz")
       spec = if uri.scheme == "file"
-        path = Bundler.rubygems.correct_for_windows_path(uri.path)
+        path = Gem::Util.correct_for_windows_path(uri.path)
         Bundler.safe_load_marshal Bundler.rubygems.inflate(Gem.read_binary(path))
       elsif cached_spec_path = gemspec_cached_path(spec_file_name)
         Bundler.load_gemspec(cached_spec_path)
@@ -255,7 +255,7 @@ module Bundler
 
         con = Gem::Net::HTTP::Persistent.new name: "bundler", proxy: :ENV
         if gem_proxy = Gem.configuration[:http_proxy]
-          con.proxy = Bundler::URI.parse(gem_proxy) if gem_proxy != :no_proxy
+          con.proxy = Gem::URI.parse(gem_proxy) if gem_proxy != :no_proxy
         end
 
         if remote_uri.scheme == "https"

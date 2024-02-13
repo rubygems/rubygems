@@ -1195,6 +1195,46 @@ RSpec.describe "the lockfile format" do
     G
   end
 
+  it "adds compatible platform specific variants to the lockfile, even if resolution fallback to RUBY due to some other incompatible platform specific variant" do
+    simulate_platform "arm64-darwin-23" do
+      build_repo4 do
+        build_gem "google-protobuf", "3.25.1"
+        build_gem "google-protobuf", "3.25.1" do |s|
+          s.platform = "arm64-darwin-23"
+        end
+        build_gem "google-protobuf", "3.25.1" do |s|
+          s.platform = "x64-mingw-ucrt"
+          s.required_ruby_version = "> #{Gem.ruby_version}"
+        end
+      end
+
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo4)}"
+        gem "google-protobuf"
+      G
+      bundle "lock --add-platform x64-mingw-ucrt"
+
+      expect(lockfile).to eq <<~L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+          specs:
+            google-protobuf (3.25.1)
+            google-protobuf (3.25.1-arm64-darwin-23)
+
+        PLATFORMS
+          arm64-darwin-23
+          ruby
+          x64-mingw-ucrt
+
+        DEPENDENCIES
+          google-protobuf
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+  end
+
   it "persists the spec's specific platform to the lockfile" do
     build_repo2 do
       build_gem "platform_specific", "1.0" do |s|
@@ -1603,7 +1643,7 @@ RSpec.describe "the lockfile format" do
     L
 
     bundle "install --verbose"
-    expect(out).to include("re-resolving dependencies because your lock file is missing \"minitest-bisect\"")
+    expect(out).to include("re-resolving dependencies because your lock file includes \"minitest-bisect\" but not some of its dependencies")
 
     expect(lockfile).to eq <<~L
       GEM

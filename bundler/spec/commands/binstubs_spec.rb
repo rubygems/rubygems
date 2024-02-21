@@ -154,7 +154,7 @@ RSpec.describe "bundle binstubs <gem>" do
         it "runs correctly even if empty" do
           skip "does not work on old rubies" if RUBY_VERSION < "2.7.0"
 
-          sys_exec "bin/bundle install", :env => { "BUNDLER_VERSION" => "" }
+          sys_exec "bin/bundle install", env: { "BUNDLER_VERSION" => "" }
         end
       end
 

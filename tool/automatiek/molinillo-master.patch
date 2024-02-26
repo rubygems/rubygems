@@ -6,7 +6,7 @@ index 16712899b..731a9e3e9 100644
  # frozen_string_literal: true
  
 -require_relative '../../../tsort/lib/tsort'
-+require_relative '../../../../tsort'
++require_relative '../../../../vendored_tsort'
  
  require_relative 'dependency_graph/log'
  require_relative 'dependency_graph/vertex'

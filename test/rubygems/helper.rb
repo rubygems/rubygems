@@ -289,8 +289,7 @@ class Gem::TestCase < Test::Unit::TestCase
 
     FileUtils.mkdir_p @tmp
 
-    @tempdir = Dir.mktmpdir(method_name.to_s, @tmp)
-    @@tempdirs << @tempdir
+    @tempdir = Dir.mktmpdir("test_rubygems_", @tmp)
 
     ENV["GEM_VENDOR"] = nil
     ENV["GEMRC"] = nil
@@ -475,7 +474,12 @@ class Gem::TestCase < Test::Unit::TestCase
 
     @back_ui.close
 
-    assert_empty @@tempdirs.select {|tempdir| File.exist?(tempdir) }
+    refute_directory_exists @tempdir, "may be still in use"
+    ghosts = @@tempdirs.filter_map do |test_name, tempdir|
+      test_name if File.exist?(tempdir)
+    end
+    @@tempdirs << [method_name, @tempdir]
+    assert_empty ghosts
   end
 
   def credential_setup

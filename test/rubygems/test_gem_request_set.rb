@@ -450,7 +450,7 @@ ruby "0"
 
   def test_resolve_vendor
     a_name, _, a_directory = vendor_gem "a", 1 do |s|
-      s.add_dependency "b", "~> 2.0"
+      s.add_dependency "b", "~> 2"
     end
 
     b_name, _, b_directory = vendor_gem "b", 2

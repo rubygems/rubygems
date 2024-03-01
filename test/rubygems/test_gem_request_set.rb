@@ -449,11 +449,11 @@ ruby "0"
   end
 
   def test_resolve_vendor
-    a_name, _, a_directory = vendor_gem "a", 1 do |s|
-      s.add_dependency "b", "~> 2"
+    a_name, _, a_directory = vendor_gem "a", "1.0" do |s|
+      s.add_dependency "b", "~> 2.0"
     end
 
-    b_name, _, b_directory = vendor_gem "b", 2
+    b_name, _, b_directory = vendor_gem "b", "2.0"
 
     rs = Gem::RequestSet.new
 
@@ -475,7 +475,7 @@ ruby "0"
 
     names = res.map(&:full_name).sort
 
-    assert_equal ["a-1", "b-2"], names
+    assert_equal ["a-1.0", "b-2.0"], names
 
     assert_equal [Gem::Resolver::BestSet, Gem::Resolver::GitSet, Gem::Resolver::VendorSet, Gem::Resolver::SourceSet],
                  rs.sets.map(&:class)

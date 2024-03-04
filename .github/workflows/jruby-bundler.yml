@@ -39,7 +39,7 @@ jobs:
           ruby-version: jruby-9.4.2.0
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4.0.0
+        uses: actions/setup-java@9704b39bf258b59bc04b50fa2dd55e9ed76b47a8 # v4.1.0
         with:
           distribution: temurin
           java-version: 19.0.2

@@ -1,3 +1,31 @@
+# 3.5.7 / 2024-03-20
+
+## Enhancements:
+
+* Warn on empty or open required_ruby_version specification attribute.
+  Pull request [#5010](https://github.com/rubygems/rubygems/pull/5010) by
+  simi
+* Control whether YAML aliases are enabled in Gem::SafeYAML.safe_load via
+  attribute. Pull request
+  [#7464](https://github.com/rubygems/rubygems/pull/7464) by segiddins
+* Update SPDX license list as of 2024-02-08. Pull request
+  [#7468](https://github.com/rubygems/rubygems/pull/7468) by
+  github-actions[bot]
+* Installs bundler 2.5.7 as a default gem.
+
+## Bug fixes:
+
+* Allow prerelease activation (even if requirement is not explicit about
+  it) when it's the only possibility. Pull request
+  [#7428](https://github.com/rubygems/rubygems/pull/7428) by kimesf
+
+## Documentation:
+
+* Fix a typo. Pull request
+  [#7505](https://github.com/rubygems/rubygems/pull/7505) by hsbt
+* Use https instead of http in documentation links. Pull request
+  [#7481](https://github.com/rubygems/rubygems/pull/7481) by hsbt
+
 # 3.5.6 / 2024-02-06
 
 ## Enhancements:

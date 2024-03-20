@@ -7,12 +7,16 @@ RSpec.describe "global gem caching" do
     let(:source)  { "http://localgemserver.test" }
     let(:source2) { "http://gemserver.example.org" }
 
+    def cache_base
+      home(".bundle", "cache", "gems")
+    end
+
     def source_global_cache(*segments)
-      home(".bundle", "cache", "gems", "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", *segments)
+      cache_base.join("localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", *segments)
     end
 
     def source2_global_cache(*segments)
-      home(".bundle", "cache", "gems", "gemserver.example.org.80.1ae1663619ffe0a3c9d97712f44c705b", *segments)
+      cache_base.join("gemserver.example.org.80.1ae1663619ffe0a3c9d97712f44c705b", *segments)
     end
 
     it "caches gems into the global cache on download" do
@@ -47,6 +51,16 @@ RSpec.describe "global gem caching" do
       G
 
       expect(err).to include("Gem::Package::FormatError: package metadata is missing in #{source_global_cache("rack-1.0.0.gem")}")
+    end
+
+    it "uses a shorter path for the cache to not hit filesystem limits" do
+      install_gemfile <<-G, artifice: "compact_index", verbose: true
+        source "http://#{"a" * 255}.test"
+        gem "rack"
+      G
+
+      expect(the_bundle).to include_gems "rack 1.0.0"
+      expect(cache_base.join("a" * 222 + ".a3cb26de2edfce9f509a65c611d99c4b", "rack-1.0.0.gem")).to exist
     end
 
     describe "when the same gem from different sources is installed" do

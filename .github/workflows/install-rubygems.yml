@@ -26,7 +26,7 @@ jobs:
           - { name: "3.1", value: 3.1.4 }
           - { name: "3.2", value: 3.2.3 }
           - { name: "3.3", value: 3.3.0 }
-          - { name: jruby-9.4, value: jruby-9.4.2.0 }
+          - { name: jruby-9.4, value: jruby-9.4.5.0 }
           - { name: truffleruby-23, value: truffleruby-23.1.2 }
         openssl:
           - { name: "openssl", value: true }
@@ -99,7 +99,7 @@ jobs:
           - { name: "3.1", value: 3.1.4 } # Rails 7
           - { name: "3.2", value: 3.2.3 } # Rails 7
           - { name: "3.3", value: 3.3.0 } # Rails 7
-          - { name: jruby-9.4, value: jruby-9.4.2.0, rails-args: "--skip-webpack-install" } # Rails 6
+          - { name: jruby-9.4, value: jruby-9.4.5.0, rails-args: "--skip-webpack-install" } # Rails 6
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - name: Setup ruby
@@ -111,7 +111,7 @@ jobs:
         uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
         with:
           distribution: temurin
-          java-version: 19.0.2
+          java-version: 21.0.2
         if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install rubygems
         run: ruby setup.rb

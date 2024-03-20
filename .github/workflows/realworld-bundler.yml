@@ -49,11 +49,11 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Prepare dependencies
-        run: bin/rake spec:deps
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
+      - name: Prepare dependencies
+        run: bin/rake spec:deps
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
@@ -85,11 +85,11 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Prepare dependencies
-        run: bin/rake spec:deps
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
+      - name: Prepare dependencies
+        run: bin/rake spec:deps
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact

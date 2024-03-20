@@ -61,6 +61,7 @@ PLATFORMS
   universal-java-11
   universal-java-18
   universal-java-19
+  universal-java-20
   x64-mingw-ucrt
   x86_64-darwin-19
   x86_64-darwin-20

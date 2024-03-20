@@ -6,6 +6,8 @@ require_relative "path"
 
 module Spec
   module Helpers
+    extend self
+
     include Spec::Path
 
     def reset!
@@ -187,7 +189,7 @@ module Spec
 
       require "open3"
       require "shellwords"
-      Open3.popen3(env, *cmd.shellsplit, chdir: dir) do |stdin, stdout, stderr, wait_thr|
+      Open3.popen3(env, *cmd.shellsplit, chdir: dir.to_s) do |stdin, stdout, stderr, wait_thr|
         yield stdin, stdout, wait_thr if block_given?
         stdin.close
 
@@ -317,6 +319,12 @@ module Spec
       end
     end
 
+    def install_dev_bundler
+      extend Path
+
+      system_gems :bundler, path: pristine_system_gem_path
+    end
+
     def install_gem(path, install_dir, default = false)
       raise "OMG `#{path}` does not exist!" unless File.exist?(path)
 
@@ -327,6 +335,8 @@ module Spec
     end
 
     def with_built_bundler(version = nil, &block)
+      require_relative "builders"
+
       Builders::BundlerBuilder.new(self, "bundler", version)._build(&block)
     end
 

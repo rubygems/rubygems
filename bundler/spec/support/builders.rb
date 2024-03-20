@@ -424,16 +424,19 @@ module Spec
         FileUtils.mkdir_p build_path
 
         @context.shipped_files.each do |shipped_file|
+          source_shipped_file = File.expand_path(shipped_file, @context.source_root)
           target_shipped_file = shipped_file
           target_shipped_file = shipped_file.sub(/\Alibexec/, "exe") if @context.ruby_core?
           target_shipped_file = build_path + target_shipped_file
           target_shipped_dir = File.dirname(target_shipped_file)
           FileUtils.mkdir_p target_shipped_dir unless File.directory?(target_shipped_dir)
-          FileUtils.cp shipped_file, target_shipped_file, preserve: true
+          FileUtils.cp source_shipped_file, target_shipped_file, preserve: true
         end
 
         @context.replace_version_file(@version, dir: build_path)
         @context.replace_required_ruby_version(@required_ruby_version, dir: build_path) if @required_ruby_version
+
+        require_relative "build_metadata"
 
         Spec::BuildMetadata.write_build_metadata(dir: build_path)
 

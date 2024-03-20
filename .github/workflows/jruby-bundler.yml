@@ -36,13 +36,13 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@d4526a55538b775af234ba4af27118ed6f8f6677 # v1.172.0
         with:
-          ruby-version: jruby-9.4.2.0
+          ruby-version: jruby-9.4.5.0
           bundler: none
       - name: Setup java
         uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
         with:
           distribution: temurin
-          java-version: 19.0.2
+          java-version: 21.0.2
         if: "!startsWith(matrix.os.name, 'ubuntu')"
       - name: Prepare dependencies
         run: |

@@ -1,4 +1,4 @@
-# 2.5.7 (March 20, 2024)
+# 2.5.7 (March 22, 2024)
 
 ## Deprecations:
 

@@ -1,12 +1,12 @@
 GIT
   remote: https://github.com/cocoapods/molinillo.git
-  revision: 6bc3d6045edadf800ba1b634fef15d3574369e60
+  revision: 6a6d9c1818cf257fc03ed6bd340a57d25c7cfea9
   specs:
     molinillo (0.8.0)
 
 GIT
   remote: https://github.com/jhawthorn/pub_grub.git
-  revision: 4250c533895080c356407d1f49619cb90fa2562d
+  revision: 55a2d65c5c3176f72de5e25d59fb6f52b9fe60ef
   specs:
     pub_grub (0.5.0)
 
@@ -68,4 +68,4 @@ CHECKSUMS
   uri (0.13.0) sha256=26553c2a9399762e1e8bebd4444b4361c4b21298cf1c864b22eeabc9c4998f24
 
 BUNDLED WITH
-   2.5.6
+   2.5.7

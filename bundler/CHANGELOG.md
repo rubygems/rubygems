@@ -1,3 +1,21 @@
+# 2.5.7 (March 22, 2024)
+
+## Deprecations:
+
+  - Deprecate `bundle plugin install --local-git=` [#7048](https://github.com/rubygems/rubygems/pull/7048)
+
+## Enhancements:
+
+  - Ignore commented out keys in config file [#7514](https://github.com/rubygems/rubygems/pull/7514)
+  - Fix exclusion of `.gemspec` file itself in `bundle gem` generated gemspec file [#7488](https://github.com/rubygems/rubygems/pull/7488)
+  - Remove redundant configs from `bundle gem` generated rubocop configuration [#7478](https://github.com/rubygems/rubygems/pull/7478)
+  - Add `gitlab:` git source shorthand [#7449](https://github.com/rubygems/rubygems/pull/7449)
+  - Use full path for `instance_eval` in `Bundler::DSL#eval_gemfile` [#7471](https://github.com/rubygems/rubygems/pull/7471)
+
+## Documentation:
+
+  - Use https instead of http in documentation links [#7481](https://github.com/rubygems/rubygems/pull/7481)
+
 # 2.5.6 (February 6, 2024)
 
 ## Deprecations:

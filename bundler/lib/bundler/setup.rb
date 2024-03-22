@@ -5,6 +5,11 @@ require_relative "shared_helpers"
 if Bundler::SharedHelpers.in_bundle?
   require_relative "../bundler"
 
+  # try to auto_install first before we get to the `Bundler.ui.silence`, so user knows what is happening
+  if Bundler.settings[:auto_install]
+    Bundler.auto_install
+  end
+
   if STDOUT.tty? || ENV["BUNDLER_FORCE_TTY"]
     begin
       Bundler.ui.silence { Bundler.setup }

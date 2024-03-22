@@ -165,6 +165,25 @@ module Bundler
       end
     end
 
+    # Automatically installs missing gems from Gemfile.
+    #
+    # To setup the Bundler runtime, see +Bundler.setup+.
+    def auto_install
+      definition.specs
+    rescue GemNotFound, GitError
+      ui.info "Automatically installing missing gems."
+      reset!
+
+      settings.temporary(no_install: false) do
+        Plugin.gemfile_install(default_gemfile) if feature_flag.plugins?
+
+        definition = self.definition
+        definition.validate_runtime!
+
+        Installer.install(root, definition, {})
+      end
+    end
+
     # Setups Bundler environment (see Bundler.setup) if it is not already set,
     # and loads all gems from groups specified. Unlike ::setup, can be called
     # multiple times with different groups (if they were allowed by setup).

@@ -1,7 +1,0 @@
-> GET /info/metasploit-erd
-> accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-> accept: */*
-> user-agent: bundler/2.4.0.dev rubygems/3.4.0.dev ruby/3.1.2 (arm64-apple-darwin21) command/lock options/ 19ed6be188f20214
-> connection: keep-alive
-> keep-alive: 30
-> host: index.rubygems.org

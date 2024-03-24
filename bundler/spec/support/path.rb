@@ -75,6 +75,18 @@ module Spec
       @man_dir ||= lib_dir.join("bundler/man")
     end
 
+    def hax
+      spec_dir.join("support/hax.rb")
+    end
+
+    def switch
+      spec_dir.join("support/switch_rubygems.rb")
+    end
+
+    def artifice_dir
+      spec_dir.join("support/artifice")
+    end
+
     def tracked_files
       @tracked_files ||= git_ls_files(tracked_files_glob)
     end

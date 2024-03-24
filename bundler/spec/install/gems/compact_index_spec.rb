@@ -729,7 +729,7 @@ RSpec.describe "compact index api" do
         gem "rack"
       G
 
-      bundle :install, env: { "RUBYOPT" => opt_add("-I#{bundled_app("broken_ssl")}", ENV["RUBYOPT"]) }, raise_on_error: false
+      bundle :install, env: { "RUBYOPT" => "-I#{bundled_app("broken_ssl")}" }, raise_on_error: false
       expect(err).to include("OpenSSL")
     end
   end

@@ -81,29 +81,9 @@ module Spec
       bundle_bin = options.delete(:bundle_bin)
       bundle_bin ||= installed_bindir.join("bundle")
 
-      env = options.delete(:env) || {}
-
-      requires = options.delete(:requires) || []
-      realworld = RSpec.current_example.metadata[:realworld]
-
-      artifice = options.delete(:artifice) do
-        if realworld
-          "vcr"
-        else
-          "fail"
-        end
-      end
-      if artifice
-        requires << "#{Path.spec_dir}/support/artifice/#{artifice}.rb"
-      end
-
-      load_path = []
-      load_path << spec_dir
-
-      dir = options.delete(:dir) || bundled_app
-      raise_on_error = options.delete(:raise_on_error)
-
       args = options.map do |k, v|
+        next if [:env, :requires, :artifice, :dir, :raise_on_error].include?(k)
+
         case v
         when nil
           next
@@ -116,9 +96,9 @@ module Spec
         end
       end.join
 
-      ruby_cmd = build_ruby_cmd({ load_path: load_path, requires: requires, env: env })
-      cmd = "#{ruby_cmd} #{bundle_bin} #{cmd}#{args}"
-      sys_exec(cmd, { env: env, dir: dir, raise_on_error: raise_on_error }, &block)
+      cmd = "#{Gem.ruby} -I#{spec_dir} #{bundle_bin} #{cmd}#{args}"
+
+      sys_exec(cmd, options, &block)
     end
 
     def bundler(cmd, options = {})
@@ -127,9 +107,8 @@ module Spec
     end
 
     def ruby(ruby, options = {})
-      ruby_cmd = build_ruby_cmd
       escaped_ruby = ruby.shellescape
-      sys_exec(%(#{ruby_cmd} -w -e #{escaped_ruby}), options)
+      sys_exec(%(#{Gem.ruby} -w -e #{escaped_ruby}), { artifice: nil }.merge(options))
     end
 
     def load_error_ruby(ruby, name, opts = {})
@@ -142,32 +121,12 @@ module Spec
       R
     end
 
-    def build_ruby_cmd(options = {})
-      libs = options.delete(:load_path)
-      lib_option = libs ? "-I#{libs.join(File::PATH_SEPARATOR)}" : []
-
-      requires = options.delete(:requires) || []
-
-      hax_path = "#{Path.spec_dir}/support/hax.rb"
-
-      # For specs that need to ignore the default Bundler gem, load hax before
-      # anything else since other stuff may actually load bundler and not skip
-      # the default version
-      options[:env]&.include?("BUNDLER_IGNORE_DEFAULT_GEM") ? requires.prepend(hax_path) : requires.append(hax_path)
-      require_option = requires.map {|r| "-r#{r}" }
-
-      [Gem.ruby, *lib_option, *require_option].compact.join(" ")
-    end
-
     def gembin(cmd, options = {})
       cmd = bundled_app("bin/#{cmd}") unless cmd.to_s.include?("/")
       sys_exec(cmd.to_s, options)
     end
 
     def gem_command(command, options = {})
-      env = options[:env] || {}
-      env["RUBYOPT"] = opt_add(opt_add("-r#{spec_dir}/support/hax.rb", env["RUBYOPT"]), ENV["RUBYOPT"])
-      options[:env] = env
       sys_exec("#{Path.gem_bin} #{command}", options)
     end
 
@@ -180,8 +139,7 @@ module Spec
     end
 
     def sys_exec(cmd, options = {})
-      env = options[:env] || {}
-      env["RUBYOPT"] = opt_add(opt_add("-r#{spec_dir}/support/switch_rubygems.rb", env["RUBYOPT"]), ENV["RUBYOPT"])
+      env = prepare_env(options)
       dir = options[:dir] || bundled_app
       command_execution = CommandExecution.new(cmd.to_s, dir)
 
@@ -557,6 +515,41 @@ module Spec
     end
 
     private
+
+    def prepare_env(options)
+      env = options.delete(:env) || {}
+      requires = options.delete(:requires) || []
+
+      current_example = RSpec.current_example
+
+      if current_example
+        artifice = options.delete(:artifice) do
+          if current_example.metadata[:realworld]
+            "vcr"
+          else
+            "fail"
+          end
+        end
+
+        if artifice
+          requires << "#{artifice_dir}/#{artifice}.rb"
+        end
+      end
+
+      rubyopt = env["RUBYOPT"] || ""
+
+      rubyopt = opt_add(ENV["RUBYOPT"], rubyopt) if ENV["RUBYOPT"]
+
+      requires.each do |r|
+        rubyopt = opt_add("-r#{r}", rubyopt)
+      end
+
+      rubyopt = opt_add("-r#{hax}", rubyopt)
+      rubyopt = opt_add("-r#{switch}", rubyopt)
+
+      env["RUBYOPT"] = rubyopt
+      env
+    end
 
     def git_root_dir?
       root.to_s == `git rev-parse --show-toplevel`.chomp

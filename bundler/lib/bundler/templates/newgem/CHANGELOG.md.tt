@@ -1,5 +1,0 @@
-## [Unreleased]
-
-## [0.1.0] - <%= Time.now.strftime('%F') %>
-
-- Initial release

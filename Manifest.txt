@@ -164,6 +164,7 @@ bundler/lib/bundler/plugin/events.rb
 bundler/lib/bundler/plugin/index.rb
 bundler/lib/bundler/plugin/installer.rb
 bundler/lib/bundler/plugin/installer/git.rb
+bundler/lib/bundler/plugin/installer/path.rb
 bundler/lib/bundler/plugin/installer/rubygems.rb
 bundler/lib/bundler/plugin/source_list.rb
 bundler/lib/bundler/process_lock.rb

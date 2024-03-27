@@ -26,8 +26,8 @@ RSpec.describe "bundle install with git sources" do
       expect(out).to eq("WIN")
     end
 
-    it "caches the git repo", bundler: "< 3" do
-      expect(Dir["#{default_bundle_path}/cache/bundler/git/foo-1.0-*"]).to have_attributes size: 1
+    it "caches the git repo" do
+      expect(Dir["#{default_cache_path}/git/foo-1.0-*"]).to have_attributes size: 1
     end
 
     it "does not write to cache on bundler/setup" do
@@ -39,7 +39,6 @@ RSpec.describe "bundle install with git sources" do
 
     it "caches the git repo globally and properly uses the cached repo on the next invocation" do
       simulate_new_machine
-      bundle "config set global_gem_cache true"
       bundle :install
       expect(Dir["#{home}/.bundle/cache/git/foo-1.0-*"]).to have_attributes size: 1
 
@@ -333,8 +332,6 @@ RSpec.describe "bundle install with git sources" do
 
     it "does not download random non-head refs" do
       sys_exec("git update-ref -m \"Bundler Spec!\" refs/bundler/1 main~1", dir: lib_path("foo-1.0"))
-
-      bundle "config set global_gem_cache true"
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"

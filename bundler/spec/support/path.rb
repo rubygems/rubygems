@@ -121,11 +121,7 @@ module Spec
     end
 
     def default_cache_path(*path)
-      if Bundler.feature_flag.global_gem_cache?
-        home(".bundle/cache", *path)
-      else
-        default_bundle_path("cache/bundler", *path)
-      end
+      home(".bundle/cache", *path)
     end
 
     def bundled_app(*path)

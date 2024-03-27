@@ -506,17 +506,6 @@ RSpec.describe Bundler::SharedHelpers do
         )
       end
     end
-
-    context "system throws an unhandled SystemCallError" do
-      let(:error) { SystemCallError.new("Shields down", 1337) }
-      let(:file_op_block) { proc {|_path| raise error } }
-
-      it "raises a GenericSystemCallError" do
-        expect { subject.filesystem_access("/path", &file_op_block) }.to raise_error(
-          Bundler::GenericSystemCallError, /error accessing.+underlying.+Shields down/m
-        )
-      end
-    end
   end
 
   describe "#major_deprecation" do

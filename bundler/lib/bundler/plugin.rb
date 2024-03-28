@@ -39,8 +39,9 @@ module Bundler
       raise InvalidOption, "You cannot specify `--branch` and `--ref` at the same time." if options["branch"] && options["ref"]
 
       specs = Installer.new.install(names, options)
+      plugins = plugins_to_save(names, specs)
 
-      save_plugins names, specs
+      save_plugins(plugins, specs)
     rescue PluginError
       specs_to_delete = specs.select {|k, _v| names.include?(k) && !index.commands.values.include?(k) }
       specs_to_delete.each_value {|spec| Bundler.rm_rf(spec.full_gem_path) }
@@ -113,10 +114,10 @@ module Bundler
 
         return if definition.dependencies.empty?
 
-        plugins = definition.dependencies.map(&:name).reject {|p| index.installed? p }
         installed_specs = Installer.new.install_definition(definition)
+        plugins = plugins_to_save(definition.dependencies.map(&:name), installed_specs)
 
-        save_plugins plugins, installed_specs, builder.inferred_plugins
+        save_plugins(plugins, installed_specs, builder.inferred_plugins)
       end
     rescue RuntimeError => e
       unless e.is_a?(GemfileError)
@@ -139,6 +140,15 @@ module Bundler
         local_root
       else
         global_root
+      end
+    end
+
+    # Return array of plugins that we need save or update the path
+    # based if was not installed with that version yet
+    def plugins_to_save(plugins, installed_specs)
+      plugins.reject do |p|
+        installed_spec = installed_specs[p]
+        installed_spec.nil? || index.version_already_installed?(p, installed_spec.version)
       end
     end
 
@@ -253,7 +263,7 @@ module Bundler
     # @param [Array<String>] names of inferred source plugins that can be ignored
     def save_plugins(plugins, specs, optional_plugins = [])
       plugins.each do |name|
-        next if index.installed?(name)
+        next if index.version_already_installed?(name, specs[name].version)
 
         spec = specs[name]
 

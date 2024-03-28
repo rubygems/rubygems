@@ -111,6 +111,15 @@ module Bundler
         @commands[command]
       end
 
+      # Plugin version is already installed?
+      def version_already_installed?(name, version)
+        plugin_path = @plugin_paths[name]
+        return false unless plugin_path
+
+        File.basename(plugin_path) == "#{name}-#{version}"
+      end
+
+      # Plugin is already installed?
       def installed?(name)
         @plugin_paths[name]
       end

@@ -384,6 +384,7 @@ lib/rubygems/commands/pristine_command.rb
 lib/rubygems/commands/push_command.rb
 lib/rubygems/commands/query_command.rb
 lib/rubygems/commands/rdoc_command.rb
+lib/rubygems/commands/rebuild_command.rb
 lib/rubygems/commands/search_command.rb
 lib/rubygems/commands/server_command.rb
 lib/rubygems/commands/setup_command.rb
@@ -425,6 +426,7 @@ lib/rubygems/gemcutter_utilities.rb
 lib/rubygems/gemcutter_utilities/webauthn_listener.rb
 lib/rubygems/gemcutter_utilities/webauthn_listener/response.rb
 lib/rubygems/gemcutter_utilities/webauthn_poller.rb
+lib/rubygems/gemspec_helpers.rb
 lib/rubygems/install_default_message.rb
 lib/rubygems/install_message.rb
 lib/rubygems/install_update_options.rb

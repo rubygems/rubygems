@@ -1,3 +1,15 @@
+# 2.5.8 (April 11, 2024)
+
+## Enhancements:
+
+  - Allow installing plugins from path via CLI [#6960](https://github.com/rubygems/rubygems/pull/6960)
+  - Improve validation of `bundle plugin install` options [#7529](https://github.com/rubygems/rubygems/pull/7529)
+
+## Bug fixes:
+
+  - Fix resolver error message when it runs out of versions due to `--strict --patch` filtering out everything [#7527](https://github.com/rubygems/rubygems/pull/7527)
+  - Fix incorrect `bundle update --bundler` message [#7516](https://github.com/rubygems/rubygems/pull/7516)
+
 # 2.5.7 (March 22, 2024)
 
 ## Deprecations:

@@ -1,3 +1,29 @@
+# 3.5.8 / 2024-04-11
+
+## Security:
+
+* Respect global umask when writing regular files. Pull request
+  [#7518](https://github.com/rubygems/rubygems/pull/7518) by
+  deivid-rodriguez
+
+## Enhancements:
+
+* Allow string keys with gemrc. Pull request
+  [#7543](https://github.com/rubygems/rubygems/pull/7543) by hsbt
+* [Experimental] Add "gem rebuild" command. Pull request
+  [#4913](https://github.com/rubygems/rubygems/pull/4913) by duckinator
+* Installs bundler 2.5.8 as a default gem.
+
+## Bug fixes:
+
+* Fix NoMethodError crash when building errors about corrupt package
+  files. Pull request
+  [#7539](https://github.com/rubygems/rubygems/pull/7539) by jez
+* Fix resolver to properly intersect Arrays of `Gem::Resolver::Activation`
+  objects. Pull request
+  [#7537](https://github.com/rubygems/rubygems/pull/7537) by
+  deivid-rodriguez
+
 # 3.5.7 / 2024-03-22
 
 ## Enhancements:

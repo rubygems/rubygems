@@ -4,6 +4,8 @@
 require_relative "../spec/support/rubygems_ext"
 
 require_relative "../spec/support/switch_rubygems"
+
+require "ostruct" # Backfill missing require in turbo_tests. Remove when added upstream
 require "turbo_tests"
 
 if RUBY_PLATFORM.match?(/mingw|mswin/)

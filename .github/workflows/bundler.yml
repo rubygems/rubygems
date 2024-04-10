@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - integrate-upstream-turbo-tests
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
@@ -25,28 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - { name: Ubuntu, value: ubuntu-22.04 }
-
-        ruby:
-          - { name: ruby-3.0, value: 3.0.6 }
-          - { name: ruby-3.1, value: 3.1.4 }
-          - { name: ruby-3.2, value: 3.2.3 }
-          - { name: ruby-3.3, value: 3.3.0 }
-
-        bundler:
-          - { name: 2, value: '' }
-          - { name: 3, value: 3.0.0 }
-
         include:
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 }, timeout: 90 }
-
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 }, timeout: 150 }
 
     env:
@@ -54,11 +34,22 @@ jobs:
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+        with:
+          repository: deivid-rodriguez/turbo_tests
+          ref: windows-support
+          path: turbo_tests
       - name: Setup ruby
         uses: ruby/setup-ruby@5f19ec79cedfadb78ab837f95b87734d0003c899 # v1.173.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - run: |
+          bundle install
+          bundle exec rake install
+        working-directory: ./turbo_tests
+      - run: |
+          rm -rf turbo_tests
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'

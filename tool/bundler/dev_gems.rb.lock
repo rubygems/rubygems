@@ -2,6 +2,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.5.1)
+    fileutils (1.7.2)
+    json (2.7.2)
+    json (2.7.2-java)
     kramdown (2.4.0)
       rexml
     kramdown-parser-gfm (1.1.0)
@@ -26,6 +29,7 @@ GEM
       kramdown-parser-gfm (>= 1.0.1, < 1.2)
       mustache (~> 1.0)
       nokogiri (~> 1.10, >= 1.10.10)
+    open3 (0.2.1)
     parallel (1.24.0)
     parallel_tests (3.8.1)
       parallel
@@ -50,7 +54,10 @@ GEM
     rspec-support (3.13.1)
     test-unit (3.6.2)
       power_assert
-    turbo_tests (2.2.0)
+    turbo_tests (2.2.2)
+      fileutils (~> 1.4)
+      json (~> 2.3)
+      open3 (~> 0.1)
       parallel_tests (>= 3.3.0, < 5)
       rspec (>= 3.10)
     uri (0.13.0)
@@ -80,12 +87,15 @@ DEPENDENCIES
   rspec-expectations (~> 3.12)
   rspec-mocks (~> 3.12)
   test-unit (~> 3.0)
-  turbo_tests (~> 2.1)
+  turbo_tests (~> 2.2.2)
   uri (~> 0.13.0)
   webrick (~> 1.6)
 
 CHECKSUMS
   diff-lcs (1.5.1) sha256=273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe
+  fileutils (1.7.2)
+  json (2.7.2) sha256=1898b5cbc81cd36c0fd4d0b7ad2682c39fb07c5ff682fc6265f678f550d4982c
+  json (2.7.2-java) sha256=138e3038b5361b3d06ee2e8aa2be00bed0d0de4ef5f1553fc5935e5b93aca7ee
   kramdown (2.4.0) sha256=b62e5bcbd6ea20c7a6730ebbb2a107237856e14f29cebf5b10c876cc1a2481c5
   kramdown-parser-gfm (1.1.0) sha256=fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729
   mini_portile2 (2.8.5) sha256=7a37db8ae758086c3c3ac3a59c036704d331e965d5e106635e4a42d6e66089ce
@@ -97,6 +107,7 @@ CHECKSUMS
   nokogiri (1.16.3-x86_64-darwin) sha256=bc22786f4db4c32a5587e3b77a106408148d3bb1602dd0b52c0f5c968c42d17d
   nokogiri (1.16.3-x86_64-linux) sha256=47a3330e41b49a100225b6fab490b2dc43410931e01e791886e0c2998412e8cb
   nronn (0.11.1) sha256=60305c7a42dcaf6bdd33210993a7e38087520717561da101bea1df7197546369
+  open3 (0.2.1)
   parallel (1.24.0) sha256=5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397
   parallel_tests (3.8.1) sha256=c781c0910be3b489411f24e3a3397d57f481d6ee4eb27dba2a1cd4b8a0967f06
   power_assert (2.0.3) sha256=cd5e13c267370427c9804ce6a57925d6030613e341cb48e02eec1f3c772d4cf8
@@ -111,7 +122,7 @@ CHECKSUMS
   rspec-mocks (3.13.0) sha256=735a891215758d77cdb5f4721fffc21078793959d1f0ee4a961874311d9b7f66
   rspec-support (3.13.1) sha256=48877d4f15b772b7538f3693c22225f2eda490ba65a0515c4e7cf6f2f17de70f
   test-unit (3.6.2) sha256=3ce480c23990ca504a3f0d6619be2a560e21326cefd1b86d0f9433c387f26039
-  turbo_tests (2.2.0) sha256=1fc08defd07aef5329c35f69b08827eb66daddf642dcf40adc426543fabbfdcc
+  turbo_tests (2.2.2)
   uri (0.13.0) sha256=26553c2a9399762e1e8bebd4444b4361c4b21298cf1c864b22eeabc9c4998f24
   webrick (1.8.1) sha256=19411ec6912911fd3df13559110127ea2badd0c035f7762873f58afc803e158f
 

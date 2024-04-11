@@ -1,3 +1,9 @@
+# 3.5.9 / 2024-04-12
+
+## Enhancements:
+
+* Installs bundler 2.5.9 as a default gem.
+
 # 3.5.8 / 2024-04-11
 
 ## Security:

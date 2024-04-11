@@ -685,7 +685,7 @@ namespace :bundler do
   task "release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "bundler:release:github"]
 
   desc "Generates the Bundler changelog for a specific target version"
-  task :generate_changelog, [:version] do |_t, opts|
+  task :generate_changelog, [:version] => [:install_release_dependencies] do |_t, opts|
     Release.for_bundler(opts[:version]).cut_changelog!
   end
 

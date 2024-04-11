@@ -80,7 +80,7 @@ DEPENDENCIES
   rspec-expectations (~> 3.12)
   rspec-mocks (~> 3.12)
   test-unit (~> 3.0)
-  turbo_tests (~> 2.1)
+  turbo_tests (= 2.2.0)
   uri (~> 0.13.0)
   webrick (~> 1.6)
 

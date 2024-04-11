@@ -164,6 +164,7 @@ bundler/lib/bundler/plugin/events.rb
 bundler/lib/bundler/plugin/index.rb
 bundler/lib/bundler/plugin/installer.rb
 bundler/lib/bundler/plugin/installer/git.rb
+bundler/lib/bundler/plugin/installer/path.rb
 bundler/lib/bundler/plugin/installer/rubygems.rb
 bundler/lib/bundler/plugin/source_list.rb
 bundler/lib/bundler/process_lock.rb
@@ -383,6 +384,7 @@ lib/rubygems/commands/pristine_command.rb
 lib/rubygems/commands/push_command.rb
 lib/rubygems/commands/query_command.rb
 lib/rubygems/commands/rdoc_command.rb
+lib/rubygems/commands/rebuild_command.rb
 lib/rubygems/commands/search_command.rb
 lib/rubygems/commands/server_command.rb
 lib/rubygems/commands/setup_command.rb
@@ -424,6 +426,7 @@ lib/rubygems/gemcutter_utilities.rb
 lib/rubygems/gemcutter_utilities/webauthn_listener.rb
 lib/rubygems/gemcutter_utilities/webauthn_listener/response.rb
 lib/rubygems/gemcutter_utilities/webauthn_poller.rb
+lib/rubygems/gemspec_helpers.rb
 lib/rubygems/install_default_message.rb
 lib/rubygems/install_message.rb
 lib/rubygems/install_update_options.rb

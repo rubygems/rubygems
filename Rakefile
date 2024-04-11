@@ -200,7 +200,7 @@ task :clear_package do
   rm_rf "pkg"
 end
 
-desc "Generates the changelog for a specific target version"
+desc "Generates the RubyGems changelog for a specific target version"
 task :generate_changelog, [:version] => [:install_release_dependencies] do |_t, opts|
   require_relative "tool/release"
 
@@ -684,7 +684,7 @@ namespace :bundler do
   desc "Push to rubygems.org"
   task "release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "bundler:release:github"]
 
-  desc "Generates the changelog for a specific target version"
+  desc "Generates the Bundler changelog for a specific target version"
   task :generate_changelog, [:version] do |_t, opts|
     Release.for_bundler(opts[:version]).cut_changelog!
   end

@@ -1,3 +1,9 @@
+# 2.5.9 (April 12, 2024)
+
+## Bug fixes:
+
+  - Fix installing plugins via relative paths [#7571](https://github.com/rubygems/rubygems/pull/7571)
+
 # 2.5.8 (April 11, 2024)
 
 ## Enhancements:

@@ -50,4 +50,18 @@ module Gem
       end
     end
   end
+
+  if ENV["BUNDLER_SPEC_READ_ONLY"]
+    module ReadOnly
+      def open(file, mode)
+        if file != IO::NULL && mode == "wb"
+          raise Errno::EROFS
+        else
+          super
+        end
+      end
+    end
+
+    File.singleton_class.prepend ReadOnly
+  end
 end

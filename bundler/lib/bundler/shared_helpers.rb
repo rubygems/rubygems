@@ -111,10 +111,6 @@ module Bundler
       raise NoSpaceOnDeviceError.new(path, action)
     rescue Errno::ENOTSUP
       raise OperationNotSupportedError.new(path, action)
-    rescue Errno::EEXIST, Errno::ENOENT
-      raise
-    rescue SystemCallError => e
-      raise GenericSystemCallError.new(e, "There was an error accessing `#{path}`.")
     end
 
     def major_deprecation(major_version, message, removed_message: nil, print_caller_location: false)

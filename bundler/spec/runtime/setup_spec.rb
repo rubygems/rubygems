@@ -1599,4 +1599,38 @@ end
     sys_exec "#{Gem.ruby} #{script}", raise_on_error: false
     expect(out).to include("requiring foo used the monkeypatch")
   end
+
+  context "in a read-only filesystem" do
+    before do
+      gemfile <<-G
+        source "#{file_uri_for(gem_repo4)}"
+      G
+
+      lockfile <<-L
+        GEM
+          remote: #{file_uri_for(gem_repo4)}/
+
+        PLATFORMS
+          x86_64-darwin-19
+
+        DEPENDENCIES
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+
+    it "should fail loudly if the lockfile platforms don't include the current platform" do
+      simulate_platform(Gem::Platform.new("x86_64-linux")) do
+        ruby <<-RUBY, raise_on_error: false, env: { "BUNDLER_SPEC_READ_ONLY" => "true", "BUNDLER_FORCE_TTY" => "true" }
+          require "bundler/setup"
+        RUBY
+      end
+
+      expect(err).to include(
+        "Your bundle only supports platforms [\"x86_64-darwin-19\"] but your local platform is x86_64-linux. " \
+        "Add the current platform to the lockfile with\n`bundle lock --add-platform x86_64-linux` and try again."
+      )
+    end
+  end
 end

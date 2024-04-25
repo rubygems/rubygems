@@ -1454,6 +1454,7 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/Cargo.toml")).to exist
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/extconf.rb")).to exist
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/src/lib.rs")).to exist
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/build.rs")).to exist
       end
 
       it "includes rake-compiler, rb_sys gems and required_rubygems_version constraint" do
@@ -1481,6 +1482,28 @@ RSpec.describe "bundle gem" do
         RAKEFILE
 
         expect(bundled_app("#{gem_name}/Rakefile").read).to eq(rakefile)
+      end
+
+      it "configures the crate such that `cargo test` works", :ruby_repo, :mri_only do
+        env = setup_rust_env
+        gem_path = bundled_app(gem_name)
+        result = sys_exec("cargo test", env: env, dir: gem_path)
+
+        expect(result).to include("1 passed")
+      end
+
+      def setup_rust_env
+        skip "rust toolchain of mingw is broken" if RUBY_PLATFORM.match?("mingw")
+
+        env = {
+          "CARGO_HOME" => ENV.fetch("CARGO_HOME", File.join(ENV["HOME"], ".cargo")),
+          "RUSTUP_HOME" => ENV.fetch("RUSTUP_HOME", File.join(ENV["HOME"], ".rustup")),
+          "RUSTUP_TOOLCHAIN" => ENV.fetch("RUSTUP_TOOLCHAIN", "stable"),
+        }
+
+        system(env, "cargo", "-V", out: IO::NULL, err: [:child, :out])
+        skip "cargo not present" unless $?.success?
+        env
       end
     end
   end

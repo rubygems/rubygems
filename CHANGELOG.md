@@ -1,3 +1,24 @@
+# 3.5.10 / 2024-05-03
+
+## Security:
+
+* Add a limit to the size of the metadata and checksums files in a gem
+  package. Pull request
+  [#7568](https://github.com/rubygems/rubygems/pull/7568) by segiddins
+
+## Enhancements:
+
+* Don't fully require `rubygems` from `rubygems/package` to prevent some
+  circular require warnings when using Bundler. Pull request
+  [#7612](https://github.com/rubygems/rubygems/pull/7612) by
+  deivid-rodriguez
+* Installs bundler 2.5.10 as a default gem.
+
+## Bug fixes:
+
+* Rename credential email to identifier in WebAuthn poller. Pull request
+  [#7623](https://github.com/rubygems/rubygems/pull/7623) by jenshenny
+
 # 3.5.9 / 2024-04-12
 
 ## Enhancements:

@@ -22,12 +22,12 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.0", value: 3.0.6 }
-          - { name: "3.1", value: 3.1.4 }
-          - { name: "3.2", value: 3.2.3 }
-          - { name: "3.3", value: 3.3.0 }
-          - { name: jruby-9.4, value: jruby-9.4.2.0 }
-          - { name: truffleruby-23, value: truffleruby-23.1.2 }
+          - { name: "3.0", value: 3.0.7 }
+          - { name: "3.1", value: 3.1.5 }
+          - { name: "3.2", value: 3.2.4 }
+          - { name: "3.3", value: 3.3.1 }
+          - { name: jruby-9.4, value: jruby-9.4.6.0 }
+          - { name: truffleruby-24, value: truffleruby-24.0.1 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }
@@ -96,10 +96,10 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.1", value: 3.1.4 } # Rails 7
-          - { name: "3.2", value: 3.2.3 } # Rails 7
-          - { name: "3.3", value: 3.3.0 } # Rails 7
-          - { name: jruby-9.4, value: jruby-9.4.2.0, rails-args: "--skip-webpack-install" } # Rails 6
+          - { name: "3.1", value: 3.1.5 } # Rails 7
+          - { name: "3.2", value: 3.2.4 } # Rails 7
+          - { name: "3.3", value: 3.3.1 } # Rails 7
+          - { name: jruby-9.4, value: jruby-9.4.6.0, rails-args: "--skip-webpack-install" } # Rails 6
     steps:
       - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
       - name: Setup ruby

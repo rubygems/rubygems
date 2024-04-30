@@ -33,10 +33,10 @@ jobs:
           - { name: "3.3", value: 3.3.1 }
 
         include:
-          - ruby: { name: jruby-9.4, value: jruby-9.4.6.0 }
+          - ruby: { name: jruby, value: jruby-9.4.6.0 }
             os: { name: Ubuntu, value: ubuntu-22.04 }
 
-          - ruby: { name: truffleruby-24, value: truffleruby-24.0.1 }
+          - ruby: { name: truffleruby, value: truffleruby-24.0.1 }
             os: { name: Ubuntu, value: ubuntu-22.04 }
 
           - os: { name: Windows, value: windows-2022 }
@@ -59,7 +59,7 @@ jobs:
         run: rake setup
       - name: Run Test
         run: rake test
-        if: "!startsWith(matrix.ruby.name, 'truffleruby') && !startsWith(matrix.ruby.name, 'jruby')"
+        if: matrix.ruby.name != 'truffleruby' && matrix.ruby.name != 'jruby'
       - name: Run Test isolatedly
         run: rake test:isolated
         if: matrix.ruby.name == '3.3' && matrix.os.name != 'Windows'
@@ -68,6 +68,6 @@ jobs:
         if: startsWith(matrix.ruby.name, 'jruby')
       - name: Run Test (Truffleruby)
         run: TRUFFLERUBYOPT="--experimental-options --testing-rubygems" rake test
-        if: startsWith(matrix.ruby.name, 'truffleruby')
+        if: matrix.ruby.name == 'truffleruby'
 
     timeout-minutes: 60

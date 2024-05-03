@@ -409,14 +409,14 @@ RSpec.describe "bundle install from an existing gemspec" do
 
       it "should install" do
         results = bundle "install", artifice: "endpoint"
-        expect(results).to include("Installing rack 1.0.0")
+        expect(results).to include("Installed rack 1.0.0")
         expect(the_bundle).to include_gems "rack 1.0.0"
       end
     end
 
     it "should install", :jruby do
       results = bundle "install", artifice: "endpoint"
-      expect(results).to include("Installing rack 1.0.0")
+      expect(results).to include("Installed rack 1.0.0")
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
 

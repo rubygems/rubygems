@@ -25,27 +25,27 @@ jobs:
           - { name: Ubuntu, value: ubuntu-22.04 }
 
         ruby:
-          - { name: ruby-3.0, value: 3.0.6 }
-          - { name: ruby-3.1, value: 3.1.4 }
-          - { name: ruby-3.2, value: 3.2.3 }
-          - { name: ruby-3.3, value: 3.3.0 }
+          - { name: ruby-3.0, value: 3.0.7 }
+          - { name: ruby-3.1, value: 3.1.5 }
+          - { name: ruby-3.2, value: 3.2.4 }
+          - { name: ruby-3.3, value: 3.3.1 }
 
         bundler:
           - { name: 2, value: '' }
           - { name: 3, value: 3.0.0 }
 
         include:
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 } }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems
     steps:
-      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
       - name: Setup ruby
-        uses: ruby/setup-ruby@5f19ec79cedfadb78ab837f95b87734d0003c899 # v1.173.0
+        uses: ruby/setup-ruby@1198b074305f9356bd56dd4b311757cc0dab2f1c # v1.175.1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -57,7 +57,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: cassettes-bundler-${{ matrix.bundler.name }}-${{ matrix.os.value }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -70,18 +70,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.6 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.4 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.3 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.0 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.7 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.5 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.1 } }
     steps:
-      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
       - name: Setup ruby
-        uses: ruby/setup-ruby@5f19ec79cedfadb78ab837f95b87734d0003c899 # v1.173.0
+        uses: ruby/setup-ruby@1198b074305f9356bd56dd4b311757cc0dab2f1c # v1.175.1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -93,7 +93,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: cassettes-system-rubygems-bundler-${{ matrix.bundler.name }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -104,16 +104,16 @@ jobs:
     needs: [bundler, system_rubygems_bundler]
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
       - name: Setup ruby
-        uses: ruby/setup-ruby@5f19ec79cedfadb78ab837f95b87734d0003c899 # v1.173.0
+        uses: ruby/setup-ruby@1198b074305f9356bd56dd4b311757cc0dab2f1c # v1.175.1
         with:
-          ruby-version: 3.3.0
+          ruby-version: 3.3.1
           bundler: none
       - name: Prepare dependencies
         run: rake setup
       - name: Download all used cassettes as artifacts
-        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
+        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
         with:
           path: ./bundler/spec/support/artifice/used_vcr_cassettes
       - name: Check unused cassettes

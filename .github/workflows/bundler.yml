@@ -29,33 +29,33 @@ jobs:
           - { name: Ubuntu, value: ubuntu-22.04 }
 
         ruby:
-          - { name: ruby-3.0, value: 3.0.6 }
-          - { name: ruby-3.1, value: 3.1.4 }
-          - { name: ruby-3.2, value: 3.2.3 }
-          - { name: ruby-3.3, value: 3.3.0 }
+          - { name: ruby-3.0, value: 3.0.7 }
+          - { name: ruby-3.1, value: 3.1.5 }
+          - { name: ruby-3.2, value: 3.2.4 }
+          - { name: ruby-3.3, value: 3.3.1 }
 
         bundler:
           - { name: 2, value: '' }
           - { name: 3, value: 3.0.0 }
 
         include:
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 }, timeout: 90 }
 
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.6 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.4 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.3 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 }, timeout: 150 }
 
     env:
       RGV: ..
       RUBYOPT: --disable-gems
     steps:
-      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
       - name: Setup ruby
-        uses: ruby/setup-ruby@5f19ec79cedfadb78ab837f95b87734d0003c899 # v1.173.0
+        uses: ruby/setup-ruby@1198b074305f9356bd56dd4b311757cc0dab2f1c # v1.175.1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

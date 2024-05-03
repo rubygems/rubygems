@@ -156,7 +156,7 @@ RSpec.describe "bundle pristine" do
       bundle "pristine foo bar weakling"
 
       expect(err).to include("Cannot pristine bar (1.0). Gem is sourced from local path.")
-      expect(out).to include("Installing weakling 1.0")
+      expect(out).to include("Installed weakling 1.0")
 
       expect(weakling_changes_txt).not_to be_file
       expect(foo_changes_txt).not_to be_file

@@ -134,7 +134,7 @@ RSpec.describe "bundle console", bundler: "< 3", readline: true do
       input.puts("puts 'hello'")
       input.puts("exit")
     end
-    expect(out).to include("Installing foo 1.0")
+    expect(out).to include("Installed foo 1.0")
     expect(out).to include("hello")
     expect(the_bundle).to include_gems "foo 1.0"
   end

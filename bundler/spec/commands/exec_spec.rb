@@ -612,7 +612,7 @@ RSpec.describe "bundle exec" do
 
     bundle "config set auto_install 1"
     bundle "exec rackup"
-    expect(out).to include("Installing foo 1.0")
+    expect(out).to include("Installed foo 1.0")
   end
 
   it "performs an automatic bundle install with git gems" do
@@ -658,7 +658,7 @@ RSpec.describe "bundle exec" do
     G
 
     bundle "exec fastlane"
-    expect(out).to include("Installing optparse 999.999.999")
+    expect(out).to include("Installed optparse 999.999.999")
     expect(out).to include("2.192.0")
   end
 

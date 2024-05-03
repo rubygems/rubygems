@@ -1624,6 +1624,6 @@ end
       require 'bundler/setup'
     RUBY
     expect(err).to be_empty
-    expect(out).to include("Installing rack 1.0.0")
+    expect(out).to include("Installed rack 1.0.0")
   end
 end

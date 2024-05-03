@@ -104,7 +104,7 @@ RSpec.describe "bundle install with gem sources" do
 
       bundle "install --verbose"
 
-      expect(out).to include("Installing rack 1.0.0")
+      expect(out).to include("Installed rack 1.0.0")
       expect(default_bundle_path("gems/rack-1.0.0")).to exist
       expect(the_bundle).to include_gems("rack 1.0.0")
     end
@@ -1265,9 +1265,9 @@ RSpec.describe "bundle install with gem sources" do
         gem "yard", group: :c
       G
 
-      expect(out).to include("Installing rack")
-      expect(out).to include("Installing rake")
-      expect(out).not_to include("Installing yard")
+      expect(out).to include("Installed rack")
+      expect(out).to include("Installed rake")
+      expect(out).not_to include("Installed yard")
     end
   end
 
@@ -1290,7 +1290,7 @@ RSpec.describe "bundle install with gem sources" do
         gem "bar"
       G
 
-      expect(out).to include("Using foo 1.0.0").and include("Fetching bar 1.0.0").and include("Installing bar 1.0.0")
+      expect(out).to include("Using foo 1.0.0").and include("Fetching bar 1.0.0").and match(/Installed bar 1.0.0 in \d+\.\d+s/)
       expect(last_command).to be_success
     end
   end

@@ -150,12 +150,12 @@ RSpec.describe "bundle install with specific platforms" do
 
     it "still installs the generic RUBY variant if necessary" do
       bundle "install --verbose", artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
-      expect(out).to include("Installing nokogiri 1.3.10")
+      expect(out).to include("Installed nokogiri 1.3.10")
     end
 
     it "still installs the generic RUBY variant if necessary, even in frozen mode" do
       bundle "install --verbose", artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s, "BUNDLE_FROZEN" => "true" }
-      expect(out).to include("Installing nokogiri 1.3.10")
+      expect(out).to include("Installed nokogiri 1.3.10")
     end
   end
 
@@ -198,7 +198,7 @@ RSpec.describe "bundle install with specific platforms" do
       L
 
       bundle "install --verbose", artifice: "compact_index", env: { "BUNDLER_VERSION" => "2.1.4", "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
-      expect(out).to include("Installing libv8 8.4.255.0 (universal-darwin)")
+      expect(out).to include("Installed libv8 8.4.255.0 (universal-darwin)")
 
       bundle "add mini_racer --verbose", artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
       expect(out).to include("Using libv8 8.4.255.0 (universal-darwin)")
@@ -235,7 +235,7 @@ RSpec.describe "bundle install with specific platforms" do
       L
 
       bundle "install --verbose", artifice: "compact_index_precompiled_before", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
-      expect(out).to include("Installing grpc 1.50.0 (universal-darwin)")
+      expect(out).to include("Installed grpc 1.50.0 (universal-darwin)")
     end
   end
 

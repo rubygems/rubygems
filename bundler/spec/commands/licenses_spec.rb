@@ -32,6 +32,6 @@ RSpec.describe "bundle licenses" do
 
     bundle "config set auto_install 1"
     bundle :licenses
-    expect(out).to include("Installing foo 1.0")
+    expect(out).to include("Installed foo 1.0")
   end
 end

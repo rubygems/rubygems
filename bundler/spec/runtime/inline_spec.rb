@@ -87,7 +87,7 @@ RSpec.describe "bundler/inline#gemfile" do
       end
     RUBY
 
-    expect(out).to include("Installing activesupport")
+    expect(out).to include("Installed activesupport")
     err_lines = err.split("\n")
     err_lines.reject! {|line| line =~ /\.rb:\d+: warning: / }
     expect(err_lines).to be_empty
@@ -270,8 +270,8 @@ RSpec.describe "bundler/inline#gemfile" do
       end
     RUBY
 
-    expect(out).to include("Installing activesupport")
-    expect(out).not_to include("Installing rack")
+    expect(out).to include("Installed activesupport")
+    expect(out).not_to include("Installed rack")
     expect(err).to be_empty
   end
 
@@ -293,8 +293,8 @@ RSpec.describe "bundler/inline#gemfile" do
       end
     RUBY
 
-    expect(out).to include("Installing activesupport")
-    expect(out).not_to include("Installing rack")
+    expect(out).to include("Installed activesupport")
+    expect(out).not_to include("Installed rack")
     expect(err).to be_empty
   end
 
@@ -316,8 +316,8 @@ RSpec.describe "bundler/inline#gemfile" do
       end
     RUBY
 
-    expect(out).to include("Installing activesupport")
-    expect(out).not_to include("Installing rack")
+    expect(out).to include("Installed activesupport")
+    expect(out).not_to include("Installed rack")
     expect(err).to be_empty
   end
 
@@ -425,7 +425,7 @@ RSpec.describe "bundler/inline#gemfile" do
       end
     RUBY
 
-    expect(out).to include("Installing rake #{rake_version}")
+    expect(out).to include("Installed rake #{rake_version}")
     expect(out).not_to include("was 11.3.0")
     expect(err).to be_empty
   end
@@ -636,7 +636,7 @@ RSpec.describe "bundler/inline#gemfile" do
       end
     RUBY
 
-    expect(out).to include("Installing timeout 999")
+    expect(out).to include("Installed timeout 999")
   end
 
   it "does not upcase ENV" do

@@ -50,7 +50,7 @@ RSpec.describe "bundler plugin install" do
 
     it "doesn't install plugin again" do
       bundle "plugin install foo --source #{file_uri_for(gem_repo2)}"
-      expect(out).not_to include("Installing plugin foo")
+      expect(out).not_to include("Installed plugin foo")
       expect(out).not_to include("Installed plugin foo")
     end
   end
@@ -72,8 +72,8 @@ RSpec.describe "bundler plugin install" do
 
     bundle "plugin install foo kung-foo --version '1.0' --source #{file_uri_for(gem_repo2)}"
 
-    expect(out).to include("Installing foo 1.0")
-    expect(out).to include("Installing kung-foo 1.0")
+    expect(out).to include("Installed foo 1.0")
+    expect(out).to include("Installed kung-foo 1.0")
     plugin_should_be_installed("foo", "kung-foo")
   end
 
@@ -83,10 +83,10 @@ RSpec.describe "bundler plugin install" do
     end
 
     bundle "plugin install foo --version 1.0 --source #{file_uri_for(gem_repo2)} --verbose"
-    expect(out).to include("Installing foo 1.0")
+    expect(out).to include("Installed foo 1.0")
 
     bundle "plugin install foo --source #{file_uri_for(gem_repo2)} --verbose"
-    expect(out).to include("Installing foo 1.1")
+    expect(out).to include("Installed foo 1.1")
 
     bundle "plugin install foo --source #{file_uri_for(gem_repo2)} --verbose"
     expect(out).to include("Using foo 1.1")
@@ -146,8 +146,8 @@ RSpec.describe "bundler plugin install" do
 
       bundle "plugin install foo kung-foo --version '1.0' --source #{file_uri_for(gem_repo2)}"
 
-      expect(out).to include("Installing foo 1.0")
-      expect(out).to include("Installing kung-foo 1.0")
+      expect(out).to include("Installed foo 1.0")
+      expect(out).to include("Installed kung-foo 1.0")
       plugin_should_be_installed("foo", "kung-foo")
 
       build_repo2 do
@@ -284,7 +284,7 @@ RSpec.describe "bundler plugin install" do
 
       bundle "install"
 
-      expect(out).to include("Installing foo 1.0")
+      expect(out).to include("Installed foo 1.0")
 
       plugin_should_be_installed("foo")
 

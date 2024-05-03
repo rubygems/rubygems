@@ -1,3 +1,27 @@
+# 2.5.10 (May 3, 2024)
+
+## Security:
+
+  - Never write credentials to lockfiles [#7560](https://github.com/rubygems/rubygems/pull/7560)
+
+## Enhancements:
+
+  - Add auto_install support to require "bundler/setup" [#6561](https://github.com/rubygems/rubygems/pull/6561)
+  - Add `--glob` flag to `bundle add` [#7557](https://github.com/rubygems/rubygems/pull/7557)
+
+## Bug fixes:
+
+  - Make sure `bundle update <specific_gems>` can always update to the latest resolvable version of each requested gem [#7558](https://github.com/rubygems/rubygems/pull/7558)
+  - Show better error when installed gemspecs are unreadable [#7603](https://github.com/rubygems/rubygems/pull/7603)
+  - Fix `bundle update` not working on an out of sync lockfile [#7607](https://github.com/rubygems/rubygems/pull/7607)
+  - Don't upcase Windows ENV before backing it up [#7574](https://github.com/rubygems/rubygems/pull/7574)
+  - Properly resolve aliases when `bundle help` is run [#7601](https://github.com/rubygems/rubygems/pull/7601)
+  - Fix issue installing gems with linux-musl variant on non musl linux [#7583](https://github.com/rubygems/rubygems/pull/7583)
+
+## Documentation:
+
+  - Clarify `bundle check` behaviour in docs [#7613](https://github.com/rubygems/rubygems/pull/7613)
+
 # 2.5.9 (April 12, 2024)
 
 ## Bug fixes:

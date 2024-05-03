@@ -198,14 +198,14 @@ module Bundler
 
         spec.source.checksum_store.register(spec, installer.gem_checksum)
 
-        message = "Installing #{version_message(spec, options[:previous_spec])}"
-        message += " with native extensions" if spec.extensions.any?
-        Bundler.ui.confirm message
-
         start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         installed_spec = installer.install
         end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        Bundler.ui.confirm "Installed #{version_message(spec, options[:previous_spec])} in %.3fs" % (end_time - start_time)
+
+        message = "Installed #{version_message(spec, options[:previous_spec])}"
+        message += " with native extensions" if spec.extensions.any?
+        message += format(" in %.3fs", end_time - start_time)
+        Bundler.ui.confirm message
 
         spec.full_gem_path = installed_spec.full_gem_path
         spec.loaded_from = installed_spec.loaded_from

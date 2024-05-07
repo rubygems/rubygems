@@ -26,7 +26,7 @@ jobs:
           - { name: "3.1", value: 3.1.5 }
           - { name: "3.2", value: 3.2.4 }
           - { name: "3.3", value: 3.3.1 }
-          - { name: jruby, value: jruby-9.4.6.0 }
+          - { name: jruby, value: jruby-9.4.7.0 }
           - { name: truffleruby, value: truffleruby-24.0.1 }
         openssl:
           - { name: "openssl", value: true }
@@ -85,6 +85,9 @@ jobs:
       - name: Check bundler install didn't hit the network
         run: if grep -q 'GET http' output.txt; then false; else true; fi
         working-directory: ./bundler
+      - name: Workaround bad nio4r release on JRuby, so that Rails can be installed below
+        run: gem install nio4r --version 2.7.1
+        if: matrix.ruby.name == 'jruby'
       - name: Check rails can be installed
         run: gem install rails --verbose --backtrace
     timeout-minutes: 10
@@ -99,7 +102,7 @@ jobs:
           - { name: "3.1", value: 3.1.5 } # Rails 7
           - { name: "3.2", value: 3.2.4 } # Rails 7
           - { name: "3.3", value: 3.3.1 } # Rails 7
-          - { name: jruby-9.4, value: jruby-9.4.6.0, rails-args: "--skip-webpack-install" } # Rails 6
+          - { name: jruby-9.4, value: jruby-9.4.7.0, rails-args: "--skip-webpack-install" } # Rails 6
     steps:
       - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
       - name: Setup ruby

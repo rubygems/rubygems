@@ -659,6 +659,7 @@ task :override_version do
 end
 
 namespace :bundler do
+  require_relative "bundler/lib/bundler/shared_helpers"
   chdir(File.expand_path("bundler", __dir__)) do
     require_relative "bundler/lib/bundler/gem_tasks"
   end

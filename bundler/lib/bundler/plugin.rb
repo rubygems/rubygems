@@ -342,7 +342,30 @@ module Bundler
       # done to avoid conflicts
       path = index.plugin_path(name)
 
-      Gem.add_to_load_path(*index.load_paths(name))
+      paths = index.load_paths(name)
+
+      all_paths_valid = true
+      paths.each do |p|
+        next if File.directory?(p)
+
+        message = <<~MESSAGE
+          Failed loading plugin #{name}:
+
+          Plugin path #{p} does not exist. This can happen if the plugin was \
+          installed with a different version of Ruby that has since been uninstalled.
+
+          If you would like to reinstall the plugin, run:
+
+          bundler plugin uninstall #{name} && bundler plugin install #{name}
+
+          Continuing without installing plugin #{name}.
+        MESSAGE
+        Bundler.ui.warn message
+        all_paths_valid = false
+      end
+      return unless all_paths_valid
+
+      Gem.add_to_load_path(*paths)
 
       load path.join(PLUGIN_FILE_NAME)
 

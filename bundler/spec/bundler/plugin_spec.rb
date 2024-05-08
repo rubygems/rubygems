@@ -333,5 +333,27 @@ RSpec.describe Bundler::Plugin do
         end.to output("win\n").to_stdout
       end
     end
+
+    context "the plugin load_path is invalid" do
+      before do
+        allow(index).to receive(:load_paths).with("foo-plugin").and_return(["invalid-file-name"])
+      end
+
+      it "outputs a useful warning" do
+        msg =
+          "Failed loading plugin foo-plugin:\n\n" \
+          "Plugin path invalid-file-name does not exist. This can happen if the plugin was " \
+          "installed with a different version of Ruby that has since been uninstalled.\n\n" \
+          "If you would like to reinstall the plugin, run:\n\n" \
+          "bundler plugin uninstall foo-plugin && bundler plugin install foo-plugin\n\n" \
+          "Continuing without installing plugin foo-plugin.\n"
+
+        expect(Bundler.ui).to receive(:warn).with(msg)
+
+        Plugin.hook(Bundler::Plugin::Events::EVENT1)
+
+        expect(subject.loaded?("foo-plugin")).to be_falsey
+      end
+    end
   end
 end

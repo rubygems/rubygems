@@ -15,9 +15,13 @@ These policies are intended to be examples of how to apply these goals, and we r
 
 Bundler tries for perfect backwards compatibility. That means that if something worked in version 1.x, it should continue to work in 1.y and 1.z. That thing may or may not continue to work in 2.x. We may not always get it right, and there may be extenuating circumstances that force us into choosing between different kinds of breakage, but compatibility is very important to us. Infrastructure should be as unsurprising as possible.
 
-As of August, 2022, the Bundler team ships features and bugfixes as 2.3.x versions, and may exceptionally backport security fixes to older series shipped with supported Rubies by default, namely, Bundler 2.1 (shipped with Ruby 2.7) and Bundler 2.2 (shipped with Ruby 3.0).
+Bundler supports any MRI Ruby versions supported by the Ruby core team, as [listed here](https://www.ruby-lang.org/en/downloads/branches/). Shortly after Ruby core team officially drops support for a Ruby release, the Bundler team will do the same. Bundler also supports the latest stable versions of JRuby and TruffleRuby, and we constantly evaluate changes in Ruby implementation usage to potentially support more implementations.
 
-As a August, 2022, Bundler supports Ruby and RubyGems versions all the way back to Ruby 2.3, for backwards compatibility reasons. Several improvements have been introduced to not break anything when dropping support for old Rubies, so we're aiming at dropping support for old Rubies at Christmas 2022, and follow the Ruby core team support policy more closely from then on.
+Bundler supports any RubyGems version [included by default](https://stdgems.org/rubygems/) with any supported Ruby version.
+
+The Bundler team ships features and bugfixes for the latest minor version of Bundler, and may exceptionally backport security fixes to older series shipped with Rubies that are officially supported.
+
+As of May, 2024, that means Bundler 2.5 is the only supported version, but the Bundler team may exceptionally backport security fixes to Bundler 2.4 (shipped with Ruby 3.2), and Bundler 2.3 (shipped with Ruby 3.1).
 
 These policies are not a guarantee that any particular fix will be backported. Instead, this is a way for us to set an upper limit on the versions of Ruby, RubyGems, and Bundler that we have to consider while making changes. Without the limit, the number of versions grows exponentially over time and quickly becomes overwhelming, which leads to maintainer burnout. We want to avoid that.
 

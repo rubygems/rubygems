@@ -56,18 +56,18 @@ jobs:
           echo "BINDGEN_EXTRA_CLANG_ARGS=$((gcm clang).source -replace "bin\clang.exe","include")" >> $env:GITHUB_ENV
         if: matrix.ruby.name == 'mswin'
       - name: Install Dependencies
-        run: rake setup
+        run: bin/rake setup
       - name: Run Test
-        run: rake test
+        run: bin/rake test
         if: matrix.ruby.name != 'truffleruby' && matrix.ruby.name != 'jruby'
       - name: Run Test isolatedly
-        run: rake test:isolated
+        run: bin/rake test:isolated
         if: matrix.ruby.name == '3.3' && matrix.os.name != 'Windows'
       - name: Run Test (JRuby)
-        run: JRUBY_OPTS=--debug rake test
+        run: JRUBY_OPTS=--debug bin/rake test
         if: startsWith(matrix.ruby.name, 'jruby')
       - name: Run Test (Truffleruby)
-        run: TRUFFLERUBYOPT="--experimental-options --testing-rubygems" rake test
+        run: TRUFFLERUBYOPT="--experimental-options --testing-rubygems" bin/rake test
         if: matrix.ruby.name == 'truffleruby'
 
     timeout-minutes: 60

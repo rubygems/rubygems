@@ -31,7 +31,7 @@ here: https://guides.rubygems.org/contributing/
 
 ### Installing dependencies
 
-    rake setup
+    bin/rake setup
 
 > **NOTE**: If the above fails with permission related errors, you're most
 > likely using a global Ruby installation (like the one packaged by your OS),
@@ -58,7 +58,7 @@ To run commands like `bundle install` from the repo:
 
 To run the entire test suite you can use:
 
-    rake test
+    bin/rake test
 
 To run an individual test file located for example in `test/rubygems/test_deprecate.rb` you can use:
 

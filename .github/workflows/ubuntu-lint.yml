@@ -28,11 +28,11 @@ jobs:
           ruby-version: 3.3.1
           bundler: none
       - name: Install Dependencies
-        run: rake setup
+        run: bin/rake setup
       - name: Run Lint
-        run: rake rubocop
+        run: bin/rake rubocop
       - name: Generate docs
-        run: rake docs
+        run: bin/rake docs
       - name: Install & Check Dependencies
         run: bin/rake dev:frozen_deps
       - name: Misc checks

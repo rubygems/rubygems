@@ -7,9 +7,9 @@
   "remoteUser": "vscode",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   // Use 'postCreateCommand' to run commands after the container is created.
-  "onCreateCommand": "rake setup",
+  "onCreateCommand": "bin/rake setup",
   // Use 'updateContentCommand' to run commands when the container is updated.
-  "updateContentCommand": "rake update",
+  "updateContentCommand": "bin/rake update",
   // Configure tool-specific properties.
   "containerEnv": {
     "EDITOR": "code --wait",

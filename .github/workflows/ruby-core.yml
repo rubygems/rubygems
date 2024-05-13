@@ -30,7 +30,7 @@ jobs:
           bundler: none
       - name: Save latest buildable revision to environment
         run: echo "REF=$(ruby -v | cut -d')' -f1 | cut -d' ' -f5)" >> $GITHUB_ENV
-      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+      - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
         with:
           repository: ruby/ruby
           path: ruby/ruby
@@ -49,7 +49,7 @@ jobs:
           ./configure -C --disable-install-doc
           make -j2
         working-directory: ruby/ruby
-      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+      - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
         with:
           path: rubygems/rubygems
       - name: Sync tools

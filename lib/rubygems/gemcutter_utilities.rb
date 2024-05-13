@@ -275,7 +275,7 @@ module Gem::GemcutterUtilities
       otp_thread[:otp]
     else
       say "You have enabled multi-factor authentication. Please enter OTP code."
-      ask "Code:"
+      ask "Code: "
     end
   end
 
@@ -374,7 +374,7 @@ module Gem::GemcutterUtilities
     ts = Time.now.strftime("%Y%m%d%H%M%S")
     default_key_name = "#{hostname}-#{user}-#{ts}"
 
-    key_name = ask "API Key name [#{default_key_name}]" unless scope
+    key_name = ask "API Key name [#{default_key_name}]: " unless scope
     if key_name.nil? || key_name.empty?
       default_key_name
     else

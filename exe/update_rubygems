@@ -34,5 +34,5 @@ else
   update_dir = File.dirname(update_dir)
   Dir.chdir update_dir
   ENV["GEM_PREV_VER"] = Gem::VERSION
-  abort unless system(Gem.ruby, "setup.rb", *ARGV)
+  abort unless system(Gem.ruby, "--disable-gems", "setup.rb", *ARGV)
 end

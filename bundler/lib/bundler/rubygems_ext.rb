@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "pathname"
-
 require "rubygems" unless defined?(Gem)
 
 # We can't let `Gem::Source` be autoloaded in the `Gem::Specification#source`
@@ -47,7 +45,7 @@ module Gem
 
     def full_gem_path
       if source.respond_to?(:root)
-        Pathname.new(loaded_from).dirname.expand_path(source.root).to_s
+        File.expand_path(File.dirname(loaded_from), source.root)
       else
         rg_full_gem_path
       end
@@ -147,11 +145,9 @@ module Gem
 
   module BetterPermissionError
     def data
-      require_relative "shared_helpers"
-
-      Bundler::SharedHelpers.filesystem_access(loaded_from, :read) do
-        super
-      end
+      super
+    rescue Errno::EACCES
+      raise Bundler::PermissionError.new(loaded_from, :read)
     end
   end
 

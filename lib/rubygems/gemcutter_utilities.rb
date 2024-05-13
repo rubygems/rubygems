@@ -130,8 +130,8 @@ module Gem::GemcutterUtilities
 
     say "The existing key doesn't have access of #{scope} on #{pretty_host}. Please sign in to update access."
 
-    identifier = ask "Username/email"
-    password   = ask_for_password "      Password"
+    identifier = ask "Username/email: "
+    password   = ask_for_password "      Password: "
 
     response = rubygems_api_request(:put, "api/v1/api_key",
                                     sign_in_host, scope: scope) do |request|
@@ -159,8 +159,8 @@ module Gem::GemcutterUtilities
     say "Don't have an account yet? " \
         "Create one at #{sign_in_host}/sign_up"
 
-    identifier = ask "Username/email: "
-    password   = ask_for_password "      Password: "
+    identifier = ask "Username/email"
+    password   = ask_for_password "      Password"
     say "\n"
 
     key_name     = get_key_name(scope)
@@ -275,7 +275,7 @@ module Gem::GemcutterUtilities
       otp_thread[:otp]
     else
       say "You have enabled multi-factor authentication. Please enter OTP code."
-      ask "Code"
+      ask "Code:"
     end
   end
 

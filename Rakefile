@@ -589,10 +589,13 @@ end
 
 desc "Check RubyGems integration"
 task :check_rubygems_integration do
-  # Bundler monkeypatches RubyGems in some ways that could potentially break gem
-  # activation. Run a non trivial binstub activation, with two different
-  # versions of a dependent gem installed.
+  # Bundler monkeypatches RubyGems in some ways that could potentially break gem activation.
+
+  # Run a non trivial binstub activation, with two different versions of a dependent gem installed.
   sh("ruby -Ilib -S gem install reline:0.3.0 reline:0.3.1 irb && ruby -Ibundler/lib -rbundler -S irb --version")
+
+  # With two psych versions installed, load a gem that depends on pysch and then load rubygems extensions.
+  sh("ruby -Ilib -S gem install psych:5.1.1 psych:5.1.2 rdoc && ruby -Ibundler/lib -rrdoc/task -rbundler/rubygems_ext -e1")
 end
 
 namespace :man do

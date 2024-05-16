@@ -925,21 +925,15 @@ class Gem::Specification < Gem::BasicSpecification
   # Enumerate every known spec.  See ::dirs= and ::add_spec to set the list of
   # specs.
 
-  def self.each
-    return enum_for(:each) unless block_given?
-
-    _all.each do |x|
-      yield x
-    end
+  def self.each(&block)
+    specification_record.each(&block)
   end
 
   ##
   # Returns every spec that matches +name+ and optional +requirements+.
 
   def self.find_all_by_name(name, *requirements)
-    requirements = Gem::Requirement.default if requirements.empty?
-
-    Gem::Dependency.new(name, *requirements).matching_specs
+    specification_record.find_all_by_name(name, *requirements)
   end
 
   ##

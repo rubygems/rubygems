@@ -429,7 +429,7 @@ create_makefile '#{@spec.name}'
   end
 
   def test_uninstall_user_install
-    @user_spec = Gem::Specification.find_by_name "b"
+    Gem::Specification.dirs = [Gem.user_dir]
 
     uninstaller = Gem::Uninstaller.new(@user_spec.name,
                                        executables: true,
@@ -451,6 +451,32 @@ create_makefile '#{@spec.name}'
 
     assert_same uninstaller, @pre_uninstall_hook_arg
     assert_same uninstaller, @post_uninstall_hook_arg
+  end
+
+  def test_uninstall_user_install_with_symlinked_home
+    pend "Symlinks not supported or not enabled" unless symlink_supported?
+
+    Gem::Specification.dirs = [Gem.user_dir]
+
+    symlinked_home = File.join(@tempdir, "new-home")
+    FileUtils.ln_s(Gem.user_home, symlinked_home)
+
+    ENV["HOME"] = symlinked_home
+    Gem.instance_variable_set(:@user_home, nil)
+    Gem.instance_variable_set(:@data_home, nil)
+
+    uninstaller = Gem::Uninstaller.new(@user_spec.name,
+                                       executables: true,
+                                       user_install: true,
+                                       force: true)
+
+    gem_dir = File.join @user_spec.gem_dir
+
+    assert_path_exist gem_dir
+
+    uninstaller.uninstall
+
+    assert_path_not_exist gem_dir
   end
 
   def test_uninstall_wrong_repo

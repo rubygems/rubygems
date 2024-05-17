@@ -132,7 +132,7 @@ RSpec.describe "bundle binstubs <gem>" do
       let(:system_bundler_version) { Bundler::VERSION }
 
       it "runs bundler" do
-        bundle "install", env: { "DEBUG" => "1" }, bundle_bin: "bin/bundle"
+        bundle "install --verbose", bundle_bin: "bin/bundle"
         expect(out).to include %(Using bundler #{system_bundler_version}\n)
       end
 
@@ -147,7 +147,7 @@ RSpec.describe "bundle binstubs <gem>" do
         it "runs the correct version of bundler even if a higher version is installed" do
           system_gems "bundler-999.999.998", "bundler-999.999.999"
 
-          bundle "install", env: { "BUNDLER_VERSION" => "999.999.998", "DEBUG" => "1" }, raise_on_error: false, bundle_bin: "bin/bundle"
+          bundle "install --verbose", env: { "BUNDLER_VERSION" => "999.999.998" }, raise_on_error: false, bundle_bin: "bin/bundle"
           expect(out).to include %(Using bundler 999.999.998\n)
         end
       end
@@ -254,7 +254,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
       context "when update --bundler is called" do
         it "calls through to the latest bundler version" do
-          bundle "update --bundler", env: { "DEBUG" => "1" }, bundle_bin: "bin/bundle", artifice: nil
+          bundle "update --bundler --verbose", bundle_bin: "bin/bundle", artifice: nil
           using_bundler_line = /Using bundler ([\w\.]+)\n/.match(out)
           expect(using_bundler_line).to_not be_nil
           latest_version = using_bundler_line[1]
@@ -272,7 +272,7 @@ RSpec.describe "bundle binstubs <gem>" do
       context "without a lockfile" do
         it "falls back to the latest installed bundler" do
           FileUtils.rm bundled_app_lock
-          bundle "install", env: { "DEBUG" => "1" }, bundle_bin: "bin/bundle"
+          bundle "install --verbose", bundle_bin: "bin/bundle"
           expect(out).to include "Using bundler #{system_bundler_version}\n"
         end
       end

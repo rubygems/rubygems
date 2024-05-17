@@ -225,16 +225,14 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "prioritizes local gems over remote gems" do
-      build_gem "rack", "1.0.0", to_bundle: true do |s|
-        s.add_dependency "activesupport", "2.3.5"
-      end
+      build_gem "rack", "9.0.0", to_bundle: true
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rack"
       G
 
-      expect(the_bundle).to include_gems "rack 1.0.0", "activesupport 2.3.5"
+      expect(the_bundle).to include_gems "rack 9.0.0"
     end
 
     it "loads env plugins" do

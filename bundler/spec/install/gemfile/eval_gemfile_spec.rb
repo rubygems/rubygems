@@ -10,7 +10,7 @@ RSpec.describe "bundle install with gemfile that uses eval_gemfile" do
 
   context "eval-ed Gemfile points to an internal gemspec" do
     before do
-      create_file "Gemfile-other", <<-G
+      gemfile "Gemfile-other", <<-G
         source "#{file_uri_for(gem_repo1)}"
         gemspec :path => 'gems/gunks'
       G
@@ -36,7 +36,7 @@ RSpec.describe "bundle install with gemfile that uses eval_gemfile" do
         build_gem "zip-zip", "0.3"
       end
 
-      create_file bundled_app("gems/Gemfile"), <<-G
+      gemfile bundled_app("gems/Gemfile"), <<-G
         source "#{file_uri_for(gem_repo2)}"
 
         gemspec :path => "\#{__dir__}/gunks"
@@ -65,7 +65,7 @@ RSpec.describe "bundle install with gemfile that uses eval_gemfile" do
   context "eval-ed Gemfile has relative-path gems" do
     before do
       build_lib("a", path: bundled_app("gems/a"))
-      create_file bundled_app("nested/Gemfile-nested"), <<-G
+      gemfile bundled_app("nested/Gemfile-nested"), <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "a", :path => "../gems/a"
       G
@@ -108,9 +108,9 @@ RSpec.describe "bundle install with gemfile that uses eval_gemfile" do
 
   context "eval-ed Gemfile references other gemfiles" do
     it "works with relative paths" do
-      create_file "other/Gemfile-other", "gem 'rack'"
-      create_file "other/Gemfile", "eval_gemfile 'Gemfile-other'"
-      create_file "Gemfile-alt", <<-G
+      gemfile "other/Gemfile-other", "gem 'rack'"
+      gemfile "other/Gemfile", "eval_gemfile 'Gemfile-other'"
+      gemfile "Gemfile-alt", <<-G
         source "#{file_uri_for(gem_repo1)}"
         eval_gemfile "other/Gemfile"
       G

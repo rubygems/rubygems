@@ -146,7 +146,7 @@ RSpec.describe "ruby requirement" do
 
     FileUtils.mkdir nested_dir
 
-    create_file ".ruby-lsp/Gemfile", <<-G
+    gemfile ".ruby-lsp/Gemfile", <<-G
       eval_gemfile(File.expand_path("../Gemfile", __dir__))
     G
 

@@ -32,7 +32,7 @@ RSpec.describe "bundle init" do
 
   context "when a Gemfile already exists" do
     before do
-      create_file "Gemfile", <<-G
+      gemfile <<-G
         gem "rails"
       G
     end
@@ -129,7 +129,7 @@ RSpec.describe "bundle init" do
 
     context "when gems.rb already exists" do
       before do
-        create_file("gems.rb", <<-G)
+        gemfile("gems.rb", <<-G)
           gem "rails"
         G
       end

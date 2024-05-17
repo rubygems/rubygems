@@ -441,7 +441,7 @@ RSpec.describe "bundle remove" do
   describe "with eval_gemfile" do
     context "when gems are present in both gemfiles" do
       it "removes the gems" do
-        create_file "Gemfile-other", <<-G
+        gemfile "Gemfile-other", <<-G
           gem "rack"
         G
 
@@ -461,7 +461,7 @@ RSpec.describe "bundle remove" do
 
     context "when gems are present in other gemfile" do
       it "removes the gems" do
-        create_file "Gemfile-other", <<-G
+        gemfile "Gemfile-other", <<-G
           gem "rack"
         G
 
@@ -499,7 +499,7 @@ RSpec.describe "bundle remove" do
 
     context "when the gem is present in parent file but not in gemfile specified by eval_gemfile" do
       it "removes the gem" do
-        create_file "Gemfile-other", <<-G
+        gemfile "Gemfile-other", <<-G
           gem "rails"
         G
 
@@ -524,7 +524,7 @@ RSpec.describe "bundle remove" do
 
     context "when gems cannot be removed from other gemfile" do
       it "shows error" do
-        create_file "Gemfile-other", <<-G
+        gemfile "Gemfile-other", <<-G
           gem "rails"; gem "rack"
         G
 
@@ -549,7 +549,7 @@ RSpec.describe "bundle remove" do
 
     context "when gems could not be removed from parent gemfile" do
       it "shows error" do
-        create_file "Gemfile-other", <<-G
+        gemfile "Gemfile-other", <<-G
           gem "rack"
         G
 
@@ -575,7 +575,7 @@ RSpec.describe "bundle remove" do
 
     context "when gem present in gemfiles but could not be removed from one from one of them" do
       it "removes gem which can be removed and shows warning for file from which it cannot be removed" do
-        create_file "Gemfile-other", <<-G
+        gemfile "Gemfile-other", <<-G
           gem "rack"
         G
 

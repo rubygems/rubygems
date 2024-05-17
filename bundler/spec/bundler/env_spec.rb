@@ -167,9 +167,9 @@ RSpec.describe Bundler::Env do
 
     context "when eval_gemfile is used" do
       it "prints all gemfiles" do
-        create_file bundled_app("other/Gemfile-other"), "gem 'rack'"
-        create_file bundled_app("other/Gemfile"), "eval_gemfile 'Gemfile-other'"
-        create_file bundled_app("Gemfile-alt"), <<-G
+        gemfile bundled_app("other/Gemfile-other"), "gem 'rack'"
+        gemfile bundled_app("other/Gemfile"), "eval_gemfile 'Gemfile-other'"
+        gemfile bundled_app("Gemfile-alt"), <<-G
           source "#{file_uri_for(gem_repo1)}"
           eval_gemfile "other/Gemfile"
         G

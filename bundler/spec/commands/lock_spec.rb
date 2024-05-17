@@ -151,7 +151,7 @@ RSpec.describe "bundle lock" do
   end
 
   it "works with --gemfile flag" do
-    create_file "CustomGemfile", <<-G
+    gemfile "CustomGemfile", <<-G
       source "#{file_uri_for(repo)}"
       gem "foo"
     G

@@ -6,7 +6,7 @@ RSpec.describe "bundle exec" do
   it "works with --gemfile flag" do
     system_gems(system_gems_to_install, path: default_bundle_path)
 
-    create_file "CustomGemfile", <<-G
+    gemfile "CustomGemfile", <<-G
       source "#{file_uri_for(gem_repo1)}"
       gem "rack", "1.0.0"
     G
@@ -120,7 +120,7 @@ RSpec.describe "bundle exec" do
       Process.setproctitle("1-2-3-4-5-6-7")
       puts `ps -ocommand= -p#{$$}`
     RUBY
-    create_file "Gemfile", "source \"#{file_uri_for(gem_repo1)}\""
+    gemfile "Gemfile", "source \"#{file_uri_for(gem_repo1)}\""
     create_file "a.rb", script_that_changes_its_own_title_and_checks_if_picked_up_by_ps_unix_utility
     bundle "exec ruby a.rb"
     expect(out).to eq("1-2-3-4-5-6-7")
@@ -935,7 +935,7 @@ Run `bundle install` to install missing gems.
 
     context "when Bundler.setup fails and Gemfile is not the default" do
       before do
-        create_file "CustomGemfile", <<-G
+        gemfile "CustomGemfile", <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem 'rack', '2'
         G
@@ -1174,14 +1174,14 @@ __FILE__: #{path.to_s.inspect}
         bundle "config set path vendor/bundle"
         bundle "config set gemfile gemfiles/rack_6_1.gemfile"
 
-        create_file(bundled_app("gemfiles/rack_6_1.gemfile"), <<~RUBY)
+        gemfile(bundled_app("gemfiles/rack_6_1.gemfile"), <<~RUBY)
           source "#{file_uri_for(gem_repo2)}"
 
           gem "rails", "6.1.0"
         RUBY
 
         # A Gemfile needs to be in the root to trick bundler's root resolution
-        create_file(bundled_app("Gemfile"), "source \"#{file_uri_for(gem_repo1)}\"")
+        gemfile "source \"#{file_uri_for(gem_repo1)}\""
 
         bundle "install"
       end

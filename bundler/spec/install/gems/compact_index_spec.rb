@@ -941,13 +941,13 @@ RSpec.describe "compact index api" do
 
     bundle :install, artifice: "compact_index"
 
+    cache_path = File.join(Bundler.rubygems.user_home, ".bundle", "cache", "compact_index", "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5")
+
     # We must remove the etag so that we don't ignore the range and get a 304 Not Modified.
-    rack_info_etag_path = File.join(Bundler.rubygems.user_home, ".bundle", "cache", "compact_index",
-      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "info-etags", "rack-11690b09f16021ff06a6857d784a1870")
+    rack_info_etag_path = File.join(cache_path, "info-etags", "rack-11690b09f16021ff06a6857d784a1870")
     File.unlink(rack_info_etag_path) if File.exist?(rack_info_etag_path)
 
-    rack_info_path = File.join(Bundler.rubygems.user_home, ".bundle", "cache", "compact_index",
-      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "info", "rack")
+    rack_info_path = File.join(cache_path, "info", "rack")
     expected_rack_info_content = File.read(rack_info_path)
 
     # Modify the cache files to make the range not satisfiable

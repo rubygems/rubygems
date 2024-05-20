@@ -591,17 +591,13 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(err).to be_empty
   end
 
-  it "when requiring fileutils after does not show redefinition warnings", :realworld do
+  it "when requiring fileutils after does not show redefinition warnings" do
     Dir.mkdir tmp("path_without_gemfile")
 
     default_fileutils_version = ruby "gem 'fileutils', '< 999999'; require 'fileutils'; puts FileUtils::VERSION", raise_on_error: false
     skip "fileutils isn't a default gem" if default_fileutils_version.empty?
 
-    realworld_system_gems "fileutils --version 1.4.1"
-
-    realworld_system_gems "pathname --version 0.2.0"
-
-    script <<-RUBY, dir: tmp("path_without_gemfile"), env: { "BUNDLER_GEM_DEFAULT_DIR" => system_gem_path.to_s }
+    script <<-RUBY, dir: tmp("path_without_gemfile")
       require "bundler/inline"
 
       gemfile(true) do

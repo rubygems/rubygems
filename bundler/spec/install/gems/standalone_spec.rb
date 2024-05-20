@@ -141,13 +141,6 @@ RSpec.shared_examples "bundle install --standalone" do
 
   describe "with default gems and a lockfile", :ruby_repo do
     before do
-      realworld_system_gems "tsort --version 0.1.0"
-
-      necessary_system_gems = ["optparse --version 0.1.1", "psych --version 3.3.2", "logger --version 1.4.3", "etc --version 1.2.0", "stringio --version 3.1.0"]
-      necessary_system_gems += ["shellwords --version 0.1.0", "base64 --version 0.1.0", "resolv --version 0.2.1"] if Gem.rubygems_version < Gem::Version.new("3.3.a")
-      necessary_system_gems += ["yaml --version 0.1.1"] if Gem.rubygems_version < Gem::Version.new("3.4.a")
-      realworld_system_gems(*necessary_system_gems, path: scoped_gem_path(bundled_app("bundle")))
-
       build_gem "foo", "1.0.0", to_system: true, default: true do |s|
         s.add_dependency "bar"
       end
@@ -170,9 +163,9 @@ RSpec.shared_examples "bundle install --standalone" do
       bundle "lock", dir: cwd, artifice: "compact_index"
     end
 
-    it "works and points to the vendored copies, not to the default copies", :realworld do
+    it "works and points to the vendored copies, not to the default copies" do
       bundle "config set --local path #{bundled_app("bundle")}"
-      bundle :install, standalone: true, dir: cwd, artifice: "compact_index", env: { "BUNDLER_GEM_DEFAULT_DIR" => system_gem_path.to_s }
+      bundle :install, standalone: true, dir: cwd, artifice: "compact_index"
 
       load_path_lines = bundled_app("bundle/bundler/setup.rb").read.split("\n").select {|line| line.start_with?("$:.unshift") }
 

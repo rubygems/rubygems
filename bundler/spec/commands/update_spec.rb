@@ -1455,7 +1455,7 @@ RSpec.describe "bundle update --bundler" do
   end
 
   it "updates the bundler version in the lockfile even if the latest version is not installed", :ruby_repo do
-    pristine_system_gems "bundler-2.3.9"
+    pristine_system_gems "bundler-2.99.9"
 
     build_repo4 do
       build_gem "rack", "1.0"
@@ -1463,24 +1463,24 @@ RSpec.describe "bundle update --bundler" do
       build_bundler "999.0.0"
     end
 
-    install_gemfile <<-G, artifice: nil, env: { "BUNDLER_IGNORE_DEFAULT_GEM" => "true" }
-      source "#{file_uri_for(gem_repo4)}"
+    install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+      source "https://gems.repo4"
       gem "rack"
     G
-    lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.3.9")
+    lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.99.9")
 
-    bundle :update, bundler: true, artifice: "compact_index", verbose: true, env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+    bundle :update, bundler: true, artifice: "compact_index", verbose: true, env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }, raise_on_error: false, preserve_ruby_flags: true
 
     # Only updates properly on modern RubyGems.
 
     if Gem.rubygems_version >= Gem::Version.new("3.3.0.dev")
       expect(out).to include("Updating bundler to 999.0.0")
-      expect(out).to include("Using bundler 999.0.0")
-      expect(out).not_to include("Installing Bundler 2.3.9 and restarting using that version.")
+      expect(out).to include("Running `bundle update --bundler \"> 0.a\" --verbose` with bundler 999.0.0")
+      expect(out).not_to include("Installing Bundler 2.99.9 and restarting using that version.")
 
       expect(lockfile).to eq <<~L
         GEM
-          remote: #{file_uri_for(gem_repo4)}/
+          remote: https://gems.repo4/
           specs:
             rack (1.0)
 
@@ -1501,7 +1501,7 @@ RSpec.describe "bundle update --bundler" do
       # WITH to the latest bundler version. This means the below check fails
       # because it tries to use bundler 999.0.0 which did not get installed.
       # Workaround the bug by forcing the version we know is installed.
-      expect(the_bundle).to include_gems "rack 1.0", env: { "BUNDLER_VERSION" => "2.3.9" }
+      expect(the_bundle).to include_gems "rack 1.0", env: { "BUNDLER_VERSION" => "2.99.9" }
     end
   end
 

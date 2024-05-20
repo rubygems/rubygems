@@ -65,6 +65,7 @@ module Spec
       bundle_bin ||= installed_bindir.join("bundle")
 
       env = options.delete(:env) || {}
+      preserve_ruby_flags = options.delete(:preserve_ruby_flags)
 
       requires = options.delete(:requires) || []
       realworld = RSpec.current_example.metadata[:realworld]
@@ -101,6 +102,7 @@ module Spec
 
       ruby_cmd = build_ruby_cmd({ load_path: load_path, requires: requires, env: env })
       cmd = "#{ruby_cmd} #{bundle_bin} #{cmd}#{args}"
+      env["BUNDLER_SPEC_ORIGINAL_CMD"] = "#{ruby_cmd} #{bundle_bin}" if preserve_ruby_flags
       sys_exec(cmd, { env: env, dir: dir, raise_on_error: raise_on_error }, &block)
     end
 

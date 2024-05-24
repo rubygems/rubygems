@@ -5949,7 +5949,7 @@ There has been some minor usability enhancements and changes ...
   This *greatly* speeds up gem commands run in non-admin mode when the
   site-wide cache is out of date.
 * The gem command now used an HTTP HEAD command to detect if the
-  server's source index needs to be downloaed.
+  server's source index needs to be downloaded.
 * gem check gemname --test will run unit tests on installed gems that
   have unit tests.
 * Multiple gem names are allowed on the gem install command line.

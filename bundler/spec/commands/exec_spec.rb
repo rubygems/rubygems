@@ -85,32 +85,15 @@ RSpec.describe "bundle exec" do
     expect(out).to eq(Gem::VERSION)
   end
 
-  it "works when exec'ing back to bundler with a lockfile that doesn't include the current platform" do
+  it "works when exec'ing back to bundler to run a remote resolve" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
       gem "myrack", "0.9.1"
     G
 
-    # simulate lockfile generated with old version not including specific platform
-    lockfile <<-L
-      GEM
-        remote: #{file_uri_for(gem_repo1)}/
-        specs:
-          myrack (0.9.1)
+    bundle "exec bundle lock", env: { "BUNDLER_VERSION" => Bundler::VERSION }
 
-      PLATFORMS
-        RUBY
-
-      DEPENDENCIES
-        myrack (= 0.9.1)
-
-      BUNDLED WITH
-          2.1.4
-    L
-
-    bundle "exec bundle cache", env: { "BUNDLER_VERSION" => Bundler::VERSION }
-
-    expect(out).to include("Updating files in vendor/cache")
+    expect(out).to include("Writing lockfile")
   end
 
   it "respects custom process title when loading through ruby" do

@@ -515,6 +515,7 @@ lib/rubygems/source_list.rb
 lib/rubygems/spec_fetcher.rb
 lib/rubygems/specification.rb
 lib/rubygems/specification_policy.rb
+lib/rubygems/specification_record.rb
 lib/rubygems/ssl_certs/.document
 lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA.pem
 lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem

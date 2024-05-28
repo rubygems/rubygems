@@ -26,15 +26,15 @@ jobs:
           - { name: "3.1", value: 3.1.5 }
           - { name: "3.2", value: 3.2.4 }
           - { name: "3.3", value: 3.3.1 }
-          - { name: jruby, value: jruby-9.4.6.0 }
+          - { name: jruby, value: jruby-9.4.7.0 }
           - { name: truffleruby, value: truffleruby-24.0.1 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }
     steps:
-      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Setup ruby
-        uses: ruby/setup-ruby@1198b074305f9356bd56dd4b311757cc0dab2f1c # v1.175.1
+        uses: ruby/setup-ruby@943103cae7d3f1bb1e4951d5fcc7928b40e4b742 # v1.177.1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -85,6 +85,9 @@ jobs:
       - name: Check bundler install didn't hit the network
         run: if grep -q 'GET http' output.txt; then false; else true; fi
         working-directory: ./bundler
+      - name: Workaround bad nio4r release on JRuby, so that Rails can be installed below
+        run: gem install nio4r --version 2.7.1
+        if: matrix.ruby.name == 'jruby'
       - name: Check rails can be installed
         run: gem install rails --verbose --backtrace
     timeout-minutes: 10
@@ -99,11 +102,11 @@ jobs:
           - { name: "3.1", value: 3.1.5 } # Rails 7
           - { name: "3.2", value: 3.2.4 } # Rails 7
           - { name: "3.3", value: 3.3.1 } # Rails 7
-          - { name: jruby-9.4, value: jruby-9.4.6.0, rails-args: "--skip-webpack-install" } # Rails 6
+          - { name: jruby-9.4, value: jruby-9.4.7.0, rails-args: "--skip-webpack-install" } # Rails 6
     steps:
-      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Setup ruby
-        uses: ruby/setup-ruby@1198b074305f9356bd56dd4b311757cc0dab2f1c # v1.175.1
+        uses: ruby/setup-ruby@943103cae7d3f1bb1e4951d5fcc7928b40e4b742 # v1.177.1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

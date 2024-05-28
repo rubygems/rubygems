@@ -33,7 +33,7 @@ jobs:
           - { name: "3.3", value: 3.3.1 }
 
         include:
-          - ruby: { name: jruby, value: jruby-9.4.6.0 }
+          - ruby: { name: jruby, value: jruby-9.4.7.0 }
             os: { name: Ubuntu, value: ubuntu-22.04 }
 
           - ruby: { name: truffleruby, value: truffleruby-24.0.1 }
@@ -43,9 +43,9 @@ jobs:
             ruby: { name: mswin, value: mswin }
 
     steps:
-      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Setup ruby (Ubuntu/macOS)
-        uses: ruby/setup-ruby@1198b074305f9356bd56dd4b311757cc0dab2f1c # v1.175.1
+        uses: ruby/setup-ruby@943103cae7d3f1bb1e4951d5fcc7928b40e4b742 # v1.177.1
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -56,18 +56,18 @@ jobs:
           echo "BINDGEN_EXTRA_CLANG_ARGS=$((gcm clang).source -replace "bin\clang.exe","include")" >> $env:GITHUB_ENV
         if: matrix.ruby.name == 'mswin'
       - name: Install Dependencies
-        run: rake setup
+        run: bin/rake setup
       - name: Run Test
-        run: rake test
+        run: bin/rake test
         if: matrix.ruby.name != 'truffleruby' && matrix.ruby.name != 'jruby'
       - name: Run Test isolatedly
-        run: rake test:isolated
+        run: bin/rake test:isolated
         if: matrix.ruby.name == '3.3' && matrix.os.name != 'Windows'
       - name: Run Test (JRuby)
-        run: JRUBY_OPTS=--debug rake test
+        run: JRUBY_OPTS=--debug bin/rake test
         if: startsWith(matrix.ruby.name, 'jruby')
       - name: Run Test (Truffleruby)
-        run: TRUFFLERUBYOPT="--experimental-options --testing-rubygems" rake test
+        run: TRUFFLERUBYOPT="--experimental-options --testing-rubygems" bin/rake test
         if: matrix.ruby.name == 'truffleruby'
 
     timeout-minutes: 60

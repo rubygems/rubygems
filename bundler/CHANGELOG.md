@@ -1,3 +1,31 @@
+# 2.5.11 (May 28, 2024)
+
+## Deprecations:
+
+  - Deprecate Bundler constants [#7653](https://github.com/rubygems/rubygems/pull/7653)
+
+## Enhancements:
+
+  - Bump `bundle gem` generated COC to Contributor Covenant 2.1 [#7692](https://github.com/rubygems/rubygems/pull/7692)
+  - Retry a full clone when git server does not support shallow capabilities [#7649](https://github.com/rubygems/rubygems/pull/7649)
+
+## Bug fixes:
+
+  - Fix regression when caching gems from secondary sources [#7659](https://github.com/rubygems/rubygems/pull/7659)
+  - Fix error when Bundler installation is corrupted [#7642](https://github.com/rubygems/rubygems/pull/7642)
+  - Fix crash caused by RubyGems `require` gem activation logic running before Bundler can properly register its own monkeypatches [#7647](https://github.com/rubygems/rubygems/pull/7647)
+
+## Performance:
+
+  - Update cache checksums to decrease string allocations [#7637](https://github.com/rubygems/rubygems/pull/7637)
+  - Fix performance regression in applications with a local cache [#7680](https://github.com/rubygems/rubygems/pull/7680)
+
+## Documentation:
+
+  - Recommend `bin/rake` over `rake` in contributing docs [#7648](https://github.com/rubygems/rubygems/pull/7648)
+  - Monthly man update for May 2024 [#7640](https://github.com/rubygems/rubygems/pull/7640)
+  - Clarify Bundler support policy [#7633](https://github.com/rubygems/rubygems/pull/7633)
+
 # 2.5.10 (May 3, 2024)
 
 ## Security:

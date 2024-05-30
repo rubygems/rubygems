@@ -22,6 +22,7 @@ module Bundler
 
         lines(@compact_index.versions).each do |line|
           name, versions_string, checksum = line.split(" ", 3)
+          next unless versions_string # Artifactory has a bug where blank lines exist in the versions file
           @info_checksums[name] = checksum || ""
           versions_string.split(",") do |version|
             delete = version.delete_prefix!("-")
@@ -69,15 +70,16 @@ module Bundler
       # This is mostly the same as `split(" ", 3)` but it avoids allocating extra objects.
       # This method gets called at least once for every gem when parsing versions.
       def parse_version_checksum(line, checksums)
-        line.freeze # allows slicing into the string to not allocate a copy of the line
         name_end = line.index(" ")
+        return if name_end.nil? # Artifactory has a bug where blank lines exist in the versions file
         checksum_start = line.index(" ", name_end + 1) + 1
+        return if checksum_start.nil?
         checksum_end = line.size - checksum_start
-        # freeze name since it is used as a hash key
-        # pre-freezing means a frozen copy isn't created
-        name = line[0, name_end].freeze
+
+        line.freeze # allows slicing into the string to not allocate a copy of the line
+        name = line[0, name_end]
         checksum = line[checksum_start, checksum_end]
-        checksums[name] = checksum
+        checksums[name.freeze] = checksum # pre-freezing name means a frozen copy isn't created
       end
     end
   end

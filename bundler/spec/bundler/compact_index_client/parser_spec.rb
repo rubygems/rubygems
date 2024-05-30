@@ -56,6 +56,22 @@ RSpec.describe Bundler::CompactIndexClient::Parser do
       compact_index.versions = nil
       expect(parser).not_to be_available
     end
+
+    context "with Artifactory" do
+      # Artifactory is adding seemingly random blank lines to the versions file
+      let(:versions) { <<~VERSIONS }
+        a 1.0.0,1.0.1,1.1.0 aaa111
+
+        b 2.0.0,2.0.0-java bbb222
+        c 3.0.0,3.0.3,3.3.3 ccc333
+        c -3.0.3 ccc333yanked
+      VERSIONS
+
+      it "parses the versions file correctly even with blank lines in the file" do
+        expect(parser).to be_available
+        expect(parser.versions).not_to be_empty
+      end
+    end
   end
 
   describe "#names" do

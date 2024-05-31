@@ -228,6 +228,7 @@ bundler/lib/bundler/templates/newgem/ext/newgem/extconf-rust.rb.tt
 bundler/lib/bundler/templates/newgem/ext/newgem/newgem.c.tt
 bundler/lib/bundler/templates/newgem/ext/newgem/newgem.h.tt
 bundler/lib/bundler/templates/newgem/ext/newgem/src/lib.rs.tt
+bundler/lib/bundler/templates/newgem/github/workflows/build-gems.yml.tt
 bundler/lib/bundler/templates/newgem/github/workflows/main.yml.tt
 bundler/lib/bundler/templates/newgem/gitignore.tt
 bundler/lib/bundler/templates/newgem/gitlab-ci.yml.tt

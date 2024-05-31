@@ -136,6 +136,9 @@ module Bundler
       case config[:ci]
       when "github"
         templates.merge!("github/workflows/main.yml.tt" => ".github/workflows/main.yml")
+        if extension == "rust"
+          templates.merge!("github/workflows/build-gems.yml.tt" => ".github/workflows/build-gems.yml")
+        end
         config[:ci_config_path] = ".github "
       when "gitlab"
         templates.merge!("gitlab-ci.yml.tt" => ".gitlab-ci.yml")
@@ -446,13 +449,6 @@ module Bundler
 
     def standard_version
       "1.3"
-    end
-
-    def validate_rust_builder_rubygems_version
-      if Gem::Version.new(rust_builder_required_rubygems_version) > Gem.rubygems_version
-        Bundler.ui.error "Your RubyGems version (#{Gem.rubygems_version}) is too old to build Rust extension. Please update your RubyGems using `gem update --system` or any other way and try again."
-        exit 1
-      end
     end
   end
 end

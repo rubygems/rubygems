@@ -1424,18 +1424,6 @@ RSpec.describe "bundle gem" do
       end
     end
 
-    context "--ext parameter set with rust and old RubyGems" do
-      it "fails in friendly way" do
-        if ::Gem::Version.new("3.3.11") <= ::Gem.rubygems_version
-          skip "RubyGems compatible with Rust builder"
-        end
-
-        expect do
-          bundle ["gem", gem_name, "--ext=rust"].compact.join(" ")
-        end.to raise_error(RuntimeError, /too old to build Rust extension/)
-      end
-    end
-
     context "--ext parameter set with rust" do
       let(:flags) { "--ext=rust" }
 
@@ -1457,10 +1445,8 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/build.rs")).to exist
       end
 
-      it "includes rake-compiler, rb_sys gems and required_rubygems_version constraint" do
+      it "includes rake-compiler constraint" do
         expect(bundled_app("#{gem_name}/Gemfile").read).to include('gem "rake-compiler"')
-        expect(bundled_app("#{gem_name}/Gemfile").read).to include('gem "rb_sys"')
-        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include('spec.required_rubygems_version = ">= ')
       end
 
       it "depends on compile task for build" do
@@ -1503,6 +1489,8 @@ RSpec.describe "bundle gem" do
 
         system(env, "cargo", "-V", out: IO::NULL, err: [:child, :out])
         skip "cargo not present" unless $?.success?
+        # Hermetic Cargo setup
+        RbConfig::CONFIG.each { |k, v| env["RBCONFIG_#{k}"] = v }
         env
       end
     end

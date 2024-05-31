@@ -2,7 +2,14 @@
 
 require_relative "<%= File.basename(config[:namespaced_path]) %>/version"
 <%- if config[:ext] -%>
-require_relative "<%= File.basename(config[:namespaced_path]) %>/<%= config[:underscored_name] %>"
+# Attempt to load a versioned extension based on the Ruby version.
+# Fall back to loading the non-versioned extension if version-specific loading fails.
+begin
+  RUBY_VERSION =~ /(\d+\.\d+)/
+  require "#{Regexp.last_match(1)}/<%= File.basename(config[:namespaced_path]) %>/<%= config[:underscored_name] %>"
+rescue LoadError
+  require "<%= File.basename(config[:namespaced_path]) %>/<%= config[:underscored_name] %>"
+end
 <%- end -%>
 
 <%- config[:constant_array].each_with_index do |c, i| -%>

@@ -1,3 +1,47 @@
+# 3.5.11 / 2024-05-28
+
+## Enhancements:
+
+* Update SPDX license list as of 2024-05-22. Pull request
+  [#7689](https://github.com/rubygems/rubygems/pull/7689) by
+  github-actions[bot]
+* Fix the update_rubygems inconsistency (--disable-gems). Pull request
+  [#7658](https://github.com/rubygems/rubygems/pull/7658) by x-yuri
+* Accept WASI as an OS name in Gem::Platform. Pull request
+  [#7629](https://github.com/rubygems/rubygems/pull/7629) by kateinoigakukun
+* Warn if RubyGems version explicitly set in gemspec does not match
+  running version. Pull request
+  [#7460](https://github.com/rubygems/rubygems/pull/7460) by
+  deivid-rodriguez
+* Installs bundler 2.5.11 as a default gem.
+
+## Bug fixes:
+
+* Fix binstubs sometimes not getting regenerated when `--destdir` is
+  given. Pull request
+  [#7660](https://github.com/rubygems/rubygems/pull/7660) by
+  deivid-rodriguez
+* Fix `gem uninstall --user-install`  for symlinked HOME. Pull request
+  [#7645](https://github.com/rubygems/rubygems/pull/7645) by
+  deivid-rodriguez
+* Fix issue when plugin stubs would sometimes not be properly removed by
+  `gem uninstall`. Pull request
+  [#7631](https://github.com/rubygems/rubygems/pull/7631) by
+  deivid-rodriguez
+* Fix plugins uninstallation for user installed gems. Pull request
+  [#6456](https://github.com/rubygems/rubygems/pull/6456) by voxik
+
+## Performance:
+
+* Use a constant empty tar header to avoid extra allocations. Pull request
+  [#7484](https://github.com/rubygems/rubygems/pull/7484) by segiddins
+
+## Documentation:
+
+* Recommend `bin/rake` over `rake` in contributing docs. Pull request
+  [#7648](https://github.com/rubygems/rubygems/pull/7648) by
+  deivid-rodriguez
+
 # 3.5.10 / 2024-05-03
 
 ## Security:
@@ -5949,7 +5993,7 @@ There has been some minor usability enhancements and changes ...
   This *greatly* speeds up gem commands run in non-admin mode when the
   site-wide cache is out of date.
 * The gem command now used an HTTP HEAD command to detect if the
-  server's source index needs to be downloaed.
+  server's source index needs to be downloaded.
 * gem check gemname --test will run unit tests on installed gems that
   have unit tests.
 * Multiple gem names are allowed on the gem install command line.

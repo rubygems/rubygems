@@ -141,7 +141,7 @@ RSpec.describe "bundle open" do
 
       bundle "config set auto_install 1"
       bundle "open rails", env: { "EDITOR" => "echo editor", "VISUAL" => "", "BUNDLER_EDITOR" => "" }
-      expect(out).to include("Installing foo 1.0")
+      expect(out).to include("Installed foo 1.0")
     end
 
     it "opens the editor with a clean env" do

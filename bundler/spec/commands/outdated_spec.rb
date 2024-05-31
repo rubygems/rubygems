@@ -749,7 +749,7 @@ RSpec.describe "bundle outdated" do
 
     bundle "config set auto_install 1"
     bundle :outdated, raise_on_error: false
-    expect(out).to include("Installing foo 1.0")
+    expect(out).to include("Installed foo 1.0")
   end
 
   context "after bundle install --deployment", bundler: "< 3" do

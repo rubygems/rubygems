@@ -40,7 +40,7 @@ RSpec.describe "installing a gem with native extensions" do
     bundle "config set build.c_extension --with-c_extension=hello"
     bundle "install"
 
-    expect(out).to include("Installing c_extension 1.0 with native extensions")
+    expect(out).to match(/Installed c_extension 1.0 with native extensions in \d+\.\d+s/)
 
     run "Bundler.require; puts CExtension.new.its_true"
     expect(out).to eq("true")

@@ -16,7 +16,7 @@ RSpec.describe "bundle install" do
       rack_lib.open("w") {|f| f.write("blah blah blah") }
       bundle :install, flag => true
 
-      expect(out).to include "Installing rack 1.0.0"
+      expect(out).to include "Installed rack 1.0.0"
       expect(rack_lib.open(&:read)).to eq("RACK = '1.0.0'\n")
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
@@ -24,7 +24,7 @@ RSpec.describe "bundle install" do
     it "works on first bundle install" do
       bundle :install, flag => true
 
-      expect(out).to include "Installing rack 1.0.0"
+      expect(out).to include "Installed rack 1.0.0"
       expect(the_bundle).to include_gems "rack 1.0.0"
     end
 

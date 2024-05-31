@@ -34,7 +34,7 @@ RSpec.describe "fetching dependencies with a not available mirror", realworld: t
 
       bundle :install, artifice: nil
 
-      expect(out).to include("Installing weakling")
+      expect(out).to include("Installed weakling")
       expect(out).to include("Bundle complete")
       expect(the_bundle).to include_gems "weakling 0.0.3"
     end
@@ -54,7 +54,7 @@ RSpec.describe "fetching dependencies with a not available mirror", realworld: t
 
       bundle :install, artifice: nil
 
-      expect(out).to include("Installing weakling")
+      expect(out).to include("Installed weakling")
       expect(out).to include("Bundle complete")
       expect(the_bundle).to include_gems "weakling 0.0.3"
     end

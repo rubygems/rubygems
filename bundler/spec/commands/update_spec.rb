@@ -362,8 +362,8 @@ RSpec.describe "bundle update" do
 
       bundle "update --conservative --verbose"
 
-      expect(out).not_to include("Installing quickbooks-ruby 0.1.9")
-      expect(out).to include("Installing quickbooks-ruby 1.0.19").and include("Installing oauth2 1.4.10")
+      expect(out).not_to include("Installed quickbooks-ruby 0.1.9")
+      expect(out).to include("Installed quickbooks-ruby 1.0.19").and include("Installed oauth2 1.4.10")
     end
 
     it "does not downgrade direct dependencies when using gemspec sources" do
@@ -423,9 +423,9 @@ RSpec.describe "bundle update" do
 
       bundle "update --verbose"
 
-      expect(out).not_to include("Installing sneakers 2.12.0")
-      expect(out).not_to include("Installing rake 12.3.3")
-      expect(out).to include("Installing sneakers 2.11.0").and include("Installing rake 13.0.6")
+      expect(out).not_to include("Installed sneakers 2.12.0")
+      expect(out).not_to include("Installed rake 12.3.3")
+      expect(out).to include("Installed sneakers 2.11.0").and include("Installed rake 13.0.6")
     end
 
     it "does not downgrade indirect dependencies unnecessarily" do
@@ -826,7 +826,7 @@ RSpec.describe "bundle update" do
     end
 
     bundle "update", all: true
-    expect(out).to include("Installing activesupport 3.0 (was 2.3.5)")
+    expect(out).to include("Installed activesupport 3.0 (was 2.3.5)")
   end
 
   it "only prints `Using` for versions that have changed" do
@@ -850,7 +850,7 @@ RSpec.describe "bundle update" do
 
     bundle "update", all: true
     out.sub!("Removing foo (1.0)\n", "")
-    expect(out).to match(/Resolving dependencies\.\.\.\.*\nFetching foo 2\.0 \(was 1\.0\)\nInstalling foo 2\.0 \(was 1\.0\)\nBundle updated/)
+    expect(out).to match(/Resolving dependencies\.\.\.\.*\nFetching foo 2\.0 \(was 1\.0\)\nInstalled foo 2\.0 \(was 1\.0\) in [\d.]+s\nBundle updated/)
   end
 
   it "shows error message when Gemfile.lock is not preset and gem is specified" do

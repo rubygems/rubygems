@@ -161,7 +161,7 @@ RSpec.describe "bundle show", bundler: "< 3" do
 
     bundle "config set auto_install 1"
     bundle :show
-    expect(out).to include("Installing foo 1.0")
+    expect(out).to include("Installed foo 1.0")
   end
 
   context "with a valid regexp for gem name" do

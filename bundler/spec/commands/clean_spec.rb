@@ -778,7 +778,7 @@ RSpec.describe "bundle clean" do
 
     bundle "config set auto_install 1"
     bundle :clean
-    expect(out).to include("Installing weakling 0.0.3")
+    expect(out).to include("Installed weakling 0.0.3")
     should_have_gems "thin-1.0", "rack-1.0.0", "weakling-0.0.3"
     should_not_have_gems "foo-1.0"
   end

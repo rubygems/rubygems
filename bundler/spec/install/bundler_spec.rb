@@ -206,7 +206,7 @@ RSpec.describe "bundle install" do
         gem "rails_pinned_to_old_activesupport"
       G
 
-      expect(out).to include("Installing activesupport 1.2.3 (was 2.3.2)")
+      expect(out).to include("Installed activesupport 1.2.3 (was 2.3.2)")
       expect(err).to be_empty
     end
 

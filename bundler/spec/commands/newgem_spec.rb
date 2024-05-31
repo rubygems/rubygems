@@ -1626,7 +1626,7 @@ RSpec.describe "bundle gem" do
         system(env, "cargo", "-V", out: IO::NULL, err: [:child, :out])
         skip "cargo not present" unless $?.success?
         # Hermetic Cargo setup
-        RbConfig::CONFIG.each { |k, v| env["RBCONFIG_#{k}"] = v }
+        RbConfig::CONFIG.each {|k, v| env["RBCONFIG_#{k}"] = v }
         env
       end
     end

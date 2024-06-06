@@ -39,9 +39,6 @@ jobs:
           - ruby: { name: truffleruby, value: truffleruby-24.0.1 }
             os: { name: Ubuntu, value: ubuntu-22.04 }
 
-          - os: { name: Windows, value: windows-2022 }
-            ruby: { name: mswin, value: mswin }
-
     steps:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Setup ruby
@@ -49,12 +46,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Configure bindgen
-        shell: pwsh
-        run: |
-          echo "LIBCLANG_PATH=$((gcm clang).source -replace "clang.exe")" >> $env:GITHUB_ENV
-          echo "BINDGEN_EXTRA_CLANG_ARGS=$((gcm clang).source -replace "bin\clang.exe","include")" >> $env:GITHUB_ENV
-        if: matrix.ruby.name == 'mswin'
       - name: Install Dependencies
         run: bin/rake setup
       - name: Run Test

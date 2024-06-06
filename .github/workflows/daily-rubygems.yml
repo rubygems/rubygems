@@ -18,9 +18,8 @@ jobs:
       matrix:
         os: [ ubuntu-22.04 ]
         ruby: [ ruby-head, truffleruby-head ]
-        cargo: [ stable ]
         include:
-          - { os: windows-2022, ruby: mswin, cargo: stable-x86_64-pc-windows-msvc }
+          - { os: windows-2022, ruby: mswin }
     env:
       TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
     steps:
@@ -32,13 +31,15 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
 
-      - uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8
-        with:
-          toolchain: ${{ matrix.cargo }}
-          components: rustfmt
-
       - name: Show Ruby version
         run: ruby --version
+
+      - name: Configure bindgen
+        shell: pwsh
+        run: |
+          echo "LIBCLANG_PATH=$((gcm clang).source -replace "clang.exe")" >> $env:GITHUB_ENV
+          echo "BINDGEN_EXTRA_CLANG_ARGS=$((gcm clang).source -replace "bin\clang.exe","include")" >> $env:GITHUB_ENV
+        if: matrix.ruby == 'mswin'
 
       - name: Test rubygems
         run: |

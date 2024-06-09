@@ -825,6 +825,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def self._resort!(specs) # :nodoc:
+    windows = RbConfig::CONFIG["host_os"].match?(/mswin|mingw/)
     specs.sort! do |a, b|
       names = a.name <=> b.name
       next names if names.nonzero?
@@ -832,7 +833,7 @@ class Gem::Specification < Gem::BasicSpecification
       next versions if versions.nonzero?
       platforms = Gem::Platform.sort_priority(b.platform) <=> Gem::Platform.sort_priority(a.platform)
       next platforms if platforms.nonzero?
-      b.base_dir == Gem.path.first ? 1 : -1
+      b.base_dir == Gem.path.first || windows && !b.default_gem? ? 1 : -1
     end
   end
 

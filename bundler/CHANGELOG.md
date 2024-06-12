@@ -1,3 +1,23 @@
+# 2.5.12 (June 13, 2024)
+
+## Enhancements:
+
+  - Keep credentials in lockfile if they are already there [#7720](https://github.com/rubygems/rubygems/pull/7720)
+  - Auto switch to locked bundler version even when using binstubs [#7719](https://github.com/rubygems/rubygems/pull/7719)
+  - Don't validate local gemspecs twice unnecessarily [#7725](https://github.com/rubygems/rubygems/pull/7725)
+  - Improve default gem handling by treating default gems as any other gem [#7673](https://github.com/rubygems/rubygems/pull/7673)
+
+## Bug fixes:
+
+  - Fix slow and incorrect resolution when adding `sorbet` to a Gemfile and the lockfile only includes "RUBY" in the platforms section [#7731](https://github.com/rubygems/rubygems/pull/7731)
+  - Fix duplicated config keys generated when `fallback_timeout` uri option is used [#7704](https://github.com/rubygems/rubygems/pull/7704)
+  - Fix `bundle exec` no longer working in truffleruby after explicit `require` of `pathname` was removed [#7703](https://github.com/rubygems/rubygems/pull/7703)
+  - Don't let `bundle config` report a path without a Gemfile as "local app" [#7687](https://github.com/rubygems/rubygems/pull/7687)
+
+## Documentation:
+
+  - Clarify BUNDLE_USER_CONFIG is a file [#7668](https://github.com/rubygems/rubygems/pull/7668)
+
 # 2.5.11 (May 28, 2024)
 
 ## Deprecations:

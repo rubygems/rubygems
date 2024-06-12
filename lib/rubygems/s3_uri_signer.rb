@@ -167,7 +167,7 @@ class Gem::S3URISigner
     end
   end
 
-  def ec2_metadata_token()
+  def ec2_metadata_token
     uri = Gem::URI(EC2_IAM_TOKEN)
     @request_pool ||= create_request_pool(uri)
     request = Gem::Request.new(uri, Gem::Net::HTTP::Put, nil, @request_pool)

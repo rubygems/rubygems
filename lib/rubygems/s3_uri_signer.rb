@@ -144,7 +144,7 @@ class Gem::S3URISigner
     require_relative "request"
     require_relative "request/connection_pools"
     require "json"
-    token = ec2_metadata_token()
+    token = ec2_metadata_token
     iam_info = ec2_metadata_request(EC2_IAM_INFO, token)
     # Expected format: arn:aws:iam::<id>:instance-profile/<role_name>
     role_name = iam_info["InstanceProfileArn"].split("/").last
@@ -156,7 +156,7 @@ class Gem::S3URISigner
     @request_pool ||= create_request_pool(uri)
     request = Gem::Request.new(uri, Gem::Net::HTTP::Get, nil, @request_pool)
     response = request.fetch do |req|
-      req.add_field 'X-aws-ec2-metadata-token', token
+      req.add_field "X-aws-ec2-metadata-token", token
     end
 
     case response
@@ -172,7 +172,7 @@ class Gem::S3URISigner
     @request_pool ||= create_request_pool(uri)
     request = Gem::Request.new(uri, Gem::Net::HTTP::Put, nil, @request_pool)
     response = request.fetch do |req|
-      req.add_field 'X-aws-ec2-metadata-token-ttl-seconds', 60
+      req.add_field "X-aws-ec2-metadata-token-ttl-seconds", 60
     end
 
     case response

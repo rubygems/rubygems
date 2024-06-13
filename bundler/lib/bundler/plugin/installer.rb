@@ -32,12 +32,27 @@ module Bundler
       #
       # @param [Definition] definition object
       # @return [Hash] map of names to their specs they are installed with
-      def install_definition(definition)
+      def install_definition(definition, latest = false)
         def definition.lock(*); end
-        definition.resolve_remotely!
-        specs = definition.specs
 
-        install_from_specs specs
+        if latest || definition.missing_plugins?
+          definition.resolve_remotely!
+        else
+          definition.resolve_with_cache!
+        end
+
+        specs = definition.plugins
+
+        paths = {}
+        specs.materialized_for_all_platforms.each do |spec|
+          if latest || !Pathname(spec.full_gem_path).directory?
+            spec.source.install spec
+          end
+
+          paths[spec.name] = spec
+        end
+
+        paths
       end
 
       private
@@ -99,33 +114,15 @@ module Bundler
       end
 
       def install_all_sources(names, version, source_list, source = nil)
-        deps = names.map {|name| Dependency.new(name, version, { "source" => source }) }
+        deps = names.map {|name| Dependency.new(name, version, { "source" => source, "type" => :plugin }) }
 
         Bundler.configure_gem_home_and_path(Plugin.root)
 
         Bundler.settings.temporary(deployment: false, frozen: false) do
           definition = Definition.new(nil, deps, source_list, true)
 
-          install_definition(definition)
+          install_definition(definition, true)
         end
-      end
-
-      # Installs the plugins and deps from the provided specs and returns map of
-      # gems to their paths
-      #
-      # @param specs to install
-      #
-      # @return [Hash] map of names to the specs
-      def install_from_specs(specs)
-        paths = {}
-
-        specs.each do |spec|
-          spec.source.install spec
-
-          paths[spec.name] = spec
-        end
-
-        paths
       end
     end
   end

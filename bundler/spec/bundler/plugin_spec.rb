@@ -139,7 +139,7 @@ RSpec.describe Bundler::Plugin do
 
       before do
         allow(index).to receive(:installed?) { nil }
-        allow(definition).to receive(:dependencies) { [Bundler::Dependency.new("new-plugin", ">=0"), Bundler::Dependency.new("another-plugin", ">=0")] }
+        allow(definition).to receive(:dependencies) { [Bundler::Dependency.new("new-plugin", ">=0", "type" => :plugin), Bundler::Dependency.new("another-plugin", ">=0", "type" => :plugin)] }
         allow(installer).to receive(:install_definition) { plugin_specs }
       end
 
@@ -187,18 +187,16 @@ RSpec.describe Bundler::Plugin do
     end
   end
 
-  describe "#source?" do
-    it "returns true value for sources in index" do
+  describe "#source_plugin" do
+    it "returns the plugin for sources in index" do
       allow(index).
-        to receive(:command_plugin).with("foo-source") { "my-plugin" }
-      result = subject.command? "foo-source"
-      expect(result).to be_truthy
+        to receive(:source_plugin).with("foo-source") { "my-plugin" }
+      expect(subject.source_plugin("foo-source")).to eql "my-plugin"
     end
 
-    it "returns false value for source not in index" do
-      allow(index).to receive(:command_plugin).with("foo-source") { nil }
-      result = subject.command? "foo-source"
-      expect(result).to be_falsy
+    it "returns nil value for source not in index" do
+      allow(index).to receive(:source_plugin).with("foo-source") { nil }
+      expect(subject.source_plugin("foo-source")).to be_nil
     end
   end
 

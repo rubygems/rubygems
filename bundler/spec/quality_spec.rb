@@ -148,6 +148,7 @@ RSpec.describe "The library itself" do
       gem.test
       git.allow_insecure
       inline
+      plugin_gemfile_parse
       trust-policy
     ]
 

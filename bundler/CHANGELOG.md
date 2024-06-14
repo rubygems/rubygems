@@ -1,3 +1,11 @@
+# 2.5.13 (June 14, 2024)
+
+## Bug fixes:
+
+  - Fix funding metadata not being printed in some situations [#7746](https://github.com/rubygems/rubygems/pull/7746)
+  - Make sure to not re-resolve when a not fully specific local platform is locked [#7751](https://github.com/rubygems/rubygems/pull/7751)
+  - Don't print bug report template when bin dir is not writable [#7748](https://github.com/rubygems/rubygems/pull/7748)
+
 # 2.5.12 (June 13, 2024)
 
 ## Enhancements:

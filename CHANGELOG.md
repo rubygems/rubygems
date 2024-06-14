@@ -1,3 +1,15 @@
+# 3.5.13 / 2024-06-14
+
+## Enhancements:
+
+* Installs bundler 2.5.13 as a default gem.
+
+## Bug fixes:
+
+* Never remove executables that may belong to a default gem. Pull request
+  [#7747](https://github.com/rubygems/rubygems/pull/7747) by
+  deivid-rodriguez
+
 # 3.5.12 / 2024-06-13
 
 ## Enhancements:

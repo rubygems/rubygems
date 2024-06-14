@@ -260,6 +260,10 @@ module Bundler
     def replace_bin_path(specs_by_name)
       gem_class = (class << Gem; self; end)
 
+      gem_class.module_exec do
+        alias_method :original_find_spec_for_exe, :find_spec_for_exe
+      end
+
       redefine_method(gem_class, :find_spec_for_exe) do |gem_name, *args|
         exec_name = args.first
         raise ArgumentError, "you must supply exec_name" unless exec_name
@@ -271,6 +275,12 @@ module Bundler
         unless spec || !matching_specs_by_exec_name.empty?
           message = "can't find executable #{exec_name} for gem #{gem_name}"
           if spec_with_name.nil?
+
+            if Gem.instance_variable_get(:@gemdeps)
+              Bundler.reset!
+              return original_find_spec_for_exe(gem_name, *args)
+            end
+
             message += ". #{gem_name} is not currently included in the bundle, " \
                        "perhaps you meant to add it to your #{Bundler.default_gemfile.basename}?"
           end

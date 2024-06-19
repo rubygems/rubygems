@@ -591,7 +591,7 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(err).to be_empty
   end
 
-  it "when requiring fileutils after does not show redefinition warnings", :realworld do
+  it "when requiring fileutils after does not show redefinition warnings" do
     Dir.mkdir tmp("path_without_gemfile")
 
     default_fileutils_version = ruby "gem 'fileutils', '< 999999'; require 'fileutils'; puts FileUtils::VERSION", raise_on_error: false

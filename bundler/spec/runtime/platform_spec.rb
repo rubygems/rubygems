@@ -145,7 +145,7 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
          #{Bundler::VERSION}
     L
 
-    bundle "install", artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+    bundle "install"
 
     expect(out).to include("Fetching nokogiri 1.11.1")
     expect(the_bundle).to include_gems "nokogiri 1.11.1"
@@ -359,7 +359,7 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
     end
 
     simulate_platform "aarch64-linux-musl" do
-      install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }, verbose: true
+      install_gemfile <<-G, verbose: true
         source "https://gem.repo4"
         gem "nokogiri"
       G

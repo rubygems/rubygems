@@ -9,7 +9,7 @@ RSpec.describe "bundle cache" do
       G
 
       system_gems "myrack-1.0.0", path: path
-      bundle :cache, artifice: "compact_index"
+      bundle :cache
     end
 
     it "copies the .gem file to vendor/cache" do
@@ -19,7 +19,7 @@ RSpec.describe "bundle cache" do
     it "uses the cache as a source when installing gems" do
       build_gem "omg", path: bundled_app("vendor/cache")
 
-      install_gemfile <<-G, artifice: "compact_index"
+      install_gemfile <<-G
         source "https://gem.repo1"
         gem "omg"
       G
@@ -105,12 +105,12 @@ RSpec.describe "bundle cache" do
 
       it "uses remote gems when installing to system gems" do
         bundle "config set path.system true"
-        install_gemfile %(source "https://gem.repo2"; gem 'json', '#{default_json_version}'), verbose: true, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+        install_gemfile %(source "https://gem.repo2"; gem 'json', '#{default_json_version}'), verbose: true
         expect(out).to include("Installing json #{default_json_version}")
       end
 
       it "caches remote and builtin gems" do
-        install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+        install_gemfile <<-G
           source "https://gem.repo2"
           gem 'json', '#{default_json_version}'
           gem 'myrack', '1.0.0'
@@ -129,7 +129,7 @@ RSpec.describe "bundle cache" do
 
         bundle "config set cache_all_platforms true"
 
-        bundle :cache, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+        bundle :cache
         expect(bundled_app("vendor/cache/json-#{default_json_version}.gem")).to exist
       end
 
@@ -138,7 +138,7 @@ RSpec.describe "bundle cache" do
           s.summary = "This builtin_gem is bundled with Ruby"
         end
 
-        install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+        install_gemfile <<-G
           source "https://gem.repo2"
           gem 'builtin_gem_2', '1.0.2'
         G
@@ -151,19 +151,19 @@ RSpec.describe "bundle cache" do
     context "when a remote gem is not available for caching" do
       it "uses builtin gems when installing to system gems" do
         bundle "config set path.system true"
-        install_gemfile %(source "https://gem.repo1"; gem 'json', '#{default_json_version}'), verbose: true, artifice: "compact_index"
+        install_gemfile %(source "https://gem.repo1"; gem 'json', '#{default_json_version}'), verbose: true
         expect(out).to include("Using json #{default_json_version}")
       end
 
       it "errors when explicitly caching" do
         bundle "config set path.system true"
 
-        install_gemfile <<-G, artifice: "compact_index"
+        install_gemfile <<-G
           source "https://gem.repo1"
           gem 'json', '#{default_json_version}'
         G
 
-        bundle :cache, artifice: "compact_index", raise_on_error: false
+        bundle :cache, raise_on_error: false
         expect(exitstatus).to_not eq(0)
         expect(err).to include("json-#{default_json_version} is built in to Ruby, and can't be cached")
       end
@@ -175,7 +175,7 @@ RSpec.describe "bundle cache" do
       build_git "foo"
       system_gems "myrack-1.0.0"
 
-      install_gemfile <<-G, artifice: "compact_index"
+      install_gemfile <<-G
         source "https://gem.repo1"
         git "#{lib_path("foo-1.0")}" do
           gem 'foo'
@@ -196,7 +196,7 @@ RSpec.describe "bundle cache" do
     it "should not explode if the lockfile is not present" do
       FileUtils.rm(bundled_app_lock)
 
-      bundle :cache, artifice: "compact_index"
+      bundle :cache
 
       expect(bundled_app_lock).to exist
     end
@@ -205,7 +205,7 @@ RSpec.describe "bundle cache" do
   describe "when previously cached" do
     before :each do
       build_repo2
-      install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+      install_gemfile <<-G
         source "https://gem.repo2"
         gem "myrack"
         gem "actionpack"
@@ -230,13 +230,13 @@ RSpec.describe "bundle cache" do
         end
       end
 
-      bundle "update", all: true, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+      bundle "update", all: true
       expect(cached_gem("myrack-1.2")).to exist
       expect(cached_gem("myrack-1.0.0")).not_to exist
     end
 
     it "adds new gems and dependencies" do
-      install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+      install_gemfile <<-G
         source "https://gem.repo2"
         gem "rails"
       G
@@ -257,7 +257,7 @@ RSpec.describe "bundle cache" do
     it "removes .gems when gem changes to git source" do
       build_git "myrack"
 
-      install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+      install_gemfile <<-G
         source "https://gem.repo2"
         gem "myrack", :git => "#{lib_path("myrack-1.0")}"
         gem "actionpack"
@@ -269,7 +269,7 @@ RSpec.describe "bundle cache" do
 
     it "doesn't remove gems that are for another platform" do
       simulate_platform "java" do
-        install_gemfile <<-G, artifice: "compact_index"
+        install_gemfile <<-G
           source "https://gem.repo1"
           gem "platform_specific"
         G
@@ -279,7 +279,7 @@ RSpec.describe "bundle cache" do
       end
 
       simulate_new_machine
-      install_gemfile <<-G, artifice: "compact_index"
+      install_gemfile <<-G
         source "https://gem.repo1"
         gem "platform_specific"
       G
@@ -297,7 +297,7 @@ RSpec.describe "bundle cache" do
 
       simulate_new_machine
 
-      bundle :install, raise_on_error: false, artifice: "compact_index"
+      bundle :install, raise_on_error: false
 
       expect(err).to eq <<~E.strip
         Bundler found mismatched checksums. This is a potential security risk.
@@ -335,14 +335,14 @@ RSpec.describe "bundle cache" do
         #{checksums}
       L
 
-      bundle :install, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }, raise_on_error: false
+      bundle :install, raise_on_error: false
       expect(exitstatus).to eq(37)
       expect(err).to include("Bundler found mismatched checksums.")
       expect(err).to include("1. remove the gem at #{cached_gem("myrack-1.0.0")}")
 
       expect(cached_gem("myrack-1.0.0")).to exist
       cached_gem("myrack-1.0.0").rmtree
-      bundle :install, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
+      bundle :install
       expect(cached_gem("myrack-1.0.0")).to exist
     end
 
@@ -369,7 +369,7 @@ RSpec.describe "bundle cache" do
     end
 
     it "does not say that it is removing gems when it isn't actually doing so" do
-      install_gemfile <<-G, artifice: "compact_index"
+      install_gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"
       G
@@ -379,7 +379,7 @@ RSpec.describe "bundle cache" do
     end
 
     it "does not warn about all if it doesn't have any git/path dependency" do
-      install_gemfile <<-G, artifice: "compact_index"
+      install_gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"
       G
@@ -391,7 +391,7 @@ RSpec.describe "bundle cache" do
       build_gem "foo-bundler", "1.0",
         path: bundled_app("vendor/cache")
 
-      install_gemfile <<-G, artifice: "compact_index"
+      install_gemfile <<-G
         source "https://gem.repo1"
         gem "foo-bundler"
       G

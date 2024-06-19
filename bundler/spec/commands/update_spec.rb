@@ -1463,13 +1463,13 @@ RSpec.describe "bundle update --bundler" do
       build_bundler "999.0.0"
     end
 
-    install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
+    install_gemfile <<-G
       source "https://gem.repo4"
       gem "myrack"
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.99.9")
 
-    bundle :update, bundler: true, artifice: "compact_index", verbose: true, env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }, raise_on_error: false, preserve_ruby_flags: true
+    bundle :update, bundler: true, verbose: true, raise_on_error: false, preserve_ruby_flags: true
 
     # Only updates properly on modern RubyGems.
 

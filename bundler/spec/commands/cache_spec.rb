@@ -265,15 +265,15 @@ RSpec.describe "bundle cache" do
     it "does not fail to cache gems in excluded groups when there's a lockfile but gems not previously installed" do
       bundle "config set --local without wo"
       gemfile <<-G
-        source "https://my.gem.repo.1"
+        source "https://gem.repo1"
         gem "myrack"
         group :wo do
           gem "weakling"
         end
       G
 
-      bundle :lock, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo1.to_s }
-      bundle :cache, "all-platforms" => true, :artifice => "compact_index", :env => { "BUNDLER_SPEC_GEM_REPO" => gem_repo1.to_s }
+      bundle :lock
+      bundle :cache, "all-platforms" => true
       expect(bundled_app("vendor/cache/weakling-0.0.3.gem")).to exist
     end
   end

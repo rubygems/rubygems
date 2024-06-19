@@ -153,10 +153,10 @@ RSpec.describe "bundle install" do
           gem 'also_has_funding', :git => '#{lib_path("also_has_funding-1.0")}'
         G
 
-        bundle :install, artifice: "compact_index"
+        bundle :install
         expect(out).to include("1 installed gem you directly depend on is looking for funding.")
 
-        bundle :install, artifice: "compact_index"
+        bundle :install
         expect(out).to include("1 installed gem you directly depend on is looking for funding.")
       end
     end

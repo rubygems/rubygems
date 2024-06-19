@@ -398,20 +398,20 @@ RSpec.describe "bundle install with gem sources" do
       end
 
       gemfile <<~G
-        source "https://gems.repo2"
+        source "https://gem.repo2"
 
-        source "https://gems.repo4" do
+        source "https://gem.repo4" do
         gem "foo"
         end
       G
 
       lockfile <<~L
         GEM
-          remote: https://gems.repo2/
+          remote: https://gem.repo2/
           specs:
 
         GEM
-          remote: https://gems.repo4/
+          remote: https://gem.repo4/
           specs:
             foo (1.0.0-x86_64-linux)
             foo (1.0.0-arm64-darwin)

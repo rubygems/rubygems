@@ -1464,7 +1464,7 @@ RSpec.describe "bundle update --bundler" do
     end
 
     install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
-      source "https://gems.repo4"
+      source "https://gem.repo4"
       gem "myrack"
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.99.9")
@@ -1480,7 +1480,7 @@ RSpec.describe "bundle update --bundler" do
 
       expect(lockfile).to eq <<~L
         GEM
-          remote: https://gems.repo4/
+          remote: https://gem.repo4/
           specs:
             myrack (1.0)
 

@@ -606,7 +606,7 @@ RSpec.describe "bundle lock" do
     system_gems "bundler-55", gem_repo: gem_repo4
 
     install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
-      source "https://gems.repo4"
+      source "https://gem.repo4"
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, '\11.0.0\2')
 

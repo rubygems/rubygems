@@ -125,13 +125,13 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
     end
 
     gemfile <<-G
-      source "https://gems.repo4"
+      source "https://gem.repo4"
       gem "nokogiri"
     G
 
     lockfile <<~L
       GEM
-        remote: https://gems.repo4/
+        remote: https://gem.repo4/
         specs:
           nokogiri (1.11.1)
 
@@ -360,7 +360,7 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
 
     simulate_platform "aarch64-linux-musl" do
       install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }, verbose: true
-        source "https://gems.repo4"
+        source "https://gem.repo4"
         gem "nokogiri"
       G
     end

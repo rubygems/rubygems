@@ -97,11 +97,10 @@ module Bundler
 
       templates.merge!("gitignore.tt" => ".gitignore") if use_git
 
-      if test_framework = ask_and_set_test_framework
-        config[:test] = test_framework
-        config[:test_framework_version] = TEST_FRAMEWORK_VERSIONS[test_framework]
+      if config[:test] = ask_and_set_test_framework
+        config[:test_framework_version] = TEST_FRAMEWORK_VERSIONS[config[:test]]
 
-        case test_framework
+        case config[:test]
         when "rspec"
           templates.merge!(
             "rspec.tt" => ".rspec",
@@ -280,13 +279,11 @@ module Bundler
       if test_framework.to_s.empty?
         Bundler.ui.confirm "Do you want to generate tests with your gem?"
         Bundler.ui.info hint_text("test")
+        test_framework = Bundler.ui.ask "Enter a test framework. rspec/minitest/test-unit/(none):"
+      end
 
-        result = Bundler.ui.ask "Enter a test framework. rspec/minitest/test-unit/(none):"
-        if /rspec|minitest|test-unit/.match?(result)
-          test_framework = result
-        else
-          test_framework = false
-        end
+      unless /rspec|minitest|test-unit/.match?(test_framework.to_s)
+        test_framework = false
       end
 
       if Bundler.settings["gem.test"].nil?

@@ -854,6 +854,30 @@ RSpec.describe "bundle gem" do
       end
     end
 
+    context "--test parameter set to none" do
+      before do
+        bundle "gem #{gem_name} --test=none"
+      end
+
+      it "does not include gem 'none' in Gemfile" do
+        expect(bundled_app("#{gem_name}/Gemfile").read).not_to include('gem "none"')
+      end
+
+      it_behaves_like "test framework is absent"
+    end
+
+    context "--test parameter set to foo" do
+      before do
+        bundle "gem #{gem_name} --test=foo"
+      end
+
+      it "does not include gem 'foo' in Gemfile" do
+        expect(bundled_app("#{gem_name}/Gemfile").read).not_to include('gem "foo"')
+      end
+
+      it_behaves_like "test framework is absent"
+    end
+
     context "gem.test setting set to test-unit" do
       before do
         bundle "config set gem.test test-unit"

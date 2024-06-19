@@ -228,7 +228,7 @@ RSpec.describe Bundler do
     it "creates a folder at the given path" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       allow(Bundler).to receive(:root).and_return(bundled_app)

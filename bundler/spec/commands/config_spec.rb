@@ -39,7 +39,7 @@ RSpec.describe ".bundle/config" do
     before :each do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "1.0.0"
+        gem "myrack", "1.0.0"
       G
     end
 
@@ -56,7 +56,7 @@ RSpec.describe ".bundle/config" do
 
       expect(bundled_app(".bundle")).not_to exist
       expect(tmp("foo/bar/config")).to exist
-      expect(the_bundle).to include_gems "rack 1.0.0"
+      expect(the_bundle).to include_gems "myrack 1.0.0"
     end
 
     it "can provide a relative path with the environment variable" do
@@ -68,7 +68,7 @@ RSpec.describe ".bundle/config" do
 
       expect(bundled_app(".bundle")).not_to exist
       expect(bundled_app("../foo/config")).to exist
-      expect(the_bundle).to include_gems "rack 1.0.0", dir: bundled_app("omg")
+      expect(the_bundle).to include_gems "myrack 1.0.0", dir: bundled_app("omg")
     end
   end
 
@@ -124,7 +124,7 @@ RSpec.describe ".bundle/config" do
     before(:each) do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "1.0.0"
+        gem "myrack", "1.0.0"
       G
     end
 
@@ -216,7 +216,7 @@ RSpec.describe ".bundle/config" do
     before(:each) do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "1.0.0"
+        gem "myrack", "1.0.0"
       G
     end
 
@@ -272,7 +272,7 @@ RSpec.describe ".bundle/config" do
     before(:each) do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "1.0.0"
+        gem "myrack", "1.0.0"
       G
     end
 
@@ -345,7 +345,7 @@ RSpec.describe ".bundle/config" do
     before(:each) do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "1.0.0"
+        gem "myrack", "1.0.0"
       G
     end
 
@@ -418,7 +418,7 @@ E
     before(:each) do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "1.0.0"
+        gem "myrack", "1.0.0"
       G
     end
 
@@ -581,7 +581,7 @@ RSpec.describe "setting gemfile via config" do
     it "persists the gemfile location to .bundle/config" do
       gemfile bundled_app("NotGemfile"), <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
       G
 
       bundle "config set --local gemfile #{bundled_app("NotGemfile")}"

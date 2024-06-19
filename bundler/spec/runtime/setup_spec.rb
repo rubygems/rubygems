@@ -7,15 +7,15 @@ RSpec.describe "Bundler.setup" do
     it "makes all groups available" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :group => :test
+        gem "myrack", :group => :test
       G
 
       ruby <<-RUBY
         require 'bundler'
         Bundler.setup
 
-        require 'rack'
-        puts RACK
+        require 'myrack'
+        puts MYRACK
       RUBY
       expect(err).to be_empty
       expect(out).to eq("1.0.0")
@@ -27,7 +27,7 @@ RSpec.describe "Bundler.setup" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
-        gem "rack", :group => :test
+        gem "myrack", :group => :test
       G
     end
 
@@ -37,7 +37,7 @@ RSpec.describe "Bundler.setup" do
         Bundler.setup(:default)
 
         begin
-          require 'rack'
+          require 'myrack'
         rescue LoadError
           puts "WIN"
         end
@@ -51,8 +51,8 @@ RSpec.describe "Bundler.setup" do
         require 'bundler'
         Bundler.setup(:default, 'test')
 
-        require 'rack'
-        puts RACK
+        require 'myrack'
+        puts MYRACK
       RUBY
       expect(err).to be_empty
       expect(out).to eq("1.0.0")
@@ -64,8 +64,8 @@ RSpec.describe "Bundler.setup" do
         Bundler.setup
         Bundler.setup(:default)
 
-        require 'rack'
-        puts RACK
+        require 'myrack'
+        puts MYRACK
       RUBY
       expect(err).to be_empty
       expect(out).to eq("1.0.0")
@@ -93,12 +93,12 @@ RSpec.describe "Bundler.setup" do
         require 'bundler'
         Bundler.setup(:default, :test)
         Bundler.setup(:default)
-        require 'rack'
+        require 'myrack'
 
         puts "FAIL"
       RUBY
 
-      expect(err).to match("rack")
+      expect(err).to match("myrack")
       expect(err).to match("LoadError")
       expect(out).not_to match("FAIL")
     end
@@ -114,7 +114,7 @@ RSpec.describe "Bundler.setup" do
     it "puts loaded gems after -I and RUBYLIB", :ruby_repo do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       ENV["RUBYOPT"] = "#{ENV["RUBYOPT"]} -Idash_i_dir"
@@ -127,11 +127,11 @@ RSpec.describe "Bundler.setup" do
       RUBY
 
       load_path = out.split("\n")
-      rack_load_order = load_path.index {|path| path.include?("rack") }
+      myrack_load_order = load_path.index {|path| path.include?("myrack") }
 
       expect(err).to be_empty
       expect(load_path).to include(a_string_ending_with("dash_i_dir"), "rubylib_dir")
-      expect(rack_load_order).to be > 0
+      expect(myrack_load_order).to be > 0
     end
 
     it "orders the load path correctly when there are dependencies" do
@@ -190,7 +190,7 @@ RSpec.describe "Bundler.setup" do
   it "raises if the Gemfile was not yet installed" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     ruby <<-R
@@ -210,7 +210,7 @@ RSpec.describe "Bundler.setup" do
   it "doesn't create a Gemfile.lock if the setup fails" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     ruby <<-R, raise_on_error: false
@@ -225,14 +225,14 @@ RSpec.describe "Bundler.setup" do
   it "doesn't change the Gemfile.lock if the setup fails" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     lockfile = File.read(bundled_app_lock)
 
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
       gem "nosuchgem", "10.0"
     G
 
@@ -248,7 +248,7 @@ RSpec.describe "Bundler.setup" do
   it "makes a Gemfile.lock if setup succeeds" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     File.read(bundled_app_lock)
@@ -264,7 +264,7 @@ RSpec.describe "Bundler.setup" do
       it "uses BUNDLE_GEMFILE to locate the gemfile if present" do
         gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
-          gem "rack"
+          gem "myrack"
         G
 
         gemfile bundled_app("4realz"), <<-G
@@ -309,14 +309,14 @@ RSpec.describe "Bundler.setup" do
     ENV["BUNDLE_PATH"] = bundled_app(".bundle").to_s
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack", "1.0.0"
+      gem "myrack", "1.0.0"
     G
 
-    build_gem "rack", "1.0", to_system: true do |s|
-      s.write "lib/rack.rb", "RACK = 'FAIL'"
+    build_gem "myrack", "1.0", to_system: true do |s|
+      s.write "lib/myrack.rb", "MYRACK = 'FAIL'"
     end
 
-    expect(the_bundle).to include_gems "rack 1.0.0"
+    expect(the_bundle).to include_gems "myrack 1.0.0"
   end
 
   describe "integrate with rubygems" do
@@ -324,7 +324,7 @@ RSpec.describe "Bundler.setup" do
       before :each do
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
-          gem "rack", "0.9.1"
+          gem "myrack", "0.9.1"
         G
       end
 
@@ -344,7 +344,7 @@ RSpec.describe "Bundler.setup" do
       it "replaces #gem but raises when the version is wrong" do
         run <<-R
           begin
-            gem "rack", "1.0.0"
+            gem "myrack", "1.0.0"
             puts "FAIL"
           rescue LoadError
             puts "WIN"
@@ -381,37 +381,37 @@ RSpec.describe "Bundler.setup" do
 
   describe "with paths" do
     it "activates the gems in the path source" do
-      system_gems "rack-1.0.0"
+      system_gems "myrack-1.0.0"
 
-      build_lib "rack", "1.0.0" do |s|
-        s.write "lib/rack.rb", "puts 'WIN'"
+      build_lib "myrack", "1.0.0" do |s|
+        s.write "lib/myrack.rb", "puts 'WIN'"
       end
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        path "#{lib_path("rack-1.0.0")}" do
-          gem "rack"
+        path "#{lib_path("myrack-1.0.0")}" do
+          gem "myrack"
         end
       G
 
-      run "require 'rack'"
+      run "require 'myrack'"
       expect(out).to eq("WIN")
     end
   end
 
   describe "with git" do
     before do
-      build_git "rack", "1.0.0"
+      build_git "myrack", "1.0.0"
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :git => "#{lib_path("rack-1.0.0")}"
+        gem "myrack", :git => "#{lib_path("myrack-1.0.0")}"
       G
     end
 
     it "provides a useful exception when the git repo is not checked out yet" do
       run "1", raise_on_error: false
-      expect(err).to match(/the git source #{lib_path("rack-1.0.0")} is not yet checked out. Please run `bundle install`/i)
+      expect(err).to match(/the git source #{lib_path("myrack-1.0.0")} is not yet checked out. Please run `bundle install`/i)
     end
 
     it "does not hit the git binary if the lockfile is available and up to date" do
@@ -460,7 +460,7 @@ RSpec.describe "Bundler.setup" do
       bundle "config set --local path vendor/bundle"
       bundle :install
       FileUtils.rm_rf vendored_gems("cache")
-      expect(the_bundle).to include_gems "rack 1.0.0"
+      expect(the_bundle).to include_gems "myrack 1.0.0"
     end
 
     it "does not randomly change the path when specifying --path and the bundle directory becomes read only" do
@@ -468,7 +468,7 @@ RSpec.describe "Bundler.setup" do
       bundle :install
 
       with_read_only("#{bundled_app}/**/*") do
-        expect(the_bundle).to include_gems "rack 1.0.0"
+        expect(the_bundle).to include_gems "myrack 1.0.0"
       end
     end
 
@@ -477,91 +477,91 @@ RSpec.describe "Bundler.setup" do
       bundle "install"
 
       with_read_only("#{bundled_app(".bundle")}/**/*") do
-        expect(the_bundle).to include_gems "rack 1.0.0"
+        expect(the_bundle).to include_gems "myrack 1.0.0"
       end
     end
   end
 
   describe "when specifying local override" do
     it "explodes if given path does not exist on runtime" do
-      build_git "rack", "0.8"
+      build_git "myrack", "0.8"
 
-      FileUtils.cp_r("#{lib_path("rack-0.8")}/.", lib_path("local-rack"))
+      FileUtils.cp_r("#{lib_path("myrack-0.8")}/.", lib_path("local-myrack"))
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :git => "#{lib_path("rack-0.8")}", :branch => "main"
+        gem "myrack", :git => "#{lib_path("myrack-0.8")}", :branch => "main"
       G
 
-      bundle %(config set local.rack #{lib_path("local-rack")})
+      bundle %(config set local.myrack #{lib_path("local-myrack")})
       bundle :install
 
-      FileUtils.rm_rf(lib_path("local-rack"))
-      run "require 'rack'", raise_on_error: false
-      expect(err).to match(/Cannot use local override for rack-0.8 because #{Regexp.escape(lib_path("local-rack").to_s)} does not exist/)
+      FileUtils.rm_rf(lib_path("local-myrack"))
+      run "require 'myrack'", raise_on_error: false
+      expect(err).to match(/Cannot use local override for myrack-0.8 because #{Regexp.escape(lib_path("local-myrack").to_s)} does not exist/)
     end
 
     it "explodes if branch is not given on runtime" do
-      build_git "rack", "0.8"
+      build_git "myrack", "0.8"
 
-      FileUtils.cp_r("#{lib_path("rack-0.8")}/.", lib_path("local-rack"))
+      FileUtils.cp_r("#{lib_path("myrack-0.8")}/.", lib_path("local-myrack"))
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :git => "#{lib_path("rack-0.8")}", :branch => "main"
+        gem "myrack", :git => "#{lib_path("myrack-0.8")}", :branch => "main"
       G
 
-      bundle %(config set local.rack #{lib_path("local-rack")})
+      bundle %(config set local.myrack #{lib_path("local-myrack")})
       bundle :install
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :git => "#{lib_path("rack-0.8")}"
+        gem "myrack", :git => "#{lib_path("myrack-0.8")}"
       G
 
-      run "require 'rack'", raise_on_error: false
+      run "require 'myrack'", raise_on_error: false
       expect(err).to match(/because :branch is not specified in Gemfile/)
     end
 
     it "explodes on different branches on runtime" do
-      build_git "rack", "0.8"
+      build_git "myrack", "0.8"
 
-      FileUtils.cp_r("#{lib_path("rack-0.8")}/.", lib_path("local-rack"))
+      FileUtils.cp_r("#{lib_path("myrack-0.8")}/.", lib_path("local-myrack"))
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :git => "#{lib_path("rack-0.8")}", :branch => "main"
+        gem "myrack", :git => "#{lib_path("myrack-0.8")}", :branch => "main"
       G
 
-      bundle %(config set local.rack #{lib_path("local-rack")})
+      bundle %(config set local.myrack #{lib_path("local-myrack")})
       bundle :install
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :git => "#{lib_path("rack-0.8")}", :branch => "changed"
+        gem "myrack", :git => "#{lib_path("myrack-0.8")}", :branch => "changed"
       G
 
-      run "require 'rack'", raise_on_error: false
+      run "require 'myrack'", raise_on_error: false
       expect(err).to match(/is using branch main but Gemfile specifies changed/)
     end
 
     it "explodes on refs with different branches on runtime" do
-      build_git "rack", "0.8"
+      build_git "myrack", "0.8"
 
-      FileUtils.cp_r("#{lib_path("rack-0.8")}/.", lib_path("local-rack"))
+      FileUtils.cp_r("#{lib_path("myrack-0.8")}/.", lib_path("local-myrack"))
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :git => "#{lib_path("rack-0.8")}", :ref => "main", :branch => "main"
+        gem "myrack", :git => "#{lib_path("myrack-0.8")}", :ref => "main", :branch => "main"
       G
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :git => "#{lib_path("rack-0.8")}", :ref => "main", :branch => "nonexistent"
+        gem "myrack", :git => "#{lib_path("myrack-0.8")}", :ref => "main", :branch => "nonexistent"
       G
 
-      bundle %(config set local.rack #{lib_path("local-rack")})
-      run "require 'rack'", raise_on_error: false
+      bundle %(config set local.myrack #{lib_path("local-myrack")})
+      run "require 'myrack'", raise_on_error: false
       expect(err).to match(/is using branch main but Gemfile specifies nonexistent/)
     end
   end
@@ -652,13 +652,13 @@ RSpec.describe "Bundler.setup" do
     it "doesn't re-resolve when deleting dependencies" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
         gem "actionpack"
       G
 
       install_gemfile <<-G, verbose: true
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       expect(out).to include("Some dependencies were deleted, using a subset of the resolution from the lockfile")
@@ -671,8 +671,8 @@ RSpec.describe "Bundler.setup" do
         source "#{file_uri_for(gem_repo1)}"
         gem "activesupport"
 
-        group :rack do
-          gem "rack"
+        group :myrack do
+          gem "myrack"
         end
 
         group :rails do
@@ -680,8 +680,8 @@ RSpec.describe "Bundler.setup" do
         end
       G
 
-      expect(the_bundle).not_to include_gems "activesupport 2.3.2", groups: :rack
-      expect(the_bundle).to include_gems "rack 1.0.0", groups: :rack
+      expect(the_bundle).not_to include_gems "activesupport 2.3.2", groups: :myrack
+      expect(the_bundle).to include_gems "myrack 1.0.0", groups: :myrack
     end
   end
 
@@ -692,7 +692,7 @@ RSpec.describe "Bundler.setup" do
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
       gem "foo", :git => "#{lib_path("foo-1.0")}"
       gem "no-gemspec", "1.0", :git => "#{lib_path("no-gemspec-1.0")}"
     G
@@ -709,7 +709,7 @@ RSpec.describe "Bundler.setup" do
   it "does not load all gemspecs" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     run <<-R
@@ -758,7 +758,7 @@ end
   it "ignores empty gem paths" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     ENV["GEM_HOME"] = ""
@@ -770,7 +770,7 @@ end
   it "can require rubygems without warnings, when using a local cache", :truffleruby do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     bundle "package"
@@ -934,7 +934,7 @@ end
   end
 
   it "does not reveal system gems even when Gem.refresh is called" do
-    system_gems "rack-1.0.0"
+    system_gems "myrack-1.0.0"
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
@@ -1023,7 +1023,7 @@ end
 
   describe "with bundled and system gems" do
     before :each do
-      system_gems "rack-1.0.0"
+      system_gems "myrack-1.0.0"
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -1035,7 +1035,7 @@ end
     it "does not pull in system gems" do
       run <<-R
         begin;
-          require 'rack'
+          require 'myrack'
         rescue LoadError
           puts 'WIN'
         end
@@ -1057,13 +1057,13 @@ end
     it "raises an exception if gem is used to invoke a system gem not in the bundle" do
       run <<-R
         begin
-          gem 'rack'
+          gem 'myrack'
         rescue LoadError => e
           puts e.message
         end
       R
 
-      expect(out).to eq("rack is not part of the bundle. Add it to your Gemfile.")
+      expect(out).to eq("myrack is not part of the bundle. Add it to your Gemfile.")
     end
 
     it "sets GEM_HOME appropriately" do
@@ -1075,11 +1075,11 @@ end
   describe "with system gems in the bundle" do
     before :each do
       bundle "config set path.system true"
-      system_gems "rack-1.0.0"
+      system_gems "myrack-1.0.0"
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "1.0.0"
+        gem "myrack", "1.0.0"
         gem "activesupport", "2.3.5"
       G
     end
@@ -1171,13 +1171,13 @@ end
         GEM
           remote: #{file_uri_for(gem_repo1)}/
           specs:
-            rack (1.0.0)
+            myrack (1.0.0)
 
         PLATFORMS
           #{lockfile_platforms}
 
         DEPENDENCIES
-          rack
+          myrack
       L
 
       if bundler_version
@@ -1192,7 +1192,7 @@ end
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
     end
 
@@ -1229,20 +1229,20 @@ end
 
     def lock_with(ruby_version = nil)
       checksums = checksums_section do |c|
-        c.checksum gem_repo1, "rack", "1.0.0"
+        c.checksum gem_repo1, "myrack", "1.0.0"
       end
 
       lock = <<~L
         GEM
           remote: #{file_uri_for(gem_repo1)}/
           specs:
-            rack (1.0.0)
+            myrack (1.0.0)
 
         PLATFORMS
           #{lockfile_platforms}
 
         DEPENDENCIES
-          rack
+          myrack
         #{checksums}
       L
 
@@ -1263,7 +1263,7 @@ end
       install_gemfile <<-G
         ruby ">= 0"
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
       lockfile lock_with(ruby_version)
     end
@@ -1521,27 +1521,27 @@ end
     it "allows calling #gem on random objects", bundler: "< 3" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       ruby <<-RUBY
         require "bundler/setup"
-        Object.new.gem "rack"
-        puts Gem.loaded_specs["rack"].full_name
+        Object.new.gem "myrack"
+        puts Gem.loaded_specs["myrack"].full_name
       RUBY
 
-      expect(out).to eq("rack-1.0.0")
+      expect(out).to eq("myrack-1.0.0")
     end
 
     it "keeps Kernel#gem private", bundler: "3" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       ruby <<-RUBY, raise_on_error: false
         require "bundler/setup"
-        Object.new.gem "rack"
+        Object.new.gem "myrack"
         puts "FAIL"
       RUBY
 
@@ -1552,12 +1552,12 @@ end
     it "keeps Kernel#require private" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       ruby <<-RUBY, raise_on_error: false
         require "bundler/setup"
-        Object.new.require "rack"
+        Object.new.require "myrack"
         puts "FAIL"
       RUBY
 
@@ -1569,7 +1569,7 @@ end
       install_gemfile <<~G
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
-        gem "rack", :group => :test
+        gem "myrack", :group => :test
       G
 
       ruby <<-RUBY, raise_on_error: false
@@ -1578,7 +1578,7 @@ end
         puts Bundler.definition.specs.map(&:name).join(", ")
       RUBY
 
-      expect(out).to include("rack, yard")
+      expect(out).to include("myrack, yard")
     end
 
     it "does not cause double loads when higher versions of default gems are activated before bundler" do
@@ -1633,7 +1633,7 @@ end
   it "performs an automatic bundle install" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack", :group => :test
+      gem "myrack", :group => :test
     G
 
     bundle "config set auto_install 1"
@@ -1642,6 +1642,6 @@ end
       require 'bundler/setup'
     RUBY
     expect(err).to be_empty
-    expect(out).to include("Installing rack 1.0.0")
+    expect(out).to include("Installing myrack 1.0.0")
   end
 end

@@ -11,17 +11,17 @@ RSpec.describe "bundle install with install_if conditionals" do
       install_if(lambda { false }) do
         gem "foo"
       end
-      gem "rack"
+      gem "myrack"
     G
 
-    expect(the_bundle).to include_gems("rack 1.0", "activesupport 2.3.5")
+    expect(the_bundle).to include_gems("myrack 1.0", "activesupport 2.3.5")
     expect(the_bundle).not_to include_gems("thin")
     expect(the_bundle).not_to include_gems("foo")
 
     checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo1, "activesupport", "2.3.5"
       c.no_checksum "foo", "1.0"
-      c.checksum gem_repo1, "rack", "1.0.0"
+      c.checksum gem_repo1, "myrack", "1.0.0"
       c.no_checksum "thin", "1.0"
     end
 
@@ -31,9 +31,9 @@ RSpec.describe "bundle install with install_if conditionals" do
         specs:
           activesupport (2.3.5)
           foo (1.0)
-          rack (1.0.0)
+          myrack (1.0.0)
           thin (1.0)
-            rack
+            myrack
 
       PLATFORMS
         #{lockfile_platforms}
@@ -41,7 +41,7 @@ RSpec.describe "bundle install with install_if conditionals" do
       DEPENDENCIES
         activesupport (= 2.3.5)
         foo
-        rack
+        myrack
         thin
       #{checksums}
       BUNDLED WITH

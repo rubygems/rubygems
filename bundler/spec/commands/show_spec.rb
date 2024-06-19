@@ -168,12 +168,12 @@ RSpec.describe "bundle show", bundler: "< 3" do
     it "presents alternatives", :readline do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
-        gem "rack-obama"
+        gem "myrack"
+        gem "myrack-obama"
       G
 
       bundle "show rac"
-      expect(out).to match(/\A1 : rack\n2 : rack-obama\n0 : - exit -(\n>|\z)/)
+      expect(out).to match(/\A1 : myrack\n2 : myrack-obama\n0 : - exit -(\n>|\z)/)
     end
   end
 

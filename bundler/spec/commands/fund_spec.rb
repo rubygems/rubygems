@@ -33,14 +33,14 @@ RSpec.describe "bundle fund" do
       source "#{file_uri_for(gem_repo2)}"
       gem 'has_funding_and_other_metadata'
       gem 'has_funding'
-      gem 'rack-obama'
+      gem 'myrack-obama'
     G
 
     bundle "fund"
 
     expect(out).to include("* has_funding_and_other_metadata (1.0)\n  Funding: https://example.com/has_funding_and_other_metadata/funding")
     expect(out).to include("* has_funding (1.2.3)\n  Funding: https://example.com/has_funding/funding")
-    expect(out).to_not include("rack-obama")
+    expect(out).to_not include("myrack-obama")
   end
 
   it "does not consider fund information for gem dependencies" do
@@ -62,14 +62,14 @@ RSpec.describe "bundle fund" do
         gem 'has_funding_and_other_metadata'
       end
       gem 'has_funding'
-      gem 'rack-obama'
+      gem 'myrack-obama'
     G
 
     bundle "fund"
 
     expect(out).to include("* has_funding (1.2.3)\n  Funding: https://example.com/has_funding/funding")
     expect(out).to_not include("has_funding_and_other_metadata")
-    expect(out).to_not include("rack-obama")
+    expect(out).to_not include("myrack-obama")
   end
 
   it "considers fund information for installed optional dependencies" do
@@ -81,20 +81,20 @@ RSpec.describe "bundle fund" do
         gem 'has_funding_and_other_metadata'
       end
       gem 'has_funding'
-      gem 'rack-obama'
+      gem 'myrack-obama'
     G
 
     bundle "fund"
 
     expect(out).to include("* has_funding_and_other_metadata (1.0)\n  Funding: https://example.com/has_funding_and_other_metadata/funding")
     expect(out).to include("* has_funding (1.2.3)\n  Funding: https://example.com/has_funding/funding")
-    expect(out).to_not include("rack-obama")
+    expect(out).to_not include("myrack-obama")
   end
 
   it "prints message if none of the gems have fund information" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
-      gem 'rack-obama'
+      gem 'myrack-obama'
     G
 
     bundle "fund"

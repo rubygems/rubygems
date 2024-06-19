@@ -634,7 +634,7 @@ RSpec.describe "bundle outdated" do
     it "only reports gem dependencies when they can actually be updated" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
-        gem "rack_middleware", "1.0"
+        gem "myrack_middleware", "1.0"
       G
 
       bundle :outdated, "filter-strict": true
@@ -743,7 +743,7 @@ RSpec.describe "bundle outdated" do
   it "performs an automatic bundle install" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack", "0.9.1"
+      gem "myrack", "0.9.1"
       gem "foo"
     G
 
@@ -759,7 +759,7 @@ RSpec.describe "bundle outdated" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
 
-        gem "rack"
+        gem "myrack"
         gem "foo"
       G
       bundle :lock
@@ -788,7 +788,7 @@ RSpec.describe "bundle outdated" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
 
-        gem "rack"
+        gem "myrack"
         gem "foo"
       G
       bundle "config set --local deployment true"

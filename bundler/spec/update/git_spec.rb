@@ -207,19 +207,19 @@ RSpec.describe "bundle update" do
     end
 
     it "should not explode on invalid revision on update of gem by name" do
-      build_git "rack", "0.8"
+      build_git "myrack", "0.8"
 
-      build_git "rack", "0.8", path: lib_path("local-rack") do |s|
-        s.write "lib/rack.rb", "puts :LOCAL"
+      build_git "myrack", "0.8", path: lib_path("local-myrack") do |s|
+        s.write "lib/myrack.rb", "puts :LOCAL"
       end
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", :git => "#{file_uri_for(lib_path("rack-0.8"))}", :branch => "main"
+        gem "myrack", :git => "#{file_uri_for(lib_path("myrack-0.8"))}", :branch => "main"
       G
 
-      bundle %(config set local.rack #{lib_path("local-rack")})
-      bundle "update rack"
+      bundle %(config set local.myrack #{lib_path("local-myrack")})
+      bundle "update myrack"
       expect(out).to include("Bundle updated!")
     end
 
@@ -250,7 +250,7 @@ RSpec.describe "bundle update" do
         git "#{lib_path("foo")}" do
           gem 'foo'
         end
-        gem 'rack'
+        gem 'myrack'
       G
     end
 
@@ -279,7 +279,7 @@ RSpec.describe "bundle update" do
       update_git "foo", path: @git.path
 
       bundle "update --source foo"
-      expect(the_bundle).to include_gems "rack 1.0"
+      expect(the_bundle).to include_gems "myrack 1.0"
     end
   end
 
@@ -293,7 +293,7 @@ RSpec.describe "bundle update" do
         git "#{lib_path("bar")}" do
           gem 'foo'
         end
-        gem 'rack'
+        gem 'myrack'
       G
     end
 
@@ -311,7 +311,7 @@ RSpec.describe "bundle update" do
 
       checksums = checksums_section_when_existing do |c|
         c.no_checksum "foo", "2.0"
-        c.checksum gem_repo2, "rack", "1.0.0"
+        c.checksum gem_repo2, "myrack", "1.0.0"
       end
 
       expect(lockfile).to eq <<~G
@@ -324,14 +324,14 @@ RSpec.describe "bundle update" do
         GEM
           remote: #{file_uri_for(gem_repo2)}/
           specs:
-            rack (1.0.0)
+            myrack (1.0.0)
 
         PLATFORMS
           #{lockfile_platforms}
 
         DEPENDENCIES
           foo!
-          rack
+          myrack
         #{checksums}
         BUNDLED WITH
            #{Bundler::VERSION}

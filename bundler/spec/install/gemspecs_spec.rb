@@ -31,22 +31,22 @@ RSpec.describe "bundle install" do
   it "should use gemspecs in the system cache when available" do
     gemfile <<-G
       source "http://localtestserver.gem"
-      gem 'rack'
+      gem 'myrack'
     G
 
-    system_gems "rack-1.0.0", path: default_bundle_path
+    system_gems "myrack-1.0.0", path: default_bundle_path
 
     FileUtils.mkdir_p "#{default_bundle_path}/specifications"
-    File.open("#{default_bundle_path}/specifications/rack-1.0.0.gemspec", "w+") do |f|
+    File.open("#{default_bundle_path}/specifications/myrack-1.0.0.gemspec", "w+") do |f|
       spec = Gem::Specification.new do |s|
-        s.name = "rack"
+        s.name = "myrack"
         s.version = "1.0.0"
         s.add_runtime_dependency "activesupport", "2.3.2"
       end
       f.write spec.to_ruby
     end
     bundle :install, artifice: "endpoint_marshal_fail" # force gemspec load
-    expect(the_bundle).to include_gems "rack 1.0.0", "activesupport 2.3.2"
+    expect(the_bundle).to include_gems "myrack 1.0.0", "activesupport 2.3.2"
   end
 
   it "does not hang when gemspec has incompatible encoding" do

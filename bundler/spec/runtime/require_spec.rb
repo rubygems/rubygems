@@ -386,11 +386,11 @@ RSpec.describe "Bundler.require" do
   it "does not load rubygems gemspecs that are used" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     run <<-R
-      path = File.join(Gem.dir, "specifications", "rack-1.0.0.gemspec")
+      path = File.join(Gem.dir, "specifications", "myrack-1.0.0.gemspec")
       contents = File.read(path)
       contents = contents.lines.to_a.insert(-2, "\n  raise 'broken gemspec'\n").join
       File.open(path, "w") do |f|
@@ -434,12 +434,12 @@ RSpec.describe "Bundler.require" do
   it "does not extract gemspecs from application cache packages" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     bundle :cache
 
-    path = cached_gem("rack-1.0.0")
+    path = cached_gem("myrack-1.0.0")
 
     run <<-R
       File.open("#{path}", "w") do |f|
@@ -465,7 +465,7 @@ RSpec.describe "Bundler.require with platform specific dependencies" do
         gem "platform_specific", :require => "omgomg"
       end
 
-      gem "rack", "1.0.0"
+      gem "myrack", "1.0.0"
     G
 
     run "Bundler.require"
@@ -477,11 +477,11 @@ RSpec.describe "Bundler.require with platform specific dependencies" do
       source "#{file_uri_for(gem_repo1)}"
 
       platforms :#{not_local_tag}, :#{local_tag} do
-        gem "rack", :require => "rack"
+        gem "myrack", :require => "myrack"
       end
     G
 
-    run "Bundler.require; puts RACK"
+    run "Bundler.require; puts MYRACK"
 
     expect(out).to eq("1.0.0")
     expect(err).to be_empty

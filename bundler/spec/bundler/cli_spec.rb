@@ -102,12 +102,12 @@ RSpec.describe "bundle executable" do
     it "ignores it" do
       gemfile bundled_app_gemfile, <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
       G
 
       bundle :install, env: { "BUNDLE_GEMFILE" => "" }
 
-      expect(the_bundle).to include_gems "rack 1.0.0"
+      expect(the_bundle).to include_gems "myrack 1.0.0"
     end
   end
 
@@ -139,7 +139,7 @@ RSpec.describe "bundle executable" do
     before do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", '0.9.1'
+        gem "myrack", '0.9.1'
       G
     end
 
@@ -149,8 +149,8 @@ RSpec.describe "bundle executable" do
       it "prints a message when there are outdated gems" do
         run_command
 
-        expect(out).to include("Gem   Current  Latest  Requested  Groups")
-        expect(out).to include("rack  0.9.1    1.0.0   = 0.9.1    default")
+        expect(out).to include("Gem     Current  Latest  Requested  Groups")
+        expect(out).to include("myrack  0.9.1    1.0.0   = 0.9.1    default")
       end
     end
 
@@ -160,7 +160,7 @@ RSpec.describe "bundle executable" do
       it "prints a message when there are outdated gems" do
         run_command
 
-        expect(out).to include("rack (newest 1.0.0, installed 0.9.1, requested = 0.9.1)")
+        expect(out).to include("myrack (newest 1.0.0, installed 0.9.1, requested = 0.9.1)")
       end
     end
 
@@ -170,7 +170,7 @@ RSpec.describe "bundle executable" do
       it "prints a simplified message when there are outdated gems" do
         run_command
 
-        expect(out).to include("rack (newest 1.0.0, installed 0.9.1, requested = 0.9.1)")
+        expect(out).to include("myrack (newest 1.0.0, installed 0.9.1, requested = 0.9.1)")
       end
     end
   end

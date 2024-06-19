@@ -39,16 +39,16 @@ RSpec.describe "bundle install" do
   describe "when prerelease gems are not available" do
     it "still works" do
       build_repo gem_repo3 do
-        build_gem "rack"
+        build_gem "myrack"
       end
       FileUtils.rm_rf Dir[gem_repo3("prerelease*")]
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo3)}"
-        gem "rack"
+        gem "myrack"
       G
 
-      expect(the_bundle).to include_gems "rack 1.0"
+      expect(the_bundle).to include_gems "myrack 1.0"
     end
   end
 end

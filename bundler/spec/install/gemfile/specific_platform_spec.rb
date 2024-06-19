@@ -970,19 +970,19 @@ RSpec.describe "bundle install with specific platforms" do
   it "does not remove ruby when adding a new gem to the Gemfile" do
     build_repo4 do
       build_gem "concurrent-ruby", "1.2.2"
-      build_gem "rack", "3.0.7"
+      build_gem "myrack", "3.0.7"
     end
 
     gemfile <<~G
       source "#{file_uri_for(gem_repo4)}"
 
       gem "concurrent-ruby"
-      gem "rack"
+      gem "myrack"
     G
 
     checksums = checksums_section_when_existing do |c|
       c.no_checksum "concurrent-ruby", "1.2.2"
-      c.no_checksum "rack", "3.0.7"
+      c.no_checksum "myrack", "3.0.7"
     end
 
     lockfile <<~L
@@ -1008,14 +1008,14 @@ RSpec.describe "bundle install with specific platforms" do
         remote: #{file_uri_for(gem_repo4)}/
         specs:
           concurrent-ruby (1.2.2)
-          rack (3.0.7)
+          myrack (3.0.7)
 
       PLATFORMS
         #{lockfile_platforms("ruby", generic_local_platform, defaults: [])}
 
       DEPENDENCIES
         concurrent-ruby
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}

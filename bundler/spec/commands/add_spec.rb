@@ -319,26 +319,26 @@ RSpec.describe "bundle add" do
     it "shows an error when added with different version requirement" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
-        gem "rack", "1.0"
+        gem "myrack", "1.0"
       G
 
-      bundle "add 'rack' --version=1.1", raise_on_error: false
+      bundle "add 'myrack' --version=1.1", raise_on_error: false
 
       expect(err).to include("You cannot specify the same gem twice with different version requirements")
-      expect(err).to include("If you want to update the gem version, run `bundle update rack`. You may also need to change the version requirement specified in the Gemfile if it's too restrictive")
+      expect(err).to include("If you want to update the gem version, run `bundle update myrack`. You may also need to change the version requirement specified in the Gemfile if it's too restrictive")
     end
 
     it "shows error when added without version requirements" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
-        gem "rack", "1.0"
+        gem "myrack", "1.0"
       G
 
-      bundle "add 'rack'", raise_on_error: false
+      bundle "add 'myrack'", raise_on_error: false
 
       expect(err).to include("Gem already added.")
       expect(err).to include("You cannot specify the same gem twice with different version requirements")
-      expect(err).not_to include("If you want to update the gem version, run `bundle update rack`. You may also need to change the version requirement specified in the Gemfile if it's too restrictive")
+      expect(err).not_to include("If you want to update the gem version, run `bundle update myrack`. You may also need to change the version requirement specified in the Gemfile if it's too restrictive")
     end
   end
 
@@ -346,13 +346,13 @@ RSpec.describe "bundle add" do
     it "shows an error when added with different version requirement" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
-        gem "rack"
+        gem "myrack"
       G
 
-      bundle "add 'rack' --version=1.1", raise_on_error: false
+      bundle "add 'myrack' --version=1.1", raise_on_error: false
 
       expect(err).to include("You cannot specify the same gem twice with different version requirements")
-      expect(err).to include("If you want to update the gem version, run `bundle update rack`.")
+      expect(err).to include("If you want to update the gem version, run `bundle update myrack`.")
       expect(err).not_to include("You may also need to change the version requirement specified in the Gemfile if it's too restrictive")
     end
   end
@@ -361,8 +361,8 @@ RSpec.describe "bundle add" do
     it "caches all new dependencies added for the specified gem" do
       bundle :cache
 
-      bundle "add 'rack' --version=1.0.0"
-      expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
+      bundle "add 'myrack' --version=1.0.0"
+      expect(bundled_app("vendor/cache/myrack-1.0.0.gem")).to exist
     end
   end
 end

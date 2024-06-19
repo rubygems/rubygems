@@ -8,15 +8,15 @@ RSpec.describe "bundle update" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         gem "platform_specific"
       G
     end
 
     it "updates the entire bundle" do
       update_repo2 do
-        build_gem "rack", "1.2" do |s|
-          s.executables = "rackup"
+        build_gem "myrack", "1.2" do |s|
+          s.executables = "myrackup"
         end
 
         build_gem "activesupport", "3.0"
@@ -24,14 +24,14 @@ RSpec.describe "bundle update" do
 
       bundle "update"
       expect(out).to include("Bundle updated!")
-      expect(the_bundle).to include_gems "rack 1.2", "rack-obama 1.0", "activesupport 3.0"
+      expect(the_bundle).to include_gems "myrack 1.2", "myrack-obama 1.0", "activesupport 3.0"
     end
 
     it "doesn't delete the Gemfile.lock file if something goes wrong" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         exit!
       G
       bundle "update", raise_on_error: false
@@ -46,15 +46,15 @@ RSpec.describe "bundle update" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         gem "platform_specific"
       G
     end
 
     it "updates the entire bundle" do
       update_repo2 do
-        build_gem "rack", "1.2" do |s|
-          s.executables = "rackup"
+        build_gem "myrack", "1.2" do |s|
+          s.executables = "myrackup"
         end
 
         build_gem "activesupport", "3.0"
@@ -62,7 +62,7 @@ RSpec.describe "bundle update" do
 
       bundle "update", all: true
       expect(out).to include("Bundle updated!")
-      expect(the_bundle).to include_gems "rack 1.2", "rack-obama 1.0", "activesupport 3.0"
+      expect(the_bundle).to include_gems "myrack 1.2", "myrack-obama 1.0", "activesupport 3.0"
     end
 
     it "doesn't delete the Gemfile.lock file if something goes wrong" do
@@ -71,7 +71,7 @@ RSpec.describe "bundle update" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         exit!
       G
       bundle "update", all: true, raise_on_error: false
@@ -83,7 +83,7 @@ RSpec.describe "bundle update" do
     it "creates lock files based on the Gemfile name" do
       gemfile bundled_app("OmgFile"), <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "1.0"
+        gem "myrack", "1.0"
       G
 
       bundle "update --gemfile OmgFile", all: true
@@ -121,7 +121,7 @@ RSpec.describe "bundle update" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         gem "platform_specific"
       G
     end
@@ -139,22 +139,22 @@ RSpec.describe "bundle update" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         gem "platform_specific"
       G
     end
 
     it "unlocks all child dependencies that are unrelated to other locked dependencies" do
       update_repo2 do
-        build_gem "rack", "1.2" do |s|
-          s.executables = "rackup"
+        build_gem "myrack", "1.2" do |s|
+          s.executables = "myrackup"
         end
 
         build_gem "activesupport", "3.0"
       end
 
-      bundle "update rack-obama"
-      expect(the_bundle).to include_gems "rack 1.2", "rack-obama 1.0", "activesupport 2.3.5"
+      bundle "update myrack-obama"
+      expect(the_bundle).to include_gems "myrack 1.2", "myrack-obama 1.0", "activesupport 2.3.5"
     end
   end
 
@@ -165,7 +165,7 @@ RSpec.describe "bundle update" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         gem "platform_specific"
       G
     end
@@ -187,20 +187,20 @@ RSpec.describe "bundle update" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         gem "platform_specific"
       G
     end
 
     it "should update the child dependency" do
       update_repo2 do
-        build_gem "rack", "1.2" do |s|
-          s.executables = "rackup"
+        build_gem "myrack", "1.2" do |s|
+          s.executables = "myrackup"
         end
       end
 
-      bundle "update rack"
-      expect(the_bundle).to include_gems "rack 1.2"
+      bundle "update myrack"
+      expect(the_bundle).to include_gems "myrack 1.2"
     end
   end
 
@@ -560,7 +560,7 @@ RSpec.describe "bundle update" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         gem "platform_specific"
       G
 
@@ -570,9 +570,9 @@ RSpec.describe "bundle update" do
           specs:
             activesupport (2.3.5)
             platform_specific (1.0-#{local_platform})
-            rack (1.0.0)
-            rack-obama (1.0)
-              rack
+            myrack (1.0.0)
+            myrack-obama (1.0)
+              myrack
 
         PLATFORMS
           #{local_platform}
@@ -580,7 +580,7 @@ RSpec.describe "bundle update" do
         DEPENDENCIES
           activesupport
           platform_specific
-          rack-obama
+          myrack-obama
 
         BUNDLED WITH
            #{Bundler::VERSION}
@@ -606,18 +606,18 @@ RSpec.describe "bundle update" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport", :group => :development
-        gem "rack"
+        gem "myrack"
       G
       update_repo2 do
-        build_gem "rack", "1.2" do |s|
-          s.executables = "rackup"
+        build_gem "myrack", "1.2" do |s|
+          s.executables = "myrackup"
         end
 
         build_gem "activesupport", "3.0"
       end
       bundle "update --group development"
       expect(the_bundle).to include_gems "activesupport 3.0"
-      expect(the_bundle).not_to include_gems "rack 1.2"
+      expect(the_bundle).not_to include_gems "myrack 1.2"
     end
 
     context "when conservatively updating a group with non-group sub-deps" do
@@ -662,11 +662,11 @@ RSpec.describe "bundle update" do
         install_gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "activesupport", :group => :development
-          gem "rack"
+          gem "myrack"
         G
         update_repo2 do
-          build_gem "rack", "1.2" do |s|
-            s.executables = "rackup"
+          build_gem "myrack", "1.2" do |s|
+            s.executables = "myrackup"
           end
 
           build_gem "activesupport", "3.0"
@@ -674,7 +674,7 @@ RSpec.describe "bundle update" do
         bundle "update --group development"
         expect(the_bundle).to include_gems "activesupport 2.3.5"
         expect(the_bundle).to include_gems "bundler #{Bundler::VERSION}"
-        expect(the_bundle).not_to include_gems "rack 1.2"
+        expect(the_bundle).not_to include_gems "myrack 1.2"
       end
     end
   end
@@ -686,7 +686,7 @@ RSpec.describe "bundle update" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
         gem "platform_specific"
       G
     end
@@ -866,10 +866,10 @@ RSpec.describe "bundle update" do
   context "with multiple sources and caching enabled" do
     before do
       build_repo2 do
-        build_gem "rack", "1.0.0"
+        build_gem "myrack", "1.0.0"
 
         build_gem "request_store", "1.0.0" do |s|
-          s.add_dependency "rack", "1.0.0"
+          s.add_dependency "myrack", "1.0.0"
         end
       end
 
@@ -890,9 +890,9 @@ RSpec.describe "bundle update" do
         GEM
           remote: #{file_uri_for(gem_repo2)}/
           specs:
-            rack (1.0.0)
+            myrack (1.0.0)
             request_store (1.0.0)
-              rack (= 1.0.0)
+              myrack (= 1.0.0)
 
         GEM
           remote: #{file_uri_for(gem_repo4)}/
@@ -915,7 +915,7 @@ RSpec.describe "bundle update" do
 
       update_repo2 do
         build_gem "request_store", "1.1.0" do |s|
-          s.add_dependency "rack", "1.0.0"
+          s.add_dependency "myrack", "1.0.0"
         end
       end
 
@@ -927,9 +927,9 @@ RSpec.describe "bundle update" do
         GEM
           remote: #{file_uri_for(gem_repo2)}/
           specs:
-            rack (1.0.0)
+            myrack (1.0.0)
             request_store (1.1.0)
-              rack (= 1.0.0)
+              myrack (= 1.0.0)
 
         GEM
           remote: #{file_uri_for(gem_repo4)}/
@@ -1020,21 +1020,21 @@ RSpec.describe "bundle update in more complicated situations" do
       source "#{file_uri_for(gem_repo2)}"
 
       gem "thin"
-      gem "rack-obama"
+      gem "myrack-obama"
     G
 
     update_repo2 do
-      build_gem "rack", "1.2" do |s|
-        s.executables = "rackup"
+      build_gem "myrack", "1.2" do |s|
+        s.executables = "myrackup"
       end
 
       build_gem "thin", "2.0" do |s|
-        s.add_dependency "rack"
+        s.add_dependency "myrack"
       end
     end
 
     bundle "update thin"
-    expect(the_bundle).to include_gems "thin 2.0", "rack 1.2", "rack-obama 1.0"
+    expect(the_bundle).to include_gems "thin 2.0", "myrack 1.2", "myrack-obama 1.0"
   end
 
   it "will warn when some explicitly updated gems are not updated" do
@@ -1042,17 +1042,17 @@ RSpec.describe "bundle update in more complicated situations" do
       source "#{file_uri_for(gem_repo2)}"
 
       gem "thin"
-      gem "rack-obama"
+      gem "myrack-obama"
     G
 
     update_repo2 do
-      build_gem("thin", "2.0") {|s| s.add_dependency "rack" }
-      build_gem "rack", "10.0"
+      build_gem("thin", "2.0") {|s| s.add_dependency "myrack" }
+      build_gem "myrack", "10.0"
     end
 
-    bundle "update thin rack-obama"
-    expect(last_command.stdboth).to include "Bundler attempted to update rack-obama but its version stayed the same"
-    expect(the_bundle).to include_gems "thin 2.0", "rack 10.0", "rack-obama 1.0"
+    bundle "update thin myrack-obama"
+    expect(last_command.stdboth).to include "Bundler attempted to update myrack-obama but its version stayed the same"
+    expect(the_bundle).to include_gems "thin 2.0", "myrack 10.0", "myrack-obama 1.0"
   end
 
   it "will not warn when an explicitly updated git gem changes sha but not version" do
@@ -1073,19 +1073,19 @@ RSpec.describe "bundle update in more complicated situations" do
   end
 
   it "will not warn when changing gem sources but not versions" do
-    build_git "rack"
+    build_git "myrack"
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
-      gem "rack", :git => '#{lib_path("rack-1.0")}'
+      gem "myrack", :git => '#{lib_path("myrack-1.0")}'
     G
 
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
-    bundle "update rack"
+    bundle "update myrack"
 
     expect(last_command.stdboth).not_to include "attempted to update"
   end
@@ -1191,12 +1191,12 @@ RSpec.describe "bundle update without a Gemfile.lock" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
 
-      gem "rack", "1.0"
+      gem "myrack", "1.0"
     G
 
     bundle "update", all: true
 
-    expect(the_bundle).to include_gems "rack 1.0.0"
+    expect(the_bundle).to include_gems "myrack 1.0.0"
   end
 end
 
@@ -1365,28 +1365,28 @@ end
 RSpec.describe "bundle update --bundler" do
   it "updates the bundler version in the lockfile" do
     build_repo4 do
-      build_gem "rack", "1.0"
+      build_gem "myrack", "1.0"
     end
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum(gem_repo4, "rack", "1.0")
+      c.checksum(gem_repo4, "myrack", "1.0")
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo4)}"
-      gem "rack"
+      gem "myrack"
     G
     expect(lockfile).to eq <<~L
       GEM
         remote: #{file_uri_for(gem_repo4)}/
         specs:
-          rack (1.0)
+          myrack (1.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1400,36 +1400,36 @@ RSpec.describe "bundle update --bundler" do
       GEM
         remote: #{file_uri_for(gem_repo4)}/
         specs:
-          rack (1.0)
+          myrack (1.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
     L
 
-    expect(the_bundle).to include_gem "rack 1.0"
+    expect(the_bundle).to include_gem "myrack 1.0"
   end
 
   it "updates the bundler version in the lockfile without re-resolving if the highest version is already installed" do
     system_gems "bundler-2.3.9"
 
     build_repo4 do
-      build_gem "rack", "1.0"
+      build_gem "myrack", "1.0"
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo4)}"
-      gem "rack"
+      gem "myrack"
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.3.9")
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum(gem_repo4, "rack", "1.0")
+      c.checksum(gem_repo4, "myrack", "1.0")
     end
 
     bundle :update, bundler: true, artifice: "compact_index", verbose: true
@@ -1439,33 +1439,33 @@ RSpec.describe "bundle update --bundler" do
       GEM
         remote: #{file_uri_for(gem_repo4)}/
         specs:
-          rack (1.0)
+          myrack (1.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
     L
 
-    expect(the_bundle).to include_gem "rack 1.0"
+    expect(the_bundle).to include_gem "myrack 1.0"
   end
 
   it "updates the bundler version in the lockfile even if the latest version is not installed", :ruby_repo do
     pristine_system_gems "bundler-2.99.9"
 
     build_repo4 do
-      build_gem "rack", "1.0"
+      build_gem "myrack", "1.0"
 
       build_bundler "999.0.0"
     end
 
     install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
       source "https://gems.repo4"
-      gem "rack"
+      gem "myrack"
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.99.9")
 
@@ -1482,26 +1482,26 @@ RSpec.describe "bundle update --bundler" do
         GEM
           remote: https://gems.repo4/
           specs:
-            rack (1.0)
+            myrack (1.0)
 
         PLATFORMS
           #{lockfile_platforms}
 
         DEPENDENCIES
-          rack
+          myrack
 
         BUNDLED WITH
            999.0.0
       L
 
       expect(the_bundle).to include_gems "bundler 999.0.0"
-      expect(the_bundle).to include_gems "rack 1.0"
+      expect(the_bundle).to include_gems "myrack 1.0"
     else
       # Old RubyGems versions do not trampoline but they still change BUNDLED
       # WITH to the latest bundler version. This means the below check fails
       # because it tries to use bundler 999.0.0 which did not get installed.
       # Workaround the bug by forcing the version we know is installed.
-      expect(the_bundle).to include_gems "rack 1.0", env: { "BUNDLER_VERSION" => "2.99.9" }
+      expect(the_bundle).to include_gems "myrack 1.0", env: { "BUNDLER_VERSION" => "2.99.9" }
     end
   end
 
@@ -1509,27 +1509,27 @@ RSpec.describe "bundle update --bundler" do
     pristine_system_gems "bundler-2.99.0"
 
     build_repo4 do
-      build_gem "rack", "3.0.9.1"
+      build_gem "myrack", "3.0.9.1"
 
       build_bundler "2.99.0"
     end
 
     gemfile <<~G
       source "#{file_uri_for(gem_repo4)}"
-      gem "rack"
+      gem "myrack"
     G
 
     lockfile <<~L
       GEM
         remote: #{file_uri_for(gem_repo4)}/
         specs:
-          rack (3.0.9.1)
+          myrack (3.0.9.1)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-       rack
+       myrack
 
       BUNDLED WITH
          2.99.0
@@ -1546,7 +1546,7 @@ RSpec.describe "bundle update --bundler" do
     pristine_system_gems "bundler-2.3.9"
 
     build_repo4 do
-      build_gem "rack", "1.0"
+      build_gem "myrack", "1.0"
 
       build_bundler "2.3.9"
       build_bundler "999.0.0" do |s|
@@ -1556,7 +1556,7 @@ RSpec.describe "bundle update --bundler" do
 
     install_gemfile <<-G, env: { "BUNDLER_IGNORE_DEFAULT_GEM" => "true" }
       source "#{file_uri_for(gem_repo4)}"
-      gem "rack"
+      gem "myrack"
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.3.9")
 
@@ -1568,32 +1568,32 @@ RSpec.describe "bundle update --bundler" do
       GEM
         remote: #{file_uri_for(gem_repo4)}/
         specs:
-          rack (1.0)
+          myrack (1.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
 
       BUNDLED WITH
          2.3.9
     L
 
     expect(the_bundle).to include_gems "bundler 2.3.9"
-    expect(the_bundle).to include_gems "rack 1.0"
+    expect(the_bundle).to include_gems "myrack 1.0"
   end
 
   it "errors if the explicit target version does not exist" do
     pristine_system_gems "bundler-2.3.9"
 
     build_repo4 do
-      build_gem "rack", "1.0"
+      build_gem "myrack", "1.0"
     end
 
     install_gemfile <<-G, env: { "BUNDLER_IGNORE_DEFAULT_GEM" => "true" }
       source "#{file_uri_for(gem_repo4)}"
-      gem "rack"
+      gem "myrack"
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.3.9")
 
@@ -1611,12 +1611,12 @@ RSpec.describe "bundle update --bundler" do
     system_gems "bundler-2.3.0.dev"
 
     build_repo4 do
-      build_gem "rack", "1.0"
+      build_gem "myrack", "1.0"
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo4)}"
-      gem "rack"
+      gem "myrack"
     G
 
     bundle :update, bundler: "2.3.0.dev", verbose: "true"
@@ -1624,20 +1624,20 @@ RSpec.describe "bundle update --bundler" do
     # Only updates properly on modern RubyGems.
     if Gem.rubygems_version >= Gem::Version.new("3.3.0.dev")
       checksums = checksums_section_when_existing do |c|
-        c.checksum(gem_repo4, "rack", "1.0")
+        c.checksum(gem_repo4, "myrack", "1.0")
       end
 
       expect(lockfile).to eq <<~L
         GEM
           remote: #{file_uri_for(gem_repo4)}/
           specs:
-            rack (1.0)
+            myrack (1.0)
 
         PLATFORMS
           #{lockfile_platforms}
 
         DEPENDENCIES
-          rack
+          myrack
         #{checksums}
         BUNDLED WITH
            2.3.0.dev
@@ -1651,12 +1651,12 @@ RSpec.describe "bundle update --bundler" do
     system_gems "bundler-2.3.9"
 
     build_repo4 do
-      build_gem "rack", "1.0"
+      build_gem "myrack", "1.0"
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo4)}"
-      gem "rack"
+      gem "myrack"
     G
 
     bundle :update, bundler: "2.3.9", verbose: true
@@ -1665,7 +1665,7 @@ RSpec.describe "bundle update --bundler" do
 
     # Only updates properly on modern RubyGems.
     checksums = checksums_section_when_existing do |c|
-      c.checksum(gem_repo4, "rack", "1.0")
+      c.checksum(gem_repo4, "myrack", "1.0")
     end
 
     if Gem.rubygems_version >= Gem::Version.new("3.3.0.dev")
@@ -1673,13 +1673,13 @@ RSpec.describe "bundle update --bundler" do
         GEM
           remote: #{file_uri_for(gem_repo4)}/
           specs:
-            rack (1.0)
+            myrack (1.0)
 
         PLATFORMS
           #{lockfile_platforms}
 
         DEPENDENCIES
-          rack
+          myrack
         #{checksums}
         BUNDLED WITH
            2.3.9

@@ -24,7 +24,7 @@ RSpec.describe "bundle install" do
     it "are forced to the current bundler version even if not already present" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
       expect(the_bundle).to include_gems "bundler #{Bundler::VERSION}"
     end
@@ -108,7 +108,7 @@ RSpec.describe "bundle install" do
         source "#{file_uri_for(gem_repo2)}"
 
         gem "multiple_versioned_deps"
-        gem "rack"
+        gem "myrack"
       G
 
       expect(the_bundle).to include_gems "multiple_versioned_deps 1.0.0"
@@ -127,7 +127,7 @@ RSpec.describe "bundle install" do
     it "allows gem 'bundler' when Bundler is not in the Gemfile or its dependencies" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
-        gem "rack"
+        gem "myrack"
       G
 
       run "begin; gem 'bundler'; puts 'WIN'; rescue Gem::LoadError => e; puts e.backtrace; end"

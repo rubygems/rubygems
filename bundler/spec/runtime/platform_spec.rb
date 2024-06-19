@@ -4,20 +4,20 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
   it "raises a friendly error when gems are missing locally" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
     lockfile <<-G
       GEM
         remote: #{file_uri_for(gem_repo1)}/
         specs:
-          rack (1.0)
+          myrack (1.0)
 
       PLATFORMS
         #{local_tag}
 
       DEPENDENCIES
-        rack
+        myrack
     G
 
     ruby <<-R
@@ -387,7 +387,7 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
 
   it "allows specifying only-ruby-platform on windows with gemspec dependency" do
     build_lib("foo", "1.0", path: bundled_app) do |s|
-      s.add_dependency "rack"
+      s.add_dependency "myrack"
     end
 
     gemfile <<-G
@@ -400,7 +400,7 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
       bundle "config set force_ruby_platform true"
       bundle "install"
 
-      expect(the_bundle).to include_gems "rack 1.0"
+      expect(the_bundle).to include_gems "myrack 1.0"
     end
   end
 

@@ -6,22 +6,22 @@ RSpec.describe "bundle install across platforms" do
       GEM
         remote: #{file_uri_for(gem_repo1)}/
         specs:
-          rack (0.9.1)
+          myrack (0.9.1)
 
       PLATFORMS
         #{not_local}
 
       DEPENDENCIES
-        rack
+        myrack
     G
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
 
-      gem "rack"
+      gem "myrack"
     G
 
-    expect(the_bundle).to include_gems "rack 0.9.1"
+    expect(the_bundle).to include_gems "myrack 0.9.1"
   end
 
   it "pulls in the correct platform specific gem" do
@@ -359,7 +359,7 @@ RSpec.describe "bundle install across platforms" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
 
-      gem "rack", "1.0.0"
+      gem "myrack", "1.0.0"
     G
 
     bundle "config set --local path vendor/bundle"
@@ -368,7 +368,7 @@ RSpec.describe "bundle install across platforms" do
     FileUtils.mv(vendored_gems, bundled_app("vendor/bundle", Gem.ruby_engine, "1.8"))
 
     bundle :install
-    expect(vendored_gems("gems/rack-1.0.0")).to exist
+    expect(vendored_gems("gems/myrack-1.0.0")).to exist
   end
 
   it "keeps existing platforms when installing with force_ruby_platform" do
@@ -438,13 +438,13 @@ RSpec.describe "bundle install with platform conditionals" do
   it "does not install gems tagged w/ another platforms" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
       platforms :#{not_local_tag} do
         gem "nokogiri"
       end
     G
 
-    expect(the_bundle).to include_gems "rack 1.0"
+    expect(the_bundle).to include_gems "myrack 1.0"
     expect(the_bundle).not_to include_gems "nokogiri 1.4.2"
   end
 
@@ -502,10 +502,10 @@ RSpec.describe "bundle install with platform conditionals" do
   it "does not install gems tagged w/ another platforms inline" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
       gem "nokogiri", :platforms => :#{not_local_tag}
     G
-    expect(the_bundle).to include_gems "rack 1.0"
+    expect(the_bundle).to include_gems "myrack 1.0"
     expect(the_bundle).not_to include_gems "nokogiri 1.4.2"
   end
 
@@ -567,7 +567,7 @@ RSpec.describe "bundle install with platform conditionals" do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
 
-      gem "rack", :platform => [:windows, :mswin, :mswin64, :mingw, :x64_mingw, :jruby]
+      gem "myrack", :platform => [:windows, :mswin, :mswin64, :mingw, :x64_mingw, :jruby]
     G
 
     bundle "install"
@@ -583,7 +583,7 @@ RSpec.describe "bundle install with platform conditionals" do
         ruby
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums_section_when_existing}
       BUNDLED WITH
          #{Bundler::VERSION}

@@ -8,8 +8,8 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
   it "graphs gems from the Gemfile" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
-      gem "rack-obama"
+      gem "myrack"
+      gem "myrack-obama"
     G
 
     bundle "viz"
@@ -25,11 +25,11 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
       node[ fontname  =  "Arial, Helvetica, SansSerif"];
       edge[ fontname  =  "Arial, Helvetica, SansSerif" , fontsize  =  "12"];
       default [style = "filled", fillcolor = "#B9B9D5", shape = "box3d", fontsize = "16", label = "default"];
-      rack [style = "filled", fillcolor = "#B9B9D5", label = "rack"];
-        default -> rack [constraint = "false"];
-      "rack-obama" [style = "filled", fillcolor = "#B9B9D5", label = "rack-obama"];
-        default -> "rack-obama" [constraint = "false"];
-        "rack-obama" -> rack;
+      myrack [style = "filled", fillcolor = "#B9B9D5", label = "myrack"];
+        default -> myrack [constraint = "false"];
+      "myrack-obama" [style = "filled", fillcolor = "#B9B9D5", label = "myrack-obama"];
+        default -> "myrack-obama" [constraint = "false"];
+        "myrack-obama" -> myrack;
       }
       debugging bundle viz...
     DOT
@@ -37,13 +37,13 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
 
   it "graphs gems that are prereleases" do
     build_repo2 do
-      build_gem "rack", "1.3.pre"
+      build_gem "myrack", "1.3.pre"
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
-      gem "rack", "= 1.3.pre"
-      gem "rack-obama"
+      gem "myrack", "= 1.3.pre"
+      gem "myrack-obama"
     G
 
     bundle "viz"
@@ -59,11 +59,11 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
       node[ fontname  =  "Arial, Helvetica, SansSerif"];
       edge[ fontname  =  "Arial, Helvetica, SansSerif" , fontsize  =  "12"];
       default [style = "filled", fillcolor = "#B9B9D5", shape = "box3d", fontsize = "16", label = "default"];
-      rack [style = "filled", fillcolor = "#B9B9D5", label = "rack\\n1.3.pre"];
-        default -> rack [constraint = "false"];
-      "rack-obama" [style = "filled", fillcolor = "#B9B9D5", label = "rack-obama\\n1.0"];
-        default -> "rack-obama" [constraint = "false"];
-        "rack-obama" -> rack;
+      myrack [style = "filled", fillcolor = "#B9B9D5", label = "myrack\\n1.3.pre"];
+        default -> myrack [constraint = "false"];
+      "myrack-obama" [style = "filled", fillcolor = "#B9B9D5", label = "myrack-obama\\n1.0"];
+        default -> "myrack-obama" [constraint = "false"];
+        "myrack-obama" -> myrack;
       }
       debugging bundle viz...
     EOS
@@ -83,8 +83,8 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
     it "loads the correct ruby-graphviz gem" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
-        gem "rack-obama"
+        gem "myrack"
+        gem "myrack-obama"
       G
 
       bundle "viz", format: "debug"
@@ -97,11 +97,11 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
         node[ fontname  =  "Arial, Helvetica, SansSerif"];
         edge[ fontname  =  "Arial, Helvetica, SansSerif" , fontsize  =  "12"];
         default [style = "filled", fillcolor = "#B9B9D5", shape = "box3d", fontsize = "16", label = "default"];
-        rack [style = "filled", fillcolor = "#B9B9D5", label = "rack"];
-          default -> rack [constraint = "false"];
-        "rack-obama" [style = "filled", fillcolor = "#B9B9D5", label = "rack-obama"];
-          default -> "rack-obama" [constraint = "false"];
-          "rack-obama" -> rack;
+        myrack [style = "filled", fillcolor = "#B9B9D5", label = "myrack"];
+          default -> myrack [constraint = "false"];
+        "myrack-obama" [style = "filled", fillcolor = "#B9B9D5", label = "myrack-obama"];
+          default -> "myrack-obama" [constraint = "false"];
+          "myrack-obama" -> myrack;
         }
         debugging bundle viz...
       DOT
@@ -128,8 +128,8 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
         source "#{file_uri_for(gem_repo1)}"
         gem "activesupport"
 
-        group :rack do
-          gem "rack"
+        group :myrack do
+          gem "myrack"
         end
 
         group :rails do
@@ -137,7 +137,7 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
         end
       G
 
-      bundle "viz --without=rails:rack"
+      bundle "viz --without=rails:myrack"
       expect(out).to include("gem_graph.png")
     end
   end

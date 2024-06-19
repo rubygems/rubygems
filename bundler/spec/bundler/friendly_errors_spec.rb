@@ -19,7 +19,7 @@ RSpec.describe Bundler, "friendly errors" do
     it "reports a relevant friendly error message" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       bundle :install, env: { "DEBUG" => "true" }

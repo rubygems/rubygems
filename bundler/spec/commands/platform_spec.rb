@@ -316,7 +316,7 @@ G
     it "installs fine when the ruby version matches" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_correct}
       G
@@ -327,7 +327,7 @@ G
     it "installs fine with any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_correct_engineless}
       G
@@ -338,7 +338,7 @@ G
     it "installs fine when the patchlevel matches" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_correct_patchlevel}
       G
@@ -349,7 +349,7 @@ G
     it "doesn't install when the ruby version doesn't match" do
       install_gemfile <<-G, raise_on_error: false
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_incorrect}
       G
@@ -361,7 +361,7 @@ G
     it "doesn't install when engine doesn't match" do
       install_gemfile <<-G, raise_on_error: false
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{engine_incorrect}
       G
@@ -373,7 +373,7 @@ G
     it "doesn't install when engine version doesn't match", :jruby_only do
       install_gemfile <<-G, raise_on_error: false
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{engine_version_incorrect}
       G
@@ -385,7 +385,7 @@ G
     it "doesn't install when patchlevel doesn't match" do
       install_gemfile <<-G, raise_on_error: false
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{patchlevel_incorrect}
       G
@@ -399,12 +399,12 @@ G
     it "checks fine when the ruby version matches" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_correct}
       G
@@ -416,12 +416,12 @@ G
     it "checks fine with any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_correct_engineless}
       G
@@ -433,12 +433,12 @@ G
     it "fails when ruby version doesn't match" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_incorrect}
       G
@@ -450,12 +450,12 @@ G
     it "fails when engine doesn't match" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{engine_incorrect}
       G
@@ -467,12 +467,12 @@ G
     it "fails when engine version doesn't match", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{engine_version_incorrect}
       G
@@ -484,12 +484,12 @@ G
     it "fails when patchlevel doesn't match" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
       G
 
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{patchlevel_incorrect}
       G
@@ -506,7 +506,7 @@ G
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
       G
     end
 
@@ -514,47 +514,47 @@ G
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
 
         #{ruby_version_correct}
       G
       update_repo2 do
-        build_gem "rack", "1.2" do |s|
-          s.executables = "rackup"
+        build_gem "myrack", "1.2" do |s|
+          s.executables = "myrackup"
         end
 
         build_gem "activesupport", "3.0"
       end
 
       bundle "update", all: true
-      expect(the_bundle).to include_gems "rack 1.2", "rack-obama 1.0", "activesupport 3.0"
+      expect(the_bundle).to include_gems "myrack 1.2", "myrack-obama 1.0", "activesupport 3.0"
     end
 
     it "updates fine with any engine", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
 
         #{ruby_version_correct_engineless}
       G
       update_repo2 do
-        build_gem "rack", "1.2" do |s|
-          s.executables = "rackup"
+        build_gem "myrack", "1.2" do |s|
+          s.executables = "myrackup"
         end
 
         build_gem "activesupport", "3.0"
       end
 
       bundle "update", all: true
-      expect(the_bundle).to include_gems "rack 1.2", "rack-obama 1.0", "activesupport 3.0"
+      expect(the_bundle).to include_gems "myrack 1.2", "myrack-obama 1.0", "activesupport 3.0"
     end
 
     it "fails when ruby version doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
 
         #{ruby_version_incorrect}
       G
@@ -570,7 +570,7 @@ G
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
 
         #{engine_incorrect}
       G
@@ -586,7 +586,7 @@ G
       gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
         gem "activesupport"
-        gem "rack-obama"
+        gem "myrack-obama"
 
         #{engine_version_incorrect}
       G
@@ -601,7 +601,7 @@ G
     it "fails when patchlevel doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{patchlevel_incorrect}
       G
@@ -685,7 +685,7 @@ G
     it "fails when patchlevel doesn't match", bundler: "< 3" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{patchlevel_incorrect}
       G
@@ -702,38 +702,38 @@ G
     before do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
       G
     end
 
     it "copies the .gem file to vendor/cache when ruby version matches" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{ruby_version_correct}
       G
 
       bundle :cache
-      expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
+      expect(bundled_app("vendor/cache/myrack-1.0.0.gem")).to exist
     end
 
     it "copies the .gem file to vendor/cache when ruby version matches for any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{ruby_version_correct_engineless}
       G
 
       bundle :cache
-      expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
+      expect(bundled_app("vendor/cache/myrack-1.0.0.gem")).to exist
     end
 
     it "fails if the ruby version doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{ruby_version_incorrect}
       G
@@ -745,7 +745,7 @@ G
     it "fails if the engine doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{engine_incorrect}
       G
@@ -757,7 +757,7 @@ G
     it "fails if the engine version doesn't match", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{engine_version_incorrect}
       G
@@ -769,7 +769,7 @@ G
     it "fails when patchlevel doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{patchlevel_incorrect}
       G
@@ -783,38 +783,38 @@ G
     before do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
       G
     end
 
     it "copies the .gem file to vendor/cache when ruby version matches" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{ruby_version_correct}
       G
 
       bundle :cache
-      expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
+      expect(bundled_app("vendor/cache/myrack-1.0.0.gem")).to exist
     end
 
     it "copies the .gem file to vendor/cache when ruby version matches any engine", :jruby_only do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{ruby_version_correct_engineless}
       G
 
       bundle :cache
-      expect(bundled_app("vendor/cache/rack-1.0.0.gem")).to exist
+      expect(bundled_app("vendor/cache/myrack-1.0.0.gem")).to exist
     end
 
     it "fails if the ruby version doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{ruby_version_incorrect}
       G
@@ -826,7 +826,7 @@ G
     it "fails if the engine doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{engine_incorrect}
       G
@@ -838,7 +838,7 @@ G
     it "fails if the engine version doesn't match", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
 
         #{engine_version_incorrect}
       G
@@ -850,7 +850,7 @@ G
     it "fails when patchlevel doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{patchlevel_incorrect}
       G
@@ -863,78 +863,78 @@ G
   context "bundle exec" do
     before do
       ENV["BUNDLER_FORCE_TTY"] = "true"
-      system_gems "rack-1.0.0", "rack-0.9.1", path: default_bundle_path
+      system_gems "myrack-1.0.0", "myrack-0.9.1", path: default_bundle_path
     end
 
     it "activates the correct gem when ruby version matches" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "0.9.1"
+        gem "myrack", "0.9.1"
 
         #{ruby_version_correct}
       G
 
-      bundle "exec rackup"
+      bundle "exec myrackup"
       expect(out).to include("0.9.1")
     end
 
     it "activates the correct gem when ruby version matches any engine", :jruby_only do
-      system_gems "rack-1.0.0", "rack-0.9.1", path: default_bundle_path
+      system_gems "myrack-1.0.0", "myrack-0.9.1", path: default_bundle_path
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "0.9.1"
+        gem "myrack", "0.9.1"
 
         #{ruby_version_correct_engineless}
       G
 
-      bundle "exec rackup"
+      bundle "exec myrackup"
       expect(out).to include("0.9.1")
     end
 
     it "fails when the ruby version doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "0.9.1"
+        gem "myrack", "0.9.1"
 
         #{ruby_version_incorrect}
       G
 
-      bundle "exec rackup", raise_on_error: false
+      bundle "exec myrackup", raise_on_error: false
       should_be_ruby_version_incorrect
     end
 
     it "fails when the engine doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack", "0.9.1"
+        gem "myrack", "0.9.1"
 
         #{engine_incorrect}
       G
 
-      bundle "exec rackup", raise_on_error: false
+      bundle "exec myrackup", raise_on_error: false
       should_be_engine_incorrect
     end
 
     # it "fails when the engine version doesn't match", :jruby_only do
     #   gemfile <<-G
-    #     gem "rack", "0.9.1"
+    #     gem "myrack", "0.9.1"
     #
     #     #{engine_version_incorrect}
     #   G
     #
-    #   bundle "exec rackup"
+    #   bundle "exec myrackup"
     #   should_be_engine_version_incorrect
     # end
 
     it "fails when patchlevel doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
 
         #{patchlevel_incorrect}
       G
 
-      bundle "exec rackup", raise_on_error: false
+      bundle "exec myrackup", raise_on_error: false
       should_be_patchlevel_incorrect
     end
   end
@@ -943,24 +943,24 @@ G
     before do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
         gem "activesupport", :group => :test
-        gem "rack_middleware", :group => :development
+        gem "myrack_middleware", :group => :development
       G
     end
 
     it "starts IRB with the default group loaded when ruby version matches", :readline do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
         gem "activesupport", :group => :test
-        gem "rack_middleware", :group => :development
+        gem "myrack_middleware", :group => :development
 
         #{ruby_version_correct}
       G
 
       bundle "console" do |input, _, _|
-        input.puts("puts RACK")
+        input.puts("puts MYRACK")
         input.puts("exit")
       end
       expect(out).to include("0.9.1")
@@ -969,15 +969,15 @@ G
     it "starts IRB with the default group loaded when ruby version matches", :readline, :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
         gem "activesupport", :group => :test
-        gem "rack_middleware", :group => :development
+        gem "myrack_middleware", :group => :development
 
         #{ruby_version_correct_engineless}
       G
 
       bundle "console" do |input, _, _|
-        input.puts("puts RACK")
+        input.puts("puts MYRACK")
         input.puts("exit")
       end
       expect(out).to include("0.9.1")
@@ -986,9 +986,9 @@ G
     it "fails when ruby version doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
         gem "activesupport", :group => :test
-        gem "rack_middleware", :group => :development
+        gem "myrack_middleware", :group => :development
 
         #{ruby_version_incorrect}
       G
@@ -1000,9 +1000,9 @@ G
     it "fails when engine doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
         gem "activesupport", :group => :test
-        gem "rack_middleware", :group => :development
+        gem "myrack_middleware", :group => :development
 
         #{engine_incorrect}
       G
@@ -1014,9 +1014,9 @@ G
     it "fails when engine version doesn't match", :jruby_only do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
         gem "activesupport", :group => :test
-        gem "rack_middleware", :group => :development
+        gem "myrack_middleware", :group => :development
 
         #{engine_version_incorrect}
       G
@@ -1028,9 +1028,9 @@ G
     it "fails when patchlevel doesn't match" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
+        gem "myrack"
         gem "activesupport", :group => :test
-        gem "rack_middleware", :group => :development
+        gem "myrack_middleware", :group => :development
 
         #{patchlevel_incorrect}
       G
@@ -1045,7 +1045,7 @@ G
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
-        gem "rack", :group => :test
+        gem "myrack", :group => :test
       G
 
       ENV["BUNDLER_FORCE_TTY"] = "true"
@@ -1055,7 +1055,7 @@ G
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_correct}
       G
@@ -1070,7 +1070,7 @@ G
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_correct_engineless}
       G
@@ -1085,7 +1085,7 @@ G
       install_gemfile <<-G, raise_on_error: false
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
-        gem "rack"
+        gem "myrack"
 
         #{ruby_version_incorrect}
       G
@@ -1102,7 +1102,7 @@ G
       install_gemfile <<-G, raise_on_error: false
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
-        gem "rack"
+        gem "myrack"
 
         #{engine_incorrect}
       G
@@ -1119,7 +1119,7 @@ G
       install_gemfile <<-G, raise_on_error: false
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
-        gem "rack"
+        gem "myrack"
 
         #{engine_version_incorrect}
       G
@@ -1136,7 +1136,7 @@ G
       install_gemfile <<-G, raise_on_error: false
         source "#{file_uri_for(gem_repo1)}"
         gem "yard"
-        gem "rack"
+        gem "myrack"
 
         #{patchlevel_incorrect}
       G

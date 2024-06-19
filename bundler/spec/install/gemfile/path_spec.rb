@@ -148,14 +148,14 @@ RSpec.describe "bundle install with explicit source paths" do
   end
 
   it "installs dependencies from the path even if a newer gem is available elsewhere" do
-    system_gems "rack-1.0.0"
+    system_gems "myrack-1.0.0"
 
-    build_lib "rack", "1.0", path: lib_path("nested/bar") do |s|
-      s.write "lib/rack.rb", "puts 'WIN OVERRIDE'"
+    build_lib "myrack", "1.0", path: lib_path("nested/bar") do |s|
+      s.write "lib/myrack.rb", "puts 'WIN OVERRIDE'"
     end
 
     build_lib "foo", path: lib_path("nested") do |s|
-      s.add_dependency "rack", "= 1.0"
+      s.add_dependency "myrack", "= 1.0"
     end
 
     install_gemfile <<-G
@@ -163,7 +163,7 @@ RSpec.describe "bundle install with explicit source paths" do
       gem "foo", :path => "#{lib_path("nested")}"
     G
 
-    run "require 'rack'"
+    run "require 'myrack'"
     expect(out).to eq("WIN OVERRIDE")
   end
 
@@ -314,7 +314,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
   it "supports gemspec syntax" do
     build_lib "foo", "1.0", path: lib_path("foo") do |s|
-      s.add_dependency "rack", "1.0"
+      s.add_dependency "myrack", "1.0"
     end
 
     gemfile lib_path("foo/Gemfile"), <<-G
@@ -324,7 +324,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
     bundle "install", dir: lib_path("foo")
     expect(the_bundle).to include_gems "foo 1.0", dir: lib_path("foo")
-    expect(the_bundle).to include_gems "rack 1.0", dir: lib_path("foo")
+    expect(the_bundle).to include_gems "myrack 1.0", dir: lib_path("foo")
   end
 
   it "does not unlock dependencies of path sources" do
@@ -385,7 +385,7 @@ RSpec.describe "bundle install with explicit source paths" do
 
   it "supports gemspec syntax with an alternative path" do
     build_lib "foo", "1.0", path: lib_path("foo") do |s|
-      s.add_dependency "rack", "1.0"
+      s.add_dependency "myrack", "1.0"
     end
 
     install_gemfile <<-G
@@ -394,12 +394,12 @@ RSpec.describe "bundle install with explicit source paths" do
     G
 
     expect(the_bundle).to include_gems "foo 1.0"
-    expect(the_bundle).to include_gems "rack 1.0"
+    expect(the_bundle).to include_gems "myrack 1.0"
   end
 
   it "doesn't automatically unlock dependencies when using the gemspec syntax" do
     build_lib "foo", "1.0", path: lib_path("foo") do |s|
-      s.add_dependency "rack", ">= 1.0"
+      s.add_dependency "myrack", ">= 1.0"
     end
 
     install_gemfile lib_path("foo/Gemfile"), <<-G, dir: lib_path("foo")
@@ -407,17 +407,17 @@ RSpec.describe "bundle install with explicit source paths" do
       gemspec
     G
 
-    build_gem "rack", "1.0.1", to_system: true
+    build_gem "myrack", "1.0.1", to_system: true
 
     bundle "install", dir: lib_path("foo")
 
     expect(the_bundle).to include_gems "foo 1.0", dir: lib_path("foo")
-    expect(the_bundle).to include_gems "rack 1.0", dir: lib_path("foo")
+    expect(the_bundle).to include_gems "myrack 1.0", dir: lib_path("foo")
   end
 
   it "doesn't automatically unlock dependencies when using the gemspec syntax and the gem has development dependencies" do
     build_lib "foo", "1.0", path: lib_path("foo") do |s|
-      s.add_dependency "rack", ">= 1.0"
+      s.add_dependency "myrack", ">= 1.0"
       s.add_development_dependency "activesupport"
     end
 
@@ -426,12 +426,12 @@ RSpec.describe "bundle install with explicit source paths" do
       gemspec
     G
 
-    build_gem "rack", "1.0.1", to_system: true
+    build_gem "myrack", "1.0.1", to_system: true
 
     bundle "install", dir: lib_path("foo")
 
     expect(the_bundle).to include_gems "foo 1.0", dir: lib_path("foo")
-    expect(the_bundle).to include_gems "rack 1.0", dir: lib_path("foo")
+    expect(the_bundle).to include_gems "myrack 1.0", dir: lib_path("foo")
   end
 
   it "raises if there are multiple gemspecs" do
@@ -570,17 +570,17 @@ RSpec.describe "bundle install with explicit source paths" do
     it "rubygems gems don't re-resolve without changes" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack-obama', '1.0'
+        gem 'myrack-obama', '1.0'
         gem 'net-ssh', '1.0'
       G
 
       bundle :check, env: { "DEBUG" => "1" }
       expect(out).to match(/using resolution from the lockfile/)
-      expect(the_bundle).to include_gems "rack-obama 1.0", "net-ssh 1.0"
+      expect(the_bundle).to include_gems "myrack-obama 1.0", "net-ssh 1.0"
     end
 
     it "source path gems w/deps don't re-resolve without changes" do
-      build_lib "rack-obama", "1.0", path: lib_path("omg") do |s|
+      build_lib "myrack-obama", "1.0", path: lib_path("omg") do |s|
         s.add_dependency "yard"
       end
 
@@ -590,13 +590,13 @@ RSpec.describe "bundle install with explicit source paths" do
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack-obama', :path => "#{lib_path("omg")}"
+        gem 'myrack-obama', :path => "#{lib_path("omg")}"
         gem 'net-ssh', :path => "#{lib_path("omg")}"
       G
 
       bundle :check, env: { "DEBUG" => "1" }
       expect(out).to match(/using resolution from the lockfile/)
-      expect(the_bundle).to include_gems "rack-obama 1.0", "net-ssh 1.0"
+      expect(the_bundle).to include_gems "myrack-obama 1.0", "net-ssh 1.0"
     end
   end
 
@@ -658,26 +658,26 @@ RSpec.describe "bundle install with explicit source paths" do
 
     it "gets dependencies that are updated in the path" do
       build_lib "foo", "1.0", path: lib_path("foo") do |s|
-        s.add_dependency "rack"
+        s.add_dependency "myrack"
       end
 
       bundle "install"
 
-      expect(the_bundle).to include_gems "rack 1.0.0"
+      expect(the_bundle).to include_gems "myrack 1.0.0"
     end
 
     it "keeps using the same version if it's compatible" do
       build_lib "foo", "1.0", path: lib_path("foo") do |s|
-        s.add_dependency "rack", "0.9.1"
+        s.add_dependency "myrack", "0.9.1"
       end
 
       bundle "install"
 
-      expect(the_bundle).to include_gems "rack 0.9.1"
+      expect(the_bundle).to include_gems "myrack 0.9.1"
 
       checksums = checksums_section_when_existing do |c|
         c.no_checksum "foo", "1.0"
-        c.checksum gem_repo1, "rack", "0.9.1"
+        c.checksum gem_repo1, "myrack", "0.9.1"
       end
 
       expect(lockfile).to eq <<~G
@@ -685,12 +685,12 @@ RSpec.describe "bundle install with explicit source paths" do
           remote: #{lib_path("foo")}
           specs:
             foo (1.0)
-              rack (= 0.9.1)
+              myrack (= 0.9.1)
 
         GEM
           remote: #{file_uri_for(gem_repo1)}/
           specs:
-            rack (0.9.1)
+            myrack (0.9.1)
 
         PLATFORMS
           #{lockfile_platforms}
@@ -703,7 +703,7 @@ RSpec.describe "bundle install with explicit source paths" do
       G
 
       build_lib "foo", "1.0", path: lib_path("foo") do |s|
-        s.add_dependency "rack"
+        s.add_dependency "myrack"
       end
 
       bundle "install"
@@ -713,12 +713,12 @@ RSpec.describe "bundle install with explicit source paths" do
           remote: #{lib_path("foo")}
           specs:
             foo (1.0)
-              rack
+              myrack
 
         GEM
           remote: #{file_uri_for(gem_repo1)}/
           specs:
-            rack (0.9.1)
+            myrack (0.9.1)
 
         PLATFORMS
           #{lockfile_platforms}
@@ -730,21 +730,21 @@ RSpec.describe "bundle install with explicit source paths" do
            #{Bundler::VERSION}
       G
 
-      expect(the_bundle).to include_gems "rack 0.9.1"
+      expect(the_bundle).to include_gems "myrack 0.9.1"
     end
 
     it "keeps using the same version even when another dependency is added" do
       build_lib "foo", "1.0", path: lib_path("foo") do |s|
-        s.add_dependency "rack", "0.9.1"
+        s.add_dependency "myrack", "0.9.1"
       end
 
       bundle "install"
 
-      expect(the_bundle).to include_gems "rack 0.9.1"
+      expect(the_bundle).to include_gems "myrack 0.9.1"
 
       checksums = checksums_section_when_existing do |c|
         c.no_checksum "foo", "1.0"
-        c.checksum gem_repo1, "rack", "0.9.1"
+        c.checksum gem_repo1, "myrack", "0.9.1"
       end
 
       expect(lockfile).to eq <<~G
@@ -752,12 +752,12 @@ RSpec.describe "bundle install with explicit source paths" do
           remote: #{lib_path("foo")}
           specs:
             foo (1.0)
-              rack (= 0.9.1)
+              myrack (= 0.9.1)
 
         GEM
           remote: #{file_uri_for(gem_repo1)}/
           specs:
-            rack (0.9.1)
+            myrack (0.9.1)
 
         PLATFORMS
           #{lockfile_platforms}
@@ -770,7 +770,7 @@ RSpec.describe "bundle install with explicit source paths" do
       G
 
       build_lib "foo", "1.0", path: lib_path("foo") do |s|
-        s.add_dependency "rack"
+        s.add_dependency "myrack"
         s.add_dependency "rake", rake_version
       end
 
@@ -783,13 +783,13 @@ RSpec.describe "bundle install with explicit source paths" do
           remote: #{lib_path("foo")}
           specs:
             foo (1.0)
-              rack
+              myrack
               rake (= #{rake_version})
 
         GEM
           remote: #{file_uri_for(gem_repo1)}/
           specs:
-            rack (0.9.1)
+            myrack (0.9.1)
             rake (#{rake_version})
 
         PLATFORMS
@@ -802,12 +802,12 @@ RSpec.describe "bundle install with explicit source paths" do
            #{Bundler::VERSION}
       G
 
-      expect(the_bundle).to include_gems "rack 0.9.1"
+      expect(the_bundle).to include_gems "myrack 0.9.1"
     end
 
     it "does not remove existing ruby platform" do
       build_lib "foo", "1.0", path: lib_path("foo") do |s|
-        s.add_dependency "rack", "0.9.1"
+        s.add_dependency "myrack", "0.9.1"
       end
 
       checksums = checksums_section_when_existing do |c|
@@ -832,19 +832,19 @@ RSpec.describe "bundle install with explicit source paths" do
 
       bundle "lock"
 
-      checksums.no_checksum "rack", "0.9.1"
+      checksums.no_checksum "myrack", "0.9.1"
 
       expect(lockfile).to eq <<~G
         PATH
           remote: #{lib_path("foo")}
           specs:
             foo (1.0)
-              rack (= 0.9.1)
+              myrack (= 0.9.1)
 
         GEM
           remote: #{file_uri_for(gem_repo1)}/
           specs:
-            rack (0.9.1)
+            myrack (0.9.1)
 
         PLATFORMS
           #{lockfile_platforms("ruby")}
@@ -915,13 +915,13 @@ RSpec.describe "bundle install with explicit source paths" do
       gemfile lib_path("private_lib/Gemfile"), <<-G
         source "http://localgemserver.test"
         gemspec
-        gem 'rack'
+        gem 'myrack'
       G
       bundle :install, env: { "DEBUG" => "1" }, artifice: "endpoint", dir: lib_path("private_lib")
-      expect(out).to match(%r{^HTTP GET http://localgemserver\.test/api/v1/dependencies\?gems=rack$})
+      expect(out).to match(%r{^HTTP GET http://localgemserver\.test/api/v1/dependencies\?gems=myrack$})
       expect(out).not_to match(/^HTTP GET.*private_lib/)
       expect(the_bundle).to include_gems "private_lib 2.2", dir: lib_path("private_lib")
-      expect(the_bundle).to include_gems "rack 1.0", dir: lib_path("private_lib")
+      expect(the_bundle).to include_gems "myrack 1.0", dir: lib_path("private_lib")
     end
   end
 

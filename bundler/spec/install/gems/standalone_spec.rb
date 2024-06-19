@@ -8,9 +8,9 @@ RSpec.shared_examples "bundle install --standalone" do
     end
 
     it "still makes system gems unavailable to normal bundler" do
-      system_gems "rack-1.0.0"
+      system_gems "myrack-1.0.0"
 
-      expect(the_bundle).to_not include_gems("rack")
+      expect(the_bundle).to_not include_gems("myrack")
     end
 
     it "generates a bundle/bundler/setup.rb" do
@@ -63,14 +63,14 @@ RSpec.shared_examples "bundle install --standalone" do
     end
 
     it "makes system gems unavailable without bundler" do
-      system_gems "rack-1.0.0"
+      system_gems "myrack-1.0.0"
 
       testrb = String.new <<-RUBY
         $:.unshift File.expand_path("bundle")
         require "bundler/setup"
 
         begin
-          require "rack"
+          require "myrack"
         rescue LoadError
           puts "LoadError"
         end
@@ -329,7 +329,7 @@ RSpec.shared_examples "bundle install --standalone" do
 
         group :test do
           gem "rspec"
-          gem "rack-test"
+          gem "myrack-test"
         end
       G
       bundle "config set --local path #{bundled_app("bundle")}"
@@ -503,22 +503,22 @@ RSpec.describe "bundle install --standalone --local" do
   before do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem "rack"
+      gem "myrack"
     G
 
-    system_gems "rack-1.0.0", path: default_bundle_path
+    system_gems "myrack-1.0.0", path: default_bundle_path
   end
 
   it "generates script pointing to system gems" do
     bundle "install --standalone --local --verbose"
 
-    expect(out).to include("Using rack 1.0.0")
+    expect(out).to include("Using myrack 1.0.0")
 
     load_error_ruby <<-RUBY, "spec"
       require "./bundler/setup"
 
-      require "rack"
-      puts RACK
+      require "myrack"
+      puts MYRACK
       require "spec"
     RUBY
 

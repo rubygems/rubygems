@@ -20,10 +20,10 @@ RSpec.describe "hook plugins" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rake"
-        gem "rack"
+        gem "myrack"
       G
 
-      expect(out).to include "gems to be installed rake, rack"
+      expect(out).to include "gems to be installed rake, myrack"
     end
   end
 
@@ -46,11 +46,11 @@ RSpec.describe "hook plugins" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rake"
-        gem "rack"
+        gem "myrack"
       G
 
       expect(out).to include "installing gem rake"
-      expect(out).to include "installing gem rack"
+      expect(out).to include "installing gem myrack"
     end
   end
 
@@ -73,10 +73,10 @@ RSpec.describe "hook plugins" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rake"
-        gem "rack"
+        gem "myrack"
       G
 
-      expect(out).to include "installed gems rake, rack"
+      expect(out).to include "installed gems rake, myrack"
     end
   end
 
@@ -99,11 +99,11 @@ RSpec.describe "hook plugins" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         gem "rake"
-        gem "rack"
+        gem "myrack"
       G
 
       expect(out).to include "installed gem rake : installed"
-      expect(out).to include "installed gem rack : installed"
+      expect(out).to include "installed gem myrack : installed"
     end
   end
 
@@ -124,7 +124,7 @@ RSpec.describe "hook plugins" do
 
     it "runs before all rubygems are required" do
       install_gemfile_and_bundler_require
-      expect(out).to include "gems to be required rake, rack"
+      expect(out).to include "gems to be required rake, myrack"
     end
   end
 
@@ -146,7 +146,7 @@ RSpec.describe "hook plugins" do
     it "runs before each rubygem is required" do
       install_gemfile_and_bundler_require
       expect(out).to include "requiring gem rake"
-      expect(out).to include "requiring gem rack"
+      expect(out).to include "requiring gem myrack"
     end
   end
 
@@ -167,7 +167,7 @@ RSpec.describe "hook plugins" do
 
     it "runs after all rubygems are required" do
       install_gemfile_and_bundler_require
-      expect(out).to include "required gems rake, rack"
+      expect(out).to include "required gems rake, myrack"
     end
   end
 
@@ -189,7 +189,7 @@ RSpec.describe "hook plugins" do
     it "runs after each rubygem is required" do
       install_gemfile_and_bundler_require
       expect(out).to include "required gem rake"
-      expect(out).to include "required gem rack"
+      expect(out).to include "required gem myrack"
     end
   end
 
@@ -197,7 +197,7 @@ RSpec.describe "hook plugins" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
       gem "rake"
-      gem "rack"
+      gem "myrack"
     G
 
     ruby <<-RUBY

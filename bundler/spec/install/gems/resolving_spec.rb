@@ -199,11 +199,11 @@ RSpec.describe "bundle install with install-time dependencies" do
     context "allows only an older version" do
       it "installs the older version" do
         build_repo2 do
-          build_gem "rack", "1.2" do |s|
-            s.executables = "rackup"
+          build_gem "myrack", "1.2" do |s|
+            s.executables = "myrackup"
           end
 
-          build_gem "rack", "9001.0.0" do |s|
+          build_gem "myrack", "9001.0.0" do |s|
             s.required_ruby_version = "> 9000"
           end
         end
@@ -211,20 +211,20 @@ RSpec.describe "bundle install with install-time dependencies" do
         install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
           ruby "#{Gem.ruby_version}"
           source "http://localgemserver.test/"
-          gem 'rack'
+          gem 'myrack'
         G
 
-        expect(err).to_not include("rack-9001.0.0 requires ruby version > 9000")
-        expect(the_bundle).to include_gems("rack 1.2")
+        expect(err).to_not include("myrack-9001.0.0 requires ruby version > 9000")
+        expect(the_bundle).to include_gems("myrack 1.2")
       end
 
       it "installs the older version when using servers not implementing the compact index API" do
         build_repo2 do
-          build_gem "rack", "1.2" do |s|
-            s.executables = "rackup"
+          build_gem "myrack", "1.2" do |s|
+            s.executables = "myrackup"
           end
 
-          build_gem "rack", "9001.0.0" do |s|
+          build_gem "myrack", "9001.0.0" do |s|
             s.required_ruby_version = "> 9000"
           end
         end
@@ -232,11 +232,11 @@ RSpec.describe "bundle install with install-time dependencies" do
         install_gemfile <<-G, artifice: "endpoint", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
           ruby "#{Gem.ruby_version}"
           source "http://localgemserver.test/"
-          gem 'rack'
+          gem 'myrack'
         G
 
-        expect(err).to_not include("rack-9001.0.0 requires ruby version > 9000")
-        expect(the_bundle).to include_gems("rack 1.2")
+        expect(err).to_not include("myrack-9001.0.0 requires ruby version > 9000")
+        expect(the_bundle).to include_gems("myrack 1.2")
       end
 
       context "when there is a lockfile using the newer incompatible version" do
@@ -531,47 +531,47 @@ RSpec.describe "bundle install with install-time dependencies" do
 
       it "installs the older version under rate limiting conditions" do
         build_repo4 do
-          build_gem "rack", "9001.0.0" do |s|
+          build_gem "myrack", "9001.0.0" do |s|
             s.required_ruby_version = "> 9000"
           end
-          build_gem "rack", "1.2"
+          build_gem "myrack", "1.2"
           build_gem "foo1", "1.0"
         end
 
         install_gemfile <<-G, artifice: "compact_index_rate_limited", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
           ruby "#{Gem.ruby_version}"
           source "http://localgemserver.test/"
-          gem 'rack'
+          gem 'myrack'
           gem 'foo1'
         G
 
-        expect(err).to_not include("rack-9001.0.0 requires ruby version > 9000")
-        expect(the_bundle).to include_gems("rack 1.2")
+        expect(err).to_not include("myrack-9001.0.0 requires ruby version > 9000")
+        expect(the_bundle).to include_gems("myrack 1.2")
       end
 
       it "installs the older not platform specific version" do
         build_repo4 do
-          build_gem "rack", "9001.0.0" do |s|
+          build_gem "myrack", "9001.0.0" do |s|
             s.required_ruby_version = "> 9000"
           end
-          build_gem "rack", "1.2" do |s|
+          build_gem "myrack", "1.2" do |s|
             s.platform = x86_mingw32
             s.required_ruby_version = "> 9000"
           end
-          build_gem "rack", "1.2"
+          build_gem "myrack", "1.2"
         end
 
         simulate_platform x86_mingw32 do
           install_gemfile <<-G, artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
             ruby "#{Gem.ruby_version}"
             source "http://localgemserver.test/"
-            gem 'rack'
+            gem 'myrack'
           G
         end
 
-        expect(err).to_not include("rack-9001.0.0 requires ruby version > 9000")
-        expect(err).to_not include("rack-1.2-#{Bundler.local_platform} requires ruby version > 9000")
-        expect(the_bundle).to include_gems("rack 1.2")
+        expect(err).to_not include("myrack-9001.0.0 requires ruby version > 9000")
+        expect(err).to_not include("myrack-1.2-#{Bundler.local_platform} requires ruby version > 9000")
+        expect(the_bundle).to include_gems("myrack 1.2")
       end
     end
 

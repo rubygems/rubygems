@@ -454,7 +454,7 @@ RSpec.describe "bundle lock" do
       source "#{file_uri_for(gem_repo1)}"
 
       gem "thin"
-      gem "rack_middleware", :group => "test"
+      gem "myrack_middleware", :group => "test"
     G
     bundle "config set without test"
     bundle "config set path vendor/bundle"

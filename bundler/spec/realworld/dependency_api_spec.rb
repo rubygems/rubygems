@@ -36,11 +36,11 @@ RSpec.describe "gemcutter's dependency API", realworld: true do
     it "times out and falls back on the modern index" do
       install_gemfile <<-G, artifice: nil
         source "#{@server_uri}"
-        gem "rack"
+        gem "myrack"
       G
 
       expect(out).to include("Fetching source index from #{@server_uri}/")
-      expect(the_bundle).to include_gems "rack 1.0.0"
+      expect(the_bundle).to include_gems "myrack 1.0.0"
     end
   end
 end

@@ -165,7 +165,7 @@ RSpec.describe "bundle install from an existing gemspec" do
 
   it "should match a lockfile without needing to re-resolve" do
     build_lib("foo", path: tmp("foo")) do |s|
-      s.add_dependency "rack"
+      s.add_dependency "myrack"
     end
 
     install_gemfile <<-G
@@ -183,7 +183,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     simulate_platform java
 
     build_lib("foo", path: tmp("foo")) do |s|
-      s.add_dependency "rack"
+      s.add_dependency "myrack"
       s.add_development_dependency "thin"
     end
 
@@ -231,12 +231,12 @@ RSpec.describe "bundle install from an existing gemspec" do
     #
     # issue was caused by rubygems having an unresolved gem during a require,
     # so emulate that
-    system_gems %w[rack-1.0.0 rack-0.9.1 rack-obama-1.0]
+    system_gems %w[myrack-1.0.0 myrack-0.9.1 myrack-obama-1.0]
 
     build_lib("foo", path: bundled_app)
     gemspec = bundled_app("foo.gemspec").read
     bundled_app("foo.gemspec").open("w") do |f|
-      f.write "#{gemspec.strip}.tap { gem 'rack-obama'; require 'rack/obama' }"
+      f.write "#{gemspec.strip}.tap { gem 'myrack-obama'; require 'myrack/obama' }"
     end
 
     install_gemfile <<-G
@@ -335,13 +335,13 @@ RSpec.describe "bundle install from an existing gemspec" do
     before do
       # build the "parent" gem that depends on another gem in the same repo
       build_lib "source_conflict", path: bundled_app do |s|
-        s.add_dependency "rack_middleware"
+        s.add_dependency "myrack_middleware"
       end
 
       # build the "child" gem that is the same version as a released gem, but
       # has completely different and conflicting dependency requirements
-      build_lib "rack_middleware", "1.0", path: bundled_app("rack_middleware") do |s|
-        s.add_dependency "rack", "1.0" # anything other than 0.9.1
+      build_lib "myrack_middleware", "1.0", path: bundled_app("myrack_middleware") do |s|
+        s.add_dependency "myrack", "1.0" # anything other than 0.9.1
       end
     end
 
@@ -351,7 +351,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         gemspec
       G
 
-      expect(the_bundle).to include_gems "rack 1.0"
+      expect(the_bundle).to include_gems "myrack 1.0"
     end
   end
 
@@ -360,7 +360,7 @@ RSpec.describe "bundle install from an existing gemspec" do
 
     before do
       build_lib("foo", path: tmp("foo")) do |s|
-        s.add_dependency "rack", "=1.0.0"
+        s.add_dependency "myrack", "=1.0.0"
       end
 
       gemfile <<-G
@@ -377,12 +377,12 @@ RSpec.describe "bundle install from an existing gemspec" do
           remote: ../foo
           specs:
             foo (1.0)
-              rack (= 1.0.0)
+              myrack (= 1.0.0)
 
         GEM
           remote: #{source_uri}
           specs:
-            rack (1.0.0)
+            myrack (1.0.0)
 
         PLATFORMS
           #{generic_local_platform}
@@ -400,7 +400,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         create_file(
           tmp("foo", "foo-java.gemspec"),
           build_spec("foo", "1.0", "java") do
-            dep "rack", "=1.0.0"
+            dep "myrack", "=1.0.0"
             @spec.authors = "authors"
             @spec.summary = "summary"
           end.first.to_ruby
@@ -409,15 +409,15 @@ RSpec.describe "bundle install from an existing gemspec" do
 
       it "should install" do
         results = bundle "install", artifice: "endpoint"
-        expect(results).to include("Installing rack 1.0.0")
-        expect(the_bundle).to include_gems "rack 1.0.0"
+        expect(results).to include("Installing myrack 1.0.0")
+        expect(the_bundle).to include_gems "myrack 1.0.0"
       end
     end
 
     it "should install", :jruby do
       results = bundle "install", artifice: "endpoint"
-      expect(results).to include("Installing rack 1.0.0")
-      expect(the_bundle).to include_gems "rack 1.0.0"
+      expect(results).to include("Installing myrack 1.0.0")
+      expect(the_bundle).to include_gems "myrack 1.0.0"
     end
 
     context "bundled for multiple platforms" do
@@ -591,8 +591,8 @@ RSpec.describe "bundle install from an existing gemspec" do
     before do
       build_lib("foo", path: tmp("foo")) do |s|
         s.version = "1.0.0"
-        s.add_development_dependency "rack"
-        s.write "foo-universal-java.gemspec", build_spec("foo", "1.0.0", "universal-java") {|sj| sj.runtime "rack", "1.0.0" }.first.to_ruby
+        s.add_development_dependency "myrack"
+        s.write "foo-universal-java.gemspec", build_spec("foo", "1.0.0", "universal-java") {|sj| sj.runtime "myrack", "1.0.0" }.first.to_ruby
       end
     end
 
@@ -604,7 +604,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         gemspec :path => '#{tmp("foo")}', :name => 'foo'
       G
 
-      expect(the_bundle).to include_gems "foo 1.0.0", "rack 1.0.0"
+      expect(the_bundle).to include_gems "foo 1.0.0", "myrack 1.0.0"
     end
 
     it "installs the ruby platform gemspec and skips dev deps with `without development` configured" do
@@ -617,7 +617,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       G
 
       expect(the_bundle).to include_gem "foo 1.0.0"
-      expect(the_bundle).not_to include_gem "rack"
+      expect(the_bundle).not_to include_gem "myrack"
     end
   end
 

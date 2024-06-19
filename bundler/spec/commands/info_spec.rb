@@ -127,9 +127,9 @@ RSpec.describe "bundle info" do
 
     context "when gem has a reverse dependency on any version" do
       it "prints the details" do
-        bundle "info rack"
+        bundle "info myrack"
 
-        expect(out).to include("Reverse Dependencies: \n\t\tthin (1.0) depends on rack (>= 0)")
+        expect(out).to include("Reverse Dependencies: \n\t\tthin (1.0) depends on myrack (>= 0)")
       end
     end
 
@@ -210,12 +210,12 @@ RSpec.describe "bundle info" do
     it "presents alternatives", :readline do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem "rack"
-        gem "rack-obama"
+        gem "myrack"
+        gem "myrack-obama"
       G
 
       bundle "info rac"
-      expect(out).to match(/\A1 : rack\n2 : rack-obama\n0 : - exit -(\n>|\z)/)
+      expect(out).to match(/\A1 : myrack\n2 : myrack-obama\n0 : - exit -(\n>|\z)/)
     end
   end
 

@@ -6,7 +6,7 @@ RSpec.describe "bundle update" do
   before do
     gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
-      gem 'rack', "< 1.0"
+      gem 'myrack', "< 1.0"
       gem 'thin'
     G
 
@@ -17,10 +17,10 @@ RSpec.describe "bundle update" do
 
   shared_examples "a config observer" do
     context "when ignore post-install messages for gem is set" do
-      let(:config) { "ignore_messages.rack true" }
+      let(:config) { "ignore_messages.myrack true" }
 
       it "doesn't display gem's post-install message" do
-        expect(out).not_to include("Rack's post install message")
+        expect(out).not_to include("Myrack's post install message")
       end
     end
 
@@ -35,8 +35,8 @@ RSpec.describe "bundle update" do
 
   shared_examples "a post-install message outputter" do
     it "should display post-install messages for updated gems" do
-      expect(out).to include("Post-install message from rack:")
-      expect(out).to include("Rack's post install message")
+      expect(out).to include("Post-install message from myrack:")
+      expect(out).to include("Myrack's post install message")
     end
 
     it "should not display the post-install message for non-updated gems" do
@@ -48,7 +48,7 @@ RSpec.describe "bundle update" do
     before do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
         gem 'thin'
       G
 
@@ -63,7 +63,7 @@ RSpec.describe "bundle update" do
     before do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack-obama'
+        gem 'myrack-obama'
         gem 'thin'
       G
 

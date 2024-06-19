@@ -35,7 +35,7 @@ RSpec.describe "bundle install" do
           source "https://gem.repo2"
           gem 'has_funding_and_other_metadata'
           gem 'has_funding'
-          gem 'rack-obama'
+          gem 'myrack-obama'
         G
 
         expect(out).to include("2 installed gems you directly depend on are looking for funding.")
@@ -45,7 +45,7 @@ RSpec.describe "bundle install" do
         install_gemfile <<-G, artifice: "compact_index"
           source "https://gem.repo2"
           gem 'has_funding'
-          gem 'rack-obama'
+          gem 'myrack-obama'
         G
 
         expect(out).to include("1 installed gem you directly depend on is looking for funding.")
@@ -62,7 +62,7 @@ RSpec.describe "bundle install" do
           source "https://gem.repo2"
           gem 'has_funding_and_other_metadata'
           gem 'has_funding'
-          gem 'rack-obama'
+          gem 'myrack-obama'
         G
 
         expect(out).not_to include("2 installed gems you directly depend on are looking for funding.")
@@ -72,7 +72,7 @@ RSpec.describe "bundle install" do
         install_gemfile <<-G, artifice: "compact_index"
           source "https://gem.repo2"
           gem 'has_funding'
-          gem 'rack-obama'
+          gem 'myrack-obama'
         G
 
         expect(out).not_to include("1 installed gem you directly depend on is looking for funding.")

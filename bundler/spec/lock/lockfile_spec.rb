@@ -7,26 +7,26 @@ RSpec.describe "the lockfile format" do
 
   it "generates a simple lockfile for a single source, gem" do
     checksums = checksums_section_when_existing do |c|
-      c.checksum(gem_repo2, "rack", "1.0.0")
+      c.checksum(gem_repo2, "myrack", "1.0.0")
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
 
-      gem "rack"
+      gem "myrack"
     G
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -45,14 +45,14 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
         omg!
-        rack
+        myrack
 
       BUNDLED WITH
          1.8.2
@@ -61,7 +61,7 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G, verbose: true, env: { "BUNDLER_VERSION" => Bundler::VERSION }
       source "#{file_uri_for(gem_repo2)}"
 
-      gem "rack"
+      gem "myrack"
     G
 
     expect(out).not_to include("Bundler #{Bundler::VERSION} is running, but your lockfile was generated with 1.8.2.")
@@ -71,13 +71,13 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -91,13 +91,13 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
 
       BUNDLED WITH
          #{version}
@@ -106,7 +106,7 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G, verbose: true, artifice: "vcr"
       source "#{file_uri_for(gem_repo2)}"
 
-      gem "rack"
+      gem "myrack"
     G
 
     expect(out).to include("Bundler #{Bundler::VERSION} is running, but your lockfile was generated with #{version}.")
@@ -116,13 +116,13 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
 
       BUNDLED WITH
          #{version}
@@ -133,20 +133,20 @@ RSpec.describe "the lockfile format" do
     version = "#{Bundler::VERSION.split(".").first}.0.0.a"
 
     checksums = checksums_section do |c|
-      c.checksum(gem_repo2, "rack", "1.0.0")
+      c.checksum(gem_repo2, "myrack", "1.0.0")
     end
 
     lockfile <<-L
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{version}
@@ -155,7 +155,7 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G, verbose: true
       source "#{file_uri_for(gem_repo2)}"
 
-      gem "rack"
+      gem "myrack"
     G
 
     expect(out).not_to include("Bundler #{Bundler::VERSION} is running, but your lockfile was generated with #{version}.")
@@ -165,13 +165,13 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{version}
@@ -183,32 +183,32 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
     L
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}"
 
-      gem "rack", "> 0"
+      gem "myrack", "> 0"
     G
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack (> 0)
+        myrack (> 0)
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -225,13 +225,13 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
 
       BUNDLED WITH
          #{older_major}
@@ -240,7 +240,7 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G, env: { "BUNDLER_VERSION" => Bundler::VERSION }
       source "#{file_uri_for(gem_repo2)}/"
 
-      gem "rack"
+      gem "myrack"
     G
 
     expect(err).to be_empty
@@ -249,13 +249,13 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
 
       BUNDLED WITH
          #{current_version}
@@ -266,27 +266,27 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
 
-      gem "rack-obama"
+      gem "myrack-obama"
     G
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum gem_repo2, "rack", "1.0.0"
-      c.checksum gem_repo2, "rack-obama", "1.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
+      c.checksum gem_repo2, "myrack-obama", "1.0"
     end
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
-          rack-obama (1.0)
-            rack
+          myrack (1.0.0)
+          myrack-obama (1.0)
+            myrack
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack-obama
+        myrack-obama
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -297,27 +297,27 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
 
-      gem "rack-obama", ">= 1.0"
+      gem "myrack-obama", ">= 1.0"
     G
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum gem_repo2, "rack", "1.0.0"
-      c.checksum gem_repo2, "rack-obama", "1.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
+      c.checksum gem_repo2, "myrack-obama", "1.0"
     end
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
-          rack-obama (1.0)
-            rack
+          myrack (1.0.0)
+          myrack-obama (1.0)
+            myrack
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack-obama (>= 1.0)
+        myrack-obama (>= 1.0)
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -335,13 +335,13 @@ RSpec.describe "the lockfile format" do
       end
 
       source "http://user:pass@othergemserver.test/" do
-        gem "rack-obama", ">= 1.0"
+        gem "myrack-obama", ">= 1.0"
       end
     G
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum gem_repo2, "rack", "1.0.0"
-      c.checksum gem_repo2, "rack-obama", "1.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
+      c.checksum gem_repo2, "myrack-obama", "1.0"
     end
 
     expect(lockfile).to eq <<~G
@@ -356,15 +356,15 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: http://othergemserver.test/
         specs:
-          rack (1.0.0)
-          rack-obama (1.0)
-            rack
+          myrack (1.0.0)
+          myrack-obama (1.0)
+            myrack
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack-obama (>= 1.0)!
+        myrack-obama (>= 1.0)!
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -382,13 +382,13 @@ RSpec.describe "the lockfile format" do
       end
 
       source "http://user:pass@othergemserver.test/" do
-        gem "rack-obama", ">= 1.0"
+        gem "myrack-obama", ">= 1.0"
       end
     G
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum gem_repo2, "rack", "1.0.0"
-      c.checksum gem_repo2, "rack-obama", "1.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
+      c.checksum gem_repo2, "myrack-obama", "1.0"
     end
 
     lockfile_without_credentials = <<~L
@@ -403,15 +403,15 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: http://othergemserver.test/
         specs:
-          rack (1.0.0)
-          rack-obama (1.0)
-            rack
+          myrack (1.0.0)
+          myrack-obama (1.0)
+            myrack
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack-obama (>= 1.0)!
+        myrack-obama (>= 1.0)!
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -443,13 +443,13 @@ RSpec.describe "the lockfile format" do
       end
 
       source "http://user:pass@othergemserver.test/" do
-        gem "rack-obama", ">= 1.0"
+        gem "myrack-obama", ">= 1.0"
       end
     G
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum gem_repo2, "rack", "1.0.0"
-      c.checksum gem_repo2, "rack-obama", "1.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
+      c.checksum gem_repo2, "myrack-obama", "1.0"
     end
 
     lockfile_with_credentials = <<~L
@@ -464,15 +464,15 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: http://user:pass@othergemserver.test/
         specs:
-          rack (1.0.0)
-          rack-obama (1.0)
-            rack
+          myrack (1.0.0)
+          myrack-obama (1.0)
+            myrack
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack-obama (>= 1.0)!
+        myrack-obama (>= 1.0)!
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -561,7 +561,7 @@ RSpec.describe "the lockfile format" do
         gem "omg", :path => "#{lib_path("omg")}"
       end
 
-      gem "rack"
+      gem "myrack"
     G
 
     lockfile <<-L
@@ -573,21 +573,21 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}//
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{not_local}
 
       DEPENDENCIES
         omg!
-        rack
+        myrack
 
       BUNDLED WITH
          #{Bundler::VERSION}
     L
 
     bundle "install"
-    expect(the_bundle).to include_gems "rack 1.0.0"
+    expect(the_bundle).to include_gems "myrack 1.0.0"
   end
 
   it "serializes global git sources" do
@@ -861,13 +861,13 @@ RSpec.describe "the lockfile format" do
     checksums = checksums_section_when_existing do |c|
       c.no_checksum "foo", "1.0"
       c.no_checksum "bar", "1.0"
-      c.checksum gem_repo2, "rack", "1.0.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
 
-      gem "rack"
+      gem "myrack"
       gem "foo", :path => "#{lib_path("foo-1.0")}"
       gem "bar", :git => "#{lib_path("bar-1.0")}"
     G
@@ -887,7 +887,7 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
@@ -895,7 +895,7 @@ RSpec.describe "the lockfile format" do
       DEPENDENCIES
         bar!
         foo!
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -906,24 +906,24 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
 
-      gem "rack", :source => "#{file_uri_for(gem_repo2)}/"
+      gem "myrack", :source => "#{file_uri_for(gem_repo2)}/"
     G
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum gem_repo2, "rack", "1.0.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
     end
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack!
+        myrack!
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -936,14 +936,14 @@ RSpec.describe "the lockfile format" do
 
       gem "thin"
       gem "actionpack"
-      gem "rack-obama"
+      gem "myrack-obama"
     G
 
     checksums = checksums_section_when_existing do |c|
       c.checksum gem_repo2, "actionpack", "2.3.2"
       c.checksum gem_repo2, "activesupport", "2.3.2"
-      c.checksum gem_repo2, "rack", "1.0.0"
-      c.checksum gem_repo2, "rack-obama", "1.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
+      c.checksum gem_repo2, "myrack-obama", "1.0"
       c.checksum gem_repo2, "thin", "1.0"
     end
 
@@ -954,18 +954,18 @@ RSpec.describe "the lockfile format" do
           actionpack (2.3.2)
             activesupport (= 2.3.2)
           activesupport (2.3.2)
-          rack (1.0.0)
-          rack-obama (1.0)
-            rack
+          myrack (1.0.0)
+          myrack-obama (1.0)
+            myrack
           thin (1.0)
-            rack
+            myrack
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
         actionpack
-        rack-obama
+        myrack-obama
         thin
       #{checksums}
       BUNDLED WITH
@@ -1067,27 +1067,27 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
 
-      gem "rack-obama", ">= 1.0", :require => "rack/obama"
+      gem "myrack-obama", ">= 1.0", :require => "myrack/obama"
     G
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum gem_repo2, "rack", "1.0.0"
-      c.checksum gem_repo2, "rack-obama", "1.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
+      c.checksum gem_repo2, "myrack-obama", "1.0"
     end
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
-          rack-obama (1.0)
-            rack
+          myrack (1.0.0)
+          myrack-obama (1.0)
+            myrack
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack-obama (>= 1.0)
+        myrack-obama (>= 1.0)
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1098,27 +1098,27 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
 
-      gem "rack-obama", ">= 1.0", :group => :test
+      gem "myrack-obama", ">= 1.0", :group => :test
     G
 
     checksums = checksums_section_when_existing do |c|
-      c.checksum gem_repo2, "rack", "1.0.0"
-      c.checksum gem_repo2, "rack-obama", "1.0"
+      c.checksum gem_repo2, "myrack", "1.0.0"
+      c.checksum gem_repo2, "myrack-obama", "1.0"
     end
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
-          rack-obama (1.0)
-            rack
+          myrack (1.0.0)
+          myrack-obama (1.0)
+            myrack
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack-obama (>= 1.0)
+        myrack-obama (>= 1.0)
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1265,20 +1265,20 @@ RSpec.describe "the lockfile format" do
 
   it "keeps existing platforms in the lockfile" do
     checksums = checksums_section_when_existing do |c|
-      c.no_checksum "rack", "1.0.0"
+      c.no_checksum "myrack", "1.0.0"
     end
 
     lockfile <<-G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         java
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1287,22 +1287,22 @@ RSpec.describe "the lockfile format" do
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
 
-      gem "rack"
+      gem "myrack"
     G
 
-    checksums.checksum(gem_repo2, "rack", "1.0.0")
+    checksums.checksum(gem_repo2, "myrack", "1.0.0")
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms("java", local_platform, defaults: [])}
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1387,17 +1387,17 @@ RSpec.describe "the lockfile format" do
   it "does not add duplicate gems" do
     checksums = checksums_section_when_existing do |c|
       c.checksum(gem_repo2, "activesupport", "2.3.5")
-      c.checksum(gem_repo2, "rack", "1.0.0")
+      c.checksum(gem_repo2, "myrack", "1.0.0")
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
-      gem "rack"
+      gem "myrack"
     G
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
-      gem "rack"
+      gem "myrack"
       gem "activesupport"
     G
 
@@ -1406,14 +1406,14 @@ RSpec.describe "the lockfile format" do
         remote: #{file_uri_for(gem_repo2)}/
         specs:
           activesupport (2.3.5)
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
         activesupport
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1422,26 +1422,26 @@ RSpec.describe "the lockfile format" do
 
   it "does not add duplicate dependencies" do
     checksums = checksums_section_when_existing do |c|
-      c.checksum(gem_repo2, "rack", "1.0.0")
+      c.checksum(gem_repo2, "myrack", "1.0.0")
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
-      gem "rack"
-      gem "rack"
+      gem "myrack"
+      gem "myrack"
     G
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1450,26 +1450,26 @@ RSpec.describe "the lockfile format" do
 
   it "does not add duplicate dependencies with versions" do
     checksums = checksums_section_when_existing do |c|
-      c.checksum(gem_repo2, "rack", "1.0.0")
+      c.checksum(gem_repo2, "myrack", "1.0.0")
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
-      gem "rack", "1.0"
-      gem "rack", "1.0"
+      gem "myrack", "1.0"
+      gem "myrack", "1.0"
     G
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack (= 1.0)
+        myrack (= 1.0)
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1478,26 +1478,26 @@ RSpec.describe "the lockfile format" do
 
   it "does not add duplicate dependencies in different groups" do
     checksums = checksums_section_when_existing do |c|
-      c.checksum(gem_repo2, "rack", "1.0.0")
+      c.checksum(gem_repo2, "myrack", "1.0.0")
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
-      gem "rack", "1.0", :group => :one
-      gem "rack", "1.0", :group => :two
+      gem "myrack", "1.0", :group => :one
+      gem "myrack", "1.0", :group => :two
     G
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (1.0.0)
+          myrack (1.0.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack (= 1.0)
+        myrack (= 1.0)
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1507,46 +1507,46 @@ RSpec.describe "the lockfile format" do
   it "raises if two different versions are used" do
     install_gemfile <<-G, raise_on_error: false
       source "#{file_uri_for(gem_repo2)}/"
-      gem "rack", "1.0"
-      gem "rack", "1.1"
+      gem "myrack", "1.0"
+      gem "myrack", "1.1"
     G
 
     expect(bundled_app_lock).not_to exist
-    expect(err).to include "rack (= 1.0) and rack (= 1.1)"
+    expect(err).to include "myrack (= 1.0) and myrack (= 1.1)"
   end
 
   it "raises if two different sources are used" do
     install_gemfile <<-G, raise_on_error: false
       source "#{file_uri_for(gem_repo2)}/"
-      gem "rack"
-      gem "rack", :git => "git://hubz.com"
+      gem "myrack"
+      gem "myrack", :git => "git://hubz.com"
     G
 
     expect(bundled_app_lock).not_to exist
-    expect(err).to include "rack (>= 0) should come from an unspecified source and git://hubz.com"
+    expect(err).to include "myrack (>= 0) should come from an unspecified source and git://hubz.com"
   end
 
   it "works correctly with multiple version dependencies" do
     checksums = checksums_section_when_existing do |c|
-      c.checksum(gem_repo2, "rack", "0.9.1")
+      c.checksum(gem_repo2, "myrack", "0.9.1")
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
-      gem "rack", "> 0.9", "< 1.0"
+      gem "myrack", "> 0.9", "< 1.0"
     G
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (0.9.1)
+          myrack (0.9.1)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack (> 0.9, < 1.0)
+        myrack (> 0.9, < 1.0)
       #{checksums}
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1555,26 +1555,26 @@ RSpec.describe "the lockfile format" do
 
   it "captures the Ruby version in the lockfile" do
     checksums = checksums_section_when_existing do |c|
-      c.checksum(gem_repo2, "rack", "0.9.1")
+      c.checksum(gem_repo2, "myrack", "0.9.1")
     end
 
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo2)}/"
       ruby '#{Gem.ruby_version}'
-      gem "rack", "> 0.9", "< 1.0"
+      gem "myrack", "> 0.9", "< 1.0"
     G
 
     expect(lockfile).to eq <<~G
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack (0.9.1)
+          myrack (0.9.1)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack (> 0.9, < 1.0)
+        myrack (> 0.9, < 1.0)
       #{checksums}
       RUBY VERSION
          #{Bundler::RubyVersion.system}
@@ -1589,22 +1589,22 @@ RSpec.describe "the lockfile format" do
       GEM
         remote: #{file_uri_for(gem_repo2)}/
         specs:
-          rack_middleware (1.0)
+          myrack_middleware (1.0)
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack_middleware
+        myrack_middleware
     L
 
     install_gemfile <<-G, raise_on_error: false
       source "#{file_uri_for(gem_repo2)}"
-      gem "rack_middleware"
+      gem "myrack_middleware"
     G
 
-    expect(err).to include("Downloading rack_middleware-1.0 revealed dependencies not in the API or the lockfile (#{Gem::Dependency.new("rack", "= 0.9.1")}).").
-      and include("Running `bundle update rack_middleware` should fix the problem.")
+    expect(err).to include("Downloading myrack_middleware-1.0 revealed dependencies not in the API or the lockfile (#{Gem::Dependency.new("myrack", "= 0.9.1")}).").
+      and include("Running `bundle update myrack_middleware` should fix the problem.")
   end
 
   it "regenerates a lockfile with no specs" do
@@ -1788,35 +1788,35 @@ RSpec.describe "the lockfile format" do
 
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo2)}"
-        gem "rack"
+        gem "myrack"
       G
       set_lockfile_mtime_to_known_value
     end
 
     it "generates Gemfile.lock with \\n line endings" do
       expect(File.read(bundled_app_lock)).not_to match("\r\n")
-      expect(the_bundle).to include_gems "rack 1.0"
+      expect(the_bundle).to include_gems "myrack 1.0"
     end
 
     context "during updates" do
       it "preserves Gemfile.lock \\n line endings" do
         update_repo2 do
-          build_gem "rack", "1.2" do |s|
-            s.executables = "rackup"
+          build_gem "myrack", "1.2" do |s|
+            s.executables = "myrackup"
           end
         end
 
         expect { bundle "update", all: true }.to change { File.mtime(bundled_app_lock) }
         expect(File.read(bundled_app_lock)).not_to match("\r\n")
-        expect(the_bundle).to include_gems "rack 1.2"
+        expect(the_bundle).to include_gems "myrack 1.2"
       end
 
       it "preserves Gemfile.lock \\n\\r line endings" do
         skip "needs to be adapted" if Gem.win_platform?
 
         update_repo2 do
-          build_gem "rack", "1.2" do |s|
-            s.executables = "rackup"
+          build_gem "myrack", "1.2" do |s|
+            s.executables = "myrackup"
           end
         end
 
@@ -1827,7 +1827,7 @@ RSpec.describe "the lockfile format" do
         expect { bundle "update", all: true }.to change { File.mtime(bundled_app_lock) }
         expect(File.read(bundled_app_lock)).to match("\r\n")
 
-        expect(the_bundle).to include_gems "rack 1.2"
+        expect(the_bundle).to include_gems "myrack 1.2"
       end
     end
 
@@ -1862,16 +1862,16 @@ RSpec.describe "the lockfile format" do
         remote: #{file_uri_for(gem_repo2)}//
         specs:
       <<<<<<<
-          rack (1.0.0)
+          myrack (1.0.0)
       =======
-          rack (1.0.1)
+          myrack (1.0.1)
       >>>>>>>
 
       PLATFORMS
         #{lockfile_platforms}
 
       DEPENDENCIES
-        rack
+        myrack
 
       BUNDLED WITH
          #{Bundler::VERSION}
@@ -1879,7 +1879,7 @@ RSpec.describe "the lockfile format" do
 
     install_gemfile <<-G, raise_on_error: false
       source "#{file_uri_for(gem_repo2)}/"
-      gem "rack"
+      gem "myrack"
     G
 
     expect(err).to match(/your Gemfile.lock contains merge conflicts/i)

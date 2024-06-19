@@ -50,12 +50,12 @@ RSpec.describe Bundler::Definition do
       G
 
       build_lib "foo", "1.0", path: lib_path("foo") do |s|
-        s.add_dependency "rack", "1.0"
+        s.add_dependency "myrack", "1.0"
       end
 
       checksums = checksums_section_when_existing do |c|
         c.no_checksum "foo", "1.0"
-        c.checksum gem_repo1, "rack", "1.0.0"
+        c.checksum gem_repo1, "myrack", "1.0.0"
       end
 
       bundle :install, env: { "DEBUG" => "1" }
@@ -66,12 +66,12 @@ RSpec.describe Bundler::Definition do
           remote: #{lib_path("foo")}
           specs:
             foo (1.0)
-              rack (= 1.0)
+              myrack (= 1.0)
 
         GEM
           remote: #{file_uri_for(gem_repo1)}/
           specs:
-            rack (1.0.0)
+            myrack (1.0.0)
 
         PLATFORMS
           #{lockfile_platforms}
@@ -104,13 +104,13 @@ RSpec.describe Bundler::Definition do
 
     it "for a path gem with deps and no changes" do
       build_lib "foo", "1.0", path: lib_path("foo") do |s|
-        s.add_dependency "rack", "1.0"
+        s.add_dependency "myrack", "1.0"
         s.add_development_dependency "net-ssh", "1.0"
       end
 
       checksums = checksums_section_when_existing do |c|
         c.no_checksum "foo", "1.0"
-        c.checksum gem_repo1, "rack", "1.0.0"
+        c.checksum gem_repo1, "myrack", "1.0.0"
       end
 
       install_gemfile <<-G
@@ -123,12 +123,12 @@ RSpec.describe Bundler::Definition do
           remote: #{lib_path("foo")}
           specs:
             foo (1.0)
-              rack (= 1.0)
+              myrack (= 1.0)
 
         GEM
           remote: #{file_uri_for(gem_repo1)}/
           specs:
-            rack (1.0.0)
+            myrack (1.0.0)
 
         PLATFORMS
           #{lockfile_platforms}

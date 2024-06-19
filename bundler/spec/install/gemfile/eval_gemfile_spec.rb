@@ -108,7 +108,7 @@ RSpec.describe "bundle install with gemfile that uses eval_gemfile" do
 
   context "eval-ed Gemfile references other gemfiles" do
     it "works with relative paths" do
-      gemfile "other/Gemfile-other", "gem 'rack'"
+      gemfile "other/Gemfile-other", "gem 'myrack'"
       gemfile "other/Gemfile", "eval_gemfile 'Gemfile-other'"
       gemfile "Gemfile-alt", <<-G
         source "#{file_uri_for(gem_repo1)}"
@@ -116,7 +116,7 @@ RSpec.describe "bundle install with gemfile that uses eval_gemfile" do
       G
       install_gemfile "eval_gemfile File.expand_path('Gemfile-alt')"
 
-      expect(the_bundle).to include_gem "rack 1.0.0"
+      expect(the_bundle).to include_gem "myrack 1.0.0"
     end
   end
 end

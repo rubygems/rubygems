@@ -17,7 +17,7 @@ RSpec.describe "bundle install" do
     it "finds the gemfile" do
       gemfile bundled_app("NotGemfile"), <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
       G
 
       bundle :install, gemfile: bundled_app("NotGemfile")
@@ -25,7 +25,7 @@ RSpec.describe "bundle install" do
       # Specify BUNDLE_GEMFILE for `the_bundle`
       # to retrieve the proper Gemfile
       ENV["BUNDLE_GEMFILE"] = "NotGemfile"
-      expect(the_bundle).to include_gems "rack 1.0.0"
+      expect(the_bundle).to include_gems "myrack 1.0.0"
     end
   end
 
@@ -33,7 +33,7 @@ RSpec.describe "bundle install" do
     before do
       gemfile bundled_app("NotGemfile"), <<-G
         source "#{file_uri_for(gem_repo1)}"
-        gem 'rack'
+        gem 'myrack'
       G
 
       bundle "config set --local gemfile #{bundled_app("NotGemfile")}"
@@ -42,14 +42,14 @@ RSpec.describe "bundle install" do
       bundle "install"
       bundle "list"
 
-      expect(out).to include("rack (1.0.0)")
+      expect(out).to include("myrack (1.0.0)")
     end
     it "uses the gemfile while in a subdirectory" do
       bundled_app("subdir").mkpath
       bundle "install", dir: bundled_app("subdir")
       bundle "list", dir: bundled_app("subdir")
 
-      expect(out).to include("rack (1.0.0)")
+      expect(out).to include("myrack (1.0.0)")
     end
   end
 
@@ -58,11 +58,11 @@ RSpec.describe "bundle install" do
       gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
 
-        gem "rack", :lib => "rack"
+        gem "myrack", :lib => "myrack"
       G
 
       bundle :install, raise_on_error: false
-      expect(err).to match(/You passed :lib as an option for gem 'rack', but it is invalid/)
+      expect(err).to match(/You passed :lib as an option for gem 'myrack', but it is invalid/)
     end
   end
 
@@ -80,10 +80,10 @@ RSpec.describe "bundle install" do
       install_gemfile <<-G
         source "#{file_uri_for(gem_repo1)}"
         ruby "#{RUBY_VERSION}", :engine => :jruby, :engine_version => "#{RUBY_ENGINE_VERSION}"
-        gem "rack"
+        gem "myrack"
       G
 
-      expect(the_bundle).to include_gems "rack 1.0.0"
+      expect(the_bundle).to include_gems "myrack 1.0.0"
     end
   end
 

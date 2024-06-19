@@ -259,7 +259,7 @@ RSpec.describe "bundler plugin install" do
       gemfile <<-G
         source '#{file_uri_for(gem_repo2)}'
         plugin 'foo'
-        gem 'rack', "1.0.0"
+        gem 'myrack', "1.0.0"
       G
 
       bundle "install"
@@ -268,7 +268,7 @@ RSpec.describe "bundler plugin install" do
 
       expect(out).to include("Bundle complete!")
 
-      expect(the_bundle).to include_gems("rack 1.0.0")
+      expect(the_bundle).to include_gems("myrack 1.0.0")
       plugin_should_be_installed("foo")
     end
 
@@ -338,21 +338,21 @@ RSpec.describe "bundler plugin install" do
       it "installs plugins" do
         install_gemfile <<-G
           source '#{file_uri_for(gem_repo2)}'
-          gem 'rack', "1.0.0"
+          gem 'myrack', "1.0.0"
         G
 
         bundle "config set --local deployment true"
         install_gemfile <<-G
           source '#{file_uri_for(gem_repo2)}'
           plugin 'foo'
-          gem 'rack', "1.0.0"
+          gem 'myrack', "1.0.0"
         G
 
         expect(out).to include("Installed plugin foo")
 
         expect(out).to include("Bundle complete!")
 
-        expect(the_bundle).to include_gems("rack 1.0.0")
+        expect(the_bundle).to include_gems("myrack 1.0.0")
         plugin_should_be_installed("foo")
       end
     end

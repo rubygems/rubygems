@@ -114,6 +114,8 @@ RSpec.describe "bundle exec" do
   end
 
   it "respects custom process title when loading through ruby" do
+    skip "ps has different options on Windows" if Gem.win_platform?
+
     script_that_changes_its_own_title_and_checks_if_picked_up_by_ps_unix_utility = <<~'RUBY'
       Process.setproctitle("1-2-3-4-5-6-7")
       puts `ps -ocommand= -p#{$$}`
@@ -168,6 +170,8 @@ RSpec.describe "bundle exec" do
   end
 
   it "can run a command named --verbose" do
+    skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
     install_gemfile "source \"#{file_uri_for(gem_repo1)}\"; gem \"rack\""
     File.open(bundled_app("--verbose"), "w") do |f|
       f.puts "#!/bin/sh"
@@ -324,6 +328,8 @@ RSpec.describe "bundle exec" do
   end
 
   it "does not duplicate already exec'ed RUBYOPT" do
+    skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
       gem "rack"
@@ -341,6 +347,8 @@ RSpec.describe "bundle exec" do
   end
 
   it "does not duplicate already exec'ed RUBYLIB" do
+    skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
     install_gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
       gem "rack"
@@ -419,7 +427,7 @@ RSpec.describe "bundle exec" do
             gem "rack"
           G
 
-          create_file("print_args", <<-'RUBY')
+          create_script("print_args", <<-'RUBY')
             #!/usr/bin/env ruby
             puts "args: #{ARGV.inspect}"
           RUBY
@@ -680,6 +688,8 @@ RSpec.describe "bundle exec" do
 
   describe "with gems bundled for deployment" do
     it "works when calling bundler from another script" do
+      skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
       gemfile <<-G
       source "#{file_uri_for(gem_repo1)}"
 
@@ -738,6 +748,8 @@ RSpec.describe "bundle exec" do
     subject { bundle "exec #{path} arg1 arg2", raise_on_error: false }
 
     it "runs" do
+      skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
       subject
       expect(exitstatus).to eq(exit_code)
       expect(err).to eq(expected_err)
@@ -749,6 +761,8 @@ RSpec.describe "bundle exec" do
 
       context "with exit 0" do
         it "runs" do
+          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
           subject
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
@@ -760,6 +774,8 @@ RSpec.describe "bundle exec" do
         let(:exit_code) { 99 }
 
         it "runs" do
+          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
           subject
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
@@ -781,6 +797,8 @@ RSpec.describe "bundle exec" do
       end
 
       it "runs" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -796,6 +814,8 @@ RSpec.describe "bundle exec" do
       let(:expected) { "" }
 
       it "runs" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -811,6 +831,8 @@ RSpec.describe "bundle exec" do
       end
 
       it "runs like a normally executed executable" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to match(expected_err)
@@ -825,6 +847,8 @@ RSpec.describe "bundle exec" do
       let(:expected) { super() }
 
       it "runs" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -836,6 +860,8 @@ RSpec.describe "bundle exec" do
       let(:shebang) { "#!#{Gem.ruby}" }
 
       it "runs" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -864,6 +890,8 @@ Run `bundle install` to install missing gems.
       EOS
 
       it "runs" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -891,6 +919,8 @@ Run `bundle install` to install missing gems.
       EOS
 
       it "runs" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -913,6 +943,8 @@ Run `bundle install` to install missing gems.
       let(:expected) { "" }
 
       it "prints proper suggestion" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to include("Run `bundle install --gemfile CustomGemfile` to install missing gems.")
@@ -925,6 +957,8 @@ Run `bundle install` to install missing gems.
       let(:exit_code) { 1 }
 
       it "runs" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -941,6 +975,8 @@ Run `bundle install` to install missing gems.
       end
 
       it "runs" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -962,6 +998,8 @@ __FILE__: #{path.to_s.inspect}
       EOS
 
       it "runs" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -972,6 +1010,8 @@ __FILE__: #{path.to_s.inspect}
         let(:path) { super().relative_path_from(bundled_app) }
 
         it "runs" do
+          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
           subject
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
@@ -1011,6 +1051,8 @@ __FILE__: #{path.to_s.inspect}
         RUBY
 
         it "receives the signal" do
+          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
           bundle("exec #{path}") do |_, o, thr|
             o.gets # Consumes 'Started' and ensures that thread has started
             Process.kill("INT", thr.pid)
@@ -1032,6 +1074,8 @@ __FILE__: #{path.to_s.inspect}
         RUBY
 
         it "makes sure no unexpected signals are restored to DEFAULT" do
+          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
           test_signals.each do |n|
             Signal.trap(n, "IGNORE")
           end
@@ -1047,6 +1091,8 @@ __FILE__: #{path.to_s.inspect}
   context "nested bundle exec" do
     context "when bundle in a local path" do
       before do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         gemfile <<-G
           source "#{file_uri_for(gem_repo1)}"
           gem "rack"
@@ -1069,6 +1115,8 @@ __FILE__: #{path.to_s.inspect}
 
     context "when Kernel.require uses extra monkeypatches" do
       before do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         install_gemfile "source \"#{file_uri_for(gem_repo1)}\""
       end
 
@@ -1110,6 +1158,8 @@ __FILE__: #{path.to_s.inspect}
 
     context "when gemfile and path are configured", :ruby_repo do
       before do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+
         build_repo2 do
           build_gem "rails", "6.1.0" do |s|
             s.executables = "rails"
@@ -1154,6 +1204,7 @@ __FILE__: #{path.to_s.inspect}
       let(:expected) { ruby "gem 'openssl', '< 999999'; require 'openssl'; puts OpenSSL::VERSION", artifice: nil, raise_on_error: false }
 
       it "only leaves the default gem in the stdlib available" do
+        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
         skip "openssl isn't a default gem" if expected.empty?
 
         install_gemfile "source \"#{file_uri_for(gem_repo1)}\"" # must happen before installing the broken system gem

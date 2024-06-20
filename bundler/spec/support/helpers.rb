@@ -188,6 +188,11 @@ module Spec
       config(config, home(".bundle/config"))
     end
 
+    def create_script(path, contents = "")
+      create_file(path, contents)
+      create_file("#{path}.cmd", %(@ECHO OFF\n@"ruby.exe" -x "%~dpn0" %*)) if Gem.win_platform?
+    end
+
     def create_file(path, contents = "")
       path = Pathname.new(path).expand_path(bundled_app) unless path.is_a?(Pathname)
       path.dirname.mkpath

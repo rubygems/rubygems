@@ -18,17 +18,10 @@ module Bundler
     def run
       validate_cmd!
       SharedHelpers.set_bundle_environment
-      bin_path = Bundler.which(cmd)
-      bin_path ||= Bundler.which(cmd, allow_non_executables: true) if Gem.win_platform?
-      if bin_path
+      if bin_path = Bundler.which(cmd)
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
           return kernel_load(bin_path, *args)
         end
-
-        if Gem.win_platform? && ruby_shebang?(bin_path)
-          return kernel_exec(Gem.ruby, bin_path, *args)
-        end
-
         kernel_exec(bin_path, *args)
       else
         # exec using the given command
@@ -44,8 +37,8 @@ module Bundler
       exit 128
     end
 
-    def kernel_exec(cmd, *args)
-      Kernel.exec(cmd, *args)
+    def kernel_exec(*args)
+      Kernel.exec(*args)
     rescue Errno::EACCES, Errno::ENOEXEC
       Bundler.ui.error "bundler: not executable: #{cmd}"
       exit 126

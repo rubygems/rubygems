@@ -515,14 +515,15 @@ module Bundler
     end
 
     def which(executable)
-      if executable?(executable)
-        executable
-      elsif paths = ENV["PATH"]
+      executable_path = find_executable(executable)
+      return executable_path if executable_path
+
+      if paths = ENV["PATH"]
         quote = '"'
         paths.split(File::PATH_SEPARATOR).find do |path|
           path = path[1..-2] if path.start_with?(quote) && path.end_with?(quote)
-          executable_path = File.expand_path(executable, path)
-          return executable_path if executable?(executable_path)
+          executable_path = find_executable(File.expand_path(executable, path))
+          return executable_path if executable_path
         end
       end
     end
@@ -651,12 +652,12 @@ module Bundler
 
     private
 
-    def executable?(path)
+    def find_executable(path)
       extensions = RbConfig::CONFIG["EXECUTABLE_EXTS"]&.split
       extensions = [RbConfig::CONFIG["EXEEXT"]] unless extensions&.any?
       candidates = extensions.map {|ext| "#{path}#{ext}" }
 
-      candidates.any? {|candidate| File.file?(candidate) && File.executable?(candidate) }
+      candidates.find {|candidate| File.file?(candidate) && File.executable?(candidate) }
     end
 
     def load_marshal(data, marshal_proc: nil)

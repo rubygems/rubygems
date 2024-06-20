@@ -49,6 +49,8 @@ jobs:
         if: matrix.bundler.value != ''
       - name: Run Test
         run: |
+          ruby -rrbconfig -e 'puts RbConfig::CONFIG["EXEEXT"]'
+          ruby -rrbconfig -e 'puts RbConfig::CONFIG["EXECUTABLE_EXTS"]'
           bin/rspec spec/commands/exec_spec.rb
         working-directory: ./bundler
     timeout-minutes: ${{ matrix.timeout || 60 }}

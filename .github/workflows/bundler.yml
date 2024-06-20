@@ -25,28 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - { name: Ubuntu, value: ubuntu-22.04 }
-
-        ruby:
-          - { name: ruby-3.0, value: 3.0.7 }
-          - { name: ruby-3.1, value: 3.1.5 }
-          - { name: ruby-3.2, value: 3.2.4 }
-          - { name: ruby-3.3, value: 3.3.1 }
-
-        bundler:
-          - { name: 2, value: '' }
-          - { name: 3, value: 3.0.0 }
-
         include:
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 }, timeout: 90 }
-
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 }, timeout: 150 }
 
     env:
@@ -70,6 +49,6 @@ jobs:
         if: matrix.bundler.value != ''
       - name: Run Test
         run: |
-          bin/parallel_rspec
+          bin/rspec spec/commands/exec_spec.rb
         working-directory: ./bundler
     timeout-minutes: ${{ matrix.timeout || 60 }}

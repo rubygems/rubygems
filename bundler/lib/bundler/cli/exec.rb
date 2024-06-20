@@ -22,6 +22,11 @@ module Bundler
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
           return kernel_load(bin_path, *args)
         end
+
+        if Gem.win_platform? && ruby_shebang?(bin_path)
+          return kernel_exec(Gem.ruby, bin_path, *args)
+        end
+
         kernel_exec(bin_path, *args)
       else
         # exec using the given command

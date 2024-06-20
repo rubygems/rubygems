@@ -1,3 +1,14 @@
+# 3.5.14 / 2024-06-21
+
+## Enhancements:
+
+* Installs bundler 2.5.14 as a default gem.
+
+## Bug fixes:
+
+* Make "bundler? update --bundler" behave identically. Pull request
+  [#7778](https://github.com/rubygems/rubygems/pull/7778) by x-yuri
+
 # 3.5.13 / 2024-06-14
 
 ## Enhancements:

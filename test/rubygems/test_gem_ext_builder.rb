@@ -323,19 +323,25 @@ install:
       end
       RUBY
       RbConfig::CONFIG.each do |k, v|
-        f.puts %(RbConfig::CONFIG[#{k.dump}] = #{v&.dump || "nil"})
+        f.puts %(RbConfig::CONFIG[#{k.dump}] = #{v.dump})
       end
       RbConfig::MAKEFILE_CONFIG.each do |k, v|
-        f.puts %(RbConfig::MAKEFILE_CONFIG[#{k.dump}] = #{v&.dump || "nil"})
+        f.puts %(RbConfig::MAKEFILE_CONFIG[#{k.dump}] = #{v.dump})
       end
       f.puts "RbConfig::CONFIG['host_os'] = 'fake_os'"
       f.puts "RbConfig::CONFIG['arch'] = 'fake_arch'"
       f.puts "RbConfig::CONFIG['platform'] = 'fake_platform'"
     end
 
-    system(Gem.ruby, "-rmkmf", "-e", "exit MakeMakefile::RbConfig::CONFIG['host_os'] == 'fake_os'",
-           "--", "--target-rbconfig=#{fake_rbconfig}")
-    pend "This version of mkmf does not support --target-rbconfig" unless $?.success?
+    stdout, stderr = capture_subprocess_io do
+      system(Gem.ruby, "-rmkmf", "-e", "exit MakeMakefile::RbConfig::CONFIG['host_os'] == 'fake_os'",
+             "--", "--target-rbconfig=#{fake_rbconfig}")
+    end
+    unless $?.success?
+      assert_include(stderr, "uninitialized constant MakeMakefile::RbConfig")
+      pend "This version of mkmf does not support --target-rbconfig"
+    end
+    assert_empty(stdout)
 
     @spec.extensions << "extconf.rb"
     @builder = Gem::Ext::Builder.new @spec, "", Gem::TargetRbConfig.from_path(fake_rbconfig)

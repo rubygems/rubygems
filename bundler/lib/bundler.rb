@@ -514,17 +514,11 @@ module Bundler
       end
     end
 
-    def which(executable)
-      if File.file?(executable) && File.executable?(executable)
-        executable
-      elsif paths = ENV["PATH"]
-        quote = '"'
-        paths.split(File::PATH_SEPARATOR).find do |path|
-          path = path[1..-2] if path.start_with?(quote) && path.end_with?(quote)
-          executable_path = File.expand_path(executable, path)
-          return executable_path if File.file?(executable_path) && File.executable?(executable_path)
-        end
-      end
+    def which(executable, allow_non_executables: false)
+      found = find_in_path(executable) {|path| executable?(path) }
+      return found if found || !allow_non_executables
+
+      find_in_path(executable) {|path| file?(path) }
     end
 
     def read_file(file)
@@ -650,6 +644,27 @@ module Bundler
     end
 
     private
+
+    def find_in_path(executable)
+      if yield(executable)
+        executable
+      elsif paths = ENV["PATH"]
+        quote = '"'
+        paths.split(File::PATH_SEPARATOR).find do |path|
+          path = path[1..-2] if path.start_with?(quote) && path.end_with?(quote)
+          executable_path = File.expand_path(executable, path)
+          return executable_path if yield(executable_path)
+        end
+      end
+    end
+
+    def executable?(path)
+      file?(path) || File.executable?(path)
+    end
+
+    def file?(path)
+      File.file?(path)
+    end
 
     def load_marshal(data, marshal_proc: nil)
       Marshal.load(data, marshal_proc)

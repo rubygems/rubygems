@@ -1,3 +1,11 @@
+# 2.5.14 (June 21, 2024)
+
+## Bug fixes:
+
+  - Fix credentials being re-added when re-resolving without a full unlock [#7767](https://github.com/rubygems/rubygems/pull/7767)
+  - Fix `bundle update <gem_name>` edge case [#7770](https://github.com/rubygems/rubygems/pull/7770)
+  - Fix `bundle fund` when the gemfile contains optional groups [#7758](https://github.com/rubygems/rubygems/pull/7758)
+
 # 2.5.13 (June 14, 2024)
 
 ## Bug fixes:

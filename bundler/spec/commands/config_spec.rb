@@ -38,7 +38,7 @@ RSpec.describe ".bundle/config" do
   describe "location with a gemfile" do
     before :each do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0.0"
       G
     end
@@ -123,7 +123,7 @@ RSpec.describe ".bundle/config" do
   describe "global" do
     before(:each) do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0.0"
       G
     end
@@ -215,7 +215,7 @@ RSpec.describe ".bundle/config" do
   describe "local" do
     before(:each) do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0.0"
       G
     end
@@ -271,7 +271,7 @@ RSpec.describe ".bundle/config" do
   describe "env" do
     before(:each) do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0.0"
       G
     end
@@ -344,7 +344,7 @@ RSpec.describe ".bundle/config" do
   describe "gem mirrors" do
     before(:each) do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0.0"
       G
     end
@@ -367,7 +367,7 @@ E
   end
 
   describe "quoting" do
-    before(:each) { gemfile "source \"#{file_uri_for(gem_repo1)}\"" }
+    before(:each) { gemfile "source 'https://gem.repo1'" }
     let(:long_string) do
       "--with-xml2-include=/usr/pkg/include/libxml2 --with-xml2-lib=/usr/pkg/lib " \
       "--with-xslt-dir=/usr/pkg"
@@ -417,7 +417,7 @@ E
   describe "very long lines" do
     before(:each) do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0.0"
       G
     end
@@ -580,7 +580,7 @@ RSpec.describe "setting gemfile via config" do
   context "when only the non-default Gemfile exists" do
     it "persists the gemfile location to .bundle/config" do
       gemfile bundled_app("NotGemfile"), <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack'
       G
 

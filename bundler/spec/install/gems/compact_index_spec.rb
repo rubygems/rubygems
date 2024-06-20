@@ -110,7 +110,7 @@ RSpec.describe "compact index api" do
 
     gemfile <<-G
       source "#{source_uri}"
-      git "#{file_uri_for(lib_path("foo-1.0"))}" do
+      git "#{lib_path("foo-1.0")}" do
         gem 'foo'
       end
     G
@@ -128,7 +128,7 @@ RSpec.describe "compact index api" do
 
     gemfile <<-G
       source "#{source_uri}"
-      gem 'foo', :git => "#{file_uri_for(lib_path("foo-1.0"))}"
+      gem 'foo', :git => "#{lib_path("foo-1.0")}"
     G
 
     bundle :install, artifice: "compact_index"
@@ -143,7 +143,7 @@ RSpec.describe "compact index api" do
     build_git "foo"
     gemfile <<-G
       source "#{source_uri}"
-      gem 'foo', :git => "#{file_uri_for(lib_path("foo-1.0"))}"
+      gem 'foo', :git => "#{lib_path("foo-1.0")}"
     G
 
     bundle "install", artifice: "compact_index"
@@ -744,7 +744,7 @@ RSpec.describe "compact index api" do
         gem "myrack"
       G
 
-      bundle :install, env: { "RUBYOPT" => opt_add("-I#{bundled_app("broken_ssl")}", ENV["RUBYOPT"]) }, raise_on_error: false
+      bundle :install, env: { "RUBYOPT" => opt_add("-I#{bundled_app("broken_ssl")}", ENV["RUBYOPT"]) }, raise_on_error: false, artifice: nil
       expect(err).to include("OpenSSL")
     end
   end
@@ -1083,7 +1083,7 @@ Running `bundle update rails` should fix the problem.
 
   it "does not duplicate specs in the lockfile when updating and a dependency is not installed" do
     install_gemfile <<-G, artifice: "compact_index"
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       source "#{source_uri}" do
         gem "rails"
         gem "activemerchant"

@@ -101,7 +101,7 @@ RSpec.describe "bundle executable" do
   context "when ENV['BUNDLE_GEMFILE'] is set to an empty string" do
     it "ignores it" do
       gemfile bundled_app_gemfile, <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack'
       G
 
@@ -113,18 +113,18 @@ RSpec.describe "bundle executable" do
 
   context "with --verbose" do
     it "prints the running command" do
-      gemfile "source \"#{file_uri_for(gem_repo1)}\""
+      gemfile "source 'https://gem.repo1'"
       bundle "info bundler", verbose: true
       expect(out).to start_with("Running `bundle info bundler --verbose` with bundler #{Bundler::VERSION}")
     end
 
     it "doesn't print defaults" do
-      install_gemfile "source \"#{file_uri_for(gem_repo1)}\"", verbose: true
+      install_gemfile "source 'https://gem.repo1'", verbose: true
       expect(out).to start_with("Running `bundle install --verbose` with bundler #{Bundler::VERSION}")
     end
 
     it "doesn't print defaults" do
-      install_gemfile "source \"#{file_uri_for(gem_repo1)}\"", verbose: true
+      install_gemfile "source 'https://gem.repo1'", verbose: true
       expect(out).to start_with("Running `bundle install --verbose` with bundler #{Bundler::VERSION}")
     end
   end
@@ -138,7 +138,7 @@ RSpec.describe "bundle executable" do
 
     before do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", '0.9.1'
       G
     end

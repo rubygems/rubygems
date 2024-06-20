@@ -3,7 +3,7 @@
 RSpec.describe "bundle flex_install" do
   it "installs the gems as expected" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem 'myrack'
     G
 
@@ -13,7 +13,7 @@ RSpec.describe "bundle flex_install" do
 
   it "installs even when the lockfile is invalid" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem 'myrack'
     G
 
@@ -21,7 +21,7 @@ RSpec.describe "bundle flex_install" do
     expect(the_bundle).to be_locked
 
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem 'myrack', '1.0'
     G
 
@@ -34,7 +34,7 @@ RSpec.describe "bundle flex_install" do
     build_repo2
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "myrack-obama"
     G
 
@@ -42,7 +42,7 @@ RSpec.describe "bundle flex_install" do
 
     update_repo2
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "myrack-obama", "1.0"
     G
 
@@ -54,14 +54,14 @@ RSpec.describe "bundle flex_install" do
       build_repo2
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem 'myrack'
       G
 
       update_repo2
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem 'myrack'
         gem 'activesupport', '2.3.5'
       G
@@ -73,14 +73,14 @@ RSpec.describe "bundle flex_install" do
       build_repo2
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "myrack-obama"
       G
 
       update_repo2
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "myrack-obama"
         gem "thin"
       G
@@ -93,7 +93,7 @@ RSpec.describe "bundle flex_install" do
     it "removes gems without changing the versions of remaining gems" do
       build_repo2
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem 'myrack'
         gem 'activesupport', '2.3.5'
       G
@@ -101,7 +101,7 @@ RSpec.describe "bundle flex_install" do
       update_repo2
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem 'myrack'
       G
 
@@ -109,7 +109,7 @@ RSpec.describe "bundle flex_install" do
       expect(the_bundle).not_to include_gems "activesupport 2.3.5"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem 'myrack'
         gem 'activesupport', '2.3.2'
       G
@@ -120,7 +120,7 @@ RSpec.describe "bundle flex_install" do
     it "removes top level dependencies when removed from the Gemfile while leaving other dependencies intact" do
       build_repo2
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem 'myrack'
         gem 'activesupport', '2.3.5'
       G
@@ -128,7 +128,7 @@ RSpec.describe "bundle flex_install" do
       update_repo2
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem 'myrack'
       G
 
@@ -138,7 +138,7 @@ RSpec.describe "bundle flex_install" do
     it "removes child dependencies" do
       build_repo2
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem 'myrack-obama'
         gem 'activesupport'
       G
@@ -147,7 +147,7 @@ RSpec.describe "bundle flex_install" do
 
       update_repo2
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem 'activesupport'
       G
 
@@ -160,7 +160,7 @@ RSpec.describe "bundle flex_install" do
     before(:each) do
       build_repo2
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "myrack_middleware"
       G
 
@@ -176,7 +176,7 @@ RSpec.describe "bundle flex_install" do
       end
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "myrack-obama", "2.0"
         gem "myrack_middleware"
       G
@@ -197,7 +197,7 @@ RSpec.describe "bundle flex_install" do
         Could not find compatible versions
 
         Because myrack-obama >= 2.0 depends on myrack = 1.2
-          and myrack = 1.2 could not be found in rubygems repository #{file_uri_for(gem_repo2)}/ or installed locally,
+          and myrack = 1.2 could not be found in rubygems repository https://gem.repo2/ or installed locally,
           myrack-obama >= 2.0 cannot be used.
         So, because Gemfile depends on myrack-obama = 2.0,
           version solving has failed.
@@ -233,12 +233,12 @@ RSpec.describe "bundle flex_install" do
       end
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gem "jekyll-feed", "~> 0.12"
       G
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gem "github-pages", "~> 226"
         gem "jekyll-feed", "~> 0.12"
       G
@@ -253,13 +253,13 @@ RSpec.describe "bundle flex_install" do
   describe "subtler cases" do
     before :each do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "myrack-obama"
       G
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "0.9.1"
         gem "myrack-obama"
       G
@@ -275,7 +275,7 @@ RSpec.describe "bundle flex_install" do
 
       expect(lockfile).to eq <<~L
         GEM
-          remote: #{file_uri_for(gem_repo1)}/
+          remote: https://gem.repo1/
           specs:
             myrack (0.9.1)
             myrack-obama (1.0)
@@ -302,13 +302,13 @@ RSpec.describe "bundle flex_install" do
     it "updates the lockfile" do
       build_repo2
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
-        source "#{file_uri_for(gem_repo2)}" do
+        source "https://gem.repo1"
+        source "https://gem.repo2" do
         end
         gem "myrack"
       G
@@ -319,12 +319,12 @@ RSpec.describe "bundle flex_install" do
 
       expect(lockfile).to eq <<~L
         GEM
-          remote: #{file_uri_for(gem_repo1)}/
+          remote: https://gem.repo1/
           specs:
             myrack (1.0.0)
 
         GEM
-          remote: #{file_uri_for(gem_repo2)}/
+          remote: https://gem.repo2/
           specs:
 
         PLATFORMS
@@ -362,14 +362,14 @@ RSpec.describe "bundle flex_install" do
     it "resolves them" do
       # install Rails 3.0.0.rc
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "rails", "3.0.0.rc4"
         gem "capybara", "0.3.9"
       G
 
       # upgrade Rails to 3.0.0 and then install again
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "rails", "3.0.0"
         gem "capybara", "0.3.9"
       G

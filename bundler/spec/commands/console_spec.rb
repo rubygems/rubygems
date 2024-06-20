@@ -38,7 +38,7 @@ RSpec.describe "bundle console", bundler: "< 3", readline: true do
     end
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "myrack"
       gem "activesupport", :group => :test
       gem "myrack_middleware", :group => :development
@@ -63,7 +63,7 @@ RSpec.describe "bundle console", bundler: "< 3", readline: true do
 
   it "starts another REPL if configured as such" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "pry"
     G
     bundle "config set console pry"
@@ -122,7 +122,7 @@ RSpec.describe "bundle console", bundler: "< 3", readline: true do
 
   it "performs an automatic bundle install" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "myrack"
       gem "activesupport", :group => :test
       gem "myrack_middleware", :group => :development

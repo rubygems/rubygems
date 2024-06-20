@@ -6,7 +6,7 @@ RSpec.describe "bundle install" do
       expect(Pathname.new("/usr/bin")).not_to be_writable
       gemfile <<-G
         def Gem.bindir; "/usr/bin"; end
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -26,7 +26,7 @@ RSpec.describe "bundle install" do
       end
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "fake"
         gem "myrack"
       G

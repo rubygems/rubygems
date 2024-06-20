@@ -70,11 +70,11 @@ RSpec.describe Bundler::Env do
 
     context "when there is a Gemfile and a lockfile and print_gemfile is true" do
       before do
-        gemfile "source \"#{file_uri_for(gem_repo1)}\"; gem 'myrack', '1.0.0'"
+        gemfile "source 'https://gem.repo1'; gem 'myrack', '1.0.0'"
 
         lockfile <<-L
           GEM
-            remote: #{file_uri_for(gem_repo1)}/
+            remote: https://gem.repo1/
             specs:
               myrack (1.0.0)
 
@@ -148,7 +148,7 @@ RSpec.describe Bundler::Env do
       end
 
       before do
-        gemfile("source \"#{file_uri_for(gem_repo1)}\"; gemspec")
+        gemfile("source 'https://gem.repo1'; gemspec")
 
         File.open(bundled_app("foo.gemspec"), "wb") do |f|
           f.write(gemspec)
@@ -170,7 +170,7 @@ RSpec.describe Bundler::Env do
         gemfile bundled_app("other/Gemfile-other"), "gem 'myrack'"
         gemfile bundled_app("other/Gemfile"), "eval_gemfile 'Gemfile-other'"
         gemfile bundled_app("Gemfile-alt"), <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           eval_gemfile "other/Gemfile"
         G
         gemfile "eval_gemfile #{bundled_app("Gemfile-alt").to_s.dump}"
@@ -190,7 +190,7 @@ RSpec.describe Bundler::Env do
           ### Gemfile-alt
 
           ```ruby
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           eval_gemfile "other/Gemfile"
           ```
 

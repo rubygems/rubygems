@@ -4,7 +4,7 @@ RSpec.describe "bundle install with groups" do
   describe "installing with no options" do
     before :each do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         group :emo do
           gem "activesupport", "2.3.5"
@@ -74,7 +74,7 @@ RSpec.describe "bundle install with groups" do
     describe "with gems assigned to a single group" do
       before :each do
         gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack"
           group :emo do
             gem "activesupport", "2.3.5"
@@ -135,7 +135,7 @@ RSpec.describe "bundle install with groups" do
 
       it "does not effect the resolve" do
         gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "activesupport"
           group :emo do
             gem "rails", "2.3.2"
@@ -257,7 +257,7 @@ RSpec.describe "bundle install with groups" do
     describe "with gems assigned to multiple groups" do
       before :each do
         gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack"
           group :emo, :lolercoaster do
             gem "activesupport", "2.3.5"
@@ -280,7 +280,7 @@ RSpec.describe "bundle install with groups" do
       describe "with a gem defined multiple times in different groups" do
         before :each do
           gemfile <<-G
-            source "#{file_uri_for(gem_repo1)}"
+            source "https://gem.repo1"
             gem "myrack"
 
             group :emo do
@@ -316,7 +316,7 @@ RSpec.describe "bundle install with groups" do
     describe "nesting groups" do
       before :each do
         gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack"
           group :emo do
             group :lolercoaster do
@@ -343,7 +343,7 @@ RSpec.describe "bundle install with groups" do
   describe "when loading only the default group" do
     it "should not load all groups" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "activesupport", :groups => :development
       G
@@ -373,7 +373,7 @@ RSpec.describe "bundle install with groups" do
 
       bundle "config set --local without myrack"
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "myrack"
 
         group :myrack do

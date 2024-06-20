@@ -5,7 +5,7 @@ RSpec.describe "bundle update" do
 
   before do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem 'myrack', "< 1.0"
       gem 'thin'
     G
@@ -47,7 +47,7 @@ RSpec.describe "bundle update" do
   context "when listed gem is updated" do
     before do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack'
         gem 'thin'
       G
@@ -62,7 +62,7 @@ RSpec.describe "bundle update" do
   context "when dependency triggers update" do
     before do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack-obama'
         gem 'thin'
       G

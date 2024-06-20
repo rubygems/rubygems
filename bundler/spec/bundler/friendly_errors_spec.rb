@@ -18,7 +18,7 @@ RSpec.describe Bundler, "friendly errors" do
 
     it "reports a relevant friendly error message" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 

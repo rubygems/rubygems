@@ -4,7 +4,7 @@ RSpec.describe "bundle install with ENV conditionals" do
   describe "when just setting an ENV key as a string" do
     before :each do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         env "BUNDLER_TEST" do
           gem "myrack"
@@ -27,7 +27,7 @@ RSpec.describe "bundle install with ENV conditionals" do
   describe "when just setting an ENV key as a symbol" do
     before :each do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         env :BUNDLER_TEST do
           gem "myrack"
@@ -50,7 +50,7 @@ RSpec.describe "bundle install with ENV conditionals" do
   describe "when setting a string to match the env" do
     before :each do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         env "BUNDLER_TEST" => "foo" do
           gem "myrack"
@@ -79,7 +79,7 @@ RSpec.describe "bundle install with ENV conditionals" do
   describe "when setting a regex to match the env" do
     before :each do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         env "BUNDLER_TEST" => /foo/ do
           gem "myrack"

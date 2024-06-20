@@ -3,7 +3,7 @@
 RSpec.describe "bundle install with install_if conditionals" do
   it "follows the install_if DSL" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       install_if(lambda { true }) do
         gem "activesupport", "2.3.5"
       end
@@ -27,7 +27,7 @@ RSpec.describe "bundle install with install_if conditionals" do
 
     expect(lockfile).to eq <<~L
       GEM
-        remote: #{file_uri_for(gem_repo1)}/
+        remote: https://gem.repo1/
         specs:
           activesupport (2.3.5)
           foo (1.0)

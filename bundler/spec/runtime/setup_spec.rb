@@ -6,7 +6,7 @@ RSpec.describe "Bundler.setup" do
   describe "with no arguments" do
     it "makes all groups available" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :group => :test
       G
 
@@ -25,7 +25,7 @@ RSpec.describe "Bundler.setup" do
   describe "when called with groups" do
     before(:each) do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "yard"
         gem "myrack", :group => :test
       G
@@ -113,7 +113,7 @@ RSpec.describe "Bundler.setup" do
 
     it "puts loaded gems after -I and RUBYLIB", :ruby_repo do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -138,7 +138,7 @@ RSpec.describe "Bundler.setup" do
       bundle "config set path.system true"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "rails"
       G
 
@@ -166,7 +166,7 @@ RSpec.describe "Bundler.setup" do
       bundle "config set path.system true"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "weakling"
         gem "duradura"
         gem "terranova"
@@ -189,7 +189,7 @@ RSpec.describe "Bundler.setup" do
 
   it "raises if the Gemfile was not yet installed" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -209,7 +209,7 @@ RSpec.describe "Bundler.setup" do
 
   it "doesn't create a Gemfile.lock if the setup fails" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -224,14 +224,14 @@ RSpec.describe "Bundler.setup" do
 
   it "doesn't change the Gemfile.lock if the setup fails" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
     lockfile = File.read(bundled_app_lock)
 
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
       gem "nosuchgem", "10.0"
     G
@@ -247,7 +247,7 @@ RSpec.describe "Bundler.setup" do
 
   it "makes a Gemfile.lock if setup succeeds" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -263,12 +263,12 @@ RSpec.describe "Bundler.setup" do
     context "user provides an absolute path" do
       it "uses BUNDLE_GEMFILE to locate the gemfile if present" do
         gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack"
         G
 
         gemfile bundled_app("4realz"), <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "activesupport", "2.3.5"
         G
 
@@ -282,7 +282,7 @@ RSpec.describe "Bundler.setup" do
     context "an absolute path is not provided" do
       it "uses BUNDLE_GEMFILE to locate the gemfile if present and doesn't fail in deployment mode" do
         gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
         G
 
         bundle "install"
@@ -308,7 +308,7 @@ RSpec.describe "Bundler.setup" do
   it "prioritizes gems in BUNDLE_PATH over gems in GEM_HOME" do
     ENV["BUNDLE_PATH"] = bundled_app(".bundle").to_s
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack", "1.0.0"
     G
 
@@ -323,7 +323,7 @@ RSpec.describe "Bundler.setup" do
     describe "by replacing #gem" do
       before :each do
         install_gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack", "0.9.1"
         G
       end
@@ -359,7 +359,7 @@ RSpec.describe "Bundler.setup" do
       before :each do
         system_gems "activesupport-2.3.5"
         install_gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "yard"
         G
       end
@@ -388,7 +388,7 @@ RSpec.describe "Bundler.setup" do
       end
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         path "#{lib_path("myrack-1.0.0")}" do
           gem "myrack"
         end
@@ -404,7 +404,7 @@ RSpec.describe "Bundler.setup" do
       build_git "myrack", "1.0.0"
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack-1.0.0")}"
       G
     end
@@ -489,7 +489,7 @@ RSpec.describe "Bundler.setup" do
       FileUtils.cp_r("#{lib_path("myrack-0.8")}/.", lib_path("local-myrack"))
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack-0.8")}", :branch => "main"
       G
 
@@ -507,7 +507,7 @@ RSpec.describe "Bundler.setup" do
       FileUtils.cp_r("#{lib_path("myrack-0.8")}/.", lib_path("local-myrack"))
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack-0.8")}", :branch => "main"
       G
 
@@ -515,7 +515,7 @@ RSpec.describe "Bundler.setup" do
       bundle :install
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack-0.8")}"
       G
 
@@ -529,7 +529,7 @@ RSpec.describe "Bundler.setup" do
       FileUtils.cp_r("#{lib_path("myrack-0.8")}/.", lib_path("local-myrack"))
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack-0.8")}", :branch => "main"
       G
 
@@ -537,7 +537,7 @@ RSpec.describe "Bundler.setup" do
       bundle :install
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack-0.8")}", :branch => "changed"
       G
 
@@ -551,12 +551,12 @@ RSpec.describe "Bundler.setup" do
       FileUtils.cp_r("#{lib_path("myrack-0.8")}/.", lib_path("local-myrack"))
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack-0.8")}", :ref => "main", :branch => "main"
       G
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack-0.8")}", :ref => "main", :branch => "nonexistent"
       G
 
@@ -570,7 +570,7 @@ RSpec.describe "Bundler.setup" do
     it "doesn't change the resolve if --without is used" do
       bundle "config set --local without rails"
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "activesupport"
 
         group :rails do
@@ -586,7 +586,7 @@ RSpec.describe "Bundler.setup" do
     it "remembers --without and does not bail on bare Bundler.setup" do
       bundle "config set --local without rails"
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "activesupport"
 
         group :rails do
@@ -606,7 +606,7 @@ RSpec.describe "Bundler.setup" do
       build_lib "foo", path: path
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "activesupport", "2.3.2"
         gem 'foo', :path => 'vendor/foo', :group => :development
       G
@@ -629,7 +629,7 @@ RSpec.describe "Bundler.setup" do
       end
 
       install_gemfile <<~G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gem "depends_on_bundler"
       G
 
@@ -641,7 +641,7 @@ RSpec.describe "Bundler.setup" do
 
     it "doesn't fail in frozen mode when bundler is a Gemfile dependency" do
       install_gemfile <<~G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gem "bundler"
       G
 
@@ -651,13 +651,13 @@ RSpec.describe "Bundler.setup" do
 
     it "doesn't re-resolve when deleting dependencies" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "actionpack"
       G
 
       install_gemfile <<-G, verbose: true
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -668,7 +668,7 @@ RSpec.describe "Bundler.setup" do
     it "remembers --without and does not include groups passed to Bundler.setup" do
       bundle "config set --local without rails"
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "activesupport"
 
         group :myrack do
@@ -691,7 +691,7 @@ RSpec.describe "Bundler.setup" do
     build_git "no-gemspec", gemspec: false
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
       gem "foo", :git => "#{lib_path("foo-1.0")}"
       gem "no-gemspec", "1.0", :git => "#{lib_path("no-gemspec-1.0")}"
@@ -708,7 +708,7 @@ RSpec.describe "Bundler.setup" do
 
   it "does not load all gemspecs" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -757,7 +757,7 @@ end
 
   it "ignores empty gem paths" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -769,7 +769,7 @@ end
 
   it "can require rubygems without warnings, when using a local cache", :truffleruby do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -790,7 +790,7 @@ end
       end
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gem "with_man"
       G
 
@@ -814,7 +814,7 @@ end
       end
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gem "with_man"
       G
 
@@ -827,7 +827,7 @@ end
       expect(out).to eq("#{default_bundle_path("gems/with_man-1.0/man")}#{File::PATH_SEPARATOR}\ntrue")
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gem "with_man_overriding_system_man"
       G
 
@@ -854,7 +854,7 @@ end
     end
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "requirepaths", :require => nil
     G
 
@@ -870,7 +870,7 @@ end
     system_gems full_gem_name
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
     G
 
     ruby <<-R
@@ -917,7 +917,7 @@ end
     end
 
     it "should not remove itself from the LOAD_PATH and require a different copy of 'bundler/setup'" do
-      install_gemfile "source \"#{file_uri_for(gem_repo1)}\""
+      install_gemfile "source 'https://gem.repo1'"
 
       ruby <<-R, env: { "GEM_PATH" => symlinked_gem_home }
         TracePoint.trace(:class) do |tp|
@@ -937,7 +937,7 @@ end
     system_gems "myrack-1.0.0"
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "activesupport"
     G
 
@@ -966,7 +966,7 @@ end
       FileUtils.rm(File.join(path, "foo.gemspec"))
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'foo', '1.2.3', :path => 'vendor/foo'
       G
 
@@ -987,7 +987,7 @@ end
       FileUtils.rm(File.join(absolute_path, "foo.gemspec"))
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'foo', '1.2.3', :path => '#{relative_path}'
       G
 
@@ -1006,7 +1006,7 @@ end
       build_git "no_gemspec", gemspec: false
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "no_gemspec", "1.0", :git => "#{lib_path("no_gemspec-1.0")}"
       G
     end
@@ -1026,7 +1026,7 @@ end
       system_gems "myrack-1.0.0"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         gem "activesupport", "2.3.5"
       G
@@ -1078,7 +1078,7 @@ end
       system_gems "myrack-1.0.0"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0.0"
         gem "activesupport", "2.3.5"
       G
@@ -1109,7 +1109,7 @@ end
       end
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "bar", :git => "#{lib_path("bar-1.0")}"
       G
     end
@@ -1156,7 +1156,7 @@ end
   describe "when Bundler is bundled" do
     it "doesn't blow up" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "bundler", :path => "#{root}"
       G
 
@@ -1169,7 +1169,7 @@ end
     def lock_with(bundler_version = nil)
       lock = <<~L
         GEM
-          remote: #{file_uri_for(gem_repo1)}/
+          remote: https://gem.repo1/
           specs:
             myrack (1.0.0)
 
@@ -1191,7 +1191,7 @@ end
       bundle "config set --local path.system true"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
     end
@@ -1234,7 +1234,7 @@ end
 
       lock = <<~L
         GEM
-          remote: #{file_uri_for(gem_repo1)}/
+          remote: https://gem.repo1/
           specs:
             myrack (1.0.0)
 
@@ -1262,7 +1262,7 @@ end
     before do
       install_gemfile <<-G
         ruby ">= 0"
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
       lockfile lock_with(ruby_version)
@@ -1311,13 +1311,13 @@ end
       end
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "bar", :git => "#{lib_path("bar-1.0")}"
       G
 
       bundle :install
 
-      ruby <<-RUBY
+      ruby <<-RUBY, artifice: nil
         require 'bundler/setup'
         puts defined?(::Digest) ? "Digest defined" : "Digest undefined"
         require 'digest'
@@ -1326,7 +1326,7 @@ end
     end
 
     it "does not load Psych" do
-      gemfile "source \"#{file_uri_for(gem_repo1)}\""
+      gemfile "source 'https://gem.repo1'"
       ruby <<-RUBY
         require 'bundler/setup'
         puts defined?(Psych::VERSION) ? Psych::VERSION : "undefined"
@@ -1339,8 +1339,8 @@ end
     end
 
     it "does not load openssl" do
-      install_gemfile "source \"#{file_uri_for(gem_repo1)}\""
-      ruby <<-RUBY
+      install_gemfile "source 'https://gem.repo1'"
+      ruby <<-RUBY, artifice: nil
         require "bundler/setup"
         puts defined?(OpenSSL) || "undefined"
         require "openssl"
@@ -1363,11 +1363,11 @@ end
       G
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "test", path: "#{bundled_app("test")}"
       G
 
-      ruby <<-RUBY
+      ruby <<-RUBY, artifice: nil
         require "bundler/setup"
         puts defined?(URI) || "undefined"
         require "uri"
@@ -1383,7 +1383,7 @@ end
         build_gem "json", default_json_version
       end
 
-      gemfile "source \"#{file_uri_for(gem_repo2)}\"; gem 'json'"
+      gemfile "source \"https://gem.repo2\"; gem 'json'"
 
       ruby <<-RUBY
         require "bundler/setup"
@@ -1440,13 +1440,13 @@ end
       RUBY
 
       it "activates no gems with -rbundler/setup" do
-        install_gemfile "source \"#{file_uri_for(gem_repo1)}\""
-        ruby code, env: { "RUBYOPT" => activation_warning_hack_rubyopt + " -rbundler/setup" }
+        install_gemfile "source 'https://gem.repo1'"
+        ruby code, env: { "RUBYOPT" => activation_warning_hack_rubyopt + " -rbundler/setup" }, artifice: nil
         expect(out).to eq("{}")
       end
 
       it "activates no gems with bundle exec" do
-        install_gemfile "source \"#{file_uri_for(gem_repo1)}\""
+        install_gemfile "source 'https://gem.repo1'"
         create_file("script.rb", code)
         bundle "exec ruby ./script.rb", env: { "RUBYOPT" => activation_warning_hack_rubyopt }
         expect(out).to eq("{}")
@@ -1455,7 +1455,7 @@ end
       it "activates no gems with bundle exec that is loaded" do
         skip "not executable" if Gem.win_platform?
 
-        install_gemfile "source \"#{file_uri_for(gem_repo1)}\""
+        install_gemfile "source 'https://gem.repo1'"
         create_file("script.rb", "#!/usr/bin/env ruby\n\n#{code}")
         FileUtils.chmod(0o777, bundled_app("script.rb"))
         bundle "exec ./script.rb", artifice: nil, env: { "RUBYOPT" => activation_warning_hack_rubyopt }
@@ -1470,7 +1470,7 @@ end
         system_gems "net-http-pipeline-1.0.1", gem_repo: gem_repo4
 
         gemfile <<-G
-          source "#{file_uri_for(gem_repo4)}"
+          source "https://gem.repo4"
           gem "net-http-pipeline", "1.0.1"
         G
 
@@ -1492,11 +1492,11 @@ end
           end
 
           install_gemfile <<-G
-            source "#{file_uri_for(gem_repo4)}"
+            source "https://gem.repo4"
             gem "#{g}", "999999"
           G
 
-          expect(the_bundle).to include_gem("#{g} 999999", env: { "RUBYOPT" => activation_warning_hack_rubyopt })
+          expect(the_bundle).to include_gem("#{g} 999999", env: { "RUBYOPT" => activation_warning_hack_rubyopt }, artifice: nil)
         end
 
         it "activates older versions of #{g}", :ruby_repo do
@@ -1507,11 +1507,11 @@ end
           end
 
           install_gemfile <<-G
-            source "#{file_uri_for(gem_repo4)}"
+            source "https://gem.repo4"
             gem "#{g}", "0.0.0.a"
           G
 
-          expect(the_bundle).to include_gem("#{g} 0.0.0.a", env: { "RUBYOPT" => activation_warning_hack_rubyopt })
+          expect(the_bundle).to include_gem("#{g} 0.0.0.a", env: { "RUBYOPT" => activation_warning_hack_rubyopt }, artifice: nil)
         end
       end
     end
@@ -1520,7 +1520,7 @@ end
   describe "after setup" do
     it "allows calling #gem on random objects", bundler: "< 3" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -1535,7 +1535,7 @@ end
 
     it "keeps Kernel#gem private", bundler: "3" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -1551,7 +1551,7 @@ end
 
     it "keeps Kernel#require private" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -1567,7 +1567,7 @@ end
 
     it "memoizes initial set of specs when requiring bundler/setup, so that even if further code mutates dependencies, Bundler.definition.specs is not affected" do
       install_gemfile <<~G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "yard"
         gem "myrack", :group => :test
       G
@@ -1594,7 +1594,7 @@ end
 
       system_gems "json-999.999.999", gem_repo: gem_repo2
 
-      install_gemfile "source \"#{file_uri_for(gem_repo1)}\""
+      install_gemfile "source 'https://gem.repo1'"
       ruby <<-RUBY
         require "json"
         require "bundler/setup"
@@ -1606,7 +1606,7 @@ end
   end
 
   it "does not undo the Kernel.require decorations", rubygems: ">= 3.4.6" do
-    install_gemfile "source \"#{file_uri_for(gem_repo1)}\""
+    install_gemfile "source 'https://gem.repo1'"
     script = bundled_app("bin/script")
     create_file(script, <<~RUBY)
       module Kernel
@@ -1631,14 +1631,18 @@ end
   end
 
   it "performs an automatic bundle install" do
+    build_repo4 do
+      build_gem "myrack", "1.0.0"
+    end
+
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack", :group => :test
     G
 
     bundle "config set auto_install 1"
 
-    ruby <<-RUBY
+    ruby <<-RUBY, artifice: "compact_index"
       require 'bundler/setup'
     RUBY
     expect(err).to be_empty

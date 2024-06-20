@@ -3,7 +3,7 @@
 RSpec.describe "bundle cache" do
   it "doesn't update the cache multiple times, even if it already exists" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -17,7 +17,7 @@ RSpec.describe "bundle cache" do
   context "with --gemfile" do
     it "finds the gemfile" do
       gemfile bundled_app("NotGemfile"), <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack'
       G
 
@@ -32,7 +32,7 @@ RSpec.describe "bundle cache" do
     context "without a gemspec" do
       it "caches all dependencies except bundler itself" do
         gemfile <<-D
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem 'myrack'
           gem 'bundler'
         D
@@ -63,7 +63,7 @@ RSpec.describe "bundle cache" do
 
         it "caches all dependencies except bundler and the gemspec specified gem" do
           gemfile <<-D
-            source "#{file_uri_for(gem_repo1)}"
+            source "https://gem.repo1"
             gem 'myrack'
             gemspec
           D
@@ -95,7 +95,7 @@ RSpec.describe "bundle cache" do
 
         it "caches all dependencies except bundler and the gemspec specified gem" do
           gemfile <<-D
-            source "#{file_uri_for(gem_repo1)}"
+            source "https://gem.repo1"
             gem 'myrack'
             gemspec
           D
@@ -139,7 +139,7 @@ RSpec.describe "bundle cache" do
 
       it "caches all dependencies except bundler and the gemspec specified gems" do
         gemfile <<-D
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem 'myrack'
           gemspec :name => 'mygem'
           gemspec :name => 'mygem_test'
@@ -161,7 +161,7 @@ RSpec.describe "bundle cache" do
   context "with --path", bundler: "< 3" do
     it "sets root directory for gems" do
       gemfile <<-D
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack'
       D
 
@@ -175,7 +175,7 @@ RSpec.describe "bundle cache" do
   context "with --no-install" do
     it "puts the gems in vendor/cache but does not install them" do
       gemfile <<-D
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack'
       D
 
@@ -187,7 +187,7 @@ RSpec.describe "bundle cache" do
 
     it "does not prevent installing gems with bundle install" do
       gemfile <<-D
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack'
       D
 
@@ -199,7 +199,7 @@ RSpec.describe "bundle cache" do
 
     it "does not prevent installing gems with bundle update" do
       gemfile <<-D
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0.0"
       D
 
@@ -213,7 +213,7 @@ RSpec.describe "bundle cache" do
   context "with --all-platforms" do
     it "puts the gems in vendor/cache even for other rubies", bundler: ">= 2.4.0" do
       gemfile <<-D
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack', :platforms => [:ruby_20, :windows_20]
       D
 
@@ -223,7 +223,7 @@ RSpec.describe "bundle cache" do
 
     it "puts the gems in vendor/cache even for legacy windows rubies", bundler: ">= 2.4.0" do
       gemfile <<-D
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'myrack', :platforms => [:ruby_20, :x64_mingw_20]
       D
 
@@ -241,25 +241,25 @@ RSpec.describe "bundle cache" do
       end
 
       bundle "config set --local without wo"
-      install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+      install_gemfile <<-G, artifice: "compact_index_extra_api"
+        source "https://main.repo"
         gem "myrack"
         group :wo do
           gem "weakling"
-          gem "uninstallable", :source => "#{file_uri_for(gem_repo4)}"
+          gem "uninstallable", :source => "https://main.repo/extra"
         end
       G
 
-      bundle :cache, "all-platforms" => true
+      bundle :cache, "all-platforms" => true, artifice: "compact_index_extra_api"
       expect(bundled_app("vendor/cache/weakling-0.0.3.gem")).to exist
       expect(bundled_app("vendor/cache/uninstallable-2.0.gem")).to exist
       expect(the_bundle).to include_gem "myrack 1.0"
       expect(the_bundle).not_to include_gems "weakling", "uninstallable"
 
       bundle "config set --local without wo"
-      bundle :install
+      bundle :install, artifice: "compact_index_extra_api"
       expect(the_bundle).to include_gem "myrack 1.0"
-      expect(the_bundle).not_to include_gems "weakling", "uninstallable"
+      expect(the_bundle).not_to include_gems "weakling"
     end
 
     it "does not fail to cache gems in excluded groups when there's a lockfile but gems not previously installed" do
@@ -281,7 +281,7 @@ RSpec.describe "bundle cache" do
   context "with frozen configured" do
     before do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
       bundle "install"
@@ -295,7 +295,7 @@ RSpec.describe "bundle cache" do
     it "tries to install with frozen" do
       bundle "config set deployment true"
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "myrack-obama"
       G
@@ -320,7 +320,7 @@ RSpec.describe "bundle cache" do
       end
 
       gemfile <<~G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
 
         gem "racc"
       G
@@ -339,7 +339,7 @@ RSpec.describe "bundle install with gem sources" do
     it "does not hit the remote at all" do
       build_repo2
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "myrack"
       G
 
@@ -354,7 +354,7 @@ RSpec.describe "bundle install with gem sources" do
     it "does not hit the remote at all in frozen mode" do
       build_repo2
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "myrack"
       G
 
@@ -371,7 +371,7 @@ RSpec.describe "bundle install with gem sources" do
     it "does not hit the remote at all when cache_all_platforms configured" do
       build_repo2
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "myrack"
       G
 
@@ -448,7 +448,7 @@ RSpec.describe "bundle install with gem sources" do
 
     it "does not reinstall already-installed gems" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
       bundle :cache
@@ -465,7 +465,7 @@ RSpec.describe "bundle install with gem sources" do
     it "ignores cached gems for the wrong platform" do
       simulate_platform "java" do
         install_gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "platform_specific"
         G
         bundle :cache
@@ -476,7 +476,7 @@ RSpec.describe "bundle install with gem sources" do
       bundle "config set --local force_ruby_platform true"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "platform_specific"
       G
       run "require 'platform_specific' ; puts PLATFORM_SPECIFIC"
@@ -485,7 +485,7 @@ RSpec.describe "bundle install with gem sources" do
 
     it "does not update the cache if --no-cache is passed" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
       bundled_app("vendor/cache").mkpath

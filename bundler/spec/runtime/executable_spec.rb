@@ -3,7 +3,7 @@
 RSpec.describe "Running bin/* commands" do
   before :each do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
   end
@@ -63,7 +63,7 @@ RSpec.describe "Running bin/* commands" do
     end
 
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack", :path => "#{lib_path("myrack")}"
     G
 
@@ -79,7 +79,7 @@ RSpec.describe "Running bin/* commands" do
 
   it "creates a bundle binstub" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "bundler"
     G
 
@@ -109,14 +109,14 @@ RSpec.describe "Running bin/* commands" do
 
   it "remembers that the option was specified", bundler: "< 3" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "activesupport"
     G
 
     bundle :install, binstubs: "bin"
 
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "activesupport"
       gem "myrack"
     G
@@ -128,7 +128,7 @@ RSpec.describe "Running bin/* commands" do
 
   it "rewrites bins on binstubs (to maintain backwards compatibility)" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -149,7 +149,7 @@ RSpec.describe "Running bin/* commands" do
     end
 
     gemfile("OtherGemfile", <<-G)
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem 'bindir'
     G
 

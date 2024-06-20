@@ -3,7 +3,7 @@
 RSpec.describe "install in deployment or frozen mode" do
   before do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
   end
@@ -60,7 +60,7 @@ RSpec.describe "install in deployment or frozen mode" do
     it "explodes with the --deployment flag if you make a change and don't check in the lockfile" do
       bundle :lock
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "myrack-obama"
       G
@@ -86,7 +86,7 @@ RSpec.describe "install in deployment or frozen mode" do
   it "works if you exclude a group with a git gem" do
     build_git "foo"
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       group :test do
         gem "foo", :git => "#{lib_path("foo-1.0")}"
       end
@@ -110,7 +110,7 @@ RSpec.describe "install in deployment or frozen mode" do
     build_lib "foo", path: lib_path("nested/foo")
     build_lib "bar", path: lib_path("nested/bar")
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "foo", "1.0", :path => "#{lib_path("nested")}"
       gem "bar", :path => "#{lib_path("nested")}"
     G
@@ -123,7 +123,7 @@ RSpec.describe "install in deployment or frozen mode" do
   it "works when path gems are specified twice" do
     build_lib "foo", path: lib_path("nested/foo")
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "foo", :path => "#{lib_path("nested/foo")}"
       gem "foo", :path => "#{lib_path("nested/foo")}"
     G
@@ -146,8 +146,8 @@ RSpec.describe "install in deployment or frozen mode" do
 
   it "works with sources given by a block" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
-      source "#{file_uri_for(gem_repo1)}" do
+      source "https://gem.repo1"
+      source "https://gem.repo1" do
         gem "myrack"
       end
     G
@@ -231,7 +231,7 @@ RSpec.describe "install in deployment or frozen mode" do
 
     it "explodes with the `deployment` setting if you make a change and don't check in the lockfile" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "myrack-obama"
       G
@@ -248,7 +248,7 @@ RSpec.describe "install in deployment or frozen mode" do
     it "works if a path gem is missing but is in a without group" do
       build_lib "path_gem"
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "rake"
         gem "path_gem", :path => "#{lib_path("path_gem-1.0")}", :group => :development
       G
@@ -267,9 +267,9 @@ RSpec.describe "install in deployment or frozen mode" do
       build_repo2
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
 
-        source "#{file_uri_for(gem_repo1)}" do
+        source "https://gem.repo1" do
           gem "rake", platform: :#{not_local_tag}
         end
       G
@@ -315,7 +315,7 @@ RSpec.describe "install in deployment or frozen mode" do
     it "explodes if a path gem is missing" do
       build_lib "path_gem"
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "rake"
         gem "path_gem", :path => "#{lib_path("path_gem-1.0")}", :group => :development
       G
@@ -330,7 +330,7 @@ RSpec.describe "install in deployment or frozen mode" do
 
     it "can have --frozen set via an environment variable" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "myrack-obama"
       G
@@ -346,7 +346,7 @@ RSpec.describe "install in deployment or frozen mode" do
 
     it "can have --deployment set via an environment variable" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "myrack-obama"
       G
@@ -375,7 +375,7 @@ RSpec.describe "install in deployment or frozen mode" do
 
     it "can have --frozen set to false via an environment variable" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "myrack-obama"
       G
@@ -390,7 +390,7 @@ RSpec.describe "install in deployment or frozen mode" do
 
     it "explodes if you remove a gem and don't check in the lockfile" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "activesupport"
       G
 
@@ -404,7 +404,7 @@ RSpec.describe "install in deployment or frozen mode" do
 
     it "explodes if you add a source" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "git://hubz.com"
       G
 
@@ -419,12 +419,12 @@ RSpec.describe "install in deployment or frozen mode" do
       build_git "myrack"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack-1.0")}"
       G
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -441,13 +441,13 @@ RSpec.describe "install in deployment or frozen mode" do
       build_git "myrack", path: lib_path("myrack")
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", :git => "#{lib_path("myrack")}"
         gem "foo", :git => "#{lib_path("myrack")}"
       G
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "foo", :git => "#{lib_path("myrack")}"
       G
@@ -466,7 +466,7 @@ RSpec.describe "install in deployment or frozen mode" do
       bundle "config set --local deployment true"
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0.0"
         gem "myrack-obama"
       G
@@ -489,7 +489,7 @@ RSpec.describe "install in deployment or frozen mode" do
     it "works fine after bundle package and bundle install --local" do
       build_lib "foo", path: lib_path("foo")
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "foo", :path => "#{lib_path("foo")}"
       G
 

@@ -227,7 +227,7 @@ RSpec.describe Bundler do
   describe "#mkdir_p" do
     it "creates a folder at the given path" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 

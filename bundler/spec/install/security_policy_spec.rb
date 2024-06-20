@@ -9,7 +9,7 @@ RSpec.describe "policies with unsigned gems" do
   before do
     build_security_repo
     gemfile <<-G
-      source "#{file_uri_for(security_repo)}"
+      source "https://gems.security"
       gem "myrack"
       gem "signed_gem"
     G
@@ -45,7 +45,7 @@ RSpec.describe "policies with signed gems and no CA" do
   before do
     build_security_repo
     gemfile <<-G
-      source "#{file_uri_for(security_repo)}"
+      source "https://gems.security"
       gem "signed_gem"
     G
   end

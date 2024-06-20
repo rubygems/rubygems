@@ -77,6 +77,8 @@ module Spec
       build_ruby_options = { load_path: load_path, requires: requires, env: env }
       build_ruby_options.merge!(artifice: options.delete(:artifice)) if options.key?(:artifice)
 
+      match_source(cmd)
+
       env, ruby_cmd = build_ruby_cmd(build_ruby_options)
 
       raise_on_error = options.delete(:raise_on_error)
@@ -233,8 +235,7 @@ module Spec
       if contents.nil?
         read_gemfile
       else
-        match = contents.match(/source ["'](?<source>[^"']+)["']/)
-        @gemfile_source = match[:source] if match
+        match_source(contents)
         create_file(args.pop || "Gemfile", contents)
       end
     end
@@ -530,6 +531,13 @@ module Spec
     end
 
     private
+
+    def match_source(contents)
+      match = /source ["']?(?<source>http[^"']+)["']?/.match(contents)
+      return unless match
+
+      @gemfile_source = match[:source]
+    end
 
     def git_root_dir?
       root.to_s == `git rev-parse --show-toplevel`.chomp

@@ -4,7 +4,7 @@ RSpec.describe "Bundler.load" do
   describe "with a gemfile" do
     before(:each) do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
       allow(Bundler::SharedHelpers).to receive(:pwd).and_return(bundled_app)
@@ -28,8 +28,8 @@ RSpec.describe "Bundler.load" do
 
   describe "with a gems.rb file" do
     before(:each) do
-      create_file "gems.rb", <<-G
-        source "#{file_uri_for(gem_repo1)}"
+      gemfile "gems.rb", <<-G
+        source "https://gem.repo1"
         gem "myrack"
       G
       bundle :install
@@ -76,7 +76,7 @@ RSpec.describe "Bundler.load" do
   describe "when called twice" do
     it "doesn't try to load the runtime twice" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "activesupport", :group => :test
       G
@@ -100,7 +100,7 @@ RSpec.describe "Bundler.load" do
   describe "not hurting brittle rubygems" do
     it "does not inject #source into the generated YAML of the gem specs" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "activerecord"
       G
       allow(Bundler::SharedHelpers).to receive(:find_gemfile).and_return(bundled_app_gemfile)

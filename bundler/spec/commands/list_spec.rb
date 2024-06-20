@@ -20,7 +20,7 @@ RSpec.describe "bundle list" do
   describe "with without-group option" do
     before do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         gem "myrack"
         gem "rspec", :group => [:test]
@@ -60,7 +60,7 @@ RSpec.describe "bundle list" do
   describe "with only-group option" do
     before do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         gem "myrack"
         gem "rspec", :group => [:test]
@@ -99,7 +99,7 @@ RSpec.describe "bundle list" do
   context "with name-only option" do
     before do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         gem "myrack"
         gem "rspec", :group => [:test]
@@ -131,7 +131,7 @@ RSpec.describe "bundle list" do
       end
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "myrack"
         gem "rails"
         gem "git_test", :git => "#{lib_path("git_test")}"
@@ -151,7 +151,7 @@ RSpec.describe "bundle list" do
   context "when no gems are in the gemfile" do
     before do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
       G
     end
 
@@ -164,7 +164,7 @@ RSpec.describe "bundle list" do
   context "without options" do
     before do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         gem "myrack"
         gem "rspec", :group => [:test]
@@ -180,7 +180,7 @@ RSpec.describe "bundle list" do
   context "when using the ls alias" do
     before do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         gem "myrack"
         gem "rspec", :group => [:test]

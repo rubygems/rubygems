@@ -1318,7 +1318,7 @@ RSpec.describe "bundle install with gems on multiple sources" do
         build_lib "foo"
 
         gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack", :source => "https://gem.repo1"
           gem "foo", :path => "#{lib_path("foo-1.0")}"
         G
@@ -1592,21 +1592,21 @@ RSpec.describe "bundle install with gems on multiple sources" do
         build_gem "myrack"
       end
 
-      install_gemfile <<-G, artifice: "compact_index", raise_on_error: false
-        source "#{file_uri_for(gem_repo1)}"
+      install_gemfile <<-G, artifice: "compact_index_extra_api", raise_on_error: false
+        source "https://global.source"
 
-        source "https://gem.repo4" do
+        source "https://scoped.source/extra" do
           gem "depends_on_myrack"
         end
 
-        source "https://gem.repo1" do
+        source "https://scoped.source" do
           gem "thin"
         end
       G
       expect(err).to eq <<~EOS.strip
         Warning: The gem 'myrack' was found in multiple relevant sources.
-          * rubygems repository https://gem.repo1/
-          * rubygems repository https://gem.repo4/
+          * rubygems repository https://scoped.source/
+          * rubygems repository https://scoped.source/extra/
         You should add this gem to the source block for the source you wish it to be installed from.
       EOS
       expect(last_command).to be_success
@@ -1623,20 +1623,22 @@ RSpec.describe "bundle install with gems on multiple sources" do
         build_gem "myrack"
       end
 
-      install_gemfile <<-G, artifice: "compact_index", raise_on_error: false
-        source "#{file_uri_for(gem_repo1)}"
-        source "https://gem.repo4" do
+      install_gemfile <<-G, artifice: "compact_index_extra_api", raise_on_error: false
+        source "https://global.source"
+
+        source "https://scoped.source/extra" do
           gem "depends_on_myrack"
         end
-        source "https://gem.repo1" do
+
+        source "https://scoped.source" do
           gem "thin"
         end
       G
       expect(last_command).to be_failure
       expect(err).to eq <<~EOS.strip
         The gem 'myrack' was found in multiple relevant sources.
-          * rubygems repository https://gem.repo1/
-          * rubygems repository https://gem.repo4/
+          * rubygems repository https://scoped.source/
+          * rubygems repository https://scoped.source/extra/
         You must add this gem to the source block for the source you wish it to be installed from.
       EOS
       expect(the_bundle).not_to be_locked

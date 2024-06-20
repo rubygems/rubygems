@@ -7,7 +7,7 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
 
   it "graphs gems from the Gemfile" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
       gem "myrack-obama"
     G
@@ -41,7 +41,7 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
     end
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "myrack", "= 1.3.pre"
       gem "myrack-obama"
     G
@@ -82,7 +82,7 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
 
     it "loads the correct ruby-graphviz gem" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "myrack-obama"
       G
@@ -111,7 +111,7 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
   context "--without option" do
     it "one group" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "activesupport"
 
         group :rails do
@@ -125,7 +125,7 @@ RSpec.describe "bundle viz", bundler: "< 3", if: Bundler.which("dot"), realworld
 
     it "two groups" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "activesupport"
 
         group :myrack do

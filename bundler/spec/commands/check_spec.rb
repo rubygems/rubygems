@@ -3,7 +3,7 @@
 RSpec.describe "bundle check" do
   it "returns success when the Gemfile is satisfied" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "rails"
     G
 
@@ -13,7 +13,7 @@ RSpec.describe "bundle check" do
 
   it "works with the --gemfile flag when not in the directory" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "rails"
     G
 
@@ -23,7 +23,7 @@ RSpec.describe "bundle check" do
 
   it "creates a Gemfile.lock by default if one does not exist" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "rails"
     G
 
@@ -36,7 +36,7 @@ RSpec.describe "bundle check" do
 
   it "does not create a Gemfile.lock if --dry-run was passed" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "rails"
     G
 
@@ -51,7 +51,7 @@ RSpec.describe "bundle check" do
     system_gems ["rails-2.3.2"]
 
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "rails"
     G
 
@@ -61,7 +61,7 @@ RSpec.describe "bundle check" do
 
   it "prints a generic error if a Gemfile.lock does not exist and a toplevel dependency does not exist" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "rails"
     G
 
@@ -78,12 +78,12 @@ RSpec.describe "bundle check" do
     end
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem 'rails'
     G
 
     gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "rails"
       gem "rails_pinned_to_old_activesupport"
     G
@@ -94,7 +94,7 @@ RSpec.describe "bundle check" do
 
   it "remembers --without option from install", bundler: "< 3" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       group :foo do
         gem "myrack"
       end
@@ -108,7 +108,7 @@ RSpec.describe "bundle check" do
   it "uses the without setting" do
     bundle "config set without foo"
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       group :foo do
         gem "myrack"
       end
@@ -120,7 +120,7 @@ RSpec.describe "bundle check" do
 
   it "ensures that gems are actually installed and not just cached" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack", :group => :foo
     G
 
@@ -128,7 +128,7 @@ RSpec.describe "bundle check" do
     bundle :install
 
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -139,7 +139,7 @@ RSpec.describe "bundle check" do
 
   it "ensures that gems are actually installed and not just cached in applications' cache" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 
@@ -155,7 +155,7 @@ RSpec.describe "bundle check" do
 
   it "ignores missing gems restricted to other platforms" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
       platforms :#{not_local_tag} do
         gem "activesupport"
@@ -166,7 +166,7 @@ RSpec.describe "bundle check" do
 
     lockfile <<-G
       GEM
-        remote: #{file_uri_for(gem_repo1)}/
+        remote: https://gem.repo1/
         specs:
           activesupport (2.3.5)
           myrack (1.0.0)
@@ -186,7 +186,7 @@ RSpec.describe "bundle check" do
 
   it "works with env conditionals" do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
       env :NOT_GOING_TO_BE_SET do
         gem "activesupport"
@@ -197,7 +197,7 @@ RSpec.describe "bundle check" do
 
     lockfile <<-G
       GEM
-        remote: #{file_uri_for(gem_repo1)}/
+        remote: https://gem.repo1/
         specs:
           activesupport (2.3.5)
           myrack (1.0.0)
@@ -229,7 +229,7 @@ RSpec.describe "bundle check" do
 
   it "fails when there's no lock file and frozen is set" do
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "foo"
     G
 
@@ -245,7 +245,7 @@ RSpec.describe "bundle check" do
     context "after installing gems in the proper directory" do
       before do
         gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "rails"
         G
         bundle "install --path vendor/bundle"
@@ -267,7 +267,7 @@ RSpec.describe "bundle check" do
     context "after installing gems on a different directory" do
       before do
         install_gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "rails"
         G
 
@@ -285,7 +285,7 @@ RSpec.describe "bundle check" do
     before :each do
       system_gems "myrack-1.0.0"
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack", "1.0"
       G
     end
@@ -317,7 +317,7 @@ RSpec.describe "bundle check" do
       end
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gem "depends_on_myrack"
         gem "also_depends_on_myrack"
       G
@@ -339,13 +339,13 @@ RSpec.describe "bundle check" do
       end
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gem "myrack"
       G
 
       lockfile <<-L
         GEM
-          remote: #{file_uri_for(gem_repo4)}/
+          remote: https://gem.repo4/
           specs:
             myrack (1.0)
 
@@ -371,8 +371,8 @@ RSpec.describe "bundle check" do
   describe "when using only scoped rubygems sources" do
     before do
       gemfile <<~G
-        source "#{file_uri_for(gem_repo2)}"
-        source "#{file_uri_for(gem_repo1)}" do
+        source "https://gem.repo2"
+        source "https://gem.repo1" do
           gem "myrack"
         end
       G
@@ -396,8 +396,8 @@ RSpec.describe "bundle check" do
       end
 
       gemfile <<~G
-        source "#{file_uri_for(gem_repo1)}"
-        source "#{file_uri_for(gem_repo4)}" do
+        source "https://gem.repo1"
+        source "https://gem.repo4" do
           gem "depends_on_myrack"
         end
       G
@@ -415,11 +415,11 @@ RSpec.describe "bundle check" do
       expect(out).to include("The Gemfile's dependencies are satisfied")
       expect(lockfile).to eq <<~L
         GEM
-          remote: #{file_uri_for(gem_repo1)}/
+          remote: https://gem.repo1/
           specs:
 
         GEM
-          remote: #{file_uri_for(gem_repo4)}/
+          remote: https://gem.repo4/
           specs:
             depends_on_myrack (1.0)
               myrack
@@ -510,7 +510,7 @@ RSpec.describe "bundle check" do
     def lock_with(bundler_version = nil)
       lock = <<~L
         GEM
-          remote: #{file_uri_for(gem_repo1)}/
+          remote: https://gem.repo1/
           specs:
             myrack (1.0.0)
 
@@ -532,7 +532,7 @@ RSpec.describe "bundle check" do
       bundle "config set --local path vendor/bundle"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
     end

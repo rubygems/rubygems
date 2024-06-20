@@ -10,7 +10,7 @@ RSpec.describe "bundle install" do
 
     it "still installs correctly" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "yaml_spec"
       G
       bundle :install
@@ -21,7 +21,7 @@ RSpec.describe "bundle install" do
       build_lib "yaml_spec", gemspec: :yaml
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem 'yaml_spec', :path => "#{lib_path("yaml_spec-1.0")}"
       G
       expect(err).to be_empty
@@ -60,7 +60,7 @@ RSpec.describe "bundle install" do
     G
 
     install_gemfile <<-G, env: { "LANG" => "C" }
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gemspec
     G
 
@@ -86,7 +86,7 @@ RSpec.describe "bundle install" do
     G
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gemspec
     G
 
@@ -102,7 +102,7 @@ RSpec.describe "bundle install" do
 
       install_gemfile <<-G
         ruby '#{RUBY_VERSION}', :engine_version => '#{RUBY_VERSION}', :engine => 'ruby'
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gemspec
       G
       expect(the_bundle).to include_gems "foo 1.0"
@@ -116,7 +116,7 @@ RSpec.describe "bundle install" do
 
       install_gemfile <<-G, raise_on_error: false
         ruby '#{RUBY_VERSION}', :engine_version => '#{RUBY_VERSION}', :engine => 'ruby', :patchlevel => '#{RUBY_PATCHLEVEL}'
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gemspec
       G
       expect(the_bundle).to include_gems "foo 1.0"
@@ -131,7 +131,7 @@ RSpec.describe "bundle install" do
 
       install_gemfile <<-G, raise_on_error: false
         ruby '#{RUBY_VERSION}', :engine_version => '#{RUBY_VERSION}', :engine => 'ruby', :patchlevel => '#{patchlevel}'
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gemspec
       G
 
@@ -149,7 +149,7 @@ RSpec.describe "bundle install" do
 
       install_gemfile <<-G, raise_on_error: false
         ruby '#{version}', :engine_version => '#{version}', :engine => 'ruby'
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gemspec
       G
 
@@ -162,7 +162,7 @@ RSpec.describe "bundle install" do
       build_lib "foo"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gemspec path: "#{lib_path("foo-1.0")}"
 
         module Monkey

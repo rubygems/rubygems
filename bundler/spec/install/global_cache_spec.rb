@@ -211,7 +211,7 @@ RSpec.describe "global gem caching" do
       revision = revision_for(lib_path("very_simple_git_binary-1.0"))[0, 12]
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
 
         gem "very_simple_binary"
         gem "very_simple_git_binary", :git => "#{lib_path("very_simple_git_binary-1.0")}"
@@ -219,7 +219,7 @@ RSpec.describe "global gem caching" do
       G
 
       gem_binary_cache = home(".bundle", "cache", "extensions", local_platform.to_s, Bundler.ruby_scope,
-        Digest(:MD5).hexdigest("#{gem_repo1}/"), "very_simple_binary-1.0")
+        "gem.repo1.443.#{Digest(:MD5).hexdigest("gem.repo1.443./")}", "very_simple_binary-1.0")
       git_binary_cache = home(".bundle", "cache", "extensions", local_platform.to_s, Bundler.ruby_scope,
         "very_simple_git_binary-1.0-#{revision}", "very_simple_git_binary-1.0")
 

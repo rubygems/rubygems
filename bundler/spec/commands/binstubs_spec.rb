@@ -4,7 +4,7 @@ RSpec.describe "bundle binstubs <gem>" do
   context "when the gem exists in the lockfile" do
     it "sets up the binstub" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -15,7 +15,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     it "does not install other binstubs" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "rails"
       G
@@ -28,7 +28,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     it "does install multiple binstubs" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "rails"
       G
@@ -41,7 +41,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     it "allows installing all binstubs" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "rails"
       G
 
@@ -53,7 +53,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     it "allows installing binstubs for all platforms" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -65,7 +65,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     it "displays an error when used without any gem" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -76,7 +76,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     it "displays an error when used with --all and gems" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -88,7 +88,7 @@ RSpec.describe "bundle binstubs <gem>" do
     context "when generating bundle binstub outside bundler" do
       it "should abort" do
         install_gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack"
         G
 
@@ -313,7 +313,7 @@ RSpec.describe "bundle binstubs <gem>" do
         s.executables = %w[foo]
       end
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "foo", :git => "#{lib_path("foo")}"
       G
 
@@ -329,7 +329,7 @@ RSpec.describe "bundle binstubs <gem>" do
         s.executables = %w[foo]
       end
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "foo", :path => "#{lib_path("foo")}"
       G
 
@@ -341,7 +341,7 @@ RSpec.describe "bundle binstubs <gem>" do
     it "sets correct permissions for binstubs" do
       with_umask(0o002) do
         install_gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack"
         G
 
@@ -354,7 +354,7 @@ RSpec.describe "bundle binstubs <gem>" do
     context "when using --shebang" do
       it "sets the specified shebang for the binstub" do
         install_gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack"
         G
 
@@ -367,7 +367,7 @@ RSpec.describe "bundle binstubs <gem>" do
   context "when the gem doesn't exist" do
     it "displays an error with correct status" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
       G
 
       bundle "binstubs doesnt_exist", raise_on_error: false
@@ -380,7 +380,7 @@ RSpec.describe "bundle binstubs <gem>" do
   context "--path" do
     it "sets the binstubs dir" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -391,7 +391,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     it "setting is saved for bundle install", bundler: "< 3" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "rails"
       G
@@ -406,7 +406,7 @@ RSpec.describe "bundle binstubs <gem>" do
   context "with --standalone option" do
     before do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
         gem "rails"
       G
@@ -466,7 +466,7 @@ RSpec.describe "bundle binstubs <gem>" do
       end
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -486,7 +486,7 @@ RSpec.describe "bundle binstubs <gem>" do
         end
 
         install_gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "myrack"
         G
 
@@ -501,7 +501,7 @@ RSpec.describe "bundle binstubs <gem>" do
   context "when the gem has no bins" do
     it "suggests child gems if they have bins" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack-obama"
       G
 
@@ -512,7 +512,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     it "works if child gems don't have bins" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "actionpack"
       G
 
@@ -528,7 +528,7 @@ RSpec.describe "bundle binstubs <gem>" do
       end
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo2)}"
+        source "https://gem.repo2"
         gem "with_development_dependency"
       G
 
@@ -540,7 +540,7 @@ RSpec.describe "bundle binstubs <gem>" do
   context "when BUNDLE_INSTALL is specified" do
     it "performs an automatic bundle install" do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 
@@ -552,7 +552,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
     it "does nothing when already up to date" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "myrack"
       G
 

@@ -45,7 +45,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       s.add_development_dependency "bar-dev", "=1.0.0"
     end
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gemspec :path => '#{tmp("foo")}'
     G
 
@@ -62,7 +62,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     FileUtils.mv tmp("foo", "foo.gemspec"), tmp("foo", ".gemspec")
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gemspec :path => '#{tmp("foo")}'
     G
 
@@ -81,7 +81,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       s.add_dependency "baz", ">= 1.0", "< 1.1"
     end
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gemspec :path => '#{tmp("foo")}'
     G
 
@@ -92,7 +92,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     build_lib("foo", path: tmp("foo"), gemspec: false)
 
     install_gemfile <<-G, raise_on_error: false
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gemspec :path => '#{tmp("foo")}'
     G
     expect(err).to match(/There are no gemspecs at #{tmp("foo")}/)
@@ -104,7 +104,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     install_gemfile <<-G, raise_on_error: false
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gemspec :path => '#{tmp("foo")}'
     G
     expect(err).to match(/There are multiple gemspecs at #{tmp("foo")}/)
@@ -118,7 +118,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     install_gemfile(<<-G)
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gemspec :path => '#{tmp("foo")}', :name => 'foo'
     G
 
@@ -134,7 +134,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     install_gemfile(<<-G)
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gemspec :path => '#{tmp("foo")}', :name => 'foo', :development_group => :dev
     G
 
@@ -145,19 +145,19 @@ RSpec.describe "bundle install from an existing gemspec" do
 
   it "should match a lockfile even if the gemspec defines development dependencies" do
     build_lib("foo", path: tmp("foo")) do |s|
-      s.write("Gemfile", "source '#{file_uri_for(gem_repo1)}'\ngemspec")
+      s.write("Gemfile", "source 'https://gem.repo1'\ngemspec")
       s.add_dependency "actionpack", "=2.3.2"
       s.add_development_dependency "rake", rake_version
     end
 
-    bundle "install", dir: tmp("foo")
+    bundle "install", dir: tmp("foo"), artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo1.to_s }
     # This should really be able to rely on $stderr, but, it's not written
     # right, so we can't. In fact, this is a bug negation test, and so it'll
     # ghost pass in future, and will only catch a regression if the message
     # doesn't change. Exit codes should be used correctly (they can be more
     # than just 0 and 1).
     bundle "config set --local deployment true"
-    output = bundle("install", dir: tmp("foo"))
+    output = bundle("install", dir: tmp("foo"), artifice: "compact_index", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo1.to_s })
     expect(output).not_to match(/You have added to the Gemfile/)
     expect(output).not_to match(/You have deleted from the Gemfile/)
     expect(output).not_to match(/the lockfile can't be updated because frozen mode is set/)
@@ -169,7 +169,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gemspec :path => '#{tmp("foo")}'
     G
 
@@ -188,7 +188,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gemspec :path => '#{tmp("foo")}'
     G
 
@@ -240,7 +240,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gemspec
     G
 
@@ -258,7 +258,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     build_gem "foo", "0.0.1", to_bundle: true
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "deps"
       gemspec :path => '#{tmp("foo")}', :name => 'foo'
     G
@@ -279,7 +279,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo2)}"
+      source "https://gem.repo2"
       gem "deps"
       gemspec :path => '#{tmp("foo")}', :name => 'foo'
     G
@@ -294,7 +294,7 @@ RSpec.describe "bundle install from an existing gemspec" do
     build_lib "omg", "2.0", path: lib_path("omg")
 
     install_gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gemspec :path => "#{lib_path("omg")}"
     G
 
@@ -313,7 +313,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         end
 
         install_gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gemspec
         G
 
@@ -347,7 +347,7 @@ RSpec.describe "bundle install from an existing gemspec" do
 
     it "should install the child gemspec's deps" do
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gemspec
       G
 
@@ -441,7 +441,7 @@ RSpec.describe "bundle install from an existing gemspec" do
         end
 
         gemfile <<-G
-          source "#{file_uri_for(gem_repo2)}"
+          source "https://gem.repo2"
           gemspec
         G
 
@@ -478,7 +478,7 @@ RSpec.describe "bundle install from an existing gemspec" do
                     platform_specific
 
               GEM
-                remote: #{file_uri_for(gem_repo2)}/
+                remote: https://gem.repo2/
                 specs:
                   platform_specific (1.0)
                   platform_specific (1.0-java)
@@ -518,7 +518,7 @@ RSpec.describe "bundle install from an existing gemspec" do
                   foo (1.0)
 
               GEM
-                remote: #{file_uri_for(gem_repo2)}/
+                remote: https://gem.repo2/
                 specs:
                   platform_specific (1.0)
                   platform_specific (1.0-java)
@@ -561,7 +561,7 @@ RSpec.describe "bundle install from an existing gemspec" do
                   foo (1.0)
 
               GEM
-                remote: #{file_uri_for(gem_repo2)}/
+                remote: https://gem.repo2/
                 specs:
                   indirect_platform_specific (1.0)
                     platform_specific
@@ -600,7 +600,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       bundle "config set --local force_ruby_platform true"
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gemspec :path => '#{tmp("foo")}', :name => 'foo'
       G
 
@@ -612,7 +612,7 @@ RSpec.describe "bundle install from an existing gemspec" do
 
       bundle "config set --local without development"
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gemspec :path => '#{tmp("foo")}', :name => 'foo'
       G
 
@@ -637,7 +637,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       end
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gemspec :path => "../chef"
       G
 
@@ -656,7 +656,7 @@ RSpec.describe "bundle install from an existing gemspec" do
               win32-api (~> 1.5.3)
 
         GEM
-          remote: #{file_uri_for(gem_repo4)}/
+          remote: https://gem.repo4/
           specs:
             win32-api (1.5.3-universal-mingw32)
 
@@ -696,7 +696,7 @@ RSpec.describe "bundle install from an existing gemspec" do
       end
 
       install_gemfile <<-G
-        source "#{file_uri_for(gem_repo4)}"
+        source "https://gem.repo4"
         gemspec :path => "../activeadmin"
         gem "jruby-openssl", :platform => :jruby
       G
@@ -719,7 +719,7 @@ RSpec.describe "bundle install from an existing gemspec" do
               railties (>= 5.2, < 6.2)
 
         GEM
-          remote: #{file_uri_for(gem_repo4)}/
+          remote: https://gem.repo4/
           specs:
             jruby-openssl (0.10.7-java)
             railties (6.1.4)

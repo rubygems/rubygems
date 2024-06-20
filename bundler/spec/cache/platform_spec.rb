@@ -3,7 +3,7 @@
 RSpec.describe "bundle cache with multiple platforms" do
   before :each do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
 
       platforms :mri, :rbx do
         gem "myrack", "1.0.0"
@@ -16,7 +16,7 @@ RSpec.describe "bundle cache with multiple platforms" do
 
     lockfile <<-G
       GEM
-        remote: #{file_uri_for(gem_repo1)}/
+        remote: https://gem.repo1/
         specs:
           myrack (1.0.0)
           activesupport (2.3.5)

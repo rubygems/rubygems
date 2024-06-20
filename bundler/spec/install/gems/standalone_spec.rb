@@ -122,7 +122,7 @@ RSpec.shared_examples "bundle install --standalone" do
   describe "with simple gems" do
     before do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "rails"
       G
       bundle "config set --local path #{bundled_app("bundle")}"
@@ -192,7 +192,7 @@ RSpec.shared_examples "bundle install --standalone" do
       Dir.mkdir bundled_app("app")
 
       gemfile bundled_app("app/Gemfile"), <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "minitest", :path => "#{lib_path("minitest")}"
       G
 
@@ -222,7 +222,7 @@ RSpec.shared_examples "bundle install --standalone" do
       build_lib "minitest", "1.0.0", path: bundled_app("app/vendor/minitest")
 
       gemfile bundled_app("app/Gemfile"), <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "minitest", :path => "vendor/minitest"
       G
 
@@ -248,7 +248,7 @@ RSpec.shared_examples "bundle install --standalone" do
     before do
       bundle "config set --local path #{bundled_app("bundle")}"
       install_gemfile <<-G, standalone: true, dir: cwd
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "very_simple_binary"
       G
     end
@@ -286,7 +286,7 @@ RSpec.shared_examples "bundle install --standalone" do
       end
       bundle "config set --local path #{bundled_app("bundle")}"
       install_gemfile <<-G, standalone: true, dir: cwd, raise_on_error: false
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "bar", :git => "#{lib_path("bar-1.0")}"
       G
     end
@@ -302,7 +302,7 @@ RSpec.shared_examples "bundle install --standalone" do
       build_git "devise", "1.0"
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "rails"
         gem "devise", :git => "#{lib_path("devise-1.0")}"
       G
@@ -326,7 +326,7 @@ RSpec.shared_examples "bundle install --standalone" do
       build_git "devise", "1.0"
 
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "rails"
 
         group :test do
@@ -444,7 +444,7 @@ RSpec.shared_examples "bundle install --standalone" do
   describe "with --binstubs", bundler: "< 3" do
     before do
       gemfile <<-G
-        source "#{file_uri_for(gem_repo1)}"
+        source "https://gem.repo1"
         gem "rails"
       G
       bundle "config set --local path #{bundled_app("bundle")}"
@@ -504,7 +504,7 @@ end
 RSpec.describe "bundle install --standalone --local" do
   before do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
 

@@ -3,7 +3,7 @@
 RSpec.describe "bundle install" do
   before :each do
     gemfile <<-G
-      source "#{file_uri_for(gem_repo1)}"
+      source "https://gem.repo1"
       gem "myrack"
     G
   end
@@ -33,7 +33,7 @@ RSpec.describe "bundle install" do
 
       before do
         gemfile <<-G
-          source "#{file_uri_for(gem_repo1)}"
+          source "https://gem.repo1"
           gem "foo", :git => "#{lib_path("foo-1.0")}"
         G
       end

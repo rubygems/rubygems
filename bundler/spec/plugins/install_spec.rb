@@ -187,7 +187,7 @@ RSpec.describe "bundler plugin install" do
         s.write "plugins.rb"
       end
 
-      bundle "plugin install foo --git #{file_uri_for(lib_path("foo-1.0"))}"
+      bundle "plugin install foo --git #{lib_path("foo-1.0")}"
 
       expect(out).to include("Installed plugin foo")
       plugin_should_be_installed("foo")

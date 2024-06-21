@@ -324,7 +324,7 @@ RSpec.describe "real source plugins" do
 
       gemfile <<-G
         source "https://gem.repo2" # plugin source
-        source "#{file_uri_for(lib_path("ma-gitp-gem-1.0"))}", :type => :gitp do
+        source "#{lib_path("ma-gitp-gem-1.0")}", :type => :gitp do
           gem "ma-gitp-gem"
         end
       G
@@ -346,7 +346,7 @@ RSpec.describe "real source plugins" do
 
       expect(lockfile).to eq <<~G
         PLUGIN SOURCE
-          remote: #{file_uri_for(lib_path("ma-gitp-gem-1.0"))}
+          remote: #{lib_path("ma-gitp-gem-1.0")}
           type: gitp
           revision: #{revision}
           specs:
@@ -372,7 +372,7 @@ RSpec.describe "real source plugins" do
         revision = revision_for(lib_path("ma-gitp-gem-1.0"))
         lockfile <<-G
           PLUGIN SOURCE
-            remote: #{file_uri_for(lib_path("ma-gitp-gem-1.0"))}
+            remote: #{lib_path("ma-gitp-gem-1.0")}
             type: gitp
             revision: #{revision}
             specs:
@@ -424,7 +424,7 @@ RSpec.describe "real source plugins" do
         update_git "ma-gitp-gem", "1.1", path: lib_path("ma-gitp-gem-1.0"), gemspec: true
         gemfile <<-G
           source "https://gem.repo2" # plugin source
-          source "#{file_uri_for(lib_path("ma-gitp-gem-1.0"))}", :type => :gitp do
+          source "#{lib_path("ma-gitp-gem-1.0")}", :type => :gitp do
             gem "ma-gitp-gem", "1.1"
           end
         G

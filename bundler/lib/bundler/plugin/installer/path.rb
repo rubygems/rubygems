@@ -5,7 +5,7 @@ module Bundler
     class Installer
       class Path < Bundler::Source::Path
         def root
-          SharedHelpers.in_bundle? ? Bundler.root : Plugin.root
+          Plugin.root
         end
 
         def generate_bin(spec, disable_extensions = false)

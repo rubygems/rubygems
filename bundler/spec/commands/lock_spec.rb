@@ -1586,7 +1586,7 @@ RSpec.describe "bundle lock" do
       G
     end
 
-    it "locks ruby specs" do
+    it "locks both ruby and platform specific specs" do
       checksums = checksums_section_when_existing do |c|
         c.no_checksum "foo", "1.0"
         c.no_checksum "nokogiri", "1.14.2"
@@ -1594,29 +1594,31 @@ RSpec.describe "bundle lock" do
 
       simulate_platform "x86_64-linux" do
         bundle "lock"
+
+        expect(lockfile).to eq <<~L
+          PATH
+            remote: .
+            specs:
+              foo (1.0)
+                nokogiri
+
+          GEM
+            remote: https://gem.repo4/
+            specs:
+              nokogiri (1.14.2)
+              nokogiri (1.14.2-x86_64-linux)
+
+          PLATFORMS
+            ruby
+            x86_64-linux
+
+          DEPENDENCIES
+            foo!
+          #{checksums}
+          BUNDLED WITH
+             #{Bundler::VERSION}
+        L
       end
-
-      expect(lockfile).to eq <<~L
-        PATH
-          remote: .
-          specs:
-            foo (1.0)
-              nokogiri
-
-        GEM
-          remote: https://gem.repo4/
-          specs:
-            nokogiri (1.14.2)
-
-        PLATFORMS
-          #{lockfile_platforms}
-
-        DEPENDENCIES
-          foo!
-        #{checksums}
-        BUNDLED WITH
-           #{Bundler::VERSION}
-      L
     end
   end
 

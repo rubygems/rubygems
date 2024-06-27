@@ -818,7 +818,7 @@ RSpec.describe "bundle install with gem sources" do
     end
   end
 
-  describe "when bundle path does not have write access", :permissions do
+  describe "when bundle path does not have cd permission", :permissions do
     let(:bundle_path) { bundled_app("vendor") }
 
     before do
@@ -839,7 +839,7 @@ RSpec.describe "bundle install with gem sources" do
     end
   end
 
-  describe "when bundle gems path does not have write access", :permissions do
+  describe "when bundle gems path does not have cd permission", :permissions do
     let(:gems_path) { bundled_app("vendor/#{Bundler.ruby_scope}/gems") }
 
     before do
@@ -869,7 +869,7 @@ RSpec.describe "bundle install with gem sources" do
     end
   end
 
-  describe "when bundle bin dir does not have write access", :permissions do
+  describe "when bundle bin dir does not have cd permission", :permissions do
     let(:bin_dir) { bundled_app("vendor/#{Bundler.ruby_scope}/bin") }
 
     before do
@@ -929,7 +929,7 @@ RSpec.describe "bundle install with gem sources" do
     end
   end
 
-  describe "when the path of a specific gem is not writable", :permissions do
+  describe "when the path of a specific gem does not have cd permission", :permissions do
     let(:gems_path) { bundled_app("vendor/#{Bundler.ruby_scope}/gems") }
     let(:foo_path) { gems_path.join("foo-1.0.0") }
 

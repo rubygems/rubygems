@@ -63,7 +63,7 @@ def gemfile(install = false, options = {}, &gemfile)
       end
 
       runtime = Bundler::Runtime.new(nil, definition)
-      runtime.setup.require
+      runtime.setup(:allow_compatible_activated_specs => true).require
     end
   end
 

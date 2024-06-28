@@ -622,6 +622,7 @@ module Bundler
 
     def start_resolution
       @platforms |= [local_platform]
+      @platforms |= [Gem::Platform::RUBY] if RUBY_ENGINE == "truffleruby"
 
       result = SpecSet.new(resolver.start)
 
@@ -633,15 +634,9 @@ module Bundler
 
       @platforms = result.add_extra_platforms!(platforms) if should_add_extra_platforms?
 
-      if RUBY_ENGINE == "truffleruby"
-        platforms_for_resolve = (@platforms + [Gem::Platform::RUBY]).uniq
-      else
-        platforms_for_resolve = @platforms
-      end
+      result.complete_platforms!(platforms)
 
-      result.complete_platforms!(platforms_for_resolve)
-
-      SpecSet.new(result.for(dependencies, false, platforms_for_resolve))
+      SpecSet.new(result.for(dependencies, false, @platforms))
     end
 
     def precompute_source_requirements_for_indirect_dependencies?

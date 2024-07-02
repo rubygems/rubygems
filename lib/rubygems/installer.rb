@@ -500,8 +500,7 @@ class Gem::Installer
       dir_mode = options[:prog_mode] || (mode | 0o111)
 
       unless dir_mode == mode
-        require "fileutils"
-        FileUtils.chmod dir_mode, bin_path
+        File.chmod dir_mode, bin_path
       end
 
       check_executable_overwrite filename
@@ -542,10 +541,9 @@ class Gem::Installer
     require "fileutils"
     FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
 
-    File.open bin_script_path, "wb", 0o755 do |file|
-      file.print app_script_text(filename)
-      file.chmod(options[:prog_mode] || 0o755)
-    end
+    Gem.write_binary(bin_script_path, app_script_text(filename))
+
+    File.chmod(options[:prog_mode] || 0o755, bin_script_path)
 
     verbose bin_script_path
 

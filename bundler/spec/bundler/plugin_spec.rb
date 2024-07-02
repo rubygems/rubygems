@@ -333,5 +333,17 @@ RSpec.describe Bundler::Plugin do
         end.to output("win\n").to_stdout
       end
     end
+
+    context "the plugin load_path is invalid" do
+      before do
+        allow(index).to receive(:load_paths).with("foo-plugin").and_return(["invalid-file-name"])
+      end
+
+      it "outputs a useful error" do
+        expect do
+          Plugin.hook(Bundler::Plugin::Events::EVENT1)
+        end.to raise_error(Bundler::PluginError)
+      end
+    end
   end
 end

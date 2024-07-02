@@ -622,6 +622,7 @@ module Bundler
 
     def start_resolution
       @platforms |= [local_platform]
+      @platforms |= [Gem::Platform::RUBY] if RUBY_ENGINE == "truffleruby"
 
       result = SpecSet.new(resolver.start)
 

@@ -18,6 +18,12 @@ jobs:
   ubuntu_lint:
     name: Lint
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - { name: ruby, value: 3.3.1 }
+          - { name: truffleruby, value: truffleruby-24.0.1 }
     env:
       RUBYOPT: -Ilib
     steps:
@@ -25,7 +31,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@1d0e911f615a112e322369596f10ee0b95b010ae # v1.183.0
         with:
-          ruby-version: 3.3.1
+          ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Install Dependencies
         run: bin/rake setup

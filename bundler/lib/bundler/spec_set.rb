@@ -273,7 +273,7 @@ module Bundler
       specs_for_name = lookup[dep.name]
       return [] unless specs_for_name
 
-      matching_specs = if dep.force_ruby_platform
+      matching_specs = if dep.force_ruby_platform || (platform.nil? && dep.default_force_ruby_platform)
         GemHelpers.force_ruby_platform(specs_for_name)
       else
         GemHelpers.select_best_platform_match(specs_for_name, platform || Bundler.local_platform)

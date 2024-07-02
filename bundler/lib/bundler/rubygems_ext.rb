@@ -186,15 +186,11 @@ module Gem
 
     include ::Bundler::ForcePlatform
 
+    attr_reader :force_ruby_platform
+
     attr_accessor :source, :groups
 
     alias_method :eql?, :==
-
-    def force_ruby_platform
-      return @force_ruby_platform if defined?(@force_ruby_platform) && !@force_ruby_platform.nil?
-
-      @force_ruby_platform = default_force_ruby_platform
-    end
 
     def encode_with(coder)
       to_yaml_properties.each do |ivar|

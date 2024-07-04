@@ -46,6 +46,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - name: Update RBS # https://github.com/ruby/rbs/pull/1612
+        run: ruby -e 'begin; require "rbs"; rescue LoadError; exit; end; exec(*%w{gem install --version 3.4.0 rbs}) if Gem::Requirement.new([">= 1.6", "< 3.1.1"]).satisfied_by?(Gem::Version.new(RBS::VERSION))'
       - name: Install Dependencies
         run: bin/rake setup
       - name: Run Test

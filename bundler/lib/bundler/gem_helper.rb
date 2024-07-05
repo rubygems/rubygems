@@ -129,7 +129,7 @@ module Bundler
 
     def git_push(remote = nil)
       remote ||= default_remote
-      sh("git push #{remote} refs/heads/#{current_branch}".shellsplit)
+      sh("git push #{remote} refs/heads/#{current_branch}".shellsplit) unless head_exists?(remote)
       sh("git push #{remote} refs/tags/#{version_tag}".shellsplit)
       Bundler.ui.confirm "Pushed git commits and release tag."
     end
@@ -161,6 +161,10 @@ module Bundler
       return false unless sh(%w[git tag]).split(/\n/).include?(version_tag)
       Bundler.ui.confirm "Tag #{version_tag} has already been created."
       true
+    end
+
+    def head_exists?(remote)
+      sh("git status -b --porcelain").match(/\.{3}#{remote}\/#{current_branch} \[behind \d+\]/)
     end
 
     def guard_clean

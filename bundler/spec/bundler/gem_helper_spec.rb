@@ -329,6 +329,19 @@ RSpec.describe Bundler::GemHelper do
 
             Rake.application["release"].invoke
           end
+
+          it "also works with releasing from a branch lagging behind from remote" do
+            git("checkout -b behind", app_path)
+            sh("touch test.txt", dir: app_path)
+            git("add test.txt", app_path)
+            git("commit -a -m \"additional commit in remote\"", app_path)
+            git("push -u origin behind", app_path)
+            git("reset --hard HEAD~", app_path)
+
+            expect(subject).to receive(:rubygem_push).with(app_gem_path.to_s)
+
+            Rake.application["release"].invoke
+          end
         end
 
         context "on releasing with a custom tag prefix" do

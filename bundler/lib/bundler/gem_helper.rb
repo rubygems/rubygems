@@ -164,7 +164,7 @@ module Bundler
     end
 
     def head_exists?(remote)
-      sh("git status -b --porcelain").match(/\.{3}#{remote}\/#{current_branch} \[behind \d+\]/)
+      sh("git status -b --porcelain").match(%r{\.{3}#{remote}\/#{current_branch} \[behind \d+\]})
     end
 
     def guard_clean

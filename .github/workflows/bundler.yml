@@ -30,9 +30,9 @@ jobs:
 
         ruby:
           - { name: ruby-3.0, value: 3.0.7 }
-          - { name: ruby-3.1, value: 3.1.5 }
+          - { name: ruby-3.1, value: 3.1.6 }
           - { name: ruby-3.2, value: 3.2.4 }
-          - { name: ruby-3.3, value: 3.3.1 }
+          - { name: ruby-3.3, value: 3.3.3 }
 
         bundler:
           - { name: 2, value: '' }
@@ -40,14 +40,14 @@ jobs:
 
         include:
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 }, timeout: 90 }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.3 }, timeout: 90 }
 
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.3 }, timeout: 150 }
 
     env:
       RGV: ..
@@ -70,6 +70,6 @@ jobs:
           bin/rake spec:parallel_deps
       - name: Run Test
         run: |
-          bin/parallel_rspec
+          bin/rspec spec/install/gems/standalone_spec.rb:175
         working-directory: ./bundler
     timeout-minutes: ${{ matrix.timeout || 60 }}

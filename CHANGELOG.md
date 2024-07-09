@@ -1,3 +1,23 @@
+# 3.5.15 / 2024-07-09
+
+## Enhancements:
+
+* Installs bundler 2.5.15 as a default gem.
+
+## Bug fixes:
+
+* Restrict generic `arm` to only match 32-bit arm. Pull request
+  [#7830](https://github.com/rubygems/rubygems/pull/7830) by ntkme
+* Protect creating binstubs with a file lock. Pull request
+  [#7806](https://github.com/rubygems/rubygems/pull/7806) by
+  deivid-rodriguez
+
+## Documentation:
+
+* Make it clearer that `add_dependency` is the main way to add
+  non-development dependencies. Pull request
+  [#7800](https://github.com/rubygems/rubygems/pull/7800) by jeromedalbert
+
 # 3.5.14 / 2024-06-21
 
 ## Enhancements:

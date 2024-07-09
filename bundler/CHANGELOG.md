@@ -1,3 +1,21 @@
+# 2.5.15 (July 9, 2024)
+
+## Enhancements:
+
+  - Support `--no-test`, `--no-ci`, and `--no-linter` options [#7780](https://github.com/rubygems/rubygems/pull/7780)
+  - Allow bundle command in new gems with invalid metadata [#7707](https://github.com/rubygems/rubygems/pull/7707)
+
+## Bug fixes:
+
+  - Protect creating RubyGems binstubs with a file lock [#7841](https://github.com/rubygems/rubygems/pull/7841)
+  - Only allow valid values for `--test`, `--ci`, and `--linter` options [#7801](https://github.com/rubygems/rubygems/pull/7801)
+  - Fix `bundle lock --add-platform <current_platform>` doing nothing [#7803](https://github.com/rubygems/rubygems/pull/7803)
+  - Print a proper error when bin dir does not have writable permission bit [#7794](https://github.com/rubygems/rubygems/pull/7794)
+
+## Documentation:
+
+  - Regenerate bundler docs for June 2024 [#7787](https://github.com/rubygems/rubygems/pull/7787)
+
 # 2.5.14 (June 21, 2024)
 
 ## Bug fixes:

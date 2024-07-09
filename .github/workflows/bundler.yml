@@ -30,9 +30,9 @@ jobs:
 
         ruby:
           - { name: ruby-3.0, value: 3.0.7 }
-          - { name: ruby-3.1, value: 3.1.5 }
+          - { name: ruby-3.1, value: 3.1.6 }
           - { name: ruby-3.2, value: 3.2.4 }
-          - { name: ruby-3.3, value: 3.3.1 }
+          - { name: ruby-3.3, value: 3.3.3 }
 
         bundler:
           - { name: 2, value: '' }
@@ -40,14 +40,14 @@ jobs:
 
         include:
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 }, timeout: 90 }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.3 }, timeout: 90 }
 
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.5 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.1 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.3 }, timeout: 150 }
 
     env:
       RGV: ..
@@ -55,19 +55,19 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Setup ruby
-        uses: ruby/setup-ruby@ff740bc00a01b3a50fffc55a1071b1060eeae9dc # v1.180.0
+        uses: ruby/setup-ruby@97e35c5302afcf3f5ac1df3fca9343d32536b286 # v1.184.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'
-      - name: Prepare dependencies
-        run: |
-          bin/rake spec:parallel_deps
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
         if: matrix.bundler.value != ''
+      - name: Prepare dependencies
+        run: |
+          bin/rake spec:parallel_deps
       - name: Run Test
         run: |
           bin/parallel_rspec

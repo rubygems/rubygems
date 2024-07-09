@@ -1,6 +1,6 @@
 .\" generated with nRonn/v0.11.1
 .\" https://github.com/n-ronn/nronn/tree/0.11.1
-.TH "BUNDLE\-CONFIG" "1" "June 2024" ""
+.TH "BUNDLE\-CONFIG" "1" "July 2024" ""
 .SH "NAME"
 \fBbundle\-config\fR \- Set bundler configuration options
 .SH "SYNOPSIS"
@@ -128,6 +128,8 @@ The following is a list of all configuration keys and their purpose\. You can le
 \fBdisable_shared_gems\fR (\fBBUNDLE_DISABLE_SHARED_GEMS\fR): Stop Bundler from accessing gems installed to RubyGems' normal location\.
 .IP "\(bu" 4
 \fBdisable_version_check\fR (\fBBUNDLE_DISABLE_VERSION_CHECK\fR): Stop Bundler from checking if a newer Bundler version is available on rubygems\.org\.
+.IP "\(bu" 4
+\fBenv_shebang\fR (\fBBUNDLE_ENV_SHEBANG\fR): Set the shebang line on generated system binaries to \fB/usr/bin/env\fR if \fBtrue\fR, or \fB/full/path/to/ruby\fR if \fBfalse\fR\. Defaults to \fBtrue\fR\.
 .IP "\(bu" 4
 \fBforce_ruby_platform\fR (\fBBUNDLE_FORCE_RUBY_PLATFORM\fR): Ignore the current machine's platform and install only \fBruby\fR platform gems\. As a result, gems with native extensions will be compiled from source\.
 .IP "\(bu" 4

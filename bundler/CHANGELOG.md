@@ -1,4 +1,18 @@
-# 2.5.15 (July 8, 2024)
+# 2.5.16 (July 18, 2024)
+
+## Bug fixes:
+
+  - Fix platform removal regression when `platforms:` used in the Gemfile [#7864](https://github.com/rubygems/rubygems/pull/7864)
+  - Fix standalone script when default gems with extensions are used [#7870](https://github.com/rubygems/rubygems/pull/7870)
+  - Fix another case of `bundle lock --add-platform` doing nothing [#7848](https://github.com/rubygems/rubygems/pull/7848)
+  - Fix bad error messages when using `bundle add` with frozen mode set [#7845](https://github.com/rubygems/rubygems/pull/7845)
+  - Fix generic platform gems getting incorrectly removed from lockfile [#7833](https://github.com/rubygems/rubygems/pull/7833)
+
+## Performance:
+
+  - Use `caller_locations` instead of splitting `caller` [#7708](https://github.com/rubygems/rubygems/pull/7708)
+
+# 2.5.15 (July 9, 2024)
 
 ## Enhancements:
 

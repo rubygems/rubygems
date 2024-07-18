@@ -1,4 +1,24 @@
-# 3.5.15 / 2024-07-08
+# 3.5.16 / 2024-07-18
+
+## Enhancements:
+
+* Installs bundler 2.5.16 as a default gem.
+
+## Bug fixes:
+
+* Fix gemspec `require_paths` validation. Pull request
+  [#7866](https://github.com/rubygems/rubygems/pull/7866) by
+  deivid-rodriguez
+* Fix loading of nested `gemrc` config keys when specified as symbols.
+  Pull request [#7851](https://github.com/rubygems/rubygems/pull/7851) by
+  moofkit
+
+## Performance:
+
+* Use `caller_locations` instead of splitting `caller`. Pull request
+  [#7708](https://github.com/rubygems/rubygems/pull/7708) by nobu
+
+# 3.5.15 / 2024-07-09
 
 ## Enhancements:
 

@@ -137,7 +137,7 @@ module Bundler
       end
       @unlocking ||= @unlock[:ruby] ||= (!@locked_ruby_version ^ !@ruby_version)
 
-      add_current_platform unless Bundler.frozen_bundle?
+      @current_platform_missing = add_current_platform unless Bundler.frozen_bundle?
 
       converge_path_sources_to_gemspec_sources
       @path_changes = converge_paths
@@ -484,6 +484,7 @@ module Bundler
 
       !@source_changes &&
         !@dependency_changes &&
+        !@current_platform_missing &&
         @new_platforms.empty? &&
         !@path_changes &&
         !@local_changes &&
@@ -671,19 +672,19 @@ module Bundler
     end
 
     def add_current_platform
-      @most_specific_non_local_locked_ruby_platform = find_most_specific_non_local_locked_ruby_platform
+      return if @platforms.include?(local_platform)
+
+      @most_specific_non_local_locked_ruby_platform = find_most_specific_locked_ruby_platform
       return if @most_specific_non_local_locked_ruby_platform
 
-      add_platform(local_platform)
+      @platforms << local_platform
+      true
     end
 
-    def find_most_specific_non_local_locked_ruby_platform
+    def find_most_specific_locked_ruby_platform
       return unless generic_local_platform_is_ruby? && current_platform_locked?
 
-      most_specific_locked_ruby_platform = most_specific_locked_platform
-      return unless most_specific_locked_ruby_platform != local_platform
-
-      most_specific_locked_ruby_platform
+      most_specific_locked_platform
     end
 
     def change_reason
@@ -705,6 +706,7 @@ module Bundler
       [
         [@source_changes, "the list of sources changed"],
         [@dependency_changes, "the dependencies in your gemfile changed"],
+        [@current_platform_missing, "your lockfile does not include the current platform"],
         [@new_platforms.any?, "you added a new platform to your gemfile"],
         [@path_changes, "the gemspecs for path gems changed"],
         [@local_changes, "the gemspecs for git local gems changed"],

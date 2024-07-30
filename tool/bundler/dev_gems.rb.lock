@@ -57,9 +57,11 @@ GEM
     webrick (1.8.1)
 
 PLATFORMS
+  aarch64-darwin
   arm64-darwin-22
   arm64-darwin-23
   java
+  ruby
   universal-java-11
   universal-java-18
   universal-java-19

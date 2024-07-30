@@ -14,6 +14,8 @@ module Bundler
         exit 1
       end
 
+      check_for_conflicting_options
+
       print = options[:print]
       previous_ui_level = Bundler.ui.level
       Bundler.ui.level = "silent" if print
@@ -60,6 +62,10 @@ module Bundler
 
         definition.resolve_remotely! unless options[:local]
 
+        if options["normalize-platforms"]
+          definition.normalize_platforms
+        end
+
         if print
           puts definition.to_lock
         else
@@ -69,6 +75,18 @@ module Bundler
       end
 
       Bundler.ui.level = previous_ui_level
+    end
+
+    private
+
+    def check_for_conflicting_options
+      if options["normalize-platforms"] && options["add-platform"].any?
+        raise InvalidOption, "--normalize-platforms can't be used with --add-platform"
+      end
+
+      if options["normalize-platforms"] && options["remove-platform"].any?
+        raise InvalidOption, "--normalize-platforms can't be used with --remove-platform"
+      end
     end
   end
 end

@@ -23,7 +23,7 @@ If you're still stuck, please fill in the following sections so we can process y
 
 ### Describe the problem as clearly as you can
 
-<!-- Replace this with an explanation of the problem you are having. Be as much clear and precise as you can. -->
+<!-- Replace this with an explanation of your problem. Be as clear and precise as you can. -->
 
 ### Did you try upgrading rubygems & bundler?
 
@@ -44,7 +44,7 @@ might do the trick, and will also save us some time :)
 
 <!--
 
-Fill this with a list of steps maintainers can follow to reproduce your issue. Note that while you are seeing this issue in your computer, maintainers might not see the same thing on theirs. There is a number of things that could influence this:
+Fill this with a list of steps maintainers can follow to reproduce your issue. Note that while you see this issue in your computer, maintainers might not see the same thing on theirs. There are many things that could influence this:
 
 * How your ruby is setup (OS package, from source, using a version manager).
 * How bundler & rubygems are configured.
@@ -53,7 +53,7 @@ Fill this with a list of steps maintainers can follow to reproduce your issue. N
 
 The more complete the steps to simulate your particular environment are, the easier it will be for maintainers to reproduce your issue on their machines.
 
-Ideally, we recommend you to set up the list of steps as a [Dockerfile](https://docs.docker.com/get-started/). A Dockerfile provides a neutral environment that should give the same results, no matter where it's run.
+Ideally, we recommend you set up the list of steps as a [Dockerfile](https://docs.docker.com/get-started/). A Dockerfile provides a neutral environment that should give the same results, no matter where it's run.
 
 -->
 

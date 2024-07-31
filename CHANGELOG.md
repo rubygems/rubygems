@@ -1,3 +1,22 @@
+# 3.5.17 / 2024-08-01
+
+## Enhancements:
+
+* Explicitly encode `Gem::Dependency` to yaml. Pull request
+  [#7867](https://github.com/rubygems/rubygems/pull/7867) by segiddins
+* Installs bundler 2.5.17 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem list` regression when a regular gem shadows a default one. Pull
+  request [#7892](https://github.com/rubygems/rubygems/pull/7892) by
+  deivid-rodriguez
+* Always leave default gem executables around. Pull request
+  [#7879](https://github.com/rubygems/rubygems/pull/7879) by
+  deivid-rodriguez
+* Fix line comment issue for hash when loading gemrc. Pull request
+  [#7857](https://github.com/rubygems/rubygems/pull/7857) by leetking
+
 # 3.5.16 / 2024-07-18
 
 ## Enhancements:

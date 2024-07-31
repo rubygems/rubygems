@@ -21,6 +21,7 @@ module Bundler
       disable_local_revision_check
       disable_shared_gems
       disable_version_check
+      env_shebang
       force_ruby_platform
       forget_cli_options
       frozen
@@ -93,6 +94,7 @@ module Bundler
     DEFAULT_CONFIG = {
       "BUNDLE_SILENCE_DEPRECATIONS" => false,
       "BUNDLE_DISABLE_VERSION_CHECK" => true,
+      "BUNDLE_ENV_SHEBANG" => true,
       "BUNDLE_PREFER_PATCH" => false,
       "BUNDLE_REDIRECT" => 5,
       "BUNDLE_RETRY" => 3,

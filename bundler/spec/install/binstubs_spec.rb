@@ -46,4 +46,44 @@ RSpec.describe "bundle install" do
       )
     end
   end
+
+  describe "when env_shebang setting is not set" do
+    it "generates a system binstub with a /usr/bin/env shebang" do
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "myrack"
+      G
+
+      binstub = File.read(default_bundle_path("bin/myrackup"))
+      expect(binstub).to include("#!/usr/bin/env")
+    end
+  end
+
+  describe "when env_shebang setting is set to true" do
+    it "generates a system binstub with a /usr/bin/env shebang" do
+      config "BUNDLE_ENV_SHEBANG" => "true"
+
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "myrack"
+      G
+
+      binstub = File.read(default_bundle_path("bin/myrackup"))
+      expect(binstub).to include("#!/usr/bin/env")
+    end
+  end
+
+  describe "when env_shebang setting is set to false" do
+    it "generates a system binstub with a /full/path/to/ruby shebang" do
+      config "BUNDLE_ENV_SHEBANG" => "false"
+
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "myrack"
+      G
+
+      binstub = File.read(default_bundle_path("bin/myrackup"))
+      expect(binstub).to include("#!#{Gem.ruby}")
+    end
+  end
 end

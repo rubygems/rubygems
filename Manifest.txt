@@ -422,6 +422,7 @@ lib/rubygems/ext/cmake_builder.rb
 lib/rubygems/ext/configure_builder.rb
 lib/rubygems/ext/ext_conf_builder.rb
 lib/rubygems/ext/rake_builder.rb
+lib/rubygems/ext/script_builder.rb
 lib/rubygems/gem_runner.rb
 lib/rubygems/gemcutter_utilities.rb
 lib/rubygems/gemcutter_utilities/webauthn_listener.rb

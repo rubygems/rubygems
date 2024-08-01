@@ -1,3 +1,19 @@
+# 2.5.17 (August 1, 2024)
+
+## Enhancements:
+
+  - Print better log message when current platform is not present in the lockfile [#7891](https://github.com/rubygems/rubygems/pull/7891)
+  - Explicitly encode `Gem::Dependency` to yaml [#7867](https://github.com/rubygems/rubygems/pull/7867)
+  - Enable lockfile checksums on future Bundler 3 when there's no previous lockfile [#7805](https://github.com/rubygems/rubygems/pull/7805)
+
+## Bug fixes:
+
+  - Fix truffleruby removing gems from lockfile [#7795](https://github.com/rubygems/rubygems/pull/7795)
+  - Fix `bundle check` exit code when gem git source is not checked out [#7894](https://github.com/rubygems/rubygems/pull/7894)
+  - Generate gems.rb from Gemfile.tt template for `bundle-gem` [#7853](https://github.com/rubygems/rubygems/pull/7853)
+  - Fix git source cache being used as the install location [#4469](https://github.com/rubygems/rubygems/pull/4469)
+  - Fix `bundle exec gem uninstall` [#7886](https://github.com/rubygems/rubygems/pull/7886)
+
 # 2.5.16 (July 18, 2024)
 
 ## Bug fixes:

@@ -214,6 +214,7 @@ module Bundler
       @resolve = nil
       @resolver = nil
       @resolution_packages = nil
+      @source_requirements = nil
       @specs = nil
 
       Bundler.ui.debug "The definition is missing dependencies, failed to resolve & materialize locally (#{e})"
@@ -476,9 +477,6 @@ module Bundler
       end
     end
 
-    attr_reader :sources
-    private :sources
-
     def nothing_changed?
       return false unless lockfile_exists?
 
@@ -502,7 +500,11 @@ module Bundler
       @unlocking
     end
 
+    attr_writer :source_requirements
+
     private
+
+    attr_reader :sources
 
     def should_add_extra_platforms?
       !lockfile_exists? && generic_local_platform_is_ruby? && !Bundler.settings[:force_ruby_platform]
@@ -972,6 +974,10 @@ module Bundler
     end
 
     def source_requirements
+      @source_requirements ||= find_source_requirements
+    end
+
+    def find_source_requirements
       # Record the specs available in each gem's source, so that those
       # specs will be available later when the resolver knows where to
       # look for that gemspec (or its dependencies)
@@ -1053,6 +1059,7 @@ module Bundler
 
     def dup_for_full_unlock
       unlocked_definition = self.class.new(@lockfile, @dependencies, @sources, true, @ruby_version, @optional_groups, @gemfiles)
+      unlocked_definition.source_requirements = source_requirements
       unlocked_definition.gem_version_promoter.tap do |gvp|
         gvp.level = gem_version_promoter.level
         gvp.strict = gem_version_promoter.strict

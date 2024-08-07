@@ -12,9 +12,6 @@ RSpec.describe "gemcutter's dependency API" do
 
       require_relative "../../support/artifice/endpoint_timeout"
 
-      # mustermann depends on URI::RFC2396_PARSER behavior
-      URI.parser = URI::RFC2396_PARSER if URI.respond_to?(:parser=)
-
       @t = Thread.new do
         server = Rack::Server.start(app: EndpointTimeout,
                                     Host: "0.0.0.0",
@@ -34,8 +31,6 @@ RSpec.describe "gemcutter's dependency API" do
       Artifice.deactivate
       @t.kill
       @t.join
-
-      URI.parser = URI::DEFAULT_PARSER if URI.respond_to?(:parser=)
     end
 
     it "times out and falls back on the modern index" do

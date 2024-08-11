@@ -159,6 +159,10 @@ You can use `i` command instead of `install`.
 
     load_hooks
 
+    if ENV["GEM_HOST_API_KEY"]
+      Gem::RemoteFetcher.fetcher.headers[:authorization] = ENV["GEM_HOST_API_KEY"]
+    end
+
     exit_code = install_gems
 
     show_installed

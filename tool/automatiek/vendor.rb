@@ -6,7 +6,7 @@ require "bundler"
 require "find"
 require "fileutils"
 
-VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendor_lib, :license_path, :patch_name, :require_target, :skip_dependencies, keyword_init: true) do
+VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendor_lib, :license_path, :patch_name, :require_target, :skip_dependencies, :extra_entrypoints, keyword_init: true) do
   def vendor(spec)
     raise "#{name} missing license #{license_path.inspect}" unless File.file? File.join(spec.full_gem_path, license_path)
     FileUtils.rm_rf(vendor_lib)
@@ -26,20 +26,23 @@ VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendo
 
     files.each do |file|
       contents = File.read(file)
-
-      contents.gsub!(/module Kernel/, "module #{prefix}")
-      contents.gsub!(/#{prefix}::#{namespace}::/, "#{namespace}::")
-      contents.gsub!(/#{namespace}::/, "#{prefix}::#{namespace}::")
-      contents.gsub!(/(\s)::#{namespace}/, '\1' + "::#{prefix}::#{namespace}")
-      contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
-
-      contents.gsub!(/^require (["'])#{Regexp.escape require_entrypoint}/, "require_relative \\1#{relative_require_target_from(file)}")
-      contents.gsub!(/require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
-
-      contents.gsub!(%r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")
-
-      File.open(file, "w") {|f| f << contents }
+      contents = namespace_file(file, contents)
+      File.write(file, contents)
     end
+  end
+
+  def namespace_file(file, contents)
+    contents.gsub!(/module Kernel/, "module #{prefix}")
+    contents.gsub!(/#{prefix}::#{namespace}::/, "#{namespace}::")
+    contents.gsub!(/#{namespace}::/, "#{prefix}::#{namespace}::")
+    contents.gsub!(/(\s)::#{namespace}/, '\1' + "::#{prefix}::#{namespace}")
+    contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
+
+    contents.gsub!(/^require (["'])#{Regexp.escape require_entrypoint}/, "require_relative \\1#{relative_require_target_from(file)}")
+    contents.gsub!(/require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
+
+    contents.gsub!(%r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")
+    contents
   end
 
   def clean
@@ -66,12 +69,23 @@ VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendo
 
   alias_method :gem_name, :name
 
-  def relative_require_target_from(file)
-    Pathname.new("#{vendor_lib}/lib/#{require_entrypoint}").relative_path_from(File.dirname(file))
+  def relative_require_target_from(file, entrypoint = require_entrypoint)
+    Pathname.new("#{vendor_lib}/lib/#{entrypoint}").relative_path_from(File.dirname(file))
   end
 
   def require_target
     @require_target ||= vendor_lib.sub(%r{^(.+?/)?lib/}, "") << "/lib"
+  end
+end
+
+class VendoredSecureRandom < VendoredGem
+  def namespace_file(file, contents)
+    super
+    
+    entrypoint = "random"
+    contents.gsub!(/^require (["'])#{Regexp.escape entrypoint}/, "require_relative \\1#{relative_require_target_from(file, "random")}")
+    contents.gsub!(/require (["'])#{Regexp.escape entrypoint}/, "require \\1#{require_target}/#{entrypoint}")
+    contents
   end
 end
 
@@ -95,6 +109,7 @@ vendored_gems = [
   VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/thor", license_path: "LICENSE.md", patch_name: "thor-v1.3.0.patch"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/tsort", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "uri", namespace: "URI", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/uri", license_path: "LICENSE.txt"),
+  VendoredSecureRandom.new(name: "securerandom", namespace: "SecureRandom", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/secure_random", license_path: "LICENSE.txt"),
 ].group_by(&:name)
 
 Bundler.definition.resolve.materialized_for_all_platforms.reject {|s| ignore.include?(s.name) }.each do |s|

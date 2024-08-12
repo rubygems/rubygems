@@ -3,7 +3,7 @@
 require_relative "vendored_persistent"
 require_relative "vendored_timeout"
 require "cgi"
-require "securerandom"
+require_relative "vendored_securerandom"
 require "zlib"
 
 module Bundler

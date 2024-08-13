@@ -1383,7 +1383,7 @@ RSpec.describe "bundle install with gem sources" do
       expect(last_command).to be_success
     end
 
-    it "fetches remote sources for sub-dependencies only when not available locally", focus: true do
+    it "fetches remote sources for sub-dependencies only when not available locally" do
       install_gemfile <<-G, "prefer-local": true, verbose: true
         source "https://gem.repo4"
 

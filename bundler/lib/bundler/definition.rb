@@ -636,6 +636,14 @@ module Bundler
 
       result = SpecSet.new(resolver.start)
 
+      # Prefer local versions for sub dependencies too
+      if @prefer_local
+        all_requirements = SourceMap.new(sources, result, @locked_specs).all_requirements
+        all_requirements = pin_locally_available_names(all_requirements)
+        @source_requirements.merge!(all_requirements)
+        result = SpecSet.new(resolver.start)
+      end
+
       @resolved_bundler_version = result.find {|spec| spec.name == "bundler" }&.version
 
       if @most_specific_non_local_locked_ruby_platform

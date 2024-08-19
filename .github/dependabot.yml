@@ -11,6 +11,6 @@ updates:
   - package-ecosystem: 'cargo'
     directories:
       - '/test/rubygems/test_gem_ext_cargo_builder/custom_name/ext/custom_name_lib'
-      - '/test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example/'
+      - '/test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example'
     schedule:
       interval: 'weekly'

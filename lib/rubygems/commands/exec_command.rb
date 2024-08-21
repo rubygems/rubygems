@@ -59,24 +59,35 @@ to the same gem path as user-installed gems.
   def execute
     gem_paths = { "GEM_HOME" => Gem.paths.home, "GEM_PATH" => Gem.paths.path.join(File::PATH_SEPARATOR), "GEM_SPEC_CACHE" => Gem.paths.spec_cache_dir }.compact
 
-    check_executable
+    begin
+      check_executable
 
-    print_command
-    if options[:gem_name] == "gem" && options[:executable] == "gem"
-      set_gem_exec_install_paths
-      Gem::GemRunner.new.run options[:args]
-      return
-    elsif options[:conservative]
-      install_if_needed
-    else
-      install
-      activate!
+      print_command
+      if options[:gem_name] == "gem" && options[:executable] == "gem"
+        set_gem_exec_install_paths
+        Gem::GemRunner.new.run options[:args]
+        return
+      elsif options[:conservative]
+        install_if_needed
+      else
+        install
+        activate!
+      end
+
+      executable_path = find_executable_path
+    ensure
+      ENV.update(gem_paths) if gem_paths
+      Gem.clear_paths
     end
 
-    load!
-  ensure
-    ENV.update(gem_paths) if gem_paths
-    Gem.clear_paths
+    begin
+      argv = ARGV.clone
+      ARGV.replace options[:args]
+
+      load executable_path
+    ensure
+      ARGV.replace argv
+    end
   end
 
   private
@@ -196,10 +207,7 @@ to the same gem path as user-installed gems.
     verbose "activated #{options[:gem_name]} (#{Gem.loaded_specs[options[:gem_name]].version})"
   end
 
-  def load!
-    argv = ARGV.clone
-    ARGV.replace options[:args]
-
+  def find_executable_path
     exe = executable = options[:executable]
 
     contains_executable = Gem.loaded_specs.values.select do |spec|
@@ -227,9 +235,7 @@ to the same gem path as user-installed gems.
       terminate_interaction 1
     end
 
-    load Gem.activate_bin_path(contains_executable.first.name, exe, ">= 0.a")
-  ensure
-    ARGV.replace argv
+    Gem.bin_path(contains_executable.first.name, exe, ">= 0.a")
   end
 
   def suppress_always_install

@@ -33,7 +33,7 @@ VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendo
       contents.gsub!(/(\s)::#{namespace}/, '\1' + "::#{prefix}::#{namespace}")
       contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
 
-      contents.gsub!(/^require (["'])#{Regexp.escape require_entrypoint}/, "require_relative \\1#{relative_require_target_from(file)}")
+      contents.gsub!(/^(\s*)require (["'])#{Regexp.escape require_entrypoint}/, "\\1require_relative \\2#{relative_require_target_from(file)}")
       contents.gsub!(/require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
 
       contents.gsub!(%r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")

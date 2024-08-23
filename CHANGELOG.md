@@ -1,3 +1,15 @@
+# 3.5.18 / 2024-08-26
+
+## Enhancements:
+
+* Installs bundler 2.5.18 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem uninstall <name>:<version>` failing on shadowed default gems.
+  Pull request [#7949](https://github.com/rubygems/rubygems/pull/7949) by
+  deivid-rodriguez
+
 # 3.5.17 / 2024-08-01
 
 ## Enhancements:

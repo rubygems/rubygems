@@ -15,6 +15,40 @@ These policies are intended to be examples of how to apply these goals, and we r
 
 Bundler tries for perfect backwards compatibility. That means that if something worked in version 1.x, it should continue to work in 1.y and 1.z. That thing may or may not continue to work in 2.x. We may not always get it right, and there may be extenuating circumstances that force us into choosing between different kinds of breakage, but compatibility is very important to us. Infrastructure should be as unsurprising as possible.
 
+In general, this is what we consider as "public API" of Bundler:
+
+* The `bundle` CLI. Flags and commands will never be removed without
+  deprecation, but we may change the specific output of certain commands without
+  notice, unless a `--parseable` or equivalent flag is given. Don't rely on
+  empty error output when checking success of Bundler commands, since progress
+  may be logged to stderr. Instead, check the exit status of the command.
+
+* The documented Gemfile DSL (both methods and their options).
+
+* The lockfile format. We may introduce slight changes in new lockfiles, but
+  we'll keep being able to read what we previously generated and we'll keep it
+  the same by default and instead provide explicit tools to upgrade existing
+  lockfiles to new formats.
+
+* Any documented methods in the Bundler namespace like
+  `Bundler.with_original_env`, and similar.
+
+* Actual APIs meant to be used by other libraries, like the plugin API.
+
+* Entrypoints different from the `bundle` CLI, like `bundler/setup` or
+  `bundler/inline`.
+
+We will never intentionally break any of the above in patch or minor releases.
+
+Internal classes and their methods (public or private) are not considered public
+API, but we are aware that they are used in many places all around. So we try
+not to break internal stuff that may be used by others, including proactively
+using code search tools in public code. That said, we may not always be able to
+avoid breaking things, and we may even intentionally introduce this kind of
+"breakage" in a minor release if we deem it affects very few users or edge
+cases. So be aware when using Bundler internals and ideally get in touch with us
+before doing so, so that we can help find the right APIs.
+
 Bundler supports any MRI Ruby versions supported by the Ruby core team, as [listed here](https://www.ruby-lang.org/en/downloads/branches/). Shortly after Ruby core team officially drops support for a Ruby release, the Bundler team will do the same. Bundler also supports the latest stable versions of JRuby and TruffleRuby, and we constantly evaluate changes in Ruby implementation usage to potentially support more implementations.
 
 Bundler supports any RubyGems version [included by default](https://stdgems.org/rubygems/) with any supported Ruby version.

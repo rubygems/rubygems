@@ -1,3 +1,21 @@
+# 2.5.18 (August 26, 2024)
+
+## Enhancements:
+
+  - Don't remove existing platform gems when PLATFORMS section is badly indented [#7916](https://github.com/rubygems/rubygems/pull/7916)
+
+## Bug fixes:
+
+  - Fix error message when Bundler refuses to install due to frozen being set without a lockfile [#7955](https://github.com/rubygems/rubygems/pull/7955)
+  - Fix several issues with the `--prefer-local` flag [#7951](https://github.com/rubygems/rubygems/pull/7951)
+  - Restore support for passing relative paths to `git:` sources [#7950](https://github.com/rubygems/rubygems/pull/7950)
+  - Regenerate previous git application caches that didn't include bare repos [#7926](https://github.com/rubygems/rubygems/pull/7926)
+  - Fix `bundle update <indirect_dep>` failing to upgrade when versions present in two different sources [#7915](https://github.com/rubygems/rubygems/pull/7915)
+
+## Documentation:
+
+  - Change new gem README template to have copyable code blocks [#7935](https://github.com/rubygems/rubygems/pull/7935)
+
 # 2.5.17 (August 1, 2024)
 
 ## Enhancements:

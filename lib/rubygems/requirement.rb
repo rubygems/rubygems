@@ -18,6 +18,7 @@ class Gem::Requirement
     ">=" => lambda {|v, r| v >= r },
     "<=" => lambda {|v, r| v <= r },
     "~>" => lambda {|v, r| v >= r && v.release < r.bump },
+    "^>" => lambda {|v, r| v >= r && v.release < r.bump_major },
   }.freeze
 
   SOURCE_SET_REQUIREMENT = Struct.new(:for_lockfile).new "!" # :nodoc:
@@ -191,7 +192,14 @@ class Gem::Requirement
   end
 
   def hash # :nodoc:
-    requirements.map {|r| r.first == "~>" ? [r[0], r[1].to_s] : r }.sort.hash
+    requirements.map do |r|
+      case r.first
+      when "~>", "^>"
+        [r[0], r[1].to_s]
+      else
+        r
+      end
+    end.sort.hash
   end
 
   def marshal_dump # :nodoc:

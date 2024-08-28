@@ -585,6 +585,10 @@ lib/rubygems/vendor/optparse/lib/optparse/version.rb
 lib/rubygems/vendor/resolv/.document
 lib/rubygems/vendor/resolv/LICENSE.txt
 lib/rubygems/vendor/resolv/lib/resolv.rb
+lib/rubygems/vendor/securerandom/.document
+lib/rubygems/vendor/securerandom/LICENSE.txt
+lib/rubygems/vendor/securerandom/lib/random/formatter.rb
+lib/rubygems/vendor/securerandom/lib/securerandom.rb
 lib/rubygems/vendor/timeout/.document
 lib/rubygems/vendor/timeout/LICENSE.txt
 lib/rubygems/vendor/timeout/lib/timeout.rb

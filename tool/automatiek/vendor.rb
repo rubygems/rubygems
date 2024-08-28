@@ -33,7 +33,7 @@ VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendo
       contents.gsub!(/(\s)::#{namespace}/, '\1' + "::#{prefix}::#{namespace}")
       contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
 
-      contents.gsub!(/^require (["'])#{Regexp.escape require_entrypoint}/, "require_relative \\1#{relative_require_target_from(file)}")
+      contents.gsub!(/^(\s*)require (["'])#{Regexp.escape require_entrypoint}/, "\\1require_relative \\2#{relative_require_target_from(file)}")
       contents.gsub!(/require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
 
       contents.gsub!(%r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")
@@ -84,7 +84,8 @@ vendored_gems = [
   VendoredGem.new(name: "net-http-persistent", namespace: "Net::HTTP::Persistent", prefix: "Gem", vendor_lib: "bundler/lib/bundler/vendor/net-http-persistent", license_path: "README.rdoc", extra_dependencies: %w[net-http uri/lib/rubygems/vendor/uri], patch_name: "net-http-persistent-v4.0.2.patch"),
   VendoredGem.new(name: "net-protocol", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-protocol", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/optparse", license_path: "COPYING", extra_dependencies: %w[uri/lib/rubygems/vendor/uri], patch_name: "optparse-v0.4.0.patch"),
-  VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/resolv", license_path: "LICENSE.txt", extra_dependencies: %w[timeout]),
+  VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/resolv", license_path: "LICENSE.txt", extra_dependencies: %w[securerandom timeout]),
+  VendoredGem.new(name: "securerandom", namespace: "SecureRandom", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/securerandom", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/timeout", license_path: "LICENSE.txt", patch_name: "timeout-v0.4.1.patch"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/tsort", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "uri", namespace: "URI", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/uri", license_path: "LICENSE.txt"),

@@ -85,9 +85,9 @@ jobs:
       - name: Check bundler install didn't hit the network
         run: if grep -q 'GET http' output.txt; then false; else true; fi
         working-directory: ./bundler
-      - name: Workaround bad nio4r release on JRuby, so that Rails can be installed below
-        run: gem install nio4r --version 2.7.1
-        if: matrix.ruby.name == 'jruby'
+      - name: Check gem exec can create a rails project
+        run: gem exec rails new app --minimal
+        if: matrix.ruby.name != 'truffleruby' && matrix.ruby.name != 'jruby'
       - name: Check rails can be installed
         run: gem install rails --verbose --backtrace
     timeout-minutes: 10

@@ -283,6 +283,10 @@ bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_constraint.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_range.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_solver.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_union.rb
+bundler/lib/bundler/vendor/securerandom/.document
+bundler/lib/bundler/vendor/securerandom/LICENSE.txt
+bundler/lib/bundler/vendor/securerandom/lib/random/formatter.rb
+bundler/lib/bundler/vendor/securerandom/lib/securerandom.rb
 bundler/lib/bundler/vendor/thor/.document
 bundler/lib/bundler/vendor/thor/LICENSE.md
 bundler/lib/bundler/vendor/thor/lib/thor.rb
@@ -344,6 +348,7 @@ bundler/lib/bundler/vendored_fileutils.rb
 bundler/lib/bundler/vendored_net_http.rb
 bundler/lib/bundler/vendored_persistent.rb
 bundler/lib/bundler/vendored_pub_grub.rb
+bundler/lib/bundler/vendored_securerandom.rb
 bundler/lib/bundler/vendored_thor.rb
 bundler/lib/bundler/vendored_timeout.rb
 bundler/lib/bundler/vendored_tsort.rb

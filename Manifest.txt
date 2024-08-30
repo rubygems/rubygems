@@ -616,6 +616,7 @@ lib/rubygems/vendor/uri/lib/uri/wss.rb
 lib/rubygems/vendored_molinillo.rb
 lib/rubygems/vendored_net_http.rb
 lib/rubygems/vendored_optparse.rb
+lib/rubygems/vendored_securerandom.rb
 lib/rubygems/vendored_timeout.rb
 lib/rubygems/vendored_tsort.rb
 lib/rubygems/version.rb

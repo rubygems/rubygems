@@ -1,0 +1,13 @@
+diff --git a/lib/rubygems/vendor/resolv/lib/resolv.rb b/lib/rubygems/vendor/resolv/lib/resolv.rb
+index 0301f4f161..0f5ded3b76 100644
+--- a/lib/rubygems/vendor/resolv/lib/resolv.rb
++++ b/lib/rubygems/vendor/resolv/lib/resolv.rb
+@@ -5,7 +5,7 @@
+ require 'io/wait'
+ 
+ begin
+-  require_relative '../../securerandom/lib/securerandom'
++  require_relative '../../../vendored_securerandom'
+ rescue LoadError
+ end
+ 

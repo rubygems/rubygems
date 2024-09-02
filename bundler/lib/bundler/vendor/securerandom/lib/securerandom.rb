@@ -10,7 +10,7 @@ require_relative 'random/formatter'
 #
 # You can use this library in your application by requiring it:
 #
-#   require 'rubygems/vendor/securerandom/lib/securerandom'
+#   require 'bundler/vendor/securerandom/lib/securerandom'
 #
 # It supports the following secure random number generators:
 #
@@ -18,7 +18,7 @@ require_relative 'random/formatter'
 # * /dev/urandom
 # * Win32
 #
-# Gem::SecureRandom is extended by the Gem::Random::Formatter module which
+# Bundler::SecureRandom is extended by the Bundler::Random::Formatter module which
 # defines the following methods:
 #
 # * alphanumeric
@@ -32,13 +32,13 @@ require_relative 'random/formatter'
 # * urlsafe_base64
 # * uuid
 #
-# These methods are usable as class methods of Gem::SecureRandom such as
-# +Gem::SecureRandom.hex+.
+# These methods are usable as class methods of Bundler::SecureRandom such as
+# +Bundler::SecureRandom.hex+.
 #
 # If a secure random number generator is not available,
 # +NotImplementedError+ is raised.
 
-module Gem::SecureRandom
+module Bundler::SecureRandom
 
   # The version
   VERSION = "0.3.1"
@@ -88,9 +88,9 @@ module Gem::SecureRandom
 
     # :startdoc:
 
-    # Generate random data bytes for Gem::Random::Formatter
+    # Generate random data bytes for Bundler::Random::Formatter
     public :gen_random
   end
 end
 
-Gem::SecureRandom.extend(Gem::Random::Formatter)
+Bundler::SecureRandom.extend(Bundler::Random::Formatter)

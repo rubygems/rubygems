@@ -60,6 +60,18 @@ def gemfile(install = false, options = {}, &gemfile)
             Bundler.ui.info "Post-install message from #{name}:\n#{message}"
           end
         end
+
+        # Gem.load_yaml needs to be called after gem installation.
+        # Psych and StringIO are used for gemspec verification from default gems.
+        # bundler/inline can't activate them if their versions are different.
+        %w[psych stringio].each do |name|
+          gemspec = definition.specs[name]&.first
+          activated = Gem.loaded_specs[name]
+          if gemspec && activated && (gemspec.version != activated.version)
+            warn "bundler/inline can't activate #{gemspec.full_name} because it's used by gemspec verification with #{activated.full_name}."
+            definition.specs.delete_by_name(name) if definition.specs[name]
+          end
+        end
       end
 
       runtime = Bundler::Runtime.new(nil, definition)

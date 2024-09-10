@@ -27,7 +27,7 @@ GEM
       mustache (~> 1.0)
       nokogiri (~> 1.10, >= 1.10.10)
     parallel (1.24.0)
-    parallel_tests (3.8.1)
+    parallel_tests (4.7.2)
       parallel
     power_assert (2.0.3)
     racc (1.7.3)
@@ -75,7 +75,7 @@ PLATFORMS
 DEPENDENCIES
   nronn (~> 0.11.1)
   parallel (~> 1.19)
-  parallel_tests (< 3.9.0)
+  parallel_tests (~> 4.7)
   rake (~> 13.1)
   rb_sys
   rspec-core (~> 3.12)
@@ -100,7 +100,7 @@ CHECKSUMS
   nokogiri (1.16.3-x86_64-linux) sha256=47a3330e41b49a100225b6fab490b2dc43410931e01e791886e0c2998412e8cb
   nronn (0.11.1) sha256=60305c7a42dcaf6bdd33210993a7e38087520717561da101bea1df7197546369
   parallel (1.24.0) sha256=5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397
-  parallel_tests (3.8.1) sha256=c781c0910be3b489411f24e3a3397d57f481d6ee4eb27dba2a1cd4b8a0967f06
+  parallel_tests (4.7.2) sha256=d6b3a46d3c36f5167716bba38e571d813ae7c754e9b096b2daa41095e70a2612
   power_assert (2.0.3) sha256=cd5e13c267370427c9804ce6a57925d6030613e341cb48e02eec1f3c772d4cf8
   racc (1.7.3) sha256=b785ab8a30ec43bce073c51dbbe791fd27000f68d1c996c95da98bf685316905
   racc (1.7.3-java) sha256=b2ad737e788cfa083263ce7c9290644bb0f2c691908249eb4f6eb48ed2815dbf

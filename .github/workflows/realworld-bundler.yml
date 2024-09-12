@@ -28,7 +28,7 @@ jobs:
           - { name: ruby-3.0, value: 3.0.7 }
           - { name: ruby-3.1, value: 3.1.6 }
           - { name: ruby-3.2, value: 3.2.4 }
-          - { name: ruby-3.3, value: 3.3.4 }
+          - { name: ruby-3.3, value: 3.3.5 }
 
         bundler:
           - { name: 2, value: '' }
@@ -38,7 +38,7 @@ jobs:
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 } }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.4 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.5 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems
@@ -73,11 +73,11 @@ jobs:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.4 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.5 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.7 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.6 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.4 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.5 } }
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Setup ruby
@@ -108,7 +108,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@a6b46b8a08edb18935835849f2a17072d5cc8c73 # v1.192.0
         with:
-          ruby-version: 3.3.4
+          ruby-version: 3.3.5
           bundler: none
       - name: Prepare dependencies
         run: bin/rake setup

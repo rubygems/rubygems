@@ -1,6 +1,105 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle install across platforms" do
+  context "conditional inclusion of gems in lockfile" do
+    let!(:local_platform) { super() }
+    let!(:not_local) { super() }
+    let!(:also_not_local) { all_platforms.find {|p| p != generic_local_platform && p != generic(not_local) } }
+
+    before do
+      build_repo4 do
+        build_gem "only_local_platform", "1.0" do |s|
+          s.platform = local_platform
+        end
+
+        build_gem "only_nonlocal_platform", "1.0" do |s|
+          s.platform = not_local
+        end
+
+        build_gem "myrack", "1.0"
+        build_gem "mynokogiri", "1.0"
+        build_gem "mynokogiri", "1.0" do |s|
+          s.platform = local_platform
+        end
+        build_gem "mynokogiri", "1.0" do |s|
+          s.platform = not_local
+        end
+
+        build_gem "split", "1.0"
+        build_gem "split", "1.0" do |s|
+          s.platform = not_local
+        end
+        build_gem "split", "2.0" do |s|
+          s.platform = local_platform
+        end
+      end
+
+      gemfile <<~G
+        source "https://gem.repo4"
+
+        gem "only_nonlocal_platform", install_if: !!ENV["LOCAL_PLATFORM"]
+        gem "only_local_platform",    install_if: !!ENV["NONLOCAL_PLATFORM"]
+        gem "myrack"
+        gem "mynokogiri"
+      G
+    end
+
+    it "allows installing" do
+      bundle "install"
+
+      expect(the_bundle).to include_gems "myrack 1.0", "mynokogiri 1.0 #{local_platform}"
+      expect(the_bundle.locked_gems.platforms).to contain_exactly(*default_platform_list)
+      expect(the_bundle.locked_gems.specs.map(&:full_name)).
+        to contain_exactly("mynokogiri-1.0", "mynokogiri-1.0-#{local_platform}",
+                           "myrack-1.0",
+                           "only_local_platform-1.0-#{local_platform}")
+
+      bundle "lock --add-platform #{not_local}"
+
+      expect(the_bundle).to include_gems "myrack 1.0", "mynokogiri 1.0 #{local_platform}"
+      expect(the_bundle.locked_gems.platforms).to contain_exactly(*default_platform_list(not_local))
+      expect(the_bundle.locked_gems.specs.map(&:full_name)).
+        to contain_exactly("mynokogiri-1.0", "mynokogiri-1.0-#{local_platform}", "mynokogiri-1.0-#{not_local}",
+                           "myrack-1.0",
+                           "only_local_platform-1.0-#{local_platform}", "only_nonlocal_platform-1.0-#{not_local}")
+    end
+
+    it "allows installing on a 3rd platform" do
+      simulate_platform also_not_local do
+        bundle "install", verbose: true
+      end
+
+      expect(the_bundle.locked_gems.platforms).to contain_exactly(*default_platform_list(defaults: [local_platform, also_not_local, generic(also_not_local)]))
+      expect(the_bundle.locked_gems.specs.map(&:full_name)).
+        to contain_exactly("mynokogiri-1.0", "mynokogiri-1.0-#{local_platform}",
+                          "myrack-1.0")
+    end
+
+    it "allows installing w/ split" do
+      gemfile gemfile + "\ngem 'split'"
+
+      bundle "install"
+      expect(the_bundle).to include_gems "myrack 1.0", "mynokogiri 1.0 #{local_platform}", "split 1.0"
+      expect(the_bundle.locked_gems.platforms).to contain_exactly(*default_platform_list)
+      expect(the_bundle.locked_gems.specs.map(&:full_name)).
+        to contain_exactly("mynokogiri-1.0", "mynokogiri-1.0-#{local_platform}",
+                           "myrack-1.0",
+                           "only_local_platform-1.0-#{local_platform}",
+                           "split-1.0")
+
+                           bundle "lock --add-platform #{not_local}"
+
+                           expect(the_bundle).to include_gems "myrack 1.0", "mynokogiri 1.0 #{local_platform}", "split 1.0"
+      expect(the_bundle.locked_gems.platforms).to contain_exactly(*default_platform_list(not_local))
+      expect(the_bundle.locked_gems.specs.map(&:full_name)).
+        to contain_exactly("mynokogiri-1.0", "mynokogiri-1.0-#{local_platform}", "mynokogiri-1.0-#{not_local}",
+                           "myrack-1.0",
+                           "only_local_platform-1.0-#{local_platform}", "only_nonlocal_platform-1.0-#{not_local}",
+                           "split-1.0", "split-1.0-#{not_local}")
+    end
+
+  end
+
   it "maintains the same lockfile if all gems are compatible across platforms" do
     lockfile <<-G
       GEM

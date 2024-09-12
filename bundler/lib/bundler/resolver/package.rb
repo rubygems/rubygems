@@ -85,6 +85,10 @@ module Bundler
       def current_platform?
         @dependency.current_platform?
       end
+
+      def should_include?
+        @dependency.should_include?
+      end
     end
   end
 end

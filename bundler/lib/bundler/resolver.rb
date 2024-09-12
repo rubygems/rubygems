@@ -268,12 +268,13 @@ module Bundler
 
         # If package is a top-level dependency,
         #   candidate is only valid if there are matching versions for all resolution platforms.
+        #   TODO: allow missing platforms if package is optional
         #
-        # If package is not a top-level deependency,
+        # If package is not a top-level dependency,
         #   then it's not necessary that it has matching versions for all platforms, since it may have been introduced only as
         #   a dependency for a platform specific variant, so it will only need to have a valid version for that platform.
         #
-        if package.top_level?
+        if package.top_level? && package.should_include?
           next groups if platform_specs.any?(&:empty?)
         else
           next groups if platform_specs.all?(&:empty?)
@@ -440,7 +441,7 @@ module Bundler
 
         next [dep_package, dep_constraint] unless versions.empty?
 
-        next unless dep_package.current_platform?
+        next unless dep_package.should_include?
 
         raise_not_found!(dep_package)
       end.compact.to_h

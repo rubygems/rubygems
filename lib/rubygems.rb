@@ -794,15 +794,24 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     File.open(path, flags, &block)
   end
 
-  mode = IO::RDONLY | IO::APPEND | IO::CREAT | IO::BINARY
-  mode |= IO::SHARE_DELETE if IO.const_defined?(:SHARE_DELETE)
-  MODE_TO_FLOCK = mode # :nodoc:
+  ##
+  # Open a file with given flags, and protect access with a file lock
+
+  def self.open_file_with_lock(path, &block)
+    file_lock = "#{path}.lock"
+    open_file_with_flock(file_lock, &block)
+  ensure
+    FileUtils.rm_f file_lock
+  end
 
   ##
   # Open a file with given flags, and protect access with flock
 
   def self.open_file_with_flock(path, &block)
-    File.open(path, MODE_TO_FLOCK) do |io|
+    mode = IO::RDONLY | IO::APPEND | IO::CREAT | IO::BINARY
+    mode |= IO::SHARE_DELETE if IO.const_defined?(:SHARE_DELETE)
+
+    File.open(path, mode) do |io|
       begin
         io.flock(File::LOCK_EX)
       rescue Errno::ENOSYS, Errno::ENOTSUP

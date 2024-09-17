@@ -1,3 +1,31 @@
+# 2.5.19 (September 18, 2024)
+
+## Enhancements:
+
+  - Raise original errors when unexpected errors happen during Gemfile evaluation [#8003](https://github.com/rubygems/rubygems/pull/8003)
+  - Make an exe file executable when generating new gems [#8020](https://github.com/rubygems/rubygems/pull/8020)
+  - Gracefully handle gem activation conflicts in inline mode [#5535](https://github.com/rubygems/rubygems/pull/5535)
+  - Don't include hook templates in cached git source [#8013](https://github.com/rubygems/rubygems/pull/8013)
+  - Fix some errors about a previous installation folder that's unsafe to remove, when there's no need to remove it [#7985](https://github.com/rubygems/rubygems/pull/7985)
+  - Emit progress to stderr during `bundle outdated --parseable` [#7966](https://github.com/rubygems/rubygems/pull/7966)
+  - Reject unknown platforms when running `bundle lock --add-platform` [#7967](https://github.com/rubygems/rubygems/pull/7967)
+  - Emit progress to stderr when `--print` is passed to `bundle lock` [#7957](https://github.com/rubygems/rubygems/pull/7957)
+
+## Bug fixes:
+
+  - Fix `bundle install --local` hitting the network when default gems are included [#8027](https://github.com/rubygems/rubygems/pull/8027)
+  - Remove temporary `.lock` files unintentionally left around by gem installer [#8022](https://github.com/rubygems/rubygems/pull/8022)
+  - Fix `bundle exec rake install` failing when local gem has extensions [#7977](https://github.com/rubygems/rubygems/pull/7977)
+  - Load gemspecs in the context of its parent also when using local overrides [#7993](https://github.com/rubygems/rubygems/pull/7993)
+  - Fix `bundler/inline` failing in Ruby 3.2 due to conflicting `securerandom` versions [#7984](https://github.com/rubygems/rubygems/pull/7984)
+  - Don't blow up when explicit version is removed from some git sources [#7973](https://github.com/rubygems/rubygems/pull/7973)
+  - Fix `gem exec rails new project` failing on Ruby 3.2 [#7960](https://github.com/rubygems/rubygems/pull/7960)
+
+## Documentation:
+
+  - Improve `bundle add` man page [#5903](https://github.com/rubygems/rubygems/pull/5903)
+  - Add some documentation about backwards compatibility [#7964](https://github.com/rubygems/rubygems/pull/7964)
+
 # 2.5.18 (August 26, 2024)
 
 ## Enhancements:

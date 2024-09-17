@@ -1,3 +1,43 @@
+# 3.5.19 / 2024-09-18
+
+## Enhancements:
+
+* Standardize pretty-print output for `Gem::Source` and subclasses. Pull
+  request [#7994](https://github.com/rubygems/rubygems/pull/7994) by
+  djberube
+* Update vendored `molinillo` to master and vendored `resolv` to 0.4.0.
+  Pull request [#7521](https://github.com/rubygems/rubygems/pull/7521) by
+  hsbt
+* Installs bundler 2.5.19 as a default gem.
+
+## Bug fixes:
+
+* Fix `bundle exec rake install` failing when local gem has extensions.
+  Pull request [#7977](https://github.com/rubygems/rubygems/pull/7977) by
+  deivid-rodriguez
+* Make `gem exec` use the standard GEM_HOME. Pull request
+  [#7982](https://github.com/rubygems/rubygems/pull/7982) by
+  deivid-rodriguez
+* Fix `gem fetch` always exiting with zero status code. Pull request
+  [#8007](https://github.com/rubygems/rubygems/pull/8007) by
+  deivid-rodriguez
+* Remove temporary `.lock` files unintentionally left around by gem
+  installer. Pull request
+  [#7939](https://github.com/rubygems/rubygems/pull/7939) by nobu
+* Removed unused stringio. Pull request
+  [#8001](https://github.com/rubygems/rubygems/pull/8001) by hsbt
+* Avoid another race condition of open mode. Pull request
+  [#7931](https://github.com/rubygems/rubygems/pull/7931) by nobu
+* Fix `@license` typo preventing licenses from being correctly
+  unmarshalled. Pull request
+  [#7975](https://github.com/rubygems/rubygems/pull/7975) by djberube
+
+## Performance:
+
+* Fix `gem install does-not-exist` being super slow. Pull request
+  [#8006](https://github.com/rubygems/rubygems/pull/8006) by
+  deivid-rodriguez
+
 # 3.5.18 / 2024-08-26
 
 ## Enhancements:

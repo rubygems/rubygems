@@ -25,7 +25,7 @@ jobs:
           - { name: "3.0", value: 3.0.7 }
           - { name: "3.1", value: 3.1.6 }
           - { name: "3.2", value: 3.2.4 }
-          - { name: "3.3", value: 3.3.4 }
+          - { name: "3.3", value: 3.3.5 }
           - { name: jruby, value: jruby-9.4.8.0 }
           - { name: truffleruby, value: truffleruby-24.0.1 }
         openssl:
@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Setup ruby
-        uses: ruby/setup-ruby@a6e6f86333f0a2523ece813039b8b4be04560854 # v1.190.0
+        uses: ruby/setup-ruby@f321cf5a4d1533575411f8752cf25b86478b0442 # v1.193.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -85,9 +85,9 @@ jobs:
       - name: Check bundler install didn't hit the network
         run: if grep -q 'GET http' output.txt; then false; else true; fi
         working-directory: ./bundler
-      - name: Workaround bad nio4r release on JRuby, so that Rails can be installed below
-        run: gem install nio4r --version 2.7.1
-        if: matrix.ruby.name == 'jruby'
+      - name: Check gem exec can create a rails project
+        run: gem exec rails new app --minimal
+        if: matrix.ruby.name != 'truffleruby' && matrix.ruby.name != 'jruby'
       - name: Check rails can be installed
         run: gem install rails --verbose --backtrace
     timeout-minutes: 10
@@ -99,19 +99,19 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.1", value: 3.1.6 } # Rails 7
-          - { name: "3.2", value: 3.2.4 } # Rails 7
-          - { name: "3.3", value: 3.3.4 } # Rails 7
-          - { name: jruby-9.4, value: jruby-9.4.8.0, rails-args: "--skip-webpack-install" } # Rails 6
+          - { name: "3.1", value: 3.1.6 }
+          - { name: "3.2", value: 3.2.4 }
+          - { name: "3.3", value: 3.3.5 }
+          - { name: jruby-9.4, value: jruby-9.4.8.0, rails-args: "--skip-webpack-install" }
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Setup ruby
-        uses: ruby/setup-ruby@a6e6f86333f0a2523ece813039b8b4be04560854 # v1.190.0
+        uses: ruby/setup-ruby@f321cf5a4d1533575411f8752cf25b86478b0442 # v1.193.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@6a0805fcefea3d4657a47ac4c165951e33482018 # v4.2.2
+        uses: actions/setup-java@2dfa2011c5b2a0f1489bf9e433881c92c1631f88 # v4.3.0
         with:
           distribution: temurin
           java-version: 19.0.2

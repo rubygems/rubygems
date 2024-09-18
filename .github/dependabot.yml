@@ -14,3 +14,7 @@ updates:
       - '/test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example'
     schedule:
       interval: 'weekly'
+    groups:
+      rb-sys:
+        patterns:
+          - 'rb-sys'

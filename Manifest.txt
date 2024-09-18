@@ -283,6 +283,10 @@ bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_constraint.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_range.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_solver.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_union.rb
+bundler/lib/bundler/vendor/securerandom/.document
+bundler/lib/bundler/vendor/securerandom/LICENSE.txt
+bundler/lib/bundler/vendor/securerandom/lib/random/formatter.rb
+bundler/lib/bundler/vendor/securerandom/lib/securerandom.rb
 bundler/lib/bundler/vendor/thor/.document
 bundler/lib/bundler/vendor/thor/LICENSE.md
 bundler/lib/bundler/vendor/thor/lib/thor.rb
@@ -344,6 +348,7 @@ bundler/lib/bundler/vendored_fileutils.rb
 bundler/lib/bundler/vendored_net_http.rb
 bundler/lib/bundler/vendored_persistent.rb
 bundler/lib/bundler/vendored_pub_grub.rb
+bundler/lib/bundler/vendored_securerandom.rb
 bundler/lib/bundler/vendored_thor.rb
 bundler/lib/bundler/vendored_timeout.rb
 bundler/lib/bundler/vendored_tsort.rb
@@ -585,6 +590,10 @@ lib/rubygems/vendor/optparse/lib/optparse/version.rb
 lib/rubygems/vendor/resolv/.document
 lib/rubygems/vendor/resolv/LICENSE.txt
 lib/rubygems/vendor/resolv/lib/resolv.rb
+lib/rubygems/vendor/securerandom/.document
+lib/rubygems/vendor/securerandom/LICENSE.txt
+lib/rubygems/vendor/securerandom/lib/random/formatter.rb
+lib/rubygems/vendor/securerandom/lib/securerandom.rb
 lib/rubygems/vendor/timeout/.document
 lib/rubygems/vendor/timeout/LICENSE.txt
 lib/rubygems/vendor/timeout/lib/timeout.rb
@@ -611,6 +620,7 @@ lib/rubygems/vendor/uri/lib/uri/wss.rb
 lib/rubygems/vendored_molinillo.rb
 lib/rubygems/vendored_net_http.rb
 lib/rubygems/vendored_optparse.rb
+lib/rubygems/vendored_securerandom.rb
 lib/rubygems/vendored_timeout.rb
 lib/rubygems/vendored_tsort.rb
 lib/rubygems/version.rb

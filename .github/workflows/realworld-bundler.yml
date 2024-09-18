@@ -28,7 +28,7 @@ jobs:
           - { name: ruby-3.0, value: 3.0.7 }
           - { name: ruby-3.1, value: 3.1.6 }
           - { name: ruby-3.2, value: 3.2.4 }
-          - { name: ruby-3.3, value: 3.3.4 }
+          - { name: ruby-3.3, value: 3.3.5 }
 
         bundler:
           - { name: 2, value: '' }
@@ -38,14 +38,14 @@ jobs:
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 } }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.4 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.5 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Setup ruby
-        uses: ruby/setup-ruby@a6e6f86333f0a2523ece813039b8b4be04560854 # v1.190.0
+        uses: ruby/setup-ruby@f321cf5a4d1533575411f8752cf25b86478b0442 # v1.193.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -57,7 +57,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
         with:
           name: cassettes-bundler-${{ matrix.bundler.name }}-${{ matrix.os.value }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -73,15 +73,15 @@ jobs:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.4 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.5 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.7 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.6 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.4 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.5 } }
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Setup ruby
-        uses: ruby/setup-ruby@a6e6f86333f0a2523ece813039b8b4be04560854 # v1.190.0
+        uses: ruby/setup-ruby@f321cf5a4d1533575411f8752cf25b86478b0442 # v1.193.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -93,7 +93,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
         with:
           name: cassettes-system-rubygems-bundler-${{ matrix.bundler.name }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -106,9 +106,9 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Setup ruby
-        uses: ruby/setup-ruby@a6e6f86333f0a2523ece813039b8b4be04560854 # v1.190.0
+        uses: ruby/setup-ruby@f321cf5a4d1533575411f8752cf25b86478b0442 # v1.193.0
         with:
-          ruby-version: 3.3.4
+          ruby-version: 3.3.5
           bundler: none
       - name: Prepare dependencies
         run: bin/rake setup

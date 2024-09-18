@@ -22,14 +22,14 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: ruby, value: 3.3.4 }
+          - { name: ruby, value: 3.3.5 }
           - { name: truffleruby, value: truffleruby-24.0.1 }
     env:
       RUBYOPT: -Ilib
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Setup ruby
-        uses: ruby/setup-ruby@a6e6f86333f0a2523ece813039b8b4be04560854 # v1.190.0
+        uses: ruby/setup-ruby@f321cf5a4d1533575411f8752cf25b86478b0442 # v1.193.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

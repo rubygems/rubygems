@@ -246,4 +246,17 @@ module Bundler
   end
 
   class InvalidArgumentError < BundlerError; status_code(40); end
+
+  class PsychLinkedToIncompatibleOrMissingRubyError < BundlerError
+    def initialize(orig_exception)
+      full_message = "The psych library used by RubyGems to load its configuration is linked to an incompatible or missing Ruby.\n" \
+                     "The underlying error was #{orig_exception.class}: #{orig_exception.message}, with backtrace:\n" \
+                     "  #{orig_exception.backtrace.join("\n  ")}\n\n" \
+                     "You may try reinstalling `psych` or completely reinstalling Ruby"
+
+      super(full_message)
+    end
+
+    status_code(41)
+  end
 end

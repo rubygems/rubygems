@@ -133,6 +133,13 @@ module Bundler
       else
         super
       end
+    rescue LoadError => e
+      raise unless e.path.nil? # LoadError when failing to load a dynamic library has `nil` path
+
+      message = e.message
+      raise unless message.include?("psych.#{RbConfig::CONFIG["DLEXT"]}") && incompatible_or_missing_libruby?(message)
+
+      raise PsychLinkedToIncompatibleOrMissingRubyError.new(e)
     end
 
     def gem_checksum
@@ -140,6 +147,11 @@ module Bundler
     end
 
     private
+
+    def incompatible_or_missing_libruby?(message)
+      message.match?(/libruby\.(\d+\.|#{RbConfig::CONFIG["SOEXT"]})/) || # linux or macOS
+        message.include?("The specified module could not be found") # windows, does not specifically mention libruby
+    end
 
     def prepare_extension_build(extension_dir)
       SharedHelpers.filesystem_access(extension_dir, :create) do

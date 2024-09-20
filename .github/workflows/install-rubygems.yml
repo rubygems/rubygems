@@ -130,3 +130,46 @@ jobs:
         shell: bash
 
     timeout-minutes: 20
+
+  mess_up_installation:
+    name: Handling issues with messed up psych (${{ matrix.os.name }})
+    runs-on: ${{ matrix.os.value }}
+    strategy:
+      matrix:
+        include:
+          - os: { name: macOS, value: macos-14, ext: bundle }
+          - os: { name: linux, value: ubuntu-24.04, ext: so }
+          - os: { name: Windows, value: windows-2022, ext: so }
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Setup original ruby
+        uses: ruby/setup-ruby@f321cf5a4d1533575411f8752cf25b86478b0442 # v1.193.0
+        with:
+          ruby-version: 3.2
+          bundler: none
+      - name: Install rubygems in original ruby
+        run: ruby setup.rb
+        shell: bash
+      - name: Setup app depending on psych with local bundle path
+        run: mkdir foo && cd foo && bundle init && bundle config path vendor/bundle && bundle add psych -v 5.1.2
+        shell: bash
+      - name: Setup final ruby
+        uses: ruby/setup-ruby@f321cf5a4d1533575411f8752cf25b86478b0442 # v1.193.0
+        with:
+          ruby-version: 3.3
+          bundler: none
+      - name: Install rubygems in final ruby
+        run: ruby setup.rb
+        shell: bash
+      - name: Install gems with final ruby
+        run: bundle install
+        working-directory: foo
+      - name: Break compiled psych
+        run: mv vendor/bundle/ruby/3.2.0/gems/psych-5.1.2/lib/psych.${{ matrix.os.ext }} vendor/bundle/ruby/3.3.0/gems/psych-5.1.2/lib/psych.${{ matrix.os.ext }}
+        shell: bash
+        working-directory: foo
+      - name: Reinstall gems with final ruby
+        run: bundle install --redownload | grep -v "ERROR REPORT TEMPLATE"
+        working-directory: foo
+
+    timeout-minutes: 20

@@ -1,3 +1,16 @@
+# 2.5.20 (September 24, 2024)
+
+## Enhancements:
+
+  - Don't try to auto-install dev versions of Bundler not available remotely [#8045](https://github.com/rubygems/rubygems/pull/8045)
+  - Don't try to install locked bundler when `--local` is passed [#8041](https://github.com/rubygems/rubygems/pull/8041)
+
+## Bug fixes:
+
+  - Fix `bundler/inline` overwriting lockfiles [#8055](https://github.com/rubygems/rubygems/pull/8055)
+  - Ensure refs directory in cached git source [#8047](https://github.com/rubygems/rubygems/pull/8047)
+  - Fix `bundle outdated` with `--group` option [#8052](https://github.com/rubygems/rubygems/pull/8052)
+
 # 2.5.19 (September 18, 2024)
 
 ## Enhancements:

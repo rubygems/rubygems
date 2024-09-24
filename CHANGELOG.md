@@ -1,3 +1,9 @@
+# 3.5.20 / 2024-09-24
+
+## Enhancements:
+
+* Installs bundler 2.5.20 as a default gem.
+
 # 3.5.19 / 2024-09-18
 
 ## Enhancements:

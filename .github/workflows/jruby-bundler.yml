@@ -20,8 +20,8 @@ defaults:
 
 jobs:
   jruby_bundler:
-    name: Bundler on JRuby (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Bundler on JRuby (${{ matrix.os.name }})
+    runs-on: ${{ matrix.os.value }}
 
     env:
       RGV: ..
@@ -29,7 +29,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, windows-2022]
+        os:
+          - { name: Ubuntu, value: ubuntu-24.04 }
+          - { name: Windows, value: windows-2022 }
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -43,7 +45,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 19.0.2
-        if: "!startsWith(matrix.os, 'ubuntu')"
+        if: matrix.os.name != 'Ubuntu'
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps
@@ -51,15 +53,15 @@ jobs:
         run: |
           bin/parallel_rspec --tag jruby_only --tag jruby
         working-directory: ./bundler
-        if: startsWith(matrix.os, 'ubuntu')
+        if: matrix.os.name == 'Ubuntu'
       - name: Install local bundler
         run: |
           bin/rake bundler:install:local
-        if: startsWith(matrix.os, 'ubuntu')
+        if: matrix.os.name == 'Ubuntu'
       - name: Run a warbler project
         run: |
           cd bundler/spec/realworld/fixtures/warbler
           bundle install
           bundle exec warble
           java -jar warbler.jar
-        if: startsWith(matrix.os, 'ubuntu')
+        if: matrix.os.name == 'Ubuntu'

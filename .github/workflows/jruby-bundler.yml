@@ -43,7 +43,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 19.0.2
-        if: "!startsWith(matrix.os.name, 'ubuntu')"
+        if: "!startsWith(matrix.os, 'ubuntu')"
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps
@@ -51,15 +51,15 @@ jobs:
         run: |
           bin/parallel_rspec --tag jruby_only --tag jruby
         working-directory: ./bundler
-        if: startsWith(matrix.os.name, 'ubuntu')
+        if: startsWith(matrix.os, 'ubuntu')
       - name: Install local bundler
         run: |
           bin/rake bundler:install:local
-        if: startsWith(matrix.os.name, 'ubuntu')
+        if: startsWith(matrix.os, 'ubuntu')
       - name: Run a warbler project
         run: |
-          cd spec/realworld/fixtures/warbler
+          cd bundler/spec/realworld/fixtures/warbler
           bundle install
           bundle exec warble
           java -jar warbler.jar
-        if: startsWith(matrix.os.name, 'ubuntu')
+        if: startsWith(matrix.os, 'ubuntu')

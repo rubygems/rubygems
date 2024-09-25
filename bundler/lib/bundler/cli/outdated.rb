@@ -118,8 +118,6 @@ module Bundler
         else
           print_gems_table(relevant_outdated_gems)
         end
-
-        exit 1
       end
     end
 

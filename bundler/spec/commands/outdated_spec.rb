@@ -60,7 +60,7 @@ RSpec.describe "bundle outdated" do
       expect(out).to include(expected_output.strip)
     end
 
-    it "returns non zero exit status if outdated gems present" do
+    it "returns success exit status if outdated gems present" do
       update_repo2 do
         build_gem "activesupport", "3.0"
         update_git "foo", path: lib_path("foo")
@@ -68,11 +68,13 @@ RSpec.describe "bundle outdated" do
 
       bundle "outdated", raise_on_error: false
 
-      expect(exitstatus).to_not be_zero
+      expect(exitstatus).to be_zero
     end
 
     it "returns success exit status if no outdated gems present" do
       bundle "outdated"
+
+      expect(exitstatus).to be_zero
     end
 
     it "adds gem group to dependency output when repo is updated" do

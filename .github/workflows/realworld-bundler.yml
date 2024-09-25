@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - { name: Ubuntu, value: ubuntu-22.04 }
+          - { name: Ubuntu, value: ubuntu-24.04 }
 
         ruby:
           - { name: ruby-3.0, value: 3.0.7 }
@@ -65,7 +65,7 @@ jobs:
 
   system_rubygems_bundler:
     name: Realworld Bundler ${{ matrix.bundler.name }} against system Rubygems (${{ matrix.ruby.name }})
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -102,7 +102,7 @@ jobs:
   check_unused_cassettes:
     name: Check unused cassettes
     needs: [bundler, system_rubygems_bundler]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Setup ruby

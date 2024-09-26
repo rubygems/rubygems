@@ -24,7 +24,7 @@ defaults:
 jobs:
   system_rubygems_bundler:
     name: Bundler ${{ matrix.bundler.name }} against system Rubygems (${{ matrix.ruby.name }})
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:

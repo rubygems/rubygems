@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - { name: Ubuntu, value: ubuntu-22.04 }
+          - { name: Ubuntu, value: ubuntu-24.04 }
 
         ruby:
           - { name: ruby-3.0, value: 3.0.7 }

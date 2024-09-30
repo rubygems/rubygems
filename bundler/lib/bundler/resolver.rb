@@ -184,7 +184,7 @@ module Bundler
       constraint_string = constraint.constraint_string
       requirements = constraint_string.split(" OR ").map {|req| Gem::Requirement.new(req.split(",")) }
 
-      if name == "bundler" && bundler_pinned_to_current_version?
+      if name == "bundler" && local_bundler_source
         custom_explanation = "the current Bundler version (#{Bundler::VERSION}) does not satisfy #{constraint}"
         extended_explanation = bundler_not_found_message(requirements)
       else
@@ -255,11 +255,6 @@ module Bundler
       name = package.name
       results = (@base[name] + filter_specs(@all_specs[name], package)).uniq {|spec| [spec.version.hash, spec.platform] }
 
-      if name == "bundler" && !bundler_pinned_to_current_version?
-        bundler_spec = Gem.loaded_specs["bundler"]
-        results << bundler_spec if bundler_spec
-      end
-
       locked_requirement = base_requirements[name]
       results = filter_matching_specs(results, locked_requirement) if locked_requirement
 
@@ -301,15 +296,15 @@ module Bundler
     end
 
     def source_for(name)
-      @source_requirements[name] || @source_requirements[:default]
+      if name == "bundler" && local_bundler_source
+        local_bundler_source
+      else
+        default_source_for(name)
+      end
     end
 
-    def default_bundler_source
-      @source_requirements[:default_bundler]
-    end
-
-    def bundler_pinned_to_current_version?
-      !default_bundler_source.nil?
+    def local_bundler_source
+      @source_requirements[:local_bundler]
     end
 
     def name_for_explicit_dependency_source
@@ -355,6 +350,10 @@ module Bundler
     end
 
     private
+
+    def default_source_for(name)
+      @source_requirements[name] || @source_requirements[:default]
+    end
 
     def filtered_versions_for(package)
       @gem_version_promoter.filter_versions(package, @all_versions[package])
@@ -508,7 +507,7 @@ module Bundler
     end
 
     def bundler_not_found_message(conflict_dependencies)
-      candidate_specs = filter_matching_specs(default_bundler_source.specs.search("bundler"), conflict_dependencies)
+      candidate_specs = filter_matching_specs(default_source_for("bundler").specs.search("bundler"), conflict_dependencies)
 
       if candidate_specs.any?
         target_version = candidate_specs.last.version

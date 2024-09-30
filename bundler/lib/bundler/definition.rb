@@ -985,8 +985,7 @@ module Bundler
       if @unlocking_bundler
         default_bundler_source.add_dependency_names("bundler")
       else
-        source_requirements[:default_bundler] = default_bundler_source
-        source_requirements["bundler"] = sources.metadata_source # needs to come last to override
+        source_requirements[:local_bundler] = sources.metadata_source
       end
 
       source_requirements

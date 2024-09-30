@@ -221,7 +221,7 @@ module Bundler
     rescue BundlerError => e
       @resolve = nil
       @resolver = nil
-      @resolution_packages = nil
+      @resolution_base = nil
       @source_requirements = nil
       @specs = nil
 
@@ -557,7 +557,7 @@ module Bundler
     end
 
     def resolver
-      @resolver ||= Resolver.new(resolution_packages, gem_version_promoter)
+      @resolver ||= Resolver.new(resolution_base, gem_version_promoter)
     end
 
     def expanded_dependencies
@@ -571,14 +571,14 @@ module Bundler
       [Dependency.new("bundler", @unlocking_bundler)] + dependencies
     end
 
-    def resolution_packages
-      @resolution_packages ||= begin
+    def resolution_base
+      @resolution_base ||= begin
         last_resolve = converge_locked_specs
         remove_invalid_platforms!
-        packages = Resolver::Base.new(source_requirements, expanded_dependencies, last_resolve, @platforms, locked_specs: @originally_locked_specs, unlock: @gems_to_unlock, prerelease: gem_version_promoter.pre?, prefer_local: @prefer_local)
-        packages = additional_base_requirements_to_prevent_downgrades(packages, last_resolve)
-        packages = additional_base_requirements_to_force_updates(packages)
-        packages
+        base = Resolver::Base.new(source_requirements, expanded_dependencies, last_resolve, @platforms, locked_specs: @originally_locked_specs, unlock: @gems_to_unlock, prerelease: gem_version_promoter.pre?, prefer_local: @prefer_local)
+        base = additional_base_requirements_to_prevent_downgrades(base, last_resolve)
+        base = additional_base_requirements_to_force_updates(base)
+        base
       end
     end
 
@@ -613,14 +613,14 @@ module Bundler
 
         Bundler.ui.debug("The lockfile does not have all gems needed for the current platform though, Bundler will still re-resolve dependencies")
         sources.remote!
-        resolution_packages.delete(incomplete_specs)
+        resolution_base.delete(incomplete_specs)
         @resolve = start_resolution
         specs = resolve.materialize(dependencies)
 
         still_incomplete_specs = specs.incomplete_specs
 
         if still_incomplete_specs == incomplete_specs
-          package = resolution_packages.get_package(incomplete_specs.first.name)
+          package = resolution_base.get_package(incomplete_specs.first.name)
           resolver.raise_not_found! package
         end
 
@@ -1015,23 +1015,23 @@ module Bundler
       current == proposed
     end
 
-    def additional_base_requirements_to_prevent_downgrades(resolution_packages, last_resolve)
-      return resolution_packages unless @locked_gems && !sources.expired_sources?(@locked_gems.sources)
+    def additional_base_requirements_to_prevent_downgrades(resolution_base, last_resolve)
+      return resolution_base unless @locked_gems && !sources.expired_sources?(@locked_gems.sources)
       converge_specs(@originally_locked_specs - last_resolve).each do |locked_spec|
         next if locked_spec.source.is_a?(Source::Path)
-        resolution_packages.base_requirements[locked_spec.name] = Gem::Requirement.new(">= #{locked_spec.version}")
+        resolution_base.base_requirements[locked_spec.name] = Gem::Requirement.new(">= #{locked_spec.version}")
       end
-      resolution_packages
+      resolution_base
     end
 
-    def additional_base_requirements_to_force_updates(resolution_packages)
-      return resolution_packages if @explicit_unlocks.empty?
+    def additional_base_requirements_to_force_updates(resolution_base)
+      return resolution_base if @explicit_unlocks.empty?
       full_update = dup_for_full_unlock.resolve
       @explicit_unlocks.each do |name|
         version = full_update[name].first&.version
-        resolution_packages.base_requirements[name] = Gem::Requirement.new("= #{version}") if version
+        resolution_base.base_requirements[name] = Gem::Requirement.new("= #{version}") if version
       end
-      resolution_packages
+      resolution_base
     end
 
     def dup_for_full_unlock

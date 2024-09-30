@@ -80,12 +80,11 @@ module Bundler
       # time, we have builtin tools to do. So for now, we use an undocumented
       # ENV variable only for our specs.
       bundler_spec_original_cmd = ENV["BUNDLER_SPEC_ORIGINAL_CMD"]
-      if bundler_spec_original_cmd
+      cmd = if bundler_spec_original_cmd
         require "shellwords"
-        cmd = [*Shellwords.shellsplit(bundler_spec_original_cmd), *ARGV]
+        [*Shellwords.shellsplit(bundler_spec_original_cmd), *ARGV]
       else
-        cmd = [$PROGRAM_NAME, *ARGV]
-        cmd.unshift(Gem.ruby) unless File.executable?($PROGRAM_NAME)
+        [$PROGRAM_NAME, *ARGV]
       end
 
       Bundler.with_original_env do

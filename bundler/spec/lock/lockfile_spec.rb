@@ -284,7 +284,7 @@ RSpec.describe "the lockfile format" do
   it "generates a lockfile without credentials" do
     bundle "config set https://localgemserver.test/ user:pass"
 
-    install_gemfile(<<-G, artifice: "endpoint_strict_basic_authentication", quiet: true)
+    install_gemfile(<<-G, artifice: "endpoint_strict_basic_authentication")
       source "https://gem.repo1"
 
       source "https://localgemserver.test/" do
@@ -377,7 +377,7 @@ RSpec.describe "the lockfile format" do
     lockfile lockfile_without_credentials
 
     # when not re-resolving
-    bundle "install", artifice: "endpoint_strict_basic_authentication", quiet: true
+    bundle "install", artifice: "endpoint_strict_basic_authentication"
     expect(lockfile).to eq lockfile_without_credentials
 
     # when re-resolving with full unlock
@@ -437,7 +437,7 @@ RSpec.describe "the lockfile format" do
 
     lockfile lockfile_with_credentials
 
-    bundle "install", artifice: "endpoint_strict_basic_authentication", quiet: true
+    bundle "install", artifice: "endpoint_strict_basic_authentication"
 
     expect(lockfile).to eq lockfile_with_credentials
   end

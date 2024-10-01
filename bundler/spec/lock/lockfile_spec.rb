@@ -387,11 +387,7 @@ RSpec.describe "the lockfile format" do
     bundle "config set http://localgemserver.test/ user:pass"
 
     gemfile <<~G
-      source "https://gem.repo1"
-
-      source "http://localgemserver.test/" do
-
-      end
+      source "http://localgemserver.test/"
 
       source "http://user:pass@othergemserver.test/" do
         gem "myrack-obama", ">= 1.0"
@@ -414,10 +410,6 @@ RSpec.describe "the lockfile format" do
           myrack (1.0.0)
           myrack-obama (1.0)
             myrack
-
-      GEM
-        remote: https://gem.repo1/
-        specs:
 
       PLATFORMS
         #{lockfile_platforms}
@@ -448,11 +440,7 @@ RSpec.describe "the lockfile format" do
     bundle "config set http://localgemserver.test/ user:pass"
 
     gemfile <<~G
-      source "https://gem.repo1"
-
-      source "http://localgemserver.test/" do
-
-      end
+      source "http://localgemserver.test"
 
       source "http://user:pass@othergemserver.test/" do
         gem "myrack-obama", ">= 1.0"
@@ -475,10 +463,6 @@ RSpec.describe "the lockfile format" do
           myrack (1.0.0)
           myrack-obama (1.0)
             myrack
-
-      GEM
-        remote: https://gem.repo1/
-        specs:
 
       PLATFORMS
         #{lockfile_platforms}

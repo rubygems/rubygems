@@ -1,3 +1,29 @@
+# 3.5.21 / 2024-10-03
+
+## Enhancements:
+
+* Fix `Gem::MissingSpecVersionError#to_s` not showing exception message.
+  Pull request [#8074](https://github.com/rubygems/rubygems/pull/8074) by
+  deivid-rodriguez
+* Remove code that makes suggest_gems_from_name give worse results. Pull
+  request [#8083](https://github.com/rubygems/rubygems/pull/8083) by
+  duckinator
+* Warning about PATH in `--user-install` mode is only necessary for gems
+  with executables. Pull request
+  [#8071](https://github.com/rubygems/rubygems/pull/8071) by
+  deivid-rodriguez
+* Installs bundler 2.5.21 as a default gem.
+
+## Bug fixes:
+
+* Fix error in one source when fetching dependency APIs clearing results
+  from all sources. Pull request
+  [#8080](https://github.com/rubygems/rubygems/pull/8080) by
+  deivid-rodriguez
+* Fix `gem cleanup` warning when two versions of psych installed. Pull
+  request [#8072](https://github.com/rubygems/rubygems/pull/8072) by
+  deivid-rodriguez
+
 # 3.5.20 / 2024-09-24
 
 ## Enhancements:

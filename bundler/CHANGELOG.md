@@ -1,3 +1,12 @@
+# 2.5.21 (October 3, 2024)
+
+## Bug fixes:
+
+  - Fix bug report template printed when changing a path source to a git source in frozen mode [#8079](https://github.com/rubygems/rubygems/pull/8079)
+  - Fix `stub.activated?` sometimes returning false after activation under bundler [#8073](https://github.com/rubygems/rubygems/pull/8073)
+  - Fix old cache format detection when application is not source controlled [#8076](https://github.com/rubygems/rubygems/pull/8076)
+  - Fix `bundler/inline` resetting ENV changes [#8059](https://github.com/rubygems/rubygems/pull/8059)
+
 # 2.5.20 (September 24, 2024)
 
 ## Enhancements:

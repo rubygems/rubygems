@@ -155,6 +155,12 @@ RSpec.describe "bundle binstubs <gem>" do
           bundle "install --verbose", env: { "BUNDLER_VERSION" => "999.999.998" }, raise_on_error: false, bundle_bin: "bin/bundle"
           expect(out).to include %(Using bundler 999.999.998\n)
         end
+
+        it "runs correctly even if empty" do
+          skip "does not work on old rubies" if RUBY_VERSION < "2.7.0"
+
+          sys_exec "bin/bundle install", env: { "BUNDLER_VERSION" => "" }
+        end
       end
 
       context "when a lockfile exists with a locked bundler version" do

@@ -266,11 +266,7 @@ module Bundler
       groups.map!(&:to_sym)
       deps = current_dependencies # always returns a new array
       deps.select! do |d|
-        if RUBY_VERSION >= "3.1"
-          d.groups.intersect?(groups)
-        else
-          !(d.groups & groups).empty?
-        end
+        d.groups.intersect?(groups)
       end
       deps
     end
@@ -558,7 +554,7 @@ module Bundler
 
     def dependencies_with_bundler
       return dependencies unless @unlocking_bundler
-      return dependencies if dependencies.map(&:name).include?("bundler")
+      return dependencies if dependencies.any? {|d| d.name == "bundler" }
 
       [Dependency.new("bundler", @unlocking_bundler)] + dependencies
     end

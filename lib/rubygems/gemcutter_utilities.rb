@@ -260,7 +260,7 @@ module Gem::GemcutterUtilities
       port = server.addr[1].to_s
 
       url_with_port = "#{webauthn_url}?port=#{port}"
-      say "You have enabled multi-factor authentication. Please visit #{url_with_port} to authenticate via security device. If you can't verify using WebAuthn but have OTP enabled, you can re-run the gem signin command with the `--otp [your_code]` option."
+      say "You have enabled multi-factor authentication. Please visit #{url_with_port} to authenticate via security device, or alternatively scan the QR code below. If you can't verify using WebAuthn but have OTP enabled, you can re-run the gem signin command with the `--otp [your_code]` option."
       qrcode Gem::RQRCodeCore::QRCode.new(url_with_port)
 
       threads = [WebauthnListener.listener_thread(host, server), WebauthnPoller.poll_thread(options, host, webauthn_url, credentials)]

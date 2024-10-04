@@ -234,7 +234,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     end
 
     assert_match "You have enabled multi-factor authentication. Please visit #{@fetcher.webauthn_url_with_port(server.port)} " \
-      "to authenticate via security device. If you can't verify using WebAuthn but have OTP enabled, " \
+      "to authenticate via security device, or alternatively scan the QR code below. If you can't verify using WebAuthn but have OTP enabled, " \
       "you can re-run the gem signin command with the `--otp [your_code]` option.", @sign_in_ui.output
     assert_includes @sign_in_ui.output, <<~QRCODE
       █████████████████████████████████████████████████████
@@ -285,7 +285,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     assert_equal 1, error.exit_code
 
     assert_match "You have enabled multi-factor authentication. Please visit #{@fetcher.webauthn_url_with_port(server.port)} " \
-      "to authenticate via security device. If you can't verify using WebAuthn but have OTP enabled, " \
+      "to authenticate via security device, or alternatively scan the QR code below. If you can't verify using WebAuthn but have OTP enabled, " \
       "you can re-run the gem signin command with the `--otp [your_code]` option.", @sign_in_ui.output
     assert_match "ERROR:  Security device verification failed: Something went wrong", @sign_in_ui.error
     refute_match "You are verified with a security device. You may close the browser window.", @sign_in_ui.output
@@ -303,7 +303,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     end
 
     assert_match "You have enabled multi-factor authentication. Please visit #{@fetcher.webauthn_url_with_port(server.port)} " \
-      "to authenticate via security device. If you can't verify using WebAuthn but have OTP enabled, " \
+      "to authenticate via security device, or alternatively scan the QR code below. If you can't verify using WebAuthn but have OTP enabled, " \
       "you can re-run the gem signin command with the `--otp [your_code]` option.", @sign_in_ui.output
     assert_match "You are verified with a security device. You may close the browser window.", @sign_in_ui.output
     assert_equal "Uvh6T57tkWuUnWYo", @fetcher.last_request["OTP"]
@@ -322,7 +322,7 @@ class TestGemGemcutterUtilities < Gem::TestCase
     end
 
     assert_match "You have enabled multi-factor authentication. Please visit #{@fetcher.webauthn_url_with_port(server.port)} " \
-      "to authenticate via security device. If you can't verify using WebAuthn but have OTP enabled, " \
+      "to authenticate via security device, or alternatively scan the QR code below. If you can't verify using WebAuthn but have OTP enabled, " \
       "you can re-run the gem signin command with the `--otp [your_code]` option.", @sign_in_ui.output
     assert_match "ERROR:  Security device verification failed: " \
       "The token in the link you used has either expired or been used already.", @sign_in_ui.error

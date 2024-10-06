@@ -305,6 +305,9 @@ class Gem::RequestSet
       end
     end
 
+    # Don't run hooks with nil spec since they don't expect that
+    specs.delete_if { |spec| spec.nil? }
+
     require_relative "dependency_installer"
     inst = Gem::DependencyInstaller.new options
     inst.installed_gems.replace specs

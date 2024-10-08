@@ -285,7 +285,7 @@ module Bundler
 
       redefine_method(gem_class, :activate_bin_path) do |name, *args|
         exec_name = args.first
-        return ENV["BUNDLE_BIN_PATH"] if exec_name == "bundle"
+        return ENV["BUNDLE_BIN_PATH"] if exec_name == "bundle" or exec_name == "bundler"
 
         # Copy of Rubygems activate_bin_path impl
         requirement = args.last
@@ -298,7 +298,7 @@ module Bundler
 
       redefine_method(gem_class, :bin_path) do |name, *args|
         exec_name = args.first
-        return ENV["BUNDLE_BIN_PATH"] if exec_name == "bundle"
+        return ENV["BUNDLE_BIN_PATH"] if exec_name == "bundle" or exec_name == "bundler"
 
         spec = find_spec_for_exe(name, *args)
         exec_name ||= spec.default_executable

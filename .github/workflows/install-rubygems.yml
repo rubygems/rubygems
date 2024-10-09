@@ -90,6 +90,10 @@ jobs:
         if: matrix.ruby.name != 'truffleruby' && matrix.ruby.name != 'jruby'
       - name: Check rails can be installed
         run: gem install rails --verbose --backtrace
+      - name: Install and load a gem that defines a command as a plugin
+        run: |
+          gem install nexus:1.5.2
+          gem nexus --help
     timeout-minutes: 10
 
   install_rubygems_windows:

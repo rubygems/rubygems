@@ -11,11 +11,17 @@ GEM
     nokogiri (1.16.3)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.16.3-aarch64-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.3-arm-linux)
+      racc (~> 1.4)
     nokogiri (1.16.3-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.3-java)
       racc (~> 1.4)
     nokogiri (1.16.3-x64-mingw-ucrt)
+      racc (~> 1.4)
+    nokogiri (1.16.3-x86-linux)
       racc (~> 1.4)
     nokogiri (1.16.3-x86_64-darwin)
       racc (~> 1.4)
@@ -58,18 +64,16 @@ GEM
 
 PLATFORMS
   aarch64-darwin
-  arm64-darwin-22
-  arm64-darwin-23
+  aarch64-linux
+  arm-linux
+  arm64-darwin
   java
   ruby
-  universal-java-11
-  universal-java-18
-  universal-java-19
+  universal-java
   x64-mingw-ucrt
   x64-mingw32
-  x86_64-darwin-20
-  x86_64-darwin-21
-  x86_64-darwin-22
+  x86-linux
+  x86_64-darwin
   x86_64-linux
 
 DEPENDENCIES
@@ -93,9 +97,12 @@ CHECKSUMS
   mini_portile2 (2.8.5) sha256=7a37db8ae758086c3c3ac3a59c036704d331e965d5e106635e4a42d6e66089ce
   mustache (1.1.1) sha256=90891fdd50b53919ca334c8c1031eada1215e78d226d5795e523d6123a2717d0
   nokogiri (1.16.3) sha256=498aa253ccd5b89a0fa5c4c82b346d22176fc865f4a12ef8da642064d1d3e248
+  nokogiri (1.16.3-aarch64-linux) sha256=3d806263a0548e5163ff256655d78a87998fa83a5ae256b83c14a1a97731e824
+  nokogiri (1.16.3-arm-linux) sha256=cfb923c02bde065005e2521f0a6883c63cf305cb899a9dd4c74897731bb2af1d
   nokogiri (1.16.3-arm64-darwin) sha256=5d3268558c002fa493e33076798cfda1df8effbd5363060dc41595cfebb1cf90
   nokogiri (1.16.3-java) sha256=6bf0918233959c7d5e703061ada0f436544612397475a866aa314071f02bfabb
   nokogiri (1.16.3-x64-mingw-ucrt) sha256=656f163dd287671c3a28157a2e853ee1a36afeb3f4185a78af863f3980efc58d
+  nokogiri (1.16.3-x86-linux) sha256=08d8a369940fa2309379cd8af1e7b3cc702b0115d3ddd197cfa7b33daedfd541
   nokogiri (1.16.3-x86_64-darwin) sha256=bc22786f4db4c32a5587e3b77a106408148d3bb1602dd0b52c0f5c968c42d17d
   nokogiri (1.16.3-x86_64-linux) sha256=47a3330e41b49a100225b6fab490b2dc43410931e01e791886e0c2998412e8cb
   nronn (0.11.1) sha256=60305c7a42dcaf6bdd33210993a7e38087520717561da101bea1df7197546369

@@ -161,6 +161,7 @@ bundler/lib/bundler/plugin.rb
 bundler/lib/bundler/plugin/api.rb
 bundler/lib/bundler/plugin/api/source.rb
 bundler/lib/bundler/plugin/dsl.rb
+bundler/lib/bundler/plugin/dummy_source.rb
 bundler/lib/bundler/plugin/events.rb
 bundler/lib/bundler/plugin/index.rb
 bundler/lib/bundler/plugin/installer.rb

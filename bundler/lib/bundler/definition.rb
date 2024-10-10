@@ -105,6 +105,8 @@ module Bundler
           @locked_specs   = SpecSet.new([])
           @locked_sources = []
         end
+
+        remove_plugin_dependencies_if_necessary
       else
         @unlock         = {}
         @platforms      = []
@@ -227,6 +229,10 @@ module Bundler
 
     def requested_dependencies
       dependencies_for(requested_groups)
+    end
+
+    def plugin_dependencies
+      requested_dependencies.select {|dep| dep.type == :plugin }
     end
 
     def current_dependencies
@@ -418,6 +424,7 @@ module Bundler
     def validate_runtime!
       validate_ruby!
       validate_platforms!
+      validate_plugins!
     end
 
     def validate_ruby!
@@ -451,6 +458,19 @@ module Bundler
       raise ProductionError, "Your bundle only supports platforms #{@platforms.map(&:to_s)} " \
         "but your local platform is #{local_platform}. " \
         "Add the current platform to the lockfile with\n`bundle lock --add-platform #{local_platform}` and try again."
+    end
+
+    def validate_plugins!
+      missing_plugins_list = []
+      plugin_dependencies.each do |plugin|
+        missing_plugins_list << plugin unless Plugin.installed?(plugin.name)
+      end
+      missing_plugins_list.map! {|p| "#{p.name} (#{p.requirement})" }
+      if missing_plugins_list.size > 1
+        raise GemNotFound, "Plugins #{missing_plugins_list.join(", ")} are not installed"
+      elsif missing_plugins_list.any?
+        raise GemNotFound, "Plugin #{missing_plugins_list.join(", ")} is not installed"
+      end
     end
 
     def add_platform(platform)
@@ -1067,6 +1087,15 @@ module Bundler
 
     def source_map
       @source_map ||= SourceMap.new(sources, dependencies, @locked_specs)
+    end
+
+    def remove_plugin_dependencies_if_necessary
+      return if Bundler.feature_flag.plugins_in_lockfile?
+      # we already have plugin dependencies in the lockfile; continue to do so regardless
+      # of the current setting
+      return if @dependencies.any? {|d| d.type == :plugin && @locked_deps.key?(d.name) }
+
+      @dependencies.reject! {|d| d.type == :plugin }
     end
   end
 end

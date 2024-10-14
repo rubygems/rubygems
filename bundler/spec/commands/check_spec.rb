@@ -448,6 +448,61 @@ RSpec.describe "bundle check" do
     end
   end
 
+  context "with scoped and unscoped sources" do
+    it "does not corrupt lockfile" do
+      build_repo2 do
+        build_gem "foo"
+        build_gem "wadus"
+        build_gem("baz") { |s| s.add_dependency "wadus" }
+      end
+
+      build_repo4 do
+        build_gem "bar"
+      end
+
+      # Add all gems to ensure all gems are installed so that a bundle check
+      # would be successful
+      install_gemfile(<<-G, artifice: "compact_index_extra")
+        source "https://gem.repo2"
+
+        source "https://gem.repo4" do
+          gem "bar"
+        end
+
+        gem "foo"
+        gem "baz"
+      G
+
+      correct_lockfile = lockfile
+
+      # Remove "baz" gem from the Gemfile, and bundle install again to generate
+      # a functional lockfile with no "baz" dependency or "wadus" transitive
+      # dependency
+      install_gemfile(<<-G, artifice: "compact_index_extra")
+        source "https://gem.repo2"
+
+        source "https://gem.repo4" do
+          gem "bar"
+        end
+
+        gem "foo"
+      G
+
+      # Add "baz" gem back to the Gemfile, but _crucially_ we do not perform a
+      # bundle install
+      gemfile(gemfile + 'gem "baz"')
+
+      # Bundle check, which we expect to succeed, but break the lockfile
+      bundle :check
+
+      new_lockfile = lockfile
+
+      # Observe that the "wadus" transitive dependency is moved from the "repo2"
+      # section of the gemspec to the "repo4" section, which is incorrect
+      expect(correct_lockfile).to eq(new_lockfile)
+    end
+  end
+
   context "with gemspec directive and scoped sources" do
     before do
       build_repo4 do

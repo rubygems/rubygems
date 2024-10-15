@@ -339,7 +339,7 @@ RSpec.describe "the lockfile format" do
   it "generates a lockfile without credentials" do
     bundle "config set https://localgemserver.test/ user:pass"
 
-    install_gemfile(<<-G, artifice: "endpoint_strict_basic_authentication", quiet: true)
+    install_gemfile(<<-G, artifice: "endpoint_strict_basic_authentication")
       source "https://gem.repo1"
 
       source "https://localgemserver.test/" do
@@ -387,11 +387,7 @@ RSpec.describe "the lockfile format" do
     bundle "config set http://localgemserver.test/ user:pass"
 
     gemfile <<~G
-      source "https://gem.repo1"
-
-      source "http://localgemserver.test/" do
-
-      end
+      source "http://localgemserver.test/"
 
       source "http://user:pass@othergemserver.test/" do
         gem "myrack-obama", ">= 1.0"
@@ -415,10 +411,6 @@ RSpec.describe "the lockfile format" do
           myrack-obama (1.0)
             myrack
 
-      GEM
-        remote: https://gem.repo1/
-        specs:
-
       PLATFORMS
         #{lockfile_platforms}
 
@@ -432,7 +424,7 @@ RSpec.describe "the lockfile format" do
     lockfile lockfile_without_credentials
 
     # when not re-resolving
-    bundle "install", artifice: "endpoint_strict_basic_authentication", quiet: true
+    bundle "install", artifice: "endpoint_strict_basic_authentication"
     expect(lockfile).to eq lockfile_without_credentials
 
     # when re-resolving with full unlock
@@ -448,11 +440,7 @@ RSpec.describe "the lockfile format" do
     bundle "config set http://localgemserver.test/ user:pass"
 
     gemfile <<~G
-      source "https://gem.repo1"
-
-      source "http://localgemserver.test/" do
-
-      end
+      source "http://localgemserver.test"
 
       source "http://user:pass@othergemserver.test/" do
         gem "myrack-obama", ">= 1.0"
@@ -476,10 +464,6 @@ RSpec.describe "the lockfile format" do
           myrack-obama (1.0)
             myrack
 
-      GEM
-        remote: https://gem.repo1/
-        specs:
-
       PLATFORMS
         #{lockfile_platforms}
 
@@ -492,7 +476,7 @@ RSpec.describe "the lockfile format" do
 
     lockfile lockfile_with_credentials
 
-    bundle "install", artifice: "endpoint_strict_basic_authentication", quiet: true
+    bundle "install", artifice: "endpoint_strict_basic_authentication"
 
     expect(lockfile).to eq lockfile_with_credentials
   end

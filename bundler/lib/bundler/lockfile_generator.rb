@@ -29,7 +29,7 @@ module Bundler
     private
 
     def add_sources
-      definition.send(:sources).lock_sources.each_with_index do |source, idx|
+      definition.sources.lock_sources.each_with_index do |source, idx|
         out << "\n" unless idx.zero?
 
         # Add the source header
@@ -69,8 +69,9 @@ module Bundler
     def add_checksums
       return unless definition.locked_checksums
       checksums = definition.resolve.map do |spec|
+        next if spec.name == "bundler"
         spec.source.checksum_store.to_lock(spec)
-      end
+      end.compact
       add_section("CHECKSUMS", checksums)
     end
 

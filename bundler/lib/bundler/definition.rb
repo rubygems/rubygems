@@ -19,7 +19,8 @@ module Bundler
       :ruby_version,
       :lockfile,
       :gemfiles,
-      :locked_checksums
+      :locked_checksums,
+      :sources
     )
 
     # Given a gemfile and lockfile creates a Bundler definition
@@ -213,7 +214,7 @@ module Bundler
     rescue BundlerError => e
       @resolve = nil
       @resolver = nil
-      @resolution_packages = nil
+      @resolution_base = nil
       @source_requirements = nil
       @specs = nil
 
@@ -230,7 +231,7 @@ module Bundler
     end
 
     def current_dependencies
-      filter_relevant(dependencies)
+      filter_relevant(dependencies_with_bundler)
     end
 
     def current_locked_dependencies
@@ -279,17 +280,17 @@ module Bundler
     def resolve
       @resolve ||= if Bundler.frozen_bundle?
         Bundler.ui.debug "Frozen, using resolution from the lockfile"
-        @locked_specs
+        locked_specs_with_bundler
       elsif no_resolve_needed?
         if deleted_deps.any?
           Bundler.ui.debug "Some dependencies were deleted, using a subset of the resolution from the lockfile"
-          SpecSet.new(filter_specs(@locked_specs, @dependencies - deleted_deps))
+          SpecSet.new(filter_specs(locked_specs_with_bundler, dependencies_with_bundler - deleted_deps))
         else
           Bundler.ui.debug "Found no changes, using resolution from the lockfile"
           if @removed_platform || @locked_gems.may_include_redundant_platform_specific_gems?
-            SpecSet.new(filter_specs(@locked_specs, @dependencies))
+            SpecSet.new(filter_specs(locked_specs_with_bundler, dependencies_with_bundler))
           else
-            @locked_specs
+            locked_specs_with_bundler
           end
         end
       else
@@ -308,7 +309,7 @@ module Bundler
     end
 
     def groups
-      dependencies.map(&:groups).flatten.uniq
+      dependencies_with_bundler.map(&:groups).flatten.uniq
     end
 
     def lock(file_or_preserve_unknown_sections = false, preserve_unknown_sections_or_unused = false)
@@ -500,7 +501,13 @@ module Bundler
 
     private
 
-    attr_reader :sources
+    def locked_specs_with_bundler
+      @locked_specs_with_bundler ||= SpecSet.new(@locked_gems.specs + [bundler_spec])
+    end
+
+    def bundler_spec
+      LazySpecification.new("bundler", Bundler.gem_version, Gem::Platform::RUBY, bundler_source)
+    end
 
     def should_add_extra_platforms?
       !lockfile_exists? && generic_local_platform_is_ruby? && !Bundler.settings[:force_ruby_platform]
@@ -545,7 +552,7 @@ module Bundler
     end
 
     def resolver
-      @resolver ||= Resolver.new(resolution_packages, gem_version_promoter)
+      @resolver ||= Resolver.new(resolution_base, gem_version_promoter)
     end
 
     def expanded_dependencies
@@ -553,20 +560,19 @@ module Bundler
     end
 
     def dependencies_with_bundler
-      return dependencies unless @unlocking_bundler
       return dependencies if dependencies.any? {|d| d.name == "bundler" }
 
-      [Dependency.new("bundler", @unlocking_bundler)] + dependencies
+      [Dependency.new("bundler", @unlocking_bundler || Bundler::VERSION, { "implicit" => true })] + dependencies
     end
 
-    def resolution_packages
-      @resolution_packages ||= begin
+    def resolution_base
+      @resolution_base ||= begin
         last_resolve = converge_locked_specs
         remove_invalid_platforms!
-        packages = Resolver::Base.new(source_requirements, expanded_dependencies, last_resolve, @platforms, locked_specs: @originally_locked_specs, unlock: @gems_to_unlock, prerelease: gem_version_promoter.pre?, prefer_local: @prefer_local)
-        packages = additional_base_requirements_to_prevent_downgrades(packages, last_resolve)
-        packages = additional_base_requirements_to_force_updates(packages)
-        packages
+        base = Resolver::Base.new(source_requirements, expanded_dependencies, last_resolve, @platforms, locked_specs: @originally_locked_specs, unlock: @gems_to_unlock, prerelease: gem_version_promoter.pre?, prefer_local: @prefer_local)
+        base = additional_base_requirements_to_prevent_downgrades(base, last_resolve)
+        base = additional_base_requirements_to_force_updates(base)
+        base
       end
     end
 
@@ -601,22 +607,19 @@ module Bundler
 
         Bundler.ui.debug("The lockfile does not have all gems needed for the current platform though, Bundler will still re-resolve dependencies")
         sources.remote!
-        resolution_packages.delete(incomplete_specs)
+        resolution_base.delete(incomplete_specs)
         @resolve = start_resolution
         specs = resolve.materialize(dependencies)
 
         still_incomplete_specs = specs.incomplete_specs
 
         if still_incomplete_specs == incomplete_specs
-          package = resolution_packages.get_package(incomplete_specs.first.name)
+          package = resolution_base.get_package(incomplete_specs.first.name)
           resolver.raise_not_found! package
         end
 
         incomplete_specs = still_incomplete_specs
       end
-
-      bundler = sources.metadata_source.specs.search(["bundler", Bundler.gem_version]).last
-      specs["bundler"] = bundler
 
       specs
     end
@@ -640,7 +643,7 @@ module Bundler
 
       @platforms = result.add_extra_platforms!(platforms) if should_add_extra_platforms?
 
-      SpecSet.new(result.for(dependencies, false, @platforms))
+      SpecSet.new(result.for(dependencies_with_bundler, false, @platforms))
     end
 
     def precompute_source_requirements_for_indirect_dependencies?
@@ -971,13 +974,12 @@ module Bundler
         source_requirements[dep.name] = sources.metadata_source
       end
 
-      default_bundler_source = source_requirements["bundler"] || default_source
+      default_bundler_source = source_requirements["bundler"] || sources.global_rubygems_source
 
       if @unlocking_bundler
         default_bundler_source.add_dependency_names("bundler")
       else
-        source_requirements[:default_bundler] = default_bundler_source
-        source_requirements["bundler"] = sources.metadata_source # needs to come last to override
+        source_requirements[:local_bundler] = sources.metadata_source
       end
 
       verify_changed_sources!
@@ -986,6 +988,10 @@ module Bundler
 
     def default_source
       sources.default_source
+    end
+
+    def bundler_source
+      source_map.direct_requirements["bundler"] || sources.global_rubygems_source
     end
 
     def verify_changed_sources!
@@ -1016,23 +1022,23 @@ module Bundler
       current == proposed
     end
 
-    def additional_base_requirements_to_prevent_downgrades(resolution_packages, last_resolve)
-      return resolution_packages unless @locked_gems && !sources.expired_sources?(@locked_gems.sources)
+    def additional_base_requirements_to_prevent_downgrades(resolution_base, last_resolve)
+      return resolution_base unless @locked_gems && !sources.expired_sources?(@locked_gems.sources)
       converge_specs(@originally_locked_specs - last_resolve).each do |locked_spec|
         next if locked_spec.source.is_a?(Source::Path)
-        resolution_packages.base_requirements[locked_spec.name] = Gem::Requirement.new(">= #{locked_spec.version}")
+        resolution_base.base_requirements[locked_spec.name] = Gem::Requirement.new(">= #{locked_spec.version}")
       end
-      resolution_packages
+      resolution_base
     end
 
-    def additional_base_requirements_to_force_updates(resolution_packages)
-      return resolution_packages if @explicit_unlocks.empty?
+    def additional_base_requirements_to_force_updates(resolution_base)
+      return resolution_base if @explicit_unlocks.empty?
       full_update = dup_for_full_unlock.resolve
       @explicit_unlocks.each do |name|
         version = full_update[name].first&.version
-        resolution_packages.base_requirements[name] = Gem::Requirement.new("= #{version}") if version
+        resolution_base.base_requirements[name] = Gem::Requirement.new("= #{version}") if version
       end
-      resolution_packages
+      resolution_base
     end
 
     def dup_for_full_unlock
@@ -1055,7 +1061,7 @@ module Bundler
                 @path_changes ||
                 @dependency_changes ||
                 @locked_spec_with_invalid_deps ||
-                !spec_set_incomplete_for_platform?(@originally_locked_specs, platform)
+                !spec_set_incomplete_for_platform?(locked_specs_with_bundler, platform)
 
         remove_platform(platform)
       end

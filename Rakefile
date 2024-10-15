@@ -252,7 +252,8 @@ file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
     tar_version = `tar --version`
     if tar_version.include?("bsdtar")
       # bsdtar, as used by at least FreeBSD and macOS, uses `--uname` and `--gname`.
-      sh "tar -czf rubygems-#{v}.tgz --uname=rubygems:0 --gname=rubygems:0 rubygems-#{v}"
+      # COPYFILE_DISABLE prevents storing macOS extended attribute data in `._*` files inside the archive
+      sh({ "COPYFILE_DISABLE" => "1" }, "tar -czf rubygems-#{v}.tgz --uname=rubygems:0 --gname=rubygems:0 rubygems-#{v}")
     else # If a third variant is added, change this line to: elsif tar_version =~ /GNU tar/
       # GNU Tar, as used by many Linux distros, uses `--owner` and `--group`.
       sh "tar -czf rubygems-#{v}.tgz --owner=rubygems:0 --group=rubygems:0 rubygems-#{v}"

@@ -84,7 +84,7 @@ changes to `master` by default _won't_ make their way into the current stable
 branch, and development on `master` will be targeting the next minor
 or major release.
 
-There is a `rake prepare_release[<target_rubygems_version>]` rake task
+There is a `bin/rake prepare_release[<target_rubygems_version>]` rake task
 that helps with creating a release. It takes a single argument, the _exact
 rubygems release_ being made (e.g.  `3.2.3` when releasing bundler `2.2.3`).
 This task checks out the appropriate stable branch (`3.2`, for example), grabs
@@ -158,21 +158,21 @@ affect only very few users in rare cases.
 
 *   Confirm all PRs that you want backported are properly tagged with `rubygems:
     <type>` or `bundler: <type>` labels at GitHub.
-*   Run `rake prepare_release[<target_rubygems_version>]`. This will create a PR
-    to the stable branch with the backports included in the release, and proper
-    changelogs and version bumps. It will also create a PR to merge release
-    changelogs into master.
+*   Run `bin/rake prepare_release[<target_rubygems_version>]`. This will create
+    a PR to the stable branch with the backports included in the release, and
+    proper changelogs and version bumps. It will also create a PR to merge
+    release changelogs into master.
 *   Once CI passes, merge the release PR, switch to the stable branch and pull
     the PR just merged.
-*   Release `bundler` with `rake bundler:release`.
-*   Release `rubygems` with `rake release`.
+*   Release `bundler` with `bin/rake bundler:release`.
+*   Release `rubygems` with `bin/rake release`.
 
 ### Steps for minor and major releases
 
 *   Confirm all PRs that you want listed in changelogs are properly tagged with
     `rubygems: <type>` or `bundler: <type>` labels at GitHub.
-*   Run `rake prepare_release[<target_rubygems_version>]`. This will create a
-    new stable branch off the master branch, and create a PR to it with the
+*   Run `bin/rake prepare_release[<target_rubygems_version>]`. This will create
+    a new stable branch off the master branch, and create a PR to it with the
     proper version bumps and changelogs. It will also create a PR to merge
     release changelogs into master.
 *   Replace the stable branch in the workflows with the new stable branch, and
@@ -181,8 +181,8 @@ affect only very few users in rare cases.
     to the master PR.
 *   Once CI passes, merge the release PR, switch to  the stable branch and pull
     the PR just merged.
-*   Release `bundler` with `rake bundler:release`.
-*   Release `rubygems` with `rake release`.
+*   Release `bundler` with `bin/rake bundler:release`.
+*   Release `rubygems` with `bin/rake release`.
 
 ## Committer Access
 

@@ -11,11 +11,11 @@ contributors to follow to reduce the time it takes to get changes merged in.
 2.  Ensure that your code blends well with ours:
     *   No trailing whitespace
     *   Match indentation (two spaces)
-    *   Match coding style (run `rake rubocop`)
+    *   Match coding style (run `bin/rake rubocop`)
 
 3.  If any new files are added or existing files removed in a commit or PR,
     please update the `Manifest.txt` accordingly. This can be done by running
-    `rake update_manifest`
+    `bin/rake update_manifest`
 
 4.  Don't modify the history file or version number.
 
@@ -74,7 +74,7 @@ Everything needs to be run from the `bundler/` subfolder.
 
 To setup bundler tests:
 
-    rake spec:parallel_deps
+    bin/rake spec:parallel_deps
 
 To run the entire bundler test suite in parallel (it takes a while):
 
@@ -92,11 +92,11 @@ To run an individual test file location for example in `spec/install/gems/standa
 
 You can check compliance with our code style with
 
-    rake rubocop
+    bin/rake rubocop
 
 Optionally you can configure git hooks with to check this before every commit with
 
-    rake git_hooks
+    bin/rake git_hooks
 
 ## Issues
 

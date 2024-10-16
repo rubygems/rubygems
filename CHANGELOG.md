@@ -1,3 +1,38 @@
+# 3.5.22 / 2024-10-16
+
+## Enhancements:
+
+* Prevent `._*` files in packages generated from macOS. Pull request
+  [#8150](https://github.com/rubygems/rubygems/pull/8150) by
+  deivid-rodriguez
+* Fix `gem pristine etc` resetting gem twice sometimes. Pull request
+  [#8117](https://github.com/rubygems/rubygems/pull/8117) by
+  deivid-rodriguez
+* Allow `gem pristine` to reset default gems too. Pull request
+  [#8118](https://github.com/rubygems/rubygems/pull/8118) by
+  deivid-rodriguez
+* Update vendored `uri` and `net-http`. Pull request
+  [#8112](https://github.com/rubygems/rubygems/pull/8112) by segiddins
+* Installs bundler 2.5.22 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem contents` for default gems. Pull request
+  [#8132](https://github.com/rubygems/rubygems/pull/8132) by
+  deivid-rodriguez
+* Fix duplicated specs when they have been previously activated. Pull
+  request [#8131](https://github.com/rubygems/rubygems/pull/8131) by
+  deivid-rodriguez
+* Fix `gem install` on NFS shares. Pull request
+  [#8123](https://github.com/rubygems/rubygems/pull/8123) by
+  deivid-rodriguez
+* Fix a `gem install` crash during "done installing" hooks. Pull request
+  [#8113](https://github.com/rubygems/rubygems/pull/8113) by
+  deivid-rodriguez
+* Fix plugin command loading. Pull request
+  [#8121](https://github.com/rubygems/rubygems/pull/8121) by
+  deivid-rodriguez
+
 # 3.5.21 / 2024-10-03
 
 ## Enhancements:

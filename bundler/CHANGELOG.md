@@ -1,3 +1,13 @@
+# 2.5.22 (October 16, 2024)
+
+## Enhancements:
+
+  - Update vendored `uri` and `net-http` [#8112](https://github.com/rubygems/rubygems/pull/8112)
+
+## Bug fixes:
+
+  - Fix bundler sometimes crashing because of trying to use a version of psych compiled for a different Ruby [#8104](https://github.com/rubygems/rubygems/pull/8104)
+
 # 2.5.21 (October 3, 2024)
 
 ## Bug fixes:

@@ -19,7 +19,8 @@ module Bundler
       :ruby_version,
       :lockfile,
       :gemfiles,
-      :locked_checksums
+      :locked_checksums,
+      :sources
     )
 
     # Given a gemfile and lockfile creates a Bundler definition
@@ -162,7 +163,14 @@ module Bundler
       @gem_version_promoter ||= GemVersionPromoter.new
     end
 
-    def resolve_only_locally!
+    def check!
+      # If dependencies have changed, we need to resolve remotely. Otherwise,
+      # since we'll be resolving with a single local source, we may end up
+      # locking gems under the wrong source in the lockfile, and missing lockfile
+      # checksums
+      resolve_remotely! if @dependency_changes
+
+      # Now do a local only resolve, to verify if any gems are missing locally
       sources.local_only!
       resolve
     end
@@ -499,8 +507,6 @@ module Bundler
     attr_writer :source_requirements
 
     private
-
-    attr_reader :sources
 
     def should_add_extra_platforms?
       !lockfile_exists? && generic_local_platform_is_ruby? && !Bundler.settings[:force_ruby_platform]
@@ -888,8 +894,6 @@ module Bundler
       converged = []
       deps = []
 
-      @specs_that_changed_sources = []
-
       specs.each do |s|
         name = s.name
         dep = @dependencies.find {|d| s.satisfies?(d) }
@@ -898,7 +902,6 @@ module Bundler
         if dep
           gemfile_source = dep.source || default_source
 
-          @specs_that_changed_sources << s if gemfile_source != lockfile_source
           deps << dep if !dep.source || lockfile_source.include?(dep.source)
           @gems_to_unlock << name if lockfile_source.include?(dep.source) && lockfile_source != gemfile_source
 
@@ -980,20 +983,11 @@ module Bundler
         source_requirements["bundler"] = sources.metadata_source # needs to come last to override
       end
 
-      verify_changed_sources!
       source_requirements
     end
 
     def default_source
       sources.default_source
-    end
-
-    def verify_changed_sources!
-      @specs_that_changed_sources.each do |s|
-        if s.source.specs.search(s.name).empty?
-          raise GemNotFound, "Could not find gem '#{s.name}' in #{s.source}"
-        end
-      end
     end
 
     def requested_groups

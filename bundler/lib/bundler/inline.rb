@@ -33,9 +33,13 @@ def gemfile(install = false, options = {}, &gemfile)
   require_relative "../bundler"
   Bundler.reset!
 
+  if install.is_a?(Hash)
+    options = install
+    install = false
+  end
   opts = options.dup
   ui = opts.delete(:ui) { Bundler::UI::Shell.new }
-  ui.level = "silent" if opts.delete(:quiet) || !install
+  ui.level = "silent" if opts.delete(:quiet)
   Bundler.ui = ui
   raise ArgumentError, "Unknown options: #{opts.keys.join(", ")}" unless opts.empty?
 
@@ -46,6 +50,15 @@ def gemfile(install = false, options = {}, &gemfile)
   begin
     Bundler.instance_variable_set(:@bundle_path, Pathname.new(Gem.dir))
     Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", "Gemfile"
+    if install
+      Bundler::SharedHelpers.major_deprecation(
+        2,
+        "The optional `install` parameter in the `gemfile(install = false, options = {}, &gemfile)` " \
+        "helper will be removed because regardless of what you pass in there, it still installs " \
+        "missing gems. Remove the explicit `install` parameter to get rid of this message.",
+        print_caller_location: true
+      )
+    end
 
     Bundler::Plugin.gemfile_install(&gemfile) if Bundler.feature_flag.plugins?
     builder = Bundler::Dsl.new

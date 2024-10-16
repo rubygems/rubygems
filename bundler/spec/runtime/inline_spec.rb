@@ -46,7 +46,7 @@ RSpec.describe "bundler/inline#gemfile" do
 
   it "requires the gems" do
     script <<-RUBY
-      gemfile do
+      gemfile(quiet: true) do
         source "https://gem.repo1"
         path "#{lib_path}" do
           gem "two"
@@ -71,7 +71,7 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(out).not_to include "success"
 
     script <<-RUBY
-      gemfile(true) do
+      gemfile do
         source "https://gem.repo1"
         gem "myrack"
       end
@@ -80,7 +80,7 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(out).to include("Myrack's post install message")
 
     script <<-RUBY, artifice: "endpoint"
-      gemfile(true) do
+      gemfile do
         source "https://notaserver.com"
         gem "activesupport", :require => true
       end
@@ -102,7 +102,7 @@ RSpec.describe "bundler/inline#gemfile" do
       end
       my_ui = MyBundlerUI.new
       my_ui.level = "confirm"
-      gemfile(true, :ui => my_ui) do
+      gemfile(:ui => my_ui) do
         source "https://notaserver.com"
         gem "activesupport", :require => true
       end
@@ -115,7 +115,7 @@ RSpec.describe "bundler/inline#gemfile" do
     script <<-RUBY, artifice: "endpoint"
       require 'bundler/inline'
 
-      gemfile(true, :quiet => true) do
+      gemfile(:quiet => true) do
         source "https://notaserver.com"
         gem "activesupport", :require => true
       end
@@ -126,7 +126,7 @@ RSpec.describe "bundler/inline#gemfile" do
 
   it "raises an exception if passed unknown arguments" do
     script <<-RUBY, raise_on_error: false
-      gemfile(true, :arglebargle => true) do
+      gemfile(:arglebargle => true) do
         path "#{lib_path}"
         gem "two"
       end
@@ -141,7 +141,7 @@ RSpec.describe "bundler/inline#gemfile" do
     script <<-RUBY
       require 'bundler'
       options = { :ui => Bundler::UI::Shell.new }
-      gemfile(false, options) do
+      gemfile(options) do
         source "https://gem.repo1"
         path "#{lib_path}" do
           gem "two"
@@ -153,9 +153,9 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(out).to match("OKAY")
   end
 
-  it "installs quietly if necessary when the install option is not set" do
+  it "installs quietly when the quiet option is set to true" do
     script <<-RUBY
-      gemfile do
+      gemfile(quiet: true) do
         source "https://gem.repo1"
         gem "myrack"
       end
@@ -167,7 +167,7 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(err).to be_empty
   end
 
-  it "installs subdependencies quietly if necessary when the install option is not set" do
+  it "installs subdependencies quietly when the quiet option is set to true" do
     build_repo4 do
       build_gem "myrack" do |s|
         s.add_dependency "myrackdep"
@@ -177,7 +177,7 @@ RSpec.describe "bundler/inline#gemfile" do
     end
 
     script <<-RUBY, env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
-      gemfile do
+      gemfile(quiet: true) do
         source "https://gem.repo4"
         gem "myrack"
       end
@@ -190,7 +190,7 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(err).to be_empty
   end
 
-  it "installs subdependencies quietly if necessary when the install option is not set, and multiple sources used" do
+  it "installs subdependencies quietly when the quiet option is set to true, and multiple sources used" do
     build_repo4 do
       build_gem "myrack" do |s|
         s.add_dependency "myrackdep"
@@ -200,7 +200,7 @@ RSpec.describe "bundler/inline#gemfile" do
     end
 
     script <<-RUBY, artifice: "compact_index_extra_api"
-      gemfile do
+      gemfile(quiet: true) do
         source "https://test.repo"
         source "https://test.repo/extra" do
           gem "myrack"
@@ -215,11 +215,11 @@ RSpec.describe "bundler/inline#gemfile" do
     expect(err).to be_empty
   end
 
-  it "installs quietly from git if necessary when the install option is not set" do
+  it "installs quietly when the quiet option is set to true, and git sources used" do
     build_git "foo", "1.0.0"
     baz_ref = build_git("baz", "2.0.0").ref_for("HEAD")
     script <<-RUBY
-      gemfile do
+      gemfile(quiet: true) do
         source "https://gem.repo1"
         gem "foo", :git => #{lib_path("foo-1.0.0").to_s.dump}
         gem "baz", :git => #{lib_path("baz-2.0.0").to_s.dump}, :ref => #{baz_ref.dump}
@@ -235,14 +235,14 @@ RSpec.describe "bundler/inline#gemfile" do
 
   it "allows calling gemfile twice" do
     script <<-RUBY
-      gemfile do
+      gemfile(quiet: true) do
         path "#{lib_path}" do
           source "https://gem.repo1"
           gem "two"
         end
       end
 
-      gemfile do
+      gemfile(quiet: true) do
         path "#{lib_path}" do
           source "https://gem.repo1"
           gem "four"
@@ -262,7 +262,7 @@ RSpec.describe "bundler/inline#gemfile" do
       ui = Bundler::UI::Shell.new
       ui.level = "confirm"
 
-      gemfile(true, ui: ui) do
+      gemfile(ui: ui) do
         source "https://gem.repo1"
         gem "activesupport"
         gem "myrack"
@@ -281,12 +281,12 @@ RSpec.describe "bundler/inline#gemfile" do
       require 'bundler'
       ui = Bundler::UI::Shell.new
       ui.level = "confirm"
-      gemfile(true, ui: ui) do
+      gemfile(ui: ui) do
         source "https://gem.repo1"
         gem "myrack"
       end
 
-      gemfile(true, ui: ui) do
+      gemfile(ui: ui) do
         source "https://gem.repo1"
         gem "activesupport"
       end
@@ -304,12 +304,12 @@ RSpec.describe "bundler/inline#gemfile" do
       require 'bundler'
       ui = Bundler::UI::Shell.new
       ui.level = "confirm"
-      gemfile(true, ui: ui) do
+      gemfile(ui: ui) do
         source "https://gem.repo1"
         gem "activesupport"
       end
 
-      gemfile(true, ui: ui) do
+      gemfile(ui: ui) do
         source "https://gem.repo1"
         gem "myrack"
       end
@@ -341,12 +341,12 @@ RSpec.describe "bundler/inline#gemfile" do
       require 'bundler'
       ui = Bundler::UI::Shell.new
       ui.level = "confirm"
-      gemfile(true, ui: ui) do
+      gemfile(ui: ui) do
         source "https://gem.repo1"
         gem "myrack"
       end
 
-      gemfile(true, ui: ui) do
+      gemfile(ui: ui) do
         source "https://gem.repo1"
         gem "foo", :git => "#{lib_path("foo-1.0")}"
       end
@@ -418,7 +418,7 @@ RSpec.describe "bundler/inline#gemfile" do
     G
 
     script <<-RUBY
-      gemfile(true) do
+      gemfile do
         source "https://gem.repo1"
         gem "rake", "#{rake_version}"
       end
@@ -474,7 +474,7 @@ RSpec.describe "bundler/inline#gemfile" do
     ENV["BUNDLE_BIN"] = "/usr/local/bundle/bin"
 
     script <<-RUBY
-      gemfile do
+      gemfile(quiet: true) do
         source "https://gem.repo1"
         gem "myrack" # has the myrackup executable
       end
@@ -488,7 +488,7 @@ RSpec.describe "bundler/inline#gemfile" do
   context "when BUNDLE_PATH is set" do
     it "installs inline gems to the system path regardless" do
       script <<-RUBY, env: { "BUNDLE_PATH" => "./vendor/inline", "BUNDLER_SPEC_GEM_REPO" => gem_repo1.to_s }
-        gemfile(true) do
+        gemfile do
           source "https://gem.repo1"
           gem "myrack"
         end
@@ -502,7 +502,7 @@ RSpec.describe "bundler/inline#gemfile" do
     bundle "config set --local force_ruby_platform true"
 
     script <<-RUBY
-      gemfile(true) do
+      gemfile do
         source "https://gem.repo1"
         gem "myrack", platform: :jruby
       end
@@ -576,7 +576,7 @@ RSpec.describe "bundler/inline#gemfile" do
     end
 
     script <<-RUBY, dir: tmp("path_without_gemfile"), env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
-      gemfile do
+      gemfile(quiet: true) do
         source "https://gem.repo2"
         path "#{lib_path}" do
           gem "foo", require: false
@@ -603,7 +603,7 @@ RSpec.describe "bundler/inline#gemfile" do
     script <<-RUBY, dir: tmp("path_without_gemfile"), env: { "BUNDLER_GEM_DEFAULT_DIR" => system_gem_path.to_s, "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
       require "bundler/inline"
 
-      gemfile(true) do
+      gemfile do
         source "https://gem.repo2"
       end
 
@@ -628,7 +628,7 @@ RSpec.describe "bundler/inline#gemfile" do
     script <<-RUBY, env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
       require "bundler/inline"
 
-      gemfile(true) do
+      gemfile do
         source "https://gem.repo4"
 
         gem "timeout"
@@ -660,7 +660,7 @@ RSpec.describe "bundler/inline#gemfile" do
     script <<-RUBY
       require 'bundler/inline'
 
-      gemfile do
+      gemfile(quiet: true) do
         source "https://gem.repo1"
       end
 
@@ -674,7 +674,7 @@ RSpec.describe "bundler/inline#gemfile" do
     script <<-RUBY
       require 'bundler/inline'
 
-      gemfile do
+      gemfile(quiet: true) do
         source "https://gem.repo1"
 
         ENV['FOO'] = 'bar'
@@ -695,7 +695,7 @@ RSpec.describe "bundler/inline#gemfile" do
     script <<-RUBY, env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo4.to_s }
       require "bundler/inline"
 
-      gemfile(true) do
+      gemfile do
         source "https://gem.repo4"
 
         gem "psych"
@@ -720,7 +720,7 @@ RSpec.describe "bundler/inline#gemfile" do
     script <<-RUBY, env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo1.to_s }
       require "bundler/inline"
 
-      gemfile(true) do
+      gemfile do
         source "https://gem.repo1"
 
         gem "myrack"

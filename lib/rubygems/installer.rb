@@ -1005,7 +1005,7 @@ TEXT
         =begin
         bindir="${0%/*}"
         ruby="$bindir/#{ruby_install_name}"
-        if [ ! -f $ruby ]; then
+        if [ ! -f "$ruby" ]; then
           ruby="#{ruby_install_name}"
         fi
         exec "$ruby" "-x" "$0" "$@"

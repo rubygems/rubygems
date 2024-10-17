@@ -1,10 +1,10 @@
 .\" generated with nRonn/v0.11.1
 .\" https://github.com/n-ronn/nronn/tree/0.11.1
-.TH "BUNDLE\-ADD" "1" "September 2024" ""
+.TH "BUNDLE\-ADD" "1" "October 2024" ""
 .SH "NAME"
 \fBbundle\-add\fR \- Add gem to the Gemfile and run bundle install
 .SH "SYNOPSIS"
-\fBbundle add\fR \fIGEM_NAME\fR [\-\-group=GROUP] [\-\-version=VERSION] [\-\-source=SOURCE] [\-\-path=PATH] [\-\-git=GIT|\-\-github=GITHUB] [\-\-branch=BRANCH] [\-\-ref=REF] [\-\-skip\-install] [\-\-strict|\-\-optimistic]
+\fBbundle add\fR \fIGEM_NAME\fR [\-\-group=GROUP] [\-\-version=VERSION] [\-\-source=SOURCE] [\-\-path=PATH] [\-\-git=GIT|\-\-github=GITHUB] [\-\-branch=BRANCH] [\-\-ref=REF] [\-\-quiet] [\-\-skip\-install] [\-\-strict|\-\-optimistic]
 .SH "DESCRIPTION"
 Adds the named gem to the [\fBGemfile(5)\fR][Gemfile(5)] and run \fBbundle install\fR\. \fBbundle install\fR can be avoided by using the flag \fB\-\-skip\-install\fR\.
 .SH "OPTIONS"
@@ -35,6 +35,9 @@ Specify the git branch for the added gem\.
 .TP
 \fB\-\-ref\fR
 Specify the git ref for the added gem\.
+.TP
+\fB\-\-quiet\fR
+Do not print progress information to the standard output\.
 .TP
 \fB\-\-skip\-install\fR
 Adds the gem to the Gemfile but does not install it\.

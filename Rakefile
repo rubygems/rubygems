@@ -124,7 +124,7 @@ RDoc::Task.new rdoc: "docs", clobber_rdoc: "clobber_docs" do |doc|
 
   doc.rdoc_files = rdoc_files
 
-  doc.rdoc_dir = "doc"
+  doc.rdoc_dir = "rdoc"
 end
 
 namespace :vendor do

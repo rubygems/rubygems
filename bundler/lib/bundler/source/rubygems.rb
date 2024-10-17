@@ -431,11 +431,14 @@ module Bundler
       end
 
       def fetch_gem_if_possible(spec, previous_spec = nil)
-        if spec.remote
+        Plugin.hook(Plugin::Events::GEM_BEFORE_FETCH, spec, self)
+        gem_path = if spec.remote
           fetch_gem(spec, previous_spec)
         else
           cached_gem(spec)
         end
+        Plugin.hook(Plugin::Events::GEM_AFTER_FETCH, spec, self)
+        gem_path
       end
 
       def fetch_gem(spec, previous_spec = nil)

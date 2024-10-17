@@ -1,10 +1,10 @@
 CHANGELOG.md
 CODE_OF_CONDUCT.md
 LICENSE.txt
-MAINTAINERS.txt
 MIT.txt
 Manifest.txt
 README.md
+doc/MAINTAINERS.txt
 doc/rubygems/CONTRIBUTING.md
 doc/rubygems/POLICIES.md
 doc/rubygems/UPGRADING.md

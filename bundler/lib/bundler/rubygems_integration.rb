@@ -233,10 +233,14 @@ module Bundler
     end
 
     # Used to make bin stubs that are not created by bundler work
-    # under bundler. The new Gem.bin_path only considers gems in
+    # under bundler. The new Gem.activate_bin_path only considers gems in
     # +specs+
     def replace_bin_path(specs_by_name)
       gem_class = (class << Gem; self; end)
+
+      gem_class.module_exec do
+        alias_method :original_find_spec_for_exe, :find_spec_for_exe
+      end
 
       redefine_method(gem_class, :find_spec_for_exe) do |gem_name, *args|
         exec_name = args.first
@@ -249,6 +253,12 @@ module Bundler
         unless spec || !matching_specs_by_exec_name.empty?
           message = "can't find executable #{exec_name} for gem #{gem_name}"
           if spec_with_name.nil?
+
+            if Gem.instance_variable_get(:@gemdeps)
+              Bundler.reset!
+              return original_find_spec_for_exe(gem_name, *args)
+            end
+
             message += ". #{gem_name} is not currently included in the bundle, " \
                        "perhaps you meant to add it to your #{Bundler.default_gemfile.basename}?"
           end
@@ -281,18 +291,6 @@ module Bundler
         # Copy of Rubygems activate_bin_path impl
         requirement = args.last
         spec = find_spec_for_exe name, exec_name, [requirement]
-
-        gem_bin = File.join(spec.full_gem_path, spec.bindir, exec_name)
-        gem_from_path_bin = File.join(File.dirname(spec.loaded_from), spec.bindir, exec_name)
-        File.exist?(gem_bin) ? gem_bin : gem_from_path_bin
-      end
-
-      redefine_method(gem_class, :bin_path) do |name, *args|
-        exec_name = args.first
-        return ENV["BUNDLE_BIN_PATH"] if exec_name == "bundle"
-
-        spec = find_spec_for_exe(name, *args)
-        exec_name ||= spec.default_executable
 
         gem_bin = File.join(spec.full_gem_path, spec.bindir, exec_name)
         gem_from_path_bin = File.join(File.dirname(spec.loaded_from), spec.bindir, exec_name)

@@ -668,4 +668,27 @@ RSpec.describe "major deprecations" do
       end
     end
   end
+
+  context "inline gemfile with install parameter set to true" do
+    before do
+      ruby <<-RUBY
+        require "bundler/inline"
+
+        gemfile(true) do
+          source "https://gem.repo1"
+          gem "myrack", platform: :jruby
+        end
+      RUBY
+    end
+
+    it "prints a deprecation warning", bundler: "< 3" do
+      expect(deprecations).to include \
+        "The optional `install` parameter in the `gemfile(install = false, options = {}, &gemfile)` " \
+        "helper will be removed because regardless of what you pass in there, it still installs " \
+        "missing gems. Remove the explicit `install` parameter to get rid of this message. " \
+        "(called at -e:3)"
+    end
+
+    pending "is removed and shows a helpful error message about it", bundler: "3"
+  end
 end

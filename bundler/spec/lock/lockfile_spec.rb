@@ -1601,7 +1601,7 @@ RSpec.describe "the lockfile format" do
     G
   end
 
-  it "raises a helpful error message when the lockfile is missing deps" do
+  it "automatically fixes the lockfile when it's missing deps" do
     lockfile <<-L
       GEM
         remote: https://gem.repo2/
@@ -1613,15 +1613,33 @@ RSpec.describe "the lockfile format" do
 
       DEPENDENCIES
         myrack_middleware
+
+      BUNDLED WITH
+         #{Bundler::VERSION}
     L
 
-    install_gemfile <<-G, raise_on_error: false
+    install_gemfile <<-G
       source "https://gem.repo2"
       gem "myrack_middleware"
     G
 
-    expect(err).to include("Downloading myrack_middleware-1.0 revealed dependencies not in the API or the lockfile (#{Gem::Dependency.new("myrack", "= 0.9.1")}).").
-      and include("Running `bundle update myrack_middleware` should fix the problem.")
+    expect(lockfile).to eq <<~L
+      GEM
+        remote: https://gem.repo2/
+        specs:
+          myrack (0.9.1)
+          myrack_middleware (1.0)
+            myrack (= 0.9.1)
+
+      PLATFORMS
+        #{lockfile_platforms}
+
+      DEPENDENCIES
+        myrack_middleware
+
+      BUNDLED WITH
+         #{Bundler::VERSION}
+    L
   end
 
   it "regenerates a lockfile with no specs" do
@@ -1673,6 +1691,47 @@ RSpec.describe "the lockfile format" do
       BUNDLED WITH
          #{Bundler::VERSION}
     G
+  end
+
+  it "automatically fixes the lockfile when it's missing deps and the full index is in use" do
+    lockfile <<-L
+      GEM
+        remote: https://gem.repo2/
+        specs:
+          myrack_middleware (1.0)
+
+      PLATFORMS
+        #{lockfile_platforms}
+
+      DEPENDENCIES
+        myrack_middleware
+
+      BUNDLED WITH
+         #{Bundler::VERSION}
+    L
+
+    install_gemfile <<-G
+      source "#{file_uri_for(gem_repo2)}"
+      gem "myrack_middleware"
+    G
+
+    expect(lockfile).to eq <<~L
+      GEM
+        remote: #{file_uri_for(gem_repo2)}/
+        specs:
+          myrack (0.9.1)
+          myrack_middleware (1.0)
+            myrack (= 0.9.1)
+
+      PLATFORMS
+        #{lockfile_platforms}
+
+      DEPENDENCIES
+        myrack_middleware
+
+      BUNDLED WITH
+         #{Bundler::VERSION}
+    L
   end
 
   shared_examples_for "a lockfile missing dependent specs" do

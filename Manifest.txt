@@ -1,17 +1,12 @@
 CHANGELOG.md
 CODE_OF_CONDUCT.md
-CONTRIBUTING.md
 LICENSE.txt
-MAINTAINERS.txt
 MIT.txt
 Manifest.txt
-POLICIES.md
 README.md
-UPGRADING.md
 bundler/CHANGELOG.md
 bundler/LICENSE.md
 bundler/README.md
-bundler/UPGRADING.md
 bundler/bundler.gemspec
 bundler/exe/bundle
 bundler/exe/bundler

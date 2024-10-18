@@ -99,6 +99,27 @@ RSpec.describe "Self management" do
       expect(out).not_to include("Bundler #{Bundler::VERSION} is running, but your lockfile was generated with #{previous_minor}. Installing Bundler #{previous_minor} and restarting using that version.")
     end
 
+    it "installs locked version when using local path, even if locked version installed globally, and uses it" do
+      lockfile_bundled_with(previous_minor)
+      system_gems "bundler-#{previous_minor}"
+
+      bundle "config set --local path vendor/bundle"
+      bundle "install --verbose", preserve_ruby_flags: true
+      expect(out).to include("Installing bundler #{previous_minor}")
+      expect(vendored_gems("gems/bundler-#{previous_minor}")).to exist
+
+      # Uninstall the global version
+      gem_command "uninstall bundler --force --executables --version #{previous_minor}"
+
+      # App still uses locked version
+      bundle "-v"
+      expect(out).to end_with(previous_minor[0] == "2" ? "Bundler version #{previous_minor}" : previous_minor)
+
+      # Subsequent installs use the locked version without reinstalling
+      bundle "install --verbose"
+      expect(out).to include("Using bundler #{previous_minor}")
+    end
+
     it "installs locked version when using deployment option and uses it" do
       lockfile_bundled_with(previous_minor)
 

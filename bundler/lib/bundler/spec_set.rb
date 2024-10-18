@@ -15,7 +15,7 @@ module Bundler
     end
 
     def for(dependencies, check = false, platforms = [nil])
-      handled = ["bundler"].product(platforms).map {|k| [k, true] }.to_h
+      handled = {}
       deps = dependencies.product(platforms)
       specs = []
 
@@ -37,7 +37,7 @@ module Bundler
 
           specs_for_dep.first.dependencies.each do |d|
             next if d.type == :development
-            incomplete = true if d.name != "bundler" && lookup[d.name].nil?
+            incomplete = true if lookup[d.name].nil?
             deps << [d, dep[1]]
           end
         else
@@ -131,7 +131,7 @@ module Bundler
     end
 
     def incomplete_for_platform?(deps, platform)
-      return false if @specs.empty?
+      return false if names == ["bundler"]
 
       @incomplete_specs = []
 

@@ -143,6 +143,8 @@ module Bundler
           # index through remote, cached, or installed specs
           index.use(default_specs) if @allow_local
 
+          index << meta_spec
+
           index
         end
       end
@@ -160,7 +162,14 @@ module Bundler
         end
 
         path = fetch_gem_if_possible(spec, options[:previous_spec])
-        raise GemNotFound, "Could not find #{spec.file_name} for installation" unless path
+        unless path
+          if spec.name == "bundler"
+            print_using_message "Using #{version_message(spec, options[:previous_spec])}"
+            return nil
+          end
+
+          raise GemNotFound, "Could not find #{spec.file_name} for installation"
+        end
 
         return if Bundler.settings[:no_install]
 
@@ -455,6 +464,12 @@ module Bundler
       end
 
       private
+
+      def meta_spec
+        spec = Metadata.bundler
+        spec.source = self
+        spec
+      end
 
       def lockfile_remotes
         @lockfile_remotes || credless_remotes

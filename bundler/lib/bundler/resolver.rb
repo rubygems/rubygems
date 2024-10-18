@@ -19,6 +19,7 @@ module Bundler
       @source_requirements = base.source_requirements
       @base = base
       @gem_version_promoter = gem_version_promoter
+      @implicit_bundler_dependency = nil
     end
 
     def start
@@ -114,6 +115,7 @@ module Bundler
       end
 
       explanation = e.message
+      explanation.gsub!("Gemfile depends on bundler =", "the current Bundler version is") if @implicit_bundler_dependency
 
       if extended_explanation
         explanation << "\n\n"
@@ -132,8 +134,9 @@ module Bundler
       while incompatibility.conflict?
         cause = incompatibility.cause
         incompatibility = cause.incompatibility
+        terms = incompatibility.terms
 
-        incompatibility.terms.each do |term|
+        terms.each do |term|
           package = term.package
           name = package.name
 
@@ -143,6 +146,10 @@ module Bundler
             names_to_allow_prereleases_for << name
           elsif package.prefer_local? && @all_specs[name].any? {|s| !s.is_a?(StubSpecification) }
             names_to_allow_remote_specs_for << name
+          elsif name == "bundler"
+            unsatisfied_constraint = terms.find {|t| t.package != "bundler" }.invert.constraint.constraint_string
+            unsatisfied_requirements = constraint_to_req(unsatisfied_constraint)
+            extended_explanation = bundler_not_found_message(unsatisfied_requirements)
           end
 
           no_versions_incompat = [cause.incompatibility, cause.satisfier].find {|incompat| incompat.cause.is_a?(PubGrub::Incompatibility::NoVersions) }
@@ -182,9 +189,9 @@ module Bundler
       name = package.name
       constraint = unsatisfied_term.constraint
       constraint_string = constraint.constraint_string
-      requirements = constraint_string.split(" OR ").map {|req| Gem::Requirement.new(req.split(",")) }
+      requirements = constraint_to_req(constraint_string)
 
-      if name == "bundler" && bundler_pinned_to_current_version?
+      if name == "bundler" && local_bundler_source
         custom_explanation = "the current Bundler version (#{Bundler::VERSION}) does not satisfy #{constraint}"
         extended_explanation = bundler_not_found_message(requirements)
       else
@@ -255,11 +262,6 @@ module Bundler
       name = package.name
       results = (@base[name] + filter_specs(@all_specs[name], package)).uniq {|spec| [spec.version.hash, spec.platform] }
 
-      if name == "bundler" && !bundler_pinned_to_current_version?
-        bundler_spec = Gem.loaded_specs["bundler"]
-        results << bundler_spec if bundler_spec
-      end
-
       locked_requirement = base_requirements[name]
       results = filter_matching_specs(results, locked_requirement) if locked_requirement
 
@@ -301,15 +303,15 @@ module Bundler
     end
 
     def source_for(name)
-      @source_requirements[name] || @source_requirements[:default]
+      if name == "bundler" && local_bundler_source
+        local_bundler_source
+      else
+        default_source_for(name)
+      end
     end
 
-    def default_bundler_source
-      @source_requirements[:default_bundler]
-    end
-
-    def bundler_pinned_to_current_version?
-      !default_bundler_source.nil?
+    def local_bundler_source
+      @source_requirements[:local_bundler]
     end
 
     def name_for_explicit_dependency_source
@@ -355,6 +357,18 @@ module Bundler
     end
 
     private
+
+    def constraint_to_req(constraint)
+      constraint.split(" OR ").map {|req| Gem::Requirement.new(req.split(",")) }
+    end
+
+    def implicit_bundler_dependency?
+      @implicit_bundler_dependency
+    end
+
+    def default_source_for(name)
+      @source_requirements[name] || @source_requirements[:default]
+    end
 
     def filtered_versions_for(package)
       @gem_version_promoter.filter_versions(package, @all_versions[package])
@@ -494,6 +508,8 @@ module Bundler
       dependencies.inject({}) do |deps, dep|
         package = packages[dep.name]
 
+        @implicit_bundler_dependency = true if dep.name == "bundler" && dep.implicit?
+
         current_req = deps[package]
         new_req = parse_dependency(package, dep.requirement)
 
@@ -508,7 +524,7 @@ module Bundler
     end
 
     def bundler_not_found_message(conflict_dependencies)
-      candidate_specs = filter_matching_specs(default_bundler_source.specs.search("bundler"), conflict_dependencies)
+      candidate_specs = filter_matching_specs(default_source_for("bundler").specs.search("bundler"), conflict_dependencies)
 
       if candidate_specs.any?
         target_version = candidate_specs.last.version

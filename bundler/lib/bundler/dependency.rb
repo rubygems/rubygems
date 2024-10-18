@@ -46,6 +46,7 @@ module Bundler
       @gemfile        = options["gemfile"]
       @force_ruby_platform = options["force_ruby_platform"] if options.key?("force_ruby_platform")
 
+      @implicit = options["implicit"]
       @autorequire = Array(options["require"] || []) if options.key?("require")
     end
 
@@ -59,6 +60,10 @@ module Bundler
       return valid_platforms if @platforms.empty?
 
       valid_platforms.select {|p| expanded_platforms.include?(GemHelpers.generic(p)) }
+    end
+
+    def implicit?
+      @implicit
     end
 
     def expanded_platforms

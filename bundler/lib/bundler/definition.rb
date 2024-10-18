@@ -565,10 +565,9 @@ module Bundler
     end
 
     def dependencies_with_bundler
-      return dependencies unless @unlocking_bundler
       return dependencies if dependencies.any? {|d| d.name == "bundler" }
 
-      [Dependency.new("bundler", @unlocking_bundler)] + dependencies
+      [Dependency.new("bundler", @unlocking_bundler || Bundler::VERSION, { "implicit" => true })] + dependencies
     end
 
     def resolution_base

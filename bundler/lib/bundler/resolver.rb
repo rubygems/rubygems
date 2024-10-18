@@ -19,6 +19,7 @@ module Bundler
       @source_requirements = base.source_requirements
       @base = base
       @gem_version_promoter = gem_version_promoter
+      @implicit_bundler_dependency = nil
     end
 
     def start
@@ -114,6 +115,7 @@ module Bundler
       end
 
       explanation = e.message
+      explanation.gsub!("Gemfile depends on bundler =", "the current Bundler version is") if @implicit_bundler_dependency
 
       if extended_explanation
         explanation << "\n\n"
@@ -132,8 +134,9 @@ module Bundler
       while incompatibility.conflict?
         cause = incompatibility.cause
         incompatibility = cause.incompatibility
+        terms = incompatibility.terms
 
-        incompatibility.terms.each do |term|
+        terms.each do |term|
           package = term.package
           name = package.name
 
@@ -143,6 +146,10 @@ module Bundler
             names_to_allow_prereleases_for << name
           elsif package.prefer_local? && @all_specs[name].any? {|s| !s.is_a?(StubSpecification) }
             names_to_allow_remote_specs_for << name
+          elsif name == "bundler"
+            unsatisfied_constraint = terms.find {|t| t.package != "bundler" }.invert.constraint.constraint_string
+            unsatisfied_requirements = constraint_to_req(unsatisfied_constraint)
+            extended_explanation = bundler_not_found_message(unsatisfied_requirements)
           end
 
           no_versions_incompat = [cause.incompatibility, cause.satisfier].find {|incompat| incompat.cause.is_a?(PubGrub::Incompatibility::NoVersions) }
@@ -182,7 +189,7 @@ module Bundler
       name = package.name
       constraint = unsatisfied_term.constraint
       constraint_string = constraint.constraint_string
-      requirements = constraint_string.split(" OR ").map {|req| Gem::Requirement.new(req.split(",")) }
+      requirements = constraint_to_req(constraint_string)
 
       if name == "bundler" && local_bundler_source
         custom_explanation = "the current Bundler version (#{Bundler::VERSION}) does not satisfy #{constraint}"
@@ -351,6 +358,14 @@ module Bundler
 
     private
 
+    def constraint_to_req(constraint)
+      constraint.split(" OR ").map {|req| Gem::Requirement.new(req.split(",")) }
+    end
+
+    def implicit_bundler_dependency?
+      @implicit_bundler_dependency
+    end
+
     def default_source_for(name)
       @source_requirements[name] || @source_requirements[:default]
     end
@@ -492,6 +507,8 @@ module Bundler
     def to_dependency_hash(dependencies, packages)
       dependencies.inject({}) do |deps, dep|
         package = packages[dep.name]
+
+        @implicit_bundler_dependency = true if dep.name == "bundler" && dep.implicit?
 
         current_req = deps[package]
         new_req = parse_dependency(package, dep.requirement)

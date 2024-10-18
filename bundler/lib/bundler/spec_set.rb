@@ -14,7 +14,7 @@ module Bundler
       @incomplete_specs = incomplete_specs
     end
 
-    def for(dependencies, check = false, platforms = [nil])
+    def for(dependencies, check = false, platforms = [nil], most_specific_locked_platform = nil)
       handled = ["bundler"].product(platforms).map {|k| [k, true] }.to_h
       deps = dependencies.product(platforms)
       specs = []
@@ -31,7 +31,7 @@ module Bundler
 
         handled[key] = true
 
-        specs_for_dep = specs_for_dependency(*dep)
+        specs_for_dep = specs_for_dependency(*dep, most_specific_locked_platform)
         if specs_for_dep.any?
           specs.concat(specs_for_dep)
 
@@ -50,6 +50,25 @@ module Bundler
       end
 
       specs.uniq
+    end
+
+    def normalize_platforms!(deps, platforms)
+      complete_platforms = add_extra_platforms!(platforms)
+
+      complete_platforms.map do |platform|
+        next platform if platform == Gem::Platform::RUBY
+
+        begin
+          Integer(platform.version)
+        rescue ArgumentError, TypeError
+          next platform
+        end
+
+        less_specific_platform = Gem::Platform.new([platform.cpu, platform.os, nil])
+        next platform if incomplete_for_platform?(deps, less_specific_platform)
+
+        less_specific_platform
+      end.uniq
     end
 
     def add_extra_platforms!(platforms)
@@ -111,8 +130,8 @@ module Bundler
       lookup.dup
     end
 
-    def materialize(deps)
-      materialized = self.for(deps, true)
+    def materialize(deps, most_specific_locked_platform = nil)
+      materialized = self.for(deps, true, [nil], most_specific_locked_platform)
 
       SpecSet.new(materialized, incomplete_specs)
     end
@@ -124,7 +143,7 @@ module Bundler
       @specs.map do |s|
         next s unless s.is_a?(LazySpecification)
         s.source.remote!
-        spec = s.materialize_for_installation
+        spec = s.materialize_strictly
         raise GemNotFound, "Could not find #{s.full_name} in any of the sources" unless spec
         spec
       end
@@ -133,15 +152,18 @@ module Bundler
     def incomplete_for_platform?(deps, platform)
       return false if @specs.empty?
 
-      @incomplete_specs = []
+      validation_set = self.class.new(@specs)
+      validation_set.for(deps, true, [platform])
 
-      self.for(deps, true, [platform])
-
-      @incomplete_specs.any?
+      validation_set.incomplete_specs.any?
     end
 
     def missing_specs
       @specs.select {|s| s.is_a?(LazySpecification) }
+    end
+
+    def insecurely_materialized_specs
+      @specs.select(&:insecurely_materialized?)
     end
 
     def -(other)
@@ -273,14 +295,14 @@ module Bundler
       @specs.sort_by(&:name).each {|s| yield s }
     end
 
-    def specs_for_dependency(dep, platform)
+    def specs_for_dependency(dep, platform, most_specific_locked_platform)
       specs_for_name = lookup[dep.name]
       return [] unless specs_for_name
 
       if platform
         GemHelpers.select_best_platform_match(specs_for_name, platform, force_ruby: dep.force_ruby_platform)
       else
-        GemHelpers.select_best_local_platform_match(specs_for_name, force_ruby: dep.force_ruby_platform || dep.default_force_ruby_platform)
+        GemHelpers.select_best_local_platform_match(specs_for_name, force_ruby: dep.force_ruby_platform || dep.default_force_ruby_platform, most_specific_locked_platform: most_specific_locked_platform)
       end
     end
 

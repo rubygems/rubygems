@@ -134,7 +134,7 @@ RSpec.describe "bundle install with complex dependencies", realworld: true do
     if Bundler.feature_flag.bundler_3_mode?
       bundle "lock", env: { "DEBUG_RESOLVER" => "1" }, raise_on_error: false
 
-      expect(out).to include("backtracking").exactly(26).times
+      expect(out).to include("backtracking").exactly(20).times
     else
       bundle "lock", env: { "DEBUG_RESOLVER" => "1" }
 

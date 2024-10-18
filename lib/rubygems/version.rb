@@ -198,6 +198,7 @@ class Gem::Version
 
   @@all = {}
   @@bump = {}
+  @@bump_major = {}
   @@release = {}
 
   def self.new(version) # :nodoc:
@@ -253,6 +254,21 @@ class Gem::Version
                        segments[-1] = segments[-1].succ
                        self.class.new segments.join(".")
                      end
+  end
+
+  ##
+  # Return a new version object where the major version number
+  # is one greater and all non-major version components are zeroed out -
+  # e.g., 5.3.1 => 6.0.0.
+
+  def bump_major
+    @@bump_major[self] ||= begin
+                             segments = self.segments
+                             segments.pop while segments.any? {|s| String === s }
+                             segments[0] = segments[0].succ
+                             segments[1..-1] = Array.new(segments.length - 1, 0)
+                             self.class.new segments.join(".")
+                           end
   end
 
   ##

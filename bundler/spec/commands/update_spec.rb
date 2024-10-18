@@ -1553,7 +1553,7 @@ RSpec.describe "bundle update --bundler" do
 
     bundle :update, bundler: true, verbose: true
 
-    expect(out).to include("Using bundler 9.9.9")
+    expect(out).to include("Fetching bundler 9.9.9")
 
     expect(lockfile).to eq <<~L
       GEM

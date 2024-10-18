@@ -137,11 +137,15 @@ module Bundler
           # small_idx.merge! large_idx.
           index = @allow_remote ? remote_specs.dup : Index.new
           index.merge!(cached_specs) if @allow_cached
-          index.merge!(installed_specs) if @allow_local
 
-          # complete with default specs, only if not already available in the
-          # index through remote, cached, or installed specs
-          index.use(default_specs) if @allow_local
+          if @allow_local
+            index.merge!(installed_specs)
+
+            # complete with default specs and meta specs, only if not already
+            # available in the index through remote, cached, or installed specs
+            index.use(default_specs)
+            index.use(meta_specs)
+          end
 
           index
         end
@@ -160,7 +164,14 @@ module Bundler
         end
 
         path = fetch_gem_if_possible(spec, options[:previous_spec])
-        raise GemNotFound, "Could not find #{spec.file_name} for installation" unless path
+        unless path
+          if spec.name == "bundler"
+            print_using_message "Using #{version_message(spec, options[:previous_spec])}"
+            return nil
+          end
+
+          raise GemNotFound, "Could not find #{spec.file_name} for installation"
+        end
 
         return if Bundler.settings[:no_install]
 
@@ -369,6 +380,14 @@ module Bundler
             spec.source = self
             idx << spec
           end
+        end
+      end
+
+      def meta_specs
+        @meta_specs ||= Index.build do |idx|
+          spec = Metadata.bundler
+          spec.source = self
+          idx << spec
         end
       end
 

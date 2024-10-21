@@ -1,0 +1,18 @@
+package main
+
+/*
+#include "<%= config[:underscored_name] %>.h"
+*/
+import "C"
+
+import (
+	"github.com/ruby-go-gem/go-gem-wrapper/ruby"
+)
+
+//export Init_<%= config[:underscored_name] %>
+func Init_<%= config[:underscored_name] %>() {
+	rb_m<%= config[:constant_array].join %> := ruby.RbDefineModule(<%= config[:constant_name].inspect %>)
+}
+
+func main() {
+}

@@ -1667,6 +1667,20 @@ RSpec.describe "bundle gem" do
           YAML
         end
       end
+
+      context "when Go is installed" do
+        before do
+          skip "Go isn't installed" unless system("go version")
+        end
+
+        let(:go_version) do
+          /go version go([.\d]+)/.match(`go version`)[1]
+        end
+
+        it "includes go version in go.mod" do
+          expect(bundled_app("#{gem_name}/ext/#{gem_name}/go.mod").read).to include("go #{go_version}")
+        end
+      end
     end
   end
 

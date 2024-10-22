@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "pathname"
+require "open3"
 
 module Bundler
   class CLI
@@ -220,6 +221,8 @@ module Bundler
           "ext/newgem/newgem.go.tt" => "ext/#{name}/#{underscored_name}.go",
           "ext/newgem/newgem-go.c.tt" => "ext/#{name}/#{underscored_name}.c",
         )
+
+        config[:go_version] = go_version
       end
 
       if target.exist? && !target.directory?
@@ -471,6 +474,15 @@ module Bundler
         Bundler.ui.error "Your RubyGems version (#{Gem.rubygems_version}) is too old to build Rust extension. Please update your RubyGems using `gem update --system` or any other way and try again."
         exit 1
       end
+    end
+
+    def go_version
+      stdout, _, status = Open3.capture3("go version")
+
+      # Suppress error if Go isn't installed
+      return nil unless status.success?
+
+      /go version go([.\d]+)/.match(stdout)[1]
     end
   end
 end

@@ -1,3 +1,5 @@
 module github.com/<%= config[:github_username] %>/<%= config[:underscored_name] %>
 
+go <%= config[:go_version] %>
+
 require github.com/ruby-go-gem/go-gem-wrapper latest

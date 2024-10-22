@@ -68,6 +68,10 @@ jobs:
           distribution: temurin
           java-version: 19.0.2
         if: matrix.os.name == 'Windows' && matrix.ruby.name == 'jruby'
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'

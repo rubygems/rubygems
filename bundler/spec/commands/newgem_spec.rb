@@ -1647,6 +1647,27 @@ RSpec.describe "bundle gem" do
         C
       end
 
+      it "includes skeleton code in gem_name.go" do
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/#{gem_name}.go").read).to include(<<~GO)
+          /*
+          #include "#{gem_name}.h"
+
+          VALUE rb_#{gem_name}_sum(VALUE self, VALUE a, VALUE b);
+          */
+          import "C"
+        GO
+
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/#{gem_name}.go").read).to include(<<~GO)
+          //export rb_#{gem_name}_sum
+          func rb_#{gem_name}_sum(_ C.VALUE, a C.VALUE, b C.VALUE) C.VALUE {
+        GO
+
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/#{gem_name}.go").read).to include(<<~GO)
+          //export Init_#{gem_name}
+          func Init_#{gem_name}() {
+        GO
+      end
+
       context "with --no-ci" do
         let(:flags) { "--ext=go --no-ci" }
 

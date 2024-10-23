@@ -37,6 +37,7 @@ module Bundler
       path_relative_to_cwd
       path.system
       plugins
+      plugins_in_lockfile
       prefer_patch
       print_only_version_number
       setup_makes_kernel_gem_public

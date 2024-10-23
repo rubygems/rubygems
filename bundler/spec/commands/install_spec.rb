@@ -890,7 +890,7 @@ RSpec.describe "bundle install with gem sources" do
       bundle "config set --local path vendor"
       bundle :install, raise_on_error: false
       expect(err).to include(bundle_path.to_s)
-      expect(err).to include("grant write permissions")
+      expect(err).to include("grant executable permissions")
     end
   end
 
@@ -1067,7 +1067,7 @@ RSpec.describe "bundle install with gem sources" do
       G
     end
 
-    it "should display a proper message to explain the problem" do
+    it "should still work" do
       bundle "config set --local path vendor"
       bundle :install
       expect(out).to include("Bundle complete!")

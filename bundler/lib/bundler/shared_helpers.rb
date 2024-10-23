@@ -96,14 +96,16 @@ module Bundler
     #   given block
     #
     # @example
-    #   filesystem_access("vendor/cache", :write) do
+    #   filesystem_access("vendor/cache", :create) do
     #     FileUtils.mkdir_p("vendor/cache")
     #   end
     #
     # @see {Bundler::PermissionError}
     def filesystem_access(path, action = :write, &block)
       yield(path.dup)
-    rescue Errno::EACCES
+    rescue Errno::EACCES => e
+      raise unless e.message.include?(path.to_s) || action == :create
+
       raise PermissionError.new(path, action)
     rescue Errno::EAGAIN
       raise TemporaryResourceError.new(path, action)
@@ -116,7 +118,7 @@ module Bundler
     rescue Errno::EEXIST, Errno::ENOENT
       raise
     rescue SystemCallError => e
-      raise GenericSystemCallError.new(e, "There was an error accessing `#{path}`.")
+      raise GenericSystemCallError.new(e, "There was an error #{[:create, :write].include?(action) ? "creating" : "accessing"} `#{path}`.")
     end
 
     def major_deprecation(major_version, message, removed_message: nil, print_caller_location: false)

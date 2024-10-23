@@ -1689,6 +1689,28 @@ RSpec.describe "bundle gem" do
         end
       end
 
+      context "--ci set to circle" do
+        let(:flags) { "--ext=go --ci=circle" }
+
+        it "generates a .circleci/config.yml" do
+          expect(bundled_app("#{gem_name}/.circleci/config.yml")).to exist
+
+          expect(bundled_app("#{gem_name}/.circleci/config.yml").read).to include(<<-YAML.strip)
+    environment:
+      GO_VERSION:
+          YAML
+
+          expect(bundled_app("#{gem_name}/.circleci/config.yml").read).to include(<<-YAML)
+      - run:
+          name: Install Go
+          command: |
+            wget https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz -O /tmp/go.tar.gz
+            tar -C /usr/local -xzf /tmp/go.tar.gz
+            echo 'export PATH=/usr/local/go/bin:"$PATH"' >> "$BASH_ENV"
+          YAML
+        end
+      end
+
       context "when Go is installed" do
         before do
           skip "Go isn't installed" unless system("go version")

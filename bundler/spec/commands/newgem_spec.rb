@@ -1711,6 +1711,25 @@ RSpec.describe "bundle gem" do
         end
       end
 
+      context "--ci set to gitlab" do
+        let(:flags) { "--ext=go --ci=gitlab" }
+
+        it "generates a .gitlab-ci.yml" do
+          expect(bundled_app("#{gem_name}/.gitlab-ci.yml")).to exist
+
+          expect(bundled_app("#{gem_name}/.gitlab-ci.yml").read).to include(<<-YAML)
+    - wget https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz -O /tmp/go.tar.gz
+    - tar -C /usr/local -xzf /tmp/go.tar.gz
+    - export PATH=/usr/local/go/bin:$PATH
+          YAML
+
+          expect(bundled_app("#{gem_name}/.gitlab-ci.yml").read).to include(<<-YAML.strip)
+  variables:
+    GO_VERSION:
+          YAML
+        end
+      end
+
       context "when Go is installed" do
         before do
           skip "Go isn't installed" unless system("go version")

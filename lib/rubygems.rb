@@ -781,6 +781,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     file_lock = "#{path}.lock"
     open_file_with_flock(file_lock, &block)
   ensure
+    require "fileutils"
     FileUtils.rm_f file_lock
   end
 

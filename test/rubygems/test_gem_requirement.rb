@@ -30,11 +30,15 @@ class TestGemRequirement < Gem::TestCase
 
     refute_requirement_equal "~> 1.3", "~> 1.3.0"
     refute_requirement_equal "~> 1.3.0", "~> 1.3"
+    refute_requirement_equal "~> 1.3.1", "^> 1.3"
 
     assert_requirement_equal ["> 2", "~> 1.3", "~> 1.3.1"], ["~> 1.3.1", "~> 1.3", "> 2"]
+    assert_requirement_equal ["> 2", "^> 1.3", "^> 1.3.1"], ["^> 1.3.1", "^> 1.3", "> 2"]
+    assert_requirement_equal ["> 2", "^> 1.3", "^> 1.3.1"], ["^> 1.3.1", "^> 1.3", "> 2"]
 
     assert_requirement_equal ["> 2", "~> 1.3"], ["> 2.0", "~> 1.3"]
     assert_requirement_equal ["> 2.0", "~> 1.3"], ["> 2", "~> 1.3"]
+    assert_requirement_equal ["> 2.0", "^> 1.3"], ["> 2", "^> 1.3"]
 
     refute_equal Object.new, req("= 1.2")
     refute_equal req("= 1.2"), Object.new
@@ -70,8 +74,10 @@ class TestGemRequirement < Gem::TestCase
 
   def test_for_lockfile
     assert_equal " (~> 1.0)", req("~> 1.0").for_lockfile
+    assert_equal " (^> 1.0)", req("^> 1.0").for_lockfile
 
     assert_equal " (~> 1.0, >= 1.0.1)", req(">= 1.0.1", "~> 1.0").for_lockfile
+    assert_equal " (^> 1.0, >= 1.0.1)", req(">= 1.0.1", "^> 1.0").for_lockfile
 
     duped = req "= 1.0"
     duped.requirements << ["=", v("1.0")]
@@ -252,6 +258,50 @@ class TestGemRequirement < Gem::TestCase
     assert_satisfied_by "0.0.1", r
   end
 
+  def test_satisfied_by_eh_caret_gt
+    r = req "^> 1.2"
+
+    refute_satisfied_by "1.1", r
+    assert_satisfied_by "1.2", r
+    assert_satisfied_by "1.2.1", r
+    assert_satisfied_by "1.3", r
+
+    assert_raise ArgumentError do
+      r.satisfied_by? nil
+    end
+  end
+
+  def test_satisfied_by_eh_caret_gt_v0
+    r = req "^> 0.0.1"
+
+    assert_satisfied_by "0.1.1", r
+    assert_satisfied_by "0.0.2", r
+    assert_satisfied_by "0.0.1", r
+    refute_satisfied_by "1.0.1", r
+  end
+
+  def test_satisfied_by_eh_caret_gt_v1
+    r = req "^> 1"
+
+    assert_satisfied_by "1", r
+    assert_satisfied_by "1.1", r
+    assert_satisfied_by "1.1.1", r
+    assert_satisfied_by "1.0.2", r
+    assert_satisfied_by "1.0.1", r
+    refute_satisfied_by "2.0.1", r
+    refute_satisfied_by "2.1.1", r
+  end
+
+  def test_satisfied_by_eh_caret_gt_v10
+    r = req "^> 1.0"
+
+    assert_satisfied_by "1.1.1", r
+    assert_satisfied_by "1.0.2", r
+    assert_satisfied_by "1.0.1", r
+    refute_satisfied_by "2.0.0", r
+    refute_satisfied_by "2.0.1", r
+  end
+
   def test_satisfied_by_eh_good
     assert_satisfied_by "0.2.33",      "= 0.2.33"
     assert_satisfied_by "0.2.34",      "> 0.2.33"
@@ -289,9 +339,20 @@ class TestGemRequirement < Gem::TestCase
 
     assert_satisfied_by "5.0.0.rc2",   "~> 5.a"
     refute_satisfied_by "5.0.0.rc2",   "~> 5.x"
+    assert_satisfied_by "5.0.0.rc2",   "~> 5.a"
+    refute_satisfied_by "5.0.0.rc2",   "~> 5.x"
 
     assert_satisfied_by "5.0.0",       "~> 5.a"
     assert_satisfied_by "5.0.0",       "~> 5.x"
+
+    assert_satisfied_by "5.0.0.rc2",   "^> 5.a"
+    refute_satisfied_by "5.0.0.rc2",   "^> 5.x"
+
+    assert_satisfied_by "5.0.0.rc2",   "^> 5.a"
+    refute_satisfied_by "5.0.0.rc2",   "^> 5.x"
+
+    assert_satisfied_by "5.0.0",       "^> 5.a"
+    assert_satisfied_by "5.0.0",       "^> 5.x"
   end
 
   def test_illformed_requirements
@@ -334,6 +395,30 @@ class TestGemRequirement < Gem::TestCase
     assert_satisfied_by "1.0",     "~> 1"
     assert_satisfied_by "1.1",     "~> 1"
     refute_satisfied_by "2.0",     "~> 1"
+  end
+
+  def test_satisfied_by_eh_boxed_caret
+    refute_satisfied_by "1.3",     "^> 1.4"
+    assert_satisfied_by "1.4",     "^> 1.4"
+    assert_satisfied_by "1.5",     "^> 1.4"
+    refute_satisfied_by "2.0",     "^> 1.4"
+
+    refute_satisfied_by "1.3",     "^> 1.4.4"
+    refute_satisfied_by "1.4",     "^> 1.4.4"
+    assert_satisfied_by "1.4.4",   "^> 1.4.4"
+    assert_satisfied_by "1.4.5",   "^> 1.4.4"
+    assert_satisfied_by "1.5",     "^> 1.4.4"
+    refute_satisfied_by "2.0",     "^> 1.4.4"
+
+    assert_satisfied_by "1.1.pre", "^> 1.0.0"
+    refute_satisfied_by "1.1.pre", "^> 1.1"
+    refute_satisfied_by "2.0.a",   "^> 1.0"
+    refute_satisfied_by "2.0.a",   "^> 2.0"
+
+    refute_satisfied_by "0.9",     "^> 1"
+    assert_satisfied_by "1.0",     "^> 1"
+    assert_satisfied_by "1.1",     "^> 1"
+    refute_satisfied_by "2.0",     "^> 1"
   end
 
   def test_satisfied_by_eh_multiple
@@ -385,6 +470,7 @@ class TestGemRequirement < Gem::TestCase
     assert req("<= 1").specific?
     assert req("= 1") .specific?
     assert req("~> 1").specific?
+    assert req("^> 1").specific?
 
     assert req("> 1", "> 2").specific? # GIGO
   end
@@ -422,11 +508,14 @@ class TestGemRequirement < Gem::TestCase
 
     refute_requirement_hash_equal "~> 1.3", "~> 1.3.0"
     refute_requirement_hash_equal "~> 1.3.0", "~> 1.3"
+    refute_requirement_hash_equal "^> 1.3.0", "^> 1.3"
 
     assert_requirement_hash_equal ["> 2", "~> 1.3", "~> 1.3.1"], ["~> 1.3.1", "~> 1.3", "> 2"]
+    assert_requirement_hash_equal ["> 2", "^> 1.3", "^> 1.3.1"], ["^> 1.3.1", "^> 1.3", "> 2"]
 
     assert_requirement_hash_equal ["> 2", "~> 1.3"], ["> 2.0", "~> 1.3"]
     assert_requirement_hash_equal ["> 2.0", "~> 1.3"], ["> 2", "~> 1.3"]
+    assert_requirement_hash_equal ["> 2.0", "^> 1.3"], ["> 2", "^> 1.3"]
 
     assert_requirement_hash_equal "= 1.0", "= 1.0.0"
     assert_requirement_hash_equal "= 1.1", "= 1.1.0"

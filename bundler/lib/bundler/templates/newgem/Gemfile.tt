@@ -12,6 +12,9 @@ gem "rake-compiler"
 <%- if config[:ext] == 'rust' -%>
 gem "rb_sys", "~> 0.9.63"
 <%- end -%>
+<%- if config[:ext] == 'go' -%>
+gem "go_gem", "~> 0.2"
+<%- end -%>
 <%- end -%>
 <%- if config[:test] -%>
 

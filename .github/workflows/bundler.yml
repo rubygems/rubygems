@@ -56,6 +56,10 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'

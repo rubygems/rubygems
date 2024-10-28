@@ -69,11 +69,13 @@ module Bundler
     end
 
     def ruby_shebang?(file)
+      gem_ruby = Gem.ruby.dup
+      gem_ruby.force_encoding('ASCII-8BIT')
       possibilities = [
         "#!/usr/bin/env ruby\n",
         "#!/usr/bin/env jruby\n",
         "#!/usr/bin/env truffleruby\n",
-        "#!#{Gem.ruby}\n",
+        "#!#{gem_ruby}\n",
       ]
 
       if File.zero?(file)

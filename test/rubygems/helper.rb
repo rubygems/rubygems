@@ -934,7 +934,7 @@ class Gem::TestCase < Test::Unit::TestCase
   #              don't collide with a.
   # +@b2+:: gem b version 2
   # +@c1_2+:: gem c version 1.2
-  # +@pl1+:: gem pl version 1, this gem has a legacy platform of i386-linux.
+  # +@pl1+:: gem pl version 1, this gem has a legacy platform of x86-linux.
   #
   # Additional +prerelease+ gems may also be created:
   #
@@ -978,8 +978,8 @@ Also, a list:
     @pl1 = quick_gem "pl", "1" do |s| # l for legacy
       s.files = %w[lib/code.rb]
       s.require_paths = %w[lib]
-      s.platform = Gem::Platform.new "i386-linux"
-      s.instance_variable_set :@original_platform, "i386-linux"
+      s.platform = Gem::Platform.new "x86-linux"
+      s.instance_variable_set :@original_platform, "x86-linux"
     end
 
     if prerelease

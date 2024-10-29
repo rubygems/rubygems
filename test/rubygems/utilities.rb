@@ -348,8 +348,8 @@ class Gem::TestCase::SpecFetcherSetup
 
   def legacy_platform
     spec "pl", 1 do |s|
-      s.platform = Gem::Platform.new "i386-linux"
-      s.instance_variable_set :@original_platform, "i386-linux"
+      s.platform = Gem::Platform.new "x86-linux"
+      s.instance_variable_set :@original_platform, "x86-linux"
     end
   end
 

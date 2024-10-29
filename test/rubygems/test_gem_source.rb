@@ -108,7 +108,7 @@ class TestGemSource < Gem::TestCase
   def test_fetch_spec_platform
     specs = spec_fetcher(&:legacy_platform)
 
-    spec = @source.fetch_spec tuple("pl", Gem::Version.new(1), "i386-linux")
+    spec = @source.fetch_spec tuple("pl", Gem::Version.new(1), "x86-linux")
 
     assert_equal specs["pl-1-x86-linux"].full_name, spec.full_name
   end

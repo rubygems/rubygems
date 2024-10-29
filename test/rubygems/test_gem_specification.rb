@@ -2462,13 +2462,14 @@ end
 
   def test_to_ruby_platform
     @a2.platform = Gem::Platform.local
-    @a2.instance_variable_set :@original_platform, "old_platform"
+    @a2.instance_variable_set :@original_platform, "some_old_platform"
 
     ruby_code = @a2.to_ruby
 
     same_spec = eval ruby_code
 
-    assert_equal "old_platform", same_spec.original_platform
+    assert_equal Gem::Platform.local, same_spec.platform
+    assert_equal Gem::Platform.local, same_spec.original_platform
   end
 
   def test_to_yaml

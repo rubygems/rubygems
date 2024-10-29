@@ -107,7 +107,7 @@ class TestGemSpecFetcher < Gem::TestCase
   end
 
   def test_spec_for_dependency_platform
-    util_set_arch "i386-linux"
+    util_set_arch "x86-linux"
 
     spec_fetcher(&:legacy_platform)
 
@@ -134,8 +134,8 @@ class TestGemSpecFetcher < Gem::TestCase
     assert_equal 1, errors.size
     pmm = errors.first
 
-    assert_equal "i386-linux", pmm.platforms.first
-    assert_equal "Found pl (1), but was for platform i386-linux", pmm.wordy
+    assert_equal "x86-linux", pmm.platforms.first
+    assert_equal "Found pl (1), but was for platform x86-linux", pmm.wordy
   end
 
   def test_spec_for_dependency_bad_fetch_spec
@@ -213,7 +213,7 @@ class TestGemSpecFetcher < Gem::TestCase
 
     expected = Gem::NameTuple.from_list \
       [["a",      v(2),     Gem::Platform::RUBY],
-       ["pl",     v(1),     "i386-linux"]]
+       ["pl",     v(1),     "x86-linux"]]
 
     assert_equal expected, specs[@source]
   end
@@ -230,7 +230,7 @@ class TestGemSpecFetcher < Gem::TestCase
 
     expected = Gem::NameTuple.from_list \
       [["a",      v(1),     Gem::Platform::RUBY],
-       ["pl",     v(1),     "i386-linux"]]
+       ["pl",     v(1),     "x86-linux"]]
 
     assert_equal expected, specs[@source]
   end
@@ -251,7 +251,7 @@ class TestGemSpecFetcher < Gem::TestCase
       [["a",      v(1),     Gem::Platform::RUBY],
        ["a",      v("2.a"), Gem::Platform::RUBY],
        ["b",      v(2),     Gem::Platform::RUBY],
-       ["pl",     v(1),     "i386-linux"]]
+       ["pl",     v(1),     "x86-linux"]]
 
     assert_equal expected, specs[@source]
   end
@@ -274,7 +274,7 @@ class TestGemSpecFetcher < Gem::TestCase
     expected = Gem::NameTuple.from_list \
       [["a",      v(1), Gem::Platform::RUBY],
        ["b",      v(2), Gem::Platform::RUBY],
-       ["pl",     v(1), "i386-linux"]]
+       ["pl",     v(1), "x86-linux"]]
 
     assert_equal expected, specs[@source]
   end

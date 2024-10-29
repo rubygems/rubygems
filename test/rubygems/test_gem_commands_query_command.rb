@@ -36,7 +36,7 @@ class TestGemCommandsQueryCommandWithInstalledGems < Gem::TestCase
 *** REMOTE GEMS ***
 
 a (2)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -57,7 +57,7 @@ pl (1 i386-linux)
 *** REMOTE GEMS ***
 
 a (2, 1)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -78,7 +78,7 @@ pl (1 i386-linux)
 *** REMOTE GEMS ***
 
 a (3.a, 2, 1)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -114,7 +114,7 @@ a (2)
     This is a lot of text.
 
 pl (1)
-    Platform: i386-linux
+    Platform: x86-linux
     Author: A User
     Homepage: http://example.com
 
@@ -154,7 +154,7 @@ a (2)
     This is a lot of text.
 
 pl (1)
-    Platform: i386-linux
+    Platform: x86-linux
     Author: A User
     Homepage: http://example.com
 
@@ -194,7 +194,7 @@ a (2)
 #{"    This is a lot of text. This is a lot of text. This is a lot of text.\n" * 1449}    This is a lot of te
 
 pl (1)
-    Platform: i386-linux
+    Platform: x86-linux
     Author: A User
     Homepage: http://example.com
 
@@ -318,7 +318,7 @@ pl (1)
 *** LOCAL GEMS ***
 
 a (3.a, 2, 1)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -338,7 +338,7 @@ pl (1 i386-linux)
 
     expected = <<-EOF
 a (3.a, 2, 1)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -357,7 +357,7 @@ pl (1 i386-linux)
 
     expected = <<-EOF
 a (3.a, 2, 1)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -398,7 +398,7 @@ pl
 
     expected = <<-EOF
 a (2)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -437,7 +437,7 @@ a (3.a)
 *** LOCAL GEMS ***
 
 a (3.a, 2, 1)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -457,7 +457,7 @@ pl (1 i386-linux)
 *** LOCAL GEMS ***
 
 a (2, 1)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -477,7 +477,7 @@ pl (1 i386-linux)
 *** REMOTE GEMS ***
 
 a (2)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -497,7 +497,7 @@ pl (1 i386-linux)
 
     expected = <<-EOF
 a (3.a, 2, 1)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -516,7 +516,7 @@ pl (1 i386-linux)
 
     expected = <<-EOF
 a (2)
-pl (1 i386-linux)
+pl (1 x86-linux)
     EOF
 
     assert_equal expected, @stub_ui.output
@@ -726,7 +726,7 @@ a (2, 1)
     This is a lot of text.
 
 pl (1)
-    Platform: i386-linux
+    Platform: x86-linux
     Author: A User
     Homepage: http://example.com
     Installed at: -

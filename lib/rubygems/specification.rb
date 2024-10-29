@@ -2433,8 +2433,8 @@ class Gem::Specification < Gem::BasicSpecification
 
     result << "  s.name = #{ruby_code name}"
     result << "  s.version = #{ruby_code version}"
-    unless platform.nil? || platform == Gem::Platform::RUBY
-      result << "  s.platform = #{ruby_code original_platform}"
+    if platform && platform != Gem::Platform::RUBY
+      result << "  s.platform = #{ruby_code platform}"
     end
     result << ""
     result << "  s.required_rubygems_version = #{ruby_code required_rubygems_version} if s.respond_to? :required_rubygems_version="

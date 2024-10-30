@@ -15,10 +15,6 @@ Gem::Specification.new do |spec|
   spec.license = "MIT"
 <%- end -%>
   spec.required_ruby_version = ">= <%= config[:required_ruby_version] %>"
-<%- if config[:ext] == 'rust' -%>
-  spec.required_rubygems_version = ">= <%= config[:rust_builder_required_rubygems_version] %>"
-<%- end -%>
-
   spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
@@ -41,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.extensions = ["ext/<%= config[:underscored_name] %>/extconf.rb"]
 <%- end -%>
 <%- if config[:ext] == 'rust' -%>
-  spec.extensions = ["ext/<%= config[:underscored_name] %>/Cargo.toml"]
+  spec.add_dependency "rb_sys", "~> 0.9"
 <%- end -%>
 
   # Uncomment to register a new dependency of your gem

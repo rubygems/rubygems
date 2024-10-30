@@ -132,6 +132,9 @@ jobs:
       - name: Generate a Rails application
         run: gem install rails --version 7.0.8 && rails new foo ${{ matrix.ruby.rails-args }}
         shell: bash
+      - name: Use gem installed in a bin dir different from where Ruby itself is installed
+        run: gem install rspec --version 3.13.0 --install-dir foo && GEM_HOME=foo foo/bin/rspec --version
+        shell: bash
 
     timeout-minutes: 20
 

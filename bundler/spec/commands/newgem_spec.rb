@@ -1645,8 +1645,8 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include(%(spec.extensions = ["ext/#{gem_name}/extconf.rb"]))
       end
 
-      it "includes go_gem in Gemfile" do
-        expect(bundled_app("#{gem_name}/Gemfile").read).to include('gem "go_gem", "~> 0.2"')
+      it "includes go_gem in gem_name.gemspec" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include('spec.add_dependency "go_gem", "~> 0.2"')
       end
 
       it "includes go_gem extension in extconf.rb" do

@@ -46,6 +46,9 @@ Gem::Specification.new do |spec|
 <%- if config[:ext] == 'rust' -%>
   spec.add_dependency "rb_sys", "~> 0.9.91"
 <%- end -%>
+<%- if config[:ext] == 'go' -%>
+  spec.add_dependency "go_gem", "~> 0.2"
+<%- end -%>
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

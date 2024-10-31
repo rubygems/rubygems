@@ -10,9 +10,6 @@ gem "rake", "~> 13.0"
 <%- if config[:ext] -%>
 
 gem "rake-compiler"
-<%- if config[:ext] == 'go' -%>
-gem "go_gem", "~> 0.2"
-<%- end -%>
 <%- end -%>
 <%- if config[:test] -%>
 

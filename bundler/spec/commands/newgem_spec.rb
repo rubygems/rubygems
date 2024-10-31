@@ -1621,6 +1621,7 @@ RSpec.describe "bundle gem" do
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/#{gem_name}.h")).to exist
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/extconf.rb")).to exist
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/go.mod")).to exist
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/go.sum")).to exist
       end
 
       it "includes extconf.rb in gem_name.gemspec" do

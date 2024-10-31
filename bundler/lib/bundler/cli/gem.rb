@@ -253,6 +253,10 @@ module Bundler
         path.chmod(executable)
       end
 
+      if extension == "go"
+        run_go_mod_tidy(target.join("ext/#{name}"))
+      end
+
       if use_git
         IO.popen(%w[git add .], { chdir: target }, &:read)
       end
@@ -487,6 +491,23 @@ module Bundler
       return nil unless status.success?
 
       /go version go([.\d]+)/.match(stdout)[1]
+    end
+
+    # Run `go mod tidy` within ext/newgem/
+    def run_go_mod_tidy(ext_dir)
+      Dir.chdir(ext_dir) do
+        _, stderr, status = Open3.capture3("go mod tidy")
+
+        if status.success?
+          Bundler.ui.info "#{ext_dir}/go.sum has been created with `go mod tidy`"
+        else
+          Bundler.ui.warn <<~MSG
+            An error occurred when executing `go mod tidy`.
+            stderr: #{stderr}
+            Please run `go mod tidy` later in #{ext_dir} to create `go.sum`.
+          MSG
+        end
+      end
     end
   end
 end

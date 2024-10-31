@@ -1,4 +1,4 @@
-module github.com/<%= config[:github_username] %>/<%= config[:underscored_name] %>
+module github.com/<%= config[:go_module_username] %>/<%= config[:underscored_name] %>
 
 go <%= config[:go_version] %>
 

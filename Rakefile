@@ -459,6 +459,15 @@ module Rubygems
         files << path
       end
 
+      # Restore important documents
+      %w[
+        doc/MAINTAINERS.txt
+        doc/bundler/UPGRADING.md
+        doc/rubygems/CONTRIBUTING.md
+        doc/rubygems/POLICIES.md
+        doc/rubygems/UPGRADING.md
+      ].each {|f| files << f }
+
       files.sort
     end
   end

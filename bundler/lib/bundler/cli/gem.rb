@@ -16,6 +16,8 @@ module Bundler
       "test-unit" => "3.0",
     }.freeze
 
+    DEFAULT_GITHUB_USERNAME = "[USERNAME]"
+
     attr_reader :options, :gem_name, :thor, :name, :target, :extension
 
     def initialize(options, gem_name, thor)
@@ -72,7 +74,7 @@ module Bundler
         exe: options[:exe],
         bundler_version: bundler_dependency_version,
         git: use_git,
-        github_username: github_username.empty? ? "[USERNAME]" : github_username,
+        github_username: github_username.empty? ? DEFAULT_GITHUB_USERNAME : github_username,
         required_ruby_version: required_ruby_version,
         rust_builder_required_rubygems_version: rust_builder_required_rubygems_version,
         minitest_constant_name: minitest_constant_name,
@@ -223,6 +225,7 @@ module Bundler
         )
 
         config[:go_version] = go_version
+        config[:go_module_username] = config[:github_username] == DEFAULT_GITHUB_USERNAME ? "username" : config[:github_username]
       end
 
       if target.exist? && !target.directory?

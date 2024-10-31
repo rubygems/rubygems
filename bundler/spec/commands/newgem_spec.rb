@@ -1687,6 +1687,10 @@ RSpec.describe "bundle gem" do
         GO
       end
 
+      it "includes valid module name in go.mod" do
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/go.mod").read).to include("module github.com/bundleuser/#{gem_name}")
+      end
+
       context "with --no-ci" do
         let(:flags) { "--ext=go --no-ci" }
 
@@ -1754,6 +1758,17 @@ RSpec.describe "bundle gem" do
 
         it "includes go version in go.mod" do
           expect(bundled_app("#{gem_name}/ext/#{gem_name}/go.mod").read).to include("go #{go_version}")
+        end
+      end
+
+      context "without github.user" do
+        before do
+          git("config --global --unset github.user")
+          bundle ["gem", gem_name, flags].compact.join(" ")
+        end
+
+        it "includes valid module name in go.mod" do
+          expect(bundled_app("#{gem_name}/ext/#{gem_name}/go.mod").read).to include("module github.com/username/#{gem_name}")
         end
       end
     end

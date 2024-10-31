@@ -1646,6 +1646,27 @@ RSpec.describe "bundle gem" do
           #include "_cgo_export.h"
         C
       end
+
+      context "with --no-ci" do
+        let(:flags) { "--ext=go --no-ci" }
+
+        it_behaves_like "CI config is absent"
+      end
+
+      context "--ci set to github" do
+        let(:flags) { "--ext=go --ci=github" }
+
+        it "generates .github/workflows/main.yml" do
+          expect(bundled_app("#{gem_name}/.github/workflows/main.yml")).to exist
+
+          expect(bundled_app("#{gem_name}/.github/workflows/main.yml").read).to include(<<-YAML)
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: ext/#{gem_name}/go.mod
+          YAML
+        end
+      end
     end
   end
 

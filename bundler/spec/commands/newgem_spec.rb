@@ -1637,6 +1637,7 @@ RSpec.describe "bundle gem" do
       it "builds ext skeleton" do
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/#{gem_name}.c")).to exist
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/#{gem_name}.go")).to exist
+        expect(bundled_app("#{gem_name}/ext/#{gem_name}/#{gem_name}.h")).to exist
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/extconf.rb")).to exist
         expect(bundled_app("#{gem_name}/ext/#{gem_name}/go.mod")).to exist
       end

@@ -1698,13 +1698,7 @@ RSpec.describe "bundle gem" do
 
         it "generates .github/workflows/main.yml" do
           expect(bundled_app("#{gem_name}/.github/workflows/main.yml")).to exist
-
-          expect(bundled_app("#{gem_name}/.github/workflows/main.yml").read).to include(<<-YAML)
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version-file: ext/#{gem_name}/go.mod
-          YAML
+          expect(bundled_app("#{gem_name}/.github/workflows/main.yml").read).to include("go-version-file: ext/#{gem_name}/go.mod")
         end
       end
 

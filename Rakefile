@@ -450,7 +450,7 @@ module Rubygems
   class ProjectFiles
     def self.all
       files = []
-      exclude = %r{\A(?:\.|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|tool/|Rakefile|bin|test)}
+      exclude = %r{\A(?:\.|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|tool/|Rakefile|bin|test|doc)}
       tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|
@@ -458,6 +458,15 @@ module Rubygems
         next if path&.match?(exclude)
         files << path
       end
+
+      # Restore important documents
+      %w[
+        doc/MAINTAINERS.txt
+        doc/bundler/UPGRADING.md
+        doc/rubygems/CONTRIBUTING.md
+        doc/rubygems/POLICIES.md
+        doc/rubygems/UPGRADING.md
+      ].each {|f| files << f }
 
       files.sort
     end

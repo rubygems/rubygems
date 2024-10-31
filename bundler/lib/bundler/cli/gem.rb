@@ -220,6 +220,7 @@ module Bundler
         templates.merge!(
           "ext/newgem/go.mod.tt" => "ext/#{name}/go.mod",
           "ext/newgem/extconf-go.rb.tt" => "ext/#{name}/extconf.rb",
+          "ext/newgem/newgem.h.tt" => "ext/#{name}/#{underscored_name}.h",
           "ext/newgem/newgem.go.tt" => "ext/#{name}/#{underscored_name}.go",
           "ext/newgem/newgem-go.c.tt" => "ext/#{name}/#{underscored_name}.c",
         )

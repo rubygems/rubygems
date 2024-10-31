@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-<%- if config[:ext] == 'c' || config[:ext] == 'rust' || config[:ext] == 'go' -%>
+<%- if %w(c rust go).include?(config[:ext]) -%>
   spec.extensions = ["ext/<%= config[:underscored_name] %>/extconf.rb"]
 <%- end -%>
 

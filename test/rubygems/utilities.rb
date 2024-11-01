@@ -31,11 +31,13 @@ require "rubygems/remote_fetcher"
 
 class Gem::FakeFetcher
   attr_reader :data
+  attr_reader :headers
   attr_reader :last_request
   attr_accessor :paths
 
   def initialize
     @data = {}
+    @headers = {}
     @paths = []
   end
 

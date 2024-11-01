@@ -28,6 +28,10 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     Gem::Command.build_args = @orig_args
     File.unlink @gemdeps if File.file? @gemdeps
     File.unlink "#{@gemdeps}.lock" if File.file? "#{@gemdeps}.lock"
+
+    if defined? Gem::RemoteFetcher
+      Gem::RemoteFetcher.fetcher = nil
+    end
   end
 
   def test_execute_exclude_prerelease
@@ -758,6 +762,22 @@ ERROR:  Possible alternatives: non_existent_with_hint
     assert_equal %w[a-2], @cmd.installed_specs.map(&:full_name)
 
     assert_match "1 gem installed", @ui.output
+  end
+
+  def test_execute_remote_gem_host_api_key
+    Gem::RemoteFetcher.fetcher = @fetcher = Gem::FakeFetcher.new
+    @a1, @a1_gem = util_gem "a", "1"
+    util_setup_spec_fetcher @a1
+    @fetcher.data["http://gems.example.com/gems/a-1.gem"] = Gem.read_binary(@a1_gem)
+
+    ENV["GEM_HOST_API_KEY"] = "temporary_secret_key"
+    @cmd.options[:args] = %w[a]
+    use_ui @stub_ui do
+      @cmd.execute
+    end
+
+    assert_match "1 gem installed", @ui.output
+    assert_equal "temporary_secret_key", @fetcher.headers[:authorization]
   end
 
   def test_execute_with_invalid_gem_file

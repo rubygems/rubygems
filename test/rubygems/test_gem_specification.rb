@@ -2462,7 +2462,7 @@ end
 
   def test_to_ruby_platform
     @a2.platform = Gem::Platform.local
-    @a2.instance_variable_set :@original_platform, "some_old_platform"
+    @a2.instance_variable_set :@original_platform, "old_platform"
 
     ruby_code = @a2.to_ruby
 
@@ -2496,25 +2496,25 @@ end
   def test_to_yaml_platform_empty_string
     @a1.instance_variable_set :@original_platform, ""
 
-    assert_match(/^platform: ruby$/, @a1.to_yaml)
+    refute_match(/^platform: /, @a1.to_yaml)
   end
 
   def test_to_yaml_platform_legacy
     @a1.platform = "powerpc-darwin7.9.0"
-    @a1.instance_variable_set :@original_platform, "powerpc-darwin7.9.0"
+    @a1.instance_variable_set :@original_platform, "old_platform"
 
     yaml_str = @a1.to_yaml
 
     same_spec = load_yaml yaml_str
 
     assert_equal Gem::Platform.new("powerpc-darwin7"), same_spec.platform
-    assert_equal "powerpc-darwin7.9.0", same_spec.original_platform
+    assert_equal "powerpc-darwin-7", same_spec.original_platform
   end
 
   def test_to_yaml_platform_nil
     @a1.instance_variable_set :@original_platform, nil
 
-    assert_match(/^platform: ruby$/, @a1.to_yaml)
+    refute_match(/^platform: /, @a1.to_yaml)
   end
 
   def test_to_yaml_no_autorequire

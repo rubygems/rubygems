@@ -1813,15 +1813,9 @@ class Gem::Specification < Gem::BasicSpecification
   def encode_with(coder) # :nodoc:
     coder.add "name", @name
     coder.add "version", @version
-    platform = case @original_platform
-               when nil, "" then
-                 "ruby"
-               when String then
-                 @original_platform
-               else
-                 @original_platform.to_s
+    if @platform && @platform != Gem::Platform::RUBY
+      coder.add "platform", @platform
     end
-    coder.add "platform", platform
 
     attributes = @@attributes.map(&:to_s) - %w[name version platform]
     attributes.each do |name|

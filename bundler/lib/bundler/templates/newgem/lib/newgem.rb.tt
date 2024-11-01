@@ -1,8 +1,24 @@
 # frozen_string_literal: true
 
+<%- unless config[:zeitwerk] -%>
 require_relative "<%= File.basename(config[:namespaced_path]) %>/version"
+<%- end -%>
 <%- if config[:ext] -%>
 require_relative "<%= File.basename(config[:namespaced_path]) %>/<%= config[:underscored_name] %>"
+<%- end -%>
+<%- if config[:zeitwerk] -%>
+require "zeitwerk"
+<%- if config[:name].include?("-") -%>
+loader = Zeitwerk::Loader.for_gem_extension(<%= config[:constant_array][0..-2].join("::") %>)
+<%- else -%>
+loader = Zeitwerk::Loader.for_gem
+<%- end -%>
+loader.setup
+
+# Client code may eager load the gem, make sure that works.
+# If some files or directories should never be eager loaded,
+# please configure eager load exceptions in the loader.
+loader.eager_load if ENV.key?('CI')
 <%- end -%>
 
 <%- config[:constant_array].each_with_index do |c, i| -%>

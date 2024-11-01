@@ -545,6 +545,7 @@ module Bundler
                          desc: "Open generated gemspec in the specified editor (defaults to $EDITOR or $BUNDLER_EDITOR)"
     method_option :ext, type: :string, desc: "Generate the boilerplate for C extension code.", enum: EXTENSIONS
     method_option :git, type: :boolean, default: true, desc: "Initialize a git repo inside your library."
+    method_option :zeitwerk, type: :boolean, desc: "Configure Zeitwerk as the class loader. Set a default with `bundle config set --global gem.zeitwerk true`."
     method_option :mit, type: :boolean, desc: "Generate an MIT license file. Set a default with `bundle config set --global gem.mit true`."
     method_option :rubocop, type: :boolean, desc: "Add rubocop to the generated Rakefile and gemspec. Set a default with `bundle config set --global gem.rubocop true`."
     method_option :changelog, type: :boolean, desc: "Generate changelog file. Set a default with `bundle config set --global gem.changelog true`."

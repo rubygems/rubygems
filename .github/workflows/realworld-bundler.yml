@@ -27,7 +27,7 @@ jobs:
         ruby:
           - { name: ruby-3.0, value: 3.0.7 }
           - { name: ruby-3.1, value: 3.1.6 }
-          - { name: ruby-3.2, value: 3.2.4 }
+          - { name: ruby-3.2, value: 3.2.6 }
           - { name: ruby-3.3, value: 3.3.5 }
 
         bundler:
@@ -37,7 +37,7 @@ jobs:
         include:
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.5 } }
     env:
       RGV: ..
@@ -72,11 +72,11 @@ jobs:
         include:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.0, value: 3.0.7 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.4 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.5 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.0, value: 3.0.7 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.6 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.4 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.6 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.5 } }
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

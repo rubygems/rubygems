@@ -3,6 +3,27 @@
 module Bundler
   class Source
     class Metadata < Source
+      def self.bundler
+        @bundler ||= if local_spec = Gem.loaded_specs["bundler"]
+          raise CorruptBundlerInstallError.new(local_spec) if local_spec.version.to_s != Bundler::VERSION
+
+          local_spec
+        else
+          Gem::Specification.new do |s|
+            s.name     = "bundler"
+            s.version  = VERSION
+            s.license  = "MIT"
+            s.platform = Gem::Platform::RUBY
+            s.authors  = ["bundler team"]
+            s.bindir   = "exe"
+            s.homepage = "https://bundler.io"
+            s.summary  = "The best way to manage your application's dependencies"
+            s.executables = %w[bundle bundler]
+            s.loaded_from = SharedHelpers.gemspec_path
+          end
+        end
+      end
+
       def specs
         @specs ||= Index.build do |idx|
           idx << Gem::Specification.new("Ruby\0", Bundler::RubyVersion.system.gem_version)
@@ -10,24 +31,7 @@ module Bundler
             s.required_rubygems_version = Gem::Requirement.default
           end
 
-          if local_spec = Gem.loaded_specs["bundler"]
-            raise CorruptBundlerInstallError.new(local_spec) if local_spec.version.to_s != Bundler::VERSION
-
-            idx << local_spec
-          else
-            idx << Gem::Specification.new do |s|
-              s.name     = "bundler"
-              s.version  = VERSION
-              s.license  = "MIT"
-              s.platform = Gem::Platform::RUBY
-              s.authors  = ["bundler team"]
-              s.bindir   = "exe"
-              s.homepage = "https://bundler.io"
-              s.summary  = "The best way to manage your application's dependencies"
-              s.executables = %w[bundle bundler]
-              s.loaded_from = SharedHelpers.gemspec_path
-            end
-          end
+          idx << self.class.bundler
 
           idx.each {|s| s.source = self }
         end

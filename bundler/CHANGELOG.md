@@ -1,3 +1,27 @@
+# 2.5.23 (November 5, 2024)
+
+## Enhancements:
+
+  - Add useful error message for plugin load [#7639](https://github.com/rubygems/rubygems/pull/7639)
+  - Indent github workflow steps for generated gems [#8193](https://github.com/rubygems/rubygems/pull/8193)
+  - Improve several permission errors [#8168](https://github.com/rubygems/rubygems/pull/8168)
+  - Add `bundle add` `--quiet` option [#8157](https://github.com/rubygems/rubygems/pull/8157)
+
+## Bug fixes:
+
+  - Fix incompatible encodings error when paths with UTF-8 characters are involved [#8196](https://github.com/rubygems/rubygems/pull/8196)
+  - Update `--ext=rust` to support compiling the native extension from source [#7610](https://github.com/rubygems/rubygems/pull/7610)
+  - Print a proper error when there's a previous empty installation path with bad permissions [#8169](https://github.com/rubygems/rubygems/pull/8169)
+  - Fix running `bundler` (with a final `r`) in a `bundle exec` context [#8165](https://github.com/rubygems/rubygems/pull/8165)
+  - Handle two `gemspec` usages in same Gemfile with same dep and compatible requirements [#7999](https://github.com/rubygems/rubygems/pull/7999)
+  - Fix `bundle check` sometimes locking gems under the wrong source [#8148](https://github.com/rubygems/rubygems/pull/8148)
+
+## Documentation:
+
+  - Remove confusing `bundle config` documentation [#8177](https://github.com/rubygems/rubygems/pull/8177)
+  - Rename bundler inline's `install` parameter and clarify docs [#8170](https://github.com/rubygems/rubygems/pull/8170)
+  - Clarify `bundle install --quiet` documentation [#8163](https://github.com/rubygems/rubygems/pull/8163)
+
 # 2.5.22 (October 16, 2024)
 
 ## Enhancements:

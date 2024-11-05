@@ -461,8 +461,13 @@ class Gem::Installer
 
   def generate_windows_script(filename, bindir)
     if Gem.win_platform?
-      script_name = formatted_program_filename(filename) + ".bat"
+      script_name = formatted_program_filename(filename) + ".shim"
       script_path = File.join bindir, File.basename(script_name)
+      shim_path = File.join File.dirname(__FILE__), "shim.exe"
+      script_shim = formatted_program_filename(filename) + ".exe"
+      script_shim = File.join bindir, script_shim
+      require 'fileutils'
+      FileUtils.copy_file(shim_path, script_shim) 
       File.open script_path, "w" do |file|
         file.puts windows_stub_script(bindir, filename)
       end
@@ -812,8 +817,8 @@ TEXT
     if File.exist?(File.join(bindir, ruby_exe))
       # stub & ruby.exe within same folder.  Portable
       <<-TEXT
-@ECHO OFF
-@"%~dp0#{ruby_exe}" "%~dpn0" %*
+path = #{ruby_exe}
+args = #{File.join(bin_dir, bin_file_name)}
       TEXT
     elsif bindir.downcase.start_with? rb_topdir.downcase
       # stub within ruby folder, but not standard bin.  Portable
@@ -822,15 +827,15 @@ TEXT
       to   = Pathname.new "#{rb_topdir}/bin"
       rel  = to.relative_path_from from
       <<-TEXT
-@ECHO OFF
-@"%~dp0#{rel}/#{ruby_exe}" "%~dpn0" %*
+path = #{rel}/#{ruby_exe}
+args = #{File.join(bin_dir, bin_file_name)}
       TEXT
     else
       # outside ruby folder, maybe -user-install or bundler.  Portable, but ruby
       # is dependent on PATH
       <<-TEXT
-@ECHO OFF
-@#{ruby_exe} "%~dpn0" %*
+path = #{ruby_exe}
+args = #{File.join(bin_dir, bin_file_name)}
       TEXT
     end
   end

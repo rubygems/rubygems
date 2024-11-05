@@ -24,7 +24,7 @@ jobs:
         ruby:
           - { name: "3.0", value: 3.0.7 }
           - { name: "3.1", value: 3.1.6 }
-          - { name: "3.2", value: 3.2.4 }
+          - { name: "3.2", value: 3.2.6 }
           - { name: "3.3", value: 3.3.5 }
           - { name: jruby, value: jruby-9.4.8.0 }
           - { name: truffleruby, value: truffleruby-24.0.1 }
@@ -32,9 +32,9 @@ jobs:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@f26937343756480a8cb3ae1f623b9c8d89ed6984 # v1.196.0
+        uses: ruby/setup-ruby@7d3497fd78c07c0d84ebafa58d8dac60cd1f0763 # v1.199.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -104,18 +104,18 @@ jobs:
       matrix:
         ruby:
           - { name: "3.1", value: 3.1.6 }
-          - { name: "3.2", value: 3.2.4 }
+          - { name: "3.2", value: 3.2.6 }
           - { name: "3.3", value: 3.3.5 }
           - { name: jruby-9.4, value: jruby-9.4.8.0, rails-args: "--skip-webpack-install" }
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@f26937343756480a8cb3ae1f623b9c8d89ed6984 # v1.196.0
+        uses: ruby/setup-ruby@7d3497fd78c07c0d84ebafa58d8dac60cd1f0763 # v1.199.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # v4.4.0
+        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
         with:
           distribution: temurin
           java-version: 19.0.2
@@ -132,6 +132,9 @@ jobs:
       - name: Generate a Rails application
         run: gem install rails --version 7.0.8 && rails new foo ${{ matrix.ruby.rails-args }}
         shell: bash
+      - name: Use gem installed in a bin dir different from where Ruby itself is installed
+        run: gem install rspec --version 3.13.0 --install-dir foo && GEM_HOME=foo foo/bin/rspec --version
+        shell: bash
 
     timeout-minutes: 20
 
@@ -144,9 +147,9 @@ jobs:
           - dev
           - system
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup original ruby
-        uses: ruby/setup-ruby@f26937343756480a8cb3ae1f623b9c8d89ed6984 # v1.196.0
+        uses: ruby/setup-ruby@7d3497fd78c07c0d84ebafa58d8dac60cd1f0763 # v1.199.0
         with:
           ruby-version: 3.2
           bundler: none
@@ -167,7 +170,7 @@ jobs:
           GEM_HOME: bar
           GEM_PATH: bar
       - name: Setup final ruby
-        uses: ruby/setup-ruby@f26937343756480a8cb3ae1f623b9c8d89ed6984 # v1.196.0
+        uses: ruby/setup-ruby@7d3497fd78c07c0d84ebafa58d8dac60cd1f0763 # v1.199.0
         with:
           ruby-version: 3.3
           bundler: none

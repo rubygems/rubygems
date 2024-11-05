@@ -485,6 +485,63 @@ RSpec.describe "bundle install with gem sources" do
       expect(the_bundle).to include_gems("rubocop 1.36.0")
     end
 
+    it "includes the gem without warning if two gemspecs add it with compatible requirements" do
+      gem1 = tmp("my-gem-1")
+      gem2 = tmp("my-gem-2")
+
+      build_lib "my-gem", path: gem1 do |s|
+        s.add_development_dependency "rubocop", "~> 1.0"
+      end
+
+      build_lib "my-gem-2", path: gem2 do |s|
+        s.add_development_dependency "rubocop", "~> 1.36.0"
+      end
+
+      build_repo4 do
+        build_gem "rubocop", "1.36.0"
+      end
+
+      gemfile <<~G
+        source "https://gem.repo4"
+
+        gemspec path: "#{gem1}"
+        gemspec path: "#{gem2}"
+      G
+
+      bundle :install
+
+      expect(err).to be_empty
+      expect(the_bundle).to include_gems("rubocop 1.36.0")
+    end
+
+    it "errors out if two gemspecs add it with incompatible requirements" do
+      gem1 = tmp("my-gem-1")
+      gem2 = tmp("my-gem-2")
+
+      build_lib "my-gem", path: gem1 do |s|
+        s.add_development_dependency "rubocop", "~> 2.0"
+      end
+
+      build_lib "my-gem-2", path: gem2 do |s|
+        s.add_development_dependency "rubocop", "~> 1.36.0"
+      end
+
+      build_repo4 do
+        build_gem "rubocop", "1.36.0"
+      end
+
+      gemfile <<~G
+        source "https://gem.repo4"
+
+        gemspec path: "#{gem1}"
+        gemspec path: "#{gem2}"
+      G
+
+      bundle :install, raise_on_error: false
+
+      expect(err).to include("Two gemspecs have conflicting requirements on the same gem: rubocop (~> 1.36.0, development) and rubocop (~> 2.0, development). Bundler cannot continue.")
+    end
+
     it "warns when a Gemfile dependency is overriding a gemspec development dependency, with different requirements" do
       build_lib "my-gem", path: bundled_app do |s|
         s.add_development_dependency "rails", ">= 5"
@@ -833,7 +890,7 @@ RSpec.describe "bundle install with gem sources" do
       bundle "config set --local path vendor"
       bundle :install, raise_on_error: false
       expect(err).to include(bundle_path.to_s)
-      expect(err).to include("grant write permissions")
+      expect(err).to include("grant executable permissions")
     end
   end
 
@@ -863,6 +920,36 @@ RSpec.describe "bundle install with gem sources" do
       expect(err).to include(
         "There was an error while trying to create `#{gems_path.join("myrack-1.0.0")}`. " \
         "It is likely that you need to grant executable permissions for all parent directories and write permissions for `#{gems_path}`."
+      )
+    end
+  end
+
+  describe "when there's an empty install folder (like with default gems) without cd permissions", :permissions do
+    let(:full_gem_path) { bundled_app("vendor/#{Bundler.ruby_scope}/gems/myrack-1.0.0") }
+
+    before do
+      FileUtils.mkdir_p(full_gem_path)
+      gemfile <<-G
+        source "https://gem.repo1"
+        gem 'myrack'
+      G
+    end
+
+    it "should display a proper message to explain the problem" do
+      FileUtils.chmod("-x", full_gem_path)
+      bundle "config set --local path vendor"
+
+      begin
+        bundle :install, raise_on_error: false
+      ensure
+        FileUtils.chmod("+x", full_gem_path)
+      end
+
+      expect(err).not_to include("ERROR REPORT TEMPLATE")
+
+      expect(err).to include(
+        "There was an error while trying to write to `#{full_gem_path}`. " \
+        "It is likely that you need to grant write permissions for that path."
       )
     end
   end
@@ -1010,7 +1097,7 @@ RSpec.describe "bundle install with gem sources" do
       G
     end
 
-    it "should display a proper message to explain the problem" do
+    it "should still work" do
       bundle "config set --local path vendor"
       bundle :install
       expect(out).to include("Bundle complete!")
@@ -1128,6 +1215,35 @@ RSpec.describe "bundle install with gem sources" do
       bundle :install, raise_on_error: false
       expect(err).to include(gemspec_path.to_s)
       expect(err).to include("grant read permissions")
+    end
+  end
+
+  describe "when configured path is UTF-8 and a file inside a gem package too" do
+    let(:app_path) do
+      path = tmp("♥")
+      FileUtils.mkdir_p(path)
+      path
+    end
+
+    let(:path) do
+      root.join("vendor/bundle")
+    end
+
+    before do
+      build_repo4 do
+        build_gem "mygem" do |s|
+          s.write "spec/fixtures/_posts/2016-04-01-错误.html"
+        end
+      end
+    end
+
+    it "works" do
+      bundle "config path #{app_path}/vendor/bundle", dir: app_path
+
+      install_gemfile app_path.join("Gemfile"),<<~G, dir: app_path
+        source "https://gem.repo4"
+        gem "mygem", "1.0"
+      G
     end
   end
 

@@ -36,7 +36,6 @@ PLATFORMS
   universal-java-18
   universal-java-19
   x64-mingw-ucrt
-  x64-mingw32
   x86_64-darwin-20
   x86_64-linux
 
@@ -71,4 +70,4 @@ CHECKSUMS
   uri (0.13.1) sha256=df2d8b13e3e8c8a43432637e2ace4f9de7b42674361b4dd26302b40f7d7fcd1e
 
 BUNDLED WITH
-   2.5.22
+   2.5.23

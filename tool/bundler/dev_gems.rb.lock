@@ -66,7 +66,6 @@ PLATFORMS
   universal-java-18
   universal-java-19
   x64-mingw-ucrt
-  x64-mingw32
   x86_64-darwin-20
   x86_64-darwin-21
   x86_64-darwin-22
@@ -118,4 +117,4 @@ CHECKSUMS
   webrick (1.8.1) sha256=19411ec6912911fd3df13559110127ea2badd0c035f7762873f58afc803e158f
 
 BUNDLED WITH
-   2.5.22
+   2.5.23

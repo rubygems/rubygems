@@ -38,7 +38,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@217c988b8c2bf2bacb2d5c78a7e7b18f8c34daed # v1.200.0
         with:
-          ruby-version: jruby-9.4.8.0
+          ruby-version: jruby-9.4.9.0
           bundler: none
       - name: Setup java
         uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0

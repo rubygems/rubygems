@@ -25,6 +25,8 @@ jobs:
         run: pip install -r .github/workflows/lint.txt
       - name: Run codespell
         run: codespell
+      - name: Run YAMLlint
+        run: yamllint .
 
   ruby_linters:
     name: Ruby linters on ${{ matrix.ruby.name }}

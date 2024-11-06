@@ -136,8 +136,16 @@ module Bundler
       end
       if search.nil? && fallback_to_non_installable
         search = candidates.last
-      else
-        search.dependencies = dependencies if search && search.full_name == full_name && (search.is_a?(RemoteSpecification) || search.is_a?(EndpointSpecification))
+      elsif search && search.full_name == full_name
+        # We don't validate locally installed dependencies but accept what's in
+        # the lockfile instead for performance, since loading locally installed
+        # dependencies would mean evaluating all gemspecs, which would affect
+        # `bundler/setup` performance
+        if search.is_a?(StubSpecification)
+          search.dependencies = dependencies
+        elsif !source.is_a?(Source::Path) && search.runtime_dependencies.sort != dependencies.sort
+          raise IncorrectLockfileDependencies.new(self)
+        end
       end
       search
     end

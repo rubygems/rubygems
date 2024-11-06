@@ -1,0 +1,6 @@
+ignore-from-file: .gitignore
+
+rules:
+  quoted-strings:
+    quote-type: double
+    required: only-when-needed

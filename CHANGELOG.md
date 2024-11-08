@@ -1,3 +1,37 @@
+# 3.5.23 / 2024-11-05
+
+## Enhancements:
+
+* Validate user input encoding of `gem` CLI arguments. Pull request
+  [#6471](https://github.com/rubygems/rubygems/pull/6471) by
+  deivid-rodriguez
+* Fix `gem update --system` leaving old default bundler executables
+  around. Pull request
+  [#8172](https://github.com/rubygems/rubygems/pull/8172) by
+  deivid-rodriguez
+* Installs bundler 2.5.23 as a default gem.
+
+## Bug fixes:
+
+* Fix commands with 2 MFA requests when webauthn is enabled. Pull request
+  [#8174](https://github.com/rubygems/rubygems/pull/8174) by
+  deivid-rodriguez
+* Make `--enable-load-relative` binstubs prolog work when Ruby is not
+  installed in the same directory as the binstub. Pull request
+  [#7872](https://github.com/rubygems/rubygems/pull/7872) by
+  deivid-rodriguez
+
+## Performance:
+
+* Speed up `gem install <nonexistent-gem>` by finding alternative name
+  suggestions faster. Pull request
+  [#8084](https://github.com/rubygems/rubygems/pull/8084) by duckinator
+
+## Documentation:
+
+* Add missing comma in documentation. Pull request
+  [#8152](https://github.com/rubygems/rubygems/pull/8152) by leoarnold
+
 # 3.5.22 / 2024-10-16
 
 ## Enhancements:

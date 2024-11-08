@@ -323,7 +323,7 @@ bundler/lib/bundler/vendor/tsort/.document
 bundler/lib/bundler/vendor/tsort/LICENSE.txt
 bundler/lib/bundler/vendor/tsort/lib/tsort.rb
 bundler/lib/bundler/vendor/uri/.document
-bundler/lib/bundler/vendor/uri/LICENSE.txt
+bundler/lib/bundler/vendor/uri/COPYING
 bundler/lib/bundler/vendor/uri/lib/uri.rb
 bundler/lib/bundler/vendor/uri/lib/uri/common.rb
 bundler/lib/bundler/vendor/uri/lib/uri/file.rb
@@ -602,7 +602,7 @@ lib/rubygems/vendor/tsort/.document
 lib/rubygems/vendor/tsort/LICENSE.txt
 lib/rubygems/vendor/tsort/lib/tsort.rb
 lib/rubygems/vendor/uri/.document
-lib/rubygems/vendor/uri/LICENSE.txt
+lib/rubygems/vendor/uri/COPYING
 lib/rubygems/vendor/uri/lib/uri.rb
 lib/rubygems/vendor/uri/lib/uri/common.rb
 lib/rubygems/vendor/uri/lib/uri/file.rb

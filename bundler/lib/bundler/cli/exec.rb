@@ -19,7 +19,7 @@ module Bundler
       validate_cmd!
       SharedHelpers.set_bundle_environment
       if (bin_path = Bundler.which(cmd))
-        if !Bundler.settings[:disable_exec_load] and has_shebang?(bin_path)
+        if !Bundler.settings[:disable_exec_load] && has_shebang?(bin_path)
           begin
             if Gem.win_platform? # remove `bat` suffix
               bin_path = File.join(File.dirname(bin_path), File.basename(bin_path, File.extname(bin_path)))
@@ -83,8 +83,11 @@ module Bundler
       end
 
       first_line = File.open(file, "rb") {|f| f.read(5) }
-      return first_line.start_with?("@ECHO") if Gem.win_platform?
-      return first_line.start_with?("#!")
+      if Gem.win_platform?
+        return first_line.start_with?("@ECHO")
+      else
+        return first_line.start_with?("#!")
+      end
     end
   end
 end

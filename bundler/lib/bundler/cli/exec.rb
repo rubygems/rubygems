@@ -19,11 +19,16 @@ module Bundler
       validate_cmd!
       SharedHelpers.set_bundle_environment
       if (bin_path = Bundler.which(cmd))
-        if !Bundler.settings[:disable_exec_load]
-          return kernel_load(bin_path, *args) if Gem.win_platform?
-          return kernel_load(bin_path, *args) if ruby_shebang?(bin_path)
+        if !Bundler.settings[:disable_exec_load] and has_shebang?(bin_path)
+          begin
+            if Gem.win_platform? # remove `bat` suffix
+              bin_path = File.join(File.dirname(bin_path), File.basename(bin_path, File.extname(bin_path)))
+            end
+            kernel_load(bin_path, *args)
+          rescue LoadError
+            kernel_exec(bin_path, *args)
+          end
         end
-        kernel_exec(bin_path, *args)
       else
         # exec using the given command
         kernel_exec(cmd, *args)
@@ -69,15 +74,15 @@ module Bundler
       "#{file} #{args.join(" ")}".strip
     end
 
-    def ruby_shebang?(file)
-      if Gem.win_platform? then return true end
+    def has_shebang?(file)
       if File.zero?(file)
         Bundler.ui.warn "#{file} is empty"
         return false
       end
 
-      first_line = File.open(file, "rb") {|f| f.read(3) }
-      possibilities.any? {|shebang| first_line.start_with?("#!") }
+      first_line = File.open(file, "rb") {|f| f.read(5) }
+      return first_line.start_with?("@ECHO") if Gem.win_platform?
+      return first_line.start_with?("#!")
     end
   end
 end

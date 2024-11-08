@@ -76,8 +76,6 @@ module Bundler
       "#{file} #{args.join(" ")}".strip
     end
 
-
-
     def ruby_shebang?(file)
       possibilities = [
         "#!/usr/bin/env ruby\n",

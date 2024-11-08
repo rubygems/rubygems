@@ -83,11 +83,8 @@ module Bundler
       end
 
       first_line = File.open(file, "rb") {|f| f.read(5) }
-      if Gem.win_platform?
-        return first_line.start_with?("@ECHO")
-      else
-        return first_line.start_with?("#!")
-      end
+      first_line.start_with?("@ECHO") if Gem.win_platform?
+      first_line.start_with?("#!")
     end
   end
 end

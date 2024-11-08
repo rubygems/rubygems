@@ -18,8 +18,6 @@ module Bundler
     def run
       validate_cmd!
       SharedHelpers.set_bundle_environment
-      require 'byebug'
-      byebug
       if (bin_path = Bundler.which(cmd))
         if !Bundler.settings[:disable_exec_load]
           return kernel_load(bin_path, *args) if Gem.win_platform?

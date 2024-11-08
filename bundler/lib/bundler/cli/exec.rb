@@ -21,8 +21,9 @@ module Bundler
       require 'byebug'
       byebug
       if (bin_path = Bundler.which(cmd))
-        if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
-          return kernel_load(bin_path, *args)
+        if !Bundler.settings[:disable_exec_load]
+          return kernel_load(bin_path, *args) if Gem.win_platform?
+          return kernel_load(bin_path, *args) if ruby_shebang?(bin_path)
         end
         kernel_exec(bin_path, *args)
       else

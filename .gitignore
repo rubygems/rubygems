@@ -13,3 +13,4 @@
 /pkg
 /tmp
 /coverage
+.byebug_history

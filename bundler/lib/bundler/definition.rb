@@ -19,9 +19,10 @@ module Bundler
       :ruby_version,
       :lockfile,
       :gemfiles,
-      :locked_checksums,
       :sources
     )
+
+    attr_accessor :locked_checksums
 
     # Given a gemfile and lockfile creates a Bundler definition
     #
@@ -587,17 +588,41 @@ module Bundler
     end
 
     def materialize(dependencies)
-      specs = resolve.materialize(dependencies)
+      # Tracks potential endless loops trying to re-resolve.
+      # TODO: Remove as dead code if not reports are received in a while
+      incorrect_spec = nil
+
+      specs = begin
+        resolve.materialize(dependencies)
+      rescue IncorrectLockfileDependencies => e
+        spec = e.spec
+        raise "Infinite loop while fixing lockfile dependencies" if incorrect_spec == spec
+
+        incorrect_spec = spec
+        reresolve_without([spec])
+        retry
+      end
+
       missing_specs = specs.missing_specs
 
       if missing_specs.any?
         missing_specs.each do |s|
           locked_gem = @locked_specs[s.name].last
           next if locked_gem.nil? || locked_gem.version != s.version || sources.local_mode?
-          raise GemNotFound, "Your bundle is locked to #{locked_gem} from #{locked_gem.source}, but that version can " \
-                             "no longer be found in that source. That means the author of #{locked_gem} has removed it. " \
-                             "You'll need to update your bundle to a version other than #{locked_gem} that hasn't been " \
-                             "removed in order to install."
+
+          message = if sources.implicit_global_source?
+            "Because your Gemfile specifies no global remote source, your bundle is locked to " \
+            "#{locked_gem} from #{locked_gem.source}. However, #{locked_gem} is not installed. You'll " \
+            "need to either add a global remote source to your Gemfile or make sure #{locked_gem} is " \
+            "available locally before rerunning Bundler."
+          else
+            "Your bundle is locked to #{locked_gem} from #{locked_gem.source}, but that version can " \
+            "no longer be found in that source. That means the author of #{locked_gem} has removed it. " \
+            "You'll need to update your bundle to a version other than #{locked_gem} that hasn't been " \
+            "removed in order to install."
+          end
+
+          raise GemNotFound, message
         end
 
         missing_specs_list = missing_specs.group_by(&:source).map do |source, missing_specs_for_source|
@@ -613,8 +638,7 @@ module Bundler
 
         Bundler.ui.debug("The lockfile does not have all gems needed for the current platform though, Bundler will still re-resolve dependencies")
         sources.remote!
-        resolution_packages.delete(incomplete_specs)
-        @resolve = start_resolution
+        reresolve_without(incomplete_specs)
         specs = resolve.materialize(dependencies)
 
         still_incomplete_specs = specs.incomplete_specs
@@ -631,6 +655,11 @@ module Bundler
       specs["bundler"] = bundler
 
       specs
+    end
+
+    def reresolve_without(incomplete_specs)
+      resolution_packages.delete(incomplete_specs)
+      @resolve = start_resolution
     end
 
     def start_resolution

@@ -28,6 +28,8 @@ module Bundler
           rescue LoadError
             kernel_exec(bin_path, *args)
           end
+        else
+          kernel_exec(bin_path, *args)
         end
       else
         # exec using the given command

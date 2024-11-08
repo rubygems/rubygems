@@ -18,7 +18,9 @@ module Bundler
     def run
       validate_cmd!
       SharedHelpers.set_bundle_environment
-      if bin_path = Bundler.which(cmd)
+      require 'byebug'
+      byebug
+      if (bin_path = Bundler.which(cmd))
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
           return kernel_load(bin_path, *args)
         end
@@ -69,20 +71,14 @@ module Bundler
     end
 
     def ruby_shebang?(file)
-      possibilities = [
-        "#!/usr/bin/env ruby\n",
-        "#!/usr/bin/env jruby\n",
-        "#!/usr/bin/env truffleruby\n",
-        "#!#{Gem.ruby}\n",
-      ]
-
+      if Gem.win_platform? then return true end
       if File.zero?(file)
         Bundler.ui.warn "#{file} is empty"
         return false
       end
 
-      first_line = File.open(file, "rb") {|f| f.read(possibilities.map(&:size).max) }
-      possibilities.any? {|shebang| first_line.start_with?(shebang) }
+      first_line = File.open(file, "rb") {|f| f.read(3) }
+      possibilities.any? {|shebang| first_line.start_with?("#!") }
     end
   end
 end

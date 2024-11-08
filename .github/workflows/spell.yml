@@ -1,11 +1,6 @@
 name: spell
 
-on:
-  pull_request:
-
-  push:
-    branches:
-      - master
+on: [push, pull_request]
 
 permissions:
   contents: read

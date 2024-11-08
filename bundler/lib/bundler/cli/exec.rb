@@ -90,7 +90,7 @@ module Bundler
       end
 
       first_line = File.open(file, "rb") {|f| f.read(possibilities.map(&:size).max) }
-      first_line.start_with?("@ECHO") if Gem.win_platform?
+      return first_line.start_with?("@ECHO") if Gem.win_platform?
       possibilities.any? {|shebang| first_line.start_with?(shebang) }
     end
   end

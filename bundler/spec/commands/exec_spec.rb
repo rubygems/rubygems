@@ -827,6 +827,7 @@ RSpec.describe "bundle exec" do
       let(:expected) { super() }
 
       it "runs" do
+        subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
         expect(out).to eq(expected)

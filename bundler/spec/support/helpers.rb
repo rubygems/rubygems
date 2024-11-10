@@ -237,19 +237,15 @@ module Spec
     def create_file(path, contents = "")
       path = Pathname.new(path).expand_path(bundled_app) unless path.is_a?(Pathname)
       path.dirname.mkpath
-      File.open(path.to_s, "w") do |f|
-        f.puts strip_whitespace(contents)
-      end
+      path.write(strip_whitespace(contents))
 
       # if the file is a script, create respective bat file on Windows
       if contents.start_with?("#!") && Gem.win_platform?
         bat_path = path.dirname.join(path.basename.to_s + ".bat")
-        File.open(bat_path.to_s, "w") do |f|
-          f.puts <<-SCRIPT
+        bat_path.write(<<-SCRIPT)
 @ECHO OFF
 @"%~dp0ruby.exe" "%~dpn0" %*
-          SCRIPT
-        end
+        SCRIPT
       end
     end
 

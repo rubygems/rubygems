@@ -87,7 +87,7 @@ module Bundler
           Bundler.ui.warn "#{script_file} is empty"
           return false
         end
-        first_line = File.open(script_file, "r") {|f| f.read(5) }
+        first_line = File.open(file, "r") {|f| f.read(5) }
         return first_line.start_with?("@ECHO")
       end
 

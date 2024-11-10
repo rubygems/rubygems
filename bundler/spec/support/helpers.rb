@@ -545,6 +545,7 @@ module Spec
     end
 
     def exit_status_for_signal(signal_number)
+      return 3 if signal_number == Signal.list["TERM"] && Gem.win_platform?
       # For details see: https://en.wikipedia.org/wiki/Exit_status#Shell_and_scripts
       128 + signal_number
     end

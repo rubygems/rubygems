@@ -368,7 +368,7 @@ RSpec.describe "bundle exec" do
       gem "myrack"
     G
 
-    bundle "exec touch foo"
+    Pathname("foo").write("")
     bundle "exec ./foo", raise_on_error: false
     expect(exitstatus).to eq(126)
     expect(err).to include("bundler: not executable: ./foo")
@@ -412,11 +412,12 @@ RSpec.describe "bundle exec" do
             gem "myrack"
           G
 
-          create_file("print_args", <<-'RUBY')
+          app = bundled_app("print_args")
+          create_file(app, <<-'RUBY')
             #!/usr/bin/env ruby
             puts "args: #{ARGV.inspect}"
           RUBY
-          bundled_app("print_args").chmod(0o755)
+          app.chmod(0o755)
         end
 
         it "shows executable's man page when --help is after the executable" do

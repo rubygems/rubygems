@@ -235,16 +235,17 @@ module Spec
     end
 
     def create_file(path, contents = "")
+      contents = contents.strip
       path = Pathname.new(path).expand_path(bundled_app) unless path.is_a?(Pathname)
       path.dirname.mkpath
-      path.write(strip_whitespace(contents))
+      path.write(contents)
 
       # if the file is a script, create respective bat file on Windows
       if contents.start_with?("#!") && Gem.win_platform?
         bat_path = path.dirname.join(path.basename.to_s + ".bat")
         bat_path.write(<<-SCRIPT)
 @ECHO OFF
-@"%~dp0ruby.exe" "%~dpn0" %*
+@"ruby.exe" "%~dpn0" %*
         SCRIPT
       end
     end
@@ -280,12 +281,6 @@ module Spec
 
     def read_bundled_app_file(file)
       bundled_app(file).read
-    end
-
-    def strip_whitespace(str)
-      # Trim the leading spaces
-      spaces = str[/\A\s+/, 0] || ""
-      str.gsub(/^#{spaces}/, "")
     end
 
     def install_gemfile(*args)

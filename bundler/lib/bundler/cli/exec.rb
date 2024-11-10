@@ -84,6 +84,9 @@ module Bundler
         "#!#{Gem.ruby}\n",
       ]
 
+      if Gem.win_platform? # remove `bat` suffix
+        file = File.join(File.dirname(file), File.basename(file, File.extname(file)))
+      end
       if File.zero?(file)
         Bundler.ui.warn "#{file} is empty"
         return false

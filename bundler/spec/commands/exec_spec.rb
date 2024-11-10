@@ -125,6 +125,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "handles --keep-file-descriptors" do
+    skip "not supported on Windows" if Gem.win_platform?
     require "tempfile"
 
     command = Tempfile.new("io-test")

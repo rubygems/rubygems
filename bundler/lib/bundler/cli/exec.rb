@@ -82,10 +82,12 @@ module Bundler
 
       if Gem.win_platform? # remove `bat` suffix
         script_file = File.join(File.dirname(file), File.basename(file, File.extname(file)))
+        return false unless Pathname(script_file).exist?
         if File.zero?(script_file)
           Bundler.ui.warn "#{script_file} is empty"
           return false
         end
+        first_line = File.open(script_file, "r") {|f| f.read(5) }
         return first_line.start_with?("@ECHO")
       end
 

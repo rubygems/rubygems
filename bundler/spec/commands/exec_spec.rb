@@ -722,8 +722,9 @@ RSpec.describe "bundle exec" do
     before do
       system_gems(system_gems_to_install, path: default_bundle_path)
 
-      bundled_app(path).open("w") {|f| f << executable }
-      bundled_app(path).chmod(0o755)
+      path_app = bundled_app(path)
+      create_file(path_app, executable)
+      path_app.chmod(0o755)
 
       install_gemfile <<-G
         source "https://gem.repo1"

@@ -240,6 +240,17 @@ module Spec
       File.open(path.to_s, "w") do |f|
         f.puts strip_whitespace(contents)
       end
+
+      # if the file is a script, create respective bat file on Windows
+      if contents.starts_with?("#!") && Gem.win_plaftorm?
+        bat_path = path.dirname.join(path.basename.to_s + ".bat")
+        File.open(bat_path.to_s, 'w') do |f|
+          f.puts <<-SCRIPT
+@ECHO OFF
+@"%~dp0ruby.exe" "%~dpn0" %*
+          SCRIPT
+        end
+      end
     end
 
     def gemfile(*args)

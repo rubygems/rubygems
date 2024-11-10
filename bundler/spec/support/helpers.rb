@@ -242,7 +242,7 @@ module Spec
       end
 
       # if the file is a script, create respective bat file on Windows
-      if contents.start_with?("#!") && Gem.win_plaftorm?
+      if contents.start_with?("#!") && Gem.win_platform?
         bat_path = path.dirname.join(path.basename.to_s + ".bat")
         File.open(bat_path.to_s, "w") do |f|
           f.puts <<-SCRIPT

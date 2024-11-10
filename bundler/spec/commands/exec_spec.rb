@@ -401,6 +401,7 @@ RSpec.describe "bundle exec" do
   end
 
   describe "with help flags" do
+    let(:print_args) { bundled_app("print_args") }
     each_prefix = proc do |string, &blk|
       1.upto(string.length) {|l| blk.call(string[0, l]) }
     end
@@ -421,38 +422,40 @@ RSpec.describe "bundle exec" do
         end
 
         it "shows executable's man page when --help is after the executable" do
-          bundle "#{exec} print_args --help"
+          bundle "#{exec} #{print_args} --help"
           expect(out).to eq('args: ["--help"]')
         end
 
         it "shows executable's man page when --help is after the executable and an argument" do
-          bundle "#{exec} print_args foo --help"
+          bundle "#{exec} #{print_args} foo --help"
           expect(out).to eq('args: ["foo", "--help"]')
 
-          bundle "#{exec} print_args foo bar --help"
+          bundle "#{exec} #{print_args} foo bar --help"
           expect(out).to eq('args: ["foo", "bar", "--help"]')
 
-          bundle "#{exec} print_args foo --help bar"
+          bundle "#{exec} #{print_args} foo --help bar"
           expect(out).to eq('args: ["foo", "--help", "bar"]')
         end
 
         it "shows executable's man page when the executable has a -" do
           FileUtils.mv(bundled_app("print_args"), bundled_app("docker-template"))
-          bundle "#{exec} docker-template build discourse --help"
+          docker_template = bundled_app("docker-template")
+          bundle "#{exec} #{docker_template} build discourse --help"
           expect(out).to eq('args: ["build", "discourse", "--help"]')
         end
 
         it "shows executable's man page when --help is after another flag" do
-          bundle "#{exec} print_args --bar --help"
+          bundle "#{exec} #{print_args} --bar --help"
           expect(out).to eq('args: ["--bar", "--help"]')
         end
 
         it "uses executable's original behavior for -h" do
-          bundle "#{exec} print_args -h"
+          bundle "#{exec} #{print_args} -h"
           expect(out).to eq('args: ["-h"]')
         end
 
         it "shows bundle-exec's man page when --help is between exec and the executable" do
+          skip "`cat` is not an executable on Windows" if Gem.win_platform?
           with_fake_man do
             bundle "#{exec} --help cat"
           end

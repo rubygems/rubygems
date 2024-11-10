@@ -1,6 +1,6 @@
 name: ubuntu-lint
 
-on: [push, pull_request]
+on: [pull_request]
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
@@ -18,7 +18,6 @@ jobs:
       matrix:
         ruby:
           - { name: ruby, value: 3.3.5 }
-          - { name: truffleruby, value: truffleruby-24.0.1 }
     env:
       RUBYOPT: -Ilib
     steps:

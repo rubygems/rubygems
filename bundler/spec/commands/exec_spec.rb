@@ -368,7 +368,7 @@ RSpec.describe "bundle exec" do
       gem "myrack"
     G
 
-    Pathname("foo").write("")
+    bundled_app("foo").write("")
     bundle "exec ./foo", raise_on_error: false
     expect(exitstatus).to eq(126)
     expect(err).to include("bundler: not executable: ./foo")

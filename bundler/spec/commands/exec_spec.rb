@@ -821,9 +821,7 @@ RSpec.describe "bundle exec" do
     context "the executable raises" do
       let(:executable) { super() << "\nraise 'ERROR'" }
       let(:exit_code) { 1 }
-      let(:expected_err) do
-        /bundler: failed to load command/
-      end
+      let(:expected_err) { "bundler: failed to load command" }
 
       it "runs like a normally executed executable" do
         subject

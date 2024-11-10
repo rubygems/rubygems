@@ -62,6 +62,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "works when exec'ing something else" do
+    skip "`echo` is not an executable on Windows" if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\"; gem \"myrack\""
     bundle "exec echo exec"
     expect(out).to eq("exec")
@@ -110,12 +111,14 @@ RSpec.describe "bundle exec" do
   end
 
   it "accepts --verbose" do
+    skip "`echo` is not an executable on Windows" if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\"; gem \"myrack\""
     bundle "exec --verbose echo foobar"
     expect(out).to eq("foobar")
   end
 
   it "passes --verbose to command if it is given after the command" do
+    skip "`echo` is not an executable on Windows" if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\"; gem \"myrack\""
     bundle "exec echo --verbose"
     expect(out).to eq("--verbose")
@@ -146,6 +149,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "accepts --keep-file-descriptors" do
+    skip "`echo` is not an executable on Windows" if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\""
     bundle "exec --keep-file-descriptors echo foobar"
 
@@ -153,7 +157,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "can run a command named --verbose" do
-    skip "'exec --' not supported in Windows" if Gem.win_platform?
+    skip "'exec --' is not supported on Windows" if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\"; gem \"myrack\""
     File.open(bundled_app("--verbose"), "w") do |f|
       f.puts "#!/bin/sh"
@@ -310,6 +314,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "does not duplicate already exec'ed RUBYOPT" do
+    skip "`echo` is not an executable on Windows" if Gem.win_platform?
     install_gemfile <<-G
       source "https://gem.repo1"
       gem "myrack"
@@ -327,6 +332,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "does not duplicate already exec'ed RUBYLIB" do
+    skip "`echo` is not an executable on Windows" if Gem.win_platform?
     install_gemfile <<-G
       source "https://gem.repo1"
       gem "myrack"
@@ -1058,6 +1064,7 @@ __FILE__: #{path.to_s.inspect}
       end
 
       it "correctly shells out" do
+        skip "`echo` is not an executable on Windows" if Gem.win_platform?
         file = bundled_app("file_that_bundle_execs.rb")
         create_file(file, <<-RUBY)
           #!#{Gem.ruby}

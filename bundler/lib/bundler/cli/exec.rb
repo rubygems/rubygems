@@ -20,14 +20,10 @@ module Bundler
       SharedHelpers.set_bundle_environment
       if (bin_path = Bundler.which(cmd))
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
-          begin
-            if Gem.win_platform? # remove `bat` suffix
-              bin_path = File.join(File.dirname(bin_path), File.basename(bin_path, File.extname(bin_path)))
-            end
-            kernel_load(bin_path, *args)
-          rescue LoadError
-            kernel_exec(bin_path, *args)
+          if Gem.win_platform? # remove `bat` suffix
+            bin_path = File.join(File.dirname(bin_path), File.basename(bin_path, File.extname(bin_path)))
           end
+          kernel_load(bin_path, *args)
         else
           kernel_exec(bin_path, *args)
         end
@@ -90,6 +86,7 @@ module Bundler
           Bundler.ui.warn "#{script_file} is empty"
           return false
         end
+        return first_line.start_with?("@ECHO")
       end
 
       if File.zero?(file)
@@ -98,7 +95,6 @@ module Bundler
       end
 
       first_line = File.open(file, "rb") {|f| f.read(possibilities.map(&:size).max) }
-      return first_line.start_with?("@ECHO") if Gem.win_platform?
       possibilities.any? {|shebang| first_line.start_with?(shebang) }
     end
   end

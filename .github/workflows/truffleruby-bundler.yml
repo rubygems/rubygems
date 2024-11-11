@@ -1,6 +1,11 @@
 name: truffleruby-bundler
 
-on: [push, pull_request]
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}

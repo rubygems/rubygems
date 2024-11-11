@@ -596,7 +596,7 @@ lib/rubygems/vendor/securerandom/COPYING
 lib/rubygems/vendor/securerandom/lib/random/formatter.rb
 lib/rubygems/vendor/securerandom/lib/securerandom.rb
 lib/rubygems/vendor/timeout/.document
-lib/rubygems/vendor/timeout/LICENSE.txt
+lib/rubygems/vendor/timeout/COPYING
 lib/rubygems/vendor/timeout/lib/timeout.rb
 lib/rubygems/vendor/tsort/.document
 lib/rubygems/vendor/tsort/LICENSE.txt

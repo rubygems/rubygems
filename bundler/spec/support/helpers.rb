@@ -235,7 +235,7 @@ module Spec
     end
 
     def create_file(path, contents = "")
-      contents = contents.strip
+      contents = strip_whitespace(contents)
       path = Pathname.new(path).expand_path(bundled_app) unless path.is_a?(Pathname)
       path.dirname.mkpath
       path.write(contents)
@@ -281,6 +281,12 @@ module Spec
 
     def read_bundled_app_file(file)
       bundled_app(file).read
+    end
+
+    def strip_whitespace(str)
+      # Trim the leading spaces
+      spaces = str[/\A\s+/, 0] || ""
+      str.gsub(/^#{spaces}/, "")
     end
 
     def install_gemfile(*args)

@@ -1,0 +1,111 @@
+name: realworld
+
+on: [push, pull_request]
+
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
+jobs:
+  bundler:
+    name: Realworld Bundler ${{ matrix.bundler.name }} on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
+    runs-on: ${{ matrix.os.value }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - { name: Ubuntu, value: ubuntu-24.04 }
+
+        ruby:
+          - { name: ruby-3.1, value: 3.1.6 }
+          - { name: ruby-3.2, value: 3.2.6 }
+          - { name: ruby-3.3, value: 3.3.5 }
+
+        bundler:
+          - { name: 2, value: '' }
+          - { name: 3, value: 3.0.0 }
+
+        include:
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.5 } }
+    env:
+      RGV: ..
+      RUBYOPT: --disable-gems
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@46ca53beb334a2329bcd0e46a694816a6ae6d173 # v1.201.0
+        with:
+          ruby-version: ${{ matrix.ruby.value }}
+          bundler: none
+      - name: Replace version
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
+        if: matrix.bundler.value != ''
+      - name: Prepare dependencies
+        run: bin/rake spec:deps
+      - name: Run Test
+        run: bin/rake spec:realworld
+      - name: Upload used cassettes as artifact
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: cassettes-bundler-${{ matrix.bundler.name }}-${{ matrix.os.value }}-${{ matrix.ruby.name }}
+          path: ./bundler/spec/support/artifice/used_cassettes.txt
+    timeout-minutes: 20
+
+  system_rubygems_bundler:
+    name: Realworld Bundler ${{ matrix.bundler.name }} against system Rubygems (${{ matrix.ruby.name }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.5 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.6 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.6 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.5 } }
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@46ca53beb334a2329bcd0e46a694816a6ae6d173 # v1.201.0
+        with:
+          ruby-version: ${{ matrix.ruby.value }}
+          bundler: none
+      - name: Replace version
+        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
+        if: matrix.bundler.value != ''
+      - name: Prepare dependencies
+        run: bin/rake spec:deps
+      - name: Run Test
+        run: bin/rake spec:realworld
+      - name: Upload used cassettes as artifact
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: cassettes-system-rubygems-bundler-${{ matrix.bundler.name }}-${{ matrix.ruby.name }}
+          path: ./bundler/spec/support/artifice/used_cassettes.txt
+    timeout-minutes: 20
+
+  check_unused_cassettes:
+    name: Check unused cassettes
+    needs: [bundler, system_rubygems_bundler]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@46ca53beb334a2329bcd0e46a694816a6ae6d173 # v1.201.0
+        with:
+          ruby-version: 3.3.5
+          bundler: none
+      - name: Prepare dependencies
+        run: bin/rake setup
+      - name: Download all used cassettes as artifacts
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          path: ./bundler/spec/support/artifice/used_vcr_cassettes
+      - name: Check unused cassettes
+        run: bin/rake spec:realworld:check_unused_cassettes

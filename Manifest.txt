@@ -252,7 +252,7 @@ bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/timed_stack.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/version.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/wrapper.rb
 bundler/lib/bundler/vendor/fileutils/.document
-bundler/lib/bundler/vendor/fileutils/LICENSE.txt
+bundler/lib/bundler/vendor/fileutils/COPYING
 bundler/lib/bundler/vendor/fileutils/lib/fileutils.rb
 bundler/lib/bundler/vendor/net-http-persistent/.document
 bundler/lib/bundler/vendor/net-http-persistent/README.rdoc

@@ -38,6 +38,12 @@ jobs:
           - ruby: { name: truffleruby, value: truffleruby-24.0.1 }
             os: { name: Ubuntu, value: ubuntu-24.04 }
 
+          - ruby: { name: "3.4", value: 3.4.0-preview2 }
+            os: { name: Ubuntu, value: ubuntu-24.04 }
+
+          - ruby: { name: "3.4", value: 3.4.0-preview2 }
+            os: { name: macOS, value: macos-14 }
+
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
@@ -54,7 +60,7 @@ jobs:
         if: matrix.ruby.name != 'truffleruby' && matrix.ruby.name != 'jruby'
       - name: Run Test isolatedly
         run: bin/rake test:isolated
-        if: matrix.ruby.name == '3.3' && matrix.os.name != 'Windows'
+        if: matrix.ruby.name == '3.4' && matrix.os.name != 'Windows'
       - name: Run Test (JRuby)
         run: JRUBY_OPTS=--debug bin/rake test
         if: startsWith(matrix.ruby.name, 'jruby')

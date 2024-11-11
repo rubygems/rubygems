@@ -6,43 +6,43 @@ module Bundler
     autoload :Mirrors, File.expand_path("mirror", __dir__)
     autoload :Validator, File.expand_path("settings/validator", __dir__)
 
-    BOOL_KEYS = %w[
-      allow_offline_install
-      auto_clean_without_path
-      auto_install
-      cache_all
-      cache_all_platforms
-      clean
-      default_install_uses_path
-      deployment
-      disable_checksum_validation
-      disable_exec_load
-      disable_local_branch_check
-      disable_local_revision_check
-      disable_shared_gems
-      disable_version_check
-      force_ruby_platform
-      forget_cli_options
-      frozen
-      gem.changelog
-      gem.coc
-      gem.mit
-      git.allow_insecure
-      global_gem_cache
-      ignore_messages
-      init_gems_rb
-      inline
-      no_install
-      no_prune
-      path_relative_to_cwd
-      path.system
-      plugins
-      prefer_patch
-      print_only_version_number
-      setup_makes_kernel_gem_public
-      silence_deprecations
-      silence_root_warning
-      update_requires_all_flag
+    BOOL_KEYS = Set[
+      'allow_offline_install',
+      'auto_clean_without_path',
+      'auto_install',
+      'cache_all',
+      'cache_all_platforms',
+      'clean',
+      'default_install_uses_path',
+      'deployment',
+      'disable_checksum_validation',
+      'disable_exec_load',
+      'disable_local_branch_check',
+      'disable_local_revision_check',
+      'disable_shared_gems',
+      'disable_version_check',
+      'force_ruby_platform',
+      'forget_cli_options',
+      'frozen',
+      'gem.changelog',
+      'gem.coc',
+      'gem.mit',
+      'git.allow_insecure',
+      'global_gem_cache',
+      'ignore_messages',
+      'init_gems_rb',
+      'inline',
+      'no_install',
+      'no_prune',
+      'path_relative_to_cwd',
+      'path.system',
+      'plugins',
+      'prefer_patch',
+      'print_only_version_number',
+      'setup_makes_kernel_gem_public',
+      'silence_deprecations',
+      'silence_root_warning',
+      'update_requires_all_flag'
     ].freeze
 
     REMEMBERED_KEYS = %w[

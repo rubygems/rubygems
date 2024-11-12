@@ -158,13 +158,11 @@ RSpec.describe "bundle exec" do
   end
 
   it "can run a command named --verbose" do
-    skip "'exec --' is not supported on Windows" if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\"; gem \"myrack\""
-    File.open(bundled_app("--verbose"), "w") do |f|
-      f.puts "#!/bin/sh"
-      f.puts "echo foobar"
-    end
-    File.chmod(0o744, bundled_app("--verbose"))
+    create_file("--verbose", <<-TEXT)
+      #!/usr/bin/env ruby
+      print "foobar"
+    TEXT
     with_path_as(".") do
       bundle "exec -- --verbose"
     end

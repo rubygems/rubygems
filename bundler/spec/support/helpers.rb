@@ -241,12 +241,15 @@ module Spec
       path.write(contents)
 
       # if the file is a script, create respective bat file on Windows
-      if contents.start_with?("#!") && Gem.win_platform?
-        bat_path = path.dirname.join(path.basename.to_s + ".bat")
-        bat_path.write(<<-SCRIPT)
-@ECHO OFF
-@"ruby.exe" "%~dpn0" %*
-        SCRIPT
+      if contents.start_with?("#!")
+        path.chmod(0o755)
+        if Gem.win_platform?
+          bat_path = path.dirname.join(path.basename.to_s + ".bat")
+          bat_path.write(strip_whitespace(<<-SCRIPT))
+            @ECHO OFF
+            @"ruby.exe" "%~dpn0" %*
+          SCRIPT
+        end
       end
     end
 

@@ -62,7 +62,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "works when exec'ing something else" do
-    create_file("echo", "#!ruby\nprint ARGV.join(' ')") if Gem.win_platform?
+    create_file("echo", "#!/usr/bin/env ruby\nprint ARGV.join(' ')") if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\"; gem \"myrack\""
     bundle "exec echo exec"
     expect(out).to eq("exec")
@@ -111,14 +111,14 @@ RSpec.describe "bundle exec" do
   end
 
   it "accepts --verbose" do
-    create_file("echo", "#!ruby\nprint ARGV.join(' ')") if Gem.win_platform?
+    create_file("echo", "#!/usr/bin/env ruby\nprint ARGV.join(' ')") if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\"; gem \"myrack\""
     bundle "exec --verbose echo foobar"
     expect(out).to eq("foobar")
   end
 
   it "passes --verbose to command if it is given after the command" do
-    create_file("echo", "#!ruby\nprint ARGV.join(' ')") if Gem.win_platform?
+    create_file("echo", "#!/usr/bin/env ruby\nprint ARGV.join(' ')") if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\"; gem \"myrack\""
     bundle "exec echo --verbose"
     expect(out).to eq("--verbose")
@@ -150,7 +150,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "accepts --keep-file-descriptors" do
-    create_file("echo", "#!ruby\nprint ARGV.join(' ')") if Gem.win_platform?
+    create_file("echo", "#!/usr/bin/env ruby\nprint ARGV.join(' ')") if Gem.win_platform?
     install_gemfile "source \"https://gem.repo1\""
     bundle "exec --keep-file-descriptors echo foobar"
 
@@ -315,7 +315,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "does not duplicate already exec'ed RUBYOPT" do
-    create_file("echoopt", "#!ruby\nprint ENV['RUBYOPT']") if Gem.win_platform?
+    create_file("echoopt", "#!/usr/bin/env ruby\nprint ENV['RUBYOPT']")
     install_gemfile <<-G
       source "https://gem.repo1"
       gem "myrack"
@@ -333,7 +333,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "does not duplicate already exec'ed RUBYLIB" do
-    create_file("echolib", "#!ruby\nprint ENV['RUBYLIB']") if Gem.win_platform?
+    create_file("echolib", "#!/usr/bin/env ruby\nprint ENV['RUBYLIB']")
     install_gemfile <<-G
       source "https://gem.repo1"
       gem "myrack"
@@ -456,7 +456,7 @@ RSpec.describe "bundle exec" do
         end
 
         it "shows bundle-exec's man page when --help is between exec and the executable" do
-          create_file("cat", "#!ruby\n") if Gem.win_platform?
+          create_file("cat", "#!/usr/bin/env ruby\n") if Gem.win_platform?
           with_fake_man do
             bundle "#{exec} --help cat"
           end
@@ -1070,7 +1070,7 @@ __FILE__: #{path.to_s.inspect}
       end
 
       it "correctly shells out" do
-        create_file("echo", "#!ruby\nprint ARGV.join(' ')") if Gem.win_platform?
+        create_file("echo", "#!/usr/bin/env ruby\nprint ARGV.join(' ')") if Gem.win_platform?
         file = bundled_app("file_that_bundle_execs.rb")
         create_file(file, <<-RUBY)
           #!#{Gem.ruby}

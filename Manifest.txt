@@ -252,7 +252,7 @@ bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/timed_stack.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/version.rb
 bundler/lib/bundler/vendor/connection_pool/lib/connection_pool/wrapper.rb
 bundler/lib/bundler/vendor/fileutils/.document
-bundler/lib/bundler/vendor/fileutils/LICENSE.txt
+bundler/lib/bundler/vendor/fileutils/COPYING
 bundler/lib/bundler/vendor/fileutils/lib/fileutils.rb
 bundler/lib/bundler/vendor/net-http-persistent/.document
 bundler/lib/bundler/vendor/net-http-persistent/README.rdoc
@@ -279,7 +279,7 @@ bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_range.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_solver.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_union.rb
 bundler/lib/bundler/vendor/securerandom/.document
-bundler/lib/bundler/vendor/securerandom/LICENSE.txt
+bundler/lib/bundler/vendor/securerandom/COPYING
 bundler/lib/bundler/vendor/securerandom/lib/random/formatter.rb
 bundler/lib/bundler/vendor/securerandom/lib/securerandom.rb
 bundler/lib/bundler/vendor/thor/.document
@@ -561,7 +561,7 @@ lib/rubygems/vendor/molinillo/lib/molinillo/resolution.rb
 lib/rubygems/vendor/molinillo/lib/molinillo/resolver.rb
 lib/rubygems/vendor/molinillo/lib/molinillo/state.rb
 lib/rubygems/vendor/net-http/.document
-lib/rubygems/vendor/net-http/LICENSE.txt
+lib/rubygems/vendor/net-http/COPYING
 lib/rubygems/vendor/net-http/lib/net/http.rb
 lib/rubygems/vendor/net-http/lib/net/http/backward.rb
 lib/rubygems/vendor/net-http/lib/net/http/exceptions.rb
@@ -589,14 +589,14 @@ lib/rubygems/vendor/optparse/lib/optparse/time.rb
 lib/rubygems/vendor/optparse/lib/optparse/uri.rb
 lib/rubygems/vendor/optparse/lib/optparse/version.rb
 lib/rubygems/vendor/resolv/.document
-lib/rubygems/vendor/resolv/LICENSE.txt
+lib/rubygems/vendor/resolv/COPYING
 lib/rubygems/vendor/resolv/lib/resolv.rb
 lib/rubygems/vendor/securerandom/.document
-lib/rubygems/vendor/securerandom/LICENSE.txt
+lib/rubygems/vendor/securerandom/COPYING
 lib/rubygems/vendor/securerandom/lib/random/formatter.rb
 lib/rubygems/vendor/securerandom/lib/securerandom.rb
 lib/rubygems/vendor/timeout/.document
-lib/rubygems/vendor/timeout/LICENSE.txt
+lib/rubygems/vendor/timeout/COPYING
 lib/rubygems/vendor/timeout/lib/timeout.rb
 lib/rubygems/vendor/tsort/.document
 lib/rubygems/vendor/tsort/LICENSE.txt

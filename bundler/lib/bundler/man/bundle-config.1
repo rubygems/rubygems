@@ -1,6 +1,6 @@
 .\" generated with nRonn/v0.11.1
 .\" https://github.com/n-ronn/nronn/tree/0.11.1
-.TH "BUNDLE\-CONFIG" "1" "October 2024" ""
+.TH "BUNDLE\-CONFIG" "1" "November 2024" ""
 .SH "NAME"
 \fBbundle\-config\fR \- Set bundler configuration options
 .SH "SYNOPSIS"
@@ -148,6 +148,8 @@ The following is a list of all configuration keys and their purpose\. You can le
 \fBinit_gems_rb\fR (\fBBUNDLE_INIT_GEMS_RB\fR): Generate a \fBgems\.rb\fR instead of a \fBGemfile\fR when running \fBbundle init\fR\.
 .IP "\(bu" 4
 \fBjobs\fR (\fBBUNDLE_JOBS\fR): The number of gems Bundler can install in parallel\. Defaults to the number of available processors\.
+.IP "\(bu" 4
+\fBlockfile_checksums\fR (\fBBUNDLE_LOCKFILE_CHECKSUMS\fR): Whether Bundler should include a checksums section in new lockfiles, to protect from compromised gem sources\.
 .IP "\(bu" 4
 \fBno_install\fR (\fBBUNDLE_NO_INSTALL\fR): Whether \fBbundle package\fR should skip installing gems\.
 .IP "\(bu" 4

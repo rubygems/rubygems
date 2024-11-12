@@ -23,6 +23,7 @@ GEM
       timeout
     optparse (0.4.0)
     resolv (0.4.0)
+    rqrcode_core (1.2.0)
     securerandom (0.3.1)
     thor (1.3.0)
     timeout (0.4.1)
@@ -46,6 +47,7 @@ DEPENDENCIES
   optparse (= 0.4.0)
   pub_grub!
   resolv (= 0.4.0)
+  rqrcode_core (= 1.2.0)
   securerandom (= 0.3.1)
   thor (= 1.3.0)
   timeout (= 0.4.1)
@@ -62,6 +64,7 @@ CHECKSUMS
   optparse (0.4.0) sha256=f584afc034f610ea7b28a9b1a68b0917d34e0da73c40c2b29cd7151c5eb0bade
   pub_grub (0.5.0)
   resolv (0.4.0) sha256=80ef3a5932c564cf6ae0a7b10a313e5487ea5ce7868407650f2501e68d57f7a5
+  rqrcode_core (1.2.0) sha256=cf4989dc82d24e2877984738c4ee569308625fed2a810960f1b02d68d0308d1a
   securerandom (0.3.1) sha256=98f0450c0ea46d2f9a4b6db4f391dbd83dc08049592eada155739f40e0341bde
   thor (1.3.0) sha256=1adc7f9e5b3655a68c71393fee8bd0ad088d14ee8e83a0b73726f23cbb3ca7c3
   timeout (0.4.1) sha256=6f1f4edd4bca28cffa59501733a94215407c6960bd2107331f0280d4abdebb9a

@@ -28,6 +28,23 @@ To work on Bundler, you'll probably want to do a couple of things:
 
         alias dbundle='ruby /path/to/bundler/repo/spec/support/bundle.rb'
 
+On Windows, you can add this to your [PowerShell profile][profile] (you can use `vim $profile` on the command line if you have `vim` installed):
+
+```powershell
+$Env:RUBYOPT="-rdebug"
+function dbundle
+{
+	& "ruby.exe" E:\[source path]\rubygems\bundler\spec\support\bundle.rb $args
+}
+```
+
+It is also recommended to use [Windows Terminal][terminal] for a better command line experience:
+
+![windows terminal](windows-terminal.png)
+
+[profile]: https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.4
+[terminal]: https://github.com/microsoft/terminal
+
 ## Jointly developing on Bundler and RubyGems
 
 When developing Bundler features or bug fixes that require changes in RubyGems,

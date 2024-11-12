@@ -167,10 +167,20 @@ RSpec.describe Bundler do
     let(:executable) { "executable" }
 
     let(:path) do
-      %w[/a /b c ../d /e]
+      if Gem.win_platform?
+        %w[C:/a C:/b C:/c C:/../d C:/e]
+      else
+        %w[/a /b c ../d /e]
+      end
     end
 
-    let(:expected) { "executable" }
+    let(:expected) do
+      if Gem.win_platform?
+        "executable.exe"
+      else
+        "executable"
+      end
+    end
 
     before do
       ENV["PATH"] = path.join(File::PATH_SEPARATOR)
@@ -187,7 +197,6 @@ RSpec.describe Bundler do
 
     shared_examples_for "it returns the correct executable" do
       it "returns the expected file" do
-        skip "respective bat file need to exist on Windows" if Gem.win_platform?
         expect(subject).to eq(expected)
       end
     end
@@ -196,8 +205,13 @@ RSpec.describe Bundler do
 
     context "when the executable in inside a quoted path" do
       let(:expected) do
-        "/e/executable"
+        if Gem.win_platform?
+          "C:/e/executable.exe"
+        else
+          "/e/executable"
+        end
       end
+
       it_behaves_like "it returns the correct executable"
     end
 

@@ -399,7 +399,6 @@ RSpec.describe "bundle exec" do
   end
 
   describe "with help flags" do
-    let(:print_args) { bundled_app("print_args") }
     each_prefix = proc do |string, &blk|
       1.upto(string.length) {|l| blk.call(string[0, l]) }
     end
@@ -981,7 +980,6 @@ __FILE__: #{path.to_s.inspect}
         let(:path) { super().relative_path_from(bundled_app) }
 
         it "runs" do
-          skip "relative path" if Gem.win_platform?
           subject
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)

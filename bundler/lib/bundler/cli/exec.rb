@@ -20,8 +20,8 @@ module Bundler
       SharedHelpers.set_bundle_environment
       if (bin_path = Bundler.which(cmd))
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
-          if Gem.win_platform? # remove `bat` suffix
-            bin_path = File.join(File.dirname(bin_path), File.basename(bin_path, File.extname(bin_path)))
+          if Gem.win_platform? # remove `.bat` suffix
+            bin_path = bin_path[0..-5]
           end
           kernel_load(bin_path, *args)
         else

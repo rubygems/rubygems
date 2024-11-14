@@ -220,6 +220,7 @@ class Gem::Uninstaller
 
         safe_delete { FileUtils.rm exe_file }
         safe_delete { FileUtils.rm "#{exe_file}.bat" }
+        safe_delete { FileUtils.rm "#{exe_file}.ps1" }
       end
     else
       say "Executables and scripts will remain installed."

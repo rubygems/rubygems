@@ -806,10 +806,7 @@ TEXT
 TEXT
   end
 
-  ##
-  # return the stub script text used to launch the true Ruby script
-
-  def windows_stub_script(bindir, bin_file_name)
+  def get_ruby_exe_path(bindir, bin_file_name)
     rb_topdir = RbConfig::TOPDIR || File.dirname(rb_config["bindir"])
 
     # get ruby executable file name from RbConfig
@@ -818,37 +815,38 @@ TEXT
 
     if File.exist?(File.join(bindir, ruby_exe))
       # stub & ruby.exe within same folder.  Portable
-      <<-TEXT
-@ECHO OFF
-@"%~dp0#{ruby_exe}" "%~dpn0" %*
-      TEXT
+      ruby_exe
     elsif bindir.downcase.start_with? rb_topdir.downcase
       # stub within ruby folder, but not standard bin.  Portable
       require "pathname"
       from = Pathname.new bindir
       to   = Pathname.new "#{rb_topdir}/bin"
       rel  = to.relative_path_from from
-      <<-TEXT
-@ECHO OFF
-@"%~dp0#{rel}/#{ruby_exe}" "%~dpn0" %*
-      TEXT
+      "#{rel}/#{ruby_exe}"
     else
       # outside ruby folder, maybe -user-install or bundler.  Portable, but ruby
       # is dependent on PATH
-      <<-TEXT
-@ECHO OFF
-@#{ruby_exe} "%~dpn0" %*
-      TEXT
+      ruby_exe
     end
+  end
+
+  ##
+  # return the stub script text used to launch the true Ruby script
+
+  def windows_stub_script(bindir, bin_file_name)
+    ruby_exe = get_ruby_exe_path(bindir, bin_file_name)
+    <<-TEXT
+@ECHO OFF
+@"%~dp0#{ruby_exe}" "%~dpn0" %*
+    TEXT
   end
 
   ##
   # the powershell version of `windows_stub_script`.
 
   def windows_stub_script_powershell(bindir, bin_file_name)
-    rb_topdir = RbConfig::TOPDIR || File.dirname(rb_config["bindir"])
-
-    stub = <<-SCRIPT
+    ruby_exe = get_ruby_exe_path(bindir, bin_file_name)
+    <<-SCRIPT
 if ($PSCommandPath -eq $null)
 { function GetPSCommandPath()
   { return $MyInvocation.PSCommandPath;
@@ -858,36 +856,8 @@ if ($PSCommandPath -eq $null)
 $File = Get-Item $PSCommandPath
 $Folder = Split-Path $PSCommandPath -Parent
 $Script = Join-Path -Path $Folder -ChildPath $File.BaseName
-    SCRIPT
-
-    # get ruby executable file name from RbConfig
-    ruby_exe = "#{rb_config["RUBY_INSTALL_NAME"]}#{rb_config["EXEEXT"]}"
-    ruby_exe = "ruby.exe" if ruby_exe.empty?
-
-    if File.exist?(File.join(bindir, ruby_exe))
-      # stub & ruby.exe within same folder.  Portable
-      stub += <<-TEXT
 & "$Folder/#{ruby_exe}" $Script $args
-      TEXT
-    elsif bindir.downcase.start_with? rb_topdir.downcase
-      # stub within ruby folder, but not standard bin.  Portable
-      require "pathname"
-      from = Pathname.new bindir
-      to   = Pathname.new "#{rb_topdir}/bin"
-      rel  = to.relative_path_from from
-      stub += <<-TEXT
-& "$Folder/#{rel}/#{ruby_exe}" $Script $args
-      TEXT
-    else
-      # outside ruby folder, maybe -user-install or bundler.  Portable, but ruby
-      # is dependent on PATH
-      stub += <<-TEXT
-& "#{ruby_exe}" $Script $args
-      TEXT
-    end
-
-    stub
-
+    SCRIPT
   end
 
   ##

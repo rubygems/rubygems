@@ -28,7 +28,18 @@ class Gem::Requirement
   ##
   # A regular expression that matches a requirement
 
-  PATTERN = /\A#{PATTERN_RAW}\z/
+  PATTERN = /\A
+    \s*                          # Optional leading whitespace
+    (=|!=|>|<|>=|<=|~>)?         # Optional operator
+    \s*                          # Optional whitespace after operator
+    ([0-9]+                      # Major version number
+      (?>\.[0-9a-zA-Z]+)*        # Atomic group for dot-separated parts
+      (-[0-9A-Za-z-]+            # Optional pre-release
+        (?>\.[0-9A-Za-z-]+)*     # Atomic group for dot-separated pre-release parts
+      )?
+    )
+    \s*                          # Optional trailing whitespace
+  \z/x
 
   ##
   # The default requirement matches any non-prerelease version

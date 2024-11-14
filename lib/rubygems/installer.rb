@@ -467,7 +467,14 @@ class Gem::Installer
         file.puts windows_stub_script(bindir, filename)
       end
 
+      powershell_script_name = formatted_program_filename(filename) + ".ps1"
+      powershell_script_path = File.join bindir, File.basename(powershell_script_name)
+      File.open powershell_script_path, "w" do |file|
+        file.puts windows_stub_script_powershell(bindir, filename)
+      end
+
       verbose script_path
+      verbose powershell_script_path
     end
   end
 
@@ -834,6 +841,55 @@ TEXT
       TEXT
     end
   end
+
+  ##
+  # the powershell version of `windows_stub_script`.
+
+  def windows_stub_script_powershell(bindir, bin_file_name)
+    rb_topdir = RbConfig::TOPDIR || File.dirname(rb_config["bindir"])
+
+    stub = <<-SCRIPT
+if ($PSCommandPath -eq $null)
+{ function GetPSCommandPath()
+  { return $MyInvocation.PSCommandPath;
+  } $PSCommandPath = GetPSCommandPath
+}
+
+$File = Get-Item $PSCommandPath
+$Folder = Split-Path $PSCommandPath -Parent
+$Script = Join-Path -Path $Folder -ChildPath $File.BaseName
+    SCRIPT
+
+    # get ruby executable file name from RbConfig
+    ruby_exe = "#{rb_config["RUBY_INSTALL_NAME"]}#{rb_config["EXEEXT"]}"
+    ruby_exe = "ruby.exe" if ruby_exe.empty?
+
+    if File.exist?(File.join(bindir, ruby_exe))
+      # stub & ruby.exe within same folder.  Portable
+      stub += <<-TEXT
+& "$Folder/#{ruby_exe}" $Script $args
+      TEXT
+    elsif bindir.downcase.start_with? rb_topdir.downcase
+      # stub within ruby folder, but not standard bin.  Portable
+      require "pathname"
+      from = Pathname.new bindir
+      to   = Pathname.new "#{rb_topdir}/bin"
+      rel  = to.relative_path_from from
+      stub += <<-TEXT
+& "$Folder/#{rel}/#{ruby_exe}" $Script $args
+      TEXT
+    else
+      # outside ruby folder, maybe -user-install or bundler.  Portable, but ruby
+      # is dependent on PATH
+      stub += <<-TEXT
+& "#{ruby_exe}" $Script $args
+      TEXT
+    end
+
+    stub
+
+  end
+
   ##
   # Builds extensions.  Valid types of extensions are extconf.rb files,
   # configure scripts and rakefiles or mkrf_conf files.

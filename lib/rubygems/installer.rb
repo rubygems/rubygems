@@ -815,14 +815,14 @@ TEXT
 
     if File.exist?(File.join(bindir, ruby_exe))
       # stub & ruby.exe within same folder.  Portable
-      ruby_exe
+      "%~dp0#{ruby_exe}"
     elsif bindir.downcase.start_with? rb_topdir.downcase
       # stub within ruby folder, but not standard bin.  Portable
       require "pathname"
       from = Pathname.new bindir
       to   = Pathname.new "#{rb_topdir}/bin"
       rel  = to.relative_path_from from
-      "#{rel}/#{ruby_exe}"
+      "%~dp0#{rel}/#{ruby_exe}"
     else
       # outside ruby folder, maybe -user-install or bundler.  Portable, but ruby
       # is dependent on PATH
@@ -837,7 +837,7 @@ TEXT
     ruby_exe = get_ruby_exe_path(bindir, bin_file_name)
     <<-TEXT
 @ECHO OFF
-@"%~dp0#{ruby_exe}" "%~dpn0" %*
+@"#{ruby_exe}" "%~dpn0" %*
     TEXT
   end
 
@@ -846,6 +846,7 @@ TEXT
 
   def windows_stub_script_powershell(bindir, bin_file_name)
     ruby_exe = get_ruby_exe_path(bindir, bin_file_name)
+    ruby_exe.sub!("%~dp0", "$Folder/")
     <<-SCRIPT
 if ($PSCommandPath -eq $null)
 { function GetPSCommandPath()
@@ -856,7 +857,7 @@ if ($PSCommandPath -eq $null)
 $File = Get-Item $PSCommandPath
 $Folder = Split-Path $PSCommandPath -Parent
 $Script = Join-Path -Path $Folder -ChildPath $File.BaseName
-& "$Folder/#{ruby_exe}" $Script $args
+& "#{ruby_exe}" $Script $args
     SCRIPT
   end
 

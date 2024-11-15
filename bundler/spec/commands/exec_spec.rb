@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle exec" do
-  let(:system_gems_to_install) { %w[myrack-1.0.0 myrack-0.9.1] }
 
   it "works with --gemfile flag" do
+    system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
     system_gems(system_gems_to_install, path: default_bundle_path)
 
     gemfile "CustomGemfile", <<-G
@@ -16,6 +16,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "activates the correct gem" do
+    system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
     system_gems(system_gems_to_install, path: default_bundle_path)
 
     gemfile <<-G
@@ -28,6 +29,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "works and prints no warnings when HOME is not writable" do
+    system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
     system_gems(system_gems_to_install, path: default_bundle_path)
 
     gemfile <<-G
@@ -195,28 +197,25 @@ RSpec.describe "bundle exec" do
   end
 
   context "with default gems" do
-    let(:default_irb_version) { ruby "gem 'irb', '< 999999'; require 'irb'; puts IRB::VERSION", raise_on_error: false }
-
     context "when not specified in Gemfile" do
-      before do
+      it "uses version provided by ruby" do
         skip "irb isn't a default gem" if default_irb_version.empty?
 
         install_gemfile "source \"https://gem.repo1\""
-      end
 
-      it "uses version provided by ruby" do
+        default_irb_version = ruby "gem 'irb', '< 999999'; require 'irb'; puts IRB::VERSION", raise_on_error: false
         bundle "exec irb --version"
 
         expect(out).to include(default_irb_version)
-      end
     end
 
     context "when specified in Gemfile directly" do
-      let(:specified_irb_version) { "0.9.6" }
 
-      before do
+      it "uses version specified" do
+        default_irb_version = ruby "gem 'irb', '< 999999'; require 'irb'; puts IRB::VERSION", raise_on_error: false
         skip "irb isn't a default gem" if default_irb_version.empty?
 
+        specified_irb_version = "0.9.6"
         build_repo2 do
           build_gem "irb", specified_irb_version do |s|
             s.executables = "irb"
@@ -227,9 +226,7 @@ RSpec.describe "bundle exec" do
           source "https://gem.repo2"
           gem "irb", "#{specified_irb_version}"
         G
-      end
 
-      it "uses version specified" do
         bundle "exec irb --version"
 
         expect(out).to eq(specified_irb_version)
@@ -238,10 +235,10 @@ RSpec.describe "bundle exec" do
     end
 
     context "when specified in Gemfile indirectly" do
-      let(:indirect_irb_version) { "0.9.6" }
-
-      before do
+      it "uses resolved version" do
+        default_irb_version = ruby "gem 'irb', '< 999999'; require 'irb'; puts IRB::VERSION", raise_on_error: false
         skip "irb isn't a default gem" if default_irb_version.empty?
+        indirect_irb_version = "0.9.6"
 
         build_repo2 do
           build_gem "irb", indirect_irb_version do |s|
@@ -259,9 +256,7 @@ RSpec.describe "bundle exec" do
         G
 
         bundle "exec irb --version"
-      end
 
-      it "uses resolved version" do
         expect(out).to eq(indirect_irb_version)
         expect(err).to be_empty
       end
@@ -386,6 +381,7 @@ RSpec.describe "bundle exec" do
   end
 
   it "raises a helpful error when exec'ing to something outside of the bundle" do
+    system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
     system_gems(system_gems_to_install, path: default_bundle_path)
 
     bundle "config set clean false" # want to keep the myrackup binstub
@@ -692,7 +688,7 @@ RSpec.describe "bundle exec" do
   end
 
   describe "bundle exec gem uninstall" do
-    before do
+    it "works" do
       build_repo4 do
         build_gem "foo"
       end
@@ -702,71 +698,96 @@ RSpec.describe "bundle exec" do
 
         gem "foo"
       G
-    end
-
-    it "works" do
       bundle "exec #{gem_cmd} uninstall foo"
       expect(out).to eq("Successfully uninstalled foo-1.0")
     end
   end
 
   context "`load`ing a ruby file instead of `exec`ing" do
-    let(:path) { bundled_app("ruby_executable") }
-    let(:shebang) { "#!/usr/bin/env ruby" }
-    let(:executable) { <<~RUBY.strip }
-      #{shebang}
+    it "runs" do
+      skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
 
-      require "myrack"
-      puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
-      puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
-      puts "MYRACK: \#{MYRACK}"
-      process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
-      puts "PROCESS: \#{process_title}"
-    RUBY
-
-    before do
+      system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
       system_gems(system_gems_to_install, path: default_bundle_path)
-
-      bundled_app(path).open("w") {|f| f << executable }
-      bundled_app(path).chmod(0o755)
 
       install_gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"
       G
-    end
+      path = bundled_app("ruby_executable")
+      shebang = "#!/usr/bin/env ruby"
+      executable = <<~RUBY.strip
+        #{shebang}
 
-    let(:exec) { "EXEC: load" }
-    let(:args) { "ARGS: #{path} arg1 arg2" }
-    let(:myrack) { "MYRACK: 1.0.0" }
-    let(:process) do
-      title = "PROCESS: #{path}"
-      title += " arg1 arg2"
-      title
-    end
-    let(:exit_code) { 0 }
-    let(:expected) { [exec, args, myrack, process].join("\n") }
-    let(:expected_err) { "" }
+        require "myrack"
+        puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
+        puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
+        puts "MYRACK: \#{MYRACK}"
+        process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+        puts "PROCESS: \#{process_title}"
+      RUBY
+      exec = "EXEC: load"
+      args = "ARGS: #{path} arg1 arg2"
+      myrack = "MYRACK: 1.0.0"
+      process = do
+        title = "PROCESS: #{path}"
+        title += " arg1 arg2"
+        title
+      end
+      expected = [exec, args, myrack, process].join("\n")
+      bundled_app(path).open("w") {|f| f << executable }
+      exit_code = 0
 
-    subject { bundle "exec #{path} arg1 arg2", raise_on_error: false }
+      expected_err = ""
+      bundle "exec #{path} arg1 arg2", raise_on_error: false
 
-    it "runs" do
-      skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
-      subject
       expect(exitstatus).to eq(exit_code)
       expect(err).to eq(expected_err)
       expect(out).to eq(expected)
     end
 
     context "the executable exits explicitly" do
-      let(:executable) { super() << "\nexit #{exit_code}\nputs 'POST_EXIT'\n" }
 
       context "with exit 0" do
         it "runs" do
           skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
 
-          subject
+          system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
+          system_gems(system_gems_to_install, path: default_bundle_path)
+
+          install_gemfile <<-G
+            source "https://gem.repo1"
+            gem "myrack"
+          G
+          path = bundled_app("ruby_executable")
+          shebang = "#!/usr/bin/env ruby"
+          exit_code = 0
+          executable = <<~RUBY.strip
+            #{shebang}
+
+            require "myrack"
+            puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
+            puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
+            puts "MYRACK: \#{MYRACK}"
+            process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+            puts "PROCESS: \#{process_title}"
+            exit #{exit_code}
+            puts 'POST_EXIT'
+          RUBY
+          exec = "EXEC: load"
+          args = "ARGS: #{path} arg1 arg2"
+          myrack = "MYRACK: 1.0.0"
+          process = do
+            title = "PROCESS: #{path}"
+            title += " arg1 arg2"
+            title
+          end
+          expected = [exec, args, myrack, process].join("\n")
+          bundled_app(path).open("w") {|f| f << executable }
+
+          expected_err = ""
+          bundle "exec #{path} arg1 arg2", raise_on_error: false
+
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
           expect(out).to eq(expected)
@@ -774,12 +795,46 @@ RSpec.describe "bundle exec" do
       end
 
       context "with exit 99" do
-        let(:exit_code) { 99 }
 
         it "runs" do
           skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
 
-          subject
+          system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
+          system_gems(system_gems_to_install, path: default_bundle_path)
+
+          install_gemfile <<-G
+            source "https://gem.repo1"
+            gem "myrack"
+          G
+          path = bundled_app("ruby_executable")
+          shebang = "#!/usr/bin/env ruby"
+          exit_code = 99
+          executable = <<~RUBY.strip
+            #{shebang}
+
+            require "myrack"
+            puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
+            puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
+            puts "MYRACK: \#{MYRACK}"
+            process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+            puts "PROCESS: \#{process_title}"
+            exit #{exit_code}
+            puts 'POST_EXIT'
+          RUBY
+          exec = "EXEC: load"
+          args = "ARGS: #{path} arg1 arg2"
+          myrack = "MYRACK: 1.0.0"
+          process = do
+            title = "PROCESS: #{path}"
+            title += " arg1 arg2"
+            title
+          end
+          expected = [exec, args, myrack, process].join("\n")
+          bundled_app(path).open("w") {|f| f << executable }
+
+          expected_err = ""
+          bundle "exec #{path} arg1 arg2", raise_on_error: false
+
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
           expect(out).to eq(expected)
@@ -788,21 +843,45 @@ RSpec.describe "bundle exec" do
     end
 
     context "the executable exits by SignalException" do
-      let(:executable) do
-        ex = super()
-        ex << "\n"
-        ex << "raise SignalException, 'SIGTERM'\n"
-        ex
-      end
-      let(:expected_err) { "" }
-      let(:exit_code) do
-        exit_status_for_signal(Signal.list["TERM"])
-      end
-
       it "runs" do
         skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+        system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
+        system_gems(system_gems_to_install, path: default_bundle_path)
 
-        subject
+        install_gemfile <<-G
+          source "https://gem.repo1"
+          gem "myrack"
+        G
+        path = bundled_app("ruby_executable")
+        shebang = "#!/usr/bin/env ruby"
+        exit_code = exit_status_for_signal(Signal.list["TERM"])
+        executable = <<~RUBY.strip
+          #{shebang}
+
+          require "myrack"
+          puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
+          puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
+          puts "MYRACK: \#{MYRACK}"
+          process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+          puts "PROCESS: \#{process_title}"
+          exit #{exit_code}
+          puts 'POST_EXIT'
+          raise SignalException, 'SIGTERM'
+        RUBY
+        exec = "EXEC: load"
+        args = "ARGS: #{path} arg1 arg2"
+        myrack = "MYRACK: 1.0.0"
+        process = do
+          title = "PROCESS: #{path}"
+          title += " arg1 arg2"
+          title
+        end
+        expected = [exec, args, myrack, process].join("\n")
+        bundled_app(path).open("w") {|f| f << executable }
+
+        expected_err = ""
+        bundle "exec #{path} arg1 arg2", raise_on_error: false
+
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
         expect(out).to eq(expected)
@@ -810,14 +889,48 @@ RSpec.describe "bundle exec" do
     end
 
     context "the executable is empty" do
-      let(:executable) { "" }
-
-      let(:exit_code) { 0 }
-      let(:expected_err) { "#{path} is empty" }
-      let(:expected) { "" }
-
       it "runs" do
         skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+        system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
+        system_gems(system_gems_to_install, path: default_bundle_path)
+
+        install_gemfile <<-G
+          source "https://gem.repo1"
+          gem "myrack"
+        G
+        path = bundled_app("ruby_executable")
+        shebang = "#!/usr/bin/env ruby"
+        exit_code = exit_status_for_signal(Signal.list["TERM"])
+        exit_code = 0
+        executable = <<~RUBY.strip
+          #{shebang}
+
+          require "myrack"
+          puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
+          puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
+          puts "MYRACK: \#{MYRACK}"
+          process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+          puts "PROCESS: \#{process_title}"
+          exit #{exit_code}
+          puts 'POST_EXIT'
+          raise SignalException, 'SIGTERM'
+        RUBY
+        executable = ""
+        exec = "EXEC: load"
+        args = "ARGS: #{path} arg1 arg2"
+        myrack = "MYRACK: 1.0.0"
+        process = do
+          title = "PROCESS: #{path}"
+          title += " arg1 arg2"
+          title
+        end
+        expected = [exec, args, myrack, process].join("\n")
+        expected = ""
+        bundled_app(path).open("w") {|f| f << executable }
+
+        expected_err = "#{path} is empty"
+        bundle "exec #{path} arg1 arg2", raise_on_error: false
+
 
         subject
         expect(exitstatus).to eq(exit_code)
@@ -827,16 +940,49 @@ RSpec.describe "bundle exec" do
     end
 
     context "the executable raises" do
-      let(:executable) { super() << "\nraise 'ERROR'" }
-      let(:exit_code) { 1 }
-      let(:expected_err) do
-        /\Abundler: failed to load command: #{Regexp.quote(path.to_s)} \(#{Regexp.quote(path.to_s)}\)\n#{Regexp.quote(path.to_s)}:10:in [`']<top \(required\)>': ERROR \(RuntimeError\)/
-      end
-
       it "runs like a normally executed executable" do
         skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+        system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
+        system_gems(system_gems_to_install, path: default_bundle_path)
 
-        subject
+        install_gemfile <<-G
+          source "https://gem.repo1"
+          gem "myrack"
+        G
+        path = bundled_app("ruby_executable")
+        shebang = "#!/usr/bin/env ruby"
+        exit_code = exit_status_for_signal(Signal.list["TERM"])
+        exit_code = 1
+        executable = <<~RUBY.strip
+          #{shebang}
+
+          require "myrack"
+          puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
+          puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
+          puts "MYRACK: \#{MYRACK}"
+          process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+          puts "PROCESS: \#{process_title}"
+          raise 'ERROR'
+        RUBY
+        executable = ""
+        exec = "EXEC: load"
+        args = "ARGS: #{path} arg1 arg2"
+        myrack = "MYRACK: 1.0.0"
+        process = do
+          title = "PROCESS: #{path}"
+          title += " arg1 arg2"
+          title
+        end
+        expected = [exec, args, myrack, process].join("\n")
+        expected = ""
+        bundled_app(path).open("w") {|f| f << executable }
+
+        expected_err = do
+        /\Abundler: failed to load command: #{Regexp.quote(path.to_s)} \(#{Regexp.quote(path.to_s)}\)\n#{Regexp.quote(path.to_s)}:10:in [`']<top \(required\)>': ERROR \(RuntimeError\)/
+        end
+
+        bundle "exec #{path} arg1 arg2", raise_on_error: false
+
         expect(exitstatus).to eq(exit_code)
         expect(err).to match(expected_err)
         expect(out).to eq(expected)
@@ -844,15 +990,51 @@ RSpec.describe "bundle exec" do
     end
 
     context "the executable raises an error without a backtrace" do
-      let(:executable) { super() << "\nclass Err < Exception\ndef backtrace; end;\nend\nraise Err" }
-      let(:exit_code) { 1 }
-      let(:expected_err) { "bundler: failed to load command: #{path} (#{path})\n#{system_gem_path("bin/bundle")}: Err (Err)" }
-      let(:expected) { super() }
 
       it "runs" do
         skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+        system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
+        system_gems(system_gems_to_install, path: default_bundle_path)
 
-        subject
+        install_gemfile <<-G
+          source "https://gem.repo1"
+          gem "myrack"
+        G
+        path = bundled_app("ruby_executable")
+        shebang = "#!/usr/bin/env ruby"
+        exit_code = exit_status_for_signal(Signal.list["TERM"])
+        exit_code = 1
+        executable = <<~RUBY.strip
+          #{shebang}
+
+          require "myrack"
+          puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
+          puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
+          puts "MYRACK: \#{MYRACK}"
+          process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+          puts "PROCESS: \#{process_title}"
+          class Err < Exception
+          def backtrace; end;
+          end
+          raise Err
+        RUBY
+        executable = ""
+        exec = "EXEC: load"
+        args = "ARGS: #{path} arg1 arg2"
+        myrack = "MYRACK: 1.0.0"
+        process = do
+          title = "PROCESS: #{path}"
+          title += " arg1 arg2"
+          title
+        end
+        expected = [exec, args, myrack, process].join("\n")
+        expected = ""
+        bundled_app(path).open("w") {|f| f << executable }
+
+        expected_err = "bundler: failed to load command: #{path} (#{path})\n#{system_gem_path("bin/bundle")}: Err (Err)"
+
+        bundle "exec #{path} arg1 arg2", raise_on_error: false
+
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
         expect(out).to eq(expected)
@@ -860,12 +1042,47 @@ RSpec.describe "bundle exec" do
     end
 
     context "when the file uses the current ruby shebang" do
-      let(:shebang) { "#!#{Gem.ruby}" }
 
       it "runs" do
         skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+        system_gems_to_install = %w[myrack-1.0.0 myrack-0.9.1]
+        system_gems(system_gems_to_install, path: default_bundle_path)
 
-        subject
+        install_gemfile <<-G
+          source "https://gem.repo1"
+          gem "myrack"
+        G
+        path = bundled_app("ruby_executable")
+        shebang = "#!/usr/bin/env ruby"
+        shebang = "#!#{Gem.ruby}"
+        exit_code = exit_status_for_signal(Signal.list["TERM"])
+        exit_code = 1
+        executable = <<~RUBY.strip
+          #{shebang}
+
+          require "myrack"
+          puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
+          puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
+          puts "MYRACK: \#{MYRACK}"
+          process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+          puts "PROCESS: \#{process_title}"
+        RUBY
+        executable = ""
+        exec = "EXEC: load"
+        args = "ARGS: #{path} arg1 arg2"
+        myrack = "MYRACK: 1.0.0"
+        process = do
+          title = "PROCESS: #{path}"
+          title += " arg1 arg2"
+          title
+        end
+        expected = [exec, args, myrack, process].join("\n")
+        bundled_app(path).open("w") {|f| f << executable }
+
+        expected_err = "bundler: failed to load command: #{path} (#{path})\n#{system_gem_path("bin/bundle")}: Err (Err)"
+
+        bundle "exec #{path} arg1 arg2", raise_on_error: false
+
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
         expect(out).to eq(expected)
@@ -1220,10 +1437,9 @@ __FILE__: #{path.to_s.inspect}
     end
 
     context "with a system gem that shadows a default gem" do
-      let(:openssl_version) { "99.9.9" }
-      let(:expected) { ruby "gem 'openssl', '< 999999'; require 'openssl'; puts OpenSSL::VERSION", artifice: nil, raise_on_error: false }
-
       it "only leaves the default gem in the stdlib available" do
+        expected = ruby "gem 'openssl', '< 999999'; require 'openssl'; puts OpenSSL::VERSION", artifice: nil, raise_on_error: false
+        openssl_version = "99.9.9"
         skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
         skip "openssl isn't a default gem" if expected.empty?
 

@@ -29,7 +29,7 @@ here: https://guides.rubygems.org/contributing/
 
 ## Getting Started
 
-For more information, check [SETUP.md](doc/bundler/development/SETUP.md) and [DEBUGGING.md](doc/bundler/development/DEBUGGING.md).
+For more information, check [SETUP.md](../bundler/development/SETUP.md) and [DEBUGGING.md](../bundler/development/DEBUGGING.md).
 
 ### Installing dependencies
 

@@ -90,5 +90,5 @@ RGV=v3.2.33 bin/parallel_rspec
 
 ## Debugging
 
-See [DEBUGGING.md](doc/bundler/development/DEBUGGING.md).
+See [DEBUGGING.md](DEBUGGING.md).
 

@@ -235,10 +235,21 @@ module Spec
     end
 
     def create_file(path, contents = "")
+      contents = strip_whitespace(contents)
       path = Pathname.new(path).expand_path(bundled_app) unless path.is_a?(Pathname)
       path.dirname.mkpath
-      File.open(path.to_s, "w") do |f|
-        f.puts strip_whitespace(contents)
+      path.write(contents)
+
+      # if the file is a script, create respective bat file on Windows
+      if contents.start_with?("#!")
+        path.chmod(0o755)
+        if Gem.win_platform?
+          bat_path = path.dirname.join(path.basename.to_s + ".bat")
+          bat_path.write(strip_whitespace(<<-SCRIPT))
+            @ECHO OFF
+            @"ruby.exe" "%~dpn0" %*
+          SCRIPT
+        end
       end
     end
 
@@ -374,12 +385,8 @@ module Spec
     end
 
     def with_fake_man
-      skip "fake_man is not a Windows friendly binstub" if Gem.win_platform?
-
       FileUtils.mkdir_p(tmp("fake_man"))
-      File.open(tmp("fake_man/man"), "w", 0o755) do |f|
-        f.puts "#!/usr/bin/env ruby\nputs ARGV.inspect\n"
-      end
+      create_file(tmp("fake_man/man"), "#!/usr/bin/env ruby\nputs ARGV.inspect\n")
       with_path_added(tmp("fake_man")) { yield }
     end
 
@@ -543,6 +550,7 @@ module Spec
     end
 
     def exit_status_for_signal(signal_number)
+      return 3 if signal_number == Signal.list["TERM"] && Gem.win_platform?
       # For details see: https://en.wikipedia.org/wiki/Exit_status#Shell_and_scripts
       128 + signal_number
     end

@@ -174,7 +174,13 @@ RSpec.describe Bundler do
       end
     end
 
-    let(:expected) { "executable" }
+    let(:expected) do
+      if Gem.win_platform?
+        "executable.exe"
+      else
+        "executable"
+      end
+    end
 
     before do
       ENV["PATH"] = path.join(File::PATH_SEPARATOR)
@@ -200,11 +206,12 @@ RSpec.describe Bundler do
     context "when the executable in inside a quoted path" do
       let(:expected) do
         if Gem.win_platform?
-          "C:/e/executable"
+          "C:/e/executable.exe"
         else
           "/e/executable"
         end
       end
+
       it_behaves_like "it returns the correct executable"
     end
 

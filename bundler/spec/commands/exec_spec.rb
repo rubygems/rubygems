@@ -207,6 +207,7 @@ RSpec.describe "bundle exec" do
         bundle "exec irb --version"
 
         expect(out).to include(default_irb_version)
+      end
     end
 
     context "when specified in Gemfile directly" do
@@ -729,7 +730,7 @@ RSpec.describe "bundle exec" do
       exec = "EXEC: load"
       args = "ARGS: #{path} arg1 arg2"
       myrack = "MYRACK: 1.0.0"
-      process = do
+      process = begin
         title = "PROCESS: #{path}"
         title += " arg1 arg2"
         title
@@ -777,7 +778,7 @@ RSpec.describe "bundle exec" do
           exec = "EXEC: load"
           args = "ARGS: #{path} arg1 arg2"
           myrack = "MYRACK: 1.0.0"
-          process = do
+          process = begin
             title = "PROCESS: #{path}"
             title += " arg1 arg2"
             title
@@ -824,7 +825,7 @@ RSpec.describe "bundle exec" do
           exec = "EXEC: load"
           args = "ARGS: #{path} arg1 arg2"
           myrack = "MYRACK: 1.0.0"
-          process = do
+          process = begin
             title = "PROCESS: #{path}"
             title += " arg1 arg2"
             title
@@ -871,7 +872,7 @@ RSpec.describe "bundle exec" do
         exec = "EXEC: load"
         args = "ARGS: #{path} arg1 arg2"
         myrack = "MYRACK: 1.0.0"
-        process = do
+        process = begin
           title = "PROCESS: #{path}"
           title += " arg1 arg2"
           title
@@ -919,7 +920,7 @@ RSpec.describe "bundle exec" do
         exec = "EXEC: load"
         args = "ARGS: #{path} arg1 arg2"
         myrack = "MYRACK: 1.0.0"
-        process = do
+        process = begin
           title = "PROCESS: #{path}"
           title += " arg1 arg2"
           title
@@ -968,7 +969,7 @@ RSpec.describe "bundle exec" do
         exec = "EXEC: load"
         args = "ARGS: #{path} arg1 arg2"
         myrack = "MYRACK: 1.0.0"
-        process = do
+        process = begin
           title = "PROCESS: #{path}"
           title += " arg1 arg2"
           title
@@ -977,7 +978,7 @@ RSpec.describe "bundle exec" do
         expected = ""
         bundled_app(path).open("w") {|f| f << executable }
 
-        expected_err = do
+        expected_err = begin
         /\Abundler: failed to load command: #{Regexp.quote(path.to_s)} \(#{Regexp.quote(path.to_s)}\)\n#{Regexp.quote(path.to_s)}:10:in [`']<top \(required\)>': ERROR \(RuntimeError\)/
         end
 
@@ -1022,7 +1023,7 @@ RSpec.describe "bundle exec" do
         exec = "EXEC: load"
         args = "ARGS: #{path} arg1 arg2"
         myrack = "MYRACK: 1.0.0"
-        process = do
+        process = begin
           title = "PROCESS: #{path}"
           title += " arg1 arg2"
           title
@@ -1071,7 +1072,7 @@ RSpec.describe "bundle exec" do
         exec = "EXEC: load"
         args = "ARGS: #{path} arg1 arg2"
         myrack = "MYRACK: 1.0.0"
-        process = do
+        process = begin
           title = "PROCESS: #{path}"
           title += " arg1 arg2"
           title

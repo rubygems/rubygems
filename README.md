@@ -42,13 +42,15 @@ Manager, such as [rbenv](https://github.com/rbenv/rbenv) or
 version provided by your OS package manager, please also use your OS package
 manager to upgrade rubygems.
 
+To install the development version, see [Development Setup](doc/bundler/development/SETUP.md#install-the-development-version).
+
 ## Upgrading RubyGems
 
 To upgrade to the latest RubyGems, run:
 
     $ gem update --system
 
-See [UPGRADING](UPGRADING.md) for more details and alternative instructions.
+See [UPGRADING](doc/bundler/UPGRADING.md) for more details and alternative instructions.
 
 ## Release policy
 

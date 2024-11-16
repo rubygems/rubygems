@@ -15,6 +15,8 @@ you read and parse XML in Ruby:
 
     $ gem install nokogiri
 
+(On Windows, you need to install `mingw-w64-ucrt-x86_64-libxslt` first. See <https://nokogiri.org/tutorials/installing_nokogiri.html#windows>.)
+
 RubyGems will download the Nokogiri Gem from RubyGems.org and install it into your Ruby environment.
 
 Finally, inside your Ruby program, load the Nokogiri gem and start parsing your XML:
@@ -38,21 +40,7 @@ recommended way to use Ruby & RubyGems. It's better to use a Ruby Version
 Manager, such as [rbenv](https://github.com/rbenv/rbenv) or
 [chruby](https://github.com/postmodern/chruby). If you still want to use the
 version provided by your OS package manager, please also use your OS package
-manager to upgrade rubygems, and disregard any other installation instructions
-given below.
-
-If you would like to manually install RubyGems:
-
-* Download from https://rubygems.org/pages/download, unpack, and `cd` into RubyGems' src
-* OR clone this repository and `cd` into the repository
-
-Install RubyGems by running:
-
-    $ ruby setup.rb
-
-For more details and other options, see:
-
-    $ ruby setup.rb --help
+manager to upgrade rubygems.
 
 ## Upgrading RubyGems
 
@@ -105,7 +93,7 @@ RubyGems is managed by [Ruby Central](https://rubycentral.org), a non-profit org
 
 ### Contributing
 
-If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](CONTRIBUTING.md) for more information.
+If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](doc/rubygems/CONTRIBUTING.md) for more information.
 
 ### Code of Conduct
 

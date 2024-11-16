@@ -191,6 +191,7 @@ class TestGem < Gem::TestCase
     }
     # add Windows script
     expected["bin/#{prog_name}.bat"] = mask.to_s(8) if Gem.win_platform?
+    expected["bin/#{prog_name}.ps1"] = mask.to_s(8) if Gem.win_platform?
     result = {}
     Dir.chdir @gemhome do
       expected.each_key do |n|

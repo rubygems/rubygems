@@ -287,6 +287,30 @@ By default, this RubyGems will install gem as:
         ensure
           rm bin_cmd_file
         end
+
+        begin
+          bin_cmd_file = File.join Dir.tmpdir, "#{bin_file}.ps1"
+
+          File.open bin_cmd_file, "w" do |file|
+            file.puts <<-TEXT
+if ($PSCommandPath -eq $null)
+{ function GetPSCommandPath()
+  { return $MyInvocation.PSCommandPath;
+  } $PSCommandPath = GetPSCommandPath
+}
+
+$File = Get-Item $PSCommandPath
+$Folder = Split-Path $PSCommandPath -Parent
+$Script = Join-Path -Path $Folder -ChildPath $File.BaseName
+& "$Folder/#{File.basename(Gem.ruby).chomp('"')}" $Script $args
+            TEXT
+          end
+
+          install bin_cmd_file, "#{dest_file}.ps1", mode: prog_mode
+        ensure
+          rm bin_cmd_file
+        end
+
       end
     end
   end
@@ -499,7 +523,11 @@ abort "#{deprecation_message}"
       next unless Gem.win_platform?
 
       File.open "#{old_bin_path}.bat", "w" do |fp|
+        fp.puts "@ECHO OFF"
         fp.puts %(@ECHO.#{deprecation_message})
+      end
+      File.open "#{old_bin_path}.ps1", "w" do |fp|
+        fp.puts "echo #{deprecation_message}"
       end
     end
   end

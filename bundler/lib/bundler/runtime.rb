@@ -174,7 +174,7 @@ module Bundler
         spec_git_paths << md[1] if md
         spec_gem_executables << spec.executables.collect do |executable|
           e = "#{Bundler.rubygems.gem_bindir}/#{executable}"
-          [e, "#{e}.bat"]
+          [e, "#{e}.bat", "#{e}.ps1"]
         end
         spec_cache_paths << spec.cache_file
         spec_gemspec_paths << spec.spec_file

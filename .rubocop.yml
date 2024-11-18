@@ -46,11 +46,6 @@ Naming/VariableNumber:
     - test/**/*
     - tool/**/*
 
-# Performance
-
-Performance/RegexpMatch:
-  Enabled: true
-
 # Style
 
 Style/ClassVars:
@@ -499,6 +494,11 @@ Naming/FileName:
     - "bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb"
 
 Naming/MemoizedInstanceVariableName:
+  Enabled: true
+
+# Performance
+
+Performance/RegexpMatch:
   Enabled: true
 
 Performance/MapCompact:

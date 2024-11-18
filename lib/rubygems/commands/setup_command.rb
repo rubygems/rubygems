@@ -310,7 +310,6 @@ $Script = Join-Path -Path $Folder -ChildPath $File.BaseName
         ensure
           rm bin_cmd_file
         end
-
       end
     end
   end

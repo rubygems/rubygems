@@ -501,6 +501,9 @@ Naming/FileName:
 Naming/MemoizedInstanceVariableName:
   Enabled: true
 
+Performance/MapCompact:
+  Enabled: true
+
 Performance/TimesMap:
   Enabled: true
 

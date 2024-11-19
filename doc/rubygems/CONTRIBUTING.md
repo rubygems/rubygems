@@ -98,6 +98,8 @@ Optionally you can configure git hooks with to check this before every commit wi
 
     bin/rake git_hooks
 
+For more information, check [SETUP.md](../bundler/development/SETUP.md) and [DEBUGGING.md](../bundler/development/DEBUGGING.md).
+
 ## Issues
 
 RubyGems uses labels to track all issues and pull requests. In order to

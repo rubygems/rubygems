@@ -60,7 +60,7 @@ To upgrade to the latest RubyGems, run:
 
     $ gem update --system
 
-See [UPGRADING](UPGRADING.md) for more details and alternative instructions.
+See [UPGRADING](doc/bundler/UPGRADING.md) for more details and alternative instructions.
 
 ## Release policy
 
@@ -105,7 +105,7 @@ RubyGems is managed by [Ruby Central](https://rubycentral.org), a non-profit org
 
 ### Contributing
 
-If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](CONTRIBUTING.md) for more information.
+If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](doc/rubygems/CONTRIBUTING.md) for more information.
 
 ### Code of Conduct
 

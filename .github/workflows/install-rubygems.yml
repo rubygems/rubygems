@@ -93,6 +93,9 @@ jobs:
         run: |
           gem install nexus:1.5.2
           gem nexus --help
+      - name: Check gem exec preserves app name
+        run: gem exec kamal help | grep -q 'kamal help'
+        if: matrix.ruby.name != 'truffleruby' && matrix.ruby.name != 'jruby'
     timeout-minutes: 10
 
   install_rubygems_windows:

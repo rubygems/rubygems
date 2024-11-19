@@ -15,7 +15,18 @@ you read and parse XML in Ruby:
 
     $ gem install nokogiri
 
-RubyGems will download the Nokogiri Gem from RubyGems.org and install it into your Ruby environment.
+If you are on Windows, you need to run [these commands instead][noko-doc]:
+
+```
+ridk exec pacman -S mingw-w64-ucrt-x86_64-libxslt
+gem install nokogiri --platform=ruby -- --use-system-libraries
+```
+
+[noko-doc]: https://nokogiri.org/tutorials/installing_nokogiri.html#windows
+
+You can also find detailed install instructions for other platforms in the documentation.
+
+When executing `gem install`, RubyGems will download the Nokogiri Gem from RubyGems.org and install it into your Ruby environment.
 
 Finally, inside your Ruby program, load the Nokogiri gem and start parsing your XML:
 

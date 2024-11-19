@@ -961,7 +961,7 @@ module Bundler
     def converge_locked_specs
       converged = converge_specs(@locked_specs)
 
-      resolve = SpecSet.new(converged.reject {|s| @gems_to_unlock.include?(s.name) })
+      resolve = SpecSet.new(converged)
 
       diff = nil
 
@@ -1021,7 +1021,7 @@ module Bundler
         end
       end
 
-      filter_specs(converged, deps)
+      filter_specs(converged, deps).reject {|s| @gems_to_unlock.include?(s.name) }
     end
 
     def metadata_dependencies

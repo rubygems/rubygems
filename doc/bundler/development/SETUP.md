@@ -66,17 +66,7 @@ to make sure your changes in Bundler work fine with those versions. For example,
 RGV=v3.2.33 bin/parallel_rspec
 ```
 
-## Debugging with `pry`
+## Debugging
 
-To dive into the code with Pry: `RUBYOPT=-rpry dbundle` to require pry and then run commands.
+See [DEBUGGING.md](DEBUGGING.md).
 
-For background context: you can manipulate environment variables in Ruby to control the Ruby interpreter's behavior. Ruby uses the `RUBYOPT` environment variable to specify options to launch Ruby with.
-
-The arguments of `RUBYOPT` are applied as if you had typed them as flags after `ruby`. The `-r` flag means 'require'. So saying `-rpry` means `require 'pry'`. To illustrate, `ruby -rpry /path/to/bundle` is the same as `RUBYOPT=-rpry ruby /path/to/bundle`.
-
-So, `RUBYOPT=-rpry dbundle` is saying "require pry and require this path to Bundler", which means that you will start your development environment with `pry` and your local bundler.
-
-_Why is this necessary?_ Why isn't `require 'pry'; binding.pry` enough?
-
-The reason for combining `RUBYOPT` with `dbundle` is because Bundler takes over what gems are available. If you have `pry` installed on your machine but not included in the Gemfile, Bundler itself will remove `pry` from the list of gems you can require. Setting `RUBYOPT=-rpry` is a way to require `pry` before Bundler takes over and removes it from the list of gems that can be required. That way, later, you can take advantage of `binding.pry` and have it work.
-Unfortunately, if you waited until the point of `binding.pry` to `require 'pry'`, it would fail anytime `pry` is not in the Gemfile.

@@ -121,6 +121,8 @@ bundler/lib/bundler/man/bundle-inject.1
 bundler/lib/bundler/man/bundle-inject.1.ronn
 bundler/lib/bundler/man/bundle-install.1
 bundler/lib/bundler/man/bundle-install.1.ronn
+bundler/lib/bundler/man/bundle-issue.1
+bundler/lib/bundler/man/bundle-issue.1.ronn
 bundler/lib/bundler/man/bundle-list.1
 bundler/lib/bundler/man/bundle-list.1.ronn
 bundler/lib/bundler/man/bundle-lock.1

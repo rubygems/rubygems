@@ -619,8 +619,8 @@ module Bundler
       end
     end
 
-    def filter_specs(specs, deps)
-      SpecSet.new(specs).for(deps, platforms)
+    def filter_specs(specs, deps, skips: [])
+      SpecSet.new(specs).for(deps, platforms, skips: skips)
     end
 
     def materialize(dependencies)
@@ -1021,7 +1021,7 @@ module Bundler
         end
       end
 
-      filter_specs(converged, deps).reject {|s| @gems_to_unlock.include?(s.name) }
+      filter_specs(converged, deps, skips: @gems_to_unlock)
     end
 
     def metadata_dependencies

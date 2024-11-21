@@ -1015,11 +1015,12 @@ module Bundler
           end
         end
 
-        if dep.nil? && requested_dependencies.find {|d| name == d.name }
+        if dep.nil? && requested_dep = requested_dependencies.find {|d| name == d.name }
           @gems_to_unlock << name
-        else
-          converged << s
+          deps << requested_dep
         end
+
+        converged << s
       end
 
       filter_specs(converged, deps, skips: @gems_to_unlock)

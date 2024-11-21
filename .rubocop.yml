@@ -46,11 +46,6 @@ Naming/VariableNumber:
     - test/**/*
     - tool/**/*
 
-# Performance
-
-Performance/RegexpMatch:
-  Enabled: true
-
 # Style
 
 Style/ClassVars:
@@ -501,6 +496,14 @@ Naming/FileName:
 Naming/MemoizedInstanceVariableName:
   Enabled: true
 
+# Performance
+
+Performance/RegexpMatch:
+  Enabled: true
+
+Performance/MapCompact:
+  Enabled: true
+
 Performance/TimesMap:
   Enabled: true
 
@@ -515,6 +518,7 @@ Performance/Casecmp:
 
 Performance/FlatMap:
   Enabled: true
+  EnabledForFlattenWithoutParams: true
 
 Performance/StartWith:
   Enabled: true

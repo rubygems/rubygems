@@ -79,7 +79,7 @@ module Bundler
     def solve_versions(root:, logger:)
       solver = PubGrub::VersionSolver.new(source: self, root: root, logger: logger)
       result = solver.solve
-      resolved_specs = result.map {|package, version| version.to_specs(package) }.flatten
+      resolved_specs = result.flat_map {|package, version| version.to_specs(package) }
       resolved_specs |= @base.specs_compatible_with(SpecSet.new(resolved_specs))
     rescue PubGrub::SolveFailure => e
       incompatibility = e.incompatibility
@@ -417,7 +417,7 @@ module Bundler
     end
 
     def prepare_dependencies(requirements, packages)
-      to_dependency_hash(requirements, packages).map do |dep_package, dep_constraint|
+      to_dependency_hash(requirements, packages).filter_map do |dep_package, dep_constraint|
         name = dep_package.name
 
         next [dep_package, dep_constraint] if name == "bundler"
@@ -443,7 +443,7 @@ module Bundler
         next unless dep_package.current_platform?
 
         raise_not_found!(dep_package)
-      end.compact.to_h
+      end.to_h
     end
 
     def select_sorted_versions(package, range)

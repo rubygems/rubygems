@@ -304,12 +304,12 @@ class Release
   def unreleased_pr_ids
     stable_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@previous_stable_branch}`.split("\n")
 
-    `git log --oneline --grep "^Merge pull request #" origin/master`.split("\n").map do |l|
+    `git log --oneline --grep "^Merge pull request #" origin/master`.split("\n").filter_map do |l|
       _sha, message = l.split(/\s/, 2)
 
       next if stable_merge_commit_messages.include?(message)
 
       /^Merge pull request #(\d+)/.match(message)[1].to_i
-    end.compact
+    end
   end
 end

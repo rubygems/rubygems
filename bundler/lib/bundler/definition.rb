@@ -313,11 +313,11 @@ module Bundler
     end
 
     def spec_git_paths
-      sources.git_sources.map {|s| File.realpath(s.path) if File.exist?(s.path) }.compact
+      sources.git_sources.filter_map {|s| File.realpath(s.path) if File.exist?(s.path) }
     end
 
     def groups
-      dependencies.map(&:groups).flatten.uniq
+      dependencies.flat_map(&:groups).uniq
     end
 
     def lock(file_or_preserve_unknown_sections = false, preserve_unknown_sections_or_unused = false)

@@ -10,29 +10,23 @@ that can be shared and used by other developers. See our guide on publishing a G
 
 ## Getting Started
 
-Installing and managing a Gem is done through the `gem` command. To install a Gem such as [Nokogiri](https://github.com/sparklemotion/nokogiri) which lets
-you read and parse XML in Ruby:
+Installing and managing a Gem is done through the `gem` command. To install a Gem such as [Faraday][faraday]:
 
-    $ gem install nokogiri
-
-If you are on Windows, you need to run [these commands instead][noko-doc]:
-
-```
-ridk exec pacman -S mingw-w64-ucrt-x86_64-libxslt
-gem install nokogiri --platform=ruby -- --use-system-libraries
+```bash
+gem install faraday
 ```
 
-[noko-doc]: https://nokogiri.org/tutorials/installing_nokogiri.html#windows
+[faraday]: https://github.com/lostisland/faraday?tab=readme-ov-file
 
-You can also find detailed install instructions for other platforms in the documentation.
+RubyGems will download the Faraday Gem from RubyGems.org and install it into your Ruby environment.
 
-When executing `gem install`, RubyGems will download the Nokogiri Gem from RubyGems.org and install it into your Ruby environment.
+Finally, inside your Ruby program, load the Faraday gem and start hacking:
 
-Finally, inside your Ruby program, load the Nokogiri gem and start parsing your XML:
-
-    require 'nokogiri'
-
-    Nokogiri.XML('<h1>Hello World</h1>')
+```ruby
+require 'faraday'
+response = Faraday.get('https://rubygems.org')
+# do something with `response`...
+```
 
 For more information about how to use RubyGems, see our RubyGems basics guide at [guides.rubygems.org](https://guides.rubygems.org/rubygems-basics/)
 

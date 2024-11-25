@@ -89,6 +89,7 @@ module Bundler
         @lockfile_contents = Bundler.read_file(lockfile)
         @locked_gems = LockfileParser.new(@lockfile_contents)
         @locked_platforms = @locked_gems.platforms
+        @most_specific_locked_platform = @locked_gems.most_specific_locked_platform
         @platforms = @locked_platforms.dup
         @locked_bundler_version = @locked_gems.bundler_version
         @locked_ruby_version = @locked_gems.ruby_version
@@ -108,14 +109,15 @@ module Bundler
         end
       else
         @unlock         = {}
-        @platforms      = []
         @locked_gems    = nil
+        @locked_platforms = []
+        @most_specific_locked_platform = nil
+        @platforms      = []
         @locked_deps    = {}
         @locked_specs   = SpecSet.new([])
         @originally_locked_deps = {}
         @originally_locked_specs = @locked_specs
         @locked_sources = []
-        @locked_platforms = []
         @locked_checksums = Bundler.feature_flag.lockfile_checksums?
       end
 
@@ -150,7 +152,7 @@ module Bundler
         @gems_to_unlock = @explicit_unlocks.any? ? @explicit_unlocks : @dependencies.map(&:name)
       else
         eager_unlock = @explicit_unlocks.map {|name| Dependency.new(name, ">= 0") }
-        @gems_to_unlock = @locked_specs.for(eager_unlock, false, platforms).map(&:name).uniq
+        @gems_to_unlock = @locked_specs.for(eager_unlock, platforms).map(&:name).uniq
       end
 
       @dependency_changes = converge_dependencies
@@ -239,7 +241,7 @@ module Bundler
     end
 
     def missing_specs
-      resolve.materialize(requested_dependencies, most_specific_locked_platform).missing_specs
+      resolve.missing_specs_for(requested_dependencies)
     end
 
     def missing_specs?
@@ -493,7 +495,7 @@ module Bundler
     def normalize_platforms
       @platforms = resolve.normalize_platforms!(current_dependencies, platforms)
 
-      @resolve = SpecSet.new(resolve.for(current_dependencies, false, @platforms))
+      @resolve = SpecSet.new(resolve.for(current_dependencies, @platforms))
     end
 
     def add_platform(platform)
@@ -508,12 +510,6 @@ module Bundler
       @removed_platform ||= removed_platform
       return if removed_platform
       raise InvalidOption, "Unable to remove the platform `#{platform}` since the only platforms are #{@platforms.join ", "}"
-    end
-
-    def most_specific_locked_platform
-      @platforms.min_by do |bundle_platform|
-        platform_specificity_match(bundle_platform, local_platform)
-      end
     end
 
     def nothing_changed?
@@ -598,7 +594,7 @@ module Bundler
     end
 
     def resolver
-      @resolver ||= Resolver.new(resolution_packages, gem_version_promoter)
+      @resolver ||= Resolver.new(resolution_packages, gem_version_promoter, @most_specific_locked_platform)
     end
 
     def expanded_dependencies
@@ -624,7 +620,7 @@ module Bundler
     end
 
     def filter_specs(specs, deps)
-      SpecSet.new(specs).for(deps, false, platforms)
+      SpecSet.new(specs).for(deps, platforms)
     end
 
     def materialize(dependencies)
@@ -633,7 +629,7 @@ module Bundler
       incorrect_spec = nil
 
       specs = begin
-        resolve.materialize(dependencies, most_specific_locked_platform)
+        resolve.materialize(dependencies)
       rescue IncorrectLockfileDependencies => e
         spec = e.spec
         raise "Infinite loop while fixing lockfile dependencies" if incorrect_spec == spec
@@ -643,7 +639,7 @@ module Bundler
         retry
       end
 
-      missing_specs = specs.missing_specs
+      missing_specs = resolve.missing_specs
 
       if missing_specs.any?
         missing_specs.each do |s|
@@ -672,16 +668,24 @@ module Bundler
         raise GemNotFound, "Could not find #{missing_specs_list.join(" nor ")}"
       end
 
-      incomplete_specs = specs.incomplete_specs
+      partially_missing_specs = resolve.partially_missing_specs
+
+      if partially_missing_specs.any? && !sources.local_mode?
+        Bundler.ui.warn "Some locked specs have possibly been yanked (#{partially_missing_specs.map(&:full_name).join(", ")}). Ignoring them..."
+
+        resolve.delete(partially_missing_specs)
+      end
+
+      incomplete_specs = resolve.incomplete_specs
       loop do
         break if incomplete_specs.empty?
 
         Bundler.ui.debug("The lockfile does not have all gems needed for the current platform though, Bundler will still re-resolve dependencies")
         sources.remote!
         reresolve_without(incomplete_specs)
-        specs = resolve.materialize(dependencies, most_specific_locked_platform)
+        specs = resolve.materialize(dependencies)
 
-        still_incomplete_specs = specs.incomplete_specs
+        still_incomplete_specs = resolve.incomplete_specs
 
         if still_incomplete_specs == incomplete_specs
           package = resolution_packages.get_package(incomplete_specs.first.name)
@@ -691,7 +695,7 @@ module Bundler
         incomplete_specs = still_incomplete_specs
       end
 
-      insecurely_materialized_specs = specs.insecurely_materialized_specs
+      insecurely_materialized_specs = resolve.insecurely_materialized_specs
 
       if insecurely_materialized_specs.any?
         Bundler.ui.warn "The following platform specific gems are getting installed, yet the lockfile includes only their generic ruby version:\n" \
@@ -730,7 +734,7 @@ module Bundler
 
       @platforms = result.add_extra_platforms!(platforms) if should_add_extra_platforms?
 
-      SpecSet.new(result.for(dependencies, false, @platforms))
+      SpecSet.new(result.for(dependencies, @platforms))
     end
 
     def precompute_source_requirements_for_indirect_dependencies?
@@ -756,7 +760,7 @@ module Bundler
     def find_most_specific_locked_ruby_platform
       return unless generic_local_platform_is_ruby? && current_platform_locked?
 
-      most_specific_locked_platform
+      @most_specific_locked_platform
     end
 
     def change_reason
@@ -1002,7 +1006,7 @@ module Bundler
         if source.instance_of?(Source::Path) || source.instance_of?(Source::Gemspec) || (source.instance_of?(Source::Git) && !@gems_to_unlock.include?(name) && deps.include?(dep))
           new_spec = source.specs[s].first
           if new_spec
-            s.dependencies.replace(new_spec.dependencies)
+            s.runtime_dependencies.replace(new_spec.runtime_dependencies)
           else
             # If the spec is no longer in the path source, unlock it. This
             # commonly happens if the version changed in the gemspec

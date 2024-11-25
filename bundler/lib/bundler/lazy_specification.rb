@@ -8,14 +8,26 @@ module Bundler
     include MatchPlatform
     include ForcePlatform
 
-    attr_reader :name, :version, :platform
+    attr_reader :name, :version, :platform, :materialization
     attr_accessor :source, :remote, :force_ruby_platform, :dependencies, :required_ruby_version, :required_rubygems_version
+
+    #
+    # For backwards compatibility with existing lockfiles, if the most specific
+    # locked platform is not a specific platform like x86_64-linux or
+    # universal-java-11, then we keep the previous behaviour of resolving the
+    # best platform variant at materiliazation time. For previous bundler
+    # versions (before 2.2.0) this was always the case (except when the lockfile
+    # only included non-ruby platforms), but we're also keeping this behaviour
+    # on newer bundlers unless users generate the lockfile from scratch or
+    # explicitly add a more specific platform.
+    #
+    attr_accessor :most_specific_locked_platform
 
     alias_method :runtime_dependencies, :dependencies
 
     def self.from_spec(s)
       lazy_spec = new(s.name, s.version, s.platform, s.source)
-      lazy_spec.dependencies = s.dependencies
+      lazy_spec.dependencies = s.runtime_dependencies
       lazy_spec.required_ruby_version = s.required_ruby_version
       lazy_spec.required_rubygems_version = s.required_rubygems_version
       lazy_spec
@@ -33,6 +45,16 @@ module Bundler
       @source = source
 
       @force_ruby_platform = default_force_ruby_platform
+      @most_specific_locked_platform = nil
+      @materialization = nil
+    end
+
+    def missing?
+      @materialization == self
+    end
+
+    def incomplete?
+      @materialization.nil?
     end
 
     def source_changed?
@@ -108,10 +130,16 @@ module Bundler
       __materialize__(matching_specs)
     end
 
-    def materialize_for_installation(most_specific_locked_platform = nil)
+    def materialized_for_installation
+      @materialization = materialize_for_installation
+
+      self unless incomplete?
+    end
+
+    def materialize_for_installation
       source.local!
 
-      if use_exact_resolved_specifications?(most_specific_locked_platform)
+      if use_exact_resolved_specifications?
         materialize_strictly
       else
         matching_specs = source.specs.search([name, version])
@@ -180,21 +208,11 @@ module Bundler
 
     private
 
-    def use_exact_resolved_specifications?(most_specific_locked_platform)
-      !source.is_a?(Source::Path) && ruby_platform_materializes_to_ruby_platform?(most_specific_locked_platform)
+    def use_exact_resolved_specifications?
+      !source.is_a?(Source::Path) && ruby_platform_materializes_to_ruby_platform?
     end
 
-    #
-    # For backwards compatibility with existing lockfiles, if the most specific
-    # locked platform is not a specific platform like x86_64-linux or
-    # universal-java-11, then we keep the previous behaviour of resolving the
-    # best platform variant at materiliazation time. For previous bundler
-    # versions (before 2.2.0) this was always the case (except when the lockfile
-    # only included non-ruby platforms), but we're also keeping this behaviour
-    # on newer bundlers unless users generate the lockfile from scratch or
-    # explicitly add a more specific platform.
-    #
-    def ruby_platform_materializes_to_ruby_platform?(most_specific_locked_platform)
+    def ruby_platform_materializes_to_ruby_platform?
       generic_platform = generic_local_platform == Gem::Platform::JAVA ? Gem::Platform::JAVA : Gem::Platform::RUBY
 
       (most_specific_locked_platform != generic_platform) || force_ruby_platform || Bundler.settings[:force_ruby_platform]

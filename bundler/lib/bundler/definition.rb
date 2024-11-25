@@ -619,8 +619,8 @@ module Bundler
       end
     end
 
-    def filter_specs(specs, deps)
-      SpecSet.new(specs).for(deps, platforms)
+    def filter_specs(specs, deps, skips: [])
+      SpecSet.new(specs).for(deps, platforms, skips: skips)
     end
 
     def materialize(dependencies)
@@ -961,7 +961,7 @@ module Bundler
     def converge_locked_specs
       converged = converge_specs(@locked_specs)
 
-      resolve = SpecSet.new(converged.reject {|s| @gems_to_unlock.include?(s.name) })
+      resolve = SpecSet.new(converged)
 
       diff = nil
 
@@ -1014,14 +1014,15 @@ module Bundler
           end
         end
 
-        if dep.nil? && requested_dependencies.find {|d| name == d.name }
+        if dep.nil? && requested_dep = requested_dependencies.find {|d| name == d.name }
           @gems_to_unlock << name
-        else
-          converged << s
+          deps << requested_dep
         end
+
+        converged << s
       end
 
-      filter_specs(converged, deps)
+      filter_specs(converged, deps, skips: @gems_to_unlock)
     end
 
     def metadata_dependencies

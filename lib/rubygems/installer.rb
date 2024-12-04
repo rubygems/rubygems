@@ -467,7 +467,14 @@ class Gem::Installer
         file.puts windows_stub_script(bindir, filename)
       end
 
+      powershell_script_name = formatted_program_filename(filename) + ".ps1"
+      powershell_script_path = File.join bindir, File.basename(powershell_script_name)
+      File.open powershell_script_path, "w" do |file|
+        file.puts windows_stub_script_powershell(bindir, filename)
+      end
+
       verbose script_path
+      verbose powershell_script_path
     end
   end
 
@@ -832,6 +839,26 @@ TEXT
       @ECHO OFF
       @"#{ruby_exe}" "%~dpn0" %*
     TEXT
+  end
+
+  ##
+  # the powershell version of `windows_stub_script`.
+
+  def windows_stub_script_powershell(bindir, bin_file_name)
+    ruby_exe = get_ruby_exe_path(bindir, bin_file_name)
+    ruby_exe.sub!("%~dp0", "$Folder/")
+    <<~SCRIPT
+      if ($PSCommandPath -eq $null)
+      { function GetPSCommandPath()
+        { return $MyInvocation.PSCommandPath;
+        } $PSCommandPath = GetPSCommandPath
+      }
+
+      $File = Get-Item $PSCommandPath
+      $Folder = Split-Path $PSCommandPath -Parent
+      $Script = Join-Path -Path $Folder -ChildPath $File.BaseName
+      & "#{ruby_exe}" $Script $args
+    SCRIPT
   end
 
   ##

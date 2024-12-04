@@ -45,7 +45,7 @@ module Gem::SafeMarshal
         idx = 0
         # not idiomatic, but there's a huge number of IMEMOs allocated here, so we avoid the block
         # because this is such a hot path when doing a bundle install with the full index
-        until idx == size
+        while idx < size
           push_stack idx
           array << visit(elements[idx])
           idx += 1
@@ -171,11 +171,11 @@ module Gem::SafeMarshal
       end
 
       def visit_Gem_SafeMarshal_Elements_ObjectLink(o)
-        @objects[o.offset]
+        @objects.fetch(o.offset)
       end
 
       def visit_Gem_SafeMarshal_Elements_SymbolLink(o)
-        @symbols[o.offset]
+        @symbols.fetch(o.offset)
       end
 
       def visit_Gem_SafeMarshal_Elements_UserDefined(o)
@@ -219,16 +219,18 @@ module Gem::SafeMarshal
       end
 
       def visit_Gem_SafeMarshal_Elements_Float(f)
-        case f.string
-        when "inf"
-          ::Float::INFINITY
-        when "-inf"
-          -::Float::INFINITY
-        when "nan"
-          ::Float::NAN
-        else
-          f.string.to_f
-        end
+        register_object(
+          case f.string
+          when "inf"
+            ::Float::INFINITY
+          when "-inf"
+            -::Float::INFINITY
+          when "nan"
+            ::Float::NAN
+          else
+            f.string.to_f
+          end
+        )
       end
 
       def visit_Gem_SafeMarshal_Elements_Bignum(b)

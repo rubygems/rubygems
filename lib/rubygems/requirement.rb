@@ -22,7 +22,7 @@ class Gem::Requirement
 
   SOURCE_SET_REQUIREMENT = Struct.new(:for_lockfile).new "!" # :nodoc:
 
-  quoted = OPS.keys.map {|k| Regexp.quote k }.join "|"
+  quoted = Regexp.union(OPS.keys)
   PATTERN_RAW = "\\s*(#{quoted})?\\s*(#{Gem::Version::VERSION_PATTERN})\\s*".freeze # :nodoc:
 
   ##

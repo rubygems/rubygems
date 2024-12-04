@@ -266,10 +266,10 @@ By default, this RubyGems will install gem as:
           bin_cmd_file = File.join Dir.tmpdir, "#{bin_file}.bat"
 
           File.open bin_cmd_file, "w" do |file|
-            file.puts <<-TEXT
-  @ECHO OFF
-  @"%~dp0#{File.basename(Gem.ruby).chomp('"')}" "%~dpn0" %*
-  TEXT
+            file.puts <<~TEXT
+              @ECHO OFF
+              @"%~dp0#{File.basename(Gem.ruby).chomp('"')}" "%~dpn0" %*
+              TEXT
           end
 
           install bin_cmd_file, "#{dest_file}.bat", mode: prog_mode
@@ -488,6 +488,7 @@ abort "#{deprecation_message}"
       next unless Gem.win_platform?
 
       File.open "#{old_bin_path}.bat", "w" do |fp|
+        fp.puts "@ECHO OFF"
         fp.puts %(@ECHO.#{deprecation_message})
       end
     end

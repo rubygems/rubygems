@@ -233,6 +233,12 @@ class TestGemSafeMarshal < Gem::TestCase
     end
   end
 
+  def test_link_after_float
+    a = []
+    a << a
+    assert_safe_load_as [0.0, a, 1.0, a]
+  end
+
   def test_hash_with_ivar
     h = { runtime: :development }
     h.instance_variable_set :@type, []
@@ -323,6 +329,22 @@ class TestGemSafeMarshal < Gem::TestCase
     assert_equal ["MIT"], unmarshalled_spec.license
   end
 
+  def test_gem_spec_unmarshall_required_ruby_rubygems_version
+    spec = Gem::Specification.new do |s|
+      s.name = "hi"
+      s.version = "1.2.3"
+      s.license = "MIT"
+    end
+
+    assert_safe_load_marshal spec._dump(0), inspect: false, to_s: false
+    assert_safe_load_marshal Marshal.dump(spec), inspect: false, additional_methods: [:to_ruby, :required_ruby_version, :required_rubygems_version]
+
+    unmarshalled_spec = Gem::SafeMarshal.safe_load(Marshal.dump(spec))
+
+    assert_equal Gem::Requirement.new(">= 0"), unmarshalled_spec.required_ruby_version
+    assert_equal Gem::Requirement.new(">= 0"), unmarshalled_spec.required_rubygems_version
+  end
+
   def test_gem_spec_disallowed_symbol
     e = assert_raise(Gem::SafeMarshal::Visitors::ToRuby::UnpermittedSymbolError) do
       spec = Gem::Specification.new do |s|
@@ -368,24 +390,27 @@ class TestGemSafeMarshal < Gem::TestCase
     assert_equal e.message, "Unexpected EOF"
   end
 
-  def assert_safe_load_marshal(dumped, additional_methods: [], permitted_ivars: nil, equality: true, marshal_dump_equality: true)
+  def assert_safe_load_marshal(dumped, additional_methods: [], permitted_ivars: nil, equality: true, marshal_dump_equality: true,
+  inspect: true, to_s: true)
     loaded = Marshal.load(dumped)
     safe_loaded =
-      if permitted_ivars
-        with_const(Gem::SafeMarshal, :PERMITTED_IVARS, permitted_ivars) do
+      assert_nothing_raised("dumped: #{dumped.b.inspect} loaded: #{loaded.inspect}") do
+        if permitted_ivars
+          with_const(Gem::SafeMarshal, :PERMITTED_IVARS, permitted_ivars) do
           Gem::SafeMarshal.safe_load(dumped)
         end
       else
         Gem::SafeMarshal.safe_load(dumped)
       end
+    end
 
     # NaN != NaN, for example
     if equality
       assert_equal loaded, safe_loaded, "should equal what Marshal.load returns"
     end
 
-    assert_equal loaded.to_s, safe_loaded.to_s, "should have equal to_s"
-    assert_equal loaded.inspect, safe_loaded.inspect, "should have equal inspect"
+    assert_equal loaded.to_s, safe_loaded.to_s, "should have equal to_s" if to_s
+    assert_equal loaded.inspect, safe_loaded.inspect, "should have equal inspect" if inspect
     additional_methods.each do |m|
       if m.is_a?(Proc)
         call = m

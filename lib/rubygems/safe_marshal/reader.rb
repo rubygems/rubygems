@@ -20,6 +20,9 @@ module Gem
       class EOFError < Error
       end
 
+      class DataTooShortError < Error
+      end
+
       def initialize(io)
         @io = io
       end
@@ -27,7 +30,7 @@ module Gem
       def read!
         read_header
         root = read_element
-        raise UnconsumedBytesError unless @io.eof?
+        raise UnconsumedBytesError, "expected EOF, got #{@io.read(10).inspect}... after top-level element #{root.class}" unless @io.eof?
         root
       end
 
@@ -39,6 +42,12 @@ module Gem
       def read_header
         v = @io.read(2)
         raise UnsupportedVersionError, "Unsupported marshal version #{v.bytes.map(&:ord).join(".")}, expected #{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}" unless v == MARSHAL_VERSION
+      end
+
+      def read_bytes(n)
+        str = @io.read(n)
+        raise DataTooShortError, "expected #{n} bytes, got #{str.inspect}" unless str.bytesize == n
+        str
       end
 
       def read_byte
@@ -127,7 +136,7 @@ module Gem
             Elements::Symbol.new(byte.chr)
           end
         else
-          name = -@io.read(len)
+          name = read_bytes(len)
           Elements::Symbol.new(name)
         end
       end
@@ -138,7 +147,7 @@ module Gem
       def read_string
         length = read_integer
         return EMPTY_STRING if length == 0
-        str = @io.read(length)
+        str = read_bytes(length)
         Elements::String.new(str)
       end
 
@@ -152,7 +161,7 @@ module Gem
 
       def read_user_defined
         name = read_element
-        binary_string = @io.read(read_integer)
+        binary_string = read_bytes(read_integer)
         Elements::UserDefined.new(name, binary_string)
       end
 
@@ -260,13 +269,13 @@ module Gem
       end
 
       def read_float
-        string = @io.read(read_integer)
+        string = read_bytes(read_integer)
         Elements::Float.new(string)
       end
 
       def read_bignum
         sign = read_byte
-        data = @io.read(read_integer * 2)
+        data = read_bytes(read_integer * 2)
         Elements::Bignum.new(sign, data)
       end
 

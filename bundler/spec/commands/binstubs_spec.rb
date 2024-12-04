@@ -61,6 +61,7 @@ RSpec.describe "bundle binstubs <gem>" do
 
       expect(bundled_app("bin/myrackup")).to exist
       expect(bundled_app("bin/myrackup.cmd")).to exist
+      expect(bundled_app("bin/myrackup.ps1")).to exist
     end
 
     it "displays an error when used without any gem" do
@@ -213,6 +214,7 @@ RSpec.describe "bundle binstubs <gem>" do
         bundle "binstubs myrack --standalone --all-platforms"
         expect(bundled_app("bin/myrackup")).to exist
         expect(bundled_app("bin/myrackup.cmd")).to exist
+        expect(bundled_app("bin/myrackup.ps1")).to exist
       end
     end
 

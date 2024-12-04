@@ -90,6 +90,21 @@ module Bundler
       end
     end
 
+    def powershell_stub_script
+      <<~SCRIPT
+        if ($PSCommandPath -eq $null)
+        { function GetPSCommandPath()
+          { return $MyInvocation.PSCommandPath;
+          } $PSCommandPath = GetPSCommandPath
+        }
+
+        $File = Get-Item $PSCommandPath
+        $Folder = Split-Path $PSCommandPath -Parent
+        $Script = Join-Path -Path $Folder -ChildPath $File.BaseName
+        & "ruby.exe" $Script $args
+      SCRIPT
+    end
+
     def generate_bundler_executable_stubs(spec, options = {})
       if spec.name == "bundler"
         Bundler.ui.warn "Bundler itself does not use binstubs because its version is selected by RubyGems"
@@ -140,6 +155,7 @@ module Bundler
 
         prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
         File.write("#{binstub_path}.cmd", prefix + content, mode: mode)
+        File.write("#{binstub_path}.ps1", powershell_stub_script, mode: mode)
       end
 
       if options[:binstubs_cmd] && exists.any?
@@ -184,6 +200,7 @@ module Bundler
 
         prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
         File.write("#{bin_path}/#{executable}.cmd", prefix + content, mode: mode)
+        File.write("#{bin_path}/#{executable}.ps1", powershell_stub_script, mode: mode)
       end
     end
 

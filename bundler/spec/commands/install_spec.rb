@@ -1787,6 +1787,7 @@ RSpec.describe "bundle install with gem sources" do
 
     expected_executables = [vendored_gems("bin/myrackup").to_s]
     expected_executables << vendored_gems("bin/myrackup.bat").to_s if Gem.win_platform?
+    expected_executables << vendored_gems("bin/myrackup.ps1").to_s if Gem.win_platform?
     expect(Dir.glob(vendored_gems("bin/*"))).to eq(expected_executables)
   end
 

@@ -391,18 +391,18 @@ class TestGemSafeMarshal < Gem::TestCase
   end
 
   def assert_safe_load_marshal(dumped, additional_methods: [], permitted_ivars: nil, equality: true, marshal_dump_equality: true,
-  inspect: true, to_s: true)
+    inspect: true, to_s: true)
     loaded = Marshal.load(dumped)
     safe_loaded =
       assert_nothing_raised("dumped: #{dumped.b.inspect} loaded: #{loaded.inspect}") do
         if permitted_ivars
           with_const(Gem::SafeMarshal, :PERMITTED_IVARS, permitted_ivars) do
+            Gem::SafeMarshal.safe_load(dumped)
+          end
+        else
           Gem::SafeMarshal.safe_load(dumped)
         end
-      else
-        Gem::SafeMarshal.safe_load(dumped)
       end
-    end
 
     # NaN != NaN, for example
     if equality

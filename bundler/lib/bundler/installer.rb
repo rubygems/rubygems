@@ -135,10 +135,11 @@ module Bundler
         content = ERB.new(template, trim_mode: "-").result(binding)
 
         File.write(binstub_path, content, mode: mode, perm: 0o777 & ~File.umask)
-        if Gem.win_platform? || options[:all_platforms]
-          prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
-          File.write("#{binstub_path}.cmd", prefix + content, mode: mode)
-        end
+
+        next unless Gem.win_platform? || options[:all_platforms]
+
+        prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
+        File.write("#{binstub_path}.cmd", prefix + content, mode: mode)
       end
 
       if options[:binstubs_cmd] && exists.any?
@@ -178,10 +179,11 @@ module Bundler
         content = ERB.new(template, trim_mode: "-").result(binding)
 
         File.write("#{bin_path}/#{executable}", content, mode: mode, perm: 0o755)
-        if Gem.win_platform? || options[:all_platforms]
-          prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
-          File.write("#{bin_path}/#{executable}.cmd", prefix + content, mode: mode)
-        end
+
+        next unless Gem.win_platform? || options[:all_platforms]
+
+        prefix = "@ruby -x \"%~f0\" %*\n@exit /b %ERRORLEVEL%\n\n"
+        File.write("#{bin_path}/#{executable}.cmd", prefix + content, mode: mode)
       end
     end
 

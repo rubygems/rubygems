@@ -251,6 +251,30 @@ class TestGemSafeMarshal < Gem::TestCase
     end
   end
 
+  class UserMarshal
+    def marshal_load(*)
+      throw "#{self.class}#marshal_load called"
+    end
+
+    def marshal_dump
+    end
+  end
+
+  def test_time_user_marshal
+    payload =
+      "#{Marshal::MAJOR_VERSION.chr}#{Marshal::MINOR_VERSION.chr}" \
+      "I" + # TYPE_IVAR
+      "u" + # TYPE_USERDEF
+      Marshal.dump(:Time)[2..-1] +
+      Marshal.dump(0xfb - 5)[3..-1] +
+      Marshal.dump(1)[3..-1] +
+      Marshal.dump(:zone)[2..-1] +
+      Marshal.dump(UserMarshal.new)[2..-1] +
+      ("\x00" * (236 - UserMarshal.name.bytesize))
+
+    assert_raise(Gem::SafeMarshal::Visitors::ToRuby::TimeTooLargeError, TypeError) { Gem::SafeMarshal.safe_load(payload) }
+  end
+
   class StringSubclass < ::String
   end
 

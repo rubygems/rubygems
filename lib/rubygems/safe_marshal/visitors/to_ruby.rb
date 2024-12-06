@@ -98,16 +98,20 @@ module Gem::SafeMarshal
             end
 
             s = e.object.binary_string
+            raise TimeTooLargeError.new("binary string too large", stack: formatted_stack) if s.bytesize > 122
+            raise TimeTooLargeError.new("too many internal ivars", stack: formatted_stack) if internal.size > 122
 
             marshal_string = "\x04\bIu:\tTime".b
-            marshal_string.concat(s.size + 5)
+            marshal_string.concat(s.bytesize + 5)
             marshal_string << s
             marshal_string.concat(internal.size + 5)
 
             internal.each do |k, v|
+              k = k.name
               marshal_string.concat(":")
-              marshal_string.concat(k.size + 5)
-              marshal_string.concat(k.to_s)
+              marshal_string.concat(k.bytesize + 5)
+              raise TimeTooLargeError.new("ivar name too large", stack: formatted_stack) if k.bytesize > 122
+              marshal_string.concat(k)
               dumped = Marshal.dump(v)
               dumped[0, 2] = ""
               marshal_string.concat(dumped)
@@ -372,6 +376,12 @@ module Gem::SafeMarshal
       end
 
       class Error < StandardError
+      end
+
+      class TimeTooLargeError < Error
+        def initialize(message, stack:)
+          super "#{message} @ #{stack.join "."}"
+        end
       end
 
       class UnpermittedSymbolError < Error

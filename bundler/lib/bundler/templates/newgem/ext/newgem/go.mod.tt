@@ -1,0 +1,10 @@
+module github.com/<%= config[:go_module_username] %>/<%= config[:underscored_name] %>
+
+<%- if config[:go_version] -%>
+go <%= config[:go_version] %>
+<%- else -%>
+// TODO: Fix following with your Go's version
+// go 1.23.0
+<%- end -%>
+
+require github.com/ruby-go-gem/go-gem-wrapper latest

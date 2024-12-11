@@ -571,7 +571,6 @@ lib/rubygems/vendor/molinillo/lib/molinillo/state.rb
 lib/rubygems/vendor/net-http/.document
 lib/rubygems/vendor/net-http/COPYING
 lib/rubygems/vendor/net-http/lib/net/http.rb
-lib/rubygems/vendor/net-http/lib/net/http/backward.rb
 lib/rubygems/vendor/net-http/lib/net/http/exceptions.rb
 lib/rubygems/vendor/net-http/lib/net/http/generic_request.rb
 lib/rubygems/vendor/net-http/lib/net/http/header.rb

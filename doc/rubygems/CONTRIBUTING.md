@@ -70,13 +70,11 @@ And to run an individual test method named `test_default` within a test file, yo
 
 ### Running bundler tests
 
-Everything needs to be run from the `bundler/` subfolder.
-
 To setup bundler tests:
 
     bin/rake spec:parallel_deps
 
-To run the entire bundler test suite in parallel (it takes a while):
+To run the entire bundler test suite in parallel (it takes a while), run the following from the `bundler/` subfolder:
 
     bin/parallel_rspec
 
@@ -84,7 +82,7 @@ There are some realworld higher level specs run in CI, but not run by `bin/paral
 
     bin/rake spec:realworld
 
-To run an individual test file location for example in `spec/install/gems/standalone_spec.rb` you can use:
+To run an individual test file location for example in `spec/install/gems/standalone_spec.rb` you can use the following from the `bundler/` subfolder:
 
     bin/rspec spec/install/gems/standalone_spec.rb
 

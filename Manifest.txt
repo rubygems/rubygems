@@ -289,7 +289,6 @@ bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_solver.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_union.rb
 bundler/lib/bundler/vendor/securerandom/.document
 bundler/lib/bundler/vendor/securerandom/COPYING
-bundler/lib/bundler/vendor/securerandom/lib/random/formatter.rb
 bundler/lib/bundler/vendor/securerandom/lib/securerandom.rb
 bundler/lib/bundler/vendor/thor/.document
 bundler/lib/bundler/vendor/thor/LICENSE.md
@@ -572,7 +571,6 @@ lib/rubygems/vendor/molinillo/lib/molinillo/state.rb
 lib/rubygems/vendor/net-http/.document
 lib/rubygems/vendor/net-http/COPYING
 lib/rubygems/vendor/net-http/lib/net/http.rb
-lib/rubygems/vendor/net-http/lib/net/http/backward.rb
 lib/rubygems/vendor/net-http/lib/net/http/exceptions.rb
 lib/rubygems/vendor/net-http/lib/net/http/generic_request.rb
 lib/rubygems/vendor/net-http/lib/net/http/header.rb
@@ -602,7 +600,6 @@ lib/rubygems/vendor/resolv/COPYING
 lib/rubygems/vendor/resolv/lib/resolv.rb
 lib/rubygems/vendor/securerandom/.document
 lib/rubygems/vendor/securerandom/COPYING
-lib/rubygems/vendor/securerandom/lib/random/formatter.rb
 lib/rubygems/vendor/securerandom/lib/securerandom.rb
 lib/rubygems/vendor/timeout/.document
 lib/rubygems/vendor/timeout/COPYING

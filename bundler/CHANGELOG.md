@@ -1,3 +1,62 @@
+# 2.6.0 (December 16, 2024)
+
+## Security:
+
+  - Fix gemfury credentials written to logs in verbose mode [#8283](https://github.com/rubygems/rubygems/pull/8283)
+  - Fix private registry credentials being written to logs [#8222](https://github.com/rubygems/rubygems/pull/8222)
+
+## Breaking changes:
+
+  - Drop ruby 3.0 support [#8091](https://github.com/rubygems/rubygems/pull/8091)
+  - Remove client-side MD5 ETag transition from compact index client [#7677](https://github.com/rubygems/rubygems/pull/7677)
+
+## Deprecations:
+
+  - Cancel `bundle console` deprecation [#8218](https://github.com/rubygems/rubygems/pull/8218)
+  - Warn when platform of installed gem differs from platform in the lockfile [#8029](https://github.com/rubygems/rubygems/pull/8029)
+  - Cancel deprecation of Gemfiles without a global source [#8213](https://github.com/rubygems/rubygems/pull/8213)
+
+## Features:
+
+  - Add a `lockfile_checksums` configuration to include checksums in fresh lockfiles [#8219](https://github.com/rubygems/rubygems/pull/8219)
+  - Add `bundle lock --add-checksums` to add checksums to an existing lockfile [#8214](https://github.com/rubygems/rubygems/pull/8214)
+
+## Performance:
+
+  - Enable a couple of performance cops [#8261](https://github.com/rubygems/rubygems/pull/8261)
+  - Remove override of worker jobs for `bundle install --local` [#8248](https://github.com/rubygems/rubygems/pull/8248)
+
+## Enhancements:
+
+  - Support `bundle exec <relative-path-to-script>` when `Kernel.exec` is used under the hood [#8294](https://github.com/rubygems/rubygems/pull/8294)
+  - Improve working with different rubies using the same lockfile [#8251](https://github.com/rubygems/rubygems/pull/8251)
+  - Define a few `inspect` methods to help debugging [#8266](https://github.com/rubygems/rubygems/pull/8266)
+  - Include original error when openssl fails to load [#8232](https://github.com/rubygems/rubygems/pull/8232)
+  - Automatically fix lockfile when it's missing dependencies [#8103](https://github.com/rubygems/rubygems/pull/8103)
+  - Fix some JRuby warnings when using `bundler/setup` with Ruby's -w flag [#8205](https://github.com/rubygems/rubygems/pull/8205)
+  - Add a `--normalize-platforms` flag to `bundle lock` [#7896](https://github.com/rubygems/rubygems/pull/7896)
+  - Add plugin hooks for Bundler.require [#3439](https://github.com/rubygems/rubygems/pull/3439)
+
+## Bug fixes:
+
+  - Fix restarting with locked version when `$PROGRAM_NAME` has been changed [#8320](https://github.com/rubygems/rubygems/pull/8320)
+  - Restore the previous cache format for git sources [#8296](https://github.com/rubygems/rubygems/pull/8296)
+  - Fix installs of subdependencies of unlocked dependencies to be conservative [#8281](https://github.com/rubygems/rubygems/pull/8281)
+  - Fix test task name on generated readme when using test-unit [#8291](https://github.com/rubygems/rubygems/pull/8291)
+  - Fix `bundle exec` executable detection on windows [#8276](https://github.com/rubygems/rubygems/pull/8276)
+  - Fix `bundle remove` sometimes not removing gems [#8278](https://github.com/rubygems/rubygems/pull/8278)
+  - Fix issue with git gems locking incorrect specs sometimes [#8269](https://github.com/rubygems/rubygems/pull/8269)
+
+## Documentation:
+
+  - Normalize command flag documentation and make sure all flags are documented [#8313](https://github.com/rubygems/rubygems/pull/8313)
+  - Add missing man pages for `bundle env` and `bundle licenses` [#8315](https://github.com/rubygems/rubygems/pull/8315)
+  - Add man page for 'bundle issue' command [#8271](https://github.com/rubygems/rubygems/pull/8271)
+  - Add man page for 'bundle fund' command [#8258](https://github.com/rubygems/rubygems/pull/8258)
+  - Move pry-related contents to `debugging.md` [#8263](https://github.com/rubygems/rubygems/pull/8263)
+  - Add debugging instruction on Windows [#8236](https://github.com/rubygems/rubygems/pull/8236)
+  - Unify rubygems and bundler docs directory [#8159](https://github.com/rubygems/rubygems/pull/8159)
+
 # 2.5.23 (November 5, 2024)
 
 ## Enhancements:

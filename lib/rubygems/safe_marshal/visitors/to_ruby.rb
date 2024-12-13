@@ -98,19 +98,20 @@ module Gem::SafeMarshal
             end
 
             s = e.object.binary_string
+            # 122 is the largest integer that can be represented in marshal in a single byte
             raise TimeTooLargeError.new("binary string too large", stack: formatted_stack) if s.bytesize > 122
-            raise TimeTooLargeError.new("too many internal ivars", stack: formatted_stack) if internal.size > 122
 
             marshal_string = "\x04\bIu:\tTime".b
             marshal_string.concat(s.bytesize + 5)
             marshal_string << s
+            # internal is limited to 5, so no overflow is possible
             marshal_string.concat(internal.size + 5)
 
             internal.each do |k, v|
               k = k.name
+              # ivar name can't be too large because only known ivars are in the internal ivars list
               marshal_string.concat(":")
               marshal_string.concat(k.bytesize + 5)
-              raise TimeTooLargeError.new("ivar name too large", stack: formatted_stack) if k.bytesize > 122
               marshal_string.concat(k)
               dumped = Marshal.dump(v)
               dumped[0, 2] = ""

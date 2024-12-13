@@ -23,6 +23,9 @@ module Gem
       class DataTooShortError < Error
       end
 
+      class NegativeLengthError < Error
+      end
+
       def initialize(io)
         @io = io
       end
@@ -45,13 +48,15 @@ module Gem
       end
 
       def read_bytes(n)
+        raise NegativeLengthError if n < 0
         str = @io.read(n)
+        raise EOFError, "expected #{n} bytes, got EOF" if str.nil?
         raise DataTooShortError, "expected #{n} bytes, got #{str.inspect}" unless str.bytesize == n
         str
       end
 
       def read_byte
-        @io.getbyte
+        @io.getbyte || raise(EOFError, "Unexpected EOF")
       end
 
       def read_integer
@@ -76,8 +81,6 @@ module Gem
           read_byte | (read_byte << 8) | -0x10000
         when 0xFF
           read_byte | -0x100
-        when nil
-          raise EOFError, "Unexpected EOF"
         else
           signed = (b ^ 128) - 128
           if b >= 128
@@ -116,8 +119,6 @@ module Gem
         when 47 then read_regexp # ?/
         when 83 then read_struct # ?S
         when 67 then read_user_class # ?C
-        when nil
-          raise EOFError, "Unexpected EOF"
         else
           raise Error, "Unknown marshal type discriminator #{type.chr.inspect} (#{type})"
         end
@@ -171,6 +172,7 @@ module Gem
       def read_array
         length = read_integer
         return EMPTY_ARRAY if length == 0
+        raise NegativeLengthError if length < 0
         elements = Array.new(length) do
           read_element
         end
@@ -179,7 +181,9 @@ module Gem
 
       def read_object_with_ivars
         object = read_element
-        ivars = Array.new(read_integer) do
+        length = read_integer
+        raise NegativeLengthError if length < 0
+        ivars = Array.new(length) do
           [read_element, read_element]
         end
         Elements::WithIvars.new(object, ivars)
@@ -248,7 +252,9 @@ module Gem
       end
 
       def read_hash_with_default_value
-        pairs = Array.new(read_integer) do
+        length = read_integer
+        raise NegativeLengthError if length < 0
+        pairs = Array.new(length) do
           [read_element, read_element]
         end
         default = read_element
@@ -258,7 +264,9 @@ module Gem
       def read_object
         name = read_element
         object = Elements::Object.new(name)
-        ivars = Array.new(read_integer) do
+        length = read_integer
+        raise NegativeLengthError if length < 0
+        ivars = Array.new(length) do
           [read_element, read_element]
         end
         Elements::WithIvars.new(object, ivars)

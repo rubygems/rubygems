@@ -202,7 +202,7 @@ class Gem::Requirement
     @requirements = array[0]
 
     raise TypeError, "wrong @requirements" unless Array === @requirements &&
-      @requirements.all? {|r| r.size == 2 && (r.first.is_a?(String) || r[0] = "=") && r.last.is_a?(Gem::Version) }
+                                                  @requirements.all? {|r| r.size == 2 && (r.first.is_a?(String) || r[0] = "=") && r.last.is_a?(Gem::Version) }
   end
 
   def yaml_initialize(tag, vals) # :nodoc:

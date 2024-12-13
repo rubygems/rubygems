@@ -1,0 +1,13 @@
+diff --git a/lib/rubygems/vendor/resolv/lib/resolv.rb b/lib/rubygems/vendor/resolv/lib/resolv.rb
+index 511f9888c26..4d95e5fc7fc 100644
+--- a/lib/rubygems/vendor/resolv/lib/resolv.rb
++++ b/lib/rubygems/vendor/resolv/lib/resolv.rb
+@@ -3,7 +3,7 @@
+ require 'socket'
+ require_relative '../../timeout/lib/timeout'
+ require 'io/wait'
+-require_relative '../../securerandom/lib/securerandom'
++require_relative '../../../vendored_securerandom'
+ 
+ # Gem::Resolv is a thread-aware DNS resolver library written in Ruby.  Gem::Resolv can
+ # handle multiple DNS requests concurrently without blocking the entire Ruby

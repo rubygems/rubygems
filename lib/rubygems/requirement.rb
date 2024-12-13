@@ -201,7 +201,8 @@ class Gem::Requirement
   def marshal_load(array) # :nodoc:
     @requirements = array[0]
 
-    raise TypeError, "wrong @requirements" unless Array === @requirements && @requirements.all? {|r| r.size == 2 && r.first.is_a?(String) && r.last.is_a?(Gem::Version) }
+    raise TypeError, "wrong @requirements" unless Array === @requirements &&
+      @requirements.all? {|r| r.size == 2 && (r.first.is_a?(String) || r[0] = "=") && r.last.is_a?(Gem::Version) }
   end
 
   def yaml_initialize(tag, vals) # :nodoc:
@@ -238,7 +239,7 @@ class Gem::Requirement
   def satisfied_by?(version)
     raise ArgumentError, "Need a Gem::Version: #{version.inspect}" unless
       Gem::Version === version
-    requirements.all? {|op, rv| OPS[op].call version, rv }
+    requirements.all? {|op, rv| OPS.fetch(op).call version, rv }
   end
 
   alias_method :===, :satisfied_by?

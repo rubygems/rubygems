@@ -1,3 +1,60 @@
+# 3.6.0 / 2024-12-16
+
+## Security:
+
+* Stop storing executable names in ivars. Pull request
+  [#8307](https://github.com/rubygems/rubygems/pull/8307) by segiddins
+
+## Breaking changes:
+
+* Drop ruby 3.0 support. Pull request
+  [#8091](https://github.com/rubygems/rubygems/pull/8091) by segiddins
+
+## Features:
+
+* Add --attestation option to gem push. Pull request
+  [#8239](https://github.com/rubygems/rubygems/pull/8239) by segiddins
+
+## Enhancements:
+
+* Skip unresolved deps warning on `Gem::Specification.reset` on benign
+  cases. Pull request
+  [#8309](https://github.com/rubygems/rubygems/pull/8309) by
+  deivid-rodriguez
+* Let `gem install <name>` suggest `<name>-ruby` and `ruby-<name>` when
+  providing "did you mean" suggestions. Pull request
+  [#8197](https://github.com/rubygems/rubygems/pull/8197) by duckinator
+* Update SPDX license list as of 2024-08-19. Pull request
+  [#8233](https://github.com/rubygems/rubygems/pull/8233) by
+  github-actions[bot]
+* Add `--target-rbconfig` option to `gem install` and `gem update`
+  commands. Pull request
+  [#7628](https://github.com/rubygems/rubygems/pull/7628) by kateinoigakukun
+* Skip nil-value keys to make metadata reproducible. Pull request
+  [#7129](https://github.com/rubygems/rubygems/pull/7129) by nobu
+* Allow disabling installation of compiled extensions into lib through
+  `Gem.configuration.install_extension_in_lib`. Pull request
+  [#6463](https://github.com/rubygems/rubygems/pull/6463) by hsbt
+* Installs bundler 2.6.0 as a default gem.
+
+## Bug fixes:
+
+* Set $0 to exe when running `gem exec` to fix name in CLI output. Pull
+  request [#8267](https://github.com/rubygems/rubygems/pull/8267) by adam12
+* Fix manifest in gem package using incorrect platform sometimes. Pull
+  request [#8202](https://github.com/rubygems/rubygems/pull/8202) by
+  deivid-rodriguez
+
+## Documentation:
+
+* Fix missing single quote in git source example. Pull request
+  [#8303](https://github.com/rubygems/rubygems/pull/8303) by nobu
+* Update the `gem install` demo in REAME to use a gem that just works on
+  Windows. Pull request
+  [#8262](https://github.com/rubygems/rubygems/pull/8262) by soda92
+* Unify rubygems and bundler docs directory. Pull request
+  [#8159](https://github.com/rubygems/rubygems/pull/8159) by hsbt
+
 # 3.5.23 / 2024-11-05
 
 ## Enhancements:

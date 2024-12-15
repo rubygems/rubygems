@@ -86,7 +86,7 @@ The release policy is somewhat similar to the release policy of Ruby itself:
 ## Documentation
 
 RubyGems uses [rdoc](https://github.com/rdoc/rdoc) for documentation. A compiled set of the docs
-can be viewed online at [rubydoc](https://www.rubydoc.info/github/rubygems/rubygems).
+can be viewed online at [docs.ruby-lang.org](https://docs.ruby-lang.org/en/master/Gem.html).
 
 RubyGems also provides a comprehensive set of guides which covers numerous topics such as
 creating a new gem, security practices and other resources at https://guides.rubygems.org

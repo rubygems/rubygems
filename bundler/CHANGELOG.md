@@ -1,3 +1,10 @@
+# 2.6.1 (December 17, 2024)
+
+## Bug fixes:
+
+  - Fix missing `Gem::Uri.redact` on some Ruby 3.1 versions [#8337](https://github.com/rubygems/rubygems/pull/8337)
+  - Fix `bundle lock --add-checksums` when gems are already installed [#8326](https://github.com/rubygems/rubygems/pull/8326)
+
 # 2.6.0 (December 16, 2024)
 
 ## Security:

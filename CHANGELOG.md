@@ -1,3 +1,20 @@
+# 3.6.1 / 2024-12-17
+
+## Enhancements:
+
+* Installs bundler 2.6.1 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem info` tagging some non default gems as default. Pull request
+  [#8321](https://github.com/rubygems/rubygems/pull/8321) by
+  deivid-rodriguez
+
+## Documentation:
+
+* Fix broken links. Pull request
+  [#8327](https://github.com/rubygems/rubygems/pull/8327) by st0012
+
 # 3.6.0 / 2024-12-16
 
 ## Security:

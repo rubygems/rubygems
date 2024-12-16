@@ -89,7 +89,7 @@ vendored_gems = [
   VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/optparse", license_path: "COPYING", extra_dependencies: %w[uri/lib/rubygems/vendor/uri], patch_name: "optparse-v0.4.0.patch"),
   VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/resolv", license_path: "COPYING", extra_dependencies: %w[securerandom/lib/rubygems/vendor/securerandom timeout], patch_name: "resolv-v0.6.0.patch"),
   VendoredGem.new(name: "securerandom", namespace: "SecureRandom", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/securerandom", license_path: "COPYING"),
-  VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/timeout", license_path: "COPYING", patch_name: "timeout-v0.4.1.patch"),
+  VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/timeout", license_path: "COPYING", patch_name: "timeout-v0.4.3.patch"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/tsort", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "uri", namespace: "URI", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/uri", license_path: "COPYING"),
   # Bundler

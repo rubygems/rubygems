@@ -16,8 +16,6 @@ class TestGemCommandsInstallCommand < Gem::TestCase
     @cmd.options[:document] = []
 
     @gemdeps = "tmp_install_gemdeps"
-
-    common_installer_setup
   end
 
   def teardown

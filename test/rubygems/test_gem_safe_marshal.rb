@@ -265,6 +265,31 @@ class TestGemSafeMarshal < Gem::TestCase
     end
   end
 
+  class UserMarshal
+    def marshal_load(*)
+      throw "#{self.class}#marshal_load called"
+    end
+
+    def marshal_dump
+    end
+  end
+
+  def test_time_user_marshal
+    payload = [
+      Marshal::MAJOR_VERSION.chr, Marshal::MINOR_VERSION.chr,
+      "I", # TYPE_IVAR
+      "u", # TYPE_USERDEF
+      Marshal.dump(:Time)[2..-1],
+      Marshal.dump(0xfb - 5)[3..-1],
+      Marshal.dump(1)[3..-1],
+      Marshal.dump(:zone)[2..-1],
+      Marshal.dump(UserMarshal.new)[2..-1],
+      ("\x00" * (236 - UserMarshal.name.bytesize))
+    ].join
+
+    assert_raise(Gem::SafeMarshal::Visitors::ToRuby::TimeTooLargeError, TypeError) { Gem::SafeMarshal.safe_load(payload) }
+  end
+
   class StringSubclass < ::String
   end
 
@@ -390,6 +415,38 @@ class TestGemSafeMarshal < Gem::TestCase
       Gem::SafeMarshal.safe_load("\x04\x08[\x06")
     end
     assert_equal e.message, "Unexpected EOF"
+
+    e = assert_raise(Gem::SafeMarshal::Reader::EOFError) do
+      Gem::SafeMarshal.safe_load("\004\010:\012")
+    end
+    assert_equal e.message, "expected 5 bytes, got EOF"
+
+    e = assert_raise(Gem::SafeMarshal::Reader::EOFError) do
+      Gem::SafeMarshal.safe_load("\x04\x08i\x01")
+    end
+    assert_equal e.message, "Unexpected EOF"
+    e = assert_raise(Gem::SafeMarshal::Reader::EOFError) do
+      Gem::SafeMarshal.safe_load("\x04\x08\"\x06")
+    end
+    assert_equal e.message, "expected 1 bytes, got EOF"
+  end
+
+  def test_negative_length
+    assert_raise(Gem::SafeMarshal::Reader::NegativeLengthError) do
+      Gem::SafeMarshal.safe_load("\004\010}\325")
+    end
+    assert_raise(Gem::SafeMarshal::Reader::NegativeLengthError) do
+      Gem::SafeMarshal.safe_load("\004\010:\325")
+    end
+    assert_raise(Gem::SafeMarshal::Reader::NegativeLengthError) do
+      Gem::SafeMarshal.safe_load("\004\010\"\325")
+    end
+    assert_raise(IndexError) do
+      Gem::SafeMarshal.safe_load("\004\010;\325")
+    end
+    assert_raise(Gem::SafeMarshal::Reader::EOFError) do
+      Gem::SafeMarshal.safe_load("\004\010@\377")
+    end
   end
 
   def assert_safe_load_marshal(dumped, additional_methods: [], permitted_ivars: nil, equality: true, marshal_dump_equality: true,

@@ -211,7 +211,6 @@ bundler/lib/bundler/spec_set.rb
 bundler/lib/bundler/stub_specification.rb
 bundler/lib/bundler/templates/.document
 bundler/lib/bundler/templates/Executable
-bundler/lib/bundler/templates/Executable.bundler
 bundler/lib/bundler/templates/Executable.standalone
 bundler/lib/bundler/templates/Gemfile
 bundler/lib/bundler/templates/newgem/CHANGELOG.md.tt

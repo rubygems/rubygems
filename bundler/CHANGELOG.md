@@ -1,3 +1,9 @@
+# 2.6.2 (December 23, 2024)
+
+## Bug fixes:
+
+  - Restart using `Process.argv0` only if `$PROGRAM_NAME` is not a script [#8343](https://github.com/rubygems/rubygems/pull/8343)
+
 # 2.6.1 (December 17, 2024)
 
 ## Bug fixes:

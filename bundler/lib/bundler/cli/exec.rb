@@ -20,10 +20,12 @@ module Bundler
       SharedHelpers.set_bundle_environment
       if bin_path = Bundler.which(cmd)
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
-          return kernel_load(bin_path, *args)
+          bin_path.delete_suffix!(".bat") if Gem.win_platform?
+          kernel_load(bin_path, *args)
+        else
+          bin_path = "./" + bin_path unless File.absolute_path?(bin_path)
+          kernel_exec(bin_path, *args)
         end
-        bin_path = "./" + bin_path unless File.absolute_path?(bin_path)
-        kernel_exec(bin_path, *args)
       else
         # exec using the given command
         kernel_exec(cmd, *args)
@@ -76,6 +78,19 @@ module Bundler
         "#!/usr/bin/env truffleruby\n",
         "#!#{Gem.ruby}\n",
       ]
+
+      if Gem.win_platform?
+        script_file = file.delete_suffix(".bat")
+        return false unless File.exist?(script_file)
+        if File.zero?(script_file)
+          Bundler.ui.warn "#{script_file} is empty"
+          return false
+        end
+        header = File.open(file, "r") {|f| f.read(32) }
+        ruby_exe = "#{rb_config["RUBY_INSTALL_NAME"]}#{rb_config["EXEEXT"]}"
+        ruby_exe = "ruby.exe" if ruby_exe.empty?
+        return header.include?(ruby_exe)
+      end
 
       if File.zero?(file)
         Bundler.ui.warn "#{file} is empty"

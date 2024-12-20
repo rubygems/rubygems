@@ -1,3 +1,13 @@
+# 2.6.2 (December 23, 2024)
+
+## Bug fixes:
+
+  - Restart using `Process.argv0` only if `$PROGRAM_NAME` is not a script [#8343](https://github.com/rubygems/rubygems/pull/8343)
+
+## Documentation:
+
+  - Fix typo in `bundle lock` man page synopsis (`--add-checkums` → `--add-checksums`) [#8350](https://github.com/rubygems/rubygems/pull/8350)
+
 # 2.6.1 (December 17, 2024)
 
 ## Bug fixes:

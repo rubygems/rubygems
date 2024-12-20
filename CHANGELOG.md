@@ -1,3 +1,20 @@
+# 3.6.2 / 2024-12-23
+
+## Security:
+
+* Fix Gem::SafeMarshal buffer overrun when given lengths larger than fit
+  into a byte. Pull request
+  [#8305](https://github.com/rubygems/rubygems/pull/8305) by segiddins
+* Improve type checking in marshal_load methods. Pull request
+  [#8306](https://github.com/rubygems/rubygems/pull/8306) by segiddins
+
+## Enhancements:
+
+* Skip rdoc hooks and their tests on newer rdoc versions. Pull request
+  [#8340](https://github.com/rubygems/rubygems/pull/8340) by
+  deivid-rodriguez
+* Installs bundler 2.6.2 as a default gem.
+
 # 3.6.1 / 2024-12-17
 
 ## Enhancements:

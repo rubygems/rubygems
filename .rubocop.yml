@@ -239,7 +239,6 @@ Lint/ScriptPermission:
   Enabled: true
   Exclude:
     - "bundler/lib/bundler/templates/Executable"
-    - "bundler/lib/bundler/templates/Executable.*"
 
 Lint/ShadowedArgument:
   Enabled: true

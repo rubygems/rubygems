@@ -464,7 +464,10 @@ class Gem::Specification < Gem::BasicSpecification
   #   spec.platform = Gem::Platform.local
 
   def platform=(platform)
-    @original_platform = platform
+    if @original_platform.nil? ||
+       @original_platform == Gem::Platform::RUBY
+      @original_platform = platform
+    end
 
     case platform
     when Gem::Platform::CURRENT then
@@ -1314,7 +1317,7 @@ class Gem::Specification < Gem::BasicSpecification
     spec.instance_variable_set :@summary,                   array[5]
     spec.instance_variable_set :@required_ruby_version,     array[6]
     spec.instance_variable_set :@required_rubygems_version, array[7]
-    spec.platform =                                         array[8]
+    spec.instance_variable_set :@original_platform,         array[8]
     spec.instance_variable_set :@dependencies,              array[9]
     # offset due to rubyforge_project removal
     spec.instance_variable_set :@email,                     array[11]
@@ -1322,6 +1325,8 @@ class Gem::Specification < Gem::BasicSpecification
     spec.instance_variable_set :@description,               array[13]
     spec.instance_variable_set :@homepage,                  array[14]
     spec.instance_variable_set :@has_rdoc,                  array[15]
+    spec.instance_variable_set :@new_platform,              array[16]
+    spec.instance_variable_set :@platform,                  array[16].to_s
     spec.instance_variable_set :@licenses,                  [array[17]]
     spec.instance_variable_set :@metadata,                  array[18]
     spec.instance_variable_set :@loaded,                    false
@@ -1817,16 +1822,15 @@ class Gem::Specification < Gem::BasicSpecification
   def encode_with(coder) # :nodoc:
     coder.add "name", @name
     coder.add "version", @version
-    platform = case @new_platform
+    platform = case @original_platform
                when nil, "" then
                  "ruby"
                when String then
-                 @new_platform
+                 @original_platform
                else
-                 @new_platform.to_s
+                 @original_platform.to_s
     end
     coder.add "platform", platform
-    coder.add "original_platform", @original_platform.to_s if platform != @original_platform.to_s
 
     attributes = @@attributes.map(&:to_s) - %w[name version platform]
     attributes.each do |name|
@@ -2631,12 +2635,13 @@ class Gem::Specification < Gem::BasicSpecification
       when "date"
         # Force Date to go through the extra coerce logic in date=
         self.date = val
-      when "platform"
-        self.platform = val
       else
         instance_variable_set "@#{ivar}", val
       end
     end
+
+    @original_platform = @platform # for backwards compatibility
+    self.platform = Gem::Platform.new @platform
   end
 
   ##

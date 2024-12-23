@@ -63,6 +63,24 @@ jobs:
           path: ./bundler/spec/support/artifice/used_cassettes.txt
     timeout-minutes: 20
 
+  tapioca:
+    name: Tapioca
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@401c19e14f474b54450cd3905bb8b86e2c8509cf # v1.204.0
+        with:
+          ruby-version: 3.4.0-rc1
+          bundler: none
+      - name: Prepare tapioca
+        run: ruby ../../../support/bundle.rb install
+        working-directory: bundler/spec/realworld/fixtures/tapioca
+      - name: Run tapioca
+        run: ruby ../../../support/bundle.rb exec tapioca init
+        working-directory: bundler/spec/realworld/fixtures/tapioca
+    timeout-minutes: 20
+
   system_rubygems_bundler:
     name: Realworld Bundler ${{ matrix.bundler.name }} against system Rubygems (${{ matrix.ruby.name }})
     runs-on: ubuntu-24.04

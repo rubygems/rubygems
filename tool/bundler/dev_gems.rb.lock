@@ -6,26 +6,24 @@ GEM
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
-    mini_portile2 (2.8.5)
+    mini_portile2 (2.8.8)
     mustache (1.1.1)
-    nokogiri (1.16.3)
+    nokogiri (1.18.0)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.16.3-aarch64-linux)
+    nokogiri (1.18.0-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.16.3-arm-linux)
+    nokogiri (1.18.0-arm-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.16.3-arm64-darwin)
+    nokogiri (1.18.0-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.3-java)
+    nokogiri (1.18.0-java)
       racc (~> 1.4)
-    nokogiri (1.16.3-x64-mingw-ucrt)
+    nokogiri (1.18.0-x64-mingw-ucrt)
       racc (~> 1.4)
-    nokogiri (1.16.3-x86-linux)
+    nokogiri (1.18.0-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.3-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.3-x86_64-linux)
+    nokogiri (1.18.0-x86_64-linux-gnu)
       racc (~> 1.4)
     nronn (0.11.1)
       kramdown (~> 2.1)
@@ -36,8 +34,8 @@ GEM
     parallel_tests (4.7.2)
       parallel
     power_assert (2.0.3)
-    racc (1.7.3)
-    racc (1.7.3-java)
+    racc (1.8.1)
+    racc (1.8.1-java)
     rake (13.2.1)
     rb_sys (0.9.91)
     rexml (3.2.6)
@@ -91,23 +89,22 @@ CHECKSUMS
   diff-lcs (1.5.1) sha256=273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe
   kramdown (2.4.0) sha256=b62e5bcbd6ea20c7a6730ebbb2a107237856e14f29cebf5b10c876cc1a2481c5
   kramdown-parser-gfm (1.1.0) sha256=fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729
-  mini_portile2 (2.8.5) sha256=7a37db8ae758086c3c3ac3a59c036704d331e965d5e106635e4a42d6e66089ce
+  mini_portile2 (2.8.8) sha256=8e47136cdac04ce81750bb6c09733b37895bf06962554e4b4056d78168d70a75
   mustache (1.1.1) sha256=90891fdd50b53919ca334c8c1031eada1215e78d226d5795e523d6123a2717d0
-  nokogiri (1.16.3) sha256=498aa253ccd5b89a0fa5c4c82b346d22176fc865f4a12ef8da642064d1d3e248
-  nokogiri (1.16.3-aarch64-linux) sha256=3d806263a0548e5163ff256655d78a87998fa83a5ae256b83c14a1a97731e824
-  nokogiri (1.16.3-arm-linux) sha256=cfb923c02bde065005e2521f0a6883c63cf305cb899a9dd4c74897731bb2af1d
-  nokogiri (1.16.3-arm64-darwin) sha256=5d3268558c002fa493e33076798cfda1df8effbd5363060dc41595cfebb1cf90
-  nokogiri (1.16.3-java) sha256=6bf0918233959c7d5e703061ada0f436544612397475a866aa314071f02bfabb
-  nokogiri (1.16.3-x64-mingw-ucrt) sha256=656f163dd287671c3a28157a2e853ee1a36afeb3f4185a78af863f3980efc58d
-  nokogiri (1.16.3-x86-linux) sha256=08d8a369940fa2309379cd8af1e7b3cc702b0115d3ddd197cfa7b33daedfd541
-  nokogiri (1.16.3-x86_64-darwin) sha256=bc22786f4db4c32a5587e3b77a106408148d3bb1602dd0b52c0f5c968c42d17d
-  nokogiri (1.16.3-x86_64-linux) sha256=47a3330e41b49a100225b6fab490b2dc43410931e01e791886e0c2998412e8cb
+  nokogiri (1.18.0) sha256=119dea343386d88849f44dd8c36fb1cc36f4a4fe42cf4d60f26f4bac18b3a709
+  nokogiri (1.18.0-aarch64-linux-gnu) sha256=a240b4183b7a12d82cdd46d7a77255d785e01198ffb0c52c8aee1197daf0b465
+  nokogiri (1.18.0-arm-linux-gnu) sha256=80e9534e153b141242864c7274605fcb8312860a16460bae796fa4490acca4e8
+  nokogiri (1.18.0-arm64-darwin) sha256=e6e75760aa66adf5ea0dccfba2516c111526ba50f6475426975532d1a134173c
+  nokogiri (1.18.0-java) sha256=432ecef3824ff23d38c897b4d08cddb5d10cf53838add84834349422038e4812
+  nokogiri (1.18.0-x64-mingw-ucrt) sha256=ab1d35ce91ee9af7fbe45e97a6eca0e6b103b724a7b4712e6eeb7968ca9809eb
+  nokogiri (1.18.0-x86_64-darwin) sha256=4c27a29a3509f38caeec582feef381b07d1e80f56a622b3548be07271dc903b9
+  nokogiri (1.18.0-x86_64-linux-gnu) sha256=1232a310b8e186d402a5f3d0c06affafaf25b1c30b01aa797559ac7bd5851c92
   nronn (0.11.1) sha256=60305c7a42dcaf6bdd33210993a7e38087520717561da101bea1df7197546369
   parallel (1.24.0) sha256=5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397
   parallel_tests (4.7.2) sha256=d6b3a46d3c36f5167716bba38e571d813ae7c754e9b096b2daa41095e70a2612
   power_assert (2.0.3) sha256=cd5e13c267370427c9804ce6a57925d6030613e341cb48e02eec1f3c772d4cf8
-  racc (1.7.3) sha256=b785ab8a30ec43bce073c51dbbe791fd27000f68d1c996c95da98bf685316905
-  racc (1.7.3-java) sha256=b2ad737e788cfa083263ce7c9290644bb0f2c691908249eb4f6eb48ed2815dbf
+  racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
+  racc (1.8.1-java) sha256=54f2e6d1e1b91c154013277d986f52a90e5ececbe91465d29172e49342732b98
   rake (13.2.1) sha256=46cb38dae65d7d74b6020a4ac9d48afed8eb8149c040eccf0523bec91907059d
   rb_sys (0.9.91) sha256=8c6ad8f97fd86f80530e942f1a904c229a510ca372c6b92dc05270a84e51ecda
   rexml (3.2.6) sha256=e0669a2d4e9f109951cb1fde723d8acd285425d81594a2ea929304af50282816

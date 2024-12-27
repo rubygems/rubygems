@@ -38,10 +38,10 @@ jobs:
           - ruby: { name: truffleruby, value: truffleruby-24.1.1 }
             os: { name: Ubuntu, value: ubuntu-24.04 }
 
-          - ruby: { name: "3.4", value: 3.4.0-rc1 }
+          - ruby: { name: "3.4", value: 3.4.1 }
             os: { name: Ubuntu, value: ubuntu-24.04 }
 
-          - ruby: { name: "3.4", value: 3.4.0-rc1 }
+          - ruby: { name: "3.4", value: 3.4.1 }
             os: { name: macOS, value: macos-14 }
 
     steps:

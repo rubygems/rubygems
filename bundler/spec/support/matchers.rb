@@ -116,8 +116,9 @@ module Spec
         source = opts.delete(:source)
         groups = Array(opts.delete(:groups)).map(&:inspect).join(", ")
         opts[:raise_on_error] = false
-        @errors = names.map do |full_name|
+        @errors = names.filter_map do |full_name|
           name, version, platform = full_name.split(/\s+/)
+          platform ||= "ruby"
           require_path = name.tr("-", "/")
           version_const = name == "bundler" ? "Bundler::VERSION" : Spec::Builders.constantize(name)
           source_const = "#{Spec::Builders.constantize(name)}_SOURCE"
@@ -127,6 +128,7 @@ module Spec
 
             require '#{require_path}'
             actual_version, actual_platform = #{version_const}.split(/\s+/, 2)
+            actual_platform ||= "ruby"
             unless Gem::Version.new(actual_version) == Gem::Version.new('#{version}')
               puts actual_version
               exit 64
@@ -150,14 +152,14 @@ module Spec
           end
           if exitstatus == 65
             actual_platform = out.split("\n").last
-            next "#{name} was expected to be of platform #{platform || "ruby"} but was #{actual_platform || "ruby"}"
+            next "#{name} was expected to be of platform #{platform} but was #{actual_platform}"
           end
           if exitstatus == 66
             actual_source = out.split("\n").last
             next "Expected #{name} (#{version}) to be installed from `#{source}`, was actually from `#{actual_source}`"
           end
           next "Command to check for inclusion of gem #{full_name} failed"
-        end.compact
+        end
 
         @errors.empty?
       end
@@ -166,7 +168,7 @@ module Spec
         opts = names.last.is_a?(Hash) ? names.pop : {}
         groups = Array(opts.delete(:groups)).map(&:inspect).join(", ")
         opts[:raise_on_error] = false
-        @errors = names.map do |name|
+        @errors = names.filter_map do |name|
           name, version = name.split(/\s+/, 2)
           ruby <<-R, opts
             begin
@@ -192,7 +194,7 @@ module Spec
           next "command to check version of #{name} installed failed" unless exitstatus == 64
           next "expected #{name} to not be installed, but it was" if version.nil?
           next "expected #{name} (#{version}) not to be installed, but it was"
-        end.compact
+        end
 
         @errors.empty?
       end

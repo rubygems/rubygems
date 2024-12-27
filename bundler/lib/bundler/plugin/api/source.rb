@@ -131,7 +131,7 @@ module Bundler
           Bundler::Index.build do |index|
             files.each do |file|
               next unless spec = Bundler.load_gemspec(file)
-              Bundler.rubygems.set_installed_by_version(spec)
+              spec.installed_by_version = Gem::VERSION
 
               spec.source = self
               Bundler.rubygems.validate(spec)
@@ -196,6 +196,7 @@ module Bundler
 
           FileUtils.rm_rf(new_cache_path)
           FileUtils.cp_r(install_path, new_cache_path)
+          FileUtils.rm_rf(app_cache_path.join(".git"))
           FileUtils.touch(app_cache_path.join(".bundlecache"))
         end
 

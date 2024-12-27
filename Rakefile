@@ -117,14 +117,14 @@ RDoc::Task.new rdoc: "docs", clobber_rdoc: "clobber_docs" do |doc|
   doc.title  = "RubyGems #{v} API Documentation"
 
   rdoc_files = Rake::FileList.new %w[lib bundler/lib]
-  rdoc_files.add %w[CHANGELOG.md LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.md
-                    MAINTAINERS.txt Manifest.txt POLICIES.md README.md UPGRADING.md bundler/CHANGELOG.md
-                    bundler/doc/contributing/README.md bundler/LICENSE.md bundler/README.md
+  rdoc_files.add %w[CHANGELOG.md LICENSE.txt MIT.txt CODE_OF_CONDUCT.md doc/rubygems/CONTRIBUTING.md
+                    doc/MAINTAINERS.txt Manifest.txt doc/rubygems/POLICIES.md README.md doc/rubygems/UPGRADING.md bundler/CHANGELOG.md
+                    doc/bundler/contributing/README.md bundler/LICENSE.md bundler/README.md
                     hide_lib_for_update/note.txt].map(&:freeze)
 
   doc.rdoc_files = rdoc_files
 
-  doc.rdoc_dir = "doc"
+  doc.rdoc_dir = "rdoc"
 end
 
 namespace :vendor do
@@ -252,7 +252,8 @@ file "pkg/rubygems-#{v}.tgz" => "pkg/rubygems-#{v}" do
     tar_version = `tar --version`
     if tar_version.include?("bsdtar")
       # bsdtar, as used by at least FreeBSD and macOS, uses `--uname` and `--gname`.
-      sh "tar -czf rubygems-#{v}.tgz --uname=rubygems:0 --gname=rubygems:0 rubygems-#{v}"
+      # COPYFILE_DISABLE prevents storing macOS extended attribute data in `._*` files inside the archive
+      sh({ "COPYFILE_DISABLE" => "1" }, "tar -czf rubygems-#{v}.tgz --uname=rubygems:0 --gname=rubygems:0 rubygems-#{v}")
     else # If a third variant is added, change this line to: elsif tar_version =~ /GNU tar/
       # GNU Tar, as used by many Linux distros, uses `--owner` and `--group`.
       sh "tar -czf rubygems-#{v}.tgz --owner=rubygems:0 --group=rubygems:0 rubygems-#{v}"
@@ -449,7 +450,7 @@ module Rubygems
   class ProjectFiles
     def self.all
       files = []
-      exclude = %r{\A(?:\.|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|tool/|Rakefile|bin|test)}
+      exclude = %r{\A(?:\.|bundler/(?!lib|exe|[^/]+\.md|bundler.gemspec)|tool/|Rakefile|bin|test|doc)}
       tracked_files = `git ls-files`.split("\n")
 
       tracked_files.each do |path|
@@ -457,6 +458,15 @@ module Rubygems
         next if path&.match?(exclude)
         files << path
       end
+
+      # Restore important documents
+      %w[
+        doc/MAINTAINERS.txt
+        doc/bundler/UPGRADING.md
+        doc/rubygems/CONTRIBUTING.md
+        doc/rubygems/POLICIES.md
+        doc/rubygems/UPGRADING.md
+      ].each {|f| files << f }
 
       files.sort
     end
@@ -532,12 +542,16 @@ end
 namespace :spec do
   desc "Ensure spec dependencies are installed"
   task deps: "dev:deps" do
-    Spec::Rubygems.install_test_deps
+    chdir("bundler") do
+      Spec::Rubygems.install_test_deps
+    end
   end
 
   desc "Ensure spec dependencies for running in parallel are installed"
   task parallel_deps: "dev:deps" do
-    Spec::Rubygems.install_parallel_test_deps
+    chdir("bundler") do
+      Spec::Rubygems.install_parallel_test_deps
+    end
   end
 
   desc "Run all specs"

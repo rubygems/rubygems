@@ -16,7 +16,7 @@ module Bundler
           hash[name] = Package.new(name, platforms, **options)
         end
 
-        @requirements = dependencies.map do |dep|
+        @requirements = dependencies.filter_map do |dep|
           dep_platforms = dep.gem_platforms(platforms)
 
           # Dependencies scoped to external platforms are ignored
@@ -27,7 +27,7 @@ module Bundler
           @packages[name] = Package.new(name, dep_platforms, **options.merge(dependency: dep))
 
           dep
-        end.compact
+        end
       end
 
       def [](name)
@@ -68,6 +68,12 @@ module Bundler
         end
       end
 
+      def include_remote_specs(names)
+        names.each do |name|
+          get_package(name).consider_remote_versions!
+        end
+      end
+
       private
 
       def indirect_pins(names)
@@ -97,6 +103,10 @@ module Bundler
       def build_base_requirements
         base_requirements = {}
         @base.each do |ls|
+          if ls.source_changed? && ls.source.specs.search(ls.name).empty?
+            raise GemNotFound, "Could not find gem '#{ls.name}' in #{ls.source}"
+          end
+
           req = Gem::Requirement.new(ls.version)
           base_requirements[ls.name] = req
         end

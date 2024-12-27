@@ -140,11 +140,11 @@ module Bundler::URI
 
         if !scheme
           raise InvalidURIError,
-            "bad Bundler::URI(absolute but no scheme): #{uri}"
+            "bad Bundler::URI (absolute but no scheme): #{uri}"
         end
         if !opaque && (!path && (!host && !registry))
           raise InvalidURIError,
-            "bad Bundler::URI(absolute but no path): #{uri}"
+            "bad Bundler::URI (absolute but no path): #{uri}"
         end
 
       when @regexp[:REL_URI]
@@ -173,7 +173,7 @@ module Bundler::URI
         # server        = [ [ userinfo "@" ] hostport ]
 
       else
-        raise InvalidURIError, "bad Bundler::URI(is not Bundler::URI?): #{uri}"
+        raise InvalidURIError, "bad Bundler::URI (is not Bundler::URI?): #{uri}"
       end
 
       path = '' if !path && !opaque # (see RFC2396 Section 5.2)
@@ -536,4 +536,11 @@ module Bundler::URI
     end
 
   end # class Parser
+
+  # Backward compatibility for Bundler::URI::REGEXP::PATTERN::*
+  RFC2396_Parser.new.pattern.each_pair do |sym, str|
+    unless RFC2396_REGEXP::PATTERN.const_defined?(sym, false)
+      RFC2396_REGEXP::PATTERN.const_set(sym, str)
+    end
+  end
 end # module Bundler::URI

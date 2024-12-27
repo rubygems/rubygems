@@ -11,7 +11,7 @@ index b3ebf6ecb..546409d03 100644
  require_relative '../../../../connection_pool/lib/connection_pool'
  
 -begin
--  require 'rubygems/vendor/net-http/lib/net/http/pipeline'
+-  require_relative '../../../../../../../../lib/rubygems/vendor/net-http/lib/net/http/pipeline'
 -rescue LoadError
 -end
 -

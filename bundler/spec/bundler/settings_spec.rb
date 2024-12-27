@@ -6,12 +6,18 @@ RSpec.describe Bundler::Settings do
   subject(:settings) { described_class.new(bundled_app) }
 
   describe "#set_local" do
-    context "when the local config file is not found" do
+    context "root is nil" do
       subject(:settings) { described_class.new(nil) }
 
-      it "raises a GemfileNotFound error with explanation" do
-        expect { subject.set_local("foo", "bar") }.
-          to raise_error(Bundler::GemfileNotFound, "Could not locate Gemfile")
+      before do
+        allow(Pathname).to receive(:new).and_call_original
+        allow(Pathname).to receive(:new).with(".bundle").and_return home(".bundle")
+      end
+
+      it "works" do
+        subject.set_local("foo", "bar")
+
+        expect(subject["foo"]).to eq("bar")
       end
     end
   end
@@ -115,12 +121,13 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
       end
     end
 
-    context "when it's not possible to write to the file" do
+    context "when it's not possible to create the settings directory" do
       it "raises an PermissionError with explanation" do
-        expect(::Bundler::FileUtils).to receive(:mkdir_p).with(settings.send(:local_config_file).dirname).
-          and_raise(Errno::EACCES)
+        settings_dir = settings.send(:local_config_file).dirname
+        expect(::Bundler::FileUtils).to receive(:mkdir_p).with(settings_dir).
+          and_raise(Errno::EACCES.new(settings_dir.to_s))
         expect { settings.set_local :frozen, "1" }.
-          to raise_error(Bundler::PermissionError, /config/)
+          to raise_error(Bundler::PermissionError, /#{settings_dir}/)
       end
     end
   end
@@ -158,12 +165,13 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
   end
 
   describe "#set_global" do
-    context "when it's not possible to write to the file" do
+    context "when it's not possible to write to create the settings directory" do
       it "raises an PermissionError with explanation" do
-        expect(::Bundler::FileUtils).to receive(:mkdir_p).with(settings.send(:global_config_file).dirname).
-          and_raise(Errno::EACCES)
+        settings_dir = settings.send(:global_config_file).dirname
+        expect(::Bundler::FileUtils).to receive(:mkdir_p).with(settings_dir).
+          and_raise(Errno::EACCES.new(settings_dir.to_s))
         expect { settings.set_global(:frozen, "1") }.
-          to raise_error(Bundler::PermissionError, %r{\.bundle/config})
+          to raise_error(Bundler::PermissionError, /#{settings_dir}/)
       end
     end
   end
@@ -310,8 +318,8 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
     let(:settings) { described_class.new(bundled_app(".bundle")) }
 
     it "converts older keys without double underscore" do
-      config("BUNDLE_MY__PERSONAL.RACK" => "~/Work/git/rack")
-      expect(settings["my.personal.rack"]).to eq("~/Work/git/rack")
+      config("BUNDLE_MY__PERSONAL.MYRACK" => "~/Work/git/myrack")
+      expect(settings["my.personal.myrack"]).to eq("~/Work/git/myrack")
     end
 
     it "converts older keys without trailing slashes and double underscore" do

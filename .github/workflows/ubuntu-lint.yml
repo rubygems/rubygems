@@ -16,16 +16,22 @@ permissions: # added using https://github.com/step-security/secure-workflows
 
 jobs:
   ubuntu_lint:
-    name: Lint
-    runs-on: ubuntu-22.04
+    name: Lint on ${{ matrix.ruby.name }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - { name: ruby, value: 3.4.1 }
+          - { name: truffleruby, value: truffleruby-24.1.1 }
     env:
       RUBYOPT: -Ilib
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@cacc9f1c0b3f4eb8a16a6bb0ed10897b43b9de49 # v1.176.0
+        uses: ruby/setup-ruby@bfefad842bb982ff05b233bcbc1571d97a87e69f # v1.206.0
         with:
-          ruby-version: 3.3.1
+          ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Install Dependencies
         run: bin/rake setup

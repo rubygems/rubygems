@@ -16,7 +16,6 @@ require "rspec/mocks"
 require "rspec/support/differ"
 
 require_relative "support/builders"
-require_relative "support/build_metadata"
 require_relative "support/checksums"
 require_relative "support/filters"
 require_relative "support/helpers"
@@ -83,15 +82,13 @@ RSpec.configure do |config|
     ENV["RUBYGEMS_GEMDEPS"] = nil
     ENV["XDG_CONFIG_HOME"] = nil
     ENV["GEMRC"] = nil
+    ENV["EDITOR"] = nil
 
     # Don't wrap output in tests
     ENV["THOR_COLUMNS"] = "10000"
 
-    extend(Spec::Helpers)
-    system_gems :bundler, path: pristine_system_gem_path
-  end
+    extend(Spec::Builders)
 
-  config.before :all do
     check_test_gems!
 
     build_repo1

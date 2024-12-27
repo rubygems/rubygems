@@ -1,12 +1,21 @@
 # frozen_string_literal: true
 
-require_relative "command_execution"
 require_relative "the_bundle"
 require_relative "path"
+require_relative "options"
+require_relative "subprocess"
 
 module Spec
   module Helpers
     include Spec::Path
+    include Spec::Options
+    include Spec::Subprocess
+
+    def self.extended(mod)
+      mod.extend Spec::Path
+      mod.extend Spec::Options
+      mod.extend Spec::Subprocess
+    end
 
     def reset!
       Dir.glob("#{tmp}/{gems/*,*}", File::FNM_DOTMATCH).each do |dir|
@@ -27,22 +36,6 @@ module Spec
       TheBundle.new(*args)
     end
 
-    def command_executions
-      @command_executions ||= []
-    end
-
-    def last_command
-      command_executions.last || raise("There is no last command")
-    end
-
-    def out
-      last_command.stdout
-    end
-
-    def err
-      last_command.stderr
-    end
-
     MAJOR_DEPRECATION = /^\[DEPRECATED\]\s*/
 
     def err_without_deprecations
@@ -51,10 +44,6 @@ module Spec
 
     def deprecations
       err.split("\n").select {|l| l =~ MAJOR_DEPRECATION }.join("\n").split(MAJOR_DEPRECATION)
-    end
-
-    def exitstatus
-      last_command.exitstatus
     end
 
     def run(cmd, *args)
@@ -82,31 +71,28 @@ module Spec
       bundle_bin ||= installed_bindir.join("bundle")
 
       env = options.delete(:env) || {}
+      preserve_ruby_flags = options.delete(:preserve_ruby_flags)
 
       requires = options.delete(:requires) || []
-      realworld = RSpec.current_example.metadata[:realworld]
 
-      artifice = options.delete(:artifice) do
-        if realworld
-          "vcr"
-        else
-          "fail"
-        end
-      end
-      if artifice
-        requires << "#{Path.spec_dir}/support/artifice/#{artifice}.rb"
-      end
+      dir = options.delete(:dir) || bundled_app
+      custom_load_path = options.delete(:load_path)
 
       load_path = []
       load_path << spec_dir
+      load_path << custom_load_path if custom_load_path
 
-      dir = options.delete(:dir) || bundled_app
+      build_ruby_options = { load_path: load_path, requires: requires, env: env }
+      build_ruby_options.merge!(artifice: options.delete(:artifice)) if options.key?(:artifice)
+
+      match_source(cmd)
+
+      env, ruby_cmd = build_ruby_cmd(build_ruby_options)
+
       raise_on_error = options.delete(:raise_on_error)
 
       args = options.map do |k, v|
         case v
-        when nil
-          next
         when true
           " --#{k}"
         when false
@@ -116,19 +102,30 @@ module Spec
         end
       end.join
 
-      ruby_cmd = build_ruby_cmd({ load_path: load_path, requires: requires, env: env })
       cmd = "#{ruby_cmd} #{bundle_bin} #{cmd}#{args}"
+      env["BUNDLER_SPEC_ORIGINAL_CMD"] = "#{ruby_cmd} #{bundle_bin}" if preserve_ruby_flags
       sys_exec(cmd, { env: env, dir: dir, raise_on_error: raise_on_error }, &block)
     end
 
+    def main_source(dir)
+      gemfile = File.expand_path("Gemfile", dir)
+      return unless File.exist?(gemfile)
+
+      match = File.readlines(gemfile).first.match(/source ["'](?<source>[^"']+)["']/)
+      return unless match
+
+      match[:source]
+    end
+
     def bundler(cmd, options = {})
-      options[:bundle_bin] = system_gem_path.join("bin/bundler")
+      options[:bundle_bin] = system_gem_path("bin/bundler")
       bundle(cmd, options)
     end
 
     def ruby(ruby, options = {})
-      ruby_cmd = build_ruby_cmd
+      env, ruby_cmd = build_ruby_cmd({ artifice: nil }.merge(options))
       escaped_ruby = ruby.shellescape
+      options[:env] = env if env
       sys_exec(%(#{ruby_cmd} -w -e #{escaped_ruby}), options)
     end
 
@@ -146,17 +143,40 @@ module Spec
       libs = options.delete(:load_path)
       lib_option = libs ? "-I#{libs.join(File::PATH_SEPARATOR)}" : []
 
+      env = options.delete(:env) || {}
+      current_example = RSpec.current_example
+
+      main_source = @gemfile_source if defined?(@gemfile_source)
+      compact_index_main_source = main_source&.start_with?("https://gem.repo", "https://gems.security")
+
       requires = options.delete(:requires) || []
+      artifice = options.delete(:artifice) do
+        if current_example && current_example.metadata[:realworld]
+          "vcr"
+        elsif compact_index_main_source
+          env["BUNDLER_SPEC_GEM_REPO"] ||=
+            case main_source
+            when "https://gem.repo1" then gem_repo1.to_s
+            when "https://gem.repo2" then gem_repo2.to_s
+            when "https://gem.repo3" then gem_repo3.to_s
+            when "https://gem.repo4" then gem_repo4.to_s
+            when "https://gems.security" then security_repo.to_s
+            end
 
-      hax_path = "#{Path.spec_dir}/support/hax.rb"
+          "compact_index"
+        else
+          "fail"
+        end
+      end
+      if artifice
+        requires << "#{Path.spec_dir}/support/artifice/#{artifice}.rb"
+      end
 
-      # For specs that need to ignore the default Bundler gem, load hax before
-      # anything else since other stuff may actually load bundler and not skip
-      # the default version
-      options[:env]&.include?("BUNDLER_IGNORE_DEFAULT_GEM") ? requires.prepend(hax_path) : requires.append(hax_path)
+      requires << "#{Path.spec_dir}/support/hax.rb"
+
       require_option = requires.map {|r| "-r#{r}" }
 
-      [Gem.ruby, *lib_option, *require_option].compact.join(" ")
+      [env, [Gem.ruby, *lib_option, *require_option].compact.join(" ")]
     end
 
     def gembin(cmd, options = {})
@@ -168,70 +188,46 @@ module Spec
       env = options[:env] || {}
       env["RUBYOPT"] = opt_add(opt_add("-r#{spec_dir}/support/hax.rb", env["RUBYOPT"]), ENV["RUBYOPT"])
       options[:env] = env
-      sys_exec("#{Path.gem_bin} #{command}", options)
+
+      # Sometimes `gem install` commands hang at dns resolution, which has a
+      # default timeout of 60 seconds. When that happens, the timeout for a
+      # command is expired too. So give `gem install` commands a bit more time.
+      options[:timeout] = 120
+
+      output = sys_exec("#{Path.gem_bin} #{command}", options)
+      stderr = last_command.stderr
+      raise stderr if stderr.include?("WARNING") && !allowed_rubygems_warning?(stderr)
+      output
     end
 
     def rake
       "#{Gem.ruby} -S #{ENV["GEM_PATH"]}/bin/rake"
     end
 
-    def git(cmd, path, options = {})
-      sys_exec("git #{cmd}", options.merge(dir: path))
-    end
-
-    def sys_exec(cmd, options = {})
+    def sys_exec(cmd, options = {}, &block)
       env = options[:env] || {}
       env["RUBYOPT"] = opt_add(opt_add("-r#{spec_dir}/support/switch_rubygems.rb", env["RUBYOPT"]), ENV["RUBYOPT"])
-      dir = options[:dir] || bundled_app
-      command_execution = CommandExecution.new(cmd.to_s, dir)
+      options[:env] = env
+      options[:dir] ||= bundled_app
 
-      require "open3"
-      require "shellwords"
-      Open3.popen3(env, *cmd.shellsplit, chdir: dir) do |stdin, stdout, stderr, wait_thr|
-        yield stdin, stdout, wait_thr if block_given?
-        stdin.close
-
-        stdout_read_thread = Thread.new { stdout.read }
-        stderr_read_thread = Thread.new { stderr.read }
-        command_execution.original_stdout = stdout_read_thread.value.strip
-        command_execution.original_stderr = stderr_read_thread.value.strip
-
-        status = wait_thr.value
-        command_execution.exitstatus = if status.exited?
-          status.exitstatus
-        elsif status.signaled?
-          exit_status_for_signal(status.termsig)
-        end
-      end
-
-      unless options[:raise_on_error] == false || command_execution.success?
-        raise <<~ERROR
-
-          Invoking `#{cmd}` failed with output:
-          ----------------------------------------------------------------------
-          #{command_execution.stdboth}
-          ----------------------------------------------------------------------
-        ERROR
-      end
-
-      command_executions << command_execution
-
-      command_execution.stdout
-    end
-
-    def all_commands_output
-      return "" if command_executions.empty?
-
-      "\n\nCommands:\n#{command_executions.map(&:to_s_verbose).join("\n\n")}"
+      sh(cmd, options, &block)
     end
 
     def config(config = nil, path = bundled_app(".bundle/config"))
-      return Psych.load_file(path) unless config
+      current = File.exist?(path) ? Psych.load_file(path) : {}
+      return current unless config
+
+      current = {} if current.empty?
+
       FileUtils.mkdir_p(File.dirname(path))
-      File.open(path, "w") do |f|
-        f.puts config.to_yaml
+
+      new_config = current.merge(config).compact
+
+      File.open(path, "w+") do |f|
+        f.puts new_config.to_yaml
       end
-      config
+
+      new_config
     end
 
     def global_config(config = nil)
@@ -239,10 +235,20 @@ module Spec
     end
 
     def create_file(path, contents = "")
+      contents = strip_whitespace(contents)
       path = Pathname.new(path).expand_path(bundled_app) unless path.is_a?(Pathname)
       path.dirname.mkpath
-      File.open(path.to_s, "w") do |f|
-        f.puts strip_whitespace(contents)
+      path.write(contents)
+
+      # if the file is a script, create respective bat file on Windows
+      if contents.start_with?("#!")
+        path.chmod(0o755)
+        if Gem.win_platform?
+          path.sub_ext(".bat").write <<~SCRIPT
+            @ECHO OFF
+            @"ruby.exe" "%~dpn0" %*
+          SCRIPT
+        end
       end
     end
 
@@ -252,6 +258,7 @@ module Spec
       if contents.nil?
         read_gemfile
       else
+        match_source(contents)
         create_file(args.pop || "Gemfile", contents)
       end
     end
@@ -301,20 +308,24 @@ module Spec
       options = gems.last.is_a?(Hash) ? gems.pop : {}
       install_dir = options.fetch(:path, system_gem_path)
       default = options.fetch(:default, false)
-      with_gem_path_as(install_dir) do
-        gem_repo = options.fetch(:gem_repo, gem_repo1)
-        gems.each do |g|
-          gem_name = g.to_s
-          if gem_name.start_with?("bundler")
-            version = gem_name.match(/\Abundler-(?<version>.*)\z/)[:version] if gem_name != "bundler"
-            with_built_bundler(version) {|gem_path| install_gem(gem_path, install_dir, default) }
-          elsif %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}.match?(gem_name)
-            install_gem(gem_name, install_dir, default)
-          else
-            install_gem("#{gem_repo}/gems/#{gem_name}.gem", install_dir, default)
-          end
+      gems.each do |g|
+        gem_name = g.to_s
+        if gem_name.start_with?("bundler")
+          version = gem_name.match(/\Abundler-(?<version>.*)\z/)[:version] if gem_name != "bundler"
+          with_built_bundler(version) {|gem_path| install_gem(gem_path, install_dir, default) }
+        elsif %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}.match?(gem_name)
+          install_gem(gem_name, install_dir, default)
+        else
+          gem_repo = options.fetch(:gem_repo, gem_repo1)
+          install_gem("#{gem_repo}/gems/#{gem_name}.gem", install_dir, default)
         end
       end
+    end
+
+    def self.install_dev_bundler
+      extend self
+
+      system_gems :bundler, path: pristine_system_gem_path
     end
 
     def install_gem(path, install_dir, default = false)
@@ -327,6 +338,8 @@ module Spec
     end
 
     def with_built_bundler(version = nil, &block)
+      require_relative "builders"
+
       Builders::BundlerBuilder.new(self, "bundler", version)._build(&block)
     end
 
@@ -361,16 +374,6 @@ module Spec
       end
     end
 
-    def opt_add(option, options)
-      [option.strip, options].compact.reject(&:empty?).join(" ")
-    end
-
-    def opt_remove(option, options)
-      return unless options
-
-      options.split(" ").reject {|opt| opt.strip == option.strip }.join(" ")
-    end
-
     def break_git!
       FileUtils.mkdir_p(tmp("broken_path"))
       File.open(tmp("broken_path/git"), "w", 0o755) do |f|
@@ -401,10 +404,8 @@ module Spec
       opts = gems.last.is_a?(Hash) ? gems.pop : {}
       path = opts.fetch(:path, system_gem_path)
 
-      with_gem_path_as(path) do
-        gems.each do |gem|
-          gem_command "install --no-document #{gem}"
-        end
+      gems.each do |gem|
+        gem_command "install --no-document --verbose --install-dir #{path} #{gem}"
       end
     end
 
@@ -437,7 +438,7 @@ module Spec
     def simulate_platform(platform)
       old = ENV["BUNDLER_SPEC_PLATFORM"]
       ENV["BUNDLER_SPEC_PLATFORM"] = platform.to_s
-      yield if block_given?
+      yield
     ensure
       ENV["BUNDLER_SPEC_PLATFORM"] = old if block_given?
     end
@@ -471,7 +472,7 @@ module Spec
     end
 
     def revision_for(path)
-      sys_exec("git rev-parse HEAD", dir: path).strip
+      git("rev-parse HEAD", path).strip
     end
 
     def with_read_only(pattern)
@@ -557,6 +558,17 @@ module Spec
     end
 
     private
+
+    def allowed_rubygems_warning?(text)
+      text.include?("open-ended") || text.include?("is a symlink") || text.include?("rake based") || text.include?("expected RubyGems version")
+    end
+
+    def match_source(contents)
+      match = /source ["']?(?<source>http[^"']+)["']?/.match(contents)
+      return unless match
+
+      @gemfile_source = match[:source]
+    end
 
     def git_root_dir?
       root.to_s == `git rev-parse --show-toplevel`.chomp

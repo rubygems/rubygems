@@ -10,7 +10,7 @@ module Bundler
     end
 
     def setup(*groups)
-      @definition.ensure_equivalent_gemfile_and_lockfile if Bundler.frozen_bundle?
+      @definition.ensure_equivalent_gemfile_and_lockfile
 
       # Has to happen first
       clean_load_path
@@ -136,7 +136,11 @@ module Bundler
       specs_to_cache.each do |spec|
         next if spec.name == "bundler"
         next if spec.source.is_a?(Source::Gemspec)
-        spec.source.cache(spec, custom_path) if spec.source.respond_to?(:cache)
+        if spec.source.respond_to?(:migrate_cache)
+          spec.source.migrate_cache(custom_path, local: local)
+        elsif spec.source.respond_to?(:cache)
+          spec.source.cache(spec, custom_path)
+        end
       end
 
       Dir[cache_path.join("*/.git")].each do |git_dir|
@@ -268,10 +272,10 @@ module Bundler
 
     def setup_manpath
       # Add man/ subdirectories from activated bundles to MANPATH for man(1)
-      manuals = $LOAD_PATH.map do |path|
+      manuals = $LOAD_PATH.filter_map do |path|
         man_subdir = path.sub(/lib$/, "man")
         man_subdir unless Dir[man_subdir + "/man?/"].empty?
-      end.compact
+      end
 
       return if manuals.empty?
       Bundler::SharedHelpers.set_env "MANPATH", manuals.concat(

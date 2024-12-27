@@ -28,7 +28,7 @@ module Bundler
     private
 
     def paths
-      @specs.map do |spec|
+      @specs.flat_map do |spec|
         next if spec.name == "bundler"
         Array(spec.require_paths).map do |path|
           gem_path(path, spec).
@@ -36,7 +36,7 @@ module Bundler
             sub(extensions_dir, 'extensions/\k<platform>/#{Gem.extension_api_version}')
           # This is a static string intentionally. It's interpolated at a later time.
         end
-      end.flatten.compact
+      end.compact
     end
 
     def version_dir
@@ -58,9 +58,6 @@ module Bundler
       else
         SharedHelpers.relative_path_to(full_path, from: Bundler.root.join(bundler_path))
       end
-    rescue TypeError
-      error_message = "#{spec.name} #{spec.version} has an invalid gemspec"
-      raise Gem::InvalidSpecificationException.new(error_message)
     end
 
     def prevent_gem_activation

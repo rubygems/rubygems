@@ -279,7 +279,7 @@ class Gem::Dependency
       end
     end
 
-    matches
+    matches.reject(&:ignored?)
   end
 
   ##
@@ -336,5 +336,13 @@ class Gem::Dependency
     else
       :released
     end
+  end
+
+  def encode_with(coder) # :nodoc:
+    coder.add "name", @name
+    coder.add "requirement", @requirement
+    coder.add "type", @type
+    coder.add "prerelease", @prerelease
+    coder.add "version_requirements", @version_requirements
   end
 end

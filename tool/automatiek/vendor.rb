@@ -26,20 +26,23 @@ VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendo
 
     files.each do |file|
       contents = File.read(file)
-
-      contents.gsub!(/module Kernel/, "module #{prefix}")
-      contents.gsub!(/#{prefix}::#{namespace}::/, "#{namespace}::")
-      contents.gsub!(/#{namespace}::/, "#{prefix}::#{namespace}::")
-      contents.gsub!(/(\s)::#{namespace}/, '\1' + "::#{prefix}::#{namespace}")
-      contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
-
-      contents.gsub!(/^require (["'])#{Regexp.escape require_entrypoint}/, "require_relative \\1#{relative_require_target_from(file)}")
-      contents.gsub!(/require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
-
-      contents.gsub!(%r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")
-
-      File.open(file, "w") {|f| f << contents }
+      contents = namespace_file(file, contents, namespace)
+      File.write(file, contents)
     end
+  end
+
+  def namespace_file(file, contents, namespace)
+    contents.gsub!(/module Kernel/, "module #{prefix}")
+    contents.gsub!(/#{prefix}::#{namespace}::/, "#{namespace}::")
+    contents.gsub!(/#{namespace}::/, "#{prefix}::#{namespace}::")
+    contents.gsub!(/(\s)::#{namespace}/, '\1' + "::#{prefix}::#{namespace}")
+    contents.gsub!(/(?<!\w|def |:)#{namespace}\b/, "#{prefix}::#{namespace}")
+
+    contents.gsub!(/^(\s*)require (["'])#{Regexp.escape require_entrypoint}/, "\\1require_relative \\2#{relative_require_target_from(file)}")
+    contents.gsub!(/require (["'])#{Regexp.escape require_entrypoint}/, "require \\1#{require_target}/#{require_entrypoint}")
+
+    contents.gsub!(%r{(autoload\s+[:\w]+,\s+["'])(#{Regexp.escape require_entrypoint}[\w\/]+["'])}, "\\1#{require_target}/\\2")
+    contents
   end
 
   def clean
@@ -66,8 +69,8 @@ VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendo
 
   alias_method :gem_name, :name
 
-  def relative_require_target_from(file)
-    Pathname.new("#{vendor_lib}/lib/#{require_entrypoint}").relative_path_from(File.dirname(file))
+  def relative_require_target_from(file, entrypoint = require_entrypoint)
+    Pathname.new("#{vendor_lib}/lib/#{entrypoint}").relative_path_from(File.dirname(file))
   end
 
   def require_target
@@ -80,21 +83,23 @@ ignore = ["bundler"]
 vendored_gems = [
   # RubyGems
   VendoredGem.new(name: "molinillo", namespace: "Molinillo", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/molinillo", license_path: "LICENSE", extra_dependencies: %w[tsort/lib/rubygems/vendor/tsort], patch_name: "molinillo-master.patch"),
-  VendoredGem.new(name: "net-http", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-http", license_path: "LICENSE.txt", extra_dependencies: %w[net-protocol resolv timeout uri/lib/rubygems/vendor/uri], skip_dependencies: %w[uri], patch_name: "net-http-v0.4.0.patch"),
+  VendoredGem.new(name: "net-http", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-http", license_path: "COPYING", extra_dependencies: %w[net-protocol resolv timeout uri/lib/rubygems/vendor/uri], skip_dependencies: %w[uri], patch_name: "net-http-v0.4.0.patch"),
   VendoredGem.new(name: "net-http-persistent", namespace: "Net::HTTP::Persistent", prefix: "Gem", vendor_lib: "bundler/lib/bundler/vendor/net-http-persistent", license_path: "README.rdoc", extra_dependencies: %w[net-http uri/lib/rubygems/vendor/uri], patch_name: "net-http-persistent-v4.0.2.patch"),
   VendoredGem.new(name: "net-protocol", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-protocol", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/optparse", license_path: "COPYING", extra_dependencies: %w[uri/lib/rubygems/vendor/uri], patch_name: "optparse-v0.4.0.patch"),
-  VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/resolv", license_path: "LICENSE.txt", extra_dependencies: %w[timeout]),
-  VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/timeout", license_path: "LICENSE.txt", patch_name: "timeout-v0.4.1.patch"),
+  VendoredGem.new(name: "resolv", namespace: "Resolv", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/resolv", license_path: "COPYING", extra_dependencies: %w[securerandom/lib/rubygems/vendor/securerandom timeout], patch_name: "resolv-v0.6.0.patch"),
+  VendoredGem.new(name: "securerandom", namespace: "SecureRandom", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/securerandom", license_path: "COPYING"),
+  VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/timeout", license_path: "COPYING", patch_name: "timeout-v0.4.3.patch"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/tsort", license_path: "LICENSE.txt"),
-  VendoredGem.new(name: "uri", namespace: "URI", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/uri", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "uri", namespace: "URI", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/uri", license_path: "COPYING"),
   # Bundler
   VendoredGem.new(name: "connection_pool", namespace: "ConnectionPool", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/connection_pool", license_path: "LICENSE", patch_name: "connection_pool-v2.4.1.patch", extra_dependencies: %w[timeout]),
-  VendoredGem.new(name: "fileutils", namespace: "FileUtils", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/fileutils", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "fileutils", namespace: "FileUtils", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/fileutils", license_path: "COPYING"),
   VendoredGem.new(name: "pub_grub", namespace: "PubGrub", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/pub_grub", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/thor", license_path: "LICENSE.md", patch_name: "thor-v1.3.0.patch"),
   VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/tsort", license_path: "LICENSE.txt"),
-  VendoredGem.new(name: "uri", namespace: "URI", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/uri", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "uri", namespace: "URI", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/uri", license_path: "COPYING"),
+  VendoredGem.new(name: "securerandom", namespace: "SecureRandom", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/securerandom", license_path: "COPYING"),
 ].group_by(&:name)
 
 Bundler.definition.resolve.materialized_for_all_platforms.reject {|s| ignore.include?(s.name) }.each do |s|

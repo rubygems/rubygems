@@ -96,7 +96,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     out = @ui.output.split("\n")
 
     assert_equal "Restoring gems to pristine condition...", out.shift
-    assert_equal "Restored #{a.full_name}", out.shift
+    assert_equal "Restored #{a.full_name} in #{Gem.user_dir}", out.shift
     assert_empty out, out.inspect
   ensure
     FileUtils.chmod(0o755, @gemhome)
@@ -404,7 +404,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     out = @ui.output.split "\n"
 
     assert_equal "Restoring gems to pristine condition...", out.shift
-    assert_equal "Restored #{a.full_name}", out.shift
+    assert_equal "Restored #{a.full_name} in #{@gemhome}", out.shift
     assert_equal "Restored #{b.full_name}", out.shift
     assert_empty out, out.inspect
 
@@ -476,8 +476,9 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
     [
       "Restoring gems to pristine condition...",
-      "Cached gem for a-1 not found, attempting to fetch...",
-      "Restored a-1",
+      "Cached gem for a-1 in #{@gemhome} not found, attempting to fetch...",
+      "Restored a-1 in #{@gemhome}",
+      "Restored b-1 in #{@gemhome}",
       "Cached gem for b-1 not found, attempting to fetch...",
       "Restored b-1",
     ].each do |line|
@@ -495,7 +496,7 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert_path_exist File.join(gemhome2, "cache", "b-1.gem")
     assert_path_not_exist File.join(@gemhome, "cache", "b-2.gem")
     assert_path_exist File.join(gemhome2, "gems", "b-1")
-    assert_path_not_exist File.join(@gemhome, "gems", "b-1")
+    assert_path_exist File.join(@gemhome, "gems", "b-1")
   end
 
   def test_execute_no_gem
@@ -629,8 +630,16 @@ class TestGemCommandsPristineCommand < Gem::TestCase
 
   def test_execute_default_gem
     default_gem_spec = new_default_spec("default", "2.0.0.0",
-                                        nil, "default/gem.rb")
-    install_default_gems(default_gem_spec)
+                                        nil, "exe/executable")
+    default_gem_spec.executables = "executable"
+    install_default_gems default_gem_spec
+
+    exe = File.join @gemhome, "bin", "executable"
+
+    assert_path_exist exe, "default gem's executable not installed"
+
+    content_with_replaced_shebang = File.read(exe).gsub(/^#![^\n]+ruby/, "#!/usr/bin/env ruby_executable_hooks")
+    File.write(exe, content_with_replaced_shebang)
 
     @cmd.options[:args] = %w[default]
 
@@ -641,11 +650,13 @@ class TestGemCommandsPristineCommand < Gem::TestCase
     assert_equal(
       [
         "Restoring gems to pristine condition...",
-        "Skipped default-2.0.0.0, it is a default gem",
+        "Restored default-2.0.0.0",
       ],
       @ui.output.split("\n")
     )
     assert_empty(@ui.error)
+
+    refute_includes "ruby_executable_hooks", File.read(exe)
   end
 
   def test_execute_multi_platform

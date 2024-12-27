@@ -9,7 +9,7 @@
 require "rbconfig"
 
 module Gem
-  VERSION = "3.6.0.dev"
+  VERSION = "3.7.0.dev"
 end
 
 # Must be first since it unloads the prelude from 1.9.2
@@ -18,6 +18,7 @@ require_relative "rubygems/compatibility"
 require_relative "rubygems/defaults"
 require_relative "rubygems/deprecate"
 require_relative "rubygems/errors"
+require_relative "rubygems/target_rbconfig"
 
 ##
 # RubyGems is the Ruby standard for publishing and managing third party
@@ -106,7 +107,7 @@ require_relative "rubygems/errors"
 #
 # == License
 #
-# See {LICENSE.txt}[rdoc-ref:lib/rubygems/LICENSE.txt] for permissions.
+# See {LICENSE.txt}[https://github.com/rubygems/rubygems/blob/master/LICENSE.txt] for permissions.
 #
 # Thanks!
 #
@@ -178,6 +179,8 @@ module Gem
   @default_source_date_epoch = nil
 
   @discover_gems_on_require = true
+
+  @target_rbconfig = nil
 
   ##
   # Try to activate a gem containing +path+. Returns true if
@@ -397,6 +400,23 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
+  # The RbConfig object for the deployment target platform.
+  #
+  # This is usually the same as the running platform, but may be
+  # different if you are cross-compiling.
+
+  def self.target_rbconfig
+    @target_rbconfig || Gem::TargetRbConfig.for_running_ruby
+  end
+
+  def self.set_target_rbconfig(rbconfig_path)
+    @target_rbconfig = Gem::TargetRbConfig.from_path(rbconfig_path)
+    Gem::Platform.local(refresh: true)
+    Gem.platforms << Gem::Platform.local unless Gem.platforms.include? Gem::Platform.local
+    @target_rbconfig
+  end
+
+  ##
   # Quietly ensure the Gem directory +dir+ contains all the proper
   # subdirectories.  If we can't create a directory due to a permission
   # problem, then we will silently continue.
@@ -450,7 +470,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # distinction as extensions cannot be shared between the two.
 
   def self.extension_api_version # :nodoc:
-    if RbConfig::CONFIG["ENABLE_SHARED"] == "no"
+    if target_rbconfig["ENABLE_SHARED"] == "no"
       "#{ruby_api_version}-static"
     else
       ruby_api_version
@@ -476,9 +496,9 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
     gem_specifications = @gemdeps ? Gem.loaded_specs.values : Gem::Specification.stubs
 
-    files.concat gem_specifications.map {|spec|
+    files.concat gem_specifications.flat_map {|spec|
       spec.matches_for_glob("#{glob}#{Gem.suffix_pattern}")
-    }.flatten
+    }
 
     # $LOAD_PATH might contain duplicate entries or reference
     # the spec dirs directly, so we prune.
@@ -489,9 +509,9 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   def self.find_files_from_load_path(glob) # :nodoc:
     glob_with_suffixes = "#{glob}#{Gem.suffix_pattern}"
-    $LOAD_PATH.map do |load_path|
+    $LOAD_PATH.flat_map do |load_path|
       Gem::Util.glob_files_in_dir(glob_with_suffixes, load_path)
-    end.flatten.select {|file| File.file? file }
+    end.select {|file| File.file? file }
   end
 
   ##
@@ -511,9 +531,9 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
     files = find_files_from_load_path glob if check_load_path
 
-    files.concat Gem::Specification.latest_specs(true).map {|spec|
+    files.concat Gem::Specification.latest_specs(true).flat_map {|spec|
       spec.matches_for_glob("#{glob}#{Gem.suffix_pattern}")
-    }.flatten
+    }
 
     # $LOAD_PATH might contain duplicate entries or reference
     # the spec dirs directly, so we prune.
@@ -753,17 +773,14 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Safely read a file in binary mode on all platforms.
 
   def self.read_binary(path)
-    open_file(path, "rb+", &:read)
-  rescue Errno::EACCES, Errno::EROFS
-    open_file(path, "rb", &:read)
+    File.binread(path)
   end
 
   ##
   # Safely write a file in binary mode on all platforms.
+
   def self.write_binary(path, data)
-    open_file(path, "wb") do |io|
-      io.write data
-    end
+    File.binwrite(path, data)
   rescue Errno::ENOSPC
     # If we ran out of space but the file exists, it's *guaranteed* to be corrupted.
     File.delete(path) if File.exist?(path)
@@ -771,25 +788,37 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   ##
-  # Open a file with given flags, and on Windows protect access with flock
+  # Open a file with given flags
 
   def self.open_file(path, flags, &block)
-    File.open(path, flags) do |io|
-      if !java_platform? && win_platform?
-        begin
-          io.flock(File::LOCK_EX)
-        rescue Errno::ENOSYS, Errno::ENOTSUP
-        end
+    File.open(path, flags, &block)
+  end
+
+  ##
+  # Open a file with given flags, and protect access with a file lock
+
+  def self.open_file_with_lock(path, &block)
+    file_lock = "#{path}.lock"
+    open_file_with_flock(file_lock, &block)
+  ensure
+    require "fileutils"
+    FileUtils.rm_f file_lock
+  end
+
+  ##
+  # Open a file with given flags, and protect access with flock
+
+  def self.open_file_with_flock(path, &block)
+    # read-write mode is used rather than read-only in order to support NFS
+    mode = IO::RDWR | IO::APPEND | IO::CREAT | IO::BINARY
+    mode |= IO::SHARE_DELETE if IO.const_defined?(:SHARE_DELETE)
+
+    File.open(path, mode) do |io|
+      begin
+        io.flock(File::LOCK_EX)
+      rescue Errno::ENOSYS, Errno::ENOTSUP
       end
       yield io
-    end
-  rescue Errno::ENOLCK # NFS
-    if Thread.main != Thread.current
-      raise
-    else
-      File.open(path, flags) do |io|
-        yield io
-      end
     end
   end
 
@@ -810,7 +839,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   # Returns a String containing the API compatibility version of Ruby
 
   def self.ruby_api_version
-    @ruby_api_version ||= RbConfig::CONFIG["ruby_version"].dup
+    @ruby_api_version ||= target_rbconfig["ruby_version"].dup
   end
 
   def self.env_requirement(gem_name)
@@ -1356,17 +1385,6 @@ begin
 
   require "rubygems/defaults/#{RUBY_ENGINE}"
 rescue LoadError
-end
-
-# TruffleRuby >= 24 defines REUSE_AS_BINARY_ON_TRUFFLERUBY in defaults/truffleruby.
-# However, TruffleRuby < 24 defines REUSE_AS_BINARY_ON_TRUFFLERUBY directly in its copy
-# of lib/rubygems/platform.rb, so it is not defined if RubyGems is updated (gem update --system).
-# Instead, we define it here in that case, similar to bundler/lib/bundler/rubygems_ext.rb.
-# We must define it here and not in platform.rb because platform.rb is loaded before defaults/truffleruby.
-class Gem::Platform
-  if RUBY_ENGINE == "truffleruby" && !defined?(REUSE_AS_BINARY_ON_TRUFFLERUBY)
-    REUSE_AS_BINARY_ON_TRUFFLERUBY = %w[libv8 libv8-node sorbet-static].freeze
-  end
 end
 
 ##

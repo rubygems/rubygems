@@ -83,11 +83,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # True when this gem has been activated
 
   def activated?
-    @activated ||=
-      begin
-        loaded = Gem.loaded_specs[name]
-        loaded && loaded.version == version
-      end
+    @activated ||= !loaded_spec.nil?
   end
 
   def default_gem?
@@ -187,11 +183,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
   # The full Gem::Specification for this gem, loaded from evalling its gemspec
 
   def spec
-    @spec ||= if @data
-      loaded = Gem.loaded_specs[name]
-      loaded if loaded && loaded.version == version
-    end
-
+    @spec ||= loaded_spec if @data
     @spec ||= Gem::Specification.load(loaded_from)
   end
   alias_method :to_spec, :spec
@@ -209,5 +201,35 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def stubbed?
     data.is_a? StubLine
+  end
+
+  def ==(other) # :nodoc:
+    self.class === other &&
+      name == other.name &&
+      version == other.version &&
+      platform == other.platform
+  end
+
+  alias_method :eql?, :== # :nodoc:
+
+  def hash # :nodoc:
+    name.hash ^ version.hash ^ platform.hash
+  end
+
+  def <=>(other) # :nodoc:
+    sort_obj <=> other.sort_obj
+  end
+
+  def sort_obj # :nodoc:
+    [name, version, Gem::Platform.sort_priority(platform)]
+  end
+
+  private
+
+  def loaded_spec
+    spec = Gem.loaded_specs[name]
+    return unless spec && spec.version == version && spec.default_gem? == default_gem?
+
+    spec
   end
 end

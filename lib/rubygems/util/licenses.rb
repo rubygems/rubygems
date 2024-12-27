@@ -15,6 +15,7 @@ class Gem::Licenses
   # license identifiers
   LICENSE_IDENTIFIERS = %w[
     0BSD
+    3D-Slicer-1.0
     AAL
     ADSL
     AFL-1.1
@@ -26,6 +27,7 @@ class Gem::Licenses
     AGPL-1.0-or-later
     AGPL-3.0-only
     AGPL-3.0-or-later
+    AMD-newlib
     AMDPLPA
     AML
     AML-glslang
@@ -62,6 +64,7 @@ class Gem::Licenses
     BSD-2-Clause-Darwin
     BSD-2-Clause-Patent
     BSD-2-Clause-Views
+    BSD-2-Clause-first-lines
     BSD-3-Clause
     BSD-3-Clause-Attribution
     BSD-3-Clause-Clear
@@ -191,6 +194,7 @@ class Gem::Licenses
     CUA-OPL-1.0
     Caldera
     Caldera-no-preamble
+    Catharon
     ClArtistic
     Clips
     Community-Spec-1.0
@@ -208,6 +212,8 @@ class Gem::Licenses
     DRL-1.0
     DRL-1.1
     DSDP
+    DocBook-Schema
+    DocBook-XML
     Dotseqn
     ECL-1.0
     ECL-2.0
@@ -270,25 +276,34 @@ class Gem::Licenses
     Glide
     Glulxe
     Graphics-Gems
+    Gutmann
+    HIDAPI
     HP-1986
     HP-1989
     HPND
     HPND-DEC
     HPND-Fenneberg-Livingston
     HPND-INRIA-IMAG
+    HPND-Intel
     HPND-Kevlin-Henney
     HPND-MIT-disclaimer
     HPND-Markus-Kuhn
+    HPND-Netrek
     HPND-Pbmplus
     HPND-UC
+    HPND-UC-export-US
     HPND-doc
     HPND-doc-sell
     HPND-export-US
+    HPND-export-US-acknowledgement
     HPND-export-US-modify
+    HPND-export2-US
+    HPND-merchantability-variant
     HPND-sell-MIT-disclaimer-xserver
     HPND-sell-regexpr
     HPND-sell-variant
     HPND-sell-variant-MIT-disclaimer
+    HPND-sell-variant-MIT-disclaimer-rev
     HTMLTIDY
     HaskellReport
     Hippocratic-2.1
@@ -353,6 +368,7 @@ class Gem::Licenses
     MIT-0
     MIT-CMU
     MIT-Festival
+    MIT-Khronos-old
     MIT-Modern-Variant
     MIT-Wu
     MIT-advertising
@@ -386,7 +402,9 @@ class Gem::Licenses
     NAIST-2003
     NASA-1.3
     NBPL-1.0
+    NCBI-PD
     NCGL-UK-2.0
+    NCL
     NCSA
     NGPL
     NICTA-1.0
@@ -404,12 +422,12 @@ class Gem::Licenses
     NTP
     NTP-0
     Naumen
-    Net-SNMP
     NetCDF
     Newsletr
     Nokia
     Noweb
     O-UDA-1.0
+    OAR
     OCCT-PL
     OCLC-2.0
     ODC-By-1.0
@@ -463,6 +481,7 @@ class Gem::Licenses
     PDDL-1.0
     PHP-3.0
     PHP-3.01
+    PPL
     PSF-2.0
     Parity-6.0.0
     Parity-7.0.0
@@ -484,6 +503,7 @@ class Gem::Licenses
     RSCPL
     Rdisc
     Ruby
+    Ruby-pty
     SAX-PD
     SAX-PD-2.0
     SCEA
@@ -518,6 +538,7 @@ class Gem::Licenses
     Spencer-99
     SugarCRM-1.1.3
     Sun-PPP
+    Sun-PPP-2000
     SunPro
     Symlinks
     TAPR-OHL-1.0
@@ -539,6 +560,7 @@ class Gem::Licenses
     UMich-Merit
     UPL-1.0
     URT-RLE
+    Ubuntu-font-1.0
     Unicode-3.0
     Unicode-DFS-2015
     Unicode-DFS-2016
@@ -557,6 +579,7 @@ class Gem::Licenses
     Wsuipa
     X11
     X11-distribute-modifications-variant
+    X11-swapped
     XFree86-1.1
     XSkat
     Xdebug-1.03
@@ -574,6 +597,7 @@ class Gem::Licenses
     Zimbra-1.3
     Zimbra-1.4
     Zlib
+    any-OSI
     bcrypt-Solar-Designer
     blessing
     bzip2-1.0.6
@@ -582,6 +606,7 @@ class Gem::Licenses
     copyleft-next-0.3.0
     copyleft-next-0.3.1
     curl
+    cve-tou
     diffmark
     dtoa
     dvipdfm
@@ -604,6 +629,7 @@ class Gem::Licenses
     mpi-permissive
     mpich2
     mplus
+    pkgconf
     pnmstitch
     psfrag
     psutils
@@ -613,12 +639,14 @@ class Gem::Licenses
     softSurfer
     ssh-keyscan
     swrule
+    threeparttable
     ulem
     w3m
     xinetd
     xkeyboard-config-Zinoviev
     xlock
     xpp
+    xzoom
     zlib-acknowledgement
   ].freeze
 
@@ -649,6 +677,7 @@ class Gem::Licenses
     LGPL-2.1+
     LGPL-3.0
     LGPL-3.0+
+    Net-SNMP
     Nunit
     StandardML-NJ
     bzip2-1.0.5
@@ -660,6 +689,7 @@ class Gem::Licenses
   EXCEPTION_IDENTIFIERS = %w[
     389-exception
     Asterisk-exception
+    Asterisk-linking-protocols-exception
     Autoconf-exception-2.0
     Autoconf-exception-3.0
     Autoconf-exception-generic
@@ -697,11 +727,13 @@ class Gem::Licenses
     OCCT-exception-1.0
     OCaml-LGPL-linking-exception
     OpenJDK-assembly-exception-1.0
+    PCRE2-exception
     PS-or-PDF-font-exception-20170817
     QPL-1.0-INRIA-2004-exception
     Qt-GPL-exception-1.0
     Qt-LGPL-exception-1.1
     Qwt-exception-1.0
+    RRDtool-FLOSS-exception-2.0
     SANE-exception
     SHL-2.0
     SHL-2.1
@@ -713,6 +745,7 @@ class Gem::Licenses
     WxWindows-exception-3.1
     cryptsetup-OpenSSL-exception
     eCos-exception-2.0
+    erlang-otp-linking-exception
     fmt-exception
     freertos-exception-2.0
     gnu-javamail-exception
@@ -720,6 +753,7 @@ class Gem::Licenses
     libpri-OpenH323-exception
     mif-exception
     openvpn-openssl-exception
+    romic-exception
     stunnel-exception
     u-boot-exception-2.0
     vsftpd-openssl-exception

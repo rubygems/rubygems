@@ -21,8 +21,6 @@ class TestGem < Gem::TestCase
     common_installer_setup
 
     @additional = %w[a b].map {|d| File.join @tempdir, d }
-
-    util_remove_interrupt_command
   end
 
   def test_self_finish_resolve
@@ -1028,6 +1026,20 @@ class TestGem < Gem::TestCase
     Gem.refresh
   end
 
+  def test_activated_specs_does_not_cause_duplicates_when_looping_through_specs
+    util_make_gems
+
+    s = Gem::Specification.first
+    s.activate
+
+    Gem.refresh
+
+    assert_equal 1, Gem::Specification.count {|spec| spec.full_name == s.full_name }
+
+    Gem.loaded_specs.delete(s)
+    Gem.refresh
+  end
+
   def test_self_ruby_escaping_spaces_in_path
     with_clean_path_to_ruby do
       with_rb_config_ruby("C:/Ruby 1.8/bin/ruby.exe") do
@@ -1524,8 +1536,6 @@ class TestGem < Gem::TestCase
       nil
     end
 
-    util_remove_interrupt_command
-
     # Should attempt to cause a StandardError
     with_plugin("standarderror") { Gem.load_env_plugins }
     begin
@@ -1533,8 +1543,6 @@ class TestGem < Gem::TestCase
     rescue StandardError
       nil
     end
-
-    util_remove_interrupt_command
 
     # Should attempt to cause an Exception
     with_plugin("scripterror") { Gem.load_env_plugins }
@@ -1562,21 +1570,20 @@ class TestGem < Gem::TestCase
     assert_equal m1.gem_dir, File.join(Gem.user_dir, "gems", "m-1")
 
     tests = [
-      [:dir0, [Gem.dir, Gem.user_dir], m0],
-      [:dir1, [Gem.user_dir, Gem.dir], m1],
+      [:dir0, [Gem.dir, Gem.user_dir]],
+      [:dir1, [Gem.user_dir, Gem.dir]],
     ]
 
-    tests.each do |name, paths, expected|
+    tests.each do |name, paths|
       Gem.use_paths paths.first, paths
-      Gem::Specification.reset
       Gem.searcher = nil
 
       assert_equal Gem::Dependency.new("m","1").to_specs,
                    Gem::Dependency.new("m","1").to_specs.sort
 
       assert_equal \
-        [expected.gem_dir],
-        Gem::Dependency.new("m","1").to_specs.map(&:gem_dir).sort,
+        [m0.gem_dir, m1.gem_dir],
+        Gem::Dependency.new("m","1").to_specs.map(&:gem_dir).uniq.sort,
         "Wrong specs for #{name}"
 
       spec = Gem::Dependency.new("m","1").to_spec
@@ -1616,9 +1623,11 @@ class TestGem < Gem::TestCase
 
     Gem.use_paths Gem.dir, [Gem.dir, Gem.user_dir]
 
+    spec = Gem::Dependency.new("m", "1").to_spec
+
     assert_equal \
       File.join(Gem.dir, "gems", "m-1"),
-      Gem::Dependency.new("m","1").to_spec.gem_dir,
+      spec.gem_dir,
       "Wrong spec selected"
   end
 
@@ -1788,11 +1797,6 @@ class TestGem < Gem::TestCase
     @exec_path = File.join spec.full_gem_path, spec.bindir, "exec"
     @abin_path = File.join spec.full_gem_path, spec.bindir, "abin"
     spec
-  end
-
-  def util_remove_interrupt_command
-    Gem::Commands.send :remove_const, :InterruptCommand if
-      Gem::Commands.const_defined? :InterruptCommand
   end
 
   def util_cache_dir

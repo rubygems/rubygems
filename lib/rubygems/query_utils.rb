@@ -132,7 +132,7 @@ module Gem::QueryUtils
       version_matches = show_prereleases? || !s.version.prerelease?
 
       name_matches && version_matches
-    end
+    end.uniq(&:full_name)
 
     spec_tuples = specs.map do |spec|
       [spec.name_tuple, spec]
@@ -311,7 +311,7 @@ module Gem::QueryUtils
       label = "Installed at"
       specs.each do |s|
         version = s.version.to_s
-        default = ", default" if s.default_gem?
+        default = s.default_gem? ? ", default" : ""
         entry << "\n" << "    #{label} (#{version}#{default}): #{s.base_dir}"
         label = " " * label.length
       end

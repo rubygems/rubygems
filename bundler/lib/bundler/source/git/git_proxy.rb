@@ -182,6 +182,14 @@ module Bundler
             if err.include?("Could not find remote branch")
               raise MissingGitRevisionError.new(command_with_no_credentials, nil, explicit_ref, credential_filtered_uri)
             else
+              idx = command.index("--depth")
+              if idx
+                command.delete_at(idx)
+                command.delete_at(idx)
+                command_with_no_credentials = check_allowed(command)
+
+                err += "Retrying without --depth argument."
+              end
               raise GitCommandError.new(command_with_no_credentials, path, err)
             end
           end
@@ -324,8 +332,6 @@ module Bundler
             config_auth = Bundler.settings[remote.to_s] || Bundler.settings[remote.host]
             remote.userinfo ||= config_auth
             remote.to_s
-          elsif File.exist?(uri)
-            "file://#{uri}"
           else
             uri.to_s
           end

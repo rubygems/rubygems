@@ -30,7 +30,7 @@ module Gem
     # Returns the list of all specifications in the record
 
     def all
-      @all ||= Gem.loaded_specs.values | stubs.map(&:to_spec)
+      @all ||= stubs.map(&:to_spec)
     end
 
     ##
@@ -68,7 +68,6 @@ module Gem
       installed_stubs = installed_stubs(pattern)
       installed_stubs.select! {|s| Gem::Platform.match_spec? s } if match_platform
       stubs = installed_stubs + Gem::Specification.default_stubs(pattern)
-      stubs = stubs.uniq(&:full_name)
       Gem::Specification._resort!(stubs)
       stubs
     end

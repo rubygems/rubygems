@@ -2,67 +2,77 @@ GEM
   remote: https://rubygems.org/
   specs:
     base64 (0.2.0)
-    builder (3.2.4)
+    builder (3.3.0)
     compact_index (0.15.0)
-    mustermann (3.0.0)
+    logger (1.6.1)
+    mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
-    rack (2.2.9)
-    rack-protection (3.2.0)
+    rack (3.1.8)
+    rack-protection (4.1.0)
       base64 (>= 0.1.0)
-      rack (~> 2.2, >= 2.2.4)
-    rack-test (1.1.0)
-      rack (>= 1.0, < 3)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
+    rack-session (2.0.0)
+      rack (>= 3.0.0)
+    rack-test (2.1.0)
+      rack (>= 1.3)
+    rackup (2.1.0)
+      rack (>= 3)
+      webrick (~> 1.8)
     rake (13.2.1)
-    rb_sys (0.9.91)
+    rb_sys (0.9.102)
     ruby2_keywords (0.0.5)
-    rubygems-generate_index (1.1.2)
+    rubygems-generate_index (1.1.3)
       compact_index (~> 0.15.0)
-    sinatra (3.2.0)
+    sinatra (4.1.0)
+      logger (>= 1.6.0)
       mustermann (~> 3.0)
-      rack (~> 2.2, >= 2.2.4)
-      rack-protection (= 3.2.0)
+      rack (>= 3.0.0, < 4)
+      rack-protection (= 4.1.0)
+      rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
-    tilt (2.3.0)
-    webrick (1.7.0)
+    tilt (2.4.0)
+    webrick (1.9.0)
 
 PLATFORMS
   java
   ruby
-  universal-java-11
-  universal-java-18
-  universal-java-19
+  universal-java
   x64-mingw-ucrt
-  x64-mingw32
-  x86_64-darwin-20
+  x86_64-darwin
   x86_64-linux
 
 DEPENDENCIES
   base64
   builder (~> 3.2)
   compact_index (~> 0.15.0)
-  rack (~> 2.0)
-  rack-test (~> 1.1)
+  rack (~> 3.0)
+  rack-test (~> 2.1)
+  rackup (~> 2.1)
   rake (~> 13.1)
   rb_sys
   rubygems-generate_index (~> 1.1)
-  sinatra (~> 3.0)
-  webrick (= 1.7.0)
+  sinatra (~> 4.1)
+  webrick (~> 1.9)
 
 CHECKSUMS
   base64 (0.2.0) sha256=0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507
-  builder (3.2.4) sha256=99caf08af60c8d7f3a6b004029c4c3c0bdaebced6c949165fe98f1db27fbbc10
+  builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
   compact_index (0.15.0) sha256=5c6c404afca8928a7d9f4dde9524f6e1610db17e675330803055db282da84a8b
-  mustermann (3.0.0) sha256=6d3569aa3c3b2f048c60626f48d9b2d561cc8d2ef269296943b03da181c08b67
-  rack (2.2.9) sha256=fd6301a97a1c1e955e68f85c861fcb1cde6145a32c532e1ea321a72ff8cc4042
-  rack-protection (3.2.0) sha256=3c74ba7fc59066453d61af9bcba5b6fe7a9b3dab6f445418d3b391d5ea8efbff
-  rack-test (1.1.0) sha256=154161f40f162b1c009a655b7b0c5de3a3102cc6d7d2e94b64e1f46ace800866
+  logger (1.6.1) sha256=3ad9587ed3940bf7897ea64a673971415523f4f7d6b22c5e3af5219705669653
+  mustermann (3.0.3) sha256=d1f8e9ba2ddaed47150ddf81f6a7ea046826b64c672fbc92d83bce6b70657e88
+  rack (3.1.8) sha256=d3fbcbca43dc2b43c9c6d7dfbac01667ae58643c42cea10013d0da970218a1b1
+  rack-protection (4.1.0) sha256=c32350d08b28f53df08c9e7c770900fa863593826e9f4f3cdd02ec685902ac30
+  rack-session (2.0.0) sha256=db04b2063e180369192a9046b4559af311990af38c6a93d4c600cee4eb6d4e81
+  rack-test (2.1.0) sha256=0c61fc61904049d691922ea4bb99e28004ed3f43aa5cfd495024cc345f125dfb
+  rackup (2.1.0) sha256=6ecb884a581990332e45ee17bdfdc14ccbee46c2f710ae1566019907869a6c4d
   rake (13.2.1) sha256=46cb38dae65d7d74b6020a4ac9d48afed8eb8149c040eccf0523bec91907059d
-  rb_sys (0.9.91) sha256=8c6ad8f97fd86f80530e942f1a904c229a510ca372c6b92dc05270a84e51ecda
+  rb_sys (0.9.102) sha256=6ed736cc0d0bc236327e233f349ba16913231051df1c886c471ed268ce0e623b
   ruby2_keywords (0.0.5) sha256=ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef
-  rubygems-generate_index (1.1.2) sha256=b5cfafe811b18bc45780b4cccc92593cf3115d2c8ea2a9f93a253eb9b2a8b955
-  sinatra (3.2.0) sha256=6e727f4d034e87067d9aab37f328021d7c16722ffd293ef07b6e968915109807
-  tilt (2.3.0) sha256=82dd903d61213c63679d28e404ee8e10d1b0fdf5270f1ad0898ec314cc3e745c
-  webrick (1.7.0) sha256=87e9b8e39947b7925338a5eb55427b11ce1f2b25a3645770ec9f39d8ebdb8cb4
+  rubygems-generate_index (1.1.3) sha256=3571424322666598e9586a906485e1543b617f87644913eaf137d986a3393f5c
+  sinatra (4.1.0) sha256=27d3217f6d83d49c8a9326ae8b688c253ecce2d39582cff24660b0e34b3e9df7
+  tilt (2.4.0) sha256=df74f29a451daed26591a85e8e0cebb198892cb75b6573394303acda273fba4d
+  webrick (1.9.0) sha256=9ee50c57006489960b2a07544f68de6f23dfbee30e7b424167b5c14b72ace964
 
 BUNDLED WITH
-   2.6.0.dev
+   2.7.0.dev

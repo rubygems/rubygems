@@ -13,8 +13,8 @@ class Gem::Requirement
   OPS = { # :nodoc:
     "=" => lambda {|v, r| v == r },
     "!=" => lambda {|v, r| v != r },
-    ">" => lambda {|v, r| v >  r },
-    "<" => lambda {|v, r| v <  r },
+    ">" => lambda {|v, r| v > r },
+    "<" => lambda {|v, r| v < r },
     ">=" => lambda {|v, r| v >= r },
     "<=" => lambda {|v, r| v <= r },
     "~>" => lambda {|v, r| v >= r && v.release < r.bump },
@@ -22,7 +22,7 @@ class Gem::Requirement
 
   SOURCE_SET_REQUIREMENT = Struct.new(:for_lockfile).new "!" # :nodoc:
 
-  quoted = OPS.keys.map {|k| Regexp.quote k }.join "|"
+  quoted = Regexp.union(OPS.keys)
   PATTERN_RAW = "\\s*(#{quoted})?\\s*(#{Gem::Version::VERSION_PATTERN})\\s*".freeze # :nodoc:
 
   ##
@@ -201,7 +201,8 @@ class Gem::Requirement
   def marshal_load(array) # :nodoc:
     @requirements = array[0]
 
-    raise TypeError, "wrong @requirements" unless Array === @requirements
+    raise TypeError, "wrong @requirements" unless Array === @requirements &&
+                                                  @requirements.all? {|r| r.size == 2 && (r.first.is_a?(String) || r[0] = "=") && r.last.is_a?(Gem::Version) }
   end
 
   def yaml_initialize(tag, vals) # :nodoc:
@@ -212,10 +213,6 @@ class Gem::Requirement
 
   def init_with(coder) # :nodoc:
     yaml_initialize coder.tag, coder.map
-  end
-
-  def to_yaml_properties # :nodoc:
-    ["@requirements"]
   end
 
   def encode_with(coder) # :nodoc:
@@ -242,7 +239,7 @@ class Gem::Requirement
   def satisfied_by?(version)
     raise ArgumentError, "Need a Gem::Version: #{version.inspect}" unless
       Gem::Version === version
-    requirements.all? {|op, rv| OPS[op].call version, rv }
+    requirements.all? {|op, rv| OPS.fetch(op).call version, rv }
   end
 
   alias_method :===, :satisfied_by?

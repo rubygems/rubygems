@@ -16,9 +16,14 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
     @profile = :release
   end
 
-  def build(extension, dest_path, results, args = [], lib_dir = nil, cargo_dir = Dir.pwd)
+  def build(extension, dest_path, results, args = [], lib_dir = nil, cargo_dir = Dir.pwd,
+    target_rbconfig=Gem.target_rbconfig)
     require "tempfile"
     require "fileutils"
+
+    if target_rbconfig.path
+      warn "--target-rbconfig is not yet supported for Rust extensions. Ignoring"
+    end
 
     # Where's the Cargo.toml of the crate we're building
     cargo_toml = File.join(cargo_dir, "Cargo.toml")
@@ -247,8 +252,7 @@ EOF
 
   def rustc_dynamic_linker_flags(dest_dir, crate_name)
     split_flags("DLDFLAGS").
-      map {|arg| maybe_resolve_ldflag_variable(arg, dest_dir, crate_name) }.
-      compact.
+      filter_map {|arg| maybe_resolve_ldflag_variable(arg, dest_dir, crate_name) }.
       flat_map {|arg| ldflag_to_link_modifier(arg) }
   end
 

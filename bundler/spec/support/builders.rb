@@ -3,8 +3,15 @@
 require "bundler/shared_helpers"
 require "shellwords"
 
+require_relative "build_metadata"
+
 module Spec
   module Builders
+    def self.extended(mod)
+      mod.extend Path
+      mod.extend Helpers
+    end
+
     def self.constantize(name)
       name.delete("-").upcase
     end
@@ -22,8 +29,6 @@ module Spec
     end
 
     def build_repo1
-      rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
-
       build_repo gem_repo1 do
         FileUtils.cp rake_path, "#{gem_repo1}/gems/"
 
@@ -32,23 +37,23 @@ module Spec
         build_gem "puma"
         build_gem "minitest"
 
-        build_gem "rack", %w[0.9.1 1.0.0] do |s|
-          s.executables = "rackup"
-          s.post_install_message = "Rack's post install message"
+        build_gem "myrack", %w[0.9.1 1.0.0] do |s|
+          s.executables = "myrackup"
+          s.post_install_message = "Myrack's post install message"
         end
 
         build_gem "thin" do |s|
-          s.add_dependency "rack"
+          s.add_dependency "myrack"
           s.post_install_message = "Thin's post install message"
         end
 
-        build_gem "rack-obama" do |s|
-          s.add_dependency "rack"
-          s.post_install_message = "Rack-obama's post install message"
+        build_gem "myrack-obama" do |s|
+          s.add_dependency "myrack"
+          s.post_install_message = "Myrack-obama's post install message"
         end
 
-        build_gem "rack_middleware", "1.0" do |s|
-          s.add_dependency "rack", "0.9.1"
+        build_gem "myrack_middleware", "1.0" do |s|
+          s.add_dependency "myrack", "0.9.1"
         end
 
         build_gem "rails", "2.3.2" do |s|
@@ -81,80 +86,62 @@ module Spec
           s.write "lib/spec.rb", "SPEC = '1.2.7'"
         end
 
-        build_gem "rack-test", no_default: true do |s|
-          s.write "lib/rack/test.rb", "RACK_TEST = '1.0'"
-        end
-
-        build_gem "platform_specific" do |s|
-          s.platform = Gem::Platform.local
-          s.write "lib/platform_specific.rb", "PLATFORM_SPECIFIC = '1.0.0 #{Gem::Platform.local}'"
+        build_gem "myrack-test", no_default: true do |s|
+          s.write "lib/myrack/test.rb", "MYRACK_TEST = '1.0'"
         end
 
         build_gem "platform_specific" do |s|
           s.platform = "java"
-          s.write "lib/platform_specific.rb", "PLATFORM_SPECIFIC = '1.0.0 JAVA'"
         end
 
         build_gem "platform_specific" do |s|
           s.platform = "ruby"
-          s.write "lib/platform_specific.rb", "PLATFORM_SPECIFIC = '1.0.0 RUBY'"
         end
 
         build_gem "platform_specific" do |s|
           s.platform = "x86-mswin32"
-          s.write "lib/platform_specific.rb", "PLATFORM_SPECIFIC = '1.0 x86-mswin32'"
         end
 
         build_gem "platform_specific" do |s|
           s.platform = "x64-mswin64"
-          s.write "lib/platform_specific.rb", "PLATFORM_SPECIFIC = '1.0 x64-mswin64'"
         end
 
         build_gem "platform_specific" do |s|
           s.platform = "x86-mingw32"
-          s.write "lib/platform_specific.rb", "PLATFORM_SPECIFIC = '1.0 x86-mingw32'"
         end
 
         build_gem "platform_specific" do |s|
           s.platform = "x64-mingw32"
-          s.write "lib/platform_specific.rb", "PLATFORM_SPECIFIC = '1.0 x64-mingw32'"
         end
 
         build_gem "platform_specific" do |s|
           s.platform = "x64-mingw-ucrt"
-          s.write "lib/platform_specific.rb", "PLATFORM_SPECIFIC = '1.0 x64-mingw-ucrt'"
         end
 
         build_gem "platform_specific" do |s|
           s.platform = "x86-darwin-100"
-          s.write "lib/platform_specific.rb", "PLATFORM_SPECIFIC = '1.0.0 x86-darwin-100'"
         end
 
         build_gem "only_java", "1.0" do |s|
           s.platform = "java"
-          s.write "lib/only_java.rb", "ONLY_JAVA = '1.0.0 JAVA'"
         end
 
         build_gem "only_java", "1.1" do |s|
           s.platform = "java"
-          s.write "lib/only_java.rb", "ONLY_JAVA = '1.1.0 JAVA'"
         end
 
         build_gem "nokogiri", "1.4.2"
         build_gem "nokogiri", "1.4.2" do |s|
           s.platform = "java"
-          s.write "lib/nokogiri.rb", "NOKOGIRI = '1.4.2 JAVA'"
           s.add_dependency "weakling", ">= 0.0.3"
         end
 
         build_gem "laduradura", "5.15.2"
         build_gem "laduradura", "5.15.2" do |s|
           s.platform = "java"
-          s.write "lib/laduradura.rb", "LADURADURA = '5.15.2 JAVA'"
         end
         build_gem "laduradura", "5.15.3" do |s|
           s.platform = "java"
-          s.write "lib/laduradura.rb", "LADURADURA = '5.15.2 JAVA'"
         end
 
         build_gem "weakling", "0.0.3"
@@ -168,7 +155,7 @@ module Spec
 
         build_gem "bundler", "0.9" do |s|
           s.executables = "bundle"
-          s.write "bin/bundle", "puts 'FAIL'"
+          s.write "bin/bundle", "#!/usr/bin/env ruby\nputs 'FAIL'"
         end
 
         # The bundler 0.8 gem has a rubygems plugin that always loads :(
@@ -203,9 +190,15 @@ module Spec
 
     # A repo that has no pre-installed gems included. (The caller completely
     # determines the contents with the block.)
+    def build_repo3(**kwargs, &blk)
+      build_empty_repo gem_repo3, **kwargs, &blk
+    end
+
+    # Like build_repo3, this is a repo that has no pre-installed gems included.
+    # We have two different methods for situations where two different empty
+    # sources are needed.
     def build_repo4(**kwargs, &blk)
-      FileUtils.rm_rf gem_repo4
-      build_repo(gem_repo4, **kwargs, &blk)
+      build_empty_repo gem_repo4, **kwargs, &blk
     end
 
     def update_repo4(&blk)
@@ -218,7 +211,7 @@ module Spec
 
     def build_security_repo
       build_repo security_repo do
-        build_gem "rack"
+        build_gem "myrack"
 
         build_gem "signed_gem" do |s|
           cert = "signing-cert.pem"
@@ -240,30 +233,26 @@ module Spec
     end
 
     def check_test_gems!
-      rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
-
       if rake_path.nil?
-        FileUtils.rm_rf(Path.base_system_gems)
+        FileUtils.rm_rf(base_system_gems)
         Spec::Rubygems.install_test_deps
-        rake_path = Dir["#{Path.base_system_gems}/**/rake*.gem"].first
       end
 
-      if rake_path.nil?
-        abort "Your test gems are missing! Run `rm -rf #{tmp}` and try again."
-      end
+      Helpers.install_dev_bundler unless pristine_system_gem_path.exist?
     end
 
     def update_repo(path, build_compact_index: true)
-      if path == gem_repo1 && caller.first.split(" ").last == "`build_repo`"
+      exempted_caller = Gem.ruby_version >= Gem::Version.new("3.4.0.dev") ? "#{Module.nesting.first}#build_repo" : "build_repo"
+      if path == gem_repo1 && caller_locations(1, 1).first.label != exempted_caller
         raise "Updating gem_repo1 is unsupported -- use gem_repo2 instead"
       end
       return unless block_given?
       @_build_path = "#{path}/gems"
       @_build_repo = File.basename(path)
       yield
-      with_gem_path_as Path.base_system_gem_path do
-        Dir[Spec::Path.base_system_gem_path.join("gems/rubygems-generate_index*/lib")].first ||
-          raise("Could not find rubygems-generate_index lib directory in #{Spec::Path.base_system_gem_path}")
+      with_gem_path_as base_system_gem_path do
+        Dir[base_system_gem_path.join("gems/rubygems-generate_index*/lib")].first ||
+          raise("Could not find rubygems-generate_index lib directory in #{base_system_gem_path}")
 
         command = "generate_index"
         command += " --no-compact" if !build_compact_index && gem_command(command + " --help").include?("--[no-]compact")
@@ -323,6 +312,11 @@ module Spec
     end
 
     private
+
+    def build_empty_repo(gem_repo, **kwargs, &blk)
+      FileUtils.rm_rf gem_repo
+      build_repo(gem_repo, **kwargs, &blk)
+    end
 
     def build_with(builder, name, args, &blk)
       @_build_path ||= nil
@@ -462,6 +456,7 @@ module Spec
           s.email       = "foo@bar.baz"
           s.homepage    = "http://example.com"
           s.license     = "MIT"
+          s.required_ruby_version = ">= 3.0"
         end
         @files = {}
       end
@@ -478,18 +473,13 @@ module Spec
         @spec.executables = Array(val)
         @spec.executables.each do |file|
           executable = "#{@spec.bindir}/#{file}"
-          shebang = if Bundler.current_ruby.jruby?
-            "#!/usr/bin/env jruby\n"
-          else
-            "#!/usr/bin/env ruby\n"
-          end
+          shebang = "#!/usr/bin/env ruby\n"
           @spec.files << executable
           write executable, "#{shebang}require_relative '../lib/#{@name}' ; puts #{Builders.constantize(@name)}"
         end
       end
 
       def add_c_extension
-        require_paths << "ext"
         extensions << "ext/extconf.rb"
         write "ext/extconf.rb", <<-RUBY
           require "mkmf"
@@ -507,7 +497,7 @@ module Spec
         write "ext/#{name}.c", <<-C
           #include "ruby.h"
 
-          void Init_#{name}_c() {
+          void Init_#{name}_c(void) {
             rb_define_module("#{Builders.constantize(name)}_IN_C");
           }
         C
@@ -544,10 +534,10 @@ module Spec
         end
 
         @files.each do |file, source|
-          file = Pathname.new(path).join(file)
-          FileUtils.mkdir_p(file.dirname)
-          File.open(file, "w") {|f| f.puts source }
-          File.chmod("+x", file) if @spec.executables.map {|exe| "#{@spec.bindir}/#{exe}" }.include?(file)
+          full_path = Pathname.new(path).join(file)
+          FileUtils.mkdir_p(full_path.dirname)
+          File.open(full_path, "w") {|f| f.puts source }
+          FileUtils.chmod("+x", full_path) if @spec.executables.map {|exe| "#{@spec.bindir}/#{exe}" }.include?(file)
         end
         path
       end

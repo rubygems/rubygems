@@ -38,16 +38,12 @@ GEM
     uri (0.13.0)
 
 PLATFORMS
+  aarch64-darwin
   aarch64-linux
-  arm64-darwin-20
-  arm64-darwin-21
-  arm64-darwin-22
-  arm64-darwin-23
-  universal-java-11
-  universal-java-18
-  x86_64-darwin-20
-  x86_64-darwin-21
-  x86_64-darwin-22
+  arm64-darwin
+  ruby
+  universal-java
+  x86_64-darwin
   x86_64-linux
 
 DEPENDENCIES
@@ -74,4 +70,4 @@ CHECKSUMS
   uri (0.13.0) sha256=26553c2a9399762e1e8bebd4444b4361c4b21298cf1c864b22eeabc9c4998f24
 
 BUNDLED WITH
-   2.6.0.dev
+   2.7.0.dev

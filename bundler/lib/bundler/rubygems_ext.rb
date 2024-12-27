@@ -30,22 +30,66 @@ module Gem
     end
   end
 
+  # Can be removed once RubyGems 3.5.18 support is dropped
+  unless Gem.respond_to?(:open_file_with_lock)
+    class << self
+      remove_method :open_file_with_flock if Gem.respond_to?(:open_file_with_flock)
+
+      def open_file_with_flock(path, &block)
+        # read-write mode is used rather than read-only in order to support NFS
+        mode = IO::RDWR | IO::APPEND | IO::CREAT | IO::BINARY
+        mode |= IO::SHARE_DELETE if IO.const_defined?(:SHARE_DELETE)
+
+        File.open(path, mode) do |io|
+          begin
+            io.flock(File::LOCK_EX)
+          rescue Errno::ENOSYS, Errno::ENOTSUP
+          end
+          yield io
+        end
+      end
+
+      def open_file_with_lock(path, &block)
+        file_lock = "#{path}.lock"
+        open_file_with_flock(file_lock, &block)
+      ensure
+        FileUtils.rm_f file_lock
+      end
+    end
+  end
+
   require "rubygems/specification"
 
+  # Can be removed once RubyGems 3.5.14 support is dropped
+  VALIDATES_FOR_RESOLUTION = Specification.new.respond_to?(:validate_for_resolution).freeze
+
+  # Can be removed once RubyGems 3.3.15 support is dropped
+  FLATTENS_REQUIRED_PATHS = Specification.new.respond_to?(:flatten_require_paths).freeze
+
   class Specification
+    # Can be removed once RubyGems 3.5.15 support is dropped
+    correct_array_attributes = @@default_value.select {|_k,v| v.is_a?(Array) }.keys
+    unless @@array_attributes == correct_array_attributes
+      @@array_attributes = correct_array_attributes # rubocop:disable Style/ClassVars
+    end
+
     require_relative "match_metadata"
     require_relative "match_platform"
 
     include ::Bundler::MatchMetadata
     include ::Bundler::MatchPlatform
 
-    attr_accessor :remote, :location, :relative_loaded_from
+    attr_accessor :remote, :relative_loaded_from
 
-    remove_method :source
-    attr_writer :source
-    def source
-      (defined?(@source) && @source) || Gem::Source::Installed.new
+    module AllowSettingSource
+      attr_writer :source
+
+      def source
+        (defined?(@source) && @source) || super
+      end
     end
+
+    prepend AllowSettingSource
 
     alias_method :rg_full_gem_path, :full_gem_path
     alias_method :rg_loaded_from,   :loaded_from
@@ -82,7 +126,9 @@ module Gem
       end
     end
 
-    remove_method :gem_dir
+    # Can be removed once RubyGems 3.5.21 support is dropped
+    remove_method :gem_dir if method_defined?(:gem_dir, false)
+
     def gem_dir
       full_gem_path
     end
@@ -102,6 +148,10 @@ module Gem
           end
         end
       end
+    end
+
+    def insecurely_materialized?
+      false
     end
 
     def groups
@@ -131,6 +181,33 @@ module Gem
       !default_gem? && !File.directory?(full_gem_path)
     end
 
+    unless VALIDATES_FOR_RESOLUTION
+      def validate_for_resolution
+        SpecificationPolicy.new(self).validate_for_resolution
+      end
+    end
+
+    unless FLATTENS_REQUIRED_PATHS
+      def flatten_require_paths
+        return unless raw_require_paths.first.is_a?(Array)
+
+        warn "#{name} #{version} includes a gemspec with `require_paths` set to an array of arrays. Newer versions of this gem might've already fixed this"
+        raw_require_paths.flatten!
+      end
+
+      class << self
+        module RequirePathFlattener
+          def from_yaml(input)
+            spec = super(input)
+            spec.flatten_require_paths
+            spec
+          end
+        end
+
+        prepend RequirePathFlattener
+      end
+    end
+
     private
 
     def dependencies_to_gemfile(dependencies, group = nil)
@@ -147,6 +224,14 @@ module Gem
         gemfile << "end\n" if group
       end
       gemfile
+    end
+  end
+
+  unless VALIDATES_FOR_RESOLUTION
+    class SpecificationPolicy
+      def validate_for_resolution
+        validate_required!
+      end
     end
   end
 
@@ -169,24 +254,18 @@ module Gem
 
     include ::Bundler::ForcePlatform
 
+    attr_reader :force_ruby_platform
+
     attr_accessor :source, :groups
 
     alias_method :eql?, :==
 
-    def force_ruby_platform
-      return @force_ruby_platform if defined?(@force_ruby_platform) && !@force_ruby_platform.nil?
-
-      @force_ruby_platform = default_force_ruby_platform
-    end
-
-    def encode_with(coder)
-      to_yaml_properties.each do |ivar|
-        coder[ivar.to_s.sub(/^@/, "")] = instance_variable_get(ivar)
+    unless method_defined?(:encode_with, false)
+      def encode_with(coder)
+        [:@name, :@requirement, :@type, :@prerelease, :@version_requirements].each do |ivar|
+          coder[ivar.to_s.sub(/^@/, "")] = instance_variable_get(ivar)
+        end
       end
-    end
-
-    def to_yaml_properties
-      instance_variables.reject {|p| ["@source", "@groups"].include?(p.to_s) }
     end
 
     def to_lock
@@ -197,22 +276,15 @@ module Gem
       end
       out
     end
-  end
 
-  # Requirements using lambda operator differentiate trailing zeros since rubygems 3.2.6
-  if Gem::Requirement.new("~> 2.0").hash == Gem::Requirement.new("~> 2.0.0").hash
-    class Requirement
-      module CorrectHashForLambdaOperator
-        def hash
-          if requirements.any? {|r| r.first == "~>" }
-            requirements.map {|r| r.first == "~>" ? [r[0], r[1].to_s] : r }.sort.hash
-          else
-            super
-          end
+    if Gem.rubygems_version < Gem::Version.new("3.5.22")
+      module FilterIgnoredSpecs
+        def matching_specs(platform_only = false)
+          super.reject(&:ignored?)
         end
       end
 
-      prepend CorrectHashForLambdaOperator
+      prepend FilterIgnoredSpecs
     end
   end
 
@@ -241,7 +313,7 @@ module Gem
 
         # cpu
         ([nil,"universal"].include?(@cpu) || [nil, "universal"].include?(other.cpu) || @cpu == other.cpu ||
-        (@cpu == "arm" && other.cpu.start_with?("arm"))) &&
+        (@cpu == "arm" && other.cpu.start_with?("armv"))) &&
 
           # os
           @os == other.os &&
@@ -264,10 +336,6 @@ module Gem
 
         without_gnu_nor_abi_modifiers
       end
-    end
-
-    if RUBY_ENGINE == "truffleruby" && !defined?(REUSE_AS_BINARY_ON_TRUFFLERUBY)
-      REUSE_AS_BINARY_ON_TRUFFLERUBY = %w[libv8 libv8-node sorbet-static].freeze
     end
   end
 
@@ -319,6 +387,15 @@ module Gem
         end
       end
     end
+
+    # Can be removed once RubyGems 3.5.22 support is dropped
+    unless new.respond_to?(:ignored?)
+      def ignored?
+        return @ignored unless @ignored.nil?
+
+        @ignored = missing_extensions?
+      end
+    end
   end
 
   require "rubygems/name_tuple"
@@ -342,6 +419,50 @@ module Gem
         "#{name} (#{version})"
       else
         "#{name} (#{version}-#{platform})"
+      end
+    end
+  end
+
+  unless Gem.rubygems_version >= Gem::Version.new("3.5.19")
+    class Resolver::ActivationRequest
+      remove_method :installed?
+
+      def installed?
+        case @spec
+        when Gem::Resolver::VendorSpecification then
+          true
+        else
+          this_spec = full_spec
+
+          Gem::Specification.any? do |s|
+            s == this_spec && s.base_dir == this_spec.base_dir
+          end
+        end
+      end
+    end
+  end
+
+  if Gem.rubygems_version < Gem::Version.new("3.6.0")
+    class Package; end
+    require "rubygems/package/tar_reader"
+    require "rubygems/package/tar_reader/entry"
+
+    module FixFullNameEncoding
+      def full_name
+        super.force_encoding(Encoding::UTF_8)
+      end
+    end
+
+    Package::TarReader::Entry.prepend(FixFullNameEncoding)
+  end
+
+  require "rubygems/uri"
+
+  # Can be removed once RubyGems 3.3.15 support is dropped
+  unless Gem::Uri.respond_to?(:redact)
+    class Uri
+      def self.redact(uri)
+        new(uri).redacted
       end
     end
   end

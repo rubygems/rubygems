@@ -175,7 +175,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   @@attributes = @@default_value.keys.sort_by(&:to_s)
-  @@array_attributes = @@default_value.reject {|_k,v| v != [] }.keys
+  @@array_attributes = @@default_value.select {|_k,v| v.is_a?(Array) }.keys
   @@nil_attributes, @@non_nil_attributes = @@default_value.keys.partition do |k|
     @@default_value[k].nil?
   end
@@ -391,7 +391,7 @@ class Gem::Specification < Gem::BasicSpecification
   #     "homepage_uri"      => "https://bestgemever.example.io",
   #     "mailing_list_uri"  => "https://groups.example.com/bestgemever",
   #     "source_code_uri"   => "https://example.com/user/bestgemever",
-  #     "wiki_uri"          => "https://example.com/user/bestgemever/wiki"
+  #     "wiki_uri"          => "https://example.com/user/bestgemever/wiki",
   #     "funding_uri"       => "https://example.com/donate"
   #   }
   #
@@ -464,10 +464,7 @@ class Gem::Specification < Gem::BasicSpecification
   #   spec.platform = Gem::Platform.local
 
   def platform=(platform)
-    if @original_platform.nil? ||
-       @original_platform == Gem::Platform::RUBY
-      @original_platform = platform
-    end
+    @original_platform = platform
 
     case platform
     when Gem::Platform::CURRENT then
@@ -546,9 +543,9 @@ class Gem::Specification < Gem::BasicSpecification
   #
   # Usage:
   #
-  #   spec.add_runtime_dependency 'example', '~> 1.1', '>= 1.1.4'
+  #   spec.add_dependency 'example', '~> 1.1', '>= 1.1.4'
 
-  def add_runtime_dependency(gem, *requirements)
+  def add_dependency(gem, *requirements)
     if requirements.uniq.size != requirements.size
       warn "WARNING: duplicated #{gem} dependency #{requirements}"
     end
@@ -771,6 +768,11 @@ class Gem::Specification < Gem::BasicSpecification
   end
   private_class_method :clear_load_cache
 
+  def self.gem_path # :nodoc:
+    Gem.path
+  end
+  private_class_method :gem_path
+
   def self.each_gemspec(dirs) # :nodoc:
     dirs.each do |dir|
       Gem::Util.glob_files_in_dir("*.gemspec", dir).each do |path|
@@ -830,7 +832,11 @@ class Gem::Specification < Gem::BasicSpecification
       next names if names.nonzero?
       versions = b.version <=> a.version
       next versions if versions.nonzero?
-      Gem::Platform.sort_priority(b.platform)
+      platforms = Gem::Platform.sort_priority(b.platform) <=> Gem::Platform.sort_priority(a.platform)
+      next platforms if platforms.nonzero?
+      default_gem = a.default_gem_priority <=> b.default_gem_priority
+      next default_gem if default_gem.nonzero?
+      a.base_dir_priority(gem_path) <=> b.base_dir_priority(gem_path)
     end
   end
 
@@ -865,7 +871,7 @@ class Gem::Specification < Gem::BasicSpecification
   # You probably want to use one of the Enumerable methods instead.
 
   def self.all
-    warn "NOTE: Specification.all called from #{caller.first}" unless
+    warn "NOTE: Specification.all called from #{caller(1, 1).first}" unless
       Gem::Deprecate.skip
     _all
   end
@@ -906,7 +912,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Return the directories that Specification uses to find specs.
 
   def self.dirs
-    @@dirs ||= Gem::SpecificationRecord.dirs_from(Gem.path)
+    @@dirs ||= Gem::SpecificationRecord.dirs_from(gem_path)
   end
 
   ##
@@ -1008,7 +1014,7 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   def self.unresolved_specs
-    unresolved_deps.values.map(&:to_specs).flatten
+    unresolved_deps.values.flat_map(&:to_specs)
   end
   private_class_method :unresolved_specs
 
@@ -1067,7 +1073,7 @@ class Gem::Specification < Gem::BasicSpecification
       result[spec.name] = spec
     end
 
-    result.map(&:last).flatten.sort_by(&:name)
+    result.flat_map(&:last).sort_by(&:name)
   end
 
   ##
@@ -1193,21 +1199,30 @@ class Gem::Specification < Gem::BasicSpecification
     Gem.pre_reset_hooks.each(&:call)
     @specification_record = nil
     clear_load_cache
-    unresolved = unresolved_deps
-    unless unresolved.empty?
-      warn "WARN: Unresolved or ambiguous specs during Gem::Specification.reset:"
-      unresolved.values.each do |dep|
-        warn "      #{dep}"
 
-        versions = find_all_by_name(dep.name)
-        unless versions.empty?
-          warn "      Available/installed versions of this gem:"
-          versions.each {|s| warn "      - #{s.version}" }
+    unless unresolved_deps.empty?
+      unresolved = unresolved_deps.filter_map do |name, dep|
+        matching_versions = find_all_by_name(name)
+        next if dep.latest_version? && matching_versions.any?(&:default_gem?)
+
+        [dep, matching_versions.uniq(&:full_name)]
+      end.to_h
+
+      unless unresolved.empty?
+        warn "WARN: Unresolved or ambiguous specs during Gem::Specification.reset:"
+        unresolved.each do |dep, versions|
+          warn "      #{dep}"
+
+          unless versions.empty?
+            warn "      Available/installed versions of this gem:"
+            versions.each {|s| warn "      - #{s.version}" }
+          end
         end
+        warn "WARN: Clearing out unresolved specs. Try 'gem cleanup <gem>'"
+        warn "Please report a bug if this causes problems."
       end
-      warn "WARN: Clearing out unresolved specs. Try 'gem cleanup <gem>'"
-      warn "Please report a bug if this causes problems."
-      unresolved.clear
+
+      unresolved_deps.clear
     end
     Gem.post_reset_hooks.each(&:call)
   end
@@ -1299,7 +1314,7 @@ class Gem::Specification < Gem::BasicSpecification
     spec.instance_variable_set :@summary,                   array[5]
     spec.instance_variable_set :@required_ruby_version,     array[6]
     spec.instance_variable_set :@required_rubygems_version, array[7]
-    spec.instance_variable_set :@original_platform,         array[8]
+    spec.platform =                                         array[8]
     spec.instance_variable_set :@dependencies,              array[9]
     # offset due to rubyforge_project removal
     spec.instance_variable_set :@email,                     array[11]
@@ -1307,9 +1322,7 @@ class Gem::Specification < Gem::BasicSpecification
     spec.instance_variable_set :@description,               array[13]
     spec.instance_variable_set :@homepage,                  array[14]
     spec.instance_variable_set :@has_rdoc,                  array[15]
-    spec.instance_variable_set :@new_platform,              array[16]
-    spec.instance_variable_set :@platform,                  array[16].to_s
-    spec.instance_variable_set :@license,                   array[17]
+    spec.instance_variable_set :@licenses,                  [array[17]]
     spec.instance_variable_set :@metadata,                  array[18]
     spec.instance_variable_set :@loaded,                    false
     spec.instance_variable_set :@activated,                 false
@@ -1403,7 +1416,7 @@ class Gem::Specification < Gem::BasicSpecification
       end
 
       begin
-        specs = spec_dep.to_specs
+        specs = spec_dep.to_specs.uniq(&:full_name)
       rescue Gem::MissingSpecError => e
         raise Gem::MissingSpecError.new(e.name, e.requirement, "at: #{spec_file}")
       end
@@ -1495,7 +1508,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   private :add_dependency_with_type
 
-  alias_method :add_dependency, :add_runtime_dependency
+  alias_method :add_runtime_dependency, :add_dependency
 
   ##
   # Adds this spec's require paths to LOAD_PATH, in the proper location.
@@ -1766,7 +1779,7 @@ class Gem::Specification < Gem::BasicSpecification
   # Returns all specs that matches this spec's runtime dependencies.
 
   def dependent_specs
-    runtime_dependencies.map(&:to_specs).flatten
+    runtime_dependencies.flat_map(&:to_specs)
   end
 
   ##
@@ -1804,15 +1817,8 @@ class Gem::Specification < Gem::BasicSpecification
   def encode_with(coder) # :nodoc:
     coder.add "name", @name
     coder.add "version", @version
-    platform = case @original_platform
-               when nil, "" then
-                 "ruby"
-               when String then
-                 @original_platform
-               else
-                 @original_platform.to_s
-    end
-    coder.add "platform", platform
+    coder.add "platform", platform.to_s
+    coder.add "original_platform", original_platform.to_s if platform.to_s != original_platform.to_s
 
     attributes = @@attributes.map(&:to_s) - %w[name version platform]
     attributes.each do |name|
@@ -1904,7 +1910,8 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
-  # Work around bundler removing my methods
+  # Work around old bundler versions removing my methods
+  # Can be removed once RubyGems can no longer install Bundler 2.5
 
   def gem_dir # :nodoc:
     super
@@ -2462,7 +2469,7 @@ class Gem::Specification < Gem::BasicSpecification
 
     if @installed_by_version
       result << nil
-      result << "  s.installed_by_version = #{ruby_code Gem::VERSION} if s.respond_to? :installed_by_version"
+      result << "  s.installed_by_version = #{ruby_code Gem::VERSION}"
     end
 
     unless dependencies.empty?
@@ -2577,6 +2584,10 @@ class Gem::Specification < Gem::BasicSpecification
     @test_files.delete_if       {|x| File.directory?(x) && !File.symlink?(x) }
   end
 
+  def validate_for_resolution
+    Gem::SpecificationPolicy.new(self).validate_for_resolution
+  end
+
   def validate_metadata
     Gem::SpecificationPolicy.new(self).validate_metadata
   end
@@ -2612,13 +2623,12 @@ class Gem::Specification < Gem::BasicSpecification
       when "date"
         # Force Date to go through the extra coerce logic in date=
         self.date = val
+      when "platform"
+        self.platform = val
       else
         instance_variable_set "@#{ivar}", val
       end
     end
-
-    @original_platform = @platform # for backwards compatibility
-    self.platform = Gem::Platform.new @platform
   end
 
   ##

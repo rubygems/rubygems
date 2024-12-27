@@ -107,15 +107,6 @@ class Gem::Commands::SetupCommand < Gem::Command
     @verbose = nil
   end
 
-  def check_ruby_version
-    required_version = Gem::Requirement.new ">= 2.6.0"
-
-    unless required_version.satisfied_by? Gem.ruby_version
-      alert_error "Expected Ruby version #{required_version}, is #{Gem.ruby_version}"
-      terminate_interaction 1
-    end
-  end
-
   def defaults_str # :nodoc:
     "--format-executable --document ri --regenerate-binstubs"
   end
@@ -147,8 +138,6 @@ By default, this RubyGems will install gem as:
 
   def execute
     @verbose = Gem.configuration.really_verbose
-
-    check_ruby_version
 
     require "fileutils"
     if Gem.configuration.really_verbose
@@ -279,11 +268,7 @@ By default, this RubyGems will install gem as:
           File.open bin_cmd_file, "w" do |file|
             file.puts <<-TEXT
   @ECHO OFF
-  IF NOT "%~f0" == "~f0" GOTO :WinNT
-  @"#{File.basename(Gem.ruby).chomp('"')}" "#{dest_file}" %1 %2 %3 %4 %5 %6 %7 %8 %9
-  GOTO :EOF
-  :WinNT
-  @"#{File.basename(Gem.ruby).chomp('"')}" "%~dpn0" %*
+  @"%~dp0#{File.basename(Gem.ruby).chomp('"')}" "%~dpn0" %*
   TEXT
           end
 
@@ -340,6 +325,8 @@ By default, this RubyGems will install gem as:
 
       require_relative "../rdoc"
 
+      return false unless defined?(Gem::RDoc)
+
       fake_spec = Gem::Specification.new "rubygems", Gem::VERSION
       def fake_spec.full_gem_path
         File.expand_path "../../..", __dir__
@@ -363,9 +350,15 @@ By default, this RubyGems will install gem as:
   def install_default_bundler_gem(bin_dir)
     current_default_spec = Gem::Specification.default_stubs.find {|s| s.name == "bundler" }
     specs_dir = if current_default_spec && default_dir == Gem.default_dir
+      all_specs_current_version = Gem::Specification.stubs.select {|s| s.full_name == current_default_spec.full_name }
+
       Gem::Specification.remove_spec current_default_spec
       loaded_from = current_default_spec.loaded_from
       File.delete(loaded_from)
+
+      # Remove previous default gem executables if they were not shadowed by a regular gem
+      FileUtils.rm_rf current_default_spec.full_gem_path if all_specs_current_version.size == 1
+
       File.dirname(loaded_from)
     else
       target_specs_dir = File.join(default_dir, "specifications", "default")

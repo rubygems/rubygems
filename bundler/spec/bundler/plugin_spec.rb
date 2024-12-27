@@ -247,7 +247,7 @@ RSpec.describe Bundler::Plugin do
       end
 
       it "returns plugin dir in app .bundle path" do
-        expect(subject.root).to eq(bundled_app.join(".bundle/plugin"))
+        expect(subject.root).to eq(bundled_app(".bundle/plugin"))
       end
     end
 
@@ -257,7 +257,7 @@ RSpec.describe Bundler::Plugin do
       end
 
       it "returns plugin dir in global bundle path" do
-        expect(subject.root).to eq(home.join(".bundle/plugin"))
+        expect(subject.root).to eq(home(".bundle/plugin"))
       end
     end
   end
@@ -331,6 +331,29 @@ RSpec.describe Bundler::Plugin do
         expect do
           Plugin.hook(Bundler::Plugin::Events::EVENT1) { puts "win" }
         end.to output("win\n").to_stdout
+      end
+    end
+
+    context "the plugin load_path is invalid" do
+      before do
+        allow(index).to receive(:load_paths).with("foo-plugin").
+          and_return(["invalid-file-name1", "invalid-file-name2"])
+      end
+
+      it "outputs a useful warning" do
+        msg =
+          "The following plugin paths don't exist: invalid-file-name1, invalid-file-name2.\n\n" \
+          "This can happen if the plugin was " \
+          "installed with a different version of Ruby that has since been uninstalled.\n\n" \
+          "If you would like to reinstall the plugin, run:\n\n" \
+          "bundler plugin uninstall foo-plugin && bundler plugin install foo-plugin\n\n" \
+          "Continuing without installing plugin foo-plugin.\n"
+
+        expect(Bundler.ui).to receive(:warn).with(msg)
+
+        Plugin.hook(Bundler::Plugin::Events::EVENT1)
+
+        expect(subject.loaded?("foo-plugin")).to be_falsey
       end
     end
   end

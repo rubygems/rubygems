@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+abort "RubyGems only supports Ruby 3.1 or higher" if RUBY_VERSION < "3.1.0"
+
 require_relative "path"
 
 $LOAD_PATH.unshift(Spec::Path.source_lib_dir.to_s)
@@ -57,8 +59,8 @@ module Spec
       install_test_deps
 
       (2..Parallel.processor_count).each do |n|
-        source = Path.source_root.join("tmp", "1")
-        destination = Path.source_root.join("tmp", n.to_s)
+        source = Path.tmp_root("1")
+        destination = Path.tmp_root(n.to_s)
 
         FileUtils.rm_rf destination
         FileUtils.cp_r source, destination
@@ -70,14 +72,20 @@ module Spec
 
       ENV["BUNDLE_PATH"] = nil
       ENV["GEM_HOME"] = ENV["GEM_PATH"] = Path.base_system_gem_path.to_s
-      ENV["PATH"] = [Path.system_gem_path.join("bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)
+      ENV["PATH"] = [Path.system_gem_path("bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)
       ENV["PATH"] = [Path.bindir, ENV["PATH"]].join(File::PATH_SEPARATOR) if Path.ruby_core?
     end
 
     def install_test_deps
+      Gem.clear_paths
+
       install_gems(test_gemfile, Path.base_system_gems.to_s)
       install_gems(rubocop_gemfile, Path.rubocop_gems.to_s)
       install_gems(standard_gemfile, Path.standard_gems.to_s)
+
+      # For some reason, doing this here crashes on JRuby + Windows. So defer to
+      # when the test suite is running in that case.
+      Helpers.install_dev_bundler unless Gem.win_platform? && RUBY_ENGINE == "jruby"
     end
 
     def check_source_control_changes(success_message:, error_message:)
@@ -142,8 +150,9 @@ module Spec
         ENV["BUNDLE_PATH__SYSTEM"] = "true"
       end
 
-      puts `#{Gem.ruby} #{File.expand_path("support/bundle.rb", Path.spec_dir)} install --verbose`
-      raise unless $?.success?
+      # We don't use `Open3` here because it does not work on JRuby + Windows
+      output = `#{Gem.ruby} #{File.expand_path("support/bundle.rb", Path.spec_dir)} install`
+      raise output unless $?.success?
     ensure
       if path
         ENV["BUNDLE_PATH"] = old_path

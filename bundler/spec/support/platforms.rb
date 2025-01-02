@@ -59,7 +59,7 @@ module Spec
     def local_tag
       if RUBY_PLATFORM == "java"
         :jruby
-      elsif ["x64-mingw32", "x64-mingw-ucrt"].include?(RUBY_PLATFORM)
+      elsif RUBY_PLATFORM.match?(/mingw|mswin/)
         :windows
       else
         :ruby

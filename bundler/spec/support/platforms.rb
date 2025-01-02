@@ -105,7 +105,7 @@ module Spec
     end
 
     def default_locked_platforms
-      [local_platform, generic_local_platform]
+      [local_platform, generic_local_platform] - [Gem::Platform.new("windows")]
     end
   end
 end

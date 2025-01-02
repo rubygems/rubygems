@@ -292,10 +292,11 @@ module Gem
 
   class Platform
     JAVA = Gem::Platform.new("java")
-    WINDOWS = [Gem::Platform.new("mingw"),
-               Gem::Platform.new("mingw32"),
+    WINDOWS = [Gem::Platform.new("windows"),
                Gem::Platform.new("mswin32"),
-               Gem::Platform.new("mswin64")].freeze
+               Gem::Platform.new("mswin64"),
+               Gem::Platform.new("mingw32"),
+               Gem::Platform.new("mingw")].freeze
     X64_LINUX = Gem::Platform.new("x86_64-linux")
     X64_LINUX_MUSL = Gem::Platform.new("x86_64-linux-musl")
 

@@ -714,13 +714,10 @@ RSpec.describe "bundle exec" do
       puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
       puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
       puts "MYRACK: \#{MYRACK}"
-      process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
-      puts "PROCESS: \#{process_title}"
     RUBY
 
     before do
-      bundled_app(path).open("w") {|f| f << executable }
-      bundled_app(path).chmod(0o755)
+      create_file(bundled_app(path), executable)
 
       install_gemfile <<-G
         source "https://gem.repo1"
@@ -731,20 +728,13 @@ RSpec.describe "bundle exec" do
     let(:exec) { "EXEC: load" }
     let(:args) { "ARGS: #{path} arg1 arg2" }
     let(:myrack) { "MYRACK: 1.0.0" }
-    let(:process) do
-      title = "PROCESS: #{path}"
-      title += " arg1 arg2"
-      title
-    end
     let(:exit_code) { 0 }
-    let(:expected) { [exec, args, myrack, process].join("\n") }
+    let(:expected) { [exec, args, myrack].join("\n") }
     let(:expected_err) { "" }
 
     subject { bundle "exec #{path} arg1 arg2", raise_on_error: false }
 
     it "runs" do
-      skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
       subject
       expect(exitstatus).to eq(exit_code)
       expect(err).to eq(expected_err)
@@ -811,6 +801,9 @@ RSpec.describe "bundle exec" do
       it "runs" do
         skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
 
+        # it's empty, so `create_file` won't add executable permission
+        bundled_app(path).chmod(0o755)
+
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -822,7 +815,7 @@ RSpec.describe "bundle exec" do
       let(:executable) { super() << "\nraise 'ERROR'" }
       let(:exit_code) { 1 }
       let(:expected_err) do
-        /\Abundler: failed to load command: #{Regexp.quote(path.to_s)} \(#{Regexp.quote(path.to_s)}\)\n#{Regexp.quote(path.to_s)}:10:in [`']<top \(required\)>': ERROR \(RuntimeError\)/
+        /\Abundler: failed to load command: #{Regexp.quote(path.to_s)} \(#{Regexp.quote(path.to_s)}\)\n#{Regexp.quote(path.to_s)}:[0-9]+:in [`']<top \(required\)>': ERROR \(RuntimeError\)/
       end
 
       it "runs like a normally executed executable" do
@@ -943,8 +936,6 @@ RSpec.describe "bundle exec" do
       end
 
       it "runs" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)

@@ -292,19 +292,20 @@ module Gem
 
   class Platform
     JAVA = Gem::Platform.new("java")
-    WINDOWS = [Gem::Platform.new("windows"),
-               Gem::Platform.new("mswin32"),
-               Gem::Platform.new("mswin64"),
-               Gem::Platform.new("mingw32"),
-               Gem::Platform.new("mingw")].freeze
+    WINDOWS = Gem::Platform.new("windows")
     X64_LINUX = Gem::Platform.new("x86_64-linux")
     X64_LINUX_MUSL = Gem::Platform.new("x86_64-linux-musl")
 
     # @deprecated Use WINDOWS instead. These constants will be removed in RubyGems 4.
-    MSWIN = WINDOWS
-    MSWIN64 = WINDOWS
-    MINGW = WINDOWS
-    X64_MINGW = WINDOWS
+    MSWIN = Gem::Platform.new("mswin32")
+    MSWIN64 = Gem::Platform.new("mswin64")
+    MINGW = Gem::Platform.new("x86-mingw32")
+    X64_MINGW = [Gem::Platform.new("x64-mingw32"),
+                 Gem::Platform.new("x64-mingw-ucrt")].freeze
+    deprecate_constant :MSWIN
+    deprecate_constant :MSWIN64
+    deprecate_constant :MINGW
+    deprecate_constant :X64_MINGW
 
     if X64_LINUX === X64_LINUX_MUSL
       remove_method :===

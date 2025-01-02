@@ -297,7 +297,8 @@ module Gem
     MINGW = Gem::Platform.new("x86-mingw32")
     X64_MINGW = [Gem::Platform.new("x64-mingw32"),
                  Gem::Platform.new("x64-mingw-ucrt")].freeze
-    WINDOWS = [MSWIN, MSWIN64, MINGW, X64_MINGW].flatten.freeze
+    WINDOWS = [Gem::Platform.new("mingw"),
+               MSWIN, MSWIN64, MINGW, X64_MINGW].flatten.freeze
     X64_LINUX = Gem::Platform.new("x86_64-linux")
     X64_LINUX_MUSL = Gem::Platform.new("x86_64-linux-musl")
 

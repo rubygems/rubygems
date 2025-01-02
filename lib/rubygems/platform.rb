@@ -125,6 +125,7 @@ class Gem::Platform
                       when /^dotnet$/ then              ["dotnet",    nil]
                       when /^dotnet([\d.]*)/ then       ["dotnet",    $1]
                       when /linux-?(\w+)?/ then         ["linux",     $1]
+                      when /windows/ then               ["windows",   nil]
                       when /mingw32/ then               ["mingw32",   nil]
                       when /mingw-?(\w+)?/ then         ["mingw",     $1]
                       when /(mswin\d+)(\_(\d+))?/ then

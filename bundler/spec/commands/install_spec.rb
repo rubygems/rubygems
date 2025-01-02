@@ -291,6 +291,17 @@ RSpec.describe "bundle install with gem sources" do
           expect(the_bundle).to include_gems("platform_specific 1.0 x86-mswin32")
         end
       end
+
+      it "installs gems for arm64-windows" do
+        simulate_platform arm64_windows do
+          install_gemfile <<-G
+            source "https://gem.repo1"
+            gem "platform_specific"
+          G
+
+          expect(the_bundle).to include_gems("platform_specific 1.0 arm64-windows")
+        end
+      end
     end
 
     describe "doing bundle install foo" do

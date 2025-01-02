@@ -120,7 +120,6 @@ module Gem
   # An Array of Regexps that match windows Ruby platforms.
 
   WIN_PATTERNS = [
-    /windows/i,
     /bccwin/i,
     /cygwin/i,
     /djgpp/i,

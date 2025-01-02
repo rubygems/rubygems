@@ -271,6 +271,7 @@ module Bundler
     end
 
     def platforms(*platforms)
+      deprecate_legacy_windows_platforms(platforms)
       @platforms.concat platforms
       yield
     ensure
@@ -486,6 +487,16 @@ module Bundler
       else
         raise GemfileError, "Unknown source '#{source}'"
       end
+    end
+
+    def deprecate_legacy_windows_platforms(platforms)
+      dep_platforms = Array(platforms).select {|pl| pl.to_s.match?(/mingw|mswin/) }
+      return if dep_platforms.empty?
+
+      dep_platforms = dep_platforms.map! {|pl| ":#{pl}" }.join(', ')
+      message = "Platform #{dep_platforms} is deprecated. Please use platform :windows instead."
+      removed_message = "Platform #{dep_platforms} has been removed. Please use platform :windows instead."
+      Bundler::SharedHelpers.major_deprecation 3, message, removed_message: removed_message
     end
 
     def check_path_source_safety

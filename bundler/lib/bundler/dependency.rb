@@ -17,11 +17,11 @@ module Bundler
       truffleruby: [Gem::Platform::RUBY],
       jruby: [Gem::Platform::JAVA, [18, 19]],
       windows: [Gem::Platform::WINDOWS, ALL_RUBY_VERSIONS],
-      # deprecated
-      mswin: [Gem::Platform::MSWIN, ALL_RUBY_VERSIONS],
-      mswin64: [Gem::Platform::MSWIN64, ALL_RUBY_VERSIONS - [18]],
-      mingw: [Gem::Platform::MINGW, ALL_RUBY_VERSIONS],
-      x64_mingw: [Gem::Platform::X64_MINGW, ALL_RUBY_VERSIONS - [18, 19]],
+      # @deprecated Use :windows instead.
+      mswin: [Gem::Platform::WINDOWS, ALL_RUBY_VERSIONS],
+      mswin64: [Gem::Platform::WINDOWS, ALL_RUBY_VERSIONS - [18]],
+      mingw: [Gem::Platform::WINDOWS, ALL_RUBY_VERSIONS],
+      x64_mingw: [Gem::Platform::WINDOWS, ALL_RUBY_VERSIONS - [18, 19]],
     }.each_with_object({}) do |(platform, spec), hash|
       hash[platform] = spec[0]
       spec[1]&.each {|version| hash[:"#{platform}_#{version}"] = spec[0] }

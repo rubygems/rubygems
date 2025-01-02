@@ -71,6 +71,8 @@ module Bundler
     def windows?
       Gem.win_platform?
     end
+
+    # @deprecated Use windows? instead. These methods will be removed in Rubygems version 4.
     alias_method :mswin?, :windows?
     alias_method :mswin64?, :windows?
     alias_method :mingw?, :windows?

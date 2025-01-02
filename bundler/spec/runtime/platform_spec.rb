@@ -476,28 +476,16 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
 
       simulate_windows platform do
         lockfile <<-L
-          GEM
-            remote: https://gem.repo1/
-            specs:
-              platform_specific (1.0-#{platform})
-              requires_platform_specific (1.0)
-                platform_specific
-
           PLATFORMS
             #{platform}
-
-          DEPENDENCIES
-            requires_platform_specific
         L
 
-        install_gemfile <<-G
-          source "https://gem.repo1"
-          gem "platform_specific", :platforms => [:windows]
-        G
-
-        bundle "install"
-
-        expect(the_bundle).to_not include_gems "platform_specific 1.0 #{platform}"
+        expect do
+          install_gemfile <<-G
+            source "https://gem.repo1"
+            gem "platform_specific", :platforms => [:windows]
+          G
+        end.to raise_error(RuntimeError, /Could not find gem 'platform_specific windows' in rubygems repository/)
       end
     end
   end

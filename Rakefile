@@ -636,11 +636,11 @@ namespace :man do
     end
     task build_all_pages: "index.txt"
 
-    desc "Make sure nronn is installed"
+    desc "Make sure ronn-ng is installed"
     task :check_ronn do
-      Spec::Rubygems.gem_require("nronn", "ronn")
+      Spec::Rubygems.gem_require("ronn-ng", "ronn")
     rescue Gem::LoadError => e
-      abort("We couldn't activate nronn (#{e.requirement}). Try `gem install nronn:'#{e.requirement}'` to be able to build the help pages")
+      abort("We couldn't activate ronn-ng (#{e.requirement}). Try `gem install ronn-ng:'#{e.requirement}'` to be able to build the help pages")
     end
 
     desc "Remove all built man pages"

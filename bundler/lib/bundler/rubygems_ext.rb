@@ -291,7 +291,7 @@ module Gem
   require "rubygems/platform"
 
   class Platform
-    JAVA  = Gem::Platform.new("java")
+    JAVA = Gem::Platform.new("java")
     WINDOWS = [Gem::Platform.new("mingw"),
                Gem::Platform.new("mingw32"),
                Gem::Platform.new("mswin32"),

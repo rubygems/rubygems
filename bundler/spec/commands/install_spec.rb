@@ -293,7 +293,7 @@ RSpec.describe "bundle install with gem sources" do
       end
 
       it "installs gems for aarch64-mingw-ucrt" do
-        simulate_platform aarch64_windows_ucrt do
+        simulate_platform aarch64_mingw_ucrt do
           install_gemfile <<-G
             source "https://gem.repo1"
             gem "platform_specific"

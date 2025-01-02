@@ -44,16 +44,12 @@ module Spec
       Gem::Platform.new(["x64", "mingw", "ucrt"])
     end
 
-    def aarch64_mingw
-      Gem::Platform.new(["aarch64", "mingw", nil])
-    end
-
     def aarch64_mingw_ucrt
       Gem::Platform.new(["aarch64", "mingw", "ucrt"])
     end
 
     def windows_platforms
-      [x86_mswin32, x64_mswin64, x86_mingw32, x64_mingw32, x64_mingw_ucrt, aarch64_mingw, aarch64_mingw_ucrt]
+      [x86_mswin32, x64_mswin64, x86_mingw32, x64_mingw32, x64_mingw_ucrt, aarch64_mingw_ucrt]
     end
 
     def all_platforms

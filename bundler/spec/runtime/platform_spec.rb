@@ -438,7 +438,7 @@ RSpec.describe "Bundler.setup with multi platform stuff" do
     end
   end
 
-  %w[x86-mswin32 x64-mswin64 x86-mingw32 x64-mingw32 x64-mingw-ucrt].each do |arch|
+  %w[arm64-windows arm64-windows-version x86-mswin32 x64-mswin64 x86-mingw32 x64-mingw32 x64-mingw-ucrt].each do |arch|
     it "allows specifying platform windows on #{arch} arch" do
       platform = send(arch.tr("-", "_"))
 

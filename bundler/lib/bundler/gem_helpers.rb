@@ -9,7 +9,7 @@ module Bundler
       [Gem::Platform.new("mswin32"), Gem::Platform.new("windows")],
       [Gem::Platform.new("mswin64"), Gem::Platform.new("windows")],
       [Gem::Platform.new("mingw32"), Gem::Platform.new("windows")],
-      [Gem::Platform.new("mingw"), Gem::Platform.new("windows")]
+      [Gem::Platform.new("mingw"), Gem::Platform.new("windows")],
     ].freeze
 
     def generic(p)

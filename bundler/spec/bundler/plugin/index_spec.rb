@@ -200,5 +200,26 @@ RSpec.describe Bundler::Plugin::Index do
         and_raise(Bundler::GenericSystemCallError.new("foo", "bar"))
       Bundler::Plugin::Index.new
     end
+
+    context "empty global index" do
+      before do
+        allow(File).to receive(:writable?).and_return(false)
+        allow(FileTest).to receive(:writable?).and_return(false)
+        require "tmpdir"
+        allow(::Dir).to receive(:tmpdir).and_raise(ArgumentError, "could not find a temporary directory")
+        expect { Dir.tmpdir }.to raise_error(/temporary/)
+
+        # to reset user_home memoized value
+        Bundler.reset_paths!
+      end
+
+      after do
+        Bundler.reset_paths!
+      end
+
+      it "does not fail with exception" do
+        described_class.new
+      end
+    end
   end
 end

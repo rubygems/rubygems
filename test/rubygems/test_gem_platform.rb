@@ -123,6 +123,7 @@ class TestGemPlatform < Gem::TestCase
       "i386-linux-gnu" => ["x86", "linux", "gnu"],
       "i386-mingw32" => ["x86", "mingw32", nil],
       "x64-mingw-ucrt" => ["x64", "mingw", "ucrt"],
+      "aarch64-mingw-ucrt" => ["aarch64", "mingw", "ucrt"],
       "i386-mswin32" => ["x86", "mswin32", nil],
       "i386-mswin32_80" => ["x86", "mswin32", "80"],
       "i386-mswin32-80" => ["x86", "mswin32", "80"],

@@ -17,11 +17,11 @@ To request substantial changes to Bundler and/or Bundler documentation, please r
 
 Here are the different ways you can start contributing to the Bundler project:
 
-* [First contribution suggestions](/bundler/doc/contributing/HOW_YOU_CAN_HELP.md)
-* [Adding new features](/bundler/doc/development/NEW_FEATURES.md)
-* [Triaging bugs](/bundler/doc/contributing/BUG_TRIAGE.md)
-* [Writing documentation](/bundler/doc/documentation/WRITING.md)
-* [Community engagement](/bundler/doc/contributing/COMMUNITY.md)
+* [First contribution suggestions](HOW_YOU_CAN_HELP.md)
+* [Adding new features](../development/NEW_FEATURES.md)
+* [Triaging bugs](BUG_TRIAGE.md)
+* [Writing documentation](../documentation/WRITING.md)
+* [Community engagement](COMMUNITY.md)
 
 ## Supporting Bundler
 

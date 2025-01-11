@@ -57,7 +57,6 @@ GEM
     turbo_tests (2.2.3)
       parallel_tests (>= 3.3.0, < 5)
       rspec (>= 3.10)
-    uri (0.13.0)
 
 PLATFORMS
   aarch64-darwin
@@ -83,7 +82,6 @@ DEPENDENCIES
   rspec-mocks (~> 3.12)
   test-unit (~> 3.0)
   turbo_tests (~> 2.2.3)
-  uri (~> 0.13.0)
 
 CHECKSUMS
   diff-lcs (1.5.1) sha256=273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe
@@ -115,7 +113,6 @@ CHECKSUMS
   rspec-support (3.13.1) sha256=48877d4f15b772b7538f3693c22225f2eda490ba65a0515c4e7cf6f2f17de70f
   test-unit (3.6.2) sha256=3ce480c23990ca504a3f0d6619be2a560e21326cefd1b86d0f9433c387f26039
   turbo_tests (2.2.3) sha256=c1a8763361a019c3ff68e8a47c5e1acb32c1e7668f9d4a4e08416ca4786ea8a0
-  uri (0.13.0) sha256=26553c2a9399762e1e8bebd4444b4361c4b21298cf1c864b22eeabc9c4998f24
 
 BUNDLED WITH
    2.6.2

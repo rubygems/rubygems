@@ -28,7 +28,7 @@ jobs:
         ruby:
           - { name: ruby-3.1, value: 3.1.6 }
           - { name: ruby-3.2, value: 3.2.6 }
-          - { name: ruby-3.3, value: 3.3.6 }
+          - { name: ruby-3.3, value: 3.3.7 }
           - { name: ruby-3.4, value: 3.4.1 }
 
     steps:

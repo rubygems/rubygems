@@ -134,8 +134,9 @@ jobs:
         run: bundle init && bundle add fileutils --git https://github.com/ruby/fileutils
         shell: bash
       - name: Generate a Rails application
-        run: gem install rails --version 7.0.8 && rails new foo ${{ matrix.ruby.rails-args }}
+        run: gem install rails --version 8.0.1 && rails new foo ${{ matrix.ruby.rails-args }}
         shell: bash
+        if: matrix.ruby.name != 'jruby-9.4' && matrix.ruby.name != '3.1'
       - name: Use gem installed in a bin dir different from where Ruby itself is installed
         run: gem install rspec --version 3.13.0 --install-dir foo && GEM_HOME=foo foo/bin/rspec --version
         shell: bash

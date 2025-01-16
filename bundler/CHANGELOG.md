@@ -1,3 +1,25 @@
+# 2.6.3 (January 16, 2025)
+
+## Enhancements:
+
+  - Don't fallback to evaluating YAML gemspecs as Ruby code [#8404](https://github.com/rubygems/rubygems/pull/8404)
+  - Print message when blocking on file locks [#8299](https://github.com/rubygems/rubygems/pull/8299)
+  - Add support for mise version manager file [#8356](https://github.com/rubygems/rubygems/pull/8356)
+  - Add Ruby 3.5 to Gemfile DSL platform values [#8365](https://github.com/rubygems/rubygems/pull/8365)
+
+## Bug fixes:
+
+  - Revert RubyGems plugins getting loaded on `Bundler.require` [#8410](https://github.com/rubygems/rubygems/pull/8410)
+  - Fix platform specific gems sometimes being removed from the lockfile [#8401](https://github.com/rubygems/rubygems/pull/8401)
+  - Serialize gemspec when caching git source [#8403](https://github.com/rubygems/rubygems/pull/8403)
+  - Fix crash on read-only filesystems in Ruby 3.4 [#8372](https://github.com/rubygems/rubygems/pull/8372)
+  - Fix `bundle outdated <GEM>` failing if not all gems are installed [#8361](https://github.com/rubygems/rubygems/pull/8361)
+  - Fix `bundle install` crash on Windows [#8362](https://github.com/rubygems/rubygems/pull/8362)
+
+## Documentation:
+
+  - Fix broken links in the documents [#8389](https://github.com/rubygems/rubygems/pull/8389)
+
 # 2.6.2 (December 23, 2024)
 
 ## Bug fixes:

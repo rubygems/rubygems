@@ -28,7 +28,7 @@ jobs:
           - { name: ruby-3.1, value: 3.1.6 }
           - { name: ruby-3.2, value: 3.2.6 }
           - { name: ruby-3.3, value: 3.3.6 }
-          - { name: ruby-3.4, value: 3.4.0-rc1 }
+          - { name: ruby-3.4, value: 3.4.1 }
 
         bundler:
           - { name: 2, value: '' }
@@ -38,14 +38,14 @@ jobs:
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.6 } }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.0-rc1 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.1 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@401c19e14f474b54450cd3905bb8b86e2c8509cf # v1.204.0
+        uses: ruby/setup-ruby@868b3f088412f139260f27f5b148179b9dd6b008 # v1.208.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -57,10 +57,28 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: cassettes-bundler-${{ matrix.bundler.name }}-${{ matrix.os.value }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
+    timeout-minutes: 20
+
+  tapioca:
+    name: Tapioca
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@868b3f088412f139260f27f5b148179b9dd6b008 # v1.208.0
+        with:
+          ruby-version: 3.4.1
+          bundler: none
+      - name: Prepare tapioca
+        run: ruby ../../../support/bundle.rb install
+        working-directory: bundler/spec/realworld/fixtures/tapioca
+      - name: Run tapioca
+        run: ruby ../../../support/bundle.rb exec tapioca init
+        working-directory: bundler/spec/realworld/fixtures/tapioca
     timeout-minutes: 20
 
   system_rubygems_bundler:
@@ -73,15 +91,15 @@ jobs:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.6 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.0-rc1 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.1 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.6 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.6 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.6 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.4, value: 3.4.0-rc1 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.4, value: 3.4.1 } }
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@401c19e14f474b54450cd3905bb8b86e2c8509cf # v1.204.0
+        uses: ruby/setup-ruby@868b3f088412f139260f27f5b148179b9dd6b008 # v1.208.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -93,7 +111,7 @@ jobs:
       - name: Run Test
         run: bin/rake spec:realworld
       - name: Upload used cassettes as artifact
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: cassettes-system-rubygems-bundler-${{ matrix.bundler.name }}-${{ matrix.ruby.name }}
           path: ./bundler/spec/support/artifice/used_cassettes.txt
@@ -106,9 +124,9 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@401c19e14f474b54450cd3905bb8b86e2c8509cf # v1.204.0
+        uses: ruby/setup-ruby@868b3f088412f139260f27f5b148179b9dd6b008 # v1.208.0
         with:
-          ruby-version: 3.4.0-rc1
+          ruby-version: 3.4.1
           bundler: none
       - name: Prepare dependencies
         run: bin/rake setup

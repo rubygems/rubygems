@@ -29,7 +29,7 @@ See [bundler.io](https://bundler.io) for the full documentation.
 
 ### Troubleshooting
 
-For help with common problems, see [TROUBLESHOOTING](doc/TROUBLESHOOTING.md).
+For help with common problems, see [TROUBLESHOOTING](../doc/bundler/TROUBLESHOOTING.md).
 
 Still stuck? Try [filing an issue](https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md).
 

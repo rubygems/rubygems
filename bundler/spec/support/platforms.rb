@@ -44,8 +44,12 @@ module Spec
       Gem::Platform.new(["x64", "mingw", "ucrt"])
     end
 
+    def aarch64_mingw_ucrt
+      Gem::Platform.new(["aarch64", "mingw", "ucrt"])
+    end
+
     def windows_platforms
-      [x86_mswin32, x64_mswin64, x86_mingw32, x64_mingw32, x64_mingw_ucrt]
+      [x86_mswin32, x64_mswin64, x86_mingw32, x64_mingw32, x64_mingw_ucrt, aarch64_mingw_ucrt]
     end
 
     def all_platforms
@@ -59,7 +63,7 @@ module Spec
     def local_tag
       if RUBY_PLATFORM == "java"
         :jruby
-      elsif ["x64-mingw32", "x64-mingw-ucrt"].include?(RUBY_PLATFORM)
+      elsif RUBY_PLATFORM.match?(/mingw|mswin/)
         :windows
       else
         :ruby
@@ -105,7 +109,7 @@ module Spec
     end
 
     def default_locked_platforms
-      [local_platform, generic_local_platform]
+      [local_platform, generic_local_platform] - [Gem::Platform.new("mingw")]
     end
   end
 end

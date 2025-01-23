@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
     groups:
       artifacts:
         patterns:
@@ -13,7 +13,7 @@ updates:
       - '/test/rubygems/test_gem_ext_cargo_builder/custom_name/ext/custom_name_lib'
       - '/test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
     groups:
       rb-sys:
         patterns:
@@ -21,4 +21,4 @@ updates:
   - package-ecosystem: 'pip'
     directory: '/.github/workflows/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'

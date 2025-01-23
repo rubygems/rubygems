@@ -18,3 +18,7 @@ updates:
       rb-sys:
         patterns:
           - 'rb-sys'
+  - package-ecosystem: 'pip'
+    directory: '/.github/workflows/'
+    schedule:
+      interval: 'weekly'

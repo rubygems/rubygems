@@ -209,6 +209,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     spec.executables.each do |e|
       if Gem.win_platform?
         assert_path_exist File.join(bin_dir, "#{e}.bat")
+        assert_path_exist File.join(bin_dir, "#{e}.ps1")
       end
 
       assert_path_exist File.join bin_dir, e
@@ -269,6 +270,7 @@ class TestGemCommandsSetupCommand < Gem::TestCase
     spec.executables.each do |e|
       if Gem.win_platform?
         assert_path_exist File.join(bin_dir, "#{e}.bat")
+        assert_path_exist File.join(bin_dir, "#{e}.ps1")
       end
 
       assert_path_exist File.join bin_dir, e

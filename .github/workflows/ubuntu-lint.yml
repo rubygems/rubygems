@@ -23,7 +23,7 @@ jobs:
       matrix:
         ruby:
           - { name: ruby, value: 3.4.1 }
-          - { name: truffleruby, value: truffleruby-24.1.1 }
+          - { name: truffleruby, value: truffleruby-24.1.2 }
     env:
       RUBYOPT: -Ilib
     steps:

@@ -54,12 +54,9 @@ jobs:
           bin/parallel_rspec --tag jruby_only --tag jruby
         working-directory: ./bundler
         if: matrix.os.name == 'Ubuntu'
-      - name: Install local bundler
-        run: |
-          bin/rake bundler:install:local
-        if: matrix.os.name == 'Ubuntu'
       - name: Run a warbler project
         run: |
+          bin/rake bundler:install:local
           cd bundler/spec/realworld/fixtures/warbler
           bundle install
           bundle exec warble

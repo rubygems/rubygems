@@ -17,7 +17,7 @@ module Bundler
       truffleruby: [Gem::Platform::RUBY],
       jruby: [Gem::Platform::JAVA, [18, 19]],
       windows: [Gem::Platform::WINDOWS, ALL_RUBY_VERSIONS],
-      # deprecated
+      # @deprecated Use platform :windows instead.
       mswin: [Gem::Platform::MSWIN, ALL_RUBY_VERSIONS],
       mswin64: [Gem::Platform::MSWIN64, ALL_RUBY_VERSIONS - [18]],
       mingw: [Gem::Platform::MINGW, ALL_RUBY_VERSIONS],

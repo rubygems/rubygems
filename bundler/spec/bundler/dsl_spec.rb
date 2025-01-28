@@ -222,7 +222,7 @@ RSpec.describe Bundler::Dsl do
     end
 
     it "raises a deprecation warning for legacy windows platforms" do
-      expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(3, /\APlatform :mswin, :x64_mingw is deprecated/, removed_message: /\APlatform :mswin, :x64_mingw has been removed/)
+      expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(2, /\APlatform :mswin, :x64_mingw is deprecated/, removed_message: /\APlatform :mswin, :x64_mingw has been removed/)
       subject.gem("foo", platforms: [:mswin, :jruby, :x64_mingw])
     end
 
@@ -292,7 +292,7 @@ RSpec.describe Bundler::Dsl do
 
   describe "#platforms" do
     it "raises a deprecation warning for legacy windows platforms" do
-      expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(3, /\APlatform :mswin64, :mingw is deprecated/, removed_message: /\APlatform :mswin64, :mingw has been removed/)
+      expect(Bundler::SharedHelpers).to receive(:major_deprecation).with(2, /\APlatform :mswin64, :mingw is deprecated/, removed_message: /\APlatform :mswin64, :mingw has been removed/)
       subject.platforms(:mswin64, :jruby, :mingw) do
         subject.gem("foo")
       end

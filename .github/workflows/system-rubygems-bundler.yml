@@ -65,10 +65,8 @@ jobs:
         with:
           path: bundler/tmp/rubygems
           ref: ${{ env.RGV }}
-        if: matrix.ruby.name != 'ruby-3.4'
       - name: Run Rubygems Requirement tests against local bundler, to make sure bundler monkeypatches preserve the behaviour
         run: |
           ruby -I../../lib:lib:test test/rubygems/test_gem_requirement.rb
         working-directory: ./bundler/tmp/rubygems
-        if: matrix.ruby.name != 'ruby-3.4'
     timeout-minutes: 60

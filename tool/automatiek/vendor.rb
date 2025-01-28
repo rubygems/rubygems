@@ -16,8 +16,6 @@ VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendo
 
     clean
 
-    File.write(File.join(vendor_lib, ".document"), "# Vendored files do not need to be documented\n")
-
     raise "#{name} missing license #{license_path.inspect}" unless File.file? File.join(vendor_lib, license_path)
   end
 

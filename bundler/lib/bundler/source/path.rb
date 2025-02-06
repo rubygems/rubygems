@@ -50,7 +50,7 @@ module Bundler
       end
 
       def to_s
-        "source at `#{@path}`"
+        "source::path at `#{@path}`"
       end
 
       alias_method :to_gemfile, :path

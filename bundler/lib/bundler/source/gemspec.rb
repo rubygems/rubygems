@@ -15,7 +15,7 @@ module Bundler
       end
 
       def to_s
-        "source::gemspec at `#{@path}`"
+        "gemspec at `#{@path}`"
       end
     end
   end

@@ -258,8 +258,8 @@ module Gem
       dependencies - development_dependencies
     end
 
-    def deleted_gem?
-      !default_gem? && !File.directory?(full_gem_path)
+    def installation_missing?
+      !default_gem? && (!Dir.exist?(full_gem_path) || Dir.empty?(full_gem_path))
     end
 
     unless VALIDATES_FOR_RESOLUTION

@@ -645,6 +645,8 @@ module Bundler
         raise "Infinite loop while fixing lockfile dependencies" if incorrect_spec == spec
 
         incorrect_spec = spec
+
+        Bundler.ui.info "#{spec.full_name} has incorrect dependencies in the lockfile. Bundler will re-resolve ignoring lockfile dependencies for #{spec.full_name}"
         reresolve_without([spec])
         retry
       end

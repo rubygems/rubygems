@@ -1563,10 +1563,12 @@ RSpec.describe "the lockfile format" do
          #{Bundler::VERSION}
     L
 
-    install_gemfile <<-G
+    install_gemfile <<-G, verbose: true
       source "https://gem.repo2"
       gem "myrack_middleware"
     G
+
+    expect(out).to include("incorrect dependencies in the lockfile")
 
     expect(lockfile).to eq <<~L
       GEM
@@ -1618,11 +1620,13 @@ RSpec.describe "the lockfile format" do
          #{Bundler::VERSION}
     L
 
-    install_gemfile <<-G
+    install_gemfile <<-G, verbose: true
       source "https://gem.repo4"
       gem "myrack_middleware"
       gem "other_dep"
     G
+
+    expect(out).to include("incorrect dependencies in the lockfile")
 
     expect(lockfile).to eq <<~L
       GEM
@@ -1680,11 +1684,13 @@ RSpec.describe "the lockfile format" do
          #{Bundler::VERSION}
     L
 
-    install_gemfile <<-G
+    install_gemfile <<-G, verbose: true
       source "https://gem.repo4"
       gem "myrack_middleware"
       gem "another_dep_middleware"
     G
+
+    expect(out).to include("incorrect dependencies in the lockfile")
 
     expect(lockfile).to eq <<~L
       GEM
@@ -1825,10 +1831,12 @@ RSpec.describe "the lockfile format" do
          #{Bundler::VERSION}
     L
 
-    install_gemfile <<-G
+    install_gemfile <<-G, verbose: true
       source "#{file_uri_for(gem_repo2)}"
       gem "myrack_middleware"
     G
+
+    expect(out).to include("incorrect dependencies in the lockfile")
 
     expect(lockfile).to eq <<~L
       GEM

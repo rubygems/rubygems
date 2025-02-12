@@ -146,7 +146,6 @@ class Gem::Ext::Builder
 
   def builder_for(extension) # :nodoc:
     case extension
-    # File that ends with .rb
     when /extconf/ then
       Gem::Ext::ExtConfBuilder
     when /configure/ then

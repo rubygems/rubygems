@@ -626,7 +626,7 @@ module Bundler
         last_resolve = converge_locked_specs
         remove_invalid_platforms!
         packages = Resolver::Base.new(source_requirements, expanded_dependencies, last_resolve, @platforms, locked_specs: @originally_locked_specs, unlock: @unlocking_all || @gems_to_unlock, prerelease: gem_version_promoter.pre?, prefer_local: @prefer_local, new_platforms: @new_platforms)
-        packages = additional_base_requirements_to_prevent_downgrades(packages, last_resolve)
+        packages = additional_base_requirements_to_prevent_downgrades(packages)
         packages = additional_base_requirements_to_force_updates(packages)
         packages
       end
@@ -938,7 +938,7 @@ module Bundler
 
     def converge_dependencies
       @missing_lockfile_dep = nil
-      changes = false
+      @changed_dependencies = []
 
       current_dependencies.each do |dep|
         if dep.source
@@ -960,10 +960,10 @@ module Bundler
           end
         end
 
-        changes ||= dep_changed
+        @changed_dependencies << name if dep_changed
       end
 
-      changes
+      @changed_dependencies.any?
     end
 
     # Remove elements from the locked specs that are expired. This will most
@@ -1093,11 +1093,15 @@ module Bundler
       current == proposed
     end
 
-    def additional_base_requirements_to_prevent_downgrades(resolution_packages, last_resolve)
+    def additional_base_requirements_to_prevent_downgrades(resolution_packages)
       return resolution_packages unless @locked_gems && !sources.expired_sources?(@locked_gems.sources)
-      converge_specs(@originally_locked_specs - last_resolve).each do |locked_spec|
+      @originally_locked_specs.each do |locked_spec|
         next if locked_spec.source.is_a?(Source::Path)
-        resolution_packages.base_requirements[locked_spec.name] = Gem::Requirement.new(">= #{locked_spec.version}")
+
+        name = locked_spec.name
+        next if @changed_dependencies.include?(name)
+
+        resolution_packages.base_requirements[name] = Gem::Requirement.new(">= #{locked_spec.version}")
       end
       resolution_packages
     end

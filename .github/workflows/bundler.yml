@@ -31,7 +31,7 @@ jobs:
         ruby:
           - { name: ruby-3.1, value: 3.1.6 }
           - { name: ruby-3.2, value: 3.2.6 }
-          - { name: ruby-3.3, value: 3.3.6 }
+          - { name: ruby-3.3, value: 3.3.7 }
           - { name: ruby-3.4, value: 3.4.1 }
 
         bundler:
@@ -41,13 +41,16 @@ jobs:
         include:
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 }, timeout: 90 }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.6 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.7 }, timeout: 90 }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.1 }, timeout: 90 }
 
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.6 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.7 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.1 }, timeout: 150 }
+
+          - { os: { name: Ubuntu, value: ubuntu-24.04 }, bundler: { name: 2, value: '' }, ruby: { name: jruby, value: jruby-9.4.10.0 } }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: jruby, value: jruby-9.4.10.0 } }
 
     env:
       RGV: ..
@@ -55,10 +58,16 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@868b3f088412f139260f27f5b148179b9dd6b008 # v1.208.0
+        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - name: Setup java
+        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
+        with:
+          distribution: temurin
+          java-version: 19.0.2
+        if: matrix.os.name == 'Windows' && matrix.ruby.name == 'jruby'
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'
@@ -68,8 +77,23 @@ jobs:
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps
-      - name: Run Test
+      - name: Run Test (CRuby)
         run: |
           bin/parallel_rspec
         working-directory: ./bundler
+        if: matrix.ruby.name != 'jruby'
+      - name: Run Test (JRuby)
+        run: |
+          bin/parallel_rspec --tag jruby_only --tag jruby
+        working-directory: ./bundler
+        if: matrix.ruby.name == 'jruby' && matrix.os.name == 'Ubuntu'
+      - name: Run a warbler project
+        run: |
+          bin/rake bundler:install:local
+          cd bundler/spec/realworld/fixtures/warbler
+          bundle install
+          bundle exec warble
+          java -jar warbler.jar
+        if: matrix.ruby.name == 'jruby' && matrix.os.name == 'Ubuntu'
+
     timeout-minutes: ${{ matrix.timeout || 60 }}

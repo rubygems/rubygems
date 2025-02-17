@@ -24,17 +24,17 @@ jobs:
         ruby:
           - { name: "3.1", value: 3.1.6 }
           - { name: "3.2", value: 3.2.6 }
-          - { name: "3.3", value: 3.3.6 }
+          - { name: "3.3", value: 3.3.7 }
           - { name: "3.4", value: 3.4.1 }
-          - { name: jruby, value: jruby-9.4.9.0 }
-          - { name: truffleruby, value: truffleruby-24.1.1 }
+          - { name: jruby, value: jruby-9.4.10.0 }
+          - { name: truffleruby, value: truffleruby-24.1.2 }
         openssl:
           - { name: "openssl", value: true }
           - { name: "no-openssl", value: false }
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@868b3f088412f139260f27f5b148179b9dd6b008 # v1.208.0
+        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -108,18 +108,18 @@ jobs:
         ruby:
           - { name: "3.1", value: 3.1.6 }
           - { name: "3.2", value: 3.2.6 }
-          - { name: "3.3", value: 3.3.6 }
+          - { name: "3.3", value: 3.3.7 }
           - { name: "3.4", value: 3.4.1 }
-          - { name: jruby-9.4, value: jruby-9.4.9.0, rails-args: "--skip-webpack-install" }
+          - { name: jruby-9.4, value: jruby-9.4.10.0, rails-args: "--skip-webpack-install" }
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@868b3f088412f139260f27f5b148179b9dd6b008 # v1.208.0
+        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b # v4.6.0
+        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
         with:
           distribution: temurin
           java-version: 19.0.2
@@ -154,7 +154,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup original ruby
-        uses: ruby/setup-ruby@868b3f088412f139260f27f5b148179b9dd6b008 # v1.208.0
+        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
         with:
           ruby-version: 3.2
           bundler: none
@@ -175,7 +175,7 @@ jobs:
           GEM_HOME: bar
           GEM_PATH: bar
       - name: Setup final ruby
-        uses: ruby/setup-ruby@868b3f088412f139260f27f5b148179b9dd6b008 # v1.208.0
+        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
         with:
           ruby-version: 3.3
           bundler: none

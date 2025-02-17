@@ -384,12 +384,11 @@ module Spec
     end
 
     def with_fake_man
-      skip "fake_man is not a Windows friendly binstub" if Gem.win_platform?
-
       FileUtils.mkdir_p(tmp("fake_man"))
-      File.open(tmp("fake_man/man"), "w", 0o755) do |f|
-        f.puts "#!/usr/bin/env ruby\nputs ARGV.inspect\n"
-      end
+      create_file(tmp("fake_man/man"), <<~SCRIPT)
+        #!/usr/bin/env ruby
+        puts ARGV.inspect
+      SCRIPT
       with_path_added(tmp("fake_man")) { yield }
     end
 
@@ -441,16 +440,6 @@ module Spec
       yield
     ensure
       ENV["BUNDLER_SPEC_PLATFORM"] = old if block_given?
-    end
-
-    def simulate_windows(platform = x86_mswin32)
-      old = ENV["BUNDLER_SPEC_WINDOWS"]
-      ENV["BUNDLER_SPEC_WINDOWS"] = "true"
-      simulate_platform platform do
-        yield
-      end
-    ensure
-      ENV["BUNDLER_SPEC_WINDOWS"] = old
     end
 
     def current_ruby_minor

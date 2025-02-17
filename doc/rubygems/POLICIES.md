@@ -95,7 +95,7 @@ the version in all version files, synchronizes both changelogs to include all
 backported changes and commits that change on top of the cherry-picks.
 
 Note that this task requires all user facing pull requests to be tagged with
-specific labels. See [Merging a PR](/bundler/doc/playbooks/MERGING_A_PR.md) for details.
+specific labels. See [Merging a PR](../bundler/playbooks/MERGING_A_PR.md) for details.
 
 Also note that when this task cherry-picks, it cherry-picks the merge commits
 using the following command:

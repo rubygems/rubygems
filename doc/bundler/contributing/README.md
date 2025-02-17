@@ -5,9 +5,9 @@ Thank you for your interest in making Bundler better! We welcome contributions f
 Before submitting a contribution, read through the following guidelines:
 
 * [Bundler Code of Conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md) (By participating in Bundler, you agree to abide by the terms laid out in the CoC.)
-* [Pull Request Guidelines](https://github.com/rubygems/rubygems/blob/master/bundler/doc/development/PULL_REQUESTS.md)
+* [Pull Request Guidelines](../development/PULL_REQUESTS.md)
 
-And be sure to [set up your development environment](https://github.com/rubygems/rubygems/blob/master/bundler/doc/development/SETUP.md).
+And be sure to [set up your development environment](../development/SETUP.md).
 
 ## Feature Requests
 
@@ -17,11 +17,11 @@ To request substantial changes to Bundler and/or Bundler documentation, please r
 
 Here are the different ways you can start contributing to the Bundler project:
 
-* [First contribution suggestions](/bundler/doc/contributing/HOW_YOU_CAN_HELP.md)
-* [Adding new features](/bundler/doc/development/NEW_FEATURES.md)
-* [Triaging bugs](/bundler/doc/contributing/BUG_TRIAGE.md)
-* [Writing documentation](/bundler/doc/documentation/WRITING.md)
-* [Community engagement](/bundler/doc/contributing/COMMUNITY.md)
+* [First contribution suggestions](HOW_YOU_CAN_HELP.md)
+* [Adding new features](../development/NEW_FEATURES.md)
+* [Triaging bugs](BUG_TRIAGE.md)
+* [Writing documentation](../documentation/WRITING.md)
+* [Community engagement](COMMUNITY.md)
 
 ## Supporting Bundler
 

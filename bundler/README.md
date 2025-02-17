@@ -29,7 +29,7 @@ See [bundler.io](https://bundler.io) for the full documentation.
 
 ### Troubleshooting
 
-For help with common problems, see [TROUBLESHOOTING](doc/TROUBLESHOOTING.md).
+For help with common problems, see [TROUBLESHOOTING](../doc/bundler/TROUBLESHOOTING.md).
 
 Still stuck? Try [filing an issue](https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md).
 
@@ -41,7 +41,7 @@ To get in touch with the Bundler core team and other Bundler users, please join 
 
 ### Contributing
 
-If you'd like to contribute to Bundler, that's awesome, and we <3 you. We've put together [the Bundler contributor guide](https://github.com/rubygems/rubygems/blob/master/bundler/doc/contributing/README.md) with all of the information you need to get started.
+If you'd like to contribute to Bundler, that's awesome, and we <3 you. We've put together [the Bundler contributor guide](https://github.com/rubygems/rubygems/blob/master/doc/bundler/contributing/README.md) with all of the information you need to get started.
 
 If you'd like to request a substantial change to Bundler or its documentation, refer to the [Bundler RFC process](https://github.com/rubygems/rfcs) for more information.
 

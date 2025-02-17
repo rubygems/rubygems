@@ -1,0 +1,39 @@
+name: read-only
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  read-only:
+    name: Bundler on read-only system (${{ matrix.ruby.name }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - { name: ruby-3.1, value: 3.1.6 }
+          - { name: ruby-3.2, value: 3.2.6 }
+          - { name: ruby-3.3, value: 3.3.7 }
+          - { name: ruby-3.4, value: 3.4.1 }
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Basic usage on a read-only filesystem
+        run: docker run --mount type=bind,source=.,target=/rubygems --rm --read-only ruby:${{ matrix.ruby.value }} ruby -I/rubygems/bundler/lib -r'bundler/inline' -e 'gemfile {}; puts :ok'
+
+    timeout-minutes: 15

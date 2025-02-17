@@ -1,3 +1,43 @@
+# 3.6.3 / 2025-01-16
+
+## Enhancements:
+
+* Add credentials file path to `gem env`. Pull request
+  [#8375](https://github.com/rubygems/rubygems/pull/8375) by duckinator
+* Update SPDX license list as of 2024-12-30. Pull request
+  [#8387](https://github.com/rubygems/rubygems/pull/8387) by
+  github-actions[bot]
+* Installs bundler 2.6.3 as a default gem.
+
+## Bug fixes:
+
+* Fix `@licenses` array unmarshalling. Pull request
+  [#8411](https://github.com/rubygems/rubygems/pull/8411) by rykov
+
+# 3.6.2 / 2024-12-23
+
+## Security:
+
+* Fix Gem::SafeMarshal buffer overrun when given lengths larger than fit
+  into a byte. Pull request
+  [#8305](https://github.com/rubygems/rubygems/pull/8305) by segiddins
+* Improve type checking in marshal_load methods. Pull request
+  [#8306](https://github.com/rubygems/rubygems/pull/8306) by segiddins
+
+## Enhancements:
+
+* Skip rdoc hooks and their tests on newer rdoc versions. Pull request
+  [#8340](https://github.com/rubygems/rubygems/pull/8340) by
+  deivid-rodriguez
+* Installs bundler 2.6.2 as a default gem.
+
+## Bug fixes:
+
+* Fix serialized metadata including an empty `@original_platform`
+  attribute. Pull request
+  [#8355](https://github.com/rubygems/rubygems/pull/8355) by
+  deivid-rodriguez
+
 # 3.6.1 / 2024-12-17
 
 ## Enhancements:

@@ -564,7 +564,6 @@ end
   #         [B] ~> 1.0
   #
   # and should resolve using b-1.0
-  # TODO: move these to specification
 
   def test_self_activate_over
     a = util_spec "a", "1.0", "b" => ">= 1.0", "c" => "= 1.0"
@@ -651,6 +650,17 @@ end
     assert_raise Gem::LoadError do
       gem "b", "= 2.0"
     end
+  end
+
+  def test_self_activate_missing_deps_does_not_raise_nested_exceptions
+    a = util_spec "a", "1.0", "b" => ">= 1.0"
+    install_specs a
+
+    e = assert_raise Gem::MissingSpecError do
+      a.activate
+    end
+
+    refute e.cause
   end
 
   def test_self_all_equals
@@ -2492,7 +2502,31 @@ end
     assert_equal @a1, same_spec
   end
 
-  def test_to_yaml_platform_empty_string
+  def test_to_yaml_platform
+    yaml_str = @a1.to_yaml
+
+    assert_match(/^platform: ruby$/, yaml_str)
+    refute_match(/^original_platform: /, yaml_str)
+  end
+
+  def test_to_yaml_platform_no_specific_platform
+    a = Gem::Specification.new do |s|
+      s.name        = "a"
+      s.version     = "1.0"
+      s.author      = "A User"
+      s.email       = "example@example.com"
+      s.homepage    = "http://example.com"
+      s.summary     = "this is a summary"
+      s.description = "This is a test description"
+    end
+
+    yaml_str = a.to_yaml
+
+    assert_match(/^platform: ruby$/, yaml_str)
+    refute_match(/^original_platform: /, yaml_str)
+  end
+
+  def test_to_yaml_platform_original_platform_empty_string
     @a1.instance_variable_set :@original_platform, ""
 
     assert_match(/^platform: ruby$/, @a1.to_yaml)
@@ -2510,7 +2544,7 @@ end
     assert_equal "powerpc-darwin7.9.0", same_spec.original_platform
   end
 
-  def test_to_yaml_platform_nil
+  def test_to_yaml_platform_original_platform_nil
     @a1.instance_variable_set :@original_platform, nil
 
     assert_match(/^platform: ruby$/, @a1.to_yaml)

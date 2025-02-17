@@ -1322,7 +1322,7 @@ class Gem::Specification < Gem::BasicSpecification
     spec.instance_variable_set :@description,               array[13]
     spec.instance_variable_set :@homepage,                  array[14]
     spec.instance_variable_set :@has_rdoc,                  array[15]
-    spec.instance_variable_set :@licenses,                  [array[17]]
+    spec.instance_variable_set :@licenses,                  array[17]
     spec.instance_variable_set :@metadata,                  array[18]
     spec.instance_variable_set :@loaded,                    false
     spec.instance_variable_set :@activated,                 false
@@ -1415,13 +1415,11 @@ class Gem::Specification < Gem::BasicSpecification
         raise e
       end
 
-      begin
-        specs = spec_dep.to_specs.uniq(&:full_name)
-      rescue Gem::MissingSpecError => e
-        raise Gem::MissingSpecError.new(e.name, e.requirement, "at: #{spec_file}")
-      end
+      specs = spec_dep.matching_specs(true).uniq(&:full_name)
 
-      if specs.size == 1
+      if specs.size == 0
+        raise Gem::MissingSpecError.new(spec_dep.name, spec_dep.requirement, "at: #{spec_file}")
+      elsif specs.size == 1
         specs.first.activate
       else
         name = spec_dep.name
@@ -1817,16 +1815,8 @@ class Gem::Specification < Gem::BasicSpecification
   def encode_with(coder) # :nodoc:
     coder.add "name", @name
     coder.add "version", @version
-    platform = case @new_platform
-               when nil, "" then
-                 "ruby"
-               when String then
-                 @new_platform
-               else
-                 @new_platform.to_s
-    end
-    coder.add "platform", platform
-    coder.add "original_platform", @original_platform.to_s if platform != @original_platform.to_s
+    coder.add "platform", platform.to_s
+    coder.add "original_platform", original_platform.to_s if platform.to_s != original_platform.to_s
 
     attributes = @@attributes.map(&:to_s) - %w[name version platform]
     attributes.each do |name|

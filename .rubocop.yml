@@ -7,13 +7,6 @@ AllCops:
     - pkg/**/*
     - tmp/**/*
     - bundler/tmp/**/*
-    - lib/rubygems/resolver/molinillo/**/*
-    - lib/rubygems/tsort/**/*
-    - lib/rubygems/timeout/**/*
-    - lib/rubygems/resolv/**/*
-    - lib/rubygems/optparse/**/*
-    - lib/rubygems/net-protocol/**/*
-    - lib/rubygems/net-http/**/*
     - lib/rubygems/vendor/**/*
     - bundler/lib/bundler/vendor/**/*
   CacheRootDirectory: tmp/rubocop
@@ -239,7 +232,6 @@ Lint/ScriptPermission:
   Enabled: true
   Exclude:
     - "bundler/lib/bundler/templates/Executable"
-    - "bundler/lib/bundler/templates/Executable.*"
 
 Lint/ShadowedArgument:
   Enabled: true

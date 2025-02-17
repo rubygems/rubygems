@@ -1,3 +1,34 @@
+# 2.6.4 (February 17, 2025)
+
+## Enhancements:
+
+  - Make Bundler never instantiate development dependencies [#8486](https://github.com/rubygems/rubygems/pull/8486)
+  - Fix some invalid options to `gem` DSL not getting reported as invalid [#8480](https://github.com/rubygems/rubygems/pull/8480)
+  - Add `irb` to a Gemfile for a newly created gem [#8467](https://github.com/rubygems/rubygems/pull/8467)
+  - Auto-heal empty installation directory [#8457](https://github.com/rubygems/rubygems/pull/8457)
+  - Fix `bundle console` unnecessarily trying to load IRB twice [#8443](https://github.com/rubygems/rubygems/pull/8443)
+  - Add ruby_34 and ruby_35 as valid platform: [#8430](https://github.com/rubygems/rubygems/pull/8430)
+  - Consider gems under `platform: :windows` filter in Gemfile when running on Windows with ARM architecture [#8428](https://github.com/rubygems/rubygems/pull/8428)
+
+## Bug fixes:
+
+  - Fix regression when running `bundle update <foo>` would sometimes downgrade a top level dependency [#8491](https://github.com/rubygems/rubygems/pull/8491)
+  - Fix dependency locking when Bundler finds incorrect lockfile dependencies [#8489](https://github.com/rubygems/rubygems/pull/8489)
+  - Raise error when lockfile is missing deps in frozen mode [#8483](https://github.com/rubygems/rubygems/pull/8483)
+  - Fix `bundle install --prefer-local` sometimes installing very old versions [#8484](https://github.com/rubygems/rubygems/pull/8484)
+  - Fix incorrect error message when running `bundle update` in frozen mode [#8481](https://github.com/rubygems/rubygems/pull/8481)
+  - Keep platform variants in `vendor/cache` even if incompatible with the current Ruby version [#8471](https://github.com/rubygems/rubygems/pull/8471)
+  - Fix `bundle console` printing bug report template incorrectly [#8436](https://github.com/rubygems/rubygems/pull/8436)
+  - Fix `--prefer-local` not respecting default gems [#8412](https://github.com/rubygems/rubygems/pull/8412)
+
+## Performance:
+
+  - Improve resolution performance [#8458](https://github.com/rubygems/rubygems/pull/8458)
+
+## Documentation:
+
+  - Fix more broken links [#8416](https://github.com/rubygems/rubygems/pull/8416)
+
 # 2.6.3 (January 16, 2025)
 
 ## Enhancements:

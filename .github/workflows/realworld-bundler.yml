@@ -26,7 +26,7 @@ jobs:
 
         ruby:
           - { name: ruby-3.1, value: 3.1.6 }
-          - { name: ruby-3.2, value: 3.2.6 }
+          - { name: ruby-3.2, value: 3.2.7 }
           - { name: ruby-3.3, value: 3.3.7 }
           - { name: ruby-3.4, value: 3.4.2 }
 
@@ -36,7 +36,7 @@ jobs:
 
         include:
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 } }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.7 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.7 } }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.2 } }
     env:
@@ -89,11 +89,11 @@ jobs:
       matrix:
         include:
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.6 } }
+          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.7 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.7 } }
           - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.2 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.6 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.6 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.7 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.7 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.4, value: 3.4.2 } }
     steps:

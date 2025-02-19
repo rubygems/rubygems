@@ -73,8 +73,12 @@ class Gem::BasicSpecification
   def contains_requirable_file?(file)
     if ignored?
       if platform == Gem::Platform::RUBY || Gem::Platform.local === platform
-        warn "Ignoring #{full_name} because its extensions are not built. " \
-             "Try: gem pristine #{name} --version #{version}"
+        # RubyGems warns gem specification of C extensions. But JRuby couldn't
+        # rebuild with `gem pristine` command. So, we skip the warning.
+        if RUBY_PLATFORM != Gem::Platform::JAVA
+          warn "Ignoring #{full_name} because its extensions are not built. " \
+              "Try: gem pristine #{name} --version #{version}"
+        end
       end
 
       return false

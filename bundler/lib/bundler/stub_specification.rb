@@ -38,7 +38,11 @@ module Bundler
       @ignored = missing_extensions?
       return false unless @ignored
 
-      warn "Source #{source} is ignoring #{self} because it is missing extensions"
+      # If we share GEM_HOME for all of Ruby platform, the platform specific gem always warn that specification.
+      # ex `jruby-launcher` and CRuby
+      if platform == Gem::Platform::RUBY && RUBY_PLATFORM != Gem::Platform::JAVA
+        warn "Source #{source} is ignoring #{self} because it is missing extensions"
+      end
 
       true
     end

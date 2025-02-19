@@ -23,6 +23,7 @@ jobs:
       matrix:
         ruby:
           - { name: ruby, value: 3.4.1 }
+          - { name: jruby, value: jruby-9.4.12.0 }
           - { name: truffleruby, value: truffleruby-24.1.2 }
     env:
       RUBYOPT: -Ilib
@@ -39,8 +40,10 @@ jobs:
         run: bin/rake rubocop
       - name: Generate docs
         run: bin/rake docs
+        if: matrix.ruby.name != 'jruby'
       - name: Install & Check Dependencies
         run: bin/rake dev:frozen_deps
       - name: Misc checks
         run: bin/rake check_rvm_integration man:check vendor:check version:check check_rubygems_integration
+        if: matrix.ruby.name != 'jruby'
     timeout-minutes: 15

@@ -1,3 +1,14 @@
+# 3.6.5 / 2025-02-20
+
+## Enhancements:
+
+* Installs bundler 2.6.5 as a default gem.
+
+## Documentation:
+
+* Removed `gem server` from `gem help`. Pull request
+  [#8507](https://github.com/rubygems/rubygems/pull/8507) by hsbt
+
 # 3.6.4 / 2025-02-17
 
 ## Enhancements:

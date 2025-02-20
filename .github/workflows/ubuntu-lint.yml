@@ -22,14 +22,15 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: ruby, value: 3.4.1 }
+          - { name: ruby, value: 3.4.2 }
+          - { name: jruby, value: jruby-9.4.12.0 }
           - { name: truffleruby, value: truffleruby-24.1.2 }
     env:
       RUBYOPT: -Ilib
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
+        uses: ruby/setup-ruby@32110d4e311bd8996b2a82bf2a43b714ccc91777 # v1.221.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -39,8 +40,10 @@ jobs:
         run: bin/rake rubocop
       - name: Generate docs
         run: bin/rake docs
+        if: matrix.ruby.name != 'jruby'
       - name: Install & Check Dependencies
         run: bin/rake dev:frozen_deps
       - name: Misc checks
         run: bin/rake check_rvm_integration man:check vendor:check version:check check_rubygems_integration
+        if: matrix.ruby.name != 'jruby'
     timeout-minutes: 15

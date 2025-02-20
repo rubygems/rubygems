@@ -56,11 +56,11 @@ RSpec.describe "global gem caching" do
     it "uses a shorter path for the cache to not hit filesystem limits" do
       install_gemfile <<-G, artifice: "compact_index", verbose: true
         source "http://#{"a" * 255}.test"
-        gem "rack"
+        gem "myrack"
       G
 
-      expect(the_bundle).to include_gems "rack 1.0.0"
-      expect(cache_base.join("a" * 222 + ".a3cb26de2edfce9f509a65c611d99c4b", "rack-1.0.0.gem")).to exist
+      expect(the_bundle).to include_gems "myrack 1.0.0"
+      expect(cache_base.join("a" * 222 + ".a3cb26de2edfce9f509a65c611d99c4b", "myrack-1.0.0.gem")).to exist
     end
 
     describe "when the same gem from different sources is installed" do

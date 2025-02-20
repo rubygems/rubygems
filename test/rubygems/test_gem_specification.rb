@@ -1557,7 +1557,7 @@ dependencies: []
       refute @ext.contains_requirable_file? "nonexistent"
     end
 
-    expected = if RUBY_PLATFORM == "java"
+    expected = if RUBY_ENGINE == "jruby"
       ""
     else
       "Ignoring ext-1 because its extensions are not built. " \

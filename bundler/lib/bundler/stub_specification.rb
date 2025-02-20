@@ -40,7 +40,7 @@ module Bundler
 
       # If we share GEM_HOME for all of Ruby platform, the platform specific gem always warn that specification.
       # ex `jruby-launcher` and CRuby
-      if RUBY_PLATFORM != Gem::Platform::JAVA
+      if RUBY_ENGINE != "jruby"
         warn "Source #{source} is ignoring #{self} because it is missing extensions"
       end
 

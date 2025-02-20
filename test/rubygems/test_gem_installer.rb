@@ -2264,6 +2264,24 @@ end
     assert_equal "#!test", shebang
   end
 
+  def test_shebang_env_conffig
+    installer = setup_base_installer
+
+    conf = Gem::ConfigFile.new []
+    conf[:env_shebang] = true
+
+    Gem.configuration = conf
+
+    util_make_exec @spec, ""
+
+    shebang = installer.shebang "executable"
+
+    bin_env = get_bin_env
+
+    assert_equal("#!#{bin_env} #{RbConfig::CONFIG["ruby_install_name"]}",
+                 shebang)
+  end
+
   def get_bin_env
     if Gem.win_platform?
       ""

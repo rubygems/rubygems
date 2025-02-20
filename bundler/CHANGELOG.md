@@ -1,3 +1,14 @@
+# 2.6.5 (February 20, 2025)
+
+## Enhancements:
+
+  - Fix lockfile platforms inconveniently added on JRuby [#8494](https://github.com/rubygems/rubygems/pull/8494)
+
+## Bug fixes:
+
+  - Fix resolver issue due to ill-defined version ranges being created [#8503](https://github.com/rubygems/rubygems/pull/8503)
+  - Make sure empty gems are not reinstalled every time [#8502](https://github.com/rubygems/rubygems/pull/8502)
+
 # 2.6.4 (February 17, 2025)
 
 ## Enhancements:

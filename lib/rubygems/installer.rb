@@ -614,7 +614,7 @@ class Gem::Installer
       end
 
       "#!#{which}"
-    elsif @env_shebang
+    elsif @env_shebang || Gem.configuration[:env_shebang]
       # Create a plain shebang line.
       @env_path ||= ENV_PATHS.find {|env_path| File.executable? env_path }
       "#!#{@env_path} #{ruby_install_name}"

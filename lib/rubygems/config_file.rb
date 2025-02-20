@@ -49,6 +49,8 @@ class Gem::ConfigFile
   DEFAULT_IPV4_FALLBACK_ENABLED = false
   # TODO: Use false as default value for this option in RubyGems 4.0
   DEFAULT_INSTALL_EXTENSION_IN_LIB = true
+  # TODO: Use true as default value for this option in RubyGems 4.0
+  DEFAULT_ENV_SHEBANG = false
 
   ##
   # For Ruby packagers to set configuration defaults.  Set in
@@ -161,6 +163,10 @@ class Gem::ConfigFile
   attr_reader :ssl_client_cert
 
   ##
+  # Use env command for shebang line when building executables
+  attr_reader :env_shebang
+
+  ##
   # Create the config file object.  +args+ is the list of arguments
   # from the command line.
   #
@@ -192,6 +198,7 @@ class Gem::ConfigFile
     @cert_expiration_length_days = DEFAULT_CERT_EXPIRATION_LENGTH_DAYS
     @install_extension_in_lib = DEFAULT_INSTALL_EXTENSION_IN_LIB
     @ipv4_fallback_enabled = ENV["IPV4_FALLBACK_ENABLED"] == "true" || DEFAULT_IPV4_FALLBACK_ENABLED
+    @env_shebang = DEFAULT_ENV_SHEBANG
 
     operating_system_config = Marshal.load Marshal.dump(OPERATING_SYSTEM_DEFAULTS)
     platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)
@@ -214,7 +221,7 @@ class Gem::ConfigFile
       # gemhome and gempath are not working with symbol keys
       if %w[backtrace bulk_threshold verbose update_sources cert_expiration_length_days
             install_extension_in_lib ipv4_fallback_enabled sources disable_default_gem_server
-            ssl_verify_mode ssl_ca_cert ssl_client_cert].include?(k)
+            env_shebang ssl_verify_mode ssl_ca_cert ssl_client_cert].include?(k)
         k.to_sym
       else
         k
@@ -230,6 +237,7 @@ class Gem::ConfigFile
     @cert_expiration_length_days = @hash[:cert_expiration_length_days] if @hash.key? :cert_expiration_length_days
     @install_extension_in_lib    = @hash[:install_extension_in_lib]    if @hash.key? :install_extension_in_lib
     @ipv4_fallback_enabled       = @hash[:ipv4_fallback_enabled]       if @hash.key? :ipv4_fallback_enabled
+    @env_shebang                 = @hash[:env_shebang]                 if @hash.key? :env_shebang
 
     @home                        = @hash[:gemhome]                     if @hash.key? :gemhome
     @path                        = @hash[:gempath]                     if @hash.key? :gempath
@@ -487,6 +495,8 @@ if you believe they were disclosed to a third party.
 
     yaml_hash[:install_extension_in_lib] =
       @hash.fetch(:install_extension_in_lib, DEFAULT_INSTALL_EXTENSION_IN_LIB)
+
+    yaml_hash[:env_shebang] = @hash.fetch(:env_shebang, DEFAULT_ENV_SHEBANG)
 
     yaml_hash[:ssl_verify_mode] =
       @hash[:ssl_verify_mode] if @hash.key? :ssl_verify_mode

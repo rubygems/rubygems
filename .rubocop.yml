@@ -1,4 +1,4 @@
-require: rubocop-performance
+plugins: rubocop-performance
 
 AllCops:
   DisabledByDefault: true

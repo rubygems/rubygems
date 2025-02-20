@@ -55,7 +55,7 @@ RSpec.describe Bundler::StubSpecification do
   end
 
   describe "#ignored?" do
-    skip "This example is only for without JRuby" if RUBY_ENGINE == 'jruby'
+    skip "This example is only for without JRuby" if RUBY_ENGINE == "jruby"
 
     it "returns true if the gem is for different platform" do
       stub = described_class.from_stub(with_java_gem_stub_spec)

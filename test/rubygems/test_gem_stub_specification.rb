@@ -71,7 +71,7 @@ class TestStubSpecification < Gem::TestCase
         refute stub.contains_requirable_file? "nonexistent"
       end
 
-      expected = if RUBY_PLATFORM == "java"
+      expected = if RUBY_ENGINE == "jruby"
         ""
       else
         "Ignoring stub_e-2 because its extensions are not built. " \

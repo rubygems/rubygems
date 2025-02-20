@@ -1308,7 +1308,7 @@ class TestGem < Gem::TestCase
       refute Gem.try_activate "nonexistent"
     end
 
-    expected = if RUBY_PLATFORM == "java"
+    expected = if RUBY_ENGINE == "jruby"
       ""
     else
       "Ignoring ext-1 because its extensions are not built. " \

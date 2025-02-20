@@ -75,7 +75,7 @@ class Gem::BasicSpecification
       if platform == Gem::Platform::RUBY || Gem::Platform.local === platform
         # RubyGems warns gem specification of C extensions. But JRuby couldn't
         # rebuild with `gem pristine` command. So, we skip the warning.
-        if RUBY_PLATFORM != "java" # JRuby
+        if RUBY_ENGINE != "jruby"
           warn "Ignoring #{full_name} because its extensions are not built. " \
               "Try: gem pristine #{name} --version #{version}"
         end

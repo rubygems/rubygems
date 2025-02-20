@@ -12,6 +12,17 @@ RSpec.describe Bundler::StubSpecification do
     described_class.from_stub(gemspec)
   end
 
+  let(:with_java_gem_stub_spec) do
+    gemspec = Gem::Specification.new do |s|
+      s.name = "gemname"
+      s.version = "1.0.0"
+      s.loaded_from = __FILE__
+      s.platform = "java"
+    end
+
+    described_class.from_stub(gemspec)
+  end
+
   describe "#from_stub" do
     it "returns the same stub if already a Bundler::StubSpecification" do
       stub = described_class.from_stub(with_bundler_stub_spec)
@@ -40,6 +51,17 @@ RSpec.describe Bundler::StubSpecification do
       stub = described_class.from_stub(with_bundler_stub_spec)
       stub.installed_by_version = Gem::Version.new(1)
       expect(stub.manually_installed?).to be false
+    end
+  end
+
+  describe "#ignored?" do
+    skip "This example is only for without JRuby" if RUBY_ENGINE == 'jruby'
+
+    it "returns true if the gem is for different platform" do
+      stub = described_class.from_stub(with_java_gem_stub_spec)
+      allow(stub).to receive(:missing_extensions?).and_return(true)
+      expect(stub).to_not receive(:warn)
+      expect(stub.ignored?).to be true
     end
   end
 

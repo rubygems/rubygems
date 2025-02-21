@@ -1,3 +1,28 @@
+# 3.6.5 / 2025-02-20
+
+## Enhancements:
+
+* Installs bundler 2.6.5 as a default gem.
+
+## Documentation:
+
+* Removed `gem server` from `gem help`. Pull request
+  [#8507](https://github.com/rubygems/rubygems/pull/8507) by hsbt
+
+# 3.6.4 / 2025-02-17
+
+## Enhancements:
+
+* Raise a simpler error when RubyGems fails to activate a dependency. Pull
+  request [#8449](https://github.com/rubygems/rubygems/pull/8449) by
+  deivid-rodriguez
+* Installs bundler 2.6.4 as a default gem.
+
+## Performance:
+
+* Allocate strings from Requirement match only once. Pull request
+  [#8245](https://github.com/rubygems/rubygems/pull/8245) by segiddins
+
 # 3.6.3 / 2025-01-16
 
 ## Enhancements:

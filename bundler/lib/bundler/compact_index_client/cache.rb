@@ -26,6 +26,10 @@ module Bundler
         fetch("versions", versions_path, versions_etag_path)
       end
 
+      def info_checksums
+        fetch("info_checksums", info_checksums_path, info_checksums_etag_path)
+      end
+
       def info(name, remote_checksum = nil)
         path = info_path(name)
 
@@ -47,6 +51,8 @@ module Bundler
       def names_etag_path = directory.join("names.etag")
       def versions_path = directory.join("versions")
       def versions_etag_path = directory.join("versions.etag")
+      def info_checksums_path = directory.join("info_checksums")
+      def info_checksums_etag_path = directory.join("info_checksums.etag")
 
       def info_path(name)
         name = name.to_s

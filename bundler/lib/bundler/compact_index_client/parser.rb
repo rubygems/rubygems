@@ -51,9 +51,15 @@ module Bundler
       private
 
       def info_checksums
+        @info_checksums ||= lines(@compact_index.info_checksums).each_with_object({}) do |line, checksums|
+          parse_info_checksum(line, checksums)
+        end
+      rescue
+        # TODO: only rescue HTTP errors
         @info_checksums ||= lines(@compact_index.versions).each_with_object({}) do |line, checksums|
           parse_version_checksum(line, checksums)
         end
+        raise
       end
 
       def lines(data)
@@ -72,6 +78,17 @@ module Bundler
       def parse_version_checksum(line, checksums)
         return unless (name_end = line.index(" ")) # Artifactory bug causes blank lines in artifactor index files
         return unless (checksum_start = line.index(" ", name_end + 1) + 1)
+        checksum_end = line.size - checksum_start
+
+        line.freeze # allows slicing into the string to not allocate a copy of the line
+        name = line[0, name_end]
+        checksum = line[checksum_start, checksum_end]
+        checksums[name.freeze] = checksum # freeze name since it is used as a hash key
+      end
+
+      def parse_info_checksum(line, checksums)
+        return unless (name_end = line.index(" ")) # Artifactory bug causes blank lines in artifactor index files
+        checksum_start = name_end + 1
         checksum_end = line.size - checksum_start
 
         line.freeze # allows slicing into the string to not allocate a copy of the line

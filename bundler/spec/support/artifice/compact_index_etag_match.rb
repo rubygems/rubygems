@@ -9,6 +9,13 @@ class CompactIndexEtagMatch < CompactIndexAPI
     status 304
     body ""
   end
+
+  get "/info_checksums" do
+    raise "ETag header should be present" unless env["HTTP_IF_NONE_MATCH"]
+    headers "ETag" => env["HTTP_IF_NONE_MATCH"]
+    status 304
+    body ""
+  end
 end
 
 require_relative "helpers/artifice"

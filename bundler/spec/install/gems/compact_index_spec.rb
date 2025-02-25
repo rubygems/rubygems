@@ -24,7 +24,7 @@ RSpec.describe "compact index api" do
     bundle :install, artifice: "compact_index", env: { "DEBUG_COMPACT_INDEX" => "true" }
     expect(out).to include("Fetching gem metadata from #{source_uri}")
     expect(err).to include("[Bundler::CompactIndexClient] available?")
-    expect(err).to include("[Bundler::CompactIndexClient] fetching versions")
+    expect(err).to include("[Bundler::CompactIndexClient] fetching info_checksums")
     expect(err).to include("[Bundler::CompactIndexClient] info(myrack)")
     expect(err).to include("[Bundler::CompactIndexClient] fetching info/myrack")
     expect(the_bundle).to include_gems "myrack 1.0.0"
@@ -183,18 +183,18 @@ RSpec.describe "compact index api" do
       gem "myrack"
     G
 
-    versions = Pathname.new(Bundler.rubygems.user_home).join(
+    info_checksums = Pathname.new(Bundler.rubygems.user_home).join(
       ".bundle", "cache", "compact_index",
-      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "versions"
+      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "info_checksums"
     )
-    versions.dirname.mkpath
-    versions.write("created_at")
-    FileUtils.chmod("-r", versions)
+    info_checksums.dirname.mkpath
+    info_checksums.write("created_at")
+    FileUtils.chmod("-r", info_checksums)
 
     bundle :install, artifice: "compact_index", raise_on_error: false
 
     expect(err).to include(
-      "There was an error while trying to read from `#{versions}`. It is likely that you need to grant read permissions for that path."
+      "There was an error while trying to read from `#{info_checksums}`. It is likely that you need to grant read permissions for that path."
     )
   end
 
@@ -306,7 +306,7 @@ RSpec.describe "compact index api" do
     system_gems %w[myrack-1.0.0 thin-1.0 net_a-1.0], gem_repo: gem_repo2
     bundle "config set --local path.system true"
     ENV["BUNDLER_SPEC_ALL_REQUESTS"] = <<~EOS.strip
-      #{source_uri}/versions
+      #{source_uri}/info_checksums
       #{source_uri}/info/myrack
     EOS
 
@@ -705,7 +705,7 @@ RSpec.describe "compact index api" do
 
         bundle :install, artifice: "compact_index_strict_basic_authentication", raise_on_error: false, verbose: true
         expect(err).to include("Bad username or password")
-        expect(out).to include("HTTP 401 Unauthorized http://user@localgemserver.test/versions")
+        expect(out).to include("HTTP 401 Unauthorized http://user@localgemserver.test/info_checksums")
         expect(out).not_to include("HTTP 401 Unauthorized http://user@localgemserver.test/api/v1/dependencies")
       end
     end
@@ -789,11 +789,11 @@ RSpec.describe "compact index api" do
   end
 
   it "performs update with etag not-modified" do
-    versions_etag = Pathname.new(Bundler.rubygems.user_home).join(
+    info_checksums_etag = Pathname.new(Bundler.rubygems.user_home).join(
       ".bundle", "cache", "compact_index",
-      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "versions.etag"
+      "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "info_checksums.etag"
     )
-    expect(versions_etag.file?).to eq(false)
+    expect(info_checksums_etag).not_to be_file
 
     gemfile <<-G
       source "#{source_uri}"
@@ -803,8 +803,8 @@ RSpec.describe "compact index api" do
     # Initial install creates the cached versions file and etag file
     bundle :install, artifice: "compact_index"
 
-    expect(versions_etag.file?).to eq(true)
-    previous_content = versions_etag.binread
+    expect(info_checksums_etag).to be_file
+    previous_content = info_checksums_etag.binread
 
     # Update the Gemfile so we can check subsequent install was successful
     gemfile <<-G
@@ -815,7 +815,7 @@ RSpec.describe "compact index api" do
     # Second install should match etag
     bundle :install, artifice: "compact_index_etag_match"
 
-    expect(versions_etag.binread).to eq(previous_content)
+    expect(info_checksums_etag.binread).to eq(previous_content)
     expect(the_bundle).to include_gems "myrack 1.0.0"
   end
 

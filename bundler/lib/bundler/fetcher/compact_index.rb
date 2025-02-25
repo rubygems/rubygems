@@ -51,7 +51,7 @@ module Bundler
           Bundler.ui.debug("FIPS mode is enabled, bundler can't use the CompactIndex API")
           return nil
         end
-        # Read info file checksums out of /versions, so we can know if gems are up to date
+        # Read info file checksums out of /info_checksums or /versions, so we can know if gems are up to date
         compact_index_client.available?
       rescue CompactIndexClient::Updater::MismatchedChecksumError => e
         Bundler.ui.debug(e.message)

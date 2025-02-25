@@ -19,6 +19,24 @@ class CompactIndexExtraApi < CompactIndexAPI
     end
   end
 
+  get "/extra/info_checksums" do
+    etag_response do
+      file = tmp("versions.list")
+      FileUtils.rm_f(file)
+      # file = CompactIndex::VersionsFile.new(file.to_s, only_info_checksums: true)
+      file = CompactIndex::VersionsFile.new(file.to_s)
+      file.create(gems(gem_repo4))
+      seen = false
+      file.contents.lines.map do |line|
+        unless seen
+          seen = line == "---\n"
+          next line
+        end
+        line.sub!(/([^ ]+) .+? ([^ ]+)/, '\1 \2') or raise("Unexpected line: #{line.inspect}")
+      end.join
+    end
+  end
+
   get "/extra/info/:name" do
     etag_response do
       gem = gems(gem_repo4).find {|g| g.name == params[:name] }

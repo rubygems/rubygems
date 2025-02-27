@@ -158,7 +158,7 @@ module Bundler
     end
 
     def already_tagged?
-      return false unless sh(%w[git tag]).split(/\n/).include?(version_tag)
+      return false unless sh(%w[git fetch --tags]) && sh(%w[git tag]).split(/\n/).include?(version_tag)
       Bundler.ui.confirm "Tag #{version_tag} has already been created."
       true
     end

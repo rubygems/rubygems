@@ -738,8 +738,6 @@ module Bundler
       command_name = current_command.name
       return if PARSEABLE_COMMANDS.include?(command_name)
 
-      return unless SharedHelpers.md5_available?
-
       require_relative "vendored_uri"
       remote = Source::Rubygems::Remote.new(Gem::URI("https://rubygems.org"))
       cache_path = Bundler.user_cache.join("compact_index", remote.cache_slug)

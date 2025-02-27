@@ -13,6 +13,10 @@ module Bundler
       def as_path_source
         Path.new(options)
       end
+
+      def to_s
+        "gemspec at `#{@path}`"
+      end
     end
   end
 end

@@ -39,45 +39,6 @@ RSpec.describe Bundler::Fetcher::CompactIndex do
       it "returns true" do
         expect(compact_index).to be_available
       end
-
-      context "when OpenSSL is not available" do
-        before do
-          allow(compact_index).to receive(:require).with("openssl").and_raise(LoadError)
-        end
-
-        it "returns true" do
-          expect(compact_index).to be_available
-        end
-      end
-
-      context "when OpenSSL is FIPS-enabled" do
-        def remove_cached_md5_availability
-          return unless Bundler::SharedHelpers.instance_variable_defined?(:@md5_available)
-          Bundler::SharedHelpers.remove_instance_variable(:@md5_available)
-        end
-
-        before do
-          remove_cached_md5_availability
-          stub_const("OpenSSL::OPENSSL_FIPS", true)
-        end
-
-        after { remove_cached_md5_availability }
-
-        context "when FIPS-mode is active" do
-          before do
-            allow(OpenSSL::Digest).to receive(:digest).with("MD5", "").
-              and_raise(OpenSSL::Digest::DigestError)
-          end
-
-          it "returns false" do
-            expect(compact_index).to_not be_available
-          end
-        end
-
-        it "returns true" do
-          expect(compact_index).to be_available
-        end
-      end
     end
 
     context "logging" do

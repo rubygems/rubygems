@@ -219,7 +219,7 @@ RSpec.describe "global gem caching" do
       G
 
       gem_binary_cache = home(".bundle", "cache", "extensions", local_platform.to_s, Bundler.ruby_scope,
-        "gem.repo1.443.#{Digest(:MD5).hexdigest("gem.repo1.443./")}", "very_simple_binary-1.0")
+        "gem.repo1.443.#{Digest(:SHA256).hexdigest("gem.repo1.443./")}", "very_simple_binary-1.0")
       git_binary_cache = home(".bundle", "cache", "extensions", local_platform.to_s, Bundler.ruby_scope,
         "very_simple_git_binary-1.0-#{revision}", "very_simple_git_binary-1.0")
 

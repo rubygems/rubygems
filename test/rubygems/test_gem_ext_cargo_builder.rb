@@ -141,6 +141,19 @@ class TestGemExtCargoBuilder < Gem::TestCase
     end
   end
 
+  def test_linker_args
+    orig_cc = RbConfig::CONFIG["CC"]
+    RbConfig::CONFIG["CC"] = "sccache clang"
+
+    builder = Gem::Ext::CargoBuilder.new
+    args = builder.send(:linker_args)
+
+    assert args[1], "linker=clang"
+    assert_nil args[2]
+  ensure
+    RbConfig::CONFIG["CC"] = orig_cc
+  end
+
   private
 
   def skip_unsupported_platforms!

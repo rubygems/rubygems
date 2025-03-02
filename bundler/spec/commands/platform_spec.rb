@@ -941,6 +941,12 @@ G
 
   context "bundle console", bundler: "< 3" do
     before do
+      begin
+        require "irb"
+      rescue LoadError
+        skip "This spec requires IRB to be available"
+      end
+
       install_gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"

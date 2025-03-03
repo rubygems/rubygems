@@ -235,7 +235,7 @@ RSpec.describe "bundle install" do
           expect(the_bundle).to include_gems "foo 1.0", source: "git@#{lib_path("foo")}"
 
           # validate that the installed directory exists and has some expected contents
-          install_directory = system_gem_path("bundler/gems/foo-#{revision_for(lib_path("foo"))[0..11]}")
+          install_directory = default_bundle_path("bundler/gems/foo-#{revision_for(lib_path("foo"))[0..11]}")
           dot_git_directory = install_directory.join(".git")
           lib_directory = install_directory.join("lib")
           gemspec = install_directory.join("foo.gemspec")

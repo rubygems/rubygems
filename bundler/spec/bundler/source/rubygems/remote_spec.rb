@@ -8,7 +8,7 @@ RSpec.describe Bundler::Source::Rubygems::Remote do
   end
 
   before do
-    allow(Digest(:MD5)).to receive(:hexdigest).with(duck_type(:to_s)) {|string| "MD5HEX(#{string})" }
+    allow(Digest(:SHA256)).to receive(:hexdigest).with(duck_type(:to_s)) {|string| "SHA256HEX(#{string})" }
   end
 
   let(:uri_no_auth) { Gem::URI("https://gems.example.com") }
@@ -42,12 +42,12 @@ RSpec.describe Bundler::Source::Rubygems::Remote do
 
     describe "#cache_slug" do
       it "returns the correct slug" do
-        expect(remote(uri_no_auth).cache_slug).to eq("gems.example.com.443.MD5HEX(gems.example.com.443./)")
+        expect(remote(uri_no_auth).cache_slug).to eq("gems.example.com.443.SHA256HEX(gems.example.com.443./)")
       end
 
       it "only applies the given user" do
         Bundler.settings.temporary(uri_no_auth.to_s => credentials) do
-          expect(remote(uri_no_auth).cache_slug).to eq("gems.example.com.username.443.MD5HEX(gems.example.com.username.443./)")
+          expect(remote(uri_no_auth).cache_slug).to eq("gems.example.com.username.443.SHA256HEX(gems.example.com.username.443./)")
         end
       end
     end
@@ -78,12 +78,12 @@ RSpec.describe Bundler::Source::Rubygems::Remote do
 
     describe "#cache_slug" do
       it "returns the correct slug" do
-        expect(remote(uri_with_auth).cache_slug).to eq("gems.example.com.username.443.MD5HEX(gems.example.com.username.443./)")
+        expect(remote(uri_with_auth).cache_slug).to eq("gems.example.com.username.443.SHA256HEX(gems.example.com.username.443./)")
       end
 
       it "does not apply given credentials" do
         Bundler.settings.temporary(uri_with_auth.to_s => credentials)
-        expect(remote(uri_with_auth).cache_slug).to eq("gems.example.com.username.443.MD5HEX(gems.example.com.username.443./)")
+        expect(remote(uri_with_auth).cache_slug).to eq("gems.example.com.username.443.SHA256HEX(gems.example.com.username.443./)")
       end
     end
   end
@@ -99,7 +99,7 @@ RSpec.describe Bundler::Source::Rubygems::Remote do
 
     describe "#cache_slug" do
       it "returns the correct slug" do
-        expect(remote(uri).cache_slug).to eq("gem.fury.io.SeCrEt-ToKeN.443.MD5HEX(gem.fury.io.SeCrEt-ToKeN.443./me/)")
+        expect(remote(uri).cache_slug).to eq("gem.fury.io.SeCrEt-ToKeN.443.SHA256HEX(gem.fury.io.SeCrEt-ToKeN.443./me/)")
       end
     end
   end
@@ -126,7 +126,7 @@ RSpec.describe Bundler::Source::Rubygems::Remote do
     end
 
     specify "#cache_slug returns the correct slug" do
-      expect(remote(uri).cache_slug).to eq("rubygems.org.443.MD5HEX(rubygems.org.443./)")
+      expect(remote(uri).cache_slug).to eq("rubygems.org.443.SHA256HEX(rubygems.org.443./)")
     end
   end
 
@@ -158,7 +158,7 @@ RSpec.describe Bundler::Source::Rubygems::Remote do
     end
 
     specify "#cache_slug returns the original source" do
-      expect(remote(uri).cache_slug).to eq("rubygems.org.443.MD5HEX(rubygems.org.443./)")
+      expect(remote(uri).cache_slug).to eq("rubygems.org.443.SHA256HEX(rubygems.org.443./)")
     end
   end
 

@@ -47,7 +47,7 @@ jobs:
           ruby --enable-gems -e 'File.delete $LOADED_FEATURES.find {|f| f.end_with?("/operating_system.rb")}'
       - name: Run Test (CRuby)
         run: |
-          bin/rspec spec/commands --fail-fast
+          bin/rspec --fail-fast
         working-directory: ./bundler
 
     timeout-minutes: ${{ matrix.timeout || 60 }}

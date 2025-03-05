@@ -41,6 +41,10 @@ jobs:
       - name: Prepare dependencies
         run: |
           bin/rake spec:parallel_deps
+      - name: Delete operating_system.rb
+        run: |
+          ruby -e 'puts $LOADED_FEATURES.find {|f| f.end_with?("/operating_system.rb")}'
+          ruby -e 'File.delete $LOADED_FEATURES.find {|f| f.end_with?("/operating_system.rb")}'
       - name: Run Test (CRuby)
         run: |
           bin/rspec spec/commands/info_spec.rb:67

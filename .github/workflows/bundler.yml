@@ -43,7 +43,8 @@ jobs:
           bin/rake spec:parallel_deps
       - name: Run Test (CRuby)
         run: |
-          bin/rspec --fail-fast
+          bin/rspec spec/commands/info_spec.rb:67
+          bin/rspec --bisect --fail-fast
         working-directory: ./bundler
 
     timeout-minutes: ${{ matrix.timeout || 60 }}

@@ -11,6 +11,10 @@ class CompactIndexRedirect < CompactIndexAPI
     status 404
   end
 
+  get "/info_checksums" do
+    status 404
+  end
+
   get "/api/v1/dependencies" do
     status 404
   end

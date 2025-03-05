@@ -37,7 +37,7 @@ RSpec.describe "bundle console", readline: true do
       end
 
       # A minimal fake irb console
-      build_gem "irb" do |s|
+      build_gem "irb", "9.9.9" do |s|
         s.write "lib/irb.rb", <<-RUBY
           class IRB
             class << self

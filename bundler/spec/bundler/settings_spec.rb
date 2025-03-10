@@ -268,7 +268,7 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
       let(:helper_path) { "/path/to/helper" }
 
       before do
-        settings.set_local "credential-helper.gemserver.example.org", helper_path
+        settings.set_local "credential.helper.gemserver.example.org", helper_path
       end
 
       it "uses the credential helper when configured" do

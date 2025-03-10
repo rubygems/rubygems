@@ -603,10 +603,25 @@ module Bundler
       return unless helper_path
 
       begin
-        output = IO.popen(helper_path, &:read).strip
-        output unless output.empty?
+        require "shellwords"
+        command = Shellwords.shellsplit(helper_path)
+        command[0] = if command[0].start_with?("/", "~")
+          command[0]
+        else
+          "bundler-credential-#{command[0]}"
+        end
+
+        output = SharedHelpers.filesystem_access(command[0], :read) do
+          Bundler.clean_system(*command, out: :err)
+        end
+
+        output&.strip unless output.to_s.empty?
+      rescue Errno::ENOENT, ArgumentError => e
+        Bundler.ui.warn "Credential helper #{helper_path} not available: #{e.message}"
+        nil
       rescue StandardError => e
         Bundler.ui.warn "Credential helper failed: #{e.message}"
+        nil
       end
     end
   end

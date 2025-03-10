@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'rbconfig'
+
+exe = File.expand_path("../exe", __dir__)
+
+exec RbConfig.ruby, "-Ilib", "#{exe}/gem", *ARGV

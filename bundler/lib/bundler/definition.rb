@@ -627,9 +627,9 @@ module Bundler
 
     def dependencies_with_bundler
       return dependencies unless @unlocking_bundler
-      return dependencies if dependencies.any? { |d| d.name == "bundler" }
+      return dependencies if dependencies.any? {|d| d.name == "bundler" }
 
-      [Dependency.new("bundler", @unlocking_bundler)].concat dependencies
+      [Dependency.new("bundler", @unlocking_bundler)] + dependencies
     end
 
     def resolution_packages
@@ -781,7 +781,6 @@ module Bundler
       return if @most_specific_non_local_locked_platform
 
       @platforms << local_platform
-      @platforms << generic_local_platform unless @platforms.include?(generic_local_platform)
       true
     end
 

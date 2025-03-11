@@ -1,3 +1,18 @@
+# 3.6.6 / 2025-03-13
+
+## Enhancements:
+
+* Update vendored uri to 1.0.3. Pull request
+  [#8534](https://github.com/rubygems/rubygems/pull/8534) by hsbt
+* Installs bundler 2.6.6 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem rdoc` not working with newer versions of rdoc when not
+  installed as default gems. Pull request
+  [#8549](https://github.com/rubygems/rubygems/pull/8549) by
+  deivid-rodriguez
+
 # 3.6.5 / 2025-02-20
 
 ## Enhancements:

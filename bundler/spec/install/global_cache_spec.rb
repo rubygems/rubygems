@@ -64,26 +64,6 @@ RSpec.describe "global gem caching" do
       source_cache = cache_base.join(source_segment)
       cached_gem = source_cache.join("myrack-1.0.0.gem")
       expect(cached_gem).to exist
-    ensure
-      # We cleanup dummy files created by this spec manually because due to a
-      # Ruby on Windows bug, `FileUtils.rm_rf` (run in our global after hook)
-      # cannot traverse directories with such long names. So we delete
-      # everything explicitly to workaround the bug. An alternative workaround
-      # would be to shell out to `rm -rf`. That also works fine, but I went with
-      # the more verbose and explicit approach. This whole ensure block can be
-      # removed once/if https://bugs.ruby-lang.org/issues/21177 is fixed, and
-      # once the fix propagates to all supported rubies.
-      File.delete cached_gem
-      Dir.rmdir source_cache
-
-      File.delete compact_index_cache_path.join(source_segment, "info", "myrack")
-      Dir.rmdir compact_index_cache_path.join(source_segment, "info")
-      File.delete compact_index_cache_path.join(source_segment, "info-etags", "myrack-92f3313ce5721296f14445c3a6b9c073")
-      Dir.rmdir compact_index_cache_path.join(source_segment, "info-etags")
-      Dir.rmdir compact_index_cache_path.join(source_segment, "info-special-characters")
-      File.delete compact_index_cache_path.join(source_segment, "versions")
-      File.delete compact_index_cache_path.join(source_segment, "versions.etag")
-      Dir.rmdir compact_index_cache_path.join(source_segment)
     end
 
     describe "when the same gem from different sources is installed" do

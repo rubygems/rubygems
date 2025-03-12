@@ -201,6 +201,10 @@ module Bundler
         end
       end
 
+      def missing?(spec)
+        @store[spec.lock_name].nil?
+      end
+
       def register(spec, checksum)
         return unless checksum
 

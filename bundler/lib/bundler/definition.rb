@@ -564,6 +564,7 @@ module Bundler
         @local_changes ||
         @missing_lockfile_dep ||
         @unlocking_bundler ||
+        @locked_spec_with_missing_checksums ||
         @locked_spec_with_missing_deps ||
         @locked_spec_with_invalid_deps
     end
@@ -816,6 +817,7 @@ module Bundler
         [@local_changes, "the gemspecs for git local gems changed"],
         [@missing_lockfile_dep, "your lockfile is missing \"#{@missing_lockfile_dep}\""],
         [@unlocking_bundler, "an update to the version of Bundler itself was requested"],
+        [@locked_spec_with_missing_checksums, "your lockfile is missing a CHECKSUMS entry for \"#{@locked_spec_with_missing_checksums}\""],
         [@locked_spec_with_missing_deps, "your lockfile includes \"#{@locked_spec_with_missing_deps}\" but not some of its dependencies"],
         [@locked_spec_with_invalid_deps, "your lockfile does not satisfy dependencies of \"#{@locked_spec_with_invalid_deps}\""],
       ].select(&:first).map(&:last).join(", ")
@@ -874,21 +876,27 @@ module Bundler
     def check_lockfile
       @locked_spec_with_invalid_deps = nil
       @locked_spec_with_missing_deps = nil
+      @locked_spec_with_missing_checksums = nil
 
-      missing = []
+      missing_deps = []
+      missing_checksums = []
       invalid = []
 
       @locked_specs.each do |s|
+        missing_checksums << s if @locked_checksums && s.source.checksum_store.missing?(s)
+
         validation = @locked_specs.validate_deps(s)
 
-        missing << s if validation == :missing
+        missing_deps << s if validation == :missing
         invalid << s if validation == :invalid
       end
 
-      if missing.any?
-        @locked_specs.delete(missing)
+      @locked_spec_with_missing_checksums = missing_checksums.first.name if missing_checksums.any?
 
-        @locked_spec_with_missing_deps = missing.first.name
+      if missing_deps.any?
+        @locked_specs.delete(missing_deps)
+
+        @locked_spec_with_missing_deps = missing_deps.first.name
       end
 
       if invalid.any?

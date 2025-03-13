@@ -1,3 +1,30 @@
+# 2.6.6 (March 13, 2025)
+
+## Enhancements:
+
+  - Fix `ENAMETOOLONG` error when creating compact index cache [#5578](https://github.com/rubygems/rubygems/pull/5578)
+  - Use shorthand hash syntax for bundle add [#8547](https://github.com/rubygems/rubygems/pull/8547)
+  - Update vendored uri to 1.0.3 [#8534](https://github.com/rubygems/rubygems/pull/8534)
+  - Retry gracefully on blank partial response in compact index [#8524](https://github.com/rubygems/rubygems/pull/8524)
+  - Give a better error when trying to write the lock file on a read-only filesystem [#5920](https://github.com/rubygems/rubygems/pull/5920)
+  - Improve log messages when lockfile platforms are added [#8523](https://github.com/rubygems/rubygems/pull/8523)
+  - Allow noop `bundle install` to work on read-only or protected folders [#8519](https://github.com/rubygems/rubygems/pull/8519)
+
+## Bug fixes:
+
+  - Detect partial gem installs from a git source so that they are reinstalled on a successive run [#8539](https://github.com/rubygems/rubygems/pull/8539)
+  - Modify `bundle doctor` to not report issue when files aren't writable [#8520](https://github.com/rubygems/rubygems/pull/8520)
+
+## Performance:
+
+  - Optimize resolution by removing an array allocation from `Candidate#<=>` [#8559](https://github.com/rubygems/rubygems/pull/8559)
+
+## Documentation:
+
+  - Update docs for with/without consistency [#8555](https://github.com/rubygems/rubygems/pull/8555)
+  - Recommend non-deprecated methods in `bundle exec` documentation [#8537](https://github.com/rubygems/rubygems/pull/8537)
+  - Hint about default group when using `only` configuration option [#8536](https://github.com/rubygems/rubygems/pull/8536)
+
 # 2.6.5 (February 20, 2025)
 
 ## Enhancements:

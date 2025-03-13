@@ -50,6 +50,10 @@ jobs:
         run: |
           ruby -Ilib -S rake install 2> errors.txt || (cat errors.txt && exit 1)
           test ! -s errors.txt || (cat errors.txt && exit 1)
+      - name: Check generating documentation with a non default rdoc
+        run: |
+          gem install rdoc
+          gem rdoc rdoc | grep -q "Parsing documentation"
       - name: Run a local rubygems command
         run: gem list bundler
         env:

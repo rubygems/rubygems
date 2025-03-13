@@ -368,13 +368,13 @@ class Gem::Version
 
     lhsize = lhsegments.size
     rhsize = rhsegments.size
-    limit  = (lhsize > rhsize ? lhsize : rhsize) - 1
+    limit  = (lhsize > rhsize ? rhsize : lhsize)
 
     i = 0
 
-    while i <= limit
-      lhs = lhsegments[i] || 0
-      rhs = rhsegments[i] || 0
+    while i < limit
+      lhs = lhsegments[i]
+      rhs = rhsegments[i]
       i += 1
 
       next      if lhs == rhs
@@ -382,6 +382,24 @@ class Gem::Version
       return  1 if Numeric === lhs && String  === rhs
 
       return lhs <=> rhs
+    end
+
+    lhs = lhsegments[i]
+
+    if lhs.nil?
+      while i < rhsize
+        rhs = rhsegments[i]
+        return 1 if String === rhs
+        return -1 unless rhs.zero?
+        i += 1
+      end
+    else
+      while i < lhsize
+        lhs = lhsegments[i]
+        return -1 if String === lhs
+        return 1 unless lhs.zero?
+        i += 1
+      end
     end
 
     0

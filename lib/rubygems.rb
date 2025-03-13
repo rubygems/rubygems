@@ -1155,8 +1155,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   ##
   # If the SOURCE_DATE_EPOCH environment variable is set, returns it's value.
-  # Otherwise, returns the time that +Gem.source_date_epoch_string+ was
-  # first called in the same format as SOURCE_DATE_EPOCH.
+  # Otherwise, returns "1".
   #
   # NOTE(@duckinator): The implementation is a tad weird because we want to:
   #   1. Make builds reproducible by default, by having this function always
@@ -1172,7 +1171,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
 
   def self.source_date_epoch_string
     # The value used if $SOURCE_DATE_EPOCH is not set.
-    @default_source_date_epoch ||= Time.now.to_i.to_s
+    @default_source_date_epoch ||= "0"
 
     specified_epoch = ENV["SOURCE_DATE_EPOCH"]
 

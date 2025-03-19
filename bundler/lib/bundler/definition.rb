@@ -539,12 +539,13 @@ module Bundler
 
       reason = resolve_needed? ? change_reason : "some dependencies were deleted from your gemfile"
 
-      msg = String.new
-      msg << "#{reason.capitalize.strip}, but the lockfile can't be updated because #{update_refused_reason}"
+      msg = String.new("#{reason.capitalize.strip}, but ")
+      msg << "the lockfile " unless msg.start_with?("Your lockfile")
+      msg << "can't be updated because #{update_refused_reason}"
       msg << "\n\nYou have added to the Gemfile:\n" << added.join("\n") if added.any?
       msg << "\n\nYou have deleted from the Gemfile:\n" << deleted.join("\n") if deleted.any?
       msg << "\n\nYou have changed in the Gemfile:\n" << changed.join("\n") if changed.any?
-      msg << "\n\nRun `bundle install` elsewhere and add the updated #{SharedHelpers.relative_gemfile_path} to version control.\n" unless unlocking?
+      msg << "\n\nRun `bundle install` elsewhere and add the updated #{SharedHelpers.relative_lockfile_path} to version control.\n" unless unlocking?
       msg
     end
 
@@ -809,13 +810,13 @@ module Bundler
       [
         [@source_changes, "the list of sources changed"],
         [@dependency_changes, "the dependencies in your gemfile changed"],
-        [@current_platform_missing, "your lockfile does not include the current platform"],
+        [@current_platform_missing, "your lockfile is missing the current platform"],
         [@new_platforms.any?, "you are adding a new platform to your lockfile"],
         [@path_changes, "the gemspecs for path gems changed"],
         [@local_changes, "the gemspecs for git local gems changed"],
-        [@missing_lockfile_dep, "your lock file is missing \"#{@missing_lockfile_dep}\""],
+        [@missing_lockfile_dep, "your lockfile is missing \"#{@missing_lockfile_dep}\""],
         [@unlocking_bundler, "an update to the version of Bundler itself was requested"],
-        [@locked_spec_with_missing_deps, "your lock file includes \"#{@locked_spec_with_missing_deps}\" but not some of its dependencies"],
+        [@locked_spec_with_missing_deps, "your lockfile includes \"#{@locked_spec_with_missing_deps}\" but not some of its dependencies"],
         [@locked_spec_with_invalid_deps, "your lockfile does not satisfy dependencies of \"#{@locked_spec_with_invalid_deps}\""],
       ].select(&:first).map(&:last).join(", ")
     end

@@ -157,6 +157,8 @@ class Gem::Ext::Builder
       Gem::Ext::CmakeBuilder
     when /Cargo.toml/ then
       Gem::Ext::CargoBuilder.new
+    when /\.rb/ then
+      Gem::Ext::ScriptBuilder
     else
       build_error("No builder for extension '#{extension}'")
     end

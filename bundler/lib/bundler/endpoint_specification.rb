@@ -34,7 +34,7 @@ module Bundler
     end
 
     def dependencies
-      @dependencies ||= @unbuilt_dependencies.map! {|dep, reqs| build_dependency(dep, reqs) }
+      @dependencies ||= @unbuilt_dependencies.map {|dep, reqs| build_dependency(dep, reqs) }
     end
     alias_method :runtime_dependencies, :dependencies
 

@@ -80,4 +80,22 @@ RSpec.describe Bundler::EndpointSpecification do
     expect(spec).to eql(spec)
     expect(spec).to_not eql(other_spec)
   end
+
+  describe '#dependencies' do
+    let(:name)         { "foo" }
+    let(:requirement)  { "~> 1.1" }
+    let(:dependencies) { [[name, requirement]] }
+
+    it "should return an array of Gem::Dependency objects" do
+      expect(subject.dependencies). to eq([Gem::Dependency.new(name, requirement)])
+    end
+
+    context 'when dependencies parameter is a frozen array' do
+      let(:dependencies) { [[name, requirement]].freeze }
+
+      it "should return an array of Gem::Dependency objects" do
+        expect(subject.dependencies). to eq([Gem::Dependency.new(name, requirement)])
+      end
+    end
+  end
 end

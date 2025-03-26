@@ -181,6 +181,7 @@ bundler/lib/bundler/resolver/incompatibility.rb
 bundler/lib/bundler/resolver/package.rb
 bundler/lib/bundler/resolver/root.rb
 bundler/lib/bundler/resolver/spec_group.rb
+bundler/lib/bundler/resolver/strategy.rb
 bundler/lib/bundler/retry.rb
 bundler/lib/bundler/ruby_dsl.rb
 bundler/lib/bundler/ruby_version.rb
@@ -281,6 +282,7 @@ bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/partial_solution.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/rubygems.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/solve_failure.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/static_package_source.rb
+bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/strategy.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/term.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version.rb
 bundler/lib/bundler/vendor/pub_grub/lib/pub_grub/version_constraint.rb

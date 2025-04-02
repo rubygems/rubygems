@@ -1,3 +1,22 @@
+# 2.6.7 (April 3, 2025)
+
+## Enhancements:
+
+  - Fix crash when server compact index API implementation only lists versions [#8594](https://github.com/rubygems/rubygems/pull/8594)
+  - Fix lockfile when a gem ends up accidentally under two different sources [#8579](https://github.com/rubygems/rubygems/pull/8579)
+  - Refuse to install and print an error in frozen mode if some entries are missing in CHECKSUMS lockfile section [#8563](https://github.com/rubygems/rubygems/pull/8563)
+  - Support git 2.49 [#8581](https://github.com/rubygems/rubygems/pull/8581)
+  - Improve wording of a few messages [#8570](https://github.com/rubygems/rubygems/pull/8570)
+
+## Bug fixes:
+
+  - Fix `bundle add` sometimes generating invalid lockfiles [#8586](https://github.com/rubygems/rubygems/pull/8586)
+
+## Performance:
+
+  - Implement pub_grub strategy interface [#8589](https://github.com/rubygems/rubygems/pull/8589)
+  - Update vendored pub_grub [#8571](https://github.com/rubygems/rubygems/pull/8571)
+
 # 2.6.6 (March 13, 2025)
 
 ## Enhancements:

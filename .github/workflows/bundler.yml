@@ -29,8 +29,8 @@ jobs:
           - { name: Ubuntu, value: ubuntu-24.04 }
 
         ruby:
-          - { name: ruby-3.1, value: 3.1.6 }
-          - { name: ruby-3.2, value: 3.2.7 }
+          - { name: ruby-3.1, value: 3.1.7 }
+          - { name: ruby-3.2, value: 3.2.8 }
           - { name: ruby-3.3, value: 3.3.7 }
           - { name: ruby-3.4, value: 3.4.2 }
 
@@ -39,13 +39,13 @@ jobs:
           - { name: 3, value: 3.0.0 }
 
         include:
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.7 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.7 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 90 }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.7 }, timeout: 90 }
           - { os: { name: macOS, value: macos-14 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.2 }, timeout: 90 }
 
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.6 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.7 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.7 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.7 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2022 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.2 }, timeout: 150 }
 

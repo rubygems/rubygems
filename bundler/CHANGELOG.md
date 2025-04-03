@@ -1,3 +1,22 @@
+# 2.6.7 (April 3, 2025)
+
+## Enhancements:
+
+  - Fix crash when server compact index API implementation only lists versions [#8594](https://github.com/rubygems/rubygems/pull/8594)
+  - Fix lockfile when a gem ends up accidentally under two different sources [#8579](https://github.com/rubygems/rubygems/pull/8579)
+  - Refuse to install and print an error in frozen mode if some entries are missing in CHECKSUMS lockfile section [#8563](https://github.com/rubygems/rubygems/pull/8563)
+  - Support git 2.49 [#8581](https://github.com/rubygems/rubygems/pull/8581)
+  - Improve wording of a few messages [#8570](https://github.com/rubygems/rubygems/pull/8570)
+
+## Bug fixes:
+
+  - Fix `bundle add` sometimes generating invalid lockfiles [#8586](https://github.com/rubygems/rubygems/pull/8586)
+
+## Performance:
+
+  - Implement pub_grub strategy interface [#8589](https://github.com/rubygems/rubygems/pull/8589)
+  - Update vendored pub_grub [#8571](https://github.com/rubygems/rubygems/pull/8571)
+
 # 2.6.6 (March 13, 2025)
 
 ## Enhancements:
@@ -1318,7 +1337,7 @@
   - Enable parallel installation on Windows by default [#4822](https://github.com/rubygems/rubygems/pull/4822)
   - More logging when compact index is not used and we fallback to other APIs [#4546](https://github.com/rubygems/rubygems/pull/4546)
   - `bundle gem` generated MiniTest file and class now start with 'test' [#3893](https://github.com/rubygems/rubygems/pull/3893)
-  - Add `Bundler::Definition.no_lock` accessor for skipping lock file creation/update [#3401](https://github.com/rubygems/rubygems/pull/3401)
+  - Add `Bundler::Definition.no_lock` accessor for skipping lockfile creation/update [#3401](https://github.com/rubygems/rubygems/pull/3401)
 
 ## Bug fixes:
 
@@ -2060,7 +2079,7 @@
   - Fix `bundle outdated --group NAME` when the group is listed second in the Gemfile ([#6116](https://github.com/rubygems/bundler/pull/6116))
   - Improve conflict resolution messages by not calling "ruby" a gem when conflict happens in the `required_ruby_version`, and by filtering out requirements that didn't contribute to the conflict ([#6647](https://github.com/rubygems/bundler/pull/6647))
   - Avoid fetching and rebuilding git gems whenever any gem is changed in the Gemfile ([#6711](https://github.com/rubygems/bundler/pull/6711))
-  - Include the exact bundler version in the lock file in the suggested command when bundler warns about version mismatches of itself [#6971](https://github.com/rubygems/bundler/pull/6971)
+  - Include the exact bundler version in the lockfile in the suggested command when bundler warns about version mismatches of itself [#6971](https://github.com/rubygems/bundler/pull/6971)
   - Fix plugins being installed every time a command is run #[#6978](https://github.com/rubygems/bundler/pull/6978)
   - Fallback to sequentially fetching specs on 429s [#6728](https://github.com/rubygems/bundler/pull/6728)
   - Make `bundle clean` also clean native extensions for gems with a git source [#7058](https://github.com/rubygems/bundler/pull/7058)
@@ -3525,7 +3544,7 @@ Changes
 
 ## Bug fixes:
 
-  - Revert gem source sorting in lock files (@indirect)
+  - Revert gem source sorting in lockfiles (@indirect)
 
 # 1.7.1 (August 20, 2014)
 
@@ -3625,7 +3644,7 @@ Changes
   - redirects across hosts now work on rubies without OpenSSL ([#2686](https://github.com/rubygems/bundler/issues/2686), @grddev)
   - gemspecs now handle filenames with newlines ([#2634](https://github.com/rubygems/bundler/issues/2634), @jasonmp85)
   - support escaped characters in usernames and passwords (@punkie)
-  - no more exception on `update GEM` without lock file (@simi)
+  - no more exception on `update GEM` without lockfile (@simi)
   - allow long config values ([#2823](https://github.com/rubygems/bundler/issues/2823), @kgrz)
   - cache successfully even locked to gems shipped with Ruby ([#2869](https://github.com/rubygems/bundler/issues/2869), @aughr)
   - respect NO_PROXY even if a proxy is configured ([#2878](https://github.com/rubygems/bundler/issues/2878), @stlay)
@@ -3773,7 +3792,7 @@ Changes
 
 ## Bug fixes:
 
-  - make gemspec path option preserve relative paths in lock file (@bwillis)
+  - make gemspec path option preserve relative paths in lockfile (@bwillis)
   - use umask when creating binstubs ([#1618](https://github.com/rubygems/bundler/issues/1618), @v-yarotsky)
   - warn if graphviz is not installed ([#2435](https://github.com/rubygems/bundler/issues/2435), @Agis-)
   - show git errors while loading gemspecs
@@ -4662,7 +4681,7 @@ Changes
   - Skeleton gemspec now works with older versions of git
   - Fix shell quoting and ref fetching in GemHelper
   - Disable colored output in --deployment
-  - Preserve line endings in lock file
+  - Preserve line endings in lockfile
 
 ## Features:
 

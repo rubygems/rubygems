@@ -1,4 +1,4 @@
-# RubyGems [![Maintainability](https://api.codeclimate.com/v1/badges/30f913e9c2dd932132c1/maintainability)](https://codeclimate.com/github/rubygems/rubygems/maintainability)
+# RubyGems
 
 RubyGems is a package management framework for Ruby.
 

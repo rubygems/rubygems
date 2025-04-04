@@ -223,7 +223,7 @@ module Spec
     end
 
     def pristine_system_gem_path
-      tmp("gems/base_system")
+      tmp_root.join("gems/pristine_system")
     end
 
     def local_gem_path(*path, base: bundled_app)
@@ -277,7 +277,7 @@ module Spec
     end
 
     def rake_path
-      Dir["#{base_system_gems}/#{Bundler.ruby_scope}/**/rake*.gem"].first
+      Dir["#{base_system_gems}/*/*/**/rake*.gem"].first
     end
 
     def sinatra_dependency_paths

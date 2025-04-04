@@ -25,10 +25,6 @@ module Spec
       @relative_gemspec ||= ruby_core? ? "lib/bundler/bundler.gemspec" : "bundler.gemspec"
     end
 
-    def gemspec_dir
-      @gemspec_dir ||= gemspec.parent
-    end
-
     def loaded_gemspec
       @loaded_gemspec ||= Dir.chdir(source_root) { Gem::Specification.load(gemspec.to_s) }
     end

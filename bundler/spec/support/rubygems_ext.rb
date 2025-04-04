@@ -73,8 +73,6 @@ module Spec
     end
 
     def install_test_deps
-      Gem.clear_paths
-
       install_gems(test_gemfile, Path.base_system_gems.to_s)
       install_gems(rubocop_gemfile, Path.rubocop_gems.to_s)
       install_gems(standard_gemfile, Path.standard_gems.to_s)

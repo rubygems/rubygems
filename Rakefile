@@ -37,8 +37,7 @@ module RubyGems
 end
 
 desc "Setup Rubygems dev environment"
-task :setup do
-  RubyGems::DevTasks.bundle_dev_gemfile "install"
+task setup: [:"dev:deps"] do
   Dir.glob("tool/bundler/*_gems.rb").each do |file|
     name = File.basename(file, ".rb")
     next if name == "dev_gems"
@@ -527,7 +526,7 @@ end
 namespace :dev do
   desc "Ensure dev dependencies are installed"
   task :deps do
-    Spec::Rubygems.dev_setup
+    RubyGems::DevTasks.bundle_dev_gemfile "install"
   end
 
   desc "Ensure dev dependencies are installed, and make sure no lockfile changes are generated"
@@ -540,20 +539,6 @@ namespace :dev do
 end
 
 namespace :spec do
-  desc "Ensure spec dependencies are installed"
-  task deps: "dev:deps" do
-    chdir("bundler") do
-      Spec::Rubygems.install_test_deps
-    end
-  end
-
-  desc "Ensure spec dependencies for running in parallel are installed"
-  task parallel_deps: "dev:deps" do
-    chdir("bundler") do
-      Spec::Rubygems.install_parallel_test_deps
-    end
-  end
-
   desc "Run all specs"
   task all: %w[spec:regular spec:realworld]
 

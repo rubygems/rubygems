@@ -10,10 +10,6 @@ module Spec
   module Rubygems
     extend self
 
-    def dev_setup
-      install_gems(dev_gemfile)
-    end
-
     def gem_load(gem_name, bin_container)
       require_relative "switch_rubygems"
 
@@ -50,41 +46,19 @@ module Spec
       Gem::DefaultUserInteraction.ui = Gem::SilentUI.new
     end
 
-    def install_parallel_test_deps
-      Gem.clear_paths
-
-      require "parallel"
-      require "fileutils"
-
-      install_test_deps
-
-      (2..Parallel.processor_count).each do |n|
-        source = Path.tmp_root("1")
-        destination = Path.tmp_root(n.to_s)
-
-        FileUtils.cp_r source, destination, remove_destination: true
-      end
-    end
-
     def setup_test_paths
-      Gem.clear_paths
-
       ENV["BUNDLE_PATH"] = nil
-      ENV["GEM_HOME"] = ENV["GEM_PATH"] = Path.base_system_gem_path.to_s
       ENV["PATH"] = [Path.system_gem_path("bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)
       ENV["PATH"] = [Path.bindir, ENV["PATH"]].join(File::PATH_SEPARATOR) if Path.ruby_core?
     end
 
     def install_test_deps
-      Gem.clear_paths
-
       install_gems(test_gemfile, Path.base_system_gems.to_s)
       install_gems(rubocop_gemfile, Path.rubocop_gems.to_s)
       install_gems(standard_gemfile, Path.standard_gems.to_s)
 
-      # For some reason, doing this here crashes on JRuby + Windows. So defer to
-      # when the test suite is running in that case.
-      Helpers.install_dev_bundler unless Gem.win_platform? && RUBY_ENGINE == "jruby"
+      require_relative "helpers"
+      Helpers.install_dev_bundler
     end
 
     def check_source_control_changes(success_message:, error_message:)
@@ -151,7 +125,11 @@ module Spec
 
       # We don't use `Open3` here because it does not work on JRuby + Windows
       output = `#{Gem.ruby} #{File.expand_path("support/bundle.rb", Path.spec_dir)} install`
-      raise output unless $?.success?
+      if $?.success?
+        puts output
+      else
+        raise output
+      end
     ensure
       if path
         ENV["BUNDLE_PATH"] = old_path

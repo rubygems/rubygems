@@ -72,7 +72,7 @@ And to run an individual test method named `test_default` within a test file, yo
 
 To setup bundler tests:
 
-    bin/rake spec:parallel_deps
+    bin/rake spec:deps
 
 To run the entire bundler test suite in parallel (it takes a while), run the following from the `bundler/` subfolder:
 

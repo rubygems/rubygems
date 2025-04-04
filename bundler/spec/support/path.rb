@@ -30,7 +30,7 @@ module Spec
     end
 
     def loaded_gemspec
-      @loaded_gemspec ||= Gem::Specification.load(gemspec.to_s)
+      @loaded_gemspec ||= Dir.chdir(source_root) { Gem::Specification.load(gemspec.to_s) }
     end
 
     def test_gemfile
@@ -102,11 +102,11 @@ module Spec
     end
 
     def tmp(*path)
-      tmp_root(scope).join(*path)
+      tmp_root.join("#{test_env_version}.#{scope}").join(*path)
     end
 
-    def tmp_root(scope)
-      source_root.join("tmp", "#{test_env_version}.#{scope}")
+    def tmp_root
+      source_root.join("tmp")
     end
 
     # Bump this version whenever you make a breaking change to the spec setup
@@ -180,15 +180,15 @@ module Spec
     end
 
     def base_system_gems
-      tmp("gems/base")
+      tmp_root.join("gems/base")
     end
 
     def rubocop_gems
-      tmp("gems/rubocop")
+      tmp_root.join("gems/rubocop")
     end
 
     def standard_gems
-      tmp("gems/standard")
+      tmp_root.join("gems/standard")
     end
 
     def file_uri_for(path)

@@ -67,10 +67,7 @@ module Spec
     end
 
     def setup_test_paths
-      Gem.clear_paths
-
       ENV["BUNDLE_PATH"] = nil
-      ENV["GEM_HOME"] = ENV["GEM_PATH"] = Path.base_system_gem_path.to_s
       ENV["PATH"] = [Path.system_gem_path("bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)
       ENV["PATH"] = [Path.bindir, ENV["PATH"]].join(File::PATH_SEPARATOR) if Path.ruby_core?
     end

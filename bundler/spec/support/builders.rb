@@ -276,14 +276,6 @@ module Spec
       update_repo(path,**kwargs, &blk)
     end
 
-    def check_test_gems!
-      if rake_path.nil?
-        Spec::Rubygems.install_test_deps
-      end
-
-      Helpers.install_dev_bundler unless pristine_system_gem_path.exist?
-    end
-
     def update_repo(path, build_compact_index: true)
       exempted_caller = Gem.ruby_version >= Gem::Version.new("3.4.0.dev") ? "#{Module.nesting.first}#build_repo" : "build_repo"
       if path == gem_repo1 && caller_locations(1, 1).first.label != exempted_caller
@@ -453,6 +445,7 @@ module Spec
         build_path = @context.tmp + full_name
         bundler_path = build_path + "#{full_name}.gem"
 
+        require "fileutils"
         FileUtils.mkdir_p build_path
 
         @context.shipped_files.each do |shipped_file|

@@ -10,10 +10,6 @@ module Spec
   module Rubygems
     extend self
 
-    def dev_setup
-      install_gems(dev_gemfile)
-    end
-
     def gem_load(gem_name, bin_container)
       require_relative "switch_rubygems"
 
@@ -61,9 +57,8 @@ module Spec
       install_gems(rubocop_gemfile, Path.rubocop_gems.to_s)
       install_gems(standard_gemfile, Path.standard_gems.to_s)
 
-      # For some reason, doing this here crashes on JRuby + Windows. So defer to
-      # when the test suite is running in that case.
-      Helpers.install_dev_bundler unless Gem.win_platform? && RUBY_ENGINE == "jruby"
+      require_relative "helpers"
+      Helpers.install_dev_bundler
     end
 
     def check_source_control_changes(success_message:, error_message:)
@@ -130,7 +125,11 @@ module Spec
 
       # We don't use `Open3` here because it does not work on JRuby + Windows
       output = `#{Gem.ruby} #{File.expand_path("support/bundle.rb", Path.spec_dir)} install`
-      raise output unless $?.success?
+      if $?.success?
+        puts output
+      else
+        raise output
+      end
     ensure
       if path
         ENV["BUNDLE_PATH"] = old_path

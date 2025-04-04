@@ -12,9 +12,9 @@ To work on Bundler, you'll probably want to do a couple of things:
 
         brew install graphviz
 
-* Install development dependencies and Bundler's test dependencies from the rubygems root directory:
+* Install development dependencies from the rubygems root directory:
 
-        bin/rake setup spec:deps
+        bin/rake setup
 
 * Change into the bundler directory:
 

@@ -263,6 +263,31 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
         expect(settings.credentials_for(uri)).to eq(credentials)
       end
     end
+
+    context "with credential helper configured" do
+      let(:helper_path) { "/path/to/helper" }
+
+      before do
+        settings.set_local "credential-helper.gemserver.example.org", helper_path
+      end
+
+      it "uses the credential helper when configured" do
+        expect(settings).to receive(:`).with(helper_path).and_return("username:password\n")
+        expect(settings.credentials_for(uri)).to eq("username:password")
+      end
+
+      it "fallback to config when helper fails" do
+        expect(settings).to receive(:`).with(helper_path).and_raise(StandardError, "Helper failed")
+        expect(Bundler.ui).to receive(:warn).with("Credential helper failed: Helper failed")
+        settings.set_local "gemserver.example.org", "fallback:password"
+        expect(settings.credentials_for(uri)).to eq("fallback:password")
+      end
+
+      it "returns nil when helper fails and no fallback config exists" do
+        expect(settings).to receive(:`).with(helper_path).and_return("")
+        expect(settings.credentials_for(uri)).to be_nil
+      end
+    end
   end
 
   describe "URI normalization" do

@@ -50,22 +50,6 @@ module Spec
       Gem::DefaultUserInteraction.ui = Gem::SilentUI.new
     end
 
-    def install_parallel_test_deps
-      Gem.clear_paths
-
-      require "parallel"
-      require "fileutils"
-
-      install_test_deps
-
-      (2..Parallel.processor_count).each do |n|
-        source = Path.tmp_root("1")
-        destination = Path.tmp_root(n.to_s)
-
-        FileUtils.cp_r source, destination, remove_destination: true
-      end
-    end
-
     def setup_test_paths
       ENV["BUNDLE_PATH"] = nil
       ENV["PATH"] = [Path.system_gem_path("bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)

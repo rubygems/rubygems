@@ -33,7 +33,7 @@ jobs:
       - name: Prepare dependencies
         run: |
           sudo apt-get install graphviz -y
-          bin/rake spec:parallel_deps
+          bin/rake spec:deps
 
       - name: Run Test
         run: |

@@ -14,7 +14,7 @@ To work on Bundler, you'll probably want to do a couple of things:
 
 * Install development dependencies and Bundler's test dependencies from the rubygems root directory:
 
-        bin/rake setup spec:parallel_deps
+        bin/rake setup spec:deps
 
 * Change into the bundler directory:
 

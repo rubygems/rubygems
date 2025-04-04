@@ -30,7 +30,7 @@ module Spec
     end
 
     def loaded_gemspec
-      @loaded_gemspec ||= Gem::Specification.load(gemspec.to_s)
+      @loaded_gemspec ||= Dir.chdir(source_root) { Gem::Specification.load(gemspec.to_s) }
     end
 
     def test_gemfile

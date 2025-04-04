@@ -542,9 +542,7 @@ end
 namespace :spec do
   desc "Ensure spec dependencies are installed"
   task deps: "dev:deps" do
-    chdir("bundler") do
-      Spec::Rubygems.install_test_deps
-    end
+    Spec::Rubygems.install_test_deps
   end
 
   desc "Run all specs"

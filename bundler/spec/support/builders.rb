@@ -461,7 +461,7 @@ module Spec
           target_shipped_file = build_path + target_shipped_file
           target_shipped_dir = File.dirname(target_shipped_file)
           FileUtils.mkdir_p target_shipped_dir unless File.directory?(target_shipped_dir)
-          FileUtils.cp shipped_file, target_shipped_file, preserve: true
+          FileUtils.cp File.expand_path(shipped_file, @context.source_root), target_shipped_file, preserve: true
         end
 
         @context.replace_version_file(@version, dir: build_path)

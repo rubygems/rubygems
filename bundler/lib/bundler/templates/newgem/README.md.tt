@@ -19,6 +19,12 @@ If bundler is not being used to manage dependencies, install the gem by executin
 ```bash
 gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
 ```
+<%- if config[:zeitwerk] -%>
+
+### Zeitwerk and class loading
+
+This gem uses [Zeitwerk](https://github.com/fxn/zeitwerk), which, by default, loads classes lazily as they are referenced in the code. In production environments, it's common to load code eagerly for performance reasons. If you're running this gem in a context that supports Zeitwerk—such as Rails or Hanami—no additional configuration is necessary. Otherwise, you may want to [eager load this gem](https://github.com/fxn/zeitwerk?tab=readme-ov-file#eager-loading).
+<%- end -%>
 
 ## Usage
 

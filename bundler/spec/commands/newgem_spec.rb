@@ -625,7 +625,7 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/lib/#{require_path}/version.rb").read).to match(/VERSION = "0.1.0"/)
     end
 
-    it "declare String type for VERSION constant" do
+    it "declares String type for VERSION constant" do
       bundle "gem #{gem_name}"
 
       expect(bundled_app("#{gem_name}/sig/#{require_path}.rbs").read).to match(/VERSION: String/)

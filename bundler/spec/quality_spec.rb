@@ -140,6 +140,7 @@ RSpec.describe "The library itself" do
     exemptions = %w[
       forget_cli_options
       gem.changelog
+      gem.rbs
       gem.ci
       gem.coc
       gem.linter

@@ -19,6 +19,7 @@ below. Note that these options can also be specified via Bundler's global
 configuration file using the following names:
 
 * `gem.coc`
+* `gem.rbs`
 * `gem.mit`
 * `gem.test`
 
@@ -50,6 +51,15 @@ configuration file using the following names:
 * `--no-changelog`:
   Do not create a `CHANGELOG.md` (overrides `--changelog` specified in the
   global config).
+
+* `--rbs`:
+  Add a RBS signatures file in `sig/GEM_NAME.rbs`. If this option is
+  unspecified, an interactive prompt will be displayed and the answer will be
+  saved in Bundler's global config for future `bundle gem` use.
+
+* `--no-rbs`:
+  Do not create `sig/GEM_NAME.rbs` (overrides `--rbs` specified in the global
+  config).
 
 * `--ext=c`, `--ext=rust`:
   Add boilerplate for C or Rust (currently [magnus](https://docs.rs/magnus) based) extension code to the generated project. This behavior

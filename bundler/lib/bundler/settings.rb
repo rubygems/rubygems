@@ -25,6 +25,7 @@ module Bundler
       forget_cli_options
       frozen
       gem.changelog
+      gem.rbs
       gem.coc
       gem.mit
       gem.bundle

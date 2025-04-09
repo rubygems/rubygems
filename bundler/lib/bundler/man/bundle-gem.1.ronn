@@ -19,6 +19,7 @@ below. Note that these options can also be specified via Bundler's global
 configuration file using the following names:
 
 * `gem.coc`
+* `gem.rbs`
 * `gem.mit`
 * `gem.test`
 

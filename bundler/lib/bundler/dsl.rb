@@ -228,7 +228,7 @@ module Bundler
       version = args || [">= 0"]
 
       normalize_options(name, version, options)
-      options["type"] = :plugin
+      options["plugin"] = true
       options["require"] = false
 
       add_dependency(name, version, options)

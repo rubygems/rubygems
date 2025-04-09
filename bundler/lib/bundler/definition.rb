@@ -435,7 +435,6 @@ module Bundler
     def validate_runtime!
       validate_ruby!
       validate_platforms!
-      validate_plugins!
     end
 
     def validate_ruby!
@@ -475,19 +474,6 @@ module Bundler
       @platforms = resolve.normalize_platforms!(current_dependencies, platforms)
 
       @resolve = SpecSet.new(resolve.for(current_dependencies, @platforms))
-    end
-
-    def validate_plugins!
-      missing_plugins_list = []
-      plugin_dependencies.each do |plugin|
-        missing_plugins_list << plugin unless Plugin.installed?(plugin.name)
-      end
-      missing_plugins_list.map! {|p| "#{p.name} (#{p.requirement})" }
-      if missing_plugins_list.size > 1
-        raise GemNotFound, "Plugins #{missing_plugins_list.join(", ")} are not installed"
-      elsif missing_plugins_list.any?
-        raise GemNotFound, "Plugin #{missing_plugins_list.join(", ")} is not installed"
-      end
     end
 
     def add_platform(platform)

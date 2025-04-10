@@ -44,7 +44,7 @@ RSpec.describe "bundle gem" do
       "BUNDLE_GEM__LINTER" => "false",
       "BUNDLE_GEM__CI" => "false",
       "BUNDLE_GEM__CHANGELOG" => "false",
-      "BUNDLE_GEM__RBS" => "true"
+      "BUNDLE_GEM__RBS" => "false"
     )
   end
 
@@ -163,9 +163,14 @@ RSpec.describe "bundle gem" do
     before do
       bundle "gem #{gem_name} --rbs"
     end
+
     it "generates a gem skeleton with a sig/GEM_NAME.rbs" do
       gem_skeleton_assertions
       expect(bundled_app("#{gem_name}/sig/#{require_path}.rbs")).to exist
+    end
+
+    it "declares String type for VERSION constant" do
+      expect(bundled_app("#{gem_name}/sig/#{require_path}.rbs").read).to match(/VERSION: String/)
     end
   end
 
@@ -173,6 +178,7 @@ RSpec.describe "bundle gem" do
     before do
       bundle "gem #{gem_name} --no-rbs"
     end
+
     it "generates a gem skeleton without a sig/GEM_NAME.rbs" do
       gem_skeleton_assertions
       expect(bundled_app("#{gem_name}/sig")).to_not exist
@@ -604,7 +610,6 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/Rakefile")).to exist
       expect(bundled_app("#{gem_name}/lib/#{require_path}.rb")).to exist
       expect(bundled_app("#{gem_name}/lib/#{require_path}/version.rb")).to exist
-      expect(bundled_app("#{gem_name}/sig/#{require_path}.rbs")).to exist
       expect(bundled_app("#{gem_name}/.gitignore")).to exist
 
       expect(bundled_app("#{gem_name}/bin/setup")).to exist
@@ -623,12 +628,6 @@ RSpec.describe "bundle gem" do
       bundle "gem #{gem_name}"
 
       expect(bundled_app("#{gem_name}/lib/#{require_path}/version.rb").read).to match(/VERSION = "0.1.0"/)
-    end
-
-    it "declares String type for VERSION constant" do
-      bundle "gem #{gem_name}"
-
-      expect(bundled_app("#{gem_name}/sig/#{require_path}.rbs").read).to match(/VERSION: String/)
     end
 
     context "git config user.{name,email} is set" do

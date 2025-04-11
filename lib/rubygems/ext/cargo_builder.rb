@@ -160,6 +160,8 @@ class Gem::Ext::CargoBuilder < Gem::Ext::Builder
   # mkmf work properly.
   def linker_args
     cc_flag = Shellwords.split(makefile_config("CC"))
+    # Avoid to sccache and ccache from Rust build
+    cc_flag = cc_flag.delete_if {|f| f.include?("ccache") }
     linker = cc_flag.shift
     link_args = cc_flag.flat_map {|a| ["-C", "link-arg=#{a}"] }
 

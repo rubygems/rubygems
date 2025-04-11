@@ -19,7 +19,7 @@ jobs:
         os: [ ubuntu-24.04 ]
         ruby: [ ruby-head, truffleruby-head ]
         include:
-          - { os: windows-2022, ruby: mswin }
+          - { os: windows-2025, ruby: mswin }
     env:
       TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
     steps:

@@ -105,7 +105,7 @@ jobs:
 
   install_rubygems_windows:
     name: Install Rubygems on Windows (${{ matrix.ruby.name }})
-    runs-on: windows-2022
+    runs-on: windows-2025
     strategy:
       fail-fast: false
       matrix:

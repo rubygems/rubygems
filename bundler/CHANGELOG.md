@@ -1,3 +1,15 @@
+# 2.6.8 (April 13, 2025)
+
+## Enhancements:
+
+  - Refine `bundle update --verbose` logs [#8627](https://github.com/rubygems/rubygems/pull/8627)
+  - Improve bug report instructions [#8607](https://github.com/rubygems/rubygems/pull/8607)
+
+## Bug fixes:
+
+  - Fix `bundle update` crash in an edge case [#8626](https://github.com/rubygems/rubygems/pull/8626)
+  - Fix `bundle lock --normalize-platforms` regression [#8620](https://github.com/rubygems/rubygems/pull/8620)
+
 # 2.6.7 (April 3, 2025)
 
 ## Enhancements:

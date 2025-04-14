@@ -27,7 +27,6 @@ jobs:
           - { name: Windows, value: windows-2025 }
 
         ruby:
-          - { name: "3.1", value: 3.1.7 }
           - { name: "3.2", value: 3.2.8 }
           - { name: "3.3", value: 3.3.8 }
           - { name: "3.4", value: 3.4.3 }

@@ -53,7 +53,7 @@ class Bundler::Thor::Runner < Bundler::Thor #:nodoc:
       package = :file
       require "open-uri"
       begin
-        contents = URI.open(name, &:read)
+        contents = URI(name).open(&:read)
       rescue OpenURI::HTTPError
         raise Error, "Error opening URI '#{name}'"
       end
@@ -69,7 +69,7 @@ class Bundler::Thor::Runner < Bundler::Thor #:nodoc:
           base = name
           package = :file
           require "open-uri"
-          contents = URI.open(name, &:read)
+          contents = URI(name).open(&:read)
         end
       rescue Errno::ENOENT
         raise Error, "Error opening file '#{name}'"

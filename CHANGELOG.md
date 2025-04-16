@@ -172,7 +172,7 @@
 
 * Fix missing single quote in git source example. Pull request
   [#8303](https://github.com/rubygems/rubygems/pull/8303) by nobu
-* Update the `gem install` demo in REAME to use a gem that just works on
+* Update the `gem install` demo in README to use a gem that just works on
   Windows. Pull request
   [#8262](https://github.com/rubygems/rubygems/pull/8262) by soda92
 * Unify rubygems and bundler docs directory. Pull request

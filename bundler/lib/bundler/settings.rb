@@ -89,6 +89,7 @@ module Bundler
       system_bindir
       trust-policy
       version
+      credential-helper
     ].freeze
 
     DEFAULT_CONFIG = {
@@ -197,7 +198,7 @@ module Bundler
     end
 
     def credentials_for(uri)
-      self[uri.to_s] || self[uri.host]
+      credentials_from_helper(uri) || self[uri.to_s] || self[uri.host]
     end
 
     def gem_mirrors
@@ -593,6 +594,19 @@ module Bundler
         else
           raise ArgumentError, "Invalid key: #{key.inspect}"
         end
+      end
+    end
+
+    def credentials_from_helper(uri)
+      helper_key = "credential-helper.#{uri.host}"
+      helper_path = self[helper_key]
+      return unless helper_path
+
+      begin
+        output = `#{helper_path}`.strip
+        output unless output.empty?
+      rescue StandardError => e
+        Bundler.ui.warn "Credential helper failed: #{e.message}"
       end
     end
   end

@@ -29,9 +29,10 @@ module Bundler
     end
 
     def normalize_platforms!(deps, platforms)
-      complete_platforms = add_extra_platforms!(platforms)
+      remove_invalid_platforms!(deps, platforms)
+      add_extra_platforms!(platforms)
 
-      complete_platforms.map do |platform|
+      platforms.map! do |platform|
         next platform if platform == Gem::Platform::RUBY
 
         begin
@@ -44,11 +45,34 @@ module Bundler
         next platform if incomplete_for_platform?(deps, less_specific_platform)
 
         less_specific_platform
-      end.uniq
+      end.uniq!
+    end
+
+    def add_originally_invalid_platforms!(platforms, originally_invalid_platforms)
+      originally_invalid_platforms.each do |originally_invalid_platform|
+        platforms << originally_invalid_platform if complete_platform(originally_invalid_platform)
+      end
+    end
+
+    def remove_invalid_platforms!(deps, platforms, skips: [])
+      invalid_platforms = []
+
+      platforms.reject! do |platform|
+        next false if skips.include?(platform)
+
+        invalid = incomplete_for_platform?(deps, platform)
+        invalid_platforms << platform if invalid
+        invalid
+      end
+
+      invalid_platforms
     end
 
     def add_extra_platforms!(platforms)
-      return platforms.concat([Gem::Platform::RUBY]).uniq if @specs.empty?
+      if @specs.empty?
+        platforms.concat([Gem::Platform::RUBY]).uniq
+        return
+      end
 
       new_platforms = all_platforms.select do |platform|
         next if platforms.include?(platform)
@@ -56,14 +80,13 @@ module Bundler
 
         complete_platform(platform)
       end
-      return platforms if new_platforms.empty?
+      return if new_platforms.empty?
 
       platforms.concat(new_platforms)
+      return if new_platforms.include?(Bundler.local_platform)
 
       less_specific_platform = new_platforms.find {|platform| platform != Gem::Platform::RUBY && Bundler.local_platform === platform && platform === Bundler.local_platform }
       platforms.delete(Bundler.local_platform) if less_specific_platform
-
-      platforms
     end
 
     def validate_deps(s)
@@ -122,12 +145,15 @@ module Bundler
     end
 
     def incomplete_for_platform?(deps, platform)
-      return false if @specs.empty?
+      incomplete_specs_for_platform(deps, platform).any?
+    end
+
+    def incomplete_specs_for_platform(deps, platform)
+      return [] if @specs.empty?
 
       validation_set = self.class.new(@specs)
       validation_set.for(deps, [platform])
-
-      validation_set.incomplete_specs.any?
+      validation_set.incomplete_specs
     end
 
     def missing_specs_for(deps)
@@ -173,7 +199,7 @@ module Bundler
     end
 
     def version_for(name)
-      self[name].first&.version
+      exemplary_spec(name)&.version
     end
 
     def what_required(spec)
@@ -278,8 +304,13 @@ module Bundler
     end
 
     def additional_variants_from(other)
-      other.select do |spec|
-        version_for(spec.name) == spec.version && valid_dependencies?(spec)
+      other.select do |other_spec|
+        spec = exemplary_spec(other_spec.name)
+        next unless spec
+
+        selected = spec.version == other_spec.version && valid_dependencies?(other_spec)
+        other_spec.source = spec.source if selected
+        selected
       end
     end
 
@@ -355,6 +386,10 @@ module Bundler
     def index_spec(hash, key, value)
       hash[key] ||= []
       hash[key] << value
+    end
+
+    def exemplary_spec(name)
+      self[name].first
     end
   end
 end

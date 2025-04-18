@@ -1,3 +1,29 @@
+# 3.6.8 / 2025-04-13
+
+## Enhancements:
+
+* Installs bundler 2.6.8 as a default gem.
+
+# 3.6.7 / 2025-04-03
+
+## Enhancements:
+
+* Sorting files in metadata for build reproducibility. Pull request
+  [#8569](https://github.com/rubygems/rubygems/pull/8569) by
+  giacomobenedetti
+* Default to a SOURCE_DATE_EPOCH of 315619200, to simplify reproducible
+  builds. Pull request
+  [#8568](https://github.com/rubygems/rubygems/pull/8568) by duckinator
+* Let `gem exec` raise an error in ambiguous cases. Pull request
+  [#8573](https://github.com/rubygems/rubygems/pull/8573) by
+  deivid-rodriguez
+* Installs bundler 2.6.7 as a default gem.
+
+## Performance:
+
+* Speed up Version#<=> ~20-50% when lengths differ. Pull request
+  [#8565](https://github.com/rubygems/rubygems/pull/8565) by skipkayhil
+
 # 3.6.6 / 2025-03-13
 
 ## Enhancements:

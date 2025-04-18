@@ -6,14 +6,15 @@ GIT
 
 GIT
   remote: https://github.com/jhawthorn/pub_grub.git
-  revision: 55a2d65c5c3176f72de5e25d59fb6f52b9fe60ef
+  revision: df6add45d1b4d122daff2f959c9bd1ca93d14261
+  ref: df6add45d1b4d122daff2f959c9bd1ca93d14261
   specs:
     pub_grub (0.5.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    connection_pool (2.4.1)
+    connection_pool (2.5.0)
     fileutils (1.7.3)
     net-http (0.6.0)
       uri
@@ -53,7 +54,7 @@ DEPENDENCIES
   uri (= 1.0.3)
 
 CHECKSUMS
-  connection_pool (2.4.1) sha256=0f40cf997091f1f04ff66da67eabd61a9fe0d4928b9a3645228532512fab62f4
+  connection_pool (2.5.0) sha256=233b92f8d38e038c1349ccea65dd3772727d669d6d2e71f9897c8bf5cd53ebfc
   fileutils (1.7.3) sha256=57271e854b694a87755d76f836f5c57b2c9538ebbaf4b2154bb66addf15eb5da
   molinillo (0.8.0)
   net-http (0.6.0) sha256=9621b20c137898af9d890556848c93603716cab516dc2c89b01a38b894e259fb

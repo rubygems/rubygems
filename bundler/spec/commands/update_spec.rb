@@ -39,6 +39,23 @@ RSpec.describe "bundle update" do
     end
   end
 
+  describe "with --verbose" do
+    before do
+      build_repo2
+
+      install_gemfile <<~G
+        source "https://gem.repo2"
+        gem "myrack"
+      G
+    end
+
+    it "logs the reason for re-resolving" do
+      bundle "update --verbose"
+      expect(out).not_to include("Found changes from the lockfile")
+      expect(out).to include("Re-resolving dependencies because bundler is unlocking")
+    end
+  end
+
   describe "with --all" do
     before do
       build_repo2
@@ -80,7 +97,7 @@ RSpec.describe "bundle update" do
   end
 
   describe "with --gemfile" do
-    it "creates lock files based on the Gemfile name" do
+    it "creates lockfiles based on the Gemfile name" do
       gemfile bundled_app("OmgFile"), <<-G
         source "https://gem.repo1"
         gem "myrack", "1.0"
@@ -640,7 +657,7 @@ RSpec.describe "bundle update" do
                 myrack
 
           PLATFORMS
-            #{local_platform}
+            x86-darwin-100
 
           DEPENDENCIES
             activesupport

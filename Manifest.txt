@@ -26,6 +26,8 @@ bundler/lib/bundler/cli/common.rb
 bundler/lib/bundler/cli/config.rb
 bundler/lib/bundler/cli/console.rb
 bundler/lib/bundler/cli/doctor.rb
+bundler/lib/bundler/cli/doctor/diagnose.rb
+bundler/lib/bundler/cli/doctor/ssl.rb
 bundler/lib/bundler/cli/exec.rb
 bundler/lib/bundler/cli/fund.rb
 bundler/lib/bundler/cli/gem.rb

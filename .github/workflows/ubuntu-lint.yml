@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: ruby, value: 3.4.2 }
+          - { name: ruby, value: 3.4.3 }
           - { name: jruby, value: jruby-9.4.12.0 }
           - { name: truffleruby, value: truffleruby-24.2.0 }
     env:

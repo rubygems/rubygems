@@ -24,7 +24,7 @@ module Bundler
       private
 
       def append(remote_path, local_path, etag_path)
-        return false unless local_path.file? && local_path.size.nonzero?
+        return false unless local_path.file? && local_path.size.nonzero? && local_path.read.valid_encoding?
 
         CacheFile.copy(local_path) do |file|
           etag = etag_path.read.tap(&:chomp!) if etag_path.file?
@@ -49,7 +49,7 @@ module Bundler
 
       # request without range header to get the full file or a 304 Not Modified
       def replace(remote_path, local_path, etag_path)
-        etag = etag_path.read.tap(&:chomp!) if etag_path.file?
+        etag = etag_path.read.tap(&:chomp!) if etag_path.file? && local_path.read.valid_encoding?
         response = @fetcher.call(remote_path, request_headers(etag))
         return true if response.is_a?(Gem::Net::HTTPNotModified)
         CacheFile.write(local_path, response.body, parse_digests(response))

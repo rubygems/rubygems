@@ -44,6 +44,7 @@ module Bundler
       silence_deprecations
       silence_root_warning
       update_requires_all_flag
+      validate_lockfile
     ].freeze
 
     REMEMBERED_KEYS = %w[

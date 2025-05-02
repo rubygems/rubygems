@@ -9,6 +9,7 @@ module Bundler
 
     def run
       Bundler.ui.level = "warn" if options[:quiet]
+      Bundler.settings.temporary(validate_lockfile: true)
 
       warn_if_root
 

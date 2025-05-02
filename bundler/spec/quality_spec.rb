@@ -149,6 +149,7 @@ RSpec.describe "The library itself" do
       git.allow_insecure
       inline
       trust-policy
+      validate_lockfile
     ]
 
     all_settings = Hash.new {|h, k| h[k] = [] }

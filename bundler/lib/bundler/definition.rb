@@ -71,6 +71,7 @@ module Bundler
       else
         @unlocking_all = false
         @unlocking_bundler = unlock.delete(:bundler)
+        @validate_dependencies = unlock.delete(:validate_dependencies)
         @unlocking = unlock.any? {|_k, v| !Array(v).empty? }
         @sources_to_unlock = unlock.delete(:sources) || []
         @unlocking_ruby = unlock.delete(:ruby)
@@ -99,7 +100,7 @@ module Bundler
 
       if lockfile_exists?
         @lockfile_contents = Bundler.read_file(lockfile)
-        @locked_gems = LockfileParser.new(@lockfile_contents)
+        @locked_gems = LockfileParser.new(@lockfile_contents, validate_dependencies: @validate_dependencies)
         @locked_platforms = @locked_gems.platforms
         @most_specific_locked_platform = @locked_gems.most_specific_locked_platform
         @platforms = @locked_platforms.dup

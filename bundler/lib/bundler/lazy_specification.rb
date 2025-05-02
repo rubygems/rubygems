@@ -23,6 +23,9 @@ module Bundler
     #
     attr_accessor :most_specific_locked_platform
 
+    # Controls whether to validate runtime dependencies when materializing.
+    attr_accessor :validate_dependencies_when_materializing
+
     alias_method :runtime_dependencies, :dependencies
 
     def self.from_spec(s)
@@ -47,6 +50,7 @@ module Bundler
       @force_ruby_platform = default_force_ruby_platform
       @most_specific_locked_platform = nil
       @materialization = nil
+      @validate_dependencies_when_materializing = false
     end
 
     def missing?
@@ -231,7 +235,8 @@ module Bundler
     # dependencies of locally installed gems would mean evaluating all gemspecs,
     # which would affect `bundler/setup` performance.
     def validate_dependencies(spec)
-      if spec.is_a?(StubSpecification)
+      # This flag is set during installation when we do want to validate dependencies.
+      if !@validate_dependencies_when_materializing && spec.is_a?(StubSpecification)
         spec.dependencies = dependencies
       else
         if !source.is_a?(Source::Path) && spec.runtime_dependencies.sort != dependencies.sort

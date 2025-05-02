@@ -23,6 +23,10 @@ module Bundler
       :sources
     )
 
+    # Controls whether to validate that runtime dependencies in the lockfile
+    # match the actual dependencies of the gems when materializing specifications.
+    attr_accessor :validate_dependencies
+
     # Given a gemfile and lockfile creates a Bundler definition
     #
     # @param gemfile [Pathname] Path to Gemfile
@@ -340,6 +344,8 @@ module Bundler
         Bundler.ui.debug resolve_needed_reason
 
         start_resolution
+      end.tap do |spec_set|
+        spec_set.validate_dependencies = validate_dependencies
       end
     end
 

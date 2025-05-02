@@ -7,6 +7,8 @@ module Bundler
     include Enumerable
     include TSort
 
+    attr_accessor :validate_dependencies
+
     def initialize(specs)
       @specs = specs
     end
@@ -260,7 +262,17 @@ module Bundler
 
         handled[key] = true
 
-        materialization = Materialization.new(dependency, platform, candidates: lookup[name])
+        candidates = lookup[name]
+        # Set validation flag on all LazySpecification objects before materializing them.
+        # This ensures the validate_dependencies method will perform actual validation
+        # when validating the lockfile during install (or use the existing dependencies otherwise).
+        candidates&.each do |spec|
+          if spec.is_a?(LazySpecification)
+            spec.validate_dependencies_when_materializing = validate_dependencies
+          end
+        end
+
+        materialization = Materialization.new(dependency, platform, candidates: candidates)
 
         deps.concat(materialization.dependencies) if materialization.complete?
 

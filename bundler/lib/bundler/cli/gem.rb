@@ -69,6 +69,7 @@ module Bundler
         test: options[:test],
         ext: extension,
         exe: options[:exe],
+        bundle: options[:bundle],
         bundler_version: bundler_dependency_version,
         git: use_git,
         github_username: github_username.empty? ? "[USERNAME]" : github_username,
@@ -239,6 +240,13 @@ module Bundler
 
       if use_git
         IO.popen(%w[git add .], { chdir: target }, &:read)
+      end
+
+      if config[:bundle]
+        Bundler.ui.info "Running bundle install in the new gem directory."
+        Dir.chdir(target) do
+          system("bundle install")
+        end
       end
 
       # Open gemspec in editor

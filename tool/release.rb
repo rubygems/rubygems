@@ -119,6 +119,8 @@ class Release
       "--gemfile=#{File.expand_path("bundler/release_gems.rb", __dir__)}",
       exception: true
     )
+
+    Gem.clear_paths
   end
 
   def self.for_bundler(version)

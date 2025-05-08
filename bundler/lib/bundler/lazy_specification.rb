@@ -231,7 +231,9 @@ module Bundler
     # dependencies of locally installed gems would mean evaluating all gemspecs,
     # which would affect `bundler/setup` performance.
     def validate_dependencies(spec)
-      if spec.is_a?(StubSpecification)
+      # When validating the lockfile (like during `bundle check`)
+      # we always want to detect incorrect dependencies.
+      if !Bundler.settings[:validate_lockfile] && spec.is_a?(StubSpecification)
         spec.dependencies = dependencies
       else
         if !source.is_a?(Source::Path) && spec.runtime_dependencies.sort != dependencies.sort

@@ -206,7 +206,7 @@ class Release
           "Cherry-picking change logs from future RubyGems #{@rubygems.version} and Bundler #{@bundler.version} into master."
         )
       end
-    rescue StandardError
+    rescue StandardError, LoadError
       system("git", "checkout", initial_branch)
       raise
     end

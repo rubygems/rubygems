@@ -118,7 +118,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@eaecf785f6a34567a6d97f686bbb7bccc1ac1e5c # v1.237.0
+        uses: ntkme/setup-ruby@dev # TODO: Go back to ruby/setup-ruby once https://github.com/ruby/setup-ruby/pull/762 is released
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

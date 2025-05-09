@@ -169,7 +169,9 @@ module Spec
         end
       end
       if artifice
-        requires << "#{Path.spec_dir}/support/artifice/#{artifice}.rb"
+        if artifice == "endpoint_strict_basic_authentication" || artifice == "endpoint"
+          requires << "#{Path.spec_dir}/support/artifice/#{artifice}.rb"
+        end
       end
 
       requires << "#{Path.spec_dir}/support/hax.rb"
@@ -259,8 +261,59 @@ module Spec
       contents = args.pop
 
       if contents.nil?
+        contents = read_gemfile
+        if contents
+          server_ports = {
+            "gem.repo1" => 4567,
+            "gem.repo2" => 4568,
+            "gem.repo3" => 4569,
+            "gem.repo4" => 4570
+          }
+          
+          server_ports.each do |repo, port|
+            contents = contents.gsub(%r{https://#{repo}/}, "http://localhost:#{port}/")
+            contents = contents.gsub(%r{https://#{repo}}, "http://localhost:#{port}")
+          end
+        end
+      else
+        match_source(contents)
+        if contents
+          server_ports = {
+            "gem.repo1" => 4567,
+            "gem.repo2" => 4568,
+            "gem.repo3" => 4569,
+            "gem.repo4" => 4570
+          }
+          
+          server_ports.each do |repo, port|
+            contents = contents.gsub(%r{https://#{repo}/}, "http://localhost:#{port}/")
+            contents = contents.gsub(%r{https://#{repo}}, "http://localhost:#{port}")
+          end
+        end
+        contents = create_file(args.pop || "Gemfile", contents)
+      end
+      contents
+    end
+
+    def gemfilea(*args)
+      contents = args.pop
+
+      if contents.nil?
         read_gemfile
       else
+        # if contents
+        #   server_ports = {
+        #     "gem.repo1" => 4567,
+        #     "gem.repo2" => 4568,
+        #     "gem.repo3" => 4569,
+        #     "gem.repo4" => 4570
+        #   }
+          
+        #   server_ports.each do |repo, port|
+        #     contents = contents.gsub("https://#{repo}/", "http://localhost:#{port}/")
+        #     contents = contents.gsub("https://#{repo}", "http://localhost:#{port}")
+        #   end
+        # end
         match_source(contents)
         create_file(args.pop || "Gemfile", contents)
       end
@@ -270,10 +323,52 @@ module Spec
       contents = args.pop
 
       if contents.nil?
-        read_lockfile
+        contents = read_lockfile
+        if contents
+          server_ports = {
+            "gem.repo1" => 4567,
+            "gem.repo2" => 4568,
+            "gem.repo3" => 4569,
+            "gem.repo4" => 4570
+          }
+          
+          server_ports.each do |repo, port|
+            # contents = contents.gsub(%r{http://localhost:#{port}/}, "https://#{repo}/")
+            # contents = contents.gsub(%r{http://localhost:#{port}}, "https://#{repo}")
+            contents = contents.gsub(%r{remote: http://localhost:#{port}/}, "remote: https://#{repo}/")
+            contents = contents.gsub(%r{remote: http://localhost:#{port}}, "remote: https://#{repo}")
+          end
+        end
       else
-        create_file(args.pop || "Gemfile.lock", contents)
+        if contents
+          server_ports = {
+            "gem.repo1" => 4567,
+            "gem.repo2" => 4568,
+            "gem.repo3" => 4569,
+            "gem.repo4" => 4570
+          }
+          
+          server_ports.each do |repo, port|
+            # contents = contents.gsub(%r{http://localhost:#{port}/}, "https://#{repo}/")
+            # contents = contents.gsub(%r{http://localhost:#{port}}, "https://#{repo}")
+            contents = contents.gsub("remote: https://#{repo}/", "remote: http://localhost:#{port}/")
+            contents = contents.gsub("remote: https://#{repo}", "remote: http://localhost:#{port}")
+          end
+        end
+        contents = create_file(args.pop || "Gemfile.lock", contents)
       end
+      contents
+    end
+
+    def lockfilea(*args)
+      contents = args.pop
+
+      if contents.nil?
+        contents = read_lockfile
+      else
+        contents = create_file(args.pop || "Gemfile.lock", contents)
+      end
+      contents
     end
 
     def read_gemfile(file = "Gemfile")

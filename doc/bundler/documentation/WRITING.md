@@ -39,7 +39,7 @@ If you're not sure if the formatting looks right, that's ok! Make a pull request
 To preview your changes as they will print out for Bundler users, you'll need to run a series of commands:
 
 ```
-$ bin/rake spec:deps
+$ bin/rake dev:deps
 $ bin/rake man:build
 $ man ./lib/bundler/man/bundle-cookies.1
 ```

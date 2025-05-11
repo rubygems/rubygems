@@ -1,3 +1,55 @@
+# 3.6.8 / 2025-04-13
+
+## Enhancements:
+
+* Installs bundler 2.6.8 as a default gem.
+
+# 3.6.7 / 2025-04-03
+
+## Enhancements:
+
+* Sorting files in metadata for build reproducibility. Pull request
+  [#8569](https://github.com/rubygems/rubygems/pull/8569) by
+  giacomobenedetti
+* Default to a SOURCE_DATE_EPOCH of 315619200, to simplify reproducible
+  builds. Pull request
+  [#8568](https://github.com/rubygems/rubygems/pull/8568) by duckinator
+* Let `gem exec` raise an error in ambiguous cases. Pull request
+  [#8573](https://github.com/rubygems/rubygems/pull/8573) by
+  deivid-rodriguez
+* Installs bundler 2.6.7 as a default gem.
+
+## Performance:
+
+* Speed up Version#<=> ~20-50% when lengths differ. Pull request
+  [#8565](https://github.com/rubygems/rubygems/pull/8565) by skipkayhil
+
+# 3.6.6 / 2025-03-13
+
+## Enhancements:
+
+* Update vendored uri to 1.0.3. Pull request
+  [#8534](https://github.com/rubygems/rubygems/pull/8534) by hsbt
+* Installs bundler 2.6.6 as a default gem.
+
+## Bug fixes:
+
+* Fix `gem rdoc` not working with newer versions of rdoc when not
+  installed as default gems. Pull request
+  [#8549](https://github.com/rubygems/rubygems/pull/8549) by
+  deivid-rodriguez
+
+# 3.6.5 / 2025-02-20
+
+## Enhancements:
+
+* Installs bundler 2.6.5 as a default gem.
+
+## Documentation:
+
+* Removed `gem server` from `gem help`. Pull request
+  [#8507](https://github.com/rubygems/rubygems/pull/8507) by hsbt
+
 # 3.6.4 / 2025-02-17
 
 ## Enhancements:
@@ -120,7 +172,7 @@
 
 * Fix missing single quote in git source example. Pull request
   [#8303](https://github.com/rubygems/rubygems/pull/8303) by nobu
-* Update the `gem install` demo in REAME to use a gem that just works on
+* Update the `gem install` demo in README to use a gem that just works on
   Windows. Pull request
   [#8262](https://github.com/rubygems/rubygems/pull/8262) by soda92
 * Unify rubygems and bundler docs directory. Pull request

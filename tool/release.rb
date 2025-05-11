@@ -119,6 +119,8 @@ class Release
       "--gemfile=#{File.expand_path("bundler/release_gems.rb", __dir__)}",
       exception: true
     )
+
+    Gem.clear_paths
   end
 
   def self.for_bundler(version)
@@ -206,7 +208,7 @@ class Release
           "Cherry-picking change logs from future RubyGems #{@rubygems.version} and Bundler #{@bundler.version} into master."
         )
       end
-    rescue StandardError
+    rescue StandardError, LoadError
       system("git", "checkout", initial_branch)
       raise
     end

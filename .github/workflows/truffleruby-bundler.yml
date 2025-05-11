@@ -26,13 +26,13 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
+        uses: ruby/setup-ruby@eaecf785f6a34567a6d97f686bbb7bccc1ac1e5c # v1.237.0
         with:
-          ruby-version: truffleruby-24.1.2
+          ruby-version: truffleruby-24.2.0
           bundler: none
       - name: Prepare dependencies
         run: |
-          bin/rake spec:parallel_deps
+          bin/rake dev:deps
       - name: Run Test
         run: |
           bin/parallel_rspec --tag truffleruby_only --tag truffleruby

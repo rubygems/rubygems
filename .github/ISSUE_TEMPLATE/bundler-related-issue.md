@@ -59,9 +59,11 @@ Ideally, we recommend you set up the list of steps as a Dockerfile. A Dockerfile
 
 <!-- Replace this with the results you expected before running the command. -->
 
-### What actually happened?
+### What happened instead?
 
-<!-- Replace this with the actual result you got. Paste the output of your command here. -->
+````
+Replace this with the actual result you got. Paste the output of your command here.
+````
 
 ### If not included with the output of your command, run `bundle env` and paste the output below
 

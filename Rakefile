@@ -6,60 +6,36 @@ require "rubygems"
 require "rubygems/package_task"
 require "rake/testtask"
 
-module RubyGems
-  module DevTasks
-    include FileUtils
-
-    extend self
-
-    def bundle_dev_gemfile(*args)
-      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=tool/bundler/dev_gems.rb"
-    end
-
-    def bundle_support_gemfile(name, *args)
-      sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", *args, "--gemfile=tool/bundler/#{name}.rb"
-    end
-
-    def update_locked_bundler
-      require "open3"
-
-      stdout, status = Open3.capture2e("ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "--version")
-      raise "Failed to find current version of Bundler" unless status.success?
-
-      version = stdout.split(" ").last
-
-      Dir.glob("tool/bundler/*_gems.rb").each do |file|
-        name = File.basename(file, ".rb")
-        bundle_support_gemfile(name, "update", "--bundler", version)
-      end
-    end
-  end
-end
+require_relative "bundler/spec/support/rubygems_ext"
 
 desc "Setup Rubygems dev environment"
-task :setup do
-  RubyGems::DevTasks.bundle_dev_gemfile "install"
+task setup: [:"dev:deps"] do
   Dir.glob("tool/bundler/*_gems.rb").each do |file|
     name = File.basename(file, ".rb")
     next if name == "dev_gems"
-    RubyGems::DevTasks.bundle_support_gemfile name, "lock"
+    Spec::Rubygems.dev_bundle "lock", gemfile: file
   end
 end
 
 desc "Update Rubygems dev environment"
 task :update do
-  RubyGems::DevTasks.bundle_dev_gemfile "update"
+  Spec::Rubygems.dev_bundle "update"
   Dir.glob("tool/bundler/*_gems.rb").each do |file|
     name = File.basename(file, ".rb")
     next if name == "dev_gems"
-    RubyGems::DevTasks.bundle_support_gemfile name, "lock", "--update"
+    Spec::Rubygems.dev_bundle "lock", "--update", gemfile: file
   end
 end
 
 namespace :version do
   desc "Update the locked bundler version in dev environment"
   task update_locked_bundler: [:"bundler:install"] do |_, _args|
-    RubyGems::DevTasks.update_locked_bundler
+    stdout = Spec::Rubygems.dev_bundle "--version"
+    version = stdout.split(" ").last
+
+    Dir.glob("tool/bundler/*_gems.rb").each do |file|
+      Spec::Rubygems.dev_bundle("update", "--bundler", version, gemfile: file)
+    end
   end
 
   desc "Check locked bundler version is up to date"
@@ -73,14 +49,14 @@ end
 
 desc "Update specific development dependencies"
 task :update_dev_dep do |_, args|
-  RubyGems::DevTasks.bundle_dev_gemfile "update", *args
+  Spec::Rubygems.dev_bundle "update", *args
 end
 
 desc "Update RSpec related gems"
 task :update_rspec_deps do |_, _args|
-  RubyGems::DevTasks.bundle_dev_gemfile "update", "rspec-core", "rspec-expectations", "rspec-mocks"
-  RubyGems::DevTasks.bundle_support_gemfile "rubocop_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
-  RubyGems::DevTasks.bundle_support_gemfile "standard_gems", "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  Spec::Rubygems.dev_bundle "update", "rspec-core", "rspec-expectations", "rspec-mocks"
+  Spec::Rubygems.dev_bundle "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks", gemfile: "tool/bundler/rubocop_gems.rb"
+  Spec::Rubygems.dev_bundle "lock", "--update", "rspec-core", "rspec-expectations", "rspec-mocks", gemfile: "tool/bundler/standard_gems.rb"
 end
 
 desc "Setup git hooks"
@@ -515,8 +491,6 @@ task update_licenses_branch: :update_licenses do
   end
 end
 
-require_relative "bundler/spec/support/rubygems_ext"
-
 desc "Run specs"
 task :spec do
   chdir("bundler") do
@@ -527,7 +501,7 @@ end
 namespace :dev do
   desc "Ensure dev dependencies are installed"
   task :deps do
-    Spec::Rubygems.dev_setup
+    puts Spec::Rubygems.dev_bundle("install")
   end
 
   desc "Ensure dev dependencies are installed, and make sure no lockfile changes are generated"
@@ -540,18 +514,14 @@ namespace :dev do
 end
 
 namespace :spec do
-  desc "Ensure spec dependencies are installed"
+  desc "Ensure spec dependencies are installed (deprecated)"
   task deps: "dev:deps" do
-    chdir("bundler") do
-      Spec::Rubygems.install_test_deps
-    end
+    warn "The `spec:deps` task is deprecated because test dependencies are now installed by the tests themselves. Use `dev:deps` task instead."
   end
 
-  desc "Ensure spec dependencies for running in parallel are installed"
+  desc "Ensure spec dependencies for running in parallel are installed (deprecated)"
   task parallel_deps: "dev:deps" do
-    chdir("bundler") do
-      Spec::Rubygems.install_parallel_test_deps
-    end
+    warn "The `spec:parallel_deps` task is deprecated because test dependencies are now installed by the tests themselves and don't need parallelization. Use `dev:deps` task instead."
   end
 
   desc "Run all specs"

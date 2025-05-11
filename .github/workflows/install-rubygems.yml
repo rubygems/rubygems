@@ -22,11 +22,11 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.1", value: 3.1.6 }
-          - { name: "3.2", value: 3.2.6 }
-          - { name: "3.3", value: 3.3.7 }
-          - { name: "3.4", value: 3.4.1 }
-          - { name: jruby, value: jruby-9.4.10.0 }
+          - { name: "3.1", value: 3.1.7 }
+          - { name: "3.2", value: 3.2.8 }
+          - { name: "3.3", value: 3.3.8 }
+          - { name: "3.4", value: 3.4.3 }
+          - { name: jruby, value: jruby-9.4.12.0 }
           - { name: truffleruby, value: truffleruby-24.1.2 }
         openssl:
           - { name: "openssl", value: true }
@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
+        uses: ruby/setup-ruby@eaecf785f6a34567a6d97f686bbb7bccc1ac1e5c # v1.237.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -50,6 +50,10 @@ jobs:
         run: |
           ruby -Ilib -S rake install 2> errors.txt || (cat errors.txt && exit 1)
           test ! -s errors.txt || (cat errors.txt && exit 1)
+      - name: Check generating documentation with a non default rdoc
+        run: |
+          gem install rdoc
+          gem rdoc rdoc | grep -q "Parsing documentation"
       - name: Run a local rubygems command
         run: gem list bundler
         env:
@@ -101,25 +105,25 @@ jobs:
 
   install_rubygems_windows:
     name: Install Rubygems on Windows (${{ matrix.ruby.name }})
-    runs-on: windows-2022
+    runs-on: windows-2025
     strategy:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.1", value: 3.1.6 }
-          - { name: "3.2", value: 3.2.6 }
-          - { name: "3.3", value: 3.3.7 }
-          - { name: "3.4", value: 3.4.1 }
-          - { name: jruby-9.4, value: jruby-9.4.10.0, rails-args: "--skip-webpack-install" }
+          - { name: "3.1", value: 3.1.7 }
+          - { name: "3.2", value: 3.2.8 }
+          - { name: "3.3", value: 3.3.8 }
+          - { name: "3.4", value: 3.4.3 }
+          - { name: jruby, value: jruby-9.4.12.0, rails-args: "--skip-webpack-install" }
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup ruby
-        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
+        uses: ruby/setup-ruby@eaecf785f6a34567a6d97f686bbb7bccc1ac1e5c # v1.237.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           distribution: temurin
           java-version: 19.0.2
@@ -136,7 +140,7 @@ jobs:
       - name: Generate a Rails application
         run: gem install rails --version 8.0.1 && rails new foo ${{ matrix.ruby.rails-args }}
         shell: bash
-        if: matrix.ruby.name != 'jruby-9.4' && matrix.ruby.name != '3.1'
+        if: matrix.ruby.name != 'jruby' && matrix.ruby.name != '3.1'
       - name: Use gem installed in a bin dir different from where Ruby itself is installed
         run: gem install rspec --version 3.13.0 --install-dir foo && GEM_HOME=foo foo/bin/rspec --version
         shell: bash
@@ -154,7 +158,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup original ruby
-        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
+        uses: ruby/setup-ruby@eaecf785f6a34567a6d97f686bbb7bccc1ac1e5c # v1.237.0
         with:
           ruby-version: 3.2
           bundler: none
@@ -175,7 +179,7 @@ jobs:
           GEM_HOME: bar
           GEM_PATH: bar
       - name: Setup final ruby
-        uses: ruby/setup-ruby@f2f42b7848feff522ffa488a5236ba0a73bccbdd # v1.219.0
+        uses: ruby/setup-ruby@eaecf785f6a34567a6d97f686bbb7bccc1ac1e5c # v1.237.0
         with:
           ruby-version: 3.3
           bundler: none

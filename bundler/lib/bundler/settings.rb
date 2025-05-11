@@ -611,10 +611,7 @@ module Bundler
           "bundler-credential-#{command[0]}"
         end
 
-        output = SharedHelpers.filesystem_access(command[0], :read) do
-          Bundler.clean_system(*command, out: :err)
-        end
-
+        output = Bundler.with_unbundled_env { IO.popen(command, &:read) }
         output&.strip unless output.to_s.empty?
       rescue Errno::ENOENT, ArgumentError => e
         Bundler.ui.warn "Credential helper #{helper_path} not available: #{e.message}"

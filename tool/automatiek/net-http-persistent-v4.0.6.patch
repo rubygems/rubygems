@@ -2,12 +2,13 @@ diff --git b/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persist
 index b3ebf6ecb..546409d03 100644
 --- b/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
 +++ a/bundler/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
-@@ -1,13 +1,8 @@
+@@ -1,14 +1,9 @@
 -require_relative '../../../../../../../../lib/rubygems/vendor/net-http/lib/net/http'
 -require_relative '../../../../../../../../lib/rubygems/vendor/uri/lib/uri'
 +require_relative '../../../../../vendored_net_http'
 +require_relative '../../../../../vendored_uri'
- require 'cgi' # for escaping
+ require 'cgi/escape'
+ require 'cgi/util' unless defined?(CGI::EscapeExt)
  require_relative '../../../../connection_pool/lib/connection_pool'
  
 -begin
@@ -18,10 +19,12 @@ index b3ebf6ecb..546409d03 100644
  autoload :OpenSSL, 'openssl'
  
  ##
-@@ -712,23 +707,6 @@ def max_retries= retries
-     reconnect
-   end
+@@ -761,23 +756,6 @@
+     @max_retries = retries
  
+     reconnect
+-  end
+-
 -  ##
 -  # Pipelines +requests+ to the HTTP server at +uri+ yielding responses if a
 -  # block is given.  Returns all responses received.
@@ -37,8 +40,6 @@ index b3ebf6ecb..546409d03 100644
 -    connection_for uri do |connection|
 -      connection.http.pipeline requests, &block
 -    end
--  end
--
-   ##
-   # Sets this client's SSL private key
+   end
  
+   ##

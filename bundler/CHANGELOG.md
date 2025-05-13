@@ -1,3 +1,16 @@
+# 2.6.9 (May 13, 2025)
+
+## Enhancements:
+
+  - Fix doctor command parsing of otool output [#8665](https://github.com/rubygems/rubygems/pull/8665)
+  - Add SSL troubleshooting to `bundle doctor` [#8624](https://github.com/rubygems/rubygems/pull/8624)
+  - Let `bundle lock --normalize-platforms` remove invalid platforms [#8631](https://github.com/rubygems/rubygems/pull/8631)
+
+## Bug fixes:
+
+  - Fix `bundle lock` sometimes allowing invalid platforms into the lockfile [#8630](https://github.com/rubygems/rubygems/pull/8630)
+  - Fix false positive warning about insecure materialization in frozen mode [#8629](https://github.com/rubygems/rubygems/pull/8629)
+
 # 2.6.8 (April 13, 2025)
 
 ## Enhancements:

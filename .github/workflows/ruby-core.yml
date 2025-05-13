@@ -27,7 +27,7 @@ jobs:
         with:
           repository: ruby/ruby
           path: ruby/ruby
-          ref: v3_4_2
+          ref: v3_4_3
       - name: Install libraries
         run: |
           set -x

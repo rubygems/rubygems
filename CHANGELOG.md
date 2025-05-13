@@ -1,3 +1,27 @@
+# 3.6.9 / 2025-05-13
+
+## Enhancements:
+
+* Add mtime to Gem::Package::TarWriter#add_file argument. Pull request
+  [#8673](https://github.com/rubygems/rubygems/pull/8673) by unasuke
+* Print webauthn authentication link as a separate line to make it easier
+  to visit. Pull request
+  [#8663](https://github.com/rubygems/rubygems/pull/8663) by mperham
+* Remove shellwords autoload. Pull request
+  [#8644](https://github.com/rubygems/rubygems/pull/8644) by
+  deivid-rodriguez
+* Installs bundler 2.6.9 as a default gem.
+
+## Performance:
+
+* Avoid unnecessary splat allocation. Pull request
+  [#8640](https://github.com/rubygems/rubygems/pull/8640) by jeremyevans
+
+## Documentation:
+
+* Fix typo in Changelog for 3.6.0 / 2024-12-16. Pull request
+  [#8638](https://github.com/rubygems/rubygems/pull/8638) by thatrobotdev
+
 # 3.6.8 / 2025-04-13
 
 ## Enhancements:
@@ -172,7 +196,7 @@
 
 * Fix missing single quote in git source example. Pull request
   [#8303](https://github.com/rubygems/rubygems/pull/8303) by nobu
-* Update the `gem install` demo in REAME to use a gem that just works on
+* Update the `gem install` demo in README to use a gem that just works on
   Windows. Pull request
   [#8262](https://github.com/rubygems/rubygems/pull/8262) by soda92
 * Unify rubygems and bundler docs directory. Pull request

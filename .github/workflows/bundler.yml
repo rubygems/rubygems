@@ -69,7 +69,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 19.0.2
-        if: matrix.os.name == 'Windows' && matrix.ruby.name == 'jruby'
+        if: matrix.ruby.name == 'jruby'
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'

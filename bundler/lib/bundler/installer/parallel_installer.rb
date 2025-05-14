@@ -37,7 +37,7 @@ module Bundler
       end
 
       def ignorable_dependency?(dep)
-        dep.type == :development || dep.name == @name
+        dep.development? || dep.name == @name
       end
 
       # Checks installed dependencies against spec's dependencies to make

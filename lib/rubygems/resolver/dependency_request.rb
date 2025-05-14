@@ -39,7 +39,7 @@ class Gem::Resolver::DependencyRequest
   # Is this dependency a development dependency?
 
   def development?
-    @dependency.type == :development
+    @dependency.development?
   end
 
   ##

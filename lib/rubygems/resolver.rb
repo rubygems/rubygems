@@ -150,11 +150,9 @@ class Gem::Resolver
     s.fetch_development_dependencies if @development
 
     s.dependencies.reverse_each do |d|
-      next if d.type == :development && !@development
-      next if d.type == :development && @development_shallow &&
-              act.development?
-      next if d.type == :development && @development_shallow &&
-              act.parent
+      next if d.development? && !@development
+      next if d.development? && @development_shallow &&
+              (act.development? || act.parent)
 
       reqs << Gem::Resolver::DependencyRequest.new(d, act)
       @stats.requirement!

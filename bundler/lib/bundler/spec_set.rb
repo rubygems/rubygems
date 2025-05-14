@@ -348,7 +348,7 @@ module Bundler
 
     def tsort_each_child(s)
       s.dependencies.sort_by(&:name).each do |d|
-        next if d.type == :development
+        next if d.development?
 
         specs_for_name = lookup[d.name]
         next unless specs_for_name

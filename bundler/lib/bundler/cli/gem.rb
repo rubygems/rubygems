@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "pathname"
+require "open3"
 
 module Bundler
   class CLI
@@ -14,6 +15,8 @@ module Bundler
       "minitest" => "5.16",
       "test-unit" => "3.0",
     }.freeze
+
+    DEFAULT_GITHUB_USERNAME = "[USERNAME]"
 
     attr_reader :options, :gem_name, :thor, :name, :target, :extension
 
@@ -71,7 +74,7 @@ module Bundler
         exe: options[:exe],
         bundler_version: bundler_dependency_version,
         git: use_git,
-        github_username: github_username.empty? ? "[USERNAME]" : github_username,
+        github_username: github_username.empty? ? DEFAULT_GITHUB_USERNAME : github_username,
         required_ruby_version: required_ruby_version,
         rust_builder_required_rubygems_version: rust_builder_required_rubygems_version,
         minitest_constant_name: minitest_constant_name,
@@ -213,6 +216,19 @@ module Bundler
         )
       end
 
+      if extension == "go"
+        templates.merge!(
+          "ext/newgem/go.mod.tt" => "ext/#{name}/go.mod",
+          "ext/newgem/extconf-go.rb.tt" => "ext/#{name}/extconf.rb",
+          "ext/newgem/newgem.h.tt" => "ext/#{name}/#{underscored_name}.h",
+          "ext/newgem/newgem.go.tt" => "ext/#{name}/#{underscored_name}.go",
+          "ext/newgem/newgem-go.c.tt" => "ext/#{name}/#{underscored_name}.c",
+        )
+
+        config[:go_version] = go_version
+        config[:go_module_username] = config[:github_username] == DEFAULT_GITHUB_USERNAME ? "username" : config[:github_username]
+      end
+
       if target.exist? && !target.directory?
         Bundler.ui.error "Couldn't create a new gem named `#{gem_name}` because there's an existing file named `#{gem_name}`."
         exit Bundler::BundlerError.all_errors[Bundler::GenericSystemCallError]
@@ -235,6 +251,10 @@ module Bundler
         path = target.join(file)
         executable = (path.stat.mode | 0o111)
         path.chmod(executable)
+      end
+
+      if extension == "go"
+        run_go_mod_tidy(target.join("ext/#{name}"))
       end
 
       if use_git
@@ -461,6 +481,32 @@ module Bundler
       if Gem::Version.new(rust_builder_required_rubygems_version) > Gem.rubygems_version
         Bundler.ui.error "Your RubyGems version (#{Gem.rubygems_version}) is too old to build Rust extension. Please update your RubyGems using `gem update --system` or any other way and try again."
         exit 1
+      end
+    end
+
+    def go_version
+      stdout, _, status = Open3.capture3("go version")
+
+      # Suppress error if Go isn't installed
+      return nil unless status.success?
+
+      /go version go([.\d]+)/.match(stdout)[1]
+    end
+
+    # Run `go mod tidy` within ext/newgem/
+    def run_go_mod_tidy(ext_dir)
+      Dir.chdir(ext_dir) do
+        _, stderr, status = Open3.capture3("go mod tidy")
+
+        if status.success?
+          Bundler.ui.info "#{ext_dir}/go.sum has been created with `go mod tidy`"
+        else
+          Bundler.ui.warn <<~MSG
+            An error occurred when executing `go mod tidy`.
+            stderr: #{stderr}
+            Please run `go mod tidy` later in #{ext_dir} to create `go.sum`.
+          MSG
+        end
       end
     end
   end

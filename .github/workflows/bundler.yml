@@ -57,10 +57,8 @@ jobs:
       RUBYOPT: --disable-gems
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      # TODO:
-      # * Go back to ruby/setup-ruby once https://github.com/ruby/setup-ruby/pull/762 is released
       - name: Setup ruby
-        uses: ntkme/setup-ruby@dev
+        uses: ruby/setup-ruby@bb0f760b6c925183520ee0bcc9c4a432a7c8c3c6 # v1.241.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

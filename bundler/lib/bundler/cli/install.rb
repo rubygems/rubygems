@@ -67,6 +67,7 @@ module Bundler
       Plugin.gemfile_install(Bundler.default_gemfile) if Bundler.feature_flag.plugins?
 
       definition = Bundler.definition
+      definition.validate_dependencies = true
       definition.validate_runtime!
 
       installer = Installer.install(Bundler.root, definition, options)

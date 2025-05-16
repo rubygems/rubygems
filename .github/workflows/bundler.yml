@@ -49,8 +49,8 @@ jobs:
           - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.3 }, timeout: 150 }
 
-          - { os: { name: Ubuntu, value: ubuntu-24.04 }, bundler: { name: 2, value: '' }, ruby: { name: jruby, value: jruby-9.4.12.0 } }
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: '' }, ruby: { name: jruby, value: jruby-9.4.12.0 } }
+          - { os: { name: Ubuntu, value: ubuntu-24.04 }, bundler: { name: 2, value: '' }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
+          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: '' }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
 
     env:
       RGV: ..
@@ -68,8 +68,8 @@ jobs:
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           distribution: temurin
-          java-version: 19.0.2
-        if: matrix.os.name == 'Windows' && matrix.ruby.name == 'jruby'
+          java-version: 21.0.7
+        if: matrix.ruby.name == 'jruby'
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'

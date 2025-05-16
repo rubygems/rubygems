@@ -109,7 +109,7 @@ class Gem::RequestSet::Lockfile
         out << "    #{request.name} (#{request.version}#{platform})"
 
         request.full_spec.dependencies.sort.each do |dependency|
-          next if dependency.type == :development
+          next if dependency.development?
 
           requirement = dependency.requirement
           out << "      #{dependency.name}#{requirement.for_lockfile}"

@@ -612,7 +612,8 @@ module Bundler
         end
 
         output = Bundler.with_unbundled_env { IO.popen(command, &:read) }
-        output&.strip unless output.to_s.empty?
+        output = output.to_s.strip
+        output.empty? ? nil : output
       rescue Errno::ENOENT, ArgumentError => e
         Bundler.ui.warn "Credential helper #{helper_path} not available: #{e.message}"
         nil

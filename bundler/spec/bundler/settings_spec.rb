@@ -273,19 +273,19 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
       end
 
       it "uses the credential helper when configured" do
-        expect(Bundler).to receive(:clean_system).with(helper_path, out: :err).and_return("username:password\n")
+        expect(IO).to receive(:popen).with([helper_path]).and_yield(StringIO.new("username:password\n"))
         expect(settings.credentials_for(uri)).to eq("username:password")
       end
 
       it "fallback to config when helper fails" do
-        expect(Bundler).to receive(:clean_system).with(helper_path, out: :err).and_raise(StandardError, "Helper failed")
+        expect(IO).to receive(:popen).with([helper_path]).and_raise(StandardError, "Helper failed")
         expect(Bundler.ui).to receive(:warn).with("Credential helper failed: Helper failed")
         settings.set_local "gemserver.example.org", "fallback:password"
         expect(settings.credentials_for(uri)).to eq("fallback:password")
       end
 
       it "returns nil when helper fails and no fallback config exists" do
-        expect(Bundler).to receive(:clean_system).with(helper_path, out: :err).and_return("")
+        expect(IO).to receive(:popen).with([helper_path]).and_yield(StringIO.new(""))
         expect(settings.credentials_for(uri)).to be_nil
       end
 
@@ -293,7 +293,7 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
         let(:helper_path) { "custom-helper --foo=bar" }
 
         it "prepends bundler-credential- to the helper name" do
-          expect(Bundler).to receive(:clean_system).with("bundler-credential-custom-helper", "--foo=bar", out: :err).and_return("username:password\n")
+          expect(IO).to receive(:popen).with(["bundler-credential-custom-helper", "--foo=bar"]).and_yield(StringIO.new("username:password\n"))
           expect(settings.credentials_for(uri)).to eq("username:password")
         end
       end

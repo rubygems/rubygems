@@ -12,8 +12,9 @@ on:
   schedule:
     - cron: 22 4 * * 2
 
-# Declare default permissions as read only.
-permissions: read-all
+permissions:
+  # The workflow needs to read the repository contents to run the analysis.
+  contents: read
 
 jobs:
   analysis:

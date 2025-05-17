@@ -57,3 +57,17 @@ jobs:
           make test-bundler-parallel
         working-directory: ruby/ruby
         if: matrix.target == 'Bundler'
+
+  all-pass:
+    if: always()
+
+    needs:
+      - ruby_core
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

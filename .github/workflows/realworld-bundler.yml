@@ -136,3 +136,20 @@ jobs:
           path: ./bundler/spec/support/artifice/used_vcr_cassettes
       - name: Check unused cassettes
         run: bin/rake spec:realworld:check_unused_cassettes
+
+  all-pass:
+    if: always()
+
+    needs:
+      - bundler
+      - tapioca
+      - system_rubygems_bundler
+      - check_unused_cassettes
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

@@ -38,3 +38,17 @@ jobs:
           bin/parallel_rspec --tag truffleruby_only --tag truffleruby
         working-directory: ./bundler
     timeout-minutes: 20
+
+  all-pass:
+    if: always()
+
+    needs:
+      - truffleruby_bundler
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

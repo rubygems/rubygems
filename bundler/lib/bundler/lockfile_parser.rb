@@ -2,8 +2,6 @@
 
 module Bundler
   class LockfileParser
-    include GemHelpers
-
     class Position
       attr_reader :line, :column
       def initialize(line, column)
@@ -140,7 +138,7 @@ module Bundler
         @pos.advance!(line)
       end
       @most_specific_locked_platform = @platforms.min_by do |bundle_platform|
-        platform_specificity_match(bundle_platform, local_platform)
+        Gem::Platform.platform_specificity_match(bundle_platform, Bundler.local_platform)
       end
       @specs = @specs.values.sort_by!(&:full_name).each do |spec|
         spec.most_specific_locked_platform = @most_specific_locked_platform

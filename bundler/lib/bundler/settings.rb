@@ -612,6 +612,10 @@ module Bundler
         end
 
         output = Bundler.with_unbundled_env { IO.popen(command, &:read) }
+        unless Process.last_status.success?
+          Bundler.ui.warn "Credential helper failed with exit status #{$?.exitstatus}"
+          return nil
+        end
         output = output.to_s.strip
         output.empty? ? nil : output
       rescue Errno::ENOENT, ArgumentError => e

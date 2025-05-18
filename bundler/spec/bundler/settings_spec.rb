@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "stringio"
 require "bundler/settings"
 
 RSpec.describe Bundler::Settings do
@@ -270,6 +271,7 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
 
       before do
         settings.set_local "credential.helper.gemserver.example.org", helper_path
+        allow(Process).to receive(:last_status).and_return(double(success?: true, exitstatus: 0))
       end
 
       it "uses the credential helper when configured" do
@@ -291,6 +293,11 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
 
       context "with relative helper path and options" do
         let(:helper_path) { "custom-helper --foo=bar" }
+
+        before do
+          settings.set_local "credential.helper.gemserver.example.org", helper_path
+          allow(Process).to receive(:last_status).and_return(double(success?: true, exitstatus: 0))
+        end
 
         it "prepends bundler-credential- to the helper name" do
           expect(IO).to receive(:popen).with(["bundler-credential-custom-helper", "--foo=bar"]).and_yield(StringIO.new("username:password\n"))

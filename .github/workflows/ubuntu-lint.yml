@@ -47,3 +47,17 @@ jobs:
         run: bin/rake check_rvm_integration man:check vendor:check version:check check_rubygems_integration
         if: matrix.ruby.name != 'jruby'
     timeout-minutes: 15
+
+  all-pass:
+    if: always()
+
+    needs:
+      - ubuntu_lint
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

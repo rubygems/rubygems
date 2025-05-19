@@ -37,3 +37,17 @@ jobs:
         run: docker run --mount type=bind,source=.,target=/rubygems --rm --read-only ruby:${{ matrix.ruby.value }} ruby -I/rubygems/bundler/lib -r'bundler/inline' -e 'gemfile {}; puts :ok'
 
     timeout-minutes: 15
+
+  all-pass:
+    if: always()
+
+    needs:
+      - read-only
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

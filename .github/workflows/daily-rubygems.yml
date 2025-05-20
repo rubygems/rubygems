@@ -16,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-24.04 ]
-        ruby: [ ruby-head, truffleruby-head ]
+        os: [ubuntu-24.04]
+        ruby: [ruby-head, truffleruby-head]
         include:
           - { os: windows-2025, ruby: mswin }
     env:

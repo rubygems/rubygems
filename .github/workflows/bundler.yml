@@ -99,6 +99,8 @@ jobs:
     timeout-minutes: ${{ matrix.timeout || 60 }}
 
   all-pass:
+    name: All bundler jobs pass
+
     if: always()
 
     needs:

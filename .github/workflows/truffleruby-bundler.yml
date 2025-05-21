@@ -40,6 +40,8 @@ jobs:
     timeout-minutes: 20
 
   all-pass:
+    name: All truffleruby-bundler jobs pass
+
     if: always()
 
     needs:

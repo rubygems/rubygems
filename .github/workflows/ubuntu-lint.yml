@@ -62,6 +62,8 @@ jobs:
     timeout-minutes: 15
 
   all-pass:
+    name: All ubuntu-lint jobs pass
+
     if: always()
 
     needs:

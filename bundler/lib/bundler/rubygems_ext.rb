@@ -61,16 +61,97 @@ module Gem
   require "rubygems/platform"
 
   class Platform
-    JAVA  = Gem::Platform.new("java")
-    MSWIN = Gem::Platform.new("mswin32")
-    MSWIN64 = Gem::Platform.new("mswin64")
-    MINGW = Gem::Platform.new("x86-mingw32")
-    X64_MINGW = [Gem::Platform.new("x64-mingw32"),
-                 Gem::Platform.new("x64-mingw-ucrt")].freeze
-    UNIVERSAL_MINGW = Gem::Platform.new("universal-mingw")
-    WINDOWS = [MSWIN, MSWIN64, UNIVERSAL_MINGW].flatten.freeze
-    X64_LINUX = Gem::Platform.new("x86_64-linux")
-    X64_LINUX_MUSL = Gem::Platform.new("x86_64-linux-musl")
+    unless respond_to?(:generic)
+      JAVA  = Gem::Platform.new("java")
+      MSWIN = Gem::Platform.new("mswin32")
+      MSWIN64 = Gem::Platform.new("mswin64")
+      MINGW = Gem::Platform.new("x86-mingw32")
+      X64_MINGW = [Gem::Platform.new("x64-mingw32"),
+                   Gem::Platform.new("x64-mingw-ucrt")].freeze
+      UNIVERSAL_MINGW = Gem::Platform.new("universal-mingw")
+      WINDOWS = [MSWIN, MSWIN64, UNIVERSAL_MINGW].flatten(1).freeze
+      X64_LINUX = Gem::Platform.new("x86_64-linux")
+      X64_LINUX_MUSL = Gem::Platform.new("x86_64-linux-musl")
+
+      GENERICS = [RUBY, JAVA, *WINDOWS].freeze
+      private_constant :GENERICS
+
+      GENERIC_CACHE = GENERICS.each_with_object({}) {|g, h| h[g] = g }
+      private_constant :GENERIC_CACHE
+
+      def generic
+        GENERIC_CACHE[self] ||= begin
+          found = GENERICS.find do |match|
+            self === match
+          end
+          found || Gem::Platform::RUBY
+        end
+      end
+
+      class << self
+        def generic(platform)
+          return Gem::Platform::RUBY if platform.nil? || platform == Gem::Platform::RUBY
+          platform.generic
+        end
+
+        def platform_specificity_match(spec_platform, user_platform)
+          return -1 if spec_platform == user_platform
+          return 1_000_000 if spec_platform.nil? || spec_platform == Gem::Platform::RUBY || user_platform == Gem::Platform::RUBY
+
+          os_match = if spec_platform.os == user_platform.os
+            0
+          else
+            1
+          end
+          cpu_match = if spec_platform.cpu == user_platform.cpu
+            0
+          elsif spec_platform.cpu == "arm" && user_platform.cpu.to_s.start_with?("arm")
+            0
+          elsif spec_platform.cpu.nil? || spec_platform.cpu == "universal"
+            1
+          else
+            2
+          end
+          version_match = if spec_platform.version == user_platform.version
+            0
+          elsif spec_platform.version.nil?
+            1
+          else
+            2
+          end
+
+          os_match + cpu_match * 10 + version_match * 100
+        end
+
+        def sort_and_filter_best_platform_match(matching, platform)
+          return matching if matching.one?
+
+          exact = matching.select {|spec| spec.platform == platform }
+          return exact if exact.any?
+
+          sorted_matching = sort_best_platform_match(matching, platform)
+          exemplary_spec = sorted_matching.first
+
+          sorted_matching.take_while {|spec| same_specificity?(platform, spec, exemplary_spec) && same_deps?(spec, exemplary_spec) }
+        end
+
+        def sort_best_platform_match(matching, platform)
+          matching.sort_by {|spec| platform_specificity_match(spec.platform, platform) }
+        end
+
+        private
+
+        def same_specificity?(platform, spec, exemplary_spec)
+          platform_specificity_match(spec.platform, platform) == platform_specificity_match(exemplary_spec.platform, platform)
+        end
+
+        def same_deps?(spec, exemplary_spec)
+          same_runtime_deps = spec.dependencies.sort == exemplary_spec.dependencies.sort
+          same_metadata_deps = spec.required_ruby_version == exemplary_spec.required_ruby_version && spec.required_rubygems_version == exemplary_spec.required_rubygems_version
+          same_runtime_deps && same_metadata_deps
+        end
+      end
+    end
 
     if X64_LINUX === X64_LINUX_MUSL
       remove_method :===
@@ -158,7 +239,6 @@ module Gem
     require_relative "match_platform"
 
     include ::Bundler::MatchMetadata
-    include ::Bundler::MatchPlatform
 
     attr_accessor :remote, :relative_loaded_from
 
@@ -400,6 +480,10 @@ module Gem
 
         @ignored = missing_extensions?
       end
+    end
+
+    unless new.respond_to?(:installable_on_platform?)
+      include(::Bundler::MatchPlatform)
     end
   end
 

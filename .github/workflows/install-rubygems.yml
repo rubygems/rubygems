@@ -193,6 +193,8 @@ jobs:
     timeout-minutes: 20
 
   all-pass:
+    name: All install-rubygems jobs pass
+
     if: always()
 
     needs:

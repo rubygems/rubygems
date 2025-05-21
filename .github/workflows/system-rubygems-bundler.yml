@@ -72,6 +72,8 @@ jobs:
     timeout-minutes: 60
 
   all-pass:
+    name: All system-rubygems-bundler jobs pass
+
     if: always()
 
     needs:

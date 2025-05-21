@@ -66,6 +66,8 @@ jobs:
     timeout-minutes: 60
 
   all-pass:
+    name: All rubygems jobs pass
+
     if: always()
 
     needs:

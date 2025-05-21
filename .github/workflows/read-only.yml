@@ -39,6 +39,8 @@ jobs:
     timeout-minutes: 15
 
   all-pass:
+    name: All read-only jobs pass
+
     if: always()
 
     needs:

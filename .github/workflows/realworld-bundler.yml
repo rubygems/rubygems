@@ -138,6 +138,8 @@ jobs:
         run: bin/rake spec:realworld:check_unused_cassettes
 
   all-pass:
+    name: All realworld-bundler jobs pass
+
     if: always()
 
     needs:

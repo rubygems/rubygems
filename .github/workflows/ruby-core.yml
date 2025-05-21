@@ -59,6 +59,8 @@ jobs:
         if: matrix.target == 'Bundler'
 
   all-pass:
+    name: All ruby-core jobs pass
+
     if: always()
 
     needs:

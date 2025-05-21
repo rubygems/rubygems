@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.licenses = ["Ruby", "MIT"]
 
   s.files = File.read(File.expand_path("Manifest.txt", __dir__)).split
+  s.files += %w[sbom/rubygems.cdx.json]
   s.bindir = "exe"
   s.executables = ["update_rubygems"]
   s.require_paths = ["hide_lib_for_update"]

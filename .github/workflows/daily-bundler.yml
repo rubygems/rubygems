@@ -1,8 +1,9 @@
+---
 name: daily-bundler
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: 0 0 * * *
 
 permissions:
   contents: read

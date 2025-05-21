@@ -231,7 +231,7 @@ Lint/SafeNavigationConsistency:
 Lint/ScriptPermission:
   Enabled: true
   Exclude:
-    - "bundler/lib/bundler/templates/Executable"
+    - bundler/lib/bundler/templates/Executable
 
 Lint/ShadowedArgument:
   Enabled: true
@@ -483,7 +483,7 @@ Naming/ClassAndModuleCamelCase:
 Naming/FileName:
   Enabled: true
   Exclude:
-    - "bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb"
+    - bundler/spec/realworld/fixtures/warbler/bin/warbler-example.rb
 
 Naming/MemoizedInstanceVariableName:
   Enabled: true

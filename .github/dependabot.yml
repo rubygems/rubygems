@@ -1,24 +1,26 @@
+---
 version: 2
 updates:
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: 'monthly'
+      interval: monthly
+
     groups:
       artifacts:
         patterns:
           - "*-artifact"
-  - package-ecosystem: 'cargo'
+  - package-ecosystem: cargo
     directories:
-      - '/test/rubygems/test_gem_ext_cargo_builder/custom_name/ext/custom_name_lib'
-      - '/test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example'
+      - /test/rubygems/test_gem_ext_cargo_builder/custom_name/ext/custom_name_lib
+      - /test/rubygems/test_gem_ext_cargo_builder/rust_ruby_example
     schedule:
-      interval: 'monthly'
+      interval: monthly
     groups:
       rb-sys:
         patterns:
-          - 'rb-sys'
-  - package-ecosystem: 'pip'
-    directory: '/.github/workflows/'
+          - rb-sys
+  - package-ecosystem: pip
+    directory: /.github/workflows/
     schedule:
-      interval: 'monthly'
+      interval: monthly

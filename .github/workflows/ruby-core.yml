@@ -45,7 +45,6 @@ jobs:
       - name: Sync tools
         run: |
           ruby tool/sync_default_gems.rb rubygems
-          mv spec/bundler/bin/parallel_rspec spec/bin/parallel_rspec # TODO: fix `sync_default_gems.rb` script so we don't need to vendor the ruby-core binstub ourselves
         working-directory: ruby/ruby
       - name: Test RubyGems
         run: make -j2 -s test-all TESTS="rubygems --no-retry"

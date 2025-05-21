@@ -28,6 +28,7 @@ jobs:
           repository: ruby/ruby
           path: ruby/ruby
           ref: v3_4_3
+          persist-credentials: false
       - name: Install libraries
         run: |
           set -x
@@ -42,6 +43,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           path: rubygems/rubygems
+          persist-credentials: false
       - name: Sync tools
         run: |
           ruby tool/sync_default_gems.rb rubygems

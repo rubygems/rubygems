@@ -29,10 +29,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { bundler: { name: 2, value: "" }, ruby: { name: ruby-3.1, value: 3.1.0 } }
-          - { bundler: { name: 2, value: "" }, ruby: { name: ruby-3.2, value: 3.2.0 } }
-          - { bundler: { name: 2, value: "" }, ruby: { name: ruby-3.3, value: 3.3.0 } }
-          - { bundler: { name: 2, value: "" }, ruby: { name: ruby-3.4, value: 3.4.1 } }
+          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.1, value: 3.1.0 } }
+          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.2, value: 3.2.0 } }
+          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.3, value: 3.3.0 } }
+          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.4, value: 3.4.1 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.0 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.0 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.0 } }
@@ -46,10 +46,10 @@ jobs:
           bundler: none
       - name: Install graphviz
         run: sudo apt-get install graphviz -y
-        if: matrix.bundler.value == ""
+        if: matrix.bundler.value == null
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
-        if: matrix.bundler.value != ""
+        if: matrix.bundler.value != null
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps
@@ -70,19 +70,3 @@ jobs:
           ruby -I../../lib:lib:test test/rubygems/test_gem_requirement.rb
         working-directory: ./bundler/tmp/rubygems
     timeout-minutes: 60
-
-  all-pass:
-    name: All system-rubygems-bundler jobs pass
-
-    if: always()
-
-    needs:
-      - system_rubygems_bundler
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: check dependent jobs
-        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
-        with:
-          jobs: ${{ toJSON(needs) }}

@@ -31,14 +31,14 @@ jobs:
           - { name: ruby-3.4, value: 3.4.3 }
 
         bundler:
-          - { name: 2, value: "" }
+          - { name: 2, value: null }
           - { name: 3, value: 3.0.0 }
 
         include:
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.1, value: 3.1.7 } }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.2, value: 3.2.8 } }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.3, value: 3.3.8 } }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.4, value: 3.4.3 } }
+          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: null }, ruby: { name: ruby-3.1, value: 3.1.7 } }
+          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: null }, ruby: { name: ruby-3.2, value: 3.2.8 } }
+          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: null }, ruby: { name: ruby-3.3, value: 3.3.8 } }
+          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: null }, ruby: { name: ruby-3.4, value: 3.4.3 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems
@@ -51,7 +51,7 @@ jobs:
           bundler: none
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
-        if: matrix.bundler.value != ""
+        if: matrix.bundler.value != null
       - name: Prepare dependencies
         run: bin/rake dev:deps
       - name: Run Test
@@ -88,10 +88,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { bundler: { name: 2, value: "" }, ruby: { name: ruby-3.1, value: 3.1.7 } }
-          - { bundler: { name: 2, value: "" }, ruby: { name: ruby-3.2, value: 3.2.8 } }
-          - { bundler: { name: 2, value: "" }, ruby: { name: ruby-3.3, value: 3.3.8 } }
-          - { bundler: { name: 2, value: "" }, ruby: { name: ruby-3.4, value: 3.4.3 } }
+          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.1, value: 3.1.7 } }
+          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.2, value: 3.2.8 } }
+          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.3, value: 3.3.8 } }
+          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.4, value: 3.4.3 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.7 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.8 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.8 } }
@@ -105,7 +105,7 @@ jobs:
           bundler: none
       - name: Replace version
         run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
-        if: matrix.bundler.value != ""
+        if: matrix.bundler.value != null
       - name: Prepare dependencies
         run: bin/rake dev:deps
       - name: Run Test

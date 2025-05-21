@@ -1,6 +1,6 @@
 ---
 
-header_template: "# %new_version / %release_date"
+header_template: "## %new_version / %release_date"
 
 entry_template: "* %title. Pull request [#%pull_request_number](%pull_request_url) by %pull_request_author"
 
@@ -13,14 +13,14 @@ release_date_format: "%Y-%m-%d"
 entry_wrapping: 74
 
 changelog_label_mapping:
-  "rubygems: security": "## Security:"
-  "rubygems: breaking change": "## Breaking changes:"
-  "rubygems: deprecation": "## Deprecations:"
-  "rubygems: feature": "## Features:"
-  "rubygems: performance": "## Performance:"
-  "rubygems: enhancement": "## Enhancements:"
-  "rubygems: bug fix": "## Bug fixes:"
-  "rubygems: documentation": "## Documentation:"
+  "rubygems: security": "### Security:"
+  "rubygems: breaking change": "### Breaking changes:"
+  "rubygems: deprecation": "### Deprecations:"
+  "rubygems: feature": "### Features:"
+  "rubygems: performance": "### Performance:"
+  "rubygems: enhancement": "### Enhancements:"
+  "rubygems: bug fix": "### Bug fixes:"
+  "rubygems: documentation": "### Documentation:"
   "rubygems: skip changelog": null
 
 patch_level_labels:

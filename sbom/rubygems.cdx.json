@@ -1,0 +1,238 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "application",
+      "name": "rubygems",
+      "version": "3.7.0.dev",
+      "purl": "pkg:gem/rubygems-update@3.7.0.dev"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "molinillo",
+      "version": "0.8.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "Provides support for dependency resolution",
+      "purl": "pkg:gem/molinillo@0.8.0?vcs_url=git%2Bhttps%3A%2F%2Fgithub.com%2Fcocoapods%2Fmolinillo.git%401d62d7d5f448e79418716dc779a4909509ccda2a"
+    },
+    {
+      "type": "library",
+      "name": "net-http",
+      "version": "0.6.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "HTTP client api for Ruby.",
+      "purl": "pkg:gem/net-http@0.6.0?vcs_url=git%2Bhttps%3A%2F%2Fgithub.com%2Fruby%2Fnet-http.git%40d8fd39c589279b1aaec85a7c8de9b3e199c72efe"
+    },
+    {
+      "type": "library",
+      "name": "net-http-persistent",
+      "version": "4.0.6",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "Manages persistent connections using Net::HTTP including a thread pool for\nconnecting to multiple hosts.\n\nUsing persistent HTTP connections can dramatically increase the speed of HTTP.\nCreating a new HTTP connection for every request involves an extra TCP\nround-trip and causes TCP congestion avoidance negotiation to start over.\n\nNet::HTTP supports persistent connections with some API methods but does not\nmake setting up a single persistent connection or managing multiple\nconnections easy.  Net::HTTP::Persistent wraps Net::HTTP and allows you to\nfocus on how to make HTTP requests.",
+      "purl": "pkg:gem/net-http-persistent@4.0.6?vcs_url=git%2Bhttps%3A%2F%2Fgithub.com%2Fhsbt%2Fnet-http-persistent.git%409b6fbd733cf35596dfe7f80c0c154f9f3d17dbdb"
+    },
+    {
+      "type": "library",
+      "name": "net-protocol",
+      "version": "0.2.2",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "The abstract interface for net-* client.",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "aa73e0cba6a125369de9837b8d8ef82a61849360eba0521900e2c3713aa162a8"
+        }
+      ],
+      "purl": "pkg:gem/net-protocol@0.2.2"
+    },
+    {
+      "type": "library",
+      "name": "optparse",
+      "version": "0.6.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "OptionParser is a class for command-line option analysis.",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "25e90469c1cd44048a89dc01c1dde9d5f0bdf717851055fb18237780779b068c"
+        }
+      ],
+      "purl": "pkg:gem/optparse@0.6.0"
+    },
+    {
+      "type": "library",
+      "name": "resolv",
+      "version": "0.6.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "Thread-aware DNS resolver library in Ruby.",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "b8b73f7734d4102ef9f75bad281d8fd1c434f8588b6aba17832ddc16fe679fab"
+        }
+      ],
+      "purl": "pkg:gem/resolv@0.6.0"
+    },
+    {
+      "type": "library",
+      "name": "securerandom",
+      "version": "0.4.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "Interface for secure random number generator.",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1"
+        }
+      ],
+      "purl": "pkg:gem/securerandom@0.4.1"
+    },
+    {
+      "type": "library",
+      "name": "timeout",
+      "version": "0.4.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "Auto-terminate potentially long-running operations in Ruby.",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "9509f079b2b55fe4236d79633bd75e34c1c1e7e3fb4b56cb5fda61f80a0fe30e"
+        }
+      ],
+      "purl": "pkg:gem/timeout@0.4.3"
+    },
+    {
+      "type": "library",
+      "name": "tsort",
+      "version": "0.2.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "Topological sorting using Tarjan's algorithm",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f"
+        }
+      ],
+      "purl": "pkg:gem/tsort@0.2.0"
+    },
+    {
+      "type": "library",
+      "name": "uri",
+      "version": "1.0.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "URI is a module providing classes to handle Uniform Resource Identifiers",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "e9f2244608eea2f7bc357d954c65c910ce0399ca5e18a7a29207ac22d8767011"
+        }
+      ],
+      "purl": "pkg:gem/uri@1.0.3"
+    }
+  ]
+}

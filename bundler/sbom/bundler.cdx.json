@@ -1,0 +1,170 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "library",
+      "name": "bundler",
+      "version": "2.7.0.dev",
+      "purl": "pkg:gem/bundler@2.7.0.dev"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "connection_pool",
+      "version": "2.5.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "Generic connection pool for Ruby",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "233b92f8d38e038c1349ccea65dd3772727d669d6d2e71f9897c8bf5cd53ebfc"
+        }
+      ],
+      "purl": "pkg:gem/connection_pool@2.5.0"
+    },
+    {
+      "type": "library",
+      "name": "fileutils",
+      "version": "1.7.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "Several file utility methods for copying, moving, removing, etc.",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "57271e854b694a87755d76f836f5c57b2c9538ebbaf4b2154bb66addf15eb5da"
+        }
+      ],
+      "purl": "pkg:gem/fileutils@1.7.3"
+    },
+    {
+      "type": "library",
+      "name": "pub_grub",
+      "version": "0.5.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "A version solver based on dart's PubGrub",
+      "purl": "pkg:gem/pub_grub@0.5.0?vcs_url=git%2Bhttps%3A%2F%2Fgithub.com%2Fjhawthorn%2Fpub_grub.git%40df6add45d1b4d122daff2f959c9bd1ca93d14261"
+    },
+    {
+      "type": "library",
+      "name": "securerandom",
+      "version": "0.4.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "Interface for secure random number generator.",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1"
+        }
+      ],
+      "purl": "pkg:gem/securerandom@0.4.1"
+    },
+    {
+      "type": "library",
+      "name": "thor",
+      "version": "1.3.2",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "Thor is a toolkit for building powerful command-line interfaces.",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "eef0293b9e24158ccad7ab383ae83534b7ad4ed99c09f96f1a6b036550abbeda"
+        }
+      ],
+      "purl": "pkg:gem/thor@1.3.2"
+    },
+    {
+      "type": "library",
+      "name": "tsort",
+      "version": "0.2.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "Topological sorting using Tarjan's algorithm",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f"
+        }
+      ],
+      "purl": "pkg:gem/tsort@0.2.0"
+    },
+    {
+      "type": "library",
+      "name": "uri",
+      "version": "1.0.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Ruby"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "URI is a module providing classes to handle Uniform Resource Identifiers",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "e9f2244608eea2f7bc357d954c65c910ce0399ca5e18a7a29207ac22d8767011"
+        }
+      ],
+      "purl": "pkg:gem/uri@1.0.3"
+    }
+  ]
+}

@@ -74,6 +74,26 @@ VendoredGem = Struct.new(:name, :extra_dependencies, :namespace, :prefix, :vendo
   def require_target
     @require_target ||= vendor_lib.sub(%r{^(.+?/)?lib/}, "") << "/lib"
   end
+
+  def cdx_component(spec)
+    h = {
+      type: "library",
+      name: spec.name,
+      version: spec.version,
+      licenses: spec.licenses.map { { license: { id: _1 } } },
+      description: spec.description || spec.summary,
+    }
+    # h[:source] = spec.source.inspect
+    case spec.source
+    when Bundler::Source::Rubygems
+      h[:hashes] = [{ "alg" => "SHA-256", "content" => Digest(:SHA256).hexdigest(File.binread(spec.cache_file)) }]
+      h[:purl] = "pkg:gem/#{spec.name}@#{spec.version}"
+    when Bundler::Source::Git
+      vcs_url = "git+#{spec.source.uri}@#{spec.source.revision}"
+      h[:purl] = "pkg:gem/#{spec.name}@#{spec.version}?vcs_url=#{CGI.escape(vcs_url)}"
+    end
+    h
+  end
 end
 
 ignore = ["bundler"]
@@ -100,10 +120,44 @@ vendored_gems = [
   VendoredGem.new(name: "securerandom", namespace: "SecureRandom", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/securerandom", license_path: "COPYING"),
 ].group_by(&:name)
 
+sboms = {
+  "Bundler" => {
+    "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.4",
+    "version": 1,
+    "metadata": {
+      "component": {
+        "type": "library",
+        "name": "bundler",
+        "version": Bundler::VERSION,
+        "purl": "pkg:gem/bundler@#{Bundler::VERSION}",
+      },
+    },
+    "components": [],
+  },
+  "Gem" => {
+    "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.4",
+    "version": 1,
+    "metadata": {
+      "component": {
+        "type": "application",
+        "name": "rubygems",
+        "version": Gem::VERSION,
+        "purl": "pkg:gem/rubygems-update@#{Gem::VERSION}",
+      },
+    },
+    "components": [],
+  },
+}
+
 Bundler.definition.resolve.materialized_for_all_platforms.reject {|s| ignore.include?(s.name) }.each do |s|
   raise "Vendoring default gem #{s.full_name} doesn't work..." if s.default_gem?
 
   vendored_gems.fetch(s.name)&.each do |vg|
+    sboms.fetch(vg.prefix).fetch(:components) << vg.cdx_component(s)
     vg.vendor(s)
   end
 end.each do |s|
@@ -126,3 +180,7 @@ end.each do |s|
     vg.apply_patch
   end
 end
+
+require "json"
+File.write("sbom/rubygems.cdx.json", JSON.pretty_generate(sboms["Gem"]) << "\n")
+File.write("bundler/sbom/bundler.cdx.json", JSON.pretty_generate(sboms["Bundler"]) << "\n")

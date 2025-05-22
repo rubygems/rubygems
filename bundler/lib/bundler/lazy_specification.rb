@@ -114,7 +114,7 @@ module Bundler
       out << "    #{lock_name}\n"
 
       dependencies.sort_by(&:to_s).uniq.each do |dep|
-        next if dep.type == :development
+        next if dep.development?
         out << "    #{dep.to_lock}\n"
       end
 

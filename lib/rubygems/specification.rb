@@ -1791,7 +1791,7 @@ class Gem::Specification < Gem::BasicSpecification
   # List of dependencies that are used for development
 
   def development_dependencies
-    dependencies.select {|d| d.type == :development }
+    dependencies.select(&:development?)
   end
 
   ##

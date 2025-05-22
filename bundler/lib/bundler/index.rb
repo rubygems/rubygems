@@ -108,7 +108,7 @@ module Bundler
       names = []
       each do |spec|
         spec.dependencies.each do |dep|
-          next if dep.type == :development
+          next if dep.development?
           names << dep.name
         end
       end
@@ -153,8 +153,8 @@ module Bundler
     end
 
     def dependencies_eql?(spec, other_spec)
-      deps       = spec.dependencies.select {|d| d.type != :development }
-      other_deps = other_spec.dependencies.select {|d| d.type != :development }
+      deps       = spec.dependencies.reject(&:development?)
+      other_deps = other_spec.dependencies.reject(&:development?)
       deps.sort == other_deps.sort
     end
 

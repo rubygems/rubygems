@@ -89,6 +89,7 @@ module Bundler
       system_bindir
       trust-policy
       version
+      credential.helper
     ].freeze
 
     DEFAULT_CONFIG = {
@@ -197,7 +198,7 @@ module Bundler
     end
 
     def credentials_for(uri)
-      self[uri.to_s] || self[uri.host]
+      credentials_from_helper(uri) || self[uri.to_s] || self[uri.host]
     end
 
     def gem_mirrors
@@ -593,6 +594,36 @@ module Bundler
         else
           raise ArgumentError, "Invalid key: #{key.inspect}"
         end
+      end
+    end
+
+    def credentials_from_helper(uri)
+      helper_key = "credential.helper.#{uri.host}"
+      helper_path = self[helper_key]
+      return unless helper_path
+
+      begin
+        require "shellwords"
+        command = Shellwords.shellsplit(helper_path)
+        command[0] = if command[0].start_with?("/", "~")
+          command[0]
+        else
+          "bundler-credential-#{command[0]}"
+        end
+
+        output = Bundler.with_unbundled_env { IO.popen(command, &:read) }
+        unless Process.last_status.success?
+          Bundler.ui.warn "Credential helper failed with exit status #{$?.exitstatus}"
+          return nil
+        end
+        output = output.to_s.strip
+        output.empty? ? nil : output
+      rescue Errno::ENOENT, ArgumentError => e
+        Bundler.ui.warn "Credential helper #{helper_path} not available: #{e.message}"
+        nil
+      rescue StandardError => e
+        Bundler.ui.warn "Credential helper failed: #{e.message}"
+        nil
       end
     end
   end

@@ -33,7 +33,7 @@ module Bundler
       lazy_spec
     end
 
-    def initialize(name, version, platform, source = nil)
+    def initialize(name, version, platform, source = nil, validate_dependencies: false)
       @name          = name
       @version       = version
       @dependencies  = []
@@ -43,6 +43,7 @@ module Bundler
 
       @original_source = source
       @source = source
+      @validate_dependencies = validate_dependencies
 
       @force_ruby_platform = default_force_ruby_platform
       @most_specific_locked_platform = nil
@@ -231,7 +232,8 @@ module Bundler
     # dependencies of locally installed gems would mean evaluating all gemspecs,
     # which would affect `bundler/setup` performance.
     def validate_dependencies(spec)
-      if spec.is_a?(StubSpecification)
+      # This flag is set during installation when we do want to validate dependencies.
+      if !@validate_dependencies && spec.is_a?(StubSpecification)
         spec.dependencies = dependencies
       else
         if !source.is_a?(Source::Path) && spec.runtime_dependencies.sort != dependencies.sort

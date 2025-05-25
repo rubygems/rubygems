@@ -184,10 +184,12 @@ module Bundler
         config[:linter_version] = rubocop_version
         Bundler.ui.info "RuboCop enabled in config"
         templates.merge!("rubocop.yml.tt" => ".rubocop.yml")
+        config[:linter_config_path] = ".rubocop.yml "
       when "standard"
         config[:linter_version] = standard_version
         Bundler.ui.info "Standard enabled in config"
         templates.merge!("standard.yml.tt" => ".standard.yml")
+        config[:linter_config_path] = ".standard.yml "
       end
 
       if config[:exe]

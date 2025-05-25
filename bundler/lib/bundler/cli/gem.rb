@@ -108,6 +108,7 @@ module Bundler
             "spec/newgem_spec.rb.tt" => "spec/#{namespaced_path}_spec.rb"
           )
           config[:test_task] = :spec
+          config[:test_config_path] = ".rspec "
         when "minitest"
           # Generate path for minitest target file (FileList["test/**/test_*.rb"])
           #   foo     => test/test_foo.rb

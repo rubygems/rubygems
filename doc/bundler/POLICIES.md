@@ -2,7 +2,7 @@
 
 This document is an attempt to record the policies and processes that are used to govern the Bundler project--it's not fixed or permanent, and will likely evolve as events warrant.
 
-### Our Goals
+## Our Goals
 
 0. Treat everyone like a valuable human being, worthy of respect and empathy. No exceptions.
 1. Strive to empower users, the Ruby developers who use Bundler. For example, there is no such thing as user error, only insufficient UX design.
@@ -11,7 +11,7 @@ This document is an attempt to record the policies and processes that are used t
 
 These policies are intended to be examples of how to apply these goals, and we realize that we can't possibly cover every edge case or loophole. In any case where policies turn out to conflict with these goals, the goals should win.
 
-### Compatibility guidelines
+## Compatibility guidelines
 
 Bundler tries for perfect backwards compatibility. That means that if something worked in version 1.x, it should continue to work in 1.y and 1.z. That thing may or may not continue to work in 2.x. We may not always get it right, and there may be extenuating circumstances that force us into choosing between different kinds of breakage, but compatibility is very important to us. Infrastructure should be as unsurprising as possible.
 
@@ -59,7 +59,7 @@ As of May, 2024, that means Bundler 2.5 is the only supported version, but the B
 
 These policies are not a guarantee that any particular fix will be backported. Instead, this is a way for us to set an upper limit on the versions of Ruby, RubyGems, and Bundler that we have to consider while making changes. Without the limit, the number of versions grows exponentially over time and quickly becomes overwhelming, which leads to maintainer burnout. We want to avoid that.
 
-### Release guidelines
+## Release guidelines
 
 **tl;dr**: Majors about once per year, minors for any finished features with docs, patches for any committed bugfix.
 
@@ -77,7 +77,7 @@ The experience of using Bundler should not include surprises. If users are surpr
 
 Changing existing behavior is also surprising. If reducing user surprise will result in a backwards-incompatible change, that change should include at least one major version of deprecation warning before the breaking change is made.
 
-### Issue guidelines
+## Issue guidelines
 
 Anyone is welcome to open an issue, or comment on an issue. Issue comments without useful content (like “me too”) may be removed.
 
@@ -85,7 +85,7 @@ Opening an issue to ask for help may eventually get you help, but chances are he
 
 Issues will be handled as soon as possible, which may take some time. Including a script that can be used to reproduce your issue is a great way to help maintainers help you. If you can, writing a failing test for your issue is even more helpful.
 
-### Contribution and pull request guidelines
+## Contribution and pull request guidelines
 
 Anyone is welcome to [contribute to Bundler](README.md). Contributed code will be released under the same license as the existing codebase.
 
@@ -98,17 +98,17 @@ Every pull request should explain:
 3. What changes to fix that problem are included in the PR, and
 4. Why that implementation was chosen out of the possible options.
 
-### RFC guidelines
+## RFC guidelines
 
 Large changes often benefit from being written out more completely, read by others, and discussed. The [Bundler RFC repo](https://github.com/rubygems/rfcs) is the preferred place for that to happen.
 
-### Maintainer team guidelines
+## Maintainer team guidelines
 
 Always create pull requests rather than pushing directly to the primary branch. Try to get code review and merge approval from someone other than yourself whenever possible.
 
 Contributors who have contributed regularly for more than six months (or implemented a completely new feature for a minor release) are eligible to join the maintainer team. Unless vetoed by an existing maintainer, these contributors will be asked to join the maintainer team. If they accept, new maintainers will be given permissions to view maintainer playbooks, accept pull requests, and release new versions.
 
-### Enforcement guidelines
+## Enforcement guidelines
 
 First off, Bundler's policies and enforcement of those policies are subsidiary to [Bundler's code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md) in any case where they conflict. The first priority is treating human beings with respect and empathy, and figuring out project guidelines and sticking to them will always come after that.
 

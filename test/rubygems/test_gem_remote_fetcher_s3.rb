@@ -8,6 +8,103 @@ require "rubygems/package"
 class TestGemRemoteFetcherS3 < Gem::TestCase
   include Gem::DefaultUserInteraction
 
+  class FakeGemRequest < Gem::Request
+
+    attr_reader :last_request, :uri
+
+    # Override perform_request to stub things
+    def perform_request(request)
+      @last_request = request
+      @response
+    end
+
+    def set_response(response)
+      @response = response
+    end
+  end
+
+  class FakeS3URISigner < Gem::S3URISigner
+    # Convenience method to output the recent aws iam queries made in tests
+    # this outputs the verb, path, and any non-generic headers 
+    def recent_aws_query_logs
+      sreqs = @aws_iam_calls.map do |c|
+        r = c.last_request
+        s = +"#{r.method} #{c.uri}\n"
+        r.each_header do |key, v|
+          # Only include headers that start with x-
+          next unless key.start_with?("x-")
+          s << "    #{key}=#{v}\n"
+        end
+        s
+      end
+
+      sreqs.join("")
+    end
+
+    def initialize(uri)
+      @aws_iam_calls = []
+      super
+    end
+
+    def ec2_iam_request(uri, verb)
+      fake_s3_request = FakeGemRequest.new(uri, verb, nil, nil)
+      @aws_iam_calls << fake_s3_request
+
+      case uri.to_s
+      when "http://169.254.169.254/latest/api/token"
+        res = Gem::Net::HTTPOK.new nil, 200, nil
+        def res.body
+          "mysecrettoken"
+        end
+        fake_s3_request.set_response(res)
+
+      when "http://169.254.169.254/latest/meta-data/iam/info"
+        res = Gem::Net::HTTPOK.new nil, 200, nil
+        def res.body
+          <<~JSON
+            {
+              "Code": "Success",
+              "LastUpdated": "2023-05-27:05:05",
+              "InstanceProfileArn": "arn:aws:iam::somesecretid:instance-profile/TestRole",
+              "InstanceProfileId": "SOMEPROFILEID"
+            }
+          JSON
+        end
+        fake_s3_request.set_response(res)
+
+      when "http://169.254.169.254/latest/meta-data/iam/security-credentials/TestRole"
+        res = Gem::Net::HTTPOK.new nil, 200, nil
+        def res.body
+          $instance_profile
+        end
+        fake_s3_request.set_response(res)
+
+      else
+        raise "Unexpected request to #{uri}"
+      end
+
+      fake_s3_request
+    end
+  end
+
+  class FakeGemFetcher < Gem::RemoteFetcher
+
+    attr_reader :fetched_uri, :last_s3_uri_signer
+
+    def request(uri, request_class, last_modified = nil)
+      @fetched_uri = uri
+      res = Gem::Net::HTTPOK.new nil, 200, nil
+      def res.body
+        "success"
+      end
+      res
+    end
+
+    def s3_uri_signer(uri)
+      @last_s3_uri_signer = FakeS3URISigner.new(uri)
+    end
+  end
+
   def setup
     super
 
@@ -19,38 +116,35 @@ class TestGemRemoteFetcherS3 < Gem::TestCase
   end
 
   def assert_fetch_s3(url, signature, token=nil, region="us-east-1", instance_profile_json=nil)
-    fetcher = Gem::RemoteFetcher.new nil
-    @fetcher = fetcher
-    $fetched_uri = nil
+    @fetcher = FakeGemFetcher.new nil
     $instance_profile = instance_profile_json
 
-    def fetcher.request(uri, request_class, last_modified = nil)
-      $fetched_uri = uri
-      res = Gem::Net::HTTPOK.new nil, 200, nil
-      def res.body
-        "success"
-      end
-      res
-    end
+    data = @fetcher.fetch_s3 Gem::URI.parse(url)
 
-    def fetcher.s3_uri_signer(uri)
-      require "json"
-      s3_uri_signer = Gem::S3URISigner.new(uri)
-      def s3_uri_signer.ec2_metadata_credentials_json
-        JSON.parse($instance_profile)
-      end
-      # Running sign operation to make sure uri.query is not mutated
-      s3_uri_signer.sign
-      raise "URI query is not empty: #{uri.query}" unless uri.query.nil?
-      s3_uri_signer
-    end
-
-    data = fetcher.fetch_s3 Gem::URI.parse(url)
-
-    assert_equal "https://my-bucket.s3.#{region}.amazonaws.com/gems/specs.4.8.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=testuser%2F20190624%2F#{region}%2Fs3%2Faws4_request&X-Amz-Date=20190624T050641Z&X-Amz-Expires=86400#{token ? "&X-Amz-Security-Token=" + token : ""}&X-Amz-SignedHeaders=host&X-Amz-Signature=#{signature}", $fetched_uri.to_s
+    assert_equal "https://my-bucket.s3.#{region}.amazonaws.com/gems/specs.4.8.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=testuser%2F20190624%2F#{region}%2Fs3%2Faws4_request&X-Amz-Date=20190624T050641Z&X-Amz-Expires=86400#{token ? "&X-Amz-Security-Token=" + token : ""}&X-Amz-SignedHeaders=host&X-Amz-Signature=#{signature}", @fetcher.fetched_uri.to_s
     assert_equal "success", data
+
+    # Validation for EC2 IAM signing
+    if Gem.configuration[:s3_source]&.dig("my-bucket", :provider) == "instance_profile"
+      # Three API requests:
+      # 1. Get the token
+      # 2. Lookup profile details
+      # 3. Query the credentials
+      expected = <<~TEXT
+        PUT http://169.254.169.254/latest/api/token
+            x-aws-ec2-metadata-token-ttl-seconds=60
+        GET http://169.254.169.254/latest/meta-data/iam/info
+            x-aws-ec2-metadata-token=mysecrettoken
+        GET http://169.254.169.254/latest/meta-data/iam/security-credentials/TestRole
+            x-aws-ec2-metadata-token=mysecrettoken
+      TEXT
+      recent_aws_query_logs = @fetcher.last_s3_uri_signer.recent_aws_query_logs
+      assert_equal(expected.strip, recent_aws_query_logs.strip)
+    else
+      assert_equal("", @fetcher.last_s3_uri_signer.recent_aws_query_logs)
+    end
   ensure
-    $fetched_uri = nil
+    $instance_profile = nil
   end
 
   def test_fetch_s3_config_creds

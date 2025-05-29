@@ -1,9 +1,24 @@
 # frozen_string_literal: true
 
 RSpec.describe "bundle list" do
+  def find_gem_name(json:, name:)
+    parse_json(json)["gems"].detect {|h| h["name"] == name }
+  end
+
+  def parse_json(json)
+    require "json" unless defined?(::JSON)
+    JSON.parse(json)
+  end
+
   context "with name-only and paths option" do
     it "raises an error" do
       bundle "list --name-only --paths", raise_on_error: false
+
+      expect(err).to eq "The `--name-only` and `--paths` options cannot be used together"
+    end
+
+    it "raises an error with json" do
+      bundle "list --json --name-only --paths", raise_on_error: false
 
       expect(err).to eq "The `--name-only` and `--paths` options cannot be used together"
     end
@@ -12,6 +27,12 @@ RSpec.describe "bundle list" do
   context "with without-group and only-group option" do
     it "raises an error" do
       bundle "list --without-group dev --only-group test", raise_on_error: false
+
+      expect(err).to eq "The `--only-group` and `--without-group` options cannot be used together"
+    end
+
+    it "raises an error with json" do
+      bundle "list --without-group dev --only-group test --json", raise_on_error: false
 
       expect(err).to eq "The `--only-group` and `--without-group` options cannot be used together"
     end
@@ -36,11 +57,28 @@ RSpec.describe "bundle list" do
         expect(out).to include("  * rails (2.3.2)")
         expect(out).not_to include("  * rspec (1.2.7)")
       end
+
+      it "prints the gems not in the specified group with json" do
+        bundle "list --without-group test --json"
+
+        gem = find_gem_name(json: out, name: "myrack")
+        expect(gem["version"]).to eq("1.0.0")
+        gem = find_gem_name(json: out, name: "rails")
+        expect(gem["version"]).to eq("2.3.2")
+        gem = find_gem_name(json: out, name: "rspec")
+        expect(gem).to be_nil
+      end
     end
 
     context "when group is not found" do
       it "raises an error" do
         bundle "list --without-group random", raise_on_error: false
+
+        expect(err).to eq "`random` group could not be found."
+      end
+
+      it "raises an error with json" do
+        bundle "list --without-group random --json", raise_on_error: false
 
         expect(err).to eq "`random` group could not be found."
       end
@@ -53,6 +91,17 @@ RSpec.describe "bundle list" do
         expect(out).to include("  * myrack (1.0.0)")
         expect(out).not_to include("  * rails (2.3.2)")
         expect(out).not_to include("  * rspec (1.2.7)")
+      end
+
+      it "prints the gems not in the specified groups with json" do
+        bundle "list --without-group test production --json"
+
+        gem = find_gem_name(json: out, name: "myrack")
+        expect(gem["version"]).to eq("1.0.0")
+        gem = find_gem_name(json: out, name: "rails")
+        expect(gem).to be_nil
+        gem = find_gem_name(json: out, name: "rspec")
+        expect(gem).to be_nil
       end
     end
   end
@@ -75,11 +124,26 @@ RSpec.describe "bundle list" do
         expect(out).to include("  * myrack (1.0.0)")
         expect(out).not_to include("  * rspec (1.2.7)")
       end
+
+      it "prints the gems in the specified group with json" do
+        bundle "list --only-group default --json"
+
+        gem = find_gem_name(json: out, name: "myrack")
+        expect(gem["version"]).to eq("1.0.0")
+        gem = find_gem_name(json: out, name: "rspec")
+        expect(gem).to be_nil
+      end
     end
 
     context "when group is not found" do
       it "raises an error" do
         bundle "list --only-group random", raise_on_error: false
+
+        expect(err).to eq "`random` group could not be found."
+      end
+
+      it "raises an error with json" do
+        bundle "list --only-group random --json", raise_on_error: false
 
         expect(err).to eq "`random` group could not be found."
       end
@@ -92,6 +156,17 @@ RSpec.describe "bundle list" do
         expect(out).to include("  * myrack (1.0.0)")
         expect(out).to include("  * rails (2.3.2)")
         expect(out).not_to include("  * rspec (1.2.7)")
+      end
+
+      it "prints the gems in the specified groups with json" do
+        bundle "list --only-group default production --json"
+
+        gem = find_gem_name(json: out, name: "myrack")
+        expect(gem["version"]).to eq("1.0.0")
+        gem = find_gem_name(json: out, name: "rails")
+        expect(gem["version"]).to eq("2.3.2")
+        gem = find_gem_name(json: out, name: "rspec")
+        expect(gem).to be_nil
       end
     end
   end
@@ -111,6 +186,15 @@ RSpec.describe "bundle list" do
 
       expect(out).to include("myrack")
       expect(out).to include("rspec")
+    end
+
+    it "prints only the name of the gems in the bundle with json" do
+      bundle "list --name-only --json"
+
+      gem = find_gem_name(json: out, name: "myrack")
+      expect(gem.keys).to eq(["name"])
+      gem = find_gem_name(json: out, name: "rspec")
+      expect(gem.keys).to eq(["name"])
     end
   end
 
@@ -146,6 +230,27 @@ RSpec.describe "bundle list" do
       expect(out).to match(%r{.*\/git_test\-\w})
       expect(out).to match(%r{.*\/gemspec_test})
     end
+
+    it "prints the path of each gem in the bundle with json" do
+      bundle "list --paths --json"
+
+      gem = find_gem_name(json: out, name: "rails")
+      expect(gem["path"]).to match(%r{.*\/rails\-2\.3\.2})
+      expect(gem["git_version"]).to be_nil
+
+      gem = find_gem_name(json: out, name: "myrack")
+      expect(gem["path"]).to match(%r{.*\/myrack\-1\.2})
+      expect(gem["git_version"]).to be_nil
+
+      gem = find_gem_name(json: out, name: "git_test")
+      expect(gem["path"]).to match(%r{.*\/git_test\-\w})
+      expect(gem["git_version"]).to be_truthy
+      expect(gem["git_version"].strip).to eq(gem["git_version"])
+
+      gem = find_gem_name(json: out, name: "gemspec_test")
+      expect(gem["path"]).to match(%r{.*\/gemspec_test})
+      expect(gem["git_version"]).to be_nil
+    end
   end
 
   context "when no gems are in the gemfile" do
@@ -158,6 +263,11 @@ RSpec.describe "bundle list" do
     it "prints message saying no gems are in the bundle" do
       bundle "list"
       expect(out).to include("No gems in the Gemfile")
+    end
+
+    it "prints empty json" do
+      bundle "list --json"
+      expect(parse_json(out.strip)["gems"]).to eq([])
     end
   end
 
@@ -174,6 +284,13 @@ RSpec.describe "bundle list" do
     it "lists gems installed in the bundle" do
       bundle "list"
       expect(out).to include("  * myrack (1.0.0)")
+    end
+
+    it "lists gems installed in the bundle with json" do
+      bundle "list --json"
+
+      gem = find_gem_name(json: out, name: "myrack")
+      expect(gem["version"]).to eq("1.0.0")
     end
   end
 

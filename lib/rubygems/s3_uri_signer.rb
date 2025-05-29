@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require_relative "openssl"
+require_relative "user_interaction"
 
 ##
 # S3URISigner implements AWS SigV4 for S3 Source to avoid a dependency on the aws-sdk-* gems
 # More on AWS SigV4: https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html
 class Gem::S3URISigner
+  include Gem::UserInteraction
+
   class ConfigurationError < Gem::Exception
     def initialize(message)
       super message
@@ -150,6 +153,7 @@ class Gem::S3URISigner
     begin
       res = ec2_metadata_credentials_imds_v2
     rescue InstanceProfileError
+      alert_warning "Unable to access ec2 credentials via IMDSv2, falling back to IMDSv1"
       res = ec2_metadata_credentials_imds_v1
     end
     res

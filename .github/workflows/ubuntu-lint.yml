@@ -18,6 +18,9 @@ jobs:
   python_linters:
     name: Python linter ${{ matrix.command }}
     runs-on: ubuntu-24.04
+    permissions:
+      # Needed to upload the results to code-scanning dashboard.
+      security-events: write
     strategy:
       fail-fast: false
       matrix:

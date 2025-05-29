@@ -164,6 +164,7 @@ class TestGemRemoteFetcherS3 < Gem::TestCase
   def assert_fetch_s3(url:, signature:, token: nil, region: "us-east-1", instance_profile_json: nil, fetcher: nil)
     @fetcher = fetcher || FakeGemFetcher.new(nil)
     $instance_profile = instance_profile_json
+    $imdsv2_token_failure ||= nil
 
     data = @fetcher.fetch_s3 Gem::URI.parse(url)
 

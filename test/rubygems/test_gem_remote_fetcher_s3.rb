@@ -9,7 +9,6 @@ class TestGemRemoteFetcherS3 < Gem::TestCase
   include Gem::DefaultUserInteraction
 
   class FakeGemRequest < Gem::Request
-
     attr_reader :last_request, :uri
 
     # Override perform_request to stub things
@@ -54,16 +53,10 @@ class TestGemRemoteFetcherS3 < Gem::TestCase
       when "http://169.254.169.254/latest/api/token"
         if $imdsv2_token_failure
           res = Gem::Net::HTTPUnauthorized.new nil, 401, nil
-          def res.body
-            "you got a 401! panic!"
-          end
-          fake_s3_request.set_response(res)
+          def res.body = "you got a 401! panic!"
         else
           res = Gem::Net::HTTPOK.new nil, 200, nil
-          def res.body
-            "mysecrettoken"
-          end
-          fake_s3_request.set_response(res)
+          def res.body = "mysecrettoken"
         end
       when "http://169.254.169.254/latest/meta-data/iam/info"
         res = Gem::Net::HTTPOK.new nil, 200, nil
@@ -77,33 +70,26 @@ class TestGemRemoteFetcherS3 < Gem::TestCase
             }
           JSON
         end
-        fake_s3_request.set_response(res)
 
       when "http://169.254.169.254/latest/meta-data/iam/security-credentials/TestRole"
         res = Gem::Net::HTTPOK.new nil, 200, nil
-        def res.body
-          $instance_profile
-        end
-        fake_s3_request.set_response(res)
-
+        def res.body = $instance_profile
       else
         raise "Unexpected request to #{uri}"
       end
 
+      fake_s3_request.set_response(res)
       fake_s3_request
     end
   end
 
   class FakeGemFetcher < Gem::RemoteFetcher
-
     attr_reader :fetched_uri, :last_s3_uri_signer
 
     def request(uri, request_class, last_modified = nil)
       @fetched_uri = uri
       res = Gem::Net::HTTPOK.new nil, 200, nil
-      def res.body
-        "success"
-      end
+      def res.body = "success"
       res
     end
 

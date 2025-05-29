@@ -31,7 +31,7 @@ jobs:
         ruby:
           - { name: ruby-3.2, value: 3.2.8 }
           - { name: ruby-3.3, value: 3.3.8 }
-          - { name: ruby-3.4, value: 3.4.3 }
+          - { name: ruby-3.4, value: 3.4.4 }
 
         bundler:
           - { name: 2, value: "" }
@@ -40,11 +40,11 @@ jobs:
         include:
           - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 90 }
           - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.4, value: 3.4.3 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 90 }
 
           - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.4, value: 3.4.3 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 150 }
 
           - { os: { name: Ubuntu, value: ubuntu-24.04 }, bundler: { name: 2, value: "" }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
           - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: "" }, ruby: { name: jruby, value: jruby-10.0.0.1 } }

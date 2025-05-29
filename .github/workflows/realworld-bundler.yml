@@ -27,7 +27,7 @@ jobs:
         ruby:
           - { name: ruby-3.2, value: 3.2.8 }
           - { name: ruby-3.3, value: 3.3.8 }
-          - { name: ruby-3.4, value: 3.4.3 }
+          - { name: ruby-3.4, value: 3.4.4 }
 
         bundler:
           - { name: 2, value: null }
@@ -36,7 +36,7 @@ jobs:
         include:
           - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: null }, ruby: { name: ruby-3.2, value: 3.2.8 } }
           - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: null }, ruby: { name: ruby-3.3, value: 3.3.8 } }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: null }, ruby: { name: ruby-3.4, value: 3.4.3 } }
+          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: null }, ruby: { name: ruby-3.4, value: 3.4.4 } }
     env:
       RGV: ..
       RUBYOPT: --disable-gems
@@ -73,7 +73,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
         with:
-          ruby-version: 3.4.3
+          ruby-version: 3.4.4
           bundler: none
       - name: Prepare tapioca
         run: ruby ../../../support/bundle.rb install
@@ -92,10 +92,10 @@ jobs:
         include:
           - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.2, value: 3.2.8 } }
           - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.3, value: 3.3.8 } }
-          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.4, value: 3.4.3 } }
+          - { bundler: { name: 2, value: null }, ruby: { name: ruby-3.4, value: 3.4.4 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.8 } }
           - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.8 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.4, value: 3.4.3 } }
+          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.4, value: 3.4.4 } }
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -130,7 +130,7 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
         with:
-          ruby-version: 3.4.3
+          ruby-version: 3.4.4
           bundler: none
       - name: Prepare dependencies
         run: bin/rake setup

@@ -37,8 +37,15 @@ RSpec.describe "bundle gem" do
     git("config --global user.email user@example.com")
     git("config --global github.user bundleuser")
 
-    global_config "BUNDLE_GEM__MIT" => "false", "BUNDLE_GEM__TEST" => "false", "BUNDLE_GEM__COC" => "false", "BUNDLE_GEM__LINTER" => "false",
-                  "BUNDLE_GEM__CI" => "false", "BUNDLE_GEM__CHANGELOG" => "false"
+    global_config(
+      "BUNDLE_GEM__MIT" => "false",
+      "BUNDLE_GEM__TEST" => "false",
+      "BUNDLE_GEM__COC" => "false",
+      "BUNDLE_GEM__LINTER" => "false",
+      "BUNDLE_GEM__CI" => "false",
+      "BUNDLE_GEM__CHANGELOG" => "false",
+      "BUNDLE_GEM__RBS" => "false"
+    )
   end
 
   describe "git repo initialization" do
@@ -149,6 +156,32 @@ RSpec.describe "bundle gem" do
     it "generates a gem skeleton without a CHANGELOG" do
       gem_skeleton_assertions
       expect(bundled_app("#{gem_name}/CHANGELOG.md")).to_not exist
+    end
+  end
+
+  shared_examples_for "--rbs flag" do
+    before do
+      bundle "gem #{gem_name} --rbs"
+    end
+
+    it "generates a gem skeleton with a sig/GEM_NAME.rbs" do
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/sig/#{require_path}.rbs")).to exist
+    end
+
+    it "declares String type for VERSION constant" do
+      expect(bundled_app("#{gem_name}/sig/#{require_path}.rbs").read).to match(/VERSION: String/)
+    end
+  end
+
+  shared_examples_for "--no-rbs flag" do
+    before do
+      bundle "gem #{gem_name} --no-rbs"
+    end
+
+    it "generates a gem skeleton without a sig/GEM_NAME.rbs" do
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/sig")).to_not exist
     end
   end
 
@@ -577,7 +610,6 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/Rakefile")).to exist
       expect(bundled_app("#{gem_name}/lib/#{require_path}.rb")).to exist
       expect(bundled_app("#{gem_name}/lib/#{require_path}/version.rb")).to exist
-      expect(bundled_app("#{gem_name}/sig/#{require_path}.rbs")).to exist
       expect(bundled_app("#{gem_name}/.gitignore")).to exist
 
       expect(bundled_app("#{gem_name}/bin/setup")).to exist
@@ -596,12 +628,6 @@ RSpec.describe "bundle gem" do
       bundle "gem #{gem_name}"
 
       expect(bundled_app("#{gem_name}/lib/#{require_path}/version.rb").read).to match(/VERSION = "0.1.0"/)
-    end
-
-    it "declare String type for VERSION constant" do
-      bundle "gem #{gem_name}"
-
-      expect(bundled_app("#{gem_name}/sig/#{require_path}.rbs").read).to match(/VERSION: String/)
     end
 
     context "git config user.{name,email} is set" do
@@ -1427,6 +1453,24 @@ RSpec.describe "bundle gem" do
     end
   end
 
+  context "testing --rbs option against bundle config settings" do
+    context "with rbs option in bundle config settings set to true" do
+      before do
+        global_config "BUNDLE_GEM__RBS" => "true"
+      end
+      it_behaves_like "--rbs flag"
+      it_behaves_like "--no-rbs flag"
+    end
+
+    context "with changelog option in bundle config settings set to false" do
+      before do
+        global_config "BUNDLE_GEM__RBS" => "false"
+      end
+      it_behaves_like "--rbs flag"
+      it_behaves_like "--no-rbs flag"
+    end
+  end
+
   context "testing --github-username option against git and bundle config settings" do
     context "without git config set" do
       before do
@@ -1765,6 +1809,16 @@ Usage: "bundle gem NAME [OPTIONS]"
       end
 
       expect(bundled_app("foobar/CHANGELOG.md")).to exist
+    end
+
+    it "asks about RBS" do
+      global_config "BUNDLE_GEM__RBS" => nil
+
+      bundle "gem foobar" do |input, _, _|
+        input.puts "yes"
+      end
+
+      expect(bundled_app("foobar/sig/foobar.rbs")).to exist
     end
   end
 

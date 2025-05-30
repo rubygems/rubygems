@@ -404,7 +404,7 @@ class Gem::Installer
   # True if the gems in the system satisfy +dependency+.
 
   def installation_satisfies_dependency?(dependency)
-    return true if @options[:development] && dependency.type == :development
+    return true if @options[:development] && dependency.development?
     return true if installed_specs.detect {|s| dependency.matches_spec? s }
     return false if @only_install_dir
     !dependency.matching_specs.empty?
@@ -734,7 +734,7 @@ class Gem::Installer
       raise Gem::InstallError, "#{spec} has an invalid specification_version"
     end
 
-    if spec.dependencies.any? {|dep| dep.type != :runtime && dep.type != :development }
+    if spec.dependencies.any? {|dep| !Gem::Dependency::TYPES.include?(dep.type) }
       raise Gem::InstallError, "#{spec} has an invalid dependencies"
     end
 

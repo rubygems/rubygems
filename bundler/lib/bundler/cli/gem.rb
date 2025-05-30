@@ -240,6 +240,11 @@ module Bundler
         IO.popen(%w[git add .], { chdir: target }, &:read)
       end
 
+      Bundler.ui.info "Running bundle install in the new gem directory."
+      Dir.chdir(target) do
+        system("bundle", "install")
+      end
+
       # Open gemspec in editor
       open_editor(options["edit"], target.join("#{name}.gemspec")) if options[:edit]
 

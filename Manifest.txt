@@ -354,6 +354,7 @@ bundler/lib/bundler/version.rb
 bundler/lib/bundler/vlad.rb
 bundler/lib/bundler/worker.rb
 bundler/lib/bundler/yaml_serializer.rb
+bundler/sbom/bundler.cdx.json
 doc/MAINTAINERS.txt
 doc/bundler/UPGRADING.md
 doc/rubygems/CONTRIBUTING.md
@@ -619,4 +620,5 @@ lib/rubygems/version.rb
 lib/rubygems/version_option.rb
 lib/rubygems/yaml_serializer.rb
 rubygems-update.gemspec
+sbom/rubygems.cdx.json
 setup.rb

@@ -21,6 +21,8 @@ bundle list --only-group dev
 
 bundle list --only-group dev test --paths
 
+bundle list --json
+
 ## OPTIONS
 
 * `--name-only`:
@@ -34,3 +36,7 @@ bundle list --only-group dev test --paths
 
 * `--only-group=<list>`:
   A space-separated list of groups of gems to print.
+
+* `--json`:
+  Format output as JSON.
+

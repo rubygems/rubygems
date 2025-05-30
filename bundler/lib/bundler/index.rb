@@ -130,9 +130,14 @@ module Bundler
     def merge!(other)
       return unless other
       other.each do |spec|
-        if existing = find_by_spec(spec)
-          add_duplicate(existing)
+        existing = find_by_spec(spec)
+
+        if existing && !dependencies_eql?(existing, spec)
+          Bundler.ui.warn "Local specification for #{spec.full_name} has different dependencies than the remote gem, ignoring it"
+          next
         end
+
+        add_duplicate(existing) if existing
         add spec
       end
       self
@@ -153,8 +158,8 @@ module Bundler
     end
 
     def dependencies_eql?(spec, other_spec)
-      deps       = spec.dependencies.select {|d| d.type != :development }
-      other_deps = other_spec.dependencies.select {|d| d.type != :development }
+      deps       = spec.runtime_dependencies
+      other_deps = other_spec.runtime_dependencies
       deps.sort == other_deps.sort
     end
 

@@ -94,7 +94,7 @@ module Bundler
       lockfile_contents.split(BUNDLED).last.strip
     end
 
-    def initialize(lockfile)
+    def initialize(lockfile, validate_dependencies: false)
       @platforms    = []
       @sources      = []
       @dependencies = {}
@@ -106,6 +106,7 @@ module Bundler
         "Gemfile.lock"
       end
       @pos = Position.new(1, 1)
+      @validate_dependencies = validate_dependencies
 
       if lockfile.match?(/<<<<<<<|=======|>>>>>>>|\|\|\|\|\|\|\|/)
         raise LockfileError, "Your #{@lockfile_path} contains merge conflicts.\n" \
@@ -271,7 +272,7 @@ module Bundler
 
         version = Gem::Version.new(version)
         platform = platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
-        @current_spec = LazySpecification.new(name, version, platform, @current_source)
+        @current_spec = LazySpecification.new(name, version, platform, @current_source, validate_dependencies: @validate_dependencies)
         @current_source.add_dependency_names(name)
 
         @specs[@current_spec.full_name] = @current_spec

@@ -17,8 +17,7 @@ class Gem::Source::Local < Gem::Source
 
   def <=>(other)
     case other
-    when Gem::Source::Installed,
-         Gem::Source::Lock then
+    when Gem::Source::Installed
       -1
     when Gem::Source::Local then
       0

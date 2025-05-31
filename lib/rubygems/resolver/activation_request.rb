@@ -99,15 +99,10 @@ class Gem::Resolver::ActivationRequest
   # True if the requested gem has already been installed.
 
   def installed?
-    case @spec
-    when Gem::Resolver::VendorSpecification then
-      true
-    else
-      this_spec = full_spec
+    this_spec = full_spec
 
-      Gem::Specification.any? do |s|
-        s == this_spec && s.base_dir == this_spec.base_dir
-      end
+    Gem::Specification.any? do |s|
+      s == this_spec && s.base_dir == this_spec.base_dir
     end
   end
 

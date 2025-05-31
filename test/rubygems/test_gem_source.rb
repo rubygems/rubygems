@@ -27,14 +27,6 @@ class TestGemSource < Gem::TestCase
     end
   end
 
-  def test_initialize_git
-    repository = "git@example:a.git"
-
-    source = Gem::Source::Git.new "a", repository, nil, false
-
-    assert_equal repository, source.uri
-  end
-
   def test_cache_dir_escapes_windows_paths
     uri = Gem::URI.parse("file:///C:/WINDOWS/Temp/gem_repo")
     root = Gem.spec_cache_dir

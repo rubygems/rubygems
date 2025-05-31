@@ -155,21 +155,6 @@ class Gem::Requirement
   end
 
   ##
-  # Formats this requirement for use in a Gem::RequestSet::Lockfile.
-
-  def for_lockfile # :nodoc:
-    return if @requirements == [DefaultRequirement]
-
-    list = requirements.sort_by do |_, version|
-      version
-    end.map do |op, version|
-      "#{op} #{version}"
-    end.uniq
-
-    " (#{list.join ", "})"
-  end
-
-  ##
   # true if this gem has no requirements.
 
   def none?

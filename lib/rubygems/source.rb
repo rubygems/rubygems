@@ -38,10 +38,7 @@ class Gem::Source
     case other
     when Gem::Source::Installed,
          Gem::Source::Local,
-         Gem::Source::Lock,
-         Gem::Source::SpecificFile,
-         Gem::Source::Git,
-         Gem::Source::Vendor then
+         Gem::Source::SpecificFile then
       -1
     when Gem::Source then
       unless @uri
@@ -245,9 +242,6 @@ class Gem::Source
   end
 end
 
-require_relative "source/git"
 require_relative "source/installed"
 require_relative "source/specific_file"
 require_relative "source/local"
-require_relative "source/lock"
-require_relative "source/vendor"

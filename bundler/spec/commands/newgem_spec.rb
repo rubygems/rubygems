@@ -181,6 +181,10 @@ RSpec.describe "bundle gem" do
       it "generates a default .rubocop.yml" do
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to exist
       end
+
+      it "contained .rubocop.yml into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include("appveyor .rubocop.yml Gemfile")
+      end
     end
   end
 
@@ -209,6 +213,10 @@ RSpec.describe "bundle gem" do
 
       it "doesn't generate a default .rubocop.yml" do
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to_not exist
+      end
+
+      it "does not add .rubocop.yml into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include("appveyor .rubocop.yml Gemfile")
       end
     end
   end
@@ -240,6 +248,10 @@ RSpec.describe "bundle gem" do
     it "generates a default .rubocop.yml" do
       expect(bundled_app("#{gem_name}/.rubocop.yml")).to exist
     end
+
+    it "contained .rubocop.yml into ignore list" do
+      expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include("appveyor .rubocop.yml Gemfile")
+    end
   end
 
   shared_examples_for "--linter=standard flag" do
@@ -266,6 +278,10 @@ RSpec.describe "bundle gem" do
 
     it "generates a default .standard.yml" do
       expect(bundled_app("#{gem_name}/.standard.yml")).to exist
+    end
+
+    it "contained .standard.yml into ignore list" do
+      expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include("appveyor .standard.yml Gemfile")
     end
   end
 
@@ -304,8 +320,16 @@ RSpec.describe "bundle gem" do
       expect(bundled_app("#{gem_name}/.rubocop.yml")).to_not exist
     end
 
+    it "does not add .rubocop.yml into ignore list" do
+      expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include("appveyor .rubocop.yml Gemfile")
+    end
+
     it "doesn't generate a default .standard.yml" do
       expect(bundled_app("#{gem_name}/.standard.yml")).to_not exist
+    end
+
+    it "does not add .standard.yml into ignore list" do
+      expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include("appveyor .standard.yml Gemfile")
     end
   end
 
@@ -1166,29 +1190,48 @@ RSpec.describe "bundle gem" do
     end
 
     context "--linter with no argument" do
-      it "does not generate any linter config" do
+      before do
         bundle "gem #{gem_name}"
+      end
 
+      it "does not generate any linter config" do
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to_not exist
         expect(bundled_app("#{gem_name}/.standard.yml")).to_not exist
+      end
+
+      it "does not add any linter config file into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include("appveyor .rubocop.yml Gemfile")
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include("appveyor .standard.yml Gemfile")
       end
     end
 
     context "--linter set to rubocop" do
-      it "generates a RuboCop config" do
+      before do
         bundle "gem #{gem_name} --linter=rubocop"
+      end
 
+      it "generates a RuboCop config" do
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to exist
         expect(bundled_app("#{gem_name}/.standard.yml")).to_not exist
+      end
+
+      it "contained .rubocop.yml into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include("appveyor .rubocop.yml Gemfile")
       end
     end
 
     context "--linter set to standard" do
-      it "generates a Standard config" do
+      before do
         bundle "gem #{gem_name} --linter=standard"
+      end
 
+      it "generates a Standard config" do
         expect(bundled_app("#{gem_name}/.standard.yml")).to exist
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to_not exist
+      end
+
+      it "contained .standard.yml into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include("appveyor .standard.yml Gemfile")
       end
     end
 
@@ -1204,29 +1247,48 @@ RSpec.describe "bundle gem" do
     end
 
     context "gem.linter setting set to none" do
-      it "doesn't generate any linter config" do
+      before do
         bundle "gem #{gem_name}"
+      end
 
+      it "doesn't generate any linter config" do
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to_not exist
         expect(bundled_app("#{gem_name}/.standard.yml")).to_not exist
+      end
+
+      it "does not add any linter config file into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include("appveyor .rubocop.yml Gemfile")
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include("appveyor .standard.yml Gemfile")
       end
     end
 
     context "gem.linter setting set to rubocop" do
-      it "generates a RuboCop config file" do
+      before do
         bundle "config set gem.linter rubocop"
         bundle "gem #{gem_name}"
+      end
 
+      it "generates a RuboCop config file" do
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to exist
+      end
+
+      it "contained .rubocop.yml into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include("appveyor .rubocop.yml Gemfile")
       end
     end
 
     context "gem.linter setting set to standard" do
-      it "generates a Standard config file" do
+      before do
         bundle "config set gem.linter standard"
         bundle "gem #{gem_name}"
+      end
 
+      it "generates a Standard config file" do
         expect(bundled_app("#{gem_name}/.standard.yml")).to exist
+      end
+
+      it "contained .standard.yml into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include("appveyor .standard.yml Gemfile")
       end
     end
 
@@ -1239,6 +1301,10 @@ RSpec.describe "bundle gem" do
 
       it "generates rubocop config" do
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to exist
+      end
+
+      it "contained .rubocop.yml into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include("appveyor .rubocop.yml Gemfile")
       end
 
       it "unsets gem.rubocop" do
@@ -1260,6 +1326,10 @@ RSpec.describe "bundle gem" do
 
       it "generates a RuboCop config file" do
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to exist
+      end
+
+      it "contained .rubocop.yml into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include("appveyor .rubocop.yml Gemfile")
       end
 
       it "hints that --linter is already configured" do
@@ -1312,6 +1382,11 @@ RSpec.describe "bundle gem" do
       it "does not generate any linter config" do
         expect(bundled_app("#{gem_name}/.rubocop.yml")).to_not exist
         expect(bundled_app("#{gem_name}/.standard.yml")).to_not exist
+      end
+
+      it "does not add any linter config file into ignore list" do
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include("appveyor .rubocop.yml Gemfile")
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include("appveyor .standard.yml Gemfile")
       end
     end
 

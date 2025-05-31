@@ -1,6 +1,8 @@
-# 3.6.9 / 2025-05-13
+# Changelog
 
-## Enhancements:
+## 3.6.9 / 2025-05-13
+
+### Enhancements:
 
 * Add mtime to Gem::Package::TarWriter#add_file argument. Pull request
   [#8673](https://github.com/rubygems/rubygems/pull/8673) by unasuke
@@ -12,25 +14,25 @@
   deivid-rodriguez
 * Installs bundler 2.6.9 as a default gem.
 
-## Performance:
+### Performance:
 
 * Avoid unnecessary splat allocation. Pull request
   [#8640](https://github.com/rubygems/rubygems/pull/8640) by jeremyevans
 
-## Documentation:
+### Documentation:
 
 * Fix typo in Changelog for 3.6.0 / 2024-12-16. Pull request
   [#8638](https://github.com/rubygems/rubygems/pull/8638) by thatrobotdev
 
-# 3.6.8 / 2025-04-13
+## 3.6.8 / 2025-04-13
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.6.8 as a default gem.
 
-# 3.6.7 / 2025-04-03
+## 3.6.7 / 2025-04-03
 
-## Enhancements:
+### Enhancements:
 
 * Sorting files in metadata for build reproducibility. Pull request
   [#8569](https://github.com/rubygems/rubygems/pull/8569) by
@@ -43,54 +45,54 @@
   deivid-rodriguez
 * Installs bundler 2.6.7 as a default gem.
 
-## Performance:
+### Performance:
 
 * Speed up Version#<=> ~20-50% when lengths differ. Pull request
   [#8565](https://github.com/rubygems/rubygems/pull/8565) by skipkayhil
 
-# 3.6.6 / 2025-03-13
+## 3.6.6 / 2025-03-13
 
-## Enhancements:
+### Enhancements:
 
 * Update vendored uri to 1.0.3. Pull request
   [#8534](https://github.com/rubygems/rubygems/pull/8534) by hsbt
 * Installs bundler 2.6.6 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem rdoc` not working with newer versions of rdoc when not
   installed as default gems. Pull request
   [#8549](https://github.com/rubygems/rubygems/pull/8549) by
   deivid-rodriguez
 
-# 3.6.5 / 2025-02-20
+## 3.6.5 / 2025-02-20
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.6.5 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Removed `gem server` from `gem help`. Pull request
   [#8507](https://github.com/rubygems/rubygems/pull/8507) by hsbt
 
-# 3.6.4 / 2025-02-17
+## 3.6.4 / 2025-02-17
 
-## Enhancements:
+### Enhancements:
 
 * Raise a simpler error when RubyGems fails to activate a dependency. Pull
   request [#8449](https://github.com/rubygems/rubygems/pull/8449) by
   deivid-rodriguez
 * Installs bundler 2.6.4 as a default gem.
 
-## Performance:
+### Performance:
 
 * Allocate strings from Requirement match only once. Pull request
   [#8245](https://github.com/rubygems/rubygems/pull/8245) by segiddins
 
-# 3.6.3 / 2025-01-16
+## 3.6.3 / 2025-01-16
 
-## Enhancements:
+### Enhancements:
 
 * Add credentials file path to `gem env`. Pull request
   [#8375](https://github.com/rubygems/rubygems/pull/8375) by duckinator
@@ -99,14 +101,14 @@
   github-actions[bot]
 * Installs bundler 2.6.3 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `@licenses` array unmarshalling. Pull request
   [#8411](https://github.com/rubygems/rubygems/pull/8411) by rykov
 
-# 3.6.2 / 2024-12-23
+## 3.6.2 / 2024-12-23
 
-## Security:
+### Security:
 
 * Fix Gem::SafeMarshal buffer overrun when given lengths larger than fit
   into a byte. Pull request
@@ -114,55 +116,55 @@
 * Improve type checking in marshal_load methods. Pull request
   [#8306](https://github.com/rubygems/rubygems/pull/8306) by segiddins
 
-## Enhancements:
+### Enhancements:
 
 * Skip rdoc hooks and their tests on newer rdoc versions. Pull request
   [#8340](https://github.com/rubygems/rubygems/pull/8340) by
   deivid-rodriguez
 * Installs bundler 2.6.2 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix serialized metadata including an empty `@original_platform`
   attribute. Pull request
   [#8355](https://github.com/rubygems/rubygems/pull/8355) by
   deivid-rodriguez
 
-# 3.6.1 / 2024-12-17
+## 3.6.1 / 2024-12-17
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.6.1 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem info` tagging some non default gems as default. Pull request
   [#8321](https://github.com/rubygems/rubygems/pull/8321) by
   deivid-rodriguez
 
-## Documentation:
+### Documentation:
 
 * Fix broken links. Pull request
   [#8327](https://github.com/rubygems/rubygems/pull/8327) by st0012
 
-# 3.6.0 / 2024-12-16
+## 3.6.0 / 2024-12-16
 
-## Security:
+### Security:
 
 * Stop storing executable names in ivars. Pull request
   [#8307](https://github.com/rubygems/rubygems/pull/8307) by segiddins
 
-## Breaking changes:
+### Breaking changes:
 
 * Drop ruby 3.0 support. Pull request
   [#8091](https://github.com/rubygems/rubygems/pull/8091) by segiddins
 
-## Features:
+### Features:
 
 * Add --attestation option to gem push. Pull request
   [#8239](https://github.com/rubygems/rubygems/pull/8239) by segiddins
 
-## Enhancements:
+### Enhancements:
 
 * Skip unresolved deps warning on `Gem::Specification.reset` on benign
   cases. Pull request
@@ -184,7 +186,7 @@
   [#6463](https://github.com/rubygems/rubygems/pull/6463) by hsbt
 * Installs bundler 2.6.0 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Set $0 to exe when running `gem exec` to fix name in CLI output. Pull
   request [#8267](https://github.com/rubygems/rubygems/pull/8267) by adam12
@@ -192,7 +194,7 @@
   request [#8202](https://github.com/rubygems/rubygems/pull/8202) by
   deivid-rodriguez
 
-## Documentation:
+### Documentation:
 
 * Fix missing single quote in git source example. Pull request
   [#8303](https://github.com/rubygems/rubygems/pull/8303) by nobu
@@ -202,9 +204,9 @@
 * Unify rubygems and bundler docs directory. Pull request
   [#8159](https://github.com/rubygems/rubygems/pull/8159) by hsbt
 
-# 3.5.23 / 2024-11-05
+## 3.5.23 / 2024-11-05
 
-## Enhancements:
+### Enhancements:
 
 * Validate user input encoding of `gem` CLI arguments. Pull request
   [#6471](https://github.com/rubygems/rubygems/pull/6471) by
@@ -215,7 +217,7 @@
   deivid-rodriguez
 * Installs bundler 2.5.23 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix commands with 2 MFA requests when webauthn is enabled. Pull request
   [#8174](https://github.com/rubygems/rubygems/pull/8174) by
@@ -225,20 +227,20 @@
   [#7872](https://github.com/rubygems/rubygems/pull/7872) by
   deivid-rodriguez
 
-## Performance:
+### Performance:
 
 * Speed up `gem install <nonexistent-gem>` by finding alternative name
   suggestions faster. Pull request
   [#8084](https://github.com/rubygems/rubygems/pull/8084) by duckinator
 
-## Documentation:
+### Documentation:
 
 * Add missing comma in documentation. Pull request
   [#8152](https://github.com/rubygems/rubygems/pull/8152) by leoarnold
 
-# 3.5.22 / 2024-10-16
+## 3.5.22 / 2024-10-16
 
-## Enhancements:
+### Enhancements:
 
 * Prevent `._*` files in packages generated from macOS. Pull request
   [#8150](https://github.com/rubygems/rubygems/pull/8150) by
@@ -253,7 +255,7 @@
   [#8112](https://github.com/rubygems/rubygems/pull/8112) by segiddins
 * Installs bundler 2.5.22 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem contents` for default gems. Pull request
   [#8132](https://github.com/rubygems/rubygems/pull/8132) by
@@ -271,9 +273,9 @@
   [#8121](https://github.com/rubygems/rubygems/pull/8121) by
   deivid-rodriguez
 
-# 3.5.21 / 2024-10-03
+## 3.5.21 / 2024-10-03
 
-## Enhancements:
+### Enhancements:
 
 * Fix `Gem::MissingSpecVersionError#to_s` not showing exception message.
   Pull request [#8074](https://github.com/rubygems/rubygems/pull/8074) by
@@ -287,7 +289,7 @@
   deivid-rodriguez
 * Installs bundler 2.5.21 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix error in one source when fetching dependency APIs clearing results
   from all sources. Pull request
@@ -297,15 +299,15 @@
   request [#8072](https://github.com/rubygems/rubygems/pull/8072) by
   deivid-rodriguez
 
-# 3.5.20 / 2024-09-24
+## 3.5.20 / 2024-09-24
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.20 as a default gem.
 
-# 3.5.19 / 2024-09-18
+## 3.5.19 / 2024-09-18
 
-## Enhancements:
+### Enhancements:
 
 * Standardize pretty-print output for `Gem::Source` and subclasses. Pull
   request [#7994](https://github.com/rubygems/rubygems/pull/7994) by
@@ -315,7 +317,7 @@
   hsbt
 * Installs bundler 2.5.19 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `bundle exec rake install` failing when local gem has extensions.
   Pull request [#7977](https://github.com/rubygems/rubygems/pull/7977) by
@@ -337,33 +339,33 @@
   unmarshalled. Pull request
   [#7975](https://github.com/rubygems/rubygems/pull/7975) by djberube
 
-## Performance:
+### Performance:
 
 * Fix `gem install does-not-exist` being super slow. Pull request
   [#8006](https://github.com/rubygems/rubygems/pull/8006) by
   deivid-rodriguez
 
-# 3.5.18 / 2024-08-26
+## 3.5.18 / 2024-08-26
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.18 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem uninstall <name>:<version>` failing on shadowed default gems.
   Pull request [#7949](https://github.com/rubygems/rubygems/pull/7949) by
   deivid-rodriguez
 
-# 3.5.17 / 2024-08-01
+## 3.5.17 / 2024-08-01
 
-## Enhancements:
+### Enhancements:
 
 * Explicitly encode `Gem::Dependency` to yaml. Pull request
   [#7867](https://github.com/rubygems/rubygems/pull/7867) by segiddins
 * Installs bundler 2.5.17 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem list` regression when a regular gem shadows a default one. Pull
   request [#7892](https://github.com/rubygems/rubygems/pull/7892) by
@@ -374,13 +376,13 @@
 * Fix line comment issue for hash when loading gemrc. Pull request
   [#7857](https://github.com/rubygems/rubygems/pull/7857) by leetking
 
-# 3.5.16 / 2024-07-18
+## 3.5.16 / 2024-07-18
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.16 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix gemspec `require_paths` validation. Pull request
   [#7866](https://github.com/rubygems/rubygems/pull/7866) by
@@ -389,18 +391,18 @@
   Pull request [#7851](https://github.com/rubygems/rubygems/pull/7851) by
   moofkit
 
-## Performance:
+### Performance:
 
 * Use `caller_locations` instead of splitting `caller`. Pull request
   [#7708](https://github.com/rubygems/rubygems/pull/7708) by nobu
 
-# 3.5.15 / 2024-07-09
+## 3.5.15 / 2024-07-09
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.15 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Restrict generic `arm` to only match 32-bit arm. Pull request
   [#7830](https://github.com/rubygems/rubygems/pull/7830) by ntkme
@@ -408,42 +410,42 @@
   [#7806](https://github.com/rubygems/rubygems/pull/7806) by
   deivid-rodriguez
 
-## Documentation:
+### Documentation:
 
 * Make it clearer that `add_dependency` is the main way to add
   non-development dependencies. Pull request
   [#7800](https://github.com/rubygems/rubygems/pull/7800) by jeromedalbert
 
-# 3.5.14 / 2024-06-21
+## 3.5.14 / 2024-06-21
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.14 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Make "bundler? update --bundler" behave identically. Pull request
   [#7778](https://github.com/rubygems/rubygems/pull/7778) by x-yuri
 
-# 3.5.13 / 2024-06-14
+## 3.5.13 / 2024-06-14
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.13 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Never remove executables that may belong to a default gem. Pull request
   [#7747](https://github.com/rubygems/rubygems/pull/7747) by
   deivid-rodriguez
 
-# 3.5.12 / 2024-06-13
+## 3.5.12 / 2024-06-13
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.12 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem uninstall` unresolved specifications warning. Pull request
   [#7667](https://github.com/rubygems/rubygems/pull/7667) by
@@ -452,9 +454,9 @@
   Pull request [#7664](https://github.com/rubygems/rubygems/pull/7664) by
   deivid-rodriguez
 
-# 3.5.11 / 2024-05-28
+## 3.5.11 / 2024-05-28
 
-## Enhancements:
+### Enhancements:
 
 * Update SPDX license list as of 2024-05-22. Pull request
   [#7689](https://github.com/rubygems/rubygems/pull/7689) by
@@ -469,7 +471,7 @@
   deivid-rodriguez
 * Installs bundler 2.5.11 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix binstubs sometimes not getting regenerated when `--destdir` is
   given. Pull request
@@ -485,26 +487,26 @@
 * Fix plugins uninstallation for user installed gems. Pull request
   [#6456](https://github.com/rubygems/rubygems/pull/6456) by voxik
 
-## Performance:
+### Performance:
 
 * Use a constant empty tar header to avoid extra allocations. Pull request
   [#7484](https://github.com/rubygems/rubygems/pull/7484) by segiddins
 
-## Documentation:
+### Documentation:
 
 * Recommend `bin/rake` over `rake` in contributing docs. Pull request
   [#7648](https://github.com/rubygems/rubygems/pull/7648) by
   deivid-rodriguez
 
-# 3.5.10 / 2024-05-03
+## 3.5.10 / 2024-05-03
 
-## Security:
+### Security:
 
 * Add a limit to the size of the metadata and checksums files in a gem
   package. Pull request
   [#7568](https://github.com/rubygems/rubygems/pull/7568) by segiddins
 
-## Enhancements:
+### Enhancements:
 
 * Don't fully require `rubygems` from `rubygems/package` to prevent some
   circular require warnings when using Bundler. Pull request
@@ -512,26 +514,26 @@
   deivid-rodriguez
 * Installs bundler 2.5.10 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Rename credential email to identifier in WebAuthn poller. Pull request
   [#7623](https://github.com/rubygems/rubygems/pull/7623) by jenshenny
 
-# 3.5.9 / 2024-04-12
+## 3.5.9 / 2024-04-12
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.9 as a default gem.
 
-# 3.5.8 / 2024-04-11
+## 3.5.8 / 2024-04-11
 
-## Security:
+### Security:
 
 * Respect global umask when writing regular files. Pull request
   [#7518](https://github.com/rubygems/rubygems/pull/7518) by
   deivid-rodriguez
 
-## Enhancements:
+### Enhancements:
 
 * Allow string keys with gemrc. Pull request
   [#7543](https://github.com/rubygems/rubygems/pull/7543) by hsbt
@@ -539,7 +541,7 @@
   [#4913](https://github.com/rubygems/rubygems/pull/4913) by duckinator
 * Installs bundler 2.5.8 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix NoMethodError crash when building errors about corrupt package
   files. Pull request
@@ -549,9 +551,9 @@
   [#7537](https://github.com/rubygems/rubygems/pull/7537) by
   deivid-rodriguez
 
-# 3.5.7 / 2024-03-22
+## 3.5.7 / 2024-03-22
 
-## Enhancements:
+### Enhancements:
 
 * Warn on empty or open required_ruby_version specification attribute.
   Pull request [#5010](https://github.com/rubygems/rubygems/pull/5010) by
@@ -564,22 +566,22 @@
   github-actions[bot]
 * Installs bundler 2.5.7 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Allow prerelease activation (even if requirement is not explicit about
   it) when it's the only possibility. Pull request
   [#7428](https://github.com/rubygems/rubygems/pull/7428) by kimesf
 
-## Documentation:
+### Documentation:
 
 * Fix a typo. Pull request
   [#7505](https://github.com/rubygems/rubygems/pull/7505) by hsbt
 * Use https instead of http in documentation links. Pull request
   [#7481](https://github.com/rubygems/rubygems/pull/7481) by hsbt
 
-# 3.5.6 / 2024-02-06
+## 3.5.6 / 2024-02-06
 
-## Enhancements:
+### Enhancements:
 
 * Deep copy requirements in `Gem::Specification` and `Gem::Requirement`.
   Pull request [#7439](https://github.com/rubygems/rubygems/pull/7439) by
@@ -596,20 +598,20 @@
   deivid-rodriguez
 * Installs bundler 2.5.6 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Skip to load commented out words. Pull request
   [#7413](https://github.com/rubygems/rubygems/pull/7413) by hsbt
 * Fix rake runtime dependency warning for rake based extension. Pull
   request [#7395](https://github.com/rubygems/rubygems/pull/7395) by ntkme
 
-# 3.5.5 / 2024-01-18
+## 3.5.5 / 2024-01-18
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.5 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `require` activation conflicts when requiring default gems under
   some situations. Pull request
@@ -618,63 +620,63 @@
 * Use cache_home instead of data_home in default_spec_cache_dir. Pull
   request [#7331](https://github.com/rubygems/rubygems/pull/7331) by mrkn
 
-## Documentation:
+### Documentation:
 
 * Use squiggly heredocs in `Gem::Specification#description` documentation,
   so it doesn't add leading whitespace. Pull request
   [#7373](https://github.com/rubygems/rubygems/pull/7373) by bravehager
 
-# 3.5.4 / 2024-01-04
+## 3.5.4 / 2024-01-04
 
-## Enhancements:
+### Enhancements:
 
 * Always avoid "Updating rubygems-update" message. Pull request
   [#7335](https://github.com/rubygems/rubygems/pull/7335) by
   deivid-rodriguez
 * Installs bundler 2.5.4 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Make `gem update --system` respect ruby version constraints. Pull
   request [#7334](https://github.com/rubygems/rubygems/pull/7334) by
   deivid-rodriguez
 
-# 3.5.3 / 2023-12-22
+## 3.5.3 / 2023-12-22
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.3 as a default gem.
 
-# 3.5.2 / 2023-12-21
+## 3.5.2 / 2023-12-21
 
-## Enhancements:
+### Enhancements:
 
 * Support dynamic library loading with extension .so or .o. Pull request
   [#7241](https://github.com/rubygems/rubygems/pull/7241) by hogelog
 * Installs bundler 2.5.2 as a default gem.
 
-## Performance:
+### Performance:
 
 * Replace `object_id` comparison with identity Hash. Pull request
   [#7303](https://github.com/rubygems/rubygems/pull/7303) by amomchilov
 * Use IO.copy_stream when reading, writing. Pull request
   [#6958](https://github.com/rubygems/rubygems/pull/6958) by martinemde
 
-# 3.5.1 / 2023-12-15
+## 3.5.1 / 2023-12-15
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.5.1 as a default gem.
 
-# 3.5.0 / 2023-12-15
+## 3.5.0 / 2023-12-15
 
-## Security:
+### Security:
 
 * Replace `Marshal.load` with a fully-checked safe gemspec loader. Pull
   request [#6896](https://github.com/rubygems/rubygems/pull/6896) by
   segiddins
 
-## Breaking changes:
+### Breaking changes:
 
 * Drop ruby 2.6 and 2.7 support. Pull request
   [#7116](https://github.com/rubygems/rubygems/pull/7116) by
@@ -686,14 +688,14 @@
 * Deprecated `Gem.datadir` has been removed. Pull request
   [#6469](https://github.com/rubygems/rubygems/pull/6469) by hsbt
 
-## Deprecations:
+### Deprecations:
 
 * Deprecate `Gem::Platform.match?`. Pull request
   [#6783](https://github.com/rubygems/rubygems/pull/6783) by hsbt
 * Deprecate `Gem::List`. Pull request
   [#6311](https://github.com/rubygems/rubygems/pull/6311) by segiddins
 
-## Features:
+### Features:
 
 * The `generate_index` command can now generate compact index files and
   lives as an external `rubygems-generate_index` gem. Pull request
@@ -705,7 +707,7 @@
   that will be turned into bundled gems in the future. Pull request
   [#6840](https://github.com/rubygems/rubygems/pull/6840) by hsbt
 
-## Performance:
+### Performance:
 
 * Use match? when regexp match data is unused. Pull request
   [#7263](https://github.com/rubygems/rubygems/pull/7263) by segiddins
@@ -714,7 +716,7 @@
 * Optimize allocations in `Gem::Version`. Pull request
   [#6970](https://github.com/rubygems/rubygems/pull/6970) by segiddins
 
-## Enhancements:
+### Enhancements:
 
 * Warn for duplicate meta data links when building gems. Pull request
   [#7213](https://github.com/rubygems/rubygems/pull/7213) by etherbob
@@ -750,22 +752,22 @@
   [#6436](https://github.com/rubygems/rubygems/pull/6436) by hsbt
 * Installs bundler 2.5.0 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix installing from source with same default bundler version already
   installed. Pull request
   [#7244](https://github.com/rubygems/rubygems/pull/7244) by
   deivid-rodriguez
 
-## Documentation:
+### Documentation:
 
 * Improve comment explaining the necessity of `write_default_spec` method.
   Pull request [#6563](https://github.com/rubygems/rubygems/pull/6563) by
   voxik
 
-# 3.4.22 / 2023-11-09
+## 3.4.22 / 2023-11-09
 
-## Enhancements:
+### Enhancements:
 
 * Update SPDX license list as of 2023-10-05. Pull request
   [#7040](https://github.com/rubygems/rubygems/pull/7040) by
@@ -775,7 +777,7 @@
   deivid-rodriguez
 * Installs bundler 2.4.22 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Handle empty array at built-in YAML serializer. Pull request
   [#7099](https://github.com/rubygems/rubygems/pull/7099) by hsbt
@@ -785,20 +787,20 @@
   request [#7063](https://github.com/rubygems/rubygems/pull/7063) by
   kstevens715
 
-## Performance:
+### Performance:
 
 * Avoid regexp match on every call to `Gem::Platform.local`. Pull request
   [#7104](https://github.com/rubygems/rubygems/pull/7104) by segiddins
 
-## Documentation:
+### Documentation:
 
 * Get `Gem::Specification#extensions_dir` documented. Pull request
   [#6218](https://github.com/rubygems/rubygems/pull/6218) by
   deivid-rodriguez
 
-# 3.4.21 / 2023-10-17
+## 3.4.21 / 2023-10-17
 
-## Enhancements:
+### Enhancements:
 
 * Abort `setup.rb` if Ruby is too old. Pull request
   [#7011](https://github.com/rubygems/rubygems/pull/7011) by
@@ -811,16 +813,16 @@
   request [#6615](https://github.com/rubygems/rubygems/pull/6615) by hsbt
 * Installs bundler 2.4.21 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Update suggested variable for bindir. Pull request
   [#7028](https://github.com/rubygems/rubygems/pull/7028) by hsbt
 * Fix invalid links in documentation. Pull request
   [#7008](https://github.com/rubygems/rubygems/pull/7008) by simi
 
-# 3.4.20 / 2023-09-27
+## 3.4.20 / 2023-09-27
 
-## Enhancements:
+### Enhancements:
 
 * Raise `Gem::Package::FormatError` when gem encounters corrupt EOF.
   Pull request [#6882](https://github.com/rubygems/rubygems/pull/6882)
@@ -837,7 +839,7 @@
   [#6310](https://github.com/rubygems/rubygems/pull/6310) by segiddins
 * Installs bundler 2.4.20 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed false positive SymlinkError in symbolic link directory. Pull
   request [#6947](https://github.com/rubygems/rubygems/pull/6947) by
@@ -849,26 +851,26 @@
   Pull request [#6901](https://github.com/rubygems/rubygems/pull/6901) by
   amatsuda
 
-## Performance:
+### Performance:
 
 * Reduce allocations for stub specifications. Pull request
   [#6972](https://github.com/rubygems/rubygems/pull/6972) by segiddins
 
-# 3.4.19 / 2023-08-17
+## 3.4.19 / 2023-08-17
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.19 as a default gem.
 
-## Performance:
+### Performance:
 
 * Speedup building docs when updating rubygems. Pull request
   [#6864](https://github.com/rubygems/rubygems/pull/6864) by
   deivid-rodriguez
 
-# 3.4.18 / 2023-08-02
+## 3.4.18 / 2023-08-02
 
-## Enhancements:
+### Enhancements:
 
 * Add poller to fetch WebAuthn OTP. Pull request
   [#6774](https://github.com/rubygems/rubygems/pull/6774) by jenshenny
@@ -878,83 +880,83 @@
   [#6704](https://github.com/rubygems/rubygems/pull/6704) by hsbt
 * Installs bundler 2.4.18 as a default gem.
 
-# 3.4.17 / 2023-07-14
+## 3.4.17 / 2023-07-14
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.17 as a default gem.
 
-## Performance:
+### Performance:
 
 * Avoid unnecessary work for private local gem installation. Pull request
   [#6810](https://github.com/rubygems/rubygems/pull/6810) by
   deivid-rodriguez
 
-# 3.4.16 / 2023-07-10
+## 3.4.16 / 2023-07-10
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.16 as a default gem.
 
-# 3.4.15 / 2023-06-29
+## 3.4.15 / 2023-06-29
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.15 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Autoload shellwords when it's needed. Pull request
   [#6734](https://github.com/rubygems/rubygems/pull/6734) by ioquatix
 
-## Documentation:
+### Documentation:
 
 * Update command to test local gem command changes. Pull request
   [#6761](https://github.com/rubygems/rubygems/pull/6761) by jenshenny
 
-# 3.4.14 / 2023-06-12
+## 3.4.14 / 2023-06-12
 
-## Enhancements:
+### Enhancements:
 
 * Load plugin immediately. Pull request
   [#6673](https://github.com/rubygems/rubygems/pull/6673) by kou
 * Installs bundler 2.4.14 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Clarify what the `rubygems-update` gem is for, and link to source code
   and guides. Pull request
   [#6710](https://github.com/rubygems/rubygems/pull/6710) by davetron5000
 
-# 3.4.13 / 2023-05-09
+## 3.4.13 / 2023-05-09
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.13 as a default gem.
 
-# 3.4.12 / 2023-04-11
+## 3.4.12 / 2023-04-11
 
-## Enhancements:
+### Enhancements:
 
 * [Experimental] Add WebAuthn Support to the CLI. Pull request
   [#6560](https://github.com/rubygems/rubygems/pull/6560) by jenshenny
 * Installs bundler 2.4.12 as a default gem.
 
-# 3.4.11 / 2023-04-10
+## 3.4.11 / 2023-04-10
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.11 as a default gem.
 
-# 3.4.10 / 2023-03-27
+## 3.4.10 / 2023-03-27
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.10 as a default gem.
 
-# 3.4.9 / 2023-03-20
+## 3.4.9 / 2023-03-20
 
-## Enhancements:
+### Enhancements:
 
 * Improve `TarHeader#calculate_checksum` speed and readability. Pull
   request [#6476](https://github.com/rubygems/rubygems/pull/6476) by
@@ -963,7 +965,7 @@
   [#6446](https://github.com/rubygems/rubygems/pull/6446) by hsbt
 * Installs bundler 2.4.9 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `$LOAD_PATH` in rake and ext_conf builder. Pull request
   [#6490](https://github.com/rubygems/rubygems/pull/6490) by ntkme
@@ -971,15 +973,15 @@
   [#6481](https://github.com/rubygems/rubygems/pull/6481) by
   deivid-rodriguez
 
-## Documentation:
+### Documentation:
 
 * Document our current release policy. Pull request
   [#6450](https://github.com/rubygems/rubygems/pull/6450) by
   deivid-rodriguez
 
-# 3.4.8 / 2023-03-08
+## 3.4.8 / 2023-03-08
 
-## Enhancements:
+### Enhancements:
 
 * Add TarReader::Entry#seek to seek within the tar file entry. Pull
   request [#6390](https://github.com/rubygems/rubygems/pull/6390) by
@@ -994,7 +996,7 @@
   [#6309](https://github.com/rubygems/rubygems/pull/6309) by segiddins
 * Installs bundler 2.4.8 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix installation error of same version of default gems with local
   installation. Pull request
@@ -1002,101 +1004,101 @@
 * Use proper memoized var name for Gem.state_home. Pull request
   [#6420](https://github.com/rubygems/rubygems/pull/6420) by simi
 
-## Documentation:
+### Documentation:
 
 * Switch supporting explanations to all Ruby Central. Pull request
   [#6419](https://github.com/rubygems/rubygems/pull/6419) by indirect
 * Update the link to OpenSource.org. Pull request
   [#6392](https://github.com/rubygems/rubygems/pull/6392) by nobu
 
-# 3.4.7 / 2023-02-15
+## 3.4.7 / 2023-02-15
 
-## Enhancements:
+### Enhancements:
 
 * Warn on self referencing gemspec dependency. Pull request
   [#6335](https://github.com/rubygems/rubygems/pull/6335) by simi
 * Installs bundler 2.4.7 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix inconsistent behavior of zero byte files in archive. Pull request
   [#6329](https://github.com/rubygems/rubygems/pull/6329) by martinemde
 
-# 3.4.6 / 2023-01-31
+## 3.4.6 / 2023-01-31
 
-## Enhancements:
+### Enhancements:
 
 * Allow `require` decorations be disabled. Pull request
   [#6319](https://github.com/rubygems/rubygems/pull/6319) by
   deivid-rodriguez
 * Installs bundler 2.4.6 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Include directory in CargoBuilder install path. Pull request
   [#6298](https://github.com/rubygems/rubygems/pull/6298) by matsadler
 
-## Documentation:
+### Documentation:
 
 * Include links to pull requests in changelog. Pull request
   [#6316](https://github.com/rubygems/rubygems/pull/6316) by
   deivid-rodriguez
 
-# 3.4.5 / 2023-01-21
+## 3.4.5 / 2023-01-21
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.5 as a default gem.
 
-# 3.4.4 / 2023-01-16
+## 3.4.4 / 2023-01-16
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.4 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Improve documentation about `Kernel` monkeypatches. Pull request [#6217](https://github.com/rubygems/rubygems/pull/6217)
   by nobu
 
-# 3.4.3 / 2023-01-06
+## 3.4.3 / 2023-01-06
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.3 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Fix several typos. Pull request [#6224](https://github.com/rubygems/rubygems/pull/6224) by jdufresne
 
-# 3.4.2 / 2023-01-01
+## 3.4.2 / 2023-01-01
 
-## Enhancements:
+### Enhancements:
 
 * Add global flag (`-C`) to change execution directory. Pull request [#6180](https://github.com/rubygems/rubygems/pull/6180)
   by gustavothecoder
 * Installs bundler 2.4.2 as a default gem.
 
-# 3.4.1 / 2022-12-24
+## 3.4.1 / 2022-12-24
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.4.1 as a default gem.
 
-# 3.4.0 / 2022-12-24
+## 3.4.0 / 2022-12-24
 
-## Breaking changes:
+### Breaking changes:
 
 * Drop support for Ruby 2.3, 2.4, 2.5 and RubyGems 2.5, 2.6, 2.7. Pull
   request [#6107](https://github.com/rubygems/rubygems/pull/6107) by deivid-rodriguez
 * Remove support for deprecated OS. Pull request [#6041](https://github.com/rubygems/rubygems/pull/6041) by peterzhu2118
 
-## Features:
+### Features:
 
 * Add 'call for update' to RubyGems install command. Pull request [#5922](https://github.com/rubygems/rubygems/pull/5922) by
   simi
 
-## Enhancements:
+### Enhancements:
 
 * Add `mswin` support for cargo builder. Pull request [#6167](https://github.com/rubygems/rubygems/pull/6167) by ianks
 * Validate Cargo.lock is present for Rust based extensions. Pull request
@@ -1105,23 +1107,23 @@
   deivid-rodriguez
 * Installs bundler 2.4.0 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix crash due to `BundlerVersionFinder` not defined. Pull request [#6152](https://github.com/rubygems/rubygems/pull/6152)
   by deivid-rodriguez
 * Don't leave corrupted partial package download around when running out
   of disk space. Pull request [#5681](https://github.com/rubygems/rubygems/pull/5681) by duckinator
 
-# 3.3.26 / 2022-11-16
+## 3.3.26 / 2022-11-16
 
-## Enhancements:
+### Enhancements:
 
 * Upgrade rb-sys to 0.9.37. Pull request [#6047](https://github.com/rubygems/rubygems/pull/6047) by ianks
 * Installs bundler 2.3.26 as a default gem.
 
-# 3.3.25 / 2022-11-02
+## 3.3.25 / 2022-11-02
 
-## Enhancements:
+### Enhancements:
 
 * Github source should default to secure protocol. Pull request [#6026](https://github.com/rubygems/rubygems/pull/6026) by
   jasonkarns
@@ -1129,21 +1131,21 @@
   by enebo
 * Installs bundler 2.3.25 as a default gem.
 
-# 3.3.24 / 2022-10-17
+## 3.3.24 / 2022-10-17
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.3.24 as a default gem.
 
-# 3.3.23 / 2022-10-05
+## 3.3.23 / 2022-10-05
 
-## Enhancements:
+### Enhancements:
 
 * Add better error handling for permanent redirect responses. Pull request
   [#5931](https://github.com/rubygems/rubygems/pull/5931) by jenshenny
 * Installs bundler 2.3.23 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix generic arm platform matching against runtime arm platforms with
   eabi modifiers. Pull request [#5957](https://github.com/rubygems/rubygems/pull/5957) by deivid-rodriguez
@@ -1154,30 +1156,30 @@
 * Mask the file mode when extracting files. Pull request [#5906](https://github.com/rubygems/rubygems/pull/5906) by
   kddnewton
 
-# 3.3.22 / 2022-09-07
+## 3.3.22 / 2022-09-07
 
-## Enhancements:
+### Enhancements:
 
 * Support non gnu libc arm-linux-eabi platforms. Pull request [#5889](https://github.com/rubygems/rubygems/pull/5889) by
   ntkme
 * Installs bundler 2.3.22 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem info` with explicit `--version`. Pull request [#5884](https://github.com/rubygems/rubygems/pull/5884) by
   tonyaraujop
 
-# 3.3.21 / 2022-08-24
+## 3.3.21 / 2022-08-24
 
-## Enhancements:
+### Enhancements:
 
 * Support non gnu libc linux platforms. Pull request [#5852](https://github.com/rubygems/rubygems/pull/5852) by
   deivid-rodriguez
 * Installs bundler 2.3.21 as a default gem.
 
-# 3.3.20 / 2022-08-10
+## 3.3.20 / 2022-08-10
 
-## Enhancements:
+### Enhancements:
 
 * Include backtrace with crashes by default. Pull request [#5811](https://github.com/rubygems/rubygems/pull/5811) by
   deivid-rodriguez
@@ -1187,7 +1189,7 @@
   request [#5794](https://github.com/rubygems/rubygems/pull/5794) by deivid-rodriguez
 * Installs bundler 2.3.20 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Always consider installed specs for resolution, even if prereleases.
   Pull request [#5821](https://github.com/rubygems/rubygems/pull/5821) by deivid-rodriguez
@@ -1195,9 +1197,9 @@
   correctly. Pull request [#5820](https://github.com/rubygems/rubygems/pull/5820) by deivid-rodriguez
 * Fix platform matching for index specs. Pull request [#5795](https://github.com/rubygems/rubygems/pull/5795) by Ilushkanama
 
-# 3.3.19 / 2022-07-27
+## 3.3.19 / 2022-07-27
 
-## Enhancements:
+### Enhancements:
 
 * Display mfa warnings on `gem signin`. Pull request [#5590](https://github.com/rubygems/rubygems/pull/5590) by aellispierce
 * Require fileutils more lazily when installing gems. Pull request [#5738](https://github.com/rubygems/rubygems/pull/5738)
@@ -1209,19 +1211,19 @@
 * Unify loading `Gem::Requirement`. Pull request [#5596](https://github.com/rubygems/rubygems/pull/5596) by deivid-rodriguez
 * Installs bundler 2.3.19 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `ruby setup.rb` with `--destdir` writing outside of `--destdir`.
   Pull request [#5737](https://github.com/rubygems/rubygems/pull/5737) by deivid-rodriguez
 
-## Documentation:
+### Documentation:
 
 * Fix wrong information about default RubyGems source. Pull request [#5723](https://github.com/rubygems/rubygems/pull/5723)
   by tnir
 
-# 3.3.18 / 2022-07-14
+## 3.3.18 / 2022-07-14
 
-## Enhancements:
+### Enhancements:
 
 * Make platform `universal-mingw32` match "x64-mingw-ucrt". Pull request
   [#5655](https://github.com/rubygems/rubygems/pull/5655) by johnnyshields
@@ -1229,14 +1231,14 @@
   gems. Pull request [#5676](https://github.com/rubygems/rubygems/pull/5676) by brianleshopify
 * Installs bundler 2.3.18 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Make sure RubyGems prints no warnings when loading plugins. Pull request
   [#5607](https://github.com/rubygems/rubygems/pull/5607) by deivid-rodriguez
 
-# 3.3.17 / 2022-06-29
+## 3.3.17 / 2022-06-29
 
-## Enhancements:
+### Enhancements:
 
 * Document `gem env` argument aliases and add `gem env user_gemhome` and
   `gem env user_gemdir`. Pull request [#5644](https://github.com/rubygems/rubygems/pull/5644) by deivid-rodriguez
@@ -1247,66 +1249,66 @@
 * Simplify extension builder. Pull request [#5626](https://github.com/rubygems/rubygems/pull/5626) by deivid-rodriguez
 * Installs bundler 2.3.17 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Modify RubyGems issue template to be like the one for Bundler. Pull
   request [#5643](https://github.com/rubygems/rubygems/pull/5643) by deivid-rodriguez
 
-# 3.3.16 / 2022-06-15
+## 3.3.16 / 2022-06-15
 
-## Enhancements:
+### Enhancements:
 
 * Auto-fix and warn gem packages including a gemspec with `require_paths`
   as an array of arrays. Pull request [#5615](https://github.com/rubygems/rubygems/pull/5615) by deivid-rodriguez
 * Misc cargo builder improvements. Pull request [#5459](https://github.com/rubygems/rubygems/pull/5459) by ianks
 * Installs bundler 2.3.16 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix incorrect password redaction when there's an error in `gem source
   -a`. Pull request [#5623](https://github.com/rubygems/rubygems/pull/5623) by deivid-rodriguez
 * Fix another regression when loading old marshaled specs. Pull request
   [#5610](https://github.com/rubygems/rubygems/pull/5610) by deivid-rodriguez
 
-# 3.3.15 / 2022-06-01
+## 3.3.15 / 2022-06-01
 
-## Enhancements:
+### Enhancements:
 
 * Support the change of did_you_mean about `Exception#detailed_message`.
   Pull request [#5560](https://github.com/rubygems/rubygems/pull/5560) by mame
 * Installs bundler 2.3.15 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix loading old marshaled specs including `YAML::PrivateType` constant.
   Pull request [#5415](https://github.com/rubygems/rubygems/pull/5415) by deivid-rodriguez
 * Fix rubygems update when non default `--install-dir` is configured. Pull
   request [#5566](https://github.com/rubygems/rubygems/pull/5566) by deivid-rodriguez
 
-# 3.3.14 / 2022-05-18
+## 3.3.14 / 2022-05-18
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.3.14 as a default gem.
 
-# 3.3.13 / 2022-05-04
+## 3.3.13 / 2022-05-04
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.3.13 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix regression when resolving ruby constraints. Pull request [#5486](https://github.com/rubygems/rubygems/pull/5486) by
   deivid-rodriguez
 
-## Documentation:
+### Documentation:
 
 * Clarify description of owner-flags. Pull request [#5497](https://github.com/rubygems/rubygems/pull/5497) by kronn
 
-# 3.3.12 / 2022-04-20
+## 3.3.12 / 2022-04-20
 
-## Enhancements:
+### Enhancements:
 
 * Less error swallowing when installing gems. Pull request [#5475](https://github.com/rubygems/rubygems/pull/5475) by
   deivid-rodriguez
@@ -1316,14 +1318,14 @@
   deivid-rodriguez
 * Installs bundler 2.3.12 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Fix formatting in docs. Pull request [#5470](https://github.com/rubygems/rubygems/pull/5470) by peterzhu2118
 * Fix a typo. Pull request [#5401](https://github.com/rubygems/rubygems/pull/5401) by znz
 
-# 3.3.11 / 2022-04-07
+## 3.3.11 / 2022-04-07
 
-## Enhancements:
+### Enhancements:
 
 * Enable mfa on specific keys during gem signin. Pull request [#5305](https://github.com/rubygems/rubygems/pull/5305) by
   aellispierce
@@ -1331,48 +1333,48 @@
 * Add cargo builder for rust extensions. Pull request [#5175](https://github.com/rubygems/rubygems/pull/5175) by ianks
 * Installs bundler 2.3.11 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Improve RDoc setup. Pull request [#5398](https://github.com/rubygems/rubygems/pull/5398) by deivid-rodriguez
 
-# 3.3.10 / 2022-03-23
+## 3.3.10 / 2022-03-23
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.3.10 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Enable `Gem::Package` example in RDoc documentation. Pull request [#5399](https://github.com/rubygems/rubygems/pull/5399)
   by nobu
 * Unhide RDoc documentation from top level `Gem` module. Pull request
   [#5396](https://github.com/rubygems/rubygems/pull/5396) by nobu
 
-# 3.3.9 / 2022-03-09
+## 3.3.9 / 2022-03-09
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.3.9 as a default gem.
 
-# 3.3.8 / 2022-02-23
+## 3.3.8 / 2022-02-23
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.3.8 as a default gem.
 
-# 3.3.7 / 2022-02-09
+## 3.3.7 / 2022-02-09
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.3.7 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Fix missing rdoc for `Gem::Version`. Pull request [#5299](https://github.com/rubygems/rubygems/pull/5299) by nevans
 
-# 3.3.6 / 2022-01-26
+## 3.3.6 / 2022-01-26
 
-## Enhancements:
+### Enhancements:
 
 * Forbid downgrading past the originally shipped version on Ruby 3.1. Pull
   request [#5301](https://github.com/rubygems/rubygems/pull/5301) by deivid-rodriguez
@@ -1381,16 +1383,16 @@
 * Let `Version#<=>` accept a String. Pull request [#5275](https://github.com/rubygems/rubygems/pull/5275) by amatsuda
 * Installs bundler 2.3.6 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Avoid `flock` on non Windows systems, since it causing issues on NFS
   file systems. Pull request [#5278](https://github.com/rubygems/rubygems/pull/5278) by deivid-rodriguez
 * Fix `gem update --system`  for already installed version of
   `rubygems-update`. Pull request [#5285](https://github.com/rubygems/rubygems/pull/5285) by loadkpi
 
-# 3.3.5 / 2022-01-12
+## 3.3.5 / 2022-01-12
 
-## Enhancements:
+### Enhancements:
 
 * Don't activate `yaml` gem from RubyGems. Pull request [#5266](https://github.com/rubygems/rubygems/pull/5266) by
   deivid-rodriguez
@@ -1398,89 +1400,89 @@
   `--[no-]suggestions` flag. Pull request [#5242](https://github.com/rubygems/rubygems/pull/5242) by ximenasandoval
 * Installs bundler 2.3.5 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem install <non-existent-gem> --force` crash. Pull request [#5262](https://github.com/rubygems/rubygems/pull/5262)
   by deivid-rodriguez
 * Fix longstanding `gem install` failure on JRuby. Pull request [#5228](https://github.com/rubygems/rubygems/pull/5228) by
   deivid-rodriguez
 
-## Documentation:
+### Documentation:
 
 * Markup `Gem::Specification` documentation with RDoc notations. Pull
   request [#5268](https://github.com/rubygems/rubygems/pull/5268) by nobu
 
-# 3.3.4 / 2021-12-29
+## 3.3.4 / 2021-12-29
 
-## Enhancements:
+### Enhancements:
 
 * Don't redownload `rubygems-update` package if already there. Pull
   request [#5230](https://github.com/rubygems/rubygems/pull/5230) by deivid-rodriguez
 * Installs bundler 2.3.4 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem update --system` crashing when latest version not supported.
   Pull request [#5191](https://github.com/rubygems/rubygems/pull/5191) by deivid-rodriguez
 
-## Performance:
+### Performance:
 
 * Make SpecificationPolicy autoload constant. Pull request [#5222](https://github.com/rubygems/rubygems/pull/5222) by pocke
 
-# 3.3.3 / 2021-12-24
+## 3.3.3 / 2021-12-24
 
-## Enhancements:
+### Enhancements:
 
 * Installs bundler 2.3.3 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix gem installation failing in Solaris due to bad `IO#flock` usage.
   Pull request [#5216](https://github.com/rubygems/rubygems/pull/5216) by mame
 
-# 3.3.2 / 2021-12-23
+## 3.3.2 / 2021-12-23
 
-## Enhancements:
+### Enhancements:
 
 * Fix deprecations when activating DidYouMean for misspelled command
   suggestions. Pull request [#5211](https://github.com/rubygems/rubygems/pull/5211) by yuki24
 * Installs bundler 2.3.2 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix gemspec truncation. Pull request [#5208](https://github.com/rubygems/rubygems/pull/5208) by deivid-rodriguez
 
-# 3.3.1 / 2021-12-22
+## 3.3.1 / 2021-12-22
 
-## Enhancements:
+### Enhancements:
 
 * Fix compatibility with OpenSSL 3.0. Pull request [#5196](https://github.com/rubygems/rubygems/pull/5196) by rhenium
 * Remove hard errors when matching major bundler not found. Pull request
   [#5181](https://github.com/rubygems/rubygems/pull/5181) by deivid-rodriguez
 * Installs bundler 2.3.1 as a default gem.
 
-# 3.3.0 / 2021-12-21
+## 3.3.0 / 2021-12-21
 
-## Breaking changes:
+### Breaking changes:
 
 * Removed deprecated `gem server` command. Pull request [#5034](https://github.com/rubygems/rubygems/pull/5034) by hsbt
 * Remove macOS specific gem layout. Pull request [#4833](https://github.com/rubygems/rubygems/pull/4833) by deivid-rodriguez
 * Default `gem update` documentation format is now only `ri`. Pull request
   [#3888](https://github.com/rubygems/rubygems/pull/3888) by hsbt
 
-## Features:
+### Features:
 
 * Give command misspelled suggestions via `did_you_mean` gem. Pull request
   [#3904](https://github.com/rubygems/rubygems/pull/3904) by hsbt
 
-## Performance:
+### Performance:
 
 * Avoid some unnecessary stat calls. Pull request [#3887](https://github.com/rubygems/rubygems/pull/3887) by kares
 * Improve spell checking suggestion performance by
   vendoring`DidYouMean::Levenshtein.distance` from `did_you_mean-1.4.0`.
   Pull request [#3856](https://github.com/rubygems/rubygems/pull/3856) by austinpray
 
-## Enhancements:
+### Enhancements:
 
 * Set `BUNDLER_VERSION` when `bundle _<version>_` is passed. Pull request
   [#5180](https://github.com/rubygems/rubygems/pull/5180) by deivid-rodriguez
@@ -1489,7 +1491,7 @@
   information on errors. Pull request [#4189](https://github.com/rubygems/rubygems/pull/4189) by deivid-rodriguez
 * Installs bundler 2.3.0 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix encoding mismatch issues when writing gem packages. Pull request
   [#5162](https://github.com/rubygems/rubygems/pull/5162) by deivid-rodriguez
@@ -1500,13 +1502,13 @@
 * Fix upgrade crashing when multiple versions of `fileutils` installed.
   Pull request [#5140](https://github.com/rubygems/rubygems/pull/5140) by deivid-rodriguez
 
-# 3.2.33 / 2021-12-07
+## 3.2.33 / 2021-12-07
 
-## Deprecations:
+### Deprecations:
 
 * Deprecate typo name. Pull request [#5109](https://github.com/rubygems/rubygems/pull/5109) by nobu
 
-## Enhancements:
+### Enhancements:
 
 * Add login & logout alias for the signin & signout commands. Pull request
   [#5133](https://github.com/rubygems/rubygems/pull/5133) by colby-swandale
@@ -1514,21 +1516,21 @@
   request [#4408](https://github.com/rubygems/rubygems/pull/4408) by deivid-rodriguez
 * Installs bundler 2.2.33 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `ruby setup.rb` trying to write outside of `--destdir`. Pull request
   [#5053](https://github.com/rubygems/rubygems/pull/5053) by deivid-rodriguez
 
-## Documentation:
+### Documentation:
 
 * Move required_ruby_version gemspec attribute to recommended section.
   Pull request [#5130](https://github.com/rubygems/rubygems/pull/5130) by simi
 * Ignore to generate the documentation from vendored libraries. Pull
   request [#5118](https://github.com/rubygems/rubygems/pull/5118) by hsbt
 
-# 3.2.32 / 2021-11-23
+## 3.2.32 / 2021-11-23
 
-## Enhancements:
+### Enhancements:
 
 * Refactor installer thread safety protections. Pull request [#5050](https://github.com/rubygems/rubygems/pull/5050) by
   deivid-rodriguez
@@ -1536,9 +1538,9 @@
   deivid-rodriguez
 * Installs bundler 2.2.32 as a default gem.
 
-# 3.2.31 / 2021-11-08
+## 3.2.31 / 2021-11-08
 
-## Enhancements:
+### Enhancements:
 
 * Don't pass empty `DESTDIR` to `nmake` since it works differently from
   standard `make`. Pull request [#5057](https://github.com/rubygems/rubygems/pull/5057) by hsbt
@@ -1550,16 +1552,16 @@
   deivid-rodriguez
 * Install bundler 2.2.31 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `ruby setup.rb` when `--prefix` is passed. Pull request [#5051](https://github.com/rubygems/rubygems/pull/5051) by
   deivid-rodriguez
 * Don't apply `--destdir` twice when running `setup.rb`. Pull request
   [#2768](https://github.com/rubygems/rubygems/pull/2768) by alyssais
 
-# 3.2.30 / 2021-10-26
+## 3.2.30 / 2021-10-26
 
-## Enhancements:
+### Enhancements:
 
 * Add support to build and sign certificates with multiple key algorithms.
   Pull request [#4991](https://github.com/rubygems/rubygems/pull/4991) by doodzik
@@ -1571,32 +1573,32 @@
   `Gem::Request.verify_certificate_message`. Pull request [#4975](https://github.com/rubygems/rubygems/pull/4975) by nobu
 * Install bundler 2.2.30 as a default gem.
 
-## Performance:
+### Performance:
 
 * Speed up `gem install`, specially under Windows. Pull request [#4960](https://github.com/rubygems/rubygems/pull/4960) by
   deivid-rodriguez
 
-# 3.2.29 / 2021-10-08
+## 3.2.29 / 2021-10-08
 
-## Enhancements:
+### Enhancements:
 
 * Only disallow FIXME/TODO for first word of gemspec description. Pull
   request [#4937](https://github.com/rubygems/rubygems/pull/4937) by duckinator
 * Install bundler 2.2.29 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `wordy` method in `SourceFetchProblem` changing the password of
   source. Pull request [#4910](https://github.com/rubygems/rubygems/pull/4910) by Huangxiaodui
 
-## Performance:
+### Performance:
 
 * Improve `require` performance, particularly on systems with a lot of
   gems installed. Pull request [#4951](https://github.com/rubygems/rubygems/pull/4951) by pocke
 
-# 3.2.28 / 2021-09-23
+## 3.2.28 / 2021-09-23
 
-## Enhancements:
+### Enhancements:
 
 * Support MINGW-UCRT. Pull request [#4925](https://github.com/rubygems/rubygems/pull/4925) by hsbt
 * Only check if descriptions *start with* FIXME/TODO. Pull request [#4841](https://github.com/rubygems/rubygems/pull/4841)
@@ -1605,14 +1607,14 @@
   [#4897](https://github.com/rubygems/rubygems/pull/4897) by deivid-rodriguez
 * Install bundler 2.2.28 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix redacted credentials being sent to gemserver. Pull request [#4919](https://github.com/rubygems/rubygems/pull/4919) by
   jdliss
 
-# 3.2.27 / 2021-09-03
+## 3.2.27 / 2021-09-03
 
-## Enhancements:
+### Enhancements:
 
 * Redact credentials when printing URI. Pull request [#4868](https://github.com/rubygems/rubygems/pull/4868) by intuxicated
 * Prefer `require_relative` to `require` for internal requires. Pull
@@ -1621,9 +1623,9 @@
   fetching once we find a valid candidate. Pull request [#4843](https://github.com/rubygems/rubygems/pull/4843) by intuxicated
 * Install bundler 2.2.27 as a default gem.
 
-# 3.2.26 / 2021-08-17
+## 3.2.26 / 2021-08-17
 
-## Enhancements:
+### Enhancements:
 
 * Enhance the error handling for loading the
   `rubygems/defaults/operating_system` file. Pull request [#4824](https://github.com/rubygems/rubygems/pull/4824) by
@@ -1632,14 +1634,14 @@
   deivid-rodriguez
 * Install bundler 2.2.26 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Also load user installed rubygems plugins. Pull request [#4829](https://github.com/rubygems/rubygems/pull/4829) by
   deivid-rodriguez
 
-# 3.2.25 / 2021-07-30
+## 3.2.25 / 2021-07-30
 
-## Enhancements:
+### Enhancements:
 
 * Don't load the `base64` library since it's not used. Pull request [#4785](https://github.com/rubygems/rubygems/pull/4785)
   by deivid-rodriguez
@@ -1650,38 +1652,38 @@
   request [#4651](https://github.com/rubygems/rubygems/pull/4651) by nobu
 * Install bundler 2.2.25 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Add missing `require 'fileutils'` in `Gem::ConfigFile`. Pull request
   [#4768](https://github.com/rubygems/rubygems/pull/4768) by ybiquitous
 
-# 3.2.24 / 2021-07-15
+## 3.2.24 / 2021-07-15
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.24 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix contradictory message about deletion of default gem. Pull request
   [#4739](https://github.com/rubygems/rubygems/pull/4739) by jaredbeck
 
-## Documentation:
+### Documentation:
 
 * Add a description about `GEM_HOST_OTP_CODE` to help text. Pull request
   [#4742](https://github.com/rubygems/rubygems/pull/4742) by ybiquitous
 
-# 3.2.23 / 2021-07-09
+## 3.2.23 / 2021-07-09
 
-## Enhancements:
+### Enhancements:
 
 * Rewind IO source to allow working with contents in memory. Pull request
   [#4729](https://github.com/rubygems/rubygems/pull/4729) by drcapulet
 * Install bundler 2.2.23 as a default gem.
 
-# 3.2.22 / 2021-07-06
+## 3.2.22 / 2021-07-06
 
-## Enhancements:
+### Enhancements:
 
 * Allow setting `--otp` via `GEM_HOST_OTP_CODE`. Pull request [#4697](https://github.com/rubygems/rubygems/pull/4697) by
   CGA1123
@@ -1689,9 +1691,9 @@
   [#4695](https://github.com/rubygems/rubygems/pull/4695) by rhenium
 * Install bundler 2.2.22 as a default gem.
 
-# 3.2.21 / 2021-06-23
+## 3.2.21 / 2021-06-23
 
-## Enhancements:
+### Enhancements:
 
 * Fix typo in OpenSSL detection. Pull request [#4679](https://github.com/rubygems/rubygems/pull/4679) by osyoyu
 * Add the most recent licenses from spdx.org. Pull request [#4662](https://github.com/rubygems/rubygems/pull/4662) by nobu
@@ -1699,42 +1701,42 @@
   truffleruby 21.0 and 21.1. Pull request [#4624](https://github.com/rubygems/rubygems/pull/4624) by deivid-rodriguez
 * Install bundler 2.2.21 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Create credentials folder when setting API keys if not there yet. Pull
   request [#4665](https://github.com/rubygems/rubygems/pull/4665) by deivid-rodriguez
 
-# 3.2.20 / 2021-06-11
+## 3.2.20 / 2021-06-11
 
-## Security fixes:
+### Security fixes:
 
 * Verify platform before installing to avoid potential remote code
   execution. Pull request [#4667](https://github.com/rubygems/rubygems/pull/4667) by sonalkr132
 
-## Enhancements:
+### Enhancements:
 
 * Add better specification policy error description. Pull request [#4658](https://github.com/rubygems/rubygems/pull/4658) by
   ceritium
 * Install bundler 2.2.20 as a default gem.
 
-# 3.2.19 / 2021-05-31
+## 3.2.19 / 2021-05-31
 
-## Enhancements:
+### Enhancements:
 
 * Fix `gem help build` output format. Pull request [#4613](https://github.com/rubygems/rubygems/pull/4613) by tnir
 * Install bundler 2.2.19 as a default gem.
 
-# 3.2.18 / 2021-05-25
+## 3.2.18 / 2021-05-25
 
-## Enhancements:
+### Enhancements:
 
 * Don't leave temporary directory around when building extensions to
   improve build reproducibility. Pull request [#4610](https://github.com/rubygems/rubygems/pull/4610) by baloo
 * Install bundler 2.2.18 as a default gem.
 
-# 3.2.17 / 2021-05-05
+## 3.2.17 / 2021-05-05
 
-## Enhancements:
+### Enhancements:
 
 * Only print month & year in deprecation messages. Pull request [#3085](https://github.com/rubygems/rubygems/pull/3085) by
   Schwad
@@ -1744,94 +1746,94 @@
 * Prefer File.open instead of Kernel#open. Pull request [#4529](https://github.com/rubygems/rubygems/pull/4529) by mame
 * Install bundler 2.2.17 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Fix usage messages to reflect the current POSIX-compatible behaviour.
   Pull request [#4551](https://github.com/rubygems/rubygems/pull/4551) by graywolf-at-work
 
-# 3.2.16 / 2021-04-08
+## 3.2.16 / 2021-04-08
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.16 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Correctly handle symlinks. Pull request [#2836](https://github.com/rubygems/rubygems/pull/2836) by voxik
 
-# 3.2.15 / 2021-03-19
+## 3.2.15 / 2021-03-19
 
-## Enhancements:
+### Enhancements:
 
 * Prevent downgrades to untested rubygems versions. Pull request [#4460](https://github.com/rubygems/rubygems/pull/4460) by
   deivid-rodriguez
 * Install bundler 2.2.15 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix missing require breaking `gem cert`. Pull request [#4464](https://github.com/rubygems/rubygems/pull/4464) by lukehinds
 
-# 3.2.14 / 2021-03-08
+## 3.2.14 / 2021-03-08
 
-## Enhancements:
+### Enhancements:
 
 * Less wrapping of network errors. Pull request [#4064](https://github.com/rubygems/rubygems/pull/4064) by deivid-rodriguez
 * Install bundler 2.2.14 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Revert addition of support for `musl` variants to restore graceful
   fallback on Alpine. Pull request [#4434](https://github.com/rubygems/rubygems/pull/4434) by deivid-rodriguez
 
-# 3.2.13 / 2021-03-03
+## 3.2.13 / 2021-03-03
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.13 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Support non-gnu libc linux platforms. Pull request [#4082](https://github.com/rubygems/rubygems/pull/4082) by lloeki
 
-# 3.2.12 / 2021-03-01
+## 3.2.12 / 2021-03-01
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.12 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Restore the ability to manually install extension gems. Pull request
   [#4384](https://github.com/rubygems/rubygems/pull/4384) by cfis
 
-# 3.2.11 / 2021-02-17
+## 3.2.11 / 2021-02-17
 
-## Enhancements:
+### Enhancements:
 
 * Optionally fallback to IPv4 when IPv6 is unreachable. Pull request [#2662](https://github.com/rubygems/rubygems/pull/2662)
   by sonalkr132
 * Install bundler 2.2.11 as a default gem.
 
-# 3.2.10 / 2021-02-15
+## 3.2.10 / 2021-02-15
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.10 as a default gem.
 
-## Documentation:
+### Documentation:
 
 * Add a `gem push` example to `gem help`. Pull request [#4373](https://github.com/rubygems/rubygems/pull/4373) by
   deivid-rodriguez
 * Improve documentation for `required_ruby_version`. Pull request [#4343](https://github.com/rubygems/rubygems/pull/4343) by
   AlexWayfer
 
-# 3.2.9 / 2021-02-08
+## 3.2.9 / 2021-02-08
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.9 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix error message when underscore selection can't find bundler. Pull
   request [#4363](https://github.com/rubygems/rubygems/pull/4363) by deivid-rodriguez
@@ -1842,59 +1844,59 @@
 * Fix `gem outdated` incorrectly handling platform specific gems. Pull
   request [#4248](https://github.com/rubygems/rubygems/pull/4248) by deivid-rodriguez
 
-# 3.2.8 / 2021-02-02
+## 3.2.8 / 2021-02-02
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.8 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem install` crashing on gemspec with nil required_ruby_version.
   Pull request [#4334](https://github.com/rubygems/rubygems/pull/4334) by pbernays
 
-# 3.2.7 / 2021-01-26
+## 3.2.7 / 2021-01-26
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.7 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Generate plugin wrappers with relative requires. Pull request [#4317](https://github.com/rubygems/rubygems/pull/4317) by
   deivid-rodriguez
 
-# 3.2.6 / 2021-01-18
+## 3.2.6 / 2021-01-18
 
-## Enhancements:
+### Enhancements:
 
 * Fix `Gem::Platform#inspect` showing duplicate information. Pull request
   [#4276](https://github.com/rubygems/rubygems/pull/4276) by deivid-rodriguez
 * Install bundler 2.2.6 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Swallow any system call error in `ensure_gem_subdirs` to support jruby
   embedded paths. Pull request [#4291](https://github.com/rubygems/rubygems/pull/4291) by kares
 * Restore accepting custom make command with extra options as the `make`
   env variable. Pull request [#4271](https://github.com/rubygems/rubygems/pull/4271) by terceiro
 
-# 3.2.5 / 2021-01-11
+## 3.2.5 / 2021-01-11
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.5 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Don't load more specs after the whole set of specs has been setup. Pull
   request [#4262](https://github.com/rubygems/rubygems/pull/4262) by deivid-rodriguez
 * Fix broken `bundler` executable after `gem update --system`. Pull
   request [#4221](https://github.com/rubygems/rubygems/pull/4221) by deivid-rodriguez
 
-# 3.2.4 / 2020-12-31
+## 3.2.4 / 2020-12-31
 
-## Enhancements:
+### Enhancements:
 
 * Use a CHANGELOG in markdown for rubygems. Pull request [#4168](https://github.com/rubygems/rubygems/pull/4168) by
   deivid-rodriguez
@@ -1902,33 +1904,33 @@
   deivid-rodriguez
 * Install bundler 2.2.4 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix fallback to the old index and installation from it not working. Pull
   request [#4213](https://github.com/rubygems/rubygems/pull/4213) by deivid-rodriguez
 * Fix installing from source on truffleruby. Pull request [#4201](https://github.com/rubygems/rubygems/pull/4201) by
   deivid-rodriguez
 
-# 3.2.3 / 2020-12-22
+## 3.2.3 / 2020-12-22
 
-## Enhancements:
+### Enhancements:
 
 * Fix misspellings in default API key name. Pull request [#4177](https://github.com/rubygems/rubygems/pull/4177) by hsbt
 * Install bundler 2.2.3 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Respect `required_ruby_version` and `required_rubygems_version`
   constraints when looking for `gem install` candidates. Pull request [#4110](https://github.com/rubygems/rubygems/pull/4110)
   by deivid-rodriguez
 
-# 3.2.2 / 2020-12-17
+## 3.2.2 / 2020-12-17
 
-## Enhancements:
+### Enhancements:
 
 * Install bundler 2.2.2 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix issue where CLI commands making more than one request to
   rubygems.org needing an OTP code would crash or ask for the code twice.
@@ -1938,24 +1940,24 @@
 * Fix `gem update --system` displaying too many changelog entries. Pull
   request [#4145](https://github.com/rubygems/rubygems/pull/4145) by deivid-rodriguez
 
-# 3.2.1 / 2020-12-14
+## 3.2.1 / 2020-12-14
 
-## Enhancements:
+### Enhancements:
 
 * Added help message for gem i webrick in gem server command. Pull request
   [#4117](https://github.com/rubygems/rubygems/pull/4117) by hsbt
 * Install bundler 2.2.1 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Added the missing loading of fileutils same as load_specs. Pull request
   [#4124](https://github.com/rubygems/rubygems/pull/4124) by hsbt
 * Fix Resolver::APISet to always include prereleases when necessary. Pull
   request [#4113](https://github.com/rubygems/rubygems/pull/4113) by deivid-rodriguez
 
-# 3.2.0 / 2020-12-07
+## 3.2.0 / 2020-12-07
 
-## Enhancements:
+### Enhancements:
 
 * Do not override Kernel#warn when there is no need. Pull request [#4075](https://github.com/rubygems/rubygems/pull/4075) by
   eregon
@@ -1975,7 +1977,7 @@
   eregon
 * Install bundler 2.2.0 as a default gem.
 
-## Bug fixes:
+### Bug fixes:
 
 * Use better owner & group for files in rubygems package. Pull request
   [#4065](https://github.com/rubygems/rubygems/pull/4065) by deivid-rodriguez
@@ -2001,18 +2003,18 @@
 * Make `--default` and `--install-dir` options to `gem install` play nice
   together. Pull request [#3906](https://github.com/rubygems/rubygems/pull/3906) by deivid-rodriguez
 
-## Deprecations:
+### Deprecations:
 
 * Deprecate server command. Pull request [#3868](https://github.com/rubygems/rubygems/pull/3868) by bronzdoc
 
-## Performance:
+### Performance:
 
 * Don't change ruby process CWD when building extensions. Pull request
   [#3498](https://github.com/rubygems/rubygems/pull/3498) by deivid-rodriguez
 
-# 3.2.0.rc.2 / 2020-10-08
+## 3.2.0.rc.2 / 2020-10-08
 
-## Enhancements:
+### Enhancements:
 
 * Make --dry-run flag consistent across rubygems commands. Pull request
   [#3867](https://github.com/rubygems/rubygems/pull/3867) by bronzdoc
@@ -2029,7 +2031,7 @@
 * Ignore internal frames in RubyGems' Kernel#warn. Pull request [#3810](https://github.com/rubygems/rubygems/pull/3810) by
   eregon
 
-## Bug fixes:
+### Bug fixes:
 
 * Add missing fileutils require. Pull request [#3911](https://github.com/rubygems/rubygems/pull/3911) by deivid-rodriguez
 * Fix false positive warning on Windows when PATH has
@@ -2041,7 +2043,7 @@
 * `gem install --user` fails with `Gem::FilePermissionError` on the system
   plugins directory. Pull request [#3804](https://github.com/rubygems/rubygems/pull/3804) by nobu
 
-## Performance:
+### Performance:
 
 * Avoid duplicated generation of APISpecification objects. Pull request
   [#3940](https://github.com/rubygems/rubygems/pull/3940) by mame
@@ -2051,9 +2053,9 @@
   casperisfine
 * Optimize Gem.already_loaded?. Pull request [#3793](https://github.com/rubygems/rubygems/pull/3793) by casperisfine
 
-# 3.2.0.rc.1 / 2020-07-04
+## 3.2.0.rc.1 / 2020-07-04
 
-## Enhancements:
+### Enhancements:
 
 * Test TruffleRuby in CI. Pull request [#2797](https://github.com/rubygems/rubygems/pull/2797) by Benoit Daloze.
 * Rework plugins system and speed up rubygems. Pull request [#3108](https://github.com/rubygems/rubygems/pull/3108) by David
@@ -2100,7 +2102,7 @@
 * Only rescue the errors we actually want to rescue. Pull request [#3156](https://github.com/rubygems/rubygems/pull/3156) by
   David Rodríguez.
 
-## Bug fixes:
+### Bug fixes:
 
 * Accept not only /usr/bin/env but also /bin/env in some tests. Pull
   request [#3422](https://github.com/rubygems/rubygems/pull/3422) by Yusuke Endoh.
@@ -2122,12 +2124,12 @@
 * Fix `ruby setup.rb` for new plugins layout. Pull request [#3144](https://github.com/rubygems/rubygems/pull/3144) by David
   Rodríguez.
 
-## Deprecations:
+### Deprecations:
 
 * Set deprecation warning on query command. Pull request [#2967](https://github.com/rubygems/rubygems/pull/2967) by Luis
   Sagastume.
 
-## Breaking changes:
+### Breaking changes:
 
 * Remove ruby 1.8 leftovers. Pull request [#3442](https://github.com/rubygems/rubygems/pull/3442) by David Rodríguez.
 * Minitest cleanup. Pull request [#3445](https://github.com/rubygems/rubygems/pull/3445) by David Rodríguez.
@@ -2154,9 +2156,9 @@
 * Requiring rubygems/source_specific_file is deprecated, remove it. Pull
   request [#3114](https://github.com/rubygems/rubygems/pull/3114) by Luis Sagastume.
 
-# 3.1.4 / 2020-06-03
+## 3.1.4 / 2020-06-03
 
-## Enhancements:
+### Enhancements:
 
 * Deprecate rubyforge_project attribute only during build
   time. Pull request [#3609](https://github.com/rubygems/rubygems/pull/3609) by Josef Šimánek.
@@ -2165,9 +2167,9 @@
 * Remove failing ubuntu-rvm CI flow. Pull request [#3611](https://github.com/rubygems/rubygems/pull/3611) by
   Josef Šimánek.
 
-# 3.1.3 / 2020-05-05
+## 3.1.3 / 2020-05-05
 
-## Enhancements:
+### Enhancements:
 
 * Resolver: require NameTuple before use. Pull request [#3171](https://github.com/rubygems/rubygems/pull/3171) by Olle
   Jonsson.
@@ -2178,7 +2180,7 @@
 * Add tests to check if Gem.ruby_version works with ruby git master.
   Pull request [#3049](https://github.com/rubygems/rubygems/pull/3049) by Yusuke Endoh.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix platform comparison check in #contains_requirable_file?. Pull
   request [#3495](https://github.com/rubygems/rubygems/pull/3495) by Benoit Daloze.
@@ -2190,9 +2192,9 @@
 * Fix gem install from a gemdeps file with complex dependencies.
   Pull request [#3054](https://github.com/rubygems/rubygems/pull/3054) by Luis Sagastume.
 
-# 3.1.2 / 2019-12-20
+## 3.1.2 / 2019-12-20
 
-## Enhancements:
+### Enhancements:
 
 * Restore non prompting `gem update --system` behavior. Pull request [#3040](https://github.com/rubygems/rubygems/pull/3040)
   by David Rodríguez.
@@ -2202,24 +2204,24 @@
   Pull request [#3042](https://github.com/rubygems/rubygems/pull/3042) by David Rodríguez.
 * Use Bundler 2.1.2. Pull request [#3043](https://github.com/rubygems/rubygems/pull/3043) by SHIBATA Hiroshi.
 
-## Bug fixes:
+### Bug fixes:
 
 * Require `uri` in source.rb. Pull request [#3034](https://github.com/rubygems/rubygems/pull/3034) by mihaibuzgau.
 * Fix `gem update --system --force`. Pull request [#3035](https://github.com/rubygems/rubygems/pull/3035) by David
   Rodríguez.
 * Move `require uri` to source_list. Pull request [#3038](https://github.com/rubygems/rubygems/pull/3038) by mihaibuzgau.
 
-# 3.1.1 / 2019-12-16
+## 3.1.1 / 2019-12-16
 
-## Bug fixes:
+### Bug fixes:
 
 * Vendor Bundler 2.1.0 again. The version of Bundler with
   RubyGems 3.1.0 was Bundler 2.1.0.pre.3. Pull request [#3029](https://github.com/rubygems/rubygems/pull/3029) by
   SHIBATA Hiroshi.
 
-# 3.1.0 / 2019-12-16
+## 3.1.0 / 2019-12-16
 
-## Enhancements:
+### Enhancements:
 
 * Vendor bundler 2.1. Pull request [#3028](https://github.com/rubygems/rubygems/pull/3028) by David Rodríguez.
 * Check for rubygems.org typo squatting sources. Pull request [#2999](https://github.com/rubygems/rubygems/pull/2999) by
@@ -2233,25 +2235,25 @@
 * Use bundler to manage development dependencies. Pull request [#3012](https://github.com/rubygems/rubygems/pull/3012) by
   David Rodríguez.
 
-## Bug fixes:
+### Bug fixes:
 
 * Remove unnecessary executable flags. Pull request [#2982](https://github.com/rubygems/rubygems/pull/2982) by David
   Rodríguez.
 * Remove configuration that contained a typo. Pull request [#2989](https://github.com/rubygems/rubygems/pull/2989) by David
   Rodríguez.
 
-## Deprecations:
+### Deprecations:
 
 * Deprecate `gem generate_index --modern` and `gem generate_index
   --no-modern`. Pull request [#2992](https://github.com/rubygems/rubygems/pull/2992) by David Rodríguez.
 
-## Breaking changes:
+### Breaking changes:
 
 * Remove 1.8.7 leftovers. Pull request [#2972](https://github.com/rubygems/rubygems/pull/2972) by David Rodríguez.
 
-# 3.1.0.pre3 / 2019-11-11
+## 3.1.0.pre3 / 2019-11-11
 
-## Enhancements:
+### Enhancements:
 
 * Fix gem pristine not accounting for user installed gems. Pull request
   [#2914](https://github.com/rubygems/rubygems/pull/2914) by Luis Sagastume.
@@ -2270,18 +2272,18 @@
 * Fix Gem::LOADED_SPECS_MUTEX handling for recursive locking. Pull request
   [#2985](https://github.com/rubygems/rubygems/pull/2985) by MSP-Greg.
 
-# 3.1.0.pre2 / 2019-10-15
+## 3.1.0.pre2 / 2019-10-15
 
-## Enhancements:
+### Enhancements:
 
 * Optimize Gem::Package::TarReader#each. Pull request [#2941](https://github.com/rubygems/rubygems/pull/2941) by Jean byroot
   Boussier.
 * Time comparison around date boundary. Pull request [#2944](https://github.com/rubygems/rubygems/pull/2944) by Nobuyoshi
   Nakada.
 
-# 3.1.0.pre1 / 2019-10-08
+## 3.1.0.pre1 / 2019-10-08
 
-## Enhancements:
+### Enhancements:
 
 * Try to use bundler-2.1.0.pre.2. Pull request [#2923](https://github.com/rubygems/rubygems/pull/2923) by SHIBATA Hiroshi.
 * [Require] Ensure -I beats a default gem. Pull request [#1868](https://github.com/rubygems/rubygems/pull/1868) by Samuel
@@ -2411,7 +2413,7 @@
   Berger.
 * Remove useless TODO comment. Pull request [#2818](https://github.com/rubygems/rubygems/pull/2818) by Luis Sagastume.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix typos in History.txt. Pull request [#2565](https://github.com/rubygems/rubygems/pull/2565) by Igor Zubkov.
 * Remove unused empty sources array. Pull request [#2598](https://github.com/rubygems/rubygems/pull/2598) by Aaron
@@ -2444,7 +2446,7 @@
 * Fix cryptic error on local and ignore-dependencies combination. Pull
   request [#2650](https://github.com/rubygems/rubygems/pull/2650) by David Rodríguez.
 
-## Deprecations:
+### Deprecations:
 
 * Make deprecate Gem::RubyGemsVersion and Gem::ConfigMap. Pull request
   [#2857](https://github.com/rubygems/rubygems/pull/2857) by SHIBATA Hiroshi.
@@ -2458,7 +2460,7 @@
 * Add deprecation warnings for cli options. Pull request [#2607](https://github.com/rubygems/rubygems/pull/2607) by Luis
   Sagastume.
 
-## Breaking changes:
+### Breaking changes:
 
 * Suppress keywords warning. Pull request [#2934](https://github.com/rubygems/rubygems/pull/2934) by Nobuyoshi Nakada.
 * Suppress Ruby 2.7's real kwargs warning. Pull request [#2912](https://github.com/rubygems/rubygems/pull/2912) by Koichi
@@ -2481,16 +2483,16 @@
   [#2685](https://github.com/rubygems/rubygems/pull/2685) by SHIBATA Hiroshi.
 * Removing yaml require. Pull request [#2538](https://github.com/rubygems/rubygems/pull/2538) by Luciano Sousa.
 
-# 3.0.8 / 2020-02-19
+## 3.0.8 / 2020-02-19
 
-## Bug fixes:
+### Bug fixes:
 
 * Gem::Specification#to_ruby needs OpenSSL. Pull request [#2937](https://github.com/rubygems/rubygems/pull/2937) by
   Nobuyoshi Nakada.
 
-# 3.0.7 / 2020-02-18
+## 3.0.7 / 2020-02-18
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix underscore version selection for bundler #2908 by David Rodríguez.
 * Add missing wrapper. Pull request [#2690](https://github.com/rubygems/rubygems/pull/2690) by David Rodríguez.
@@ -2500,15 +2502,15 @@
 * Use IAM role to extract security-credentials for EC2 instance. Pull
   request [#2894](https://github.com/rubygems/rubygems/pull/2894) by Alexander Pakulov.
 
-# 3.0.6 / 2019-08-17
+## 3.0.6 / 2019-08-17
 
-## Bug fixes:
+### Bug fixes:
 
 * Revert #2813. It broke the compatibility with 3.0.x versions.
 
-# 3.0.5 / 2019-08-16
+## 3.0.5 / 2019-08-16
 
-## Enhancements:
+### Enhancements:
 
 * Use env var to configure api key on push. Pull request [#2559](https://github.com/rubygems/rubygems/pull/2559) by Luis
   Sagastume.
@@ -2543,7 +2545,7 @@
   by Alexander Pakulov.
 * Fixup #2844. Pull request [#2878](https://github.com/rubygems/rubygems/pull/2878) by SHIBATA Hiroshi.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix intermittent test error on Appveyor & Travis. Pull request [#2568](https://github.com/rubygems/rubygems/pull/2568) by
   MSP-Greg.
@@ -2559,9 +2561,9 @@
 * Ignore GEMRC variable for test suite. Pull request [#2837](https://github.com/rubygems/rubygems/pull/2837) by SHIBATA
   Hiroshi.
 
-# 3.0.4 / 2019-06-14
+## 3.0.4 / 2019-06-14
 
-## Enhancements:
+### Enhancements:
 
 * Add support for TruffleRuby #2612 by Benoit Daloze
 * Serve a more descriptive error when --no-ri or --no-rdoc are used #2572
@@ -2598,7 +2600,7 @@
   request [#2777](https://github.com/rubygems/rubygems/pull/2777) by Yusuke Endoh.
 * Backport ruby core changes. Pull request [#2778](https://github.com/rubygems/rubygems/pull/2778) by SHIBATA Hiroshi.
 
-## Bug fixes:
+### Bug fixes:
 
 * Test_gem.rb - intermittent failure fix. Pull request [#2613](https://github.com/rubygems/rubygems/pull/2613) by MSP-Greg.
 * Fix sporadic CI failures. Pull request [#2617](https://github.com/rubygems/rubygems/pull/2617) by David Rodríguez.
@@ -2614,7 +2616,7 @@
   [#2732](https://github.com/rubygems/rubygems/pull/2732) by Alex Junger.
 * Fix TODOs. Pull request [#2748](https://github.com/rubygems/rubygems/pull/2748) by David Rodríguez.
 
-# 3.0.3 / 2019-03-05
+## 3.0.3 / 2019-03-05
 
 Security fixes:
 
@@ -2625,14 +2627,14 @@ Security fixes:
   * CVE-2019-8324: Installing a malicious gem may lead to arbitrary code execution
   * CVE-2019-8325: Escape sequence injection vulnerability in errors
 
-# 3.0.2 / 2019-01-01
+## 3.0.2 / 2019-01-01
 
-## Enhancements:
+### Enhancements:
 
 * Use Bundler-1.17.3. Pull request [#2556](https://github.com/rubygems/rubygems/pull/2556) by SHIBATA Hiroshi.
 * Fix document flag description. Pull request [#2555](https://github.com/rubygems/rubygems/pull/2555) by Luis Sagastume.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix tests when ruby --program-suffix is used without rubygems
   --format-executable. Pull request [#2549](https://github.com/rubygems/rubygems/pull/2549) by Jeremy Evans.
@@ -2642,9 +2644,9 @@ Security fixes:
   Fukumori.
 * Restore SOURCE_DATE_EPOCH. Pull request [#2560](https://github.com/rubygems/rubygems/pull/2560) by SHIBATA Hiroshi.
 
-# 3.0.1 / 2018-12-23
+## 3.0.1 / 2018-12-23
 
-## Bug fixes:
+### Bug fixes:
 
 * Ensure globbed files paths are expanded. Pull request [#2536](https://github.com/rubygems/rubygems/pull/2536) by Tony Ta.
 * Dup the Dir.home string before passing it on. Pull request [#2545](https://github.com/rubygems/rubygems/pull/2545) by
@@ -2653,9 +2655,9 @@ Security fixes:
   by SHIBATA Hiroshi.
 * Restore release task without hoe. Pull request [#2547](https://github.com/rubygems/rubygems/pull/2547) by SHIBATA Hiroshi.
 
-# 3.0.0 / 2018-12-19
+## 3.0.0 / 2018-12-19
 
-## Enhancements:
+### Enhancements:
 
 * S3 source. Pull request [#1690](https://github.com/rubygems/rubygems/pull/1690) by Aditya Prakash.
 * Download gems with threads. Pull request [#1898](https://github.com/rubygems/rubygems/pull/1898) by André Arko.
@@ -2820,7 +2822,7 @@ Security fixes:
 * Support the environment without OpenSSL. Pull request [#2528](https://github.com/rubygems/rubygems/pull/2528) by SHIBATA
   Hiroshi.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix undefined method error when printing alert. Pull request [#1884](https://github.com/rubygems/rubygems/pull/1884) by
   Robert Ross.
@@ -2873,7 +2875,7 @@ Security fixes:
 * Fix tests when --program-suffix and similar ruby configure options are
   used. Pull request [#2529](https://github.com/rubygems/rubygems/pull/2529) by Jeremy Evans.
 
-## Breaking changes:
+### Breaking changes:
 
 * IO.binread is not provided at Ruby 1.8. Pull request [#2093](https://github.com/rubygems/rubygems/pull/2093) by SHIBATA
   Hiroshi.
@@ -2926,9 +2928,9 @@ Security fixes:
 * [BudlerVersionFinder] set .filter! and .compatible? to match only on
   major versions. Pull request [#2515](https://github.com/rubygems/rubygems/pull/2515) by Colby Swandale.
 
-# 2.7.10 / 2019-06-14
+## 2.7.10 / 2019-06-14
 
-## Enhancements:
+### Enhancements:
 
 * Fix bundler rubygems binstub not properly looking for bundler. Pull request [#2426](https://github.com/rubygems/rubygems/pull/2426)
   by David Rodríguez.
@@ -2936,7 +2938,7 @@ Security fixes:
   Pull request [#2515](https://github.com/rubygems/rubygems/pull/2515) by Colby Swandale.
 + Update for compatibility with new minitest. Pull request [#2118](https://github.com/rubygems/rubygems/pull/2118) by MSP-Greg.
 
-# 2.7.9 / 2019-03-05
+## 2.7.9 / 2019-03-05
 
 Security fixes:
 
@@ -2947,9 +2949,9 @@ Security fixes:
   * CVE-2019-8324: Installing a malicious gem may lead to arbitrary code execution
   * CVE-2019-8325: Escape sequence injection vulnerability in errors
 
-# 2.7.8 / 2018-11-02
+## 2.7.8 / 2018-11-02
 
-## Enhancements:
+### Enhancements:
 
 * [Requirement] Treat requirements with == versions as equal. Pull
   request [#2230](https://github.com/rubygems/rubygems/pull/2230) by Samuel Giddins.
@@ -2968,7 +2970,7 @@ Security fixes:
 * Improve bindir flag description. Pull request [#2383](https://github.com/rubygems/rubygems/pull/2383) by Luis Sagastume.
 * Update bundler-1.16.6. Pull request [#2423](https://github.com/rubygems/rubygems/pull/2423) by SHIBATA Hiroshi.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix #1470: generate documentation when --install-dir is present. Pull
   request [#2229](https://github.com/rubygems/rubygems/pull/2229) by Elias Hernandis.
@@ -2981,9 +2983,9 @@ Security fixes:
 * Gem::Version should handle nil like it used to before. Pull request
   [#2363](https://github.com/rubygems/rubygems/pull/2363) by Luis Sagastume.
 
-# 2.7.7 / 2018-05-08
+## 2.7.7 / 2018-05-08
 
-## Enhancements:
+### Enhancements:
 
 * [RequestSet] Only suggest a gem version with an installable platform.
   Pull request [#2175](https://github.com/rubygems/rubygems/pull/2175) by Samuel Giddins.
@@ -2998,7 +3000,7 @@ Security fixes:
   Sagastume.
 * Backport ruby core commits. Pull request [#2264](https://github.com/rubygems/rubygems/pull/2264) by SHIBATA Hiroshi.
 
-## Bug fixes:
+### Bug fixes:
 
 * Frozen string fix - lib/rubygems/bundler_version_finder.rb. Pull request
   [#2115](https://github.com/rubygems/rubygems/pull/2115) by MSP-Greg.
@@ -3011,7 +3013,7 @@ Security fixes:
 * Fix path checks for case insensitive filesystem. Pull request [#2211](https://github.com/rubygems/rubygems/pull/2211) by
   Lars Kanis.
 
-## Deprecations:
+### Deprecations:
 
 * Deprecate unused code before removing them at #1524. Pull request [#2197](https://github.com/rubygems/rubygems/pull/2197)
   by SHIBATA Hiroshi.
@@ -3019,11 +3021,11 @@ Security fixes:
 * Mark deprecation to `ubygems.rb` for RubyGems 4. Pull request [#2269](https://github.com/rubygems/rubygems/pull/2269) by
   SHIBATA Hiroshi.
 
-## Breaking changes:
+### Breaking changes:
 
 * Update bundler-1.16.2. Pull request [#2291](https://github.com/rubygems/rubygems/pull/2291) by SHIBATA Hiroshi.
 
-# 2.7.6 / 2018-02-16
+## 2.7.6 / 2018-02-16
 
 Security fixes:
 
@@ -3042,9 +3044,9 @@ Security fixes:
 * Prevent Path Traversal issue during gem installation.
   Discovered by nmalkin.
 
-# 2.7.5
+## 2.7.5
 
-## Bug fixes:
+### Bug fixes:
 
 * To use bundler-1.16.1 #2121 by SHIBATA Hiroshi.
 * Fixed leaked FDs. Pull request [#2127](https://github.com/rubygems/rubygems/pull/2127) by Nobuyoshi Nakada.
@@ -3056,9 +3058,9 @@ Security fixes:
 * Set whether bundler is used for gemdeps with an environmental variable #2126 by SHIBATA Hiroshi.
 * Fix undefined method error when printing alert #1884 by Robert Ross.
 
-# 2.7.4
+## 2.7.4
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed leaked FDs. Pull request [#2127](https://github.com/rubygems/rubygems/pull/2127) by Nobuyoshi Nakada.
 * Avoid to warnings about gemspec loadings in rubygems tests. Pull request
@@ -3067,9 +3069,9 @@ Security fixes:
 * Handle environment that does not have `flock` system call. Pull request
   [#2107](https://github.com/rubygems/rubygems/pull/2107) by SHIBATA Hiroshi.
 
-# 2.7.3
+## 2.7.3
 
-## Enhancements:
+### Enhancements:
 
 * Removed needless version lock. Pull request [#2074](https://github.com/rubygems/rubygems/pull/2074) by SHIBATA Hiroshi.
 * Add --[no-]check-development option to cleanup command. Pull request
@@ -3082,7 +3084,7 @@ Security fixes:
 * Remove multi load warning from plugins documentation. Pull request [#2103](https://github.com/rubygems/rubygems/pull/2103)
   by Thibault Jouan.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix test failure on Alpine Linux. Pull request [#2079](https://github.com/rubygems/rubygems/pull/2079) by Ellen Marie
   Dash.
@@ -3101,25 +3103,25 @@ Security fixes:
 * Use setup command --regenerate-binstubs option flag. Pull request [#2099](https://github.com/rubygems/rubygems/pull/2099)
   by Thibault Jouan.
 
-# 2.7.2
+## 2.7.2
 
-## Bug fixes:
+### Bug fixes:
 
 * Added template files to vendoerd bundler. Pull request [#2065](https://github.com/rubygems/rubygems/pull/2065) by SHIBATA
   Hiroshi.
 * Added workaround for non-git environment. Pull request [#2066](https://github.com/rubygems/rubygems/pull/2066) by SHIBATA
   Hiroshi.
 
-# 2.7.1 (2017-11-03)
+## 2.7.1 (2017-11-03)
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `gem update --system` with RubyGems 2.7+. Pull request [#2054](https://github.com/rubygems/rubygems/pull/2054) by
   Samuel Giddins.
 
-# 2.7.0 (2017-11-02)
+## 2.7.0 (2017-11-02)
 
-## Enhancements:
+### Enhancements:
 
 * Update vendored bundler-1.16.0. Pull request [#2051](https://github.com/rubygems/rubygems/pull/2051) by Samuel Giddins.
 * Use Bundler for Gem.use_gemdeps. Pull request [#1674](https://github.com/rubygems/rubygems/pull/1674) by Samuel Giddins.
@@ -3210,7 +3212,7 @@ Security fixes:
 * Warn when requiring deprecated files. Pull request [#1939](https://github.com/rubygems/rubygems/pull/1939) by Ellen Marie
   Dash.
 
-## Deprecations:
+### Deprecations:
 
 * Deprecate Gem::InstallerTestCase#util_gem_bindir and
   Gem::InstallerTestCase#util_gem_dir. Pull request [#1729](https://github.com/rubygems/rubygems/pull/1729) by Jon Moss.
@@ -3220,7 +3222,7 @@ Security fixes:
 * Add deprecation warning for Gem::DependencyInstaller#gems_to_install.
   Pull request [#1731](https://github.com/rubygems/rubygems/pull/1731) by Jon Moss.
 
-## Breaking changes:
+### Breaking changes:
 
 * Use `-rrubygems` instead of `-rubygems.rb`. Because ubygems.rb is
   unavailable on Ruby 2.5. Pull request [#2028](https://github.com/rubygems/rubygems/pull/2028) #2027 #2029
@@ -3228,7 +3230,7 @@ Security fixes:
 * Update Code of Conduct to Contributor Covenant v1.4.0. Pull request
   [#1796](https://github.com/rubygems/rubygems/pull/1796) by Matej.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix issue for MinGW / MSYS2 builds and testing. Pull request [#1876](https://github.com/rubygems/rubygems/pull/1876) by
   MSP-Greg.
@@ -3281,7 +3283,7 @@ Security fixes:
 * [StubSpecification] Don’t iterate through all loaded specs in #to_spec.
   Pull request [#1738](https://github.com/rubygems/rubygems/pull/1738) by Samuel Giddins.
 
-# 2.6.14 / 2017-10-09
+## 2.6.14 / 2017-10-09
 
 Security fixes:
 
@@ -3289,7 +3291,7 @@ Security fixes:
   See CVE-2017-0903 for full details.
   Fix by Aaron Patterson.
 
-# 2.6.13 / 2017-08-27
+## 2.6.13 / 2017-08-27
 
 Security fixes:
 
@@ -3303,9 +3305,9 @@ Security fixes:
   to overwrite arbitrary files. (CVE-2017-0901)
   Discovered by Yusuke Endoh, fix by Samuel Giddins.
 
-# 2.6.12 / 2017-04-30
+## 2.6.12 / 2017-04-30
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix test_self_find_files_with_gemfile to sort expected files. Pull
   request [#1880](https://github.com/rubygems/rubygems/pull/1880) by Kazuaki Matsuo.
@@ -3326,9 +3328,9 @@ Security fixes:
 * Allow Gem.finish_resolve to respect already-activated specs. Pull
   request [#1910](https://github.com/rubygems/rubygems/pull/1910) by Samuel Giddins.
 
-# 2.6.11 / 2017-03-16
+## 2.6.11 / 2017-03-16
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed broken tests on ruby-head. Pull request [#1841](https://github.com/rubygems/rubygems/pull/1841) by
   SHIBATA Hiroshi.
@@ -3339,16 +3341,16 @@ Security fixes:
 * Use improved resolver sorting algorithm. Pull request [#1856](https://github.com/rubygems/rubygems/pull/1856) by
   Samuel Giddins.
 
-# 2.6.10 / 2017-01-23
+## 2.6.10 / 2017-01-23
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix `require` calling the wrong `gem` method when it is overridden.
   Pull request [#1822](https://github.com/rubygems/rubygems/pull/1822) by Samuel Giddins.
 
-# 2.6.9 / 2017-01-20
+## 2.6.9 / 2017-01-20
 
-## Bug fixes:
+### Bug fixes:
 
 * Allow initializing versions with empty strings. Pull request [#1767](https://github.com/rubygems/rubygems/pull/1767) by
   Luis Sagastume.
@@ -3362,9 +3364,9 @@ Security fixes:
 * RakeBuilder: avoid frozen string issue. Pull request [#1819](https://github.com/rubygems/rubygems/pull/1819) by Olle
   Jonsson.
 
-# 2.6.8 / 2016-10-29
+## 2.6.8 / 2016-10-29
 
-## Bug fixes:
+### Bug fixes:
 
 * Improve SSL verification failure message. Pull request [#1751](https://github.com/rubygems/rubygems/pull/1751)
   by Eric Hodel.
@@ -3373,9 +3375,9 @@ Security fixes:
 * Update vendored Molinillo to 0.5.3. Pull request [#1763](https://github.com/rubygems/rubygems/pull/1763) by
   Samuel Giddins.
 
-# 2.6.7 / 2016-09-26
+## 2.6.7 / 2016-09-26
 
-## Bug fixes:
+### Bug fixes:
 
 * Install native extensions in the correct location when using the
   `--user-install` flag. Pull request [#1683](https://github.com/rubygems/rubygems/pull/1683) by Noah Kantrowitz.
@@ -3387,24 +3389,24 @@ Security fixes:
 * Update vendored Molinillo to 0.5.1. Pull request [#1714](https://github.com/rubygems/rubygems/pull/1714) by
   Samuel Giddins.
 
-# 2.6.6 / 2016-06-22
+## 2.6.6 / 2016-06-22
 
-## Bug fixes:
+### Bug fixes:
 
 * Sort installed versions to make sure we install the latest version when
   running `gem update --system`. As a one-time fix, run
   `gem update --system=2.6.6`. Pull request [#1601](https://github.com/rubygems/rubygems/pull/1601) by David Radcliffe.
 
-# 2.6.5 / 2016-06-21
+## 2.6.5 / 2016-06-21
 
-## Enhancements:
+### Enhancements:
 
 * Support for unified Integer in Ruby 2.4. Pull request [#1618](https://github.com/rubygems/rubygems/pull/1618)
   by SHIBATA Hiroshi.
 * Update vendored Molinillo to 0.5.0 for performance improvements.
   Pull request [#1638](https://github.com/rubygems/rubygems/pull/1638) by Samuel Giddins.
 
-## Bug fixes:
+### Bug fixes:
 
 * Raise an explicit error if Signer#sign is called with no certs. Pull
   request [#1605](https://github.com/rubygems/rubygems/pull/1605) by Daniel Berger.
@@ -3424,16 +3426,16 @@ Security fixes:
   Pull request [#1644](https://github.com/rubygems/rubygems/pull/1644) by Charles Oliver Nutter.
 * Run Bundler tests on TravisCI. Pull request [#1650](https://github.com/rubygems/rubygems/pull/1650) by Samuel Giddins.
 
-# 2.6.4 / 2016-04-26
+## 2.6.4 / 2016-04-26
 
-## Enhancements:
+### Enhancements:
 
 * Use Gem::Util::NULL_DEVICE instead of hard coded strings. Pull request [#1588](https://github.com/rubygems/rubygems/pull/1588)
   by Chris Charabaruk.
 * Use File.symlink on MS Windows if supported. Pull request [#1418](https://github.com/rubygems/rubygems/pull/1418)
   by Nobuyoshi Nakada.
 
-## Bug fixes:
+### Bug fixes:
 
 * Redact uri password from error output when gem fetch fails. Pull request
   [#1565](https://github.com/rubygems/rubygems/pull/1565) by Brian Fletcher.
@@ -3441,9 +3443,9 @@ Security fixes:
 * Escape user-supplied content served on web pages by `gem server` to avoid
   potential XSS vulnerabilities. Samuel Giddins.
 
-# 2.6.3 / 2016-04-05
+## 2.6.3 / 2016-04-05
 
-## Enhancements:
+### Enhancements:
 
 * Lazily calculate Gem::LoadError exception messages. Pull request [#1550](https://github.com/rubygems/rubygems/pull/1550)
   by Aaron Patterson.
@@ -3454,7 +3456,7 @@ Security fixes:
 * Show default gems when using "gem list". Pull request [#1570](https://github.com/rubygems/rubygems/pull/1570) by Luis
   Sagastume.
 
-## Bug fixes:
+### Bug fixes:
 
 * Stub ordering should be consistent regardless of how cache is populated.
   Pull request [#1552](https://github.com/rubygems/rubygems/pull/1552) by Aaron Patterson.
@@ -3470,9 +3472,9 @@ Security fixes:
   Giddins.
 * Allow two digit version numbers in the tests. Pull request [#1575](https://github.com/rubygems/rubygems/pull/1575) by unak.
 
-# 2.6.2 / 2016-03-12
+## 2.6.2 / 2016-03-12
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix wrong version of gem activation for bin stub. Pull request [#1527](https://github.com/rubygems/rubygems/pull/1527) by
   Aaron Patterson.
@@ -3483,9 +3485,9 @@ Security fixes:
   [#1538](https://github.com/rubygems/rubygems/pull/1538) by Charles Oliver Nutter.
 
 
-# 2.6.1 / 2016-02-28
+## 2.6.1 / 2016-02-28
 
-## Bug fixes:
+### Bug fixes:
 
 * Ensure `default_path` and `home` are set for paths. Pull request [#1513](https://github.com/rubygems/rubygems/pull/1513)
   by Aaron Patterson.
@@ -3494,9 +3496,9 @@ Security fixes:
 * Fix invalid gem file preventing gem install from working. Pull request
   [#1499](https://github.com/rubygems/rubygems/pull/1499) by Luis Sagastume.
 
-# 2.6.0 / 2016-02-26
+## 2.6.0 / 2016-02-26
 
-## Enhancements:
+### Enhancements:
 
 * RubyGems now defaults the `gem push` to the gem's "allowed_push_host"
   metadata setting.  Pull request [#1486](https://github.com/rubygems/rubygems/pull/1486) by Josh Lane.
@@ -3507,7 +3509,7 @@ Security fixes:
 * Allow specifying gem requirements via env variables. Pull request [#1472](https://github.com/rubygems/rubygems/pull/1472)
   by Samuel E. Giddins.
 
-## Bug fixes:
+### Bug fixes:
 
 * RubyGems now stores `gem push` credentials under the host you signed-in for.
   Pull request [#1485](https://github.com/rubygems/rubygems/pull/1485) by Josh Lane.
@@ -3533,9 +3535,9 @@ Security fixes:
 * Find_files only from loaded_gems when using gemdeps. Pull request [#1277](https://github.com/rubygems/rubygems/pull/1277)
   by Michal Papis.
 
-# 2.5.2 / 2016-01-31
+## 2.5.2 / 2016-01-31
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix memoization of Gem::Version#prerelease? Pull request [#1125](https://github.com/rubygems/rubygems/pull/1125) by Matijs van
   Zuijlen.
@@ -3551,7 +3553,7 @@ Security fixes:
 * Handle symlinks containing ".." correctly. Pull request [#1457](https://github.com/rubygems/rubygems/pull/1457) by Samuel E.
   Giddins.
 
-## Enhancements:
+### Enhancements:
 
 * Add `--no-rc` flag, which skips loading `.gemrc`. Pull request [#1329](https://github.com/rubygems/rubygems/pull/1329) by Luis
   Sagastume.
@@ -3576,9 +3578,9 @@ Security fixes:
 * Function correctly when string literals are frozen on Ruby 2.3. Pull request
   [#1408](https://github.com/rubygems/rubygems/pull/1408) by Samuel E. Giddins.
 
-# 2.5.1 / 2015-12-10
+## 2.5.1 / 2015-12-10
 
-## Bug fixes:
+### Bug fixes:
 
 * Ensure platform sorting only uses strings. Affected binary installs on Windows.
   Issue #1369 reported by Ryan Atball (among others).
@@ -3607,9 +3609,9 @@ Security fixes:
   Kudo.
 * Fixed double word typo.  Pull request [#1411](https://github.com/rubygems/rubygems/pull/1411) by Jake Worth.
 
-# 2.5.0 / 2015-11-03
+## 2.5.0 / 2015-11-03
 
-## Enhancements:
+### Enhancements:
 
 * Added the Gem::Licenses class which provides a set of standard license
   identifiers as set by spdx.org. This is now used by the
@@ -3679,7 +3681,7 @@ Security fixes:
 * Gem::RemoteFetcher allows users to set HTTP headers.  Pull request [#1363](https://github.com/rubygems/rubygems/pull/1363) by
   Agis Anastasopoulos.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed Rake homepage url in example for Gem::Specification#homepage.
   Pull request [#1171](https://github.com/rubygems/rubygems/pull/1171) by Arthur Nogueira Neves
@@ -3736,22 +3738,22 @@ Security fixes:
 * RubyGems handles invalid config files better.  Pull request [#1367](https://github.com/rubygems/rubygems/pull/1367) by Agis
   Anastasopoulos.
 
-# 2.4.8 / 2015-06-08
+## 2.4.8 / 2015-06-08
 
-## Bug fixes:
+### Bug fixes:
 
 * Tightened API endpoint checks for CVE-2015-3900
 
-# 2.4.7 / 2015-05-14
+## 2.4.7 / 2015-05-14
 
-## Bug fixes:
+### Bug fixes:
 
 * Limit API endpoint to original security domain for CVE-2015-3900.
   Fix by claudijd
 
-# 2.4.6 / 2015-02-05
+## 2.4.6 / 2015-02-05
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed resolving gems with both upper and lower requirement boundaries.
   Issue #1141 by Jakub Jirutka.
@@ -3776,9 +3778,9 @@ Security fixes:
   Ondruch.
 * Relaxed Psych dependency.  Pull request [#1128](https://github.com/rubygems/rubygems/pull/1128) by Vít Ondruch.
 
-# 2.4.5 / 2014-12-03
+## 2.4.5 / 2014-12-03
 
-## Bug fixes:
+### Bug fixes:
 
 * Improved speed of requiring gems.  (Around 25% for a 60 gem test).  Pull
   request [#1060](https://github.com/rubygems/rubygems/pull/1060) by unak.
@@ -3818,27 +3820,27 @@ Security fixes:
 * Fixed grouped expression warning.  Pull request [#1081](https://github.com/rubygems/rubygems/pull/1081) by André Arko.
 * Fixed handling of platforms when writing lockfiles.
 
-# 2.4.4 / 2014-11-12
+## 2.4.4 / 2014-11-12
 
-## Bug fixes:
+### Bug fixes:
 
 * Add alternate Root CA for upcoming certificate change. Fixes #1050 by
   Protosac
 
-# 2.4.3 / 2014-11-10
+## 2.4.3 / 2014-11-10
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix redefine MirrorCommand issue. Pull request [#1044](https://github.com/rubygems/rubygems/pull/1044) by @akr.
 * Fix typo in platform= docs.  Pull request [#1048](https://github.com/rubygems/rubygems/pull/1048) by @jasonrclark
 * Add root SSL certificates for upcoming certificate change.  Fixes #1050 by
   Protosac
 
-# 2.4.2 / 2014-10-01
+## 2.4.2 / 2014-10-01
 
 This release was sponsored by Ruby Central.
 
-## Bug fixes:
+### Bug fixes:
 
 * RubyGems now correctly matches wildcard no_proxy hosts.  Issue #997 by
   voelzemo.
@@ -3872,16 +3874,16 @@ This release was sponsored by Ruby Central.
 * RubyGems now fails immediately when a git reference cannot be found instead
   of spewing git errors.  Issue #1031 by Michal Papis
 
-# 2.4.1 / 2014-07-17
+## 2.4.1 / 2014-07-17
 
-## Bug fixes:
+### Bug fixes:
 
 * RubyGems can now be updated on Ruby implementations that do not support
   vendordir in RbConfig::CONFIG.  Issue #974 by net1957.
 
-# 2.4.0 / 2014-07-16
+## 2.4.0 / 2014-07-16
 
-## Enhancements:
+### Enhancements:
 
 * The contents command now supports a --show-install-dir option that shows
   only the directory the gem is installed in.  Feature request [#966](https://github.com/rubygems/rubygems/pull/966) by Akinori
@@ -3892,7 +3894,7 @@ This release was sponsored by Ruby Central.
   in Gem.vendor_dir with the --vendor option to gem install.  Issue #943 by
   Marcus Rückert.
 
-## Bug fixes:
+### Bug fixes:
 
 * Kernel#gem now respects the prerelease flag when activating gems.
   Previously this behavior was undefined which could lead to bugs when a
@@ -3942,9 +3944,9 @@ This release was sponsored by Ruby Central.
   during gem resolution.
 
 
-# 2.3.0 / 2014-06-10
+## 2.3.0 / 2014-06-10
 
-## Enhancements:
+### Enhancements:
 
 * Added the `open` command which allows you to inspect the source of a gem
   using your editor.
@@ -3985,7 +3987,7 @@ This release was sponsored by Ruby Central.
 * RubyGems recommends SPDX IDs for licenses now.  Pull request [#917](https://github.com/rubygems/rubygems/pull/917) by
   Benjamin Fleischer.
 
-## Bug fixes:
+### Bug fixes:
 
 * RubyGems now only fetches the latest specs to find misspellings which speeds
   up gem suggestions.  Pull request [#808](https://github.com/rubygems/rubygems/pull/808) by Aaron Patterson.
@@ -4065,29 +4067,29 @@ This release was sponsored by Ruby Central.
 * Gem::BasicSpecification#require_paths respects default_ext_dir_for now.  Bug
   #852 by Vít Ondruch.
 
-# 2.2.5 / 2015-06-08
+## 2.2.5 / 2015-06-08
 
-## Bug fixes:
+### Bug fixes:
 
 * Tightened API endpoint checks for CVE-2015-3900
 
-# 2.2.4 / 2015-05-14
+## 2.2.4 / 2015-05-14
 
-## Bug fixes:
+### Bug fixes:
 
 * Backport: Limit API endpoint to original security domain for CVE-2015-3900.
   Fix by claudijd
 
-# 2.2.3 / 2014-12-21
+## 2.2.3 / 2014-12-21
 
-## Bug fixes:
+### Bug fixes:
 
 * Backport: Add alternate Root CA for upcoming certificate change.
   Fixes #1050 by Protosac
 
-# 2.2.2 / 2014-02-05
+## 2.2.2 / 2014-02-05
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed ruby tests when BASERUBY is not set.  Patch for #778 by Nobuyoshi
   Nakada.
@@ -4112,9 +4114,9 @@ This release was sponsored by Ruby Central.
 * Restored behavior of Gem::Version::new when subclassed.  Issue #805 by
   Sergio Rubio.
 
-# 2.2.1 / 2014-01-06
+## 2.2.1 / 2014-01-06
 
-## Bug fixes:
+### Bug fixes:
 
 * Platforms in the Gemfile.lock GEM section are now handled correctly.  Bug
   #767 by Diego Viola.
@@ -4140,12 +4142,12 @@ This release was sponsored by Ruby Central.
 * Fixed specification file sorting for Ruby 1.8.7 compatibility.  Pull
   request [#763](https://github.com/rubygems/rubygems/pull/763) by James Mead
 
-# 2.2.0 / 2013-12-26
+## 2.2.0 / 2013-12-26
 
 Special thanks to Vít Ondruch and Michal Papis for testing and finding bugs in
 RubyGems as it was prepared for the 2.2.0 release.
 
-## Enhancements:
+### Enhancements:
 
 * RubyGems can check for gem dependencies files (gem.deps.rb or Gemfile) when
   rubygems executables are started and uses the found dependencies.  This
@@ -4213,7 +4215,7 @@ RubyGems as it was prepared for the 2.2.0 release.
 * Relaxed Gem.ruby tests for platforms that override where ruby lives.  Pull
   Request #755 by strzibny.
 
-## Bug fixes:
+### Bug fixes:
 
 * RubyGems now returns an error status when any file given to `gem which`
   cannot be found.  Ruby bug #9004 by Eugene Vilensky.
@@ -4230,9 +4232,9 @@ RubyGems as it was prepared for the 2.2.0 release.
 * Improved speed of `gem install --ignore-dependencies`.  Patch by Terence
   Lee.
 
-# 2.1.11 / 2013-11-12
+## 2.1.11 / 2013-11-12
 
-## Bug fixes:
+### Bug fixes:
 
 * Gem::Specification::remove_spec no longer checks for existence of the spec
   to be removed.  Issue #698 by Tiago Macedo.
@@ -4242,9 +4244,9 @@ RubyGems as it was prepared for the 2.2.0 release.
 * The Gem::RemoteFetcher tests now choose the test server port more reliably.
   Pull Request #706 by akr.
 
-# 2.1.10 / 2013-10-24
+## 2.1.10 / 2013-10-24
 
-## Bug fixes:
+### Bug fixes:
 
 * Use class check instead of :version method check when creating Gem::Version
   objects.  Fixes #674 by jkanywhere.
@@ -4263,18 +4265,18 @@ RubyGems as it was prepared for the 2.2.0 release.
 * The --ignore-dependencies option for gem installation works again.  Issue
   #695
 
-# 2.1.9 / 2013-10-14
+## 2.1.9 / 2013-10-14
 
-## Bug fixes:
+### Bug fixes:
 
 * Reduce sorting when fetching specifications.  This speeds up the update and
   outdated commands, and others.  Issue #657 by windwiny.
 * Proxy usernames and passwords are now escaped properly.  Ruby Bug #8979 by
   Masahiro Tomita, Issue #668 by Kouhei Sutou.
 
-# 2.1.8 / 2013-10-10
+## 2.1.8 / 2013-10-10
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed local installation of platform gem files.  Issue #664 by Ryan Melton.
 * Files starting with "." in the root directory are installed again.  Issue
@@ -4282,9 +4284,9 @@ RubyGems as it was prepared for the 2.2.0 release.
 * The index generator no longer indexes default gems.  Issue #661 by
   Jeremy Hinegardner.
 
-# 2.1.7 / 2013-10-09
+## 2.1.7 / 2013-10-09
 
-## Bug fixes:
+### Bug fixes:
 
 * `gem sources --list` now displays a list of sources.  Pull request [#672](https://github.com/rubygems/rubygems/pull/672) by
   Nathan Marley.
@@ -4297,9 +4299,9 @@ RubyGems as it was prepared for the 2.2.0 release.
 * Expand unpack destination directory.  This fixes problems when File.realpath
   is missing and $GEM_HOME contains "..".  Issue #679 by Charles Nutter.
 
-# 2.1.6 / 2013-10-08
+## 2.1.6 / 2013-10-08
 
-## Bug fixes:
+### Bug fixes:
 
 * Added certificates to follow the s3.amazonaws.com certificate change.  Fixes
   #665 by emeyekayee.  Fixes #671 by jonforums.
@@ -4314,7 +4316,7 @@ RubyGems as it was prepared for the 2.2.0 release.
   version.)  Issue #676 by Michal Papis.  Issue wayneeseguin/rvm#2262 by
   Thomas Sänger.
 
-# 2.1.5 / 2013-09-24
+## 2.1.5 / 2013-09-24
 
 Security fixes:
 
@@ -4323,25 +4325,25 @@ Security fixes:
   including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
   1.8.23.2 (for Ruby 1.9.3).
 
-# 2.1.4 / 2013-09-17
+## 2.1.4 / 2013-09-17
 
-## Bug fixes:
+### Bug fixes:
 
 * `gem uninstall foo --all` now force-uninstalls all versions of foo.  Issue
   #650 by Kyle (remkade).
 * Fixed uninstalling gems installed in the home directory (as in
   `--user-install`).  Issue #653 by Lin Jen-Shin.
 
-# 2.1.3 / 2013-09-12
+## 2.1.3 / 2013-09-12
 
-## Bug fixes:
+### Bug fixes:
 
 * Gems with files entries starting with "./" no longer install 0 files.  Issue
   #644 by Darragh Curran, #645 by Brandon Turner, #646 by Alex Tambellini
 
-# 2.1.2 / 2013-09-11
+## 2.1.2 / 2013-09-11
 
-## Bug fixes:
+### Bug fixes:
 
 * Restore concurrent requires following the fix for ruby bug #8374.  Pull
   request [#637](https://github.com/rubygems/rubygems/pull/637) and issue #640 by Charles Nutter.
@@ -4350,14 +4352,14 @@ Security fixes:
 * Gem fetch now fetches the newest (not oldest) gem when --version is given.
   Issue #643 by Brian Shirai.
 
-# 2.1.1 / 2013-09-10
+## 2.1.1 / 2013-09-10
 
-## Bug fixes:
+### Bug fixes:
 
 * Only matching gems matching your local platform are considered for
   installation.  Issue #638 by José M. Prieto, issue #639 by sawanoboly.
 
-# 2.1.0 / 2013-09-09
+## 2.1.0 / 2013-09-09
 
 Security fixes:
 
@@ -4366,7 +4368,7 @@ Security fixes:
   including vulnerable APIs.  Fixed versions include 2.0.8, 1.8.26 and
   1.8.23.1 (for Ruby 1.9.3).  Issue #626 by Damir Sharipov.
 
-## Enhancements:
+### Enhancements:
 
 * RubyGems uses a new dependency resolver for gem installation which works
   similar to the bundler resolver.  The new resolver can resolve conflicts the
@@ -4442,7 +4444,7 @@ Security fixes:
   still slow, but I see a near 50% improvement for 250 gems on a fast
   connection).  See also Gem::Specification::outdated_and_latest_version
 
-## Bug fixes:
+### Bug fixes:
 
 * rubygems_plugin.rb files are now only loaded from the latest installed gem.
 * Fixed Gem.clear_paths when Security is defined at top-level.  Pull request
@@ -4450,29 +4452,29 @@ Security fixes:
 * Fixed credential creation for `gem push` when `--host` is not given.  Pull
   request [#622](https://github.com/rubygems/rubygems/pull/622) by Arthur Nogueira Neves
 
-# 2.0.17 / 2015-06-08
+## 2.0.17 / 2015-06-08
 
-## Bug fixes:
+### Bug fixes:
 
 * Tightened API endpoint checks for CVE-2015-3900
 
-# 2.0.16 / 2015-05-14
+## 2.0.16 / 2015-05-14
 
-## Bug fixes:
+### Bug fixes:
 
 * Backport: Limit API endpoint to original security domain for CVE-2015-3900.
   Fix by claudijd
 
-# 2.0.15 / 2014-12-21
+## 2.0.15 / 2014-12-21
 
-## Bug fixes:
+### Bug fixes:
 
 * Backport: Add alternate Root CA for upcoming certificate change.
   Fixes #1050 by Protosac
 
-# 2.0.14 / 2013-11-12
+## 2.0.14 / 2013-11-12
 
-## Bug fixes:
+### Bug fixes:
 
 * Gem::Specification::remove_spec no longer checks for existence of the spec
   to be removed.  Issue #698 by Tiago Macedo.
@@ -4482,9 +4484,9 @@ Security fixes:
 * The Gem::RemoteFetcher tests now choose the test server port more reliably.
   Pull Request #706 by akr.
 
-# 2.0.13 / 2013-10-24
+## 2.0.13 / 2013-10-24
 
-## Bug fixes:
+### Bug fixes:
 
 * Use class check instead of :version method check when creating Gem::Version
   objects.  Fixes #674 by jkanywhere.
@@ -4493,16 +4495,16 @@ Security fixes:
 * Fix updating gems which have multiple platforms.  Issue #693 by Ookami
   Kenrou.
 
-# 2.0.12 / 2013-10-14
+## 2.0.12 / 2013-10-14
 
-## Bug fixes:
+### Bug fixes:
 
 * Proxy usernames and passwords are now escaped properly.  Ruby Bug #8979 by
   Masahiro Tomita, Issue #668 by Kouhei Sutou.
 
-# 2.0.11 / 2013-10-08
+## 2.0.11 / 2013-10-08
 
-## Bug fixes:
+### Bug fixes:
 
 * Added certificates to follow the s3.amazonaws.com certificate change.  Fixes
   #665 by emeyekayee.  Fixes #671 by jonforums.
@@ -4517,7 +4519,7 @@ Security fixes:
   version.)  Issue #676 by Michal Papis.  Issue wayneeseguin/rvm#2262 by
   Thomas Sänger.
 
-# 2.0.10 / 2013-09-24
+## 2.0.10 / 2013-09-24
 
 Security fixes:
 
@@ -4526,16 +4528,16 @@ Security fixes:
   including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
   1.8.23.2 (for Ruby 1.9.3).
 
-# 2.0.9 / 2013-09-13
+## 2.0.9 / 2013-09-13
 
-## Bug fixes:
+### Bug fixes:
 
 * Gem fetch now fetches the newest (not oldest) gem when --version is given.
   Issue #643 by Brian Shirai.
 * Fixed credential creation for `gem push` when `--host` is not given.  Pull
   request [#622](https://github.com/rubygems/rubygems/pull/622) by Arthur Nogueira Neves
 
-# 2.0.8 / 2013-09-09
+## 2.0.8 / 2013-09-09
 
 Security fixes:
 
@@ -4544,14 +4546,14 @@ Security fixes:
   including vulnerable APIs.  Fixed versions include 2.0.8, 1.8.26 and
   1.8.23.1 (for Ruby 1.9.3).  Issue #626 by Damir Sharipov.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed Gem.clear_paths when Security is defined at top-level.  Pull request
   [#625](https://github.com/rubygems/rubygems/pull/625) by elarkin
 
-# 2.0.7 / 2013-08-15
+## 2.0.7 / 2013-08-15
 
-## Bug fixes:
+### Bug fixes:
 
 * Extensions may now be built in parallel (therefore gems may be installed in
   parallel).  Bug #607 by Hemant Kumar.
@@ -4561,9 +4563,9 @@ Security fixes:
   Patches by Yui Naruse and Koichi Sasada.
 * Fixed documentation for Kernel#require.
 
-# 2.0.6 / 2013-07-24
+## 2.0.6 / 2013-07-24
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed the `--no-install` and `-I` options to `gem list` and friends.  Bug
   #593 by Blargel.
@@ -4575,14 +4577,14 @@ Security fixes:
   Bug #599 by Chris Riesbeck
 * Restored default of remote search to `gem search`.
 
-# 2.0.5 / 2013-07-11
+## 2.0.5 / 2013-07-11
 
 * Fixed building of extensions that run ruby in their makefiles.  Bug #589 by
   Zachary Salzbank.
 
-# 2.0.4 / 2013-07-09
+## 2.0.4 / 2013-07-09
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed error caused by gem install not finding the right platform for your
   platform. Bug #576 by John Anderson
@@ -4621,9 +4623,9 @@ Security fixes:
 * Fix deprecation warnings when converting gemspecs to yaml.  Ruby commit
   r41148 by Yui Naruse
 
-# 2.0.3 / 2013-03-11
+## 2.0.3 / 2013-03-11
 
-## Bug fixes:
+### Bug fixes:
   * Reverted automatic upgrade to HTTPS as it breaks RubyGems APIs.  Fixes
     #506 by André Arko
   * Use File.realpath to remove extra / while checking if files are
@@ -4638,17 +4640,17 @@ Security fixes:
   * Fixed default gem key and cert locations.  Pull request [#511](https://github.com/rubygems/rubygems/pull/511) by Samuel
     Cochran.
 
-# 2.0.2 / 2013-03-06
+## 2.0.2 / 2013-03-06
 
-## Bug fixes:
+### Bug fixes:
   * HTTPS URLs are preferred over HTTP URLs.  RubyGems will now attempt to
     upgrade any HTTP source to HTTPS.  Credit to Alex Gaynor.
   * SSL Certificates are now installed properly.  Fixes #491 by hemanth.hm
   * Fixed HTTP to HTTPS upgrade for rubygems.org.
 
-# 2.0.1 / 2013-03-05
+## 2.0.1 / 2013-03-05
 
-## Bug fixes:
+### Bug fixes:
   * Lazily load RubyGems.org API credentials to avoid failure during
     RubyGems installation.  Bug #465 by Isaac Sanders.
   * RubyGems now picks the latest prerelease to install.  Fixes bug #468 by
@@ -4670,7 +4672,7 @@ Security fixes:
     Ruby bug #7713 by nobu
   * Fix tests when an 'a.rb' exists.  Ruby bug #7749 by nobu.
 
-# 2.0.0 / 2013-02-24
+## 2.0.0 / 2013-02-24
 
 RubyGems 2.0 includes several new features and many breaking changes.  Some of
 these changes will cause existing software to break.  These changes are a
@@ -4682,7 +4684,7 @@ newer.  Older versions of bundler will not work with RubyGems 2.0.
 
 Changes since RubyGems 1.8.25 (including past pre-releases):
 
-## Breaking changes:
+### Breaking changes:
 
   * Deprecated Gem.unresolved_deps in favor of
     Gem::Specification.unresolved_deps
@@ -4704,7 +4706,7 @@ Changes since RubyGems 1.8.25 (including past pre-releases):
   * Removed support for Ruby 1.9.1
   * Removed many deprecated methods
 
-## Enhancements:
+### Enhancements:
 
   * Improved support for default gems shipping with ruby 2.0.0+
   * A gem can have arbitrary metadata through Gem::Specification#metadata
@@ -4764,7 +4766,7 @@ Changes since RubyGems 1.8.25 (including past pre-releases):
     GEM_HOME
   * When building gems with non-world-readable files a warning is shown.
 
-## Bug fixes:
+### Bug fixes:
   * Gem.refresh now maintains the active gem list.  Clearing the list would
     cause double-loads which would cause other bugs.  Pull Request #427 by
     Jeremy Evans
@@ -4821,7 +4823,7 @@ Changes since RubyGems 1.8.25 (including past pre-releases):
 
 Changes since RubyGems 2.0.0.rc.2:
 
-## Bug fixes:
+### Bug fixes:
   * Gem.gzip and Gem.gunzip now return strings with BINARY encoding.  Issue
     #450 by Jeremy Kemper
   * Fixed placement of executables with --user-install.  Ruby bug #7779 by Jon
@@ -4834,48 +4836,48 @@ Changes since RubyGems 2.0.0.rc.2:
   * Fixed verification of gems at LowSecurity due to missing signature.
     Thanks to André Arko.
 
-# 2.0.0.rc.2 / 2013-02-08
+## 2.0.0.rc.2 / 2013-02-08
 
-## Bug fixes:
+### Bug fixes:
   * Fixed signature verification of gems which was broken only on master.
     Thanks to Brian Buchanan.
   * Proper exceptions are raised when verifying an unsigned gem.  Thanks to
     André Arko.
 
-# 2.0.0.rc.1 / 2013-01-08
+## 2.0.0.rc.1 / 2013-01-08
 
-## Enhancements:
+### Enhancements:
   * This release of RubyGems can push gems to rubygems.org.  Ordinarily
     prerelease versions of RubyGems cannot push gems.
   * Added `gem check --doctor` to clean up after failed uninstallation.  Bug
     #419 by Erik Hollensbe
 
-## Bug fixes:
+### Bug fixes:
   * Fixed exception raised when attempting to push gems to rubygems.org.  Bug
     #418 by André Arko
   * Gem installation will fail if RubyGems cannot load the specification from
     the gem.  Bug #419 by Erik Hollensbe
 
-# 2.0.0.preview2.2 / 2012-12-14
+## 2.0.0.preview2.2 / 2012-12-14
 
-## Enhancements:
+### Enhancements:
   * Added a cmake builder.  Pull request [#265](https://github.com/rubygems/rubygems/pull/265) by Allan Espinosa.
   * Removed rubyforge page from gem list output
 
-## Bug fixes:
+### Bug fixes:
   * Restored RubyGems 1.8 packaging behavior of omitting directories.  Bug
     #413 by Jeremy Kemper.
 
-# 2.0.0.preview2.1 / 2012-12-08
+## 2.0.0.preview2.1 / 2012-12-08
 
-## Enhancements:
+### Enhancements:
   * Gem::DependencyInstaller now passes build_args down to the installer.
     Pull Request #412 by Sam Rawlins.
   * RubyGems no longer defaults to uninstalling gems if a dependency would be
     broken.  Now you must manually say "yes".  Pull Request #406 by Shannon
     Skipper.
 
-## Bug fixes:
+### Bug fixes:
   * RubyGems tests now run in FIPS mode.  Issue #365 by Vít Ondruch
   * Fixed Gem::Specification#base_dir for default gems.  Ruby Bug #7469
   * Only update the spec cache when we have permission.  Ruby Bug #7509
@@ -4887,13 +4889,13 @@ Changes since RubyGems 2.0.0.rc.2:
   * gem install now ignores directories that match the gem to install.  Bug
     #407 by Santiago Pastorino.
 
-# 2.0.0.preview2 / 2012-12-01
+## 2.0.0.preview2 / 2012-12-01
 
 This release contains two commits not present in Ruby 2.0.0.preview2.  One
 commit is for ruby 1.8.7 support, the second allows RubyGems to work under
 $SAFE=1.  There is no functional difference compared to Ruby 2.0.0.preview2
 
-## Breaking changes:
+### Breaking changes:
 
   * Deprecated Gem.unresolved_deps in favor of
     Gem::Specification.unresolved_deps
@@ -4915,7 +4917,7 @@ $SAFE=1.  There is no functional difference compared to Ruby 2.0.0.preview2
   * Removed support for Ruby 1.9.1
   * Removed many deprecated methods
 
-## Enhancements:
+### Enhancements:
 
   * Improved support for default gems shipping with ruby 2.0.0+
   * A gem can have arbitrary metadata through Gem::Specification#metadata
@@ -4966,7 +4968,7 @@ $SAFE=1.  There is no functional difference compared to Ruby 2.0.0.preview2
     GEM_HOME
   * When building gems with non-world-readable files a warning is shown.
 
-## Bug fixes:
+### Bug fixes:
 
   * Added PID to setup bin_file while installing RubyGems to protect against
     errors. Fixes #328 by ConradIrwin
@@ -5007,17 +5009,17 @@ $SAFE=1.  There is no functional difference compared to Ruby 2.0.0.preview2
   * URI scheme matching is no longer case-sensitive.  Fixes #322
   * ext/builder now checks $MAKE as well as $make (okkez)
 
-# 1.8.29 / 2013-11-23
+## 1.8.29 / 2013-11-23
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed installation when the LANG environment variable is empty.
 * Added DigiCert High Assurance EV Root CA to the default SSL certificates for
   cloudfront.
 
-# 1.8.28 / 2013-10-08
+## 1.8.28 / 2013-10-08
 
-## Bug fixes:
+### Bug fixes:
 
 * Added the Verisign Class 3 Public Primary Certification Authority G5
   certificate and its intermediary to follow the s3.amazonaws.com certificate
@@ -5027,7 +5029,7 @@ $SAFE=1.  There is no functional difference compared to Ruby 2.0.0.preview2
 * Added test for missing certificates for https://s3.amazonaws.com or
   https://rubygems.org.  Pull request [#673](https://github.com/rubygems/rubygems/pull/673) by Hannes Georg.
 
-# 1.8.27 / 2013-09-24
+## 1.8.27 / 2013-09-24
 
 Security fixes:
 
@@ -5036,7 +5038,7 @@ Security fixes:
   including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
   1.8.23.2 (for Ruby 1.9.3).
 
-# 1.8.26 / 2013-09-09
+## 1.8.26 / 2013-09-09
 
 Security fixes:
 
@@ -5045,13 +5047,13 @@ Security fixes:
   including vulnerable APIs.  Fixed versions include 2.0.8, 1.8.26 and
   1.8.23.1 (for Ruby 1.9.3).  Issue #626 by Damir Sharipov.
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed editing of a Makefile with 8-bit characters.  Fixes #181
 
-# 1.8.25 / 2013-01-24
+## 1.8.25 / 2013-01-24
 
-## Bug fixes:
+### Bug fixes:
   * Added 11627 to setup bin_file location to protect against errors. Fixes
     #328 by ConradIrwin
   * Specification#ruby_code didn't handle Requirement with multiple
@@ -5060,14 +5062,14 @@ Security fixes:
   * Fix missing load_yaml in YAML-related requirement.rb code.
   * Manually backport encoding-aware YAML gemspec
 
-# 1.8.24 / 2012-04-27
+## 1.8.24 / 2012-04-27
 
-## Bug fixes:
+### Bug fixes:
 
   * Install the .pem files properly. Fixes #320
   * Remove OpenSSL dependency from the http code path
 
-# 1.8.23.2 / 2013-09-24
+## 1.8.23.2 / 2013-09-24
 
 Security fixes:
 
@@ -5076,7 +5078,7 @@ Security fixes:
   including vulnerable APIs.  Fixed versions include 2.1.5, 2.0.10, 1.8.27 and
   1.8.23.2 (for Ruby 1.9.3).
 
-# 1.8.23.1 / 2013-09-09
+## 1.8.23.1 / 2013-09-09
 
 Security fixes:
 
@@ -5085,7 +5087,7 @@ Security fixes:
   including vulnerable APIs.  Fixed versions include 2.0.8, 1.8.26 and
   1.8.23.1 (for Ruby 1.9.3).  Issue #626 by Damir Sharipov.
 
-# 1.8.23 / 2012-04-19
+## 1.8.23 / 2012-04-19
 
 This release increases the security used when RubyGems is talking to
 an https server. If you use a custom RubyGems server over SSL, this
@@ -5105,49 +5107,49 @@ Security fixes:
   * Disallow redirects from https to http
   * Turn on verification of server SSL certs
 
-## Enhancements:
+### Enhancements:
   * Add --clear-sources to fetch
 
-## Bug fixes:
+### Bug fixes:
   * Use File.identical? to check if two files are the same.
   * Fixed init_with warning when using psych
 
-# 1.8.22 / 2012-04-13
+## 1.8.22 / 2012-04-13
 
-## Bug fixes:
+### Bug fixes:
 
   * Workaround for psych/syck YAML date parsing issue
   * Don't trust the encoding of ARGV. Fixes #307
   * Quiet default warnings about missing spec variables
   * Read a binary file properly (windows fix)
 
-# 1.8.21 / 2012-03-22
+## 1.8.21 / 2012-03-22
 
-## Bug fixes:
+### Bug fixes:
 
   * Add workaround for buggy yaml output from 1.9.2
   * Force 1.9.1 to remove it's prelude code. Fixes #305
 
-# 1.8.20 / 2012-03-21
+## 1.8.20 / 2012-03-21
 
-## Bug fixes:
+### Bug fixes:
 
   * Add --force to `gem build` to skip validation. Fixes #297
   * Gracefully deal with YAML::PrivateType objects in Marshal'd gemspecs
   * Treat the source as a proper url base. Fixes #304
   * Warn when updating the specs cache fails. Fixes #300
 
-# 1.8.19 / 2012-03-14
+## 1.8.19 / 2012-03-14
 
-## Bug fixes:
+### Bug fixes:
 
   * Handle loading psych vs syck properly. Fixes #298
   * Make sure Date objects don't leak in via Marshal
   * Perform Date => Time coercion on yaml loading. Fixes #266
 
-# 1.8.18 / 2012-03-11
+## 1.8.18 / 2012-03-11
 
-## Bug fixes:
+### Bug fixes:
 
   * Use Psych API to emit more compatible YAML
   * Download and write inside `gem fetch` directly. Fixes #289
@@ -5155,14 +5157,14 @@ Security fixes:
   * Search everywhere for a spec for `gem spec`. Fixes #288
   * Fix Gem.all_load_path. Fixes #171
 
-# 1.8.17 / 2012-02-17
+## 1.8.17 / 2012-02-17
 
-## Enhancements:
+### Enhancements:
 
   * Add MacRuby to the list of special cases for platforms (ferrous26)
   * Add a default for where to install rubygems itself
 
-## Bug fixes:
+### Bug fixes:
 
   * Fixed gem loading issue caused by dependencies not resolving.
   * Fixed umask error when stdlib is required and unresolved dependencies exist.
@@ -5170,59 +5172,59 @@ Security fixes:
   * Define SUCKAGE better, ie only MRI 1.9.2
   * Propagate env-shebang to the pristine command if set for install.
 
-# 1.8.16 / 2012-02-12
+## 1.8.16 / 2012-02-12
 
-## Bug fixes:
+### Bug fixes:
 
   * Fix gem specification loading when encoding is not UTF-8. #146
   * Allow group writable if umask allows it already.
   * Uniquify the spec list based on directory order priority
 
-# 1.8.15 / 2012-01-06
+## 1.8.15 / 2012-01-06
 
-## Bug fixes:
+### Bug fixes:
 
   * Don't eager load yaml, it creates a bad loop. Fixes #256
 
-# 1.8.14 / 2012-01-05
+## 1.8.14 / 2012-01-05
 
-## Bug fixes:
+### Bug fixes:
 
   * Ignore old/bad cache data in Version
   * Make sure our YAML workarounds are loaded properly. Fixes #250.
 
-# 1.8.13 / 2011-12-21
+## 1.8.13 / 2011-12-21
 
-## Bug fixes:
+### Bug fixes:
 
   * Check loaded_specs properly when trying to satisfy a dep
 
-## Enhancements:
+### Enhancements:
 
   * Remove using #loaded_path? for performance
   * Remove Zlib workaround for Windows build.
 
-# 1.8.12 / 2011-12-02
+## 1.8.12 / 2011-12-02
 
-## Bug fixes:
+### Bug fixes:
 
   * Handle more cases where Syck's DefaultKey showed up in requirements
     and wasn't cleaned out.
 
-# 1.8.11 / 2011-10-03
+## 1.8.11 / 2011-10-03
 
-## Bug fixes:
+### Bug fixes:
 
   * Deprecate was moved to Gem::Deprecate to stop polluting the top-level
     namespace.
 
-# 1.8.10 / 2011-08-25
+## 1.8.10 / 2011-08-25
 
 RubyGems 1.8.10 contains a security fix that prevents malicious gems from
 executing code when their specification is loaded.  See
 https://github.com/rubygems/rubygems/pull/165 for details.
 
-## Bug fixes:
+### Bug fixes:
 
   * RubyGems escapes strings in ruby-format specs using #dump instead of #to_s
     and %q to prevent code injection.  Issue #165 by Postmodern
@@ -5233,21 +5235,21 @@ https://github.com/rubygems/rubygems/pull/165 for details.
   * Fixed Syck DefaultKey infecting ruby-format specifications.
   * `gem uninstall a b` no longer stops if gem "a" is not installed.
 
-# 1.8.9 / 2011-08-23
+## 1.8.9 / 2011-08-23
 
-## Bug fixes:
+### Bug fixes:
 
   * Fixed uninstalling multiple gems using `gem uninstall`
   * Gem.use_paths splatted to take multiple paths!  Issue #148
 
-# 1.8.8 / 2011-08-11
+## 1.8.8 / 2011-08-11
 
-## Bug fixes:
+### Bug fixes:
   * The encoding of a gem's YAML spec is now UTF-8.  Issue #149
 
-# 1.8.7 / 2011-08-04
+## 1.8.7 / 2011-08-04
 
-## Bug fixes:
+### Bug fixes:
   * Added missing require for `gem uninstall --format-executable`
   * The correct name of the executable being uninstalled is now displayed with
     --format-executable
@@ -5259,14 +5261,14 @@ https://github.com/rubygems/rubygems/pull/165 for details.
   * Gem repository directories are no longer created world-writable.  Patch by
     Sakuro OZAWA.  Ruby Bug #4930
 
-# 1.8.6 / 2011-07-25
+## 1.8.6 / 2011-07-25
 
-## Enhancements:
+### Enhancements:
 
   * Add autorequires and delay startup of RubyGems until require is called.
     See Ruby bug #4962
 
-## Bug fixes:
+### Bug fixes:
 
   * Restore behavior of Gem::Specification#loaded?  Ruby Bug #5032
   * Clean up SourceIndex.add_specs to not be so damn noisy. (tadman)
@@ -5278,27 +5280,27 @@ https://github.com/rubygems/rubygems/pull/165 for details.
   * Handle the Syck DefaultKey problem once and for all.
   * Fix SystemStackError occurring with "gem list -r -a" on 1.9.
 
-# 1.8.5 / 2011-05-31
+## 1.8.5 / 2011-05-31
 
-## Enhancements:
+### Enhancements:
 
   * The -u option to 'update local source cache' is official deprecated.
   * Remove has_rdoc deprecations from Specification.
 
-## Bug fixes:
+### Bug fixes:
 
   * Handle bad specs more gracefully.
   * Reset any Gem paths changed in the installer.
 
-# 1.8.4 / 2011-05-25
+## 1.8.4 / 2011-05-25
 
-## Enhancements:
+### Enhancements:
 
   * Removed default_executable deprecations from Specification.
 
-# 1.8.3 / 2011-05-19
+## 1.8.3 / 2011-05-19
 
-## Bug fixes:
+### Bug fixes:
 
   * Fix independent testing of test_gem_package_tar_output.  Ruby Bug #4686 by
     Shota Fukumori
@@ -5307,33 +5309,33 @@ https://github.com/rubygems/rubygems/pull/165 for details.
   * Fixed some bad calls left behind after rolling out some refactorings.
   * Syck has a parse error on (good) times output from Psych. (dazuma, et al)
 
-# 1.8.2 / 2011-05-11
+## 1.8.2 / 2011-05-11
 
-## Enhancements:
+### Enhancements:
 
   * Moved #outdated from OutdatedCommand to Specification (for Isolate).
   * Print out a warning about missing executables.
 
-## Bug fixes:
+### Bug fixes:
 
   * Added missing requires to fix various upgrade issues.
   * `gem pristine` respects multiple gem repositories.
   * setup.rb now execs with --disable-gems when possible
 
-# 1.8.1 / 2011-05-05
+## 1.8.1 / 2011-05-05
 
-## Enhancements:
+### Enhancements:
 
   * Added Gem::Requirement#specific? and Gem::Dependency#specific?
 
-## Bug fixes:
+### Bug fixes:
 
   * Typo on Indexer rendered it useless on Windows
   * gem dep can fetch remote dependencies for non-latest gems again.
   * gem uninstall with multiple versions no longer crashes with ArgumentError
   * Always use binary mode for File.open to keep Windows happy
 
-# 1.8.0 / 2011-04-34
+## 1.8.0 / 2011-04-34
 
 This release focused on properly encapsulating functionality.  Most of this
 work focused on moving functionality out of Gem::SourceIndex and
@@ -5348,7 +5350,7 @@ extensions.  You will need to run `gem pristine gem_with_extension --
 --build-arg` to regenerate a gem with an extension where it requires special
 build arguments.
 
-## Deprecations:
+### Deprecations:
 
   * DependencyList.from_source_index deprecated the source_index argument.
   * Deprecated Dependency.new(/regex/).
@@ -5369,7 +5371,7 @@ build arguments.
   * Deprecated all of Gem::GemPathSearcher.
   * Deprecated Gem::Specification#default_executable.
 
-## Enhancements:
+### Enhancements:
 
   * Gem::SourceIndex functionality has been moved to Gem::Specification.
     Gem::SourceIndex is completely disconnected from Gem::Specification
@@ -5421,7 +5423,7 @@ build arguments.
     extensions.
   * `gem pristine` can now restore multiple gems.
 
-## Bug fixes:
+### Bug fixes:
 
   * DependencyInstaller passed around a source_index instance but used
     Gem.source_index.
@@ -5433,15 +5435,15 @@ build arguments.
   * `gem pristine` can now restore non-latest gems where the cached gem was
     removed.
 
-# 1.7.1 / 2011-03-32
+## 1.7.1 / 2011-03-32
 
-## Bug fixes:
+### Bug fixes:
   * Fixed missing file in Manifest.txt.  (Also a bug in hoe was fixed where
     `rake check_manifest` showing a diff would not exit with an error.)
 
-# 1.7.0 / 2011-03-32
+## 1.7.0 / 2011-03-32
 
-## Deprecations:
+### Deprecations:
   * Deprecated Gem.all_load_paths, latest_load_paths, promote_load_path, and
     cache.
   * Deprecated RemoteFetcher#open_uri_or_path.
@@ -5453,7 +5455,7 @@ build arguments.
     test_suite_file(=).
   * Deprecated Specification#has_rdoc= and default_executable=
 
-## Enhancements:
+### Enhancements:
   * Added stupid simple deprecation module.
   * Added --spec option to `gem unpack` to output a gem's original metadata
   * Added packaging option to Specification#validate
@@ -5485,7 +5487,7 @@ build arguments.
   * UpdateCommand#gems_to_update now returns (name, version) pairs.
   * UpdateCommand#which_to_update now takes an optional system argument.
 
-## Bug fixes:
+### Bug fixes:
   * Added missing remote fetcher require to pristine command (aarnell)
   * Building gems now checks to ensure all required fields are non-nil
   * Fix option parser when summary is nil.
@@ -5501,17 +5503,17 @@ build arguments.
     Elias Baixas
   * `gem update` now uniq's command line arguments.
 
-# 1.6.2 / 2011-03-08
+## 1.6.2 / 2011-03-08
 
-## Bug fixes:
+### Bug fixes:
 
 * require of an activated gem could cause activation conflicts.  Fixes
   Bug #29056 by Dave Verwer.
 * `gem outdated` now works with up-to-date prerelease gems.
 
-# 1.6.1 / 2011-03-03
+## 1.6.1 / 2011-03-03
 
-## Bug fixes:
+### Bug fixes:
 
 * Installation no longer fails when a dependency from a version that won't be
   installed is unsatisfied.
@@ -5520,9 +5522,9 @@ build arguments.
 * Gem files are cached correctly again.  Patch #29051 by Mamoru Tasaka.
 * Tests now pass with non-022 umask.  Patch #29050 by Mamoru Tasaka.
 
-# 1.6.0 / 2011-02-29
+## 1.6.0 / 2011-02-29
 
-## Deprecations:
+### Deprecations:
 
 * RubyGems no longer requires 'thread'.  Rails < 3 will need to add require
   'thread' to their applications.
@@ -5531,7 +5533,7 @@ build arguments.
 * Gem::LoadError#version_requirements has been removed.  Use
   Gem::LoadError#requirement.
 
-## Enhancements:
+### Enhancements:
 
 * Rewrote how Gem::activate (gem and require) resolves dependencies.
 * Gem::LoadError#version_requirement has been removed. Use
@@ -5559,7 +5561,7 @@ build arguments.
   locally cached gem specifications.
 * SpecFetcher.fetch_spec can now take a string source_uri.
 
-## Bug fixes:
+### Bug fixes:
 
 * Added missing require of Gem::RemoteFetcher to the unpack command.
 * RubyGems now completely removes a previous install when reinstalling.
@@ -5572,28 +5574,26 @@ build arguments.
 * Gem::Security used FileUtils but didn't require it.  Reported by Elia Schito.
 * Gem::Uninstaller now respects --format-executable.
 
-# 1.5.3 / 2011-02-26
+## 1.5.3 / 2011-02-26
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix for a bug in Syck which causes install failures for gems packaged with
   Psych.  Bug #28965 by Aaron Patterson.
 
-# 1.5.2 / 2011-02-10
+## 1.5.2 / 2011-02-10
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed <tt>gem update --system</tt>.  RubyGems can now update itself again.
 
-# 1.5.1 / 2011-02-09
+## 1.5.1 / 2011-02-09
 
-#= NOTE: `gem update --system` is broken. See UPGRADING.rdoc.
-
-## Enhancements:
+### Enhancements:
 
 * Added ability to do gem update --system X.Y.Z.
 
-## Bug fixes:
+### Bug fixes:
 
 * Scrub !!null YAML from 1.9.2 (install and build).
 * Added missing requires for user_interaction.
@@ -5602,11 +5602,9 @@ build arguments.
 * Fixed SilentUI for cygwin; try /dev/null first then fall back to NUL.
 * RubyGems now enforces ruby 1.8.7 or newer.
 
-# 1.5.0 / 2011-01-31
+## 1.5.0 / 2011-01-31
 
-#= NOTE: `gem update --system` is broken. See UPGRADING.rdoc.
-
-## Enhancements:
+### Enhancements:
 
 * Finally fixed all known 1.9.x issues. Upgrading is now possible!
 * Merged huge 1.3.7/ruby-core changes to master.
@@ -5621,7 +5619,7 @@ build arguments.
 * Gem::SilentUI now behaves like Gem::StreamUI for asking questions.  Patch by
   Erik Hollensbe.
 
-## Bug fixes:
+### Bug fixes:
 
 * `gem update` was implicitly doing --system.
 * 1.9.3: Fixed encoding errors causing gem installs to die during rdoc phase.
@@ -5633,25 +5631,25 @@ build arguments.
   Erik Hollensbe.
 * rubygems-update lists its development dependencies again
 
-# 1.4.2 / 2011-01-06
+## 1.4.2 / 2011-01-06
 
-## Bug fixes:
+### Bug fixes:
 
 * Gem::Versions: "1.b1" != "1.b.1", but "1.b1" eql? "1.b.1". Fixes gem indexing.
 * Fixed Gem.find_files.
 * Removed otherwise unused #find_all_dot_rb. Only 6 days old and hella buggy.
 
-# 1.4.1 / 2010-12-31
+## 1.4.1 / 2010-12-31
 
 Since apparently nobody reads my emails, blog posts or the README:
 
 DO NOT UPDATE RUBYGEMS ON RUBY 1.9! See UPGRADING.rdoc for details.
 
-## Bug fixes:
+### Bug fixes:
 
 * Specification#load was untainting a frozen string (via `gem build *.spec`)
 
-# 1.4.0 / 2010-12-30
+## 1.4.0 / 2010-12-30
 
 NOTE: In order to better maintain rubygems and to get it in sync with
 the world (eg, 1.9's 1.3.7 is different from our 1.3.7), rubygems is
@@ -5661,7 +5659,7 @@ You have been warned!
 
 NOTE: We've switched to git/github. See README.rdoc for details.
 
-## Features:
+### Features:
 
 * Added --launch option to `gem server`. (gthiesfeld)
 * Added fuzzy name matching on install failures. (gstark/presidentbeef)
@@ -5671,7 +5669,7 @@ NOTE: We've switched to git/github. See README.rdoc for details.
 * --source is now additive with your current sources.
   Use --clear-sources first to maintain previous behavior.
 
-## Bug fixes:
+### Bug fixes:
 
 * Dependency "~>"s now respect lower-bound prerelease versions.
 * Ensure the gem directories exist on download.
@@ -5682,7 +5680,7 @@ NOTE: We've switched to git/github. See README.rdoc for details.
   Do not depend on rubygems to require stdlib stuff for you. (raggi/tmm1)
 * Treat 1.0.a10 like 1.0.a.10 for sorting, etc. Fixes #27903. (dchelimsky)
 
-# 1.3.7 / 2010-05-13
+## 1.3.7 / 2010-05-13
 
 NOTE:
 
@@ -5693,7 +5691,7 @@ http://gems.rubyforge.org with https://rubygems.org/
 
 http://gems.rubyforge.org will continue to work for the foreseeable future.
 
-## Features:
+### Features:
 
 * `gem` commands
   * `gem install` and `gem fetch` now report alternate platforms when a
@@ -5712,7 +5710,7 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
     in 1.3.6)
 * RubyGems now has platform support for IronRuby.  Patch #27951 by Will Green.
 
-## Bug fixes:
+### Bug fixes:
 
 * Require rubygems/custom_require if --disable-gem was set.  Bug #27700 by
   Roger Pack.
@@ -5724,9 +5722,9 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
 * Gem::PackageTask depends on the package dir like the other rake package
   tasks so dependencies can be hooked up correctly.
 
-# 1.3.6 / 2010-02-17
+## 1.3.6 / 2010-02-17
 
-## Features:
+### Features:
 
 * `gem` commands
   * Added `gem push` and `gem owner` for interacting with modern/Gemcutter
@@ -5738,7 +5736,7 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
     force rebuilding.  Patch #25982 by Akinori MUSHA.
 * Capital letters are now allowed in prerelease versions.
 
-## Bug fixes:
+### Bug fixes:
 
 * Development deps are no longer added to rubygems-update gem so older
   versions can update successfully.
@@ -5757,7 +5755,7 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
 * Gem::RemoteFetcher no longer copies the file if it is where we want it.
   Patch #27409 by Jakub Šťastný.
 
-## Deprecations:
+### Deprecations:
 
 * lib/rubygems/timer.rb has been removed.
 * Gem::Dependency#version_requirements is deprecated and will be removed on or
@@ -5766,23 +5764,23 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
 * Gem::manage_gems was removed in 1.3.3.
 * Time::today was removed in 1.3.3.
 
-# 1.3.5 / 2009-07-21
+## 1.3.5 / 2009-07-21
 
-## Bug fixes:
+### Bug fixes:
 
 * Fix use of prerelease gems.
 * Gem.bin_path no longer escapes path with spaces. Bug #25935 and #26458.
 
-## Deprecations:
+### Deprecations:
 
 * Bulk index update is no longer supported (the code currently remains, but not
   the tests)
 * Gem::manage_gems was removed in 1.3.3.
 * Time::today was removed in 1.3.3.
 
-# 1.3.4 / 2009-05-03
+## 1.3.4 / 2009-05-03
 
-## Bug fixes:
+### Bug fixes:
 
 * Fixed various warnings
 * Gem::ruby_version works correctly for 1.8 branch and trunk
@@ -5793,16 +5791,16 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
   drives.  Bug #25882 by Lars Christensen
 * Fix typo in Gem::Requirement#parse.  Bug #26000 by Mike Gunderloy.
 
-## Deprecations:
+### Deprecations:
 
 * Bulk index update is no longer supported (the code currently remains, but not
   the tests)
 * Gem::manage_gems was removed in 1.3.3.
 * Time::today was removed in 1.3.3.
 
-# 1.3.3 / 2009-05-04
+## 1.3.3 / 2009-05-04
 
-## Features:
+### Features:
 
 * `gem server` allows port names (from /etc/services) with --port.
 * `gem server` now has search that jumps to RDoc.  Patch #22959 by Vladimir
@@ -5812,7 +5810,7 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
 * Gem::Specification#has_rdoc= is deprecated and ignored (defaults to true)
 * RDoc is now generated regardless of Gem::Specification#has_rdoc?
 
-## Bug fixes:
+### Bug fixes:
 
 * `gem clean` now cleans up --user-install gems.  Bug #25516 by Brett
   Eisenberg.
@@ -5834,15 +5832,15 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
 * Raise Gem::LoadError if Kernel#gem fails due to previously-loaded gem.  Bug
   reported by Alf Mikula.
 
-## Deprecations:
+### Deprecations:
 
 * Gem::manage_gems has been removed.
 * Time::today has been removed early.  There was no way to make it warn and be
   easy to override with user code.
 
-# 1.3.2 / 2009-04-15
+## 1.3.2 / 2009-04-15
 
-## Features:
+### Features:
 
 * RubyGems now loads plugins from rubygems_plugin.rb in installed gems.
   This can be used to add commands (See Gem::CommandManager) or add
@@ -5858,9 +5856,9 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
 * Various improvements to build arguments for installing gems.
 * `gem contents` added --all and --no-prefix.
 * Gem::Specification
-  * #validate strips directories and errors on not-files.
-  * #description no longer removes newlines.
-  * #name must be a String.
+  * `#validate` strips directories and errors on not-files.
+  * `#description` no longer removes newlines.
+  * `#name` must be a String.
   * FIXME and TODO are no longer allowed in various fields.
   * Added support for a license attribute.  Feature #11041 (partial).
   * Removed Gem::Specification::list, too much process growth.  Bug #23668 by
@@ -5870,7 +5868,7 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
   * Modern indices can now be updated incrementally.
   * Legacy indices can be updated separately from modern.
 
-## Bug fixes:
+### Bug fixes:
 
 * Better gem activation error message. Patch #23082.
 * Kernel methods are now private.  Patch #20801 by James M. Lawrence.
@@ -5896,7 +5894,7 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
   * Deal with extraneous quotation mark when autogenerating .bat file on MS
     Windows.  Bug #22712.
 
-## Deprecations:
+### Deprecations:
 
 * Gem::manage_gems has been removed.
 * Time::today will be removed in RubyGems 1.4.
@@ -5904,9 +5902,9 @@ http://gems.rubyforge.org will continue to work for the foreseeable future.
 Special thanks to Chad Wooley for backwards compatibility testing and Luis
 Lavena and Daniel Berger for continuing windows support.
 
-# 1.3.1 / 2008-10-28
+## 1.3.1 / 2008-10-28
 
-## Bug fixes:
+### Bug fixes:
 
 * Disregard ownership of ~ under Windows while creating ~/.gem.  Fixes
   issues related to no uid support under Windows.
@@ -5917,13 +5915,13 @@ Lavena and Daniel Berger for continuing windows support.
 * Gem::location_of_caller now behaves on Windows.  Patch by Daniel Berger.
 * Silence PATH warning.
 
-## Deprecations:
+### Deprecations:
 
 * Gem::manage_gems will be removed on or after March 2009.
 
-# 1.3.0 / 2008-09-25
+## 1.3.0 / 2008-09-25
 
-## Features:
+### Features:
 
 * RubyGems doesn't print LOCAL/REMOTE titles for `gem query` and friends if
   stdout is not a TTY, except with --both.
@@ -5937,12 +5935,12 @@ Lavena and Daniel Berger for continuing windows support.
 * RubyGems now updates the ri cache when the rdoc gem is installed and
   documentation is generated.
 
-## Deprecations:
+### Deprecations:
 
 * Gem::manage_gems now warns when called.  It will be removed on or after March
   2009.
 
-## Bug fixes:
+### Bug fixes:
 
 * RubyGems 1.3.0+ now updates when no previous rubygems-update is installed.
   Bug #20775 by Hemant Kumar.
@@ -5966,7 +5964,7 @@ Lavena and Daniel Berger for continuing windows support.
 * `gem lock --strict` works again.  Patch #21814 by Sven Engelhardt.
 * Platform detection for Solaris was improved.  Patch #21911 by Bob Remeika.
 
-## Enhancements:
+### Enhancements:
 
 * `gem help install` now describes _version_ argument to executable stubs
 * `gem help environment` describes environment variables and ~/.gemrc and
@@ -5992,9 +5990,9 @@ Lavena and Daniel Berger for continuing windows support.
 * test/test_ext_configure_builder.rb
   * Locale-free patch by Yusuke Endoh [ruby-core:17444].
 
-# 1.2.0 / 2008-06-21
+## 1.2.0 / 2008-06-21
 
-## Features:
+### Features:
 
 * RubyGems no longer performs bulk updates and instead only fetches the gemspec
   files it needs.  Alternate sources will need to upgrade to RubyGems 1.2 to
@@ -6013,7 +6011,7 @@ Lavena and Daniel Berger for continuing windows support.
 * setup.rb now handles --vendor and --destdir for packagers
 * `gem stale` command that lists gems by last access time
 
-## Bug fixes:
+### Bug fixes:
 
 * File modes from gems are now honored, patch #19737
 * Marshal Gem::Specification objects from the future can now be loaded.
@@ -6028,7 +6026,7 @@ Lavena and Daniel Berger for continuing windows support.
 * Gem::DependencyInstaller resets installed gems every install, bug #19444
 * Gem.default_path is now honored if GEM_PATH is not set, patch #19502
 
-## Enhancements:
+### Enhancements:
 
 * setup.rb
   * stub files created by RubyGems 0.7.x and older are no longer removed.  When
@@ -6047,9 +6045,9 @@ Lavena and Daniel Berger for continuing windows support.
 * Gem::RemoteFetcher now performs persistent connections for HEAD requests,
   bug #7973
 
-# 1.1.1 / 2008-04-11
+## 1.1.1 / 2008-04-11
 
-## Bug fixes:
+### Bug fixes:
 
 * Gem.prefix now returns non-nil only when RubyGems was installed outside
   sitelibdir or libdir.
@@ -6064,9 +6062,9 @@ Lavena and Daniel Berger for continuing windows support.
 * Gem::RemoteFetcher handles Errno::ECONNABORTED.
 * Printing of release notes fixed.
 
-# 1.1.0 / 2008-03-29
+## 1.1.0 / 2008-03-29
 
-## Features:
+### Features:
 
 * RubyGems now uses persistent connections on index updates.  Index updates are
   much faster now.
@@ -6078,7 +6076,7 @@ Lavena and Daniel Berger for continuing windows support.
 * `gem spec` now extracts specifications from .gem files.
 * `gem query --installed` to aid automation of checking for gems.
 
-## Bug fixes:
+### Bug fixes:
 
 * RubyGems works with both Config and RbConfig now.
 * Executables are now cleaned upon uninstall.
@@ -6094,7 +6092,7 @@ Lavena and Daniel Berger for continuing windows support.
 * Gem stub scripts on windows now work outside Gem.bindir.
 * `gem sources -r` now works without network access.
 
-## Enhancements:
+### Enhancements:
 
 * RubyGems now requires Ruby > 1.8.3.
 * Release notes are now printed upon installation.
@@ -6105,26 +6103,26 @@ Lavena and Daniel Berger for continuing windows support.
 
 For a full list of changes to RubyGems, see the git log.
 
-# 1.0.1 / 2007-12-20
+## 1.0.1 / 2007-12-20
 
-## Bug fixes:
+### Bug fixes:
 
 * Installation on Ruby 1.8.3 through 1.8.5 fixed
 * `gem build` on 1.8.3 fixed
 
-## Enhancements:
+### Enhancements:
 
 * Since RubyGems 0.9.5, RubyGems is no longer supported on Ruby 1.8.2 or older,
   this is official in RubyGems 1.0.1.
 
-# 1.0.0 / 2007-12-20
+## 1.0.0 / 2007-12-20
 
-## Features:
+### Features:
 
 * RubyGems warns about various problems with gemspecs during gem building
 * More-consistent versioning for the RubyGems software
 
-## Enhancements:
+### Enhancements:
 
 * Fixed various bugs and problems with installing gems on Windows
 * Fixed using `gem server` for installing gems
@@ -6138,7 +6136,7 @@ For a full list of changes to RubyGems, see the git log.
 * `gem unpack` can now unpack into a specific directory with --target
 * OpenSSL is no longer required by default
 
-## Breaking changes:
+### Breaking changes:
 
 * Kernel#require_gem has been removed
 * Executables without a shebang will not be wrapped in a future version, this
@@ -6150,9 +6148,9 @@ For a full list of changes to RubyGems, see the git log.
 * Gem::Specification#autorequire= has been deprecated
 * Time::today will be removed in a future version
 
-# 0.9.5 / 2007-11-19
+## 0.9.5 / 2007-11-19
 
-## Features:
+### Features:
 
 * Platform support
 * Automatic installation of platform gems
@@ -6164,7 +6162,7 @@ For a full list of changes to RubyGems, see the git log.
 * Improved stubs and `gem.bat` on mswin, including better compatibility
   with the One-Click Installer.
 
-## Enhancements:
+### Enhancements:
 
 * Time::today is deprecated and will be removed at a future date
 * Gem::manage_gems is deprecated and will be removed at a future date
@@ -6209,13 +6207,13 @@ Special thanks to:
 * Tom Copeland
 * Wilson Bilkovich
 
-# 0.9.4 / 2007-05-23
+## 0.9.4 / 2007-05-23
 
 If you are experiencing problems with the source index (e.g. strange
 "No Method" errors), or problems with zlib (e.g. "Buffer Error"
 message), we recommend upgrading to RubyGems 0.9.4.
 
-## Bug fixes:
+### Bug fixes:
 
 * Several people have been experiencing problems with no method errors
   on the source index cache.  The source index cache is now a bit more
@@ -6227,9 +6225,9 @@ message), we recommend upgrading to RubyGems 0.9.4.
 * Several sub-commands were accidentally dropped from the "gem" command.
   These commands have been restored.
 
-# 0.9.3 / 2007-05-10
+## 0.9.3 / 2007-05-10
 
-## Bug fixes:
+### Bug fixes:
 
 The ZLib library on Windows will occasionally complains about a buffer error
 when unpacking gems.  The Gems software has a workaround for that problem, but
@@ -6237,19 +6235,19 @@ the workaround was only enabled for versions of ZLib 1.2.1 or earlier.  We
 have received several reports of the error occurring with ZLib 1.2.3, so we
 have permanently enabled the work around on all versions.
 
-# 0.9.2 / 2007-02-05
+## 0.9.2 / 2007-02-05
 
-## Bug fixes:
+### Bug fixes:
 
 * The "unpack" command now works properly.
 * User name and password are now passed properly to the authenticating
   proxy when downloading gems.
 
-# 0.9.1 / 2007-01-16
+## 0.9.1 / 2007-01-16
 
 See git log
 
-# 0.9.0 / 2006-06-28
+## 0.9.0 / 2006-06-28
 
 Finally, the much anticipated RubyGems version 0.9.0 is now available.
 This release includes a number of new features and bug fixes.  The
@@ -6257,7 +6255,7 @@ number one change is that we can now download the gem index
 incrementally.  This will greatly speed up the gem command when only a
 few gems are out of date.
 
-## Enhancements:
+### Enhancements:
 
 * The gem index is now downloaded incrementally, only updating entries
   that are out of date.  If more than 50 entries are out of date, we
@@ -6284,7 +6282,7 @@ few gems are out of date.
 * .rbw is now a supported suffix for RubyGem's custom require.
 * Several Ruby 1.9 compatibility fixes (Eric Hodel).
 
-## Bug fixes:
+### Bug fixes:
 
 * Added dashes to gemspecs generated in Ruby 1.8.3.  This solves some
   cross-Ruby version compatibility issues.
@@ -6296,7 +6294,7 @@ few gems are out of date.
 * Fixed prefix handling for native expressions (patch by Aaron Patterson).
 * Fixed several Upgrade => Update typos.
 
-# 0.8.11 / 2005-07-13
+## 0.8.11 / 2005-07-13
 
 * -y is a synonym for --include-dependencies.
 * Better handling of errors in the top level rescue clause.
@@ -6315,7 +6313,7 @@ few gems are out of date.
 * Added David Glasser's install-from-mirror patch.
 * Additional internal structural cleanup and test reorganization.
 
-# 0.8.10 / 2005-03-27
+## 0.8.10 / 2005-03-27
 
 * In multi-user environments, it is common to supply multiple versions of gems
   (for example Rails), allowing individual users to select the version of the
@@ -6326,16 +6324,16 @@ few gems are out of date.
   installed, then the "gem update --system" command will download a new
   update, but install the latest update prior to the download.
 
-# 0.8.9
+## 0.8.9
 
 Never released
 
-# 0.8.8 / 2005-03-14
+## 0.8.8 / 2005-03-14
 
 * Moved the master definition of class Requirement back under version.
   Kept the body of Requirement under Gem.
 
-# 0.8.7 / 2005-03-14
+## 0.8.7 / 2005-03-14
 
 Even though it has only been a few weeks since that last release,
 there are quite a number of new features in 0.8.7.  A complete list of
@@ -6388,11 +6386,11 @@ file system.  You can read more about them here:
 * gemconfigure: http://docs.rubygems.org/read/chapter/4#page73
 * gemwhich: http://docs.rubygems.org/read/chapter/17
 
-# 0.8.6 / 2005-02-27
+## 0.8.6 / 2005-02-27
 
 * Fixed a small bug with shebang construction
 
-# 0.8.5 / 2005-02-26
+## 0.8.5 / 2005-02-26
 
 Do you know how you used to dread getting the following message while
 installing gems?
@@ -6414,7 +6412,7 @@ us.  No RDoc generation was included in the following times.
 The new caching code is at least 3x faster than previous versions.  Woo
 Hoo!
 
-# 0.8.4 / 2005-01-01
+## 0.8.4 / 2005-01-01
 
 * Rubygems 0.8.3's installer was broken unless you already had an older
   version of RubyGems installed.  That's fixed.
@@ -6424,7 +6422,7 @@ Hoo!
 * Support for lower-cased Gem file names (for you, Paul Duncan :)
 * Erik Veenstra's patch for making Gem versions sortable.
 
-# 0.8.3 / 2004-12-07
+## 0.8.3 / 2004-12-07
 
 No real earth shattering news here, but there were a number of really
 annoying issues involving other libraries that RubyGems depends upon.
@@ -6466,11 +6464,11 @@ There has been some minor usability enhancements and changes ...
   names.  This was useful for him while testing libs that he had in
   development.
 
-# 0.8.1 / 2004-09-17
+## 0.8.1 / 2004-09-17
 
 * Quick release to capture some bug fixes.
 
-# 0.8.0 / 2004-09-15
+## 0.8.0 / 2004-09-15
 
 * Remove need for library stubs.  Set the RUBYOPT environment variable to
   include "rrubygems", and a normal require will find gem files.  Continue to
@@ -6493,15 +6491,15 @@ There has been some minor usability enhancements and changes ...
   to pick.
 * Added "gem unpack" for "unpacking" a gem to the current directory
 
-# 0.7.0 / 2004-07-09
+## 0.7.0 / 2004-07-09
 
 See git log
 
-# 0.6.1 / 2004-06-08
+## 0.6.1 / 2004-06-08
 
 See git log
 
-# 0.6.0 / 2004-06-08
+## 0.6.0 / 2004-06-08
 
 * Collapse output of --search and --list (and gem_server) operations so that
   each gem is listed only once, with each of its versions listed on the same
@@ -6514,7 +6512,7 @@ See git log
     spec.required_ruby_version = "> 1.8.0"
 * --install-stub defaults to true, so library stubs are created
 
-# 0.5.0 / 2004-06-06
+## 0.5.0 / 2004-06-06
 
 * Jim added the ability to specify version constraints to avoid API
   incompatibilities.  This has been the subject of much debate for the past
@@ -6537,11 +6535,11 @@ See git log
   automatically included.
 * Some small bug fixes
 
-# 0.4.0 / 2004-05-30
+## 0.4.0 / 2004-05-30
 
 * Minor bug fixes including Windows compatibility issues
 
-# 0.3.0 / 2004-04-30
+## 0.3.0 / 2004-04-30
 
 * Cleanup of command-line arguments and handling.  Most commands accept a
   --local or --remote modifier.
@@ -6562,6 +6560,6 @@ See git log
 * Generally improved error messages (still more work to do)
 * Rearranged gem directory structure for cleanliness.
 
-# 0.2.0 / 2004-03-14
+## 0.2.0 / 2004-03-14
 
 * Initial public release

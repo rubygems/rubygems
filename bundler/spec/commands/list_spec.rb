@@ -26,6 +26,20 @@ RSpec.describe "bundle list" do
     end
   end
 
+  context "with invalid format option" do
+    before do
+      install_gemfile <<-G
+        source "https://gem.repo1"
+      G
+    end
+
+    it "raises an error" do
+      bundle "list --format=nope", raise_on_error: false
+
+      expect(err).to eq "Unknown option`--format=nope`. Supported formats: `json`"
+    end
+  end
+
   describe "with without-group option" do
     before do
       install_gemfile <<-G
@@ -47,7 +61,7 @@ RSpec.describe "bundle list" do
       end
 
       it "prints the gems not in the specified group with json" do
-        bundle "list --without-group test --json"
+        bundle "list --without-group test --format=json"
 
         gem = find_gem_name(json: out, name: "myrack")
         expect(gem["version"]).to eq("1.0.0")
@@ -76,7 +90,7 @@ RSpec.describe "bundle list" do
       end
 
       it "prints the gems not in the specified groups with json" do
-        bundle "list --without-group test production --json"
+        bundle "list --without-group test production --format=json"
 
         gem = find_gem_name(json: out, name: "myrack")
         expect(gem["version"]).to eq("1.0.0")
@@ -108,7 +122,7 @@ RSpec.describe "bundle list" do
       end
 
       it "prints the gems in the specified group with json" do
-        bundle "list --only-group default --json"
+        bundle "list --only-group default --format=json"
 
         gem = find_gem_name(json: out, name: "myrack")
         expect(gem["version"]).to eq("1.0.0")
@@ -135,7 +149,7 @@ RSpec.describe "bundle list" do
       end
 
       it "prints the gems in the specified groups with json" do
-        bundle "list --only-group default production --json"
+        bundle "list --only-group default production --format=json"
 
         gem = find_gem_name(json: out, name: "myrack")
         expect(gem["version"]).to eq("1.0.0")
@@ -165,7 +179,7 @@ RSpec.describe "bundle list" do
     end
 
     it "prints only the name of the gems in the bundle with json" do
-      bundle "list --name-only --json"
+      bundle "list --name-only --format=json"
 
       gem = find_gem_name(json: out, name: "myrack")
       expect(gem.keys).to eq(["name"])
@@ -208,7 +222,7 @@ RSpec.describe "bundle list" do
     end
 
     it "prints the path of each gem in the bundle with json" do
-      bundle "list --paths --json"
+      bundle "list --paths --format=json"
 
       gem = find_gem_name(json: out, name: "rails")
       expect(gem["path"]).to match(%r{.*\/rails\-2\.3\.2})
@@ -242,7 +256,7 @@ RSpec.describe "bundle list" do
     end
 
     it "prints empty json" do
-      bundle "list --json"
+      bundle "list --format=json"
       expect(parse_json(out)["gems"]).to eq([])
     end
   end
@@ -263,7 +277,7 @@ RSpec.describe "bundle list" do
     end
 
     it "lists gems installed in the bundle with json" do
-      bundle "list --json"
+      bundle "list --format=json"
 
       gem = find_gem_name(json: out, name: "myrack")
       expect(gem["version"]).to eq("1.0.0")

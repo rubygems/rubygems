@@ -6,7 +6,7 @@ module Bundler
       @options = options
       @without_group = options["without-group"].map(&:to_sym)
       @only_group = options["only-group"].map(&:to_sym)
-      @format_json = options["json"]
+      @format = options["format"]
     end
 
     def run
@@ -26,10 +26,13 @@ module Bundler
         end
       end.reject {|s| s.name == "bundler" }.sort_by(&:name)
 
-      if @format_json
+      case @format
+      when "json"
         print_json(specs: specs)
-      else
+      when nil
         print_human(specs: specs)
+      else
+        raise InvalidOption, "Unknown option`--format=#{@format}`. Supported formats: `json`"
       end
     end
 

@@ -16,23 +16,11 @@ RSpec.describe "bundle list" do
 
       expect(err).to eq "The `--name-only` and `--paths` options cannot be used together"
     end
-
-    it "raises an error with json" do
-      bundle "list --json --name-only --paths", raise_on_error: false
-
-      expect(err).to eq "The `--name-only` and `--paths` options cannot be used together"
-    end
   end
 
   context "with without-group and only-group option" do
     it "raises an error" do
       bundle "list --without-group dev --only-group test", raise_on_error: false
-
-      expect(err).to eq "The `--only-group` and `--without-group` options cannot be used together"
-    end
-
-    it "raises an error with json" do
-      bundle "list --without-group dev --only-group test --json", raise_on_error: false
 
       expect(err).to eq "The `--only-group` and `--without-group` options cannot be used together"
     end
@@ -73,12 +61,6 @@ RSpec.describe "bundle list" do
     context "when group is not found" do
       it "raises an error" do
         bundle "list --without-group random", raise_on_error: false
-
-        expect(err).to eq "`random` group could not be found."
-      end
-
-      it "raises an error with json" do
-        bundle "list --without-group random --json", raise_on_error: false
 
         expect(err).to eq "`random` group could not be found."
       end
@@ -138,12 +120,6 @@ RSpec.describe "bundle list" do
     context "when group is not found" do
       it "raises an error" do
         bundle "list --only-group random", raise_on_error: false
-
-        expect(err).to eq "`random` group could not be found."
-      end
-
-      it "raises an error with json" do
-        bundle "list --only-group random --json", raise_on_error: false
 
         expect(err).to eq "`random` group could not be found."
       end

@@ -267,7 +267,7 @@ RSpec.describe "bundle list" do
 
     it "prints empty json" do
       bundle "list --json"
-      expect(parse_json(out.strip)["gems"]).to eq([])
+      expect(parse_json(out)["gems"]).to eq([])
     end
   end
 

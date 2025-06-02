@@ -50,7 +50,7 @@ module Bundler
             h[:path] = s.full_gem_path if @options["paths"]
           end
         end
-      end.to_a
+      end
       Bundler.ui.info({ gems: gems }.to_json)
     end
 

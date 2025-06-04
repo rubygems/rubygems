@@ -80,8 +80,11 @@ jobs:
           bundler: none
       - name: Install Dependencies
         run: bin/rake setup
-      - name: Run Lint
+      - name: Run Ruby Lint
         run: bin/rake rubocop
+      - name: Run Markdown Lint
+        run: bin/mdl -g . -r MD001,MD025
+        if: matrix.ruby.name == 'ruby'
       - name: Generate docs
         run: bin/rake docs
         if: matrix.ruby.name != 'jruby'

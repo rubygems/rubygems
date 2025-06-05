@@ -156,8 +156,8 @@ module Bundler
     end
 
     def ensure_same_dependencies(spec, old_deps, new_deps)
-      new_deps = new_deps.reject {|d| d.type == :development }
-      old_deps = old_deps.reject {|d| d.type == :development }
+      new_deps = new_deps.reject(&:development?)
+      old_deps = old_deps.reject(&:development?)
 
       without_type = proc {|d| Gem::Dependency.new(d.name, d.requirements_list.sort) }
       new_deps.map!(&without_type)

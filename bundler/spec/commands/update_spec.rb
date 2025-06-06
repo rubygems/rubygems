@@ -1804,6 +1804,30 @@ RSpec.describe "bundle update --bundler" do
     bundle "update --bundler=2.3.9", env: { "BUNDLE_FROZEN" => "true" }, raise_on_error: false
     expect(err).to include("An update to the version of bundler itself was requested, but the lockfile can't be updated because frozen mode is set")
   end
+
+  it "succeeds when $GEM_HOME directory and its parents don't exist" do
+    build_repo4 do
+      build_gem "bundler", "2.5.9"
+      build_gem "myrack", "1.0"
+    end
+
+    install_gemfile <<-G
+      source "https://gem.repo4"
+      gem "myrack"
+    G
+
+    nonexistent_gem_home = tmp("nonexistent_parent/nested/gem_home")
+
+    without_env_side_effects do
+      ENV["GEM_HOME"] = nonexistent_gem_home.to_s
+      bundle "update --bundler", verbose: true
+
+      expect(out).to include("Using bundler")
+      expect(out).not_to include("Errno::ENOENT")
+      expect(out).not_to include("No such file or directory")
+      expect(out).to include("Bundle updated!")
+    end
+  end
 end
 
 # these specs are slow and focus on integration and therefore are not exhaustive. unit specs elsewhere handle that.

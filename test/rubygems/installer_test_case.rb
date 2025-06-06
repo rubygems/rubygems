@@ -221,6 +221,23 @@ class Gem::InstallerTestCase < Gem::TestCase
                        force: force)
   end
 
+  def test_ensure_writable_dir_creates_missing_parent_directories
+    installer = setup_base_installer(false)
+
+    non_existent_parent = File.join(@tempdir, "non_existent_parent")
+    target_dir = File.join(non_existent_parent, "target_dir")
+
+    refute Dir.exist?(non_existent_parent), "Parent directory should not exist"
+    refute Dir.exist?(target_dir), "Target directory should not exist"
+
+    assert_nothing_raised do
+      installer.send(:ensure_writable_dir, target_dir)
+    end
+
+    assert Dir.exist?(target_dir), "Target directory should be created"
+    assert Dir.exist?(non_existent_parent), "Parent directory should be created"
+  end
+
   @@symlink_supported = nil
 
   # This is needed for Windows environment without symlink support enabled (the default

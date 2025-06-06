@@ -61,11 +61,7 @@ module Bundler
     end
 
     def ensure_writable_dir(dir)
-      super
-    rescue Gem::FilePermissionError
-      # Ignore permission checks in RubyGems. Instead, go on, and try to write
-      # for real. We properly handle permission errors when they happen.
-      nil
+      FileUtils.mkdir_p dir, mode: options[:dir_mode] && 0o755
     end
 
     def generate_plugins

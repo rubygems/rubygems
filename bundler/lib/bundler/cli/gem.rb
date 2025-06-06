@@ -160,6 +160,12 @@ module Bundler
         config[:ignore_paths] << ".circleci/"
       end
 
+      if ask_and_set(:zeitwerk, "Do you want to use Zeitwerk to load classes?",
+        "With Zeitwerk (https://github.com/fxn/zeitwerk), Ruby can load classes automatically " \
+          "based on name conventions so that you don't have to require files manually.")
+        config[:zeitwerk] = true
+      end
+
       if ask_and_set(:mit, "Do you want to license your code permissively under the MIT license?",
         "This means that any other developer or company will be legally allowed to use your code " \
         "for free as long as they admit you created it. You can read more about the MIT license " \

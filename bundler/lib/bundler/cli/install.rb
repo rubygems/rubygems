@@ -64,7 +64,7 @@ module Bundler
           removed_message: "The --binstubs option have been removed in favor of `bundle binstubs --all`"
       end
 
-      Plugin.gemfile_install(Bundler.default_gemfile) if Bundler.feature_flag.plugins?
+      Plugin.gemfile_install(Bundler.default_gemfile, Bundler.default_lockfile) if Bundler.feature_flag.plugins?
 
       # For install we want to enable strict validation
       # (rather than some optimizations we perform at app runtime).

@@ -105,6 +105,8 @@ class Changelog
 
   def cut!(previous_version, included_pull_requests, extra_entry: nil)
     full_new_changelog = [
+      "# Changelog",
+      "",
       format_header,
       "",
       unreleased_notes_for(included_pull_requests, extra_entry: extra_entry),

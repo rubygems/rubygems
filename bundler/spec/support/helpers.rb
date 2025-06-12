@@ -20,7 +20,7 @@ module Spec
     def reset!
       Dir.glob("#{tmp}/{gems/*,*}", File::FNM_DOTMATCH).each do |dir|
         next if %w[base base_system remote1 rubocop standard gems rubygems . ..].include?(File.basename(dir))
-        FileUtils.rm_rf(dir)
+        FileUtils.rm_r(dir)
       end
       FileUtils.mkdir_p(home)
       FileUtils.mkdir_p(tmpdir)
@@ -76,9 +76,11 @@ module Spec
       requires = options.delete(:requires) || []
 
       dir = options.delete(:dir) || bundled_app
+      custom_load_path = options.delete(:load_path)
 
       load_path = []
       load_path << spec_dir
+      load_path << custom_load_path if custom_load_path
 
       build_ruby_options = { load_path: load_path, requires: requires, env: env }
       build_ruby_options.merge!(artifice: options.delete(:artifice)) if options.key?(:artifice)
@@ -170,12 +172,8 @@ module Spec
         requires << "#{Path.spec_dir}/support/artifice/#{artifice}.rb"
       end
 
-      hax_path = "#{Path.spec_dir}/support/hax.rb"
+      requires << "#{Path.spec_dir}/support/hax.rb"
 
-      # For specs that need to ignore the default Bundler gem, load hax before
-      # anything else since other stuff may actually load bundler and not skip
-      # the default version
-      env.include?("BUNDLER_IGNORE_DEFAULT_GEM") ? requires.prepend(hax_path) : requires.append(hax_path)
       require_option = requires.map {|r| "-r#{r}" }
 
       [env, [Gem.ruby, *lib_option, *require_option].compact.join(" ")]
@@ -190,7 +188,19 @@ module Spec
       env = options[:env] || {}
       env["RUBYOPT"] = opt_add(opt_add("-r#{spec_dir}/support/hax.rb", env["RUBYOPT"]), ENV["RUBYOPT"])
       options[:env] = env
-      sys_exec("#{Path.gem_bin} #{command}", options)
+
+      # Sometimes `gem install` commands hang at dns resolution, which has a
+      # default timeout of 60 seconds. When that happens, the timeout for a
+      # command is expired too. So give `gem install` commands a bit more time.
+      options[:timeout] = 120
+
+      allowed_warning = options.delete(:allowed_warning)
+
+      output = sys_exec("#{Path.gem_bin} #{command}", options)
+      stderr = last_command.stderr
+
+      raise stderr if stderr.include?("WARNING") && !allowed_rubygems_warning?(stderr, allowed_warning)
+      output
     end
 
     def rake
@@ -228,10 +238,20 @@ module Spec
     end
 
     def create_file(path, contents = "")
+      contents = strip_whitespace(contents)
       path = Pathname.new(path).expand_path(bundled_app) unless path.is_a?(Pathname)
       path.dirname.mkpath
-      File.open(path.to_s, "w") do |f|
-        f.puts strip_whitespace(contents)
+      path.write(contents)
+
+      # if the file is a script, create respective bat file on Windows
+      if contents.start_with?("#!")
+        path.chmod(0o755)
+        if Gem.win_platform?
+          path.sub_ext(".bat").write <<~SCRIPT
+            @ECHO OFF
+            @"ruby.exe" "%~dpn0" %*
+          SCRIPT
+        end
       end
     end
 
@@ -291,18 +311,16 @@ module Spec
       options = gems.last.is_a?(Hash) ? gems.pop : {}
       install_dir = options.fetch(:path, system_gem_path)
       default = options.fetch(:default, false)
-      with_gem_path_as(install_dir) do
-        gem_repo = options.fetch(:gem_repo, gem_repo1)
-        gems.each do |g|
-          gem_name = g.to_s
-          if gem_name.start_with?("bundler")
-            version = gem_name.match(/\Abundler-(?<version>.*)\z/)[:version] if gem_name != "bundler"
-            with_built_bundler(version) {|gem_path| install_gem(gem_path, install_dir, default) }
-          elsif %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}.match?(gem_name)
-            install_gem(gem_name, install_dir, default)
-          else
-            install_gem("#{gem_repo}/gems/#{gem_name}.gem", install_dir, default)
-          end
+      gems.each do |g|
+        gem_name = g.to_s
+        if gem_name.start_with?("bundler")
+          version = gem_name.match(/\Abundler-(?<version>.*)\z/)[:version] if gem_name != "bundler"
+          with_built_bundler(version) {|gem_path| install_gem(gem_path, install_dir, default) }
+        elsif %r{\A(?:[a-zA-Z]:)?/.*\.gem\z}.match?(gem_name)
+          install_gem(gem_name, install_dir, default)
+        else
+          gem_repo = options.fetch(:gem_repo, gem_repo1)
+          install_gem("#{gem_repo}/gems/#{gem_name}.gem", install_dir, default)
         end
       end
     end
@@ -369,17 +387,16 @@ module Spec
     end
 
     def with_fake_man
-      skip "fake_man is not a Windows friendly binstub" if Gem.win_platform?
-
       FileUtils.mkdir_p(tmp("fake_man"))
-      File.open(tmp("fake_man/man"), "w", 0o755) do |f|
-        f.puts "#!/usr/bin/env ruby\nputs ARGV.inspect\n"
-      end
+      create_file(tmp("fake_man/man"), <<~SCRIPT)
+        #!/usr/bin/env ruby
+        puts ARGV.inspect
+      SCRIPT
       with_path_added(tmp("fake_man")) { yield }
     end
 
     def pristine_system_gems(*gems)
-      FileUtils.rm_rf(system_gem_path)
+      FileUtils.rm_r(system_gem_path)
 
       system_gems(*gems)
     end
@@ -389,17 +406,14 @@ module Spec
       opts = gems.last.is_a?(Hash) ? gems.pop : {}
       path = opts.fetch(:path, system_gem_path)
 
-      with_gem_path_as(path) do
-        gems.each do |gem|
-          gem_command "install --no-document #{gem}"
-        end
+      gems.each do |gem|
+        gem_command "install --no-document --verbose --install-dir #{path} #{gem}"
       end
     end
 
     def cache_gems(*gems, gem_repo: gem_repo1)
       gems = gems.flatten
 
-      FileUtils.rm_rf("#{bundled_app}/vendor/cache")
       FileUtils.mkdir_p("#{bundled_app}/vendor/cache")
 
       gems.each do |g|
@@ -410,7 +424,7 @@ module Spec
     end
 
     def simulate_new_machine
-      FileUtils.rm_rf bundled_app(".bundle")
+      FileUtils.rm_r bundled_app(".bundle")
       pristine_system_gems :bundler
     end
 
@@ -430,28 +444,12 @@ module Spec
       ENV["BUNDLER_SPEC_PLATFORM"] = old if block_given?
     end
 
-    def simulate_windows(platform = x86_mswin32)
-      old = ENV["BUNDLER_SPEC_WINDOWS"]
-      ENV["BUNDLER_SPEC_WINDOWS"] = "true"
-      simulate_platform platform do
-        yield
-      end
-    ensure
-      ENV["BUNDLER_SPEC_WINDOWS"] = old
-    end
-
     def current_ruby_minor
       Gem.ruby_version.segments.tap {|s| s.delete_at(2) }.join(".")
     end
 
     def next_ruby_minor
       ruby_major_minor.map.with_index {|s, i| i == 1 ? s + 1 : s }.join(".")
-    end
-
-    def previous_ruby_minor
-      return "2.7" if ruby_major_minor == [3, 0]
-
-      ruby_major_minor.map.with_index {|s, i| i == 1 ? s - 1 : s }.join(".")
     end
 
     def ruby_major_minor
@@ -511,11 +509,11 @@ module Spec
       end
     end
 
-    def require_rack
-      # need to hack, so we can require rack
+    def require_rack_test
+      # need to hack, so we can require rack for testing
       old_gem_home = ENV["GEM_HOME"]
       ENV["GEM_HOME"] = Spec::Path.base_system_gem_path.to_s
-      require "rack"
+      require "rack/test"
       ENV["GEM_HOME"] = old_gem_home
     end
 
@@ -544,7 +542,21 @@ module Spec
       128 + signal_number
     end
 
+    def empty_repo4
+      FileUtils.rm_r gem_repo4
+
+      build_repo4 {}
+    end
+
     private
+
+    def allowed_rubygems_warning?(text, extra_allowed_warning)
+      allowed_warnings = ["open-ended", "is a symlink", "rake based", "expected RubyGems version"]
+      allowed_warnings << extra_allowed_warning if extra_allowed_warning
+      allowed_warnings.any? do |warning|
+        text.include?(warning)
+      end
+    end
 
     def match_source(contents)
       match = /source ["']?(?<source>http[^"']+)["']?/.match(contents)

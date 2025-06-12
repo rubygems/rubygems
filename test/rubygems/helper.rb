@@ -9,8 +9,6 @@ end
 
 require "test/unit"
 
-ENV["JARS_SKIP"] = "true" if Gem.java_platform? # avoid unnecessary and noisy `jar-dependencies` post install hook
-
 require "fileutils"
 require "pathname"
 require "pp"
@@ -19,7 +17,6 @@ require "shellwords"
 require "tmpdir"
 require "rubygems/vendor/uri/lib/uri"
 require "zlib"
-require "benchmark" # stdlib
 require_relative "mock_gem_ui"
 
 module Gem
@@ -420,6 +417,9 @@ class Gem::TestCase < Test::Unit::TestCase
     %w[post_install_hooks done_installing_hooks post_uninstall_hooks pre_uninstall_hooks pre_install_hooks pre_reset_hooks post_reset_hooks post_build_hooks].each do |name|
       @orig_hooks[name] = Gem.send(name).dup
     end
+
+    Gem::Platform.const_get(:GENERIC_CACHE).clear
+    Gem::Platform.const_get(:GENERICS).each {|g| Gem::Platform.const_get(:GENERIC_CACHE)[g] = g }
 
     @marshal_version = "#{Marshal::MAJOR_VERSION}.#{Marshal::MINOR_VERSION}"
     @orig_loaded_features = $LOADED_FEATURES.dup

@@ -1,4 +1,4 @@
-# RubyGems [![Maintainability](https://api.codeclimate.com/v1/badges/30f913e9c2dd932132c1/maintainability)](https://codeclimate.com/github/rubygems/rubygems/maintainability)
+# RubyGems
 
 RubyGems is a package management framework for Ruby.
 
@@ -10,18 +10,23 @@ that can be shared and used by other developers. See our guide on publishing a G
 
 ## Getting Started
 
-Installing and managing a Gem is done through the `gem` command. To install a Gem such as [Nokogiri](https://github.com/sparklemotion/nokogiri) which lets
-you read and parse XML in Ruby:
+Installing and managing a Gem is done through the `gem` command. To install a Gem such as [Faraday][faraday]:
 
-    $ gem install nokogiri
+```bash
+gem install faraday
+```
 
-RubyGems will download the Nokogiri Gem from RubyGems.org and install it into your Ruby environment.
+[faraday]: https://github.com/lostisland/faraday?tab=readme-ov-file
 
-Finally, inside your Ruby program, load the Nokogiri gem and start parsing your XML:
+RubyGems will download the Faraday Gem from RubyGems.org and install it into your Ruby environment.
 
-    require 'nokogiri'
+Finally, inside your Ruby program, load the Faraday gem and start hacking:
 
-    Nokogiri.XML('<h1>Hello World</h1>')
+```ruby
+require 'faraday'
+response = Faraday.get('https://rubygems.org')
+# do something with `response`...
+```
 
 For more information about how to use RubyGems, see our RubyGems basics guide at [guides.rubygems.org](https://guides.rubygems.org/rubygems-basics/)
 
@@ -60,7 +65,7 @@ To upgrade to the latest RubyGems, run:
 
     $ gem update --system
 
-See [UPGRADING](UPGRADING.md) for more details and alternative instructions.
+See [UPGRADING](doc/bundler/UPGRADING.md) for more details and alternative instructions.
 
 ## Release policy
 
@@ -81,7 +86,7 @@ The release policy is somewhat similar to the release policy of Ruby itself:
 ## Documentation
 
 RubyGems uses [rdoc](https://github.com/rdoc/rdoc) for documentation. A compiled set of the docs
-can be viewed online at [rubydoc](https://www.rubydoc.info/github/rubygems/rubygems).
+can be viewed online at [docs.ruby-lang.org](https://docs.ruby-lang.org/en/master/Gem.html).
 
 RubyGems also provides a comprehensive set of guides which covers numerous topics such as
 creating a new gem, security practices and other resources at https://guides.rubygems.org
@@ -105,7 +110,7 @@ RubyGems is managed by [Ruby Central](https://rubycentral.org), a non-profit org
 
 ### Contributing
 
-If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](CONTRIBUTING.md) for more information.
+If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check out our [guide to contributing](doc/rubygems/CONTRIBUTING.md) for more information.
 
 ### Code of Conduct
 

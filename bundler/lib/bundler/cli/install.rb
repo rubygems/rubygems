@@ -12,7 +12,11 @@ module Bundler
 
       warn_if_root
 
-      Bundler.self_manager.install_locked_bundler_and_restart_with_it_if_needed
+      if options[:local]
+        Bundler.self_manager.restart_with_locked_bundler_if_needed
+      else
+        Bundler.self_manager.install_locked_bundler_and_restart_with_it_if_needed
+      end
 
       Bundler::SharedHelpers.set_env "RB_USER_INSTALL", "1" if Gem.freebsd_platform?
 
@@ -29,9 +33,10 @@ module Bundler
 
       if options[:deployment] || options[:frozen] || Bundler.frozen_bundle?
         unless Bundler.default_lockfile.exist?
-          flag   = "--deployment flag" if options[:deployment]
-          flag ||= "--frozen flag"     if options[:frozen]
-          flag ||= "deployment setting"
+          flag = "--deployment flag" if options[:deployment]
+          flag ||= "--frozen flag" if options[:frozen]
+          flag ||= "deployment setting" if Bundler.settings[:deployment]
+          flag ||= "frozen setting" if Bundler.settings[:frozen]
           raise ProductionError, "The #{flag} requires a lockfile. Please make " \
                                  "sure you have checked your #{SharedHelpers.relative_lockfile_path} into version control " \
                                  "before deploying."
@@ -61,7 +66,9 @@ module Bundler
 
       Plugin.gemfile_install(Bundler.default_gemfile) if Bundler.feature_flag.plugins?
 
-      definition = Bundler.definition
+      # For install we want to enable strict validation
+      # (rather than some optimizations we perform at app runtime).
+      definition = Bundler.definition(strict: true)
       definition.validate_runtime!
 
       installer = Installer.install(Bundler.root, definition, options)

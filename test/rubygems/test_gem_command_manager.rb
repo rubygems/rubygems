@@ -43,23 +43,24 @@ class TestGemCommandManager < Gem::TestCase
     assert_kind_of Gem::Commands::SigninCommand, command
   end
 
-  def test_find_logout_alias_comamnd
+  def test_find_logout_alias_command
     command = @command_manager.find_command "logout"
 
     assert_kind_of Gem::Commands::SignoutCommand, command
   end
 
   def test_find_command_ambiguous_exact
-    ins_command = Class.new
-    Gem::Commands.send :const_set, :InsCommand, ins_command
+    old_load_path = $:.dup
+    $: << File.expand_path("test/rubygems", PROJECT_DIR)
 
     @command_manager.register_command :ins
 
     command = @command_manager.find_command "ins"
 
-    assert_kind_of ins_command, command
+    assert_kind_of Gem::Commands::InsCommand, command
   ensure
-    Gem::Commands.send :remove_const, :InsCommand
+    $:.replace old_load_path
+    @command_manager.unregister_command :ins
   end
 
   def test_find_command_unknown

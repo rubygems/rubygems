@@ -193,6 +193,24 @@ module Bundler
     status_code(31)
   end
 
+  class ReadOnlyFileSystemError < PermissionError
+    def message
+      "There was an error while trying to #{action} `#{@path}`. " \
+      "File system is read-only."
+    end
+
+    status_code(42)
+  end
+
+  class OperationNotPermittedError < PermissionError
+    def message
+      "There was an error while trying to #{action} `#{@path}`. " \
+      "Underlying OS system call raised an EPERM error."
+    end
+
+    status_code(43)
+  end
+
   class GenericSystemCallError < BundlerError
     attr_reader :underlying_error
 
@@ -217,15 +235,15 @@ module Bundler
   end
 
   class InsecureInstallPathError < BundlerError
-    def initialize(path)
+    def initialize(name, path)
+      @name = name
       @path = path
     end
 
     def message
-      "The installation path is insecure. Bundler cannot continue.\n" \
-      "#{@path} is world-writable (without sticky bit).\n" \
-      "Bundler cannot safely replace gems in world-writeable directories due to potential vulnerabilities.\n" \
-      "Please change the permissions of this directory or choose a different install path."
+      "Bundler cannot reinstall #{@name} because there's a previous installation of it at #{@path} that is unsafe to remove.\n" \
+      "The parent of #{@path} is world-writable and does not have the sticky bit set, making it insecure to remove due to potential vulnerabilities.\n" \
+      "Please change the permissions of #{File.dirname(@path)} or choose a different install path."
     end
 
     status_code(38)
@@ -243,5 +261,21 @@ module Bundler
     end
 
     status_code(39)
+  end
+
+  class InvalidArgumentError < BundlerError; status_code(40); end
+
+  class IncorrectLockfileDependencies < BundlerError
+    attr_reader :spec
+
+    def initialize(spec)
+      @spec = spec
+    end
+
+    def message
+      "Bundler found incorrect dependencies in the lockfile for #{spec.full_name}"
+    end
+
+    status_code(41)
   end
 end

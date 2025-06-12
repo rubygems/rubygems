@@ -31,14 +31,13 @@ RSpec.describe "bundle install with git sources" do
     end
 
     it "does not write to cache on bundler/setup" do
-      cache_path = default_bundle_path("cache")
-      FileUtils.rm_rf(cache_path)
+      FileUtils.rm_r(default_cache_path)
       ruby "require 'bundler/setup'"
-      expect(cache_path).not_to exist
+      expect(default_cache_path).not_to exist
     end
 
     it "caches the git repo globally and properly uses the cached repo on the next invocation" do
-      simulate_new_machine
+      pristine_system_gems :bundler
       bundle "config set global_gem_cache true"
       bundle :install
       expect(Dir["#{home}/.bundle/cache/git/foo-1.0-*"]).to have_attributes size: 1
@@ -836,6 +835,32 @@ RSpec.describe "bundle install with git sources" do
     expect(the_bundle).to include_gems "rails 2.3.2"
   end
 
+  it "runs the gemspec in the context of its parent directory, when using local overrides" do
+    build_git "foo", path: lib_path("foo"), gemspec: false do |s|
+      s.write lib_path("foo/lib/foo/version.rb"), %(FOO_VERSION = '1.0')
+      s.write "foo.gemspec", <<-G
+        $:.unshift Dir.pwd
+        require 'lib/foo/version'
+        Gem::Specification.new do |s|
+          s.name        = 'foo'
+          s.author      = 'no one'
+          s.version     = FOO_VERSION
+          s.summary     = 'Foo'
+          s.files       = Dir["lib/**/*.rb"]
+        end
+      G
+    end
+
+    gemfile <<-G
+      source "https://gem.repo1"
+      gem "foo", :git => "https://github.com/gems/foo", branch: "main"
+    G
+
+    bundle %(config set local.foo #{lib_path("foo")})
+
+    expect(the_bundle).to include_gems "foo 1.0"
+  end
+
   it "installs from git even if a rubygems gem is present" do
     build_gem "foo", "1.0", path: lib_path("fake_foo"), to_system: true do |s|
       s.write "lib/foo.rb", "raise 'FAIL'"
@@ -1013,7 +1038,7 @@ RSpec.describe "bundle install with git sources" do
       gem "foo", :git => "#{lib_path("foo-1.0")}"
     G
 
-    FileUtils.rm_rf(lib_path("foo-1.0"))
+    FileUtils.rm_r(lib_path("foo-1.0"))
 
     bundle "install"
     expect(out).not_to match(/updating/i)
@@ -1042,7 +1067,7 @@ RSpec.describe "bundle install with git sources" do
       gem "foo", :git => "#{lib_path("foo-1.0")}"
     G
 
-    expect(exitstatus).to_not eq(0)
+    expect(last_command).to be_failure
     expect(err).to include("Bundler could not install a gem because it " \
                            "needs to create a directory, but a file exists " \
                            "- #{default_bundle_path("bundler")}")
@@ -1106,6 +1131,49 @@ RSpec.describe "bundle install with git sources" do
 
       run "require 'new_file'"
       expect(out).to eq("USING GIT")
+    end
+
+    it "doesn't explode when removing an explicit exact version from a git gem with dependencies" do
+      build_lib "activesupport", "7.1.4", path: lib_path("rails/activesupport")
+      build_git "rails", "7.1.4", path: lib_path("rails") do |s|
+        s.add_dependency "activesupport", "= 7.1.4"
+      end
+
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "rails", "7.1.4", :git => "#{lib_path("rails")}"
+      G
+
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "rails", :git => "#{lib_path("rails")}"
+      G
+
+      expect(the_bundle).to include_gem "rails 7.1.4", "activesupport 7.1.4"
+    end
+
+    it "doesn't explode when adding an explicit ref to a git gem with dependencies" do
+      lib_root = lib_path("rails")
+
+      build_lib "activesupport", "7.1.4", path: lib_root.join("activesupport")
+      build_git "rails", "7.1.4", path: lib_root do |s|
+        s.add_dependency "activesupport", "= 7.1.4"
+      end
+
+      old_revision = revision_for(lib_root)
+      update_git "rails", "7.1.4", path: lib_root
+
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "rails", "7.1.4", :git => "#{lib_root}"
+      G
+
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "rails", :git => "#{lib_root}", :ref => "#{old_revision}"
+      G
+
+      expect(the_bundle).to include_gem "rails 7.1.4", "activesupport 7.1.4"
     end
   end
 
@@ -1173,7 +1241,7 @@ RSpec.describe "bundle install with git sources" do
         gem "valim", "= 1.0", :git => "#{lib_path("valim")}"
       G
 
-      simulate_new_machine
+      pristine_system_gems :bundler
 
       bundle "config set --local deployment true"
       bundle :install
@@ -1560,7 +1628,7 @@ In Gemfile:
       G
       bundle "config set --global path vendor/bundle"
       bundle :install
-      simulate_new_machine
+      pristine_system_gems :bundler
 
       bundle "install", env: { "PATH" => "" }
       expect(out).to_not include("You need to install git to be able to use gems from git repositories.")
@@ -1605,7 +1673,7 @@ In Gemfile:
           end
         G
 
-        expect(last_command.stdboth).to_not include("password1")
+        expect(stdboth).to_not include("password1")
         expect(out).to include("Fetching https://user1@github.com/company/private-repo")
       end
     end
@@ -1621,7 +1689,7 @@ In Gemfile:
           end
         G
 
-        expect(last_command.stdboth).to_not include("oauth_token")
+        expect(stdboth).to_not include("oauth_token")
         expect(out).to include("Fetching https://x-oauth-basic@github.com/company/private-repo")
       end
     end

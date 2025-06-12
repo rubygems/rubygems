@@ -119,6 +119,8 @@ class Release
       "--gemfile=#{File.expand_path("bundler/release_gems.rb", __dir__)}",
       exception: true
     )
+
+    Gem.clear_paths
   end
 
   def self.for_bundler(version)
@@ -206,7 +208,7 @@ class Release
           "Cherry-picking change logs from future RubyGems #{@rubygems.version} and Bundler #{@bundler.version} into master."
         )
       end
-    rescue StandardError
+    rescue StandardError, LoadError
       system("git", "checkout", initial_branch)
       raise
     end
@@ -250,7 +252,7 @@ class Release
     bundler_changelog = `git show --no-patch --pretty=format:%h`
 
     @bundler.bump_versions!
-    system("rake", "version:update_locked_bundler", exception: true)
+    system("bin/rake", "version:update_locked_bundler", exception: true)
     system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
 
     @rubygems.cut_changelog!
@@ -304,12 +306,12 @@ class Release
   def unreleased_pr_ids
     stable_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@previous_stable_branch}`.split("\n")
 
-    `git log --oneline --grep "^Merge pull request #" origin/master`.split("\n").map do |l|
+    `git log --oneline --grep "^Merge pull request #" origin/master`.split("\n").filter_map do |l|
       _sha, message = l.split(/\s/, 2)
 
       next if stable_merge_commit_messages.include?(message)
 
       /^Merge pull request #(\d+)/.match(message)[1].to_i
-    end.compact
+    end
   end
 end

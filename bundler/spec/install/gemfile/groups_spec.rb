@@ -394,10 +394,10 @@ RSpec.describe "bundle install with groups" do
     end
 
     it "does not hit the remote a second time" do
-      FileUtils.rm_rf gem_repo2
+      FileUtils.rm_r gem_repo2
       bundle "config set --local without myrack"
       bundle :install, verbose: true
-      expect(last_command.stdboth).not_to match(/fetching/i)
+      expect(stdboth).not_to match(/fetching/i)
     end
   end
 end

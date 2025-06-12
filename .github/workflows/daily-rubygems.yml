@@ -2,7 +2,7 @@ name: daily-rubygems
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: 0 0 * * *
   workflow_dispatch:
 
 permissions:
@@ -16,17 +16,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-22.04 ]
-        ruby: [ ruby-head, truffleruby-head ]
+        os: [ubuntu-24.04]
+        ruby: [ruby-head, truffleruby-head]
         include:
-          - { os: windows-2022, ruby: mswin }
+          - { os: windows-2025, ruby: mswin }
     env:
-      TRUFFLERUBYOPT: "--experimental-options --testing-rubygems"
+      TRUFFLERUBYOPT: --experimental-options --testing-rubygems
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@a6e6f86333f0a2523ece813039b8b4be04560854 # v1.190.0
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
@@ -50,7 +52,7 @@ jobs:
         if: always()
         run: echo "OLD_STATUS=$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/workflows/daily-rubygems.yml/runs?event=schedule&branch=master' | jq '.workflow_runs | .[1].conclusion')" >> $GITHUB_ENV
 
-      - uses: 8398a7/action-slack@28ba43ae48961b90635b50953d216767a6bea486 # v3.16.2
+      - uses: 8398a7/action-slack@1750b5085f3ec60384090fb7c52965ef822e869e # v3.18.0
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,action,workflow

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "shared_helpers"
+
 module Bundler
   class LockfileParser
     class Position
@@ -29,6 +31,7 @@ module Bundler
       :dependencies,
       :specs,
       :platforms,
+      :most_specific_locked_platform,
       :bundler_version,
       :ruby_version,
       :checksums,
@@ -91,7 +94,7 @@ module Bundler
       lockfile_contents.split(BUNDLED).last.strip
     end
 
-    def initialize(lockfile)
+    def initialize(lockfile, strict: false)
       @platforms    = []
       @sources      = []
       @dependencies = {}
@@ -103,6 +106,7 @@ module Bundler
         "Gemfile.lock"
       end
       @pos = Position.new(1, 1)
+      @strict = strict
 
       if lockfile.match?(/<<<<<<<|=======|>>>>>>>|\|\|\|\|\|\|\|/)
         raise LockfileError, "Your #{@lockfile_path} contains merge conflicts.\n" \
@@ -136,7 +140,27 @@ module Bundler
         end
         @pos.advance!(line)
       end
-      @specs = @specs.values.sort_by!(&:full_name)
+
+      if !Bundler.frozen_bundle? && @platforms.include?(Gem::Platform::X64_MINGW_LEGACY)
+        if @platforms.include?(Gem::Platform::X64_MINGW)
+          @platforms.delete(Gem::Platform::X64_MINGW_LEGACY)
+          SharedHelpers.major_deprecation(2,
+            "Found x64-mingw32 in lockfile, which is deprecated. Removing it. Support for x64-mingw32 will be removed in Bundler 3.0.",
+            removed_message: "Found x64-mingw32 in lockfile, which is no longer supported as of Bundler 3.0.")
+        else
+          @platforms[@platforms.index(Gem::Platform::X64_MINGW_LEGACY)] = Gem::Platform::X64_MINGW
+          SharedHelpers.major_deprecation(2,
+            "Found x64-mingw32 in lockfile, which is deprecated. Using x64-mingw-ucrt, the replacement for x64-mingw32 in modern rubies, instead. Support for x64-mingw32 will be removed in Bundler 3.0.",
+            removed_message: "Found x64-mingw32 in lockfile, which is no longer supported as of Bundler 3.0.")
+        end
+      end
+
+      @most_specific_locked_platform = @platforms.min_by do |bundle_platform|
+        Gem::Platform.platform_specificity_match(bundle_platform, Bundler.local_platform)
+      end
+      @specs = @specs.values.sort_by!(&:full_name).each do |spec|
+        spec.most_specific_locked_platform = @most_specific_locked_platform
+      end
     rescue ArgumentError => e
       Bundler.ui.debug(e)
       raise LockfileError, "Your lockfile is unreadable. Run `rm #{@lockfile_path}` " \
@@ -231,7 +255,6 @@ module Bundler
       spaces = $1
       return unless spaces.size == 2
       checksums = $6
-      return unless checksums
       name = $2
       version = $3
       platform = $4
@@ -241,10 +264,14 @@ module Bundler
       full_name = Gem::NameTuple.new(name, version, platform).full_name
       return unless spec = @specs[full_name]
 
-      checksums.split(",") do |lock_checksum|
-        column = line.index(lock_checksum) + 1
-        checksum = Checksum.from_lock(lock_checksum, "#{@lockfile_path}:#{@pos.line}:#{column}")
-        spec.source.checksum_store.register(spec, checksum)
+      if checksums
+        checksums.split(",") do |lock_checksum|
+          column = line.index(lock_checksum) + 1
+          checksum = Checksum.from_lock(lock_checksum, "#{@lockfile_path}:#{@pos.line}:#{column}")
+          spec.source.checksum_store.register(spec, checksum)
+        end
+      else
+        spec.source.checksum_store.register(spec, nil)
       end
     end
 
@@ -260,7 +287,7 @@ module Bundler
 
         version = Gem::Version.new(version)
         platform = platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
-        @current_spec = LazySpecification.new(name, version, platform, @current_source)
+        @current_spec = LazySpecification.new(name, version, platform, @current_source, strict: @strict)
         @current_source.add_dependency_names(name)
 
         @specs[@current_spec.full_name] = @current_spec

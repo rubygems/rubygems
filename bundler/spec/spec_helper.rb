@@ -9,14 +9,22 @@ if File.expand_path(__FILE__) =~ %r{([^\w/\.:\-])}
   abort "The bundler specs cannot be run from a path that contains special characters (particularly #{$1.inspect})"
 end
 
+# Bundler CLI will have different help text depending on whether any of these
+# variables is set, since the `-e` flag `bundle gem` with require an explicit
+# value if they are not set, but will use their value by default if set. So make
+# sure they are `nil` before loading bundler to get a consistent help text,
+# since some tests rely on that.
+ENV["EDITOR"] = nil
+ENV["VISUAL"] = nil
+ENV["BUNDLER_EDITOR"] = nil
 require "bundler"
+
 require "rspec/core"
 require "rspec/expectations"
 require "rspec/mocks"
 require "rspec/support/differ"
 
 require_relative "support/builders"
-require_relative "support/build_metadata"
 require_relative "support/checksums"
 require_relative "support/filters"
 require_relative "support/helpers"
@@ -87,11 +95,7 @@ RSpec.configure do |config|
     # Don't wrap output in tests
     ENV["THOR_COLUMNS"] = "10000"
 
-    Spec::Helpers.install_dev_bundler unless ENV["CI"]
-
     extend(Spec::Builders)
-
-    check_test_gems!
 
     build_repo1
 
@@ -114,9 +118,5 @@ RSpec.configure do |config|
     end
   ensure
     reset!
-  end
-
-  config.after :suite do
-    FileUtils.rm_rf Spec::Path.pristine_system_gem_path
   end
 end

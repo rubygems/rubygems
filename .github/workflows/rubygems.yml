@@ -22,27 +22,28 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - { name: Ubuntu, value: ubuntu-22.04 }
-          - { name: macOS, value: macos-14 }
-          - { name: Windows, value: windows-2022 }
+          - { name: Ubuntu, value: ubuntu-24.04 }
+          - { name: macOS, value: macos-15 }
+          - { name: Windows, value: windows-2025 }
 
         ruby:
-          - { name: "3.0", value: 3.0.7 }
-          - { name: "3.1", value: 3.1.6 }
-          - { name: "3.2", value: 3.2.4 }
-          - { name: "3.3", value: 3.3.4 }
+          - { name: "3.2", value: 3.2.8 }
+          - { name: "3.3", value: 3.3.8 }
+          - { name: "3.4", value: 3.4.4 }
 
         include:
-          - ruby: { name: jruby, value: jruby-9.4.8.0 }
-            os: { name: Ubuntu, value: ubuntu-22.04 }
+          - ruby: { name: jruby, value: jruby-10.0.0.1 }
+            os: { name: Ubuntu, value: ubuntu-24.04 }
 
-          - ruby: { name: truffleruby, value: truffleruby-24.0.1 }
-            os: { name: Ubuntu, value: ubuntu-22.04 }
+          - ruby: { name: truffleruby, value: truffleruby-24.2.0 }
+            os: { name: Ubuntu, value: ubuntu-24.04 }
 
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@a6e6f86333f0a2523ece813039b8b4be04560854 # v1.190.0
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -55,7 +56,7 @@ jobs:
         if: matrix.ruby.name != 'truffleruby' && matrix.ruby.name != 'jruby'
       - name: Run Test isolatedly
         run: bin/rake test:isolated
-        if: matrix.ruby.name == '3.3' && matrix.os.name != 'Windows'
+        if: matrix.ruby.name == '3.4' && matrix.os.name != 'Windows'
       - name: Run Test (JRuby)
         run: JRUBY_OPTS=--debug bin/rake test
         if: startsWith(matrix.ruby.name, 'jruby')
@@ -64,3 +65,19 @@ jobs:
         if: matrix.ruby.name == 'truffleruby'
 
     timeout-minutes: 60
+
+  all-pass:
+    name: All rubygems jobs pass
+
+    if: always()
+
+    needs:
+      - rubygems
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

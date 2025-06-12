@@ -251,6 +251,14 @@ RSpec.describe "bundle outdated" do
       expect(out).to end_with("Bundle up to date!")
     end
 
+    it "works when only out of date gems are not in given group" do
+      update_repo2 do
+        build_gem "terranova", "9"
+      end
+      bundle "outdated --group development"
+      expect(out).to end_with("Bundle up to date!")
+    end
+
     it "returns a sorted list of outdated gems from one group => 'default'" do
       test_group_option("default")
 
@@ -409,7 +417,7 @@ RSpec.describe "bundle outdated" do
     end
 
     it "doesn't hit repo2" do
-      FileUtils.rm_rf(gem_repo2)
+      FileUtils.rm_r(gem_repo2)
 
       bundle "outdated --local"
       expect(out).not_to match(/Fetching (gem|version|dependency) metadata from/)
@@ -438,18 +446,39 @@ RSpec.describe "bundle outdated" do
         G
       end
 
-      it "outputs a sorted list of outdated gems with a more minimal format" do
+      it "outputs a sorted list of outdated gems with a more minimal format to stdout" do
         minimal_output = "activesupport (newest 3.0, installed 2.3.5, requested = 2.3.5)\n" \
                          "weakling (newest 0.2, installed 0.0.3, requested ~> 0.0.1)"
         subject
         expect(out).to eq(minimal_output)
       end
+
+      it "outputs progress to stderr" do
+        subject
+        expect(err).to include("Fetching gem metadata")
+      end
     end
 
     context "and no gems are outdated" do
-      it "has empty output" do
+      before do
+        build_repo2 do
+          build_gem "activesupport", "3.0"
+        end
+
+        install_gemfile <<-G
+          source "https://gem.repo2"
+          gem "activesupport", "3.0"
+        G
+      end
+
+      it "does not output to stdout" do
         subject
         expect(out).to be_empty
+      end
+
+      it "outputs progress to stderr" do
+        subject
+        expect(err).to include("Fetching gem metadata")
       end
     end
   end
@@ -496,6 +525,44 @@ RSpec.describe "bundle outdated" do
       TABLE
 
       expect(out).to match(Regexp.new(expected_output))
+    end
+
+    it "does not require gems to be installed" do
+      build_repo4 do
+        build_gem "zeitwerk", "1.0.0"
+        build_gem "zeitwerk", "2.0.0"
+      end
+
+      gemfile <<-G
+        source "https://gem.repo4"
+        gem "zeitwerk"
+      G
+
+      lockfile <<~L
+        GEM
+          remote: https://gem.repo4/
+          specs:
+            zeitwerk (1.0.0)
+
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          zeitwerk
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+
+      bundle "outdated zeitwerk", raise_on_error: false
+
+      expected_output = <<~TABLE.tr(".", "\.").strip
+        Gem       Current  Latest  Requested  Groups
+        zeitwerk  1.0.0    2.0.0   >= 0       default
+      TABLE
+
+      expect(out).to match(Regexp.new(expected_output))
+      expect(err).to be_empty
     end
   end
 
@@ -907,7 +974,7 @@ RSpec.describe "bundle outdated" do
         gem "terranova", '8'
       G
 
-      simulate_new_machine
+      pristine_system_gems :bundler
 
       update_git "foo", path: lib_path("foo")
       update_repo2 do

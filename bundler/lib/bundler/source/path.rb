@@ -53,13 +53,15 @@ module Bundler
         "source at `#{@path}`"
       end
 
+      alias_method :to_gemfile, :path
+
       def hash
         [self.class, expanded_path, version].hash
       end
 
       def eql?(other)
-        return unless other.class == self.class
-        expanded_original_path == other.expanded_original_path &&
+        [Gemspec, Path].include?(other.class) &&
+          expanded_original_path == other.expanded_original_path &&
           version == other.version
       end
 
@@ -148,7 +150,7 @@ module Bundler
 
       def load_gemspec(file)
         return unless spec = Bundler.load_gemspec(file)
-        Bundler.rubygems.set_installed_by_version(spec)
+        spec.installed_by_version = Gem::VERSION
         spec
       end
 
@@ -212,7 +214,7 @@ module Bundler
 
         # Some gem authors put absolute paths in their gemspec
         # and we have to save them from themselves
-        spec.files = spec.files.map do |path|
+        spec.files = spec.files.filter_map do |path|
           next path unless /\A#{Pathname::SEPARATOR_PAT}/o.match?(path)
           next if File.directory?(path)
           begin
@@ -220,7 +222,7 @@ module Bundler
           rescue ArgumentError
             path
           end
-        end.compact
+        end
 
         installer = Path::Installer.new(
           spec,

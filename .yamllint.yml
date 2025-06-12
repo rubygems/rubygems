@@ -1,0 +1,10 @@
+ignore-from-file: .gitignore
+
+rules:
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+
+  quoted-strings:
+    quote-type: double
+    required: only-when-needed

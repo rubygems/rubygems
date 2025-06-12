@@ -17,27 +17,18 @@ permissions:  # added using https://github.com/step-security/secure-workflows
 jobs:
   ruby_core:
     name: ${{matrix.target}} under a ruby-core setup
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         target: [Rubygems, Bundler]
     steps:
-      - name: Set up latest ruby head
-        uses: ruby/setup-ruby@a6e6f86333f0a2523ece813039b8b4be04560854 # v1.190.0
-        with:
-          ruby-version: head
-          bundler: none
-      - name: Save latest buildable revision to environment
-        run: echo "REF=$(ruby -v | cut -d')' -f1 | cut -d' ' -f5)" >> $GITHUB_ENV
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ruby/ruby
           path: ruby/ruby
-          fetch-depth: 10
-      - name: Checkout the latest buildable revision
-        run: git switch -c ${{ env.REF }}
-        working-directory: ruby/ruby
+          ref: v3_4_4
+          persist-credentials: false
       - name: Install libraries
         run: |
           set -x
@@ -49,12 +40,14 @@ jobs:
           ./configure -C --disable-install-doc
           make -j2
         working-directory: ruby/ruby
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           path: rubygems/rubygems
+          persist-credentials: false
       - name: Sync tools
         run: |
           ruby tool/sync_default_gems.rb rubygems
+          mv spec/bundler/bin/parallel_rspec spec/bin/parallel_rspec # TODO: fix `sync_default_gems.rb` script so we don't need to vendor the ruby-core binstub ourselves
         working-directory: ruby/ruby
       - name: Test RubyGems
         run: make -j2 -s test-all TESTS="rubygems --no-retry"
@@ -66,3 +59,19 @@ jobs:
           make test-bundler-parallel
         working-directory: ruby/ruby
         if: matrix.target == 'Bundler'
+
+  all-pass:
+    name: All ruby-core jobs pass
+
+    if: always()
+
+    needs:
+      - ruby_core
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

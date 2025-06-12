@@ -130,7 +130,7 @@ class TestGemRequire < Gem::TestCase
   end
 
   def test_dash_i_respects_default_library_extension_priority
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
+    pend "needs investigation" if Gem.java_platform?
     pend "not installed yet" unless RbConfig::TOPDIR
 
     dash_i_ext_arg = util_install_extension_file("a")
@@ -182,6 +182,22 @@ class TestGemRequire < Gem::TestCase
     assert_equal %w[a-1 b-1], loaded_spec_names
   end
 
+  def test_require_is_not_lazy_with_shadowed_default_gem
+    b1_default = new_default_spec("b", "1", nil, "foo.rb")
+    install_default_gems b1_default
+
+    a1 = util_spec "a", "1", { "b" => ">= 1" }, "lib/test_gem_require_a.rb"
+    b1 = util_spec("b", "1", nil, "lib/foo.rb")
+    install_specs b1, a1
+
+    # Load default ruby gems fresh as if we've just started a ruby script.
+    Gem::Specification.reset
+
+    assert_require "test_gem_require_a"
+    assert_equal %w[a-1 b-1], loaded_spec_names
+    assert_equal unresolved_names, []
+  end
+
   def test_require_is_lazy_with_inexact_req
     a1 = util_spec "a", "1", { "b" => ">= 1" }, "lib/test_gem_require_a.rb"
     b1 = util_spec "b", "1", nil, "lib/b/c.rb"
@@ -223,7 +239,7 @@ class TestGemRequire < Gem::TestCase
 
   def test_activate_via_require_respects_loaded_files
     pend "Not sure what's going on. If another spec creates a 'a' gem before
-      this test, somehow require will load the benchmark in b, and ignore that the
+      this test, somehow require will load the erb in b, and ignore that the
       stdlib one is already in $LOADED_FEATURES?. Reproducible by running the
       spaceship_specific_file test before this one" if Gem.java_platform?
 
@@ -240,11 +256,11 @@ class TestGemRequire < Gem::TestCase
       load_path_changed = true
     end
 
-    require "benchmark" # the stdlib
+    require "erb" # the stdlib
 
     a1 = util_spec "a", "1", { "b" => ">= 1" }, "lib/test_gem_require_a.rb"
-    b1 = util_spec "b", "1", nil, "lib/benchmark.rb"
-    b2 = util_spec "b", "2", nil, "lib/benchmark.rb"
+    b1 = util_spec "b", "1", nil, "lib/erb.rb"
+    b2 = util_spec "b", "2", nil, "lib/erb.rb"
 
     install_specs b1, b2, a1
 
@@ -257,12 +273,12 @@ class TestGemRequire < Gem::TestCase
 
     assert_equal unresolved_names, ["b (>= 1)"]
 
-    # The require('benchmark') below will activate b-2. However, its
-    # lib/benchmark.rb won't ever be loaded. The reason is MRI sees that even
-    # though b-2 is earlier in $LOAD_PATH it already loaded a benchmark.rb file
+    # The require('erb') below will activate b-2. However, its
+    # lib/erb.rb won't ever be loaded. The reason is MRI sees that even
+    # though b-2 is earlier in $LOAD_PATH it already loaded a erb.rb file
     # and that still exists in $LOAD_PATH (further down),
     # and as a result #gem_original_require returns false.
-    refute require("benchmark"), "the benchmark stdlib should be recognized as already loaded"
+    refute require("erb"), "the erb stdlib should be recognized as already loaded"
 
     assert_includes $LOAD_PATH, b2.full_require_paths[0]
     assert_includes $LOAD_PATH, rubylibdir
@@ -273,7 +289,7 @@ class TestGemRequire < Gem::TestCase
     assert_operator $LOAD_PATH.index(b2.full_require_paths[0]), :<, $LOAD_PATH.index(rubylibdir), message
 
     # We detected that we should activate b-2, so we did so, but
-    # then #gem_original_require decided "I've already got some benchmark.rb" loaded.
+    # then #gem_original_require decided "I've already got some erb.rb" loaded.
     # This case is fine because our lazy loading provided exactly
     # the same behavior as eager loading would have.
 
@@ -705,11 +721,11 @@ class TestGemRequire < Gem::TestCase
         _, err = capture_subprocess_io do
           system(*ruby_with_rubygems_in_load_path, "-w", "--disable=gems", "-C", dir, "main.rb")
         end
-        assert_match(/{:x=>1}\n{:y=>2}\n$/, err)
+        assert_match(/#{{ x: 1 }.inspect}\n#{{ y: 2 }.inspect}\n$/, err)
         _, err = capture_subprocess_io do
           system(*ruby_with_rubygems_in_load_path, "-w", "--enable=gems", "-C", dir, "main.rb")
         end
-        assert_match(/{:x=>1}\n{:y=>2}\n$/, err)
+        assert_match(/#{{ x: 1 }.inspect}\n#{{ y: 2 }.inspect}\n$/, err)
       end
     end
   end

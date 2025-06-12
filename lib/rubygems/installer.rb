@@ -66,8 +66,6 @@ class Gem::Installer
 
   attr_reader :package
 
-  @path_warning = false
-
   class << self
     #
     # Changes in rubygems to lazily loading `rubygems/command` (in order to
@@ -85,11 +83,6 @@ class Gem::Installer
 
       super(klass)
     end
-
-    ##
-    # True if we've warned about PATH not including Gem.bindir
-
-    attr_accessor :path_warning
 
     ##
     # Overrides the executable format.
@@ -188,15 +181,6 @@ class Gem::Installer
     @package.dir_mode = options[:dir_mode]
     @package.prog_mode = options[:prog_mode]
     @package.data_mode = options[:data_mode]
-
-    if @gem_home == Gem.user_dir
-      # If we get here, then one of the following likely happened:
-      # - `--user-install` was specified
-      # - `Gem::PathSupport#home` fell back to `Gem.user_dir`
-      # - GEM_HOME was manually set to `Gem.user_dir`
-
-      check_that_user_bin_dir_is_in_path
-    end
   end
 
   ##
@@ -488,11 +472,21 @@ class Gem::Installer
   end
 
   def generate_bin # :nodoc:
-    return if spec.executables.nil? || spec.executables.empty?
+    executables = spec.executables
+    return if executables.nil? || executables.empty?
+
+    if @gem_home == Gem.user_dir
+      # If we get here, then one of the following likely happened:
+      # - `--user-install` was specified
+      # - `Gem::PathSupport#home` fell back to `Gem.user_dir`
+      # - GEM_HOME was manually set to `Gem.user_dir`
+
+      check_that_user_bin_dir_is_in_path(executables)
+    end
 
     ensure_writable_dir @bin_dir
 
-    spec.executables.each do |filename|
+    executables.each do |filename|
       bin_path = File.join gem_dir, spec.bindir, filename
       next unless File.exist? bin_path
 
@@ -538,7 +532,7 @@ class Gem::Installer
   def generate_bin_script(filename, bindir)
     bin_script_path = File.join bindir, formatted_program_filename(filename)
 
-    Gem.open_file_with_flock("#{bin_script_path}.lock") do
+    Gem.open_file_with_lock(bin_script_path) do
       require "fileutils"
       FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
 
@@ -694,9 +688,7 @@ class Gem::Installer
     end
   end
 
-  def check_that_user_bin_dir_is_in_path # :nodoc:
-    return if self.class.path_warning
-
+  def check_that_user_bin_dir_is_in_path(executables) # :nodoc:
     user_bin_dir = @bin_dir || Gem.bindir(gem_home)
     user_bin_dir = user_bin_dir.tr(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
 
@@ -712,8 +704,7 @@ class Gem::Installer
 
     unless path.include? user_bin_dir
       unless !Gem.win_platform? && (path.include? user_bin_dir.sub(ENV["HOME"], "~"))
-        alert_warning "You don't have #{user_bin_dir} in your PATH,\n\t  gem executables will not run."
-        self.class.path_warning = true
+        alert_warning "You don't have #{user_bin_dir} in your PATH,\n\t  gem executables (#{executables.join(", ")}) will not run."
       end
     end
   end
@@ -1007,18 +998,17 @@ TEXT
 
   def bash_prolog_script
     if load_relative_enabled?
-      script = +<<~EOS
-        bindir="${0%/*}"
-      EOS
-
-      script << %(exec "$bindir/#{ruby_install_name}" "-x" "$0" "$@"\n)
-
       <<~EOS
         #!/bin/sh
         # -*- ruby -*-
         _=_\\
         =begin
-        #{script.chomp}
+        bindir="${0%/*}"
+        ruby="$bindir/#{ruby_install_name}"
+        if [ ! -f "$ruby" ]; then
+          ruby="#{ruby_install_name}"
+        fi
+        exec "$ruby" "-x" "$0" "$@"
         =end
       EOS
     else

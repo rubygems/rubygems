@@ -27,7 +27,8 @@ jobs:
         with:
           repository: ruby/ruby
           path: ruby/ruby
-          ref: v3_4_4
+          ref: 3a6844a692cab3bd9078ce74c3d96c16c2f3f2fb
+          # ref: v3_4_4
           persist-credentials: false
       - name: Install libraries
         run: |
@@ -47,7 +48,6 @@ jobs:
       - name: Sync tools
         run: |
           ruby tool/sync_default_gems.rb rubygems
-          mv spec/bundler/bin/parallel_rspec spec/bin/parallel_rspec # TODO: fix `sync_default_gems.rb` script so we don't need to vendor the ruby-core binstub ourselves
         working-directory: ruby/ruby
       - name: Test RubyGems
         run: make -j2 -s test-all TESTS="rubygems --no-retry"

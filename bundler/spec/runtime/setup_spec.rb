@@ -1525,7 +1525,7 @@ end
   end
 
   describe "after setup" do
-    it "allows calling #gem on random objects", bundler: "< 3" do
+    it "allows calling #gem on random objects", bundler: "2" do
       install_gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"
@@ -1540,7 +1540,7 @@ end
       expect(out).to eq("myrack-1.0.0")
     end
 
-    it "keeps Kernel#gem private", bundler: "3" do
+    it "keeps Kernel#gem private", bundler: "4" do
       install_gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"

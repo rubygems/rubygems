@@ -1,9 +1,9 @@
 # Upgrading
 
-## Bundler 3
+## Bundler 4
 
 The following is a summary of the changes that we plan to introduce in Bundler
-3, why we will be making those changes, and what the deprecation process will
+4, why we will be making those changes, and what the deprecation process will
 look like. All these deprecations are printed by default in the Bundler 2.1 release.
 
 If you don't want to deal with deprecations right now and want to toggle them
@@ -48,7 +48,7 @@ in the upcoming 3 version.
   relying on it. For example, when you run `bundle install --without
   development:test` in production, those flags are persisted in the app's
   configuration file and further `bundle` invocations will happily ignore
-  development and test gems.  This magic will disappear from bundler 3, and
+  development and test gems.  This magic will disappear from bundler 4, and
   you will explicitly need to configure it, either through environment
   variables, application configuration, or machine configuration. For example,
   with `bundle config set --local without development test`.
@@ -143,7 +143,7 @@ were cancelled before the release of Bundler 2.1.0 in [rubygems/bundler#7475](ht
 #### DSL deprecations
 
 The following deprecations in bundler's DSL are meant to prepare for the strict
-source pinning in bundler 3, where the source for every dependency will be
+source pinning in bundler 4, where the source for every dependency will be
 unambiguously defined.
 
 * Multiple global Gemfile sources will no longer be supported.

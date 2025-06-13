@@ -1220,8 +1220,7 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
     attr_reader :loaded_specs
 
     ##
-    # GemDependencyAPI object, which is set when .use_gemdeps is called.
-    # This contains all the information from the Gemfile.
+    #
 
     attr_reader :gemdeps
 

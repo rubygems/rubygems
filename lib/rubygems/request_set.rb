@@ -38,11 +38,6 @@ class Gem::RequestSet
   attr_accessor :development_shallow
 
   ##
-  # The set of git gems imported via load_gemdeps.
-
-  attr_reader :git_set # :nodoc:
-
-  ##
   # When true, dependency resolution is not performed, only the requested gems
   # are installed.
 
@@ -71,16 +66,6 @@ class Gem::RequestSet
   # Treat missing dependencies as silent errors
 
   attr_accessor :soft_missing
-
-  ##
-  # The set of vendor gems imported via load_gemdeps.
-
-  attr_reader :vendor_set # :nodoc:
-
-  ##
-  # The set of source gems imported via load_gemdeps.
-
-  attr_reader :source_set
 
   ##
   # Creates a RequestSet for a list of Gem::Dependency objects, +deps+.  You
@@ -205,53 +190,9 @@ class Gem::RequestSet
       requests << spec
     end
 
-    return requests if options[:gemdeps]
-
     install_hooks requests, options
 
     requests
-  end
-
-  ##
-  # Installs from the gem dependencies files in the +:gemdeps+ option in
-  # +options+, yielding to the +block+ as in #install.
-  #
-  # If +:without_groups+ is given in the +options+, those groups in the gem
-  # dependencies file are not used.  See Gem::Installer for other +options+.
-
-  def install_from_gemdeps(options, &block)
-    gemdeps = options[:gemdeps]
-
-    @install_dir = options[:install_dir] || Gem.dir
-    @prerelease  = options[:prerelease]
-    @remote      = options[:domain] != :local
-    @conservative = true if options[:conservative]
-
-    gem_deps_api = load_gemdeps gemdeps, options[:without_groups], true
-
-    resolve
-
-    if options[:explain]
-      puts "Gems to install:"
-
-      sorted_requests.each do |spec|
-        puts "  #{spec.full_name}"
-      end
-
-      if Gem.configuration.really_verbose
-        @resolver.stats.display
-      end
-    else
-      installed = install options, &block
-
-      if options.fetch :lock, true
-        lockfile =
-          Gem::RequestSet::Lockfile.build self, gemdeps, gem_deps_api.dependencies
-        lockfile.write
-      end
-
-      installed
-    end
   end
 
   def install_into(dir, force = true, options = {})
@@ -312,30 +253,6 @@ class Gem::RequestSet
     Gem.done_installing_hooks.each do |hook|
       hook.call inst, specs
     end unless Gem.done_installing_hooks.empty?
-  end
-
-  ##
-  # Load a dependency management file.
-
-  def load_gemdeps(path, without_groups = [], installing = false)
-    @git_set    = Gem::Resolver::GitSet.new
-    @vendor_set = Gem::Resolver::VendorSet.new
-    @source_set = Gem::Resolver::SourceSet.new
-
-    @git_set.root_dir = @install_dir
-
-    lock_file = "#{File.expand_path(path)}.lock"
-    begin
-      tokenizer = Gem::RequestSet::Lockfile::Tokenizer.from_file lock_file
-      parser = tokenizer.make_parser self, []
-      parser.parse
-    rescue Errno::ENOENT
-    end
-
-    gf = Gem::RequestSet::GemDependencyAPI.new self, path
-    gf.installing = installing
-    gf.without_groups = without_groups if without_groups
-    gf.load
   end
 
   def pretty_print(q) # :nodoc:
@@ -462,7 +379,3 @@ class Gem::RequestSet
     end
   end
 end
-
-require_relative "request_set/gem_dependency_api"
-require_relative "request_set/lockfile"
-require_relative "request_set/lockfile/tokenizer"

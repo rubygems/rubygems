@@ -661,8 +661,6 @@ RSpec.describe "bundle exec" do
 
   describe "with gems bundled for deployment" do
     it "works when calling bundler from another script" do
-      skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
       gemfile <<-G
       source "https://gem.repo1"
 
@@ -709,13 +707,16 @@ RSpec.describe "bundle exec" do
       puts "EXEC: \#{caller.grep(/load/).empty? ? 'exec' : 'load'}"
       puts "ARGS: \#{$0} \#{ARGV.join(' ')}"
       puts "MYRACK: \#{MYRACK}"
-      process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+      if Gem.win_platform?
+        process_title = "ruby"
+      else
+        process_title = `ps -o args -p \#{Process.pid}`.split("\n", 2).last.strip
+      end
       puts "PROCESS: \#{process_title}"
     RUBY
 
     before do
-      bundled_app(path).open("w") {|f| f << executable }
-      bundled_app(path).chmod(0o755)
+      create_file(bundled_app(path), executable)
 
       install_gemfile <<-G
         source "https://gem.repo1"
@@ -727,9 +728,11 @@ RSpec.describe "bundle exec" do
     let(:args) { "ARGS: #{path} arg1 arg2" }
     let(:myrack) { "MYRACK: 1.0.0" }
     let(:process) do
-      title = "PROCESS: #{path}"
-      title += " arg1 arg2"
-      title
+      if Gem.win_platform?
+        "PROCESS: ruby"
+      else
+        "PROCESS: #{path} arg1 arg2"
+      end
     end
     let(:exit_code) { 0 }
     let(:expected) { [exec, args, myrack, process].join("\n") }
@@ -738,8 +741,6 @@ RSpec.describe "bundle exec" do
     subject { bundle "exec #{path} arg1 arg2", raise_on_error: false }
 
     it "runs" do
-      skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
       subject
       expect(exitstatus).to eq(exit_code)
       expect(err).to eq(expected_err)
@@ -751,8 +752,6 @@ RSpec.describe "bundle exec" do
 
       context "with exit 0" do
         it "runs" do
-          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
           subject
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
@@ -764,8 +763,6 @@ RSpec.describe "bundle exec" do
         let(:exit_code) { 99 }
 
         it "runs" do
-          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
           subject
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
@@ -804,7 +801,12 @@ RSpec.describe "bundle exec" do
       let(:expected) { "" }
 
       it "runs" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
+        # it's empty, so `create_file` won't add executable permission and bat scripts on Windows
+        bundled_app(path).chmod(0o755)
+        path.sub_ext(".bat").write <<~SCRIPT if Gem.win_platform?
+            @ECHO OFF
+            @"ruby.exe" "%~dpn0" %*
+        SCRIPT
 
         subject
         expect(exitstatus).to eq(exit_code)
@@ -817,12 +819,10 @@ RSpec.describe "bundle exec" do
       let(:executable) { super() << "\nraise 'ERROR'" }
       let(:exit_code) { 1 }
       let(:expected_err) do
-        /\Abundler: failed to load command: #{Regexp.quote(path.to_s)} \(#{Regexp.quote(path.to_s)}\)\n#{Regexp.quote(path.to_s)}:10:in [`']<top \(required\)>': ERROR \(RuntimeError\)/
+        /\Abundler: failed to load command: #{Regexp.quote(path.to_s)} \(#{Regexp.quote(path.to_s)}\)\n#{Regexp.quote(path.to_s)}:[0-9]+:in [`']<top \(required\)>': ERROR \(RuntimeError\)/
       end
 
       it "runs like a normally executed executable" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to match(expected_err)
@@ -837,8 +837,6 @@ RSpec.describe "bundle exec" do
       let(:expected) { super() }
 
       it "runs" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -850,8 +848,6 @@ RSpec.describe "bundle exec" do
       let(:shebang) { "#!#{Gem.ruby}" }
 
       it "runs" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -882,8 +878,6 @@ RSpec.describe "bundle exec" do
       EOS
 
       it "runs" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -906,8 +900,6 @@ RSpec.describe "bundle exec" do
       let(:expected) { "" }
 
       it "prints proper suggestion" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to include("Run `bundle install --gemfile CustomGemfile` to install missing gems.")
@@ -920,8 +912,6 @@ RSpec.describe "bundle exec" do
       let(:exit_code) { 1 }
 
       it "runs" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -931,15 +921,19 @@ RSpec.describe "bundle exec" do
 
     context "when disable_exec_load is set" do
       let(:exec) { "EXEC: exec" }
-      let(:process) { "PROCESS: ruby #{path} arg1 arg2" }
+      let(:process) do
+        if Gem.win_platform?
+          "PROCESS: ruby"
+        else
+          "PROCESS: ruby #{path} arg1 arg2"
+        end
+      end
 
       before do
         bundle "config set disable_exec_load true"
       end
 
       it "runs" do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         subject
         expect(exitstatus).to eq(exit_code)
         expect(err).to eq(expected_err)
@@ -962,8 +956,6 @@ RSpec.describe "bundle exec" do
         EOS
 
         it "runs" do
-          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
           subject
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
@@ -980,8 +972,6 @@ RSpec.describe "bundle exec" do
         EOS
 
         it "runs" do
-          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
           subject
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
@@ -998,8 +988,6 @@ RSpec.describe "bundle exec" do
         EOS
 
         it "runs" do
-          skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
           subject
           expect(exitstatus).to eq(exit_code)
           expect(err).to eq(expected_err)
@@ -1140,8 +1128,6 @@ RSpec.describe "bundle exec" do
 
     context "when gemfile and path are configured", :ruby_repo do
       before do
-        skip "https://github.com/rubygems/rubygems/issues/3351" if Gem.win_platform?
-
         build_repo2 do
           build_gem "rails", "6.1.0" do |s|
             s.executables = "rails"

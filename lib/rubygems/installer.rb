@@ -954,7 +954,7 @@ TEXT
 
   def ensure_writable_dir(dir) # :nodoc:
     begin
-      Dir.mkdir dir, *[options[:dir_mode] && 0o755].compact
+      FileUtils.mkdir_p dir, mode: options[:dir_mode] && 0o755
     rescue SystemCallError
       raise unless File.directory? dir
     end

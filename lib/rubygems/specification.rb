@@ -471,7 +471,7 @@ class Gem::Specification < Gem::BasicSpecification
       @new_platform = Gem::Platform.local
       @original_platform = @new_platform.to_s
 
-    when Gem::Platform then
+    when Gem::Platform, Gem::Platform::Wheel then
       @new_platform = platform
 
     # legacy constants
@@ -1365,7 +1365,7 @@ class Gem::Specification < Gem::BasicSpecification
       @description,
       @homepage,
       true, # has_rdoc
-      @new_platform,
+      @new_platform.to_s,
       @licenses,
       @metadata,
     ]
@@ -1661,6 +1661,7 @@ class Gem::Specification < Gem::BasicSpecification
 
   def has_conflicts?
     return true unless Gem.env_requirement(name).satisfied_by?(version)
+    return true unless Gem::Platform.match_spec?(self)
     runtime_dependencies.any? do |dep|
       spec = Gem.loaded_specs[dep.name]
       spec && !spec.satisfies_requirement?(dep)
@@ -2181,7 +2182,14 @@ class Gem::Specification < Gem::BasicSpecification
   # The platform this gem runs on.  See Gem::Platform for details.
 
   def platform
-    @new_platform ||= Gem::Platform::RUBY # rubocop:disable Naming/MemoizedInstanceVariableName
+    @new_platform ||= Gem::Platform::RUBY
+
+    # Handle wheel platforms stored as strings
+    if @new_platform.is_a?(String) && @new_platform.start_with?("whl-")
+      @new_platform = Gem::Platform.new(@new_platform)
+    end
+
+    @new_platform
   end
 
   def pretty_print(q) # :nodoc:

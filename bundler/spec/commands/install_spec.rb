@@ -690,16 +690,14 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "gracefully handles error when rubygems server is unavailable" do
-      skip "networking issue" if Gem.win_platform?
-
       install_gemfile <<-G, artifice: nil, raise_on_error: false
         source "https://gem.repo1"
-        source "http://0.0.0.0:9384" do
+        source "http://127.0.0.1:9384" do
           gem 'foo'
         end
       G
 
-      expect(err).to eq("Could not reach host 0.0.0.0:9384. Check your network connection and try again.")
+      expect(err).to eq("Could not reach host 127.0.0.1:9384. Check your network connection and try again.")
     end
 
     it "fails gracefully when downloading an invalid specification from the full index" do

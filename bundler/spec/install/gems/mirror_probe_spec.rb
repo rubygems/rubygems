@@ -68,13 +68,8 @@ RSpec.describe "fetching dependencies with a not available mirror" do
 
       bundle :install, artifice: nil, raise_on_error: false
 
-      expect(out).to include("Fetching source index from #{@mirror_uri}")
-
-      err_lines = err.split("\n")
-      expect(err_lines).to include(%r{\ARetrying fetcher due to error \(2/4\): Bundler::HTTPError Could not fetch specs from #{@mirror_uri}/ due to underlying error <})
-      expect(err_lines).to include(%r{\ARetrying fetcher due to error \(3/4\): Bundler::HTTPError Could not fetch specs from #{@mirror_uri}/ due to underlying error <})
-      expect(err_lines).to include(%r{\ARetrying fetcher due to error \(4/4\): Bundler::HTTPError Could not fetch specs from #{@mirror_uri}/ due to underlying error <})
-      expect(err_lines).to include(%r{\ACould not fetch specs from #{@mirror_uri}/ due to underlying error <})
+      expect(out).to be_empty
+      expect(err).to eq("Could not reach host 127.0.0.1:21454. Check your network connection and try again.")
     end
   end
 
@@ -91,13 +86,8 @@ RSpec.describe "fetching dependencies with a not available mirror" do
 
       bundle :install, artifice: nil, raise_on_error: false
 
-      expect(out).to include("Fetching source index from #{@mirror_uri}")
-
-      err_lines = err.split("\n")
-      expect(err_lines).to include(%r{\ARetrying fetcher due to error \(2/4\): Bundler::HTTPError Could not fetch specs from #{@mirror_uri}/ due to underlying error <})
-      expect(err_lines).to include(%r{\ARetrying fetcher due to error \(3/4\): Bundler::HTTPError Could not fetch specs from #{@mirror_uri}/ due to underlying error <})
-      expect(err_lines).to include(%r{\ARetrying fetcher due to error \(4/4\): Bundler::HTTPError Could not fetch specs from #{@mirror_uri}/ due to underlying error <})
-      expect(err_lines).to include(%r{\ACould not fetch specs from #{@mirror_uri}/ due to underlying error <})
+      expect(out).to be_empty
+      expect(err).to eq("Could not reach host 127.0.0.1:21454. Check your network connection and try again.")
     end
   end
 

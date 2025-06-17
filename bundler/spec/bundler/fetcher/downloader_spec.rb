@@ -203,10 +203,11 @@ RSpec.describe Bundler::Fetcher::Downloader do
 
     context "when the request response causes an error included in HTTP_ERRORS" do
       let(:message) { nil }
-      let(:error)   { RuntimeError.new(message) }
+      let(:error)   { error_class.new(message) }
+      let(:error_class) { RuntimeError }
 
       before do
-        stub_const("Bundler::Fetcher::HTTP_ERRORS", [RuntimeError])
+        stub_const("Bundler::Fetcher::HTTP_ERRORS", [error_class])
         allow(connection).to receive(:request).with(uri, net_http_get) { raise error }
       end
 
@@ -217,6 +218,7 @@ RSpec.describe Bundler::Fetcher::Downloader do
       end
 
       context "when error message is about the host being down" do
+        let(:error_class) { Gem::Net::HTTP::Persistent::Error }
         let(:message) { "host down: http://www.uri-to-fetch.com" }
 
         it "should raise a Bundler::Fetcher::NetworkDownError" do
@@ -247,11 +249,12 @@ RSpec.describe Bundler::Fetcher::Downloader do
       end
 
       context "when error message is about no route to host" do
+        let(:error_class) { Errno::EHOSTUNREACH }
         let(:message) { "Failed to open TCP connection to www.uri-to-fetch.com:443 " }
 
-        it "should raise a Bundler::Fetcher::HTTPError" do
-          expect { subject.request(uri, options) }.to raise_error(Bundler::HTTPError,
-            "Network error while fetching http://www.uri-to-fetch.com/api/v2/endpoint (#{message})")
+        it "should raise a Bundler::Fetcher::NetworkDownError" do
+          expect { subject.request(uri, options) }.to raise_error(Bundler::Fetcher::NetworkDownError,
+            /Could not reach host www.uri-to-fetch.com/)
         end
       end
     end

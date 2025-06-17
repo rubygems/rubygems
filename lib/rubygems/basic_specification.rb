@@ -72,7 +72,7 @@ class Gem::BasicSpecification
 
   def contains_requirable_file?(file)
     if ignored?
-      if platform == Gem::Platform::RUBY || Gem::Platform.local === platform
+      if platform == Gem::Platform::RUBY || Gem::Platform::Specific.local === platform
         warn "Ignoring #{full_name} because its extensions are not built. " \
              "Try: gem pristine #{name} --version #{version}"
       end

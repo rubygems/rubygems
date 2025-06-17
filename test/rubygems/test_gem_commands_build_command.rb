@@ -120,6 +120,76 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_match spec.platform, "java"
   end
 
+  def test_execute_platform_wheel
+    gemspec_file = File.join(@tempdir, @gem.spec_name)
+
+    File.open gemspec_file, "w" do |gs|
+      gs.write @gem.to_ruby
+    end
+
+    # Test building with wheel platform using --platform option
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+    wheel_platform_string = "whl-#{current_abi}-#{current_platform}"
+
+    @cmd.handle_options ["--platform", wheel_platform_string, gemspec_file]
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        @cmd.execute
+      end
+    end
+
+    # Verify the gem was built with wheel platform
+    expected_gem_file = "some_gem-2-#{wheel_platform_string}.gem"
+    gem_file = File.join(@tempdir, expected_gem_file)
+    assert File.exist?(gem_file), "Expected gem file #{expected_gem_file} to exist"
+
+    # Verify the spec has the correct platform
+    spec = Gem::Package.new(gem_file).spec
+    assert_equal wheel_platform_string, spec.platform.to_s,
+      "Spec platform should match the wheel platform specified"
+
+    # Verify output shows correct platform
+    output = @ui.output.split "\n"
+    assert_equal "  Successfully built RubyGem", output.shift
+    assert_equal "  Name: some_gem", output.shift
+    assert_equal "  Version: 2", output.shift
+    assert_equal "  File: #{expected_gem_file}", output.shift
+    assert_equal [], output
+  end
+
+  def test_execute_platform_wheel_universal
+    gemspec_file = File.join(@tempdir, @gem.spec_name)
+
+    File.open gemspec_file, "w" do |gs|
+      gs.write @gem.to_ruby
+    end
+
+    # Test building with universal wheel platform
+    wheel_platform_string = "whl-any-any"
+
+    @cmd.handle_options ["--platform", wheel_platform_string, gemspec_file]
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        @cmd.execute
+      end
+    end
+
+    # Verify the gem was built with universal wheel platform
+    expected_gem_file = "some_gem-2-#{wheel_platform_string}.gem"
+    gem_file = File.join(@tempdir, expected_gem_file)
+    assert File.exist?(gem_file), "Expected gem file #{expected_gem_file} to exist"
+
+    # Verify the spec has the correct platform
+    spec = Gem::Package.new(gem_file).spec
+    assert_equal wheel_platform_string, spec.platform.to_s,
+      "Spec platform should match the universal wheel platform specified"
+    assert spec.platform.is_a?(Gem::Platform::Wheel),
+      "Platform should be a Gem::Platform::Wheel instance"
+  end
+
   def test_execute_bad_name
     [".", "-", "_"].each do |special_char|
       gem = util_spec "some_gem_with_bad_name" do |s|

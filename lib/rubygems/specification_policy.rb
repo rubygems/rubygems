@@ -345,7 +345,7 @@ duplicate dependency on #{dep}, (#{prev.requirement}) use:
     platform = @specification.platform
 
     case platform
-    when Gem::Platform, Gem::Platform::RUBY # ok
+    when Gem::Platform, Gem::Platform::RUBY, Gem::Platform::Wheel # ok
     else
       error "invalid platform #{platform.inspect}, see Gem::Platform"
     end

@@ -186,6 +186,11 @@ class Gem::Resolver
     Gem::Molinillo::Resolver.new(self, self).resolve(@needed.map {|d| DependencyRequest.new d, nil }).tsort.filter_map(&:payload)
   rescue Gem::Molinillo::VersionConflict => e
     conflict = e.conflicts.values.first
+    if conflict.existing.nil?
+      exc = Gem::UnsatisfiableDependencyError.new conflict.requirement, []
+      exc.errors = @set.errors
+      raise exc
+    end
     raise Gem::DependencyResolutionError, Conflict.new(conflict.requirement_trees.first.first, conflict.existing, conflict.requirement)
   ensure
     @output.close if defined?(@output) && !debug?
@@ -223,6 +228,7 @@ class Gem::Resolver
   def search_for(dependency)
     possibles, all = find_possible(dependency)
     if !@soft_missing && possibles.empty?
+      return [] if all.empty?
       exc = Gem::UnsatisfiableDependencyError.new dependency, all
       exc.errors = @set.errors
       raise exc
@@ -241,7 +247,7 @@ class Gem::Resolver
 
     sources.each do |source|
       groups[source].
-        sort_by {|spec| [spec.version, -Gem::Platform.platform_specificity_match(spec.platform, Gem::Platform.local)] }.
+        sort_by {|spec| [spec.version, -Gem::Platform.platform_specificity_match(spec.platform, Gem::Platform::Specific.local)] }.
         map {|spec| ActivationRequest.new spec, dependency }.
         each {|activation_request| activation_requests << activation_request }
     end

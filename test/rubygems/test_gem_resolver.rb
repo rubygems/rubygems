@@ -850,4 +850,555 @@ class TestGemResolver < Gem::TestCase
     assert_match "No match for 'a (= 1)' on this platform. Found: c-p-1",
                  e.message
   end
+
+  def test_wheel_platform_resolution_best_match_installation
+    # Test that wheel platforms with precise ruby/ABI matching get chosen over traditional platforms
+    is = Gem::Resolver::IndexSpecification
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    spec_fetcher do |fetcher|
+      # Traditional platform variant
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local
+      end
+
+      # Wheel variant for current environment - should be preferred
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-#{current_abi}-#{current_platform}"
+      end
+
+      # Wheel variant for different ABI - should not match
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-cr32_320-#{current_platform}"
+      end
+
+      # Universal wheel - should be fallback
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-any-any"
+      end
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    # Create specifications for resolver
+    traditional = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.to_s
+    wheel_exact = is.new s, "native-gem", v("1.0"), source, "whl-#{current_abi}-#{current_platform}"
+    wheel_different = is.new s, "native-gem", v("1.0"), source, "whl-cr32_320-#{current_platform}"
+    wheel_universal = is.new s, "native-gem", v("1.0"), source, "whl-any-any"
+
+    s.add traditional
+    s.add wheel_exact
+    s.add wheel_different
+    s.add wheel_universal
+
+    dep = make_dep "native-gem"
+    resolver = Gem::Resolver.new([dep], s)
+
+    # Should resolve to the wheel with exact ABI match
+    result = resolver.resolve
+    resolved_spec = result.first.spec
+
+    assert_equal "whl-#{current_abi}-#{current_platform}", resolved_spec.platform.to_s,
+      "Should choose wheel with exact ABI match over traditional platform"
+  end
+
+  def test_wheel_platform_resolution_traditional_fallback
+    # Test that traditional platforms are chosen when no compatible wheel exists
+    is = Gem::Resolver::IndexSpecification
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    spec_fetcher do |fetcher|
+      # Traditional platform variant
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local
+      end
+
+      # Wheel variant for incompatible ABI
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-cr32_320-#{current_platform}"
+      end
+
+      # Wheel variant for incompatible platform
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-cr33-aarch64_linux"
+      end
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    traditional = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.to_s
+    wheel_wrong_abi = is.new s, "native-gem", v("1.0"), source, "whl-cr32_320-#{current_platform}"
+    wheel_wrong_platform = is.new s, "native-gem", v("1.0"), source, "whl-cr33-aarch64_linux"
+
+    s.add traditional
+    s.add wheel_wrong_abi
+    s.add wheel_wrong_platform
+
+    dep = make_dep "native-gem"
+    resolver = Gem::Resolver.new([dep], s)
+
+    # Should resolve to traditional platform when wheels don't match
+    result = resolver.resolve
+    resolved_spec = result.first.spec
+
+    assert_equal Gem::Platform.local.to_s, resolved_spec.platform.to_s,
+      "Should fall back to traditional platform when no wheel matches"
+  end
+
+  def test_wheel_platform_resolution_universal_wheel_fallback
+    # Test that universal wheels are chosen when no platform-specific wheel matches
+    is = Gem::Resolver::IndexSpecification
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    spec_fetcher do |fetcher|
+      # No traditional platform variant
+
+      # Wheel variant for incompatible ABI
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-cr32_320-#{current_platform}"
+      end
+
+      # Universal wheel - should be chosen
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-any-any"
+      end
+
+      # Platform-specific universal wheel - should be preferred over full universal
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-any-#{current_platform}"
+      end
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    wheel_wrong_abi = is.new s, "native-gem", v("1.0"), source, "whl-cr32_320-#{current_platform}"
+    wheel_universal = is.new s, "native-gem", v("1.0"), source, "whl-any-any"
+    wheel_platform_universal = is.new s, "native-gem", v("1.0"), source, "whl-any-#{current_platform}"
+
+    s.add wheel_wrong_abi
+    s.add wheel_universal
+    s.add wheel_platform_universal
+
+    dep = make_dep "native-gem"
+    resolver = Gem::Resolver.new([dep], s)
+
+    # Should resolve to platform-specific universal wheel
+    result = resolver.resolve
+    resolved_spec = result.first.spec
+
+    assert_equal "whl-any-#{current_platform}", resolved_spec.platform.to_s,
+      "Should choose platform-specific universal wheel over full universal"
+  end
+
+  def test_wheel_platform_resolution_mixed_versions
+    # Test wheel platform resolution with different versions
+    is = Gem::Resolver::IndexSpecification
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    spec_fetcher do |fetcher|
+      # Older version with traditional platform
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local
+      end
+
+      # Newer version with wheel platform for current environment
+      fetcher.spec "native-gem", "2.0" do |s|
+        s.platform = "whl-#{current_abi}-#{current_platform}"
+      end
+
+      # Even newer version but incompatible wheel
+      fetcher.spec "native-gem", "3.0" do |s|
+        s.platform = "whl-cr32_320-#{current_platform}"
+      end
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    traditional_old = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.to_s
+    wheel_newer = is.new s, "native-gem", v("2.0"), source, "whl-#{current_abi}-#{current_platform}"
+    wheel_newest_incompatible = is.new s, "native-gem", v("3.0"), source, "whl-cr32_320-#{current_platform}"
+
+    s.add traditional_old
+    s.add wheel_newer
+    s.add wheel_newest_incompatible
+
+    dep = make_dep "native-gem"
+    resolver = Gem::Resolver.new([dep], s)
+
+    # Should resolve to compatible wheel version even if older than incompatible wheel
+    result = resolver.resolve
+    resolved_spec = result.first.spec
+
+    assert_equal "2.0", resolved_spec.version.to_s,
+      "Should choose compatible wheel version over incompatible newer version"
+    assert_equal "whl-#{current_abi}-#{current_platform}", resolved_spec.platform.to_s,
+      "Should choose wheel platform over traditional for same compatibility"
+  end
+
+  def test_wheel_platform_specific_dependencies
+    # Test wheel platforms with platform-specific dependency requirements
+    is = Gem::Resolver::IndexSpecification
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    spec_fetcher do |fetcher|
+      # Traditional platform gem requires older version of dependency
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local
+        s.add_dependency "shared-dep", "~> 1.0"
+      end
+
+      # Wheel platform gem requires newer version of dependency
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-#{current_abi}-#{current_platform}"
+        s.add_dependency "shared-dep", "~> 2.0"
+      end
+
+      # Dependencies available
+      fetcher.spec "shared-dep", "1.5"
+      fetcher.spec "shared-dep", "2.1"
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    traditional = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.to_s
+    wheel = is.new s, "native-gem", v("1.0"), source, "whl-#{current_abi}-#{current_platform}"
+    dep_old = is.new s, "shared-dep", v("1.5"), source, Gem::Platform::RUBY.to_s
+    dep_new = is.new s, "shared-dep", v("2.1"), source, Gem::Platform::RUBY.to_s
+
+    s.add traditional
+    s.add wheel
+    s.add dep_old
+    s.add dep_new
+
+    dep = make_dep "native-gem"
+    resolver = Gem::Resolver.new([dep], s)
+
+    # Should resolve to wheel platform and its newer dependency
+    result = resolver.resolve.sort_by {|spec| spec.spec.name }
+    main_spec = result.find {|spec| spec.spec.name == "native-gem" }.spec
+    dep_spec = result.find {|spec| spec.spec.name == "shared-dep" }.spec
+
+    assert_equal "whl-#{current_abi}-#{current_platform}", main_spec.platform.to_s,
+      "Should choose wheel platform with its specific dependencies"
+    assert_equal "2.1", dep_spec.version.to_s,
+      "Should resolve newer dependency required by wheel platform"
+  end
+
+  def test_fallback_to_traditional_when_wheel_deps_missing
+    pend "Platform normalization adds x86- prefix on Windows" if Gem.win_platform?
+
+    # Test fallback when wheel deps are missing from available gems
+    is = Gem::Resolver::IndexSpecification
+
+    spec_fetcher do |fetcher|
+      # Traditional platform gem with satisfiable dependency
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local.os
+        s.add_dependency "available-dep", "~> 1.0"
+      end
+
+      # Wheel platform gem with unsatisfiable dependency
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local
+        s.add_dependency "missing-dep", "~> 1.0"
+      end
+
+      # Only one dependency is available
+      fetcher.spec "available-dep", "1.0"
+      # missing-dep is NOT available
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    traditional = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.to_s
+    wheel = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.os.to_s
+    available = is.new s, "available-dep", v("1.0"), source, Gem::Platform::RUBY.to_s
+
+    s.add traditional
+    s.add wheel
+    s.add available
+
+    dep = make_dep "native-gem"
+    resolver = Gem::Resolver.new([dep], s)
+
+    # Should fall back to traditional platform when wheel deps can't be satisfied
+    result = resolver.resolve.sort_by {|spec| spec.spec.name }
+    main_spec = result.find {|spec| spec.spec.name == "native-gem" }.spec
+    dep_spec = result.find {|spec| spec.spec.name == "available-dep" }.spec
+
+    assert_equal Gem::Platform.local.os.to_s, main_spec.platform.to_s,
+      "Should fall back to traditional platform when wheel dependencies unsatisfiable"
+    assert_equal "1.0", dep_spec.version.to_s,
+      "Should resolve dependencies for traditional platform"
+  end
+
+  def test_fallback_to_traditional_when_wheel_deps_unsatisfiable
+    # Test fallback when wheel deps cannot be satisfied
+    is = Gem::Resolver::IndexSpecification
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    spec_fetcher do |fetcher|
+      # Traditional platform gem with satisfiable dependency
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local
+        s.add_dependency "available-dep", "~> 1.0"
+      end
+
+      # Wheel platform gem with unsatisfiable dependency
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-#{current_abi}-#{current_platform}"
+        s.add_dependency "missing-dep", "~> 1.0"
+      end
+
+      # Only one dependency is available
+      fetcher.spec "available-dep", "1.0"
+      # missing-dep is NOT available
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    traditional = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.to_s
+    wheel = is.new s, "native-gem", v("1.0"), source, "whl-#{current_abi}-#{current_platform}"
+    available = is.new s, "available-dep", v("1.0"), source, Gem::Platform::RUBY.to_s
+
+    s.add traditional
+    s.add wheel
+    s.add available
+
+    dep = make_dep "native-gem"
+    resolver = Gem::Resolver.new([dep], s)
+
+    # Should fall back to traditional platform when wheel deps can't be satisfied
+    result = resolver.resolve.sort_by {|spec| spec.spec.name }
+    main_spec = result.find {|spec| spec.spec.name == "native-gem" }.spec
+    dep_spec = result.find {|spec| spec.spec.name == "available-dep" }.spec
+
+    assert_equal Gem::Platform.local.to_s, main_spec.platform.to_s,
+      "Should fall back to traditional platform when wheel dependencies unsatisfiable"
+    assert_equal "1.0", dep_spec.version.to_s,
+      "Should resolve dependencies for traditional platform"
+  end
+
+  def test_wheel_vs_traditional_dependency_conflicts
+    # Test resolution with conflicting dependency versions between wheel and traditional platforms
+    is = Gem::Resolver::IndexSpecification
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    spec_fetcher do |fetcher|
+      # Traditional platform requires older version
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local
+        s.add_dependency "conflict-dep", "~> 1.0"
+      end
+
+      # Wheel platform requires newer version
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-#{current_abi}-#{current_platform}"
+        s.add_dependency "conflict-dep", "~> 2.0"
+      end
+
+      # Another gem that requires the older version
+      fetcher.spec "legacy-gem", "1.0" do |s|
+        s.add_dependency "conflict-dep", "~> 1.0"
+      end
+
+      # Conflicting dependency versions
+      fetcher.spec "conflict-dep", "1.5"
+      fetcher.spec "conflict-dep", "2.1"
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    traditional = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.to_s
+    wheel = is.new s, "native-gem", v("1.0"), source, "whl-#{current_abi}-#{current_platform}"
+    legacy = is.new s, "legacy-gem", v("1.0"), source, Gem::Platform::RUBY.to_s
+    dep_old = is.new s, "conflict-dep", v("1.5"), source, Gem::Platform::RUBY.to_s
+    dep_new = is.new s, "conflict-dep", v("2.1"), source, Gem::Platform::RUBY.to_s
+
+    s.add traditional
+    s.add wheel
+    s.add legacy
+    s.add dep_old
+    s.add dep_new
+
+    # Request both gems - creates dependency conflict
+    deps = [make_dep("native-gem"), make_dep("legacy-gem")]
+    resolver = Gem::Resolver.new(deps, s)
+
+    # Should resolve to traditional platform to satisfy both dependencies
+    result = resolver.resolve.sort_by {|spec| spec.spec.name }
+    native_spec = result.find {|spec| spec.spec.name == "native-gem" }.spec
+    legacy_spec = result.find {|spec| spec.spec.name == "legacy-gem" }.spec
+    dep_spec = result.find {|spec| spec.spec.name == "conflict-dep" }.spec
+
+    assert_equal Gem::Platform.local.to_s, native_spec.platform.to_s,
+      "Should choose traditional platform to resolve dependency conflicts"
+    assert_equal "1.0", legacy_spec.version.to_s,
+      "Should include the legacy gem"
+    assert_equal "1.5", dep_spec.version.to_s,
+      "Should resolve to common dependency version"
+  end
+
+  def test_wheel_platform_unique_dependencies
+    # Test wheel platforms with additional dependencies not in traditional variants
+    is = Gem::Resolver::IndexSpecification
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    spec_fetcher do |fetcher|
+      # Traditional platform gem with minimal dependencies
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local
+        s.add_dependency "basic-dep", "~> 1.0"
+      end
+
+      # Wheel platform gem with additional platform-specific dependencies
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-#{current_abi}-#{current_platform}"
+        s.add_dependency "basic-dep", "~> 1.0"
+        s.add_dependency "wheel-specific-dep", "~> 1.0"
+        s.add_dependency "performance-dep", "~> 2.0"
+      end
+
+      # All dependencies available
+      fetcher.spec "basic-dep", "1.0"
+      fetcher.spec "wheel-specific-dep", "1.2"
+      fetcher.spec "performance-dep", "2.1"
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    traditional = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.to_s
+    wheel = is.new s, "native-gem", v("1.0"), source, "whl-#{current_abi}-#{current_platform}"
+    basic = is.new s, "basic-dep", v("1.0"), source, Gem::Platform::RUBY.to_s
+    wheel_specific = is.new s, "wheel-specific-dep", v("1.2"), source, Gem::Platform::RUBY.to_s
+    performance = is.new s, "performance-dep", v("2.1"), source, Gem::Platform::RUBY.to_s
+
+    s.add traditional
+    s.add wheel
+    s.add basic
+    s.add wheel_specific
+    s.add performance
+
+    dep = make_dep "native-gem"
+    resolver = Gem::Resolver.new([dep], s)
+
+    # Should resolve to wheel platform and include all its unique dependencies
+    result = resolver.resolve.sort_by {|spec| spec.spec.name }
+
+    resolved_names = result.map {|spec| spec.spec.name }
+    native_spec = result.find {|spec| spec.spec.name == "native-gem" }.spec
+
+    assert_equal "whl-#{current_abi}-#{current_platform}", native_spec.platform.to_s,
+      "Should choose wheel platform with additional dependencies"
+    assert_includes resolved_names, "basic-dep",
+      "Should include basic dependency"
+    assert_includes resolved_names, "wheel-specific-dep",
+      "Should include wheel-specific dependency"
+    assert_includes resolved_names, "performance-dep",
+      "Should include performance dependency"
+    assert_equal 4, result.length,
+      "Should resolve all required dependencies"
+  end
+
+  def test_wheel_platform_ignores_dev_dependencies
+    # Test that dev dependencies are ignored during platform resolution
+    is = Gem::Resolver::IndexSpecification
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    spec_fetcher do |fetcher|
+      # Traditional platform gem
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = Gem::Platform.local
+        s.add_dependency "runtime-dep", "~> 1.0"
+        s.add_development_dependency "test-dep", "~> 1.0"
+      end
+
+      # Wheel platform gem with different dev dependencies
+      fetcher.spec "native-gem", "1.0" do |s|
+        s.platform = "whl-#{current_abi}-#{current_platform}"
+        s.add_dependency "runtime-dep", "~> 1.0"
+        s.add_development_dependency "wheel-test-dep", "~> 2.0"
+      end
+
+      # Runtime dependencies
+      fetcher.spec "runtime-dep", "1.0"
+      # Development dependencies (should not be resolved)
+      fetcher.spec "test-dep", "1.0"
+      fetcher.spec "wheel-test-dep", "2.0"
+    end
+
+    source = Gem::Source.new @gem_repo
+    s = set
+
+    traditional = is.new s, "native-gem", v("1.0"), source, Gem::Platform.local.to_s
+    wheel = is.new s, "native-gem", v("1.0"), source, "whl-#{current_abi}-#{current_platform}"
+    runtime = is.new s, "runtime-dep", v("1.0"), source, Gem::Platform::RUBY.to_s
+    test = is.new s, "test-dep", v("1.0"), source, Gem::Platform::RUBY.to_s
+    wheel_test = is.new s, "wheel-test-dep", v("2.0"), source, Gem::Platform::RUBY.to_s
+
+    s.add traditional
+    s.add wheel
+    s.add runtime
+    s.add test
+    s.add wheel_test
+
+    dep = make_dep "native-gem"
+    resolver = Gem::Resolver.new([dep], s)
+
+    # Should resolve to wheel platform but only include runtime dependencies
+    result = resolver.resolve.sort_by {|spec| spec.spec.name }
+
+    resolved_names = result.map {|spec| spec.spec.name }
+    native_spec = result.find {|spec| spec.spec.name == "native-gem" }.spec
+
+    assert_equal "whl-#{current_abi}-#{current_platform}", native_spec.platform.to_s,
+      "Should choose wheel platform"
+    assert_includes resolved_names, "runtime-dep",
+      "Should include runtime dependency"
+    refute_includes resolved_names, "test-dep",
+      "Should not include traditional development dependency"
+    refute_includes resolved_names, "wheel-test-dep",
+      "Should not include wheel development dependency"
+    assert_equal 2, result.length,
+      "Should only resolve runtime dependencies"
+  end
+
+  def test_resolver_handles_wheel_platform_objects
+    # Test that resolver can handle Gem::Platform::Wheel objects in specs
+    wheel_spec = util_spec "test_gem", "1.0.0" do |s|
+      s.platform = "whl-rb33-x86_64_linux"
+    end
+
+    traditional_spec = util_spec "test_gem", "1.0.0" do |s|
+      s.platform = "x86_64-linux"
+    end
+
+    ruby_spec = util_spec "test_gem", "1.0.0" do |s|
+      s.platform = "ruby"
+    end
+
+    assert_equal "whl-rb33-x86_64_linux", wheel_spec.platform.to_s
+    assert_instance_of Gem::Platform::Wheel, wheel_spec.platform
+
+    assert_equal "x86_64-linux", traditional_spec.platform.to_s
+    assert_instance_of Gem::Platform, traditional_spec.platform
+
+    assert_equal Gem::Platform::RUBY, ruby_spec.platform
+  end
 end

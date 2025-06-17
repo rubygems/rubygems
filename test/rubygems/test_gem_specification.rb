@@ -4107,4 +4107,113 @@ end
       end
     end
   end
+
+  def test_platform_assignment_with_wheel_strings
+    # Test that specifications can have wheel platforms assigned
+    spec = util_spec "test_gem", "1.0.0"
+
+    # Test string assignment
+    spec.platform = "whl-rb33-x86_64_linux"
+    assert_instance_of Gem::Platform::Wheel, spec.platform
+    assert_equal "whl-rb33-x86_64_linux", spec.platform.to_s
+
+    # Test object assignment
+    wheel_platform = Gem::Platform::Wheel.new("whl-rb32-arm64_darwin")
+    spec.platform = wheel_platform
+    assert_equal wheel_platform, spec.platform
+    assert_equal "whl-rb32-arm64_darwin", spec.platform.to_s
+  end
+
+  def test_platform_comparison_with_mixed_types
+    # Test that wheel platforms can be compared with traditional platforms
+    wheel = Gem::Platform::Wheel.new("whl-rb33-x86_64_linux")
+    traditional = Gem::Platform.new("x86_64-linux")
+    ruby = Gem::Platform::RUBY
+    specific = Gem::Platform::Specific.local
+
+    # Test === operator works across platform types
+    assert_respond_to wheel, :===
+    assert_respond_to traditional, :===
+
+    # Test basic compatibility (specific tests in wheel test file)
+    refute_nil(wheel === ruby)
+    refute_nil(wheel === specific)
+  end
+
+  def test_specification_with_wheel_platform_validation
+    Dir.mktmpdir do |tmpdir|
+      lib_dir = File.join(tmpdir, "lib")
+      Dir.mkdir(lib_dir)
+      File.write(File.join(lib_dir, "test.rb"), "# test file")
+
+      gemspec_content = <<~GEMSPEC
+        Gem::Specification.new do |s|
+          s.name = "test_wheel_gem"
+          s.version = "1.0.0"
+          s.platform = "whl-rb33-x86_64_linux"
+          s.summary = "Test gem with wheel platform"
+          s.authors = ["Test Author"]
+          s.files = ["lib/test.rb"]
+        end
+      GEMSPEC
+
+      gemspec_path = File.join(tmpdir, "test_wheel_gem.gemspec")
+      File.write(gemspec_path, gemspec_content)
+
+      Dir.chdir(tmpdir) do
+        spec = Gem::Specification.load(gemspec_path)
+        assert_instance_of Gem::Platform::Wheel, spec.platform
+        assert_equal "whl-rb33-x86_64_linux", spec.platform.to_s
+
+        spec.validate(:packaging) # Basic validation without file checks
+      end
+    end
+  end
+
+  def test_wheel_platform_sets_required_rubygems_version
+    # Test that setting wheel platform automatically sets required_rubygems_version
+    spec = util_spec "test_gem", "1.0.0"
+
+    # Initially should have default requirement
+    assert_equal Gem::Requirement.default, spec.required_rubygems_version
+
+    # Setting wheel platform string should set required_rubygems_version
+    spec.platform = "whl-rb33-x86_64_linux"
+    assert_equal Gem::Requirement.new(">= 4.0.0"), spec.required_rubygems_version
+    assert_instance_of Gem::Platform::Wheel, spec.platform
+  end
+
+  def test_wheel_platform_object_sets_required_rubygems_version
+    # Test that setting wheel platform object automatically sets required_rubygems_version
+    spec = util_spec "test_gem", "1.0.0"
+    wheel_platform = Gem::Platform::Wheel.new("whl-rb33-arm64_darwin")
+
+    # Setting wheel platform object should set required_rubygems_version
+    spec.platform = wheel_platform
+    assert_equal Gem::Requirement.new(">= 4.0.0"), spec.required_rubygems_version
+    assert_equal wheel_platform, spec.platform
+  end
+
+  def test_wheel_platform_respects_existing_required_rubygems_version
+    # Test that existing required_rubygems_version is not overridden
+    spec = util_spec "test_gem", "1.0.0"
+    spec.required_rubygems_version = ">= 4.0.0"
+
+    # Setting wheel platform should not override existing requirement
+    spec.platform = "whl-rb33-x86_64_linux"
+    assert_equal Gem::Requirement.new(">= 4.0.0"), spec.required_rubygems_version
+    assert_instance_of Gem::Platform::Wheel, spec.platform
+  end
+
+  def test_traditional_platform_does_not_set_required_rubygems_version
+    # Test that traditional platforms don't affect required_rubygems_version
+    spec = util_spec "test_gem", "1.0.0"
+    original_requirement = spec.required_rubygems_version
+
+    # Setting traditional platform should not change required_rubygems_version
+    spec.platform = "x86_64-linux"
+    assert_equal original_requirement, spec.required_rubygems_version
+    assert_instance_of Gem::Platform, spec.platform
+    refute_instance_of Gem::Platform::Wheel, spec.platform
+  end
 end

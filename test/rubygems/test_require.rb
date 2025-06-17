@@ -786,6 +786,151 @@ class TestGemRequire < Gem::TestCase
     assert_predicate $?, :success?, "Require failed due to #{out}"
   end
 
+  def test_require_best_wheel_platform_match
+    # Test that requiring chooses the best wheel platform match over traditional platforms
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    # Create traditional platform gem
+    traditional_spec = util_spec "native-lib", "1.0", nil, "lib/native-lib.rb"
+    traditional_spec.platform = Gem::Platform.local
+    write_file File.join(traditional_spec.gem_dir, "lib", "native-lib.rb") do |io|
+      io.write "NATIVE_LIB_PLATFORM = 'traditional'"
+    end
+    install_specs traditional_spec
+
+    # Create wheel platform gem for current environment
+    wheel_spec = util_spec "native-lib", "1.0", nil, "lib/native-lib.rb"
+    wheel_spec.platform = "whl-#{current_abi}-#{current_platform}"
+    write_file File.join(wheel_spec.gem_dir, "lib", "native-lib.rb") do |io|
+      io.write "NATIVE_LIB_PLATFORM = 'wheel_exact'"
+    end
+    install_specs wheel_spec
+
+    # Require should choose the wheel platform gem
+    assert_require "native-lib"
+    assert_equal "wheel_exact", Object.const_get(:NATIVE_LIB_PLATFORM),
+      "Should require wheel platform gem over traditional platform"
+
+    # Should load the wheel specification
+    loaded_spec = Gem.loaded_specs["native-lib"]
+    assert_equal "whl-#{current_abi}-#{current_platform}", loaded_spec.platform.to_s,
+      "Should load wheel platform specification"
+  ensure
+    Object.send :remove_const, :NATIVE_LIB_PLATFORM if Object.const_defined? :NATIVE_LIB_PLATFORM
+  end
+
+  def test_require_traditional_platform_fallback_when_wheel_incompatible
+    # Test that requiring falls back to traditional platform when wheel doesn't match
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    # Create traditional platform gem
+    traditional_spec = util_spec "native-lib", "1.0", nil, "lib/native-lib.rb" do |s|
+      s.platform = Gem::Platform.local
+    end
+
+    # Create incompatible wheel platform gem
+    wheel_spec = util_spec "native-lib", "1.0", nil, "lib/native-lib.rb" do |s|
+      s.platform = "whl-jr31_310-#{current_platform}" # Incompatible JRuby version
+    end
+
+    # Install both specs
+    install_specs traditional_spec, wheel_spec
+
+    # Write files after installation
+    write_file File.join(traditional_spec.gem_dir, "lib", "native-lib.rb") do |io|
+      io.write "NATIVE_LIB_PLATFORM = 'traditional'"
+    end
+    write_file File.join(wheel_spec.gem_dir, "lib", "native-lib.rb") do |io|
+      io.write "NATIVE_LIB_PLATFORM = 'wheel_incompatible'"
+    end
+
+    # Require should fall back to traditional platform gem
+    assert_require "native-lib"
+    assert_equal "traditional", Object.const_get(:NATIVE_LIB_PLATFORM),
+      "Should fall back to traditional platform when wheel incompatible"
+
+    # Should load the traditional specification
+    loaded_spec = Gem.loaded_specs["native-lib"]
+    assert_equal Gem::Platform.local.to_s, loaded_spec.platform.to_s,
+      "Should load traditional platform specification"
+  ensure
+    Object.send :remove_const, :NATIVE_LIB_PLATFORM if Object.const_defined? :NATIVE_LIB_PLATFORM
+  end
+
+  def test_require_universal_wheel_fallback
+    # Test that requiring chooses universal wheel when no platform-specific match
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    # Create incompatible wheel platform gem
+    wheel_incompatible_spec = util_spec "native-lib", "1.0", nil, "lib/native-lib.rb" do |s|
+      s.platform = "whl-cr31_310-#{current_platform}"
+    end
+
+    # Create universal wheel platform gem
+    wheel_universal_spec = util_spec "native-lib", "1.0", nil, "lib/native-lib.rb" do |s|
+      s.platform = "whl-any-any"
+    end
+
+    install_specs wheel_incompatible_spec, wheel_universal_spec
+
+    # Write files after installation
+    write_file File.join(wheel_incompatible_spec.gem_dir, "lib", "native-lib.rb") do |io|
+      io.write "NATIVE_LIB_PLATFORM = 'wheel_incompatible'"
+    end
+    write_file File.join(wheel_universal_spec.gem_dir, "lib", "native-lib.rb") do |io|
+      io.write "NATIVE_LIB_PLATFORM = 'wheel_universal'"
+    end
+
+    # Require should choose the universal wheel
+    assert_require "native-lib"
+    assert_equal "wheel_universal", Object.const_get(:NATIVE_LIB_PLATFORM),
+      "Should choose universal wheel when no platform-specific match"
+
+    # Should load the universal wheel specification
+    loaded_spec = Gem.loaded_specs["native-lib"]
+    assert_equal "whl-any-any", loaded_spec.platform.to_s,
+      "Should load universal wheel platform specification"
+  ensure
+    Object.send :remove_const, :NATIVE_LIB_PLATFORM if Object.const_defined? :NATIVE_LIB_PLATFORM
+  end
+
+  def test_require_chooses_newer_compatible_wheel_over_older_exact_traditional
+    # Test version vs platform specificity prioritization in require
+    current_abi = Gem::Platform::Specific.current_ruby_abi_tag
+    current_platform = Gem::Platform.local.to_s.tr("-", "_")
+
+    # Create older traditional platform gem
+    traditional_spec = util_spec "native-lib", "1.0", nil, "lib/native-lib.rb"
+    traditional_spec.platform = Gem::Platform.local
+    write_file File.join(traditional_spec.gem_dir, "lib", "native-lib.rb") do |io|
+      io.write "NATIVE_LIB_VERSION = '1.0-traditional'"
+    end
+    install_specs traditional_spec
+
+    # Create newer wheel platform gem for current environment
+    wheel_spec = util_spec "native-lib", "2.0", nil, "lib/native-lib.rb"
+    wheel_spec.platform = "whl-#{current_abi}-#{current_platform}"
+    write_file File.join(wheel_spec.gem_dir, "lib", "native-lib.rb") do |io|
+      io.write "NATIVE_LIB_VERSION = '2.0-wheel'"
+    end
+    install_specs wheel_spec
+
+    # Require should choose the newer wheel platform gem
+    assert_require "native-lib"
+    assert_equal "2.0-wheel", Object.const_get(:NATIVE_LIB_VERSION),
+      "Should choose newer wheel platform gem over older traditional"
+
+    # Should load the wheel specification
+    loaded_spec = Gem.loaded_specs["native-lib"]
+    assert_equal "2.0", loaded_spec.version.to_s,
+      "Should load newer version"
+    assert_equal "whl-#{current_abi}-#{current_platform}", loaded_spec.platform.to_s,
+      "Should load wheel platform specification"
+  ensure
+    Object.send :remove_const, :NATIVE_LIB_VERSION if Object.const_defined? :NATIVE_LIB_VERSION
+  end
+
   private
 
   def util_install_extension_file(name)

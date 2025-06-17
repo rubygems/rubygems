@@ -84,6 +84,81 @@ class TestGemPlatform < Gem::TestCase
     assert_equal Gem::Platform::RUBY, Gem::Platform.new("")
   end
 
+  def test_self_new_with_specific_string
+    # Test that Platform.new can parse Specific string format
+    specific_str = "x86_64-linux v:1 engine:ruby engine_version:3.3.1 ruby_version:3.3.1 abi_version:3.3.0"
+    result = Gem::Platform.new(specific_str)
+
+    assert_instance_of Gem::Platform::Specific, result
+    assert_equal Gem::Platform.new("x86_64-linux"), result.platform
+    assert_equal "ruby", result.ruby_engine
+    assert_equal "3.3.1", result.ruby_engine_version
+    assert_equal "3.3.1", result.ruby_version
+    assert_equal "3.3.0", result.abi_version
+  end
+
+  def test_self_new_with_specific_minimal_string
+    # Test with just platform, no key:value pairs - should create normal Platform
+    result = Gem::Platform.new("x86_64-linux")
+    assert_instance_of Gem::Platform, result
+    refute_instance_of Gem::Platform::Specific, result
+    assert_equal "x86_64", result.cpu
+    assert_equal "linux", result.os
+  end
+
+  def test_self_new_with_specific_string_libc
+    # Test parsing with libc information
+    specific_str = "x86_64-linux v:1 libc_type:glibc libc_version:2.31"
+    result = Gem::Platform.new(specific_str)
+
+    assert_instance_of Gem::Platform::Specific, result
+    assert_equal "glibc", result.libc_type
+    assert_equal [2, 31], result.libc_version
+  end
+
+  def test_self_new_with_wheel_string
+    # Ensure wheel strings still work
+    wheel_str = "whl-rb33-x86_64_linux"
+    result = Gem::Platform.new(wheel_str)
+
+    assert_instance_of Gem::Platform::Wheel, result
+    assert_equal "rb33", result.ruby_abi_tag
+    assert_equal "x86_64_linux", result.platform_tags
+  end
+
+  def test_self_new_handles_specific_strings
+    # Test parsing of version-specific platform strings
+    specific_platform = Gem::Platform.new("x86_64-linux v:1")
+    assert_instance_of Gem::Platform::Specific, specific_platform
+    assert_equal "x86_64", specific_platform.platform.cpu
+    assert_equal "linux", specific_platform.platform.os
+  end
+
+  def test_self_sort_priority_ordering
+    # Test that wheel platforms get higher priority than traditional platforms
+    ruby_priority = Gem::Platform.sort_priority(Gem::Platform::RUBY)
+    wheel_priority = Gem::Platform.sort_priority(Gem::Platform::Wheel.new("whl-rb33-x86_64_linux"))
+    traditional_priority = Gem::Platform.sort_priority(Gem::Platform.new("x86_64-linux"))
+
+    assert_equal(-1, ruby_priority, "Ruby platform should have highest priority")
+    assert_equal(2, wheel_priority, "Wheel platforms should have higher priority than traditional")
+    assert_equal(1, traditional_priority, "Traditional platforms should have lowest priority")
+
+    # Verify correct sorting order (lower numbers sort first)
+    assert ruby_priority < traditional_priority, "Ruby should sort before traditional"
+    assert traditional_priority < wheel_priority, "Traditional should sort before wheel"
+  end
+
+  def test_self_new_preserves_backward_compatibility
+    # Regular platform strings should still work normally
+    result = Gem::Platform.new("x86_64-darwin20")
+    assert_instance_of Gem::Platform, result
+    refute_instance_of Gem::Platform::Specific, result
+    assert_equal "x86_64", result.cpu
+    assert_equal "darwin", result.os
+    assert_equal "20", result.version
+  end
+
   def test_initialize
     test_cases = {
       "amd64-freebsd6" => ["amd64", "freebsd", "6"],
@@ -91,6 +166,7 @@ class TestGemPlatform < Gem::TestCase
       "jruby" => [nil, "java", nil],
       "universal-dotnet" => ["universal", "dotnet", nil],
       "universal-dotnet2.0" => ["universal", "dotnet", "2.0"],
+      "dotnet-2.0" => [nil, "dotnet", "2.0"],
       "universal-dotnet4.0" => ["universal", "dotnet", "4.0"],
       "powerpc-aix5.3.0.0" => ["powerpc", "aix", "5"],
       "powerpc-darwin7" => ["powerpc", "darwin", "7"],
@@ -168,9 +244,9 @@ class TestGemPlatform < Gem::TestCase
 
     test_cases.each do |arch, expected|
       platform = Gem::Platform.new arch
-      assert_equal expected, platform.to_a, arch.inspect
+      assert_equal expected, platform.to_a, "Expected #{expected.inspect} for Gem::Platform.new(#{arch.inspect}).to_a, got #{platform.to_a.inspect}"
       platform2 = Gem::Platform.new platform.to_s
-      assert_equal expected, platform2.to_a, "#{arch.inspect} => #{platform2.inspect}"
+      assert_equal expected, platform2.to_a, "Expected #{expected.inspect} for #{arch.inspect}, got #{platform2.to_a.inspect}"
     end
   end
 
@@ -276,6 +352,31 @@ class TestGemPlatform < Gem::TestCase
     assert((ppc_darwin8 === Gem::Platform.local), "universal =~ ppc")
     assert((uni_darwin8 === Gem::Platform.local), "universal =~ universal")
     assert((x86_darwin8 === Gem::Platform.local), "universal =~ x86")
+
+    arm   = Gem::Platform.new "arm-linux"
+    armv5 = Gem::Platform.new "armv5-linux"
+    armv7 = Gem::Platform.new "armv7-linux"
+    arm64 = Gem::Platform.new "arm64-linux"
+
+    util_set_arch "armv5-linux"
+    assert((arm   === Gem::Platform.local), "arm   === armv5")
+    assert((armv5 === Gem::Platform.local), "armv5 === armv5")
+    refute((armv7 === Gem::Platform.local), "armv7 === armv5")
+    refute((arm64 === Gem::Platform.local), "arm64 === armv5")
+    refute((Gem::Platform.local === arm), "armv5 === arm")
+
+    util_set_arch "armv7-linux"
+    assert((arm   === Gem::Platform.local), "arm   === armv7")
+    refute((armv5 === Gem::Platform.local), "armv5 === armv7")
+    assert((armv7 === Gem::Platform.local), "armv7 === armv7")
+    refute((arm64 === Gem::Platform.local), "arm64 === armv7")
+    refute((Gem::Platform.local === arm), "armv7 === arm")
+
+    util_set_arch "arm64-linux"
+    refute((arm   === Gem::Platform.local), "arm   === arm64")
+    refute((armv5 === Gem::Platform.local), "armv5 === arm64")
+    refute((armv7 === Gem::Platform.local), "armv7 === arm64")
+    assert((arm64 === Gem::Platform.local), "arm64 === arm64")
   end
 
   def test_nil_cpu_arch_is_treated_as_universal
@@ -379,33 +480,6 @@ class TestGemPlatform < Gem::TestCase
     # other libc arm hosts are not glibc compatible
     refute(arm_linux === arm_linux_uclibceabi, "arm-linux =~ arm-linux-uclibceabi")
     refute(arm_linux === arm_linux_uclibceabihf, "arm-linux =~ arm-linux-uclibceabihf")
-  end
-
-  def test_equals3_cpu_arm
-    arm   = Gem::Platform.new "arm-linux"
-    armv5 = Gem::Platform.new "armv5-linux"
-    armv7 = Gem::Platform.new "armv7-linux"
-    arm64 = Gem::Platform.new "arm64-linux"
-
-    util_set_arch "armv5-linux"
-    assert((arm   === Gem::Platform.local), "arm   === armv5")
-    assert((armv5 === Gem::Platform.local), "armv5 === armv5")
-    refute((armv7 === Gem::Platform.local), "armv7 === armv5")
-    refute((arm64 === Gem::Platform.local), "arm64 === armv5")
-    refute((Gem::Platform.local === arm), "armv5 === arm")
-
-    util_set_arch "armv7-linux"
-    assert((arm   === Gem::Platform.local), "arm   === armv7")
-    refute((armv5 === Gem::Platform.local), "armv5 === armv7")
-    assert((armv7 === Gem::Platform.local), "armv7 === armv7")
-    refute((arm64 === Gem::Platform.local), "arm64 === armv7")
-    refute((Gem::Platform.local === arm), "armv7 === arm")
-
-    util_set_arch "arm64-linux"
-    refute((arm   === Gem::Platform.local), "arm   === arm64")
-    refute((armv5 === Gem::Platform.local), "armv5 === arm64")
-    refute((armv7 === Gem::Platform.local), "armv7 === arm64")
-    assert((arm64 === Gem::Platform.local), "arm64 === arm64")
   end
 
   def test_equals3_universal_mingw

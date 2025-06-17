@@ -42,6 +42,20 @@ module Bundler
       end
     end
 
+    def ==(other) # :nodoc:
+      self.class === other &&
+        name == other.name &&
+        version == other.version &&
+        platform == other.platform
+    end
+
+    alias_method :eql?, :== # :nodoc:
+
+    def hash # :nodoc:
+      name.hash ^ version.hash ^ platform.hash
+    end
+
+
     # Compare this specification against another object. Using sort_obj
     # is compatible with Gem::Specification and other Bundler or RubyGems
     # objects. Otherwise, use the default Object comparison.
@@ -73,7 +87,7 @@ module Bundler
     # @return [Array] an object you can use to compare and sort this
     #   specification against other specifications
     def sort_obj
-      [@name, @version, @platform == Gem::Platform::RUBY ? -1 : 1]
+      [@name, @version, Gem::Platform.sort_priority(@platform)]
     end
 
     def to_s

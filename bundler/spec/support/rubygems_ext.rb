@@ -22,12 +22,29 @@ module Spec
       gem_load_activate_and_possibly_install(gem_name, bin_container)
     end
 
+    def with_test_deps
+      require_relative "switch_rubygems"
+
+      install_test_deps
+
+      begin
+        require_relative "path"
+        $LOAD_PATH.unshift(File.expand_path("../../lib", __dir__)) if Spec::Path.ruby_core?
+
+        yield
+      ensure
+        Helpers.remove_dev_bundler
+      end
+    end
+
     def gem_require(gem_name, entrypoint)
       gem_activate(gem_name)
       require entrypoint
     end
 
     def test_setup
+      Gem.ruby = ENV["RUBY"] if ENV["RUBY"]
+
       # Install test dependencies unless parallel-rspec is being used, since in that case they should be setup already
       install_test_deps unless ENV["RSPEC_FORMATTER_OUTPUT_ID"]
 
@@ -47,6 +64,27 @@ module Spec
 
       require "rubygems/user_interaction"
       Gem::DefaultUserInteraction.ui = Gem::SilentUI.new
+
+      ENV["BUNDLER_SPEC_RUN"] = "true"
+      ENV["BUNDLE_USER_CONFIG"] = ENV["BUNDLE_USER_CACHE"] = ENV["BUNDLE_USER_PLUGIN"] = nil
+      ENV["BUNDLE_APP_CONFIG"] = nil
+      ENV["BUNDLE_SILENCE_ROOT_WARNING"] = nil
+      ENV["RUBYGEMS_GEMDEPS"] = nil
+      ENV["XDG_CONFIG_HOME"] = nil
+      ENV["GEMRC"] = nil
+
+      # Don't wrap output in tests
+      ENV["THOR_COLUMNS"] = "10000"
+
+      extend(Spec::Builders)
+
+      build_repo1
+
+      reset_paths!
+    end
+
+    def test_teardown
+      remove_dev_bundler unless ENV["RSPEC_FORMATTER_OUTPUT_ID"]
     end
 
     def setup_test_paths
@@ -62,6 +100,10 @@ module Spec
 
       require_relative "helpers"
       Helpers.install_dev_bundler
+    end
+
+    def remove_dev_bundler
+      Helpers.remove_dev_bundler
     end
 
     def check_source_control_changes(success_message:, error_message:)

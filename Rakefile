@@ -640,11 +640,6 @@ namespace :man do
   end
 end
 
-task :override_version do
-  next unless version = ENV["BUNDLER_SPEC_SUB_VERSION"]
-  Spec::Path.replace_version_file(version)
-end
-
 namespace :bundler do
   chdir(File.expand_path("bundler", __dir__)) do
     require_relative "bundler/lib/bundler/gem_tasks"
@@ -688,14 +683,5 @@ namespace :bundler do
 
       Release.for_bundler(gemspec_version).create_for_github!
     end
-  end
-end
-
-namespace :bundler3 do
-  task :install do
-    ENV["BUNDLER_SPEC_SUB_VERSION"] = "3.0.0"
-    Rake::Task["override_version"].invoke
-    Rake::Task["install"].invoke
-    sh("git", "checkout", "--", "bundler/lib/bundler/version.rb")
   end
 end

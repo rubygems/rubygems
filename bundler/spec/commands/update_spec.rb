@@ -772,7 +772,7 @@ RSpec.describe "bundle update" do
       G
     end
 
-    it "should fail loudly", bundler: "< 3" do
+    it "should fail loudly", bundler: "2" do
       bundle "install --deployment"
       bundle "update", all: true, raise_on_error: false
 
@@ -1036,7 +1036,7 @@ RSpec.describe "bundle update" do
     end
   end
 
-  context "with multiple, duplicated sources, with lockfile in old format", bundler: "< 3" do
+  context "with multiple, duplicated sources, with lockfile in old format", bundler: "2" do
     before do
       build_repo2 do
         build_gem "dotenv", "2.7.6"
@@ -1558,7 +1558,7 @@ RSpec.describe "bundle update --bundler" do
     G
     lockfile lockfile.sub(/(^\s*)#{Bundler::VERSION}($)/, "2.99.9")
 
-    bundle :update, bundler: true, verbose: true, preserve_ruby_flags: true
+    bundle :update, bundler: true, verbose: true, preserve_ruby_flags: true, env: { "BUNDLER_4_MODE" => nil }
 
     expect(out).to include("Updating bundler to 999.0.0")
     expect(out).to include("Running `bundle update --bundler \"> 0.a\" --verbose` with bundler 999.0.0")

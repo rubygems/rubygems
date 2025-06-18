@@ -383,7 +383,7 @@ RSpec.describe "bundle clean" do
     expect(out).to include("myrack (1.0.0)").and include("thin (1.0)")
   end
 
-  it "--clean should override the bundle setting on install", bundler: "< 3" do
+  it "--clean should override the bundle setting on install", bundler: "2" do
     gemfile <<-G
       source "https://gem.repo1"
 
@@ -405,7 +405,7 @@ RSpec.describe "bundle clean" do
     should_not_have_gems "thin-1.0"
   end
 
-  it "--clean should override the bundle setting on update", bundler: "< 3" do
+  it "--clean should override the bundle setting on update", bundler: "2" do
     build_repo2
 
     gemfile <<-G
@@ -427,7 +427,7 @@ RSpec.describe "bundle clean" do
     should_not_have_gems "foo-1.0"
   end
 
-  it "automatically cleans when path has not been set", bundler: "3" do
+  it "automatically cleans when path has not been set", bundler: "4" do
     build_repo2
 
     install_gemfile <<-G

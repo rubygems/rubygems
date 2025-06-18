@@ -32,6 +32,7 @@ require_relative "support/indexes"
 require_relative "support/matchers"
 require_relative "support/permissions"
 require_relative "support/platforms"
+require_relative "support/rubygems_ext"
 
 $debug = false
 
@@ -80,30 +81,11 @@ RSpec.configure do |config|
   end
 
   config.before :suite do
-    Gem.ruby = ENV["RUBY"] if ENV["RUBY"]
-
-    require_relative "support/rubygems_ext"
     Spec::Rubygems.test_setup
+  end
 
-    # Simulate bundler has not yet been loaded
-    ENV.replace(ENV.to_hash.delete_if {|k, _v| k.start_with?(Bundler::EnvironmentPreserver::BUNDLER_PREFIX) })
-
-    ENV["BUNDLER_SPEC_RUN"] = "true"
-    ENV["BUNDLE_USER_CONFIG"] = ENV["BUNDLE_USER_CACHE"] = ENV["BUNDLE_USER_PLUGIN"] = nil
-    ENV["BUNDLE_APP_CONFIG"] = nil
-    ENV["BUNDLE_SILENCE_ROOT_WARNING"] = nil
-    ENV["RUBYGEMS_GEMDEPS"] = nil
-    ENV["XDG_CONFIG_HOME"] = nil
-    ENV["GEMRC"] = nil
-
-    # Don't wrap output in tests
-    ENV["THOR_COLUMNS"] = "10000"
-
-    extend(Spec::Builders)
-
-    build_repo1
-
-    reset_paths!
+  config.after :suite do
+    Spec::Rubygems.test_teardown
   end
 
   config.around :each do |example|

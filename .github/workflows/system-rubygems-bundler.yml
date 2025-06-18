@@ -49,7 +49,7 @@ jobs:
         if: matrix.bundler == 2
       - name: Set version
         run: echo "BUNDLER_4_MODE=true" >> $GITHUB_ENV
-        if: matrix.bundler == 3
+        if: matrix.bundler == 4
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps

@@ -68,7 +68,9 @@ module Bundler
 
     def restart_with(version)
       configured_gem_home = ENV["GEM_HOME"]
+      configured_orig_gem_home = ENV["BUNDLER_ORIG_GEM_HOME"]
       configured_gem_path = ENV["GEM_PATH"]
+      configured_orig_gem_path = ENV["BUNDLER_ORIG_GEM_PATH"]
 
       # Bundler specs need some stuff to be required before Bundler starts
       # running, for example, for faking the compact index API. However, these
@@ -91,7 +93,13 @@ module Bundler
 
       Bundler.with_original_env do
         Kernel.exec(
-          { "GEM_HOME" => configured_gem_home, "GEM_PATH" => configured_gem_path, "BUNDLER_VERSION" => version.to_s },
+          {
+            "GEM_HOME" => configured_gem_home,
+            "BUNDLER_ORIG_GEM_HOME" => configured_orig_gem_home,
+            "GEM_PATH" => configured_gem_path,
+            "BUNDLER_ORIG_GEM_PATH" => configured_orig_gem_path,
+            "BUNDLER_VERSION" => version.to_s,
+          },
           *cmd
         )
       end

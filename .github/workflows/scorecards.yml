@@ -48,8 +48,18 @@ jobs:
           # - See https://github.com/ossf/scorecard-action#publishing-results.
           publish_results: true
 
+      - name: Filter SARIF to skip irrelevant rules
+        env:
+          SCORECARD_SKIPPED_RULE_IDS: CodeReviewID,BranchProtectionID,FuzzingID,CIIBestPracticesID
+        run: |
+          SCORECARD_SKIPPED_RULE_IDS_IN_JSON=$(echo $SCORECARD_SKIPPED_RULE_IDS | jq -cR 'split(",")')
+          # Trim the SARIF file to remove skipped rule detections
+          cat results.sarif | jq '.runs[].results |= map(select(.ruleId as $id | '$SCORECARD_SKIPPED_RULE_IDS_IN_JSON' | all($id != .)))' > filteredResults.sarif
+          # Print the skipped rule detections
+          cat results.sarif | jq '.runs[].results | map(select(.ruleId as $id | '$SCORECARD_SKIPPED_RULE_IDS_IN_JSON' | any($id == .))) | select(. | length > 0)'
+
       # Upload the results to GitHub's code scanning dashboard.
       - name: Upload to code-scanning
         uses: github/codeql-action/upload-sarif@60168efe1c415ce0f5521ea06d5c2062adbeed1b # v3.28.17
         with:
-          sarif_file: results.sarif
+          sarif_file: filteredResults.sarif

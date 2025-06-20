@@ -106,12 +106,12 @@ end
 namespace :vendor do
   desc "Download vendored gems to tmp"
   task :bundle do
-    sh({ "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "--disable-gems", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=tool/bundler/vendor_gems.rb")
+    sh({ "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor", "RUBYOPT" => "--disable-gems -r#{File.expand_path("bundler/spec/support/hax.rb", __dir__)} -Ilib" }, "bundler/bin/bundle", "install", "--gemfile=tool/bundler/vendor_gems.rb")
   end
 
   desc "Install patched vendored gems"
   task install: :bundle do
-    sh({ "BUNDLE_GEMFILE" => "tool/bundler/vendor_gems.rb", "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "-rpathname", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "exec", "tool/automatiek/vendor.rb")
+    sh({ "BUNDLE_GEMFILE" => "tool/bundler/vendor_gems.rb", "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor", "RUBYOPT" => "-rpathname -r#{File.expand_path("bundler/spec/support/hax.rb", __dir__)} -Ilib" }, "bundler/bin/bundle", "exec", "tool/automatiek/vendor.rb")
   end
 
   desc "Check vendored gems are up to date"
@@ -126,7 +126,7 @@ end
 namespace :rubocop do
   desc "Setup gems necessary to lint Ruby code"
   task(:setup) do
-    sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=tool/bundler/lint_gems.rb"
+    sh({ "RUBYOPT" => "-Ilib" }, "bundler/bin/bundle", "install", "--gemfile=tool/bundler/lint_gems.rb")
   end
 
   desc "Run rubocop. Pass positional arguments as Rake arguments, e.g. `rake 'rubocop:run[-a]'`"

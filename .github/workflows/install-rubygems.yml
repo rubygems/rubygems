@@ -177,7 +177,7 @@ jobs:
           echo "RGV=v$RGV" >> $GITHUB_ENV
         if: matrix.rubygems == 'dev'
       - name: Setup app depending on psych with initial Ruby
-        run: mkdir foo && cd foo && ruby ../bundler/spec/support/bundle.rb init && ruby ../bundler/spec/support/bundle.rb add psych -v 5.1.2
+        run: mkdir foo && cd foo && ../bundler/bin/bundle init && ../bundler/bin/bundle add psych -v 5.1.2
         shell: bash
         env:
           GEM_HOME: bar
@@ -188,7 +188,7 @@ jobs:
           ruby-version: 3.3
           bundler: none
       - name: Install gems with final ruby, using GEM_HOME created by the other Ruby
-        run: ruby ../bundler/spec/support/bundle.rb install
+        run: ../bundler/bin/bundle install
         working-directory: foo
         env:
           GEM_HOME: bar

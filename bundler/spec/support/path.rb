@@ -45,8 +45,16 @@ module Spec
       @dev_gemfile ||= tool_dir.join("dev_gems.rb")
     end
 
+    def dev_binstub
+      @dev_binstub ||= bindir.join("bundle")
+    end
+
     def bindir
-      @bindir ||= source_root.join(ruby_core? ? "libexec" : "exe")
+      @bindir ||= source_root.join(ruby_core? ? "spec/bin" : "bin")
+    end
+
+    def exedir
+      @exedir ||= source_root.join(ruby_core? ? "libexec" : "exe")
     end
 
     def installed_bindir
@@ -63,7 +71,7 @@ module Spec
 
     def path
       env_path = ENV["PATH"]
-      env_path = env_path.split(File::PATH_SEPARATOR).reject {|path| path == bindir.to_s }.join(File::PATH_SEPARATOR) if ruby_core?
+      env_path = env_path.split(File::PATH_SEPARATOR).reject {|path| path == exedir.to_s }.join(File::PATH_SEPARATOR) if ruby_core?
       env_path
     end
 

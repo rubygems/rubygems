@@ -69,10 +69,10 @@ jobs:
           ruby-version: 3.4.4
           bundler: none
       - name: Prepare tapioca
-        run: ruby ../../../support/bundle.rb install
+        run: ../../../../bin/bundle install
         working-directory: bundler/spec/realworld/fixtures/tapioca
       - name: Run tapioca
-        run: ruby ../../../support/bundle.rb exec tapioca init
+        run: ../../../../bin/bundle exec tapioca init
         working-directory: bundler/spec/realworld/fixtures/tapioca
     timeout-minutes: 20
 

@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "../spec/support/setup"
+require_relative "../spec/support/rubygems_ext"
 
-require "turbo_tests"
-TurboTests::CLI.new(ARGV).run
+Spec::Rubygems.with_test_deps do
+  require "turbo_tests"
+  TurboTests::CLI.new(ARGV).run
+end

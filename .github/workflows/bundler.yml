@@ -67,6 +67,16 @@ jobs:
           distribution: temurin
           java-version: 21.0.7
         if: matrix.ruby.name == 'jruby'
+      - name: Cache dependencies
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: |
+            ~/.bundle
+            vendor/bundle
+            .bundle
+          key: ${{ runner.os }}-ruby-${{ matrix.ruby.value }}-bundler-${{ matrix.bundler }}-${{ hashFiles('**/Gemfile.lock', 'tool/bundler/*.rb') }}
+          restore-keys: |
+            ${{ runner.os }}-ruby-${{ matrix.ruby.value }}-bundler-${{ matrix.bundler }}-
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
         if: matrix.bundler == 2 && matrix.os.name == 'Ubuntu'

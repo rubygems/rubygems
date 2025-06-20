@@ -486,7 +486,7 @@ module Bundler
     def version
       cli_help = current_command.name == "cli_help"
       if cli_help || ARGV.include?("version")
-        build_info = " (#{BuildMetadata.built_at} commit #{BuildMetadata.git_commit_sha})"
+        build_info = " (commit #{BuildMetadata.git_commit_sha})"
       end
 
       if !cli_help && Bundler.feature_flag.print_only_version_number?

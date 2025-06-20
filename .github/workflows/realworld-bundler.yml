@@ -50,7 +50,7 @@ jobs:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Set version
-        run: echo "BUNDLER_4_MODE=true" >> $GITHUB_ENV
+        run: echo "BUNDLE_SIMULATE_VERSION=4" >> $GITHUB_ENV
         if: matrix.bundler == 4
       - name: Prepare dependencies
         run: bin/rake dev:deps
@@ -106,7 +106,7 @@ jobs:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Set version
-        run: echo "BUNDLER_4_MODE=true" >> $GITHUB_ENV
+        run: echo "BUNDLE_SIMULATE_VERSION=4" >> $GITHUB_ENV
         if: matrix.bundler == 4
       - name: Prepare dependencies
         run: bin/rake dev:deps

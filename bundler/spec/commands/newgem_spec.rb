@@ -47,7 +47,7 @@ RSpec.describe "bundle gem" do
     git("config --global github.user bundleuser")
 
     global_config "BUNDLE_GEM__MIT" => "false", "BUNDLE_GEM__TEST" => "false", "BUNDLE_GEM__COC" => "false", "BUNDLE_GEM__LINTER" => "false",
-                  "BUNDLE_GEM__CI" => "false", "BUNDLE_GEM__CHANGELOG" => "false"
+                  "BUNDLE_GEM__CI" => "false", "BUNDLE_GEM__ZEITWERK" => "false", "BUNDLE_GEM__CHANGELOG" => "false"
   end
 
   describe "git repo initialization" do
@@ -80,6 +80,36 @@ RSpec.describe "bundle gem" do
         bundle "gem #{gem_name}", dir: bundled_app("path with spaces")
         expect(bundled_app("path with spaces/#{gem_name}/.git")).to exist
       end
+    end
+  end
+
+  shared_examples_for "--zeitwerk flag" do
+    let(:gem_name) { "my_gem" }
+
+    before do
+      bundle "gem #{gem_name} --zeitwerk"
+    end
+    it "configures zeitwerk" do
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include('spec.add_dependency "zeitwerk"')
+      expect(bundled_app("#{gem_name}/README.md").read).to include("## Zeitwerk")
+      expect(bundled_app("#{gem_name}/lib/#{require_path}.rb").read).to include <<~RUBY
+        require "zeitwerk"
+        loader = Zeitwerk::Loader.for_gem
+        loader.setup
+      RUBY
+    end
+  end
+
+  shared_examples_for "--no-zeitwerk flag" do
+    before do
+      bundle "gem #{gem_name} --no-zeitwerk"
+    end
+    it "does not configure zeitwerk" do
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to_not include('spec.add_dependency "zeitwerk"')
+      expect(bundled_app("#{gem_name}/README.md").read).to_not include("## Zeitwerk")
+      expect(bundled_app("#{gem_name}/lib/#{require_path}.rb").read).to_not include('require "zeitwerk"')
     end
   end
 
@@ -1584,6 +1614,28 @@ RSpec.describe "bundle gem" do
     end
   end
 
+  context "testing --zeitwerk option against bundle config settings" do
+    let(:gem_name) { "my_gem" }
+
+    let(:require_path) { "my_gem" }
+
+    context "with zeitwerk option in bundle config settings set to true" do
+      before do
+        global_config "BUNDLE_GEM__ZEITWERK" => "true"
+      end
+      it_behaves_like "--zeitwerk flag"
+      it_behaves_like "--no-zeitwerk flag"
+    end
+
+    context "with zeitwerk option in bundle config settings set to false" do
+      before do
+        global_config "BUNDLE_GEM__ZEITWERK" => "false"
+      end
+      it_behaves_like "--zeitwerk flag"
+      it_behaves_like "--no-zeitwerk flag"
+    end
+  end
+
   context "testing --github-username option against git and bundle config settings" do
     context "without git config set" do
       before do
@@ -1876,6 +1928,31 @@ Usage: "bundle gem NAME [OPTIONS]"
       end
 
       expect(bundled_app("foobar/.github/workflows/main.yml")).to exist
+    end
+
+    it "asks about Zeitwerk" do
+      global_config "BUNDLE_GEM__ZEITWERK" => nil
+
+      bundle "gem foobar" do |input, _, _|
+        input.puts "yes"
+      end
+
+      expect(bundled_app("foobar/foobar.gemspec").read).to include('spec.add_dependency "zeitwerk"')
+    end
+
+    context("gem extensions") do
+      let(:gem_name) { "my-gem" }
+
+      it "configures zeitwerk detecting the gem extension" do
+        bundle "gem my-gem --zeitwerk"
+
+        expect(bundled_app("#{gem_name}/#{gem_name}.gemspec").read).to include('spec.add_dependency "zeitwerk"')
+        expect(bundled_app("#{gem_name}/lib/my/gem.rb").read).to include <<~RUBY
+          require "zeitwerk"
+          loader = Zeitwerk::Loader.for_gem_extension(My)
+          loader.setup
+        RUBY
+      end
     end
 
     it "asks about MIT license" do

@@ -7,8 +7,6 @@ require "turbo_tests"
 
 args = ARGV.dup
 # Minimize process creation overhead in Windows by using fewer processes
-if Gem.win_platform? && !args.include?("--processes") && !args.include?("-p")
-  args.concat(["--processes", "2"])
-end
+args.concat(["-n", "2"]) if Gem.win_platform? && !args.include?("-n")
 
 TurboTests::CLI.new(args).run

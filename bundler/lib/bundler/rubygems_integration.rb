@@ -147,10 +147,6 @@ module Bundler
       Gem::Package.new(path).spec
     end
 
-    def build_gem(gem_dir, spec)
-      build(spec)
-    end
-
     def security_policy_keys
       %w[High Medium Low AlmostNo No].map {|level| "#{level}Security" }
     end

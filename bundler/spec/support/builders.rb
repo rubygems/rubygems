@@ -651,14 +651,8 @@ module Spec
         destination = opts[:path] || _default_path
         FileUtils.mkdir_p(lib_path.join(destination))
 
-        if [:yaml, false].include?(opts[:gemspec])
-          Dir.chdir(lib_path) do
-            Bundler.rubygems.build(@spec, opts[:skip_validation])
-          end
-        elsif opts[:skip_validation]
-          @context.gem_command "build --force #{@spec.name}", dir: lib_path
-        else
-          @context.gem_command "build #{@spec.name}", dir: lib_path, allowed_warning: opts[:allowed_warning]
+        Dir.chdir(lib_path) do
+          Bundler.rubygems.build(@spec, opts[:skip_validation])
         end
 
         gem_path = File.expand_path("#{@spec.full_name}.gem", lib_path)

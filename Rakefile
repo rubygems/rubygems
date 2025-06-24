@@ -514,14 +514,14 @@ namespace :dev do
 end
 
 namespace :spec do
-  desc "Ensure spec dependencies are installed (deprecated)"
+  desc "Ensure spec dependencies are installed"
   task deps: "dev:deps" do
-    warn "The `spec:deps` task is deprecated because test dependencies are now installed by the tests themselves. Use `dev:deps` task instead."
+    Spec::Rubygems.install_test_deps
   end
 
   desc "Ensure spec dependencies for running in parallel are installed (deprecated)"
-  task parallel_deps: "dev:deps" do
-    warn "The `spec:parallel_deps` task is deprecated because test dependencies are now installed by the tests themselves and don't need parallelization. Use `dev:deps` task instead."
+  task parallel_deps: "spec:deps" do
+    warn "The `spec:parallel_deps` task is deprecated because test dependencies don't need parallelization. Use `spec:deps` task instead."
   end
 
   desc "Run all specs"

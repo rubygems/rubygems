@@ -20,7 +20,7 @@ defaults:
 
 jobs:
   bundler:
-    name: Bundler ${{ matrix.bundler }} on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
+    name: Bundler on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
     runs-on: ${{ matrix.os.value }}
     strategy:
       fail-fast: false
@@ -33,21 +33,17 @@ jobs:
           - { name: ruby-3.3, value: 3.3.8 }
           - { name: ruby-3.4, value: 3.4.4 }
 
-        bundler:
-          - 2
-          - 4
-
         include:
-          - { os: { name: macOS, value: macos-15 }, bundler: 2, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, bundler: 2, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, bundler: 2, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 90 }
 
-          - { os: { name: Windows, value: windows-2025 }, bundler: 2, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, bundler: 2, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, bundler: 2, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 150 }
 
-          - { os: { name: Ubuntu, value: ubuntu-24.04 }, bundler: 2, ruby: { name: jruby, value: jruby-10.0.0.1 } }
-          - { os: { name: Windows, value: windows-2025 }, bundler: 2, ruby: { name: jruby, value: jruby-10.0.0.1 } }
+          - { os: { name: Ubuntu, value: ubuntu-24.04 }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
 
     env:
       RGV: ..
@@ -69,10 +65,7 @@ jobs:
         if: matrix.ruby.name == 'jruby'
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
-        if: matrix.bundler == 2 && matrix.os.name == 'Ubuntu'
-      - name: Set version
-        run: echo "BUNDLE_SIMULATE_VERSION=4" >> $GITHUB_ENV
-        if: matrix.bundler == 4
+        if: matrix.os.name == 'Ubuntu'
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps

@@ -53,7 +53,7 @@ jobs:
           test ! -s errors.txt || (cat errors.txt && exit 1)
       - name: Check generating documentation with a non default rdoc
         run: |
-          gem install rdoc
+          gem install rdoc --no-conservative
           gem rdoc rdoc | grep -q "Parsing documentation"
       - name: Run a local rubygems command
         run: gem list bundler

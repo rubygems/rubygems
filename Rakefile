@@ -649,11 +649,13 @@ namespace :bundler do
 
   Bundler::GemHelper.tag_prefix = "bundler-"
 
+  desc "Write build metadata file in preparation for release"
   task :build_metadata do
     Spec::BuildMetadata.write_build_metadata
   end
 
   namespace :build_metadata do
+    desc "Reset build metadata file after release"
     task :clean do
       Spec::BuildMetadata.reset_build_metadata
     end

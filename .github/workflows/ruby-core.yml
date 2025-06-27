@@ -25,9 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          repository: deivid-rodriguez/ruby
+          repository: ruby/ruby
           path: ruby/ruby
-          ref: deivid-rodriguez/adapt-to-bin-bundle-addition-backport # TODO: Point to v3_4_5 once released
+          ref: 2cce628721728409a26c2d4732f63419785c7fd8 # TODO: Point to v3_4_5 once released
           persist-credentials: false
       - name: Install libraries
         run: |
@@ -47,6 +47,7 @@ jobs:
       - name: Sync tools
         run: |
           ruby tool/sync_default_gems.rb rubygems
+          mv spec/bundler/support/bundle spec/bin/bundle # TODO: fix `sync_default_gems.rb` script so we don't need to vendor the ruby-core binstub ourselves
         working-directory: ruby/ruby
       - name: Test RubyGems
         run: make -j2 -s test-all TESTS="rubygems --no-retry"

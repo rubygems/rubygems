@@ -4,7 +4,7 @@ header_template: "## %new_version (%release_date)"
 
 entry_template: "  - %title [#%pull_request_number](%pull_request_url)"
 
-release_date_format: "%B %-d, %Y"
+release_date_format: "%Y-%m-%d"
 
 changelog_label_mapping:
   "bundler: security": "### Security:"

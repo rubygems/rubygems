@@ -4,21 +4,28 @@ module Bundler
   # Represents metadata from when the Bundler gem was built.
   module BuildMetadata
     # begin ivars
+    @built_at = nil
     @release = false
     # end ivars
 
     # A hash representation of the build metadata.
     def self.to_h
       {
-        "Built At" => built_at,
+        "Timestamp" => timestamp,
         "Git SHA" => git_commit_sha,
         "Released Version" => release?,
       }
     end
 
+    # A timestamp representing the date the bundler gem was built, or the
+    # current time if never built
+    def self.timestamp
+      @timestamp ||= @built_at || Time.now.utc.strftime("%Y-%m-%d").freeze
+    end
+
     # A string representing the date the bundler gem was built.
     def self.built_at
-      @built_at ||= Time.now.utc.strftime("%Y-%m-%d").freeze
+      @built_at
     end
 
     # The SHA for the git commit the bundler gem was built from.

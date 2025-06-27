@@ -20,6 +20,7 @@ module Spec
 
     def reset_build_metadata(dir: source_root)
       build_metadata = {
+        built_at: nil,
         release: false,
       }
 

@@ -328,6 +328,12 @@ module Spec
       system_gems :bundler, path: pristine_system_gem_path
     end
 
+    def self.remove_dev_bundler
+      extend self
+
+      FileUtils.rm_r pristine_system_gem_path
+    end
+
     def install_gem(path, install_dir, default = false)
       raise "OMG `#{path}` does not exist!" unless File.exist?(path)
 

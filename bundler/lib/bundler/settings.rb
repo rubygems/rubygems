@@ -39,7 +39,6 @@ module Bundler
       path.system
       plugins
       prefer_patch
-      print_only_version_number
       setup_makes_kernel_gem_public
       silence_deprecations
       silence_root_warning

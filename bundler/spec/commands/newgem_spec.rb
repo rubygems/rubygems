@@ -47,7 +47,7 @@ RSpec.describe "bundle gem" do
     git("config --global github.user bundleuser")
 
     global_config "BUNDLE_GEM__MIT" => "false", "BUNDLE_GEM__TEST" => "false", "BUNDLE_GEM__COC" => "false", "BUNDLE_GEM__LINTER" => "false",
-                  "BUNDLE_GEM__CI" => "false", "BUNDLE_GEM__CHANGELOG" => "false"
+                  "BUNDLE_GEM__CI" => "false", "BUNDLE_GEM__CHANGELOG" => "false", "BUNDLE_GEM__BUNDLE" => "false"
   end
 
   describe "git repo initialization" do
@@ -158,6 +158,26 @@ RSpec.describe "bundle gem" do
     it "generates a gem skeleton without a CHANGELOG" do
       gem_skeleton_assertions
       expect(bundled_app("#{gem_name}/CHANGELOG.md")).to_not exist
+    end
+  end
+
+  shared_examples_for "--bundle flag" do
+    before do
+      bundle "gem #{gem_name} --bundle"
+    end
+    it "generates a gem skeleton with bundle install" do
+      gem_skeleton_assertions
+      expect(out).to include("Running bundle install in the new gem directory.")
+    end
+  end
+
+  shared_examples_for "--no-bundle flag" do
+    before do
+      bundle "gem #{gem_name} --no-bundle"
+    end
+    it "generates a gem skeleton without bundle install" do
+      gem_skeleton_assertions
+      expect(out).to_not include("Running bundle install in the new gem directory.")
     end
   end
 
@@ -1581,6 +1601,34 @@ RSpec.describe "bundle gem" do
       end
       it_behaves_like "--changelog flag"
       it_behaves_like "--no-changelog flag"
+    end
+  end
+
+  context "testing --bundle option against git and bundle config settings" do
+    context "with bundle option in bundle config settings set to true" do
+      before do
+        global_config "BUNDLE_GEM__BUNDLE" => "true"
+      end
+      it_behaves_like "--bundle flag"
+      it_behaves_like "--no-bundle flag"
+
+      it "runs bundle install" do
+        bundle "gem #{gem_name}"
+        expect(out).to include("Running bundle install in the new gem directory.")
+      end
+    end
+
+    context "with bundle option in bundle config settings set to false" do
+      before do
+        global_config "BUNDLE_GEM__BUNDLE" => "false"
+      end
+      it_behaves_like "--bundle flag"
+      it_behaves_like "--no-bundle flag"
+
+      it "does not run bundle install" do
+        bundle "gem #{gem_name}"
+        expect(out).to_not include("Running bundle install in the new gem directory.")
+      end
     end
   end
 

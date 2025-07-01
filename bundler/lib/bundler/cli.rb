@@ -490,9 +490,9 @@ module Bundler
       end
 
       if !cli_help && Bundler.feature_flag.bundler_4_mode?
-        Bundler.ui.info "#{Bundler::VERSION}#{build_info}"
+        Bundler.ui.info "#{Bundler.verbose_version}#{build_info}"
       else
-        Bundler.ui.info "Bundler version #{Bundler::VERSION}#{build_info}"
+        Bundler.ui.info "Bundler version #{Bundler.verbose_version}#{build_info}"
       end
     end
 
@@ -714,14 +714,9 @@ module Bundler
       command_name = cmd.name
       return if PARSEABLE_COMMANDS.include?(command_name)
       command = ["bundle", command_name] + args
-      options_to_print = options.dup
-      options_to_print.delete_if do |k, v|
-        next unless o = cmd.options[k]
-        o.default == v
-      end
-      command << Thor::Options.to_switches(options_to_print.sort_by(&:first)).strip
+      command << Thor::Options.to_switches(options.sort_by(&:first)).strip
       command.reject!(&:empty?)
-      Bundler.ui.info "Running `#{command * " "}` with bundler #{Bundler::VERSION}"
+      Bundler.ui.info "Running `#{command * " "}` with bundler #{Bundler.verbose_version}"
     end
 
     def warn_on_outdated_bundler

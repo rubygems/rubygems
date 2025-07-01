@@ -303,6 +303,10 @@ module Spec
       bundle :lock, opts
     end
 
+    def base_system_gems(*names, **options)
+      system_gems names.map {|name| find_base_path(name) }, **options
+    end
+
     def system_gems(*gems)
       gems = gems.flatten
       options = gems.last.is_a?(Hash) ? gems.pop : {}
@@ -396,16 +400,6 @@ module Spec
       FileUtils.rm_r(system_gem_path)
 
       system_gems(*gems)
-    end
-
-    def realworld_system_gems(*gems)
-      gems = gems.flatten
-      opts = gems.last.is_a?(Hash) ? gems.pop : {}
-      path = opts.fetch(:path, system_gem_path)
-
-      gems.each do |gem|
-        gem_command "install --no-document --verbose --install-dir #{path} #{gem}"
-      end
     end
 
     def cache_gems(*gems, gem_repo: gem_repo1)
@@ -509,7 +503,7 @@ module Spec
     def require_rack_test
       # need to hack, so we can require rack for testing
       old_gem_home = ENV["GEM_HOME"]
-      ENV["GEM_HOME"] = Spec::Path.base_system_gem_path.to_s
+      ENV["GEM_HOME"] = Spec::Path.scoped_base_system_gem_path.to_s
       require "rack/test"
       ENV["GEM_HOME"] = old_gem_home
     end

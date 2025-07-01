@@ -12,7 +12,6 @@ module Spec
       build_metadata = {
         git_commit_sha: git_commit_sha,
         built_at: loaded_gemspec.date.utc.strftime("%Y-%m-%d"),
-        release: true,
       }
 
       replace_build_metadata(build_metadata, dir: dir)
@@ -21,7 +20,6 @@ module Spec
     def reset_build_metadata(dir: source_root)
       build_metadata = {
         built_at: nil,
-        release: false,
       }
 
       replace_build_metadata(build_metadata, dir: dir)

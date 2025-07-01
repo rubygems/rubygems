@@ -5,7 +5,6 @@ module Bundler
   module BuildMetadata
     # begin ivars
     @built_at = nil
-    @release = false
     # end ivars
 
     # A hash representation of the build metadata.
@@ -13,7 +12,6 @@ module Bundler
       {
         "Timestamp" => timestamp,
         "Git SHA" => git_commit_sha,
-        "Released Version" => release?,
       }
     end
 
@@ -40,11 +38,6 @@ module Bundler
       end
 
       @git_commit_sha ||= "unknown"
-    end
-
-    # Whether this is an official release build of Bundler.
-    def self.release?
-      @release
     end
   end
 end

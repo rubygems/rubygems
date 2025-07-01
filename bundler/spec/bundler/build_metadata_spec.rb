@@ -23,12 +23,6 @@ RSpec.describe Bundler::BuildMetadata do
     end
   end
 
-  describe "#release?" do
-    it "returns false as default" do
-      expect(Bundler::BuildMetadata.release?).to be_falsey
-    end
-  end
-
   describe "#git_commit_sha" do
     context "if instance valuable is defined" do
       before do
@@ -48,10 +42,9 @@ RSpec.describe Bundler::BuildMetadata do
   describe "#to_h" do
     subject { Bundler::BuildMetadata.to_h }
 
-    it "returns a hash includes Timestamp, Git SHA and Released Version" do
+    it "returns a hash includes Timestamp, and Git SHA" do
       expect(subject["Timestamp"]).to eq "1970-01-01"
       expect(subject["Git SHA"]).to be_instance_of(String)
-      expect(subject["Released Version"]).to be_falsey
     end
   end
 end

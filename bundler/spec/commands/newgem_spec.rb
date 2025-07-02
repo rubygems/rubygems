@@ -718,6 +718,59 @@ RSpec.describe "bundle gem" do
         to match(/example\.com/)
     end
 
+    context "when git config github.user present" do
+      context "when changelog is enabled" do
+        it "sets gemspec changelog_uri, homepage, homepage_uri, source_code_uri based on git username" do
+          bundle "gem #{gem_name} --changelog"
+
+          expect(generated_gemspec.metadata["changelog_uri"]).
+            to eq("https://github.com/bundleuser/#{gem_name}/blob/main/CHANGELOG.md")
+          expect(generated_gemspec.homepage).to eq("https://github.com/bundleuser/#{gem_name}")
+          expect(generated_gemspec.metadata["homepage_uri"]).to eq("https://github.com/bundleuser/#{gem_name}")
+          expect(generated_gemspec.metadata["source_code_uri"]).to eq("https://github.com/bundleuser/#{gem_name}")
+        end
+      end
+
+      context "when changelog is not enabled" do
+        it "sets gemspec source_code_uri, homepage, homepage_uri but not changelog_uri" do
+          bundle "gem #{gem_name}"
+
+          expect(generated_gemspec.metadata["changelog_uri"]).to be_nil
+          expect(generated_gemspec.homepage).to eq("https://github.com/bundleuser/#{gem_name}")
+          expect(generated_gemspec.metadata["homepage_uri"]).to eq("https://github.com/bundleuser/#{gem_name}")
+          expect(generated_gemspec.metadata["source_code_uri"]).to eq("https://github.com/bundleuser/#{gem_name}")
+        end
+      end
+    end
+
+    context "git config github.user is absent" do
+      before do
+        git("config --global --unset github.user")
+      end
+      context "when changelog is enabled" do
+        it "sets gemspec changelog_uri, homepage, homepage_uri, source_code_uri to TODOs" do
+          bundle "gem #{gem_name} --changelog"
+
+          expect(generated_gemspec.metadata["changelog_uri"]).
+            to eq("TODO: Put your gem's CHANGELOG.md URL here.")
+          expect(generated_gemspec.homepage).to eq("TODO: Put your gem's website or public repo URL here.")
+          expect(generated_gemspec.metadata["homepage_uri"]).to eq("TODO: Put your gem's website or public repo URL here.")
+          expect(generated_gemspec.metadata["source_code_uri"]).to eq("TODO: Put your gem's public repo URL here.")
+        end
+      end
+
+      context "when changelog is not enabled" do
+        it "sets gemspec homepage, homepage_uri, source_code_uri to TODOs and changelog_uri to nil" do
+          bundle "gem #{gem_name}"
+
+          expect(generated_gemspec.metadata["changelog_uri"]).to be_nil
+          expect(generated_gemspec.homepage).to eq("TODO: Put your gem's website or public repo URL here.")
+          expect(generated_gemspec.metadata["homepage_uri"]).to eq("TODO: Put your gem's website or public repo URL here.")
+          expect(generated_gemspec.metadata["source_code_uri"]).to eq("TODO: Put your gem's public repo URL here.")
+        end
+      end
+    end
+
     it "sets a minimum ruby version" do
       bundle "gem #{gem_name}"
 

@@ -288,6 +288,13 @@ module Spec
       File.open(gemspec_file, "w") {|f| f << contents }
     end
 
+    def replace_changelog(version, dir:)
+      changelog = File.expand_path("CHANGELOG.md", dir)
+      contents = File.readlines(changelog)
+      contents = [contents[0], contents[1], "## #{version} (2100-01-01)\n", *contents[3..-1]].join
+      File.open(changelog, "w") {|f| f << contents }
+    end
+
     def git_root
       ruby_core? ? source_root : source_root.parent
     end

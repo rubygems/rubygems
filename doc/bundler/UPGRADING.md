@@ -2,149 +2,84 @@
 
 ## Bundler 4
 
+In order to prepare for Bundler 4, you can easily configure Bundler 2.7 to
+behave exactly like Bundler 4 will behave. To do so, set the environment
+variable `BUNDLE_SIMULATE_VERSION` to `4`. Alternatively, you can use `bundle
+config` and enable "Bundler 4 mode" either globally through `bundle config set
+--global simulate_version 4`, or locally through `bundle config set --local
+simulate_version 4`. From now on in this document we will assume that all three
+of these configuration options are available, but will only mention `bundle
+config set <option> <value>`.
+
 The following is a summary of the changes that we plan to introduce in Bundler
-4, why we will be making those changes, and what the deprecation process will
-look like. All these deprecations are printed by default in the Bundler 2.1 release.
+4, and why we will be making those changes. Some of them should be well known
+already by existing users, because we have been printing deprecation messages
+for years, but some of them are defaults that will be switched in Bundler 4 and
+needs some heads up.
 
-If you don't want to deal with deprecations right now and want to toggle them
-off, you can do it through configuration. Set the `BUNDLE_SILENCE_DEPRECATIONS`
-environment variable to "true", or configure it through `bundle config` either
-globally through `bundle config set --global silence_deprecations true` command, or
-locally through `bundle config set --local silence_deprecations true`. From now
-on in this document we will assume that all three of these configuration options
-are available, but will only mention `bundle config set <option> <value>`.
+### Running just `bundle`  will print help usage
 
-As a general note, these changes are intended to improve the experience using
-bundler for _new_ users, who have no existing usage routines nor possibly biased
-opinions about how the tool should work based on how it has historically worked.
-We do understand that changing behaviour that have been existing for years can
-be annoying for old users, that's why we intend to make this process as smooth
-as possible for everyone.
+We're changing this default to make Bundler more friendly for new users. We do
+understand that long time users already know how Bundler works and find useful
+that just `bundle` defaults to `bundle install`. Those users can keep the
+existing default by configuring
 
-I'll be dividing the deprecations into four groups: CLI deprecations, Helper
-deprecations, DSL deprecations, and misc deprecations. Let's dive into each of
-them.
+```
+bundle config default_cli_command install
+```
 
-### CLI deprecations
+### Bundler will install to a `.bundle` folder relative to repository root by default
 
-The CLI defines a set of commands and options that can be used by our users to
-create command lines that bundler can understand. There's a number of changes
-in the upcoming 3 version.
+We're making this change to improve isolation.
 
-* Flags passed to `bundle install` that relied on being remembered across invocations have been deprecated.
+The previous default of installing to system changes can be kept with `bundle
+config path.system true`.
 
-  In particular, the `--clean`, `--deployment`, `--frozen`,
-  `--no-prune`, `--path`, `--shebang`, `--system`, `--without`, and `--with`
-  options to `bundle install`.
+Related to this change, and to alleviate potential bad consequences from it,
+we're also shipping some related changes:
 
-  Remembering CLI options has been a source of historical confusion and bug
-  reports, not only for beginners but also for experienced users. A CLI tool
-  should not behave differently across exactly the same invocations _unless_
-  explicitly configured to do so. This is what configuration is about after all,
-  and things should never be silently configured without the user knowing about
-  it.
+* To keep disk usage under control, Bundler will cleanup unused gems when
+  installing gems per application using the new default. This new behavior can
+  be disabled by toggling back installing to system gems as explained before, or
+  by configuring `bundle config clean false`.
 
-  The problem with changing this behavior is that very common workflows are
-  relying on it. For example, when you run `bundle install --without
-  development:test` in production, those flags are persisted in the app's
-  configuration file and further `bundle` invocations will happily ignore
-  development and test gems.  This magic will disappear from bundler 4, and
-  you will explicitly need to configure it, either through environment
-  variables, application configuration, or machine configuration. For example,
-  with `bundle config set --local without development test`.
+* To avoid duplicate downloads of `.gem` packages and recompilation of
+  extensions, Bundler will keep a global cache of gem packages and compiled
+  extensions. This new behaviour can be disabled with `bundle config
+  global_gem_cache false`, or by toggling back installing to system gems as
+  explained before.
 
-  The removal of this kind of flag also applies to analogous commands, for
-  example, to `bundle check --path`.
+### Flags passed to `bundle install` that relied on being remembered across invocations will be removed
 
-* The `--force` flag to `bundle install` and `bundle update` has been renamed to `--redownload`.
+In particular, the `--clean`, `--deployment`, `--frozen`, `--no-prune`,
+`--path`, `--shebang`, `--system`, `--without`, and `--with` options to `bundle
+install`.
 
-  This is just a simple rename of the flag, to make more apparent what it
-  actually does. This flag forces redownloading every gem, it doesn't "force"
-  anything else.
+Remembering CLI options has been a source of historical confusion and bug
+reports, not only for beginners but also for experienced users. A CLI tool
+should not behave differently across exactly the same invocations _unless_
+explicitly configured to do so. This is what configuration is about after all,
+and things should never be silently configured without the user knowing about
+it.
 
-* `bundle viz` will be removed and extracted to a plugin.
+The problem with changing this behavior is that very common workflows are
+relying on it. For example, when you run `bundle install --without
+development:test` in production, those flags are persisted in the app's
+configuration file and further `bundle` invocations will happily ignore
+development and test gems.  This magic will disappear from bundler 4, and you
+will explicitly need to configure it, either through environment variables,
+application configuration, or machine configuration. For example, with `bundle
+config set --local without development test`.
 
-  This is the only bundler command requiring external dependencies, both an OS
-  dependency (the `graphviz` package) and a gem dependency (the `ruby-graphviz`
-  gem). Removing these dependencies will make development easier and it was also
-  seen by the bundler team as an opportunity to develop a bundler plugin that
-  it's officially maintained by the bundler team, and that users can take as a
-  reference to develop their own plugins. The plugin will contain the same code
-  as the old core command, the only difference being that the command is now
-  implemented as `bundle graph` which is much easier to understand. However, the
-  details of the plugin are under discussion. See [#3333](https://github.com/rubygems/rubygems/issues/3333).
+### Bundler will include checksums in the lockfile by default
 
-* The `bundle console` will be removed and replaced with `bin/console`.
+We shipped this security feature recently and we believe it's time to turn it on
+by default, so that everyone benefits from the extra security assurances by default.
 
-  Over time we found `bundle console` hard to maintain because every user would
-  want to add her own specific tweaks to it. In order to ease maintenance and
-  reduce bikeshedding discussions, we're removing the `bundle console` command
-  in favor of a `bin/console` script created by `bundle gem` on gem generation
-  that users can tweak to their needs.
+### Strict source pinning in Gemfile is enforced by default
 
-
-* The `bundle install` command will no longer accept a `--binstubs` flag.
-
-  The `--binstubs` option has been removed from `bundle install` and replaced
-  with the `bundle binstubs` command. The `--binstubs` flag would create
-  binstubs for all executables present inside the gems in the project. This was
-  hardly useful since most users will only use a subset of all the binstubs
-  available to them. Also, it would force the introduction of a bunch of most
-  likely unused files into source control. Because of this, binstubs now must
-  be created and checked into version control individually.
-
-
-* The `bundle inject` command is deprecated and replaced with `bundle add`.
-
-  We believe the new command fits the user's mental model better and it supports
-  a wider set of use cases. The interface supported by `bundle inject` works
-  exactly the same in `bundle add`, so it should be easy to migrate to the new
-  command.
-
-#### Cancelled CLI deprecations
-
-These deprecations have been initially announced before, but the deprecations
-were cancelled before the release of Bundler 2.1.0 in [rubygems/bundler#7475](https://github.com/rubygems/bundler/pull/7475).
-
-* ~The `bundle update` command will no longer update all gems, you'll need to pass `--all` to it.~ (postponed)
-
-* ~The `bundle config` command will no longer accept old subcommand-based interface before Bundler 2.1.~ (postponed)
-
-### Helper deprecations
-
-* `Bundler.clean_env`, `Bundler.with_clean_env`, `Bundler.clean_system`, and `Bundler.clean_exec` are deprecated.
-
-  All of these helpers ultimately use `Bundler.clean_env` under the hood, which
-  makes sure all bundler-related environment are removed inside the block it
-  yields.
-
-  After quite a lot user reports, we noticed that users don't usually want this
-  but instead want the bundler environment as it was before the current process
-  was started. Thus, `Bundler.with_original_env`, `Bundler.original_system`, and
-  `Bundler.original_exec` were born. They all use the new `Bundler.original_env`
-  under the hood.
-
-  There's however some specific cases where the good old `Bundler.clean_env`
-  behavior can be useful. For example, when testing Rails generators, you really
-  want an environment where `bundler` is out of the picture. This is why we
-  decided to keep the old behavior under a new more clear name, because we
-  figured the word "clean" was too ambiguous. So we have introduced
-  `Bundler.unbundled_env`, `Bundler.with_unbundled_env`,
-  `Bundler.unbundled_system`, and `Bundler.unbundled_exec`.
-
-* `Bundler.environment` is deprecated in favor of `Bundler.load`.
-
-  We're not sure how people might be using this directly but we have removed the
-  `Bundler::Environment` class which was instantiated by `Bundler.environment`
-  since we realized the `Bundler::Runtime` class was the same thing. During the
-  transition `Bundler.environment` will delegate to `Bundler.load`, which holds
-  the reference to the `Bundler::Environment`.
-
-#### DSL deprecations
-
-The following deprecations in bundler's DSL are meant to prepare for the strict
-source pinning in bundler 4, where the source for every dependency will be
-unambiguously defined.
+In bundler 4, the source for every dependency will be unambiguously defined, and
+Bundler will refuse to run otherwise.
 
 * Multiple global Gemfile sources will no longer be supported.
 
@@ -207,7 +142,82 @@ unambiguously defined.
   end
   ```
 
-#### Misc deprecations
+#### Notable CLI changes
+
+* The `--force` flag to `bundle install` and `bundle update` will be renamed to `--redownload`.
+
+  This is just a simple rename of the flag, to make more apparent what it
+  actually does. This flag forces redownloading every gem, it doesn't "force"
+  anything else.
+
+* `bundle viz` will be removed and extracted to a plugin.
+
+  This is the only bundler command requiring external dependencies, both an OS
+  dependency (the `graphviz` package) and a gem dependency (the `ruby-graphviz`
+  gem). Removing these dependencies will make development easier and it was also
+  seen by the bundler team as an opportunity to develop a bundler plugin that
+  it's officially maintained by the bundler team, and that users can take as a
+  reference to develop their own plugins. The plugin will contain the same code
+  as the old core command, the only difference being that the command is now
+  implemented as `bundle graph` which is much easier to understand. However, the
+  details of the plugin are under discussion. See [#3333](https://github.com/rubygems/rubygems/issues/3333).
+
+* The `bundle install` command will no longer accept a `--binstubs` flag.
+
+  The `--binstubs` option has been removed from `bundle install` and replaced
+  with the `bundle binstubs` command. The `--binstubs` flag would create
+  binstubs for all executables present inside the gems in the project. This was
+  hardly useful since most users will only use a subset of all the binstubs
+  available to them. Also, it would force the introduction of a bunch of most
+  likely unused files into source control. Because of this, binstubs now must
+  be created and checked into version control individually.
+
+* The `bundle inject` command will be replaced with `bundle add`
+
+  We believe the new command fits the user's mental model better and it supports
+  a wider set of use cases. The interface supported by `bundle inject` works
+  exactly the same in `bundle add`, so it should be easy to migrate to the new
+  command.
+
+### Other notable changes
+
+* Git and Path gems will be included in `vendor/cache` by default
+
+  We're unsure why these gems were treated specially so we'll start caching them
+  normally.
+
+* Bundler will use cached local data if available when network issues are found
+  during resolution.
+
+  Just trying to provide a more resilient behavior here.
+
+* `Bundler.clean_env`, `Bundler.with_clean_env`, `Bundler.clean_system`, and `Bundler.clean_exec` will be removed
+
+  All of these helpers ultimately use `Bundler.clean_env` under the hood, which
+  makes sure all bundler-related environment are removed inside the block it
+  yields.
+
+  After quite a lot user reports, we noticed that users don't usually want this
+  but instead want the bundler environment as it was before the current process
+  was started. Thus, `Bundler.with_original_env`, `Bundler.original_system`, and
+  `Bundler.original_exec` were born. They all use the new `Bundler.original_env`
+  under the hood.
+
+  There's however some specific cases where the good old `Bundler.clean_env`
+  behavior can be useful. For example, when testing Rails generators, you really
+  want an environment where `bundler` is out of the picture. This is why we
+  decided to keep the old behavior under a new more clear name, because we
+  figured the word "clean" was too ambiguous. So we have introduced
+  `Bundler.unbundled_env`, `Bundler.with_unbundled_env`,
+  `Bundler.unbundled_system`, and `Bundler.unbundled_exec`.
+
+* `Bundler.environment` is deprecated in favor of `Bundler.load`.
+
+  We're not sure how people might be using this directly but we have removed the
+  `Bundler::Environment` class which was instantiated by `Bundler.environment`
+  since we realized the `Bundler::Runtime` class was the same thing. During the
+  transition `Bundler.environment` will delegate to `Bundler.load`, which holds
+  the reference to the `Bundler::Environment`.
 
 * Deployment helpers for `vlad` and `capistrano` are being removed.
 

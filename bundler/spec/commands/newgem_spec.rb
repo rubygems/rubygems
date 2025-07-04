@@ -1014,7 +1014,7 @@ RSpec.describe "bundle gem" do
     end
   end
 
-  context "gem.test setting set to false and --test with no arguments", :readline do
+  context "gem.test setting set to false and --test with no arguments" do
     before do
       bundle "config set gem.test false"
       bundle "gem #{gem_name} --test" do |input, _, _|
@@ -1033,7 +1033,7 @@ RSpec.describe "bundle gem" do
     it_behaves_like "test framework is absent"
   end
 
-  context "gem.test setting not set and --test with no arguments", :readline do
+  context "gem.test setting not set and --test with no arguments" do
     before do
       global_config "BUNDLE_GEM__TEST" => nil
       bundle "gem #{gem_name} --test" do |input, _, _|
@@ -1184,7 +1184,7 @@ RSpec.describe "bundle gem" do
     end
   end
 
-  context "gem.ci setting set to false and --ci with no arguments", :readline do
+  context "gem.ci setting set to false and --ci with no arguments" do
     before do
       bundle "config set gem.ci false"
       bundle "gem #{gem_name} --ci" do |input, _, _|
@@ -1201,7 +1201,7 @@ RSpec.describe "bundle gem" do
     end
   end
 
-  context "gem.ci setting not set and --ci with no arguments", :readline do
+  context "gem.ci setting not set and --ci with no arguments" do
     before do
       global_config "BUNDLE_GEM__CI" => nil
       bundle "gem #{gem_name} --ci" do |input, _, _|
@@ -1383,7 +1383,7 @@ RSpec.describe "bundle gem" do
     end
   end
 
-  context "gem.linter setting set to false and --linter with no arguments", :readline do
+  context "gem.linter setting set to false and --linter with no arguments" do
     before do
       bundle "config set gem.linter false"
       bundle "gem #{gem_name} --linter" do |input, _, _|
@@ -1400,7 +1400,7 @@ RSpec.describe "bundle gem" do
     end
   end
 
-  context "gem.linter setting not set and --linter with no arguments", :readline do
+  context "gem.linter setting not set and --linter with no arguments" do
     before do
       global_config "BUNDLE_GEM__LINTER" => nil
       bundle "gem #{gem_name} --linter" do |input, _, _|
@@ -1905,7 +1905,7 @@ Usage: "bundle gem NAME [OPTIONS]"
     end
   end
 
-  context "on first run", :readline do
+  context "on first run" do
     it "asks about test framework" do
       global_config "BUNDLE_GEM__TEST" => nil
 

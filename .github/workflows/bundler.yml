@@ -5,7 +5,7 @@ on:
 
   push:
     branches:
-      - master
+      - deivid-rodriguez/try-reline
 
 concurrency:
   group: ci-${{ github.ref }}-${{ github.workflow }}
@@ -25,25 +25,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - { name: Ubuntu, value: ubuntu-24.04 }
-
-        ruby:
-          - { name: ruby-3.2, value: 3.2.8 }
-          - { name: ruby-3.3, value: 3.3.8 }
-          - { name: ruby-3.4, value: 3.4.4 }
-
         include:
-          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 90 }
-
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 150 }
-
-          - { os: { name: Ubuntu, value: ubuntu-24.04 }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
 
     env:
       RGV: ..
@@ -57,36 +40,13 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Setup java
-        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
-        with:
-          distribution: temurin
-          java-version: 21.0.7
-        if: matrix.ruby.name == 'jruby'
-      - name: Install graphviz (Ubuntu)
-        run: sudo apt-get install graphviz -y
-        if: matrix.os.name == 'Ubuntu'
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps
       - name: Run Test (CRuby)
         run: |
-          bin/parallel_rspec
+          bin/rspec spec/commands/newgem_spec.rb
         working-directory: ./bundler
-        if: matrix.ruby.name != 'jruby'
-      - name: Run Test (JRuby)
-        run: |
-          bin/parallel_rspec --tag jruby_only --tag jruby
-        working-directory: ./bundler
-        if: matrix.ruby.name == 'jruby' && matrix.os.name == 'Ubuntu'
-      - name: Run a warbler project
-        run: |
-          bin/rake bundler:install:local
-          cd bundler/spec/realworld/fixtures/warbler
-          bundle install
-          bundle exec warble
-          java -jar warbler.jar
-        if: matrix.ruby.name == 'jruby' && matrix.os.name == 'Ubuntu'
 
     timeout-minutes: ${{ matrix.timeout || 60 }}
 

@@ -83,7 +83,6 @@ module Bundler
         "Gemfile.tt" => Bundler.preferred_gemfile_name,
         "lib/newgem.rb.tt" => "lib/#{namespaced_path}.rb",
         "lib/newgem/version.rb.tt" => "lib/#{namespaced_path}/version.rb",
-        "sig/newgem.rbs.tt" => "sig/#{namespaced_path}.rbs",
         "newgem.gemspec.tt" => "#{name}.gemspec",
         "Rakefile.tt" => "Rakefile",
         "README.md.tt" => "README.md",
@@ -193,6 +192,13 @@ module Bundler
         config[:changelog] = true
         Bundler.ui.info "Changelog enabled in config"
         templates.merge!("CHANGELOG.md.tt" => "CHANGELOG.md")
+      end
+
+      if ask_and_set(:rbs, "Do you want to include RBS type signatures?",
+        "See https://github.com/ruby/rbs")
+        config[:rbs] = true
+        Bundler.ui.info "RBS signatures enabled in config"
+        templates.merge!("sig/newgem.rbs.tt" => "sig/#{namespaced_path}.rbs")
       end
 
       config[:linter] = ask_and_set_linter

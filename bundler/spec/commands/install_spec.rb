@@ -29,7 +29,7 @@ RSpec.describe "bundle install with gem sources" do
       expect(bundled_app_lock).to exist
     end
 
-    it "does not create ./.bundle by default", bundler: "< 3" do
+    it "does not create ./.bundle by default" do
       gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"
@@ -334,14 +334,14 @@ RSpec.describe "bundle install with gem sources" do
         expect(the_bundle).to include_gems "myrack 1.0"
       end
 
-      it "allows running bundle install --system without deleting foo", bundler: "< 3" do
+      it "allows running bundle install --system without deleting foo" do
         bundle "install --path vendor"
         bundle "install --system"
         FileUtils.rm_r(bundled_app("vendor"))
         expect(the_bundle).to include_gems "myrack 1.0"
       end
 
-      it "allows running bundle install --system after deleting foo", bundler: "< 3" do
+      it "allows running bundle install --system after deleting foo" do
         bundle "install --path vendor"
         FileUtils.rm_r(bundled_app("vendor"))
         bundle "install --system"
@@ -349,7 +349,7 @@ RSpec.describe "bundle install with gem sources" do
       end
     end
 
-    it "finds gems in multiple sources", bundler: "< 3" do
+    it "finds gems in multiple sources" do
       build_repo2 do
         build_gem "myrack", "1.2" do |s|
           s.executables = "myrackup"
@@ -690,8 +690,6 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "gracefully handles error when rubygems server is unavailable" do
-      skip "networking issue" if Gem.win_platform?
-
       install_gemfile <<-G, artifice: nil, raise_on_error: false
         source "https://gem.repo1"
         source "http://0.0.0.0:9384" do
@@ -699,7 +697,7 @@ RSpec.describe "bundle install with gem sources" do
         end
       G
 
-      expect(err).to include("Could not fetch specs from http://0.0.0.0:9384/")
+      expect(err).to eq("Could not reach host 0.0.0.0:9384. Check your network connection and try again.")
       expect(err).not_to include("file://")
     end
 
@@ -1497,6 +1495,55 @@ RSpec.describe "bundle install with gem sources" do
         BUNDLED WITH
            #{Bundler::VERSION}
       L
+    end
+  end
+
+  context "when lockfile has incorrect dependencies" do
+    before do
+      build_repo2
+
+      gemfile <<-G
+        source "https://gem.repo2"
+        gem "myrack_middleware"
+      G
+
+      system_gems "myrack_middleware-1.0", path: default_bundle_path
+
+      # we want to raise when the 1.0 line should be followed by "            myrack (= 0.9.1)" but isn't
+      lockfile <<-L
+        GEM
+          remote: https://gem.repo2/
+          specs:
+            myrack_middleware (1.0)
+
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          myrack_middleware
+
+        BUNDLED WITH
+          #{Bundler::VERSION}
+      L
+    end
+
+    it "raises a clear error message when frozen" do
+      bundle "config set frozen true"
+      bundle "install", raise_on_error: false
+
+      expect(exitstatus).to eq(41)
+      expect(err).to eq("Bundler found incorrect dependencies in the lockfile for myrack_middleware-1.0")
+    end
+
+    it "updates the lockfile when not frozen" do
+      missing_dep = "myrack (0.9.1)"
+      expect(lockfile).not_to include(missing_dep)
+
+      bundle "config set frozen false"
+      bundle :install
+
+      expect(lockfile).to include(missing_dep)
+      expect(out).to include("now installed")
     end
   end
 

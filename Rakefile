@@ -106,12 +106,12 @@ end
 namespace :vendor do
   desc "Download vendored gems to tmp"
   task :bundle do
-    sh({ "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "--disable-gems", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=tool/bundler/vendor_gems.rb")
+    sh({ "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor", "RUBYOPT" => "--disable-gems -r#{File.expand_path("bundler/spec/support/hax.rb", __dir__)} -Ilib" }, "bundler/bin/bundle", "install", "--gemfile=tool/bundler/vendor_gems.rb")
   end
 
   desc "Install patched vendored gems"
   task install: :bundle do
-    sh({ "BUNDLE_GEMFILE" => "tool/bundler/vendor_gems.rb", "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor" }, "ruby", "-rpathname", "-r./bundler/spec/support/hax.rb", "-I", "lib", "bundler/spec/support/bundle.rb", "exec", "tool/automatiek/vendor.rb")
+    sh({ "BUNDLE_GEMFILE" => "tool/bundler/vendor_gems.rb", "BUNDLE_PATH" => "../../tmp/vendor", "BUNDLER_GEM_DEFAULT_DIR" => "../../tmp/vendor", "RUBYOPT" => "-rpathname -r#{File.expand_path("bundler/spec/support/hax.rb", __dir__)} -Ilib" }, "bundler/bin/bundle", "exec", "tool/automatiek/vendor.rb")
   end
 
   desc "Check vendored gems are up to date"
@@ -126,7 +126,7 @@ end
 namespace :rubocop do
   desc "Setup gems necessary to lint Ruby code"
   task(:setup) do
-    sh "ruby", "-I", "lib", "bundler/spec/support/bundle.rb", "install", "--gemfile=tool/bundler/lint_gems.rb"
+    sh({ "RUBYOPT" => "-Ilib" }, "bundler/bin/bundle", "install", "--gemfile=tool/bundler/lint_gems.rb")
   end
 
   desc "Run rubocop. Pass positional arguments as Rake arguments, e.g. `rake 'rubocop:run[-a]'`"
@@ -514,14 +514,14 @@ namespace :dev do
 end
 
 namespace :spec do
-  desc "Ensure spec dependencies are installed (deprecated)"
+  desc "Ensure spec dependencies are installed"
   task deps: "dev:deps" do
-    warn "The `spec:deps` task is deprecated because test dependencies are now installed by the tests themselves. Use `dev:deps` task instead."
+    Spec::Rubygems.install_test_deps
   end
 
   desc "Ensure spec dependencies for running in parallel are installed (deprecated)"
-  task parallel_deps: "dev:deps" do
-    warn "The `spec:parallel_deps` task is deprecated because test dependencies are now installed by the tests themselves and don't need parallelization. Use `dev:deps` task instead."
+  task parallel_deps: "spec:deps" do
+    warn "The `spec:parallel_deps` task is deprecated because test dependencies don't need parallelization. Use `spec:deps` task instead."
   end
 
   desc "Run all specs"
@@ -640,11 +640,6 @@ namespace :man do
   end
 end
 
-task :override_version do
-  next unless version = ENV["BUNDLER_SPEC_SUB_VERSION"]
-  Spec::Path.replace_version_file(version)
-end
-
 namespace :bundler do
   chdir(File.expand_path("bundler", __dir__)) do
     require_relative "bundler/lib/bundler/gem_tasks"
@@ -654,11 +649,13 @@ namespace :bundler do
 
   Bundler::GemHelper.tag_prefix = "bundler-"
 
+  desc "Write build metadata file in preparation for release"
   task :build_metadata do
     Spec::BuildMetadata.write_build_metadata
   end
 
   namespace :build_metadata do
+    desc "Reset build metadata file after release"
     task :clean do
       Spec::BuildMetadata.reset_build_metadata
     end
@@ -688,14 +685,5 @@ namespace :bundler do
 
       Release.for_bundler(gemspec_version).create_for_github!
     end
-  end
-end
-
-namespace :bundler3 do
-  task :install do
-    ENV["BUNDLER_SPEC_SUB_VERSION"] = "3.0.0"
-    Rake::Task["override_version"].invoke
-    Rake::Task["install"].invoke
-    sh("git", "checkout", "--", "bundler/lib/bundler/version.rb")
   end
 end

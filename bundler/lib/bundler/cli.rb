@@ -77,7 +77,7 @@ module Bundler
       self.options ||= {}
       unprinted_warnings = Bundler.ui.unprinted_warnings
       Bundler.ui = UI::Shell.new(options)
-      Bundler.ui.level = "debug" if options["verbose"]
+      Bundler.ui.level = "debug" if options[:verbose] || Bundler.settings[:verbose]
       unprinted_warnings.each {|w| Bundler.ui.warn(w) }
     end
 
@@ -130,7 +130,7 @@ module Bundler
 
       if man_pages.include?(command)
         man_page = man_pages[command]
-        if Bundler.which("man") && !man_path.match?(%r{^file:/.+!/META-INF/jruby.home/.+})
+        if Bundler.which("man") && !man_path.match?(%r{^(?:file:/.+!|uri:classloader:)/META-INF/jruby.home/.+})
           Kernel.exec("man", man_page)
         else
           puts File.read("#{man_path}/#{File.basename(man_page)}.ronn")
@@ -486,13 +486,13 @@ module Bundler
     def version
       cli_help = current_command.name == "cli_help"
       if cli_help || ARGV.include?("version")
-        build_info = " (#{BuildMetadata.built_at} commit #{BuildMetadata.git_commit_sha})"
+        build_info = " (#{BuildMetadata.timestamp} commit #{BuildMetadata.git_commit_sha})"
       end
 
-      if !cli_help && Bundler.feature_flag.print_only_version_number?
-        Bundler.ui.info "#{Bundler::VERSION}#{build_info}"
+      if !cli_help && Bundler.feature_flag.bundler_4_mode?
+        Bundler.ui.info "#{Bundler.verbose_version}#{build_info}"
       else
-        Bundler.ui.info "Bundler version #{Bundler::VERSION}#{build_info}"
+        Bundler.ui.info "Bundler version #{Bundler.verbose_version}#{build_info}"
       end
     end
 
@@ -512,7 +512,7 @@ module Bundler
       end
     end
 
-    unless Bundler.feature_flag.bundler_3_mode?
+    unless Bundler.feature_flag.bundler_4_mode?
       desc "viz [OPTIONS]", "Generates a visual dependency graph", hide: true
       long_desc <<-D
         Viz generates a PNG file of the current Gemfile as a dependency graph.
@@ -544,6 +544,7 @@ module Bundler
     method_option :ci, type: :string, lazy_default: Bundler.settings["gem.ci"] || "", enum: %w[github gitlab circle], desc: "Generate CI configuration, either GitHub Actions, GitLab CI or CircleCI. Set a default with `bundle config set --global gem.ci (github|gitlab|circle)`"
     method_option :linter, type: :string, lazy_default: Bundler.settings["gem.linter"] || "", enum: %w[rubocop standard], desc: "Add a linter and code formatter, either RuboCop or Standard. Set a default with `bundle config set --global gem.linter (rubocop|standard)`"
     method_option :github_username, type: :string, default: Bundler.settings["gem.github_username"], banner: "Set your username on GitHub", desc: "Fill in GitHub username on README so that you don't have to do it manually. Set a default with `bundle config set --global gem.github_username <your_username>`."
+    method_option :bundle, type: :boolean, default: Bundler.settings["gem.bundle"], desc: "Automatically run `bundle install` after creation. Set a default with `bundle config set --global gem.bundle true`"
 
     def gem(name)
       require_relative "cli/gem"
@@ -713,14 +714,9 @@ module Bundler
       command_name = cmd.name
       return if PARSEABLE_COMMANDS.include?(command_name)
       command = ["bundle", command_name] + args
-      options_to_print = options.dup
-      options_to_print.delete_if do |k, v|
-        next unless o = cmd.options[k]
-        o.default == v
-      end
-      command << Thor::Options.to_switches(options_to_print.sort_by(&:first)).strip
+      command << Thor::Options.to_switches(options.sort_by(&:first)).strip
       command.reject!(&:empty?)
-      Bundler.ui.info "Running `#{command * " "}` with bundler #{Bundler::VERSION}"
+      Bundler.ui.info "Running `#{command * " "}` with bundler #{Bundler.verbose_version}"
     end
 
     def warn_on_outdated_bundler

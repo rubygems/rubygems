@@ -94,7 +94,7 @@ module Bundler
       lockfile_contents.split(BUNDLED).last.strip
     end
 
-    def initialize(lockfile)
+    def initialize(lockfile, strict: false)
       @platforms    = []
       @sources      = []
       @dependencies = {}
@@ -106,6 +106,7 @@ module Bundler
         "Gemfile.lock"
       end
       @pos = Position.new(1, 1)
+      @strict = strict
 
       if lockfile.match?(/<<<<<<<|=======|>>>>>>>|\|\|\|\|\|\|\|/)
         raise LockfileError, "Your #{@lockfile_path} contains merge conflicts.\n" \
@@ -144,13 +145,13 @@ module Bundler
         if @platforms.include?(Gem::Platform::X64_MINGW)
           @platforms.delete(Gem::Platform::X64_MINGW_LEGACY)
           SharedHelpers.major_deprecation(2,
-            "Found x64-mingw32 in lockfile, which is deprecated. Removing it. Support for x64-mingw32 will be removed in Bundler 3.0.",
-            removed_message: "Found x64-mingw32 in lockfile, which is no longer supported as of Bundler 3.0.")
+            "Found x64-mingw32 in lockfile, which is deprecated. Removing it. Support for x64-mingw32 will be removed in Bundler 4.0.",
+            removed_message: "Found x64-mingw32 in lockfile, which is no longer supported as of Bundler 4.0.")
         else
           @platforms[@platforms.index(Gem::Platform::X64_MINGW_LEGACY)] = Gem::Platform::X64_MINGW
           SharedHelpers.major_deprecation(2,
-            "Found x64-mingw32 in lockfile, which is deprecated. Using x64-mingw-ucrt, the replacement for x64-mingw32 in modern rubies, instead. Support for x64-mingw32 will be removed in Bundler 3.0.",
-            removed_message: "Found x64-mingw32 in lockfile, which is no longer supported as of Bundler 3.0.")
+            "Found x64-mingw32 in lockfile, which is deprecated. Using x64-mingw-ucrt, the replacement for x64-mingw32 in modern rubies, instead. Support for x64-mingw32 will be removed in Bundler 4.0.",
+            removed_message: "Found x64-mingw32 in lockfile, which is no longer supported as of Bundler 4.0.")
         end
       end
 
@@ -286,7 +287,7 @@ module Bundler
 
         version = Gem::Version.new(version)
         platform = platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
-        @current_spec = LazySpecification.new(name, version, platform, @current_source)
+        @current_spec = LazySpecification.new(name, version, platform, @current_source, strict: @strict)
         @current_source.add_dependency_names(name)
 
         @specs[@current_spec.full_name] = @current_spec

@@ -366,7 +366,6 @@ hide_lib_for_update/note.txt
 lib/rubygems.rb
 lib/rubygems/available_set.rb
 lib/rubygems/basic_specification.rb
-lib/rubygems/bundler_integration.rb
 lib/rubygems/bundler_version_finder.rb
 lib/rubygems/ci_detector.rb
 lib/rubygems/command.rb

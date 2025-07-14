@@ -1,5 +1,70 @@
 # Changelog
 
+## 3.7.0 / 2025-07-16
+
+### Security:
+
+* Update vendored resolv to 0.6.2. Pull request
+  [#8831](https://github.com/rubygems/rubygems/pull/8831) by hsbt
+
+### Breaking changes:
+
+* Stop generating binstubs with support for RubyGems before 2.6.2. Pull
+  request [#8833](https://github.com/rubygems/rubygems/pull/8833) by
+  deivid-rodriguez
+* Drop support for Ruby 3.1. Pull request
+  [#8634](https://github.com/rubygems/rubygems/pull/8634) by segiddins
+
+### Enhancements:
+
+* Update SPDX license list as of 2025-07-01. Pull request
+  [#8829](https://github.com/rubygems/rubygems/pull/8829) by
+  github-actions[bot]
+* Add `push_rubygem` as a default scope for `gem signin` command. Pull
+  request [#8672](https://github.com/rubygems/rubygems/pull/8672) by hsbt
+* Update bundled tls certs. Pull request
+  [#8731](https://github.com/rubygems/rubygems/pull/8731) by segiddins
+* Install the best matching gem for the current platform in `gem install`.
+  Pull request [#8751](https://github.com/rubygems/rubygems/pull/8751) by
+  segiddins
+* Move most of `Bundler::GemHelpers` to `Gem::Platform`. Pull request
+  [#8703](https://github.com/rubygems/rubygems/pull/8703) by segiddins
+* Ensure that `Gem::Platform` parses strings to a fix point. Pull request
+  [#8584](https://github.com/rubygems/rubygems/pull/8584) by segiddins
+* Installs bundler 2.7.0 as a default gem.
+
+### Bug fixes:
+
+* Fix signing HEAD and date formatting in S3 signer. Pull request
+  [#8763](https://github.com/rubygems/rubygems/pull/8763) by rye-stripe
+* Fix `--bindir <foo>` flag to gem install failing when `<foo>` is not in
+  the default GEM_HOME and its parent directory does not exist yet. Pull
+  request [#8783](https://github.com/rubygems/rubygems/pull/8783) by larouxn
+* Fix `gem install` sometimes compiling the wrong source files. Pull
+  request [#8764](https://github.com/rubygems/rubygems/pull/8764) by
+  deivid-rodriguez
+* Workaround rust extension compilation when `ccache` or `sccache` are
+  used. Pull request [#8521](https://github.com/rubygems/rubygems/pull/8521)
+  by hsbt
+* Fix `gem pristine` not recompiling extensions sometimes. Pull request
+  [#8757](https://github.com/rubygems/rubygems/pull/8757) by
+  deivid-rodriguez
+* Fix `--prerelease` flag to `gem install` sometimes not respected. Pull
+  request [#8648](https://github.com/rubygems/rubygems/pull/8648) by ntl
+
+### Documentation:
+
+* Fix incorrect UPGRADING link in README.md. Pull request
+  [#8838](https://github.com/rubygems/rubygems/pull/8838) by djbender
+* Add a root CONTRIBUTING.md file. Pull request
+  [#8822](https://github.com/rubygems/rubygems/pull/8822) by
+  deivid-rodriguez
+* Add a SECURITY.md file. Pull request
+  [#8812](https://github.com/rubygems/rubygems/pull/8812) by
+  deivid-rodriguez
+* Fix heading ranks in documentation. Pull request
+  [#8711](https://github.com/rubygems/rubygems/pull/8711) by antoinem
+
 ## 3.6.9 / 2025-05-13
 
 ### Enhancements:

@@ -1,0 +1,31 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1172
+last-modified: Thu, 13 Mar 2025 00:02:47 GMT
+etag: "01941731e677a12be4cbaec1c5c8fc14"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="dradScY5N/fqPumBE8KQVYd0qRCWmNOgyLYkxwVsnlw="
+repr-digest: sha-256="dradScY5N/fqPumBE8KQVYd0qRCWmNOgyLYkxwVsnlw="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400048_BFI 167.82.142.48:443
+accept-ranges: bytes
+age: 3434
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400048-BFI, cache-mad22049-MAD
+x-cache: HIT, HIT
+x-cache-hits: 85728, 0
+x-timer: S1752478957.429803,VS0,VE1
+server: RubyGems.org
+
+---
+2.22.0 rubocop:~> 1.33|checksum:a7bff8efff6a8c986c885b4a3a572b7e7fff817feefa524d1c06494e228640f9,ruby:>= 2.7.0
+2.23.0 rubocop:~> 1.33|checksum:5998ab5cb5a0a3f20d781eb7c9bce524c2fd95848d08855cfb4a6c58c36e5571,ruby:>= 2.7.0
+2.23.1 rubocop:~> 1.33|checksum:c19ee30c02e591f4293c07e943e22b7999c545d5010aac4d79621ee310850c4f,ruby:>= 2.7.0
+2.24.0 rubocop:~> 1.33|checksum:3018d350315277200c31c98a5297c9d19463536c04bdeba0a75a512e3975e9f8,ruby:>= 2.7.0
+2.25.0 rubocop:~> 1.33|checksum:804d906d48e7296b1d94491024d6aa40f8ace815eaf7439f370d44d4f4d25889,ruby:>= 2.7.0
+2.25.1 rubocop:~> 1.41|checksum:62751bde7af789878b8a31cbd2a82e69515ce7b23a2ad1820cb0fcc3e0150134,ruby:>= 2.7.0
+2.26.0 rubocop:~> 1.41|checksum:17593a8dd296867c906a33946d91e69232c9a3084c92933f5109d23e0451a37f,ruby:>= 2.7.0
+2.26.1 rubocop:~> 1.61|checksum:8de13cd4edcee5ca800f255188167ecef8dbfc3d1fae9f15734e9d2e755392aa,ruby:>= 2.7.0
+2.27.0 lint_roller:~> 1.1,rubocop:>= 1.72.1&~> 1.72|checksum:de9918bc4e1406b3025da87c5c34c91dd6c3e802cd59339790631f963a5652ba,ruby:>= 2.7.0
+2.27.1 lint_roller:~> 1.1,rubocop:>= 1.72.1&~> 1.72|checksum:9d744b5916778c1848e5fe6777cc69855bd96548853554ec239ba9961b8573fe,ruby:>= 2.7.0

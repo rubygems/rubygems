@@ -1,20 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 3050
-last-modified: Fri, 27 Oct 2023 19:47:29 GMT
-etag: "a0a697ff0e975f9903e1086e1b0f4e25"
+content-length: 3566
+last-modified: Fri, 07 Mar 2025 18:43:07 GMT
+etag: "8abfc511700258f0739a9ef27eda1717"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="VmIAUfoFtQnaPWsnoV+qn43lXBMjB34DqxGwzBHQw/Q="
+digest: sha-256="4SvM/LecJx4Vn6yHtY8fPUK7TsgQtAItc8wI23kZKz4="
+repr-digest: sha-256="4SvM/LecJx4Vn6yHtY8fPUK7TsgQtAItc8wI23kZKz4="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400050_BFI 167.82.142.50:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400110_BFI 167.82.142.110:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:07 GMT
-age: 3217
-x-served-by: cache-bfi-kbfi7400050-BFI, cache-mad2200096-MAD
-x-cache: HIT, MISS
-x-cache-hits: 83356, 0
-x-timer: S1702666987.947865,VS0,VE162
+age: 3565
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400110-BFI, cache-mad2200124-MAD
+x-cache: HIT, HIT
+x-cache-hits: 93409, 0
+x-timer: S1752478957.128879,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -42,3 +43,6 @@ server: RubyGems.org
 4.0.1 rspec-core:~> 3.0,rspec-expectations:~> 3.0,rspec-mocks:~> 3.0,sidekiq:< 8&>= 5|checksum:feaf2f3b2e97949e5df128757f0a1de79585b3c30bfbd168a666222b39ab3236
 4.0.2 rspec-core:~> 3.0,rspec-expectations:~> 3.0,rspec-mocks:~> 3.0,sidekiq:< 8&>= 5|checksum:2ba4214aacff850ab9c28b9c69661c75a0dcbbf37cff249b870e068de8f0ffba
 4.1.0 rspec-core:~> 3.0,rspec-expectations:~> 3.0,rspec-mocks:~> 3.0,sidekiq:< 8&>= 5|checksum:d7fc7ec64b34fcefc9940aa65f6ca892f77579bac0a09347a6398d515d78fe3c,ruby:>= 2.7
+4.2.0 rspec-core:~> 3.0,rspec-expectations:~> 3.0,rspec-mocks:~> 3.0,sidekiq:< 8&>= 5|checksum:de625b94e4a2abb471a84673a77c86d84a9823494321bbbf9ea0a7dda02442b9,ruby:>= 2.7
+5.0.0 rspec-core:~> 3.0,rspec-expectations:~> 3.0,rspec-mocks:~> 3.0,sidekiq:< 8&>= 5|checksum:bd5d0958a9b6270ef4a3dd172cb2b064e572ccc97f93212b90fd1ad8d8884b23,ruby:>= 2.7
+5.1.0 rspec-core:~> 3.0,rspec-expectations:~> 3.0,rspec-mocks:~> 3.0,sidekiq:< 9&>= 5|checksum:ed671ce4a9948ea2395db464c8c846651ea006e124f7868ee5d497f693102867,ruby:>= 2.7

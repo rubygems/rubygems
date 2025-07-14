@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 6958
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "d2a331a8e7d287b6d73a55263fd66d1a"
-last-modified: Wed, 14 Jul 2021 00:04:29 GMT
+content-length: 7529
+last-modified: Wed, 04 Sep 2024 21:32:04 GMT
+etag: "7f7f06649d30d8214af5b473c28cedf4"
 cache-control: max-age=60, public
-x-request-id: df6d77d1-0c82-4e4b-bf88-b211505dad27
-x-runtime: 0.007917
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="BlUuGbeJDW8pD7HM2vqaXHD4Jim4g8/FFf6ZutQBH6E="
+repr-digest: sha-256="BlUuGbeJDW8pD7HM2vqaXHD4Jim4g8/FFf6ZutQBH6E="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300037_BFI 167.82.143.37:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:44 GMT
-via: 1.1 varnish
-age: 538
-x-served-by: cache-fra19182-FRA
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1635203865.737828,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 931
+date: Mon, 14 Jul 2025 07:42:31 GMT
+x-served-by: cache-bfi-krnt7300037-BFI, cache-mad22074-MAD
+x-cache: HIT, HIT
+x-cache-hits: 35343, 0
+x-timer: S1752478951.171731,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -104,3 +96,8 @@ server: RubyGems.org
 3.6.0 fugit:>= 1.1.6&~> 1.1|checksum:cc9cd71db26334e73897e9722d78551ac2fffefe80de391fe056016c934799ad,ruby:>= 1.9
 3.7.0 fugit:>= 1.1.6&~> 1.1|checksum:5ece427f7bf1793f659ffac4c34d2c328d7106c5261d98f3831aded160ca2cf4,ruby:>= 1.9
 3.8.0 fugit:>= 1.1.6&~> 1.1|checksum:2c0f45c191d26b1fceedd7c6ff5b5a9e3cb42fe74cebe57edafefc9ff8237423,ruby:>= 1.9
+3.8.1 fugit:>= 1.1.6&~> 1.1|checksum:0ca683c769a16a794981fae57d4ad745a2f31c6eee1fc8036b962a88f5667dcb,ruby:>= 1.9
+3.8.2 fugit:>= 1.1.6&~> 1.1|checksum:9a33d32fb5d58a70861fa792be2d7f0de6cc1fdee3a21d5b2298168f56f644ab,ruby:>= 1.9
+3.9.0 fugit:>= 1.1.6&~> 1.1|checksum:f48bdca738987b426f72ffe0b211899d68534fbc9a7f480840f91c0800caa844,ruby:>= 1.9
+3.9.1 fugit:>= 1.1.6&~> 1.1|checksum:5fca077ca039a0025fa77fcc7484fa64e47a112124babc75d4c072ad05439992,ruby:>= 1.9
+3.9.2 fugit:>= 1.11.1&~> 1.1|checksum:55fa9e4db0ff69d7f38c804f17baba0c9bce5cba39984ae3c5cf6c039d1323b9,ruby:>= 1.9

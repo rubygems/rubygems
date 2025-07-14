@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 11565
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "7e25902fd9c8e0738485608825508916"
-last-modified: Tue, 13 Apr 2021 09:52:30 GMT
+content-length: 11728
+last-modified: Fri, 24 Nov 2023 15:57:58 GMT
+etag: "c7d9d57bfc50612712583276bb42bd6c"
 cache-control: max-age=60, public
-x-request-id: 8f7ca88d-a5fc-46ff-8594-001c53e6688f
-x-runtime: 0.011091
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="0T4nEYHXooQQxFyU7EZTgngy4euERdoBfDNWdKmMjvY="
+repr-digest: sha-256="0T4nEYHXooQQxFyU7EZTgngy4euERdoBfDNWdKmMjvY="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300108_BFI 167.82.143.108:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 2826
-x-served-by: cache-fra19151-FRA
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1635203860.877804,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 2931
+date: Mon, 14 Jul 2025 07:42:25 GMT
+x-served-by: cache-bfi-krnt7300108-BFI, cache-mad2200138-MAD
+x-cache: HIT, HIT
+x-cache-hits: 87698, 0
+x-timer: S1752478946.653919,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -125,3 +117,4 @@ server: RubyGems.org
 3.0.4 declarative:< 0.1.0,declarative-option:< 0.2.0,uber:< 0.2.0|checksum:07d43917dea4712ecebd19c1909e769deed863ad444d23ceb6461519e2cba962,ruby:>= 1.9.3
 3.1.0 declarative:< 0.1.0,trailblazer-option:~> 0.1.0,uber:< 0.2.0|checksum:70c0df90d7c2bef77db1b7e0ff0280828a44a14c234f0dc60ce2fa7e12da27d3,ruby:>= 2.4.0
 3.1.1 declarative:< 0.1.0,trailblazer-option:< 0.2.0&>= 0.1.1,uber:< 0.2.0|checksum:dacfd01d46ee2c398cf78aa74a3269dd52adc38fdae32c3d3fe5fa4cd2ffbc27,ruby:>= 2.4.0
+3.2.0 declarative:< 0.1.0,trailblazer-option:< 0.2.0&>= 0.1.1,uber:< 0.2.0|checksum:cc29bf7eebc31653586849371a43ffe36c60b54b0a6365b5f7d95ec34d1ebace,ruby:>= 2.4.0

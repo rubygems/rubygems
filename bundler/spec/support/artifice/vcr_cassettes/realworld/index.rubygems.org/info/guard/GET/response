@@ -1,21 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 22237
-last-modified: Fri, 24 Nov 2023 16:34:46 GMT
-etag: "33d517d8af6ac20bf97641391215521b"
+content-length: 22738
+last-modified: Thu, 02 Jan 2025 14:35:57 GMT
+etag: "cd107163415f0dc4d8125171fd33c300"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="mWEtf2L0teT1YM54prHuApQ1O6TCkjDyCWqFHMa2uJg="
-repr-digest: sha-256="mWEtf2L0teT1YM54prHuApQ1O6TCkjDyCWqFHMa2uJg="
+digest: sha-256="tO3FFPsb2Js5dNCQ2MsVSe5koSA8R18whyi+uBPdOus="
+repr-digest: sha-256="tO3FFPsb2Js5dNCQ2MsVSe5koSA8R18whyi+uBPdOus="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300024_BFI 167.82.143.24:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300086_BFI 167.82.143.86:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:07 GMT
-age: 715
-x-served-by: cache-bfi-krnt7300024-BFI, cache-mad22037-MAD
+age: 470
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-krnt7300086-BFI, cache-mad2200089-MAD
 x-cache: HIT, HIT
-x-cache-hits: 50140, 1
-x-timer: S1702666987.948288,VS0,VE168
+x-cache-hits: 123466, 0
+x-timer: S1752478957.132425,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -154,3 +154,5 @@ server: RubyGems.org
 2.17.0 formatador:>= 0.2.4,listen:< 4.0&>= 2.7,lumberjack:< 2.0&>= 1.0.12,nenv:~> 0.1,notiffany:~> 0.0,pry:>= 0.9.12,shellany:~> 0.0,thor:>= 0.18.1|checksum:21d89632958439d6da8b568e9673910b498019b993ada2adbe37cbd5ce94f890,ruby:>= 1.9.3
 2.18.0 formatador:>= 0.2.4,listen:< 4.0&>= 2.7,lumberjack:< 2.0&>= 1.0.12,nenv:~> 0.1,notiffany:~> 0.0,pry:>= 0.13.0,shellany:~> 0.0,thor:>= 0.18.1|checksum:12f2b801a0c8d41e7480ab5c2c4283e439fbe0ac7574a0da1dee82ec484a1eff,ruby:>= 1.9.3
 2.18.1 formatador:>= 0.2.4,listen:< 4.0&>= 2.7,lumberjack:< 2.0&>= 1.0.12,nenv:~> 0.1,notiffany:~> 0.0,pry:>= 0.13.0,shellany:~> 0.0,thor:>= 0.18.1|checksum:a3893d3b23d538a9b2d6f05a27713e0ed53ea881df0f0550b21a3393c6d87c09,ruby:>= 1.9.3
+2.19.0 formatador:>= 0.2.4,listen:< 4.0&>= 2.7,lumberjack:< 2.0&>= 1.0.12,nenv:~> 0.1,notiffany:~> 0.0,pry:>= 0.13.0,shellany:~> 0.0,thor:>= 0.18.1|checksum:f740fd01ade3db0d3c08ee8977468c0110270002c1cd8cdaf1558a0796971666,ruby:>= 1.9.3
+2.19.1 formatador:>= 0.2.4,listen:< 4.0&>= 2.7,logger:~> 1.6,lumberjack:< 2.0&>= 1.0.12,nenv:~> 0.1,notiffany:~> 0.0,ostruct:~> 0.6,pry:>= 0.13.0,shellany:~> 0.0,thor:>= 0.18.1|checksum:b8bc52694be3d8b26730280de7dcec7fe92ea1cff3414246fe96af3f23580f3d,ruby:>= 1.9.3

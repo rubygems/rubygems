@@ -1,30 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 31840
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "fd52b49dab375bee53c8051f05182b58"
-last-modified: Tue, 20 Dec 2022 20:21:21 GMT
+content-length: 35710
+last-modified: Tue, 28 Jan 2025 23:05:58 GMT
+etag: "9a3f63f02fb55b4d1ccb96da70d4d2bc"
 cache-control: max-age=60, public
-content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
-x-request-id: 968de3a3-50d9-4dee-a6e2-3bfafd6d3eb9
-x-runtime: 0.019481
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.25.15.240:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="DrXvC+9urKB+rNi3hcqJrSLmeWwDjwunFRABdltPoL8="
+repr-digest: sha-256="DrXvC+9urKB+rNi3hcqJrSLmeWwDjwunFRABdltPoL8="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400075_BFI 167.82.142.75:443
 accept-ranges: bytes
-date: Tue, 27 Dec 2022 11:24:52 GMT
-via: 1.1 varnish
-age: 3148
-x-served-by: cache-mad22062-MAD
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1672140292.219944,VS0,VE0
-vary: Accept,Accept-Encoding
+age: 3138
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400075-BFI, cache-mad22028-MAD
+x-cache: HIT, HIT
+x-cache-hits: 178273, 0
+x-timer: S1752478957.438721,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -326,3 +317,39 @@ server: RubyGems.org
 6.0.0-java nio4r:~> 2.0|checksum:fd6a36ea5d7cd71127a419f163d6cbf5eec7d5b6678b4071d7283ba5e0dd02bc,ruby:>= 2.4
 6.0.1 nio4r:~> 2.0|checksum:bcba626c3ef434007daf89ad9294fb4072b2f2dfe8f8938c287ba1db05f7c237,ruby:>= 2.4
 6.0.1-java nio4r:~> 2.0|checksum:5a782852dc221bf2c648a608d52950c637f593b4e43b99dec1f36877a57a2643,ruby:>= 2.4
+6.0.2 nio4r:~> 2.0|checksum:405fcda84436374bedc18a114c507d7e94d9e81ce156a90e0a7388cb4d461296,ruby:>= 2.4
+6.0.2-java nio4r:~> 2.0|checksum:9849b67b925293ed3106e9d87445cc00fb42a666d6b9ef19063831fec661ed8e,ruby:>= 2.4
+6.1.0 nio4r:~> 2.0|checksum:33340161b09cc309ca98095e5488994370a9ed9415711bad2ea37b30aac0aafa,ruby:>= 2.4
+6.1.0-java nio4r:~> 2.0|checksum:455b01768b2d1e6c282c39476b57040521bbf4a046aeecb8ca729d30c377aa18,ruby:>= 2.4
+6.1.1 nio4r:~> 2.0|checksum:41acf33e5fd4ade63ef701036fb3dc64f7fe338ae500eb99b310020853e830c8,ruby:>= 2.4
+6.1.1-java nio4r:~> 2.0|checksum:c95dd31b39daec61fdb1089d2b6b47fb98f83cc4e830b7a5704c40d43eefa88b,ruby:>= 2.4
+6.2.0 nio4r:~> 2.0|checksum:5b3970f1755200555c264ffdfd254f7ecafcc1f8c013487506ff5537ca200818,ruby:>= 2.4
+6.2.0-java nio4r:~> 2.0|checksum:6a87b400ee1bc11c065d477aa556a75e6e8239be8cc70f2fdf5a58588942fb0e,ruby:>= 2.4
+6.2.1 nio4r:~> 2.0|checksum:c5d1c97a387801c1f5bc7186060d8674917775ddaa83aef528b0aa3a162d0d63,ruby:>= 2.4
+6.2.1-java nio4r:~> 2.0|checksum:35e291e73123fe75b94a37c3db39eba34641bb245b46b3fd698985f31211c78d,ruby:>= 2.4
+6.2.2 nio4r:~> 2.0|checksum:4503e79d1d9f13985a30928c72cd1518cebf1da5fcf720efd1aa21ef6795c479,ruby:>= 2.4
+6.2.2-java nio4r:~> 2.0|checksum:979623e8072876a1d44092f91dfaddf337be103323b321fe779adc92def7106a,ruby:>= 2.4
+6.3.0 nio4r:~> 2.0|checksum:b0e35b4fe7ae440237a9ff1647c6bb252a1c0951ff356020670d2e62c1aeeeec,ruby:>= 2.4
+6.3.0-java nio4r:~> 2.0|checksum:5e2ff95953608d1ba0350b80a3961a43e9bbb78ec60ebd5e4db1940c2921d5d8,ruby:>= 2.4
+5.6.6 nio4r:~> 2.0|checksum:8e04ffb55349d846f73ecaa6ffd6487d154b369917c63ce7bda64cc5aa262184,ruby:>= 2.2
+5.6.6-java nio4r:~> 2.0|checksum:bed760bfcd87ced210ba7b52fbf96b028be632e63c929e51ef62ff34f168ea00,ruby:>= 2.2
+6.3.1 nio4r:~> 2.0|checksum:ec989c775f88f5cbea0c7178b94ed9ff44797241f9245d353d1774a845e78df4,ruby:>= 2.4
+6.3.1-java nio4r:~> 2.0|checksum:b242e45d6dd45cbbf26730a8c60939472f813dbe014baead4710001be7273f11,ruby:>= 2.4
+5.6.7 nio4r:~> 2.0|checksum:89fff754ceda5e95602c784e9256449b722dbf7e551bc6512d91436951321b7b,ruby:>= 2.2
+5.6.7-java nio4r:~> 2.0|checksum:271fafd94559700870d30589fa5276470b22d9189fdf7a7e8e60701cb84b1041,ruby:>= 2.2
+6.4.0 nio4r:~> 2.0|checksum:d5dda11362744df9f4694708a62e3cfddf72eba7498c16016ebbb30f106712f9,ruby:>= 2.4
+6.4.0-java nio4r:~> 2.0|checksum:eb27679e9e665882bab85dfa84704b0615b4f77cec46de014f05b90a5ab36cfe,ruby:>= 2.4
+6.4.1 nio4r:~> 2.0|checksum:278512793a0d3e2460a27ed5370b3d1f7bcd195eae09b355679179bc333f1524,ruby:>= 2.4
+6.4.1-java nio4r:~> 2.0|checksum:a69eea2af807ab4165850c57aafa2a7b1360199e6ae173de00dde2e0fc7e5635,ruby:>= 2.4
+6.4.2 nio4r:~> 2.0|checksum:3eb41999d00733280be3faeb00d610331b6965a537a8cd3d905f316c38575b44,ruby:>= 2.4
+6.4.2-java nio4r:~> 2.0|checksum:65822783e835c48106e464e776a1484f7383ef8a6e34b434f01fda8b034266c3,ruby:>= 2.4
+5.6.8 nio4r:~> 2.0|checksum:9928863e73a19e45bbc4b7930106fe6ed1a6ed5d7b89104905c421986066635e,ruby:>= 2.2
+5.6.8-java nio4r:~> 2.0|checksum:f66ac126a1055895349eab91ee0c8f4094a8834130cf49c88c2e9cc54a4dc084,ruby:>= 2.2
+5.6.9 nio4r:~> 2.0|checksum:20701b2451080ec8d6d78d2e4b5a2913e6d0b865a51d704a4d60db8fd39a4228,ruby:>= 2.2
+6.4.3 nio4r:~> 2.0|checksum:24a4645c006811d83f2480057d1f54a96e7627b6b90e1c99b260b9dc630eb43e,ruby:>= 2.4
+6.4.3-java nio4r:~> 2.0|checksum:373fcfacacaafd0f5a24db18cb99b3f2decb5c5316470169852559aa80adc8ab,ruby:>= 2.4
+5.6.9-java nio4r:~> 2.0|checksum:939685a15953884d7862c5db5c91b0ffb5ce0754dc70cf6df2b3f68c53980538,ruby:>= 2.2
+6.5.0 nio4r:~> 2.0|checksum:94d1b75cab7f356d52e4f1b17b9040a090889b341dbeee6ee3703f441dc189f2,ruby:>= 2.4
+6.5.0-java nio4r:~> 2.0|checksum:a58eea585d291aa33796add9884208bc1591da5d8e61886f8ac74d080b298c40,ruby:>= 2.4
+6.6.0 nio4r:~> 2.0|checksum:f25c06873eb3d5de5f0a4ebc783acc81a4ccfe580c760cfe323497798018ad87,ruby:>= 2.4
+6.6.0-java nio4r:~> 2.0|checksum:707623ea7a5e4cfb8badb60f192fed6ae66d8c25d28737ebc684437d6fda08ce,ruby:>= 2.4

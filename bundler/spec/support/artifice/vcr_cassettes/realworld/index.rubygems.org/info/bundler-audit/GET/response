@@ -1,33 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 2394
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 0
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "2816ba09f1a759cc33eeefa4e4e9cc49"
-last-modified: Sat, 30 Sep 2023 11:39:25 GMT
-digest: sha-256=tSn4bUxwQvYWtINj0OYSrWRaDAbONvFbwXyMZhBBChA=
-repr-digest: sha-256=:tSn4bUxwQvYWtINj0OYSrWRaDAbONvFbwXyMZhBBChA=:
+content-length: 2539
+last-modified: Thu, 22 Aug 2024 23:56:32 GMT
+etag: "47a142dc7dbd596fc16c3b0614a88e56"
 cache-control: max-age=60, public
-content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com https://unpkg.com/@hotwired/stimulus/dist/stimulus.umd.js https://unpkg.com/stimulus-rails-nested-form/dist/stimulus-rails-nested-form.umd.js 'nonce-'; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3A6eb44c41cd8e1c639b6aaf07c0b14fcd78e0674c%2Cenv%3Aproduction%2Ctrace_id%3A730241608167871316
-x-request-id: 886ac198-57e7-4eaf-a4e2-7b15d5865861
-x-runtime: 0.010587
-strict-transport-security: max-age=31536000
-fastly-restarts: 1
+content-type: text/plain; charset=utf-8
+digest: sha-256="lRNxaSI70GVVU+97em4ITlgo3YcNkXo52ZwVJ4EFoS4="
+repr-digest: sha-256="lRNxaSI70GVVU+97em4ITlgo3YcNkXo52ZwVJ4EFoS4="
 via: 1.1 varnish, 1.1 varnish
-x-backend: F_Rails 54.71.216.117:443, fastlyshield--shield_ssl_cache_bfi_krnt7300082_BFI 167.82.143.82:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400095_BFI 167.82.142.95:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:07 GMT
-age: 3087
-x-served-by: cache-bfi-krnt7300082-BFI, cache-mad2200130-MAD
-x-cache: HIT, MISS
-x-cache-hits: 100830, 0
-x-timer: S1702666987.153258,VS0,VE169
-vary: Accept,Accept-Encoding
+age: 1770
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400095-BFI, cache-mad2200089-MAD
+x-cache: HIT, HIT
+x-cache-hits: 108293, 0
+x-timer: S1752478957.148267,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -49,3 +37,4 @@ server: RubyGems.org
 0.9.0 bundler:< 3&>= 1.2.0,thor:~> 1.0|checksum:5e2473028e0fc8e3c0f6eb2b3a57133a649840704c3329f606a463fa0b9c0572,ruby:>= 2.0.0,rubygems:>= 1.8.0
 0.9.0.1 bundler:< 3&>= 1.2.0,thor:~> 1.0|checksum:1bf1bf26a961ccb3cb40961cf5ea7727323d45a5c232725a464420340a4d6116,ruby:>= 2.0.0,rubygems:>= 1.8.0
 0.9.1 bundler:< 3&>= 1.2.0,thor:~> 1.0|checksum:bdc716fc21cd8652a6507b137e5bc51f5e0e4f6f106a114ab004c89d0200bd3d,ruby:>= 2.0.0,rubygems:>= 1.8.0
+0.9.2 bundler:< 3&>= 1.2.0,thor:~> 1.0|checksum:73051daa09865c436450a35c4d87ceef15f3f9777f4aad4fd015cc6f1f2b1048,ruby:>= 2.0.0,rubygems:>= 1.8.0

@@ -1,21 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 2848
-last-modified: Tue, 28 Nov 2023 20:33:29 GMT
-etag: "631f865a824eaca9be4e38dbc11381ac"
+content-length: 3707
+last-modified: Tue, 10 Jun 2025 19:12:25 GMT
+etag: "c7e8450aa3d8eaa03723edbb6df0e631"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="BTMSYNfGi1AkcuDWu3V3bHAb1D8xrirhShBjUxx8kpw="
-repr-digest: sha-256="BTMSYNfGi1AkcuDWu3V3bHAb1D8xrirhShBjUxx8kpw="
+digest: sha-256="PUeHK9/Ux9Gs2mTmjqpYavos6UqUy2BwFYaCfwmK1+Y="
+repr-digest: sha-256="PUeHK9/Ux9Gs2mTmjqpYavos6UqUy2BwFYaCfwmK1+Y="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300044_BFI 167.82.143.44:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400110_BFI 167.82.142.110:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:07 GMT
-age: 2913
-x-served-by: cache-bfi-krnt7300044-BFI, cache-mad22068-MAD
+age: 3446
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400110-BFI, cache-mad2200094-MAD
 x-cache: HIT, HIT
-x-cache-hits: 118562, 1
-x-timer: S1702666988.565528,VS0,VE1
+x-cache-hits: 265518, 0
+x-timer: S1752478957.355528,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -44,3 +44,10 @@ server: RubyGems.org
 1.6.1 aws-eventstream:>= 1.0.2&~> 1|checksum:1c158f74d7daa882459bd5a686bccc25041af127a6b791911f2233e7673df1f3,ruby:>= 2.3
 1.7.0 aws-eventstream:>= 1.0.2&~> 1|checksum:ca1fdd2a7de51056d09b9ebdab9e0d27d2f859621a549eba2388b42d8e49a74e,ruby:>= 2.5
 1.8.0 aws-eventstream:>= 1.0.2&~> 1|checksum:84dd99768b91b93b63d1d8e53ee837cfd06ab402812772a7899a78f9f9117cbc,ruby:>= 2.5
+1.9.0 aws-eventstream:>= 1.0.2&~> 1|checksum:32d0807a1d613373bec44fe3e18d4786834c85fd75bb9c233f215aae7066fd5a,ruby:>= 2.5
+1.9.1 aws-eventstream:>= 1.0.2&~> 1|checksum:7753e320c39f80f82f9e0883b30de0e7b99e756adbaedc80c50b6ad59d49c379,ruby:>= 2.5
+1.10.0 aws-eventstream:>= 1.0.2&~> 1|checksum:159b113dc93f9fa5a13603a8bd09eab54a9a0e8f98e606b47f1cee504780df9c,ruby:>= 2.5
+1.10.1 aws-eventstream:>= 1.0.2&~> 1|checksum:8a140753f34de18125686b11e7adaed4ca3db06dfb50a478993bd437f7a203bb,ruby:>= 2.5
+1.11.0 aws-eventstream:>= 1.0.2&~> 1|checksum:50a8796991a862324442036ad7a395920572b84bb6cd29b945e5e1800e8da1db,ruby:>= 2.5
+1.12.0 aws-eventstream:>= 1.0.2&~> 1|checksum:6e08f83fba19e64e671df460a342a36831a4bf336888cf3cbc3f6658cc108de5,ruby:>= 2.7
+1.12.1 aws-eventstream:>= 1.0.2&~> 1|checksum:6973ff95cb0fd0dc58ba26e90e9510a2219525d07620c8babeb70ef831826c00,ruby:>= 2.7

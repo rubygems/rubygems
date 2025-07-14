@@ -1,29 +1,33 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 2160
+content-length: 2468
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
+x-xss-protection: 0
 x-content-type-options: nosniff
-x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "12557e75f2c8c7435d84a249076acb6e"
-last-modified: Mon, 18 Oct 2021 09:04:25 GMT
+cross-origin-opener-policy: same-origin
+etag: "47e95111f61f6e65dfdc4a763dacca7b"
+last-modified: Sat, 30 Sep 2023 10:27:57 GMT
+digest: sha-256=8cmNdDe/ODRM45UrI5LN2ycdGifnJjLzEhy3OT3apGo=
+repr-digest: sha-256=:8cmNdDe/ODRM45UrI5LN2ycdGifnJjLzEhy3OT3apGo=:
 cache-control: max-age=60, public
-x-request-id: d0c80bcc-e8ea-4d7a-bb52-0e6209d877bd
-x-runtime: 0.010323
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' 'sha256-4uzPy2VgfUcGFr8frA/viCcF1/EbzT520i3H5sP5w0U=' https://secure.gaug.es https://www.fastly-insights.com 'nonce-ba64cd65dda5c8582db608f0dff3ecad'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; base-uri 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3A19d5a2ae81ab0ca5ec291f02001853fe44787184%2Cenv%3Aproduction%2Ctrace_id%3A685163fb000000000037a19aaca2fb38
+x-request-id: 36979ef5-946b-4fb4-9d6d-102f57d7ada6
+x-runtime: 0.006076
+strict-transport-security: max-age=31536000; includeSubDomains
+fastly-restarts: 1
+via: 1.1 varnish, 1.1 varnish
+x-backend: F_Rails 52.25.57.180:443, fastlyshield--shield_ssl_cache_bfi_krnt7300066_BFI 167.82.143.66:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:47 GMT
-via: 1.1 varnish
-age: 2698
-x-served-by: cache-fra19182-FRA
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1635203867.463469,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 07:42:23 GMT
+age: 2954
+x-served-by: cache-bfi-krnt7300066-BFI, cache-mad22040-MAD
+x-cache: HIT, HIT
+x-cache-hits: 208639, 1
+x-timer: S1752478943.345678,VS0,VE1
+vary: Accept,Accept-Encoding
 server: RubyGems.org
 
 ---
@@ -41,3 +45,5 @@ server: RubyGems.org
 6.0.0 cucumber-messages:>= 17.0.0&~> 17.0,sys-uname:>= 1.2.2&~> 1.2|checksum:8f9d1b9ec17448605cde6ad9ac3b50b34d7a5eb28c6513abb6178513c85b0a6d,ruby:>= 2.3
 6.0.1 cucumber-messages:>= 17.0.1&~> 17.0,sys-uname:>= 1.2.2&~> 1.2|checksum:d117510c4b0da92cb76550e78046f8a2e965f7bf552d634c49b80d9b004566c4,ruby:>= 2.3
 6.0.2 cucumber-messages:>= 17.1.1&~> 17.1,sys-uname:>= 1.2.2&~> 1.2|checksum:e8c7f4d9b0edc79a6bf309cec1640f0c1e01ffdc57cb211c6d1131c2aba12f63,ruby:>= 2.3
+6.0.3 cucumber-messages:>= 17.1.1&~> 17.1,sys-uname:>= 1.2.2&~> 1.2|checksum:f2dc426451c61eb3f01f86d9c2ab7b2ef77a719eebc4b89b673a513494c8f2f1,ruby:>= 2.3
+6.0.4 cucumber-messages:>= 17.1.1&~> 17.1,sys-uname:>= 1.2.2&~> 1.2|checksum:f939306cf020b5522c390329705ea4249f54624c901e61a1fb86baaf0051dc48,ruby:>= 2.3

@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4161
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "76fdf96dc145446fa9d115abe66e6b41"
-last-modified: Sat, 15 May 2021 20:47:51 GMT
+content-length: 4749
+last-modified: Mon, 11 Nov 2024 19:06:31 GMT
+etag: "391382caa9f2f1712bba88d67ba1fb3f"
 cache-control: max-age=60, public
-x-request-id: d4460c26-c332-4235-82e7-5b93608db8ba
-x-runtime: 0.007507
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="MT6aZlDu2HOrUptInfxX5UlYuasTu9FcvIVV7c1sLiw="
+repr-digest: sha-256="MT6aZlDu2HOrUptInfxX5UlYuasTu9FcvIVV7c1sLiw="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300027_BFI 167.82.143.27:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:33 GMT
-via: 1.1 varnish
-age: 1190
-x-served-by: cache-fra19124-FRA
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1635203853.063004,VS0,VE1
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 1528
+date: Mon, 14 Jul 2025 07:42:20 GMT
+x-served-by: cache-bfi-krnt7300027-BFI, cache-mad22082-MAD
+x-cache: HIT, HIT
+x-cache-hits: 156807, 0
+x-timer: S1752478940.334339,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -77,3 +69,9 @@ server: RubyGems.org
 4.15.1 |checksum:9291a0f2247f50d15068ee6965b67cd7b678b0d273e18adf3c0b2ea4a890125c,ruby:< 3.1&>= 2.1
 4.15.2 |checksum:0684494bd59480fc5c9c589871080f37adc5384c339be2a9b8a0369fd300cf68,ruby:< 4&>= 2.1
 4.15.3 |checksum:1f8be144bbd3e11be4dace795b17c42375b1ec9db302e00c48c0447fa031b284,ruby:< 4&>= 2.1
+4.16.0 |checksum:4df85af5ac7ecbdefd37edf617fc883d04cdccc179946952597915a2ba808c0c,ruby:< 4&>= 2.1
+4.16.1 |checksum:5caadbf4bbe5ab539cb892a5bcf74ca33a2f2a897cecafdee4a63be79b4819dc,ruby:< 4&>= 2.1
+4.17.0 |checksum:4daa4874ce1838cd801c65e66ed5d4f140024404a3de7482c36d4ef2604dff6f,ruby:< 4&>= 2.6
+4.17.1 |checksum:91110946720307f30bf1d549e90d9a529fef40d1fc471c069c8cca7667015da0,ruby:< 4&>= 2.6
+4.17.2 |checksum:0dfdd3d90aed28360cb3032ac8905bca66d8c5f5cab01e94762206eca24e75be,ruby:< 4&>= 2.6
+4.17.3 |checksum:5ef0d952565eeedb416519f678b6b41c6ab6700abba828f46986f2d85d295dae,ruby:< 4&>= 2.6

@@ -1,21 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 2043
-last-modified: Thu, 28 Sep 2023 07:56:24 GMT
-etag: "1e508e21bb0c1ea8a69dad688c3326f7"
+content-length: 2764
+last-modified: Tue, 18 Feb 2025 15:50:26 GMT
+etag: "dfafb68bf63fdb4616b8029052aca645"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="FB0HJEDaFqCf0+4MmOdixwpduZpJ0Qjobf53AzIwoII="
-repr-digest: sha-256="FB0HJEDaFqCf0+4MmOdixwpduZpJ0Qjobf53AzIwoII="
+digest: sha-256="+7wfHkWxE3oHHzJ18nHEef53o9kgusD+m71mxTnUcZU="
+repr-digest: sha-256="+7wfHkWxE3oHHzJ18nHEef53o9kgusD+m71mxTnUcZU="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400115_BFI 167.82.142.115:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300099_BFI 167.82.143.99:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:08 GMT
-age: 1858
-x-served-by: cache-bfi-kbfi7400115-BFI, cache-mad22037-MAD
-x-cache: HIT, MISS
-x-cache-hits: 6876, 0
-x-timer: S1702666988.360781,VS0,VE166
+age: 1182
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-krnt7300099-BFI, cache-mad2200124-MAD
+x-cache: HIT, HIT
+x-cache-hits: 123132, 0
+x-timer: S1752478958.612618,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -35,3 +35,9 @@ server: RubyGems.org
 8.1.2 faraday:~> 1,multi_json:>= 0|checksum:5e04559c581daf73ff9534cb0de624d38586da419d10426acc41a98136598581,ruby:>= 2.5
 8.2.4 faraday:< 3,multi_json:>= 0|checksum:1aa190a5025cce0517fd97b5ced71cf28e799e85556fb95f3f7c5024e1ff845f,ruby:>= 2.5
 8.3.0 faraday:< 3,multi_json:>= 0|checksum:4a9e21432db6fdbde8858fcc6b9241a33d25e9a74eb4dfe08715da82bcaa3965,ruby:>= 2.5
+8.1.3 faraday:~> 1,multi_json:>= 0|checksum:2b6e67b3f14a53593159067159c4dd270446be4b52c9d6334bafb9d129741ee7,ruby:>= 2.5
+8.2.5 faraday:< 3,multi_json:>= 0|checksum:66ee016d6247ea977d7603956ae1e2a0d7ef9377aa1a0bee80b72175e2fb5771,ruby:>= 2.5
+8.3.1 faraday:< 3,multi_json:>= 0|checksum:d53f31036e42aeb2c03d24eaf2fc556d9079c44d4f76671840eeb6173dfadbdd,ruby:>= 2.5
+8.3.2 faraday:< 3,multi_json:>= 0|checksum:ca81291b1eada6b4d145346df2d742df9475b5368b0672105bba953ef0a89ed4,ruby:>= 2.5
+8.3.5 faraday:< 3,multi_json:>= 0|checksum:af7393a00a8e92498e2c9f29fb5c33c381022b5bfe48a481cd162200e65bf606,ruby:>= 2.5
+8.4.0 faraday:< 3,multi_json:>= 0|checksum:b5e9e406c98a867dc73a9c7c2f29faf619de3ade94aa1b7f5a8dcf45ffc0e577,ruby:>= 2.5

@@ -1,29 +1,32 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 3007
+content-length: 3307
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
+x-xss-protection: 0
 x-content-type-options: nosniff
-x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "f37450deb373b56c2139435c55cfe6d7"
-last-modified: Fri, 02 Sep 2022 14:41:39 GMT
+cross-origin-opener-policy: same-origin
+etag: "31c59cec95803f1fe1659203f2ab6cfd"
+last-modified: Sat, 30 Sep 2023 13:26:57 GMT
+digest: sha-256=XR1uqZ1jTiJFztaOf40sUJy7PtjFnBQA7KuoKyOptoI=
+repr-digest: sha-256=:XR1uqZ1jTiJFztaOf40sUJy7PtjFnBQA7KuoKyOptoI=:
 cache-control: max-age=60, public
-content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
-x-request-id: d709b5aa-0941-46d0-9916-7ec291383028
-x-runtime: 0.008221
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.25.92.26:443
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' 'sha256-cCx/054kTLMPsOXs/RSfWzj+QTTXTo79eGucevTHPxU=' https://secure.gaug.es https://www.fastly-insights.com 'nonce-60318315ee5c699eb41c880fc87b22a9'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; base-uri 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3Ac23da3a39a084bc46f4b47ee57f93eaba97ffcea%2Cenv%3Aproduction%2Ctrace_id%3A68749676000000001dd111dd85c5f1af
+x-request-id: d1c1edd4-6dfa-4013-9935-1615e805799a
+x-runtime: 0.008995
+strict-transport-security: max-age=31536000; includeSubDomains
+fastly-restarts: 1
+via: 1.1 varnish, 1.1 varnish
+x-backend: F_Rails 52.37.144.133:443, fastlyshield--shield_ssl_cache_bfi_krnt7300054_BFI 167.82.143.54:443
 accept-ranges: bytes
-date: Wed, 05 Oct 2022 12:19:38 GMT
-via: 1.1 varnish
-age: 0
-x-served-by: cache-mad22066-MAD
-x-cache: MISS
-x-cache-hits: 0
-x-timer: S1664972378.794815,VS0,VE705
+age: 1211
+date: Mon, 14 Jul 2025 07:42:41 GMT
+x-served-by: cache-bfi-krnt7300054-BFI, cache-mad22036-MAD
+x-cache: HIT, HIT
+x-cache-hits: 0, 0
+x-timer: S1752478962.525703,VS0,VE1
 vary: Accept,Accept-Encoding
 server: RubyGems.org
 
@@ -47,3 +50,5 @@ server: RubyGems.org
 4.0.2 activerecord:~> 6.0,activesupport:~> 6.0,rails-erd:>= 0|checksum:089f6a34874b0a8b6c4064f7883f777452b5bda4cef910ef6cdfb249796c09a2,ruby:>= 2.2.0
 4.0.3 activerecord:~> 6.0,activesupport:~> 6.0,rails-erd:>= 0|checksum:37639e7c92b1fa60b9109424cecf684387ef25538c907b3f2c0b3510ea90de48,ruby:>= 2.2.0
 4.0.4 activerecord:~> 6.0,activesupport:~> 6.0,rails-erd:>= 0|checksum:2255fce07ffd4ffa79463a8ee71ee227d545b5dac06b25857a1f7db763a1ff66,ruby:>= 2.2.0
+5.0.0 activerecord:~> 7.0,activesupport:~> 7.0,rails-erd:>= 0|checksum:fb8d73e70b212f6d7d76ca281f23b661738015e868c6b2a1b0d7bb91753b7981,ruby:>= 2.7.0
+5.0.1 activerecord:~> 7.0,activesupport:~> 7.0,rails-erd:>= 0|checksum:d0071a82ad5643dc71d28e4c4e8b125207b4058618d2a3fa1521579409f62101,ruby:>= 2.7.0

@@ -6,15 +6,16 @@ etag: "d40fc305c70a361cfda871e525722da6"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
 digest: sha-256="QORDnpV5ieJ1O3YtZYfUKJ+O5t1JYksOBNpE4o+guTw="
+repr-digest: sha-256="QORDnpV5ieJ1O3YtZYfUKJ+O5t1JYksOBNpE4o+guTw="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300022_BFI 167.82.143.22:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400035_BFI 167.82.142.35:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:08 GMT
-age: 3009
-x-served-by: cache-bfi-krnt7300022-BFI, cache-mad2200136-MAD
+age: 1367
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400035-BFI, cache-mad2200124-MAD
 x-cache: HIT, HIT
-x-cache-hits: 88187, 1
-x-timer: S1702666989.606712,VS0,VE1
+x-cache-hits: 137487, 0
+x-timer: S1752478958.635630,VS0,VE1
 server: RubyGems.org
 
 ---

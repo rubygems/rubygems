@@ -1,29 +1,33 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 1996
+content-length: 2091
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
+x-xss-protection: 0
 x-content-type-options: nosniff
-x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
-etag: "ce255a6a1e3a87cbdce5e1eeed8f6581"
-last-modified: Mon, 14 Dec 2020 17:13:47 GMT
+cross-origin-opener-policy: same-origin
+etag: "b69e67a8bb2930b9da24cc4a2e5c730b"
+last-modified: Sat, 30 Sep 2023 13:49:22 GMT
+digest: sha-256=32QydyClJ2DNOLoAc7D71L2eF2m8AqlFt3pzmKVKsjE=
+repr-digest: sha-256=:32QydyClJ2DNOLoAc7D71L2eF2m8AqlFt3pzmKVKsjE=:
 cache-control: max-age=60, public
-x-request-id: 80a3c851-8819-408b-b455-d6449c5ef127
-x-runtime: 0.006600
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' 'sha256-cCx/054kTLMPsOXs/RSfWzj+QTTXTo79eGucevTHPxU=' https://secure.gaug.es https://www.fastly-insights.com 'nonce-5b1a9b7c2666d95bfed6ebb7eb89a1dd'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; base-uri 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3Ad9b6bd7b93e50c7a59444f5f2a885a4aeddef7ff%2Cenv%3Aproduction%2Ctrace_id%3A686d7800000000003144bc634308a675
+x-request-id: 9c132017-b947-4b4a-a8e9-77be91e13beb
+x-runtime: 0.007160
+strict-transport-security: max-age=31536000; includeSubDomains
+fastly-restarts: 1
+via: 1.1 varnish, 1.1 varnish
+x-backend: F_Rails 52.37.144.133:443, fastlyshield--shield_ssl_cache_bfi_krnt7300049_BFI 167.82.143.49:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 2208
-x-served-by: cache-fra19163-FRA
-x-cache: HIT
-x-cache-hits: 5
-x-timer: S1635203860.095164,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 2413
+date: Mon, 14 Jul 2025 07:42:23 GMT
+x-served-by: cache-bfi-krnt7300049-BFI, cache-mad22030-MAD
+x-cache: HIT, HIT
+x-cache-hits: 45324, 0
+x-timer: S1752478943.439033,VS0,VE1
+vary: Accept,Accept-Encoding
 server: RubyGems.org
 
 ---
@@ -49,3 +53,4 @@ server: RubyGems.org
 1.2.6 |checksum:7b38e971e73a23ab75a74ead63541fbd9692d7df6a85dfbde3d0618a54329244,ruby:>= 1.9.0
 1.3.0 |checksum:cd97d6fd85106de1dc78940e2ad7ae70f0cec0af113f66ce4fbb0f654f41813b,ruby:>= 1.9.0
 1.3.1 |checksum:b65aba4db51987a0d1d504696f3ebd0a484d86f18f33d0e66deedeed36d92e56,ruby:>= 1.9.0
+1.4.0 |checksum:e71023ed7c56ae780ec34c0ce7789a233bcead08c045d50bc7b3af40f5afcd80,ruby:>= 1.9.0

@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 2311
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "2faf1cfa49af4c937504de58906c09c3"
-last-modified: Sat, 13 Feb 2021 06:15:18 GMT
+content-length: 2566
+last-modified: Fri, 07 Feb 2025 21:36:37 GMT
+etag: "627de505fb134d2e845bcd6e3c6738d0"
 cache-control: max-age=60, public
-x-request-id: e2c2bc6a-23f5-4155-bdf5-5e7d91f122e0
-x-runtime: 0.006615
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="zskPItINrXSJswWH5RGKSm6CsiyVN5miVwVKqJerNaw="
+repr-digest: sha-256="zskPItINrXSJswWH5RGKSm6CsiyVN5miVwVKqJerNaw="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400068_BFI 167.82.142.68:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 2795
-x-served-by: cache-fra19141-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203860.894256,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 683
+date: Mon, 14 Jul 2025 07:42:23 GMT
+x-served-by: cache-bfi-kbfi7400068-BFI, cache-mad22030-MAD
+x-cache: HIT, HIT
+x-cache-hits: 111350, 0
+x-timer: S1752478943.362977,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -52,3 +44,6 @@ server: RubyGems.org
 4.3.1 |checksum:3916d72ff72aa21c990cef2c0444def10e5615ba317a9e596bb60d583fb40244,ruby:>= 2.5
 4.3.2 |checksum:87280146f98fe58370029479a65e3031c3b09eadf64a891f11c7bee3e7443488
 4.3.3 |checksum:4c8235cca32c510465d2c954af0c1536d8e49c2e7b3f09b1a32a80fa4e8aad03
+4.3.4 |checksum:6ab079ea29de95466594127875a7cdf8e3abbd7c3d95ecd2aad268e5ac9bf232
+4.3.5 |checksum:f7d87656363f78f66438183c000ef9f49057ad91bcbf91f5dbdcbb5fed8d5f5e
+4.4.0 |checksum:a92f43cbec26219b17a52c86501557486569bd5d01975cbca4315203cfc0ade7,ruby:>= 3.1

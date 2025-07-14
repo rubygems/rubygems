@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 3128
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "92544f2668ab3c20eb4d7f952898f6e6"
-last-modified: Mon, 14 Dec 2020 17:07:25 GMT
+content-length: 3796
+last-modified: Sun, 11 May 2025 13:59:34 GMT
+etag: "6adee30a9b03cbff6ba27a264ad3b1af"
 cache-control: max-age=60, public
-x-request-id: dca2cb0f-4748-44d1-80b1-e1aaaa0033da
-x-runtime: 0.008234
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="e2JzuoynJfK7wC7mING1KizYFjCDwwUESlOLYjaBOqw="
+repr-digest: sha-256="e2JzuoynJfK7wC7mING1KizYFjCDwwUESlOLYjaBOqw="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300108_BFI 167.82.143.108:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 798
-x-served-by: cache-fra19138-FRA
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1635203860.240768,VS0,VE1
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 3118
+date: Mon, 14 Jul 2025 07:42:23 GMT
+x-served-by: cache-bfi-krnt7300108-BFI, cache-mad22082-MAD
+x-cache: HIT, HIT
+x-cache-hits: 107873, 0
+x-timer: S1752478943.497692,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -64,3 +56,11 @@ server: RubyGems.org
 1.5.3-java |checksum:ca868e27d2025056151c1486d92c1d8fdeb1ec975988f54ae2205fd02d39281c
 1.5.4-java |checksum:0454333a50b44a09745878bfe57859893631ff7dfe48c029827894944514fe7c
 1.5.4 |checksum:50c3e83c5a9e8769c1cf5b73c8b51bb6eebbf8852a0ee53bf6ad6e4dc63414f9
+1.5.5 |checksum:e3fca80938200cf2103d8a6f9413aafdaf02f006e8aa3423316a7f0b5d5360dd
+1.5.5-java |checksum:8e0ca9f566b88db8f538138e4ea0de2bbf245860d11b6360eb44f7a6026b196d
+1.5.6-java |checksum:3262aea433861fec3179184e9adc1933cca8bc15665957a143b56816f1a22f74
+1.5.6 |checksum:007db7805527ada1cc12f2547676181d63b0a504ec4dd7a9a2eb2424521ccd81
+1.6.0 |checksum:8b081ab4ba7da5d16b438e62c4be58b87724bfeeb1527e62603f05ab0a2cc424
+1.6.0-java |checksum:6cbb36eb4c2649834124d8b92957e577890e8157dd41be8252fde5b02b63b42b
+1.6.1 |checksum:c056b61bbf7f1fc0151bde7c8f589a2d666d42d0cdb889395b9b73b328e1b393
+1.6.1-java |checksum:e4f64bc73edbd6210861be99691d890cddb34d77b97d0615995c06bc26ee6cdb

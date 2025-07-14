@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 5314
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "fa683784df3f6b0ed8b48a531a02fe00"
-last-modified: Mon, 24 May 2021 22:16:32 GMT
+content-length: 5842
+last-modified: Sun, 25 May 2025 17:45:51 GMT
+etag: "15bf562a200bd5a87dbba303289563fc"
 cache-control: max-age=60, public
-x-request-id: dc3fbdb4-cf6a-454e-8bbf-9266153ab3c5
-x-runtime: 0.009140
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="H4zQJ6Xg9Apev64eTtUsWTLgfxdHj5fjJlYX2zSbQzo="
+repr-digest: sha-256="H4zQJ6Xg9Apev64eTtUsWTLgfxdHj5fjJlYX2zSbQzo="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400114_BFI 167.82.142.114:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 2612
-x-served-by: cache-fra19141-FRA
-x-cache: HIT
-x-cache-hits: 5
-x-timer: S1635203860.826862,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 3111
+date: Mon, 14 Jul 2025 07:42:23 GMT
+x-served-by: cache-bfi-kbfi7400114-BFI, cache-mad2200135-MAD
+x-cache: HIT, HIT
+x-cache-hits: 251898, 0
+x-timer: S1752478943.174433,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -71,3 +63,7 @@ server: RubyGems.org
 0.10.9 eventmachine:>= 0.12.0,websocket-driver:>= 0.5.1|checksum:2a04291adacce14d56346a7f14d124539db6bd67c10acf816c9f9cca651e77cd
 0.11.0 eventmachine:>= 0.12.0,websocket-driver:>= 0.5.1|checksum:a36a315bf69407267d0171d443b5bc0004f14f66e37f3bbc2008fe40567b96b3
 0.11.1 eventmachine:>= 0.12.0,websocket-driver:>= 0.5.1|checksum:c8e1a7215a020849b1d3dffd1397c62169944f192139e592b795b05e0c589992
+0.11.2 eventmachine:>= 0.12.0,websocket-driver:>= 0.5.1|checksum:41902857ff53295a6028d55152ec4929cc9cfb3d55f2ea87f49d96b3c7d790dc
+0.11.3 eventmachine:>= 0.12.0,websocket-driver:>= 0.5.1|checksum:109187161939c57032d2bba9e5c45621251d73f806bb608d2d4c3ab2cabeb307
+0.11.4 eventmachine:>= 0.12.0,websocket-driver:< 0.8.0&>= 0.5.1|checksum:b8018979267d684ddfb58de957a8d631d4c93c854038bf7a62cb654c8be39ddc
+0.12.0 eventmachine:>= 0.12.0,websocket-driver:>= 0.8.0|checksum:ad9f7dfcd0306d0a13baeee450729657661129af15bb5f38716c242484ab42e1

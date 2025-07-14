@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4315
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "d96ac3079c3e7e203e68a70a305a4abc"
-last-modified: Mon, 14 Dec 2020 16:26:53 GMT
+content-length: 4901
+last-modified: Fri, 20 Jun 2025 20:48:00 GMT
+etag: "6592b1f5c685a6412daffc4ac34d34ac"
 cache-control: max-age=60, public
-x-request-id: bdbf8b55-400f-4e5c-a0bc-1d6fe83c7725
-x-runtime: 0.007022
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="p98lMRLWaXKKN1ufDz09DlwNpExCDRVS7oFxbDS0aDQ="
+repr-digest: sha-256="p98lMRLWaXKKN1ufDz09DlwNpExCDRVS7oFxbDS0aDQ="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300029_BFI 167.82.143.29:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 1569
-x-served-by: cache-fra19138-FRA
-x-cache: HIT
-x-cache-hits: 4
-x-timer: S1635203860.396258,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 07:42:23 GMT
+age: 2751
+x-served-by: cache-bfi-krnt7300029-BFI, cache-mad2200138-MAD
+x-cache: HIT, HIT
+x-cache-hits: 58042, 3
+x-timer: S1752478944.513888,VS0,VE0
 server: RubyGems.org
 
 ---
@@ -73,3 +65,9 @@ server: RubyGems.org
 1.1.3 virtus:~> 1.0|checksum:bbb37b0ee48e159e83f0e49558d5857b8a3ab48475b20571452a6c7be9798530
 1.1.4 virtus:~> 1.0|checksum:13c5c874b1c539709c1a673105a60352cd7811cbe82511a590e3fe42bdf67163
 1.1.6 virtus:~> 1.0|checksum:c92cb128c59c3ad81dc0ee447c2716e4edf80ed3e816d26548628e3833e78d37
+1.1.7 virtus:~> 1.0|checksum:5673f57b0769c0eeb853974d69c2e01458d8524a51cf353fcf6cf727838987bb
+1.2.0.pre1 virtus:~> 1.0|checksum:b8c0f3cdc7b281d21bbdda7c7288cee95768c0a7ba7f03f53de34e13adb9d40e,rubygems:> 1.3.1
+1.2.0 virtus:~> 1.0|checksum:5c3502ff414d528597ce4f5d85bf8bce08b05472301a084c3d7d2bad52f7cd40
+1.2.1 virtus:~> 1.0|checksum:fba6a70695dab16be17141504baa58357fc99c8081fb74e8fce0907e4b26539c
+1.2.2 virtus:~> 1.0|checksum:d4f9e92a29e77d6d56e0bf3f0fafa4dde1cf830ada29cbaf4b9041fdb3e194d6
+1.2.3 virtus:~> 1.0|checksum:0215fc2b821fae8f4a835dcc790b11252acf098a5335f34416160f729b17b7fd

@@ -1,30 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 7723
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "c321b120608a45f408056270a626addd"
-last-modified: Mon, 14 Dec 2020 17:13:16 GMT
+content-length: 7836
+last-modified: Fri, 24 Nov 2023 16:20:51 GMT
+etag: "bf7bc9d19eb832933051d644eed7330d"
 cache-control: max-age=60, public
-content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
-x-request-id: 52d4dd3d-0654-4c46-91da-93e6ce9895d8
-x-runtime: 0.013477
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.26.151.153:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="VCKpvqQ4owTNQv7g6M94CUbRPG6EjsdjyXpi6BmdmL4="
+repr-digest: sha-256="VCKpvqQ4owTNQv7g6M94CUbRPG6EjsdjyXpi6BmdmL4="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400061_BFI 167.82.142.61:443
 accept-ranges: bytes
-date: Tue, 27 Dec 2022 11:24:47 GMT
-via: 1.1 varnish
-age: 2484
-x-served-by: cache-mad22089-MAD
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1672140288.501393,VS0,VE0
-vary: Accept,Accept-Encoding
+age: 1308
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400061-BFI, cache-mad22078-MAD
+x-cache: HIT, HIT
+x-cache-hits: 38776, 0
+x-timer: S1752478957.082856,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -102,3 +93,4 @@ server: RubyGems.org
 1.3.0 ethon:>= 0.9.0|checksum:d8d315e067ec9764c61727d77786a7a82309b43c3964416ef476ee65ac09ed06,rubygems:>= 1.3.6
 1.3.1 ethon:>= 0.9.0|checksum:257e7163d50bed15e52c3c25bde890ea3ad854f3bd2e3fd16ce0b216c342d132,rubygems:>= 1.3.6
 1.4.0 ethon:>= 0.9.0|checksum:fff9880d5dc35950e7706cf132fd297f377c049101794be1cf01c95567f642d4,rubygems:>= 1.3.6
+1.4.1 ethon:>= 0.9.0|checksum:1c17db8364bd45ab302dc61e460173c3e69835896be88a3df07c206d5c55ef7c,rubygems:>= 1.3.6

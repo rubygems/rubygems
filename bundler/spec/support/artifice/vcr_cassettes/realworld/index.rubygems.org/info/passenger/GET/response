@@ -1,20 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 23470
-last-modified: Mon, 20 Nov 2023 13:57:04 GMT
-etag: "20cb99bd0c19e2583c34b4d056600940"
+content-length: 24416
+last-modified: Fri, 04 Apr 2025 16:27:39 GMT
+etag: "83ced155cd8865d5ff1cbbd4b3b55202"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="c9taDaO1Rx5MVQYYisw9th+4Y+S9PNV+lCfV7kIO1kE="
+digest: sha-256="4q64x+IWGRKK10EEQ8ZDAkCVz4gV+nLnZe28k4G1svA="
+repr-digest: sha-256="4q64x+IWGRKK10EEQ8ZDAkCVz4gV+nLnZe28k4G1svA="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400051_BFI 167.82.142.51:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400035_BFI 167.82.142.35:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:06 GMT
-age: 2288
-x-served-by: cache-bfi-kbfi7400051-BFI, cache-mad2200096-MAD
+age: 870
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400035-BFI, cache-mad2200135-MAD
 x-cache: HIT, HIT
-x-cache-hits: 259, 1
-x-timer: S1702666986.342910,VS0,VE1
+x-cache-hits: 29211, 0
+x-timer: S1752478957.101585,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -207,3 +208,11 @@ server: RubyGems.org
 6.0.17 rack:>= 0,rake:>= 0.8.1|checksum:3f7a406d39d13a63354f03da93fed36b24ad9d3ceb1a7e83050a9cfcd152f4d7
 6.0.18 rack:>= 0,rake:>= 0.8.1|checksum:31d308107a16cc5d6e38a8eea918166a68a89a03de048ea60307f89639518a8c
 6.0.19 rack:>= 0,rake:>= 0.8.1|checksum:3df03d364ff01e92d88523f432227b8a7b9fa3ba6653154e9b1601806015a6ea
+6.0.20 rack:>= 0,rake:>= 0.8.1|checksum:6383431c00001d3273b1038423af0516a355c521834973773f852613ee91a393
+6.0.21 rack:>= 0,rake:>= 0.8.1|checksum:4b083105df8eac7060b4999146df47e1752c65d2c2fd76efb28bd58e2bb371e7
+6.0.22 rack:>= 0,rake:>= 0.8.1|checksum:904e000c942eedf4f64c794ff8468759a3f58be52d4aefd4e6700e6084757cb8
+6.0.23 rack:>= 1.6.13,rackup:>= 0,rake:>= 12.3.3|checksum:a10aa8a46059a9866be223f0550cc3600190a8d8a1046354ea5319fc3f2029dd
+6.0.24 rack:>= 1.6.13,rackup:>= 2.0.0,rake:>= 12.3.3|checksum:acd635c0aa850af364eb3caec02d367c37e37676288d82a90650d9827413714c
+6.0.25 rack:>= 1.6.13,rackup:>= 2.0.0,rake:>= 12.3.3|checksum:b4f990e791f1dbb4168b13665939b2e58be1176f630570cc12a9263c98ee8425
+6.0.26 rack:>= 1.6.13,rackup:>= 2.0.0,rake:>= 12.3.3|checksum:2211365a98261e8a501e82ac66a6eacbcd29180d09e11d9dfdf68ac648c244d7
+6.0.27 rack:>= 1.6.13,rackup:>= 1.0.1,rake:>= 12.3.3|checksum:8b5b40fd287dd42158acd75d81d7006fbe8777299d91221a34b3fdf74d8af0c3

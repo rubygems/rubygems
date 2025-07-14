@@ -1,21 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 46162
-last-modified: Tue, 05 Dec 2023 20:47:58 GMT
-etag: "60627e69e308d5840debd8d1402a06cb"
+content-length: 55432
+last-modified: Sun, 13 Jul 2025 14:18:52 GMT
+etag: "75ef3385beb544c02c916f1810067339"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="QG6bl4OxZfx4sV33ovjnZqUyXxz0c8cdsBDY/Y1LAHc="
-repr-digest: sha-256="QG6bl4OxZfx4sV33ovjnZqUyXxz0c8cdsBDY/Y1LAHc="
+digest: sha-256="xpBvPW5y53CL9DDNEkU9rvKLYUelOj3XQArMzyxZZLQ="
+repr-digest: sha-256="xpBvPW5y53CL9DDNEkU9rvKLYUelOj3XQArMzyxZZLQ="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300079_BFI 167.82.143.79:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400105_BFI 167.82.142.105:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:07 GMT
-age: 3440
-x-served-by: cache-bfi-krnt7300079-BFI, cache-mad22044-MAD
-x-cache: HIT, MISS
-x-cache-hits: 5003, 0
-x-timer: S1702666987.166246,VS0,VE214
+age: 1348
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400105-BFI, cache-mad22069-MAD
+x-cache: HIT, HIT
+x-cache-hits: 1935, 0
+x-timer: S1752478957.148255,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -196,3 +196,26 @@ server: RubyGems.org
 0.48.0 backport:~> 1.2,benchmark:>= 0,bundler:>= 1.17.2,diff-lcs:~> 1.4,e2mmap:>= 0,jaro_winkler:~> 1.5,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,parser:~> 3.0,reverse_markdown:< 3&>= 1.0.5,rubocop:>= 0.52,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:f1019acaf3268dbe1178538e6a0ab95e89a2c599c5098952b7d339788b13bedd,ruby:>= 2.4
 0.49.0 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,e2mmap:>= 0,jaro_winkler:~> 1.5,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,parser:~> 3.0,rbs:~> 2.0,reverse_markdown:~> 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:e8e0fcb03b664913bc2f8d0bb10eb2bb717b7ea54a7219dcc702f15785aa97a3,ruby:>= 2.6
 0.50.0 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,e2mmap:>= 0,jaro_winkler:~> 1.5,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,parser:~> 3.0,rbs:~> 2.0,reverse_markdown:~> 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:278d0f7de7181376a64d54a55b5df1a22ce8aa1d0e6a103ff76bf34cb37e7261,ruby:>= 2.6
+0.51.0 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.0,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:283b2fb999437c4d32b41f5588962bd43ef4ef2b5c2dde567e90690a059ebec0,ruby:>= 2.6
+0.51.1 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.0,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:65189da68fb93c804ef0336e690ee65087486aad87a7f360a23ac982a2e26f53,ruby:>= 2.6
+0.51.2 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.0,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9|checksum:c362c648635c3613853d272abb0cde892c67f00d726941239d5b087de7b49e22,ruby:>= 2.6
+0.52.0 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.0,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:22f130e415de1a06e7fb4da840be44d2f744b71cfede71f16ad358070d220a3b,ruby:>= 2.6
+0.53.0 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:52ce7e7aa3290d6c0ef64148df825a27b95870ed9b3c331717dcc4f1bb4fea7d,ruby:>= 3.0
+0.53.1 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:cecfd63719e113ea94a14282c204f0ddfd5a77cdcfd031cddbf5197842778c4d,ruby:>= 3.0
+0.53.2 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:e971976d97a4a77b40f8638dcf91209397a91103c0da8ae4f25fc692940e005d,ruby:>= 3.0
+0.53.3 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:a964b81278b5e2d3bdb71cf1483515b9a2f9bc55602b7ca30c691ad10e1d43f5,ruby:>= 3.0
+0.53.4 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:a14c778bf96ed06e2e23438b35113acd5256233880e363cc11a75900a09a65d2,ruby:>= 3.0
+0.54.0 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:3fd13f381e6428b3c593716ee6d3d5aa802ac647b8b13692d760ab7ac3e1fdc1,ruby:>= 3.0
+0.54.1 backport:~> 1.2,benchmark:>= 0,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:< 4&>= 2.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:38293d4b7f5c214aaae6736ed970bdac768eb6a0c1d902abc0f0e62b79ab2d84,ruby:>= 3.0
+0.54.2 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:fe22f56ec2efe64f674b0e9dd3ac8a99df5b5833c2ca84993bdb2af2bb0b6c56,ruby:>= 3.0
+0.54.3 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:a56fc25c28035952fbb4b323bafef73c62a140ebe65d685532e07c9e638844f0,ruby:>= 3.0
+0.54.4 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:842705cc511a085e967314de8bd2dd89b00f90238b5582e665ffa39efbd880e0,ruby:>= 3.0
+0.54.5 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:53e5508f68af500506a968e349a5731f64069b91c358715b3432476838b6c2a5,ruby:>= 3.0
+0.55.0 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:de6363ed88d8fb1021e6dfa8a9f21d86356e909710c2ef9185e71b63f62cc0d7,ruby:>= 3.0
+0.55.1 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:847c0c5d712e15a0c4feda1371ab988ce3be51ff4736543daec0c36db0a80359,ruby:>= 3.0
+0.55.2 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:ca2852c004311a24f606ad94d20a432cb79ddbd7886af974d40fe15b8ece30a7,ruby:>= 3.0
+0.55.3 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:036e846d0c2f92a234363df12d71b761753fb66e5cba2616ff216e810bdfa2a8,ruby:>= 3.0
+0.55.4 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:4304bc73fd50b0a54667c30ded28ead64b82f6b73521664e087f86d2ac3dea9e,ruby:>= 3.0
+0.55.5 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,prism:~> 1.4,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:bdf64af0fd14324d7fc541ff19a1389a1504c3e233e1f68ff938b68812233f4c,ruby:>= 3.0
+0.56.0 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,prism:~> 1.4,rbs:~> 3.3,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:59e43311dd782ff1900017bb22d6efd32b5c1e81a957a65282c389215368c8c9,ruby:>= 3.0
+0.56.1 backport:~> 1.2,benchmark:~> 0.4,bundler:~> 2.0,diff-lcs:~> 1.4,jaro_winkler:>= 1.6.1&~> 1.6,kramdown:~> 2.3,kramdown-parser-gfm:~> 1.1,logger:~> 1.6,observer:~> 0.1,ostruct:~> 0.6,parser:~> 3.0,prism:~> 1.4,rbs:~> 3.6.1,reverse_markdown:~> 3.0,rubocop:~> 1.38,thor:~> 1.0,tilt:~> 2.0,yard:>= 0.9.24&~> 0.9,yard-solargraph:~> 0.1|checksum:3283fae225642db3c20c03d1cffb00c45943694890f6e88ad09ba404c3d790fe,ruby:>= 3.0

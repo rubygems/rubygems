@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 7780
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "059c79dc5f614f306d0c443e09e5ee78"
-last-modified: Mon, 18 Oct 2021 01:08:53 GMT
+content-length: 9740
+last-modified: Sat, 05 Jul 2025 22:27:30 GMT
+etag: "38cbedacc99c3b10cf1348b9fc037493"
 cache-control: max-age=60, public
-x-request-id: bda0ced6-91f3-49c4-b632-295b3683c8ae
-x-runtime: 0.008003
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="Sa5BqnegRKi6GrsZ+7tBCJX6G7NZc6NnNKgdD6Ls1cY="
+repr-digest: sha-256="Sa5BqnegRKi6GrsZ+7tBCJX6G7NZc6NnNKgdD6Ls1cY="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400075_BFI 167.82.142.75:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 2821
-x-served-by: cache-fra19151-FRA
-x-cache: HIT
-x-cache-hits: 7
-x-timer: S1635203860.214213,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 812
+date: Mon, 14 Jul 2025 07:42:23 GMT
+x-served-by: cache-bfi-kbfi7400075-BFI, cache-mad22082-MAD
+x-cache: HIT, HIT
+x-cache-hits: 82385, 0
+x-timer: S1752478943.478130,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -112,3 +104,23 @@ server: RubyGems.org
 3.4.8 power_assert:>= 0|checksum:accc5963ce1d40fcdfaa08a5c61bf8fa8756f623bec54eef28481a5a413a8d8a
 3.4.9 power_assert:>= 0|checksum:86bfd95327717a2f3572c7b1f27c09f8a902ad5e57c1daa7eecdf569a207edf0
 3.5.0 power_assert:>= 0|checksum:e241fdba08e9313d6d6945fe805eee6d15f4289e68d4874005dfe19e4fc172ab
+3.5.1 power_assert:>= 0|checksum:8f861aa8c25f2e576b6266760455b382fe75a4c7a9402b9ce2e9b826db0793ee
+3.5.2 power_assert:>= 0|checksum:1ce5e7990fdaa486a8bfa985df058bb046d53eeecb0a4062c8194d85e5d2ac42
+3.5.3 power_assert:>= 0|checksum:9c51e9f11f6e65ac6aa7c31e6fa00fe4a7a32a227096bab439cabde746bc0f40
+3.5.4 power_assert:>= 0|checksum:e38295d1f2105051535e492c455766732984c94a666b2ad2f15f256e508d6947
+3.5.5 power_assert:>= 0|checksum:2c24596882077421cccec1f1291c392efd1d18de96cde0d7744cdf810de1d746
+3.5.6 power_assert:>= 0|checksum:1be871e38dbe5e681ec3e60267fa8c0b748eb6e5120289ce1520fc8c010fbddd
+3.5.7 power_assert:>= 0|checksum:0e162a55d8be7032068758c6dfe548b8b40b19ace3f79b369767d28a62bbb0e5
+3.5.8 power_assert:>= 0|checksum:de8d2d39accc2a855dba210384c759dac8741e1e200198360d20ada1f87ca014
+3.5.9 power_assert:>= 0|checksum:8b709670d55edab3f7642272305cf00f6757fe627665ca6c6e21d044f6c50de4
+3.6.0 power_assert:>= 0|checksum:4517dc1657112a077d74be1aa23e96ad02443ca49d50cc4066b312ea7b474add
+3.6.1 power_assert:>= 0|checksum:0aa5c45910725d44e38d0340b31fab3ea8bfac02b11f7201d0ca2a978d52600b
+3.6.2 power_assert:>= 0|checksum:3ce480c23990ca504a3f0d6619be2a560e21326cefd1b86d0f9433c387f26039
+3.6.3 power_assert:>= 0|checksum:0524c7c0282098f2bc51f4879faead8524a140cd176d8d0cd99ae7de2dacf777
+3.6.4 power_assert:>= 0|checksum:7a4bd7dd2fb6d372c8b7499d04fd6478b7163518c6e577cbf2a4cddc8cda7688
+3.6.5 power_assert:>= 0|checksum:901fdf5f2167661f75f85b6d5d0a3cfaee36a56585d8c5d9c7793da0dd287c82
+3.6.6 power_assert:>= 0|checksum:e5b5613579568a7f7b8ce89219716f8f85cf3f9a2f9b1010fad899158870408d
+3.6.7 power_assert:>= 0|checksum:c342bb9f7334ea84a361b43c20b063f405c0bf3c7dbe3ff38f61a91661d29221
+3.6.8 power_assert:>= 0|checksum:0aa115c7d1044b92b80091c71f1f57f5d8b186402b29170e45fb4b5f20a6374e
+3.6.9 power_assert:>= 0|checksum:2be6ae0354623702f004ae626c98337f5e17f2ecc0fc334a9e6fdbb2c7c534da
+3.7.0 power_assert:>= 0|checksum:2b5745498c848768e1774acb63e3806d3bb47e2943bd91cc9bf559b4c6d4faa1

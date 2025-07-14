@@ -1,21 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 18824
-last-modified: Fri, 24 Nov 2023 16:27:06 GMT
-etag: "6d801a7d383b7e3a954ade82bcc0704e"
+content-length: 21463
+last-modified: Mon, 19 May 2025 10:28:06 GMT
+etag: "9570d0e580834ddb454d6b707e98d1a6"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="YNX1+t6eNuCaad+DTmYguLtL+00LqpvJmGx5STCrudM="
-repr-digest: sha-256="YNX1+t6eNuCaad+DTmYguLtL+00LqpvJmGx5STCrudM="
+digest: sha-256="kNFXbUQYkSAPVdxFMZb62rIkcTDK8JU+Tim0l6Iag8A="
+repr-digest: sha-256="kNFXbUQYkSAPVdxFMZb62rIkcTDK8JU+Tim0l6Iag8A="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300027_BFI 167.82.143.27:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400032_BFI 167.82.142.32:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:07 GMT
-age: 169
-x-served-by: cache-bfi-krnt7300027-BFI, cache-mad22044-MAD
+age: 1304
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400032-BFI, cache-mad2200124-MAD
 x-cache: HIT, HIT
-x-cache-hits: 1429, 1
-x-timer: S1702666988.561633,VS0,VE168
+x-cache-hits: 80946, 0
+x-timer: S1752478957.371609,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -145,3 +145,21 @@ server: RubyGems.org
 7.17.9 elasticsearch-api:= 7.17.9,elasticsearch-transport:= 7.17.9|checksum:bfaccf2cfe30d0bdd3e656bd248fafdeeffa35e0b4b24c85b04e95cbad046a9d,ruby:>= 2.4
 7.17.10 elasticsearch-api:= 7.17.10,elasticsearch-transport:= 7.17.10|checksum:e3f21bf36b48634088530386bb6c0fc90881b983c61f3b9a127da1e802147ebc,ruby:>= 2.4
 8.11.0 elasticsearch-api:= 8.11.0,elastic-transport:~> 8.3|checksum:f45fe7f7840416c6d599be8902e3c37bc62c5cced1095c73bd80953a831f82b6,ruby:>= 2.5
+8.12.0 elasticsearch-api:= 8.12.0,elastic-transport:~> 8.3|checksum:a176e571ecd9d33bd1eb2fbcf75984248c1dc49f663e30d68ad30c776447798e,ruby:>= 2.5
+8.11.1 base64:>= 0,elasticsearch-api:= 8.11.1,elastic-transport:~> 8.3|checksum:60f1c2c56570d66859d36a33fe2365151ef46ab42a28f106cfbffb81f24d2d46,ruby:>= 2.5
+8.12.1 base64:>= 0,elasticsearch-api:= 8.12.1,elastic-transport:~> 8.3|checksum:98c16d566eef566994e97b48d343f119fe769113679025d647a126ca1e2f08ea,ruby:>= 2.5
+8.11.2 elasticsearch-api:= 8.11.2,elastic-transport:~> 8.3|checksum:430e8978066c2149fd477eb84f6d6ba665c4b91d14aaf7ef0c52052cc1919e77,ruby:>= 2.5
+8.12.2 elasticsearch-api:= 8.12.2,elastic-transport:~> 8.3|checksum:8529a6a56236855fe3776a1136198013297e1893dd5f300088e095205ea9ff14,ruby:>= 2.5
+8.13.0 elasticsearch-api:= 8.13.0,elastic-transport:~> 8.3|checksum:6fde3f2c80910b2a23792a3c29bdc4b9131030cd5404aa22ddce3c23448a82bb,ruby:>= 2.5
+7.17.11 elasticsearch-api:= 7.17.11,elasticsearch-transport:= 7.17.11|checksum:ed080f085d939f21d07f424ebcea95326e4bdb5f770a8f33aac699374f2ffc86,ruby:>= 2.4
+8.14.0 elasticsearch-api:= 8.14.0,elastic-transport:~> 8.3|checksum:c773385f470167c60153c02b6dc620778c987c8f8478f86c809b7b4e6f8c3bbd,ruby:>= 2.5
+8.15.0 elasticsearch-api:= 8.15.0,elastic-transport:~> 8.3|checksum:409e7b0b6040b25d5fe4492b9f978995dde9d717c0cd9d49da907ca7ba50f136,ruby:>= 2.5
+8.16.0 elasticsearch-api:= 8.16.0,elastic-transport:~> 8.3|checksum:9988f87b1428c9d12501897e4c0e54da37c00463f95698b7b928628aabad71b5,ruby:>= 2.5
+8.17.0 elasticsearch-api:= 8.17.0,elastic-transport:~> 8.3|checksum:a68e33a274f63da1d5ef5b0971cc4ed95e7e32ef7e635653f87cea95d1f085bd,ruby:>= 2.5
+8.17.1 elasticsearch-api:= 8.17.1,elastic-transport:~> 8.3|checksum:697d80b1f6bbffdf59877334efd91e7444aaf7e77509cd7084c0005d5c687cd9,ruby:>= 2.5
+8.16.1 elasticsearch-api:= 8.16.1,elastic-transport:~> 8.3|checksum:c3bb224b38a33ac4a2ef31d145eb42c3651fd887fb0173c0ab4157765f35be44,ruby:>= 2.5
+8.17.2 elasticsearch-api:= 8.17.2,elastic-transport:~> 8.3|checksum:063caae2195f459ae42a979a63254b23af1eaaf32ba9a5315840601e5f8aa413,ruby:>= 2.5
+8.18.0 elasticsearch-api:= 8.18.0,elastic-transport:~> 8.3|checksum:2bad7699b49dfd3a66b9a2fefa86460d884bbc6600eba189df46822134a45671,ruby:>= 2.5
+9.0.0 elasticsearch-api:= 9.0.0,elastic-transport:~> 8.3|checksum:f5e37ae4256c976dbf38e3b1298e1e32addd936b424c1f16ff89306ce3479329,ruby:>= 2.6
+9.0.2 elasticsearch-api:= 9.0.2,elastic-transport:~> 8.3|checksum:96c85216518391893ca55403d6510d3182a7a38a333e5fbf111bb461d36edce8,ruby:>= 2.6
+9.0.3 elasticsearch-api:= 9.0.3,elastic-transport:~> 8.3|checksum:ad834ec4ee40a35c1f62960f91dce6b301acd274391de3e8ecbf0594e700afe9,ruby:>= 2.6

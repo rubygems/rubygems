@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4880
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "8ffe62461a3b7a60a8d5c980ef4b7171"
-last-modified: Mon, 14 Dec 2020 16:26:53 GMT
+content-length: 5323
+last-modified: Tue, 10 Dec 2024 07:53:00 GMT
+etag: "ee6326d304c2aa8a802fb013455607ca"
 cache-control: max-age=60, public
-x-request-id: 6a5e6ee9-fc32-4094-b69b-5f5bedc73305
-x-runtime: 0.007384
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="Hp1Tgw6wCVWrcqTp4jYH4q3GrOuorle5i2cxLK3xZWI="
+repr-digest: sha-256="Hp1Tgw6wCVWrcqTp4jYH4q3GrOuorle5i2cxLK3xZWI="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300044_BFI 167.82.143.44:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 965
-x-served-by: cache-fra19141-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203860.368253,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 07:42:23 GMT
+age: 1656
+x-served-by: cache-bfi-krnt7300044-BFI, cache-mad22072-MAD
+x-cache: HIT, HIT
+x-cache-hits: 118206, 1
+x-timer: S1752478943.477182,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -68,3 +60,7 @@ server: RubyGems.org
 3.3.10 ruby-maven-libs:~> 3.3.1|checksum:33f0a485902d49bb112df24b23a8254bdfb43db9c28f08f57c6fc41f4e4eca35
 3.3.11 ruby-maven-libs:~> 3.3.9|checksum:11d41bfa7d95acd15a94d92e42a9c2d1b1aaa4141dcebe5d4a7e3445eed2329d
 3.3.12 ruby-maven-libs:~> 3.3.9|checksum:7241167c620c040a1686a3d4c6f67bc2ae803e8d97d56f7d6c55e6ef183a00ce
+3.3.13 ruby-maven-libs:~> 3.3.9|checksum:5831655998c29a211ea28ece93a6b3a5074a477a29a3a6a673a9eaa29a392133
+3.9.0.pre1 ruby-maven-libs:~> 3.9.9|checksum:a56dc4c5ed94117706f9d617f93a8dec511367583dcb76786e6947d4fb08d6c2,rubygems:> 1.3.1
+3.9.2 ruby-maven-libs:~> 3.9.9|checksum:7be503b61d05a42d9cfd5fff840e03c6650b21d394cfa6d9167ad3706554eded
+3.9.3 ruby-maven-libs:~> 3.9.9|checksum:f79b8b56fa1cfcffd966d6e7b7afe81d66f1d087ea0536fb51ea10278e72a604

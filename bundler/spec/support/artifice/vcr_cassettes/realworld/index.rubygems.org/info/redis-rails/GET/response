@@ -1,20 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
 content-length: 3094
-last-modified: Thu, 23 Nov 2023 23:39:08 GMT
+last-modified: Fri, 24 Nov 2023 16:03:28 GMT
 etag: "8da1548fdb76bbd685b64a62da67d2de"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
 digest: sha-256="sK+gX5HZbt9xGw+DgAfQ+NrMYw4rWPZanqQg8zBqeA8="
+repr-digest: sha-256="sK+gX5HZbt9xGw+DgAfQ+NrMYw4rWPZanqQg8zBqeA8="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300081_BFI 167.82.143.81:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400075_BFI 167.82.142.75:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:06 GMT
-age: 874
-x-served-by: cache-bfi-krnt7300081-BFI, cache-mad22037-MAD
+age: 451
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400075-BFI, cache-mad22069-MAD
 x-cache: HIT, HIT
-x-cache-hits: 23111, 1
-x-timer: S1702666987.732941,VS0,VE167
+x-cache-hits: 48585, 0
+x-timer: S1752478957.118942,VS0,VE1
 server: RubyGems.org
 
 ---

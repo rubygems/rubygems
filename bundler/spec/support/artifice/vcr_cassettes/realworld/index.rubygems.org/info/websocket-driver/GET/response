@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 5833
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "cacc42f28bbf3c1910b12b6195dad8be"
-last-modified: Sat, 12 Jun 2021 16:15:53 GMT
+content-length: 6556
+last-modified: Sun, 25 May 2025 17:42:35 GMT
+etag: "41648c351c9773068258435f69759130"
 cache-control: max-age=60, public
-x-request-id: b2bc71e4-c8b9-4aa9-9d6d-9253a41e2371
-x-runtime: 0.006904
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="464ZyQAPUEe0LmlSpbNiCMW3GWmHnvDUpaHCwB4Gm38="
+repr-digest: sha-256="464ZyQAPUEe0LmlSpbNiCMW3GWmHnvDUpaHCwB4Gm38="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400063_BFI 167.82.142.63:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 1963
-x-served-by: cache-fra19163-FRA
-x-cache: HIT
-x-cache-hits: 5
-x-timer: S1635203860.831749,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 452
+date: Mon, 14 Jul 2025 07:42:23 GMT
+x-served-by: cache-bfi-kbfi7400063-BFI, cache-mad22072-MAD
+x-cache: HIT, HIT
+x-cache-hits: 185642, 0
+x-timer: S1752478943.175646,VS0,VE2
 server: RubyGems.org
 
 ---
@@ -85,3 +77,9 @@ server: RubyGems.org
 0.7.4-java websocket-extensions:>= 0.1.0|checksum:835cd478fb308dc025e2d56413e3ef96eb0bc7c8c5995a6537dcbe2f7ee9a207
 0.7.5 websocket-extensions:>= 0.1.0|checksum:a280c3f44dcbb0323d58bc78dc49350c05d589ab7d13267fcff08d9d5ae76b28
 0.7.5-java websocket-extensions:>= 0.1.0|checksum:fffa83aa188e9ac90e32a385832ec9d26acdf019538e1c7d703f2c8a323b39c8
+0.7.6 websocket-extensions:>= 0.1.0|checksum:f69400be7bc197879726ad8e6f5869a61823147372fd8928836a53c2c741d0db
+0.7.6-java websocket-extensions:>= 0.1.0|checksum:bc894b9e9d5aee55ac04b61003e1957c4ef411a5a048199587d0499785b505c3
+0.7.7 base64:>= 0,websocket-extensions:>= 0.1.0|checksum:056d99f2cd545712cfb1291650fde7478e4f2661dc1db6a0fa3b966231a146b4
+0.7.7-java base64:>= 0,websocket-extensions:>= 0.1.0|checksum:e2520a6049feb88691e042d631063fa96d50620fb7f53b30180ae6fb2cf75eb1
+0.8.0 base64:>= 0,websocket-extensions:>= 0.1.0|checksum:ed0dba4b943c22f17f9a734817e808bc84cdce6a7e22045f5315aa57676d4962
+0.8.0-java base64:>= 0,websocket-extensions:>= 0.1.0|checksum:3316347282a14b347c15693e57d19f4e36f7c1461baaf51f2776f838c0e89812

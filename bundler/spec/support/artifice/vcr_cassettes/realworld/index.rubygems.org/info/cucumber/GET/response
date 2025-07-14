@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 38912
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "a4cd949a92913adee61780402dc15d41"
-last-modified: Tue, 12 Oct 2021 17:26:08 GMT
+content-length: 43628
+last-modified: Thu, 12 Jun 2025 10:33:36 GMT
+etag: "383b0dd5122b55994ef4834a89ea92b0"
 cache-control: max-age=60, public
-x-request-id: 17be2130-6455-4f2e-b0ed-d35e9920ea98
-x-runtime: 0.011120
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="FW1hjdgfBxzPPDw6OW/COhoH5z+gd2WROdlLRRoiib8="
+repr-digest: sha-256="FW1hjdgfBxzPPDw6OW/COhoH5z+gd2WROdlLRRoiib8="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400099_BFI 167.82.142.99:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:47 GMT
-via: 1.1 varnish
-age: 3359
-x-served-by: cache-fra19120-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203867.337584,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 3620
+date: Mon, 14 Jul 2025 07:42:23 GMT
+x-served-by: cache-bfi-kbfi7400099-BFI, cache-mad22082-MAD
+x-cache: HIT, HIT
+x-cache-hits: 174786, 0
+x-timer: S1752478943.131870,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -211,3 +203,14 @@ server: RubyGems.org
 6.1.0 builder:>= 3.2.4&~> 3.2,cucumber-core:>= 9.0.1&~> 9.0,cucumber-create-meta:>= 4.0.0&~> 4.0,cucumber-cucumber-expressions:>= 12.1.1&~> 12.1,cucumber-gherkin:>= 18.1.0&~> 18.1,cucumber-html-formatter:>= 13.0.0&~> 13.0,cucumber-messages:>= 15.0.0&~> 15.0,cucumber-wire:>= 5.0.1&~> 5.0,diff-lcs:>= 1.4.4&~> 1.4,mime-types:>= 3.3.1&~> 3.3,multi_test:>= 0.1.2&~> 0.1,sys-uname:>= 1.2.2&~> 1.2|checksum:d86499f0a5176f15104b633c7eccc4498a303db32eb43bc1144637df0aef02d5,ruby:>= 2.5
 7.0.0 builder:>= 3.2.4&~> 3.2,cucumber-core:>= 10.0.1&~> 10.0,cucumber-create-meta:>= 6.0.1&~> 6.0,cucumber-cucumber-expressions:>= 12.1.1&~> 12.1,cucumber-gherkin:>= 20.0.1&~> 20.0,cucumber-html-formatter:>= 16.0.1&~> 16.0,cucumber-messages:>= 17.0.1&~> 17.0,cucumber-wire:>= 6.0.1&~> 6.0,diff-lcs:>= 1.4.4&~> 1.4,mime-types:>= 3.3.1&~> 3.3,multi_test:>= 0.1.2&~> 0.1,sys-uname:>= 1.2.2&~> 1.2|checksum:07c7ddb6e4d5518034e4307d67c75f4f0f2bda6bf23c95a5d9b7b87cda23e2fa,ruby:>= 2.5
 7.1.0 builder:>= 3.2.4&~> 3.2,cucumber-core:>= 10.1.0&~> 10.1,cucumber-create-meta:>= 6.0.1&~> 6.0,cucumber-cucumber-expressions:>= 14.0.0&~> 14.0,cucumber-gherkin:>= 22.0.0&~> 22.0,cucumber-html-formatter:>= 17.0.0&~> 17.0,cucumber-messages:>= 17.1.1&~> 17.1,cucumber-wire:>= 6.2.0&~> 6.2,diff-lcs:>= 1.4.4&~> 1.4,mime-types:>= 3.3.1&~> 3.3,multi_test:>= 0.1.2&~> 0.1,sys-uname:>= 1.2.2&~> 1.2|checksum:f9566e5e3050066ef22e19c9b43758787b71427235ea192ffdccc41e2a0fa2f5,ruby:>= 2.5
+8.0.0.rc.1 builder:>= 3.2.4&~> 3.2,cucumber-ci-environment:>= 8.1.0&~> 8.1,cucumber-core:>= 10.1.1&~> 10.1,cucumber-cucumber-expressions:>= 15.0.1&~> 15.0,cucumber-gherkin:>= 22.0.0&~> 22.0,cucumber-html-formatter:>= 17.0.0&~> 17.0,cucumber-messages:>= 17.1.1&~> 17.1,diff-lcs:>= 1.5.0&~> 1.5,mime-types:>= 3.4.1&~> 3.4,multi_test:>= 0.1.2&~> 0.1,sys-uname:>= 1.2.2&~> 1.2|checksum:ee8be783ae2d6d1d0bd74a11ca45ea77aead9910c1a4c76e0b13d6e6dd89074c,ruby:>= 2.6,rubygems:> 1.3.1
+8.0.0 builder:>= 3.2.4&~> 3.2,cucumber-ci-environment:>= 9.0.4&~> 9.0,cucumber-core:>= 11.0.0&~> 11.0,cucumber-cucumber-expressions:>= 15.1.1&~> 15.1,cucumber-gherkin:>= 23.0.1&~> 23.0,cucumber-html-formatter:>= 19.1.0&~> 19.1,cucumber-messages:>= 18.0.0&~> 18.0,diff-lcs:>= 1.5.0&~> 1.5,mime-types:>= 3.4.1&~> 3.4,multi_test:>= 1.1.0&~> 1.1,sys-uname:>= 1.2.2&~> 1.2|checksum:553cb3c6d29370a5ff0910c42f418120e93b4ee6eea4f658ca05828d998b17aa,ruby:>= 2.6,rubygems:>= 1.6.1
+9.0.0 builder:>= 3.2.4&~> 3.2,cucumber-ci-environment:>= 9.0.4&~> 9.0,cucumber-core:>= 11.0.0&~> 11.0,cucumber-cucumber-expressions:< 17.0&>= 15.1.1,cucumber-gherkin:< 26.2.1&>= 23.0.1,cucumber-html-formatter:< 21.0&>= 19.1,cucumber-messages:< 23&>= 18,diff-lcs:>= 1.5.0&~> 1.5,mini_mime:~> 1.0,multi_test:>= 1.1.0&~> 1.1,sys-uname:>= 1.2.2&~> 1.2|checksum:c40dd73ea125cb766c892f69bef7535d87871af11316d25a9eba96b07b0081d9,ruby:>= 2.7,rubygems:>= 1.6.1
+9.0.1 builder:>= 3.2.4&~> 3.2,cucumber-ci-environment:>= 9.2.0&~> 9.2,cucumber-core:>= 11.0.0&~> 11.0,cucumber-cucumber-expressions:>= 16.1.2&~> 16.1,cucumber-gherkin:< 26.2.1&>= 23.0.1,cucumber-html-formatter:>= 20.4.0&~> 20.4,cucumber-messages:< 23&>= 18,diff-lcs:>= 1.5.0&~> 1.5,mini_mime:>= 1.1.5&~> 1.1,multi_test:>= 1.1.0&~> 1.1,sys-uname:>= 1.2.3&~> 1.2|checksum:f5964f3ad692d46b36bbf175caa99953270be4bd0272308c010084acff97070a,ruby:>= 2.7,rubygems:>= 3.0.1
+9.0.2 builder:>= 3.2.4&~> 3.2,cucumber-ci-environment:>= 9.2.0&~> 9.2,cucumber-core:>= 11.1.0&~> 11.1,cucumber-cucumber-expressions:>= 16.1.2&~> 16.1,cucumber-gherkin:< 26.2.1&>= 24,cucumber-html-formatter:>= 20.4.0&~> 20.4,cucumber-messages:< 23&>= 19,diff-lcs:>= 1.5.0&~> 1.5,mini_mime:>= 1.1.5&~> 1.1,multi_test:>= 1.1.0&~> 1.1,sys-uname:>= 1.2.3&~> 1.2|checksum:b094fe5d001888bcdfc35bf4f79937601040c4256adc2085484d436275c18b43,ruby:>= 2.7,rubygems:>= 3.0.1
+9.1.0 builder:>= 3.2.4&~> 3.2,cucumber-ci-environment:>= 9.2.0&~> 9.2,cucumber-core:~> 12.0,cucumber-cucumber-expressions:~> 17.0,cucumber-gherkin:< 27&>= 24,cucumber-html-formatter:>= 20.4.0&~> 20.4,cucumber-messages:< 23&>= 19,diff-lcs:>= 1.5.0&~> 1.5,mini_mime:>= 1.1.5&~> 1.1,multi_test:>= 1.1.0&~> 1.1,sys-uname:>= 1.2.3&~> 1.2|checksum:614f4dc638fa2e4eaf8c1ac5f0198c3b33e9134f38093d5d546933a2895cab3e,ruby:>= 2.7,rubygems:>= 3.0.1
+9.1.1 builder:>= 3.2.4&~> 3.2,cucumber-ci-environment:>= 9.2.0&~> 9.2,cucumber-core:~> 12.0,cucumber-cucumber-expressions:~> 17.0,cucumber-gherkin:< 27&> 24,cucumber-html-formatter:< 22&> 20.3,cucumber-messages:< 25&> 19,diff-lcs:~> 1.5,mini_mime:>= 1.1.5&~> 1.1,multi_test:>= 1.1.0&~> 1.1,sys-uname:>= 1.2.3&~> 1.2|checksum:71ab3e4b37ba374c978c0e1bde692234b08ab99f1d4dcad862434bf0256ff37f,ruby:>= 2.7,rubygems:>= 3.0.1
+9.1.2 builder:>= 3.2.4&~> 3.2,cucumber-ci-environment:>= 9.2.0&~> 9.2,cucumber-core:~> 12.0,cucumber-cucumber-expressions:~> 17.0,cucumber-gherkin:< 27&> 24,cucumber-html-formatter:< 22&> 20.3,cucumber-messages:< 25&> 19,diff-lcs:~> 1.5,mini_mime:>= 1.1.5&~> 1.1,multi_test:>= 1.1.0&~> 1.1,sys-uname:>= 1.2.3&~> 1.2|checksum:db6a36b724787f9269433e6bf103ef902d363ec0f7e62c48f17e1ff51fb612b1,ruby:>= 2.7,rubygems:>= 3.0.1
+9.2.0 builder:~> 3.2,cucumber-ci-environment:< 11&> 9,cucumber-core:< 14&> 13,cucumber-cucumber-expressions:~> 17.0,cucumber-gherkin:< 28&> 24,cucumber-html-formatter:< 22&> 20.3,cucumber-messages:< 25&> 19,diff-lcs:~> 1.5,mini_mime:~> 1.1,multi_test:~> 1.1,sys-uname:~> 1.2|checksum:4827c14430427f1b5e566cda64c93b2f5e6465258075a92e9804aa09d5731aa7,ruby:>= 2.7,rubygems:>= 3.0.1
+9.2.1 builder:~> 3.2,cucumber-ci-environment:< 11&> 9,cucumber-core:< 14&> 13,cucumber-cucumber-expressions:~> 17.0,cucumber-gherkin:< 28&> 24,cucumber-html-formatter:< 22&> 20.3,cucumber-messages:< 25&> 19,diff-lcs:~> 1.5,mini_mime:~> 1.1,multi_test:~> 1.1,sys-uname:~> 1.2|checksum:fa4161391485bca15362871c04c241e8c761580d0ad52ec54703368ecd0b7131,ruby:>= 2.7,rubygems:>= 3.0.1
+10.0.0 base64:~> 0.2,builder:~> 3.2,cucumber-ci-environment:< 11&> 9,cucumber-core:< 17&> 15,cucumber-cucumber-expressions:< 19&> 17,cucumber-html-formatter:< 22&> 20.3,diff-lcs:~> 1.5,logger:~> 1.6,mini_mime:~> 1.1,multi_test:~> 1.1,sys-uname:~> 1.3|checksum:eca40158e7bd8e7413f6eb8ad6b5c1e2e32067b01812f4bee3b50dbb0f982fbd,ruby:>= 3.1,rubygems:>= 3.2.8

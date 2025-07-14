@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 2229
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "b96700fa1444ec4f02713abd4f1d068f"
-last-modified: Mon, 14 Dec 2020 16:52:35 GMT
+content-length: 2749
+last-modified: Mon, 23 Dec 2024 18:51:13 GMT
+etag: "9611ed9e5250b5f0873ae3c75a0b10f5"
 cache-control: max-age=60, public
-x-request-id: 17044c18-86e1-4791-8b23-8e83d6813f1a
-x-runtime: 0.006959
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="s93ve5MIKQiVZUEqpU/ypqhAJyXqYkc807YA7Pf9GYo="
+repr-digest: sha-256="s93ve5MIKQiVZUEqpU/ypqhAJyXqYkc807YA7Pf9GYo="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300059_BFI 167.82.143.59:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:32 GMT
-via: 1.1 varnish
-age: 3190
-x-served-by: cache-fra19180-FRA
-x-cache: HIT
-x-cache-hits: 10
-x-timer: S1635203853.913637,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 1322
+date: Mon, 14 Jul 2025 07:42:22 GMT
+x-served-by: cache-bfi-krnt7300059-BFI, cache-mad2200135-MAD
+x-cache: HIT, HIT
+x-cache-hits: 186558, 0
+x-timer: S1752478943.974205,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -51,3 +43,8 @@ server: RubyGems.org
 0.8.3 rack:< 3&>= 1.0|checksum:2fec9a98d366017788dbcddb60430d58c4fec9733d6a695c8a216fee7f1a3292,ruby:>= 2.2.2
 1.0.0 rack:< 3&>= 1.0|checksum:8116a3ee26f2129ec63a8073f74322be0cb1076405bf9737d4198b8c8b4ee9d0,ruby:>= 2.2.2
 1.1.0 rack:< 3&>= 1.0|checksum:154161f40f162b1c009a655b7b0c5de3a3102cc6d7d2e94b64e1f46ace800866,ruby:>= 2.2.2
+2.0.0 rack:>= 1.3|checksum:10c1d77cff339d4472cfd2b1057066c21202e88ef022d1cddb86e37e6ac52f06,ruby:>= 2.0
+2.0.1 rack:>= 1.3|checksum:e1047cd083f106aeb96ff03752be9ede74a989357d314fe6bee08690aab8044d,ruby:>= 2.0
+2.0.2 rack:>= 1.3|checksum:adadd0e957f63a34199a9fdf905a920a0b0a50795735095b4ac4bd3c13385466,ruby:>= 2.0
+2.1.0 rack:>= 1.3|checksum:0c61fc61904049d691922ea4bb99e28004ed3f43aa5cfd495024cc345f125dfb,ruby:>= 2.0
+2.2.0 rack:>= 1.3|checksum:005a36692c306ac0b4a9350355ee080fd09ddef1148a5f8b2ac636c720f5c463,ruby:>= 2.0

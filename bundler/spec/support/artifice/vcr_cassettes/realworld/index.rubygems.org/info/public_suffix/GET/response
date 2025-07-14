@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 3969
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "50651230e3ab27bf12f14d0945c9cb2a"
-last-modified: Mon, 14 Dec 2020 17:16:41 GMT
+content-length: 4992
+last-modified: Wed, 30 Apr 2025 12:58:09 GMT
+etag: "4b0b5149dedc3dbe9d6883f3eb8a3910"
 cache-control: max-age=60, public
-x-request-id: 6212c146-bf9e-4986-bd12-a98e704b655e
-x-runtime: 0.009183
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="mPoI3Ef1cXT1Okd2QcJiIX5ApxdP8/cpxvrINpSb8Qw="
+repr-digest: sha-256="mPoI3Ef1cXT1Okd2QcJiIX5ApxdP8/cpxvrINpSb8Qw="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400088_BFI 167.82.142.88:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 2796
-x-served-by: cache-fra19141-FRA
-x-cache: HIT
-x-cache-hits: 6
-x-timer: S1635203860.985375,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 07:42:23 GMT
+age: 181
+x-served-by: cache-bfi-kbfi7400088-BFI, cache-mad2200100-MAD
+x-cache: HIT, HIT
+x-cache-hits: 117063, 1
+x-timer: S1752478943.154341,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -69,3 +61,14 @@ server: RubyGems.org
 4.0.4 |checksum:3ff2a10253583b2780b6fb0ea643a2e877ae3bf719bd987fe5f16b550ec733d0,ruby:>= 2.3
 4.0.5 |checksum:efbc976b8f8cd7e2f9387b41ad4dc5447bcc7e862cf3afd909f13b0048a3dc6f,ruby:>= 2.3
 4.0.6 |checksum:a99967c7b2d1d2eb00e1142e60de06a1a6471e82af574b330e9af375e87c0cf7,ruby:>= 2.3
+4.0.7 |checksum:8be161e2421f8d45b0098c042c06486789731ea93dc3a896d30554ee38b573b8,ruby:>= 2.3
+5.0.0 |checksum:26ee4fbce33ada25eb117ac71f2c24bf4d8b3414ab6b34f05b4708a3e90f1c6b,ruby:>= 2.6
+5.0.1 |checksum:65603917ff4ecb32f499f42c14951aeed2380054fa7fc51758fc0a8d455fe043,ruby:>= 2.6
+5.0.3 |checksum:337d475da2bd2ea1de0446751cb972ad43243b4b00aa8cf91cb904fa593d3259,ruby:>= 2.6
+5.0.4 |checksum:35cd648e0d21d06b8dce9331d19619538d1d898ba6d56a6f2258409d2526d1ae,ruby:>= 2.6
+5.0.5 |checksum:72c340218bb384610536919988705cc29e09749c0021fd7005f715c7e5dfc493,ruby:>= 2.6
+5.1.0 |checksum:3a418b401269eda371a2a64bc7a1a27560f1e9e12d9ae0d7517c88faee29452b,ruby:>= 3.0
+5.1.1 |checksum:250ec74630d735194c797491c85e3c6a141d7b5d9bd0b66a3fa6268cf67066ed,ruby:>= 2.6
+6.0.0 |checksum:d2c8e12e076813f8fca0307205c088c6903adc70b92c65ab22479dfa9bc0a89e,ruby:>= 3.0
+6.0.1 |checksum:61d44e1cab5cbbbe5b31068481cf16976dd0dc1b6b07bd95617ef8c5e3e00c6f,ruby:>= 3.0
+6.0.2 |checksum:bfa7cd5108066f8c9602e0d6d4114999a5df5839a63149d3e8b0f9c1d3558394,ruby:>= 3.0

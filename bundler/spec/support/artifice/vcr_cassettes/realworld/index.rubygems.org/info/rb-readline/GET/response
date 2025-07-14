@@ -1,30 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
 content-length: 1021
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
+last-modified: Fri, 24 Nov 2023 15:53:23 GMT
 etag: "c7e5c98bb918b549a237c16b878fa5eb"
-last-modified: Mon, 14 Dec 2020 16:41:29 GMT
 cache-control: max-age=60, public
-content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
-x-request-id: 51cdb68f-c6f7-4f79-adbd-e37c855da5a0
-x-runtime: 0.011610
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.25.15.240:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="eLzxuSj2BmOSf21xu6feACHbqBVi7ubdTBqsxYnC95g="
+repr-digest: sha-256="eLzxuSj2BmOSf21xu6feACHbqBVi7ubdTBqsxYnC95g="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400032_BFI 167.82.142.32:443
 accept-ranges: bytes
-date: Tue, 27 Dec 2022 11:24:51 GMT
-via: 1.1 varnish
-age: 3146
-x-served-by: cache-mad22065-MAD
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1672140291.491815,VS0,VE1
-vary: Accept,Accept-Encoding
+date: Mon, 14 Jul 2025 07:42:37 GMT
+age: 1384
+x-served-by: cache-bfi-kbfi7400032-BFI, cache-mad2200107-MAD
+x-cache: HIT, HIT
+x-cache-hits: 92260, 1
+x-timer: S1752478957.404294,VS0,VE1
 server: RubyGems.org
 
 ---

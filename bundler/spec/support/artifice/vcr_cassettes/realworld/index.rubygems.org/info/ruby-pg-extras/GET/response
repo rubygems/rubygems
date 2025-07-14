@@ -1,21 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 7878
-last-modified: Thu, 14 Dec 2023 08:38:59 GMT
-etag: "4bf307f6db69f5c220c6acf35a56bf74"
+content-length: 10041
+last-modified: Sun, 13 Jul 2025 22:16:49 GMT
+etag: "92b6dcf4e1e6ff0e5fc1c756357ce27d"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="hJ1jbH8cFY+5npTDccVWJhJsARfEDti2pV2IQSNGUPo="
-repr-digest: sha-256="hJ1jbH8cFY+5npTDccVWJhJsARfEDti2pV2IQSNGUPo="
+digest: sha-256="jflf6enccuzA+ZaUEevLKm2j5NTWkvLjNFnOm51UydI="
+repr-digest: sha-256="jflf6enccuzA+ZaUEevLKm2j5NTWkvLjNFnOm51UydI="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300065_BFI 167.82.143.65:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400085_BFI 167.82.142.85:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:07 GMT
-age: 275
-x-served-by: cache-bfi-krnt7300065-BFI, cache-mad2200142-MAD
-x-cache: HIT, MISS
-x-cache-hits: 1474, 0
-x-timer: S1702666988.568785,VS0,VE168
+age: 1226
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400085-BFI, cache-mad2200097-MAD
+x-cache: HIT, HIT
+x-cache-hits: 386, 0
+x-timer: S1752478957.358445,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -89,3 +89,23 @@ server: RubyGems.org
 5.2.5 pg:>= 0,terminal-table:>= 0|checksum:4a81320133b88de63d3b6c3fc6aa285115d611a0d197a683fae177cfcb822c03
 5.3.0 pg:>= 0,terminal-table:>= 0|checksum:eb5326fbcc9eac966899235070821af2e978bf2bb1857120f4cd8b01727e2465
 5.3.1 pg:>= 0,terminal-table:>= 0|checksum:1d4068e2e1a480983b359624c7d2844a04f92d100a2cb2970c4bd26302433faf
+5.4.0 pg:>= 0,terminal-table:>= 0|checksum:c1b2c1df1bdc5f4005051600b36f62c39f9c36dbd9bb37e5262ed209e58614db
+5.4.1 pg:>= 0,terminal-table:>= 0|checksum:e69e4b062d17434cc0d99a0c26da3bac2968126895ae9bb2b7bfb028f048f313
+5.4.2 pg:>= 0,terminal-table:>= 0|checksum:5fd7484374cdad3f21c474ba945316bc16690c3274cbf62cc6f9173a1af2adad
+5.4.3 pg:>= 0,terminal-table:>= 0|checksum:e1f88684f2e07e9df71b4a36402c3221f5a9018a1e79aefcea67082f39d6eddc
+5.4.4 pg:>= 0,terminal-table:>= 0|checksum:71d3267712ac29316aae756ea36c6fd04f2edf4950ffe813e0213ea17e308d03
+5.4.5 pg:>= 0,terminal-table:>= 0|checksum:fd3f782d00cd9758c84e7543a355f5aa39964094ca32178e91f6ace6108e9a43
+5.5.0 pg:>= 0,terminal-table:>= 0|checksum:af4c233dcf7a3f1b04c2a041454a7a235d78e8fc36049192d80ba9464ea3d936
+5.5.1 pg:>= 0,terminal-table:>= 0|checksum:511db43b45661dff6b7e1eb7ce62d8db452c8863c043f920589606f726f8d48f
+5.6.0 pg:>= 0,terminal-table:>= 0|checksum:3d546576ae9f3434f10124983d9e3f7bdf276ee4895f09eedb6708b1eceac58e
+5.6.1 pg:>= 0,terminal-table:>= 0|checksum:2f8f215ff0bb35a67e46ecf14e005c7bbbf43904d4d50676377dd396f148ddb5
+5.6.2 pg:>= 0,terminal-table:>= 0|checksum:b2b44c59e703a417ccfc32dece0b4e099878d536d821749386b990dbc1132781
+5.6.4 pg:>= 0,terminal-table:>= 0|checksum:63bbfd5e6a7dfd6b5cf8e4ca6fc7e2b7e2e3524ef6f2a205b1321e86c1b53c8d
+5.6.5 pg:>= 0,terminal-table:>= 0|checksum:c764a0fc9beac7a6d9b9dfb716884a8651d26b2692b08b5237fd7380b60c5ef7
+5.6.6 pg:>= 0,terminal-table:>= 0|checksum:9a05ae59aba74664034e9ebe6b2363c03b5bdc70d38c6fceee0fd92a6e8ff2d5
+5.6.7 pg:>= 0,terminal-table:>= 0|checksum:5c587f9500443ae67cc715b7daeef7916ceedb9db58086928b77c0b63bbdc9c2
+5.6.8 pg:>= 0,terminal-table:>= 0|checksum:3b30e3f25378acf30d1b4e25b271c777ce13751555c5cc31d1f8380299d069f8
+5.6.9 pg:>= 0,terminal-table:>= 0|checksum:8ad12d2448383e206819e6a1e03929d7fcc23d43a5c26b3e170badf86d8d6267
+5.6.10 pg:>= 0,terminal-table:>= 0|checksum:1a4655cc7e74e4dfb3b366ac0b609b96924da084b50ff31d02be14b82f34850f
+5.6.11 pg:>= 0,terminal-table:>= 0|checksum:1015f5b3e37388f5607ce712c54324acff6acc019a3197afa923f5b560b68b92
+5.6.12 pg:>= 0,terminal-table:>= 0|checksum:ff80f57a0cbea3aaa940183bdb269788f17fb50ca157efdc5eb4386a42e1d425

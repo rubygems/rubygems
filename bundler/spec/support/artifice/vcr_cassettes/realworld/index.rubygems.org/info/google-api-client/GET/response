@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
 content-length: 47912
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
+last-modified: Fri, 24 Nov 2023 16:35:10 GMT
 etag: "ecffe717d0f4c9de0e8cb22b5f4009ea"
-last-modified: Mon, 18 Jan 2021 18:21:21 GMT
 cache-control: max-age=60, public
-x-request-id: 71ad8efd-266c-45a0-97bc-03b69552b4b6
-x-runtime: 0.016888
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="aJqHieHC5MnuRXAYAQDdKHicExrLb/JFrPSyqN7VLQk="
+repr-digest: sha-256="aJqHieHC5MnuRXAYAQDdKHicExrLb/JFrPSyqN7VLQk="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400112_BFI 167.82.142.112:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 2827
-x-served-by: cache-fra19138-FRA
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1635203860.748496,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 1010
+date: Mon, 14 Jul 2025 07:42:25 GMT
+x-served-by: cache-bfi-kbfi7400112-BFI, cache-mad22045-MAD
+x-cache: HIT, HIT
+x-cache-hits: 92294, 0
+x-timer: S1752478946.557031,VS0,VE1
 server: RubyGems.org
 
 ---

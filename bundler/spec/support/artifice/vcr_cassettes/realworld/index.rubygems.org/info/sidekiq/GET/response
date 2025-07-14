@@ -1,20 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 35821
-last-modified: Tue, 31 Oct 2023 17:46:19 GMT
-etag: "d3dc48bd0fae3f086e096934491aef2e"
+content-length: 39805
+last-modified: Mon, 30 Jun 2025 16:29:16 GMT
+etag: "915c3e4115d24e72ead2dbe881e4f475"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="NW95W5yVt2ww/ag9hLgp/zqs0Wo1/MSFqPLKlgcn9MU="
+digest: sha-256="BLZM2h2FIlnF+t+yCYsw1094RzY9gm0fsRR7WPcUaNM="
+repr-digest: sha-256="BLZM2h2FIlnF+t+yCYsw1094RzY9gm0fsRR7WPcUaNM="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400117_BFI 167.82.142.117:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400087_BFI 167.82.142.87:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:06 GMT
-age: 2224
-x-served-by: cache-bfi-kbfi7400117-BFI, cache-mad22080-MAD
+age: 521
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400087-BFI, cache-mad22069-MAD
 x-cache: HIT, HIT
-x-cache-hits: 52679, 1
-x-timer: S1702666987.509946,VS0,VE2
+x-cache-hits: 94320, 0
+x-timer: S1752478957.095008,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -224,3 +225,25 @@ server: RubyGems.org
 7.1.6 concurrent-ruby:< 2,connection_pool:>= 2.3.0,rack:>= 2.2.4,redis-client:>= 0.14.0|checksum:7859da66d5bcef3c22bea2c3091d08c866890168e003f5bf4dea197dc37843a2,ruby:>= 2.7.0
 6.5.12 connection_pool:< 3&>= 2.2.5,rack:~> 2.0,redis:< 5&>= 4.5.0|checksum:b4f93b2204c42220d0b526a7b8e0c49b5f9da82c1ce1a05d2baf1e8f744c197f,ruby:>= 2.5.0
 7.2.0 concurrent-ruby:< 2,connection_pool:>= 2.3.0,rack:>= 2.2.4,redis-client:>= 0.14.0|checksum:b230fab62f79f07a3d48d808ad22dff14f4205c934b33afc04d0476ad4bc9332,ruby:>= 2.7.0
+7.2.1 concurrent-ruby:< 2,connection_pool:>= 2.3.0,rack:>= 2.2.4,redis-client:>= 0.19.0|checksum:6cd43993d2c9ee5661b95a1dabfdc91d63a47a16556c0f6b2719a57e00e2fb14,ruby:>= 2.7.0
+7.2.2 concurrent-ruby:< 2,connection_pool:>= 2.3.0,rack:>= 2.2.4,redis-client:>= 0.19.0|checksum:09920d02f4318cb3fa36966f4b34d581a8b5e658f34024a579da8da5ca58d3a3,ruby:>= 2.7.0
+7.2.3 concurrent-ruby:< 2,connection_pool:>= 2.3.0,rack:>= 2.2.4,redis-client:>= 0.19.0|checksum:b745278728805ff7b718d73abec3ace76c225acee3ea04928ec0856fe30a85db,ruby:>= 2.7.0
+7.2.4 concurrent-ruby:< 2,connection_pool:>= 2.3.0,rack:>= 2.2.4,redis-client:>= 0.19.0|checksum:810e02f486ce5e102dbe6b71a19b4bf839791e11b74942ec38f5e1a6d44a0778,ruby:>= 2.7.0
+7.3.0 concurrent-ruby:< 2,connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:2a6653754dfc6e2217bcf94bf6ef03c50fef9d39ac34801acbbbf477a6a40934,ruby:>= 2.7.0
+7.3.1 concurrent-ruby:< 2,connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:19521a6e51421533ab5c10252391e94311a86d3fde30867ebb0e1194db26e9fd,ruby:>= 2.7.0
+7.3.2 concurrent-ruby:< 2,connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:70c48ad218b57b67ac5743549636dac09c5edfd9dfb004a316f36d9f3d2d5f88,ruby:>= 2.7.0
+7.3.3 connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:2ce1e7cc6cf9ec52ca4c4cf8b5e781d65a4eb33ac77c9c89b3ec48c1ce304e29,ruby:>= 2.7.0
+7.3.4 connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:57ac5937c170c289c2833ce73bad6710b16dd644c3fe441b9dd765dc915afcdb,ruby:>= 2.7.0
+7.3.5 connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:25d8cd8787361be6e706c24beec3f82fb7c2d2eb90da58ed8052d629e4f7d070,ruby:>= 2.7.0
+7.3.6 connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:cded34a6f9585113b0189f6871d27ca885f8355e27f317110196fade22c0043a,ruby:>= 2.7.0
+7.3.7 connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:5eb29c9431562f97cd82022a1588d5852142ac72cad59627ae04a4e28cdeca16,ruby:>= 2.7.0
+7.3.8 base64:>= 0,connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:766173cd223fc03d2476a95b0ba72d86941c4f1dba2274fa6ae06472764d381c,ruby:>= 2.7.0
+8.0.0.beta1 base64:>= 0,connection_pool:>= 2.5.0,json:>= 2.9.0,logger:>= 0,rack:>= 3.1.0,redis-client:>= 0.23.2|checksum:6fa49417f1c8d26e2404040070ad4e3a1b5b9b191de9507f34d7754b901f8ad5,ruby:>= 3.2.0
+7.3.9 base64:>= 0,connection_pool:>= 2.3.0,logger:>= 0,rack:>= 2.2.4,redis-client:>= 0.22.2|checksum:1108712e1def89002b28e3545d5ae15d4a57ffd4d2c25d97bb1360988826b5a7,ruby:>= 2.7.0
+8.0.0.beta2 base64:>= 0,connection_pool:>= 2.5.0,json:>= 2.9.0,logger:>= 0,rack:>= 3.1.0,redis-client:>= 0.23.2|checksum:9e034d316309661ce6de330f3b6adbd9d6fee39b2ab48dd57416b34cbd4d2e4e,ruby:>= 3.2.0
+8.0.0 connection_pool:>= 2.5.0,json:>= 2.9.0,logger:>= 1.6.2,rack:>= 3.1.0,redis-client:>= 0.23.2|checksum:1b01859aeb4242f2d7585fb763bf1f55843abf80f0b263f18ee8cc5291adf2d3,ruby:>= 3.2.0
+8.0.1 connection_pool:>= 2.5.0,json:>= 2.9.0,logger:>= 1.6.2,rack:>= 3.1.0,redis-client:>= 0.23.2|checksum:9c5864c2b15452e4e6e243946627f48c72d42886ed3bab953209114aeaf754af,ruby:>= 3.2.0
+8.0.2 connection_pool:>= 2.5.0,json:>= 2.9.0,logger:>= 1.6.2,rack:>= 3.1.0,redis-client:>= 0.23.2|checksum:7476e95d65f939228ce056a2dd2c975716efb01549c821b1fa739902f3d60416,ruby:>= 3.2.0
+8.0.3 connection_pool:>= 2.5.0,json:>= 2.9.0,logger:>= 1.6.2,rack:>= 3.1.0,redis-client:>= 0.23.2|checksum:0e618886ba2072b76e4de10a3ce4a04d09ab52da1c65b03c7eedbda5bbc76d2e,ruby:>= 3.2.0
+8.0.4 connection_pool:>= 2.5.0,json:>= 2.9.0,logger:>= 1.6.2,rack:>= 3.1.0,redis-client:>= 0.23.2|checksum:63d2ff4e37aa468490f982aded6ab3bf4da809e32156d6612c8ab3e3aebdd43b,ruby:>= 3.2.0
+8.0.5 connection_pool:>= 2.5.0,json:>= 2.9.0,logger:>= 1.6.2,rack:>= 3.1.0,redis-client:>= 0.23.2|checksum:d063b26fcf7bf082da2cd9d9f3d338bbfddc790e861e4e7c6a34ce2951f9f7d4,ruby:>= 3.2.0

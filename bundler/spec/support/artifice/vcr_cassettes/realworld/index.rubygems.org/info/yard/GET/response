@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 6657
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "d53e30028eac6f51690e6cc284de8080"
-last-modified: Sun, 27 Dec 2020 00:17:05 GMT
+content-length: 7591
+last-modified: Wed, 04 Sep 2024 08:51:36 GMT
+etag: "4989533e9d1bafd935f3a2f726b07074"
 cache-control: max-age=60, public
-x-request-id: 9b6c1cdb-00c9-41ac-9e74-cc61bc957e4d
-x-runtime: 0.006607
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="cMV0Wqa/n2lLv1OaQcQxltah11bwBXIMVHcqgT+QB+Y="
+repr-digest: sha-256="cMV0Wqa/n2lLv1OaQcQxltah11bwBXIMVHcqgT+QB+Y="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300045_BFI 167.82.143.45:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:32 GMT
-via: 1.1 varnish
-age: 3044
-x-served-by: cache-fra19158-FRA
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1635203853.986747,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 07:42:36 GMT
+age: 3545
+x-served-by: cache-bfi-krnt7300045-BFI, cache-mad22063-MAD
+x-cache: HIT, HIT
+x-cache-hits: 53151, 1
+x-timer: S1752478956.399183,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -108,3 +100,14 @@ server: RubyGems.org
 0.9.24 |checksum:f70a4938d9bf4f2aa2dc4a479ceb281f819284a0c8b896b9ea0e11cab0e00bbc
 0.9.25 |checksum:2d133b33d0bba99d10c8bca18cfbc0ab47b985ec07e79b37dd8b12b86b22d588
 0.9.26 |checksum:30594aa05cf737aa725c73444c7be3d54a443d0e258e1503da4eb1a0822cf963
+0.9.27 webrick:~> 1.7.0|checksum:56a786485da23fa878dd9f56279c2a92c38426d5ab21e8efddb4c6a0e37c0834
+0.9.28 webrick:~> 1.7.0|checksum:d31b7e3172405165212e0c8db5b3b57865f0831f1bc33bdda5d0709e1e72315c
+0.9.29 |checksum:50118cf72343915cc90c5d1d9078023b2553abce6466a18a9c10318b29e3adaf
+0.9.30 |checksum:c3cbd4c878afc2769f441916a5548c7882f2dbb97d7f2fd859312779387980f1
+0.9.31 |checksum:6abe548196735d1bbbcd806897fd5e394d605a6e2344b805a1d71bb30aba53fc
+0.9.32 |checksum:c48424e371a8137b9bc4e59d1ef0a8ad42f53b38dc42d54aebd5c1ce28507c9d
+0.9.33 |checksum:50d50f2e38042702a415f10a7be93b907a34a0243a50a7dcf5ed70ccc3a2863b
+0.9.34 |checksum:5a8e04114d7f15f77814973ea56b7c38282126fb2930eb82851ffed0b9cd7e04
+0.9.35 |checksum:999cf338f7a7e2e35a1b4a8ecc537b6226082b66c993e54ead1d8725364e053d
+0.9.36 |checksum:5505736c1b00c926f71053a606ab75f02070c5960d0778b901fe9d8b0a470be4
+0.9.37 |checksum:a6e910399e78e613f80ba9add9ba7c394b1a935f083cccbef82903a3d2a26992

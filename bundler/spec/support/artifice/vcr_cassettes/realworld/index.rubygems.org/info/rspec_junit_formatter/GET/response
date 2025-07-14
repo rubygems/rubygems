@@ -1,33 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
 content-length: 3529
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 0
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
+last-modified: Fri, 24 Nov 2023 15:59:06 GMT
 etag: "17fd6d42c2831e2156d2bd8010c450cd"
-last-modified: Sat, 30 Sep 2023 12:34:50 GMT
-digest: sha-256=CyjBxARWE8O8mduEXvowvhwzjki0i9SXP2OjelZlBYk=
-repr-digest: sha-256=:CyjBxARWE8O8mduEXvowvhwzjki0i9SXP2OjelZlBYk=:
 cache-control: max-age=60, public
-content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com https://unpkg.com/@hotwired/stimulus/dist/stimulus.umd.js https://unpkg.com/stimulus-rails-nested-form/dist/stimulus-rails-nested-form.umd.js 'nonce-'; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3A6eb44c41cd8e1c639b6aaf07c0b14fcd78e0674c%2Cenv%3Aproduction%2Ctrace_id%3A642068867786246398
-x-request-id: 0b0d4284-f317-4008-9403-e153933110e8
-x-runtime: 0.009745
-strict-transport-security: max-age=31536000
-fastly-restarts: 1
+content-type: text/plain; charset=utf-8
+digest: sha-256="CyjBxARWE8O8mduEXvowvhwzjki0i9SXP2OjelZlBYk="
+repr-digest: sha-256="CyjBxARWE8O8mduEXvowvhwzjki0i9SXP2OjelZlBYk="
 via: 1.1 varnish, 1.1 varnish
-x-backend: F_Rails 44.225.119.68:443, fastlyshield--shield_ssl_cache_bfi_kbfi7400078_BFI 167.82.142.78:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300045_BFI 167.82.143.45:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:07 GMT
-age: 1243
-x-served-by: cache-bfi-kbfi7400078-BFI, cache-mad22044-MAD
-x-cache: HIT, MISS
-x-cache-hits: 134328, 0
-x-timer: S1702666987.961985,VS0,VE165
-vary: Accept,Accept-Encoding
+age: 3485
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-krnt7300045-BFI, cache-mad22049-MAD
+x-cache: HIT, HIT
+x-cache-hits: 34217, 0
+x-timer: S1752478957.133763,VS0,VE1
 server: RubyGems.org
 
 ---

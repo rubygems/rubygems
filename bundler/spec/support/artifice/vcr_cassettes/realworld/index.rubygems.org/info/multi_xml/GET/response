@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 1858
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "e776fd2b038d2d978ab8b9db250eb474"
-last-modified: Mon, 14 Dec 2020 16:33:07 GMT
+content-length: 2192
+last-modified: Wed, 30 Apr 2025 18:30:42 GMT
+etag: "12ec7b5c9caabe50595fc4110c77e674"
 cache-control: max-age=60, public
-x-request-id: 314bf409-946e-464f-ab8b-e3c72870e6fe
-x-runtime: 0.006292
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="oy1E9EEnUBTj624Zj7pHgV7hJyZDHubFWFDL/i0JspI="
+repr-digest: sha-256="oy1E9EEnUBTj624Zj7pHgV7hJyZDHubFWFDL/i0JspI="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300102_BFI 167.82.143.102:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 315
-x-served-by: cache-fra19141-FRA
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1635203860.195976,VS0,VE1
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 741
+date: Mon, 14 Jul 2025 07:42:26 GMT
+x-served-by: cache-bfi-krnt7300102-BFI, cache-mad22076-MAD
+x-cache: HIT, HIT
+x-cache-hits: 261370, 0
+x-timer: S1752478946.063567,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -49,3 +41,6 @@ server: RubyGems.org
 0.5.4 |checksum:6365ba9aced7eb993b6237a5a6d8c854be5cd84ad2ea1aad4de63ee0bf3bfd53,rubygems:>= 1.3.5
 0.5.5 |checksum:08936dc294586ee1d178217cce577febe26315d7880e01e4f8e97cf2753b1945,rubygems:>= 1.3.5
 0.6.0 |checksum:d24393cf958adb226db884b976b007914a89c53ad88718e25679d7008823ad52,rubygems:>= 1.3.5
+0.7.0 bigdecimal:~> 3.1|checksum:9e9aaa683a8022548da2922e1ff9eb1507c59294b7ae6c23b7116bde1d18486c,ruby:>= 3.1.4
+0.7.1 bigdecimal:~> 3.1|checksum:4fce100c68af588ff91b8ba90a0bb3f0466f06c909f21a32f4962059140ba61b,ruby:>= 3.1.2
+0.7.2 bigdecimal:~> 3.1|checksum:307a96dc48613badb7b2fc174fd4e62d7c7b619bc36ea33bfd0c49f64f5787ce,ruby:>= 3.2

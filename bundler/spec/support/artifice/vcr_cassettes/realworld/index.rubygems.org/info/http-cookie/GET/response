@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 2483
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "9ed4cd63a151bc19830ca8bb89773d51"
-last-modified: Mon, 07 Jun 2021 07:47:36 GMT
+content-length: 2879
+last-modified: Thu, 05 Dec 2024 22:31:08 GMT
+etag: "fb84b270c5917ba4ef7ede5bf3634baf"
 cache-control: max-age=60, public
-x-request-id: 4b3d9a75-36df-4061-9c87-f7727aedb645
-x-runtime: 0.008667
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="dxavKgyL21lA+PBJRjJfEemFmKWyoN9Y3iZl8cVpnOM="
+repr-digest: sha-256="dxavKgyL21lA+PBJRjJfEemFmKWyoN9Y3iZl8cVpnOM="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400045_BFI 167.82.142.45:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 2491
-x-served-by: cache-fra19128-FRA
-x-cache: HIT
-x-cache-hits: 6
-x-timer: S1635203860.924882,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 07:42:23 GMT
+age: 2278
+x-served-by: cache-bfi-kbfi7400045-BFI, cache-mad2200129-MAD
+x-cache: HIT, HIT
+x-cache-hits: 63334, 1
+x-timer: S1752478944.514072,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -49,3 +41,7 @@ server: RubyGems.org
 1.0.2 domain_name:~> 0.5|checksum:bcc1b18b5bc3e9302542c9c7f68f1ac0c3100a65dd2831786172e8676773e233
 1.0.3 domain_name:~> 0.5|checksum:2f11269d817bc52ab2af2721e89a377660a961078de2a3a55fc696d7897e8c00
 1.0.4 domain_name:~> 0.5|checksum:89a64e1b9e3ed823b559b2030e0b62ad850d0d11325a0589145ebf93d80267a4
+1.0.5 domain_name:~> 0.5|checksum:73756d46c7dbdc7023deecdb8a171348ea95a1b99810b31cfe8b4fb4e9a6318f
+1.0.6 domain_name:~> 0.5|checksum:7713d3196f21ff5ab0944011d7d4e619b62ec082374a52de2193ccfe78924044
+1.0.7 domain_name:~> 0.5|checksum:cb7a399f3344f720b8a0f3b0765f29b62608ebb9c3ce4abf4d6eeff2caf42253
+1.0.8 domain_name:~> 0.5|checksum:b14fe0445cf24bf9ae098633e9b8d42e4c07c3c1f700672b09fbfe32ffd41aa6

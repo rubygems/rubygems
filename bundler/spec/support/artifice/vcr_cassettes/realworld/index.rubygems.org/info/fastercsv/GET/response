@@ -1,32 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
 content-length: 2088
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 0
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
+last-modified: Fri, 24 Nov 2023 16:14:38 GMT
 etag: "974dce9f48c20a1eaab2807de2587dd9"
-last-modified: Thu, 28 Sep 2023 03:00:04 GMT
-digest: sha-256=LFbCNMZYdpXchz/Im6rJc6OWI4dQWU4BR1QbiE0Vzws=
 cache-control: max-age=60, public
-content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com https://unpkg.com/@hotwired/stimulus/dist/stimulus.umd.js https://unpkg.com/stimulus-rails-nested-form/dist/stimulus-rails-nested-form.umd.js 'nonce-'; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3Aa7efe0ce27e1a690673e4d2da57d4dd06ead4272%2Cenv%3Aproduction%2Ctrace_id%3A1408061232550858694
-x-request-id: 5032445a-395e-45aa-ab27-aa54916aca31
-x-runtime: 0.008921
-strict-transport-security: max-age=31536000
-fastly-restarts: 1
+content-type: text/plain; charset=utf-8
+digest: sha-256="LFbCNMZYdpXchz/Im6rJc6OWI4dQWU4BR1QbiE0Vzws="
+repr-digest: sha-256="LFbCNMZYdpXchz/Im6rJc6OWI4dQWU4BR1QbiE0Vzws="
 via: 1.1 varnish, 1.1 varnish
-x-backend: F_Rails 52.24.74.243:443, fastlyshield--shield_ssl_cache_bfi_krnt7300086_BFI 167.82.143.86:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400036_BFI 167.82.142.36:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:07 GMT
-age: 2314
-x-served-by: cache-bfi-krnt7300086-BFI, cache-mad22037-MAD
+age: 1060
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400036-BFI, cache-mad22078-MAD
 x-cache: HIT, HIT
-x-cache-hits: 139593, 1
-x-timer: S1702666988.981733,VS0,VE1
-vary: Accept,Accept-Encoding
+x-cache-hits: 81624, 0
+x-timer: S1752478957.437367,VS0,VE1
 server: RubyGems.org
 
 ---

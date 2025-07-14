@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 10468
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "20e9b91147db696ea3461c04ae774002"
-last-modified: Mon, 14 Dec 2020 17:18:22 GMT
+content-length: 12877
+last-modified: Mon, 12 May 2025 01:39:24 GMT
+etag: "29035edacc609055e75e2fa83fcaa0ef"
 cache-control: max-age=60, public
-x-request-id: e47fdc43-1b18-494b-a26b-a973666bfa47
-x-runtime: 0.008381
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="Ie29VW4tZzo9Yejkq14uNLNjEkiQKlU55Usstu2s0CQ="
+repr-digest: sha-256="Ie29VW4tZzo9Yejkq14uNLNjEkiQKlU55Usstu2s0CQ="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300023_BFI 167.82.143.23:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 1271
-x-served-by: cache-fra19154-FRA
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1635203860.195918,VS0,VE1
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 165
+date: Mon, 14 Jul 2025 07:42:23 GMT
+x-served-by: cache-bfi-krnt7300023-BFI, cache-mad22040-MAD
+x-cache: HIT, HIT
+x-cache-hits: 46308, 0
+x-timer: S1752478943.478178,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -131,3 +123,27 @@ server: RubyGems.org
 3.2.0 |checksum:f704857ec8ab841439e78652dac621ddcb969206f2e465a652b7d8fd3a18082a,ruby:>= 2.5
 3.2.1 |checksum:4088adbd96e1a99002c09fef6600d35151cae408e4f4184abd895db310e05770,ruby:>= 2.5
 3.2.1-x64-mingw32 |checksum:e2737c9d26e4b4ae7a8c6953f8ada4bca0f2ea3fb053e362d8f9d7fdc881623f,ruby:>= 2.5
+3.2.2 |checksum:f1cde60c00dad1883c834c94657299d147f4830b443fdb63b1ae8a141e0c254f,ruby:>= 2.5
+3.2.2-x64-mingw-ucrt |checksum:b76c11e058e1ddfc2d5eea349c20393dcb6bc36e928e762dcaa9bbbf39cbdfa2,ruby:>= 2.5
+3.2.2-x64-mingw32 |checksum:404814c526e651abe53d1152f4fa507823f380fb088e0d8628106e564d7716a3,ruby:>= 2.5
+3.2.3 |checksum:aed194cad1933e824c763937dd4803e198dd7c4883ac92fe321309047ddb4f67,ruby:>= 2.5
+3.2.3-x64-mingw-ucrt |checksum:3d5e567934b81b5fae8f5ee798dd521fa1d1f8c079ae6d0d6eba7adecdf79317,ruby:>= 2.5
+3.2.4 |checksum:77e76667e0bfe92e6b25b7675887d410a064026b8e3b72642b11813ee1e178c9,ruby:>= 2.5
+3.2.4-x64-mingw-ucrt |checksum:00295f3f13b6993a0c1e06c34f14cb04557fccfd26ef85411b253fb22751b550,ruby:>= 2.5
+4.0.0 |checksum:5ac63cc4d4f9cb56eb6c2c5db1bb7dfbc0d38b0bde76c7492e290e106eaee5f7,ruby:>= 2.5
+4.0.0-x64-mingw-ucrt |checksum:c2060eae916c1c8358f6965d7cd9679faec55a36c9fe8b9259e91b6fc8b9f403,ruby:>= 2.5
+4.1.0 |checksum:ac3708721b85b35c157de5b6ad84b3f0441efb8450d380133fe3fe0a148f32ea,ruby:>= 2.5
+4.1.1 |checksum:432bad1a3af3e4066e32ce3654a7cde2eea227bc2c200b406807153a91a75929,ruby:>= 2.5
+4.1.1-x64-mingw-ucrt |checksum:1edd2263cbbe45b0ecc136cfbe1c5a256c17fc54ff316ad769be8fdede97d93f,ruby:>= 2.5
+4.1.2 |checksum:dbead8aa8e3b61cd391126149623def83a7cb22bead78c21f9e5cdc04830bbe8,ruby:>= 2.5
+4.1.2-x64-mingw-ucrt |checksum:d455239290e4b7bf753dbe32812befe1a6ff41539d808e365ec8790bf5b2ceb0,ruby:>= 2.5
+5.0.0 |checksum:9984213955e8c1150eca94fc9eeecab5dbcb6e5489fc79eebe2736956a9c5058,ruby:>= 2.5
+5.0.0-x64-mingw-ucrt |checksum:9b355dab145420d6faa3043575bd4182cdd0f5cc47847ebef195f00383b2a18b,ruby:>= 2.5
+5.0.1 |checksum:14f2a9a43e75837b0fa64bc2f35d8dd773dfe368c8fa64e525f4c63d38d608ed,ruby:>= 2.5
+5.0.1-x64-mingw-ucrt |checksum:aab8f7770cd6cc5e10e595486a433f8257174b75fc162650b0c71e35086cee9e,ruby:>= 2.5
+5.0.2 |checksum:493a20a9ae9870205cae1575e7ad38f433f1e407cb09cb7c063975e9e86bd0dc,ruby:>= 2.5
+5.0.2-x64-mingw-ucrt |checksum:aca59b1e4ae6fca804e7ebb8b254ab634a2bf5e3cd552210a05ced3c3d0e6e07,ruby:>= 2.5
+5.0.3 |checksum:5a530dba36066752bba59515ae612362c1343f1d0ee6cf74700499c7dd2a2bde,ruby:>= 2.5
+5.0.3-x64-mingw-ucrt |checksum:357b5fd5f51c278aae42d088c7d1857d84a9c2235617ecb1f76a0fcb124e441c,ruby:>= 2.5
+5.0.4 |checksum:78c3fb06c88a0e2b26197efa82fa663229809c1c8bf4e259bdaa8e2b60856ae6,ruby:>= 2.5
+5.0.4-x64-mingw-ucrt |checksum:5c7130c38d7b8e62b6b40c6270769b82a9dc34e4765b7e193eba60808f1c8f11,ruby:>= 2.5

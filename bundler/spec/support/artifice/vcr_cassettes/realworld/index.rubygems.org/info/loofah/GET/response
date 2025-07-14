@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4489
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "bdfe82982219a824ca129e450179ab73"
-last-modified: Wed, 11 Aug 2021 17:30:49 GMT
+content-length: 6910
+last-modified: Mon, 12 May 2025 12:32:07 GMT
+etag: "c0aa9542e9445e81884585e6982082d8"
 cache-control: max-age=60, public
-x-request-id: 61ba4db8-2cab-4d2e-b9e4-951b385ab105
-x-runtime: 0.006603
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="cw2rVPD1gIBiYbyJNJgC5j/yqW6i46YXc0yfcZqTh7k="
+repr-digest: sha-256="cw2rVPD1gIBiYbyJNJgC5j/yqW6i46YXc0yfcZqTh7k="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400071_BFI 167.82.142.71:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:33 GMT
-via: 1.1 varnish
-age: 525
-x-served-by: cache-fra19173-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203853.018662,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 07:42:23 GMT
+age: 2570
+x-served-by: cache-bfi-kbfi7400071-BFI, cache-mad22082-MAD
+x-cache: HIT, HIT
+x-cache-hits: 31094, 1
+x-timer: S1752478943.354664,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -69,3 +61,23 @@ server: RubyGems.org
 2.10.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:9eceb9e52a0d4e35528d2537a64b7a95d84437c93723a88af4077b2cbf5273a7
 2.11.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:d54c3bcdc8acde2b04c56fde64e4fb935a43ecf83592bda079222957fa98915f
 2.12.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:bcbe9a6c96455a72e14422e5e8890544d1db4004c6bbd88247c58a7e8af20cdb
+2.13.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:efb11e6d9e2d09586e4cd05381a6aee725177e757add765a3a2544c6705e3b9f
+2.14.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:9c54d949001e234b293d89f4ad56b2a35331b01780b11d8d6f431ac32b6b0b7d
+2.15.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:43f07a44426c7873937e307e0c6b81632ba9e89fcb5089badd78b67b6480e1fa
+2.16.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:750a64ce5463fc7ce196654f8d5723f1b005ebf8eca3c7c9c61636b857f94697
+2.17.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:991544acb37a90d8de5057ac34334a03d689750a768bf5555b044b60d12dfd3a
+2.18.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:61975a247a6aeb8f09ac5a3430305451efc4525c0b9b79c05feaec35a8b9d5a3
+2.19.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:302791371f473611e342f9e469e7f2fbf1155bb1b3a978a83ac7df625298feba
+2.19.1 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:6c6469efdefe3496010000a346f9d3bf710e11ac4661e353cf56852326fb1023
+2.20.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:e8fa874c8e2cd2fbdbecc1b6badc3f713639796aaca3f6dd494c4737828a24d6
+2.21.0.rc1 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:0334c76ceaad5b6bcdc4175dd21b254c86732ffd2e8256a4eed2425572262269,rubygems:> 1.3.1
+2.21.0 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:ec407f23abdbd3481640c79342a9179320d297b30456df3b46381ba0981f025b
+2.21.1 crass:~> 1.0.2,nokogiri:>= 1.5.9|checksum:f8e1584c56195e7b6139d53c50d6d9cf1adbc5997a7f4e60a3e23095c4900765
+2.21.2 crass:~> 1.0.2,nokogiri:>= 1.12.0|checksum:e8d11371d04b3dce636e4d6adaae9abff7770fd293400867b414a4a15510db06,ruby:>= 2.5.0
+2.21.3 crass:~> 1.0.2,nokogiri:>= 1.12.0|checksum:43d21a8bb96c380199a8f66e0298649eaa7362fcd32f3a6114f39775e524e4dc,ruby:>= 2.5.0
+2.21.4 crass:~> 1.0.2,nokogiri:>= 1.12.0|checksum:2c18cd5db9fd92a48a270344e57a5b84cf22d668b78e1481f10e4f2cde4eb734,ruby:>= 2.5.0
+2.22.0 crass:~> 1.0.2,nokogiri:>= 1.12.0|checksum:10d76e070c86b12fec74b6a9515fd1940f4459198b991342d0a7897d86c372fe,ruby:>= 2.5.0
+2.23.0 crass:~> 1.0.2,nokogiri:>= 1.12.0|checksum:a409cf88e5c808c1908e7d1b997df867d102be16e110e81eef43823dd24c7175,ruby:>= 2.5.0
+2.23.1 crass:~> 1.0.2,nokogiri:>= 1.12.0|checksum:d0a07422cb3b69272e124afa914ef6d517e30d5496b7f1c1fc5b95481f13f75e,ruby:>= 2.5.0
+2.24.0 crass:~> 1.0.2,nokogiri:>= 1.12.0|checksum:61e6a710883abb8210887f3dc868cf3ed66594c509d9ff6987621efa6651ee1e,ruby:>= 2.5.0
+2.24.1 crass:~> 1.0.2,nokogiri:>= 1.12.0|checksum:655a30842b70ec476410b347ab1cd2a5b92da46a19044357bbd9f401b009a337,ruby:>= 2.5.0

@@ -1,21 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 7443
-last-modified: Fri, 24 Nov 2023 16:16:29 GMT
-etag: "e08afa7f6dd81ae1886dc9a57c29a919"
+content-length: 8136
+last-modified: Tue, 04 Feb 2025 00:13:27 GMT
+etag: "2cb102f3d671278e7b6b70217e147978"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="fcS5spmEcdtr88jzwYiZndSJS5OfmiAHp5cqqa2vjZc="
-repr-digest: sha-256="fcS5spmEcdtr88jzwYiZndSJS5OfmiAHp5cqqa2vjZc="
+digest: sha-256="Xt+qSf4GG/2dprhXD7Q5yzIz3hBfUAldwvNPnacsB8o="
+repr-digest: sha-256="Xt+qSf4GG/2dprhXD7Q5yzIz3hBfUAldwvNPnacsB8o="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400095_BFI 167.82.142.95:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300074_BFI 167.82.143.74:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:09 GMT
-age: 1657
-x-served-by: cache-bfi-kbfi7400095-BFI, cache-mad2200142-MAD
-x-cache: HIT, MISS
-x-cache-hits: 9062, 0
-x-timer: S1702666989.867858,VS0,VE167
+age: 2050
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-krnt7300074-BFI, cache-mad22028-MAD
+x-cache: HIT, HIT
+x-cache-hits: 221700, 0
+x-timer: S1752478958.686006,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -77,3 +77,7 @@ server: RubyGems.org
 2.9.2 afm:~> 0.2.1,Ascii85:~> 1.0,hashery:~> 2.0,ruby-rc4:>= 0,ttfunk:>= 0|checksum:c649bfbf1add6e9271b3738f88b9d0a1bb45ddc06c5a91178a0640b62005abde,ruby:>= 2.0
 2.10.0 afm:~> 0.2.1,Ascii85:~> 1.0,hashery:~> 2.0,ruby-rc4:>= 0,ttfunk:>= 0|checksum:9f6f3ab26b85f45d4049050b58dc8a6ec58342f943db67653199e2e1ba87901d,ruby:>= 2.0
 2.11.0 afm:~> 0.2.1,Ascii85:~> 1.0,hashery:~> 2.0,ruby-rc4:>= 0,ttfunk:>= 0|checksum:03238525f98340f7598ce5e292a2cbe8a87f9a2a5617c8cdd5e2467b65115d27,ruby:>= 2.0
+2.12.0 afm:~> 0.2.1,Ascii85:~> 1.0,hashery:~> 2.0,ruby-rc4:>= 0,ttfunk:>= 0|checksum:61e72a4839cf2b3735a4b08dcb00e23c57a51d199494a5b11bd78e49d7b91758,ruby:>= 2.0
+2.13.0 afm:~> 0.2.1,Ascii85:!= 2.0.0&< 3.0&>= 1.0,hashery:~> 2.0,ruby-rc4:>= 0,ttfunk:>= 0|checksum:20a46732ca4ba21ad0a4b76a23a5f6a18575a85fb98027c6b124bcfe32beb2d4,ruby:>= 2.0
+2.14.0 afm:~> 0.2.1,Ascii85:!= 2.0.0&< 3.0&>= 1.0,hashery:~> 2.0,ruby-rc4:>= 0,ttfunk:>= 0|checksum:676bf8bba61f07365f20e336d302aef6e7128754dec9d605bbf7fd742ec916a2,ruby:>= 2.1
+2.14.1 afm:~> 0.2.1,Ascii85:!= 2.0.0&< 3.0&>= 1.0,hashery:~> 2.0,ruby-rc4:>= 0,ttfunk:>= 0|checksum:b45a4521c249a394ad7ad9e691bfd46d4d00998cfc4f019e4525afb4963b411b,ruby:>= 2.1

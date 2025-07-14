@@ -1,21 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 16588
-last-modified: Tue, 28 Nov 2023 20:59:57 GMT
-etag: "fbacc8d2dc08506a35c2dc9bd38c0434"
+content-length: 17080
+last-modified: Tue, 20 May 2025 21:37:54 GMT
+etag: "275cd6dd1fc251fb81b273029462eb43"
 cache-control: max-age=60, public
 content-type: text/plain; charset=utf-8
-digest: sha-256="cnogmmRO+5/xuJrhPsgSwvP5FvvZP+VS7Yn9rg210ww="
-repr-digest: sha-256="cnogmmRO+5/xuJrhPsgSwvP5FvvZP+VS7Yn9rg210ww="
+digest: sha-256="cR6BmIQxdQhvWs8z3eSigdVQyxDZxHyZSAUIj00f+yE="
+repr-digest: sha-256="cR6BmIQxdQhvWs8z3eSigdVQyxDZxHyZSAUIj00f+yE="
 via: 1.1 varnish, 1.1 varnish
-x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300047_BFI 167.82.143.47:443
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400101_BFI 167.82.142.101:443
 accept-ranges: bytes
-date: Fri, 15 Dec 2023 19:03:06 GMT
-age: 3219
-x-served-by: cache-bfi-krnt7300047-BFI, cache-mad2200136-MAD
+age: 1178
+date: Mon, 14 Jul 2025 07:42:37 GMT
+x-served-by: cache-bfi-kbfi7400101-BFI, cache-mad2200089-MAD
 x-cache: HIT, HIT
-x-cache-hits: 2444, 1
-x-timer: S1702666986.338248,VS0,VE167
+x-cache-hits: 11218, 0
+x-timer: S1752478957.096961,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -151,3 +151,7 @@ server: RubyGems.org
 5.2.4 activemodel:>= 5.2,hashie:>= 0|checksum:355b03d82b6d89f0879cf17b8bcb96e6adb8dfe4e688260826caf4637e88c9f4,ruby:>= 2.6
 5.3.0 activemodel:>= 6.1,hashie:>= 0|checksum:e2d526be4be2b459c319bce8bf6307ce0e41b6aafe2af257d526fd20d60fe211,ruby:>= 3
 5.3.1 activemodel:>= 6.1,hashie:>= 0|checksum:dc1181543f6a68354e380651f235fa7f3df6a09e4cd67fc284dc293fa9860f57,ruby:>= 3
+5.4.0 activemodel:>= 6.1,hashie:>= 0|checksum:75d7256d3ec2af2dc11c2ba8160c86d80451f3f86447aae2ace1f79553de0bf3,ruby:>= 3.1
+5.5.0 activemodel:>= 7.1,hashie:>= 0|checksum:62851dcc78b349a675b112c0f80581a295db5aeffab08ee8d6e4581a8485f7b0,ruby:>= 3.2
+5.5.1 activemodel:>= 7.1,hashie:>= 0|checksum:cc1df998cb89f36187c31047c4248cb226862c526fe43b3c2db7371488cee9e1,ruby:>= 3.2
+5.5.2 activemodel:>= 7.1,hashie:>= 0|checksum:8be24a74b612d1ac7f1dbc4a3cba310d6af2f8ba7405f30960769db871e3cf67,ruby:>= 3.2

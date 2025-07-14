@@ -1,7 +1,7 @@
 > GET /info/mustermann
 > accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
 > accept: */*
-> user-agent: bundler/2.7.0.dev rubygems/3.7.0.dev ruby/3.4.4 (arm64-apple-darwin24) command/lock options/frozen 694dc94dbeea8793
+> user-agent: bundler/4.0.0.dev rubygems/3.7.0.dev ruby/3.4.4 (arm64-apple-darwin24) command/install options/force_ruby_platform,no_install,path 478182a7f3263ccd
 > connection: keep-alive
 > keep-alive: 30
 > host: index.rubygems.org

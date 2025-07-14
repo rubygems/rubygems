@@ -10,12 +10,12 @@ repr-digest: sha-256="SHlRCSR9UWQKNjltRrj9W4s+YQN1Omjq5696ZXHVie8="
 via: 1.1 varnish, 1.1 varnish
 x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300074_BFI 167.82.143.74:443
 accept-ranges: bytes
-age: 2074
-date: Mon, 14 Jul 2025 07:42:25 GMT
-x-served-by: cache-bfi-krnt7300074-BFI, cache-mad2200143-MAD
+age: 3679
+date: Mon, 14 Jul 2025 08:09:11 GMT
+x-served-by: cache-bfi-krnt7300074-BFI, cache-mad2200100-MAD
 x-cache: HIT, HIT
 x-cache-hits: 214202, 0
-x-timer: S1752478946.648091,VS0,VE1
+x-timer: S1752480551.264967,VS0,VE1
 server: RubyGems.org
 
 ---

@@ -3,5 +3,5 @@
 > accept: */*
 > connection: keep-alive
 > keep-alive: 30
-> user-agent: bundler/2.7.0.dev rubygems/3.7.0.dev ruby/3.4.4 (arm64-apple-darwin24) command/install options/no_install 6aceb2ca29c5ce40
+> user-agent: bundler/4.0.0.dev rubygems/3.7.0.dev ruby/3.4.4 (arm64-apple-darwin24) command/install options/no_install 648112fe7ae5aa1d
 > host: rubygems.org

@@ -21,12 +21,12 @@ fastly-restarts: 1
 via: 1.1 varnish, 1.1 varnish
 x-backend: F_Rails 52.41.215.168:443, fastlyshield--shield_ssl_cache_bfi_krnt7300025_BFI 167.82.143.25:443
 accept-ranges: bytes
-age: 554
-date: Mon, 14 Jul 2025 07:42:23 GMT
-x-served-by: cache-bfi-krnt7300025-BFI, cache-mad2200146-MAD
+date: Mon, 14 Jul 2025 08:09:04 GMT
+age: 2156
+x-served-by: cache-bfi-krnt7300025-BFI, cache-mad2200134-MAD
 x-cache: HIT, HIT
-x-cache-hits: 46790, 0
-x-timer: S1752478943.369859,VS0,VE1
+x-cache-hits: 46790, 1
+x-timer: S1752480545.983891,VS0,VE1
 vary: Accept,Accept-Encoding
 server: RubyGems.org
 

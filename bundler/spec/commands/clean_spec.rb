@@ -383,51 +383,7 @@ RSpec.describe "bundle clean" do
     expect(out).to include("myrack (1.0.0)").and include("thin (1.0)")
   end
 
-  it "--clean should override the bundle setting on install" do
-    gemfile <<-G
-      source "https://gem.repo1"
-
-      gem "thin"
-      gem "myrack"
-    G
-    bundle "config set path vendor/bundle"
-    bundle "config set clean false"
-    bundle "install --clean true"
-
-    gemfile <<-G
-      source "https://gem.repo1"
-
-      gem "myrack"
-    G
-    bundle "install"
-
-    should_have_gems "myrack-1.0.0"
-    should_not_have_gems "thin-1.0"
-  end
-
-  it "--clean should override the bundle setting on update" do
-    build_repo2
-
-    gemfile <<-G
-      source "https://gem.repo2"
-
-      gem "foo"
-    G
-    bundle "config set path vendor/bundle"
-    bundle "config set clean false"
-    bundle "install --clean true"
-
-    update_repo2 do
-      build_gem "foo", "1.0.1"
-    end
-
-    bundle "update", all: true
-
-    should_have_gems "foo-1.0.1"
-    should_not_have_gems "foo-1.0"
-  end
-
-  it "automatically cleans when path has not been set", bundler: "5" do
+  it "does not clean when path has not been set" do
     build_repo2
 
     install_gemfile <<-G
@@ -442,8 +398,43 @@ RSpec.describe "bundle clean" do
 
     bundle "update", all: true
 
-    files = Pathname.glob(bundled_app(".bundle", Bundler.ruby_scope, "*", "*"))
-    files.map! {|f| f.to_s.sub(bundled_app(".bundle", Bundler.ruby_scope).to_s, "") }
+    files = Pathname.glob(default_bundle_path("*", "*"))
+    files.map! {|f| f.to_s.sub(default_bundle_path.to_s, "") }
+    expected_files = %w[
+      /bin/bundle
+      /bin/bundler
+      /cache/bundler-4.0.0.dev.gem
+      /cache/foo-1.0.1.gem
+      /cache/foo-1.0.gem
+      /gems/bundler-4.0.0.dev
+      /gems/foo-1.0
+      /gems/foo-1.0.1
+      /specifications/bundler-4.0.0.dev.gemspec
+      /specifications/foo-1.0.1.gemspec
+      /specifications/foo-1.0.gemspec
+    ]
+    expected_files += ["/bin/bundle.bat", "/bin/bundler.bat"] if Gem.win_platform?
+
+    expect(files.sort).to eq(expected_files.sort)
+  end
+
+  it "will automatically clean when path has not been set", bundler: "5" do
+    build_repo2
+
+    install_gemfile <<-G
+      source "https://gem.repo2"
+
+      gem "foo"
+    G
+
+    update_repo2 do
+      build_gem "foo", "1.0.1"
+    end
+
+    bundle "update", all: true
+
+    files = Pathname.glob(local_gem_path("*", "*"))
+    files.map! {|f| f.to_s.sub(local_gem_path.to_s, "") }
     expect(files.sort).to eq %w[
       /cache/foo-1.0.1.gem
       /gems/foo-1.0.1
@@ -451,7 +442,7 @@ RSpec.describe "bundle clean" do
     ]
   end
 
-  it "does not clean automatically on --path" do
+  it "does not clean automatically when path configured" do
     gemfile <<-G
       source "https://gem.repo1"
 
@@ -471,7 +462,7 @@ RSpec.describe "bundle clean" do
     should_have_gems "myrack-1.0.0", "thin-1.0"
   end
 
-  it "does not clean on bundle update with --path" do
+  it "does not clean on bundle update when path configured" do
     build_repo2
 
     gemfile <<-G
@@ -490,7 +481,7 @@ RSpec.describe "bundle clean" do
     should_have_gems "foo-1.0", "foo-1.0.1"
   end
 
-  it "does not clean on bundle update when using --system" do
+  it "does not clean on bundle update when installing to system gems" do
     bundle "config set path.system true"
 
     build_repo2

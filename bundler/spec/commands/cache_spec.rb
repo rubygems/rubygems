@@ -158,20 +158,6 @@ RSpec.describe "bundle cache" do
     end
   end
 
-  context "with --path" do
-    it "sets root directory for gems" do
-      gemfile <<-D
-        source "https://gem.repo1"
-        gem 'myrack'
-      D
-
-      bundle "cache --path #{bundled_app("test")}"
-
-      expect(the_bundle).to include_gems "myrack 1.0.0"
-      expect(bundled_app("test/vendor/cache/")).to exist
-    end
-  end
-
   context "with --no-install" do
     it "puts the gems in vendor/cache but does not install them" do
       gemfile <<-D
@@ -221,18 +207,7 @@ RSpec.describe "bundle cache" do
       expect(bundled_app("vendor/cache/myrack-1.0.0.gem")).to exist
     end
 
-    it "puts the gems in vendor/cache even for legacy windows rubies, but prints a warning" do
-      gemfile <<-D
-        source "https://gem.repo1"
-        gem 'myrack', :platforms => [:ruby_20, :x64_mingw_20]
-      D
-
-      bundle "cache --all-platforms"
-      expect(err).to include("deprecated")
-      expect(bundled_app("vendor/cache/myrack-1.0.0.gem")).to exist
-    end
-
-    it "prints an error when using legacy windows rubies", bundler: "4" do
+    it "prints an error when using legacy windows rubies" do
       gemfile <<-D
         source "https://gem.repo1"
         gem 'myrack', :platforms => [:ruby_20, :x64_mingw_20]

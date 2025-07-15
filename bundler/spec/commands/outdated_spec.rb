@@ -819,32 +819,6 @@ RSpec.describe "bundle outdated" do
     expect(out).to include("Installing foo 1.0")
   end
 
-  context "after bundle install --deployment" do
-    before do
-      build_repo2
-
-      gemfile <<-G
-        source "https://gem.repo2"
-
-        gem "myrack"
-        gem "foo"
-      G
-      bundle :lock
-      bundle :install, deployment: true
-    end
-
-    it "outputs a helpful message about being in deployment mode" do
-      update_repo2 { build_gem "activesupport", "3.0" }
-
-      bundle "outdated", raise_on_error: false
-      expect(last_command).to be_failure
-      expect(err).to include("You are trying to check outdated gems in deployment mode.")
-      expect(err).to include("Run `bundle outdated` elsewhere.")
-      expect(err).to include("If this is a development machine, remove the ")
-      expect(err).to include("Gemfile freeze\nby running `bundle config unset deployment`.")
-    end
-  end
-
   context "after bundle config set --local deployment true" do
     before do
       build_repo2 do

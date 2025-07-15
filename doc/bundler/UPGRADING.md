@@ -144,12 +144,6 @@ Bundler will refuse to run otherwise.
 
 #### Notable CLI changes
 
-* The `--force` flag to `bundle install` and `bundle update` will be renamed to `--redownload`.
-
-  This is just a simple rename of the flag, to make more apparent what it
-  actually does. This flag forces redownloading every gem, it doesn't "force"
-  anything else.
-
 * `bundle viz` will be removed and extracted to a plugin.
 
   This is the only bundler command requiring external dependencies, both an OS

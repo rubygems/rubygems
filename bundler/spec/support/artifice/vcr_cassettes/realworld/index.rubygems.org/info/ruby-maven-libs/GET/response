@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 328
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "fee6e5d80567cf66f13941f7a18b97d5"
-last-modified: Mon, 14 Dec 2020 16:25:10 GMT
+content-length: 759
+last-modified: Tue, 10 Sep 2024 17:17:31 GMT
+etag: "b803d40a598b8afd5cc24474c6f8651c"
 cache-control: max-age=60, public
-x-request-id: bfdbcc71-dacd-4895-b1c5-2f85c7543fe0
-x-runtime: 0.005642
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="3QM3B0NrtMRQSiRyumpJxIbfIPJROSvJx+BXKgBYdMs="
+repr-digest: sha-256="3QM3B0NrtMRQSiRyumpJxIbfIPJROSvJx+BXKgBYdMs="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400054_BFI 167.82.142.54:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 532
-x-served-by: cache-fra19170-FRA
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1635203860.396255,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 2671
+date: Mon, 14 Jul 2025 08:09:05 GMT
+x-served-by: cache-bfi-kbfi7400054-BFI, cache-mad2200095-MAD
+x-cache: HIT, HIT
+x-cache-hits: 264219, 0
+x-timer: S1752480545.097522,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -31,3 +23,8 @@ server: RubyGems.org
 3.1.1 |checksum:a41d34c770387433f8b714664e48a29ca235ef4fd4863437a145c1fa562fe1f0
 3.3.3 |checksum:433be607c867ef579024952d605aae42a1d1f29f75a9c8a1e5218eeec814e1d6
 3.3.9 |checksum:f7e1b6ca81f3c539c45177ed637667a2999a5342b95b8f75182a1148076e9843
+3.8.9 |checksum:bd0f90374d76e4e2a252135e9a6521dcfbd0acdb0a98cc339c8ef3147213390b
+3.9.6 |checksum:b7583cddf36940442c36874980138a0cceeb39a6fb06204a94d75114d087c9d3
+3.9.6.1.pre1 |checksum:d8ae86b2aa015e684df591d161bf423de1da0c2afd397f998dc03c20c4f6084a,rubygems:> 1.3.1
+3.9.6.1 |checksum:c72065c5a6b84f9990b53527b62e6b8a24f53d699ed635217584a7006048df87
+3.9.9 |checksum:d03f665b231a6a4731a117282a3598b62a2ad75fa01918df3eaeba3a8df3d9b1

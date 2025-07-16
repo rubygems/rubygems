@@ -240,7 +240,7 @@ module Bundler
 
       print_remembered_flag_deprecation("--system", "path.system", "true") if ARGV.include?("--system")
 
-      remembered_negative_flag_deprecation("no-deployment")
+      remembered_flag_deprecation("deployment", negative: true)
 
       require_relative "cli/install"
       Bundler.settings.temporary(no_install: false) do
@@ -331,6 +331,8 @@ module Bundler
     method_option "all", type: :boolean, banner: "Install binstubs for all gems"
     method_option "all-platforms", type: :boolean, default: false, banner: "Install binstubs for all platforms"
     def binstubs(*gems)
+      remembered_flag_deprecation("path", option_name: "bin")
+
       require_relative "cli/binstubs"
       Binstubs.new(options, gems).run
     end
@@ -414,7 +416,7 @@ module Bundler
     def cache
       print_remembered_flag_deprecation("--all", "cache_all", "true") if ARGV.include?("--all")
 
-      if ARGV.include?("--path")
+      if flag_passed?("--path")
         message =
           "The `--path` flag is deprecated because its semantics are unclear. " \
           "Use `bundle config cache_path` to configure the path of your cache of gems, " \
@@ -743,30 +745,17 @@ module Bundler
       nil
     end
 
-    def remembered_negative_flag_deprecation(name)
-      positive_name = name.gsub(/\Ano-/, "")
-      option = current_command.options[positive_name]
-      flag_name = "--no-" + option.switch_name.gsub(/\A--/, "")
-
-      flag_deprecation(positive_name, flag_name, option)
-    end
-
-    def remembered_flag_deprecation(name)
+    def remembered_flag_deprecation(name, negative: false, option_name: nil)
       option = current_command.options[name]
       flag_name = option.switch_name
-
-      flag_deprecation(name, flag_name, option)
-    end
-
-    def flag_deprecation(name, flag_name, option)
-      name_index = ARGV.find {|arg| flag_name == arg.split("=")[0] }
-      return unless name_index
+      flag_name = "--no-" + flag_name.gsub(/\A--/, "") if negative
+      return unless flag_passed?(flag_name)
 
       value = options[name]
       value = value.join(" ").to_s if option.type == :array
       value = "'#{value}'" unless option.type == :boolean
 
-      print_remembered_flag_deprecation(flag_name, name.tr("-", "_"), value)
+      print_remembered_flag_deprecation(flag_name, option_name || name.tr("-", "_"), value)
     end
 
     def print_remembered_flag_deprecation(flag_name, option_name, option_value)
@@ -781,6 +770,10 @@ module Bundler
         "do. Instead please use `bundle config set #{option_name} " \
         "#{option_value}`, and stop using this flag"
       Bundler::SharedHelpers.major_deprecation 2, message, removed_message: removed_message
+    end
+
+    def flag_passed?(name)
+      ARGV.any? {|arg| name == arg.split("=")[0] }
     end
   end
 end

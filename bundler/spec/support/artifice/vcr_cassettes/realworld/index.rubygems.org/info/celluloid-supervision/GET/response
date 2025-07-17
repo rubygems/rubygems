@@ -3,27 +3,31 @@ connection: keep-alive
 content-length: 1527
 content-type: text/plain; charset=utf-8
 x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
+x-xss-protection: 0
 x-content-type-options: nosniff
-x-download-options: noopen
 x-permitted-cross-domain-policies: none
 referrer-policy: strict-origin-when-cross-origin
+cross-origin-opener-policy: same-origin
 etag: "1115a992819187f204c2bc0c029f32e2"
-last-modified: Mon, 14 Dec 2020 16:27:05 GMT
+last-modified: Sat, 30 Sep 2023 00:00:09 GMT
+digest: sha-256=Y75pFYHmKKXoC2zd9IRoLdubmQRZjvl/w+Sbw4TiBgI=
+repr-digest: sha-256=:Y75pFYHmKKXoC2zd9IRoLdubmQRZjvl/w+Sbw4TiBgI=:
 cache-control: max-age=60, public
-x-request-id: 8e138754-53bb-4a22-a59c-1a6d67230955
-x-runtime: 0.008647
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://secure.gaug.es https://gravatar.com https://www.gravatar.com https://secure.gravatar.com https://*.fastly-insights.com https://avatars.githubusercontent.com; object-src 'none'; script-src 'self' 'sha256-4uzPy2VgfUcGFr8frA/viCcF1/EbzT520i3H5sP5w0U=' https://secure.gaug.es https://www.fastly-insights.com 'nonce-c356a87bde68893b0fa4c92c85cad410'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com http://localhost:*; form-action 'self' https://github.com/login/oauth/authorize; frame-ancestors 'self'; base-uri 'self'; report-uri https://csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub852fa3e2312391fafa5640b60784e660&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Arubygems.org%2Cversion%3A33acc2ae7a075fa124a1b84dfc9dbb5f7ce7e0e4%2Cenv%3Aproduction%2Ctrace_id%3A685a6bda000000003afd93e522855d0e
+x-request-id: 3ce0733e-3573-4f93-8f39-f5ec595ecda3
+x-runtime: 0.008460
+strict-transport-security: max-age=31536000; includeSubDomains
+fastly-restarts: 1
+via: 1.1 varnish, 1.1 varnish
+x-backend: F_Rails 35.82.194.1:443, fastlyshield--shield_ssl_cache_bfi_krnt7300087_BFI 167.82.143.87:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 1711
-x-served-by: cache-fra19138-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203860.903970,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 08:09:04 GMT
+age: 3228
+x-served-by: cache-bfi-krnt7300087-BFI, cache-mad22036-MAD
+x-cache: HIT, HIT
+x-cache-hits: 168049, 1
+x-timer: S1752480545.983473,VS0,VE1
+vary: Accept,Accept-Encoding
 server: RubyGems.org
 
 ---

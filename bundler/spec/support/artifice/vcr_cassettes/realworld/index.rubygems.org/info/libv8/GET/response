@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 46887
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "2ba8a0ac7fe4736b7c400ef2a2dfce03"
-last-modified: Mon, 14 Dec 2020 17:18:50 GMT
+content-length: 48182
+last-modified: Mon, 04 Dec 2023 11:53:58 GMT
+etag: "a99680ab8d7f5e107ac0dde8853e8cd1"
 cache-control: max-age=60, public
-x-request-id: 2ac505c3-206e-47c7-946c-3affa6a31cf2
-x-runtime: 0.012066
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="rI6RNW3YPJJYEPwfblf/zY20O2eilnb4EfsFnaVAI28="
+repr-digest: sha-256="rI6RNW3YPJJYEPwfblf/zY20O2eilnb4EfsFnaVAI28="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300117_BFI 167.82.143.117:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:47 GMT
-via: 1.1 varnish
-age: 206
-x-served-by: cache-fra19182-FRA
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1635203867.484195,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 08:09:14 GMT
+age: 1896
+x-served-by: cache-bfi-krnt7300117-BFI, cache-mad2200147-MAD
+x-cache: HIT, HIT
+x-cache-hits: 46116, 1
+x-timer: S1752480555.820278,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -469,3 +461,16 @@ server: RubyGems.org
 8.4.255.0-x86_64-darwin-20 |checksum:cae4b3ef98193d828db205d8c46a275885b9765adb30670c975a799bb89e8c1e
 7.3.492.27.1-x86_64-darwin-20 |checksum:ad76f8c45c3af0fef98053232a1d948f54b381b9b057e70d2f02b66a0bba77c3
 7.3.492.27.1-universal-darwin-20 |checksum:07ed13476f9aa54160746b1258eb261fbea3528528296699b6e52c875d5e0813
+3.16.14.19.1 |checksum:31886682fbefc30f8b65a26e99fdc64531bc7276903e0056dfd335b5626fe342
+3.16.14.19.1-amd64-freebsd-10 |checksum:149782805f00977eed4734f9cb8d95b199233e35dae8ce31596b4affee4411d2
+3.16.14.19.1-amd64-freebsd-11 |checksum:97dce824ff356d8d0af46e84a99f366a47354435cdf93231e513f3a82c799c74
+3.16.14.19.1-arm-linux |checksum:5e3dada5810a9f795d1ee083aecc5ce0951c775b5562629b8d28a74933ec3b44
+3.16.14.19.1-armv7l-linux |checksum:2cad02422428956a71aebbc1175c644daa4e33706858d7be303a3e96f876ce6c
+3.16.14.19.1-universal-darwin |checksum:12663630ceda75e2d1049265ca25db2182b428694fd3699b217fa7d86c99b385
+3.16.14.19.1-x86-linux |checksum:49108a6b0d9d8cb45a8319f2ffe32ae3786b307e449d57f707a177fd5735b5e1
+3.16.14.19.1-x86_64-darwin |checksum:2da5e0c9594291969cb166a31e0837464bd8c8b2787442315025f6f51096fea7
+3.16.14.19.1-x86_64-linux |checksum:fcb39cdc7a3d99bcef813cff13f3229772f83b32b571fede38d0844a06c2fdb7
+8.4.255.0.1 |checksum:e8a4c68efbed5c6e8ae638474e5f1c5dc8ba7a36e67632f5ba4b779d7a69a44d
+8.4.255.0.1-universal-darwin |checksum:a14b3d1fb99fc4981cd223e7efb55343879079768a2074c430617268b42315cd
+8.4.255.0.1-x86_64-darwin |checksum:044282f7038e93ce9c7b3ec70ff82fa06cb9ade4addbe9b5587585e00323e66b
+8.4.255.0.1-x86_64-linux |checksum:5e0dcb02abe0fe3bd53431b8664003c511f59dec6b7368a252288ce907926d04

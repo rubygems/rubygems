@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4801
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "7604d5d3f671281c77f9bf407f50f0d2"
-last-modified: Mon, 14 Dec 2020 17:15:15 GMT
+content-length: 7138
+last-modified: Sun, 13 Apr 2025 00:19:07 GMT
+etag: "37ce8943f3ffc0311226928056a2835c"
 cache-control: max-age=60, public
-x-request-id: 7ba9a8de-3437-47a7-af65-b7a4c236ed99
-x-runtime: 0.007056
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="Z5upj+5Craf83AzIRklSMV3r/b5A7lfi3R5Mb+Lcbkg="
+repr-digest: sha-256="Z5upj+5Craf83AzIRklSMV3r/b5A7lfi3R5Mb+Lcbkg="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300101_BFI 167.82.143.101:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 1108
-x-served-by: cache-fra19154-FRA
-x-cache: HIT
-x-cache-hits: 4
-x-timer: S1635203860.139956,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 3093
+date: Mon, 14 Jul 2025 08:09:05 GMT
+x-served-by: cache-bfi-krnt7300101-BFI, cache-mad2200137-MAD
+x-cache: HIT, HIT
+x-cache-hits: 47488, 0
+x-timer: S1752480545.051652,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -67,3 +59,22 @@ server: RubyGems.org
 1.0.9 rake:>= 0|checksum:9f2124219848c413e822249d8b741d462d402bc2bc341712118786c46d617ce1,ruby:>= 1.8.7,rubygems:>= 1.8.23
 1.1.0 rake:>= 0|checksum:18d4395ad141f965c26e0862bf40ee350abb797d3442c1b4cb0e5eb083789050,ruby:>= 1.8.7,rubygems:>= 1.8.23
 1.1.1 rake:>= 0|checksum:ee6e2f06ac0ca045f80d41eb596c8f33f25415973294952351a66509027f5d87,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.1.2 rake:>= 0|checksum:4eb928c68ad2ea4228173a0318bb6efac636cd70174471141b296aff152d62a1,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.1.3 rake:>= 0|checksum:e1ea0ba157600aee4dcb1b18a046aea3fc30078885c5789605225401c034684d,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.1.4 rake:>= 0|checksum:551edeb7a6dd9d9092aba4b806b3653280b07e56479729242968dacd972deb3c,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.1.5 rake:>= 0|checksum:2589b7c5562e738f9f3a7ff8b132ae06d14cc5912eb4b165daa8c0fbc81aa107,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.1.6 rake:>= 0|checksum:d151d842583c8f55210d77ef0f5398a469925116fa8e0b2b317cb35e6ac5559b,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.1.7 rake:>= 0|checksum:baed39539ec16aebcbe77b1c4b50895a71f01668a517ecd236570315e26c510a,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.1.8 rake:>= 0|checksum:6c2dd41c2c2c584aa56c909ca7e26ec5ed4715e90f6f4ccb5a858c5f98a38b52,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.1.9 rake:>= 0|checksum:51b5c95a1ff25cabaaf92e674a2bed847ab53d66302fc8843830df46ab1f51f5,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.0 rake:>= 0|checksum:e02bcf56d2f3d80cb878b760268e8f13dc8e4251c9fba080ded779b167ae6ff5,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.1 rake:>= 0|checksum:752f428b89c7e5a542b0682dc6b59deaffc6535cf8050a2609afdfccc579ac0f,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.2 rake:>= 0|checksum:a03e6ac99a0431475fe275f3158408cf2f070959ec8026934aeb68fa2a795e44,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.3 rake:>= 0|checksum:994a53efb3374b8960de536ea1cbdff9a0d36bfe4fd4f409d73a26e60993d085,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.4 rake:>= 0|checksum:8a821cf1a9bdb0e8a5349ae5233c69a02e4e8b061e1349ca92c0846a5d3b13af,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.5 rake:>= 0|checksum:ab9b03a6db5fce88fb8dcff23c0cae3bccd7166f036c7fc8b2199f53ee38b2ac,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.6 rake:>= 0|checksum:66640f9330128a91a20edebd4d58a214dfcd1c764e23809be558b0fa6c618d1b,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.7 rake:>= 0|checksum:5176f8527bbf86db4b333915335eb5fa0b4f578cb82428c3e5e47e48179f0dee,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.8 rake:>= 0|checksum:f314105ecb3d23d4287014d30c189cab9da14150de0201e48b99c25a04749176,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.2.9 rake:>= 0|checksum:5a3213a5dda977dfdf73e28beed6f4cd6a2cc86ac640bb662728eb7049a23607,ruby:>= 1.8.7,rubygems:>= 1.8.23
+1.3.0 rake:>= 0|checksum:eec272ef6d4dad27b36f5cdcf5b9ee4df2193751f4082b095f981ebf9cdf4127,ruby:>= 1.8.7,rubygems:>= 1.8.23

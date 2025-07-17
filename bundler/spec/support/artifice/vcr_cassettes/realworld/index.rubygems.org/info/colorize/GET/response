@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 1338
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "c3748f1bba4f85573e7fc3b32defd0f1"
-last-modified: Mon, 14 Dec 2020 16:27:27 GMT
+content-length: 2371
+last-modified: Fri, 24 Nov 2023 16:17:57 GMT
+etag: "48e4f18abe5bbd192fae97623c53c193"
 cache-control: max-age=60, public
-x-request-id: 26479670-5bcd-4fa1-a51c-8d5286d611fb
-x-runtime: 0.006677
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="TGxSP6KJuUb+4Bed65cMLZiCLdNkbePh94JnuJzzdE4="
+repr-digest: sha-256="TGxSP6KJuUb+4Bed65cMLZiCLdNkbePh94JnuJzzdE4="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300054_BFI 167.82.143.54:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 531
-x-served-by: cache-fra19128-FRA
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1635203860.259042,VS0,VE1
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 2013
+date: Mon, 14 Jul 2025 08:09:04 GMT
+x-served-by: cache-bfi-krnt7300054-BFI, cache-mad22030-MAD
+x-cache: HIT, HIT
+x-cache-hits: 244820, 0
+x-timer: S1752480545.835812,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -43,3 +35,13 @@ server: RubyGems.org
 0.7.7 |checksum:d6ab95a5fcdea3c36c3327d38c1e79e2950ee1788506d8489ae35db330937a99
 0.8.0 |checksum:43c0daf332260b67d844487b2975830d31d1ca49fd427f9d2468bd52324fb1d6
 0.8.1 |checksum:0ba0c2a58232f9b706dc30621ea6aa6468eeea120eb6f1ccc400105b90c4798c
+1.0.0.pre.beta.3 |checksum:d96f34f70c61c9e1259bb2b1368c881373996208079f94913e9efc8ec6e1168e,ruby:>= 2.6,rubygems:> 1.3.1
+1.0.0.pre.pre |checksum:fedf27a886de02b6ee04ed04a3c7cd1a2342c92917f27c78bd0f94d2d7e14037,ruby:>= 2.6,rubygems:> 1.3.1
+1.0.0.pre.pre.1 |checksum:588c766751a723671eb513e938491e19aff480a21ffa62b4d1a781563c1f5fb8,ruby:>= 2.6,rubygems:> 1.3.1
+1.0.0.pre.1 |checksum:3160a1a6426bd57408a7ccc9ce75d4dd138e655ddedaf43245bfdfd13a54619c,ruby:>= 2.6,rubygems:> 1.3.1
+1.0.0 |checksum:99d826c5d2e9bf9bdf9415d12bd40ad239531fb3e5680edbc83e6e924672cfd6,ruby:>= 2.6
+1.0.1 |checksum:9a9417e8fbf0ab61fd93111a87e5204ed60517f7a4d3d0097c18cbb0980c8722,ruby:>= 2.6
+1.0.2 |checksum:12fb806598ba7f94ea87fd653da962ddcf15679e32c021cdab2c5f890837ba56,ruby:>= 2.6
+1.0.3 |checksum:2697ef7aea6eb6f7f9c94b982a0712c44d215fa124a7aee9aa3f7eb98230f024,ruby:>= 2.6
+1.0.5 |checksum:5550d84ff6aec20a35d4505340559470ef855c56bb800377a52232bb1d00675b,ruby:>= 2.6
+1.1.0 |checksum:30b5237f0603f6662ab8d1fc2bd4a96142b806c6415d79e45ef5fdc6a0cfc837,ruby:>= 2.6

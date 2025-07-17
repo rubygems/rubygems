@@ -1,0 +1,7 @@
+> GET /gems/concurrent-ruby-1.3.5.gem
+> accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+> accept: */*
+> connection: keep-alive
+> keep-alive: 30
+> user-agent: bundler/4.0.0.dev rubygems/3.7.0.dev ruby/3.4.4 (arm64-apple-darwin24) command/install options/no_install 5cd2003b105bf4cf
+> host: rubygems.org

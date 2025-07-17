@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 1133
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "1797a5da3ae0f62fd94db03d525bc564"
-last-modified: Sat, 08 May 2021 20:46:11 GMT
+content-length: 1526
+last-modified: Tue, 13 May 2025 10:37:13 GMT
+etag: "48959585485513b6344ecccaf8c8458f"
 cache-control: max-age=60, public
-x-request-id: a892c85e-a0db-4948-8d16-948792257a2c
-x-runtime: 0.006449
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="W7km5gF21vgYwy+xjxM6UTlRCojME6Jne0bqgHHIxQE="
+repr-digest: sha-256="W7km5gF21vgYwy+xjxM6UTlRCojME6Jne0bqgHHIxQE="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400027_BFI 167.82.142.27:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:47 GMT
-via: 1.1 varnish
-age: 2289
-x-served-by: cache-fra19135-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203867.343242,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 2686
+date: Mon, 14 Jul 2025 08:09:14 GMT
+x-served-by: cache-bfi-kbfi7400027-BFI, cache-mad2200086-MAD
+x-cache: HIT, HIT
+x-cache-hits: 177177, 0
+x-timer: S1752480555.739736,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -35,3 +27,6 @@ server: RubyGems.org
 1.99.0 activerecord:>= 0,database_cleaner:~> 1.99.0|checksum:871201d388b6bc7288bcce2f4828d250fa0487e4d5798b0eb5f9ea853efd9eea
 2.0.0 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:158d7946779f4f8158a5702ba945b3fae1a1a828c2a1b87e560d16c34f93e7c9
 2.0.1 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:d55bbd23504b9793e144cde67f1c28ab5ea21eeb5db276333e941950d150bdfb
+2.1.0 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:7384b973d67bcc1b5a850b876a4638aa83cca3bc88f9d87562fe25cd2dd60d8a
+2.2.0 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:3228d6d8ec1f2103fd6ab468dae923424318bcfabcf5dd5b02e5fcb0c486e1c7
+2.2.1 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:be47005de91e48f97841f8220f7cbd57b13682073016caac7ce332e6c77bbfcb

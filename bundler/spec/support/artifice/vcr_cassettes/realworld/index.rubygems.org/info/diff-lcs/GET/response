@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 1315
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "38ed14680e5327530700ac12fc2bddf4"
-last-modified: Mon, 14 Dec 2020 17:15:00 GMT
+content-length: 1780
+last-modified: Mon, 12 May 2025 02:32:48 GMT
+etag: "d62f2c9cae0d0367cc58832dab426566"
 cache-control: max-age=60, public
-x-request-id: 390a05e8-2b28-44a1-9ae4-5e5abcaf89d3
-x-runtime: 0.006839
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="g6OJ075V2EzWE9yz7f96T7XdGggYJNZC2qX0+2IoTYQ="
+repr-digest: sha-256="g6OJ075V2EzWE9yz7f96T7XdGggYJNZC2qX0+2IoTYQ="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400095_BFI 167.82.142.95:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 1421
-x-served-by: cache-fra19141-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203860.287708,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 08:09:01 GMT
+age: 564
+x-served-by: cache-bfi-kbfi7400095-BFI, cache-mad2200116-MAD
+x-cache: HIT, HIT
+x-cache-hits: 194586, 2
+x-timer: S1752480542.982180,VS0,VE0
 server: RubyGems.org
 
 ---
@@ -42,3 +34,8 @@ server: RubyGems.org
 1.4.2 |checksum:414f14be32241257c19ec334497c74c78a5e0b9af2698d0a2f6897eb8e7708dc,ruby:>= 1.8
 1.4.3 |checksum:8bffae7bea519dd52531fc74a0fc96b4bc3fcf54941cb6d108e03bd5a825b96d,ruby:>= 1.8
 1.4.4 |checksum:bf3a658875f70c1467fe7a3b302b795f074c84b28db6e4a2bd6b1ad6d12a2255,ruby:>= 1.8
+1.5.0 |checksum:49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67,ruby:>= 1.8
+1.5.1 |checksum:273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe,ruby:>= 1.8
+1.6.0 |checksum:a1e7f7b272962f8fc769358ad00001b87cdcf32ba349d6c70c6b544613d2da2e,ruby:>= 1.8
+1.6.1 |checksum:12a5a83f3e37a8e2f4427268e305914d5f1879f22b4e73bb1a09f76a3dd86cd4,ruby:>= 1.8
+1.6.2 |checksum:9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962,ruby:>= 1.8

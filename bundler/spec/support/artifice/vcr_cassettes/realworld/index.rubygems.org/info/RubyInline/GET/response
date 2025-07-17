@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 3647
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "93b6babb98c1da082d7208f77619165b"
-last-modified: Mon, 14 Dec 2020 17:06:49 GMT
+content-length: 4127
+last-modified: Wed, 12 Mar 2025 03:08:14 GMT
+etag: "4c07676d4ac85b6a1f58bee85e8f24ba"
 cache-control: max-age=60, public
-x-request-id: 32188c6a-9b90-451e-8398-e75c851f146a
-x-runtime: 0.010935
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="NTID7oZHO5y4pO1LvlgT94JrmV4m+QKP7ke7+j62CVQ="
+repr-digest: sha-256="NTID7oZHO5y4pO1LvlgT94JrmV4m+QKP7ke7+j62CVQ="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400119_BFI 167.82.142.119:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:32 GMT
-via: 1.1 varnish
-age: 1830
-x-served-by: cache-fra19124-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203853.948666,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 08:08:59 GMT
+age: 2280
+x-served-by: cache-bfi-kbfi7400119-BFI, cache-mad2200141-MAD
+x-cache: HIT, HIT
+x-cache-hits: 194710, 1
+x-timer: S1752480540.527150,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -65,3 +57,8 @@ server: RubyGems.org
 3.12.3 ZenTest:~> 4.3|checksum:c1ececb4057d22638818c1bf1998cdbe485bf6eda81c3fe52a543487c9c35ad6
 3.12.4 ZenTest:~> 4.3|checksum:205bbc14c02d3d55e1b497241ede832ab87f3d981f92f3bda98b75e8144103e0
 3.12.5 ZenTest:~> 4.3|checksum:d4559cb86b7fedd2e9b4b0a3bd99a1955186dbc09f1269920a0dd5c67639c156
+3.12.6 ZenTest:~> 4.3|checksum:37f57ded6116f83f1c53e18dcb10e0780a60ea1d97a6ef39cb5a7e3c372602ff
+3.13.0 ZenTest:~> 4.3|checksum:cc112e0877f18e2fabc0e0d403cbed418b47afc72b791741e277edad81e83f58
+3.14.0 ZenTest:~> 4.3|checksum:839ef1393f34f5e0c1423b2378f00c17244e0580f43fdcf9b664c873bb431b90
+3.14.1 ZenTest:~> 4.3|checksum:dd060b8e083287b8e01394325259f6d5288e9db41212b39f78b311954d960cdc
+3.14.2 ZenTest:~> 4.3|checksum:211cbec89f1961a4bc8d49f75540546c19942984b218d7d0c66575a82c54da10

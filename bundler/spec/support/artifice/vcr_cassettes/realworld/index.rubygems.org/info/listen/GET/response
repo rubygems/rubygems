@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 16651
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "b284dbc86a8b504850593df80a9cae8b"
-last-modified: Thu, 19 Aug 2021 05:31:35 GMT
+content-length: 17104
+last-modified: Sat, 24 Feb 2024 20:27:02 GMT
+etag: "c72f9d33822829c4d8a8240280d1762e"
 cache-control: max-age=60, public
-x-request-id: 9fef6f48-2346-4f0f-92ba-3d46f2d77e3d
-x-runtime: 0.010608
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="bYgoXM9bMRvrt5403iA/MmD8LvXh/O8PowFuPFJPVcs="
+repr-digest: sha-256="bYgoXM9bMRvrt5403iA/MmD8LvXh/O8PowFuPFJPVcs="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400070_BFI 167.82.142.70:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 2698
-x-served-by: cache-fra19163-FRA
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1635203860.812569,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 2666
+date: Mon, 14 Jul 2025 08:09:11 GMT
+x-served-by: cache-bfi-kbfi7400070-BFI, cache-mad22071-MAD
+x-cache: HIT, HIT
+x-cache-hits: 228628, 0
+x-timer: S1752480551.229624,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -138,3 +130,6 @@ server: RubyGems.org
 3.5.1 rb-fsevent:>= 0.10.3&~> 0.10,rb-inotify:>= 0.9.10&~> 0.9|checksum:d2f6425068347454936c75bf3b9fc0f925b40d17ba7df752031c8c083b195b40,ruby:>= 2.4.0
 3.6.0 rb-fsevent:>= 0.10.3&~> 0.10,rb-inotify:>= 0.9.10&~> 0.9|checksum:f095d31f66f8cef7142d0658697961900f3ee3d3223980a3bc8ca9a449f307b7,ruby:>= 2.4.0
 3.7.0 rb-fsevent:>= 0.10.3&~> 0.10,rb-inotify:>= 0.9.10&~> 0.9|checksum:b72c0ca66346956c1939719bf21b90e24f20d4155d1d546fa009f32867838e59,ruby:>= 2.4.0
+3.7.1 rb-fsevent:>= 0.10.3&~> 0.10,rb-inotify:>= 0.9.10&~> 0.9|checksum:3b80caa7aa77fae836916c2f9e3fbcafbd15f5d695dd487c1f5b5e7e465efe29,ruby:>= 2.4.0
+3.8.0 rb-fsevent:>= 0.10.3&~> 0.10,rb-inotify:>= 0.9.10&~> 0.9|checksum:9679040ac6e7845ad9f19cf59ecde60861c78e2fae57a5c20fe35e94959b2f8f,ruby:>= 2.4.0
+3.9.0 rb-fsevent:>= 0.10.3&~> 0.10,rb-inotify:>= 0.9.10&~> 0.9|checksum:db9e4424e0e5834480385197c139cb6b0ae0ef28cc13310cfd1ca78377d59c67,ruby:>= 2.4.0

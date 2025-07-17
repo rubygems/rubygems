@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.7.1 / 2025-07-17
+
+### Enhancements:
+
+* Restore parsing "--" as an unknown platform rather than crashing. Pull
+  request [#8846](https://github.com/rubygems/rubygems/pull/8846) by
+  deivid-rodriguez
+* Installs bundler 2.7.1 as a default gem.
+
+### Documentation:
+
+* Update CoC email to conduct@rubygems.org. Pull request
+  [#8848](https://github.com/rubygems/rubygems/pull/8848) by indirect
+
 ## 3.7.0 / 2025-07-16
 
 ### Security:

@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.7.1 (2025-07-17)
+
+### Enhancements:
+
+  - Add some missing deprecation messages [#8844](https://github.com/rubygems/rubygems/pull/8844)
+
+### Bug fixes:
+
+  - Cancel deprecation of `--force` flag to `bundle install` and `bundle update` [#8843](https://github.com/rubygems/rubygems/pull/8843)
+
+### Documentation:
+
+  - Update CoC email to conduct@rubygems.org [#8848](https://github.com/rubygems/rubygems/pull/8848)
+  - Add missing link to `irb` repo in DEBUGGING.md [#8842](https://github.com/rubygems/rubygems/pull/8842)
+
 ## 2.7.0 (2025-07-16)
 
 ### Breaking changes:

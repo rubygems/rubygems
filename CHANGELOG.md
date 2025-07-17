@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.7.1 / 2025-07-21
+
+### Enhancements:
+
+* Fix regression in presence of RVM gems. Pull request
+  [#8854](https://github.com/rubygems/rubygems/pull/8854) by
+  deivid-rodriguez
+* Restore parsing "--" as an unknown platform rather than crashing. Pull
+  request [#8846](https://github.com/rubygems/rubygems/pull/8846) by
+  deivid-rodriguez
+* Installs bundler 2.7.1 as a default gem.
+
+### Documentation:
+
+* Use mailto link in Code of Conduct. Pull request
+  [#8849](https://github.com/rubygems/rubygems/pull/8849) by
+  deivid-rodriguez
+* Update Code of Conduct email to conduct@rubygems.org. Pull request
+  [#8848](https://github.com/rubygems/rubygems/pull/8848) by indirect
+
 ## 3.7.0 / 2025-07-16
 
 ### Security:

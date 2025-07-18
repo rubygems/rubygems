@@ -357,7 +357,18 @@ module Spec
       without_env_side_effects do
         ENV["PATH"] = path.to_s
         ENV["BUNDLER_ORIG_PATH"] = nil
+
+        # mise installed rubygems_plugin.rb to system wide `site_ruby` directory.
+        # That call `mise` command while `Bundler::Installer`, So if path is empty,
+        # that command is failed.
+        system_rubygems_plugin = RbConfig::CONFIG["sitedir"] + "/rubygems_plugin.rb"
+        if File.exist?(system_rubygems_plugin) && path.empty?
+          FileUtils.mv(system_rubygems_plugin, system_rubygems_plugin + ".backup")
+        end
+
         yield
+
+        FileUtils.mv(system_rubygems_plugin + ".backup", system_rubygems_plugin) if File.exist?(system_rubygems_plugin + ".backup")
       end
     end
 

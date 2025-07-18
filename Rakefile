@@ -563,14 +563,6 @@ namespace :spec do
   end
 end
 
-desc "Check RVM integration"
-task :check_rvm_integration do
-  # The rubygems-bundler gem is installed by RVM by default and it could easily
-  # break when we change bundler. Make sure that binstubs still run with it
-  # installed.
-  sh("RUBYOPT=-Ilib gem install rubygems-bundler rake && RUBYOPT=-Ibundler/lib rake -T")
-end
-
 desc "Check RubyGems integration"
 task :check_rubygems_integration do
   # Bundler monkeypatches RubyGems in some ways that could potentially break gem activation.

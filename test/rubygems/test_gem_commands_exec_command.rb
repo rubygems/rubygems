@@ -40,8 +40,16 @@ class TestGemCommandsExecCommand < Gem::TestCase
     @ui.errs.rewind
     @installed_specs.clear
 
+    # mise installed rubygems_plugin.rb to system wide `site_ruby` directory.
+    # We should avoid it with `gem exec gem ...`
+    system_rubygems_plugin = RbConfig::CONFIG["sitedir"] + "/rubygems_plugin.rb"
+    if File.exist?(system_rubygems_plugin) && args.include?("gem")
+      FileUtils.mv(system_rubygems_plugin, system_rubygems_plugin + ".backup")
+    end
+
     @cmd.invoke(*args)
   ensure
+    FileUtils.mv(system_rubygems_plugin + ".backup", system_rubygems_plugin) if File.exist?(system_rubygems_plugin + ".backup")
     Gem::Specification.unresolved_deps.clear
     Gem.loaded_specs.clear
     Gem.instance_variable_set(:@activated_gem_paths, 0)

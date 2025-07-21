@@ -8,11 +8,6 @@ module Bundler
       @gems = gems
     end
 
-    # Parse gem names and version constraints from command line arguments
-    # Supports both formats:
-    # - "gem_name" (updates to latest version)
-    # - "gem_name, version_constraint" (updates to specific version constraint)
-    # Gemfile-style: "rails, >=8.0.2" or "rails, >=3.0, <4.0"
     def parse_gem_constraints(gems)
       gems.each_with_object({}) do |gem_str, constraints|
         if gem_str.include?(",")
@@ -54,8 +49,6 @@ module Bundler
       end
 
       conservative = options[:conservative]
-
-      # Initialize gem_names and gem_constraints
       gem_constraints = {}
       gem_names = []
 
@@ -70,8 +63,7 @@ module Bundler
           raise GemfileLockNotFound, "This Bundle hasn't been installed yet. " \
             "Run `bundle install` to update and install the bundled gems."
         end
-
-        # Parse gem constraints if any gems are specified
+        
         gem_constraints = gems.any? ? parse_gem_constraints(gems) : {}
         gem_names = gem_constraints.keys
 

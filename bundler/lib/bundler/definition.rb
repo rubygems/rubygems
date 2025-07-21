@@ -1155,7 +1155,7 @@ module Bundler
             resolution_base.base_requirements[name] = Gem::Requirement.new(requirements)
           end
         else
-          # Force latest version (current behavior)
+          # Force latest version
           full_update = dup_for_full_unlock.resolve
           version = full_update.version_for(name)
           resolution_base.base_requirements[name] = Gem::Requirement.new("= #{version}") if version

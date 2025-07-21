@@ -1,30 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 27963
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "8d0e8e54f91497d848a5840791d6d96c"
-last-modified: Sun, 24 Apr 2022 08:28:30 GMT
+content-length: 32229
+last-modified: Thu, 19 Jun 2025 12:46:42 GMT
+etag: "35712aa6fc3297ffd370b38f1b6ee8cc"
 cache-control: max-age=60, public
-content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
-x-request-id: 956d9bfb-0539-4b65-909a-0c948ab2b200
-x-runtime: 0.015978
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.25.92.26:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="87Er0qvD/2mIEbLpXUXB+q1vYbql8hNLRkX4mY0zBL4="
+repr-digest: sha-256="87Er0qvD/2mIEbLpXUXB+q1vYbql8hNLRkX4mY0zBL4="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400093_BFI 167.82.142.93:443
 accept-ranges: bytes
-date: Wed, 05 Oct 2022 12:19:37 GMT
-via: 1.1 varnish
-age: 2767
-x-served-by: cache-mad22043-MAD
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1664972378.787150,VS0,VE0
-vary: Accept,Accept-Encoding
+age: 1131
+date: Mon, 14 Jul 2025 08:09:04 GMT
+x-served-by: cache-bfi-kbfi7400093-BFI, cache-mad22072-MAD
+x-cache: HIT, HIT
+x-cache-hits: 45046, 0
+x-timer: S1752480545.772017,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -182,3 +173,21 @@ server: RubyGems.org
 5.1.1 actionpack:>= 5.2,activesupport:>= 5.2,railties:>= 5.2,rspec-core:~> 3.10,rspec-expectations:~> 3.10,rspec-mocks:~> 3.10,rspec-support:~> 3.10|checksum:ca214f0570eb5e531740b040e4ac66c41f18b55f84a994cc8f88520193fe454a,ruby:>= 2.2.0
 6.0.0.rc1 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.11,rspec-expectations:~> 3.11,rspec-mocks:~> 3.11,rspec-support:~> 3.11|checksum:a0b4724aa19cb6c5581808e41433ba2c0e081217c8e136a1c2dd84abf5ce4af3,ruby:>= 2.5.0,rubygems:> 1.3.1
 5.1.2 actionpack:>= 5.2,activesupport:>= 5.2,railties:>= 5.2,rspec-core:~> 3.10,rspec-expectations:~> 3.10,rspec-mocks:~> 3.10,rspec-support:~> 3.10|checksum:f434107474560a2e4f661ff067bd849385945395afc4d40384992822e13a1cb3,ruby:>= 2.2.0
+6.0.0 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.11,rspec-expectations:~> 3.11,rspec-mocks:~> 3.11,rspec-support:~> 3.11|checksum:123391f91bbccb3cc3b7f237ac592278c19215f349fdbd26bbf01781736ab732,ruby:>= 2.5.0
+6.0.1 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.11,rspec-expectations:~> 3.11,rspec-mocks:~> 3.11,rspec-support:~> 3.11|checksum:016c8ebd5b38ce5cbce949de2f5b28f2bde7bb78d4de26940516713597b26e34,ruby:>= 2.5.0
+6.0.2 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.12,rspec-expectations:~> 3.12,rspec-mocks:~> 3.12,rspec-support:~> 3.12|checksum:ae0c8bd6b8179fe0de7083bddd57fea727d119cd76d773b83210843be6fa81f4,ruby:>= 2.5.0
+6.0.3 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.12,rspec-expectations:~> 3.12,rspec-mocks:~> 3.12,rspec-support:~> 3.12|checksum:6d1812cfaf18dba5a08d7e30c85149b24a220fae064853a96e451376be6fd820,ruby:>= 2.5.0
+6.0.4 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.12,rspec-expectations:~> 3.12,rspec-mocks:~> 3.12,rspec-support:~> 3.12|checksum:60bbfd7ec06124d0cd3eedcdf1ce31b6faa58bfdd0413ccbadd9db84a168ae0d,ruby:>= 2.5.0
+6.1.0 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.12,rspec-expectations:~> 3.12,rspec-mocks:~> 3.12,rspec-support:~> 3.12|checksum:be86f73de238d40aad02e6acfc0f6d06edbd5cba4e310086e5516aae045ef5b6,ruby:>= 2.5.0
+6.1.1 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.12,rspec-expectations:~> 3.12,rspec-mocks:~> 3.12,rspec-support:~> 3.12|checksum:bd949e61f89379f410ea1e43133163282f8d977c683ce6d10bf5aef6b1e995b2,ruby:>= 2.5.0
+6.1.2 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:02874ab2e3b09001742af389c48739bed8706943e453afaea5e12614a83b990b,ruby:>= 2.5.0
+6.1.3 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:dc23386e9ddb9b750456d77bf88228100d5dd9812690380984ec1ba4aadf1c5b,ruby:>= 2.5.0
+6.1.4 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:4a267f07cb16f73bfeccef948988937eca111df14bdfd3e73ad96d01c875076e,ruby:>= 2.5.0
+6.1.5 actionpack:>= 6.1,activesupport:>= 6.1,railties:>= 6.1,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:d11afce893ceb6e2c3c11db280f83dee6d0120d150228cef6b989d37c7394c4b,ruby:>= 2.5.0
+7.0.0 actionpack:>= 7.0,activesupport:>= 7.0,railties:>= 7.0,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:87c9bce6ae1df1dce6a83c81a35e870d6352044cf3e19aaa1fa0b9483a526d6d,ruby:>= 2.7.0
+7.0.1 actionpack:>= 7.0,activesupport:>= 7.0,railties:>= 7.0,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:ad2b2cb6dabca072260e21b188059645bac10659466c02a674f9ad5fd97b92f9,ruby:>= 2.7.0
+7.0.2 actionpack:>= 7.0,activesupport:>= 7.0,railties:>= 7.0,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:45d636d7e0547d406fc4de46634153e184165e0ce231e356317d9531b7ea330f,ruby:>= 2.7.0
+7.1.0 actionpack:>= 7.0,activesupport:>= 7.0,railties:>= 7.0,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:94585b69c4086ca79afae5cc8d2c5e314f6ad32a88c927f9c065b99596e3ee47,ruby:>= 2.7.0
+7.1.1 actionpack:>= 7.0,activesupport:>= 7.0,railties:>= 7.0,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:e15dccabed211e2fd92f21330c819adcbeb1591c1d66c580d8f2d8288557e331,ruby:>= 2.7.0
+8.0.0 actionpack:>= 7.2,activesupport:>= 7.2,railties:>= 7.2,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:977a508cd94d152db2068c6585470db5d0cd47eef56d5410b9531034fb9d97bf,ruby:>= 3.0.0
+8.0.1 actionpack:>= 7.2,activesupport:>= 7.2,railties:>= 7.2,rspec-core:~> 3.13,rspec-expectations:~> 3.13,rspec-mocks:~> 3.13,rspec-support:~> 3.13|checksum:0c3700b10ab6d7c648c4cd554023d8c2b5b07e7f01205f7608f0c511cf686505,ruby:>= 3.0.0

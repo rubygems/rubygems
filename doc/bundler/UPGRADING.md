@@ -28,9 +28,10 @@ existing default by configuring
 bundle config default_cli_command install
 ```
 
-### Bundler will install to a `.bundle` folder relative to repository root by default
+### Bundler will install to a `.bundle` folder relative to the Gemfile location by default
 
-We're making this change to improve isolation.
+We're making this change to improve isolation. It will install gems to a
+`.bundle` folder relative to the Gemfile location, instead of a global system folder.
 
 The previous default of installing to system changes can be kept with `bundle
 config path.system true`.
@@ -143,12 +144,6 @@ Bundler will refuse to run otherwise.
   ```
 
 #### Notable CLI changes
-
-* The `--force` flag to `bundle install` and `bundle update` will be renamed to `--redownload`.
-
-  This is just a simple rename of the flag, to make more apparent what it
-  actually does. This flag forces redownloading every gem, it doesn't "force"
-  anything else.
 
 * `bundle viz` will be removed and extracted to a plugin.
 

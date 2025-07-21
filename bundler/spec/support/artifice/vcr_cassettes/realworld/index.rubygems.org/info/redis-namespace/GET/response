@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 3894
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "0c7607c95631e1d359d326360b5d19dd"
-last-modified: Thu, 04 Feb 2021 18:49:34 GMT
+content-length: 4312
+last-modified: Fri, 24 Nov 2023 16:21:34 GMT
+etag: "3ba6c31144bd87ef6f61ad9fda42f5ab"
 cache-control: max-age=60, public
-x-request-id: 832ef78f-fd92-4381-b321-a02bea318bd7
-x-runtime: 0.008140
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="AcXm5U1zNZEOLFLKy6l55NQ3NZxb+60ckQ7cGnKYwvY="
+repr-digest: sha-256="AcXm5U1zNZEOLFLKy6l55NQ3NZxb+60ckQ7cGnKYwvY="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300094_BFI 167.82.143.94:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:44 GMT
-via: 1.1 varnish
-age: 1274
-x-served-by: cache-fra19182-FRA
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1635203865.649779,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 790
+date: Mon, 14 Jul 2025 08:09:09 GMT
+x-served-by: cache-bfi-krnt7300094-BFI, cache-mad2200126-MAD
+x-cache: HIT, HIT
+x-cache-hits: 193311, 0
+x-timer: S1752480550.745196,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -68,3 +60,7 @@ server: RubyGems.org
 1.7.0 redis:>= 3.0.4|checksum:bd0ac3894380a9951a1c641dde2dea31347b9a0eb1de1fc7a61734f116ea64f1,ruby:~> 2.4
 1.8.0 redis:>= 3.0.4|checksum:fbb1f52e91e76d951733c85422abb5e5bd3b90096ab182c60f83978f12d22616,ruby:~> 2.4
 1.8.1 redis:>= 3.0.4|checksum:c81707d693e5e754c690b4e1fa68ecfa8bd1028fbf306e533b3832e44e76c54c,ruby:>= 2.4
+1.8.2 redis:>= 3.0.4|checksum:eee7f0642c2b994e775b5163a4dafa234d9d5f2202e48f0e088067541925b259,ruby:>= 2.4
+1.9.0 redis:>= 4|checksum:0923961f38cf15b86cb57d92507e0a3b32480729eb5033249f5de8b12e0d8612,ruby:>= 2.4
+1.10.0 redis:>= 4|checksum:2c1c6ea7c6c5e343e75b9bee3aa4c265e364a5b9966507397467af2bb3758d94,ruby:>= 2.4
+1.11.0 redis:>= 4|checksum:e91a1aa2b2d888b6dea1d4ab8d39e1ae6fac3426161feb9d91dd5cca598a2239,ruby:>= 2.4

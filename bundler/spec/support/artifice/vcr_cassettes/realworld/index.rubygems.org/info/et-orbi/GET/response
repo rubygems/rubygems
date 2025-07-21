@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 2396
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "809a538e37d17d041a1476766e04177c"
-last-modified: Sat, 18 Sep 2021 00:05:49 GMT
+content-length: 2950
+last-modified: Sat, 23 Mar 2024 00:37:43 GMT
+etag: "a60c77d215f6ee2f16d83760aa32fb1b"
 cache-control: max-age=60, public
-x-request-id: 57122f55-6af3-4526-bb94-4ea07846720e
-x-runtime: 0.007434
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="TjXsgwY5OGmRdiq7yeFJpbpb7XXKB2Z0v2q9XwuO7fI="
+repr-digest: sha-256="TjXsgwY5OGmRdiq7yeFJpbpb7XXKB2Z0v2q9XwuO7fI="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400110_BFI 167.82.142.110:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:44 GMT
-via: 1.1 varnish
-age: 3486
-x-served-by: cache-fra19128-FRA
-x-cache: HIT
-x-cache-hits: 4
-x-timer: S1635203865.877434,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 1442
+date: Mon, 14 Jul 2025 08:09:09 GMT
+x-served-by: cache-bfi-kbfi7400110-BFI, cache-mad2200095-MAD
+x-cache: HIT, HIT
+x-cache-hits: 201390, 0
+x-timer: S1752480550.944871,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -53,3 +45,9 @@ server: RubyGems.org
 1.2.3 tzinfo:>= 0|checksum:56bf46f6c250d547a3b8e7d5e82c99b6c7bd4b50d30194e1be10b9290c8eac2a
 1.2.4 tzinfo:>= 0|checksum:77e70e19b5258ae05b12522809d83612a624e488201511da09fd7742318a2877
 1.2.5 tzinfo:>= 0|checksum:902df7287f84296a2f9c59ca008fb2ce294fe700ec0df7833d492aa285d0f836
+1.2.6 tzinfo:>= 0|checksum:b5005bf1fa69104796f1173797b30187a3c90dd7bb2de098ab5ed80805504e77
+1.2.7 tzinfo:>= 0|checksum:3b693d47f94a4060ccc07e60adda488759b1e8b9228a633ebbad842dfc245fb4
+1.2.8 tzinfo:>= 0|checksum:1c75567ab9b4da7ffb6773efa245d57d69d9512112e61a1019ef19cacd7016f0
+1.2.9 tzinfo:>= 0|checksum:8367604f9d7abb8092286a76c7a06024842f9c76e215a4523fa7067d93b57ea0
+1.2.10 tzinfo:>= 0|checksum:8e36e23c0c541d7a1900b25248bacaef719231540885a094fb060905ea3e4f3a
+1.2.11 tzinfo:>= 0|checksum:d26e868cc21db88280a9ec1a50aa3da5d267eb9b2037ba7b831d6c2731f5df64

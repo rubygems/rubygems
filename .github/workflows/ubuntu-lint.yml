@@ -75,7 +75,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@a4effe49ee8ee5b8b5091268c473a4628afb5651 # v1.245.0
+        uses: ruby/setup-ruby@472790540115ce5bd69d399a020189a8c87d641f # v1.247.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -92,7 +92,7 @@ jobs:
       - name: Install & Check Dependencies
         run: bin/rake dev:frozen_deps
       - name: Misc checks
-        run: bin/rake check_rvm_integration man:check vendor:check version:check check_rubygems_integration
+        run: bin/rake man:check vendor:check version:check check_rubygems_integration
         if: matrix.ruby.name != 'jruby'
     timeout-minutes: 15
 

@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 5015
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "4c87ef449949fd6d5986c55bfe7c52c9"
-last-modified: Thu, 04 Feb 2021 17:15:47 GMT
+content-length: 5255
+last-modified: Fri, 25 Oct 2024 01:50:08 GMT
+etag: "0d77899b61f66436ddf0ec97cc524afe"
 cache-control: max-age=60, public
-x-request-id: 0115056b-ff9f-4b58-81e7-919c56ba56b4
-x-runtime: 0.007312
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="ONQa0h9HELCmE5lm35hhEZA7u+Rd+2iL37qGqU46BvY="
+repr-digest: sha-256="ONQa0h9HELCmE5lm35hhEZA7u+Rd+2iL37qGqU46BvY="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400065_BFI 167.82.142.65:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:47 GMT
-via: 1.1 varnish
-age: 680
-x-served-by: cache-fra19172-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203867.222236,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 08:09:14 GMT
+age: 318
+x-served-by: cache-bfi-kbfi7400065-BFI, cache-mad22074-MAD
+x-cache: HIT, HIT
+x-cache-hits: 45279, 1
+x-timer: S1752480555.682009,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -83,3 +75,5 @@ server: RubyGems.org
 1.99.0 |checksum:4854c518ed36fae7ea8961993ff3cfe7c0a0434c4762ab2f0026075adbd2d1b2,ruby:>= 1.9.3
 2.0.0 database_cleaner-active_record:~> 2.0.0|checksum:b82044c4b59ba8d73a59c74448ffc7319d324b52fafeb9f949d6a0151d4d7bc4
 2.0.1 database_cleaner-active_record:~> 2.0.0|checksum:9c589a03f0e77233d303451266445b7a504624fe702364a94fd5f26bb31099f4
+2.0.2 database_cleaner-active_record:< 3&>= 2|checksum:e356500b35c7113a16bd79adf6e6a3c1da8b615cbd3a67af06ed60f677860794
+2.1.0 database_cleaner-active_record:< 3&>= 2|checksum:1dcba26e3b1576da692fc6bac10136a4744da5bcc293d248aae19640c65d89cd

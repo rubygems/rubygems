@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4649
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "b646cba5037638851f18e2dde1872a05"
-last-modified: Wed, 20 Jan 2021 16:54:30 GMT
+content-length: 5327
+last-modified: Thu, 29 Aug 2024 17:37:24 GMT
+etag: "bd3b953f41ff43892038557e5afd6d49"
 cache-control: max-age=60, public
-x-request-id: 4aad0e51-9c91-4eda-8ae2-4385a943a343
-x-runtime: 0.006740
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="2WyJ+y65TvPhsGOyvpAokmQUUEKPX/iLyc0U3JN61ew="
+repr-digest: sha-256="2WyJ+y65TvPhsGOyvpAokmQUUEKPX/iLyc0U3JN61ew="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300086_BFI 167.82.143.86:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 644
-x-served-by: cache-fra19128-FRA
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1635203860.797876,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 08:08:59 GMT
+age: 27
+x-served-by: cache-bfi-krnt7300086-BFI, cache-mad22062-MAD
+x-cache: HIT, HIT
+x-cache-hits: 267078, 1
+x-timer: S1752480539.355956,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -77,3 +69,9 @@ server: RubyGems.org
 1.0.0 |checksum:1d81e6cd805a9e5ba8f4c2e25f7ec09e299dba48443b4a16422c14df9bb32601,ruby:>= 2.0.0,rubygems:>= 1.3.5
 1.0.1 |checksum:7572061e3cbe6feee57828670e6a25a66dd397f05c1f8515d49f770a7d9d70f5,ruby:>= 2.0.0,rubygems:>= 1.3.5
 1.1.0 |checksum:cacae12a3761be4ccbe63be19261352b108f86c721c37d87664328efeaa6d0a3,ruby:>= 2.0.0,rubygems:>= 1.3.5
+1.2.0 |checksum:06e1a090166cf717792da5e22e4bac9d2a692c9f4a6d5d84c45101291c937930,ruby:>= 2.0.0,rubygems:>= 1.3.5
+1.2.1 |checksum:b1752153dc9c6b8d3fcaa665e9e1a00a3e73f28da5e238b81c404502e539d446,ruby:>= 2.0.0,rubygems:>= 1.3.5
+1.2.2 |checksum:2f93c652828cba9fcf4f65f5dc8c306f1a7317e05aad5835a13740122c17f24c,ruby:>= 2.0.0,rubygems:>= 1.3.5
+1.3.0 |checksum:1adc7f9e5b3655a68c71393fee8bd0ad088d14ee8e83a0b73726f23cbb3ca7c3,ruby:>= 2.6.0,rubygems:>= 1.3.5
+1.3.1 |checksum:fa7e3471d4f6a27138e3d9c9b0d4daac9c3d7383927667ae83e9ab42ae7401ef,ruby:>= 2.6.0,rubygems:>= 1.3.5
+1.3.2 |checksum:eef0293b9e24158ccad7ab383ae83534b7ad4ed99c09f96f1a6b036550abbeda,ruby:>= 2.6.0,rubygems:>= 1.3.5

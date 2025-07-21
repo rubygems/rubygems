@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 21708
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "dd10b57f064a5739e9f4ce6ab65d5933"
-last-modified: Mon, 14 Dec 2020 17:18:11 GMT
+content-length: 22320
+last-modified: Tue, 27 May 2025 12:06:26 GMT
+etag: "deea09b7bf9c86ab0131b7065fd54537"
 cache-control: max-age=60, public
-x-request-id: cc90eb1a-e3ce-4567-a3a0-8dd3a07af9bf
-x-runtime: 0.008723
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 44.239.42.136:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="ZxClPq4zcTXn8iPuMQlbm/bnk/leHtDlYXNfbW+xEmk="
+repr-digest: sha-256="ZxClPq4zcTXn8iPuMQlbm/bnk/leHtDlYXNfbW+xEmk="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300103_BFI 167.82.143.103:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 872
-x-served-by: cache-fra19170-FRA
-x-cache: HIT
-x-cache-hits: 4
-x-timer: S1635203860.985301,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 2650
+date: Mon, 14 Jul 2025 08:09:04 GMT
+x-served-by: cache-bfi-krnt7300103-BFI, cache-mad22040-MAD
+x-cache: HIT, HIT
+x-cache-hits: 205269, 0
+x-timer: S1752480545.842836,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -194,3 +186,7 @@ server: RubyGems.org
 3.8.0 rspec-core:~> 3.8.0,rspec-expectations:~> 3.8.0,rspec-mocks:~> 3.8.0|checksum:83f519611bb674d456e87397fea7c5b15b1af8bdc77ce929673ae3b4b656f796
 3.9.0 rspec-core:~> 3.9.0,rspec-expectations:~> 3.9.0,rspec-mocks:~> 3.9.0|checksum:90a037a7cc02365d7c112201881839aafbc875a88094423bc8cba778c98bfac3
 3.10.0 rspec-core:~> 3.10.0,rspec-expectations:~> 3.10.0,rspec-mocks:~> 3.10.0|checksum:b870b43d49ae4a4e063b94976d2742b0854ec10458c425d569b5556ee5898ab7
+3.11.0 rspec-core:~> 3.11.0,rspec-expectations:~> 3.11.0,rspec-mocks:~> 3.11.0|checksum:8907f32e5c3095724e54c143e9cfc4df37079be349343dab9029becdb259bea5
+3.12.0 rspec-core:~> 3.12.0,rspec-expectations:~> 3.12.0,rspec-mocks:~> 3.12.0|checksum:ccc41799a43509dc0be84070e3f0410ac95cbd480ae7b6c245543eb64162399c
+3.13.0 rspec-core:~> 3.13.0,rspec-expectations:~> 3.13.0,rspec-mocks:~> 3.13.0|checksum:d490914ac1d5a5a64a0e1400c1d54ddd2a501324d703b8cfe83f458337bab993
+3.13.1 rspec-core:~> 3.13.0,rspec-expectations:~> 3.13.0,rspec-mocks:~> 3.13.0|checksum:b9f9a58fa915b8d94a1d6b3195fe6dd28c4c34836a6097015142c4a9ace72140

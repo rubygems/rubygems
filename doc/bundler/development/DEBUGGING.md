@@ -28,7 +28,7 @@ With REPL you can look at the values of objects and variables, the stack trace, 
 
 To use REPL, place a `binding.irb` wherever you'd like to take a look around. An interactive `irb` console will open when your code gets to your breakpoint.
 
-To learn more about using IRB, [TODO: link to doc]
+To learn more about using IRB, see [https://github.com/ruby/irb](https://github.com/ruby/irb).
 
 ## Interactive debugging
 

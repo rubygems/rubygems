@@ -1,7 +1,7 @@
 > GET /gems/faker-1.1.2.gem
 > accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
 > accept: */*
-> user-agent: Ruby
 > connection: keep-alive
 > keep-alive: 30
+> user-agent: bundler/4.0.0.dev rubygems/3.7.0.dev ruby/3.4.4 (arm64-apple-darwin24) command/install options/jobs,no_install 3225600f6858afa1
 > host: rubygems.org

@@ -1,31 +1,27 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 209
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "5f8243d329686d4afc7d527454354135"
-last-modified: Sun, 18 Apr 2021 15:48:49 GMT
+content-length: 737
+last-modified: Thu, 24 Oct 2024 13:39:17 GMT
+etag: "bf0e382bb20aaa7edf71217c4a093d25"
 cache-control: max-age=60, public
-x-request-id: 59524677-4ee9-4667-8ea1-bac2c9006607
-x-runtime: 0.007591
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="91sSUDxwwT4Ce6Bx/0vmHOJY2PgVNh0MDib+V2JZgGY="
+repr-digest: sha-256="91sSUDxwwT4Ce6Bx/0vmHOJY2PgVNh0MDib+V2JZgGY="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300096_BFI 167.82.143.96:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:40 GMT
-via: 1.1 varnish
-age: 630
-x-served-by: cache-fra19128-FRA
-x-cache: HIT
-x-cache-hits: 3
-x-timer: S1635203860.015512,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 08:09:11 GMT
+age: 2216
+x-served-by: cache-bfi-krnt7300096-BFI, cache-mad2200132-MAD
+x-cache: HIT, HIT
+x-cache-hits: 111516, 1
+x-timer: S1752480551.324946,VS0,VE1
 server: RubyGems.org
 
 ---
 1.0.0 excon:>= 0.27.4|checksum:0594549fb0a158d4a49a45794ba0d1a2a63181b9ffcc7b084f30f143ef2e6882,ruby:>= 2.4.0
 1.1.0 |checksum:b055c842376734d7f74350fe8611542ae2000c5387348d9ba9708109d6e40940,ruby:>= 2.4.0
+2.0.0 excon:>= 0.27.4,faraday:~> 2.0.0.alpha.pre.2|checksum:b2e2d3d86356683e537af02e41cb733ca0273315899b6f9b40fa63ebeb664604,ruby:>= 2.6.0
+2.1.0 excon:>= 0.27.4,faraday:~> 2.0|checksum:d487bad1c13342457fbcf79d0abc70f8d6d07280c0276bba716122e4a79eebfa,ruby:>= 2.6.0
+2.2.0 excon:>= 0.109.0,faraday:< 3&>= 2.11.0|checksum:46956f67aa7a402472a23749b158b9d5d3b54bfc73789167126c84aacc786c0e,ruby:>= 3.0.0
+2.3.0 excon:>= 1.0.0,faraday:< 3&>= 2.11.0|checksum:c5fc7175ab284b164496559e35f550587ec5b028b3cdbb40b7ebe83aa7e5b575,ruby:>= 3.0.0

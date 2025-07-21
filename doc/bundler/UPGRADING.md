@@ -28,9 +28,10 @@ existing default by configuring
 bundle config default_cli_command install
 ```
 
-### Bundler will install to a `.bundle` folder relative to repository root by default
+### Bundler will install to a `.bundle` folder relative to the Gemfile location by default
 
-We're making this change to improve isolation.
+We're making this change to improve isolation. It will install gems to a
+`.bundle` folder relative to the Gemfile location, instead of a global system folder.
 
 The previous default of installing to system changes can be kept with `bundle
 config path.system true`.

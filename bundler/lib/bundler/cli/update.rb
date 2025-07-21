@@ -12,24 +12,19 @@ module Bundler
     # Supports both formats:
     # - "gem_name" (updates to latest version)
     # - "gem_name, version_constraint" (updates to specific version constraint)
+    # Gemfile-style: "rails, >=8.0.2" or "rails, >=3.0, <4.0"
     def parse_gem_constraints(gems)
       gems.each_with_object({}) do |gem_str, constraints|
         if gem_str.include?(",")
-          # Gemfile-style: "rails, >=8.0.2" or "rails, >=3.0, <4.0"
           parts = gem_str.split(",", 2)
           name = parts[0].strip
-          req = parts[1].strip
-          
-          # Handle multiple requirements by splitting them
-          if req.include?(",")
-            # Split multiple requirements and pass them as separate arguments
-            requirements = req.split(",").map(&:strip)
-            constraints[name] = requirements
+          version_constraints = parts[1].strip
+          if version_constraints.include?(",")
+            constraints[name] = version_constraints.split(",").map(&:strip)
           else
-            constraints[name] = [req]
+            constraints[name] = [version_constraints]
           end
         else
-          # Simple gem name: "nokogiri" (latest version)
           constraints[gem_str] = [">= 0"]
         end
       end

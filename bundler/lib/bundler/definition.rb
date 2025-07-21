@@ -65,7 +65,7 @@ module Bundler
         @unlocking = unlock
         @sources_to_unlock = []
         @unlocking_ruby = false
-        @explicit_unlocks = []
+        @explicit_unlocks = {}
         conservative = false
       else
         @unlocking_all = false
@@ -74,7 +74,7 @@ module Bundler
         @unlocking = unlock.any? {|_k, v| !Array(v).empty? }
         @sources_to_unlock = unlock.delete(:sources) || []
         @unlocking_ruby = unlock.delete(:ruby)
-        @explicit_unlocks = unlock.delete(:gems) || []
+        @explicit_unlocks = unlock.delete(:gems) || {}
         conservative = unlock.delete(:conservative)
       end
 
@@ -152,9 +152,9 @@ module Bundler
       @path_changes = converge_paths
 
       if conservative
-        @gems_to_unlock = @explicit_unlocks.any? ? @explicit_unlocks : @dependencies.map(&:name)
+        @gems_to_unlock = @explicit_unlocks.any? ? @explicit_unlocks.keys : @dependencies.map(&:name)
       else
-        eager_unlock = @explicit_unlocks.map {|name| Dependency.new(name, ">= 0") }
+        eager_unlock = @explicit_unlocks.map {|name, _| Dependency.new(name, ">= 0") }
         @gems_to_unlock = @locked_specs.for(eager_unlock, platforms).map(&:name).uniq
       end
 
@@ -1145,10 +1145,21 @@ module Bundler
 
     def additional_base_requirements_to_force_updates(resolution_base)
       return resolution_base if @explicit_unlocks.empty?
-      full_update = dup_for_full_unlock.resolve
-      @explicit_unlocks.each do |name|
-        version = full_update.version_for(name)
-        resolution_base.base_requirements[name] = Gem::Requirement.new("= #{version}") if version
+      
+      @explicit_unlocks.each do |name, requirements|
+        if requirements && requirements != [">= 0"]
+          # Use the specified version constraint(s)
+          if requirements.is_a?(Array)
+            resolution_base.base_requirements[name] = Gem::Requirement.new(*requirements)
+          else
+            resolution_base.base_requirements[name] = Gem::Requirement.new(requirements)
+          end
+        else
+          # Force latest version (current behavior)
+          full_update = dup_for_full_unlock.resolve
+          version = full_update.version_for(name)
+          resolution_base.base_requirements[name] = Gem::Requirement.new("= #{version}") if version
+        end
       end
       resolution_base
     end

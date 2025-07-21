@@ -8,6 +8,33 @@ module Bundler
       @gems = gems
     end
 
+    # Parse gem names and version constraints from command line arguments
+    # Supports both formats:
+    # - "gem_name" (updates to latest version)
+    # - "gem_name, version_constraint" (updates to specific version constraint)
+    def parse_gem_constraints(gems)
+      gems.each_with_object({}) do |gem_str, constraints|
+        if gem_str.include?(",")
+          # Gemfile-style: "rails, >=8.0.2" or "rails, >=3.0, <4.0"
+          parts = gem_str.split(",", 2)
+          name = parts[0].strip
+          req = parts[1].strip
+          
+          # Handle multiple requirements by splitting them
+          if req.include?(",")
+            # Split multiple requirements and pass them as separate arguments
+            requirements = req.split(",").map(&:strip)
+            constraints[name] = requirements
+          else
+            constraints[name] = [req]
+          end
+        else
+          # Simple gem name: "nokogiri" (latest version)
+          constraints[gem_str] = [">= 0"]
+        end
+      end
+    end
+
     def run
       Bundler.ui.level = "warn" if options[:quiet]
 
@@ -33,6 +60,10 @@ module Bundler
 
       conservative = options[:conservative]
 
+      # Initialize gem_names and gem_constraints
+      gem_constraints = {}
+      gem_names = []
+
       if full_update
         if conservative
           Bundler.definition(conservative: conservative)
@@ -44,14 +75,19 @@ module Bundler
           raise GemfileLockNotFound, "This Bundle hasn't been installed yet. " \
             "Run `bundle install` to update and install the bundled gems."
         end
-        Bundler::CLI::Common.ensure_all_gems_in_lockfile!(gems)
+
+        # Parse gem constraints if any gems are specified
+        gem_constraints = gems.any? ? parse_gem_constraints(gems) : {}
+        gem_names = gem_constraints.keys
+
+        Bundler::CLI::Common.ensure_all_gems_in_lockfile!(gem_names)
 
         if groups.any?
           deps = Bundler.definition.dependencies.select {|d| (d.groups & groups).any? }
-          gems.concat(deps.map(&:name))
+          gem_names.concat(deps.map(&:name))
         end
 
-        Bundler.definition(gems: gems, sources: sources, ruby: options[:ruby],
+        Bundler.definition(gems: gem_constraints, sources: sources, ruby: options[:ruby],
                            conservative: conservative,
                            bundler: update_bundler)
       end
@@ -84,8 +120,8 @@ module Bundler
         Bundler::CLI::Clean.new(options).run
       end
 
-      if locked_gems
-        gems.each do |name|
+      if locked_gems && gem_names.any?
+        gem_names.each do |name|
           locked_info = previous_locked_info[name]
           next unless locked_info
 

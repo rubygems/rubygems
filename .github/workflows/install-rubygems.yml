@@ -204,6 +204,40 @@ jobs:
 
     timeout-minutes: 20
 
+  check_rvm_integration:
+    name: Handling gems shipped by default with RVM
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - { name: "3.2", value: 3.2.8 }
+          - { name: "3.3", value: 3.3.8 }
+          - { name: "3.4", value: 3.4.4 }
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Setup ruby
+        uses: ruby/setup-ruby@472790540115ce5bd69d399a020189a8c87d641f # v1.247.0
+        with:
+          ruby-version: ${{ matrix.ruby.value }}
+          bundler: none
+      - name: Install rubygems
+        run: ruby setup.rb
+      - name: Install RVM gems
+        run: gem install rubygems-bundler
+      - name: Check binstubs can run
+        run: |
+          gem install rake
+          RUBYOPT=-Ibundler/lib rake -T
+      - name: Check binstubs can handle nested bundle exec
+        run: |
+          echo "source 'https://rubygems.org'" > Gemfile
+          gem install bundler:2.5.22
+          bundle _2.5.22_ exec ruby -e 'system("bundle", "exec", "ruby", "-e1")' 2>&1 | grep -v LoadError
+
   all-pass:
     name: All install-rubygems jobs pass
 
@@ -213,6 +247,7 @@ jobs:
       - install_rubygems_ubuntu
       - install_rubygems_windows
       - shared_gem_home
+      - check_rvm_integration
 
     runs-on: ubuntu-latest
 

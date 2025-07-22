@@ -13,6 +13,16 @@ module Bundler
       Bundler.settings.set_command_option_if_given :path, options[:path]
       Bundler.settings.set_command_option_if_given :cache_path, options["cache-path"]
 
+      # Early exit if --no-fail-on-empty-cache-path is set and cache dir exists but is empty
+      if options["no-fail-on-empty-cache-path"]
+        cache_path = Bundler.settings[:cache_path] || "vendor/cache"
+        cache_dir = Bundler.root.join(cache_path)
+        if cache_dir.exist? && cache_dir.children.empty?
+          Bundler.ui.warn "Cache directory exists but is empty. Proceeding with cache operation."
+          return
+        end
+      end
+
       setup_cache_all
       install
 
@@ -20,7 +30,7 @@ module Bundler
       custom_path = Bundler.settings[:path] if options[:path]
 
       Bundler.settings.temporary(cache_all_platforms: options["all-platforms"]) do
-        Bundler.load.cache(custom_path)
+        Bundler.load.cache(custom_path, options["no-fail-on-empty-cache-path"])
       end
     end
 

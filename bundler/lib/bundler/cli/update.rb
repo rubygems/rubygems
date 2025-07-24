@@ -77,7 +77,8 @@ module Bundler
       end
 
       installer = Installer.install Bundler.root, Bundler.definition, opts
-      Bundler.load.cache if Bundler.app_cache.exist?
+      require_relative "cache"
+      CLI::Cache.load_cache if Bundler.app_cache.exist?
 
       if CLI::Common.clean_after_install?
         require_relative "clean"

@@ -38,9 +38,10 @@ jobs:
           - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 90 }
           - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 90 }
 
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 150 }
+          # Windows 2025 is almost 33% slower, so keep windows-2022 until performance catches up or we're forced to upgrade
+          - { os: { name: Windows, value: windows-2022 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2022 }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 150 }
 
           - { os: { name: Ubuntu, value: ubuntu-24.04 }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
           - { os: { name: Windows, value: windows-2025 }, ruby: { name: jruby, value: jruby-10.0.0.1 } }

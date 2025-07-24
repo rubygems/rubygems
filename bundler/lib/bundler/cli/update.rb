@@ -8,6 +8,23 @@ module Bundler
       @gems = gems
     end
 
+    def parse_gem_constraints(gems)
+      gems.each_with_object({}) do |gem_str, constraints|
+        if gem_str.include?(",")
+          parts = gem_str.split(",", 2)
+          name = parts[0].strip
+          version_constraints = parts[1].strip
+          if version_constraints.include?(",")
+            constraints[name] = version_constraints.split(",").map(&:strip)
+          else
+            constraints[name] = [version_constraints]
+          end
+        else
+          constraints[gem_str] = [">= 0"]
+        end
+      end
+    end
+
     def run
       Bundler.ui.level = "warn" if options[:quiet]
 
@@ -32,6 +49,8 @@ module Bundler
       end
 
       conservative = options[:conservative]
+      gem_constraints = {}
+      gem_names = []
 
       if full_update
         if conservative
@@ -44,14 +63,18 @@ module Bundler
           raise GemfileLockNotFound, "This Bundle hasn't been installed yet. " \
             "Run `bundle install` to update and install the bundled gems."
         end
-        Bundler::CLI::Common.ensure_all_gems_in_lockfile!(gems)
+        
+        gem_constraints = gems.any? ? parse_gem_constraints(gems) : {}
+        gem_names = gem_constraints.keys
+
+        Bundler::CLI::Common.ensure_all_gems_in_lockfile!(gem_names)
 
         if groups.any?
           deps = Bundler.definition.dependencies.select {|d| (d.groups & groups).any? }
-          gems.concat(deps.map(&:name))
+          gem_names.concat(deps.map(&:name))
         end
 
-        Bundler.definition(gems: gems, sources: sources, ruby: options[:ruby],
+        Bundler.definition(gems: gem_constraints, sources: sources, ruby: options[:ruby],
                            conservative: conservative,
                            bundler: update_bundler)
       end
@@ -84,8 +107,8 @@ module Bundler
         Bundler::CLI::Clean.new(options).run
       end
 
-      if locked_gems
-        gems.each do |name|
+      if locked_gems && gem_names.any?
+        gem_names.each do |name|
           locked_info = previous_locked_info[name]
           next unless locked_info
 

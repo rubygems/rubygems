@@ -39,21 +39,21 @@ class TestGemResolver < Gem::TestCase
   end
 
   def test_self_compose_sets_multiple
-    index_set  = Gem::Resolver::IndexSet.new
-    vendor_set = Gem::Resolver::VendorSet.new
+    index_set = Gem::Resolver::IndexSet.new
+    best_set = Gem::Resolver::BestSet.new
 
-    composed = Gem::Resolver.compose_sets index_set, vendor_set
+    composed = Gem::Resolver.compose_sets index_set, best_set
 
     assert_kind_of Gem::Resolver::ComposedSet, composed
 
-    assert_equal [index_set, vendor_set], composed.sets
+    assert_equal [index_set, best_set], composed.sets
   end
 
   def test_self_compose_sets_nest
-    index_set  = Gem::Resolver::IndexSet.new
-    vendor_set = Gem::Resolver::VendorSet.new
+    index_set = Gem::Resolver::IndexSet.new
+    best_set = Gem::Resolver::BestSet.new
 
-    inner = Gem::Resolver.compose_sets index_set, vendor_set
+    inner = Gem::Resolver.compose_sets index_set, best_set
 
     current_set = Gem::Resolver::CurrentSet.new
 
@@ -61,7 +61,7 @@ class TestGemResolver < Gem::TestCase
 
     assert_kind_of Gem::Resolver::ComposedSet, composed
 
-    assert_equal [index_set, vendor_set, current_set], composed.sets
+    assert_equal [index_set, best_set, current_set], composed.sets
   end
 
   def test_self_compose_sets_nil

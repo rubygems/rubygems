@@ -552,4 +552,42 @@ RSpec.describe "bundle install with gem sources" do
       expect(bundled_app("vendor/cache").children).to be_empty
     end
   end
+
+  context "with --no-fail-on-empty-cache-path" do
+    it "allows the command to run when cache directory exists but is empty" do
+      gemfile <<-G
+        source "https://gem.repo1"
+        gem "myrack"
+      G
+
+      # Create an empty cache directory (simulating Docker mount)
+      bundled_app("vendor/cache").mkpath
+      expect(bundled_app("vendor/cache").children).to be_empty
+
+      # This should succeed with the flag even when cache is empty
+      bundle "cache --no-fail-on-empty-cache-path"
+      expect(err).to include("Cache directory exists but is empty. Proceeding with cache operation.")
+    end
+
+    it "handles the case when gems are not available" do
+      gemfile <<-G
+        source "https://gem.repo1"
+        gem "nonexistent-gem"
+      G
+
+      # Create an empty cache directory
+      bundled_app("vendor/cache").mkpath
+      expect(bundled_app("vendor/cache").children).to be_empty
+
+      # This should fail without the flag
+      bundle "cache", raise_on_error: false
+      expect(err).to include("Could not find")
+
+      # This should succeed with the flag
+      bundle "cache --no-fail-on-empty-cache-path"
+      expect(err).to include("Cache directory exists but is empty. Proceeding with cache operation.")
+    end
+
+    
+  end
 end

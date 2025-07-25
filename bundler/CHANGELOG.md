@@ -88,6 +88,7 @@
 
 ### Enhancements:
 
+  - Introduce `bundle list --format=json` to produce machine readable gem version information [#8728](https://github.com/rubygems/rubygems/pull/8728)
   - Fix doctor command parsing of otool output [#8665](https://github.com/rubygems/rubygems/pull/8665)
   - Add SSL troubleshooting to `bundle doctor` [#8624](https://github.com/rubygems/rubygems/pull/8624)
   - Let `bundle lock --normalize-platforms` remove invalid platforms [#8631](https://github.com/rubygems/rubygems/pull/8631)

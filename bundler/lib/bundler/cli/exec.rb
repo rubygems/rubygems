@@ -10,6 +10,14 @@ module Bundler
 
     def initialize(options, args)
       @options = options
+      @env = {}
+
+      # Parse leading KEY=VALUE pairs as env vars
+      while args.first && args.first.include?("=") && args.first =~ /^[A-Za-z_][A-Za-z0-9_]*=/
+        key, value = args.shift.split("=", 2)
+        @env[key] = value
+      end
+
       @cmd = args.shift
       @args = args
       @args << { close_others: !options.keep_file_descriptors? } unless Bundler.current_ruby.jruby?
@@ -39,7 +47,11 @@ module Bundler
     end
 
     def kernel_exec(*args)
-      Kernel.exec(*args)
+      if @env.any?
+        Kernel.exec(@env, *args)
+      else
+        Kernel.exec(*args)
+      end
     rescue Errno::EACCES, Errno::ENOEXEC
       Bundler.ui.error "bundler: not executable: #{cmd}"
       exit 126

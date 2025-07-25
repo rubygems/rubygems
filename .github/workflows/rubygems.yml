@@ -43,7 +43,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@472790540115ce5bd69d399a020189a8c87d641f # v1.247.0
+        uses: ruby/setup-ruby@e8621f0b86851d7377d85882bb751b24dfadd958 # v1.251.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

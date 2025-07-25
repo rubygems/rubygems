@@ -37,7 +37,7 @@ jobs:
           bin/rake dev:deps
       - name: Run Test
         run: |
-          bin/parallel_rspec --tag truffleruby_only --tag truffleruby
+          bin/rspec --tag truffleruby_only --tag truffleruby
         working-directory: ./bundler
     timeout-minutes: 20
 

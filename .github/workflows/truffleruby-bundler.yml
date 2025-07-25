@@ -30,14 +30,14 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@472790540115ce5bd69d399a020189a8c87d641f # v1.247.0
         with:
-          ruby-version: truffleruby-24.2.0
+          ruby-version: truffleruby-24.2.1
           bundler: none
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps
       - name: Run Test
         run: |
-          bin/parallel_rspec --tag truffleruby_only --tag truffleruby
+          bin/rspec --tag truffleruby_only --tag truffleruby
         working-directory: ./bundler
     timeout-minutes: 20
 

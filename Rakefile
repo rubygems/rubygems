@@ -41,7 +41,7 @@ namespace :version do
   desc "Check locked bundler version is up to date"
   task check: :update_locked_bundler do
     Spec::Rubygems.check_source_control_changes(
-      success_message: "Locked bundler version is out of sync",
+      success_message: "Locked bundler version is in sync",
       error_message: "Please run `rake version:update_locked_bundler` and commit the result."
     )
   end

@@ -28,28 +28,6 @@ existing default by configuring
 bundle config default_cli_command install
 ```
 
-### Bundler will install to a `.bundle` folder relative to the Gemfile location by default
-
-We're making this change to improve isolation. It will install gems to a
-`.bundle` folder relative to the Gemfile location, instead of a global system folder.
-
-The previous default of installing to system changes can be kept with `bundle
-config path.system true`.
-
-Related to this change, and to alleviate potential bad consequences from it,
-we're also shipping some related changes:
-
-* To keep disk usage under control, Bundler will cleanup unused gems when
-  installing gems per application using the new default. This new behavior can
-  be disabled by toggling back installing to system gems as explained before, or
-  by configuring `bundle config clean false`.
-
-* To avoid duplicate downloads of `.gem` packages and recompilation of
-  extensions, Bundler will keep a global cache of gem packages and compiled
-  extensions. This new behaviour can be disabled with `bundle config
-  global_gem_cache false`, or by toggling back installing to system gems as
-  explained before.
-
 ### Flags passed to `bundle install` that relied on being remembered across invocations will be removed
 
 In particular, the `--clean`, `--deployment`, `--frozen`, `--no-prune`,

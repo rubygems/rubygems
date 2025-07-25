@@ -192,6 +192,16 @@ RSpec.describe "bundle exec" do
     expect(out).to eq("1.0.0")
   end
 
+  it "sets environment variables only for the child process" do
+    install_gemfile <<-G
+      source "https://gem.repo1"
+      gem "myrack"
+    G
+    ruby_script = "puts ENV['RUBYOPT'] || 'none'"    
+    bundle "exec RUBYOPT=foo ruby -e \"#{ruby_script}\""
+    expect(out).to include("foo")
+  end
+
   context "with default gems" do
     # TODO: Switch to ERB::VERSION once Ruby 3.4 support is dropped, so all
     # supported rubies include an `erb` gem version where `ERB::VERSION` is

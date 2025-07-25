@@ -15,21 +15,30 @@ module Bundler
 
       setup_cache_all
       install
+      load_cache # after bundles are locked
+    end
 
-      # TODO: move cache contents here now that all bundles are locked
-      custom_path = Bundler.settings[:path] if options[:path]
-
-      Bundler.settings.temporary(cache_all_platforms: options["all-platforms"]) do
-        Bundler.load.cache(custom_path)
+    # Shared cache method that other commands can call
+    def self.load_cache(custom_path = nil, local = false, all_platforms = nil)
+      all_platforms ||= Bundler.settings[:cache_all_platforms]
+      Bundler.settings.temporary(cache_all_platforms: all_platforms) do
+        Bundler.load.cache(custom_path, local)
       end
     end
 
     private
 
+    def load_cache
+      custom_path = Bundler.settings[:path] if options[:path]
+      all_platforms = options["all-platforms"]
+      self.class.load_cache(custom_path, false, all_platforms)
+    end
+
     def install
       require_relative "install"
       options = self.options.dup
       options["local"] = false if Bundler.settings[:cache_all_platforms]
+      # Keep no-cache flag to prevent install from caching, since we handle it here
       options["no-cache"] = true
       Bundler::CLI::Install.new(options).run
     end

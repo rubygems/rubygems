@@ -65,8 +65,8 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: ruby, value: 3.4.4 }
-          - { name: jruby, value: jruby-10.0.0.1 }
+          - { name: ruby, value: 3.4.5 }
+          - { name: jruby, value: jruby-10.0.1.0 }
           - { name: truffleruby, value: truffleruby-24.2.1 }
     env:
       RUBYOPT: -Ilib

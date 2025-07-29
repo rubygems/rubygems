@@ -35,7 +35,7 @@ jobs:
           - ruby: { name: jruby, value: jruby-10.0.0.1 }
             os: { name: Ubuntu, value: ubuntu-24.04 }
 
-          - ruby: { name: truffleruby, value: truffleruby-24.2.0 }
+          - ruby: { name: truffleruby, value: truffleruby-24.2.1 }
             os: { name: Ubuntu, value: ubuntu-24.04 }
 
     steps:

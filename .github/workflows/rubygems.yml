@@ -28,7 +28,7 @@ jobs:
 
         ruby:
           - { name: "3.2", value: 3.2.8 }
-          - { name: "3.3", value: 3.3.8 }
+          - { name: "3.3", value: 3.3.9 }
           - { name: "3.4", value: 3.4.5 }
 
         include:

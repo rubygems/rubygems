@@ -86,26 +86,8 @@ module Bundler
 
     desc "cli_help", "Prints a summary of bundler commands", hide: true
     def cli_help
-      version
-      Bundler.ui.info "\n"
-
-      primary_commands = ["install", "update", "cache", "exec", "config", "help"]
-
-      list = self.class.printable_commands(true)
-      by_name = list.group_by {|name, _message| name.match(/^bundle (\w+)/)[1] }
-      utilities = by_name.keys.sort - primary_commands
-      primary_commands.map! {|name| (by_name[name] || raise("no primary command #{name}")).first }
-      utilities.map! {|name| by_name[name].first }
-
-      shell.say "Bundler commands:\n\n"
-
-      shell.say "  Primary commands:\n"
-      shell.print_table(primary_commands, indent: 4, truncate: true)
-      shell.say
-      shell.say "  Utilities:\n"
-      shell.print_table(utilities, indent: 4, truncate: true)
-      shell.say
-      self.class.send(:class_options_help, shell)
+      # Use the enhanced man-based help system for consistency
+      help(nil)
     end
     default_task(Bundler.feature_flag.default_cli_command)
 
@@ -490,7 +472,11 @@ module Bundler
     def version
       cli_help = current_command.name == "cli_help"
       if cli_help || ARGV.include?("version")
-        build_info = " (#{BuildMetadata.timestamp} commit #{BuildMetadata.git_commit_sha})"
+        # Only show build info if it's not the default timestamp
+        timestamp = BuildMetadata.timestamp
+        unless timestamp == "1980-01-02"
+          build_info = " (#{timestamp} commit #{BuildMetadata.git_commit_sha})"
+        end
       end
 
       if !cli_help && Bundler.feature_flag.bundler_4_mode?

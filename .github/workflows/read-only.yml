@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: ruby-3.2, value: 3.2.8 }
+          - { name: ruby-3.2, value: 3.2.9 }
           - { name: ruby-3.3, value: 3.3.9 }
           - { name: ruby-3.4, value: 3.4.5 }
 

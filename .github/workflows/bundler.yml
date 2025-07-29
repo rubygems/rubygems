@@ -29,16 +29,16 @@ jobs:
           - { name: Ubuntu, value: ubuntu-24.04 }
 
         ruby:
-          - { name: ruby-3.2, value: 3.2.8 }
+          - { name: ruby-3.2, value: 3.2.9 }
           - { name: ruby-3.3, value: 3.3.9 }
           - { name: ruby-3.4, value: 3.4.5 }
 
         include:
-          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.2, value: 3.2.9 }, timeout: 90 }
           - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.3, value: 3.3.9 }, timeout: 90 }
           - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.4, value: 3.4.5 }, timeout: 90 }
 
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.2, value: 3.2.9 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.3, value: 3.3.9 }, timeout: 150 }
           - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.4, value: 3.4.5 }, timeout: 150 }
 

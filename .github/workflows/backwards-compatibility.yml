@@ -1,0 +1,399 @@
+name: backwards-compatibility
+
+on:
+  pull_request:
+    paths:
+      - "lib/rubygems/**"
+      - "bundler/lib/**"
+      - "test/**"
+      - "bundler/spec/**"
+  push:
+    branches:
+      - master
+  schedule:
+    # Run weekly on Sunday at 6 AM UTC
+    - cron: "0 6 * * 0"
+
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # This workflow tests bi-directional compatibility for:
+  # 1. RubyGems marshal data (gemspecs, indexes, safe marshal)
+  # 2. Bundler lockfiles
+  #
+  # Each compatibility type has:
+  # - Forward: Current version generates → Old version consumes
+  # - Backward: Old version generates → Current version consumes
+
+  # Forward compatibility: Generate test data with current RubyGems
+  forward-generate:
+    name: Generate Forward Test Data (RG ${{ matrix.rubygems_version }}, Ruby ${{ matrix.ruby_version }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        rubygems_version:
+          - "current" # Use current source
+        ruby_version:
+          - "3.2.8"
+          - "3.3.8"
+          - "3.4.4"
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler: none
+
+      - name: Install current RubyGems from source
+        run: |
+          ruby setup.rb --no-format-executable
+
+      - name: Generate test data
+        run: |
+          mkdir -p test-data/forward-compat
+          ruby tool/compat/generate_test_data.rb forward test-data/forward-compat/
+
+      - name: Upload test data
+        uses: actions/upload-artifact@v4
+        with:
+          name: forward-data-rg${{ matrix.rubygems_version }}-ruby${{ matrix.ruby_version }}
+          path: test-data/forward-compat/
+          retention-days: 1
+
+  # Forward compatibility: Test deserialization with old RubyGems versions
+  forward-validate:
+    name: Forward Validate (Old RG ${{ matrix.old_rubygems }}, Ruby ${{ matrix.ruby_version }})
+    runs-on: ubuntu-24.04
+    needs: forward-generate
+    strategy:
+      fail-fast: false
+      matrix:
+        old_rubygems:
+          - "2.7.11" # Last 2.7.x
+          - "3.0.9" # Last 3.0.x
+          - "3.1.6" # Last 3.1.x
+          - "3.2.3" # Last 3.2.x
+          - "3.3.26" # Last 3.3.x
+          - "3.4.22" # Last 3.4.x
+        ruby_version:
+          - "3.2.8"
+          - "3.3.8"
+          - "3.4.4"
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler: none
+
+      - name: Download all forward test data
+        uses: actions/download-artifact@v4
+        with:
+          pattern: forward-data-*
+          path: downloaded-data/
+          merge-multiple: true
+
+      - name: Install old RubyGems version
+        run: |
+          gem install rubygems-update -v ${{ matrix.old_rubygems }}
+          update_rubygems ${{ matrix.old_rubygems }}
+
+      - name: Test deserialization with old RubyGems
+        run: |
+          # Test against all downloaded data (merged into single directory)
+          if [ -d "downloaded-data" ] && [ "$(ls -A downloaded-data 2>/dev/null)" ]; then
+            echo "Testing data from: downloaded-data"
+            ruby tool/compat/validate_deserialization.rb "downloaded-data" ${{ matrix.old_rubygems }}
+          else
+            echo "No test data found in downloaded-data"
+            exit 1
+          fi
+
+  # Backward compatibility: Generate test data with old RubyGems versions
+  backward-generate:
+    name: Generate Backward Test Data (RG ${{ matrix.old_rubygems }}, Ruby ${{ matrix.ruby_version }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        old_rubygems:
+          - "2.7.11"
+          - "3.0.9"
+          - "3.1.6"
+          - "3.2.3"
+          - "3.3.26"
+          - "3.4.22"
+        ruby_version:
+          - "3.2.8"
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler: none
+
+      - name: Install old RubyGems version
+        run: |
+          gem install rubygems-update -v ${{ matrix.old_rubygems }}
+          update_rubygems ${{ matrix.old_rubygems }}
+
+      - name: Generate test data with old RubyGems
+        run: |
+          mkdir -p test-data/backward-compat
+          ruby tool/compat/generate_test_data.rb backward test-data/backward-compat/
+
+      - name: Upload test data
+        uses: actions/upload-artifact@v4
+        with:
+          name: backward-data-rg${{ matrix.old_rubygems }}-ruby${{ matrix.ruby_version }}
+          path: test-data/backward-compat/
+          retention-days: 1
+
+  # Backward compatibility: Test deserialization with current RubyGems
+  backward-validate:
+    name: Backward Validate (Current RG, Ruby ${{ matrix.ruby_version }})
+    runs-on: ubuntu-24.04
+    needs: backward-generate
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby_version:
+          - "3.2.8"
+          - "3.3.8"
+          - "3.4.4"
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler: none
+
+      - name: Download all backward test data
+        uses: actions/download-artifact@v4
+        with:
+          pattern: backward-data-*
+          path: downloaded-data/
+          merge-multiple: true
+
+      - name: Install current RubyGems from source
+        run: |
+          ruby setup.rb --no-format-executable
+
+      - name: Test deserialization with current RubyGems
+        run: |
+          # Test against all downloaded data (merged into single directory)
+          if [ -d "downloaded-data" ] && [ "$(ls -A downloaded-data 2>/dev/null)" ]; then
+            echo "Testing data from: downloaded-data"
+            ruby tool/compat/validate_deserialization.rb "downloaded-data" current
+          else
+            echo "No test data found in downloaded-data"
+            exit 1
+          fi
+
+  # Lockfile forward compatibility: Generate lockfiles with current Bundler
+  lockfile-forward-generate:
+    name: Generate Forward Lockfiles (Current Bundler, Ruby ${{ matrix.ruby_version }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby_version:
+          - "3.2.8"
+          - "3.3.8"
+          - "3.4.4"
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler: none
+
+      - name: Install current Bundler from source and generate lockfiles
+        run: |
+          cd bundler && rake install
+          cd ..
+
+          # Generate lockfiles with current Bundler
+          mkdir -p test-data/lockfiles
+          ruby tool/compat/generate_lockfiles.rb current test-data/lockfiles/
+
+      - name: Upload forward lockfile data
+        uses: actions/upload-artifact@v4
+        with:
+          name: lockfile-forward-data-current-ruby${{ matrix.ruby_version }}
+          path: test-data/lockfiles/
+          retention-days: 1
+
+  # Lockfile forward compatibility: Test with old Bundler versions
+  lockfile-forward-validate:
+    name: Lockfile Forward Validate (Old Bundler ${{ matrix.old_bundler }}, Ruby ${{ matrix.ruby_version }})
+    runs-on: ubuntu-24.04
+    needs: lockfile-forward-generate
+    strategy:
+      fail-fast: false
+      matrix:
+        old_bundler:
+          - "1.17.3" # Last 1.x
+          - "2.0.2" # First 2.x
+          - "2.1.4" # Last 2.1.x
+          - "2.2.33" # Last 2.2.x
+          - "2.3.26" # Last 2.3.x
+          - "2.4.22" # Last 2.4.x
+          - "2.5.23" # Last 2.5.x
+        ruby_version:
+          - "3.2.8"
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler: none
+
+      - name: Download all forward lockfile data
+        uses: actions/download-artifact@v4
+        with:
+          pattern: lockfile-forward-data-*
+          path: downloaded-data/
+          merge-multiple: true
+
+      - name: Install old Bundler version
+        run: |
+          gem install bundler -v ${{ matrix.old_bundler }}
+
+      - name: Test lockfile parsing with old Bundler
+        run: |
+          # Test against all downloaded lockfile data (merged into single directory)
+          if [ -d "downloaded-data" ] && [ "$(ls -A downloaded-data 2>/dev/null)" ]; then
+            echo "Testing lockfiles from: downloaded-data"
+            ruby tool/compat/validate_lockfiles.rb "downloaded-data" ${{ matrix.old_bundler }}
+          else
+            echo "No lockfile data found in downloaded-data"
+            exit 1
+          fi
+
+  # Lockfile backward compatibility: Generate lockfiles with old Bundler versions
+  lockfile-backward-generate:
+    name: Generate Backward Lockfiles (Bundler ${{ matrix.old_bundler }}, Ruby ${{ matrix.ruby_version }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        old_bundler:
+          - "1.17.3" # Last 1.x
+          - "2.0.2" # First 2.x
+          - "2.1.4" # Last 2.1.x
+          - "2.2.33" # Last 2.2.x
+          - "2.3.26" # Last 2.3.x
+          - "2.4.22" # Last 2.4.x
+          - "2.5.23" # Last 2.5.x
+        ruby_version:
+          - "3.2.8"
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler: none
+
+      - name: Install old Bundler version and generate lockfiles
+        run: |
+          # Install specific Bundler version
+          gem install bundler -v ${{ matrix.old_bundler }}
+
+          # Generate lockfiles
+          mkdir -p test-data/lockfiles
+          ruby tool/compat/generate_lockfiles.rb ${{ matrix.old_bundler }} test-data/lockfiles/
+
+      - name: Upload backward lockfile data
+        uses: actions/upload-artifact@v4
+        with:
+          name: lockfile-backward-data-bundler${{ matrix.old_bundler }}-ruby${{ matrix.ruby_version }}
+          path: test-data/lockfiles/
+          retention-days: 1
+
+  # Lockfile backward compatibility: Test with current Bundler
+  lockfile-backward-validate:
+    name: Lockfile Backward Validate (Current Bundler, Ruby ${{ matrix.ruby_version }})
+    runs-on: ubuntu-24.04
+    needs: lockfile-backward-generate
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby_version:
+          - "3.2.8"
+          - "3.3.8"
+          - "3.4.4"
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler: none
+
+      - name: Download all backward lockfile data
+        uses: actions/download-artifact@v4
+        with:
+          pattern: lockfile-backward-data-*
+          path: downloaded-data/
+          merge-multiple: true
+
+      - name: Install current Bundler from source
+        run: |
+          cd bundler && rake install
+
+      - name: Test lockfile parsing with current Bundler
+        run: |
+          # Test against all downloaded lockfile data (merged into single directory)
+          if [ -d "downloaded-data" ] && [ "$(ls -A downloaded-data 2>/dev/null)" ]; then
+            echo "Testing lockfiles from: downloaded-data"
+            ruby tool/compat/validate_lockfiles.rb "downloaded-data" current
+          else
+            echo "No lockfile data found in downloaded-data"
+            exit 1
+          fi

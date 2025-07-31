@@ -353,8 +353,6 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
   end
 
   describe "default_cli_command validation" do
-    let(:settings) { described_class.new }
-
     it "accepts 'install' as a valid value" do
       expect { settings.set_local("default_cli_command", "install") }.not_to raise_error
     end

@@ -169,20 +169,24 @@ You can use `i` command instead of `install`.
   end
 
   def install_from_gemdeps # :nodoc:
-    require_relative "../request_set"
-    rs = Gem::RequestSet.new
+    require "bundler"
+    require "bundler/cli/install"
 
-    specs = rs.install_from_gemdeps options do |req, inst|
-      s = req.full_spec
+    Bundler::SharedHelpers.set_env "BUNDLE_GEMFILE", File.expand_path(options[:gemdeps])
+    Bundler.reset_settings_and_root!
 
-      if inst
-        say "Installing #{s.name} (#{s.version})"
-      else
-        say "Using #{s.name} (#{s.version})"
-      end
+    bundler_options = {
+      without: options[:without_groups],
+    }
+    if options[:install_dir]
+      Gem.paths = { "GEM_PATH" => options[:install_dir], "GEM_HOME" => options[:install_dir] }
     end
+    bundler_options[:local] = true if options[:domain] == :local
+    bundler_options[:conservative] = true if options[:conservative]
 
-    @installed_specs = specs
+    Gem::DefaultUserInteraction.use_ui(ui) do
+      Bundler::CLI::Install.new(bundler_options).run
+    end
 
     terminate_interaction
   end

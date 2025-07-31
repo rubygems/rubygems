@@ -132,6 +132,25 @@ RSpec.describe Bundler::CompactIndexClient::Updater do
         expect(local_path.read).to eq(full_body)
         expect(etag_path.read).to eq("NewEtag")
       end
+
+      context "when local_body has invalid_encoding" do
+        let(:local_body) { "\xF5\xA6\xDB" }
+        let(:headers_without_etag) { {} }
+
+        it "replaces the file" do
+          expect(fetcher).to receive(:call).once.with(remote_path, headers_without_etag).and_return(response)
+          allow(response).to receive(:[]).with("Repr-Digest") { "sha-256=:#{digest}:" }
+          allow(response).to receive(:[]).with("ETag") { '"NewEtag"' }
+          allow(response).to receive(:is_a?).with(Gem::Net::HTTPPartialContent) { false }
+          allow(response).to receive(:is_a?).with(Gem::Net::HTTPNotModified) { false }
+          allow(response).to receive(:body) { full_body }
+
+          updater.update(remote_path, local_path, etag_path)
+
+          expect(local_path.read).to eq(full_body)
+          expect(etag_path.read).to eq("NewEtag")
+        end
+      end
     end
 
     context "without an etag file" do

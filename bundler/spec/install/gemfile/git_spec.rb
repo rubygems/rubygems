@@ -27,7 +27,7 @@ RSpec.describe "bundle install with git sources" do
     end
 
     it "caches the git repo" do
-      expect(Dir["#{default_bundle_path}/cache/bundler/git/foo-1.0-*"]).to have_attributes size: 1
+      expect(Dir["#{default_cache_path}/git/foo-1.0-*"]).to have_attributes size: 1
     end
 
     it "does not write to cache on bundler/setup" do

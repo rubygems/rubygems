@@ -139,18 +139,16 @@ RSpec.describe Bundler::CurrentRuby do
   end
 
   describe "Deprecated platform" do
-    it "Outputs a deprecation warning when calling maglev?" do
-      expect(Bundler.ui).to receive(:warn).with(/`CurrentRuby#maglev\?` is deprecated with no replacement./)
+    it "outputs an error and aborts when calling maglev?" do
+      expect(Bundler.ui).to receive(:error).with(/`CurrentRuby#maglev\?` was removed with no replacement./)
 
-      Bundler.current_ruby.maglev?
+      expect { Bundler.current_ruby.maglev? }.to raise_error(SystemExit) {|error| expect(error.status).to eq(9) }
     end
 
-    it "Outputs a deprecation warning when calling maglev_31?" do
-      expect(Bundler.ui).to receive(:warn).with(/`CurrentRuby#maglev_31\?` is deprecated with no replacement./)
+    it "outputs an error and aborts when calling maglev_31?" do
+      expect(Bundler.ui).to receive(:error).with(/`CurrentRuby#maglev\?` was removed with no replacement./)
 
-      Bundler.current_ruby.maglev_31?
+      expect { Bundler.current_ruby.maglev? }.to raise_error(SystemExit) {|error| expect(error.status).to eq(9) }
     end
-
-    pending "is removed and shows a helpful error message about it", bundler: "4"
   end
 end

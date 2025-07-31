@@ -33,13 +33,18 @@ module Spec
     end
 
     MAJOR_DEPRECATION = /^\[DEPRECATED\]\s*/
+    MAJOR_REMOVAL = /^\[REMOVED\]\s*/
 
     def err_without_deprecations
       err.gsub(/#{MAJOR_DEPRECATION}.+[\n]?/, "")
     end
 
     def deprecations
-      err.split("\n").select {|l| l =~ MAJOR_DEPRECATION }.join("\n").split(MAJOR_DEPRECATION)
+      err.split("\n").filter_map {|l| l.sub(MAJOR_DEPRECATION, "") if l.match?(MAJOR_DEPRECATION) }
+    end
+
+    def removals
+      err.split("\n").select {|l| l =~ MAJOR_REMOVAL }.join("\n").split(MAJOR_REMOVAL)
     end
 
     def run(cmd, *args)

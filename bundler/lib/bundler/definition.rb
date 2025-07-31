@@ -132,11 +132,9 @@ module Bundler
       @multisource_allowed = locked_gem_sources.size == 1 && locked_gem_sources.first.multiple_remotes? && Bundler.frozen_bundle?
 
       if @multisource_allowed
-        unless sources.aggregate_global_source?
-          msg = "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure."
+        msg = "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure."
 
-          Bundler::SharedHelpers.major_deprecation 2, msg
-        end
+        Bundler::SharedHelpers.major_deprecation 2, msg
 
         @sources.merged_gem_lockfile_sections!(locked_gem_sources.first)
       end
@@ -763,7 +761,7 @@ module Bundler
     end
 
     def precompute_source_requirements_for_indirect_dependencies?
-      sources.non_global_rubygems_sources.all?(&:dependency_api_available?) && !sources.aggregate_global_source?
+      sources.non_global_rubygems_sources.all?(&:dependency_api_available?)
     end
 
     def current_platform_locked?

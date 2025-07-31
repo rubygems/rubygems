@@ -49,7 +49,7 @@ module Bundler
 
         # back-compat; local_git is an alias for git
         if options.key?(:local_git)
-          Bundler::SharedHelpers.major_deprecation(2, "--local_git is deprecated, use --git")
+          Bundler::SharedHelpers.major_deprecation(2, "--local_git is deprecated, use --git", removed_message: "--local_git has been removed, use --git")
           options[:git] = options.delete(:local_git)
         end
 

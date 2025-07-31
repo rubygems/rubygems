@@ -529,6 +529,26 @@ if you believe they were disclosed to a third party.
     assert_equal(false, @cfg.install_extension_in_lib)
   end
 
+  def test_install_extension_in_lib_deprecation_warning
+    File.open @temp_conf, "w" do |fp|
+      fp.puts ":install_extension_in_lib: true"
+    end
+    
+    # Capture the warning using stderr
+    require "stringio"
+    stderr = StringIO.new
+    $stderr = stderr
+    
+    util_config_file
+    
+    # Restore stderr
+    $stderr = STDERR
+    
+    assert_equal(true, @cfg.install_extension_in_lib)
+    warning_output = stderr.string
+    assert_includes warning_output, "The default value has changed to false in RubyGems 4.0"
+  end
+
   def test_disable_default_gem_server
     File.open @temp_conf, "w" do |fp|
       fp.puts ":disable_default_gem_server: true"

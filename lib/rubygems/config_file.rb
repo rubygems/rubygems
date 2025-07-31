@@ -47,8 +47,8 @@ class Gem::ConfigFile
   DEFAULT_CONCURRENT_DOWNLOADS = 8
   DEFAULT_CERT_EXPIRATION_LENGTH_DAYS = 365
   DEFAULT_IPV4_FALLBACK_ENABLED = false
-  # TODO: Use false as default value for this option in RubyGems 4.0
-  DEFAULT_INSTALL_EXTENSION_IN_LIB = true
+  # Changed from true to false in RubyGems 4.0 for better gem organization
+  DEFAULT_INSTALL_EXTENSION_IN_LIB = false
 
   ##
   # For Ruby packagers to set configuration defaults.  Set in
@@ -229,6 +229,11 @@ class Gem::ConfigFile
     # TODO: We should handle concurrent_downloads same as other options
     @cert_expiration_length_days = @hash[:cert_expiration_length_days] if @hash.key? :cert_expiration_length_days
     @install_extension_in_lib    = @hash[:install_extension_in_lib]    if @hash.key? :install_extension_in_lib
+    # Issue deprecation warning if install_extension_in_lib is set to true
+    if @hash.key?(:install_extension_in_lib) && @hash[:install_extension_in_lib] == true
+      warn  "The default value has changed to false in RubyGems 4.0 for better gem organization. " \
+           "Extensions will now be installed in ext/ by default. "
+    end
     @ipv4_fallback_enabled       = @hash[:ipv4_fallback_enabled]       if @hash.key? :ipv4_fallback_enabled
 
     @home                        = @hash[:gemhome]                     if @hash.key? :gemhome

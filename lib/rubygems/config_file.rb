@@ -231,7 +231,7 @@ class Gem::ConfigFile
     @install_extension_in_lib    = @hash[:install_extension_in_lib]    if @hash.key? :install_extension_in_lib
     # Issue deprecation warning if install_extension_in_lib is set to true
     if @hash.key?(:install_extension_in_lib) && @hash[:install_extension_in_lib] == true
-      warn  "The default value has changed to false in RubyGems 4.0 for better gem organization. " \
+      warn "The default value has changed to false in RubyGems 4.0 for better gem organization. " \
            "Extensions will now be installed in ext/ by default. "
     end
     @ipv4_fallback_enabled       = @hash[:ipv4_fallback_enabled]       if @hash.key? :ipv4_fallback_enabled

@@ -1,0 +1,7 @@
+> GET /gems/ffi-1.17.2.gem
+> accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+> accept: */*
+> connection: keep-alive
+> keep-alive: 30
+> user-agent: bundler/2.8.0.dev rubygems/3.8.0.dev ruby/3.5.0.dev (arm64-apple-darwin24) command/install options/no_install 953e66b502739796
+> host: rubygems.org

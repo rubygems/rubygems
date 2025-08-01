@@ -106,7 +106,7 @@ module Bundler
 
     alias_method :gems, :specs
 
-    def cache(custom_path = nil, local = false)
+    def cache(custom_path = nil, local = false, no_fail_on_empty_cache = false)
       cache_path = Bundler.app_cache(custom_path)
       SharedHelpers.filesystem_access(cache_path) do |p|
         FileUtils.mkdir_p(p)
@@ -119,12 +119,17 @@ module Bundler
       else
         begin
           specs
-        rescue GemNotFound
+        rescue GemNotFound, Errno::ENOENT => e
           if local
             Bundler.ui.warn "Some gems seem to be missing from your #{Bundler.settings.app_cache_path} directory."
           end
 
-          raise
+          if no_fail_on_empty_cache
+            Bundler.ui.warn "Cache directory exists but is empty or gem index is missing. Proceeding with cache operation."
+            return
+          end
+
+          raise e
         end
       end
 

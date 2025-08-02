@@ -543,10 +543,12 @@ if you believe they were disclosed to a third party.
     
     # Restore stderr
     $stderr = STDERR
-    
+
     assert_equal(true, @cfg.install_extension_in_lib)
     warning_output = stderr.string
-    assert_includes warning_output, "The default value has changed to false in RubyGems 4.0"
+    assert_includes warning_output, "Setting install_extension_in_lib to true is deprecated in RubyGems 4.0"
+    assert_includes warning_output, "Native extensions should be installed in /ext directory by default"
+    assert_includes warning_output, "This setting will be removed in a future RubyGems version"
   end
 
   def test_disable_default_gem_server

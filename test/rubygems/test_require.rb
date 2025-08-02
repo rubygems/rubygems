@@ -248,8 +248,8 @@ class TestGemRequire < Gem::TestCase
     lib_dir = File.expand_path("../lib", __dir__)
     rubylibdir = File.realdirpath(RbConfig::CONFIG["rubylibdir"])
     if rubylibdir == lib_dir
-      # testing in the ruby repository where RubyGems' lib/ == stdlib lib/
-      # In that case we want to move the stdlib lib/ to still be after b-2 in $LOAD_PATH
+      # testing in the ruby repository where RubyGems' /lib == stdlib lib/
+      # In that case we want to move the stdlib /lib to still be after b-2 in $LOAD_PATH
       lp = $LOAD_PATH.dup
       $LOAD_PATH.delete lib_dir
       $LOAD_PATH.push lib_dir
@@ -283,7 +283,7 @@ class TestGemRequire < Gem::TestCase
     assert_includes $LOAD_PATH, b2.full_require_paths[0]
     assert_includes $LOAD_PATH, rubylibdir
     message = proc {
-      "this test relies on the b-2 gem lib/ to be before stdlib to make sense\n" +
+      "this test relies on the b-2 gem /lib to be before stdlib to make sense\n" +
         $LOAD_PATH.pretty_inspect
     }
     assert_operator $LOAD_PATH.index(b2.full_require_paths[0]), :<, $LOAD_PATH.index(rubylibdir), message

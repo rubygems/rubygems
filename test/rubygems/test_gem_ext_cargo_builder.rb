@@ -226,4 +226,108 @@ class TestGemExtCargoBuilder < Gem::TestCase
     content = @fixture_dir.join(name).read.gsub(from, to)
     File.write(File.join(@ext, name), content)
   end
+
+  def test_build_with_lib_placement_warning
+    skip_unsupported_platforms!
+    setup_rust_gem "rust_ruby_example"
+
+    # Set up lib directory for the gem
+    gem_dir = File.join @tempdir, "rust_ruby_example"
+    lib_dir = File.join gem_dir, "lib"
+    FileUtils.mkdir_p lib_dir
+
+    # Mock the install_extension_in_lib setting to true
+    original_setting = Gem.install_extension_in_lib
+    Gem.configuration.install_extension_in_lib = true
+
+    # Capture stderr for warning
+    require "stringio"
+    stderr = StringIO.new
+    original_stderr = $stderr
+    $stderr = stderr
+
+    output = []
+
+    begin
+      Dir.chdir @ext do
+        ENV.update(@rust_envs)
+        builder = Gem::Ext::CargoBuilder.new
+        builder.build "Cargo.toml", @dest_path, output, [], lib_dir, @ext
+      end
+
+      # Restore stderr
+      $stderr = original_stderr
+
+      warning_output = stderr.string
+      assert_includes warning_output, "Gem 'rust_ruby_example' is installing native extensions in /lib directory"
+      assert_includes warning_output, "Consider moving extensions to /ext directory for better organization"
+      assert_includes warning_output, "Set install_extension_in_lib: true in your .gemrc to maintain current behavior"
+    ensure
+      # Restore original setting
+      Gem.configuration.install_extension_in_lib = original_setting
+      $stderr = original_stderr
+    end
+  end
+
+  def test_build_without_lib_placement_warning_when_false
+    skip_unsupported_platforms!
+    setup_rust_gem "rust_ruby_example"
+
+    # Set up lib directory for the gem
+    gem_dir = File.join @tempdir, "rust_ruby_example"
+    lib_dir = File.join gem_dir, "lib"
+    FileUtils.mkdir_p lib_dir
+
+    # Mock the install_extension_in_lib setting to false
+    original_setting = Gem.install_extension_in_lib
+    Gem.configuration.install_extension_in_lib = false
+
+    # Capture stderr for warning
+    require "stringio"
+    stderr = StringIO.new
+    original_stderr = $stderr
+    $stderr = stderr
+
+    output = []
+
+    begin
+      Dir.chdir @ext do
+        ENV.update(@rust_envs)
+        builder = Gem::Ext::CargoBuilder.new
+        builder.build "Cargo.toml", @dest_path, output, [], lib_dir, @ext
+      end
+
+      # Restore stderr
+      $stderr = original_stderr
+
+      warning_output = stderr.string
+      refute_includes warning_output, "Gem 'rust_ruby_example' is installing native extensions in /lib directory"
+    ensure
+      # Restore original setting
+      Gem.configuration.install_extension_in_lib = original_setting
+      $stderr = original_stderr
+    end
+  end
+
+  def test_detect_gem_name_from_path
+    # Test with standard gem structure
+    path = "/path/to/test_gem/ext/extension"
+    gem_name = Gem::Ext::CargoBuilder.detect_gem_name_from_path(path)
+    assert_equal "test_gem", gem_name
+
+    # Test with no ext directory
+    path = "/path/to/test_gem/lib"
+    gem_name = Gem::Ext::CargoBuilder.detect_gem_name_from_path(path)
+    assert_nil gem_name
+
+    # Test with ext at root path
+    path = "/ext/extension"
+    gem_name = Gem::Ext::CargoBuilder.detect_gem_name_from_path(path)
+    assert_nil gem_name
+
+    # Test with empty path
+    path = ""
+    gem_name = Gem::Ext::CargoBuilder.detect_gem_name_from_path(path)
+    assert_nil gem_name
+  end
 end

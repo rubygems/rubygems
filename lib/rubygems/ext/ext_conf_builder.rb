@@ -49,6 +49,14 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
       # Do not copy extension libraries by default when cross-compiling
       # not to conflict with the one already built for the host platform.
       if Gem.install_extension_in_lib && lib_dir && !is_cross_compiling
+        # Warn about using the deprecated /lib placement
+        gem_name = detect_gem_name_from_path(extension_dir)
+        if gem_name
+          warn "Gem '#{gem_name}' is installing native extensions in /lib directory. " \
+               "Consider moving extensions to /ext directory for better organization. " \
+               "Set install_extension_in_lib: true in your .gemrc to maintain current behavior."
+        end
+        
         FileUtils.mkdir_p lib_dir
         entries = Dir.entries(full_tmp_dest) - %w[. ..]
         entries = entries.map {|entry| File.join full_tmp_dest, entry }
@@ -73,5 +81,20 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
   def self.get_relative_path(path, base)
     path[0..base.length - 1] = "." if path.start_with?(base)
     path
+  end
+
+  def self.detect_gem_name_from_path(extension_dir)
+    # Try to detect gem name from the extension directory path
+    # Look for patterns like /path/to/gem_name/ext/extension_name
+    path_parts = extension_dir.split(File::SEPARATOR)
+    
+    # Find the gem name by looking for the parent of 'ext' directory
+    ext_index = path_parts.rindex('ext')
+    return nil unless ext_index && ext_index > 0
+    
+    gem_name = path_parts[ext_index - 1]
+    return nil if gem_name.nil? || gem_name.empty?
+    
+    gem_name
   end
 end

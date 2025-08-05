@@ -650,6 +650,16 @@ RSpec.describe "major deprecations" do
     end
   end
 
+  context "bundle inject" do
+    before do
+      bundle "inject", raise_on_error: false
+    end
+
+    it "fails with a helpful message" do
+      expect(err).to include "The `inject` command has been replaced by the `add` command"
+    end
+  end
+
   context "bundle plugin install --local_git" do
     before do
       build_git "foo" do |s|

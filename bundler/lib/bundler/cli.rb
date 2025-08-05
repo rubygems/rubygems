@@ -553,15 +553,6 @@ module Bundler
       Platform.new(options).run
     end
 
-    desc "inject GEM VERSION", "Add the named gem, with version requirements, to the resolved Gemfile", hide: true
-    method_option "source", type: :string, banner: "Install gem from the given source"
-    method_option "group", type: :string, banner: "Install gem into a bundler group"
-    def inject(name, version)
-      SharedHelpers.major_deprecation 2, "The `inject` command has been replaced by the `add` command"
-      require_relative "cli/inject"
-      Inject.new(options.dup, name, version).run
-    end
-
     desc "lock", "Creates a lockfile without installing"
     method_option "update", type: :array, lazy_default: true, banner: "ignore the existing lockfile, update all gems by default, or update list of given gems"
     method_option "local", type: :boolean, default: false, banner: "do not attempt to fetch remote gemspecs and use the local gem cache only"

@@ -20,9 +20,6 @@ module Bundler
 
       Bundler::SharedHelpers.set_env "RB_USER_INSTALL", "1" if Gem.freebsd_platform?
 
-      # Disable color in deployment mode
-      Bundler.ui.shell = Thor::Shell::Basic.new if options[:deployment]
-
       if target_rbconfig_path = options[:"target-rbconfig"]
         Bundler.rubygems.set_target_rbconfig(target_rbconfig_path)
       end
@@ -31,27 +28,16 @@ module Bundler
 
       check_trust_policy
 
-      if options[:deployment] || options[:frozen] || Bundler.frozen_bundle?
+      if Bundler.frozen_bundle?
         unless Bundler.default_lockfile.exist?
-          flag = "--deployment flag" if options[:deployment]
-          flag ||= "--frozen flag" if options[:frozen]
-          flag ||= "deployment setting" if Bundler.settings[:deployment]
-          flag ||= "frozen setting" if Bundler.settings[:frozen]
+          flag = "deployment setting" if Bundler.settings[:deployment]
+          flag = "frozen setting" if Bundler.settings[:frozen]
           raise ProductionError, "The #{flag} requires a lockfile. Please make " \
                                  "sure you have checked your #{SharedHelpers.relative_lockfile_path} into version control " \
                                  "before deploying."
         end
 
         options[:local] = true if Bundler.app_cache.exist?
-
-        Bundler.settings.set_command_option :deployment, true if options[:deployment]
-        Bundler.settings.set_command_option :frozen, true if options[:frozen]
-      end
-
-      # When install is called with --no-deployment, disable deployment mode
-      if options[:deployment] == false
-        Bundler.settings.set_command_option :frozen, nil
-        options[:system] = true
       end
 
       normalize_settings
@@ -122,11 +108,8 @@ module Bundler
     end
 
     def check_for_options_conflicts
-      if (options[:path] || options[:deployment]) && options[:system]
-        error_message = String.new
-        error_message << "You have specified both --path as well as --system. Please choose only one option.\n" if options[:path]
-        error_message << "You have specified both --deployment as well as --system. Please choose only one option.\n" if options[:deployment]
-        raise InvalidOption.new(error_message)
+      if options[:path] && options[:system]
+        raise InvalidOption.new("You have specified both --path as well as --system. Please choose only one option.")
       end
     end
 

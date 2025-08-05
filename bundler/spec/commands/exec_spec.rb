@@ -202,6 +202,61 @@ RSpec.describe "bundle exec" do
     expect(out).to include("foo")
   end
 
+  it "sets environment variables with --env option" do
+    install_gemfile <<-G
+      source "https://gem.repo1"
+      gem "myrack"
+    G
+    ruby_script = "puts ENV['RUBYOPT'] || 'none'"
+    bundle "exec --env RUBYOPT=foo ruby -e \"#{ruby_script}\""
+    expect(out).to include("foo")
+  end
+
+  it "supports multiple --env flags" do
+    install_gemfile <<-G
+      source "https://gem.repo1"
+      gem "myrack"
+    G
+    ruby_script = "puts ENV['RUBYOPT'] || 'none'; puts ENV['DEBUG'] || 'none'"
+    bundle "exec --env RUBYOPT=foo --env DEBUG=1 ruby -e \"#{ruby_script}\""
+    expect(out).to include("foo")
+    expect(out).to include("1")
+  end
+
+  it "does not affect Bundler's environment with --env" do
+    install_gemfile <<-G
+      source "https://gem.repo1"
+      gem "myrack"
+    G
+    # Test that Bundler itself doesn't see the env vars
+    bundle "exec --env RUBYOPT=foo ruby -e 'puts ENV[\"RUBYOPT\"]'"
+    expect(out).to include("foo")
+    # Bundler should still work normally
+    bundle "exec myrackup"
+    expect(out).to eq("1.0.0")
+  end
+
+  it "works with mixed KEY=VALUE and --env syntax" do
+    install_gemfile <<-G
+      source "https://gem.repo1"
+      gem "myrack"
+    G
+    ruby_script = "puts ENV['RUBYOPT'] || 'none'; puts ENV['DEBUG'] || 'none'"
+    bundle "exec RUBYOPT=foo --env DEBUG=1 ruby -e \"#{ruby_script}\""
+    expect(out).to include("foo")
+    expect(out).to include("1")
+  end
+
+  it "overrides existing environment variables with --env" do
+    install_gemfile <<-G
+      source "https://gem.repo1"
+      gem "myrack"
+    G
+    ruby_script = "puts ENV['RUBYOPT'] || 'none'"
+    bundle "exec --env RUBYOPT=override ruby -e \"#{ruby_script}\"", env: { "RUBYOPT" => "original" }
+    expect(out).to include("override")
+  end
+
   context "with default gems" do
     # TODO: Switch to ERB::VERSION once Ruby 3.4 support is dropped, so all
     # supported rubies include an `erb` gem version where `ERB::VERSION` is

@@ -12,6 +12,16 @@ module Bundler
       @options = options
       @env = {}
 
+      # Parse leading --env option separately
+      if options[:env]
+        options[:env].each do |env_var|
+          if env_var.include?("=")
+            key, value = env_var.split("=", 2)
+            @env[key] = value
+          end
+        end
+      end
+
       # Parse leading KEY=VALUE pairs as env vars
       while args.first && args.first.include?("=") && args.first =~ /^[A-Za-z_][A-Za-z0-9_]*=/
         key, value = args.shift.split("=", 2)

@@ -28,7 +28,7 @@ RSpec.describe "bundle cache" do
     end
   end
 
-  context "with --all" do
+  context "with cache_all configured" do
     context "without a gemspec" do
       it "caches all dependencies except bundler itself" do
         gemfile <<-D
@@ -155,20 +155,6 @@ RSpec.describe "bundle cache" do
         expect(bundled_app("vendor/cache/mygem_test-0.1.1.gem")).to_not exist
         expect(bundled_app("vendor/cache/bundler-0.9.gem")).to_not exist
       end
-    end
-  end
-
-  context "with --path" do
-    it "sets root directory for gems" do
-      gemfile <<-D
-        source "https://gem.repo1"
-        gem 'myrack'
-      D
-
-      bundle "cache --path #{bundled_app("test")}"
-
-      expect(the_bundle).to include_gems "myrack 1.0.0"
-      expect(bundled_app("test/vendor/cache/")).to exist
     end
   end
 

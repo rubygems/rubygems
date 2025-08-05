@@ -618,19 +618,6 @@ RSpec.describe "major deprecations" do
     end
   end
 
-  context "bundle viz" do
-    before do
-      create_file "gems.rb", "source 'https://gem.repo1'"
-      bundle "viz"
-    end
-
-    it "prints a deprecation warning" do
-      expect(deprecations).to include "The `viz` command has been renamed to `graph` and moved to a plugin. See https://github.com/rubygems/bundler-graph"
-    end
-
-    pending "fails with a helpful message", bundler: "4"
-  end
-
   context "bundle plugin install --local_git" do
     before do
       build_git "foo" do |s|

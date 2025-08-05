@@ -511,25 +511,6 @@ module Bundler
       end
     end
 
-    unless Bundler.feature_flag.bundler_4_mode?
-      desc "viz [OPTIONS]", "Generates a visual dependency graph", hide: true
-      long_desc <<-D
-        Viz generates a PNG file of the current Gemfile as a dependency graph.
-        Viz requires the ruby-graphviz gem (and its dependencies).
-        The associated gems must also be installed via 'bundle install'.
-      D
-      method_option :file, type: :string, default: "gem_graph", aliases: "-f", desc: "The name to use for the generated file. see format option"
-      method_option :format, type: :string, default: "png", aliases: "-F", desc: "This is output format option. Supported format is png, jpg, svg, dot ..."
-      method_option :requirements, type: :boolean, default: false, aliases: "-R", desc: "Set to show the version of each required dependency."
-      method_option :version, type: :boolean, default: false, aliases: "-v", desc: "Set to show each gem version."
-      method_option :without, type: :array, default: [], aliases: "-W", banner: "GROUP[ GROUP...]", desc: "Exclude gems that are part of the specified named group."
-      def viz
-        SharedHelpers.major_deprecation 2, "The `viz` command has been renamed to `graph` and moved to a plugin. See https://github.com/rubygems/bundler-graph"
-        require_relative "cli/viz"
-        Viz.new(options.dup).run
-      end
-    end
-
     desc "gem NAME [OPTIONS]", "Creates a skeleton for creating a rubygem"
     method_option :exe, type: :boolean, default: false, aliases: ["--bin", "-b"], desc: "Generate a binary executable for your library."
     method_option :coc, type: :boolean, desc: "Generate a code of conduct file. Set a default with `bundle config set --global gem.coc true`."

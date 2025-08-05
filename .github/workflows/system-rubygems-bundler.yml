@@ -41,8 +41,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Install graphviz
-        run: sudo apt-get install graphviz -y
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps

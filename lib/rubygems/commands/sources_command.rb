@@ -18,6 +18,10 @@ class Gem::Commands::SourcesCommand < Gem::Command
       options[:add] = value
     end
 
+    add_option "-p", "--prepend SOURCE_URI", "Prepend source" do |value, options|
+      options[:prepend] = value
+    end
+
     add_option "-l", "--list", "List sources" do |value, options|
       options[:list] = value
     end
@@ -57,6 +61,34 @@ class Gem::Commands::SourcesCommand < Gem::Command
         Gem.sources << source
         Gem.configuration.write
 
+        say "#{source_uri} added to sources"
+      end
+    rescue Gem::URI::Error, ArgumentError
+      say "#{source_uri} is not a URI"
+      terminate_interaction 1
+    rescue Gem::RemoteFetcher::FetchError => e
+      say "Error fetching #{Gem::Uri.redact(source.uri)}:\n\t#{e.message}"
+      terminate_interaction 1
+    end
+  end
+
+  def prepend_source(source_uri) # :nodoc:
+    check_rubygems_https source_uri
+
+    source = Gem::Source.new source_uri
+
+    check_typo_squatting(source)
+
+    begin
+      was_present = Gem.sources.include?(source)
+
+      source.load_specs :released
+      Gem.sources.unshift source
+      Gem.configuration.write
+
+      if was_present
+        say "#{source_uri} moved to top of sources"
+      else
         say "#{source_uri} added to sources"
       end
     rescue Gem::URI::Error, ArgumentError
@@ -176,7 +208,8 @@ To remove a source use the --remove argument:
     !(options[:add] ||
       options[:clear_all] ||
       options[:remove] ||
-      options[:update])
+      options[:update] ||
+      options[:prepend])
   end
 
   def execute
@@ -184,6 +217,9 @@ To remove a source use the --remove argument:
 
     source_uri = options[:add]
     add_source source_uri if source_uri
+
+    source_uri = options[:prepend]
+    prepend_source source_uri if source_uri
 
     source_uri = options[:remove]
     remove_source source_uri if source_uri

@@ -531,4 +531,81 @@ beta-gems.example.com is not a URI
     assert_equal "source cache successfully updated\n", @ui.output
     assert_equal "", @ui.error
   end
+
+  def test_execute_prepend_new_source
+    spec_fetcher do |fetcher|
+      fetcher.spec "a", 1
+    end
+
+    specs = Gem::Specification.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    @cmd.handle_options %W[--prepend #{@new_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal [@new_repo, @gem_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} added to sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  end
+
+  def test_execute_prepend_existing_source
+    spec_fetcher do |fetcher|
+      fetcher.spec "a", 1
+    end
+
+    specs = Gem::Specification.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    # Add the source normally first
+    @cmd.handle_options %W[--add #{@new_repo}]
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    # Initial state: [@gem_repo, @new_repo]
+    assert_equal [@gem_repo, @new_repo], Gem.sources
+
+    # Now prepend the existing source
+    @cmd.handle_options %W[--prepend #{@new_repo}]
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    # Should be moved to front: [@new_repo, @gem_repo]
+    assert_equal [@new_repo, @gem_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} added to sources
+#{@new_repo} moved to top of sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  end
 end

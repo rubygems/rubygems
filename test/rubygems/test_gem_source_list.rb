@@ -116,4 +116,31 @@ class TestGemSourceList < Gem::TestCase
     @sl.delete Gem::Source.new(@uri)
     assert_equal @sl.sources, []
   end
+
+  def test_unshift_new_source
+    uri2 = "http://example2"
+    source2 = Gem::Source.new(uri2)
+
+    result = @sl.unshift(uri2)
+
+    assert_kind_of Gem::Source, result
+    assert_kind_of Gem::URI, result.uri
+    assert_equal uri2, result.uri.to_s
+    assert_equal [source2, @source], @sl.sources
+  end
+
+  def test_unshift_existing_source
+    uri2 = "http://example2"
+    source2 = Gem::Source.new(uri2)
+    @sl << uri2
+
+    assert_equal [@source, source2], @sl.sources
+
+    result = @sl.unshift(uri2)
+
+    assert_kind_of Gem::Source, result
+    assert_kind_of Gem::URI, result.uri
+    assert_equal uri2, result.uri.to_s
+    assert_equal [source2, @source], @sl.sources
+  end
 end

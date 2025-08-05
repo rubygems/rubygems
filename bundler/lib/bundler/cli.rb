@@ -242,7 +242,7 @@ module Bundler
 
       if ARGV.include?("--binstubs")
         message = "The --binstubs option will be removed in favor of `bundle binstubs --all`"
-        removed_message = "The --binstubs option have been removed in favor of `bundle binstubs --all`"
+        removed_message = "The --binstubs option has been removed in favor of `bundle binstubs --all`"
         Bundler::SharedHelpers.major_deprecation(2, message, removed_message: removed_message)
       end
 

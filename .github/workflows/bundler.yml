@@ -20,7 +20,7 @@ defaults:
 
 jobs:
   bundler:
-    name: Bundler ${{ matrix.bundler.name }} on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
+    name: Bundler on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
     runs-on: ${{ matrix.os.value }}
     strategy:
       fail-fast: false
@@ -29,35 +29,32 @@ jobs:
           - { name: Ubuntu, value: ubuntu-24.04 }
 
         ruby:
-          - { name: ruby-3.2, value: 3.2.8 }
-          - { name: ruby-3.3, value: 3.3.8 }
-          - { name: ruby-3.4, value: 3.4.4 }
-
-        bundler:
-          - { name: 2, value: "" }
-          - { name: 3, value: 3.0.0 }
+          - { name: ruby-3.2, value: 3.2.9 }
+          - { name: ruby-3.3, value: 3.3.9 }
+          - { name: ruby-3.4, value: 3.4.5 }
 
         include:
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.2, value: 3.2.9 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.3, value: 3.3.9 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.4, value: 3.4.5 }, timeout: 90 }
 
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: "" }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.2, value: 3.2.9 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.3, value: 3.3.9 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.4, value: 3.4.5 }, timeout: 150 }
 
-          - { os: { name: Ubuntu, value: ubuntu-24.04 }, bundler: { name: 2, value: "" }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: "" }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
+          - { os: { name: Ubuntu, value: ubuntu-24.04 }, ruby: { name: jruby, value: jruby-10.0.1.0 } }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: jruby, value: jruby-10.0.1.0 } }
 
     env:
       RGV: ..
       RUBYOPT: --disable-gems
+      WORKSPACE: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        uses: ruby/setup-ruby@bb6434c747fa7022e12fa1cae2a0951fcffcff26 # v1.253.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -69,22 +66,26 @@ jobs:
         if: matrix.ruby.name == 'jruby'
       - name: Install graphviz (Ubuntu)
         run: sudo apt-get install graphviz -y
-        if: matrix.bundler.value == '' && matrix.os.name == 'Ubuntu'
-      - name: Replace version
-        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
-        if: matrix.bundler.value != ''
+        if: matrix.os.name == 'Ubuntu'
+      - uses: samypr100/setup-dev-drive@750bec535eb7e4833d6a4c86c5738751f9887575 # v3.4.2
+        with:
+          workspace-copy: true
+          env-mapping: |
+            WORKSPACE,{{ DEV_DRIVE_WORKSPACE }}
+        if: matrix.os.name == 'Windows'
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps
+        working-directory: ${{ env.WORKSPACE }}
       - name: Run Test (CRuby)
         run: |
           bin/parallel_rspec
-        working-directory: ./bundler
+        working-directory: ${{ env.WORKSPACE }}/bundler
         if: matrix.ruby.name != 'jruby'
       - name: Run Test (JRuby)
         run: |
           bin/parallel_rspec --tag jruby_only --tag jruby
-        working-directory: ./bundler
+        working-directory: ${{ env.WORKSPACE }}/bundler
         if: matrix.ruby.name == 'jruby' && matrix.os.name == 'Ubuntu'
       - name: Run a warbler project
         run: |
@@ -94,6 +95,7 @@ jobs:
           bundle exec warble
           java -jar warbler.jar
         if: matrix.ruby.name == 'jruby' && matrix.os.name == 'Ubuntu'
+        working-directory: ${{ env.WORKSPACE }}
 
     timeout-minutes: ${{ matrix.timeout || 60 }}
 

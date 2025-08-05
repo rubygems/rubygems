@@ -123,7 +123,7 @@ RSpec.describe "bundle check" do
     expect(err).to include("Bundler can't satisfy your Gemfile's dependencies.")
   end
 
-  it "remembers --without option from install", bundler: "< 3" do
+  it "remembers --without option from install" do
     gemfile <<-G
       source "https://gem.repo1"
       group :foo do
@@ -272,7 +272,7 @@ RSpec.describe "bundle check" do
     expect(last_command).to be_failure
   end
 
-  context "--path", bundler: "< 3" do
+  context "--path" do
     context "after installing gems in the proper directory" do
       before do
         gemfile <<-G
@@ -329,7 +329,7 @@ RSpec.describe "bundle check" do
 
     it "shows what is missing with the current Gemfile if it is not satisfied" do
       FileUtils.rm_r default_bundle_path
-      system_gems :bundler
+      default_system_gems
       bundle :check, raise_on_error: false
       expect(err).to match(/The following gems are missing/)
       expect(err).to include("* myrack (1.0")

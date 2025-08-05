@@ -27,15 +27,15 @@ jobs:
           - { name: Windows, value: windows-2025 }
 
         ruby:
-          - { name: "3.2", value: 3.2.8 }
-          - { name: "3.3", value: 3.3.8 }
-          - { name: "3.4", value: 3.4.4 }
+          - { name: "3.2", value: 3.2.9 }
+          - { name: "3.3", value: 3.3.9 }
+          - { name: "3.4", value: 3.4.5 }
 
         include:
-          - ruby: { name: jruby, value: jruby-10.0.0.1 }
+          - ruby: { name: jruby, value: jruby-10.0.1.0 }
             os: { name: Ubuntu, value: ubuntu-24.04 }
 
-          - ruby: { name: truffleruby, value: truffleruby-24.2.0 }
+          - ruby: { name: truffleruby, value: truffleruby-24.2.1 }
             os: { name: Ubuntu, value: ubuntu-24.04 }
 
     steps:
@@ -43,7 +43,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        uses: ruby/setup-ruby@bb6434c747fa7022e12fa1cae2a0951fcffcff26 # v1.253.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

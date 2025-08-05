@@ -647,17 +647,10 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = %w[a]
 
     use_ui @ui do
-      # Don't use Dir.chdir with a block, it warnings a lot because
-      # of a downstream Dir.chdir with a block
-      old = Dir.getwd
-
-      begin
-        Dir.chdir @tempdir
+      Dir.chdir @tempdir do
         assert_raise Gem::MockGemUi::SystemExitException, @ui.error do
           @cmd.execute
         end
-      ensure
-        Dir.chdir old
       end
     end
 
@@ -684,17 +677,10 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = %w[a]
 
     use_ui @ui do
-      # Don't use Dir.chdir with a block, it warnings a lot because
-      # of a downstream Dir.chdir with a block
-      old = Dir.getwd
-
-      begin
-        Dir.chdir @tempdir
+      Dir.chdir @tempdir do
         assert_raise Gem::MockGemUi::SystemExitException, @ui.error do
           @cmd.execute
         end
-      ensure
-        Dir.chdir old
       end
     end
 
@@ -720,17 +706,10 @@ ERROR:  Possible alternatives: non_existent_with_hint
     @cmd.options[:args] = %w[a]
 
     use_ui @ui do
-      # Don't use Dir.chdir with a block, it warnings a lot because
-      # of a downstream Dir.chdir with a block
-      old = Dir.getwd
-
-      begin
-        Dir.chdir @tempdir
+      Dir.chdir @tempdir do
         assert_raise Gem::MockGemUi::SystemExitException, @ui.error do
           @cmd.execute
         end
-      ensure
-        Dir.chdir old
       end
     end
 
@@ -1603,5 +1582,32 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
       assert_includes @ui.output, "A new release of RubyGems is available: 1.2.3 → 2.0.0!"
     end
+  end
+
+  def test_execute_bindir_with_nonexistent_parent_dirs
+    spec_fetcher do |fetcher|
+      fetcher.gem "a", 2 do |s|
+        s.executables = %w[a_bin]
+        s.files = %w[bin/a_bin]
+      end
+    end
+
+    @cmd.options[:args] = %w[a]
+
+    nested_bin_dir = File.join(@tempdir, "not", "exists")
+    refute_directory_exists nested_bin_dir, "Nested bin directory should not exist yet"
+
+    @cmd.options[:bin_dir] = nested_bin_dir
+
+    use_ui @ui do
+      assert_raise Gem::MockGemUi::SystemExitException, @ui.error do
+        @cmd.execute
+      end
+    end
+
+    assert_directory_exists nested_bin_dir, "Nested bin directory should exist now"
+    assert_path_exist File.join(nested_bin_dir, "a_bin")
+
+    assert_equal %w[a-2], @cmd.installed_specs.map(&:full_name)
   end
 end

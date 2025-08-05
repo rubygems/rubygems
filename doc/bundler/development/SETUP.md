@@ -26,7 +26,7 @@ To work on Bundler, you'll probably want to do a couple of things:
 
 * Set up a shell alias to run Bundler from your clone, e.g. a Bash alias ([follow these instructions](https://www.moncefbelyamani.com/create-aliases-in-bash-profile-to-assign-shortcuts-for-common-terminal-commands/) for adding aliases to your `~/.bashrc` profile):
 
-        alias dbundle='ruby /path/to/bundler/repo/spec/support/bundle.rb'
+        alias dbundle='ruby /[repo root]/bundler/bin/bundle'
 
 On Windows, you can add this to your [PowerShell profile][profile] (you can use `vim $profile` on the command line if you have `vim` installed):
 
@@ -34,7 +34,7 @@ On Windows, you can add this to your [PowerShell profile][profile] (you can use 
 $Env:RUBYOPT="-rdebug"
 function dbundle
 {
-	& "ruby.exe" E:\[source path]\rubygems\bundler\spec\support\bundle.rb $args
+	& "ruby.exe" E:\[repo root]\bundler\bin\bundle $args
 }
 ```
 

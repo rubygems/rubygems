@@ -26,7 +26,7 @@ module Bundler
         if Bundler.feature_flag.update_requires_all_flag?
           raise InvalidOption, "To update everything, pass the `--all` flag."
         end
-        SharedHelpers.major_deprecation 3, "Pass --all to `bundle update` to update everything"
+        SharedHelpers.major_deprecation 4, "Pass --all to `bundle update` to update everything"
       elsif !full_update && options[:all]
         raise InvalidOption, "Cannot specify --all along with specific options."
       end
@@ -63,7 +63,7 @@ module Bundler
       opts = options.dup
       opts["update"] = true
       opts["local"] = options[:local]
-      opts["force"] = options[:redownload]
+      opts["force"] = options[:redownload] if options[:redownload]
 
       Bundler.settings.set_command_option_if_given :jobs, opts["jobs"]
 

@@ -158,7 +158,7 @@ RSpec.describe "bundle cache" do
     end
   end
 
-  context "with --path", bundler: "< 3" do
+  context "with --path" do
     it "sets root directory for gems" do
       gemfile <<-D
         source "https://gem.repo1"
@@ -221,7 +221,7 @@ RSpec.describe "bundle cache" do
       expect(bundled_app("vendor/cache/myrack-1.0.0.gem")).to exist
     end
 
-    it "puts the gems in vendor/cache even for legacy windows rubies, but prints a warning", bundler: "< 3" do
+    it "puts the gems in vendor/cache even for legacy windows rubies, but prints a warning" do
       gemfile <<-D
         source "https://gem.repo1"
         gem 'myrack', :platforms => [:ruby_20, :x64_mingw_20]
@@ -232,7 +232,7 @@ RSpec.describe "bundle cache" do
       expect(bundled_app("vendor/cache/myrack-1.0.0.gem")).to exist
     end
 
-    it "prints an error when using legacy windows rubies", bundler: "3" do
+    it "prints an error when using legacy windows rubies", bundler: "4" do
       gemfile <<-D
         source "https://gem.repo1"
         gem 'myrack', :platforms => [:ruby_20, :x64_mingw_20]
@@ -356,7 +356,7 @@ RSpec.describe "bundle install with gem sources" do
       G
 
       bundle :cache
-      pristine_system_gems :bundler
+      pristine_system_gems
       FileUtils.rm_r gem_repo2
 
       bundle "install --local"
@@ -371,7 +371,7 @@ RSpec.describe "bundle install with gem sources" do
       G
 
       bundle :cache
-      pristine_system_gems :bundler
+      pristine_system_gems
       FileUtils.rm_r gem_repo2
 
       bundle "config set --local deployment true"
@@ -388,7 +388,7 @@ RSpec.describe "bundle install with gem sources" do
       G
 
       bundle :cache
-      pristine_system_gems :bundler
+      pristine_system_gems
       FileUtils.rm_r gem_repo2
 
       bundle "config set --local cache_all_platforms true"
@@ -482,7 +482,7 @@ RSpec.describe "bundle install with gem sources" do
         bundle :cache
       end
 
-      pristine_system_gems :bundler
+      pristine_system_gems
 
       bundle "config set --local force_ruby_platform true"
 

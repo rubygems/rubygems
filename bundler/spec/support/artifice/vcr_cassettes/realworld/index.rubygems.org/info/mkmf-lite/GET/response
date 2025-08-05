@@ -1,0 +1,43 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 2127
+last-modified: Sat, 22 Mar 2025 02:46:41 GMT
+etag: "9da7707b7923bba645251724e5fcfa48"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="2HIh+Vtcx00U59zHaI4LM4aGzjN+nDFQ2B2UKN7zTpQ="
+repr-digest: sha-256="2HIh+Vtcx00U59zHaI4LM4aGzjN+nDFQ2B2UKN7zTpQ="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400057_BFI 167.82.142.57:443
+accept-ranges: bytes
+date: Mon, 14 Jul 2025 08:09:05 GMT
+age: 297
+x-served-by: cache-bfi-kbfi7400057-BFI, cache-mad2200104-MAD
+x-cache: HIT, HIT
+x-cache-hits: 47068, 1
+x-timer: S1752480545.085744,VS0,VE1
+server: RubyGems.org
+
+---
+0.1.0 ptools:>= 0|checksum:e0390d24e9a3c441b0fde4a50fe80bc99945d4d0aaae5ae934dc290f931473fa
+0.2.0 ptools:>= 0|checksum:198fb5e0ea680fcca8bb3f059b2be61f5df87890b15279f9c9052f84363f2f2c
+0.2.1 ptools:>= 0|checksum:87243b1fa749f2550578b5944e93f536a544f3f6cde03c7af8b855c9bb0fc0f6
+0.2.2 ptools:>= 0|checksum:237103cc86c15be20a6f140b1996c178c5fd5d61801c6a5f6cc91d7a557e76ae
+0.2.3 ptools:>= 0|checksum:0d3a1debf70a282eac523a4c157f60514081f19bcd1f8466dba02ebddc1904b7
+0.2.4 ptools:>= 0|checksum:39063f262da48f8aec06c3297440829f9467a5e32ecaecc1d938edc86bed9f95
+0.2.5 ptools:>= 0|checksum:91d579be80bcaa378b4f6038b1be440d618bf67af66412ff052c068ad15307b2
+0.2.6 ptools:>= 0|checksum:3b6ee06c32cd6fa66126b771b8220392a00186d797273df5c127e016be5003c2
+0.3.0 ptools:>= 0|checksum:0dfbdb782aff5308a4ac0e98c2850f16be2e0e1c2fd217b6e4590d461fcede06
+0.3.1 ptools:>= 0|checksum:ff77a60eaaae9de4b7c3a4a2ce83fa41c14326a1b4aeb1d8cfc54e212ce387e1
+0.3.2 ptools:>= 0|checksum:06e498b73425cc0447c0c3d9d99eb3a8505e8314ee5c648b603f4819bf99292f
+0.4.0 ptools:~> 1.3|checksum:781188b1eee4a925c16365622b0666d05e6aa4c212d2f73e77f314ffdd177110
+0.4.1 |checksum:6c5922ce12fec689ba43038f64bea56e9a171dda82aeb34c038c496b97395055
+0.4.2 ptools:~> 1.4|checksum:31a301f023125f9b60c819f8de8c317008a564b0304992a047c7dba093bc13c1
+0.5.0 ptools:~> 1.4|checksum:d53ba514c2c41c58118c8953086b1e1fb65f0695f0b20f55ceea624040289da2
+0.5.1 ptools:~> 1.4|checksum:bd228be9847b050bf5c410a8a414abf24fec27ce4377ed3bf29cc2c7e485cac0
+0.5.2 ptools:~> 1.4|checksum:8511baf90b99d7219f286bf94797ee6d8b262bf938e39af2911343aeff2c0a67
+0.6.0 memoist:~> 0.16.2,ptools:~> 1.4|checksum:af46e83809a1dc6cd1ad776ecd81ffccf20c3903d642b0297e6a73d3919cdea7
+0.7.0 memoist:~> 0.16.2,ptools:~> 1.4|checksum:42749eeab93163cef7f6abb8a05ae7e59016e13844cb1d1597f55e287e002b98
+0.7.1 memoist:~> 0.16.2,ptools:~> 1.4|checksum:807917691cb8b54b0623941919feb5d08fbadd9399c82d4bdc187956e55de8b5
+0.7.2 memoist:~> 0.16.2,ptools:~> 1.4|checksum:6fba93ad5d47685435aecf6cabb26a29f761353bb0c0711adc0d86e385976b30
+0.7.3 memoist:~> 0.16.2,ptools:~> 1.4|checksum:de8db62d07cfddd1e72c78df1b2636d9dd39ebf373dd494b81f5d47d85cef24b

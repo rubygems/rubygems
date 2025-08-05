@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 14608
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "148050ba62ced843b42121b98787ed59"
-last-modified: Mon, 25 Oct 2021 10:25:13 GMT
+content-length: 24022
+last-modified: Fri, 04 Jul 2025 13:15:38 GMT
+etag: "782d24f5e3a37d6264f77103702e93ec"
 cache-control: max-age=60, public
-x-request-id: 14e3da82-f6b4-4d65-8ebe-a29b7d3d6660
-x-runtime: 0.010596
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="GM9JmdvgfQ0zIsymoWdjUtXYzuBqpHx7ZC17CtQEp8g="
+repr-digest: sha-256="GM9JmdvgfQ0zIsymoWdjUtXYzuBqpHx7ZC17CtQEp8g="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300048_BFI 167.82.143.48:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:39 GMT
-via: 1.1 varnish
-age: 3050
-x-served-by: cache-fra19183-FRA
-x-cache: HIT
-x-cache-hits: 6
-x-timer: S1635203860.855152,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 3143
+date: Mon, 14 Jul 2025 08:09:11 GMT
+x-served-by: cache-bfi-krnt7300048-BFI, cache-mad22041-MAD
+x-cache: HIT, HIT
+x-cache-hits: 96271, 0
+x-timer: S1752480551.269082,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -127,3 +119,55 @@ server: RubyGems.org
 1.7.2 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0.1,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.1,faraday-patron:~> 1.0,faraday-rack:~> 1.0,multipart-post:< 3&>= 1.2,ruby2_keywords:>= 0.0.4|checksum:afafb551525f384fbb568c9960b0425e22bf7bc84dfac6203f878a63beaa4dd8,ruby:>= 2.4
 1.8.0 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0.1,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.1,faraday-patron:~> 1.0,faraday-rack:~> 1.0,multipart-post:< 3&>= 1.2,ruby2_keywords:>= 0.0.4|checksum:d1fb776cf25973b7f52a82b625bb0a009fe30ad6021ef838fb9109bf1ea6d029,ruby:>= 2.4
 2.0.0.alpha.pre.1 multipart-post:< 3&>= 1.2,ruby2_keywords:>= 0.0.4|checksum:b7dc71d8cbc64b74d584d88b581ece2e05097b94d1bc0a5f673583628f2312de,ruby:>= 2.6,rubygems:> 1.3.1
+2.0.0.alpha.pre.2 multipart-post:< 3&>= 1.2,ruby2_keywords:>= 0.0.4|checksum:fd4bf3667cc30a0e3a900fb50343e30805299fb9ec0882861f97edd1fccdad1f,ruby:>= 2.6,rubygems:> 1.3.1
+2.0.0.alpha.pre.3 multipart-post:< 3&>= 1.2,ruby2_keywords:>= 0.0.4|checksum:c91891472d7a3f01b7b74a0fdfd73db8c68dd495cb5993fba0affd038b6d10c5,ruby:>= 2.6,rubygems:> 1.3.1
+2.0.0.alpha.pre.4 multipart-post:< 3&>= 1.2,ruby2_keywords:>= 0.0.4|checksum:30b7da66fa3f349ce6b3c805508502bf6a4df59ac430d1d77563a7d83d21a6ea,ruby:>= 2.6,rubygems:> 1.3.1
+2.0.0 ruby2_keywords:>= 0.0.4|checksum:ae07de19659ee3b8c2bb0df2af6cc2ae7e53e60e262ec65a1b0ba5ee074bb9c3,ruby:>= 2.6
+2.0.1 faraday-net_http:~> 2.0,ruby2_keywords:>= 0.0.4|checksum:a3aa9a2275ee07d843fae755790544290b36f2e5f4c429a1005d631f8e1c499d,ruby:>= 2.6
+1.9.0 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:< 3,faraday-multipart:~> 1.0,faraday-net_http:< 3,faraday-net_http_persistent:< 3,faraday-patron:< 3,faraday-rack:~> 1.0,faraday-retry:~> 1.0,ruby2_keywords:>= 0.0.4|checksum:d85144cebf4bc84aacbcdf95c41dcc3cf3b3960617b9c7a8a7aed1e3c67a80f5,ruby:>= 2.6
+1.9.1 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0,faraday-multipart:~> 1.0,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.0,faraday-patron:~> 1.0,faraday-rack:~> 1.0,faraday-retry:~> 1.0,ruby2_keywords:>= 0.0.4|checksum:560f34294c8bc5c7677c670e1b3bd69e3b5db061d08f4604353856a88764293d,ruby:>= 2.6
+1.9.2 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0,faraday-multipart:~> 1.0,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.0,faraday-patron:~> 1.0,faraday-rack:~> 1.0,faraday-retry:~> 1.0,ruby2_keywords:>= 0.0.4|checksum:106cf79d8b1f7fb664274afbaa2370918162645683958df718dbc451267bc7de,ruby:>= 2.6
+1.9.3 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0,faraday-multipart:~> 1.0,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.0,faraday-patron:~> 1.0,faraday-rack:~> 1.0,faraday-retry:~> 1.0,ruby2_keywords:>= 0.0.4|checksum:468773f7e3decd2baff8cec8e8158f71007d323a97578919fd835292927c6278,ruby:>= 2.4
+2.1.0 faraday-net_http:~> 2.0,ruby2_keywords:>= 0.0.4|checksum:c907bd06b5630a47b73dac35491afa09edf3d15609cd45ca2e5ac020bd36e17d,ruby:>= 2.6
+2.2.0 faraday-net_http:~> 2.0,ruby2_keywords:>= 0.0.4|checksum:ccb092a9f95a409df1da5e840d1fa20d610f195435c622b8b793cb629c5773f9,ruby:>= 2.6
+1.10.0 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0,faraday-multipart:~> 1.0,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.0,faraday-patron:~> 1.0,faraday-rack:~> 1.0,faraday-retry:~> 1.0,ruby2_keywords:>= 0.0.4|checksum:a42158d5c1932c16fd483c512f7e0797b4916096bcf0eb5fb927a1c915a7ea02,ruby:>= 2.4
+0.17.5 multipart-post:< 3&>= 1.2|checksum:d75c5d9c78a9b23bb96f2b30b27fcc3cd841e645374c8b309fe388c641a5422f,ruby:>= 1.9
+2.3.0 faraday-net_http:~> 2.0,ruby2_keywords:>= 0.0.4|checksum:53382490743a40d6551bfc7d7b4bc681cf21068cf74e8f76319ce5cd53d27de7,ruby:>= 2.6
+2.4.0 faraday-net_http:~> 2.0,ruby2_keywords:>= 0.0.4|checksum:522a7983cc1b89808d929e577f835a98f3f513ced9b87edf8fc78c5741728544,ruby:>= 2.6
+1.10.1 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0,faraday-multipart:~> 1.0,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.0,faraday-patron:~> 1.0,faraday-rack:~> 1.0,faraday-retry:~> 1.0,ruby2_keywords:>= 0.0.4|checksum:38e5d43359ad0e8579af549fcc6083c03ffbeb0dd6fd78dee359263fde2cfc0c,ruby:>= 2.4
+2.5.0 faraday-net_http:~> 2.0,ruby2_keywords:>= 0.0.4|checksum:d214ca3a7f57f2088e96fc22596ad8ff69838bf04b06808f697aa299c0fa6120,ruby:>= 2.6
+2.5.1 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:70b06bca1aa57291b3e76af023eda751c803f4afa27d0b6a672ac72db27bc9c9,ruby:>= 2.6
+2.5.2 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:bd0e2f2ad04bb5d94baea75cc46cacae7cef046a261b9d2dfd1ebb2dd044d8a8,ruby:>= 2.6
+1.10.2 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0,faraday-multipart:~> 1.0,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.0,faraday-patron:~> 1.0,faraday-rack:~> 1.0,faraday-retry:~> 1.0,ruby2_keywords:>= 0.0.4|checksum:b7d3789a7cf87c1f10c22a80eaf6835e1449fe45f275f8d37eb02503b6beb1b4,ruby:>= 2.4
+2.6.0 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:7bf59cf89e584b5f5ccdbee0ab7ebd4f3f623c631e2fb12af504deeae0091b57,ruby:>= 2.6
+0.17.6 multipart-post:< 3&>= 1.2|checksum:a572118695fce2937e3a8bed33498ac0c25a263cdb570ea5cd2e41b36c821c34,ruby:>= 1.9
+2.7.0 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:94953a8216c4e2cf273050033685622591350624c0b64526b39f6904cf106222,ruby:>= 2.6
+2.7.1 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:2095ab2b0e24c0646bb06616117badf4f598770ada05e4ee2328fe0a964adff3,ruby:>= 2.6
+2.7.2 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:16c3ee797ff57b2fe412c3aeacc412a60bec9eadfff5b79df24a43608d678a9e,ruby:>= 2.6
+2.7.3 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:fc2cb3d1b1fb48718cd7fc5c8bc1bc2c18366ce97fe81eca5ed60c094c61c4fa,ruby:>= 2.6
+1.10.3 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0,faraday-multipart:~> 1.0,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.0,faraday-patron:~> 1.0,faraday-rack:~> 1.0,faraday-retry:~> 1.0,ruby2_keywords:>= 0.0.4|checksum:20f52e9f73231e5f3d43fb645901573ce2b75f0bd01ea52a2772133d0106e6b0,ruby:>= 2.4
+2.7.4 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:f2a6977c2b44295a868685b7f3b6f9a1b479d465a4bb4656fba0730fbadc40b8,ruby:>= 2.6
+2.7.5 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:e4fde719d3b7d5c4513459cd1b72e689aac09d4673293ac6854a7cb804f143b9,ruby:>= 2.6
+2.7.6 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:83d5f0bfa6cad31ad62d6b13743b297359236abb8540d79e266163adff8a3d23,ruby:>= 2.6
+2.7.7 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:1ea3c705cf3546c21e1379502dfdba002a25909e7aba85bb60e7caea6d6724aa,ruby:>= 2.6
+2.7.8 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:e980ea944b56977f7ca81e5fa9c65e20fce97368270ca37e21cd78802fb03ab0,ruby:>= 2.6
+2.7.9 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:f14455fd71d5d560ad77843e2cd63bea61d1a6e37ab3d999f070c25b176265d3,ruby:>= 2.6
+2.7.10 faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:09be6cf3d4498e31369a8aa0ffde0a4fc3ad4fb9cd5159b1ad65d77421a6eca0,ruby:>= 2.6
+2.7.11 base64:>= 0,faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:85dbf6bb776c66d2a03394d8fe535f90cb1c875e3c6ab9bb85d26ca13597c76e,ruby:>= 2.6
+2.7.12 base64:>= 0,faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:ed38dcd396d2defcf8a536bbf7ef45e6385392ab815fe087df46777be3a781a7,ruby:>= 2.6
+2.8.0 base64:>= 0,faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:c8f313f6d141eddb1ff13a82c6c5785b2fe831225e1182ffc4ebd89c98e1cd5a,ruby:>= 2.6
+2.8.1 base64:>= 0,faraday-net_http:< 3.1&>= 2.0,ruby2_keywords:>= 0.0.4|checksum:a823dc6e1f5deaf6f91c8c1c02f37393f2339b39d811d9de33cef59d7d2ee4a6,ruby:>= 2.6
+2.9.0 faraday-net_http:< 3.2&>= 2.0|checksum:1aa114507006eed6779a726b932d5cc12f5f6053984a19a3403539306b0e0be3,ruby:>= 3.0
+2.9.1 faraday-net_http:< 3.2&>= 2.0|checksum:8ffbc8aaa28509dc31edd57f27a9e49250a283caf0d04090667a3264895b168a,ruby:>= 3.0
+2.9.2 faraday-net_http:< 3.2&>= 2.0|checksum:6595edbe3b4663223e52a315f6bf2bca97ea1527bab7e02a926bf8afcf7423a4,ruby:>= 3.0
+2.10.0 faraday-net_http:< 3.2&>= 2.0,logger:>= 0|checksum:1a3e6c02acc511fc334d799521f1013e449bde38aa2dceb3af71e8030519bda9,ruby:>= 3.0
+2.10.1 faraday-net_http:< 3.2&>= 2.0,logger:>= 0|checksum:6bc9fba3f6191684449d94215195b2c43e2a07bd40b321d245881450923d9a80,ruby:>= 3.0
+2.11.0 faraday-net_http:< 3.4&>= 2.0,logger:>= 0|checksum:e6ead2c9aa1304107d3bb342e9f930cf7e649a71e3ec1e782c3256672f19ed02,ruby:>= 3.0
+2.12.0 faraday-net_http:< 3.4&>= 2.0,json:>= 0,logger:>= 0|checksum:d106d0b1bc2548a8c0c34619a657a5e4aeae2780f951b0e095c8f803bbbf4517,ruby:>= 3.0
+1.10.4 faraday-em_http:~> 1.0,faraday-em_synchrony:~> 1.0,faraday-excon:~> 1.1,faraday-httpclient:~> 1.0,faraday-multipart:~> 1.0,faraday-net_http:~> 1.0,faraday-net_http_persistent:~> 1.0,faraday-patron:~> 1.0,faraday-rack:~> 1.0,faraday-retry:~> 1.0,ruby2_keywords:>= 0.0.4|checksum:a384c541cde688d68bf85055723aecb4100c3fa41b53beb2011b245960ab2f19,ruby:>= 2.4
+2.12.1 faraday-net_http:< 3.5&>= 2.0,json:>= 0,logger:>= 0|checksum:23f2128bf5d40533806b3a3f0444cca218d76d0af25320db8e782bf42ae0aa6f,ruby:>= 3.0
+2.12.2 faraday-net_http:< 3.5&>= 2.0,json:>= 0,logger:>= 0|checksum:157339c25c7b8bcb739f5cf1207cb0cefe8fa1c65027266bcbc34c90c84b9ad6,ruby:>= 3.0
+2.12.3 faraday-net_http:< 3.5&>= 2.0,json:>= 0,logger:>= 0|checksum:b1ad088abda31b356657c96944be5aa2a5546952b6a47f5a9572370ad8a5aa37,ruby:>= 3.0
+2.13.0 faraday-net_http:< 3.5&>= 2.0,json:>= 0,logger:>= 0|checksum:f2697cd61a434dc446ee035f0370de654c2ad64707c4fc2541eb2338702e9614,ruby:>= 3.0
+2.13.1 faraday-net_http:< 3.5&>= 2.0,json:>= 0,logger:>= 0|checksum:cc531eb5467e7d74d4517630fa96f1a7003647cbf20a9a3e067d098941217b75,ruby:>= 3.0
+2.13.2 faraday-net_http:< 3.5&>= 2.0,json:>= 0,logger:>= 0|checksum:5c19762e3bbe78e61d8007c5119f2968373c5296d6c6d6aa05b6f9cec34f2a1a,ruby:>= 3.0

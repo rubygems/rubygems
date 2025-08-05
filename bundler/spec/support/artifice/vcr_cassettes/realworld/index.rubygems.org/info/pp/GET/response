@@ -1,0 +1,30 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 987
+last-modified: Tue, 03 Dec 2024 04:52:46 GMT
+etag: "d36586a9cfdfb8a2e3a0c0ceea5aa13c"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="F5jTMVqDLPcScAQd8aZ1R5N3ANgI9WTamRp5MTozOSk="
+repr-digest: sha-256="F5jTMVqDLPcScAQd8aZ1R5N3ANgI9WTamRp5MTozOSk="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300075_BFI 167.82.143.75:443
+accept-ranges: bytes
+age: 1638
+date: Mon, 14 Jul 2025 08:09:04 GMT
+x-served-by: cache-bfi-krnt7300075-BFI, cache-mad22080-MAD
+x-cache: HIT, HIT
+x-cache-hits: 171073, 0
+x-timer: S1752480545.980953,VS0,VE1
+server: RubyGems.org
+
+---
+0.1.0 |checksum:7340495b99c1f857f328317cafb184f0e7c6996118baefc3a2ec197ee965d5b9,ruby:>= 2.3.0
+0.2.0 prettyprint:>= 0|checksum:d85c03d839820e6dd8e53f65d13fa0fef7aa1977237adc8fbac76218bc7a6c9e,ruby:>= 2.3.0
+0.2.1 prettyprint:>= 0|checksum:0ac9f6fed19709ff472ad4e1bb18636972f472ad041004a4f6c1794a9141cc37,ruby:>= 2.7.0
+0.3.0 prettyprint:>= 0|checksum:a96a86251bb15427686ddda345f72f5a0de204ca67ce5052ad2afbd17a262c96,ruby:>= 2.7.0
+0.4.0 prettyprint:>= 0|checksum:1edc8f053b7e3e496adce86bf3ab39cd5c99aa1ee186fc6260781f01c816a6b6,ruby:>= 2.7.0
+0.5.0 prettyprint:>= 0|checksum:f8f40bc2ba9e1ab351b9458151da3a89f46034f7f599a8e0a06abb9b9f4411dd,ruby:>= 2.7.0
+0.6.0 prettyprint:>= 0|checksum:4e2baf0da59f6e2c682dbe913f8ade3271eb8e3d277642c4f538750d776df5be,ruby:>= 2.7.0
+0.6.1 prettyprint:>= 0|checksum:16d45bd9972616e81090ba08e119161131eb5b6348e85e43c4efffc8c5fe9fea,ruby:>= 2.7.0
+0.6.2 prettyprint:>= 0|checksum:947ec3120c6f92195f8ee8aa25a7b2c5297bb106d83b41baa02983686577b6ff,ruby:>= 2.7.0

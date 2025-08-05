@@ -683,6 +683,14 @@ class Gem::TestCase < Test::Unit::TestCase
     path
   end
 
+  def write_dummy_extconf(gem_name)
+    write_file File.join(@tempdir, "extconf.rb") do |io|
+      io.puts "require 'mkmf'"
+      yield io if block_given?
+      io.puts "create_makefile '#{gem_name}'"
+    end
+  end
+
   ##
   # Load a YAML string, the psych 3 way
 
@@ -1570,3 +1578,9 @@ class Object
 end
 
 require_relative "utilities"
+
+# mise installed rubygems_plugin.rb to system wide `site_ruby` directory.
+# This empty module avoid to call `mise` command.
+module ReshimInstaller
+  def self.reshim; end
+end

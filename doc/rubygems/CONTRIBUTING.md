@@ -52,7 +52,7 @@ To run commands like `gem install` from the repo:
 
 To run commands like `bundle install` from the repo:
 
-    ruby bundler/spec/support/bundle.rb install
+    bundler/bin/bundle install
 
 ### Running Tests
 

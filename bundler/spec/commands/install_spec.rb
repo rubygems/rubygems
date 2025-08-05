@@ -29,23 +29,30 @@ RSpec.describe "bundle install with gem sources" do
       expect(bundled_app_lock).to exist
     end
 
-    it "does not create ./.bundle by default", bundler: "< 3" do
-      gemfile <<-G
+    it "does not create ./.bundle by default" do
+      install_gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"
       G
 
-      bundle :install # can't use install_gemfile since it sets retry
       expect(bundled_app(".bundle")).not_to exist
     end
 
-    it "does not create ./.bundle by default when installing to system gems" do
-      gemfile <<-G
+    it "will create a ./.bundle by default", bundler: "5" do
+      install_gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"
       G
 
-      bundle :install, env: { "BUNDLE_PATH__SYSTEM" => "true" } # can't use install_gemfile since it sets retry
+      expect(bundled_app(".bundle")).to exist
+    end
+
+    it "does not create ./.bundle by default when installing to system gems" do
+      install_gemfile <<-G, env: { "BUNDLE_PATH__SYSTEM" => "true" }
+        source "https://gem.repo1"
+        gem "myrack"
+      G
+
       expect(bundled_app(".bundle")).not_to exist
     end
 
@@ -334,14 +341,14 @@ RSpec.describe "bundle install with gem sources" do
         expect(the_bundle).to include_gems "myrack 1.0"
       end
 
-      it "allows running bundle install --system without deleting foo", bundler: "< 3" do
+      it "allows running bundle install --system without deleting foo" do
         bundle "install --path vendor"
         bundle "install --system"
         FileUtils.rm_r(bundled_app("vendor"))
         expect(the_bundle).to include_gems "myrack 1.0"
       end
 
-      it "allows running bundle install --system after deleting foo", bundler: "< 3" do
+      it "allows running bundle install --system after deleting foo" do
         bundle "install --path vendor"
         FileUtils.rm_r(bundled_app("vendor"))
         bundle "install --system"
@@ -349,7 +356,7 @@ RSpec.describe "bundle install with gem sources" do
       end
     end
 
-    it "finds gems in multiple sources", bundler: "< 3" do
+    it "finds gems in multiple sources" do
       build_repo2 do
         build_gem "myrack", "1.2" do |s|
           s.executables = "myrackup"
@@ -690,8 +697,6 @@ RSpec.describe "bundle install with gem sources" do
     end
 
     it "gracefully handles error when rubygems server is unavailable" do
-      skip "networking issue" if Gem.win_platform?
-
       install_gemfile <<-G, artifice: nil, raise_on_error: false
         source "https://gem.repo1"
         source "http://0.0.0.0:9384" do
@@ -699,7 +704,7 @@ RSpec.describe "bundle install with gem sources" do
         end
       G
 
-      expect(err).to include("Could not fetch specs from http://0.0.0.0:9384/")
+      expect(err).to eq("Could not reach host 0.0.0.0:9384. Check your network connection and try again.")
       expect(err).not_to include("file://")
     end
 
@@ -1107,7 +1112,7 @@ RSpec.describe "bundle install with gem sources" do
       FileUtils.chmod("-x", foo_path)
 
       begin
-        bundle "install --redownload", raise_on_error: false
+        bundle "install --force", raise_on_error: false
       ensure
         FileUtils.chmod("+x", foo_path)
       end
@@ -1143,7 +1148,7 @@ RSpec.describe "bundle install with gem sources" do
       FileUtils.chmod("-w", gem_home)
 
       begin
-        bundle "install --redownload"
+        bundle "install --force"
       ensure
         FileUtils.chmod("+w", gem_home)
       end
@@ -1177,7 +1182,7 @@ RSpec.describe "bundle install with gem sources" do
 
       FileUtils.chmod(0o777, gems_path)
 
-      bundle "install --redownload", raise_on_error: false
+      bundle "install --force", raise_on_error: false
 
       expect(err).to include("Bundler cannot reinstall foo-1.0.0 because there's a previous installation of it at #{gems_path}/foo-1.0.0 that is unsafe to remove")
     end

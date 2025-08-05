@@ -28,16 +28,16 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb # v1.244.0
+        uses: ruby/setup-ruby@bb6434c747fa7022e12fa1cae2a0951fcffcff26 # v1.253.0
         with:
-          ruby-version: truffleruby-24.2.0
+          ruby-version: truffleruby-24.2.1
           bundler: none
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps
       - name: Run Test
         run: |
-          bin/parallel_rspec --tag truffleruby_only --tag truffleruby
+          bin/rspec --tag truffleruby_only --tag truffleruby
         working-directory: ./bundler
     timeout-minutes: 20
 

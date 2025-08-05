@@ -62,9 +62,6 @@ RSpec.describe "env helpers" do
     end
 
     it "removes variables that bundler added", :ruby_repo do
-      # Simulate bundler has not yet been loaded
-      ENV.replace(ENV.to_hash.delete_if {|k, _v| k.start_with?(Bundler::EnvironmentPreserver::BUNDLER_PREFIX) })
-
       original = ruby('puts ENV.to_a.map {|e| e.join("=") }.sort.join("\n")', artifice: "fail")
       create_file("source.rb", <<-RUBY)
         puts Bundler.original_env.to_a.map {|e| e.join("=") }.sort.join("\n")
@@ -139,7 +136,7 @@ RSpec.describe "env helpers" do
     it_behaves_like "an unbundling helper"
   end
 
-  describe "Bundler.clean_env", bundler: 2 do
+  describe "Bundler.clean_env" do
     let(:modified_env) { "Bundler.clean_env" }
 
     it_behaves_like "an unbundling helper"
@@ -161,7 +158,7 @@ RSpec.describe "env helpers" do
     end
   end
 
-  describe "Bundler.with_clean_env", bundler: 2 do
+  describe "Bundler.with_clean_env" do
     it "should set ENV to unbundled_env in the block" do
       expected = Bundler.unbundled_env
 
@@ -212,7 +209,7 @@ RSpec.describe "env helpers" do
     end
   end
 
-  describe "Bundler.clean_system", bundler: 2 do
+  describe "Bundler.clean_system" do
     before do
       create_file("source.rb", <<-'RUBY')
         Bundler.ui.silence { Bundler.clean_system("ruby", "-e", "exit(42) unless ENV['BUNDLE_FOO'] == 'bar'") }
@@ -263,7 +260,7 @@ RSpec.describe "env helpers" do
     end
   end
 
-  describe "Bundler.clean_exec", bundler: 2 do
+  describe "Bundler.clean_exec" do
     before do
       create_file("source.rb", <<-'RUBY')
         Process.fork do

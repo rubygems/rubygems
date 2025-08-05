@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "bundler/rubygems_ext"
 require_relative "bundler/vendored_fileutils"
 require "pathname"
 require "rbconfig"
@@ -7,7 +8,6 @@ require "rbconfig"
 require_relative "bundler/errors"
 require_relative "bundler/environment_preserver"
 require_relative "bundler/plugin"
-require_relative "bundler/rubygems_ext"
 require_relative "bundler/rubygems_integration"
 require_relative "bundler/version"
 require_relative "bundler/current_ruby"
@@ -113,13 +113,13 @@ module Bundler
     end
 
     def configured_bundle_path
-      @configured_bundle_path ||= settings.path.tap(&:validate!)
+      @configured_bundle_path ||= Bundler.settings.path.tap(&:validate!)
     end
 
     # Returns absolute location of where binstubs are installed to.
     def bin_path
       @bin_path ||= begin
-        path = settings[:bin] || "bin"
+        path = Bundler.settings[:bin] || "bin"
         path = Pathname.new(path).expand_path(root).expand_path
         mkdir_p(path)
         path
@@ -173,14 +173,14 @@ module Bundler
       self_manager.restart_with_locked_bundler_if_needed
     end
 
-    # Automatically install dependencies if Bundler.settings[:auto_install] exists.
+    # Automatically install dependencies if settings[:auto_install] exists.
     # This is set through config cmd `bundle config set --global auto_install 1`.
     #
     # Note that this method `nil`s out the global Definition object, so it
     # should be called first, before you instantiate anything like an
     # `Installer` that'll keep a reference to the old one instead.
     def auto_install
-      return unless settings[:auto_install]
+      return unless Bundler.settings[:auto_install]
 
       begin
         definition.specs
@@ -238,10 +238,10 @@ module Bundler
     end
 
     def frozen_bundle?
-      frozen = settings[:frozen]
+      frozen = Bundler.settings[:frozen]
       return frozen unless frozen.nil?
 
-      settings[:deployment]
+      Bundler.settings[:deployment]
     end
 
     def locked_gems
@@ -342,7 +342,7 @@ module Bundler
 
     def app_cache(custom_path = nil)
       path = custom_path || root
-      Pathname.new(path).join(settings.app_cache_path)
+      Pathname.new(path).join(Bundler.settings.app_cache_path)
     end
 
     def tmp(name = Process.pid.to_s)
@@ -454,7 +454,7 @@ module Bundler
     end
 
     def local_platform
-      return Gem::Platform::RUBY if settings[:force_ruby_platform]
+      return Gem::Platform::RUBY if Bundler.settings[:force_ruby_platform]
       Gem::Platform.local
     end
 
@@ -567,7 +567,7 @@ module Bundler
     end
 
     def feature_flag
-      @feature_flag ||= FeatureFlag.new(VERSION)
+      @feature_flag ||= FeatureFlag.new(Bundler.settings[:simulate_version] || VERSION)
     end
 
     def reset!
@@ -583,7 +583,6 @@ module Bundler
 
     def reset_paths!
       @bin_path = nil
-      @bundler_major_version = nil
       @bundle_path = nil
       @configure = nil
       @configured_bundle_path = nil

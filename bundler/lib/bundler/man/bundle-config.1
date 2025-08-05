@@ -1,6 +1,6 @@
 .\" generated with Ronn-NG/v0.10.1
 .\" http://github.com/apjanke/ronn-ng/tree/0.10.1
-.TH "BUNDLE\-CONFIG" "1" "June 2025" ""
+.TH "BUNDLE\-CONFIG" "1" "July 2025" ""
 .SH "NAME"
 \fBbundle\-config\fR \- Set bundler configuration options
 .SH "SYNOPSIS"
@@ -56,9 +56,6 @@ The following is a list of all configuration keys and their purpose\. You can le
 \fBallow_offline_install\fR (\fBBUNDLE_ALLOW_OFFLINE_INSTALL\fR)
 Allow Bundler to use cached data when installing without network access\.
 .TP
-\fBauto_clean_without_path\fR (\fBBUNDLE_AUTO_CLEAN_WITHOUT_PATH\fR)
-Automatically run \fBbundle clean\fR after installing when an explicit \fBpath\fR has not been set and Bundler is not installing into the system gems\.
-.TP
 \fBauto_install\fR (\fBBUNDLE_AUTO_INSTALL\fR)
 Automatically run \fBbundle install\fR when gems are missing\.
 .TP
@@ -66,7 +63,7 @@ Automatically run \fBbundle install\fR when gems are missing\.
 Install executables from gems in the bundle to the specified directory\. Defaults to \fBfalse\fR\.
 .TP
 \fBcache_all\fR (\fBBUNDLE_CACHE_ALL\fR)
-Cache all gems, including path and git gems\. This needs to be explicitly configured on bundler 1 and bundler 2, but will be the default on bundler 3\.
+Cache all gems, including path and git gems\. This needs to be explicitly before bundler 4, but will be the default on bundler 4\.
 .TP
 \fBcache_all_platforms\fR (\fBBUNDLE_CACHE_ALL_PLATFORMS\fR)
 Cache gems for all platforms\.
@@ -75,13 +72,13 @@ Cache gems for all platforms\.
 The directory that bundler will place cached gems in when running \fBbundle package\fR, and that bundler will look in when installing gems\. Defaults to \fBvendor/cache\fR\.
 .TP
 \fBclean\fR (\fBBUNDLE_CLEAN\fR)
-Whether Bundler should run \fBbundle clean\fR automatically after \fBbundle install\fR\.
+Whether Bundler should run \fBbundle clean\fR automatically after \fBbundle install\fR\. Defaults to \fBtrue\fR in Bundler 4, as long as \fBpath\fR is not explicitly configured\.
 .TP
 \fBconsole\fR (\fBBUNDLE_CONSOLE\fR)
 The console that \fBbundle console\fR starts\. Defaults to \fBirb\fR\.
 .TP
-\fBdefault_install_uses_path\fR (\fBBUNDLE_DEFAULT_INSTALL_USES_PATH\fR)
-Whether a \fBbundle install\fR without an explicit \fB\-\-path\fR argument defaults to installing gems in \fB\.bundle\fR\.
+\fBdefault_cli_command\fR (\fBBUNDLE_DEFAULT_CLI_COMMAND\fR)
+The command that running \fBbundle\fR without arguments should run\. Defaults to \fBcli_help\fR since Bundler 4, but can also be \fBinstall\fR which was the previous default\.
 .TP
 \fBdeployment\fR (\fBBUNDLE_DEPLOYMENT\fR)
 Equivalent to setting \fBfrozen\fR to \fBtrue\fR and \fBpath\fR to \fBvendor/bundle\fR\.
@@ -111,7 +108,7 @@ Ignore the current machine's platform and install only \fBruby\fR platform gems\
 Disallow any automatic changes to \fBGemfile\.lock\fR\. Bundler commands will be blocked unless the lockfile can be installed exactly as written\. Usually this will happen when changing the \fBGemfile\fR manually and forgetting to update the lockfile through \fBbundle lock\fR or \fBbundle install\fR\.
 .TP
 \fBgem\.github_username\fR (\fBBUNDLE_GEM__GITHUB_USERNAME\fR)
-Sets a GitHub username or organization to be used in \fBREADME\fR file when you create a new gem via \fBbundle gem\fR command\. It can be overridden by passing an explicit \fB\-\-github\-username\fR flag to \fBbundle gem\fR\.
+Sets a GitHub username or organization to be used in the \fBREADME\fR and \fB\.gemspec\fR files when you create a new gem via \fBbundle gem\fR command\. It can be overridden by passing an explicit \fB\-\-github\-username\fR flag to \fBbundle gem\fR\.
 .TP
 \fBgem\.push_key\fR (\fBBUNDLE_GEM__PUSH_KEY\fR)
 Sets the \fB\-\-key\fR parameter for \fBgem push\fR when using the \fBrake release\fR command with a private gemstash server\.
@@ -120,7 +117,7 @@ Sets the \fB\-\-key\fR parameter for \fBgem push\fR when using the \fBrake relea
 The name of the file that bundler should use as the \fBGemfile\fR\. This location of this file also sets the root of the project, which is used to resolve relative paths in the \fBGemfile\fR, among other things\. By default, bundler will search up from the current working directory until it finds a \fBGemfile\fR\.
 .TP
 \fBglobal_gem_cache\fR (\fBBUNDLE_GLOBAL_GEM_CACHE\fR)
-Whether Bundler should cache all gems globally, rather than locally to the installing Ruby installation\.
+Whether Bundler should cache all gems and compiled extensions globally, rather than locally to the configured installation path\.
 .TP
 \fBignore_funding_requests\fR (\fBBUNDLE_IGNORE_FUNDING_REQUESTS\fR)
 When set, no funding requests will be printed\.
@@ -147,13 +144,10 @@ Whether Bundler should leave outdated gems unpruned when caching\.
 A space\-separated list of groups to install only gems of the specified groups\.
 .TP
 \fBpath\fR (\fBBUNDLE_PATH\fR)
-The location on disk where all gems in your bundle will be located regardless of \fB$GEM_HOME\fR or \fB$GEM_PATH\fR values\. Bundle gems not found in this location will be installed by \fBbundle install\fR\. Defaults to \fBGem\.dir\fR\.
+The location on disk where all gems in your bundle will be located regardless of \fB$GEM_HOME\fR or \fB$GEM_PATH\fR values\. Bundle gems not found in this location will be installed by \fBbundle install\fR\. Defaults to \fB\.bundle\fR relative to repository root in Bundler 4, and to the default system path (\fBGem\.dir\fR) before Bundler 4\.
 .TP
 \fBpath\.system\fR (\fBBUNDLE_PATH__SYSTEM\fR)
 Whether Bundler will install gems into the default system path (\fBGem\.dir\fR)\.
-.TP
-\fBpath_relative_to_cwd\fR (\fBBUNDLE_PATH_RELATIVE_TO_CWD\fR)
-Makes \fB\-\-path\fR relative to the CWD instead of the \fBGemfile\fR\.
 .TP
 \fBplugins\fR (\fBBUNDLE_PLUGINS\fR)
 Enable Bundler's experimental plugin system\.
@@ -161,17 +155,11 @@ Enable Bundler's experimental plugin system\.
 \fBprefer_patch\fR (BUNDLE_PREFER_PATCH)
 Prefer updating only to next patch version during updates\. Makes \fBbundle update\fR calls equivalent to \fBbundler update \-\-patch\fR\.
 .TP
-\fBprint_only_version_number\fR (\fBBUNDLE_PRINT_ONLY_VERSION_NUMBER\fR)
-Print only version number from \fBbundler \-\-version\fR\.
-.TP
 \fBredirect\fR (\fBBUNDLE_REDIRECT\fR)
 The number of redirects allowed for network requests\. Defaults to \fB5\fR\.
 .TP
 \fBretry\fR (\fBBUNDLE_RETRY\fR)
 The number of times to retry failed network requests\. Defaults to \fB3\fR\.
-.TP
-\fBsetup_makes_kernel_gem_public\fR (\fBBUNDLE_SETUP_MAKES_KERNEL_GEM_PUBLIC\fR)
-Have \fBBundler\.setup\fR make the \fBKernel#gem\fR method public, even though RubyGems declares it as private\.
 .TP
 \fBshebang\fR (\fBBUNDLE_SHEBANG\fR)
 The program name that should be invoked for generated binstubs\. Defaults to the ruby install name used to generate the binstub\.
@@ -181,6 +169,9 @@ Whether Bundler should silence deprecation warnings for behavior that will be ch
 .TP
 \fBsilence_root_warning\fR (\fBBUNDLE_SILENCE_ROOT_WARNING\fR)
 Silence the warning Bundler prints when installing gems as root\.
+.TP
+\fBsimulate_version\fR (\fBBUNDLE_SIMULATE_VERSION\fR)
+The virtual version Bundler should use for activating feature flags\. Can be used to simulate all the new functionality that will be enabled in a future major version\.
 .TP
 \fBssl_ca_cert\fR (\fBBUNDLE_SSL_CA_CERT\fR)
 Path to a designated CA certificate file or folder containing multiple certificates for trusted CAs in PEM format\.
@@ -203,6 +194,9 @@ Require passing \fB\-\-all\fR to \fBbundle update\fR when everything should be u
 \fBuser_agent\fR (\fBBUNDLE_USER_AGENT\fR)
 The custom user agent fragment Bundler includes in API requests\.
 .TP
+\fBverbose\fR (\fBBUNDLE_VERBOSE\fR)
+Whether Bundler should print verbose output\. Defaults to \fBfalse\fR, unless the \fB\-\-verbose\fR CLI flag is used\.
+.TP
 \fBversion\fR (\fBBUNDLE_VERSION\fR)
 The version of Bundler to use when running under Bundler environment\. Defaults to \fBlockfile\fR\. You can also specify \fBsystem\fR or \fBx\.y\.z\fR\. \fBlockfile\fR will use the Bundler version specified in the \fBGemfile\.lock\fR, \fBsystem\fR will use the system version of Bundler, and \fBx\.y\.z\fR will use the specified version of Bundler\.
 .TP
@@ -214,7 +208,7 @@ A space\-separated or \fB:\fR\-separated list of groups whose gems bundler shoul
 .SH "REMEMBERING OPTIONS"
 Flags passed to \fBbundle install\fR or the Bundler runtime, such as \fB\-\-path foo\fR or \fB\-\-without production\fR, are remembered between commands and saved to your local application's configuration (normally, \fB\./\.bundle/config\fR)\.
 .P
-However, this will be changed in bundler 3, so it's better not to rely on this behavior\. If these options must be remembered, it's better to set them using \fBbundle config\fR (e\.g\., \fBbundle config set \-\-local path foo\fR)\.
+However, this will be changed in bundler 4, so it's better not to rely on this behavior\. If these options must be remembered, it's better to set them using \fBbundle config\fR (e\.g\., \fBbundle config set \-\-local path foo\fR)\.
 .P
 The flags that can be configured are:
 .TP

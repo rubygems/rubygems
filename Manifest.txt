@@ -1,9 +1,11 @@
 CHANGELOG.md
 CODE_OF_CONDUCT.md
+CONTRIBUTING.md
 LICENSE.txt
 MIT.txt
 Manifest.txt
 README.md
+SECURITY.md
 bundler/CHANGELOG.md
 bundler/LICENSE.md
 bundler/README.md
@@ -523,8 +525,7 @@ lib/rubygems/specification.rb
 lib/rubygems/specification_policy.rb
 lib/rubygems/specification_record.rb
 lib/rubygems/ssl_certs/.document
-lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA.pem
-lib/rubygems/ssl_certs/rubygems.org/GlobalSignRootCA_R3.pem
+lib/rubygems/ssl_certs/rubygems.org/GlobalSign.pem
 lib/rubygems/stub_specification.rb
 lib/rubygems/target_rbconfig.rb
 lib/rubygems/text.rb

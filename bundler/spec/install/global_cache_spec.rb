@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "global gem caching" do
-  before { bundle "config set global_gem_cache true" }
+  # global_gem_cache is now enabled by default, so we don't need to explicitly set it
 
   describe "using the cross-application user cache" do
     let(:source)  { "http://localgemserver.test" }
@@ -291,6 +291,90 @@ RSpec.describe "global gem caching" do
         require 'very_simple_git_binary_c'
       R
       expect(out).to eq "very_simple_binary_c.rb\nvery_simple_git_binary_c.rb"
+    end
+  end
+
+  describe "default behavior" do
+    before do
+      # Ensure no explicit configuration is set to test default behavior
+      bundle "config unset global_gem_cache"
+    end
+
+    it "is enabled by default" do
+      expect(Bundler.feature_flag.global_gem_cache?).to be true
+    end
+
+    it "caches gems globally when no explicit configuration is set" do
+      install_gemfile <<-G, artifice: "compact_index"
+        source "http://localgemserver.test"
+        gem "myrack"
+      G
+
+      expect(the_bundle).to include_gems "myrack 1.0.0"
+      
+      # Verify that gems are cached in the global cache
+      cache_path = home(".bundle", "cache", "gems", "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "myrack-1.0.0.gem")
+      expect(cache_path).to exist
+    end
+
+    it "disables global gem cache via environment variable" do
+      with_env_vars("BUNDLE_GLOBAL_GEM_CACHE" => "false") do
+        Bundler.reset!
+        expect(Bundler.feature_flag.global_gem_cache?).to be false
+      end
+    end
+
+    it "disables global gem cache via bundle config" do
+      bundle "config set global_gem_cache false"
+      expect(Bundler.feature_flag.global_gem_cache?).to be false
+    end
+
+    it "enables global gem cache via bundle config" do
+      bundle "config set global_gem_cache true"
+      expect(Bundler.feature_flag.global_gem_cache?).to be true
+    end
+
+    it "disables global gem cache via environment variable and re-enabled via config" do
+      with_env_vars("BUNDLE_GLOBAL_GEM_CACHE" => "false") do
+        Bundler.reset!
+        expect(Bundler.feature_flag.global_gem_cache?).to be false
+        
+        # Config should override environment variable
+        bundle "config set global_gem_cache true"
+        expect(Bundler.feature_flag.global_gem_cache?).to be true
+      end
+    end
+
+    it "works with system gems configuration" do
+      bundle "config set path.system true"
+      
+      install_gemfile <<-G, artifice: "compact_index"
+        source "http://localgemserver.test"
+        gem "myrack"
+      G
+
+      expect(the_bundle).to include_gems "myrack 1.0.0"
+      
+      # Verify global cache is used even with system gems
+      cache_path = home(".bundle", "cache", "gems", "localgemserver.test.80.dd34752a738ee965a2a4298dc16db6c5", "myrack-1.0.0.gem")
+      expect(cache_path).to exist
+    end
+
+    it "caches compiled extensions globally by default" do
+      skip "gets incorrect ref in path" if Gem.win_platform?
+      skip "fails for unknown reason when run by ruby-core" if ruby_core?
+
+      build_lib "very_simple_path_binary", &:add_c_extension
+
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "very_simple_path_binary", :path => "#{lib_path("very_simple_path_binary-1.0")}"
+      G
+
+      # Verify extension is cached globally
+      extension_cache = home(".bundle", "cache", "extensions", local_platform.to_s, Bundler.ruby_scope,
+        "very_simple_path_binary-1.0", "very_simple_path_binary-1.0")
+      expect(extension_cache).to exist
     end
   end
 end

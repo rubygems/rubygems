@@ -204,13 +204,19 @@ To remove a source use the --remove argument:
   def remove_source(source_uri) # :nodoc:
     source = Gem::Source.new source_uri
 
-    if Gem.sources.include? source
+    if configured_sources&.include?(source)
       Gem.sources.delete source
       Gem.configuration.write
 
-      say "#{source_uri} removed from sources"
+      if default_sources.include?(source)
+        say "#{source_uri} removed from explicitly configured sources, but it's still considered since it's a default source"
+      else
+        say "#{source_uri} removed from sources"
+      end
+    elsif configured_sources
+      say "source #{source_uri} cannot be removed because it's not present in #{config_file_name}"
     else
-      say "source #{source_uri} not present in cache"
+      say "source #{source_uri} cannot be removed because there are no configured sources in #{config_file_name}"
     end
   end
 
@@ -237,7 +243,18 @@ To remove a source use the --remove argument:
 
   private
 
+  def default_sources
+    Gem::SourceList.from(Gem.default_sources)
+  end
+
   def configured_sources
-    Gem.configuration.sources
+    return @configured_sources if defined?(@configured_sources)
+
+    configuration_sources = Gem.configuration.sources
+    @configured_sources = Gem::SourceList.from(configuration_sources) if configuration_sources
+  end
+
+  def config_file_name
+    Gem.configuration.config_file_name
   end
 end

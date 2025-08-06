@@ -14,8 +14,12 @@ class Gem::Commands::SourcesCommand < Gem::Command
     super "sources",
           "Manage the sources and cache file RubyGems uses to search for gems"
 
-    add_option "-a", "--add SOURCE_URI", "Add source" do |value, options|
+    add_option "-a", "--add SOURCE_URI", "Add source [DEPRECATED]" do |value, options|
       options[:add] = value
+    end
+
+    add_option "--append SOURCE_URI", "Append source" do |value, options|
+      options[:append] = value
     end
 
     add_option "-p", "--prepend SOURCE_URI", "Prepend source" do |value, options|
@@ -61,6 +65,35 @@ class Gem::Commands::SourcesCommand < Gem::Command
         Gem.sources << source
         Gem.configuration.write
 
+        say "#{source_uri} added to sources"
+      end
+    rescue Gem::URI::Error, ArgumentError
+      say "#{source_uri} is not a URI"
+      terminate_interaction 1
+    rescue Gem::RemoteFetcher::FetchError => e
+      say "Error fetching #{Gem::Uri.redact(source.uri)}:\n\t#{e.message}"
+      terminate_interaction 1
+    end
+  end
+
+  def append_source(source_uri) # :nodoc:
+    check_rubygems_https source_uri
+
+    source = Gem::Source.new source_uri
+
+    check_typo_squatting(source)
+
+    begin
+      was_present = Gem.sources.include?(source)
+
+      source.load_specs :released
+      Gem.sources.delete(source) if was_present
+      Gem.sources << source
+      Gem.configuration.write
+
+      if was_present
+        say "#{source_uri} moved to end of sources"
+      else
         say "#{source_uri} added to sources"
       end
     rescue Gem::URI::Error, ArgumentError
@@ -179,13 +212,19 @@ Since all of these sources point to the same set of gems you only need one
 of them in your list.  https://rubygems.org is recommended as it brings the
 protections of an SSL connection to gem downloads.
 
-To add a source use the --add argument:
+To add a source use the --prepend argument to insert it before the default
+source. This is usually the best place for private gem sources:
 
-    $ gem sources --add https://rubygems.org
-    https://rubygems.org added to sources
+    $ gem sources --prepend https://my-private-gem-server.com
+    https://my-private-gem-server.com added to sources
 
-RubyGems will check to see if gems can be installed from the source given
+RubyGems will check to see if gems can be installed from the new source
 before it is added.
+
+To add a source as a fallback after all other sources, use --append:
+
+    $ gem sources --append https://rubygems.org
+    https://rubygems.org added to sources
 
 To remove a source use the --remove argument:
 
@@ -206,17 +245,24 @@ To remove a source use the --remove argument:
 
   def list? # :nodoc:
     !(options[:add] ||
+      options[:append] ||
+      options[:prepend] ||
       options[:clear_all] ||
       options[:remove] ||
-      options[:update] ||
-      options[:prepend])
+      options[:update])
   end
 
   def execute
     clear_all if options[:clear_all]
 
     source_uri = options[:add]
-    add_source source_uri if source_uri
+    if source_uri
+      say "DEPRECATED: The --add option is deprecated and will be removed in RubyGems 4.0. Use --prepend or --append instead."
+      add_source source_uri
+    end
+
+    source_uri = options[:append]
+    append_source source_uri if source_uri
 
     source_uri = options[:prepend]
     prepend_source source_uri if source_uri

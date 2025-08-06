@@ -225,4 +225,129 @@ end
       RbConfig::CONFIG.delete "configure_args"
     end
   end
+
+  def test_class_build_with_lib_placement_warning
+    if Gem.java_platform?
+      pend("failing on jruby")
+    end
+
+    if vc_windows? && !nmake_found?
+      pend("test_class_build_with_lib_placement_warning skipped - nmake not found")
+    end
+
+    # Set up a gem-like directory structure
+    gem_dir = File.join @tempdir, "test_gem"
+    ext_dir = File.join gem_dir, "ext", "extension"
+    lib_dir = File.join gem_dir, "lib"
+
+    FileUtils.mkdir_p ext_dir
+    FileUtils.mkdir_p lib_dir
+
+    File.open File.join(ext_dir, "extconf.rb"), "w" do |extconf|
+      extconf.puts "require 'mkmf'\ncreate_makefile 'foo'"
+    end
+
+    # Mock the install_extension_in_lib setting to true
+    original_setting = Gem.install_extension_in_lib
+    Gem.configuration.install_extension_in_lib = true
+
+    # Capture stderr for warning
+    require "stringio"
+    stderr = StringIO.new
+    original_stderr = $stderr
+    $stderr = stderr
+
+    output = []
+
+    begin
+      result = Gem::Ext::ExtConfBuilder.build "extconf.rb", @dest_path, output, [], lib_dir, ext_dir
+
+      # Restore stderr
+      $stderr = original_stderr
+
+      warning_output = stderr.string
+      assert_includes warning_output, "Gem 'test_gem' is installing native extensions in /lib directory"
+      assert_includes warning_output, "Consider moving extensions to /ext directory for better organization"
+      assert_includes warning_output, "Set install_extension_in_lib: true in your .gemrc to maintain current behavior"
+    ensure
+      # Restore original setting
+      Gem.configuration.install_extension_in_lib = original_setting
+      $stderr = original_stderr
+    end
+  end
+
+  def test_class_build_without_lib_placement_warning_when_false
+    if Gem.java_platform?
+      pend("failing on jruby")
+    end
+
+    if vc_windows? && !nmake_found?
+      pend("test_class_build_without_lib_placement_warning_when_false skipped - nmake not found")
+    end
+
+    # Set up a gem-like directory structure
+    gem_dir = File.join @tempdir, "test_gem"
+    ext_dir = File.join gem_dir, "ext", "extension"
+    lib_dir = File.join gem_dir, "lib"
+
+    FileUtils.mkdir_p ext_dir
+    FileUtils.mkdir_p lib_dir
+
+    File.open File.join(ext_dir, "extconf.rb"), "w" do |extconf|
+      extconf.puts "require 'mkmf'\ncreate_makefile 'foo'"
+    end
+
+    # Mock the install_extension_in_lib setting to false
+    original_setting = Gem.install_extension_in_lib
+    Gem.configuration.install_extension_in_lib = false
+
+    # Capture stderr for warning
+    require "stringio"
+    stderr = StringIO.new
+    original_stderr = $stderr
+    $stderr = stderr
+
+    output = []
+
+    begin
+      result = Gem::Ext::ExtConfBuilder.build "extconf.rb", @dest_path, output, [], lib_dir, ext_dir
+
+      # Restore stderr
+      $stderr = original_stderr
+
+      warning_output = stderr.string
+      refute_includes warning_output, "Gem 'test_gem' is installing native extensions in /lib directory"
+    ensure
+      # Restore original setting
+      Gem.configuration.install_extension_in_lib = original_setting
+      $stderr = original_stderr
+    end
+  end
+
+  def test_detect_gem_name_from_path
+    # Test with standard gem structure
+    path = "/path/to/test_gem/ext/extension"
+    gem_name = Gem::Ext::ExtConfBuilder.detect_gem_name_from_path(path)
+    assert_equal "test_gem", gem_name
+
+    # Test with nested structure
+    path = "/path/to/nested/test_gem/ext/extension"
+    gem_name = Gem::Ext::ExtConfBuilder.detect_gem_name_from_path(path)
+    assert_equal "test_gem", gem_name
+
+    # Test with no ext directory
+    path = "/path/to/test_gem/lib"
+    gem_name = Gem::Ext::ExtConfBuilder.detect_gem_name_from_path(path)
+    assert_nil gem_name
+
+    # Test with ext at root
+    path = "/ext/extension"
+    gem_name = Gem::Ext::ExtConfBuilder.detect_gem_name_from_path(path)
+    assert_nil gem_name
+
+    # Test with empty path
+    path = ""
+    gem_name = Gem::Ext::ExtConfBuilder.detect_gem_name_from_path(path)
+    assert_nil gem_name
+  end
 end

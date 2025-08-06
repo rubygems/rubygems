@@ -60,6 +60,23 @@ class Gem::SourceList
   end
 
   ##
+  # Prepends +obj+ to the beginning of the source list which may be a Gem::Source, Gem::URI or URI
+  # String.
+
+  def unshift(obj)
+    src = case obj
+          when Gem::Source
+            obj
+          else
+            Gem::Source.new(obj)
+    end
+
+    @sources.delete(src) if @sources.include?(src)
+    @sources.unshift(src)
+    src
+  end
+
+  ##
   # Replaces this SourceList with the sources in +other+  See #<< for
   # acceptable items in +other+.
 

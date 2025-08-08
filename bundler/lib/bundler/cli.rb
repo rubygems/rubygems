@@ -286,11 +286,6 @@ module Bundler
     method_option "paths", type: :boolean, banner: "List the paths of all gems that are required by your Gemfile."
     method_option "outdated", type: :boolean, banner: "Show verbose output including whether gems are outdated."
     def show(gem_name = nil)
-      if ARGV.include?("--outdated")
-        message = "the `--outdated` flag to `bundle show` was undocumented and will be removed without replacement"
-        removed_message = "the `--outdated` flag to `bundle show` was undocumented and has been removed without replacement"
-        SharedHelpers.major_deprecation(2, message, removed_message: removed_message)
-      end
       require_relative "cli/show"
       Show.new(options, gem_name).run
     end

@@ -578,27 +578,6 @@ RSpec.describe "major deprecations" do
     pending "fails with a helpful error", bundler: "4"
   end
 
-  context "bundle show" do
-    before do
-      install_gemfile <<-G
-        source "https://gem.repo1"
-        gem "myrack"
-      G
-    end
-
-    context "with --outdated flag" do
-      before do
-        bundle "show --outdated"
-      end
-
-      it "prints a deprecation warning informing about its removal" do
-        expect(deprecations).to include("the `--outdated` flag to `bundle show` was undocumented and will be removed without replacement")
-      end
-
-      pending "fails with a helpful message", bundler: "4"
-    end
-  end
-
   context "bundle remove" do
     before do
       gemfile <<-G

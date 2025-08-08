@@ -155,8 +155,7 @@ automatically and that requires `bundler` to silently remember them. Since
   runtime. A space separated list of groups to install can be specified.
   Bundler creates a directory named `bundle` and installs the bundle there. It
   also generates a `bundle/bundler/setup.rb` file to replace Bundler's own setup
-  in the manner required. Using this option implicitly sets `path`, which is a
-  [remembered option][REMEMBERED OPTIONS].
+  in the manner required.
 
 * `--system`:
   Installs the gems specified in the bundle to the system's Rubygems location.

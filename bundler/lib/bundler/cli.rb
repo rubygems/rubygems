@@ -173,7 +173,7 @@ module Bundler
     D
     method_option "dry-run", type: :boolean, default: false, banner: "Lock the Gemfile"
     method_option "gemfile", type: :string, banner: "Use the specified gemfile instead of Gemfile"
-    method_option "path", type: :string, banner: "Specify a different path than the system default ($BUNDLE_PATH or $GEM_HOME).#{" Bundler will remember this value for future installs on this machine" unless Bundler.feature_flag.forget_cli_options?}"
+    method_option "path", type: :string, banner: "Specify a different path than the system default ($BUNDLE_PATH or $GEM_HOME)."
     def check
       remembered_flag_deprecation("path")
 
@@ -222,7 +222,7 @@ module Bundler
     method_option "no-cache", type: :boolean, banner: "Don't update the existing gem cache."
     method_option "force", type: :boolean, aliases: "--redownload", banner: "Force reinstalling every gem, even if already installed"
     method_option "no-prune", type: :boolean, banner: "Don't remove stale gems from the cache."
-    method_option "path", type: :string, banner: "Specify a different path than the system default ($BUNDLE_PATH or $GEM_HOME).#{" Bundler will remember this value for future installs on this machine" unless Bundler.feature_flag.forget_cli_options?}"
+    method_option "path", type: :string, banner: "Specify a different path than the system default ($BUNDLE_PATH or $GEM_HOME)."
     method_option "quiet", type: :boolean, banner: "Only output warnings and errors."
     method_option "shebang", type: :string, banner: "Specify a different shebang executable name than the default (usually 'ruby')"
     method_option "standalone", type: :array, lazy_default: [], banner: "Make a bundle that can work without the Bundler runtime"
@@ -239,6 +239,12 @@ module Bundler
       print_remembered_flag_deprecation("--system", "path.system", "true") if ARGV.include?("--system")
 
       remembered_flag_deprecation("deployment", negative: true)
+
+      if ARGV.include?("--binstubs")
+        message = "The --binstubs option will be removed in favor of `bundle binstubs --all`"
+        removed_message = "The --binstubs option has been removed in favor of `bundle binstubs --all`"
+        Bundler::SharedHelpers.major_deprecation(2, message, removed_message: removed_message)
+      end
 
       require_relative "cli/install"
       Bundler.settings.temporary(no_install: false) do
@@ -401,7 +407,7 @@ module Bundler
     method_option "gemfile", type: :string, banner: "Use the specified gemfile instead of Gemfile"
     method_option "no-install", type: :boolean, banner: "Don't install the gems, only update the cache."
     method_option "no-prune", type: :boolean, banner: "Don't remove stale gems from the cache."
-    method_option "path", type: :string, banner: "Specify a different path than the system default ($BUNDLE_PATH or $GEM_HOME).#{" Bundler will remember this value for future installs on this machine" unless Bundler.feature_flag.forget_cli_options?}"
+    method_option "path", type: :string, banner: "Specify a different path than the system default ($BUNDLE_PATH or $GEM_HOME)."
     method_option "quiet", type: :boolean, banner: "Only output warnings and errors."
     method_option "frozen", type: :boolean, banner: "Do not allow the Gemfile.lock to be updated after this bundle cache operation's install"
     long_desc <<-D
@@ -412,6 +418,7 @@ module Bundler
     D
     def cache
       print_remembered_flag_deprecation("--all", "cache_all", "true") if ARGV.include?("--all")
+      print_remembered_flag_deprecation("--no-all", "cache_all", "false") if ARGV.include?("--no-all")
 
       if flag_passed?("--path")
         message =
@@ -422,7 +429,8 @@ module Bundler
         removed_message =
           "The `--path` flag has been removed because its semantics were unclear. " \
           "Use `bundle config cache_path` to configure the path of your cache of gems, " \
-          "and `bundle config path` to configure the path where your gems are installed."
+          "and `bundle config path` to configure the path where your gems are installed, " \
+          "and stop using this flag"
         SharedHelpers.major_deprecation 2, message, removed_message: removed_message
       end
 
@@ -511,25 +519,6 @@ module Bundler
       end
     end
 
-    unless Bundler.feature_flag.bundler_4_mode?
-      desc "viz [OPTIONS]", "Generates a visual dependency graph", hide: true
-      long_desc <<-D
-        Viz generates a PNG file of the current Gemfile as a dependency graph.
-        Viz requires the ruby-graphviz gem (and its dependencies).
-        The associated gems must also be installed via 'bundle install'.
-      D
-      method_option :file, type: :string, default: "gem_graph", aliases: "-f", desc: "The name to use for the generated file. see format option"
-      method_option :format, type: :string, default: "png", aliases: "-F", desc: "This is output format option. Supported format is png, jpg, svg, dot ..."
-      method_option :requirements, type: :boolean, default: false, aliases: "-R", desc: "Set to show the version of each required dependency."
-      method_option :version, type: :boolean, default: false, aliases: "-v", desc: "Set to show each gem version."
-      method_option :without, type: :array, default: [], aliases: "-W", banner: "GROUP[ GROUP...]", desc: "Exclude gems that are part of the specified named group."
-      def viz
-        SharedHelpers.major_deprecation 2, "The `viz` command has been renamed to `graph` and moved to a plugin. See https://github.com/rubygems/bundler-graph"
-        require_relative "cli/viz"
-        Viz.new(options.dup).run
-      end
-    end
-
     desc "gem NAME [OPTIONS]", "Creates a skeleton for creating a rubygem"
     method_option :exe, type: :boolean, default: false, aliases: ["--bin", "-b"], desc: "Generate a binary executable for your library."
     method_option :coc, type: :boolean, desc: "Generate a code of conduct file. Set a default with `bundle config set --global gem.coc true`."
@@ -570,15 +559,6 @@ module Bundler
     def platform
       require_relative "cli/platform"
       Platform.new(options).run
-    end
-
-    desc "inject GEM VERSION", "Add the named gem, with version requirements, to the resolved Gemfile", hide: true
-    method_option "source", type: :string, banner: "Install gem from the given source"
-    method_option "group", type: :string, banner: "Install gem into a bundler group"
-    def inject(name, version)
-      SharedHelpers.major_deprecation 2, "The `inject` command has been replaced by the `add` command"
-      require_relative "cli/inject"
-      Inject.new(options.dup, name, version).run
     end
 
     desc "lock", "Creates a lockfile without installing"
@@ -768,9 +748,9 @@ module Bundler
         "#{option_value}`, and stop using this flag"
       removed_message =
         "The `#{flag_name}` flag has been removed because it relied on being " \
-        "remembered across bundler invocations, which bundler will no longer " \
-        "do. Instead please use `bundle config set #{option_name} " \
-        "#{option_value}`, and stop using this flag"
+        "remembered across bundler invocations, which bundler no longer does. " \
+        "Instead please use `bundle config set #{option_name} #{option_value}`, " \
+        "and stop using this flag"
       Bundler::SharedHelpers.major_deprecation 2, message, removed_message: removed_message
     end
 

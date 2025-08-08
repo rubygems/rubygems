@@ -572,6 +572,30 @@ RSpec.describe "major deprecations" do
     pending "fails with a helpful error", bundler: "4"
   end
 
+  context "when `bundler/capistrano` is required in a ruby script" do
+    before do
+      ruby <<-RUBY, raise_on_error: false
+        require 'bundler/capistrano'
+      RUBY
+    end
+
+    it "fails with a helpful error" do
+      expect(err).to include("[REMOVED] The Bundler task for Capistrano. Please use https://github.com/capistrano/bundler")
+    end
+  end
+
+  context "when `bundler/vlad` is required in a ruby script" do
+    before do
+      ruby <<-RUBY, raise_on_error: false
+        require 'bundler/vlad'
+      RUBY
+    end
+
+    it "fails with a helpful error" do
+      expect(err).to include("[REMOVED] The Bundler task for Vlad")
+    end
+  end
+
   context "bundle show" do
     before do
       install_gemfile <<-G

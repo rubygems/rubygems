@@ -9,7 +9,7 @@ module Bundler
       :metadata_source
 
     def global_rubygems_source
-      @global_rubygems_source ||= rubygems_aggregate_class.new("allow_local" => true)
+      @global_rubygems_source ||= source_class.new("allow_local" => true)
     end
 
     def initialize
@@ -199,7 +199,7 @@ module Bundler
       !equivalent_sources?(lock_sources, replacement_sources)
     end
 
-    def rubygems_aggregate_class
+    def source_class
       Source::Rubygems
     end
 

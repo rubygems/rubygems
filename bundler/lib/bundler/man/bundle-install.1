@@ -77,7 +77,7 @@ Uses the specified ruby executable (usually \fBruby\fR) to execute the scripts c
 This option is deprecated in favor of the \fBshebang\fR setting\.
 .TP
 \fB\-\-standalone[=<list>]\fR
-Makes a bundle that can work without depending on Rubygems or Bundler at runtime\. A space separated list of groups to install can be specified\. Bundler creates a directory named \fBbundle\fR and installs the bundle there\. It also generates a \fBbundle/bundler/setup\.rb\fR file to replace Bundler's own setup in the manner required\. Using this option implicitly sets \fBpath\fR, which is a [remembered option][REMEMBERED OPTIONS]\.
+Makes a bundle that can work without depending on Rubygems or Bundler at runtime\. A space separated list of groups to install can be specified\. Bundler creates a directory named \fBbundle\fR and installs the bundle there\. It also generates a \fBbundle/bundler/setup\.rb\fR file to replace Bundler's own setup in the manner required\.
 .TP
 \fB\-\-system\fR
 Installs the gems specified in the bundle to the system's Rubygems location\. This overrides any previous configuration of \fB\-\-path\fR\.

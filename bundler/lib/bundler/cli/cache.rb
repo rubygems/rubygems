@@ -10,16 +10,13 @@ module Bundler
 
     def run
       Bundler.ui.level = "warn" if options[:quiet]
-      Bundler.settings.set_command_option_if_given :path, options[:path]
       Bundler.settings.set_command_option_if_given :cache_path, options["cache-path"]
 
       setup_cache_all
       install
 
-      custom_path = Bundler.settings[:path] if options[:path]
-
       Bundler.settings.temporary(cache_all_platforms: options["all-platforms"]) do
-        Bundler.load.cache(custom_path)
+        Bundler.load.cache
       end
     end
 

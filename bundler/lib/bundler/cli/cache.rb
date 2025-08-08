@@ -12,7 +12,6 @@ module Bundler
       Bundler.ui.level = "warn" if options[:quiet]
       Bundler.settings.set_command_option_if_given :cache_path, options["cache-path"]
 
-      setup_cache_all
       install
 
       Bundler.settings.temporary(cache_all_platforms: options["all-platforms"]) do
@@ -28,12 +27,6 @@ module Bundler
       options["local"] = false if Bundler.settings[:cache_all_platforms]
       options["no-cache"] = true
       Bundler::CLI::Install.new(options).run
-    end
-
-    def setup_cache_all
-      all = options.fetch(:all, Bundler.feature_flag.cache_all? || nil)
-
-      Bundler.settings.set_command_option_if_given :cache_all, all
     end
   end
 end

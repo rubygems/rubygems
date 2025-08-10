@@ -206,7 +206,7 @@ module Bundler
       gem versions as the last person who updated the Gemfile and ran `bundle update`.
 
       Passing [DIR] to install (e.g. vendor) will cause the unpacked gems to be installed
-      into the [DIR] directory rather than into system gems.
+      into the [DIR] directory rather than into system gems..
 
       If the bundle has already been installed, bundler will tell you so and then exit.
     D
@@ -236,7 +236,13 @@ module Bundler
         remembered_flag_deprecation(option)
       end
 
-      print_remembered_flag_deprecation("--system", "path.system", "true") if ARGV.include?("--system")
+      if ARGV.include?("--system")
+        if Bundler.feature_flag.forget_cli_options?
+          print_remembered_flag_deprecation("--system", "path.system", "true")
+        else
+          print_remembered_flag_logging("--system", "path.system", "true")
+        end
+      end
 
       remembered_flag_deprecation("deployment", negative: true)
 
@@ -411,7 +417,13 @@ module Bundler
       bundle without having to download any additional gems.
     D
     def cache
-      print_remembered_flag_deprecation("--all", "cache_all", "true") if ARGV.include?("--all")
+      if ARGV.include?("--all")
+        if Bundler.feature_flag.forget_cli_options?
+          print_remembered_flag_deprecation("--all", "cache_all", "true")
+        else
+          print_remembered_flag_logging("--all", "cache_all", "true")
+        end
+      end
 
       if flag_passed?("--path")
         message =
@@ -757,7 +769,13 @@ module Bundler
       value = value.join(" ").to_s if option.type == :array
       value = "'#{value}'" unless option.type == :boolean
 
-      print_remembered_flag_deprecation(flag_name, option_name || name.tr("-", "_"), value)
+      if Bundler.feature_flag.forget_cli_options?
+        # Show deprecation warning when forget_cli_options is enabled (default)
+        print_remembered_flag_deprecation(flag_name, option_name || name.tr("-", "_"), value)
+      else
+        # Show logging message when forget_cli_options is disabled (opt-out)
+        print_remembered_flag_logging(flag_name, option_name || name.tr("-", "_"), value)
+      end
     end
 
     def print_remembered_flag_deprecation(flag_name, option_name, option_value)
@@ -765,13 +783,20 @@ module Bundler
         "The `#{flag_name}` flag is deprecated because it relies on being " \
         "remembered across bundler invocations, which bundler will no longer " \
         "do in future versions. Instead please use `bundle config set #{option_name} " \
-        "#{option_value}`, and stop using this flag"
+        "#{option_value}`, and stop using this flag. Alternatively, you can set " \
+        "`bundle config set forget_cli_options false` to restore the old behavior and see logging messages instead of deprecation warnings."
       removed_message =
         "The `#{flag_name}` flag has been removed because it relied on being " \
         "remembered across bundler invocations, which bundler will no longer " \
         "do. Instead please use `bundle config set #{option_name} " \
-        "#{option_value}`, and stop using this flag"
+        "#{option_value}`, and stop using this flag. Alternatively, you can set " \
+        "`bundle config set forget_cli_options false` to restore the old behavior and see logging messages instead of deprecation warnings."
       Bundler::SharedHelpers.major_deprecation 2, message, removed_message: removed_message
+    end
+
+    def print_remembered_flag_logging(flag_name, option_name, option_value)
+      message = "The `#{flag_name}` flag is being saved to configuration for future bundler invocations"
+      Bundler.ui.info message
     end
 
     def flag_passed?(name)

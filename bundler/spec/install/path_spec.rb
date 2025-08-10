@@ -50,12 +50,23 @@ RSpec.describe "bundle install" do
       expect(exitstatus).to eq(15)
     end
 
-    it "remembers to disable system gems after the first time with bundle --path vendor/bundle" do
+    it "remembers to disable system gems after the first time with bundle --path vendor/bundle when forget_cli_options is disabled" do
+      bundle "config set forget_cli_options false"
       bundle "install --path vendor/bundle"
       FileUtils.rm_r bundled_app("vendor")
       bundle "install"
 
       expect(vendored_gems("gems/myrack-1.0.0")).to be_directory
+      expect(the_bundle).to include_gems "myrack 1.0.0"
+    end
+
+    it "forgets --path flag when forget_cli_options is enabled (default)" do
+      bundle "install --path vendor/bundle"
+      FileUtils.rm_r bundled_app("vendor")
+      bundle "install"
+
+      # Should install to default location, not the previously specified path
+      expect(bundled_app("vendor")).not_to be_directory
       expect(the_bundle).to include_gems "myrack 1.0.0"
     end
 

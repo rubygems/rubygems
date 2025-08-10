@@ -57,6 +57,34 @@ RSpec.describe "install in deployment or frozen mode" do
       bundle "install --frozen"
     end
 
+    it "shows deprecation warning for --deployment flag when forget_cli_options is enabled (default)" do
+      bundle :lock
+      bundle "install --deployment"
+      expect(out).to include("[DEPRECATED] The `--deployment` flag is deprecated")
+      expect(out).to include("vendor/bundle")
+    end
+
+    it "shows logging message for --deployment flag when forget_cli_options is disabled" do
+      bundle "config set forget_cli_options false"
+      bundle :lock
+      bundle "install --deployment"
+      expect(out).to include("The `--deployment` flag is being saved to configuration for future bundler invocations")
+      expect(out).to include("vendor/bundle")
+    end
+
+    it "shows deprecation warning for --frozen flag when forget_cli_options is enabled (default)" do
+      bundle :lock
+      bundle "install --frozen"
+      expect(out).to include("[DEPRECATED] The `--frozen` flag is deprecated")
+    end
+
+    it "shows logging message for --frozen flag when forget_cli_options is disabled" do
+      bundle "config set forget_cli_options false"
+      bundle :lock
+      bundle "install --frozen"
+      expect(out).to include("The `--frozen` flag is being saved to configuration for future bundler invocations")
+    end
+
     it "explodes with the --deployment flag if you make a change and don't check in the lockfile" do
       bundle :lock
       gemfile <<-G

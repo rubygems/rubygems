@@ -289,6 +289,19 @@ RSpec.describe "bundle check" do
         expect(out).to include("The Gemfile's dependencies are satisfied")
       end
 
+      it "shows deprecation warning for --path flag when forget_cli_options is enabled (default)" do
+        bundle "check --path vendor/bundle"
+        expect(out).to include("[DEPRECATED] The `--path` flag is deprecated")
+        expect(out).to include("The Gemfile's dependencies are satisfied")
+      end
+
+      it "shows logging message for --path flag when forget_cli_options is disabled" do
+        bundle "config set forget_cli_options false"
+        bundle "check --path vendor/bundle"
+        expect(out).to include("The `--path` flag is being saved to configuration for future bundler invocations")
+        expect(out).to include("The Gemfile's dependencies are satisfied")
+      end
+
       it "should write to .bundle/config" do
         bundle "check --path vendor/bundle"
         bundle "check"

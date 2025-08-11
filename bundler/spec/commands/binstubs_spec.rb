@@ -168,6 +168,29 @@ RSpec.describe "bundle binstubs <gem>" do
       expect(bundled_app("exec/myrackup")).to exist
     end
 
+    it "shows deprecation warning for --path flag when forget_cli_options is enabled (default)" do
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "myrack"
+      G
+
+      bundle "binstubs myrack --path exec"
+      expect(out).to include("[DEPRECATED] The `--path` flag is deprecated")
+      expect(bundled_app("exec/myrackup")).to exist
+    end
+
+    it "shows logging message for --path flag when forget_cli_options is disabled" do
+      bundle "config set forget_cli_options false"
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "myrack"
+      G
+
+      bundle "binstubs myrack --path exec"
+      expect(out).to include("The `--path` flag is being saved to configuration for future bundler invocations")
+      expect(bundled_app("exec/myrackup")).to exist
+    end
+
     it "setting is saved for bundle install" do
       install_gemfile <<-G
         source "https://gem.repo1"

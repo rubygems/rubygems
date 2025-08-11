@@ -125,6 +125,9 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
 * `force_ruby_platform` (`BUNDLE_FORCE_RUBY_PLATFORM`):
    Ignore the current machine's platform and install only `ruby` platform gems.
    As a result, gems with native extensions will be compiled from source.
+* `forget_cli_options` (`BUNDLE_FORGET_CLI_OPTIONS`):
+   Whether Bundler should forget CLI options after each command, rather than
+   silently saving them to configuration. Enabled by default.
 * `frozen` (`BUNDLE_FROZEN`):
    Disallow any automatic changes to `Gemfile.lock`. Bundler commands will
    be blocked unless the lockfile can be installed exactly as written.

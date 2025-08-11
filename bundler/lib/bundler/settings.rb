@@ -398,11 +398,10 @@ module Bundler
       return if hash[key] == value
 
       hash[key] = value
-
       hash.delete(key) if value.nil?
 
       Validator.validate!(raw_key, converted_value(value, raw_key), hash)
-      
+
       return unless file
 
       SharedHelpers.filesystem_access(file.dirname, :create) do |p|

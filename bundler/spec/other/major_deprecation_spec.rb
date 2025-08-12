@@ -602,19 +602,18 @@ RSpec.describe "major deprecations" do
 
   context "when `bundler/deployment` is required in a ruby script" do
     before do
-      ruby <<-RUBY
+      ruby <<-RUBY, raise_on_error: false
         require 'bundler/deployment'
       RUBY
     end
 
-    it "should print a capistrano deprecation warning" do
-      expect(deprecations).to include("Bundler no longer integrates " \
-                             "with Capistrano, but Capistrano provides " \
-                             "its own integration with Bundler via the " \
-                             "capistrano-bundler gem. Use it instead.")
+    it "fails with a helpful error" do
+      expect(err).to include(
+        "Bundler no longer integrates with Capistrano, but Capistrano " \
+        "provides its own integration with Bundler via the " \
+        "capistrano-bundler gem. Use it instead."
+      )
     end
-
-    pending "fails with a helpful error", bundler: "4"
   end
 
   context "when `bundler/capistrano` is required in a ruby script" do
@@ -744,6 +743,18 @@ RSpec.describe "major deprecations" do
         expect(err).to include \
           "--no-rubocop has been removed, use --no-linter"
       end
+    end
+  end
+
+  context " bundle gem --ext parameter with no value" do
+    it "prints deprecation when used after gem name" do
+      bundle "gem --ext foo", raise_on_error: false
+      expect(err).to include "Extensions can now be generated using C or Rust, so `--ext` with no arguments has been removed. Please select a language, e.g. `--ext=rust` to generate a Rust extension."
+    end
+
+    it "prints deprecation when used before gem name" do
+      bundle "gem foo --ext", raise_on_error: false
+      expect(err).to include "Extensions can now be generated using C or Rust, so `--ext` with no arguments has been removed. Please select a language, e.g. `--ext=rust` to generate a Rust extension."
     end
   end
 end

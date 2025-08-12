@@ -82,6 +82,7 @@ module Bundler
       "BUNDLE_TIMEOUT" => 10,
       "BUNDLE_VERSION" => "lockfile",
       "BUNDLE_CACHE_ALL" => true,
+      "BUNDLE_DEFAULT_CLI_COMMAND" => "cli_help",
       "BUNDLE_LOCKFILE_CHECKSUMS" => true,
       "BUNDLE_PLUGINS" => true,
     }.freeze

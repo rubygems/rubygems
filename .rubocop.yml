@@ -290,6 +290,9 @@ Layout/AssignmentIndentation:
 Layout/EmptyLinesAroundExceptionHandlingKeywords:
   Enabled: true
 
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
 Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: true
 

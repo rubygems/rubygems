@@ -1,15 +1,15 @@
 # .git-blame-ignore-revs
-# RubyGems
-# Enable Style/StringLiterals cop
+# [RuboCop] Enable Style/StringLiterals in RubyGems
 dca5fa728437383428a593644f537aaa1020ee63
-# enable Style/MethodDefParentheses in Rubocop
+# [RuboCop] Enable Style/MethodDefParentheses in RubyGems
 79e6bafd945e358480ac2253995e82e229bb4f5c
-# Bundler
-# [RuboCop] Enable Style/StringLiterals
+# [RuboCop] Enable Style/StringLiterals in Bundler
 b0d532adb80521271fbde4d3955c252f2ee09a5c
-# [RuboCop] Enable Style/SymbolProc
+# [RuboCop] Enable Style/SymbolProc in Bundler
 cf58bc4b1ee83b2697fbdbcc76ced09515525141
-# [RuboCop] Enable Style/EmptyLines
+# [RuboCop] Enable Style/EmptyLines in Bundler
 ff426fdbc1bde3582b6e1d5137abd21d74c38f87
-# Use modern hashes consistently
+# [RuboCop] Use modern hashes consistently in Bundler
 bb66253f2ceddee527b82971423348d8bbc1b606
+# [RuboCop] Enable Layout/SpaceAroundEqualsInParameterDefault
+cf085f1d11e729732657991baa2de010a51f4378

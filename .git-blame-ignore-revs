@@ -11,3 +11,5 @@ cf58bc4b1ee83b2697fbdbcc76ced09515525141
 ff426fdbc1bde3582b6e1d5137abd21d74c38f87
 # [RuboCop] Use modern hashes consistently in Bundler
 bb66253f2ceddee527b82971423348d8bbc1b606
+# [RuboCop] Enable Layout/SpaceAroundEqualsInParameterDefault
+cf085f1d11e729732657991baa2de010a51f4378

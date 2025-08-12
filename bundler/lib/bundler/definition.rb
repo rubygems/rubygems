@@ -125,7 +125,7 @@ module Bundler
         @locked_specs   = SpecSet.new([])
         @originally_locked_specs = @locked_specs
         @locked_sources = []
-        @locked_checksums = Bundler.feature_flag.lockfile_checksums?
+        @locked_checksums = Bundler.settings[:lockfile_checksums]
       end
 
       locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }

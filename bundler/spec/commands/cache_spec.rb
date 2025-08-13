@@ -328,6 +328,16 @@ RSpec.describe "bundle cache" do
       bundle "env"
       expect(out).to include("frozen")
     end
+
+    it "caches gems without installing even if vendor/cache directory is initially empty" do
+      app_cache = bundled_app("vendor/cache")
+      FileUtils.mkdir_p app_cache
+
+      bundle "cache --no-install"
+      expect(out).not_to include("Installing myrack 1.0.0")
+      expect(out).to include("Fetching myrack 1.0.0")
+      expect(app_cache.join("myrack-1.0.0.gem")).to exist
+    end
   end
 
   context "with gems with extensions" do

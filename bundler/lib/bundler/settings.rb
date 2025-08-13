@@ -85,6 +85,7 @@ module Bundler
       "BUNDLE_DEFAULT_CLI_COMMAND" => "cli_help",
       "BUNDLE_LOCKFILE_CHECKSUMS" => true,
       "BUNDLE_PLUGINS" => true,
+      "BUNDLE_GLOBAL_GEM_CACHE" => false,
     }.freeze
 
     def initialize(root = nil)

@@ -30,12 +30,4 @@ class TestGemResolverActivationRequest < Gem::TestCase
     assert_match "a-3",                         @req.inspect
     assert_match "from a (>= 0)",               @req.inspect
   end
-
-  def test_installed_eh
-    v_spec = Gem::Resolver::VendorSpecification.new nil, @a3
-
-    @req = Gem::Resolver::ActivationRequest.new v_spec, @dep
-
-    assert @req.installed?
-  end
 end

@@ -411,7 +411,13 @@ module Bundler
         next if VALID_PLATFORMS.include?(p)
         raise GemfileError, "`#{p}` is not a valid platform. The available options are: #{VALID_PLATFORMS.inspect}"
       end
-      deprecate_legacy_windows_platforms(platforms)
+
+      windows_platforms = platforms.select {|pl| pl.to_s.match?(/mingw|mswin/) }
+      if windows_platforms.any?
+        windows_platforms = windows_platforms.map! {|pl| ":#{pl}" }.join(", ")
+        removed_message = "Platform #{windows_platforms} has been removed. Please use platform :windows instead."
+        Bundler::SharedHelpers.feature_removed! removed_message
+      end
 
       # Save sources passed in a key
       if opts.key?("source")
@@ -477,29 +483,15 @@ module Bundler
     def normalize_source(source)
       case source
       when :gemcutter, :rubygems, :rubyforge
-        message =
-          "The source :#{source} is deprecated because HTTP requests are insecure.\n" \
-          "Please change your source to 'https://rubygems.org' if possible, or 'http://rubygems.org' if not."
         removed_message =
           "The source :#{source} is disallowed because HTTP requests are insecure.\n" \
           "Please change your source to 'https://rubygems.org' if possible, or 'http://rubygems.org' if not."
-        Bundler::SharedHelpers.major_deprecation 2, message, removed_message: removed_message
-        "http://rubygems.org"
+        Bundler::SharedHelpers.feature_removed! removed_message
       when String
         source
       else
         raise GemfileError, "Unknown source '#{source}'"
       end
-    end
-
-    def deprecate_legacy_windows_platforms(platforms)
-      windows_platforms = platforms.select {|pl| pl.to_s.match?(/mingw|mswin/) }
-      return if windows_platforms.empty?
-
-      windows_platforms = windows_platforms.map! {|pl| ":#{pl}" }.join(", ")
-      message = "Platform #{windows_platforms} is deprecated. Please use platform :windows instead."
-      removed_message = "Platform #{windows_platforms} has been removed. Please use platform :windows instead."
-      Bundler::SharedHelpers.major_deprecation 2, message, removed_message: removed_message
     end
 
     def check_path_source_safety
@@ -513,7 +505,7 @@ module Bundler
               "      gem 'rails'\n" \
               "    end\n\n"
 
-      SharedHelpers.major_deprecation(2, msg.strip)
+      SharedHelpers.feature_removed!(msg.strip)
     end
 
     def check_rubygems_source_safety
@@ -521,24 +513,10 @@ module Bundler
     end
 
     def multiple_global_source_warning
-      if Bundler.feature_flag.bundler_4_mode?
-        msg = "This Gemfile contains multiple global sources. " \
-          "Each source after the first must include a block to indicate which gems " \
-          "should come from that source"
-        raise GemfileEvalError, msg
-      else
-        message =
-          "Your Gemfile contains multiple global sources. " \
-          "Using `source` more than once without a block is a security risk, and " \
-          "may result in installing unexpected gems. To resolve this warning, use " \
-          "a block to indicate which gems should come from the secondary source."
-        removed_message =
-          "Your Gemfile contains multiple global sources. " \
-          "Using `source` more than once without a block is a security risk, and " \
-          "may result in installing unexpected gems. To resolve this error, use " \
-          "a block to indicate which gems should come from the secondary source."
-        Bundler::SharedHelpers.major_deprecation 2, message, removed_message: removed_message
-      end
+      msg = "This Gemfile contains multiple global sources. " \
+        "Each source after the first must include a block to indicate which gems " \
+        "should come from that source"
+      raise GemfileEvalError, msg
     end
 
     class DSLError < GemfileError

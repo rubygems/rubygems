@@ -296,28 +296,47 @@ RSpec.describe "bundle cache" do
         source "https://gem.repo1"
         gem "myrack"
       G
-      bundle "install"
-    end
+      lockfile <<-L
+        GEM
+          remote: https://gem.repo1/
+          specs:
+            myrack (1.0.0)
 
-    subject do
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          myrack
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
       bundle "config set --local frozen true"
-      bundle :cache, raise_on_error: false
     end
 
     it "tries to install with frozen" do
-      bundle "config set deployment true"
       gemfile <<-G
         source "https://gem.repo1"
         gem "myrack"
         gem "myrack-obama"
       G
-      subject
+      bundle :cache, raise_on_error: false
       expect(exitstatus).to eq(16)
       expect(err).to include("frozen mode")
       expect(err).to include("You have added to the Gemfile")
       expect(err).to include("* myrack-obama")
       bundle "env"
-      expect(out).to include("frozen").or include("deployment")
+      expect(out).to include("frozen")
+    end
+
+    it "caches gems without installing even if vendor/cache directory is initially empty" do
+      app_cache = bundled_app("vendor/cache")
+      FileUtils.mkdir_p app_cache
+
+      bundle "cache --no-install"
+      expect(out).not_to include("Installing myrack 1.0.0")
+      expect(out).to include("Fetching myrack 1.0.0")
+      expect(app_cache.join("myrack-1.0.0.gem")).to exist
     end
   end
 
@@ -375,6 +394,22 @@ RSpec.describe "bundle install with gem sources" do
       FileUtils.rm_r gem_repo2
 
       bundle "config set --local deployment true"
+      bundle "config set --local path vendor/bundle"
+      bundle :install
+      expect(the_bundle).to include_gems "myrack 1.0.0"
+    end
+
+    it "does not hit the remote at all in non frozen mode either" do
+      build_repo2
+      install_gemfile <<-G
+        source "https://gem.repo2"
+        gem "myrack"
+      G
+
+      bundle :cache
+      pristine_system_gems
+      FileUtils.rm_r gem_repo2
+
       bundle "config set --local path vendor/bundle"
       bundle :install
       expect(the_bundle).to include_gems "myrack 1.0.0"

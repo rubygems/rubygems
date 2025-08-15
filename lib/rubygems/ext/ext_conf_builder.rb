@@ -53,6 +53,9 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
         entries = Dir.entries(full_tmp_dest) - %w[. ..]
         entries = entries.map {|entry| File.join full_tmp_dest, entry }
         FileUtils.cp_r entries, lib_dir, remove_destination: true
+        
+        # Create wrapper files for backwards compatibility
+        create_wrapper_files(lib_dir, dest_path, entries, gem_name)
       end
 
       FileUtils::Entry_.new(full_tmp_dest).traverse do |ent|
@@ -77,5 +80,74 @@ class Gem::Ext::ExtConfBuilder < Gem::Ext::Builder
   def self.get_relative_path(path, base)
     path[0..base.length - 1] = "." if path.start_with?(base)
     path
+  end
+
+  def self.detect_gem_name_from_path(extension_dir)
+    # Try to detect gem name from the extension directory path
+    # Look for patterns like /path/to/gem_name/ext/extension_name
+    path_parts = extension_dir.split(File::SEPARATOR)
+    
+    # Find the gem name by looking for the parent of 'ext' directory
+    ext_index = path_parts.rindex('ext')
+    return nil unless ext_index && ext_index > 0
+    
+    gem_name = path_parts[ext_index - 1]
+    return nil if gem_name.nil? || gem_name.empty?
+    
+    gem_name
+  end
+  
+  def self.create_wrapper_files(lib_dir, dest_path, entries, gem_name)
+    return unless gem_name
+    
+    # Find native extensions in the entries
+    native_extensions = entries.select do |entry|
+      File.file?(entry) && native_extension?(entry)
+    end
+    
+    native_extensions.each do |extension_path|
+      extension_name = File.basename(extension_path)
+      wrapper_path = File.join(lib_dir, "#{extension_name}.rb")
+      
+      # Create wrapper file that loads from ext/ and shows deprecation warning
+      create_wrapper_file(wrapper_path, extension_name, gem_name)
+    end
+  end
+  
+  def self.native_extension?(file_path)
+    # Check if file is a native extension based on platform
+    case RbConfig::CONFIG["host_os"]
+    when /darwin|mac os/
+      File.extname(file_path) == ".bundle"
+    when /mswin|mingw|cygwin/
+      File.extname(file_path) == ".dll"
+    else
+      File.extname(file_path) == ".so"
+    end
+  end
+  
+  # Creates a wrapper file that loads the extension from ext/ and shows deprecation warning
+  # it can be removed when ffi-compiler is updated to use the new path
+  def self.create_wrapper_file(wrapper_path, extension_name, gem_name)
+    wrapper_content = <<~RUBY
+      # frozen_string_literal: true
+      
+      # DEPRECATED: This extension is loaded from lib/ directory
+      # The extension has been moved to ext/ directory for better organization
+      # 
+      # To fix this deprecation warning, update your code to load from ext/:
+      #   require_relative '../ext/#{extension_name}'
+      # 
+      # Or set install_extension_in_lib: true in your .gemrc to maintain current behavior
+      
+      warn "DEPRECATED: Gem '#{gem_name}' is loading native extension '#{extension_name}' from lib/ directory. " \
+           "Consider updating your code to load from ext/ directory instead. " \
+           "Set install_extension_in_lib: true in your .gemrc to maintain current behavior."
+      
+      # Load the actual extension from ext/ directory
+      require_relative "../ext/#{extension_name}"
+    RUBY
+    
+    File.write(wrapper_path, wrapper_content)
   end
 end

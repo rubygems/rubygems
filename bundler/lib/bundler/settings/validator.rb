@@ -77,9 +77,7 @@ module Bundler
 
       rule %w[default_cli_command], "default_cli_command must be either 'install' or 'cli_help'" do |key, value, settings|
         valid_values = %w[install cli_help]
-        if value.nil?
-          fail!(key, value, "must be one of: #{valid_values.join(", ")}")
-        elsif !valid_values.include?(value.to_s)
+        if !value.nil? && !valid_values.include?(value.to_s)
           fail!(key, value, "must be one of: #{valid_values.join(", ")}")
         end
       end

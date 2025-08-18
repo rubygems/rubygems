@@ -42,10 +42,27 @@ class Gem::Uninstaller
   attr_reader :spec
 
   ##
-  # Constructs an uninstaller that will uninstall +gem+
+  # Constructs an uninstaller that will uninstall +gem+ which can be a gem name.
+  # +options+ is a Hash with the following keys:
+  #
+  # :version:: Version requirement for the gem to uninstall. If not specified,
+  #            uses Gem::Requirement.default.
+  # :install_dir:: The directory where the gem was installed. If not specified,
+  #                uses Gem.dir.
+  # :executables:: Force removal of executables. If true, removes executables
+  #                without asking. If false, asks the user. If nil, uses default
+  #                behavior.
+  # :all:: Remove all matching versions without asking the user.
+  # :ignore:: Ignore dependency checks when uninstalling.
+  # :bin_dir:: Directory containing executables to remove. If not specified,
+  #            uses Gem.bindir.
+  # :format_executable:: Format executable names using Gem::Installer.exec_format.
+  # :abort_on_dependent:: Abort uninstallation if dependencies would be broken.
+  # :check_dev:: Check development dependencies when validating removal.
+  # :force:: Set both :all and :ignore to true for forced uninstallation.
+  # :user_install:: Uninstall from user gem directory instead of system directory.
 
   def initialize(gem, options = {})
-    # TODO: document the valid options
     @gem                = gem
     @version            = options[:version] || Gem::Requirement.default
     @install_dir        = options[:install_dir]

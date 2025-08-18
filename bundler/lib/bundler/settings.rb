@@ -75,6 +75,7 @@ module Bundler
       bin
       cache_path
       console
+      default_cli_command
       gem.ci
       gem.github_username
       gem.linter

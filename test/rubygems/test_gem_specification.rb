@@ -4179,7 +4179,7 @@ end
 
     # Setting wheel platform string should set required_rubygems_version
     spec.platform = "whl-rb33-x86_64_linux"
-    assert_equal Gem::Requirement.new(">= 4.0.0"), spec.required_rubygems_version
+    assert_equal Gem::Requirement.new(">= 3.8.0.dev"), spec.required_rubygems_version
     assert_instance_of Gem::Platform::Wheel, spec.platform
   end
 
@@ -4190,7 +4190,7 @@ end
 
     # Setting wheel platform object should set required_rubygems_version
     spec.platform = wheel_platform
-    assert_equal Gem::Requirement.new(">= 4.0.0"), spec.required_rubygems_version
+    assert_equal Gem::Requirement.new(">= 3.8.0.dev"), spec.required_rubygems_version
     assert_equal wheel_platform, spec.platform
   end
 

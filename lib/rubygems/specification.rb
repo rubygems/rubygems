@@ -476,8 +476,8 @@ class Gem::Specification < Gem::BasicSpecification
 
     when Gem::Platform::Wheel then
       @new_platform = platform
-      # Wheel platforms require RubyGems 4.0+ for proper support
-      self.required_rubygems_version = ">= 4.0.0" if required_rubygems_version == Gem::Requirement.default
+      # Wheel platforms require RubyGems 3.8+ for proper support
+      self.required_rubygems_version = ">= 3.8.0.dev" if required_rubygems_version == Gem::Requirement.default
     when nil, Gem::Platform::RUBY then
       @new_platform = Gem::Platform::RUBY
     when "mswin32" then # was Gem::Platform::WIN32
@@ -489,8 +489,8 @@ class Gem::Specification < Gem::BasicSpecification
     else
       @new_platform = Gem::Platform.new platform
       if @new_platform.is_a?(Gem::Platform::Wheel)
-        # Wheel platforms require RubyGems 4.0+ for proper support
-        self.required_rubygems_version = ">= 4.0.0" if required_rubygems_version == Gem::Requirement.default
+        # Wheel platforms require RubyGems 3.8+ for proper support
+        self.required_rubygems_version = ">= 3.8.0.dev" if required_rubygems_version == Gem::Requirement.default
       end
     end
 

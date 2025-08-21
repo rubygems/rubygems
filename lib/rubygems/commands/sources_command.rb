@@ -14,8 +14,19 @@ class Gem::Commands::SourcesCommand < Gem::Command
     super "sources",
           "Manage the sources and cache file RubyGems uses to search for gems"
 
-    add_option "-a", "--add SOURCE_URI", "Add source" do |value, options|
-      options[:add] = value
+    add_option "-a", "--append SOURCE_URI", "Append source (can be used multiple times)" do |value, options|
+      options[:append] ||= []
+      options[:append] << value
+    end
+
+    add_option "--add SOURCE_URI", "Add source (alias for --append)" do |value, options|
+      options[:append] ||= []
+      options[:append] << value
+    end
+
+    add_option "-p", "--prepend SOURCE_URI", "Prepend source (can be used multiple times)" do |value, options|
+      options[:prepend] ||= []
+      options[:prepend] << value
     end
 
     add_option "-l", "--list", "List sources" do |value, options|
@@ -26,8 +37,7 @@ class Gem::Commands::SourcesCommand < Gem::Command
       options[:remove] = value
     end
 
-    add_option "-c", "--clear-all",
-               "Remove all sources (clear the cache)" do |value, options|
+    add_option "-c", "--clear-all", "Remove all sources (clear the cache)" do |value, options|
       options[:clear_all] = value
     end
 
@@ -57,6 +67,60 @@ class Gem::Commands::SourcesCommand < Gem::Command
         Gem.sources << source
         Gem.configuration.write
 
+        say "#{source_uri} added to sources"
+      end
+    rescue Gem::URI::Error, ArgumentError
+      say "#{source_uri} is not a URI"
+      terminate_interaction 1
+    rescue Gem::RemoteFetcher::FetchError => e
+      say "Error fetching #{Gem::Uri.redact(source.uri)}:\n\t#{e.message}"
+      terminate_interaction 1
+    end
+  end
+
+  def append_source(source_uri) # :nodoc:
+    check_rubygems_https source_uri
+
+    source = Gem::Source.new source_uri
+
+    check_typo_squatting(source)
+
+    begin
+      source.load_specs :released
+      was_present = Gem.sources.include?(source)
+      Gem.sources.append source
+      Gem.configuration.write
+
+      if was_present
+        say "#{source_uri} moved to end of sources"
+      else
+        say "#{source_uri} added to sources"
+      end
+    rescue Gem::URI::Error, ArgumentError
+      say "#{source_uri} is not a URI"
+      terminate_interaction 1
+    rescue Gem::RemoteFetcher::FetchError => e
+      say "Error fetching #{Gem::Uri.redact(source.uri)}:\n\t#{e.message}"
+      terminate_interaction 1
+    end
+  end
+
+  def prepend_source(source_uri) # :nodoc:
+    check_rubygems_https source_uri
+
+    source = Gem::Source.new source_uri
+
+    check_typo_squatting(source)
+
+    begin
+      source.load_specs :released
+      was_present = Gem.sources.include?(source)
+      Gem.sources.prepend source
+      Gem.configuration.write
+
+      if was_present
+        say "#{source_uri} moved to top of sources"
+      else
         say "#{source_uri} added to sources"
       end
     rescue Gem::URI::Error, ArgumentError
@@ -147,13 +211,19 @@ Since all of these sources point to the same set of gems you only need one
 of them in your list.  https://rubygems.org is recommended as it brings the
 protections of an SSL connection to gem downloads.
 
-To add a source use the --add argument:
+To add a private gem source use the --prepend argument to insert it before
+the default source. This is usually the best place for private gem sources:
 
-    $ gem sources --add https://rubygems.org
-    https://rubygems.org added to sources
+    $ gem sources --prepend https://my-private-gem-server.com
+    https://my-private-gem-server.com added to sources
 
-RubyGems will check to see if gems can be installed from the source given
+RubyGems will check to see if gems can be installed from the new source
 before it is added.
+
+To add a source as a fallback after all other sources, use --append:
+
+    $ gem sources --append https://rubygems.org
+    https://rubygems.org added to sources
 
 To remove a source use the --remove argument:
 
@@ -172,8 +242,18 @@ To remove a source use the --remove argument:
     end
   end
 
+  def append?
+    options[:append] && !options[:append].empty?
+  end
+
+  def prepend?
+    options[:prepend] && !options[:prepend].empty?
+  end
+
+
   def list? # :nodoc:
-    !(options[:add] ||
+    !(append? ||
+      prepend? ||
       options[:clear_all] ||
       options[:remove] ||
       options[:update])
@@ -182,8 +262,17 @@ To remove a source use the --remove argument:
   def execute
     clear_all if options[:clear_all]
 
-    source_uri = options[:add]
-    add_source source_uri if source_uri
+    if append?
+      options[:append].each do |source_uri|
+        append_source source_uri
+      end
+    end
+
+    if prepend?
+      options[:prepend].each do |source_uri|
+        prepend_source source_uri
+      end
+    end
 
     source_uri = options[:remove]
     remove_source source_uri if source_uri

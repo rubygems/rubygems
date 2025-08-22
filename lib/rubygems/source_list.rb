@@ -44,8 +44,8 @@ class Gem::SourceList
   end
 
   ##
-  # Appends +obj+ to the source list which may be a Gem::Source, Gem::URI or URI
-  # String.
+  # Appends +obj+ to the end of the source list, moving it if already present.
+  # +obj+ may be a Gem::Source, Gem::URI or URI String.
 
   def <<(obj)
     src = case obj
@@ -55,9 +55,12 @@ class Gem::SourceList
             Gem::Source.new(obj)
     end
 
-    @sources << src unless @sources.include?(src)
+    @sources.delete(src) if @sources.include?(src)
+    @sources << src
     src
   end
+  alias_method :push, :<<
+  alias_method :append, :<<
 
   ##
   # Prepends +obj+ to the beginning of the source list which may be a Gem::Source, Gem::URI or URI
@@ -76,25 +79,6 @@ class Gem::SourceList
     src
   end
   alias_method :prepend, :unshift
-
-  ##
-  # Appends +obj+ to the end of the source list, moving it if already present.
-  # +obj+ may be a Gem::Source, Gem::URI or URI String.
-
-  def push(obj)
-    src = case obj
-          when Gem::Source
-            obj
-          else
-            Gem::Source.new(obj)
-    end
-
-    @sources.delete(src) if @sources.include?(src)
-    @sources << src
-    src
-  end
-  alias_method :<<, :push
-  alias_method :append, :push
 
   ##
   # Replaces this SourceList with the sources in +other+  See #<< for

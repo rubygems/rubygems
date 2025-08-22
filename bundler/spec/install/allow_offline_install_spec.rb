@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "bundle install with offline installation enabled by default" do
+RSpec.describe "bundle install with :allow_offline_install" do
 
   context "with no cached data locally" do
     it "still installs" do

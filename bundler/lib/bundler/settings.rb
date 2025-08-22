@@ -7,6 +7,7 @@ module Bundler
     autoload :Validator, File.expand_path("settings/validator", __dir__)
 
     BOOL_KEYS = %w[
+      allow_offline_install
       auto_install
       cache_all
       cache_all_platforms
@@ -89,6 +90,7 @@ module Bundler
     ].freeze
 
     DEFAULT_CONFIG = {
+      "BUNDLE_ALLOW_OFFLINE_INSTALL" => true,
       "BUNDLE_SILENCE_DEPRECATIONS" => false,
       "BUNDLE_DISABLE_VERSION_CHECK" => true,
       "BUNDLE_PREFER_PATCH" => false,

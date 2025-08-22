@@ -41,7 +41,40 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     assert_equal "", @ui.error
   end
 
-  def test_execute_add
+  def test_execute_append
+    spec_fetcher do |fetcher|
+      fetcher.spec "a", 1
+    end
+
+    specs = Gem::Specification.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    @cmd.handle_options %W[--append #{@new_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal [@gem_repo, @new_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} added to sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  end
+
+  def test_execute_add_deprecated
     spec_fetcher do |fetcher|
       fetcher.spec "a", 1
     end
@@ -66,15 +99,10 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
 
     assert_equal [@gem_repo, @new_repo], Gem.sources
 
-    expected = <<-EOF
-#{@new_repo} added to sources
-    EOF
-
-    assert_equal expected, @ui.output
     assert_equal "", @ui.error
   end
 
-  def test_execute_add_allow_typo_squatting_source
+  def test_execute_append_allow_typo_squatting_source
     rubygems_org = "https://rubyems.org"
 
     spec_fetcher do |fetcher|
@@ -91,7 +119,7 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     end
 
     @fetcher.data["#{rubygems_org}/specs.#{@marshal_version}.gz"] = specs_dump_gz.string
-    @cmd.handle_options %W[--add #{rubygems_org}]
+    @cmd.handle_options %W[--append #{rubygems_org}]
     ui = Gem::MockGemUi.new("y")
 
     use_ui ui do
@@ -108,7 +136,7 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     assert_empty ui.error
   end
 
-  def test_execute_add_allow_typo_squatting_source_forced
+  def test_execute_append_allow_typo_squatting_source_forced
     rubygems_org = "https://rubyems.org"
 
     spec_fetcher do |fetcher|
@@ -125,7 +153,7 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     end
 
     @fetcher.data["#{rubygems_org}/specs.#{@marshal_version}.gz"] = specs_dump_gz.string
-    @cmd.handle_options %W[--force --add #{rubygems_org}]
+    @cmd.handle_options %W[--force --append #{rubygems_org}]
 
     @cmd.execute
 
@@ -138,7 +166,7 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     assert_empty ui.error
   end
 
-  def test_execute_add_deny_typo_squatting_source
+  def test_execute_append_deny_typo_squatting_source
     rubygems_org = "https://rubyems.org"
 
     spec_fetcher do |fetcher|
@@ -157,7 +185,7 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     @fetcher.data["#{rubygems_org}/specs.#{@marshal_version}.gz"] =
       specs_dump_gz.string
 
-    @cmd.handle_options %W[--add #{rubygems_org}]
+    @cmd.handle_options %W[--append #{rubygems_org}]
 
     ui = Gem::MockGemUi.new("n")
 
@@ -177,7 +205,7 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
     assert_empty ui.error
   end
 
-  def test_execute_add_nonexistent_source
+  def test_execute_append_nonexistent_source
     spec_fetcher
 
     uri = "http://beta-gems.example.com/specs.#{@marshal_version}.gz"
@@ -185,7 +213,7 @@ class TestGemCommandsSourcesCommand < Gem::TestCase
       raise Gem::RemoteFetcher::FetchError.new("it died", uri)
     end
 
-    @cmd.handle_options %w[--add http://beta-gems.example.com]
+    @cmd.handle_options %w[--append http://beta-gems.example.com]
 
     use_ui @ui do
       assert_raise Gem::MockGemUi::TermError do
@@ -202,12 +230,12 @@ Error fetching http://beta-gems.example.com:
     assert_equal "", @ui.error
   end
 
-  def test_execute_add_existent_source_invalid_uri
+  def test_execute_append_existent_source_invalid_uri
     spec_fetcher
 
     uri = "https://u:p@example.com/specs.#{@marshal_version}.gz"
 
-    @cmd.handle_options %w[--add https://u:p@example.com]
+    @cmd.handle_options %w[--append https://u:p@example.com]
     @fetcher.data[uri] = proc do
       raise Gem::RemoteFetcher::FetchError.new("it died", uri)
     end
@@ -227,12 +255,12 @@ Error fetching https://u:REDACTED@example.com:
     assert_equal "", @ui.error
   end
 
-  def test_execute_add_existent_source_invalid_uri_with_error_by_chance_including_the_uri_password
+  def test_execute_append_existent_source_invalid_uri_with_error_by_chance_including_the_uri_password
     spec_fetcher
 
     uri = "https://u:secret@example.com/specs.#{@marshal_version}.gz"
 
-    @cmd.handle_options %w[--add https://u:secret@example.com]
+    @cmd.handle_options %w[--append https://u:secret@example.com]
     @fetcher.data[uri] = proc do
       raise Gem::RemoteFetcher::FetchError.new("it secretly died", uri)
     end
@@ -252,10 +280,10 @@ Error fetching https://u:REDACTED@example.com:
     assert_equal "", @ui.error
   end
 
-  def test_execute_add_redundant_source
+  def test_execute_append_redundant_source
     spec_fetcher
 
-    @cmd.handle_options %W[--add #{@gem_repo}]
+    @cmd.handle_options %W[--append #{@gem_repo}]
 
     use_ui @ui do
       @cmd.execute
@@ -264,7 +292,7 @@ Error fetching https://u:REDACTED@example.com:
     assert_equal [@gem_repo], Gem.sources
 
     expected = <<-EOF
-source #{@gem_repo} already present in the cache
+#{@gem_repo} moved to end of sources
     EOF
 
     assert_equal expected, @ui.output
@@ -290,9 +318,9 @@ source #{@gem_repo} already present in the cache
     assert_equal expected, @ui.output
     assert_equal "", @ui.error
 
-    # Re-add pre-existing gem source (w/o slash)
+    # Re-append pre-existing gem source (w/o slash)
     repo_without_slash = "http://gems.example.com"
-    @cmd.handle_options %W[--add #{repo_without_slash}]
+    @cmd.handle_options %W[--append #{repo_without_slash}]
     use_ui @ui do
       @cmd.execute
     end
@@ -307,8 +335,8 @@ http://gems.example.com added to sources
     assert_equal expected, @ui.output
     assert_equal "", @ui.error
 
-    # Re-add original gem source (w/ slash)
-    @cmd.handle_options %W[--add #{repo_with_slash}]
+    # Re-append original gem source (w/ slash)
+    @cmd.handle_options %W[--append #{repo_with_slash}]
     use_ui @ui do
       @cmd.execute
     end
@@ -318,14 +346,14 @@ http://gems.example.com added to sources
     expected = <<-EOF
 http://gems.example.com/ removed from sources
 http://gems.example.com added to sources
-source http://gems.example.com/ already present in the cache
+http://gems.example.com/ moved to end of sources
     EOF
 
     assert_equal expected, @ui.output
     assert_equal "", @ui.error
   end
 
-  def test_execute_add_http_rubygems_org
+  def test_execute_append_http_rubygems_org
     http_rubygems_org = "http://rubygems.org/"
 
     spec_fetcher do |fetcher|
@@ -344,7 +372,7 @@ source http://gems.example.com/ already present in the cache
     @fetcher.data["#{http_rubygems_org}/specs.#{@marshal_version}.gz"] =
       specs_dump_gz.string
 
-    @cmd.handle_options %W[--add #{http_rubygems_org}]
+    @cmd.handle_options %W[--append #{http_rubygems_org}]
 
     ui = Gem::MockGemUi.new "n"
 
@@ -363,7 +391,7 @@ source http://gems.example.com/ already present in the cache
     assert_empty @ui.error
   end
 
-  def test_execute_add_http_rubygems_org_forced
+  def test_execute_append_http_rubygems_org_forced
     rubygems_org = "http://rubygems.org"
 
     spec_fetcher do |fetcher|
@@ -380,7 +408,7 @@ source http://gems.example.com/ already present in the cache
     end
 
     @fetcher.data["#{rubygems_org}/specs.#{@marshal_version}.gz"] = specs_dump_gz.string
-    @cmd.handle_options %W[--force --add #{rubygems_org}]
+    @cmd.handle_options %W[--force --append #{rubygems_org}]
 
     @cmd.execute
 
@@ -393,7 +421,7 @@ source http://gems.example.com/ already present in the cache
     assert_empty ui.error
   end
 
-  def test_execute_add_https_rubygems_org
+  def test_execute_append_https_rubygems_org
     https_rubygems_org = "https://rubygems.org/"
 
     spec_fetcher do |fetcher|
@@ -412,7 +440,7 @@ source http://gems.example.com/ already present in the cache
     @fetcher.data["#{https_rubygems_org}/specs.#{@marshal_version}.gz"] =
       specs_dump_gz.string
 
-    @cmd.handle_options %W[--add #{https_rubygems_org}]
+    @cmd.handle_options %W[--append #{https_rubygems_org}]
 
     ui = Gem::MockGemUi.new "n"
 
@@ -431,8 +459,8 @@ source http://gems.example.com/ already present in the cache
     assert_empty @ui.error
   end
 
-  def test_execute_add_bad_uri
-    @cmd.handle_options %w[--add beta-gems.example.com]
+  def test_execute_append_bad_uri
+    @cmd.handle_options %w[--append beta-gems.example.com]
 
     use_ui @ui do
       assert_raise Gem::MockGemUi::TermError do
@@ -529,6 +557,242 @@ beta-gems.example.com is not a URI
     end
 
     assert_equal "source cache successfully updated\n", @ui.output
+    assert_equal "", @ui.error
+  end
+
+  def test_execute_prepend_new_source
+    spec_fetcher do |fetcher|
+      fetcher.spec "a", 1
+    end
+
+    specs = Gem::Specification.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    @cmd.handle_options %W[--prepend #{@new_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal [@new_repo, @gem_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} added to sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  end
+
+  def test_execute_prepend_existing_source
+    spec_fetcher do |fetcher|
+      fetcher.spec "a", 1
+    end
+
+    specs = Gem::Specification.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    # Append the source normally first
+    @cmd.handle_options %W[--append #{@new_repo}]
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    # Initial state: [@gem_repo, @new_repo]
+    assert_equal [@gem_repo, @new_repo], Gem.sources
+
+    # Now prepend the existing source
+    @cmd.handle_options %W[--prepend #{@new_repo}]
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    # Should be moved to front: [@new_repo, @gem_repo]
+    assert_equal [@new_repo, @gem_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} added to sources
+#{@new_repo} moved to top of sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  end
+
+  def test_execute_append_existing_source
+    spec_fetcher do |fetcher|
+      fetcher.spec "a", 1
+    end
+
+    specs = Gem::Specification.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    # Prepend the source first so it's at the beginning
+    @cmd.handle_options %W[--prepend #{@new_repo}]
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    # Initial state: [@new_repo, @gem_repo] (new_repo is first)
+    assert_equal [@new_repo, @gem_repo], Gem.sources
+
+    # Now append the existing source
+    @cmd.handle_options %W[--append #{@new_repo}]
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    # Should be moved to end: [@gem_repo, @new_repo]
+    assert_equal [@gem_repo, @new_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} added to sources
+#{@new_repo} moved to end of sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  end
+
+  def test_execute_multiple_append
+    spec_fetcher do |fetcher|
+      fetcher.spec "a", 1
+    end
+
+    specs = Gem::Specification.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    second_repo = "http://second-gems.example.com"
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+    @fetcher.data["#{second_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    @cmd.handle_options %W[--append #{@new_repo} --append #{second_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal [@gem_repo, @new_repo, second_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} added to sources
+#{second_repo} added to sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  end
+
+  def test_execute_multiple_prepend
+    spec_fetcher do |fetcher|
+      fetcher.spec "a", 1
+    end
+
+    specs = Gem::Specification.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    second_repo = "http://second-gems.example.com"
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+    @fetcher.data["#{second_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    @cmd.handle_options %W[--prepend #{@new_repo} --prepend #{second_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    assert_equal [second_repo, @new_repo, @gem_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} added to sources
+#{second_repo} added to sources
+    EOF
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  end
+
+  def test_execute_mixed_append_prepend
+    spec_fetcher do |fetcher|
+      fetcher.spec "a", 1
+    end
+
+    specs = Gem::Specification.map do |spec|
+      [spec.name, spec.version, spec.original_platform]
+    end
+
+    specs_dump_gz = StringIO.new
+    Zlib::GzipWriter.wrap specs_dump_gz do |io|
+      Marshal.dump specs, io
+    end
+
+    second_repo = "http://second-gems.example.com"
+
+    @fetcher.data["#{@new_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+    @fetcher.data["#{second_repo}/specs.#{@marshal_version}.gz"] =
+      specs_dump_gz.string
+
+    @cmd.handle_options %W[--append #{@new_repo} --prepend #{second_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    # append happens first, then prepend
+    assert_equal [second_repo, @gem_repo, @new_repo], Gem.sources
+
+    expected = <<-EOF
+#{@new_repo} added to sources
+#{second_repo} added to sources
+    EOF
+
+    assert_equal expected, @ui.output
     assert_equal "", @ui.error
   end
 end

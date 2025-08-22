@@ -250,7 +250,6 @@ To remove a source use the --remove argument:
     options[:prepend] && !options[:prepend].empty?
   end
 
-
   def list? # :nodoc:
     !(append? ||
       prepend? ||

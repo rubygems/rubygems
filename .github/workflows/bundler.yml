@@ -48,7 +48,6 @@ jobs:
     env:
       RGV: ..
       RUBYOPT: --disable-gems
-      WORKSPACE: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -64,25 +63,18 @@ jobs:
           distribution: temurin
           java-version: 21.0.7
         if: matrix.ruby.name == 'jruby'
-      - uses: samypr100/setup-dev-drive@750bec535eb7e4833d6a4c86c5738751f9887575 # v3.4.2
-        with:
-          workspace-copy: true
-          env-mapping: |
-            WORKSPACE,{{ DEV_DRIVE_WORKSPACE }}
-        if: matrix.os.name == 'Windows'
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps
-        working-directory: ${{ env.WORKSPACE }}
       - name: Run Test (CRuby)
         run: |
           bin/parallel_rspec
-        working-directory: ${{ env.WORKSPACE }}/bundler
+        working-directory: ./bundler
         if: matrix.ruby.name != 'jruby'
       - name: Run Test (JRuby)
         run: |
           bin/parallel_rspec --tag jruby_only --tag jruby
-        working-directory: ${{ env.WORKSPACE }}/bundler
+        working-directory: ./bundler
         if: matrix.ruby.name == 'jruby' && matrix.os.name == 'Ubuntu'
       - name: Run a warbler project
         run: |
@@ -92,7 +84,6 @@ jobs:
           bundle exec warble
           java -jar warbler.jar
         if: matrix.ruby.name == 'jruby' && matrix.os.name == 'Ubuntu'
-        working-directory: ${{ env.WORKSPACE }}
 
     timeout-minutes: ${{ matrix.timeout || 60 }}
 

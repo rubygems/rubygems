@@ -8,6 +8,12 @@ require_relative "deprecate"
 # See `gem help platform` for information on platform matching.
 
 class Gem::Platform
+  require_relative "platform/elffile"
+  require_relative "platform/manylinux"
+  require_relative "platform/musllinux"
+  require_relative "platform/wheel"
+  require_relative "platform/specific"
+
   @local = nil
 
   attr_accessor :cpu, :os, :version
@@ -49,19 +55,23 @@ class Gem::Platform
       raise "Not a string: #{gem_name.inspect}" unless String === gem_name
 
       if REUSE_AS_BINARY_ON_TRUFFLERUBY.include?(gem_name)
-        match_platforms?(platform, [Gem::Platform::RUBY, Gem::Platform.local])
+        match_platforms?(platform, [Gem::Platform::RUBY, Gem::Platform::Specific.local])
       else
-        match_platforms?(platform, Gem.platforms)
+        match_platforms?(platform, Gem.platforms.map {|pl| Specific.local(pl) })
       end
     end
   else
     def self.match_gem?(platform, gem_name)
-      match_platforms?(platform, Gem.platforms)
+      match_platforms?(platform, Gem.platforms.map {|pl| Specific.local(pl) })
     end
   end
 
   def self.sort_priority(platform)
-    platform == Gem::Platform::RUBY ? -1 : 1
+    case platform
+    when Gem::Platform::RUBY then -1
+    when Gem::Platform::Wheel then 2 # Higher priority than traditional platforms
+    else 1
+    end
   end
 
   def self.installable?(spec)
@@ -78,6 +88,14 @@ class Gem::Platform
       Gem::Platform.local
     when Gem::Platform::RUBY, nil, "" then
       Gem::Platform::RUBY
+    when /^whl-/ then
+      Gem::Platform::Wheel.new(arch)
+    when Wheel then
+      Wheel.new(arch)
+    when Specific then
+      Specific.new(arch)
+    when / v:\d+/
+      Gem::Platform::Specific.parse(arch)
     else
       super
     end
@@ -85,56 +103,63 @@ class Gem::Platform
 
   def initialize(arch)
     case arch
-    when Array then
-      @cpu, @os, @version = arch
     when String then
-      cpu, os = arch.sub(/-+$/, "").split("-", 2)
-
-      @cpu = if cpu&.match?(/i\d86/)
-        "x86"
-      else
-        cpu
-      end
-
-      if os.nil?
-        @cpu = nil
-        os = cpu
-      end # legacy jruby
-
-      @os, @version = case os
-                      when /aix-?(\d+)?/ then                ["aix",     $1]
-                      when /cygwin/ then                     ["cygwin",  nil]
-                      when /darwin-?(\d+)?/ then             ["darwin",  $1]
-                      when "macruby" then                    ["macruby", nil]
-                      when /^macruby-?(\d+(?:\.\d+)*)?/ then ["macruby", $1]
-                      when /freebsd-?(\d+)?/ then            ["freebsd", $1]
-                      when "java", "jruby" then              ["java",    nil]
-                      when /^java-?(\d+(?:\.\d+)*)?/ then    ["java",    $1]
-                      when /^dalvik-?(\d+)?$/ then           ["dalvik",  $1]
-                      when /^dotnet$/ then                   ["dotnet",  nil]
-                      when /^dotnet-?(\d+(?:\.\d+)*)?/ then  ["dotnet",  $1]
-                      when /linux-?(\w+)?/ then              ["linux",   $1]
-                      when /mingw32/ then                    ["mingw32", nil]
-                      when /mingw-?(\w+)?/ then              ["mingw",   $1]
-                      when /(mswin\d+)(?:[_-](\d+))?/ then
-                        os = $1
-                        version = $2
-                        @cpu = "x86" if @cpu.nil? && os.end_with?("32")
-                        [os, version]
-                      when /netbsdelf/ then                  ["netbsdelf", nil]
-                      when /openbsd-?(\d+\.\d+)?/ then       ["openbsd",   $1]
-                      when /solaris-?(\d+\.\d+)?/ then       ["solaris",   $1]
-                      when /wasi/ then                       ["wasi",      nil]
-                      # test
-                      when /^(\w+_platform)-?(\d+)?/ then    [$1,          $2]
-                      else ["unknown", nil]
-      end
-    when Gem::Platform then
+    when Array then
+      raise "Array #{arch.inspect} is not a valid platform" unless arch.size <= 3
+      @cpu, @os, @version = arch
+      return
+    when Gem::Platform
       @cpu = arch.cpu
       @os = arch.os
       @version = arch.version
+      return
     else
       raise ArgumentError, "invalid argument #{arch.inspect}"
+    end
+
+    cpu, os = arch.sub(/-+$/, "").split("-", 2)
+
+    @cpu = if cpu&.match?(/i\d86/)
+      "x86"
+    elsif cpu == "dotnet"
+      os = "dotnet-#{os}"
+      nil
+    else
+      cpu
+    end
+
+    if os.nil?
+      @cpu = nil
+      os = cpu
+    end # legacy jruby
+
+    @os, @version = case os
+                    when /aix-?(\d+)?/ then                ["aix",     $1]
+                    when /cygwin/ then                     ["cygwin",  nil]
+                    when /darwin-?(\d+)?/ then             ["darwin",  $1]
+                    when "macruby" then                    ["macruby", nil]
+                    when /^macruby-?(\d+(?:\.\d+)*)?/ then ["macruby", $1]
+                    when /freebsd-?(\d+)?/ then            ["freebsd", $1]
+                    when "java", "jruby" then              ["java",    nil]
+                    when /^java-?(\d+(?:\.\d+)*)?/ then    ["java",    $1]
+                    when /^dalvik-?(\d+)?$/ then           ["dalvik",  $1]
+                    when "dotnet" then                     ["dotnet",  nil]
+                    when /^dotnet-?(\d+(?:\.\d+)*)?/ then  ["dotnet",  $1]
+                    when /linux-?(\w+)?/ then              ["linux",   $1]
+                    when /mingw32/ then                    ["mingw32", nil]
+                    when /mingw-?(\w+)?/ then              ["mingw",   $1]
+                    when /(mswin\d+)(?:[_-](\d+))?/ then
+                      os = $1
+                      version = $2
+                      @cpu = "x86" if @cpu.nil? && os.end_with?("32")
+                      [os, version]
+                    when /netbsdelf/ then                  ["netbsdelf", nil]
+                    when /openbsd-?(\d+\.\d+)?/ then       ["openbsd",   $1]
+                    when /solaris-?(\d+\.\d+)?/ then       ["solaris",   $1]
+                    when /wasi/ then                       ["wasi",      nil]
+                    # test
+                    when /^(\w+_platform)-?(\d+)?/ then    [$1,          $2]
+                    else ["unknown", nil]
     end
   end
 
@@ -218,25 +243,9 @@ class Gem::Platform
 
   def =~(other)
     case other
-    when Gem::Platform then # nop
-    when String then
-      # This data is from http://gems.rubyforge.org/gems/yaml on 19 Aug 2007
-      other = case other
-              when /^i686-darwin(\d)/     then ["x86",       "darwin",  $1]
-              when /^i\d86-linux/         then ["x86",       "linux",   nil]
-              when "java", "jruby"        then [nil,         "java",    nil]
-              when /^dalvik(\d+)?$/       then [nil,         "dalvik",  $1]
-              when /dotnet(\-(\d+\.\d+))?/ then ["universal","dotnet",  $2]
-              when /mswin32(\_(\d+))?/    then ["x86",       "mswin32", $2]
-              when /mswin64(\_(\d+))?/    then ["x64",       "mswin64", $2]
-              when "powerpc-darwin"       then ["powerpc",   "darwin",  nil]
-              when /powerpc-darwin(\d)/   then ["powerpc",   "darwin",  $1]
-              when /sparc-solaris2.8/     then ["sparc",     "solaris", "2.8"]
-              when /universal-darwin(\d)/ then ["universal", "darwin",  $1]
-              else other
-      end
-
-      other = Gem::Platform.new other
+    when Gem::Platform, Gem::Platform::Wheel
+    when Gem::Platform::Specific then other = other.platform
+    when String then other = Gem::Platform.new(other)
     else
       return nil
     end
@@ -278,7 +287,15 @@ class Gem::Platform
     # Returns the generic platform for the given platform.
 
     def generic(platform)
-      return Gem::Platform::RUBY if platform.nil? || platform == Gem::Platform::RUBY
+      case platform
+      when NilClass, Gem::Platform::RUBY
+        return Gem::Platform::RUBY
+      when Gem::Platform::Wheel
+        return platform
+      when Gem::Platform
+      else
+        raise ArgumentError, "invalid argument #{platform.inspect}"
+      end
 
       GENERIC_CACHE[platform] ||= begin
         found = GENERICS.find do |match|
@@ -295,6 +312,48 @@ class Gem::Platform
       return -1 if spec_platform == user_platform
       return 1_000_000 if spec_platform.nil? || spec_platform == Gem::Platform::RUBY || user_platform == Gem::Platform::RUBY
 
+      # Handle Specific user platforms
+      if user_platform.is_a?(Gem::Platform::Specific)
+        case spec_platform
+        when Gem::Platform::Wheel
+          # Use each_possible_match to find the best match for wheels
+          # Return negative values to indicate better matches than traditional platforms
+          index = user_platform.each_possible_match.to_a.index do |abi_tag, platform_tag|
+            # Check if the wheel matches this generated tag pair
+            spec_platform.ruby_abi_tag.split(".").include?(abi_tag) && spec_platform.platform_tags.split(".").include?(platform_tag)
+          end
+          return(if index == 0
+                   -10
+                 elsif index
+                   index
+                 else
+                   1_000_000
+                 end)
+        when Gem::Platform
+          # For traditional platforms with Specific user platforms, use original scoring
+          user_platform = user_platform.platform
+          return -1 if spec_platform == user_platform # Better than non-matching wheels but worse than matching wheels
+        else
+          raise ArgumentError, "spec_platform must be Gem::Platform or Gem::Platform::Wheel, given #{spec_platform.inspect}"
+        end
+      end
+
+      # Handle traditional Platform user platforms
+      case user_platform
+      when Gem::Platform
+        # For wheel spec platforms with traditional user platforms, create a Specific user platform
+        if spec_platform.is_a?(Gem::Platform::Wheel)
+          specific_user = Gem::Platform::Specific.local(user_platform)
+          return platform_specificity_match(spec_platform, specific_user)
+        end
+      when Gem::Platform::Specific
+        # TODO: also match on ruby ABI tags!
+        user_platform = user_platform.platform
+        return -1 if spec_platform == user_platform
+      else
+        raise ArgumentError, "user_platform must be Gem::Platform or Gem::Platform::Specific, given #{user_platform.inspect}"
+      end
+
       os_match(spec_platform, user_platform) +
         cpu_match(spec_platform, user_platform) * 10 +
         version_match(spec_platform, user_platform) * 100
@@ -303,25 +362,25 @@ class Gem::Platform
     ##
     # Sorts and filters the best platform match for the given matching specs and platform.
 
-    def sort_and_filter_best_platform_match(matching, platform)
+    def sort_and_filter_best_platform_match(matching, user_platform)
       return matching if matching.one?
 
-      exact = matching.select {|spec| spec.platform == platform }
+      exact = matching.select {|spec| spec.platform == user_platform }
       return exact if exact.any?
 
-      sorted_matching = sort_best_platform_match(matching, platform)
+      sorted_matching = sort_best_platform_match(matching, user_platform)
       exemplary_spec = sorted_matching.first
 
-      sorted_matching.take_while {|spec| same_specificity?(platform, spec, exemplary_spec) && same_deps?(spec, exemplary_spec) }
+      sorted_matching.take_while {|spec| same_specificity?(user_platform, spec, exemplary_spec) && same_deps?(spec, exemplary_spec) }
     end
 
     ##
     # Sorts the best platform match for the given matching specs and platform.
 
-    def sort_best_platform_match(matching, platform)
+    def sort_best_platform_match(matching, user_platform)
       matching.sort_by.with_index do |spec, i|
         [
-          platform_specificity_match(spec.platform, platform),
+          platform_specificity_match(spec.platform, user_platform),
           i, # for stable sort
         ]
       end
@@ -329,8 +388,8 @@ class Gem::Platform
 
     private
 
-    def same_specificity?(platform, spec, exemplary_spec)
-      platform_specificity_match(spec.platform, platform) == platform_specificity_match(exemplary_spec.platform, platform)
+    def same_specificity?(user_platform, spec, exemplary_spec)
+      platform_specificity_match(spec.platform, user_platform) == platform_specificity_match(exemplary_spec.platform, user_platform)
     end
 
     def same_deps?(spec, exemplary_spec)

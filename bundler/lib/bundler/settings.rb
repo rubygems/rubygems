@@ -90,6 +90,7 @@ module Bundler
     ].freeze
 
     DEFAULT_CONFIG = {
+      "BUNDLE_ALLOW_OFFLINE_INSTALL" => true,
       "BUNDLE_SILENCE_DEPRECATIONS" => false,
       "BUNDLE_DISABLE_VERSION_CHECK" => true,
       "BUNDLE_PREFER_PATCH" => false,

@@ -64,9 +64,6 @@ jobs:
           distribution: temurin
           java-version: 21.0.7
         if: matrix.ruby.name == 'jruby'
-      - name: Install graphviz (Ubuntu)
-        run: sudo apt-get install graphviz -y
-        if: matrix.os.name == 'Ubuntu'
       - uses: samypr100/setup-dev-drive@750bec535eb7e4833d6a4c86c5738751f9887575 # v3.4.2
         with:
           workspace-copy: true

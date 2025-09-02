@@ -25,7 +25,7 @@ jobs:
           - { name: "3.2", value: 3.2.9 }
           - { name: "3.3", value: 3.3.9 }
           - { name: "3.4", value: 3.4.5 }
-          - { name: jruby, value: jruby-10.0.1.0 }
+          - { name: jruby, value: jruby-10.0.2.0 }
           - { name: truffleruby, value: truffleruby-24.1.2 }
         openssl:
           - { name: openssl, value: true }
@@ -122,7 +122,7 @@ jobs:
           - { name: "3.2", value: 3.2.9 }
           - { name: "3.3", value: 3.3.9 }
           - { name: "3.4", value: 3.4.5 }
-          - { name: jruby, value: jruby-10.0.1.0, rails-args: --skip-webpack-install }
+          - { name: jruby, value: jruby-10.0.2.0, rails-args: --skip-webpack-install }
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:

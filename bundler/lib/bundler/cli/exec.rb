@@ -20,7 +20,7 @@ module Bundler
       SharedHelpers.set_bundle_environment
       if bin_path = Bundler.which(cmd)
         if !Bundler.settings[:disable_exec_load] && ruby_shebang?(bin_path)
-          return kernel_load(bin_path, *args)
+          return kernel_load(cmd, bin_path, *args)
         end
         bin_path = "./" + bin_path unless File.absolute_path?(bin_path)
         kernel_exec(bin_path, *args)
@@ -52,11 +52,12 @@ module Bundler
     def kernel_load(file, *args)
       args.pop if args.last.is_a?(Hash)
       ARGV.replace(args)
-      $0 = file
+      absolute_file = File.realpath(file)
+      $0 = absolute_file
       Process.setproctitle(process_title(file, args)) if Process.respond_to?(:setproctitle)
       require_relative "../setup"
       TRAPPED_SIGNALS.each {|s| trap(s, "DEFAULT") }
-      Kernel.load(file)
+      Kernel.load(absolute_file)
     rescue SystemExit, SignalException
       raise
     rescue Exception # rubocop:disable Lint/RescueException

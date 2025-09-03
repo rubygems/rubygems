@@ -149,16 +149,16 @@ protections of an SSL connection to gem downloads.
 
 To add a source use the --add argument:
 
-    $ gem sources --add https://rubygems.org
-    https://rubygems.org added to sources
+    $ gem sources --add https://my.private.source
+    https://my.private.source added to sources
 
 RubyGems will check to see if gems can be installed from the source given
 before it is added.
 
 To remove a source use the --remove argument:
 
-    $ gem sources --remove https://rubygems.org/
-    https://rubygems.org/ removed from sources
+    $ gem sources --remove https://my.private.source/
+    https://my.private.source/ removed from sources
 
     EOF
   end
@@ -204,13 +204,19 @@ To remove a source use the --remove argument:
   def remove_source(source_uri) # :nodoc:
     source = Gem::Source.new source_uri
 
-    if Gem.sources.include? source
+    if configured_sources&.include? source
       Gem.sources.delete source
       Gem.configuration.write
 
-      say "#{source_uri} removed from sources"
+      if default_sources.include?(source) && configured_sources.one?
+        alert_warning "Removing a default source when it is the only source has no effect. Add a different source to #{config_file_name} if you want to stop using it as a source."
+      else
+        say "#{source_uri} removed from sources"
+      end
+    elsif configured_sources
+      say "source #{source_uri} cannot be removed because it's not present in #{config_file_name}"
     else
-      say "source #{source_uri} not present in cache"
+      say "source #{source_uri} cannot be removed because there are no configured sources in #{config_file_name}"
     end
   end
 
@@ -237,7 +243,18 @@ To remove a source use the --remove argument:
 
   private
 
+  def default_sources
+    Gem::SourceList.from(Gem.default_sources)
+  end
+
   def configured_sources
-    Gem.configuration.sources
+    return @configured_sources if defined?(@configured_sources)
+
+    configuration_sources = Gem.configuration.sources
+    @configured_sources = Gem::SourceList.from(configuration_sources) if configuration_sources
+  end
+
+  def config_file_name
+    Gem.configuration.config_file_name
   end
 end

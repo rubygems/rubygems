@@ -382,24 +382,32 @@ beta-gems.example.com is not a URI
   end
 
   def test_execute_remove
-    @cmd.handle_options %W[--remove #{@gem_repo}]
+    Gem.configuration.sources = [@new_repo]
+
+    setup_fake_source(@new_repo)
+
+    @cmd.handle_options %W[--remove #{@new_repo}]
 
     use_ui @ui do
       @cmd.execute
     end
 
-    expected = "#{@gem_repo} removed from sources\n"
+    expected = "#{@new_repo} removed from sources\n"
 
     assert_equal expected, @ui.output
     assert_equal "", @ui.error
+  ensure
+    Gem.configuration.sources = nil
   end
 
   def test_execute_remove_no_network
+    Gem.configuration.sources = [@new_repo]
+
     spec_fetcher
 
-    @cmd.handle_options %W[--remove #{@gem_repo}]
+    @cmd.handle_options %W[--remove #{@new_repo}]
 
-    @fetcher.data["#{@gem_repo}Marshal.#{Gem.marshal_version}"] = proc do
+    @fetcher.data["#{@new_repo}Marshal.#{Gem.marshal_version}"] = proc do
       raise Gem::RemoteFetcher::FetchError
     end
 
@@ -407,13 +415,32 @@ beta-gems.example.com is not a URI
       @cmd.execute
     end
 
-    expected = "#{@gem_repo} removed from sources\n"
+    expected = "#{@new_repo} removed from sources\n"
 
     assert_equal expected, @ui.output
     assert_equal "", @ui.error
+  ensure
+    Gem.configuration.sources = nil
   end
 
   def test_execute_remove_not_present
+    Gem.configuration.sources = ["https://other.repo"]
+
+    @cmd.handle_options %W[--remove #{@new_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = "source #{@new_repo} cannot be removed because it's not present in #{Gem.configuration.config_file_name}\n"
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  ensure
+    Gem.configuration.sources = nil
+  end
+
+  def test_execute_remove_nothing_configured
     spec_fetcher
 
     @cmd.handle_options %W[--remove https://does.not.exist]
@@ -422,10 +449,44 @@ beta-gems.example.com is not a URI
       @cmd.execute
     end
 
-    expected = "source https://does.not.exist not present in cache\n"
+    expected = "source https://does.not.exist cannot be removed because there are no configured sources in #{Gem.configuration.config_file_name}\n"
 
     assert_equal expected, @ui.output
     assert_equal "", @ui.error
+  end
+
+  def test_remove_default_also_present_in_configuration
+    Gem.configuration.sources = [@gem_repo]
+
+    @cmd.handle_options %W[--remove #{@gem_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = "WARNING:  Removing a default source when it is the only source has no effect. Add a different source to #{Gem.configuration.config_file_name} if you want to stop using it as a source.\n"
+
+    assert_equal "", @ui.output
+    assert_equal expected, @ui.error
+  ensure
+    Gem.configuration.sources = nil
+  end
+
+  def test_remove_default_also_present_in_configuration_when_there_are_more_configured_sources
+    Gem.configuration.sources = [@gem_repo, "https://other.repo"]
+
+    @cmd.handle_options %W[--remove #{@gem_repo}]
+
+    use_ui @ui do
+      @cmd.execute
+    end
+
+    expected = "#{@gem_repo} removed from sources\n"
+
+    assert_equal expected, @ui.output
+    assert_equal "", @ui.error
+  ensure
+    Gem.configuration.sources = nil
   end
 
   def test_execute_remove_redundant_source_trailing_slash

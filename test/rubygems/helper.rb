@@ -400,8 +400,9 @@ class Gem::TestCase < Test::Unit::TestCase
     Gem::RemoteFetcher.fetcher = Gem::FakeFetcher.new
 
     @gem_repo = "http://gems.example.com/"
+    Gem.instance_variable_set :@default_sources, [@gem_repo]
+    Gem.instance_variable_set :@sources, nil
     @uri = Gem::URI.parse @gem_repo
-    Gem.sources.replace [@gem_repo]
 
     Gem.searcher = nil
     Gem::SpecFetcher.fetcher = nil
@@ -1578,3 +1579,9 @@ class Object
 end
 
 require_relative "utilities"
+
+# mise installed rubygems_plugin.rb to system wide `site_ruby` directory.
+# This empty module avoid to call `mise` command.
+module ReshimInstaller
+  def self.reshim; end
+end

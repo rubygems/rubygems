@@ -29,36 +29,36 @@ jobs:
           - { name: Ubuntu, value: ubuntu-24.04 }
 
         ruby:
-          - { name: ruby-3.2, value: 3.2.8 }
-          - { name: ruby-3.3, value: 3.3.8 }
-          - { name: ruby-3.4, value: 3.4.4 }
+          - { name: ruby-3.2, value: 3.2.9 }
+          - { name: ruby-3.3, value: 3.3.9 }
+          - { name: ruby-3.4, value: 3.4.5 }
 
         include:
-          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.2, value: 3.2.9 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.3, value: 3.3.9 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.4, value: 3.4.5 }, timeout: 90 }
 
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.3, value: 3.3.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.4, value: 3.4.4 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.2, value: 3.2.9 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.3, value: 3.3.9 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.4, value: 3.4.5 }, timeout: 150 }
 
-          - { os: { name: Ubuntu, value: ubuntu-24.04 }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
-          - { os: { name: Windows, value: windows-2025 }, ruby: { name: jruby, value: jruby-10.0.0.1 } }
+          - { os: { name: Ubuntu, value: ubuntu-24.04 }, ruby: { name: jruby, value: jruby-10.0.2.0 } }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: jruby, value: jruby-10.0.2.0 } }
 
     env:
       RGV: ..
       RUBYOPT: --disable-gems
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@472790540115ce5bd69d399a020189a8c87d641f # v1.247.0
+        uses: ruby/setup-ruby@44511735964dcb71245e7e55f72539531f7bc0eb # v1.257.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
           distribution: temurin
           java-version: 21.0.7

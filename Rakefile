@@ -33,7 +33,7 @@ namespace :version do
     stdout = Spec::Rubygems.dev_bundle "--version"
     version = stdout.split(" ").last
 
-    Dir.glob("tool/bundler/*_gems.rb").each do |file|
+    Dir.glob("{tool/bundler/*_gems.rb,bundler/spec/realworld/fixtures/*/Gemfile}").each do |file|
       Spec::Rubygems.dev_bundle("update", "--bundler", version, gemfile: file)
     end
   end
@@ -41,7 +41,7 @@ namespace :version do
   desc "Check locked bundler version is up to date"
   task check: :update_locked_bundler do
     Spec::Rubygems.check_source_control_changes(
-      success_message: "Locked bundler version is out of sync",
+      success_message: "Locked bundler version is in sync",
       error_message: "Please run `rake version:update_locked_bundler` and commit the result."
     )
   end

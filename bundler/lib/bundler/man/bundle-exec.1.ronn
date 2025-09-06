@@ -3,7 +3,7 @@ bundle-exec(1) -- Execute a command in the context of the bundle
 
 ## SYNOPSIS
 
-`bundle exec` [--keep-file-descriptors] [--gemfile=GEMFILE] <command>
+`bundle exec` [--keep-file-descriptors] [--gemfile=GEMFILE] [--env KEY=VALUE] <command>
 
 ## DESCRIPTION
 
@@ -26,6 +26,10 @@ available on your shell's `$PATH`.
 
 * `--gemfile=GEMFILE`:
   Use the specified gemfile instead of [`Gemfile(5)`][Gemfile(5)].
+
+* `--env KEY=VALUE`:
+  Set environment variables for the child process. Can be specified multiple times.
+  Example: `bundle exec --env RUBYOPT=-rlogger --env DEBUG=1 ruby script.rb`
 
 ## BUNDLE INSTALL --BINSTUBS
 

@@ -32,7 +32,7 @@ jobs:
           - { name: "3.4", value: 3.4.5 }
 
         include:
-          - ruby: { name: jruby, value: jruby-10.0.1.0 }
+          - ruby: { name: jruby, value: jruby-10.0.2.0 }
             os: { name: Ubuntu, value: ubuntu-24.04 }
 
           - ruby: { name: truffleruby, value: truffleruby-24.2.1 }

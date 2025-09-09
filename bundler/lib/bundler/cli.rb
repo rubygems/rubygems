@@ -438,7 +438,7 @@ module Bundler
     map aliases_for("cache")
 
     desc "exec [OPTIONS]", "Run the command in context of the bundle"
-    method_option :keep_file_descriptors, type: :boolean, default: true, banner: "Passes all file descriptors to the new processes. Default is true, and setting it to false is deprecated"
+    method_option :keep_file_descriptors, type: :boolean, default: true, banner: "Passes all file descriptors to the new processes. Default is true, and setting it to false is not permitted"
     method_option :gemfile, type: :string, required: false, banner: "Use the specified gemfile instead of Gemfile"
     long_desc <<-D
       Exec runs a command, providing it access to the gems in the bundle. While using
@@ -447,9 +447,8 @@ module Bundler
     D
     def exec(*args)
       if ARGV.include?("--no-keep-file-descriptors")
-        message = "The `--no-keep-file-descriptors` has been deprecated. `bundle exec` no longer mess with your file descriptors. Close them in the exec'd script if you need to"
         removed_message = "The `--no-keep-file-descriptors` has been removed. `bundle exec` no longer mess with your file descriptors. Close them in the exec'd script if you need to"
-        SharedHelpers.major_deprecation(2, message, removed_message: removed_message)
+        raise InvalidOption, removed_message
       end
 
       require_relative "cli/exec"

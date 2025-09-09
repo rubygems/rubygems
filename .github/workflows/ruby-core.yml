@@ -27,7 +27,7 @@ jobs:
         with:
           repository: ruby/ruby
           path: ruby/ruby
-          ref: 2cce628721728409a26c2d4732f63419785c7fd8 # TODO: Point to v3_4_5 once released
+          ref: v3_4_5
           persist-credentials: false
       - name: Install libraries
         run: |

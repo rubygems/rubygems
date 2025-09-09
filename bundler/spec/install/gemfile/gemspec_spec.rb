@@ -10,7 +10,6 @@ RSpec.describe "bundle install from an existing gemspec" do
 
   it "should install runtime and development dependencies" do
     build_lib("foo", path: tmp("foo")) do |s|
-      s.write("Gemfile", "source :rubygems\ngemspec")
       s.add_dependency "bar", "=1.0.0"
       s.add_development_dependency "bar-dev", "=1.0.0"
     end
@@ -25,7 +24,6 @@ RSpec.describe "bundle install from an existing gemspec" do
 
   it "that is hidden should install runtime and development dependencies" do
     build_lib("foo", path: tmp("foo")) do |s|
-      s.write("Gemfile", "source :rubygems\ngemspec")
       s.add_dependency "bar", "=1.0.0"
       s.add_development_dependency "bar-dev", "=1.0.0"
     end
@@ -47,7 +45,6 @@ RSpec.describe "bundle install from an existing gemspec" do
     end
 
     build_lib("foo", path: tmp("foo")) do |s|
-      s.write("Gemfile", "source :rubygems\ngemspec")
       s.add_dependency "baz", ">= 1.0", "< 1.1"
     end
     install_gemfile <<-G

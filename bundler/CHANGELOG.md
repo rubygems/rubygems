@@ -1,5 +1,31 @@
 # Changelog
 
+## 2.7.2 (2025-09-09)
+
+### Enhancements:
+
+  - Improve error message when the same source is specified through `gemspec` and `path` [#8460](https://github.com/rubygems/rubygems/pull/8460)
+  - Raise an error in frozen mode if some registry gems have empty checksums [#8888](https://github.com/rubygems/rubygems/pull/8888)
+  - Bump vendored thor to 1.4.0 [#8883](https://github.com/rubygems/rubygems/pull/8883)
+  - Delay default path and global cache changes to Bundler 5 [#8867](https://github.com/rubygems/rubygems/pull/8867)
+  - Fix spacing in bundle gem newgem.gemspec.tt [#8865](https://github.com/rubygems/rubygems/pull/8865)
+
+### Bug fixes:
+
+  - Fix `bundle cache --frozen` and `bundle cache --no-prune` not printing a deprecation message [#8926](https://github.com/rubygems/rubygems/pull/8926)
+  - Fix local installation incorrectly forced if there's a `vendor/cache` directory and frozen mode is set [#8925](https://github.com/rubygems/rubygems/pull/8925)
+  - Fix `bundle lock --update <gem>` with `--lockfile` flag updating all gems [#8922](https://github.com/rubygems/rubygems/pull/8922)
+  - Fix `bundle show --verbose` and recommend it as an alternative to `bundle show --outdated` [#8915](https://github.com/rubygems/rubygems/pull/8915)
+  - Fix `bundle cache --no-all` not printing a deprecation warning [#8912](https://github.com/rubygems/rubygems/pull/8912)
+  - Fix `bundle update foo` unable to update foo in an edge case [#8897](https://github.com/rubygems/rubygems/pull/8897)
+  - Fix Bundler printing more flags than actually passed in verbose mode [#8914](https://github.com/rubygems/rubygems/pull/8914)
+  - Fix bundler failing to install sorbet-static in truffleruby when there's no lockfile [#8872](https://github.com/rubygems/rubygems/pull/8872)
+
+### Documentation:
+
+  - Improve documentation of `bundle doctor`, `bundle plugin`, and `bundle config` [#8919](https://github.com/rubygems/rubygems/pull/8919)
+  - Make sure all CLI flags and subcommands are documented [#8861](https://github.com/rubygems/rubygems/pull/8861)
+
 ## 2.7.1 (2025-07-21)
 
 ### Enhancements:

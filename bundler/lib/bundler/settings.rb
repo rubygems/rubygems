@@ -83,6 +83,7 @@ module Bundler
       "BUNDLE_VERSION" => "lockfile",
       "BUNDLE_LOCKFILE_CHECKSUMS" => true,
       "BUNDLE_CACHE_ALL" => true,
+      "BUNDLE_DEFAULT_CLI_COMMAND" => "cli_help",
       "BUNDLE_PLUGINS" => true,
     }.freeze
 

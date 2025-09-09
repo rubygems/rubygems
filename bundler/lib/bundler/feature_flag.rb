@@ -11,11 +11,6 @@ module Bundler
     end
     private_class_method :settings_flag
 
-    def self.settings_option(key, &default)
-      settings_method(key, key, &default)
-    end
-    private_class_method :settings_option
-
     def self.settings_method(name, key, &default)
       define_method(name) do
         value = Bundler.settings[key]
@@ -29,8 +24,6 @@ module Bundler
 
     settings_flag(:global_gem_cache) { bundler_5_mode? }
     settings_flag(:update_requires_all_flag) { bundler_5_mode? }
-
-    settings_option(:default_cli_command) { bundler_4_mode? ? :cli_help : :install }
 
     def removed_major?(target_major_version)
       @major_version > target_major_version

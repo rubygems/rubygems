@@ -505,7 +505,7 @@ module Bundler
               "      gem 'rails'\n" \
               "    end\n\n"
 
-      SharedHelpers.major_deprecation(2, msg.strip)
+      SharedHelpers.feature_removed!(msg.strip)
     end
 
     def check_rubygems_source_safety

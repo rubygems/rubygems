@@ -86,6 +86,7 @@ module Bundler
       "BUNDLE_LOCKFILE_CHECKSUMS" => true,
       "BUNDLE_PLUGINS" => true,
       "BUNDLE_GLOBAL_GEM_CACHE" => false,
+      "BUNDLE_UPDATE_REQUIRES_ALL_FLAG" => false,
     }.freeze
 
     def initialize(root = nil)

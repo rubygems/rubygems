@@ -1,5 +1,32 @@
 # Changelog
 
+## 3.7.2 / 2025-09-09
+
+### Enhancements:
+
+* `gem sources --prepend` and `--append` allow finer grained control of
+  sources. Pull request
+  [#8901](https://github.com/rubygems/rubygems/pull/8901) by martinemde
+* Improve `gem sources --remove` output. Pull request
+  [#8909](https://github.com/rubygems/rubygems/pull/8909) by
+  deivid-rodriguez
+* Make `gem sources` output more clear. Pull request
+  [#8938](https://github.com/rubygems/rubygems/pull/8938) by
+  deivid-rodriguez
+* Use IMDSv2 for S3 instance credentials. Pull request
+  [#7709](https://github.com/rubygems/rubygems/pull/7709) by
+  folbricht-stripe
+* Installs bundler 2.7.2 as a default gem.
+
+### Bug fixes:
+
+* Fix "did you mean" suggestions for unknown commands. Pull request
+  [#8948](https://github.com/rubygems/rubygems/pull/8948) by
+  deivid-rodriguez
+* Fix trailing slashes not considered by `gem sources --remove`. Pull
+  request [#8939](https://github.com/rubygems/rubygems/pull/8939) by
+  deivid-rodriguez
+
 ## 3.7.1 / 2025-07-21
 
 ### Enhancements:

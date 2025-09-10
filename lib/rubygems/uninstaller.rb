@@ -42,23 +42,21 @@ class Gem::Uninstaller
   attr_reader :spec
 
   ##
-  # Constructs an uninstaller that will uninstall +gem+ which can be a gem name.
+  # Constructs an uninstaller that will uninstall gem named +gem+.
   # +options+ is a Hash with the following keys:
   #
   # :version:: Version requirement for the gem to uninstall. If not specified,
   #            uses Gem::Requirement.default.
-  # :install_dir:: The directory where the gem was installed. If not specified,
+  # :install_dir:: The directory where the gem is installed. If not specified,
   #                uses Gem.dir.
-  # :executables:: Force removal of executables. If true, removes executables
-  #                without asking. If false, asks the user. If nil, uses default
-  #                behavior.
-  # :all:: Remove all matching versions without asking the user.
-  # :ignore:: Ignore dependency checks when uninstalling.
+  # :executables:: Whether executables should be removed without confirmation or not. If nil, asks the user explicitly.
+  # :all:: If more than one version matches the requirement, whether to forcefully remove all matching versions or ask the user to select specific matching versions that should be removed.
+  # :ignore:: Ignore broken dependency checks when uninstalling.
   # :bin_dir:: Directory containing executables to remove. If not specified,
   #            uses Gem.bindir.
-  # :format_executable:: Format executable names using Gem::Installer.exec_format.
-  # :abort_on_dependent:: Abort uninstallation if dependencies would be broken.
-  # :check_dev:: Check development dependencies when validating removal.
+  # :format_executable:: In order to find executables to be removed, format executable names using Gem::Installer.exec_format.
+  # :abort_on_dependent:: Directly abort uninstallation if dependencies would be broken, rather than asking the user for confirmation.
+  # :check_dev:: When checking if uninstalling gem would leave broken dependencies around, also consider development dependencies.
   # :force:: Set both :all and :ignore to true for forced uninstallation.
   # :user_install:: Uninstall from user gem directory instead of system directory.
 
@@ -74,10 +72,6 @@ class Gem::Uninstaller
     @bin_dir            = options[:bin_dir]
     @format_executable  = options[:format_executable]
     @abort_on_dependent = options[:abort_on_dependent]
-
-    # Indicate if development dependencies should be checked when
-    # uninstalling. (default: false)
-    #
     @check_dev = options[:check_dev]
 
     if options[:force]

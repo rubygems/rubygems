@@ -160,8 +160,10 @@ Bundler will refuse to run otherwise.
 
 * Git and Path gems will be included in `vendor/cache` by default
 
-  We're unsure why these gems were treated specially so we'll start caching them
-  normally.
+  If you have a `vendor/cache` directory (to support offline scenarios, for
+  example), Bundler will start including gems from `path` and `git` sources in
+  there. We're unsure why these gems were treated specially so we'll start
+  caching them normally.
 
 * Bundler will use cached local data if available when network issues are found
   during resolution.

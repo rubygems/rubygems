@@ -7,7 +7,6 @@ module Bundler
     autoload :Validator, File.expand_path("settings/validator", __dir__)
 
     BOOL_KEYS = %w[
-      allow_offline_install
       auto_install
       cache_all
       cache_all_platforms
@@ -82,6 +81,12 @@ module Bundler
       "BUNDLE_RETRY" => 3,
       "BUNDLE_TIMEOUT" => 10,
       "BUNDLE_VERSION" => "lockfile",
+      "BUNDLE_CACHE_ALL" => true,
+      "BUNDLE_DEFAULT_CLI_COMMAND" => "cli_help",
+      "BUNDLE_LOCKFILE_CHECKSUMS" => true,
+      "BUNDLE_PLUGINS" => true,
+      "BUNDLE_GLOBAL_GEM_CACHE" => false,
+      "BUNDLE_UPDATE_REQUIRES_ALL_FLAG" => false,
     }.freeze
 
     def initialize(root = nil)

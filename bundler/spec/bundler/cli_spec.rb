@@ -87,7 +87,7 @@ RSpec.describe "bundle executable" do
   end
 
   context "with no arguments" do
-    it "prints a concise help message", bundler: "4" do
+    it "prints a concise help message by default" do
       bundle ""
       expect(err).to be_empty
       expect(out).to include("Bundler version #{Bundler::VERSION}").
@@ -95,6 +95,23 @@ RSpec.describe "bundle executable" do
         and include("\n\n  Primary commands:\n").
         and include("\n\n  Utilities:\n").
         and include("\n\nOptions:\n")
+    end
+
+    it "prints a concise help message when default_cli_command set to cli_help" do
+      bundle "config set default_cli_command cli_help"
+      bundle ""
+      expect(err).to be_empty
+      expect(out).to include("Bundler version #{Bundler::VERSION}").
+        and include("\n\nBundler commands:\n\n").
+        and include("\n\n  Primary commands:\n").
+        and include("\n\n  Utilities:\n").
+        and include("\n\nOptions:\n")
+    end
+
+    it "runs bundle install when default_cli_command set to install" do
+      bundle "config set default_cli_command install"
+      bundle "", raise_on_error: false
+      expect(err).to include("Could not locate Gemfile")
     end
   end
 
@@ -266,10 +283,10 @@ end
 RSpec.describe "bundler executable" do
   it "shows the bundler version just as the `bundle` executable does" do
     bundler "--version"
-    expect(out).to eq("Bundler version #{Bundler::VERSION}")
+    expect(out).to eq(Bundler::VERSION)
 
-    bundle "config simulate_version 4"
+    bundle "config simulate_version 5"
     bundler "--version"
-    expect(out).to eq("#{Bundler::VERSION} (simulating Bundler 4)")
+    expect(out).to eq("#{Bundler::VERSION} (simulating Bundler 5)")
   end
 end

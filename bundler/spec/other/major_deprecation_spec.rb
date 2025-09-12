@@ -83,11 +83,9 @@ RSpec.describe "major deprecations" do
       bundle "exec --no-keep-file-descriptors -e 1", raise_on_error: false
     end
 
-    it "is deprecated" do
-      expect(deprecations).to include "The `--no-keep-file-descriptors` has been deprecated. `bundle exec` no longer mess with your file descriptors. Close them in the exec'd script if you need to"
+    it "is removed and shows a helpful error message about it" do
+      expect(err).to include "The `--no-keep-file-descriptors` has been removed. `bundle exec` no longer mess with your file descriptors. Close them in the exec'd script if you need to"
     end
-
-    pending "is removed and shows a helpful error message about it", bundler: "4"
   end
 
   describe "bundle update --quiet" do
@@ -398,17 +396,15 @@ RSpec.describe "major deprecations" do
 
   describe "bundle install --binstubs" do
     before do
-      install_gemfile <<-G, binstubs: true
+      install_gemfile <<-G, binstubs: true, raise_on_error: false
         source "https://gem.repo1"
         gem "myrack"
       G
     end
 
-    it "should output a deprecation warning" do
-      expect(deprecations).to include("The --binstubs option will be removed in favor of `bundle binstubs --all`")
+    it "fails with a helpful error" do
+      expect(err).to include("The --binstubs option has been removed in favor of `bundle binstubs --all`")
     end
-
-    pending "fails with a helpful error", bundler: "4"
   end
 
   context "bundle install with both gems.rb and Gemfile present" do
@@ -484,53 +480,62 @@ RSpec.describe "major deprecations" do
 
   context "bundle install with multiple sources" do
     before do
-      install_gemfile <<-G
+      install_gemfile <<-G, raise_on_error: false
         source "https://gem.repo3"
         source "https://gem.repo1"
       G
     end
 
-    it "shows a deprecation" do
-      expect(deprecations).to include(
-        "Your Gemfile contains multiple global sources. " \
-        "Using `source` more than once without a block is a security risk, and " \
-        "may result in installing unexpected gems. To resolve this warning, use " \
-        "a block to indicate which gems should come from the secondary source."
+    it "fails with a helpful error" do
+      expect(err).to include(
+        "This Gemfile contains multiple global sources. " \
+        "Each source after the first must include a block to indicate which gems " \
+        "should come from that source"
       )
     end
 
     it "doesn't show lockfile deprecations if there's a lockfile" do
-      bundle "install"
+      lockfile <<~L
+        GEM
+          remote: https://gem.repo3/
+          remote: https://gem.repo1/
+          specs:
 
-      expect(deprecations).to include(
-        "Your Gemfile contains multiple global sources. " \
-        "Using `source` more than once without a block is a security risk, and " \
-        "may result in installing unexpected gems. To resolve this warning, use " \
-        "a block to indicate which gems should come from the secondary source."
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+      bundle "install", raise_on_error: false
+
+      expect(err).to include(
+        "This Gemfile contains multiple global sources. " \
+        "Each source after the first must include a block to indicate which gems " \
+        "should come from that source"
       )
-      expect(deprecations).not_to include(
+      expect(err).not_to include(
         "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. " \
         "Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure."
       )
       bundle "config set --local frozen true"
-      bundle "install"
+      bundle "install", raise_on_error: false
 
-      expect(deprecations).to include(
-        "Your Gemfile contains multiple global sources. " \
-        "Using `source` more than once without a block is a security risk, and " \
-        "may result in installing unexpected gems. To resolve this warning, use " \
-        "a block to indicate which gems should come from the secondary source."
+      expect(err).to include(
+        "This Gemfile contains multiple global sources. " \
+        "Each source after the first must include a block to indicate which gems " \
+        "should come from that source"
       )
-      expect(deprecations).not_to include(
+      expect(err).not_to include(
         "Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. " \
         "Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure."
       )
     end
-
-    pending "fails with a helpful error", bundler: "4"
   end
 
-  context "bundle install in frozen mode with a lockfile with a single rubygems section with multiple remotes" do
+  context "bundle install with a lockfile with a single rubygems section with multiple remotes" do
     before do
       build_repo3 do
         build_gem "myrack", "0.9.1"
@@ -559,17 +564,60 @@ RSpec.describe "major deprecations" do
         BUNDLED WITH
            #{Bundler::VERSION}
       L
-
-      bundle "config set --local frozen true"
     end
 
-    it "shows a deprecation" do
-      bundle "install"
+    it "shows an error" do
+      bundle "install", raise_on_error: false
 
-      expect(deprecations).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure.")
+      expect(err).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure.")
+    end
+  end
+
+  context "bundle install with a lockfile including X64_MINGW_LEGACY platform" do
+    before do
+      gemfile <<~G
+        source "https://gem.repo1"
+        gem "rake"
+      G
+
+      lockfile <<~L
+        GEM
+          remote: https://rubygems.org/
+          specs:
+            rake (10.3.2)
+
+        PLATFORMS
+          ruby
+          x64-mingw32
+
+        DEPENDENCIES
+          rake
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
     end
 
-    pending "fails with a helpful error", bundler: "4"
+    it "raises a helpful error" do
+      bundle "install", raise_on_error: false
+
+      expect(err).to include("Found x64-mingw32 in lockfile, which is no longer supported as of Bundler 4.0.")
+    end
+  end
+
+  context "with a global path source" do
+    before do
+      build_lib "foo"
+
+      install_gemfile <<-G, raise_on_error: false
+        path "#{lib_path("foo-1.0")}"
+        gem 'foo'
+      G
+    end
+
+    it "shows an error" do
+      expect(err).to include("You can no longer specify a path source by itself")
+    end
   end
 
   context "when Bundler.setup is run in a ruby script" do
@@ -644,14 +692,12 @@ RSpec.describe "major deprecations" do
 
     context "with --outdated flag" do
       before do
-        bundle "show --outdated"
+        bundle "show --outdated", raise_on_error: false
       end
 
-      it "prints a deprecation warning informing about its removal" do
-        expect(deprecations).to include("the `--outdated` flag to `bundle show` will be removed in favor of `bundle show --verbose`")
+      it "fails with a helpful message" do
+        expect(err).to include("the `--outdated` flag to `bundle show` has been removed in favor of `bundle show --verbose`")
       end
-
-      pending "fails with a helpful message", bundler: "4"
     end
   end
 
@@ -664,13 +710,11 @@ RSpec.describe "major deprecations" do
     end
 
     context "with --install" do
-      it "shows a deprecation warning" do
-        bundle "remove myrack --install"
+      it "fails with a helpful message" do
+        bundle "remove myrack --install", raise_on_error: false
 
-        expect(err).to include "[DEPRECATED] The `--install` flag has been deprecated. `bundle install` is triggered by default."
+        expect(err).to include "The `--install` flag has been removed. `bundle install` is triggered by default."
       end
-
-      pending "fails with a helpful message", bundler: "4"
     end
   end
 
@@ -701,14 +745,11 @@ RSpec.describe "major deprecations" do
       end
     end
 
-    it "prints a deprecation warning" do
-      bundle "plugin install foo --local_git #{lib_path("foo-1.0")}"
+    it "fails with a helpful message" do
+      bundle "plugin install foo --local_git #{lib_path("foo-1.0")}", raise_on_error: false
 
-      expect(out).to include("Installed plugin foo")
-      expect(deprecations).to include "--local_git is deprecated, use --git"
+      expect(err).to include "--local_git has been removed, use --git"
     end
-
-    pending "fails with a helpful message", bundler: "4"
   end
 
   describe "removing rubocop" do
@@ -737,6 +778,18 @@ RSpec.describe "major deprecations" do
         expect(err).to include \
           "--no-rubocop has been removed, use --no-linter"
       end
+    end
+  end
+
+  context " bundle gem --ext parameter with no value" do
+    it "prints deprecation when used after gem name" do
+      bundle "gem --ext foo", raise_on_error: false
+      expect(err).to include "Extensions can now be generated using C or Rust, so `--ext` with no arguments has been removed. Please select a language, e.g. `--ext=rust` to generate a Rust extension."
+    end
+
+    it "prints deprecation when used before gem name" do
+      bundle "gem foo --ext", raise_on_error: false
+      expect(err).to include "Extensions can now be generated using C or Rust, so `--ext` with no arguments has been removed. Please select a language, e.g. `--ext=rust` to generate a Rust extension."
     end
   end
 end

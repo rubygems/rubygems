@@ -24,7 +24,7 @@ module Bundler
     }.freeze
 
     def self.start(*)
-      check_deprecated_ext_option(ARGV) if ARGV.include?("--ext")
+      check_invalid_ext_option(ARGV) if ARGV.include?("--ext")
 
       super
     ensure
@@ -107,7 +107,7 @@ module Bundler
       shell.say
       self.class.send(:class_options_help, shell)
     end
-    default_task(Bundler.feature_flag.default_cli_command)
+    default_task(Bundler.settings[:default_cli_command])
 
     class_option "no-color", type: :boolean, desc: "Disable colorization in output"
     class_option "retry", type: :numeric, aliases: "-r", banner: "NUM",
@@ -143,7 +143,7 @@ module Bundler
     end
 
     def self.handle_no_command_error(command, has_namespace = $thor_runner)
-      if Bundler.feature_flag.plugins? && Bundler::Plugin.command?(command)
+      if Bundler.settings[:plugins] && Bundler::Plugin.command?(command)
         return Bundler::Plugin.exec_command(command, ARGV[1..-1])
       end
 
@@ -187,12 +187,11 @@ module Bundler
     long_desc <<-D
       Removes the given gems from the Gemfile while ensuring that the resulting Gemfile is still valid. If the gem is not found, Bundler prints a error message and if gem could not be removed due to any reason Bundler will display a warning.
     D
-    method_option "install", type: :boolean, banner: "Runs 'bundle install' after removing the gems from the Gemfile"
+    method_option "install", type: :boolean, banner: "Runs 'bundle install' after removing the gems from the Gemfile (removed)"
     def remove(*gems)
       if ARGV.include?("--install")
-        message = "The `--install` flag has been deprecated. `bundle install` is triggered by default."
         removed_message = "The `--install` flag has been removed. `bundle install` is triggered by default."
-        SharedHelpers.major_deprecation(2, message, removed_message: removed_message)
+        raise InvalidOption, removed_message
       end
 
       require_relative "cli/remove"
@@ -210,7 +209,7 @@ module Bundler
 
       If the bundle has already been installed, bundler will tell you so and then exit.
     D
-    method_option "binstubs", type: :string, lazy_default: "bin", banner: "Generate bin stubs for bundled gems to ./bin"
+    method_option "binstubs", type: :string, lazy_default: "bin", banner: "Generate bin stubs for bundled gems to ./bin (removed)"
     method_option "clean", type: :boolean, banner: "Run bundle clean automatically after install (removed)"
     method_option "deployment", type: :boolean, banner: "Install using defaults tuned for deployment environments (removed)"
     method_option "frozen", type: :boolean, banner: "Do not allow the Gemfile.lock to be updated after this install (removed)"
@@ -239,6 +238,11 @@ module Bundler
       print_remembered_flag_deprecation("--system", "path.system", "true") if ARGV.include?("--system")
 
       remembered_flag_deprecation("deployment", negative: true)
+
+      if ARGV.include?("--binstubs")
+        removed_message = "The --binstubs option has been removed in favor of `bundle binstubs --all`"
+        raise InvalidOption, removed_message
+      end
 
       require_relative "cli/install"
       Bundler.settings.temporary(no_install: false) do
@@ -284,12 +288,11 @@ module Bundler
       Calling show with [GEM] will list the exact location of that gem on your machine.
     D
     method_option "paths", type: :boolean, banner: "List the paths of all gems that are required by your Gemfile."
-    method_option "outdated", type: :boolean, banner: "Show verbose output including whether gems are outdated."
+    method_option "outdated", type: :boolean, banner: "Show verbose output including whether gems are outdated (removed)."
     def show(gem_name = nil)
       if ARGV.include?("--outdated")
-        message = "the `--outdated` flag to `bundle show` will be removed in favor of `bundle show --verbose`"
         removed_message = "the `--outdated` flag to `bundle show` has been removed in favor of `bundle show --verbose`"
-        SharedHelpers.major_deprecation(2, message, removed_message: removed_message)
+        raise InvalidOption, removed_message
       end
       require_relative "cli/show"
       Show.new(options, gem_name).run
@@ -435,7 +438,7 @@ module Bundler
     map aliases_for("cache")
 
     desc "exec [OPTIONS]", "Run the command in context of the bundle"
-    method_option :keep_file_descriptors, type: :boolean, default: true, banner: "Passes all file descriptors to the new processes. Default is true, and setting it to false is deprecated"
+    method_option :keep_file_descriptors, type: :boolean, default: true, banner: "Passes all file descriptors to the new processes. Default is true, and setting it to false is not permitted"
     method_option :gemfile, type: :string, required: false, banner: "Use the specified gemfile instead of Gemfile"
     long_desc <<-D
       Exec runs a command, providing it access to the gems in the bundle. While using
@@ -444,9 +447,8 @@ module Bundler
     D
     def exec(*args)
       if ARGV.include?("--no-keep-file-descriptors")
-        message = "The `--no-keep-file-descriptors` has been deprecated. `bundle exec` no longer mess with your file descriptors. Close them in the exec'd script if you need to"
         removed_message = "The `--no-keep-file-descriptors` has been removed. `bundle exec` no longer mess with your file descriptors. Close them in the exec'd script if you need to"
-        SharedHelpers.major_deprecation(2, message, removed_message: removed_message)
+        raise InvalidOption, removed_message
       end
 
       require_relative "cli/exec"
@@ -620,7 +622,7 @@ module Bundler
       end
     end
 
-    if Bundler.feature_flag.plugins?
+    if Bundler.settings[:plugins]
       require_relative "cli/plugin"
       desc "plugin", "Manage the bundler plugins"
       subcommand "plugin", Plugin
@@ -654,18 +656,15 @@ module Bundler
       end
     end
 
-    def self.check_deprecated_ext_option(arguments)
-      # when deprecated version of `--ext` is called
-      # print out deprecation warning and pretend `--ext=c` was provided
-      if deprecated_ext_value?(arguments)
-        message = "Extensions can now be generated using C or Rust, so `--ext` with no arguments has been deprecated. Please select a language, e.g. `--ext=rust` to generate a Rust extension. This gem will now be generated as if `--ext=c` was used."
+    def self.check_invalid_ext_option(arguments)
+      # when invalid version of `--ext` is called
+      if invalid_ext_value?(arguments)
         removed_message = "Extensions can now be generated using C or Rust, so `--ext` with no arguments has been removed. Please select a language, e.g. `--ext=rust` to generate a Rust extension."
-        SharedHelpers.major_deprecation 2, message, removed_message: removed_message
-        arguments[arguments.index("--ext")] = "--ext=c"
+        raise InvalidOption, removed_message
       end
     end
 
-    def self.deprecated_ext_value?(arguments)
+    def self.invalid_ext_value?(arguments)
       index = arguments.index("--ext")
       next_argument = arguments[index + 1]
 
@@ -673,15 +672,15 @@ module Bundler
       # for example `bundle gem hello --ext c`
       return false if EXTENSIONS.include?(next_argument)
 
-      # deprecated call when --ext is called with no value in last position
+      # invalid call when --ext is called with no value in last position
       # for example `bundle gem hello_gem --ext`
       return true if next_argument.nil?
 
-      # deprecated call when --ext is followed by other parameter
+      # invalid call when --ext is followed by other parameter
       # for example `bundle gem --ext --no-ci hello_gem`
       return true if next_argument.start_with?("-")
 
-      # deprecated call when --ext is followed by gem name
+      # invalid call when --ext is followed by gem name
       # for example `bundle gem --ext hello_gem`
       return true if next_argument
 

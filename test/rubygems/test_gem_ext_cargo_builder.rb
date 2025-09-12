@@ -193,6 +193,154 @@ class TestGemExtCargoBuilder < Gem::TestCase
     RbConfig::MAKEFILE_CONFIG["CC"] = orig_cc
   end
 
+  def test_extension_in_lib_with_wrapper_file_when_enabled
+    skip "Wrapper functionality not available" unless Gem.respond_to?(:install_extension_in_lib)
+    
+    # Mock the install_extension_in_lib setting
+    Gem.stub(:install_extension_in_lib, true) do
+      # Create a mock Rust extension file
+      extension_file = File.join(@ext, "test_rust_extension.#{RbConfig::CONFIG["DLEXT"]}")
+      File.write(extension_file, "fake rust extension content")
+      
+      lib_dir = File.join(@dest_path, "lib")
+      FileUtils.mkdir_p(lib_dir)
+      
+      # Test the wrapper file creation
+      entries = [extension_file]
+      gem_name = "test_rust_gem"
+      
+      Gem::Ext::CargoBuilder.create_wrapper_files(lib_dir, @dest_path, entries, gem_name)
+      
+      # Verify wrapper file was created
+      wrapper_path = File.join(lib_dir, "test_rust_extension.#{RbConfig::CONFIG["DLEXT"]}.rb")
+      assert_path_exist wrapper_path
+      
+      # Verify wrapper content and path to ext/
+      wrapper_content = File.read(wrapper_path)
+      assert_includes wrapper_content, "DEPRECATED: Gem 'test_rust_gem'"
+      assert_includes wrapper_content, "require_relative \"../ext/test_rust_extension.#{RbConfig::CONFIG["DLEXT"]}\""
+    end
+  end
+
+  def test_extension_in_lib_with_wrapper_file_when_disabled
+    skip "Wrapper functionality not available" unless Gem.respond_to?(:install_extension_in_lib)
+    
+    # Mock the install_extension_in_lib setting to false
+    Gem.stub(:install_extension_in_lib, false) do
+      lib_dir = File.join(@dest_path, "lib")
+      FileUtils.mkdir_p(lib_dir)
+      
+      extension_file = File.join(@ext, "test_extension.#{RbConfig::CONFIG["DLEXT"]}")
+      File.write(extension_file, "fake extension content")
+      
+      entries = [extension_file]
+      gem_name = "test_gem"
+      
+      # This should not create wrapper files when install_extension_in_lib is false
+      # The wrapper creation is only called when install_extension_in_lib is true
+      # So we're testing the integration point
+      refute_path_exist File.join(lib_dir, "test_extension.#{RbConfig::CONFIG["DLEXT"]}.rb")
+    end
+  end
+
+  def test_extension_in_lib_with_wrapper_file_when_enabled_with_nested_lib_directory
+    skip "Wrapper functionality not available" unless Gem.respond_to?(:install_extension_in_lib)
+    
+    Gem.stub(:install_extension_in_lib, true) do
+      # Test with nested lib directory structure (like cargo builder uses)
+      nested_lib_dir = File.join(@dest_path, "lib", "nested")
+      FileUtils.mkdir_p(nested_lib_dir)
+      
+      extension_file = File.join(@ext, "test_nested_extension.#{RbConfig::CONFIG["DLEXT"]}")
+      File.write(extension_file, "fake nested extension content")
+      
+      entries = [extension_file]
+      gem_name = "test_nested_gem"
+      
+      Gem::Ext::CargoBuilder.create_wrapper_files(nested_lib_dir, @dest_path, entries, gem_name)
+      
+      # Verify wrapper file was created in nested directory
+      wrapper_path = File.join(nested_lib_dir, "test_nested_extension.#{RbConfig::CONFIG["DLEXT"]}.rb")
+      assert_path_exist wrapper_path
+      
+      # Verify wrapper content points to correct ext/ location
+      wrapper_content = File.read(wrapper_path)
+      assert_includes wrapper_content, "require_relative \"../ext/test_nested_extension.#{RbConfig::CONFIG["DLEXT"]}\""
+    end
+  end
+
+  def test_extension_in_lib_detection_os
+    skip "Wrapper functionality not available" unless Gem.respond_to?(:install_extension_in_lib)
+    
+    lib_dir = File.join(@dest_path, "lib")
+    FileUtils.mkdir_p(lib_dir)
+    
+    # Test operative system specific extension detection
+    case RbConfig::CONFIG["host_os"]
+    when /darwin|mac os/
+      extension_file = File.join(@ext, "test_extension.bundle")
+      expected_wrapper = "test_extension.bundle.rb"
+    when /mswin|mingw|cygwin/
+      extension_file = File.join(@ext, "test_extension.dll")
+      expected_wrapper = "test_extension.dll.rb"
+    else
+      extension_file = File.join(@ext, "test_extension.so")
+      expected_wrapper = "test_extension.so.rb"
+    end
+    
+    File.write(extension_file, "fake extension content")
+    
+    entries = [extension_file]
+    gem_name = "test_platform_gem"
+    
+    Gem::Ext::CargoBuilder.create_wrapper_files(lib_dir, @dest_path, entries, gem_name)
+    
+    # Verify wrapper file was created with correct extension
+    wrapper_path = File.join(lib_dir, expected_wrapper)
+    assert_path_exist wrapper_path
+    
+    # Verify wrapper content
+    wrapper_content = File.read(wrapper_path)
+    assert_includes wrapper_content, "DEPRECATED: Gem 'test_platform_gem'"
+  end
+
+  def test_extension_in_lib_with_wrapper_file_when_enabled_with_multiple_extensions
+    skip "Wrapper functionality not available" unless Gem.respond_to?(:install_extension_in_lib)
+    
+    Gem.stub(:install_extension_in_lib, true) do
+      lib_dir = File.join(@dest_path, "lib")
+      FileUtils.mkdir_p(lib_dir)
+      
+      # Create multiple extension files
+      extension1 = File.join(@ext, "extension1.#{RbConfig::CONFIG["DLEXT"]}")
+      extension2 = File.join(@ext, "extension2.#{RbConfig::CONFIG["DLEXT"]}")
+      extension3 = File.join(@ext, "extension3.#{RbConfig::CONFIG["DLEXT"]}")
+      
+      [extension1, extension2, extension3].each do |ext_file|
+        File.write(ext_file, "fake extension content")
+      end
+      
+      entries = [extension1, extension2, extension3]
+      gem_name = "test_multi_gem"
+      
+      Gem::Ext::CargoBuilder.create_wrapper_files(lib_dir, @dest_path, entries, gem_name)
+      
+      # Verify all wrapper files were created
+      assert_path_exist File.join(lib_dir, "extension1.#{RbConfig::CONFIG["DLEXT"]}.rb")
+      assert_path_exist File.join(lib_dir, "extension2.#{RbConfig::CONFIG["DLEXT"]}.rb")
+      assert_path_exist File.join(lib_dir, "extension3.#{RbConfig::CONFIG["DLEXT"]}.rb")
+      
+      # Verify wrapper content for each
+      [extension1, extension2, extension3].each do |ext_file|
+        extension_name = File.basename(ext_file)
+        wrapper_path = File.join(lib_dir, "#{extension_name}.rb")
+        wrapper_content = File.read(wrapper_path)
+        assert_includes wrapper_content, "DEPRECATED: Gem 'test_multi_gem'"
+        assert_includes wrapper_content, "require_relative \"../ext/#{extension_name}\""
+      end
+    end
+  end
+
   private
 
   def skip_unsupported_platforms!

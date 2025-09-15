@@ -50,10 +50,14 @@ will explicitly need to configure it, either through environment variables,
 application configuration, or machine configuration. For example, with `bundle
 config set --local without development test`.
 
-### Bundler will include checksums in the lockfile by default
+### Bundler will include checksums in new lockfiles by default
 
 We shipped this security feature recently and we believe it's time to turn it on
-by default, so that everyone benefits from the extra security assurances by default.
+by default, so that everyone benefits from the extra security assurances. So
+whenever you create a new lockfile, Bundler will include a CHECKSUMS section.
+Bundler will not automatically add a CHECKSUMS section to existing
+lockfiles, though, unless explicitly requested through `bundle lock
+--add-checksums`.
 
 ### Strict source pinning in Gemfile is enforced by default
 
@@ -156,8 +160,10 @@ Bundler will refuse to run otherwise.
 
 * Git and Path gems will be included in `vendor/cache` by default
 
-  We're unsure why these gems were treated specially so we'll start caching them
-  normally.
+  If you have a `vendor/cache` directory (to support offline scenarios, for
+  example), Bundler will start including gems from `path` and `git` sources in
+  there. We're unsure why these gems were treated specially so we'll start
+  caching them normally.
 
 * Bundler will use cached local data if available when network issues are found
   during resolution.

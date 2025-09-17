@@ -609,6 +609,7 @@ lib/rubygems/vendored_timeout.rb
 lib/rubygems/vendored_tsort.rb
 lib/rubygems/version.rb
 lib/rubygems/version_option.rb
+lib/rubygems/win_platform.rb
 lib/rubygems/yaml_serializer.rb
 rubygems-update.gemspec
 setup.rb

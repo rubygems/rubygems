@@ -83,11 +83,9 @@ RSpec.describe "major deprecations" do
       bundle "exec --no-keep-file-descriptors -e 1", raise_on_error: false
     end
 
-    it "is deprecated" do
-      expect(deprecations).to include "The `--no-keep-file-descriptors` has been deprecated. `bundle exec` no longer mess with your file descriptors. Close them in the exec'd script if you need to"
+    it "is removed and shows a helpful error message about it" do
+      expect(err).to include "The `--no-keep-file-descriptors` has been removed. `bundle exec` no longer mess with your file descriptors. Close them in the exec'd script if you need to"
     end
-
-    pending "is removed and shows a helpful error message about it", bundler: "4"
   end
 
   describe "bundle update --quiet" do
@@ -572,6 +570,53 @@ RSpec.describe "major deprecations" do
       bundle "install", raise_on_error: false
 
       expect(err).to include("Your lockfile contains a single rubygems source section with multiple remotes, which is insecure. Make sure you run `bundle install` in non frozen mode and commit the result to make your lockfile secure.")
+    end
+  end
+
+  context "bundle install with a lockfile including X64_MINGW_LEGACY platform" do
+    before do
+      gemfile <<~G
+        source "https://gem.repo1"
+        gem "rake"
+      G
+
+      lockfile <<~L
+        GEM
+          remote: https://rubygems.org/
+          specs:
+            rake (10.3.2)
+
+        PLATFORMS
+          ruby
+          x64-mingw32
+
+        DEPENDENCIES
+          rake
+
+        BUNDLED WITH
+           #{Bundler::VERSION}
+      L
+    end
+
+    it "raises a helpful error" do
+      bundle "install", raise_on_error: false
+
+      expect(err).to include("Found x64-mingw32 in lockfile, which is no longer supported as of Bundler 4.0.")
+    end
+  end
+
+  context "with a global path source" do
+    before do
+      build_lib "foo"
+
+      install_gemfile <<-G, raise_on_error: false
+        path "#{lib_path("foo-1.0")}"
+        gem 'foo'
+      G
+    end
+
+    it "shows an error" do
+      expect(err).to include("You can no longer specify a path source by itself")
     end
   end
 

@@ -28,7 +28,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@44511735964dcb71245e7e55f72539531f7bc0eb # v1.257.0
+        uses: ruby/setup-ruby@0481980f17b760ef6bca5e8c55809102a0af1e5a # v1.263.0
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: none
@@ -52,7 +52,7 @@ jobs:
         if: always()
         run: echo "OLD_STATUS=$(curl -sS 'https://api.github.com/repos/rubygems/rubygems/actions/workflows/daily-rubygems.yml/runs?event=schedule&branch=master' | jq '.workflow_runs | .[1].conclusion')" >> $GITHUB_ENV
 
-      - uses: 8398a7/action-slack@1750b5085f3ec60384090fb7c52965ef822e869e # v3.18.0
+      - uses: 8398a7/action-slack@77eaa4f1c608a7d68b38af4e3f739dcd8cba273e # v3.19.0
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,action,workflow

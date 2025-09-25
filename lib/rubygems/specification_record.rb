@@ -148,7 +148,7 @@ module Gem
     def find_by_path(path)
       path = path.dup.freeze
       spec = @spec_with_requirable_file[path] ||= stubs.find do |s|
-        s.contains_requirable_file? path
+        s.contains_requirable_file?(path) && Gem::Platform.match_spec?(s)
       end || NOT_FOUND
 
       spec.to_spec

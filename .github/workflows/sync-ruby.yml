@@ -9,6 +9,8 @@ jobs:
     if: ${{ github.repository_owner == 'ruby' }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Create GitHub App token
         id: app-token

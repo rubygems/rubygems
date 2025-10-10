@@ -393,16 +393,18 @@ By default, this RubyGems will install gem as:
     Dir.chdir("bundler") do
       built_gem = Gem::Package.build(new_bundler_spec)
       begin
-        Gem::Installer.at(
+        installer = Gem::Installer.at(
           built_gem,
           env_shebang: options[:env_shebang],
           format_executable: options[:format_executable],
           force: options[:force],
-          install_as_default: true,
           bin_dir: bin_dir,
           install_dir: default_dir,
           wrappers: true
-        ).install
+        )
+        installer.install
+        File.delete installer.spec_file
+        installer.write_default_spec
       ensure
         FileUtils.rm_f built_gem
       end

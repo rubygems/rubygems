@@ -191,8 +191,10 @@ module Bundler
         set_cache_path!(app_cache_path) if use_app_cache?
 
         if requires_checkout? && !@copied
+          Plugin.hook(Plugin::Events::GIT_BEFORE_FETCH, self)
           fetch unless use_app_cache?
           checkout
+          Plugin.hook(Plugin::Events::GIT_AFTER_FETCH, self)
         end
 
         local_specs
@@ -205,7 +207,9 @@ module Bundler
         print_using_message "Using #{version_message(spec, options[:previous_spec])} from #{self}"
 
         if (requires_checkout? && !@copied) || force
+          Plugin.hook(Plugin::Events::GEM_BEFORE_FETCH, spec, self)
           checkout
+          Plugin.hook(Plugin::Events::GEM_AFTER_FETCH, spec, self)
         end
 
         generate_bin_options = { disable_extensions: !spec.missing_extensions?, build_args: options[:build_args] }

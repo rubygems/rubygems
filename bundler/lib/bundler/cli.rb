@@ -437,13 +437,18 @@ module Bundler
 
     map aliases_for("cache")
 
-    desc "exec [OPTIONS]", "Run the command in context of the bundle"
+    desc "exec [OPTIONS] [KEY=VALUE...] COMMAND", "Run the command in context of the bundle"
     method_option :keep_file_descriptors, type: :boolean, default: true, banner: "Passes all file descriptors to the new processes. Default is true, and setting it to false is deprecated"
     method_option :gemfile, type: :string, required: false, banner: "Use the specified gemfile instead of Gemfile"
     long_desc <<-D
       Exec runs a command, providing it access to the gems in the bundle. While using
       bundle exec you can require and call the bundled gems as if they were installed
       into the system wide RubyGems repository.
+
+      You can also set environment variables for the commands by prefixing with KEY=VALUE pairs or using the --env option.
+
+      e.g.: bundle exec RUBYOPT=-rlogger ruby script.rb
+      e.g.: bundle exec --env RUBYOPT=-rlogger ruby script.rb
     D
     def exec(*args)
       if ARGV.include?("--no-keep-file-descriptors")
@@ -452,8 +457,38 @@ module Bundler
         SharedHelpers.major_deprecation(2, message, removed_message: removed_message)
       end
 
+      # Handle --env options separately
+      env_vars = []
+      args = args.reject do |arg|
+        if arg == "--env"
+          # Next argument should be KEY=VALUE
+          next_arg = args[args.index(arg) + 1]
+          if next_arg && next_arg.include?("=")
+            env_vars << next_arg
+            true # Remove both --env and the next argument
+          else
+            false # Keep --env if no valid next argument
+          end
+        elsif arg.start_with?("--env=")
+          # Handle --env=KEY=VALUE format
+          env_var = arg[6..-1] # Remove "--env="
+          if env_var.include?("=")
+            env_vars << env_var
+            true # Remove this argument
+          else
+            false # Keep if invalid format
+          end
+        else
+          false # Keep other arguments
+        end
+      end
+
+      # Create new options hash with env_vars
+      new_options = options.dup
+      new_options[:env] = env_vars
+
       require_relative "cli/exec"
-      Exec.new(options, args).run
+      Exec.new(new_options, args).run
     end
 
     map aliases_for("exec")

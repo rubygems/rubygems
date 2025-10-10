@@ -66,6 +66,11 @@ def gemfile(force_latest_compatible = false, options = {}, &gemfile)
             Bundler.ui.info "Post-install message from #{name}:\n#{message}"
           end
         end
+
+        unless install
+          Bundler.ui.info "Re-executing program with installed gems"
+          Process.exec(RbConfig.ruby, $PROGRAM_NAME, *ARGV)
+        end
       end
 
       begin

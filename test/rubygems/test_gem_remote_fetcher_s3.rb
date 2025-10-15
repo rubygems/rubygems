@@ -49,8 +49,8 @@ class TestGemRemoteFetcherS3 < Gem::TestCase
       super
     end
 
-    def ec2_iam_request(uri, verb)
-      fake_s3_request = FakeGemRequest.new(uri, verb, nil, nil)
+    def ec2_iam_request(uri, verb, headers)
+      fake_s3_request = FakeGemRequest.new(uri, verb, nil, nil, headers)
       @aws_iam_calls << fake_s3_request
 
       case uri.to_s
@@ -90,7 +90,7 @@ class TestGemRemoteFetcherS3 < Gem::TestCase
   class FakeGemFetcher < Gem::RemoteFetcher
     attr_reader :fetched_uri, :last_s3_uri_signer
 
-    def request(uri, request_class, last_modified = nil)
+    def request(uri, ...)
       @fetched_uri = uri
       res = Gem::Net::HTTPOK.new nil, 200, nil
       def res.body = "success"

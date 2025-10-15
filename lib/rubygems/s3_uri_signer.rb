@@ -177,13 +177,11 @@ class Gem::S3URISigner
   end
 
   def ec2_metadata_request(url, token:)
-    request = ec2_iam_request(Gem::URI(url), Gem::Net::HTTP::Get)
+    request = ec2_iam_request(Gem::URI(url), Gem::Net::HTTP::Get, token ? {
+      "X-aws-ec2-metadata-token" => token,
+    } : {})
 
-    response = request.fetch do |req|
-      if token
-        req.add_field "X-aws-ec2-metadata-token", token
-      end
-    end
+    response = request.fetch
 
     case response
     when Gem::Net::HTTPOK then
@@ -194,11 +192,11 @@ class Gem::S3URISigner
   end
 
   def ec2_metadata_token
-    request = ec2_iam_request(Gem::URI(EC2_IAM_TOKEN), Gem::Net::HTTP::Put)
+    request = ec2_iam_request(Gem::URI(EC2_IAM_TOKEN), Gem::Net::HTTP::Put, {
+      "X-aws-ec2-metadata-token-ttl-seconds" => "60",
+    })
 
-    response = request.fetch do |req|
-      req.add_field "X-aws-ec2-metadata-token-ttl-seconds", 60
-    end
+    response = request.fetch
 
     case response
     when Gem::Net::HTTPOK then
@@ -208,9 +206,9 @@ class Gem::S3URISigner
     end
   end
 
-  def ec2_iam_request(uri, verb)
+  def ec2_iam_request(uri, verb, headers)
     @request_pool ||= create_request_pool(uri)
-    Gem::Request.new(uri, verb, nil, @request_pool)
+    Gem::Request.new(uri, verb, nil, @request_pool, headers)
   end
 
   def create_request_pool(uri)

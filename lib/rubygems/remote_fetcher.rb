@@ -210,9 +210,7 @@ class Gem::RemoteFetcher
 
   def fetch_http(uri, last_modified = nil, head = false, depth = 0)
     fetch_type = head ? Gem::Net::HTTP::Head : Gem::Net::HTTP::Get
-    response   = request uri, fetch_type, last_modified do |req|
-      headers.each {|k,v| req.add_field(k,v) }
-    end
+    response   = request uri, fetch_type, last_modified, headers
 
     case response
     when Gem::Net::HTTPOK, Gem::Net::HTTPNotModified then
@@ -308,15 +306,13 @@ class Gem::RemoteFetcher
   # a Gem::Net::HTTP response object.  request maintains a table of persistent
   # connections to reduce connect overhead.
 
-  def request(uri, request_class, last_modified = nil)
+  def request(uri, request_class, last_modified = nil, headers = {})
     proxy = proxy_for @proxy, uri
     pool  = pools_for(proxy).pool_for uri
 
-    request = Gem::Request.new uri, request_class, last_modified, pool
+    request = Gem::Request.new uri, request_class, last_modified, pool, headers
 
-    request.fetch do |req|
-      yield req if block_given?
-    end
+    request.fetch
   end
 
   def https?(uri)

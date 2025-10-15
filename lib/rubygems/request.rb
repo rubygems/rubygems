@@ -14,7 +14,7 @@ class Gem::Request
     proxy ||= get_proxy_from_env(uri.scheme)
     pool = ConnectionPools.new proxy_uri(proxy), cert_files
 
-    new(uri, request_class, last_modified, pool.pool_for(uri))
+    new(uri, request_class, last_modified, pool.pool_for(uri), {})
   end
 
   def self.proxy_uri(proxy) # :nodoc:
@@ -26,12 +26,13 @@ class Gem::Request
     end
   end
 
-  def initialize(uri, request_class, last_modified, pool)
+  def initialize(uri, request_class, last_modified, pool, initheader)
     @uri = uri
     @request_class = request_class
     @last_modified = last_modified
     @requests = Hash.new(0).compare_by_identity
     @user_agent = user_agent
+    @initheader = initheader
 
     @connection_pool = pool
   end
@@ -139,7 +140,7 @@ class Gem::Request
   end
 
   def fetch
-    request = @request_class.new @uri.request_uri
+    request = @request_class.new @uri.request_uri, @initheader
 
     unless @uri.nil? || @uri.user.nil? || @uri.user.empty?
       request.basic_auth Gem::UriFormatter.new(@uri.user).unescape,
@@ -154,8 +155,6 @@ class Gem::Request
       require "time"
       request.add_field "If-Modified-Since", @last_modified.httpdate
     end
-
-    yield request if block_given?
 
     perform_request request
   end

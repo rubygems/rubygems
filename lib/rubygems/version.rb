@@ -336,11 +336,11 @@ class Gem::Version
     _segments.dup
   end
 
-  alias deconstruct segments
+  alias_method :deconstruct, :segments
 
   def deconstruct_keys(keys)
     major, minor, patch = segments
-    {major:, minor:, patch:}
+    { major:, minor:, patch: }
   end
 
   ##

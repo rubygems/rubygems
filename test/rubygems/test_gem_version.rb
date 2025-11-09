@@ -236,7 +236,7 @@ class TestGemVersion < Gem::TestCase
 
   def test_deconstruct_keys
     version = v("3.2.1")
-    assert_equal({major: 3, minor: 2, patch: 1}, version.deconstruct_keys(nil))
+    assert_equal({ major: 3, minor: 2, patch: 1 }, version.deconstruct_keys(nil))
   end
 
   def test_pattern_matching_array
@@ -251,10 +251,11 @@ class TestGemVersion < Gem::TestCase
   end
 
   def test_pattern_matching_hash
-    result = case v("3.2.1")
-    in major: 3.., minor: 2.. then "matched"
-    else "no match"
-    end
+    result =
+      case v("3.2.1")
+      in major: 3.., minor: 2.. then "matched"
+      else "no match"
+      end
     assert_equal "matched", result
   end
 

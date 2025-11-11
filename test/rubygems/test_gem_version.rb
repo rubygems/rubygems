@@ -239,6 +239,16 @@ class TestGemVersion < Gem::TestCase
     assert_equal({ major: 3, minor: 2, patch: 1 }, version.deconstruct_keys(nil))
   end
 
+  def test_deconstruct_keys_two_segments
+    version = v("3.2")
+    assert_equal({ major: 3, minor: 2, patch: nil }, version.deconstruct_keys(nil))
+  end
+
+  def test_deconstruct_keys_one_segment
+    version = v("3")
+    assert_equal({ major: 3, minor: nil, patch: nil }, version.deconstruct_keys(nil))
+  end
+
   def test_pattern_matching_array
     case v("3.2.1")
     in [major, minor, patch]

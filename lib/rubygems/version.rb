@@ -336,8 +336,37 @@ class Gem::Version
     _segments.dup
   end
 
+  ##
+  # Deconstructs the version into an array for pattern matching.
+  # Returns the version segments as an array.
+  #
+  #   Gem::Version.new("3.2.1").deconstruct  #=> [3, 2, 1]
+  #
+  # This enables array pattern matching:
+  #
+  #   case Gem::Version.new("3.2.1")
+  #   in [major, minor, patch]
+  #     # major => 3, minor => 2, patch => 1
+  #   end
   alias_method :deconstruct, :segments
 
+  ##
+  # Deconstructs the version into a hash for pattern matching.
+  # Returns a hash with keys +:major+, +:minor+, and +:patch+.
+  #
+  #   Gem::Version.new("3.2.1").deconstruct_keys(nil)  #=> { major: 3, minor: 2, patch: 1 }
+  #
+  # This enables hash pattern matching:
+  #
+  #   case Gem::Version.new("3.2.1")
+  #   in major: 3.., minor: 2..
+  #     # matches versions >= 3.2
+  #   end
+  #
+  # Note: For versions with fewer than 3 segments, missing values are +nil+:
+  #
+  #   Gem::Version.new("3.2").deconstruct_keys(nil)  #=> { major: 3, minor: 2, patch: nil }
+  #   Gem::Version.new("3").deconstruct_keys(nil)    #=> { major: 3, minor: nil, patch: nil }
   def deconstruct_keys(keys)
     major, minor, patch = segments
     { major:, minor:, patch: }

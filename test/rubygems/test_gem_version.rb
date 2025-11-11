@@ -236,25 +236,25 @@ class TestGemVersion < Gem::TestCase
 
   def test_deconstruct_keys
     version = v("3.2.1")
-    assert_equal({ major: 3, minor: 2, patch: 1 }, version.deconstruct_keys(nil))
+    assert_equal({ major: 3, minor: 2, build: 1 }, version.deconstruct_keys(nil))
   end
 
   def test_deconstruct_keys_two_segments
     version = v("3.2")
-    assert_equal({ major: 3, minor: 2, patch: nil }, version.deconstruct_keys(nil))
+    assert_equal({ major: 3, minor: 2, build: nil }, version.deconstruct_keys(nil))
   end
 
   def test_deconstruct_keys_one_segment
     version = v("3")
-    assert_equal({ major: 3, minor: nil, patch: nil }, version.deconstruct_keys(nil))
+    assert_equal({ major: 3, minor: nil, build: nil }, version.deconstruct_keys(nil))
   end
 
   def test_pattern_matching_array
     case v("3.2.1")
-    in [major, minor, patch]
+    in [major, minor, build]
       assert_equal 3, major
       assert_equal 2, minor
-      assert_equal 1, patch
+      assert_equal 1, build
     else
       flunk "Array pattern did not match"
     end
@@ -267,6 +267,22 @@ class TestGemVersion < Gem::TestCase
       else "no match"
       end
     assert_equal "matched", result
+  end
+
+  def test_pattern_matching_hash_vs_comparison
+    # Hash pattern checks each segment independently
+    version = v("4.0")
+    result =
+      case version
+      in major: (3..), minor: (2..)
+        "matched"
+      else
+        "no match"
+      end
+    assert_equal "no match", result
+
+    # But version comparison shows 4.0 > 3.2
+    assert_operator v("4.0"), :>=, v("3.2")
   end
 
   # Asserts that +version+ is a prerelease.

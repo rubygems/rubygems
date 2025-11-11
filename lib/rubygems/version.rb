@@ -340,36 +340,59 @@ class Gem::Version
   # Deconstructs the version into an array for pattern matching.
   # Returns the version segments as an array.
   #
-  #   Gem::Version.new("3.2.1").deconstruct  #=> [3, 2, 1]
+  #   Gem::Version.new("3.2.1").deconstruct      #=> [3, 2, 1]
+  #   Gem::Version.new("3.2.0.rc.2").deconstruct #=> [3, 2, 0, "rc", 2]
   #
-  # This enables array pattern matching:
+  # This enables array pattern matching on version segments:
   #
   #   case Gem::Version.new("3.2.1")
-  #   in [major, minor, patch]
-  #     # major => 3, minor => 2, patch => 1
+  #   in [major, minor, build]
+  #     # major => 3, minor => 2, build => 1
+  #   end
+  #
+  #   case Gem::Version.new("3.2.0.rc.2")
+  #   in [major, minor, build, pre, *]
+  #     # Matches prerelease versions
   #   end
   alias_method :deconstruct, :segments
 
   ##
   # Deconstructs the version into a hash for pattern matching.
-  # Returns a hash with keys +:major+, +:minor+, and +:patch+.
+  # Returns a hash with keys +:major+, +:minor+, and +:build+.
   #
-  #   Gem::Version.new("3.2.1").deconstruct_keys(nil)  #=> { major: 3, minor: 2, patch: 1 }
+  # Note: RubyGems does not enforce a specific versioning scheme, and the
+  # names "major", "minor", and "build" are conventional.
+  #
+  #   Gem::Version.new("3.2.1").deconstruct_keys(nil)  #=> { major: 3, minor: 2, build: 1 }
+  #   Gem::Version.new("3.2").deconstruct_keys(nil)    #=> { major: 3, minor: 2, build: nil }
+  #   Gem::Version.new("3").deconstruct_keys(nil)      #=> { major: 3, minor: nil, build: nil }
   #
   # This enables hash pattern matching:
   #
   #   case Gem::Version.new("3.2.1")
-  #   in major: 3.., minor: 2..
-  #     # matches versions >= 3.2
+  #   in major: 3, minor: 2, build: 1
+  #     # Matches exactly 3.2.1
   #   end
   #
-  # Note: For versions with fewer than 3 segments, missing values are +nil+:
+  # Important: Hash pattern matching checks each segment independently, which
+  # differs from version comparison semantics:
   #
-  #   Gem::Version.new("3.2").deconstruct_keys(nil)  #=> { major: 3, minor: 2, patch: nil }
-  #   Gem::Version.new("3").deconstruct_keys(nil)    #=> { major: 3, minor: nil, patch: nil }
+  #   # This matches "3.2" but NOT "4.0" (since 0 < 2)
+  #   case Gem::Version.new("4.0")
+  #   in major: (3..), minor: (2..)
+  #     "matches"
+  #   else
+  #     "no match"  # => "no match"
+  #   end
+  #
+  #   # However, version comparison shows 4.0 > 3.2
+  #   Gem::Version.new("4.0") >= Gem::Version.new("3.2")  #=> true
+  #
+  # For version comparison logic, use standard comparison operators or array
+  # patterns instead of hash patterns with ranges.
   def deconstruct_keys(keys)
-    major, minor, patch = segments
-    { major:, minor:, patch: }
+    major, minor, build = segments
+    { major:, minor:, build: }
   end
 
   ##

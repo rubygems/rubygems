@@ -57,6 +57,10 @@ module Bundler
         @spec.dependencies
       end
 
+      def has_extensions?
+        @spec.extensions.any?
+      end
+
       def to_s
         "#<#{self.class} #{full_name} (#{state})>"
       end
@@ -193,7 +197,9 @@ module Bundler
       end
 
       @specs.each do |spec|
-        if spec.ready_to_enqueue? && spec.dependencies_installed?(installed_specs)
+        next unless spec.ready_to_enqueue?
+
+        if !spec.has_extensions? || spec.dependencies_installed?(installed_specs)
           spec.state = :enqueued
           worker_pool.enq spec
         end

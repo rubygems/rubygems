@@ -64,7 +64,7 @@ jobs:
           java-version: 21.0.7
         if: matrix.ruby.name == 'jruby'
       - name: Setup go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version: stable
       - name: Install graphviz (Ubuntu)

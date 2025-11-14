@@ -258,30 +258,30 @@ end
 desc "Upload release to rubygems.org"
 task upload: %w[upload_to_github upload_to_s3]
 
-directory "../guides.rubygems.org" do
+directory "tmp/guides.rubygems.org" do
   sh "git", "clone",
      "https://github.com/rubygems/guides.git",
-     "../guides.rubygems.org"
+     "tmp/guides.rubygems.org"
 end
 
 namespace "guides" do
-  task "pull" => %w[../guides.rubygems.org] do
-    chdir "../guides.rubygems.org" do
+  task "pull" => %w[tmp/guides.rubygems.org] do
+    chdir "tmp/guides.rubygems.org" do
       sh "git", "pull"
     end
   end
 
-  task "update" => %w[../guides.rubygems.org] do
+  task "update" => %w[tmp/guides.rubygems.org] do
     lib_dir = File.join Dir.pwd, "lib"
 
-    chdir "../guides.rubygems.org" do
+    chdir "tmp/guides.rubygems.org" do
       ruby "-I", lib_dir, "-S", "rake", "command_guide"
       ruby "-I", lib_dir, "-S", "rake", "spec_guide"
     end
   end
 
-  task "commit" => %w[../guides.rubygems.org] do
-    chdir "../guides.rubygems.org" do
+  task "commit" => %w[tmp/guides.rubygems.org] do
+    chdir "tmp/guides.rubygems.org" do
       sh "git", "diff", "--quiet"
     rescue StandardError
       sh "git", "commit", "command-reference.md", "specification-reference.md",
@@ -289,8 +289,8 @@ namespace "guides" do
     end
   end
 
-  task "push" => %w[../guides.rubygems.org] do
-    chdir "../guides.rubygems.org" do
+  task "push" => %w[tmp/guides.rubygems.org] do
+    chdir "tmp/guides.rubygems.org" do
       sh "git", "push"
     end
   end
@@ -306,10 +306,10 @@ namespace "guides" do
   ]
 end
 
-directory "../blog.rubygems.org" do
+directory "tmp/blog.rubygems.org" do
   sh "git", "clone",
     "https://github.com/rubygems/rubygems.github.io.git",
-     "../blog.rubygems.org"
+     "tmp/blog.rubygems.org"
 end
 
 namespace "blog" do
@@ -343,13 +343,13 @@ namespace "blog" do
     end
   end
 
-  task "pull" => %w[../blog.rubygems.org] do
-    chdir "../blog.rubygems.org" do
+  task "pull" => %w[tmp/blog.rubygems.org] do
+    chdir "tmp/blog.rubygems.org" do
       sh "git", "pull"
     end
   end
 
-  path = File.join "../blog.rubygems.org", post_page
+  path = File.join "tmp/blog.rubygems.org", post_page
 
   task "update" => [path]
 
@@ -397,16 +397,16 @@ SHA256 Checksums:
     end
   end
 
-  task "commit" => %w[../blog.rubygems.org] do
-    chdir "../blog.rubygems.org" do
+  task "commit" => %w[tmp/blog.rubygems.org] do
+    chdir "tmp/blog.rubygems.org" do
       sh "git", "add", post_page
       sh "git", "commit", post_page,
          "-m", "Added #{v} release announcement"
     end
   end
 
-  task "push" => %w[../blog.rubygems.org] do
-    chdir "../blog.rubygems.org" do
+  task "push" => %w[tmp/blog.rubygems.org] do
+    chdir "tmp/blog.rubygems.org" do
       sh "git", "push"
     end
   end

@@ -2,7 +2,7 @@
 
 If you would like to add a new feature to Bundler, please follow these steps:
 
-  1. [Create an issue](https://github.com/rubygems/rubygems/issues/new) to discuss your feature.
+  1. [Create an issue](https://github.com/ruby/rubygems/issues/new) to discuss your feature.
   2. Base your commits on the master branch, since we follow [SemVer](https://semver.org) and don't add new features to old releases.
   3. Commit the code and at least one test covering your changes to a feature branch in your fork.
   4. Send us a [pull request](PULL_REQUESTS.md) from your feature branch.

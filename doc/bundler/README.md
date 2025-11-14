@@ -12,7 +12,7 @@ If you'd like to help make Bundler better, you totally rock! Thanks for helping 
 * [How you can help: your first contributions!](contributing/HOW_YOU_CAN_HELP.md)
 * [Bug triage](contributing/BUG_TRIAGE.md)
 * [Getting help](https://slack.bundler.io)
-* [Filing issues](https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md)
+* [Filing issues](https://github.com/ruby/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md)
 * [Community](contributing/COMMUNITY.md)
 
 ## Development

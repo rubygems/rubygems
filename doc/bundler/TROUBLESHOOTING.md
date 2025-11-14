@@ -1,6 +1,6 @@
 # Troubleshooting common issues
 
-Stuck using Bundler? Browse these common issues before [filing a new issue](https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md).
+Stuck using Bundler? Browse these common issues before [filing a new issue](https://github.com/ruby/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md).
 
 ## Permission denied when installing bundler
 

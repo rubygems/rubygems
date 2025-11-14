@@ -14,8 +14,6 @@ module Bundler
     require_relative "resolver/root"
     require_relative "resolver/strategy"
 
-    include GemHelpers
-
     def initialize(base, gem_version_promoter, most_specific_locked_platform = nil)
       @source_requirements = base.source_requirements
       @base = base
@@ -167,7 +165,7 @@ module Bundler
       PubGrub::VersionConstraint.new(package, range: range)
     end
 
-    def versions_for(package, range=VersionRange.any)
+    def versions_for(package, range = VersionRange.any)
       range.select_versions(@sorted_versions[package])
     end
 
@@ -273,7 +271,7 @@ module Bundler
           next groups if platform_specs.all?(&:empty?)
         end
 
-        ruby_specs = select_best_platform_match(specs, Gem::Platform::RUBY)
+        ruby_specs = MatchPlatform.select_best_platform_match(specs, Gem::Platform::RUBY)
         ruby_group = Resolver::SpecGroup.new(ruby_specs)
 
         unless ruby_group.empty?

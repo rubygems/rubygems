@@ -65,7 +65,7 @@ To upgrade to the latest RubyGems, run:
 
     $ gem update --system
 
-See [UPGRADING](doc/bundler/UPGRADING.md) for more details and alternative instructions.
+See [UPGRADING](doc/rubygems/UPGRADING.md) for more details and alternative instructions.
 
 ## Release policy
 
@@ -98,7 +98,7 @@ creating a new gem, security practices and other resources at https://guides.rub
 Got a bug and you're not sure?  You're sure you have a bug, but don't know
 what to do next?  In any case, let us know about it!  The best place
 for letting the RubyGems team know about bugs or problems you're having is
-[on the RubyGems issues page at GitHub](https://github.com/rubygems/rubygems/issues).
+[on the RubyGems issues page at GitHub](https://github.com/ruby/rubygems/issues).
 
 ### Bundler Compatibility
 
@@ -114,4 +114,4 @@ If you'd like to contribute to RubyGems, that's awesome, and we <3 you. Check ou
 
 ### Code of Conduct
 
-Everyone interacting in the RubyGems project’s codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [contributor code of conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the RubyGems project’s codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [contributor code of conduct](https://github.com/ruby/rubygems/blob/master/CODE_OF_CONDUCT.md).

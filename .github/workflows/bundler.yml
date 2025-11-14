@@ -20,7 +20,7 @@ defaults:
 
 jobs:
   bundler:
-    name: Bundler ${{ matrix.bundler.name }} on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
+    name: Bundler on ${{ matrix.os.name }} (${{ matrix.ruby.name }})
     runs-on: ${{ matrix.os.value }}
     strategy:
       fail-fast: false
@@ -29,45 +29,40 @@ jobs:
           - { name: Ubuntu, value: ubuntu-24.04 }
 
         ruby:
-          - { name: ruby-3.1, value: 3.1.7 }
-          - { name: ruby-3.2, value: 3.2.8 }
-          - { name: ruby-3.3, value: 3.3.7 }
-          - { name: ruby-3.4, value: 3.4.2 }
-
-        bundler:
-          - { name: 2, value: '' }
-          - { name: 3, value: 3.0.0 }
+          - { name: ruby-3.2, value: 3.2.9 }
+          - { name: ruby-3.3, value: 3.3.9 }
+          - { name: ruby-3.4, value: 3.4.5 }
 
         include:
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.7 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.7 }, timeout: 90 }
-          - { os: { name: macOS, value: macos-15 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.2 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.2, value: 3.2.9 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.3, value: 3.3.9 }, timeout: 90 }
+          - { os: { name: macOS, value: macos-15 }, ruby: { name: ruby-3.4, value: 3.4.5 }, timeout: 90 }
 
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.7 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.8 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.7 }, timeout: 150 }
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.2 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.2, value: 3.2.9 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.3, value: 3.3.9 }, timeout: 150 }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: ruby-3.4, value: 3.4.5 }, timeout: 150 }
 
-          - { os: { name: Ubuntu, value: ubuntu-24.04 }, bundler: { name: 2, value: '' }, ruby: { name: jruby, value: jruby-9.4.12.0 } }
-          - { os: { name: Windows, value: windows-2025 }, bundler: { name: 2, value: '' }, ruby: { name: jruby, value: jruby-9.4.12.0 } }
+          - { os: { name: Ubuntu, value: ubuntu-24.04 }, ruby: { name: jruby, value: jruby-10.0.2.0 } }
+          - { os: { name: Windows, value: windows-2025 }, ruby: { name: jruby, value: jruby-10.0.2.0 } }
 
     env:
       RGV: ..
       RUBYOPT: --disable-gems
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1.229.0
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
           distribution: temurin
-          java-version: 19.0.2
-        if: matrix.os.name == 'Windows' && matrix.ruby.name == 'jruby'
+          java-version: 21.0.7
+        if: matrix.ruby.name == 'jruby'
       - name: Setup go
         uses: actions/setup-go@v5
         with:
@@ -101,3 +96,19 @@ jobs:
         if: matrix.ruby.name == 'jruby' && matrix.os.name == 'Ubuntu'
 
     timeout-minutes: ${{ matrix.timeout || 60 }}
+
+  all-pass:
+    name: All bundler jobs pass
+
+    if: always()
+
+    needs:
+      - bundler
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

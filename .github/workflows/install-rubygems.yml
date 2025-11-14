@@ -22,19 +22,20 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.1", value: 3.1.7 }
-          - { name: "3.2", value: 3.2.8 }
-          - { name: "3.3", value: 3.3.7 }
-          - { name: "3.4", value: 3.4.2 }
-          - { name: jruby, value: jruby-9.4.12.0 }
+          - { name: "3.2", value: 3.2.9 }
+          - { name: "3.3", value: 3.3.9 }
+          - { name: "3.4", value: 3.4.5 }
+          - { name: jruby, value: jruby-10.0.2.0 }
           - { name: truffleruby, value: truffleruby-24.1.2 }
         openssl:
-          - { name: "openssl", value: true }
-          - { name: "no-openssl", value: false }
+          - { name: openssl, value: true }
+          - { name: no-openssl, value: false }
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1.229.0
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -80,6 +81,14 @@ jobs:
         run: bundle install --help | grep -q BUNDLE-INSTALL
       - name: Check bundler fallback man pages are properly picked up
         run: sudo rm $(which man) && bundle install --help
+      - name: Install older bundler
+        run: gem install bundler:2.6.9
+      - name: Run older bundler without warnings
+        run: |
+          BUNDLER_VERSION=2.6.9 ruby -rbundler/setup -e1 2> errors.txt || (cat errors.txt && exit 1)
+          test ! -s errors.txt || (cat errors.txt && exit 1)
+          bundle _2.6.9_ -v 2> errors.txt || (cat errors.txt && exit 1)
+          test ! -s errors.txt || (cat errors.txt && exit 1)
       - name: Build bundler
         run: gem build bundler.gemspec
         working-directory: ./bundler
@@ -110,23 +119,24 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - { name: "3.1", value: 3.1.7 }
-          - { name: "3.2", value: 3.2.8 }
-          - { name: "3.3", value: 3.3.7 }
-          - { name: "3.4", value: 3.4.2 }
-          - { name: jruby-9.4, value: jruby-9.4.12.0, rails-args: "--skip-webpack-install" }
+          - { name: "3.2", value: 3.2.9 }
+          - { name: "3.3", value: 3.3.9 }
+          - { name: "3.4", value: 3.4.5 }
+          - { name: jruby, value: jruby-10.0.2.0, rails-args: --skip-webpack-install }
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1.229.0
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
       - name: Setup java
-        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
           distribution: temurin
-          java-version: 19.0.2
+          java-version: 21.0.7
         if: startsWith(matrix.ruby.name, 'jruby')
       - name: Install rubygems
         run: ruby setup.rb
@@ -140,7 +150,7 @@ jobs:
       - name: Generate a Rails application
         run: gem install rails --version 8.0.1 && rails new foo ${{ matrix.ruby.rails-args }}
         shell: bash
-        if: matrix.ruby.name != 'jruby-9.4' && matrix.ruby.name != '3.1'
+        if: matrix.ruby.name != '3.1'
       - name: Use gem installed in a bin dir different from where Ruby itself is installed
         run: gem install rspec --version 3.13.0 --install-dir foo && GEM_HOME=foo foo/bin/rspec --version
         shell: bash
@@ -156,9 +166,11 @@ jobs:
           - dev
           - system
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
       - name: Setup original ruby
-        uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1.229.0
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
         with:
           ruby-version: 3.2
           bundler: none
@@ -173,21 +185,74 @@ jobs:
           echo "RGV=v$RGV" >> $GITHUB_ENV
         if: matrix.rubygems == 'dev'
       - name: Setup app depending on psych with initial Ruby
-        run: mkdir foo && cd foo && ruby ../bundler/spec/support/bundle.rb init && ruby ../bundler/spec/support/bundle.rb add psych -v 5.1.2
+        run: mkdir foo && cd foo && ../bundler/bin/bundle init && ../bundler/bin/bundle add psych -v 5.1.2
         shell: bash
         env:
           GEM_HOME: bar
           GEM_PATH: bar
       - name: Setup final ruby
-        uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1.229.0
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
         with:
           ruby-version: 3.3
           bundler: none
       - name: Install gems with final ruby, using GEM_HOME created by the other Ruby
-        run: ruby ../bundler/spec/support/bundle.rb install
+        run: ../bundler/bin/bundle install
         working-directory: foo
         env:
           GEM_HOME: bar
           GEM_PATH: bar
 
     timeout-minutes: 20
+
+  check_rvm_integration:
+    name: Handling gems shipped by default with RVM
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - { name: "3.2", value: 3.2.9 }
+          - { name: "3.3", value: 3.3.9 }
+          - { name: "3.4", value: 3.4.5 }
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+      - name: Setup ruby
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
+        with:
+          ruby-version: ${{ matrix.ruby.value }}
+          bundler: none
+      - name: Install rubygems
+        run: ruby setup.rb
+      - name: Install RVM gems
+        run: gem install rubygems-bundler
+      - name: Check binstubs can run
+        run: |
+          gem install rake
+          RUBYOPT=-Ibundler/lib rake -T
+      - name: Check binstubs can handle nested bundle exec
+        run: |
+          echo "source 'https://rubygems.org'" > Gemfile
+          gem install bundler:2.5.22
+          bundle _2.5.22_ exec ruby -e 'system("bundle", "exec", "ruby", "-e1")' 2>&1 | grep -v LoadError
+
+  all-pass:
+    name: All install-rubygems jobs pass
+
+    if: always()
+
+    needs:
+      - install_rubygems_ubuntu
+      - install_rubygems_windows
+      - shared_gem_home
+      - check_rvm_integration
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

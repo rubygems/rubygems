@@ -11,16 +11,11 @@ module Bundler
       @specs = specs
     end
 
-    def for(dependencies, platforms_or_legacy_check = [nil], legacy_platforms = [nil], skips: [])
-      platforms = if [true, false].include?(platforms_or_legacy_check)
-        Bundler::SharedHelpers.major_deprecation 2,
+    def for(dependencies, platforms = [nil], legacy_platforms = [nil], skips: [])
+      if [true, false].include?(platforms)
+        Bundler::SharedHelpers.feature_removed! \
           "SpecSet#for received a `check` parameter, but that's no longer used and deprecated. " \
-          "SpecSet#for always implicitly performs validation. Please remove this parameter",
-          print_caller_location: true
-
-        legacy_platforms
-      else
-        platforms_or_legacy_check
+          "SpecSet#for always implicitly performs validation. Please remove this parameter"
       end
 
       materialize_dependencies(dependencies, platforms, skips: skips)
@@ -76,7 +71,7 @@ module Bundler
 
       new_platforms = all_platforms.select do |platform|
         next if platforms.include?(platform)
-        next unless GemHelpers.generic(platform) == Gem::Platform::RUBY
+        next unless Gem::Platform.generic(platform) == Gem::Platform::RUBY
 
         complete_platform(platform)
       end
@@ -179,11 +174,11 @@ module Bundler
     end
 
     def -(other)
-      SpecSet.new(to_a - other.to_a)
+      SharedHelpers.feature_removed! "SpecSet#- has been removed with no replacement"
     end
 
     def find_by_name_and_platform(name, platform)
-      @specs.detect {|spec| spec.name == name && spec.match_platform(platform) }
+      @specs.detect {|spec| spec.name == name && spec.installable_on_platform?(platform) }
     end
 
     def specs_with_additional_variants_from(other)
@@ -210,7 +205,7 @@ module Bundler
     end
 
     def <<(spec)
-      @specs << spec
+      SharedHelpers.feature_removed! "SpecSet#<< has been removed with no replacement"
     end
 
     def length
@@ -280,7 +275,7 @@ module Bundler
       valid_platform = lookup.all? do |_, specs|
         spec = specs.first
         matching_specs = spec.source.specs.search([spec.name, spec.version])
-        platform_spec = GemHelpers.select_best_platform_match(matching_specs, platform).find do |s|
+        platform_spec = MatchPlatform.select_best_platform_match(matching_specs, platform).find do |s|
           valid?(s)
         end
 

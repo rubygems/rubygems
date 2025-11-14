@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
+require_relative "shared_helpers"
+
 module Bundler
   class LockfileParser
-    include GemHelpers
-
     class Position
       attr_reader :line, :column
       def initialize(line, column)
@@ -94,7 +94,7 @@ module Bundler
       lockfile_contents.split(BUNDLED).last.strip
     end
 
-    def initialize(lockfile)
+    def initialize(lockfile, strict: false)
       @platforms    = []
       @sources      = []
       @dependencies = {}
@@ -106,6 +106,7 @@ module Bundler
         "Gemfile.lock"
       end
       @pos = Position.new(1, 1)
+      @strict = strict
 
       if lockfile.match?(/<<<<<<<|=======|>>>>>>>|\|\|\|\|\|\|\|/)
         raise LockfileError, "Your #{@lockfile_path} contains merge conflicts.\n" \
@@ -139,8 +140,13 @@ module Bundler
         end
         @pos.advance!(line)
       end
+
+      if @platforms.include?(Gem::Platform::X64_MINGW_LEGACY)
+        SharedHelpers.feature_deprecated!("Found x64-mingw32 in lockfile, which is deprecated and will be removed in the future.")
+      end
+
       @most_specific_locked_platform = @platforms.min_by do |bundle_platform|
-        platform_specificity_match(bundle_platform, local_platform)
+        Gem::Platform.platform_specificity_match(bundle_platform, Bundler.local_platform)
       end
       @specs = @specs.values.sort_by!(&:full_name).each do |spec|
         spec.most_specific_locked_platform = @most_specific_locked_platform
@@ -271,7 +277,7 @@ module Bundler
 
         version = Gem::Version.new(version)
         platform = platform ? Gem::Platform.new(platform) : Gem::Platform::RUBY
-        @current_spec = LazySpecification.new(name, version, platform, @current_source)
+        @current_spec = LazySpecification.new(name, version, platform, @current_source, strict: @strict)
         @current_source.add_dependency_names(name)
 
         @specs[@current_spec.full_name] = @current_spec

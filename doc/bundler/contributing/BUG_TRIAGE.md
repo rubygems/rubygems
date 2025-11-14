@@ -2,7 +2,7 @@
 
 Triaging is the work of processing tickets that have been opened by users. Common tasks include verifying bugs, categorizing tickets, and ensuring there's enough information to reproduce the bug for anyone who wants to try to fix it.
 
-We've created an [issue template]( https://github.com/rubygems/rubygems/issues/new?labels=Bundler&template=bundler-related-issue) to walk users through the process of how to report an issue with the Bundler project. We also have a [troubleshooting guide](../TROUBLESHOOTING.md) to diagnose common problems.
+We've created an [issue template]( https://github.com/ruby/rubygems/issues/new?labels=Bundler&template=bundler-related-issue) to walk users through the process of how to report an issue with the Bundler project. We also have a [troubleshooting guide](../TROUBLESHOOTING.md) to diagnose common problems.
 
 Not every ticket will be a bug in Bundler's code, but open tickets usually mean that there is something we could improve to help that user. Sometimes that means writing additional documentation or making error messages clearer.
 

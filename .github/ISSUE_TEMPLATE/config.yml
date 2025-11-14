@@ -3,4 +3,4 @@ blank_issues_enabled: true
 contact_links:
   - name: Installation or Execution failed
     about: Check the Discussions section for reports of a failing installation. Submit your experience (plus logs) if you cannot find reports similar to yours.
-    url: https://github.com/rubygems/rubygems/discussions
+    url: https://github.com/ruby/rubygems/discussions

@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "rubygems-update"
-  s.version = "3.7.0.dev"
+  s.version = "4.0.0.dev"
   s.authors = ["Jim Weirich", "Chad Fowler", "Eric Hodel", "Luis Lavena", "Aaron Patterson", "Samuel Giddins", "André Arko", "Evan Phoenix", "Hiroshi SHIBATA"]
   s.email = ["", "", "drbrain@segment7.net", "luislavena@gmail.com", "aaron@tenderlovemaking.com", "segiddins@segiddins.me", "andre@arko.net", "evan@phx.io", "hsbt@ruby-lang.org"]
 
@@ -15,9 +15,9 @@ Gem::Specification.new do |s|
   developers. See our guide on publishing a Gem at guides.rubygems.org"
   s.homepage = "https://guides.rubygems.org"
   s.metadata = {
-    "source_code_uri" => "https://github.com/rubygems/rubygems",
-    "bug_tracker_uri" => "https://github.com/rubygems/rubygems/issues",
-    "changelog_uri" => "https://github.com/rubygems/rubygems/blob/master/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/ruby/rubygems",
+    "bug_tracker_uri" => "https://github.com/ruby/rubygems/issues",
+    "changelog_uri" => "https://github.com/ruby/rubygems/blob/master/CHANGELOG.md",
     "funding_uri" => "https://rubycentral.org/#/portal/signup",
   }
   s.licenses = ["Ruby", "MIT"]
@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
     "hide_lib_for_update/note.txt", *Dir["bundler/lib/bundler/man/*.1", base: __dir__]
   ]
 
-  s.required_ruby_version = Gem::Requirement.new(">= 3.1.0")
+  s.required_ruby_version = Gem::Requirement.new(">= 3.2.0")
   s.required_rubygems_version = Gem::Requirement.new(">= 0")
 
   s.specification_version = 4

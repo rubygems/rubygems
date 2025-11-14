@@ -9,18 +9,26 @@ if File.expand_path(__FILE__) =~ %r{([^\w/\.:\-])}
   abort "The bundler specs cannot be run from a path that contains special characters (particularly #{$1.inspect})"
 end
 
-# Bundler CLI will have different help text depending on whether this variable
-# is set, since the `-e` flag `bundle gem` with require an explicit value if
-# `EDITOR` is not set, but will use `EDITOR` by default is set. So make sure
-# it's `nil` before loading bundler to get a consistent help text, since some
-# tests rely on that.
+# Bundler CLI will have different help text depending on whether any of these
+# variables is set, since the `-e` flag `bundle gem` with require an explicit
+# value if they are not set, but will use their value by default if set. So make
+# sure they are `nil` before loading bundler to get a consistent help text,
+# since some tests rely on that.
 ENV["EDITOR"] = nil
+ENV["VISUAL"] = nil
+ENV["BUNDLER_EDITOR"] = nil
 require "bundler"
+
+# If we use shared GEM_HOME and install multiple versions, it may cause
+# unexpected test failures.
+gem "diff-lcs"
 
 require "rspec/core"
 require "rspec/expectations"
 require "rspec/mocks"
 require "rspec/support/differ"
+gem "rubygems-generate_index"
+require "rubygems/indexer"
 
 require_relative "support/builders"
 require_relative "support/checksums"
@@ -82,6 +90,10 @@ RSpec.configure do |config|
 
     require_relative "support/rubygems_ext"
     Spec::Rubygems.test_setup
+
+    # Simulate bundler has not yet been loaded
+    ENV.replace(ENV.to_hash.delete_if {|k, _v| k.start_with?(Bundler::EnvironmentPreserver::BUNDLER_PREFIX) })
+
     ENV["BUNDLER_SPEC_RUN"] = "true"
     ENV["BUNDLE_USER_CONFIG"] = ENV["BUNDLE_USER_CACHE"] = ENV["BUNDLE_USER_PLUGIN"] = nil
     ENV["BUNDLE_APP_CONFIG"] = nil
@@ -97,11 +109,11 @@ RSpec.configure do |config|
 
     build_repo1
 
-    reset_paths!
+    reset!
   end
 
   config.around :each do |example|
-    FileUtils.cp_r pristine_system_gem_path, system_gem_path
+    default_system_gems
 
     with_gem_path_as(system_gem_path) do
       Bundler.ui.silence { example.run }

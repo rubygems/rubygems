@@ -1,31 +1,29 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 203
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "5c80452c544f83d37e3ae0843af590f8"
-last-modified: Thu, 14 Oct 2021 11:42:23 GMT
+content-length: 818
+last-modified: Fri, 08 Nov 2024 05:00:55 GMT
+etag: "7e10aefb70ac5cc7501cf5b0d1abc438"
 cache-control: max-age=60, public
-x-request-id: 6d20ca78-03c2-47be-a58d-f545f6133a08
-x-runtime: 0.012998
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="2QsLJEIg7W1bNnRUkL5guGqM4jzZz6qq1gGJhNWecSE="
+repr-digest: sha-256="2QsLJEIg7W1bNnRUkL5guGqM4jzZz6qq1gGJhNWecSE="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300044_BFI 167.82.143.44:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:33 GMT
-via: 1.1 varnish
-age: 2839
-x-served-by: cache-fra19143-FRA
-x-cache: HIT
-x-cache-hits: 9
-x-timer: S1635203853.110334,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 08:09:04 GMT
+age: 3253
+x-served-by: cache-bfi-krnt7300044-BFI, cache-mad22081-MAD
+x-cache: HIT, HIT
+x-cache-hits: 119586, 1
+x-timer: S1752480544.033499,VS0,VE1
 server: RubyGems.org
 
 ---
 0.1.0 |checksum:7e7fda2af5e2e299d55f7ec9832b682f383a90afd7f14dc607d630b050e5ceab,ruby:>= 2.3.0
 0.2.0 date:>= 0|checksum:b388760c7a0d6879be4586d04afa433ec8adaee7c94f95ba52cbd5ff16bd0add,ruby:>= 2.3.0
+0.2.1 date:>= 0|checksum:67b65cab29dd2b9ff241a74a1ba9cdbd5a558b47005b26368b728cea2c25e872,ruby:>= 2.3.0
+0.1.1 |checksum:aaf586ea116c82e6cc1b556eeb3ec02f30493ba65d35860704f2c5204733d98d,ruby:>= 2.3.0
+0.2.2 date:>= 0|checksum:60bce491350cdafb6d39c72e8fc4e01e6a80ee5197ddf8abaf06ece19e6eff8e,ruby:>= 2.3.0
+0.3.0 date:>= 0|checksum:662be3af862b913dab519f4679c1a239fb27d5839ce2b8d5774c760f53d82530,ruby:>= 2.4.0
+0.4.0 date:>= 0|checksum:1949374e50f5c1b2f980f5180e32f1360808aa639f40867fa21b8fbe3d6f61de,ruby:>= 2.4.0
+0.4.1 date:>= 0|checksum:035f360508a4a4dbabcbbcd3886566b9abd432de89136795d2ff7aec5bcdea61,ruby:>= 2.4.0

@@ -1,0 +1,29 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 822
+last-modified: Sun, 14 Jul 2024 23:41:44 GMT
+etag: "a3799f2c86efbf3953f2c63ad197a05b"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="n9E+qaNiGJGB5oJZEgccGxFdT3M/9WbkYbz7EXArvn8="
+repr-digest: sha-256="n9E+qaNiGJGB5oJZEgccGxFdT3M/9WbkYbz7EXArvn8="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300067_BFI 167.82.143.67:443
+accept-ranges: bytes
+age: 2516
+date: Mon, 14 Jul 2025 08:09:04 GMT
+x-served-by: cache-bfi-krnt7300067-BFI, cache-mad2200095-MAD
+x-cache: HIT, HIT
+x-cache-hits: 186294, 0
+x-timer: S1752480545.982019,VS0,VE1
+server: RubyGems.org
+
+---
+0.8.0 ParseTree:>= 2.0.2|checksum:6c7d120f7135ccacc09e218dd2e98e3426d8a9dead039db5cb474532f3d60b40,ruby:> 0.0.0
+0.8.1 ParseTree:~> 2.0|checksum:253e5f66a00e6daed675d7420f25667cf28beef7f4cc063e97584294b52fac57
+0.8.2 ParseTree:~> 3.0|checksum:2bd1e858e8870508a196c99ea877e97201b58ae53d4dcc8d2bddb036d890b1e7
+0.9.0 ParseTree:~> 3.0,ruby_parser:~> 2.0|checksum:c49b14fe7e345fe41a6b166cb3d72bbd70e026d679e333402fa16f2b4bc7037a
+1.0.0 ruby_parser:~> 3.0|checksum:878bb89404bfcfea5bc1504c8c7e6d510b5d74fb6a6a2c4b6056d83826c90e54
+1.0.1 ruby_parser:~> 3.0|checksum:f8283f17d5e1a5d6104abf65c7a0b277eb49c1d553375328d83a090da2ebe0b9
+2.0.0 ruby_parser:~> 3.0|checksum:dcd7c509e53b8cd6284e965a2e2e71d5291ca9e2d50acfa3d7ee0561c0df16b9
+2.0.1 ruby_parser:~> 3.0|checksum:c342bebe2888f108c6bf2f41480576aabd7ebc1ff1a81e13a19677164a574953

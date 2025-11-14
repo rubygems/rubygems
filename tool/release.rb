@@ -40,10 +40,10 @@ class Release
     def create_for_github!
       tag = "#{@tag_prefix}#{@version}"
 
-      gh_client.create_release "rubygems/rubygems", tag, name: tag,
-                                                         body: @changelog.release_notes.join("\n").strip,
-                                                         prerelease: @version.prerelease?,
-                                                         target_commitish: @stable_branch
+      gh_client.create_release "ruby/rubygems", tag, name: tag,
+                                                     body: @changelog.release_notes.join("\n").strip,
+                                                     prerelease: @version.prerelease?,
+                                                     target_commitish: @stable_branch
     end
 
     def previous_version
@@ -51,7 +51,7 @@ class Release
     end
 
     def latest_release
-      @latest_release ||= gh_client.releases("rubygems/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.max_by do |release|
+      @latest_release ||= gh_client.releases("ruby/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.max_by do |release|
         Gem::Version.new(remove_tag_prefix(release.tag_name))
       end
     end
@@ -111,14 +111,14 @@ class Release
 
   def self.install_dependencies!
     system(
-      "ruby",
-      "-I",
-      File.expand_path("../lib", __dir__),
-      File.expand_path("../bundler/spec/support/bundle.rb", __dir__),
+      { "RUBYOPT" => "-I#{File.expand_path("../lib", __dir__)}" },
+      File.expand_path("../bundler/bin/bundle", __dir__),
       "install",
       "--gemfile=#{File.expand_path("bundler/release_gems.rb", __dir__)}",
       exception: true
     )
+
+    Gem.clear_paths
   end
 
   def self.for_bundler(version)
@@ -183,7 +183,7 @@ class Release
       system("git", "push", exception: true)
 
       gh_client.create_pull_request(
-        "rubygems/rubygems",
+        "ruby/rubygems",
         @stable_branch,
         @release_branch,
         "Prepare RubyGems #{@rubygems.version} and Bundler #{@bundler.version}",
@@ -199,14 +199,14 @@ class Release
         system("git", "cherry-pick", "--abort")
       else
         gh_client.create_pull_request(
-          "rubygems/rubygems",
+          "ruby/rubygems",
           "master",
           "cherry_pick_changelogs",
           "Changelogs for RubyGems #{@rubygems.version} and Bundler #{@bundler.version}",
           "Cherry-picking change logs from future RubyGems #{@rubygems.version} and Bundler #{@bundler.version} into master."
         )
       end
-    rescue StandardError
+    rescue StandardError, LoadError
       system("git", "checkout", initial_branch)
       raise
     end
@@ -288,7 +288,7 @@ class Release
   end
 
   def scan_unreleased_pull_requests(ids)
-    pulls = gh_client.pull_requests("rubygems/rubygems", sort: :updated, state: :closed, direction: :desc)
+    pulls = gh_client.pull_requests("ruby/rubygems", sort: :updated, state: :closed, direction: :desc)
 
     loop do
       pulls.select! {|pull| ids.include?(pull.number) }

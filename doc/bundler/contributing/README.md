@@ -4,7 +4,7 @@ Thank you for your interest in making Bundler better! We welcome contributions f
 
 Before submitting a contribution, read through the following guidelines:
 
-* [Bundler Code of Conduct](https://github.com/rubygems/rubygems/blob/master/CODE_OF_CONDUCT.md) (By participating in Bundler, you agree to abide by the terms laid out in the CoC.)
+* [Bundler Code of Conduct](https://github.com/ruby/rubygems/blob/master/CODE_OF_CONDUCT.md) (By participating in Bundler, you agree to abide by the terms laid out in the CoC.)
 * [Pull Request Guidelines](../development/PULL_REQUESTS.md)
 
 And be sure to [set up your development environment](../development/SETUP.md).

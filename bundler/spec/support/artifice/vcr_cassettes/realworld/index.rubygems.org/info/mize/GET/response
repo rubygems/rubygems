@@ -1,0 +1,38 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1737
+last-modified: Thu, 17 Oct 2024 20:04:30 GMT
+etag: "b2252ba713ba93d452db8852a60e4838"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="iHCQubQ+szp8PFC8gLtOzRb3pcd1UyGPuLHMySrzpzM="
+repr-digest: sha-256="iHCQubQ+szp8PFC8gLtOzRb3pcd1UyGPuLHMySrzpzM="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300083_BFI 167.82.143.83:443
+accept-ranges: bytes
+age: 700
+date: Mon, 14 Jul 2025 08:09:04 GMT
+x-served-by: cache-bfi-krnt7300083-BFI, cache-mad22072-MAD
+x-cache: HIT, HIT
+x-cache-hits: 186415, 0
+x-timer: S1752480545.948118,VS0,VE1
+server: RubyGems.org
+
+---
+0.0.0 protocol:>= 0|checksum:d32d9d54c66380d3014cc159d41f8d89c3a7516729afac5b647fcad193306cc2,ruby:>= 2
+0.0.1 protocol:>= 0|checksum:a00abcc5ec240e5a41e6c9eefb6786b7f61c21e3b96b88eaf6b8a49d08fd7b05,ruby:>= 2
+0.0.2 protocol:>= 0|checksum:24ade92e6651ae34900f492eb7a82a5fd54535f5a11598090e35f7fe3ee77479,ruby:>= 2
+0.1.0 protocol:>= 0|checksum:faec3c658518eeb3184cbaac0bd14c650ee2b0301439ac9d0dd8931e46d89d7c,ruby:>= 2
+0.2.0 protocol:>= 0|checksum:516175f39359ffc6f3ef8061d411c738ee22d2bf4f31d6576ea9d37ef7073bac,ruby:>= 2
+0.2.1 protocol:>= 0|checksum:321f66839c860953f5059550805869375b6e9ac26045667b2f179ee00750ea6d,ruby:>= 2
+0.3.0 protocol:>= 0|checksum:c4900c558c9ead5e15cff7b558d1629f7328d52f1eff82b33140b9bdb322d92a,ruby:>= 2
+0.3.1 protocol:>= 0|checksum:2f949734486079ca933a5ce604efaf0ba9e19d0aecf49d2b91d2cd5066cde273,ruby:>= 2
+0.3.2 protocol:>= 0|checksum:b93616105deee8876cb6b2e885aa082278aa071c67315d80fe0b60acad72f158,ruby:>= 2
+0.3.3 protocol:>= 0|checksum:0afca73569418d51a345ca74c83031e218726798d8d0d6dee8ef0e3e0a01e782,ruby:>= 2
+0.3.4 protocol:>= 0|checksum:e82df1c0b88577b40e2d105acd9912e6d40a8a64c6f80b87141907eda604b3dd,ruby:>= 2
+0.3.5 protocol:>= 0|checksum:83cec4b3ee3de719d7a0a8737dd67fd58e556f874d6d43574a440f867e640954,ruby:>= 2
+0.4.0 protocol:~> 2.0|checksum:ffbc47cc7787db68ef0b14d13ba59a1e4c6e3dfc430ca29fdc6e7a356608425a,ruby:>= 2
+0.4.1 protocol:~> 2.0|checksum:55bcba0cf001cbff5a647a18172c4a885061ceec586395fb08ecbb98d039f627,ruby:>= 2
+0.5.0 |checksum:c35323d102b54cc96f21e7cefa558573ab1f287393e8e0ca13c193e5dc9b3cbc,ruby:>= 2
+0.6.0 |checksum:3f1a0f52cb5c158e43e93a6dd3be896d9c7dd345d76eb1bd9f26088681db2363,ruby:>= 2
+0.6.1 |checksum:4031558979ff5426fda24c75a149b4e4c0faf4cacf2fae8938f83866ab94b780,ruby:>= 2

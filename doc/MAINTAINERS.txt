@@ -1,6 +1,5 @@
 Luis Sagastume <lsagastume1990@gmail.com> (@bronzdoc)
 Daniel Berger <djberg96@gmail.com> (@djberg96)
-Ellen Marie Dash <me@duckie.co> (@duckinator)
 Evan Phoenix <evan@phx.io> (@evanphx)
 SHIBATA Hiroshi <hsbt@ruby-lang.org> (@hsbt)
 André Arko <andre@arko.net> (@indirect)

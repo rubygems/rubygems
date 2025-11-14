@@ -8,7 +8,7 @@ module Bundler
       autoload :Remote, File.expand_path("rubygems/remote", __dir__)
 
       # Ask for X gems per API request
-      API_REQUEST_SIZE = 50
+      API_REQUEST_SIZE = 100
 
       attr_accessor :remotes
 
@@ -168,12 +168,6 @@ module Bundler
           return nil # no post-install message
         end
 
-        if spec.remote
-          # Check for this spec from other sources
-          uris = [spec.remote, *remotes_for_spec(spec)].map(&:anonymized_uri).uniq
-          Installer.ambiguous_gems << [spec.name, *uris] if uris.length > 1
-        end
-
         path = fetch_gem_if_possible(spec, options[:previous_spec])
         raise GemNotFound, "Could not find #{spec.file_name} for installation" unless path
 
@@ -217,7 +211,11 @@ module Bundler
         message += " with native extensions" if spec.extensions.any?
         Bundler.ui.confirm message
 
-        installed_spec = installer.install
+        installed_spec = nil
+
+        Gem.time("Installed #{spec.name} in", 0, true) do
+          installed_spec = installer.install
+        end
 
         spec.full_gem_path = installed_spec.full_gem_path
         spec.loaded_from = installed_spec.loaded_from
@@ -330,13 +328,6 @@ module Bundler
 
       def credless_remotes
         remotes.map(&method(:remove_auth))
-      end
-
-      def remotes_for_spec(spec)
-        specs.search_all(spec.name).inject([]) do |uris, s|
-          uris << s.remote if s.remote
-          uris
-        end
       end
 
       def cached_gem(spec)
@@ -491,7 +482,10 @@ module Bundler
         uri = spec.remote.uri
         Bundler.ui.confirm("Fetching #{version_message(spec, previous_spec)}")
         gem_remote_fetcher = remote_fetchers.fetch(spec.remote).gem_remote_fetcher
-        Bundler.rubygems.download_gem(spec, uri, download_cache_path, gem_remote_fetcher)
+
+        Gem.time("Downloaded #{spec.name} in", 0, true) do
+          Bundler.rubygems.download_gem(spec, uri, download_cache_path, gem_remote_fetcher)
+        end
       end
 
       # Returns the global cache path of the calling Rubygems::Source object.
@@ -506,7 +500,7 @@ module Bundler
       # @return [Pathname] The global cache path.
       #
       def download_cache_path(spec)
-        return unless Bundler.feature_flag.global_gem_cache?
+        return unless Bundler.settings[:global_gem_cache]
         return unless remote = spec.remote
         return unless cache_slug = remote.cache_slug
 

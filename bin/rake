@@ -3,7 +3,7 @@
 
 require_relative "../bundler/spec/support/rubygems_ext"
 
-if ["setup", "dev:deps", "dev:frozen_deps", "override_version"].include?(ARGV[0])
+if ["setup", "dev:deps", "dev:frozen_deps"].include?(ARGV[0])
   Spec::Rubygems.gem_load_and_possibly_install("rake", "rake")
 else
   Spec::Rubygems.gem_load("rake", "rake")

@@ -7,10 +7,12 @@
 #++
 
 require_relative "../user_interaction"
-require_relative "../shellwords"
 
 class Gem::Ext::Builder
   include Gem::UserInteraction
+
+  class NoMakefileError < Gem::InstallError
+  end
 
   attr_accessor :build_args # :nodoc:
 
@@ -22,14 +24,15 @@ class Gem::Ext::Builder
   def self.make(dest_path, results, make_dir = Dir.pwd, sitedir = nil, targets = ["clean", "", "install"],
     target_rbconfig: Gem.target_rbconfig)
     unless File.exist? File.join(make_dir, "Makefile")
-      raise Gem::InstallError, "Makefile not found"
+      # No makefile exists, nothing to do.
+      raise NoMakefileError, "No Makefile found in #{make_dir}"
     end
 
     # try to find make program from Ruby configure arguments first
     target_rbconfig["configure_args"] =~ /with-make-prog\=(\w+)/
     make_program_name = ENV["MAKE"] || ENV["make"] || $1
     make_program_name ||= RUBY_PLATFORM.include?("mswin") ? "nmake" : "make"
-    make_program = Shellwords.split(make_program_name)
+    make_program = shellsplit(make_program_name)
 
     # The installation of the bundled gems is failed when DESTDIR is empty in mswin platform.
     destdir = /\bnmake/i !~ make_program_name || ENV["DESTDIR"] && ENV["DESTDIR"] != "" ? format("DESTDIR=%s", ENV["DESTDIR"]) : ""
@@ -58,7 +61,7 @@ class Gem::Ext::Builder
 
   def self.ruby
     # Gem.ruby is quoted if it contains whitespace
-    cmd = Shellwords.split(Gem.ruby)
+    cmd = shellsplit(Gem.ruby)
 
     # This load_path is only needed when running rubygems test without a proper installation.
     # Prepending it in a normal installation will cause problem with order of $LOAD_PATH.
@@ -83,7 +86,7 @@ class Gem::Ext::Builder
         p(command)
       end
       results << "current directory: #{dir}"
-      results << Shellwords.join(command)
+      results << shelljoin(command)
 
       require "open3"
       # Set $SOURCE_DATE_EPOCH for the subprocess.
@@ -127,6 +130,18 @@ class Gem::Ext::Builder
     end
   end
 
+  def self.shellsplit(command)
+    require "shellwords"
+
+    Shellwords.split(command)
+  end
+
+  def self.shelljoin(command)
+    require "shellwords"
+
+    Shellwords.join(command)
+  end
+
   ##
   # Creates a new extension builder for +spec+.  If the +spec+ does not yet
   # have build arguments, saved, set +build_args+ which is an ARGV-style
@@ -154,7 +169,7 @@ class Gem::Ext::Builder
       @ran_rake = true
       Gem::Ext::RakeBuilder
     when /CMakeLists.txt/ then
-      Gem::Ext::CmakeBuilder
+      Gem::Ext::CmakeBuilder.new
     when /Cargo.toml/ then
       Gem::Ext::CargoBuilder.new
     else

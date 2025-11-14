@@ -1,0 +1,35 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 1628
+last-modified: Wed, 05 Feb 2025 04:35:46 GMT
+etag: "9e0dc69400e02c108d6db158ef235147"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="k2dYP9T4yyUh42lRPLyuiCbIqGftj8K8z1CP3zNwqIk="
+repr-digest: sha-256="k2dYP9T4yyUh42lRPLyuiCbIqGftj8K8z1CP3zNwqIk="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400086_BFI 167.82.142.86:443
+accept-ranges: bytes
+age: 200
+date: Mon, 14 Jul 2025 08:09:03 GMT
+x-served-by: cache-bfi-kbfi7400086-BFI, cache-mad22046-MAD
+x-cache: HIT, HIT
+x-cache-hits: 248149, 0
+x-timer: S1752480544.604308,VS0,VE1
+server: RubyGems.org
+
+---
+0.1.0 |checksum:86be82e5059ab0d126231af68f0e27773a5f6467a47a6bc7d593b3bbee2ce30e
+0.2.0 |checksum:db21aac683e92caaeb2c1ee9c928b51b5639f9937dad5596e399d6efd793297e,ruby:>= 2.5.0
+0.2.1 net-protocol:>= 0|checksum:d1ae74d4b75970915d7c7a548275583974cb54d09ca9c56312dc8cb7f40ff40f,ruby:>= 2.5.0
+0.2.2 digest:>= 0,net-protocol:>= 0,timeout:>= 0|checksum:2487b00fa352d533512b57c79377e933163cf7a91201a8795822e8edab2b1231,ruby:>= 2.5.0
+0.3.0 digest:>= 0,net-protocol:>= 0,timeout:>= 0|checksum:79361c21117aec9f9a19a104231c803f03f914c7d1bb1704d9792513cfb5c540,ruby:>= 2.5.0
+0.3.1 digest:>= 0,net-protocol:>= 0,timeout:>= 0|checksum:3af115c64d7aace0aa41f63a77f8e40707fd842a2de4bb24ebced6b4dd4465e8,ruby:>= 2.6.0
+0.3.2 net-protocol:>= 0|checksum:4d35446673295f47c288e859a21b202a003534bc7fa31b77d4ee7afea61d3e34,ruby:>= 2.6.0
+0.3.3 net-protocol:>= 0|checksum:3d51dcaa981b74aff2d89cbe89de4503bc2d682365ea5176366e950a0d68d5b0,ruby:>= 2.6.0
+0.4.0 net-protocol:>= 0|checksum:2d7eb8de289ba8dce3f0d436ee40b9366bea28354c5ba183c8ab2ec05139a3e7,ruby:>= 2.6.0
+0.3.1.1 digest:>= 0,net-protocol:>= 0,timeout:>= 0|checksum:57577a017cfd9145f09a9ef48b7650245a7d5a655a2bfdf48825a7379651145c,ruby:>= 2.6.0
+0.3.4 net-protocol:>= 0|checksum:3dd445186f3d6dd8c2559850eb5dafdc6c1c0a85195489a874338908e9c59143,ruby:>= 2.6.0
+0.4.0.1 net-protocol:>= 0|checksum:098d28fab9d9bc280a2cfada77692cdca89c83c6789bdbb8d8429f97f1bf5a33,ruby:>= 2.6.0
+0.5.0 net-protocol:>= 0|checksum:5fc0415e6ea1cc0b3dfea7270438ec22b278ca8d524986a3ae4e5ae8d087b42a,ruby:>= 2.6.0
+0.5.1 net-protocol:>= 0|checksum:ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736,ruby:>= 2.6.0

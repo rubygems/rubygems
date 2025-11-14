@@ -57,7 +57,7 @@ RSpec.describe "bundle check" do
 
     bundle :check, raise_on_error: false
     expect(err).to include("The following gems are missing")
-    expect(err).to include(" * rake (13.2.1)")
+    expect(err).to include(" * rake (#{rake_version})")
     expect(err).to include(" * actionpack (2.3.2)")
     expect(err).to include(" * activerecord (2.3.2)")
     expect(err).to include(" * actionmailer (2.3.2)")
@@ -76,7 +76,7 @@ RSpec.describe "bundle check" do
     expect(exitstatus).to be > 0
     expect(err).to include("The following gems are missing")
     expect(err).to include(" * rails (2.3.2)")
-    expect(err).to include(" * rake (13.2.1)")
+    expect(err).to include(" * rake (#{rake_version})")
     expect(err).to include(" * actionpack (2.3.2)")
     expect(err).to include(" * activerecord (2.3.2)")
     expect(err).to include(" * actionmailer (2.3.2)")
@@ -121,19 +121,6 @@ RSpec.describe "bundle check" do
 
     bundle :check, raise_on_error: false
     expect(err).to include("Bundler can't satisfy your Gemfile's dependencies.")
-  end
-
-  it "remembers --without option from install", bundler: "< 3" do
-    gemfile <<-G
-      source "https://gem.repo1"
-      group :foo do
-        gem "myrack"
-      end
-    G
-
-    bundle "install --without foo"
-    bundle "check"
-    expect(out).to include("The Gemfile's dependencies are satisfied")
   end
 
   it "uses the without setting" do
@@ -272,46 +259,6 @@ RSpec.describe "bundle check" do
     expect(last_command).to be_failure
   end
 
-  context "--path", bundler: "< 3" do
-    context "after installing gems in the proper directory" do
-      before do
-        gemfile <<-G
-          source "https://gem.repo1"
-          gem "rails"
-        G
-        bundle "install --path vendor/bundle"
-
-        FileUtils.rm_r(bundled_app(".bundle"))
-      end
-
-      it "returns success" do
-        bundle "check --path vendor/bundle"
-        expect(out).to include("The Gemfile's dependencies are satisfied")
-      end
-
-      it "should write to .bundle/config" do
-        bundle "check --path vendor/bundle"
-        bundle "check"
-      end
-    end
-
-    context "after installing gems on a different directory" do
-      before do
-        install_gemfile <<-G
-          source "https://gem.repo1"
-          gem "rails"
-        G
-
-        bundle "check --path vendor/bundle", raise_on_error: false
-      end
-
-      it "returns false" do
-        expect(exitstatus).to eq(1)
-        expect(err).to match(/The following gems are missing/)
-      end
-    end
-  end
-
   describe "when locked" do
     before :each do
       system_gems "myrack-1.0.0"
@@ -329,7 +276,7 @@ RSpec.describe "bundle check" do
 
     it "shows what is missing with the current Gemfile if it is not satisfied" do
       FileUtils.rm_r default_bundle_path
-      system_gems :bundler
+      default_system_gems
       bundle :check, raise_on_error: false
       expect(err).to match(/The following gems are missing/)
       expect(err).to include("* myrack (1.0")
@@ -389,7 +336,7 @@ RSpec.describe "bundle check" do
           myrack
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
 
@@ -464,7 +411,7 @@ RSpec.describe "bundle check" do
           depends_on_myrack!
         #{checksums}
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
   end
@@ -535,7 +482,7 @@ RSpec.describe "bundle check" do
           dex-dispatch-engine!
         #{checksums}
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
   end

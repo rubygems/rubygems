@@ -23,33 +23,24 @@ defaults:
 
 jobs:
   system_rubygems_bundler:
-    name: Bundler ${{ matrix.bundler.name }} against system Rubygems (${{ matrix.ruby.name }})
+    name: Bundler against system Rubygems (${{ matrix.ruby.name }})
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.1, value: 3.1.0 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.2, value: 3.2.0 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.3, value: 3.3.0 } }
-          - { bundler: { name: 2, value: '' }, ruby: { name: ruby-3.4, value: 3.4.1 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.1, value: 3.1.0 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.2, value: 3.2.0 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.3, value: 3.3.0 } }
-          - { bundler: { name: 3, value: 3.0.0 }, ruby: { name: ruby-3.4, value: 3.4.1 } }
+          - { ruby: { name: ruby-3.2, value: 3.2.0 } }
+          - { ruby: { name: ruby-3.3, value: 3.3.0 } }
+          - { ruby: { name: ruby-3.4, value: 3.4.1 } }
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1.229.0
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Install graphviz
-        run: sudo apt-get install graphviz -y
-        if: matrix.bundler.value == ''
-      - name: Replace version
-        run: BUNDLER_SPEC_SUB_VERSION=${{ matrix.bundler.value }} bin/rake override_version
-        if: matrix.bundler.value != ''
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps
@@ -61,10 +52,11 @@ jobs:
         run: |
           RGV=$(ruby -e 'puts Gem::VERSION.split(".")[0..2].join(".")')
           echo "RGV=v$RGV" >> $GITHUB_ENV
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           path: bundler/tmp/rubygems
           ref: ${{ env.RGV }}
+          persist-credentials: false
       - name: Run Rubygems Requirement tests against local bundler, to make sure bundler monkeypatches preserve the behaviour
         run: |
           ruby -I../../lib:lib:test test/rubygems/test_gem_requirement.rb

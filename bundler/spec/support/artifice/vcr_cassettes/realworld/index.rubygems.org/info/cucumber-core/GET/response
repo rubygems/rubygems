@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 5403
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "a887be1b0abe670f5801b010b7562433"
-last-modified: Mon, 11 Oct 2021 12:03:30 GMT
+content-length: 7596
+last-modified: Fri, 28 Feb 2025 14:08:23 GMT
+etag: "7cae49475ac8acea42c5344a3b81b452"
 cache-control: max-age=60, public
-x-request-id: 81b39d61-2b0e-40f5-9b24-a44fc2be1096
-x-runtime: 0.015823
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="xHf2ptZ9q1ArOGX2qvgklvCQODfhwtUpWnVbmBut7AY="
+repr-digest: sha-256="xHf2ptZ9q1ArOGX2qvgklvCQODfhwtUpWnVbmBut7AY="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300077_BFI 167.82.143.77:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:47 GMT
-via: 1.1 varnish
-age: 2232
-x-served-by: cache-fra19180-FRA
-x-cache: HIT
-x-cache-hits: 2
-x-timer: S1635203867.438997,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 14 Jul 2025 08:09:14 GMT
+age: 3422
+x-served-by: cache-bfi-krnt7300077-BFI, cache-mad2200147-MAD
+x-cache: HIT, HIT
+x-cache-hits: 48210, 1
+x-timer: S1752480555.811899,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -62,3 +54,14 @@ server: RubyGems.org
 10.0.0 cucumber-gherkin:>= 20.0.0&~> 20.0,cucumber-messages:>= 17.0.0&~> 17.0,cucumber-tag-expressions:>= 3.0.1&~> 3.0|checksum:0d8f6242837a0e49c48930f520d1945d8f7b57ccf0e66855d75077852e166cb9,ruby:>= 2.3
 10.0.1 cucumber-gherkin:>= 20.0.1&~> 20.0,cucumber-messages:>= 17.0.1&~> 17.0,cucumber-tag-expressions:>= 3.0.1&~> 3.0|checksum:5851eefed2d25d583c85f5705aaa4bc484eb26c7ae55e406ec1af4197fa7886d,ruby:>= 2.3
 10.1.0 cucumber-gherkin:>= 22.0.0&~> 22.0,cucumber-messages:>= 17.1.1&~> 17.1,cucumber-tag-expressions:>= 4.0.2&~> 4.0|checksum:1b13f9d81708dae89a17a3ee915b3e8e8f2303b480d0978278d61e474001d700,ruby:>= 2.3
+10.1.1 cucumber-gherkin:>= 22.0.0&~> 22.0,cucumber-messages:>= 17.1.1&~> 17.1,cucumber-tag-expressions:>= 4.1.0&~> 4.1|checksum:d929773b4f821b20427876602c3698525280acf2c230bd3c33eeee1e08a25630,ruby:>= 2.3
+11.0.0 cucumber-gherkin:>= 23.0.1&~> 23.0,cucumber-messages:>= 18.0.0&~> 18.0,cucumber-tag-expressions:>= 4.1.0&~> 4.1|checksum:300f0b27e54cee4167ad4930ccc6fbd9477fbcee31f9730084ac96cf0a4f2f37,ruby:>= 2.3
+11.1.0 cucumber-gherkin:< 27&>= 24,cucumber-messages:< 22&>= 19,cucumber-tag-expressions:>= 4.1.0&~> 4.1|checksum:4b5a76518555f97be0e7220011a593462941c7dbd225e610f0f1f7ccf5f4b90a,ruby:>= 2.3
+12.0.0 cucumber-gherkin:< 27&>= 25,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:>= 5.0.4&~> 5.0|checksum:c2a7f4c457dd64df6cc7f430392fb5c03160805eafb27849639fee65d5bb9dfa,ruby:>= 2.5
+13.0.0 cucumber-gherkin:< 28&>= 27,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:< 7&> 5|checksum:7d417e02fbe6accfe9aed30df73a7df0b65b8f82490647ad148346af01f9adcc,ruby:>= 2.5,rubygems:>= 3.0.1
+13.0.1 cucumber-gherkin:< 28&>= 27,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:< 7&> 5|checksum:757f9dbfb1e2e0eec19f5fc1091b56a388fb42ba23322be8f10207e6fab3c5c9,ruby:>= 2.5,rubygems:>= 3.0.1
+13.0.2 cucumber-gherkin:< 28&>= 27,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:< 7&> 5|checksum:eeb62b06ba538a24f1c7df591253a7deeb0552c1e9f3f36adca153921ffb0064,ruby:>= 2.5,rubygems:>= 3.0.1
+13.0.3 cucumber-gherkin:< 28&>= 27,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:< 7&> 5|checksum:e01c28d658dc0a8d5804507e0b63b58ba0e4fbe8e7d50f8f19c17b44872c5344,ruby:>= 2.5,rubygems:>= 3.0.1
+14.0.0 cucumber-gherkin:< 30&> 27,cucumber-messages:< 27&> 22,cucumber-tag-expressions:< 7&> 5|checksum:12c9ffba129967efa65df48f077f79b7ff923d3d163590b86c9b3108386f4869,ruby:>= 2.7,rubygems:>= 3.2.8
+15.0.0 cucumber-gherkin:< 30&> 27,cucumber-messages:< 28&> 25,cucumber-tag-expressions:< 7&> 5|checksum:57859a6c5ea2c5d3934b963e450b4560ee3d4121d4e49bc61ec16544d7891fc2,ruby:>= 3.0,rubygems:>= 3.2.8
+15.1.0 cucumber-gherkin:< 31&> 27,cucumber-messages:< 29&> 26,cucumber-tag-expressions:< 7&> 5|checksum:2d5c56425d5f663a58647e12969288d555fd78a1e18bfe34d1957f0b3c4134b7,ruby:>= 3.0,rubygems:>= 3.2.8

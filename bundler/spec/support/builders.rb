@@ -2,6 +2,8 @@
 
 require "bundler/shared_helpers"
 require "shellwords"
+require "fileutils"
+require "rubygems/package"
 
 require_relative "build_metadata"
 
@@ -22,10 +24,6 @@ module Spec
 
     def pl(platform)
       Gem::Platform.new(platform)
-    end
-
-    def rake_version
-      "13.2.1"
     end
 
     def build_repo1
@@ -108,10 +106,6 @@ module Spec
 
         build_gem "platform_specific" do |s|
           s.platform = "x86-mingw32"
-        end
-
-        build_gem "platform_specific" do |s|
-          s.platform = "x64-mingw32"
         end
 
         build_gem "platform_specific" do |s|
@@ -277,7 +271,7 @@ module Spec
     end
 
     def update_repo(path, build_compact_index: true)
-      exempted_caller = Gem.ruby_version >= Gem::Version.new("3.4.0.dev") ? "#{Module.nesting.first}#build_repo" : "build_repo"
+      exempted_caller = Gem.ruby_version >= Gem::Version.new("3.4.0.dev") && RUBY_ENGINE != "jruby" ? "#{Module.nesting.first}#build_repo" : "build_repo"
       if path == gem_repo1 && caller_locations(1, 1).first.label != exempted_caller
         raise "Updating gem_repo1 is unsupported -- use gem_repo2 instead"
       end
@@ -285,14 +279,8 @@ module Spec
       @_build_path = "#{path}/gems"
       @_build_repo = File.basename(path)
       yield
-      with_gem_path_as base_system_gem_path do
-        Dir[base_system_gem_path.join("gems/rubygems-generate_index*/lib")].first ||
-          raise("Could not find rubygems-generate_index lib directory in #{base_system_gem_path}")
-
-        command = "generate_index"
-        command += " --no-compact" if !build_compact_index && gem_command(command + " --help").include?("--[no-]compact")
-        gem_command command, dir: path
-      end
+      options = { build_compact: build_compact_index }
+      Gem::Indexer.new(path, options).generate_index
     ensure
       @_build_path = nil
       @_build_repo = nil
@@ -431,21 +419,27 @@ module Spec
     end
 
     class BundlerBuilder
-      attr_writer :required_ruby_version
-
       def initialize(context, name, version)
         raise "can only build bundler" unless name == "bundler"
 
         @context = context
-        @version = version || Bundler::VERSION
+        @spec = Spec::Path.loaded_gemspec.dup
+        @spec.version = version || Bundler::VERSION
+      end
+
+      def required_ruby_version
+        @spec.required_ruby_version
+      end
+
+      def required_ruby_version=(x)
+        @spec.required_ruby_version = x
       end
 
       def _build(options = {})
-        full_name = "bundler-#{@version}"
-        build_path = @context.tmp + full_name
+        full_name = "bundler-#{@spec.version}"
+        build_path = (options[:build_path] || @context.tmp) + full_name
         bundler_path = build_path + "#{full_name}.gem"
 
-        require "fileutils"
         FileUtils.mkdir_p build_path
 
         @context.shipped_files.each do |shipped_file|
@@ -457,12 +451,16 @@ module Spec
           FileUtils.cp File.expand_path(shipped_file, @context.source_root), target_shipped_file, preserve: true
         end
 
-        @context.replace_version_file(@version, dir: build_path)
-        @context.replace_required_ruby_version(@required_ruby_version, dir: build_path) if @required_ruby_version
+        @context.replace_version_file(@spec.version, dir: build_path)
+        @context.replace_changelog(@spec.version, dir: build_path) if options[:released]
 
-        Spec::BuildMetadata.write_build_metadata(dir: build_path)
+        Spec::BuildMetadata.write_build_metadata(dir: build_path, version: @spec.version.to_s)
 
-        @context.gem_command "build #{@context.relative_gemspec}", dir: build_path
+        Dir.chdir build_path do
+          Gem::DefaultUserInteraction.use_ui(Gem::SilentUI.new) do
+            Gem::Package.build(@spec)
+          end
+        end
 
         if block_given?
           yield(bundler_path)
@@ -470,7 +468,7 @@ module Spec
           FileUtils.mv bundler_path, options[:path]
         end
       ensure
-        build_path.rmtree
+        FileUtils.rm_rf build_path
       end
     end
 
@@ -666,7 +664,7 @@ module Spec
         elsif opts[:skip_validation]
           @context.gem_command "build --force #{@spec.name}", dir: lib_path
         else
-          @context.gem_command "build #{@spec.name}", dir: lib_path, allowed_warning: opts[:allowed_warning]
+          Dir.chdir(lib_path) { Gem::Package.build(@spec) }
         end
 
         gem_path = File.expand_path("#{@spec.full_name}.gem", lib_path)

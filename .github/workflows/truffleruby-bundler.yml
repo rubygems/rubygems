@@ -24,17 +24,35 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: Setup ruby
-        uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1.229.0
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          ruby-version: truffleruby-24.2.0
+          persist-credentials: false
+      - name: Setup ruby
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
+        with:
+          ruby-version: truffleruby-24.2.1
           bundler: none
       - name: Prepare dependencies
         run: |
           bin/rake dev:deps
       - name: Run Test
         run: |
-          bin/parallel_rspec --tag truffleruby_only --tag truffleruby
+          bin/rspec --tag truffleruby_only --tag truffleruby
         working-directory: ./bundler
     timeout-minutes: 20
+
+  all-pass:
+    name: All truffleruby-bundler jobs pass
+
+    if: always()
+
+    needs:
+      - truffleruby_bundler
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check dependent jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

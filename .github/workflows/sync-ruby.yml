@@ -1,0 +1,35 @@
+name: Sync ruby
+on:
+  push:
+    branches: [master]
+jobs:
+  sync:
+    name: Sync ruby
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'ruby' }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: 2060836
+          private-key: ${{ secrets.RUBY_SYNC_DEFAULT_GEMS_PRIVATE_KEY }}
+          owner: ruby
+          repositories: ruby
+
+      - name: Sync to ruby/ruby
+        uses: convictional/trigger-workflow-and-wait@f69fa9eedd3c62a599220f4d5745230e237904be # v1.6.5
+        with:
+          owner: ruby
+          repo: ruby
+          workflow_file_name: sync_default_gems.yml
+          github_token: ${{ steps.app-token.outputs.token }}
+          ref: master
+          client_payload: |
+            {"gem":"${{ github.event.repository.name }}","before":"${{ github.event.before }}","after":"${{ github.event.after }}"}
+          propagate_failure: true
+          wait_interval: 10

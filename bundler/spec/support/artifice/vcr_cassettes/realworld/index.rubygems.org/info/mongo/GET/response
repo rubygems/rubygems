@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 17930
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "958b62e11340314b52ad56d5a4f55f22"
-last-modified: Tue, 05 Oct 2021 15:55:15 GMT
+content-length: 20508
+last-modified: Wed, 30 Apr 2025 17:30:29 GMT
+etag: "fb3fe99adf0621f969a91d946d45dd02"
 cache-control: max-age=60, public
-x-request-id: a9412cf8-a5c8-4881-9786-eedfc657aac4
-x-runtime: 0.008293
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.41.58.231:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="ovEa1Oiz1lfJ8NEphq7SPIsCb1qkw9S2qAm/9ve/mnA="
+repr-digest: sha-256="ovEa1Oiz1lfJ8NEphq7SPIsCb1qkw9S2qAm/9ve/mnA="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400020_BFI 167.82.142.20:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:32 GMT
-via: 1.1 varnish
-age: 665
-x-served-by: cache-fra19143-FRA
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1635203853.785814,VS0,VE1
-vary: Accept,Accept-Encoding,Fastly-SSL
+age: 2561
+date: Mon, 14 Jul 2025 08:09:03 GMT
+x-served-by: cache-bfi-kbfi7400020-BFI, cache-mad2200100-MAD
+x-cache: HIT, HIT
+x-cache-hits: 49522, 0
+x-timer: S1752480544.613407,VS0,VE1
 server: RubyGems.org
 
 ---
@@ -203,3 +195,25 @@ server: RubyGems.org
 2.14.1 bson:< 5.0.0&>= 4.8.2|checksum:632a2ddd1e5e211ddea6929267ee042b624e70f91bf1d3dad2e039a1112d4c69,ruby:>= 2.3
 2.13.3 bson:< 5.0.0&>= 4.8.2|checksum:7ba5118e91a86f77ffc22a2a0602918c222f2fa8b79c864ce3b6279309e847ab,ruby:>= 2.3
 2.16.0 bson:< 5.0.0&>= 4.8.2|checksum:9ad91f335535b909642c0365167c0979dd006c13305e59591c17e35870098877,ruby:>= 2.4
+2.17.0 bson:< 5.0.0&>= 4.8.2|checksum:2cdb0967a74408bb5a077bd012dceafa843775828f914d1e61c73e3b8ed9a466,ruby:>= 2.5
+2.16.1 bson:< 5.0.0&>= 4.8.2|checksum:fa2e026fb5ac5b9e56ed1f0bdd936641f3a8061910e6803497ccc5195865bb4c,ruby:>= 2.4
+2.17.1 bson:< 5.0.0&>= 4.8.2|checksum:011e0d2b073f4911001925bde73beadfcafa37266ef5375eab704418918751a7,ruby:>= 2.5
+2.16.2 bson:< 5.0.0&>= 4.8.2|checksum:7aad906ad79634b567f3689042160594d9f78ebc1879ddeff53448c80f3f19c2,ruby:>= 2.4
+2.18.0.beta1 bson:< 5.0.0&>= 4.14.1|checksum:1ab9e7d125c45ad9610165e8dba5d292053bd9bd61fb77b19020e0ef3aa97ea6,ruby:>= 2.5,rubygems:> 1.3.1
+2.16.3 bson:< 5.0.0&>= 4.8.2|checksum:910e4a52847dd5b14b1b7e961e951994a93fe41149536d88b88e394526447680,ruby:>= 2.4
+2.17.2 bson:< 5.0.0&>= 4.8.2|checksum:bb735a5c236f3bc104a8520d8d330ca5d3bd3c9eb9b9f43a01bb8ee357cf4659,ruby:>= 2.5
+2.18.0 bson:< 5.0.0&>= 4.14.1|checksum:142048c6dce4dad472e77c63adb2ec7c0ef954a2a5d644adca71fd76f8bab38d,ruby:>= 2.5
+2.18.1 bson:< 5.0.0&>= 4.14.1|checksum:e5ea015347e804ba913dcd9ef57338b21328e1790e275e27b1e4910f2b53bf99,ruby:>= 2.5
+2.17.3 bson:< 5.0.0&>= 4.8.2|checksum:a6035cb06ceaf5c1bdb17f0dc2f7c5b4816e3040d869ddd04bfa370ce56959cf,ruby:>= 2.5
+2.18.2 bson:< 5.0.0&>= 4.14.1|checksum:769ee6caf8675b42f24bcb13930e97ca64db87157bb51d5a3eb6ed07b167b7d1,ruby:>= 2.5
+2.19.0 bson:< 5.0.0&>= 4.14.1|checksum:70d990671b93994f98dc8dc8e758799255e46f9055617e4c946e371f3793dab7,ruby:>= 2.5
+2.19.1 bson:< 5.0.0&>= 4.14.1|checksum:6096e917fae8f76239449132f6b658734d29bff17a02ac7900f8317ae0264c9f,ruby:>= 2.5
+2.19.2 bson:< 5.0.0&>= 4.14.1|checksum:aefc109621c99ac8d15b230626fcedaac207181ae04a526bcb7302d4756690d7,ruby:>= 2.5
+2.18.3 bson:< 5.0.0&>= 4.14.1|checksum:0ec257131d451fc2f39c27cfb73423a03e473701a4c2850efd30e1227aee3676,ruby:>= 2.5
+2.17.4 bson:< 5.0.0&>= 4.8.2|checksum:f74ba21a740a832364ff3477affb725330edebc3c716f95ec7260e9a893ffec9,ruby:>= 2.5
+2.16.4 bson:< 5.0.0&>= 4.8.2|checksum:a3bba7a5540f04bb943f5069422f4889af99b3560c207ce7aca9745095889799,ruby:>= 2.4
+2.19.3 bson:< 5.0.0&>= 4.14.1|checksum:eab5a75855a84893a20d813b32d05b5744f1b56a6b8eab77465d894353ac66a0,ruby:>= 2.5
+2.20.0 bson:< 6.0.0&>= 4.14.1|checksum:a6a697c855738d91695db081caef466b27ee799388731b0564bac5546a5b635d,ruby:>= 2.5
+2.20.1 bson:< 6.0.0&>= 4.14.1|checksum:ea113d051e76f386fd00ee5ce856fa58a6d7cc5ba7c91ef2437777f426bbc360,ruby:>= 2.5
+2.21.0 bson:< 6.0.0&>= 4.14.1|checksum:38c4743733dbb918d8feb197a8f8b9af8ad922dadba8e03f5117c3cabc79339b,ruby:>= 2.5
+2.21.1 base64:>= 0,bson:< 6.0.0&>= 4.14.1|checksum:a0858375c546b87c9aba6adcda8e6298720fed787be54dde0fcb4637b5e48f43,ruby:>= 2.7

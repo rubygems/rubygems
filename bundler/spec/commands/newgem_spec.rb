@@ -1763,6 +1763,10 @@ RSpec.describe "bundle gem" do
         bundle ["gem", gem_name, flags].compact.join(" ")
       end
 
+      after do
+        sys_exec("go clean -modcache", raise_on_error: true) if installed_go?
+      end
+
       it "is not deprecated" do
         expect(err).not_to include "[DEPRECATED] Option `--ext` without explicit value is deprecated."
       end

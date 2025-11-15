@@ -32,7 +32,10 @@ RSpec.describe "bundle gem" do
   end
 
   def installed_go?
-    system("go version")
+    sys_exec("go version", raise_on_error: true)
+    true
+  rescue StandardError
+    false
   end
 
   let(:generated_gemspec) { Bundler.load_gemspec_uncached(bundled_app(gem_name).join("#{gem_name}.gemspec")) }
@@ -1884,7 +1887,8 @@ RSpec.describe "bundle gem" do
         end
 
         let(:go_version) do
-          /go version go([.\d]+)/.match(`go version`)[1]
+          stdout = sys_exec("go version", raise_on_error: true)
+          /go version go([.\d]+)/.match(stdout)[1]
         end
 
         it "includes go version in go.mod" do

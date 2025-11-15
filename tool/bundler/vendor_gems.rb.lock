@@ -30,7 +30,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    connection_pool (2.5.0)
+    connection_pool (2.5.4)
     fileutils (1.7.3)
     net-protocol (0.2.2)
       timeout
@@ -67,7 +67,7 @@ DEPENDENCIES
   uri (= 1.0.4)
 
 CHECKSUMS
-  connection_pool (2.5.0) sha256=233b92f8d38e038c1349ccea65dd3772727d669d6d2e71f9897c8bf5cd53ebfc
+  connection_pool (2.5.4) sha256=e9e1922327416091f3f6542f5f4446c2a20745276b9aa796dd0bb2fd0ea1e70a
   fileutils (1.7.3) sha256=57271e854b694a87755d76f836f5c57b2c9538ebbaf4b2154bb66addf15eb5da
   molinillo (0.8.0)
   net-http (0.6.0)
@@ -83,4 +83,4 @@ CHECKSUMS
   uri (1.0.4) sha256=34485d137c079f8753a0ca1d883841a7ba2e5fae556e3c30c2aab0dde616344b
 
 BUNDLED WITH
-   4.0.0.dev
+  4.0.0.dev

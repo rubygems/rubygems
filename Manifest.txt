@@ -384,7 +384,6 @@ lib/rubygems/commands/outdated_command.rb
 lib/rubygems/commands/owner_command.rb
 lib/rubygems/commands/pristine_command.rb
 lib/rubygems/commands/push_command.rb
-lib/rubygems/commands/query_command.rb
 lib/rubygems/commands/rdoc_command.rb
 lib/rubygems/commands/rebuild_command.rb
 lib/rubygems/commands/search_command.rb

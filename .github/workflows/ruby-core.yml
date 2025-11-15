@@ -36,9 +36,10 @@ jobs:
           sudo apt-get install --no-install-recommends -q -y build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev bison autoconf ruby
       - name: Build Ruby
         run: |
+          export GNUMAKEFLAGS="-j$((1 + $(nproc)))"
           ./autogen.sh
           ./configure -C --disable-install-doc
-          make -j2
+          make
         working-directory: ruby/ruby
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -50,7 +51,7 @@ jobs:
           mv spec/bundler/support/bundle spec/bin/bundle # TODO: fix `sync_default_gems.rb` script so we don't need to vendor the ruby-core binstub ourselves
         working-directory: ruby/ruby
       - name: Test RubyGems
-        run: make -j2 -s test-all TESTS="rubygems --no-retry"
+        run: make -s test-all TESTS="--no-retry -j$((1 + $(nproc)))"
         working-directory: ruby/ruby
         if: matrix.target == 'Rubygems'
       - name: Test Bundler

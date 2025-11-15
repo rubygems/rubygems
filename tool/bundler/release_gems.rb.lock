@@ -3,47 +3,50 @@ GEM
   specs:
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    aws-eventstream (1.3.2)
-    aws-partitions (1.1075.0)
-    aws-sdk-core (3.221.0)
+    aws-eventstream (1.4.0)
+    aws-partitions (1.1181.0)
+    aws-sdk-core (3.237.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
       base64
+      bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-kms (1.99.0)
-      aws-sdk-core (~> 3, >= 3.216.0)
+    aws-sdk-kms (1.117.0)
+      aws-sdk-core (~> 3, >= 3.234.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.182.0)
-      aws-sdk-core (~> 3, >= 3.216.0)
+    aws-sdk-s3 (1.203.1)
+      aws-sdk-core (~> 3, >= 3.234.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
-    aws-sigv4 (1.11.0)
+    aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
-    base64 (0.2.0)
-    faraday (2.12.2)
+    base64 (0.3.0)
+    bigdecimal (3.3.1)
+    bigdecimal (3.3.1-java)
+    faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.4.0)
-      net-http (>= 0.5.0)
-    faraday-retry (2.2.1)
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
+    faraday-retry (2.3.2)
       faraday (~> 2.0)
     jmespath (1.6.2)
-    json (2.10.2)
-    json (2.10.2-java)
+    json (2.16.0)
+    json (2.16.0-java)
     logger (1.7.0)
-    net-http (0.6.0)
-      uri
+    net-http (0.8.0)
+      uri (>= 0.11.1)
     octokit (7.2.0)
       faraday (>= 1, < 3)
       sawyer (~> 0.9)
-    public_suffix (6.0.1)
-    sawyer (0.9.2)
+    public_suffix (6.0.2)
+    sawyer (0.9.3)
       addressable (>= 2.3.5)
       faraday (>= 0.17.3, < 3)
-    uri (1.0.3)
+    uri (1.1.1)
 
 PLATFORMS
   aarch64-darwin
@@ -61,25 +64,27 @@ DEPENDENCIES
 
 CHECKSUMS
   addressable (2.8.7) sha256=462986537cf3735ab5f3c0f557f14155d778f4b43ea4f485a9deb9c8f7c58232
-  aws-eventstream (1.3.2) sha256=7e2c3a55ca70d7861d5d3c98e47daa463ed539c349caba22b48305b8919572d7
-  aws-partitions (1.1075.0) sha256=71d89cb59d40d7417f03d177e02d838313ed6df216c50a1f4a342914a41467c9
-  aws-sdk-core (3.221.0) sha256=5ecad719dc2a15a76efd17071a43de5ac703aaa74e713af54cc949645c46ad4a
-  aws-sdk-kms (1.99.0) sha256=ba292fc3ffd672532aae2601fe55ff424eee78da8e23c23ba6ce4037138275a8
-  aws-sdk-s3 (1.182.0) sha256=d0fc3579395cb6cb69bf6e975240ce031fc673190e74c8dddbdd6c18572b450d
-  aws-sigv4 (1.11.0) sha256=50a8796991a862324442036ad7a395920572b84bb6cd29b945e5e1800e8da1db
-  base64 (0.2.0) sha256=0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507
-  faraday (2.12.2) sha256=157339c25c7b8bcb739f5cf1207cb0cefe8fa1c65027266bcbc34c90c84b9ad6
-  faraday-net_http (3.4.0) sha256=a1f1e4cd6a2cf21599c8221595e27582d9936819977bbd4089a601f24c64e54a
-  faraday-retry (2.2.1) sha256=4146fed14549c0580bf14591fca419a40717de0dd24f267a8ec2d9a728677608
+  aws-eventstream (1.4.0) sha256=116bf85c436200d1060811e6f5d2d40c88f65448f2125bc77ffce5121e6e183b
+  aws-partitions (1.1181.0) sha256=ad818435b31c5ed60f9332896dc83bfa7eff9661af93935b468f012e07c8ea7d
+  aws-sdk-core (3.237.0) sha256=9a8b14167a75be07ba7cfd9d27075aa12f1ed897d6eaed808a1c6a20963af32b
+  aws-sdk-kms (1.117.0) sha256=d3d655ae825ca0d6715555e2543e062fe14ccacf30bace04f3aefd6005b76c14
+  aws-sdk-s3 (1.203.1) sha256=edaa6ecc641ffa8564f38df237876876ac679b937ca8cd7873f6f9857d8f99b9
+  aws-sigv4 (1.12.1) sha256=6973ff95cb0fd0dc58ba26e90e9510a2219525d07620c8babeb70ef831826c00
+  base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
+  bigdecimal (3.3.1) sha256=eaa01e228be54c4f9f53bf3cc34fe3d5e845c31963e7fcc5bedb05a4e7d52218
+  bigdecimal (3.3.1-java) sha256=ed496e9c075dd501d58a519707bf704dba82a0cef658c719c929789551ec7d85
+  faraday (2.14.0) sha256=8699cfe5d97e55268f2596f9a9d5a43736808a943714e3d9a53e6110593941cd
+  faraday-net_http (3.4.2) sha256=f147758260d3526939bf57ecf911682f94926a3666502e24c69992765875906c
+  faraday-retry (2.3.2) sha256=2402d2029032ebd238a2046221e67f6ef0da78c5a8ce8cd4f8b9c62e4d6451d1
   jmespath (1.6.2) sha256=238d774a58723d6c090494c8879b5e9918c19485f7e840f2c1c7532cf84ebcb1
-  json (2.10.2) sha256=34e0eada93022b2a0a3345bb0b5efddb6e9ff5be7c48e409cfb54ff8a36a8b06
-  json (2.10.2-java) sha256=fe31faac61ea21ea1448c35450183f84e85c2b94cc6522c241959ba9d1362006
+  json (2.16.0) sha256=ca5630320bb5ca23ebfd0bac84532fab56eb357575653b815b9df42c051e1525
+  json (2.16.0-java) sha256=ee4c6fcc8f4efd156414b3e253e51675ec95bdfc79230b0bd5ec3a6139ed6d22
   logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
-  net-http (0.6.0) sha256=9621b20c137898af9d890556848c93603716cab516dc2c89b01a38b894e259fb
+  net-http (0.8.0) sha256=df42c47ce9f9e95ad32a317c97c12f945bc1af365288837ea4ff259876ecb46d
   octokit (7.2.0) sha256=7032d968d03177ee7a29e3bd4782fc078215cca4743db0dfc66a49feb9411907
-  public_suffix (6.0.1) sha256=61d44e1cab5cbbbe5b31068481cf16976dd0dc1b6b07bd95617ef8c5e3e00c6f
-  sawyer (0.9.2) sha256=fa3a72d62a4525517b18857ddb78926aab3424de0129be6772a8e2ba240e7aca
-  uri (1.0.3) sha256=e9f2244608eea2f7bc357d954c65c910ce0399ca5e18a7a29207ac22d8767011
+  public_suffix (6.0.2) sha256=bfa7cd5108066f8c9602e0d6d4114999a5df5839a63149d3e8b0f9c1d3558394
+  sawyer (0.9.3) sha256=0d0f19298408047037638639fe62f4794483fb04320269169bd41af2bdcf5e41
+  uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
 
 BUNDLED WITH
-   4.0.0.dev
+  4.0.0.dev

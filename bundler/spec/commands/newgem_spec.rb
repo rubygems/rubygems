@@ -31,6 +31,10 @@ RSpec.describe "bundle gem" do
     matched[:ignored]&.split(" ")
   end
 
+  def installed_go?
+    system("go version")
+  end
+
   let(:generated_gemspec) { Bundler.load_gemspec_uncached(bundled_app(gem_name).join("#{gem_name}.gemspec")) }
 
   let(:gem_name) { "mygem" }
@@ -1876,7 +1880,7 @@ RSpec.describe "bundle gem" do
 
       context "when Go is installed" do
         before do
-          skip "Go isn't installed" unless system("go version")
+          skip "Go isn't installed" unless installed_go?
         end
 
         let(:go_version) do

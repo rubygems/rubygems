@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "open3"
-
 module Bundler
   class CLI
     Bundler.require_thor_actions
@@ -244,7 +242,6 @@ module Bundler
           "ext/newgem/newgem-go.c.tt" => "ext/#{name}/#{underscored_name}.c",
         )
 
-        config[:go_version] = go_version
         config[:go_module_username] = config[:github_username] == DEFAULT_GITHUB_USERNAME ? "username" : config[:github_username]
       end
 
@@ -270,10 +267,6 @@ module Bundler
         path = target.join(file)
         executable = (path.stat.mode | 0o111)
         path.chmod(executable)
-      end
-
-      if extension == "go"
-        run_go_mod_tidy(target.join("ext/#{name}"))
       end
 
       if use_git
@@ -486,32 +479,6 @@ module Bundler
         ""
       else
         options[:github_username]
-      end
-    end
-
-    def go_version
-      stdout, _, status = Open3.capture3("go version")
-
-      # Suppress error if Go isn't installed
-      return nil unless status.success?
-
-      /go version go([.\d]+)/.match(stdout)[1]
-    end
-
-    # Run `go mod tidy` within ext/newgem/
-    def run_go_mod_tidy(ext_dir)
-      Dir.chdir(ext_dir) do
-        _, stderr, status = Open3.capture3("go mod tidy")
-
-        if status.success?
-          Bundler.ui.info "#{ext_dir}/go.sum has been created with `go mod tidy`"
-        else
-          Bundler.ui.warn <<~MSG
-            An error occurred when executing `go mod tidy`.
-            stderr: #{stderr}
-            Please run `go mod tidy` later in #{ext_dir} to create `go.sum`.
-          MSG
-        end
       end
     end
   end

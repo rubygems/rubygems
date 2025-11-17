@@ -1885,25 +1885,6 @@ RSpec.describe "bundle gem" do
         end
       end
 
-      context "when Go is installed" do
-        before do
-          skip "Go isn't installed" unless installed_go?
-        end
-
-        let(:go_version) do
-          stdout = sys_exec("go version", raise_on_error: true)
-          /go version go([.\d]+)/.match(stdout)[1]
-        end
-
-        it "includes go version in go.mod" do
-          expect(bundled_app("#{gem_name}/ext/#{gem_name}/go.mod").read).to include("go #{go_version}")
-        end
-
-        it "go.sum is generated" do
-          expect(bundled_app("#{gem_name}/ext/#{gem_name}/go.sum")).to exist
-        end
-      end
-
       context "without github.user" do
         before do
           # FIXME: GitHub Actions Windows Runner hang up here for some reason...

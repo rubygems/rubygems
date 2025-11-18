@@ -240,7 +240,12 @@ module Bundler
 
         cached.each do |path|
           Bundler.ui.info "  * #{File.basename(path)}"
-          File.delete(path)
+
+          begin
+            File.delete(path)
+          rescue Errno::ENOENT
+            nil
+          end
         end
       end
     end

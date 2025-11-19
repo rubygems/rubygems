@@ -158,6 +158,10 @@ class Release
     @previous_stable_branch = @level == :minor_or_major ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
     @previous_stable_branch = "3.7" if @stable_branch == "4.0"
 
+    if segments.size == 5 && segments[4] > 1
+      @previous_prerelease = "#{segments[0]}.#{segments[1]}.#{segments[2]}.#{segments[3]}.#{segments[4] - 1}"
+    end
+
     rubygems_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
     @rubygems = Rubygems.new(rubygems_version, @stable_branch)
 
@@ -321,11 +325,15 @@ class Release
 
   def unreleased_pr_ids
     stable_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@previous_stable_branch}`.split("\n")
+    prerelease_merge_commit_messages = []
+    if @previous_prerelease
+      prerelease_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@previous_stable_branch}..#{@previous_prerelease}`.split("\n")
+    end
 
     `git log --oneline --grep "^Merge pull request #" origin/master`.split("\n").filter_map do |l|
       _sha, message = l.split(/\s/, 2)
 
-      next if stable_merge_commit_messages.include?(message)
+      next if stable_merge_commit_messages.include?(message) || prerelease_merge_commit_messages.include?(message)
 
       /^Merge pull request #(\d+)/.match(message)[1].to_i
     end

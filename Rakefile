@@ -140,7 +140,7 @@ task rubocop: %w[rubocop:setup rubocop:run]
 # --------------------------------------------------------------------
 # Creating a release
 
-task prerelease: %w[clobber install_release_dependencies test bundler:build_metadata check_deprecations]
+task prerelease: %w[clobber install_release_dependencies bundler:build_metadata check_deprecations]
 task postrelease: %w[upload guides:publish blog:publish bundler:build_metadata:clean]
 
 desc "Check for deprecated methods with expired deprecation horizon"

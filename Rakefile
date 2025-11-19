@@ -186,7 +186,11 @@ end
 desc "Release rubygems-#{v}"
 task release: :prerelease do
   Rake::Task["package"].invoke
-  sh "gem push pkg/rubygems-update-#{v}.gem"
+  if ENV["DRYRUN"]
+    puts "DRYRUN mode: skipping push gem to rubygems.org"
+  else
+    sh "gem push pkg/rubygems-update-#{v}.gem"
+  end
   Rake::Task["postrelease"].invoke
 end
 
@@ -257,8 +261,12 @@ end
 
 desc "Upload release to rubygems.org"
 task :upload do
-  Rake::Task["upload_to_github"].invoke
-  Rake::Task["upload_to_s3"].invoke unless Gem::Specification.load("rubygems-update.gemspec").version.prerelease?
+  if ENV["DRYRUN"]
+    puts "DRYRUN mode: skipping upload to GitHub and S3"
+  else
+    Rake::Task["upload_to_github"].invoke
+    Rake::Task["upload_to_s3"].invoke unless Gem::Specification.load("rubygems-update.gemspec").version.prerelease?
+  end
 end
 
 directory "tmp/guides.rubygems.org" do
@@ -294,7 +302,11 @@ namespace "guides" do
 
   task "push" => %w[tmp/guides.rubygems.org] do
     chdir "tmp/guides.rubygems.org" do
-      sh "git", "push"
+      if ENV["DRYRUN"]
+        puts "DRYRUN mode: skipping push to guides repository"
+      else
+        sh "git", "push"
+      end
     end
   end
 
@@ -410,7 +422,11 @@ SHA256 Checksums:
 
   task "push" => %w[tmp/blog.rubygems.org] do
     chdir "tmp/blog.rubygems.org" do
-      sh "git", "push"
+      if ENV["DRYRUN"]
+        puts "DRYRUN mode: skipping push to blog repository"
+      else
+        sh "git", "push"
+      end
     end
   end
 

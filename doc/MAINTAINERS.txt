@@ -1,7 +1,1 @@
-Luis Sagastume <lsagastume1990@gmail.com> (@bronzdoc)
-Daniel Berger <djberg96@gmail.com> (@djberg96)
-Evan Phoenix <evan@phx.io> (@evanphx)
 SHIBATA Hiroshi <hsbt@ruby-lang.org> (@hsbt)
-André Arko <andre@arko.net> (@indirect)
-Samuel Giddins <segiddins@segiddins.me> (@segiddins)
-David Rodríguez <deivid.rodriguez@riseup.net> (@deivid-rodriguez)

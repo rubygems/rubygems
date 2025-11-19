@@ -103,12 +103,11 @@ class Release
     private
 
     def bundler_version
-      v = if version.segments[0] >= 4
-        version
+      if version.segments[0] >= 4
+        version.to_s.gsub(/([a-z])\.(\d)/i, '\1\2')
       else
         version.segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")
       end
-      v.to_s.gsub(/([a-z])\.(\d)/i, '\1\2')
     end
   end
 
@@ -133,7 +132,6 @@ class Release
     else
       segments.map.with_index {|s, i| i == 0 ? s + 1 : s }.join(".")
     end
-    rubygems_version.gsub(/([a-z])\.(\d)/i, '\1\2')
 
     release = new(rubygems_version)
     release.set_bundler_as_current_library
@@ -165,7 +163,7 @@ class Release
     rubygems_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
     @rubygems = Rubygems.new(rubygems_version, @stable_branch)
 
-    bundler_version = if segments[0] == 4
+    bundler_version = if segments[0] >= 4
       segments.join(".")
     else
       segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")

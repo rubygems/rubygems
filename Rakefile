@@ -186,11 +186,7 @@ end
 desc "Release rubygems-#{v}"
 task release: :prerelease do
   Rake::Task["package"].invoke
-  if ENV["DRYRUN"]
-    puts "DRYRUN mode: skipping push gem to rubygems.org"
-  else
-    sh "gem push pkg/rubygems-update-#{v}.gem"
-  end
+  sh "gem", "push", "pkg/rubygems-update-#{v}.gem", noop: ENV["DRYRUN"]
   Rake::Task["postrelease"].invoke
 end
 

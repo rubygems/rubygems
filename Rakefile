@@ -265,7 +265,7 @@ task :upload do
     puts "DRYRUN mode: skipping upload to GitHub and S3"
   else
     Rake::Task["upload_to_github"].invoke
-    Rake::Task["upload_to_s3"].invoke unless Gem::Specification.load("rubygems-update.gemspec").version.prerelease?
+    Rake::Task["upload_to_s3"].invoke
   end
 end
 

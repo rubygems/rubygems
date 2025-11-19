@@ -156,7 +156,7 @@ class Release
 
     @stable_branch = segments[0, 2].join(".")
     @previous_stable_branch = @level == :minor_or_major ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
-    @previous_stable_branch = "3.7" if @stable_branch == '4.0'
+    @previous_stable_branch = "3.7" if @stable_branch == "4.0"
 
     rubygems_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
     @rubygems = Rubygems.new(rubygems_version, @stable_branch)

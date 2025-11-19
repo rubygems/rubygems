@@ -103,7 +103,12 @@ class Release
     private
 
     def bundler_version
-      version.segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")
+      v = if version.segments[0] >= 4
+        version
+      else
+        version.segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")
+      end
+      v.to_s.gsub(/([a-z])\.(\d)/i, '\1\2')
     end
   end
 
@@ -122,7 +127,13 @@ class Release
   end
 
   def self.for_bundler(version)
-    rubygems_version = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }.join(".")
+    segments = Gem::Version.new(version).segments
+    rubygems_version = if segments[0] >= 4
+      segments.join(".")
+    else
+      segments.map.with_index {|s, i| i == 0 ? s + 1 : s }.join(".")
+    end
+    rubygems_version.gsub(/([a-z])\.(\d)/i, '\1\2')
 
     release = new(rubygems_version)
     release.set_bundler_as_current_library
@@ -145,11 +156,18 @@ class Release
 
     @stable_branch = segments[0, 2].join(".")
     @previous_stable_branch = @level == :minor_or_major ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
+    @previous_stable_branch = "3.7" if @stable_branch == '4.0'
 
-    rubygems_version = segments.join(".")
+    rubygems_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
     @rubygems = Rubygems.new(rubygems_version, @stable_branch)
 
-    bundler_version = segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")
+    bundler_version = if segments[0] == 4
+      segments.join(".")
+    else
+      segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")
+    end
+    bundler_version = bundler_version.gsub(/([a-z])\.(\d)/i, '\1\2')
+
     @bundler = Bundler.new(bundler_version, @stable_branch)
 
     @release_branch = "release/bundler_#{bundler_version}_rubygems_#{rubygems_version}"

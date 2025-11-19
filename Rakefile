@@ -286,8 +286,8 @@ namespace "guides" do
     lib_dir = File.join Dir.pwd, "lib"
 
     chdir "tmp/guides.rubygems.org" do
-      ruby "-I", lib_dir, "-S", "rake", "command_guide"
-      ruby "-I", lib_dir, "-S", "rake", "spec_guide"
+      ruby "-I", lib_dir, "-S", "rake", "-N", "command_guide"
+      ruby "-I", lib_dir, "-S", "rake", "-N", "spec_guide"
     end
   end
 

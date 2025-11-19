@@ -256,7 +256,10 @@ task :upload_to_s3 do
 end
 
 desc "Upload release to rubygems.org"
-task upload: %w[upload_to_github upload_to_s3]
+task :upload do
+  Rake::Task["upload_to_github"].invoke
+  Rake::Task["upload_to_s3"].invoke unless Gem::Specification.load("rubygems-update.gemspec").version.prerelease?
+end
 
 directory "tmp/guides.rubygems.org" do
   sh "git", "clone",

@@ -40,10 +40,14 @@ class Release
     def create_for_github!
       tag = "#{@tag_prefix}#{@version}"
 
-      gh_client.create_release "ruby/rubygems", tag, name: tag,
-                                                     body: @changelog.release_notes.join("\n").strip,
-                                                     prerelease: @version.prerelease?,
-                                                     target_commitish: @stable_branch
+      options = {
+        name: tag,
+        body: @changelog.release_notes.join("\n").strip,
+        prerelease: @version.prerelease?
+      }
+      options[:target_commitish] = @stable_branch unless @version.prerelease?
+
+      gh_client.create_release "ruby/rubygems", tag, **options
     end
 
     def previous_version

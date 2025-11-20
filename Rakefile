@@ -374,7 +374,8 @@ namespace "blog" do
     email = `git config --get user.email`.strip
 
     require_relative "tool/changelog"
-    history = Changelog.for_rubygems(v.to_s)
+    rubygems_history = Changelog.for_rubygems(v.to_s)
+    bundler_history = Changelog.for_bundler(v.to_s)
 
     require "tempfile"
 
@@ -387,15 +388,27 @@ author: #{name}
 author_email: #{email}
 ---
 
-RubyGems #{v} includes #{history.change_types_for_blog}.
+RubyGems #{v} includes #{rubygems_history.change_types_for_blog} and Bundler #{v} includes #{bundler_history.change_types_for_blog}.
 
 To update to the latest RubyGems you can run:
 
-    gem update --system
+    gem update --system [--pre]
+
+To update to the latest Bundler you can run:
+
+    gem install bundler [--pre]
+
+## RubyGems Release Notes
+
+#{rubygems_history.release_notes_for_blog.join("\n")}
+
+## Bundler Release Notes
+
+#{bundler_history.release_notes_for_blog.join("\n")}
+
+## Manual Installation
 
 To install RubyGems by hand see the [Download RubyGems][download] page.
-
-#{history.release_notes_for_blog.join("\n")}
 
 SHA256 Checksums:
 

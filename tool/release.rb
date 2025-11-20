@@ -43,7 +43,7 @@ class Release
       options = {
         name: tag,
         body: @changelog.release_notes.join("\n").strip,
-        prerelease: @version.prerelease?
+        prerelease: @version.prerelease?,
       }
       options[:target_commitish] = @stable_branch unless @version.prerelease?
 

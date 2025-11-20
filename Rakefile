@@ -260,6 +260,7 @@ task :upload do
   if ENV["DRYRUN"]
     puts "DRYRUN mode: skipping upload to GitHub and S3"
   else
+    Rake::Task["check_release_preparations"].invoke
     Rake::Task["upload_to_github"].invoke
     Rake::Task["upload_to_s3"].invoke
   end
@@ -593,6 +594,16 @@ task :check_rubygems_integration do
   sh("ruby -Ilib -S gem install psych:5.1.1 psych:5.1.2 rdoc && ruby -Ibundler/lib -rrdoc/task -rbundler/rubygems_ext -e1")
 end
 
+desc "Check release preparations"
+task :check_release_preparations do
+  %w[AWS_PROFILE GITHUB_RELEASE_PAT].each do |env_var|
+    if ENV[env_var].nil? || ENV[env_var] == ""
+      puts "Environment variable #{env_var} is not set"
+      raise unless ENV["DRYRUN"]
+    end
+  end
+end
+
 namespace :man do
   if RUBY_ENGINE == "jruby"
     task(:build) {}
@@ -677,7 +688,7 @@ namespace :bundler do
   end
 
   desc "Push to rubygems.org"
-  task "release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "bundler:release:github"]
+  task "release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "check_release_preparations", "bundler:release:github"]
 
   desc "Generates the Bundler changelog for a specific target version"
   task :generate_changelog, [:version] => [:install_release_dependencies] do |_t, opts|

@@ -1,5 +1,78 @@
 # Changelog
 
+## 4.0.0.beta1 (2025-11-20)
+
+### Security:
+
+  - Bump up vendored URI to 1.0.4 [#9031](https://github.com/ruby/rubygems/pull/9031)
+
+### Breaking changes:
+
+  - Fix triple spacing when generating lockfile [#9076](https://github.com/ruby/rubygems/pull/9076)
+  - Hide patchlevel from lockfile [#7772](https://github.com/ruby/rubygems/pull/7772)
+  - Remove `bundler_4_mode` [#9038](https://github.com/ruby/rubygems/pull/9038)
+  - Pick and add extra changes for 4.0.0 version [#9018](https://github.com/ruby/rubygems/pull/9018)
+  - Replaced Bundler::SharedHelpers.major_deprecation to feature_removed! or feature_deprecated! [#9016](https://github.com/ruby/rubygems/pull/9016)
+  - Removed legacy_check option from SpecSet#for [#9015](https://github.com/ruby/rubygems/pull/9015)
+  - Removed deprecated legacy windows platform support [#9013](https://github.com/ruby/rubygems/pull/9013)
+  - Make update_requires_all_flag to settings [#9011](https://github.com/ruby/rubygems/pull/9011)
+  - Make default cli command settings [#9010](https://github.com/ruby/rubygems/pull/9010)
+  - Make global_gem_cache flag to settings [#9009](https://github.com/ruby/rubygems/pull/9009)
+  - Consolidate removal of `Bundler.rubygems.all_specs` [#9008](https://github.com/ruby/rubygems/pull/9008)
+  - Consolidate removal of `Bundler::SpecSet#-` and `Bundler::SpecSet#<<` [#9007](https://github.com/ruby/rubygems/pull/9007)
+  - Replaced Bundler.feature_flag.plugins? to Bundler.settings [#9006](https://github.com/ruby/rubygems/pull/9006)
+  - Switch to 4.0.0.dev in development version [#9002](https://github.com/ruby/rubygems/pull/9002)
+  - Make `bundle show --outdated` raise an error [#8980](https://github.com/ruby/rubygems/pull/8980)
+  - Make `--local-git` flag to `bundle plugin install` raise an error [#8979](https://github.com/ruby/rubygems/pull/8979)
+  - Switch `cache_all` to be `true` by default [#8975](https://github.com/ruby/rubygems/pull/8975)
+  - Completely forbid passing `--ext` to `bundle gem` without a value [#8976](https://github.com/ruby/rubygems/pull/8976)
+  - Switch `lockfile_checksums` to be `true` by default [#8981](https://github.com/ruby/rubygems/pull/8981)
+  - Make `bundle install --binstubs` raise an error [#8978](https://github.com/ruby/rubygems/pull/8978)
+  - Make `bundle remove --install` raise an error [#8977](https://github.com/ruby/rubygems/pull/8977)
+  - Remove support for multiple global sources in Gemfile & lockfile [#8968](https://github.com/ruby/rubygems/pull/8968)
+  - Remove `allow_offline_install` setting [#8969](https://github.com/ruby/rubygems/pull/8969)
+  - Completely remove `--rubocop` flag to `bundle gem`, and related configuration [#8967](https://github.com/ruby/rubygems/pull/8967)
+  - Completely remove all remembered CLI flags [#8958](https://github.com/ruby/rubygems/pull/8958)
+  - Remove implementation of `deployment`, `capistrano` and `vlad` entrypoints [#8957](https://github.com/ruby/rubygems/pull/8957)
+  - Remove deprecated `Bundler.*clean*`, and `Bundler.environment` helpers [#8924](https://github.com/ruby/rubygems/pull/8924)
+  - Remove deprecated `bundle viz` and `bundle inject` commands [#8923](https://github.com/ruby/rubygems/pull/8923)
+  - Removed to workaround for Bundler 2.2 [#8903](https://github.com/ruby/rubygems/pull/8903)
+
+### Features:
+
+  - Update Bundler::CurrentRuby::ALL_RUBY_VERSIONS [#9058](https://github.com/ruby/rubygems/pull/9058)
+  - Introduce `bundle list --format=json` [#8728](https://github.com/ruby/rubygems/pull/8728)
+
+### Performance:
+
+  - Replace instance method look up in plugin installer [#9094](https://github.com/ruby/rubygems/pull/9094)
+  - Adjust the API_REQUEST_LIMIT to make less network roundtrip [#9071](https://github.com/ruby/rubygems/pull/9071)
+
+### Enhancements:
+
+  - Use DidYouMean::SpellChecker for gem suggestions in Bundler [#3857](https://github.com/ruby/rubygems/pull/3857)
+  - Update all vendored libraries to latest version [#9089](https://github.com/ruby/rubygems/pull/9089)
+  - We don't need to allow some warning now [#9074](https://github.com/ruby/rubygems/pull/9074)
+  - Shell out fewer times [#9068](https://github.com/ruby/rubygems/pull/9068)
+  - Build gems directly instead of shelling out [#9053](https://github.com/ruby/rubygems/pull/9053)
+  - Support to embedded Pathname [#9056](https://github.com/ruby/rubygems/pull/9056)
+  - Forcely activate irb when running with bundle console [#9033](https://github.com/ruby/rubygems/pull/9033)
+  - Update Magnus version in Rust extension gem template [#9025](https://github.com/ruby/rubygems/pull/9025)
+  - Postpone to remove legacy mingw platform [#9023](https://github.com/ruby/rubygems/pull/9023)
+  - Add checksum of gems hosted on private servers: [#9004](https://github.com/ruby/rubygems/pull/9004)
+  - Loading support on Windows [#8254](https://github.com/ruby/rubygems/pull/8254)
+
+### Bug fixes:
+
+  - Fix `bundle install` when the Gemfile contains "install_if" git gems: [#8992](https://github.com/ruby/rubygems/pull/8992)
+  - Fix installation issue related to path sources and precompiled gems [#8973](https://github.com/ruby/rubygems/pull/8973)
+  - Fix outdated lockfile during `bundle lock` when source changes [#8962](https://github.com/ruby/rubygems/pull/8962)
+  - Raise error on missing version file [#8963](https://github.com/ruby/rubygems/pull/8963)
+
+### Documentation:
+
+  - Small clarifications to Bundler 4 upgrade docs [#8964](https://github.com/ruby/rubygems/pull/8964)
+
 ## 2.7.2 (2025-09-09)
 
 ### Enhancements:

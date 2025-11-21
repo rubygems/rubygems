@@ -244,7 +244,6 @@ module Bundler
           begin
             File.delete(path)
           rescue Errno::ENOENT
-            nil
           end
         end
       end

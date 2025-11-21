@@ -314,7 +314,12 @@ class Release
   end
 
   def scan_unreleased_pull_requests(ids)
-    ids.map {|id| gh_client.pull_request("ruby/rubygems", id) }
+    pulls = []
+    ids.each do |id|
+      pull = gh_client.pull_request("ruby/rubygems", id)
+      pulls << pull if pull.merged_at
+    end
+    pulls
   end
 
   def unreleased_pr_ids

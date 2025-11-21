@@ -322,16 +322,30 @@ class Release
   end
 
   def unreleased_pr_ids
-    # TODO: This algorithm support only works with tag to tag range.
-    # We need to reduce the number of API calls for the first beta release like 4.1.0.beta1.
-
     previous_release_tag = `git describe --tags --abbrev=0`.strip
 
-    commits = `git log --format=%H #{previous_release_tag}..HEAD`.split("\n")
+    commits = `git log --format=%h #{previous_release_tag}..HEAD`.split("\n")
 
-    pr_ids = commits.flat_map do |commit|
-      result = `gh search prs --repo ruby/rubygems #{commit} --json number --jq '.[].number'`.strip
-      result.empty? ? [] : result.split("\n").map(&:to_i)
-    end.to_set.to_a
+    # GitHub search API has a rate limit of 30 requests per minute for authenticated users
+    rate_limit = 28
+    # GitHub search API only accepts 250 characters per search query
+    batch_size = 15
+    sleep_duration = 60 # seconds
+
+    pr_ids = Set.new
+
+    commits.each_slice(batch_size).with_index do |batch, index|
+      result = `gh search prs --repo ruby/rubygems #{batch.join(",")} --json number --jq '.[].number'`.strip
+      unless result.empty?
+        result.split("\n").each { |pr_number| pr_ids.add(pr_number.to_i) }
+      end
+
+      if index % rate_limit == 1
+        puts "Sleeping for #{sleep_duration} seconds to avoid rate limiting..."
+        sleep(sleep_duration)
+      end
+    end
+
+    pr_ids.to_a
   end
 end

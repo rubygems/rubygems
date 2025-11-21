@@ -160,10 +160,6 @@ class Release
     @previous_stable_branch = @level == :minor_or_major ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
     @previous_stable_branch = "3.7" if @stable_branch == "4.0"
 
-    if segments.size == 5 && segments[4] > 1
-      @previous_prerelease = "#{segments[0]}.#{segments[1]}.#{segments[2]}.#{segments[3]}.#{segments[4] - 1}"
-    end
-
     rubygems_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
     @rubygems = Rubygems.new(rubygems_version, @stable_branch)
 
@@ -326,18 +322,16 @@ class Release
   end
 
   def unreleased_pr_ids
-    stable_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@previous_stable_branch}`.split("\n")
-    prerelease_merge_commit_messages = []
-    if @previous_prerelease
-      prerelease_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@previous_stable_branch}..#{@previous_prerelease}`.split("\n")
-    end
+    # TODO: This algorithm support only works with tag to tag range.
+    # We need to reduce the number of API calls for the first beta release like 4.1.0.beta1.
 
-    `git log --oneline --grep "^Merge pull request #" origin/master`.split("\n").filter_map do |l|
-      _sha, message = l.split(/\s/, 2)
+    previous_release_tag = `git describe --tags --abbrev=0`.strip
 
-      next if stable_merge_commit_messages.include?(message) || prerelease_merge_commit_messages.include?(message)
+    commits = `git log --format=%H #{previous_release_tag}..HEAD`.split("\n")
 
-      /^Merge pull request #(\d+)/.match(message)[1].to_i
-    end
+    pr_ids = commits.flat_map do |commit|
+      result = `gh search prs --repo ruby/rubygems #{commit} --json number --jq '.[].number'`.strip
+      result.empty? ? [] : result.split("\n").map(&:to_i)
+    end.to_set.to_a
   end
 end

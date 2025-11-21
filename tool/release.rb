@@ -160,6 +160,12 @@ class Release
     @previous_stable_branch = @level == :minor_or_major ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
     @previous_stable_branch = "3.7" if @stable_branch == "4.0"
 
+    @previous_release_tag = if @level == :minor_or_major
+       "v#{@previous_stable_branch}.0"
+    else
+      `git describe --tags --abbrev=0`.strip
+    end
+
     rubygems_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
     @rubygems = Rubygems.new(rubygems_version, @stable_branch)
 
@@ -322,9 +328,7 @@ class Release
   end
 
   def unreleased_pr_ids
-    previous_release_tag = `git describe --tags --abbrev=0`.strip
-
-    commits = `git log --format=%h #{previous_release_tag}..HEAD`.split("\n")
+    commits = `git log --format=%h #{@previous_release_tag}..HEAD`.split("\n")
 
     # GitHub search API has a rate limit of 30 requests per minute for authenticated users
     rate_limit = 28
@@ -335,12 +339,13 @@ class Release
     pr_ids = Set.new
 
     commits.each_slice(batch_size).with_index do |batch, index|
+      puts "Processing batch #{index + 1}/#{(commits.size / batch_size.to_f).ceil}"
       result = `gh search prs --repo ruby/rubygems #{batch.join(",")} --json number --jq '.[].number'`.strip
       unless result.empty?
         result.split("\n").each { |pr_number| pr_ids.add(pr_number.to_i) }
       end
 
-      if index % rate_limit == 1
+      if index != 0 && index % rate_limit == 0
         puts "Sleeping for #{sleep_duration} seconds to avoid rate limiting..."
         sleep(sleep_duration)
       end

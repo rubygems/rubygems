@@ -161,7 +161,7 @@ class Release
     @previous_stable_branch = "3.7" if @stable_branch == "4.0"
 
     @previous_release_tag = if @level == :minor_or_major
-       "v#{@previous_stable_branch}.0"
+      "v#{@previous_stable_branch}.0"
     else
       `git describe --tags --abbrev=0`.strip
     end
@@ -314,7 +314,7 @@ class Release
   end
 
   def scan_unreleased_pull_requests(ids)
-    ids.map{|id| gh_client.pull_request("ruby/rubygems", id) }
+    ids.map {|id| gh_client.pull_request("ruby/rubygems", id) }
   end
 
   def unreleased_pr_ids
@@ -332,7 +332,7 @@ class Release
       puts "Processing batch #{index + 1}/#{(commits.size / batch_size.to_f).ceil}"
       result = `gh search prs --repo ruby/rubygems #{batch.join(",")} --json number --jq '.[].number'`.strip
       unless result.empty?
-        result.split("\n").each { |pr_number| pr_ids.add(pr_number.to_i) }
+        result.split("\n").each {|pr_number| pr_ids.add(pr_number.to_i) }
       end
 
       if index != 0 && index % rate_limit == 0

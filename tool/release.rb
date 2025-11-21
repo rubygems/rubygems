@@ -314,17 +314,7 @@ class Release
   end
 
   def scan_unreleased_pull_requests(ids)
-    pulls = gh_client.pull_requests("ruby/rubygems", sort: :updated, state: :closed, direction: :desc)
-
-    loop do
-      pulls.select! {|pull| ids.include?(pull.number) }
-
-      break if (pulls.map(&:number) & ids).to_set == ids.to_set
-
-      pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
-    end
-
-    pulls
+    ids.map{|id| gh_client.pull_request("ruby/rubygems", id) }
   end
 
   def unreleased_pr_ids

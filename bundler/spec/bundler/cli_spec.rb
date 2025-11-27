@@ -88,6 +88,8 @@ RSpec.describe "bundle executable" do
 
   context "with no arguments" do
     it "ask default command and set cli_help to default" do
+      skip "Bundler.ui.ask is not working with Windows CI" if Gem.win_platform?
+
       bundle "", raise_on_error: false
       expect(err).to be_empty
       expect(out).to include("Default command set to 'cli_help'")

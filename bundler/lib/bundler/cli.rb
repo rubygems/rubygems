@@ -126,14 +126,18 @@ module Bundler
       default_cli_command = Bundler.settings[:default_cli_command]
       return default_cli_command if default_cli_command
 
-      Bundler.ui.warn(<<~MSG)
+      Bundler.ui.info(<<~MSG)
         In the next version of Bundler, running `bundle` without argument will no longer run `bundle install`.
         Instead, the `help` command will be displayed.
-
-        If you'd like to keep the previous behaviour please run `bundle config set default_cli_command install --global`.
       MSG
 
-      "install"
+      result = Bundler.ui.ask "What default command would you like to use when running `bundle`? (install or cli_help):"
+      choice = /^(install|cli_help)$/.match?(result) ? result : "cli_help"
+
+      Bundler.settings.set_global("default_cli_command", choice)
+      Bundler.ui.info "Default command set to '#{choice}'"
+
+      choice
     end
 
     class_option "no-color", type: :boolean, desc: "Disable colorization in output"

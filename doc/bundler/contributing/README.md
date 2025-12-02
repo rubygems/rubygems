@@ -22,7 +22,3 @@ Here are the different ways you can start contributing to the Bundler project:
 * [Triaging bugs](BUG_TRIAGE.md)
 * [Writing documentation](../documentation/WRITING.md)
 * [Community engagement](COMMUNITY.md)
-
-## Supporting Bundler
-
-RubyGems is managed by [Ruby Central](https://rubycentral.org), a non-profit organization that supports the Ruby community through projects like this one, as well as [RubyConf](https://rubyconf.org), [RailsConf](https://railsconf.org), and [RubyGems.org](https://rubygems.org). You can support Ruby Central by attending or [sponsoring](sponsors@rubycentral.org) a conference, or by [joining as a supporting member](https://rubycentral.org/#/portal/signup).

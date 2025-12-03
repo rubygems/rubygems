@@ -45,7 +45,7 @@ RSpec.describe Bundler::Source::Rubygems do
     end
   end
 
-  describe "log debug information" do
+  describe "log timing information" do
     it "log the time spent downloading and installing a gem" do
       build_repo2 do
         build_gem "warning"
@@ -56,7 +56,7 @@ RSpec.describe Bundler::Source::Rubygems do
         gem "warning"
       G
 
-      stdout = install_gemfile(gemfile_content, env: { "DEBUG" => "1" })
+      stdout = install_gemfile(gemfile_content)
 
       expect(stdout).to match(/Downloaded warning in: \d+\.\d+s/)
       expect(stdout).to match(/Installed warning in: \d+\.\d+s/)

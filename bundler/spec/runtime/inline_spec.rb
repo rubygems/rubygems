@@ -108,7 +108,7 @@ RSpec.describe "bundler/inline#gemfile" do
       end
     RUBY
 
-    expect(out).to eq("CONFIRMED!\nCONFIRMED!")
+    expect(out).to eq("CONFIRMED!\nCONFIRMED!\nCONFIRMED!\nCONFIRMED!")
   end
 
   it "has an option for quiet installation" do

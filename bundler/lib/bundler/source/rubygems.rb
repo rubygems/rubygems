@@ -211,11 +211,9 @@ module Bundler
         message += " with native extensions" if spec.extensions.any?
         Bundler.ui.confirm message
 
-        installed_spec = nil
-
-        Gem.time("Installed #{spec.name} in", 0, true) do
-          installed_spec = installer.install
-        end
+        start_time = Time.now
+        installed_spec = installer.install
+        Bundler.ui.confirm "Installed #{spec.name} in: #{format("%.3f", Time.now - start_time)}s"
 
         spec.full_gem_path = installed_spec.full_gem_path
         spec.loaded_from = installed_spec.loaded_from
@@ -483,9 +481,9 @@ module Bundler
         Bundler.ui.confirm("Fetching #{version_message(spec, previous_spec)}")
         gem_remote_fetcher = remote_fetchers.fetch(spec.remote).gem_remote_fetcher
 
-        Gem.time("Downloaded #{spec.name} in", 0, true) do
-          Bundler.rubygems.download_gem(spec, uri, download_cache_path, gem_remote_fetcher)
-        end
+        start_time = Time.now
+        Bundler.rubygems.download_gem(spec, uri, download_cache_path, gem_remote_fetcher)
+        Bundler.ui.confirm "Downloaded #{spec.name} in: #{format("%.3f", Time.now - start_time)}s"
       end
 
       # Returns the global cache path of the calling Rubygems::Source object.

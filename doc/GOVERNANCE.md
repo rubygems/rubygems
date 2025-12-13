@@ -1,4 +1,4 @@
-#  Governance of`ruby/rubygems`
+#  Governance of `ruby/rubygems`
 
 The objective of this document is to provide a minimum version of Governance and plan for a more comprehensive iteration later. Governance is **“a well-defined set of norms, written down.”** We intentionally minimize legalistic language and expect this document to be treated as a tool for understanding and collaboration, and not a “point of order” procedural technicalities.
 

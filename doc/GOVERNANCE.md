@@ -55,7 +55,7 @@ Team memberships are not mutually exclusive.
 
 ## Access Team (`access`)
 
-The access team controls the mechanisms by which other teams have capabilities. i.e. they can give someone commit permissions on GitHub or [owner/deploy permissions on RubyGems.org](https://rubygems.org/gems/bundler).
+The access team controls the mechanisms by which other teams have capabilities. i.e. they can give someone commit permissions on GitHub or owner/deploy permissions on RubyGems.org (e.g. https://rubygems.org/gems/bundler or https://rubygems.org/gems/rubygems-update).
 
 The access team members do not need to be members of another team (i.e. someone can have “access” abilities but not be on “core”). By default, those who have the capability to change permissions should NOT assume they can perform the actions themselves. I.e. Just because you can give someone a commit bit, does not mean you have permission to commit freely to that project (unless otherwise stated via appropriate team membership).
 

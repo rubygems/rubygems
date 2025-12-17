@@ -40,17 +40,6 @@ releases will only support Ruby 2.3 and above. As of this writing RubyGems is
 at version 2.7, so when RubyGems 2.8 is released, it will only support Ruby
 2.3 and later.
 
-## Committer Access
-
-RubyGems committers may lose their commit privileges if they are inactive for
-longer than 12 months. Committer permission may be restored upon request by
-having a pull request merged.
-
-This is designed to improve the maintainability of RubyGems by requiring
-committers to maintain familiarity with RubyGems activity and to improve the
-security of RubyGems by preventing idle committers from having their commit
-permissions compromised or exposed.
-
 ## Changing These Policies
 
 These policies were set in order to reduce the burden of maintenance and to keep

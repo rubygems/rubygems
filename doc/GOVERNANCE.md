@@ -83,7 +83,7 @@ The security team is expected to advise on sensitive requests such as CVE report
 
 ## Core Team (`core`)
 
-The core team determines the project's vision. This is achieved by mentoring other teams and advising them. Core team members must show a history of sustained contributions prior to being considered for the `core` team. A core member may override a decision about a feature or breaking change made by a `committer` team member. This should be done explicitly, in public, with a sufficient justification stated.
+The core team determines the project's vision. This is achieved by mentoring other teams and advising them. Core team members must show a history of sustained contributions prior to being considered for the `core` team. A core member may override a decision about a feature or breaking change made by a `committer` team member. This should be done explicitly, in public (i.e. on the issue or PR), with a sufficient justification stated.
 
 Core team members are expected to mentor and grow the committer base in quality and quantity.
 

@@ -228,10 +228,6 @@ You can use `i` command instead of `install`.
       rescue Gem::InstallError => e
         alert_error "Error installing #{gem_name}:\n\t#{e.message}"
         exit_code |= 1
-      rescue Gem::GemNotFoundException => e
-        show_lookup_failure e.name, e.version, e.errors, suppress_suggestions
-
-        exit_code |= 2
       rescue Gem::UnsatisfiableDependencyError => e
         show_lookup_failure e.name, e.version, e.errors, suppress_suggestions,
                             "'#{gem_name}' (#{gem_version})"
@@ -247,11 +243,7 @@ You can use `i` command instead of `install`.
   # Loads post-install hooks
 
   def load_hooks # :nodoc:
-    if options[:install_as_default]
-      require_relative "../install_default_message"
-    else
-      require_relative "../install_message"
-    end
+    require_relative "../install_message"
     require_relative "../rdoc"
   end
 

@@ -2,21 +2,23 @@ name: weekly-update
 
 on:
   schedule:
-    - cron: '0 0 * * 0'
+    - cron: 0 0 * * 0
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   weekly_update:
     name: Rubygems weekly update
     runs-on: ${{ matrix.os }}
-    if: github.repository == 'rubygems/rubygems'
+    if: github.repository == 'ruby/rubygems'
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-24.04]
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Config git
         run: |
@@ -24,7 +26,9 @@ jobs:
           git config --global user.email license.update@rubygems.org
           git config --global push.autoSetupRemote true
 
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: true
 
       - name: Check versions
         run: |

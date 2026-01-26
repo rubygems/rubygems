@@ -23,7 +23,13 @@ module Bundler
       #   specified must match the version.
 
       @versions = Array(versions).map do |v|
-        op, v = Gem::Requirement.parse(normalize_version(v))
+        normalized_v = normalize_version(v)
+
+        unless Gem::Requirement::PATTERN.match?(normalized_v)
+          raise InvalidArgumentError, "#{v} is not a valid requirement on the Ruby version"
+        end
+
+        op, v = Gem::Requirement.parse(normalized_v)
         op == "=" ? v.to_s : "#{op} #{v}"
       end
 
@@ -37,7 +43,6 @@ module Bundler
 
     def to_s(versions = self.versions)
       output = String.new("ruby #{versions_string(versions)}")
-      output << "p#{patchlevel}" if patchlevel && patchlevel != "-1"
       output << " (#{engine} #{versions_string(engine_versions)})" unless engine == "ruby"
 
       output
@@ -66,8 +71,7 @@ module Bundler
     def ==(other)
       versions == other.versions &&
         engine == other.engine &&
-        engine_versions == other.engine_versions &&
-        patchlevel == other.patchlevel
+        engine_versions == other.engine_versions
     end
 
     def host

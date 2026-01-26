@@ -1,0 +1,7 @@
+> GET /info/action_text-trix
+> accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+> accept: */*
+> user-agent: bundler/4.1.0.dev rubygems/4.1.0.dev ruby/4.1.0.dev (arm64-apple-darwin25) command/lock options/frozen 2903e3f7845945cb
+> connection: keep-alive
+> keep-alive: 30
+> host: index.rubygems.org

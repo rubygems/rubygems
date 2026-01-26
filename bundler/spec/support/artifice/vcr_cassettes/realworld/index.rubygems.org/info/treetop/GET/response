@@ -1,29 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 4217
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "263b5393c022b2c4378359e1efb6705d"
-last-modified: Mon, 14 Dec 2020 17:16:42 GMT
+content-length: 4799
+last-modified: Wed, 12 Nov 2025 22:13:00 GMT
+etag: "20a6025c22ab9e90bc3ef604294fea33"
 cache-control: max-age=60, public
-x-request-id: 152c215e-1b82-44c8-b32f-68a2019f470c
-x-runtime: 0.007735
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.88.209.40:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="N2bl8rmu06HstONIN0GNYbAV4OrivPIlDPj4X2U3zyc="
+repr-digest: sha-256="N2bl8rmu06HstONIN0GNYbAV4OrivPIlDPj4X2U3zyc="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300038_BFI 167.82.143.38:443
 accept-ranges: bytes
-date: Mon, 25 Oct 2021 23:17:32 GMT
-via: 1.1 varnish
-age: 2585
-x-served-by: cache-fra19178-FRA
-x-cache: HIT
-x-cache-hits: 5
-x-timer: S1635203853.866289,VS0,VE0
-vary: Accept,Accept-Encoding,Fastly-SSL
+date: Mon, 05 Jan 2026 06:53:48 GMT
+age: 2198
+x-served-by: cache-bfi-krnt7300038-BFI, cache-tyo11961-TYO
+x-cache: HIT, HIT
+x-cache-hits: 58287, 6
+x-timer: S1767596028.283447,VS0,VE0
 server: RubyGems.org
 
 ---
@@ -68,3 +60,9 @@ server: RubyGems.org
 1.6.9 polyglot:~> 0.3|checksum:6da18fd1662a66de69f75c16e6356f35f0b371e5fe5acd6c92b021287668b369
 1.6.10 polyglot:~> 0.3|checksum:67df9f52c5fdeb7b2b8ce42156f9d019c1c4eb643481a68149ff6c0b65bc613c
 1.6.11 polyglot:~> 0.3|checksum:102e13adf065fc916eae60b9539a76101902a56e4283c847468eaea9c2c72719
+1.6.12 polyglot:~> 0.3|checksum:ed48add684a2d7a8fd6e3b8b027d8ee5983b50977ae691913131a24f1746ac29
+1.6.14 polyglot:~> 0.3|checksum:ba31d1911ce53dbc68208b9e6b421d48d16bfc99551e5efb5bc71bbc8fc7aed4
+1.6.15 polyglot:~> 0.3|checksum:4bb879f65c53877a04be3824a346f0de6ca92aa8890bfae613d1bdd9ad7f455b
+1.6.16 polyglot:~> 0.3|checksum:93ced961d854131a968215c19feebbe2483bcaad8ae1bf3c643e2f91c6c45117
+1.6.17 polyglot:~> 0.3|checksum:7f52b5ffad949c974be091efb96d814a7c7a008e55e81d93bf267a73b62d2ca5
+1.6.18 polyglot:~> 0.3|checksum:a3043f32f1c652aa2abdf3a3848edb2d2f69897257af2675516ac61355c183da

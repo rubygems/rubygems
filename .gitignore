@@ -7,9 +7,10 @@
 /.rvmrc
 /.envrc
 /TAGS
-/doc
+/rdoc
 /misc
 /notes.txt
 /pkg
-/tmp
+tmp
 /coverage
+/.venv

@@ -1,0 +1,20 @@
+diff --git a/lib/rubygems/vendor/timeout/lib/timeout.rb b/lib/rubygems/vendor/timeout/lib/timeout.rb
+index cc5d05ce670..455c504f470 100644
+--- a/lib/rubygems/vendor/timeout/lib/timeout.rb
++++ b/lib/rubygems/vendor/timeout/lib/timeout.rb
+@@ -1,5 +1,5 @@
+ # frozen_string_literal: true
+-# Gem::Timeout long-running blocks
++# Timeout long-running blocks
+ #
+ # == Synopsis
+ #
+@@ -166,7 +166,7 @@ def self.ensure_timeout_thread_created
+   # a module method, so you can call it directly as Gem::Timeout.timeout().
+   def timeout(sec, klass = nil, message = nil, &block)   #:yield: +sec+
+     return yield(sec) if sec == nil or sec.zero?
+-    raise ArgumentError, "Gem::Timeout sec must be a non-negative number" if 0 > sec
++    raise ArgumentError, "Timeout sec must be a non-negative number" if 0 > sec
+ 
+     message ||= "execution expired"
+ 

@@ -1,30 +1,21 @@
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 2077
-content-type: text/plain; charset=utf-8
-x-frame-options: SAMEORIGIN
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-x-download-options: noopen
-x-permitted-cross-domain-policies: none
-referrer-policy: strict-origin-when-cross-origin
-etag: "2790c88c2df21905d5519dc5581898bc"
-last-modified: Wed, 01 Sep 2021 09:02:20 GMT
+content-length: 2158
+last-modified: Tue, 23 Dec 2025 06:55:48 GMT
+etag: "f9441e126f35ee570da7e0a1c5d0322f"
 cache-control: max-age=60, public
-content-security-policy: default-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://secure.gaug.es https://gravatar.com https://secure.gravatar.com https://*.fastly-insights.com; object-src 'none'; script-src 'self' https://secure.gaug.es https://www.fastly-insights.com; style-src 'self' https://fonts.googleapis.com; connect-src 'self' https://s3-us-west-2.amazonaws.com/rubygems-dumps/ https://*.fastly-insights.com https://fastly-insights.com https://api.github.com; form-action 'self'; frame-ancestors 'self'
-x-request-id: 571f0a57-f107-4d4f-8acb-911269bf3807
-x-runtime: 0.008752
-strict-transport-security: max-age=31536000
-x-backend: F_Rails 52.26.151.153:443
+content-type: text/plain; charset=utf-8
+digest: sha-256="Mow2EiWtGHh5qf7LJ4fEgtBN7HqoIL/O4RlGIsVzNbM="
+repr-digest: sha-256="Mow2EiWtGHh5qf7LJ4fEgtBN7HqoIL/O4RlGIsVzNbM="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400115_BFI 167.82.142.115:443
 accept-ranges: bytes
-date: Tue, 27 Dec 2022 11:25:35 GMT
-via: 1.1 varnish
-age: 1847
-x-served-by: cache-mad22087-MAD
-x-cache: HIT
-x-cache-hits: 1
-x-timer: S1672140336.989361,VS0,VE1
-vary: Accept,Accept-Encoding
+date: Mon, 05 Jan 2026 06:53:54 GMT
+age: 3403
+x-served-by: cache-bfi-kbfi7400115-BFI, cache-tyo11976-TYO
+x-cache: HIT, HIT
+x-cache-hits: 135497, 10
+x-timer: S1767596035.716418,VS0,VE0
 server: RubyGems.org
 
 ---
@@ -51,3 +42,4 @@ server: RubyGems.org
 0.6.0-java |checksum:1e32c24d78af96e8e16a9c0f114ab91d6289b7c3f54366ac806ee921d6e57cc1
 0.7.0 |checksum:176ab661633ed25a11a415a745cd82957eaa6eed414aec3327809ae848300af6
 0.8.0 |checksum:5a0932f1fa82ce08a8516a2685d5a86031c000560f89946913c555a0697544be
+0.8.1 |checksum:9ae8df145b39aa5398b2f90090d651c67bd8e2ebfe4507c966579f641e11097a

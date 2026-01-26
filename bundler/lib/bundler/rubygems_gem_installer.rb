@@ -23,7 +23,9 @@ module Bundler
         FileUtils.mkdir_p gem_dir, mode: 0o755
       end
 
-      extract_files
+      SharedHelpers.filesystem_access(gem_dir, :write) do
+        extract_files
+      end
 
       build_extensions if spec.extensions.any?
       write_build_info_file
@@ -67,7 +69,7 @@ module Bundler
     end
 
     def generate_plugins
-      return unless Gem::Installer.instance_methods(false).include?(:generate_plugins)
+      return unless Gem::Installer.method_defined?(:generate_plugins, false)
 
       latest = Gem::Specification.stubs_for(spec.name).first
       return if latest && latest.version > spec.version
@@ -81,11 +83,11 @@ module Bundler
       end
     end
 
-    if Bundler.rubygems.provides?("< 3.5.15")
+    if Bundler.rubygems.provides?("< 3.5.19")
       def generate_bin_script(filename, bindir)
         bin_script_path = File.join bindir, formatted_program_filename(filename)
 
-        Gem.open_file_with_flock("#{bin_script_path}.lock") do
+        Gem.open_file_with_lock(bin_script_path) do
           require "fileutils"
           FileUtils.rm_f bin_script_path # prior install may have been --no-wrappers
 
@@ -99,6 +101,10 @@ module Bundler
 
         generate_windows_script filename, bindir
       end
+    end
+
+    def build_jobs
+      Bundler.settings[:jobs] || super
     end
 
     def build_extensions
@@ -145,17 +151,17 @@ module Bundler
       SharedHelpers.filesystem_access(extension_dir, :create) do
         FileUtils.mkdir_p extension_dir
       end
-      require "shellwords" unless Bundler.rubygems.provides?(">= 3.2.25")
     end
 
     def strict_rm_rf(dir)
       return unless File.exist?(dir)
+      return if Dir.empty?(dir)
 
       parent = File.dirname(dir)
       parent_st = File.stat(parent)
 
       if parent_st.world_writable? && !parent_st.sticky?
-        raise InsecureInstallPathError.new(parent)
+        raise InsecureInstallPathError.new(spec.full_name, dir)
       end
 
       begin

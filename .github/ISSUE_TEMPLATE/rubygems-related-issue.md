@@ -10,7 +10,7 @@ assignees: ''
 <!--
 
 Thank you for contributing to the
-[rubygems](https://github.com/rubygems/rubygems) repository, and specifically to
+[rubygems](https://github.com/ruby/rubygems) repository, and specifically to
 [RubyGems](https://guides.rubygems.org/).
 
 -->

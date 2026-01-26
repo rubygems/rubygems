@@ -77,13 +77,7 @@ class Changelog
   end
 
   def release_notes_for_blog
-    release_notes.map do |line|
-      if change_types.include?(line)
-        "_#{line}_"
-      else
-        line
-      end
-    end
+    release_notes
   end
 
   def change_types_for_blog
@@ -105,6 +99,8 @@ class Changelog
 
   def cut!(previous_version, included_pull_requests, extra_entry: nil)
     full_new_changelog = [
+      "# Changelog",
+      "",
       format_header,
       "",
       unreleased_notes_for(included_pull_requests, extra_entry: extra_entry),

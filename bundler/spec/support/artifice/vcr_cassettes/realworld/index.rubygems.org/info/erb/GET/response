@@ -1,0 +1,55 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 3448
+last-modified: Mon, 15 Dec 2025 17:16:02 GMT
+etag: "5b52251a9c4096b0a30a158721496801"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="AR16jXlQiIJ0MhBNCwXwb/KR6vSyRZDpRFbp4u3IVNQ="
+repr-digest: sha-256="AR16jXlQiIJ0MhBNCwXwb/KR6vSyRZDpRFbp4u3IVNQ="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_krnt7300052_BFI 167.82.143.52:443
+accept-ranges: bytes
+date: Mon, 05 Jan 2026 06:53:49 GMT
+age: 2245
+x-served-by: cache-bfi-krnt7300052-BFI, cache-tyo11971-TYO
+x-cache: HIT, HIT
+x-cache-hits: 178042, 8
+x-timer: S1767596030.744566,VS0,VE0
+server: RubyGems.org
+
+---
+2.2.0 |checksum:d84b98f8cd3b3c31cec4525a49207aa00932b4a59a3ad60340f903fc8877438c,ruby:>= 2.3.0
+2.2.1 cgi:>= 0|checksum:520b7e2ac5a8d8d9a432ee5735b66027ea5a4c406e38c98abdb19db5136df8a8,ruby:>= 2.3.0
+2.2.2 cgi:>= 0|checksum:d7ad86810b71e121c91b3a97c49ebaa23cab468191554d95bddd7f42251cb673,ruby:>= 2.3.0
+2.2.3 cgi:>= 0|checksum:cbc18b3745fa1794d245db2e64731c681704f350f89eca725275b62075b84f3b,ruby:>= 2.5.0
+3.0.0 cgi:>= 0.3.3|checksum:a2be3904bdb0ab7b6f446fdf2d5ca2c4b7d4bc12933e766fd19df95cb00c1ccc,ruby:>= 2.7.0
+4.0.0 cgi:>= 0.3.3|checksum:de0295ae1b4d391890bbbb0571729f7e8b5be45f3613d18ced61f087f38add5b,ruby:>= 2.7.0
+4.0.1 cgi:>= 0.3.3|checksum:aca6d6282f10dd86f4063d55c13f11335086a10be8824ef405ddfae1672fcde2,ruby:>= 2.7.0
+4.0.1-java cgi:>= 0.3.3|checksum:aa3f51b50526fe7195fe7068f8425609cbec9a2985e19ba02583427bd6954b95,ruby:>= 2.5.0
+4.0.2-java cgi:>= 0.3.3|checksum:fb84b31bf8763121bf5c6e4418eba66d866912bfcdf630a37c28f2a4c99c446b,ruby:>= 2.5.0
+4.0.2 cgi:>= 0.3.3|checksum:14b80d33dcc52720dec1d9240667ae27c71e677205b4eb4f9563761645e5e599,ruby:>= 2.7.0
+4.0.3 cgi:>= 0.3.3|checksum:351a013ffee7e4e40b593df76dd4d0b2bd612e14dbff1d66273221d0cff6a49a,ruby:>= 2.7.0
+4.0.3-java cgi:>= 0.3.3|checksum:892557f80ee5f9b7caa7c7ac447c98fa868c9f4ca91c33b46a5cc3b92bcc9c20,ruby:>= 2.5.0
+4.0.4 cgi:>= 0.3.3|checksum:de116e106205c46bc01918789b611aaad1328dcc6e9f12cf8cd2cc60ef619717,ruby:>= 2.7.0
+4.0.4-java cgi:>= 0.3.3|checksum:3767088f230194a84316a5879f0c3dc5f2a96fb1c9a198c3e27d3f35d416c597,ruby:>= 2.5.0
+5.0.0 |checksum:234fc1acc30b4d63120afec562102034e1d437dab1527f167ca119076b02a5ae,ruby:>= 3.2.0
+5.0.0-java |checksum:c2eade2d5d36db0824e01ae4d67c384707eab7ef423ef964d1a13c85162f1737,ruby:>= 3.2.0
+5.0.1 |checksum:760439803b36cc93eca8a266aab614614e588024a89bc30a62e78d98ff452c23,ruby:>= 3.2.0
+5.0.1-java |checksum:7f1793bbee2bea4d634d60271617bd408263af0587602a64313df05f630c6579,ruby:>= 3.2.0
+5.0.2 |checksum:d30f258143d4300fb4ecf430042ac12970c9bb4b33c974a545b8f58c1ec26c0f,ruby:>= 3.2.0
+5.0.2-java |checksum:d000d963afebc166ec7f2499b2b3198d526790cf962c37514d7a85843a60423c,ruby:>= 3.2.0
+5.0.3 |checksum:a3b6eb7a1b1dfaa7567a503bb70bd5d4c2279644b4bad660cd9201fa05e43775,ruby:>= 3.2.0
+5.0.3-java |checksum:c3c85db235874fb936aff88e18d29dbee7ff621034b0134787dbb596891649e0,ruby:>= 3.2.0
+5.1.0 |checksum:51cb21c742e834ffb615988305b51d2bdf6bf6e710c4894ac29e38b13aa38708,ruby:>= 3.2.0
+5.1.0-java |checksum:49fc014b14dcbca1cf46739db34436ab614a265ec0ba4c8526750d43cd355350,ruby:>= 3.2.0
+5.1.1 |checksum:b2c26e7924551d9efbae998e17ddbef220937b6422b1d2ec7ae71417b5a1f4ec,ruby:>= 3.2.0
+5.1.1-java |checksum:e77b7e3f5057f8a529d6563a6e544ab9896a84bc799def28ca876b32912a43d8,ruby:>= 3.2.0
+5.1.2 |checksum:f6dd90a10fb9caefb370a555fb6cfba0b1af9997bfc96a4493ec83c1759c03d1,ruby:>= 3.2.0
+5.1.3 |checksum:566e53057b6ba48699f824b578473b391fa8aef100aa14afad1c46725fae0e67,ruby:>= 3.2.0
+5.1.2-java |checksum:e0aab9a46232b7c0e16517dd825ea6739d780545cd4fea1bbac26766d64d3ec6,ruby:>= 3.2.0
+5.1.3-java |checksum:ee38dbaf7bd3c4a9b67ea51cc0b5ca8debd8223009cecac9918aa017fcdc8581,ruby:>= 3.2.0
+6.0.0 |checksum:2730893f9d8c9733f16cab315a4e4b71c1afa9cabc1a1e7ad1403feba8f52579,ruby:>= 3.2.0
+6.0.0-java |checksum:6537c84b596d889c4e20d87da41b38664e79bfe0af812ba7ea2a82a7ebf0ed62,ruby:>= 3.2.0
+6.0.1 |checksum:28ecdd99c5472aebd5674d6061e3c6b0a45c049578b071e5a52c2a7f13c197e5,ruby:>= 3.2.0
+6.0.1-java |checksum:5c6b8d885fb0220d4a8ad158f70430d805845939dd44827e5130ef7fdbaed8ba,ruby:>= 3.2.0

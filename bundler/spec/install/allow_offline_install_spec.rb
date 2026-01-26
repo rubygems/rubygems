@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "bundle install with :allow_offline_install" do
-  before do
-    bundle "config set allow_offline_install true"
-  end
-
+RSpec.describe "bundle install allows offline install" do
   context "with no cached data locally" do
     it "still installs" do
       install_gemfile <<-G, artifice: "compact_index"
@@ -43,7 +39,7 @@ RSpec.describe "bundle install with :allow_offline_install" do
       G
 
       bundle :update, artifice: "fail", all: true
-      expect(last_command.stdboth).to include "Using the cached data for the new index because of a network error"
+      expect(stdboth).to include "Using the cached data for the new index because of a network error"
 
       expect(the_bundle).to include_gems("myrack-obama 1.0", "myrack 1.0.0")
     end
@@ -53,10 +49,10 @@ RSpec.describe "bundle install with :allow_offline_install" do
       File.open(tmp("broken_path/git"), "w", 0o755) do |f|
         f.puts <<~RUBY
           #!/usr/bin/env ruby
-          fetch_args = %w(fetch --force --quiet)
+          fetch_args = %w(fetch --force --quiet --no-tags)
           clone_args = %w(clone --bare --no-hardlinks --quiet)
 
-          if (fetch_args.-(ARGV).empty? || clone_args.-(ARGV).empty?) && ARGV.any? {|arg| arg.start_with?("file://") }
+          if (fetch_args.-(ARGV).empty? || clone_args.-(ARGV).empty?) && File.exist?(ARGV[ARGV.index("--") + 1])
             warn "git remote ops have been disabled"
             exit 1
           end

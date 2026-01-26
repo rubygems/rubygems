@@ -40,10 +40,14 @@ class Release
     def create_for_github!
       tag = "#{@tag_prefix}#{@version}"
 
-      gh_client.create_release "rubygems/rubygems", tag, name: tag,
-                                                         body: @changelog.release_notes.join("\n").strip,
-                                                         prerelease: @version.prerelease?,
-                                                         target_commitish: @stable_branch
+      options = {
+        name: tag,
+        body: @changelog.release_notes.join("\n").strip,
+        prerelease: @version.prerelease?,
+      }
+      options[:target_commitish] = @stable_branch unless @version.prerelease?
+
+      gh_client.create_release "ruby/rubygems", tag, **options
     end
 
     def previous_version
@@ -51,7 +55,7 @@ class Release
     end
 
     def latest_release
-      @latest_release ||= gh_client.releases("rubygems/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.max_by do |release|
+      @latest_release ||= gh_client.releases("ruby/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.max_by do |release|
         Gem::Version.new(remove_tag_prefix(release.tag_name))
       end
     end
@@ -92,18 +96,12 @@ class Release
       @version = Gem::Version.new(version)
       @stable_branch = stable_branch
       @changelog = Changelog.for_rubygems(version)
-      @version_files = [File.expand_path("../lib/rubygems.rb", __dir__), File.expand_path("../rubygems-update.gemspec", __dir__)]
+      @version_files = [File.expand_path("../lib/rubygems.rb", __dir__)]
       @tag_prefix = "v"
     end
 
     def extra_entry
-      "Installs bundler #{bundler_version} as a default gem"
-    end
-
-    private
-
-    def bundler_version
-      version.segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")
+      "Installs bundler #{@version} as a default gem"
     end
   end
 
@@ -111,20 +109,18 @@ class Release
 
   def self.install_dependencies!
     system(
-      "ruby",
-      "-I",
-      File.expand_path("../lib", __dir__),
-      File.expand_path("../bundler/spec/support/bundle.rb", __dir__),
+      { "RUBYOPT" => "-I#{File.expand_path("../lib", __dir__)}" },
+      File.expand_path("../bundler/bin/bundle", __dir__),
       "install",
       "--gemfile=#{File.expand_path("bundler/release_gems.rb", __dir__)}",
       exception: true
     )
+
+    Gem.clear_paths
   end
 
   def self.for_bundler(version)
-    rubygems_version = Gem::Version.new(version).segments.map.with_index {|s, i| i == 0 ? s + 1 : s }.join(".")
-
-    release = new(rubygems_version)
+    release = new(version)
     release.set_bundler_as_current_library
     release
   end
@@ -142,17 +138,29 @@ class Release
     segments = Gem::Version.new(version).segments
 
     @level = segments[2] != 0 ? :patch : :minor_or_major
+    @prerelease = segments.size > 3
 
     @stable_branch = segments[0, 2].join(".")
     @previous_stable_branch = @level == :minor_or_major ? "#{segments[0]}.#{segments[1] - 1}" : @stable_branch
+    @previous_stable_branch = "3.7" if @stable_branch == "4.0"
 
-    rubygems_version = segments.join(".")
+    @previous_release_tag = if @level == :minor_or_major
+      if @prerelease
+        `git describe --tags --abbrev=0`.strip
+      else
+        "v#{@previous_stable_branch}.0"
+      end
+    else
+      "v#{@stable_branch}.0"
+    end
+
+    rubygems_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
     @rubygems = Rubygems.new(rubygems_version, @stable_branch)
 
-    bundler_version = segments.map.with_index {|s, i| i == 0 ? s - 1 : s }.join(".")
+    bundler_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
     @bundler = Bundler.new(bundler_version, @stable_branch)
 
-    @release_branch = "release/bundler_#{bundler_version}_rubygems_#{rubygems_version}"
+    @release_branch = "release/#{version}"
   end
 
   def set_bundler_as_current_library
@@ -166,11 +174,17 @@ class Release
   def prepare!
     initial_branch = `git rev-parse --abbrev-ref HEAD`.strip
 
-    create_if_not_exist_and_switch_to(@stable_branch, from: "master")
+    unless @prerelease
+      create_if_not_exist_and_switch_to(@stable_branch, from: "master")
+      system("git", "push", "origin", @stable_branch, exception: true) if @level == :minor_or_major && !ENV["DRYRUN"]
+    end
 
-    system("git", "push", "origin", @stable_branch, exception: true) if @level == :minor_or_major
-
-    create_if_not_exist_and_switch_to(@release_branch, from: @stable_branch)
+    from_branch = if @level == :minor_or_major && @prerelease
+      "master"
+    else
+      @stable_branch
+    end
+    create_if_not_exist_and_switch_to(@release_branch, from: from_branch)
 
     begin
       @bundler.set_relevant_pull_requests_from(unreleased_pull_requests)
@@ -180,33 +194,35 @@ class Release
 
       bundler_changelog, rubygems_changelog = cut_changelogs_and_bump_versions
 
-      system("git", "push", exception: true)
+      system("git", "push", exception: true) unless ENV["DRYRUN"]
 
       gh_client.create_pull_request(
-        "rubygems/rubygems",
-        @stable_branch,
+        "ruby/rubygems",
+        from_branch,
         @release_branch,
         "Prepare RubyGems #{@rubygems.version} and Bundler #{@bundler.version}",
         "It's release day!"
-      )
+      ) unless ENV["DRYRUN"]
 
-      create_if_not_exist_and_switch_to("cherry_pick_changelogs", from: "master")
+      unless @prerelease
+        create_if_not_exist_and_switch_to("cherry_pick_changelogs", from: "master")
 
-      begin
-        system("git", "cherry-pick", bundler_changelog, rubygems_changelog, exception: true)
-        system("git", "push", exception: true)
-      rescue StandardError
-        system("git", "cherry-pick", "--abort")
-      else
-        gh_client.create_pull_request(
-          "rubygems/rubygems",
-          "master",
-          "cherry_pick_changelogs",
-          "Changelogs for RubyGems #{@rubygems.version} and Bundler #{@bundler.version}",
-          "Cherry-picking change logs from future RubyGems #{@rubygems.version} and Bundler #{@bundler.version} into master."
-        )
+        begin
+          system("git", "cherry-pick", bundler_changelog, rubygems_changelog, exception: true)
+          system("git", "push", exception: true) unless ENV["DRYRUN"]
+        rescue StandardError
+          system("git", "cherry-pick", "--abort")
+        else
+          gh_client.create_pull_request(
+            "ruby/rubygems",
+            "master",
+            "cherry_pick_changelogs",
+            "Changelogs for RubyGems #{@rubygems.version} and Bundler #{@bundler.version}",
+            "Cherry-picking change logs from future RubyGems #{@rubygems.version} and Bundler #{@bundler.version} into master."
+          ) unless ENV["DRYRUN"]
+        end
       end
-    rescue StandardError
+    rescue StandardError, LoadError
       system("git", "checkout", initial_branch)
       raise
     end
@@ -250,7 +266,7 @@ class Release
     bundler_changelog = `git show --no-patch --pretty=format:%h`
 
     @bundler.bump_versions!
-    system("rake", "version:update_locked_bundler", exception: true)
+    system("bin/rake", "version:update_locked_bundler", exception: true)
     system("git", "commit", "-am", "Bump Bundler version to #{@bundler.version}", exception: true)
 
     @rubygems.cut_changelog!
@@ -287,29 +303,52 @@ class Release
     @unreleased_pull_requests ||= scan_unreleased_pull_requests(unreleased_pr_ids)
   end
 
-  def scan_unreleased_pull_requests(ids)
-    pulls = gh_client.pull_requests("rubygems/rubygems", sort: :updated, state: :closed, direction: :desc)
-
-    loop do
-      pulls.select! {|pull| ids.include?(pull.number) }
-
-      break if (pulls.map(&:number) & ids).to_set == ids.to_set
-
-      pulls.concat gh_client.get(gh_client.last_response.rels[:next].href)
+  def released_pull_requests
+    commits = `git log --oneline --grep "^Merge pull request #" #{@previous_release_tag}..#{@stable_branch}`.split("\n")
+    commits.filter_map do |commit|
+      match = commit.match(/Merge pull request #(\d+) from /)
+      match[1].to_i if match
     end
+  end
 
+  def scan_unreleased_pull_requests(ids)
+    pulls = []
+    ids.each do |id|
+      pull = gh_client.pull_request("ruby/rubygems", id)
+      pulls << pull if pull.merged_at
+    end
     pulls
   end
 
   def unreleased_pr_ids
-    stable_merge_commit_messages = `git log --format=%s --grep "^Merge pull request #" #{@previous_stable_branch}`.split("\n")
+    head = @level == :minor_or_major ? "HEAD" : "master"
+    commits = `git log --format=%h #{@previous_release_tag}..#{head}`.split("\n")
 
-    `git log --oneline --grep "^Merge pull request #" origin/master`.split("\n").map do |l|
-      _sha, message = l.split(/\s/, 2)
+    # GitHub search API has a rate limit of 30 requests per minute for authenticated users
+    rate_limit = 28
+    # GitHub search API only accepts 250 characters per search query
+    batch_size = 15
+    sleep_duration = 60 # seconds
 
-      next if stable_merge_commit_messages.include?(message)
+    pr_ids = Set.new
 
-      /^Merge pull request #(\d+)/.match(message)[1].to_i
-    end.compact
+    commits.each_slice(batch_size).with_index do |batch, index|
+      puts "Processing batch #{index + 1}/#{(commits.size / batch_size.to_f).ceil}"
+      result = `gh search prs --repo ruby/rubygems #{batch.join(",")} --json number --jq '.[].number'`.strip
+      unless result.empty?
+        result.split("\n").each do |pr_number|
+          pr_id = pr_number.to_i
+          next if @level == :patch && released_pull_requests.include?(pr_id)
+          pr_ids.add(pr_id)
+        end
+      end
+
+      if index != 0 && index % rate_limit == 0
+        puts "Sleeping for #{sleep_duration} seconds to avoid rate limiting..."
+        sleep(sleep_duration)
+      end
+    end
+
+    pr_ids.to_a
   end
 end

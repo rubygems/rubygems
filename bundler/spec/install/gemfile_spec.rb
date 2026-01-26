@@ -27,6 +27,35 @@ RSpec.describe "bundle install" do
       ENV["BUNDLE_GEMFILE"] = "NotGemfile"
       expect(the_bundle).to include_gems "myrack 1.0.0"
     end
+
+    it "respects lockfile and BUNDLE_LOCKFILE" do
+      gemfile bundled_app("NotGemfile"), <<-G
+        lockfile "ReallyNotGemfile.lock"
+        source "https://gem.repo1"
+        gem 'myrack'
+      G
+
+      bundle :install, gemfile: bundled_app("NotGemfile")
+
+      ENV["BUNDLE_GEMFILE"] = "NotGemfile"
+      ENV["BUNDLE_LOCKFILE"] = "ReallyNotGemfile.lock"
+      expect(the_bundle).to include_gems "myrack 1.0.0"
+    end
+
+    it "respects BUNDLE_LOCKFILE during bundle install" do
+      ENV["BUNDLE_LOCKFILE"] = "ReallyNotGemfile.lock"
+
+      gemfile bundled_app("NotGemfile"), <<-G
+        source "https://gem.repo1"
+        gem 'myrack'
+      G
+
+      bundle :install, gemfile: bundled_app("NotGemfile")
+      expect(bundled_app("ReallyNotGemfile.lock")).to exist
+
+      ENV["BUNDLE_GEMFILE"] = "NotGemfile"
+      expect(the_bundle).to include_gems "myrack 1.0.0"
+    end
   end
 
   context "with gemfile set via config" do
@@ -53,16 +82,61 @@ RSpec.describe "bundle install" do
     end
   end
 
-  context "with deprecated features" do
-    it "reports that lib is an invalid option" do
-      gemfile <<-G
-        source "https://gem.repo1"
+  it "reports that lib is an invalid option" do
+    gemfile <<-G
+      source "https://gem.repo1"
 
-        gem "myrack", :lib => "myrack"
-      G
+      gem "myrack", :lib => "myrack"
+    G
 
-      bundle :install, raise_on_error: false
-      expect(err).to match(/You passed :lib as an option for gem 'myrack', but it is invalid/)
+    bundle :install, raise_on_error: false
+    expect(err).to match(/You passed :lib as an option for gem 'myrack', but it is invalid/)
+  end
+
+  it "reports that type is an invalid option" do
+    gemfile <<-G
+      source "https://gem.repo1"
+
+      gem "myrack", :type => "development"
+    G
+
+    bundle :install, raise_on_error: false
+    expect(err).to match(/You passed :type as an option for gem 'myrack', but it is invalid/)
+  end
+
+  it "reports that gemfile is an invalid option" do
+    gemfile <<-G
+      source "https://gem.repo1"
+
+      gem "myrack", :gemfile => "foo"
+    G
+
+    bundle :install, raise_on_error: false
+    expect(err).to match(/You passed :gemfile as an option for gem 'myrack', but it is invalid/)
+  end
+
+  context "when an internal error happens" do
+    let(:bundler_bug) do
+      create_file("bundler_bug.rb", <<~RUBY)
+        require "bundler"
+
+        module Bundler
+          class Dsl
+            def source(source, *args, &blk)
+              nil.name
+            end
+          end
+        end
+      RUBY
+
+      bundled_app("bundler_bug.rb").to_s
+    end
+
+    it "shows culprit file and line" do
+      skip "ruby-core test setup has always \"lib\" in $LOAD_PATH so `require \"bundler\"` always activates the local version rather than using RubyGems gem activation stuff, causing conflicts" if ruby_core?
+
+      install_gemfile "source 'https://gem.repo1'", requires: [bundler_bug], artifice: nil, raise_on_error: false
+      expect(err).to include("bundler_bug.rb:6")
     end
   end
 

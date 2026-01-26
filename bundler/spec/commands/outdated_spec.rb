@@ -151,72 +151,6 @@ RSpec.describe "bundle outdated" do
     end
   end
 
-  describe "with multiple, duplicated sources, with lockfile in old format", bundler: "< 3" do
-    before do
-      build_repo2 do
-        build_gem "dotenv", "2.7.6"
-
-        build_gem "oj", "3.11.3"
-        build_gem "oj", "3.11.5"
-
-        build_gem "vcr", "6.0.0"
-      end
-
-      build_repo3 do
-        build_gem "pkg-gem-flowbyte-with-dep", "1.0.0" do |s|
-          s.add_dependency "oj"
-        end
-      end
-
-      gemfile <<~G
-        source "https://gem.repo2"
-
-        gem "dotenv"
-
-        source "https://gem.repo3" do
-          gem 'pkg-gem-flowbyte-with-dep'
-        end
-
-        gem "vcr",source: "https://gem.repo2"
-      G
-
-      lockfile <<~L
-        GEM
-          remote: https://gem.repo2/
-          remote: https://gem.repo3/
-          specs:
-            dotenv (2.7.6)
-            oj (3.11.3)
-            pkg-gem-flowbyte-with-dep (1.0.0)
-              oj
-            vcr (6.0.0)
-
-        PLATFORMS
-          #{local_platform}
-
-        DEPENDENCIES
-          dotenv
-          pkg-gem-flowbyte-with-dep!
-          vcr!
-
-        BUNDLED WITH
-           #{Bundler::VERSION}
-      L
-    end
-
-    it "works" do
-      bundle :install, artifice: "compact_index"
-      bundle :outdated, artifice: "compact_index", raise_on_error: false
-
-      expected_output = <<~TABLE
-        Gem  Current  Latest  Requested  Groups
-        oj   3.11.3   3.11.5
-      TABLE
-
-      expect(out).to include(expected_output.strip)
-    end
-  end
-
   describe "with --group option" do
     before do
       build_repo2 do
@@ -248,6 +182,14 @@ RSpec.describe "bundle outdated" do
 
     it "works when the bundle is up to date" do
       bundle "outdated --group"
+      expect(out).to end_with("Bundle up to date!")
+    end
+
+    it "works when only out of date gems are not in given group" do
+      update_repo2 do
+        build_gem "terranova", "9"
+      end
+      bundle "outdated --group development"
       expect(out).to end_with("Bundle up to date!")
     end
 
@@ -409,7 +351,7 @@ RSpec.describe "bundle outdated" do
     end
 
     it "doesn't hit repo2" do
-      FileUtils.rm_rf(gem_repo2)
+      FileUtils.rm_r(gem_repo2)
 
       bundle "outdated --local"
       expect(out).not_to match(/Fetching (gem|version|dependency) metadata from/)
@@ -438,18 +380,39 @@ RSpec.describe "bundle outdated" do
         G
       end
 
-      it "outputs a sorted list of outdated gems with a more minimal format" do
+      it "outputs a sorted list of outdated gems with a more minimal format to stdout" do
         minimal_output = "activesupport (newest 3.0, installed 2.3.5, requested = 2.3.5)\n" \
                          "weakling (newest 0.2, installed 0.0.3, requested ~> 0.0.1)"
         subject
         expect(out).to eq(minimal_output)
       end
+
+      it "outputs progress to stderr" do
+        subject
+        expect(err).to include("Fetching gem metadata")
+      end
     end
 
     context "and no gems are outdated" do
-      it "has empty output" do
+      before do
+        build_repo2 do
+          build_gem "activesupport", "3.0"
+        end
+
+        install_gemfile <<-G
+          source "https://gem.repo2"
+          gem "activesupport", "3.0"
+        G
+      end
+
+      it "does not output to stdout" do
         subject
         expect(out).to be_empty
+      end
+
+      it "outputs progress to stderr" do
+        subject
+        expect(err).to include("Fetching gem metadata")
       end
     end
   end
@@ -496,6 +459,44 @@ RSpec.describe "bundle outdated" do
       TABLE
 
       expect(out).to match(Regexp.new(expected_output))
+    end
+
+    it "does not require gems to be installed" do
+      build_repo4 do
+        build_gem "zeitwerk", "1.0.0"
+        build_gem "zeitwerk", "2.0.0"
+      end
+
+      gemfile <<-G
+        source "https://gem.repo4"
+        gem "zeitwerk"
+      G
+
+      lockfile <<~L
+        GEM
+          remote: https://gem.repo4/
+          specs:
+            zeitwerk (1.0.0)
+
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+          zeitwerk
+
+        BUNDLED WITH
+          #{Bundler::VERSION}
+      L
+
+      bundle "outdated zeitwerk", raise_on_error: false
+
+      expected_output = <<~TABLE.tr(".", "\.").strip
+        Gem       Current  Latest  Requested  Groups
+        zeitwerk  1.0.0    2.0.0   >= 0       default
+      TABLE
+
+      expect(out).to match(Regexp.new(expected_output))
+      expect(err).to be_empty
     end
   end
 
@@ -752,7 +753,7 @@ RSpec.describe "bundle outdated" do
     expect(out).to include("Installing foo 1.0")
   end
 
-  context "after bundle install --deployment", bundler: "< 3" do
+  context "in deployment mode" do
     before do
       build_repo2
 
@@ -763,7 +764,7 @@ RSpec.describe "bundle outdated" do
         gem "foo"
       G
       bundle :lock
-      bundle :install, deployment: true
+      bundle "config deployment true"
     end
 
     it "outputs a helpful message about being in deployment mode" do
@@ -907,7 +908,7 @@ RSpec.describe "bundle outdated" do
         gem "terranova", '8'
       G
 
-      simulate_new_machine
+      pristine_system_gems
 
       update_git "foo", path: lib_path("foo")
       update_repo2 do
@@ -1296,7 +1297,7 @@ RSpec.describe "bundle outdated" do
           nokogiri
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
 
       gemfile <<-G
@@ -1350,7 +1351,7 @@ RSpec.describe "bundle outdated" do
           mini_portile2
 
         BUNDLED WITH
-           #{Bundler::VERSION}
+          #{Bundler::VERSION}
       L
     end
 

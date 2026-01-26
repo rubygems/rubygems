@@ -32,4 +32,9 @@ class TestGemSourceInstalled < Gem::TestCase
     assert_equal(1, vendor.<=>(installed), "vendor <=> installed")
     assert_equal(-1, installed.<=>(vendor), "installed <=> vendor")
   end
+
+  def test_pretty_print
+    local = Gem::Source::Installed.new
+    assert_equal "#<Gem::Source::Installed[Installed]>", local.pretty_inspect.gsub(/\s+/, " ").strip
+  end
 end

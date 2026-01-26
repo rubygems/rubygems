@@ -7,7 +7,7 @@
 # See LICENSE.txt for permissions.
 #++
 
-abort "RubyGems only supports Ruby 3.0 or higher" if RUBY_VERSION < "3.0.0"
+abort "RubyGems only supports Ruby 3.2 or higher" if RUBY_VERSION < "3.2.0"
 
 # Make sure rubygems isn't already loaded.
 if ENV["RUBYOPT"] || defined? Gem
@@ -24,6 +24,7 @@ Dir.chdir __dir__
 $:.unshift File.expand_path("lib")
 require "rubygems"
 require "rubygems/gem_runner"
+require "securerandom"
 
 Gem::CommandManager.instance.register_command :setup
 

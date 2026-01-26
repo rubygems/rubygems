@@ -1,0 +1,26 @@
+HTTP/1.1 200 OK
+connection: keep-alive
+content-length: 565
+last-modified: Sat, 27 Dec 2025 09:04:13 GMT
+etag: "b0c2a7a09f34337794266c545e108b4d"
+cache-control: max-age=60, public
+content-type: text/plain; charset=utf-8
+digest: sha-256="nOp0tEnKvlbInTw+riZzSnH+VI085RvN3eKXYmN52BM="
+repr-digest: sha-256="nOp0tEnKvlbInTw+riZzSnH+VI085RvN3eKXYmN52BM="
+via: 1.1 varnish, 1.1 varnish
+x-backend: fastlyshield--shield_ssl_cache_bfi_kbfi7400065_BFI 167.82.142.65:443
+accept-ranges: bytes
+date: Mon, 05 Jan 2026 06:53:54 GMT
+age: 2895
+x-served-by: cache-bfi-kbfi7400065-BFI, cache-tyo11978-TYO
+x-cache: HIT, HIT
+x-cache-hits: 85413, 4
+x-timer: S1767596035.632719,VS0,VE0
+server: RubyGems.org
+
+---
+0.1.0 faraday:< 3&>= 2|checksum:da7f3f7b08feb093bba1259b3104f5b70a88e14767947c01f0dc0b7e12242f59,ruby:< 4&>= 2.6
+0.2.0 faraday:< 3&>= 2|checksum:2b5c6212588fd49cad5cf7d6da196f1d8aa8a2ffb3ede71853f845b9fdcb1832,ruby:< 4&>= 2.6
+0.3.0 faraday:< 3&>= 1|checksum:d92d975635e2c7fe525dd494fcd4b9bb7f0a4a0ec0d5f4c15c729530fdb807f9,ruby:< 4&>= 2.6
+0.4.0 faraday:< 3&>= 1|checksum:d3fa1118ab1350e24035a272b4cff64948643bb7182846db89acaf87abadd5d9,ruby:< 4&>= 2.6
+0.5.0 faraday:< 3&>= 1|checksum:5cde93c894b30943a5d2b93c2fe9284216a6b756f7af406a1e55f211d97d10ad,ruby:>= 2.6

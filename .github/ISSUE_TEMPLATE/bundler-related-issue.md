@@ -9,15 +9,9 @@ assignees: ''
 
 <!--
 
-Thank you for contributing to the [rubygems](https://github.com/rubygems/rubygems) repository, and specifically to the [Bundler](https://bundler.io/) gem.
+Thank you for contributing to the rubygems) repository, and specifically to the Bundler gem.
 
-Sometimes you can find a solution to your issue by reading some documentation.
-
-* Instructions for common Bundler uses can be found on the [Bundler documentation site](https://bundler.io/).
-* Detailed information about each Bundler command, including help with common problems, can be found in the [Bundler man pages](https://bundler.io/man/bundle.1.html) or [Bundler Command Line Reference](https://bundler.io/commands.html).
-* We also have a document detailing solutions to common problems: https://github.com/rubygems/rubygems/blob/master/bundler/doc/TROUBLESHOOTING.md.
-
-If you're still stuck, please fill in the following sections so we can process your issue as fast as possible:
+Please fill in the following sections so we can process your issue as fast as possible
 
 -->
 
@@ -53,7 +47,7 @@ Fill this with a list of steps maintainers can follow to reproduce your issue. N
 
 The more complete the steps to simulate your particular environment are, the easier it will be for maintainers to reproduce your issue on their machines.
 
-Ideally, we recommend you set up the list of steps as a [Dockerfile](https://docs.docker.com/get-started/). A Dockerfile provides a neutral environment that should give the same results, no matter where it's run.
+Ideally, we recommend you set up the list of steps as a Dockerfile. A Dockerfile provides a neutral environment that should give the same results, no matter where it's run.
 
 -->
 
@@ -65,9 +59,11 @@ Ideally, we recommend you set up the list of steps as a [Dockerfile](https://doc
 
 <!-- Replace this with the results you expected before running the command. -->
 
-### What actually happened?
+### What happened instead?
 
-<!-- Replace this with the actual result you got. Paste the output of your command here. -->
+````
+Replace this with the actual result you got. Paste the output of your command here.
+````
 
 ### If not included with the output of your command, run `bundle env` and paste the output below
 

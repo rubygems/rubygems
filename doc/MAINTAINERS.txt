@@ -1,0 +1,1 @@
+SHIBATA Hiroshi <hsbt@ruby-lang.org> (@hsbt)

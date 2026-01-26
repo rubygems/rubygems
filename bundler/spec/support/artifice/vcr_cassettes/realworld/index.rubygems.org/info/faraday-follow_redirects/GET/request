@@ -1,0 +1,7 @@
+> GET /info/faraday-follow_redirects
+> accept-encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+> accept: */*
+> user-agent: bundler/4.1.0.dev rubygems/4.1.0.dev ruby/4.1.0.dev (arm64-apple-darwin25) command/lock options/frozen 2d52ed98a541a8ee
+> connection: keep-alive
+> keep-alive: 30
+> host: index.rubygems.org

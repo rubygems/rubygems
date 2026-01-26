@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "benchmark"
 require_relative "helper"
 require "date"
 require "pathname"
@@ -17,7 +16,7 @@ rubygems_version: "1.0"
 name: keyedlist
 version: !ruby/object:Gem::Version
   version: 0.4.0
-date: 2004-03-28 15:37:49.828000 +02:00
+date: 1980-01-02 00:00:00 UTC
 platform:
 summary: A Hash which automatically computes keys.
 require_paths:
@@ -34,7 +33,6 @@ has_rdoc: true
 Gem::Specification.new do |s|
   s.name = %q{keyedlist}
   s.version = %q{0.4.0}
-  s.has_rdoc = true
   s.summary = %q{A Hash which automatically computes keys.}
   s.files = [%q{lib/keyedlist.rb}]
   s.require_paths = [%q{lib}]
@@ -76,7 +74,7 @@ end
   def assert_date(date)
     assert_kind_of Time, date
     assert_equal [0, 0, 0], [date.hour, date.min, date.sec]
-    assert_operator (Gem::Specification::TODAY..Time.now), :cover?, date
+    assert_equal Time.at(Gem::DEFAULT_SOURCE_DATE_EPOCH).utc, date
   end
 
   def setup
@@ -146,6 +144,12 @@ end
   end
 
   def test_find_in_unresolved_tree_is_not_exponentiental
+    begin
+      require "benchmark"
+    rescue LoadError
+      pend "Benchmark is not available in this environment. Please install it with `gem install benchmark`."
+    end
+
     pend "currently slower in CI on TruffleRuby" if RUBY_ENGINE == "truffleruby"
     num_of_pkg = 7
     num_of_version_per_pkg = 3
@@ -559,7 +563,6 @@ end
   #         [B] ~> 1.0
   #
   # and should resolve using b-1.0
-  # TODO: move these to specification
 
   def test_self_activate_over
     a = util_spec "a", "1.0", "b" => ">= 1.0", "c" => "= 1.0"
@@ -646,6 +649,17 @@ end
     assert_raise Gem::LoadError do
       gem "b", "= 2.0"
     end
+  end
+
+  def test_self_activate_missing_deps_does_not_raise_nested_exceptions
+    a = util_spec "a", "1.0", "b" => ">= 1.0"
+    install_specs a
+
+    e = assert_raise Gem::MissingSpecError do
+      a.activate
+    end
+
+    refute e.cause
   end
 
   def test_self_all_equals
@@ -1014,7 +1028,7 @@ dependencies: []
 
     gem = "mingw"
     v   = "1.1.1"
-    platforms = ["x86-mingw32", "x64-mingw32"]
+    platforms = ["x86-mingw32", "x64-mingw-ucrt"]
 
     # create specs
     platforms.each do |plat|
@@ -1233,12 +1247,37 @@ dependencies: []
   end
 
   def test_initialize_nil_version
-    expected = "nil versions are discouraged and will be deprecated in Rubygems 4\n"
-    actual_stdout, actual_stderr = capture_output do
-      Gem::Specification.new.version = nil
+    spec = Gem::Specification.new
+    spec.name = "test-name"
+
+    assert_nil spec.version
+    spec.version = nil
+    assert_nil spec.version
+
+    spec.summary = "test gem"
+    spec.authors = ["test author"]
+    e = assert_raise Gem::InvalidSpecificationException do
+      spec.validate
     end
-    assert_empty actual_stdout
-    assert_equal(expected, actual_stderr)
+    assert_match("missing value for attribute version", e.message)
+  end
+
+  def test_set_version_to_nil_after_setting_version
+    spec = Gem::Specification.new
+    spec.name = "test-name"
+
+    assert_nil spec.version
+    spec.version = "1.0.0"
+    assert_equal "1.0.0", spec.version.to_s
+    spec.version = nil
+    assert_nil spec.version
+
+    spec.summary = "test gem"
+    spec.authors = ["test author"]
+    e = assert_raise Gem::InvalidSpecificationException do
+      spec.validate
+    end
+    assert_match("missing value for attribute version", e.message)
   end
 
   def test__dump
@@ -1329,7 +1368,6 @@ dependencies: []
   end
 
   def test_build_args
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec
 
     assert_empty @ext.build_args
@@ -1346,7 +1384,6 @@ dependencies: []
   end
 
   def test_build_extensions
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec
 
     assert_path_not_exist @ext.extension_dir, "sanity check"
@@ -1382,7 +1419,6 @@ dependencies: []
   end
 
   def test_build_extensions_built
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec
 
     refute_empty @ext.extensions, "sanity check"
@@ -1421,7 +1457,6 @@ dependencies: []
   end
 
   def test_build_extensions_error
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec
 
     refute_empty @ext.extensions, "sanity check"
@@ -1435,7 +1470,7 @@ dependencies: []
     pend "chmod not supported" if Gem.win_platform?
     pend "skipped in root privilege" if Process.uid.zero?
 
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
+    pend "needs investigation" if Gem.java_platform?
     ext_spec
 
     refute_empty @ext.extensions, "sanity check"
@@ -1468,7 +1503,6 @@ dependencies: []
 
   def test_build_extensions_no_extensions_dir_unwritable
     pend "chmod not supported" if Gem.win_platform?
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec
 
     refute_empty @ext.extensions, "sanity check"
@@ -1507,7 +1541,6 @@ dependencies: []
   end
 
   def test_build_extensions_preview
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec
 
     extconf_rb = File.join @ext.gem_dir, @ext.extensions.first
@@ -1542,7 +1575,6 @@ dependencies: []
   end
 
   def test_contains_requirable_file_eh_extension
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec
 
     _, err = capture_output do
@@ -2208,9 +2240,9 @@ dependencies: []
     s1 = util_spec "a", "1"
     s2 = util_spec "b", "1"
 
-    assert_equal(-1, (s1 <=> s2))
-    assert_equal(0, (s1 <=> s1)) # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
-    assert_equal(1, (s2 <=> s1))
+    assert_equal(-1, s1 <=> s2)
+    assert_equal(0, s1 <=> s1) # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+    assert_equal(1, s2 <=> s1)
   end
 
   def test_spaceship_platform
@@ -2219,18 +2251,18 @@ dependencies: []
       s.platform = Gem::Platform.new "x86-my_platform1"
     end
 
-    assert_equal(-1, (s1 <=> s2))
-    assert_equal(0, (s1 <=> s1)) # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
-    assert_equal(1, (s2 <=> s1))
+    assert_equal(-1, s1 <=> s2)
+    assert_equal(0, s1 <=> s1) # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+    assert_equal(1, s2 <=> s1)
   end
 
   def test_spaceship_version
     s1 = util_spec "a", "1"
     s2 = util_spec "a", "2"
 
-    assert_equal(-1, (s1 <=> s2))
-    assert_equal(0, (s1 <=> s1)) # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
-    assert_equal(1, (s2 <=> s1))
+    assert_equal(-1, s1 <=> s2)
+    assert_equal(0, s1 <=> s1) # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+    assert_equal(1, s2 <=> s1)
   end
 
   def test_spec_file
@@ -2363,7 +2395,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = "#{Gem::VERSION}".freeze
   s.summary = "this is a summary".freeze
 
-  s.installed_by_version = "#{Gem::VERSION}".freeze if s.respond_to? :installed_by_version
+  s.installed_by_version = "#{Gem::VERSION}".freeze
 
   s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
 
@@ -2494,7 +2526,31 @@ end
     assert_equal @a1, same_spec
   end
 
-  def test_to_yaml_platform_empty_string
+  def test_to_yaml_platform
+    yaml_str = @a1.to_yaml
+
+    assert_match(/^platform: ruby$/, yaml_str)
+    refute_match(/^original_platform: /, yaml_str)
+  end
+
+  def test_to_yaml_platform_no_specific_platform
+    a = Gem::Specification.new do |s|
+      s.name        = "a"
+      s.version     = "1.0"
+      s.author      = "A User"
+      s.email       = "example@example.com"
+      s.homepage    = "http://example.com"
+      s.summary     = "this is a summary"
+      s.description = "This is a test description"
+    end
+
+    yaml_str = a.to_yaml
+
+    assert_match(/^platform: ruby$/, yaml_str)
+    refute_match(/^original_platform: /, yaml_str)
+  end
+
+  def test_to_yaml_platform_original_platform_empty_string
     @a1.instance_variable_set :@original_platform, ""
 
     assert_match(/^platform: ruby$/, @a1.to_yaml)
@@ -2512,7 +2568,7 @@ end
     assert_equal "powerpc-darwin7.9.0", same_spec.original_platform
   end
 
-  def test_to_yaml_platform_nil
+  def test_to_yaml_platform_original_platform_nil
     @a1.instance_variable_set :@original_platform, nil
 
     assert_match(/^platform: ruby$/, @a1.to_yaml)
@@ -2639,27 +2695,7 @@ end
         @a1.validate
       end
 
-      expected = <<-EXPECTED
-#{w}:  prerelease dependency on b (>= 1.0.rc1) is not recommended
-#{w}:  prerelease dependency on c (>= 2.0.rc2, development) is not recommended
-#{w}:  open-ended dependency on i (>= 1.2) is not recommended
-  if i is semantically versioned, use:
-    add_runtime_dependency "i", "~> 1.2"
-#{w}:  open-ended dependency on j (>= 1.2.3) is not recommended
-  if j is semantically versioned, use:
-    add_runtime_dependency "j", "~> 1.2", ">= 1.2.3"
-#{w}:  open-ended dependency on k (> 1.2) is not recommended
-  if k is semantically versioned, use:
-    add_runtime_dependency "k", "~> 1.2", "> 1.2"
-#{w}:  open-ended dependency on l (> 1.2.3) is not recommended
-  if l is semantically versioned, use:
-    add_runtime_dependency "l", "~> 1.2", "> 1.2.3"
-#{w}:  open-ended dependency on o (>= 0) is not recommended
-  use a bounded requirement, such as "~> x.y"
-#{w}:  See https://guides.rubygems.org/specification-reference/ for help
-      EXPECTED
-
-      assert_equal expected, @ui.error, "warning"
+      assert_equal "", @ui.error, "warning"
     end
   end
 
@@ -2977,6 +3013,65 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
     assert_match "#{w}:  bin/exec is missing #! line\n", @ui.error, "error"
   end
 
+  def test_validate_executables_with_space
+    util_setup_validate
+
+    FileUtils.mkdir_p File.join(@tempdir, "bin")
+    File.write File.join(@tempdir, "bin", "echo hax"), "#!/usr/bin/env ruby\n"
+
+    @a1.executables = ["echo hax"]
+
+    e = assert_raise Gem::InvalidSpecificationException do
+      use_ui @ui do
+        Dir.chdir @tempdir do
+          @a1.validate
+        end
+      end
+    end
+
+    assert_match "executable \"echo hax\" contains invalid characters", e.message
+  end
+
+  def test_validate_executables_with_path_separator
+    util_setup_validate
+
+    FileUtils.mkdir_p File.join(@tempdir, "bin")
+    File.write File.join(@tempdir, "exe"), "#!/usr/bin/env ruby\n"
+
+    @a1.executables = Gem.win_platform? ? ["..\\exe"] : ["../exe"]
+
+    e = assert_raise Gem::InvalidSpecificationException do
+      use_ui @ui do
+        Dir.chdir @tempdir do
+          @a1.validate
+        end
+      end
+    end
+
+    assert_match "executable \"#{Gem.win_platform? ? "..\\exe" : "../exe"}\" contains invalid characters", e.message
+  end
+
+  def test_validate_executables_with_path_list_separator
+    sep = Gem.win_platform? ? ";" : ":"
+
+    util_setup_validate
+
+    FileUtils.mkdir_p File.join(@tempdir, "bin")
+    File.write File.join(@tempdir, "bin", "foo#{sep}bar"), "#!/usr/bin/env ruby\n"
+
+    @a1.executables = ["foo#{sep}bar"]
+
+    e = assert_raise Gem::InvalidSpecificationException do
+      use_ui @ui do
+        Dir.chdir @tempdir do
+          @a1.validate
+        end
+      end
+    end
+
+    assert_match "executable \"foo#{sep}bar\" contains invalid characters", e.message
+  end
+
   def test_validate_empty_require_paths
     util_setup_validate
 
@@ -3027,9 +3122,7 @@ duplicate dependency on c (>= 1.2.3, development), (~> 1.2) use:
 
     set_orig specification
 
-    specification.define_singleton_method(:unresolved_deps) do
-      { b: Gem::Dependency.new("x","1") }
-    end
+    specification.instance_variable_set(:@unresolved_deps, { b: Gem::Dependency.new("x","1") })
 
     specification.define_singleton_method(:find_all_by_name) do |_dep_name|
       []
@@ -3047,6 +3140,7 @@ Please report a bug if this causes problems.
     end
     assert_empty actual_stdout
     assert_equal(expected, actual_stderr)
+    assert_empty specification.unresolved_deps
   end
 
   def test_unresolved_specs_with_versions
@@ -3054,9 +3148,7 @@ Please report a bug if this causes problems.
 
     set_orig specification
 
-    specification.define_singleton_method(:unresolved_deps) do
-      { b: Gem::Dependency.new("x","1") }
-    end
+    specification.instance_variable_set(:@unresolved_deps, { b: Gem::Dependency.new("x","1") })
 
     specification.define_singleton_method(:find_all_by_name) do |_dep_name|
       [
@@ -3080,6 +3172,60 @@ Please report a bug if this causes problems.
     end
     assert_empty actual_stdout
     assert_equal(expected, actual_stderr)
+    assert_empty specification.unresolved_deps
+  end
+
+  def test_unresolved_specs_with_duplicated_versions
+    specification = Gem::Specification.clone
+
+    set_orig specification
+
+    specification.instance_variable_set(:@unresolved_deps, { b: Gem::Dependency.new("x","1") })
+
+    specification.define_singleton_method(:find_all_by_name) do |_dep_name|
+      [
+        specification.new {|s| s.name = "z", s.version = Gem::Version.new("1") }, # default copy
+        specification.new {|s| s.name = "z", s.version = Gem::Version.new("1") }, # regular copy
+        specification.new {|s| s.name = "z", s.version = Gem::Version.new("2") }, # regular copy
+      ]
+    end
+
+    expected = <<-EXPECTED
+WARN: Unresolved or ambiguous specs during Gem::Specification.reset:
+      x (= 1)
+      Available/installed versions of this gem:
+      - 1
+      - 2
+WARN: Clearing out unresolved specs. Try 'gem cleanup <gem>'
+Please report a bug if this causes problems.
+    EXPECTED
+
+    actual_stdout, actual_stderr = capture_output do
+      specification.reset
+    end
+    assert_empty actual_stdout
+    assert_equal(expected, actual_stderr)
+    assert_empty specification.unresolved_deps
+  end
+
+  def test_unresolved_specs_with_unrestricted_deps_on_default_gems
+    specification = Gem::Specification.clone
+
+    set_orig specification
+
+    spec = new_default_spec "stringio", "3.1.1"
+
+    specification.instance_variable_set(:@unresolved_deps, { stringio: Gem::Dependency.new("stringio", ">= 0") })
+
+    specification.define_singleton_method(:find_all_by_name) do |_dep_name|
+      [spec]
+    end
+
+    actual_stdout, actual_stderr = capture_output do
+      specification.reset
+    end
+    assert_empty actual_stdout
+    assert_empty actual_stderr
   end
 
   def test_duplicate_runtime_dependency
@@ -3092,8 +3238,9 @@ Please report a bug if this causes problems.
   end
 
   def set_orig(cls)
+    assert_empty cls.unresolved_deps
+
     s_cls = cls.singleton_class
-    s_cls.send :alias_method, :orig_unresolved_deps, :unresolved_deps
     s_cls.send :alias_method, :orig_find_all_by_name, :find_all_by_name
   end
 
@@ -3804,7 +3951,6 @@ end
   end
 
   def test_missing_extensions_eh
-    pend "extensions don't quite work on jruby" if Gem.java_platform?
     ext_spec
 
     assert @ext.missing_extensions?

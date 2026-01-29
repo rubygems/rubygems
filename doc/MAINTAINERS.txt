@@ -1,1 +1,3 @@
 SHIBATA Hiroshi <hsbt@ruby-lang.org> (@hsbt)
+Aaron Patterson <tenderlove@ruby-lang.org> (@tenderlove)
+Sutou Kouhei <kou@clear-code.com> (@kou)

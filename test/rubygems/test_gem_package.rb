@@ -1344,4 +1344,44 @@ class TestGemPackage < Gem::Package::TarTestCase
 
     assert_equal %w[lib/code.rb], package.contents
   end
+
+  def test_invalid_windows_filename
+    package = Gem::Package.new @gem
+
+    if Gem.win_platform?
+      assert package.invalid_windows_filename?("spec/internal/:memory")
+      assert package.invalid_windows_filename?("file:name.rb")
+      assert package.invalid_windows_filename?("file<name.rb")
+      assert package.invalid_windows_filename?('file"name.rb')
+    end
+  end
+
+  def test_invalid_file_name_error_message
+    error = Gem::Package::InvalidFileNameError.new("spec/internal/:memory", "crono-2.0.1")
+    assert_match(%r{The gem contains a file 'spec/internal/:memory'}, error.message)
+    assert_match(/characters in its name that are not allowed on Windows/, error.message)
+    assert_match(/This is a problem with the 'crono-2.0.1' gem, not Rubygems/, error.message)
+    assert_match(/Please report this issue to the gem author/, error.message)
+  end
+
+  def test_extract_tar_gz_invalid_filename
+    pend "Windows filename validation only applies on Windows" unless Gem.win_platform?
+
+    package = Gem::Package.new @gem
+    package.verify
+
+    tgz_io = util_tar_gz do |tar|
+      tar.add_file "spec/internal/:memory", 0o644 do |io|
+        io.write "test content"
+      end
+    end
+
+    e = assert_raise Gem::Package::InvalidFileNameError do
+      package.extract_tar_gz tgz_io, @destination
+    end
+
+    assert_match(%r{The gem contains a file 'spec/internal/:memory'}, e.message)
+    assert_match(/characters in its name that are not allowed on Windows/, e.message)
+    assert_match(/This is a problem with the 'a-2' gem, not Rubygems/, e.message)
+  end
 end

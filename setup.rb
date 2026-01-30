@@ -24,7 +24,7 @@ Dir.chdir __dir__
 $:.unshift File.expand_path("lib")
 require "rubygems"
 require "rubygems/gem_runner"
-require "tempfile"
+require "securerandom"
 
 Gem::CommandManager.instance.register_command :setup
 

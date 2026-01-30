@@ -16,24 +16,29 @@ permissions:  # added using https://github.com/step-security/secure-workflows
 
 jobs:
   ruby_core:
-    name: ${{matrix.target}} under a ruby-core setup
+    name: ${{matrix.target}} under a ruby-core / ${{matrix.branch}}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         target: [Rubygems, Bundler]
+        branch: [ruby_3_4, ruby_4_0, master]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           repository: ruby/ruby
           path: ruby/ruby
-          ref: v3_4_5
+          ref: ${{ matrix.branch }}
           persist-credentials: false
+      - uses: ruby/setup-ruby@b90be12699fdfcbee4440c2bba85f6f460446bb0 # v1.279.0
+        with:
+          ruby-version: 3.4
+          bundler: none
       - name: Install libraries
         run: |
           set -x
           sudo apt-get update -q || :
-          sudo apt-get install --no-install-recommends -q -y build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev bison autoconf ruby
+          sudo apt-get install --no-install-recommends -q -y build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev bison autoconf
       - name: Build Ruby
         run: |
           export GNUMAKEFLAGS="-j$((1 + $(nproc)))"
@@ -43,8 +48,14 @@ jobs:
         working-directory: ruby/ruby
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
-          path: rubygems/rubygems # We need to backport repository url to sync_default_gems.rb of `ruby_3_4` branch.
+          path: rubygems/rubygems
           persist-credentials: false
+        if: matrix.branch == 'ruby_3_4'
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          path: ruby/rubygems
+          persist-credentials: false
+        if: matrix.branch != 'ruby_3_4'
       - name: Sync tools
         run: |
           ruby tool/sync_default_gems.rb rubygems

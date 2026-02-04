@@ -164,4 +164,55 @@ class TestGemResolverAPISpecification < Gem::TestCase
     assert_kind_of Gem::Specification, spec
     assert_equal "j-1-java", spec.full_name
   end
+
+  def test_spec_builds_from_compact_index_without_marshal_gemspec
+    dep_uri = @gem_repo + "info"
+    set = Gem::Resolver::APISet.new dep_uri
+    data = {
+      name: "rails",
+      number: "7.0.0",
+      platform: "ruby",
+      dependencies: [
+        ["activesupport", "= 7.0.0"],
+        ["bundler", ">= 1.15.0"],
+      ],
+      requirements: {
+        ruby: ">= 3.4.0",
+        rubygems: ">= 4.0.0",
+      },
+    }
+
+    api_spec = Gem::Resolver::APISpecification.new set, data
+    spec = api_spec.spec
+
+    assert_kind_of Gem::Specification, spec
+    assert_equal "rails", spec.name
+    assert_equal Gem::Version.new("7.0.0"), spec.version
+    assert_equal Gem::Platform::RUBY, spec.platform
+
+    assert_equal 2, spec.dependencies.size
+    assert spec.dependencies.any? {|d| d.name == "activesupport" && d.requirement.to_s == "= 7.0.0" }
+    assert spec.dependencies.any? {|d| d.name == "bundler" && d.requirement.to_s == ">= 1.15.0" }
+
+    assert_equal ">= 3.4.0", spec.required_ruby_version.to_s
+    assert_equal ">= 4.0.0", spec.required_rubygems_version.to_s
+  end
+
+  def test_spec_builds_without_requirements
+    dep_uri = @gem_repo + "info"
+    set = Gem::Resolver::APISet.new dep_uri
+    data = {
+      name: "simple_gem",
+      number: "1.0.0",
+      platform: "ruby",
+      dependencies: [],
+    }
+
+    api_spec = Gem::Resolver::APISpecification.new set, data
+    spec = api_spec.spec
+
+    assert_kind_of Gem::Specification, spec
+    assert_equal "simple_gem", spec.name
+    assert_equal Gem::Version.new("1.0.0"), spec.version
+  end
 end

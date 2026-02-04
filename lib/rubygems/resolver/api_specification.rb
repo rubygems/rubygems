@@ -87,19 +87,24 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
   # Fetches a Gem::Specification for this APISpecification.
 
   def spec # :nodoc:
-    @spec ||=
-      begin
-        tuple = Gem::NameTuple.new @name, @version, @platform
-        source.fetch_spec tuple
-      rescue Gem::RemoteFetcher::FetchError
-        raise if @original_platform == @platform
-
-        tuple = Gem::NameTuple.new @name, @version, @original_platform
-        source.fetch_spec tuple
-      end
+    @spec ||= build_minimal_spec_from_compact_index
   end
 
   def source # :nodoc:
     @set.source
+  end
+
+  private
+
+  def build_minimal_spec_from_compact_index
+    spec = Gem::Specification.new
+    spec.name = @name
+    spec.version = @version
+    spec.platform = @platform
+    spec.dependencies.replace(@dependencies)
+    spec.required_ruby_version = @required_ruby_version
+    spec.required_rubygems_version = @required_rubygems_version
+
+    spec
   end
 end

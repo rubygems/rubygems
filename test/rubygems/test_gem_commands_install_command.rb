@@ -29,9 +29,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
   end
 
   def test_execute_exclude_prerelease
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", 2
-      fetcher.gem "a", "2.pre"
+    compact_index do |ci|
+      ci.gem "a", 2
+      ci.gem "a", "2.pre"
     end
 
     @cmd.options[:args] = %w[a]
@@ -46,9 +46,9 @@ class TestGemCommandsInstallCommand < Gem::TestCase
   end
 
   def test_execute_explicit_version_includes_prerelease
-    specs = spec_fetcher do |fetcher|
-      fetcher.gem "a", 2
-      fetcher.gem "a", "2.a"
+    specs = compact_index do |ci|
+      ci.gem "a", 2
+      ci.gem "a", "2.a"
     end
 
     a2_pre = specs["a-2.a"]
@@ -430,9 +430,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_prerelease_skipped_when_no_flag_set
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", 1
-      fetcher.gem "a", "3.a"
+    compact_index do |ci|
+      ci.gem "a", 1
+      ci.gem "a", "3.a"
     end
 
     @cmd.options[:prerelease] = false
@@ -483,9 +483,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_prerelease_skipped_when_non_pre_available
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", "2.pre"
-      fetcher.gem "a", 2
+    compact_index do |ci|
+      ci.gem "a", "2.pre"
+      ci.gem "a", 2
     end
 
     @cmd.options[:prerelease] = true
@@ -532,9 +532,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
   def test_execute_required_ruby_version_upper_bound
     local = Gem::Platform.local
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", 2.0
-      fetcher.gem "a", 2.0 do |s|
+    compact_index do |ci|
+      ci.gem "a", 2.0
+      ci.gem "a", 2.0 do |s|
         s.required_ruby_version = "< #{RUBY_VERSION}.a"
         s.platform = local
       end
@@ -552,8 +552,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_required_ruby_version_specific_not_met
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", "1.0" do |s|
+    compact_index do |ci|
+      ci.gem "a", "1.0" do |s|
         s.required_ruby_version = "= 1.4.6"
       end
     end
@@ -572,8 +572,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_required_ruby_version_specific_prerelease_met
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", "1.0" do |s|
+    compact_index do |ci|
+      ci.gem "a", "1.0" do |s|
         s.required_ruby_version = ">= 1.4.6.preview2"
       end
     end
@@ -592,8 +592,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   def test_execute_required_ruby_version_specific_prerelease_not_met
     next_ruby_pre = Gem.ruby_version.segments.map.with_index {|n, i| i == 1 ? n + 1 : n }.join(".") + ".a"
 
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", "1.0" do |s|
+    compact_index do |ci|
+      ci.gem "a", "1.0" do |s|
         s.required_ruby_version = "> #{next_ruby_pre}"
       end
     end
@@ -612,8 +612,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_required_rubygems_version_wrong
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", "1.0" do |s|
+    compact_index do |ci|
+      ci.gem "a", "1.0" do |s|
         s.required_rubygems_version = "< 0"
       end
     end
@@ -632,8 +632,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_rdoc
-    specs = spec_fetcher do |fetcher|
-      fetcher.gem "a", 2
+    specs = compact_index do |ci|
+      ci.gem "a", 2
     end
 
     Gem.done_installing(&Gem::RDoc.method(:generation_hook))
@@ -661,8 +661,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end if defined?(Gem::RDoc) && !Gem.rdoc_hooks_defined_via_plugin?
 
   def test_execute_rdoc_with_path
-    specs = spec_fetcher do |fetcher|
-      fetcher.gem "a", 2
+    specs = compact_index do |ci|
+      ci.gem "a", 2
     end
 
     Gem.done_installing(&Gem::RDoc.method(:generation_hook))
@@ -690,8 +690,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end if defined?(Gem::RDoc) && !Gem.rdoc_hooks_defined_via_plugin?
 
   def test_execute_saves_build_args
-    specs = spec_fetcher do |fetcher|
-      fetcher.gem "a", 2
+    specs = compact_index do |ci|
+      ci.gem "a", 2
     end
 
     args = %w[--with-awesome=true --more-awesome=yes]
@@ -720,8 +720,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_remote
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", 2
+    compact_index do |ci|
+      ci.gem "a", 2
     end
 
     @cmd.options[:args] = %w[a]
@@ -740,8 +740,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   def test_execute_with_invalid_gem_file
     FileUtils.touch("a.gem")
 
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", 2
+    compact_index do |ci|
+      ci.gem "a", 2
     end
 
     @cmd.options[:args] = %w[a]
@@ -758,8 +758,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_remote_truncates_existing_gemspecs
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", 1
+    compact_index do |ci|
+      ci.gem "a", 1
     end
 
     @cmd.options[:domain] = :remote
@@ -791,9 +791,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_remote_ignores_files
-    specs = spec_fetcher do |fetcher|
-      fetcher.gem "a", 1
-      fetcher.gem "a", 2
+    specs = compact_index do |ci|
+      ci.gem "a", 1
+      ci.gem "a", 2
     end
 
     @cmd.options[:domain] = :remote
@@ -887,11 +887,11 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_two_version_specified_by_colon
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", 1
-      fetcher.gem "a", 2
-      fetcher.gem "b", 1
-      fetcher.gem "b", 2
+    compact_index do |ci|
+      ci.gem "a", 1
+      ci.gem "a", 2
+      ci.gem "b", 1
+      ci.gem "b", 2
     end
 
     @cmd.options[:args] = %w[a:1 b:1]
@@ -956,8 +956,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_install_gem_ignore_dependencies_remote
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", 2
+    compact_index do |ci|
+      ci.gem "a", 2
     end
 
     @cmd.options[:ignore_dependencies] = true
@@ -969,10 +969,10 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
   def test_install_gem_ignore_dependencies_remote_platform_local
     local = Gem::Platform.local
-    spec_fetcher do |fetcher|
-      fetcher.gem "a", 3
+    compact_index do |ci|
+      ci.gem "a", 3
 
-      fetcher.gem "a", 3 do |s|
+      ci.gem "a", 3 do |s|
         s.platform = local
       end
     end
@@ -1365,9 +1365,9 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_execute_uses_deps_a_gemdeps_with_a_path
-    specs = spec_fetcher do |fetcher|
-      fetcher.gem "q", "1.0"
-      fetcher.gem "r", "2.0", "q" => nil
+    specs = compact_index do |ci|
+      ci.gem "q", "1.0"
+      ci.gem "r", "2.0", "q" => nil
     end
 
     i = Gem::Installer.at specs["q-1.0"].cache_file, install_dir: "gf-path"
@@ -1568,8 +1568,8 @@ ERROR:  Possible alternatives: non_existent_with_hint
 
   def test_suggest_update_if_enabled
     TestUpdateSuggestion.with_eligible_environment(cmd: @cmd) do
-      spec_fetcher do |fetcher|
-        fetcher.gem "a", 2
+      compact_index do |ci|
+        ci.gem "a", 2
       end
 
       @cmd.options[:args] = %w[a]

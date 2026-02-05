@@ -1644,30 +1644,14 @@ ERROR:  Possible alternatives: non_existent_with_hint
   end
 
   def test_install_from_compact_index_only_source
-    specs = spec_fetcher do |fetcher|
-      fetcher.gem "main-gem", "2" do |s|
+    compact_index do |ci|
+      ci.gem "main-gem", "2" do |s|
         s.add_dependency "dep-gem", ">= 1.0"
       end
-      fetcher.gem "dep-gem", "1"
+      ci.gem "dep-gem", "1"
     end
 
-    compact_index_response = Gem::Net::HTTPResponse.new "1.1", 200, "OK"
-    compact_index_response.uri = Gem::URI(@gem_repo) + "versions"
-    @fetcher.data["#{@gem_repo}versions"] = compact_index_response
-
-    info_main_gem_response = <<~INFO
-      ---
-      2 dep-gem:>= 1.0|ruby:>= 2.5.0,rubygems:>= 3.0.0
-    INFO
-    @fetcher.data["#{@gem_repo}info/main-gem"] = info_main_gem_response
-
-    info_dep_gem_response = <<~INFO
-      ---
-      1 |ruby:>= 2.0.0
-    INFO
-    @fetcher.data["#{@gem_repo}info/dep-gem"] = info_dep_gem_response
-
-    @cmd.options[:args] = %w[main-gem] # gem install main-gem
+    @cmd.options[:args] = %w[main-gem]
 
     use_ui @ui do
       assert_raise Gem::MockGemUi::SystemExitException, @ui.error do
@@ -1675,7 +1659,7 @@ ERROR:  Possible alternatives: non_existent_with_hint
       end
     end
 
-    assert_equal %w[main-gem-2], @cmd.installed_specs.map(&:full_name)
+    assert_equal %w[dep-gem-1 main-gem-2], @cmd.installed_specs.map(&:full_name).sort
 
     installed_gem = @cmd.installed_specs.find {|s| s.name == "main-gem" }
     assert_equal "main-gem", installed_gem.name

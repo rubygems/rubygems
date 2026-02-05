@@ -1144,6 +1144,25 @@ Also, a list:
   end
 
   ##
+  # Sets up Compact Index API endpoints for testing. Does NOT set up old marshal API.
+  # This causes Source#new_dependency_resolver_set to use APISet.
+  #
+  # Usage:
+  #   compact_index do |ci|
+  #     ci.gem "a", 1 do |s|
+  #       s.add_dependency "b", ">= 2.0"
+  #     end
+  #     ci.gem "b", 2
+  #   end
+
+  def compact_index(&block)
+    fake_compact_index = Gem::TestCase::CompactIndexSetup.new(self, @gem_repo)
+    yield fake_compact_index
+    fake_compact_index.stub
+    fake_compact_index.specs
+  end
+
+  ##
   # Deflates +data+
 
   def util_zip(data)

@@ -421,6 +421,106 @@ class Gem::TestCase::SpecFetcherSetup
 end
 
 ##
+# Minimal CompactIndex implementation for tests.
+# This is a simplified version that only implements what's needed for test fixtures.
+module CompactIndexBuilder
+  # Generates the /info/{gem_name} response body
+  # Format: ---\nVERSION DEPS|METADATA\n
+  # Where DEPS is: dep_name:requirement,dep_name:requirement
+  # And METADATA is: checksum:SHA256,ruby:requirement,rubygems:requirement
+  def self.info(versions)
+    lines = ["---"]
+    versions.each do |version|
+      # Add dependencies (if any)
+      deps = version.dependencies.map {|d| "#{d.name}:#{d.requirement}" }
+      deps_string = deps.join(",")
+
+      # Build metadata
+      metadata = []
+      metadata << "checksum:#{version.checksum}" if version.checksum
+      metadata << "ruby:#{version.ruby_version}" if version.ruby_version && version.ruby_version != ">= 0"
+      metadata << "rubygems:#{version.rubygems_version}" if version.rubygems_version && version.rubygems_version != ">= 0"
+
+      # Format: "VERSION DEPS|METADATA" or "VERSION |METADATA" (space before | only when no deps)
+      line = "#{version.version} #{deps_string}|" + metadata.join(",")
+      lines << line
+    end
+    lines.join("\n") << "\n"
+  end
+
+  GemVersion = Data.define(:version, :platform, :checksum, :info_checksum, :dependencies, :ruby_version, :rubygems_version) do
+    def initialize(version:, platform:, checksum:, info_checksum: nil, dependencies: [], ruby_version: nil, rubygems_version: nil)
+      super(version:, platform:, checksum:, info_checksum:, dependencies:, ruby_version:, rubygems_version:)
+    end
+  end
+
+  Dependency = Data.define(:name, :requirement)
+end
+
+##
+# The CompactIndexSetup allows easy setup of compact index endpoints in tests.
+# Unlike SpecFetcherSetup, this only sets up compact index (no marshal API).
+#
+#   compact_index do |ci|
+#     ci.gem "a", 1 do |s|
+#       s.add_dependency "b", "~> 2.0"
+#     end
+#     ci.gem "b", 2
+#   end
+
+class Gem::TestCase::CompactIndexSetup
+  attr_reader :specs
+
+  def initialize(test, repository)
+    @test = test
+    @repository = repository
+    @test.fetcher = Gem::FakeFetcher.new
+    Gem::RemoteFetcher.fetcher = @test.fetcher
+    @specs = {}
+  end
+
+  def gem(name, version, dependencies = nil, &block)
+    spec = @test.util_spec(name, version, dependencies, &block)
+    @specs[spec.full_name] = spec
+  end
+
+  def stub
+    @specs.values.group_by(&:name).each do |name, gem_specs|
+      versions = gem_specs.map do |spec|
+        gem_file = Gem::Package.build(spec)
+        gem_contents = Gem.read_binary(gem_file)
+        FileUtils.cp gem_file, spec.cache_file
+
+        @test.fetcher.data["#{@repository}gems/#{spec.file_name}"] = gem_contents
+
+        dependencies = spec.dependencies.select(&:runtime?).map do |dep|
+          CompactIndexBuilder::Dependency.new(dep.name, dep.requirement.to_s)
+        end
+
+        checksum = Digest::SHA256.hexdigest(gem_contents)
+
+        CompactIndexBuilder::GemVersion.new(
+          spec.version.to_s,
+          spec.platform.to_s,
+          checksum,
+          nil,
+          dependencies,
+          spec.required_ruby_version.to_s,
+          spec.required_rubygems_version.to_s
+        )
+      end
+
+      @test.fetcher.data["#{@repository}info/#{name}"] = CompactIndexBuilder.info(versions)
+    end
+
+    # stub only to pass Compact Index API presence check currently
+    versions_response = Gem::Net::HTTPResponse.new "1.1", 200, "OK"
+    versions_response.uri = Gem::URI("#{@repository}versions")
+    @test.fetcher.data["#{@repository}versions"] = versions_response
+  end
+end
+
+##
 # A StringIO duck-typed class that uses Tempfile instead of String as the
 # backing store.
 #

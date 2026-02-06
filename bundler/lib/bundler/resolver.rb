@@ -8,6 +8,7 @@ module Bundler
   #
   class Resolver
     require_relative "vendored_pub_grub"
+    require_relative "compact_version"
     require_relative "resolver/base"
     require_relative "resolver/candidate"
     require_relative "resolver/incompatibility"
@@ -47,7 +48,7 @@ module Bundler
           matches = filter_invalid_self_dependencies(matches, name)
         end
 
-        specs[name] = matches.sort_by {|s| [s.version, s.platform.to_s] }
+        specs[name] = matches.sort_by {|s| [CompactVersion.from_gem_version(s.version), s.platform.to_s] }
       end
 
       @all_versions = Hash.new do |candidates, package|
@@ -261,7 +262,8 @@ module Bundler
       locked_requirement = base_requirements[name]
       results = filter_matching_specs(results, locked_requirement) if locked_requirement
 
-      results.group_by(&:version).reduce([]) do |groups, (version, specs)|
+      results.group_by {|s| s.version.to_s }.reduce([]) do |groups, (version_str, specs)|
+        version = specs.first.version
         platform_specs = package.platform_specs(specs)
 
         # If package is a top-level dependency,

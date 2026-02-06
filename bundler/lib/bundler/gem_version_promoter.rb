@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Bundler
+  require_relative "compact_version"
+
   # This class contains all of the logic for determining the next version of a
   # Gem to update to based on the requested level (patch, minor, major).
   # Primarily designed to work with Resolver which will provide it the list of
@@ -114,14 +116,14 @@ module Bundler
         must_match = minor? ? [0] : [0, 1]
 
         all_match = must_match.all? {|idx| gsv.segments[idx] == locked_version.segments[idx] }
-        all_match && gsv >= locked_version
+        all_match && CompactVersion.compare(gsv, locked_version) >= 0
       end
     end
 
     private
 
     def either_version_older_than_locked?(a, b, locked_version)
-      a.version < locked_version || b.version < locked_version
+      CompactVersion.compare(a.version, locked_version) < 0 || CompactVersion.compare(b.version, locked_version) < 0
     end
 
     def segments_do_not_match?(a, b, level)

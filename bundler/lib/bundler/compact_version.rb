@@ -85,6 +85,21 @@ module Bundler
       @cache_mutex.synchronize { @cache.clear }
     end
 
+    # Compare two Gem::Version objects using packed integer fast path.
+    # Returns -1, 0, or 1 like <=>.
+    def self.compare(a, b)
+      ca = from_gem_version(a)
+      cb = from_gem_version(b)
+      ca <=> cb
+    end
+
+    # Fast equality check for two Gem::Version objects.
+    def self.versions_equal?(a, b)
+      ca = from_gem_version(a)
+      cb = from_gem_version(b)
+      ca == cb
+    end
+
     private
 
     def pack(version)

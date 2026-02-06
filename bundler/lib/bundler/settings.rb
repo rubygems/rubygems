@@ -27,6 +27,7 @@ module Bundler
       git.allow_insecure
       global_gem_cache
       ignore_messages
+      ignore_ruby_upper_bounds
       init_gems_rb
       inline
       lockfile_checksums

@@ -24,6 +24,12 @@ module Bundler
     def metadata_dependency(name, requirement)
       return if requirement.nil? || requirement.none?
 
+      if name == "Ruby" && Bundler.settings[:ignore_ruby_upper_bounds]
+        reqs = requirement.requirements.reject { |op, _| op == "<" || op == "<=" }
+        return if reqs.empty?
+        requirement = Gem::Requirement.new(reqs.map { |op, v| "#{op} #{v}" })
+      end
+
       Gem::Dependency.new("#{name}\0", requirement)
     end
   end

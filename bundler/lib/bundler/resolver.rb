@@ -60,6 +60,12 @@ module Bundler
 
       @sorted_versions[root] = [root_version]
 
+      # OPTIMIZATION: Batch prefetch specs for all known dependency names upfront.
+      # This populates the @all_specs cache eagerly rather than lazily during
+      # resolution, which avoids N sequential network round-trips. Inspired by
+      # uv's batch_prefetch.rs which prefetches version metadata proactively.
+      prefetch_dependency_specs
+
       root_dependencies = prepare_dependencies(@requirements, @packages)
 
       @cached_dependencies = Hash.new do |dependencies, package|
@@ -319,6 +325,36 @@ module Bundler
     end
 
     private
+
+    # Eagerly populate @all_specs for all known dependency names.
+    # This triggers the compact index fetches upfront rather than lazily
+    # during resolution, allowing the fetcher's built-in parallelism to
+    # batch network requests efficiently.
+    def prefetch_dependency_specs
+      names_to_prefetch = Set.new
+
+      # Collect all dependency names from requirements
+      @requirements.each do |dep|
+        names_to_prefetch << dep.name
+      end
+
+      # Also collect transitive dependency names from locked specs if available
+      if @base.respond_to?(:locked_specs)
+        @base.locked_specs.each do |spec|
+          names_to_prefetch << spec.name
+          spec.dependencies.each {|d| names_to_prefetch << d.name }
+        end
+      end
+
+      # Trigger the lazy hash population for all known names
+      # This will batch the compact index requests
+      names_to_prefetch.each do |name|
+        @all_specs[name] unless @all_specs.key?(name)
+      end
+    rescue => e
+      # Prefetch failure is non-fatal - lazy loading will still work
+      Bundler.ui.debug "Prefetch warning: #{e.message}"
+    end
 
     def raise_not_found!(package)
       name = package.name

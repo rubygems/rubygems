@@ -72,8 +72,20 @@ module Bundler
           end
       end
 
+      # OPTIMIZATION (inspired by uv's OnceMap): Deduplicate gem info fetches.
+      # If we've already fetched info for a gem name in this session, return
+      # the cached result instead of hitting the network again.
       def fetch_gem_infos(names)
-        in_parallel(names) {|name| compact_index_client.info(name) }
+        @gem_info_cache ||= {}
+
+        uncached = names.reject {|name| @gem_info_cache.key?(name) }
+
+        if uncached.any?
+          results = in_parallel(uncached) {|name| compact_index_client.info(name) }
+          uncached.zip(results).each {|name, result| @gem_info_cache[name] = result }
+        end
+
+        names.map {|name| @gem_info_cache[name] }
       rescue TooManyRequestsError # rubygems.org is rate limiting us, slow down.
         @bundle_worker&.stop
         @bundle_worker = nil # reset it.  Not sure if necessary

@@ -8,7 +8,7 @@ module Bundler
       def initialize(*)
         super
 
-        @pool_size = 5
+        @pool_size = [Bundler.settings[:jobs] || Bundler.settings.processor_count, 8].max
       end
 
       def request(*args)

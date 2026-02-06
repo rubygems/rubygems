@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rubygems/resolver/api_set/gem_parser"
+require_relative "../io_trace"
 
 module Bundler
   class CompactIndexClient
@@ -29,10 +30,28 @@ module Bundler
       def info(name, remote_checksum = nil)
         path = info_path(name)
 
-        if remote_checksum && remote_checksum != SharedHelpers.checksum_for_file(path, :MD5)
-          fetch("info/#{name}", path, info_etag_path(name))
+        if remote_checksum
+          # OPTIMIZATION: Read the file once for both checksum verification and data return.
+          # Previously, SharedHelpers.checksum_for_file would read the file for MD5,
+          # and then read() would read it again if the checksum matched. Now we read
+          # once and compute MD5 from the in-memory data.
+          data = read(path)
+          if data
+            local_checksum = SharedHelpers.digest(:MD5).hexdigest(data)
+            if remote_checksum != local_checksum
+              IOTrace.trace(:http, "compact_index info checksum mismatch, fetching: #{name}") do
+                fetch("info/#{name}", path, info_etag_path(name))
+              end
+            else
+              Bundler::CompactIndexClient.debug { "update skipped info/#{name} (versions index checksum matches local)" }
+              IOTrace.note(:file_read, "compact_index info cache hit: #{name}")
+              data
+            end
+          else
+            fetch("info/#{name}", path, info_etag_path(name))
+          end
         else
-          Bundler::CompactIndexClient.debug { "update skipped info/#{name} (#{remote_checksum ? "versions index checksum is nil" : "versions index checksum matches local"})" }
+          Bundler::CompactIndexClient.debug { "update skipped info/#{name} (versions index checksum is nil)" }
           read(path)
         end
       end
@@ -66,8 +85,12 @@ module Bundler
 
       def mkdir(name)
         directory.join(name).tap do |dir|
-          SharedHelpers.filesystem_access(dir) do
-            FileUtils.mkdir_p(dir)
+          # OPTIMIZATION: Skip mkdir_p if directory already exists.
+          # During warm-cache runs, these directories always exist.
+          unless dir.directory?
+            SharedHelpers.filesystem_access(dir) do
+              FileUtils.mkdir_p(dir)
+            end
           end
         end
       end
@@ -75,9 +98,12 @@ module Bundler
       def fetch(remote_path, path, etag_path)
         if already_fetched?(remote_path)
           Bundler::CompactIndexClient.debug { "already fetched #{remote_path}" }
+          IOTrace.note(:http, "compact_index already fetched: #{remote_path}")
         else
           Bundler::CompactIndexClient.debug { "fetching #{remote_path}" }
-          @updater&.update(remote_path, path, etag_path)
+          IOTrace.trace(:http, "compact_index fetch: #{remote_path}") do
+            @updater&.update(remote_path, path, etag_path)
+          end
         end
 
         read(path)
@@ -89,7 +115,9 @@ module Bundler
 
       def read(path)
         return unless path.file?
-        SharedHelpers.filesystem_access(path, :read, &:read)
+        IOTrace.trace(:file_read, "compact_index read: #{path}") do
+          SharedHelpers.filesystem_access(path, :read, &:read)
+        end
       end
     end
   end

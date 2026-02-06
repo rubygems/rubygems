@@ -1,9 +1,22 @@
 # frozen_string_literal: true
 
 require "rubygems/installer"
+require_relative "io_trace"
 
 module Bundler
   class RubyGemsGemInstaller < Gem::Installer
+    # Detect clonefile support (macOS APFS copy-on-write)
+    CLONEFILE_SUPPORTED = begin
+      if RUBY_PLATFORM =~ /darwin/
+        require "fiddle"
+        true
+      else
+        false
+      end
+    rescue LoadError
+      false
+    end
+
     def check_executable_overwrite(filename)
       # Bundler needs to install gems regardless of binstub overwriting
     end
@@ -16,18 +29,22 @@ module Bundler
       spec.loaded_from = spec_file
 
       # Completely remove any previous gem files
-      strict_rm_rf gem_dir
-      strict_rm_rf spec.extension_dir
+      IOTrace.trace(:file_write, "strict_rm_rf gem_dir: #{gem_dir}") { strict_rm_rf gem_dir }
+      IOTrace.trace(:file_write, "strict_rm_rf extension_dir: #{spec.extension_dir}") { strict_rm_rf spec.extension_dir }
 
       SharedHelpers.filesystem_access(gem_dir, :create) do
         FileUtils.mkdir_p gem_dir, mode: 0o755
       end
 
-      SharedHelpers.filesystem_access(gem_dir, :write) do
-        extract_files
+      IOTrace.trace(:file_write, "extract_files: #{spec.name} -> #{gem_dir}") do
+        SharedHelpers.filesystem_access(gem_dir, :write) do
+          extract_files
+        end
       end
 
-      build_extensions if spec.extensions.any?
+      if spec.extensions.any?
+        IOTrace.trace(:file_write, "build_extensions: #{spec.name}") { build_extensions }
+      end
       write_build_info_file
       run_post_build_hooks
 
@@ -37,10 +54,12 @@ module Bundler
 
       generate_plugins
 
-      write_spec
+      IOTrace.trace(:file_write, "write_spec: #{spec.name}") { write_spec }
 
-      SharedHelpers.filesystem_access("#{gem_home}/cache", :write) do
-        write_cache_file
+      IOTrace.trace(:file_write, "write_cache_file: #{spec.name}") do
+        SharedHelpers.filesystem_access("#{gem_home}/cache", :write) do
+          write_cache_file
+        end
       end
 
       say spec.post_install_message unless spec.post_install_message.nil?
@@ -121,14 +140,14 @@ module Bundler
           FileUtils.mkpath p
         end
         SharedHelpers.filesystem_access(extension_cache_path) do
-          FileUtils.cp_r extension_cache_path, extension_dir
+          fast_cp_r extension_cache_path.to_s, extension_dir.to_s
         end
       else
         prepare_extension_build(extension_dir)
         super
         SharedHelpers.filesystem_access(extension_cache_path.parent, &:mkpath)
         SharedHelpers.filesystem_access(extension_cache_path) do
-          FileUtils.cp_r extension_dir, extension_cache_path
+          fast_cp_r extension_dir.to_s, extension_cache_path.to_s
         end
       end
     end
@@ -147,6 +166,56 @@ module Bundler
 
     private
 
+    # Fast directory copy using macOS clonefile (APFS copy-on-write),
+    # falling back to hardlinks, then regular copy.
+    # This follows uv's hierarchical fallback: clone -> hardlink -> copy
+    def fast_cp_r(src, dest)
+      if CLONEFILE_SUPPORTED && IOTrace.trace(:file_copy, "try_clonefile: #{src} -> #{dest}") { try_clonefile(src, dest) }
+        return
+      end
+
+      if IOTrace.trace(:file_link, "try_hardlink_tree: #{src} -> #{dest}") { try_hardlink_tree(src, dest) }
+        return
+      end
+
+      IOTrace.trace(:file_copy, "FileUtils.cp_r: #{src} -> #{dest}") { FileUtils.cp_r(src, dest) }
+    end
+
+    # Try macOS clonefile syscall for instant copy-on-write
+    def try_clonefile(src, dest)
+      return false unless CLONEFILE_SUPPORTED
+      # Use system cp -c for clone on macOS (uses clonefile under the hood)
+      system("cp", "-cR", src.to_s, dest.to_s, out: File::NULL, err: File::NULL)
+    rescue
+      false
+    end
+
+    # Try to hardlink all files from src to dest tree
+    def try_hardlink_tree(src, dest)
+      return false unless File.directory?(src)
+
+      FileUtils.mkdir_p(dest) unless File.exist?(dest)
+
+      Dir.each_child(src) do |entry|
+        src_path = File.join(src, entry)
+        dest_path = File.join(dest, entry)
+
+        if File.directory?(src_path)
+          return false unless try_hardlink_tree(src_path, dest_path)
+        else
+          begin
+            FileUtils.ln(src_path, dest_path)
+          rescue Errno::EXDEV, Errno::ENOTSUP, Errno::EPERM
+            return false
+          end
+        end
+      end
+
+      true
+    rescue
+      false
+    end
+
     def prepare_extension_build(extension_dir)
       SharedHelpers.filesystem_access(extension_dir, :create) do
         FileUtils.mkdir_p extension_dir
@@ -154,7 +223,17 @@ module Bundler
     end
 
     def strict_rm_rf(dir)
-      return unless File.exist?(dir)
+      # OPTIMIZATION: Use a single lstat call instead of File.exist? + Dir.empty? + File.stat
+      # which results in 3+ stat syscalls. We use lstat to avoid following symlinks.
+      begin
+        st = File.lstat(dir)
+      rescue Errno::ENOENT
+        return # doesn't exist
+      end
+
+      return unless st.directory?
+
+      # Only check for empty if it's a directory (Dir.empty? is a single getdents call)
       return if Dir.empty?(dir)
 
       parent = File.dirname(dir)

@@ -46,11 +46,24 @@ class Gem::NameTuple
   # of Gem::Specification#full_name.
 
   def full_name
-    case @platform
+    @full_name ||= case @platform
     when nil, "", Gem::Platform::RUBY
       "#{@name}-#{@version}"
     else
       "#{@name}-#{@version}-#{@platform}"
+    end
+  end
+
+  ##
+  # Returns the lock file formatted name (e.g. "rake (13.0.6)" or "nokogiri (1.14.0-x86_64-linux)")
+  # Cached to avoid repeated string allocations during lockfile generation and parsing.
+
+  def lock_name
+    @lock_name ||= case @platform
+    when nil, "", Gem::Platform::RUBY
+      "#{@name} (#{@version})"
+    else
+      "#{@name} (#{@version}-#{@platform})"
     end
   end
 
@@ -120,6 +133,8 @@ class Gem::NameTuple
   alias_method :eql?, :==
 
   def hash
-    to_a.hash
+    # Cache hash to avoid repeated Array allocation from to_a on every call.
+    # NameTuples are used as hash keys in Index and other structures.
+    @hash ||= to_a.hash
   end
 end

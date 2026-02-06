@@ -71,7 +71,11 @@ module Bundler
     end
 
     def lock_name
-      @lock_name ||= name_tuple.lock_name
+      @lock_name ||= if platform == Gem::Platform::RUBY
+        "#{@name} (#{@version})"
+      else
+        "#{@name} (#{@version}-#{platform})"
+      end
     end
 
     def name_tuple

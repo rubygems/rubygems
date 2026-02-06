@@ -1496,6 +1496,7 @@ class Gem::Specification < Gem::BasicSpecification
       dependency = Gem::Dependency.new(dependency.to_s, requirements, type)
     end
 
+    @runtime_dependencies = nil  # invalidate cache
     dependencies << dependency
   end
 
@@ -2247,9 +2248,10 @@ class Gem::Specification < Gem::BasicSpecification
 
   ##
   # List of dependencies that will automatically be activated at runtime.
+  # Cached since this is called many times during dependency resolution.
 
   def runtime_dependencies
-    dependencies.select(&:runtime?)
+    @runtime_dependencies ||= dependencies.select(&:runtime?)
   end
 
   ##

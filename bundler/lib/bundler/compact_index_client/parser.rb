@@ -22,8 +22,25 @@ module Bundler
         @info_checksums = {}
 
         lines(@compact_index.versions).each do |line|
-          name, versions_string, checksum = line.split(" ", 3)
-          @info_checksums[name] = checksum || ""
+          # Avoid allocating a 3-element array via split(" ", 3) on every line.
+          # Instead, find space positions directly and slice the frozen string.
+          line.freeze
+
+          name_end = line.index(" ")
+          next unless name_end # skip malformed lines
+
+          versions_end = line.index(" ", name_end + 1)
+          name = line[0, name_end]
+          name.freeze
+
+          if versions_end
+            versions_string = line[name_end + 1, versions_end - name_end - 1]
+            @info_checksums[name] = line[versions_end + 1, line.size - versions_end - 1]
+          else
+            versions_string = line[name_end + 1, line.size - name_end - 1]
+            @info_checksums[name] = ""
+          end
+
           versions_string.split(",") do |version|
             delete = version.delete_prefix!("-")
             version = version.split("-", 2).unshift(name)

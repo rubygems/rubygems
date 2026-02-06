@@ -906,10 +906,14 @@ class Gem::Installer
   end
 
   ##
-  # Writes the .gem file to the cache directory
+  # Writes the .gem file to the cache directory.
+  # Skips the copy if the cache file already exists (same path or identical content),
+  # since copy_to already checks File.exist? but we can avoid the method call overhead
+  # and the join + file_name string allocation when the gem is already cached.
 
   def write_cache_file
     cache_file = File.join gem_home, "cache", spec.file_name
+    return if File.exist?(cache_file)
     @package.copy_to cache_file
   end
 

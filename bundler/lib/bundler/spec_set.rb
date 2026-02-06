@@ -88,7 +88,9 @@ module Bundler
       s.runtime_dependencies.each do |dep|
         next if dep.name == "bundler"
 
-        return :missing unless names.include?(dep.name)
+        # Use hash key lookup (O(1)) instead of names.include? which
+        # creates an array of keys on every call and scans it (O(n)).
+        return :missing unless lookup.key?(dep.name)
         return :invalid if none? {|spec| dep.matches_spec?(spec) }
       end
 
@@ -108,6 +110,7 @@ module Bundler
 
     def delete(specs)
       Array(specs).each {|spec| remove_spec(spec) }
+      @reverse_deps = nil  # invalidate reverse deps cache
     end
 
     def sort!
@@ -178,7 +181,11 @@ module Bundler
     end
 
     def find_by_name_and_platform(name, platform)
-      @specs.detect {|spec| spec.name == name && spec.installable_on_platform?(platform) }
+      # Use the lookup hash to narrow candidates by name (O(1)) instead of
+      # scanning all specs (O(n)). This matters when the spec set is large.
+      candidates = lookup[name]
+      return nil unless candidates
+      candidates.detect {|spec| spec.installable_on_platform?(platform) }
     end
 
     def specs_with_additional_variants_from(other)
@@ -188,6 +195,7 @@ module Bundler
     def delete_by_name(name)
       @specs.reject! {|spec| spec.name == name }
       @sorted&.reject! {|spec| spec.name == name }
+      @reverse_deps = nil  # invalidate reverse deps cache
       return if @lookup.nil?
 
       @lookup[name] = nil
@@ -198,7 +206,18 @@ module Bundler
     end
 
     def what_required(spec)
-      unless req = find {|s| s.runtime_dependencies.any? {|d| d.name == spec.name } }
+      # Build a reverse-dependency lookup on first call to avoid O(n*m) repeated scanning.
+      @reverse_deps ||= begin
+        rd = {}
+        sorted.each do |s|
+          s.runtime_dependencies.each do |d|
+            next if d.type == :development
+            rd[d.name] = s
+          end
+        end
+        rd
+      end
+      unless req = @reverse_deps[spec.name]
         return [spec]
       end
       what_required(req) << spec
@@ -314,7 +333,8 @@ module Bundler
     end
 
     def sorted
-      @sorted ||= ([@specs.find {|s| s.name == "rake" }] + tsort).compact.uniq
+      # Use the lookup hash for O(1) rake lookup instead of O(n) array scan
+      @sorted ||= ([lookup["rake"]&.first] + tsort).compact.uniq
     rescue TSort::Cyclic => error
       cgems = extract_circular_gems(error)
       raise CyclicDependencyError, "Your bundle requires gems that depend" \
@@ -354,6 +374,7 @@ module Bundler
 
     def add_spec(spec)
       @specs << spec
+      @reverse_deps = nil  # invalidate reverse deps cache
 
       name = spec.name
 

@@ -100,6 +100,7 @@ module Bundler
       @dependencies = {}
       @parse_method = nil
       @specs        = {}
+      @specs_by_name = {}
       @lockfile_path = begin
         SharedHelpers.relative_lockfile_path
       rescue GemfileNotFound
@@ -136,7 +137,16 @@ module Bundler
         elsif /^[^\s]/.match?(line)
           @parse_method = nil
         elsif @parse_method
-          send(@parse_method, line)
+          # Direct dispatch avoids the overhead of Kernel#send + method lookup on every line.
+          # In a large lockfile (500+ gems) this is called thousands of times.
+          case @parse_method
+          when :parse_source then parse_source(line)
+          when :parse_dependency then parse_dependency(line)
+          when :parse_checksum then parse_checksum(line)
+          when :parse_platform then parse_platform(line)
+          when :parse_ruby then parse_ruby(line)
+          when :parse_bundled_with then parse_bundled_with(line)
+          end
         end
         @pos.advance!(line)
       end
@@ -223,8 +233,10 @@ module Bundler
       dep = Bundler::Dependency.new(name, version)
 
       if pinned && dep.name != "bundler"
-        spec = @specs.find {|_, v| v.name == dep.name }
-        dep.source = spec.last.source if spec
+        # Use @specs_by_name for O(1) lookup instead of O(n) scan over all specs.
+        # @specs is keyed by full_name; @specs_by_name is keyed by gem name.
+        spec = @specs_by_name[dep.name]
+        dep.source = spec.source if spec
 
         # Path sources need to know what the default name / version
         # to use in the case that there are no gemspecs present. A fake
@@ -281,6 +293,7 @@ module Bundler
         @current_source.add_dependency_names(name)
 
         @specs[@current_spec.full_name] = @current_spec
+        @specs_by_name[name] = @current_spec
       elsif spaces.size == 6
         version = version.split(",").each(&:strip!) if version
         dep = Gem::Dependency.new(name, version)

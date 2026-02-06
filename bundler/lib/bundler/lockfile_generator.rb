@@ -58,11 +58,12 @@ module Bundler
     def add_dependencies
       out << "\nDEPENDENCIES\n"
 
-      handled = []
+      # Use a Hash (O(1) lookup) instead of Array (O(n) include? check)
+      handled = {}
       definition.dependencies.sort_by(&:to_s).each do |dep|
-        next if handled.include?(dep.name)
+        next if handled.key?(dep.name)
         out << dep.to_lock << "\n"
-        handled << dep.name
+        handled[dep.name] = true
       end
     end
 

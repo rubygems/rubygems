@@ -42,8 +42,9 @@ module Bundler
     end
 
     def empty?
-      each { return false }
-      true
+      # Fast path: check local specs hash first, avoiding Enumerable#each overhead
+      return false unless @specs.empty?
+      @sources.none? {|s| !s.empty? }
     end
 
     # Search this index's specs, and any source indexes that this index knows

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fileutils"
+
 module Bundler
   class CompactIndexClient
     class Parser
@@ -56,8 +58,36 @@ module Bundler
       end
 
       def info(name)
-        data = @compact_index.info(name, info_checksums[name])
-        lines(data).map {|line| gem_parser.parse(line).unshift(name) }
+        checksum = info_checksums[name]
+
+        # Try binary cache first (Marshal format)
+        binary_path = info_binary_path(name)
+        if binary_path && checksum && File.exist?(binary_path)
+          begin
+            cached = Bundler.safe_load_marshal(File.binread(binary_path))
+            if cached.is_a?(Array) && cached.length == 2 && cached[0] == checksum
+              return cached[1]
+            end
+          rescue => _e
+            # Corrupted cache, fall through to parse
+          end
+        end
+
+        data = @compact_index.info(name, checksum)
+        result = lines(data).map {|line| gem_parser.parse(line).unshift(name) }
+
+        # Write binary cache
+        if binary_path && checksum && !result.empty?
+          begin
+            dir = File.dirname(binary_path)
+            FileUtils.mkdir_p(dir) unless File.directory?(dir)
+            File.binwrite(binary_path, Marshal.dump([checksum, result]))
+          rescue => _e
+            # Cache write failure is non-fatal
+          end
+        end
+
+        result
       end
 
       def available?
@@ -82,6 +112,13 @@ module Bundler
 
       def gem_parser
         @gem_parser ||= Gem::Resolver::APISet::GemParser.new
+      end
+
+      def info_binary_path(name)
+        return nil unless @compact_index.respond_to?(:directory)
+        dir = @compact_index.directory
+        return nil unless dir
+        dir.join("info-binary", "#{name}.bin")
       end
 
       # This is mostly the same as `split(" ", 3)` but it avoids allocating extra objects.

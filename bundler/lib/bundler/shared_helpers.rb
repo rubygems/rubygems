@@ -198,6 +198,21 @@ module Bundler
       Digest(name)
     end
 
+    def fast_digest
+      @fast_digest ||= begin
+        require "openssl"
+        OpenSSL::Digest.new("BLAKE2b256")
+        :BLAKE2b256
+      rescue => _e
+        :MD5
+      end
+    end
+
+    def fast_hexdigest(data)
+      require "openssl"
+      OpenSSL::Digest.hexdigest(fast_digest.to_s, data)
+    end
+
     def checksum_for_file(path, digest)
       return unless path.file?
       # This must use File.read instead of Digest.file().hexdigest

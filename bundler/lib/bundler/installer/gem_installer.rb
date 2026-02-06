@@ -25,6 +25,31 @@ module Bundler
       [false, specific_failure_message(e)]
     end
 
+    def extract_from_spec
+      source = spec.source
+      return nil unless source.respond_to?(:extract_gem)
+      source.extract_gem(spec, force: force, local: local, build_args: Array(spec_settings))
+    rescue Bundler::InstallHookError, Bundler::SecurityError, Bundler::APIResponseMismatchError
+      raise
+    rescue Bundler::BundlerError, Gem::InstallError => e
+      [false, specific_failure_message(e)]
+    end
+
+    def finalize_from_spec(extract_result, has_extensions)
+      source = spec.source
+      return nil unless source.respond_to?(:finalize_gem)
+      post_install_message = source.finalize_gem(spec, extract_result, has_extensions,
+        force: force, local: local, build_args: Array(spec_settings))
+      Bundler.ui.debug "#{worker}:  #{spec.name} (#{spec.version}) finalized from #{spec.loaded_from}"
+      [true, post_install_message]
+    rescue Bundler::InstallHookError, Bundler::SecurityError, Bundler::APIResponseMismatchError
+      raise
+    rescue Errno::ENOSPC
+      [false, out_of_space_message]
+    rescue Bundler::BundlerError, Gem::InstallError => e
+      [false, specific_failure_message(e)]
+    end
+
     private
 
     def specific_failure_message(e)

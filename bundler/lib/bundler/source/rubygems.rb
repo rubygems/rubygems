@@ -192,6 +192,15 @@ module Bundler
         false
       end
 
+      def extension_cache_path(spec)
+        # Prefer global XDG-based extension cache
+        global_path = global_extension_cache_path(spec)
+        return global_path if global_path
+
+        # Fall back to per-source cache
+        super
+      end
+
       def install(spec, options = {})
         if (spec.default_gem? && !cached_built_in_gem(spec, local: options[:local])) || (installed?(spec) && !options[:force])
           print_using_message "Using #{version_message(spec, options[:previous_spec])}"
@@ -246,6 +255,75 @@ module Bundler
 
         Gem.time("Installed #{spec.name} in", 0, true) do
           installed_spec = installer.install
+        end
+
+        spec.full_gem_path = installed_spec.full_gem_path
+        spec.loaded_from = installed_spec.loaded_from
+        spec.base_dir = installed_spec.base_dir
+
+        spec.post_install_message
+      end
+
+      # Extract gem to a temporary directory without installing.
+      # Returns the temp_dir path, or nil if already installed.
+      def extract_gem(spec, options = {})
+        if (spec.default_gem? && !cached_built_in_gem(spec, local: options[:local])) || (installed?(spec) && !options[:force])
+          return nil # already available
+        end
+
+        path = cached_gem(spec) || fetch_gem_if_possible(spec, nil)
+        raise GemNotFound, "Could not find #{spec.file_name} for extraction" unless path
+
+        return nil if Bundler.settings[:no_install]
+
+        install_path = rubygems_dir
+        bin_path     = Bundler.system_bindir
+
+        require_relative "../rubygems_gem_installer"
+
+        installer = Bundler::RubyGemsGemInstaller.at(
+          path,
+          security_policy: Bundler.rubygems.security_policies[Bundler.settings["trust-policy"]],
+          install_dir: install_path.to_s,
+          bin_dir: bin_path.to_s,
+          ignore_dependencies: true,
+          wrappers: true,
+          env_shebang: true,
+          build_args: options[:build_args],
+          bundler_extension_cache_path: extension_cache_path(spec)
+        )
+
+        if spec.remote
+          s = begin
+            installer.spec
+          rescue Gem::Package::FormatError
+            Bundler.rm_rf(path)
+            raise
+          rescue Gem::Security::Exception => e
+            raise SecurityError,
+             "The gem #{File.basename(path, ".gem")} can't be installed because " \
+             "the security policy didn't allow it, with the message: #{e.message}"
+          end
+
+          spec.__swap__(s)
+        end
+
+        spec.source.checksum_store.register(spec, installer.gem_checksum)
+
+        temp_dir = installer.extract_to_temp
+        [temp_dir, installer, spec]
+      end
+
+      # Finalize a previously extracted gem.
+      def finalize_gem(spec, extract_result, has_extensions, options = {})
+        return nil unless extract_result
+
+        temp_dir, installer, spec = extract_result
+
+        installed_spec = if has_extensions
+          installer.finalize_with_extensions(temp_dir)
+        else
+          installer.finalize_without_extensions(temp_dir)
         end
 
         spec.full_gem_path = installed_spec.full_gem_path
@@ -404,7 +482,13 @@ module Bundler
 
       def installed_specs
         @installed_specs ||= Index.build do |idx|
-          Bundler.rubygems.installed_specs.reverse_each do |spec|
+          specs = if Bundler.default_lockfile.file?
+            names = Bundler::LockfileParser.new(Bundler.read_file(Bundler.default_lockfile.to_s)).specs.map(&:name).uniq
+            Bundler.rubygems.installed_specs_for_names(names)
+          else
+            Bundler.rubygems.installed_specs
+          end
+          specs.reverse_each do |spec|
             spec.source = self
             next if spec.ignored?
             idx << spec
@@ -553,10 +637,32 @@ module Bundler
       # Returns path in the global gem cache (XDG_CACHE_HOME based).
       # This cache is shared across all Ruby versions since .gem files
       # are Ruby-version independent archives.
-      def global_gem_cache_path(spec)
-        xdg_cache = ENV["XDG_CACHE_HOME"] || File.join(Dir.home, ".cache")
-        cache_dir = File.join(xdg_cache, "bundler", "gems")
+      def global_gem_cache_path(spec = nil)
+        cache_home = if Gem.respond_to?(:cache_home)
+          Gem.cache_home
+        else
+          ENV["XDG_CACHE_HOME"] || File.join(Dir.home, ".cache")
+        end
+        cache_dir = File.join(cache_home, "gem", "gems")
+        return cache_dir unless spec
         File.join(cache_dir, spec.file_name)
+      rescue
+        nil
+      end
+
+      # Returns path in the global extension cache (XDG_CACHE_HOME based).
+      # Extensions are ABI-dependent, so the cache is keyed by Ruby engine,
+      # Ruby version, and platform.
+      def global_extension_cache_path(spec)
+        cache_home = if Gem.respond_to?(:cache_home)
+          Gem.cache_home
+        else
+          ENV["XDG_CACHE_HOME"] || File.join(Dir.home, ".cache")
+        end
+        ruby_key = "#{Gem.ruby_engine}-#{RbConfig::CONFIG["ruby_version"]}"
+        platform_key = Gem::Platform.local.to_s
+        ext_dir = File.join(cache_home, "gem", "extensions", ruby_key, platform_key)
+        Pathname.new(ext_dir).join(spec.full_name.to_s)
       rescue
         nil
       end

@@ -425,6 +425,17 @@ module Bundler
       end
     end
 
+    def installed_specs_for_names(names)
+      specs = []
+      names.each do |name|
+        Gem::Specification.stubs_for(name).each do |stub|
+          next if stub.default_gem?
+          specs << StubSpecification.from_stub(stub)
+        end
+      end
+      specs
+    end
+
     def default_specs
       Gem::Specification.default_stubs.map do |stub|
         StubSpecification.from_stub(stub)

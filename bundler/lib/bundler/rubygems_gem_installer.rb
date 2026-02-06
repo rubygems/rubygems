@@ -62,6 +62,8 @@ module Bundler
         end
       end
 
+      Gem::Specification.add_spec(spec)
+
       say spec.post_install_message unless spec.post_install_message.nil?
 
       run_post_install_hooks
@@ -164,6 +166,99 @@ module Bundler
       Checksum.from_gem_package(@package)
     end
 
+    # Phase A: Extract gem contents to a temporary directory.
+    # This can run in parallel for all gems without dependency ordering.
+    def extract_to_temp
+      temp_dir = "#{gem_dir}.bundler-tmp"
+      strict_rm_rf(temp_dir)
+
+      SharedHelpers.filesystem_access(temp_dir, :create) do
+        FileUtils.mkdir_p temp_dir, mode: 0o755
+      end
+
+      # Temporarily point gem_dir to temp location for extract_files
+      original_gem_dir = @gem_dir
+      @gem_dir = temp_dir
+
+      begin
+        pre_install_checks
+        IOTrace.trace(:file_write, "extract_to_temp: #{spec.name} -> #{temp_dir}") do
+          SharedHelpers.filesystem_access(temp_dir, :write) do
+            extract_files
+          end
+        end
+      ensure
+        @gem_dir = original_gem_dir
+      end
+
+      temp_dir
+    end
+
+    # Phase B: Finalize a pure Ruby gem (no native extensions).
+    # Atomic rename from temp dir, then write spec/cache/bin.
+    def finalize_without_extensions(temp_dir)
+      atomic_move(temp_dir, gem_dir)
+
+      spec.loaded_from = spec_file
+
+      write_build_info_file
+      run_post_build_hooks
+
+      SharedHelpers.filesystem_access(bin_dir, :write) do
+        generate_bin
+      end
+
+      generate_plugins
+
+      IOTrace.trace(:file_write, "write_spec: #{spec.name}") { write_spec }
+
+      IOTrace.trace(:file_write, "write_cache_file: #{spec.name}") do
+        SharedHelpers.filesystem_access("#{gem_home}/cache", :write) do
+          write_cache_file
+        end
+      end
+
+      Gem::Specification.add_spec(spec)
+
+      say spec.post_install_message unless spec.post_install_message.nil?
+      run_post_install_hooks
+
+      spec
+    end
+
+    # Phase C: Finalize a gem with native extensions.
+    # Must wait for dependencies. Atomic rename, build extensions, then finalize.
+    def finalize_with_extensions(temp_dir)
+      atomic_move(temp_dir, gem_dir)
+
+      spec.loaded_from = spec_file
+
+      IOTrace.trace(:file_write, "build_extensions: #{spec.name}") { build_extensions }
+      write_build_info_file
+      run_post_build_hooks
+
+      SharedHelpers.filesystem_access(bin_dir, :write) do
+        generate_bin
+      end
+
+      generate_plugins
+
+      IOTrace.trace(:file_write, "write_spec: #{spec.name}") { write_spec }
+
+      IOTrace.trace(:file_write, "write_cache_file: #{spec.name}") do
+        SharedHelpers.filesystem_access("#{gem_home}/cache", :write) do
+          write_cache_file
+        end
+      end
+
+      Gem::Specification.add_spec(spec)
+
+      say spec.post_install_message unless spec.post_install_message.nil?
+      run_post_install_hooks
+
+      spec
+    end
+
     private
 
     # Fast directory copy using macOS clonefile (APFS copy-on-write),
@@ -249,6 +344,17 @@ module Bundler
         raise unless File.exist?(dir)
 
         raise DirectoryRemovalError.new(e, "Could not delete previous installation of `#{dir}`")
+      end
+    end
+
+    # Atomic rename, falling back to FileUtils.mv for cross-device moves
+    def atomic_move(src, dest)
+      strict_rm_rf(dest)
+      strict_rm_rf("#{dest.chomp('/')}.old") # clean up any leftover
+      begin
+        File.rename(src, dest)
+      rescue Errno::EXDEV
+        FileUtils.mv(src, dest)
       end
     end
   end

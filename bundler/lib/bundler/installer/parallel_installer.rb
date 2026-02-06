@@ -2,6 +2,7 @@
 
 require_relative "../worker"
 require_relative "gem_installer"
+require_relative "progress_reporter"
 
 module Bundler
   class ParallelInstaller
@@ -111,22 +112,30 @@ module Bundler
       end if skip
       @spec_set = all_specs
       @rake = @specs.find {|s| s.name == "rake" unless s.installed? }
+      @progress = ProgressReporter.new
     end
 
     def call
       if @rake
         do_install(@rake, 0)
-        Gem::Specification.reset
       end
 
-      # Phase 1: Download ALL gems in parallel (no dependency ordering needed)
-      download_all_gems
+      # Silence default UI during progress-tracked phases to prevent
+      # "Fetching X" / "Installing X" messages from corrupting the
+      # live progress display. The ProgressReporter handles all output.
+      Bundler.ui.silence do
+        # Phase 1: Download ALL gems in parallel
+        download_all_gems
 
-      # Phase 2: Install gems (with relaxed dependency ordering)
-      if @size > 1
-        install_with_worker
-      else
-        install_serially
+        # Quick scan: peek at downloaded .gem files to detect native extensions
+        # BEFORE starting installation. This lets us prioritize native ext gems
+        # so compilation starts ASAP while pure Ruby gems install in parallel.
+        scan_native_extensions
+
+        # Phase 2: Install gems (extract + finalize inline, no batch barrier)
+        # Native ext gems are enqueued first so compilation overlaps with
+        # pure Ruby gem installation.
+        install_all_gems
       end
 
       handle_error if failed_specs.any?
@@ -158,19 +167,21 @@ module Bundler
       # for deterministic ordering. This ensures large downloads start early.
       downloadable.sort_by! {|s| [s.has_native_ext ? 0 : 1, s.name] }
 
-      Bundler.ui.debug "Downloading #{downloadable.size} gems in parallel..."
+      @progress.start_phase(:download, downloadable.size)
+      spinner_thread = start_spinner_thread
 
       download_size = [@size, downloadable.size].min
       download_size = [download_size, 8].max if download_size > 1 # At least 8 download threads
 
       if download_size > 1
         download_pool = Bundler::Worker.new(download_size, "Parallel Downloader", lambda {|spec_install, worker_num|
-          do_download(spec_install)
+          Bundler.ui.silence { do_download(spec_install) }
           spec_install
         })
 
         downloadable.each do |spec_install|
           spec_install.download_state = :enqueued
+          @progress.item_start(spec_install.name, spec_install.spec.version, download_label_for(spec_install))
           download_pool.enq spec_install
         end
 
@@ -181,8 +192,23 @@ module Bundler
         download_pool.stop
       else
         downloadable.each do |spec_install|
+          @progress.item_start(spec_install.name, spec_install.spec.version, download_label_for(spec_install))
           do_download(spec_install)
         end
+      end
+
+      stop_spinner_thread(spinner_thread)
+      @progress.finish_phase
+    end
+
+    def download_label_for(spec_install)
+      source = spec_install.spec.source
+      if source.is_a?(Source::Git)
+        "git checkout"
+      elsif source.is_a?(Source::Path)
+        "local"
+      else
+        "fetching"
       end
     end
 
@@ -198,14 +224,63 @@ module Bundler
             local: @local
           )
           spec_install.download_state = :downloaded
+          done = source.is_a?(Source::Git) ? "checked out" : "fetched"
+          @progress.item_done(spec_install.name, done)
         rescue => e
-          # Download failure is not fatal yet - install phase will handle it
           Bundler.ui.debug "Download warning for #{spec_install.name}: #{e.message}"
           spec_install.download_state = :downloaded # Mark as "attempted"
+          @progress.item_done(spec_install.name, "cached")
         end
       else
         spec_install.download_state = :downloaded
+        @progress.item_done(spec_install.name, "local")
       end
+    end
+
+    # Quick scan of downloaded .gem files to detect native extensions.
+    # This reads only the metadata from each .gem (tiny, fast) without
+    # extracting any files. Knowing which gems have native extensions
+    # lets us prioritize them in the install phase so compilation starts
+    # early and overlaps with pure Ruby gem installation.
+    def scan_native_extensions
+      @specs.each do |spec_install|
+        next if spec_install.installed? || spec_install.failed?
+        next if spec_install.has_native_ext # already detected
+        next unless spec_install.downloaded?
+
+        source = spec_install.spec.source
+        next unless source.respond_to?(:cached_gem)
+
+        begin
+          path = source.cached_gem(spec_install.spec)
+          next unless path && File.exist?(path.to_s)
+
+          pkg = Gem::Package.new(path.to_s)
+          if pkg.spec.extensions.is_a?(Array) && pkg.spec.extensions.any?
+            spec_install.has_native_ext = true
+          end
+        rescue
+          # Non-fatal: we'll detect during install if this fails
+        end
+      end
+    end
+
+    def install_all_gems
+      installable = @specs.reject {|s| s.installed? || s.failed? }
+      return if installable.empty?
+
+      @progress.start_phase(:install, installable.size)
+      @install_spinner_thread = start_spinner_thread
+
+      if @size > 1
+        install_with_worker
+      else
+        install_serially
+      end
+
+      stop_spinner_thread(@install_spinner_thread)
+      @install_spinner_thread = nil
+      @progress.finish_phase
     end
 
     def install_with_worker
@@ -223,23 +298,61 @@ module Bundler
 
     def worker_pool
       @worker_pool ||= Bundler::Worker.new @size, "Parallel Installer", lambda {|spec_install, worker_num|
-        do_install(spec_install, worker_num)
+        Bundler.ui.silence { do_install(spec_install, worker_num) }
       }
     end
 
     def do_install(spec_install, worker_num)
+      detail = spec_install.has_native_ext ? "compiling native extensions" : "installing"
+      @progress.item_start(spec_install.name, spec_install.spec.version, detail)
+
       Plugin.hook(Plugin::Events::GEM_BEFORE_INSTALL, spec_install)
+
+      # Try the phased path: extract to temp dir, then finalize.
+      # This is crash-safe (temp dir is cleaned up on failure) and
+      # lets us detect native extensions from the real spec.
       gem_installer = Bundler::GemInstaller.new(
         spec_install.spec, @installer, @standalone, worker_num, @force, @local
       )
-      success, message = gem_installer.install_from_spec
-      if success
-        spec_install.state = :installed
-        spec_install.post_install_message = message unless message.nil?
+      extract_result = gem_installer.extract_from_spec
+
+      if extract_result
+        # Detect native extensions from the REAL spec (not LazySpecification).
+        # LazySpecification doesn't have #extensions, so detect_native_extensions
+        # may return false. The real Gem::Specification from the .gem package
+        # has the correct extensions list.
+        _temp_dir, _installer, real_spec = extract_result
+        if !spec_install.has_native_ext && real_spec.respond_to?(:extensions) &&
+            real_spec.extensions.is_a?(Array) && real_spec.extensions.any?
+          spec_install.has_native_ext = true
+        end
+
+        success, message = gem_installer.finalize_from_spec(extract_result, spec_install.has_native_ext)
+        if success
+          spec_install.state = :installed
+          spec_install.post_install_message = message unless message.nil?
+        else
+          spec_install.error = "#{message}\n\n#{require_tree_for_spec(spec_install.spec)}"
+          spec_install.state = :failed
+        end
       else
-        spec_install.error = "#{message}\n\n#{require_tree_for_spec(spec_install.spec)}"
-        spec_install.state = :failed
+        # extract_from_spec returns nil when gem is already installed or
+        # source doesn't support phased install (git, path). Fall back
+        # to the traditional install path.
+        success, message = gem_installer.install_from_spec
+        if success
+          spec_install.state = :installed
+          spec_install.post_install_message = message unless message.nil?
+        else
+          spec_install.error = "#{message}\n\n#{require_tree_for_spec(spec_install.spec)}"
+          spec_install.state = :failed
+        end
       end
+
+      done_detail = spec_install.has_native_ext ? "compiled" : "installed"
+      done_detail = "failed" if spec_install.failed?
+      @progress.item_done(spec_install.name, done_detail)
+
       Plugin.hook(Plugin::Events::GEM_AFTER_INSTALL, spec_install)
       spec_install
     end
@@ -292,6 +405,9 @@ module Bundler
     # without waiting for their dependencies, since they don't run any
     # code during installation. Only gems with native extensions need
     # their dependencies installed first (for extconf.rb).
+    #
+    # PRIORITY: Native extension gems are enqueued first so that
+    # compilation starts ASAP and overlaps with pure Ruby gem installation.
     def enqueue_specs
       installed_specs = {}
       @specs.each do |spec|
@@ -299,22 +415,48 @@ module Bundler
         installed_specs[spec.name] = true
       end
 
+      # Collect enqueueable specs, prioritizing native ext gems
+      native_ext_ready = []
+      pure_ruby_ready = []
+
       @specs.each do |spec|
         next unless spec.ready_to_enqueue?
 
-        can_enqueue = if spec.can_install_without_deps?
-          # Pure Ruby gem: install immediately, no need to wait for deps
-          true
-        else
+        if spec.has_native_ext
           # Native extension gem: must wait for dependencies
-          spec.dependencies_installed?(installed_specs)
-        end
-
-        if can_enqueue
-          spec.state = :enqueued
-          worker_pool.enq spec
+          if spec.dependencies_installed?(installed_specs)
+            native_ext_ready << spec
+          end
+        else
+          # Pure Ruby gem: install immediately, no need to wait for deps
+          pure_ruby_ready << spec
         end
       end
+
+      # Enqueue native ext gems first so compilation starts early
+      (native_ext_ready + pure_ruby_ready).each do |spec|
+        spec.state = :enqueued
+        worker_pool.enq spec
+      end
+    end
+
+    # Start a background thread that ticks the spinner animation.
+    def start_spinner_thread
+      return nil unless @progress.tty
+      Thread.new do
+        loop do
+          sleep 0.15
+          @progress.tick
+        rescue
+          break
+        end
+      end
+    end
+
+    def stop_spinner_thread(thread)
+      return unless thread
+      thread.kill
+      thread.join(0.5)
     end
   end
 end

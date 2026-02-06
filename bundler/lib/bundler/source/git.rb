@@ -198,6 +198,16 @@ module Bundler
         local_specs
       end
 
+      # Pre-checkout git source during the parallel download phase.
+      # This makes git repos participate in the same parallel pipeline
+      # as rubygems downloads, so the progress reporter shows them.
+      def download(spec, options = {})
+        return if Bundler.settings[:no_install]
+        if (requires_checkout? && !@copied) || options[:force]
+          checkout
+        end
+      end
+
       def install(spec, options = {})
         return if Bundler.settings[:no_install]
         force = options[:force]

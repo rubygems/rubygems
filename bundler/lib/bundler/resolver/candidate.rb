@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "spec_group"
+require_relative "../compact_version"
 
 module Bundler
   class Resolver
@@ -19,6 +20,9 @@ module Bundler
     # are used when materializing resolution results back into RubyGems
     # specifications that can be installed, written to lockfiles, and so on.
     #
+    # OPTIMIZATION: Uses CompactVersion for O(1) integer comparison on ~90% of
+    # real-world versions, falling back to Gem::Version for edge cases.
+    #
     class Candidate
       include Comparable
 
@@ -27,6 +31,7 @@ module Bundler
       def initialize(version, group: nil, priority: -1)
         @spec_group = group || SpecGroup.new([])
         @version = Gem::Version.new(version)
+        @compact = CompactVersion.new(@version)
         @priority = priority
       end
 
@@ -51,7 +56,12 @@ module Bundler
       def <=>(other)
         return unless other.is_a?(self.class)
 
-        version_comparison = version <=> other.version
+        # Use packed integer comparison when available (fast path)
+        if @compact.packed && other.compact_version.packed
+          version_comparison = @compact.packed <=> other.compact_version.packed
+        else
+          version_comparison = version <=> other.version
+        end
         return version_comparison unless version_comparison.zero?
 
         priority <=> other.priority
@@ -60,7 +70,11 @@ module Bundler
       def ==(other)
         return unless other.is_a?(self.class)
 
-        version == other.version && priority == other.priority
+        if @compact.packed && other.compact_version.packed
+          @compact.packed == other.compact_version.packed && priority == other.priority
+        else
+          version == other.version && priority == other.priority
+        end
       end
 
       def eql?(other)
@@ -75,6 +89,11 @@ module Bundler
 
       def to_s
         @version.to_s
+      end
+
+      # Expose compact version for fast comparison from other candidates
+      def compact_version
+        @compact
       end
 
       protected

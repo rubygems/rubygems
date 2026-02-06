@@ -120,23 +120,13 @@ module Bundler
         do_install(@rake, 0)
       end
 
-      # Silence default UI during progress-tracked phases to prevent
-      # "Fetching X" / "Installing X" messages from corrupting the
-      # live progress display. The ProgressReporter handles all output.
-      Bundler.ui.silence do
-        # Phase 1: Download ALL gems in parallel
-        download_all_gems
+      # Phase 1: Download ALL gems in parallel
+      download_all_gems
 
-        # Quick scan: peek at downloaded .gem files to detect native extensions
-        # BEFORE starting installation. This lets us prioritize native ext gems
-        # so compilation starts ASAP while pure Ruby gems install in parallel.
-        scan_native_extensions
-
-        # Phase 2: Install gems (extract + finalize inline, no batch barrier)
-        # Native ext gems are enqueued first so compilation overlaps with
-        # pure Ruby gem installation.
-        install_all_gems
-      end
+      # Phase 2: Install gems (extract + finalize inline per gem)
+      # Native ext gems are prioritized when detected so compilation
+      # starts ASAP and overlaps with pure Ruby gem installation.
+      install_all_gems
 
       handle_error if failed_specs.any?
       @specs
@@ -234,34 +224,6 @@ module Bundler
       else
         spec_install.download_state = :downloaded
         @progress.item_done(spec_install.name, "local")
-      end
-    end
-
-    # Quick scan of downloaded .gem files to detect native extensions.
-    # This reads only the metadata from each .gem (tiny, fast) without
-    # extracting any files. Knowing which gems have native extensions
-    # lets us prioritize them in the install phase so compilation starts
-    # early and overlaps with pure Ruby gem installation.
-    def scan_native_extensions
-      @specs.each do |spec_install|
-        next if spec_install.installed? || spec_install.failed?
-        next if spec_install.has_native_ext # already detected
-        next unless spec_install.downloaded?
-
-        source = spec_install.spec.source
-        next unless source.respond_to?(:cached_gem)
-
-        begin
-          path = source.cached_gem(spec_install.spec)
-          next unless path && File.exist?(path.to_s)
-
-          pkg = Gem::Package.new(path.to_s)
-          if pkg.spec.extensions.is_a?(Array) && pkg.spec.extensions.any?
-            spec_install.has_native_ext = true
-          end
-        rescue
-          # Non-fatal: we'll detect during install if this fails
-        end
       end
     end
 

@@ -203,7 +203,6 @@ module Bundler
 
       def install(spec, options = {})
         if (spec.default_gem? && !cached_built_in_gem(spec, local: options[:local])) || (installed?(spec) && !options[:force])
-          print_using_message "Using #{version_message(spec, options[:previous_spec])}"
           return nil # no post-install message
         end
 
@@ -246,10 +245,6 @@ module Bundler
         end
 
         spec.source.checksum_store.register(spec, installer.gem_checksum)
-
-        message = "Installing #{version_message(spec, options[:previous_spec])}"
-        message += " with native extensions" if spec.extensions.any?
-        Bundler.ui.confirm message
 
         installed_spec = nil
 
@@ -681,7 +676,6 @@ module Bundler
       #
       def download_gem(spec, download_cache_path, previous_spec = nil)
         uri = spec.remote.uri
-        Bundler.ui.confirm("Fetching #{version_message(spec, previous_spec)}")
         gem_remote_fetcher = remote_fetchers.fetch(spec.remote).gem_remote_fetcher
 
         IOTrace.trace(:http, "download_gem: #{spec.name} from #{uri}") do

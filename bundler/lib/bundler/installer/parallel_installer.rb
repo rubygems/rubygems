@@ -7,13 +7,17 @@ module Bundler
   class ParallelInstaller
     class SpecInstallation
       attr_accessor :spec, :name, :full_name, :post_install_message, :state, :error
+      attr_accessor :download_state, :has_native_ext
+
       def initialize(spec)
         @spec = spec
         @name = spec.name
         @full_name = spec.full_name
         @state = :none
+        @download_state = :none # :none, :enqueued, :downloaded, :failed
         @post_install_message = ""
         @error = nil
+        @has_native_ext = detect_native_extensions
       end
 
       def installed?
@@ -32,6 +36,14 @@ module Bundler
         state == :none
       end
 
+      def downloaded?
+        download_state == :downloaded
+      end
+
+      def download_ready?
+        download_state == :none
+      end
+
       def has_post_install_message?
         !post_install_message.empty?
       end
@@ -46,6 +58,12 @@ module Bundler
         dependencies.all? {|d| installed_specs.include? d.name }
       end
 
+      # For pure Ruby gems, we can install without waiting for dependencies
+      # since there's no extconf.rb that might require them at build time.
+      def can_install_without_deps?
+        !has_native_ext
+      end
+
       # Represents only the non-development dependencies, the ones that are
       # itself and are in the total list.
       def dependencies
@@ -58,7 +76,17 @@ module Bundler
       end
 
       def to_s
-        "#<#{self.class} #{full_name} (#{state})>"
+        "#<#{self.class} #{full_name} (#{state}) dl:#{download_state}>"
+      end
+
+      private
+
+      def detect_native_extensions
+        return false unless @spec.respond_to?(:extensions)
+        extensions = @spec.extensions
+        extensions.is_a?(Array) ? extensions.any? : false
+      rescue
+        false
       end
     end
 
@@ -76,7 +104,10 @@ module Bundler
       @local = local
       @specs = all_specs.map {|s| SpecInstallation.new(s) }
       @specs.each do |spec_install|
-        spec_install.state = :installed if skip.include?(spec_install.name)
+        if skip.include?(spec_install.name)
+          spec_install.state = :installed
+          spec_install.download_state = :downloaded
+        end
       end if skip
       @spec_set = all_specs
       @rake = @specs.find {|s| s.name == "rake" unless s.installed? }
@@ -88,6 +119,10 @@ module Bundler
         Gem::Specification.reset
       end
 
+      # Phase 1: Download ALL gems in parallel (no dependency ordering needed)
+      download_all_gems
+
+      # Phase 2: Install gems (with relaxed dependency ordering)
       if @size > 1
         install_with_worker
       else
@@ -98,12 +133,79 @@ module Bundler
       @specs
     ensure
       worker_pool&.stop
+      @download_pool&.stop
     end
 
     private
 
     def failed_specs
       @specs.select(&:failed?)
+    end
+
+    # Download all gems in parallel - no dependency ordering needed for downloads.
+    # This is the key insight from tenderlove: downloading is pure I/O and can
+    # happen for ALL gems simultaneously, regardless of dependency relationships.
+    #
+    # OPTIMIZATION (from uv's preparer.rs): Sort downloads by estimated size
+    # descending so large gems start downloading first. This reduces tail
+    # latency - by the time small gems finish, large ones are already in progress.
+    # Gems with native extensions tend to be larger, so we prioritize those.
+    def download_all_gems
+      downloadable = @specs.reject {|s| s.installed? || s.failed? }
+      return if downloadable.empty?
+
+      # Sort: native extension gems first (tend to be larger), then by name
+      # for deterministic ordering. This ensures large downloads start early.
+      downloadable.sort_by! {|s| [s.has_native_ext ? 0 : 1, s.name] }
+
+      Bundler.ui.debug "Downloading #{downloadable.size} gems in parallel..."
+
+      download_size = [@size, downloadable.size].min
+      download_size = [download_size, 8].max if download_size > 1 # At least 8 download threads
+
+      if download_size > 1
+        download_pool = Bundler::Worker.new(download_size, "Parallel Downloader", lambda {|spec_install, worker_num|
+          do_download(spec_install)
+          spec_install
+        })
+
+        downloadable.each do |spec_install|
+          spec_install.download_state = :enqueued
+          download_pool.enq spec_install
+        end
+
+        downloadable.size.times do
+          download_pool.deq
+        end
+
+        download_pool.stop
+      else
+        downloadable.each do |spec_install|
+          do_download(spec_install)
+        end
+      end
+    end
+
+    def do_download(spec_install)
+      return if spec_install.installed? || spec_install.download_state == :downloaded
+
+      source = spec_install.spec.source
+      if source.respond_to?(:download)
+        begin
+          source.download(
+            spec_install.spec,
+            force: @force,
+            local: @local
+          )
+          spec_install.download_state = :downloaded
+        rescue => e
+          # Download failure is not fatal yet - install phase will handle it
+          Bundler.ui.debug "Download warning for #{spec_install.name}: #{e.message}"
+          spec_install.download_state = :downloaded # Mark as "attempted"
+        end
+      else
+        spec_install.download_state = :downloaded
+      end
     end
 
     def install_with_worker
@@ -185,6 +287,11 @@ module Bundler
     # Later we call this lambda again to install specs that depended on
     # previously installed specifications. We continue until all specs
     # are installed.
+    #
+    # OPTIMIZATION: Pure Ruby gems (no native extensions) can be installed
+    # without waiting for their dependencies, since they don't run any
+    # code during installation. Only gems with native extensions need
+    # their dependencies installed first (for extconf.rb).
     def enqueue_specs
       installed_specs = {}
       @specs.each do |spec|
@@ -193,7 +300,17 @@ module Bundler
       end
 
       @specs.each do |spec|
-        if spec.ready_to_enqueue? && spec.dependencies_installed?(installed_specs)
+        next unless spec.ready_to_enqueue?
+
+        can_enqueue = if spec.can_install_without_deps?
+          # Pure Ruby gem: install immediately, no need to wait for deps
+          true
+        else
+          # Native extension gem: must wait for dependencies
+          spec.dependencies_installed?(installed_specs)
+        end
+
+        if can_enqueue
           spec.state = :enqueued
           worker_pool.enq spec
         end

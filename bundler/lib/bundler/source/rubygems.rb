@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rubygems/user_interaction"
+require_relative "../io_trace"
 
 module Bundler
   class Source
@@ -61,9 +62,12 @@ module Bundler
       end
 
       def cached!
-        return unless File.exist?(cache_path)
-
+        # OPTIMIZATION: Check @allow_cached first to avoid redundant File.exist?
+        # stat calls. cached! is called up to 3 times during definition setup
+        # (setup_domain!, with_cache!, remotely!) and each call would stat the
+        # cache directory unnecessarily.
         return if @allow_cached
+        return unless File.exist?(cache_path)
 
         @specs = nil
         @allow_cached = true
@@ -162,13 +166,40 @@ module Bundler
         end
       end
 
+      # Download a gem to the cache without installing it.
+      # Returns the path to the cached .gem file, or nil if already installed.
+      def download(spec, previous_spec: nil, force: false, local: false)
+        if (spec.default_gem? && !cached_built_in_gem(spec, local: local)) || (installed?(spec) && !force)
+          return nil # already available
+        end
+
+        path = fetch_gem_if_possible(spec, previous_spec)
+        raise GemNotFound, "Could not find #{spec.file_name} for download" unless path
+
+        # OPTIMIZATION: Update cached_gem memo so install() doesn't re-stat
+        @cached_gem_memo ||= {}
+        @cached_gem_memo[spec.full_name] = path
+
+        path
+      end
+
+      # Check if a spec has native extensions that need compilation.
+      def has_native_extensions?(spec)
+        return false unless spec.respond_to?(:extensions)
+        extensions = spec.extensions
+        extensions.is_a?(Array) ? extensions.any? : false
+      rescue
+        false
+      end
+
       def install(spec, options = {})
         if (spec.default_gem? && !cached_built_in_gem(spec, local: options[:local])) || (installed?(spec) && !options[:force])
           print_using_message "Using #{version_message(spec, options[:previous_spec])}"
           return nil # no post-install message
         end
 
-        path = fetch_gem_if_possible(spec, options[:previous_spec])
+        # Use pre-downloaded gem if available, otherwise download now
+        path = cached_gem(spec) || fetch_gem_if_possible(spec, options[:previous_spec])
         raise GemNotFound, "Could not find #{spec.file_name} for installation" unless path
 
         return if Bundler.settings[:no_install]
@@ -331,11 +362,23 @@ module Bundler
       end
 
       def cached_gem(spec)
+        # OPTIMIZATION: Memoize cached_gem lookups to avoid redundant File.exist?
+        # stat calls. cached_gem is called from both download() and install()
+        # for the same spec, plus indirectly from fetch_gem_if_possible.
+        @cached_gem_memo ||= {}
+        key = spec.full_name
+        return @cached_gem_memo[key] if @cached_gem_memo.key?(key)
+
         global_cache_path = download_cache_path(spec)
-        caches << global_cache_path if global_cache_path
+        # Only add global_cache_path if not already present to avoid growing
+        # the caches array on every call (causes extra File.exist? checks)
+        caches << global_cache_path if global_cache_path && !caches.include?(global_cache_path)
 
         possibilities = caches.map {|p| package_path(p, spec) }
-        possibilities.find {|p| File.exist?(p) }
+        result = IOTrace.trace(:file_stat, "cached_gem search: #{spec.name} (#{possibilities.size} paths)") do
+          possibilities.find {|p| File.exist?(p) }
+        end
+        @cached_gem_memo[key] = result
       end
 
       def package_path(cache_path, spec)
@@ -382,10 +425,12 @@ module Bundler
         @cached_specs ||= begin
           idx = Index.new
 
-          Dir["#{cache_path}/*.gem"].each do |gemfile|
-            s ||= Bundler.rubygems.spec_from_gem(gemfile)
-            s.source = self
-            idx << s
+          IOTrace.trace(:dir_scan, "cached_specs Dir glob: #{cache_path}/*.gem") do
+            Dir["#{cache_path}/*.gem"].each do |gemfile|
+              s ||= Bundler.rubygems.spec_from_gem(gemfile)
+              s.source = self
+              idx << s
+            end
           end
 
           idx
@@ -432,6 +477,23 @@ module Bundler
       def fetch_gem(spec, previous_spec = nil)
         spec.fetch_platform
 
+        # Check global cache first (shared across Ruby versions)
+        global_path = global_gem_cache_path(spec)
+        if global_path && IOTrace.trace(:file_stat, "fetch_gem global cache check: #{spec.name}") { File.exist?(global_path) }
+          # Found in global cache - copy/link to local cache if needed
+          local_cache = default_cache_path_for(rubygems_dir)
+          local_path = package_path(local_cache, spec)
+          unless File.exist?(local_path)
+            SharedHelpers.filesystem_access(local_cache) {|p| FileUtils.mkdir_p(p) }
+            begin
+              FileUtils.ln(global_path, local_path)
+            rescue Errno::EXDEV, Errno::ENOTSUP
+              FileUtils.cp(global_path, local_path)
+            end
+          end
+          return local_path
+        end
+
         cache_path = download_cache_path(spec) || default_cache_path_for(rubygems_dir)
         gem_path = package_path(cache_path, spec)
         return gem_path if File.exist?(gem_path)
@@ -441,11 +503,33 @@ module Bundler
         end
         download_gem(spec, cache_path, previous_spec)
 
+        # Store in global cache for future Ruby versions
+        if global_path = global_gem_cache_path(spec)
+          unless File.exist?(global_path)
+            SharedHelpers.filesystem_access(File.dirname(global_path)) {|p| FileUtils.mkdir_p(p) }
+            begin
+              FileUtils.ln(gem_path, global_path)
+            rescue Errno::EXDEV, Errno::ENOTSUP
+              FileUtils.cp(gem_path, global_path)
+            end
+          end
+        end
+
         gem_path
       end
 
       def installed?(spec)
-        installed_specs[spec].any? && !spec.installation_missing?
+        # OPTIMIZATION: Memoize installed? checks. Each call to installation_missing?
+        # does a File.directory? syscall. During install, installed? is called from
+        # both download() and install() for every spec.
+        @installed_memo ||= {}
+        key = spec.full_name
+        return @installed_memo[key] if @installed_memo.key?(key)
+
+        result = IOTrace.trace(:file_stat, "installed? check: #{spec.name}") do
+          installed_specs[spec].any? && !spec.installation_missing?
+        end
+        @installed_memo[key] = result
       end
 
       def rubygems_dir
@@ -466,6 +550,17 @@ module Bundler
         @lockfile_remotes || credless_remotes
       end
 
+      # Returns path in the global gem cache (XDG_CACHE_HOME based).
+      # This cache is shared across all Ruby versions since .gem files
+      # are Ruby-version independent archives.
+      def global_gem_cache_path(spec)
+        xdg_cache = ENV["XDG_CACHE_HOME"] || File.join(Dir.home, ".cache")
+        cache_dir = File.join(xdg_cache, "bundler", "gems")
+        File.join(cache_dir, spec.file_name)
+      rescue
+        nil
+      end
+
       # Checks if the requested spec exists in the global cache. If it does,
       # we copy it to the download path, and if it does not, we download it.
       #
@@ -483,8 +578,10 @@ module Bundler
         Bundler.ui.confirm("Fetching #{version_message(spec, previous_spec)}")
         gem_remote_fetcher = remote_fetchers.fetch(spec.remote).gem_remote_fetcher
 
-        Gem.time("Downloaded #{spec.name} in", 0, true) do
-          Bundler.rubygems.download_gem(spec, uri, download_cache_path, gem_remote_fetcher)
+        IOTrace.trace(:http, "download_gem: #{spec.name} from #{uri}") do
+          Gem.time("Downloaded #{spec.name} in", 0, true) do
+            Bundler.rubygems.download_gem(spec, uri, download_cache_path, gem_remote_fetcher)
+          end
         end
       end
 

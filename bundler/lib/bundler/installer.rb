@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "worker"
+require_relative "io_trace"
 require_relative "installer/parallel_installer"
 require_relative "installer/standalone"
 require_relative "installer/gem_installer"
@@ -67,6 +68,16 @@ module Bundler
 
         if @definition.dependencies.empty?
           Bundler.ui.warn "The Gemfile specifies no dependencies"
+          lock
+          return
+        end
+
+        # OPTIMIZATION (inspired by uv's SatisfiesResult::Fresh):
+        # Fast pre-check: if nothing changed and no specs are missing,
+        # skip the entire install pipeline. This makes repeated
+        # `bundle install` with no changes nearly instant.
+        if !@definition.install_needed? && !options[:force]
+          Bundler.ui.info "Bundle already satisfied. Skipping install."
           lock
           return
         end

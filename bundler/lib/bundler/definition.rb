@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "lockfile_parser"
+require_relative "io_trace"
 require_relative "worker"
 
 module Bundler
@@ -101,8 +102,8 @@ module Bundler
       @originally_invalid_platforms = []
 
       if lockfile_exists?
-        @lockfile_contents = Bundler.read_file(lockfile)
-        @locked_gems = LockfileParser.new(@lockfile_contents, strict: strict)
+        @lockfile_contents = IOTrace.trace(:file_read, "lockfile read: #{lockfile}") { Bundler.read_file(lockfile) }
+        @locked_gems = IOTrace.trace(:file_read, "lockfile parse: #{lockfile}") { LockfileParser.new(@lockfile_contents, strict: strict) }
         @locked_platforms = @locked_gems.platforms
         @most_specific_locked_platform = @locked_gems.most_specific_locked_platform
         @platforms = @locked_platforms.dup
@@ -384,7 +385,17 @@ module Bundler
     def write_lock(file, preserve_unknown_sections)
       return if Definition.no_lock || !lockfile || file.nil?
 
-      contents = to_lock
+      # OPTIMIZATION: Skip expensive to_lock generation when nothing changed
+      # and the lockfile already exists. to_lock traverses the entire resolved
+      # spec set and generates a large string, which is wasted work when the
+      # lockfile content would be identical.
+      if nothing_changed? && !@unlocking && !@unlocking_bundler && lockfile_exists? && !Bundler.frozen_bundle?
+        IOTrace.note(:file_write, "lockfile write skipped (nothing_changed?): #{file}")
+        SharedHelpers.filesystem_access(file) { FileUtils.touch(file) }
+        return
+      end
+
+      contents = IOTrace.trace(:file_write, "lockfile to_lock generation") { to_lock }
 
       # Convert to \r\n if the existing lock has them
       # i.e., Windows with `git config core.autocrlf=true`
@@ -399,9 +410,11 @@ module Bundler
 
       preserve_unknown_sections ||= !updating_major && (Bundler.frozen_bundle? || !(unlocking? || @unlocking_bundler))
 
-      if File.exist?(file) && lockfiles_equal?(@lockfile_contents, contents, preserve_unknown_sections)
+      if IOTrace.trace(:file_stat, "lockfile exist check: #{file}") { File.exist?(file) } && lockfiles_equal?(@lockfile_contents, contents, preserve_unknown_sections)
         return if Bundler.frozen_bundle?
-        SharedHelpers.filesystem_access(file) { FileUtils.touch(file) }
+        IOTrace.trace(:file_write, "lockfile touch (unchanged): #{file}") do
+          SharedHelpers.filesystem_access(file) { FileUtils.touch(file) }
+        end
         return
       end
 
@@ -411,8 +424,10 @@ module Bundler
       end
 
       begin
-        SharedHelpers.filesystem_access(file) do |p|
-          File.open(p, "wb") {|f| f.puts(contents) }
+        IOTrace.trace(:file_write, "lockfile write: #{file}") do
+          SharedHelpers.filesystem_access(file) do |p|
+            File.open(p, "wb") {|f| f.puts(contents) }
+          end
         end
       rescue ReadOnlyFileSystemError
         raise ProductionError, lockfile_changes_summary("file system is read-only")
@@ -559,6 +574,12 @@ module Bundler
       end
     end
 
+    # Public: Check if a full install pipeline is needed.
+    # Used by Installer for early satisfaction check (uv's SatisfiesResult::Fresh).
+    def install_needed?
+      resolve_needed? || missing_specs?
+    end
+
     private
 
     def lockfile_changes_summary(update_refused_reason)
@@ -600,10 +621,6 @@ module Bundler
       msg
     end
 
-    def install_needed?
-      resolve_needed? || missing_specs?
-    end
-
     def something_changed?
       return true unless lockfile_exists?
 
@@ -630,7 +647,8 @@ module Bundler
     end
 
     def lockfile_exists?
-      lockfile && File.exist?(lockfile)
+      return @lockfile_exists if defined?(@lockfile_exists)
+      @lockfile_exists = lockfile && File.exist?(lockfile)
     end
 
     def resolver
@@ -1054,11 +1072,21 @@ module Bundler
       converged = []
       deps = []
 
+      # Build a hash of dependencies by name for O(1) lookup instead of
+      # scanning the full dependency list for every spec (O(specs * deps)).
+      deps_by_name = {}
+      @dependencies.each {|d| deps_by_name[d.name] = d }
+
+      # Convert @gems_to_unlock to a Set for O(1) include? checks
+      gems_to_unlock_set = @gems_to_unlock.is_a?(Array) ? @gems_to_unlock.to_h {|g| [g, true] } : @gems_to_unlock
+
       specs.each do |s|
         name = s.name
-        next if @gems_to_unlock.include?(name)
+        next if gems_to_unlock_set.key?(name)
 
-        dep = @dependencies.find {|d| s.satisfies?(d) }
+        # O(1) hash lookup, then verify it satisfies (almost always true for same name)
+        dep = deps_by_name[name]
+        dep = nil if dep && !s.satisfies?(dep)
         lockfile_source = s.source
 
         if dep

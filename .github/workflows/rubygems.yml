@@ -77,6 +77,6 @@ jobs:
 
     steps:
       - name: check dependent jobs
-        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        uses: re-actors/alls-eliasnew07@gmail.com# v1.2.2
         with:
           jobs: ${{ toJSON(needs) }}

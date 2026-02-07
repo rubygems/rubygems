@@ -118,6 +118,7 @@ module Bundler
     def call
       if @rake
         do_install(@rake, 0)
+        Gem::Specification.reset # make rake visible for native extension builds
       end
 
       # Phase 1: Download ALL gems in parallel
@@ -160,30 +161,32 @@ module Bundler
       @progress.start_phase(:download, downloadable.size)
       spinner_thread = start_spinner_thread
 
-      download_size = [@size, downloadable.size].min
-      download_size = [download_size, 8].max if download_size > 1 # At least 8 download threads
+      @progress.with_cursor_hidden do
+        download_size = [@size, downloadable.size].min
+        download_size = [download_size, 8].max if download_size > 1 # At least 8 download threads
 
-      if download_size > 1
-        download_pool = Bundler::Worker.new(download_size, "Parallel Downloader", lambda {|spec_install, worker_num|
-          Bundler.ui.silence { do_download(spec_install) }
-          spec_install
-        })
+        if download_size > 1
+          download_pool = Bundler::Worker.new(download_size, "Parallel Downloader", lambda {|spec_install, worker_num|
+            Bundler.ui.silence { do_download(spec_install) }
+            spec_install
+          })
 
-        downloadable.each do |spec_install|
-          spec_install.download_state = :enqueued
-          @progress.item_start(spec_install.name, spec_install.spec.version, download_label_for(spec_install))
-          download_pool.enq spec_install
-        end
+          downloadable.each do |spec_install|
+            spec_install.download_state = :enqueued
+            @progress.item_start(spec_install.name, spec_install.spec.version, download_label_for(spec_install))
+            download_pool.enq spec_install
+          end
 
-        downloadable.size.times do
-          download_pool.deq
-        end
+          downloadable.size.times do
+            download_pool.deq
+          end
 
-        download_pool.stop
-      else
-        downloadable.each do |spec_install|
-          @progress.item_start(spec_install.name, spec_install.spec.version, download_label_for(spec_install))
-          do_download(spec_install)
+          download_pool.stop
+        else
+          downloadable.each do |spec_install|
+            @progress.item_start(spec_install.name, spec_install.spec.version, download_label_for(spec_install))
+            do_download(spec_install)
+          end
         end
       end
 
@@ -234,10 +237,12 @@ module Bundler
       @progress.start_phase(:install, installable.size)
       @install_spinner_thread = start_spinner_thread
 
-      if @size > 1
-        install_with_worker
-      else
-        install_serially
+      @progress.with_cursor_hidden do
+        if @size > 1
+          install_with_worker
+        else
+          install_serially
+        end
       end
 
       stop_spinner_thread(@install_spinner_thread)
@@ -278,12 +283,12 @@ module Bundler
       )
       extract_result = gem_installer.extract_from_spec
 
-      if extract_result
+      if extract_result.is_a?(Array) && extract_result.length >= 3
         # Detect native extensions from the REAL spec (not LazySpecification).
         # LazySpecification doesn't have #extensions, so detect_native_extensions
         # may return false. The real Gem::Specification from the .gem package
         # has the correct extensions list.
-        _temp_dir, _installer, real_spec = extract_result
+        _source_dir, _installer, real_spec, _from_cache = extract_result
         if !spec_install.has_native_ext && real_spec.respond_to?(:extensions) &&
             real_spec.extensions.is_a?(Array) && real_spec.extensions.any?
           spec_install.has_native_ext = true
@@ -297,6 +302,9 @@ module Bundler
           spec_install.error = "#{message}\n\n#{require_tree_for_spec(spec_install.spec)}"
           spec_install.state = :failed
         end
+      elsif extract_result.is_a?(Array)
+        # extract_from_spec returned [false, error_message]
+        success, message = extract_result
       else
         # extract_from_spec returns nil when gem is already installed or
         # source doesn't support phased install (git, path). Fall back

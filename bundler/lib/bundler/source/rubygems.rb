@@ -259,66 +259,78 @@ module Bundler
         spec.post_install_message
       end
 
-      # Extract gem to a temporary directory without installing.
-      # Returns the temp_dir path, or nil if already installed.
+      # Extract gem contents, using a global extracted cache to avoid
+      # re-extracting on subsequent installs. Returns [source_dir, installer,
+      # spec, from_cache] or nil if already installed.
+      #
+      # Cache layout:
+      #   ~/.cache/gem/extracted/<full_name>/              extracted gem files
+      #   ~/.cache/gem/extracted/<full_name>.spec.marshal   marshaled Gem::Specification
+      #
+      # Cache HIT:  0 .gem file reads — spec loaded from marshal
+      # Cache MISS: 1 .gem file read  — single-pass extraction (spec + data.tar.gz)
       def extract_gem(spec, options = {})
         if (spec.default_gem? && !cached_built_in_gem(spec, local: options[:local])) || (installed?(spec) && !options[:force])
-          return nil # already available
+          return nil
         end
 
-        path = cached_gem(spec) || fetch_gem_if_possible(spec, nil)
-        raise GemNotFound, "Could not find #{spec.file_name} for extraction" unless path
+        gem_path = cached_gem(spec) || fetch_gem_if_possible(spec, nil)
+        raise GemNotFound, "Could not find #{spec.file_name} for extraction" unless gem_path
 
         return nil if Bundler.settings[:no_install]
 
-        install_path = rubygems_dir
-        bin_path     = Bundler.system_bindir
-
         require_relative "../rubygems_gem_installer"
 
-        installer = Bundler::RubyGemsGemInstaller.at(
-          path,
-          security_policy: Bundler.rubygems.security_policies[Bundler.settings["trust-policy"]],
-          install_dir: install_path.to_s,
-          bin_dir: bin_path.to_s,
-          ignore_dependencies: true,
-          wrappers: true,
-          env_shebang: true,
-          build_args: options[:build_args],
-          bundler_extension_cache_path: extension_cache_path(spec)
-        )
+        cache_dir = extracted_cache_path(spec)
 
-        if spec.remote
-          s = begin
-            installer.spec
-          rescue Gem::Package::FormatError
-            Bundler.rm_rf(path)
-            raise
-          rescue Gem::Security::Exception => e
-            raise SecurityError,
-             "The gem #{File.basename(path, ".gem")} can't be installed because " \
-             "the security policy didn't allow it, with the message: #{e.message}"
-          end
-
-          spec.__swap__(s)
+        # CACHE HIT: spec + extracted files available from global cache
+        if cache_dir && (cached_spec = load_cached_spec(cache_dir))
+          installer = build_gem_installer(gem_path, spec, options, preloaded_spec: cached_spec)
+          spec.__swap__(cached_spec) if spec.remote
+          installer.pre_install_checks
+          return [cache_dir, installer, spec, true]
         end
 
-        spec.source.checksum_store.register(spec, installer.gem_checksum)
+        # CACHE MISS: single-pass extract .gem → global cache
+        if cache_dir
+          real_spec = extract_to_global_cache(gem_path, cache_dir)
+          installer = build_gem_installer(gem_path, spec, options, preloaded_spec: real_spec)
+          spec.__swap__(real_spec) if spec.remote
+          installer.pre_install_checks
+          return [cache_dir, installer, spec, true]
+        end
 
-        temp_dir = installer.extract_to_temp
-        [temp_dir, installer, spec]
+        # FALLBACK: no global cache path available (homeless user etc.)
+        installer = build_gem_installer(gem_path, spec, options)
+        if spec.remote
+          s = installer.spec
+          spec.__swap__(s)
+        end
+        installer.pre_install_checks
+        temp_dir = "#{installer.gem_dir}.bundler-tmp"
+        FileUtils.rm_rf(temp_dir)
+        FileUtils.mkdir_p(temp_dir, mode: 0o755)
+        original_gem_dir = installer.gem_dir
+        installer.instance_variable_set(:@gem_dir, temp_dir)
+        begin
+          installer.send(:extract_files)
+        ensure
+          installer.instance_variable_set(:@gem_dir, original_gem_dir)
+        end
+        [temp_dir, installer, spec, false]
       end
 
-      # Finalize a previously extracted gem.
+      # Finalize a previously extracted gem: copy/move files to GEM_HOME,
+      # write spec, generate binstubs, build native extensions.
       def finalize_gem(spec, extract_result, has_extensions, options = {})
         return nil unless extract_result
 
-        temp_dir, installer, spec = extract_result
+        source_dir, installer, spec, from_cache = extract_result
 
         installed_spec = if has_extensions
-          installer.finalize_with_extensions(temp_dir)
+          installer.finalize_with_extensions(source_dir, copy: !!from_cache)
         else
-          installer.finalize_without_extensions(temp_dir)
+          installer.finalize_without_extensions(source_dir, copy: !!from_cache)
         end
 
         spec.full_gem_path = installed_spec.full_gem_path
@@ -660,6 +672,98 @@ module Bundler
         Pathname.new(ext_dir).join(spec.full_name.to_s)
       rescue
         nil
+      end
+
+      # Returns path for the global extracted gem cache.
+      # Extracted contents are Ruby-version independent (source files only;
+      # compiled extensions are cached separately by global_extension_cache_path).
+      def extracted_cache_path(spec)
+        return nil unless (base = gem_cache_home)
+        File.join(base, "extracted", spec.full_name)
+      rescue
+        nil
+      end
+
+      # Base directory for all global gem caches (~/.cache/gem/).
+      def gem_cache_home
+        @gem_cache_home ||= begin
+          base = if Gem.respond_to?(:cache_home)
+            Gem.cache_home
+          else
+            ENV["XDG_CACHE_HOME"] || File.join(Dir.home, ".cache")
+          end
+          File.join(base, "gem")
+        end
+      rescue
+        nil
+      end
+
+      # Load a cached Gem::Specification from the extracted cache.
+      # Returns nil on cache miss or any error.
+      def load_cached_spec(cache_dir)
+        marshal_path = "#{cache_dir}.spec.marshal"
+        return nil unless File.exist?(marshal_path)
+        return nil unless File.directory?(cache_dir)
+        Marshal.load(File.binread(marshal_path))
+      rescue
+        nil
+      end
+
+      # Single-pass extract a .gem to the global cache.
+      # Uses a PID-unique temp dir + atomic rename for process safety.
+      def extract_to_global_cache(gem_path, cache_dir)
+        temp_dir = "#{cache_dir}.tmp-#{Process.pid}"
+        begin
+          FileUtils.rm_rf(temp_dir)
+          FileUtils.mkdir_p(temp_dir, mode: 0o755)
+
+          real_spec = Bundler::RubyGemsGemInstaller.single_pass_extract(gem_path, temp_dir)
+
+          # Atomic move to final cache location
+          SharedHelpers.filesystem_access(File.dirname(cache_dir)) { |p| FileUtils.mkdir_p(p) }
+          begin
+            File.rename(temp_dir, cache_dir)
+          rescue Errno::EEXIST, Errno::ENOTEMPTY
+            # Another process won the race — use theirs
+            FileUtils.rm_rf(temp_dir)
+          rescue Errno::EXDEV
+            FileUtils.mv(temp_dir, cache_dir)
+          end
+
+          # Persist spec for future cache hits (stored as sibling, not inside
+          # the extracted dir, so fast_cp_r doesn't copy it to GEM_HOME)
+          File.binwrite("#{cache_dir}.spec.marshal", Marshal.dump(real_spec))
+
+          real_spec
+        rescue => e
+          FileUtils.rm_rf(temp_dir) rescue nil
+          raise
+        end
+      end
+
+      # Create a RubyGemsGemInstaller, optionally injecting a preloaded spec
+      # to avoid opening the .gem file for verification.
+      def build_gem_installer(gem_path, spec, options, preloaded_spec: nil)
+        installer = Bundler::RubyGemsGemInstaller.at(
+          gem_path,
+          security_policy: Bundler.rubygems.security_policies[Bundler.settings["trust-policy"]],
+          install_dir: rubygems_dir.to_s,
+          bin_dir: Bundler.system_bindir.to_s,
+          ignore_dependencies: true,
+          wrappers: true,
+          env_shebang: true,
+          build_args: options[:build_args],
+          bundler_extension_cache_path: extension_cache_path(spec)
+        )
+
+        if preloaded_spec
+          # Inject spec into the package to prevent .gem file from being
+          # opened for verification. The spec was already parsed during
+          # single-pass extraction or loaded from marshal cache.
+          installer.instance_variable_get(:@package).instance_variable_set(:@spec, preloaded_spec)
+        end
+
+        installer
       end
 
       # Checks if the requested spec exists in the global cache. If it does,

@@ -39,6 +39,7 @@ module Bundler
         @phase_start = nil
         @spinner_tick = 0
         @slow_item = nil       # {name:, version:, detail:, started_at:}
+        @last_item = nil       # {name:, version:} most recently started item
         @has_slow_line = false  # whether we printed a second line for slow item
         @total_width = 1       # digit width for right-aligning counts
       end
@@ -52,6 +53,7 @@ module Bundler
           @completed_count = 0
           @phase_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
           @slow_item = nil
+          @last_item = nil
           @has_slow_line = false
           @total_width = total.to_s.length
 
@@ -82,6 +84,7 @@ module Bundler
           $stderr.flush
 
           @slow_item = nil
+          @last_item = nil
           @phase = nil
         end
       end
@@ -90,6 +93,8 @@ module Bundler
 
       def item_start(name, version, detail = nil)
         @mutex.synchronize do
+          @last_item = { name: name, version: version.to_s }
+
           # Track items that might be slow (native ext compilation, git checkouts)
           if detail&.include?("compil") || detail&.include?("git")
             @slow_item = {
@@ -125,6 +130,13 @@ module Bundler
         end
       end
 
+      def with_cursor_hidden
+        $stderr.write "\e[?25l" if @tty
+        yield
+      ensure
+        $stderr.write "\e[?25h" if @tty
+      end
+
       private
 
       def write_header
@@ -138,6 +150,11 @@ module Bundler
         line = "#{spinner} #{BOLD}#{phase_label}#{RESET} " \
                "#{DIM}(#{count}/#{@total_count})#{RESET} " \
                "#{DIM}#{format_time(elapsed)}#{RESET}"
+
+        # Show current gem name at end of line
+        if @last_item
+          line << "  #{DIM}- #{@last_item[:name]} #{@last_item[:version]}#{RESET}"
+        end
 
         $stderr.write "\r#{CLR}#{line}"
 
@@ -194,9 +211,10 @@ module Bundler
         else
           mins = (seconds / 60).to_i
           secs = seconds - (mins * 60)
-          format("%dm%.1fs", mins, secs)
+          format("%02dm%04.1fs", mins, secs)
         end
       end
+
     end
   end
 end

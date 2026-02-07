@@ -120,7 +120,18 @@ module Bundler
               SharedHelpers.filesystem_access(destination) do |p|
                 FileUtils.rm_rf(p)
               end
-              git "clone", "--no-checkout", "--quiet", path.to_s, destination.to_s
+              # Shallow clone from the bare cache — we only need one commit's
+              # worth of files. The .git is kept so future lockfile rev changes
+              # can be fetched incrementally with `git fetch --depth 1`.
+              # Skip --depth for submodule repos: submodule init needs full objects.
+              # Use file:// URI so git respects --depth (ignored for local paths).
+              clone_args = ["clone", "--no-checkout", "--quiet"]
+              unless submodules
+                clone_args.push("--depth", "1", "--no-tags")
+                clone_args.push("--single-branch") if supports_fetching_unreachable_refs?
+              end
+              clone_args.push("file://#{path}", destination.to_s)
+              git(*clone_args)
               File.chmod((File.stat(destination).mode | 0o777) & ~File.umask, destination)
             rescue Errno::EEXIST => e
               file_path = e.message[%r{.*?((?:[a-zA-Z]:)?/.*)}, 1]
@@ -141,9 +152,6 @@ module Bundler
 
           if submodules
             git_retry "submodule", "update", "--init", "--recursive", dir: destination
-          elsif Gem::Version.create(version) >= Gem::Version.create("2.9.0")
-            inner_command = "git -C $toplevel submodule deinit --force $sm_path"
-            git_retry "submodule", "foreach", "--quiet", inner_command, dir: destination
           end
         end
 

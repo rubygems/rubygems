@@ -166,7 +166,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     @cmd.options[:args] = [@path]
 
     attest_called = false
-    @cmd.stub(:attest!, proc { attest_called = true; raise "attest! should not be called" }) do
+    @cmd.stub(:attest!, proc { attest_called = true }) do
       @cmd.execute
     end
 
@@ -189,7 +189,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     Object.const_set :RUBY_ENGINE, "jruby"
 
     begin
-      @cmd.stub(:attest!, proc { attest_called = true; raise "attest! should not be called" }) do
+      @cmd.stub(:attest!, proc { attest_called = true }) do
         @cmd.execute
       end
 

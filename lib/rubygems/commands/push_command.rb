@@ -92,7 +92,7 @@ The push command will use ~/.gem/credentials to authenticate to a server, but yo
   private
 
   def send_push_request(name, args)
-    if RUBY_ENGINE == "jruby" || options[:attestations].any? || !attestation_supported_host?
+    if RUBY_ENGINE == "jruby" || !attestation_supported_host?
       return send_push_request_without_attestation(name, args)
     end
 
@@ -108,27 +108,27 @@ The push command will use ~/.gem/credentials to authenticate to a server, but yo
     scope = get_push_scope
     rubygems_api_request(*args, scope: scope) do |request|
       body = Gem.read_binary name
-      if options[:attestations].any?
-        request.set_form([
-          ["gem", body, { filename: name, content_type: "application/octet-stream" }],
-          get_attestations_part,
-        ], "multipart/form-data")
-      else
-        request.body = body
-        request.add_field "Content-Type",   "application/octet-stream"
-        request.add_field "Content-Length", request.body.size
-      end
+      request.body = body
+      request.add_field "Content-Type",   "application/octet-stream"
+      request.add_field "Content-Length", request.body.size
       request.add_field "Authorization", api_key
     end
   end
 
   def send_push_request_with_attestation(name, args)
-    attestation = attest!(name)
+    attestations = if options[:attestations].any?
+      options[:attestations].map do |attestation|
+        Gem.read_binary(attestation)
+      end
+    else
+      [Gem.read_binary(attest!(name))]
+    end
+    bundles = "[" + attestations.join(",") + "]"
 
     rubygems_api_request(*args, scope: get_push_scope) do |request|
       request.set_form([
         ["gem", Gem.read_binary(name), { filename: name, content_type: "application/octet-stream" }],
-        ["attestations", "[#{Gem.read_binary(attestation)}]", { content_type: "application/json" }],
+        ["attestations", bundles, { content_type: "application/json" }],
       ], "multipart/form-data")
       request.add_field "Authorization", api_key
     end
@@ -165,16 +165,5 @@ The push command will use ~/.gem/credentials to authenticate to a server, but yo
 
   def attestation_supported_host?
     (@host || Gem.host) == "https://rubygems.org"
-  end
-
-  def get_attestations_part
-    bundles = "[" + options[:attestations].map do |attestation|
-      Gem.read_binary(attestation)
-    end.join(",") + "]"
-    [
-      "attestations",
-      bundles,
-      { content_type: "application/json" },
-    ]
   end
 end

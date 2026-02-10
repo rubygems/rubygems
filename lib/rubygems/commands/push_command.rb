@@ -121,7 +121,12 @@ The push command will use ~/.gem/credentials to authenticate to a server, but yo
         Gem.read_binary(attestation)
       end
     else
-      [Gem.read_binary(attest!(name))]
+      bundle_path = attest!(name)
+      begin
+        [Gem.read_binary(bundle_path)]
+      ensure
+        File.unlink(bundle_path) if bundle_path && File.exist?(bundle_path)
+      end
     end
     bundles = "[" + attestations.join(",") + "]"
 
@@ -136,8 +141,14 @@ The push command will use ~/.gem/credentials to authenticate to a server, but yo
 
   def attest!(name)
     require "open3"
+    require "tempfile"
 
-    bundle = "#{name}.sigstore.json"
+    # Create a temporary file for the bundle
+    basename = File.basename(name, ".*")
+    tempfile = Tempfile.new([basename, ".sigstore.json"])
+    bundle = tempfile.path
+    tempfile.close
+
     env = defined?(Bundler.unbundled_env) ? Bundler.unbundled_env : ENV.to_h
     out, st = Open3.capture2e(
       env,

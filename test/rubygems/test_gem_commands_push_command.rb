@@ -123,7 +123,8 @@ class TestGemCommandsPushCommand < Gem::TestCase
     @fetcher.data["#{Gem.host}/api/v1/gems"] = HTTPResponseFactory.create(body: @response, code: 200, msg: "OK")
 
     attestation_path = "#{@path}.sigstore.json"
-    File.write(attestation_path, "auto-attestation")
+    attestation_content = "auto-attestation"
+    File.write(attestation_path, attestation_content)
     @cmd.options[:args] = [@path]
 
     @cmd.stub(:attest!, attestation_path) do
@@ -133,7 +134,7 @@ class TestGemCommandsPushCommand < Gem::TestCase
     assert_equal Gem::Net::HTTP::Post, @fetcher.last_request.class
     content_length = @fetcher.last_request["Content-Length"].to_i
     assert_equal content_length, @fetcher.last_request.body.length
-    assert_attestation_multipart Gem.read_binary(attestation_path)
+    assert_attestation_multipart attestation_content
   end
 
   def test_execute_attestation_fallback

@@ -155,6 +155,55 @@ class TestGemCommandsPushCommand < Gem::TestCase
                  @fetcher.last_request["Content-Type"]
   end
 
+  def test_execute_attestation_skipped_on_non_rubygems_host
+    @spec, @path = util_gem "freebird", "1.0.1" do |spec|
+      spec.metadata["allowed_push_host"] = "https://privategemserver.example"
+    end
+
+    @response = "Successfully registered gem: freebird (1.0.1)"
+    @fetcher.data["#{@spec.metadata["allowed_push_host"]}/api/v1/gems"] = HTTPResponseFactory.create(body: @response, code: 200, msg: "OK")
+
+    @cmd.options[:args] = [@path]
+
+    attest_called = false
+    @cmd.stub(:attest!, proc { attest_called = true; raise "attest! should not be called" }) do
+      @cmd.execute
+    end
+
+    refute attest_called, "attest! should not be called for non-rubygems.org hosts"
+    assert_equal Gem::Net::HTTP::Post, @fetcher.last_request.class
+    assert_equal Gem.read_binary(@path), @fetcher.last_request.body
+    assert_equal "application/octet-stream",
+                 @fetcher.last_request["Content-Type"]
+  end
+
+  def test_execute_attestation_skipped_on_jruby
+    @response = "Successfully registered gem: freewill (1.0.0)"
+    @fetcher.data["#{Gem.host}/api/v1/gems"] = HTTPResponseFactory.create(body: @response, code: 200, msg: "OK")
+
+    @cmd.options[:args] = [@path]
+
+    attest_called = false
+    engine = RUBY_ENGINE
+    Object.send :remove_const, :RUBY_ENGINE
+    Object.const_set :RUBY_ENGINE, "jruby"
+
+    begin
+      @cmd.stub(:attest!, proc { attest_called = true; raise "attest! should not be called" }) do
+        @cmd.execute
+      end
+
+      refute attest_called, "attest! should not be called on JRuby"
+      assert_equal Gem::Net::HTTP::Post, @fetcher.last_request.class
+      assert_equal Gem.read_binary(@path), @fetcher.last_request.body
+      assert_equal "application/octet-stream",
+                   @fetcher.last_request["Content-Type"]
+    ensure
+      Object.send :remove_const, :RUBY_ENGINE
+      Object.const_set :RUBY_ENGINE, engine
+    end
+  end
+
   def test_execute_allowed_push_host
     @spec, @path = util_gem "freebird", "1.0.1" do |spec|
       spec.metadata["allowed_push_host"] = "https://privategemserver.example"

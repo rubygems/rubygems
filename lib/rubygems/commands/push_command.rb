@@ -147,7 +147,7 @@ The push command will use ~/.gem/credentials to authenticate to a server, but yo
     basename = File.basename(name, ".*")
     tempfile = Tempfile.new([basename, ".sigstore.json"])
     bundle = tempfile.path
-    tempfile.close
+    tempfile.close(false) # Close but don't unlink - we need the file for sigstore-cli
 
     env = defined?(Bundler.unbundled_env) ? Bundler.unbundled_env : ENV.to_h
     out, st = Open3.capture2e(

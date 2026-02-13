@@ -445,12 +445,12 @@ EOM
         full_name = entry.full_name
         next unless File.fnmatch pattern, full_name, File::FNM_DOTMATCH
 
-        destination = install_location full_name, destination_dir
-
-        if invalid_windows_filename?(full_name)
+        if Gem.win_platform? && invalid_windows_filename?(full_name)
           gem_name = @spec ? @spec.full_name : "unknown"
           raise Gem::Package::InvalidWindowsFileNameError.new(full_name, gem_name)
         end
+
+        destination = install_location full_name, destination_dir
 
         if entry.symlink?
           link_target = entry.header.linkname
@@ -480,18 +480,13 @@ EOM
         end
 
         if entry.file?
-          begin
-            File.open(destination, "wb") do |out|
-              copy_stream(tar.io, out, entry.size)
-              # Flush needs to happen before chmod because there could be data
-              # in the IO buffer that needs to be written, and that could be
-              # written after the chmod (on close) which would mess up the perms
-              out.flush
-              out.chmod file_mode(entry.header.mode) & ~File.umask
-            end
-          rescue Errno::EINVAL
-            gem_name = @spec ? @spec.full_name : "unknown"
-            raise Gem::Package::InvalidWindowsFileNameError.new(full_name, gem_name)
+          File.open(destination, "wb") do |out|
+            copy_stream(tar.io, out, entry.size)
+            # Flush needs to happen before chmod because there could be data
+            # in the IO buffer that needs to be written, and that could be
+            # written after the chmod (on close) which would mess up the perms
+            out.flush
+            out.chmod file_mode(entry.header.mode) & ~File.umask
           end
         end
 
@@ -571,10 +566,7 @@ EOM
   # Note: Colons are only valid as drive letter separators (e.g., C:), not in filenames.
 
   def invalid_windows_filename?(filename) # :nodoc:
-    return false unless Gem.win_platform?
-
-    basename = File.basename(filename)
-    basename.match?(/[:<>"|?*\\\x00-\x1f]/)
+    filename.to_s.split("/").any? { |part| part.match?(/[:<>"|?*\\\x00-\x1f]/) }
   end
 
   ##

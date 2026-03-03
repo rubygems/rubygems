@@ -12,6 +12,7 @@ module Bundler
     AUTO_INSTALL_CMDS = %w[show binstubs outdated exec open console licenses clean].freeze
     PARSEABLE_COMMANDS = %w[check config help exec platform show version].freeze
     EXTENSIONS = ["c", "rust", "go"].freeze
+    COC_OPTIONS = %w[contributor-covenant ruby none].freeze
 
     COMMAND_ALIASES = {
       "check" => "c",
@@ -571,7 +572,7 @@ module Bundler
 
     desc "gem NAME [OPTIONS]", "Creates a skeleton for creating a rubygem"
     method_option :exe, type: :boolean, default: false, aliases: ["--bin", "-b"], banner: "Generate a binary executable for your library."
-    method_option :coc, type: :boolean, banner: "Generate a code of conduct file. Set a default with `bundle config set --global gem.coc true`."
+    method_option :coc, type: :string, lazy_default: (COC_OPTIONS.include?(Bundler.settings["gem.coc"]) ? Bundler.settings["gem.coc"] : ""), enum: COC_OPTIONS, banner: "Generate a code of conduct file, either Contributor Covenant, Ruby, or none. Set a default with `bundle config set --global gem.coc (contributor-covenant|ruby|none)`"
     method_option :edit, type: :string, aliases: "-e", required: false, lazy_default: [ENV["BUNDLER_EDITOR"], ENV["VISUAL"], ENV["EDITOR"]].find {|e| !e.nil? && !e.empty? }, banner: "Open generated gemspec in the specified editor (defaults to $EDITOR or $BUNDLER_EDITOR)"
     method_option :ext, type: :string, banner: "Generate the boilerplate for C extension code.", enum: EXTENSIONS
     method_option :git, type: :boolean, default: true, banner: "Initialize a git repo inside your library."

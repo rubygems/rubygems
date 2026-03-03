@@ -32,10 +32,22 @@ configuration file using the following names:
 * `--no-exe`:
   Do not create a binary (overrides `--exe` specified in the global config).
 
-* `--coc`:
-  Add a `CODE_OF_CONDUCT.md` file to the root of the generated project. If
-  this option is unspecified, an interactive prompt will be displayed and the
-  answer will be saved in Bundler's global config for future `bundle gem` use.
+* `--coc`, `--coc=contributor-covenant`, `--coc=none`, `--coc=ruby`:
+  Specify the code of conduct that Bundler should use when generating the
+  project. Acceptable values are `contributor-covenant`, `ruby`, and `none`.
+  A `CODE_OF_CONDUCT.md` file will be generated in the project directory
+  unless `none` is specified. If no option is specified:
+
+  When Bundler is configured to generate a code of conduct, this defaults to
+  Bundler's global config setting `gem.coc`.
+
+  When Bundler is configured to not generate a code of conduct, an interactive
+  prompt will be displayed and the answer will be used for the current rubygem
+  project.
+
+  When Bundler is unconfigured, an interactive prompt will be displayed and
+  the answer will be saved in Bundler's global config for future `bundle gem`
+  use.
 
 * `--no-coc`:
   Do not create a `CODE_OF_CONDUCT.md` (overrides `--coc` specified in the

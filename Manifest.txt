@@ -209,11 +209,12 @@ bundler/lib/bundler/templates/Executable
 bundler/lib/bundler/templates/Executable.standalone
 bundler/lib/bundler/templates/Gemfile
 bundler/lib/bundler/templates/newgem/CHANGELOG.md.tt
-bundler/lib/bundler/templates/newgem/CODE_OF_CONDUCT.md.tt
+bundler/lib/bundler/templates/newgem/CONTRIBUTOR_COVENANT_CODE_OF_CONDUCT.md.tt
 bundler/lib/bundler/templates/newgem/Cargo.toml.tt
 bundler/lib/bundler/templates/newgem/Gemfile.tt
 bundler/lib/bundler/templates/newgem/LICENSE.txt.tt
 bundler/lib/bundler/templates/newgem/README.md.tt
+bundler/lib/bundler/templates/newgem/RUBY_SRC_CODE_OF_CONDUCT.md.tt
 bundler/lib/bundler/templates/newgem/Rakefile.tt
 bundler/lib/bundler/templates/newgem/bin/console.tt
 bundler/lib/bundler/templates/newgem/bin/setup.tt

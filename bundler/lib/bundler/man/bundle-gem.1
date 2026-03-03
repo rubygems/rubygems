@@ -26,8 +26,14 @@ Specify that Bundler should create a binary executable (as \fBexe/GEM_NAME\fR) i
 \fB\-\-no\-exe\fR
 Do not create a binary (overrides \fB\-\-exe\fR specified in the global config)\.
 .TP
-\fB\-\-coc\fR
-Add a \fBCODE_OF_CONDUCT\.md\fR file to the root of the generated project\. If this option is unspecified, an interactive prompt will be displayed and the answer will be saved in Bundler's global config for future \fBbundle gem\fR use\.
+\fB\-\-coc\fR, \fB\-\-coc=contributor\-covenant\fR, \fB\-\-coc=none\fR, \fB\-\-coc=ruby\fR
+Specify the code of conduct that Bundler should use when generating the project\. Acceptable values are \fBcontributor\-covenant\fR, \fBruby\fR, and \fBnone\fR\. A \fBCODE_OF_CONDUCT\.md\fR file will be generated in the project directory unless \fBnone\fR is specified\. If no option is specified:
+.IP
+When Bundler is configured to generate a code of conduct, this defaults to Bundler's global config setting \fBgem\.coc\fR\.
+.IP
+When Bundler is configured to not generate a code of conduct, an interactive prompt will be displayed and the answer will be used for the current rubygem project\.
+.IP
+When Bundler is unconfigured, an interactive prompt will be displayed and the answer will be saved in Bundler's global config for future \fBbundle gem\fR use\.
 .TP
 \fB\-\-no\-coc\fR
 Do not create a \fBCODE_OF_CONDUCT\.md\fR (overrides \fB\-\-coc\fR specified in the global config)\.

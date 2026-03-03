@@ -179,13 +179,18 @@ module Bundler
         templates.merge!("LICENSE.txt.tt" => "LICENSE.txt")
       end
 
-      if ask_and_set(:coc, "Do you want to include a code of conduct in gems you generate?",
-        "Codes of conduct can increase contributions to your project by contributors who " \
-        "prefer safe, respectful, productive, and collaborative spaces. \n" \
-        "See https://github.com/ruby/rubygems/blob/master/CODE_OF_CONDUCT.md")
+      coc_template = ask_and_set_coc
+      case coc_template
+      when "contributor-covenant"
         config[:coc] = true
-        Bundler.ui.info "Code of conduct enabled in config"
-        templates.merge!("CODE_OF_CONDUCT.md.tt" => "CODE_OF_CONDUCT.md")
+        Bundler.ui.info "Contributor Covenant enabled in config"
+        templates.merge!("CONTRIBUTOR_COVENANT_CODE_OF_CONDUCT.md.tt" => "CODE_OF_CONDUCT.md")
+      when "ruby"
+        config[:coc] = true
+        Bundler.ui.info "Ruby Community Conduct Guideline enabled in config"
+        templates.merge!("RUBY_SRC_CODE_OF_CONDUCT.md.tt" => "CODE_OF_CONDUCT.md")
+      when "none"
+        config[:coc] = false
       end
 
       if ask_and_set(:changelog, "Do you want to include a changelog?",
@@ -389,6 +394,59 @@ module Bundler
       end
 
       ci_template
+    end
+
+    def ask_and_set_coc
+      return "none" if skip?(:coc)
+      coc_template = options[:coc] || Bundler.settings["gem.coc"]
+
+      # Handle backwards compatibility: if the old boolean `false` value is set,
+      # silently migrate to the new `none` value and honor the setting
+      if coc_template.to_s == "false"
+        Bundler.settings.set_global("gem.coc", "none")
+        return "none"
+      end
+
+      # Handle backwards compatibility: if the old boolean `true` value is set,
+      # prompt the user to choose a specific code of conduct
+      if coc_template.to_s == "true"
+        Bundler.ui.info "\nYour gem.coc setting is configured to `true`, but `bundle gem` now supports " \
+          "multiple codes of conduct. Please select which code of conduct you'd like to use:\n" \
+          "* Contributor Covenant: https://www.contributor-covenant.org/\n" \
+          "* Ruby:                 https://www.ruby-lang.org/en/conduct/\n"
+        Bundler.ui.info "Your choice will update the global gem.coc setting."
+
+        coc_template = prompt_coc_selection
+        Bundler.settings.set_global("gem.coc", coc_template)
+      elsif coc_template.to_s.empty?
+        Bundler.ui.info "\nDo you want to include a code of conduct in gems you generate? " \
+          "Codes of conduct can increase contributions to your project by contributors who " \
+          "prefer safe, respectful, productive, and collaborative spaces.\n" \
+          "Supported codes of conduct:\n" \
+          "* Contributor Covenant: https://www.contributor-covenant.org/\n" \
+          "* Ruby:                 https://www.ruby-lang.org/en/conduct/\n"
+        Bundler.ui.info hint_text("coc")
+
+        coc_template = prompt_coc_selection
+
+        if Bundler.settings["gem.coc"].nil?
+          Bundler.settings.set_global("gem.coc", coc_template)
+        end
+      end
+
+      if options[:coc] && !options[:coc].empty? && options[:coc] == Bundler.settings["gem.coc"]
+        Bundler.ui.info "Using configured code of conduct: #{options[:coc]}"
+      end
+
+      coc_template
+    end
+
+    def prompt_coc_selection
+      result = Bundler.ui.ask "Enter a code of conduct. contributor-covenant/ruby/(none):"
+      return result if %w[contributor-covenant ruby].include?(result)
+
+      Bundler.ui.info "Unrecognized input, skipping code of conduct" unless result.to_s.empty? || result == "none"
+      "none"
     end
 
     def ask_and_set_linter

@@ -21,7 +21,6 @@ module Bundler
       force_ruby_platform
       frozen
       gem.changelog
-      gem.coc
       gem.mit
       gem.bundle
       git.allow_insecure
@@ -60,6 +59,7 @@ module Bundler
       cache_path
       console
       gem.ci
+      gem.coc
       gem.github_username
       gem.linter
       gem.rubocop

@@ -105,25 +105,41 @@ RSpec.describe "bundle gem" do
     end
   end
 
-  shared_examples_for "--coc flag" do
-    it "generates a gem skeleton with MIT license" do
-      bundle "gem #{gem_name} --coc"
+  shared_examples_for "--coc=ruby flag" do
+    it "generates a gem skeleton with Ruby Community Conduct Guideline" do
+      bundle "gem #{gem_name} --coc=ruby"
       gem_skeleton_assertions
       expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md").read).to include("Ruby Community Conduct Guideline")
     end
 
     it "generates the README with a section for the Code of Conduct" do
-      bundle "gem #{gem_name} --coc"
+      bundle "gem #{gem_name} --coc=ruby"
       expect(bundled_app("#{gem_name}/README.md").read).to include("## Code of Conduct")
       expect(bundled_app("#{gem_name}/README.md").read).to match(%r{https://github\.com/bundleuser/#{gem_name}/blob/.*/CODE_OF_CONDUCT.md})
     end
 
     it "generates the README with a section for the Code of Conduct, respecting the configured git default branch", git: ">= 2.28.0" do
       git("config --global init.defaultBranch main")
-      bundle "gem #{gem_name} --coc"
+      bundle "gem #{gem_name} --coc=ruby"
 
       expect(bundled_app("#{gem_name}/README.md").read).to include("## Code of Conduct")
       expect(bundled_app("#{gem_name}/README.md").read).to include("https://github.com/bundleuser/#{gem_name}/blob/main/CODE_OF_CONDUCT.md")
+    end
+  end
+
+  shared_examples_for "--coc=contributor-covenant flag" do
+    it "generates a gem skeleton with Contributor Covenant" do
+      bundle "gem #{gem_name} --coc=contributor-covenant"
+      gem_skeleton_assertions
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md").read).to include("Contributor Covenant")
+    end
+
+    it "generates the README with a section for the Code of Conduct" do
+      bundle "gem #{gem_name} --coc=contributor-covenant"
+      expect(bundled_app("#{gem_name}/README.md").read).to include("## Code of Conduct")
+      expect(bundled_app("#{gem_name}/README.md").read).to match(%r{https://github\.com/bundleuser/#{gem_name}/blob/.*/CODE_OF_CONDUCT.md})
     end
   end
 
@@ -1168,6 +1184,185 @@ RSpec.describe "bundle gem" do
     end
   end
 
+  context "--coc set to ruby" do
+    before do
+      bundle "gem #{gem_name} --coc=ruby"
+    end
+
+    it "generates a Ruby Community Conduct Guideline" do
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md").read).to include("Ruby Community Conduct Guideline")
+    end
+  end
+
+  context "--coc set to contributor-covenant" do
+    before do
+      bundle "gem #{gem_name} --coc=contributor-covenant"
+    end
+
+    it "generates a Contributor Covenant" do
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md").read).to include("Contributor Covenant")
+    end
+  end
+
+  context "--coc set to none" do
+    before do
+      bundle "gem #{gem_name} --coc=none"
+    end
+
+    it "does not generate any Code of Conduct" do
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to_not exist
+    end
+  end
+
+  context "--coc parameter set to an invalid value" do
+    before do
+      bundle "gem #{gem_name} --coc=foo", raise_on_error: false
+    end
+
+    it "fails loudly" do
+      expect(last_command).to be_failure
+      expect(err).to match(/Expected '--coc' to be one of .*; got foo/)
+    end
+  end
+
+  context "gem.coc setting set to ruby" do
+    it "generates a Ruby Community Conduct Guideline" do
+      bundle "config set gem.coc ruby"
+      bundle "gem #{gem_name}"
+
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md").read).to include("Ruby Community Conduct Guideline")
+    end
+  end
+
+  context "gem.coc setting set to contributor-covenant" do
+    it "generates a Contributor Covenant" do
+      bundle "config set gem.coc contributor-covenant"
+      bundle "gem #{gem_name}"
+
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md").read).to include("Contributor Covenant")
+    end
+  end
+
+  context "gem.coc set to ruby and --coc with no arguments" do
+    before do
+      bundle "config set gem.coc ruby"
+      bundle "gem #{gem_name} --coc"
+    end
+
+    it "generates a Ruby Community Conduct Guideline" do
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md").read).to include("Ruby Community Conduct Guideline")
+    end
+
+    it "shows which code of conduct is being used" do
+      expect(out).to match("Using configured code of conduct: ruby")
+    end
+  end
+
+  context "gem.coc set to none and --coc with no arguments" do
+    before do
+      bundle "config set gem.coc none"
+      bundle "gem #{gem_name} --coc"
+    end
+
+    it "does not generate any Code of Conduct" do
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to_not exist
+    end
+
+    it "shows which code of conduct is being used" do
+      expect(out).to match("Using configured code of conduct: none")
+    end
+  end
+
+  context "gem.coc setting set to false and --coc with no arguments", :readline do
+    before do
+      bundle "config set gem.coc false"
+      bundle "gem #{gem_name} --coc" do |input, _, _|
+        input.puts "ruby"
+      end
+    end
+
+    it "asks to setup code of conduct" do
+      expect(out).to match("Do you want to include a code of conduct in gems you generate?")
+    end
+
+    it "hints that the choice will only be applied to the current gem" do
+      expect(out).to match("Your choice will only be applied to this gem.")
+    end
+  end
+
+  context "gem.coc setting not set and --coc with no arguments", :readline do
+    before do
+      global_config "BUNDLE_GEM__COC" => nil
+      bundle "gem #{gem_name} --coc" do |input, _, _|
+        input.puts "contributor-covenant"
+      end
+    end
+
+    it "asks to setup code of conduct" do
+      expect(out).to match("Do you want to include a code of conduct in gems you generate?")
+    end
+
+    it "hints that the choice will be applied to future bundle gem calls" do
+      hint = "Future `bundle gem` calls will use your choice. " \
+             "This setting can be changed anytime with `bundle config gem.coc`."
+      expect(out).to match(hint)
+    end
+  end
+
+  context "gem.coc setting set to a CoC and --no-coc" do
+    before do
+      bundle "config set gem.coc ruby"
+      bundle "gem #{gem_name} --no-coc"
+    end
+
+    it "does not generate any Code of Conduct" do
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to_not exist
+    end
+  end
+
+  context "gem.coc setting set to true (legacy boolean value)", :readline do
+    before do
+      bundle "config set gem.coc true"
+      bundle "gem #{gem_name}" do |input, _, _|
+        input.puts "contributor-covenant"
+      end
+    end
+
+    it "prompts user to select a specific code of conduct" do
+      expect(out).to include("Your gem.coc setting is configured to `true`")
+      expect(out).to include("now supports multiple codes of conduct")
+    end
+
+    it "generates the selected code of conduct" do
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to exist
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md").read).to include("Contributor Covenant")
+    end
+
+    it "updates the global config with the new value" do
+      expect(bundle("config get gem.coc")).to include("contributor-covenant")
+    end
+  end
+
+  context "gem.coc setting set to false (legacy boolean value)" do
+    before do
+      bundle "config set gem.coc false"
+      bundle "gem #{gem_name}"
+    end
+
+    it "does not generate any Code of Conduct" do
+      expect(bundled_app("#{gem_name}/CODE_OF_CONDUCT.md")).to_not exist
+    end
+
+    it "silently migrates the global config to 'none'" do
+      expect(bundle("config get gem.coc")).to include("none")
+    end
+  end
+
   context "--linter with no argument" do
     before do
       bundle "gem #{gem_name}"
@@ -1447,19 +1642,24 @@ RSpec.describe "bundle gem" do
     it_behaves_like "--no-mit flag"
   end
 
-  context "with coc option in bundle config settings set to true" do
+  context "with coc option in bundle config settings set to ruby" do
     before do
-      global_config "BUNDLE_GEM__COC" => "true"
+      global_config "BUNDLE_GEM__COC" => "ruby"
     end
-    it_behaves_like "--coc flag"
-    it_behaves_like "--no-coc flag"
+    it_behaves_like "--coc=ruby flag"
+  end
+
+  context "with coc option in bundle config settings set to contributor-covenant" do
+    before do
+      global_config "BUNDLE_GEM__COC" => "contributor-covenant"
+    end
+    it_behaves_like "--coc=contributor-covenant flag"
   end
 
   context "with coc option in bundle config settings set to false" do
     before do
       global_config "BUNDLE_GEM__COC" => "false"
     end
-    it_behaves_like "--coc flag"
     it_behaves_like "--no-coc flag"
   end
 
@@ -2080,11 +2280,22 @@ Usage: "bundle gem NAME [OPTIONS]"
       global_config "BUNDLE_GEM__COC" => nil
 
       bundle "gem foobar" do |input, _, _|
-        input.puts "yes"
+        input.puts "ruby"
       end
 
       expect(bundled_app("foobar/CODE_OF_CONDUCT.md")).to exist
       expect(out).to include("Codes of conduct can increase contributions to your project").once
+    end
+
+    it "generates Contributor Covenant when selected" do
+      global_config "BUNDLE_GEM__COC" => nil
+
+      bundle "gem foobar" do |input, _, _|
+        input.puts "contributor-covenant"
+      end
+
+      expect(bundled_app("foobar/CODE_OF_CONDUCT.md")).to exist
+      expect(bundled_app("foobar/CODE_OF_CONDUCT.md").read).to include("Contributor Covenant")
     end
 
     it "asks about CHANGELOG just once" do

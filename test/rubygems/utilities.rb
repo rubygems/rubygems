@@ -421,7 +421,7 @@ class Gem::TestCase::SpecFetcherSetup
 end
 
 ##
-# Minimal CompactIndex implementation for tests.
+# Minimal Compact Index API implementation for tests.
 # This is a simplified version that only implements what's needed for test fixtures.
 module CompactIndexBuilder
   # Generates the /info/{gem_name} response body
@@ -431,7 +431,7 @@ module CompactIndexBuilder
   def self.info(versions)
     lines = ["---"]
     versions.each do |version|
-      # Compact index uses & to separate compound requirements within a single dependency,
+      # Compact Index API uses & to separate compound requirements within a single dependency,
       # since , is used to separate different dependencies.
       deps = version.dependencies.map {|d| "#{d.name}:#{d.requirement.gsub(", ", "&")}" }
       deps_string = deps.join(",")
@@ -460,8 +460,8 @@ module CompactIndexBuilder
 end
 
 ##
-# The CompactIndexSetup allows easy setup of compact index endpoints in tests.
-# Unlike SpecFetcherSetup, this only sets up compact index (no marshal API).
+# The CompactIndexSetup allows easy setup of Compact Index API endpoints in tests.
+# Unlike SpecFetcherSetup, this only sets up Compact Index API (no marshal API).
 #
 #   compact_index do |ci|
 #     ci.gem "a", 1 do |s|

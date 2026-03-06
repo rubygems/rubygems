@@ -55,6 +55,22 @@ class TestGemResolverAPISet < Gem::TestCase
     assert_equal expected, set.find_all(a_dep)
   end
 
+  def test_find_all_platform
+    spec_fetcher
+
+    @fetcher.data["#{@dep_uri}a"] = "---\n1 |checksum:abc123\n1-java |checksum:def456"
+
+    set = Gem::Resolver::APISet.new @dep_uri
+
+    a_dep = Gem::Resolver::DependencyRequest.new dep("a"), nil
+
+    specs = set.find_all(a_dep)
+
+    assert_equal 2, specs.length
+    assert_equal Gem::Platform.new("ruby"), specs[0].platform
+    assert_equal Gem::Platform.new("java"), specs[1].platform
+  end
+
   def test_find_all_prereleases
     spec_fetcher
 

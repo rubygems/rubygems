@@ -425,24 +425,26 @@ end
 # This is a simplified version that only implements what's needed for test fixtures.
 module CompactIndexBuilder
   # Generates the /info/{gem_name} response body
-  # Format: ---\nVERSION DEPS|METADATA\n
-  # Where DEPS is: dep_name:requirement,dep_name:requirement
-  # And METADATA is: checksum:SHA256,ruby:requirement,rubygems:requirement
+  # Format: ---\nVERSION[-PLATFORM] DEPS|METADATA\n
+  # Where DEPS is: dep_name:req1&req2,dep_name:req1&req2
+  # And METADATA is: checksum:SHA256,ruby:req1&req2,rubygems:req1&req2
   def self.info(versions)
     lines = ["---"]
     versions.each do |version|
-      # Add dependencies (if any)
-      deps = version.dependencies.map {|d| "#{d.name}:#{d.requirement}" }
+      # Compact index uses & to separate compound requirements within a single dependency,
+      # since , is used to separate different dependencies.
+      deps = version.dependencies.map {|d| "#{d.name}:#{d.requirement.gsub(", ", "&")}" }
       deps_string = deps.join(",")
 
       # Build metadata
       metadata = []
       metadata << "checksum:#{version.checksum}" if version.checksum
-      metadata << "ruby:#{version.ruby_version}" if version.ruby_version && version.ruby_version != ">= 0"
-      metadata << "rubygems:#{version.rubygems_version}" if version.rubygems_version && version.rubygems_version != ">= 0"
+      metadata << "ruby:#{version.ruby_version.gsub(", ", "&")}" if version.ruby_version && version.ruby_version != ">= 0"
+      metadata << "rubygems:#{version.rubygems_version.gsub(", ", "&")}" if version.rubygems_version && version.rubygems_version != ">= 0"
 
-      # Format: "VERSION DEPS|METADATA" or "VERSION |METADATA" (space before | only when no deps)
-      line = "#{version.version} #{deps_string}|" + metadata.join(",")
+      # Format: "VERSION[-PLATFORM] DEPS|METADATA" or "VERSION[-PLATFORM] |METADATA"
+      version_string = version.platform && version.platform != "ruby" ? "#{version.version}-#{version.platform}" : version.version
+      line = "#{version_string} #{deps_string}|" + metadata.join(",")
       lines << line
     end
     lines.join("\n") << "\n"

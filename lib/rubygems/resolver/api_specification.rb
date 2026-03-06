@@ -84,7 +84,10 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
   end
 
   ##
-  # Fetches a Gem::Specification for this APISpecification.
+  # Returns a minimal Gem::Specification built from compact index data.
+  # Only includes name, version, platform, dependencies, required_ruby_version,
+  # and required_rubygems_version. Other specification fields (e.g., files,
+  # executables, authors, metadata) are not populated.
 
   def spec # :nodoc:
     @spec ||= build_minimal_spec_from_compact_index

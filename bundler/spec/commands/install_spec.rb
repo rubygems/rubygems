@@ -801,6 +801,39 @@ RSpec.describe "bundle install with gem sources" do
     end
   end
 
+  describe "Bundler version in Gemfile.lock" do
+    it "always download the bundler gem to system path" do
+      gemfile <<~G
+        source "https://gem.repo4"
+      G
+
+      lockfile <<~L
+        GEM
+          remote: https://gem.repo4/
+          specs:
+
+        PLATFORMS
+          #{lockfile_platforms}
+
+        DEPENDENCIES
+
+        BUNDLED WITH
+          2.7.99
+      L
+
+      build_repo4 do
+        build_gem "bundler", "2.7.99"
+      end
+
+      bundle :install, env: { "BUNDLE_PATH" => "vendor/bundle" }
+
+      expect(system_gem_path("gems/bundler-2.7.99")).to exist
+      expect(system_gem_path("bin/bundler")).to exist
+      expect(vendored_gems("gems/bundler-2.7.99")).to_not exist
+      expect(vendored_gems("bin/bundler")).to_not exist
+    end
+  end
+
   describe "Ruby version in Gemfile.lock" do
     context "and using an unsupported Ruby version" do
       it "prints an error" do

@@ -67,11 +67,6 @@ module Bundler
     end
 
     def restart_with(version)
-      configured_gem_home = ENV["GEM_HOME"]
-      configured_orig_gem_home = ENV["BUNDLER_ORIG_GEM_HOME"]
-      configured_gem_path = ENV["GEM_PATH"]
-      configured_orig_gem_path = ENV["BUNDLER_ORIG_GEM_PATH"]
-
       argv0 = File.exist?($PROGRAM_NAME) ? $PROGRAM_NAME : Process.argv0
       cmd = [argv0, *ARGV]
       cmd.unshift(Gem.ruby) unless File.executable?(argv0)
@@ -79,10 +74,6 @@ module Bundler
       Bundler.with_original_env do
         Kernel.exec(
           {
-            "GEM_HOME" => configured_gem_home,
-            "BUNDLER_ORIG_GEM_HOME" => configured_orig_gem_home,
-            "GEM_PATH" => configured_gem_path,
-            "BUNDLER_ORIG_GEM_PATH" => configured_orig_gem_path,
             "BUNDLER_VERSION" => version.to_s,
           },
           *cmd
@@ -132,7 +123,6 @@ module Bundler
     end
 
     def find_latest_matching_spec(requirement)
-      Bundler.configure
       local_result = find_latest_matching_spec_from_collection(local_specs, requirement)
       return local_result if local_result && requirement.specific?
 
@@ -163,8 +153,6 @@ module Bundler
     end
 
     def installed?(restart_version)
-      Bundler.configure
-
       Bundler.rubygems.find_bundler(restart_version.to_s)
     end
 

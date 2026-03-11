@@ -70,7 +70,7 @@ RSpec.describe "Self management" do
       bundle "config set --local path vendor/bundle"
       bundle "install"
       expect(out).to include("Bundler #{current_version} is running, but your lockfile was generated with #{previous_minor}. Installing Bundler #{previous_minor} and restarting using that version.")
-      expect(vendored_gems("gems/bundler-#{previous_minor}")).to exist
+      expect(system_gem_path("gems/bundler-#{previous_minor}")).to exist
 
       # It does not uninstall the locked bundler
       bundle "clean"
@@ -111,7 +111,7 @@ RSpec.describe "Self management" do
       bundle "config set --local deployment true"
       bundle "install"
       expect(out).to include("Bundler #{current_version} is running, but your lockfile was generated with #{previous_minor}. Installing Bundler #{previous_minor} and restarting using that version.")
-      expect(vendored_gems("gems/bundler-#{previous_minor}")).to exist
+      expect(system_gem_path("gems/bundler-#{previous_minor}")).to exist
 
       # It does not uninstall the locked bundler
       bundle "clean"

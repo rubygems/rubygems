@@ -81,8 +81,8 @@ module Bundler
       Gem.dir
     end
 
-    def gem_bindir
-      Gem.bindir
+    def gem_bindir(install_dir = nil)
+      Gem.bindir(install_dir || gem_dir)
     end
 
     def user_home

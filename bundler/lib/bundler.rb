@@ -452,13 +452,13 @@ module Bundler
       SharedHelpers.default_bundle_dir
     end
 
-    def system_bindir
+    def system_bindir(install_dir = nil)
       # Gem.bindir doesn't always return the location that RubyGems will install
       # system binaries. If you put '-n foo' in your .gemrc, RubyGems will
       # install binstubs there instead. Unfortunately, RubyGems doesn't expose
       # that directory at all, so rather than parse .gemrc ourselves, we allow
       # the directory to be set as well, via `bundle config set --local bindir foo`.
-      Bundler.settings[:system_bindir] || Bundler.rubygems.gem_bindir
+      Bundler.settings[:system_bindir] || Bundler.rubygems.gem_bindir(install_dir)
     end
 
     def preferred_gemfile_name

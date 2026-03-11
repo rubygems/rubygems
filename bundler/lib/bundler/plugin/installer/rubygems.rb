@@ -6,7 +6,7 @@ module Bundler
       class Rubygems < Bundler::Source::Rubygems
         private
 
-        def rubygems_dir
+        def rubygems_dir(_)
           Plugin.root
         end
 

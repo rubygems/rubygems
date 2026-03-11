@@ -1700,7 +1700,7 @@ RSpec.describe "bundle update --bundler" do
       gem "myrack"
     G
 
-    system_gems "bundler-9.0.0.dev", path: local_gem_path
+    system_gems "bundler-9.0.0.dev"
     bundle :update, bundler: "9.0.0.dev", verbose: "true"
 
     checksums = checksums_section_when_enabled do |c|
@@ -1737,7 +1737,7 @@ RSpec.describe "bundle update --bundler" do
       source "https://gem.repo4"
       gem "myrack"
     G
-    system_gems "bundler-9.0.0", path: local_gem_path
+    system_gems "bundler-9.0.0"
     bundle :update, bundler: "9.0.0", verbose: true
 
     expect(out).not_to include("Fetching gem metadata from https://rubygems.org/")
@@ -1787,7 +1787,7 @@ RSpec.describe "bundle update --bundler" do
          9.0.0
     L
 
-    system_gems "bundler-9.9.9", path: local_gem_path
+    system_gems "bundler-9.9.9"
 
     bundle "update --bundler=9.9.9", env: { "BUNDLE_FROZEN" => "true" }, raise_on_error: false
     expect(err).to include("An update to the version of Bundler itself was requested, but the lockfile can't be updated because frozen mode is set")

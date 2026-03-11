@@ -173,8 +173,8 @@ module Bundler
 
         return if Bundler.settings[:no_install]
 
-        install_path = rubygems_dir
-        bin_path     = Bundler.system_bindir
+        install_path = rubygems_dir(spec)
+        bin_path     = Bundler.system_bindir(install_path)
 
         require_relative "../rubygems_gem_installer"
 
@@ -432,7 +432,7 @@ module Bundler
       def fetch_gem(spec, previous_spec = nil)
         spec.fetch_platform
 
-        cache_path = download_cache_path(spec) || default_cache_path_for(rubygems_dir)
+        cache_path = download_cache_path(spec) || default_cache_path_for(rubygems_dir(spec))
         gem_path = package_path(cache_path, spec)
         return gem_path if File.exist?(gem_path)
 
@@ -448,8 +448,10 @@ module Bundler
         installed_specs[spec].any? && !spec.installation_missing?
       end
 
-      def rubygems_dir
-        Bundler.bundle_path
+      def rubygems_dir(spec)
+        dir = Pathname(ENV["BUNDLER_ORIG_GEM_HOME"]) if spec.name == "bundler"
+
+        dir ||= Bundler.bundle_path
       end
 
       def default_cache_path_for(dir)

@@ -1218,6 +1218,42 @@ end
       end
     end
 
+    context "auto switch" do
+      it "picks the right bundler version without re-exec" do
+        bundle "config unset path.system"
+        bundle "config set --local path #{bundled_app(".bundle")}"
+
+        build_repo4 do
+          build_bundler "4.4.99"
+          build_gem "myrack", "1.0.0"
+        end
+
+        lockfile(lock_with("4.4.99"))
+
+        install_gemfile <<-G
+          source "https://gem.repo4"
+          gem "myrack"
+        G
+
+        # ruby-core test setup has always "lib" in $LOAD_PATH so `require "bundler/setup"` always activate the local version rather than using RubyGems gem activation stuff
+        unless ruby_core?
+          file = bundled_app("bin/bundle_version.rb")
+          create_file file, <<~RUBY
+            #!#{Gem.ruby}
+            p 'executed once'
+            require 'bundler/setup'
+            p Bundler::VERSION
+          RUBY
+
+          file.chmod(0o777)
+          cmd = Gem.win_platform? ? "#{Gem.ruby} bin/bundle_version.rb" : "bin/bundle_version.rb"
+          in_bundled_app cmd
+
+          expect(out).to eq(%("executed once"\n"4.4.99"))
+        end
+      end
+    end
+
     context "is newer" do
       it "does not change the lock or warn" do
         lockfile lock_with(Bundler::VERSION.succ)

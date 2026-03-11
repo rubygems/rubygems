@@ -10,13 +10,18 @@ class Gem::StubSpecification < Gem::BasicSpecification
   PREFIX = "# stub: "
 
   # :nodoc:
+  FILES_PREFIX = "# files: "
+
+  # :nodoc:
   OPEN_MODE = "r:UTF-8:-"
 
   class StubLine # :nodoc: all
     attr_reader :name, :version, :platform, :require_paths, :extensions,
                 :full_name
+    attr_accessor :files
 
     NO_EXTENSIONS = [].freeze
+    NO_FILES = [].freeze
 
     # These are common require paths.
     REQUIRE_PATHS = { # :nodoc:
@@ -44,6 +49,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
       @platform      = Gem::Platform.new parts[2]
       @extensions    = extensions
+      @files         = NO_FILES
       @full_name     = if platform == Gem::Platform::RUBY
         "#{name}-#{version}"
       else
@@ -122,6 +128,13 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
             stubline.chomp! # readline(chomp: true) allocates 3x as much as .readline.chomp!
             @data = StubLine.new stubline, extensions
+
+            # Read files stub line if present
+            filesline = extensions == StubLine::NO_EXTENSIONS ? extline : file.readline
+            if filesline.start_with?(FILES_PREFIX)
+              filesline.chomp!
+              @data.files = filesline.byteslice(FILES_PREFIX.bytesize..).split("\0")
+            end
           end
         rescue EOFError
         end
@@ -137,6 +150,21 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def raw_require_paths # :nodoc:
     data.require_paths
+  end
+
+  ##
+  # Files in the gem, from the files stub line if available,
+  # otherwise from the full specification.
+
+  def files
+    data.files
+  end
+
+  ##
+  # Activate this spec, loading the full specification if needed.
+
+  def activate
+    to_spec.activate
   end
 
   def missing_extensions?

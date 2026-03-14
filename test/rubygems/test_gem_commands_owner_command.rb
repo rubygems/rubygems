@@ -55,7 +55,7 @@ EOF
   end
 
   def test_show_owners_dont_load_objects
-    pend "testing a psych-only API" unless defined?(::Psych::DisallowedClass)
+    Gem.load_yaml
 
     response = <<EOF
 ---

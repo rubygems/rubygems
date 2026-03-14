@@ -11,6 +11,7 @@ index d72b4dba38..168df21f3e 100644
  require 'io/wait'
 -require_relative '../../securerandom/lib/securerandom'
 +require_relative '../../../vendored_securerandom'
+ require 'rbconfig'
  
  # Gem::Resolv is a thread-aware DNS resolver library written in Ruby.  Gem::Resolv can
  # handle multiple DNS requests concurrently without blocking the entire Ruby

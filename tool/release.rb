@@ -201,7 +201,7 @@ class Release
         from_branch,
         @release_branch,
         "Prepare RubyGems #{@rubygems.version} and Bundler #{@bundler.version}",
-        "It's release day!"
+        release_pull_request_body
       ) unless ENV["DRYRUN"]
 
       unless @prerelease
@@ -294,6 +294,12 @@ class Release
   end
 
   private
+
+  def release_pull_request_body
+    prs = relevant_unreleased_pull_requests
+    lines = prs.map {|pr| "* #{pr.title} [##{pr.number}](#{pr.html_url})" }
+    lines.join("\n")
+  end
 
   def relevant_unreleased_pull_requests
     (@bundler.relevant_pull_requests + @rubygems.relevant_pull_requests).uniq.sort_by(&:merged_at)

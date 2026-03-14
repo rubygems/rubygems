@@ -10,8 +10,6 @@ extra_entry:
 
 release_date_format: "%Y-%m-%d"
 
-entry_wrapping: 74
-
 changelog_label_mapping:
   "rubygems: feature": "### Features:"
   "rubygems: performance": "### Performance:"

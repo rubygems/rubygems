@@ -26,6 +26,10 @@ require "rubygems"
 require "rubygems/gem_runner"
 require "securerandom"
 
+if Gem.disable_system_update_message
+  abort "ERROR: #{Gem.disable_system_update_message}"
+end
+
 Gem::CommandManager.instance.register_command :setup
 
 args = ARGV.clone

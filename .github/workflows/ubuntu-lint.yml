@@ -29,10 +29,10 @@ jobs:
           - yamllint
           - zizmor
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867 # v7.1.6
+      - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
           python-version: "3.13"
           activate-environment: true
@@ -52,14 +52,39 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@fe4161a26a8629af62121b670040955b330f9af2 # v4.31.6
+        uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
         if: matrix.command == 'zizmor'
         with:
           sarif_file: results.sarif
           category: zizmor
 
   ruby_linters:
-    name: Ruby linters on ${{ matrix.ruby.name }}
+    name: Ruby linters
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+    env:
+      RUBYOPT: -Ilib
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Setup ruby
+        uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd # v1.288.0
+        with:
+          ruby-version: ruby
+          bundler: none
+      - name: Install Dependencies
+        run: bin/rake setup
+      - name: Run Ruby Lint
+        run: bin/rake rubocop
+      - name: Run Markdown Lint
+        run: bin/mdl -g . -r MD001,MD025
+      - name: Generate docs
+        run: bin/rake docs
+
+  check_misc:
+    name: Check misc on ${{ matrix.ruby.name }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -71,24 +96,14 @@ jobs:
     env:
       RUBYOPT: -Ilib
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@b90be12699fdfcbee4440c2bba85f6f460446bb0 # v1.279.0
+        uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd # v1.288.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
-      - name: Install Dependencies
-        run: bin/rake setup
-      - name: Run Ruby Lint
-        run: bin/rake rubocop
-      - name: Run Markdown Lint
-        run: bin/mdl -g . -r MD001,MD025
-        if: matrix.ruby.name == 'ruby'
-      - name: Generate docs
-        run: bin/rake docs
-        if: matrix.ruby.name != 'jruby'
       - name: Install & Check Dependencies
         run: bin/rake dev:frozen_deps
       - name: Misc checks
@@ -104,6 +119,7 @@ jobs:
     needs:
       - python_linters
       - ruby_linters
+      - check_misc
     runs-on: ubuntu-latest
 
     steps:

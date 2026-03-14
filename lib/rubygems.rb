@@ -351,6 +351,8 @@ module Gem
   def self.clear_paths
     @paths         = nil
     @user_home     = nil
+    @cache_home    = nil
+    @data_home     = nil
     Gem::Specification.reset
     Gem::Security.reset if defined?(Gem::Security)
   end
@@ -638,6 +640,14 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   end
 
   @yaml_loaded = false
+  @use_psych = nil
+
+  ##
+  # Returns true if the Psych YAML parser is enabled via configuration.
+
+  def self.use_psych?
+    @use_psych || false
+  end
 
   ##
   # Loads YAML, preferring Psych
@@ -645,9 +655,15 @@ An Array (#{env.inspect}) was passed in from #{caller[3]}
   def self.load_yaml
     return if @yaml_loaded
 
-    require "psych"
-    require_relative "rubygems/psych_tree"
+    @use_psych = ENV["RUBYGEMS_USE_PSYCH"] == "true" ||
+                 (defined?(@configuration) && @configuration && !@configuration[:use_psych].nil?)
 
+    if @use_psych
+      require "psych"
+      require_relative "rubygems/psych_tree"
+    end
+
+    require_relative "rubygems/yaml_serializer"
     require_relative "rubygems/safe_yaml"
 
     @yaml_loaded = true
@@ -1410,9 +1426,7 @@ require_relative "rubygems/specification"
 
 # REFACTOR: This should be pulled out into some kind of hacks file.
 begin
-  ##
   # Defaults the operating system (or packager) wants to provide for RubyGems.
-
   require "rubygems/defaults/operating_system"
 rescue LoadError
   # Ignored
@@ -1427,9 +1441,7 @@ rescue StandardError => e
 end
 
 begin
-  ##
   # Defaults the Ruby implementation wants to provide for RubyGems
-
   require "rubygems/defaults/#{RUBY_ENGINE}"
 rescue LoadError
 end

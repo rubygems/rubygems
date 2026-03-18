@@ -13,4 +13,5 @@
 /pkg
 tmp
 /coverage
+.rspec_status
 /.venv

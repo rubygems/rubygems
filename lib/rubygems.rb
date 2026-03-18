@@ -37,7 +37,7 @@ require_relative "rubygems/win_platform"
 # Further RubyGems documentation can be found at:
 #
 # * {RubyGems Guides}[https://guides.rubygems.org]
-# * {RubyGems API}[https://www.rubydoc.info/github/ruby/rubygems] (also available from
+# * {RubyGems API}[https://guides.rubygems.org/rubygems-org-api/] (also available from
 #   <tt>gem server</tt>)
 #
 # == RubyGems Plugins

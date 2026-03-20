@@ -26,6 +26,44 @@ class Gem::UnknownCommandError < Gem::Exception
       DidYouMean.correct_error(Gem::UnknownCommandError, Gem::UnknownCommandSpellChecker)
     end
   end
+
+  def detailed_message(highlight: true, **)
+    msg = super(highlight: highlight)
+
+    case unknown_command
+    when "upgrade"
+      command = "bundle update <gem_name>"
+
+      bold = "\e[1m"
+      cyan = "\e[36m"
+      reset = "\e[0m"
+
+      command = if highlight && can_display_colors?
+        "#{bold}#{cyan}#{command}#{reset}"
+      else
+        "`#{command}`"
+      end
+
+      msg + "\nPlease use #{command} to update gems in your bundle."
+
+    else
+      msg
+    end
+  end
+
+  private
+
+  def can_display_colors?
+    are_colors_supported? && !are_colors_disabled?
+  end
+
+  def are_colors_supported?
+    stdout.tty? && ENV["TERM"] != "dumb"
+  end
+
+  def are_colors_disabled?
+    !ENV["NO_COLOR"].nil? && !ENV["NO_COLOR"].empty?
+  end
 end
 
 class Gem::DependencyError < Gem::Exception; end

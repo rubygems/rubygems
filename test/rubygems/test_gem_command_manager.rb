@@ -91,6 +91,24 @@ class TestGemCommandManager < Gem::TestCase
     assert_equal message, actual_message
   end
 
+  def test_upgrade_points_users_to_update
+    e = assert_raise Gem::UnknownCommandError do
+      @command_manager.find_command "upgrade"
+    end
+
+    assert_equal <<~MSG.chomp, e.detailed_message(highlight: false)
+      Unknown command upgrade (Gem::UnknownCommandError)
+      Please use `bundle update <gem_name>` to update gems in your bundle.
+    MSG
+
+    def e.can_display_colors? = true
+
+    assert_equal <<~MSG.chomp, e.detailed_message(highlight: true)
+      \e[1mUnknown command upgrade (\e[1;4mGem::UnknownCommandError\e[m\e[1m)\e[m
+      Please use \e[1m\e[36mbundle update <gem_name>\e[0m to update gems in your bundle.
+    MSG
+  end
+
   def test_run_interrupt
     old_load_path = $:.dup
     $: << File.expand_path("test/rubygems", PROJECT_DIR)

@@ -17,4 +17,10 @@ RSpec.describe "bundle command names" do
     bundle "in", raise_on_error: false
     expect(err).to eq("Ambiguous command in matches [info, init, install]")
   end
+
+  it "prints a helpful message for 'upgrade'" do
+    bundle "upgrade", raise_on_error: false
+    expect(out).to eq("Please use bundle update <gem_name> to update gems in your bundle.")
+    expect(exitstatus).to eq(1)
+  end
 end

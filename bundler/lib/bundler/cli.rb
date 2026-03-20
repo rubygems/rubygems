@@ -185,6 +185,12 @@ module Bundler
     end
 
     def self.handle_no_command_error(command, has_namespace = $thor_runner)
+      if command == "upgrade"
+        command = Bundler.ui.add_color("bundle update <gem_name>", :bold, :cyan)
+        Bundler.ui.info("Please use #{command} to update gems in your bundle.")
+        exit(1)
+      end
+
       if Bundler.settings[:plugins] && Bundler::Plugin.command?(command)
         return Bundler::Plugin.exec_command(command, ARGV[1..-1])
       end

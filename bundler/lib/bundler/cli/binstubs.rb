@@ -20,6 +20,7 @@ module Bundler
         force: options[:force],
         binstubs_cmd: true,
         all_platforms: options["all-platforms"],
+        inherit: options[:inherit],
       }
 
       if options[:all]

@@ -3,7 +3,7 @@ bundle-binstubs(1) -- Install the binstubs of the listed gems
 
 ## SYNOPSIS
 
-`bundle binstubs` <GEM_NAME> [--force] [--standalone] [--all-platforms]
+`bundle binstubs` <GEM_NAME> [--force] [--standalone] [--all-platforms] [--inherit]
 
 ## DESCRIPTION
 
@@ -40,3 +40,7 @@ all given gems.
 
 * `--all-platforms`:
   Install binstubs for all platforms.
+
+* `--inherit`:
+  Point `BUNDLE_GEMFILE` in generated binstubs to the first parent directory
+  containing both `Gemfile` and `Gemfile.lock`.

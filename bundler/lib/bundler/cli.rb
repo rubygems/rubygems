@@ -380,6 +380,7 @@ module Bundler
     method_option "standalone", type: :boolean, banner: "Make binstubs that can work without the Bundler runtime"
     method_option "all", type: :boolean, banner: "Install binstubs for all gems"
     method_option "all-platforms", type: :boolean, default: false, banner: "Install binstubs for all platforms"
+    method_option "inherit", type: :boolean, default: false, banner: "Point BUNDLE_GEMFILE to the first parent directory containing both Gemfile and Gemfile.lock"
     def binstubs(*gems)
       remembered_flag_deprecation("path", option_name: "bin")
 

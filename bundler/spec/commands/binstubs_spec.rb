@@ -141,6 +141,25 @@ RSpec.describe "bundle binstubs <gem>" do
         expect(File.readlines(bundled_app("bin/myrackup")).first).to eq("#!/usr/bin/env jruby\n")
       end
     end
+
+    it "supports --inherit to point to the first parent with both Gemfile and Gemfile.lock" do
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "myrack"
+      G
+
+      gemfile "engines/admin/Gemfile", <<-G
+        source "https://gem.repo1"
+        gem "myrack"
+      G
+
+      bundle "binstubs myrack", dir: bundled_app("engines/admin")
+      expect(File.read(bundled_app("engines/admin/bin/myrackup"))).to include('ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)')
+      expect(bundled_app("engines/admin/Gemfile.lock")).not_to exist
+
+      bundle "binstubs myrack --inherit --force", dir: bundled_app("engines/admin")
+      expect(File.read(bundled_app("engines/admin/bin/myrackup"))).to include('ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../../Gemfile", __dir__)')
+    end
   end
 
   context "when the gem doesn't exist" do

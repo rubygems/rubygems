@@ -109,7 +109,8 @@ module Bundler
       # double-assignment to avoid warnings about variables that will be used by ERB
       bin_path = Bundler.bin_path
       bin_path = bin_path
-      relative_gemfile_path = Bundler.default_gemfile.relative_path_from(bin_path)
+      gemfile_for_binstubs = options[:inherit] ? inherited_gemfile_for(bin_path) : Bundler.default_gemfile
+      relative_gemfile_path = gemfile_for_binstubs.relative_path_from(bin_path)
       relative_gemfile_path = relative_gemfile_path
       ruby_command = Thor::Util.ruby_command
       ruby_command = ruby_command
@@ -225,6 +226,24 @@ module Bundler
 
     def lock
       @definition.lock
+    end
+
+    def inherited_gemfile_for(bin_path)
+      gemfile_name = Bundler.default_gemfile.basename.to_s
+      lockfile_name = Bundler.default_lockfile.basename.to_s
+      current = bin_path.expand_path
+      previous = nil
+
+      until !current.directory? || current == previous
+        candidate_gemfile = current.join(gemfile_name)
+        candidate_lockfile = current.join(lockfile_name)
+        return candidate_gemfile if candidate_gemfile.file? && candidate_lockfile.file?
+
+        previous = current
+        current = current.parent
+      end
+
+      Bundler.default_gemfile
     end
   end
 end

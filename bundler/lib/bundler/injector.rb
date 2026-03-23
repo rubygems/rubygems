@@ -84,7 +84,27 @@ module Bundler
       seg_end_index = version >= Gem::Version.new("1.0") ? 1 : 2
 
       prerelease_suffix = version.to_s.delete_prefix(version.release.to_s) if version.prerelease?
-      "#{version_prefix}#{segments[0..seg_end_index].join(".")}#{prerelease_suffix}"
+      result = "#{version_prefix}#{segments[0..seg_end_index].join(".")}#{prerelease_suffix}"
+
+      # Re-parse segments directly from the version string to detect corruption
+      expected_segments = version.version.scan(/\d+|[a-z]+/i).map {|s| /\A\d/.match?(s) ? s.to_i : s }
+      if segments != expected_segments
+        warn "BUNDLER_DEBUG: segments mismatch for #{version} (#{version.class})"
+        warn "BUNDLER_DEBUG:   version string: #{version.version.inspect}"
+        warn "BUNDLER_DEBUG:   segments:          #{segments.inspect}"
+        warn "BUNDLER_DEBUG:   expected_segments: #{expected_segments.inspect}"
+        warn "BUNDLER_DEBUG:   _segments:         #{version.send(:_segments).inspect}"
+        warn "BUNDLER_DEBUG:   frozen?:           #{version.frozen?}"
+        warn "BUNDLER_DEBUG:   object_id:         #{version.object_id}"
+        warn "BUNDLER_DEBUG:   sort_key:          #{version.send(:sort_key).inspect}"
+        warn "BUNDLER_DEBUG:   seg_end_index:     #{seg_end_index}"
+        warn "BUNDLER_DEBUG:   result:            #{result.inspect}"
+        warn "BUNDLER_DEBUG:   RUBY_VERSION:      #{RUBY_VERSION}"
+        warn "BUNDLER_DEBUG:   RUBY_PLATFORM:     #{RUBY_PLATFORM}"
+        warn "BUNDLER_DEBUG:   spec:              #{spec.full_name} (#{spec.class})"
+      end
+
+      result
     end
 
     def version_prefix

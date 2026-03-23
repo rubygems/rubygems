@@ -222,7 +222,6 @@ class Gem::Version
     end
     @version = -@version
     @segments = nil
-    @sort_key = compute_sort_key
   end
 
   ##
@@ -351,13 +350,43 @@ class Gem::Version
     end
 
     return unless Gem::Version === other
-
-    # Fast path for comparison when available.
-    if @sort_key && other.sort_key
-      return @sort_key <=> other.sort_key
-    end
-
     return 0 if @version == other.version || canonical_segments == other.canonical_segments
+
+    lhsegments = _segments
+    rhsegments = other._segments
+
+    lhsize = lhsegments.size
+    rhsize = rhsegments.size
+    limit  = (lhsize > rhsize ? rhsize : lhsize)
+
+    i = 0
+
+    if limit <= 4 && !prerelease? && !other.prerelease?
+      # Fast path
+      lh0 = lhsegments[0] || 0
+      lh1 = lhsegments[1] || 0
+      lh2 = lhsegments[2] || 0
+      lh3 = lhsegments[3] || 0
+
+      rh0 = rhsegments[0] || 0
+      rh1 = rhsegments[1] || 0
+      rh2 = rhsegments[2] || 0
+      rh3 = rhsegments[3] || 0
+
+      res = (lh0 <=> rh0)
+      return res unless res.zero?
+
+      res = (lh1 <=> rh1)
+      return res unless res.zero?
+
+      res = (lh2 <=> rh2)
+      return res unless res.zero?
+
+      res = (lh3 <=> rh3)
+      return res unless res.zero?
+      
+      return 0
+    end
 
     lhsegments = canonical_segments
     rhsegments = other.canonical_segments
@@ -365,8 +394,6 @@ class Gem::Version
     lhsize = lhsegments.size
     rhsize = rhsegments.size
     limit  = (lhsize > rhsize ? rhsize : lhsize)
-
-    i = 0
 
     while i < limit
       lhs = lhsegments[i]
@@ -421,21 +448,6 @@ class Gem::Version
   end
 
   protected
-
-  attr_reader :sort_key # :nodoc:
-
-  def compute_sort_key
-    segments = canonical_segments
-    return if segments.size > 4 || prerelease? || segments.any? {|segment| segment > 65_000 }
-
-    base = 1_000_000_000_000
-
-    segments.sum do |segment|
-      result = segment * base
-      base /= 10_000
-      result
-    end
-  end
 
   def _segments
     # segments is lazy so it can pick up version values that come from

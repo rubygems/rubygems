@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.9 / 2026-03-25
+
+### Enhancements:
+
+* Fix: include owner role in `gem owner`. Pull request [#9403](https://github.com/ruby/rubygems/pull/9403) by gjtorikian
+* Installs bundler 4.0.9 as a default gem.
+
+### Bug fixes:
+
+* Fix: Ensure trailing slash is added to source URIs added via gem sources. Pull request [#9055](https://github.com/ruby/rubygems/pull/9055) by zirni
+
+### Documentation:
+
+* [DOC] Fix link. Pull request [#9409](https://github.com/ruby/rubygems/pull/9409) by BurdetteLamar
+
 ## 4.0.8 / 2026-03-11
 
 ### Enhancements:

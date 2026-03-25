@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.9 / 2026-03-25
+
+### Enhancements:
+
+* Lock the checksum of Bundler itself in the lockfile. Pull request [#9366](https://github.com/ruby/rubygems/pull/9366) by Edouard-chin
+* Check the git version only **once** per `bundle install`. Pull request [#9406](https://github.com/ruby/rubygems/pull/9406) by Edouard-chin
+* Normalize the number of workers when performing parallel operations. Pull request [#9400](https://github.com/ruby/rubygems/pull/9400) by Edouard-chin
+* Add exponential backoff to bundler retries. Pull request [#9163](https://github.com/ruby/rubygems/pull/9163) by ChrisBr
+* Introduce a priority queue. Pull request [#9389](https://github.com/ruby/rubygems/pull/9389) by Edouard-chin
+* Split the download and install process of a gem. Pull request [#9381](https://github.com/ruby/rubygems/pull/9381) by Edouard-chin
+
+### Bug fixes:
+
+* Retry git fetch without --depth for dumb HTTP transport. Pull request [#9405](https://github.com/ruby/rubygems/pull/9405) by hsbt
+
 ## 4.0.8 (2026-03-11)
 
 ### Enhancements:

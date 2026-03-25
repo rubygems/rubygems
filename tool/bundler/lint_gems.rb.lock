@@ -85,6 +85,7 @@ DEPENDENCIES
 
 CHECKSUMS
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
+  bundler (4.0.9) sha256=5c03b3aec3e09d532afbd8e56c215105db986d27441a85923e727ef74c6cf8f3
   chef-utils (18.8.54) sha256=651c6c53291a520eddf636c7be598169fa52a07c41706b35e2e2a262c1eb0dc7
   concurrent-ruby (1.3.5) sha256=813b3e37aca6df2a21a3b9f1d497f8cbab24a2b94cab325bffe65ee0f6cbebc6
   ffi (1.17.2-x64-mingw-ucrt) sha256=15d2da54ee578657a333a6059ed16eaba1cbd794ceecd15944825b65c8381ac0
@@ -119,4 +120,4 @@ CHECKSUMS
   wmi-lite (1.0.7) sha256=116ef5bb470dbe60f58c2db9047af3064c16245d6562c646bc0d90877e27ddda
 
 BUNDLED WITH
-  4.0.8
+  4.0.9

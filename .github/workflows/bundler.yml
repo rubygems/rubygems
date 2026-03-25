@@ -72,6 +72,45 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
+      - name: Restore gem caches
+        uses: actions/cache/restore@v5
+        id: restore-cache
+        with:
+          path: |
+            bundler/tmp/gems/base
+            bundler/tmp/gems/standard
+            bundler/tmp/gems/rubocop
+          key: gem-cache-${{ hashFiles('tool/bundler/test_gems.rb.lock', 'tool/bundler/standard_gems.rb.lock', 'tool/bundler/rubocop_gems.rb.lock') }}-${{ matrix.ruby.value }}-${{ matrix.os.name }}
+      - name: Install test dependencies
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: bundle install
+        env:
+          BUNDLE_PATH: ../../bundler/tmp/gems/base
+          BUNDLE_GEMFILE: tool/bundler/test_gems.rb
+          BUNDLE_CLEAN: 1
+      - name: Install standard dependencies
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: bundle install
+        env:
+          BUNDLE_PATH: ../../bundler/tmp/gems/standard
+          BUNDLE_GEMFILE: tool/bundler/standard_gems.rb
+          BUNDLE_CLEAN: 1
+      - name: Install rubocop dependencies
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: bundle install
+        env:
+          BUNDLE_PATH: ../../bundler/tmp/gems/rubocop
+          BUNDLE_GEMFILE: tool/bundler/rubocop_gems.rb
+          BUNDLE_CLEAN: 1
+      - name: Save gems cache
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            bundler/tmp/gems/base
+            bundler/tmp/gems/standard
+            bundler/tmp/gems/rubocop
+          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
       - name: Setup java
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:

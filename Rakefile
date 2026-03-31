@@ -34,7 +34,7 @@ namespace :version do
     version = stdout.split(" ").last
 
     Dir.glob("{tool/bundler/*_gems.rb,bundler/spec/realworld/fixtures/*/Gemfile}").each do |file|
-      Spec::Rubygems.dev_bundle("update", "--bundler", version, gemfile: file)
+      Spec::Rubygems.dev_bundle("lock", "--bundler", version, gemfile: file)
     end
   end
 

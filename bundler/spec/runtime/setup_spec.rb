@@ -1329,7 +1329,7 @@ end
         gem "bar", :git => "#{lib_path("bar-1.0")}"
       G
 
-      bundle :install
+      bundle :install, env: { "BUNDLE_LOCKFILE_CHECKSUMS" => "false" }
 
       ruby <<-RUBY, artifice: nil
         require 'bundler/setup'

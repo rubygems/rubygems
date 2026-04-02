@@ -27,7 +27,11 @@ module Bundler
         extract_files
       end
 
-      build_extensions if spec.extensions.any?
+      if options[:build_extension] == false
+        warn_skipped_extensions
+      elsif spec.extensions.any?
+        build_extensions
+      end
       write_build_info_file
       run_post_build_hooks
 
@@ -35,7 +39,7 @@ module Bundler
         generate_bin
       end
 
-      generate_plugins
+      generate_plugins unless options[:install_plugin] == false
 
       write_spec
 

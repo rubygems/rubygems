@@ -7,7 +7,12 @@ module Bundler
     end
 
     def matches_current_ruby?
-      @required_ruby_version.satisfied_by?(Gem.ruby_version)
+      requirement = if Bundler.settings[:ignore_ruby_upper_bounds]
+        remove_upper_bounds(@required_ruby_version)
+      else
+        @required_ruby_version
+      end
+      requirement.satisfied_by?(Gem.ruby_version)
     end
 
     def matches_current_rubygems?
@@ -25,12 +30,22 @@ module Bundler
       return if requirement.nil? || requirement.none?
 
       if name == "Ruby" && Bundler.settings[:ignore_ruby_upper_bounds]
-        reqs = requirement.requirements.reject { |op, _| op == "<" || op == "<=" }
-        return if reqs.empty?
-        requirement = Gem::Requirement.new(reqs.map { |op, v| "#{op} #{v}" })
+        requirement = remove_upper_bounds(requirement)
+        return if requirement.none?
       end
 
       Gem::Dependency.new("#{name}\0", requirement)
+    end
+
+    private
+
+    def remove_upper_bounds(requirement)
+      filtered = requirement.requirements.reject {|op, _| op == "<" || op == "<=" }
+      if filtered.empty?
+        Gem::Requirement.default
+      else
+        Gem::Requirement.new(filtered.map {|op, v| "#{op} #{v}" })
+      end
     end
   end
 end

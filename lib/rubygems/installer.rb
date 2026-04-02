@@ -282,12 +282,16 @@ class Gem::Installer
 
     extract_files
 
-    build_extensions
+    if options[:build_extension] == false
+      warn_skipped_extensions
+    else
+      build_extensions
+    end
     write_build_info_file
     run_post_build_hooks
 
     generate_bin
-    generate_plugins
+    generate_plugins unless options[:install_plugin] == false
 
     write_spec
     write_cache_file
@@ -807,6 +811,13 @@ class Gem::Installer
     builder = Gem::Ext::Builder.new spec, build_args, Gem.target_rbconfig, build_jobs
 
     builder.build_extensions
+  end
+
+  def warn_skipped_extensions # :nodoc:
+    return if spec.extensions.empty?
+
+    alert_warning "#{spec.full_name} contains native extensions that were not built.\n" \
+                  "To build extensions, run: gem install #{spec.name} --build-extension"
   end
 
   ##

@@ -2442,6 +2442,58 @@ class TestGemInstaller < Gem::InstallerTestCase
     assert_kind_of(String, installer.gem)
   end
 
+  def test_install_no_build_extension
+    installer = util_setup_installer
+
+    gemdir = File.join @gemhome, "gems", @spec.full_name
+
+    installer.options[:build_extension] = false
+
+    use_ui @ui do
+      installer.install
+    end
+
+    assert_path_exist gemdir
+    assert_path_not_exist File.join(@spec.extension_dir, "gem.build_complete")
+    assert_match "contains native extensions that were not built", @ui.error
+  end
+
+  def test_install_no_build_extension_without_extensions
+    spec = quick_gem "b", 2
+
+    util_build_gem spec
+
+    installer = util_installer spec, @gemhome
+    installer.options[:build_extension] = false
+
+    use_ui @ui do
+      installer.install
+    end
+
+    refute_match "contains native extensions", @ui.error
+  end
+
+  def test_install_no_install_plugin
+    installer = util_setup_installer do |spec|
+      write_file File.join(@tempdir, "lib", "rubygems_plugin.rb") do |io|
+        io.write "# do nothing"
+      end
+
+      spec.files += %w[lib/rubygems_plugin.rb]
+    end
+
+    installer.options[:install_plugin] = false
+
+    build_rake_in do
+      use_ui @ui do
+        installer.install
+      end
+    end
+
+    plugin_path = File.join Gem.plugindir, "a_plugin.rb"
+    refute File.exist?(plugin_path), "plugin must not be written when --no-install-plugin"
+  end
+
   private
 
   def util_execless

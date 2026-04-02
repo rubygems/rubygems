@@ -56,6 +56,32 @@ RSpec.describe Bundler::MatchMetadata do
     end
   end
 
+  describe "#matches_current_rubygems?" do
+    context "when the rubygems version has an upper bound that excludes the current rubygems" do
+      let(:spec) { klass.new(Gem::Requirement.default, Gem::Requirement.new(">= 3.0", "< 3.1")) }
+
+      it "returns false by default" do
+        expect(spec.matches_current_rubygems?).to be false
+      end
+
+      it "returns true when ignore_rubygems_upper_bounds is set" do
+        bundle "config set ignore_rubygems_upper_bounds true"
+        expect(spec.matches_current_rubygems?).to be true
+      end
+    end
+
+    context "when the rubygems version has only a lower bound" do
+      let(:spec) { klass.new(Gem::Requirement.default, Gem::Requirement.new(">= 2.0")) }
+
+      it "returns true regardless of setting" do
+        expect(spec.matches_current_rubygems?).to be true
+
+        bundle "config set ignore_rubygems_upper_bounds true"
+        expect(spec.matches_current_rubygems?).to be true
+      end
+    end
+  end
+
   describe "#metadata_dependency" do
     context "when ignore_ruby_upper_bounds is set" do
       before { bundle "config set ignore_ruby_upper_bounds true" }
@@ -76,6 +102,22 @@ RSpec.describe Bundler::MatchMetadata do
         spec = klass.new(Gem::Requirement.default, Gem::Requirement.new(">= 3.0", "< 4.0"))
         dep = spec.send(:metadata_dependency, "RubyGems", spec.required_rubygems_version)
         expect(dep.requirement).to eq(Gem::Requirement.new(">= 3.0", "< 4.0"))
+      end
+    end
+
+    context "when ignore_rubygems_upper_bounds is set" do
+      before { bundle "config set ignore_rubygems_upper_bounds true" }
+
+      it "removes upper bounds from RubyGems dependency" do
+        spec = klass.new(Gem::Requirement.default, Gem::Requirement.new(">= 3.0", "< 4.0"))
+        dep = spec.send(:metadata_dependency, "RubyGems", spec.required_rubygems_version)
+        expect(dep.requirement).to eq(Gem::Requirement.new(">= 3.0"))
+      end
+
+      it "does not affect Ruby dependency" do
+        spec = klass.new(Gem::Requirement.new(">= 3.0", "< 3.1"), Gem::Requirement.default)
+        dep = spec.send(:metadata_dependency, "Ruby", spec.required_ruby_version)
+        expect(dep.requirement).to eq(Gem::Requirement.new(">= 3.0", "< 3.1"))
       end
     end
   end

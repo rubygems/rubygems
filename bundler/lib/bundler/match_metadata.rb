@@ -16,7 +16,12 @@ module Bundler
     end
 
     def matches_current_rubygems?
-      @required_rubygems_version.satisfied_by?(Gem.rubygems_version)
+      requirement = if Bundler.settings[:ignore_rubygems_upper_bounds]
+        remove_upper_bounds(@required_rubygems_version)
+      else
+        @required_rubygems_version
+      end
+      requirement.satisfied_by?(Gem.rubygems_version)
     end
 
     def expanded_dependencies
@@ -29,7 +34,8 @@ module Bundler
     def metadata_dependency(name, requirement)
       return if requirement.nil? || requirement.none?
 
-      if name == "Ruby" && Bundler.settings[:ignore_ruby_upper_bounds]
+      if (name == "Ruby" && Bundler.settings[:ignore_ruby_upper_bounds]) ||
+         (name == "RubyGems" && Bundler.settings[:ignore_rubygems_upper_bounds])
         requirement = remove_upper_bounds(requirement)
         return if requirement.none?
       end
@@ -40,7 +46,7 @@ module Bundler
     private
 
     def remove_upper_bounds(requirement)
-      filtered = requirement.requirements.reject {|op, _| op == "<" || op == "<=" }
+      filtered = requirement.requirements.reject {|op, _| ["<", "<="].include?(op) }
       if filtered.empty?
         Gem::Requirement.default
       else

@@ -28,6 +28,7 @@ module Bundler
       global_gem_cache
       ignore_messages
       ignore_ruby_upper_bounds
+      ignore_rubygems_upper_bounds
       init_gems_rb
       inline
       lockfile_checksums

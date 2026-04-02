@@ -142,6 +142,12 @@ When set, no funding requests will be printed\.
 \fBignore_messages\fR (\fBBUNDLE_IGNORE_MESSAGES\fR)
 When set, no post install messages will be printed\. To silence a single gem, use dot notation like \fBignore_messages\.httparty true\fR\.
 .TP
+\fBignore_ruby_upper_bounds\fR (\fBBUNDLE_IGNORE_RUBY_UPPER_BOUNDS\fR)
+When set, Bundler ignores upper bound constraints (\fB<\fR and \fB<=\fR) on \fBrequired_ruby_version\fR in gem metadata\. Useful when gems haven't updated their gemspecs for newer Ruby versions but still work fine\.
+.TP
+\fBignore_rubygems_upper_bounds\fR (\fBBUNDLE_IGNORE_RUBYGEMS_UPPER_BOUNDS\fR)
+When set, Bundler ignores upper bound constraints (\fB<\fR and \fB<=\fR) on \fBrequired_rubygems_version\fR in gem metadata\. Useful when gems haven't updated their gemspecs for newer RubyGems versions but still work fine\.
+.TP
 \fBinit_gems_rb\fR (\fBBUNDLE_INIT_GEMS_RB\fR)
 Generate a \fBgems\.rb\fR instead of a \fBGemfile\fR when running \fBbundle init\fR\.
 .TP

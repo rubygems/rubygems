@@ -1001,9 +1001,10 @@ class Gem::Installer
     # are loaded at the same time.
     return unless specs.size == 1
 
-    plugin_files = spec.plugins.map do |plugin|
-      File.join(@plugins_dir, "#{spec.name}_plugin#{File.extname(plugin)}")
+    plugin_files = spec.plugins.filter_map do |plugin|
+      path = File.join(@plugins_dir, "#{spec.name}_plugin#{File.extname(plugin)}")
+      path if File.exist?(path)
     end
-    Gem.load_plugin_files(plugin_files)
+    Gem.load_plugin_files(plugin_files) unless plugin_files.empty?
   end
 end

@@ -478,7 +478,7 @@ RSpec.describe "bundle install with git sources" do
         update_git("foo", path: repo, tag: tag)
 
         install_gemfile <<-G
-         source "https://gem.repo1"
+          source "https://gem.repo1"
           git "#{repo}", :tag => #{tag.dump} do
             gem "foo"
           end

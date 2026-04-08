@@ -174,6 +174,8 @@ class Release
   def prepare!
     initial_branch = `git rev-parse --abbrev-ref HEAD`.strip
 
+    check_git_state!
+
     unless @prerelease
       create_if_not_exist_and_switch_to(@stable_branch, from: "master")
       system("git", "push", "origin", @stable_branch, exception: true) if @level == :minor_or_major && !ENV["DRYRUN"]
@@ -226,6 +228,32 @@ class Release
       system("git", "checkout", initial_branch)
       raise
     end
+  end
+
+  def check_git_state!
+    git_dir = `git rev-parse --git-dir`.strip
+    errors = []
+
+    if File.exist?(File.join(git_dir, "index.lock"))
+      errors << "#{git_dir}/index.lock exists. A previous git process may have crashed. Remove it if no git process is running."
+    end
+
+    if File.exist?(File.join(git_dir, "CHERRY_PICK_HEAD"))
+      errors << "A cherry-pick is in progress. Run `git cherry-pick --abort` to cancel it."
+    end
+
+    if File.exist?(File.join(git_dir, "rebase-merge")) || File.exist?(File.join(git_dir, "rebase-apply"))
+      errors << "A rebase is in progress. Run `git rebase --abort` to cancel it."
+    end
+
+    branches = [@release_branch]
+    branches << "cherry_pick_changelogs" unless @prerelease
+    existing = branches.select {|b| system("git", "rev-parse", "--verify", b, out: IO::NULL, err: IO::NULL) }
+    unless existing.empty?
+      errors << "Release branches already exist: #{existing.join(", ")}. Please delete them before running this task."
+    end
+
+    raise errors.join("\n") unless errors.empty?
   end
 
   def create_if_not_exist_and_switch_to(branch, from:)

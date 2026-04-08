@@ -513,7 +513,7 @@ module Bundler
 
       # We are using a mutex to read and write from/to the hash.
       # The reason this double synchronization was added is for performance
-      # and lock the mutex for the shortest possible amount of time. Otherwise,
+      # and to lock the mutex for the shortest possible amount of time. Otherwise,
       # all threads are fighting over this mutex and when it gets acquired it gets locked
       # until a thread finishes downloading a gem, leaving the other threads waiting
       # doing nothing.

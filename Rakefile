@@ -29,12 +29,12 @@ end
 
 namespace :version do
   desc "Update the locked bundler version in dev environment"
-  task update_locked_bundler: [:"bundler:install"] do |_, _args|
+  task :update_locked_bundler do |_, _args|
     stdout = Spec::Rubygems.dev_bundle "--version"
     version = stdout.split(" ").last
 
     Dir.glob("{tool/bundler/*_gems.rb,bundler/spec/realworld/fixtures/*/Gemfile}").each do |file|
-      Spec::Rubygems.dev_bundle("lock", "--bundler", version, gemfile: file)
+      Spec::Rubygems.dev_bundle("lock", "--update", "--bundler", version, gemfile: file)
     end
   end
 

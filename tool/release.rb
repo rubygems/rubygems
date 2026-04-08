@@ -310,10 +310,12 @@ class Release
   end
 
   def released_pull_requests
-    commits = `git log --oneline --grep "^Merge pull request #" #{@previous_release_tag}..#{@stable_branch}`.split("\n")
-    commits.filter_map do |commit|
-      match = commit.match(/Merge pull request #(\d+) from /)
-      match[1].to_i if match
+    @released_pull_requests ||= begin
+      commits = `git log --oneline --grep "^Merge pull request #" #{@previous_release_tag}..#{@stable_branch}`.split("\n")
+      commits.filter_map do |commit|
+        match = commit.match(/Merge pull request #(\d+) from /)
+        match[1].to_i if match
+      end
     end
   end
 

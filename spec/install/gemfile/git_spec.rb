@@ -1078,7 +1078,7 @@ RSpec.describe "bundle install with git sources" do
     expect(out).to eq("WIN")
   end
 
-  it "does not to a remote fetch if the revision is cached locally" do
+  it "does not do a remote fetch if the revision is cached locally" do
     build_git "foo"
 
     install_gemfile <<-G

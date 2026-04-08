@@ -221,7 +221,7 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def stub_with_version
-    spec = File.join @gemhome, "specifications", "stub_e-2.gemspec"
+    spec = File.join @gemhome, "specifications", "stub_v-2.gemspec"
     File.open spec, "w" do |io|
       io.write <<~STUB
         # -*- encoding: utf-8 -*-
@@ -244,7 +244,7 @@ class TestStubSpecification < Gem::TestCase
   end
 
   def stub_without_version
-    spec = File.join @gemhome, "specifications", "stub-2.gemspec"
+    spec = File.join @gemhome, "specifications", "stub_v-2.gemspec"
     File.open spec, "w" do |io|
       io.write <<~STUB
         # -*- encoding: utf-8 -*-

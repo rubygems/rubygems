@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.0.10 / 2026-04-08
+
+### Enhancements:
+
+* Ignore warnings with spec different platforms. Pull request [#8508](https://github.com/ruby/rubygems/pull/8508) by hsbt
+* Better algorithm for sorting gem version. Pull request [#9421](https://github.com/ruby/rubygems/pull/9421) by Edouard-chin
+* Update SPDX license list as of 2026-02-20. Pull request [#9434](https://github.com/ruby/rubygems/pull/9434) by hsbt
+* Installs bundler 4.0.10 as a default gem.
+
+### Bug fixes:
+
+* Register native extension files in default spec map. Pull request [#9431](https://github.com/ruby/rubygems/pull/9431) by hsbt
+* Fix NoMethodError in Gem.try_activate when activation conflicts occur. Pull request [#9404](https://github.com/ruby/rubygems/pull/9404) by hsbt
+
 ## 4.0.9 / 2026-03-25
 
 ### Enhancements:

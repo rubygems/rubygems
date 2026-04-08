@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.10 / 2026-04-08
+
+### Enhancements:
+
+* Ignore warnings with spec different platforms. Pull request [#8508](https://github.com/ruby/rubygems/pull/8508) by hsbt
+* Improve error message when current platform is not in lockfile. Pull request [#9439](https://github.com/ruby/rubygems/pull/9439) by 55728
+* Cache package version selection. Pull request [#9410](https://github.com/ruby/rubygems/pull/9410) by Edouard-chin
+* Check happy path first when comparing gem version. Pull request [#9417](https://github.com/ruby/rubygems/pull/9417) by Edouard-chin
+* [feature] default_cli_command for config what command bundler runs when no specific command is provided. Pull request [#8886](https://github.com/ruby/rubygems/pull/8886) by jonbarlo
+* Introduce a fast path for comparing Gem::Version. Pull request [#9414](https://github.com/ruby/rubygems/pull/9414) by Edouard-chin
+
+### Bug fixes:
+
+* Restore rb_sys dependency for Rust. Pull request [#9416](https://github.com/ruby/rubygems/pull/9416) by bangseongbeom
+
 ## 4.0.9 / 2026-03-25
 
 ### Enhancements:

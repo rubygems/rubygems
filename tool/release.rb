@@ -231,7 +231,7 @@ class Release
   end
 
   def check_git_state!
-    git_dir = `git rev-parse --git-dir`.strip
+    git_dir = `git rev-parse --absolute-git-dir`.strip
     errors = []
 
     if File.exist?(File.join(git_dir, "index.lock"))
@@ -248,7 +248,7 @@ class Release
 
     branches = [@release_branch]
     branches << "cherry_pick_changelogs" unless @prerelease
-    existing = branches.select {|b| system("git", "rev-parse", "--verify", b, out: IO::NULL, err: IO::NULL) }
+    existing = branches.select {|b| system("git", "rev-parse", "--verify", "refs/heads/#{b}", out: IO::NULL, err: IO::NULL) }
     unless existing.empty?
       errors << "Release branches already exist: #{existing.join(", ")}. Please delete them before running this task."
     end

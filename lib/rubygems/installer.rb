@@ -306,7 +306,7 @@ class Gem::Installer
 
     Gem::Specification.add_spec(spec) unless @install_dir
 
-    load_plugin
+    load_plugin unless options[:install_plugin] == false
 
     run_post_install_hooks
 

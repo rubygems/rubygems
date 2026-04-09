@@ -2497,6 +2497,34 @@ class TestGemInstaller < Gem::InstallerTestCase
     assert_match "gem pristine #{@spec.name} --only-plugins", @ui.error
   end
 
+  def test_install_no_install_plugin_skips_load_plugin
+    installer = util_setup_installer do |spec|
+      write_file File.join(@tempdir, "lib", "rubygems_plugin.rb") do |io|
+        io.write "$no_install_plugin_test_loaded = true"
+      end
+
+      spec.files += %w[lib/rubygems_plugin.rb]
+    end
+
+    # Simulate a pre-existing plugin wrapper from a previous install
+    FileUtils.mkdir_p Gem.plugindir
+    plugin_path = File.join Gem.plugindir, "a_plugin.rb"
+    File.write(plugin_path, "require_relative '../../gems/#{@spec.full_name}/lib/rubygems_plugin'")
+
+    installer.options[:install_plugin] = false
+
+    build_rake_in do
+      use_ui @ui do
+        installer.install
+      end
+    end
+
+    refute defined?($no_install_plugin_test_loaded) && $no_install_plugin_test_loaded,
+           "plugin must not be loaded when --no-install-plugin"
+  ensure
+    $no_install_plugin_test_loaded = nil
+  end
+
   def test_install_no_install_plugin_without_plugins
     installer = util_setup_installer
 

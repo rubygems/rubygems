@@ -291,7 +291,11 @@ class Gem::Installer
     run_post_build_hooks
 
     generate_bin
-    generate_plugins unless options[:install_plugin] == false
+    if options[:install_plugin] == false
+      warn_skipped_plugins
+    else
+      generate_plugins
+    end
 
     write_spec
     write_cache_file
@@ -817,7 +821,14 @@ class Gem::Installer
     return if spec.extensions.empty?
 
     alert_warning "#{spec.full_name} contains native extensions that were not built.\n" \
-                  "To build extensions, run: gem install #{spec.name} --build-extension"
+                  "To build extensions, run: gem pristine #{spec.name} --extensions"
+  end
+
+  def warn_skipped_plugins # :nodoc:
+    return if spec.plugins.empty?
+
+    alert_warning "#{spec.full_name} contains plugins that were not installed.\n" \
+                  "To install plugins, run: gem pristine #{spec.name} --only-plugins"
   end
 
   ##

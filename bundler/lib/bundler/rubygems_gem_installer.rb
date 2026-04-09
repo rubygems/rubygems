@@ -39,7 +39,11 @@ module Bundler
         generate_bin
       end
 
-      generate_plugins unless options[:install_plugin] == false
+      if options[:install_plugin] == false
+        warn_skipped_plugins
+      else
+        generate_plugins
+      end
 
       write_spec
 

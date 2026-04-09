@@ -2456,6 +2456,7 @@ class TestGemInstaller < Gem::InstallerTestCase
     assert_path_exist gemdir
     assert_path_not_exist File.join(@spec.extension_dir, "gem.build_complete")
     assert_match "contains native extensions that were not built", @ui.error
+    assert_match "gem pristine #{@spec.name} --extensions", @ui.error
   end
 
   def test_install_no_build_extension_without_extensions
@@ -2492,6 +2493,22 @@ class TestGemInstaller < Gem::InstallerTestCase
 
     plugin_path = File.join Gem.plugindir, "a_plugin.rb"
     refute File.exist?(plugin_path), "plugin must not be written when --no-install-plugin"
+    assert_match "contains plugins that were not installed", @ui.error
+    assert_match "gem pristine #{@spec.name} --only-plugins", @ui.error
+  end
+
+  def test_install_no_install_plugin_without_plugins
+    installer = util_setup_installer
+
+    installer.options[:install_plugin] = false
+
+    build_rake_in do
+      use_ui @ui do
+        installer.install
+      end
+    end
+
+    refute_match "contains plugins", @ui.error
   end
 
   private

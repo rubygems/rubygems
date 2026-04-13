@@ -347,6 +347,7 @@ RSpec.describe Bundler::SharedHelpers do
       before do
         Dir.mkdir bundled_app(".bundle")
         Dir.mkdir(bundled_app("bin")) unless File.directory?(bundled_app("bin"))
+        ENV["BUNDLE_GEMFILE"] = bundled_app_gemfile.to_s
         ENV["PATH"] = "/usr/bin"
       end
 
@@ -364,6 +365,7 @@ RSpec.describe Bundler::SharedHelpers do
       before do
         Dir.mkdir bundled_app(".bundle")
         FileUtils.rm_rf(bundled_app("bin"))
+        ENV["BUNDLE_GEMFILE"] = bundled_app_gemfile.to_s
         ENV["PATH"] = "/usr/bin"
       end
 

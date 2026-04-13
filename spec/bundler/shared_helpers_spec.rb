@@ -343,6 +343,37 @@ RSpec.describe Bundler::SharedHelpers do
       it_behaves_like "ENV['PATH'] gets set correctly"
     end
 
+    context "when project bin/ directory exists" do
+      before do
+        Dir.mkdir bundled_app(".bundle")
+        Dir.mkdir(bundled_app("bin")) unless File.directory?(bundled_app("bin"))
+        ENV["PATH"] = "/usr/bin"
+      end
+
+      it "prepends project bin/ to ENV['PATH'] before bundle path bin" do
+        subject.set_bundle_environment
+        paths = ENV["PATH"].split(File::PATH_SEPARATOR)
+        bundle_bin_index = paths.index("#{Bundler.bundle_path}/bin")
+        project_bin_index = paths.index(bundled_app("bin").to_s)
+        expect(project_bin_index).not_to be_nil
+        expect(project_bin_index).to be < bundle_bin_index
+      end
+    end
+
+    context "when project bin/ directory does not exist" do
+      before do
+        Dir.mkdir bundled_app(".bundle")
+        FileUtils.rm_rf(bundled_app("bin"))
+        ENV["PATH"] = "/usr/bin"
+      end
+
+      it "does not prepend project bin/ to ENV['PATH']" do
+        subject.set_bundle_environment
+        paths = ENV["PATH"].split(File::PATH_SEPARATOR)
+        expect(paths).not_to include(bundled_app("bin").to_s)
+      end
+    end
+
     context "ENV['PATH'] already contains the bundle bin path" do
       let(:bundle_path) { "#{Bundler.bundle_path}/bin" }
 

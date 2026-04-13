@@ -342,6 +342,9 @@ module Bundler
       validate_bundle_path
       paths = (ENV["PATH"] || "").split(File::PATH_SEPARATOR)
       paths.unshift "#{Bundler.bundle_path}/bin"
+      bin_dir = Bundler.settings[:bin] || "bin"
+      bin_path = Pathname.new(bin_dir).expand_path(Bundler.root)
+      paths.unshift bin_path.to_s if bin_path.directory?
       Bundler::SharedHelpers.set_env "PATH", paths.uniq.join(File::PATH_SEPARATOR)
     end
 

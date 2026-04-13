@@ -2,16 +2,16 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.3)
-    chef-utils (18.8.54)
+    chef-utils (19.2.110)
       concurrent-ruby
     concurrent-ruby (1.3.6)
-    ffi (1.17.3-x64-mingw-ucrt)
+    ffi (1.17.4-x64-mingw-ucrt)
     ffi-win32-extensions (1.0.4)
       ffi
-    json (2.18.0)
-    json (2.18.0-java)
-    kramdown (2.5.1)
-      rexml (>= 3.3.9)
+    json (2.19.4)
+    json (2.19.4-java)
+    kramdown (2.5.2)
+      rexml (>= 3.4.4)
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     language_server-protocol (3.17.0.5)
@@ -25,35 +25,35 @@ GEM
     mixlib-cli (2.1.8)
     mixlib-config (3.0.27)
       tomlrb
-    mixlib-shellout (3.3.9)
+    mixlib-shellout (3.4.10)
       chef-utils
-    mixlib-shellout (3.3.9-x64-mingw-ucrt)
+    mixlib-shellout (3.4.10-x64-mingw-ucrt)
       chef-utils
       ffi-win32-extensions (~> 1.0.3)
       win32-process (~> 0.9)
       wmi-lite (~> 1.0)
-    parallel (1.27.0)
-    parser (3.3.10.0)
+    parallel (2.1.0)
+    parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
-    prism (1.7.0)
+    prism (1.9.0)
     racc (1.8.1)
     racc (1.8.1-java)
     rainbow (3.1.1)
-    regexp_parser (2.11.3)
+    regexp_parser (2.12.0)
     rexml (3.4.4)
-    rubocop (1.82.1)
+    rubocop (1.86.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
-      parallel (~> 1.10)
+      parallel (>= 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.48.0, < 2.0)
+      rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.49.0)
+    rubocop-ast (1.49.1)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
     rubocop-performance (1.26.1)
@@ -85,31 +85,31 @@ DEPENDENCIES
 
 CHECKSUMS
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
-  chef-utils (18.8.54) sha256=651c6c53291a520eddf636c7be598169fa52a07c41706b35e2e2a262c1eb0dc7
+  chef-utils (19.2.110) sha256=477c9a755922b1695ddf3488458ae9d2fc2443d83fa1381795e7307804276ff5
   concurrent-ruby (1.3.6) sha256=6b56837e1e7e5292f9864f34b69c5a2cbc75c0cf5338f1ce9903d10fa762d5ab
-  ffi (1.17.3-x64-mingw-ucrt) sha256=5f1d7d067a9a1058ad183dba25b05557cd51c85fc1768c49338eabc1cf242d7c
+  ffi (1.17.4-x64-mingw-ucrt) sha256=f6ff9618cfccc494138bddade27aa06c74c6c7bc367a1ea1103d80c2fcb9ed35
   ffi-win32-extensions (1.0.4) sha256=9d01a511a7ea957d8f73a06892f3ccfa49dcb32be95c4edb86b5ba3103edea00
-  json (2.18.0) sha256=b10506aee4183f5cf49e0efc48073d7b75843ce3782c68dbeb763351c08fd505
-  json (2.18.0-java) sha256=74706f684baeb1a40351ed26fc8fe6e958afa861320d1c28ff4eb7073b29c7aa
-  kramdown (2.5.1) sha256=87bbb6abd9d3cebe4fc1f33e367c392b4500e6f8fa19dd61c0972cf4afe7368c
+  json (2.19.4) sha256=670a7d333fb3b18ca5b29cb255eb7bef099e40d88c02c80bd42a3f30fe5239ac
+  json (2.19.4-java) sha256=f7f0fe701e2bef648497b0eb59422f5b453e5038cfbaf9cde09af20e22241efb
+  kramdown (2.5.2) sha256=1ba542204c66b6f9111ff00dcc26075b95b220b07f2905d8261740c82f7f02fa
   kramdown-parser-gfm (1.1.0) sha256=fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729
   language_server-protocol (3.17.0.5) sha256=fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
   mdl (0.15.0) sha256=5fb62937cf49b3130a6cd0296981f55a8596bf559e65273d346a800ff57cfdf5
   mixlib-cli (2.1.8) sha256=e6f27be34d580f6ed71731ca46b967e57793a627131c1f6e1ed2dad39ea3bdf9
   mixlib-config (3.0.27) sha256=d7748b1898e4f16502afec1de00b5ad65c6de405114b1b0c65ec61b1a9100148
-  mixlib-shellout (3.3.9) sha256=0edf5ee3b07526de8eb5219af051752fb8df2691dc030ce233e248dedf4fd388
-  mixlib-shellout (3.3.9-x64-mingw-ucrt) sha256=0169db7b7dc6304903c7205588ca1194b3d3aab722c1f0090c2a8f42f67a6c57
-  parallel (1.27.0) sha256=4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130
-  parser (3.3.10.0) sha256=ce3587fa5cc55a88c4ba5b2b37621b3329aadf5728f9eafa36bbd121462aabd6
-  prism (1.7.0) sha256=10062f734bf7985c8424c44fac382ac04a58124ea3d220ec3ba9fe4f2da65103
+  mixlib-shellout (3.4.10) sha256=7c8a6c5a6c90922a8871ed682129c19c9b1a514eedea2e867077229e6a415f0c
+  mixlib-shellout (3.4.10-x64-mingw-ucrt) sha256=77defd5c445db201aa0f3e5602173953c538755c5626675f63dbca40e2042d2a
+  parallel (2.1.0) sha256=b35258865c2e31134c5ecb708beaaf6772adf9d5efae28e93e99260877b09356
+  parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
+  prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   racc (1.8.1-java) sha256=54f2e6d1e1b91c154013277d986f52a90e5ececbe91465d29172e49342732b98
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
-  regexp_parser (2.11.3) sha256=ca13f381a173b7a93450e53459075c9b76a10433caadcb2f1180f2c741fc55a4
+  regexp_parser (2.12.0) sha256=35a916a1d63190ab5c9009457136ae5f3c0c7512d60291d0d1378ba18ce08ebb
   rexml (3.4.4) sha256=19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142
-  rubocop (1.82.1) sha256=09f1a6a654a960eda767aebea33e47603080f8e9c9a3f019bf9b94c9cab5e273
-  rubocop-ast (1.49.0) sha256=49c3676d3123a0923d333e20c6c2dbaaae2d2287b475273fddee0c61da9f71fd
+  rubocop (1.86.1) sha256=44415f3f01d01a21e01132248d2fd0867572475b566ca188a0a42133a08d4531
+  rubocop-ast (1.49.1) sha256=4412f3ee70f6fe4546cc489548e0f6fcf76cafcfa80fa03af67098ffed755035
   rubocop-performance (1.26.1) sha256=cd19b936ff196df85829d264b522fd4f98b6c89ad271fa52744a8c11b8f71834
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   tomlrb (2.0.4) sha256=262f77947ac3ac9b3366a0a5940ecd238300c553e2e14f22009e2afcd2181b99

@@ -477,7 +477,7 @@ module Bundler
     end
 
     def which(executable)
-      executable_path = find_executable(executable)
+      executable_path = find_executable(File.expand_path(executable))
       return executable_path if executable_path
 
       if (paths = ENV["PATH"])

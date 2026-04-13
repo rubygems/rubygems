@@ -292,6 +292,7 @@ class Gem::Installer
 
     generate_bin
     if options[:install_plugin] == false
+      remove_stale_plugins
       warn_skipped_plugins
     else
       generate_plugins
@@ -829,6 +830,13 @@ class Gem::Installer
 
     alert_warning "#{spec.full_name} contains plugins that were not installed.\n" \
                   "To install plugins, run: gem pristine #{spec.name} --only-plugins"
+  end
+
+  def remove_stale_plugins # :nodoc:
+    return unless spec.plugins.empty?
+
+    ensure_writable_dir @plugins_dir
+    remove_plugins_for(spec, @plugins_dir)
   end
 
   ##

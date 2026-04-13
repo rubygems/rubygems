@@ -40,6 +40,7 @@ module Bundler
       end
 
       if options[:install_plugin] == false
+        remove_stale_plugins
         warn_skipped_plugins
       else
         generate_plugins

@@ -2539,6 +2539,39 @@ class TestGemInstaller < Gem::InstallerTestCase
     refute_match "contains plugins", @ui.error
   end
 
+  def test_install_no_install_plugin_removes_stale_wrappers
+    # First install a version with a plugin
+    installer = util_setup_installer do |spec|
+      write_file File.join(@tempdir, "lib", "rubygems_plugin.rb") do |io|
+        io.write "# plugin code"
+      end
+
+      spec.files += %w[lib/rubygems_plugin.rb]
+    end
+
+    build_rake_in do
+      use_ui @ui do
+        installer.install
+      end
+    end
+
+    plugin_path = File.join Gem.plugindir, "a_plugin.rb"
+    assert File.exist?(plugin_path), "plugin wrapper should exist after first install"
+
+    # Now install a new version without plugins, using --no-install-plugin
+    spec2 = quick_gem "a", 3
+    util_build_gem spec2
+
+    installer2 = util_installer spec2, @gemhome
+    installer2.options[:install_plugin] = false
+
+    use_ui @ui do
+      installer2.install
+    end
+
+    refute File.exist?(plugin_path), "stale plugin wrapper must be removed"
+  end
+
   private
 
   def util_execless

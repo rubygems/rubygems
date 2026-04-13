@@ -187,6 +187,8 @@ module Spec
         "spec/bundler/digest_spec.rb",
         "spec/bundler/fetcher/gem_remote_fetcher_spec.rb",
         "spec/bundler/uri_normalizer_spec.rb",
+        "spec/install/gems/no_build_extension_spec.rb",
+        "spec/install/gems/no_install_plugin_spec.rb",
       ],
     }.freeze
   end

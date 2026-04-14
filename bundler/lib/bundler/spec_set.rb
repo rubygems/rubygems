@@ -178,7 +178,7 @@ module Bundler
     end
 
     def find_by_name_and_platform(name, platform)
-      @specs.detect {|spec| spec.name == name && spec.installable_on_platform?(platform) }
+      lookup[name]&.detect {|spec| spec.installable_on_platform?(platform) }
     end
 
     def specs_with_additional_variants_from(other)
@@ -314,7 +314,7 @@ module Bundler
     end
 
     def sorted
-      @sorted ||= ([@specs.find {|s| s.name == "rake" }] + tsort).compact.uniq
+      @sorted ||= ([lookup["rake"]&.first] + tsort).compact.uniq
     rescue TSort::Cyclic => error
       cgems = extract_circular_gems(error)
       raise CyclicDependencyError, "Your bundle requires gems that depend" \

@@ -31,7 +31,7 @@ To run RubyGems commands like `gem install` from your local copy:
 
 To run Bundler commands like `bundle install` from your local copy:
 
-    bundler/bin/bundle install
+    bin/bundle install
 
 ## Running Tests
 
@@ -101,7 +101,7 @@ Set up a shell alias to run Bundler from your clone for convenience.
 
 Add this to your `~/.bashrc` or `~/.bash_profile`:
 
-    alias dbundle='ruby /[repo root]/bundler/bin/bundle'
+    alias dbundle='ruby /[repo root]/bin/bundle'
 
 See [this tutorial](https://www.moncefbelyamani.com/create-aliases-in-bash-profile-to-assign-shortcuts-for-common-terminal-commands/) for adding aliases to your `~/.bashrc` profile.
 
@@ -113,7 +113,7 @@ Add this to your [PowerShell profile](https://learn.microsoft.com/en-us/powershe
 $Env:RUBYOPT="-rdebug"
 function dbundle
 {
-	& "ruby.exe" E:\[repo root]\bundler\bin\bundle $args
+	& "ruby.exe" E:\[repo root]\bin\bundle $args
 }
 ```
 

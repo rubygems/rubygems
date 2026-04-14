@@ -43,6 +43,30 @@ RSpec.describe Bundler::SpecSet do
       spec = described_class.new(specs).find_by_name_and_platform("b", platform)
       expect(spec).to eq platform_spec
     end
+
+    it "returns nil when the name is not present" do
+      spec = described_class.new(specs).find_by_name_and_platform("missing", platform)
+      expect(spec).to be_nil
+    end
+
+    it "returns nil when the name exists but no spec is installable on the requested platform" do
+      incompatible_platform = Gem::Platform.new("java")
+      incompatible_spec = build_spec("a", "1.0", incompatible_platform).first
+
+      spec = described_class.new([incompatible_spec]).find_by_name_and_platform("a", platform)
+      expect(spec).to be_nil
+    end
+
+    it "returns the first installable spec for the given name in insertion order" do
+      later_platform_spec = build_spec("b", "3.0", platform).first
+      specs = [
+        platform_spec,
+        later_platform_spec,
+      ]
+
+      spec = described_class.new(specs).find_by_name_and_platform("b", platform)
+      expect(spec).to eq platform_spec
+    end
   end
 
   describe "#to_a" do
@@ -53,6 +77,18 @@ RSpec.describe Bundler::SpecSet do
         e-1.0.0.pre.1
         c-1.1
         d-2.0
+      ]
+    end
+
+    it "puts rake first when present" do
+      specs = [
+        build_spec("a", "1.0") {|s| s.dep "rake", ">= 0" },
+        build_spec("rake", "13.0"),
+      ].flatten
+
+      expect(described_class.new(specs).to_a.map(&:full_name)).to eq %w[
+        rake-13.0
+        a-1.0
       ]
     end
   end

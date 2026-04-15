@@ -39,7 +39,12 @@ If you'd like to contribute to Bundler, that's awesome, and we <3 you. We've put
 
 ## Supporting
 
-RubyGems is managed by [Ruby Central](https://rubycentral.org), a non-profit organization that supports the Ruby community through projects like this one, as well as [RubyConf](https://rubyconf.org), [RailsConf](https://railsconf.org), and [RubyGems.org](https://rubygems.org). You can support Ruby Central by attending or [sponsoring](sponsors@rubycentral.org) a conference, or by [joining as a supporting member](https://rubycentral.org/#/portal/signup).
+RubyGems is a community project, please consider sponsoring [individual contributors for their great OSS
+work](https://github.com/ruby/rubygems/graphs/contributors).
+
+In addition, Ruby Central administers grant-funded work for improvements to `ruby/rubygems`, as well as running
+RubyGems.org (the service). You can support Ruby Central by attending or [sponsoring](sponsors@rubycentral.org)
+a [RubyConf](https://rubyconf.org/), or by [joining as a supporting member](https://rubycentral.org/#/portal/signup).
 
 ## Code of Conduct
 

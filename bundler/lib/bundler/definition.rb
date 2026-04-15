@@ -777,8 +777,6 @@ module Bundler
     end
 
     def precompute_source_requirements_for_indirect_dependencies?
-      return false unless @remote && !sources.aggregate_global_source?
-
       if sources.non_global_rubygems_sources.all?(&:dependency_api_available?)
         true
       else

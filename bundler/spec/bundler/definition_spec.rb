@@ -304,8 +304,8 @@ RSpec.describe Bundler::Definition do
     context "when all the scoped sources implement a dependency API" do
       let(:non_global_rubygems_sources) do
         [
-          double("non-global-source-0", :dependency_api_available? => true, :to_s => "a"),
-          double("non-global-source-1", :dependency_api_available? => true, :to_s => "b"),
+          double("non-global-source-0", "dependency_api_available?":true, to_s:"a"),
+          double("non-global-source-1", "dependency_api_available?":true, to_s:"b"),
         ]
       end
 
@@ -319,9 +319,9 @@ RSpec.describe Bundler::Definition do
     context "when some scoped sources do not implement a dependency API" do
       let(:non_global_rubygems_sources) do
         [
-          double("non-global-source-0", :dependency_api_available? => true, :to_s => "a"),
-          double("non-global-source-1", :dependency_api_available? => false, :to_s => "b"),
-          double("non-global-source-2", :dependency_api_available? => false, :to_s => "c"),
+          double("non-global-source-0", "dependency_api_available?":true, to_s:"a"),
+          double("non-global-source-1", "dependency_api_available?":false, to_s:"b"),
+          double("non-global-source-2", "dependency_api_available?":false, to_s:"c"),
         ]
       end
 

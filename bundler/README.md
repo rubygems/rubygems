@@ -39,11 +39,11 @@ If you'd like to contribute to Bundler, that's awesome, and we <3 you. We've put
 
 ## Supporting
 
-RubyGems is a community project, please consider sponsoring [individual contributors for their great OSS
+RubyGems is a community project. Please consider sponsoring [individual contributors for their great OSS
 work](https://github.com/ruby/rubygems/graphs/contributors).
 
 In addition, Ruby Central administers grant-funded work for improvements to `ruby/rubygems`, as well as running
-RubyGems.org (the service). You can support Ruby Central by attending or [sponsoring](sponsors@rubycentral.org)
+RubyGems.org (the service). You can support Ruby Central by attending or [sponsoring](mailto:sponsors@rubycentral.org)
 a [RubyConf](https://rubyconf.org/), or by [joining as a supporting member](https://rubycentral.org/#/portal/signup).
 
 ## Code of Conduct

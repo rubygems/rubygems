@@ -13,7 +13,7 @@ RSpec.describe "bundle install with --no-install-plugin" do
 
   let(:plugin_path) { default_bundle_path("plugins", "with_plugin_plugin.rb") }
 
-  it "does not generate the plugin wrapper when no_install_plugin is set" do
+  it "does not generate the plugin wrapper and warns when no_install_plugin is set" do
     bundle_config "no_install_plugin true"
 
     install_gemfile <<-G
@@ -22,6 +22,8 @@ RSpec.describe "bundle install with --no-install-plugin" do
     G
 
     expect(plugin_path).not_to exist
+    expect(err).to include("with_plugin-1.0 contains plugins that were not installed")
+    expect(err).to include("unset no_install_plugin and run `bundle pristine with_plugin`")
   end
 
   it "removes a stale plugin wrapper from a prior version when no_install_plugin is set" do

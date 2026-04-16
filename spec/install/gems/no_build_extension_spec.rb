@@ -18,7 +18,7 @@ RSpec.describe "bundle install with --no-build-extension" do
     end
   end
 
-  it "skips building native extensions when no_build_extension is set" do
+  it "skips building native extensions and warns when no_build_extension is set" do
     bundle_config "no_build_extension true"
 
     gemfile <<-G
@@ -36,6 +36,8 @@ RSpec.describe "bundle install with --no-build-extension" do
       "gem.build_complete"
     )
     expect(build_complete).not_to exist
+    expect(err).to include("with_extension-1.0 contains native extensions that were not built")
+    expect(err).to include("unset no_build_extension and run `bundle pristine with_extension`")
   end
 
   it "builds native extensions by default" do

@@ -89,6 +89,20 @@ module Bundler
       end
     end
 
+    def warn_skipped_extensions
+      return if spec.extensions.empty?
+
+      Bundler.ui.warn "#{spec.full_name} contains native extensions that were not built.\n" \
+                      "To build extensions, unset no_build_extension and run `bundle pristine #{spec.name}`."
+    end
+
+    def warn_skipped_plugins
+      return if spec.plugins.empty?
+
+      Bundler.ui.warn "#{spec.full_name} contains plugins that were not installed.\n" \
+                      "To install plugins, unset no_install_plugin and run `bundle pristine #{spec.name}`."
+    end
+
     if Bundler.rubygems.provides?("< 3.5.19")
       def generate_bin_script(filename, bindir)
         bin_script_path = File.join bindir, formatted_program_filename(filename)

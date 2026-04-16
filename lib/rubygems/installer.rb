@@ -282,11 +282,7 @@ class Gem::Installer
 
     extract_files
 
-    if options[:build_extension] == false
-      warn_skipped_extensions
-    else
-      build_extensions
-    end
+    build_extensions
     write_build_info_file
     run_post_build_hooks
 
@@ -813,6 +809,11 @@ class Gem::Installer
   # configure scripts and rakefiles or mkrf_conf files.
 
   def build_extensions
+    if options[:build_extension] == false
+      warn_skipped_extensions
+      return
+    end
+
     builder = Gem::Ext::Builder.new spec, build_args, Gem.target_rbconfig, build_jobs
 
     builder.build_extensions

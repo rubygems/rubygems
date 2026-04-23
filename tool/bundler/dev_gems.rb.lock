@@ -94,6 +94,7 @@ DEPENDENCIES
   turbo_tests (~> 2.2.3)
 
 CHECKSUMS
+  bundler (4.0.11) sha256=0b50b7bcc2babdcb1fa72df1ff831b42e6bbac604c16dffda22e3db3941c7fb2
   compact_index (0.15.0) sha256=5c6c404afca8928a7d9f4dde9524f6e1610db17e675330803055db282da84a8b
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   kramdown (2.5.1) sha256=87bbb6abd9d3cebe4fc1f33e367c392b4500e6f8fa19dd61c0972cf4afe7368c
@@ -129,4 +130,4 @@ CHECKSUMS
   turbo_tests (2.2.5) sha256=3fa31497d12976d11ccc298add29107b92bda94a90d8a0a5783f06f05102509f
 
 BUNDLED WITH
-  4.0.10
+  4.0.11

@@ -56,6 +56,7 @@ DEPENDENCIES
   uri (= 1.1.1)
 
 CHECKSUMS
+  bundler (4.0.11) sha256=0b50b7bcc2babdcb1fa72df1ff831b42e6bbac604c16dffda22e3db3941c7fb2
   connection_pool (2.5.4) sha256=e9e1922327416091f3f6542f5f4446c2a20745276b9aa796dd0bb2fd0ea1e70a
   fileutils (1.8.0) sha256=8c6b1df54e2540bdb2f39258f08af78853aa70bad52b4d394bbc6424593c6e02
   molinillo (0.8.0)
@@ -72,4 +73,4 @@ CHECKSUMS
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
 
 BUNDLED WITH
-  4.0.10
+  4.0.11

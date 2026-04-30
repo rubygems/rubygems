@@ -58,12 +58,7 @@ module Spec
       ChecksumsBuilder.new(enabled, &block).tap do |builder|
         next if builder.bundler_registered || !bundler_checksum
 
-        # Mirror the conditions under which LockfileGenerator#bundler_checksum
-        # gives up and omits the bundler checksum from the lockfile:
-        #   - .dev: development builds have no released bundler.gem to checksum.
-        #   - ruby_core?: bundler is loaded as a default gem, so bundler.gem
-        #     is not present on disk under the test gem cache.
-        next if Bundler::VERSION.to_s.end_with?(".dev") || Spec::Path.ruby_core?
+        next if Bundler::VERSION.to_s.end_with?(".dev")
         builder.checksum(system_gem_path, "bundler", Bundler::VERSION, Gem::Platform::RUBY, "cache")
       end
     end

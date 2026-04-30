@@ -63,7 +63,7 @@ module Spec
         #   - .dev: development builds have no released bundler.gem to checksum.
         #   - ruby_core?: bundler is loaded as a default gem, so bundler.gem
         #     is not present on disk under the test gem cache.
-        next if Bundler::VERSION.to_s.end_with?(".dev") || ruby_core?
+        next if Bundler::VERSION.to_s.end_with?(".dev") || Spec::Path.ruby_core?
         builder.checksum(system_gem_path, "bundler", Bundler::VERSION, Gem::Platform::RUBY, "cache")
       end
     end

@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.0.11 / 2026-04-30
+
+### Enhancements:
+
+* Update gem creation guide URL to rubygems.org. Pull request [#9500](https://github.com/ruby/rubygems/pull/9500) by nissyi-gh
+* Lock the checksum of Bundler itself in the lockfile. Pull request [#9366](https://github.com/ruby/rubygems/pull/9366) by Edouard-chin
+
+### Bug fixes:
+
+* Fix installing gems with native extensions + transitive dependencies. Pull request [#9477](https://github.com/ruby/rubygems/pull/9477) by nicholasdower
+* Fix the bundler version not being updated in dev/test lockfile. Pull request [#9463](https://github.com/ruby/rubygems/pull/9463) by Edouard-chin
+* Ensure the release CI doesn't break due to the Bundler checksum feature. Pull request [#9436](https://github.com/ruby/rubygems/pull/9436) by Edouard-chin
+
+### Documentation:
+
+* Fix formatting for BUNDLE_PREFER_PATCH variable in man page. Pull request [#9474](https://github.com/ruby/rubygems/pull/9474) by toy
+
 ## 4.0.10 / 2026-04-08
 
 ### Enhancements:

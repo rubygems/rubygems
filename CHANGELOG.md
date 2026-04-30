@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.11 / 2026-04-30
+
+### Enhancements:
+
+* Add commented-out rubygems_mfa_required to bundle gem template. Pull request [#9487](https://github.com/ruby/rubygems/pull/9487) by MatheusRich
+* Clarify the name and meaning of the first argument to `gem spec`. Pull request [#9476](https://github.com/ruby/rubygems/pull/9476) by eregon
+* Installs bundler 4.0.11 as a default gem.
+
 ## 4.0.10 / 2026-04-08
 
 ### Enhancements:

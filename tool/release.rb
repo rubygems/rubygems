@@ -268,22 +268,55 @@ class Release
 
     puts "The following unreleased prs were found:\n#{prs.map {|pr| "* #{pr.url}" }.join("\n")}"
 
-    unless system("git", "cherry-pick", "-x", "-m", "1", *prs.map(&:merge_commit_sha))
+    prs.each do |pr|
+      args = cherry_pick_args_for(pr)
+      next if system("git", "cherry-pick", "-x", *args)
+
       warn <<~MSG
 
-        Opening a new shell to fix the cherry-pick errors manually. You can do the following now:
+        Cherry-picking #{pr.url} failed. Opening a new shell to fix the errors manually. You can do the following now:
 
-        * Find the PR that caused the merge conflict.
-        * If you'd like to include that PR in the release, tag it with an appropriate label. Then type `exit 1` and rerun the task so that the PR is cherry-picked before and the conflict is fixed.
-        * If you don't want to include that PR in the release, fix conflicts manually, run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the release preparation.
+        * If you'd like to include that PR in the release, fix conflicts manually, run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the release preparation.
+        * If you don't want to include that PR in the release, run `git cherry-pick --abort` and then `exit 0` to skip it and resume.
+        * To abort the entire release preparation, run `exit 1`.
 
       MSG
 
       unless system(ENV["SHELL"] || "zsh")
-        system("git", "cherry-pick", "--abort", exception: true)
+        system("git", "cherry-pick", "--abort")
         raise "Failed to resolve conflicts, resetting original state"
       end
     end
+  end
+
+  # Builds the `git cherry-pick` arguments for a PR by detecting which merge
+  # strategy GitHub used. PRs merged with "Create a merge commit" are picked
+  # with `-m 1` against the merge commit. PRs merged with "Squash and merge"
+  # produce a single commit, which is picked directly. PRs merged with
+  # "Rebase and merge" produce N linear commits ending at `merge_commit_sha`,
+  # so we cherry-pick the full range to avoid silently dropping commits.
+  def cherry_pick_args_for(pr)
+    sha = pr.merge_commit_sha
+    parents = `git rev-list --parents -n 1 #{sha}`.strip.split.drop(1)
+
+    if parents.size >= 2
+      ["-m", "1", sha]
+    else
+      pr_commits = gh_client.pull_request_commits("ruby/rubygems", pr.number)
+
+      if pr_commits.size > 1 && rebase_merged?(sha, pr_commits)
+        ["#{sha}~#{pr_commits.size}..#{sha}"]
+      else
+        [sha]
+      end
+    end
+  end
+
+  def rebase_merged?(sha, pr_commits)
+    n = pr_commits.size
+    master_subjects = `git log -n #{n} --format=%s #{sha}`.lines.map(&:strip).reverse
+    pr_subjects = pr_commits.map {|c| c.commit.message.lines.first.strip }
+    master_subjects == pr_subjects
   end
 
   def cut_changelogs_and_bump_versions

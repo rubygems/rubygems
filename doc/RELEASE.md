@@ -52,17 +52,7 @@ There is a `bin/rake prepare_release[<target_rubygems_version>]` rake task that 
 
 Note that this task requires all user facing pull requests to be tagged with specific labels. See [Merging a PR](../bundler/playbooks/MERGING_A_PR.md) for details.
 
-Also note that when this task cherry-picks, it cherry-picks the merge commits using the following command:
-
-```bash
-$ git cherry-pick -m 1 MERGE_COMMIT_SHAS
-```
-
-For example, for PR [#5029](https://github.com/rubygems/bundler/pull/5029), we cherry picked commit [dd6aef9](https://github.com/rubygems/bundler/commit/dd6aef97a5f2e7173f406267256a8c319d6134ab), not [4fe9291](https://github.com/rubygems/bundler/commit/4fe92919f51e3463f0aad6fa833ab68044311f03) using:
-
-```bash
-$ git cherry-pick -m 1 dd6aef9
-```
+Also note that when this task cherry-picks, the strategy depends on how the PR was merged on GitHub. PRs merged with "Create a merge commit" are cherry-picked using `git cherry-pick -m 1 MERGE_COMMIT_SHA` against the merge commit. PRs merged with "Squash and merge" are cherry-picked directly against their single commit. PRs merged with "Rebase and merge" are cherry-picked as a range covering all of the rebased commits, so that none of them is silently dropped.
 
 After running the task, you'll have a release branch ready to be merged into the stable branch. You'll want to open a PR from this branch into the stable branch and provided CI is green, you can go ahead, merge the PR and run release tasks as specified below from the updated stable branch.
 

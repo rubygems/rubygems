@@ -156,6 +156,7 @@ bundler/lib/bundler/match_platform.rb
 bundler/lib/bundler/match_remote_metadata.rb
 bundler/lib/bundler/materialization.rb
 bundler/lib/bundler/mirror.rb
+bundler/lib/bundler/override.rb
 bundler/lib/bundler/plugin.rb
 bundler/lib/bundler/plugin/api.rb
 bundler/lib/bundler/plugin/api/source.rb

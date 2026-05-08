@@ -372,13 +372,22 @@ class Release
 
   # Source SHAs already cherry-picked onto the stable branch, derived from the
   # `(cherry picked from commit X)` footer that `git cherry-pick -x` records.
-  # This is more reliable than matching merge commit subjects, which only
-  # catches PRs merged with "Create a merge commit". Squash-merged PRs are
-  # cherry-picked as plain commits with subjects like `"Foo (#1234)"` or
-  # without any PR reference, so subject-based detection misses them.
+  # When the footer references a merge commit (PRs merged with "Create a merge
+  # commit", picked with `-m 1`), also include the individual PR commits the
+  # merge introduced, otherwise `gh search prs` would still re-discover the PR
+  # through those commits left on master.
   def released_commit_shas
-    @released_commit_shas ||= `git log --format=%B #{@previous_release_tag}..#{@stable_branch}`
-      .scan(/cherry picked from commit ([0-9a-f]+)/).flatten.to_set
+    @released_commit_shas ||= begin
+      log = `git log --format=%B #{@previous_release_tag}..#{@stable_branch}`
+      shas = Set.new
+      log.scan(/cherry picked from commit ([0-9a-f]+)/).flatten.each do |sha|
+        shas << sha
+        parents = `git rev-list --parents -n 1 #{sha} 2>/dev/null`.strip.split.drop(1)
+        next unless parents.size >= 2
+        shas.merge(`git log --format=%H #{parents[0]}..#{parents[1]}`.split("\n"))
+      end
+      shas
+    end
   end
 
   def scan_unreleased_pull_requests(ids)

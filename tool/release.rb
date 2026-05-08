@@ -370,14 +370,15 @@ class Release
     @unreleased_pull_requests ||= scan_unreleased_pull_requests(unreleased_pr_ids)
   end
 
-  def released_pull_requests
-    @released_pull_requests ||= begin
-      commits = `git log --oneline --grep "^Merge pull request #" #{@previous_release_tag}..#{@stable_branch}`.split("\n")
-      commits.filter_map do |commit|
-        match = commit.match(/Merge pull request #(\d+) from /)
-        match[1].to_i if match
-      end
-    end
+  # Source SHAs already cherry-picked onto the stable branch, derived from the
+  # `(cherry picked from commit X)` footer that `git cherry-pick -x` records.
+  # This is more reliable than matching merge commit subjects, which only
+  # catches PRs merged with "Create a merge commit". Squash-merged PRs are
+  # cherry-picked as plain commits with subjects like `"Foo (#1234)"` or
+  # without any PR reference, so subject-based detection misses them.
+  def released_commit_shas
+    @released_commit_shas ||= `git log --format=%B #{@previous_release_tag}..#{@stable_branch}`
+      .scan(/cherry picked from commit ([0-9a-f]+)/).flatten.to_set
   end
 
   def scan_unreleased_pull_requests(ids)
@@ -391,7 +392,8 @@ class Release
 
   def unreleased_pr_ids
     head = @level == :minor_or_major ? "HEAD" : "master"
-    commits = `git log --format=%h #{@previous_release_tag}..#{head}`.split("\n")
+    commits = `git log --format=%H #{@previous_release_tag}..#{head}`.split("\n")
+    commits.reject! {|sha| released_commit_shas.include?(sha) } if @level == :patch
 
     # GitHub search API has a rate limit of 30 requests per minute for authenticated users
     rate_limit = 28
@@ -406,9 +408,7 @@ class Release
       result = `gh search prs --repo ruby/rubygems #{batch.join(",")} --json number --jq '.[].number'`.strip
       unless result.empty?
         result.split("\n").each do |pr_number|
-          pr_id = pr_number.to_i
-          next if @level == :patch && released_pull_requests.include?(pr_id)
-          pr_ids.add(pr_id)
+          pr_ids.add(pr_number.to_i)
         end
       end
 

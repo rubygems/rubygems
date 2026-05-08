@@ -394,7 +394,12 @@ class Release
     pulls = []
     ids.each do |id|
       pull = gh_client.pull_request("ruby/rubygems", id)
-      pulls << pull if pull.merged_at
+      next unless pull.merged_at
+      # `gh search prs` can associate a PR with commits left behind by
+      # force-pushes that no longer match the merged HEAD. Confirm the PR is
+      # actually unreleased by comparing its merge commit SHA directly.
+      next if @level == :patch && released_commit_shas.include?(pull.merge_commit_sha)
+      pulls << pull
     end
     pulls
   end

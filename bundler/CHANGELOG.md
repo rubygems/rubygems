@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.0.12 / 2026-05-20
+
+### Enhancements:
+
+* Make `bundle config get` return status 1 when the value is not set. Pull request [#9505](https://github.com/ruby/rubygems/pull/9505) by willnet
+* Use Pathname#absolute?. Pull request [#9529](https://github.com/ruby/rubygems/pull/9529) by nobu
+* Deprecate parsing non-lockfile content in LockfileParser. Pull request [#9502](https://github.com/ruby/rubygems/pull/9502) by kurotaky
+* Print a warning for a potential confusion from the indirect dependencies. Pull request [#5029](https://github.com/ruby/rubygems/pull/5029) by junaruga
+* Respect Gemfile bundler setting in `Bundler.setup`. Pull request [#4892](https://github.com/ruby/rubygems/pull/4892) by godfat
+
+### Bug fixes:
+
+* Gracefully handle missing checksums in Compact Index. Pull request [#9492](https://github.com/ruby/rubygems/pull/9492) by jneen
+* Skip git source exclusion when lockfile cannot backfill. Pull request [#9544](https://github.com/ruby/rubygems/pull/9544) by yahonda
+* Fix bundle config gemfile unset behavior. Pull request [#9514](https://github.com/ruby/rubygems/pull/9514) by afurm
+
 ## 4.0.11 / 2026-04-30
 
 ### Enhancements:

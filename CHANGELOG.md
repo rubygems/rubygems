@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0.12 / 2026-05-20
+
+### Enhancements:
+
+* Remove cygwin from WIN_PATTERNS. Pull request [#9527](https://github.com/ruby/rubygems/pull/9527) by fd00
+* Installs bundler 4.0.12 as a default gem.
+
+### Bug fixes:
+
+* Fall back to lockfile version when `BUNDLE_VERSION` is "lockfile". Pull request [#9545](https://github.com/ruby/rubygems/pull/9545) by hsbt
+* Read `BUNDLE_VERSION` env var in `BundlerVersionFinder`. Pull request [#9538](https://github.com/ruby/rubygems/pull/9538) by hsbt
+
 ## 4.0.11 / 2026-04-30
 
 ### Enhancements:

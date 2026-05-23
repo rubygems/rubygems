@@ -145,6 +145,13 @@ configuration file using the following names:
 * `--no-bundle`:
   Do not run `bundle install` after creating the gem.
 
+* `--sig`:
+  Create RBS signatures (in `sig/`, matching the structure in `lib/`). This
+  behavior is enabled by default.
+
+* `--no-sig`:
+  Do not add RBS signatures.
+
 ## SEE ALSO
 
 * [bundle config(1)](bundle-config.1.html)

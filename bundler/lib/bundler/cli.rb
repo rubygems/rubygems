@@ -584,6 +584,7 @@ module Bundler
     method_option :linter, type: :string, lazy_default: Bundler.settings["gem.linter"] || "", enum: %w[rubocop standard], banner: "Add a linter and code formatter, either RuboCop or Standard. Set a default with `bundle config set --global gem.linter (rubocop|standard)`"
     method_option :github_username, type: :string, default: Bundler.settings["gem.github_username"], banner: "Set your username on GitHub", desc: "Fill in GitHub username on README so that you don't have to do it manually. Set a default with `bundle config set --global gem.github_username <your_username>`."
     method_option :bundle, type: :boolean, default: Bundler.settings["gem.bundle"], banner: "Automatically run `bundle install` after creation. Set a default with `bundle config set --global gem.bundle true`"
+    method_option :sig, type: :boolean, default: true, banner: "Generate signatures for your library."
 
     def gem(name)
       require_relative "cli/gem"

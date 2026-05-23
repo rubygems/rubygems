@@ -1367,6 +1367,22 @@ RSpec.describe "bundle gem" do
     end
   end
 
+  context "--sig option" do
+    context "with --sig" do
+      it "includes rbs signatures" do
+        bundle "gem #{gem_name} --sig"
+        expect(bundled_app("#{gem_name}/sig/#{gem_name}.rbs")).to exist
+      end
+    end
+
+    context "with --no-sig" do
+      it "does not include rbs signatures" do
+        bundle "gem #{gem_name} --no-sig"
+        expect(bundled_app("#{gem_name}/sig/#{gem_name}.rbs")).not_to exist
+      end
+    end
+  end
+
   shared_examples_for "paths that depend on gem name" do
     it "generates entrypoint, version file and signatures file at the proper path, with the proper content" do
       bundle "gem #{gem_name}"

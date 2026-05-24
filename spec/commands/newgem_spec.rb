@@ -746,13 +746,14 @@ RSpec.describe "bundle gem" do
       expect(ignore_paths).to include("spec/")
     end
 
-    it "depends on a specific version of rspec in generated Gemfile" do
+    it "depends on a minimum version of rspec in generated Gemfile" do
       allow(Bundler::SharedHelpers).to receive(:find_gemfile).and_return(bundled_app_gemfile)
       builder = Bundler::Dsl.new
       builder.eval_gemfile(bundled_app("#{gem_name}/Gemfile"))
       builder.dependencies
       rspec_dep = builder.dependencies.find {|d| d.name == "rspec" }
       expect(rspec_dep).not_to be_specific
+      expect(rspec_dep.requirement).to eq(Gem::Requirement.new([">= 3.0"]))
     end
   end
 
@@ -831,13 +832,14 @@ RSpec.describe "bundle gem" do
       bundle "gem #{gem_name} --test=minitest"
     end
 
-    it "depends on a specific version of minitest" do
+    it "depends on a minimum version of minitest" do
       allow(Bundler::SharedHelpers).to receive(:find_gemfile).and_return(bundled_app_gemfile)
       builder = Bundler::Dsl.new
       builder.eval_gemfile(bundled_app("#{gem_name}/Gemfile"))
       builder.dependencies
       minitest_dep = builder.dependencies.find {|d| d.name == "minitest" }
       expect(minitest_dep).not_to be_specific
+      expect(minitest_dep.requirement).to eq(Gem::Requirement.new([">= 6.0"]))
     end
 
     it "builds spec skeleton" do
@@ -892,13 +894,14 @@ RSpec.describe "bundle gem" do
       bundle "gem #{gem_name} --test=test-unit"
     end
 
-    it "depends on a specific version of test-unit" do
+    it "depends on a minimum version of test-unit" do
       allow(Bundler::SharedHelpers).to receive(:find_gemfile).and_return(bundled_app_gemfile)
       builder = Bundler::Dsl.new
       builder.eval_gemfile(bundled_app("#{gem_name}/Gemfile"))
       builder.dependencies
       test_unit_dep = builder.dependencies.find {|d| d.name == "test-unit" }
       expect(test_unit_dep).not_to be_specific
+      expect(test_unit_dep.requirement).to eq(Gem::Requirement.new([">= 3.0"]))
     end
 
     it "builds spec skeleton" do

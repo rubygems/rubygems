@@ -5,6 +5,7 @@ GEM
     date (3.5.1)
     date (3.5.1-java)
     diff-lcs (1.6.2)
+    drb (2.2.3)
     erb (6.0.4)
     erb (6.0.4-java)
     io-console (0.8.2)
@@ -19,7 +20,9 @@ GEM
     json (2.19.4-java)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
-    minitest (5.27.0)
+    minitest (6.0.6)
+      drb (~> 2.0)
+      prism (~> 1.5)
     parallel (1.28.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
@@ -116,7 +119,7 @@ PLATFORMS
 
 DEPENDENCIES
   irb
-  minitest (~> 5.1)
+  minitest (~> 6.0)
   rake
   rake-compiler
   rb_sys (>= 0.9.127)
@@ -129,6 +132,7 @@ CHECKSUMS
   date (3.5.1) sha256=750d06384d7b9c15d562c76291407d89e368dda4d4fff957eb94962d325a0dc0
   date (3.5.1-java) sha256=12e09477dc932afe45bf768cd362bf73026804e0db1e6c314186d6cd0bee3344
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
+  drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   erb (6.0.4) sha256=38e3803694be357fe2bfe312487c74beaf9fb4e5beb3e22498952fe1645b95d9
   erb (6.0.4-java) sha256=3014611d37917a20e14ea3ba71e06a8d581b71c073858d7796eeee45b01e8407
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
@@ -139,7 +143,7 @@ CHECKSUMS
   json (2.19.4-java) sha256=f7f0fe701e2bef648497b0eb59422f5b453e5038cfbaf9cde09af20e22241efb
   language_server-protocol (3.17.0.5) sha256=fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
-  minitest (5.27.0) sha256=2d3b17f8a36fe7801c1adcffdbc38233b938eb0b4966e97a6739055a45fa77d5
+  minitest (6.0.6) sha256=153ea36d1d987a62942382b61075745042a2b3123b1cd48f4c3675af9cc7d6f1
   parallel (1.28.0) sha256=33e6de1484baf2524792d178b0913fc8eb94c628d6cfe45599ad4458c638c970
   parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
   power_assert (3.0.1) sha256=8ce9876716cc74e863fcd4cdcdc52d792bd983598d1af3447083a3a9a4d34103

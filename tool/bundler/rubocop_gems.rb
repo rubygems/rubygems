@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 gem "rubocop", ">= 1.52.1", "< 2"
 
-gem "minitest", "~> 5.1"
+gem "minitest", "~> 6.0"
 gem "irb"
 gem "rake"
 gem "rake-compiler"

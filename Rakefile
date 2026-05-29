@@ -9,11 +9,41 @@ require "rake/testtask"
 require_relative "bundler/spec/support/rubygems_ext"
 
 desc "Setup Rubygems dev environment"
-task setup: [:"dev:deps"] do
+task setup: [:"dev:deps", "vendor:compact_index"] do
   Dir.glob("tool/bundler/*_gems.rb").each do |file|
     name = File.basename(file, ".rb")
     next if name == "dev_gems"
     Spec::Rubygems.dev_bundle "lock", gemfile: file
+  end
+end
+
+namespace :vendor do
+  # Pinned to rubygems/rubygems.org#6504 so `rake setup` stays reproducible.
+  # Override with REF=<sha> to test against a newer compact_index.
+  desc "Sync vendored compact_index from rubygems/rubygems.org"
+  task :compact_index do
+    require "open-uri"
+    require "fileutils"
+
+    ref = ENV["REF"] || "7c68a7b39761c61a66f9299f85b889ec39afc02c"
+    repo = "rubygems/rubygems.org"
+    paths = %w[
+      lib/compact_index.rb
+      lib/compact_index/dependency.rb
+      lib/compact_index/gem.rb
+      lib/compact_index/gem_version.rb
+      lib/compact_index/versions_file.rb
+    ]
+
+    target_root = Spec::Path.tmp_root.join("compact_index")
+    paths.each do |path|
+      url = "https://raw.githubusercontent.com/#{repo}/#{ref}/#{path}"
+      puts "Fetching #{url}"
+      content = URI.parse(url).open(&:read)
+      target = File.join(target_root, path)
+      FileUtils.mkdir_p(File.dirname(target))
+      File.write(target, content)
+    end
   end
 end
 

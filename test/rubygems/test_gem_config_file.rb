@@ -52,6 +52,7 @@ class TestGemConfigFile < Gem::TestCase
       fp.puts ":sources:"
       fp.puts "  - http://more-gems.example.com"
       fp.puts "install: --wrappers"
+      fp.puts ":gemhome: /tmp/gems"
       fp.puts ":gempath:"
       fp.puts "- /usr/ruby/1.8/lib/ruby/gems/1.8"
       fp.puts "- /var/ruby/1.8/gem_home"
@@ -69,6 +70,7 @@ class TestGemConfigFile < Gem::TestCase
     assert_equal false, @cfg.update_sources
     assert_equal %w[http://more-gems.example.com], @cfg.sources
     assert_equal "--wrappers", @cfg[:install]
+    assert_equal "/tmp/gems", @cfg.home
     assert_equal(["/usr/ruby/1.8/lib/ruby/gems/1.8", "/var/ruby/1.8/gem_home"],
                  @cfg.path)
     assert_equal 0, @cfg.ssl_verify_mode

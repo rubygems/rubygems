@@ -150,6 +150,13 @@ module Bundler
           # sources, and large_idx.merge! small_idx is way faster than
           # small_idx.merge! large_idx.
           index = @allow_remote ? remote_specs.dup : Index.new
+
+          # Snapshot per-version `created_at` from the remote info before installed
+          # / cached specs overwrite the EndpointSpecification objects that carry
+          # it. The cooldown filter consults `created_at` on every candidate, so
+          # local stubs need the published date back-filled to participate.
+          remote_created_at = collect_remote_created_at(index)
+
           index.merge!(cached_specs) if @allow_cached
           index.merge!(installed_specs) if @allow_local
 
@@ -162,6 +169,8 @@ module Bundler
               index.use(default_specs)
             end
           end
+
+          backfill_created_at(index, remote_created_at) unless remote_created_at.empty?
 
           index
         end
@@ -469,6 +478,31 @@ module Bundler
       end
 
       private
+
+      def collect_remote_created_at(index)
+        return {} unless @allow_remote
+
+        snapshot = {}
+        index.each do |spec|
+          next unless spec.respond_to?(:created_at) && spec.created_at
+          # Remember the remote that supplied the date too: when a source has
+          # several remotes with different per-URI cooldown settings we must
+          # restore the same one during backfill so `effective_cooldown` agrees.
+          snapshot[[spec.name, spec.version]] = [spec.created_at, spec.remote]
+        end
+        snapshot
+      end
+
+      def backfill_created_at(index, snapshot)
+        index.each do |spec|
+          next unless spec.respond_to?(:created_at=)
+          next if spec.created_at
+          remote_created_at, remote = snapshot[[spec.name, spec.version]]
+          next unless remote_created_at
+          spec.created_at = remote_created_at
+          spec.remote ||= remote if remote && spec.respond_to?(:remote=)
+        end
+      end
 
       def lockfile_remotes
         @lockfile_remotes || credless_remotes

@@ -382,8 +382,8 @@ module Bundler
       redacted_uri = Gem::Uri.redact(uri)
 
       Bundler::Retry.new("download gem from #{redacted_uri}").attempts do
-        gem_file_name = spec.file_name
-        local_gem_path = File.join cache_dir, gem_file_name
+        gem_file_name = gem_remote_file_name(spec)
+        local_gem_path = File.join cache_dir, gem_cache_file_name(spec)
         return if File.exist? local_gem_path
 
         begin
@@ -393,6 +393,7 @@ module Bundler
             fetcher.cache_update_path remote_gem_path, local_gem_path
           end
         rescue Gem::RemoteFetcher::FetchError
+          raise if content_addressed_gem?(spec)
           raise if spec.original_platform == spec.platform
 
           original_gem_file_name = "#{spec.original_name}.gem"
@@ -404,6 +405,22 @@ module Bundler
       end
     rescue Gem::RemoteFetcher::FetchError => e
       raise Bundler::HTTPError, "Could not download gem from #{redacted_uri} due to underlying error <#{e.message}>"
+    end
+
+    def gem_remote_file_name(spec)
+      return spec.remote_file_name if spec.respond_to?(:remote_file_name)
+
+      spec.file_name
+    end
+
+    def gem_cache_file_name(spec)
+      return spec.cache_file_name if spec.respond_to?(:cache_file_name)
+
+      spec.file_name
+    end
+
+    def content_addressed_gem?(spec)
+      spec.respond_to?(:artifact_id) && spec.artifact_id
     end
 
     def build(spec, skip_validation = false)

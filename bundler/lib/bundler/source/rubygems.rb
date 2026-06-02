@@ -340,7 +340,13 @@ module Bundler
       end
 
       def package_path(cache_path, spec)
-        "#{cache_path}/#{spec.file_name}"
+        "#{cache_path}/#{gem_cache_file_name(spec)}"
+      end
+
+      def gem_cache_file_name(spec)
+        return spec.cache_file_name if spec.respond_to?(:cache_file_name)
+
+        spec.file_name
       end
 
       def normalize_uri(uri)

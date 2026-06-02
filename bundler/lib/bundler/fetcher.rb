@@ -176,10 +176,11 @@ module Bundler
     def specs(gem_names, source)
       index = Bundler::Index.new
 
-      fetch_specs(gem_names).each do |name, version, platform, dependencies, metadata|
+      fetch_specs(gem_names).each do |name, version, platform, dependencies, metadata, artifact_id|
         spec = if dependencies
+          metadata << [-"artifact_id", [artifact_id]] if artifact_id && !metadata.any? {|key, _| key == "artifact_id" }
           EndpointSpecification.new(name, version, platform, self, dependencies, metadata).tap do |es|
-            source.checksum_store.replace(es, es.checksum)
+            source.checksum_store.replace(es, es.checksum) unless es.artifact_id
           end
         else
           RemoteSpecification.new(name, version, platform, self)

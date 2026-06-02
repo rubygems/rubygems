@@ -55,7 +55,7 @@ module Bundler
       @sources.each do |source|
         results = safe_concat(results, source.search(query))
       end
-      results.uniq!(&:full_name) unless results.empty? # avoid modifying frozen EMPTY_SEARCH
+      results.uniq! {|spec| spec_key(spec) } unless results.empty? # avoid modifying frozen EMPTY_SEARCH
       results
     end
 
@@ -72,7 +72,7 @@ module Bundler
     end
 
     def add(spec)
-      (@specs[spec.name] ||= {}).store(spec.full_name, spec)
+      (@specs[spec.name] ||= {}).store(spec_key(spec), spec)
     end
     alias_method :<<, :add
 
@@ -193,11 +193,17 @@ module Bundler
     end
 
     def find_by_spec(spec)
-      @specs[spec.name]&.fetch(spec.full_name, nil)
+      @specs[spec.name]&.fetch(spec_key(spec), nil)
     end
 
     def exist?(spec)
-      @specs[spec.name]&.key?(spec.full_name)
+      @specs[spec.name]&.key?(spec_key(spec))
+    end
+
+    def spec_key(spec)
+      return spec.index_key if spec.respond_to?(:index_key)
+
+      spec.full_name
     end
   end
 end

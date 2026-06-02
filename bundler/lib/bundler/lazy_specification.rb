@@ -9,7 +9,8 @@ module Bundler
     include ForcePlatform
 
     attr_reader :name, :version, :platform, :materialization
-    attr_accessor :source, :remote, :force_ruby_platform, :dependencies, :required_ruby_version, :required_rubygems_version, :overrides
+    attr_accessor :source, :remote, :force_ruby_platform, :dependencies, :required_ruby_version,
+      :required_rubygems_version, :overrides, :artifact_id
 
     #
     # For backwards compatibility with existing lockfiles, if the most specific
@@ -31,6 +32,7 @@ module Bundler
       lazy_spec.required_ruby_version = s.required_ruby_version
       lazy_spec.required_rubygems_version = s.required_rubygems_version
       lazy_spec.overrides = s.overrides if s.is_a?(LazySpecification)
+      lazy_spec.artifact_id = s.artifact_id if s.respond_to?(:artifact_id)
       lazy_spec
     end
 
@@ -71,6 +73,12 @@ module Bundler
       end
     end
 
+    def index_key
+      return full_name unless artifact_id
+
+      "#{full_name}-#{artifact_id}"
+    end
+
     def lock_name
       @lock_name ||= name_tuple.lock_name
     end
@@ -80,15 +88,15 @@ module Bundler
     end
 
     def ==(other)
-      full_name == other.full_name
+      index_key == (other.respond_to?(:index_key) ? other.index_key : other.full_name)
     end
 
     def eql?(other)
-      full_name.eql?(other.full_name)
+      self == other
     end
 
     def hash
-      full_name.hash
+      index_key.hash
     end
 
     ##
@@ -236,9 +244,10 @@ module Bundler
     # bad gem.
     def choose_compatible(candidates, fallback_to_non_installable: Bundler.frozen_bundle?)
       override_list = overrides || []
-      search = candidates.reverse.find do |spec|
+      compatible = candidates.reverse.select do |spec|
         spec.is_a?(StubSpecification) || spec.matches_current_metadata_with_overrides?(override_list)
       end
+      search = most_specific_ruby_requirement(compatible)
       if search.nil? && fallback_to_non_installable
         search = candidates.last
       end
@@ -249,6 +258,46 @@ module Bundler
         search.locked_platform = platform if search.instance_of?(RemoteSpecification) || search.instance_of?(EndpointSpecification)
       end
       search
+    end
+
+    def most_specific_ruby_requirement(specs)
+      specs.max do |a, b|
+        compare_ruby_requirement_specificity(a.required_ruby_version, b.required_ruby_version)
+      end
+    end
+
+    def compare_ruby_requirement_specificity(a_requirement, b_requirement)
+      lower_comparison = lower_ruby_bound(a_requirement) <=> lower_ruby_bound(b_requirement)
+      return lower_comparison unless lower_comparison.zero?
+
+      a_upper = upper_ruby_bound(a_requirement)
+      b_upper = upper_ruby_bound(b_requirement)
+
+      upper_comparison =
+        if a_upper && b_upper
+          b_upper <=> a_upper
+        elsif a_upper
+          1
+        elsif b_upper
+          -1
+        else
+          0
+        end
+      return upper_comparison unless upper_comparison.zero?
+
+      a_requirement.requirements.length <=> b_requirement.requirements.length
+    end
+
+    def lower_ruby_bound(requirement)
+      requirement.requirements.map do |operator, version|
+        version if ["=", ">=", ">", "~>"].include?(operator)
+      end.compact.max || Gem::Version.new("0")
+    end
+
+    def upper_ruby_bound(requirement)
+      requirement.requirements.map do |operator, version|
+        version if ["=", "<=", "<"].include?(operator)
+      end.compact.min
     end
 
     # Validate dependencies of this locked spec are consistent with dependencies

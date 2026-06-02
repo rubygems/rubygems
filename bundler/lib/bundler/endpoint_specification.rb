@@ -5,7 +5,7 @@ module Bundler
   class EndpointSpecification < Gem::Specification
     include MatchRemoteMetadata
 
-    attr_reader :name, :version, :platform, :checksum
+    attr_reader :name, :version, :platform, :checksum, :artifact_id
     attr_writer :dependencies
     attr_accessor :remote, :locked_platform
 
@@ -31,6 +31,36 @@ module Bundler
 
     def fetch_platform
       @platform
+    end
+
+    def index_key
+      return full_name unless artifact_id
+
+      "#{full_name}-#{artifact_id}"
+    end
+
+    def remote_file_name
+      return file_name unless artifact_id
+
+      artifact_id.end_with?(".gem") ? artifact_id : "#{artifact_id}.gem"
+    end
+
+    def cache_file_name
+      return file_name unless artifact_id
+
+      "#{full_name}-#{artifact_id.tr("/", "_")}.gem"
+    end
+
+    def ==(other)
+      super && artifact_id == (other.artifact_id if other.respond_to?(:artifact_id))
+    end
+
+    def eql?(other)
+      self == other
+    end
+
+    def hash
+      super ^ artifact_id.hash
     end
 
     def dependencies
@@ -145,6 +175,7 @@ module Bundler
       unless data
         @required_ruby_version = nil
         @required_rubygems_version = nil
+        @artifact_id = nil
         return
       end
 
@@ -161,6 +192,8 @@ module Bundler
           @required_rubygems_version = Gem::Requirement.new(v)
         when "ruby"
           @required_ruby_version = Gem::Requirement.new(v)
+        when "artifact", "artifact_id"
+          @artifact_id = v.last
         end
       end
     rescue StandardError => e

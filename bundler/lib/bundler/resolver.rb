@@ -47,7 +47,7 @@ module Bundler
           matches = filter_invalid_self_dependencies(matches, name)
         end
 
-        specs[name] = matches.sort_by {|s| [s.version, s.platform.to_s] }
+        specs[name] = matches.sort_by {|s| [s.version, s.platform.to_s, artifact_id_for(s)] }
       end
 
       @all_versions = Hash.new do |candidates, package|
@@ -264,7 +264,9 @@ module Bundler
 
     def all_versions_for(package)
       name = package.name
-      results = (@base[name] + filter_specs(@all_specs[name], package)).uniq {|spec| [spec.version.hash, spec.platform] }
+      results = (@base[name] + filter_specs(@all_specs[name], package)).uniq do |spec|
+        [spec.version.hash, spec.platform, artifact_id_for(spec)]
+      end
 
       if name == "bundler" && !bundler_pinned_to_current_version?
         bundler_spec = Gem.loaded_specs["bundler"]
@@ -302,7 +304,7 @@ module Bundler
           next groups if package.force_ruby_platform?
         end
 
-        platform_group = Resolver::SpecGroup.new(platform_specs.flatten.uniq)
+        platform_group = Resolver::SpecGroup.new(platform_specs.flatten.uniq {|spec| spec_identity(spec) })
         next groups if platform_group == ruby_group
 
         groups << Resolver::Candidate.new(version, group: platform_group, priority: 1)
@@ -338,6 +340,16 @@ module Bundler
     end
 
     private
+
+    def spec_identity(spec)
+      return spec.index_key if spec.respond_to?(:index_key)
+
+      [spec.name, spec.version, spec.platform]
+    end
+
+    def artifact_id_for(spec)
+      spec.respond_to?(:artifact_id) ? spec.artifact_id.to_s : ""
+    end
 
     def raise_not_found!(package)
       name = package.name

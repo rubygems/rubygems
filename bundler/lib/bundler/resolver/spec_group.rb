@@ -49,7 +49,7 @@ module Bundler
       def merge(other)
         return false unless equivalent?(other)
 
-        @specs |= other.specs
+        @specs = (@specs + other.specs).uniq {|spec| spec_identity(spec) }
 
         true
       end
@@ -57,7 +57,7 @@ module Bundler
       protected
 
       def sorted_spec_names
-        @specs.map(&:full_name).sort
+        @specs.map {|spec| spec_identity(spec) }.sort
       end
 
       private
@@ -68,6 +68,12 @@ module Bundler
 
       def exemplary_spec
         @specs.first
+      end
+
+      def spec_identity(spec)
+        return spec.index_key if spec.respond_to?(:index_key)
+
+        spec.full_name
       end
     end
   end

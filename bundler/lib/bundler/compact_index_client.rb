@@ -36,6 +36,7 @@ module Bundler
     INFO_PLATFORM = 2
     INFO_DEPS = 3
     INFO_REQS = 4
+    INFO_ARTIFACT_ID = 5
 
     def self.debug
       return unless ENV["DEBUG_COMPACT_INDEX"]

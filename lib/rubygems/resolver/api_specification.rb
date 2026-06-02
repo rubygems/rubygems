@@ -7,6 +7,8 @@
 # is the name, version, and dependencies.
 
 class Gem::Resolver::APISpecification < Gem::Resolver::Specification
+  attr_reader :artifact_id
+
   ##
   # We assume that all instances of this class are immutable;
   # so avoid duplicated generation for performance.
@@ -33,6 +35,7 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
     @version = Gem::Version.new(api_data[:number]).freeze
     @platform = Gem::Platform.new(api_data[:platform]).freeze
     @original_platform = api_data[:platform].freeze
+    @artifact_id = api_data[:artifact_id]&.freeze
     @dependencies = api_data[:dependencies].map do |name, ver|
       Gem::Dependency.new(name, ver.split(/\s*,\s*/)).freeze
     end.freeze
@@ -45,11 +48,12 @@ class Gem::Resolver::APISpecification < Gem::Resolver::Specification
       @set          == other.set &&
       @name         == other.name &&
       @version      == other.version &&
-      @platform     == other.platform
+      @platform     == other.platform &&
+      @artifact_id  == other.artifact_id
   end
 
   def hash
-    @set.hash ^ @name.hash ^ @version.hash ^ @platform.hash
+    @set.hash ^ @name.hash ^ @version.hash ^ @platform.hash ^ @artifact_id.hash
   end
 
   def fetch_development_dependencies # :nodoc:

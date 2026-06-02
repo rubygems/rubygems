@@ -457,8 +457,11 @@ module Gem
   unless Gem.rubygems_version >= Gem::Version.new("3.6.7")
     module UnfreezeCompactIndexParsedResponse
       def parse(line)
-        version, platform, dependencies, requirements = super
-        [version, platform, dependencies.frozen? ? dependencies.dup : dependencies, requirements.frozen? ? requirements.dup : requirements]
+        version, platform, dependencies, requirements, artifact_id = super
+        dependencies = dependencies.frozen? ? dependencies.dup : dependencies
+        requirements = requirements.frozen? ? requirements.dup : requirements
+
+        [version, platform, dependencies, requirements, artifact_id]
       end
     end
 

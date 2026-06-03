@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0.13 / 2026-06-03
+
+### Enhancements:
+
+* Prevent extraction from escaping destination_dir via pre-existing symlinks. Pull request [#9493](https://github.com/ruby/rubygems/pull/9493) by thesmartshadow
+* Close stdin immediately when using popen2e. Pull request [#9540](https://github.com/ruby/rubygems/pull/9540) by rwstauner
+* Fallback to copy symlinks on Windows. Pull request [#9296](https://github.com/ruby/rubygems/pull/9296) by larskanis
+* Installs bundler 4.0.13 as a default gem.
+
 ## 4.0.12 / 2026-05-20
 
 ### Enhancements:

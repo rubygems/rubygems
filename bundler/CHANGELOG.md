@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.0.13 / 2026-06-03
+
+### Enhancements:
+
+* Do not hard-code permissions for new gem directories during bundle install. Pull request [#9557](https://github.com/ruby/rubygems/pull/9557) by maxfelsher-cgi
+* Clear gem specification cache after acquiring process lock. Pull request [#9310](https://github.com/ruby/rubygems/pull/9310) by ngan
+* Show release date with bundle outdated. Pull request [#9337](https://github.com/ruby/rubygems/pull/9337) by hsbt
+
+### Bug fixes:
+
+* Apply cooldown to locally installed gem versions. Pull request [#9582](https://github.com/ruby/rubygems/pull/9582) by hsbt
+
+### Security:
+
+* Add `cooldown` to delay newly published gem. Pull request [#9576](https://github.com/ruby/rubygems/pull/9576) by hsbt
+
 ## 4.0.12 / 2026-05-20
 
 ### Enhancements:

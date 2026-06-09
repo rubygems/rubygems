@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.0.14 / 2026-06-10
+
+### Bug fixes:
+
+* Preserve per-source cooldown when converging sources from the lockfile. Pull request [#9601](https://github.com/ruby/rubygems/pull/9601) by bryanwoods
+* Don't exclude the locked version from cooldown during bundle update. Pull request [#9599](https://github.com/ruby/rubygems/pull/9599) by hsbt
+
 ## 4.0.13 / 2026-06-03
 
 ### Enhancements:

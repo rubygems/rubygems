@@ -253,6 +253,11 @@ class Release
       errors << "Release branches already exist: #{existing.join(", ")}. Please delete them before running this task."
     end
 
+    existing_remote = branches.select {|b| system("git", "rev-parse", "--verify", "refs/remotes/origin/#{b}", out: IO::NULL, err: IO::NULL) }
+    unless existing_remote.empty?
+      errors << "Release branches already exist on origin: #{existing_remote.map {|b| "origin/#{b}" }.join(", ")}. `git checkout` would silently base work on them instead of the intended branch. Delete them from origin, or run `git fetch --prune origin` if they are already gone."
+    end
+
     raise errors.join("\n") unless errors.empty?
   end
 

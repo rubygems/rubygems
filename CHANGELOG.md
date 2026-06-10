@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.14 / 2026-06-10
+
+### Enhancements:
+
+* Add executables and bindir validation to the gem installer. Pull request [#9595](https://github.com/ruby/rubygems/pull/9595) by hsbt
+* Strip C1 control characters from displayed gem text. Pull request [#9597](https://github.com/ruby/rubygems/pull/9597) by hsbt
+* Installs bundler 4.0.14 as a default gem.
+
 ## 4.0.13 / 2026-06-03
 
 ### Enhancements:

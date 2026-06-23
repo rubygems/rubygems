@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.15 / 2026-06-24
+
+### Enhancements:
+
+* Reduce peak memory usage of full index loading and bundle install. Pull request [#9618](https://github.com/ruby/rubygems/pull/9618) by hsbt
+* Installs bundler 4.0.15 as a default gem.
+
+### Bug fixes:
+
+* Forward security policy to old-format gems. Pull request [#9611](https://github.com/ruby/rubygems/pull/9611) by hsbt
+
 ## 4.0.14 / 2026-06-10
 
 ### Enhancements:

@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.0.15 / 2026-06-24
+
+### Enhancements:
+
+* Resolve Git LFS files in git sources from the real remote. Pull request [#9632](https://github.com/ruby/rubygems/pull/9632) by hsbt
+* Suggest access issues, not only yanking, for missing locked gems. Pull request [#9631](https://github.com/ruby/rubygems/pull/9631) by hsbt
+* Implement a make jobserver (continuation of #9210). Pull request [#9625](https://github.com/ruby/rubygems/pull/9625) by hsbt
+* Reduce peak memory usage of full index loading and bundle install. Pull request [#9618](https://github.com/ruby/rubygems/pull/9618) by hsbt
+* Bump up to rb-sys 0.9.128. Pull request [#9569](https://github.com/ruby/rubygems/pull/9569) by hsbt
+
+### Bug fixes:
+
+* Skip the make jobserver on Windows. Pull request [#9630](https://github.com/ruby/rubygems/pull/9630) by hsbt
+* Don't require source plugins to be installed to parse a lockfile: 4.0.x. Pull request [#9621](https://github.com/ruby/rubygems/pull/9621) by hsbt
+* Exempt lockfile versions from cooldown on every resolution path. Pull request [#9619](https://github.com/ruby/rubygems/pull/9619) by hsbt
+* Set `Bundler.settings[:ssl_ca_cert]` to download gems. Pull request [#9610](https://github.com/ruby/rubygems/pull/9610) by junaruga
+
 ## 4.0.14 / 2026-06-10
 
 ### Bug fixes:

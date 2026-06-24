@@ -323,8 +323,6 @@ bundler/lib/bundler/vendor/thor/lib/thor/shell/terminal.rb
 bundler/lib/bundler/vendor/thor/lib/thor/shell/wrapped_printer.rb
 bundler/lib/bundler/vendor/thor/lib/thor/util.rb
 bundler/lib/bundler/vendor/thor/lib/thor/version.rb
-bundler/lib/bundler/vendor/tsort/LICENSE.txt
-bundler/lib/bundler/vendor/tsort/lib/tsort.rb
 bundler/lib/bundler/vendor/uri/COPYING
 bundler/lib/bundler/vendor/uri/lib/uri.rb
 bundler/lib/bundler/vendor/uri/lib/uri/common.rb

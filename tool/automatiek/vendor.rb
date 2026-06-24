@@ -95,7 +95,6 @@ vendored_gems = [
   VendoredGem.new(name: "fileutils", namespace: "FileUtils", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/fileutils", license_path: "COPYING"),
   VendoredGem.new(name: "pub_grub", namespace: "PubGrub", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/pub_grub", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/thor", license_path: "LICENSE.md", patch_name: "thor-v1.4.0.patch"),
-  VendoredGem.new(name: "tsort", namespace: "TSort", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/tsort", license_path: "LICENSE.txt"),
   VendoredGem.new(name: "uri", namespace: "URI", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/uri", license_path: "COPYING"),
   VendoredGem.new(name: "securerandom", namespace: "SecureRandom", prefix: "Bundler", vendor_lib: "bundler/lib/bundler/vendor/securerandom", license_path: "COPYING"),
 ].group_by(&:name)

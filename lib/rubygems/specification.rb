@@ -2382,8 +2382,7 @@ class Gem::Specification < Gem::BasicSpecification
     result << "#{Gem::StubSpecification::PREFIX}#{extensions.join "\0"}" unless
       extensions.empty?
     unless files.empty?
-      files_line = "#{Gem::StubSpecification::FILES_PREFIX}#{files.join "\0"}"
-      result << files_line if files_line.bytesize <= 200
+      result << "#{Gem::StubSpecification::FILES_PREFIX}#{files.join "\0"}"
     end
     result << nil
     result << "Gem::Specification.new do |s|"

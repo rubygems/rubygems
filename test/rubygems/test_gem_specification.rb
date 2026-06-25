@@ -2345,6 +2345,18 @@ end
     assert_equal @a2, same_spec
   end
 
+  def test_to_ruby_omits_files_stub_when_path_contains_newline
+    @a2.files = ["lib/code.rb", "lib/with\nnewline.rb"]
+
+    ruby_code = @a2.to_ruby
+
+    refute_includes ruby_code, "# files:"
+
+    same_spec = eval ruby_code
+
+    assert_equal @a2.files.sort, same_spec.files.sort
+  end
+
   def test_to_ruby_with_rsa_key
     require "rubygems/openssl"
     pend "openssl is missing" unless defined?(OpenSSL::PKey::RSA)

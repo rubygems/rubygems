@@ -6,16 +6,17 @@
 # wrap the data returned from the indexes.
 
 class Gem::NameTuple
-  def initialize(name, version, platform = Gem::Platform::RUBY)
+  def initialize(name, version, platform = Gem::Platform::RUBY, content_address = nil)
     @name = name
     @version = version
 
     platform &&= platform.to_s
     platform = Gem::Platform::RUBY if !platform || platform.empty?
     @platform = platform
+    @content_address = content_address
   end
 
-  attr_reader :name, :version, :platform
+  attr_reader :name, :version, :platform, :content_address
 
   ##
   # Turn an array of [name, version, platform] into an array of
@@ -46,11 +47,15 @@ class Gem::NameTuple
   # of Gem::Specification#full_name.
 
   def full_name
-    case @platform
-    when nil, "", Gem::Platform::RUBY
-      "#{@name}-#{@version}"
+    if @content_address
+      "#{@name}-#{@version}-#{@content_address}"
     else
-      "#{@name}-#{@version}-#{@platform}"
+      case @platform
+      when nil, "", Gem::Platform::RUBY
+        "#{@name}-#{@version}"
+      else
+        "#{@name}-#{@version}-#{@platform}"
+      end
     end
   end
 
@@ -59,6 +64,13 @@ class Gem::NameTuple
 
   def match_platform?
     Gem::Platform.match_gem? @platform, @name
+  end
+
+  ##
+  # Indicate if this NameTuple is content-addressable (carries a content address).
+
+  def content_addressable?
+    !@content_address.nil?
   end
 
   ##
@@ -94,8 +106,8 @@ class Gem::NameTuple
   alias_method :to_s, :inspect # :nodoc:
 
   def <=>(other)
-    [@name, @version, Gem::Platform.sort_priority(@platform)] <=>
-      [other.name, other.version, Gem::Platform.sort_priority(other.platform)]
+    [@name, @version, Gem::Platform.sort_priority(@platform), @content_address.to_s] <=>
+      [other.name, other.version, Gem::Platform.sort_priority(other.platform), other.content_address.to_s]
   end
 
   include Comparable
@@ -109,7 +121,8 @@ class Gem::NameTuple
     when self.class
       @name == other.name &&
         @version == other.version &&
-        @platform == other.platform
+        @platform == other.platform &&
+        @content_address == other.content_address
     when Array
       to_a == other
     else
@@ -120,6 +133,6 @@ class Gem::NameTuple
   alias_method :eql?, :==
 
   def hash
-    to_a.hash
+    [@name, @version, @platform, @content_address].hash
   end
 end

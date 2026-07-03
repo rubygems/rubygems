@@ -154,6 +154,6 @@ class Gem::Resolver::ActivationRequest
   private
 
   def name_tuple
-    @name_tuple ||= Gem::NameTuple.new(name, version, platform)
+    @name_tuple ||= Gem::NameTuple.new(name, version, platform, @spec.content_address)
   end
 end

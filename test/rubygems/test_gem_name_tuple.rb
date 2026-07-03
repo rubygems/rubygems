@@ -16,6 +16,24 @@ class TestGemNameTuple < Gem::TestCase
 
     n = Gem::NameTuple.new "a", Gem::Version.new(0), "other"
     assert_equal "a-0-other", n.full_name
+
+    n = Gem::NameTuple.new "a", Gem::Version.new(0), "arm64-darwin", "bd0ec167"
+    assert_equal "a-0-bd0ec167", n.full_name
+  end
+
+  def test_content_address_variants_are_distinct
+    a = Gem::NameTuple.new "a", Gem::Version.new(0), "arm64-darwin", "bd0ec167"
+    b = Gem::NameTuple.new "a", Gem::Version.new(0), "arm64-darwin", "3a41cc2c08"
+
+    assert a.content_addressable?
+    refute Gem::NameTuple.new("a", Gem::Version.new(0), "ruby").content_addressable?
+    refute_equal a, b
+    refute_equal a.hash, b.hash
+    assert_equal 2, [a, b].uniq.size
+
+    same = Gem::NameTuple.new "a", Gem::Version.new(0), "arm64-darwin", "bd0ec167"
+    assert_equal a, same
+    assert_equal a.hash, same.hash
   end
 
   def test_platform_normalization

@@ -24,6 +24,13 @@ class Gem::Resolver::SpecSpecification < Gem::Resolver::Specification
   end
 
   ##
+  # The content address of the backing gem
+
+  def content_address
+    spec.content_address
+  end
+
+  ##
   # The required_ruby_version constraint for this specification
 
   def required_ruby_version

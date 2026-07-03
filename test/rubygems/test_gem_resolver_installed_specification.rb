@@ -19,6 +19,17 @@ class TestGemResolverInstalledSpecification < Gem::TestCase
     assert_equal Gem::Platform::RUBY, spec.platform
   end
 
+  def test_content_address_delegates_to_spec
+    plain = Gem::Resolver::InstalledSpecification.new @set, util_spec("a")
+    refute plain.content_addressable?
+    assert_nil plain.content_address
+
+    skinny_spec = util_spec("a") {|s| s.content_address = "bd0ec167" }
+    skinny = Gem::Resolver::InstalledSpecification.new @set, skinny_spec
+    assert skinny.content_addressable?
+    assert_equal "bd0ec167", skinny.content_address
+  end
+
   def test_install
     a = util_spec "a"
 

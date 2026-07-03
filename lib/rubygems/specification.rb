@@ -407,6 +407,13 @@ class Gem::Specification < Gem::BasicSpecification
 
   attr_accessor :metadata
 
+  ##
+  # The content address of a platformed gem that targets one Ruby ABI: a hex
+  # prefix of the gem's SHA256 that stands in for the platform in the .gem file
+  # name.  Assigned at install time, not declared in the gemspec.
+
+  attr_accessor :content_address # :nodoc:
+
   ######################################################################
   # :section: Optional gemspec attributes
 
@@ -1949,6 +1956,7 @@ class Gem::Specification < Gem::BasicSpecification
     @loaded_from = nil
     @original_platform = nil
     @installed_by_version = nil
+    @content_address = nil
 
     set_nil_attributes_to_nil
     set_not_nil_attributes_to_default_values
@@ -2370,9 +2378,11 @@ class Gem::Specification < Gem::BasicSpecification
   def to_ruby
     result = []
     result << "# -*- encoding: utf-8 -*-"
-    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{raw_require_paths.join("\0")}"
+    slot = content_addressable? ? content_address : platform
+    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{slot} #{raw_require_paths.join("\0")}"
     result << "#{Gem::StubSpecification::PREFIX}#{extensions.join "\0"}" unless
       extensions.empty?
+    result << "#{Gem::StubSpecification::TARGET_PREFIX}platform=#{platform}" if content_addressable?
     result << nil
     result << "Gem::Specification.new do |s|"
 
@@ -2381,6 +2391,7 @@ class Gem::Specification < Gem::BasicSpecification
     unless platform.nil? || platform == Gem::Platform::RUBY
       result << "  s.platform = #{ruby_code original_platform}"
     end
+    result << "  s.content_address = #{ruby_code content_address}" if content_addressable?
     result << ""
     result << "  s.required_rubygems_version = #{ruby_code required_rubygems_version} if s.respond_to? :required_rubygems_version="
 

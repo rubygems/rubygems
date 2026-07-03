@@ -38,7 +38,7 @@ class TestGemResolverAPISet < Gem::TestCase
     data = [
       { name: "a",
         number: "1",
-        platform: "ruby",
+        suffix: "ruby",
         dependencies: [] },
     ]
 
@@ -61,11 +61,11 @@ class TestGemResolverAPISet < Gem::TestCase
     data = [
       { name: "a",
         number: "1",
-        platform: "ruby",
+        suffix: "ruby",
         dependencies: [] },
       { name: "a",
         number: "2.a",
-        platform: "ruby",
+        suffix: "ruby",
         dependencies: [] },
     ]
 
@@ -90,7 +90,7 @@ class TestGemResolverAPISet < Gem::TestCase
     data = [
       { name: "a",
         number: "1",
-        platform: "ruby",
+        suffix: "ruby",
         dependencies: [] },
     ]
 

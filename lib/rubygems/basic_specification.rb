@@ -140,16 +140,42 @@ class Gem::BasicSpecification
   end
 
   ##
-  # Returns the full name (name-version) of this Gem.  Platform information
-  # is included (name-version-platform) if it is specified and not the
-  # default Ruby platform.
+  # Returns the full name (name-version) of this Gem.  For a content-addressable
+  # gem (one targeting a single Ruby ABI on a non-default platform), the content
+  # address takes the platform's place (name-version-<content-address>).
+  # Otherwise platform information is included (name-version-platform) unless it
+  # is the default Ruby platform.
 
   def full_name
-    if platform == Gem::Platform::RUBY || platform.nil?
+    if content_addressable?
+      "#{name}-#{version}-#{content_address}"
+    elsif platform == Gem::Platform::RUBY || platform.nil?
       "#{name}-#{version}"
     else
       "#{name}-#{version}-#{platform}"
     end
+  end
+
+  ##
+  # The content address (a hex prefix of the gem file's SHA256) used in place of
+  # the platform in #full_name for a Gem that targets one CRuby ABI
+
+  def content_address
+    raise NotImplementedError
+  end
+
+  ##
+  # True if this Gem is content-addressable, i.e. it carries a
+  # content address.
+
+  def content_addressable?
+    !content_address.nil?
+  end
+
+  CONTENT_ADDRESS = /\A[0-9a-f]{8,64}\z/ # :nodoc:
+
+  def self.content_address?(string) # :nodoc:
+    string.is_a?(String) && CONTENT_ADDRESS.match?(string)
   end
 
   ##

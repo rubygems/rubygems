@@ -396,10 +396,11 @@ class Gem::Resolver
       next installed.first if installed.length == 1
       candidates = installed if installed.any?
 
-      # Among remaining candidates, prefer the most specific platform, then the
-      # earlier-supplied source.
+      # Prefer the most specific platform; among equally specific candidates
+      # prefer a content-addressable (skinny) variant, then the earlier source.
       candidates.min_by do |s|
         [Gem::Platform.platform_specificity_match(s.platform, Gem::Platform.local),
+         s.content_addressable? ? 0 : 1,
          source_rank[s.source]]
       end
     end

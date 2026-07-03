@@ -114,6 +114,9 @@ class Gem::Installer
 
     def copy_to(path)
     end
+
+    def gem
+    end
   end
 
   ##
@@ -266,6 +269,8 @@ class Gem::Installer
   #     specifications/<gem-version>.gemspec #=> the Gem::Specification
 
   def install
+    assign_content_address
+
     pre_install_checks
 
     run_pre_install_hooks
@@ -965,6 +970,25 @@ class Gem::Installer
   end
 
   private
+
+  def assign_content_address
+    address = content_address_from_filename(@package.gem&.path)
+    spec.content_address = address if address
+  end
+
+  def content_address_from_filename(path)
+    return unless path
+
+    token = File.basename(path, ".gem").split("-").last
+    return unless Gem::BasicSpecification.content_address?(token)
+
+    require "digest"
+    unless Digest::SHA256.file(path).hexdigest.start_with?(token)
+      raise Gem::InstallError, "content address mismatch for #{File.basename(path)}"
+    end
+
+    token
+  end
 
   def user_install_dir
     # never install to user home in --build-root mode

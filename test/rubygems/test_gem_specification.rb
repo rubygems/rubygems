@@ -1940,6 +1940,18 @@ dependencies: []
     end
   end
 
+  def test_content_addressable_full_name
+    refute @a2.content_addressable?
+    assert_nil @a2.content_address
+
+    @a2.platform = "arm64-darwin"
+    @a2.content_address = "bd0ec167"
+
+    assert @a2.content_addressable?
+    assert_equal "a-2-bd0ec167", @a2.full_name
+    assert_equal Gem::Platform.new("arm64-darwin"), @a2.platform
+  end
+
   def test_gem_build_complete_path
     expected = File.join @a1.extension_dir, "gem.build_complete"
     assert_equal expected, @a1.gem_build_complete_path
@@ -2513,6 +2525,22 @@ end
     assert_equal "old_platform", same_spec.original_platform
   end
 
+  def test_to_ruby_content_addressable
+    @a2.platform = "arm64-darwin"
+    @a2.content_address = "bd0ec167"
+
+    ruby_code = @a2.to_ruby
+    lines = ruby_code.lines
+
+    assert_equal "# stub: a 2 bd0ec167 lib\n", lines[1]
+    assert_includes ruby_code, "# stub-target: platform=arm64-darwin"
+    assert_includes ruby_code, %(s.content_address = "bd0ec167")
+
+    reloaded = eval ruby_code
+    assert_equal "bd0ec167", reloaded.content_address
+    assert_equal "a-2-bd0ec167", reloaded.full_name
+  end
+
   def test_to_yaml
     yaml_str = @a1.to_yaml
 
@@ -2677,6 +2705,21 @@ end
       end
 
       assert_match "#{w}:  deprecated autorequire specified\n",
+                   @ui.error, "error"
+    end
+  end
+
+  def test_validate_content_address_warns
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @a1.content_address = "bd0ec167"
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      assert_match "content_address is assigned automatically at install time",
                    @ui.error, "error"
     end
   end

@@ -8,7 +8,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "rails",
       number: "3.0.3",
-      platform: Gem::Platform.local.to_s,
+      suffix: Gem::Platform.local.to_s,
       dependencies: [
         ["bundler",  "~> 1.0"],
         ["railties", "= 3.0.3"],
@@ -20,6 +20,8 @@ class TestGemResolverAPISpecification < Gem::TestCase
     assert_equal "rails",                   spec.name
     assert_equal Gem::Version.new("3.0.3"), spec.version
     assert_equal Gem::Platform.local,       spec.platform
+    refute spec.content_addressable?
+    assert_nil spec.content_address
 
     expected = [
       Gem::Dependency.new("bundler",  "~> 1.0"),
@@ -30,12 +32,31 @@ class TestGemResolverAPISpecification < Gem::TestCase
     assert_nil spec.created_at
   end
 
+  def test_initialize_content_addressable
+    set = Gem::Resolver::APISet.new
+    data = {
+      name: "darwin-demo",
+      number: "1.0.0",
+      suffix: "bd0ec167",
+      dependencies: [],
+      requirements: { ruby: ["~> 3.4.0"], platform: ["= arm64-darwin"] },
+    }
+
+    spec = Gem::Resolver::APISpecification.new set, data
+
+    assert spec.content_addressable?
+    assert_equal "bd0ec167", spec.content_address
+    assert_equal Gem::Platform.new("arm64-darwin"), spec.platform
+    assert_equal "darwin-demo-1.0.0-bd0ec167", spec.spec.full_name
+    assert_equal "bd0ec167", spec.spec.content_address
+  end
+
   def test_initialize_created_at
     set = Gem::Resolver::APISet.new
     data = {
       name: "rails",
       number: "3.0.3",
-      platform: "ruby",
+      suffix: "ruby",
       dependencies: [],
       requirements: { created_at: ["2026-06-05T10:30:45Z"] },
     }
@@ -50,7 +71,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "rails",
       number: "3.0.3",
-      platform: "ruby",
+      suffix: "ruby",
       dependencies: [],
       requirements: { created_at: ["not a timestamp"] },
     }
@@ -65,7 +86,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "rails",
       number: "3.0.3",
-      platform: "ruby",
+      suffix: "ruby",
       dependencies: [],
       requirements: { created_at: ["2026"] },
     }
@@ -93,7 +114,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "rails",
       number: "3.0.3",
-      platform: "ruby",
+      suffix: "ruby",
       dependencies: [
         ["bundler",  "~> 1.0"],
         ["railties", "= 3.0.3"],
@@ -120,7 +141,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "a",
       number: "1",
-      platform: "ruby",
+      suffix: "ruby",
       dependencies: [],
     }
 
@@ -131,7 +152,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "b",
       number: "1",
-      platform: "cpu-other_platform-1",
+      suffix: "cpu-other_platform-1",
       dependencies: [],
     }
 
@@ -142,7 +163,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "c",
       number: "1",
-      platform: Gem::Platform.local.to_s,
+      suffix: Gem::Platform.local.to_s,
       dependencies: [],
     }
 
@@ -156,7 +177,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "a",
       number: "1",
-      platform: "ruby",
+      suffix: "ruby",
       dependencies: [],
     }
 
@@ -175,7 +196,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "a",
       number: "1",
-      platform: "ruby",
+      suffix: "ruby",
       dependencies: [],
     }
 
@@ -199,7 +220,7 @@ class TestGemResolverAPISpecification < Gem::TestCase
     data = {
       name: "j",
       number: "1",
-      platform: "jruby",
+      suffix: "jruby",
       dependencies: [],
     }
 

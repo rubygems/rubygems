@@ -64,6 +64,7 @@ class Gem::Resolver::Specification
   # Sets default instance variables for the specification.
 
   def initialize
+    @content_address = nil
     @created_at   = nil
     @dependencies = nil
     @name         = nil
@@ -89,6 +90,15 @@ class Gem::Resolver::Specification
 
   def full_name
     "#{@name}-#{@version}"
+  end
+
+  ##
+  # The content address of a content-addressable gem, or nil for ordinary gems.
+
+  attr_reader :content_address
+
+  def content_addressable?
+    !content_address.nil?
   end
 
   ##

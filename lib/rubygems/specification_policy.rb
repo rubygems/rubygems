@@ -434,6 +434,8 @@ or set it to nil if you don't want to specify a license.
     # TODO: raise at some given date
     warning "deprecated autorequire specified" if @specification.autorequire
 
+    warning "content_address is assigned automatically at install time; remove it from your gemspec" if @specification.content_address
+
     @specification.executables.each do |executable|
       validate_executable(executable)
       validate_shebang_line_in(executable)

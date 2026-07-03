@@ -10,11 +10,14 @@ class Gem::StubSpecification < Gem::BasicSpecification
   PREFIX = "# stub: "
 
   # :nodoc:
+  TARGET_PREFIX = "# stub-target: "
+
+  # :nodoc:
   OPEN_MODE = "r:UTF-8:-"
 
   class StubLine # :nodoc: all
     attr_reader :name, :version, :platform, :require_paths, :extensions,
-                :full_name
+                :full_name, :content_address
 
     NO_EXTENSIONS = [].freeze
 
@@ -33,7 +36,7 @@ class Gem::StubSpecification < Gem::BasicSpecification
       "lib" => ["lib"].freeze,
     }.freeze
 
-    def initialize(data, extensions)
+    def initialize(data, extensions, target = nil)
       parts          = data[PREFIX.length..-1].split(" ", 4)
       @name          = -parts[0]
       @version       = if Gem::Version.correct?(parts[1])
@@ -42,12 +45,15 @@ class Gem::StubSpecification < Gem::BasicSpecification
         Gem::Version.new(0)
       end
 
-      @platform      = Gem::Platform.new parts[2]
-      @extensions    = extensions
-      @full_name     = if platform == Gem::Platform::RUBY
+      suffix           = parts[2]
+      @extensions      = extensions
+      target_platform  = target && target["platform"]
+      @platform        = Gem::Platform.new(target_platform || suffix)
+      @content_address = Gem::BasicSpecification.content_address?(suffix) ? suffix : nil
+      @full_name       = if @platform == Gem::Platform::RUBY
         "#{name}-#{version}"
       else
-        "#{name}-#{version}-#{platform}"
+        "#{name}-#{version}-#{suffix}"
       end
 
       path_list = parts.last
@@ -110,18 +116,24 @@ class Gem::StubSpecification < Gem::BasicSpecification
           file.readline # discard encoding line
           stubline = file.readline
           if stubline.start_with?(PREFIX)
-            extline = file.readline
+            extensions = StubLine::NO_EXTENSIONS
+            target = nil
 
-            extensions =
-              if extline.delete_prefix!(PREFIX)
-                extline.chomp!
-                extline.split "\0"
+            loop do
+              line = file.readline
+              if line.delete_prefix!(TARGET_PREFIX)
+                line.chomp!
+                target = parse_target(line)
+              elsif line.delete_prefix!(PREFIX)
+                line.chomp!
+                extensions = line.split "\0"
               else
-                StubLine::NO_EXTENSIONS
+                break
               end
+            end
 
             stubline.chomp! # readline(chomp: true) allocates 3x as much as .readline.chomp!
-            @data = StubLine.new stubline, extensions
+            @data = StubLine.new stubline, extensions, target
           end
         rescue EOFError
         end
@@ -134,6 +146,15 @@ class Gem::StubSpecification < Gem::BasicSpecification
   end
 
   private :data
+
+  def parse_target(line)
+    line.split(" ").each_with_object({}) do |pair, target|
+      key, value = pair.split("=", 2)
+      target[key] = value if value
+    end
+  end
+
+  private :parse_target
 
   def raw_require_paths # :nodoc:
     data.require_paths
@@ -178,6 +199,10 @@ class Gem::StubSpecification < Gem::BasicSpecification
 
   def full_name
     data.full_name
+  end
+
+  def content_address
+    data.content_address
   end
 
   ##

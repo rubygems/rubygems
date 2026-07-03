@@ -291,6 +291,47 @@ class TestGemInstaller < Gem::InstallerTestCase
     assert_equal "a requires b (> 2)", e.message
   end
 
+  def test_install_assigns_content_address_from_filename
+    require "digest"
+    _, a_gem = util_gem "a", 2
+    address = Digest::SHA256.file(a_gem).hexdigest[0, 8]
+    skinny = File.join(File.dirname(a_gem), "a-2-#{address}.gem")
+    FileUtils.cp a_gem, skinny
+
+    installer = Gem::Installer.at skinny, install_dir: @gemhome, force: true
+    spec = installer.install
+
+    assert_equal address, spec.content_address
+    assert spec.content_addressable?
+    assert_equal "a-2-#{address}", spec.full_name
+    assert_path_exist File.join(@gemhome, "gems", "a-2-#{address}")
+    assert_path_exist File.join(@gemhome, "specifications", "a-2-#{address}.gemspec")
+  end
+
+  def test_install_raises_when_content_address_token_does_not_match_sha
+    _, a_gem = util_gem "a", 2
+    bogus = File.join(File.dirname(a_gem), "a-2-deadbeef.gem")
+    FileUtils.cp a_gem, bogus
+
+    installer = Gem::Installer.at bogus, install_dir: @gemhome, force: true
+
+    e = assert_raise Gem::InstallError do
+      installer.install
+    end
+    assert_match "content address mismatch", e.message
+  end
+
+  def test_install_does_not_content_address_ordinary_gem
+    _, a_gem = util_gem "a", 2
+
+    installer = Gem::Installer.at a_gem, install_dir: @gemhome, force: true
+    spec = installer.install
+
+    refute spec.content_addressable?
+    assert_nil spec.content_address
+    assert_equal "a-2", spec.full_name
+  end
+
   def test_ensure_loadable_spec
     a, a_gem = util_gem "a", 2 do |s|
       s.add_dependency "garbage ~> 5"

@@ -47,6 +47,19 @@ class TestStubSpecification < Gem::TestCase
     assert_equal v(0),                        stub.version
   end
 
+  def test_content_addressable_stub
+    refute @foo.content_addressable?
+    assert_nil @foo.content_address
+
+    stub = stub_content_addressed
+
+    assert stub.content_addressable?
+    assert_equal "bd0ec167", stub.content_address
+    assert_equal Gem::Platform.new("arm64-darwin"), stub.platform
+    assert_equal "skinny-1.0.0-bd0ec167", stub.full_name
+    assert_equal ["lib"], stub.require_paths
+  end
+
   def test_initialize_missing_stubline
     stub = Gem::StubSpecification.gemspec_stub(BAR, @base_dir, @gems_dir)
     assert_equal "bar", stub.name
@@ -212,6 +225,15 @@ class TestStubSpecification < Gem::TestCase
     refute_same real_bar, bar_default.to_spec
   end
 
+  def test_content_addressable_to_spec_carries_address
+    spec = stub_content_addressed.to_spec
+
+    assert_equal "bd0ec167", spec.content_address
+    assert spec.content_addressable?
+    assert_equal "skinny-1.0.0-bd0ec167", spec.full_name
+    assert_equal Gem::Platform.new("arm64-darwin"), spec.platform
+  end
+
   def test_to_spec_with_other_specs_loaded_does_not_warn
     real_foo = util_spec @foo.name, @foo.version
     real_foo.activate
@@ -230,6 +252,32 @@ class TestStubSpecification < Gem::TestCase
         Gem::Specification.new do |s|
           s.name = 'stub_v'
           s.version = Gem::Version.new '2'
+        end
+      STUB
+
+      io.flush
+
+      stub = Gem::StubSpecification.gemspec_stub io.path, @gemhome, File.join(@gemhome, "gems")
+
+      yield stub if block_given?
+
+      return stub
+    end
+  end
+
+  def stub_content_addressed
+    spec = File.join @gemhome, "specifications", "skinny-1.0.0-bd0ec167.gemspec"
+    File.open spec, "w" do |io|
+      io.write <<~STUB
+        # -*- encoding: utf-8 -*-
+        # stub: skinny 1.0.0 bd0ec167 lib
+        # stub-target: platform=arm64-darwin
+
+        Gem::Specification.new do |s|
+          s.name = 'skinny'
+          s.version = Gem::Version.new '1.0.0'
+          s.platform = 'arm64-darwin'
+          s.content_address = 'bd0ec167'
         end
       STUB
 

@@ -285,6 +285,44 @@ class TestGemResolver < Gem::TestCase
     assert_resolves_to [a2], res
   end
 
+  def test_prefers_content_addressable_variant
+    set = Gem::Resolver::APISet.new
+    fat = Gem::Resolver::APISpecification.new(set,
+      { name: "a", number: "1", suffix: "arm64-darwin", dependencies: [], requirements: {} })
+    skinny = Gem::Resolver::APISpecification.new(set,
+      { name: "a", number: "1", suffix: "abc12345", dependencies: [],
+        requirements: { ruby: [">= 0"], platform: ["= arm64-darwin"] } })
+
+    resolver = Gem::Resolver.new [], set
+    all = Hash.new {|h, k| h[k] = [] }
+    all["a"] = [fat, skinny]
+    resolver.instance_variable_set(:@all_specs, all)
+
+    chosen = resolver.send(:build_spec_for_cache, "a")
+
+    assert_equal skinny, chosen[v(1)]
+  end
+
+  def test_prefers_more_specific_platform_over_content_addressable
+    util_set_arch "arm64-darwin-23" do
+      set = Gem::Resolver::APISet.new
+      fat = Gem::Resolver::APISpecification.new(set,
+        { name: "a", number: "1", suffix: "arm64-darwin-23", dependencies: [], requirements: {} })
+      skinny = Gem::Resolver::APISpecification.new(set,
+        { name: "a", number: "1", suffix: "abc12345", dependencies: [],
+          requirements: { ruby: [">= 0"], platform: ["= arm64-darwin"] } })
+
+      resolver = Gem::Resolver.new [], set
+      all = Hash.new {|h, k| h[k] = [] }
+      all["a"] = [skinny, fat]
+      resolver.instance_variable_set(:@all_specs, all)
+
+      chosen = resolver.send(:build_spec_for_cache, "a")
+
+      assert_equal fat, chosen[v(1)]
+    end
+  end
+
   def test_picks_best_platform
     is      = Gem::Resolver::IndexSpecification
     unknown = Gem::Platform.new "unknown"

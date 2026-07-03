@@ -93,6 +93,8 @@ then repackaging it.
         specs_and_sources = filtered unless filtered.empty?
       end
 
+      specs_and_sources = prefer_content_addressed(specs_and_sources)
+
       spec, source = specs_and_sources.max_by {|s,| s }
 
       if spec.nil?
@@ -105,5 +107,17 @@ then repackaging it.
     end
 
     exit_code
+  end
+
+  def prefer_content_addressed(specs_and_sources)
+    return specs_and_sources unless specs_and_sources.any? {|s,| s.content_addressable? }
+
+    compatible = specs_and_sources.select do |spec,|
+      spec.required_ruby_version.satisfied_by?(Gem.ruby_version)
+    end
+    specs_and_sources = compatible unless compatible.empty?
+
+    skinny = specs_and_sources.select {|s,| s.content_addressable? }
+    skinny.empty? ? specs_and_sources : skinny
   end
 end

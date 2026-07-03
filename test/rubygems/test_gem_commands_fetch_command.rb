@@ -12,6 +12,30 @@ class TestGemCommandsFetchCommand < Gem::TestCase
     @cmd = Gem::Commands::FetchCommand.new
   end
 
+  def test_prefer_content_addressed
+    fat = util_spec("a", "1") {|s| s.platform = "arm64-darwin" }
+    s33 = util_spec("a", "1") do |s|
+      s.platform = "arm64-darwin"
+      s.content_address = "3a41cc2c08"
+      s.required_ruby_version = "~> 3.3.0"
+    end
+    s34 = util_spec("a", "1") do |s|
+      s.platform = "arm64-darwin"
+      s.content_address = "bd0ec167"
+      s.required_ruby_version = "~> 3.4.0"
+    end
+    pairs = [[fat, nil], [s33, nil], [s34, nil]]
+
+    Gem.stub :ruby_version, Gem::Version.new("3.4.5") do
+      chosen = @cmd.send(:prefer_content_addressed, pairs).map {|s,| s.content_address }
+      assert_equal ["bd0ec167"], chosen, "the running-Ruby skinny"
+    end
+
+    # No content-addressable candidates: leave the set untouched.
+    plain = [[fat, nil]]
+    assert_same plain, @cmd.send(:prefer_content_addressed, plain)
+  end
+
   def test_execute
     specs = spec_fetcher do |fetcher|
       fetcher.gem "a", 2

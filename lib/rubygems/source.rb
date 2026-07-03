@@ -123,7 +123,10 @@ class Gem::Source
              rescue StandardError
                nil
              end
-      return spec if spec
+      if spec
+        spec.content_address = name_tuple.content_address if name_tuple.content_address
+        return spec
+      end
     end
 
     source_uri.path << ".rz"
@@ -142,7 +145,9 @@ class Gem::Source
 
     Gem.load_safe_marshal
     # TODO: Investigate setting Gem::Specification#loaded_from to a URI
-    Gem::SafeMarshal.safe_load spec
+    spec = Gem::SafeMarshal.safe_load spec
+    spec.content_address = name_tuple.content_address if name_tuple.content_address
+    spec
   end
 
   ##
@@ -258,7 +263,14 @@ class Gem::Source
         version = Gem::Version.new(version_string)
         next if version.prerelease? != (type == :prerelease)
 
-        Gem::NameTuple.new(name, version, platform || "ruby")
+        if Gem::BasicSpecification.content_address?(platform)
+          # The /versions index carries the content address in the platform slot,
+          # not the real platform. Record it as the content address (which keeps
+          # variants distinct) and let the fetched spec supply the real platform.
+          Gem::NameTuple.new(name, version, platform, platform)
+        else
+          Gem::NameTuple.new(name, version, platform || "ruby")
+        end
       end
 
       gem_tuples = max_versions_by_platform(gem_tuples) if type == :latest

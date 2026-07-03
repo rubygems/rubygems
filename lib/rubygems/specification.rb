@@ -836,10 +836,24 @@ class Gem::Specification < Gem::BasicSpecification
       next versions if versions.nonzero?
       platforms = Gem::Platform.sort_priority(b.platform) <=> Gem::Platform.sort_priority(a.platform)
       next platforms if platforms.nonzero?
+      content = _compare_content_address(a, b)
+      next content if content.nonzero?
       default_gem = a.default_gem_priority <=> b.default_gem_priority
       next default_gem if default_gem.nonzero?
       a.base_dir_priority(gem_path) <=> b.base_dir_priority(gem_path)
     end
+  end
+
+  def self._compare_content_address(a, b) # :nodoc:
+    return 0 unless a.content_addressable? || b.content_addressable?
+
+    _content_address_priority(a) <=> _content_address_priority(b)
+  end
+
+  def self._content_address_priority(spec) # :nodoc:
+    full = spec.to_spec
+    built_for_running_ruby = full && full.required_ruby_version.satisfied_by?(Gem.ruby_version)
+    [built_for_running_ruby ? 0 : 1, spec.content_addressable? ? 0 : 1]
   end
 
   ##

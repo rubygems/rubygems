@@ -1952,6 +1952,57 @@ dependencies: []
     assert_equal Gem::Platform.new("arm64-darwin"), @a2.platform
   end
 
+  def test_resort_orders_content_addressed_variants_by_ruby_abi
+    fat = util_spec("a", "1") {|s| s.platform = "arm64-darwin" }
+    old = util_spec("a", "1") do |s|
+      s.platform = "arm64-darwin"
+      s.content_address = "3a41cc2c08"
+      s.required_ruby_version = "~> 3.3.0"
+    end
+    new = util_spec("a", "1") do |s|
+      s.platform = "arm64-darwin"
+      s.content_address = "bd0ec167"
+      s.required_ruby_version = "~> 3.4.0"
+    end
+
+    Gem.stub :ruby_version, Gem::Version.new("3.4.5") do
+      specs = [old, fat, new]
+      Gem::Specification._resort! specs
+      assert_equal "bd0ec167", specs.first.content_address, "running-Ruby skinny first"
+      assert specs[1].content_address.nil?, "then the compatible fat"
+    end
+
+    Gem.stub :ruby_version, Gem::Version.new("3.3.9") do
+      specs = [new, fat, old]
+      Gem::Specification._resort! specs
+      assert_equal "3a41cc2c08", specs.first.content_address
+    end
+  end
+
+  def test_resort_keeps_ordinary_duplicates_lazy
+    # A default gem plus an installed copy tie on name-version-platform but are
+    # not content-addressable; _resort! must not load their full specs.
+    a = util_spec("a", "1")
+    b = util_spec("a", "1")
+    [a, b].each do |s|
+      def s.to_spec
+        raise "to_spec must not be called for ordinary gems"
+      end
+    end
+
+    sorted = Gem::Specification._resort!([a, b]) # must not call to_spec
+    assert_equal 2, sorted.size
+  end
+
+  def test_content_address_priority_tolerates_missing_spec
+    spec = util_spec("a", "1") {|s| s.content_address = "bd0ec167" }
+    def spec.to_spec
+      nil
+    end
+
+    assert_equal [1, 0], Gem::Specification._content_address_priority(spec)
+  end
+
   def test_gem_build_complete_path
     expected = File.join @a1.extension_dir, "gem.build_complete"
     assert_equal expected, @a1.gem_build_complete_path

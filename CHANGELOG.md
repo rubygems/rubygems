@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.16 / 2026-07-10
+
+### Enhancements:
+
+* Installs bundler 4.0.16 as a default gem.
+
+### Bug fixes:
+
+* Skip the make job server when using BSD make. Pull request [#9676](https://github.com/ruby/rubygems/pull/9676) by flavorjones
+
 ## 4.0.15 / 2026-06-24
 
 ### Enhancements:

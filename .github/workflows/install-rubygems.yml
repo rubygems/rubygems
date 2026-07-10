@@ -26,7 +26,7 @@ jobs:
           - { name: "3.3", value: 3.3.9 }
           - { name: "3.4", value: 3.4.5 }
           - { name: jruby, value: jruby-10.0.2.0 }
-          - { name: truffleruby, value: truffleruby-24.1.2 }
+          - { name: truffleruby, value: truffleruby-34.0.1 }
         openssl:
           - { name: openssl, value: true }
           - { name: no-openssl, value: false }
@@ -35,7 +35,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@b90be12699fdfcbee4440c2bba85f6f460446bb0 # v1.279.0
+        uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -134,7 +134,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@b90be12699fdfcbee4440c2bba85f6f460446bb0 # v1.279.0
+        uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -176,7 +176,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup original ruby
-        uses: ruby/setup-ruby@b90be12699fdfcbee4440c2bba85f6f460446bb0 # v1.279.0
+        uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
         with:
           ruby-version: 3.2
           bundler: none
@@ -197,7 +197,7 @@ jobs:
           GEM_HOME: bar
           GEM_PATH: bar
       - name: Setup final ruby
-        uses: ruby/setup-ruby@b90be12699fdfcbee4440c2bba85f6f460446bb0 # v1.279.0
+        uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
         with:
           ruby-version: 3.3
           bundler: none
@@ -226,7 +226,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@b90be12699fdfcbee4440c2bba85f6f460446bb0 # v1.279.0
+        uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

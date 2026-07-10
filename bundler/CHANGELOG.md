@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.0.16 / 2026-07-10
+
+### Enhancements:
+
+* Bundler: Fix Bundler::Fetcher for PQC support, adding integration connection tests. Pull request [#9637](https://github.com/ruby/rubygems/pull/9637) by junaruga
+* Reuse RubyGems' vendored tsort in Bundler. Pull request [#9647](https://github.com/ruby/rubygems/pull/9647) by hsbt
+
+### Bug fixes:
+
+* Initialize the new gem's git repo without a subshell. Pull request [#9670](https://github.com/ruby/rubygems/pull/9670) by hsbt
+* Preserve CRLF lockfile line endings on Windows. Pull request [#9669](https://github.com/ruby/rubygems/pull/9669) by hsbt
+* Fix the gemspec error snippet on Windows drive-letter paths. Pull request [#9668](https://github.com/ruby/rubygems/pull/9668) by hsbt
+
+### Documentation:
+
+* Point Bundler gemspec metadata at the moved docs. Pull request [#9648](https://github.com/ruby/rubygems/pull/9648) by hsbt
+
 ## 4.0.15 / 2026-06-24
 
 ### Enhancements:

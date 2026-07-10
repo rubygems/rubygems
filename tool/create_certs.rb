@@ -25,9 +25,16 @@ class CertificateBuilder
     certificates <<
       create_certificate(key, subject, issuer_key, issuer_cert,
                          not_before, not_after, is_ca)
-    certificates <<
-      create_certificate(key, subject, issuer_key, issuer_cert_32,
-                         not_before_32, not_after_32, is_ca)
+
+    # When not_before and not_after are the same between the regular and 32-bit
+    # certificates, don't create 32-bit certificate. Because it is redundant.
+    if not_before == not_before_32 && not_after == not_after_32
+      certificates << nil
+    else
+      certificates <<
+        create_certificate(key, subject, issuer_key, issuer_cert_32,
+                           not_before_32, not_after_32, is_ca)
+    end
 
     certificates
   end
@@ -168,6 +175,8 @@ File.write dest, keys[:private].private_to_pem(OpenSSL::Cipher.new("aes-256-cbc"
 certs.each do |name, (cert, cert_32)|
   dest = File.join base_dir, "#{name}_cert.pem"
   File.write dest, cert.to_pem
+
+  next unless cert_32
 
   dest = File.join base_dir, "#{name}_cert_32.pem"
   File.write dest, cert_32.to_pem

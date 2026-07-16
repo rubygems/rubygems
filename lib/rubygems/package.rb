@@ -129,13 +129,30 @@ class Gem::Package
   # Permission for other files
   attr_accessor :data_mode
 
-  def self.build(spec, skip_validation = false, strict_validation = false, file_name = nil)
-    gem_file = file_name || spec.file_name
-
-    package = new gem_file
+  def self.build_content_addressable_file(spec, skip_validation, strict_validation)
+    require "digest"
+    require "stringio"
+    io = StringIO.new
+    package = new io
     package.spec = spec
     package.build skip_validation, strict_validation
+    bytes = io.string
+    gem_file = "#{spec.name}-#{spec.version}-#{Digest::SHA256.hexdigest(bytes)[0, 10]}.gem"
+    File.binwrite(gem_file, bytes)
+    package.say "  File: #{gem_file}"
+    gem_file
+  end
 
+  def self.build(spec, skip_validation = false, strict_validation = false, file_name = nil)
+    if file_name.nil? && spec.content_addressable?
+      gem_file = build_content_addressable_file(spec, skip_validation, strict_validation)
+    else
+      gem_file = file_name || spec.file_name
+
+      package = new gem_file
+      package.spec = spec
+      package.build skip_validation, strict_validation
+    end
     gem_file
   end
 
@@ -315,12 +332,14 @@ class Gem::Package
       end
     end
 
-    say <<-EOM
+    message = <<-EOM
   Successfully built RubyGem
   Name: #{@spec.name}
   Version: #{@spec.version}
-  File: #{File.basename @gem.path}
 EOM
+
+    message += "  File: #{File.basename(@gem.path)}\n" if @gem.path
+    say message
   ensure
     @signer = nil
   end

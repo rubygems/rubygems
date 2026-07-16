@@ -236,6 +236,66 @@ class TestGemPackage < Gem::Package::TarTestCase
     assert_equal [{ "lib/code_sym.rb" => "code.rb" }, { "lib/code_sym2.rb" => "../lib/code.rb" }], symlinks
   end
 
+  def test_content_addressable_spec_creates_content_addressed_file
+    spec = Gem::Specification.new "platformed", "1"
+    spec.summary = "platformed"
+    spec.authors = "platformed"
+    spec.files = ["lib/code.rb"]
+    spec.platform = "arm64-darwin"
+    spec.required_ruby_version = Gem::Requirement.new("~> 3.4.0")
+
+    FileUtils.mkdir "lib"
+
+    File.open "lib/code.rb", "w" do |io|
+      io.write "# lib/code.rb"
+    end
+
+    built_file = Gem::Package.build(spec)
+
+    assert_path_not_exist spec.file_name
+    assert_path_exist built_file
+    assert_match(/\Aplatformed-1-[0-9a-f]{10}\.gem\z/, built_file)
+  end
+
+  def test_non_content_addressable_spec_creates_non_content_addressed_file
+    spec = Gem::Specification.new "non-platformed", "1"
+    spec.summary = "non-platformed"
+    spec.authors = "non-platformed"
+    spec.files = ["lib/code.rb"]
+    spec.required_ruby_version = Gem::Requirement.new("~> 3.4")
+
+    FileUtils.mkdir "lib"
+
+    File.open "lib/code.rb", "w" do |io|
+      io.write "# lib/code.rb"
+    end
+
+    built_file = Gem::Package.build(spec)
+
+    assert_path_exist built_file
+    assert_equal("non-platformed-1.gem", built_file)
+  end
+
+  def test_explicit_output_keeps_requested_filename
+    spec = Gem::Specification.new "explicit", "1"
+    spec.summary = "explicit"
+    spec.authors = "explicit"
+    spec.files = ["lib/code.rb"]
+    spec.platform = "arm64-darwin"
+    spec.required_ruby_version = Gem::Requirement.new("~> 3.4.0")
+
+    FileUtils.mkdir "lib"
+
+    File.open "lib/code.rb", "w" do |io|
+      io.write "# lib/code.rb"
+    end
+
+    built_file = Gem::Package.build(spec, false, false, "explicit-output.gem")
+
+    assert_path_exist built_file
+    assert_equal("explicit-output.gem", built_file)
+  end
+
   def test_build
     spec = Gem::Specification.new "build", "1"
     spec.summary = "build"

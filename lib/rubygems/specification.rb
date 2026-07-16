@@ -557,6 +557,32 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   ##
+  # True for platformed gems pinned to a single Ruby ABI
+
+  def content_addressable?
+    return false if platform.nil? || platform == Gem::Platform::RUBY
+
+    !content_addressable_ruby_abi.nil?
+  end
+
+  ##
+  # Helper that returns e.g. "3.3" or nil derived from required_ruby_version
+  # Only supports required_ruby_version in "~> 3.4.0" format for now
+  # Returns nil if the required_ruby_version does not specify a single Ruby ABI
+
+  def content_addressable_ruby_abi
+    return nil if required_ruby_version.nil?
+
+    requirements = required_ruby_version.requirements
+    return nil if requirements.size != 1
+
+    op, version = requirements.first
+    return nil if op != "~>" || version.segments.size != 3
+
+    version.segments[0..1].join(".")
+  end
+
+  ##
   # Executables included in the gem.
   #
   # For example, the rake gem has rake as an executable. You don't specify the

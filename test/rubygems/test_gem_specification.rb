@@ -1907,6 +1907,57 @@ dependencies: []
     assert_equal expected, @a1.full_gem_path
   end
 
+  def test_content_addressable_returns_true_for_platformed_gem_pinned_to_single_ruby_abi
+    spec = Gem::Specification.new
+    spec.required_ruby_version = "~> 3.4.0"
+    spec.platform = "arm64-darwin"
+    assert spec.content_addressable?
+  end
+
+  def test_content_addressable_returns_false_for_non_platformed_gem_pinned_to_single_ruby_abi
+    spec = Gem::Specification.new
+    spec.required_ruby_version = "~> 3.4.0"
+    spec.platform = Gem::Platform::RUBY
+    refute spec.content_addressable?
+  end
+
+  def test_content_addressable_returns_false_for_platformed_gem_not_pinned_to_single_ruby_abi
+    spec = Gem::Specification.new
+    spec.required_ruby_version = ["~> 3.4.0", "~> 3.5.0"]
+    spec.platform = "arm64-darwin"
+    refute spec.content_addressable?
+  end
+
+  def test_ruby_abi_derived_from_required_ruby_version
+    spec = Gem::Specification.new
+    spec.required_ruby_version = "~> 3.4.0"
+    assert_equal "3.4", spec.content_addressable_ruby_abi
+  end
+
+  def test_ruby_abi_returns_nil_for_pessimistic_requirement_without_patch_segment
+    spec = Gem::Specification.new
+    spec.required_ruby_version = "~> 3.4"
+    assert_nil spec.content_addressable_ruby_abi
+  end
+
+  def test_ruby_abi_returns_nil_for_non_single_ruby_abi_requirement
+    spec = Gem::Specification.new
+    spec.required_ruby_version = ["< 3.4", ">= 3.2"]
+    assert_nil spec.content_addressable_ruby_abi
+  end
+
+  def test_ruby_abi_returns_nil_for_non_single_ruby_abi_requirement_with_dev_version
+    spec = Gem::Specification.new
+    spec.required_ruby_version = "~> 3.4.0.dev"
+    assert_nil spec.content_addressable_ruby_abi
+  end
+
+  def test_ruby_abi_returns_nil_for_non_pessimistic_operator
+    spec = Gem::Specification.new
+    spec.required_ruby_version = ">= 3.4.0"
+    assert_nil spec.content_addressable_ruby_abi
+  end
+
   def test_full_name
     assert_equal "a-1", @a1.full_name
 

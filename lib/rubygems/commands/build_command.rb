@@ -25,6 +25,10 @@ class Gem::Commands::BuildCommand < Gem::Command
     add_option "-o", "--output FILE", "output gem with the given filename" do |value, options|
       options[:output] = value
     end
+
+    add_option "--ruby-abi RUBY_ABI", "build a content addressable gem for the given Ruby ABI" do |value, options|
+      options[:ruby_abi] = value
+    end
   end
 
   def arguments # :nodoc:
@@ -51,6 +55,10 @@ with gem spec:
 Gems can be saved to a specified filename with the output option:
 
   $ gem build my_gem-1.0.gemspec --output=release.gem
+
+Platform gems can be built for a single Ruby ABI with the --ruby-abi option:
+
+  $ gem build my_gem-1.0.gemspec --ruby-abi=3.4
 
     EOF
   end
@@ -88,7 +96,8 @@ Gems can be saved to a specified filename with the output option:
         spec,
         options[:force],
         options[:strict],
-        options[:output]
+        options[:output],
+        options[:ruby_abi]
       )
     else
       alert_error "Error loading gemspec. Aborting."

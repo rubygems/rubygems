@@ -133,6 +133,7 @@ class Gem::Package
     require "digest"
     require "stringio"
     io = StringIO.new
+    io.set_encoding(Encoding::BINARY)
     package = new io
     package.spec = spec
     package.build skip_validation, strict_validation
@@ -143,8 +144,28 @@ class Gem::Package
     gem_file
   end
 
-  def self.build(spec, skip_validation = false, strict_validation = false, file_name = nil)
-    if file_name.nil? && spec.content_addressable?
+  def self.validate_or_apply_ruby_abi(spec, ruby_abi)
+    unless /\A\d+\.\d+\z/.match?(ruby_abi)
+      raise ArgumentError, "Ruby ABI must be in X.Y format"
+    end
+
+    if spec.platform.nil? || spec.platform == Gem::Platform::RUBY
+      raise ArgumentError, "Cannot build a gem scoped to a single Ruby ABI as no platform or a Ruby platform has been set"
+    end
+
+    if spec.required_ruby_version.nil? || spec.required_ruby_version == Gem::Requirement.default
+      spec.required_ruby_version = Gem::Requirement.new("~> #{ruby_abi}.0")
+    elsif spec.content_addressable_ruby_abi != ruby_abi
+      raise ArgumentError, "Cannot build a gem scoped to a single Ruby ABI as the required_ruby_version is already set to #{spec.required_ruby_version} which does not match the requested Ruby ABI #{ruby_abi}"
+    end
+  end
+
+  def self.build(spec, skip_validation = false, strict_validation = false, file_name = nil, ruby_abi = nil)
+    if ruby_abi && file_name
+      raise ArgumentError, "Cannot specify both a Ruby ABI and an output file name because content addressable gems must use the generated file name."
+    end
+    if ruby_abi
+      validate_or_apply_ruby_abi(spec, ruby_abi)
       gem_file = build_content_addressable_file(spec, skip_validation, strict_validation)
     else
       gem_file = file_name || spec.file_name

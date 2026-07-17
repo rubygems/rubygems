@@ -43,6 +43,41 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     assert_includes Gem.platforms, Gem::Platform.local
   end
 
+  def test_options_ruby_abi
+    gem = util_spec "platformed_gem" do |s|
+      s.license = "AGPL-3.0-only"
+      s.files = ["README.md"]
+      s.platform = "arm64-darwin"
+      s.required_ruby_version = "~> 3.4.0"
+    end
+
+    gemspec_file = File.join(@tempdir, gem.spec_name)
+
+    File.open gemspec_file, "w" do |gs|
+      gs.write gem.to_ruby
+    end
+
+    @cmd.handle_options [gemspec_file, "--ruby-abi", "3.4"]
+    assert_equal "3.4", @cmd.options[:ruby_abi]
+
+    use_ui @ui do
+      Dir.chdir @tempdir do
+        @cmd.execute
+      end
+    end
+
+    files = Dir[File.join(@tempdir, "platformed_gem-2-*.gem")]
+    assert_equal 1, files.size
+    assert_match(/\Aplatformed_gem-2-[0-9a-f]{10}\.gem\z/, File.basename(files.first))
+
+    output = @ui.output.split "\n"
+    assert_equal "  Successfully built RubyGem", output.shift
+    assert_equal "  Name: platformed_gem", output.shift
+    assert_equal "  Version: 2", output.shift
+    assert_match(/\A  File: platformed_gem-2-[0-9a-f]{10}\.gem\z/, output.shift)
+    assert_equal [], output
+  end
+
   def test_options_filename
     gemspec_file = File.join(@tempdir, @gem.spec_name)
 
@@ -76,6 +111,7 @@ class TestGemCommandsBuildCommand < Gem::TestCase
     refute @cmd.options[:force]
     refute @cmd.options[:strict]
     assert_nil @cmd.options[:output]
+    assert_nil @cmd.options[:ruby_abi]
   end
 
   def test_execute

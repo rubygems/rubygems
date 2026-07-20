@@ -1005,6 +1005,100 @@ class TestGemPackage < Gem::Package::TarTestCase
                  e.message
   end
 
+  def test_verify_checksum_bad_algorithm
+    data_tgz = util_tar_gz do |tar|
+      tar.add_file "lib/code.rb", 0o444 do |io|
+        io.write "# lib/code.rb"
+      end
+    end
+
+    data_tgz = data_tgz.string
+
+    gem = util_tar do |tar|
+      metadata_gz = Gem::Util.gzip @spec.to_yaml
+
+      tar.add_file "metadata.gz", 0o444 do |io|
+        io.write metadata_gz
+      end
+
+      tar.add_file "data.tar.gz", 0o444 do |io|
+        io.write data_tgz
+      end
+
+      bad_checksums = {
+        "this-is-not-a-digest-name" => {
+          "data.tar.gz" => "0",
+          "metadata.gz" => "0",
+        },
+      }
+      tar.add_file "checksums.yaml.gz", 0o444 do |io|
+        Zlib::GzipWriter.wrap io do |gz_io|
+          if Gem.use_psych?
+            gz_io.write Psych.dump(bad_checksums)
+          else
+            gz_io.write Gem::YAMLSerializer.dump(bad_checksums)
+          end
+        end
+      end
+    end
+
+    File.open "bad_algorithm.gem", "wb" do |io|
+      io.write gem.string
+    end
+
+    package = Gem::Package.new "bad_algorithm.gem"
+
+    capture_output do
+      assert_raise Gem::Package::FormatError do
+        package.verify
+      end
+    end
+  end
+
+  def test_verify_checksums_not_a_mapping
+    data_tgz = util_tar_gz do |tar|
+      tar.add_file "lib/code.rb", 0o444 do |io|
+        io.write "# lib/code.rb"
+      end
+    end
+
+    data_tgz = data_tgz.string
+
+    gem = util_tar do |tar|
+      metadata_gz = Gem::Util.gzip @spec.to_yaml
+
+      tar.add_file "metadata.gz", 0o444 do |io|
+        io.write metadata_gz
+      end
+
+      tar.add_file "data.tar.gz", 0o444 do |io|
+        io.write data_tgz
+      end
+
+      tar.add_file "checksums.yaml.gz", 0o444 do |io|
+        Zlib::GzipWriter.wrap io do |gz_io|
+          gz_io.write "just a string, not a mapping\n"
+        end
+      end
+    end
+
+    File.open "checksums_not_a_mapping.gem", "wb" do |io|
+      io.write gem.string
+    end
+
+    package = Gem::Package.new "checksums_not_a_mapping.gem"
+
+    e = nil
+    capture_output do
+      e = assert_raise Gem::Package::FormatError do
+        package.verify
+      end
+    end
+
+    assert_equal "corrupt checksums.yaml.gz in checksums_not_a_mapping.gem",
+                 e.message
+  end
+
   def test_verify_checksum_missing
     data_tgz = util_tar_gz do |tar|
       tar.add_file "lib/code.rb", 0o444 do |io|

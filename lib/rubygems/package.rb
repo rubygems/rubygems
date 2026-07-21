@@ -366,7 +366,11 @@ EOM
 
       @checksums.to_h do |algorithm, _|
         [algorithm, Gem::Security.create_digest(algorithm)]
-      rescue OpenSSL::Digest::DigestError => e
+      rescue StandardError => e
+        # The algorithm name comes from the gem's own checksums.yaml.gz, so an
+        # unusable one means the gem is malformed rather than that something
+        # went wrong on our side.  OpenSSL raises RuntimeError for an unknown
+        # digest name, and the class differs across engines, so match broadly.
         raise Gem::Package::FormatError.new e.message, @gem
       end
     elsif Gem::Security::DIGEST_NAME

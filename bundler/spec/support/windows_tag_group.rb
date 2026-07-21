@@ -191,6 +191,8 @@ module Spec
         "spec/bundler/fetcher/gem_remote_fetcher_spec.rb",
         "spec/bundler/uri_normalizer_spec.rb",
         "spec/bundler/fetcher/gem_remote_fetcher_local_ssl_server_spec.rb",
+        "spec/bundler/plugin/unloaded_source_spec.rb",
+        "spec/bundler/cli/open_spec.rb",
       ],
     }.freeze
   end

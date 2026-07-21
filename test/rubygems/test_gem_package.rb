@@ -1005,6 +1005,75 @@ class TestGemPackage < Gem::Package::TarTestCase
                  e.message
   end
 
+  def test_verify_checksums_unknown_algorithm
+    gem = util_gem_with_checksums "notanalgo" => { "data.tar.gz" => "bogus" }
+
+    File.open "unknown_algorithm.gem", "wb" do |io|
+      io.write gem.string
+    end
+
+    package = Gem::Package.new "unknown_algorithm.gem"
+
+    e = nil
+    capture_output do
+      e = assert_raise Gem::Package::FormatError do
+        package.verify
+      end
+    end
+
+    assert_match "unsupported digest algorithm", e.message
+  end
+
+  def test_verify_checksums_not_a_mapping
+    gem = util_gem_with_checksums %w[not a mapping]
+
+    File.open "checksums_list.gem", "wb" do |io|
+      io.write gem.string
+    end
+
+    package = Gem::Package.new "checksums_list.gem"
+
+    e = nil
+    capture_output do
+      e = assert_raise Gem::Package::FormatError do
+        package.verify
+      end
+    end
+
+    assert_match "checksums.yaml.gz is not a mapping", e.message
+  end
+
+  def util_gem_with_checksums(checksums)
+    data_tgz = util_tar_gz do |tar|
+      tar.add_file "lib/code.rb", 0o444 do |io|
+        io.write "# lib/code.rb"
+      end
+    end
+
+    data_tgz = data_tgz.string
+
+    util_tar do |tar|
+      tar.add_file "metadata.gz", 0o444 do |io|
+        io.write Gem::Util.gzip(@spec.to_yaml)
+      end
+
+      tar.add_file "data.tar.gz", 0o444 do |io|
+        io.write data_tgz
+      end
+
+      tar.add_file "checksums.yaml.gz", 0o444 do |io|
+        Zlib::GzipWriter.wrap io do |gz_io|
+          if Gem.use_psych?
+            gz_io.write Psych.dump(checksums)
+          else
+            gz_io.write Gem::YAMLSerializer.dump(checksums)
+          end
+        end
+      end
+    end
+  end
+
+
   def test_verify_checksum_missing
     data_tgz = util_tar_gz do |tar|
       tar.add_file "lib/code.rb", 0o444 do |io|

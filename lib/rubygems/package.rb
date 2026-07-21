@@ -360,7 +360,15 @@ EOM
 
   def digest(entry) # :nodoc:
     algorithms = if @checksums
-      @checksums.to_h {|algorithm, _| [algorithm, Gem::Security.create_digest(algorithm)] }
+      unless @checksums.is_a?(Hash)
+        raise Gem::Package::FormatError.new "checksums.yaml.gz is not a mapping", @gem
+      end
+
+      @checksums.to_h do |algorithm, _|
+        [algorithm, Gem::Security.create_digest(algorithm)]
+      rescue OpenSSL::Digest::DigestError => e
+        raise Gem::Package::FormatError.new e.message, @gem
+      end
     elsif Gem::Security::DIGEST_NAME
       { Gem::Security::DIGEST_NAME => Gem::Security.create_digest(Gem::Security::DIGEST_NAME) }
     end

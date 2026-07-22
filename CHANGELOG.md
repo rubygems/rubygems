@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.17 / 2026-07-22
+
+### Enhancements:
+
+* Validate spec name before writing to the spec cache. Pull request [#9690](https://github.com/ruby/rubygems/pull/9690) by hsbt
+* Installs bundler 4.0.17 as a default gem.
+
+### Bug fixes:
+
+* Unquote Gem.ruby when spawning it as a separate argv element. Pull request [#9695](https://github.com/ruby/rubygems/pull/9695) by hsbt
+* Escape glob metacharacters in install paths when globbing. Pull request [#9687](https://github.com/ruby/rubygems/pull/9687) by hsbt
+* Preserve Windows editor paths in gem open and bundle open. Pull request [#9694](https://github.com/ruby/rubygems/pull/9694) by hsbt
+* Preserve Windows paths in MAKE and rake environment variables. Pull request [#9693](https://github.com/ruby/rubygems/pull/9693) by hsbt
+* Fix `bundle` binstub broken by `gem update --system` on Homebrew ruby. Pull request [#9688](https://github.com/ruby/rubygems/pull/9688) by hsbt
+
 ## 4.0.16 / 2026-07-10
 
 ### Enhancements:

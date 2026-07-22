@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.0.17 / 2026-07-22
+
+### Enhancements:
+
+* Open compact index cache in binary mode when appending. Pull request [#9679](https://github.com/ruby/rubygems/pull/9679) by hsbt
+
+### Bug fixes:
+
+* Unquote Gem.ruby when spawning it as a separate argv element. Pull request [#9695](https://github.com/ruby/rubygems/pull/9695) by hsbt
+* Escape glob metacharacters in install paths when globbing. Pull request [#9687](https://github.com/ruby/rubygems/pull/9687) by hsbt
+* Avoid space-containing absolute path in RUBYOPT. Pull request [#9696](https://github.com/ruby/rubygems/pull/9696) by hsbt
+* Preserve the locked Bundler checksum when the gem isn't cached. Pull request [#9658](https://github.com/ruby/rubygems/pull/9658) by rwstauner
+
+### Documentation:
+
+* Point Bundler gemspec metadata at the moved docs. Pull request [#9648](https://github.com/ruby/rubygems/pull/9648) by hsbt
+
 ## 4.0.16 / 2026-07-10
 
 ### Enhancements:

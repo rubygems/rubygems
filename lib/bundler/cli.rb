@@ -758,9 +758,6 @@ module Bundler
       config[:current_command] = original_command
     end
 
-    def current_command=(command)
-    end
-
     def print_command
       return unless Bundler.ui.debug?
       cmd = current_command

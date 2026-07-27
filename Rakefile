@@ -293,20 +293,30 @@ namespace "guides" do
   end
 
   task "update" => %w[tmp/guides.rubygems.org] do
-    lib_dir = File.join Dir.pwd, "lib"
+    rubygems_dir = Dir.pwd
+    env = {
+      "BUNDLE_GEMFILE" => nil,
+      "RUBYOPT" => "--disable-gems -I#{File.join(rubygems_dir, "lib")}",
+      "RUBYGEMS_DIR" => rubygems_dir,
+    }
 
     chdir "tmp/guides.rubygems.org" do
-      ruby "-I", lib_dir, "-S", "rake", "-N", "command_guide"
-      ruby "-I", lib_dir, "-S", "rake", "-N", "spec_guide"
+      sh env, "bundle", "install"
+      sh env, "bundle", "exec", "rake", "command_reference"
+      sh env, "bundle", "exec", "rake", "spec_guide"
+
+      # `bundle install` may rewrite the lockfile (BUNDLED WITH), which would
+      # leave the checkout dirty and break future pulls
+      sh "git", "checkout", "--", "Gemfile.lock"
     end
   end
 
   task "commit" => %w[tmp/guides.rubygems.org] do
     chdir "tmp/guides.rubygems.org" do
-      sh "git", "diff", "--quiet"
+      sh "git", "add", "command-reference.md", "specification-reference.md", "command-reference"
+      sh "git", "diff", "--cached", "--quiet"
     rescue StandardError
-      sh "git", "commit", "command-reference.md", "specification-reference.md",
-         "-m", "Rebuild for RubyGems #{v}"
+      sh "git", "commit", "-m", "Rebuild for RubyGems #{v}"
     end
   end
 

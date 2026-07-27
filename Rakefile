@@ -754,7 +754,7 @@ namespace :bundler do
   task "build" => ["bundler:release:check_ruby_version"]
 
   desc "Push to rubygems.org"
-  task "release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "check_release_preparations"]
+  task "release:rubygem_push" => ["man:check", "bundler:build_metadata"]
 
   desc "Generates the Bundler changelog for a specific target version"
   task :generate_changelog, [:version] => [:install_release_dependencies] do |_t, opts|
@@ -762,11 +762,6 @@ namespace :bundler do
   end
 
   namespace :release do
-    desc "Install gems needed for releasing"
-    task :setup do
-      Release.install_dependencies!
-    end
-
     task :check_ruby_version do
       raise "bundler:build need to released Ruby for using nokogiri" if RUBY_PATCHLEVEL.to_i < 0
     end

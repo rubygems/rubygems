@@ -15,7 +15,7 @@ class Release
   module SubRelease
     include GithubAPI
 
-    attr_reader :version, :changelog, :version_files, :tag_prefix
+    attr_reader :version, :changelog, :version_files
 
     def cut_changelog_for!(pull_requests)
       set_relevant_pull_requests_from(pull_requests)
@@ -37,26 +37,17 @@ class Release
       end
     end
 
-    def create_for_github!
-      tag = "#{@tag_prefix}#{@version}"
-
-      options = {
-        name: tag,
-        body: @changelog.release_notes.join("\n").strip,
-        prerelease: @version.prerelease?,
-      }
-      options[:target_commitish] = @stable_branch unless @version.prerelease?
-
-      gh_client.create_release "ruby/rubygems", tag, **options
-    end
-
     def previous_version
-      @previous_version ||= remove_tag_prefix(latest_release.tag_name)
+      @previous_version ||= latest_release.tag_name.delete_prefix("v")
     end
 
+    # RubyGems and Bundler are versioned in lockstep and share a single
+    # unified `v`-prefixed release, so both sub-releases derive their previous
+    # version from it. The `bundler-v` tags from older releases don't match
+    # the `v` prefix and are ignored.
     def latest_release
-      @latest_release ||= gh_client.releases("ruby/rubygems").select {|release| release.tag_name.start_with?(@tag_prefix) }.max_by do |release|
-        Gem::Version.new(remove_tag_prefix(release.tag_name))
+      @latest_release ||= gh_client.releases("ruby/rubygems").select {|release| release.tag_name.start_with?("v") }.max_by do |release|
+        Gem::Version.new(release.tag_name.delete_prefix("v"))
       end
     end
 
@@ -65,23 +56,15 @@ class Release
     def set_relevant_pull_requests_from(pulls)
       @relevant_pull_requests = pulls.select {|pull| @changelog.relevant_label_for(pull) }
     end
-
-    private
-
-    def remove_tag_prefix(name)
-      name.gsub(/^#{@tag_prefix}/, "")
-    end
   end
 
   class Bundler
     include SubRelease
 
-    def initialize(version, stable_branch)
+    def initialize(version)
       @version = Gem::Version.new(version)
-      @stable_branch = stable_branch
       @changelog = Changelog.for_bundler(version)
       @version_files = [File.expand_path("../bundler/lib/bundler/version.rb", __dir__)]
-      @tag_prefix = "bundler-v"
     end
 
     def extra_entry
@@ -92,12 +75,10 @@ class Release
   class Rubygems
     include SubRelease
 
-    def initialize(version, stable_branch)
+    def initialize(version)
       @version = Gem::Version.new(version)
-      @stable_branch = stable_branch
       @changelog = Changelog.for_rubygems(version)
       @version_files = [File.expand_path("../lib/rubygems.rb", __dir__)]
-      @tag_prefix = "v"
     end
 
     def extra_entry
@@ -159,10 +140,10 @@ class Release
     @last_release_tag = @level == :patch ? "v#{@stable_branch}.#{segments[2] - 1}" : @previous_release_tag
 
     rubygems_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
-    @rubygems = Rubygems.new(rubygems_version, @stable_branch)
+    @rubygems = Rubygems.new(rubygems_version)
 
     bundler_version = segments.join(".").gsub(/([a-z])\.(\d)/i, '\1\2')
-    @bundler = Bundler.new(bundler_version, @stable_branch)
+    @bundler = Bundler.new(bundler_version)
 
     @release_branch = "release/#{version}"
   end
@@ -378,8 +359,29 @@ class Release
     @current_library.cut_changelog_for!(unreleased_pull_requests)
   end
 
+  # Creates the single GitHub release covering both RubyGems and Bundler,
+  # attached to the unified v#{version} tag.
   def create_for_github!
-    @current_library.create_for_github!
+    tag = "v#{@rubygems.version}"
+
+    body = <<~BODY.strip
+      ## RubyGems #{@rubygems.version}
+
+      #{@rubygems.changelog.release_notes.join("\n").strip}
+
+      ## Bundler #{@bundler.version}
+
+      #{@bundler.changelog.release_notes.join("\n").strip}
+    BODY
+
+    options = {
+      name: tag,
+      body: body,
+      prerelease: @prerelease,
+    }
+    options[:target_commitish] = @stable_branch unless @prerelease
+
+    gh_client.create_release "ruby/rubygems", tag, **options
   end
 
   private

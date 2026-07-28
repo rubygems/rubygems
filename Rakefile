@@ -385,7 +385,7 @@ end
 
 directory "tmp/blog.rubygems.org" do
   sh "git", "clone",
-    "https://github.com/rubygems/rubygems.github.io.git",
+    "https://github.com/rubygems/blog.git",
      "tmp/blog.rubygems.org"
 end
 

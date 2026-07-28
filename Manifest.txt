@@ -391,6 +391,8 @@ lib/rubygems/compact_index_client/http_fetcher.rb
 lib/rubygems/compact_index_client/parser.rb
 lib/rubygems/compact_index_client/updater.rb
 lib/rubygems/config_file.rb
+lib/rubygems/cooldown.rb
+lib/rubygems/cooldown_option.rb
 lib/rubygems/core_ext/kernel_gem.rb
 lib/rubygems/core_ext/kernel_require.rb
 lib/rubygems/core_ext/kernel_warn.rb

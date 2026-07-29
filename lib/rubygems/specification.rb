@@ -407,6 +407,8 @@ class Gem::Specification < Gem::BasicSpecification
 
   attr_accessor :metadata
 
+  attr_accessor :content_address # :nodoc:
+
   ######################################################################
   # :section: Optional gemspec attributes
 
@@ -1342,7 +1344,8 @@ class Gem::Specification < Gem::BasicSpecification
     self.class === other &&
       name == other.name &&
       version == other.version &&
-      platform == other.platform
+      platform == other.platform &&
+      content_address == other.content_address
   end
 
   ##
@@ -1913,7 +1916,7 @@ class Gem::Specification < Gem::BasicSpecification
   # :startdoc:
 
   def hash # :nodoc:
-    name.hash ^ version.hash
+    [name, version, platform, content_address].hash
   end
 
   def init_with(coder) # :nodoc:
@@ -1949,6 +1952,7 @@ class Gem::Specification < Gem::BasicSpecification
     @loaded_from = nil
     @original_platform = nil
     @installed_by_version = nil
+    @content_address = nil
 
     set_nil_attributes_to_nil
     set_not_nil_attributes_to_default_values
@@ -2269,7 +2273,8 @@ class Gem::Specification < Gem::BasicSpecification
   # True if this gem has the same attributes as +other+.
 
   def same_attributes?(spec)
-    @@attributes.all? {|name, _default| send(name) == spec.send(name) }
+    @@attributes.all? {|name, _default| send(name) == spec.send(name) } &&
+      content_address == spec.content_address
   end
 
   private :same_attributes?
@@ -2368,9 +2373,11 @@ class Gem::Specification < Gem::BasicSpecification
   # still have their default values are omitted.
 
   def to_ruby
+    gem_suffix = content_addressable? ? content_address : platform
     result = []
     result << "# -*- encoding: utf-8 -*-"
-    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{platform} #{raw_require_paths.join("\0")}"
+    result << "#{Gem::StubSpecification::PREFIX}#{name} #{version} #{gem_suffix} #{raw_require_paths.join("\0")}"
+    result << "#{Gem::StubSpecification::TARGET_PREFIX}platform=#{platform}" if content_addressable?
     result << "#{Gem::StubSpecification::PREFIX}#{extensions.join "\0"}" unless
       extensions.empty?
     result << nil
@@ -2381,6 +2388,7 @@ class Gem::Specification < Gem::BasicSpecification
     unless platform.nil? || platform == Gem::Platform::RUBY
       result << "  s.platform = #{ruby_code original_platform}"
     end
+    result << "  s.content_address = #{ruby_code content_address}" if content_addressable?
     result << ""
     result << "  s.required_rubygems_version = #{ruby_code required_rubygems_version} if s.respond_to? :required_rubygems_version="
 

@@ -366,11 +366,13 @@ EOM
 
       @checksums.to_h do |algorithm, _|
         [algorithm, Gem::Security.create_digest(algorithm)]
-      rescue StandardError => e
+      rescue StandardError, NotImplementedError => e
         # The algorithm name comes from the gem's own checksums.yaml.gz, so an
         # unusable one means the gem is malformed rather than that something
-        # went wrong on our side.  OpenSSL raises RuntimeError for an unknown
-        # digest name, and the class differs across engines, so match broadly.
+        # went wrong on our side.  The error class differs across engines: CRuby
+        # raises RuntimeError for an unknown digest name, jruby-openssl raises
+        # NotImplementedError, which is a ScriptError and not covered by a bare
+        # StandardError rescue.
         raise Gem::Package::FormatError.new e.message, @gem
       end
     elsif Gem::Security::DIGEST_NAME

@@ -7,7 +7,7 @@ Code needs explanation, and sometimes those who know the code well have trouble 
 Documentation for RubyGems and Bundler is managed in two places:
 
 - **Guides and tutorials**: [RubyGems Guides](https://guides.rubygems.org/) — hosted in the [rubygems/guides](https://github.com/rubygems/guides) repository
-- **Bundler CLI man pages**: Built from `.ronn` files in `lib/bundler/man/` in this repository and published to [bundler.io](https://bundler.io)
+- **Bundler CLI man pages**: Built from `.ronn` files in `lib/bundler/man/` in this repository and published as the [Bundler command reference](https://guides.rubygems.org/command-reference/bundle/) on RubyGems Guides
 
 All documentation other than Bundler command man pages — including guides, tutorials, and reference material for both RubyGems and Bundler — should be contributed to the [rubygems/guides](https://github.com/rubygems/guides) repository.
 
@@ -98,7 +98,7 @@ $ man ./lib/bundler/man/bundle-cookies.1
 
 If you make more changes to `bundle-cookies.1.ronn`, you'll need to run the `bin/rake man:build` again before previewing.
 
-The [Bundler documentation site](https://bundler.io) is automatically generated from these `.ronn` files.
+The [Bundler command reference](https://guides.rubygems.org/command-reference/bundle/) on RubyGems Guides is generated from these `.ronn` files by the `bundler_reference` task in the [rubygems/guides](https://github.com/rubygems/guides) repository, and republished when RubyGems is released.
 
 ### Testing
 

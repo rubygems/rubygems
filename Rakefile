@@ -290,7 +290,7 @@ desc "Upload the release to GitHub releases"
 task :upload_to_github do
   require_relative "tool/release"
 
-  Release.for_rubygems(v).create_for_github!
+  Release.new(v.to_s).create_for_github!
 end
 
 desc "Upload release to S3"
@@ -335,20 +335,30 @@ namespace "guides" do
   end
 
   task "update" => %w[tmp/guides.rubygems.org] do
-    lib_dir = File.join Dir.pwd, "lib"
+    rubygems_dir = Dir.pwd
+    env = {
+      "BUNDLE_GEMFILE" => nil,
+      "RUBYOPT" => "--disable-gems -I#{File.join(rubygems_dir, "lib")}",
+      "RUBYGEMS_DIR" => rubygems_dir,
+    }
 
     chdir "tmp/guides.rubygems.org" do
-      ruby "-I", lib_dir, "-S", "rake", "-N", "command_guide"
-      ruby "-I", lib_dir, "-S", "rake", "-N", "spec_guide"
+      sh env, "bundle", "install"
+      sh env, "bundle", "exec", "rake", "command_reference"
+      sh env, "bundle", "exec", "rake", "spec_guide"
+
+      # `bundle install` may rewrite the lockfile (BUNDLED WITH), which would
+      # leave the checkout dirty and break future pulls
+      sh "git", "checkout", "--", "Gemfile.lock"
     end
   end
 
   task "commit" => %w[tmp/guides.rubygems.org] do
     chdir "tmp/guides.rubygems.org" do
-      sh "git", "diff", "--quiet"
+      sh "git", "add", "command-reference.md", "specification-reference.md", "command-reference"
+      sh "git", "diff", "--cached", "--quiet"
     rescue StandardError
-      sh "git", "commit", "command-reference.md", "specification-reference.md",
-         "-m", "Rebuild for RubyGems #{v}"
+      sh "git", "commit", "-m", "Rebuild for RubyGems #{v}"
     end
   end
 
@@ -375,7 +385,7 @@ end
 
 directory "tmp/blog.rubygems.org" do
   sh "git", "clone",
-    "https://github.com/rubygems/rubygems.github.io.git",
+    "https://github.com/rubygems/blog.git",
      "tmp/blog.rubygems.org"
 end
 
@@ -727,7 +737,13 @@ namespace :bundler do
   require_relative "spec/support/build_metadata"
   require_relative "tool/release"
 
-  Bundler::GemHelper.tag_prefix = "bundler-"
+  # The rubygems release task tags the release as v#{version} and creates the
+  # single GitHub release covering both RubyGems and Bundler, so bundler's
+  # release must not tag or create a GitHub release of its own. Drop the
+  # release:source_control_push prerequisite that would add a bundler-v tag.
+  Rake::Task["bundler:release"].clear
+  desc "Push bundler-#{Bundler::GemHelper.gemspec.version}.gem to rubygems.org"
+  task release: ["build", "release:guard_clean", "release:rubygem_push"]
 
   desc "Write build metadata file in preparation for release"
   task :build_metadata do
@@ -748,7 +764,7 @@ namespace :bundler do
   task "build" => ["bundler:release:check_ruby_version"]
 
   desc "Push to rubygems.org"
-  task "release:rubygem_push" => ["bundler:release:setup", "man:check", "bundler:build_metadata", "check_release_preparations", "bundler:release:github"]
+  task "release:rubygem_push" => ["man:check", "bundler:build_metadata"]
 
   desc "Generates the Bundler changelog for a specific target version"
   task :generate_changelog, [:version] => [:install_release_dependencies] do |_t, opts|
@@ -756,18 +772,6 @@ namespace :bundler do
   end
 
   namespace :release do
-    desc "Install gems needed for releasing"
-    task :setup do
-      Release.install_dependencies!
-    end
-
-    desc "Push the release to GitHub releases"
-    task :github do
-      gemspec_version = Bundler::GemHelper.gemspec.version
-
-      Release.for_bundler(gemspec_version).create_for_github!
-    end
-
     task :check_ruby_version do
       raise "bundler:build need to released Ruby for using nokogiri" if RUBY_PATCHLEVEL.to_i < 0
     end

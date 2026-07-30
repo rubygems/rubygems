@@ -63,10 +63,6 @@ module Bundler
         headers
       end
 
-      def etag_for_request(etag_path)
-        etag_path.read.tap(&:chomp!) if etag_path.file?
-      end
-
       def etag_from_response(response)
         return unless response["ETag"]
         etag = response["ETag"].delete_prefix("W/")

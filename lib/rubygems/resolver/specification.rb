@@ -73,6 +73,7 @@ class Gem::Resolver::Specification
     @version      = nil
     @required_ruby_version = Gem::Requirement.default
     @required_rubygems_version = Gem::Requirement.default
+    @content_address = nil
   end
 
   ##
@@ -80,6 +81,12 @@ class Gem::Resolver::Specification
   # default (see APISpecification).
 
   def fetch_development_dependencies # :nodoc:
+  end
+
+  attr_reader :content_address # :nodoc:
+
+  def content_addressable? # :nodoc:
+    Gem::BasicSpecification.content_address?(content_address)
   end
 
   ##

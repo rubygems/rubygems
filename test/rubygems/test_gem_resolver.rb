@@ -322,6 +322,67 @@ class TestGemResolver < Gem::TestCase
     assert_resolves_to [a2_p1.spec], res
   end
 
+  def test_prefers_content_addressed_gem_for_same_platform
+    ca_spec = util_spec "a", "1"
+    spec = util_spec "a", "1"
+
+    ca_spec.platform = Gem::Platform.local
+    ca_spec.content_address = "abc1234567"
+    spec.platform = Gem::Platform.local
+
+    s = set(spec, ca_spec)
+    dependency = make_dep "a"
+    resolver = Gem::Resolver.new([dependency], s)
+    assert_resolves_to [ca_spec], resolver
+  end
+
+  def test_falls_back_to_fat_when_content_addressed_gem_requires_other_rubygems_version
+    ca_spec = util_spec "a", "1"
+    fat_spec = util_spec "a", "1"
+
+    ca_spec.platform = Gem::Platform.local
+    ca_spec.content_address = "abc1234567"
+    ca_spec.required_rubygems_version = ">= 999"
+    fat_spec.platform = Gem::Platform.local
+
+    s = set(fat_spec, ca_spec)
+    dependency = make_dep "a"
+    resolver = Gem::Resolver.new([dependency], s)
+    assert_resolves_to [fat_spec], resolver
+  end
+
+  def test_falls_back_to_source_when_content_addressed_gem_requires_other_ruby
+    ca_spec = util_spec "a", "1"
+    source_spec = util_spec "a", "1"
+
+    ca_spec.platform = Gem::Platform.local
+    ca_spec.content_address = "abc1234567"
+    ca_spec.required_ruby_version = ">= 999"
+    source_spec.platform = Gem::Platform::RUBY
+
+    s = set(source_spec, ca_spec)
+    dependency = make_dep "a"
+    resolver = Gem::Resolver.new([dependency], s)
+    assert_resolves_to [source_spec], resolver
+  end
+
+  def test_falls_back_to_fat_before_source_when_content_addressed_gem_requires_other_ruby
+    ca_spec = util_spec "a", "1"
+    fat_spec = util_spec "a", "1"
+    source_spec = util_spec "a", "1"
+
+    ca_spec.platform = Gem::Platform.local
+    ca_spec.content_address = "abc1234567"
+    ca_spec.required_ruby_version = ">= 999"
+    fat_spec.platform = Gem::Platform.local
+    source_spec.platform = Gem::Platform::RUBY
+
+    s = set(source_spec, fat_spec, ca_spec)
+    dependency = make_dep "a"
+    resolver = Gem::Resolver.new([dependency], s)
+    assert_resolves_to [fat_spec], resolver
+  end
+
   def test_does_not_pick_musl_variants_on_non_musl_linux
     util_set_arch "aarch64-linux" do
       is = Gem::Resolver::IndexSpecification

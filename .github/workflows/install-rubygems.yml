@@ -35,7 +35,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -131,7 +131,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none
@@ -173,7 +173,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup original ruby
-        uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           ruby-version: 3.2
           bundler: none
@@ -186,7 +186,7 @@ jobs:
           GEM_HOME: bar
           GEM_PATH: bar
       - name: Setup final ruby
-        uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           ruby-version: 3.3
           bundler: none
@@ -215,7 +215,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup ruby
-        uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           ruby-version: ${{ matrix.ruby.value }}
           bundler: none

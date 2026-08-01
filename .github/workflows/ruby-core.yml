@@ -24,7 +24,7 @@ jobs:
         target: [Rubygems, Bundler]
         branch: [ruby_3_4, ruby_4_0, master]
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ruby/ruby
           path: ruby/ruby
@@ -46,12 +46,12 @@ jobs:
           ./configure -C --disable-install-doc
           make
         working-directory: ruby/ruby
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: rubygems/rubygems
           persist-credentials: false
         if: matrix.branch == 'ruby_3_4'
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: ruby/rubygems
           persist-credentials: false

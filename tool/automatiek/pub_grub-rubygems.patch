@@ -1,7 +1,15 @@
 diff --git a/lib/rubygems/vendor/pub_grub/lib/pub_grub.rb b/lib/rubygems/vendor/pub_grub/lib/pub_grub.rb
 --- a/lib/rubygems/vendor/pub_grub/lib/pub_grub.rb
 +++ b/lib/rubygems/vendor/pub_grub/lib/pub_grub.rb
-@@ -11,6 +11,32 @@
+@@ -1,3 +1,7 @@
++# Skip reloading when an identical copy (e.g. the one shipped inside the Bundler
++# gem) was already required from a different path, to avoid redefinition warnings.
++return if defined?(Gem::PubGrub::VERSION)
++
+ require_relative "pub_grub/package"
+ require_relative "pub_grub/static_package_source"
+ require_relative "pub_grub/term"
+@@ -11,6 +15,32 @@
  require_relative 'pub_grub/version'
 
  module Gem::PubGrub

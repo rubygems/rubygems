@@ -258,19 +258,8 @@ lib/bundler/ui/silent.rb
 lib/bundler/uri_credentials_filter.rb
 lib/bundler/uri_normalizer.rb
 lib/bundler/vendor/.document
-lib/bundler/vendor/connection_pool/LICENSE
-lib/bundler/vendor/connection_pool/lib/connection_pool.rb
-lib/bundler/vendor/connection_pool/lib/connection_pool/fork.rb
-lib/bundler/vendor/connection_pool/lib/connection_pool/timed_stack.rb
-lib/bundler/vendor/connection_pool/lib/connection_pool/version.rb
-lib/bundler/vendor/connection_pool/lib/connection_pool/wrapper.rb
 lib/bundler/vendor/fileutils/COPYING
 lib/bundler/vendor/fileutils/lib/fileutils.rb
-lib/bundler/vendor/net-http-persistent/README.rdoc
-lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
-lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/connection.rb
-lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/pool.rb
-lib/bundler/vendor/net-http-persistent/lib/net/http/persistent/timed_stack_multi.rb
 lib/bundler/vendor/thor/LICENSE.md
 lib/bundler/vendor/thor/lib/thor.rb
 lib/bundler/vendor/thor/lib/thor/actions.rb
@@ -309,7 +298,6 @@ lib/bundler/vendor/thor/lib/thor/util.rb
 lib/bundler/vendor/thor/lib/thor/version.rb
 lib/bundler/vendored_fileutils.rb
 lib/bundler/vendored_net_http.rb
-lib/bundler/vendored_persistent.rb
 lib/bundler/vendored_pub_grub.rb
 lib/bundler/vendored_securerandom.rb
 lib/bundler/vendored_thor.rb

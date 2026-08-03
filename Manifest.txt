@@ -340,7 +340,6 @@ lib/bundler/vendored_uri.rb
 lib/bundler/version.rb
 lib/bundler/vlad.rb
 lib/bundler/worker.rb
-lib/bundler/yaml_serializer.rb
 lib/rubygems.rb
 lib/rubygems/available_set.rb
 lib/rubygems/basic_specification.rb

@@ -69,6 +69,7 @@ lib/bundler/feature_flag.rb
 lib/bundler/fetcher.rb
 lib/bundler/fetcher/base.rb
 lib/bundler/fetcher/compact_index.rb
+lib/bundler/fetcher/connection_pools.rb
 lib/bundler/fetcher/dependency.rb
 lib/bundler/fetcher/downloader.rb
 lib/bundler/fetcher/gem_remote_fetcher.rb

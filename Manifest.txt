@@ -53,11 +53,6 @@ lib/bundler/cli/pristine.rb
 lib/bundler/cli/remove.rb
 lib/bundler/cli/show.rb
 lib/bundler/cli/update.rb
-lib/bundler/compact_index_client.rb
-lib/bundler/compact_index_client/cache.rb
-lib/bundler/compact_index_client/cache_file.rb
-lib/bundler/compact_index_client/parser.rb
-lib/bundler/compact_index_client/updater.rb
 lib/bundler/constants.rb
 lib/bundler/current_ruby.rb
 lib/bundler/definition.rb

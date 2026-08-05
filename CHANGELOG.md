@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.18 / 2026-08-05
+
+### Enhancements:
+
+* Check the resolved parent directory before extracting old format gems. Pull request [#9755](https://github.com/ruby/rubygems/pull/9755) by hsbt
+* Installs bundler 4.0.18 as a default gem.
+
+### Bug fixes:
+
+* Call Kernel.format explicitly in Gem::Deprecate wrapper. Pull request [#9714](https://github.com/ruby/rubygems/pull/9714) by hsbt
+
+### Documentation:
+
+* Point bundler.io URLs at guides.rubygems.org. Pull request [#9737](https://github.com/ruby/rubygems/pull/9737) by hsbt
+
 ## 4.0.17 / 2026-07-22
 
 ### Enhancements:

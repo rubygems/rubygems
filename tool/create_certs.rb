@@ -156,13 +156,14 @@ base_dir = "test/rubygems"
 
 keys.each do |name, key|
   dest = File.join base_dir, "#{name}_key.pem"
-  File.write dest, key.to_pem
+  pem = name == :public ? key.public_to_pem : key.private_to_pem
+  File.write dest, pem
 end
 
 # Create an encrypted private key protected by a passphrase from the new keys[:private]
 # it has to be the same as is in # test/rubygems/helper.rb in PRIVATE_KEY_PASSPHRASE
 dest = File.join base_dir, "encrypted_private_key.pem"
-File.write dest, keys[:private].to_pem(OpenSSL::Cipher.new("aes-256-cbc"), "Foo bar")
+File.write dest, keys[:private].private_to_pem(OpenSSL::Cipher.new("aes-256-cbc"), "Foo bar")
 
 certs.each do |name, (cert, cert_32)|
   dest = File.join base_dir, "#{name}_cert.pem"

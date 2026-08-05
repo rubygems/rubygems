@@ -1,4 +1,10 @@
-plugins: rubocop-performance
+plugins:
+  - rubocop-packaging
+  - rubocop-performance
+  - rubocop-rubycw
+
+require:
+  - ./tool/cops/internal_require
 
 AllCops:
   DisabledByDefault: true
@@ -489,6 +495,37 @@ Naming/FileName:
 
 Naming/MemoizedInstanceVariableName:
   Enabled: true
+
+# Rubycw
+
+# Surfaces `ruby -w` warnings as offenses.
+Rubycw/Rubycw:
+  Enabled: true
+
+# Packaging
+
+Packaging/BundlerSetupInTests:
+  Enabled: true
+
+Packaging/GemspecGit:
+  Enabled: true
+
+Packaging/RequireHardcodingLib:
+  Enabled: true
+
+Packaging/RequireRelativeHardcodingLib:
+  Enabled: true
+
+# Local cops
+
+# Bundler files must load each other with `require_relative`.
+Rubygems/InternalRequire:
+  Enabled: true
+  Include:
+    - lib/bundler.rb
+    - lib/bundler/**/*
+  Exclude:
+    - lib/bundler/templates/**/*
 
 # Performance
 

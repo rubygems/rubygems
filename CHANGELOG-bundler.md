@@ -1,5 +1,30 @@
 # Changelog
 
+## 4.0.18 / 2026-08-05
+
+### Enhancements:
+
+* Don't mask install errors when no Gemfile can be located. Pull request [#9757](https://github.com/ruby/rubygems/pull/9757) by hsbt
+* Warn when duplicate source declarations conflict on cooldown. Pull request [#9736](https://github.com/ruby/rubygems/pull/9736) by hsbt
+* Redact URI userinfo from settings names in Bundler User-Agent. Pull request [#9716](https://github.com/ruby/rubygems/pull/9716) by hsbt
+* Validate gem name before building compact index cache paths. Pull request [#9717](https://github.com/ruby/rubygems/pull/9717) by hsbt
+
+### Bug fixes:
+
+* Fail `bundle check` when frozen mode needs lockfile changes. Pull request [#9715](https://github.com/ruby/rubygems/pull/9715) by hsbt
+* Skip empty checksum values in compact index metadata. Pull request [#9713](https://github.com/ruby/rubygems/pull/9713) by hsbt
+
+### Security:
+
+* Add --cooldown flag to bundle lock and bundle cache. Pull request [#9725](https://github.com/ruby/rubygems/pull/9725) by hsbt
+
+### Documentation:
+
+* Point bundler.io URLs at guides.rubygems.org. Pull request [#9737](https://github.com/ruby/rubygems/pull/9737) by hsbt
+* Document Bundler checksum behavior for default gems. Pull request [#9735](https://github.com/ruby/rubygems/pull/9735) by p-linnane
+* List missing subcommands in bundle(1) UTILITIES section. Pull request [#9721](https://github.com/ruby/rubygems/pull/9721) by hsbt
+* Document pessimistic operator and eval_gemfile in gemfile(5). Pull request [#9719](https://github.com/ruby/rubygems/pull/9719) by hsbt
+
 ## 4.0.17 / 2026-07-22
 
 ### Enhancements:

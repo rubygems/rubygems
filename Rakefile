@@ -338,6 +338,7 @@ namespace "guides" do
     rubygems_dir = Dir.pwd
     env = {
       "BUNDLE_GEMFILE" => nil,
+      "BUNDLE_WITHOUT" => "site:jekyll_plugins",
       "RUBYOPT" => "--disable-gems -I#{File.join(rubygems_dir, "lib")}",
       "RUBYGEMS_DIR" => rubygems_dir,
     }
@@ -385,7 +386,7 @@ end
 
 directory "tmp/blog.rubygems.org" do
   sh "git", "clone",
-    "https://github.com/rubygems/rubygems.github.io.git",
+    "https://github.com/rubygems/blog.git",
      "tmp/blog.rubygems.org"
 end
 
@@ -405,8 +406,8 @@ namespace "blog" do
       if ENV["DRYRUN"]
         puts "DRYRUN mode: skipping checksum verification for #{file}"
       else
-        release_url = URI("https://rubygems.org/#{file.end_with?("gem") ? "gems" : "rubygems"}/#{basename}")
         require "net/http"
+        release_url = URI("https://rubygems.org/#{file.end_with?("gem") ? "gems" : "rubygems"}/#{basename}")
         response = Net::HTTP.get_response(release_url)
 
         if response.is_a?(Net::HTTPSuccess)
@@ -647,6 +648,14 @@ namespace :spec do
 
       puts "No cassettes unused"
     end
+  end
+end
+
+namespace :quality do
+  desc "Check source code and documentation quality"
+  task :check do
+    require_relative "tool/quality_check"
+    QualityCheck.run!
   end
 end
 

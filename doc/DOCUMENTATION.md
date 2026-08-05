@@ -106,5 +106,5 @@ We have tests for our documentation! The most important test file to run before 
 
 ```
 $ bin/rspec spec/commands/help_spec.rb
-$ bin/rspec spec/quality_spec.rb
+$ bin/rake quality:check
 ```

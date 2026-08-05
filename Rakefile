@@ -651,6 +651,14 @@ namespace :spec do
   end
 end
 
+namespace :quality do
+  desc "Check source code and documentation quality"
+  task :check do
+    require_relative "tool/quality_check"
+    QualityCheck.run!
+  end
+end
+
 desc "Check RubyGems integration"
 task :check_rubygems_integration do
   # Bundler monkeypatches RubyGems in some ways that could potentially break gem activation.

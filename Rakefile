@@ -338,6 +338,7 @@ namespace "guides" do
     rubygems_dir = Dir.pwd
     env = {
       "BUNDLE_GEMFILE" => nil,
+      "BUNDLE_WITHOUT" => "site:jekyll_plugins",
       "RUBYOPT" => "--disable-gems -I#{File.join(rubygems_dir, "lib")}",
       "RUBYGEMS_DIR" => rubygems_dir,
     }

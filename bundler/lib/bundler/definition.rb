@@ -366,6 +366,12 @@ module Bundler
       sources.git_sources.filter_map {|s| File.realpath(s.path) if File.exist?(s.path) }
     end
 
+    # Versions excluded by cooldown during the last resolution, one entry per
+    # gem with the newest skipped version. Empty when no resolution ran.
+    def cooldown_skipped
+      @cooldown_skipped || []
+    end
+
     def groups
       dependencies.flat_map(&:groups).uniq
     end
@@ -769,6 +775,8 @@ module Bundler
       @platforms << Bundler.local_platform if local_platform_needed_for_resolvability
 
       result = SpecSet.new(resolver.start)
+
+      @cooldown_skipped = resolver.cooldown_skipped
 
       @resolved_bundler_version = result.find {|spec| spec.name == "bundler" }&.version
 

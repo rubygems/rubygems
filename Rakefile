@@ -296,6 +296,7 @@ namespace "guides" do
     rubygems_dir = Dir.pwd
     env = {
       "BUNDLE_GEMFILE" => nil,
+      "BUNDLE_WITHOUT" => "site:jekyll_plugins",
       "RUBYOPT" => "--disable-gems -I#{File.join(rubygems_dir, "lib")}",
       "RUBYGEMS_DIR" => rubygems_dir,
     }
@@ -363,8 +364,8 @@ namespace "blog" do
       if ENV["DRYRUN"]
         puts "DRYRUN mode: skipping checksum verification for #{file}"
       else
-        release_url = URI("https://rubygems.org/#{file.end_with?("gem") ? "gems" : "rubygems"}/#{basename}")
         require "net/http"
+        release_url = URI("https://rubygems.org/#{file.end_with?("gem") ? "gems" : "rubygems"}/#{basename}")
         response = Net::HTTP.get_response(release_url)
 
         if response.is_a?(Net::HTTPSuccess)

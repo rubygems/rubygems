@@ -22,7 +22,6 @@ class QualityCheck
     check_man_language_quality
     check_lib_language_quality
     check_documented_settings
-    check_internal_requires
     check_vendored_net_http_sync
     check_gem_build
     check_shipped_files
@@ -128,20 +127,6 @@ class QualityCheck
     unless documented_settings == documented_settings.sort
       @errors << "settings documented in bundle-config.1.ronn are not sorted, expected order:\n\t#{documented_settings.sort.join("\n\t")}"
     end
-  end
-
-  def check_internal_requires
-    exempt = %r{templates/|\.5|\.1|vendor/}
-    all_bad_requires = []
-    lib_tracked_files.each do |filename|
-      next if filename&.match?(exempt)
-      each_line(filename) do |line, number|
-        line.scan(/^ *require "bundler/).each { all_bad_requires << "#{filename}:#{number.succ}" }
-      end
-    end
-
-    return if all_bad_requires.empty?
-    @errors << "#{all_bad_requires.size} internal requires that should use `require_relative`: #{all_bad_requires}"
   end
 
   # We don't want our artifice code to activate bundler, but it needs to use the

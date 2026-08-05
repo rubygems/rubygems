@@ -1,4 +1,6 @@
-plugins: rubocop-performance
+plugins:
+  - rubocop-performance
+  - rubocop-rubycw
 
 AllCops:
   DisabledByDefault: true
@@ -488,6 +490,12 @@ Naming/FileName:
     - spec/realworld/fixtures/warbler/bin/warbler-example.rb
 
 Naming/MemoizedInstanceVariableName:
+  Enabled: true
+
+# Rubycw
+
+# Surfaces `ruby -w` warnings as offenses.
+Rubycw/Rubycw:
   Enabled: true
 
 # Performance

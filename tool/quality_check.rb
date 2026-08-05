@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "open3"
-require "rbconfig"
 require "rubygems/package"
 require "tmpdir"
 
@@ -28,7 +26,6 @@ class QualityCheck
     check_vendored_net_http_sync
     check_gem_build
     check_shipped_files
-    check_warnings
 
     if @errors.empty?
       puts "Quality checks passed"
@@ -188,31 +185,6 @@ class QualityCheck
     (gem_list - git_list).each do |file|
       @errors << "#{file} is shipped in the gem but not tracked in git"
     end
-  end
-
-  def check_warnings
-    # `ruby -w` output is only comparable on CRuby.
-    return unless RUBY_ENGINE == "ruby"
-
-    exclusions = %w[
-      lib/bundler/capistrano.rb
-      lib/bundler/deployment.rb
-      lib/bundler/gem_tasks.rb
-      lib/bundler/vlad.rb
-    ]
-    files_to_require = lib_tracked_files.grep(/\.rb$/) - exclusions
-    files_to_require.reject! {|f| f.start_with?("lib/bundler/vendor") }
-    files_to_require.map! {|f| File.expand_path(f, @source_root) }
-    files_to_require.sort!
-    input = files_to_require.map {|f| "require #{f.dump}" }.join("\n")
-
-    output, _status = Open3.capture2e({ "RUBYOPT" => nil }, RbConfig.ruby, "-w", "-I#{File.join(@source_root, "lib")}", stdin_data: input)
-
-    warnings = output.split("\n")
-    # ignore warnings around deprecated Object#=~ method in RubyGems
-    warnings.reject! {|w| w =~ %r{rubygems\/version.rb.*deprecated\ Object#=~} }
-
-    @errors.concat(warnings)
   end
 
   def add_error(message)

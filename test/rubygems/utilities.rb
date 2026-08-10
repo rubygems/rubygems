@@ -30,11 +30,12 @@ require "rubygems/remote_fetcher"
 # See RubyGems' tests for more examples of FakeFetcher.
 
 class Gem::FakeFetcher
-  attr_reader :data, :requests
+  attr_reader :data, :headers, :requests
   attr_accessor :paths
 
   def initialize
     @data = {}
+    @headers = {}
     @paths = []
     @requests = []
   end

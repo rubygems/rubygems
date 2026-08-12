@@ -101,6 +101,8 @@ The CLI flag and this setting apply uniformly to every source, including ones de
 .IP
 Cooldown filtering depends on the gem server providing a per\-version \fBcreated_at\fR timestamp in the v2 compact\-index format\. Versions without that metadata \- older gem servers, historical entries that predate the v2 cutover on \fBrubygems\.org\fR, or private registries that still emit the v1 format \- are treated as outside the cooldown window and remain resolvable\. If you rely on cooldown for supply\-chain protection, confirm that the gem server emits \fBcreated_at\fR in its \fB/info/<gem>\fR responses\.
 .IP "\(bu" 4
+\fBcredential\.helper\fR (\fBBUNDLE_CREDENTIAL__HELPER\fR): The absolute path to a credential helper\. Append the registry host to the key, for example \fBcredential\.helper\.gems\.example\.com\fR\. Arguments, relative paths, shell expansion, and \fBPATH\fR lookup are not supported\. The helper is used only after \fBbundle credential trust HOST\fR records explicit trust\.
+.IP "\(bu" 4
 \fBdefault_cli_command\fR (\fBBUNDLE_DEFAULT_CLI_COMMAND\fR): The command that running \fBbundle\fR without arguments should run\. Defaults to \fBcli_help\fR since Bundler 4, but can also be \fBinstall\fR which was the previous default\.
 .IP "\(bu" 4
 \fBdeployment\fR (\fBBUNDLE_DEPLOYMENT\fR): Equivalent to setting \fBfrozen\fR to \fBtrue\fR and \fBpath\fR to \fBvendor/bundle\fR\.

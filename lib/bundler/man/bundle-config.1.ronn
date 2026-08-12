@@ -167,6 +167,11 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
    window and remain resolvable. If you rely on cooldown for
    supply-chain protection, confirm that the gem server emits
    `created_at` in its `/info/<gem>` responses.
+* `credential.helper` (`BUNDLE_CREDENTIAL__HELPER`):
+   The absolute path to a credential helper. Append the registry host to the
+   key, for example `credential.helper.gems.example.com`. Arguments, relative
+   paths, shell expansion, and `PATH` lookup are not supported. The helper is
+   used only after `bundle credential trust HOST` records explicit trust.
 * `default_cli_command` (`BUNDLE_DEFAULT_CLI_COMMAND`):
    The command that running `bundle` without arguments should run. Defaults to
    `cli_help` since Bundler 4, but can also be `install` which was the previous

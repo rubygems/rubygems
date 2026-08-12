@@ -62,6 +62,7 @@ module Bundler
       bin
       cache_path
       console
+      credential.helper
       default_cli_command
       gem.ci
       gem.github_username
@@ -185,7 +186,7 @@ module Bundler
     end
 
     def credentials_for(uri)
-      self[uri.to_s] || self[uri.host]
+      credentials_from_helper(uri) || self[uri.to_s] || self[uri.host]
     end
 
     def gem_mirrors
@@ -355,7 +356,7 @@ module Bundler
 
     def is_string(name)
       name = self.class.key_to_s(name)
-      STRING_KEYS.include?(name) || name.start_with?("local.") || name.start_with?("mirror.") || name.start_with?("build.")
+      STRING_KEYS.include?(name) || name.start_with?("local.", "mirror.", "build.", "credential.helper.")
     end
 
     def to_bool(value)
@@ -508,6 +509,14 @@ module Bundler
       # resolves even on RubyGems versions that predate it.
       require "rubygems/yaml_serializer"
       Gem::YAMLSerializer
+    end
+
+    def credentials_from_helper(uri)
+      helper_path = self["credential.helper.#{uri.host}"]
+      return unless helper_path
+
+      require_relative "credential_helper"
+      CredentialHelper.fetch(uri.host, helper_path)
     end
 
     FALLBACK_TIMEOUT_URI_OPTION = "fallback_timeout"

@@ -46,6 +46,9 @@ We divide `bundle` subcommands into primary commands and utilities:
 * [`bundle config(1)`](bundle-config.1.html):
   Specify and read configuration options for Bundler
 
+* [`bundle credential(1)`](bundle-credential.1.html):
+  Manage credential helper trust
+
 * [`bundle help(1)`](bundle-help.1.html):
   Display detailed help for each subcommand
 

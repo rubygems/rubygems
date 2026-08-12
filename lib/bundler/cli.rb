@@ -527,6 +527,10 @@ module Bundler
     require_relative "cli/config"
     subcommand "config", Config
 
+    desc "credential", "Manage credential helper trust"
+    require_relative "cli/credential"
+    subcommand "credential", Credential
+
     desc "open GEM", "Opens the source directory of the given bundled gem"
     method_option "path", type: :string, lazy_default: "", banner: "Open relative path of the gem source."
     def open(name)

@@ -268,6 +268,27 @@ that would suck --ehhh=oh geez it looks like i might have broken bundler somehow
         expect(settings.credentials_for(uri)).to eq(credentials)
       end
     end
+
+    context "with a credential helper configured" do
+      let(:helper_path) { "/path/to/helper" }
+
+      before { settings.set_local "credential.helper.gemserver.example.org", helper_path }
+
+      it "uses credentials returned by the helper" do
+        require "bundler/credential_helper"
+        expect(Bundler::CredentialHelper).to receive(:fetch).with(uri.host, helper_path).and_return("helper:password")
+
+        expect(settings.credentials_for(uri)).to eq("helper:password")
+      end
+
+      it "falls back to configured credentials" do
+        require "bundler/credential_helper"
+        allow(Bundler::CredentialHelper).to receive(:fetch).and_return(nil)
+        settings.set_local uri.host, credentials
+
+        expect(settings.credentials_for(uri)).to eq(credentials)
+      end
+    end
   end
 
   describe "URI normalization" do

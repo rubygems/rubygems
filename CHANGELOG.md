@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.19 / 2026-08-20
+
+### Enhancements:
+
+* Reject SafeMarshal collection lengths longer than the remaining input. Pull request [#9756](https://github.com/ruby/rubygems/pull/9756) by hsbt
+* Installs bundler 4.0.19 as a default gem.
+
+### Bug fixes:
+
+* Fix gem uninstall --user-install crash when GEM_HOME does not exist. Pull request [#9749](https://github.com/ruby/rubygems/pull/9749) by hsbt
+
+### Documentation:
+
+* Document SPDX license handling for license= and licenses=. Pull request [#9766](https://github.com/ruby/rubygems/pull/9766) by hsbt
+
 ## 4.0.18 / 2026-08-05
 
 ### Enhancements:

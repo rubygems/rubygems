@@ -1,5 +1,25 @@
 # Changelog
 
+## 4.0.19 / 2026-08-20
+
+### Enhancements:
+
+* Validate the platform field in Gem::Installer#verify_spec. Pull request [#9780](https://github.com/ruby/rubygems/pull/9780) by hsbt
+* Restrict UserDefined handling to explicit class set for Gem::SafeMashal. Pull request [#9770](https://github.com/ruby/rubygems/pull/9770) by jackorp
+* Filter git command output against the configured URI. Pull request [#9778](https://github.com/ruby/rubygems/pull/9778) by hsbt
+* Summarize cooldown-skipped versions at the end of install, update, and lock. Pull request [#9762](https://github.com/ruby/rubygems/pull/9762) by hsbt
+
+### Bug fixes:
+
+* Make repeated bundle lock options accumulate. Pull request [#9748](https://github.com/ruby/rubygems/pull/9748) by hsbt
+* Fail instead of warning when frozen mode can't update the lockfile. Pull request [#9750](https://github.com/ruby/rubygems/pull/9750) by hsbt
+* Fix wrong $LOAD_PATH for gems installed in the same process. Pull request [#9784](https://github.com/ruby/rubygems/pull/9784) by hsbt
+
+### Documentation:
+
+* Fix auto-clean default version in bundle config docs. Pull request [#9783](https://github.com/ruby/rubygems/pull/9783) by hsbt
+* Correct Bundler 5 default path documentation. Pull request [#9771](https://github.com/ruby/rubygems/pull/9771) by alloutflo
+
 ## 4.0.18 / 2026-08-05
 
 ### Enhancements:

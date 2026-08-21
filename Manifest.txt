@@ -259,6 +259,7 @@ lib/bundler/uri_normalizer.rb
 lib/bundler/vendor/.document
 lib/bundler/vendor/connection_pool/LICENSE
 lib/bundler/vendor/connection_pool/lib/connection_pool.rb
+lib/bundler/vendor/connection_pool/lib/connection_pool/fork.rb
 lib/bundler/vendor/connection_pool/lib/connection_pool/timed_stack.rb
 lib/bundler/vendor/connection_pool/lib/connection_pool/version.rb
 lib/bundler/vendor/connection_pool/lib/connection_pool/wrapper.rb

@@ -93,7 +93,7 @@ vendored_gems = [
   # Bundler
   VendoredGem.new(name: "connection_pool", namespace: "ConnectionPool", prefix: "Bundler", vendor_lib: "lib/bundler/vendor/connection_pool", license_path: "LICENSE", patch_name: "connection_pool-v2.4.1.patch", extra_dependencies: %w[timeout]),
   VendoredGem.new(name: "fileutils", namespace: "FileUtils", prefix: "Bundler", vendor_lib: "lib/bundler/vendor/fileutils", license_path: "COPYING"),
-  VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "lib/bundler/vendor/thor", license_path: "LICENSE.md", patch_name: "thor-v1.4.0.patch"),
+  VendoredGem.new(name: "thor", namespace: "Thor", prefix: "Bundler", vendor_lib: "lib/bundler/vendor/thor", license_path: "LICENSE.md", patch_name: "thor-v1.5.0.patch"),
 ].group_by(&:name)
 
 Bundler.definition.resolve.materialized_for_all_platforms.reject {|s| ignore.include?(s.name) }.each do |s|

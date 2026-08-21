@@ -1,41 +1,27 @@
-diff --git a/lib/bundler/vendor/thor/lib/thor.rb b/lib/bundler/vendor/thor/lib/thor.rb
-index bfd9f5c914..945bdbd551 100644
---- a/lib/bundler/vendor/thor/lib/thor.rb
-+++ b/lib/bundler/vendor/thor/lib/thor.rb
-@@ -625,7 +625,7 @@ def normalize_command_name(meth) #:nodoc:
-     # alias name.
-     def find_command_possibilities(meth)
-       len = meth.to_s.length
--      possibilities = all_commands.merge(map).keys.select { |n| meth == n[0, len] }.sort
-+      possibilities = all_commands.reject { |_k, c| c.hidden? }.merge(map).keys.select { |n| meth == n[0, len] }.sort
-       unique_possibilities = possibilities.map { |k| map[k] || k }.uniq
-
-       if possibilities.include?(meth)
-
 diff --git a/lib/bundler/vendor/thor/lib/thor/runner.rb b/lib/bundler/vendor/thor/lib/thor/runner.rb
-index 95f8b16e31..f0ce6df96c 100644
 --- a/lib/bundler/vendor/thor/lib/thor/runner.rb
 +++ b/lib/bundler/vendor/thor/lib/thor/runner.rb
 @@ -2,7 +2,7 @@
  require_relative "group"
-
+ 
  require "digest/sha2"
 -require "pathname"
 +require "pathname" unless defined?(Pathname)
-
+ 
  class Bundler::Thor::Runner < Bundler::Thor #:nodoc:
    map "-T" => :list, "-i" => :install, "-u" => :update, "-v" => :version
 diff --git a/lib/bundler/vendor/thor/lib/thor/shell/color.rb b/lib/bundler/vendor/thor/lib/thor/shell/color.rb
-index 6a9176331..5d708fadc 100644
 --- a/lib/bundler/vendor/thor/lib/thor/shell/color.rb
 +++ b/lib/bundler/vendor/thor/lib/thor/shell/color.rb
-@@ -1,5 +1,4 @@
+@@ -1,7 +1,6 @@
+ # frozen_string_literal: true
+ 
  require_relative "basic"
 -require_relative "lcs_diff"
  
  class Bundler::Thor
    module Shell
-@@ -7,8 +6,6 @@ module Shell
+@@ -9,8 +8,6 @@
      # Bundler::Thor::Shell::Basic to see all available methods.
      #
      class Color < Basic
@@ -45,7 +31,6 @@ index 6a9176331..5d708fadc 100644
        CLEAR      = "\e[0m"
        # The start of an ANSI bold sequence.
 diff --git a/lib/bundler/vendor/thor/lib/thor/shell/html.rb b/lib/bundler/vendor/thor/lib/thor/shell/html.rb
-index 6091485ac..0277b882b 100644
 --- a/lib/bundler/vendor/thor/lib/thor/shell/html.rb
 +++ b/lib/bundler/vendor/thor/lib/thor/shell/html.rb
 @@ -1,5 +1,4 @@
@@ -54,7 +39,7 @@ index 6091485ac..0277b882b 100644
  
  class Bundler::Thor
    module Shell
-@@ -7,8 +6,6 @@ module Shell
+@@ -7,8 +6,6 @@
      # Bundler::Thor::Shell::Basic to see all available methods.
      #
      class HTML < Basic
@@ -65,7 +50,6 @@ index 6091485ac..0277b882b 100644
  
 diff --git a/lib/bundler/vendor/thor/lib/thor/shell/lcs_diff.rb b/lib/bundler/vendor/thor/lib/thor/shell/lcs_diff.rb
 deleted file mode 100644
-index 81268a9f0..000000000
 --- a/lib/bundler/vendor/thor/lib/thor/shell/lcs_diff.rb
 +++ /dev/null
 @@ -1,49 +0,0 @@

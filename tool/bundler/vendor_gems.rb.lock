@@ -20,7 +20,7 @@ GEM
     resolv (0.7.0)
     securerandom (0.4.1)
     thor (1.5.0)
-    timeout (0.4.4)
+    timeout (0.6.1)
     tsort (0.2.0)
     uri (1.1.1)
 
@@ -43,7 +43,7 @@ DEPENDENCIES
   resolv (= 0.7.0)
   securerandom (= 0.4.1)
   thor (= 1.5.0)
-  timeout (= 0.4.4)
+  timeout (= 0.6.1)
   tsort (= 0.2.0)
   uri (= 1.1.1)
 
@@ -58,7 +58,7 @@ CHECKSUMS
   resolv (0.7.0) sha256=e20ce2c00d1e1d1bd13aa98f52d9b5166509f80f50673084ae54dd26a0b083ad
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
-  timeout (0.4.4) sha256=f0f6f970104b82427cd990680f539b6bbb8b1e55efa913a55c6492935e4e0edb
+  timeout (0.6.1) sha256=78f57368a7e7bbadec56971f78a3f5ecbcfb59b7fcbb0a3ed6ddc08a5094accb
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
 

@@ -1,29 +1,29 @@
 diff --git b/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb a/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
-index f57e64df9c..52a8051183 100644
 --- b/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
 +++ a/lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb
-@@ -1,12 +1,11 @@
+@@ -1,14 +1,9 @@
 -require_relative '../../../../../../rubygems/vendor/net-http/lib/net/http'
 -require_relative '../../../../../../rubygems/vendor/uri/lib/uri'
--require 'cgi' # for escaping
--require_relative '../../../../connection_pool/lib/connection_pool'
--
 +require_relative '../../../../../vendored_net_http'
 +require_relative '../../../../../vendored_uri'
- begin
--  require_relative '../../../../../../rubygems/vendor/net-http/lib/net/http/pipeline'
-+  require 'cgi/escape'
- rescue LoadError
-+  require 'cgi/util' # for escaping
- end
-+require_relative '../../../../connection_pool/lib/connection_pool'
+ require 'cgi/escape'
+ require 'cgi/util' unless defined?(CGI::EscapeExt)
+ require_relative '../../../../connection_pool/lib/connection_pool'
  
+-begin
+-  require_relative '../../../../../../rubygems/vendor/net-http/lib/net/http/pipeline'
+-rescue LoadError
+-end
+-
  autoload :OpenSSL, 'openssl'
  
-@@ -762,23 +761,6 @@ def max_retries= retries
-     reconnect
-   end
+ ##
+@@ -770,23 +765,6 @@
+     @max_retries = retries
  
+     reconnect
+-  end
+-
 -  ##
 -  # Pipelines +requests+ to the HTTP server at +uri+ yielding responses if a
 -  # block is given.  Returns all responses received.
@@ -39,17 +39,6 @@ index f57e64df9c..52a8051183 100644
 -    connection_for uri do |connection|
 -      connection.http.pipeline requests, &block
 -    end
--  end
--
+   end
+ 
    ##
-   # Sets this client's SSL private key
- 
-@@ -826,7 +808,7 @@ def proxy= proxy
-       @proxy_connection_id = [nil, *@proxy_args].join ':'
- 
-       if @proxy_uri.query then
--        @no_proxy = CGI.parse(@proxy_uri.query)['no_proxy'].join(',').downcase.split(',').map { |x| x.strip }.reject { |x| x.empty? }
-+        @no_proxy = Gem::URI.decode_www_form(@proxy_uri.query).filter_map { |k, v| v if k == 'no_proxy' }.join(',').downcase.split(',').map { |x| x.strip }.reject { |x| x.empty? }
-       end
-     end
- 

@@ -106,8 +106,96 @@ module Bundler
       end
       Bundler.ui.info "0 : - exit -", true
 
-      num = Bundler.ui.ask("> ").to_i
-      num > 0 ? specs[num - 1] : nil
+      num = ask_for_number(specs.count)
+      num && num > 0 ? specs[num - 1] : nil
+    end
+
+    # Reads a menu selection in the range 0..max, returning the chosen number
+    # or nil if no selection was made (Ctrl-D/EOF). When stdin/stdout are a TTY,
+    # a choice is accepted on a single keypress as soon as it is unambiguous,
+    # i.e. no larger valid number has the typed digits as a prefix (so "1" is
+    # accepted instantly when there are < 10 options, but waits for a second
+    # digit when "10"/"11"/... are also valid). Enter resolves the prefix to
+    # the number typed so far (e.g. selecting "1" while "10" exists), backspace
+    # edits, and Ctrl-C aborts (exit 130). Falls back to a line-based prompt otherwise.
+    def self.ask_for_number(max)
+      return Bundler.ui.ask("> ").to_i unless single_keypress_supported?
+
+      buf = String.new
+      # The prompt, echo and newlines are written straight to $stdout (rather
+      # than through Bundler.ui) because this path only runs on an interactive
+      # TTY, where we need precise, unbuffered control over the cursor.
+      $stdout.print "> "
+      $stdout.flush
+
+      loop do
+        ch = $stdin.getch
+        # "No selection" -- the same outcome as choosing 0/exit -- via either a
+        # real EOF (nil, e.g. the terminal detached) or Ctrl-D, which getch's
+        # raw mode delivers as a byte (4 = EOT) rather than as EOF.
+        if ch.nil? || ch == 4.chr
+          $stdout.print "\n"
+          return
+        end
+        # Ctrl-C arrives as a raw byte because getch disables the terminal's
+        # signal keys. Re-raising Interrupt here would be re-rescued and printed
+        # by with_friendly_errors; instead exit with the conventional SIGINT
+        # status (130) so Bundler still terminates with proper signal semantics
+        # (see rubygems/bundler#6092) but without dumping a backtrace.
+        if ch == 3.chr
+          $stdout.print "\n"
+          exit(128 + Signal.list["INT"])
+        end
+
+        case ch
+        when "\r", "\n"
+          if valid_number?(buf, max)
+            $stdout.print "\n"
+            return buf.to_i
+          end
+        when "\u007f", "\b" # backspace / delete
+          unless buf.empty?
+            buf.chop!
+            $stdout.print "\b \b"
+            $stdout.flush
+          end
+        when /\A[0-9]\z/
+          candidate = buf + ch
+          # Ignore a digit that cannot lead to any valid selection.
+          next unless prefix_of_valid?(candidate, max)
+          buf = candidate
+          $stdout.print ch
+          $stdout.flush
+          if valid_number?(buf, max) && !has_longer_valid?(buf, max)
+            $stdout.print "\n"
+            return buf.to_i
+          end
+        end
+      end
+    end
+
+    def self.single_keypress_supported?
+      return false unless $stdin.tty? && $stdout.tty?
+      require "io/console"
+      $stdin.respond_to?(:getch)
+    rescue LoadError
+      false
+    end
+
+    # buf is exactly a valid token (no leading zeros) within 0..max.
+    def self.valid_number?(buf, max)
+      !buf.empty? && buf == buf.to_i.to_s && buf.to_i <= max
+    end
+
+    # Some valid token in 0..max starts with the typed digits (incl. equal).
+    def self.prefix_of_valid?(buf, max)
+      (0..max).any? {|i| i.to_s.start_with?(buf) }
+    end
+
+    # A *longer* valid token in 0..max starts with the typed digits, so the
+    # selection is still ambiguous (e.g. "1" while "10" is also valid).
+    def self.has_longer_valid?(buf, max)
+      (0..max).any? {|i| i.to_s != buf && i.to_s.start_with?(buf) }
     end
 
     def self.gem_not_found_message(missing_gem_name, alternatives)

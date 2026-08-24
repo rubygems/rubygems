@@ -159,6 +159,13 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
    Gemfile; remember that `--cooldown N` on the command line will
    still override it for that single run.
 
+   The value must be a non-negative integer. `--cooldown` rejects
+   anything else outright, while a value coming from this setting or
+   from `BUNDLE_COOLDOWN` only warns, because a typo left in a config
+   file should not make every command fail. Such a value disables the
+   cooldown for every source, including sources that declare their own
+   `cooldown:` in the Gemfile.
+
    Cooldown filtering depends on the gem server providing a per-version
    `created_at` timestamp in the v2 compact-index format. Versions
    without that metadata - older gem servers, historical entries that
@@ -167,6 +174,11 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
    window and remain resolvable. If you rely on cooldown for
    supply-chain protection, confirm that the gem server emits
    `created_at` in its `/info/<gem>` responses.
+
+   A `created_at` timestamp is read as UTC when it carries no time zone
+   offset. `rubygems.org` always sends one, but a third-party server
+   that omits it would otherwise shift the cooldown window by the
+   offset of whatever machine runs bundler.
 * `default_cli_command` (`BUNDLE_DEFAULT_CLI_COMMAND`):
    The command that running `bundle` without arguments should run. Defaults to
    `cli_help` since Bundler 4, but can also be `install` which was the previous

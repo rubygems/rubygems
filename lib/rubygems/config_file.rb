@@ -204,8 +204,8 @@ class Gem::ConfigFile
     @install_extension_in_lib = DEFAULT_INSTALL_EXTENSION_IN_LIB
     @ipv4_fallback_enabled = ENV["IPV4_FALLBACK_ENABLED"] == "true" || DEFAULT_IPV4_FALLBACK_ENABLED
 
-    operating_system_config = Marshal.load Marshal.dump(OPERATING_SYSTEM_DEFAULTS)
-    platform_config = Marshal.load Marshal.dump(PLATFORM_DEFAULTS)
+    operating_system_config = Gem::Util.deep_dup(OPERATING_SYSTEM_DEFAULTS)
+    platform_config = Gem::Util.deep_dup(PLATFORM_DEFAULTS)
     system_config = load_file SYSTEM_WIDE_CONFIG_FILE
     user_config = load_file config_file_name
 

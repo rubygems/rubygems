@@ -276,6 +276,9 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
 * `jobs` (`BUNDLE_JOBS`):
    The number of gems Bundler can download and install in parallel.
    Defaults to the number of available processors.
+* `keep_outdated_cache` (`BUNDLE_KEEP_OUTDATED_CACHE`):
+   Whether Bundler should leave outdated gems unpruned when caching. Defaults
+   to false.
 * `lockfile` (`BUNDLE_LOCKFILE`):
    The path to the lockfile that bundler should use. By default, Bundler adds
    `.lock` to the end of the `gemfile` entry. Can be set to `false` in the
@@ -295,7 +298,9 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
    When set, plugin files are not written to the plugins directory.
    To install plugins later, unset this setting and run `bundle pristine <gem>`.
 * `no_prune` (`BUNDLE_NO_PRUNE`):
-   Whether Bundler should leave outdated gems unpruned when caching.
+   Deprecated name for `keep_outdated_cache`. Each priority level is checked
+   for `keep_outdated_cache` and then for `no_prune`, and the first value
+   found wins. `no_prune` will be removed in Bundler 5.
 * `only` (`BUNDLE_ONLY`):
    A space-separated list of groups to install only gems of the specified groups.
    Please check carefully if you want to install also gems without a group, because
@@ -317,6 +322,23 @@ learn more about their operation in [bundle install(1)](bundle-install.1.html).
    Enable Bundler's experimental plugin system.
 * `prefer_patch` (`BUNDLE_PREFER_PATCH`):
    Prefer updating only to next patch version during updates. Makes `bundle update` calls equivalent to `bundler update --patch`.
+* `prune` (`BUNDLE_PRUNE`):
+   A space-separated or `:`-separated list of Bundler-managed artifacts to
+   delete after a successful `bundle install`, `bundle update` or `bundle
+   cache`, and on `bundle clean`. `cache` removes the download cache under the
+   bundle path, which holds both the cached `.gem` files and the git mirrors.
+   `git` removes the `.git` directory of every checked out git gem. Any value
+   that is not a category name is read as a boolean, so `BUNDLE_PRUNE=1` selects
+   every category and keeps doing so as categories are added. This is meant for
+   container images and other throwaway
+   environments. **The setting only takes effect when a bundle path is set.**
+   Without one Bundler installs into the system gem directory, where the cache
+   is shared with RubyGems and holds gem files Bundler never put there, so
+   pruning is skipped with a warning. Set a path with `BUNDLE_PATH` or `bundle
+   config set path <dir>`. A pruned artifact comes back only when Bundler has to
+   install that gem again, so a later `bundle install` does not restore it on
+   its own. `bundle install --redownload` does, and `bundle pristine` works once
+   it has, though with `prune` still set the reinstall prunes again at the end.
 * `redirect` (`BUNDLE_REDIRECT`):
    The number of redirects allowed for network requests. Defaults to `5`.
 * `retry` (`BUNDLE_RETRY`):

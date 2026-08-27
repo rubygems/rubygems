@@ -151,6 +151,8 @@ The store can also be selected per host with \fBcredential_store\.<host>\fR (\fB
 .IP "\(bu" 4
 \fBjobs\fR (\fBBUNDLE_JOBS\fR): The number of gems Bundler can download and install in parallel\. Defaults to the number of available processors\.
 .IP "\(bu" 4
+\fBkeep_outdated_cache\fR (\fBBUNDLE_KEEP_OUTDATED_CACHE\fR): Whether Bundler should leave outdated gems unpruned when caching\. Defaults to false\.
+.IP "\(bu" 4
 \fBlockfile\fR (\fBBUNDLE_LOCKFILE\fR): The path to the lockfile that bundler should use\. By default, Bundler adds \fB\.lock\fR to the end of the \fBgemfile\fR entry\. Can be set to \fBfalse\fR in the Gemfile to disable lockfile creation entirely (see gemfile(5))\.
 .IP "\(bu" 4
 \fBlockfile_checksums\fR (\fBBUNDLE_LOCKFILE_CHECKSUMS\fR): Whether Bundler should include a checksums section in new lockfiles, to protect from compromised gem sources\. Defaults to true\. Bundler's own checksum is only included when its \fB\.gem\fR file is cached, which may not be the case when Bundler is installed as a default gem\.
@@ -161,7 +163,7 @@ The store can also be selected per host with \fBcredential_store\.<host>\fR (\fB
 .IP "\(bu" 4
 \fBno_install_plugin\fR (\fBBUNDLE_NO_INSTALL_PLUGIN\fR): Whether Bundler should skip installing RubyGems plugins during installation\. When set, plugin files are not written to the plugins directory\. To install plugins later, unset this setting and run \fBbundle pristine <gem>\fR\.
 .IP "\(bu" 4
-\fBno_prune\fR (\fBBUNDLE_NO_PRUNE\fR): Whether Bundler should leave outdated gems unpruned when caching\.
+\fBno_prune\fR (\fBBUNDLE_NO_PRUNE\fR): Deprecated name for \fBkeep_outdated_cache\fR\. Each priority level is checked for \fBkeep_outdated_cache\fR and then for \fBno_prune\fR, and the first value found wins\. \fBno_prune\fR will be removed in Bundler 5\.
 .IP "\(bu" 4
 \fBonly\fR (\fBBUNDLE_ONLY\fR): A space\-separated list of groups to install only gems of the specified groups\. Please check carefully if you want to install also gems without a group, because they get put inside \fBdefault\fR group\. For example \fBonly test:default\fR will install all gems specified in test group and without one\.
 .IP "\(bu" 4
@@ -172,6 +174,8 @@ The store can also be selected per host with \fBcredential_store\.<host>\fR (\fB
 \fBplugins\fR (\fBBUNDLE_PLUGINS\fR): Enable Bundler's experimental plugin system\.
 .IP "\(bu" 4
 \fBprefer_patch\fR (\fBBUNDLE_PREFER_PATCH\fR): Prefer updating only to next patch version during updates\. Makes \fBbundle update\fR calls equivalent to \fBbundler update \-\-patch\fR\.
+.IP "\(bu" 4
+\fBprune\fR (\fBBUNDLE_PRUNE\fR): A space\-separated or \fB:\fR\-separated list of Bundler\-managed artifacts to delete after a successful \fBbundle install\fR, \fBbundle update\fR or \fBbundle cache\fR, and on \fBbundle clean\fR\. \fBcache\fR removes the download cache under the bundle path, which holds both the cached \fB\.gem\fR files and the git mirrors\. \fBgit\fR removes the \fB\.git\fR directory of every checked out git gem\. Any value that is not a category name is read as a boolean, so \fBBUNDLE_PRUNE=1\fR selects every category and keeps doing so as categories are added\. This is meant for container images and other throwaway environments\. \fBThe setting only takes effect when a bundle path is set\.\fR Without one Bundler installs into the system gem directory, where the cache is shared with RubyGems and holds gem files Bundler never put there, so pruning is skipped with a warning\. Set a path with \fBBUNDLE_PATH\fR or \fBbundle config set path <dir>\fR\. A pruned artifact comes back only when Bundler has to install that gem again, so a later \fBbundle install\fR does not restore it on its own\. \fBbundle install \-\-redownload\fR does, and \fBbundle pristine\fR works once it has, though with \fBprune\fR still set the reinstall prunes again at the end\.
 .IP "\(bu" 4
 \fBredirect\fR (\fBBUNDLE_REDIRECT\fR): The number of redirects allowed for network requests\. Defaults to \fB5\fR\.
 .IP "\(bu" 4

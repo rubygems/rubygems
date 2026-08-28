@@ -499,6 +499,20 @@ if you believe they were disclosed to a third party.
     assert_equal false, @cfg.verbose
   end
 
+  def test_gemrc_coerces_only_exact_boolean_spellings
+    File.open @temp_conf, "w" do |fp|
+      fp.puts ":ssl_client_cert: truecert"
+      fp.puts ":ssl_ca_cert: /home/me/certs-false"
+      fp.puts ":verbose: false"
+    end
+
+    util_config_file
+
+    assert_equal "truecert", @cfg.ssl_client_cert
+    assert_equal "/home/me/certs-false", @cfg.ssl_ca_cert
+    assert_equal false, @cfg.verbose
+  end
+
   def test_load_ssl_verify_mode_from_config
     File.open @temp_conf, "w" do |fp|
       fp.puts ":ssl_verify_mode: 1"

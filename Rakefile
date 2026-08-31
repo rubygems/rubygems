@@ -787,9 +787,9 @@ namespace :bundler do
   end
 end
 
-Rake::Task[:test].enhance do
-  Rake::Task["coverage:report"].reenable
-  Rake::Task["coverage:report"].invoke end
-Rake::Task["spec:regular"].enhance do
-  Rake::Task["coverage:report"].reenable
-  Rake::Task["coverage:report"].invoke end
+[:test, :spec, "spec:regular"].each do |name|
+  Rake::Task[name].enhance do
+    Rake::Task["coverage:report"].reenable
+    Rake::Task["coverage:report"].invoke
+  end
+end

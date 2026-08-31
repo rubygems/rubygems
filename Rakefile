@@ -108,18 +108,18 @@ task "coverage:report" do
   $stdout = File.open(File::NULL, "w")
   SimpleCov.collate Dir[resultset] do
     coverage_dir "coverage"
-    add_filter "/test/"
-    add_filter "/spec/"
-    add_filter "/tool/"
-    add_filter "/lib/rubygems/vendor/"
-    add_filter "/lib/bundler/vendor/"
-    add_filter "/tmp/"
-    add_filter ".gemspec"
+    skip "/test/"
+    skip "/spec/"
+    skip "/tool/"
+    skip "/lib/rubygems/vendor/"
+    skip "/lib/bundler/vendor/"
+    skip "/tmp/"
+    skip ".gemspec"
 
-    add_group "RubyGems" do |src|
+    group "RubyGems" do |src|
       src.filename.include?("/lib/rubygems/") || src.filename.end_with?("/lib/rubygems.rb")
     end
-    add_group "Bundler" do |src|
+    group "Bundler" do |src|
       src.filename.include?("/lib/bundler/") || src.filename.end_with?("/lib/bundler.rb")
     end
   end

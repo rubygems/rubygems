@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.0.20 / 2026-09-02
+
+### Enhancements:
+
+* Print a release notes link instead of the whole changelog on `gem update --system`. Pull request [#9794](https://github.com/ruby/rubygems/pull/9794) by hsbt
+* Installs bundler 4.0.20 as a default gem.
+
+### Bug fixes:
+
+* Only coerce exact true and false gemrc values to booleans. Pull request [#9822](https://github.com/ruby/rubygems/pull/9822) by hsbt
+* Make the gem CLI work under RUBY_BOX=1. Pull request [#9810](https://github.com/ruby/rubygems/pull/9810) by hsbt
+
+### Documentation:
+
+* Document and test all available gemrc configuration keys. Pull request [#9568](https://github.com/ruby/rubygems/pull/9568) by junaruga
+
 ## 4.0.19 / 2026-08-20
 
 ### Enhancements:

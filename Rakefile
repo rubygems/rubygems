@@ -70,6 +70,7 @@ Rake::TestTask.new do |t|
   t.ruby_opts << "-rdevkit" if RbConfig::CONFIG["host_os"].include?("mingw")
 
   t.libs << "test"
+  t.libs << "bundler/lib"
   t.test_files = FileList["test/**/test_*.rb"]
 end
 

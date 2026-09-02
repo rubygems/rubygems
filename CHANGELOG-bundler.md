@@ -1,5 +1,27 @@
 # Changelog
 
+## 4.0.20 / 2026-09-02
+
+### Enhancements:
+
+* Avoid duplicate relative path prefix in bundle exec. Pull request [#9596](https://github.com/ruby/rubygems/pull/9596) by samuel-williams-shopify
+* Follow renamed default branch in git sources. Pull request [#9813](https://github.com/ruby/rubygems/pull/9813) by hsbt
+* Bundler::Source::Git: avoid re-fetching the repo. Pull request [#9806](https://github.com/ruby/rubygems/pull/9806) by byroot
+* Show the newest out-of-cooldown version in bundle outdated. Pull request [#9803](https://github.com/ruby/rubygems/pull/9803) by hsbt
+
+### Bug fixes:
+
+* Error out when `bundle init --gemspec` gets no specification. Pull request [#9818](https://github.com/ruby/rubygems/pull/9818) by hsbt
+* Fix relative gemspec paths being expanded twice. Pull request [#9814](https://github.com/ruby/rubygems/pull/9814) by hsbt
+* Fix gemspec evaluation under Ruby::Box. Pull request [#9809](https://github.com/ruby/rubygems/pull/9809) by hsbt
+* Fix release date extraction for the current changelog header format. Pull request [#9767](https://github.com/ruby/rubygems/pull/9767) by meganemura
+* Resolve globbed entries literally in Gem::Util.glob_files_in_dir. Pull request [#9802](https://github.com/ruby/rubygems/pull/9802) by hsbt
+* Preserve native extensions during implicit clean. Pull request [#9800](https://github.com/ruby/rubygems/pull/9800) by sjh9714
+
+### Documentation:
+
+* Clarify :path expectations and cross-link platform docs in man pages. Pull request [#9724](https://github.com/ruby/rubygems/pull/9724) by hsbt
+
 ## 4.0.19 / 2026-08-20
 
 ### Enhancements:

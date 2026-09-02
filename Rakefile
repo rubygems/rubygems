@@ -188,10 +188,10 @@ task postrelease: %w[upload guides:publish blog:publish bundler:build_metadata:c
 
 desc "Check for deprecated methods with expired deprecation horizon"
 task :check_deprecations do
-  if v.segments[1] == 0 && v.segments[2] == 0
+  if v.segments[2] == 0
     sh("bin/rubocop -r ./tool/cops/deprecations --only Rubygems/Deprecations lib")
   else
-    puts "Skipping deprecation checks since not releasing a major version."
+    puts "Skipping deprecation checks since not releasing a major or minor version."
   end
 end
 

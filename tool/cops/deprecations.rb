@@ -15,25 +15,34 @@ module RuboCop
       #   # the `deprecate` call is fully removed
       #
       class Deprecations < Base
-        MSG = "Remove `%<method_name>s` calls for the next major release."
+        MSG = "Remove `%<method_name>s` calls whose deprecation horizon has been reached."
         RESTRICT_ON_SEND = [:rubygems_deprecate, :rubygems_deprecate_command].freeze
 
         def on_send(node)
-          if node.method_name == :rubygems_deprecate && node.arguments.size >= 3
-            version_arg = node.arguments[2]
-            if version_arg&.str_type?
-              target_version = version_arg.str_content
-              return if current_version < Gem::Version.new(target_version)
-            end
-          end
+          return unless expired?(horizon_of(node))
 
           add_offense(node, message: format(MSG, method_name: node.method_name))
         end
 
         private
 
+        # Prereleases compare lower than their final version, so the release
+        # segments alone are used to make 4.1.0.beta1 expire a "4.1" horizon.
         def current_version
-          @current_version ||= Gem::Version.new(Gem::VERSION)
+          @current_version ||= Gem::Version.new(Gem::VERSION).release
+        end
+
+        def expired?(horizon)
+          horizon ? current_version >= horizon : major_release?
+        end
+
+        def horizon_of(node)
+          version_arg = node.method_name == :rubygems_deprecate ? node.arguments[2] : node.arguments[0]
+          Gem::Version.new(version_arg.str_content) if version_arg&.str_type?
+        end
+
+        def major_release?
+          current_version.segments[1..].all?(&:zero?)
         end
       end
     end

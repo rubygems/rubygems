@@ -33,8 +33,8 @@ Gem::Specification.new do |s|
     "LICENSE.txt", "doc/MAINTAINERS.txt",
     "MIT.txt", "Manifest.txt", "README.md",
     "doc/UPGRADING.md", "doc/POLICIES.md", "CODE_OF_CONDUCT.md",
-    "CONTRIBUTING.md", "LICENSE-bundler.md", "README-bundler.md",
-    "hide_lib_for_update/note.txt", *Dir["lib/bundler/man/*.1", base: __dir__]
+    "CONTRIBUTING.md", "hide_lib_for_update/note.txt",
+    *Dir["lib/bundler/man/*.1", base: __dir__]
   ]
 
   s.required_ruby_version = Gem::Requirement.new(">= 3.2.0")

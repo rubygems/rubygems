@@ -69,9 +69,7 @@ See [UPGRADING](doc/UPGRADING.md) for more details and alternative instructions.
 
 ## Release policy
 
-RubyGems and Bundler are released in sync, although they do not share their
-major version number. It is planned that also their major version numbers will
-be sync'ed in the future.
+RubyGems and Bundler share a version number and are released together.
 
 The release policy is somewhat similar to the release policy of Ruby itself:
 
@@ -102,7 +100,7 @@ for letting the RubyGems team know about bugs or problems you're having is
 
 ### Bundler Compatibility
 
-See https://bundler.io/compatibility for known issues.
+See https://guides.rubygems.org/bundler-compatibility/ for known issues.
 
 ### Supporting
 

@@ -9,7 +9,7 @@ assignees: ''
 
 <!--
 
-Thank you for contributing to the rubygems) repository, and specifically to the Bundler gem.
+Thank you for contributing to the rubygems repository, and specifically to the Bundler gem.
 
 Please fill in the following sections so we can process your issue as fast as possible
 

@@ -31,6 +31,10 @@ module Gem
         false
       end
 
+      def self.widened?(value)
+        false
+      end
+
       def self.eligible?(spec, validate_ruby_abi: true)
         false
       end
@@ -41,6 +45,14 @@ module Gem
 
       def self.content_addressed_row?(suffix, platform, required_ruby_version = nil, validate_ruby_abi: true)
         false
+      end
+    end
+  end
+
+  unless Gem::ContentAddress.respond_to?(:widened?)
+    module ContentAddress
+      def self.widened?(value)
+        match?(value) && value.length > DEFAULT_LENGTH
       end
     end
   end

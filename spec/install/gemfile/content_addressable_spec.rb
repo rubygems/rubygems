@@ -80,7 +80,7 @@ RSpec.describe "bundle install with content-addressable gems", :compact_index, r
       short_cache = Dir[default_bundle_path("cache", "mygem-1.0-*.gem").to_s].first
       short_address = File.basename(short_cache, ".gem").rpartition("-").last
       short_gem_dir = default_bundle_path("gems", "mygem-1.0-#{short_address}")
-      short_gemspec = default_bundle_path("specifications", "mygem-1.0-#{short_address}.gemspec")
+      short_gemspec = default_bundle_path("specifications", current_abi, "mygem-1.0-#{short_address}.gemspec")
 
       expect(short_gem_dir).to exist
       expect(short_gemspec).to exist
@@ -101,7 +101,7 @@ RSpec.describe "bundle install with content-addressable gems", :compact_index, r
       bundle "install --redownload", artifice: "compact_index_v2", env: { "BUNDLER_SPEC_GEM_REPO" => gem_repo2.to_s }
 
       expect(default_bundle_path("gems", "mygem-1.0-#{widened_address}")).to exist
-      expect(default_bundle_path("specifications", "mygem-1.0-#{widened_address}.gemspec")).to exist
+      expect(default_bundle_path("specifications", current_abi, "mygem-1.0-#{widened_address}.gemspec")).to exist
       expect(default_bundle_path("cache", "mygem-1.0-#{widened_address}.gem")).to exist
       expect(short_gem_dir).not_to exist
       expect(short_gemspec).not_to exist
@@ -147,7 +147,7 @@ RSpec.describe "bundle install with content-addressable gems", :compact_index, r
 
       expect(lockfile).to include("mygem (1.0-x86_64-linux) #{widened_address}")
       expect(default_bundle_path("gems", "mygem-1.0-#{widened_address}")).to exist
-      expect(default_bundle_path("specifications", "mygem-1.0-#{widened_address}.gemspec")).to exist
+      expect(default_bundle_path("specifications", current_abi, "mygem-1.0-#{widened_address}.gemspec")).to exist
       expect(default_bundle_path("cache", "mygem-1.0-#{widened_address}.gem")).to exist
       expect(lockfile).not_to match(/mygem \(1\.0-x86_64-linux\) #{short_address}\s/)
     end

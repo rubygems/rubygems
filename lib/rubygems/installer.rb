@@ -11,6 +11,7 @@ require_relative "exceptions"
 require_relative "package"
 require_relative "ext"
 require_relative "user_interaction"
+require_relative "uninstaller"
 
 ##
 # The installer installs the files contained in the .gem into the Gem.home.
@@ -317,6 +318,10 @@ class Gem::Installer
     load_plugin unless options[:install_plugin] == false
 
     run_post_install_hooks
+
+    if Gem::ContentAddress.widened?(spec.content_address)
+      remove_stale_matching_gems
+    end
 
     spec
   rescue Errno::EACCES => e
@@ -998,6 +1003,41 @@ class Gem::Installer
 
   def incompatible_abi_install?
     Gem::ContentAddress.content_addressed?(spec) && spec.ruby_abi != Gem.ruby_abi
+  end
+
+  def remove_stale_matching_gems
+    require "digest"
+    incoming_sha = Digest::SHA256.file(gem).hexdigest
+
+    canonical_gem_home = File.exist?(gem_home) ? File.realpath(gem_home) : gem_home
+
+    spec_dirs = [
+      File.join(canonical_gem_home, "specifications"),
+      Gem::SpecificationRecord.specification_dir_for(spec, canonical_gem_home),
+    ].uniq
+
+    cleanup_specs = spec_dirs.flat_map do |dir|
+      Gem::Util.glob_files_in_dir("*.gemspec", dir).filter_map do |path|
+        Gem::Specification.load(path)
+      end
+    end
+
+    cleanup_specs.each do |installed_spec|
+      next unless installed_spec.name == spec.name
+      next unless installed_spec.version == spec.version
+      next unless installed_spec.platform == spec.platform
+      next unless installed_spec.ruby_abi == spec.ruby_abi
+      next unless installed_spec.content_address&.length == Gem::ContentAddress::DEFAULT_LENGTH
+      next unless spec.content_address.start_with?(installed_spec.content_address)
+      next unless File.exist?(installed_spec.cache_file)
+      installed_sha = Digest::SHA256.file(installed_spec.cache_file).hexdigest
+      next unless installed_sha == incoming_sha
+
+      uninstaller = Gem::Uninstaller.new(nil, install_dir: canonical_gem_home)
+      uninstaller.remove(installed_spec)
+      FileUtils.rm_f installed_spec.build_info_file
+      Gem::Specification.remove_spec(installed_spec) unless @install_dir
+    end
   end
 
   def assign_content_address

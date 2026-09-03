@@ -1,12 +1,12 @@
 # ruby/rubygems Policies
 
-This document is an attempt to record the policies and processes that are used to govern the Bundler project--it's not fixed or permanent, and will likely evolve as events warrant.
+This document is an attempt to record the policies and processes that are used to govern this project--it's not fixed or permanent, and will likely evolve as events warrant.
 
 ## Our Goals
 
 0. Treat everyone like a valuable human being, worthy of respect and empathy. No exceptions.
-1. Strive to empower users, the Ruby developers who use Bundler. For example, there is no such thing as user error, only insufficient UX design.
-2. Strive to empower Bundler contributors, as long as it does not harm users. For example, potential contributors should be able to set up a complete development and testing environment with a single command.
+1. Strive to empower users, the Ruby developers who use RubyGems and Bundler. For example, there is no such thing as user error, only insufficient UX design.
+2. Strive to empower contributors, as long as it does not harm users. For example, potential contributors should be able to set up a complete development and testing environment with a single command.
 3. Strive to empower maintainers, as long as it does not harm contributors or users. For example, automating issue triage to reduce repetitive work for maintainers, as long as users with problems are not worse off.
 
 These policies are intended to be examples of how to apply these goals, and we realize that we can't possibly cover every edge case or loophole. In any case where policies turn out to conflict with these goals, the goals should win.
@@ -23,8 +23,8 @@ Issues will be handled as soon as possible, which may take some time. Including 
 
 Contributions to RubyGems are made via GitHub pull requests, which must be
 approved by a project committer other than the author. To approve a PR, a
-maintainer can use GitHubs PR review feature. After that, if the original author
-is happy to merge the PR, she can press the merge button.
+maintainer can use GitHub's PR review feature. After that, if the original author
+is happy to merge the PR, they can press the merge button.
 
 Anyone is welcome to [contribute](../CONTRIBUTING.md). Contributed code will be released under the same license as the existing codebase.
 
@@ -95,7 +95,7 @@ before doing so, so that we can help find the right APIs.
 
 ## Discussing large changes
 
-Large changes often benefit from being written out more completely, read by others, and discussed. [GitHub Discussions](https://github.com/rubygems/rubygems/discussions) is the preferred place for that to happen.
+Large changes often benefit from being written out more completely, read by others, and discussed. [GitHub Discussions](https://github.com/ruby/rubygems/discussions) is the preferred place for that to happen.
 
 ## Committer Access
 
@@ -109,13 +109,13 @@ Contributors who have contributed regularly for more than six months (or impleme
 
 ## Enforcement guidelines
 
-First off, Bundler's policies and enforcement of those policies are subsidiary to [Bundler's code of conduct](https://github.com/ruby/rubygems/blob/master/CODE_OF_CONDUCT.md) in any case where they conflict. The first priority is treating human beings with respect and empathy, and figuring out project guidelines and sticking to them will always come after that.
+First off, these policies and their enforcement are subsidiary to the [code of conduct](https://github.com/ruby/rubygems/blob/master/CODE_OF_CONDUCT.md) in any case where they conflict. The first priority is treating human beings with respect and empathy, and figuring out project guidelines and sticking to them will always come after that.
 
 When it comes to carrying out our own policies, we're all regular humans trying to do the best we can. There will probably be times when we don't stick to our policies or goals. If you notice a discrepancy between real-life actions and these policies and goals, please bring it up! We want to make sure that our actions and our policies line up, and that our policies exemplify our goals.
 
 Policies are not set in stone, and may be revised if policy violations are found to be in the spirit of the project goals. Likewise, actions that violate the spirit of the project goals will be considered policy violations, and enforcement action will be taken. We're not interested in rules-lawyering, and we will take action when needed to ensure that everyone feels safe and included.
 
-If you are comfortable reporting issues to the entire Bundler team, please send an email to team@bundler.io. If you are not comfortable reporting to the entire team, for any reason, please check the [maintainers team list](https://bundler.io/team) and use email, Twitter, or Slack to report to a single maintainer of your choice. Anyone violating a policy or goal is expected to cooperate with the team (and the reporter, if they request it) to resolve the issue in a way that follows the project goals.
+Please report policy violations by email to conduct@rubygems.org. Anyone violating a policy or goal is expected to cooperate with the team (and the reporter, if they request it) to resolve the issue in a way that follows the project goals.
 
 ## Team changes
 
@@ -128,28 +128,13 @@ Interested in adding someone to the team? Here's the process.
 3. The nominator asks the potential member if they would like to join the team.
 4. The nominator also sends the candidate a link to [POLICIES](POLICIES.md) as an orientation for being on the team.
 5. If the potential member accepts:
-    - Invite them to the maintainers Slack channel
-    - Add them to the [maintainers team][org_team] on GitHub
-    - Add them to the [Team page][team] on bundler.io, in the [maintainers list][maintainers]
-    - Add them to the [list of team members][list] in `contributors.rake`
-    - Add them to the authors list in `bundler.gemspec` && `rubygems-update.gemspec`
-    - Add them to the owners list on RubyGems.org by running
-      ```
-      $ gem owner -a EMAIL bundler
-      ```
+    - Add them to the [maintainers list][team]
 
 ### Removing a team member
 
 When team members choose to retire, here's how to remove someone from the team.
 
-- Remove them from the owners list on RubyGems.org by running
-  ```
-  $ gem owner -r EMAIL bundler
-  ```
-- Remove their entry on the [Team page][team] on bundler.io, in the [maintainers list][maintainers]
-- Remove them from the [list of team members][list] in `contributors.rake`
-- Remove them from the [maintainers team][org_team] on GitHub
-- Remove them from the maintainers Slack channel
+- Remove them from the [maintainers list][team]
 
 ## Changing These Policies
 
@@ -159,7 +144,4 @@ primarily volunteer-driven which limits the ability to provide long-term
 support. By joining [Ruby Central](https://rubycentral.org/#/portal/signup) you
 can help extend support for older RubyGems versions.
 
-[org_team]: https://github.com/orgs/rubygems/teams/maintainers/members
-[team]: https://bundler.io/contributors.html
-[maintainers]: https://github.com/rubygems/bundler-site/blob/f00eb65da0697c2cb0e7b4d6e5ba47ecc1538eb2/source/contributors.html.haml#L25
-[list]: https://github.com/rubygems/bundler-site/blob/f00eb65da0697c2cb0e7b4d6e5ba47ecc1538eb2/lib/tasks/contributors.rake#L8
+[team]: https://guides.rubygems.org/contributing/#core-projects

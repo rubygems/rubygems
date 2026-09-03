@@ -2,11 +2,9 @@ CHANGELOG-bundler.md
 CHANGELOG.md
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
-LICENSE-bundler.md
 LICENSE.txt
 MIT.txt
 Manifest.txt
-README-bundler.md
 README.md
 SECURITY.md
 bundler.gemspec

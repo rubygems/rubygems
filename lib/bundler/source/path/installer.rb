@@ -57,8 +57,20 @@ module Bundler
           SharedHelpers.filesystem_access(@extension_build_dir, :create) do |path|
             FileUtils.rm_rf(path)
             FileUtils.mkdir_p(path)
-            FileUtils.cp_r("#{@spec.full_gem_path}/.", path)
+            FileUtils.cp_r(stage_extension_source_entries, path)
           end
+        end
+
+        def stage_extension_source_entries
+          source_root = Pathname(@spec.full_gem_path)
+          destination = Pathname(@extension_build_dir)
+
+          entries = source_root.children(false).map {|entry| source_root.join(entry).to_s }
+          return entries unless destination.to_s.start_with?(source_root.to_s + File::SEPARATOR)
+
+          relative_destination = destination.relative_path_from(source_root)
+          nested_entry = source_root.join(relative_destination.each_filename.first).to_s
+          entries.reject {|entry| entry == nested_entry }
         end
 
         def staged_spec(spec)

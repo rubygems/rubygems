@@ -85,6 +85,41 @@ RSpec.describe "bundle install with path sources that have extensions" do
       expect(checkout_files).to eq(pristine_checkout)
     end
 
+    it "builds path gems from the bundled app without recursing into the bundle path" do
+      build_lib "app", "1.0", path: bundled_app do |s|
+        s.extensions = ["ext/extconf.rb"]
+        s.write "ext/extconf.rb", <<-RUBY
+          require "mkmf"
+          create_makefile("app_c")
+        RUBY
+        s.write "ext/app.c", <<-C
+          #include "ruby.h"
+
+          void Init_app_c(void) {}
+        C
+        s.write "lib/app.rb", "require 'app_c'"
+      end
+
+      bundle_config "path vendor/bundle"
+
+      install_gemfile <<-G
+        source "https://gem.repo1"
+        gem "app", :path => "."
+      G
+
+      expect(bundled_app("vendor/bundle")).to be_directory
+
+      recursively_copied_bundle_paths = Pathname.glob(
+        bundled_app("vendor/bundle/**/path_extensions/**/vendor")
+      )
+      expect(recursively_copied_bundle_paths).to be_empty
+
+      expect(Pathname.glob(vendored_gems("bundler/gems/extensions/*/*/app-1.0-*"))).to have_attributes(size: 1)
+
+      run "require 'app'; puts 'ok'"
+      expect(out).to eq("ok")
+    end
+
     it "puts the build directory ahead of the gem's own load paths" do
       install_gemfile gemfile_source
 

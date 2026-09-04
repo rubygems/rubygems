@@ -433,7 +433,10 @@ class Release
   # Pull requests merged into `base` whose merge commit is reachable in
   # `from..to`.
   def pull_requests_merged_into(base, from, to)
-    reachable = Set.new(`git rev-list #{from}..#{to}`.split("\n"))
+    commits = `git rev-list #{from}..#{to}`
+    raise "Failed to list the commits in #{from}..#{to}" unless $?.success?
+
+    reachable = Set.new(commits.split("\n"))
 
     merged_pull_requests(base, from).select {|pull| reachable.include?(pull.merge_commit_sha) }
   end
@@ -443,7 +446,10 @@ class Release
   # query small, since reachability is what makes the result exact, so it is
   # deliberately loose: the UTC day before that commit.
   def merged_pull_requests(base, since_ref)
-    since = (Time.iso8601(`git log -1 --format=%cI #{since_ref}`.strip) - 86_400).utc.strftime("%Y-%m-%d")
+    committed_at = `git log -1 --format=%cI #{since_ref}`.strip
+    raise "Failed to resolve #{since_ref}" unless $?.success?
+
+    since = (Time.iso8601(committed_at) - 86_400).utc.strftime("%Y-%m-%d")
 
     json = `gh pr list --repo ruby/rubygems --state merged --base #{base} --search 'merged:>=#{since}' --limit #{MERGED_PULL_REQUEST_LIMIT} --json number,title,labels,mergeCommit,mergedAt,author,url`
     raise "Failed to list pull requests merged into #{base} since #{since}" unless $?.success?

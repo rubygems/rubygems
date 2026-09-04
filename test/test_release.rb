@@ -60,6 +60,22 @@ class ReleaseTest < Test::Unit::TestCase
     end
   end
 
+  def test_pull_requests_merged_into_fails_when_the_range_does_not_resolve
+    error = assert_raise(RuntimeError) do
+      release.send(:pull_requests_merged_into, "master", "no-such-ref-for-a-test", "HEAD")
+    end
+
+    assert_include error.message, "no-such-ref-for-a-test..HEAD"
+  end
+
+  def test_merged_pull_requests_fails_when_the_bounding_ref_does_not_resolve
+    error = assert_raise(RuntimeError) do
+      release.send(:merged_pull_requests, "master", "no-such-ref-for-a-test")
+    end
+
+    assert_include error.message, "no-such-ref-for-a-test"
+  end
+
   private
 
   # A minor release, so that the constructor derives the previous release tag

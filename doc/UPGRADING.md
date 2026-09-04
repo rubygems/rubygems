@@ -1,4 +1,4 @@
-# How to upgrade/downgrade Rubygems and Bundler:
+# How to upgrade/downgrade RubyGems and Bundler:
 
 ## Upgrade Recipe
 
@@ -9,10 +9,10 @@
 
 ## Downgrade Recipe
 
-    $ gem update --system 3.7.2
+    $ gem update --system 4.0.20
 
-    $ gem install bundler -v 2.7.2
-    $ bundle update --bundler=2.7.2
+    $ gem install bundler -v 4.0.20
+    $ bundle update --bundler=4.0.20
 
 ## Install a pre-release version
 

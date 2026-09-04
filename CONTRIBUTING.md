@@ -12,8 +12,7 @@ Before submitting a contribution:
 
 1. **Set up your development environment** - See [GETTING_STARTED.md](doc/GETTING_STARTED.md) for detailed setup instructions
 2. **Understand the repository structure** - This is a monorepo containing both RubyGems and Bundler:
-   - RubyGems code is in the root `lib/` and `exe/` directories
-   - Bundler code is in the `bundler/` subdirectory
+   - RubyGems and Bundler share the root `lib/` and `exe/` directories, with Bundler code under `lib/bundler/`
 
 ## Contribution Guidelines
 
@@ -42,7 +41,7 @@ We track [good first issues](https://github.com/ruby/rubygems/issues?q=is%3Aissu
 
 - **Test prerelease versions**: Run `gem install bundler --pre` and report any issues
 - **Report bugs or suggest features**: [Open an issue](https://github.com/ruby/rubygems/issues/new?labels=Bundler&template=bundler-related-issue.md) (see [new features documentation](doc/NEW_FEATURES.md))
-- **Improve documentation**: Contribute to the [Bundler website](https://bundler.io) or [man pages](https://bundler.io/man/bundle.1.html)
+- **Improve documentation**: Contribute to the [guides](https://guides.rubygems.org/) or [man pages](https://guides.rubygems.org/command-reference/bundle/)
 - **Triage issues**: [Check issue completeness](doc/ISSUE_TRIAGE.md) and help close incomplete reports
 - **Write tests**: Add failing tests for [reported bugs](https://github.com/ruby/rubygems/issues) or backfill missing test coverage
 - **Review pull requests**: Provide feedback on [pull requests](https://github.com/ruby/rubygems/pulls)
@@ -59,7 +58,7 @@ Community involvement is vital to both projects:
 
 - **Answer questions**: Help others on the [issue tracker](https://github.com/ruby/rubygems/issues) or [Stack Overflow](https://stackoverflow.com/questions/tagged/bundler) (questions about RubyGems, Bundler, and Ruby in general are welcome)
 - **Share knowledge**: Write blog posts, create examples, make videos, or share your experiences
-- **Improve documentation**: Suggest improvements to [bundler.io](https://bundler.io) via issues or pull requests on the [bundler-site](https://github.com/rubygems/bundler-site) repository
+- **Improve documentation**: Suggest improvements to [guides.rubygems.org](https://guides.rubygems.org/) via issues or pull requests on the [guides](https://github.com/rubygems/guides) repository
 
 ## Supporting the Projects
 

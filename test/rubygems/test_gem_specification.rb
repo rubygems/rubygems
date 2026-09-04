@@ -2315,6 +2315,7 @@ dependencies: []
     expected = <<-SPEC
 # -*- encoding: utf-8 -*-
 # stub: a 2 ruby lib\0other
+# files: lib/code.rb
 
 Gem::Specification.new do |s|
   s.name = "a".freeze
@@ -2344,6 +2345,18 @@ end
     assert_equal @a2, same_spec
   end
 
+  def test_to_ruby_omits_files_stub_when_path_contains_newline
+    @a2.files = ["lib/code.rb", "lib/with\nnewline.rb"]
+
+    ruby_code = @a2.to_ruby
+
+    refute_includes ruby_code, "# files:"
+
+    same_spec = eval ruby_code
+
+    assert_equal @a2.files.sort, same_spec.files.sort
+  end
+
   def test_to_ruby_with_rsa_key
     require "rubygems/openssl"
     pend "openssl is missing" unless defined?(OpenSSL::PKey::RSA)
@@ -2355,6 +2368,7 @@ end
     expected = <<-SPEC
 # -*- encoding: utf-8 -*-
 # stub: a 2 ruby lib
+# files: lib/code.rb
 
 Gem::Specification.new do |s|
   s.name = "a".freeze
@@ -2432,10 +2446,13 @@ end
       @c1.instance_variable_get(:@require_paths).join "\u0000"
     extensions = @c1.extensions.join "\u0000"
 
+    files_stub = @c1.files.join("\0")
+
     expected = <<-SPEC
 # -*- encoding: utf-8 -*-
 # stub: a 1 #{Gem.win_platform? ? "x86-mswin32-60" : "x86-darwin-8"} #{stub_require_paths}
 # stub: #{extensions}
+# files: #{files_stub}
 
 Gem::Specification.new do |s|
   s.name = "a".freeze
@@ -3990,6 +4007,7 @@ Did you mean 'Ruby'?
     valid_ruby_spec = <<-EOF
 # -*- encoding: utf-8 -*-
 # stub: m 1 ruby lib
+# files: lib/code.rb
 
 Gem::Specification.new do |s|
   s.name = "m".freeze

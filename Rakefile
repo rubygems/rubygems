@@ -138,7 +138,7 @@ RDoc::Task.new rdoc: "docs", clobber_rdoc: "clobber_docs" do |doc|
 
   rdoc_files = Rake::FileList.new %w[lib]
   rdoc_files.add %w[CHANGELOG.md LICENSE.txt MIT.txt CODE_OF_CONDUCT.md CONTRIBUTING.md
-                    doc/MAINTAINERS.txt Manifest.txt doc/POLICIES.md README.md doc/UPGRADING.md CHANGELOG-bundler.md
+                    doc/MAINTAINERS.txt Manifest.txt doc/POLICIES.md README.md doc/UPGRADING.md
                     hide_lib_for_update/note.txt].map(&:freeze)
 
   doc.rdoc_files = rdoc_files
@@ -219,12 +219,11 @@ task :clear_package do
   rm_rf "pkg"
 end
 
-desc "Generates the RubyGems changelog for a specific target version"
+desc "Generates the changelog for a specific target version"
 task :generate_changelog, [:version] => [:install_release_dependencies] do |_t, opts|
   require_relative "tool/release"
 
-  Release.for_rubygems(opts[:version]).cut_changelog!
-  Rake::Task["bundler:generate_changelog"].invoke(opts[:version])
+  Release.new(opts[:version]).cut_changelog!
 end
 
 desc "Release rubygems-#{v}"
@@ -440,8 +439,7 @@ namespace "blog" do
     email = `git config --get user.email`.strip
 
     require_relative "tool/changelog"
-    rubygems_history = Changelog.for_rubygems(v.to_s)
-    bundler_history = Changelog.for_bundler(v.to_s)
+    history = Changelog.for_release(v.to_s)
 
     require "tempfile"
 
@@ -454,7 +452,7 @@ author: #{name}
 author_email: #{email}
 ---
 
-RubyGems #{v} includes #{rubygems_history.change_types_for_blog} and Bundler #{v} includes #{bundler_history.change_types_for_blog}.
+RubyGems and Bundler #{v} include #{history.change_types_for_blog}.
 
 To update to the latest RubyGems you can run:
 
@@ -465,13 +463,9 @@ To update to the latest Bundler you can run:
     gem install bundler [--pre]
     bundle update --bundler=#{v}
 
-## RubyGems Release Notes
+## Release Notes
 
-#{rubygems_history.release_notes_for_blog.join("\n")}
-
-## Bundler Release Notes
-
-#{bundler_history.release_notes_for_blog.join("\n")}
+#{history.release_notes_for_blog.join("\n")}
 
 ## Manual Installation
 
@@ -744,7 +738,6 @@ namespace :bundler do
   require_relative "lib/bundler/gem_helper"
   Bundler::GemHelper.install_tasks(name: "bundler")
   require_relative "spec/support/build_metadata"
-  require_relative "tool/release"
 
   # The rubygems release task tags the release as v#{version} and creates the
   # single GitHub release covering both RubyGems and Bundler, so bundler's
@@ -774,11 +767,6 @@ namespace :bundler do
 
   desc "Push to rubygems.org"
   task "release:rubygem_push" => ["man:check", "bundler:build_metadata"]
-
-  desc "Generates the Bundler changelog for a specific target version"
-  task :generate_changelog, [:version] => [:install_release_dependencies] do |_t, opts|
-    Release.for_bundler(opts[:version]).cut_changelog!
-  end
 
   namespace :release do
     task :check_ruby_version do

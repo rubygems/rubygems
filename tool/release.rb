@@ -1,8 +1,21 @@
 # frozen_string_literal: true
 
+require "json"
+require "time"
+
 require_relative "changelog"
 
 class Release
+  # The pull request data the release tooling consumes, built from a
+  # `gh pr list` record so that no per pull request API call is needed.
+  Label = Struct.new(:name)
+  User = Struct.new(:name, :login)
+  PullRequest = Struct.new(:number, :title, :html_url, :labels, :merged_at, :user, :merge_commit_sha)
+
+  # `gh pr list` refuses to return more than this many results, and truncates
+  # silently once the window holds more.
+  MERGED_PULL_REQUEST_LIMIT = 1000
+
   module GithubAPI
     def gh_client
       @gh_client ||= begin
@@ -272,7 +285,7 @@ class Release
     # another cherry-pick.
     prs = prs.reject {|pr| already_on_stable_branch?(pr) }
 
-    puts "The following unreleased prs were found:\n#{prs.map {|pr| "* #{pr.url}" }.join("\n")}"
+    puts "The following unreleased prs were found:\n#{prs.map {|pr| "* #{pr.html_url}" }.join("\n")}"
 
     prs.each do |pr|
       args = cherry_pick_args_for(pr)
@@ -280,7 +293,7 @@ class Release
 
       warn <<~MSG
 
-        Cherry-picking #{pr.url} failed. Opening a new shell to fix the errors manually. You can do the following now:
+        Cherry-picking #{pr.html_url} failed. Opening a new shell to fix the errors manually. You can do the following now:
 
         * If you'd like to include that PR in the release, fix conflicts manually, run `git add . && git cherry-pick --continue` once done, and if it succeeds, run `exit 0` to resume the release preparation.
         * If you don't want to include that PR in the release, run `git cherry-pick --abort` and then `exit 0` to skip it and resume.
@@ -397,8 +410,75 @@ class Release
     @relevant_pull_requests ||= unreleased_pull_requests.select {|pull| @changelog.labelled?(pull) }.sort_by(&:merged_at)
   end
 
+  # Pull requests included in this release. `mergeCommit.oid` is the commit a
+  # pull request leaves on its base branch under every merge strategy, so
+  # intersecting the merged pull requests with the local history answers
+  # "is this one included?" exactly, without asking the commit search index.
   def unreleased_pull_requests
-    @unreleased_pull_requests ||= scan_unreleased_pull_requests(unreleased_pr_ids)
+    @unreleased_pull_requests ||= begin
+      head = @level == :minor_or_major ? "HEAD" : "origin/master"
+      pulls = pull_requests_merged_into("master", @previous_release_tag, head)
+
+      # Dedicated backport PRs target the stable branch instead of master, so
+      # the scan above cannot see them and their changelog entries would
+      # otherwise be dropped from the release.
+      pulls += pull_requests_merged_into(@stable_branch, @last_release_tag, "origin/#{@stable_branch}") if @level == :patch
+
+      pulls.reject! {|pull| released_commit_shas.include?(pull.merge_commit_sha) } if @level == :patch
+
+      pulls.sort_by(&:merged_at)
+    end
+  end
+
+  # Pull requests merged into `base` whose merge commit is reachable in
+  # `from..to`.
+  def pull_requests_merged_into(base, from, to)
+    reachable = Set.new(`git rev-list #{from}..#{to}`.split("\n"))
+
+    merged_pull_requests(base, from).select {|pull| reachable.include?(pull.merge_commit_sha) }
+  end
+
+  # Merged pull requests targeting `base`, bounded to those merged no earlier
+  # than the commit `since_ref` points at. The bound exists only to keep the
+  # query small, since reachability is what makes the result exact, so it is
+  # deliberately loose: the UTC day before that commit.
+  def merged_pull_requests(base, since_ref)
+    since = (Time.iso8601(`git log -1 --format=%cI #{since_ref}`.strip) - 86_400).utc.strftime("%Y-%m-%d")
+
+    json = `gh pr list --repo ruby/rubygems --state merged --base #{base} --search 'merged:>=#{since}' --limit #{MERGED_PULL_REQUEST_LIMIT} --json number,title,labels,mergeCommit,mergedAt,author,url`
+    raise "Failed to list pull requests merged into #{base} since #{since}" unless $?.success?
+
+    pull_requests_from(json, "#{base} since #{since}")
+  end
+
+  # `gh pr list` truncates silently once a window holds more than its result
+  # cap, which would drop changelog entries without a word, so refuse a listing
+  # that reaches it rather than cutting a release from a partial one.
+  def pull_requests_from(json, window)
+    records = JSON.parse(json)
+
+    if records.size >= MERGED_PULL_REQUEST_LIMIT
+      raise "More than #{MERGED_PULL_REQUEST_LIMIT} pull requests were merged into #{window}, so the listing is truncated. Split the query into narrower date ranges."
+    end
+
+    records.map {|record| build_pull_request(record) }
+  end
+
+  def build_pull_request(record)
+    author = record["author"]
+    # `gh` reports a missing author name as an empty string, while the changelog
+    # entry template expects to fall back to the login when there is none.
+    name = author["name"]
+
+    PullRequest.new(
+      record["number"],
+      record["title"],
+      record["url"],
+      record["labels"].map {|label| Label.new(label["name"]) },
+      Time.iso8601(record["mergedAt"]),
+      User.new(name.to_s.empty? ? nil : name, author["login"]),
+      record["mergeCommit"]["oid"]
+    )
   end
 
   # True when the PR's merged commit is already reachable from the release
@@ -408,21 +488,12 @@ class Release
     system("git", "merge-base", "--is-ancestor", pr.merge_commit_sha, "HEAD", out: IO::NULL, err: IO::NULL)
   end
 
-  # Commits merged directly onto the stable branch since the last release, such
-  # as dedicated backport PRs that target the stable branch instead of being
-  # cherry-picked from master. They never land on master, so the master scan in
-  # `unreleased_pr_ids` cannot see them and their changelog entries would
-  # otherwise be dropped from the release.
-  def stable_branch_backport_commits
-    `git log --format=%H #{@last_release_tag}..origin/#{@stable_branch}`.split("\n").reject(&:empty?)
-  end
-
   # Source SHAs already cherry-picked onto the stable branch, derived from the
   # `(cherry picked from commit X)` footer that `git cherry-pick -x` records.
   # When the footer references a merge commit (PRs merged with "Create a merge
   # commit", picked with `-m 1`), also include the individual PR commits the
-  # merge introduced, otherwise `gh search prs` would still re-discover the PR
-  # through those commits left on master.
+  # merge introduced, so that a pull request is recognized as released no
+  # matter which of its commits the footer names.
   def released_commit_shas
     @released_commit_shas ||= begin
       log = `git log --format=%B #{@previous_release_tag}..origin/#{@stable_branch}`
@@ -435,52 +506,5 @@ class Release
       end
       shas
     end
-  end
-
-  def scan_unreleased_pull_requests(ids)
-    pulls = []
-    ids.each do |id|
-      pull = gh_client.pull_request("ruby/rubygems", id)
-      next unless pull.merged_at
-      # `gh search prs` can associate a PR with commits left behind by
-      # force-pushes that no longer match the merged HEAD. Confirm the PR is
-      # actually unreleased by comparing its merge commit SHA directly.
-      next if @level == :patch && released_commit_shas.include?(pull.merge_commit_sha)
-      pulls << pull
-    end
-    pulls
-  end
-
-  def unreleased_pr_ids
-    head = @level == :minor_or_major ? "HEAD" : "origin/master"
-    commits = `git log --format=%H #{@previous_release_tag}..#{head}`.split("\n")
-    commits.reject! {|sha| released_commit_shas.include?(sha) } if @level == :patch
-    commits.concat(stable_branch_backport_commits) if @level == :patch
-
-    # GitHub search API has a rate limit of 30 requests per minute for authenticated users
-    rate_limit = 28
-    # GitHub search API only accepts 250 characters per search query
-    batch_size = 15
-    sleep_duration = 60 # seconds
-
-    pr_ids = Set.new
-
-    commits.each_slice(batch_size).with_index do |batch, index|
-      puts "Processing batch #{index + 1}/#{(commits.size / batch_size.to_f).ceil}"
-      result = `gh search prs --repo ruby/rubygems #{batch.join(",")} --json number --jq '.[].number'`.strip
-      raise "gh search prs failed for batch #{index + 1}" unless $?.success?
-      unless result.empty?
-        result.split("\n").each do |pr_number|
-          pr_ids.add(pr_number.to_i)
-        end
-      end
-
-      if index != 0 && index % rate_limit == 0
-        puts "Sleeping for #{sleep_duration} seconds to avoid rate limiting..."
-        sleep(sleep_duration)
-      end
-    end
-
-    pr_ids.to_a
   end
 end

@@ -461,7 +461,9 @@ class Release
       raise "More than #{MERGED_PULL_REQUEST_LIMIT} pull requests were merged into #{window}, so the listing is truncated. Split the query into narrower date ranges."
     end
 
-    records.map {|record| build_pull_request(record) }
+    # GitHub reports no merge commit for a pull request whose merge commit is
+    # gone, and a commit that is gone is never reachable.
+    records.reject {|record| record["mergeCommit"].nil? }.map {|record| build_pull_request(record) }
   end
 
   def build_pull_request(record)

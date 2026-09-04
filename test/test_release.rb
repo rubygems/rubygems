@@ -36,6 +36,14 @@ class ReleaseTest < Test::Unit::TestCase
     assert_include error.message, "truncated"
   end
 
+  def test_pull_requests_from_skips_a_pull_request_whose_merge_commit_is_gone
+    json = listing([record, record("number" => 1, "mergeCommit" => nil)])
+
+    pulls = release.send(:pull_requests_from, json, "master since 2026-01-01")
+
+    assert_equal [9852], pulls.map(&:number)
+  end
+
   def test_pull_requests_merged_into_keeps_only_the_ones_whose_merge_commit_landed
     release = self.release
     landed = "a" * 40

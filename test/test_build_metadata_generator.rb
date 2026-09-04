@@ -23,7 +23,7 @@ class BuildMetadataGeneratorTest < Test::Unit::TestCase
     end
   end
 
-  def test_write_build_metadata_defaults_to_the_changelog_release_date
+  def test_write_build_metadata_defaults_to_today_in_the_release_date_format
     with_build_metadata_copy do |dir, file|
       Time.stub :now, Time.new(2020, 1, 1) do
         Spec::BuildMetadata.write_build_metadata(dir: dir)
@@ -41,7 +41,9 @@ class BuildMetadataGeneratorTest < Test::Unit::TestCase
       FileUtils.mkdir_p File.dirname(file)
       FileUtils.cp Spec::BuildMetadata.source_root.join("lib/bundler/build_metadata.rb"), file
 
-      yield dir, file
+      Spec::BuildMetadata.stub(:git_commit_sha, "abc1234") do
+        yield dir, file
+      end
     end
   end
 end

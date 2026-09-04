@@ -2,6 +2,38 @@
 
 require "psych"
 
+# Renders release headers from `header_template` in `.changelog.yml`. Callers
+# that need only the date, such as the build metadata written into the gem,
+# use #release_date so that every date stamped at release time is produced the
+# same way rather than read back out of a changelog.
+class ChangelogHeader
+  def self.for(config_key)
+    config = Psych.load_file(File.expand_path("../.changelog.yml", __dir__))[config_key]
+
+    new(config["header_template"], config["release_date_format"])
+  end
+
+  def initialize(template, date_format)
+    @template = template
+    @date_format = date_format
+  end
+
+  def format(version)
+    header = @template.gsub(/%new_version/, version.to_s)
+    return header unless @template.include?("%release_date")
+
+    header.gsub(/%release_date/, release_date)
+  end
+
+  def release_date
+    Time.now.strftime(@date_format)
+  end
+
+  def section_token
+    @template.match(/^(\S+\s+)/)[1]
+  end
+end
+
 class ChangelogEntry
   attr_reader :title, :template, :labels, :pull_request
 
@@ -154,13 +186,7 @@ class Changelog
   attr_reader :version
 
   def format_header
-    new_header = header_template.gsub(/%new_version/, version.to_s)
-
-    if header_template.include?("%release_date")
-      new_header = new_header.gsub(/%release_date/, Time.now.strftime(release_date_format))
-    end
-
-    new_header
+    header.format(version)
   end
 
   def format_entry_for(entry)
@@ -268,7 +294,11 @@ class Changelog
   end
 
   def release_section_token
-    header_template.match(/^(\S+\s+)/)[1]
+    header.section_token
+  end
+
+  def header
+    @header ||= ChangelogHeader.new(header_template, release_date_format)
   end
 
   def header_template

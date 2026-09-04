@@ -14,3 +14,21 @@ class ChangelogTest < Test::Unit::TestCase
     end
   end
 end
+
+class ChangelogHeaderTest < Test::Unit::TestCase
+  def setup
+    @header = ChangelogHeader.for("bundler")
+  end
+
+  def test_release_date
+    Time.stub :now, Time.new(2020, 1, 1) do
+      assert_equal "2020-01-01", @header.release_date
+    end
+  end
+
+  def test_format_stamps_the_header_with_the_release_date
+    Time.stub :now, Time.new(2020, 1, 1) do
+      assert_equal "## 9.9.9 / #{@header.release_date}", @header.format("9.9.9")
+    end
+  end
+end

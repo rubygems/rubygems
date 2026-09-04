@@ -75,10 +75,10 @@ module Bundler
 
       def install(spec, options = {})
         using_message = "Using #{version_message(spec, options[:previous_spec])} from #{self}"
-        using_message += " with native extensions" if missing_extensions?(spec)
+        using_message += " with native extensions" if build_extensions?(spec)
         using_message += " and installing its executables" unless spec.executables.empty?
         print_using_message using_message
-        generate_bin(spec, disable_extensions: !missing_extensions?(spec), build_args: options[:build_args])
+        generate_bin(spec, disable_extensions: !extensions_missing_for_build?(spec), build_args: options[:build_args])
         nil # no post-install message
       end
 
@@ -236,6 +236,12 @@ module Bundler
         return false unless extension_dir_for(spec)
 
         spec.missing_extensions?
+      end
+
+      def extensions_missing_for_build?(spec)
+        return false unless build_extensions?(spec)
+
+        !File.exist?(spec.gem_build_complete_path)
       end
 
       def extension_digest(spec)

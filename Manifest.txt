@@ -308,6 +308,7 @@ lib/bundler/worker.rb
 lib/rubygems.rb
 lib/rubygems/available_set.rb
 lib/rubygems/basic_specification.rb
+lib/rubygems/bundler_settings.rb
 lib/rubygems/bundler_version_finder.rb
 lib/rubygems/ci_detector.rb
 lib/rubygems/command.rb
@@ -357,6 +358,7 @@ lib/rubygems/compact_index_client/updater.rb
 lib/rubygems/config_file.rb
 lib/rubygems/cooldown.rb
 lib/rubygems/cooldown_option.rb
+lib/rubygems/cooldown_settings.rb
 lib/rubygems/core_ext/kernel_gem.rb
 lib/rubygems/core_ext/kernel_require.rb
 lib/rubygems/core_ext/kernel_warn.rb

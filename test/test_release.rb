@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "tmpdir"
+
 require_relative "../tool/release"
 require_relative "rubygems/helper"
 
@@ -45,17 +47,15 @@ class ReleaseTest < Test::Unit::TestCase
   end
 
   def test_pull_requests_merged_into_keeps_only_the_ones_whose_merge_commit_landed
-    release = self.release
-    landed = "a" * 40
-    json = listing([
-      record("number" => 1, "mergeCommit" => { "oid" => landed }),
-      record("number" => 2, "mergeCommit" => { "oid" => "b" * 40 }),
-    ])
-    pulls = release.send(:pull_requests_from, json, "master since 2026-01-01")
+    in_a_repo_with_two_commits do |first, second|
+      json = listing([
+        record("number" => 1, "mergeCommit" => { "oid" => second }),
+        record("number" => 2, "mergeCommit" => { "oid" => first }),
+      ])
+      pulls = release.send(:pull_requests_from, json, "master since 2026-01-01")
 
-    release.stub(:`, "#{landed}\n") do
       release.stub(:merged_pull_requests, pulls) do
-        assert_equal [1], release.send(:pull_requests_merged_into, "master", "v4.0.0", "HEAD").map(&:number)
+        assert_equal [1], release.send(:pull_requests_merged_into, "master", first, second).map(&:number)
       end
     end
   end
@@ -65,7 +65,29 @@ class ReleaseTest < Test::Unit::TestCase
   # A minor release, so that the constructor derives the previous release tag
   # from the version instead of shelling out to `git describe`.
   def release
-    Release.new("4.1.0")
+    @release ||= Release.new("4.1.0")
+  end
+
+  # `pull_requests_merged_into` resolves its range against the working
+  # directory, and CI checks out with no history to resolve one against.
+  def in_a_repo_with_two_commits
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        git("init")
+        git("commit", "--allow-empty", "-m", "first")
+        first = `git rev-parse HEAD`.strip
+        git("commit", "--allow-empty", "-m", "second")
+
+        yield first, `git rev-parse HEAD`.strip
+      end
+    end
+  end
+
+  def git(*args)
+    system(
+      "git", "-c", "user.name=Release Test", "-c", "user.email=test@example.com", "-c", "commit.gpgsign=false",
+      *args, out: IO::NULL, err: IO::NULL, exception: true
+    )
   end
 
   def listing(records)

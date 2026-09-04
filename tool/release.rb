@@ -12,8 +12,9 @@ class Release
   User = Struct.new(:name, :login)
   PullRequest = Struct.new(:number, :title, :html_url, :labels, :merged_at, :user, :merge_commit_sha)
 
-  # `gh pr list` refuses to return more than this many results, and truncates
-  # silently once the window holds more.
+  # `gh pr list` refuses to return more than this many results and truncates
+  # silently once a window holds more, so a listing that reaches the cap is
+  # refused rather than cut from a partial one.
   MERGED_PULL_REQUEST_LIMIT = 1000
 
   module GithubAPI
@@ -412,15 +413,15 @@ class Release
 
   # Pull requests included in this release. `mergeCommit.oid` is the commit a
   # pull request leaves on its base branch under every merge strategy, so
-  # intersecting the merged pull requests with the local history answers
-  # "is this one included?" exactly, without asking the commit search index.
+  # intersecting one listing with the local history answers "is this one
+  # included?" exactly, in place of a search per commit.
   def unreleased_pull_requests
     @unreleased_pull_requests ||= begin
       head = @level == :minor_or_major ? "HEAD" : "origin/master"
       pulls = pull_requests_merged_into("master", @previous_release_tag, head)
 
       # Dedicated backport PRs target the stable branch instead of master, so
-      # the scan above cannot see them and their changelog entries would
+      # the listing above cannot see them and their changelog entries would
       # otherwise be dropped from the release.
       pulls += pull_requests_merged_into(@stable_branch, @last_release_tag, "origin/#{@stable_branch}") if @level == :patch
 
@@ -430,8 +431,6 @@ class Release
     end
   end
 
-  # Pull requests merged into `base` whose merge commit is reachable in
-  # `from..to`.
   def pull_requests_merged_into(base, from, to)
     commits = `git rev-list #{from}..#{to}`
     raise "Failed to list the commits in #{from}..#{to}" unless $?.success?
@@ -441,10 +440,7 @@ class Release
     merged_pull_requests(base, from).select {|pull| reachable.include?(pull.merge_commit_sha) }
   end
 
-  # Merged pull requests targeting `base`, bounded to those merged no earlier
-  # than the commit `since_ref` points at. The bound exists only to keep the
-  # query small, since reachability is what makes the result exact, so it is
-  # deliberately loose: the UTC day before that commit.
+  # The date bound is deliberately loose. It bounds the query, not the result.
   def merged_pull_requests(base, since_ref)
     committed_at = `git log -1 --format=%cI #{since_ref}`.strip
     raise "Failed to resolve #{since_ref}" unless $?.success?
@@ -457,9 +453,6 @@ class Release
     pull_requests_from(json, "#{base} since #{since}")
   end
 
-  # `gh pr list` truncates silently once a window holds more than its result
-  # cap, which would drop changelog entries without a word, so refuse a listing
-  # that reaches it rather than cutting a release from a partial one.
   def pull_requests_from(json, window)
     records = JSON.parse(json)
 

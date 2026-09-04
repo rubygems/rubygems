@@ -426,7 +426,7 @@ class Release
 
       pulls.reject! {|pull| released_commit_shas.include?(pull.merge_commit_sha) } if @level == :patch
 
-      pulls.sort_by(&:merged_at)
+      pulls
     end
   end
 

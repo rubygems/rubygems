@@ -168,7 +168,7 @@ namespace :vendor do
   # Pinned upstream revision of rubygems/rubygems.org that the vendored
   # compact_index copy is generated from. Bump this (or pass COMPACT_INDEX_REF)
   # and re-run the task to refresh.
-  COMPACT_INDEX_REF = "572cf8948f53520668c7a07808760566f07129f8"
+  COMPACT_INDEX_REF = "30703392778df8f2fb63d4cc1f45a64ffbeb7629"
   COMPACT_INDEX_FILES = %w[
     lib/compact_index.rb
     lib/compact_index/dependency.rb

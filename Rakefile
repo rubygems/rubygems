@@ -164,6 +164,46 @@ namespace :vendor do
       error_message: "Vendored gems are out of sync. Please update the vendored lib patches."
     )
   end
+
+  # Pinned upstream revision of rubygems/rubygems.org that the vendored
+  # compact_index copy is generated from. Bump this (or pass COMPACT_INDEX_REF)
+  # and re-run the task to refresh.
+  COMPACT_INDEX_REF = "30703392778df8f2fb63d4cc1f45a64ffbeb7629"
+  COMPACT_INDEX_FILES = %w[
+    lib/compact_index.rb
+    lib/compact_index/dependency.rb
+    lib/compact_index/gem.rb
+    lib/compact_index/gem_version.rb
+    lib/compact_index/versions_file.rb
+  ].freeze
+
+  desc "Vendor spec-suite compact_index from rubygems.org (COMPACT_INDEX_REF to override ref)"
+  task :compact_index do
+    require "open-uri"
+    require "fileutils"
+
+    ref = ENV["COMPACT_INDEX_REF"] || COMPACT_INDEX_REF
+    dest_root = File.expand_path("spec/support/vendor/compact_index", __dir__)
+
+    COMPACT_INDEX_FILES.each do |path|
+      url = "https://raw.githubusercontent.com/rubygems/rubygems.org/#{ref}/#{path}"
+      contents = URI.parse(url).open(&:read).gsub("CompactIndex", "VendoredCompactIndex")
+
+      target = File.join(dest_root, path)
+      FileUtils.mkdir_p(File.dirname(target))
+      File.write(target, contents)
+    end
+
+    puts "Vendored compact_index from rubygems.org@#{ref} into #{dest_root}"
+  end
+
+  desc "Check vendored compact_index is up to date"
+  task compact_index_check: :compact_index do
+    Spec::Rubygems.check_source_control_changes(
+      success_message: "Vendored compact_index is in sync",
+      error_message: "Vendored compact_index is out of sync. Run `rake vendor:compact_index`."
+    )
+  end
 end
 
 namespace :rubocop do

@@ -431,8 +431,15 @@ class Release
     end
   end
 
+  # Runs a git command whose failure the caller handles itself, so git's own
+  # diagnosis stays out of the output. The array form keeps this off the
+  # shell, where a redirect would not be portable.
+  def git_quietly(*args)
+    IO.popen(["git", *args], err: IO::NULL, &:read)
+  end
+
   def pull_requests_merged_into(base, from, to)
-    commits = IO.popen(["git", "rev-list", "#{from}..#{to}"], err: IO::NULL, &:read)
+    commits = git_quietly("rev-list", "#{from}..#{to}")
     raise "Failed to list the commits in #{from}..#{to}" unless $?.success?
 
     reachable = Set.new(commits.split("\n"))
@@ -442,7 +449,7 @@ class Release
 
   # The date bound is deliberately loose. It bounds the query, not the result.
   def merged_pull_requests(base, since_ref)
-    committed_at = IO.popen(["git", "log", "-1", "--format=%cI", since_ref], err: IO::NULL, &:read).strip
+    committed_at = git_quietly("log", "-1", "--format=%cI", since_ref).strip
     raise "Failed to resolve #{since_ref}" unless $?.success?
 
     since = (Time.iso8601(committed_at) - 86_400).utc.strftime("%Y-%m-%d")
@@ -501,7 +508,7 @@ class Release
       shas = Set.new
       log.scan(/cherry picked from commit ([0-9a-f]+)/).flatten.each do |sha|
         shas << sha
-        parents = `git rev-list --parents -n 1 #{sha} 2>/dev/null`.strip.split.drop(1)
+        parents = git_quietly("rev-list", "--parents", "-n", "1", sha).strip.split.drop(1)
         next unless parents.size >= 2
         shas.merge(`git log --format=%H #{parents[0]}..#{parents[1]}`.split("\n"))
       end

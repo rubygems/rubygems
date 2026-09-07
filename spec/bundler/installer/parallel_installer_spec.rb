@@ -56,25 +56,59 @@ RSpec.describe Bundler::ParallelInstaller do
     end
     let(:installer) { Bundler::Installer.new(bundled_app, definition) }
 
-    it "queues native extensions in priority" do
+    it "prioritizes native extensions for installation" do
       parallel_installer = Bundler::ParallelInstaller.new(installer, definition.specs, 2, false, true)
-      worker_pool = parallel_installer.send(:worker_pool)
-      expected = 6 # Enqueue to download bundler and the 2 gems. Enqueue to install Bundler and the 2 gems.
+      download_worker_pool = parallel_installer.send(:download_worker_pool)
+      install_worker_pool = parallel_installer.send(:worker_pool)
 
-      expect(worker_pool).to receive(:enq).exactly(expected).times.and_wrap_original do |original_enq, spec, opts|
-        unless opts.nil? # Enqueued for download, no priority
-          if spec.name == "gem_with_extension"
-            expect(opts).to eq({ priority: true })
-          else
-            expect(opts).to eq({ priority: false })
-          end
+      expect(download_worker_pool).to receive(:enq).exactly(3).times.and_call_original
+      expect(install_worker_pool).to receive(:enq).exactly(3).times.and_wrap_original do |original_enq, spec, opts|
+        if spec.name == "gem_with_extension"
+          expect(opts).to eq({ priority: true })
+        else
+          expect(opts).to eq({ priority: false })
         end
 
-        opts ||= {}
         original_enq.call(spec, **opts)
       end
 
       parallel_installer.call
+    end
+  end
+
+  describe "worker pools" do
+    it "uses separate worker pools with the configured size" do
+      parallel_installer = described_class.new(nil, [], 2, false, false)
+
+      download_worker_pool = parallel_installer.send(:download_worker_pool)
+      install_worker_pool = parallel_installer.send(:worker_pool)
+
+      expect(download_worker_pool).not_to equal(install_worker_pool)
+      expect(download_worker_pool.instance_variable_get(:@size)).to eq(2)
+      expect(install_worker_pool.instance_variable_get(:@size)).to eq(2)
+    ensure
+      install_worker_pool&.stop
+      download_worker_pool&.stop
+    end
+
+    it "restores the previous interrupt handler after shutting down" do
+      parallel_installer = described_class.new(nil, [], 2, false, false)
+      download_worker_pool = parallel_installer.send(:download_worker_pool)
+      install_worker_pool = parallel_installer.send(:worker_pool)
+
+      previous_handler = Signal.trap("INT", "IGNORE")
+      custom_handler = proc {}
+      Signal.trap("INT", custom_handler)
+
+      download_worker_pool.send(:create_threads)
+      install_worker_pool.send(:create_threads)
+
+      parallel_installer.call
+
+      restored_handler = Signal.trap("INT", previous_handler)
+      expect(restored_handler).to equal(custom_handler)
+    ensure
+      Signal.trap("INT", previous_handler) if previous_handler
     end
   end
 

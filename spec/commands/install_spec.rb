@@ -2065,8 +2065,8 @@ RSpec.describe "bundle install with gem sources" do
   end
 
   it "preserves bundled native extensions when BUNDLE_CLEAN removes another gem" do
-    # The command-line/RUBYOPT -r bypasses gem activation under RUBY_BOX=1, a
-    # ruby-core bug (unreported, related to [Bug #21760] item 3)
+    # The command-line/RUBYOPT -r bypasses gem activation under RUBY_BOX=1
+    # (https://bugs.ruby-lang.org/issues/22295)
     skip "-r cannot activate gems under Ruby::Box" if defined?(Ruby::Box) && Ruby::Box.enabled?
 
     build_repo4 do

@@ -31,6 +31,15 @@ module Bundler
       return matching if addressable.empty?
 
       compatible = addressable.select(&:matches_current_metadata?)
+      widened, not_widened = compatible.partition {|s| Gem::ContentAddress.widened?(s.content_address) }
+      matching_non_widened = not_widened.select do |not_widened_spec|
+        widened.any? do |widened_spec|
+          widened_spec.platform == not_widened_spec.platform &&
+            widened_spec.content_address.start_with?(not_widened_spec.content_address)
+        end
+      end
+
+      compatible -= matching_non_widened
       return compatible if compatible.any?
 
       non_addressable.any? ? non_addressable : matching

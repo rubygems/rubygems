@@ -477,10 +477,28 @@ class Gem::Resolver
     @all_specs[name].group_by(&:version).transform_values do |candidates|
       next candidates.first if candidates.length == 1
 
-      # Prefer already-installed specs to avoid unnecessary downloads
+      # Prefer already-installed specs to avoid unnecessary downloads.
       installed = candidates.select {|s| s.is_a?(Gem::Resolver::InstalledSpecification) }
-      next installed.first if installed.length == 1
-      candidates = installed if installed.any?
+
+      # A widened remote address disambiguates artifacts that share the same
+      # default-length prefix. Keep it when it extends an installed address.
+      not_installed_widened = candidates.select {|s| !s.is_a?(Gem::Resolver::InstalledSpecification) && Gem::ContentAddress.widened?(s.content_address) }
+      superseded_installed = installed.select do |installed_spec|
+        not_installed_widened.any? do |remote_spec|
+          remote_spec.platform == installed_spec.platform &&
+            Gem::ContentAddress.ruby_abi_for(remote_spec.required_ruby_version) ==
+              Gem::ContentAddress.ruby_abi_for(installed_spec.required_ruby_version) &&
+            installed_spec.content_address&.length == Gem::ContentAddress::DEFAULT_LENGTH &&
+            remote_spec.content_address.start_with?(installed_spec.content_address)
+        end
+      end
+
+      if superseded_installed.any?
+        candidates -= superseded_installed
+      else
+        next installed.first if installed.length == 1
+        candidates = installed if installed.any?
+      end
 
       # Among remaining candidates, prefer a content-addressed candidate
       # built for the running Ruby, then the most specific platform, then the

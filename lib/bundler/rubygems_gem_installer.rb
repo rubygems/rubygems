@@ -68,6 +68,10 @@ module Bundler
 
       run_post_install_hooks
 
+      if Gem::ContentAddress.widened?(spec.content_address)
+        remove_stale_matching_gems
+      end
+
       spec
     end
 

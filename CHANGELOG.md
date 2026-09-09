@@ -10,14 +10,14 @@ Changes already released in 4.0.x are not repeated here.
 
 #### Features:
 
-* Add content addressable gems support. Pull request [#9773](https://github.com/ruby/rubygems/pull/9773) by Jenny Shen
+* Add content addressable gems support. Pull request [#9773](https://github.com/ruby/rubygems/pull/9773) by Jenny Shen, Harriet Oughton and Gira Chawda
 * Let the gem and bundle cooldown settings cover each other. Pull request [#9852](https://github.com/ruby/rubygems/pull/9852) by Hiroshi SHIBATA
-* Rubygems: Add PQC ML-DSA support for cryptographically signed gems workflow. Pull request [#9697](https://github.com/ruby/rubygems/pull/9697) by Jun Aruga
+* Rubygems: Add PQC ML-DSA support for cryptographically signed gems workflow. Pull request [#9697](https://github.com/ruby/rubygems/pull/9697) by Jun Aruga, Kazuki Yamaguchi and Hiroshi SHIBATA
 * Preserve non-UTF-8 legacy gem metadata. Pull request [#9835](https://github.com/ruby/rubygems/pull/9835) by Stanislav (Stas) Katkov
 * Add an opt-in OS credential store for gem and bundler credentials. Pull request [#9671](https://github.com/ruby/rubygems/pull/9671) by Hiroshi SHIBATA
 * Add --cooldown to gem install, update and outdated. Pull request [#9734](https://github.com/ruby/rubygems/pull/9734) by Hiroshi SHIBATA
 * Adopt the compact index for gem commands. Pull request [#9606](https://github.com/ruby/rubygems/pull/9606) by Hiroshi SHIBATA
-* Replace Molinillo with PubGrub for dependency resolution. Pull request [#9402](https://github.com/ruby/rubygems/pull/9402) by Matt Larraz
+* Replace Molinillo with PubGrub for dependency resolution. Pull request [#9402](https://github.com/ruby/rubygems/pull/9402) by Matt Larraz and Colby Swandale
 * Replace the rubygems-specific lockfile parser with Bundler's parser. Pull request [#9564](https://github.com/ruby/rubygems/pull/9564) by Hiroshi SHIBATA
 * Remove pessimistic versioning in gem command output. Pull request [#9550](https://github.com/ruby/rubygems/pull/9550) by Jeremy Evans
 * Change Gem::Version#approximate_recommendation to be optimistic. Pull request [#9537](https://github.com/ruby/rubygems/pull/9537) by Jeremy Evans
@@ -52,7 +52,7 @@ Changes already released in 4.0.x are not repeated here.
 
 #### Features:
 
-* Add content addressable gems support. Pull request [#9773](https://github.com/ruby/rubygems/pull/9773) by Jenny Shen
+* Add content addressable gems support. Pull request [#9773](https://github.com/ruby/rubygems/pull/9773) by Jenny Shen, Harriet Oughton and Gira Chawda
 * Let the gem and bundle cooldown settings cover each other. Pull request [#9852](https://github.com/ruby/rubygems/pull/9852) by Hiroshi SHIBATA
 * Add a `prune` setting to drop rebuildable install artifacts. Pull request [#9815](https://github.com/ruby/rubygems/pull/9815) by Hiroshi SHIBATA
 * Add an opt-in OS credential store for gem and bundler credentials. Pull request [#9671](https://github.com/ruby/rubygems/pull/9671) by Hiroshi SHIBATA
@@ -63,8 +63,8 @@ Changes already released in 4.0.x are not repeated here.
 * Reuse RubyGems' vendored SecureRandom in Bundler. Pull request [#9651](https://github.com/ruby/rubygems/pull/9651) by Hiroshi SHIBATA
 * Reuse RubyGems' vendored URI in Bundler. Pull request [#9650](https://github.com/ruby/rubygems/pull/9650) by Hiroshi SHIBATA
 * Fix two issues by including the ruby platform variants in the lock file. Pull request [#9556](https://github.com/ruby/rubygems/pull/9556) by Randy Stauner
-* Fix plugin installation from gemfile. Pull request [#6957](https://github.com/ruby/rubygems/pull/6957) by Cody Cutrer
-* Add plugin hooks for Gemfile evaluation and source fetching. Pull request [#9488](https://github.com/ruby/rubygems/pull/9488) by Hiroshi SHIBATA
+* Fix plugin installation from gemfile. Pull request [#6957](https://github.com/ruby/rubygems/pull/6957) by Cody Cutrer, Diogo Fernandes and Hiroshi SHIBATA
+* Add plugin hooks for Gemfile evaluation and source fetching. Pull request [#9488](https://github.com/ruby/rubygems/pull/9488) by Hiroshi SHIBATA, Cody Cutrer and Marv
 * Use optimistic version constraints in bundle gem output. Pull request [#9533](https://github.com/ruby/rubygems/pull/9533) by Jeremy Evans
 * Extend Gemfile `override` DSL with `:all` target and metadata fields (Phase 2). Pull request [#9530](https://github.com/ruby/rubygems/pull/9530) by Hiroshi SHIBATA
 * Switch bundle add to use optimistic versioning by default. Pull request [#9526](https://github.com/ruby/rubygems/pull/9526) by Jeremy Evans
@@ -72,7 +72,7 @@ Changes already released in 4.0.x are not repeated here.
 * Add `--no-build-extension` and `--no-install-plugin` options to gem install. Pull request [#9473](https://github.com/ruby/rubygems/pull/9473) by Hiroshi SHIBATA
 * Include detailed dependencies when gemfile and lockfile are conflicts. Pull request [#9332](https://github.com/ruby/rubygems/pull/9332) by Hiroshi SHIBATA
 * Implement relative path handling for plugin paths. Pull request [#9299](https://github.com/ruby/rubygems/pull/9299) by Hiroshi SHIBATA
-* Bundler/inline: perform installation from a forked child. Pull request [#7941](https://github.com/ruby/rubygems/pull/7941) by Jean byroot Boussier
+* Bundler/inline: perform installation from a forked child. Pull request [#7941](https://github.com/ruby/rubygems/pull/7941) by Jean Boussier and Hiroshi SHIBATA
 * Add global gem cache shared by RubyGems and Bundler. Pull request [#9230](https://github.com/ruby/rubygems/pull/9230) by Anthony Panozzo
 * Update custom errors with Exception#full_message. Pull request [#8488](https://github.com/ruby/rubygems/pull/8488) by neimadTL
 
@@ -92,7 +92,7 @@ Changes already released in 4.0.x are not repeated here.
 #### Breaking changes:
 
 * Remove external tool version checks from `bundle env`. Pull request [#9593](https://github.com/ruby/rubygems/pull/9593) by Hiroshi SHIBATA
-* Bundler: ignore patchlevel kwarg in ruby DSL. Pull request [#6023](https://github.com/ruby/rubygems/pull/6023) by Takuya N
+* Bundler: ignore patchlevel kwarg in ruby DSL. Pull request [#6023](https://github.com/ruby/rubygems/pull/6023) by Takuya N and Hiroshi SHIBATA
 * Unify RubyGems and Bundler documentation. Pull request [#9237](https://github.com/ruby/rubygems/pull/9237) by Hiroshi SHIBATA
 
 #### Deprecations:

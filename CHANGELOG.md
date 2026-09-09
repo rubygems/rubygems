@@ -23,7 +23,7 @@ Changes already released in 4.0.x are not repeated here.
 * Change Gem::Version#approximate_recommendation to be optimistic. Pull request [#9537](https://github.com/ruby/rubygems/pull/9537) by Jeremy Evans
 * Add `--no-build-extension` and `--no-install-plugin` options to gem install. Pull request [#9473](https://github.com/ruby/rubygems/pull/9473) by Hiroshi SHIBATA
 * Push with auto-attestation. Pull request [#9325](https://github.com/ruby/rubygems/pull/9325) by Hiroshi SHIBATA
-* Imprement yaml parser written by pure ruby instead of Psych. Pull request [#9352](https://github.com/ruby/rubygems/pull/9352) by Hiroshi SHIBATA
+* Implement yaml parser written by pure ruby instead of Psych. Pull request [#9352](https://github.com/ruby/rubygems/pull/9352) by Hiroshi SHIBATA
 * Honor concurrent_downloads from .gemrc in Gem::ConfigFile. Pull request [#9339](https://github.com/ruby/rubygems/pull/9339) by Andrii Furmanets
 * Add support for custom error response from external registries. Pull request [#9270](https://github.com/ruby/rubygems/pull/9270) by Luis J. Gonzalez
 * Add global gem cache shared by RubyGems and Bundler. Pull request [#9230](https://github.com/ruby/rubygems/pull/9230) by Anthony Panozzo

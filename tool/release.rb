@@ -10,12 +10,30 @@ class Release
   # `gh pr list` record so that no per pull request API call is needed.
   Label = Struct.new(:name)
   User = Struct.new(:name, :login)
-  PullRequest = Struct.new(:number, :title, :html_url, :labels, :merged_at, :user, :merge_commit_sha)
+  PullRequest = Struct.new(:number, :node_id, :title, :html_url, :labels, :merged_at, :authors, :merge_commit_sha)
 
   # `gh pr list` refuses to return more than this many results and truncates
   # silently once a window holds more, so a listing that reaches the cap is
   # refused rather than cut from a partial one.
   MERGED_PULL_REQUEST_LIMIT = 1000
+
+  # Pull requests whose commits are read in one query. Every commit and every
+  # author a query can reach counts against a node budget, and a query over
+  # that budget is rejected rather than answered partially.
+  COMMIT_AUTHOR_BATCH_SIZE = 100
+
+  COMMIT_AUTHORS_QUERY = <<~GRAPHQL
+    query($ids: [ID!]!) {
+      nodes(ids: $ids) {
+        ... on PullRequest {
+          number
+          commits(first: 100) {
+            nodes { commit { authors(first: 10) { nodes { name user { login name } } } } }
+          }
+        }
+      }
+    }
+  GRAPHQL
 
   module GithubAPI
     def gh_client
@@ -408,7 +426,50 @@ class Release
   end
 
   def relevant_pull_requests
-    @relevant_pull_requests ||= unreleased_pull_requests.select {|pull| @changelog.labelled?(pull) }.sort_by(&:merged_at)
+    @relevant_pull_requests ||= begin
+      pulls = unreleased_pull_requests.select {|pull| @changelog.labelled?(pull) }.sort_by(&:merged_at)
+      add_commit_authors!(pulls)
+      pulls
+    end
+  end
+
+  # A changelog entry credits everyone who committed to the pull request, not
+  # only whoever opened it. A listing as wide as the one below cannot carry
+  # commits, so they are read here instead, in batches and only for the pull
+  # requests that reach the changelog.
+  def add_commit_authors!(pulls)
+    pulls.each_slice(COMMIT_AUTHOR_BATCH_SIZE) do |batch|
+      ids = batch.flat_map {|pull| ["-F", "ids[]=#{pull.node_id}"] }
+
+      json = IO.popen(["gh", "api", "graphql", "-f", "query=#{COMMIT_AUTHORS_QUERY}", *ids], &:read)
+      raise "Failed to list the commits of #{batch.map(&:number).join(", ")}" unless $?.success?
+
+      credit_commit_authors(batch, JSON.parse(json).dig("data", "nodes"))
+    end
+  end
+
+  def credit_commit_authors(pulls, nodes)
+    by_number = pulls.to_h {|pull| [pull.number, pull] }
+
+    nodes.each do |node|
+      pull = by_number[node["number"]]
+      pull.authors += commit_authors_of(node)
+    end
+  end
+
+  # Only the authors GitHub resolved to an account. A commit made under an
+  # address no account carries names whoever configured that clone, which in
+  # practice is a machine account or a local alias rather than a contributor.
+  def commit_authors_of(node)
+    node.dig("commits", "nodes").flat_map {|commit| commit.dig("commit", "authors", "nodes") }.filter_map do |author|
+      user = author["user"]
+      next unless user
+
+      # An account carrying no profile name is credited under its commit name.
+      name = (user["name"] || author["name"]).to_s.strip
+
+      User.new(name.empty? ? nil : name, user["login"])
+    end
   end
 
   # Pull requests included in this release. `mergeCommit.oid` is the commit a
@@ -454,7 +515,7 @@ class Release
 
     since = (Time.iso8601(committed_at) - 86_400).utc.strftime("%Y-%m-%d")
 
-    json = `gh pr list --repo ruby/rubygems --state merged --base #{base} --search 'merged:>=#{since}' --limit #{MERGED_PULL_REQUEST_LIMIT} --json number,title,labels,mergeCommit,mergedAt,author,url`
+    json = `gh pr list --repo ruby/rubygems --state merged --base #{base} --search 'merged:>=#{since}' --limit #{MERGED_PULL_REQUEST_LIMIT} --json number,id,title,labels,mergeCommit,mergedAt,author,url`
     raise "Failed to list pull requests merged into #{base} since #{since}" unless $?.success?
 
     pull_requests_from(json, "#{base} since #{since}")
@@ -477,14 +538,20 @@ class Release
     # `gh` reports a missing author name as an empty string, while the changelog
     # entry template expects to fall back to the login when there is none.
     name = author["name"]
+    # `gh` writes an app account's login as `app/<name>`, while the commits of
+    # that account carry the `<name>[bot]` form, so the two records of one
+    # account only meet once this is rewritten.
+    login = author["login"]
+    login = "#{login.delete_prefix("app/")}[bot]" if author["is_bot"]
 
     PullRequest.new(
       record["number"],
+      record["id"],
       record["title"],
       record["url"],
       record["labels"].map {|label| Label.new(label["name"]) },
       Time.iso8601(record["mergedAt"]),
-      User.new(name.to_s.empty? ? nil : name, author["login"]),
+      [User.new(name.to_s.empty? ? nil : name, login)],
       record["mergeCommit"]["oid"]
     )
   end

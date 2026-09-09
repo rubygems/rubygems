@@ -8,7 +8,7 @@ require_relative "rubygems/helper"
 class ChangelogTest < Test::Unit::TestCase
   Label = Struct.new(:name)
   User = Struct.new(:name, :login)
-  PullRequest = Struct.new(:number, :title, :labels, :merged_at, :user, :html_url)
+  PullRequest = Struct.new(:number, :title, :labels, :merged_at, :authors, :html_url)
 
   def setup
     @changelog = Changelog.for_release("9.9.0")
@@ -91,11 +91,65 @@ class ChangelogTest < Test::Unit::TestCase
 
   def test_entry_leaves_the_author_empty_when_the_pull_request_has_none
     changed = pull(1, "rubygems: bug fix")
-    changed.user = User.new(nil, nil)
+    changed.authors = [User.new(nil, nil)]
 
     notes = @changelog.unreleased_notes_for([changed], extra_entry: nil)
 
     assert_include notes, "* Change 1. Pull request [#1](https://github.com/ruby/rubygems/pull/1) by "
+  end
+
+  def test_entry_credits_everyone_who_committed_to_the_pull_request
+    changed = pull(1, "rubygems: bug fix")
+    changed.authors += [User.new("Someone Else", "else"), User.new("A Third", "third")]
+
+    notes = @changelog.unreleased_notes_for([changed], extra_entry: nil)
+
+    assert_include notes, "* Change 1. Pull request [#1](https://github.com/ruby/rubygems/pull/1) by Someone, Someone Else and A Third"
+  end
+
+  def test_entry_credits_an_author_recorded_under_two_names_once
+    changed = pull(1, "rubygems: bug fix")
+    changed.authors += [User.new("Someone Else", "else"), User.new("The Someone", "Someone")]
+
+    notes = @changelog.unreleased_notes_for([changed], extra_entry: nil)
+
+    assert_include notes, "* Change 1. Pull request [#1](https://github.com/ruby/rubygems/pull/1) by Someone and Someone Else"
+  end
+
+  def test_entry_credits_an_author_committing_under_two_accounts_as_the_main_one
+    changed = pull(1, "rubygems: bug fix")
+    changed.authors = [User.new("Jean byroot Boussier", "casperisfine"), User.new("Jean Boussier", "byroot")]
+
+    notes = @changelog.unreleased_notes_for([changed], extra_entry: nil)
+
+    assert_include notes, "* Change 1. Pull request [#1](https://github.com/ruby/rubygems/pull/1) by Jean Boussier"
+  end
+
+  def test_entry_credits_a_sub_account_under_its_own_name_when_the_main_one_is_absent
+    changed = pull(1, "rubygems: bug fix")
+    changed.authors = [User.new("Jean byroot Boussier", "casperisfine")]
+
+    notes = @changelog.unreleased_notes_for([changed], extra_entry: nil)
+
+    assert_include notes, "* Change 1. Pull request [#1](https://github.com/ruby/rubygems/pull/1) by Jean byroot Boussier"
+  end
+
+  def test_entry_drops_bot_authors_from_the_credits
+    changed = pull(1, "rubygems: bug fix")
+    changed.authors += [User.new("Claude Opus 5", "claude"), User.new("dependabot[bot]", "dependabot[bot]")]
+
+    notes = @changelog.unreleased_notes_for([changed], extra_entry: nil)
+
+    assert_include notes, "* Change 1. Pull request [#1](https://github.com/ruby/rubygems/pull/1) by Someone"
+  end
+
+  def test_entry_of_a_pull_request_only_bots_worked_on_credits_its_author
+    changed = pull(1, "rubygems: bug fix")
+    changed.authors = [User.new(nil, "dependabot[bot]"), User.new("Claude Opus 5", "claude")]
+
+    notes = @changelog.unreleased_notes_for([changed], extra_entry: nil)
+
+    assert_include notes, "* Change 1. Pull request [#1](https://github.com/ruby/rubygems/pull/1) by dependabot[bot]"
   end
 
   def test_entry_folds_a_newline_in_a_title_into_one_line
@@ -467,7 +521,7 @@ class ChangelogTest < Test::Unit::TestCase
       "Change #{number}",
       labels.map {|label| Label.new(label) },
       Time.at(number),
-      User.new("Someone", "someone"),
+      [User.new("Someone", "someone")],
       "https://github.com/ruby/rubygems/pull/#{number}"
     )
   end
@@ -534,6 +588,79 @@ class ReleaseChangelogTest < Test::Unit::TestCase
     release.stub(:legacy_layout?, false) do
       assert_equal [[release.changelog, "Installs bundler 9.9.9 as a default gem"]], release.send(:changelogs)
     end
+  end
+end
+
+class ReleasePullRequestTest < Test::Unit::TestCase
+  def test_a_pull_request_starts_out_credited_to_its_author
+    assert_equal [Release::User.new("Someone", "someone")], build_pull_request.authors
+  end
+
+  def test_an_app_author_is_credited_under_the_login_its_own_commits_carry
+    pull = build_pull_request("author" => { "login" => "app/dependabot", "name" => "", "is_bot" => true })
+
+    assert_equal [Release::User.new(nil, "dependabot[bot]")], pull.authors
+  end
+
+  def test_commit_authors_are_credited_after_the_pull_request_author
+    pull = build_pull_request
+
+    credit(pull, [
+      [github_author("Jenny Shen", "jenshenny")],
+      [github_author("Gira Chawda", "girachawda")],
+    ])
+
+    assert_equal [
+      Release::User.new("Someone", "someone"),
+      Release::User.new("Jenny Shen", "jenshenny"),
+      Release::User.new("Gira Chawda", "girachawda"),
+    ], pull.authors
+  end
+
+  def test_an_author_with_no_github_account_is_not_credited
+    pull = build_pull_request
+
+    credit(pull, [[{ "name" => "License Update", "user" => nil }]])
+
+    assert_equal [Release::User.new("Someone", "someone")], pull.authors
+  end
+
+  def test_an_account_with_no_profile_name_is_credited_under_its_commit_name
+    pull = build_pull_request
+
+    credit(pull, [[{ "name" => "  Ali Firas  ", "user" => { "login" => "thesmartshadow", "name" => nil } }]])
+
+    assert_equal [Release::User.new("Someone", "someone"), Release::User.new("Ali Firas", "thesmartshadow")], pull.authors
+  end
+
+  private
+
+  def build_pull_request(overrides = {})
+    record = {
+      "number" => 1,
+      "id" => "PR_1",
+      "title" => "Change",
+      "url" => "https://github.com/ruby/rubygems/pull/1",
+      "labels" => [],
+      "mergedAt" => "2020-01-01T00:00:00Z",
+      "author" => { "login" => "someone", "name" => "Someone", "is_bot" => false },
+      "mergeCommit" => { "oid" => "deadbeef" },
+    }.merge(overrides)
+
+    Release.new("9.9.9").send(:build_pull_request, record)
+  end
+
+  def credit(pull, commits)
+    node = {
+      "number" => pull.number,
+      "commits" => { "nodes" => commits.map {|authors| { "commit" => { "authors" => { "nodes" => authors } } } } },
+    }
+
+    Release.new("9.9.9").send(:credit_commit_authors, [pull], [node])
+  end
+
+  def github_author(name, login)
+    { "name" => name, "user" => { "login" => login, "name" => name } }
   end
 end
 

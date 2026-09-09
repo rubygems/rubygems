@@ -194,7 +194,7 @@ class Changelog
     if pull
       substitutions["%pull_request_number"] = pull.number.to_s
       substitutions["%pull_request_url"] = pull.html_url
-      substitutions["%pull_request_author"] = pull.user.name || pull.user.login
+      substitutions["%pull_request_authors"] = credits_for(pull)
     end
 
     # An entry is one line. A newline in a title or a display name would start
@@ -206,6 +206,44 @@ class Changelog
     new_entry = wrap(new_entry, entry_wrapping, 2) if entry_wrapping
 
     new_entry
+  end
+
+  # Everyone who committed to the pull request, not only whoever opened it, so
+  # that work several people shared is not credited to one of them. A pull
+  # request a bot opened and committed to on its own keeps the bot, since
+  # dropping it would leave the entry crediting nobody.
+  def credits_for(pull)
+    credited = pull.authors.reject {|author| excluded_credit?(author) }
+    credited = pull.authors.take(1) if credited.empty?
+
+    names = names_of(credited)
+    last = names.pop
+
+    names.empty? ? last.to_s : "#{names.join(", ")} and #{last}"
+  end
+
+  # One person can commit under more than one name, and under more than one
+  # account, so the account they are credited as decides who is on the entry
+  # already. They keep the place they were first credited in, but are named
+  # as that account, rather than as whichever one the entry reached first.
+  def names_of(authors)
+    authors.group_by {|author| credited_account(author) }.map do |account, recorded|
+      author = recorded.find {|candidate| candidate.login.to_s.downcase == account } || recorded.first
+
+      author.name || author.login
+    end
+  end
+
+  def credited_account(author)
+    login = author.login.to_s.downcase
+
+    credit_aliases.fetch(login, login)
+  end
+
+  def excluded_credit?(author)
+    login = author.login.to_s
+
+    login.end_with?("[bot]") || excluded_credit_logins.any? {|excluded| excluded.casecmp?(login) }
   end
 
   def wrap(text, length, indent)
@@ -411,6 +449,16 @@ class Changelog
 
   def already_released_template
     @config["already_released_template"]
+  end
+
+  def excluded_credit_logins
+    @config["excluded_credit_logins"]
+  end
+
+  def credit_aliases
+    @credit_aliases ||= @config["credit_aliases"].flat_map do |account, logins|
+      logins.map {|login| [login.downcase, account.downcase] }
+    end.to_h
   end
 
   def library_headings

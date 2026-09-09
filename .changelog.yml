@@ -2,7 +2,7 @@
 
 header_template: "## %new_version / %release_date"
 
-entry_template: "* %title. Pull request [#%pull_request_number](%pull_request_url) by %pull_request_author"
+entry_template: "* %title. Pull request [#%pull_request_number](%pull_request_url) by %pull_request_authors"
 
 extra_entry:
   template: "* %title."
@@ -11,6 +11,19 @@ extra_entry:
 already_released_template: Changes already released in %released_in are not repeated here.
 
 release_date_format: "%Y-%m-%d"
+
+# Commit authors that are tooling rather than people to credit. GitHub app
+# accounts, whose login ends in `[bot]`, are dropped without being listed.
+excluded_credit_logins:
+  - claude
+  - Copilot
+
+# The accounts of one person: the account they are credited as, followed by
+# the ones they have also committed under, so that one person is not listed
+# twice.
+credit_aliases:
+  byroot:
+    - casperisfine
 
 library_headings:
   rubygems: RubyGems

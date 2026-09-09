@@ -10,22 +10,60 @@ class ReleaseTest < Test::Unit::TestCase
     pull = release.send(:pull_requests_from, listing([record]), "master since 2026-01-01").first
 
     assert_equal 9852, pull.number
+    assert_equal "PR_kwDOAAlets8AAAABBxIb1Q", pull.node_id
     assert_equal "Let the gem and bundle cooldown settings cover each other", pull.title
     assert_equal "https://github.com/ruby/rubygems/pull/9852", pull.html_url
     assert_equal ["bundler: bug fix"], pull.labels.map(&:name)
     assert_equal Time.utc(2026, 9, 4, 2, 23, 29), pull.merged_at
-    assert_equal "Hiroshi SHIBATA", pull.user.name
-    assert_equal "hsbt", pull.user.login
+    assert_equal [Release::User.new("Hiroshi SHIBATA", "hsbt")], pull.authors
     assert_equal "0602168df08a985b635ea24fb80f9048465f9530", pull.merge_commit_sha
   end
 
   def test_pull_requests_from_falls_back_to_the_login_when_the_author_has_no_name
-    json = listing([record("author" => { "login" => "app/dependabot", "name" => "" })])
+    json = listing([record("author" => { "login" => "someone", "name" => "" })])
 
     pull = release.send(:pull_requests_from, json, "master since 2026-01-01").first
 
-    assert_nil pull.user.name
-    assert_equal "app/dependabot", pull.user.login
+    assert_equal [Release::User.new(nil, "someone")], pull.authors
+  end
+
+  def test_pull_requests_from_credits_an_app_account_under_the_login_its_commits_carry
+    json = listing([record("author" => { "login" => "app/dependabot", "name" => "", "is_bot" => true })])
+
+    pull = release.send(:pull_requests_from, json, "master since 2026-01-01").first
+
+    assert_equal [Release::User.new(nil, "dependabot[bot]")], pull.authors
+  end
+
+  def test_credit_commit_authors_credits_them_after_the_pull_request_author
+    pull = release.send(:pull_requests_from, listing([record]), "master since 2026-01-01").first
+
+    credit(pull, [[github_author("Jenny Shen", "jenshenny")], [github_author("Gira Chawda", "girachawda")]])
+
+    assert_equal [
+      Release::User.new("Hiroshi SHIBATA", "hsbt"),
+      Release::User.new("Jenny Shen", "jenshenny"),
+      Release::User.new("Gira Chawda", "girachawda"),
+    ], pull.authors
+  end
+
+  def test_credit_commit_authors_skips_an_author_with_no_github_account
+    pull = release.send(:pull_requests_from, listing([record]), "master since 2026-01-01").first
+
+    credit(pull, [[{ "name" => "License Update", "user" => nil }]])
+
+    assert_equal [Release::User.new("Hiroshi SHIBATA", "hsbt")], pull.authors
+  end
+
+  def test_credit_commit_authors_names_an_account_with_no_profile_name_from_its_commit
+    pull = release.send(:pull_requests_from, listing([record]), "master since 2026-01-01").first
+
+    credit(pull, [[{ "name" => "  Ali Firas  ", "user" => { "login" => "thesmartshadow", "name" => nil } }]])
+
+    assert_equal [
+      Release::User.new("Hiroshi SHIBATA", "hsbt"),
+      Release::User.new("Ali Firas", "thesmartshadow"),
+    ], pull.authors
   end
 
   def test_pull_requests_from_refuses_a_truncated_listing
@@ -110,9 +148,23 @@ class ReleaseTest < Test::Unit::TestCase
     JSON.dump(records)
   end
 
+  def credit(pull, commits)
+    node = {
+      "number" => pull.number,
+      "commits" => { "nodes" => commits.map {|authors| { "commit" => { "authors" => { "nodes" => authors } } } } },
+    }
+
+    release.send(:credit_commit_authors, [pull], [node])
+  end
+
+  def github_author(name, login)
+    { "name" => name, "user" => { "login" => login, "name" => name } }
+  end
+
   def record(overrides = {})
     {
       "number" => 9852,
+      "id" => "PR_kwDOAAlets8AAAABBxIb1Q",
       "title" => "Let the gem and bundle cooldown settings cover each other",
       "url" => "https://github.com/ruby/rubygems/pull/9852",
       "labels" => [{ "name" => "bundler: bug fix" }],

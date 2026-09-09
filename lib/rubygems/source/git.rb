@@ -189,6 +189,7 @@ class Gem::Source::Git < Gem::Source
     end
 
     # Process.last_status instead of $?, which Ruby::Box leaves uninitialized
+    # (https://bugs.ruby-lang.org/issues/22280)
     raise Gem::Exception,
           "unable to find reference #{@reference} in #{@repository}" unless
             Process.last_status.success?

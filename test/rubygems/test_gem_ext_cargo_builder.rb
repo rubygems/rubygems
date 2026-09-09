@@ -112,6 +112,7 @@ class TestGemExtCargoBuilder < Gem::TestCase
         Open3.capture2e(*gem, "install", "--verbose", "--local", built_gem, *ARGV)
 
         # Require inside -e because -r bypasses gem activation under RUBY_BOX=1
+        # (https://bugs.ruby-lang.org/issues/22295)
         stdout_and_stderr_str, status = Open3.capture2e(env_for_subprocess, *ruby_with_rubygems_in_load_path, "-e", "require 'rust_ruby_example'; puts 'Result: ' + RustRubyExample.reverse('hello world')")
         assert status.success?, stdout_and_stderr_str
         assert_match "Result: #{"hello world".reverse}", stdout_and_stderr_str

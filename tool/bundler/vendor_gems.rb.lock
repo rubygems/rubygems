@@ -17,8 +17,9 @@ GEM
   specs:
     connection_pool (2.5.4)
     fileutils (1.8.1)
-    net-http (0.7.0)
-      uri
+    net-http (0.10.0)
+      net-protocol (>= 0.3.0)
+      uri (>= 0.11.1)
     net-http-persistent (4.0.6)
       connection_pool (~> 2.2, >= 2.2.4)
     net-protocol (0.4.0)
@@ -42,7 +43,7 @@ PLATFORMS
 DEPENDENCIES
   fileutils (= 1.8.1)
   molinillo!
-  net-http (= 0.7.0)
+  net-http (= 0.10.0)
   net-http-persistent (= 4.0.6)
   net-protocol (= 0.4.0)
   optparse (= 0.8.0)
@@ -57,7 +58,7 @@ CHECKSUMS
   connection_pool (2.5.4) sha256=e9e1922327416091f3f6542f5f4446c2a20745276b9aa796dd0bb2fd0ea1e70a
   fileutils (1.8.1) sha256=2d541a1ee34a9ed5c4f054be8fb819a26b5d654488a31dc8806917cf448b9cc3
   molinillo (0.8.0)
-  net-http (0.7.0) sha256=4db7d9f558f8ffd4dcf832d0aefd02320c569c7d4f857def49e585069673a425
+  net-http (0.10.0) sha256=1a2ff6e37a05724973c43f2bf7bf105f59c36a4cd0a7e9b1c021a0a566987c27
   net-http-persistent (4.0.6) sha256=2abb3a04438edf6cb9e0e7e505969605f709eda3e3c5211beadd621a2c84dd5d
   net-protocol (0.4.0) sha256=f9f90c8c6f64794a45160bf422177a336db12809de3beeeaa26b88fcd2e8c853
   optparse (0.8.0) sha256=ef6b7fbaf7ec331474f325bc08dd5622e6e1e651007a5341330ee4b08ce734f0

@@ -1,5 +1,5 @@
-diff --git b/lib/rubygems/vendor/net-http/lib/net/http/status.rb a/lib/rubygems/vendor/net-http/lib/net/http/status.rb
-index cd5177fcbc..9110b108b8 100644
+diff --git a/lib/rubygems/vendor/net-http/lib/net/http/status.rb b/lib/rubygems/vendor/net-http/lib/net/http/status.rb
+index cd5177f..9110b10 100644
 --- a/lib/rubygems/vendor/net-http/lib/net/http/status.rb
 +++ b/lib/rubygems/vendor/net-http/lib/net/http/status.rb
 @@ -50,13 +50,13 @@
@@ -28,7 +28,7 @@ index cd5177fcbc..9110b108b8 100644
    506 => 'Variant Also Negotiates',
    507 => 'Insufficient Storage',
 diff --git a/lib/rubygems/vendor/net-http/lib/net/http.rb b/lib/rubygems/vendor/net-http/lib/net/http.rb
-index e5258175add..e1ccc056100 100644
+index 7a480fc..bdc4283 100644
 --- a/lib/rubygems/vendor/net-http/lib/net/http.rb
 +++ b/lib/rubygems/vendor/net-http/lib/net/http.rb
 @@ -22,7 +22,6 @@
@@ -39,7 +39,7 @@ index e5258175add..e1ccc056100 100644
  autoload :OpenSSL, 'openssl'
  
  module Gem::Net   #:nodoc:
-@@ -1531,6 +1530,29 @@ def use_ssl=(flag)
+@@ -1539,6 +1538,29 @@ def use_ssl=(flag)
  
      SSL_IVNAMES = SSL_ATTRIBUTES.map { |a| "@#{a}".to_sym }.freeze # :nodoc:
  
@@ -69,7 +69,7 @@ index e5258175add..e1ccc056100 100644
      # Sets or returns the path to a CA certification file in PEM format.
      attr_accessor :ca_file
  
-@@ -1714,7 +1736,7 @@ def connect
+@@ -1738,7 +1760,7 @@ def connect
  
          # Server Name Indication (SNI) RFC 3546/6066
          case @address

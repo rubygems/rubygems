@@ -2,6 +2,7 @@
 
 source "https://rubygems.org"
 
+gem "connection_pool", "2.5.5" # connection_pool 3.x does not parse on Ruby 3.3.0
 gem "fileutils", "1.8.1"
 gem "molinillo", github: "cocoapods/molinillo", ref: "1d62d7d5f448e79418716dc779a4909509ccda2a"
 gem "net-http", "0.10.0"

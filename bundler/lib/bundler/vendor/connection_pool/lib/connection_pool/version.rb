@@ -1,3 +1,3 @@
 class Bundler::ConnectionPool
-  VERSION = "3.0.2"
+  VERSION = "2.5.5"
 end

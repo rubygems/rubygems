@@ -15,7 +15,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    connection_pool (3.0.2)
+    connection_pool (2.5.5)
     fileutils (1.8.1)
     net-http (0.10.0)
       net-protocol (>= 0.3.0)
@@ -41,6 +41,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  connection_pool (= 2.5.5)
   fileutils (= 1.8.1)
   molinillo!
   net-http (= 0.10.0)
@@ -55,7 +56,7 @@ DEPENDENCIES
   uri (= 1.1.2)
 
 CHECKSUMS
-  connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
+  connection_pool (2.5.5) sha256=e54ff92855753df1fd7c59fa04a398833355f27dd14c074f8c83a05f72a716ad
   fileutils (1.8.1) sha256=2d541a1ee34a9ed5c4f054be8fb819a26b5d654488a31dc8806917cf448b9cc3
   molinillo (0.8.0)
   net-http (0.10.0) sha256=1a2ff6e37a05724973c43f2bf7bf105f59c36a4cd0a7e9b1c021a0a566987c27

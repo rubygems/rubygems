@@ -11,7 +11,7 @@ GEM
     fileutils (1.8.1)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-protocol (0.2.2)
+    net-protocol (0.4.0)
       timeout
     optparse (0.8.1)
     securerandom (0.4.1)
@@ -32,7 +32,7 @@ PLATFORMS
 DEPENDENCIES
   fileutils (= 1.8.1)
   net-http (= 0.9.1)
-  net-protocol (= 0.2.2)
+  net-protocol (= 0.4.0)
   optparse (= 0.8.1)
   pub_grub!
   securerandom (= 0.4.1)
@@ -44,7 +44,7 @@ DEPENDENCIES
 CHECKSUMS
   fileutils (1.8.1) sha256=2d541a1ee34a9ed5c4f054be8fb819a26b5d654488a31dc8806917cf448b9cc3
   net-http (0.9.1) sha256=25ba0b67c63e89df626ed8fac771d0ad24ad151a858af2cc8e6a716ca4336996
-  net-protocol (0.2.2) sha256=aa73e0cba6a125369de9837b8d8ef82a61849360eba0521900e2c3713aa162a8
+  net-protocol (0.4.0) sha256=f9f90c8c6f64794a45160bf422177a336db12809de3beeeaa26b88fcd2e8c853
   optparse (0.8.1) sha256=42bea10d53907ccff4f080a69991441d611fbf8733b60ed1ce9ee365ce03bd1a
   pub_grub (0.5.0)
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1

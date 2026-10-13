@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "fileutils", "1.8.0"
+gem "fileutils", "1.8.1"
 gem "molinillo", github: "cocoapods/molinillo", ref: "1d62d7d5f448e79418716dc779a4909509ccda2a"
 gem "net-http", "0.7.0" # net-http-0.8.0 is broken with JRuby
 gem "net-http-persistent", "4.0.6"

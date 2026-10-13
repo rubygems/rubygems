@@ -24,7 +24,7 @@ GEM
       connection_pool (>= 2.2.4, < 4)
     net-protocol (0.4.0)
       timeout
-    optparse (0.8.0)
+    optparse (0.8.1)
     securerandom (0.4.1)
     thor (1.5.0)
     timeout (0.6.1)
@@ -46,7 +46,7 @@ DEPENDENCIES
   net-http (= 0.10.0)
   net-http-persistent (= 4.0.8)
   net-protocol (= 0.4.0)
-  optparse (= 0.8.0)
+  optparse (= 0.8.1)
   pub_grub!
   securerandom (= 0.4.1)
   thor (= 1.5.0)
@@ -61,7 +61,7 @@ CHECKSUMS
   net-http (0.10.0) sha256=1a2ff6e37a05724973c43f2bf7bf105f59c36a4cd0a7e9b1c021a0a566987c27
   net-http-persistent (4.0.8) sha256=ef3de8319d691537b329053fae3a33195f8b070bbbfae8bf1a58c796081960e6
   net-protocol (0.4.0) sha256=f9f90c8c6f64794a45160bf422177a336db12809de3beeeaa26b88fcd2e8c853
-  optparse (0.8.0) sha256=ef6b7fbaf7ec331474f325bc08dd5622e6e1e651007a5341330ee4b08ce734f0
+  optparse (0.8.1) sha256=42bea10d53907ccff4f080a69991441d611fbf8733b60ed1ce9ee365ce03bd1a
   pub_grub (0.5.0)
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73

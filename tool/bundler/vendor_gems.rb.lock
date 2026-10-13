@@ -18,7 +18,7 @@ GEM
     thor (1.5.0)
     timeout (0.6.1)
     tsort (0.2.0)
-    uri (1.1.1)
+    uri (1.1.2)
 
 PLATFORMS
   java
@@ -39,7 +39,7 @@ DEPENDENCIES
   thor (= 1.5.0)
   timeout (= 0.6.1)
   tsort (= 0.2.0)
-  uri (= 1.1.1)
+  uri (= 1.1.2)
 
 CHECKSUMS
   fileutils (1.8.1) sha256=2d541a1ee34a9ed5c4f054be8fb819a26b5d654488a31dc8806917cf448b9cc3
@@ -51,7 +51,7 @@ CHECKSUMS
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
   timeout (0.6.1) sha256=78f57368a7e7bbadec56971f78a3f5ecbcfb59b7fcbb0a3ed6ddc08a5094accb
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
-  uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
+  uri (1.1.2) sha256=89292e98eabbef6248b0a0ed5e7e398e152f83f17560023a6d94a7f492b169fb
 
 BUNDLED WITH
   4.1.0.beta2

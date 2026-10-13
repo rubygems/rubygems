@@ -2,6 +2,42 @@
 
 Bundler's changelog before 4.0.0, when it was versioned separately from RubyGems, is in [doc/CHANGELOG-bundler-2.x.md](https://github.com/ruby/rubygems/blob/master/doc/CHANGELOG-bundler-2.x.md).
 
+## 4.1.0.beta2 / 2026-10-08
+
+### RubyGems
+
+Changes already released in 4.0.x are not repeated here.
+
+#### Features:
+
+* Support content addressable gems in `Gem::PackageTask`. Pull request [#9897](https://github.com/ruby/rubygems/pull/9897) by Harriet Oughton, Gira Chawda and Jenny Shen
+* Add `--content-addressable` to `gem build` and make `--ruby-abi` only set the Ruby ABI. Pull request [#9906](https://github.com/ruby/rubygems/pull/9906) by Harriet Oughton
+
+#### Enhancements:
+
+* Drop setuid, setgid and sticky bits when extracting gems. Pull request [#9929](https://github.com/ruby/rubygems/pull/9929) by Hiroshi SHIBATA
+* Improve handling of paths with invalid Windows characters. Pull request [#9276](https://github.com/ruby/rubygems/pull/9276) by Said Kaldybaev and Hiroshi SHIBATA
+* Installs bundler 4.1.0.beta2 as a default gem.
+
+#### Breaking changes:
+
+* Build a platform gem with `gem build --platform` for the local platform. Pull request [#9873](https://github.com/ruby/rubygems/pull/9873) by Hiroshi SHIBATA
+* Fix `gem update --user-install` updating gems outside the user directory. Pull request [#9872](https://github.com/ruby/rubygems/pull/9872) by Hiroshi SHIBATA
+
+### Bundler
+
+Changes already released in 4.0.x are not repeated here.
+
+#### Features:
+
+* Let override drop or replace one dependency of a gem. Pull request [#9935](https://github.com/ruby/rubygems/pull/9935) by Hiroshi SHIBATA
+* Add `sparse_checkout` option to git source. Pull request [#9295](https://github.com/ruby/rubygems/pull/9295) by Ian Ker-Seymer and Hiroshi SHIBATA
+* Implement `--exact-match` Flag for `bundle info` / `show` / `open`. Pull request [#9489](https://github.com/ruby/rubygems/pull/9489) by Harriet Oughton
+
+#### Bug fixes:
+
+* Respect Gemfile lockfile in `bundle lock`. Pull request [#9661](https://github.com/ruby/rubygems/pull/9661) by David Stosik and Hiroshi SHIBATA
+
 ## 4.0.22 / 2026-09-30
 
 ### RubyGems

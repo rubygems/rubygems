@@ -503,7 +503,7 @@ lib/rubygems/vendor/net-http/lib/net/http/response.rb
 lib/rubygems/vendor/net-http/lib/net/http/responses.rb
 lib/rubygems/vendor/net-http/lib/net/http/status.rb
 lib/rubygems/vendor/net-http/lib/net/https.rb
-lib/rubygems/vendor/net-protocol/LICENSE.txt
+lib/rubygems/vendor/net-protocol/COPYING
 lib/rubygems/vendor/net-protocol/lib/net/protocol.rb
 lib/rubygems/vendor/optparse/COPYING
 lib/rubygems/vendor/optparse/lib/optionparser.rb

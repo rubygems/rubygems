@@ -8,17 +8,18 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    fileutils (1.8.0)
-    net-http (0.9.1)
+    fileutils (1.8.1)
+    net-http (0.10.0)
+      net-protocol (>= 0.3.0)
       uri (>= 0.11.1)
-    net-protocol (0.2.2)
+    net-protocol (0.4.0)
       timeout
     optparse (0.8.1)
     securerandom (0.4.1)
     thor (1.5.0)
     timeout (0.6.1)
     tsort (0.2.0)
-    uri (1.1.1)
+    uri (1.1.2)
 
 PLATFORMS
   java
@@ -30,28 +31,28 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  fileutils (= 1.8.0)
-  net-http (= 0.9.1)
-  net-protocol (= 0.2.2)
+  fileutils (= 1.8.1)
+  net-http (= 0.10.0)
+  net-protocol (= 0.4.0)
   optparse (= 0.8.1)
   pub_grub!
   securerandom (= 0.4.1)
   thor (= 1.5.0)
   timeout (= 0.6.1)
   tsort (= 0.2.0)
-  uri (= 1.1.1)
+  uri (= 1.1.2)
 
 CHECKSUMS
-  fileutils (1.8.0) sha256=8c6b1df54e2540bdb2f39258f08af78853aa70bad52b4d394bbc6424593c6e02
-  net-http (0.9.1) sha256=25ba0b67c63e89df626ed8fac771d0ad24ad151a858af2cc8e6a716ca4336996
-  net-protocol (0.2.2) sha256=aa73e0cba6a125369de9837b8d8ef82a61849360eba0521900e2c3713aa162a8
+  fileutils (1.8.1) sha256=2d541a1ee34a9ed5c4f054be8fb819a26b5d654488a31dc8806917cf448b9cc3
+  net-http (0.10.0) sha256=1a2ff6e37a05724973c43f2bf7bf105f59c36a4cd0a7e9b1c021a0a566987c27
+  net-protocol (0.4.0) sha256=f9f90c8c6f64794a45160bf422177a336db12809de3beeeaa26b88fcd2e8c853
   optparse (0.8.1) sha256=42bea10d53907ccff4f080a69991441d611fbf8733b60ed1ce9ee365ce03bd1a
   pub_grub (0.5.0)
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
   timeout (0.6.1) sha256=78f57368a7e7bbadec56971f78a3f5ecbcfb59b7fcbb0a3ed6ddc08a5094accb
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
-  uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
+  uri (1.1.2) sha256=89292e98eabbef6248b0a0ed5e7e398e152f83f17560023a6d94a7f492b169fb
 
 BUNDLED WITH
   4.1.0.beta2

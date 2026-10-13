@@ -81,8 +81,8 @@ ignore = ["bundler"]
 vendored_gems = [
   # RubyGems
   VendoredGem.new(name: "pub_grub", namespace: "PubGrub", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/pub_grub", license_path: "LICENSE.txt", patch_name: "pub_grub-rubygems.patch"),
-  VendoredGem.new(name: "net-http", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-http", license_path: "COPYING", extra_dependencies: %w[net-protocol timeout uri/lib/rubygems/vendor/uri], skip_dependencies: %w[uri], patch_name: "net-http-v0.9.1.patch"),
-  VendoredGem.new(name: "net-protocol", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-protocol", license_path: "LICENSE.txt"),
+  VendoredGem.new(name: "net-http", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-http", license_path: "COPYING", extra_dependencies: %w[timeout uri/lib/rubygems/vendor/uri], skip_dependencies: %w[uri], patch_name: "net-http-v0.10.0.patch"),
+  VendoredGem.new(name: "net-protocol", namespace: "Net", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/net-protocol", license_path: "COPYING"),
   VendoredGem.new(name: "optparse", namespace: "OptionParser", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/optparse", license_path: "COPYING", extra_dependencies: %w[uri/lib/rubygems/vendor/uri], patch_name: "optparse-v0.8.0.patch"),
   VendoredGem.new(name: "securerandom", namespace: "SecureRandom", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/securerandom", license_path: "COPYING", patch_name: "securerandom-rubygems.patch"),
   VendoredGem.new(name: "timeout", namespace: "Timeout", prefix: "Gem", vendor_lib: "lib/rubygems/vendor/timeout", license_path: "COPYING", patch_name: "timeout-v0.6.1.patch"),

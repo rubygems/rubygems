@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "fileutils", "1.8.0"
+gem "fileutils", "1.8.1"
 gem "net-http", "0.9.1"
 gem "net-protocol", "0.2.2"
 gem "optparse", "0.8.1"

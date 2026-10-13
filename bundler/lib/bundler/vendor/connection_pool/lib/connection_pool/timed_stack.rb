@@ -5,7 +5,7 @@
 #
 # Examples:
 #
-#    ts = TimedStack.new(1) { MyConnection.new }
+#    ts = TimedStack.new(size: 1) { MyConnection.new }
 #
 #    # fetch a connection
 #    conn = ts.pop
@@ -22,7 +22,7 @@ class Bundler::ConnectionPool::TimedStack
   ##
   # Creates a new pool with +size+ connections that are created from the given
   # +block+.
-  def initialize(size = 0, &block)
+  def initialize(size: 0, &block)
     @create_block = block
     @created = 0
     @que = []
@@ -33,15 +33,15 @@ class Bundler::ConnectionPool::TimedStack
   end
 
   ##
-  # Returns +obj+ to the stack. +options+ is ignored in TimedStack but may be
+  # Returns +obj+ to the stack. Additional kwargs are ignored in TimedStack but may be
   # used by subclasses that extend TimedStack.
-  def push(obj, options = {})
+  def push(obj, **)
     @mutex.synchronize do
       if @shutdown_block
         @created -= 1 unless @created == 0
         @shutdown_block.call(obj)
       else
-        store_connection obj, options
+        store_connection obj, **
       end
 
       @resource.broadcast
@@ -54,26 +54,31 @@ class Bundler::ConnectionPool::TimedStack
   # immediately returned. If no connection is available within the given
   # timeout a Bundler::ConnectionPool::TimeoutError is raised.
   #
-  # +:timeout+ is the only checked entry in +options+ and is preferred over
-  # the +timeout+ argument (which will be removed in a future release). Other
-  # options may be used by subclasses that extend TimedStack.
-  def pop(timeout = 0.5, options = {})
-    options, timeout = timeout, 0.5 if Hash === timeout
-    timeout = options.fetch :timeout, timeout
-
+  # @option options [Float] :timeout (0.5) Wait this many seconds for an available entry
+  # @option options [Class] :exception (Bundler::ConnectionPool::TimeoutError) Exception class to raise
+  #   if an entry was not available within the timeout period. Use `exception: false` to return nil.
+  #
+  # Other options may be used by subclasses that extend TimedStack.
+  def pop(timeout: 0.5, exception: Bundler::ConnectionPool::TimeoutError, **)
     deadline = current_time + timeout
     @mutex.synchronize do
       loop do
         raise Bundler::ConnectionPool::PoolShuttingDownError if @shutdown_block
-        if (conn = try_fetch_connection(options))
+        if (conn = try_fetch_connection(**))
           return conn
         end
 
-        connection = try_create(options)
+        connection = try_create(**)
         return connection if connection
 
         to_wait = deadline - current_time
-        raise Bundler::ConnectionPool::TimeoutError, "Waited #{timeout} sec, #{length}/#{@max} available" if to_wait <= 0
+        if to_wait <= 0
+          if exception
+            raise exception, "Waited #{timeout} sec, #{length}/#{@max} available"
+          else
+            return nil
+          end
+        end
         @resource.wait(@mutex, to_wait)
       end
     end
@@ -98,21 +103,20 @@ class Bundler::ConnectionPool::TimedStack
 
   ##
   # Reaps connections that were checked in more than +idle_seconds+ ago.
-  def reap(idle_seconds, &block)
-    raise ArgumentError, "reap must receive a block" unless block
+  def reap(idle_seconds:)
+    raise ArgumentError, "reap must receive a block" unless block_given?
     raise ArgumentError, "idle_seconds must be a number" unless idle_seconds.is_a?(Numeric)
     raise Bundler::ConnectionPool::PoolShuttingDownError if @shutdown_block
 
-    idle.times do
-      conn =
-        @mutex.synchronize do
-          raise Bundler::ConnectionPool::PoolShuttingDownError if @shutdown_block
-
-          reserve_idle_connection(idle_seconds)
-        end
+    count = idle
+    count.times do
+      conn = @mutex.synchronize do
+        raise Bundler::ConnectionPool::PoolShuttingDownError if @shutdown_block
+        reserve_idle_connection(idle_seconds)
+      end
       break unless conn
 
-      block.call(conn)
+      yield conn
     end
   end
 
@@ -152,15 +156,15 @@ class Bundler::ConnectionPool::TimedStack
   # This method must returns a connection from the stack if one exists. Allows
   # subclasses with expensive match/search algorithms to avoid double-handling
   # their stack.
-  def try_fetch_connection(options = nil)
-    connection_stored?(options) && fetch_connection(options)
+  def try_fetch_connection(**)
+    connection_stored?(**) && fetch_connection(**)
   end
 
   ##
   # This is an extension point for TimedStack and is called with a mutex.
   #
   # This method must returns true if a connection is available on the stack.
-  def connection_stored?(options = nil)
+  def connection_stored?(**)
     !@que.empty?
   end
 
@@ -168,7 +172,7 @@ class Bundler::ConnectionPool::TimedStack
   # This is an extension point for TimedStack and is called with a mutex.
   #
   # This method must return a connection from the stack.
-  def fetch_connection(options = nil)
+  def fetch_connection(**)
     @que.pop&.first
   end
 
@@ -176,8 +180,8 @@ class Bundler::ConnectionPool::TimedStack
   # This is an extension point for TimedStack and is called with a mutex.
   #
   # This method must shut down all connections on the stack.
-  def shutdown_connections(options = nil)
-    while (conn = try_fetch_connection(options))
+  def shutdown_connections(**)
+    while (conn = try_fetch_connection(**))
       @created -= 1 unless @created == 0
       @shutdown_block.call(conn)
     end
@@ -193,6 +197,8 @@ class Bundler::ConnectionPool::TimedStack
 
     @created -= 1 unless @created == 0
 
+    # Most active elements are at the tail of the array.
+    # Most idle will be at the head so `shift` rather than `pop`.
     @que.shift.first
   end
 
@@ -201,14 +207,17 @@ class Bundler::ConnectionPool::TimedStack
   #
   # Returns true if the first connection in the stack has been idle for more than idle_seconds
   def idle_connections?(idle_seconds)
-    connection_stored? && (current_time - @que.first.last > idle_seconds)
+    return unless connection_stored?
+    # Most idle will be at the head so `first`
+    age = (current_time - @que.first.last)
+    age > idle_seconds
   end
 
   ##
   # This is an extension point for TimedStack and is called with a mutex.
   #
   # This method must return +obj+ to the stack.
-  def store_connection(obj, options = nil)
+  def store_connection(obj, **)
     @que.push [obj, current_time]
   end
 
@@ -217,7 +226,7 @@ class Bundler::ConnectionPool::TimedStack
   #
   # This method must create a connection if and only if the total number of
   # connections allowed has not been met.
-  def try_create(options = nil)
+  def try_create(**)
     unless @created == @max
       object = @create_block.call
       @created += 1

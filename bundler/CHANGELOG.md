@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.23 / 2026-10-14
+
+### Enhancements:
+
+* Update vendored gems to latest versions. Pull request [#9948](https://github.com/ruby/rubygems/pull/9948) by Hiroshi SHIBATA
+
+### Bug fixes:
+
+* Stop retrying a 416 response to a request without Range. Pull request [#9938](https://github.com/ruby/rubygems/pull/9938) by Hiroshi SHIBATA
+* Respect Gemfile lockfile in `bundle lock`. Pull request [#9661](https://github.com/ruby/rubygems/pull/9661) by David Stosik and Hiroshi SHIBATA
+
 ## 4.0.22 / 2026-09-30
 
 ### Enhancements:

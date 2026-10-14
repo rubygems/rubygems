@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0.23 / 2026-10-14
+
+### Enhancements:
+
+* Update vendored gems to latest versions. Pull request [#9948](https://github.com/ruby/rubygems/pull/9948) by Hiroshi SHIBATA
+* Drop setuid, setgid and sticky bits when extracting gems. Pull request [#9929](https://github.com/ruby/rubygems/pull/9929) by Hiroshi SHIBATA
+* Improve handling of paths with invalid Windows characters. Pull request [#9276](https://github.com/ruby/rubygems/pull/9276) by Said Kaldybaev and Hiroshi SHIBATA
+* Installs bundler 4.0.23 as a default gem.
+
 ## 4.0.22 / 2026-09-30
 
 ### Enhancements:

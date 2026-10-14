@@ -2,6 +2,28 @@
 
 Bundler's changelog before 4.0.0, when it was versioned separately from RubyGems, is in [doc/CHANGELOG-bundler-2.x.md](https://github.com/ruby/rubygems/blob/master/doc/CHANGELOG-bundler-2.x.md).
 
+## 4.0.23 / 2026-10-14
+
+### RubyGems
+
+#### Enhancements:
+
+* Update vendored gems to latest versions. Pull request [#9948](https://github.com/ruby/rubygems/pull/9948) by Hiroshi SHIBATA
+* Drop setuid, setgid and sticky bits when extracting gems. Pull request [#9929](https://github.com/ruby/rubygems/pull/9929) by Hiroshi SHIBATA
+* Improve handling of paths with invalid Windows characters. Pull request [#9276](https://github.com/ruby/rubygems/pull/9276) by Said Kaldybaev and Hiroshi SHIBATA
+* Installs bundler 4.0.23 as a default gem.
+
+### Bundler
+
+#### Enhancements:
+
+* Update vendored gems to latest versions. Pull request [#9948](https://github.com/ruby/rubygems/pull/9948) by Hiroshi SHIBATA
+
+#### Bug fixes:
+
+* Stop retrying a 416 response to a request without Range. Pull request [#9938](https://github.com/ruby/rubygems/pull/9938) by Hiroshi SHIBATA
+* Respect Gemfile lockfile in `bundle lock`. Pull request [#9661](https://github.com/ruby/rubygems/pull/9661) by David Stosik and Hiroshi SHIBATA
+
 ## 4.1.0.beta2 / 2026-10-08
 
 ### RubyGems
